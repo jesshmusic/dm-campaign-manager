@@ -1,0 +1,11 @@
+<div class="pagination">
+  <div class="pagination__info">
+    <%= page_entries_info @items %>
+  </div>
+  <%= will_paginate @items,
+      class: 'pagination__pages',
+      inner_window: 1,
+      outer_window: 0,
+      previous_label: 'Prev',
+      next_label: 'Next' %>
+</div>

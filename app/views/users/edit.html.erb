@@ -1,0 +1,24 @@
+<div class="admin">
+  <%= render "shared/admin-header" %>
+  <div class="admin__container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item"><a href="/users">Users</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Edit User</li>
+      </ol>
+    </nav>
+    <h1>Edit - <small><em><%= @user.name %> <%= @user.username %></em></small></h1>
+    <% if !@user.confirmed_at? %>
+      <h3>Currently waiting confirmation.</h3>
+    <% end %>
+    <%= render 'form', user: @user, url: user_path(@user) %>
+    <div class="admin__footer">
+      <%= link_to 'Show', user_path, class: "button button__success" %>
+      <% if current_user.admin? %>
+        <%= link_to 'Back', user_path, class: "button button__primary" %>
+        <%= link_to 'Admin', '/admin', class: "button button__info" %>
+      <% end %>
+    </div>
+  </div>
+</div>

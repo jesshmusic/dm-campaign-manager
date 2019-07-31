@@ -1,0 +1,44 @@
+<div class="admin">
+  <%= render "shared/admin-header" %>
+  <div class="admin__container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item"><a href="/v1/admin">Admin</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Users</li>
+      </ol>
+    </nav>
+    <h1>Users</h1>
+    <%= render 'shared/search_form', url: users_path %>
+    <% @users.each do |user| %>
+      <div class="teaser">
+        <div class="teaser__body">
+          <div class="teaser__body--title">
+            <%= link_to "#{user.name} #{user.username}", user_path(user) %>
+            <% if user.admin? %>
+              <span class="badge badge-pill badge-success">Admin</span>
+            <% elsif user.moderator? %>
+              <span class="badge badge-pill badge-info">Moderator</span>
+            <% else %>
+              <span class="badge badge-pill badge-warning">User</span>
+            <% end %>
+          </div>
+          <div class="teaser__body--date">
+            <%= user.created_at.strftime('%B %e, %Y') %>
+          </div>
+          <div class="teaser__body--text">
+            <%= link_to user.email, user_path(user) %>
+          </div>
+          <div class="teaser__body--actions">
+            <%= link_to 'Edit', edit_user_path(user), class: "btn btn-sm btn-primary" %>
+            <% if user.moderator? && !user.deleted_at %>
+              <%= link_to 'Change Role', v1_user_change_role_path(user), method: :patch, class: "btn btn-sm btn-warning" %>
+            <% elsif user.user? && !user.deleted_at %>
+              <%= link_to 'Change Role', v1_user_change_role_path(user), method: :patch, class: "btn btn-sm btn-info" %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

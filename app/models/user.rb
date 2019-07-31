@@ -20,6 +20,8 @@
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #  role                   :integer
+#  name                   :text
+#  username               :text
 #
 
 class User < ApplicationRecord
@@ -38,19 +40,19 @@ class User < ApplicationRecord
   end
 
   # instead of deleting, indicate the user requested a delete & timestamp it
-  def soft_delete
-    update_attribute(:deleted_at, Time.current)
-  end
+  # def soft_delete
+  #   update_attribute(:deleted_at, Time.current)
+  # end
 
   # ensure user account is active
-  def active_for_authentication?
-    super && !deleted_at
-  end
+  # def active_for_authentication?
+  #   super && !deleted_at
+  # end
 
   # provide a custom message for a deleted account
-  def inactive_message
-    !deleted_at ? super : :deleted_account
-  end
+  # def inactive_message
+  #   !deleted_at ? super : :deleted_account
+  # end
 
   # PgSearch
   pg_search_scope :search_for,

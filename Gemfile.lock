@@ -1,3 +1,12 @@
+GIT
+  remote: https://github.com/bootstrap-ruby/bootstrap_form.git
+  revision: 0b9c609d52d3b79190ad28201f407db687a0d2fb
+  branch: master
+  specs:
+    bootstrap_form (4.2.0)
+      actionpack (>= 5.0)
+      activemodel (>= 5.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -24,6 +33,9 @@ GEM
       erubi (~> 1.4)
       rails-dom-testing (~> 2.0)
       rails-html-sanitizer (~> 1.0, >= 1.0.3)
+    active_link_to (1.0.5)
+      actionpack
+      addressable
     activejob (5.2.3)
       activesupport (= 5.2.3)
       globalid (>= 0.3.6)
@@ -296,9 +308,11 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  active_link_to
   annotate
   bootsnap (>= 1.1.0)
   bootstrap
+  bootstrap_form!
   byebug
   capybara (>= 2.15)
   chromedriver-helper

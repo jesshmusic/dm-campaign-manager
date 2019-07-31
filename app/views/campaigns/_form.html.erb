@@ -11,6 +11,10 @@
     </div>
   <% end %>
 
+  <h4><%= 'Admin: ' if current_user.admin? %> <%= current_user.name %></h4>
+  <h4><%= 'Moderator: ' if current_user.moderator? %> <%= current_user.name %></h4>
+  <h4><%= 'Dungeon Master: ' if current_user.user? %> <%= current_user.name %></h4>
+
   <div class="field">
     <%= form.label :name %>
     <%= form.text_area :name %>

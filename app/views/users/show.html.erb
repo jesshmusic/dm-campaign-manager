@@ -1,0 +1,40 @@
+<div class="admin">
+  <%= render "shared/admin-header" %>
+  <div class="admin__container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item"><a href="/v1/users">Users</a></li>
+        <li class="breadcrumb-item active" aria-current="page">
+          <%= @user.name %>
+        </li>
+      </ol>
+    </nav>
+    <div class='wrapper'>
+      <div class="wrapper__body">
+        <h1 class="wrapper__body--title">
+          <%= @user.name %>
+          <% if @user.admin? %>
+            <span class="badge badge-pill badge-success">Admin</span>
+          <% elsif @user.moderator? %>
+            <span class="badge badge-pill badge-info">Moderator</span>
+          <% else %>
+            <span class="badge badge-pill badge-warning">User</span>
+          <% end %>
+        </h1>
+        <h3>
+          <%= @user.created_at.strftime('%B %e, %Y') %>
+        </h3>
+        <p class="wrapper__body--text">
+          <%= sanitize @user.username %>
+        </p>
+      </div>
+      <div class="wrapper__footer">
+        <%= link_to 'Edit', edit_user_path(@user), class: "btn btn-success" %>
+        <% if current_user.admin? %>
+          <%= link_to 'Back', user_path, class: "btn btn-primary" %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
