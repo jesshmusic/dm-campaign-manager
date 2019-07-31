@@ -5,10 +5,12 @@ ruby '2.4.1'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.2.3'
-# Use sqlite3 as the database for Active Record
-gem 'sqlite3'
+# Use postgresql as the database for Active Record
+gem 'pg'
+gem 'pg_search'
 # Use Puma as the app server
 gem 'puma', '~> 3.11'
+gem 'pundit'
 gem 'react_on_rails', '11.3.0'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
@@ -19,8 +21,17 @@ gem 'webpacker'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 # gem 'mini_racer', platforms: :ruby
 
+gem 'bootstrap'
 # Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails', '~> 4.2'
+
+# Auth for Users
+gem 'devise'
+gem 'omniauth'
+
+# Attachments
+gem 'paperclip'
+
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
 gem 'turbolinks', '~> 5'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
@@ -42,6 +53,12 @@ gem 'bootsnap', '>= 1.1.0', require: false
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
+  gem 'factory_bot_rails'
+  gem 'faker'
+  gem 'rspec-core'
+  gem 'rspec-rails'
+  gem 'scss_lint', require: false
+  gem 'simplecov', require: false, group: :spec
 end
 
 group :development do
