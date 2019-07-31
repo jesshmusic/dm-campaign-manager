@@ -6,5 +6,6 @@ Rails.application.routes.draw do
   
   get 'dashboard', to: 'dashboard#index'
   resources :users, except: %i[create new]
+  patch '/users/:id/change_role', to: 'users#change_role', as: 'user_change_role'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

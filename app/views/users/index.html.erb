@@ -31,9 +31,9 @@
           </div>
           <div class="teaser__body--actions">
             <%= link_to 'Edit', edit_user_path(user), class: "btn btn-sm btn-primary" %>
-            <% if user.dungeon_master? && !user.deleted_at %>
+            <% if user.dungeon_master? %>
               <%= link_to 'Change Role', user_change_role_path(user), method: :patch, class: "btn btn-sm btn-warning" %>
-            <% elsif user.player? && !user.deleted_at %>
+            <% elsif user.player? %>
               <%= link_to 'Change Role', user_change_role_path(user), method: :patch, class: "btn btn-sm btn-info" %>
             <% end %>
           </div>
