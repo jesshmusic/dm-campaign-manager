@@ -10,10 +10,16 @@
       </ul>
     </div>
   <% end %>
-
-  <h4><%= "Admin: #{current_user.name}" if current_user.admin? %></h4>
-  <h4><%= "Moderator: #{current_user.name}" if current_user.moderator? %></h4>
-  <h4><%= "Dungeon Master: #{current_user.name}" if current_user.user? %></h4>
+  <h4>
+    <small>Dungeon Master:</small> <%= current_user.name %>
+    <% if current_user.admin? %>
+      <span class="badge badge-pill badge-success">Admin</span>
+    <% elsif current_user.moderator? %>
+      <span class="badge badge-pill badge-info">Moderator</span>
+    <% else %>
+      <span class="badge badge-pill badge-warning">User</span>
+    <% end %>
+  </h4>
 
   <%= form.form_group do %>
     <%= form.text_field :name, required: true %>
