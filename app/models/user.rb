@@ -57,8 +57,8 @@ class User < ApplicationRecord
   # PgSearch
   pg_search_scope :search_for,
                   against: {
-                    first_name: 'C',
-                    last_name: 'A',
+                    name: 'A',
+                    username: 'C',
                     email: 'B'
                   },
                   using: {
