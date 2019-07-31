@@ -17,7 +17,7 @@
       </li>
       <% if current_user.admin? || current_user.moderator? %>
         <li class="nav-item">
-          <%= active_link_to 'Dashboard', '/v1/admin', active: :exclusive, class: 'nav-link' %>
+          <%= active_link_to 'Dashboard', '/admin', active: :exclusive, class: 'nav-link' %>
         </li>
         <li class="nav-item">
           <%= active_link_to 'Campaigns', campaigns_path, active: :exclusive, class: 'nav-link' %>

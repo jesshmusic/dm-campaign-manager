@@ -11,13 +11,13 @@
     </div>
   <% end %>
   <h4>
-    <small>Dungeon Master:</small> <%= current_user.name %>
+    <small>Owner:</small> <%= current_user.name %>
     <% if current_user.admin? %>
       <span class="badge badge-pill badge-success">Admin</span>
-    <% elsif current_user.moderator? %>
-      <span class="badge badge-pill badge-info">Moderator</span>
+    <% elsif current_user.dungeon_master? %>
+      <span class="badge badge-pill badge-info">Dungeon Master</span>
     <% else %>
-      <span class="badge badge-pill badge-warning">User</span>
+      <span class="badge badge-pill badge-warning">Player</span>
     <% end %>
   </h4>
 

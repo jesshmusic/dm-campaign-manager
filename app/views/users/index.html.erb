@@ -17,10 +17,10 @@
             <%= link_to "#{user.name} #{user.username}", user_path(user) %>
             <% if user.admin? %>
               <span class="badge badge-pill badge-success">Admin</span>
-            <% elsif user.moderator? %>
-              <span class="badge badge-pill badge-info">Moderator</span>
+            <% elsif user.dungeon_master? %>
+              <span class="badge badge-pill badge-info">Dungeon Master</span>
             <% else %>
-              <span class="badge badge-pill badge-warning">User</span>
+              <span class="badge badge-pill badge-warning">Player</span>
             <% end %>
           </div>
           <div class="teaser__body--date">
@@ -31,10 +31,10 @@
           </div>
           <div class="teaser__body--actions">
             <%= link_to 'Edit', edit_user_path(user), class: "btn btn-sm btn-primary" %>
-            <% if user.moderator? && !user.deleted_at %>
-              <%= link_to 'Change Role', v1_user_change_role_path(user), method: :patch, class: "btn btn-sm btn-warning" %>
-            <% elsif user.user? && !user.deleted_at %>
-              <%= link_to 'Change Role', v1_user_change_role_path(user), method: :patch, class: "btn btn-sm btn-info" %>
+            <% if user.dungeon_master? && !user.deleted_at %>
+              <%= link_to 'Change Role', user_change_role_path(user), method: :patch, class: "btn btn-sm btn-warning" %>
+            <% elsif user.player? && !user.deleted_at %>
+              <%= link_to 'Change Role', user_change_role_path(user), method: :patch, class: "btn btn-sm btn-info" %>
             <% end %>
           </div>
         </div>

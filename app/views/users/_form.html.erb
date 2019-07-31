@@ -12,16 +12,17 @@
   <% end %>
 
   <h4><%= 'Admin' if current_user.admin? %></h4>
-  <h4><%= 'Moderator' if current_user.moderator? %></h4>
+  <h4><%= 'Dungeon Master' if current_user.dungeon_master? %></h4>
+  <h4><%= 'Player' if current_user.player? %></h4>
 
   <%= form.form_group do %>
     <%= form.label :role %>
     <% if user.admin? %>
       <span class="badge badge-pill badge-success">Admin</span>
-    <% elsif user.moderator? %>
-      <span class="badge badge-pill badge-info">Moderator</span>
+    <% elsif user.dungeon_master? %>
+      <span class="badge badge-pill badge-info">Dungeon Master</span>
     <% else %>
-      <span class="badge badge-pill badge-warning">User</span>
+      <span class="badge badge-pill badge-warning">Player</span>
     <% end %>
   <% end %>
 
@@ -36,7 +37,7 @@
 
   <% if current_user.admin? %>
     <%= form.form_group do %>
-      <%= form.select :role, ['user', 'moderator', 'admin'], {}, style: "width: 100%;" %>
+      <%= form.select :role, [['Player', 'player'], ['Dungeon Master', 'dungeon_master'], ['Admin', 'admin']], {}, style: "width: 100%;" %>
     <% end %>
   <% end %>
 

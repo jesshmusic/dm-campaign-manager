@@ -29,14 +29,14 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :trackable, :validatable,
          :confirmable, :omniauthable
   include PgSearch
-  enum role: %I[user moderator admin]
+  enum role: %I[player dungeon_master admin]
   after_initialize :set_default_role, if: :new_record?
 
   # User Favorites
   has_many :campaigns, dependent: :delete_all
 
   def set_default_role
-    self.role ||= :user
+    self.role ||= :player
   end
 
   # instead of deleting, indicate the user requested a delete & timestamp it
@@ -58,8 +58,9 @@ class User < ApplicationRecord
   pg_search_scope :search_for,
                   against: {
                     name: 'A',
-                    username: 'C',
-                    email: 'B'
+                    username: 'D',
+                    email: 'C',
+                    role: 'B'
                   },
                   using: {
                     tsearch: {

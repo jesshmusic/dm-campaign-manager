@@ -53,10 +53,10 @@ class UsersController < ApplicationController
   # PATCH/PUT /v1/users/1/change_role
   def change_role
     authorize @user
-    if @user.role == 'moderator'
-      @user.role = :user
-    elsif @user.role == 'user'
-      @user.role = :moderator
+    if @user.role == 'dungeon_master'
+      @user.role = :player
+    elsif @user.role == 'player'
+      @user.role = :dungeon_master
     end
     respond_to do |format|
       if @user.save

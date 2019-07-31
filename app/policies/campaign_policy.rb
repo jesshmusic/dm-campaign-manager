@@ -1,23 +1,23 @@
 class CampaignPolicy < ApplicationPolicy
 
   def show?
-    return true
+    user && user.admin? || user.dungeon_master? || user.player?
   end
 
   def edit?
-    user.admin? || user.moderator?
+    user && user.admin? || user.dungeon_master?
   end
 
   def update?
-    user && user.admin?
+    user && user.admin? || user.dungeon_master?
   end
 
   def create?
-    user && user.admin?
+    user && user.admin? || user.dungeon_master?
   end
 
   def destroy?
-    user && user.admin?
+    user && user.admin? || user.dungeon_master?
   end
 
   def destroy_all?
