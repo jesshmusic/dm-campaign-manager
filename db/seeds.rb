@@ -5,7 +5,7 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
-admin_user = User.create!(
+admin_user = User.new(
   name: 'Jess Hendricks',
   username: 'jesshmusic',
   email: 'jesshmusic72@gmail.com',
@@ -21,7 +21,10 @@ admin_user = User.create!(
   last_sign_in_ip: "127.0.0.1",
   role: 2
 )
-player_user = User.create!(
+admin_user.skip_confirmation!
+admin_user.save!
+
+player_user = User.new(
   name: 'Jess Player',
   username: 'jesshplayer',
   email: 'jesshmusic72+player@gmail.com',
@@ -37,7 +40,10 @@ player_user = User.create!(
   last_sign_in_ip: "127.0.0.1",
   role: 0
 )
-dm_user = User.create!(
+player_user.skip_confirmation!
+player_user.save!
+
+dm_user = User.new(
   name: 'Jess DM',
   username: 'jesshdm',
   email: 'jesshmusic72+dm@gmail.com',
@@ -53,6 +59,8 @@ dm_user = User.create!(
   last_sign_in_ip: "127.0.0.1",
   role: 1
 )
+dm_user.skip_confirmation!
+dm_user.save!
 
 dm_user.campaigns.create(
   name: 'Greyhawk',
