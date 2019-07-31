@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :campaigns
   devise_for :users
   root to: 'hello_world#index'
   get 'hello_world', to: 'hello_world#index'

@@ -44,6 +44,9 @@ GEM
       tzinfo (~> 1.1)
     addressable (2.6.0)
       public_suffix (>= 2.0.2, < 4.0)
+    annotate (2.7.5)
+      activerecord (>= 3.2, < 7.0)
+      rake (>= 10.4, < 13.0)
     archive-zip (0.12.0)
       io-like (~> 0.3.0)
     arel (9.0.0)
@@ -293,6 +296,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  annotate
   bootsnap (>= 1.1.0)
   bootstrap
   byebug
@@ -312,6 +316,7 @@ DEPENDENCIES
   puma (~> 3.11)
   pundit
   rails (~> 5.2.3)
+  rainbow
   react_on_rails (= 11.3.0)
   rspec-core
   rspec-rails
