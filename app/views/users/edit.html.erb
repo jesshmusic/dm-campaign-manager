@@ -4,7 +4,8 @@
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="/">Home</a></li>
-        <li class="breadcrumb-item"><a href="/users">Users</a></li>
+        <li class="breadcrumb-item"><%= link_to 'Dashboard', dashboard_path %></li>
+        <li class="breadcrumb-item"><%= link_to 'Users', users_path %></li>
         <li class="breadcrumb-item active" aria-current="page">Edit User</li>
       </ol>
     </nav>
@@ -14,10 +15,10 @@
     <% end %>
     <%= render 'form', user: @user, url: user_path(@user) %>
     <div class="admin__footer">
-      <%= link_to 'Show', user_path, class: "button button__success" %>
+      <%= link_to 'Show', user_path, class: "btn btn-success" %>
       <% if current_user.admin? %>
-        <%= link_to 'Back', user_path, class: "button button__primary" %>
-        <%= link_to 'Admin', '/admin', class: "button button__info" %>
+        <%= link_to 'Back', users_path, class: "btn btn-primary" %>
+        <%= link_to 'Admin', '/admin', class: "btn btn-info" %>
       <% end %>
     </div>
   </div>

@@ -37,7 +37,7 @@
 
   <% if current_user.admin? %>
     <%= form.form_group do %>
-      <%= form.select :role, [['Player', 'player'], ['Dungeon Master', 'dungeon_master'], ['Admin', 'admin']], {}, style: "width: 100%;" %>
+      <%= form.select :role, [['Player', 'player'], ['Dungeon Master', 'dungeon_master'], ['Admin', 'admin']], {}, id: "change_role_select", style: "width: 100%;" %>
     <% end %>
   <% end %>
 
@@ -56,4 +56,5 @@
       $('#userFormBody').show("fast");
     }
   });
+  $('#change_role_select').select2();
 </script>
