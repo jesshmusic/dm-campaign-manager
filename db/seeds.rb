@@ -7,9 +7,9 @@
 #   Character.create(name: 'Luke', movie: movies.first)
 User.create!([
   {
-    first_name: 'Jess',
-    last_name: 'Hendricks',
-    email: 'jhendricks@existentialmusic.com',
+    name: 'Jess Hendricks',
+    username: 'jesshmusic',
+    email: 'jesshmusic72@gmail.com',
     description: 'This is the initial account for the master of the website, the boss, the Doctor.',
     password: "Flashy7151",
     password_confirmation: "Flashy7151",

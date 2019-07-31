@@ -1,4 +1,4 @@
-<%= form_with(model: campaign, local: true) do |form| %>
+<%= bootstrap_form_for @campaign do |form| %>
   <% if campaign.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(campaign.errors.count, "error") %> prohibited this campaign from being saved:</h2>
@@ -11,24 +11,18 @@
     </div>
   <% end %>
 
-  <h4><%= 'Admin: ' if current_user.admin? %> <%= current_user.name %></h4>
-  <h4><%= 'Moderator: ' if current_user.moderator? %> <%= current_user.name %></h4>
-  <h4><%= 'Dungeon Master: ' if current_user.user? %> <%= current_user.name %></h4>
+  <h4><%= "Admin: #{current_user.name}" if current_user.admin? %></h4>
+  <h4><%= "Moderator: #{current_user.name}" if current_user.moderator? %></h4>
+  <h4><%= "Dungeon Master: #{current_user.name}" if current_user.user? %></h4>
 
-  <div class="field">
-    <%= form.label :name %>
-    <%= form.text_area :name %>
-  </div>
-
-  <div class="field">
-    <%= form.label :description %>
+  <%= form.form_group do %>
+    <%= form.text_field :name, required: true %>
+    <%= form.text_field :world, required: true %>
+  <% end %>
+  
+  <%= form.form_group do %>
     <%= form.text_area :description %>
-  </div>
-
-  <div class="field">
-    <%= form.label :world %>
-    <%= form.text_area :world %>
-  </div>
+  <% end %>
 
   <div class="actions">
     <%= form.submit %>

@@ -5,7 +5,7 @@
       <%= text_field_tag :search, params[:search], class: "form-control" %>
       <div class="input-group-append">
         <%= link_to url, class: "btn btn-light" do %>
-          <%# <%= image_tag 'svg/x.svg' %> %>
+          <%= image_tag 'svg/x.svg' %>
         <% end %>
         <%= submit_tag 'Search', name: nil, class: "btn btn-primary" %>
       </div>
