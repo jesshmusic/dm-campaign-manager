@@ -10,10 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_01_125331) do
+ActiveRecord::Schema.define(version: 2019_08_01_204237) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "actions", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.integer "attack_bonus"
+    t.integer "damage_bonus"
+    t.string "damage_dice"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "campaigns", force: :cascade do |t|
     t.bigint "user_id"
@@ -25,29 +35,56 @@ ActiveRecord::Schema.define(version: 2019_08_01_125331) do
     t.index ["user_id"], name: "index_campaigns_on_user_id"
   end
 
+  create_table "container_items", force: :cascade do |t|
+    t.bigint "item_id"
+    t.bigint "item_content_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["item_content_id"], name: "index_container_items_on_item_content_id"
+    t.index ["item_id", "item_content_id"], name: "index_container_items_on_item_id_and_item_content_id", unique: true
+    t.index ["item_id"], name: "index_container_items_on_item_id"
+  end
+
   create_table "dnd_classes", force: :cascade do |t|
     t.text "name"
     t.integer "hit_die"
     t.string "api_url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "proficiency_choices", default: [], array: true
+    t.string "proficiencies", default: [], array: true
+    t.string "saving_throws", default: [], array: true
   end
 
-  create_table "proficiencies", force: :cascade do |t|
+  create_table "items", force: :cascade do |t|
     t.string "name"
-    t.string "type"
+    t.string "category"
+    t.string "sub_category"
+    t.integer "armor_class"
+    t.boolean "armor_dex_bonus"
+    t.integer "armor_max_bonus"
+    t.integer "armor_str_minimum"
+    t.boolean "armor_stealth_disadvantage"
+    t.string "weapon_range"
+    t.integer "weapon_damage_dice_count"
+    t.integer "weapon_damage_dice_value"
+    t.string "weapon_damage_type"
+    t.integer "weapon_range_normal"
+    t.integer "weapon_range_long"
+    t.string "weapon_properties", default: [], array: true
+    t.integer "weapon_thrown_range_normal"
+    t.integer "weapon_thrown_range_long"
+    t.integer "weapon_2h_damage_dice_count"
+    t.integer "weapon_2h_damage_dice_value"
+    t.string "weapon_2h_damage_type"
+    t.string "category_range"
+    t.text "description"
+    t.integer "weight"
+    t.integer "cost_value"
+    t.string "cost_unit"
     t.string "api_url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-  end
-
-  create_table "proficiency_classes", force: :cascade do |t|
-    t.bigint "proficiency_id"
-    t.bigint "dnd_class_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["dnd_class_id"], name: "index_proficiency_classes_on_dnd_class_id"
-    t.index ["proficiency_id"], name: "index_proficiency_classes_on_proficiency_id"
   end
 
   create_table "spell_classes", force: :cascade do |t|

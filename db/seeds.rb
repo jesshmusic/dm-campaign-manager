@@ -6,6 +6,7 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 include HTTParty
+
 admin_user = User.new(
   name: 'Jess Hendricks',
   username: 'jesshmusic',
@@ -74,3 +75,30 @@ dm_user.campaigns.create(
   world: 'Krynn',
   description: 'Dragonlance is a shared universe created by Laura and Tracy Hickman, and expanded by Tracy Hickman and Margaret Weis under the direction of TSR, Inc. into a series of fantasy novels. The Hickmans conceived Dragonlance while driving in their car on the way to TSR for a job interview.',
 )
+
+# spells_list_response = HTTParty.get('http://www.dnd5eapi.co/api/spells/', format: :plain)
+# spells_list = JSON.parse spells_list_response, symbolize_names: true
+# spells_list[:results].each do |spell_object|
+#   spell = HTTParty.get(spell_object[:url], format: :plain)
+#   parsed_spell = JSON.parse spell, symbolize_names: true
+#   spell_desc = parsed_spell[:desc].map { |r| "#{r}" }.join("\n")
+#   @spell = Spell.new(
+#     api_url: parsed_spell[:url],
+#     casting_time: parsed_spell[:casting_time],
+#     concentration: parsed_spell[:concentration] != 'no',
+#     description: spell_desc,
+#     duration: parsed_spell[:duration],
+#     higher_level: parsed_spell[:higher_level],
+#     level: parsed_spell[:level],
+#     material: parsed_spell[:material],
+#     name: parsed_spell[:name],
+#     page: parsed_spell[:page],
+#     range: parsed_spell[:range],
+#     ritual: parsed_spell[:ritual] != 'no',
+#     school: parsed_spell[:school][:name]
+#   )
+#   parsed_spell[:components].each do |component|
+#     @spell.components << component
+#   end
+#   @spell.save!
+# end

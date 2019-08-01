@@ -24,11 +24,12 @@ class DndApi
     spells_list[:results].each do |spell_object|
       spell = HTTParty.get(spell_object[:url], format: :plain)
       parsed_spell = JSON.parse spell, symbolize_names: true
+      spell_desc = parsed_spell[:desc].map { |r| "#{r}" }.join("\n")
       @spell = Spell.new(
         api_url: parsed_spell[:url],
         casting_time: parsed_spell[:casting_time],
         concentration: parsed_spell[:concentration] != 'no',
-        description: parsed_spell[:desc],
+        description: spell_desc,
         duration: parsed_spell[:duration],
         higher_level: parsed_spell[:higher_level],
         level: parsed_spell[:level],
