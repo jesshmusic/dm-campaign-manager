@@ -3,18 +3,20 @@
 # Table name: spells
 #
 #  id            :bigint           not null, primary key
-#  name          :text
+#  api_url       :string
+#  casting_time  :string
+#  components    :text             default([]), is an Array
+#  concentration :boolean
 #  description   :text
+#  duration      :text
 #  higher_level  :text
+#  level         :integer
+#  material      :text
+#  name          :text
 #  page          :text
 #  range         :text
-#  components    :text             default([]), is an Array
-#  material      :text
 #  ritual        :boolean
-#  duration      :text
-#  concentration :boolean
-#  casting_time  :string
-#  level         :integer
+#  school        :text
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
 #

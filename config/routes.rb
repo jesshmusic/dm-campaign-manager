@@ -9,4 +9,7 @@ Rails.application.routes.draw do
   resources :users, except: %i[create new]
   patch '/users/:id/change_role', to: 'users#change_role', as: 'user_change_role'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
+  
+  # SRD API imports
+  post 'spells/import', to: 'spells#import'
 end

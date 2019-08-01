@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_01_011445) do
+ActiveRecord::Schema.define(version: 2019_08_01_125331) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -23,6 +23,40 @@ ActiveRecord::Schema.define(version: 2019_08_01_011445) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_campaigns_on_user_id"
+  end
+
+  create_table "dnd_classes", force: :cascade do |t|
+    t.text "name"
+    t.integer "hit_die"
+    t.string "api_url"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "proficiencies", force: :cascade do |t|
+    t.string "name"
+    t.string "type"
+    t.string "api_url"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "proficiency_classes", force: :cascade do |t|
+    t.bigint "proficiency_id"
+    t.bigint "dnd_class_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["dnd_class_id"], name: "index_proficiency_classes_on_dnd_class_id"
+    t.index ["proficiency_id"], name: "index_proficiency_classes_on_proficiency_id"
+  end
+
+  create_table "spell_classes", force: :cascade do |t|
+    t.bigint "spell_id"
+    t.bigint "dnd_class_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["dnd_class_id"], name: "index_spell_classes_on_dnd_class_id"
+    t.index ["spell_id"], name: "index_spell_classes_on_spell_id"
   end
 
   create_table "spells", force: :cascade do |t|
@@ -40,6 +74,8 @@ ActiveRecord::Schema.define(version: 2019_08_01_011445) do
     t.integer "level"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "school"
+    t.string "api_url"
   end
 
   create_table "users", force: :cascade do |t|
