@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :spells
   resources :campaigns
   devise_for :users, :controllers => { registrations: 'registrations' }
   root to: 'hello_world#index'

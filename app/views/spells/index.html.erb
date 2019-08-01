@@ -1,0 +1,49 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Spells</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Higher level</th>
+      <th>Page</th>
+      <th>Range</th>
+      <th>Components</th>
+      <th>Material</th>
+      <th>Ritual</th>
+      <th>Duration</th>
+      <th>Concentration</th>
+      <th>Casting time</th>
+      <th>Level</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @spells.each do |spell| %>
+      <tr>
+        <td><%= spell.name %></td>
+        <td><%= spell.description %></td>
+        <td><%= spell.higher_level %></td>
+        <td><%= spell.page %></td>
+        <td><%= spell.range %></td>
+        <td><%= spell.components %></td>
+        <td><%= spell.material %></td>
+        <td><%= spell.ritual %></td>
+        <td><%= spell.duration %></td>
+        <td><%= spell.concentration %></td>
+        <td><%= spell.casting_time %></td>
+        <td><%= spell.level %></td>
+        <td><%= link_to 'Show', spell %></td>
+        <td><%= link_to 'Edit', edit_spell_path(spell) %></td>
+        <td><%= link_to 'Destroy', spell, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Spell', new_spell_path %>
