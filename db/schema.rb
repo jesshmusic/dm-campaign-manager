@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_02_012039) do
+ActiveRecord::Schema.define(version: 2019_08_02_012732) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -85,6 +85,33 @@ ActiveRecord::Schema.define(version: 2019_08_02_012039) do
     t.string "api_url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "monster_actions", force: :cascade do |t|
+    t.bigint "monster_id"
+    t.bigint "action_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["action_id"], name: "index_monster_actions_on_action_id"
+    t.index ["monster_id"], name: "index_monster_actions_on_monster_id"
+  end
+
+  create_table "monster_legendary_actions", force: :cascade do |t|
+    t.bigint "monster_id"
+    t.bigint "action_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["action_id"], name: "index_monster_legendary_actions_on_action_id"
+    t.index ["monster_id"], name: "index_monster_legendary_actions_on_monster_id"
+  end
+
+  create_table "monster_special_abilities", force: :cascade do |t|
+    t.bigint "monster_id"
+    t.bigint "action_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["action_id"], name: "index_monster_special_abilities_on_action_id"
+    t.index ["monster_id"], name: "index_monster_special_abilities_on_monster_id"
   end
 
   create_table "monsters", force: :cascade do |t|
@@ -173,4 +200,10 @@ ActiveRecord::Schema.define(version: 2019_08_02_012039) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "monster_actions", "actions"
+  add_foreign_key "monster_actions", "monsters"
+  add_foreign_key "monster_legendary_actions", "actions"
+  add_foreign_key "monster_legendary_actions", "monsters"
+  add_foreign_key "monster_special_abilities", "actions"
+  add_foreign_key "monster_special_abilities", "monsters"
 end
