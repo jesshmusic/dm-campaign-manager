@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :monsters
   resources :spells
   resources :campaigns
   devise_for :users, :controllers => { registrations: 'registrations' }
