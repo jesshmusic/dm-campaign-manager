@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @magic_item.name %>
+</p>
+
+<p>
+  <strong>Type:</strong>
+  <%= @magic_item.type %>
+</p>
+
+<p>
+  <strong>Description:</strong>
+  <%= @magic_item.description %>
+</p>
+
+<p>
+  <strong>Rarity:</strong>
+  <%= @magic_item.rarity %>
+</p>
+
+<p>
+  <strong>Requires attunement:</strong>
+  <%= @magic_item.requires_attunement %>
+</p>
+
+<%= link_to 'Edit', edit_magic_item_path(@magic_item) %> |
+<%= link_to 'Back', magic_items_path %>

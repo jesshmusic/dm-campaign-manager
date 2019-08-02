@@ -25,6 +25,7 @@
 #  name                   :string
 #  senses                 :string
 #  size                   :string
+#  skills                 :jsonb            is an Array
 #  speed                  :string
 #  strength               :integer
 #  strength_save          :integer
