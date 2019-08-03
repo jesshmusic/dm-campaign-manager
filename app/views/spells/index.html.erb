@@ -27,9 +27,13 @@
         <% @spells.each do |spell| %>
           <tr>
             <td><%= spell.name %></td>
-            <td><%= spell.dnd_classes %></td>
+            <td>
+              <% spell.dnd_classes.each_with_index do |dnd_class, index| %>
+                <%= link_to dnd_class.name, dnd_class %><% if index != spell.dnd_classes.count - 1 %>,<% end %>
+              <% end %>
+            </td>
             <td><%= spell.school %></td>
-            <td><%= spell.level %></td>
+            <td><%= spell.level == 0 ? 'Cantrip' : spell.level %></td>
             <td><%= link_to 'Show', spell, class: "btn btn-sm btn-primary" %></td>
             <td><%= link_to 'Edit', edit_spell_path(spell), class: "btn btn-sm btn-success" %></td>
             <td><%= link_to 'Destroy', spell, class: "btn btn-sm btn-danger", method: :delete, data: { confirm: 'Are you sure?' } %></td>

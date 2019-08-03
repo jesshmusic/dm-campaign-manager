@@ -33,7 +33,7 @@
 
     <p>
       <strong>Components:</strong>
-      <%= @spell.components %>
+      <%= @spell.components.map {|str| "#{str}"}.join(', ') %>
     </p>
 
     <p>
@@ -73,7 +73,9 @@
 
     <p>
       <strong>Classes:</strong>
-      <%= @spell.dnd_classes %>
+      <% @spell.dnd_classes.each_with_index do |dnd_class, index| %>
+        <%= link_to dnd_class.name, dnd_class %><% if index != @spell.dnd_classes.count - 1 %>,<% end %>
+      <% end %>
     </p>
 
     <%= link_to 'Edit', edit_spell_path(@spell) %> |
