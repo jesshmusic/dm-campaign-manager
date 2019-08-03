@@ -33,7 +33,7 @@
               <% end %>
             </td>
             <td><%= spell.school %></td>
-            <td><%= spell.level == 0 ? 'Cantrip' : spell.level %></td>
+            <td><%= spell.level <= 0 ? 'Cantrip' : spell.level %></td>
             <td><%= link_to 'Show', spell, class: "btn btn-sm btn-primary" %></td>
             <td><%= link_to 'Edit', edit_spell_path(spell), class: "btn btn-sm btn-success" %></td>
             <td><%= link_to 'Destroy', spell, class: "btn btn-sm btn-danger", method: :delete, data: { confirm: 'Are you sure?' } %></td>
