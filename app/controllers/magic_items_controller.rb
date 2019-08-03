@@ -4,7 +4,11 @@ class MagicItemsController < ApplicationController
   # GET /magic_items
   # GET /magic_items.json
   def index
-    @magic_items = MagicItem.all
+    if params[:search].present?
+      @magic_items = MagicItem.search_for(params[:search])
+    else
+      @magic_items = MagicItem.all.order('name ASC')
+    end
   end
 
   # GET /magic_items/1
@@ -69,6 +73,6 @@ class MagicItemsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def magic_item_params
-      params.require(:magic_item).permit(:name, :type, :description, :rarity, :requires_attunement)
+      params.require(:magic_item).permit(:name, :magic_item_type, :description, :rarity, :requires_attunement)
     end
 end

@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :items
   resources :magic_items
   resources :monsters
   resources :spells

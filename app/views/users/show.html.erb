@@ -17,10 +17,10 @@
           <%= @user.name %>
           <% if @user.admin? %>
             <span class="badge badge-pill badge-success">Admin</span>
-          <% elsif @user.moderator? %>
-            <span class="badge badge-pill badge-info">Moderator</span>
+          <% elsif @user.dungeon_master? %>
+            <span class="badge badge-pill badge-info">Dungeon Master</span>
           <% else %>
-            <span class="badge badge-pill badge-warning">User</span>
+            <span class="badge badge-pill badge-warning">Player</span>
           <% end %>
         </h1>
         <h3>

@@ -1,119 +1,127 @@
-<p id="notice"><%= notice %></p>
+<div class="admin">
+  <%= render "shared/admin-header" %>
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item"><%= link_to 'Dashboard', dashboard_path %></li>
+        <li class="breadcrumb-item"><%= link_to 'Monsters', monsters_path %></li>
+        <li class="breadcrumb-item active" aria-current="page"><%= @monster.name %></li>
+      </ol>
+    </nav>
+    <h1><%= @monster.name %></h1>
 
-<p>
-  <strong>Name:</strong>
-  <%= @monster.name %>
-</p>
+    <p>
+      <strong>Size:</strong>
+      <%= @monster.size %>
+    </p>
 
-<p>
-  <strong>Size:</strong>
-  <%= @monster.size %>
-</p>
+    <p>
+      <strong>Type:</strong>
+      <%= @monster.type %>
+    </p>
 
-<p>
-  <strong>Type:</strong>
-  <%= @monster.type %>
-</p>
+    <p>
+      <strong>Subtype:</strong>
+      <%= @monster.subtype %>
+    </p>
 
-<p>
-  <strong>Subtype:</strong>
-  <%= @monster.subtype %>
-</p>
+    <p>
+      <strong>Alignment:</strong>
+      <%= @monster.alignment %>
+    </p>
 
-<p>
-  <strong>Alignment:</strong>
-  <%= @monster.alignment %>
-</p>
+    <p>
+      <strong>Armor class:</strong>
+      <%= @monster.armor_class %>
+    </p>
 
-<p>
-  <strong>Armor class:</strong>
-  <%= @monster.armor_class %>
-</p>
+    <p>
+      <strong>Hit points:</strong>
+      <%= @monster.hit_points %>
+    </p>
 
-<p>
-  <strong>Hit points:</strong>
-  <%= @monster.hit_points %>
-</p>
+    <p>
+      <strong>Hit dice:</strong>
+      <%= @monster.hit_dice %>
+    </p>
 
-<p>
-  <strong>Hit dice:</strong>
-  <%= @monster.hit_dice %>
-</p>
+    <p>
+      <strong>Speed:</strong>
+      <%= @monster.speed %>
+    </p>
 
-<p>
-  <strong>Speed:</strong>
-  <%= @monster.speed %>
-</p>
+    <p>
+      <strong>Strength:</strong>
+      <%= @monster.strength %>
+    </p>
 
-<p>
-  <strong>Strength:</strong>
-  <%= @monster.strength %>
-</p>
+    <p>
+      <strong>Dexterity:</strong>
+      <%= @monster.dexterity %>
+    </p>
 
-<p>
-  <strong>Dexterity:</strong>
-  <%= @monster.dexterity %>
-</p>
+    <p>
+      <strong>Constitution:</strong>
+      <%= @monster.constitution %>
+    </p>
 
-<p>
-  <strong>Constitution:</strong>
-  <%= @monster.constitution %>
-</p>
+    <p>
+      <strong>Intelligence:</strong>
+      <%= @monster.intelligence %>
+    </p>
 
-<p>
-  <strong>Intelligence:</strong>
-  <%= @monster.intelligence %>
-</p>
+    <p>
+      <strong>Wisdom:</strong>
+      <%= @monster.wisdom %>
+    </p>
 
-<p>
-  <strong>Wisdom:</strong>
-  <%= @monster.wisdom %>
-</p>
+    <p>
+      <strong>Charisma:</strong>
+      <%= @monster.charisma %>
+    </p>
 
-<p>
-  <strong>Charisma:</strong>
-  <%= @monster.charisma %>
-</p>
+    <p>
+      <strong>Damage vulnerabilities:</strong>
+      <%= @monster.damage_vulnerabilities %>
+    </p>
 
-<p>
-  <strong>Damage vulnerabilities:</strong>
-  <%= @monster.damage_vulnerabilities %>
-</p>
+    <p>
+      <strong>Damage resistances:</strong>
+      <%= @monster.damage_resistances %>
+    </p>
 
-<p>
-  <strong>Damage resistances:</strong>
-  <%= @monster.damage_resistances %>
-</p>
+    <p>
+      <strong>Damage immunities:</strong>
+      <%= @monster.damage_immunities %>
+    </p>
 
-<p>
-  <strong>Damage immunities:</strong>
-  <%= @monster.damage_immunities %>
-</p>
+    <p>
+      <strong>Condition immunities:</strong>
+      <%= @monster.condition_immunities %>
+    </p>
 
-<p>
-  <strong>Condition immunities:</strong>
-  <%= @monster.condition_immunities %>
-</p>
+    <p>
+      <strong>Senses:</strong>
+      <%= @monster.senses %>
+    </p>
 
-<p>
-  <strong>Senses:</strong>
-  <%= @monster.senses %>
-</p>
+    <p>
+      <strong>Languages:</strong>
+      <%= @monster.languages %>
+    </p>
 
-<p>
-  <strong>Languages:</strong>
-  <%= @monster.languages %>
-</p>
+    <p>
+      <strong>Challenge rating:</strong>
+      <%= @monster.challenge_rating %>
+    </p>
 
-<p>
-  <strong>Challenge rating:</strong>
-  <%= @monster.challenge_rating %>
-</p>
+    <p>
+      <strong>Api url:</strong>
+      <%= @monster.api_url %>
+    </p>
 
-<p>
-  <strong>Api url:</strong>
-  <%= @monster.api_url %>
-</p>
-
-<%= link_to 'Edit', edit_monster_path(@monster) %> |
-<%= link_to 'Back', monsters_path %>
+    <%= link_to 'Edit', edit_monster_path(@monster) %> |
+    <%= link_to 'Back', monsters_path %>
+  </div>
+</div>

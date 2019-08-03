@@ -13,4 +13,18 @@
 #
 
 class MagicItem < ApplicationRecord
+  include PgSearch
+  
+  # PgSearch
+  pg_search_scope :search_for,
+                  against: {
+                    name: 'A',
+                    magic_item_type: 'B',
+                    rarity: 'C'
+                  },
+                  using: {
+                    tsearch: {
+                      prefix: true
+                    }
+                  }
 end

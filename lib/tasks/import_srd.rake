@@ -69,7 +69,7 @@ namespace :srd do
       item_uri = URI(equipment_item[:url])
       item_response = Net::HTTP.get(item_uri)
       item_result = JSON.parse item_response
-      Item.find_or_create_by(name: equipment_item[:name]) do |new_item|
+      saved_item = Item.find_or_create_by(name: equipment_item[:name]) do |new_item|
         new_item.api_url = item_result["url"]
         new_item.category = item_result["equipment_category"]
         new_item.cost_unit = item_result["cost"]["unit"]
@@ -84,8 +84,8 @@ namespace :srd do
           end
         end
       
-        if item_result["weapon_category"]
-          new_item.sub_category = item_result["weapon_category"]
+        if item_result["weapon_category:"]
+          new_item.sub_category = item_result["weapon_category:"]
           new_item.weapon_range = item_result["category_range"]
           new_item.weapon_damage_type = item_result["damage"]["damage_type"]["name"]
           new_item.weapon_damage_dice_count = item_result["damage"]["dice_count"]
@@ -145,6 +145,12 @@ namespace :srd do
             new_item.vehicle_speed_unit = item_result["speed"]["unit"]
           end
           new_item.vehicle_capacity = item_result["capacity"]
+        end
+      end
+      if !saved_item.sub_category || saved_item.sub_category == ""
+        if item_result["weapon_category:"]
+          saved_item.sub_category = item_result["weapon_category:"]
+          saved_item.save!
         end
       end
       count += 1

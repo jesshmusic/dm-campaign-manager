@@ -40,4 +40,18 @@
 class Item < ApplicationRecord
   has_many :container_items, dependent: :delete_all
   has_many :contained_items, through: :container_items
+  include PgSearch
+  
+  # PgSearch
+  pg_search_scope :search_for,
+                  against: {
+                    name: 'A',
+                    category: 'B',
+                    sub_category: 'C'
+                  },
+                  using: {
+                    tsearch: {
+                      prefix: true
+                    }
+                  }
 end

@@ -24,4 +24,19 @@
 class Spell < ApplicationRecord
   has_many :spell_classes
   has_many :dnd_classes, through: :spell_classes
+  
+  include PgSearch
+  
+  # PgSearch
+  pg_search_scope :search_for,
+                  against: {
+                    name: 'A',
+                    school: 'B',
+                    casting_time: 'C'
+                  },
+                  using: {
+                    tsearch: {
+                      prefix: true
+                    }
+                  }
 end

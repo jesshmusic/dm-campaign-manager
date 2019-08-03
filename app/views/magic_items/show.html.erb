@@ -7,12 +7,12 @@
 
 <p>
   <strong>Type:</strong>
-  <%= @magic_item.type %>
+  <%= @magic_item.magic_item_type %>
 </p>
 
 <p>
   <strong>Description:</strong>
-  <%= @magic_item.description %>
+  <%= markdown(@magic_item.description) %>
 </p>
 
 <p>

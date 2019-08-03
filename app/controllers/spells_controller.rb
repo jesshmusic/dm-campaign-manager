@@ -4,7 +4,11 @@ class SpellsController < ApplicationController
   # GET /spells
   # GET /spells.json
   def index
-    @spells = Spell.all
+    if params[:search].present?
+      @spells = Spell.search_for(params[:search])
+    else
+      @spells = Spell.all.order('name ASC')
+    end
   end
 
   # GET /spells/1

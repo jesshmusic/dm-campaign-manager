@@ -1,3 +1,14 @@
 @import "bootstrap";
 @import 'select2';
 @import 'select2-bootstrap';
+
+table {
+  @extend .table;
+  @extend .table-striped;
+  @extend .table-bordered;
+  @extend .table-sm;
+
+  thead {
+    @extend .thead-dark;
+  }
+}

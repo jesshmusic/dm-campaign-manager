@@ -7,7 +7,7 @@
   </div>
 <% end %>
 <% if user_signed_in? %>
-<nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary mb-4">
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
   <a class="navbar-brand" href="#">DM's Campaign Manager</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
@@ -24,6 +24,15 @@
         </li>
         <li class="nav-item">
           <%= active_link_to 'Campaigns', campaigns_path, active: :exclusive, class: 'nav-link' %>
+        </li>
+        <li class="nav-item">
+          <%= active_link_to 'Monsters', monsters_path, active: :exclusive, class: 'nav-link' %>
+        </li>
+        <li class="nav-item">
+          <%= active_link_to 'Equipment', items_path, active: :exclusive, class: 'nav-link' %>
+        </li>
+        <li class="nav-item">
+          <%= active_link_to 'Magic Items', magic_items_path, active: :exclusive, class: 'nav-link' %>
         </li>
       <% end %>
       <% if current_user.admin? %>

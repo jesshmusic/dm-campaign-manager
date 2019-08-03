@@ -1,0 +1,167 @@
+<%= form_with(model: item, local: true) do |form| %>
+  <% if item.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(item.errors.count, "error") %> prohibited this item from being saved:</h2>
+
+      <ul>
+      <% item.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :api_url %>
+    <%= form.text_field :api_url %>
+  </div>
+
+  <div class="field">
+    <%= form.label :armor_class %>
+    <%= form.number_field :armor_class %>
+  </div>
+
+  <div class="field">
+    <%= form.label :armor_dex_bonus %>
+    <%= form.check_box :armor_dex_bonus %>
+  </div>
+
+  <div class="field">
+    <%= form.label :armor_max_bonus %>
+    <%= form.number_field :armor_max_bonus %>
+  </div>
+
+  <div class="field">
+    <%= form.label :armor_stealth_disadvantage %>
+    <%= form.check_box :armor_stealth_disadvantage %>
+  </div>
+
+  <div class="field">
+    <%= form.label :armor_str_minimum %>
+    <%= form.number_field :armor_str_minimum %>
+  </div>
+
+  <div class="field">
+    <%= form.label :category %>
+    <%= form.text_field :category %>
+  </div>
+
+  <div class="field">
+    <%= form.label :category_range %>
+    <%= form.text_field :category_range %>
+  </div>
+
+  <div class="field">
+    <%= form.label :cost_unit %>
+    <%= form.text_field :cost_unit %>
+  </div>
+
+  <div class="field">
+    <%= form.label :cost_value %>
+    <%= form.number_field :cost_value %>
+  </div>
+
+  <div class="field">
+    <%= form.label :description %>
+    <%= form.text_area :description %>
+  </div>
+
+  <div class="field">
+    <%= form.label :name %>
+    <%= form.text_field :name %>
+  </div>
+
+  <div class="field">
+    <%= form.label :quantity %>
+    <%= form.number_field :quantity %>
+  </div>
+
+  <div class="field">
+    <%= form.label :sub_category %>
+    <%= form.text_field :sub_category %>
+  </div>
+
+  <div class="field">
+    <%= form.label :vehicle_capacity %>
+    <%= form.text_field :vehicle_capacity %>
+  </div>
+
+  <div class="field">
+    <%= form.label :vehicle_speed %>
+    <%= form.number_field :vehicle_speed %>
+  </div>
+
+  <div class="field">
+    <%= form.label :vehicle_speed_unit %>
+    <%= form.text_field :vehicle_speed_unit %>
+  </div>
+
+  <div class="field">
+    <%= form.label :weapon_2h_damage_dice_count %>
+    <%= form.number_field :weapon_2h_damage_dice_count %>
+  </div>
+
+  <div class="field">
+    <%= form.label :weapon_2h_damage_dice_value %>
+    <%= form.number_field :weapon_2h_damage_dice_value %>
+  </div>
+
+  <div class="field">
+    <%= form.label :weapon_2h_damage_type %>
+    <%= form.text_field :weapon_2h_damage_type %>
+  </div>
+
+  <div class="field">
+    <%= form.label :weapon_damage_dice_count %>
+    <%= form.number_field :weapon_damage_dice_count %>
+  </div>
+
+  <div class="field">
+    <%= form.label :weapon_damage_dice_value %>
+    <%= form.number_field :weapon_damage_dice_value %>
+  </div>
+
+  <div class="field">
+    <%= form.label :weapon_damage_type %>
+    <%= form.text_field :weapon_damage_type %>
+  </div>
+
+  <div class="field">
+    <%= form.label :weapon_properties %>
+    <%= form.text_field :weapon_properties %>
+  </div>
+
+  <div class="field">
+    <%= form.label :weapon_range %>
+    <%= form.text_field :weapon_range %>
+  </div>
+
+  <div class="field">
+    <%= form.label :weapon_range_long %>
+    <%= form.number_field :weapon_range_long %>
+  </div>
+
+  <div class="field">
+    <%= form.label :weapon_range_normal %>
+    <%= form.number_field :weapon_range_normal %>
+  </div>
+
+  <div class="field">
+    <%= form.label :weapon_thrown_range_long %>
+    <%= form.number_field :weapon_thrown_range_long %>
+  </div>
+
+  <div class="field">
+    <%= form.label :weapon_thrown_range_normal %>
+    <%= form.number_field :weapon_thrown_range_normal %>
+  </div>
+
+  <div class="field">
+    <%= form.label :weight %>
+    <%= form.number_field :weight %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

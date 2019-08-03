@@ -4,7 +4,11 @@ class MonstersController < ApplicationController
   # GET /monsters
   # GET /monsters.json
   def index
-    @monsters = Monster.all
+    if params[:search].present?
+      @monsters = Monster.search_for(params[:search])
+    else
+      @monsters = Monster.all.order('name ASC')
+    end
   end
 
   # GET /monsters/1

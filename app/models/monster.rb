@@ -46,4 +46,19 @@ class Monster < ApplicationRecord
   
   has_many :monster_special_abilities
   has_many :actions, through: :monster_special_abilities
+  
+  include PgSearch
+  
+  # PgSearch
+  pg_search_scope :search_for,
+                  against: {
+                    name: 'A',
+                    challenge_rating: 'B',
+                    alignment: 'C'
+                  },
+                  using: {
+                    tsearch: {
+                      prefix: true
+                    }
+                  }
 end

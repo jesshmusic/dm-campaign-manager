@@ -13,6 +13,7 @@ gem 'pg_search'
 gem 'puma', '~> 3.11'
 gem 'pundit'
 gem 'react_on_rails', '11.3.0'
+gem 'redcarpet'
 gem 'select2-rails'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'

@@ -17,4 +17,19 @@
 
 class Campaign < ApplicationRecord
   belongs_to :user
+  
+  include PgSearch
+  
+  # PgSearch
+  pg_search_scope :search_for,
+                  against: {
+                    name: 'A',
+                    world: 'C',
+                    description: 'B'
+                  },
+                  using: {
+                    tsearch: {
+                      prefix: true
+                    }
+                  }
 end

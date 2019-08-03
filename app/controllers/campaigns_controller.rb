@@ -6,6 +6,11 @@ class CampaignsController < ApplicationController
   # GET /campaigns.json
   def index
     @campaigns = Campaign.all
+    if params[:search].present?
+      @items = Campaign.search_for(params[:search])
+    else
+      @items = Campaign.all
+    end
   end
 
   # GET /campaigns/1
