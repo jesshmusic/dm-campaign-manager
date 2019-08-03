@@ -10,17 +10,12 @@
       </ol>
     </nav>
     <h1>Class: <%= @magic_item.name %></h1>
-    <h4><%= @magic_item.magic_item_type %></h4>
+    <h4><%= @magic_item.magic_item_type.titleize %> <small>- <%= @magic_item.rarity.titleize %></small></h4>
     <% if @magic_item.requires_attunement && @magic_item.requires_attunement != ""  %>
       <p class="font-italic">
         <%= @magic_item.requires_attunement.capitalize %>
       </p>
     <% end %>
-
-    <p class="mb-5" >
-      <strong>Rarity:</strong>
-      <%= @magic_item.rarity %>
-    </p>
 
     <% if @magic_item.description && @magic_item.description != "" %>
       <% item_desc = @magic_item.description.sub! 'Description:', '**Description:**' %>
