@@ -1,64 +1,82 @@
-<p id="notice"><%= notice %></p>
+<div class="admin">
+  <%= render "shared/admin-header" %>
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item"><%= link_to 'Dashboard', dashboard_path %></li>
+        <li class="breadcrumb-item"><%= link_to 'Spells', spells_path %></li>
+        <li class="breadcrumb-item active" aria-current="page"><%= @spell.name %></li>
+      </ol>
+    </nav>
+    <h1><%= @spell.name %></h1>
 
-<p>
-  <strong>Name:</strong>
-  <%= @spell.name %>
-</p>
+    <% if @spell.description && @spell.description != "" %>
+      <h4>Description</h4>
+      <%= markdown(@spell.description) %>
+    <% end %>
+    
+    <% if @spell.higher_level && @spell.higher_level != "" %>
+      <h4>Higher Level</h4>
+      <%= markdown(@spell.higher_level) %>
+    <% end %>
 
-<p>
-  <strong>Description:</strong>
-  <%= @spell.description %>
-</p>
+    <p>
+      <strong>Page:</strong>
+      <%= @spell.page %>
+    </p>
 
-<p>
-  <strong>Higher level:</strong>
-  <%= @spell.higher_level %>
-</p>
+    <p>
+      <strong>Range:</strong>
+      <%= @spell.range %>
+    </p>
 
-<p>
-  <strong>Page:</strong>
-  <%= @spell.page %>
-</p>
+    <p>
+      <strong>Components:</strong>
+      <%= @spell.components %>
+    </p>
 
-<p>
-  <strong>Range:</strong>
-  <%= @spell.range %>
-</p>
+    <p>
+      <strong>Material:</strong>
+      <%= @spell.material %>
+    </p>
 
-<p>
-  <strong>Components:</strong>
-  <%= @spell.components %>
-</p>
+    <p>
+      <strong>Ritual:</strong>
+      <%= @spell.ritual %>
+    </p>
 
-<p>
-  <strong>Material:</strong>
-  <%= @spell.material %>
-</p>
+    <p>
+      <strong>Duration:</strong>
+      <%= @spell.duration %>
+    </p>
 
-<p>
-  <strong>Ritual:</strong>
-  <%= @spell.ritual %>
-</p>
+    <p>
+      <strong>Concentration:</strong>
+      <%= @spell.concentration %>
+    </p>
 
-<p>
-  <strong>Duration:</strong>
-  <%= @spell.duration %>
-</p>
+    <p>
+      <strong>Casting time:</strong>
+      <%= @spell.casting_time %>
+    </p>
 
-<p>
-  <strong>Concentration:</strong>
-  <%= @spell.concentration %>
-</p>
+    <p>
+      <strong>Level:</strong>
+      <%= @spell.level %>
+    </p>
 
-<p>
-  <strong>Casting time:</strong>
-  <%= @spell.casting_time %>
-</p>
+    <p>
+      <strong>School:</strong>
+      <%= @spell.school %>
+    </p>
 
-<p>
-  <strong>Level:</strong>
-  <%= @spell.level %>
-</p>
+    <p>
+      <strong>Classes:</strong>
+      <%= @spell.dnd_classes %>
+    </p>
 
-<%= link_to 'Edit', edit_spell_path(@spell) %> |
-<%= link_to 'Back', spells_path %>
+    <%= link_to 'Edit', edit_spell_path(@spell) %> |
+    <%= link_to 'Back', spells_path %>
+  </div>
+</div>
