@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_03_132740) do
+ActiveRecord::Schema.define(version: 2019_08_03_154424) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -37,11 +37,11 @@ ActiveRecord::Schema.define(version: 2019_08_03_132740) do
 
   create_table "container_items", force: :cascade do |t|
     t.bigint "item_id"
-    t.bigint "item_content_id"
+    t.bigint "contained_item_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["item_content_id"], name: "index_container_items_on_item_content_id"
-    t.index ["item_id", "item_content_id"], name: "index_container_items_on_item_id_and_item_content_id", unique: true
+    t.index ["contained_item_id"], name: "index_container_items_on_contained_item_id"
+    t.index ["item_id", "contained_item_id"], name: "index_container_items_on_item_id_and_contained_item_id", unique: true
     t.index ["item_id"], name: "index_container_items_on_item_id"
   end
 
@@ -85,6 +85,10 @@ ActiveRecord::Schema.define(version: 2019_08_03_132740) do
     t.string "api_url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "quantity", default: 1
+    t.integer "vehicle_speed"
+    t.string "vehicle_speed_unit"
+    t.string "vehicle_capacity"
   end
 
   create_table "magic_items", force: :cascade do |t|
@@ -211,6 +215,8 @@ ActiveRecord::Schema.define(version: 2019_08_03_132740) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "container_items", "items"
+  add_foreign_key "container_items", "items", column: "contained_item_id"
   add_foreign_key "monster_actions", "actions"
   add_foreign_key "monster_actions", "monsters"
   add_foreign_key "monster_legendary_actions", "actions"

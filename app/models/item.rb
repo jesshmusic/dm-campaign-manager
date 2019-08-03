@@ -15,7 +15,11 @@
 #  cost_value                  :integer
 #  description                 :text
 #  name                        :string
+#  quantity                    :integer          default(1)
 #  sub_category                :string
+#  vehicle_capacity            :string
+#  vehicle_speed               :integer
+#  vehicle_speed_unit          :string
 #  weapon_2h_damage_dice_count :integer
 #  weapon_2h_damage_dice_value :integer
 #  weapon_2h_damage_type       :string
@@ -34,6 +38,6 @@
 #
 
 class Item < ApplicationRecord
-  has_many :container_items
-  has_many :item_contents, through: :container_items, source: :container_item
+  has_many :container_items, dependent: :delete_all
+  has_many :contained_items, through: :container_items
 end
