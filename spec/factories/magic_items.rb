@@ -4,10 +4,10 @@
 #
 #  id                  :bigint           not null, primary key
 #  description         :text
+#  magic_item_type     :string
 #  name                :string
 #  rarity              :string
-#  requires_attunement :boolean
-#  type                :string
+#  requires_attunement :string
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
 #

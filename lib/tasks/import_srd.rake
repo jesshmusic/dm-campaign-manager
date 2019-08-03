@@ -40,4 +40,23 @@ namespace :srd do
     end
     puts "#{count} D&D classes imported."
   end
+  
+  task import_magic_items: :environment do
+    next_uri = URI("#{dnd_open5e_url}magicitems/")
+    count = 0
+    while next_uri
+      response = Net::HTTP.get(next_uri)
+      result = JSON.parse response, symbolize_names: true
+      next_uri = result[:next] ? URI(result[:next]) : false
+      result[:results].each do |magic_item|
+        MagicItem.find_or_create_by(name: magic_item[:name], rarity: magic_item[:rarity]) do |new_magic_item|
+          new_magic_item.description = magic_item[:desc]
+          new_magic_item.magic_item_type = magic_item[:type]
+          new_magic_item.requires_attunement = magic_item[:requires_attunement]
+        end
+        count += 1
+      end
+    end
+    puts "#{count} Magic Items imported."
+  end
 end

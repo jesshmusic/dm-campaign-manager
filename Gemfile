@@ -31,8 +31,6 @@ gem 'bootstrap_form',
 gem 'coffee-rails', '~> 4.2'
 gem 'jquery-rails'
 
-gem 'rest-client'
-
 # Auth for Users
 gem 'devise'
 gem 'omniauth'
