@@ -1,29 +1,33 @@
-<p id="notice"><%= notice %></p>
+<div class="admin">
+  <%= render "shared/admin-header" %>
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item"><%= link_to 'Dashboard', dashboard_path %></li>
+        <li class="breadcrumb-item"><%= link_to 'Magic Items', magic_items_path %></li>
+        <li class="breadcrumb-item active" aria-current="page"><%= @magic_item.name %></li>
+      </ol>
+    </nav>
+    <h1>Class: <%= @magic_item.name %></h1>
+    <h4><%= @magic_item.magic_item_type %></h4>
+    <% if @magic_item.requires_attunement && @magic_item.requires_attunement != ""  %>
+      <p class="font-italic">
+        <%= @magic_item.requires_attunement.capitalize %>
+      </p>
+    <% end %>
 
-<p>
-  <strong>Name:</strong>
-  <%= @magic_item.name %>
-</p>
+    <p class="mb-5" >
+      <strong>Rarity:</strong>
+      <%= @magic_item.rarity %>
+    </p>
 
-<p>
-  <strong>Type:</strong>
-  <%= @magic_item.magic_item_type %>
-</p>
+    <% if @magic_item.description && @magic_item.description != "" %>
+      <% item_desc = @magic_item.description.sub! 'Description:', '**Description:**' %>
+      <%= markdown(item_desc ? item_desc : @magic_item.description) %>
+    <% end %>
 
-<p>
-  <strong>Description:</strong>
-  <%= markdown(@magic_item.description) %>
-</p>
-
-<p>
-  <strong>Rarity:</strong>
-  <%= @magic_item.rarity %>
-</p>
-
-<p>
-  <strong>Requires attunement:</strong>
-  <%= @magic_item.requires_attunement %>
-</p>
-
-<%= link_to 'Edit', edit_magic_item_path(@magic_item) %> |
-<%= link_to 'Back', magic_items_path %>
+    <%= link_to 'Edit', edit_magic_item_path(@magic_item) %> |
+    <%= link_to 'Back', magic_items_path %>
+  </div>
+</div>

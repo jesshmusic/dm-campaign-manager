@@ -1,0 +1,47 @@
+<%= form_with(model: dnd_class, local: true) do |form| %>
+  <% if dnd_class.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(dnd_class.errors.count, "error") %> prohibited this dnd_class from being saved:</h2>
+
+      <ul>
+      <% dnd_class.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :name %>
+    <%= form.text_field :name %>
+  </div>
+
+  <div class="field">
+    <%= form.label :hit_die %>
+    <%= form.number_field :hit_die %>
+  </div>
+
+  <div class="field">
+    <%= form.label :api_url %>
+    <%= form.text_field :api_url %>
+  </div>
+
+  <div class="field">
+    <%= form.label :proficiencies %>
+    <%= form.text_field :proficiencies %>
+  </div>
+
+  <div class="field">
+    <%= form.label :saving_throws %>
+    <%= form.text_field :saving_throws %>
+  </div>
+
+  <div class="field">
+    <%= form.label :proficiency_choices %>
+    <%= form.text_field :proficiency_choices %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

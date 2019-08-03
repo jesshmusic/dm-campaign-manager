@@ -34,6 +34,9 @@
         <li class="nav-item">
           <%= active_link_to 'Magic Items', magic_items_path, active: :exclusive, class: 'nav-link' %>
         </li>
+        <li class="nav-item">
+          <%= active_link_to 'Classes', dnd_classes_path, active: :exclusive, class: 'nav-link' %>
+        </li>
       <% end %>
       <% if current_user.admin? %>
         <li class="nav-item">

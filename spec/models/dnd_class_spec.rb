@@ -5,7 +5,7 @@
 #  id                  :bigint           not null, primary key
 #  api_url             :string
 #  hit_die             :integer
-#  name                :text
+#  name                :string
 #  proficiencies       :string           default([]), is an Array
 #  proficiency_choices :jsonb            is an Array
 #  saving_throws       :string           default([]), is an Array
