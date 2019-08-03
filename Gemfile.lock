@@ -84,6 +84,7 @@ GEM
       xpath (~> 3.2)
     childprocess (1.0.1)
       rake (< 13.0)
+    choice (0.2.0)
     chromedriver-helper (2.1.1)
       archive-zip (~> 0.10)
       nokogiri (~> 1.8)
@@ -106,6 +107,8 @@ GEM
       warden (~> 1.2.3)
     diff-lcs (1.3)
     docile (1.3.2)
+    domain_name (0.5.20190701)
+      unf (>= 0.0.5, < 1.0.0)
     erubi (1.8.0)
     execjs (2.7.0)
     factory_bot (5.0.2)
@@ -119,9 +122,8 @@ GEM
     globalid (0.4.2)
       activesupport (>= 4.2.0)
     hashie (3.5.7)
-    httparty (0.17.0)
-      mime-types (~> 3.0)
-      multi_xml (>= 0.5.2)
+    http-cookie (1.0.3)
+      domain_name (~> 0.5)
     i18n (1.6.0)
       concurrent-ruby (~> 1.0)
     io-like (0.3.0)
@@ -155,7 +157,7 @@ GEM
       libv8 (>= 6.9.411)
     minitest (5.11.3)
     msgpack (1.3.0)
-    multi_xml (0.6.0)
+    netrc (0.11.0)
     nio4r (2.4.0)
     nokogiri (1.10.3)
       mini_portile2 (~> 2.4.0)
@@ -199,6 +201,11 @@ GEM
     rails-dom-testing (2.0.3)
       activesupport (>= 4.2.0)
       nokogiri (>= 1.6)
+    rails-erd (1.6.0)
+      activerecord (>= 4.2)
+      activesupport (>= 4.2)
+      choice (~> 0.2.0)
+      ruby-graphviz (~> 1.2)
     rails-html-sanitizer (1.0.4)
       loofah (~> 2.2, >= 2.2.2)
     railties (5.2.3)
@@ -222,6 +229,10 @@ GEM
     responders (3.0.0)
       actionpack (>= 5.0)
       railties (>= 5.0)
+    rest-client (2.0.2)
+      http-cookie (>= 1.0.2, < 2.0)
+      mime-types (>= 1.16, < 4.0)
+      netrc (~> 0.8)
     rspec-core (3.8.2)
       rspec-support (~> 3.8.0)
     rspec-expectations (3.8.4)
@@ -239,6 +250,7 @@ GEM
       rspec-mocks (~> 3.8.0)
       rspec-support (~> 3.8.0)
     rspec-support (3.8.2)
+    ruby-graphviz (1.2.4)
     ruby_dep (1.5.0)
     rubyzip (1.2.3)
     sass (3.7.4)
@@ -297,6 +309,9 @@ GEM
       thread_safe (~> 0.1)
     uglifier (4.1.20)
       execjs (>= 0.3.0, < 3)
+    unf (0.1.4)
+      unf_ext
+    unf_ext (0.0.7.6)
     warden (1.2.8)
       rack (>= 2.0.6)
     web-console (3.7.0)
@@ -330,7 +345,6 @@ DEPENDENCIES
   devise
   factory_bot_rails
   faker
-  httparty
   jbuilder (~> 2.5)
   jquery-rails
   listen (>= 3.0.5, < 3.2)
@@ -342,8 +356,10 @@ DEPENDENCIES
   puma (~> 3.11)
   pundit
   rails (~> 5.2.3)
+  rails-erd
   rainbow
   react_on_rails (= 11.3.0)
+  rest-client
   rspec-core
   rspec-rails
   sass-rails (~> 5.0)

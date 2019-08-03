@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_02_013438) do
+ActiveRecord::Schema.define(version: 2019_08_03_123545) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -51,9 +51,9 @@ ActiveRecord::Schema.define(version: 2019_08_02_013438) do
     t.string "api_url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "proficiency_choices", default: [], array: true
     t.string "proficiencies", default: [], array: true
     t.string "saving_throws", default: [], array: true
+    t.jsonb "proficiency_choices", default: [], array: true
   end
 
   create_table "items", force: :cascade do |t|

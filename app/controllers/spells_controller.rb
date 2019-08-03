@@ -16,15 +16,6 @@ class SpellsController < ApplicationController
   def new
     @spell = Spell.new
   end
-  
-  # POST /spells/import
-  def import
-    @dnd_api = DndApi.new
-    result = @dnd_api.get_spells
-    respond_to do |format|
-      format.json { render json: result, status: :ok }
-    end
-  end
 
   # GET /spells/1/edit
   def edit
