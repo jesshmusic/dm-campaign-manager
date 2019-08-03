@@ -6,7 +6,7 @@
 #  alignment              :string
 #  api_url                :string
 #  armor_class            :integer
-#  challenge_rating       :integer
+#  challenge_rating       :string
 #  charisma               :integer
 #  charisma_save          :integer
 #  condition_immunities   :string
@@ -22,15 +22,17 @@
 #  intelligence           :integer
 #  intelligence_save      :integer
 #  languages              :string
+#  legendary_description  :text
+#  monster_subtype        :string
+#  monster_type           :string
 #  name                   :string
+#  reactions              :text
 #  senses                 :string
 #  size                   :string
 #  skills                 :jsonb            is an Array
 #  speed                  :string
 #  strength               :integer
 #  strength_save          :integer
-#  subtype                :string
-#  type                   :string
 #  wisdom                 :integer
 #  wisdom_save            :integer
 #  created_at             :datetime         not null
@@ -38,14 +40,9 @@
 #
 
 class Monster < ApplicationRecord
-  has_many :monster_actions
-  has_many :actions, through: :monster_actions
-  
-  has_many :monster_legendary_actions
-  has_many :actions, through: :monster_legendary_actions
-  
-  has_many :monster_special_abilities
-  has_many :actions, through: :monster_special_abilities
+  has_many :monster_actions, dependent: :delete_all
+  has_many :monster_legendary_actions, dependent: :delete_all
+  has_many :monster_special_abilities, dependent: :delete_all
   
   include PgSearch
   

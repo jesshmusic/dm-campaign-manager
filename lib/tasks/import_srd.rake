@@ -40,6 +40,92 @@ namespace :srd do
     puts "#{count} D&D classes imported."
   end
   
+  task import_monsters: :environment do
+    next_uri = URI("#{dnd_open5e_url}monsters/")
+    count = 0
+    while next_uri
+      response = Net::HTTP.get(next_uri)
+      result = JSON.parse response, symbolize_names: true
+      next_uri = result[:next] ? URI(result[:next]) : false
+      result[:results].each do |monster|
+        Monster.find_or_create_by(name: monster[:name]) do |new_monster|
+          new_monster.alignment = monster[:alignment]
+          new_monster.api_url = "#{dnd_open5e_url}monsters/#{monster[:slug]}"
+          new_monster.armor_class = monster[:armor_class]
+          new_monster.challenge_rating = monster[:challenge_rating]
+          new_monster.charisma = monster[:charisma]
+          new_monster.charisma_save = monster[:charisma_save]
+          new_monster.condition_immunities = monster[:condition_immunities]
+          new_monster.constitution = monster[:constitution]
+          new_monster.constitution_save = monster[:constitution_save]
+          new_monster.damage_immunities = monster[:damage_immunities]
+          new_monster.damage_resistances = monster[:damage_resistances]
+          new_monster.damage_vulnerabilities = monster[:damage_vulnerabilities]
+          new_monster.dexterity = monster[:dexterity]
+          new_monster.dexterity_save = monster[:dexterity_save]
+          new_monster.hit_dice = monster[:hit_dice]
+          new_monster.hit_points = monster[:hit_points]
+          new_monster.intelligence = monster[:intelligence]
+          new_monster.intelligence_save = monster[:intelligence_save]
+          new_monster.languages = monster[:languages]
+          new_monster.reactions = monster[:reactions]
+          new_monster.senses = monster[:senses]
+          new_monster.size  = monster[:size]
+          new_monster.skills = monster[:skills].to_json
+          new_monster.speed = monster[:speed].map { |key, value| "#{value}ft. #{key}"}.join(', ')
+          new_monster.strength = monster[:strength]
+          new_monster.strength_save = monster[:strength_save]
+          new_monster.monster_subtype = monster[:subtype]
+          new_monster.monster_type = monster[:type]
+          new_monster.wisdom = monster[:wisdom]
+          new_monster.wisdom_save = monster[:wisdom_save]
+          
+          if monster[:actions].kind_of?(Array)
+            monster[:actions].each do |monster_action|
+              new_action = MonsterAction.new(
+                name: monster_action[:name],
+                description: monster_action[:desc],
+                attack_bonus: monster_action[:attack_bonus],
+                damage_bonus: monster_action[:damage_bonus],
+                damage_dice: monster_action[:damage_dice]
+              )
+              new_monster.monster_actions << new_action
+            end
+          end
+          
+          new_monster.legendary_description = monster[:legendary_desc]
+          if monster[:legendary_actions].kind_of?(Array)
+            monster[:legendary_actions].each do |monster_action|
+              new_action = MonsterLegendaryAction.new(
+                name: monster_action[:name],
+                description: monster_action[:desc],
+                attack_bonus: monster_action[:attack_bonus],
+                damage_bonus: monster_action[:damage_bonus],
+                damage_dice: monster_action[:damage_dice]
+              )
+              new_monster.monster_legendary_actions << new_action
+            end
+          end
+          
+          if monster[:special_abilities].kind_of?(Array)
+            monster[:special_abilities].each do |monster_action|
+              new_action = MonsterSpecialAbility.new(
+                name: monster_action[:name],
+                description: monster_action[:desc],
+                attack_bonus: monster_action[:attack_bonus],
+                damage_bonus: monster_action[:damage_bonus],
+                damage_dice: monster_action[:damage_dice]
+              )
+              new_monster.monster_special_abilities << new_action
+            end
+          end
+        end
+        count += 1
+      end
+    end
+    puts "#{count} monsters imported."
+  end
+  
   task import_spells: :environment do
     uri = URI("#{dnd_api_url}spells")
     response = Net::HTTP.get(uri)

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_03_185014) do
+ActiveRecord::Schema.define(version: 2019_08_03_205407) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -102,37 +102,46 @@ ActiveRecord::Schema.define(version: 2019_08_03_185014) do
   end
 
   create_table "monster_actions", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.integer "attack_bonus"
+    t.integer "damage_bonus"
+    t.string "damage_dice"
     t.bigint "monster_id"
-    t.bigint "action_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["action_id"], name: "index_monster_actions_on_action_id"
     t.index ["monster_id"], name: "index_monster_actions_on_monster_id"
   end
 
   create_table "monster_legendary_actions", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.integer "attack_bonus"
+    t.integer "damage_bonus"
+    t.string "damage_dice"
     t.bigint "monster_id"
-    t.bigint "action_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["action_id"], name: "index_monster_legendary_actions_on_action_id"
     t.index ["monster_id"], name: "index_monster_legendary_actions_on_monster_id"
   end
 
   create_table "monster_special_abilities", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.integer "attack_bonus"
+    t.integer "damage_bonus"
+    t.string "damage_dice"
     t.bigint "monster_id"
-    t.bigint "action_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["action_id"], name: "index_monster_special_abilities_on_action_id"
     t.index ["monster_id"], name: "index_monster_special_abilities_on_monster_id"
   end
 
   create_table "monsters", force: :cascade do |t|
     t.string "name"
     t.string "size"
-    t.string "type"
-    t.string "subtype"
+    t.string "monster_type"
+    t.string "monster_subtype"
     t.string "alignment"
     t.integer "armor_class"
     t.integer "hit_points"
@@ -156,11 +165,13 @@ ActiveRecord::Schema.define(version: 2019_08_03_185014) do
     t.string "condition_immunities"
     t.string "senses"
     t.string "languages"
-    t.integer "challenge_rating"
+    t.string "challenge_rating"
     t.string "api_url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.jsonb "skills", default: [], array: true
+    t.text "legendary_description"
+    t.text "reactions"
   end
 
   create_table "spell_classes", force: :cascade do |t|
@@ -217,10 +228,4 @@ ActiveRecord::Schema.define(version: 2019_08_03_185014) do
 
   add_foreign_key "container_items", "items"
   add_foreign_key "container_items", "items", column: "contained_item_id"
-  add_foreign_key "monster_actions", "actions"
-  add_foreign_key "monster_actions", "monsters"
-  add_foreign_key "monster_legendary_actions", "actions"
-  add_foreign_key "monster_legendary_actions", "monsters"
-  add_foreign_key "monster_special_abilities", "actions"
-  add_foreign_key "monster_special_abilities", "monsters"
 end
