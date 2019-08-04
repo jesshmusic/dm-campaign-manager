@@ -1,4 +1,4 @@
-<%= form_with(model: monster, local: true) do |form| %>
+<%= bootstrap_form_for @monster do |form| %>
   <% if monster.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(monster.errors.count, "error") %> prohibited this monster from being saved:</h2>
@@ -10,121 +10,32 @@
       </ul>
     </div>
   <% end %>
-
-  <div class="field">
-    <%= form.label :name %>
-    <%= form.text_field :name %>
-  </div>
-
-  <div class="field">
-    <%= form.label :size %>
-    <%= form.text_field :size %>
-  </div>
-
-  <div class="field">
-    <%= form.label :type %>
-    <%= form.text_field :type %>
-  </div>
-
-  <div class="field">
-    <%= form.label :subtype %>
-    <%= form.text_field :subtype %>
-  </div>
-
-  <div class="field">
-    <%= form.label :alignment %>
-    <%= form.text_field :alignment %>
-  </div>
-
-  <div class="field">
-    <%= form.label :armor_class %>
-    <%= form.number_field :armor_class %>
-  </div>
-
-  <div class="field">
-    <%= form.label :hit_points %>
-    <%= form.number_field :hit_points %>
-  </div>
-
-  <div class="field">
-    <%= form.label :hit_dice %>
-    <%= form.text_field :hit_dice %>
-  </div>
-
-  <div class="field">
-    <%= form.label :speed %>
-    <%= form.text_field :speed %>
-  </div>
-
-  <div class="field">
-    <%= form.label :strength %>
-    <%= form.number_field :strength %>
-  </div>
-
-  <div class="field">
-    <%= form.label :dexterity %>
-    <%= form.number_field :dexterity %>
-  </div>
-
-  <div class="field">
-    <%= form.label :constitution %>
-    <%= form.number_field :constitution %>
-  </div>
-
-  <div class="field">
-    <%= form.label :intelligence %>
-    <%= form.number_field :intelligence %>
-  </div>
-
-  <div class="field">
-    <%= form.label :wisdom %>
-    <%= form.number_field :wisdom %>
-  </div>
-
-  <div class="field">
-    <%= form.label :charisma %>
-    <%= form.number_field :charisma %>
-  </div>
-
-  <div class="field">
-    <%= form.label :damage_vulnerabilities %>
-    <%= form.text_field :damage_vulnerabilities %>
-  </div>
-
-  <div class="field">
-    <%= form.label :damage_resistances %>
-    <%= form.text_field :damage_resistances %>
-  </div>
-
-  <div class="field">
-    <%= form.label :damage_immunities %>
-    <%= form.text_field :damage_immunities %>
-  </div>
-
-  <div class="field">
-    <%= form.label :condition_immunities %>
-    <%= form.text_field :condition_immunities %>
-  </div>
-
-  <div class="field">
-    <%= form.label :senses %>
-    <%= form.text_field :senses %>
-  </div>
-
-  <div class="field">
-    <%= form.label :languages %>
-    <%= form.text_field :languages %>
-  </div>
-
-  <div class="field">
-    <%= form.label :challenge_rating %>
-    <%= form.number_field :challenge_rating %>
-  </div>
-
-  <div class="field">
-    <%= form.label :api_url %>
-    <%= form.text_field :api_url %>
-  </div>
+  
+  <%= form.text_field :name %>
+  <%= form.text_field :size %>
+  <%= form.text_field :monster_type %>
+  <%= form.text_field :monster_subtype %>
+  <%= form.text_field :alignment %>
+  <%= form.number_field :armor_class %>
+  <%= form.number_field :hit_points %>
+  <%= form.text_field :hit_dice %>
+  <%= form.text_field :speed %>
+  
+  <%= form.number_field :strength %>
+  <%= form.number_field :dexterity %>
+  <%= form.number_field :constitution %>
+  <%= form.number_field :intelligence %>
+  <%= form.number_field :wisdom %>
+  <%= form.number_field :charisma %>
+  
+  <%= form.text_field :damage_vulnerabilities %>
+  <%= form.text_field :damage_resistances %>
+  <%= form.text_field :damage_immunities %>
+  <%= form.text_field :condition_immunities %>
+  
+  <%= form.text_field :senses %>
+  <%= form.text_field :languages %>
+  <%= form.number_field :challenge_rating %>
 
   <div class="actions">
     <%= form.submit %>

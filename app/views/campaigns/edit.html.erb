@@ -8,7 +8,7 @@
   </ol>
 </nav>
 <h1>Edit - <small><em><%= @campaign.name %></em></small></h1>
-<%= render 'form', campaign: @campaign, url: @campaign %>
+<%= render 'form', campaign: @campaign %>
 <div class="admin__footer">
   <%= link_to 'Show', @campaign, class: "btn btn-success" %>
   <%= link_to 'Back', campaigns_path, class: "btn btn-primary" %>

@@ -1,4 +1,4 @@
-<%= bootstrap_form_for(@magic_item, url: url) do |form| %>
+<%= bootstrap_form_for @magic_item do |form| %>
   <% if magic_item.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(magic_item.errors.count, "error") %> prohibited this magic_item from being saved:</h2>

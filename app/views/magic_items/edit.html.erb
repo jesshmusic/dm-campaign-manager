@@ -7,7 +7,7 @@
   </ol>
 </nav>
 <h1>Edit - <small><em><%= @magic_item.name %></em></small></h1>
-<%= render 'form', magic_item: @magic_item, url: @magic_item %>
+<%= render 'form', magic_item: @magic_item %>
 <div class="admin__footer">
   <%= link_to 'Show', @magic_item, class: "btn btn-success" %>
   <%= link_to 'Back', magic_items_path, class: "btn btn-primary" %>

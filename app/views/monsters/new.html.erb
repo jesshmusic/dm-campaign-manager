@@ -1,5 +1,14 @@
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-monster"><a href="/">Home</a></li>
+    <li class="breadcrumb-monster"><%= link_to 'Dashboard', dashboard_path %></li>
+    <li class="breadcrumb-monster"><%= link_to 'Monster', monsters_path %></li>
+    <li class="breadcrumb-monster active" aria-current="page">New Monster</li>
+  </ol>
+</nav>
 <h1>New Monster</h1>
-
 <%= render 'form', monster: @monster %>
-
-<%= link_to 'Back', monsters_path %>
+<div class="admin__footer">
+  <%= link_to 'Back', monsters_path, class: "btn btn-primary" %>
+  <%= link_to 'Dashboard', dashboard_path, class: "btn btn-info" %>
+</div>

@@ -1,4 +1,4 @@
-<%= bootstrap_form_for(@campaign, url: url) do |form| %>
+<%= bootstrap_form_for @campaign do |form| %>
   <% if campaign.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(campaign.errors.count, "error") %> prohibited this campaign from being saved:</h2>

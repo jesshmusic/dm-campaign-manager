@@ -203,5 +203,5 @@
   </div>
 <% end %>
 
-<%= link_to 'Edit', edit_monster_path(@monster) %> |
-<%= link_to 'Back', monsters_path %>
+<%= link_to 'Edit', edit_monster_path(@monster), class: "btn btn-success" if policy(@monster).edit? %>
+<%= link_to 'Back', monsters_path, class: "btn btn-info" %>

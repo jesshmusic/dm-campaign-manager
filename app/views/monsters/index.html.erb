@@ -37,9 +37,11 @@
         <td><%= monster.hit_points %></td>
         <td><%= monster.hit_dice %></td>
         <td><%= monster.challenge_rating %></td>
-        <td><%= link_to 'Show', monster, class: "btn btn-sm btn-primary" %></td>
-        <td><%= link_to 'Edit', edit_monster_path(monster), class: "btn btn-sm btn-success" %></td>
-        <td><%= link_to 'Destroy', monster, class: "btn btn-sm btn-danger", method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td>
+          <%= link_to 'Show', monster, class: "btn btn-sm btn-primary" %>
+          <%= link_to 'Edit', edit_monster_path(monster), class: "btn btn-sm btn-success" if policy(monster).edit?  %>
+          <%= link_to 'Destroy', monster, class: "btn btn-sm btn-danger", method: :delete, data: { confirm: 'Are you sure?' } if policy(monster).destroy? %>
+        </td>
       </tr>
     <% end %>
   </tbody>

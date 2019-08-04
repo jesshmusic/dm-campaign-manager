@@ -60,5 +60,5 @@
   <%= markdown(@spell.higher_level) %>
 <% end %>
 
-<%= link_to 'Edit', edit_spell_path(@spell) %> |
-<%= link_to 'Back', spells_path %>
+<%= link_to 'Edit', edit_spell_path(@spell), class: "btn btn-success" if policy(@spell).edit? %>
+<%= link_to 'Back', spells_path, class: "btn btn-info" %>

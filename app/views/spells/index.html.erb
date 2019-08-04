@@ -33,8 +33,8 @@
         <td><%= spell.spell_level %></td>
         <td><%= link_to 'Show', spell, class: "btn btn-sm btn-primary" %></td>
         <% if current_user.admin? %>
-          <td><%= link_to 'Edit', edit_spell_path(spell), class: "btn btn-sm btn-success" %></td>
-          <td><%= link_to 'Destroy', spell, class: "btn btn-sm btn-danger", method: :delete, data: { confirm: 'Are you sure?' } %></td>
+          <td><%= link_to 'Edit', edit_spell_path(spell), class: "btn btn-sm btn-success" if policy(spell).edit? %></td>
+          <td><%= link_to 'Destroy', spell, class: "btn btn-sm btn-danger", method: :delete, data: { confirm: 'Are you sure?' } if policy(spell).destroy? %></td>
         <% end %>
       </tr>
     <% end %>

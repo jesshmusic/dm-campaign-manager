@@ -29,8 +29,6 @@
   </div>
   <div class="wrapper__footer">
     <%= link_to 'Edit', edit_user_path(@user), class: "btn btn-success" %>
-    <% if current_user.admin? %>
-      <%= link_to 'Back', user_path, class: "btn btn-primary" %>
-    <% end %>
+    <%= link_to 'Back', users_path, class: "btn btn-primary" %>
   </div>
 </div>

@@ -1,4 +1,4 @@
-<<nav aria-label="breadcrumb">
+<nav aria-label="breadcrumb">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="/">Home</a></li>
     <li class="breadcrumb-item"><%= link_to 'Dashboard', dashboard_path %></li>
@@ -7,7 +7,7 @@
   </ol>
 </nav>
 <h1>Edit - <small><em><%= @item.name %></em></small></h1>
-<%= render 'form', item: @item, url: @item %>
+<%= render 'form', item: @item %>
 <div class="admin__footer">
   <%= link_to 'Show', @item, class: "btn btn-success" %>
   <%= link_to 'Back', items_path, class: "btn btn-primary" %>

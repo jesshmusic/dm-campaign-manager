@@ -28,9 +28,11 @@
         <td><%= magic_item.magic_item_type %></td>
         <td><%= magic_item.rarity %></td>
         <td><%= magic_item.requires_attunement %></td>
-        <td><%= link_to 'Show', magic_item, class: "btn btn-sm btn-primary" %></td>
-        <td><%= link_to 'Edit', edit_magic_item_path(magic_item), class: "btn btn-sm btn-success" if policy(magic_item).edit? %></td>
-        <td><%= link_to 'Destroy', magic_item, class: "btn btn-sm btn-danger", method: :delete, data: { confirm: 'Are you sure?' } if policy(magic_item).destroy? %></td>
+        <td>
+          <%= link_to 'Show', magic_item, class: "btn btn-sm btn-primary" %>
+          <%= link_to 'Edit', edit_magic_item_path(magic_item), class: "btn btn-sm btn-success" if policy(magic_item).edit? %>
+          <%= link_to 'Destroy', magic_item, class: "btn btn-sm btn-danger", method: :delete, data: { confirm: 'Are you sure?' } if policy(magic_item).destroy? %>
+        </td>
       </tr>
     <% end %>
   </tbody>

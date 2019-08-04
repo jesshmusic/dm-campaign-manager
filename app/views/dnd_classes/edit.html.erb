@@ -7,7 +7,7 @@
   </ol>
 </nav>
 <h1>Edit - <small><em><%= @dnd_class.name %></em></small></h1>
-<%= render 'form', dnd_class: @dnd_class, url: @dnd_class %>
+<%= render 'form', dnd_class: @dnd_class %>
 <div class="admin__footer">
   <%= link_to 'Show', @dnd_class, class: "btn btn-success" %>
   <%= link_to 'Back', dnd_classes_path, class: "btn btn-primary" %>

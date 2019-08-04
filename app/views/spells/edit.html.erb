@@ -1,6 +1,15 @@
-<h1>Editing Spell</h1>
-
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item"><%= link_to 'Dashboard', dashboard_path %></li>
+    <li class="breadcrumb-item"><%= link_to 'Spells', spells_path %></li>
+    <li class="breadcrumb-item active" aria-current="page">Edit Spell</li>
+  </ol>
+</nav>
+<h1>Edit - <small><em><%= @spell.name %></em></small></h1>
 <%= render 'form', spell: @spell %>
-
-<%= link_to 'Show', @spell %> |
-<%= link_to 'Back', spells_path %>
+<div class="admin__footer">
+  <%= link_to 'Show', @spell, class: "btn btn-success" %>
+  <%= link_to 'Back', spells_path, class: "btn btn-primary" %>
+  <%= link_to 'Dashboard', '/dashboard', class: "btn btn-info" %>
+</div>

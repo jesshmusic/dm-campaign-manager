@@ -10,11 +10,11 @@
 <% if !@user.confirmed_at? %>
   <h3>Currently waiting confirmation.</h3>
 <% end %>
-<%= render 'form', user: @user, url: user_path(@user) %>
+<%= render 'form', user: @user %>
 <div class="admin__footer">
   <%= link_to 'Show', user_path, class: "btn btn-success" %>
   <% if current_user.admin? %>
     <%= link_to 'Back', users_path, class: "btn btn-primary" %>
-    <%= link_to 'Admin', '/admin', class: "btn btn-info" %>
+    <%= link_to 'Dashboard', '/dashboard', class: "btn btn-info" %>
   <% end %>
 </div>
