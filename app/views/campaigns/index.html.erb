@@ -16,7 +16,7 @@
       <th>Description</th>
       <th>World</th>
       <th>Dungeon Master</th>
-      <th colspan="3"></th>
+      <th></th>
     </tr>
   </thead>
 
@@ -27,9 +27,11 @@
         <td><%= campaign.description %></td>
         <td><%= campaign.world %></td>
         <td><%= campaign.user.name %></td>
-        <td><%= link_to 'Show', campaign, class: "btn btn-sm btn-primary" %></td>
-        <td><%= link_to 'Edit', edit_campaign_path(campaign), class: "btn btn-sm btn-success" if policy(campaign).edit? %></td>
-        <td><%= link_to 'Destroy', campaign, class: "btn btn-sm btn-danger", method: :delete, data: { confirm: 'Are you sure?' } if policy(campaign).destroy? %></td>
+        <td>
+          <%= link_to 'Show', campaign, class: "btn btn-sm btn-primary" %>
+          <%= link_to 'Edit', edit_campaign_path(campaign), class: "btn btn-sm btn-success" if policy(campaign).edit? %>
+          <%= link_to 'Destroy', campaign, class: "btn btn-sm btn-danger", method: :delete, data: { confirm: 'Are you sure?' } if policy(campaign).destroy? %>
+        </td>
       </tr>
     <% end %>
   </tbody>
