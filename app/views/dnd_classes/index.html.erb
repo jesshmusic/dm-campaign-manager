@@ -35,4 +35,4 @@
 
 <br>
 
-<%= link_to 'New Dnd Class', new_dnd_class_path %>
+<%= link_to 'New Dnd Class', new_dnd_class_path if policy(DndClass).new? %>

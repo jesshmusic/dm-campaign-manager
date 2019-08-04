@@ -34,4 +34,4 @@
     <% end %>
   </tbody>
 </table>
-<%= link_to 'New Campaign', new_campaign_path %>
+<%= link_to 'New Campaign', new_campaign_path if policy(Campaign).new? %>

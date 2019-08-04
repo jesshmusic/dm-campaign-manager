@@ -49,4 +49,4 @@
 
 <br>
 
-<%= link_to 'New Monster', new_monster_path %>
+<%= link_to 'New Monster', new_monster_path if policy(Monster).new? %>
