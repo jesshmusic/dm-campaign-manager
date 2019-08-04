@@ -1,13 +1,17 @@
-<div class="admin">
-  <%= render "shared/admin-header" %>
-  <div class="container">
-    <nav aria-label="breadcrumb">
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/">Home</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
-      </ol>
-    </nav>
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+  </ol>
+</nav>
 
-    <h1>Dashboard</h1>
-  </div>
-</div>
+<h1>Dashboard</h1>
+<h4>
+  <% if current_user.admin? %>
+    <span class="badge badge-pill badge-success">Admin</span>
+  <% elsif current_user.dungeon_master? %>
+    <span class="badge badge-pill badge-info">Dungeon Master</span>
+  <% else %>
+    <span class="badge badge-pill badge-warning">Player</span>
+  <% end %>
+</h4>

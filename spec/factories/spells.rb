@@ -17,6 +17,7 @@
 #  range         :text
 #  ritual        :boolean
 #  school        :text
+#  spell_level   :string
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
 #

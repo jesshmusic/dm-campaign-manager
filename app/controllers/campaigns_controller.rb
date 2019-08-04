@@ -7,9 +7,9 @@ class CampaignsController < ApplicationController
   def index
     @campaigns = Campaign.all
     if params[:search].present?
-      @items = Campaign.search_for(params[:search])
+      @campaigns = Campaign.search_for(params[:search])
     else
-      @items = Campaign.all
+      @campaigns = Campaign.all
     end
   end
 

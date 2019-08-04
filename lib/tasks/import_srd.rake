@@ -154,6 +154,7 @@ namespace :srd do
           end
         end
         new_spell.level = spell_result[:level]
+        new_spell.spell_level = new_spell.get_spell_level_text
         new_spell.material = spell_result[:material]
         new_spell.page = spell_result[:page]
         new_spell.range = spell_result[:range]

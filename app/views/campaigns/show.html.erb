@@ -1,33 +1,28 @@
-<div class="admin">
-  <%= render "shared/admin-header" %>
-  <div class="container">
-    <nav aria-label="breadcrumb">
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/">Home</a></li>
-        <li class="breadcrumb-item"><%= link_to 'Dashboard', dashboard_path %></li>
-        <li class="breadcrumb-item"><%= link_to 'Campaigns', campaigns_path %></li>
-        <li class="breadcrumb-item"><%= link_to "#{@campaign.user.name}", user_path(@campaign.user) %></li>
-        <li class="breadcrumb-item active" aria-current="page"><%= @campaign.name %></li>
-      </ol>
-    </nav>
-    <h1>Campaign: <%= @campaign.name %></h1>
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item"><%= link_to 'Dashboard', dashboard_path %></li>
+    <li class="breadcrumb-item"><%= link_to 'Campaigns', campaigns_path %></li>
+    <li class="breadcrumb-item"><%= link_to "#{@campaign.user.name}", user_path(@campaign.user) %></li>
+    <li class="breadcrumb-item active" aria-current="page"><%= @campaign.name %></li>
+  </ol>
+</nav>
+<h1>Campaign: <%= @campaign.name %></h1>
 
-    <p>
-      <strong>Description:</strong>
-      <%= markdown(@campaign.description) %>
-    </p>
+<p>
+  <strong>Description:</strong>
+  <%= markdown(@campaign.description) %>
+</p>
 
-    <p>
-      <strong>World:</strong>
-      <%= @campaign.world %>
-    </p>
+<p>
+  <strong>World:</strong>
+  <%= @campaign.world %>
+</p>
 
-    <p>
-      <strong>Dungeon Master:</strong>
-      <%= @campaign.user.name %>
-    </p>
+<p>
+  <strong>Dungeon Master:</strong>
+  <%= @campaign.user.name %>
+</p>
 
-    <%= link_to 'Edit', edit_campaign_path(@campaign) %> |
-    <%= link_to 'Back', campaigns_path %>
-  </div>
-</div>
+<%= link_to 'Edit', edit_campaign_path(@campaign) %> |
+<%= link_to 'Back', campaigns_path %>

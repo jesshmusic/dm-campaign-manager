@@ -1,44 +1,39 @@
-<div class="admin">
-  <%= render "shared/admin-header" %>
-  <div class="container">
-    <nav aria-label="breadcrumb">
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/">Home</a></li>
-        <li class="breadcrumb-item"><%= link_to 'Dashboard', dashboard_path %></li>
-        <li class="breadcrumb-item active" aria-current="page">Users</li>
-      </ol>
-    </nav>
-    <h1>Users</h1>
-    <%= render 'shared/search_form', url: users_path %>
-    <% @users.each do |user| %>
-      <div class="teaser">
-        <div class="teaser__body">
-          <div class="teaser__body--title">
-            <%= link_to "#{user.name} #{user.username}", user_path(user) %>
-            <% if user.admin? %>
-              <span class="badge badge-pill badge-success">Admin</span>
-            <% elsif user.dungeon_master? %>
-              <span class="badge badge-pill badge-info">Dungeon Master</span>
-            <% else %>
-              <span class="badge badge-pill badge-warning">Player</span>
-            <% end %>
-          </div>
-          <div class="teaser__body--date">
-            <%= user.created_at.strftime('%B %e, %Y') %>
-          </div>
-          <div class="teaser__body--text">
-            <%= link_to user.email, user_path(user) %>
-          </div>
-          <div class="teaser__body--actions">
-            <%= link_to 'Edit', edit_user_path(user), class: "btn btn-sm btn-primary" %>
-            <% if user.dungeon_master? %>
-              <%= link_to 'Change Role', user_change_role_path(user), method: :patch, class: "btn btn-sm btn-warning" %>
-            <% elsif user.player? %>
-              <%= link_to 'Change Role', user_change_role_path(user), method: :patch, class: "btn btn-sm btn-info" %>
-            <% end %>
-          </div>
-        </div>
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item"><%= link_to 'Dashboard', dashboard_path %></li>
+    <li class="breadcrumb-item active" aria-current="page">Users</li>
+  </ol>
+</nav>
+<h1>Users</h1>
+<%= render 'shared/search_form', url: users_path %>
+<% @users.each do |user| %>
+  <div class="teaser">
+    <div class="teaser__body">
+      <div class="teaser__body--title">
+        <%= link_to "#{user.name} #{user.username}", user_path(user) %>
+        <% if user.admin? %>
+          <span class="badge badge-pill badge-success">Admin</span>
+        <% elsif user.dungeon_master? %>
+          <span class="badge badge-pill badge-info">Dungeon Master</span>
+        <% else %>
+          <span class="badge badge-pill badge-warning">Player</span>
+        <% end %>
       </div>
-    <% end %>
+      <div class="teaser__body--date">
+        <%= user.created_at.strftime('%B %e, %Y') %>
+      </div>
+      <div class="teaser__body--text">
+        <%= link_to user.email, user_path(user) %>
+      </div>
+      <div class="teaser__body--actions">
+        <%= link_to 'Edit', edit_user_path(user), class: "btn btn-sm btn-primary" %>
+        <% if user.dungeon_master? %>
+          <%= link_to 'Change Role', user_change_role_path(user), method: :patch, class: "btn btn-sm btn-warning" %>
+        <% elsif user.player? %>
+          <%= link_to 'Change Role', user_change_role_path(user), method: :patch, class: "btn btn-sm btn-info" %>
+        <% end %>
+      </div>
+    </div>
   </div>
-</div>
+<% end %>

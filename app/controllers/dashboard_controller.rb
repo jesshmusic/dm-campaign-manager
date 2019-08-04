@@ -3,6 +3,6 @@ class DashboardController < ApplicationController
 
   # GET /index
   def index
-    
+    # @current_user = current_user
   end
 end

@@ -17,6 +17,7 @@
 #  range         :text
 #  ritual        :boolean
 #  school        :text
+#  spell_level   :string
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
 #
@@ -27,12 +28,27 @@ class Spell < ApplicationRecord
   
   include PgSearch
   
+  def get_spell_level_text
+    if level <= 0
+      return 'Cantrip'
+    elsif level == 1
+      return '1st level'
+    elsif level == 2
+      return '2nd level'
+    elsif level == 3
+      return '3rd level'
+    else
+      return "#{level}th level"
+    end
+  end
+  
   # PgSearch
   pg_search_scope :search_for,
                   against: {
                     name: 'A',
                     school: 'B',
-                    casting_time: 'C'
+                    casting_time: 'C',
+                    spell_level: 'D'
                   },
                   using: {
                     tsearch: {
