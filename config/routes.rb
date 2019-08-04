@@ -6,8 +6,8 @@ Rails.application.routes.draw do
   resources :spells
   resources :campaigns
   devise_for :users, :controllers => { registrations: 'registrations' }
-  root to: 'hello_world#index'
-  get 'hello_world', to: 'hello_world#index'
+  root to: 'home#index'
+  get 'home', to: 'home#index'
   
   get 'dashboard', to: 'dashboard#index'
   resources :users, except: %i[create new]

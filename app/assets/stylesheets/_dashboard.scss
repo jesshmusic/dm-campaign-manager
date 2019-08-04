@@ -101,6 +101,10 @@ body {
 
 .navbar-nav {
   flex-direction: row;
+
+  .nav-item {
+    @extend .px-3;
+  }
 }
 
 .form-control-dark {

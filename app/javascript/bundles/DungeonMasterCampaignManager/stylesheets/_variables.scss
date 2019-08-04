@@ -1,0 +1,189 @@
+@import url('https://fonts.googleapis.com/css?family=Nunito+Sans:300,400,400i,600,700,700i,800,900');
+$body-bg: #202021;
+$text-color: #ededed;
+
+$white:    #fefefe;
+$gray-100: #ededed;
+$gray-200: darken($gray-100, 10%);
+$gray-300: darken($gray-200, 10%);
+$gray-400: darken($gray-300, 10%);
+$gray-500: darken($gray-400, 10%);
+$gray-600: darken($gray-500, 10%);
+$gray-700: darken($gray-600, 10%);
+$gray-800: darken($gray-700, 10%);
+$gray-900: darken($gray-800, 10%);
+$black:    #000;
+
+$primary: #51557b;
+$primary-dark: darken($primary, 10%);
+$secondary: #5149a7;
+$success: #4c7e64;
+$success-dark: darken($success, 10%);
+$info: #457e9a;
+$info-bright: lighten($info, 20%);
+$warning: #bdba00;
+$danger: #a8181c;
+
+$background-color: $gray-900;
+$primary-alpha-light: rgba(darken($primary, 5%), .65);
+
+$dark-alpha: rgba(lighten($gray-800, 5%), .95);
+$light-alpha: rgba($gray-400, .75);
+
+// Alpha colors
+$gray-900-alpha: rgba(darken($gray-800, 5%), .85);
+$gray-800-alpha: rgba($gray-800, .75);
+$gray-alpha: rgba($gray-600, .75);
+
+$link-color: $info-bright;
+$link-hover-color: $text-color;
+
+$content-background: rgba($gray-800, .5);
+$list-background: $dark-alpha;
+
+
+$font-family-sans-serif: 'Nunito Sans', sans-serif;
+$font-family-serif: 'Cormorant Garamond', serif;
+$font-family-base:        $font-family-sans-serif;
+
+$font-size-mobile:        16px;
+$font-size-desktop:       14px;
+$font-size-base:          1rem;
+$font-size-large:         1.15rem; // ~18px
+$font-size-small:         .85rem; // ~12px
+
+$font-size-h1:            2rem; // ~36px
+$font-size-h2:            1.75rem; // ~30px
+$font-size-h3:            1.4rem; // ~24px
+$font-size-h4:            $font-size-large; // ~18px
+$font-size-h5:            $font-size-base;
+$font-size-h6:            $font-size-small; // ~12px
+
+//** Unit-less `line-height` for use in components like buttons.
+$line-height-base:        18 / 14; // 20/14
+//** Computed "line-height" (`font-size` * `line-height`) for use with `margin`, `padding`, etc.
+$line-height-computed:    $font-size-base * $line-height-base; // ~20px
+
+$navbar-height: 4rem;
+
+$border-radius-base: .35rem;
+$border-radius-small: $border-radius-base * .75;
+$border-radius-large: $border-radius-base * 2;
+
+$screen-xs:                  568px;
+$screen-sm:                  768px;
+$screen-md:                  992px;
+$screen-lg:                  1200px;
+
+// Album List
+
+$album-list-item-bg: $primary-dark;
+
+// Article
+
+$article-border: .075rem solid $gray-500;
+
+// Borders
+
+$border-base: .075rem solid $gray-100;
+
+// Composer
+
+$composer-background: $primary-dark;
+
+// Feature Card
+
+$feature-background: rgba($primary, .5);
+$feature-head-background1: $primary-dark;
+$feature-head-border-color: $gray-100;
+$feature-head-background2: rgba($background-color, .75);
+
+// Footer
+
+$footer-background: $gray-800;
+$footer-background-secondary: darken($footer-background, 2.5%);
+$footer-border: .05rem solid $gray-500;
+$footer-bottom-color: $gray-500;
+$footer-bottom-hover-color: $gray-100;
+$footer-font-size: $font-size-small;
+$footer-link-font-size: $font-size-base;
+
+// Hero Banner
+$hero-background: darken($primary, 20%);
+$hero-color: $gray-100;
+
+// Input
+
+$input-bg: $primary;
+$input-active-bg: rgba($input-bg, 0);
+$input-active-border-color: $white;
+$input-border-color: $text-color;
+$input-placeholder-color: rgba($text-color, .5);
+$input-text-color: $white;
+
+// Link Button
+
+$button-icon-background: $secondary;
+$button-icon-fill: $gray-100;
+$button-icon-light-fill: $gray-500;
+$button-icon-hover-background: $gray-100;
+$button-icon-hover-fill: $secondary;
+$button-icon-hover-light-fill: $gray-100;
+$button-icon-transition: background 500ms ease-in-out, fill 250ms ease-in-out;
+$button-icon-nobg-transition: fill 250ms ease-in-out;
+
+// Loading Overlay
+
+$loading-overlay-bg: rgba($black, .65);
+$loading-overlay-dot-color-100: rgba($gray-600, .95);
+$loading-overlay-dot-color-200: rgba($gray-600, .85);
+$loading-overlay-dot-color-300: rgba($gray-600, .75);
+$loading-overlay-dot-color-400: rgba($gray-600, .65);
+$loading-overlay-dot-color-500: rgba($gray-600, .55);
+$loading-overlay-dot-color-600: rgba($gray-600, .45);
+$loading-overlay-dot-color-700: rgba($gray-600, .35);
+
+// Navbar
+
+$nav-background: rgba($gray-700, .5);
+$nav-border: .075rem solid $light-alpha;
+$nav-item-color: $gray-100;
+$nav-item-hover-color: $primary;
+$nav-item-shadow: 0 0 0 .1rem $gray-100;
+
+// Pagination
+
+$page-link-bg: $background-color;
+$page-link-color: $gray-100;
+$page-link-disabled: rgba($page-link-color, .25);
+$page-link-hover-bg: $secondary;
+$page-link-border: .15rem solid lighten($primary, 10%);
+$pagination-border: .05rem solid lighten($primary, 20%);
+
+// Panel
+
+$panel-bg: rgba($primary, .5);
+$panel-heading-bg: $primary-dark;
+
+// Random Cards
+
+$random-card-bg: $primary-dark;
+$random-card-color: $gray-100;
+$random-card-hover-color: $info-bright;
+
+// Refresh Button
+
+$refresh-color: $gray-100;
+$refresh-hover-color: $info;
+$refresh-circle-fill: $info-bright;
+$refresh-path-fill: $gray-100;
+$refresh-hover-circle-fill: $gray-100;
+$refresh-hover-path-fill: $info-bright;
+
+// Service Button
+
+$spotify-background: $black;
+
+// Shadow
+
+$shadow-base: 0 0 .5rem $gray-900;

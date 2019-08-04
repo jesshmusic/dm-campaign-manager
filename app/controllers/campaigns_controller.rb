@@ -21,6 +21,7 @@ class CampaignsController < ApplicationController
   # GET /campaigns/new
   def new
     @campaign = Campaign.new
+    authorize @campaign
   end
 
   # GET /campaigns/1/edit
@@ -31,6 +32,7 @@ class CampaignsController < ApplicationController
   # POST /campaigns.json
   def create
     @campaign = Campaign.new(campaign_params)
+    authorize @campaign
     @campaign.user = current_user
 
     respond_to do |format|
@@ -47,6 +49,7 @@ class CampaignsController < ApplicationController
   # PATCH/PUT /campaigns/1
   # PATCH/PUT /campaigns/1.json
   def update
+    authorize @campaign
     respond_to do |format|
       if @campaign.update(campaign_params)
         format.html { redirect_to @campaign, notice: 'Campaign was successfully updated.' }
@@ -61,6 +64,7 @@ class CampaignsController < ApplicationController
   # DELETE /campaigns/1
   # DELETE /campaigns/1.json
   def destroy
+    authorize @campaign
     @campaign.destroy
     respond_to do |format|
       format.html { redirect_to campaigns_url, notice: 'Campaign was successfully destroyed.' }

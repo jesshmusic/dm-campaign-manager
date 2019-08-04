@@ -1,0 +1,13 @@
+@import '../../../stylesheets/variables';
+@import '../../../stylesheets/mixins';
+
+.contentWrapper {
+  @include tablet {
+    padding: 4rem 0 0;
+  }
+
+  background-color: $content-background;
+  margin: 0 auto;
+  max-width: 85rem;
+  padding: 3rem 0 0;
+}

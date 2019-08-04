@@ -1,0 +1,60 @@
+@import './variables';
+
+@mixin phone {
+  @media (min-width: #{$screen-xs}) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (min-width: #{$screen-sm}) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: #{$screen-md}) {
+    @content;
+  }
+}
+
+@mixin desktop-lg {
+  @media (min-width: #{$screen-lg}) {
+    @content;
+  }
+}
+
+@mixin card-heading {
+  background: $panel-heading-bg;
+  display: flex;
+  font-weight: 700;
+  justify-content: space-between;
+  letter-spacing: .125rem;
+  padding: 1rem;
+}
+
+@mixin container-padding {
+  @include tablet {
+    padding: 2rem;
+  }
+
+  padding: 0;
+}
+
+// Box Shadows
+
+// Shadows for tablet and wider, top and bottom borders for mobile
+@mixin inset-shadow-responsive {
+  @include tablet {
+    border-bottom: 0;
+    border-radius: .5rem;
+    border-top: 0;
+    box-shadow: inset 0 0 .25rem lighten($gray-900, 8%);
+    margin: 0;
+    padding: 1rem;
+  }
+
+  background: $content-background;
+  border-bottom: 1rem solid $primary;
+  border-top: .5rem solid $primary;
+}
