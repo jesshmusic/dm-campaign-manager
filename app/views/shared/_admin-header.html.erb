@@ -1,22 +1,20 @@
-
-<% if user_signed_in? %>
-  <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
-    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">DM's Campaign Manager</a>
-    <ul class="navbar-nav px-3">
-      <li class="nav-item text-nowrap">
-        <%= active_link_to current_user.name, current_user, active: :exclusive, class: 'nav-link' %>
-      </li>
-      <li class="nav-item text-nowrap">
-        <%= link_to 'Sign Out', destroy_user_session_path, method: :delete, class: 'nav-link' %>
-      </li>
-    </ul>
-  </nav>
-  <% if notice %>
-    <div id="notice" class="alert alert-success" role="alert"><%= notice %></div>
-  <% end %>
-  <% if alert %>
-    <div class="alert alert-danger" role="alert">
-      <%= alert %>
-    </div>
-  <% end %>
+<nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
+  <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">DM's Campaign Manager</a>
+  <ul class="navbar-nav px-3">
+    <li class="nav-item text-nowrap">
+      <%= active_link_to current_user.name, current_user, active: :exclusive, class: 'nav-link' if current_user %>
+    </li>
+    <li class="nav-item text-nowrap">
+      <%= link_to 'Sign Out', destroy_user_session_path, method: :delete, class: 'nav-link' if current_user %>
+      <%= link_to 'Sign In', new_user_session_path, class: 'nav-link' if !current_user %>
+    </li>
+  </ul>
+</nav>
+<% if notice %>
+  <div id="notice" class="alert alert-success" role="alert"><%= notice %></div>
+<% end %>
+<% if alert %>
+  <div class="alert alert-danger" role="alert">
+    <%= alert %>
+  </div>
 <% end %>

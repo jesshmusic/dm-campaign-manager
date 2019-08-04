@@ -1,8 +1,7 @@
-@import url('https://fonts.googleapis.com/css?family=Nunito+Sans:300,400,400i,600,700,700i,800,900');
 $body-bg: #202021;
 $text-color: #ededed;
 
-$white:    #fefefe;
+$white: #fefefe;
 $gray-100: #ededed;
 $gray-200: darken($gray-100, 10%);
 $gray-300: darken($gray-200, 10%);
@@ -12,7 +11,7 @@ $gray-600: darken($gray-500, 10%);
 $gray-700: darken($gray-600, 10%);
 $gray-800: darken($gray-700, 10%);
 $gray-900: darken($gray-800, 10%);
-$black:    #000;
+$black: #000;
 
 $primary: #51557b;
 $primary-dark: darken($primary, 10%);
@@ -41,28 +40,23 @@ $link-hover-color: $text-color;
 $content-background: rgba($gray-800, .5);
 $list-background: $dark-alpha;
 
+$font-size-mobile: 16px;
+$font-size-desktop: 14px;
+$font-size-base: 1rem;
+$font-size-large: 1.15rem; // ~18px
+$font-size-small: .85rem; // ~12px
 
-$font-family-sans-serif: 'Nunito Sans', sans-serif;
-$font-family-serif: 'Cormorant Garamond', serif;
-$font-family-base:        $font-family-sans-serif;
-
-$font-size-mobile:        16px;
-$font-size-desktop:       14px;
-$font-size-base:          1rem;
-$font-size-large:         1.15rem; // ~18px
-$font-size-small:         .85rem; // ~12px
-
-$font-size-h1:            2rem; // ~36px
-$font-size-h2:            1.75rem; // ~30px
-$font-size-h3:            1.4rem; // ~24px
-$font-size-h4:            $font-size-large; // ~18px
-$font-size-h5:            $font-size-base;
-$font-size-h6:            $font-size-small; // ~12px
+$font-size-h1: 2rem; // ~36px
+$font-size-h2: 1.75rem; // ~30px
+$font-size-h3: 1.4rem; // ~24px
+$font-size-h4: $font-size-large; // ~18px
+$font-size-h5: $font-size-base;
+$font-size-h6: $font-size-small; // ~12px
 
 //** Unit-less `line-height` for use in components like buttons.
-$line-height-base:        18 / 14; // 20/14
+$line-height-base: 18 / 14; // 20/14
 //** Computed "line-height" (`font-size` * `line-height`) for use with `margin`, `padding`, etc.
-$line-height-computed:    $font-size-base * $line-height-base; // ~20px
+$line-height-computed: $font-size-base * $line-height-base; // ~20px
 
 $navbar-height: 4rem;
 
@@ -70,10 +64,10 @@ $border-radius-base: .35rem;
 $border-radius-small: $border-radius-base * .75;
 $border-radius-large: $border-radius-base * 2;
 
-$screen-xs:                  568px;
-$screen-sm:                  768px;
-$screen-md:                  992px;
-$screen-lg:                  1200px;
+$screen-xs: 568px;
+$screen-sm: 768px;
+$screen-md: 992px;
+$screen-lg: 1200px;
 
 // Album List
 
