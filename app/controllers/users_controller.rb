@@ -12,7 +12,7 @@ class UsersController < ApplicationController
              else
                User.all
              end
-    @users = @users.reorder(:email)
+    @users = @users.where(role: :dungeon_master).or(@users.where(role: :player))
     # @users = @users.paginate(page: params[:page],
     #                          per_page: params[:per_page])
     #                .order(:email)

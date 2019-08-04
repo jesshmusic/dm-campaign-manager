@@ -3,6 +3,7 @@ class DashboardController < ApplicationController
 
   # GET /index
   def index
-    # @current_user = current_user
+    @dms = User.where(role: :dungeon_master)
+    @campaigns = Campaign.all
   end
 end

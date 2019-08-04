@@ -7,33 +7,30 @@
 </nav>
 <h1>Users</h1>
 <%= render 'shared/search_form', url: users_path %>
-<% @users.each do |user| %>
-  <div class="teaser">
-    <div class="teaser__body">
-      <div class="teaser__body--title">
-        <%= link_to "#{user.name} #{user.username}", user_path(user) %>
-        <% if user.admin? %>
-          <span class="badge badge-pill badge-success">Admin</span>
-        <% elsif user.dungeon_master? %>
-          <span class="badge badge-pill badge-info">Dungeon Master</span>
-        <% else %>
-          <span class="badge badge-pill badge-warning">Player</span>
-        <% end %>
-      </div>
-      <div class="teaser__body--date">
-        <%= user.created_at.strftime('%B %e, %Y') %>
-      </div>
-      <div class="teaser__body--text">
-        <%= link_to user.email, user_path(user) %>
-      </div>
-      <div class="teaser__body--actions">
-        <%= link_to 'Edit', edit_user_path(user), class: "btn btn-sm btn-primary" %>
-        <% if user.dungeon_master? %>
-          <%= link_to 'Change Role', user_change_role_path(user), method: :patch, class: "btn btn-sm btn-warning" %>
-        <% elsif user.player? %>
-          <%= link_to 'Change Role', user_change_role_path(user), method: :patch, class: "btn btn-sm btn-info" %>
-        <% end %>
-      </div>
-    </div>
-  </div>
-<% end %>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Role</th>
+      <th>Campaigns</th>
+      <th>Player Characters</th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @users.each do |user| %>
+      <tr>
+        <td><%= user.name %></td>
+        <td><%= user.role.capitalize %></td>
+        <td><%= user.campaigns.count %></td>
+        <td>0</td>
+        <td>
+          <%= link_to 'Show', user, class: "btn btn-sm btn-primary" %>
+          <%= link_to 'Edit', edit_user_path(user), class: "btn btn-sm btn-success" if policy(user).edit? %>
+          <%= link_to 'Destroy', user, class: "btn btn-sm btn-danger", method: :delete, data: { confirm: 'Are you sure?' } if policy(user).destroy? %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

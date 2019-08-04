@@ -12,9 +12,12 @@ const Navbar = ({ user }) => (
         <li className="nav-item">
           <a className="nav-link" href="/">Home</a>
         </li>
+        <li className="nav-item">
+          <a className="nav-link" href="/dashboard">Dashboard</a>
+        </li>
         {user ? (
           <li className="nav-item">
-            <a className="nav-link" href="/dashboard">Dashboard</a>
+            <a className="nav-link" href={`/users/${user.username}/edit`}>{user.name}</a>
           </li>
         ) : (
             <li className="nav-item">
