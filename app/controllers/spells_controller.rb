@@ -1,5 +1,6 @@
 class SpellsController < ApplicationController
-  before_action :set_spell, only: [:show, :edit, :update, :destroy]
+  before_action :set_spell, only: %i[show edit update destroy]
+  before_action :authenticate_user!, except: %i[index show]
 
   # GET /spells
   # GET /spells.json
@@ -19,6 +20,7 @@ class SpellsController < ApplicationController
   # GET /spells/new
   def new
     @spell = Spell.new
+    authorize @spell
   end
 
   # GET /spells/1/edit
@@ -29,10 +31,11 @@ class SpellsController < ApplicationController
   # POST /spells.json
   def create
     @spell = Spell.new(spell_params)
+    authorize @spell
 
     respond_to do |format|
       if @spell.save
-        format.html { redirect_to @spell, notice: 'Spell was successfully created.' }
+        format.html { redirect_to spell_url(slug: @spell.slug), notice: 'Spell was successfully created.' }
         format.json { render :show, status: :created, location: @spell }
       else
         format.html { render :new }
@@ -44,9 +47,11 @@ class SpellsController < ApplicationController
   # PATCH/PUT /spells/1
   # PATCH/PUT /spells/1.json
   def update
+    authorize @spell
+
     respond_to do |format|
       if @spell.update(spell_params)
-        format.html { redirect_to @spell, notice: 'Spell was successfully updated.' }
+        format.html { redirect_to spell_url(slug: @spell.slug), notice: 'Spell was successfully updated.' }
         format.json { render :show, status: :ok, location: @spell }
       else
         format.html { render :edit }
@@ -58,7 +63,9 @@ class SpellsController < ApplicationController
   # DELETE /spells/1
   # DELETE /spells/1.json
   def destroy
+    authorize @spell
     @spell.destroy
+
     respond_to do |format|
       format.html { redirect_to spells_url, notice: 'Spell was successfully destroyed.' }
       format.json { head :no_content }
@@ -68,7 +75,7 @@ class SpellsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_spell
-      @spell = Spell.find(params[:id])
+      @spell = Spell.find_by(slug: params[:slug])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

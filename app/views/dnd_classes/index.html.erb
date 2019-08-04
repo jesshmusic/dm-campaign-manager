@@ -26,8 +26,8 @@
         <td>d<%= dnd_class.hit_die %></td>
         <td><%= dnd_class.saving_throws.map {|str| "#{str}"}.join(', ') %></td>
         <td><%= link_to 'Show', dnd_class, class: "btn btn-sm btn-primary" %></td>
-        <td><%= link_to 'Edit', edit_dnd_class_path(dnd_class), class: "btn btn-sm btn-success" %></td>
-        <td><%= link_to 'Destroy', dnd_class, class: "btn btn-sm btn-danger", method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= link_to 'Edit', edit_dnd_class_path(dnd_class), class: "btn btn-sm btn-success" if policy(dnd_class).edit? %></td>
+        <td><%= link_to 'Destroy', dnd_class, class: "btn btn-sm btn-danger", method: :delete, data: { confirm: 'Are you sure?' } if policy(dnd_class).destroy? %></td>
       </tr>
     <% end %>
   </tbody>

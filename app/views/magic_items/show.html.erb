@@ -19,5 +19,5 @@
   <%= markdown(item_desc ? item_desc : @magic_item.description) %>
 <% end %>
 
-<%= link_to 'Edit', edit_magic_item_path(@magic_item) %> |
-<%= link_to 'Back', magic_items_path %>
+<%= link_to 'Edit', edit_item_path(@magic_item), class: "btn btn-success" if policy(@magic_item).edit? %>
+<%= link_to 'Back', items_path, class: "btn btn-info" %>

@@ -18,6 +18,7 @@
 #  reset_password_token   :string
 #  role                   :integer
 #  sign_in_count          :integer          default(0), not null
+#  slug                   :string
 #  unconfirmed_email      :string
 #  username               :text
 #  created_at             :datetime         not null
@@ -27,6 +28,8 @@
 #
 #  index_users_on_email                 (email) UNIQUE
 #  index_users_on_reset_password_token  (reset_password_token) UNIQUE
+#  index_users_on_slug                  (slug) UNIQUE
+#  index_users_on_username              (username) UNIQUE
 #
 
 class User < ApplicationRecord
@@ -72,4 +75,8 @@ class User < ApplicationRecord
                       prefix: true
                     }
                   }
+
+  def to_param
+    slug
+  end
 end

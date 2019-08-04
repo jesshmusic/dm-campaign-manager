@@ -5,6 +5,7 @@
 #  id          :bigint           not null, primary key
 #  description :text
 #  name        :text
+#  slug        :string
 #  world       :text
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
@@ -12,6 +13,7 @@
 #
 # Indexes
 #
+#  index_campaigns_on_slug     (slug) UNIQUE
 #  index_campaigns_on_user_id  (user_id)
 #
 
@@ -32,4 +34,8 @@ class Campaign < ApplicationRecord
                       prefix: true
                     }
                   }
+
+  def to_param
+    slug
+  end
 end

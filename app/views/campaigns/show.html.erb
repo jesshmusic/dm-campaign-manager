@@ -3,7 +3,7 @@
     <li class="breadcrumb-item"><a href="/">Home</a></li>
     <li class="breadcrumb-item"><%= link_to 'Dashboard', dashboard_path %></li>
     <li class="breadcrumb-item"><%= link_to 'Campaigns', campaigns_path %></li>
-    <li class="breadcrumb-item"><%= link_to "#{@campaign.user.name}", user_path(@campaign.user) %></li>
+    <li class="breadcrumb-item"><%= link_to "#{@campaign.user.name}", user_path(slug: @campaign.user.slug) %></li>
     <li class="breadcrumb-item active" aria-current="page"><%= @campaign.name %></li>
   </ol>
 </nav>
@@ -21,8 +21,8 @@
 
 <p>
   <strong>Dungeon Master:</strong>
-  <%= @campaign.user.name %>
+  <%= link_to "#{@campaign.user.name}", @campaign.user %>
 </p>
 
-<%= link_to 'Edit', edit_campaign_path(@campaign) %> |
-<%= link_to 'Back', campaigns_path %>
+<%= link_to 'Edit', edit_campaign_path(@campaign), class: "btn btn-success" if policy(@campaign).edit? %>
+<%= link_to 'Back', campaigns_path, class: "btn btn-info" %>

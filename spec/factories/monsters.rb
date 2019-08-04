@@ -30,6 +30,7 @@
 #  senses                 :string
 #  size                   :string
 #  skills                 :jsonb            is an Array
+#  slug                   :string
 #  speed                  :string
 #  strength               :integer
 #  strength_save          :integer
@@ -37,6 +38,16 @@
 #  wisdom_save            :integer
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
+#  user_id                :bigint
+#
+# Indexes
+#
+#  index_monsters_on_slug     (slug) UNIQUE
+#  index_monsters_on_user_id  (user_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (user_id => users.id)
 #
 
 FactoryBot.define do

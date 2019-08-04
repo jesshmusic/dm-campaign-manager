@@ -1,32 +1,26 @@
 class UserPolicy < ApplicationPolicy
-  attr_reader :current_user, :model
-
-  def initialize(current_user, model)
-    @current_user = current_user
-    @user = model
-  end
 
   def index?
-    @current_user.admin?
+    user != nil
   end
 
   def show?
-    @current_user.admin?
+    user != nil
   end
 
   def edit?
-    @current_user.admin?
+    user.admin? or user == record
   end
 
   def update?
-    @current_user.admin?
+    user.admin? or user == record
   end
 
   def destroy?
-    @current_user.admin?
+    user.admin? or user == record
   end
 
   def change_role?
-    @current_user.admin?
+    user.admin?
   end
 end

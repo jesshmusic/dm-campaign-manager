@@ -37,5 +37,5 @@
   <% end %>
 </ul>
 
-<%= link_to 'Edit', edit_dnd_class_path(@dnd_class) %> |
-<%= link_to 'Back', dnd_classes_path %>
+<%= link_to 'Edit', edit_dnd_class_path(@dnd_class), class: "btn btn-success" if policy(@dnd_class).edit? %>
+<%= link_to 'Back', dnd_classes_path, class: "btn btn-info" %>

@@ -1,4 +1,4 @@
-<%= form_with(model: magic_item, local: true) do |form| %>
+<%= bootstrap_form_for(@magic_item, url: url) do |form| %>
   <% if magic_item.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(magic_item.errors.count, "error") %> prohibited this magic_item from being saved:</h2>
@@ -11,30 +11,11 @@
     </div>
   <% end %>
 
-  <div class="field">
-    <%= form.label :name %>
-    <%= form.text_field :name %>
-  </div>
-
-  <div class="field">
-    <%= form.label :type %>
-    <%= form.text_field :type %>
-  </div>
-
-  <div class="field">
-    <%= form.label :description %>
-    <%= form.text_area :description %>
-  </div>
-
-  <div class="field">
-    <%= form.label :rarity %>
-    <%= form.text_field :rarity %>
-  </div>
-
-  <div class="field">
-    <%= form.label :requires_attunement %>
-    <%= form.check_box :requires_attunement %>
-  </div>
+  <%= form.text_field :name %>
+  <%= form.text_field :magic_item_type %>
+  <%= form.text_area :description %>
+  <%= form.text_field :rarity %>
+  <%= form.check_box :requires_attunement %>
 
   <div class="actions">
     <%= form.submit %>

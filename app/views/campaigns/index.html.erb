@@ -28,10 +28,8 @@
         <td><%= campaign.world %></td>
         <td><%= campaign.user.name %></td>
         <td><%= link_to 'Show', campaign, class: "btn btn-sm btn-primary" %></td>
-        <% if current_user.admin? || (current_user.dungeon_master? && current_user.id == campaign.user.id) %>
-          <td><%= link_to 'Edit', edit_campaign_path(campaign), class: "btn btn-sm btn-success" %></td>
-          <td><%= link_to 'Destroy', campaign, class: "btn btn-sm btn-danger", method: :delete, data: { confirm: 'Are you sure?' } %></td>
-        <% end %>
+        <td><%= link_to 'Edit', edit_campaign_path(campaign), class: "btn btn-sm btn-success" if policy(campaign).edit? %></td>
+        <td><%= link_to 'Destroy', campaign, class: "btn btn-sm btn-danger", method: :delete, data: { confirm: 'Are you sure?' } if policy(campaign).destroy? %></td>
       </tr>
     <% end %>
   </tbody>

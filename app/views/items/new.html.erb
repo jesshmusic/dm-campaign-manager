@@ -1,5 +1,14 @@
-<h1>New Item</h1>
-
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item"><%= link_to 'Dashboard', dashboard_path %></li>
+    <li class="breadcrumb-item"><%= link_to 'Equipment', items_path %></li>
+    <li class="breadcrumb-item active" aria-current="page">New Equipment</li>
+  </ol>
+</nav>
+<h1>New Equipment</h1>
 <%= render 'form', item: @item %>
-
-<%= link_to 'Back', items_path %>
+<div class="admin__footer">
+  <%= link_to 'Back', items_path, class: "btn btn-primary" %>
+  <%= link_to 'Dashboard', dashboard_path, class: "btn btn-info" %>
+</div>

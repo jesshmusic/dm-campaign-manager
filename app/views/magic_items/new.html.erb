@@ -1,5 +1,14 @@
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-magic_item"><a href="/">Home</a></li>
+    <li class="breadcrumb-magic_item"><%= link_to 'Dashboard', dashboard_path %></li>
+    <li class="breadcrumb-magic_item"><%= link_to 'Magic Item', magic_items_path %></li>
+    <li class="breadcrumb-magic_item active" aria-current="page">New Magic Item</li>
+  </ol>
+</nav>
 <h1>New Magic Item</h1>
-
 <%= render 'form', magic_item: @magic_item %>
-
-<%= link_to 'Back', magic_items_path %>
+<div class="admin__footer">
+  <%= link_to 'Back', magic_items_path, class: "btn btn-primary" %>
+  <%= link_to 'Dashboard', dashboard_path, class: "btn btn-info" %>
+</div>

@@ -16,6 +16,7 @@
 #  description                 :text
 #  name                        :string
 #  quantity                    :integer          default(1)
+#  slug                        :string
 #  sub_category                :string
 #  vehicle_capacity            :string
 #  vehicle_speed               :integer
@@ -35,6 +36,16 @@
 #  weight                      :integer
 #  created_at                  :datetime         not null
 #  updated_at                  :datetime         not null
+#  user_id                     :bigint
+#
+# Indexes
+#
+#  index_items_on_slug     (slug) UNIQUE
+#  index_items_on_user_id  (user_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (user_id => users.id)
 #
 
 FactoryBot.define do

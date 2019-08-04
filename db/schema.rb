@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_04_141935) do
+ActiveRecord::Schema.define(version: 2019_08_04_193047) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -32,6 +32,8 @@ ActiveRecord::Schema.define(version: 2019_08_04_141935) do
     t.text "world"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "slug"
+    t.index ["slug"], name: "index_campaigns_on_slug", unique: true
     t.index ["user_id"], name: "index_campaigns_on_user_id"
   end
 
@@ -54,6 +56,10 @@ ActiveRecord::Schema.define(version: 2019_08_04_141935) do
     t.string "proficiencies", default: [], array: true
     t.string "saving_throws", default: [], array: true
     t.jsonb "proficiency_choices", default: [], array: true
+    t.bigint "user_id"
+    t.string "slug"
+    t.index ["slug"], name: "index_dnd_classes_on_slug", unique: true
+    t.index ["user_id"], name: "index_dnd_classes_on_user_id"
   end
 
   create_table "items", force: :cascade do |t|
@@ -89,6 +95,10 @@ ActiveRecord::Schema.define(version: 2019_08_04_141935) do
     t.integer "vehicle_speed"
     t.string "vehicle_speed_unit"
     t.string "vehicle_capacity"
+    t.bigint "user_id"
+    t.string "slug"
+    t.index ["slug"], name: "index_items_on_slug", unique: true
+    t.index ["user_id"], name: "index_items_on_user_id"
   end
 
   create_table "magic_items", force: :cascade do |t|
@@ -99,6 +109,10 @@ ActiveRecord::Schema.define(version: 2019_08_04_141935) do
     t.string "requires_attunement"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.string "slug"
+    t.index ["slug"], name: "index_magic_items_on_slug", unique: true
+    t.index ["user_id"], name: "index_magic_items_on_user_id"
   end
 
   create_table "monster_actions", force: :cascade do |t|
@@ -172,6 +186,10 @@ ActiveRecord::Schema.define(version: 2019_08_04_141935) do
     t.jsonb "skills", default: [], array: true
     t.text "legendary_description"
     t.text "reactions"
+    t.bigint "user_id"
+    t.string "slug"
+    t.index ["slug"], name: "index_monsters_on_slug", unique: true
+    t.index ["user_id"], name: "index_monsters_on_user_id"
   end
 
   create_table "spell_classes", force: :cascade do |t|
@@ -201,6 +219,10 @@ ActiveRecord::Schema.define(version: 2019_08_04_141935) do
     t.text "school"
     t.string "api_url"
     t.string "spell_level"
+    t.bigint "user_id"
+    t.string "slug"
+    t.index ["slug"], name: "index_spells_on_slug", unique: true
+    t.index ["user_id"], name: "index_spells_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -223,10 +245,18 @@ ActiveRecord::Schema.define(version: 2019_08_04_141935) do
     t.integer "role"
     t.text "name"
     t.text "username"
+    t.string "slug"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+    t.index ["slug"], name: "index_users_on_slug", unique: true
+    t.index ["username"], name: "index_users_on_username", unique: true
   end
 
   add_foreign_key "container_items", "items"
   add_foreign_key "container_items", "items", column: "contained_item_id"
+  add_foreign_key "dnd_classes", "users"
+  add_foreign_key "items", "users"
+  add_foreign_key "magic_items", "users"
+  add_foreign_key "monsters", "users"
+  add_foreign_key "spells", "users"
 end

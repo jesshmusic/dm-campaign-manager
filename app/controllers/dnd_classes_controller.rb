@@ -1,5 +1,6 @@
 class DndClassesController < ApplicationController
-  before_action :set_dnd_class, only: [:show, :edit, :update, :destroy]
+  before_action :set_dnd_class, only: %i[show edit update destroy]
+  before_action :authenticate_user!, except: %i[index show]
 
   # GET /dnd_classes
   # GET /dnd_classes.json
@@ -19,6 +20,7 @@ class DndClassesController < ApplicationController
   # GET /dnd_classes/new
   def new
     @dnd_class = DndClass.new
+    authorize @dnd_class
   end
 
   # GET /dnd_classes/1/edit
@@ -29,10 +31,11 @@ class DndClassesController < ApplicationController
   # POST /dnd_classes.json
   def create
     @dnd_class = DndClass.new(dnd_class_params)
+    authorize @dnd_class
 
     respond_to do |format|
       if @dnd_class.save
-        format.html { redirect_to @dnd_class, notice: 'Dnd class was successfully created.' }
+        format.html { redirect_to dnd_class_url(slug: @dnd_class.slug), notice: 'Dnd class was successfully created.' }
         format.json { render :show, status: :created, location: @dnd_class }
       else
         format.html { render :new }
@@ -44,9 +47,10 @@ class DndClassesController < ApplicationController
   # PATCH/PUT /dnd_classes/1
   # PATCH/PUT /dnd_classes/1.json
   def update
+    authorize @dnd_class
     respond_to do |format|
       if @dnd_class.update(dnd_class_params)
-        format.html { redirect_to @dnd_class, notice: 'Dnd class was successfully updated.' }
+        format.html { redirect_to dnd_class_url(slug: @dnd_class.slug), notice: 'Dnd class was successfully updated.' }
         format.json { render :show, status: :ok, location: @dnd_class }
       else
         format.html { render :edit }
@@ -58,6 +62,7 @@ class DndClassesController < ApplicationController
   # DELETE /dnd_classes/1
   # DELETE /dnd_classes/1.json
   def destroy
+    authorize @dnd_class
     @dnd_class.destroy
     respond_to do |format|
       format.html { redirect_to dnd_classes_url, notice: 'Dnd class was successfully destroyed.' }
@@ -68,7 +73,7 @@ class DndClassesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_dnd_class
-      @dnd_class = DndClass.find(params[:id])
+      @dnd_class = DndClass.find_by(slug: params[:slug])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

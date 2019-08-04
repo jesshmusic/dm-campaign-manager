@@ -30,8 +30,8 @@
         <td><%= "#{item.cost_value}#{item.cost_unit}" %></td>
         <td><%= item.weight %></td>
         <td><%= link_to 'Show', item, class: "btn btn-sm btn-primary" %></td>
-        <td><%= link_to 'Edit', edit_item_path(item), class: "btn btn-sm btn-success" %></td>
-        <td><%= link_to 'Destroy', item, class: "btn btn-sm btn-danger", method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= link_to 'Edit', edit_item_path(item), class: "btn btn-sm btn-success" if policy(item).edit? %></td>
+        <td><%= link_to 'Destroy', item, class: "btn btn-sm btn-danger", method: :delete, data: { confirm: 'Are you sure?' } if policy(item).destroy? %></td>
       </tr>
     <% end %>
   </tbody>

@@ -1,11 +1,10 @@
 class CampaignsController < ApplicationController
-  before_action :set_campaign, only: [:show, :edit, :update, :destroy]
-  before_action :authenticate_user!, except: %i[index]
+  before_action :set_campaign, only: %i[show edit update destroy]
+  before_action :authenticate_user!, except: %i[index show]
 
   # GET /campaigns
   # GET /campaigns.json
   def index
-    @campaigns = Campaign.all
     if params[:search].present?
       @campaigns = Campaign.search_for(params[:search])
     else
@@ -37,7 +36,7 @@ class CampaignsController < ApplicationController
 
     respond_to do |format|
       if @campaign.save
-        format.html { redirect_to @campaign, notice: 'Campaign was successfully created.' }
+        format.html { redirect_to campaign_url(slug: @campaign.slug), notice: 'Campaign was successfully created.' }
         format.json { render :show, status: :created, location: @campaign }
       else
         format.html { render :new }
@@ -52,7 +51,7 @@ class CampaignsController < ApplicationController
     authorize @campaign
     respond_to do |format|
       if @campaign.update(campaign_params)
-        format.html { redirect_to @campaign, notice: 'Campaign was successfully updated.' }
+        format.html { redirect_to campaign_url(slug: @campaign.slug), notice: 'Campaign was successfully updated.' }
         format.json { render :show, status: :ok, location: @campaign }
       else
         format.html { render :edit }
@@ -75,7 +74,7 @@ class CampaignsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_campaign
-      @campaign = Campaign.find(params[:id])
+      @campaign = Campaign.find_by(slug: params[:slug])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

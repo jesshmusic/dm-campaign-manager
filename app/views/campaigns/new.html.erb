@@ -10,7 +10,5 @@
 <%= render 'form', campaign: @campaign %>
 <div class="admin__footer">
   <%= link_to 'Back', campaigns_path, class: "btn btn-primary" %>
-  <% if current_user.admin? %>
-    <%= link_to 'Dashboard', '/admin', class: "btn btn-info" %>
-  <% end %>
+  <%= link_to 'Dashboard', dashboard_path, class: "btn btn-info" %>
 </div>

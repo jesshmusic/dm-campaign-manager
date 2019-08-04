@@ -9,8 +9,19 @@
 #  proficiencies       :string           default([]), is an Array
 #  proficiency_choices :jsonb            is an Array
 #  saving_throws       :string           default([]), is an Array
+#  slug                :string
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
+#  user_id             :bigint
+#
+# Indexes
+#
+#  index_dnd_classes_on_slug     (slug) UNIQUE
+#  index_dnd_classes_on_user_id  (user_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (user_id => users.id)
 #
 
 require 'rails_helper'

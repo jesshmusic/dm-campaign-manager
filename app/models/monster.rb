@@ -30,6 +30,7 @@
 #  senses                 :string
 #  size                   :string
 #  skills                 :jsonb            is an Array
+#  slug                   :string
 #  speed                  :string
 #  strength               :integer
 #  strength_save          :integer
@@ -37,12 +38,24 @@
 #  wisdom_save            :integer
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
+#  user_id                :bigint
+#
+# Indexes
+#
+#  index_monsters_on_slug     (slug) UNIQUE
+#  index_monsters_on_user_id  (user_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (user_id => users.id)
 #
 
 class Monster < ApplicationRecord
   has_many :monster_actions, dependent: :delete_all
   has_many :monster_legendary_actions, dependent: :delete_all
   has_many :monster_special_abilities, dependent: :delete_all
+
+  belongs_to :user, optional: true
   
   include PgSearch
   
@@ -58,4 +71,8 @@ class Monster < ApplicationRecord
                       prefix: true
                     }
                   }
+
+  def to_param
+    slug
+  end
 end
