@@ -7,11 +7,11 @@
 
 <h1>Dashboard</h1>
 <h4>
-  <% if current_user.admin? %>
+  <% if current_user && current_user.admin? %>
     <span class="badge badge-pill badge-success">Admin</span>
-  <% elsif current_user.dungeon_master? %>
+  <% elsif current_user && current_user.dungeon_master? %>
     <span class="badge badge-pill badge-info">Dungeon Master</span>
-  <% else %>
+  <% elsif current_user %>
     <span class="badge badge-pill badge-warning">Player</span>
   <% end %>
 </h4>

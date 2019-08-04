@@ -1,26 +1,26 @@
 class CampaignPolicy < ApplicationPolicy
 
   def show?
-    user.admin? or user.dungeon_master? or user.player?
+    return true
   end
 
   def edit?
-    user.admin? or user.dungeon_master?
+    user and (user.admin? or record.user == user)
   end
 
   def update?
-    user.admin? or user.dungeon_master?
+    user and (user.admin? or record.user == user)
   end
 
   def create?
-    user.admin? or user.dungeon_master?
+    user and (user.admin? or user.dungeon_master?)
   end
 
   def destroy?
-    user.admin? or user.dungeon_master?
+    user and (user.admin? or record.user == user)
   end
 
   def destroy_all?
-    user.admin?
+    user and user.admin?
   end
 end

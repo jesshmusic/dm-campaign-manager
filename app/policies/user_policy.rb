@@ -5,7 +5,7 @@ class UserPolicy < ApplicationPolicy
   end
 
   def show?
-    user != nil
+    return true
   end
 
   def edit?

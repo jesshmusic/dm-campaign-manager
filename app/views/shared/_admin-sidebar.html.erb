@@ -1,48 +1,44 @@
-<% if current_user %>
-  <nav class="col-md-2 d-none d-md-block bg-light sidebar">
-    <div class="sidebar-sticky">
-      <ul class="nav flex-column">
+<nav class="col-md-2 d-none d-md-block bg-light sidebar">
+  <div class="sidebar-sticky">
+    <ul class="nav flex-column">
+      <li class="nav-item">
+        <%= active_link_to 'Home', '/', active: :exclusive, class: 'nav-link' %>
+      </li>
+      <li class="nav-item">
+        <%= active_link_to 'Dashboard', dashboard_path, active: :exclusive, class: 'nav-link' %>
+      </li>
+      <li class="nav-item">
+        <%= active_link_to 'Campaigns', campaigns_path, active: :exclusive, class: 'nav-link' %>
+      </li>
+      <li class="nav-item">
+        <%= active_link_to 'Monsters', monsters_path, active: :exclusive, class: 'nav-link' %>
+      </li>
+      <li class="nav-item">
+        <%= active_link_to 'Equipment', items_path, active: :exclusive, class: 'nav-link' %>
+      </li>
+      <li class="nav-item">
+        <%= active_link_to 'Magic Items', magic_items_path, active: :exclusive, class: 'nav-link' %>
+      </li>
+      <li class="nav-item">
+        <%= active_link_to 'Classes', dnd_classes_path, active: :exclusive, class: 'nav-link' %>
+      </li>
+      <li class="nav-item">
+        <%= active_link_to 'Spells', spells_path, active: :exclusive, class: 'nav-link' %>
+      </li>
+    </ul>
+    
+    <% if current_user && current_user.admin? %>
+      <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+        <span>Admin</span>
+        <a class="d-flex align-items-center text-muted" href="#">
+          <span data-feather="plus-circle"></span>
+        </a>
+      </h6>
+      <ul class="nav flex-column mb-2">
         <li class="nav-item">
-          <%= active_link_to 'Home', '/', active: :exclusive, class: 'nav-link' %>
+          <%= active_link_to 'Users', users_path, active: :exclusive, class: 'nav-link' %>
         </li>
-        <% if current_user.admin? || current_user.dungeon_master? || current_user.player? %>
-          <li class="nav-item">
-            <%= active_link_to 'Dashboard', dashboard_path, active: :exclusive, class: 'nav-link' %>
-          </li>
-          <li class="nav-item">
-            <%= active_link_to 'Campaigns', campaigns_path, active: :exclusive, class: 'nav-link' %>
-          </li>
-          <li class="nav-item">
-            <%= active_link_to 'Monsters', monsters_path, active: :exclusive, class: 'nav-link' %>
-          </li>
-          <li class="nav-item">
-            <%= active_link_to 'Equipment', items_path, active: :exclusive, class: 'nav-link' %>
-          </li>
-          <li class="nav-item">
-            <%= active_link_to 'Magic Items', magic_items_path, active: :exclusive, class: 'nav-link' %>
-          </li>
-          <li class="nav-item">
-            <%= active_link_to 'Classes', dnd_classes_path, active: :exclusive, class: 'nav-link' %>
-          </li>
-          <li class="nav-item">
-            <%= active_link_to 'Spells', spells_path, active: :exclusive, class: 'nav-link' %>
-          </li>
-        <% end %>
       </ul>
-      
-      <% if current_user.admin? %>
-        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-          <span>Admin</span>
-          <a class="d-flex align-items-center text-muted" href="#">
-            <span data-feather="plus-circle"></span>
-          </a>
-        </h6>
-        <ul class="nav flex-column mb-2">
-          <li class="nav-item">
-            <%= active_link_to 'Users', users_path, active: :exclusive, class: 'nav-link' %>
-          </li>
-        </ul>
-      <% end %>
-    </div>
-  </nav>
-<% end %>
+    <% end %>
+  </div>
+</nav>
