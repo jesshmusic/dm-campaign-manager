@@ -13,9 +13,9 @@
 
   <%= form.input :name %>
   <%= form.input :hit_die %>
-  <%= form.input :proficiencies, as: :array %>
-  <%= form.input :saving_throws, as: :array %>
-  <%= form.input :proficiency_choices , as: :array%>
+  <%= form.input :proficiencies %>
+  <%= form.input :saving_throws %>
+  <%= form.input :proficiency_choices %>
   <%= form.association :spells %>
   <%= form.button :submit, class: 'btn btn-success' %>
   
