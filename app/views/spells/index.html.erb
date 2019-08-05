@@ -41,4 +41,4 @@
 
 <br>
 
-<%= link_to 'New Spell', new_spell_path if policy(Spell).new? %>
+<%= link_to 'New Spell', new_spell_path, class: "btn btn-lg btn-success" if policy(Spell).new? %>

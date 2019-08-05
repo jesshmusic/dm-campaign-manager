@@ -13,7 +13,7 @@
   <thead>
     <tr>
       <th>Name</th>
-      <th>Description</th>
+      <th>Players</th>
       <th>World</th>
       <th>Dungeon Master</th>
       <th></th>
@@ -24,7 +24,7 @@
     <% @campaigns.each do |campaign| %>
       <tr>
         <td><%= campaign.name %></td>
-        <td><%= campaign.description %></td>
+        <td>0 - Coming Soon</td>
         <td><%= campaign.world %></td>
         <td><%= campaign.user.name %></td>
         <td>
@@ -36,4 +36,4 @@
     <% end %>
   </tbody>
 </table>
-<%= link_to 'New Campaign', new_campaign_path if policy(Campaign).new? %>
+<%= link_to 'New Campaign', new_campaign_path, class: "btn btn-lg btn-success" if policy(Campaign).new? %>

@@ -40,4 +40,4 @@
 
 <br>
 
-<%= link_to 'New Magic Item', new_magic_item_path if policy(MagicItem).new?  %>
+<%= link_to 'New Magic Item', new_magic_item_path, class: "btn btn-lg btn-success" if policy(MagicItem).new?  %>
