@@ -1,4 +1,4 @@
-<%= bootstrap_form_for @dnd_class do |form| %>
+<%= simple_form_for @dnd_class do |form| %>
   <% if dnd_class.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(dnd_class.errors.count, "error") %> prohibited this dnd_class from being saved:</h2>
@@ -11,13 +11,22 @@
     </div>
   <% end %>
 
-  <%= form.text_field :name %>
-  <%= form.number_field :hit_die %>
-  <%= form.text_field :proficiencies %>
-  <%= form.text_field :saving_throws %>
-  <%= form.text_field :proficiency_choices %>
-
-  <div class="actions">
-    <%= form.submit %>
-  </div>
+  <%= form.input :name %>
+  <%= form.input :hit_die %>
+  <%= form.input :proficiencies, as: :array %>
+  <%= form.input :saving_throws, as: :array %>
+  <%= form.input :proficiency_choices , as: :array%>
+  <%= form.association :spells %>
+  <%= form.button :submit, class: 'btn btn-success' %>
+  
 <% end %>
+
+
+<script>
+  $(document).ready(function() {
+    $( "#dnd_class_spell_ids" ).select2({
+      tags: true,
+      theme: "bootstrap"
+    });
+  });
+</script>

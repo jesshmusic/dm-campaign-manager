@@ -1,15 +1,12 @@
 <h2>Log in</h2>
 
-<%= bootstrap_form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-  <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
-  <%= f.password_field :password, autocomplete: "current-password" %>
-
-  <% if devise_mapping.rememberable? %>
-    <%= f.check_box :remember_me %>
-  <% end %>
+<%= simple_form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+  <%= f.input :email, autofocus: true, autocomplete: "email" %>
+  <%= f.input :password, autocomplete: "current-password" %>
+  <%= f.input :remember_me, :as => :boolean if devise_mapping.rememberable?  %>
 
   <div class="actions">
-    <%= f.submit "Log in" %>
+    <%= f.submit "Log in", class: "btn btn-success" %>
   </div>
 <% end %>
 

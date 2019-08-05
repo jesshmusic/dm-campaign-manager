@@ -25,9 +25,7 @@
       <tr>
         <td><%= spell.name %></td>
         <td>
-          <% spell.dnd_classes.each_with_index do |dnd_class, index| %>
-            <%= dnd_class.name %><% if index != spell.dnd_classes.count - 1 %>,<% end %>
-          <% end %>
+          <%= spell.dnd_classes.where(user_id: nil).or(spell.dnd_classes.where(user_id: current_user.id)).map {|spell_class| spell_class.name}.join(', ') %>
         </td>
         <td><%= spell.school %></td>
         <td><%= spell.spell_level %></td>

@@ -32,9 +32,15 @@ class DndClassesController < ApplicationController
   def create
     @dnd_class = DndClass.new(dnd_class_params)
     authorize @dnd_class
+    dnd_class_slug = @dnd_class.name.parameterize.truncate(80, omission: '')
+    dnd_class_slug = "#{@current_user.username}_#{dnd_class_slug}" if @current_user.dungeon_master?
+    @dnd_class.slug = DndClass.exists?(slug: dnd_class_slug) ? "#{dnd_class_slug}_#{@dnd_class.id}" : dnd_class_slug
 
     respond_to do |format|
-      if @dnd_class.save
+      if @current_user.dungeon_master? && @current_user.dnd_classes << @dnd_class
+        format.html { redirect_to dnd_class_url(slug: @dnd_class.slug), notice: 'Dnd class was successfully created.' }
+        format.json { render :show, status: :created, location: @dnd_class }
+      elsif @dnd_class.save
         format.html { redirect_to dnd_class_url(slug: @dnd_class.slug), notice: 'Dnd class was successfully created.' }
         format.json { render :show, status: :created, location: @dnd_class }
       else
@@ -78,6 +84,6 @@ class DndClassesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def dnd_class_params
-      params.require(:dnd_class).permit(:name, :hit_die, :api_url, :proficiencies, :saving_throws, :proficiency_choices)
+      params.require(:dnd_class).permit(:name, :hit_die, :api_url, proficiencies: [], saving_throws: [], proficiency_choices: [], spell_ids: [])
     end
 end

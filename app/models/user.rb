@@ -40,8 +40,13 @@ class User < ApplicationRecord
   enum role: %I[player dungeon_master admin]
   after_initialize :set_default_role, if: :new_record?
 
-  # User Favorites
+  # User Associations
   has_many :campaigns, dependent: :delete_all
+  has_many :dnd_classes, dependent: :delete_all
+  has_many :items, dependent: :delete_all
+  has_many :magic_items, dependent: :delete_all
+  has_many :monsters, dependent: :delete_all
+  has_many :spells, dependent: :delete_all
 
   def set_default_role
     self.role ||= :player

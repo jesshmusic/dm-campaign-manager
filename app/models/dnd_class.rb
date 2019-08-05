@@ -25,6 +25,10 @@
 #
 
 class DndClass < ApplicationRecord
+  before_save :remove_blank_proficiencies
+  before_save :remove_saving_throws
+  before_save :remove_proficiency_choices
+
   has_many :spell_classes
   has_many :spells, through: :spell_classes
 
@@ -39,5 +43,17 @@ class DndClass < ApplicationRecord
                   
   def to_param
     slug
+  end
+
+  def remove_blank_proficiencies
+    proficiencies.reject!(&:blank?)
+  end
+
+  def remove_saving_throws
+    proficiencies.reject!(&:blank?)
+  end
+
+  def remove_proficiency_choices
+    proficiency_choices.reject!(&:blank?)
   end
 end

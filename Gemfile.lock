@@ -1,12 +1,3 @@
-GIT
-  remote: https://github.com/bootstrap-ruby/bootstrap_form.git
-  revision: 0b9c609d52d3b79190ad28201f407db687a0d2fb
-  branch: master
-  specs:
-    bootstrap_form (4.2.0)
-      actionpack (>= 5.0)
-      activemodel (>= 5.0)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -273,6 +264,9 @@ GEM
     selenium-webdriver (3.142.3)
       childprocess (>= 0.5, < 2.0)
       rubyzip (~> 1.2, >= 1.2.2)
+    simple_form (4.1.0)
+      actionpack (>= 5.0)
+      activemodel (>= 5.0)
     simplecov (0.17.0)
       docile (~> 1.1)
       json (>= 1.8, < 3)
@@ -326,7 +320,6 @@ DEPENDENCIES
   annotate
   bootsnap (>= 1.1.0)
   bootstrap
-  bootstrap_form!
   byebug
   capybara (>= 2.15)
   chromedriver-helper
@@ -355,6 +348,7 @@ DEPENDENCIES
   scss_lint
   select2-rails
   selenium-webdriver
+  simple_form
   simplecov
   spring
   spring-watcher-listen (~> 2.0.0)
