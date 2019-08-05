@@ -32,6 +32,8 @@ class DndClass < ApplicationRecord
   has_many :spells, through: :spell_classes
 
   belongs_to :user, optional: true
+  
+  accepts_nested_attributes_for :prof_choices
 
   include PgSearch
   

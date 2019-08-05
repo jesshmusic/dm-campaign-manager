@@ -25,6 +25,7 @@ gem 'webpacker'
 # gem 'mini_racer', platforms: :ruby
 
 gem 'bootstrap'
+gem 'cocoon'
 gem 'simple_form'
 # Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails', '~> 4.2'

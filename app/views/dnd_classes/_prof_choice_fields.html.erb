@@ -1,0 +1,7 @@
+<div class="nested-fields px-4">
+  <%= f.input :name %>
+  <%= f.input :prof_choice_type %>
+  <%= f.input :num_choices %>
+  <%= f.association :profs, input_html: { class: "prof_choice_profs" } %>
+  <%= link_to_remove_association "Remove", f %>
+</div>

@@ -7,8 +7,10 @@ class DndClassesController < ApplicationController
   def index
     if params[:search].present?
       @dnd_classes = DndClass.search_for(params[:search])
+    elsif current_user.admin?
+      DndClass.all
     else
-      @dnd_classes = DndClass.all
+      @dnd_classes = DndClass.where(user_id: nil).or(DndClass.where(user_id: current_user.id))
     end
   end
 
@@ -21,10 +23,16 @@ class DndClassesController < ApplicationController
   def new
     @dnd_class = DndClass.new
     authorize @dnd_class
+    @dnd_class.prof_choices.build
   end
 
   # GET /dnd_classes/1/edit
   def edit
+    # if @dnd_class.prof_choices.count == 0
+    #   @dnd_class.prof_choices.build
+    # else
+    #   puts @dnd_class.prof_choices.to_json
+    # end
   end
 
   # POST /dnd_classes
@@ -33,9 +41,9 @@ class DndClassesController < ApplicationController
     @dnd_class = DndClass.new(dnd_class_params)
     authorize @dnd_class
     dnd_class_slug = @dnd_class.name.parameterize.truncate(80, omission: '')
-    dnd_class_slug = "#{@current_user.username}_#{dnd_class_slug}" if @current_user.dungeon_master?
+    dnd_class_slug = "#{current_user.username}_#{dnd_class_slug}" if current_user.dungeon_master?
     @dnd_class.slug = DndClass.exists?(slug: dnd_class_slug) ? "#{dnd_class_slug}_#{@dnd_class.id}" : dnd_class_slug
-
+    
     respond_to do |format|
       if @current_user.dungeon_master? && @current_user.dnd_classes << @dnd_class
         format.html { redirect_to dnd_class_url(slug: @dnd_class.slug), notice: 'Dnd class was successfully created.' }
@@ -84,6 +92,20 @@ class DndClassesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def dnd_class_params
-      params.require(:dnd_class).permit(:name, :hit_die, :api_url, proficiencies: [], saving_throws: [], proficiency_choices: [], spell_ids: [])
+      params.require(:dnd_class).permit(
+        :name,
+        :hit_die,
+        :api_url,
+        prof_ids: [],
+        spell_ids: [],
+        prof_choices_attributes: [
+          :id,
+          :name,
+          :num_choices,
+          :prof_choice_type,
+          :_destroy,
+          prof_ids: []
+        ]
+      )
     end
 end
