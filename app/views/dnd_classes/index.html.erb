@@ -14,7 +14,6 @@
     <tr>
       <th>Name</th>
       <th>Hit die</th>
-      <th>Saving throws</th>
       <th></th>
     </tr>
   </thead>
@@ -24,7 +23,6 @@
       <tr>
         <td><%= dnd_class.name %></td>
         <td>d<%= dnd_class.hit_die %></td>
-        <td><%= dnd_class.saving_throws.map {|str| "#{str}"}.join(', ') %></td>
         <td>
           <%= link_to 'Show', dnd_class, class: "btn btn-sm btn-primary" %>
           <%= link_to 'Edit', edit_dnd_class_path(dnd_class), class: "btn btn-sm btn-success" if policy(dnd_class).edit? %>

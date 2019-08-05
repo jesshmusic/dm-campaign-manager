@@ -2,6 +2,46 @@ namespace :srd do
   dnd_api_url = 'http://www.dnd5eapi.co/api/'
   dnd_open5e_url = 'https://api-beta.open5e.com/'
   
+  task import_proficiencies: :environment do
+    uri = URI("#{dnd_api_url}proficiencies")
+    response = Net::HTTP.get(uri)
+    result = JSON.parse response, symbolize_names: true
+    count = 0
+    result[:results].each do |prof|
+      prof_uri = URI(prof[:url])
+      prof_response = Net::HTTP.get(prof_uri)
+      prof_result = JSON.parse prof_response, symbolize_names: true
+      Prof.find_or_create_by(name: prof[:name]) do |new_prof|
+        new_prof.prof_type = prof_result[:type]
+        prof_result[:classes].each do  |dnd_class|
+          prof_class = DndClass.find_by(name: dnd_class[:name])
+          prof_class.profs << new_prof
+        end
+      end
+      count += 1
+    end
+    puts "#{count} D&D classes imported."
+  end
+  
+  task set_prof_choices_for_class: :environment do
+    DndClass.where(user_id: nil).each do |dnd_class|
+      class_uri = URI(dnd_class.api_url)
+      class_response = Net::HTTP.get(class_uri)
+      class_result = JSON.parse class_response, symbolize_names: true
+      class_result[:proficiency_choices].each_with_index do |prof_choice_block, index|
+        prof_choice = ProfChoice.find_or_create_by(name: "#{dnd_class.name} #{index}") do |new_prof_choice|
+          new_prof_choice.num_choices = prof_choice_block[:choose]
+          new_prof_choice.prof_choice_type = prof_choice_block[:type]
+          prof_choice_block[:from].each do |prof|
+            new_prof = Prof.find_by(name: prof[:name])
+            new_prof_choice.profs << new_prof
+          end
+        end
+        dnd_class.prof_choices << prof_choice
+      end
+    end
+  end
+  
   task import_classes: :environment do
     uri = URI("#{dnd_api_url}classes")
     response = Net::HTTP.get(uri)
@@ -14,25 +54,21 @@ namespace :srd do
       DndClass.find_or_create_by(name: dnd_class[:name]) do |new_class|
         new_class.api_url = class_result[:url]
         new_class.hit_die = class_result[:hit_die]
-        prof_choices_array = Array.new
-        class_result[:proficiency_choices].each do |prof_choice_block|
-          choices_array = []
-          prof_choice_block[:from].each do |prof|
-            choices_array << prof[:name]
+        new_class_slug = dnd_class[:name].parameterize.truncate(80, omission: '')
+        new_class.slug = DndClass.exists?(slug: new_class_slug) ? "#{new_class_slug}_#{new_class.id}" : new_class_slug
+        class_result[:proficiency_choices].each_with_index do |prof_choice_block, index|
+          new_class.prof_choices << ProfChoice.find_or_create_by(name: "#{new_class.name} #{index}") do |new_prof_choice|
+            new_prof_choice.num_choices = prof_choice_block[:choose]
+            new_prof_choice.prof_choice_type = prof_choice_block[:type]
+            prof_choice_block[:from].each do |prof|
+              new_prof = Prof.find_by(name: prof[:name])
+              new_prof_choice.profs << new_prof
+            end
           end
-          prof_choices = {
-            from: choices_array,
-            type: prof_choice_block[:type],
-            number_to_choose: prof_choice_block[:choose]
-          }
-          prof_choices_array << prof_choices
         end
-        new_class.proficiency_choices = prof_choices_array
         class_result[:proficiencies].each do |prof|
-          new_class.proficiencies << prof[:name]
-        end
-        class_result[:saving_throws].each do |saving_throw|
-          new_class.saving_throws << saving_throw[:name]
+          new_prof = Prof.find_by(name: prof[:name])
+          new_class.profs << new_prof
         end
       end
       count += 1
@@ -79,6 +115,9 @@ namespace :srd do
           new_monster.monster_type = monster[:type]
           new_monster.wisdom = monster[:wisdom]
           new_monster.wisdom_save = monster[:wisdom_save]
+          
+          monster_slug = monster[:name].parameterize.truncate(80, omission: '')
+          new_monster.slug = Monster.exists?(slug: monster_slug) ? "#{monster_slug}_#{new_monster.id}" : monster_slug
           
           if monster[:actions].kind_of?(Array)
             monster[:actions].each do |monster_action|
@@ -166,6 +205,10 @@ namespace :srd do
           dnd_class = DndClass.find_by(name: dnd_class_name[:name])
           new_spell.dnd_classes << dnd_class if dnd_class
         end
+        
+        spell_slug = spell[:name].parameterize.truncate(80, omission: '')
+        new_spell.slug = Spell.exists?(slug: spell_slug) ? "#{spell_slug}_#{new_spell.id}" : spell_slug
+        
       end
       count += 1
     end
@@ -184,6 +227,10 @@ namespace :srd do
           new_magic_item.description = magic_item[:desc]
           new_magic_item.magic_item_type = magic_item[:type]
           new_magic_item.requires_attunement = magic_item[:requires_attunement]
+          
+          magic_item_slug = magic_item[:name].parameterize.truncate(80, omission: '')
+          new_magic_item.slug = MagicItem.exists?(slug: magic_item_slug) ? "#{magic_item_slug}_#{new_magic_item.id}" : magic_item_slug
+          
         end
         count += 1
       end
@@ -224,7 +271,10 @@ namespace :srd do
           new_item.weapon_damage_dice_value = item_result["damage"]["dice_value"]
           new_item.weapon_range_normal = item_result["range"]["normal"]
           new_item.weapon_range_long = item_result["range"]["long"]
-      
+          
+          item_slug = item[:name].parameterize.truncate(80, omission: '')
+          new_item.slug = Item.exists?(slug: item_slug) ? "#{item_slug}_#{new_item.id}" : item_slug
+          
           item_result["properties"].each do |item_result_prop|
             new_item.weapon_properties << item_result_prop["name"]
           end

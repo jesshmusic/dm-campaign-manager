@@ -13,9 +13,8 @@
 
   <%= form.input :name %>
   <%= form.input :hit_die %>
-  <%= form.input :proficiencies %>
-  <%= form.input :saving_throws %>
-  <%= form.input :proficiency_choices %>
+  <%= form.association :profs %>
+  <%= form.association :prof_choices %>
   <%= form.association :spells %>
   <%= form.button :submit, class: 'btn btn-success' %>
   
@@ -25,6 +24,14 @@
 <script>
   $(document).ready(function() {
     $( "#dnd_class_spell_ids" ).select2({
+      tags: true,
+      theme: "bootstrap"
+    });
+    $( "#dnd_class_prof_ids" ).select2({
+      tags: true,
+      theme: "bootstrap"
+    });
+    $( "#dnd_class_prof_choice_ids" ).select2({
       tags: true,
       theme: "bootstrap"
     });

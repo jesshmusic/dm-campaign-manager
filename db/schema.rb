@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_04_193047) do
+ActiveRecord::Schema.define(version: 2019_08_05_112324) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -53,9 +53,6 @@ ActiveRecord::Schema.define(version: 2019_08_04_193047) do
     t.string "api_url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "proficiencies", default: [], array: true
-    t.string "saving_throws", default: [], array: true
-    t.jsonb "proficiency_choices", default: [], array: true
     t.bigint "user_id"
     t.string "slug"
     t.index ["slug"], name: "index_dnd_classes_on_slug", unique: true
@@ -190,6 +187,50 @@ ActiveRecord::Schema.define(version: 2019_08_04_193047) do
     t.string "slug"
     t.index ["slug"], name: "index_monsters_on_slug", unique: true
     t.index ["user_id"], name: "index_monsters_on_user_id"
+  end
+
+  create_table "prof_choice_classes", force: :cascade do |t|
+    t.bigint "dnd_class_id"
+    t.bigint "prof_choice_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["dnd_class_id"], name: "index_prof_choice_classes_on_dnd_class_id"
+    t.index ["prof_choice_id"], name: "index_prof_choice_classes_on_prof_choice_id"
+  end
+
+  create_table "prof_choice_profs", force: :cascade do |t|
+    t.bigint "prof_id"
+    t.bigint "prof_choice_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["prof_choice_id"], name: "index_prof_choice_profs_on_prof_choice_id"
+    t.index ["prof_id"], name: "index_prof_choice_profs_on_prof_id"
+  end
+
+  create_table "prof_choices", force: :cascade do |t|
+    t.integer "num_choices"
+    t.string "prof_choice_type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "name"
+    t.index ["name"], name: "index_prof_choices_on_name", unique: true
+  end
+
+  create_table "prof_classes", force: :cascade do |t|
+    t.bigint "prof_id"
+    t.bigint "dnd_class_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["dnd_class_id"], name: "index_prof_classes_on_dnd_class_id"
+    t.index ["prof_id"], name: "index_prof_classes_on_prof_id"
+  end
+
+  create_table "profs", force: :cascade do |t|
+    t.string "name"
+    t.string "prof_type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_profs_on_name", unique: true
   end
 
   create_table "spell_classes", force: :cascade do |t|

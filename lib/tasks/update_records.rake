@@ -3,6 +3,13 @@ namespace :update do
   task spells: :environment do
     Spell.find_each do |spell|
       spell.spell_level = spell.get_spell_level_text
+      spell_uri = URI(spell.api_url)
+      spell_response = Net::HTTP.get(spell_uri)
+      spell_result = JSON.parse spell_response, symbolize_names: true
+      spell_result[:classes].each do |dnd_class_name|
+        dnd_class = DndClass.find_by(name: dnd_class_name[:name])
+        spell.dnd_classes << dnd_class if dnd_class
+      end
       spell.save!
     end
   end

@@ -11,26 +11,23 @@
 <p>
   <strong>Hit die:</strong> d<%= @dnd_class.hit_die %>
 </p>
-<p>
-  <strong>Saving throws:</strong>
-  <%= @dnd_class.saving_throws.map {|str| "#{str}"}.join(', ') %>
-</p>
 
 <h4>Proficiencies</h4>
 <ul class="list-group list-group-flush py-4">
-  <% @dnd_class.proficiencies.each do |proficiency| %>
-    <li class="list-group-item"><%= proficiency %></li>
+  <% @dnd_class.profs.each do |proficiency| %>
+    <li class="list-group-item"><strong><%= proficiency.prof_type %></strong> <%= proficiency.name %></li>
   <% end %>
 </ul>
 
 <h4>Available Proficiencies</h4>
 <ul class="list-group list-group-flush py-4">
-  <% @dnd_class.proficiency_choices.each do |proficiency_choice| %>
+  <% @dnd_class.prof_choices.each do |proficiency_choice| %>
     <li class="list-group-item">
-      <strong>Choose <%= proficiency_choice["number_to_choose"] %> from</strong>
+      <h6><%= proficiency_choice.name %></h6>
+      <strong>Choose <%= proficiency_choice.num_choices %> from</strong>
       <ul class="list-group list-group-flush">
-        <% proficiency_choice["from"].each do |proficiency| %>
-          <li class="list-group-item"><%= proficiency %></li>
+        <% proficiency_choice.profs.each do |proficiency| %>
+          <li class="list-group-item"><strong><%= proficiency.prof_type %></strong> <%= proficiency.name %></li>
         <% end %>
       </ul>
     </li>

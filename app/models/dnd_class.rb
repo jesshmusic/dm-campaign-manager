@@ -2,17 +2,14 @@
 #
 # Table name: dnd_classes
 #
-#  id                  :bigint           not null, primary key
-#  api_url             :string
-#  hit_die             :integer
-#  name                :string
-#  proficiencies       :string           default([]), is an Array
-#  proficiency_choices :jsonb            is an Array
-#  saving_throws       :string           default([]), is an Array
-#  slug                :string
-#  created_at          :datetime         not null
-#  updated_at          :datetime         not null
-#  user_id             :bigint
+#  id         :bigint           not null, primary key
+#  api_url    :string
+#  hit_die    :integer
+#  name       :string
+#  slug       :string
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#  user_id    :bigint
 #
 # Indexes
 #
@@ -25,11 +22,13 @@
 #
 
 class DndClass < ApplicationRecord
-  before_save :remove_blank_proficiencies
-  before_save :remove_saving_throws
-  before_save :remove_proficiency_choices
+  has_many :prof_choice_classes, dependent: :delete_all
+  has_many :prof_choices, through: :prof_choice_classes
 
-  has_many :spell_classes
+  has_many :prof_classes, dependent: :delete_all
+  has_many :profs, through: :prof_classes
+
+  has_many :spell_classes, dependent: :delete_all
   has_many :spells, through: :spell_classes
 
   belongs_to :user, optional: true
@@ -43,17 +42,5 @@ class DndClass < ApplicationRecord
                   
   def to_param
     slug
-  end
-
-  def remove_blank_proficiencies
-    proficiencies.reject!(&:blank?)
-  end
-
-  def remove_saving_throws
-    proficiencies.reject!(&:blank?)
-  end
-
-  def remove_proficiency_choices
-    proficiency_choices.reject!(&:blank?)
   end
 end

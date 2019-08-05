@@ -2,17 +2,14 @@
 #
 # Table name: dnd_classes
 #
-#  id                  :bigint           not null, primary key
-#  api_url             :string
-#  hit_die             :integer
-#  name                :string
-#  proficiencies       :string           default([]), is an Array
-#  proficiency_choices :jsonb            is an Array
-#  saving_throws       :string           default([]), is an Array
-#  slug                :string
-#  created_at          :datetime         not null
-#  updated_at          :datetime         not null
-#  user_id             :bigint
+#  id         :bigint           not null, primary key
+#  api_url    :string
+#  hit_die    :integer
+#  name       :string
+#  slug       :string
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#  user_id    :bigint
 #
 # Indexes
 #
