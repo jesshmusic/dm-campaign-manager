@@ -1,0 +1,15 @@
+<% title "New Treasure" %>
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item"><%= link_to 'Dashboard', dashboard_path %></li>
+    <li class="breadcrumb-item"><%= link_to 'Treasures', treasures_path %></li>
+    <li class="breadcrumb-item active" aria-current="page">New Treasure</li>
+  </ol>
+</nav>
+<h1>New Treasure</h1>
+<%= render 'form', treasure: @treasure %>
+<div class="admin__footer">
+  <%= link_to 'Back', treasures_path, class: "btn btn-primary" %>
+  <%= link_to 'Dashboard', dashboard_path, class: "btn btn-info" %>
+</div>

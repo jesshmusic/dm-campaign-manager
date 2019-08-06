@@ -1,0 +1,43 @@
+<% title "Treasure: " + @treasure.name %>
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item"><%= link_to 'Dashboard', dashboard_path %></li>
+    <li class="breadcrumb-item"><%= link_to 'Treasures', treasures_path %></li>
+    <li class="breadcrumb-item active" aria-current="page"><%= @treasure.name %></li>
+  </ol>
+</nav>
+<h1>Treasure: <%= @treasure.name %></h1>
+<h2>Description:</h2>
+<%= markdown(@treasure.description) %>
+<p>
+  <strong>Copper pieces:</strong> <%= @treasure.copper_pieces %>
+</p>
+<p>
+  <strong>Silver pieces:</strong> <%= @treasure.silver_pieces %>
+</p>
+<p>
+  <strong>Gold pieces:</strong> <%= @treasure.gold_pieces %>
+</p>
+<p>
+  <strong>Platinum pieces:</strong> <%= @treasure.platinum_pieces %>
+</p>
+
+<h2>Equipment</h2>
+<ul class="list-group">
+  <% @treasure.items.each do |item| %>
+    <li class="list-group-item"><strong><%= item.name %></strong> - quantity: <%= item.quantity %></li>
+  <% end %>
+</ul>
+
+<h2>Magic Items</h2>
+<ul class="list-group">
+  <% @treasure.magic_items.each do |magic_item| %>
+    <li class="list-group-item"><strong><%= magic_item.name %></strong></li>
+  <% end %>
+</ul>
+
+<div class="d-flex align-items-center justify-content-start py-3">
+  <%= link_to 'Edit', edit_treasure_path(@treasure), class: "btn btn-success" if policy(@treasure).edit? %>
+  <%= link_to 'Back', treasures_path, class: "btn btn-info" %>
+</div>

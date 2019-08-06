@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_05_193541) do
+ActiveRecord::Schema.define(version: 2019_08_06_195053) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -264,6 +264,39 @@ ActiveRecord::Schema.define(version: 2019_08_05_193541) do
     t.string "slug"
     t.index ["slug"], name: "index_spells_on_slug", unique: true
     t.index ["user_id"], name: "index_spells_on_user_id"
+  end
+
+  create_table "treasure_items", force: :cascade do |t|
+    t.bigint "treasure_id"
+    t.bigint "item_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["item_id"], name: "index_treasure_items_on_item_id"
+    t.index ["treasure_id"], name: "index_treasure_items_on_treasure_id"
+  end
+
+  create_table "treasure_magic_items", force: :cascade do |t|
+    t.bigint "treasure_id"
+    t.bigint "magic_item_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["magic_item_id"], name: "index_treasure_magic_items_on_magic_item_id"
+    t.index ["treasure_id"], name: "index_treasure_magic_items_on_treasure_id"
+  end
+
+  create_table "treasures", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.integer "copper_pieces"
+    t.integer "silver_pieces"
+    t.integer "gold_pieces"
+    t.integer "platinum_pieces"
+    t.bigint "user_id"
+    t.bigint "monster_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["monster_id"], name: "index_treasures_on_monster_id"
+    t.index ["user_id"], name: "index_treasures_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|

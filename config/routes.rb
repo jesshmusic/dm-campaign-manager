@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :treasures
   resources :dnd_classes, param: :slug
   resources :items, param: :slug
   resources :magic_items, param: :slug

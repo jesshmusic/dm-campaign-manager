@@ -1,0 +1,41 @@
+
+<%= simple_form_for @treasure, validate: true do |form| %>
+  <%= form.error_notification %>
+  <%= form.error_notification message: form.object.errors[:base].to_sentence if form.object.errors[:base].present? %>
+
+  <div class="form-inputs">
+    <%= form.input :name %>
+    <%= form.input :description %>
+    <%= form.input :copper_pieces %>
+    <%= form.input :silver_pieces %>
+    <%= form.input :gold_pieces %>
+    <%= form.input :platinum_pieces %>
+    
+    <%= form.hidden_field :user_id, value: form.object.user_id || current_user.id %>
+
+    <%= form.association :items %>
+    <%= form.association :magic_items %>
+  </div>
+
+  <div class="form-actions">
+    <%= form.button :submit, class: 'btn btn-success' %>
+  </div>
+<% end %>
+
+<script>
+  $(document).ready(function() {
+    function convertToSlug(text) {
+      return text.toLowerCase().replace(/[^\w ]+/g,'').replace(/ +/g,'_');
+    }
+    $( "#treasure_item_ids" ).select2({
+      theme: "bootstrap"
+    });
+    $( "#treasure_magic_item_ids" ).select2({
+      theme: "bootstrap"
+    });
+    $( "#treasure_name" ).on('change', function(event) {
+      var slugInput = $('treasure_slug');
+      slugInput.val(convertToSlug($( "#treasure_name" ).val()));
+    });
+  });
+</script>
