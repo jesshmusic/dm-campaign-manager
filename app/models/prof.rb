@@ -14,4 +14,5 @@
 #
 
 class Prof < ApplicationRecord
+  validates :name, presence: true
 end

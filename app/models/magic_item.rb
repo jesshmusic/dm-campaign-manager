@@ -24,7 +24,9 @@
 #
 
 class MagicItem < ApplicationRecord
-  include PgSearch
+  validates :name, :magic_item_type, :rarity, presence: true
+
+  include PgSearch::Model
 
   belongs_to :user, optional: true
   

@@ -27,6 +27,9 @@ gem 'webpacker'
 gem 'bootstrap'
 gem 'cocoon'
 gem 'simple_form'
+gem 'client_side_validations'
+gem 'client_side_validations-simple_form'
+
 # Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails', '~> 4.2'
 gem 'jquery-rails'

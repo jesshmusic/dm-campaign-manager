@@ -4,9 +4,9 @@
 #
 #  id          :bigint           not null, primary key
 #  description :text
-#  name        :text
+#  name        :string
 #  slug        :string
-#  world       :text
+#  world       :string
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #  user_id     :bigint

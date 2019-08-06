@@ -1,4 +1,4 @@
-<%= bootstrap_form_for @campaign do |form| %>
+<%= simple_form_for @campaign, validate: true do |form| %>
   <% if campaign.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(campaign.errors.count, "error") %> prohibited this campaign from being saved:</h2>
@@ -21,16 +21,8 @@
     <% end %>
   </h4>
 
-  <%= form.form_group do %>
-    <%= form.text_field :name, required: true %>
-    <%= form.text_field :world, required: true %>
-  <% end %>
-  
-  <%= form.form_group do %>
-    <%= form.text_area :description %>
-  <% end %>
-
-  <div class="actions">
-    <%= form.submit %>
-  </div>
+  <%= form.input :name, validate: { presence: true, uniqueness: false } %>
+  <%= form.input :world, validate: { presence: true, uniqueness: false } %>
+  <%= form.input :description %>
+  <%= form.button :submit, class: 'btn btn-success' %>
 <% end %>

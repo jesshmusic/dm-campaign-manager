@@ -22,6 +22,9 @@
 #
 
 class DndClass < ApplicationRecord
+  validates :name, :hit_die, presence: true
+  validates_associated :prof_choices
+
   has_many :prof_choice_classes, dependent: :delete_all
   has_many :prof_choices, through: :prof_choice_classes
 
@@ -35,7 +38,7 @@ class DndClass < ApplicationRecord
   
   accepts_nested_attributes_for :prof_choices
 
-  include PgSearch
+  include PgSearch::Model
   
   # PgSearch
   pg_search_scope :search_for,

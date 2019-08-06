@@ -4,9 +4,9 @@
 #
 #  id          :bigint           not null, primary key
 #  description :text
-#  name        :text
+#  name        :string
 #  slug        :string
-#  world       :text
+#  world       :string
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #  user_id     :bigint
@@ -18,9 +18,11 @@
 #
 
 class Campaign < ApplicationRecord
+  validates :name, :world, presence: true
+
   belongs_to :user
   
-  include PgSearch
+  include PgSearch::Model
   
   # PgSearch
   pg_search_scope :search_for,

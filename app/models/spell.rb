@@ -34,12 +34,14 @@
 #
 
 class Spell < ApplicationRecord
+  validates :name, :level, :casting_time, :duration, :range, :school, presence: true
+
   has_many :spell_classes
   has_many :dnd_classes, through: :spell_classes
 
   belongs_to :user, optional: true
   
-  include PgSearch
+  include PgSearch::Model
   
   def get_spell_level_text
     if level <= 0

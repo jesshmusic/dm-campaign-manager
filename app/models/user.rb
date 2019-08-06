@@ -36,7 +36,7 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable,
          :confirmable, :omniauthable
-  include PgSearch
+  include PgSearch::Model
   enum role: %I[player dungeon_master admin]
   after_initialize :set_default_role, if: :new_record?
 

@@ -17,4 +17,6 @@
 //= require select2-full
 //= require cocoon
 //= require turbolinks
+//= require rails.validations
+//= require rails.validations.simple_form.bootstrap4
 //= require_tree .

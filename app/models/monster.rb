@@ -51,13 +51,17 @@
 #
 
 class Monster < ApplicationRecord
+  
+  validates :name, :alignment, :armor_class, :challenge_rating, :charisma, :constitution,
+    :dexterity, :hit_dice, :hit_points, :intelligence, :monster_type, :size, :strength, :wisdom, presence: true
+
   has_many :monster_actions, dependent: :delete_all
   has_many :monster_legendary_actions, dependent: :delete_all
   has_many :monster_special_abilities, dependent: :delete_all
 
   belongs_to :user, optional: true
   
-  include PgSearch
+  include PgSearch::Model
   
   # PgSearch
   pg_search_scope :search_for,
