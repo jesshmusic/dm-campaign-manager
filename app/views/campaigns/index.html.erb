@@ -13,8 +13,8 @@
   <thead>
     <tr>
       <th>Name</th>
-      <th>Players</th>
-      <th>World</th>
+      <th class="d-none d-lg-table-cell">Players</th>
+      <th class="d-none d-lg-table-cell">World</th>
       <th>Dungeon Master</th>
       <th></th>
     </tr>
@@ -24,8 +24,8 @@
     <% @campaigns.each do |campaign| %>
       <tr>
         <td><%= campaign.name %></td>
-        <td>0 - Coming Soon</td>
-        <td><%= campaign.world %></td>
+        <td class="d-none d-lg-table-cell">0 - Coming Soon</td>
+        <td class="d-none d-lg-table-cell"><%= campaign.world %></td>
         <td><%= campaign.user.name %></td>
         <td>
           <%= link_to 'Show', campaign, class: "btn btn-sm btn-primary" %>

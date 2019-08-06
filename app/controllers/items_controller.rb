@@ -8,7 +8,7 @@ class ItemsController < ApplicationController
     if params[:search].present?
       @pagy, @items = pagy(Item.search_for(params[:search]))
     else
-      @pagy, @items = pagy(Item.all.order('category ASC, sub_category ASC, name ASC'))
+      @pagy, @items = pagy(Item.where(user_id: nil).or(Item.where(user_id: current_user.id)).order('category ASC, sub_category ASC, name ASC'))
     end
   end
 

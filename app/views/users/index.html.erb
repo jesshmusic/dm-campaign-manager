@@ -12,8 +12,8 @@
     <tr>
       <th>Name</th>
       <th>Role</th>
-      <th>Campaigns</th>
-      <th>Player Characters</th>
+      <th class="d-none d-lg-table-cell">Campaigns</th>
+      <th class="d-none d-lg-table-cell">Player Characters</th>
       <th></th>
     </tr>
   </thead>
@@ -23,8 +23,8 @@
       <tr>
         <td><%= user.name %></td>
         <td><%= user.role.capitalize %></td>
-        <td><%= user.campaigns.count %></td>
-        <td>0</td>
+        <td class="d-none d-lg-table-cell"><%= user.campaigns.count %></td>
+        <td class="d-none d-lg-table-cell">0</td>
         <td>
           <%= link_to 'Show', user, class: "btn btn-sm btn-primary" %>
           <%= link_to 'Edit', edit_user_path(user), class: "btn btn-sm btn-success" if policy(user).edit? %>

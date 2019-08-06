@@ -13,10 +13,9 @@
   <thead>
     <tr>
       <th>Name</th>
-      <th>Type</th>
-      <th>Description</th>
-      <th>Rarity</th>
-      <th>Requires attunement</th>
+      <th class="d-none d-lg-table-cell">Type</th>
+      <th class="d-none d-lg-table-cell">Rarity</th>
+      <th class="d-none d-lg-table-cell">Requires attunement</th>
       <th></th>
     </tr>
   </thead>
@@ -25,9 +24,9 @@
     <% @magic_items.each do |magic_item| %>
       <tr>
         <td><%= magic_item.name %></td>
-        <td><%= magic_item.magic_item_type %></td>
-        <td><%= magic_item.rarity %></td>
-        <td><%= magic_item.requires_attunement %></td>
+        <td class="d-none d-lg-table-cell"><%= magic_item.magic_item_type %></td>
+        <td class="d-none d-lg-table-cell"><%= magic_item.rarity %></td>
+        <td class="d-none d-lg-table-cell"><%= magic_item.requires_attunement %></td>
         <td>
           <%= link_to 'Show', magic_item, class: "btn btn-sm btn-primary" %>
           <%= link_to 'Edit', edit_magic_item_path(magic_item), class: "btn btn-sm btn-success" if policy(magic_item).edit? %>

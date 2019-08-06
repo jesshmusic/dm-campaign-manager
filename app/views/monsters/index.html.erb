@@ -13,13 +13,13 @@
   <thead>
     <tr>
       <th>Name</th>
-      <th>Size</th>
+      <th class="d-none d-lg-table-cell">Size</th>
       <th>Type</th>
-      <th>Subtype</th>
-      <th>Alignment</th>
-      <th>Armor class</th>
-      <th>Hit points</th>
-      <th>Hit dice</th>
+      <th class="d-none d-lg-table-cell">Subtype</th>
+      <th class="d-none d-lg-table-cell">Alignment</th>
+      <th class="d-none d-lg-table-cell">Armor class</th>
+      <th class="d-none d-lg-table-cell">Hit points</th>
+      <th class="d-none d-lg-table-cell">Hit dice</th>
       <th>Challenge rating</th>
       <th></th>
     </tr>
@@ -29,13 +29,13 @@
     <% @monsters.each do |monster| %>
       <tr>
         <td><%= monster.name %></td>
-        <td><%= monster.size %></td>
+        <td class="d-none d-lg-table-cell"><%= monster.size %></td>
         <td><%= monster.monster_type %></td>
-        <td><%= monster.monster_subtype %></td>
-        <td><%= monster.alignment %></td>
-        <td><%= monster.armor_class %></td>
-        <td><%= monster.hit_points %></td>
-        <td><%= monster.hit_dice %></td>
+        <td class="d-none d-lg-table-cell"><%= monster.monster_subtype %></td>
+        <td class="d-none d-lg-table-cell"><%= monster.alignment %></td>
+        <td class="d-none d-lg-table-cell"><%= monster.armor_class %></td>
+        <td class="d-none d-lg-table-cell"><%= monster.hit_points %></td>
+        <td class="d-none d-lg-table-cell"><%= monster.hit_dice %></td>
         <td><%= monster.challenge_rating %></td>
         <td>
           <%= link_to 'Show', monster, class: "btn btn-sm btn-primary" %>

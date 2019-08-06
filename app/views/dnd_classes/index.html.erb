@@ -13,7 +13,7 @@
   <thead>
     <tr>
       <th>Name</th>
-      <th>Hit die</th>
+      <th class="d-none d-lg-table-cell">Hit die</th>
       <th>Created By</th>
       <th></th>
     </tr>
@@ -23,7 +23,7 @@
     <% @dnd_classes.each do |dnd_class| %>
       <tr>
         <td><%= dnd_class.name %></td>
-        <td>d<%= dnd_class.hit_die %></td>
+        <td class="d-none d-lg-table-cell">d<%= dnd_class.hit_die %></td>
         <td><%= dnd_class.user ? dnd_class.user.name : "Default" %></td>
         <td>
           <%= link_to 'Show', dnd_class, class: "btn btn-sm btn-primary" %>
