@@ -1,14 +1,6 @@
-<%= simple_form_for @dnd_class do |form| %>
+<%= simple_form_for @dnd_class, validate: true do |form| %>
   <% if dnd_class.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(dnd_class.errors.count, "error") %> prohibited this dnd_class from being saved:</h2>
-
-      <ul>
-      <% dnd_class.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
-    </div>
+    <%= render 'shared/error-alert', record: dnd_class, record_type: "class" %>
   <% end %>
 
   <%= form.input :name %>

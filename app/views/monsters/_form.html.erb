@@ -1,14 +1,6 @@
 <%= bootstrap_form_for @monster do |form| %>
   <% if monster.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(monster.errors.count, "error") %> prohibited this monster from being saved:</h2>
-
-      <ul>
-      <% monster.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
-    </div>
+    <%= render 'shared/error-alert', record: monster, record_type: "monster" %>
   <% end %>
   
   <%= form.text_field :name %>

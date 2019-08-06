@@ -1,14 +1,6 @@
 <%= simple_form_for @campaign, validate: true do |form| %>
   <% if campaign.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(campaign.errors.count, "error") %> prohibited this campaign from being saved:</h2>
-
-      <ul>
-      <% campaign.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
-    </div>
+    <%= render 'shared/error-alert', record: campaign, record_type: "campaign" %>
   <% end %>
   <h4>
     <small>Owner:</small> <%= current_user.name %>
@@ -21,8 +13,8 @@
     <% end %>
   </h4>
 
-  <%= form.input :name, validate: { presence: true, uniqueness: false } %>
-  <%= form.input :world, validate: { presence: true, uniqueness: false } %>
+  <%= form.input :name %>
+  <%= form.input :world %>
   <%= form.input :description %>
   <%= form.button :submit, class: 'btn btn-success' %>
 <% end %>

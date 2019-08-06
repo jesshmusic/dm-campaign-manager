@@ -1,46 +1,92 @@
-<%= bootstrap_form_for @item do |form| %>
+<%= simple_form_for @item, validate: true do |form| %>
   <% if item.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(item.errors.count, "error") %> prohibited this item from being saved:</h2>
-
-      <ul>
-      <% item.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
-    </div>
+    <%= render 'shared/error-alert', record: item, record_type: "equipment" %>
   <% end %>
   
-  <%= form.text_field :name %>
-  <%= form.text_area :description %>
-  <%= form.number_field :weight %>
-  <%= form.text_field :cost_unit %>
-  <%= form.number_field :cost_value %>
-  <%= form.number_field :armor_class %>
-  <%= form.check_box :armor_dex_bonus %>
-  <%= form.number_field :armor_max_bonus %>
-  <%= form.check_box :armor_stealth_disadvantage %>
-  <%= form.number_field :armor_str_minimum %>
-  <%= form.text_field :category %>
-  <%= form.text_field :sub_category %>
-  <%= form.text_field :category_range %>
-  <%= form.text_field :vehicle_capacity %>
-  <%= form.number_field :vehicle_speed %>
-  <%= form.text_field :vehicle_speed_unit %>
-  <%= form.number_field :weapon_2h_damage_dice_count %>
-  <%= form.number_field :weapon_2h_damage_dice_value %>
-  <%= form.text_field :weapon_2h_damage_type %>
-  <%= form.number_field :weapon_damage_dice_count %>
-  <%= form.number_field :weapon_damage_dice_value %>
-  <%= form.text_field :weapon_damage_type %>
-  <%= form.text_field :weapon_properties %>
-  <%= form.text_field :weapon_range %>
-  <%= form.number_field :weapon_range_long %>
-  <%= form.number_field :weapon_range_normal %>
-  <%= form.number_field :weapon_thrown_range_long %>
-  <%= form.number_field :weapon_thrown_range_normal %>
-
-  <div class="actions">
-    <%= form.submit %>
+  <%= form.input :name %>
+  <%= form.input :description %>
+  <%= form.input :category, collection: [
+    "Adventuring Gear",
+    "Armor",
+    "Mounts and Vehicles",
+    "Tools",
+    "Weapon"
+  ], prompt: "Select a category", selected: "Adventuring Gear" %>
+  <%= form.input :sub_category %>
+  <%= form.input :cost_unit %>
+  <%= form.input :cost_value %>
+  <%= form.input :weight %>
+  
+  <div class="py-4 items__armor" id="armorFields">
+    <h4>Armor</h4>
+    <div class="px-4">
+      <%= form.input :armor_class %>
+      <%= form.input :armor_dex_bonus %>
+      <%= form.input :armor_max_bonus %>
+      <%= form.input :armor_stealth_disadvantage %>
+      <%= form.input :armor_str_minimum %>
+    </div>
   </div>
+  
+  <div class="py-4 items__vehicles" id="vehicleFields">
+    <h4>Mounts and Vehicles</h4>
+    <div class="px-4">
+      <%= form.input :vehicle_capacity %>
+      <%= form.input :vehicle_speed %>
+      <%= form.input :vehicle_speed_unit %>
+    </div>
+  </div>
+
+  <div class="py-4 items__weapons" id="weaponFields">
+    <h4>Weapons</h4>
+    <div class="px-4">
+      <%= form.input :category_range %>
+      <%= form.input :weapon_damage_dice_count %>
+      <%= form.input :weapon_damage_dice_value %>
+      <%= form.input :weapon_damage_type %>
+      <%= form.input :weapon_2h_damage_dice_count %>
+      <%= form.input :weapon_2h_damage_dice_value %>
+      <%= form.input :weapon_2h_damage_type %>
+      <%= form.input :weapon_properties %>
+      <%= form.input :weapon_range %>
+      <%= form.input :weapon_range_long %>
+      <%= form.input :weapon_range_normal %>
+      <%= form.input :weapon_thrown_range_long %>
+      <%= form.input :weapon_thrown_range_normal %>
+    </div>
+  </div>
+
+  <%= form.button :submit, class: 'btn btn-success' %>
+
 <% end %>
+<script>
+  $(document).ready(function() {
+    $("#item_category").select2({ theme: "bootstrap" });
+
+    var $eventSelect = $('#item_category');
+
+    $eventSelect.select2();
+
+    $eventSelect.on("select2:select", function (event) { handleSelectOptionType(event.params.data.text); });
+
+    function handleSelectOptionType (selectValue) {
+      hideAllInputs();
+      if (selectValue === 'Armor') {
+        $("#armorFields").show();
+      } else if (selectValue === 'Mounts and Vehicles') {
+        $("#vehicleFields").show();
+      } else if (selectValue === 'Weapon') {
+        $("#weaponFields").show();
+      }
+    }
+    
+    function hideAllInputs() {
+      $("#armorFields").hide();
+      $("#vehicleFields").hide();
+      $("#weaponFields").hide();
+    }
+    
+    hideAllInputs();
+    handleSelectOptionType($("#item_category").text());
+  });
+</script>
