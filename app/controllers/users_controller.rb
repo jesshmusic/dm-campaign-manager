@@ -12,10 +12,8 @@ class UsersController < ApplicationController
              else
                User.all
              end
-    @users = @users.where(role: :dungeon_master).or(@users.where(role: :player))
-    # @users = @users.paginate(page: params[:page],
-    #                          per_page: params[:per_page])
-    #                .order(:email)
+    @pagy, @users = pagy(@users.where(role: :dungeon_master).or(@users.where(role: :player)))
+
     respond_to do |format|
       format.html { @users }
       format.json { render json: @users, meta: { total: @users.total_entries } }

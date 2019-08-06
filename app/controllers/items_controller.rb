@@ -6,9 +6,9 @@ class ItemsController < ApplicationController
   # GET /items.json
   def index
     if params[:search].present?
-      @items = Item.search_for(params[:search])
+      @pagy, @items = pagy(Item.search_for(params[:search]))
     else
-      @items = Item.all.order('category ASC, name ASC')
+      @pagy, @items = pagy(Item.all.order('category ASC, sub_category ASC, name ASC'))
     end
   end
 

@@ -6,9 +6,9 @@ class MonstersController < ApplicationController
   # GET /monsters.json
   def index
     if params[:search].present?
-      @monsters = Monster.search_for(params[:search])
+      @pagy, @monsters = pagy(Monster.search_for(params[:search]))
     else
-      @monsters = Monster.all.order('name ASC')
+      @pagy, @monsters = pagy(Monster.all.order('name ASC'))
     end
   end
 

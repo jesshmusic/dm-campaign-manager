@@ -6,9 +6,9 @@ class SpellsController < ApplicationController
   # GET /spells.json
   def index
     if params[:search].present?
-      @spells = Spell.search_for(params[:search])
+      @pagy, @spells = pagy(Spell.search_for(params[:search]))
     else
-      @spells = Spell.all.order('name ASC')
+      @pagy, @spells = pagy(Spell.all.order('name ASC'))
     end
   end
 

@@ -6,9 +6,9 @@ class MagicItemsController < ApplicationController
   # GET /magic_items.json
   def index
     if params[:search].present?
-      @magic_items = MagicItem.search_for(params[:search])
+      @pagy, @magic_items = pagy(MagicItem.search_for(params[:search]))
     else
-      @magic_items = MagicItem.all.order('name ASC')
+      @pagy, @magic_items = pagy(MagicItem.all.order('name ASC'))
     end
   end
 

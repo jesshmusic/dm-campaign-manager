@@ -1,4 +1,5 @@
 class CampaignsController < ApplicationController
+
   before_action :set_campaign, only: %i[show edit update destroy]
   before_action :authenticate_user!, except: %i[index show]
 
@@ -6,9 +7,9 @@ class CampaignsController < ApplicationController
   # GET /campaigns.json
   def index
     if params[:search].present?
-      @campaigns = Campaign.search_for(params[:search])
+      @pagy, @campaigns = pagy(Campaign.search_for(params[:search]))
     else
-      @campaigns = Campaign.all
+      @pagy, @campaigns = pagy(Campaign.all)
     end
   end
 

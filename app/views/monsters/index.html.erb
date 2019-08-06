@@ -46,7 +46,6 @@
     <% end %>
   </tbody>
 </table>
-
-<br>
+<%== pagy_bootstrap_nav_js(@pagy) if @pagy.pages > 1 %>
 
 <%= link_to 'New Monster', new_monster_path, class: "btn btn-lg btn-success" if policy(Monster).new? %>

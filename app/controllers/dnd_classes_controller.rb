@@ -6,11 +6,11 @@ class DndClassesController < ApplicationController
   # GET /dnd_classes.json
   def index
     if params[:search].present?
-      @dnd_classes = DndClass.search_for(params[:search])
+      @pagy, @dnd_classes = pagy(DndClass.search_for(params[:search]))
     elsif current_user.admin?
       DndClass.all
     else
-      @dnd_classes = DndClass.where(user_id: nil).or(DndClass.where(user_id: current_user.id))
+      @pagy, @dnd_classes = pagy(DndClass.where(user_id: nil).or(DndClass.where(user_id: current_user.id)))
     end
   end
 

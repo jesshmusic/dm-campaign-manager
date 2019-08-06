@@ -36,4 +36,5 @@
     <% end %>
   </tbody>
 </table>
+<%== pagy_bootstrap_nav_js(@pagy) if @pagy.pages > 1 %>
 <%= link_to 'New Campaign', new_campaign_path, class: "btn btn-lg btn-success" if policy(Campaign).new? %>
