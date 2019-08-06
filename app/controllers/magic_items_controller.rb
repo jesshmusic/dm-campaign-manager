@@ -8,7 +8,7 @@ class MagicItemsController < ApplicationController
     if params[:search].present?
       @pagy, @magic_items = pagy(MagicItem.search_for(params[:search]))
     else
-      @pagy, @magic_items = pagy(MagicItem.all.order('name ASC'))
+      @pagy, @magic_items = pagy(MagicItem.where(user_id: nil).or(MagicItem.where(user_id: current_user.id)).order('name ASC'))
     end
   end
 

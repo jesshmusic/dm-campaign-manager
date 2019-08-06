@@ -8,7 +8,7 @@ class MonstersController < ApplicationController
     if params[:search].present?
       @pagy, @monsters = pagy(Monster.search_for(params[:search]))
     else
-      @pagy, @monsters = pagy(Monster.all.order('name ASC'))
+      @pagy, @monsters = pagy(Monster.where(user_id: nil).or(Monster.where(user_id: current_user.id)).order('name ASC'))
     end
   end
 

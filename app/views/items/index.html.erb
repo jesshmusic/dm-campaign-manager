@@ -25,8 +25,8 @@
     <% @items.each do |item| %>
       <tr>
         <td><%= item.name %></td>
-        <td class="d-none d-lg-table-cell"><%= item.category %></td>
-        <td class="d-none d-lg-table-cell"><%= item.sub_category %></td>
+        <td class="d-none d-lg-table-cell"><%= item.category.titleize %></td>
+        <td class="d-none d-lg-table-cell"><%= item.sub_category.titleize %></td>
         <td><%= "#{item.cost_value}#{item.cost_unit}" %></td>
         <td class="d-none d-lg-table-cell"><%= item.weight %></td>
         <td>

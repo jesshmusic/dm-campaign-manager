@@ -8,7 +8,7 @@ class SpellsController < ApplicationController
     if params[:search].present?
       @pagy, @spells = pagy(Spell.search_for(params[:search]))
     else
-      @pagy, @spells = pagy(Spell.all.order('name ASC'))
+      @pagy, @spells = pagy(Spell.where(user_id: nil).or(Spell.where(user_id: current_user.id)).order('name ASC'))
     end
   end
 

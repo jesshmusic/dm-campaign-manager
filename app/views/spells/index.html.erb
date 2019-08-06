@@ -27,7 +27,7 @@
         <td class="d-none d-lg-table-cell">
           <%= spell.dnd_classes.where(user_id: nil).or(spell.dnd_classes.where(user_id: current_user.id)).map {|spell_class| spell_class.name}.join(', ') %>
         </td>
-        <td class="d-none d-lg-table-cell"><%= spell.school %></td>
+        <td class="d-none d-lg-table-cell"><%= spell.school.titleize %></td>
         <td><%= spell.spell_level %></td>
         <td>
           <%= link_to 'Show', spell, class: "btn btn-sm btn-primary" %>
