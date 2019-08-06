@@ -2,31 +2,35 @@
   <%= form.error_notification %>
   <%= form.error_notification message: form.object.errors[:base].to_sentence if form.object.errors[:base].present? %>
   
-  <%= form.input :name %>
-  <%= form.input :size %>
-  <%= form.input :monster_type %>
-  <%= form.input :monster_subtype %>
-  <%= form.input :alignment %>
-  <%= form.input :armor_class %>
-  <%= form.input :hit_points %>
-  <%= form.input :hit_dice %>
-  <%= form.input :speed %>
+  <div class="form-inputs">
+    <%= form.input :name %>
+    <%= form.input :size %>
+    <%= form.input :monster_type %>
+    <%= form.input :monster_subtype %>
+    <%= form.input :alignment %>
+    <%= form.input :armor_class %>
+    <%= form.input :hit_points %>
+    <%= form.input :hit_dice %>
+    <%= form.input :speed %>
+    
+    <%= form.input :strength %>
+    <%= form.input :dexterity %>
+    <%= form.input :constitution %>
+    <%= form.input :intelligence %>
+    <%= form.input :wisdom %>
+    <%= form.input :charisma %>
+    
+    <%= form.input :damage_vulnerabilities %>
+    <%= form.input :damage_resistances %>
+    <%= form.input :damage_immunities %>
+    <%= form.input :condition_immunities %>
+    
+    <%= form.input :senses %>
+    <%= form.input :languages %>
+    <%= form.input :challenge_rating %>
+  </div>
   
-  <%= form.input :strength %>
-  <%= form.input :dexterity %>
-  <%= form.input :constitution %>
-  <%= form.input :intelligence %>
-  <%= form.input :wisdom %>
-  <%= form.input :charisma %>
-  
-  <%= form.input :damage_vulnerabilities %>
-  <%= form.input :damage_resistances %>
-  <%= form.input :damage_immunities %>
-  <%= form.input :condition_immunities %>
-  
-  <%= form.input :senses %>
-  <%= form.input :languages %>
-  <%= form.input :challenge_rating %>
-  
-  <%= form.button :submit, class: 'btn btn-success' %>
+  <div class="form-actions">
+    <%= form.button :submit, class: 'btn btn-success' %>
+  </div>
 <% end %>

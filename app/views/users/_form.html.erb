@@ -5,16 +5,20 @@
   <h4><%= 'Admin' if current_user.admin? %></h4>
   <h4><%= 'Dungeon Master' if current_user.dungeon_master? %></h4>
   <h4><%= 'Player' if current_user.player? %></h4>
-
-  <%= form.input :email %>
-  <%= form.input :name, required: true %>
-  <%= form.input :username, required: true %>
-
-  <% if current_user.admin? %>
-      <%= form.input :role, collection: [['Player', 'player'], ['Dungeon Master', 'dungeon_master'], ['Admin', 'admin']] %>
-  <% end %>
   
-  <%= form.button :submit, class: 'btn btn-success' %>
+  <div class="form-inputs">
+    <%= form.input :email %>
+    <%= form.input :name, required: true %>
+    <%= form.input :username, required: true %>
+
+    <% if current_user.admin? %>
+        <%= form.input :role, collection: [['Player', 'player'], ['Dungeon Master', 'dungeon_master'], ['Admin', 'admin']] %>
+    <% end %>
+  </div>
+  
+  <div class="form-actions">
+    <%= form.button :submit, class: 'btn btn-success' %>
+  </div>
 <% end %>
 
 <script>

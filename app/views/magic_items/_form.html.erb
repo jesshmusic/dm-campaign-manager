@@ -1,12 +1,16 @@
 <%= simple_form_for @magic_item, validate: true do |form| %>
   <%= form.error_notification %>
   <%= form.error_notification message: form.object.errors[:base].to_sentence if form.object.errors[:base].present? %>
-
-  <%= form.input :name %>
-  <%= form.input :magic_item_type %>
-  <%= form.input :description %>
-  <%= form.input :rarity %>
-  <%= form.input :requires_attunement %>
   
-  <%= form.button :submit, class: 'btn btn-success' %>
+  <div class="form-inputs">
+    <%= form.input :name %>
+    <%= form.input :magic_item_type %>
+    <%= form.input :description %>
+    <%= form.input :rarity %>
+    <%= form.input :requires_attunement %>
+  </div>
+  
+  <div class="form-actions">
+    <%= form.button :submit, class: 'btn btn-success' %>
+  </div>
 <% end %>

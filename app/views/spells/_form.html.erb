@@ -2,18 +2,22 @@
   <%= form.error_notification %>
   <%= form.error_notification message: form.object.errors[:base].to_sentence if form.object.errors[:base].present? %>
   
-  <%= form.input :name %>
-  <%= form.input :description %>
-  <%= form.input :higher_level %>
-  <%= form.input :page %>
-  <%= form.input :range %>
-  <%= form.input :components %>
-  <%= form.input :material %>
-  <%= form.input :ritual %>
-  <%= form.input :duration %>
-  <%= form.input :concentration %>
-  <%= form.input :casting_time %>
-  <%= form.input :level %>
+  <div class="form-inputs">
+    <%= form.input :name %>
+    <%= form.input :description %>
+    <%= form.input :higher_level %>
+    <%= form.input :page %>
+    <%= form.input :range %>
+    <%= form.input :components %>
+    <%= form.input :material %>
+    <%= form.input :ritual %>
+    <%= form.input :duration %>
+    <%= form.input :concentration %>
+    <%= form.input :casting_time %>
+    <%= form.input :level %>
+  </div>
   
-  <%= form.button :submit, class: 'btn btn-success' %>
+  <div class="form-actions">
+    <%= form.button :submit, class: 'btn btn-success' %>
+  </div>
 <% end %>

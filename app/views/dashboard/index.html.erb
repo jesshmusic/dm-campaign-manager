@@ -7,7 +7,7 @@
 </nav>
 
 <h1>Dashboard</h1>
-<h4>
+<h2>
   <% if current_user && current_user.admin? %>
     <span class="badge badge-pill badge-success">Admin</span>
   <% elsif current_user && current_user.dungeon_master? %>
@@ -15,7 +15,7 @@
   <% elsif current_user %>
     <span class="badge badge-pill badge-warning">Player</span>
   <% end %>
-</h4>
+</h2>
 
 <div class="row">
   <div class="col-sm-6">
