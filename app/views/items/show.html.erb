@@ -132,5 +132,7 @@
   </p>
 <% end %>
 
-<%= link_to 'Edit', edit_item_path(@item), class: "btn btn-success" if policy(@item).edit? %>
-<%= link_to 'Back', items_path, class: "btn btn-info" %>
+<div class="d-flex align-items-center justify-content-start py-3">
+  <%= link_to 'Edit', edit_item_path(@item), class: "btn btn-success" if policy(@item).edit? %>
+  <%= link_to 'Back', items_path, class: "btn btn-info" %>
+</div>

@@ -61,5 +61,7 @@
   <%= markdown(@spell.higher_level) %>
 <% end %>
 
-<%= link_to 'Edit', edit_spell_path(@spell), class: "btn btn-success" if policy(@spell).edit? %>
-<%= link_to 'Back', spells_path, class: "btn btn-info" %>
+<div class="d-flex align-items-center justify-content-start py-3">
+  <%= link_to 'Edit', edit_spell_path(@spell), class: "btn btn-success" if policy(@spell).edit? %>
+  <%= link_to 'Back', spells_path, class: "btn btn-info" %>
+</div>

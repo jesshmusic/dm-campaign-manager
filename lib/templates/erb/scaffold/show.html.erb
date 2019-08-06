@@ -1,0 +1,20 @@
+<%% title "<%= singular_table_name.capitalize %>: #{@<%= singular_table_name %>.name}" %>
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item"><%%= link_to 'Dashboard', dashboard_path %></li>
+    <li class="breadcrumb-item"><%%= link_to '<%= plural_table_name.capitalize %>', <%= plural_table_name %>_path %></li>
+    <li class="breadcrumb-item active" aria-current="page"><%%= @<%= singular_table_name %>.name %></li>
+  </ol>
+</nav>
+<h1><%= singular_table_name.capitalize %>: <%%= @<%= singular_table_name %>.name %></h1>
+<% attributes.each do |attribute| -%>
+  <p>
+    <strong><%= attribute.human_name %>:</strong> <%%= @<%= singular_table_name %>.attribute.name %>
+  </p>
+<% end -%>
+
+<div class="d-flex align-items-center justify-content-start py-3">
+  <%%= link_to 'Edit', edit_<%= singular_table_name %>_path(@<%= singular_table_name %>), class: "btn btn-success" if policy(@<%= singular_table_name %>).edit? %>
+  <%%= link_to 'Back', <%= plural_table_name %>_path, class: "btn btn-info" %>
+</div>

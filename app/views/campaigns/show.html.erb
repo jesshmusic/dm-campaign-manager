@@ -25,5 +25,7 @@
   <%= link_to "#{@campaign.user.name}", @campaign.user %>
 </p>
 
-<%= link_to 'Edit', edit_campaign_path(@campaign), class: "btn btn-success" if policy(@campaign).edit? %>
-<%= link_to 'Back', campaigns_path, class: "btn btn-info" %>
+<div class="d-flex align-items-center justify-content-start py-3">
+  <%= link_to 'Edit', edit_campaign_path(@campaign), class: "btn btn-success" if policy(@campaign).edit? %>
+  <%= link_to 'Back', campaigns_path, class: "btn btn-info" %>
+</div>

@@ -1,0 +1,39 @@
+<%% title "<%= plural_table_name %>" %>
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item"><%%= link_to 'Dashboard', dashboard_path %></li>
+    <li class="breadcrumb-item active" aria-current="page"><%= plural_table_name.capitalize %></li>
+  </ol>
+</nav>
+
+<h1><%= plural_table_name.capitalize %></h1>
+<%%= render 'shared/search_form', url: <%= plural_table_name %>_path %>
+
+<table>
+  <thead>
+    <tr>
+      <% attributes.each do |attribute| -%>
+        <th><%= attribute.human_name %></th>
+      <% end %>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <%% @<%= plural_table_name %>.each do |<%= singular_table_name %>| %>
+      <tr>
+        <% attributes.each do |attribute| -%>
+          <td><%%= <%= singular_table_name %>.<%= attribute.column_name %> %></td>
+        <% end %>
+        <td>
+          <%%= link_to 'Show', <%= singular_table_name %>, class: "btn btn-sm btn-primary" %>
+          <%%= link_to 'Edit', edit_<%= singular_table_name %>_path(<%= singular_table_name %>), class: "btn btn-sm btn-success" if policy(<%= singular_table_name %>).edit? %>
+          <%%= link_to 'Destroy', <%= singular_table_name %>, class: "btn btn-sm btn-danger", method: :delete, data: { confirm: 'Are you sure?' } if policy(<%= singular_table_name %>).destroy? %>
+        </td>
+      </tr>
+    <%% end %>
+  </tbody>
+</table>
+<%%== pagy_bootstrap_nav_js(@pagy) if @pagy.pages > 1 %>
+<%%= link_to 'New <%= singular_table_name.capitalize %>', new_<%= singular_table_name %>_path, class: "btn btn-lg btn-success" if policy(<%= singular_table_name.capitalize %>).new? %>
