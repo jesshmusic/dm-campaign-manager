@@ -1,22 +1,19 @@
-<%= bootstrap_form_for @spell do |form| %>
-  <% if spell.errors.any? %>
-    <%= render 'shared/error-alert', record: spell, record_type: "spell" %>
-  <% end %>
+<%= simple_form_for @spell, validate: true do |form| %>
+  <%= form.error_notification %>
+  <%= form.error_notification message: form.object.errors[:base].to_sentence if form.object.errors[:base].present? %>
   
-  <%= form.text_area :name %>
-  <%= form.text_area :description %>
-  <%= form.text_area :higher_level %>
-  <%= form.text_area :page %>
-  <%= form.text_area :range %>
-  <%= form.text_area :components %>
-  <%= form.text_area :material %>
-  <%= form.check_box :ritual %>
-  <%= form.text_area :duration %>
-  <%= form.check_box :concentration %>
-  <%= form.text_field :casting_time %>
-  <%= form.number_field :level %>
-
-  <div class="actions">
-    <%= form.submit %>
-  </div>
+  <%= form.input :name %>
+  <%= form.input :description %>
+  <%= form.input :higher_level %>
+  <%= form.input :page %>
+  <%= form.input :range %>
+  <%= form.input :components %>
+  <%= form.input :material %>
+  <%= form.input :ritual %>
+  <%= form.input :duration %>
+  <%= form.input :concentration %>
+  <%= form.input :casting_time %>
+  <%= form.input :level %>
+  
+  <%= form.button :submit, class: 'btn btn-success' %>
 <% end %>

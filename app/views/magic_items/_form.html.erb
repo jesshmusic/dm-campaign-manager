@@ -1,15 +1,12 @@
-<%= bootstrap_form_for @magic_item do |form| %>
-  <% if magic_item.errors.any? %>
-    <%= render 'shared/error-alert', record: magic_item, record_type: "magic item" %>
-  <% end %>
+<%= simple_form_for @magic_item, validate: true do |form| %>
+  <%= form.error_notification %>
+  <%= form.error_notification message: form.object.errors[:base].to_sentence if form.object.errors[:base].present? %>
 
-  <%= form.text_field :name %>
-  <%= form.text_field :magic_item_type %>
-  <%= form.text_area :description %>
-  <%= form.text_field :rarity %>
-  <%= form.check_box :requires_attunement %>
-
-  <div class="actions">
-    <%= form.submit %>
-  </div>
+  <%= form.input :name %>
+  <%= form.input :magic_item_type %>
+  <%= form.input :description %>
+  <%= form.input :rarity %>
+  <%= form.input :requires_attunement %>
+  
+  <%= form.button :submit, class: 'btn btn-success' %>
 <% end %>

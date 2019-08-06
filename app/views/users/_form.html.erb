@@ -1,49 +1,20 @@
-<%= bootstrap_form_for @user do |form| %>
-  <% if user.errors.any? %>
-    <div id="error_explanation" class="alert alert-warning">
-      <h1><%= pluralize(user.errors.count, "error") %> prohibited this user from being saved:</h1>
-
-      <ul>
-      <% user.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
+<%= simple_form_for @user, validate: true do |form| %>
+  <%= form.error_notification %>
+  <%= form.error_notification message: form.object.errors[:base].to_sentence if form.object.errors[:base].present? %>
 
   <h4><%= 'Admin' if current_user.admin? %></h4>
   <h4><%= 'Dungeon Master' if current_user.dungeon_master? %></h4>
   <h4><%= 'Player' if current_user.player? %></h4>
 
-  <%= form.form_group do %>
-    <%= form.label :role %>
-    <% if user.admin? %>
-      <span class="badge badge-pill badge-success">Admin</span>
-    <% elsif user.dungeon_master? %>
-      <span class="badge badge-pill badge-info">Dungeon Master</span>
-    <% else %>
-      <span class="badge badge-pill badge-warning">Player</span>
-    <% end %>
-  <% end %>
-
-  <%= form.form_group do %>
-    <%= form.static_control :email, style: "color: #fefdfc; font-size: 14px; font-weight: 300; letter-spacing: 1px;" %>
-  <% end %>
-
-  <%= form.form_group do %>
-    <%= form.text_field :name, required: true %>
-    <%= form.text_field :username, required: true %>
-  <% end %>
+  <%= form.input :email %>
+  <%= form.input :name, required: true %>
+  <%= form.input :username, required: true %>
 
   <% if current_user.admin? %>
-    <%= form.form_group do %>
-      <%= form.select :role, [['Player', 'player'], ['Dungeon Master', 'dungeon_master'], ['Admin', 'admin']], {}, id: "change_role_select", style: "width: 100%;" %>
-    <% end %>
+      <%= form.input :role, collection: [['Player', 'player'], ['Dungeon Master', 'dungeon_master'], ['Admin', 'admin']] %>
   <% end %>
-
-  <%= form.form_group do %>
-    <%= form.primary "Update Profile" %>
-  <% end %>
+  
+  <%= form.button :submit, class: 'btn btn-success' %>
 <% end %>
 
 <script>

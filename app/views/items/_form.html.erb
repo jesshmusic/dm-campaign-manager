@@ -1,7 +1,6 @@
 <%= simple_form_for @item, validate: true do |form| %>
-  <% if item.errors.any? %>
-    <%= render 'shared/error-alert', record: item, record_type: "equipment" %>
-  <% end %>
+  <%= form.error_notification %>
+  <%= form.error_notification message: form.object.errors[:base].to_sentence if form.object.errors[:base].present? %>
   
   <%= form.input :name %>
   <%= form.input :description %>

@@ -1,35 +1,32 @@
-<%= bootstrap_form_for @monster do |form| %>
-  <% if monster.errors.any? %>
-    <%= render 'shared/error-alert', record: monster, record_type: "monster" %>
-  <% end %>
+<%= simple_form_for @monster, validate: true do |form| %>
+  <%= form.error_notification %>
+  <%= form.error_notification message: form.object.errors[:base].to_sentence if form.object.errors[:base].present? %>
   
-  <%= form.text_field :name %>
-  <%= form.text_field :size %>
-  <%= form.text_field :monster_type %>
-  <%= form.text_field :monster_subtype %>
-  <%= form.text_field :alignment %>
-  <%= form.number_field :armor_class %>
-  <%= form.number_field :hit_points %>
-  <%= form.text_field :hit_dice %>
-  <%= form.text_field :speed %>
+  <%= form.input :name %>
+  <%= form.input :size %>
+  <%= form.input :monster_type %>
+  <%= form.input :monster_subtype %>
+  <%= form.input :alignment %>
+  <%= form.input :armor_class %>
+  <%= form.input :hit_points %>
+  <%= form.input :hit_dice %>
+  <%= form.input :speed %>
   
-  <%= form.number_field :strength %>
-  <%= form.number_field :dexterity %>
-  <%= form.number_field :constitution %>
-  <%= form.number_field :intelligence %>
-  <%= form.number_field :wisdom %>
-  <%= form.number_field :charisma %>
+  <%= form.input :strength %>
+  <%= form.input :dexterity %>
+  <%= form.input :constitution %>
+  <%= form.input :intelligence %>
+  <%= form.input :wisdom %>
+  <%= form.input :charisma %>
   
-  <%= form.text_field :damage_vulnerabilities %>
-  <%= form.text_field :damage_resistances %>
-  <%= form.text_field :damage_immunities %>
-  <%= form.text_field :condition_immunities %>
+  <%= form.input :damage_vulnerabilities %>
+  <%= form.input :damage_resistances %>
+  <%= form.input :damage_immunities %>
+  <%= form.input :condition_immunities %>
   
-  <%= form.text_field :senses %>
-  <%= form.text_field :languages %>
-  <%= form.number_field :challenge_rating %>
-
-  <div class="actions">
-    <%= form.submit %>
-  </div>
+  <%= form.input :senses %>
+  <%= form.input :languages %>
+  <%= form.input :challenge_rating %>
+  
+  <%= form.button :submit, class: 'btn btn-success' %>
 <% end %>

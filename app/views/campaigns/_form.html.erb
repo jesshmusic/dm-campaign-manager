@@ -1,7 +1,6 @@
 <%= simple_form_for @campaign, validate: true do |form| %>
-  <% if campaign.errors.any? %>
-    <%= render 'shared/error-alert', record: campaign, record_type: "campaign" %>
-  <% end %>
+  <%= form.error_notification %>
+  <%= form.error_notification message: form.object.errors[:base].to_sentence if form.object.errors[:base].present? %>
   <h4>
     <small>Owner:</small> <%= current_user.name %>
     <% if current_user.admin? %>
