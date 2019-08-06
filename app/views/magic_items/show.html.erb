@@ -1,3 +1,4 @@
+<% title "Magic Item: #{@magic_item.name}" %>
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="/">Home</a></li>
@@ -6,7 +7,7 @@
     <li class="breadcrumb-item active" aria-current="page"><%= @magic_item.name %></li>
   </ol>
 </nav>
-<h1>Class: <%= @magic_item.name %></h1>
+<h1>Magic Item: <%= @magic_item.name %></h1>
 <h4><%= @magic_item.magic_item_type.titleize %> <small>- <%= @magic_item.rarity.titleize %></small></h4>
 <% if @magic_item.requires_attunement && @magic_item.requires_attunement != ""  %>
   <p class="font-italic">
