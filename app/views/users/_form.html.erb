@@ -2,9 +2,9 @@
   <%= form.error_notification %>
   <%= form.error_notification message: form.object.errors[:base].to_sentence if form.object.errors[:base].present? %>
 
-  <h4><%= 'Admin' if current_user.admin? %></h4>
-  <h4><%= 'Dungeon Master' if current_user.dungeon_master? %></h4>
-  <h4><%= 'Player' if current_user.player? %></h4>
+  <h2><%= 'Admin' if current_user.admin? %></h4>
+  <h2><%= 'Dungeon Master' if current_user.dungeon_master? %></h4>
+  <h2><%= 'Player' if current_user.player? %></h4>
   
   <div class="form-inputs">
     <%= form.input :email %>
@@ -22,14 +22,5 @@
 <% end %>
 
 <script>
-  $('#user_is_external_user').change(function () {
-    if ($(this).is(":checked")) {
-      $('#userFormExternalLinks').show("fast");
-      $('#userFormBody').hide("fast");
-    } else {
-      $('#userFormExternalLinks').hide("fast");
-      $('#userFormBody').show("fast");
-    }
-  });
   $('#change_role_select').select2();
 </script>

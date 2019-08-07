@@ -21,10 +21,14 @@ const Navbar = ({ user }) => (
           </li>
         ) : (
             <li className="nav-item">
-              <a className="nav-link" href="/users/sign_in">Sign In</a>
+              <a className="nav-link" href="/users/sign_in">Login</a>
             </li>
           )}
-
+        {!user ? (
+          <li className="nav-item">
+            <a className="nav-link" href="/users/sign_up">Sign Up</a>
+          </li>
+        ) : null}
       </ul>
     </div>
   </nav>

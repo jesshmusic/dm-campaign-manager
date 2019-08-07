@@ -8,11 +8,12 @@
 #  confirmed_at           :datetime
 #  current_sign_in_at     :datetime
 #  current_sign_in_ip     :inet
+#  deleted_at             :datetime
 #  email                  :string           default(""), not null
 #  encrypted_password     :string           default(""), not null
 #  last_sign_in_at        :datetime
 #  last_sign_in_ip        :inet
-#  name                   :text
+#  name                   :string
 #  remember_created_at    :datetime
 #  reset_password_sent_at :datetime
 #  reset_password_token   :string
@@ -20,7 +21,7 @@
 #  sign_in_count          :integer          default(0), not null
 #  slug                   :string
 #  unconfirmed_email      :string
-#  username               :text
+#  username               :string
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #
@@ -36,9 +37,13 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable,
          :confirmable, :omniauthable
-  include PgSearch::Model
+  validates :username, uniqueness: true
+
   enum role: %I[player dungeon_master admin]
   after_initialize :set_default_role, if: :new_record?
+  after_validation(on: :create) do
+    self.slug = generate_slug
+  end
 
   # User Associations
   has_many :campaigns, dependent: :delete_all
@@ -51,23 +56,28 @@ class User < ApplicationRecord
   def set_default_role
     self.role ||= :player
   end
+  
+  def generate_slug
+    self.username.parameterize.truncate(80, omission: '')
+  end
 
   # instead of deleting, indicate the user requested a delete & timestamp it
-  # def soft_delete
-  #   update_attribute(:deleted_at, Time.current)
-  # end
+  def soft_delete
+    update_attribute(:deleted_at, Time.current)
+  end
 
   # ensure user account is active
-  # def active_for_authentication?
-  #   super && !deleted_at
-  # end
+  def active_for_authentication?
+    super && !deleted_at
+  end
 
   # provide a custom message for a deleted account
-  # def inactive_message
-  #   !deleted_at ? super : :deleted_account
-  # end
+  def inactive_message
+    !deleted_at ? super : :deleted_account
+  end
 
   # PgSearch
+  include PgSearch::Model
   pg_search_scope :search_for,
                   against: {
                     name: 'A',
@@ -82,6 +92,6 @@ class User < ApplicationRecord
                   }
 
   def to_param
-    slug
+    slug ? slug : username
   end
 end
