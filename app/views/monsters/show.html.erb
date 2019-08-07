@@ -19,6 +19,7 @@
       <h2 class="font-italic">
         <%= @monster.size %> <%= @monster.monster_type %><%= " (#{@monster.monster_subtype})" if @monster.monster_subtype && @monster.monster_subtype != "" %>, <%= @monster.alignment %>
       </h2>
+      <h3><small>Challenge rating</small> <%= @monster.challenge_rating %></h3>
     </div>
   </div>
 
@@ -36,31 +37,32 @@
   </div>
 
   <div class="row mb-3 pb-3 border-bottom">
-    <div class="col-sm">
+    <div class="col-4 col-sm-2">
       <strong>STR</strong><br />
       <%= @monster.strength %>
     </div>
-    <div class="col-sm">
+    <div class="col-4 col-sm-2">
       <strong>DEX</strong><br />
       <%= @monster.dexterity %>
     </div>
-    <div class="col-sm">
+    <div class="col-4 col-sm-2">
       <strong>CON</strong><br />
       <%= @monster.constitution %>
     </div>
-    <div class="col-sm">
+    <div class="col-4 col-sm-2">
       <strong>INT</strong><br />
       <%= @monster.intelligence %>
     </div>
-    <div class="col-sm">
+    <div class="col-4 col-sm-2">
       <strong>WIS</strong><br />
       <%= @monster.wisdom %>
     </div>
-    <div class="col-sm">
+    <div class="col-4 col-sm-2">
       <strong>CHA</strong><br />
       <%= @monster.charisma %>
     </div>
   </div>
+  
 
   <div class="row mb-3 pb-3 border-bottom">
     <div class="col">
@@ -85,8 +87,6 @@
         <dd><%= @monster.senses %></dd>
         <dt>Languages</dt>
         <dd><%= @monster.languages %></dd>
-        <dt>Challenge rating</dt>
-        <dd><%= @monster.challenge_rating %></dd>
       </dl>
     </div>
   </div>
