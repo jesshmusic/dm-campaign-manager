@@ -25,20 +25,24 @@ namespace :srd do
   
   task set_prof_choices_for_class: :environment do
     DndClass.where(user_id: nil).each do |dnd_class|
+      dnd_class.prof_choices.delete_all
       class_uri = URI(dnd_class.api_url)
       class_response = Net::HTTP.get(class_uri)
       class_result = JSON.parse class_response, symbolize_names: true
       class_result[:proficiency_choices].each_with_index do |prof_choice_block, index|
-        prof_choice = ProfChoice.find_or_create_by(name: "#{dnd_class.name} #{index}") do |new_prof_choice|
-          new_prof_choice.num_choices = prof_choice_block[:choose]
-          new_prof_choice.prof_choice_type = prof_choice_block[:type]
-          prof_choice_block[:from].each do |prof|
-            new_prof = Prof.find_by(name: prof[:name])
-            new_prof_choice.profs << new_prof
-          end
+        prof_choice = ProfChoice.create(
+          name: "#{dnd_class.name} #{index}",
+          num_choices: prof_choice_block[:choose],
+          prof_choice_type: prof_choice_block[:type]
+        )
+        puts prof_choice.to_json
+        prof_choice_block[:from].each do |prof|
+          new_prof = Prof.find_by(name: prof[:name])
+          prof_choice.profs << new_prof
         end
         dnd_class.prof_choices << prof_choice
       end
+      dnd_class.save!
     end
   end
   
