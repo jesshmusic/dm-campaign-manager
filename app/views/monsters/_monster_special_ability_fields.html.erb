@@ -2,18 +2,23 @@
   <div class="card-body">
     <div class="form-row">
       <div class="col">
-        <%= f.input :name %>
-      </div>
-      <div class="col">
-        <%= f.input :prof_choice_type %>
-      </div>
-      <div class="col">
-        <%= f.input :num_choices %>
+        <%= f.input :name, required: true %>
       </div>
     </div>
     <div class="form-row">
       <div class="col">
-        <%= f.association :profs, input_html: { class: "prof_choice_profs" } %>
+        <%= f.input :description, required: true %>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="col">
+        <%= f.input :attack_bonus %>
+      </div>
+      <div class="col">
+        <%= f.input :damage_bonus %>
+      </div>
+      <div class="col">
+        <%= f.input :damage_dice %>
       </div>
     </div>
     <%= link_to_remove_association "Remove", f, class: "btn btn-warning" %>

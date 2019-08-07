@@ -80,6 +80,25 @@ class MonstersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def monster_params
-      params.require(:monster).permit(:name, :size, :monster_type, :monster_subtype, :alignment, :armor_class, :hit_points, :hit_dice, :speed, :strength, :dexterity, :constitution, :intelligence, :wisdom, :charisma, :damage_vulnerabilities, :damage_resistances, :damage_immunities, :condition_immunities, :senses, :languages, :challenge_rating, :api_url)
+      params.require(:monster).permit(
+        :name, :size, :monster_type, :monster_subtype,
+        :alignment, :armor_class, :hit_points, :hit_dice,
+        :speed, :strength, :dexterity, :constitution,
+        :intelligence, :wisdom, :charisma, :damage_vulnerabilities,
+        :damage_resistances, :damage_immunities, :condition_immunities,
+        :senses, :languages, :challenge_rating, :api_url,
+        monster_action_attributes: [
+          :id, :name, :description, :attack_bonus, :damage_bonus, :damage_dice, :_destroy
+        ],
+        monster_legendary_action_attributes: [
+          :id, :name, :description, :attack_bonus, :damage_bonus, :damage_dice, :_destroy
+        ],
+        monster_special_ability_attributes: [
+          :id, :name, :description, :attack_bonus, :damage_bonus, :damage_dice, :_destroy
+        ],
+        skills: [
+          :id, :name, :score, :_destroy
+        ]
+      )
     end
 end

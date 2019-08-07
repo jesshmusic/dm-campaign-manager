@@ -8,13 +8,13 @@
     <%= form.association :profs %>
     <%= form.association :spells %>
 
-    <div class="py-3" id="prof_choices_container">
+    <div class="p-3 mx-3 my-5 border-bottom border-top" id="prof_choices_container">
       <h5>Proficiency Choices</h5>
       <%= form.simple_fields_for :prof_choices do |p_form| %>
         <%= render 'prof_choice_fields', f: p_form %>
       <% end %>
       <div class='links'>
-        <%= link_to_add_association 'add proficiency choice', form, :prof_choices %>
+        <%= link_to_add_association 'Add Proficiency Choices Set', form, :prof_choices, class: "btn btn-info" %>
       </div>
     </div>
   </div>

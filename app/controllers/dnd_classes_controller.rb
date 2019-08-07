@@ -8,7 +8,7 @@ class DndClassesController < ApplicationController
     if params[:search].present?
       @pagy, @dnd_classes = pagy(DndClass.search_for(params[:search]))
     elsif current_user.admin?
-      DndClass.all
+      @pagy, @dnd_classes = pagy(DndClass.all)
     else
       @pagy, @dnd_classes = pagy(DndClass.where(user_id: nil).or(DndClass.where(user_id: current_user.id)))
     end

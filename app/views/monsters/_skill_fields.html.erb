@@ -1,0 +1,13 @@
+<div class="card m-4">
+  <div class="card-body">
+    <div class="form-row">
+      <div class="col">
+        <%= f.input :name, required: true %>
+      </div>
+      <div class="col">
+        <%= f.input :score, required: true %>
+      </div>
+    </div>
+    <%= link_to_remove_association "Remove", f, class: "btn btn-warning" %>
+  </div>
+</div>

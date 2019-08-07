@@ -3,34 +3,147 @@
   <%= form.error_notification message: form.object.errors[:base].to_sentence if form.object.errors[:base].present? %>
   
   <div class="form-inputs">
-    <%= form.input :name %>
-    <%= form.input :size %>
-    <%= form.input :monster_type %>
-    <%= form.input :monster_subtype %>
-    <%= form.input :alignment %>
-    <%= form.input :armor_class %>
-    <%= form.input :hit_points %>
-    <%= form.input :hit_dice %>
-    <%= form.input :speed %>
+    <div class="form-row">
+      <div class="col">
+        <%= form.input :name %>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="col">
+        <%= form.input :challenge_rating %>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="col">
+        <%= form.input :alignment %>
+      </div>
+    </div>
     
-    <%= form.input :strength %>
-    <%= form.input :dexterity %>
-    <%= form.input :constitution %>
-    <%= form.input :intelligence %>
-    <%= form.input :wisdom %>
-    <%= form.input :charisma %>
+    <h3>Type</h3>
+    <div class="form-row">
+      <div class="col">
+        <%= form.input :monster_type %>
+      </div>
+      <div class="col">
+        <%= form.input :monster_subtype %>
+      </div>
+    </div>
     
-    <%= form.input :damage_vulnerabilities %>
-    <%= form.input :damage_resistances %>
-    <%= form.input :damage_immunities %>
-    <%= form.input :condition_immunities %>
+    <h3>Abilities</h3>
+    <div class="form-row">
+      <div class="col">
+        <%= form.input :strength %>
+      </div>
+      <div class="col">
+        <%= form.input :dexterity %>
+      </div>
+      <div class="col">
+        <%= form.input :constitution %>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="col">
+        <%= form.input :intelligence %>
+      </div>
+      <div class="col">
+        <%= form.input :wisdom %>
+      </div>
+      <div class="col">
+        <%= form.input :charisma %>
+      </div>
+    </div>
     
-    <%= form.input :senses %>
-    <%= form.input :languages %>
-    <%= form.input :challenge_rating %>
-    <%= form.simple_fields_for(@monster.skills) do |cf|
-      cf.input :hash_tags
-    end %>
+    <div class="form-row">
+      <div class="col">
+        <%= form.input :armor_class %>
+      </div>
+      <div class="col">
+        <%= form.input :hit_points %>
+      </div>
+      <div class="col">
+        <%= form.input :hit_dice %>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="col">
+        <%= form.input :senses %>
+      </div>
+      <div class="col">
+        <%= form.input :languages %>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="col">
+        <%= form.input :size %>
+      </div>
+      <div class="col">
+        <%= form.input :speed %>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="col">
+        <%= form.input :damage_vulnerabilities %>
+      </div>
+      <div class="col">
+        <%= form.input :damage_resistances %>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="col">
+        <%= form.input :damage_immunities %>
+      </div>
+      <div class="col">
+        <%= form.input :condition_immunities %>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="p-3 mx-3 my-5 border-bottom border-top" id="prof_choices_container">
+        <h3>Actions</h3>
+        <%= form.simple_fields_for :monster_actions do |p_form| %>
+          <%= render 'monster_action_fields', f: p_form %>
+        <% end %>
+        <div class='links'>
+          <%= link_to_add_association 'Add Action', form, :monster_actions, class: "btn btn-info" %>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="p-3 mx-3 my-5 border-bottom border-top" id="prof_choices_container">
+        <h3>Legendary Actions</h3>
+        <%= form.simple_fields_for :monster_legendary_actions do |p_form| %>
+          <%= render 'monster_legendary_action_fields', f: p_form %>
+        <% end %>
+        <div class='links'>
+          <%= link_to_add_association 'Add Action', form, :monster_legendary_actions, class: "btn btn-info" %>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="p-3 mx-3 my-5 border-bottom border-top" id="prof_choices_container">
+        <h3>Special Abilities</h3>
+        <%= form.simple_fields_for :monster_special_abilities do |p_form| %>
+          <%= render 'monster_special_ability_fields', f: p_form %>
+        <% end %>
+        <div class='links'>
+          <%= link_to_add_association 'Add Action', form, :monster_special_abilities, class: "btn btn-info" %>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="p-3 mx-3 my-5 border-bottom border-top" id="prof_choices_container">
+        <h3>Skills</h3>
+        <%= form.simple_fields_for :skills do |p_form| %>
+          <%= render 'skill_fields', f: p_form %>
+        <% end %>
+        <div class='links'>
+          <%= link_to_add_association 'Add Action', form, :skills, class: "btn btn-info" %>
+        </div>
+      </div>
+    </div>
   </div>
   
   <div class="form-actions">

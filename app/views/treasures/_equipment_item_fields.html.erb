@@ -1,5 +1,7 @@
-<div class="nested-fields px-4">
-  <%= f.input :quantity %>
-  <%= f.association :items, input_html: { class: "equipment_item_item" } %>
-  <%= link_to_remove_association "Remove", f, class: "btn btn-warning" %>
+<div class="card m-4">
+  <div class="card-body">
+    <%= f.input :quantity %>
+    <%= f.association :items, input_html: { class: "equipment_item_item" } %>
+    <%= link_to_remove_association "Remove", f, class: "btn btn-warning" %>
+  </div>
 </div>

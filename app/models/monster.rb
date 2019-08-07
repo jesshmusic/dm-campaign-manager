@@ -61,6 +61,11 @@ class Monster < ApplicationRecord
 
   belongs_to :user, optional: true
   
+  accepts_nested_attributes_for :monster_actions, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :monster_legendary_actions, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :monster_special_abilities, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :skills, reject_if: :all_blank, allow_destroy: true
+  
   include PgSearch::Model
   
   # PgSearch

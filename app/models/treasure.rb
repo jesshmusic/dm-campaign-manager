@@ -29,7 +29,6 @@ class Treasure < ApplicationRecord
   has_many :magic_items, through: :treasure_magic_items
   
   belongs_to :user
-  belongs_to :monster, optional: true
   
   accepts_nested_attributes_for :equipment_items, reject_if: :all_blank, allow_destroy: true
   
