@@ -7,10 +7,12 @@
     <li class="breadcrumb-item active" aria-current="page">Edit Class</li>
   </ol>
 </nav>
-<h1>Edit - <small><em><%= @dnd_class.name %></em></small></h1>
-<%= render 'form', dnd_class: @dnd_class %>
-<div class="admin__footer">
-  <%= link_to 'Show', @dnd_class, class: "btn btn-success" %>
-  <%= link_to 'Back', dnd_classes_path, class: "btn btn-primary" %>
-  <%= link_to 'Dashboard', '/dashboard', class: "btn btn-info" %>
+<div class="container">
+  <h1>Edit - <small><em><%= @dnd_class.name %></em></small></h1>
+  <%= render 'form', dnd_class: @dnd_class %>
+  <div class="admin__footer">
+    <%= link_to 'Show', @dnd_class, class: "btn btn-success" %>
+    <%= link_to 'Back', dnd_classes_path, class: "btn btn-primary" %>
+    <%= link_to 'Dashboard', '/dashboard', class: "btn btn-info" %>
+  </div>
 </div>

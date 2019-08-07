@@ -7,10 +7,12 @@
     <li class="breadcrumb-item active" aria-current="page">Edit Treasures</li>
   </ol>
 </nav>
-<h1>Edit - <small><em><%= @treasure.name %></em></small></h1>
-<%= render 'form', treasure: @treasure %>
-<div class="admin__footer">
-  <%= link_to 'Show', @treasure, class: "btn btn-success" %>
-  <%= link_to 'Back', treasures_path, class: "btn btn-primary" %>
-  <%= link_to 'Dashboard', '/dashboard', class: "btn btn-info" %>
+<div class="container">
+  <h1>Edit - <small><em><%= @treasure.name %></em></small></h1>
+  <%= render 'form', treasure: @treasure %>
+  <div class="admin__footer">
+    <%= link_to 'Show', @treasure, class: "btn btn-success" %>
+    <%= link_to 'Back', treasures_path, class: "btn btn-primary" %>
+    <%= link_to 'Dashboard', '/dashboard', class: "btn btn-info" %>
+  </div>
 </div>

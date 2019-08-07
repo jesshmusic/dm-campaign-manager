@@ -7,9 +7,11 @@
     <li class="breadcrumb-item active" aria-current="page">New Class</li>
   </ol>
 </nav>
-<h1>New Class</h1>
-<%= render 'form', dnd_class: @dnd_class %>
-<div class="admin__footer">
-  <%= link_to 'Back', dnd_classes_path, class: "btn btn-primary" %>
-  <%= link_to 'Dashboard', dashboard_path, class: "btn btn-info" %>
+<div class="container">
+  <h1>New Class</h1>
+  <%= render 'form', dnd_class: @dnd_class %>
+  <div class="admin__footer">
+    <%= link_to 'Back', dnd_classes_path, class: "btn btn-primary" %>
+    <%= link_to 'Dashboard', dashboard_path, class: "btn btn-info" %>
+  </div>
 </div>

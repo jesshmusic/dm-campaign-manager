@@ -7,9 +7,11 @@
     <li class="breadcrumb-monster active" aria-current="page">New Monster</li>
   </ol>
 </nav>
-<h1>New Monster</h1>
-<%= render 'form', monster: @monster %>
-<div class="admin__footer">
-  <%= link_to 'Back', monsters_path, class: "btn btn-primary" %>
-  <%= link_to 'Dashboard', dashboard_path, class: "btn btn-info" %>
+<div class="container">
+  <h1>New Monster</h1>
+  <%= render 'form', monster: @monster %>
+  <div class="admin__footer">
+    <%= link_to 'Back', monsters_path, class: "btn btn-primary" %>
+    <%= link_to 'Dashboard', dashboard_path, class: "btn btn-info" %>
+  </div>
 </div>

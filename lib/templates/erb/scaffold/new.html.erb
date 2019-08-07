@@ -7,9 +7,11 @@
     <li class="breadcrumb-item active" aria-current="page">New <%= singular_table_name.capitalize %></li>
   </ol>
 </nav>
-<h1>New <%= singular_table_name.capitalize %></h1>
-<%%= render 'form', <%= singular_table_name %>: @<%= singular_table_name %> %>
-<div class="admin__footer">
-  <%%= link_to 'Back', <%= plural_table_name %>_path, class: "btn btn-primary" %>
-  <%%= link_to 'Dashboard', dashboard_path, class: "btn btn-info" %>
+<div class="container">
+  <h1>New <%= singular_table_name.capitalize %></h1>
+  <%%= render 'form', <%= singular_table_name %>: @<%= singular_table_name %> %>
+  <div class="admin__footer">
+    <%%= link_to 'Back', <%= plural_table_name %>_path, class: "btn btn-primary" %>
+    <%%= link_to 'Dashboard', dashboard_path, class: "btn btn-info" %>
+  </div>
 </div>

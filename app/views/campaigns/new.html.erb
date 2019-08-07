@@ -7,9 +7,11 @@
     <li class="breadcrumb-item active" aria-current="page">New Campaign</li>
   </ol>
 </nav>
-<h1>New Campaign</h1>
-<%= render 'form', campaign: @campaign %>
-<div class="admin__footer">
-  <%= link_to 'Back', campaigns_path, class: "btn btn-primary" %>
-  <%= link_to 'Dashboard', dashboard_path, class: "btn btn-info" %>
+<div class="container">
+  <h1>New Campaign</h1>
+  <%= render 'form', campaign: @campaign %>
+  <div class="admin__footer">
+    <%= link_to 'Back', campaigns_path, class: "btn btn-primary" %>
+    <%= link_to 'Dashboard', dashboard_path, class: "btn btn-info" %>
+  </div>
 </div>

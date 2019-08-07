@@ -5,7 +5,11 @@
 
   <div class="form-inputs">
   <%- attributes.each do |attribute| -%>
-    <%%= form.<%= attribute.reference? ? :association : :input %> :<%= attribute.name %> %>
+    <div class="form-row">
+      <div class="col">
+        <%%= form.<%= attribute.reference? ? :association : :input %> :<%= attribute.name %> %>
+      </div>
+    </div>
   <%- end -%>
   </div>
 

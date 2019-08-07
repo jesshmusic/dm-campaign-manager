@@ -1,31 +1,42 @@
 <% title "Campaign: #{@campaign.name}" %>
-<nav aria-label="breadcrumb">
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="/">Home</a></li>
-    <li class="breadcrumb-item"><%= link_to 'Dashboard', dashboard_path %></li>
-    <li class="breadcrumb-item"><%= link_to 'Campaigns', campaigns_path %></li>
-    <li class="breadcrumb-item"><%= link_to "#{@campaign.user.name}", user_path(slug: @campaign.user.slug) %></li>
-    <li class="breadcrumb-item active" aria-current="page"><%= @campaign.name %></li>
-  </ol>
-</nav>
-<h1>Campaign: <%= @campaign.name %></h1>
+<div class="row">
+  <div class="col">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item"><%= link_to 'Dashboard', dashboard_path %></li>
+        <li class="breadcrumb-item"><%= link_to 'Campaigns', campaigns_path %></li>
+        <li class="breadcrumb-item"><%= link_to "#{@campaign.user.name}", user_path(slug: @campaign.user.slug) %></li>
+        <li class="breadcrumb-item active" aria-current="page"><%= @campaign.name %></li>
+      </ol>
+    </nav>
+  </div>
+</div>
 
-<p>
-  <strong>Description:</strong>
-  <%= markdown(@campaign.description) %>
-</p>
+<div class="container">
+  <div class="row mb-3 pb-3 border-bottom">
+    <div class="col">
+      <h1>Campaign: <%= @campaign.name %></h1>
+    </div>
+  </div>
 
-<p>
-  <strong>World:</strong>
-  <%= @campaign.world %>
-</p>
+  <p>
+    <strong>Description:</strong>
+    <%= markdown(@campaign.description) %>
+  </p>
 
-<p>
-  <strong>Dungeon Master:</strong>
-  <%= link_to "#{@campaign.user.name}", @campaign.user %>
-</p>
+  <p>
+    <strong>World:</strong>
+    <%= @campaign.world %>
+  </p>
 
-<div class="d-flex align-items-center justify-content-start py-3">
-  <%= link_to 'Edit', edit_campaign_path(@campaign), class: "btn btn-success" if policy(@campaign).edit? %>
-  <%= link_to 'Back', campaigns_path, class: "btn btn-info" %>
+  <p>
+    <strong>Dungeon Master:</strong>
+    <%= link_to "#{@campaign.user.name}", @campaign.user %>
+  </p>
+
+  <div class="d-flex align-items-center justify-content-start py-3">
+    <%= link_to 'Edit', edit_campaign_path(@campaign), class: "btn btn-success" if policy(@campaign).edit? %>
+    <%= link_to 'Back', campaigns_path, class: "btn btn-info" %>
+  </div>
 </div>
