@@ -8,15 +8,15 @@
 #  components    :text             default([]), is an Array
 #  concentration :boolean
 #  description   :text
-#  duration      :text
+#  duration      :string
 #  higher_level  :text
 #  level         :integer
-#  material      :text
-#  name          :text
-#  page          :text
-#  range         :text
+#  material      :string
+#  name          :string
+#  page          :string
+#  range         :string
 #  ritual        :boolean
-#  school        :text
+#  school        :string
 #  slug          :string
 #  spell_level   :string
 #  created_at    :datetime         not null

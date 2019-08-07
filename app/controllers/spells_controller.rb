@@ -80,6 +80,6 @@ class SpellsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def spell_params
-      params.require(:spell).permit(:name, :description, :higher_level, :page, :range, :components, :material, :ritual, :duration, :concentration, :casting_time, :level)
+      params.require(:spell).permit(:name, :description, :higher_level, :page, :range, :material, :ritual, :duration, :concentration, :casting_time, :level, components: [], dnd_class_ids: [])
     end
 end

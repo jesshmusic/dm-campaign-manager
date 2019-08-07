@@ -26,6 +26,7 @@
 
 <p>
   <strong>Components:</strong>
+  <% puts @spell.components %>
   <%= @spell.components.map {|str| "#{str}"}.join(', ') %>
 </p>
 

@@ -10,20 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_07_134615) do
+ActiveRecord::Schema.define(version: 2019_08_07_162225) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-
-  create_table "actions", force: :cascade do |t|
-    t.string "name"
-    t.text "description"
-    t.integer "attack_bonus"
-    t.integer "damage_bonus"
-    t.string "damage_dice"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
 
   create_table "campaigns", force: :cascade do |t|
     t.bigint "user_id"
@@ -251,21 +241,21 @@ ActiveRecord::Schema.define(version: 2019_08_07_134615) do
   end
 
   create_table "spells", force: :cascade do |t|
-    t.text "name"
+    t.string "name"
     t.text "description"
     t.text "higher_level"
-    t.text "page"
-    t.text "range"
+    t.string "page"
+    t.string "range"
     t.text "components", default: [], array: true
-    t.text "material"
+    t.string "material"
     t.boolean "ritual"
-    t.text "duration"
+    t.string "duration"
     t.boolean "concentration"
     t.string "casting_time"
     t.integer "level"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.text "school"
+    t.string "school"
     t.string "api_url"
     t.string "spell_level"
     t.bigint "user_id"
