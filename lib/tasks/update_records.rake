@@ -1,4 +1,7 @@
 namespace :update do
+  task monsters: :environment do
+    
+  end
   
   task spells: :environment do
     Spell.find_each do |spell|

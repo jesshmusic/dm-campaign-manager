@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_07_162225) do
+ActiveRecord::Schema.define(version: 2019_08_07_180511) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -186,7 +186,6 @@ ActiveRecord::Schema.define(version: 2019_08_07_162225) do
     t.string "api_url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.jsonb "skills", default: [], array: true
     t.text "legendary_description"
     t.text "reactions"
     t.bigint "user_id"
@@ -229,6 +228,15 @@ ActiveRecord::Schema.define(version: 2019_08_07_162225) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_profs_on_name", unique: true
+  end
+
+  create_table "skills", force: :cascade do |t|
+    t.string "name"
+    t.integer "score"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "monster_id"
+    t.index ["monster_id"], name: "index_skills_on_monster_id"
   end
 
   create_table "spell_classes", force: :cascade do |t|

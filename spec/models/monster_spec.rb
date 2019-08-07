@@ -29,7 +29,6 @@
 #  reactions              :text
 #  senses                 :string
 #  size                   :string
-#  skills                 :jsonb            is an Array
 #  slug                   :string
 #  speed                  :string
 #  strength               :integer

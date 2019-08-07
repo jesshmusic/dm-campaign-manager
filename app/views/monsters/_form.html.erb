@@ -28,6 +28,9 @@
     <%= form.input :senses %>
     <%= form.input :languages %>
     <%= form.input :challenge_rating %>
+    <%= form.simple_fields_for(@monster.skills) do |cf|
+      cf.input :hash_tags
+    end %>
   </div>
   
   <div class="form-actions">

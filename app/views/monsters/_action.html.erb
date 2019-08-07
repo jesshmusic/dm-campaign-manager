@@ -1,0 +1,26 @@
+<div class="row">
+  <div class="col">
+    <h4><%= monster_action.name %> </h4>
+    <%= markdown(monster_action.description) %>
+  </div>
+</div>
+<div class="row pt-1 pb-4">
+  <% if monster_action.attack_bonus %>
+    <div class="col">
+      <strong>Attack Bonus </strong>
+      +<%= monster_action.attack_bonus %>
+    </div>
+  <% end %>
+  <% if monster_action.damage_bonus %>
+    <div class="col">
+      <strong>Damage Bonus </strong>
+      +<%= monster_action.damage_bonus %>
+    </div>
+  <% end %>
+  <% if monster_action.damage_dice %>
+    <div class="col">
+      <strong>Damage Dice </strong>
+      <%= monster_action.damage_dice %>
+    </div>
+  <% end %>
+</div>

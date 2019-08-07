@@ -29,7 +29,6 @@
 #  reactions              :text
 #  senses                 :string
 #  size                   :string
-#  skills                 :jsonb            is an Array
 #  slug                   :string
 #  speed                  :string
 #  strength               :integer
@@ -58,6 +57,7 @@ class Monster < ApplicationRecord
   has_many :monster_actions, dependent: :delete_all
   has_many :monster_legendary_actions, dependent: :delete_all
   has_many :monster_special_abilities, dependent: :delete_all
+  has_many :skills, dependent: :delete_all
 
   belongs_to :user, optional: true
   
