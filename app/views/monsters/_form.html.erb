@@ -112,6 +112,7 @@
     <div class="form-row">
       <div class="p-3 mx-3 my-5 border-bottom border-top" id="prof_choices_container">
         <h3>Legendary Actions</h3>
+        <%= form.input :legendary_description %>
         <%= form.simple_fields_for :monster_legendary_actions do |p_form| %>
           <%= render 'monster_legendary_action_fields', f: p_form %>
         <% end %>

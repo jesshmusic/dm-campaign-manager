@@ -119,6 +119,7 @@
     <div class="row">
       <div class="col">
         <h3>Legendary Actions</h3>
+        <%= markdown(@monster.legendary_description) %>
         <% @monster.monster_legendary_actions.each do |monster_action| %>
           <%= render 'action', monster_action: monster_action %>
         <% end %>
