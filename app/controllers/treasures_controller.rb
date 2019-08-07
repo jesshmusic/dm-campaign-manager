@@ -80,6 +80,21 @@ class TreasuresController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def treasure_params
-      params.require(:treasure).permit(:name, :description, :copper_pieces, :silver_pieces, :gold_pieces, :platinum_pieces, :user_id, item_ids: [], magic_item_ids: [])
+      params.require(:treasure).permit(
+        :name,
+        :description,
+        :copper_pieces,
+        :silver_pieces,
+        :gold_pieces,
+        :platinum_pieces,
+        :user_id,
+        magic_item_ids: [],
+        equipment_items_attributes: [
+          :id,
+          :quantity,
+          :_destroy,
+          item_ids: []
+        ]
+      )
     end
 end

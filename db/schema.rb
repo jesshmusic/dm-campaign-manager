@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_06_195053) do
+ActiveRecord::Schema.define(version: 2019_08_07_014024) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -59,6 +59,23 @@ ActiveRecord::Schema.define(version: 2019_08_06_195053) do
     t.index ["user_id"], name: "index_dnd_classes_on_user_id"
   end
 
+  create_table "equipment_item_items", force: :cascade do |t|
+    t.bigint "item_id"
+    t.bigint "equipment_item_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["equipment_item_id"], name: "index_equipment_item_items_on_equipment_item_id"
+    t.index ["item_id"], name: "index_equipment_item_items_on_item_id"
+  end
+
+  create_table "equipment_items", force: :cascade do |t|
+    t.integer "quantity"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "treasure_id"
+    t.index ["treasure_id"], name: "index_equipment_items_on_treasure_id"
+  end
+
   create_table "items", force: :cascade do |t|
     t.string "name"
     t.string "category"
@@ -88,7 +105,6 @@ ActiveRecord::Schema.define(version: 2019_08_06_195053) do
     t.string "api_url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "quantity", default: 1
     t.integer "vehicle_speed"
     t.string "vehicle_speed_unit"
     t.string "vehicle_capacity"
@@ -189,15 +205,6 @@ ActiveRecord::Schema.define(version: 2019_08_06_195053) do
     t.index ["user_id"], name: "index_monsters_on_user_id"
   end
 
-  create_table "prof_choice_classes", force: :cascade do |t|
-    t.bigint "dnd_class_id"
-    t.bigint "prof_choice_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["dnd_class_id"], name: "index_prof_choice_classes_on_dnd_class_id"
-    t.index ["prof_choice_id"], name: "index_prof_choice_classes_on_prof_choice_id"
-  end
-
   create_table "prof_choice_profs", force: :cascade do |t|
     t.bigint "prof_id"
     t.bigint "prof_choice_id"
@@ -213,7 +220,8 @@ ActiveRecord::Schema.define(version: 2019_08_06_195053) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "name"
-    t.index ["name"], name: "index_prof_choices_on_name", unique: true
+    t.bigint "dnd_class_id"
+    t.index ["dnd_class_id"], name: "index_prof_choices_on_dnd_class_id"
   end
 
   create_table "prof_classes", force: :cascade do |t|
@@ -268,10 +276,10 @@ ActiveRecord::Schema.define(version: 2019_08_06_195053) do
 
   create_table "treasure_items", force: :cascade do |t|
     t.bigint "treasure_id"
-    t.bigint "item_id"
+    t.bigint "equipment_item_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["item_id"], name: "index_treasure_items_on_item_id"
+    t.index ["equipment_item_id"], name: "index_treasure_items_on_equipment_item_id"
     t.index ["treasure_id"], name: "index_treasure_items_on_treasure_id"
   end
 

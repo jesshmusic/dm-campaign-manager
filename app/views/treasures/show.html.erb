@@ -25,8 +25,8 @@
 
 <h2>Equipment</h2>
 <ul class="list-group">
-  <% @treasure.items.each do |item| %>
-    <li class="list-group-item"><strong><%= item.name %></strong> - quantity: <%= item.quantity %></li>
+  <% @treasure.equipment_items.each do |equipment_item| %>
+    <li class="list-group-item"><strong><%= equipment_item.items.first.name %></strong> - quantity: <%= equipment_item.quantity %></li>
   <% end %>
 </ul>
 

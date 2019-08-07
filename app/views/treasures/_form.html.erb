@@ -13,7 +13,16 @@
     
     <%= form.hidden_field :user_id, value: form.object.user_id || current_user.id %>
 
-    <%= form.association :items %>
+    <div class="py-3" id="equipment_items_container">
+      <h5>Equipment</h5>
+      <%= form.simple_fields_for :equipment_items do |equipment_item_form| %>
+        <%= render 'equipment_item_fields', f: equipment_item_form %>
+      <% end %>
+      <div class='links'>
+        <%= link_to_add_association 'Add Equipment', form, :equipment_items, class: "btn btn-info" %>
+      </div>
+    </div>
+    
     <%= form.association :magic_items %>
   </div>
 
@@ -27,12 +36,23 @@
     function convertToSlug(text) {
       return text.toLowerCase().replace(/[^\w ]+/g,'').replace(/ +/g,'_');
     }
-    $( "#treasure_item_ids" ).select2({
-      theme: "bootstrap"
+    $("#equipment_items_container").on('cocoon:after-insert', function(event, addedTask) {
+      loadSelect2();
     });
-    $( "#treasure_magic_item_ids" ).select2({
-      theme: "bootstrap"
-    });
+    function loadSelect2() {
+      $( "#treasure_item_ids" ).select2({
+        theme: "bootstrap"
+      });
+      $( "#treasure_magic_item_ids" ).select2({
+        theme: "bootstrap"
+      });
+      $( ".equipment_item_item" ).select2({
+        multiple: false,
+        theme: "bootstrap"
+      });
+    }
+    
+    loadSelect2();
     $( "#treasure_name" ).on('change', function(event) {
       var slugInput = $('treasure_slug');
       slugInput.val(convertToSlug($( "#treasure_name" ).val()));

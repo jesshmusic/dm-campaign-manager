@@ -1,20 +1,20 @@
 # == Schema Information
 #
-# Table name: treasure_items
+# Table name: equipment_item_items
 #
 #  id                :bigint           not null, primary key
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
 #  equipment_item_id :bigint
-#  treasure_id       :bigint
+#  item_id           :bigint
 #
 # Indexes
 #
-#  index_treasure_items_on_equipment_item_id  (equipment_item_id)
-#  index_treasure_items_on_treasure_id        (treasure_id)
+#  index_equipment_item_items_on_equipment_item_id  (equipment_item_id)
+#  index_equipment_item_items_on_item_id            (item_id)
 #
 
-class TreasureItem < ApplicationRecord
-  belongs_to :treasure
+class EquipmentItemItem < ApplicationRecord
+  belongs_to :item
   belongs_to :equipment_item
 end

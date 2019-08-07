@@ -15,7 +15,6 @@
 #  cost_value                  :integer
 #  description                 :text
 #  name                        :string
-#  quantity                    :integer          default(1)
 #  slug                        :string
 #  sub_category                :string
 #  vehicle_capacity            :string

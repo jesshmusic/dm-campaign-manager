@@ -35,7 +35,6 @@ namespace :srd do
           num_choices: prof_choice_block[:choose],
           prof_choice_type: prof_choice_block[:type]
         )
-        puts prof_choice.to_json
         prof_choice_block[:from].each do |prof|
           new_prof = Prof.find_by(name: prof[:name])
           prof_choice.profs << new_prof

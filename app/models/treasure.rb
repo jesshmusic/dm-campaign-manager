@@ -23,14 +23,15 @@
 class Treasure < ApplicationRecord
   validates :name, presence: true
 
-  has_many :treasure_items, dependent: :delete_all
-  has_many :items, through: :treasure_items
+  has_many :equipment_items, inverse_of: :treasure
 
   has_many :treasure_magic_items, dependent: :delete_all
   has_many :magic_items, through: :treasure_magic_items
   
   belongs_to :user
   belongs_to :monster, optional: true
+  
+  accepts_nested_attributes_for :equipment_items, reject_if: :all_blank, allow_destroy: true
   
   include PgSearch::Model
   
