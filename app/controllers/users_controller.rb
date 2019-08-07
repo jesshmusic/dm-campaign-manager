@@ -12,7 +12,8 @@ class UsersController < ApplicationController
              else
                User.all
              end
-    @pagy, @users = pagy(@users.where(role: :dungeon_master).or(@users.where(role: :player)))
+    @pagy, @users = pagy(@users.where(role: :dungeon_master).or(@users.where(role: :player))) if !current_user.admin?
+    @pagy, @users = pagy(@users) if current_user.admin?
 
     respond_to do |format|
       format.html { @users }

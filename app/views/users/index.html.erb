@@ -20,7 +20,11 @@
 
   <tbody>
     <% @users.each do |user| %>
-      <tr>
+      <% user_role_class = "" %>
+      <% user_role_class = "table-primary" if user.admin? %>
+      <% user_role_class = "table-success" if user.dungeon_master? %>
+      <% user_role_class = "table-danger" if user.deleted_at? %>
+      <tr class="<%= user_role_class %>">
         <td><%= user.name %></td>
         <td><%= user.role.capitalize %></td>
         <td class="d-none d-lg-table-cell"><%= user.campaigns.count %></td>

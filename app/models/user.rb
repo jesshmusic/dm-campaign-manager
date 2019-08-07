@@ -54,7 +54,12 @@ class User < ApplicationRecord
   has_many :spells, dependent: :delete_all
 
   def set_default_role
-    self.role ||= :player
+    puts "SETTING DEFAULT ROLE, self.role = #{self.role}"
+    if self.role == :dungeon_master
+      self.role ||= :dungeon_master
+    else
+      self.role ||= :player
+    end
   end
   
   def generate_slug
