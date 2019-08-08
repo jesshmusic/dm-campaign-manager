@@ -1,26 +1,10 @@
-<div class="card m-4">
-  <div class="card-body">
-    <div class="form-row">
-      <div class="col">
-        <%= f.input :name, required: true %>
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="col">
-        <%= f.input :description, required: true %>
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="col">
-        <%= f.input :attack_bonus %>
-      </div>
-      <div class="col">
-        <%= f.input :damage_bonus %>
-      </div>
-      <div class="col">
-        <%= f.input :damage_dice %>
-      </div>
-    </div>
-    <%= link_to_remove_association "Remove", f, class: "btn btn-warning" %>
+<div class="nested-fields">
+  <div class="d-flex align-items-end">
+    <%= f.input :name, required: true, wrapper_html: {class: 'mr-3' } %>
+    <%= f.input :description, required: true, wrapper_html: {class: 'mr-3' } %>
+    <%= f.input :attack_bonus, wrapper_html: {class: 'mr-3' } %>
+    <%= f.input :damage_bonus, wrapper_html: {class: 'mr-3' } %>
+    <%= f.input :damage_dice, wrapper_html: {class: 'mr-3' } %>
+    <%= link_to_remove_association "Remove", f, class: "btn btn-warning mb-3" %>
   </div>
 </div>

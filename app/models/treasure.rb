@@ -12,13 +12,11 @@
 #  silver_pieces   :integer
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
-#  character_id    :bigint
 #  user_id         :bigint
 #
 # Indexes
 #
-#  index_treasures_on_character_id  (character_id)
-#  index_treasures_on_user_id       (user_id)
+#  index_treasures_on_user_id  (user_id)
 #
 
 class Treasure < ApplicationRecord
@@ -31,7 +29,6 @@ class Treasure < ApplicationRecord
   
   belongs_to :user
   belongs_to :monster, optional: true
-  belongs_to :character, optional: true
   
   accepts_nested_attributes_for :equipment_items, reject_if: :all_blank, allow_destroy: true
   

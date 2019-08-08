@@ -2,15 +2,20 @@
 <%= simple_form_for @character, validate: true do |form| %>
   <%= form.error_notification %>
   <%= form.error_notification message: form.object.errors[:base].to_sentence if form.object.errors[:base].present? %>
+  <% @character.errors.full_messages.each do |msg| %>
+                      <h4><%= msg %></h4>
+                    <% end %>
 
   <div class="form-inputs">
-    <% if current_user.admin? %>
+    <% if current_user.admin? || current_user.dungeon_master? %>
         <%= form.input :character_type,
           collection: [['Player Character', 'pc'], ['Non-player Character', 'npc'] ],
           input_html: { multiple: false },
           include_blank: false,
           include_hidden: false %>
     <% end %>
+    
+    <%= form.hidden_field :user_id, value: form.object.user_id || current_user.id %>
     <div class="form-row">
       <div class="col">
         <%= form.input :name %>
@@ -26,9 +31,9 @@
         <%= form.input :alignment %>
       </div>
       <div class="col">
-        <%= form.input :dnd_class,
+        <%= form.association :dnd_classes,
           collection: DndClass.where(user_id: nil),
-          input_html: { multiple: false },
+          input_html: { multiple: true },
           include_blank: false,
           include_hidden: false,
           label: 'Class' %>
@@ -217,6 +222,18 @@
       </div>
     </div>
     
+    <h2>Skills</h2>
+    <div class="form-row">
+      <div class="p-3 border-bottom border-top">
+        <%= form.simple_fields_for :skills do |p_form| %>
+          <%= render 'skill_fields', f: p_form %>
+        <% end %>
+        <div class='links'>
+          <%= link_to_add_association 'Add Skill', form, :skills, class: "btn btn-info" %>
+        </div>
+      </div>
+    </div>
+    
     <h2>Inventory</h2>
     <div class="form-row">
       <div class="col">
@@ -235,6 +252,23 @@
         <%= form.input :platinum_pieces %>
       </div>
     </div>
+    <div class="form-row">
+      <div class="col">
+        <%= form.association :magic_items,
+          input_html: { multiple: true },
+          include_blank: false,
+          include_hidden: false %>
+      </div>
+    </div>
+    <div class="py-3" id="equipment_items_container">
+      <h5>Equipment</h5>
+      <%= form.simple_fields_for :equipment_items do |equipment_item_form| %>
+        <%= render 'equipment_item_fields', f: equipment_item_form %>
+      <% end %>
+      <div class='links'>
+        <%= link_to_add_association 'Add Equipment', form, :equipment_items, class: "btn btn-info" %>
+      </div>
+    </div>
   </div>
 
   <div class="form-actions">
@@ -246,12 +280,25 @@
   $('#character_character_type').select2({
     theme: "bootstrap"
   });
-  $('#character_dnd_class').select2({
+  $('#character_dnd_class_ids').select2({
+    multiple: false,
+    theme: "bootstrap"
+  });
+  $('#character_magic_item_ids').select2({
     theme: "bootstrap"
   });
   
+  function handleNPCDisplay() {
+    var classTypeValue = $('#character_character_type :selected').text();
+    if (classTypeValue === "Non-player Character") {
+      $('.character_role').show();
+    } else {
+      $('.character_role').hide();
+    }
+  }
+  
   function handleSpellsDisplay() {
-    var classValue = $('#character_dnd_class :selected').text()
+    var classValue = $('#character_dnd_class_ids :selected').text()
     if (classValue === 'Bard' || classValue === 'Cleric' || classValue === 'Druid' || classValue === 'Sorcerer' || classValue === 'Warlock' || classValue === 'Wizard') {
       $('#spellsForm').show();
       showSpellLevels(0, 9);
@@ -274,10 +321,12 @@
     }
   }
   
-  handleSpellsDisplay();
-  
-  $('#character_dnd_class').on("select2:select", function (event) {
+  $('#character_dnd_class_ids').on("select2:select", function (event) {
     handleSpellsDisplay();
+  });
+  
+  $("#equipment_items_container").on('cocoon:after-insert', function(event, addedTask) {
+    loadSelect2();
   });
   
   function loadSelect2() {
@@ -311,6 +360,14 @@
     $('#character_spell_9th_level_ids').select2({
       theme: "bootstrap"
     });
+    $( ".equipment_item_item" ).select2({
+      multiple: false,
+      theme: "bootstrap"
+    });
   }
+  
+  handleNPCDisplay();
+  handleSpellsDisplay();
+  loadSelect2()
   
 </script>

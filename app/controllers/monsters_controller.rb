@@ -104,7 +104,7 @@ class MonstersController < ApplicationController
         monster_special_ability_attributes: [
           :id, :name, :description, :attack_bonus, :damage_bonus, :damage_dice, :_destroy
         ],
-        skills: [
+        skills_attributes: [
           :id, :name, :score, :_destroy
         ]
       )

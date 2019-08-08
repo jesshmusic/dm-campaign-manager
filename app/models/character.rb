@@ -47,15 +47,15 @@
 
 class Character < ApplicationRecord
   after_validation(on: :create) do
+    self.character_type = self.character_type ? self.character_type : 'pc'
     self.slug = generate_slug
   end
   
-  has_one :character_class, dependent: :delete
-  has_one :dnd_class, through: :character_class
+  has_many :character_classes, dependent: :delete_all
+  has_many :dnd_classes, through: :character_classes
   
   has_many :equipment_items, inverse_of: :character
   has_many :skills, dependent: :delete_all
-  has_many :treasures, dependent: :delete_all
 
   has_many :character_magic_items, dependent: :delete_all
   has_many :magic_items, through: :character_magic_items
@@ -65,10 +65,9 @@ class Character < ApplicationRecord
   
   accepts_nested_attributes_for :equipment_items, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :skills, reject_if: :all_blank, allow_destroy: true
-  accepts_nested_attributes_for :treasures, reject_if: :all_blank, allow_destroy: true
   
   belongs_to :user
-  belongs_to :campaign
+  belongs_to :campaign, optional: true
   
   include PgSearch::Model
   

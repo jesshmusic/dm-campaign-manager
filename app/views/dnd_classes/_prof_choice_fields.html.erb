@@ -1,21 +1,9 @@
-<div class="card m-4">
-  <div class="card-body">
-    <div class="form-row">
-      <div class="col">
-        <%= f.input :name %>
-      </div>
-      <div class="col">
-        <%= f.input :prof_choice_type %>
-      </div>
-      <div class="col">
-        <%= f.input :num_choices %>
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="col">
-        <%= f.association :profs, input_html: { class: "prof_choice_profs" } %>
-      </div>
-    </div>
-    <%= link_to_remove_association "Remove", f, class: "btn btn-warning" %>
+<div class="nested-fields">
+  <div class="d-flex align-items-end">
+    <%= f.input :name, wrapper_html: {class: 'mr-3' } %>
+    <%= f.input :prof_choice_type, wrapper_html: {class: 'mr-3' } %>
+    <%= f.input :num_choices, wrapper_html: {class: 'mr-3' } %>
+    <%= f.association :profs, input_html: { class: "prof_choice_profs" }, wrapper_html: {class: 'mr-3' } %>
+    <%= link_to_remove_association "Remove", f, class: "btn btn-warning mb-3" %>
   </div>
 </div>

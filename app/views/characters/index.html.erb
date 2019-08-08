@@ -19,6 +19,7 @@
         <th>Class</th>
         <th>Level</th>
         <th>Race</th>
+        <th>Player</th>
         <th></th>
       </tr>
     </thead>
@@ -27,9 +28,10 @@
       <% @characters.each do |character| %>
         <tr>
           <td><%= character.name %></td>
-          <td><%= character.dnd_class.name %></td>
+          <td><%= character.dnd_classes.map {|dnd_class| dnd_class.name}.join(', ') %></td>
           <td><%= character.level %></td>
           <td><%= character.race %></td>
+          <td><%= character.user ? character.user.name : 'NPC' %></td>
           <td>
             <%= link_to 'Show', character, class: "btn btn-sm btn-primary" %>
             <%= link_to 'Edit', edit_character_path(character), class: "btn btn-sm btn-success" if policy(character).edit? %>

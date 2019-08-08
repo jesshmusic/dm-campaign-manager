@@ -102,7 +102,6 @@ class CharactersController < ApplicationController
         :constitution,
         :copper_pieces,
         :dexterity,
-        :dnd_class_id,
         :electrum_pieces,
         :gold_pieces,
         :hit_points,
@@ -123,32 +122,14 @@ class CharactersController < ApplicationController
         :strength,
         :wisdom,
         :xp,
+        dnd_class_ids: [],
         spell_ids: [],
         magic_item_ids: [],
         equipment_items_attributes: [
           :id, :quantity, :_destroy, item_ids: []
         ],
-        skills: [
+        skills_attributes: [
           :id, :name, :score, :_destroy
-        ],
-        treasures: [
-          :id,
-          :name,
-          :description,
-          :copper_pieces,
-          :silver_pieces,
-          :electrum_pieces,
-          :gold_pieces,
-          :platinum_pieces,
-          :user_id,
-          :_destroy,
-          magic_item_ids: [],
-          equipment_items_attributes: [
-            :id,
-            :quantity,
-            :_destroy,
-            item_ids: []
-          ]
         ]
       )
     end

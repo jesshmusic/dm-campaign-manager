@@ -12,13 +12,11 @@
 #  silver_pieces   :integer
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
-#  character_id    :bigint
 #  user_id         :bigint
 #
 # Indexes
 #
-#  index_treasures_on_character_id  (character_id)
-#  index_treasures_on_user_id       (user_id)
+#  index_treasures_on_user_id  (user_id)
 #
 
 require 'rails_helper'
