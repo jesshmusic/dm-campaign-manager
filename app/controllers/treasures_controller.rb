@@ -4,11 +4,18 @@ class TreasuresController < ApplicationController
   # GET /treasures
   # GET /treasures.json
   def index
-    @treasures = Treasure.all
     if params[:search].present?
-      @pagy, @treasures = pagy(Treasure.search_for(params[:search]))
+      @treasures = Treasure.search_for(params[:search])
     else
-      @pagy, @treasures = pagy(Treasure.where(user_id: nil).or(Treasure.where(user_id: current_user.id)).order('name ASC'))
+      @treasures = Treasure.all
+    end
+
+    if !current_user
+      @pagy, @treasures = pagy(@treasures.where(user_id: nil))
+    elsif current_user.admin?
+      @pagy, @treasures = pagy(@treasures)
+    else
+      @pagy, @treasures = pagy(@treasures.where(user_id: nil).or(@treasures.where(user_id: current_user.id)).order('name ASC'))
     end
   end
 

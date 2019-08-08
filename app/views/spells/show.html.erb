@@ -47,8 +47,10 @@
 
 <p>
   <strong>Classes:</strong>
-  <% @spell.dnd_classes.each_with_index do |dnd_class, index| %>
-    <%= link_to dnd_class.name, dnd_class %><% if index != @spell.dnd_classes.count - 1 %>,<% end %>
+  <% if current_user %>
+    <%= @spell.dnd_classes.where(user_id: nil).or(@spell.dnd_classes.where(user_id: current_user.id)).map {|spell_class| spell_class.name}.join(', ') %>
+  <% else %>
+    <%= @spell.dnd_classes.where(user_id: nil).map {|spell_class| spell_class.name}.join(', ') %>
   <% end %>
 </p>
 

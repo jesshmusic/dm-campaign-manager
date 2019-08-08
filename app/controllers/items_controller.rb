@@ -6,9 +6,17 @@ class ItemsController < ApplicationController
   # GET /items.json
   def index
     if params[:search].present?
-      @pagy, @items = pagy(Item.search_for(params[:search]))
+      @items = Item.search_for(params[:search])
     else
-      @pagy, @items = pagy(Item.where(user_id: nil).or(Item.where(user_id: current_user.id)).order('category ASC, sub_category ASC, name ASC'))
+      @items = Item.all
+    end
+
+    if !current_user
+      @pagy, @items = pagy(@items.where(user_id: nil))
+    elsif current_user.admin?
+      @pagy, @items = pagy(@items)
+    else
+      @pagy, @items = pagy(@items.where(user_id: nil).or(@items.where(user_id: current_user.id)).order('name ASC'))
     end
   end
 

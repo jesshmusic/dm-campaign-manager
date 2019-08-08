@@ -6,9 +6,17 @@ class MonstersController < ApplicationController
   # GET /monsters.json
   def index
     if params[:search].present?
-      @pagy, @monsters = pagy(Monster.search_for(params[:search]))
+      @monsters = Monster.search_for(params[:search])
     else
-      @pagy, @monsters = pagy(Monster.where(user_id: nil).or(Monster.where(user_id: current_user.id)).order('name ASC'))
+      @monsters = Monster.all
+    end
+
+    if !current_user
+      @pagy, @monsters = pagy(@monsters.where(user_id: nil))
+    elsif current_user.admin?
+      @pagy, @monsters = pagy(@monsters)
+    else
+      @pagy, @monsters = pagy(@monsters.where(user_id: nil).or(@monsters.where(user_id: current_user.id)).order('name ASC'))
     end
   end
 

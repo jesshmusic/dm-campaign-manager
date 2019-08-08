@@ -6,9 +6,17 @@ class SpellsController < ApplicationController
   # GET /spells.json
   def index
     if params[:search].present?
-      @pagy, @spells = pagy(Spell.search_for(params[:search]))
+      @spells = Spell.search_for(params[:search])
     else
-      @pagy, @spells = pagy(Spell.where(user_id: nil).or(Spell.where(user_id: current_user.id)).order('name ASC'))
+      @spells = Spell.all
+    end
+
+    if !current_user
+      @pagy, @spells = pagy(@spells.where(user_id: nil))
+    elsif current_user.admin?
+      @pagy, @spells = pagy(@spells)
+    else
+      @pagy, @spells = pagy(@spells.where(user_id: nil).or(@spells.where(user_id: current_user.id)).order('name ASC'))
     end
   end
 

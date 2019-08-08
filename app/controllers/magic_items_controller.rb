@@ -6,9 +6,17 @@ class MagicItemsController < ApplicationController
   # GET /magic_items.json
   def index
     if params[:search].present?
-      @pagy, @magic_items = pagy(MagicItem.search_for(params[:search]))
+      @magic_items = MagicItem.search_for(params[:search])
     else
-      @pagy, @magic_items = pagy(MagicItem.where(user_id: nil).or(MagicItem.where(user_id: current_user.id)).order('name ASC'))
+      @magic_items = MagicItem.all
+    end
+
+    if !current_user
+      @pagy, @magic_items = pagy(@magic_items.where(user_id: nil))
+    elsif current_user.admin?
+      @pagy, @magic_items = pagy(@magic_items)
+    else
+      @pagy, @magic_items = pagy(@magic_items.where(user_id: nil).or(@magic_items.where(user_id: current_user.id)).order('name ASC'))
     end
   end
 

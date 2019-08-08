@@ -5,11 +5,18 @@ class PlayerCharactersController < ApplicationController
   # GET /player_characters
   # GET /player_characters.json
   def index
-    @player_characters = PlayerCharacter.all
     if params[:search].present?
-      @pagy, @player_characters = pagy(PlayerCharacter.search_for(params[:search]))
+      @player_characters = PlayerCharacter.search_for(params[:search])
     else
-      @pagy, @player_characters = pagy(PlayerCharacter.all)
+      @player_characters = PlayerCharacter.all
+    end
+
+    if !current_user
+      @pagy, @player_characters = pagy(@player_characters.where(user_id: nil))
+    elsif current_user.admin?
+      @pagy, @player_characters = pagy(@player_characters)
+    else
+      @pagy, @player_characters = pagy(@player_characters.where(user_id: nil).or(@player_characters.where(user_id: current_user.id)).order('name ASC'))
     end
   end
 
