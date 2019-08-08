@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_08_011206) do
+ActiveRecord::Schema.define(version: 2019_08_08_122904) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -27,8 +27,28 @@ ActiveRecord::Schema.define(version: 2019_08_08_011206) do
     t.index ["user_id"], name: "index_campaigns_on_user_id"
   end
 
-  create_table "character_stats", force: :cascade do |t|
+  create_table "character_magic_items", force: :cascade do |t|
+    t.bigint "magic_item_id"
+    t.bigint "character_id"
+    t.index ["character_id"], name: "index_character_magic_items_on_character_id"
+    t.index ["magic_item_id"], name: "index_character_magic_items_on_magic_item_id"
+  end
+
+  create_table "character_spells", force: :cascade do |t|
+    t.bigint "spell_id"
+    t.bigint "character_id"
+    t.index ["character_id"], name: "index_character_spells_on_character_id"
+    t.index ["spell_id"], name: "index_character_spells_on_spell_id"
+  end
+
+  create_table "characters", force: :cascade do |t|
+    t.string "character_type", null: false
+    t.string "name", null: false
+    t.text "description"
+    t.string "slug", null: false
+    t.string "role"
     t.integer "level"
+    t.integer "xp"
     t.string "alignment"
     t.string "race"
     t.integer "initiative"
@@ -40,22 +60,25 @@ ActiveRecord::Schema.define(version: 2019_08_08_011206) do
     t.integer "spell_attack_bonus"
     t.integer "armor_class"
     t.integer "hit_points"
+    t.integer "hit_points_current"
     t.integer "strength"
     t.integer "dexterity"
     t.integer "constitution"
     t.integer "intelligence"
     t.integer "wisdom"
     t.integer "charisma"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "player_character_id"
     t.integer "copper_pieces"
     t.integer "silver_pieces"
+    t.integer "electrum_pieces"
     t.integer "gold_pieces"
     t.integer "platinum_pieces"
-    t.integer "hit_points_current"
-    t.integer "xp"
-    t.index ["player_character_id"], name: "index_character_stats_on_player_character_id"
+    t.bigint "user_id"
+    t.bigint "campaign_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["campaign_id"], name: "index_characters_on_campaign_id"
+    t.index ["slug"], name: "index_characters_on_slug"
+    t.index ["user_id"], name: "index_characters_on_user_id"
   end
 
   create_table "container_items", force: :cascade do |t|
@@ -94,6 +117,8 @@ ActiveRecord::Schema.define(version: 2019_08_08_011206) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "treasure_id"
+    t.bigint "character_id"
+    t.index ["character_id"], name: "index_equipment_items_on_character_id"
     t.index ["treasure_id"], name: "index_equipment_items_on_treasure_id"
   end
 
@@ -225,16 +250,6 @@ ActiveRecord::Schema.define(version: 2019_08_08_011206) do
     t.index ["user_id"], name: "index_monsters_on_user_id"
   end
 
-  create_table "player_characters", force: :cascade do |t|
-    t.string "name"
-    t.text "description"
-    t.string "slug"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "user_id"
-    t.index ["user_id"], name: "index_player_characters_on_user_id"
-  end
-
   create_table "prof_choice_profs", force: :cascade do |t|
     t.bigint "prof_id"
     t.bigint "prof_choice_id"
@@ -277,6 +292,8 @@ ActiveRecord::Schema.define(version: 2019_08_08_011206) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "monster_id"
+    t.bigint "character_id"
+    t.index ["character_id"], name: "index_skills_on_character_id"
     t.index ["monster_id"], name: "index_skills_on_monster_id"
   end
 
@@ -339,10 +356,11 @@ ActiveRecord::Schema.define(version: 2019_08_08_011206) do
     t.integer "gold_pieces"
     t.integer "platinum_pieces"
     t.bigint "user_id"
-    t.bigint "monster_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["monster_id"], name: "index_treasures_on_monster_id"
+    t.bigint "character_id"
+    t.integer "electrum_pieces"
+    t.index ["character_id"], name: "index_treasures_on_character_id"
     t.index ["user_id"], name: "index_treasures_on_user_id"
   end
 

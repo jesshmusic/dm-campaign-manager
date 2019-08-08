@@ -5,19 +5,20 @@
 #  id              :bigint           not null, primary key
 #  copper_pieces   :integer
 #  description     :text
+#  electrum_pieces :integer
 #  gold_pieces     :integer
 #  name            :string
 #  platinum_pieces :integer
 #  silver_pieces   :integer
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
-#  monster_id      :bigint
+#  character_id    :bigint
 #  user_id         :bigint
 #
 # Indexes
 #
-#  index_treasures_on_monster_id  (monster_id)
-#  index_treasures_on_user_id     (user_id)
+#  index_treasures_on_character_id  (character_id)
+#  index_treasures_on_user_id       (user_id)
 #
 
 class Treasure < ApplicationRecord
@@ -29,6 +30,8 @@ class Treasure < ApplicationRecord
   has_many :magic_items, through: :treasure_magic_items
   
   belongs_to :user
+  belongs_to :monster, optional: true
+  belongs_to :character, optional: true
   
   accepts_nested_attributes_for :equipment_items, reject_if: :all_blank, allow_destroy: true
   

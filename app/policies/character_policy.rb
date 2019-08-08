@@ -1,4 +1,4 @@
-class PlayerCharacterPolicy < ApplicationPolicy
+class CharacterPolicy < ApplicationPolicy
 
   def show?
     return true

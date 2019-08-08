@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  resources :player_characters, param: :slug
+  resources :characters, param: :slug
   resources :treasures
   resources :dnd_classes, param: :slug
   resources :items, param: :slug

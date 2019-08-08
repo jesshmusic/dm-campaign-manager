@@ -92,6 +92,7 @@ class TreasuresController < ApplicationController
         :description,
         :copper_pieces,
         :silver_pieces,
+        :electrum_pieces,
         :gold_pieces,
         :platinum_pieces,
         :user_id,

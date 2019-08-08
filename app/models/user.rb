@@ -61,10 +61,6 @@ class User < ApplicationRecord
       self.role ||= :player
     end
   end
-  
-  def generate_slug
-    self.username.parameterize.truncate(80, omission: '')
-  end
 
   # instead of deleting, indicate the user requested a delete & timestamp it
   def soft_delete
@@ -98,5 +94,11 @@ class User < ApplicationRecord
 
   def to_param
     slug ? slug : username
+  end
+  
+  private
+
+  def generate_slug
+    self.username.parameterize.truncate(80, omission: '')
   end
 end
