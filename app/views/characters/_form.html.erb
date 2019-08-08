@@ -4,24 +4,313 @@
   <%= form.error_notification message: form.object.errors[:base].to_sentence if form.object.errors[:base].present? %>
 
   <div class="form-inputs">
+    <% if current_user.admin? %>
+        <%= form.input :character_type,
+          collection: [['Player Character', 'pc'], ['Non-player Character', 'npc'] ],
+          input_html: { multiple: false },
+          include_blank: false,
+          include_hidden: false %>
+    <% end %>
     <div class="form-row">
       <div class="col">
         <%= form.input :name %>
       </div>
+      <div class="col">
+        <%= form.input :role, hint: 'NPCs only' %>
+      </div>
     </div>
+    
+    <h2>Info</h2>
+    <div class="form-row">
+      <div class="col">
+        <%= form.input :alignment %>
+      </div>
+      <div class="col">
+        <%= form.input :dnd_class,
+          collection: DndClass.where(user_id: nil),
+          input_html: { multiple: false },
+          include_blank: false,
+          include_hidden: false,
+          label: 'Class' %>
+      </div>
+      <div class="col">
+        <%= form.input :race %>
+      </div>
+    </div>
+    
+    <div class="form-row">
+      <div class="col">
+        <%= form.input :level %>
+      </div>
+      <div class="col">
+        <%= form.input :xp, label: "Experience Points" %>
+      </div>
+    </div>
+    
+    <div class="form-row">
+      <div class="col">
+        <%= form.input :armor_class %>
+      </div>
+      <div class="col">
+        <%= form.input :hit_points %>
+      </div>
+      <div class="col">
+        <%= form.input :hit_points_current, label: 'Current Hit Points' %>
+      </div>
+      <div class="col">
+        <%= form.input :initiative %>
+      </div>
+      <div class="col">
+        <%= form.input :proficiency %>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="col">
+        <%= form.input :speed %>
+      </div>
+      <div class="col">
+        <%= form.input :languages %>
+      </div>
+    </div>
+    
     <div class="form-row">
       <div class="col">
         <%= form.input :description %>
       </div>
     </div>
+
+    <h2>Ability Scores</h2>
     <div class="form-row">
       <div class="col">
+        <%= form.input :strength %>
+      </div>
+      <div class="col">
+        <%= form.input :dexterity %>
+      </div>
+      <div class="col">
+        <%= form.input :constitution %>
+      </div>
+      <div class="col">
+        <%= form.input :intelligence %>
+      </div>
+      <div class="col">
+        <%= form.input :wisdom %>
+      </div>
+      <div class="col">
+        <%= form.input :charisma %>
       </div>
     </div>
-  </div>
+
+    <div id="spellsForm">
+      <h2>Spells</h2>
+      <div class="form-row">
+        <div class="col">
+          <%= form.input :spell_ability %>
+        </div>
+        <div class="col">
+          <%= form.input :spell_attack_bonus %>
+        </div>
+        <div class="col">
+          <%= form.input :spell_save_dc %>
+        </div>
+      </div>
+      <div class="form-row" id="0_levelSpells">
+        <div class="col">
+          <%= form.association :spells,
+                collection: Spell.where("level < 1").order('name ASC'),
+                label: "Cantrips",
+                include_blank: false,
+                include_hidden: false,
+                input_html: { id: 'character_spell_cantrip_ids' } %>
+        </div>
+      </div>
+      <div class="form-row" id="1_levelSpells">
+        <div class="col">
+          <%= form.association :spells,
+                collection: Spell.where(level: 1).order('name ASC'),
+                label: "1st Level Spells",
+                include_blank: false,
+                include_hidden: false,
+                input_html: { id: 'character_spell_1st_level_ids' } %>
+        </div>
+      </div>
+      <div class="form-row" id="2_levelSpells">
+        <div class="col">
+          <%= form.association :spells,
+                collection: Spell.where(level: 2).order('name ASC'),
+                label: "2nd Level Spells",
+                include_blank: false,
+                include_hidden: false,
+                input_html: { id: 'character_spell_2nd_level_ids' } %>
+        </div>
+      </div>
+      <div class="form-row" id="3_levelSpells">
+        <div class="col">
+          <%= form.association :spells,
+                collection: Spell.where(level: 3).order('name ASC'),
+                label: "3rd Level Spells",
+                include_blank: false,
+                include_hidden: false,
+                input_html: { id: 'character_spell_3rd_level_ids' } %>
+        </div>
+      </div>
+      <div class="form-row" id="4_levelSpells">
+        <div class="col">
+          <%= form.association :spells,
+                collection: Spell.where(level: 4).order('name ASC'),
+                label: "4th Level Spells",
+                include_blank: false,
+                include_hidden: false,
+                input_html: { id: 'character_spell_4th_level_ids' } %>
+        </div>
+      </div>
+      <div class="form-row" id="5_levelSpells">
+        <div class="col">
+          <%= form.association :spells,
+                collection: Spell.where(level: 5).order('name ASC'),
+                label: "5th Level Spells",
+                include_blank: false,
+                include_hidden: false,
+                input_html: { id: 'character_spell_5th_level_ids' } %>
+        </div>
+      </div>
+      <div class="form-row" id="6_levelSpells">
+        <div class="col">
+          <%= form.association :spells,
+                collection: Spell.where(level: 6).order('name ASC'),
+                label: "6th Level Spells",
+                include_blank: false,
+                include_hidden: false,
+                input_html: { id: 'character_spell_6th_level_ids' } %>
+        </div>
+      </div>
+      <div class="form-row" id="7_levelSpells">
+        <div class="col">
+          <%= form.association :spells,
+                collection: Spell.where(level: 7).order('name ASC'),
+                label: "7th Level Spells",
+                include_blank: false,
+                include_hidden: false,
+                input_html: { id: 'character_spell_7th_level_ids' } %>
+        </div>
+      </div>
+      <div class="form-row" id="8_levelSpells">
+        <div class="col">
+          <%= form.association :spells,
+                collection: Spell.where(level: 8).order('name ASC'),
+                label: "8th Level Spells",
+                include_blank: false,
+                include_hidden: false,
+                input_html: { id: 'character_spell_8th_level_ids' } %>
+        </div>
+      </div>
+      <div class="form-row" id="9_levelSpells">
+        <div class="col">
+          <%= form.association :spells,
+                collection: Spell.where(level: 9).order('name ASC'),
+                label: "9th Level Spells",
+                include_blank: false,
+                include_hidden: false,
+                input_html: { id: 'character_spell_9th_level_ids' } %>
+        </div>
+      </div>
+    </div>
+    
+    <h2>Inventory</h2>
+    <div class="form-row">
+      <div class="col">
+        <%= form.input :copper_pieces %>
+      </div>
+      <div class="col">
+        <%= form.input :silver_pieces %>
+      </div>
+      <div class="col">
+        <%= form.input :electrum_pieces %>
+      </div>
+      <div class="col">
+        <%= form.input :gold_pieces %>
+      </div>
+      <div class="col">
+        <%= form.input :platinum_pieces %>
+      </div>
+    </div>
   </div>
 
   <div class="form-actions">
     <%= form.button :submit, class: 'btn btn-success mb-3' %>
   </div>
 <% end %>
+
+<script>
+  $('#character_character_type').select2({
+    theme: "bootstrap"
+  });
+  $('#character_dnd_class').select2({
+    theme: "bootstrap"
+  });
+  
+  function handleSpellsDisplay() {
+    var classValue = $('#character_dnd_class :selected').text()
+    if (classValue === 'Bard' || classValue === 'Cleric' || classValue === 'Druid' || classValue === 'Sorcerer' || classValue === 'Warlock' || classValue === 'Wizard') {
+      $('#spellsForm').show();
+      showSpellLevels(0, 9);
+      loadSelect2();
+    } else if (classValue === 'Paladin' || classValue === 'Ranger') {
+      $('#spellsForm').show();
+      showSpellLevels(1, 5);
+      loadSelect2();
+    } else {
+      $('#spellsForm').hide();
+    }
+  }
+  
+  function showSpellLevels(minLevel, maxLevel) {
+    for (var i = 0; i <= 9; i++) {
+      $(`#${i}_levelSpells`).hide();
+    }
+    for (var i = minLevel; i < maxLevel + 1; i++) {
+      $(`#${i}_levelSpells`).show();
+    }
+  }
+  
+  handleSpellsDisplay();
+  
+  $('#character_dnd_class').on("select2:select", function (event) {
+    handleSpellsDisplay();
+  });
+  
+  function loadSelect2() {
+    $('#character_spell_cantrip_ids').select2({
+      theme: "bootstrap"
+    });
+    $('#character_spell_1st_level_ids').select2({
+      theme: "bootstrap"
+    });
+    $('#character_spell_2nd_level_ids').select2({
+      theme: "bootstrap"
+    });
+    $('#character_spell_3rd_level_ids').select2({
+      theme: "bootstrap"
+    });
+    $('#character_spell_4th_level_ids').select2({
+      theme: "bootstrap"
+    });
+    $('#character_spell_5th_level_ids').select2({
+      theme: "bootstrap"
+    });
+    $('#character_spell_6th_level_ids').select2({
+      theme: "bootstrap"
+    });
+    $('#character_spell_7th_level_ids').select2({
+      theme: "bootstrap"
+    });
+    $('#character_spell_8th_level_ids').select2({
+      theme: "bootstrap"
+    });
+    $('#character_spell_9th_level_ids').select2({
+      theme: "bootstrap"
+    });
+  }
+  
+</script>

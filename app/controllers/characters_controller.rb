@@ -102,6 +102,7 @@ class CharactersController < ApplicationController
         :constitution,
         :copper_pieces,
         :dexterity,
+        :dnd_class_id,
         :electrum_pieces,
         :gold_pieces,
         :hit_points,
@@ -122,6 +123,8 @@ class CharactersController < ApplicationController
         :strength,
         :wisdom,
         :xp,
+        spell_ids: [],
+        magic_item_ids: [],
         equipment_items_attributes: [
           :id, :quantity, :_destroy, item_ids: []
         ],

@@ -12,7 +12,17 @@
     <%= form.input :username, required: true %>
 
     <% if current_user.admin? %>
-        <%= form.input :role, collection: [['Player', 'player'], ['Dungeon Master', 'dungeon_master'], ['Admin', 'admin']] %>
+        <%= form.input :role,
+                   as: :radio_buttons,
+                   collection: [['player', 'Player'], ['dungeon_master', 'Dungeon Master'], ['admin', 'Admin']],
+                   label_method: :second,
+                   value_method: :first %>
+    <% else %>
+        <%= form.input :role,
+                   as: :radio_buttons,
+                   collection: [['player', 'Player'], ['dungeon_master', 'Dungeon Master']],
+                   label_method: :second,
+                   value_method: :first %>
     <% end %>
   </div>
   
