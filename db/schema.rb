@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_07_180511) do
+ActiveRecord::Schema.define(version: 2019_08_08_011206) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -25,6 +25,37 @@ ActiveRecord::Schema.define(version: 2019_08_07_180511) do
     t.string "slug"
     t.index ["slug"], name: "index_campaigns_on_slug", unique: true
     t.index ["user_id"], name: "index_campaigns_on_user_id"
+  end
+
+  create_table "character_stats", force: :cascade do |t|
+    t.integer "level"
+    t.string "alignment"
+    t.string "race"
+    t.integer "initiative"
+    t.integer "proficiency"
+    t.string "speed"
+    t.string "languages"
+    t.string "spell_ability"
+    t.integer "spell_save_dc"
+    t.integer "spell_attack_bonus"
+    t.integer "armor_class"
+    t.integer "hit_points"
+    t.integer "strength"
+    t.integer "dexterity"
+    t.integer "constitution"
+    t.integer "intelligence"
+    t.integer "wisdom"
+    t.integer "charisma"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "player_character_id"
+    t.integer "copper_pieces"
+    t.integer "silver_pieces"
+    t.integer "gold_pieces"
+    t.integer "platinum_pieces"
+    t.integer "hit_points_current"
+    t.integer "xp"
+    t.index ["player_character_id"], name: "index_character_stats_on_player_character_id"
   end
 
   create_table "container_items", force: :cascade do |t|
@@ -192,6 +223,16 @@ ActiveRecord::Schema.define(version: 2019_08_07_180511) do
     t.string "slug"
     t.index ["slug"], name: "index_monsters_on_slug", unique: true
     t.index ["user_id"], name: "index_monsters_on_user_id"
+  end
+
+  create_table "player_characters", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.string "slug"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.index ["user_id"], name: "index_player_characters_on_user_id"
   end
 
   create_table "prof_choice_profs", force: :cascade do |t|

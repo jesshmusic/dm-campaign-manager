@@ -18,5 +18,7 @@ class EquipmentItem < ApplicationRecord
   
   has_many :equipment_item_items, dependent: :delete_all
   has_many :items, through: :equipment_item_items
+
   belongs_to :treasure, optional: true
+  belongs_to :player_character, optional: true
 end

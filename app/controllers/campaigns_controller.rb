@@ -22,6 +22,7 @@ class CampaignsController < ApplicationController
   def new
     @campaign = Campaign.new
     authorize @campaign
+    @campaign.user = current_user
   end
 
   # GET /campaigns/1/edit

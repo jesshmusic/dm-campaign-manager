@@ -1,0 +1,18 @@
+<% title "Edit" + @player_character.name %>
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item"><%= link_to 'Dashboard', dashboard_path %></li>
+    <li class="breadcrumb-item"><%= link_to 'Player_characters', player_characters_path %></li>
+    <li class="breadcrumb-item active" aria-current="page">Edit Player_characters</li>
+  </ol>
+</nav>
+<div class="container">
+  <h1>Edit - <small><em><%= @player_character.name %></em></small></h1>
+  <%= render 'form', player_character: @player_character %>
+  <div class="admin__footer">
+    <%= link_to 'Show', @player_character, class: "btn btn-success" %>
+    <%= link_to 'Back', player_characters_path, class: "btn btn-primary" %>
+    <%= link_to 'Dashboard', '/dashboard', class: "btn btn-info" %>
+  </div>
+</div>

@@ -23,16 +23,10 @@ class DndClassesController < ApplicationController
   def new
     @dnd_class = DndClass.new
     authorize @dnd_class
-    @dnd_class.prof_choices.build
   end
 
   # GET /dnd_classes/1/edit
   def edit
-    # if @dnd_class.prof_choices.count == 0
-    #   @dnd_class.prof_choices.build
-    # else
-    #   puts @dnd_class.prof_choices.to_json
-    # end
   end
 
   # POST /dnd_classes
