@@ -50,6 +50,9 @@ class Character < ApplicationRecord
     self.slug = generate_slug
   end
   
+  has_one :character_class, dependent: :delete
+  has_one :dnd_class, through: :character_class
+  
   has_many :equipment_items, inverse_of: :character
   has_many :skills, dependent: :delete_all
   has_many :treasures, dependent: :delete_all

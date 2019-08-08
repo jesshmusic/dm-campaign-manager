@@ -1,35 +1,43 @@
 <% title "Characters" %>
-<nav aria-label="breadcrumb">
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="/">Home</a></li>
-    <li class="breadcrumb-item"><%= link_to 'Dashboard', dashboard_path %></li>
-    <li class="breadcrumb-item active" aria-current="page">Characters</li>
-  </ol>
-</nav>
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a href="/">Home</a>
+      </li>
+      <li class="breadcrumb-item"><%= link_to 'Dashboard', dashboard_path %></li>
+      <li class="breadcrumb-item active" aria-current="page">Characters</li>
+    </ol>
+  </nav>
 
-<h1>Characters</h1>
-<%= render 'shared/search_form', url: characters_path %>
+  <h1>Characters</h1>
+  <%= render 'shared/search_form', url: characters_path %>
 
-<table>
-  <thead>
-    <tr>
-      
-      <th></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @characters.each do |character| %>
+  <table>
+    <thead>
       <tr>
-        
-        <td>
-          <%= link_to 'Show', character, class: "btn btn-sm btn-primary" %>
-          <%= link_to 'Edit', edit_character_path(character), class: "btn btn-sm btn-success" if policy(character).edit? %>
-          <%= link_to 'Destroy', character, class: "btn btn-sm btn-danger", method: :delete, data: { confirm: 'Are you sure?' } if policy(character).destroy? %>
-        </td>
+        <th>Name</th>
+        <th>Class</th>
+        <th>Level</th>
+        <th>Race</th>
+        <th></th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
-<%== pagy_bootstrap_nav_js(@pagy) if @pagy.pages > 1 %>
-<%= link_to 'New Character', new_character_path, class: "btn btn-lg btn-success" if policy(Character).new? %>
+    </thead>
+
+    <tbody>
+      <% @characters.each do |character| %>
+        <tr>
+          <td><%= character.name %></td>
+          <td><%= character.dnd_class.name %></td>
+          <td><%= character.level %></td>
+          <td><%= character.race %></td>
+          <td>
+            <%= link_to 'Show', character, class: "btn btn-sm btn-primary" %>
+            <%= link_to 'Edit', edit_character_path(character), class: "btn btn-sm btn-success" if policy(character).edit? %>
+            <%= link_to 'Destroy', character, class: "btn btn-sm btn-danger", method: :delete, data: { confirm: 'Are you sure?' } if policy(character).destroy? %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <%== pagy_bootstrap_nav_js(@pagy) if @pagy.pages > 1 %>
+  <%= link_to 'New Character', new_character_path, class: "btn btn-lg btn-success" if policy(Character).new? %>
