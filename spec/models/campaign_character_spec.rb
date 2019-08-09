@@ -1,0 +1,26 @@
+# == Schema Information
+#
+# Table name: campaign_characters
+#
+#  id           :bigint           not null, primary key
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#  campaign_id  :bigint
+#  character_id :bigint
+#
+# Indexes
+#
+#  index_campaign_characters_on_campaign_id   (campaign_id)
+#  index_campaign_characters_on_character_id  (character_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (campaign_id => campaigns.id)
+#  fk_rails_...  (character_id => characters.id)
+#
+
+require 'rails_helper'
+
+RSpec.describe CampaignCharacter, type: :model do
+  pending "add some examples to (or delete) #{__FILE__}"
+end

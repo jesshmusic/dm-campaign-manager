@@ -10,10 +10,29 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_08_193640) do
+ActiveRecord::Schema.define(version: 2019_08_08_232249) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "campaign_characters", force: :cascade do |t|
+    t.bigint "campaign_id"
+    t.bigint "character_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["campaign_id"], name: "index_campaign_characters_on_campaign_id"
+    t.index ["character_id"], name: "index_campaign_characters_on_character_id"
+  end
+
+  create_table "campaign_users", force: :cascade do |t|
+    t.bigint "campaign_id"
+    t.bigint "user_id"
+    t.boolean "confirmed"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["campaign_id"], name: "index_campaign_users_on_campaign_id"
+    t.index ["user_id"], name: "index_campaign_users_on_user_id"
+  end
 
   create_table "campaigns", force: :cascade do |t|
     t.bigint "user_id"
@@ -399,6 +418,10 @@ ActiveRecord::Schema.define(version: 2019_08_08_193640) do
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 
+  add_foreign_key "campaign_characters", "campaigns"
+  add_foreign_key "campaign_characters", "characters"
+  add_foreign_key "campaign_users", "campaigns"
+  add_foreign_key "campaign_users", "users"
   add_foreign_key "character_classes", "characters"
   add_foreign_key "character_classes", "dnd_classes"
   add_foreign_key "container_items", "items"

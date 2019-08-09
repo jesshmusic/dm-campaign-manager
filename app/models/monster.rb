@@ -54,10 +54,10 @@ class Monster < ApplicationRecord
   validates :name, :alignment, :armor_class, :challenge_rating, :charisma, :constitution,
     :dexterity, :hit_dice, :hit_points, :intelligence, :monster_type, :size, :strength, :wisdom, presence: true
 
-  has_many :monster_actions, dependent: :delete_all
-  has_many :monster_legendary_actions, dependent: :delete_all
-  has_many :monster_special_abilities, dependent: :delete_all
-  has_many :skills, dependent: :delete_all
+  has_many :monster_actions, dependent: :destroy
+  has_many :monster_legendary_actions, dependent: :destroy
+  has_many :monster_special_abilities, dependent: :destroy
+  has_many :skills, dependent: :destroy
 
   belongs_to :user, optional: true
   

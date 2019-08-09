@@ -51,16 +51,19 @@ class Character < ApplicationRecord
     self.slug = generate_slug
   end
   
-  has_many :character_classes, dependent: :delete_all
+  has_many :campaign_characters, dependent: :destroy
+  has_many :campaigns, through: :campaign_characters
+  
+  has_many :character_classes, dependent: :destroy
   has_many :dnd_classes, through: :character_classes
   
   has_many :equipment_items, inverse_of: :character
-  has_many :skills, dependent: :delete_all
+  has_many :skills, dependent: :destroy
 
-  has_many :character_magic_items, dependent: :delete_all
+  has_many :character_magic_items, dependent: :destroy
   has_many :magic_items, through: :character_magic_items
   
-  has_many :character_spells, dependent: :delete_all
+  has_many :character_spells, dependent: :destroy
   has_many :spells, through: :character_spells
   
   accepts_nested_attributes_for :equipment_items, reject_if: :all_blank, allow_destroy: true

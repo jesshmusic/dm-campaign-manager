@@ -19,6 +19,15 @@
 
 class Campaign < ApplicationRecord
   validates :name, :world, presence: true
+  after_validation(on: :create) do
+    self.slug = generate_slug
+  end
+  
+  has_many :campaign_users, dependent: :destroy
+  has_many :users, through: :campaign_users
+  
+  has_many :campaign_characters, dependent: :destroy
+  has_many :characters, through: :campaign_characters
 
   belongs_to :user
   
@@ -39,5 +48,11 @@ class Campaign < ApplicationRecord
 
   def to_param
     slug
+  end
+  
+  private
+
+  def generate_slug
+    self.slug = Campaign.exists?(self.name.parameterize) ? "#{self.name.parameterize}-#{self.user.username}-#{self.id}" : "#{self.name.parameterize}-#{self.user.username}"
   end
 end

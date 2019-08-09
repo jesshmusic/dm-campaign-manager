@@ -14,7 +14,5 @@ Rails.application.routes.draw do
   get 'dashboard', to: 'dashboard#index'
   resources :users, except: %i[create new], param: :slug
   patch '/users/:id/change_role', to: 'users#change_role', as: 'user_change_role'
-  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
-  
-  # SRD API imports
+  patch '/campaigns/:id/confirm_user/:user_id', to: 'campaigns#confirm_user', as: 'campaign_confirm_user'
 end

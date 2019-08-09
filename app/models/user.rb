@@ -46,12 +46,15 @@ class User < ApplicationRecord
   end
 
   # User Associations
-  has_many :campaigns, dependent: :delete_all
-  has_many :dnd_classes, dependent: :delete_all
-  has_many :items, dependent: :delete_all
-  has_many :magic_items, dependent: :delete_all
-  has_many :monsters, dependent: :delete_all
-  has_many :spells, dependent: :delete_all
+  has_many :campaigns, dependent: :destroy
+  has_many :dnd_classes, dependent: :destroy
+  has_many :items, dependent: :destroy
+  has_many :magic_items, dependent: :destroy
+  has_many :monsters, dependent: :destroy
+  has_many :spells, dependent: :destroy
+  
+  has_many :campaign_users
+  has_many :campaigns, through: :campaign_users
 
   def set_default_role
     puts "SETTING DEFAULT ROLE, self.role = #{self.role}"

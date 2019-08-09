@@ -61,6 +61,24 @@ class CampaignsController < ApplicationController
       end
     end
   end
+  
+  # PATCH/PUT /campaigns/1/confirm_user/:user_id
+  def confirm_user
+    authorize @campaign
+    if User.exists?(id: params[:user_id]) && @campaign.campaign_users.exists(user_id: params[:user_id])
+      campaign_user = @campaign.campaign_users.find_by(user_id: params[:user_id])
+      campaign_user.confirmed = true
+    end
+    respond_to do |format|
+      if @campaign.save
+        format.html { redirect_to campaign_url(slug: @campaign.slug), notice: 'User was successfully confirmed.' }
+        format.json { render :show, status: :ok, location: @campaign }
+      else
+        format.html { render :new }
+        format.json { render json: @campaign.errors, status: :unprocessable_entity }
+      end
+    end
+  end
 
   # DELETE /campaigns/1
   # DELETE /campaigns/1.json

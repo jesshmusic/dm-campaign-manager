@@ -11,6 +11,10 @@ class CampaignPolicy < ApplicationPolicy
   def update?
     user and (user.admin? or record.user == user)
   end
+  
+  def confirm_user?
+    user and user.dungeon_master? and record.user == user
+  end
 
   def create?
     user and (user.admin? or user.dungeon_master?)

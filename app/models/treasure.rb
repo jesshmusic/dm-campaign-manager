@@ -24,7 +24,7 @@ class Treasure < ApplicationRecord
 
   has_many :equipment_items, inverse_of: :treasure
 
-  has_many :treasure_magic_items, dependent: :delete_all
+  has_many :treasure_magic_items, dependent: :destroy
   has_many :magic_items, through: :treasure_magic_items
   
   belongs_to :user

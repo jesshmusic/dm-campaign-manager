@@ -50,7 +50,7 @@
 class Item < ApplicationRecord
   validates :name, :category, :sub_category, :cost_unit, :cost_value, :weight, presence: true
 
-  has_many :container_items, dependent: :delete_all
+  has_many :container_items, dependent: :destroy
   has_many :contained_items, through: :container_items
 
   belongs_to :user, optional: true

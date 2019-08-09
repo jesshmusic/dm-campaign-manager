@@ -9,12 +9,11 @@
 
 <h1>Campaigns</h1>
 <%= render 'shared/search_form', url: campaigns_path %>
-
 <table>
   <thead>
     <tr>
       <th>Name</th>
-      <th class="d-none d-lg-table-cell">Players</th>
+      <th class="d-none d-lg-table-cell">Characters</th>
       <th class="d-none d-lg-table-cell">World</th>
       <th>Dungeon Master</th>
       <th></th>
@@ -25,13 +24,11 @@
     <% @campaigns.each do |campaign| %>
       <tr>
         <td><%= campaign.name %></td>
-        <td class="d-none d-lg-table-cell">0 - Coming Soon</td>
+        <td class="d-none d-lg-table-cell"><%= campaign.campaign_characters.count %></td>
         <td class="d-none d-lg-table-cell"><%= campaign.world %></td>
         <td><%= campaign.user.name %></td>
         <td>
-          <%= link_to 'Show', campaign, class: "btn btn-sm btn-primary" %>
-          <%= link_to 'Edit', edit_campaign_path(campaign), class: "btn btn-sm btn-success" if policy(campaign).edit? %>
-          <%= link_to 'Destroy', campaign, class: "btn btn-sm btn-danger", method: :delete, data: { confirm: 'Are you sure?' } if policy(campaign).destroy? %>
+          <%= link_to 'View', campaign, class: "btn btn-sm btn-primary" %>
         </td>
       </tr>
     <% end %>

@@ -18,7 +18,7 @@
 class ProfChoice < ApplicationRecord
   validates :name, :num_choices, :prof_choice_type, presence: true
 
-  has_many :prof_choice_profs, dependent: :delete_all
+  has_many :prof_choice_profs, dependent: :destroy
   has_many :profs, through: :prof_choice_profs
   belongs_to :dnd_class, optional: true
 end

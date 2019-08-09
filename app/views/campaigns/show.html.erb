@@ -17,26 +17,52 @@
   <div class="row mb-3 pb-3 border-bottom">
     <div class="col">
       <h1>Campaign: <%= @campaign.name %></h1>
+      <h2><%= link_to "#{@campaign.user.name}", @campaign.user %>, Dungeon Master</h2>
+    </div>
+    <div class="col">
+      <h2>World</h2>
+      <%= @campaign.world %>
     </div>
   </div>
 
-  <p>
-    <strong>Description:</strong>
-    <%= markdown(@campaign.description) %>
-  </p>
-
-  <p>
-    <strong>World:</strong>
-    <%= @campaign.world %>
-  </p>
-
-  <p>
-    <strong>Dungeon Master:</strong>
-    <%= link_to "#{@campaign.user.name}", @campaign.user %>
-  </p>
-
-  <div class="d-flex align-items-center justify-content-start py-3">
-    <%= link_to 'Edit', edit_campaign_path(@campaign), class: "btn btn-success" if policy(@campaign).edit? %>
-    <%= link_to 'Back', campaigns_path, class: "btn btn-info" %>
+  <div class="row mb-3 pb-3 border-bottom">
+    <div class="col">
+      <h2>Description</h2>
+      <%= markdown(@campaign.description) %>
+    </div>
   </div>
+
+  <div class="row mb-3 pb-3 border-bottom">
+    <div class="col">
+      <h2>Active Players</h2>
+      <ul>
+        <% @campaign.campaign_users.where(confirmed: true).each do |campaign_user| %>
+          <li><%= User.find(campaign_user).name %></li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+  
+  <% if current_user == @campaign.user %>
+    <div class="row mb-3 pb-3 border-bottom">
+      <div class="col">
+        <h2>Pending Players</h2>
+        <ul>
+          <% @campaign.campaign_users.where(confirmed: false).each do |campaign_user| %>
+            <li><%= User.find(campaign_user).name %></li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+
+    <div class="d-flex align-items-center justify-content-start py-3 btn-group">
+      <%= link_to 'Edit', edit_campaign_path(@campaign), class: "btn btn-success" if policy(@campaign).edit? %>
+      <%= link_to 'Back', campaigns_path, class: "btn btn-info" %>
+      <%= link_to 'Delete Campaign', @campaign, class: "btn btn-danger", method: :delete, data: { confirm: 'Are you sure?' } if policy(@campaign).destroy? %>
+    </div>
+  <% elsif current_user %>
+    <div class="d-flex align-items-center justify-content-start py-3 btn-group">
+      <%= link_to 'Join Campaign', edit_campaign_path(@campaign), class: "btn btn-primary" %>
+    </div>
+  <% end %>
 </div>

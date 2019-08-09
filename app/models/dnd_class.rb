@@ -26,10 +26,10 @@ class DndClass < ApplicationRecord
 
   has_many :prof_choices, inverse_of: :dnd_class
 
-  has_many :prof_classes, dependent: :delete_all
+  has_many :prof_classes, dependent: :destroy
   has_many :profs, through: :prof_classes
 
-  has_many :spell_classes, dependent: :delete_all
+  has_many :spell_classes, dependent: :destroy
   has_many :spells, through: :spell_classes
 
   belongs_to :user, optional: true

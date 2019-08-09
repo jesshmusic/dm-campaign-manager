@@ -18,7 +18,7 @@
 class EquipmentItem < ApplicationRecord
   validates :quantity, presence: true
   
-  has_many :equipment_item_items, dependent: :delete_all
+  has_many :equipment_item_items, dependent: :destroy
   has_many :items, through: :equipment_item_items
 
   belongs_to :treasure, optional: true
