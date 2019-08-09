@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: users
@@ -52,17 +54,12 @@ class User < ApplicationRecord
   has_many :magic_items, dependent: :destroy
   has_many :monsters, dependent: :destroy
   has_many :spells, dependent: :destroy
-  
+
   has_many :campaign_users
   has_many :player_campaigns, through: :campaign_users, source: :campaign
 
   def set_default_role
-    puts "SETTING DEFAULT ROLE, self.role = #{self.role}"
-    if self.role == :dungeon_master
-      self.role ||= :dungeon_master
-    else
-      self.role ||= :player
-    end
+    self.role ||= :player
   end
 
   # instead of deleting, indicate the user requested a delete & timestamp it
@@ -96,12 +93,12 @@ class User < ApplicationRecord
                   }
 
   def to_param
-    slug ? slug : username
+    slug || username
   end
-  
+
   private
 
   def generate_slug
-    self.username.parameterize.truncate(80, omission: '')
+    username.parameterize.truncate(80, omission: '')
   end
 end

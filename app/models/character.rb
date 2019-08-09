@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: characters
@@ -49,46 +51,50 @@ class Character < ApplicationRecord
   after_validation(on: :create) do
     self.slug = generate_slug
   end
-  
+
   has_many :campaign_characters, dependent: :destroy
   has_many :campaigns, through: :campaign_characters
-  
+
   has_many :character_classes, dependent: :destroy
   has_many :dnd_classes, through: :character_classes
-  
+
   has_many :equipment_items, inverse_of: :character
   has_many :skills, dependent: :destroy
 
   has_many :character_magic_items, dependent: :destroy
   has_many :magic_items, through: :character_magic_items
-  
+
   has_many :character_spells, dependent: :destroy
   has_many :spells, through: :character_spells
-  
+
   accepts_nested_attributes_for :equipment_items, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :skills, reject_if: :all_blank, allow_destroy: true
-  
+
   belongs_to :user
   belongs_to :campaign
-  
+
   def dnd_class
     dnd_classes.first.name
   end
-  
+
+  def hit_dice
+    "#{level}d#{dnd_classes.first.hit_die}"
+  end
+
   include PgSearch::Model
-  
+
   # PgSearch
   pg_search_scope :search_for,
-    against: { name: 'A', description: 'B' },
-    using: { tsearch: { prefix: true } }
+                  against: { name: 'A', description: 'B' },
+                  using: { tsearch: { prefix: true } }
 
   def to_param
     slug
   end
-  
+
   private
 
   def generate_slug
-    self.slug = Character.exists?(self.name.parameterize) ? "#{self.name.parameterize}-#{self.id}" : self.name.parameterize
+    self.slug = Character.exists?(name.parameterize) ? "#{name.parameterize}-#{id}" : name.parameterize
   end
 end

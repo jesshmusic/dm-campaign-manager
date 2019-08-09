@@ -1,30 +1,220 @@
 <% title "Character: " + @character.name %>
-<div class="row">
-  <div class="col">
-    <nav aria-label="breadcrumb">
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/">Home</a></li>
-        <li class="breadcrumb-item"><%= link_to 'Dashboard', dashboard_path %></li>
-        <li class="breadcrumb-item"><%= link_to 'Characters', characters_path %></li>
-        <li class="breadcrumb-item active" aria-current="page"><%= @character.name %></li>
-      </ol>
-    </nav>
-  </div>
-</div>
-<div class="container">
-  <div class="row mb-3 pb-3 border-bottom">
+  <div class="row">
     <div class="col">
-      <h1>Character: <%= @character.name %></h1>
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="/">Home</a>
+          </li>
+          <li class="breadcrumb-item"><%= link_to 'Dashboard', dashboard_path %></li>
+          <li class="breadcrumb-item"><%= link_to 'Characters', characters_path %></li>
+          <li class="breadcrumb-item active" aria-current="page"><%= @character.name %></li>
+        </ol>
+      </nav>
     </div>
   </div>
-
-  <div class="row mb-3 pb-3 border-bottom">
-    <div class="col">
+  <div class="container">
+    <div class="row mb-3 pb-3 border-bottom">
+      <div class="col">
+        <h1>Character: <%= @character.name %></h1>
+        <h2>Level <%= @character.level %> <%= @character.dnd_class %></h2>
+        <h3>Experience Points</h3>
+        <div class="progress" style="height: 30px;">
+          <div class="progress-bar"
+               role="progressbar"
+               style="width: 100%;"
+               aria-valuenow="100"
+               aria-valuemin="100"
+               aria-valuemax="100">
+            <%= @character.xp %>
           </div>
-  </div>
+        </div>
+      </div>
+    </div>
 
-  <div class="d-flex align-items-center justify-content-start py-3">
-    <%= link_to 'Edit', edit_character_path(@character), class: "btn btn-success" if policy(@character).edit? %>
-    <%= link_to 'Back', characters_path, class: "btn btn-info" %>
+    <div class="row mb-3 pb-3 border-bottom">
+      <div class="col-12 col-sm-6 col-md-4">
+        <h3>Health</h3>
+        <% hit_point_percentage = ((@character.hit_points_current.to_f / @character.hit_points.to_f) * 100.0).to_i %>
+        <figure class="figure w-100">
+          <figcaption class="figure-caption text-center text-uppercase">Hit Points</figcaption>
+          <div class="progress" style="height: 30px;">
+            <div class="progress-bar bg-success"
+                 role="progressbar"
+                 style="width: <%= hit_point_percentage %>%;"
+                 aria-valuenow="<%= @character.hit_points_current %>"
+                 aria-valuemin="0"
+                 aria-valuemax="<%= @character.hit_points %>">
+              <%= @character.hit_points_current %>/<%= @character.hit_points %>
+            </div>
+          </div>
+        </figure>
+        <figure class="figure w-100">
+          <figcaption class="figure-caption text-center text-uppercase">Hit Dice</figcaption>
+          <div class="progress" style="height: 30px;">
+            <div class="progress-bar"
+                 role="progressbar"
+                 style="width: 100%;"
+                 aria-valuenow="100"
+                 aria-valuemin="100"
+                 aria-valuemax="100">
+              <%= @character.hit_dice %>
+            </div>
+          </div>
+        </figure>
+      </div>
+      <div class="col-12 col-sm-6 col-md-4">
+        <h3>Statistics</h3>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">
+            <strong>Armor Class</strong> <%= @character.armor_class %>
+          </li>
+          <li class="list-group-item">
+            <strong>Initiative</strong> <%= '-' if @character.initiative < 0 %><%= '+' if @character.initiative > 0 %><%= @character.initiative %>
+          </li>
+          <li class="list-group-item">
+            <strong>Profiency</strong> <%= '-' if @character.proficiency < 0 %><%= '+' if @character.proficiency > 0 %><%= @character.proficiency %>
+          </li>
+          <li class="list-group-item">
+            <strong>Speed</strong> <%= @character.speed %>
+          </li>
+        </ul>
+      </div>
+      <% if @character.skills.any? %>
+        <div class="col-12 col-sm-6 col-md-4">
+          <h3>Skills</h3>
+          <ul class="list-group list-group-flush">
+            <% @character.skills.each do |character_skill| %>
+              <li class="list-group-item">
+                <strong><%= character_skill.name.capitalize %> </strong><%= character_skill.score %>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="row mb-3 pb-3 border-bottom">
+      <div class="col">
+        <h3>Ability Scores</h3>
+        <div class="row d-flex align-items-center ">
+          <div class="col-4 col-sm-2 text-center">
+            <h4>STR</h4>
+            <p class="lead"><%= @character.strength %></p>
+          </div>
+          <div class="col-4 col-sm-2 text-center">
+            <h4>DEX</h4>
+            <p class="lead"><%= @character.dexterity %></p>
+          </div>
+          <div class="col-4 col-sm-2 text-center">
+            <h4>CON</h4>
+            <p class="lead"><%= @character.constitution %></p>
+          </div>
+          <div class="col-4 col-sm-2 text-center">
+            <h4>INT</h4>
+            <p class="lead"><%= @character.intelligence %></p>
+          </div>
+          <div class="col-4 col-sm-2 text-center">
+            <h4>WIS</h4>
+            <p class="lead"><%= @character.wisdom %></p>
+          </div>
+          <div class="col-4 col-sm-2 text-center">
+            <h4>CHA</h4>
+            <p class="lead"><%= @character.charisma %></p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <% if @character.spells.any? %>
+      <div class="row mb-3 pb-3 border-bottom">
+        <div class="col">
+          <h3>Spells</h3>
+          <div class="row d-flex align-items-center ">
+            <div class="col-4 text-center">
+              <h4>Ability</h4>
+              <p class="lead"><%= @character.spell_ability %></p>
+            </div>
+            <div class="col-4 text-center">
+              <h4>Save DC</h4>
+              <p class="lead"><%= @character.spell_save_dc %></p>
+            </div>
+            <div class="col-4 text-center">
+              <h4>Attack Bonus</h4>
+              <p class="lead"><%= @character.spell_attack_bonus %></p>
+            </div>
+          </div>
+          <div class="row">
+            <% cantrips = @character.spells.where("level <= 0") %>
+            <% if cantrips.any? %>
+              <div class="col-12 col-sm-6 col-md-4 py-5">
+                <h4>Cantrips</h4>
+                <ul class="list-group list-group-flush">
+                  <% cantrips.order('name ASC').each do |cantrip| %>
+                    <li class="list-group-item"><%= cantrip.name %></li>
+                  <% end %>
+                </ul>
+              </div>
+            <% end %>
+            <% (1..9).each do |spell_level| %>
+              <div class="col-12 col-sm-6 col-md-4 py-5">
+                <% spells = @character.spells.where(level: spell_level).order('name ASC') %>
+                <% if spells.any? %>
+                  <h4><%= spells.first.get_spell_level_text %></h4>
+                  <ul class="list-group list-group-flush">
+                    <% spells.each do |spell| %>
+                      <li class="list-group-item"><%= spell.name %></li>
+                    <% end %>
+                  </ul>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+    <div class="row mb-3 pb-3 border-bottom">
+      <div class="col-12 col-sm-6 col-md-4">
+        <h3>Wealth</h3>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item"><strong>Copper </strong><%= @character.copper_pieces %></li>
+          <li class="list-group-item"><strong>Silver </strong><%= @character.silver_pieces %></li>
+          <li class="list-group-item"><strong>Electrum </strong><%= @character.electrum_pieces %></li>
+          <li class="list-group-item"><strong>Gold </strong><%= @character.gold_pieces %></li>
+          <li class="list-group-item"><strong>Platinum </strong><%= @character.platinum_pieces %></li>
+        </ul>
+      </div>
+      <div class="col-12 col-sm-6 col-md-4">
+        <h3>Equipment</h3>
+        <ul class="list-group list-group-flush">
+          <% @character.equipment_items.each do |item| %>
+            <li class="list-group-item">
+              <strong><%= item.items.first.name %> </strong>quantity: <%= item.quantity %>
+              <% if item.items.first.contained_items.any? %>
+                <h4>Contents:</h4>
+                <ul class="list-group list-group-flush">
+                  <% item.items.first.contained_items.each do |content_item| %>
+                    <li class="list-group-item"><%= content_item.name %></li>
+                  <% end %>
+                </ul>
+              <% end %>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+      <div class="col-12 col-sm-6 col-md-4">
+        <h3>Magic Items</h3>
+        <ul class="list-group list-group-flush">
+          <% @character.magic_items.each do |magic_item| %>
+            <li class="list-group-item"><strong><%= magic_item.name %> </strong></li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+
+    <div class="d-flex align-items-center justify-content-start py-3">
+      <%= link_to 'Edit', edit_character_path(@character), class: "btn btn-success" if policy(@character).edit? %>
+      <%= link_to 'Back', characters_path, class: "btn btn-info" %>
+    </div>
   </div>
-</div>
