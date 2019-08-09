@@ -43,7 +43,7 @@
     </div>
   </div>
   
-  <% if current_user == @campaign.user %>
+  <% if current_user == @campaign.user && @campaign.campaign_users.where(confirmed: false).count > 0 %>
     <div class="row mb-3 pb-3 border-bottom">
       <div class="col">
         <h2>Pending Players</h2>
@@ -56,7 +56,9 @@
         </ul>
       </div>
     </div>
-
+  <% end %>
+    
+  <% if current_user == @campaign.user %>
     <div class="d-flex align-items-center justify-content-start py-3 btn-group">
       <%= link_to 'Edit', edit_campaign_path(@campaign), class: "btn btn-success" if policy(@campaign).edit? %>
       <%= link_to 'Back', campaigns_path, class: "btn btn-info" %>
