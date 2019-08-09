@@ -62,12 +62,31 @@ class CampaignsController < ApplicationController
     end
   end
   
+  # PATCH/PUT /campaigns/1/join_campaign/:user_id
+  def join_campaign
+    @campaign = Campaign.find(params[:id])
+    authorize @campaign
+    if User.exists?(id: params[:user_id]) && !@campaign.campaign_users.exists?(user_id: params[:user_id])
+      new_user = User.find_by(id: params[:user_id])
+      @campaign.campaign_users.create(user: new_user, confirmed: false)
+    end
+    respond_to do |format|
+      if @campaign.save
+        format.html { redirect_to campaign_url(slug: @campaign.slug), notice: "You have requested to join the \"#{@campaign.name}\" campaign." }
+        format.json { render :show, status: :ok, location: @campaign }
+      else
+        format.html { render :new }
+        format.json { render json: @campaign.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+  
   # PATCH/PUT /campaigns/1/confirm_user/:user_id
   def confirm_user
+    @campaign = Campaign.find(params[:id])
     authorize @campaign
-    if User.exists?(id: params[:user_id]) && @campaign.campaign_users.exists(user_id: params[:user_id])
-      campaign_user = @campaign.campaign_users.find_by(user_id: params[:user_id])
-      campaign_user.confirmed = true
+    if User.exists?(id: params[:user_id]) && @campaign.campaign_users.exists?(user_id: params[:user_id])
+      @campaign.campaign_users.find_by(user_id: params[:user_id]).update(confirmed: true)
     end
     respond_to do |format|
       if @campaign.save

@@ -14,5 +14,6 @@ Rails.application.routes.draw do
   get 'dashboard', to: 'dashboard#index'
   resources :users, except: %i[create new], param: :slug
   patch '/users/:id/change_role', to: 'users#change_role', as: 'user_change_role'
+  patch '/campaigns/:id/join_campaign/:user_id', to: 'campaigns#join_campaign', as: 'campaign_join_campaign'
   patch '/campaigns/:id/confirm_user/:user_id', to: 'campaigns#confirm_user', as: 'campaign_confirm_user'
 end

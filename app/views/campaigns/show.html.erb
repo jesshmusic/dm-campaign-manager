@@ -35,9 +35,9 @@
   <div class="row mb-3 pb-3 border-bottom">
     <div class="col">
       <h2>Active Players</h2>
-      <ul>
+      <ul class="list-group list-group-flush">
         <% @campaign.campaign_users.where(confirmed: true).each do |campaign_user| %>
-          <li><%= User.find(campaign_user).name %></li>
+          <li class="list-group-item"><%= campaign_user.user.name %></li>
         <% end %>
       </ul>
     </div>
@@ -47,9 +47,11 @@
     <div class="row mb-3 pb-3 border-bottom">
       <div class="col">
         <h2>Pending Players</h2>
-        <ul>
+        <ul class="list-group list-group-flush">
           <% @campaign.campaign_users.where(confirmed: false).each do |campaign_user| %>
-            <li><%= User.find(campaign_user).name %></li>
+            <li class="list-group-item">
+              <%= campaign_user.user.name %>
+              <%= link_to 'Confirm', campaign_confirm_user_path(id: @campaign.id, user_id: campaign_user.user.id), method: :patch, class: "btn btn-primary ml-4", data: { confirm: 'Are you sure?' } %></li>
           <% end %>
         </ul>
       </div>
@@ -62,7 +64,7 @@
     </div>
   <% elsif current_user %>
     <div class="d-flex align-items-center justify-content-start py-3 btn-group">
-      <%= link_to 'Join Campaign', edit_campaign_path(@campaign), class: "btn btn-primary" %>
+      <%= link_to 'Join Campaign', campaign_join_campaign_path(id: @campaign.id, user_id: current_user.id), method: :patch, class: "btn btn-primary" %>
     </div>
   <% end %>
 </div>
