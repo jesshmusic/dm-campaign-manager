@@ -16,7 +16,7 @@ class CharactersController < ApplicationController
     elsif current_user.admin?
       @pagy, @characters = pagy(@characters)
     else
-      @pagy, @characters = pagy(@characters.where(user_id: nil).or(@characters.where(user_id: current_user.id)).order('name ASC'))
+      @pagy, @characters = pagy(@characters.where(user_id: current_user.id).order('name ASC'))
     end
   end
 
@@ -44,11 +44,14 @@ class CharactersController < ApplicationController
     pc_slug = @character.name.parameterize.truncate(80, omission: '')
     pc_slug = "#{current_user.username}_#{pc_slug}"
     @character.slug = Character.exists?(slug: pc_slug) ? "#{pc_slug}_#{@character.id}" : pc_slug
-
     @character.user = current_user
 
     respond_to do |format|
       if @character.save
+        campaign_character = CampaignCharacter.new()
+        campaign_character.campaign = Campaign.find(character_params[:campaign_id])
+        campaign_character.character = @character
+        campaign_character.save
         format.html { redirect_to @character, notice: ' character was successfully created.' }
         format.json { render :show, status: :created, location: @character }
       else
@@ -64,6 +67,10 @@ class CharactersController < ApplicationController
     authorize @character
     respond_to do |format|
       if @character.update(character_params)
+        campaign_character = CampaignCharacter.find_or_create_by(character_id: @character.id)
+        campaign_character.campaign = Campaign.find(character_params[:campaign_id])
+        campaign_character.character = @character
+        campaign_character.save
         format.html { redirect_to @character, notice: ' character was successfully updated.' }
         format.json { render :show, status: :ok, location: @character }
       else
@@ -97,6 +104,7 @@ class CharactersController < ApplicationController
         :description,
         :alignment,
         :armor_class,
+        :campaign_id,
         :character_type,
         :charisma,
         :constitution,

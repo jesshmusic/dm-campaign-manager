@@ -14,6 +14,7 @@
     <tr>
       <th>Name</th>
       <th class="d-none d-lg-table-cell">Characters</th>
+      <th class="d-none d-lg-table-cell">NPCs</th>
       <th class="d-none d-lg-table-cell">World</th>
       <th>Dungeon Master</th>
       <th></th>
@@ -24,7 +25,8 @@
     <% @campaigns.each do |campaign| %>
       <tr>
         <td><%= campaign.name %></td>
-        <td class="d-none d-lg-table-cell"><%= campaign.campaign_characters.count %></td>
+        <td class="d-none d-lg-table-cell"><%= campaign.pcs_count %></td>
+        <td class="d-none d-lg-table-cell"><%= campaign.npcs_count %></td>
         <td class="d-none d-lg-table-cell"><%= campaign.world %></td>
         <td><%= campaign.user.name %></td>
         <td>

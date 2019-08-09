@@ -31,6 +31,14 @@ class Campaign < ApplicationRecord
 
   belongs_to :user
   
+  def pcs_count
+    self.characters.where(character_type: 'pc').count
+  end
+  
+  def npcs_count
+    self.characters.where(character_type: 'npc').count
+  end
+  
   include PgSearch::Model
   
   # PgSearch

@@ -7,12 +7,22 @@
                     <% end %>
 
   <div class="form-inputs">
-    <% if current_user.admin? || current_user.dungeon_master? %>
+    <% if (current_user.admin? || current_user.dungeon_master?) %>
         <%= form.input :character_type,
           collection: [['Player Character', 'pc'], ['Non-player Character', 'npc'] ],
           input_html: { multiple: false },
           include_blank: false,
           include_hidden: false %>
+        <%= form.association :campaign,
+          collection: current_user.campaigns + current_user.player_campaigns,
+          include_blank: false,
+          include_hidden: false %>
+    <% else %>
+      <%= form.hidden_field :character_type, value: 'pc' %>
+      <%= form.association :campaign,
+        collection: current_user.player_campaigns,
+        include_blank: false,
+        include_hidden: false %>
     <% end %>
     
     <%= form.hidden_field :user_id, value: form.object.user_id || current_user.id %>
@@ -287,10 +297,17 @@
   $('#character_magic_item_ids').select2({
     theme: "bootstrap"
   });
+  $('#character_campaign_id').select2({
+    theme: "bootstrap"
+  });
+  
+  $('#character_character_type').on("select2:select", function (event) {
+    handleNPCDisplay();
+  });
   
   function handleNPCDisplay() {
-    var classTypeValue = $('#character_character_type :selected').text();
-    if (classTypeValue === "Non-player Character") {
+    var classTypeValue = $('#character_character_type :selected').val();
+    if (classTypeValue === "npc") {
       $('.character_role').show();
     } else {
       $('.character_role').hide();

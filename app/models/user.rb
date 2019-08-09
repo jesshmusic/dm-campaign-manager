@@ -54,7 +54,7 @@ class User < ApplicationRecord
   has_many :spells, dependent: :destroy
   
   has_many :campaign_users
-  has_many :campaigns, through: :campaign_users
+  has_many :player_campaigns, through: :campaign_users, source: :campaign
 
   def set_default_role
     puts "SETTING DEFAULT ROLE, self.role = #{self.role}"

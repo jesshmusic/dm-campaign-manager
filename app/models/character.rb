@@ -47,7 +47,6 @@
 
 class Character < ApplicationRecord
   after_validation(on: :create) do
-    self.character_type = self.character_type ? self.character_type : 'pc'
     self.slug = generate_slug
   end
   
@@ -70,7 +69,11 @@ class Character < ApplicationRecord
   accepts_nested_attributes_for :skills, reject_if: :all_blank, allow_destroy: true
   
   belongs_to :user
-  belongs_to :campaign, optional: true
+  belongs_to :campaign
+  
+  def dnd_class
+    dnd_classes.first.name
+  end
   
   include PgSearch::Model
   

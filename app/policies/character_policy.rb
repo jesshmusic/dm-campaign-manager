@@ -13,7 +13,7 @@ class CharacterPolicy < ApplicationPolicy
   end
 
   def create?
-    user
+    user && (user.campaign_users.where(confirmed: true).count > 0 || user.dungeon_master?)
   end
 
   def destroy?

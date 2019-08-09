@@ -31,7 +31,7 @@
           <td><%= character.dnd_classes.map {|dnd_class| dnd_class.name}.join(', ') %></td>
           <td><%= character.level %></td>
           <td><%= character.race %></td>
-          <td><%= character.user ? character.user.name : 'NPC' %></td>
+          <td><%= character.character_type == 'pc' ? character.user.name : "NPC - #{character.user.name}" %></td>
           <td>
             <%= link_to 'Show', character, class: "btn btn-sm btn-primary" %>
             <%= link_to 'Edit', edit_character_path(character), class: "btn btn-sm btn-success" if policy(character).edit? %>
