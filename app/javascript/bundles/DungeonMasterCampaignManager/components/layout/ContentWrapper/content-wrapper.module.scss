@@ -3,11 +3,11 @@
 
 .contentWrapper {
   @include tablet {
-    padding: 4rem 0 0;
+    padding: 3rem 2rem;
   }
 
-  background-color: $content-background;
+  // background-color: $content-background;
   margin: 0 auto;
   max-width: 85rem;
-  padding: 3rem 0 0;
+  padding: 3rem 0;
 }

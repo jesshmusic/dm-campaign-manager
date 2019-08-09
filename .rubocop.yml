@@ -1,0 +1,31 @@
+Metrics/ClassLength:
+  CountComments: false
+  Max: 235
+
+Documentation:
+  Enabled: false
+
+EmptyLines:
+  Enabled: false
+
+Encoding:
+  Enabled: false
+
+LineLength:
+  Max: 150
+  Exclude:
+    - 'config/routes.rb'
+
+MethodLength:
+  Max: 25
+
+Metrics/AbcSize:
+  Exclude:
+    - 'app/models/composer_searcher.rb'
+
+Metrics/CyclomaticComplexity:
+  Max: 9
+
+Metrics/PerceivedComplexity:
+  # http://www.rubydoc.info/gems/rubocop/RuboCop/Cop/Metrics/PerceivedComplexity
+  Max: 8

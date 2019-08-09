@@ -1,133 +1,134 @@
 @import './variables';
 @import './mixins';
 
-body {
-  @include tablet {
-    font-size: $font-size-desktop;
-  }
-  background-color: $body-bg;
-  color: $text-color;
-  font-size: $font-size-mobile;
-  line-height: $line-height-computed;
-  margin: 0;
-}
+// body{
+  //   @include tablet {
+  //     font-size: $font-size-desktop;
+  //   }
+  //   background-color: $body-bg;
+  //   color: $text-color;
+  //   font-size: $font-size-mobile;
+  //   line-height: $line-height-computed;
+  //   margin: 0;
+  // }
+  //
+  // a {
+  //   color: $link-color;
+  //   text-decoration: none;
+  //   transition: color 250ms ease-in-out;
+  //
+  //   &:focus,
+  //   &:hover {
+  //     color: lighten($link-color, 25%);
+  //     text-decoration: none;
+  //     transition: color 250ms ease-in-out;
+  //   }
+  // }
+  //
+  // h1,
+  // h2,
+  // h3,
+  // h4,
+  // h5,
+  // h6 {
+  //   line-height: 1.1;
+  // }
+  //
+  // h1,
+  // h2 {
+  //   font-weight: 500;
+  //   margin: 0 0 1rem;
+  // }
+  //
+  // h3,
+  // h4,
+  // h5,
+  // h6 {
+  //   font-weight: 700;
+  //   margin: 0 0 .5rem;
+  // }
+  //
+  // h1 {
+  //   @include tablet {
+  //     font-size: $font-size-h1 * .85;
+  //   }
+  //   @include desktop {
+  //     font-size: $font-size-h1;
+  //   }
+  //
+  //   font-size: $font-size-h1 * .75;
+  // }
+  //
+  // h2 {
+  //   @include tablet {
+  //     font-size: $font-size-h2 * .85;
+  //   }
+  //   @include desktop {
+  //     font-size: $font-size-h2;
+  //   }
+  //
+  //   font-size: $font-size-h2 * .75;
+  // }
+  //
+  // h3 {
+  //   @include tablet {
+  //     font-size: $font-size-h3 * .85;
+  //   }
+  //   @include desktop {
+  //     font-size: $font-size-h3;
+  //   }
+  //
+  //   font-size: $font-size-h3 * .75;
+  // }
+  //
+  // h4 {
+  //   @include tablet {
+  //     font-size: $font-size-h4 * .85;
+  //   }
+  //   @include desktop {
+  //     font-size: $font-size-h4;
+  //   }
+  //
+  //   font-size: $font-size-h4 * .75;
+  // }
+  //
+  // input {
+  //   background: $input-bg;
+  //   border: .075rem solid $input-border-color;
+  //   border-bottom-left-radius: $border-radius-small;
+  //   border-top-left-radius: $border-radius-small;
+  //   color: $input-text-color;
+  //   font-size: $font-size-base;
+  //   height: 2rem;
+  //   line-height: 2rem;
+  //   margin: 0;
+  //   padding: 0 .5rem;
+  //   transition: background-color 350ms ease-in;
+  //
+  //   &:active,
+  //   &:focus {
+  //     background-color: $input-active-bg;
+  //     border: 0;
+  //     border-bottom: .075rem solid $input-border-color;
+  //     border-radius: 0;
+  //     outline: 0;
+  //     transition: background-color 350ms ease-in;
+  //   }
+  // }
+  //
+  // p {
+  //   font-weight: 300;
+  //   margin: 0 0 .5rem;
+  // }
+  //
+  // small {
+  //   color: darken($text-color, 10%);
+  //   font-size: 50%;
+  //   font-weight: 400;
+  //   text-transform: uppercase;
+  // }
+  //
+  // strong {
+  //   font-weight: 600;
+  // }
 
-a {
-  color: $link-color;
-  text-decoration: none;
-  transition: color 250ms ease-in-out;
-
-  &:focus,
-  &:hover {
-    color: lighten($link-color, 25%);
-    text-decoration: none;
-    transition: color 250ms ease-in-out;
-  }
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  line-height: 1.1;
-}
-
-h1,
-h2 {
-  font-weight: 500;
-  margin: 0 0 1rem;
-}
-
-h3,
-h4,
-h5,
-h6 {
-  font-weight: 700;
-  margin: 0 0 .5rem;
-}
-
-h1 {
-  @include tablet {
-    font-size: $font-size-h1 * .85;
-  }
-  @include desktop {
-    font-size: $font-size-h1;
-  }
-
-  font-size: $font-size-h1 * .75;
-}
-
-h2 {
-  @include tablet {
-    font-size: $font-size-h2 * .85;
-  }
-  @include desktop {
-    font-size: $font-size-h2;
-  }
-
-  font-size: $font-size-h2 * .75;
-}
-
-h3 {
-  @include tablet {
-    font-size: $font-size-h3 * .85;
-  }
-  @include desktop {
-    font-size: $font-size-h3;
-  }
-
-  font-size: $font-size-h3 * .75;
-}
-
-h4 {
-  @include tablet {
-    font-size: $font-size-h4 * .85;
-  }
-  @include desktop {
-    font-size: $font-size-h4;
-  }
-
-  font-size: $font-size-h4 * .75;
-}
-
-input {
-  background: $input-bg;
-  border: .075rem solid $input-border-color;
-  border-bottom-left-radius: $border-radius-small;
-  border-top-left-radius: $border-radius-small;
-  color: $input-text-color;
-  font-size: $font-size-base;
-  height: 2rem;
-  line-height: 2rem;
-  margin: 0;
-  padding: 0 .5rem;
-  transition: background-color 350ms ease-in;
-
-  &:active,
-  &:focus {
-    background-color: $input-active-bg;
-    border: 0;
-    border-bottom: .075rem solid $input-border-color;
-    border-radius: 0;
-    outline: 0;
-    transition: background-color 350ms ease-in;
-  }
-}
-
-p {
-  font-weight: 300;
-  margin: 0 0 .5rem;
-}
-
-small {
-  color: darken($text-color, 10%);
-  font-size: 50%;
-  font-weight: 400;
-  text-transform: uppercase;
-}
-
-strong {
-  font-weight: 600;
-}

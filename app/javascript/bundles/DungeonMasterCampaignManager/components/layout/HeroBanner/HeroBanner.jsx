@@ -2,10 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import axiosClient from '../../../actions/axiosClient';
 
-import styles from './HeroBanner.scss';
+import styles from './hero-banner';
 
 const HeroBanner = (props) => (
-  <div>
+  <div className={styles.heroBanner}>
     Hero Banner
   </div>
 );

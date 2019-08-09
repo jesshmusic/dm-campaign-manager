@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: campaigns
@@ -22,25 +24,29 @@ class Campaign < ApplicationRecord
   after_validation(on: :create) do
     self.slug = generate_slug
   end
-  
+
   has_many :campaign_users, dependent: :destroy
   has_many :users, through: :campaign_users
-  
+
   has_many :campaign_characters, dependent: :destroy
   has_many :characters, through: :campaign_characters
 
   belongs_to :user
-  
+
   def pcs_count
-    self.characters.where(character_type: 'pc').count
+    characters.where(character_type: 'pc').count
   end
-  
+
   def npcs_count
-    self.characters.where(character_type: 'npc').count
+    characters.where(character_type: 'npc').count
   end
-  
+
+  def dungeon_master
+    user
+  end
+
   include PgSearch::Model
-  
+
   # PgSearch
   pg_search_scope :search_for,
                   against: {
@@ -57,10 +63,10 @@ class Campaign < ApplicationRecord
   def to_param
     slug
   end
-  
+
   private
 
   def generate_slug
-    self.slug = Campaign.exists?(self.name.parameterize) ? "#{self.name.parameterize}-#{self.user.username}-#{self.id}" : "#{self.name.parameterize}-#{self.user.username}"
+    self.slug = Campaign.exists?(name.parameterize) ? "#{name.parameterize}-#{user.username}-#{id}" : "#{name.parameterize}-#{user.username}"
   end
 end

@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import styles from './ContentWrapper.scss';
+import styles from './content-wrapper';
 
 const ContentWrapper = ({ children }) => (
   <div className={styles.contentWrapper}>
