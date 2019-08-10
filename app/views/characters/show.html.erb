@@ -17,7 +17,7 @@
     <div class="row mb-3 pb-3 border-bottom">
       <div class="col">
         <h1>Character: <%= @character.name %></h1>
-        <h2>Level <%= @character.level %> <%= @character.dnd_class %></h2>
+        <h2>Level <%= @character.level %> <%= @character.dnd_class_string %></h2>
         <h3>Experience Points</h3>
         <div class="progress" style="height: 30px;">
           <div class="progress-bar"
@@ -58,7 +58,7 @@
                  aria-valuenow="100"
                  aria-valuemin="100"
                  aria-valuemax="100">
-              <%= @character.hit_dice %>
+              <%= "#{@character.hit_dice_number}d#{@character.hit_dice_value}" %>
             </div>
           </div>
         </figure>

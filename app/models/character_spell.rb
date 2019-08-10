@@ -3,6 +3,7 @@
 # Table name: character_spells
 #
 #  id           :bigint           not null, primary key
+#  is_prepared  :boolean          default(FALSE), not null
 #  character_id :bigint
 #  spell_id     :bigint
 #

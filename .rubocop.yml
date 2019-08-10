@@ -17,14 +17,13 @@ LineLength:
     - 'config/routes.rb'
 
 MethodLength:
-  Max: 25
+  Max: 30
 
 Metrics/AbcSize:
-  Exclude:
-    - 'app/models/composer_searcher.rb'
+  Max: 30
 
 Metrics/CyclomaticComplexity:
-  Max: 9
+  Max: 14
 
 Metrics/PerceivedComplexity:
   # http://www.rubydoc.info/gems/rubocop/RuboCop/Cop/Metrics/PerceivedComplexity

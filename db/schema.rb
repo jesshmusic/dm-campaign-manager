@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_08_232249) do
+ActiveRecord::Schema.define(version: 2019_08_10_135428) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -46,6 +46,18 @@ ActiveRecord::Schema.define(version: 2019_08_08_232249) do
     t.index ["user_id"], name: "index_campaigns_on_user_id"
   end
 
+  create_table "character_actions", force: :cascade do |t|
+    t.string "name", default: "New Action"
+    t.text "description", default: ""
+    t.integer "attack_bonus"
+    t.integer "damage_bonus"
+    t.string "damage_dice"
+    t.bigint "character_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["character_id"], name: "index_character_actions_on_character_id"
+  end
+
   create_table "character_classes", force: :cascade do |t|
     t.bigint "character_id"
     t.bigint "dnd_class_id"
@@ -65,45 +77,49 @@ ActiveRecord::Schema.define(version: 2019_08_08_232249) do
   create_table "character_spells", force: :cascade do |t|
     t.bigint "spell_id"
     t.bigint "character_id"
+    t.boolean "is_prepared", default: false, null: false
     t.index ["character_id"], name: "index_character_spells_on_character_id"
     t.index ["spell_id"], name: "index_character_spells_on_spell_id"
   end
 
   create_table "characters", force: :cascade do |t|
-    t.string "character_type", null: false
+    t.string "character_type", default: "pc", null: false
     t.string "name", null: false
-    t.text "description"
+    t.text "description", default: "Enter this character's backstory, history, or notes here."
     t.string "slug", null: false
-    t.string "role"
-    t.integer "level"
-    t.integer "xp"
-    t.string "alignment"
-    t.string "race"
-    t.integer "initiative"
-    t.integer "proficiency"
-    t.string "speed"
-    t.string "languages"
-    t.string "spell_ability"
-    t.integer "spell_save_dc"
-    t.integer "spell_attack_bonus"
-    t.integer "armor_class"
-    t.integer "hit_points"
-    t.integer "hit_points_current"
-    t.integer "strength"
-    t.integer "dexterity"
-    t.integer "constitution"
-    t.integer "intelligence"
-    t.integer "wisdom"
-    t.integer "charisma"
-    t.integer "copper_pieces"
-    t.integer "silver_pieces"
-    t.integer "electrum_pieces"
-    t.integer "gold_pieces"
-    t.integer "platinum_pieces"
+    t.string "role", default: "Player Character"
+    t.integer "level", default: 1, null: false
+    t.integer "xp", default: 0, null: false
+    t.string "alignment", default: "neutral"
+    t.string "race", default: "Human", null: false
+    t.integer "initiative", default: 0, null: false
+    t.integer "proficiency", default: 2, null: false
+    t.string "speed", default: "30 feet", null: false
+    t.string "languages", default: "Common"
+    t.string "spell_ability", default: "Intelligence"
+    t.integer "spell_save_dc", default: 8
+    t.integer "spell_attack_bonus", default: 0
+    t.integer "armor_class", default: 10
+    t.integer "hit_points", default: 8, null: false
+    t.integer "hit_points_current", default: 8, null: false
+    t.integer "strength", default: 10, null: false
+    t.integer "dexterity", default: 10, null: false
+    t.integer "constitution", default: 10, null: false
+    t.integer "intelligence", default: 10, null: false
+    t.integer "wisdom", default: 10, null: false
+    t.integer "charisma", default: 10, null: false
+    t.integer "copper_pieces", default: 0
+    t.integer "silver_pieces", default: 0, null: false
+    t.integer "electrum_pieces", default: 0
+    t.integer "gold_pieces", default: 0
+    t.integer "platinum_pieces", default: 0
     t.bigint "user_id"
     t.bigint "campaign_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "background", default: "Acolyte"
+    t.integer "hit_dice_number", default: 1, null: false
+    t.integer "hit_dice_value", default: 8, null: false
     t.index ["campaign_id"], name: "index_characters_on_campaign_id"
     t.index ["slug"], name: "index_characters_on_slug"
     t.index ["user_id"], name: "index_characters_on_user_id"
