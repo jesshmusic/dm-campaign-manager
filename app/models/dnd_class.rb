@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: dnd_classes
@@ -33,17 +35,27 @@ class DndClass < ApplicationRecord
   has_many :spells, through: :spell_classes
 
   belongs_to :user, optional: true
-  
+
   accepts_nested_attributes_for :prof_choices, reject_if: :all_blank, allow_destroy: true
 
   include PgSearch::Model
-  
+
   # PgSearch
   pg_search_scope :search_for,
                   against: { name: 'A' },
                   using: { tsearch: { prefix: true } }
-                  
+
   def to_param
     slug
+  end
+
+  private
+
+  def generate_slug
+    self.slug = if user
+                  DndClass.exists?(name.parameterize) ? "#{name.parameterize}-#{user.username}-#{id}" : "#{name.parameterize}-#{user.username}"
+                else
+                  DndClass.exists?(name.parameterize) ? "#{name.parameterize}-#{id}" : name.parameterize.to_s
+                end
   end
 end

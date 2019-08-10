@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: spells
@@ -35,28 +37,31 @@
 
 class Spell < ApplicationRecord
   validates :name, :level, :casting_time, :duration, :range, :school, presence: true
+  after_validation(on: :create) do
+    self.slug = generate_slug
+  end
 
   has_many :spell_classes
   has_many :dnd_classes, through: :spell_classes
 
   belongs_to :user, optional: true
-  
+
   include PgSearch::Model
-  
+
   def get_spell_level_text
     if level <= 0
-      return 'Cantrip'
+      'Cantrip'
     elsif level == 1
-      return '1st level'
+      '1st level'
     elsif level == 2
-      return '2nd level'
+      '2nd level'
     elsif level == 3
-      return '3rd level'
+      '3rd level'
     else
-      return "#{level}th level"
+      "#{level}th level"
     end
   end
-  
+
   # PgSearch
   pg_search_scope :search_for,
                   against: {
@@ -73,5 +78,15 @@ class Spell < ApplicationRecord
 
   def to_param
     slug
+  end
+
+  private
+
+  def generate_slug
+    self.slug = if user
+                  Spell.exists?(name.parameterize) ? "#{name.parameterize}-#{user.username}-#{id}" : "#{name.parameterize}-#{user.username}"
+                else
+                  Spell.exists?(name.parameterize) ? "#{name.parameterize}-#{id}" : name.parameterize.to_s
+                end
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SpellsController < ApplicationController
   before_action :set_spell, only: %i[show edit update destroy]
   before_action :authenticate_user!, except: %i[index show]
@@ -5,11 +7,11 @@ class SpellsController < ApplicationController
   # GET /spells
   # GET /spells.json
   def index
-    if params[:search].present?
-      @spells = Spell.search_for(params[:search])
-    else
-      @spells = Spell.all
-    end
+    @spells = if params[:search].present?
+                Spell.search_for(params[:search])
+              else
+                Spell.all
+              end
 
     if !current_user
       @pagy, @spells = pagy(@spells.where(user_id: nil))
@@ -22,8 +24,7 @@ class SpellsController < ApplicationController
 
   # GET /spells/1
   # GET /spells/1.json
-  def show
-  end
+  def show; end
 
   # GET /spells/new
   def new
@@ -32,14 +33,14 @@ class SpellsController < ApplicationController
   end
 
   # GET /spells/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /spells
   # POST /spells.json
   def create
     @spell = Spell.new(spell_params)
     authorize @spell
+    @spell.user = current_user if current_user.dungeon_master?
 
     respond_to do |format|
       if @spell.save
@@ -81,13 +82,14 @@ class SpellsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_spell
-      @spell = Spell.find_by(slug: params[:slug])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def spell_params
-      params.require(:spell).permit(:name, :description, :higher_level, :page, :range, :material, :ritual, :duration, :concentration, :casting_time, :level, components: [], dnd_class_ids: [])
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_spell
+    @spell = Spell.find_by(slug: params[:slug])
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def spell_params
+    params.require(:spell).permit(:name, :description, :higher_level, :page, :range, :material, :ritual, :duration, :concentration, :casting_time, :level, components: [], dnd_class_ids: [])
+  end
 end

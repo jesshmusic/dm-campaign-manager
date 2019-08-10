@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class DndFunc
+class NpcGenerator
   def test_generate_npc
     campaign = Campaign.first
     user = User.find_by(username: 'jesshdm')
@@ -28,10 +28,12 @@ class DndFunc
 
   private
 
+  # Statistics
+
   def set_ability_scores(score_priority = [], min_score = 15)
     ability_scores = Array.new(6)
     ability_scores.each_with_index do |_, index|
-      rolls = [rand(1..6), rand(1..6), rand(1..6), rand(1..6)]
+      rolls = [roll_dice(1, 6), roll_dice(1, 6), roll_dice(1, 6), roll_dice(1, 6)]
       rolls.delete_at(rolls.index(rolls.min))
       ability_scores[index] = rolls.sum
     end
@@ -317,11 +319,11 @@ class DndFunc
                               end
     @new_npc.hit_dice_number = @new_npc.level
     @new_npc.hit_points = @new_npc.hit_dice_value + ability_score_modifier(@new_npc.constitution)
-    (1..@new_npc.hit_dice_number - 1).each do
-      @new_npc.hit_points += rand(1..@new_npc.hit_dice_value)
-    end
+    @new_npc.hit_points += roll_dice(@new_npc.hit_dice_number - 1, @new_npc.hit_dice_value)
     @new_npc.hit_points_current = @new_npc.hit_points
   end
+
+  # Armor
 
   def add_armor
     armor_profs = @new_npc.dnd_class.profs.where(prof_type: 'Armor').pluck(:name)
@@ -374,6 +376,8 @@ class DndFunc
     armor_choices
   end
 
+  # Weapon
+
   def add_weapon
     weapon_profs = @new_npc.dnd_class.profs.where(prof_type: 'Weapons').pluck(:name)
     weapon_choices = get_weapon_choices(weapon_profs)
@@ -423,6 +427,28 @@ class DndFunc
     weapon_choices
   end
 
+  # Treasure
+
+  def add_treasure
+    # Coin by Level
+    @new_npc.copper_pieces = roll_dice(2, 4) * 10 * @new_npc.level
+    @new_npc.silver_pieces = roll_dice(3, 4) * 10 * @new_npc.level
+    @new_npc.electrum_pieces = roll_dice(1, 4) * 10 * @new_npc.level
+    @new_npc.gold_pieces = roll_dice(4, 4) * 10 * @new_npc.level
+    @new_npc.platinum_pieces = roll_dice(1, 4) * 10 * @new_npc.level
+
+    # Simple random Magic Item
+    num_magic_items = 0
+    max_rarity = 'uncommon'
+    if rand(1..100) < @new_npc.level
+      case @new_npc.level
+      when 1..4
+
+
+      end
+    end
+  end
+
   # Probability Calculation
 
   def sum_of_weights(weighted_items)
@@ -457,5 +483,14 @@ class DndFunc
     # puts items
     # puts "Item weight: #{weight}"
     items.select { |el| el[:weight] == weight }
+  end
+
+  # Dice Rolls
+  def roll_dice(num_dice, dice_value)
+    result = 0
+    (1..num_dice).each do
+      result += rand(1..dice_value)
+    end
+    result
   end
 end

@@ -1,14 +1,16 @@
+# frozen_string_literal: true
+
 class TreasuresController < ApplicationController
-  before_action :set_treasure, only: [:show, :edit, :update, :destroy]
+  before_action :set_treasure, only: %i[show edit update destroy]
 
   # GET /treasures
   # GET /treasures.json
   def index
-    if params[:search].present?
-      @treasures = Treasure.search_for(params[:search])
-    else
-      @treasures = Treasure.all
-    end
+    @treasures = if params[:search].present?
+                   Treasure.search_for(params[:search])
+                 else
+                   Treasure.all
+                 end
 
     if !current_user
       @pagy, @treasures = pagy(@treasures.where(user_id: nil))
@@ -21,8 +23,7 @@ class TreasuresController < ApplicationController
 
   # GET /treasures/1
   # GET /treasures/1.json
-  def show
-  end
+  def show; end
 
   # GET /treasures/new
   def new
@@ -31,14 +32,14 @@ class TreasuresController < ApplicationController
   end
 
   # GET /treasures/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /treasures
   # POST /treasures.json
   def create
     @treasure = Treasure.new(treasure_params)
     authorize @treasure
+    @treasure.user = current_user
 
     respond_to do |format|
       if @treasure.save
@@ -80,29 +81,30 @@ class TreasuresController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_treasure
-      @treasure = Treasure.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def treasure_params
-      params.require(:treasure).permit(
-        :name,
-        :description,
-        :copper_pieces,
-        :silver_pieces,
-        :electrum_pieces,
-        :gold_pieces,
-        :platinum_pieces,
-        :user_id,
-        magic_item_ids: [],
-        equipment_items_attributes: [
-          :id,
-          :quantity,
-          :_destroy,
-          item_ids: []
-        ]
-      )
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_treasure
+    @treasure = Treasure.find(params[:id])
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def treasure_params
+    params.require(:treasure).permit(
+      :name,
+      :description,
+      :copper_pieces,
+      :silver_pieces,
+      :electrum_pieces,
+      :gold_pieces,
+      :platinum_pieces,
+      :user_id,
+      magic_item_ids: [],
+      equipment_items_attributes: [
+        :id,
+        :quantity,
+        :_destroy,
+        item_ids: []
+      ]
+    )
+  end
 end

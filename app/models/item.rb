@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: items
@@ -49,6 +51,13 @@
 
 class Item < ApplicationRecord
   validates :name, :category, :sub_category, :cost_unit, :cost_value, :weight, presence: true
+  after_validation(on: :create) do
+    self.slug = generate_slug
+  end
+
+  after_validation(on: :create) do
+    self.slug = generate_slug
+  end
 
   has_many :container_items, dependent: :destroy
   has_many :contained_items, through: :container_items
@@ -56,7 +65,7 @@ class Item < ApplicationRecord
   belongs_to :user, optional: true
 
   include PgSearch::Model
-  
+
   # PgSearch
   pg_search_scope :search_for,
                   against: {
@@ -72,5 +81,18 @@ class Item < ApplicationRecord
 
   def to_param
     slug
+  end
+
+  private
+
+  def generate_slug
+    # frozen_string_literal: true
+
+self.slug = if user
+              Item.exists?(name.parameterize) ? "#{name.parameterize}-#{user.username}-#{id}" : "#{name.parameterize}-#{user.username}"
+            else
+              Item.exists?(name.parameterize) ? "#{name.parameterize}-#{id}" : name.parameterize.to_s
+                end
+
   end
 end

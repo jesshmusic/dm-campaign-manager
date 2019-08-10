@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: magic_items
@@ -26,10 +28,14 @@
 class MagicItem < ApplicationRecord
   validates :name, :magic_item_type, :rarity, presence: true
 
+  after_validation(on: :create) do
+    self.slug = generate_slug
+  end
+
   include PgSearch::Model
 
   belongs_to :user, optional: true
-  
+
   # PgSearch
   pg_search_scope :search_for,
                   against: {
@@ -45,5 +51,15 @@ class MagicItem < ApplicationRecord
 
   def to_param
     slug
+  end
+
+  private
+
+  def generate_slug
+    self.slug = if user
+                  MagicItem.exists?(name.parameterize) ? "#{name.parameterize}-#{user.username}-#{id}" : "#{name.parameterize}-#{user.username}"
+                else
+                  MagicItem.exists?(name.parameterize) ? "#{name.parameterize}-#{id}" : name.parameterize.to_s
+                end
   end
 end

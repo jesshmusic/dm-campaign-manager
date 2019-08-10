@@ -30,7 +30,6 @@ class CharactersController < ApplicationController
   def new
     @character = Character.new
     authorize @character
-    @character.user = current_user
   end
 
   # GET /characters/1/edit
@@ -41,9 +40,6 @@ class CharactersController < ApplicationController
   def create
     @character = Character.new(character_params)
     authorize @character
-    pc_slug = @character.name.parameterize.truncate(80, omission: '')
-    pc_slug = "#{current_user.username}_#{pc_slug}"
-    @character.slug = Character.exists?(slug: pc_slug) ? "#{pc_slug}_#{@character.id}" : pc_slug
     @character.user = current_user
 
     respond_to do |format|

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DndClassesController < ApplicationController
   before_action :set_dnd_class, only: %i[show edit update destroy]
   before_action :authenticate_user!, except: %i[index show]
@@ -5,11 +7,11 @@ class DndClassesController < ApplicationController
   # GET /dnd_classes
   # GET /dnd_classes.json
   def index
-    if params[:search].present?
-      @dnd_classes = DndClass.search_for(params[:search])
-    else
-      @dnd_classes = DndClass.all
-    end
+    @dnd_classes = if params[:search].present?
+                     DndClass.search_for(params[:search])
+                   else
+                     DndClass.all
+                   end
 
     if !current_user
       @pagy, @dnd_classes = pagy(@dnd_classes.where(user_id: nil))
@@ -22,8 +24,7 @@ class DndClassesController < ApplicationController
 
   # GET /dnd_classes/1
   # GET /dnd_classes/1.json
-  def show
-  end
+  def show; end
 
   # GET /dnd_classes/new
   def new
@@ -32,18 +33,15 @@ class DndClassesController < ApplicationController
   end
 
   # GET /dnd_classes/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /dnd_classes
   # POST /dnd_classes.json
   def create
     @dnd_class = DndClass.new(dnd_class_params)
     authorize @dnd_class
-    dnd_class_slug = @dnd_class.name.parameterize.truncate(80, omission: '')
-    dnd_class_slug = "#{current_user.username}_#{dnd_class_slug}" if current_user.dungeon_master?
-    @dnd_class.slug = DndClass.exists?(slug: dnd_class_slug) ? "#{dnd_class_slug}_#{@dnd_class.id}" : dnd_class_slug
-    
+    @dnd_class.user = current_user if current_user.dungeon_master?
+
     respond_to do |format|
       if @current_user.dungeon_master? && @current_user.dnd_classes << @dnd_class
         format.html { redirect_to dnd_class_url(slug: @dnd_class.slug), notice: 'Dnd class was successfully created.' }
@@ -85,27 +83,28 @@ class DndClassesController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_dnd_class
-      @dnd_class = DndClass.find_by(slug: params[:slug])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def dnd_class_params
-      params.require(:dnd_class).permit(
+  # Use callbacks to share common setup or constraints between actions.
+  def set_dnd_class
+    @dnd_class = DndClass.find_by(slug: params[:slug])
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def dnd_class_params
+    params.require(:dnd_class).permit(
+      :name,
+      :hit_die,
+      :api_url,
+      prof_ids: [],
+      spell_ids: [],
+      prof_choices_attributes: [
+        :id,
         :name,
-        :hit_die,
-        :api_url,
-        prof_ids: [],
-        spell_ids: [],
-        prof_choices_attributes: [
-          :id,
-          :name,
-          :num_choices,
-          :prof_choice_type,
-          :_destroy,
-          prof_ids: []
-        ]
-      )
-    end
+        :num_choices,
+        :prof_choice_type,
+        :_destroy,
+        prof_ids: []
+      ]
+    )
+  end
 end

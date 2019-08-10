@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ItemsController < ApplicationController
   before_action :set_item, only: %i[show edit update destroy]
   before_action :authenticate_user!, except: %i[index show]
@@ -5,11 +7,11 @@ class ItemsController < ApplicationController
   # GET /items
   # GET /items.json
   def index
-    if params[:search].present?
-      @items = Item.search_for(params[:search])
-    else
-      @items = Item.all
-    end
+    @items = if params[:search].present?
+               Item.search_for(params[:search])
+             else
+               Item.all
+             end
 
     if !current_user
       @pagy, @items = pagy(@items.where(user_id: nil))
@@ -22,8 +24,7 @@ class ItemsController < ApplicationController
 
   # GET /items/1
   # GET /items/1.json
-  def show
-  end
+  def show; end
 
   # GET /items/new
   def new
@@ -32,14 +33,14 @@ class ItemsController < ApplicationController
   end
 
   # GET /items/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /items
   # POST /items.json
   def create
     @item = Item.new(item_params)
     authorize @item
+    @item.user = current_user if current_user.dungeon_master?
 
     respond_to do |format|
       if @item.save
@@ -79,13 +80,14 @@ class ItemsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_item
-      @item = Item.find_by(slug: params[:slug])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def item_params
-      params.require(:item).permit(:api_url, :armor_class, :armor_dex_bonus, :armor_max_bonus, :armor_stealth_disadvantage, :armor_str_minimum, :category, :category_range, :cost_unit, :cost_value, :description, :name, :sub_category, :vehicle_capacity, :vehicle_speed, :vehicle_speed_unit, :weapon_2h_damage_dice_count, :weapon_2h_damage_dice_value, :weapon_2h_damage_type, :weapon_damage_dice_count, :weapon_damage_dice_value, :weapon_damage_type, :weapon_properties, :weapon_range, :weapon_range_long, :weapon_range_normal, :weapon_thrown_range_long, :weapon_thrown_range_normal, :weight)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_item
+    @item = Item.find_by(slug: params[:slug])
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def item_params
+    params.require(:item).permit(:api_url, :armor_class, :armor_dex_bonus, :armor_max_bonus, :armor_stealth_disadvantage, :armor_str_minimum, :category, :category_range, :cost_unit, :cost_value, :description, :name, :sub_category, :vehicle_capacity, :vehicle_speed, :vehicle_speed_unit, :weapon_2h_damage_dice_count, :weapon_2h_damage_dice_value, :weapon_2h_damage_type, :weapon_damage_dice_count, :weapon_damage_dice_value, :weapon_damage_type, :weapon_properties, :weapon_range, :weapon_range_long, :weapon_range_normal, :weapon_thrown_range_long, :weapon_thrown_range_normal, :weight)
+  end
 end

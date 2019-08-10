@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MagicItemsController < ApplicationController
   before_action :set_magic_item, only: %i[show edit update destroy]
   before_action :authenticate_user!, except: %i[index show]
@@ -5,11 +7,11 @@ class MagicItemsController < ApplicationController
   # GET /magic_items
   # GET /magic_items.json
   def index
-    if params[:search].present?
-      @magic_items = MagicItem.search_for(params[:search])
-    else
-      @magic_items = MagicItem.all
-    end
+    @magic_items = if params[:search].present?
+                     MagicItem.search_for(params[:search])
+                   else
+                     MagicItem.all
+                   end
 
     if !current_user
       @pagy, @magic_items = pagy(@magic_items.where(user_id: nil))
@@ -22,8 +24,7 @@ class MagicItemsController < ApplicationController
 
   # GET /magic_items/1
   # GET /magic_items/1.json
-  def show
-  end
+  def show; end
 
   # GET /magic_items/new
   def new
@@ -32,14 +33,14 @@ class MagicItemsController < ApplicationController
   end
 
   # GET /magic_items/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /magic_items
   # POST /magic_items.json
   def create
     @magic_item = MagicItem.new(magic_item_params)
     authorize @magic_item
+    @magic_item.user = current_user if current_user.dungeon_master?
 
     respond_to do |format|
       if @magic_item.save
@@ -81,13 +82,14 @@ class MagicItemsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_magic_item
-      @magic_item = MagicItem.find_by(slug: params[:slug])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def magic_item_params
-      params.require(:magic_item).permit(:name, :magic_item_type, :description, :rarity, :requires_attunement)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_magic_item
+    @magic_item = MagicItem.find_by(slug: params[:slug])
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def magic_item_params
+    params.require(:magic_item).permit(:name, :magic_item_type, :description, :rarity, :requires_attunement)
+  end
 end
