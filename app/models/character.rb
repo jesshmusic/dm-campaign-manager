@@ -86,6 +86,10 @@ class Character < ApplicationRecord
     dnd_classes.first
   end
 
+  def challenge_rating
+    DndRules.cr_for_npc(self)
+  end
+
   include PgSearch::Model
 
   # PgSearch
