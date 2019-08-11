@@ -16,9 +16,9 @@
   <div class="container">
     <div class="row mb-3 pb-3 border-bottom">
       <div class="col">
-        <h1>Character: <%= @character.name %></h1>
-        <h2>Level <%= @character.level %> <%= @character.dnd_class_string %></h2>
-        <h3>Experience Points</h3>
+        <h1>Character: <%= @character.name %> <% if @character.character_type == 'npc' %><span class="badge badge-pill badge-info">NPC</span><% end %></h1>
+        <h2>Level <%= @character.level %> <%= @character.dnd_class_string %> <% if @character.character_type == 'npc' %><span class="badge badge-pill badge-warning">Challenge Rating: <%= @character.challenge_rating %></span><% end %></h2>
+        <h3>Experience Points <% if @character.character_type == 'npc' %>Reward<% end %></h3>
         <div class="progress" style="height: 30px;">
           <div class="progress-bar"
                role="progressbar"
@@ -26,7 +26,7 @@
                aria-valuenow="100"
                aria-valuemin="100"
                aria-valuemax="100">
-            <%= @character.xp %>
+            <span class="lead"><%= number_with_delimiter(@character.xp, delimiter: ',') %><small>XP</small></span>
           </div>
         </div>
       </div>
@@ -92,6 +92,15 @@
           </ul>
         </div>
       <% end %>
+    </div>
+
+    <div class="row mb-3 pb-3 border-bottom">
+      <div class="col">
+        <h3>Actions</h3>
+        <% @character.character_actions.each do |character_action| %>
+          <%= render 'action', character_action: character_action %>
+        <% end %>
+      </div>
     </div>
 
     <div class="row mb-3 pb-3 border-bottom">

@@ -2,12 +2,12 @@
 
 class NpcGenerator
   class << self
-    def test_generate_npc
+    def test_generate_npc(level = nil)
       campaign = Campaign.first
       user = User.find_by(username: 'jesshdm')
       random_name = NameGen.random_name(%w[male female].sample)
       random_class = DndClass.all.pluck(:name).sample
-      random_level = rand(6..15)
+      random_level = level.nil? ? rand(6..15) : level
       puts "Creating NPC #{random_name}, level #{random_level} #{random_class}"
       puts DndRules.xp_for_cr('1/4')
       random_race = DndRules.random_race
@@ -31,9 +31,8 @@ class NpcGenerator
       generate_ability_scores(min_score)
       set_statistics
       add_armor
-      (1..rand(1..3)).each do
-        add_weapon
-      end
+      add_weapon
+      @new_npc.xp = DndRules.xp_for_cr(@new_npc.challenge_rating)
       @new_npc.save!
     end
 
@@ -188,11 +187,11 @@ class NpcGenerator
       @new_npc.hit_dice_value = case @new_npc.dnd_class_string
                                 when 'Barbarian'
                                   12
-                                when 'Bard' || 'Cleric' || 'Druid' || 'Monk' || 'Rogue' || 'Warlock'
+                                when 'Bard', 'Cleric', 'Druid', 'Monk', 'Rogue', 'Warlock'
                                   8
-                                when 'Fighter' || 'Paladin' || 'Ranger'
+                                when 'Fighter', 'Paladin', 'Ranger'
                                   10
-                                when 'Sorcerer' || 'Wizard'
+                                when 'Sorcerer', 'Wizard'
                                   6
                                 else
                                   8
@@ -207,20 +206,22 @@ class NpcGenerator
 
     def add_armor
       armor_profs = @new_npc.dnd_class.profs.where(prof_type: 'Armor').pluck(:name)
-      armor_choices = get_armor_choices(armor_profs)
-      armor = DndRules.get_weighted_random_record(armor_choices)
-      armor_item = EquipmentItem.create(quantity: 1)
-      armor_item.items << armor
-      @new_npc.equipment_items << armor_item
-      @new_npc.armor_class = if armor.armor_class
-                               if armor.armor_dex_bonus
-                                 armor.armor_class + DndRules.ability_score_modifier(@new_npc.dexterity)
+      if armor_profs.any?
+        armor_choices = get_armor_choices(armor_profs)
+        armor = DndRules.get_weighted_random_record(armor_choices)
+        armor_item = EquipmentItem.create(quantity: 1)
+        armor_item.items << armor
+        @new_npc.equipment_items << armor_item
+        @new_npc.armor_class = if armor.armor_class
+                                 if armor.armor_dex_bonus
+                                   armor.armor_class + DndRules.ability_score_modifier(@new_npc.dexterity)
+                                 else
+                                   armor.armor_class
+                                 end
                                else
-                                 armor.armor_class
+                                 10 + DndRules.ability_score_modifier(@new_npc.dexterity)
                                end
-                             else
-                               10 + DndRules.ability_score_modifier(@new_npc.dexterity)
-                             end
+      end
     end
 
     def get_armor_choices(armor_profs)
@@ -258,28 +259,30 @@ class NpcGenerator
 
     def add_weapon
       weapon_profs = @new_npc.dnd_class.profs.where(prof_type: 'Weapons').pluck(:name)
-      weapon_choices = get_weapon_choices(weapon_profs)
-      weapon = DndRules.get_weighted_random_record(weapon_choices)
-      weapon_item = EquipmentItem.create(quantity: 1)
-      weapon_item.items << weapon
-      @new_npc.equipment_items << weapon_item
-      attack_action = CharacterAction.create(
-        name: weapon.name,
-        description: weapon.description
-      )
-      if weapon.weapon_2h_damage_type
-        attack_action.damage_dice = "1h: #{weapon.weapon_damage_dice_count}d#{weapon.weapon_damage_dice_value} #{weapon.weapon_damage_type}, 2h: #{weapon.weapon_2h_damage_dice_count}d#{weapon.weapon_2h_damage_dice_value} #{weapon.weapon_2h_damage_type}"
-      else
-        attack_action.damage_dice = "1h: #{weapon.weapon_damage_dice_count}d#{weapon.weapon_damage_dice_value} #{weapon.weapon_damage_type}"
+      if weapon_profs.any?
+        weapon_choices = get_weapon_choices(weapon_profs)
+        weapon = DndRules.get_weighted_random_record(weapon_choices)
+        weapon_item = EquipmentItem.create(quantity: 1)
+        weapon_item.items << weapon
+        @new_npc.equipment_items << weapon_item
+        attack_action = CharacterAction.create(
+          name: weapon.name,
+          description: weapon.description
+        )
+        if weapon.weapon_2h_damage_type
+          attack_action.damage_dice = "1h: #{weapon.weapon_damage_dice_count}d#{weapon.weapon_damage_dice_value} #{weapon.weapon_damage_type}, 2h: #{weapon.weapon_2h_damage_dice_count}d#{weapon.weapon_2h_damage_dice_value} #{weapon.weapon_2h_damage_type}"
+        else
+          attack_action.damage_dice = "1h: #{weapon.weapon_damage_dice_count}d#{weapon.weapon_damage_dice_value} #{weapon.weapon_damage_type}"
+        end
+        if weapon.weapon_range.include? 'Ranged'
+          attack_action.attack_bonus = DndRules.ability_score_modifier(@new_npc.dexterity) + @new_npc.proficiency
+          attack_action.damage_bonus = DndRules.ability_score_modifier(@new_npc.dexterity) + @new_npc.proficiency
+        else
+          attack_action.attack_bonus = DndRules.ability_score_modifier(@new_npc.strength) + @new_npc.proficiency
+          attack_action.damage_bonus = DndRules.ability_score_modifier(@new_npc.strength) + @new_npc.proficiency
+        end
+        @new_npc.character_actions << attack_action
       end
-      if weapon.weapon_range.include? 'Ranged'
-        attack_action.attack_bonus = DndRules.ability_score_modifier(@new_npc.dexterity)
-        attack_action.damage_bonus = DndRules.ability_score_modifier(@new_npc.dexterity)
-      else
-        attack_action.attack_bonus = DndRules.ability_score_modifier(@new_npc.strength)
-        attack_action.damage_bonus = DndRules.ability_score_modifier(@new_npc.strength)
-      end
-      @new_npc.character_actions << attack_action
     end
 
     def get_weapon_choices(weapon_profs)
@@ -288,14 +291,14 @@ class NpcGenerator
         case weapon_prof
         when 'Simple weapons'
           Item.where(category: 'Weapon').where(sub_category: 'Simple').each do |weapon_item|
-            weapon_choices << { item: weapon_item, weight: 2 }
+            weapon_choices << { item: weapon_item, weight: 5 }
           end
         when 'Martial weapons'
           Item.where(category: 'Weapon').where(sub_category: 'Martial').each do |weapon_item|
-            weapon_choices << { item: weapon_item, weight: 3 }
+            weapon_choices << { item: weapon_item, weight: 15 }
           end
         else
-          Item.where(category: 'Weapon').where('name like ?', "%#{weapons_prof.delete_suffix('s')}").each do |weapon_item|
+          Item.where(category: 'Weapon').where('name like ?', "%#{weapon_prof.chomp('s')}").each do |weapon_item|
             weapon_choices << { item: weapon_item, weight: 1 }
           end
         end
