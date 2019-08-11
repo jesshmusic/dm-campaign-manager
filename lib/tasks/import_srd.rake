@@ -401,15 +401,15 @@ namespace :srd do
 
   def create_figurines_of_wondrous_power(magic_item)
     figurines = [
-      { name: 'Bronze Griffon', rarity: 'rare' },
-      { name: 'Ebony Fly', rarity: 'rare' },
-      { name: 'Golden Lions', rarity: 'rare' },
-      { name: 'Ivory Goats', rarity: 'rare' },
-      { name: 'Marble Elephant', rarity: 'rare' },
-      { name: 'Obsidian Steed', rarity: 'very rare' },
-      { name: 'Onyx Dog', rarity: 'rare' },
-      { name: 'Serpentine Owl', rarity: 'rare' },
-      { name: 'Silver Raven', rarity: 'uncommon' }
+      { name: 'Figurine of Power, Bronze Griffon', rarity: 'rare' },
+      { name: 'Figurine of Power, Ebony Fly', rarity: 'rare' },
+      { name: 'Figurine of Power, Golden Lions', rarity: 'rare' },
+      { name: 'Figurine of Power, Ivory Goats', rarity: 'rare' },
+      { name: 'Figurine of Power, Marble Elephant', rarity: 'rare' },
+      { name: 'Figurine of Power, Obsidian Steed', rarity: 'very rare' },
+      { name: 'Figurine of Power, Onyx Dog', rarity: 'rare' },
+      { name: 'Figurine of Power, Serpentine Owl', rarity: 'rare' },
+      { name: 'Figurine of Power, Silver Raven', rarity: 'uncommon' }
     ]
     giant_fly = MagicItem.find_by(name: 'Giant Fly')
     figurines.each do |figurine|
@@ -426,27 +426,27 @@ namespace :srd do
 
   def create_ioun_stones(magic_item)
     ioun_stones = [
-      { name: 'Absorption', rarity: 'very rare' },
-      { name: 'Agility', rarity: 'very rare' },
-      { name: 'Awareness', rarity: 'rare' },
-      { name: 'Fortitude', rarity: 'very rare' },
-      { name: 'Greater Absorption', rarity: 'legendary' },
-      { name: 'Insight', rarity: 'very rare' },
-      { name: 'Intellect', rarity: 'very rare' },
-      { name: 'Leadership', rarity: 'very rare' },
-      { name: 'Mastery', rarity: 'legendary' },
-      { name: 'Protection', rarity: 'rare' },
-      { name: 'Regeneration', rarity: 'legendary' },
-      { name: 'Reserve', rarity: 'rare' },
-      { name: 'Strength', rarity: 'very rare' },
-      { name: 'Sustenance', rarity: 'rare' }
+      { name: 'Ioun Stone, Absorption', rarity: 'very rare' },
+      { name: 'Ioun Stone, Agility', rarity: 'very rare' },
+      { name: 'Ioun Stone, Awareness', rarity: 'rare' },
+      { name: 'Ioun Stone, Fortitude', rarity: 'very rare' },
+      { name: 'Ioun Stone, Greater Absorption', rarity: 'legendary' },
+      { name: 'Ioun Stone, Insight', rarity: 'very rare' },
+      { name: 'Ioun Stone, Intellect', rarity: 'very rare' },
+      { name: 'Ioun Stone, Leadership', rarity: 'very rare' },
+      { name: 'Ioun Stone, Mastery', rarity: 'legendary' },
+      { name: 'Ioun Stone, Protection', rarity: 'rare' },
+      { name: 'Ioun Stone, Regeneration', rarity: 'legendary' },
+      { name: 'Ioun Stone, Reserve', rarity: 'rare' },
+      { name: 'Ioun Stone, Strength', rarity: 'very rare' },
+      { name: 'Ioun Stone, Sustenance', rarity: 'rare' }
     ]
     create_magic_items(ioun_stones, magic_item)
   end
 
   def create_potions_of_healing(magic_item)
     potions = [
-      { name: 'Common Potion of Healing', rarity: 'common' },
+      { name: 'Potion of Healing, Common', rarity: 'common' },
       { name: 'Potion of Greater Healing', rarity: 'uncommon' },
       { name: 'Potion of Superior Healing', rarity: 'rare' },
       { name: 'Potion of Supreme Healing', rarity: 'very rare' }
