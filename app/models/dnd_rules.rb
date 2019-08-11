@@ -25,7 +25,6 @@ class DndRules
         '23' => 50_000, '24' => 62_000, '25' => 75_000, '26' => 90_000, '27' => 105_000, '28' => 120_000,
         '29' => 135_000, '30' => 155_000
       }[challenge_rating.to_s]
-      puts "Getting XP for CR: #{challenge_rating} - XP: #{xp}"
       xp
     end
 
@@ -37,12 +36,13 @@ class DndRules
       puts "#{npc.name} challenge rating calculation - proficiency CR: #{prof_cr} defense CR: #{def_cr} offense CR: #{off_cr}"
       cr_total = [prof_cr, def_cr, off_cr].inject(0, &:+)
       cr = (cr_total.to_f / 3.0)
+      puts "#{npc.name} CR value: #{cr}"
       cr_string = case cr
-                  when cr < 0.25
+                  when 0...0.25
                     '1/8'
-                  when cr < 0.5
+                  when 0.25...0.5
                     '1/4'
-                  when cr < 1
+                  when 0.5...1.1
                     '1/2'
                   else
                     cr.floor.to_s
@@ -76,11 +76,11 @@ class DndRules
     end
 
     def defensive_cr(npc)
-      ac_cr = armor_class_cr(npc.armor_class)
-      hp_cr = hit_points_cr(npc.hit_points)
-
-      def_cr_total = [ac_cr, hp_cr].inject(0, &:+)
-      (def_cr_total.to_f / 2.0)
+      # ac_cr = armor_class_cr(npc.armor_class)
+      # hp_cr = hit_points_cr(npc.hit_points)
+      [hit_points_cr(npc.hit_points), armor_class_cr(npc.armor_class)].min
+      # def_cr_total = [ac_cr, hp_cr].inject(0, &:+)
+      # (def_cr_total.to_f / 2.0)
     end
 
     def armor_class_cr(armor_class)
@@ -385,6 +385,42 @@ class DndRules
       else
         score
       end
+    end
+
+    # Skills
+    def skill_from_profs(profs, exclude_list)
+      profs_list = profs - exclude_list
+      prof = profs_list.sample
+      skill_name = prof.name
+      skills = {
+        'Skill: Animal Handling' => 'wisdom',
+        'Skill: Survival' => 'wisdom',
+        'Skill: Acrobatics' => 'dexterity',
+        'Skill: Athletics' => 'strength',
+        'Skill: Perception' => 'wisdom',
+        'Skill: Performance' => 'charisma',
+        'Skill: Sleight of Hand' => 'dexterity',
+        'Skill: Stealth' => 'dexterity',
+        'Skill: Persuasion' => 'charisma',
+        'Skill: Deception' => 'charisma',
+        'Skill: Intimidation' => 'charisma',
+        'Skill: Nature' => 'intelligence',
+        'Skill: Arcana' => 'intelligence',
+        'Skill: History' => 'intelligence',
+        'Skill: Insight' => 'wisdom',
+        'Skill: Investigation' => 'intelligence',
+        'Skill: Medicine' => 'wisdom',
+        'Skill: Religion' => 'intelligence'
+      }
+      skill = skills[skill_name.to_s]
+      skill_name.slice! 'Skill: '
+      skill_result = {
+        name: skill_name,
+        ability: skill,
+        new_exclude: prof
+      }
+      puts "Skill: #{skill_result}"
+      skill_result
     end
 
     # Dice Rolls

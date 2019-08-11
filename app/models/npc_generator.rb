@@ -32,6 +32,7 @@ class NpcGenerator
       set_statistics
       add_armor
       add_weapon
+      add_skills
       @new_npc.xp = DndRules.xp_for_cr(@new_npc.challenge_rating)
       @new_npc.save!
     end
@@ -304,6 +305,38 @@ class NpcGenerator
         end
       end
       weapon_choices
+    end
+
+    def add_skills
+      proficiency_choices = @new_npc.dnd_class.prof_choices
+      proficiency_choices.each do |prof_choice|
+        next unless prof_choice.profs.first.prof_type == 'Skills'
+        exclude_list = []
+        (1..prof_choice.num_choices).each do
+          skill_choice = DndRules.skill_from_profs(prof_choice.profs, exclude_list)
+          skill_score = case skill_choice[:ability]
+                        when 'strength'
+                          DndRules.ability_score_modifier(@new_npc.strength)
+                        when 'dexterity'
+                          DndRules.ability_score_modifier(@new_npc.dexterity)
+                        when 'constitution'
+                          DndRules.ability_score_modifier(@new_npc.constitution)
+                        when 'intelligence'
+                          DndRules.ability_score_modifier(@new_npc.intelligence)
+                        when 'wisdom'
+                          DndRules.ability_score_modifier(@new_npc.wisdom)
+                        when 'charisma'
+                          DndRules.ability_score_modifier(@new_npc.charisma)
+                        else
+                          0
+                        end
+          exclude_list << skill_choice[:new_exclude]
+          @new_npc.skills << Skill.create(
+            name: skill_choice[:name],
+            score: skill_score
+          )
+        end
+      end
     end
 
     # Treasure

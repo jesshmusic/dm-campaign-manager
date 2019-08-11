@@ -57,14 +57,15 @@ class Character < ApplicationRecord
 
   has_many :character_actions, dependent: :destroy
 
+  has_many :equipment_items, inverse_of: :character
+
+  has_many :skills, dependent: :destroy
+
   has_many :campaign_characters, dependent: :destroy
   has_many :campaigns, through: :campaign_characters
 
   has_many :character_classes, dependent: :destroy
   has_many :dnd_classes, through: :character_classes
-
-  has_many :equipment_items, inverse_of: :character
-  has_many :skills, dependent: :destroy
 
   has_many :character_magic_items, dependent: :destroy
   has_many :magic_items, through: :character_magic_items
