@@ -4,6 +4,10 @@ namespace :update do
   task monsters: :environment do
   end
 
+  task spell_cantrips: :environment do
+    Spell.where('level < 0').update_all(level: 0)
+  end
+
   task spells: :environment do
     Spell.find_each do |spell|
       spell.spell_level = spell.get_spell_level_text

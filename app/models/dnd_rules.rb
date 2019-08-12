@@ -2,6 +2,14 @@
 
 class DndRules
   class << self
+    def alignments
+      [
+        'Lawful Good', 'Lawful Neutral', 'Lawful Evil',
+        'Neutral Good', 'Neutral', 'Neutral Evil',
+        'Chaotic Good', 'Chaotic Neutral', 'Chaotic Evil'
+      ]
+    end
+
     def random_race
       [
         'dragonborn',
@@ -13,6 +21,10 @@ class DndRules
         'human',
         'tiefling'
       ].sample
+    end
+
+    def random_alignment
+      alignments.sample
     end
 
     # Challenge Rating Calculations

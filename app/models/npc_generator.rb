@@ -2,18 +2,18 @@
 
 class NpcGenerator
   class << self
-    def test_generate_npc(level = nil)
+    def test_generate_npc(level = nil, dnd_class = nil)
       campaign = Campaign.first
       user = User.find_by(username: 'jesshdm')
       random_name = NameGen.random_name(%w[male female].sample)
-      random_class = DndClass.all.pluck(:name).sample
+      random_class = dnd_class || DndClass.all.pluck(:name).sample
       random_level = level.nil? ? rand(6..15) : level
       puts "Creating NPC #{random_name}, level #{random_level} #{random_class}"
       puts DndRules.xp_for_cr('1/4')
       random_race = DndRules.random_race
       generate_npc(
         random_name, random_class, random_race,
-        'chaotic evil', random_level, 'Villain',
+        DndRules.random_alignment, random_level, 'Test NPC',
         user, campaign, 14
       )
     end
@@ -33,6 +33,7 @@ class NpcGenerator
       add_armor
       add_weapon
       add_skills
+      add_spells
       @new_npc.xp = DndRules.xp_for_cr(@new_npc.challenge_rating)
       @new_npc.save!
     end
@@ -197,6 +198,10 @@ class NpcGenerator
                                 else
                                   8
                                 end
+      spell_casting = SpellSlots.spell_ability(@new_npc)
+      @new_npc.spell_save_dc = spell_casting[:mod] + @new_npc.proficiency + 8
+      @new_npc.spell_attack_bonus = spell_casting[:mod] + @new_npc.proficiency
+      @new_npc.spell_ability = spell_casting[:ability]
       @new_npc.hit_dice_number = @new_npc.level
       @new_npc.hit_points = @new_npc.hit_dice_value + DndRules.ability_score_modifier(@new_npc.constitution)
       @new_npc.hit_points += DndRules.roll_dice(@new_npc.hit_dice_number - 1, @new_npc.hit_dice_value)
@@ -336,6 +341,43 @@ class NpcGenerator
             score: skill_score
           )
         end
+      end
+    end
+
+    def add_spells
+      # TODO: Simple initial implementation
+      spell_slots = SpellSlots.spell_slots(@new_npc)
+      if spell_slots
+        add_spells_for_level(0, spell_slots[:cantrips])
+        if @new_npc.dnd_class_string != 'Warlock'
+          add_spells_for_level(1, spell_slots[:level_1])
+          add_spells_for_level(2, spell_slots[:level_2])
+          add_spells_for_level(3, spell_slots[:level_3])
+          add_spells_for_level(4, spell_slots[:level_4])
+          add_spells_for_level(5, spell_slots[:level_5])
+          add_spells_for_level(6, spell_slots[:level_6])
+          add_spells_for_level(7, spell_slots[:level_7])
+          add_spells_for_level(8, spell_slots[:level_8])
+          add_spells_for_level(9, spell_slots[:level_9])
+        else
+          spells_known = []
+          (1..spell_slots[:total_known]).each do
+            spell_level = rand(1..spell_slots[:slot_level])
+            spell = SpellSlots.random_spell(@new_npc.dnd_class_string, spell_level, spells_known)
+            next if spell.nil?
+            spells_known << spell
+            @new_npc.spells << spell
+          end
+        end
+      end
+    end
+
+    def add_spells_for_level(level, num_spells)
+      spells_known = []
+      (1..num_spells).each do
+        spell = SpellSlots.random_spell(@new_npc.dnd_class_string, level, spells_known)
+        spells_known << spell
+        @new_npc.spells << spell
       end
     end
 

@@ -38,7 +38,10 @@
     <h2>Info</h2>
     <div class="form-row">
       <div class="col">
-        <%= form.input :alignment %>
+        <%= form.input :alignment,
+          collection: DndRules.alignments,
+          include_blank: false,
+          include_hidden: false %>
       </div>
       <div class="col">
         <%= form.association :dnd_classes,
@@ -288,6 +291,9 @@
 
 <script>
   $('#character_character_type').select2({
+    theme: "bootstrap"
+  });
+  $('#character_alignment').select2({
     theme: "bootstrap"
   });
   $('#character_dnd_class_ids').select2({
