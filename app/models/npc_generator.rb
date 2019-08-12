@@ -39,7 +39,7 @@ class NpcGenerator
       add_weapon
       add_skills
       add_spells
-      add_coins
+      add_treasure
       @new_npc.xp = DndRules.xp_for_cr(@new_npc.challenge_rating)
       @new_npc
     end
@@ -389,13 +389,14 @@ class NpcGenerator
 
     # Treasure
 
-    def add_coins
+    def add_treasure
+      individual_treasure = TreasureUtility.create_individual_treasure(@new_npc.challenge_rating)
       # Coin by Level
-      @new_npc.copper_pieces = DndRules.roll_dice(2, 4) * 10 * @new_npc.level
-      @new_npc.silver_pieces = DndRules.roll_dice(3, 4) * 10 * @new_npc.level
-      @new_npc.electrum_pieces = DndRules.roll_dice(1, 4) * 10 * @new_npc.level
-      @new_npc.gold_pieces = DndRules.roll_dice(4, 4) * 10 * @new_npc.level
-      @new_npc.platinum_pieces = DndRules.roll_dice(1, 4) * 10 * @new_npc.level
+      @new_npc.copper_pieces = individual_treasure[:copper_pieces]
+      @new_npc.silver_pieces = individual_treasure[:silver_pieces]
+      @new_npc.electrum_pieces = individual_treasure[:electrum_pieces]
+      @new_npc.gold_pieces = individual_treasure[:gold_pieces]
+      @new_npc.platinum_pieces = individual_treasure[:platinum_pieces]
     end
   end
 end
