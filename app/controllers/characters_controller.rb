@@ -66,13 +66,26 @@ class CharactersController < ApplicationController
 
   # POST /characters/generate_npc
   def create_generated_npc
-    @character = Character.new(character_params)
-    authorize @character
-    NpcGenerator.generate_npc(
+    @character = NpcGenerator.generate_npc(
       character_params[:name], DndClass.find(character_params[:dnd_class_ids].first), character_params[:race],
       character_params[:alignment], character_params[:level], character_params[:role],
       current_user, Campaign.find(character_params[:campaign_id]), character_params[:min_score]
     )
+    authorize @character
+    respond_to do |format|
+      if @character.save
+        format.html { redirect_to @character, notice: 'NPC was successfully created.' }
+        format.json { render :show, status: :created, location: @character }
+      else
+        format.html { render :new }
+        format.json { render json: @character.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  def random_fantasy_name
+    random_npc_gender = params[:random_npc_gender] || %w[male female].sample
+    render json: { name: NameGen.random_name(random_npc_gender) }
   end
 
   # PATCH/PUT /characters/1

@@ -11,11 +11,16 @@ class NpcGenerator
       puts "Creating NPC #{random_name}, level #{random_level} #{random_class}"
       puts DndRules.xp_for_cr('1/4')
       random_race = DndRules.random_race
-      generate_npc(
+      test_npc = generate_npc(
         random_name, random_class, random_race,
         DndRules.random_alignment, random_level, 'Test NPC',
         user, campaign, 14
       )
+      if test_npc.save
+        puts "Generated test NPC: #{test_npc.name}, level #{test_npc.level} #{test_npc.race} #{test_npc.dnd_class_string}"
+      else
+        puts test_npc.errors
+      end
     end
 
     def generate_npc(name, dnd_class, race, alignment, level, role, user, campaign, min_score = 15)
@@ -36,7 +41,7 @@ class NpcGenerator
       add_spells
       add_coins
       @new_npc.xp = DndRules.xp_for_cr(@new_npc.challenge_rating)
-      @new_npc.save!
+      @new_npc
     end
 
     private

@@ -21,4 +21,5 @@ Rails.application.routes.draw do
   get '/characters/new/generate_npc', to: 'characters#generate_npc', as: 'generate_npc'
   post '/characters/create_generated_npc', to: 'characters#create_generated_npc',
                                            as: 'create_generated_npc'
+  get '/random_fantasy_name', to: 'characters#random_fantasy_name', as: 'random_fantasy_name', constraints: { format: 'json' }
 end

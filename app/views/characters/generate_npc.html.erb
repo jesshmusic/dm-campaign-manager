@@ -16,7 +16,11 @@
     <div class="form-inputs">
       <div class="form-row">
         <div class="col">
-          <%= form.input :name %>
+          <%= form.input :name,
+                wrapper_html: { class: 'mb-0' },
+                input_html: { value: form.object.name || NameGen.random_name } %>
+          <button class="btn btn-sm btn-link" id="randomMaleNameButton">Random Male Name</button>
+          <button class="btn btn-sm btn-link" id="randomFemaleNameButton">Random Female Name</button>
         </div>
         <div class="col">
           <%= form.input :role, hint: 'Villain, Lord, Vendor, etc.' %>
@@ -57,7 +61,10 @@
             <%= form.input :level %>
           </div>
           <div class="col">
-            <%= form.input :min_score, label: "Minimum Score for main ability", hint: 'This will ensure the primary ability is of a minimum value' %>
+            <%= form.input :min_score,
+                  label: "Minimum Score for main ability",
+                  hint: 'This will ensure the primary ability is of a minimum value',
+                  input_html: { value: form.object.min_score || 15 } %>
           </div>
         </div>
     </div>
@@ -85,5 +92,31 @@
   });
   $('#character_campaign_id').select2({
     theme: "bootstrap"
+  });
+  
+  $('#randomMaleNameButton').on('click', function(event) {
+    event.preventDefault();
+    $.ajax({
+      type: 'GET',
+      url: '/random_fantasy_name',
+      data: {
+        random_npc_gender: 'male'
+      }
+    }).done(function(response) {
+      $('#character_name').val(response.name);
+    });
+  });
+  
+  $('#randomFemaleNameButton').on('click', function(event) {
+    event.preventDefault();
+    $.ajax({
+      type: 'GET',
+      url: '/random_fantasy_name',
+      data: {
+        random_npc_gender: 'female'
+      }
+    }).done(function(response) {
+      $('#character_name').val(response.name);
+    });
   });
 </script>

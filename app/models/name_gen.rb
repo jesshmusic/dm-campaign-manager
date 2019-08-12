@@ -10,8 +10,12 @@ class NameGen
 
     NAME_POSTFIX = %w[axe glow beam blade blood bone cloud dane crag crest doom dream feather fire fist flame forest hammer heart hell leaf light moon rage river rock shade claw shadow shield snow spirit star steel stone swift tree whisper wind wolf wood gloom glory orb ash blaze arm arrow bane bash basher beard belly bend bender binder bleeder blight bloom blossom blower glade bluff bough bow brace braid branch brand breaker breath breeze brew bringer brook brow caller chaser reaper chewer cleaver creek crusher cut cutter dancer dew down draft dreamer drifter dust eye eyes fall fang flare flaw flayer flow follower flower force forge fury gaze gazer gem gleam glide grain grip grove guard gust hair hand helm hide horn hunter jumper keep keeper killer lance lash less mane mantle mark maul maw might more mourn oak ore peak pelt pike punch reaver rider ridge ripper roar run runner scar scream scribe seeker shaper shard shot shout singer sky slayer snarl snout soar song sorrow spark spear spell spire splitter sprinter stalker steam stream strength stride strider strike striker sun surge sword sworn tail taker talon thorn tide toe track trap trapper vale valor vigor walker ward watcher water weaver whirl whisk winds wing woods wound brooke fall fallow horn root shine swallow thorne willow wood].freeze
 
-    def random_name(gender)
-      first_name = gender == 'male' ? MALE_FIRST_NAMES.sample : FEMALE_FIRST_NAMES.sample
+    def random_name(gender = nil)
+      first_name = if gender.nil?
+                     (MALE_FIRST_NAMES + FEMALE_FIRST_NAMES).sample
+                   else
+                     gender == 'male' ? MALE_FIRST_NAMES.sample : FEMALE_FIRST_NAMES.sample
+                   end
       last_name_prefix = NAME_PREFIX.sample
       postfix_array = NAME_POSTFIX - [last_name_prefix.downcase]
       last_name_postfix = postfix_array.sample

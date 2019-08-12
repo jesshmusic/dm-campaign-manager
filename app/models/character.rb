@@ -51,6 +51,7 @@
 #
 
 class Character < ApplicationRecord
+  validates :name, presence: true
   after_validation(on: :create) do
     self.slug = generate_slug
   end
