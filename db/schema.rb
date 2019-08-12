@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_10_135428) do
+ActiveRecord::Schema.define(version: 2019_08_12_182812) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -160,10 +160,8 @@ ActiveRecord::Schema.define(version: 2019_08_10_135428) do
     t.integer "quantity"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "treasure_id"
     t.bigint "character_id"
     t.index ["character_id"], name: "index_equipment_items_on_character_id"
-    t.index ["treasure_id"], name: "index_equipment_items_on_treasure_id"
   end
 
   create_table "items", force: :cascade do |t|
@@ -372,38 +370,6 @@ ActiveRecord::Schema.define(version: 2019_08_10_135428) do
     t.string "slug"
     t.index ["slug"], name: "index_spells_on_slug", unique: true
     t.index ["user_id"], name: "index_spells_on_user_id"
-  end
-
-  create_table "treasure_items", force: :cascade do |t|
-    t.bigint "treasure_id"
-    t.bigint "equipment_item_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["equipment_item_id"], name: "index_treasure_items_on_equipment_item_id"
-    t.index ["treasure_id"], name: "index_treasure_items_on_treasure_id"
-  end
-
-  create_table "treasure_magic_items", force: :cascade do |t|
-    t.bigint "treasure_id"
-    t.bigint "magic_item_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["magic_item_id"], name: "index_treasure_magic_items_on_magic_item_id"
-    t.index ["treasure_id"], name: "index_treasure_magic_items_on_treasure_id"
-  end
-
-  create_table "treasures", force: :cascade do |t|
-    t.string "name"
-    t.text "description"
-    t.integer "copper_pieces"
-    t.integer "silver_pieces"
-    t.integer "gold_pieces"
-    t.integer "platinum_pieces"
-    t.bigint "user_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "electrum_pieces"
-    t.index ["user_id"], name: "index_treasures_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|

@@ -7,12 +7,10 @@
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
 #  character_id :bigint
-#  treasure_id  :bigint
 #
 # Indexes
 #
 #  index_equipment_items_on_character_id  (character_id)
-#  index_equipment_items_on_treasure_id   (treasure_id)
 #
 
 FactoryBot.define do
