@@ -52,7 +52,10 @@
           label: 'Class' %>
       </div>
       <div class="col">
-        <%= form.input :race %>
+        <%= form.input :race,
+          collection: DndRules.player_races,
+          include_blank: false,
+          include_hidden: false %>
       </div>
     </div>
     
@@ -290,6 +293,9 @@
 <% end %>
 
 <script>
+  $('#character_race').select2({
+    theme: "bootstrap"
+  });
   $('#character_character_type').select2({
     theme: "bootstrap"
   });

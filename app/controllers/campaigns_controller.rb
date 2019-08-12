@@ -1,5 +1,6 @@
-class CampaignsController < ApplicationController
+# frozen_string_literal: true
 
+class CampaignsController < ApplicationController
   before_action :set_campaign, only: %i[show edit update destroy]
   before_action :authenticate_user!, except: %i[index show]
 
@@ -15,8 +16,7 @@ class CampaignsController < ApplicationController
 
   # GET /campaigns/1
   # GET /campaigns/1.json
-  def show
-  end
+  def show; end
 
   # GET /campaigns/new
   def new
@@ -26,8 +26,7 @@ class CampaignsController < ApplicationController
   end
 
   # GET /campaigns/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /campaigns
   # POST /campaigns.json
@@ -61,7 +60,7 @@ class CampaignsController < ApplicationController
       end
     end
   end
-  
+
   # PATCH/PUT /campaigns/1/join_campaign/:user_id
   def join_campaign
     @campaign = Campaign.find(params[:id])
@@ -80,7 +79,7 @@ class CampaignsController < ApplicationController
       end
     end
   end
-  
+
   # PATCH/PUT /campaigns/1/confirm_user/:user_id
   def confirm_user
     @campaign = Campaign.find(params[:id])
@@ -111,13 +110,14 @@ class CampaignsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_campaign
-      @campaign = Campaign.find_by(slug: params[:slug])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def campaign_params
-      params.require(:campaign).permit(:name, :description, :world)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_campaign
+    @campaign = Campaign.find_by(slug: params[:slug])
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def campaign_params
+    params.require(:campaign).permit(:name, :description, :world)
+  end
 end

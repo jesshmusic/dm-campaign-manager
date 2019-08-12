@@ -1,0 +1,89 @@
+<% title "New Character" %>
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item"><%= link_to 'Dashboard', dashboard_path %></li>
+    <li class="breadcrumb-item"><%= link_to 'Characters', characters_path %></li>
+    <li class="breadcrumb-item active" aria-current="page">New Character</li>
+  </ol>
+</nav>
+<div class="container">
+  <h1>Generate NPC</h1>
+  <%= simple_form_for @character, url: create_generated_npc_path, method: :post, validate: true do |form| %>
+    <%= form.error_notification %>
+    <%= form.error_notification message: form.object.errors[:base].to_sentence if form.object.errors[:base].present? %>
+    <% @character.errors.full_messages.each do |msg| %><h4><%= msg %></h4><% end %>
+    <div class="form-inputs">
+      <div class="form-row">
+        <div class="col">
+          <%= form.input :name %>
+        </div>
+        <div class="col">
+          <%= form.input :role, hint: 'Villain, Lord, Vendor, etc.' %>
+        </div>
+      </div>
+      <%= form.association :campaign,
+        collection: current_user.campaigns + current_user.player_campaigns,
+        include_blank: false,
+        include_hidden: false %>
+      <%= form.hidden_field :user, value: form.object.user || current_user %>
+        
+        <h2>Info</h2>
+        <div class="form-row">
+          <div class="col">
+            <%= form.input :alignment,
+              collection: DndRules.alignments,
+              include_blank: false,
+              include_hidden: false %>
+          </div>
+          <div class="col">
+            <%= form.association :dnd_classes,
+              collection: DndClass.where(user_id: nil),
+              input_html: { multiple: true },
+              include_blank: false,
+              include_hidden: false,
+              label: 'Class' %>
+          </div>
+          <div class="col">
+            <%= form.input :race,
+              collection: DndRules.player_races,
+              include_blank: false,
+              include_hidden: false %>
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="col">
+            <%= form.input :level %>
+          </div>
+          <div class="col">
+            <%= form.input :min_score, label: "Minimum Score for main ability", hint: 'This will ensure the primary ability is of a minimum value' %>
+          </div>
+        </div>
+    </div>
+
+    <div class="form-actions">
+      <%= form.button :submit, 'Generate NPC', class: 'btn btn-success mb-3' %>
+    </div>
+  <% end %>
+  <div class="admin__footer">
+    <%= link_to 'Back', characters_path, class: "btn btn-primary" %>
+    <%= link_to 'Dashboard', dashboard_path, class: "btn btn-info" %>
+  </div>
+</div>
+
+<script>
+  $('#character_race').select2({
+    theme: "bootstrap"
+  });
+  $('#character_alignment').select2({
+    theme: "bootstrap"
+  });
+  $('#character_dnd_class_ids').select2({
+    multiple: false,
+    theme: "bootstrap"
+  });
+  $('#character_campaign_id').select2({
+    theme: "bootstrap"
+  });
+</script>

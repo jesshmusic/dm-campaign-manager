@@ -6,7 +6,7 @@ class NpcGenerator
       campaign = Campaign.first
       user = User.find_by(username: 'jesshdm')
       random_name = NameGen.random_name(%w[male female].sample)
-      random_class = dnd_class || DndClass.all.pluck(:name).sample
+      random_class = dnd_class || DndClass.all.sample
       random_level = level.nil? ? rand(6..15) : level
       puts "Creating NPC #{random_name}, level #{random_level} #{random_class}"
       puts DndRules.xp_for_cr('1/4')
@@ -18,12 +18,12 @@ class NpcGenerator
       )
     end
 
-    def generate_npc(name, dnd_class_name, race, alignment, level, role, user, campaign, min_score = 15)
+    def generate_npc(name, dnd_class, race, alignment, level, role, user, campaign, min_score = 15)
       @new_npc = Character.create(name: name,
                                   level: level,
                                   role: role,
                                   alignment: alignment)
-      @new_npc.dnd_classes << DndClass.find_by(name: dnd_class_name)
+      @new_npc.dnd_classes << dnd_class
       @new_npc.user = user
       @new_npc.campaign = campaign
       @new_npc.character_type = 'npc'
@@ -34,6 +34,7 @@ class NpcGenerator
       add_weapon
       add_skills
       add_spells
+      add_coins
       @new_npc.xp = DndRules.xp_for_cr(@new_npc.challenge_rating)
       @new_npc.save!
     end
@@ -50,7 +51,7 @@ class NpcGenerator
         ability_scores[index] = rolls.sum
       end
       score_priority.each_with_index do |ability, index|
-        min_score_calc = index.zero? ? min_score : 0
+        min_score_calc = index.zero? ? min_score.to_i : 0
         case ability
         when 'strength'
           @new_npc.strength = DndRules.get_strength_for_race(
@@ -383,24 +384,13 @@ class NpcGenerator
 
     # Treasure
 
-    # def add_treasure
-    #   # Coin by Level
-    #   @new_npc.copper_pieces = DndRules.roll_dice(2, 4) * 10 * @new_npc.level
-    #   @new_npc.silver_pieces = DndRules.roll_dice(3, 4) * 10 * @new_npc.level
-    #   @new_npc.electrum_pieces = DndRules.roll_dice(1, 4) * 10 * @new_npc.level
-    #   @new_npc.gold_pieces = DndRules.roll_dice(4, 4) * 10 * @new_npc.level
-    #   @new_npc.platinum_pieces = DndRules.roll_dice(1, 4) * 10 * @new_npc.level
-    #
-    #   # Simple random Magic Item
-    #   num_magic_items = 0
-    #   max_rarity = 'uncommon'
-    #   if rand(1..100) < @new_npc.level
-    #     case @new_npc.level
-    #     when 1..4
-    #
-    #
-    #     end
-    #   end
-    # end
+    def add_coins
+      # Coin by Level
+      @new_npc.copper_pieces = DndRules.roll_dice(2, 4) * 10 * @new_npc.level
+      @new_npc.silver_pieces = DndRules.roll_dice(3, 4) * 10 * @new_npc.level
+      @new_npc.electrum_pieces = DndRules.roll_dice(1, 4) * 10 * @new_npc.level
+      @new_npc.gold_pieces = DndRules.roll_dice(4, 4) * 10 * @new_npc.level
+      @new_npc.platinum_pieces = DndRules.roll_dice(1, 4) * 10 * @new_npc.level
+    end
   end
 end

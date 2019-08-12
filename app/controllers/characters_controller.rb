@@ -32,6 +32,13 @@ class CharactersController < ApplicationController
     authorize @character
   end
 
+  # GET /characters/new/generate_npc
+  def generate_npc
+    @character = Character.new
+    authorize @character
+    @character.role = ''
+  end
+
   # GET /characters/1/edit
   def edit; end
 
@@ -55,6 +62,17 @@ class CharactersController < ApplicationController
         format.json { render json: @character.errors, status: :unprocessable_entity }
       end
     end
+  end
+
+  # POST /characters/generate_npc
+  def create_generated_npc
+    @character = Character.new(character_params)
+    authorize @character
+    NpcGenerator.generate_npc(
+      character_params[:name], DndClass.find(character_params[:dnd_class_ids].first), character_params[:race],
+      character_params[:alignment], character_params[:level], character_params[:role],
+      current_user, Campaign.find(character_params[:campaign_id]), character_params[:min_score]
+    )
   end
 
   # PATCH/PUT /characters/1
@@ -87,16 +105,6 @@ class CharactersController < ApplicationController
     end
   end
 
-  # POST /characters/create_random_npc
-  def create_random_npc
-    @character = Character.new
-    authorize @character
-    @character.user = current_user
-    @character.dnd_classes << DndClass.find_by(name: character_params[:dnd_class_name])
-    @character.level = character_params[:level]
-    @character.character_type = 'npc'
-  end
-
   private
 
   # Use callbacks to share common setup or constraints between actions.
@@ -112,7 +120,7 @@ class CharactersController < ApplicationController
       :electrum_pieces, :gold_pieces, :hit_points, :hit_points_current, :initiative,
       :intelligence, :languages, :level, :platinum_pieces, :proficiency,
       :race, :role, :silver_pieces, :speed, :spell_ability, :spell_attack_bonus,
-      :spell_save_dc, :strength, :wisdom, :xp,
+      :spell_save_dc, :strength, :user_id, :wisdom, :xp, :min_score,
       dnd_class_ids: [], spell_ids: [], magic_item_ids: [],
       equipment_items_attributes: [
         :id, :quantity, :_destroy, item_ids: []

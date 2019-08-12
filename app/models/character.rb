@@ -55,6 +55,8 @@ class Character < ApplicationRecord
     self.slug = generate_slug
   end
 
+  attribute :min_score, :integer
+
   has_many :character_actions, dependent: :destroy
 
   has_many :equipment_items, inverse_of: :character

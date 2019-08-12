@@ -70,10 +70,10 @@
             <strong>Armor Class</strong> <%= @character.armor_class %>
           </li>
           <li class="list-group-item">
-            <strong>Initiative</strong> <%= '-' if @character.initiative < 0 %><%= '+' if @character.initiative > 0 %><%= @character.initiative %>
+            <strong>Initiative</strong> <%= '+' if @character.initiative > 0 %><%= @character.initiative %>
           </li>
           <li class="list-group-item">
-            <strong>Profiency</strong> <%= '-' if @character.proficiency < 0 %><%= '+' if @character.proficiency > 0 %><%= @character.proficiency %>
+            <strong>Profiency</strong> <%= '+' if @character.proficiency > 0 %><%= @character.proficiency %>
           </li>
           <li class="list-group-item">
             <strong>Speed</strong> <%= @character.speed %>

@@ -10,17 +10,21 @@ class DndRules
       ]
     end
 
-    def random_race
+    def player_races
       [
-        'dragonborn',
-        'dwarf', 'mountain-dwarf', 'hill-dwarf',
-        'elf', 'high-elf', 'wood-elf',
-        'gnome', 'rock-gnome', 'forest-gnome',
-        'half-orc',
-        'halfling', 'stout-halfling', 'lightfoot-halfling',
-        'human',
-        'tiefling'
-      ].sample
+        'Dragonborn',
+        'Dwarf', 'Mountain Dwarf', 'Hill Dwarf',
+        'Elf', 'High Elf', 'Wood Elf',
+        'Gnome', 'Rock Gnome', 'Forest Gnome',
+        'Half-orc',
+        'Halfling', 'Stout Halfling', 'Lightfoot Halfling',
+        'Human',
+        'Tiefling'
+      ]
+    end
+
+    def random_race
+      player_races.sample
     end
 
     def random_alignment
@@ -307,13 +311,13 @@ class DndRules
 
     def get_strength_for_race(score, race)
       case race.parameterize
-      when 'human'
+      when 'Human'
         score + 1
-      when 'mountain-dwarf'
+      when 'Mountain Dwarf'
         score + 2
-      when 'dragonborn'
+      when 'Dragonborn'
         score + 2
-      when 'half-orc'
+      when 'Half-orc'
         score + 2
       else
         score
@@ -322,13 +326,13 @@ class DndRules
 
     def get_dexterity_for_race(score, race)
       case race.parameterize
-      when 'human'
+      when 'Human'
         score + 1
-      when 'elf', 'high-elf', 'wood-elf'
+      when 'Elf', 'High Elf', 'Wood Elf'
         score + 2
-      when 'forest-gnome'
+      when 'Forest Gnome'
         score + 1
-      when 'halfling', 'stout-halfling', 'lightfoot-halfling'
+      when 'Halfling', 'Stout Halfling', 'Lightfoot Halfling'
         score + 2
       else
         score
@@ -337,15 +341,15 @@ class DndRules
 
     def get_constitution_for_race(score, race)
       case race.parameterize
-      when 'human'
+      when 'Human'
         score + 1
-      when 'dwarf', 'mountain-dwarf', 'hill-dwarf'
+      when 'Dwarf', 'Mountain Dwarf', 'Hill Dwarf'
         score + 2
-      when 'stout-halfling'
+      when 'Stout Halfling'
         score + 1
-      when 'half-orc'
+      when 'Half-orc'
         score + 1
-      when 'rock-gnome'
+      when 'Rock Gnome'
         score + 1
       else
         score
@@ -354,13 +358,13 @@ class DndRules
 
     def get_intelligence_for_race(score, race)
       case race.parameterize
-      when 'human'
+      when 'Human'
         score + 1
-      when 'high-elf'
+      when 'High Elf'
         score + 1
-      when 'gnome', 'rock-gnome', 'forest-gnome'
+      when 'Gnome', 'Rock Gnome', 'Forest Gnome'
         score + 2
-      when 'tiefling'
+      when 'Tiefling'
         score + 1
       else
         score
@@ -369,11 +373,11 @@ class DndRules
 
     def get_wisdom_for_race(score, race)
       case race.parameterize
-      when 'human'
+      when 'Human'
         score + 1
-      when 'hill-dwarf'
+      when 'Hill Dwarf'
         score + 1
-      when 'wood-elf'
+      when 'Wood Elf'
         score + 1
       else
         score
@@ -382,17 +386,17 @@ class DndRules
 
     def get_charisma_for_race(score, race)
       case race.parameterize
-      when 'human'
+      when 'Human'
         score + 1
-      when 'drow'
+      when 'Drow'
         score + 1
-      when 'half-elf'
+      when 'Half-elf'
         score + 2
-      when 'dragonborn'
+      when 'Dragonborn'
         score + 1
-      when 'lightfoot-halfling'
+      when 'Lightfoot Halfling'
         score + 1
-      when 'tiefling'
+      when 'Tiefling'
         score + 2
       else
         score

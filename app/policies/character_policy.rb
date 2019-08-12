@@ -1,26 +1,35 @@
-class CharacterPolicy < ApplicationPolicy
+# frozen_string_literal: true
 
+class CharacterPolicy < ApplicationPolicy
   def show?
-    return true
+    true
   end
 
   def edit?
-    user and (user.admin? or record.user == user)
+    user && (user.admin? || (record.user == user))
   end
 
   def update?
-    user and (user.admin? or record.user == user)
+    user && (user.admin? || (record.user == user))
   end
 
   def create?
-    user && (user.campaign_users.where(confirmed: true).count > 0 || user.dungeon_master?)
+    user && (user.campaign_users.where(confirmed: true).count > 0 || user.dungeon_master? || user.admin?)
+  end
+
+  def generate_npc?
+    create_generated_npc?
+  end
+
+  def create_generated_npc?
+    user || user.dungeon_master?
   end
 
   def destroy?
-    user and (user.admin? or record.user == user)
+    user && (user.admin? || (record.user == user))
   end
 
   def destroy_all?
-    user and user.admin?
+    user&.admin?
   end
 end
