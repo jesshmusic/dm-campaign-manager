@@ -10,6 +10,13 @@
 <h1>Equipment</h1>
 <%= render 'shared/search_form', url: items_path %>
 
+<div>
+  <h3>Categories:</h3>
+  <div>
+    <%= Item.distinct.pluck(:category) %>
+  </div>
+</div>
+
 <table>
   <thead>
     <tr>

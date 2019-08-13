@@ -17,8 +17,11 @@
 #  cost_value                  :integer
 #  description                 :text
 #  name                        :string
+#  rarity                      :string
+#  requires_attunement         :string
 #  slug                        :string
 #  sub_category                :string
+#  type                        :string
 #  vehicle_capacity            :string
 #  vehicle_speed               :integer
 #  vehicle_speed_unit          :string
@@ -86,13 +89,10 @@ class Item < ApplicationRecord
   private
 
   def generate_slug
-    # frozen_string_literal: true
-
-self.slug = if user
-              Item.exists?(name.parameterize) ? "#{name.parameterize}-#{user.username}-#{id}" : "#{name.parameterize}-#{user.username}"
-            else
-              Item.exists?(name.parameterize) ? "#{name.parameterize}-#{id}" : name.parameterize.to_s
+    self.slug = if user
+                  Item.exists?(name.parameterize) ? "#{name.parameterize}-#{user.username}-#{id}" : "#{name.parameterize}-#{user.username}"
+                else
+                  Item.exists?(name.parameterize) ? "#{name.parameterize}-#{id}" : name.parameterize.to_s
                 end
-
   end
 end

@@ -39,4 +39,4 @@
 </table>
 <%== pagy_bootstrap_nav_js(@pagy) if @pagy.pages > 1 %>
 
-<%= link_to 'New Magic Item', new_magic_item_path, class: "btn btn-lg btn-success" if policy(MagicItem).new?  %>
+<%= link_to 'New Magic Item', new_magic_item_path, class: "btn btn-lg btn-success" if policy(MagicItemOld).new?  %>

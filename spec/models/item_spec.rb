@@ -15,8 +15,11 @@
 #  cost_value                  :integer
 #  description                 :text
 #  name                        :string
+#  rarity                      :string
+#  requires_attunement         :string
 #  slug                        :string
 #  sub_category                :string
+#  type                        :string
 #  vehicle_capacity            :string
 #  vehicle_speed               :integer
 #  vehicle_speed_unit          :string

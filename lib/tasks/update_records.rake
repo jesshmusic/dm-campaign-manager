@@ -145,4 +145,24 @@ namespace :update do
       dnd_class.save!
     end
   end
+
+  task categorize_items: :environment do
+    Item.all.each do |item|
+      case item.category
+      when 'Armor'
+        item.type = 'ArmorItem'
+      when 'Weapon'
+        item.type = 'WeaponItem'
+      when 'Tools'
+        item.type = 'ToolItem'
+      when 'Adventuring Gear'
+        item.type = 'GearItem'
+      when 'Mounts and Vehicles'
+        item.type = 'WeaponItem'
+      else
+        puts "CATEGORY MISSING OR INCORRECT! Item #{item.id} - #{item.name}"
+      end
+      item.save!
+    end
+  end
 end

@@ -1,25 +1,27 @@
+# frozen_string_literal: true
+
 class MagicItemPolicy < ApplicationPolicy
   def show?
-    return true
+    true
   end
-  
+
   def edit?
-    user and (user.admin? or record.user == user)
+    user && (user.admin? || (record.user == user))
   end
 
   def update?
-    user and (user.admin? or record.user == user)
+    user && (user.admin? || (record.user == user))
   end
 
   def create?
-    user and (user.admin? or user.dungeon_master?)
+    user && (user.admin? || user.dungeon_master?)
   end
 
   def destroy?
-    user and (user.admin? or record.user == user)
+    user && (user.admin? || (record.user == user))
   end
 
   def destroy_all?
-    user and (user.admin?)
+    user&.admin?
   end
 end

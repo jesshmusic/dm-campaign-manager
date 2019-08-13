@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_13_132727) do
+ActiveRecord::Schema.define(version: 2019_08_13_231433) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -182,11 +182,14 @@ ActiveRecord::Schema.define(version: 2019_08_13_132727) do
     t.string "vehicle_capacity"
     t.bigint "user_id"
     t.string "slug"
+    t.string "rarity"
+    t.string "requires_attunement"
+    t.string "type"
     t.index ["slug"], name: "index_items_on_slug", unique: true
     t.index ["user_id"], name: "index_items_on_user_id"
   end
 
-  create_table "magic_items", force: :cascade do |t|
+  create_table "magic_item_olds", force: :cascade do |t|
     t.string "name"
     t.string "magic_item_type"
     t.text "description"
@@ -196,8 +199,8 @@ ActiveRecord::Schema.define(version: 2019_08_13_132727) do
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.string "slug"
-    t.index ["slug"], name: "index_magic_items_on_slug", unique: true
-    t.index ["user_id"], name: "index_magic_items_on_user_id"
+    t.index ["slug"], name: "index_magic_item_olds_on_slug", unique: true
+    t.index ["user_id"], name: "index_magic_item_olds_on_user_id"
   end
 
   create_table "monster_actions", force: :cascade do |t|
@@ -408,7 +411,7 @@ ActiveRecord::Schema.define(version: 2019_08_13_132727) do
   add_foreign_key "container_items", "items", column: "contained_item_id"
   add_foreign_key "dnd_classes", "users"
   add_foreign_key "items", "users"
-  add_foreign_key "magic_items", "users"
+  add_foreign_key "magic_item_olds", "users"
   add_foreign_key "monsters", "users"
   add_foreign_key "spells", "users"
 end

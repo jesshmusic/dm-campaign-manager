@@ -5,13 +5,13 @@
   <div class="form-inputs">
     <%= form.input :name %>
     <%= form.input :magic_item_type,
-          collection: MagicItem.distinct.pluck(:magic_item_type),
+          collection: MagicItemOld.distinct.pluck(:magic_item_type),
           input_html: { multiple: false },
           include_blank: false,
           include_hidden: false %>
     <%= form.input :description %>
     <%= form.input :rarity,
-          collection: MagicItem.distinct.pluck(:rarity),
+          collection: MagicItemOld.distinct.pluck(:rarity),
           input_html: { multiple: false },
           include_blank: false,
           include_hidden: false %>

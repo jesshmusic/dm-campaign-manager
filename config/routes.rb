@@ -6,7 +6,12 @@ Rails.application.routes.draw do
   resources :non_player_characters, param: :slug, controller: 'characters', type: 'NonPlayerCharacter'
   resources :dnd_classes, param: :slug
   resources :items, param: :slug
-  resources :magic_items, param: :slug
+  resources :armor_items, param: :slug, controller: 'items', type: 'ArmorItem'
+  resources :gear_items, param: :slug, controller: 'items', type: 'GearItem'
+  resources :magic_items, param: :slug, controller: 'items', type: 'MagicItem'
+  resources :tool_items, param: :slug, controller: 'items', type: 'ToolItem'
+  resources :vehicle_items, param: :slug, controller: 'items', type: 'VehicleItem'
+  resources :weapon_items, param: :slug, controller: 'items', type: 'WeaponItem'
   resources :monsters, param: :slug
   resources :spells, param: :slug
   resources :campaigns, param: :slug

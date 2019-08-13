@@ -8,9 +8,9 @@ class MagicItemsController < ApplicationController
   # GET /magic_items.json
   def index
     @magic_items = if params[:search].present?
-                     MagicItem.search_for(params[:search])
+                     MagicItemOld.search_for(params[:search])
                    else
-                     MagicItem.all
+                     MagicItemOld.all
                    end
 
     if !current_user
@@ -28,7 +28,7 @@ class MagicItemsController < ApplicationController
 
   # GET /magic_items/new
   def new
-    @magic_item = MagicItem.new
+    @magic_item = MagicItemOld.new
     authorize @magic_item
   end
 
@@ -38,7 +38,7 @@ class MagicItemsController < ApplicationController
   # POST /magic_items
   # POST /magic_items.json
   def create
-    @magic_item = MagicItem.new(magic_item_params)
+    @magic_item = MagicItemOld.new(magic_item_params)
     authorize @magic_item
     @magic_item.user = current_user if current_user.dungeon_master?
 
@@ -85,7 +85,7 @@ class MagicItemsController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_magic_item
-    @magic_item = MagicItem.find_by(slug: params[:slug])
+    @magic_item = MagicItemOld.find_by(slug: params[:slug])
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

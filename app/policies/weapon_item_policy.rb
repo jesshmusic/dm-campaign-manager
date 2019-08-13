@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ItemPolicy < ApplicationPolicy
+class WeaponItemPolicy < ApplicationPolicy
   def show?
     true
   end
