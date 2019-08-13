@@ -7,7 +7,6 @@
 #  id                 :bigint           not null, primary key
 #  alignment          :string           default("neutral")
 #  background         :string           default("Acolyte")
-#  character_type     :string           default("pc"), not null
 #  copper_pieces      :integer          default(0)
 #  description        :text             default("Enter this character's backstory, history, or notes here.")
 #  electrum_pieces    :integer          default(0)
@@ -23,6 +22,7 @@
 #  spell_ability      :string           default("Intelligence")
 #  spell_attack_bonus :integer          default(0)
 #  spell_save_dc      :integer          default(8)
+#  type               :string
 #  xp                 :integer          default(0), not null
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
@@ -74,10 +74,6 @@ class Character < ApplicationRecord
 
   def dnd_class
     dnd_classes.first
-  end
-
-  def challenge_rating
-    DndRules.cr_for_npc(self)
   end
 
   include PgSearch::Model

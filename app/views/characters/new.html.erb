@@ -9,7 +9,13 @@
 </nav>
 <div class="container">
   <h1>New Character</h1>
-  <%= render 'form', character: @character %>
+  <% if @character.type == 'PlayerCharacter' %>
+    <%= render 'pc_form', character: @character %>
+  <% elsif @character.type == 'NonPlayerCharacter' %>
+    <%= render 'npc_form', character: @character %>
+  <% else %>
+    <%= render 'form', character: @character %>
+  <% end %>
   <div class="admin__footer">
     <%= link_to 'Back', characters_path, class: "btn btn-primary" %>
     <%= link_to 'Dashboard', dashboard_path, class: "btn btn-info" %>

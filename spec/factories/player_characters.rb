@@ -33,7 +33,7 @@
 #
 
 FactoryBot.define do
-  factory :character do
+  factory :player_character do
     
   end
 end

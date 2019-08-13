@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: characters
@@ -32,8 +34,6 @@
 #  index_characters_on_user_id  (user_id)
 #
 
-FactoryBot.define do
-  factory :character do
-    
-  end
+
+class PlayerCharacter < Character
 end

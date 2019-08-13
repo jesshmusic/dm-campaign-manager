@@ -24,14 +24,13 @@ class NpcGenerator
     end
 
     def generate_npc(name, dnd_class, race, alignment, level, role, user, campaign_ids, min_score = 15)
-      @new_npc = Character.create(name: name,
-                                  level: level,
-                                  role: role,
-                                  alignment: alignment)
+      @new_npc = NonPlayerCharacter.create(name: name,
+                                           level: level,
+                                           role: role,
+                                           alignment: alignment)
       @new_npc.dnd_classes << dnd_class
       @new_npc.user = user
       @new_npc.campaigns << Campaign.where(id: campaign_ids)
-      @new_npc.character_type = 'npc'
       @new_npc.race = race
       @new_npc.build_stat_block
       generate_ability_scores(min_score)

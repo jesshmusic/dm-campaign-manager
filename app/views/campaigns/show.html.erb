@@ -36,7 +36,7 @@
     <div class="col">
       <h2>Characters</h2>
       <ul class="list-group list-group-flush">
-        <% @campaign.characters.where(character_type: 'pc').each do |character| %>
+        <% @campaign.characters.each do |character| %>
           <li class="list-group-item">
             <strong><%= character.name %></strong> - Level <%= character.level %> <em><%= character.dnd_class_string %></em>
           </li>

@@ -7,25 +7,20 @@
                     <% end %>
 
   <div class="form-inputs">
-    <% if (current_user.admin? || current_user.dungeon_master?) %>
-        <%= form.association :campaigns,
-          collection: current_user.campaigns + current_user.player_campaigns,
-          include_blank: false,
-          include_hidden: false %>
-    <% else %>
-      <%= form.association :campaigns,
-        collection: current_user.player_campaigns,
-        include_blank: false,
-        include_hidden: false %>
-    <% end %>
+    <%= form.association :campaigns,
+      collection: current_user.campaigns + current_user.player_campaigns,
+      include_blank: false,
+      include_hidden: false %>
     
     <%= form.hidden_field :user_id, value: form.object.user_id || current_user.id %>
     <div class="form-row">
       <div class="col">
         <%= form.input :name %>
+        <button class="btn btn-sm btn-link" id="randomMaleNameButton">Random Male Name</button>
+        <button class="btn btn-sm btn-link" id="randomFemaleNameButton">Random Female Name</button>
       </div>
       <div class="col">
-        <%= form.input :role, hint: 'NPCs only' %>
+        <%= form.input :role %>
       </div>
     </div>
     
@@ -295,26 +290,26 @@
 <% end %>
 
 <script>
-  $(`#player_character_race`).select2({
+  $(`#non_player_character_race`).select2({
     theme: "bootstrap"
   });
-  $('#character_alignment').select2({
+  $('#non_player_character_alignment').select2({
     theme: "bootstrap"
   });
-  $('#character_dnd_class_ids').select2({
+  $('#non_player_character_dnd_class_ids').select2({
     multiple: false,
     theme: "bootstrap"
   });
-  $('#character_magic_item_ids').select2({
+  $('#non_player_character_magic_item_ids').select2({
     theme: "bootstrap"
   });
-  $('#character_campaign_ids').select2({
+  $('#non_player_character_campaign_ids').select2({
     theme: "bootstrap"
   });
   $('.character_role').show();
   
   function handleSpellsDisplay() {
-    var classValue = $('#character_dnd_class_ids :selected').text()
+    var classValue = $('#non_player_character_dnd_class_ids :selected').text()
     if (classValue === 'Bard' || classValue === 'Cleric' || classValue === 'Druid' || classValue === 'Sorcerer' || classValue === 'Warlock' || classValue === 'Wizard') {
       $('#spellsForm').show();
       showSpellLevels(0, 9);
@@ -337,7 +332,7 @@
     }
   }
   
-  $('#character_dnd_class_ids').on("select2:select", function (event) {
+  $('#non_player_character_dnd_class_ids').on("select2:select", function (event) {
     handleSpellsDisplay();
   });
   
@@ -382,8 +377,33 @@
     });
   }
   
-  handleNPCDisplay();
+  $('#randomMaleNameButton').on('click', function(event) {
+    event.preventDefault();
+    $.ajax({
+      type: 'GET',
+      url: '/random_fantasy_name',
+      data: {
+        random_npc_gender: 'male'
+      }
+    }).done(function(response) {
+      $('#non_player_character_name').val(response.name);
+    });
+  });
+  
+  $('#randomFemaleNameButton').on('click', function(event) {
+    event.preventDefault();
+    $.ajax({
+      type: 'GET',
+      url: '/random_fantasy_name',
+      data: {
+        random_npc_gender: 'female'
+      }
+    }).done(function(response) {
+      $('#non_player_character_name').val(response.name);
+    });
+  });
+  
   handleSpellsDisplay();
-  loadSelect2()
+  loadSelect2();
   
 </script>

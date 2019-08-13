@@ -22,20 +22,52 @@ class CharactersController < ApplicationController
     end
   end
 
+  def pc_index
+    @characters = if params[:search].present?
+                    PlayerCharacter.search_for(params[:search])
+                  else
+                    PlayerCharacter.all
+                  end
+
+    if !current_user
+      @pagy, @characters = pagy(@characters.where(user_id: nil))
+    elsif current_user.admin?
+      @pagy, @characters = pagy(@characters)
+    else
+      @pagy, @characters = pagy(@characters.where(user_id: current_user.id).order('name ASC'))
+    end
+  end
+
+  def npc_index
+    @characters = if params[:search].present?
+                    NonPlayerCharacter.search_for(params[:search])
+                  else
+                    NonPlayerCharacter.all
+                  end
+
+    if !current_user
+      @pagy, @characters = pagy(@characters.where(user_id: nil))
+    elsif current_user.admin?
+      @pagy, @characters = pagy(@characters)
+    else
+      @pagy, @characters = pagy(@characters.where(user_id: current_user.id).order('name ASC'))
+    end
+  end
+
   # GET /characters/1
   # GET /characters/1.json
   def show; end
 
   # GET /characters/new
   def new
-    @character = Character.new
+    @character = PlayerCharacter.new
     authorize @character
     @character.build_stat_block
   end
 
   # GET /characters/new/generate_npc
   def generate_npc
-    @character = Character.new
+    @character = NonPlayerCharacter.new
     authorize @character
     @character.role = ''
   end
@@ -46,16 +78,12 @@ class CharactersController < ApplicationController
   # POST /characters
   # POST /characters.json
   def create
-    @character = Character.new(character_params)
+    @character = PlayerCharacter.new(character_params)
     authorize @character
     @character.user = current_user
 
     respond_to do |format|
       if @character.save
-        campaign_character = CampaignCharacter.new
-        campaign_character.campaign = Campaign.find(character_params[:campaign_id])
-        campaign_character.character = @character
-        campaign_character.save
         format.html { redirect_to @character, notice: ' character was successfully created.' }
         format.json { render :show, status: :created, location: @character }
       else
@@ -124,8 +152,8 @@ class CharactersController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def character_params
-    params.require(:character).permit(
-      :name, :description, :alignment, :character_type,
+    params.require(@character.type.underscore.to_sym).permit(
+      :name, :description, :alignment, :type,
       :copper_pieces, :dexterity, :dnd_class_name, :electrum_pieces, :gold_pieces,
       :languages, :level, :platinum_pieces, :race, :role, :silver_pieces, :spell_ability,
       :spell_attack_bonus, :spell_save_dc, :user_id, :xp, :min_score,

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: characters
@@ -32,8 +34,9 @@
 #  index_characters_on_user_id  (user_id)
 #
 
-FactoryBot.define do
-  factory :character do
-    
+
+class NonPlayerCharacter < Character
+  def challenge_rating
+    DndRules.cr_for_npc(self)
   end
 end

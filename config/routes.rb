@@ -2,6 +2,8 @@
 
 Rails.application.routes.draw do
   resources :characters, param: :slug
+  resources :player_characters, param: :slug, controller: 'characters', type: 'PlayerCharacter'
+  resources :non_player_characters, param: :slug, controller: 'characters', type: 'NonPlayerCharacter'
   resources :dnd_classes, param: :slug
   resources :items, param: :slug
   resources :magic_items, param: :slug
