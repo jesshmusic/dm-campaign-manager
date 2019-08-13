@@ -7,21 +7,14 @@
 #  id                     :bigint           not null, primary key
 #  alignment              :string
 #  api_url                :string
-#  armor_class            :integer
 #  challenge_rating       :string
-#  charisma               :integer
 #  charisma_save          :integer
 #  condition_immunities   :string
-#  constitution           :integer
 #  constitution_save      :integer
 #  damage_immunities      :string
 #  damage_resistances     :string
 #  damage_vulnerabilities :string
-#  dexterity              :integer
 #  dexterity_save         :integer
-#  hit_dice               :string
-#  hit_points             :integer
-#  intelligence           :integer
 #  intelligence_save      :integer
 #  languages              :string
 #  legendary_description  :text
@@ -32,10 +25,7 @@
 #  senses                 :string
 #  size                   :string
 #  slug                   :string
-#  speed                  :string
-#  strength               :integer
 #  strength_save          :integer
-#  wisdom                 :integer
 #  wisdom_save            :integer
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
@@ -52,13 +42,13 @@
 #
 
 class Monster < ApplicationRecord
-  validates :name, :alignment, :armor_class, :challenge_rating, :charisma, :constitution,
-            :dexterity, :hit_dice, :hit_points, :intelligence, :monster_type, :size, :strength, :wisdom, presence: true
+  validates :name, :alignment, :challenge_rating, :monster_type, presence: true
   after_validation(on: :create) do
     self.slug = generate_slug
   end
 
   has_one :stat_block, dependent: :destroy
+  accepts_nested_attributes_for :stat_block
 
   has_many :monster_actions, dependent: :destroy
   has_many :monster_legendary_actions, dependent: :destroy
@@ -71,6 +61,16 @@ class Monster < ApplicationRecord
   accepts_nested_attributes_for :monster_legendary_actions, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :monster_special_abilities, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :skills, reject_if: :all_blank, allow_destroy: true
+
+  def hit_dice
+    if stat_block.hit_dice_modifier < 0
+      "#{stat_block.hit_dice_number}d#{stat_block.hit_dice_value} #{stat_block.hit_dice_modifier}"
+    elsif stat_block.hit_dice_modifier > 0
+      "#{stat_block.hit_dice_number}d#{stat_block.hit_dice_value} + #{stat_block.hit_dice_modifier}"
+    else
+      "#{stat_block.hit_dice_number}d#{stat_block.hit_dice_value}"
+    end
+  end
 
   include PgSearch::Model
 

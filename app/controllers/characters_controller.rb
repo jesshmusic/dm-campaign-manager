@@ -94,10 +94,6 @@ class CharactersController < ApplicationController
     authorize @character
     respond_to do |format|
       if @character.update(character_params)
-        campaign_character = CampaignCharacter.find_or_create_by(character_id: @character.id)
-        campaign_character.campaign = Campaign.find(character_params[:campaign_id])
-        campaign_character.character = @character
-        campaign_character.save
         format.html { redirect_to @character, notice: ' character was successfully updated.' }
         format.json { render :show, status: :ok, location: @character }
       else
@@ -128,13 +124,14 @@ class CharactersController < ApplicationController
   # Never trust parameters from the scary internet, only allow the white list through.
   def character_params
     params.require(:character).permit(
-      :name, :description, :alignment, :armor_class, :campaign_id, :character_type,
-      :charisma, :constitution, :copper_pieces, :dexterity, :dnd_class_name,
-      :electrum_pieces, :gold_pieces, :hit_points, :hit_points_current, :initiative,
-      :intelligence, :languages, :level, :platinum_pieces, :proficiency,
-      :race, :role, :silver_pieces, :speed, :spell_ability, :spell_attack_bonus,
-      :spell_save_dc, :strength, :user_id, :wisdom, :xp, :min_score,
-      dnd_class_ids: [], spell_ids: [], magic_item_ids: [],
+      :name, :description, :alignment, :character_type,
+      :copper_pieces, :dexterity, :dnd_class_name, :electrum_pieces, :gold_pieces,
+      :languages, :level, :platinum_pieces, :race, :role, :silver_pieces, :spell_ability,
+      :spell_attack_bonus, :spell_save_dc, :user_id, :xp, :min_score,
+      campaign_ids: [], dnd_class_ids: [], spell_ids: [], magic_item_ids: [],
+      stat_block_attributes: %i[
+        id armor_class charisma constitution dexterity hit_dice_modifier hit_dice_number hit_dice_value hit_points hit_points_current initiative intelligence proficiency speed strength wisdom
+      ],
       equipment_items_attributes: [
         :id, :quantity, :_destroy, item_ids: []
       ],

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_12_235524) do
+ActiveRecord::Schema.define(version: 2019_08_13_011007) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -92,22 +92,10 @@ ActiveRecord::Schema.define(version: 2019_08_12_235524) do
     t.integer "xp", default: 0, null: false
     t.string "alignment", default: "neutral"
     t.string "race", default: "Human", null: false
-    t.integer "initiative", default: 0, null: false
-    t.integer "proficiency", default: 2, null: false
-    t.string "speed", default: "30 feet", null: false
     t.string "languages", default: "Common"
     t.string "spell_ability", default: "Intelligence"
     t.integer "spell_save_dc", default: 8
     t.integer "spell_attack_bonus", default: 0
-    t.integer "armor_class", default: 10
-    t.integer "hit_points", default: 8, null: false
-    t.integer "hit_points_current", default: 8, null: false
-    t.integer "strength", default: 10, null: false
-    t.integer "dexterity", default: 10, null: false
-    t.integer "constitution", default: 10, null: false
-    t.integer "intelligence", default: 10, null: false
-    t.integer "wisdom", default: 10, null: false
-    t.integer "charisma", default: 10, null: false
     t.integer "copper_pieces", default: 0
     t.integer "silver_pieces", default: 0, null: false
     t.integer "electrum_pieces", default: 0
@@ -117,8 +105,6 @@ ActiveRecord::Schema.define(version: 2019_08_12_235524) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "background", default: "Acolyte"
-    t.integer "hit_dice_number", default: 1, null: false
-    t.integer "hit_dice_value", default: 8, null: false
     t.index ["slug"], name: "index_characters_on_slug"
     t.index ["user_id"], name: "index_characters_on_user_id"
   end
@@ -256,16 +242,6 @@ ActiveRecord::Schema.define(version: 2019_08_12_235524) do
     t.string "monster_type"
     t.string "monster_subtype"
     t.string "alignment"
-    t.integer "armor_class"
-    t.integer "hit_points"
-    t.string "hit_dice"
-    t.string "speed"
-    t.integer "strength"
-    t.integer "dexterity"
-    t.integer "constitution"
-    t.integer "intelligence"
-    t.integer "wisdom"
-    t.integer "charisma"
     t.integer "strength_save"
     t.integer "dexterity_save"
     t.integer "constitution_save"

@@ -13,13 +13,13 @@
           input_html: { multiple: false },
           include_blank: false,
           include_hidden: false %>
-        <%= form.association :campaign,
+        <%= form.association :campaigns,
           collection: current_user.campaigns + current_user.player_campaigns,
           include_blank: false,
           include_hidden: false %>
     <% else %>
       <%= form.hidden_field :character_type, value: 'pc' %>
-      <%= form.association :campaign,
+      <%= form.association :campaigns,
         collection: current_user.player_campaigns,
         include_blank: false,
         include_hidden: false %>
@@ -68,58 +68,66 @@
       </div>
     </div>
     
-    <div class="form-row">
-      <div class="col">
-        <%= form.input :armor_class %>
+    <h3>Statistics</h3>
+    <%= form.simple_fields_for :stat_block do |stats_form| %>
+      <div class="form-row">
+        <div class="col-6 col-sm-4">
+          <%= stats_form.input :armor_class %>
+        </div>
+        <div class="col-6 col-sm-4">
+          <%= stats_form.input :hit_points %>
+        </div>
+        <div class="col-6 col-sm-4">
+          <%= stats_form.input :hit_points_current, label: 'Current Hit Points' %>
+        </div>
+        <div class="col-6 col-sm-4">
+          <%= stats_form.input :initiative %>
+        </div>
+        <div class="col-6 col-sm-4">
+          <%= stats_form.input :proficiency %>
+        </div>
+        <div class="col-6 col-sm-4">
+          <%= stats_form.input :speed %>
+        </div>
       </div>
-      <div class="col">
-        <%= form.input :hit_points %>
+      
+      <div class="form-row">
+        <div class="col d-flex align-items-center justify-content-between">
+          <%= stats_form.input :hit_dice_number %><strong> d </strong><%= stats_form.input :hit_dice_value %><strong>
+        </div>
       </div>
-      <div class="col">
-        <%= form.input :hit_points_current, label: 'Current Hit Points' %>
-      </div>
-      <div class="col">
-        <%= form.input :initiative %>
-      </div>
-      <div class="col">
-        <%= form.input :proficiency %>
-      </div>
-    </div>
 
-    <div class="form-row">
-      <div class="col">
-        <%= form.input :speed %>
+      <h4>Ability Scores</h4>
+      <div class="form-row">
+        <div class="col-4 col-md-2">
+          <%= stats_form.input :strength %>
+        </div>
+        <div class="col-4 col-md-2">
+          <%= stats_form.input :dexterity %>
+        </div>
+        <div class="col-4 col-md-2">
+          <%= stats_form.input :constitution %>
+        </div>
+        <div class="col-4 col-md-2">
+          <%= stats_form.input :intelligence %>
+        </div>
+        <div class="col-4 col-md-2">
+          <%= stats_form.input :wisdom %>
+        </div>
+        <div class="col-4 col-md-2">
+          <%= stats_form.input :charisma %>
+        </div>
       </div>
+    <% end %>
+    
+    <div class="form-row">
       <div class="col">
         <%= form.input :languages %>
       </div>
     </div>
-    
     <div class="form-row">
       <div class="col">
         <%= form.input :description %>
-      </div>
-    </div>
-
-    <h2>Ability Scores</h2>
-    <div class="form-row">
-      <div class="col">
-        <%= form.input :strength %>
-      </div>
-      <div class="col">
-        <%= form.input :dexterity %>
-      </div>
-      <div class="col">
-        <%= form.input :constitution %>
-      </div>
-      <div class="col">
-        <%= form.input :intelligence %>
-      </div>
-      <div class="col">
-        <%= form.input :wisdom %>
-      </div>
-      <div class="col">
-        <%= form.input :charisma %>
       </div>
     </div>
 
@@ -309,7 +317,7 @@
   $('#character_magic_item_ids').select2({
     theme: "bootstrap"
   });
-  $('#character_campaign_id').select2({
+  $('#character_campaign_ids').select2({
     theme: "bootstrap"
   });
   

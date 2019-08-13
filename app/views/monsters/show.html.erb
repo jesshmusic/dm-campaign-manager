@@ -27,11 +27,11 @@
     <div class="col">
       <dl>
         <dt>Armor Class</dt>
-        <dd><%= @monster.armor_class %></dd>
+        <dd><%= @monster.stat_block.armor_class %></dd>
         <dt>Hit Points</dt>
-        <dd><%= @monster.hit_points %> (<%= @monster.hit_dice %>)</dd>
+        <dd><%= @monster.stat_block.hit_points %> (<%= @monster.hit_dice %>)</dd>
         <dt>Speed</dt>
-        <dd><%= @monster.speed %></dd>
+        <dd><%= @monster.stat_block.speed %></dd>
       </dl>
     </div>
   </div>
@@ -39,27 +39,27 @@
   <div class="row mb-3 pb-3 border-bottom">
     <div class="col-4 col-sm-2">
       <strong>STR</strong><br />
-      <%= @monster.strength %>
+      <%= @monster.stat_block.strength %>
     </div>
     <div class="col-4 col-sm-2">
       <strong>DEX</strong><br />
-      <%= @monster.dexterity %>
+      <%= @monster.stat_block.dexterity %>
     </div>
     <div class="col-4 col-sm-2">
       <strong>CON</strong><br />
-      <%= @monster.constitution %>
+      <%= @monster.stat_block.constitution %>
     </div>
     <div class="col-4 col-sm-2">
       <strong>INT</strong><br />
-      <%= @monster.intelligence %>
+      <%= @monster.stat_block.intelligence %>
     </div>
     <div class="col-4 col-sm-2">
       <strong>WIS</strong><br />
-      <%= @monster.wisdom %>
+      <%= @monster.stat_block.wisdom %>
     </div>
     <div class="col-4 col-sm-2">
       <strong>CHA</strong><br />
-      <%= @monster.charisma %>
+      <%= @monster.stat_block.charisma %>
     </div>
   </div>
   

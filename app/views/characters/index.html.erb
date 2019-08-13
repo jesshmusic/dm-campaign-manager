@@ -20,7 +20,7 @@
         <th>Level</th>
         <th>Race</th>
         <th>Player</th>
-        <th>Campaign</th>
+        <th>Campaigns</th>
         <th></th>
       </tr>
     </thead>
@@ -33,7 +33,7 @@
           <td><%= character.level %></td>
           <td><%= character.race %></td>
           <td><%= character.character_type == 'pc' ? character.user.name : "NPC - #{character.user.name}" %></td>
-          <td><%= character.campaign.name %></td>
+          <td><%= character.campaigns.count %></td>
           <td>
             <%= link_to 'Show', character, class: "btn btn-sm btn-primary" %>
             <%= link_to 'Edit', edit_character_path(character), class: "btn btn-sm btn-success" if policy(character).edit? %>

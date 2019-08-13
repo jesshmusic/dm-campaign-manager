@@ -90,7 +90,7 @@ class DndRules
     end
 
     def proficiency_cr(npc)
-      case npc.proficiency
+      case npc.stat_block.proficiency
       when 0
         0.0
       when 1
@@ -115,7 +115,7 @@ class DndRules
     end
 
     def defensive_cr(npc)
-      [hit_points_cr(npc.hit_points), armor_class_cr(npc.armor_class)].min
+      [hit_points_cr(npc.stat_block.hit_points), armor_class_cr(npc.stat_block.armor_class)].min
     end
 
     def armor_class_cr(armor_class)

@@ -35,17 +35,17 @@
     <div class="row mb-3 pb-3 border-bottom">
       <div class="col-12 col-sm-6 col-md-4">
         <h3>Health</h3>
-        <% hit_point_percentage = ((@character.hit_points_current.to_f / @character.hit_points.to_f) * 100.0).to_i %>
+        <% hit_point_percentage = ((@character.stat_block.hit_points_current.to_f / @character.stat_block.hit_points.to_f) * 100.0).to_i %>
         <figure class="figure w-100">
           <figcaption class="figure-caption text-center text-uppercase">Hit Points</figcaption>
           <div class="progress" style="height: 30px;">
             <div class="progress-bar bg-success"
                  role="progressbar"
                  style="width: <%= hit_point_percentage %>%;"
-                 aria-valuenow="<%= @character.hit_points_current %>"
+                 aria-valuenow="<%= @character.stat_block.hit_points_current %>"
                  aria-valuemin="0"
-                 aria-valuemax="<%= @character.hit_points %>">
-              <%= @character.hit_points_current %>/<%= @character.hit_points %>
+                 aria-valuemax="<%= @character.stat_block.hit_points %>">
+              <%= @character.stat_block.hit_points_current %>/<%= @character.stat_block.hit_points %>
             </div>
           </div>
         </figure>
@@ -58,7 +58,7 @@
                  aria-valuenow="100"
                  aria-valuemin="100"
                  aria-valuemax="100">
-              <%= "#{@character.hit_dice_number}d#{@character.hit_dice_value}" %>
+              <%= "#{@character.stat_block.hit_dice_number}d#{@character.stat_block.hit_dice_value}" %>
             </div>
           </div>
         </figure>
@@ -67,16 +67,16 @@
         <h3>Statistics</h3>
         <ul class="list-group list-group-flush">
           <li class="list-group-item">
-            <strong>Armor Class</strong> <%= @character.armor_class %>
+            <strong>Armor Class</strong> <%= @character.stat_block.armor_class %>
           </li>
           <li class="list-group-item">
-            <strong>Initiative</strong> <%= '+' if @character.initiative > 0 %><%= @character.initiative %>
+            <strong>Initiative</strong> <%= '+' if @character.stat_block.initiative > 0 %><%= @character.stat_block.initiative %>
           </li>
           <li class="list-group-item">
-            <strong>Profiency</strong> <%= '+' if @character.proficiency > 0 %><%= @character.proficiency %>
+            <strong>Profiency</strong> <%= '+' if @character.stat_block.proficiency > 0 %><%= @character.stat_block.proficiency %>
           </li>
           <li class="list-group-item">
-            <strong>Speed</strong> <%= @character.speed %>
+            <strong>Speed</strong> <%= @character.stat_block.speed %>
           </li>
           <li class="list-group-item">
             <strong>Alignment</strong> <%= @character.alignment %>
@@ -112,27 +112,27 @@
         <div class="row d-flex align-items-center ">
           <div class="col-4 col-sm-2 text-center">
             <h4>STR</h4>
-            <p class="lead"><%= @character.strength %></p>
+            <p class="lead"><%= @character.stat_block.strength %></p>
           </div>
           <div class="col-4 col-sm-2 text-center">
             <h4>DEX</h4>
-            <p class="lead"><%= @character.dexterity %></p>
+            <p class="lead"><%= @character.stat_block.dexterity %></p>
           </div>
           <div class="col-4 col-sm-2 text-center">
             <h4>CON</h4>
-            <p class="lead"><%= @character.constitution %></p>
+            <p class="lead"><%= @character.stat_block.constitution %></p>
           </div>
           <div class="col-4 col-sm-2 text-center">
             <h4>INT</h4>
-            <p class="lead"><%= @character.intelligence %></p>
+            <p class="lead"><%= @character.stat_block.intelligence %></p>
           </div>
           <div class="col-4 col-sm-2 text-center">
             <h4>WIS</h4>
-            <p class="lead"><%= @character.wisdom %></p>
+            <p class="lead"><%= @character.stat_block.wisdom %></p>
           </div>
           <div class="col-4 col-sm-2 text-center">
             <h4>CHA</h4>
-            <p class="lead"><%= @character.charisma %></p>
+            <p class="lead"><%= @character.stat_block.charisma %></p>
           </div>
         </div>
       </div>
