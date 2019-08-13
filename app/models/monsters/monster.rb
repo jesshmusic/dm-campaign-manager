@@ -58,6 +58,8 @@ class Monster < ApplicationRecord
     self.slug = generate_slug
   end
 
+  has_one :stat_block, dependent: :destroy
+
   has_many :monster_actions, dependent: :destroy
   has_many :monster_legendary_actions, dependent: :destroy
   has_many :monster_special_abilities, dependent: :destroy

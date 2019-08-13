@@ -32,6 +32,29 @@ class DndRules
     end
 
     # Challenge Rating Calculations
+    def proficiency_for_cr(challenge_rating)
+      return 2 if challenge_rating = '1/8' || '1/4' || '1/2' || '0'
+      challenge = challenge_rating.to_i
+      case challenge
+      when 1..4
+        2
+      when 5..8
+        3
+      when 9..12
+        4
+      when 13..16
+        5
+      when 17..20
+        6
+      when 21..24
+        7
+      when 25..28
+        8
+      else
+        9
+      end
+    end
+
     def xp_for_cr(challenge_rating)
       xp = {
         '0' => 10, '1/8' => 25, '1/4' => 50, '1/2' => 100, '1' => 200, '2' => 450, '3' => 700,
@@ -92,11 +115,7 @@ class DndRules
     end
 
     def defensive_cr(npc)
-      # ac_cr = armor_class_cr(npc.armor_class)
-      # hp_cr = hit_points_cr(npc.hit_points)
       [hit_points_cr(npc.hit_points), armor_class_cr(npc.armor_class)].min
-      # def_cr_total = [ac_cr, hp_cr].inject(0, &:+)
-      # (def_cr_total.to_f / 2.0)
     end
 
     def armor_class_cr(armor_class)
@@ -446,6 +465,38 @@ class DndRules
         result += rand(1..dice_value)
       end
       result
+    end
+
+    # Parse Dice String
+    def parse_dice_string(dice_string)
+      # dice_string.gsub!(/\(.*?\)|\s/, '')
+      subs = dice_string.scan(/([+-]|[0-9*!xder]+)/i).flatten
+      hit_die = {
+        hit_dice_number: 0,
+        hit_dice_value: 0,
+        hit_dice_modifier: 0
+      }
+      part = :hit_dice
+      subs.each do |str|
+        # puts str
+        case str
+        when '+'
+          part = :add
+        when '-', '&#8722;'
+          part = :sub
+        else
+          if part == :hit_dice
+            values = str.split('d')
+            hit_die[:hit_dice_number] = values[0] || 1
+            hit_die[:hit_dice_value] = values[1]
+          elsif part == :sub
+            hit_die[:hit_dice_modifier] = -str.to_i
+          else
+            hit_die[:hit_dice_modifier] = str.to_i
+          end
+        end
+      end
+      hit_die
     end
 
     # Probability Calculation

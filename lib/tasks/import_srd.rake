@@ -80,26 +80,53 @@ namespace :srd do
         new_monster.slug = new_monster.slug || monster[:slug]
         new_monster.alignment = monster[:alignment]
         new_monster.api_url = "#{dnd_open5e_url}monsters/#{monster[:slug]}"
-        new_monster.armor_class = monster[:armor_class]
         new_monster.challenge_rating = monster[:challenge_rating]
-        new_monster.charisma = monster[:charisma]
         new_monster.charisma_save = monster[:charisma_save]
         new_monster.condition_immunities = monster[:condition_immunities]
-        new_monster.constitution = monster[:constitution]
         new_monster.constitution_save = monster[:constitution_save]
         new_monster.damage_immunities = monster[:damage_immunities]
         new_monster.damage_resistances = monster[:damage_resistances]
         new_monster.damage_vulnerabilities = monster[:damage_vulnerabilities]
-        new_monster.dexterity = monster[:dexterity]
         new_monster.dexterity_save = monster[:dexterity_save]
-        new_monster.hit_dice = monster[:hit_dice]
-        new_monster.hit_points = monster[:hit_points]
-        new_monster.intelligence = monster[:intelligence]
         new_monster.intelligence_save = monster[:intelligence_save]
         new_monster.languages = monster[:languages]
         new_monster.reactions = monster[:reactions]
         new_monster.senses = monster[:senses]
         new_monster.size = monster[:size]
+        new_monster.strength_save = monster[:strength_save]
+        new_monster.monster_subtype = monster[:subtype]
+        new_monster.monster_type = monster[:type]
+        new_monster.wisdom_save = monster[:wisdom_save]
+
+        # Statistics
+        new_monster.stat_block = StatBlock.find_or_create_by(monster_id: new_monster.id) do |new_stat_block|
+          new_stat_block.armor_class = monster[:armor_class]
+          new_stat_block.charisma = monster[:charisma]
+          new_stat_block.constitution = monster[:constitution]
+          new_stat_block.dexterity = monster[:dexterity]
+          new_stat_block.hit_points = monster[:hit_points]
+          new_stat_block.hit_points_current = monster[:hit_points]
+          new_stat_block.initiative = DndRules.ability_score_modifier(monster[:dexterity])
+          new_stat_block.intelligence = monster[:intelligence]
+          new_stat_block.proficiency = DndRules.proficiency_for_cr(new_monster.challenge_rating)
+          new_stat_block.speed = monster[:speed].map { |key, value| "#{value}ft. #{key}" }.join(', ')
+          new_stat_block.strength = monster[:strength]
+          new_stat_block.wisdom = monster[:wisdom]
+
+          # Parse the Hit Dice String
+          # (handling a stupid edge case with the API encoding)
+          hit_dice = if monster[:slug] == 'kobold'
+                       '2d6 - 2'
+                     else
+                       monster[:hit_dice]
+                     end
+          hit_die_values = DndRules.parse_dice_string(hit_dice)
+          new_stat_block.hit_dice_number = hit_die_values[:hit_dice_number]
+          new_stat_block.hit_dice_value = hit_die_values[:hit_dice_value]
+          new_stat_block.hit_dice_modifier = hit_die_values[:hit_dice_modifier]
+        end
+
+        # Skills
         new_monster.skills.delete_all
         monster[:skills].each do |skill, value|
           new_skill = Skill.create(
@@ -108,14 +135,8 @@ namespace :srd do
           )
           new_monster.skills << new_skill
         end
-        new_monster.speed = monster[:speed].map { |key, value| "#{value}ft. #{key}" }.join(', ')
-        new_monster.strength = monster[:strength]
-        new_monster.strength_save = monster[:strength_save]
-        new_monster.monster_subtype = monster[:subtype]
-        new_monster.monster_type = monster[:type]
-        new_monster.wisdom = monster[:wisdom]
-        new_monster.wisdom_save = monster[:wisdom_save]
 
+        # Monster Actions
         new_monster.monster_actions.delete_all
         if monster[:actions].is_a?(Array)
           monster[:actions].each do |monster_action|
@@ -130,6 +151,7 @@ namespace :srd do
           end
         end
 
+        # Legendary Actions
         new_monster.legendary_description = monster[:legendary_desc]
         new_monster.monster_legendary_actions.delete_all
         if monster[:legendary_actions].is_a?(Array)
@@ -145,6 +167,7 @@ namespace :srd do
           end
         end
 
+        # Special Abilities
         new_monster.monster_special_abilities.delete_all
         if monster[:special_abilities].is_a?(Array)
           monster[:special_abilities].each do |monster_action|

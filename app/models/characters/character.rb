@@ -40,14 +40,12 @@
 #  xp                 :integer          default(0), not null
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
-#  campaign_id        :bigint
 #  user_id            :bigint
 #
 # Indexes
 #
-#  index_characters_on_campaign_id  (campaign_id)
-#  index_characters_on_slug         (slug)
-#  index_characters_on_user_id      (user_id)
+#  index_characters_on_slug     (slug)
+#  index_characters_on_user_id  (user_id)
 #
 
 class Character < ApplicationRecord
@@ -57,6 +55,8 @@ class Character < ApplicationRecord
   end
 
   attribute :min_score, :integer
+
+  has_one :stat_block, dependent: :destroy
 
   has_many :character_actions, dependent: :destroy
 
@@ -80,7 +80,6 @@ class Character < ApplicationRecord
   accepts_nested_attributes_for :skills, reject_if: :all_blank, allow_destroy: true
 
   belongs_to :user
-  belongs_to :campaign
 
   def dnd_class_string
     dnd_classes.first.name
