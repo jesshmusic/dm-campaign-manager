@@ -30,6 +30,7 @@ class CharactersController < ApplicationController
   def new
     @character = Character.new
     authorize @character
+    @character.build_stat_block
   end
 
   # GET /characters/new/generate_npc
@@ -69,7 +70,7 @@ class CharactersController < ApplicationController
     @character = NpcGenerator.generate_npc(
       character_params[:name], DndClass.find(character_params[:dnd_class_ids].first), character_params[:race],
       character_params[:alignment], character_params[:level], character_params[:role],
-      current_user, Campaign.find(character_params[:campaign_id]), character_params[:min_score]
+      current_user, character_params[:campaign_ids], character_params[:min_score]
     )
     authorize @character
     respond_to do |format|
