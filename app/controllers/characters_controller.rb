@@ -165,7 +165,7 @@ class CharactersController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def character_params
-    params.require(@character.type.underscore.to_sym).permit(
+    params.require(params[:type].underscore.to_sym).permit(
       :name, :description, :alignment, :type,
       :copper_pieces, :dexterity, :dnd_class_name, :electrum_pieces, :gold_pieces,
       :languages, :level, :platinum_pieces, :race, :role, :silver_pieces, :spell_ability,
