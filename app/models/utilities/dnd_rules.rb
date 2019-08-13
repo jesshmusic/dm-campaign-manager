@@ -23,6 +23,29 @@ class DndRules
       ]
     end
 
+    def skills
+      [
+        'Skill: Animal Handling',
+        'Skill: Survival',
+        'Skill: Acrobatics',
+        'Skill: Athletics',
+        'Skill: Perception',
+        'Skill: Performance',
+        'Skill: Sleight of Hand',
+        'Skill: Stealth',
+        'Skill: Persuasion',
+        'Skill: Deception',
+        'Skill: Intimidation',
+        'Skill: Nature',
+        'Skill: Arcana',
+        'Skill: History',
+        'Skill: Insight',
+        'Skill: Investigation',
+        'Skill: Medicine',
+        'Skill: Religion'
+      ]
+    end
+
     def random_race
       player_races.sample
     end

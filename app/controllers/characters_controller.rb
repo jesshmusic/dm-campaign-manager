@@ -60,8 +60,15 @@ class CharactersController < ApplicationController
 
   # GET /characters/new
   def new
-    @character = PlayerCharacter.new
+    @character = if params[:type] && params[:type] == 'PlayerCharacter'
+                   PlayerCharacter.new
+                 elsif params[:type] && params[:type] == 'NonPlayerCharacter'
+                   NonPlayerCharacter.new
+                 else
+                   Character.new
+                 end
     authorize @character
+    @character.role = ''
     @character.build_stat_block
   end
 
@@ -78,7 +85,13 @@ class CharactersController < ApplicationController
   # POST /characters
   # POST /characters.json
   def create
-    @character = PlayerCharacter.new(character_params)
+    @character = if params[:type] && params[:type] == 'PlayerCharacter'
+                   PlayerCharacter.new(character_params)
+                 elsif params[:type] && params[:type] == 'NonPlayerCharacter'
+                   NonPlayerCharacter.new(character_params)
+                 else
+                   Character.new(character_params)
+                 end
     authorize @character
     @character.user = current_user
 
