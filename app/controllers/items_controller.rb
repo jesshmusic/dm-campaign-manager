@@ -10,7 +10,7 @@ class ItemsController < ApplicationController
     @items = if params[:search].present?
                Item.search_for(params[:search])
              else
-               Item.all
+               Item.all.order('name ASC')
              end
 
     if !current_user
@@ -18,7 +18,7 @@ class ItemsController < ApplicationController
     elsif current_user.admin?
       @pagy, @items = pagy(@items)
     else
-      @pagy, @items = pagy(@items.where(user_id: nil).or(@items.where(user_id: current_user.id)).order('name ASC'))
+      @pagy, @items = pagy(@items.where(user_id: nil).or(@items.where(user_id: current_user.id)))
     end
   end
 

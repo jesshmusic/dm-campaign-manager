@@ -9,7 +9,6 @@
 #  armor_max_bonus             :integer
 #  armor_stealth_disadvantage  :boolean
 #  armor_str_minimum           :integer
-#  category                    :string
 #  category_range              :string
 #  cost_unit                   :string
 #  cost_value                  :integer

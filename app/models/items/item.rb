@@ -11,7 +11,6 @@
 #  armor_max_bonus             :integer
 #  armor_stealth_disadvantage  :boolean
 #  armor_str_minimum           :integer
-#  category                    :string
 #  category_range              :string
 #  cost_unit                   :string
 #  cost_value                  :integer
@@ -66,6 +65,10 @@ class Item < ApplicationRecord
   has_many :contained_items, through: :container_items
 
   belongs_to :user, optional: true
+
+  def category
+    'Item'
+  end
 
   include PgSearch::Model
 

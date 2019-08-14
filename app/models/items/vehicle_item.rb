@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: items
@@ -9,7 +11,6 @@
 #  armor_max_bonus             :integer
 #  armor_stealth_disadvantage  :boolean
 #  armor_str_minimum           :integer
-#  category                    :string
 #  category_range              :string
 #  cost_unit                   :string
 #  cost_value                  :integer
@@ -51,4 +52,7 @@
 #
 
 class VehicleItem < Item
+  def category
+    'Mounts and Vehicles'
+  end
 end

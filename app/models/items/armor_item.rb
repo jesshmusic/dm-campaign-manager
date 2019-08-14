@@ -11,7 +11,6 @@
 #  armor_max_bonus             :integer
 #  armor_stealth_disadvantage  :boolean
 #  armor_str_minimum           :integer
-#  category                    :string
 #  category_range              :string
 #  cost_unit                   :string
 #  cost_value                  :integer
@@ -55,5 +54,9 @@
 class ArmorItem < Item
   def self.basic_armors
     ['Chain Shirt', 'Plate', 'Breastplate', 'Leather', 'Scale Mail', 'Ring Mail', 'Chain Mail', 'Studded Leather', 'Hide', 'Padded', 'Splint', 'Shield', 'Half Plate']
+  end
+
+  def category
+    'Armor'
   end
 end

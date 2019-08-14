@@ -57,9 +57,6 @@ class Character < ApplicationRecord
   has_many :character_classes, dependent: :destroy
   has_many :dnd_classes, through: :character_classes
 
-  has_many :character_magic_items, dependent: :destroy
-  has_many :magic_items, through: :character_magic_items
-
   has_many :character_spells, dependent: :destroy
   has_many :spells, through: :character_spells
 
