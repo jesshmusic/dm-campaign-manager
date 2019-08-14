@@ -137,7 +137,7 @@
         </div>
       </div>
     </div>
-    
+
     <% if @character.spells.any? %>
       <div class="row mb-3 pb-3 border-bottom">
         <div class="col">
@@ -212,14 +212,6 @@
                 </ul>
               <% end %>
             </li>
-          <% end %>
-        </ul>
-      </div>
-      <div class="col-12 col-sm-6 col-md-4">
-        <h3>Magic Items</h3>
-        <ul class="list-group list-group-flush">
-          <% @character.magic_items.each do |magic_item| %>
-            <li class="list-group-item"><strong><%= magic_item.name %> </strong></li>
           <% end %>
         </ul>
       </div>

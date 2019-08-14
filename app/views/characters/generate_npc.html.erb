@@ -31,7 +31,8 @@
         include_blank: false,
         include_hidden: false %>
       <%= form.hidden_field :user, value: form.object.user || current_user %>
-        
+      <%= form.hidden_field :type, value: 'NonPlayerCharacter' %>
+
         <h2>Info</h2>
         <div class="form-row">
           <div class="col">
@@ -55,7 +56,7 @@
               include_hidden: false %>
           </div>
         </div>
-        
+
         <div class="form-row">
           <div class="col">
             <%= form.input :level %>
@@ -80,20 +81,20 @@
 </div>
 
 <script>
-  $('#character_race').select2({
+  $('#non_player_character_race').select2({
     theme: "bootstrap"
   });
-  $('#character_alignment').select2({
+  $('#non_player_character_alignment').select2({
     theme: "bootstrap"
   });
-  $('#character_dnd_class_ids').select2({
+  $('#non_player_character_dnd_class_ids').select2({
     multiple: false,
     theme: "bootstrap"
   });
-  $('#character_campaign_ids').select2({
+  $('#non_player_character_campaign_ids').select2({
     theme: "bootstrap"
   });
-  
+
   $('#randomMaleNameButton').on('click', function(event) {
     event.preventDefault();
     $.ajax({
@@ -103,10 +104,10 @@
         random_npc_gender: 'male'
       }
     }).done(function(response) {
-      $('#character_name').val(response.name);
+      $('#non_player_character_name').val(response.name);
     });
   });
-  
+
   $('#randomFemaleNameButton').on('click', function(event) {
     event.preventDefault();
     $.ajax({
@@ -116,7 +117,7 @@
         random_npc_gender: 'female'
       }
     }).done(function(response) {
-      $('#character_name').val(response.name);
+      $('#non_player_character_name').val(response.name);
     });
   });
 </script>

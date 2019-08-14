@@ -10,7 +10,7 @@ import styles from './home.module.scss';
 
 export default class Home extends React.Component {
 
-  render() {
+  render () {
     return (
       <PageContainer user={this.props.user}>
         <div>

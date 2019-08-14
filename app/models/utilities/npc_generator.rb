@@ -241,26 +241,26 @@ class NpcGenerator
       armor_profs.each do |armor_prof|
         case armor_prof
         when 'Light armor'
-          Item.where(category: 'Armor').where(sub_category: 'Light').each do |armor_item|
-            armor_choices << { item: armor_item, weight: 1 }
+          ArmorItem.where(sub_category: 'Light').each do |armor_item|
+            armor_choices << { item: armor_item, weight: get_weight_for_magic_item(armor_item.rarity, 50) }
           end
         when 'Medium armor'
-          Item.where(category: 'Armor').where(sub_category: 'Medium').each do |armor_item|
-            armor_choices << { item: armor_item, weight: 2 }
+          ArmorItem.where(sub_category: 'Medium').each do |armor_item|
+            armor_choices << { item: armor_item, weight: get_weight_for_magic_item(armor_item.rarity, 100) }
           end
         when 'Heavy armor'
-          Item.where(category: 'Armor').where(sub_category: 'Heavy').each do |armor_item|
-            armor_choices << { item: armor_item, weight: 4 }
+          ArmorItem.where(sub_category: 'Heavy').each do |armor_item|
+            armor_choices << { item: armor_item, weight: get_weight_for_magic_item(armor_item.rarity, 200) }
           end
         when 'All armor'
-          Item.where(category: 'Armor').where(sub_category: 'Light').each do |armor_item|
-            armor_choices << { item: armor_item, weight: 1 }
+          ArmorItem.where(sub_category: 'Light').each do |armor_item|
+            armor_choices << { item: armor_item, weight: get_weight_for_magic_item(armor_item.rarity, 50) }
           end
-          Item.where(category: 'Armor').where(sub_category: 'Medium').each do |armor_item|
-            armor_choices << { item: armor_item, weight: 2 }
+          ArmorItem.where(sub_category: 'Medium').each do |armor_item|
+            armor_choices << { item: armor_item, weight: get_weight_for_magic_item(armor_item.rarity, 100) }
           end
-          Item.where(category: 'Armor').where(sub_category: 'Heavy').each do |armor_item|
-            armor_choices << { item: armor_item, weight: 8 }
+          ArmorItem.where(sub_category: 'Heavy').each do |armor_item|
+            armor_choices << { item: armor_item, weight: get_weight_for_magic_item(armor_item.rarity, 200) }
           end
         end
       end
@@ -302,20 +302,39 @@ class NpcGenerator
       weapon_profs.each do |weapon_prof|
         case weapon_prof
         when 'Simple weapons'
-          Item.where(category: 'Weapon').where(sub_category: 'Simple').each do |weapon_item|
-            weapon_choices << { item: weapon_item, weight: 5 }
+          WeaponItem.where(sub_category: 'Simple').each do |weapon_item|
+            weapon_choices << { item: weapon_item, weight: get_weight_for_magic_item(weapon_item.rarity, 50) }
           end
         when 'Martial weapons'
-          Item.where(category: 'Weapon').where(sub_category: 'Martial').each do |weapon_item|
-            weapon_choices << { item: weapon_item, weight: 15 }
+          WeaponItem.where(sub_category: 'Martial').each do |weapon_item|
+            weapon_choices << { item: weapon_item, weight: get_weight_for_magic_item(weapon_item.rarity, 150) }
           end
         else
-          Item.where(category: 'Weapon').where('name like ?', "%#{weapon_prof.chomp('s')}").each do |weapon_item|
-            weapon_choices << { item: weapon_item, weight: 1 }
+          WeaponItem.where('name like ?', "%#{weapon_prof.chomp('s')}").each do |weapon_item|
+            weapon_choices << { item: weapon_item, weight: get_weight_for_magic_item(weapon_item.rarity, 20) }
           end
         end
       end
       weapon_choices
+    end
+
+    def get_weight_for_magic_item(rarity = nil, default_weight = 50)
+      case rarity
+      when 'common'
+        5 * @new_npc.level
+      when 'common'
+        5 * @new_npc.level
+      when 'common'
+        5 * @new_npc.level
+      when 'common'
+        5 * @new_npc.level
+      when 'common'
+        5 * @new_npc.level
+      when 'common'
+        5 * @new_npc.level
+      else
+        default_weight
+      end
     end
 
     def add_skills

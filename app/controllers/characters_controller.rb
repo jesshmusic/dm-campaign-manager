@@ -85,12 +85,12 @@ class CharactersController < ApplicationController
   # POST /characters
   # POST /characters.json
   def create
-    @character = if params[:type] && params[:type] == 'PlayerCharacter'
-                   PlayerCharacter.new(character_params)
-                 elsif params[:type] && params[:type] == 'NonPlayerCharacter'
-                   NonPlayerCharacter.new(character_params)
+    @character = if params[:player_character]
+                   PlayerCharacter.new(character_params('PlayerCharacter'))
+                 elsif params[:non_player_character]
+                   NonPlayerCharacter.new(character_params('NonPlayerCharacter'))
                  else
-                   Character.new(character_params)
+                   Character.new(character_params('Character'))
                  end
     authorize @character
     @character.user = current_user
@@ -109,9 +109,15 @@ class CharactersController < ApplicationController
   # POST /characters/generate_npc
   def create_generated_npc
     @character = NpcGenerator.generate_npc(
-      character_params[:name], DndClass.find(character_params[:dnd_class_ids].first), character_params[:race],
-      character_params[:alignment], character_params[:level], character_params[:role],
-      current_user, character_params[:campaign_ids], character_params[:min_score]
+      character_params('NonPlayerCharacter')[:name],
+      DndClass.find(character_params('NonPlayerCharacter')[:dnd_class_ids].first),
+      character_params('NonPlayerCharacter')[:race],
+      character_params('NonPlayerCharacter')[:alignment],
+      character_params('NonPlayerCharacter')[:level],
+      character_params('NonPlayerCharacter')[:role],
+      current_user,
+      character_params('NonPlayerCharacter')[:campaign_ids],
+      character_params('NonPlayerCharacter')[:min_score]
     )
     authorize @character
     respond_to do |format|
@@ -164,8 +170,8 @@ class CharactersController < ApplicationController
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.
-  def character_params
-    params.require(params[:type].underscore.to_sym).permit(
+  def character_params(type)
+    params.require(type.underscore.to_sym).permit(
       :name, :description, :alignment, :type,
       :copper_pieces, :dexterity, :dnd_class_name, :electrum_pieces, :gold_pieces,
       :languages, :level, :platinum_pieces, :race, :role, :silver_pieces, :spell_ability,
