@@ -76,7 +76,7 @@ class Item < ApplicationRecord
   pg_search_scope :search_for,
                   against: {
                     name: 'A',
-                    category: 'B',
+                    type: 'B',
                     sub_category: 'C',
                     type: 'D'
                   },

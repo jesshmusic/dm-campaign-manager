@@ -99,6 +99,9 @@ GEM
     concurrent-ruby (1.1.5)
     connection_pool (2.2.2)
     crass (1.0.4)
+    debase (0.2.4)
+      debase-ruby_core_source (>= 0.10.2)
+    debase-ruby_core_source (0.10.5)
     devise (4.6.2)
       bcrypt (~> 3.0)
       orm_adapter (~> 0.1)
@@ -248,6 +251,8 @@ GEM
       rspec-mocks (~> 3.8.0)
       rspec-support (~> 3.8.0)
     rspec-support (3.8.2)
+    ruby-debug-ide (0.7.0)
+      rake (>= 0.8.1)
     ruby-graphviz (1.2.4)
     ruby_dep (1.5.0)
     rubyzip (1.2.3)
@@ -342,6 +347,7 @@ DEPENDENCIES
   client_side_validations-simple_form
   cocoon
   coffee-rails (~> 4.2)
+  debase
   devise
   factory_bot_rails
   faker
@@ -363,6 +369,7 @@ DEPENDENCIES
   redcarpet
   rspec-core
   rspec-rails
+  ruby-debug-ide
   sass-rails (~> 5.0)
   scss_lint
   select2-rails
@@ -378,7 +385,7 @@ DEPENDENCIES
   webpacker
 
 RUBY VERSION
-   ruby 2.4.1p111
+   ruby 2.6.3p62
 
 BUNDLED WITH
-   1.16.1
+   1.17.3

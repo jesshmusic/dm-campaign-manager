@@ -248,7 +248,20 @@ namespace :srd do
       item_result = JSON.parse item_response
       saved_item = Item.find_or_create_by(name: equipment_item[:name]) do |new_item|
         new_item.api_url = item_result['url']
-        new_item.category = item_result['equipment_category']
+        new_item.type = case item_result['equipment_category']
+                        when 'Armor'
+                          'ArmorItem'
+                        when 'Weapon'
+                          'WeaponItem'
+                        when 'Tools'
+                          'ToolItem'
+                        when 'Adventuring Gear'
+                          'GearItem'
+                        when 'Mounts and Vehicles'
+                          'VehicleItem'
+                        else
+                          'GearItem'
+                        end
         new_item.cost_unit = item_result['cost']['unit']
         new_item.cost_value = item_result['cost']['quantity']
         new_item.weight = item_result['weight'] || 0
@@ -344,12 +357,12 @@ namespace :srd do
       result = JSON.parse response, symbolize_names: true
       next_uri = result[:next] ? URI(result[:next]) : false
       result[:results].each do |magic_item|
-        MagicItem.find_or_create_by(name: magic_item[:name], rarity: magic_item[:rarity]) do |new_magic_item|
-          new_magic_item.description = magic_item[:desc]
-          new_magic_item.magic_item_type = magic_item[:type]
-          new_magic_item.requires_attunement = magic_item[:requires_attunement]
-          magic_item_slug = magic_item[:name].parameterize
-          new_magic_item.slug = MagicItem.exists?(slug: magic_item_slug) ? "#{magic_item_slug}_#{new_magic_item.id}" : magic_item_slug
+        if magic_item[:type].include? 'Armor'
+          ArmorItem.create_magic_armor_from_old_magic_items(magic_item)
+        elsif magic_item[:type].include? 'Weapon'
+          WeaponItem.create_magic_weapon_from_old_magic_items(magic_item)
+        else
+          MagicItem.create_magic_item_from_old_magic_items(magic_item)
         end
         count += 1
       end

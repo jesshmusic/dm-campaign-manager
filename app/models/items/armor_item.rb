@@ -59,4 +59,48 @@ class ArmorItem < Item
   def category
     'Armor'
   end
+
+  class << self
+    def create_magic_armor_from_old_magic_items(magic_item)
+      if magic_item.magic_item_type.include? 'scale mail'
+        new_magic_armor(magic_item, 'Scale Mail')
+      elsif magic_item.magic_item_type.include? 'chain shirt'
+        new_magic_armor(magic_item, 'Chain Shirt')
+      elsif magic_item.magic_item_type.include? 'studded leather'
+        new_magic_armor(magic_item, 'Studded Leather')
+      elsif magic_item.magic_item_type.include? 'shield'
+        new_magic_armor(magic_item, 'Shield')
+      elsif magic_item.magic_item_type.include? 'plate'
+        new_magic_armor(magic_item, 'Plate')
+      elsif magic_item.magic_item_type.include? 'medium or heavy'
+        medium_heavy_armors = ArmorItem.basic_armors - ['Studded Leather', 'Leather', 'Padded']
+        medium_heavy_armors.each do |armor_name|
+          new_magic_armor(magic_item, armor_name)
+        end
+      elsif magic_item.magic_item_type.include? 'light'
+        new_magic_armor(magic_item, 'Studded Leather')
+        new_magic_armor(magic_item, 'Leather')
+        new_magic_armor(magic_item, 'Padded')
+      else
+        puts "ARMOR unidentified: #{magic_item.name} - TYPE #{magic_item.magic_item_type} - ID: #{magic_item.id}"
+      end
+    end
+
+    def new_magic_armor(magic_item, armor_name)
+      armor_item = ArmorItem.find_by(name: armor_name)
+      new_item = ArmorItem.find_or_create_by(name: "#{magic_item[:name]}, #{armor_name}")
+      new_item.description = magic_item[:desc]
+      new_item.rarity = magic_item[:rarity]
+      new_item.requires_attunement = magic_item[:requires_attunement]
+      new_item.sub_category = magic_item[:type]
+      new_item.slug = new_item.name.parameterize
+      new_item.armor_class = armor_item.armor_class
+      new_item.armor_dex_bonus = armor_item.armor_dex_bonus
+      new_item.armor_max_bonus = armor_item.armor_max_bonus
+      new_item.armor_stealth_disadvantage = armor_item.armor_stealth_disadvantage
+      new_item.armor_str_minimum = armor_item.armor_str_minimum
+      new_item.weight = armor_item.weight
+      new_item.save!
+    end
+  end
 end

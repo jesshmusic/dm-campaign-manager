@@ -55,4 +55,16 @@ class MagicItem < Item
   def category
     'Magic Item'
   end
+
+  class << self
+    def create_magic_item_from_old_magic_items(magic_item)
+      new_item = MagicItem.find_or_create_by(name: magic_item.name)
+      new_item.description = magic_item[:desc]
+      new_item.rarity = magic_item[:rarity]
+      new_item.requires_attunement = magic_item[:requires_attunement]
+      new_item.slug = new_item.name.parameterize
+      new_item.sub_category = magic_item[:type]
+      new_item.save!
+    end
+  end
 end
