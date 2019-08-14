@@ -21,7 +21,7 @@
   <thead>
     <tr>
       <th>Name</th>
-      <th class="d-none d-lg-table-cell">Category</th>
+      <th class="d-none d-lg-table-cell">Type</th>
       <th class="d-none d-lg-table-cell">Sub category</th>
       <th>Cost</th>
       <th class="d-none d-lg-table-cell">Weight</th>
@@ -33,7 +33,7 @@
     <% @items.each do |item| %>
       <tr>
         <td><%= item.name %></td>
-        <td class="d-none d-lg-table-cell"><%= item.category.titleize %></td>
+        <td class="d-none d-lg-table-cell"><%= item.type %></td>
         <td class="d-none d-lg-table-cell"><%= item.sub_category.titleize %></td>
         <td><%= "#{item.cost_value}#{item.cost_unit}" %></td>
         <td class="d-none d-lg-table-cell"><%= item.weight %></td>

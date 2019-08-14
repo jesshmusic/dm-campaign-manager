@@ -158,11 +158,156 @@ namespace :update do
       when 'Adventuring Gear'
         item.type = 'GearItem'
       when 'Mounts and Vehicles'
-        item.type = 'WeaponItem'
+        item.type = 'VehicleItem'
       else
         puts "CATEGORY MISSING OR INCORRECT! Item #{item.id} - #{item.name}"
       end
       item.save!
     end
+  end
+
+  task convert_old_magic_items: :environment do
+    MagicItemOld.all.each do |magic_item|
+      if magic_item.magic_item_type.include? 'Armor'
+        create_magic_armors_from_old_magic_items(magic_item)
+      elsif magic_item.magic_item_type.include? 'Weapon'
+        create_magic_weapons_from_old_magic_items(magic_item)
+      else
+        create_magic_item_from_old_magic_items(magic_item)
+      end
+    end
+  end
+
+  def create_magic_weapons_from_old_magic_items(magic_item)
+    if magic_item.magic_item_type == 'Weapon (trident)'
+      new_magic_weapon(magic_item, 'Trident')
+    elsif magic_item.magic_item_type == 'Weapon (scimitar)'
+      new_magic_weapon(magic_item, 'Scimitar')
+    elsif magic_item.magic_item_type == 'Weapon (longsword)'
+      new_magic_weapon(magic_item, 'Longsword')
+    elsif magic_item.magic_item_type == 'Weapon (maul)'
+      new_magic_weapon(magic_item, 'Maul')
+    elsif magic_item.magic_item_type == 'Weapon (warhammer)'
+      new_magic_weapon(magic_item, 'Warhammer')
+    elsif magic_item.magic_item_type == 'Weapon (longbow)'
+      new_magic_weapon(magic_item, 'Longbow')
+    elsif magic_item.magic_item_type == 'Weapon (dagger)'
+      new_magic_weapon(magic_item, 'Dagger')
+    elsif magic_item.magic_item_type == 'Weapon (mace)'
+      new_magic_weapon(magic_item, 'Mace')
+    elsif magic_item.magic_item_type == 'Weapon (javelin)'
+      new_magic_weapon(magic_item, 'Javelin')
+    elsif magic_item.magic_item_type == 'Weapon (arrow)'
+      create_magic_item_from_old_magic_items(magic_item)
+    elsif magic_item.magic_item_type == 'Weapon (any axe)'
+      WeaponItem.all_axes.each do |weapon_name|
+        new_magic_weapon(magic_item, weapon_name)
+      end
+    elsif magic_item.magic_item_type == 'Weapon (any axe or sword)'
+      weapons = WeaponItem.all_axes + WeaponItem.all_swords
+      weapons.each do |weapon_name|
+        new_magic_weapon(magic_item, weapon_name)
+      end
+    elsif magic_item.magic_item_type == 'Weapon (any sword)'
+      WeaponItem.all_swords.each do |weapon_name|
+        new_magic_weapon(magic_item, weapon_name)
+      end
+    elsif magic_item.magic_item_type == 'Weapon (any sword that deals slashing damage)'
+      slashing_swords = WeaponItem.all_swords - ['Shortsword']
+      slashing_swords.each do |weapon_name|
+        new_magic_weapon(magic_item, weapon_name)
+      end
+    elsif magic_item.magic_item_type == 'Weapon (any)'
+      if magic_item.name == 'Weapon +1' || magic_item.name == 'Weapon +2' || magic_item.name == 'Weapon +3'
+        WeaponItem.all_weapons.each do |weapon_name|
+          new_magic_weapon(magic_item, weapon_name)
+        end
+      elsif !WeaponItem.basic_magic_weapons.include?(magic_item.name)
+        WeaponItem.all_weapons.each do |weapon_name|
+          new_magic_weapon(magic_item, weapon_name)
+        end
+      end
+    else
+      puts "WEAPON unidentified: #{magic_item.name} - TYPE #{magic_item.magic_item_type} - ID: #{magic_item.id}"
+    end
+  end
+
+  def create_magic_armors_from_old_magic_items(magic_item)
+    if magic_item.magic_item_type.include? 'scale mail'
+      new_magic_armor(magic_item, 'Scale Mail')
+    elsif magic_item.magic_item_type.include? 'chain shirt'
+      new_magic_armor(magic_item, 'Chain Shirt')
+    elsif magic_item.magic_item_type.include? 'studded leather'
+      new_magic_armor(magic_item, 'Studded Leather')
+    elsif magic_item.magic_item_type.include? 'shield'
+      new_magic_armor(magic_item, 'Shield')
+    elsif magic_item.magic_item_type.include? 'plate'
+      new_magic_armor(magic_item, 'Plate')
+    elsif magic_item.magic_item_type.include? 'medium or heavy'
+      medium_heavy_armors = ArmorItem.basic_armors - ['Studded Leather', 'Leather', 'Padded']
+      medium_heavy_armors.each do |armor_name|
+        new_magic_armor(magic_item, armor_name)
+      end
+    elsif magic_item.magic_item_type.include? 'light'
+      new_magic_armor(magic_item, 'Studded Leather')
+      new_magic_armor(magic_item, 'Leather')
+      new_magic_armor(magic_item, 'Padded')
+    else
+      puts "ARMOR unidentified: #{magic_item.name} - TYPE #{magic_item.magic_item_type} - ID: #{magic_item.id}"
+    end
+  end
+
+  def new_magic_armor(magic_item, armor_name)
+    armor_item = ArmorItem.find_by(name: armor_name)
+    new_item = ArmorItem.find_or_create_by(name: "#{magic_item.name}, #{armor_name}")
+    new_item.description = magic_item.description
+    new_item.rarity = magic_item.rarity
+    new_item.requires_attunement = magic_item.requires_attunement
+    new_item.sub_category = magic_item.magic_item_type
+    new_item.slug = new_item.name.parameterize
+    new_item.sub_category = magic_item.magic_item_type
+    new_item.armor_class = armor_item.armor_class
+    new_item.armor_dex_bonus = armor_item.armor_dex_bonus
+    new_item.armor_max_bonus = armor_item.armor_max_bonus
+    new_item.armor_stealth_disadvantage = armor_item.armor_stealth_disadvantage
+    new_item.armor_str_minimum = armor_item.armor_str_minimum
+    new_item.weight = armor_item.weight
+    new_item.save!
+  end
+
+  def new_magic_weapon(magic_item, weapon_name)
+    weapon_item = WeaponItem.find_by(name: weapon_name)
+    new_item = WeaponItem.find_or_create_by(name: "#{magic_item.name}, #{weapon_name}")
+    new_item.description = magic_item.description
+    new_item.rarity = magic_item.rarity
+    new_item.requires_attunement = magic_item.requires_attunement
+    new_item.sub_category = magic_item.magic_item_type
+    new_item.slug = new_item.name.parameterize
+    new_item.sub_category = magic_item.magic_item_type
+    new_item.weapon_2h_damage_dice_count = weapon_item.weapon_2h_damage_dice_count
+    new_item.weapon_2h_damage_dice_value = weapon_item.weapon_2h_damage_dice_value
+    new_item.weapon_2h_damage_type = weapon_item.weapon_2h_damage_type
+    new_item.weapon_damage_dice_count = weapon_item.weapon_damage_dice_count
+    new_item.weapon_damage_dice_value = weapon_item.weapon_damage_dice_value
+    new_item.weapon_damage_type = weapon_item.weapon_damage_type
+    new_item.weapon_properties = weapon_item.weapon_properties
+    new_item.weapon_range = weapon_item.weapon_range
+    new_item.weapon_range_long = weapon_item.weapon_range_long
+    new_item.weapon_range_normal = weapon_item.weapon_range_normal
+    new_item.weapon_thrown_range_long = weapon_item.weapon_thrown_range_long
+    new_item.weapon_thrown_range_normal = weapon_item.weapon_thrown_range_normal
+    new_item.category_range = weapon_item.category_range
+    new_item.weight = weapon_item.weight
+    new_item.save!
+  end
+
+  def create_magic_item_from_old_magic_items(magic_item)
+    new_item = MagicItem.find_or_create_by(name: magic_item.name)
+    new_item.description = magic_item.description
+    new_item.rarity = magic_item.rarity
+    new_item.requires_attunement = magic_item.requires_attunement
+    new_item.slug = new_item.name.parameterize
+    new_item.sub_category = magic_item.magic_item_type
+    new_item.save!
   end
 end

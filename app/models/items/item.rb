@@ -53,7 +53,7 @@
 #
 
 class Item < ApplicationRecord
-  validates :name, :category, :sub_category, :cost_unit, :cost_value, :weight, presence: true
+  validates :name, presence: true
   after_validation(on: :create) do
     self.slug = generate_slug
   end
@@ -74,7 +74,8 @@ class Item < ApplicationRecord
                   against: {
                     name: 'A',
                     category: 'B',
-                    sub_category: 'C'
+                    sub_category: 'C',
+                    type: 'D'
                   },
                   using: {
                     tsearch: {
