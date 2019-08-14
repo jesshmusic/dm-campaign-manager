@@ -34,13 +34,11 @@ class Campaign < ApplicationRecord
   belongs_to :user
 
   def pcs_count
-    # characters.where(character_type: 'pc').count
-    0
+    characters.where(type: 'PlayerCharacter').count
   end
 
   def npcs_count
-    # characters.where(character_type: 'npc').count
-    0
+    characters.where(type: 'NonPlayerCharacter').count
   end
 
   def dungeon_master

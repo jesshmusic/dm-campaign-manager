@@ -34,11 +34,21 @@
 
   <div class="row mb-3 pb-3 border-bottom">
     <div class="col">
-      <h2>Characters</h2>
+      <h2>Player Characters</h2>
       <ul class="list-group list-group-flush">
-        <% @campaign.characters.each do |character| %>
+        <% @campaign.characters.where(type: 'PlayerCharacter').each do |character| %>
           <li class="list-group-item">
             <strong><%= character.name %></strong> - Level <%= character.level %> <em><%= character.dnd_class_string %></em>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+    <div class="col">
+      <h2>Non-player Characters</h2>
+      <ul class="list-group list-group-flush">
+        <% @campaign.characters.where(type: 'NonPlayerCharacter').each do |character| %>
+          <li class="list-group-item">
+            <%=character.role %>: <strong><%= character.name %></strong> - Level <%= character.level %> <em><%= character.dnd_class_string %></em>
           </li>
         <% end %>
       </ul>
@@ -55,7 +65,7 @@
       </ul>
     </div>
   </div>
-  
+
   <% if current_user == @campaign.user && @campaign.campaign_users.where(confirmed: false).count > 0 %>
     <div class="row mb-3 pb-3 border-bottom">
       <div class="col">
@@ -70,7 +80,7 @@
       </div>
     </div>
   <% end %>
-    
+
   <% if current_user == @campaign.user %>
     <div class="d-flex align-items-center justify-content-start py-3 btn-group">
       <%= link_to 'Edit', edit_campaign_path(@campaign), class: "btn btn-success" if policy(@campaign).edit? %>
