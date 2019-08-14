@@ -10,10 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_14_113650) do
+ActiveRecord::Schema.define(version: 2019_08_14_222601) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "adventures", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.bigint "campaign_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["campaign_id"], name: "index_adventures_on_campaign_id"
+  end
 
   create_table "campaign_characters", force: :cascade do |t|
     t.bigint "campaign_id"
@@ -247,6 +256,24 @@ ActiveRecord::Schema.define(version: 2019_08_14_113650) do
     t.index ["user_id"], name: "index_monsters_on_user_id"
   end
 
+  create_table "non_player_character_adventures", force: :cascade do |t|
+    t.bigint "adventure_id"
+    t.bigint "character_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["adventure_id"], name: "index_non_player_character_adventures_on_adventure_id"
+    t.index ["character_id"], name: "index_non_player_character_adventures_on_character_id"
+  end
+
+  create_table "player_character_adventures", force: :cascade do |t|
+    t.bigint "adventure_id"
+    t.bigint "character_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["adventure_id"], name: "index_player_character_adventures_on_adventure_id"
+    t.index ["character_id"], name: "index_player_character_adventures_on_character_id"
+  end
+
   create_table "prof_choice_profs", force: :cascade do |t|
     t.bigint "prof_id"
     t.bigint "prof_choice_id"
@@ -379,6 +406,7 @@ ActiveRecord::Schema.define(version: 2019_08_14_113650) do
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 
+  add_foreign_key "adventures", "campaigns"
   add_foreign_key "campaign_characters", "campaigns"
   add_foreign_key "campaign_characters", "characters"
   add_foreign_key "campaign_users", "campaigns"
@@ -390,5 +418,9 @@ ActiveRecord::Schema.define(version: 2019_08_14_113650) do
   add_foreign_key "dnd_classes", "users"
   add_foreign_key "items", "users"
   add_foreign_key "monsters", "users"
+  add_foreign_key "non_player_character_adventures", "adventures"
+  add_foreign_key "non_player_character_adventures", "characters"
+  add_foreign_key "player_character_adventures", "adventures"
+  add_foreign_key "player_character_adventures", "characters"
   add_foreign_key "spells", "users"
 end
