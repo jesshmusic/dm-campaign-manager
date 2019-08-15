@@ -31,7 +31,11 @@ class Campaign < ApplicationRecord
   has_many :campaign_characters, dependent: :destroy
   has_many :characters, through: :campaign_characters
 
+  has_many :adventures, dependent: :destroy
+
   belongs_to :user
+
+  accepts_nested_attributes_for :adventures, reject_if: :all_blank, allow_destroy: true
 
   def pcs_count
     characters.where(type: 'PlayerCharacter').count

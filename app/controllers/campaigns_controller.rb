@@ -118,6 +118,8 @@ class CampaignsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def campaign_params
-    params.require(:campaign).permit(:name, :description, :world)
+    params.require(:campaign).permit(:name, :description, :world, adventures_attributes: [
+        :id, :name, :description, :_destroy, non_player_character_ids: [], player_character_ids: []
+    ])
   end
 end
