@@ -15,6 +15,26 @@
       </li>
       <li class="nav-item">
         <%= active_link_to 'Equipment', items_path, active: :exclusive, class: 'nav-link' %>
+        <ul class="nav flex-column pl-3">
+          <li class="nav-item">
+            <%= active_link_to 'Adventuring Gear', gear_items_path, active: :exclusive, class: 'nav-link' %>
+          </li>
+          <li class="nav-item">
+            <%= active_link_to 'Armor', armor_items_path, active: :exclusive, class: 'nav-link' %>
+          </li>
+          <li class="nav-item">
+            <%= active_link_to 'Magic Items', magic_items_path, active: :exclusive, class: 'nav-link' %>
+          </li>
+          <li class="nav-item">
+            <%= active_link_to 'Tools', tool_items_path, active: :exclusive, class: 'nav-link' %>
+          </li>
+          <li class="nav-item">
+            <%= active_link_to 'Mounts and Vehicles', vehicle_items_path, active: :exclusive, class: 'nav-link' %>
+          </li>
+          <li class="nav-item">
+            <%= active_link_to 'Weapons', weapon_items_path, active: :exclusive, class: 'nav-link' %>
+          </li>
+        </ul>
       </li>
       <li class="nav-item">
         <%= active_link_to 'Classes', dnd_classes_path, active: :exclusive, class: 'nav-link' %>
@@ -23,7 +43,7 @@
         <%= active_link_to 'Spells', spells_path, active: :exclusive, class: 'nav-link' %>
       </li>
     </ul>
-    
+
     <% if current_user && (current_user.admin? || current_user.dungeon_master? || current_user.player?) %>
       <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
         <span>Player</span>
@@ -34,10 +54,18 @@
       <ul class="nav flex-column mb-2">
         <li class="nav-item">
           <%= active_link_to 'Characters', characters_path, active: :exclusive, class: 'nav-link' %>
+          <ul class="nav flex-column pl-3">
+            <li class="nav-item">
+              <%= active_link_to 'Player Characters', player_characters_path, active: :exclusive, class: 'nav-link' %>
+            </li>
+            <li class="nav-item">
+              <%= active_link_to 'Non-player Characters', non_player_characters_path, active: :exclusive, class: 'nav-link' %>
+            </li>
+          </ul>
         </li>
       </ul>
     <% end %>
-    
+
     <% if current_user && (current_user.admin? || current_user.dungeon_master?) %>
       <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
         <span>Dungeon Master</span>
@@ -51,7 +79,7 @@
         </li>
       </ul>
     <% end %>
-    
+
     <% if current_user && current_user.admin? %>
       <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
         <span>Admin</span>

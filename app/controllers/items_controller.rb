@@ -12,6 +12,7 @@ class ItemsController < ApplicationController
              else
                Item.all.order('name ASC')
              end
+    @items = params[:type].present? ? @items.where(type: params[:type]) : @items
 
     if !current_user
       @pagy, @items = pagy(@items.where(user_id: nil))

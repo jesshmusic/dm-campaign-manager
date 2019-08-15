@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  resources :adventures
+  resources :adventures, only: [:show, :edit, :update, :destroy]
   resources :characters, param: :slug
   resources :player_characters, param: :slug, controller: 'characters', type: 'PlayerCharacter'
   resources :non_player_characters, param: :slug, controller: 'characters', type: 'NonPlayerCharacter'

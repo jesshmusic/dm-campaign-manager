@@ -30,7 +30,7 @@
     <% @items.each do |item| %>
       <tr>
         <td><%= item.name %></td>
-        <td class="d-none d-lg-table-cell"><%= item.type %></td>
+        <td class="d-none d-lg-table-cell"><%= item.type.chomp('Item') %></td>
         <td class="d-none d-lg-table-cell"><%= item.sub_category.titleize %></td>
         <td><%= "#{item.cost_value}#{item.cost_unit}" %></td>
         <td class="d-none d-lg-table-cell"><%= item.weight %></td>

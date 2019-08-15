@@ -12,6 +12,7 @@ class CharactersController < ApplicationController
                   else
                     Character.all
                   end
+    @characters = params[:type].present? ? @characters.where(type: params[:type]) : @characters
 
     if !current_user
       @pagy, @characters = pagy(@characters.where(user_id: nil))
