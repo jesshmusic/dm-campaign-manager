@@ -23,38 +23,6 @@ class CharactersController < ApplicationController
     end
   end
 
-  def pc_index
-    @characters = if params[:search].present?
-                    PlayerCharacter.search_for(params[:search])
-                  else
-                    PlayerCharacter.all
-                  end
-
-    if !current_user
-      @pagy, @characters = pagy(@characters.where(user_id: nil))
-    elsif current_user.admin?
-      @pagy, @characters = pagy(@characters)
-    else
-      @pagy, @characters = pagy(@characters.where(user_id: current_user.id).order('name ASC'))
-    end
-  end
-
-  def npc_index
-    @characters = if params[:search].present?
-                    NonPlayerCharacter.search_for(params[:search])
-                  else
-                    NonPlayerCharacter.all
-                  end
-
-    if !current_user
-      @pagy, @characters = pagy(@characters.where(user_id: nil))
-    elsif current_user.admin?
-      @pagy, @characters = pagy(@characters)
-    else
-      @pagy, @characters = pagy(@characters.where(user_id: current_user.id).order('name ASC'))
-    end
-  end
-
   # GET /characters/1
   # GET /characters/1.json
   def show; end
