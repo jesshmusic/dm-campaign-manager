@@ -16,7 +16,18 @@
     </div>
     <div class="form-row">
       <div class="col">
-        <%= form.association :campaign %>
+        <%= form.association :characters,
+                          collection: PlayerCharacter.joins(:campaigns).where(campaigns: {id: form.object.campaign.id}),
+                          include_blank: false,
+                          input_html: { class: "pc-selection" } %>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="col">
+        <%= form.association :characters,
+                          collection: NonPlayerCharacter.where(user_id: form.object.campaign.user.id),
+                          include_blank: false,
+                          input_html: { class: "npc-selection" } %>
       </div>
     </div>
   </div>
@@ -25,3 +36,14 @@
     <%= form.button :submit, class: 'btn btn-success mb-3' %>
   </div>
 <% end %>
+
+<script>
+  $(document).ready(function() {
+    $( ".pc-selection" ).select2({
+      theme: "bootstrap"
+    });
+    $( ".npc-selection" ).select2({
+      theme: "bootstrap"
+    });
+  });
+</script>

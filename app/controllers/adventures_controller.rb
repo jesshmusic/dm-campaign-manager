@@ -48,8 +48,7 @@ class AdventuresController < ApplicationController
   def adventure_params
     params.require(:adventure).permit(
         :name, :description, :campaign_id,
-        player_character_ids: [], non_player_character_ids: [],
-        monster_ids: [], item_ids: []
+        character_ids: [], monster_ids: [], item_ids: []
     )
   end
 end

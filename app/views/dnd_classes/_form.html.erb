@@ -1,7 +1,7 @@
 <%= simple_form_for @dnd_class, validate: true do |form| %>
   <%= form.error_notification %>
   <%= form.error_notification message: form.object.errors[:base].to_sentence if form.object.errors[:base].present? %>
-  
+
   <div class="form-inputs">
     <%= form.input :name %>
     <%= form.input :hit_die %>
@@ -18,11 +18,11 @@
       </div>
     </div>
   </div>
-  
+
   <div class="form-actions">
     <%= form.button :submit, class: 'btn btn-success mb-3' %>
   </div>
-  
+
 <% end %>
 
 <script>
@@ -32,18 +32,16 @@
     });
     function loadSelect2() {
       $( "#dnd_class_spell_ids" ).select2({
-        tags: true,
         theme: "bootstrap"
       });
       $( "#dnd_class_prof_ids" ).select2({
-        tags: true,
         theme: "bootstrap"
       });
       $( ".prof_choice_profs" ).select2({
         theme: "bootstrap"
       });
     }
-    
+
     loadSelect2();
   });
 </script>
