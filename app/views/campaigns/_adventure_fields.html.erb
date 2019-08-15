@@ -1,9 +1,15 @@
 <div class="nested-fields">
-  <div class="d-flex align-items-end">
+  <div class="">
     <%= f.input :name %>
     <%= f.input :description %>
-    <%#= f.association :player_characters %>
-    <%#= f.association :non_player_characters %>
+    <%= f.association :characters,
+                      collection: PlayerCharacter.joins(:campaigns).where(campaigns: {id: f.object.campaign.id}),
+                      include_blank: false,
+                      input_html: { class: "pc-selection" } %>
+    <%= f.association :characters,
+                      collection: NonPlayerCharacter.where(user_id: f.object.campaign.user.id),
+                      include_blank: false,
+                      input_html: { class: "npc-selection" } %>
     <%= link_to_remove_association "Remove", f, class: "btn btn-warning mb-3" %>
   </div>
 </div>

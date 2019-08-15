@@ -36,7 +36,4 @@
 
 
 class PlayerCharacter < Character
-
-  has_many :player_character_adventures, dependent: :destroy
-  has_many :adventures, through: :player_character_adventures
 end

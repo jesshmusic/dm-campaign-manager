@@ -20,7 +20,7 @@
 #
 
 FactoryBot.define do
-  factory :player_character_adventure do
+  factory :character_adventure do
     adventure { nil }
     character { nil }
   end

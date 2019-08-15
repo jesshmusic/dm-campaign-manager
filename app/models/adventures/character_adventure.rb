@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: player_character_adventures
+# Table name: character_adventures
 #
 #  id           :bigint           not null, primary key
 #  created_at   :datetime         not null
@@ -10,8 +10,8 @@
 #
 # Indexes
 #
-#  index_player_character_adventures_on_adventure_id  (adventure_id)
-#  index_player_character_adventures_on_character_id  (character_id)
+#  index_character_adventures_on_adventure_id  (adventure_id)
+#  index_character_adventures_on_character_id  (character_id)
 #
 # Foreign Keys
 #
@@ -19,7 +19,7 @@
 #  fk_rails_...  (character_id => characters.id)
 #
 
-class PlayerCharacterAdventure < ApplicationRecord
+class CharacterAdventure < ApplicationRecord
   belongs_to :adventure
   belongs_to :character
 end

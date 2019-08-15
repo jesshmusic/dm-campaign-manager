@@ -37,9 +37,6 @@
 
 class NonPlayerCharacter < Character
 
-  has_many :non_player_character_adventures, dependent: :destroy
-  has_many :adventures, through: :non_player_character_adventures
-
   def challenge_rating
     DndRules.cr_for_npc(self)
   end
