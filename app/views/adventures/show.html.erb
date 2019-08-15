@@ -5,7 +5,6 @@
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="/">Home</a></li>
         <li class="breadcrumb-item"><%= link_to 'Dashboard', dashboard_path %></li>
-        <li class="breadcrumb-item"><%= link_to 'Adventures', adventures_path %></li>
         <li class="breadcrumb-item active" aria-current="page"><%= @adventure.name %></li>
       </ol>
     </nav>
@@ -20,20 +19,45 @@
 
   <div class="row mb-3 pb-3 border-bottom">
     <div class="col">
-              <p>
-          <strong>Name:</strong> <%= @adventure.name %> %>
-        </p>
-              <p>
-          <strong>Description:</strong> <%= @adventure.description %> %>
-        </p>
-              <p>
-          <strong>Campaign:</strong> <%= @adventure.campaign_id %> %>
-        </p>
+      <p>
+        <strong>Name:</strong> <%= @adventure.name %>
+      </p>
+      <p>
+        <strong>Description:</strong> <%= @adventure.description %>
+      </p>
+      <p>
+        <strong>Campaign:</strong> <%= link_to @adventure.campaign.name, @adventure.campaign %>
+      </p>
+    </div>
+  </div>
+
+  <div class="row mb-3 pb-3 border-bottom">
+    <div class="col-12">
+      <h2>Characters</h2>
+    </div>
+    <div class="col-12 col-sm-6">
+      <h3>Player Characters</h3>
+      <% @adventure.characters.where(type: 'PlayerCharacter').each do |pc| %>
+        <div class="row">
+          <div class="col">
+            <strong><%= pc.name %></strong>, Level <%= pc.level %> <%= pc.dnd_class_string %>
           </div>
+        </div>
+      <% end %>
+    </div>
+    <div class="col-12 col-sm-6">
+      <h3>Main NPCs</h3>
+      <% @adventure.characters.where(type: 'NonPlayerCharacter').each do |npc| %>
+        <div class="row">
+          <div class="col">
+            <%= npc.role %>: <strong><%= npc.name %></strong>, Level <%= npc.level %> <%= npc.dnd_class_string %>
+          </div>
+        </div>
+      <% end %>
+    </div>
   </div>
 
   <div class="d-flex align-items-center justify-content-start py-3">
     <%= link_to 'Edit', edit_adventure_path(@adventure), class: "btn btn-success" if policy(@adventure).edit? %>
-    <%= link_to 'Back', adventures_path, class: "btn btn-info" %>
   </div>
 </div>
