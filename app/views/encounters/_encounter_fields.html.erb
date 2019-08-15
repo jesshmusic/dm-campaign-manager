@@ -32,10 +32,14 @@
     <div class="form-row">
       <div class="p-3 border-bottom border-top" id="adventures_container">
         <%= f.simple_fields_for :encounter_monsters do |encounter_monster_form| %>
-          <%= render 'encounter_monster_fields', f: encounter_monster_form %>
+          <%= render '/encounters/encounter_monster_fields', f: encounter_monster_form %>
         <% end %>
         <div class='links'>
-          <%= link_to_add_association 'Add Encounter Monster', f, :encounter_monsters, class: "btn btn-info" %>
+          <%= link_to_add_association 'Add Encounter Monster',
+                                      f,
+                                      :encounter_monsters,
+                                      class: "btn btn-info",
+                                      partial: 'encounters/encounter_monster_fields' %>
         </div>
       </div>
     </div>

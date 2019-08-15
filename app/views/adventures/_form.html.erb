@@ -37,10 +37,14 @@
     <div class="form-row">
       <div class="p-3 border-bottom border-top" id="encounters_container">
         <%= form.simple_fields_for :encounters do |encounter_form| %>
-          <%= render 'encounter_fields', f: encounter_form %>
+          <%= render '/encounters/encounter_fields', f: encounter_form %>
         <% end %>
         <div class='links'>
-          <%= link_to_add_association 'Add Encounter', form, :encounters, class: "btn btn-info" %>
+          <%= link_to_add_association 'Add Encounter',
+                                      form,
+                                      :encounters,
+                                      class: "btn btn-info",
+                                      partial: '/encounters/encounter_fields' %>
         </div>
       </div>
     </div>

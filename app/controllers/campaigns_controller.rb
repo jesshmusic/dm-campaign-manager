@@ -126,7 +126,7 @@ class CampaignsController < ApplicationController
         :description,
         :_destroy,
         character_ids: [],
-        encounter_attributes: [
+        encounters_attributes: [
           :id,
           :copper_pieces,
           :description,
@@ -137,7 +137,7 @@ class CampaignsController < ApplicationController
           :silver_pieces,
           :xp,
           :_destroy,
-          encounter_monster_attributes: %i[id number_of_monsters monster_id _destroy]
+          encounter_monsters_attributes: %i[id number_of_monsters monster_id _destroy]
         ]
       ]
     )

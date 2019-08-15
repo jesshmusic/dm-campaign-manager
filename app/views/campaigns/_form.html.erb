@@ -21,10 +21,14 @@
     <div class="form-row">
       <div class="p-3 border-bottom border-top" id="adventures_container">
         <%= form.simple_fields_for :adventures do |adventure_form| %>
-          <%= render 'adventure_fields', f: adventure_form %>
+          <%= render '/adventures/adventure_fields', f: adventure_form %>
         <% end %>
         <div class='links'>
-          <%= link_to_add_association 'Add Adventure', form, :adventures, class: "btn btn-info" %>
+          <%= link_to_add_association 'Add Adventure',
+                                      form,
+                                      :adventures,
+                                      class: "btn btn-info",
+                                      partial: '/adventures/adventure_fields'%>
         </div>
       </div>
     </div>
