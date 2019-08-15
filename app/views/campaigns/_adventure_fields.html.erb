@@ -1,0 +1,9 @@
+<div class="nested-fields">
+  <div class="d-flex align-items-end">
+    <%= f.input :name %>
+    <%= f.input :description %>
+    <%#= f.association :player_characters %>
+    <%#= f.association :non_player_characters %>
+    <%= link_to_remove_association "Remove", f, class: "btn btn-warning mb-3" %>
+  </div>
+</div>
