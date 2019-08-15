@@ -21,6 +21,10 @@
 class Adventure < ApplicationRecord
   belongs_to :campaign
 
+  has_many :encounters, dependent: :destroy
+
   has_many :character_adventures, dependent: :destroy
   has_many :characters, through: :character_adventures
+
+  accepts_nested_attributes_for :encounters, reject_if: :all_blank, allow_destroy: true
 end

@@ -118,8 +118,28 @@ class CampaignsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def campaign_params
-    params.require(:campaign).permit(:name, :description, :world, adventures_attributes: [
-        :id, :name, :description, :_destroy, character_ids: []
-    ])
+    params.require(:campaign).permit(
+      :name, :description, :world,
+      adventures_attributes: [
+        :id,
+        :name,
+        :description,
+        :_destroy,
+        character_ids: [],
+        encounter_attributes: [
+          :id,
+          :copper_pieces,
+          :description,
+          :electrum_pieces,
+          :gold_pieces,
+          :name,
+          :platinum_pieces,
+          :silver_pieces,
+          :xp,
+          :_destroy,
+          encounter_monster_attributes: %i[id number_of_monsters monster_id _destroy]
+        ]
+      ]
+    )
   end
 end

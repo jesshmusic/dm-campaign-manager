@@ -17,17 +17,31 @@
     <div class="form-row">
       <div class="col">
         <%= form.association :characters,
-                          collection: PlayerCharacter.joins(:campaigns).where(campaigns: {id: form.object.campaign.id}),
-                          include_blank: false,
-                          input_html: { class: "pc-selection" } %>
+                             label: 'Player Characters',
+                             collection: PlayerCharacter.joins(:campaigns).where(campaigns: {id: form.object.campaign.id}),
+                             include_blank: false,
+                             input_html: { class: "pc-selection" } %>
       </div>
     </div>
     <div class="form-row">
       <div class="col">
         <%= form.association :characters,
-                          collection: NonPlayerCharacter.where(user_id: form.object.campaign.user.id),
-                          include_blank: false,
-                          input_html: { class: "npc-selection" } %>
+                             label: 'NPCs',
+                             collection: NonPlayerCharacter.where(user_id: form.object.campaign.user.id),
+                             include_blank: false,
+                             input_html: { class: "npc-selection" } %>
+      </div>
+    </div>
+
+    <h2>Encounters</h2>
+    <div class="form-row">
+      <div class="p-3 border-bottom border-top" id="encounters_container">
+        <%= form.simple_fields_for :encounters do |encounter_form| %>
+          <%= render 'encounter_fields', f: encounter_form %>
+        <% end %>
+        <div class='links'>
+          <%= link_to_add_association 'Add Encounter', form, :encounters, class: "btn btn-info" %>
+        </div>
       </div>
     </div>
   </div>

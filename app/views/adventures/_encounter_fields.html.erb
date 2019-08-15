@@ -1,0 +1,48 @@
+<div class="nested-fields">
+  <div class="form-inputs">
+    <div class="form-row">
+      <div class="col">
+        <%= f.input :name %>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="col">
+        <%= f.input :description %>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="col">
+        <%= f.input :copper_pieces %>
+      </div>
+      <div class="col">
+        <%= f.input :silver_pieces %>
+      </div>
+      <div class="col">
+        <%= f.input :electrum_pieces %>
+      </div>
+      <div class="col">
+        <%= f.input :gold_pieces %>
+      </div>
+      <div class="col">
+        <%= f.input :platinum_pieces %>
+      </div>
+    </div>
+
+    <h4>Encounters</h4>
+    <div class="form-row">
+      <div class="p-3 border-bottom border-top" id="adventures_container">
+        <%= f.simple_fields_for :encounter_monsters do |encounter_monster_form| %>
+          <%= render 'encounter_monster_fields', f: encounter_monster_form %>
+        <% end %>
+        <div class='links'>
+          <%= link_to_add_association 'Add Encounter Monster', f, :encounter_monsters, class: "btn btn-info" %>
+        </div>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="col">
+        <%= link_to_remove_association "Remove Encounter", f, class: "btn btn-warning mb-3" %>
+      </div>
+    </div>
+  </div>
+</div>

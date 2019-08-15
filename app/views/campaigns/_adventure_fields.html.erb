@@ -26,6 +26,18 @@
                           input_html: { class: "npc-selection" } %>
       </div>
     </div>
+
+    <h3>Encounters</h3>
+    <div class="form-row">
+      <div class="p-3 border-bottom border-top" id="adventures_container">
+        <%= form.simple_fields_for :encounters do |adventure_form| %>
+          <%= render 'adventure_fields', f: adventure_form %>
+        <% end %>
+        <div class='links'>
+          <%= link_to_add_association 'Add Adventure', form, :adventures, class: "btn btn-info" %>
+        </div>
+      </div>
+    </div>
     <div class="form-row">
       <div class="col">
         <%= link_to_remove_association "Remove", f, class: "btn btn-warning mb-3" %>

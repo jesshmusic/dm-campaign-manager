@@ -9,10 +9,16 @@
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
 #  character_id :bigint
+#  encounter_id :bigint
 #
 # Indexes
 #
 #  index_equipment_items_on_character_id  (character_id)
+#  index_equipment_items_on_encounter_id  (encounter_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (encounter_id => encounters.id)
 #
 
 class EquipmentItem < ApplicationRecord
@@ -22,4 +28,5 @@ class EquipmentItem < ApplicationRecord
   has_many :items, through: :equipment_item_items
 
   belongs_to :character, optional: true
+  belongs_to :encounter, optional: true
 end
