@@ -137,7 +137,10 @@ class CampaignsController < ApplicationController
           :silver_pieces,
           :xp,
           :_destroy,
-          encounter_monsters_attributes: %i[id number_of_monsters monster_id _destroy]
+          encounter_monsters_attributes: %i[id number_of_monsters monster_id _destroy],
+          equipment_items_attributes: [
+            :id, :quantity, :_destroy, item_ids: []
+          ]
         ]
       ]
     )

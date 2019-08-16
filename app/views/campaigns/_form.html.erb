@@ -53,6 +53,9 @@
   $("#adventures_container").on('cocoon:after-insert', function(event, addedTask) {
     loadSelect2();
   });
+  $("#equipment_items_container").on('cocoon:after-insert', function(event, addedTask) {
+    loadSelect2();
+  });
   $("#encounters_container").on('cocoon:after-insert', function(event, addedTask) {
     loadSelect2();
   });
@@ -68,6 +71,10 @@
       theme: "bootstrap"
     });
     $( ".monster-select" ).select2({
+      theme: "bootstrap"
+    });
+    $( ".equipment_item_item" ).select2({
+      multiple: false,
       theme: "bootstrap"
     });
   }

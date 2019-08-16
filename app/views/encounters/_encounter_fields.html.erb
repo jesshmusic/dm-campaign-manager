@@ -31,6 +31,16 @@
     <div class="form-row">
       <button class="btn btn-sm btn-link" id="randomIndividualTreasureButton">Random Individual Treasure</button>
     </div>
+    <div class="py-3" id="equipment_items_container">
+      <h5>Equipment</h5>
+      <%= f.simple_fields_for :equipment_items do |equipment_item_form| %>
+        <%= render '/items/equipment_item_fields', f: equipment_item_form %>
+      <% end %>
+      <div class='links'>
+        <%= link_to_add_association 'Add Equipment', f, :equipment_items, class: "btn btn-info", partial: '/items/equipment_item_fields' %>
+      </div>
+    </div>
+<!--    TODO: Add Equipment Items-->
 
     <h4>Monsters</h4>
     <div class="form-row">
