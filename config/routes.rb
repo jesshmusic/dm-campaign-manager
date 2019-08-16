@@ -4,15 +4,23 @@ Rails.application.routes.draw do
   resources :adventures, only: [:show, :edit, :update, :destroy]
   resources :encounters, only: [:show, :edit, :update, :destroy]
   resources :characters, param: :slug
+  # noinspection RailsParamDefResolve
   resources :player_characters, param: :slug, controller: 'characters', type: 'PlayerCharacter'
+  # noinspection RailsParamDefResolve
   resources :non_player_characters, param: :slug, controller: 'characters', type: 'NonPlayerCharacter'
   resources :dnd_classes, param: :slug
   resources :items, param: :slug
+  # noinspection RailsParamDefResolve
   resources :armor_items, param: :slug, controller: 'items', type: 'ArmorItem'
+  # noinspection RailsParamDefResolve
   resources :gear_items, param: :slug, controller: 'items', type: 'GearItem'
+  # noinspection RailsParamDefResolve
   resources :magic_items, param: :slug, controller: 'items', type: 'MagicItem'
+  # noinspection RailsParamDefResolve
   resources :tool_items, param: :slug, controller: 'items', type: 'ToolItem'
+  # noinspection RailsParamDefResolve
   resources :vehicle_items, param: :slug, controller: 'items', type: 'VehicleItem'
+  # noinspection RailsParamDefResolve
   resources :weapon_items, param: :slug, controller: 'items', type: 'WeaponItem'
   resources :monsters, param: :slug
   resources :spells, param: :slug
