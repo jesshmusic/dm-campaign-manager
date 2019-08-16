@@ -15,6 +15,16 @@
     <div class="col">
       <h1>Encounter: <%= @encounter.name %></h1>
       <h2><%= @encounter.xp %> XP</h2>
+      <div>
+        <%= @encounter.description %>
+      </div>
+      <% @encounter.encounter_monsters.each do |encounter_monster| %>
+        <div class="row">
+          <div class="col">
+            <h3><%= encounter_monster.number_of_monsters %> <%= encounter_monster.monster.name %></h3>
+          </div>
+        </div>
+      <% end %>
     </div>
   </div>
 
