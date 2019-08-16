@@ -25,7 +25,9 @@ class SpellsController < ApplicationController
 
   # GET /spells/1
   # GET /spells/1.json
-  def show; end
+  def show
+    authorize @spell
+  end
 
   # GET /spells/new
   def new
@@ -34,7 +36,9 @@ class SpellsController < ApplicationController
   end
 
   # GET /spells/1/edit
-  def edit; end
+  def edit
+    authorize @spell
+  end
 
   # POST /spells
   # POST /spells.json

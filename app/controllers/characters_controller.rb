@@ -26,7 +26,9 @@ class CharactersController < ApplicationController
 
   # GET /characters/1
   # GET /characters/1.json
-  def show; end
+  def show
+    authorize @character
+  end
 
   # GET /characters/new
   def new
@@ -50,7 +52,9 @@ class CharactersController < ApplicationController
   end
 
   # GET /characters/1/edit
-  def edit; end
+  def edit
+    authorize @character
+  end
 
   # POST /characters
   # POST /characters.json

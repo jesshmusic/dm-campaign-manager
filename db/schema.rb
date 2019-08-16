@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_15_205901) do
+ActiveRecord::Schema.define(version: 2019_08_16_201638) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -98,7 +98,6 @@ ActiveRecord::Schema.define(version: 2019_08_15_205901) do
     t.text "description", default: "Enter this character's backstory, history, or notes here."
     t.string "slug", null: false
     t.string "role", default: "Player Character"
-    t.integer "level", default: 1, null: false
     t.integer "xp", default: 0, null: false
     t.string "alignment", default: "neutral"
     t.string "race", default: "Human", null: false
@@ -116,6 +115,7 @@ ActiveRecord::Schema.define(version: 2019_08_15_205901) do
     t.datetime "updated_at", null: false
     t.string "background", default: "Acolyte"
     t.string "type"
+    t.integer "level", default: 1
     t.index ["slug"], name: "index_characters_on_slug"
     t.index ["user_id"], name: "index_characters_on_user_id"
   end
@@ -186,6 +186,19 @@ ActiveRecord::Schema.define(version: 2019_08_15_205901) do
     t.index ["encounter_id"], name: "index_equipment_items_on_encounter_id"
   end
 
+  create_table "events", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.bigint "campaign_id"
+    t.bigint "adventure_id"
+    t.bigint "encounter_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["adventure_id"], name: "index_events_on_adventure_id"
+    t.index ["campaign_id"], name: "index_events_on_campaign_id"
+    t.index ["encounter_id"], name: "index_events_on_encounter_id"
+  end
+
   create_table "items", force: :cascade do |t|
     t.string "name"
     t.string "sub_category"
@@ -224,6 +237,21 @@ ActiveRecord::Schema.define(version: 2019_08_15_205901) do
     t.string "type"
     t.index ["slug"], name: "index_items_on_slug", unique: true
     t.index ["user_id"], name: "index_items_on_user_id"
+  end
+
+  create_table "locations", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.integer "map_x", default: 0
+    t.integer "map_y", default: 0
+    t.bigint "campaign_id"
+    t.bigint "adventure_id"
+    t.bigint "encounter_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["adventure_id"], name: "index_locations_on_adventure_id"
+    t.index ["campaign_id"], name: "index_locations_on_campaign_id"
+    t.index ["encounter_id"], name: "index_locations_on_encounter_id"
   end
 
   create_table "monster_actions", force: :cascade do |t|
@@ -440,7 +468,13 @@ ActiveRecord::Schema.define(version: 2019_08_15_205901) do
   add_foreign_key "encounter_monsters", "monsters"
   add_foreign_key "encounters", "adventures"
   add_foreign_key "equipment_items", "encounters"
+  add_foreign_key "events", "adventures"
+  add_foreign_key "events", "campaigns"
+  add_foreign_key "events", "encounters"
   add_foreign_key "items", "users"
+  add_foreign_key "locations", "adventures"
+  add_foreign_key "locations", "campaigns"
+  add_foreign_key "locations", "encounters"
   add_foreign_key "monsters", "users"
   add_foreign_key "spells", "users"
 end

@@ -6,10 +6,12 @@ class AdventuresController < ApplicationController
   # GET /adventures/1
   # GET /adventures/1.json
   def show
+    authorize @adventure
   end
 
   # GET /adventures/1/edit
   def edit
+    authorize @adventure
   end
 
   # PATCH/PUT /adventures/1

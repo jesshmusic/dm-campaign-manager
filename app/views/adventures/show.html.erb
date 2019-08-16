@@ -40,7 +40,7 @@
       <% @adventure.characters.where(type: 'PlayerCharacter').each do |pc| %>
         <div class="row">
           <div class="col">
-            <strong><%= pc.name %></strong>, Level <%= pc.level %> <%= pc.dnd_class_string %>
+            <strong><%= pc.name %></strong>; <%= pc.level %>
           </div>
         </div>
       <% end %>
@@ -50,7 +50,7 @@
       <% @adventure.characters.where(type: 'NonPlayerCharacter').each do |npc| %>
         <div class="row">
           <div class="col">
-            <%= npc.role %>: <strong><%= npc.name %></strong>, Level <%= npc.level %> <%= npc.dnd_class_string %>
+            <%= npc.role %>: <strong><%= npc.name %></strong>; <%= npc.level %>
           </div>
         </div>
       <% end %>

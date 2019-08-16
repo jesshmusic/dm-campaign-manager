@@ -10,7 +10,7 @@
 #  electrum_pieces    :integer          default(0)
 #  gold_pieces        :integer          default(0)
 #  languages          :string           default("Common")
-#  level              :integer          default(1), not null
+#  level              :integer          default(1)
 #  name               :string           not null
 #  platinum_pieces    :integer          default(0)
 #  race               :string           default("Human"), not null

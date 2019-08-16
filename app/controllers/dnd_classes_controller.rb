@@ -25,7 +25,9 @@ class DndClassesController < ApplicationController
 
   # GET /dnd_classes/1
   # GET /dnd_classes/1.json
-  def show; end
+  def show
+    authorize @dnd_class
+  end
 
   # GET /dnd_classes/new
   def new
@@ -34,7 +36,9 @@ class DndClassesController < ApplicationController
   end
 
   # GET /dnd_classes/1/edit
-  def edit; end
+  def edit
+    authorize @dnd_class
+  end
 
   # POST /dnd_classes
   # POST /dnd_classes.json

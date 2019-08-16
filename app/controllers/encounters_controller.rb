@@ -4,10 +4,12 @@ class EncountersController < ApplicationController
   # GET /encounters/1
   # GET /encounters/1.json
   def show
+    authorize @encounter
   end
 
   # GET /encounters/1/edit
   def edit
+    authorize @encounter
   end
 
   # PATCH/PUT /encounters/1

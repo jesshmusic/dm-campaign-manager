@@ -25,7 +25,9 @@ class MonstersController < ApplicationController
 
   # GET /monsters/1
   # GET /monsters/1.json
-  def show; end
+  def show
+    authorize @monster
+  end
 
   # GET /monsters/new
   def new
@@ -35,7 +37,9 @@ class MonstersController < ApplicationController
   end
 
   # GET /monsters/1/edit
-  def edit; end
+  def edit
+    authorize @monster
+  end
 
   # POST /monsters
   # POST /monsters.json

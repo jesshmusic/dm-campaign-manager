@@ -17,7 +17,9 @@ class CampaignsController < ApplicationController
 
   # GET /campaigns/1
   # GET /campaigns/1.json
-  def show; end
+  def show
+    authorize @campaign
+  end
 
   # GET /campaigns/new
   def new
@@ -27,7 +29,9 @@ class CampaignsController < ApplicationController
   end
 
   # GET /campaigns/1/edit
-  def edit; end
+  def edit
+    authorize @campaign
+  end
 
   # POST /campaigns
   # POST /campaigns.json

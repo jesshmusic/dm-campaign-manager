@@ -38,7 +38,7 @@
       <ul class="list-group list-group-flush">
         <% @campaign.characters.where(type: 'PlayerCharacter').each do |character| %>
           <li class="list-group-item">
-            <strong><%= character.name %></strong> - Level <%= character.level %> <em><%= character.dnd_class_string %></em>
+            <strong><%= character.name %></strong> -<%= character.level %>
           </li>
         <% end %>
       </ul>
@@ -48,7 +48,7 @@
       <ul class="list-group list-group-flush">
         <% @campaign.characters.where(type: 'NonPlayerCharacter').each do |character| %>
           <li class="list-group-item">
-            <%=character.role %>: <strong><%= character.name %></strong> - Level <%= character.level %> <em><%= character.dnd_class_string %></em>
+            <%=character.role %>: <strong><%= character.name %></strong> - <%= character.level %>
           </li>
         <% end %>
       </ul>

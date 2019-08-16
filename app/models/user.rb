@@ -52,7 +52,6 @@ class User < ApplicationRecord
   has_many :campaigns, dependent: :destroy
   has_many :dnd_classes, dependent: :destroy
   has_many :items, dependent: :destroy
-  has_many :magic_items, dependent: :destroy
   has_many :monsters, dependent: :destroy
   has_many :spells, dependent: :destroy
 
