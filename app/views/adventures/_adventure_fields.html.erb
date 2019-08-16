@@ -15,6 +15,7 @@
         <%= f.association :characters,
                           collection: PlayerCharacter.joins(:campaigns).where(campaigns: {id: f.object.campaign.id}),
                           include_blank: false,
+                          include_hidden: false,
                           input_html: { class: "pc-selection" } %>
       </div>
     </div>
@@ -23,6 +24,7 @@
         <%= f.association :characters,
                           collection: NonPlayerCharacter.where(user_id: f.object.campaign.user.id),
                           include_blank: false,
+                          include_hidden: false,
                           input_html: { class: "npc-selection" } %>
       </div>
     </div>

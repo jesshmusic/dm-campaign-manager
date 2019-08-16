@@ -16,6 +16,16 @@
     <%= form.input :name %>
     <%= form.input :world %>
     <%= form.input :description %>
+    <div class="form-row">
+      <div class="col">
+        <%= form.association :characters,
+                             label: 'Player Characters',
+                             collection: PlayerCharacter.all,
+                             include_blank: false,
+                             include_hidden: false,
+                             input_html: { class: "pc-selection" } %>
+      </div>
+    </div>
 
     <h2>Adventures</h2>
     <div class="form-row">

@@ -20,6 +20,7 @@
                              label: 'Player Characters',
                              collection: PlayerCharacter.joins(:campaigns).where(campaigns: {id: form.object.campaign.id}),
                              include_blank: false,
+                             include_hidden: false,
                              input_html: { class: "pc-selection" } %>
       </div>
     </div>
@@ -29,6 +30,7 @@
                              label: 'NPCs',
                              collection: NonPlayerCharacter.where(user_id: form.object.campaign.user.id),
                              include_blank: false,
+                             include_hidden: false,
                              input_html: { class: "npc-selection" } %>
       </div>
     </div>

@@ -1,23 +1,29 @@
 <%= simple_form_for @spell, validate: true do |form| %>
   <%= form.error_notification %>
   <%= form.error_notification message: form.object.errors[:base].to_sentence if form.object.errors[:base].present? %>
-  
+
   <div class="form-inputs">
     <%= form.input :name %>
     <%= form.input :description %>
     <%= form.input :higher_level %>
     <%= form.input :page %>
     <%= form.input :range %>
-    <%= form.input :components, collection: ['V', 'S', 'M'], input_html: { multiple: true }, include_blank: false, include_hidden: false %>
+    <%= form.input :components,
+                   collection: ['V', 'S', 'M'],
+                   input_html: { multiple: true },
+                   include_blank: false,
+                   include_hidden: false %>
     <%= form.input :material %>
     <%= form.input :ritual %>
     <%= form.input :duration %>
     <%= form.input :concentration %>
     <%= form.input :casting_time %>
     <%= form.input :level %>
-    <%= form.association :dnd_classes, include_blank: false, include_hidden: false %>
+    <%= form.association :dnd_classes,
+                         include_blank: false,
+                         include_hidden: false %>
   </div>
-  
+
   <div class="form-actions">
     <%= form.button :submit, class: 'btn btn-success mb-3' %>
   </div>
