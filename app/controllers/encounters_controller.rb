@@ -1,5 +1,5 @@
 class EncountersController < ApplicationController
-  before_action :set_encounter, only: [:show, :edit, :update, :destroy]
+  before_action :set_encounter, only: %i[show edit update]
 
   # GET /encounters/1
   # GET /encounters/1.json
@@ -24,14 +24,9 @@ class EncountersController < ApplicationController
     end
   end
 
-  # DELETE /encounters/1
-  # DELETE /encounters/1.json
-  def destroy
-    @encounter.destroy
-    respond_to do |format|
-      format.html { redirect_to encounters_url, notice: 'Encounter was successfully destroyed.' }
-      format.json { head :no_content }
-    end
+  def random_individual_treasure
+    challenge_rating = params[:xp] ? DndRules.challenge_raiting_for_xp(params[:xp]) : DndRules.challenge_raiting_for_xp(params[600])
+    render json: TreasureUtility.create_individual_treasure(challenge_rating)
   end
 
   private

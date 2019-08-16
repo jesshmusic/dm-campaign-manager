@@ -7,6 +7,11 @@ Ruby enVironment Manager 1.29.9 (latest) (c) 2009-2017 Michal Papis, Piotr Kuczy
                           PATCH  /adventures/:id(.:format)                                                                adventures#update
                           PUT    /adventures/:id(.:format)                                                                adventures#update
                           DELETE /adventures/:id(.:format)                                                                adventures#destroy
+           edit_encounter GET    /encounters/:id/edit(.:format)                                                           encounters#edit
+                encounter GET    /encounters/:id(.:format)                                                                encounters#show
+                          PATCH  /encounters/:id(.:format)                                                                encounters#update
+                          PUT    /encounters/:id(.:format)                                                                encounters#update
+                          DELETE /encounters/:id(.:format)                                                                encounters#destroy
                characters GET    /characters(.:format)                                                                    characters#index
                           POST   /characters(.:format)                                                                    characters#create
             new_character GET    /characters/new(.:format)                                                                characters#new

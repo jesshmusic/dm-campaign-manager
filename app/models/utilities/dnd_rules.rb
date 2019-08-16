@@ -56,7 +56,8 @@ class DndRules
 
     # Challenge Rating Calculations
     def proficiency_for_cr(challenge_rating)
-      return 2 if challenge_rating = '1/8' || '1/4' || '1/2' || '0'
+      return 2 if challenge_rating == '1/8' || '1/4' || '1/2' || '0'
+
       challenge = challenge_rating.to_i
       case challenge
       when 1..4
@@ -78,6 +79,71 @@ class DndRules
       end
     end
 
+    def challenge_raiting_for_xp(xp)
+      case xp.to_i
+      when 0..449
+        '1'
+      when 450..699
+        '2'
+      when 700..1099
+        '3'
+      when 1100..1799
+        '4'
+      when 1800..2299
+        '5'
+      when 2300..2899
+        '6'
+      when 2900..3899
+        '7'
+      when 3900..4999
+        '8'
+      when 5000..5899
+        '9'
+      when 5900..7199
+        '10'
+      when 7200..8399
+        '11'
+      when 8400..9999
+        '12'
+      when 10000..11499
+        '13'
+      when 11500..12999
+        '14'
+      when 13000..14999
+        '15'
+      when 15000..17999
+        '16'
+      when 18000..19999
+        '17'
+      when 20000..21999
+        '18'
+      when 22000..24999
+        '19'
+      when 25000..32999
+        '20'
+      when 33000..40999
+        '21'
+      when 41000..49999
+        '22'
+      when 50000..61999
+        '23'
+      when 62000..74999
+        '24'
+      when 75000..89999
+        '25'
+      when 90000..104999
+        '26'
+      when 105000..119999
+        '27'
+      when 120000..134999
+        '28'
+      when 135000..155000
+        '29'
+      else
+        '30'
+      end
+    end
+
     def xp_for_cr(challenge_rating)
       xp = {
         '0' => 10, '1/8' => 25, '1/4' => 50, '1/2' => 100, '1' => 200, '2' => 450, '3' => 700,
@@ -87,7 +153,6 @@ class DndRules
         '23' => 50_000, '24' => 62_000, '25' => 75_000, '26' => 90_000, '27' => 105_000, '28' => 120_000,
         '29' => 135_000, '30' => 155_000
       }[challenge_rating.to_s]
-      xp
     end
 
     def cr_for_npc(npc)
@@ -99,17 +164,16 @@ class DndRules
       cr_total = [prof_cr, def_cr, off_cr].inject(0, &:+)
       cr = (cr_total.to_f / 3.0)
       puts "#{npc.name} CR value: #{cr}"
-      cr_string = case cr
-                  when 0...0.25
-                    '1/8'
-                  when 0.25...0.5
-                    '1/4'
-                  when 0.5...1.1
-                    '1/2'
-                  else
-                    cr.floor.to_s
-                  end
-      cr_string
+      case cr
+      when 0...0.25
+        '1/8'
+      when 0.25...0.5
+        '1/4'
+      when 0.5...1.1
+        '1/2'
+      else
+        cr.floor.to_s
+      end
     end
 
     def proficiency_cr(npc)
@@ -157,7 +221,7 @@ class DndRules
         10.0
       when 18
         13.0
-      when 19
+      else
         17.0
       end
     end

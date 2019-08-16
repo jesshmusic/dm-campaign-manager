@@ -106,23 +106,19 @@ class TreasureUtility
     end
 
     def create_treasure_hoard(challenge_rating)
-      challenge_rating_float = case challenge_rating
-                               when '1/8'
-                                 0.125
-                               when '1/4'
-                                 0.25
-                               when '1/2'
-                                 0.5
-                               else
-                                 challenge_rating.to_f
-                               end
+      challenge_rating_int = case challenge_rating
+                             when '1/8', '1/4', '1/2'
+                               0
+                             else
+                               challenge_rating.to_i
+                             end
 
-      case challenge_rating_float
-      when 0.0...5.0
+      case challenge_rating_int
+      when 0..5
         cr_0_hoard
-      when 5.0...11.0
+      when 6..11
         cr_5_hoard
-      when 11.0...17.0
+      when 12..17
         cr_11_hoard
       else
         cr_17_hoard
