@@ -1,5 +1,5 @@
-import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import axiosClient from '../actions/axiosClient';
 
@@ -8,11 +8,11 @@ import PageContainer from '../containers/PageContainer.jsx';
 
 import styles from './home.module.scss';
 
-export default class Home extends React.Component {
+class Home extends React.Component {
 
   render () {
     return (
-      <PageContainer user={this.props.user}>
+      <PageContainer user={this.props.user} flashMessages={this.props.flashMessages}>
         <div>
           <div className="row">
             <div className="col">
@@ -48,3 +48,13 @@ export default class Home extends React.Component {
     );
   }
 }
+
+Home.propTypes = {
+  campaigns: PropTypes.object,
+  characters: PropTypes.object,
+  dungeonMasters: PropTypes.object,
+  user: PropTypes.object,
+  flashMessages: PropTypes.array,
+};
+
+export default Home;

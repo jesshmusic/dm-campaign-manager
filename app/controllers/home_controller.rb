@@ -4,6 +4,8 @@ class HomeController < ApplicationController
   layout 'home'
 
   def index
+    puts flash.to_json
+    authorize :home, :index?
     if current_user&.dungeon_master?
       set_dm_props
     elsif current_user
@@ -29,7 +31,8 @@ class HomeController < ApplicationController
       dungeonMasters: {
         title: 'My Dungeon Masters',
         dungeonMasters: current_user.campaigns.map(&:dungeon_master)
-      }
+      },
+      flashMessages: flash_messages
     }
   end
 
@@ -47,7 +50,8 @@ class HomeController < ApplicationController
       dungeonMasters: {
         title: 'My Dungeon Masters',
         dungeonMasters: current_user.player_campaigns.map(&:dungeon_master)
-      }
+      },
+      flashMessages: flash_messages
     }
   end
 
@@ -65,13 +69,14 @@ class HomeController < ApplicationController
       dungeonMasters: {
         title: 'Dungeon Masters',
         dungeonMasters: User.where(role: :dungeon_master).limit(5)
-      }
+      },
+      flashMessages: flash_messages
     }
   end
 
-  # def current_user_characters
-  #   Character.where(user_id: current_user.id).map { |character|
-  #     char
-  #   }
-  # end
+  def flash_messages
+    flash.map do |type, text|
+      {id: text.object_id, type: type, text: text}
+    end
+  end
 end

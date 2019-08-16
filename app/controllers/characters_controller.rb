@@ -7,6 +7,7 @@ class CharactersController < ApplicationController
   # GET /characters
   # GET /characters.json
   def index
+    authorize Character
     @characters = if params[:search].present?
                     Character.search_for(params[:search])
                   else

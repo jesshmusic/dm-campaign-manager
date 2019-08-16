@@ -7,6 +7,7 @@ class MonstersController < ApplicationController
   # GET /monsters
   # GET /monsters.json
   def index
+    authorize Monster
     @monsters = if params[:search].present?
                   Monster.search_for(params[:search])
                 else

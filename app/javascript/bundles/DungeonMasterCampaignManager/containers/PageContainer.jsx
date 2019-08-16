@@ -5,11 +5,14 @@ import ContentWrapper from '../components/layout/ContentWrapper/ContentWrapper.j
 import Footer from '../components/layout/Footer/Footer.jsx';
 import HeroBanner from '../components/layout/HeroBanner/HeroBanner.jsx';
 import Navbar from '../components/layout/Navbar/Navbar.jsx';
+import FlashMessages from '../components/layout/Alerts/FlashMessages.jsx';
 
 import '../stylesheets/_global.scss';
 
 const PageContainer = (props) => (
   <div>
+
+    <FlashMessages messages={props.flashMessages}/>
     <Navbar user={props.user} />
     <ContentWrapper>
       <HeroBanner />
@@ -22,6 +25,7 @@ const PageContainer = (props) => (
 PageContainer.propTypes = {
   children: PropTypes.element.isRequired,
   user: PropTypes.object,
+  flashMessages: PropTypes.array,
 };
 
 export default PageContainer;

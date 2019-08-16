@@ -7,6 +7,7 @@ class DndClassesController < ApplicationController
   # GET /dnd_classes
   # GET /dnd_classes.json
   def index
+    authorize DndClass
     @dnd_classes = if params[:search].present?
                      DndClass.search_for(params[:search])
                    else

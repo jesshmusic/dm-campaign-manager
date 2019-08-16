@@ -7,6 +7,7 @@ class ItemsController < ApplicationController
   # GET /items
   # GET /items.json
   def index
+    authorize Item
     @items = if params[:search].present?
                Item.search_for(params[:search])
              else

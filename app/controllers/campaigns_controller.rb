@@ -7,6 +7,7 @@ class CampaignsController < ApplicationController
   # GET /campaigns
   # GET /campaigns.json
   def index
+    authorize Campaign
     if params[:search].present?
       @pagy, @campaigns = pagy(Campaign.search_for(params[:search]))
     else

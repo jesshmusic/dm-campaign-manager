@@ -7,6 +7,7 @@ class SpellsController < ApplicationController
   # GET /spells
   # GET /spells.json
   def index
+    authorize Spell
     @spells = if params[:search].present?
                 Spell.search_for(params[:search])
               else
