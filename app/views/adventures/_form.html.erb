@@ -58,12 +58,24 @@
 <% end %>
 
 <script>
-  $(document).ready(function() {
+  $("#encounters_container").on('cocoon:after-insert', function(event, addedTask) {
+    loadSelect2();
+  });
+  $("#encounter_monsters_container").on('cocoon:after-insert', function(event, addedTask) {
+    loadSelect2();
+  });
+
+  function loadSelect2 () {
     $( ".pc-selection" ).select2({
       theme: "bootstrap"
     });
     $( ".npc-selection" ).select2({
       theme: "bootstrap"
     });
-  });
+    $( ".monster-select" ).select2({
+      theme: "bootstrap"
+    });
+  }
+
+  loadSelect2();
 </script>
