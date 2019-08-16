@@ -84,12 +84,21 @@
   <div class="row mb-3 pb-3 border-bottom">
     <div class="col">
       <h2>Adventures</h2>
-      <ul class="list-group list-group-flush">
         <% @campaign.adventures.each do |adventure| %>
-          <li class="list-group-item">
-            <%= link_to adventure.name, adventure %> - PCs: <%= adventure.characters.where(type:'PlayerCharacter').count %> - NPCs: <%= adventure.characters.where(type:'NonPlayerCharacter').count %></li>
+          <div class="row">
+            <div class="col">
+              <%= link_to adventure.name, adventure %> - PCs: <%= adventure.characters.where(type:'PlayerCharacter').count %> - NPCs: <%= adventure.characters.where(type:'NonPlayerCharacter').count %>
+              <h3>Encounters</h3>
+              <% adventure.encounters.each do |encounter| %>
+                <div class="row">
+                  <div class="col">
+                    <strong><%= link_to encounter.name, encounter %>:</strong> (<%= encounter.total_monsters %> monsters), <%= encounter.xp %><small class="text-muted">XP</small>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
         <% end %>
-      </ul>
     </div>
   </div>
 
