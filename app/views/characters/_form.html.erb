@@ -7,7 +7,7 @@
                     <% end %>
 
   <div class="form-inputs">
-    <% if (current_user.admin? || current_user.dungeon_master?) %>
+    <% if current_user.admin? || current_user.dungeon_master? %>
         <%= form.association :campaigns,
           collection: current_user.campaigns + current_user.player_campaigns,
           include_blank: false,
@@ -18,7 +18,7 @@
         include_blank: false,
         include_hidden: false %>
     <% end %>
-    
+
     <%= form.hidden_field :user_id, value: form.object.user_id || current_user.id %>
     <div class="form-row">
       <div class="col">
@@ -28,7 +28,7 @@
         <%= form.input :role, hint: 'NPCs only' %>
       </div>
     </div>
-    
+
     <h2>Info</h2>
     <div class="form-row">
       <div class="col">
@@ -52,7 +52,7 @@
           include_hidden: false %>
       </div>
     </div>
-    
+
     <div class="form-row">
       <div class="col">
         <%= form.input :level %>
@@ -61,7 +61,7 @@
         <%= form.input :xp, label: "Experience Points" %>
       </div>
     </div>
-    
+
     <h3>Statistics</h3>
     <%= form.simple_fields_for :stat_block do |stats_form| %>
       <div class="form-row">
@@ -84,10 +84,10 @@
           <%= stats_form.input :speed %>
         </div>
       </div>
-      
+
       <div class="form-row">
         <div class="col d-flex align-items-center justify-content-between">
-          <%= stats_form.input :hit_dice_number %><strong> d </strong><%= stats_form.input :hit_dice_value %><strong>
+          <%= stats_form.input :hit_dice_number %><strong> d </strong><%= stats_form.input :hit_dice_value %>
         </div>
       </div>
 
@@ -113,7 +113,7 @@
         </div>
       </div>
     <% end %>
-    
+
     <div class="form-row">
       <div class="col">
         <%= form.input :languages %>
@@ -239,7 +239,7 @@
         </div>
       </div>
     </div>
-    
+
     <h2>Skills</h2>
     <div class="form-row">
       <div class="p-3 border-bottom border-top">
@@ -251,7 +251,7 @@
         </div>
       </div>
     </div>
-    
+
     <h2>Inventory</h2>
     <div class="form-row">
       <div class="col">
@@ -312,7 +312,7 @@
     theme: "bootstrap"
   });
   $('.character_role').show();
-  
+
   function handleSpellsDisplay() {
     var classValue = $('#character_dnd_class_ids :selected').text()
     if (classValue === 'Bard' || classValue === 'Cleric' || classValue === 'Druid' || classValue === 'Sorcerer' || classValue === 'Warlock' || classValue === 'Wizard') {
@@ -327,7 +327,7 @@
       $('#spellsForm').hide();
     }
   }
-  
+
   function showSpellLevels(minLevel, maxLevel) {
     for (var i = 0; i <= 9; i++) {
       $(`#${i}_levelSpells`).hide();
@@ -336,15 +336,15 @@
       $(`#${i}_levelSpells`).show();
     }
   }
-  
+
   $('#character_dnd_class_ids').on("select2:select", function (event) {
     handleSpellsDisplay();
   });
-  
+
   $("#equipment_items_container").on('cocoon:after-insert', function(event, addedTask) {
     loadSelect2();
   });
-  
+
   function loadSelect2() {
     $('#character_spell_cantrip_ids').select2({
       theme: "bootstrap"
@@ -381,9 +381,9 @@
       theme: "bootstrap"
     });
   }
-  
+
   handleNPCDisplay();
   handleSpellsDisplay();
   loadSelect2()
-  
+
 </script>
