@@ -1,23 +1,14 @@
 class UserPolicy < ApplicationPolicy
-
-  def index?
-    user != nil
-  end
-
-  def show?
-    return true
-  end
-
   def edit?
-    user.admin? or user == record
+    user.admin? || (user == record)
   end
 
   def update?
-    user.admin? or user == record
+    user.admin? || (user == record)
   end
 
   def destroy?
-    user.admin? or user == record
+    user.admin? || (user == record)
   end
 
   def change_role?

@@ -1,14 +1,6 @@
 # frozen_string_literal: true
 
 class ItemPolicy < ApplicationPolicy
-  def show?
-    true
-  end
-
-  def edit?
-    user && (user.admin? || (record.user == user))
-  end
-
   def update?
     user && (user.admin? || (record.user == user))
   end
@@ -19,9 +11,5 @@ class ItemPolicy < ApplicationPolicy
 
   def destroy?
     user && (user.admin? || (record.user == user))
-  end
-
-  def destroy_all?
-    user&.admin?
   end
 end

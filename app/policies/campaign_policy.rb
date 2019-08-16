@@ -1,34 +1,24 @@
+# frozen_string_literal: true
+
 class CampaignPolicy < ApplicationPolicy
 
-  def show?
-    return true
-  end
-
-  def edit?
-    user and (user.admin? or record.user == user)
-  end
-
   def update?
-    user and (user.admin? or record.user == user)
-  end
-  
-  def confirm_user?
-    user and user.dungeon_master? and record.user == user
-  end
-  
-  def join_campaign?
-    user
+    user && (user.admin? || (record.user == user))
   end
 
   def create?
-    user and (user.admin? or user.dungeon_master?)
+    user && (user.admin? || user.dungeon_master?)
   end
 
   def destroy?
-    user and (user.admin? or record.user == user)
+    user && (user.admin? || (record.user == user))
   end
 
-  def destroy_all?
-    user and user.admin?
+  def confirm_user?
+    user&.dungeon_master? && (record.user == user)
+  end
+
+  def join_campaign?
+    user
   end
 end

@@ -110,7 +110,7 @@ class CharactersController < ApplicationController
   def update
     authorize @character
     respond_to do |format|
-      if @character.update(character_params)
+      if @character.update(character_params(params[:type]))
         format.html { redirect_to @character, notice: ' character was successfully updated.' }
         format.json { render :show, status: :ok, location: @character }
       else
@@ -157,6 +157,4 @@ class CharactersController < ApplicationController
       ]
     )
   end
-
-  def generate_bard_npc; end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ApplicationPolicy
   attr_reader :user, :record
 
@@ -7,11 +9,11 @@ class ApplicationPolicy
   end
 
   def index?
-    false
+    @user&.admin?
   end
 
   def show?
-    false
+    @user&.admin?
   end
 
   def create?
@@ -19,7 +21,7 @@ class ApplicationPolicy
   end
 
   def new?
-    create?
+    @user&.admin?
   end
 
   def update?
@@ -27,11 +29,15 @@ class ApplicationPolicy
   end
 
   def edit?
-    update?
+    @user&.admin?
   end
 
   def destroy?
     false
+  end
+
+  def destroy_all?
+    @user&.admin?
   end
 
   class Scope
