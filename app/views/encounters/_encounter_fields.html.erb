@@ -10,6 +10,7 @@
         <%= f.input :description %>
       </div>
     </div>
+    <%= f.hidden_field :xp, value: f.object.xp || 0 %>
     <div class="form-row">
       <div class="col">
         <%= f.input :copper_pieces %>
@@ -27,15 +28,18 @@
         <%= f.input :platinum_pieces %>
       </div>
     </div>
+    <div class="form-row">
+      <button class="btn btn-sm btn-link" id="randomIndividualTreasureButton">Random Individual Treasure</button>
+    </div>
 
-    <h4>Encounters</h4>
+    <h4>Monsters</h4>
     <div class="form-row">
       <div class="p-3 border-bottom border-top" id="encounter_monsters_container">
         <%= f.simple_fields_for :encounter_monsters do |encounter_monster_form| %>
           <%= render '/encounters/encounter_monster_fields', f: encounter_monster_form %>
         <% end %>
         <div class='links'>
-          <%= link_to_add_association 'Add Encounter Monster',
+          <%= link_to_add_association 'Add Monster',
                                       f,
                                       :encounter_monsters,
                                       class: "btn btn-info",
@@ -50,3 +54,29 @@
     </div>
   </div>
 </div>
+
+<script>
+  const encounterXP = $('#adventure_encounters_attributes_<%= f.index %>_xp').val();
+  const copperInput = $('#adventure_encounters_attributes_<%= f.index %>_copper_pieces');
+  const silverInput = $('#adventure_encounters_attributes_<%= f.index %>_silver_pieces');
+  const electrumInput = $('#adventure_encounters_attributes_<%= f.index %>_electrum_pieces');
+  const goldInput = $('#adventure_encounters_attributes_<%= f.index %>_gold_pieces');
+  const platinumInput = $('#adventure_encounters_attributes_<%= f.index %>_platinum_pieces');
+
+  $('#randomIndividualTreasureButton').on('click', function(event) {
+    event.preventDefault();
+    $.ajax({
+      type: 'GET',
+      url: '/random_individual_treasure',
+      data: {
+        xp: encounterXP
+      }
+    }).done(function(response) {
+      copperInput.val(response.copper_pieces);
+      silverInput.val(response.silver_pieces);
+      electrumInput.val(response.electrum_pieces);
+      goldInput.val(response.gold_pieces);
+      platinumInput.val(response.platinum_pieces);
+    });
+  });
+</script>
