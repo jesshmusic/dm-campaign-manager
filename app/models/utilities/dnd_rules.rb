@@ -105,39 +105,39 @@ class DndRules
         '11'
       when 8400..9999
         '12'
-      when 10000..11499
+      when 10_000..11_499
         '13'
-      when 11500..12999
+      when 11_500..12_999
         '14'
-      when 13000..14999
+      when 13_000..14_999
         '15'
-      when 15000..17999
+      when 15_000..17_999
         '16'
-      when 18000..19999
+      when 18_000..19_999
         '17'
-      when 20000..21999
+      when 20_000..21_999
         '18'
-      when 22000..24999
+      when 22_000..24_999
         '19'
-      when 25000..32999
+      when 25_000..32_999
         '20'
-      when 33000..40999
+      when 33_000..40_999
         '21'
-      when 41000..49999
+      when 41_000..49_999
         '22'
-      when 50000..61999
+      when 50_000..61_999
         '23'
-      when 62000..74999
+      when 62_000..74_999
         '24'
-      when 75000..89999
+      when 75_000..89_999
         '25'
-      when 90000..104999
+      when 90_000..104_999
         '26'
-      when 105000..119999
+      when 105_000..119_999
         '27'
-      when 120000..134999
+      when 120_000..134_999
         '28'
-      when 135000..155000
+      when 135_000..155_000
         '29'
       else
         '30'
@@ -157,6 +157,7 @@ class DndRules
 
     def cr_for_npc(npc)
       raise TypeError, 'cr_for_npc expects a Character' unless npc.is_a?(Character)
+
       prof_cr = proficiency_cr(npc)
       def_cr = defensive_cr(npc)
       off_cr = offensive_cr(npc)
@@ -250,6 +251,7 @@ class DndRules
         npc_actions_count += 1
         attack_bonuses << action.attack_bonus if action.attack_bonus
         next unless action.damage_dice
+
         damage_dice_str = action.damage_dice
         damage_dice_str.slice! '1h: '
         damage_dice_str.slice! '2h: '

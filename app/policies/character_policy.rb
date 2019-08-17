@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class CharacterPolicy < ApplicationPolicy
-
   def update?
     user&.admin
   end

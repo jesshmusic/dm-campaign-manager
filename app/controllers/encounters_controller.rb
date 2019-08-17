@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class EncountersController < ApplicationController
   before_action :set_encounter, only: %i[show edit update]
 
@@ -32,6 +34,7 @@ class EncountersController < ApplicationController
   end
 
   private
+
   # Use callbacks to share common setup or constraints between actions.
   def set_encounter
     @encounter = Encounter.find(params[:id])

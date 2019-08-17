@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UsersController < ApplicationController
   before_action :set_user, only: %i[show edit update change_role destroy]
   before_action :set_users, only: %i[index]
@@ -12,7 +14,7 @@ class UsersController < ApplicationController
              else
                User.all
              end
-    @pagy, @users = pagy(@users.where(role: :dungeon_master).or(@users.where(role: :player))) if !current_user.admin?
+    @pagy, @users = pagy(@users.where(role: :dungeon_master).or(@users.where(role: :player))) unless current_user.admin?
     @pagy, @users = pagy(@users) if current_user.admin?
 
     respond_to do |format|

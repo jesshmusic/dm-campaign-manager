@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: actions
@@ -14,10 +16,10 @@
 
 FactoryBot.define do
   factory :action do
-    name { "MyString" }
-    description { "MyText" }
+    name { 'MyString' }
+    description { 'MyText' }
     attack_bonus { 1 }
     damage_bonus { 1 }
-    damage_dice { "MyString" }
+    damage_dice { 'MyString' }
   end
 end

@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class NonPlayerCharacterPolicy < CharacterPolicy
-
   def update?
     user && (user.admin? || (record.user == user))
   end

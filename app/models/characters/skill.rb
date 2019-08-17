@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: skills
@@ -18,7 +20,7 @@
 
 class Skill < ApplicationRecord
   validates :name, :score, presence: true
-  
+
   belongs_to :monster, optional: true
   belongs_to :character, optional: true
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: adventures
@@ -20,8 +22,8 @@
 
 FactoryBot.define do
   factory :adventure do
-    name { "MyString" }
-    description { "MyText" }
+    name { 'MyString' }
+    description { 'MyText' }
     campaign { nil }
   end
 end

@@ -41,6 +41,7 @@ class AdventuresController < ApplicationController
   end
 
   private
+
   # Use callbacks to share common setup or constraints between actions.
   def set_adventure
     @adventure = Adventure.find(params[:id])
@@ -49,21 +50,21 @@ class AdventuresController < ApplicationController
   # Never trust parameters from the scary internet, only allow the white list through.
   def adventure_params
     params.require(:adventure).permit(
-        :name, :description, :campaign_id,
-        character_ids: [], monster_ids: [], item_ids: [],
-        encounters_attributes: [
-          :id,
-          :copper_pieces,
-          :description,
-          :electrum_pieces,
-          :gold_pieces,
-          :name,
-          :platinum_pieces,
-          :silver_pieces,
-          :xp,
-          :_destroy,
-          encounter_monsters_attributes: %i[id number_of_monsters monster_id _destroy]
-        ]
+      :name, :description, :campaign_id,
+      character_ids: [], monster_ids: [], item_ids: [],
+      encounters_attributes: [
+        :id,
+        :copper_pieces,
+        :description,
+        :electrum_pieces,
+        :gold_pieces,
+        :name,
+        :platinum_pieces,
+        :silver_pieces,
+        :xp,
+        :_destroy,
+        encounter_monsters_attributes: %i[id number_of_monsters monster_id _destroy]
+      ]
     )
   end
 end

@@ -1,8 +1,10 @@
 AllCops:
-  Excludes:
-    - config/unicorn.rb
-    - db/**
-  RunRailsCops: true
+  Exclude:
+    - 'db/**/*'
+    - 'lib/**/*'
+    - 'config/**/*'
+    - 'spec/**/*'
+
 Metrics/ClassLength:
   CountComments: false
   Max: 235
