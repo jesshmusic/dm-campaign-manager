@@ -2,10 +2,10 @@
   <%= form.error_notification %>
   <%= form.error_notification message: form.object.errors[:base].to_sentence if form.object.errors[:base].present? %>
 
-  <h2><%= 'Admin' if current_user.admin? %></h4>
-  <h2><%= 'Dungeon Master' if current_user.dungeon_master? %></h4>
-  <h2><%= 'Player' if current_user.player? %></h4>
-  
+  <h2><%= 'Admin' if current_user.admin? %></h2>
+  <h2><%= 'Dungeon Master' if current_user.dungeon_master? %></h2>
+  <h2><%= 'Player' if current_user.player? %></h2>
+
   <div class="form-inputs">
     <%= form.input :email %>
     <%= form.input :name, required: true %>
@@ -25,7 +25,7 @@
                    value_method: :first %>
     <% end %>
   </div>
-  
+
   <div class="form-actions">
     <%= form.button :submit, class: 'btn btn-success mb-2' %>
   </div>
