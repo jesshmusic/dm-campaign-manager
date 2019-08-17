@@ -20,7 +20,7 @@ class AdventuresController < ApplicationController
     authorize @adventure
     respond_to do |format|
       if @adventure.update(adventure_params)
-        format.html { redirect_to @adventure, notice: 'Adventure was successfully updated.' }
+        format.html { redirect_to campaign_adventure_url(@campaign, @adventure), notice: 'Adventure was successfully updated.' }
         format.json { render :show, status: :ok, location: @adventure }
       else
         format.html { render :edit }
@@ -35,7 +35,7 @@ class AdventuresController < ApplicationController
     authorize @adventure
     @adventure.destroy
     respond_to do |format|
-      format.html { redirect_to adventures_url, notice: 'Adventure was successfully destroyed.' }
+      format.html { redirect_to campaign_adventures_url(@campaign), notice: 'Adventure was successfully destroyed.' }
       format.json { head :no_content }
     end
   end
@@ -44,6 +44,7 @@ class AdventuresController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_adventure
+    @campaign = Campaign.find_by(slug: params[:campaign_slug])
     @adventure = Adventure.find(params[:id])
   end
 

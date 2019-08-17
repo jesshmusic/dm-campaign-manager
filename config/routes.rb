@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  resources :adventures, only: [:show, :edit, :update, :destroy]
-  resources :encounters, only: [:show, :edit, :update, :destroy]
   resources :characters, param: :slug
   # noinspection RailsParamDefResolve
   resources :player_characters, param: :slug, controller: 'characters', type: 'PlayerCharacter'
@@ -24,7 +22,13 @@ Rails.application.routes.draw do
   resources :weapon_items, param: :slug, controller: 'items', type: 'WeaponItem'
   resources :monsters, param: :slug
   resources :spells, param: :slug
-  resources :campaigns, param: :slug
+  resources :campaigns, param: :slug do
+    resources :adventures do
+      resources :encounters
+    end
+    resources :non_player_characters, param: :slug, controller: 'characters', type: 'NonPlayerCharacter'
+    resources :player_characters, param: :slug, controller: 'characters', type: 'PlayerCharacter'
+  end
   devise_for :users, controllers: { registrations: 'registrations' }
   root to: 'home#index'
   get 'home', to: 'home#index'

@@ -32,7 +32,7 @@
       <button class="btn btn-sm btn-link" id="randomIndividualTreasureButton">Random Individual Treasure</button>
     </div>
     <div class="py-3 mb-3" id="equipment_items_container">
-      <h4>Equipment</h4>
+      <h4>Treasure</h4>
       <%= f.simple_fields_for :equipment_items do |equipment_item_form| %>
         <%= render '/items/equipment_item_fields', f: equipment_item_form %>
       <% end %>

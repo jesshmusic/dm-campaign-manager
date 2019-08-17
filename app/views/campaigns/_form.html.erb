@@ -64,6 +64,10 @@
   });
 
   function loadSelect2 () {
+    $('.equipment_item_item').select2({
+      multiple: false,
+      theme: 'bootstrap',
+    });
     $( ".pc-selection" ).select2({
       theme: "bootstrap"
     });
@@ -71,10 +75,6 @@
       theme: "bootstrap"
     });
     $( ".monster-select" ).select2({
-      theme: "bootstrap"
-    });
-    $( ".equipment_item_item" ).select2({
-      multiple: false,
       theme: "bootstrap"
     });
   }

@@ -37,6 +37,8 @@ class EncountersController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_encounter
+    @campaign = Campaign.find_by(slug: params[:campaign_slug])
+    @adventure = Adventure.find(params[:adventure_id])
     @encounter = Encounter.find(params[:id])
   end
 

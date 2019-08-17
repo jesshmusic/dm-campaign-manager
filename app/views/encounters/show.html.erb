@@ -5,6 +5,9 @@
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="/">Home</a></li>
         <li class="breadcrumb-item"><%= link_to 'Dashboard', dashboard_path %></li>
+        <li class="breadcrumb-item"><%= link_to 'Campaigns', campaigns_path %></li>
+        <li class="breadcrumb-item"><%= link_to @campaign.name, campaign_adventures_path(@campaign) %></li>
+        <li class="breadcrumb-item"><%= link_to @adventure.name, campaign_adventure_path(@campaign, @adventure) %></li>
         <li class="breadcrumb-item active" aria-current="page"><%= @encounter.name %></li>
       </ol>
     </nav>
@@ -35,6 +38,6 @@
   </div>
 
   <div class="d-flex align-items-center justify-content-start py-3">
-    <%= link_to 'Edit', edit_encounter_path(@encounter), class: "btn btn-success" if policy(@encounter).edit? %>
+    <%= link_to 'Edit', edit_campaign_adventure_encounter_path(@campaign, @adventure, @encounter), class: "btn btn-success" if policy(@encounter).edit? %>
   </div>
 </div>
