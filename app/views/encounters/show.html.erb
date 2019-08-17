@@ -40,6 +40,7 @@
         <div class="row">
           <div class="col">
             <h3><%= encounter_monster.number_of_monsters %> <%= encounter_monster.monster.name %></h3>
+            <%= render 'monsters/monster_stat_block', monster: encounter_monster.monster %>
           </div>
         </div>
       <% end %>
