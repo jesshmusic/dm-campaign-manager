@@ -1,18 +1,11 @@
-<div class="nested-fields">
-  <div class="form-inputs">
-    <div class="form-row">
-      <div class="col">
-        <%= f.input :number_of_monsters %>
-      </div>
-      <div class="col">
-        <%= f.association :monster,
-                          include_blank: false,
-                          include_hidden: false,
-                          input_html: { class: "monster-select" } %>
-      </div>
-      <div class="col">
-        <%= link_to_remove_association "Remove", f, class: "btn btn-warning mb-3" %>
-      </div>
-    </div>
+<div class="nested-fields p-2 mb-2 border bg-light">
+  <div class="d-flex align-items-end">
+    <%= f.association :monster,
+                      include_blank: false,
+                      include_hidden: false,
+                      input_html: {class: "monster-select"},
+                      wrapper_html: {class: 'mr-3'} %>
+    <%= f.input :number_of_monsters, wrapper_html: {class: 'mr-3'} %>
+    <%= link_to_remove_association "Remove", f, class: "btn btn-warning mb-3" %>
   </div>
 </div>

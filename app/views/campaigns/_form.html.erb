@@ -29,7 +29,7 @@
 
     <h2>Adventures</h2>
     <div class="form-row">
-      <div class="p-3 border-bottom border-top" id="adventures_container">
+      <div class="my-3" id="adventures_container">
         <%= form.simple_fields_for :adventures do |adventure_form| %>
           <%= render '/adventures/adventure_fields', f: adventure_form %>
         <% end %>

@@ -1,4 +1,4 @@
-<div class="nested-fields">
+<div class="nested-fields p-3 border my-3 bg-white">
   <div class="form-inputs">
     <div class="form-row">
       <div class="col">
@@ -31,8 +31,8 @@
     <div class="form-row">
       <button class="btn btn-sm btn-link" id="randomIndividualTreasureButton">Random Individual Treasure</button>
     </div>
-    <div class="py-3" id="equipment_items_container">
-      <h5>Equipment</h5>
+    <div class="py-3 mb-3" id="equipment_items_container">
+      <h4>Equipment</h4>
       <%= f.simple_fields_for :equipment_items do |equipment_item_form| %>
         <%= render '/items/equipment_item_fields', f: equipment_item_form %>
       <% end %>
@@ -44,7 +44,7 @@
 
     <h4>Monsters</h4>
     <div class="form-row">
-      <div class="p-3 border-bottom border-top" id="encounter_monsters_container">
+      <div class="p-3 mb-3" id="encounter_monsters_container">
         <%= f.simple_fields_for :encounter_monsters do |encounter_monster_form| %>
           <%= render '/encounters/encounter_monster_fields', f: encounter_monster_form %>
         <% end %>
