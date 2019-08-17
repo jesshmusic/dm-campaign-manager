@@ -1,6 +1,7 @@
 <div class="nested-fields p-2 mb-2 border bg-light">
   <div class="d-flex align-items-end">
     <%= f.association :monster,
+                      collection: Monster.all.map { |monster| ["#{monster.name}, CR #{monster.challenge_rating}", monster.id] },
                       include_blank: false,
                       include_hidden: false,
                       input_html: {class: "monster-select"},

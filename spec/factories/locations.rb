@@ -27,7 +27,7 @@
 #
 
 FactoryBot.define do
-  factory :location do
+  factory :world_location do
     name { "MyString" }
     description { "MyText" }
     map_x { 1 }

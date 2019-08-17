@@ -62,12 +62,8 @@ class AdventuresController < ApplicationController
           :silver_pieces,
           :xp,
           :_destroy,
-          encounter_monsters_attributes: %i[id number_of_monsters monster_id _destroy],
-          locations_attributes: %i[id name description _destroy],
-          events_attributes: %i[id when name description _destroy]
-        ],
-        events_attributes: %i[id name description _destroy],
-        locations_attributes: %i[id when name description _destroy]
+          encounter_monsters_attributes: %i[id number_of_monsters monster_id _destroy]
+        ]
     )
   end
 end

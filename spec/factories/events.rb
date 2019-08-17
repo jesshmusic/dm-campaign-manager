@@ -26,7 +26,7 @@
 #
 
 FactoryBot.define do
-  factory :event do
+  factory :world_event do
     name { "MyString" }
     description { "MyText" }
     campaign { nil }
