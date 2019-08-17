@@ -16,7 +16,7 @@ class DndRules
         'Dwarf', 'Mountain Dwarf', 'Hill Dwarf',
         'Elf', 'High Elf', 'Wood Elf',
         'Gnome', 'Rock Gnome', 'Forest Gnome',
-        'Half-orc',
+        'Half-orc', 'Half-elf',
         'Halfling', 'Stout Halfling', 'Lightfoot Halfling',
         'Human',
         'Tiefling'

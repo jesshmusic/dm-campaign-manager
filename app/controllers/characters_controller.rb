@@ -106,6 +106,7 @@ class CharactersController < ApplicationController
   end
 
   def random_fantasy_name
+    authorize Character
     random_npc_gender = params[:random_npc_gender] || %w[male female].sample
     render json: { name: NameGen.random_name(random_npc_gender) }
   end

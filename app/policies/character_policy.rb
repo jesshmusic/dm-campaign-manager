@@ -19,6 +19,10 @@ class CharacterPolicy < ApplicationPolicy
     user&.dungeon_master? || user&.admin?
   end
 
+  def random_fantasy_name?
+    true
+  end
+
   def destroy?
     user && (user.admin? || (record.user == user))
   end
