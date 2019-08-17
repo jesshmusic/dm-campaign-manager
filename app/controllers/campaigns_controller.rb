@@ -19,6 +19,11 @@ class CampaignsController < ApplicationController
   # GET /campaigns/1.json
   def show
     authorize @campaign
+    if params[:search].present?
+      @pagy, @adventures = pagy(Adventure.where(campaign_id: @campaign.id).search_for(params[:search]))
+    else
+      @pagy, @adventures = pagy(Adventure.where(campaign_id: @campaign.id))
+    end
   end
 
   # GET /campaigns/new

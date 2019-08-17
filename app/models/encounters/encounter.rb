@@ -28,6 +28,9 @@
 
 class Encounter < ApplicationRecord
   before_save :calculate_xp
+
+  belongs_to :adventure
+
   has_many :encounter_monsters, inverse_of: :encounter
   has_many :equipment_items, inverse_of: :encounter
 

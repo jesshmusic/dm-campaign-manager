@@ -3,6 +3,62 @@
   <%= form.error_notification message: form.object.errors[:base].to_sentence if form.object.errors[:base].present? %>
 
   <div class="form-inputs">
+    <div class="form-row">
+      <div class="col">
+        <%= form.input :name %>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="col">
+        <%= form.input :description %>
+      </div>
+    </div>
+    <%= form.hidden_field :xp, value: form.object.xp || 0 %>
+    <div class="form-row">
+      <div class="col">
+        <%= form.input :copper_pieces %>
+      </div>
+      <div class="col">
+        <%= form.input :silver_pieces %>
+      </div>
+      <div class="col">
+        <%= form.input :electrum_pieces %>
+      </div>
+      <div class="col">
+        <%= form.input :gold_pieces %>
+      </div>
+      <div class="col">
+        <%= form.input :platinum_pieces %>
+      </div>
+    </div>
+    <div class="form-row">
+      <button class="btn btn-sm btn-link" id="randomIndividualTreasureButton">Random Individual Treasure</button>
+    </div>
+    <div class="py-3 mb-3" id="equipment_items_container">
+      <h4>Treasure</h4>
+      <%= form.simple_fields_for :equipment_items do |equipment_item_form| %>
+        <%= render '/items/equipment_item_fields', f: equipment_item_form %>
+      <% end %>
+      <div class='links'>
+        <%= link_to_add_association 'Add Equipment', form, :equipment_items, class: "btn btn-info", partial: '/items/equipment_item_fields' %>
+      </div>
+    </div>
+
+    <h4>Monsters</h4>
+    <div class="form-row">
+      <div class="p-3 mb-3" id="encounter_monsters_container">
+        <%= form.simple_fields_for :encounter_monsters do |encounter_monster_form| %>
+          <%= render '/encounters/encounter_monster_fields', f: encounter_monster_form %>
+        <% end %>
+        <div class='links'>
+          <%= link_to_add_association 'Add Monster',
+                                      form,
+                                      :encounter_monsters,
+                                      class: "btn btn-info",
+                                      partial: 'encounters/encounter_monster_fields' %>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="form-actions">

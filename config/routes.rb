@@ -26,8 +26,6 @@ Rails.application.routes.draw do
     resources :adventures do
       resources :encounters
     end
-    resources :non_player_characters, param: :slug, controller: 'characters', type: 'NonPlayerCharacter'
-    resources :player_characters, param: :slug, controller: 'characters', type: 'PlayerCharacter'
   end
   devise_for :users, controllers: { registrations: 'registrations' }
   root to: 'home#index'

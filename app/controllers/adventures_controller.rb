@@ -2,20 +2,62 @@
 
 class AdventuresController < ApplicationController
   before_action :set_adventure, only: %i[show edit update destroy]
+  before_action :set_campaign
 
-  # GET /adventures/1
-  # GET /adventures/1.json
+  # GET /campaigns/campaign_slug/adventures
+  # GET /campaigns/campaign_slug/adventures.json
+  def index
+    authorize Adventure
+    if params[:search].present?
+      @pagy, @adventures = pagy(Adventure.where(campaign_id: @campaign.id).search_for(params[:search]))
+    else
+      @pagy, @adventures = pagy(Adventure.where(campaign_id: @campaign.id))
+    end
+  end
+
+  # GET /campaigns/campaign_slug/adventures/1
+  # GET /campaigns/campaign_slug/adventures/1.json
   def show
+    authorize @adventure
+    if params[:search].present?
+      @pagy, @encounters = pagy(Encounter.where(adventure_id: @adventure.id).search_for(params[:search]))
+    else
+      @pagy, @encounters = pagy(Encounter.where(adventure_id: @adventure.id))
+    end
+  end
+
+  # GET /campaigns/campaign_slug/adventures/new
+  def new
+    @adventure = Adventure.new
+    @adventure.campaign = @campaign
     authorize @adventure
   end
 
-  # GET /adventures/1/edit
+  # GET /campaigns/campaign_slug/adventures/1/edit
   def edit
     authorize @adventure
   end
 
-  # PATCH/PUT /adventures/1
-  # PATCH/PUT /adventures/1.json
+  # POST /campaigns/campaign_slug/adventures
+  # POST /campaigns/campaign_slug/adventures.json
+  def create
+    @adventure = Adventure.new(adventure_params)
+    @adventure.campaign = @campaign
+    authorize @adventure
+
+    respond_to do |format|
+      if @adventure.save
+        format.html { redirect_to campaign_adventure_url(@campaign, @adventure), notice: 'Adventure was successfully created.' }
+        format.json { render :show, status: :created, location: @adventure }
+      else
+        format.html { render :new }
+        format.json { render json: @adventure.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  # PATCH/PUT /campaigns/campaign_slug/adventures/1
+  # PATCH/PUT /campaigns/campaign_slug/adventures/1.json
   def update
     authorize @adventure
     respond_to do |format|
@@ -29,8 +71,8 @@ class AdventuresController < ApplicationController
     end
   end
 
-  # DELETE /adventures/1
-  # DELETE /adventures/1.json
+  # DELETE /campaigns/campaign_slug/adventures/1
+  # DELETE /campaigns/campaign_slug/adventures/1.json
   def destroy
     authorize @adventure
     @adventure.destroy
@@ -43,8 +85,11 @@ class AdventuresController < ApplicationController
   private
 
   # Use callbacks to share common setup or constraints between actions.
-  def set_adventure
+  def set_campaign
     @campaign = Campaign.find_by(slug: params[:campaign_slug])
+  end
+
+  def set_adventure
     @adventure = Adventure.find(params[:id])
   end
 
