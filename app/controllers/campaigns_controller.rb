@@ -145,9 +145,15 @@ class CampaignsController < ApplicationController
           encounter_monsters_attributes: %i[id number_of_monsters monster_id _destroy],
           equipment_items_attributes: [
             :id, :quantity, :_destroy, item_ids: []
-          ]
-        ]
-      ]
+          ],
+          locations_attributes: %i[id name description _destroy],
+          events_attributes: %i[id when name description _destroy]
+        ],
+        locations_attributes: %i[id name description _destroy],
+        events_attributes: %i[id when name description _destroy]
+      ],
+      locations_attributes: %i[id name description _destroy],
+      events_attributes: %i[id when name description _destroy]
     )
   end
 end
