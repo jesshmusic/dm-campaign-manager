@@ -130,6 +130,7 @@ class CampaignsController < ApplicationController
   def campaign_params
     params.require(:campaign).permit(
       :name, :description, :world,
+      character_ids: [],
       adventures_attributes: [
         :id,
         :name,

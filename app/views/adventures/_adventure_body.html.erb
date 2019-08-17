@@ -46,12 +46,13 @@
   </div>
 
   <h3>Encounters</h3>
-  <%= render 'shared/search_form', url: campaign_adventure_encounters_path(@campaign, @adventure) %>
+  <%= render 'shared/search_form', url: campaign_adventure_path(@campaign, @adventure) %>
   <table>
     <thead>
     <tr>
+      <th>Location</th>
       <th>Name</th>
-      <th class="d-none d-lg-table-cell">Location</th>
+      <th>XP</th>
       <th class="d-none d-lg-table-cell">Description</th>
       <th></th>
     </tr>
@@ -60,11 +61,17 @@
     <tbody>
     <% @encounters.each do |encounter| %>
       <tr>
+        <td><%= encounter.location %></td>
         <td><%= encounter.name %></td>
-        <td class="d-none d-lg-table-cell">TBD</td>
+        <td><%= encounter.xp %></td>
         <td class="d-none d-lg-table-cell"><%= encounter.description %></td>
         <td>
-          <%= link_to 'View', campaign_adventure_encounter_path(@campaign, @adventure, encounter), class: "btn btn-sm btn-primary" %>
+          <div class="btn-group btn-group-sm" role="group" aria-label="Encounter Actions">
+            <%= link_to 'View', campaign_adventure_encounter_path(@campaign, @adventure, encounter),
+                        class: "btn btn-sm btn-primary" %>
+            <%= link_to 'Edit', edit_campaign_adventure_encounter_path(@campaign, @adventure, encounter),
+                        class: "btn btn-sm btn-success" if policy(encounter).edit? %>
+          </div>
         </td>
       </tr>
     <% end %>

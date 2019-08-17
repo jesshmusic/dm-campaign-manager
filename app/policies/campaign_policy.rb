@@ -2,19 +2,19 @@
 
 class CampaignPolicy < ApplicationPolicy
   def update?
-    user && (user.admin? || (record.user == user))
+    user && (user.admin? || record.user == user)
   end
 
   def create?
-    user && (user.admin? || user.dungeon_master?)
+    user&.admin? || user&.dungeon_master?
   end
 
   def destroy?
-    user && (user.admin? || (record.user == user))
+    user && (user.admin? || record.user == user)
   end
 
   def confirm_user?
-    user&.dungeon_master? && (record.user == user)
+    user&.admin? || (user&.dungeon_master? && record.user == user)
   end
 
   def join_campaign?

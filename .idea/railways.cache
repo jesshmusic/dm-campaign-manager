@@ -1,187 +1,171 @@
 do /Users/jesshendricks/Documents/GithubRepos/dm-campaign-manager/bin/bundle exec /Users/jesshendricks/.rvm/rubies/ruby-2.6.3/bin/ruby /Users/jesshendricks/Documents/GithubRepos/dm-campaign-manager/bin/rake routes --trace 
 Ruby enVironment Manager 1.29.9 (latest) (c) 2009-2017 Michal Papis, Piotr Kuczynski, Wayne E. Seguin
 
-                            Prefix Verb   URI Pattern                                                                              Controller#Action
-                        characters GET    /characters(.:format)                                                                    characters#index
-                                   POST   /characters(.:format)                                                                    characters#create
-                     new_character GET    /characters/new(.:format)                                                                characters#new
-                    edit_character GET    /characters/:slug/edit(.:format)                                                         characters#edit
-                         character GET    /characters/:slug(.:format)                                                              characters#show
-                                   PATCH  /characters/:slug(.:format)                                                              characters#update
-                                   PUT    /characters/:slug(.:format)                                                              characters#update
-                                   DELETE /characters/:slug(.:format)                                                              characters#destroy
-                 player_characters GET    /player_characters(.:format)                                                             characters#index {:type=>"PlayerCharacter"}
-                                   POST   /player_characters(.:format)                                                             characters#create {:type=>"PlayerCharacter"}
-              new_player_character GET    /player_characters/new(.:format)                                                         characters#new {:type=>"PlayerCharacter"}
-             edit_player_character GET    /player_characters/:slug/edit(.:format)                                                  characters#edit {:type=>"PlayerCharacter"}
-                  player_character GET    /player_characters/:slug(.:format)                                                       characters#show {:type=>"PlayerCharacter"}
-                                   PATCH  /player_characters/:slug(.:format)                                                       characters#update {:type=>"PlayerCharacter"}
-                                   PUT    /player_characters/:slug(.:format)                                                       characters#update {:type=>"PlayerCharacter"}
-                                   DELETE /player_characters/:slug(.:format)                                                       characters#destroy {:type=>"PlayerCharacter"}
-             non_player_characters GET    /non_player_characters(.:format)                                                         characters#index {:type=>"NonPlayerCharacter"}
-                                   POST   /non_player_characters(.:format)                                                         characters#create {:type=>"NonPlayerCharacter"}
-          new_non_player_character GET    /non_player_characters/new(.:format)                                                     characters#new {:type=>"NonPlayerCharacter"}
-         edit_non_player_character GET    /non_player_characters/:slug/edit(.:format)                                              characters#edit {:type=>"NonPlayerCharacter"}
-              non_player_character GET    /non_player_characters/:slug(.:format)                                                   characters#show {:type=>"NonPlayerCharacter"}
-                                   PATCH  /non_player_characters/:slug(.:format)                                                   characters#update {:type=>"NonPlayerCharacter"}
-                                   PUT    /non_player_characters/:slug(.:format)                                                   characters#update {:type=>"NonPlayerCharacter"}
-                                   DELETE /non_player_characters/:slug(.:format)                                                   characters#destroy {:type=>"NonPlayerCharacter"}
-                       dnd_classes GET    /dnd_classes(.:format)                                                                   dnd_classes#index
-                                   POST   /dnd_classes(.:format)                                                                   dnd_classes#create
-                     new_dnd_class GET    /dnd_classes/new(.:format)                                                               dnd_classes#new
-                    edit_dnd_class GET    /dnd_classes/:slug/edit(.:format)                                                        dnd_classes#edit
-                         dnd_class GET    /dnd_classes/:slug(.:format)                                                             dnd_classes#show
-                                   PATCH  /dnd_classes/:slug(.:format)                                                             dnd_classes#update
-                                   PUT    /dnd_classes/:slug(.:format)                                                             dnd_classes#update
-                                   DELETE /dnd_classes/:slug(.:format)                                                             dnd_classes#destroy
-                             items GET    /items(.:format)                                                                         items#index
-                                   POST   /items(.:format)                                                                         items#create
-                          new_item GET    /items/new(.:format)                                                                     items#new
-                         edit_item GET    /items/:slug/edit(.:format)                                                              items#edit
-                              item GET    /items/:slug(.:format)                                                                   items#show
-                                   PATCH  /items/:slug(.:format)                                                                   items#update
-                                   PUT    /items/:slug(.:format)                                                                   items#update
-                                   DELETE /items/:slug(.:format)                                                                   items#destroy
-                       armor_items GET    /armor_items(.:format)                                                                   items#index {:type=>"ArmorItem"}
-                                   POST   /armor_items(.:format)                                                                   items#create {:type=>"ArmorItem"}
-                    new_armor_item GET    /armor_items/new(.:format)                                                               items#new {:type=>"ArmorItem"}
-                   edit_armor_item GET    /armor_items/:slug/edit(.:format)                                                        items#edit {:type=>"ArmorItem"}
-                        armor_item GET    /armor_items/:slug(.:format)                                                             items#show {:type=>"ArmorItem"}
-                                   PATCH  /armor_items/:slug(.:format)                                                             items#update {:type=>"ArmorItem"}
-                                   PUT    /armor_items/:slug(.:format)                                                             items#update {:type=>"ArmorItem"}
-                                   DELETE /armor_items/:slug(.:format)                                                             items#destroy {:type=>"ArmorItem"}
-                        gear_items GET    /gear_items(.:format)                                                                    items#index {:type=>"GearItem"}
-                                   POST   /gear_items(.:format)                                                                    items#create {:type=>"GearItem"}
-                     new_gear_item GET    /gear_items/new(.:format)                                                                items#new {:type=>"GearItem"}
-                    edit_gear_item GET    /gear_items/:slug/edit(.:format)                                                         items#edit {:type=>"GearItem"}
-                         gear_item GET    /gear_items/:slug(.:format)                                                              items#show {:type=>"GearItem"}
-                                   PATCH  /gear_items/:slug(.:format)                                                              items#update {:type=>"GearItem"}
-                                   PUT    /gear_items/:slug(.:format)                                                              items#update {:type=>"GearItem"}
-                                   DELETE /gear_items/:slug(.:format)                                                              items#destroy {:type=>"GearItem"}
-                       magic_items GET    /magic_items(.:format)                                                                   items#index {:type=>"MagicItem"}
-                                   POST   /magic_items(.:format)                                                                   items#create {:type=>"MagicItem"}
-                    new_magic_item GET    /magic_items/new(.:format)                                                               items#new {:type=>"MagicItem"}
-                   edit_magic_item GET    /magic_items/:slug/edit(.:format)                                                        items#edit {:type=>"MagicItem"}
-                        magic_item GET    /magic_items/:slug(.:format)                                                             items#show {:type=>"MagicItem"}
-                                   PATCH  /magic_items/:slug(.:format)                                                             items#update {:type=>"MagicItem"}
-                                   PUT    /magic_items/:slug(.:format)                                                             items#update {:type=>"MagicItem"}
-                                   DELETE /magic_items/:slug(.:format)                                                             items#destroy {:type=>"MagicItem"}
-                        tool_items GET    /tool_items(.:format)                                                                    items#index {:type=>"ToolItem"}
-                                   POST   /tool_items(.:format)                                                                    items#create {:type=>"ToolItem"}
-                     new_tool_item GET    /tool_items/new(.:format)                                                                items#new {:type=>"ToolItem"}
-                    edit_tool_item GET    /tool_items/:slug/edit(.:format)                                                         items#edit {:type=>"ToolItem"}
-                         tool_item GET    /tool_items/:slug(.:format)                                                              items#show {:type=>"ToolItem"}
-                                   PATCH  /tool_items/:slug(.:format)                                                              items#update {:type=>"ToolItem"}
-                                   PUT    /tool_items/:slug(.:format)                                                              items#update {:type=>"ToolItem"}
-                                   DELETE /tool_items/:slug(.:format)                                                              items#destroy {:type=>"ToolItem"}
-                     vehicle_items GET    /vehicle_items(.:format)                                                                 items#index {:type=>"VehicleItem"}
-                                   POST   /vehicle_items(.:format)                                                                 items#create {:type=>"VehicleItem"}
-                  new_vehicle_item GET    /vehicle_items/new(.:format)                                                             items#new {:type=>"VehicleItem"}
-                 edit_vehicle_item GET    /vehicle_items/:slug/edit(.:format)                                                      items#edit {:type=>"VehicleItem"}
-                      vehicle_item GET    /vehicle_items/:slug(.:format)                                                           items#show {:type=>"VehicleItem"}
-                                   PATCH  /vehicle_items/:slug(.:format)                                                           items#update {:type=>"VehicleItem"}
-                                   PUT    /vehicle_items/:slug(.:format)                                                           items#update {:type=>"VehicleItem"}
-                                   DELETE /vehicle_items/:slug(.:format)                                                           items#destroy {:type=>"VehicleItem"}
-                      weapon_items GET    /weapon_items(.:format)                                                                  items#index {:type=>"WeaponItem"}
-                                   POST   /weapon_items(.:format)                                                                  items#create {:type=>"WeaponItem"}
-                   new_weapon_item GET    /weapon_items/new(.:format)                                                              items#new {:type=>"WeaponItem"}
-                  edit_weapon_item GET    /weapon_items/:slug/edit(.:format)                                                       items#edit {:type=>"WeaponItem"}
-                       weapon_item GET    /weapon_items/:slug(.:format)                                                            items#show {:type=>"WeaponItem"}
-                                   PATCH  /weapon_items/:slug(.:format)                                                            items#update {:type=>"WeaponItem"}
-                                   PUT    /weapon_items/:slug(.:format)                                                            items#update {:type=>"WeaponItem"}
-                                   DELETE /weapon_items/:slug(.:format)                                                            items#destroy {:type=>"WeaponItem"}
-                          monsters GET    /monsters(.:format)                                                                      monsters#index
-                                   POST   /monsters(.:format)                                                                      monsters#create
-                       new_monster GET    /monsters/new(.:format)                                                                  monsters#new
-                      edit_monster GET    /monsters/:slug/edit(.:format)                                                           monsters#edit
-                           monster GET    /monsters/:slug(.:format)                                                                monsters#show
-                                   PATCH  /monsters/:slug(.:format)                                                                monsters#update
-                                   PUT    /monsters/:slug(.:format)                                                                monsters#update
-                                   DELETE /monsters/:slug(.:format)                                                                monsters#destroy
-                            spells GET    /spells(.:format)                                                                        spells#index
-                                   POST   /spells(.:format)                                                                        spells#create
-                         new_spell GET    /spells/new(.:format)                                                                    spells#new
-                        edit_spell GET    /spells/:slug/edit(.:format)                                                             spells#edit
-                             spell GET    /spells/:slug(.:format)                                                                  spells#show
-                                   PATCH  /spells/:slug(.:format)                                                                  spells#update
-                                   PUT    /spells/:slug(.:format)                                                                  spells#update
-                                   DELETE /spells/:slug(.:format)                                                                  spells#destroy
-     campaign_adventure_encounters GET    /campaigns/:campaign_slug/adventures/:adventure_id/encounters(.:format)                  encounters#index
-                                   POST   /campaigns/:campaign_slug/adventures/:adventure_id/encounters(.:format)                  encounters#create
-  new_campaign_adventure_encounter GET    /campaigns/:campaign_slug/adventures/:adventure_id/encounters/new(.:format)              encounters#new
- edit_campaign_adventure_encounter GET    /campaigns/:campaign_slug/adventures/:adventure_id/encounters/:id/edit(.:format)         encounters#edit
-      campaign_adventure_encounter GET    /campaigns/:campaign_slug/adventures/:adventure_id/encounters/:id(.:format)              encounters#show
-                                   PATCH  /campaigns/:campaign_slug/adventures/:adventure_id/encounters/:id(.:format)              encounters#update
-                                   PUT    /campaigns/:campaign_slug/adventures/:adventure_id/encounters/:id(.:format)              encounters#update
-                                   DELETE /campaigns/:campaign_slug/adventures/:adventure_id/encounters/:id(.:format)              encounters#destroy
-               campaign_adventures GET    /campaigns/:campaign_slug/adventures(.:format)                                           adventures#index
-                                   POST   /campaigns/:campaign_slug/adventures(.:format)                                           adventures#create
-            new_campaign_adventure GET    /campaigns/:campaign_slug/adventures/new(.:format)                                       adventures#new
-           edit_campaign_adventure GET    /campaigns/:campaign_slug/adventures/:id/edit(.:format)                                  adventures#edit
-                campaign_adventure GET    /campaigns/:campaign_slug/adventures/:id(.:format)                                       adventures#show
-                                   PATCH  /campaigns/:campaign_slug/adventures/:id(.:format)                                       adventures#update
-                                   PUT    /campaigns/:campaign_slug/adventures/:id(.:format)                                       adventures#update
-                                   DELETE /campaigns/:campaign_slug/adventures/:id(.:format)                                       adventures#destroy
-    campaign_non_player_characters GET    /campaigns/:campaign_slug/non_player_characters(.:format)                                characters#index {:type=>"NonPlayerCharacter"}
-                                   POST   /campaigns/:campaign_slug/non_player_characters(.:format)                                characters#create {:type=>"NonPlayerCharacter"}
- new_campaign_non_player_character GET    /campaigns/:campaign_slug/non_player_characters/new(.:format)                            characters#new {:type=>"NonPlayerCharacter"}
-edit_campaign_non_player_character GET    /campaigns/:campaign_slug/non_player_characters/:slug/edit(.:format)                     characters#edit {:type=>"NonPlayerCharacter"}
-     campaign_non_player_character GET    /campaigns/:campaign_slug/non_player_characters/:slug(.:format)                          characters#show {:type=>"NonPlayerCharacter"}
-                                   PATCH  /campaigns/:campaign_slug/non_player_characters/:slug(.:format)                          characters#update {:type=>"NonPlayerCharacter"}
-                                   PUT    /campaigns/:campaign_slug/non_player_characters/:slug(.:format)                          characters#update {:type=>"NonPlayerCharacter"}
-                                   DELETE /campaigns/:campaign_slug/non_player_characters/:slug(.:format)                          characters#destroy {:type=>"NonPlayerCharacter"}
-        campaign_player_characters GET    /campaigns/:campaign_slug/player_characters(.:format)                                    characters#index {:type=>"PlayerCharacter"}
-                                   POST   /campaigns/:campaign_slug/player_characters(.:format)                                    characters#create {:type=>"PlayerCharacter"}
-     new_campaign_player_character GET    /campaigns/:campaign_slug/player_characters/new(.:format)                                characters#new {:type=>"PlayerCharacter"}
-    edit_campaign_player_character GET    /campaigns/:campaign_slug/player_characters/:slug/edit(.:format)                         characters#edit {:type=>"PlayerCharacter"}
-         campaign_player_character GET    /campaigns/:campaign_slug/player_characters/:slug(.:format)                              characters#show {:type=>"PlayerCharacter"}
-                                   PATCH  /campaigns/:campaign_slug/player_characters/:slug(.:format)                              characters#update {:type=>"PlayerCharacter"}
-                                   PUT    /campaigns/:campaign_slug/player_characters/:slug(.:format)                              characters#update {:type=>"PlayerCharacter"}
-                                   DELETE /campaigns/:campaign_slug/player_characters/:slug(.:format)                              characters#destroy {:type=>"PlayerCharacter"}
-                         campaigns GET    /campaigns(.:format)                                                                     campaigns#index
-                                   POST   /campaigns(.:format)                                                                     campaigns#create
-                      new_campaign GET    /campaigns/new(.:format)                                                                 campaigns#new
-                     edit_campaign GET    /campaigns/:slug/edit(.:format)                                                          campaigns#edit
-                          campaign GET    /campaigns/:slug(.:format)                                                               campaigns#show
-                                   PATCH  /campaigns/:slug(.:format)                                                               campaigns#update
-                                   PUT    /campaigns/:slug(.:format)                                                               campaigns#update
-                                   DELETE /campaigns/:slug(.:format)                                                               campaigns#destroy
-                  new_user_session GET    /users/sign_in(.:format)                                                                 devise/sessions#new
-                      user_session POST   /users/sign_in(.:format)                                                                 devise/sessions#create
-              destroy_user_session DELETE /users/sign_out(.:format)                                                                devise/sessions#destroy
-                 new_user_password GET    /users/password/new(.:format)                                                            devise/passwords#new
-                edit_user_password GET    /users/password/edit(.:format)                                                           devise/passwords#edit
-                     user_password PATCH  /users/password(.:format)                                                                devise/passwords#update
-                                   PUT    /users/password(.:format)                                                                devise/passwords#update
-                                   POST   /users/password(.:format)                                                                devise/passwords#create
-          cancel_user_registration GET    /users/cancel(.:format)                                                                  registrations#cancel
-             new_user_registration GET    /users/sign_up(.:format)                                                                 registrations#new
-            edit_user_registration GET    /users/edit(.:format)                                                                    registrations#edit
-                 user_registration PATCH  /users(.:format)                                                                         registrations#update
-                                   PUT    /users(.:format)                                                                         registrations#update
-                                   DELETE /users(.:format)                                                                         registrations#destroy
-                                   POST   /users(.:format)                                                                         registrations#create
-             new_user_confirmation GET    /users/confirmation/new(.:format)                                                        devise/confirmations#new
-                 user_confirmation GET    /users/confirmation(.:format)                                                            devise/confirmations#show
-                                   POST   /users/confirmation(.:format)                                                            devise/confirmations#create
-                              root GET    /                                                                                        home#index
-                              home GET    /home(.:format)                                                                          home#index
-                         dashboard GET    /dashboard(.:format)                                                                     dashboard#index
-                             users GET    /users(.:format)                                                                         users#index
-                         edit_user GET    /users/:slug/edit(.:format)                                                              users#edit
-                              user GET    /users/:slug(.:format)                                                                   users#show
-                                   PATCH  /users/:slug(.:format)                                                                   users#update
-                                   PUT    /users/:slug(.:format)                                                                   users#update
-                                   DELETE /users/:slug(.:format)                                                                   users#destroy
-                  user_change_role PATCH  /users/:id/change_role(.:format)                                                         users#change_role
-            campaign_join_campaign PATCH  /campaigns/:id/join_campaign/:user_id(.:format)                                          campaigns#join_campaign
-             campaign_confirm_user PATCH  /campaigns/:id/confirm_user/:user_id(.:format)                                           campaigns#confirm_user
-                      generate_npc GET    /characters/new/generate_npc(.:format)                                                   characters#generate_npc
-              create_generated_npc POST   /characters/create_generated_npc(.:format)                                               characters#create_generated_npc
-               random_fantasy_name GET    /random_fantasy_name(.:format)                                                           characters#random_fantasy_name {:format=>"json"}
-        random_individual_treasure GET    /random_individual_treasure(.:format)                                                    encounters#random_individual_treasure {:format=>"json"}
-                rails_service_blob GET    /rails/active_storage/blobs/:signed_id/*filename(.:format)                               active_storage/blobs#show
-         rails_blob_representation GET    /rails/active_storage/representations/:signed_blob_id/:variation_key/*filename(.:format) active_storage/representations#show
-                rails_disk_service GET    /rails/active_storage/disk/:encoded_key/*filename(.:format)                              active_storage/disk#show
-         update_rails_disk_service PUT    /rails/active_storage/disk/:encoded_token(.:format)                                      active_storage/disk#update
-              rails_direct_uploads POST   /rails/active_storage/direct_uploads(.:format)                                           active_storage/direct_uploads#create
+                           Prefix Verb   URI Pattern                                                                              Controller#Action
+                       characters GET    /characters(.:format)                                                                    characters#index
+                                  POST   /characters(.:format)                                                                    characters#create
+                    new_character GET    /characters/new(.:format)                                                                characters#new
+                   edit_character GET    /characters/:slug/edit(.:format)                                                         characters#edit
+                        character GET    /characters/:slug(.:format)                                                              characters#show
+                                  PATCH  /characters/:slug(.:format)                                                              characters#update
+                                  PUT    /characters/:slug(.:format)                                                              characters#update
+                                  DELETE /characters/:slug(.:format)                                                              characters#destroy
+                player_characters GET    /player_characters(.:format)                                                             characters#index {:type=>"PlayerCharacter"}
+                                  POST   /player_characters(.:format)                                                             characters#create {:type=>"PlayerCharacter"}
+             new_player_character GET    /player_characters/new(.:format)                                                         characters#new {:type=>"PlayerCharacter"}
+            edit_player_character GET    /player_characters/:slug/edit(.:format)                                                  characters#edit {:type=>"PlayerCharacter"}
+                 player_character GET    /player_characters/:slug(.:format)                                                       characters#show {:type=>"PlayerCharacter"}
+                                  PATCH  /player_characters/:slug(.:format)                                                       characters#update {:type=>"PlayerCharacter"}
+                                  PUT    /player_characters/:slug(.:format)                                                       characters#update {:type=>"PlayerCharacter"}
+                                  DELETE /player_characters/:slug(.:format)                                                       characters#destroy {:type=>"PlayerCharacter"}
+            non_player_characters GET    /non_player_characters(.:format)                                                         characters#index {:type=>"NonPlayerCharacter"}
+                                  POST   /non_player_characters(.:format)                                                         characters#create {:type=>"NonPlayerCharacter"}
+         new_non_player_character GET    /non_player_characters/new(.:format)                                                     characters#new {:type=>"NonPlayerCharacter"}
+        edit_non_player_character GET    /non_player_characters/:slug/edit(.:format)                                              characters#edit {:type=>"NonPlayerCharacter"}
+             non_player_character GET    /non_player_characters/:slug(.:format)                                                   characters#show {:type=>"NonPlayerCharacter"}
+                                  PATCH  /non_player_characters/:slug(.:format)                                                   characters#update {:type=>"NonPlayerCharacter"}
+                                  PUT    /non_player_characters/:slug(.:format)                                                   characters#update {:type=>"NonPlayerCharacter"}
+                                  DELETE /non_player_characters/:slug(.:format)                                                   characters#destroy {:type=>"NonPlayerCharacter"}
+                      dnd_classes GET    /dnd_classes(.:format)                                                                   dnd_classes#index
+                                  POST   /dnd_classes(.:format)                                                                   dnd_classes#create
+                    new_dnd_class GET    /dnd_classes/new(.:format)                                                               dnd_classes#new
+                   edit_dnd_class GET    /dnd_classes/:slug/edit(.:format)                                                        dnd_classes#edit
+                        dnd_class GET    /dnd_classes/:slug(.:format)                                                             dnd_classes#show
+                                  PATCH  /dnd_classes/:slug(.:format)                                                             dnd_classes#update
+                                  PUT    /dnd_classes/:slug(.:format)                                                             dnd_classes#update
+                                  DELETE /dnd_classes/:slug(.:format)                                                             dnd_classes#destroy
+                            items GET    /items(.:format)                                                                         items#index
+                                  POST   /items(.:format)                                                                         items#create
+                         new_item GET    /items/new(.:format)                                                                     items#new
+                        edit_item GET    /items/:slug/edit(.:format)                                                              items#edit
+                             item GET    /items/:slug(.:format)                                                                   items#show
+                                  PATCH  /items/:slug(.:format)                                                                   items#update
+                                  PUT    /items/:slug(.:format)                                                                   items#update
+                                  DELETE /items/:slug(.:format)                                                                   items#destroy
+                      armor_items GET    /armor_items(.:format)                                                                   items#index {:type=>"ArmorItem"}
+                                  POST   /armor_items(.:format)                                                                   items#create {:type=>"ArmorItem"}
+                   new_armor_item GET    /armor_items/new(.:format)                                                               items#new {:type=>"ArmorItem"}
+                  edit_armor_item GET    /armor_items/:slug/edit(.:format)                                                        items#edit {:type=>"ArmorItem"}
+                       armor_item GET    /armor_items/:slug(.:format)                                                             items#show {:type=>"ArmorItem"}
+                                  PATCH  /armor_items/:slug(.:format)                                                             items#update {:type=>"ArmorItem"}
+                                  PUT    /armor_items/:slug(.:format)                                                             items#update {:type=>"ArmorItem"}
+                                  DELETE /armor_items/:slug(.:format)                                                             items#destroy {:type=>"ArmorItem"}
+                       gear_items GET    /gear_items(.:format)                                                                    items#index {:type=>"GearItem"}
+                                  POST   /gear_items(.:format)                                                                    items#create {:type=>"GearItem"}
+                    new_gear_item GET    /gear_items/new(.:format)                                                                items#new {:type=>"GearItem"}
+                   edit_gear_item GET    /gear_items/:slug/edit(.:format)                                                         items#edit {:type=>"GearItem"}
+                        gear_item GET    /gear_items/:slug(.:format)                                                              items#show {:type=>"GearItem"}
+                                  PATCH  /gear_items/:slug(.:format)                                                              items#update {:type=>"GearItem"}
+                                  PUT    /gear_items/:slug(.:format)                                                              items#update {:type=>"GearItem"}
+                                  DELETE /gear_items/:slug(.:format)                                                              items#destroy {:type=>"GearItem"}
+                      magic_items GET    /magic_items(.:format)                                                                   items#index {:type=>"MagicItem"}
+                                  POST   /magic_items(.:format)                                                                   items#create {:type=>"MagicItem"}
+                   new_magic_item GET    /magic_items/new(.:format)                                                               items#new {:type=>"MagicItem"}
+                  edit_magic_item GET    /magic_items/:slug/edit(.:format)                                                        items#edit {:type=>"MagicItem"}
+                       magic_item GET    /magic_items/:slug(.:format)                                                             items#show {:type=>"MagicItem"}
+                                  PATCH  /magic_items/:slug(.:format)                                                             items#update {:type=>"MagicItem"}
+                                  PUT    /magic_items/:slug(.:format)                                                             items#update {:type=>"MagicItem"}
+                                  DELETE /magic_items/:slug(.:format)                                                             items#destroy {:type=>"MagicItem"}
+                       tool_items GET    /tool_items(.:format)                                                                    items#index {:type=>"ToolItem"}
+                                  POST   /tool_items(.:format)                                                                    items#create {:type=>"ToolItem"}
+                    new_tool_item GET    /tool_items/new(.:format)                                                                items#new {:type=>"ToolItem"}
+                   edit_tool_item GET    /tool_items/:slug/edit(.:format)                                                         items#edit {:type=>"ToolItem"}
+                        tool_item GET    /tool_items/:slug(.:format)                                                              items#show {:type=>"ToolItem"}
+                                  PATCH  /tool_items/:slug(.:format)                                                              items#update {:type=>"ToolItem"}
+                                  PUT    /tool_items/:slug(.:format)                                                              items#update {:type=>"ToolItem"}
+                                  DELETE /tool_items/:slug(.:format)                                                              items#destroy {:type=>"ToolItem"}
+                    vehicle_items GET    /vehicle_items(.:format)                                                                 items#index {:type=>"VehicleItem"}
+                                  POST   /vehicle_items(.:format)                                                                 items#create {:type=>"VehicleItem"}
+                 new_vehicle_item GET    /vehicle_items/new(.:format)                                                             items#new {:type=>"VehicleItem"}
+                edit_vehicle_item GET    /vehicle_items/:slug/edit(.:format)                                                      items#edit {:type=>"VehicleItem"}
+                     vehicle_item GET    /vehicle_items/:slug(.:format)                                                           items#show {:type=>"VehicleItem"}
+                                  PATCH  /vehicle_items/:slug(.:format)                                                           items#update {:type=>"VehicleItem"}
+                                  PUT    /vehicle_items/:slug(.:format)                                                           items#update {:type=>"VehicleItem"}
+                                  DELETE /vehicle_items/:slug(.:format)                                                           items#destroy {:type=>"VehicleItem"}
+                     weapon_items GET    /weapon_items(.:format)                                                                  items#index {:type=>"WeaponItem"}
+                                  POST   /weapon_items(.:format)                                                                  items#create {:type=>"WeaponItem"}
+                  new_weapon_item GET    /weapon_items/new(.:format)                                                              items#new {:type=>"WeaponItem"}
+                 edit_weapon_item GET    /weapon_items/:slug/edit(.:format)                                                       items#edit {:type=>"WeaponItem"}
+                      weapon_item GET    /weapon_items/:slug(.:format)                                                            items#show {:type=>"WeaponItem"}
+                                  PATCH  /weapon_items/:slug(.:format)                                                            items#update {:type=>"WeaponItem"}
+                                  PUT    /weapon_items/:slug(.:format)                                                            items#update {:type=>"WeaponItem"}
+                                  DELETE /weapon_items/:slug(.:format)                                                            items#destroy {:type=>"WeaponItem"}
+                         monsters GET    /monsters(.:format)                                                                      monsters#index
+                                  POST   /monsters(.:format)                                                                      monsters#create
+                      new_monster GET    /monsters/new(.:format)                                                                  monsters#new
+                     edit_monster GET    /monsters/:slug/edit(.:format)                                                           monsters#edit
+                          monster GET    /monsters/:slug(.:format)                                                                monsters#show
+                                  PATCH  /monsters/:slug(.:format)                                                                monsters#update
+                                  PUT    /monsters/:slug(.:format)                                                                monsters#update
+                                  DELETE /monsters/:slug(.:format)                                                                monsters#destroy
+                           spells GET    /spells(.:format)                                                                        spells#index
+                                  POST   /spells(.:format)                                                                        spells#create
+                        new_spell GET    /spells/new(.:format)                                                                    spells#new
+                       edit_spell GET    /spells/:slug/edit(.:format)                                                             spells#edit
+                            spell GET    /spells/:slug(.:format)                                                                  spells#show
+                                  PATCH  /spells/:slug(.:format)                                                                  spells#update
+                                  PUT    /spells/:slug(.:format)                                                                  spells#update
+                                  DELETE /spells/:slug(.:format)                                                                  spells#destroy
+    campaign_adventure_encounters GET    /campaigns/:campaign_slug/adventures/:adventure_id/encounters(.:format)                  encounters#index
+                                  POST   /campaigns/:campaign_slug/adventures/:adventure_id/encounters(.:format)                  encounters#create
+ new_campaign_adventure_encounter GET    /campaigns/:campaign_slug/adventures/:adventure_id/encounters/new(.:format)              encounters#new
+edit_campaign_adventure_encounter GET    /campaigns/:campaign_slug/adventures/:adventure_id/encounters/:id/edit(.:format)         encounters#edit
+     campaign_adventure_encounter GET    /campaigns/:campaign_slug/adventures/:adventure_id/encounters/:id(.:format)              encounters#show
+                                  PATCH  /campaigns/:campaign_slug/adventures/:adventure_id/encounters/:id(.:format)              encounters#update
+                                  PUT    /campaigns/:campaign_slug/adventures/:adventure_id/encounters/:id(.:format)              encounters#update
+                                  DELETE /campaigns/:campaign_slug/adventures/:adventure_id/encounters/:id(.:format)              encounters#destroy
+              campaign_adventures GET    /campaigns/:campaign_slug/adventures(.:format)                                           adventures#index
+                                  POST   /campaigns/:campaign_slug/adventures(.:format)                                           adventures#create
+           new_campaign_adventure GET    /campaigns/:campaign_slug/adventures/new(.:format)                                       adventures#new
+          edit_campaign_adventure GET    /campaigns/:campaign_slug/adventures/:id/edit(.:format)                                  adventures#edit
+               campaign_adventure GET    /campaigns/:campaign_slug/adventures/:id(.:format)                                       adventures#show
+                                  PATCH  /campaigns/:campaign_slug/adventures/:id(.:format)                                       adventures#update
+                                  PUT    /campaigns/:campaign_slug/adventures/:id(.:format)                                       adventures#update
+                                  DELETE /campaigns/:campaign_slug/adventures/:id(.:format)                                       adventures#destroy
+                        campaigns GET    /campaigns(.:format)                                                                     campaigns#index
+                                  POST   /campaigns(.:format)                                                                     campaigns#create
+                     new_campaign GET    /campaigns/new(.:format)                                                                 campaigns#new
+                    edit_campaign GET    /campaigns/:slug/edit(.:format)                                                          campaigns#edit
+                         campaign GET    /campaigns/:slug(.:format)                                                               campaigns#show
+                                  PATCH  /campaigns/:slug(.:format)                                                               campaigns#update
+                                  PUT    /campaigns/:slug(.:format)                                                               campaigns#update
+                                  DELETE /campaigns/:slug(.:format)                                                               campaigns#destroy
+                 new_user_session GET    /users/sign_in(.:format)                                                                 devise/sessions#new
+                     user_session POST   /users/sign_in(.:format)                                                                 devise/sessions#create
+             destroy_user_session DELETE /users/sign_out(.:format)                                                                devise/sessions#destroy
+                new_user_password GET    /users/password/new(.:format)                                                            devise/passwords#new
+               edit_user_password GET    /users/password/edit(.:format)                                                           devise/passwords#edit
+                    user_password PATCH  /users/password(.:format)                                                                devise/passwords#update
+                                  PUT    /users/password(.:format)                                                                devise/passwords#update
+                                  POST   /users/password(.:format)                                                                devise/passwords#create
+         cancel_user_registration GET    /users/cancel(.:format)                                                                  registrations#cancel
+            new_user_registration GET    /users/sign_up(.:format)                                                                 registrations#new
+           edit_user_registration GET    /users/edit(.:format)                                                                    registrations#edit
+                user_registration PATCH  /users(.:format)                                                                         registrations#update
+                                  PUT    /users(.:format)                                                                         registrations#update
+                                  DELETE /users(.:format)                                                                         registrations#destroy
+                                  POST   /users(.:format)                                                                         registrations#create
+            new_user_confirmation GET    /users/confirmation/new(.:format)                                                        devise/confirmations#new
+                user_confirmation GET    /users/confirmation(.:format)                                                            devise/confirmations#show
+                                  POST   /users/confirmation(.:format)                                                            devise/confirmations#create
+                             root GET    /                                                                                        home#index
+                             home GET    /home(.:format)                                                                          home#index
+                        dashboard GET    /dashboard(.:format)                                                                     dashboard#index
+                            users GET    /users(.:format)                                                                         users#index
+                        edit_user GET    /users/:slug/edit(.:format)                                                              users#edit
+                             user GET    /users/:slug(.:format)                                                                   users#show
+                                  PATCH  /users/:slug(.:format)                                                                   users#update
+                                  PUT    /users/:slug(.:format)                                                                   users#update
+                                  DELETE /users/:slug(.:format)                                                                   users#destroy
+                 user_change_role PATCH  /users/:id/change_role(.:format)                                                         users#change_role
+           campaign_join_campaign PATCH  /campaigns/:id/join_campaign/:user_id(.:format)                                          campaigns#join_campaign
+            campaign_confirm_user PATCH  /campaigns/:id/confirm_user/:user_id(.:format)                                           campaigns#confirm_user
+                     generate_npc GET    /characters/new/generate_npc(.:format)                                                   characters#generate_npc
+             create_generated_npc POST   /characters/create_generated_npc(.:format)                                               characters#create_generated_npc
+              random_fantasy_name GET    /random_fantasy_name(.:format)                                                           characters#random_fantasy_name {:format=>"json"}
+       random_individual_treasure GET    /random_individual_treasure(.:format)                                                    encounters#random_individual_treasure {:format=>"json"}
+               rails_service_blob GET    /rails/active_storage/blobs/:signed_id/*filename(.:format)                               active_storage/blobs#show
+        rails_blob_representation GET    /rails/active_storage/representations/:signed_blob_id/:variation_key/*filename(.:format) active_storage/representations#show
+               rails_disk_service GET    /rails/active_storage/disk/:encoded_key/*filename(.:format)                              active_storage/disk#show
+        update_rails_disk_service PUT    /rails/active_storage/disk/:encoded_token(.:format)                                      active_storage/disk#update
+             rails_direct_uploads POST   /rails/active_storage/direct_uploads(.:format)                                           active_storage/direct_uploads#create

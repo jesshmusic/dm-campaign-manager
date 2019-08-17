@@ -9,6 +9,7 @@
 #  description     :text
 #  electrum_pieces :integer
 #  gold_pieces     :integer
+#  location        :string           default("New Location"), not null
 #  name            :string
 #  platinum_pieces :integer
 #  silver_pieces   :integer
@@ -53,4 +54,19 @@ class Encounter < ApplicationRecord
       end
     end
   end
+
+  include PgSearch::Model
+
+  # PgSearch
+  pg_search_scope :search_for,
+                  against: {
+                    name: 'A',
+                    location: 'B',
+                    description: 'C'
+                  },
+                  using: {
+                    tsearch: {
+                      prefix: true
+                    }
+                  }
 end

@@ -7,6 +7,7 @@
 #  description     :text
 #  electrum_pieces :integer
 #  gold_pieces     :integer
+#  location        :string           default("New Location"), not null
 #  name            :string
 #  platinum_pieces :integer
 #  silver_pieces   :integer

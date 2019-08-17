@@ -37,12 +37,24 @@ class Campaign < ApplicationRecord
 
   accepts_nested_attributes_for :adventures, reject_if: :all_blank, allow_destroy: true
 
+  def unconfirmed_users
+    campaign_users.where.not(confirmed: true).or(campaign_users.where(confirmed: nil))
+  end
+
   def pcs_count
     characters.where(type: 'PlayerCharacter').count
   end
 
   def npcs_count
     characters.where(type: 'NonPlayerCharacter').count
+  end
+
+  def players_pcs
+    chars = []
+    users.each do |player|
+      chars << PlayerCharacter.where(user_id: player.id)
+    end
+    chars
   end
 
   def dungeon_master

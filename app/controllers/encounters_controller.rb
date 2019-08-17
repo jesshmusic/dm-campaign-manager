@@ -43,9 +43,10 @@ class EncountersController < ApplicationController
   # PATCH/PUT /campaigns/campaign_slug/adventures/1/encounters/1
   # PATCH/PUT /campaigns/campaign_slug/adventures/1/encounters/1.json
   def update
+    authorize @encounter
     respond_to do |format|
       if @encounter.update(encounter_params)
-        format.html { redirect_to @encounter, notice: 'Encounter was successfully updated.' }
+        format.html { redirect_to campaign_adventure_encounter_url(@campaign, @adventure, @encounter), notice: 'Encounter was successfully updated.' }
         format.json { render :show, status: :ok, location: @encounter }
       else
         format.html { render :edit }
@@ -57,8 +58,8 @@ class EncountersController < ApplicationController
   # DELETE /campaigns/campaign_slug/adventures/1/encounters/1
   # DELETE /campaigns/campaign_slug/adventures/1/encounters/1.json
   def destroy
-    authorize @adventure
-    @adventure.destroy
+    authorize @encounter
+    @encounter.destroy
     respond_to do |format|
       format.html { redirect_to campaign_adventures_url(@campaign), notice: 'Adventure was successfully destroyed.' }
       format.json { head :no_content }
@@ -90,6 +91,7 @@ class EncountersController < ApplicationController
       :description,
       :electrum_pieces,
       :gold_pieces,
+      :location,
       :name,
       :platinum_pieces,
       :silver_pieces,

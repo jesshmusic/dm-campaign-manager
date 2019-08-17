@@ -22,7 +22,7 @@ class AdventuresController < ApplicationController
     if params[:search].present?
       @pagy, @encounters = pagy(Encounter.where(adventure_id: @adventure.id).search_for(params[:search]))
     else
-      @pagy, @encounters = pagy(Encounter.where(adventure_id: @adventure.id))
+      @pagy, @encounters = pagy(Encounter.where(adventure_id: @adventure.id).order('location ASC'))
     end
   end
 
@@ -104,6 +104,7 @@ class AdventuresController < ApplicationController
         :description,
         :electrum_pieces,
         :gold_pieces,
+        :location,
         :name,
         :platinum_pieces,
         :silver_pieces,

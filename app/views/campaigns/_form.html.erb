@@ -20,26 +20,20 @@
       <div class="col">
         <%= form.association :characters,
                              label: 'Player Characters',
-                             collection: PlayerCharacter.all,
+                             collection: PlayerCharacter.where(user: form.object.users),
                              include_blank: false,
                              include_hidden: false,
                              input_html: { class: "pc-selection" } %>
       </div>
     </div>
-
-    <h2>Adventures</h2>
     <div class="form-row">
-      <div class="my-3" id="adventures_container">
-        <%= form.simple_fields_for :adventures do |adventure_form| %>
-          <%= render '/adventures/adventure_fields', f: adventure_form %>
-        <% end %>
-        <div class='links'>
-          <%= link_to_add_association 'Add Adventure',
-                                      form,
-                                      :adventures,
-                                      class: "btn btn-info",
-                                      partial: '/adventures/adventure_fields'%>
-        </div>
+      <div class="col">
+        <%= form.association :characters,
+                             label: 'Non-player Characters',
+                             collection: NonPlayerCharacter.all,
+                             include_blank: false,
+                             include_hidden: false,
+                             input_html: {class: "npc-selection"} %>
       </div>
     </div>
   </div>

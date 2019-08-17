@@ -29,4 +29,18 @@ class Adventure < ApplicationRecord
   has_many :characters, through: :character_adventures
 
   accepts_nested_attributes_for :encounters, reject_if: :all_blank, allow_destroy: true
+
+  include PgSearch::Model
+
+  # PgSearch
+  pg_search_scope :search_for,
+                  against: {
+                    name: 'A',
+                    description: 'B'
+                  },
+                  using: {
+                    tsearch: {
+                      prefix: true
+                    }
+                  }
 end
