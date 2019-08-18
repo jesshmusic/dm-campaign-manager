@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import axiosClient from '../../../actions/axiosClient';
 
 import styles from './footer.module.scss';
 
