@@ -12,7 +12,7 @@ RSpec.describe "campaigns/new", type: :view do
   it "renders new campaign form" do
     render
 
-    assert_select "form[action=?][method=?]", campaigns_path, "post" do
+    assert_select "form[action=?][method=?]", v1_campaigns_path, "post" do
 
       assert_select "textarea[name=?]", "campaign[name]"
 

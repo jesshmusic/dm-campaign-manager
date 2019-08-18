@@ -5,42 +5,42 @@
         <%= active_link_to 'Home', '/', active: :exclusive, class: 'nav-link' %>
       </li>
       <li class="nav-item">
-        <%= active_link_to 'Dashboard', dashboard_path, active: :exclusive, class: 'nav-link' %>
+        <%= active_link_to 'Dashboard', v1_dashboard_path, active: :exclusive, class: 'nav-link' %>
       </li>
       <li class="nav-item">
-        <%= active_link_to 'Campaigns', campaigns_path, active: :exclusive, class: 'nav-link' %>
+        <%= active_link_to 'Campaigns', v1_campaigns_path, active: :exclusive, class: 'nav-link' %>
       </li>
       <li class="nav-item">
-        <%= active_link_to 'Monsters', monsters_path, active: :exclusive, class: 'nav-link' %>
+        <%= active_link_to 'Monsters', v1_monsters_path, active: :exclusive, class: 'nav-link' %>
       </li>
       <li class="nav-item">
-        <%= active_link_to 'Equipment', items_path, active: :exclusive, class: 'nav-link' %>
+        <%= active_link_to 'Equipment', v1_items_path, active: :exclusive, class: 'nav-link' %>
         <ul class="nav flex-column pl-3">
           <li class="nav-item">
-            <%= active_link_to 'Adventuring Gear', gear_items_path, active: :exclusive, class: 'nav-link' %>
+            <%= active_link_to 'Adventuring Gear', v1_gear_items_path, active: :exclusive, class: 'nav-link' %>
           </li>
           <li class="nav-item">
-            <%= active_link_to 'Armor', armor_items_path, active: :exclusive, class: 'nav-link' %>
+            <%= active_link_to 'Armor', v1_armor_items_path, active: :exclusive, class: 'nav-link' %>
           </li>
           <li class="nav-item">
-            <%= active_link_to 'Magic Items', magic_items_path, active: :exclusive, class: 'nav-link' %>
+            <%= active_link_to 'Magic Items', v1_magic_items_path, active: :exclusive, class: 'nav-link' %>
           </li>
           <li class="nav-item">
-            <%= active_link_to 'Tools', tool_items_path, active: :exclusive, class: 'nav-link' %>
+            <%= active_link_to 'Tools', v1_tool_items_path, active: :exclusive, class: 'nav-link' %>
           </li>
           <li class="nav-item">
-            <%= active_link_to 'Mounts and Vehicles', vehicle_items_path, active: :exclusive, class: 'nav-link' %>
+            <%= active_link_to 'Mounts and Vehicles', v1_vehicle_items_path, active: :exclusive, class: 'nav-link' %>
           </li>
           <li class="nav-item">
-            <%= active_link_to 'Weapons', weapon_items_path, active: :exclusive, class: 'nav-link' %>
+            <%= active_link_to 'Weapons', v1_weapon_items_path, active: :exclusive, class: 'nav-link' %>
           </li>
         </ul>
       </li>
       <li class="nav-item">
-        <%= active_link_to 'Classes', dnd_classes_path, active: :exclusive, class: 'nav-link' %>
+        <%= active_link_to 'Classes', v1_dnd_classes_path, active: :exclusive, class: 'nav-link' %>
       </li>
       <li class="nav-item">
-        <%= active_link_to 'Spells', spells_path, active: :exclusive, class: 'nav-link' %>
+        <%= active_link_to 'Spells', v1_spells_path, active: :exclusive, class: 'nav-link' %>
       </li>
     </ul>
 
@@ -53,13 +53,13 @@
       </h6>
       <ul class="nav flex-column mb-2">
         <li class="nav-item">
-          <%= active_link_to 'Characters', characters_path, active: :exclusive, class: 'nav-link' %>
+          <%= active_link_to 'Characters', v1_characters_path, active: :exclusive, class: 'nav-link' %>
           <ul class="nav flex-column pl-3">
             <li class="nav-item">
-              <%= active_link_to 'Player Characters', player_characters_path, active: :exclusive, class: 'nav-link' %>
+              <%= active_link_to 'Player Characters', v1_player_characters_path, active: :exclusive, class: 'nav-link' %>
             </li>
             <li class="nav-item">
-              <%= active_link_to 'Non-player Characters', non_player_characters_path, active: :exclusive, class: 'nav-link' %>
+              <%= active_link_to 'Non-player Characters', v1_non_player_characters_path, active: :exclusive, class: 'nav-link' %>
             </li>
           </ul>
         </li>
@@ -75,7 +75,7 @@
       </h6>
       <ul class="nav flex-column mb-2">
         <li class="nav-item">
-          <%= active_link_to 'Generate NPC', generate_npc_path, active: :exclusive, class: "nav-link" if policy(Character).generate_npc? %>
+          <%= active_link_to 'Generate NPC', v1_generate_npc_path, active: :exclusive, class: "nav-link" if policy(Character).generate_npc? %>
         </li>
       </ul>
     <% end %>

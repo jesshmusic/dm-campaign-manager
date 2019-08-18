@@ -32,7 +32,7 @@ RSpec.describe "monsters/new", type: :view do
   it "renders new monster form" do
     render
 
-    assert_select "form[action=?][method=?]", monsters_path, "post" do
+    assert_select "form[action=?][method=?]", v1_monsters_path, "post" do
 
       assert_select "input[name=?]", "monster[name]"
 

@@ -1,0 +1,19 @@
+<% title "Edit" + @encounter.name %>
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item"><%= link_to 'Dashboard', v1_dashboard_path %></li>
+    <li class="breadcrumb-item"><%= link_to 'Campaigns', v1_campaigns_path %></li>
+    <li class="breadcrumb-item"><%= link_to @campaign.name, v1_campaign_adventures_path(@campaign) %></li>
+    <li class="breadcrumb-item"><%= link_to @adventure.name, v1_campaign_adventure_path(@campaign, @adventure) %></li>
+    <li class="breadcrumb-item active" aria-current="page">Edit Encounters</li>
+  </ol>
+</nav>
+<div class="container">
+  <h1>Edit - <small><em><%= @encounter.name %></em></small></h1>
+  <%= render 'form', encounter: @encounter %>
+  <div class="admin__footer">
+    <%= link_to 'Show', v1_campaign_adventure_encounter_path(@campaign, @adventure, @encounter), class: "btn btn-success" %>
+    <%= link_to 'Dashboard', '/dashboard', class: "btn btn-info" %>
+  </div>
+</div>

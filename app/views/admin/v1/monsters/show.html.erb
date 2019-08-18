@@ -1,0 +1,145 @@
+
+<% title "Monster: #{@monster.name}" %>
+<div class="row">
+  <div class="col">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item"><%= link_to 'Dashboard', v1_dashboard_path %></li>
+        <li class="breadcrumb-item"><%= link_to 'Monsters', v1_monsters_path %></li>
+        <li class="breadcrumb-item active" aria-current="page"><%= @monster.name %></li>
+      </ol>
+    </nav>
+  </div>
+</div>
+<div class="container">
+  <div class="row mb-3 pb-3 border-bottom">
+    <div class="col">
+      <h1><%= @monster.name %></h1>
+      <h2 class="font-italic">
+        <%= @monster.size %> <%= @monster.monster_type %><%= " (#{@monster.monster_subtype})" if @monster.monster_subtype && @monster.monster_subtype != "" %>, <%= @monster.alignment %>
+      </h2>
+      <h3><small>Challenge rating</small> <%= @monster.challenge_rating %></h3>
+    </div>
+  </div>
+
+  <div class="row mb-3 pb-3 border-bottom">
+    <div class="col">
+      <dl>
+        <dt>Armor Class</dt>
+        <dd><%= @monster.stat_block.armor_class %></dd>
+        <dt>Hit Points</dt>
+        <dd><%= @monster.stat_block.hit_points %> (<%= @monster.hit_dice %>)</dd>
+        <dt>Speed</dt>
+        <dd><%= @monster.stat_block.speed %></dd>
+      </dl>
+    </div>
+  </div>
+
+  <div class="row mb-3 pb-3 border-bottom">
+    <div class="col-4 col-sm-2">
+      <strong>STR</strong><br />
+      <%= @monster.stat_block.strength %>
+    </div>
+    <div class="col-4 col-sm-2">
+      <strong>DEX</strong><br />
+      <%= @monster.stat_block.dexterity %>
+    </div>
+    <div class="col-4 col-sm-2">
+      <strong>CON</strong><br />
+      <%= @monster.stat_block.constitution %>
+    </div>
+    <div class="col-4 col-sm-2">
+      <strong>INT</strong><br />
+      <%= @monster.stat_block.intelligence %>
+    </div>
+    <div class="col-4 col-sm-2">
+      <strong>WIS</strong><br />
+      <%= @monster.stat_block.wisdom %>
+    </div>
+    <div class="col-4 col-sm-2">
+      <strong>CHA</strong><br />
+      <%= @monster.stat_block.charisma %>
+    </div>
+  </div>
+
+
+  <div class="row mb-3 pb-3 border-bottom">
+    <div class="col">
+      <dl>
+        <% if !@monster.damage_vulnerabilities.empty? %>
+          <dt>Damage vulnerabilities</dt>
+          <dd><%= @monster.damage_vulnerabilities %></dd>
+        <% end %>
+        <% if !@monster.damage_resistances.empty? %>
+          <dt>Damage resistances</dt>
+          <dd><%= @monster.damage_resistances %></dd>
+        <% end %>
+        <% if !@monster.damage_immunities.empty? %>
+          <dt>Damage immunities</dt>
+          <dd><%= @monster.damage_immunities %></dd>
+        <% end %>
+        <% if !@monster.condition_immunities.empty? %>
+          <dt>Condition immunities</dt>
+          <dd><%= @monster.condition_immunities %></dd>
+        <% end %>
+        <dt>Senses</dt>
+        <dd><%= @monster.senses %></dd>
+        <dt>Languages</dt>
+        <dd><%= @monster.languages %></dd>
+      </dl>
+    </div>
+  </div>
+
+  <% if !@monster.skills.empty? %>
+    <div class="row">
+      <div class="col">
+        <h3>Skills</h3>
+        <ul>
+          <% @monster.skills.each do |monster_skill| %>
+            <li><strong><%= monster_skill.name.capitalize %> </strong><%= monster_skill.score %></li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+  <% end %>
+
+  <% if !@monster.monster_actions.empty? %>
+    <div class="row">
+      <div class="col">
+        <h3>Actions</h3>
+        <% @monster.monster_actions.each do |monster_action| %>
+          <%= render 'action', monster_action: monster_action %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+  <% if !@monster.monster_legendary_actions.empty? %>
+    <div class="row">
+      <div class="col">
+        <h3>Legendary Actions</h3>
+        <%= markdown(@monster.legendary_description) %>
+        <% @monster.monster_legendary_actions.each do |monster_action| %>
+          <%= render 'action', monster_action: monster_action %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+  <% if !@monster.monster_special_abilities.empty? %>
+    <div class="row">
+      <div class="col">
+        <h3>Special Abilities</h3>
+        <% @monster.monster_special_abilities.each do |monster_action| %>
+          <%= render 'action', monster_action: monster_action %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="d-flex align-items-center justify-content-start py-3">
+    <%= link_to 'Edit', edit_v1_monster_path(@monster), class: "btn btn-success" if policy(@monster).edit? %>
+    <%= link_to 'Back', v1_monsters_path, class: "btn btn-info" %>
+  </div>
+</div>

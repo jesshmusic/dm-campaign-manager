@@ -1,0 +1,105 @@
+<div class="container">
+  <div class="row mb-3 pb-3 border-bottom">
+    <div class="col">
+      <h5><small>Challenge rating</small> <%= monster.challenge_rating %></h5>
+    </div>
+  </div>
+
+  <div class="row mb-3 pb-3 border-bottom">
+    <div class="col">
+      <dl>
+        <dt>Armor Class</dt>
+        <dd><%= monster.stat_block.armor_class %></dd>
+        <dt>Hit Points</dt>
+        <dd><%= monster.stat_block.hit_points %> (<%= monster.hit_dice %>)</dd>
+        <dt>Speed</dt>
+        <dd><%= monster.stat_block.speed %></dd>
+      </dl>
+    </div>
+  </div>
+
+  <div class="row mb-3 pb-3 border-bottom">
+    <div class="col-4 col-sm-2">
+      <strong>STR</strong><br/>
+      <%= monster.stat_block.strength %>
+    </div>
+    <div class="col-4 col-sm-2">
+      <strong>DEX</strong><br/>
+      <%= monster.stat_block.dexterity %>
+    </div>
+    <div class="col-4 col-sm-2">
+      <strong>CON</strong><br/>
+      <%= monster.stat_block.constitution %>
+    </div>
+    <div class="col-4 col-sm-2">
+      <strong>INT</strong><br/>
+      <%= monster.stat_block.intelligence %>
+    </div>
+    <div class="col-4 col-sm-2">
+      <strong>WIS</strong><br/>
+      <%= monster.stat_block.wisdom %>
+    </div>
+    <div class="col-4 col-sm-2">
+      <strong>CHA</strong><br/>
+      <%= monster.stat_block.charisma %>
+    </div>
+  </div>
+
+
+  <div class="row mb-3 pb-3 border-bottom">
+    <div class="col">
+      <dl>
+        <% unless monster.damage_vulnerabilities.empty? %>
+          <dt>Damage vulnerabilities</dt>
+          <dd><%= monster.damage_vulnerabilities %></dd>
+        <% end %>
+        <% unless monster.damage_resistances.empty? %>
+          <dt>Damage resistances</dt>
+          <dd><%= monster.damage_resistances %></dd>
+        <% end %>
+        <% unless monster.damage_immunities.empty? %>
+          <dt>Damage immunities</dt>
+          <dd><%= monster.damage_immunities %></dd>
+        <% end %>
+        <% unless monster.condition_immunities.empty? %>
+          <dt>Condition immunities</dt>
+          <dd><%= monster.condition_immunities %></dd>
+        <% end %>
+      </dl>
+    </div>
+  </div>
+
+  <% unless monster.monster_actions.empty? %>
+    <div class="row">
+      <div class="col">
+        <h5>Actions</h5>
+        <% monster.monster_actions.each do |monster_action| %>
+          <%= render 'admin/v1/monsters/action', monster_action: monster_action %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+  <% unless monster.monster_legendary_actions.empty? %>
+    <div class="row">
+      <div class="col">
+        <h5>Legendary Actions</h5>
+        <%= markdown(monster.legendary_description) %>
+        <% monster.monster_legendary_actions.each do |monster_action| %>
+          <%= render 'admin/v1/monsters/action', monster_action: monster_action %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+  <% unless monster.monster_special_abilities.empty? %>
+    <div class="row">
+      <div class="col">
+        <h5>Special Abilities</h5>
+        <% monster.monster_special_abilities.each do |monster_action| %>
+          <%= render 'admin/v1/monsters/action', monster_action: monster_action %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>

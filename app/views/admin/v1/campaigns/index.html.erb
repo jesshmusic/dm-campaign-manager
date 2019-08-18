@@ -1,0 +1,40 @@
+<% title "Campaigns" %>
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item"><%= link_to 'Dashboard', v1_dashboard_path %></li>
+    <li class="breadcrumb-item active" aria-current="page">Campaigns</li>
+  </ol>
+</nav>
+
+<h1>Campaigns</h1>
+<%= render 'shared/search_form', url: v1_campaigns_path %>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th class="d-none d-lg-table-cell">Characters</th>
+      <th class="d-none d-lg-table-cell">NPCs</th>
+      <th class="d-none d-lg-table-cell">World</th>
+      <th>Dungeon Master</th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @campaigns.each do |campaign| %>
+      <tr>
+        <td><%= campaign.name %></td>
+        <td class="d-none d-lg-table-cell"><%= campaign.pcs_count %></td>
+        <td class="d-none d-lg-table-cell"><%= campaign.npcs_count %></td>
+        <td class="d-none d-lg-table-cell"><%= campaign.world %></td>
+        <td><%= campaign.user.name %></td>
+        <td>
+          <%= link_to 'View', v1_campaign_path(campaign), class: "btn btn-sm btn-primary" %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<%== pagy_bootstrap_nav_js(@pagy) if @pagy.pages > 1 %>
+<%= link_to 'New Campaign', new_v1_campaign_path, class: "btn btn-lg btn-success" if policy(Campaign).new? %>

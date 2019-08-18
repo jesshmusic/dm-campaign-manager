@@ -21,7 +21,7 @@ RSpec.describe "spells/new", type: :view do
   it "renders new spell form" do
     render
 
-    assert_select "form[action=?][method=?]", spells_path, "post" do
+    assert_select "form[action=?][method=?]", v1_spells_path, "post" do
 
       assert_select "textarea[name=?]", "spell[name]"
 

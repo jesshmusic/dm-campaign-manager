@@ -16,7 +16,7 @@ class Home extends React.Component {
         <div>
           <div className="row">
             <div className="col">
-              <h1>D&D Campaign Manager</h1>
+              <h1>DM Campaign Manager</h1>
             </div>
           </div>
           <div className="row">

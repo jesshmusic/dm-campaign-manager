@@ -15,7 +15,7 @@ RSpec.describe "dnd_classes/new", type: :view do
   it "renders new dnd_class form" do
     render
 
-    assert_select "form[action=?][method=?]", dnd_classes_path, "post" do
+    assert_select "form[action=?][method=?]", v1_dnd_classes_path, "post" do
 
       assert_select "input[name=?]", "dnd_class[name]"
 

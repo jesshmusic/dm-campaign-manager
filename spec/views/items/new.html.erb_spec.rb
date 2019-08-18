@@ -39,7 +39,7 @@ RSpec.describe "items/new", type: :view do
   it "renders new item form" do
     render
 
-    assert_select "form[action=?][method=?]", items_path, "post" do
+    assert_select "form[action=?][method=?]", v1_items_path, "post" do
 
       assert_select "input[name=?]", "item[api_url]"
 

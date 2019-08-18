@@ -1,0 +1,12 @@
+<% title "Campaign: #{@campaign.name}" %>
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item"><%= link_to 'Dashboard', v1_dashboard_path %></li>
+    <li class="breadcrumb-item"><%= link_to 'Campaigns', v1_campaigns_path %></li>
+    <li class="breadcrumb-item"><%= link_to @campaign.name, v1_campaign_adventures_path(@campaign) %></li>
+    <li class="breadcrumb-item active" aria-current="page">Adventures</li>
+  </ol>
+</nav>
+
+<%= render 'admin/v1/campaigns/campaign_body' %>

@@ -4,7 +4,6 @@ class ApplicationController < ActionController::Base
   include Pundit
   include Pagy::Backend
   protect_from_forgery
-  after_action :verify_authorized, unless: :devise_controller?
 
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 

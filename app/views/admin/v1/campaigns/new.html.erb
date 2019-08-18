@@ -1,0 +1,17 @@
+<% title "New Campaign" %>
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item"><%= link_to 'Dashboard', v1_dashboard_path %></li>
+    <li class="breadcrumb-item"><%= link_to 'Campaigns', v1_campaigns_path %></li>
+    <li class="breadcrumb-item active" aria-current="page">New Campaign</li>
+  </ol>
+</nav>
+<div class="container">
+  <h1>New Campaign</h1>
+  <%= render 'form', campaign: @campaign %>
+  <div class="admin__footer">
+    <%= link_to 'Back', v1_campaigns_path, class: "btn btn-primary" %>
+    <%= link_to 'Dashboard', v1_dashboard_path, class: "btn btn-info" %>
+  </div>
+</div>

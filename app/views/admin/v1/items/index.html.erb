@@ -1,0 +1,48 @@
+<% title "Equipment" %>
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item"><%= link_to 'Dashboard', v1_dashboard_path %></li>
+    <li class="breadcrumb-item active" aria-current="page">Equipment</li>
+  </ol>
+</nav>
+
+<h1>Equipment</h1>
+<%= render 'shared/search_form', url: v1_items_path %>
+
+<div>
+  <h3>Categories:</h3>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th class="d-none d-lg-table-cell">Type</th>
+      <th class="d-none d-lg-table-cell">Sub category</th>
+      <th>Cost</th>
+      <th class="d-none d-lg-table-cell">Weight</th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @items.each do |item| %>
+      <tr>
+        <td><%= item.name %></td>
+        <td class="d-none d-lg-table-cell"><%= item.type.chomp('Item') %></td>
+        <td class="d-none d-lg-table-cell"><%= item.sub_category.titleize %></td>
+        <td><%= "#{item.cost_value}#{item.cost_unit}" %></td>
+        <td class="d-none d-lg-table-cell"><%= item.weight %></td>
+        <td>
+          <%= link_to 'Show', v1_item_path(item), class: "btn btn-sm btn-primary" %>
+          <%= link_to 'Edit', edit_v1_item_path(item), class: "btn btn-sm btn-success" if policy(item).edit? %>
+          <%= link_to 'Destroy', v1_item_path(item), class: "btn btn-sm btn-danger", method: :delete, data: { confirm: 'Are you sure?' } if policy(item).destroy? %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<%== pagy_bootstrap_nav_js(@pagy) %>
+
+<%= link_to 'New Equipment', new_v1_item_path, class: "btn btn-lg btn-success" if policy(Item).new? %>

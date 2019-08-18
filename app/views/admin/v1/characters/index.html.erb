@@ -1,0 +1,47 @@
+<% title "Characters" %>
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a href="/">Home</a>
+      </li>
+      <li class="breadcrumb-item"><%= link_to 'Dashboard', v1_dashboard_path %></li>
+      <li class="breadcrumb-item active" aria-current="page">Characters</li>
+    </ol>
+  </nav>
+
+  <h1>Characters</h1>
+  <%= render 'shared/search_form', url: v1_characters_path %>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Class</th>
+        <th>Level</th>
+        <th>Race</th>
+        <th>Player</th>
+        <th>Campaigns</th>
+        <th></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @characters.each do |character| %>
+        <tr class="<%= character.type == 'PlayerCharacter' ? '' : 'table-danger' %>">
+          <td><%= character.name %></td>
+          <td><%= character.dnd_classes.map {|dnd_class| dnd_class.name}.join(', ') %></td>
+          <td><%= character.level %></td>
+          <td><%= character.race %></td>
+          <td><%= character.user.name %></td>
+          <td><%= character.campaigns.count %></td>
+          <td>
+            <%= link_to 'Show', v1_character_path(character), class: "btn btn-sm btn-primary" %>
+            <%= link_to 'Edit', edit_v1_character_path(character), class: "btn btn-sm btn-success" if policy(character).edit? %>
+            <%= link_to 'Destroy', v1_character_path(character), class: "btn btn-sm btn-danger", method: :delete, data: { confirm: 'Are you sure?' } if policy(character).destroy? %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <%== pagy_bootstrap_nav_js(@pagy) if @pagy.pages > 1 %>
+  <%= link_to 'New Player Character', new_v1_player_character_path, class: "btn btn-lg btn-success" if policy(PlayerCharacter).new? %>

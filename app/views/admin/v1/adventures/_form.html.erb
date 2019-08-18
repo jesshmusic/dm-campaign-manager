@@ -1,0 +1,81 @@
+<%= simple_form_for [:v1, @campaign, @adventure], validate: true do |form| %>
+  <%= form.error_notification %>
+  <%= form.error_notification message: form.object.errors[:base].to_sentence if form.object.errors[:base].present? %>
+
+  <div class="form-inputs">
+    <div class="form-row">
+      <div class="col">
+        <%= form.input :name %>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="col">
+        <%= form.input :description %>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="col">
+        <%= form.association :characters,
+                             label: 'Player Characters',
+                             collection: PlayerCharacter.joins(:campaigns).where(campaigns: {id: form.object.campaign.id}),
+                             include_blank: false,
+                             include_hidden: false,
+                             input_html: { class: "pc-selection" } %>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="col">
+        <%= form.association :characters,
+                             label: 'NPCs',
+                             collection: NonPlayerCharacter.where(user_id: form.object.campaign.user.id),
+                             include_blank: false,
+                             include_hidden: false,
+                             input_html: { class: "npc-selection" } %>
+      </div>
+    </div>
+
+    <h2>Encounters</h2>
+    <div class="form-row">
+      <div class="p-3 border-bottom border-top" id="encounters_container">
+        <%= form.simple_fields_for :encounters do |encounter_form| %>
+          <%= render 'admin/v1/encounters/encounter_fields', f: encounter_form %>
+        <% end %>
+        <div class='links'>
+          <%= link_to_add_association 'Add Encounter',
+                                      form,
+                                      :encounters,
+                                      class: "btn btn-info",
+                                      partial: '/encounters/encounter_fields' %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-actions">
+    <%= form.button :submit, class: 'btn btn-success mb-3' %>
+  </div>
+<% end %>
+
+<script>
+
+  $("#encounters_container").on('cocoon:after-insert', function(event, addedTask) {
+    loadSelect2();
+  });
+  $("#encounter_monsters_container").on('cocoon:after-insert', function(event, addedTask) {
+    loadSelect2();
+  });
+
+  function loadSelect2 () {
+    $( ".pc-selection" ).select2({
+      theme: "bootstrap"
+    });
+    $( ".npc-selection" ).select2({
+      theme: "bootstrap"
+    });
+    $( ".monster-select" ).select2({
+      theme: "bootstrap"
+    });
+  }
+
+  loadSelect2();
+</script>

@@ -11,12 +11,9 @@ const Navbar = ({ user }) => (
     </button>
     <div className="collapse navbar-collapse" id="navbarNav">
       <ul className="navbar-nav">
-        <li className="nav-item">
-          <a className="nav-link" href="/">Home</a>
-        </li>
         {user && user.role === 'admin' ? (
           <li className="nav-item">
-            <a className="nav-link" href="/dashboard">Dashboard</a>
+            <a className="nav-link" href="/v1/dashboard">Admin</a>
           </li>
         ) : null}
         {user ? (

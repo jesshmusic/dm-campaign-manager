@@ -1,0 +1,23 @@
+<% title "New Character" %>
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item"><%= link_to 'Dashboard', v1_dashboard_path %></li>
+    <li class="breadcrumb-item"><%= link_to 'Characters', v1_characters_path %></li>
+    <li class="breadcrumb-item active" aria-current="page">New Character</li>
+  </ol>
+</nav>
+<div class="container">
+  <h1>New Character</h1>
+  <% if @character.type == 'PlayerCharacter' %>
+    <%= render 'pc_form', character: @character %>
+  <% elsif @character.type == 'NonPlayerCharacter' %>
+    <%= render 'npc_form', character: @character %>
+  <% else %>
+    <%= render 'form', character: @character %>
+  <% end %>
+  <div class="admin__footer">
+    <%= link_to 'Back', v1_characters_path, class: "btn btn-primary" %>
+    <%= link_to 'Dashboard', v1_dashboard_path, class: "btn btn-info" %>
+  </div>
+</div>
