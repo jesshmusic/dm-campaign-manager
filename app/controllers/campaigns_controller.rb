@@ -137,6 +137,7 @@ class CampaignsController < ApplicationController
         :description,
         :_destroy,
         character_ids: [],
+        adventure_world_location_attributes: %i[id _destroy world_location_id],
         encounters_attributes: [
           :id,
           :copper_pieces,
@@ -155,7 +156,7 @@ class CampaignsController < ApplicationController
         ]
       ],
       world_locations_attributes: %i[id name description _destroy],
-      world_events_attributes: %i[id world_date name description _destroy]
+      world_events_attributes: %i[id when name description _destroy]
     )
   end
 end

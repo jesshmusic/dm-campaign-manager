@@ -32,10 +32,14 @@ class Campaign < ApplicationRecord
   has_many :characters, through: :campaign_characters
 
   has_many :adventures, dependent: :destroy
+  has_many :world_locations, dependent: :destroy
+  has_many :world_events, dependent: :destroy
 
   belongs_to :user
 
   accepts_nested_attributes_for :adventures, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :world_locations, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :world_events, reject_if: :all_blank, allow_destroy: true
 
   def unconfirmed_users
     campaign_users.where.not(confirmed: true).or(campaign_users.where(confirmed: nil))

@@ -66,6 +66,46 @@
     </div>
   <% end %>
 
+  <h3>Notable Locations</h3>
+  <table>
+    <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <% @campaign.world_locations.each do |world_location| %>
+      <tr>
+        <td class="bg-light"><%= world_location.name %></td>
+        <td><%= world_location.description %></td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+
+  <h3>Events or History</h3>
+  <table>
+    <thead>
+    <tr>
+      <th>Date</th>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <% @campaign.world_events.each do |world_event| %>
+      <tr>
+        <td class="bg-light"><%= world_event.when %></td>
+        <td><%= world_event.name %></td>
+        <td><%= world_event.description %></td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+
   <h3>Adventures</h3>
   <%= render 'shared/search_form', url: campaign_adventures_path(@campaign) %>
   <table>

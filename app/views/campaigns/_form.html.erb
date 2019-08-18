@@ -25,8 +25,6 @@
                              include_hidden: false,
                              input_html: { class: "pc-selection" } %>
       </div>
-    </div>
-    <div class="form-row">
       <div class="col">
         <%= form.association :characters,
                              label: 'Non-player Characters',
@@ -34,6 +32,38 @@
                              include_blank: false,
                              include_hidden: false,
                              input_html: {class: "npc-selection"} %>
+      </div>
+    </div>
+
+    <h2>Notable World Locations</h2>
+    <div class="form-row">
+      <div class="p-3 border-bottom border-top" id="encounters_container">
+        <%= form.simple_fields_for :world_locations do |loc_form| %>
+          <%= render '/campaigns/location_fields', f: loc_form %>
+        <% end %>
+        <div class='links'>
+          <%= link_to_add_association 'Add Location',
+                                      form,
+                                      :world_locations,
+                                      class: "btn btn-info",
+                                      partial: '/campaigns/location_fields' %>
+        </div>
+      </div>
+    </div>
+
+    <h2>Events or History</h2>
+    <div class="form-row">
+      <div class="p-3 border-bottom border-top" id="encounters_container">
+        <%= form.simple_fields_for :world_events do |event_form| %>
+          <%= render '/campaigns/event_fields', f: event_form %>
+        <% end %>
+        <div class='links'>
+          <%= link_to_add_association 'Add Event',
+                                      form,
+                                      :world_events,
+                                      class: "btn btn-info",
+                                      partial: '/campaigns/event_fields' %>
+        </div>
       </div>
     </div>
   </div>

@@ -28,7 +28,10 @@ class Adventure < ApplicationRecord
   has_many :character_adventures, dependent: :destroy
   has_many :characters, through: :character_adventures
 
+  has_one :adventure_world_location, dependent: :destroy
+
   accepts_nested_attributes_for :encounters, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :adventure_world_location
 
   include PgSearch::Model
 

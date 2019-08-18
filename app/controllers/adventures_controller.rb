@@ -98,6 +98,7 @@ class AdventuresController < ApplicationController
     params.require(:adventure).permit(
       :name, :description, :campaign_id,
       character_ids: [], monster_ids: [], item_ids: [],
+      adventure_world_location_attributes: %i[id _destroy world_location_id],
       encounters_attributes: [
         :id,
         :copper_pieces,
