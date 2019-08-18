@@ -35,6 +35,33 @@
 
 FactoryBot.define do
   factory :user do
-    
+    name { 'Jess Hendricks' }
+    email { 'user@example.com' }
+    password { 'testpass1234' }
+    password_confirmation { 'testpass1234' }
+    confirmed_at { Date.today }
+    uid { 'user@example.com' }
+    factory :player_user do
+      role { :user }
+      email { 'normal_user@example.com' }
+      uid { 'normal_user@example.com' }
+    end
+    factory :dungeon_master_user do
+      role { :moderator }
+      email { 'moderator_user@example.com' }
+      uid { 'moderator_user@example.com' }
+    end
+    factory :admin_user do
+      role { :admin }
+      email { 'admin_user@example.com' }
+      uid { 'admin_user@example.com' }
+    end
+    factory :other_user do |user|
+      user.first_name { Faker::Name.first_name }
+      user.last_name { Faker::Name.last_name }
+      user.sequence(:email) { |n| "testuser#{n}@example.com" }
+      user.sequence(:uid) { |n| "testuser#{n}@example.com" }
+      user.description { Faker::TvShows::TwinPeaks.quote }
+    end
   end
 end

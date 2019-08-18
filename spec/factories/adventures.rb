@@ -22,8 +22,8 @@
 
 FactoryBot.define do
   factory :adventure do
-    name { 'MyString' }
-    description { 'MyText' }
+    name { 'Test Adventure' }
+    description { 'An Adventure description' }
     campaign { nil }
   end
 end

@@ -38,3 +38,7 @@ yarn-debug.log*
 .yarn-integrity
 
 erd.pdf
+coverage
+
+rspec_results.html
+results.html
