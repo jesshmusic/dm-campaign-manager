@@ -29,7 +29,7 @@ RSpec.describe Admin::V1::EncountersController, type: :controller do
   # Encounter. As you add validations to Encounter, be sure to
   # adjust the attributes here as well.
   let(:valid_attributes) {
-    skip("Add a hash of attributes valid for your model")
+    attributes_for(:encounter)
   }
 
   let(:invalid_attributes) {

@@ -30,7 +30,7 @@ RSpec.describe Admin::V1::AdventuresController, type: :controller do
   # Adventure. As you add validations to Adventure, be sure to
   # adjust the attributes here as well.
   let(:valid_attributes) do
-    skip('Add a hash of attributes valid for your model')
+    attributes_for(:adventure)
   end
 
   let(:invalid_attributes) do

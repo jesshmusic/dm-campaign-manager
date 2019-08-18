@@ -29,7 +29,7 @@ RSpec.describe Admin::V1::DndClassesController, type: :controller do
   # DndClass. As you add validations to DndClass, be sure to
   # adjust the attributes here as well.
   let(:valid_attributes) {
-    skip("Add a hash of attributes valid for your model")
+    attributes_for(:dnd_class)
   }
 
   let(:invalid_attributes) {
