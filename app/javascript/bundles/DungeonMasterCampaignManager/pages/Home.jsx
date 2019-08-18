@@ -1,57 +1,32 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
-import axiosClient from '../actions/axiosClient';
-
-// Container
-import PageContainer from '../containers/PageContainer.jsx';
+import { configureStore } from 'redux-starter-kit';
+import { Provider } from 'react-redux';
+import rootReducer from '../reducers';
+import { Router } from '@reach/router';
+import HomePage from './HomePage';
+import CampaignPage from './CampaignPage';
 
 import styles from './home.module.scss';
 
-class Home extends React.Component {
+const store = (props) => configureStore({
+  reducer: rootReducer,
+  preloadedState: props,
+});
 
-  render () {
-    return (
-      <PageContainer user={this.props.user} flashMessages={this.props.flashMessages}>
-        <div>
-          <div className="row">
-            <div className="col">
-              <h1>DM Campaign Manager</h1>
-            </div>
-          </div>
-          <div className="row">
-            <div className="col">
-              <h2>{this.props.campaigns.title}</h2>
-              <ul className="list-group list-group-flush">
-                {this.props.campaigns.campaigns.map((campaign, index) => {
-                  return <li key={index} className="list-group-item">{campaign.name}</li>
-                })}
-              </ul>
-            </div>
-            <div className="col">
-              <h3>{this.props.dungeonMasters.title}</h3>
-              <ul className="list-group list-group-flush">
-                {this.props.dungeonMasters.dungeonMasters.map((dm, index) => {
-                  return <li key={index} className="list-group-item">{dm.name}</li>
-                })}
-              </ul>
-              <h3>{this.props.characters.title}</h3>
-              <ul className="list-group list-group-flush">
-                {this.props.characters.characters.map((character, index) => {
-                  return <li key={index} className="list-group-item">{character.name}</li>
-                })}
-              </ul>
-            </div>
-          </div>
-        </div>
-      </PageContainer>
-    );
-  }
-}
+const Home = (props) => (
+  <Provider store={store(props)}>
+    <Router>
+      <HomePage path="/" />
+      <CampaignPage path='/campaigns/' />
+    </Router>
+  </Provider>
+);
 
 Home.propTypes = {
   campaigns: PropTypes.object,
-  characters: PropTypes.object,
+  nonPlayerCharacters: PropTypes.object,
+  playerCharacters: PropTypes.object,
   dungeonMasters: PropTypes.object,
   user: PropTypes.object,
   flashMessages: PropTypes.array,

@@ -1,16 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Link } from '@reach/router';
 
 import styles from './navbar.module.scss';
 
 const Navbar = ({ user }) => (
   <nav className="navbar navbar-expand-lg navbar-light bg-light">
-    <a className="navbar-brand" href="#">DMCM</a>
+    <Link className="navbar-brand" to="/">DMCM</Link>
     <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span className="navbar-toggler-icon"/>
     </button>
     <div className="collapse navbar-collapse" id="navbarNav">
       <ul className="navbar-nav">
+        <Link className="nav-item" to="/campaigns/">Campaigns</Link>
         {user && user.role === 'admin' ? (
           <li className="nav-item">
             <a className="nav-link" href="/v1/dashboard">Admin</a>
