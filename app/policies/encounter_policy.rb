@@ -16,4 +16,8 @@ class EncounterPolicy < ApplicationPolicy
   def destroy?
     user && (user.admin? || (record.user == user))
   end
+
+  def random_individual_treasure?
+    true
+  end
 end

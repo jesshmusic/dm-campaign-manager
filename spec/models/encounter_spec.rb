@@ -3,15 +3,15 @@
 # Table name: encounters
 #
 #  id              :bigint           not null, primary key
-#  copper_pieces   :integer
+#  copper_pieces   :integer          default(0)
 #  description     :text
-#  electrum_pieces :integer
-#  gold_pieces     :integer
+#  electrum_pieces :integer          default(0)
+#  gold_pieces     :integer          default(0)
 #  location        :string           default("New Location"), not null
-#  name            :string
-#  platinum_pieces :integer
-#  silver_pieces   :integer
-#  xp              :integer
+#  name            :string           default("New Encounter")
+#  platinum_pieces :integer          default(0)
+#  silver_pieces   :integer          default(0)
+#  xp              :integer          default(0)
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #  adventure_id    :bigint

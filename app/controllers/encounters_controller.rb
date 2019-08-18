@@ -2,7 +2,7 @@
 
 class EncountersController < ApplicationController
   before_action :set_encounter, only: %i[show edit update]
-  before_action :set_campaign_and_adventure
+  before_action :set_campaign_and_adventure, except: [:random_individual_treasure]
 
   # GET /encounters/1
   # GET /encounters/1.json
@@ -67,6 +67,7 @@ class EncountersController < ApplicationController
   end
 
   def random_individual_treasure
+    authorize Encounter
     challenge_rating = params[:xp] ? DndRules.challenge_raiting_for_xp(params[:xp]) : DndRules.challenge_raiting_for_xp(params[600])
     render json: TreasureUtility.create_individual_treasure(challenge_rating)
   end

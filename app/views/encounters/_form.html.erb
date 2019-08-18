@@ -68,3 +68,55 @@
     <%= form.button :submit, class: 'btn btn-success mb-3' %>
   </div>
 <% end %>
+
+<script>
+  $('#equipment_items_container').on('cocoon:after-insert', function (event, addedTask) {
+    loadSelect2();
+  });
+  $('#encounter_monsters_container').on('cocoon:after-insert', function (event, addedTask) {
+    loadSelect2();
+  });
+
+  function loadSelect2 () {
+    $('.equipment_item_item').select2({
+      multiple: false,
+      theme: 'bootstrap',
+    });
+    $('.pc-selection').select2({
+      theme: 'bootstrap',
+    });
+    $('.npc-selection').select2({
+      theme: 'bootstrap',
+    });
+    $('.monster-select').select2({
+      theme: 'bootstrap',
+    });
+  }
+
+  loadSelect2();
+
+  const encounterXP = $('#encounter_xp').val();
+  const copperInput = $('#encounter_copper_pieces');
+  const silverInput = $('#encounter_silver_pieces');
+  const electrumInput = $('#encounter_electrum_pieces');
+  const goldInput = $('#encounter_gold_pieces');
+  const platinumInput = $('#encounter_platinum_pieces');
+
+  $('#randomIndividualTreasureButton').on('click', function (event) {
+    event.preventDefault();
+    $.ajax({
+      type: 'GET',
+      url: '/random_individual_treasure',
+      data: {
+        xp: encounterXP,
+      },
+    }).done(function (response) {
+      copperInput.val(response.copper_pieces);
+      silverInput.val(response.silver_pieces);
+      electrumInput.val(response.electrum_pieces);
+      goldInput.val(response.gold_pieces);
+      platinumInput.val(response.platinum_pieces);
+    });
+  });
+
+</script>

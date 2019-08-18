@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_17_171739) do
+ActiveRecord::Schema.define(version: 2019_08_18_002401) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -171,14 +171,14 @@ ActiveRecord::Schema.define(version: 2019_08_17_171739) do
   end
 
   create_table "encounters", force: :cascade do |t|
-    t.string "name"
+    t.string "name", default: "New Encounter"
     t.text "description"
-    t.integer "platinum_pieces"
-    t.integer "gold_pieces"
-    t.integer "electrum_pieces"
-    t.integer "silver_pieces"
-    t.integer "copper_pieces"
-    t.integer "xp"
+    t.integer "platinum_pieces", default: 0
+    t.integer "gold_pieces", default: 0
+    t.integer "electrum_pieces", default: 0
+    t.integer "silver_pieces", default: 0
+    t.integer "copper_pieces", default: 0
+    t.integer "xp", default: 0
     t.bigint "adventure_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
