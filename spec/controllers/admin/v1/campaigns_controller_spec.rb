@@ -42,10 +42,33 @@ RSpec.describe Admin::V1::CampaignsController, type: :controller do
   let(:valid_session) { {} }
 
   describe "GET #index" do
-    it "returns a success response" do
-      Campaign.create! valid_attributes
-      get :index, params: {}, session: valid_session
-      expect(response).to be_successful
+    let!(:campaign1) { build :campaign }
+    let!(:campaign2) { build :campaign }
+    let!(:campaign3) { build :campaign }
+    let(:admin_user) { create :admin_user }
+    let(:dungeon_master_user) { create :dungeon_master_user }
+    context 'for admin' do
+      # login_admin
+
+      it 'returns all campaigns (admin)' do
+        campaign1.user = admin_user
+        campaign2.user = dungeon_master_user
+        campaign3.user = dungeon_master_user
+        campaign1.save!
+        campaign2.save!
+        campaign3.save!
+        get :index
+        expect(response).to be_successful
+      end
+    end
+
+    context 'for dungeon master' do
+      login_dungeon_master
+
+      it 'returns only dungeon masters campaigns' do
+        get :index, params: { published: true }, format: :json
+        expect(JSON.parse(response.body)['articles'].length).to eq(2)
+      end
     end
   end
 

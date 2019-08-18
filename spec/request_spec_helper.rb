@@ -7,12 +7,12 @@ module RequestSpecHelper
     base.after(:each) { Warden.test_reset! }
   end
 
-  def login_user
+  def login_player
     user = FactoryBot.create(:player_user)
     sign_in user
   end
 
-  def login_moderator
+  def login_dungeon_master
     user = FactoryBot.create(:dungeon_master_user)
     sign_in user
   end

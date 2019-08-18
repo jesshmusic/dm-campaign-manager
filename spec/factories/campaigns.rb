@@ -19,8 +19,8 @@
 
 FactoryBot.define do
   factory :campaign do
-    name { "MyText" }
-    description { "MyText" }
-    world { "MyText" }
+    name { Faker::TvShows::GameOfThrones.city }
+    description { Faker::Movies::HarryPotter.quote }
+    world { Faker::Movies::LordOfTheRings.location }
   end
 end

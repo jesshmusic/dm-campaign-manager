@@ -27,6 +27,8 @@ require 'devise'
 # If you are not using ActiveRecord, you can remove these lines.
 begin
   ActiveRecord::Migration.maintain_test_schema!
+  require_relative 'controller_macros'
+  require_relative 'request_spec_helper'
 rescue ActiveRecord::PendingMigrationError => e
   puts e.to_s.strip
   exit 1
