@@ -43,8 +43,11 @@ RSpec.describe Admin::V1::AdventuresController, type: :controller do
   let(:valid_session) { {} }
 
   describe 'GET #index' do
+    let!(:adventure1) { create :adventure }
+    let!(:adventure2) { create :adventure }
+    let!(:adventure3) { create :adventure }
     it 'returns a success response' do
-      Adventure.create! valid_attributes
+
       get :index, params: {}, session: valid_session
       expect(response).to be_successful
     end

@@ -22,5 +22,6 @@ FactoryBot.define do
     name { Faker::TvShows::GameOfThrones.city }
     description { Faker::Movies::HarryPotter.quote }
     world { Faker::Movies::LordOfTheRings.location }
+    association :user, factory: :dungeon_master_user
   end
 end

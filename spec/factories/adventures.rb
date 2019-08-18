@@ -24,6 +24,6 @@ FactoryBot.define do
   factory :adventure do
     name { 'Test Adventure' }
     description { 'An Adventure description' }
-    campaign { nil }
+    association :campaign, factory: :campaign
   end
 end
