@@ -1,56 +1,166 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link } from '@reach/router';
+
+import AppBar from '@material-ui/core/AppBar';
+import Button from '@material-ui/core/Button';
+import Divider from '@material-ui/core/Divider';
+import Drawer from '@material-ui/core/Drawer';
+import Hidden from '@material-ui/core/Hidden';
+import IconButton from '@material-ui/core/IconButton';
+import Link from '@material-ui/core/Link';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import MenuIcon from '@material-ui/icons/Menu';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
+
+import { Link as RouterLink } from '@reach/router';
 
 import styles from './navbar.module.scss';
-const NavLink = (props) => (
-  <li className="nav-item">
-    <Link className={props.isCurrent ? "nav-link active" : "nav-link"}
-          {...props}
-          getProps={({ isCurrent }) => {
-            // the object returned here is passed to the
-            // anchor element's props
-            return {
-              className: isCurrent ? "nav-link active" : "nav-link"
-            };
-          }}>Campaigns</Link>
-  </li>
-);
 
-const Navbar = ({ user }) => (
-  <nav className="navbar navbar-expand-lg navbar-light bg-light">
-    <Link className="navbar-brand" to="/">DMCM</Link>
-    <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span className="navbar-toggler-icon"/>
-    </button>
-    <div className="collapse navbar-collapse" id="navbarNav">
-      <ul className="navbar-nav">
-        <NavLink to={"/campaigns"}>Campaigns</NavLink>
-        {user && user.role === 'admin' ? (
-          <li className="nav-item">
-            <a className="nav-link" href="/v1/dashboard">Admin</a>
-          </li>
-        ) : null}
-        {user ? (
-          <li className="nav-item">
-            <a className="nav-link" href={`/users/${user.username}/edit`}>{user.name}</a>
-          </li>
-        ) : (
-          <li className="nav-item">
-            <a className="nav-link" href="/users/sign_in">Log In</a>
-          </li>
-        )}
-        {!user ? (
-          <li className="nav-item">
-            <a className="nav-link" href="/users/sign_up">Sign Up</a>
-          </li>
-        ) : null}
-      </ul>
+const drawerWidth = 240;
+
+const useStyles = makeStyles(theme => ({
+  root: {
+    display: 'flex',
+    flexGrow: 1,
+  },
+  drawer: {
+    [theme.breakpoints.up('sm')]: {
+      width: drawerWidth,
+      flexShrink: 0,
+    },
+  },
+  appBar: {
+    marginLeft: drawerWidth,
+    [theme.breakpoints.up('sm')]: {
+      width: `calc(100% - ${drawerWidth}px)`,
+    },
+  },
+  menuButton: {
+    marginRight: theme.spacing(2),
+    [theme.breakpoints.up('sm')]: {
+      display: 'none',
+    },
+  },
+  toolbar: theme.mixins.toolbar,
+  drawerPaper: {
+    width: drawerWidth,
+  },
+  content: {
+    flexGrow: 1,
+    padding: theme.spacing(3),
+  },
+  title: {
+    flexGrow: 1,
+  },
+}));
+
+function Navbar(props) {
+  const { container, user, children } = props;
+  const classes = useStyles();
+  const theme = useTheme();
+  const [mobileOpen, setMobileOpen] = React.useState(false);
+
+  function handleDrawerToggle () {
+    setMobileOpen(!mobileOpen);
+  }
+
+  const drawer = (
+    <div>
+      <div className={classes.toolbar} />
+      <Divider />
+      <List>
+        <ListItem button>
+          <ListItemIcon><MenuIcon /></ListItemIcon>
+          <Link component={RouterLink} to={'/'}>Home</Link>
+        </ListItem>
+        <ListItem button>
+          <ListItemIcon><MenuIcon /></ListItemIcon>
+          <Link component={RouterLink} to={'/campaigns'}>Campaigns</Link>
+        </ListItem>
+      </List>
+      <Divider />
+      <List>
+        {[
+          'All mail', 'Trash', 'Spam'
+        ].map((text) => (
+          <ListItem button key={text}>
+            <ListItemIcon><MenuIcon /></ListItemIcon>
+            <ListItemText primary={text} />
+          </ListItem>
+        ))}
+      </List>
     </div>
-  </nav>
-);
+  );
+
+  return (
+    <div className={classes.root}>
+      <AppBar className={classes.appBar}>
+        <Toolbar>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            edge="start"
+            onClick={handleDrawerToggle}
+            className={classes.menuButton}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h6" className={classes.title}>
+            Dungeon Master&apos;s Campaign Manager
+          </Typography>
+          {user ? (
+            <Button color="inherit" component={RouterLink} to='/logout'>Log Out</Button>
+          ) : (
+            <Button color="inherit" component={RouterLink} to='/login'>Log In</Button>
+          )}
+        </Toolbar>
+      </AppBar>
+      <nav className={classes.drawer} aria-label="mailbox folders">
+        {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
+        <Hidden smUp implementation="css">
+          <Drawer
+            container={container}
+            variant="temporary"
+            anchor={theme.direction === 'rtl' ? 'right' : 'left'}
+            open={mobileOpen}
+            onClose={handleDrawerToggle}
+            classes={{
+              paper: classes.drawerPaper,
+            }}
+            ModalProps={{
+              keepMounted: true, // Better open performance on mobile.
+            }}
+          >
+            {drawer}
+          </Drawer>
+        </Hidden>
+        <Hidden xsDown implementation="css">
+          <Drawer
+            classes={{
+              paper: classes.drawerPaper,
+            }}
+            variant="permanent"
+            open
+          >
+            {drawer}
+          </Drawer>
+        </Hidden>
+      </nav>
+      <main className={classes.content}>
+        {children}
+      </main>
+    </div>
+  );
+}
 
 Navbar.propTypes = {
+  children: PropTypes.array,
+  container: PropTypes.object,
   user: PropTypes.object,
 };
 

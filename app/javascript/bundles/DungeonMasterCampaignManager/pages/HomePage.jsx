@@ -1,12 +1,44 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import ListItemText from '@material-ui/core/ListItemText';
+import Avatar from '@material-ui/core/Avatar';
+import IconButton from '@material-ui/core/IconButton';
+import FolderIcon from '@material-ui/icons/Folder';
+import DeleteIcon from '@material-ui/icons/Delete';
+import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
+
+import { Link as RouterLink } from '@reach/router';
 
 // Container
 import PageContainer from '../containers/PageContainer.jsx';
 
 import styles from './home.module.scss';
 import {Link} from '@reach/router';
+import Button from '@material-ui/core/Button';
+
+const ListItemLink = ({title, subtitle, path}) => (
+  <ListItem>
+    <ListItemAvatar>
+      <Avatar>
+        <FolderIcon />
+      </Avatar>
+    </ListItemAvatar>
+    <ListItemText
+      primary={title}
+      secondary={subtitle}
+    />
+    <ListItemSecondaryAction>
+      <IconButton edge="end" aria-label="view" component={RouterLink} to={path}>
+        <ArrowForwardIosIcon />
+      </IconButton>
+    </ListItemSecondaryAction>
+  </ListItem>
+);
 
 class HomePage extends React.Component {
   render () {
@@ -15,21 +47,31 @@ class HomePage extends React.Component {
         <div>
           <div className="row">
             <div className="col">
-              <h1>DM Campaign Manager</h1>
+              <h1>Dashboard</h1>
             </div>
           </div>
           <div className="row">
             <div className="col">
               <h2>{this.props.campaigns.title}</h2>
-              <ul className="list-group list-group-flush">
-                {this.props.campaigns.campaigns.map((campaign, index) => <li key={index} className="list-group-item"><Link to={`/campaigns/${campaign.slug}`}>{campaign.name}</Link></li>)}
-              </ul>
+              <List>
+                {this.props.campaigns.campaigns.map((campaign) =>
+                  <ListItemLink title={campaign.name}
+                    subtitle={campaign.user.name}
+                    path={`/campaigns/${campaign.slug}`}
+                    key={campaign.slug}/>
+                )}
+              </List>
             </div>
             <div className="col">
               <h3>{this.props.dungeonMasters.title}</h3>
-              <ul className="list-group list-group-flush">
-                {this.props.dungeonMasters.dungeonMasters.map((dm, index) => <li key={index} className="list-group-item">{dm.name}</li>)}
-              </ul>
+              <List>
+                {this.props.dungeonMasters.dungeonMasters.map((dm, index) =>
+                  <ListItemLink title={dm.name}
+                    subtitle={'Dungeon Master'}
+                    path={`/dungeon_masters/${dm.username}`}
+                    key={index}/>
+                )}
+              </List>
               { this.props.playerCharacters ? (
                 <div>
                   <h3>{this.props.playerCharacters.title}</h3>
