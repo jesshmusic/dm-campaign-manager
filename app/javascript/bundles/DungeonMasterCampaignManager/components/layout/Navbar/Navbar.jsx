@@ -3,6 +3,19 @@ import PropTypes from 'prop-types';
 import { Link } from '@reach/router';
 
 import styles from './navbar.module.scss';
+const NavLink = (props) => (
+  <li className="nav-item">
+    <Link className={props.isCurrent ? "nav-link active" : "nav-link"}
+          {...props}
+          getProps={({ isCurrent }) => {
+            // the object returned here is passed to the
+            // anchor element's props
+            return {
+              className: isCurrent ? "nav-link active" : "nav-link"
+            };
+          }}>Campaigns</Link>
+  </li>
+);
 
 const Navbar = ({ user }) => (
   <nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -12,7 +25,7 @@ const Navbar = ({ user }) => (
     </button>
     <div className="collapse navbar-collapse" id="navbarNav">
       <ul className="navbar-nav">
-        <Link className="nav-item" to="/campaigns/">Campaigns</Link>
+        <NavLink to={"/campaigns"}>Campaigns</NavLink>
         {user && user.role === 'admin' ? (
           <li className="nav-item">
             <a className="nav-link" href="/v1/dashboard">Admin</a>

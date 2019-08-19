@@ -4,7 +4,6 @@ import Alert from './Alert.jsx';
 export default class FlashMessages extends React.Component {
   constructor (props) {
     super(props);
-    console.log(props);
     this.state = {messages: props.messages};
   }
 

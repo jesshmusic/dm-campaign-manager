@@ -6,11 +6,10 @@ import { connect } from 'react-redux';
 import PageContainer from '../containers/PageContainer.jsx';
 
 import styles from './home.module.scss';
+import {Link} from '@reach/router';
 
 class HomePage extends React.Component {
-
   render () {
-
     return (
       <PageContainer user={this.props.user} flashMessages={this.props.flashMessages}>
         <div>
@@ -23,7 +22,7 @@ class HomePage extends React.Component {
             <div className="col">
               <h2>{this.props.campaigns.title}</h2>
               <ul className="list-group list-group-flush">
-                {this.props.campaigns.campaigns.map((campaign, index) => <li key={index} className="list-group-item">{campaign.name}</li>)}
+                {this.props.campaigns.campaigns.map((campaign, index) => <li key={index} className="list-group-item"><Link to={`/campaigns/${campaign.slug}`}>{campaign.name}</Link></li>)}
               </ul>
             </div>
             <div className="col">

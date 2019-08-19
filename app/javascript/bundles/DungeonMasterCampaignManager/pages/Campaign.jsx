@@ -13,11 +13,11 @@ const Campaign = ({ campaigns, user, flashMessages, campaignSlug }) => {
   const campaign = campaigns.campaigns.find(obj => {
     return obj.slug === campaignSlug;
   });
-  console.log(campaign);
+
   return (
     <PageContainer user={user} flashMessages={flashMessages}>
       <div>
-        <h1>{campaign.name} <small>a campaign by </small></h1>
+        <h1>{campaign.name} <small>a campaign by {campaign.user.name}</small></h1>
         <ReactMarkdown source={campaign.description} />
       </div>
     </PageContainer>

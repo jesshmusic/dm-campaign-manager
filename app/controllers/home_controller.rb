@@ -95,6 +95,7 @@ class HomeController < ApplicationController
         campaigns: campaigns(Campaign.all.limit(5))
       },
       nonPlayerCharacters: nil,
+      playerCharacters: nil,
       dungeonMasters: {
         title: 'Dungeon Masters',
         dungeonMasters: User.where(role: :dungeon_master).limit(5)
@@ -110,13 +111,11 @@ class HomeController < ApplicationController
   end
 
   def campaigns(campaigns_list)
-    campaigns_list.as_json(include: [
-      :users, :world_locations, :world_events,
-      adventures: { include: [:encounters] },
-      characters: { include: [:stat_block, :character_actions, :skills, :spells,
-                              equipment_items: {
-                                include: [:items]
-                              }] }
-    ])
+    campaigns_list.as_json(include: [:user, :users, :world_locations, :world_events,
+                                     adventures: { include: [:encounters] },
+                                     characters: { include: [:stat_block, :character_actions, :skills, :spells,
+                                                             equipment_items: {
+                                                               include: [:items]
+                                                             }] }])
   end
 end

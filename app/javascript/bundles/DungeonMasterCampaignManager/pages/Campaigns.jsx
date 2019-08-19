@@ -14,7 +14,11 @@ const Campaigns = ({ campaigns, user, flashMessages }) => (
     <div>
       <h1>{campaigns.title}</h1>
       <ul>
-        { campaigns.campaigns.map((campaign) => <li key={campaign.id}><Link to={`/campaigns/${campaign.slug}`}>{campaign.name}</Link></li>) }
+        { campaigns.campaigns.map((campaign) => (
+          <li key={campaign.id}>
+            <Link to={`/campaigns/${campaign.slug}`}>{campaign.name}</Link>
+          </li>
+        )) }
       </ul>
     </div>
   </PageContainer>
