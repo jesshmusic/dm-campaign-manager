@@ -26,7 +26,7 @@ class HomeController < ApplicationController
       user: current_user,
       campaigns: {
         title: 'My Campaigns',
-        campaigns: Campaign.where(user: current_user)
+        campaigns: campaigns(current_user.campaigns)
       },
       nonPlayerCharacters: {
         title: 'My Non-player Characters',
@@ -49,7 +49,7 @@ class HomeController < ApplicationController
       user: current_user,
       campaigns: {
         title: 'My Campaigns',
-        campaigns: current_user.campaigns
+        campaigns: campaigns(current_user.campaigns)
       },
       nonPlayerCharacters: {
         title: 'My Non-player Characters',
@@ -72,7 +72,7 @@ class HomeController < ApplicationController
       user: current_user,
       campaigns: {
         title: 'My Campaigns',
-        campaigns: current_user.player_campaigns
+        campaigns: campaigns(current_user.campaigns)
       },
       nonPlayerCharacters: nil,
       playerCharacters: {
@@ -92,7 +92,7 @@ class HomeController < ApplicationController
       user: nil,
       campaigns: {
         title: 'Campaigns',
-        campaigns: Campaign.all.limit(5)
+        campaigns: campaigns(Campaign.all.limit(5))
       },
       nonPlayerCharacters: nil,
       dungeonMasters: {
@@ -107,5 +107,13 @@ class HomeController < ApplicationController
     flash.map do |type, text|
       { id: text.object_id, type: type, text: text }
     end
+  end
+
+  def campaigns(campaigns_list)
+    puts campaigns_list.as_json
+    campaigns_list.as_json(include: [
+      :users, :world_locations, :world_events,
+      adventures: {include: [:encounters] }
+    ], methods: %i[pcs npcs])
   end
 end

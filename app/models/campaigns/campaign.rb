@@ -61,6 +61,14 @@ class Campaign < ApplicationRecord
     chars
   end
 
+  def pcs
+    characters.where(type: 'PlayerCharacter')
+  end
+
+  def npcs
+    characters.where(type: 'NonPlayerCharacter')
+  end
+
   def dungeon_master
     user
   end

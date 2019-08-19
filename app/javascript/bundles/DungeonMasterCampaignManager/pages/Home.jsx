@@ -5,7 +5,8 @@ import { Provider } from 'react-redux';
 import rootReducer from '../reducers';
 import { Router } from '@reach/router';
 import HomePage from './HomePage';
-import CampaignPage from './CampaignPage';
+import Campaigns from './Campaigns';
+import Campaign from './Campaign';
 
 import styles from './home.module.scss';
 
@@ -18,7 +19,8 @@ const Home = (props) => (
   <Provider store={store(props)}>
     <Router>
       <HomePage path="/" />
-      <CampaignPage path='/campaigns/' />
+      <Campaigns path='campaigns'/>
+      <Campaign path='campaigns/:campaignSlug'/>
     </Router>
   </Provider>
 );
