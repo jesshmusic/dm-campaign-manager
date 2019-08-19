@@ -110,10 +110,13 @@ class HomeController < ApplicationController
   end
 
   def campaigns(campaigns_list)
-    puts campaigns_list.as_json
     campaigns_list.as_json(include: [
       :users, :world_locations, :world_events,
-      adventures: {include: [:encounters] }
-    ], methods: %i[pcs npcs])
+      adventures: { include: [:encounters] },
+      characters: { include: [:stat_block, :character_actions, :skills, :spells,
+                              equipment_items: {
+                                include: [:items]
+                              }] }
+    ])
   end
 end
