@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
@@ -9,23 +10,32 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 import FolderIcon from '@material-ui/icons/Folder';
-import DeleteIcon from '@material-ui/icons/Delete';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
+import Paper from '@material-ui/core/Paper';
+import Grid from '@material-ui/core/Grid';
 
 import { Link as RouterLink } from '@reach/router';
 
 // Container
 import PageContainer from '../containers/PageContainer.jsx';
 
-import styles from './home.module.scss';
-import {Link} from '@reach/router';
-import Button from '@material-ui/core/Button';
+const useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1,
+  },
+  paper: {
+    padding: theme.spacing(2),
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
+  },
+}));
 
-const ListItemLink = ({title, subtitle, path}) => (
+const ListItemLink = ({title, subtitle, path, iconType}) => (
   <ListItem>
     <ListItemAvatar>
       <Avatar>
-        <FolderIcon />
+        {iconType === 'folder' ? <FolderIcon /> : <AccountCircleIcon/>}
       </Avatar>
     </ListItemAvatar>
     <ListItemText
@@ -40,60 +50,72 @@ const ListItemLink = ({title, subtitle, path}) => (
   </ListItem>
 );
 
-class HomePage extends React.Component {
-  render () {
-    return (
-      <PageContainer user={this.props.user} flashMessages={this.props.flashMessages}>
-        <div>
-          <div className="row">
-            <div className="col">
-              <h1>Dashboard</h1>
-            </div>
-          </div>
-          <div className="row">
-            <div className="col">
-              <h2>{this.props.campaigns.title}</h2>
+ListItemLink.propTypes = {
+  title: PropTypes.string.isRequired,
+  subtitle: PropTypes.string.isRequired,
+  path: PropTypes.string.isRequired,
+  iconType: PropTypes.string,
+};
+
+function HomePage (props) {
+  const classes = useStyles();
+
+  return (
+    <PageContainer user={props.user} flashMessages={props.flashMessages}>
+      <div className={classes.root}>
+        <h1>Dashboard</h1>
+        <Grid container spacing={3}>
+          <Grid item xs={12} sm={6}>
+            <Paper className={classes.paper}>
+              <h2>{props.campaigns.title}</h2>
               <List>
-                {this.props.campaigns.campaigns.map((campaign) =>
+                {props.campaigns.campaigns.map((campaign) =>
                   <ListItemLink title={campaign.name}
                     subtitle={campaign.user.name}
                     path={`/campaigns/${campaign.slug}`}
-                    key={campaign.slug}/>
+                    key={campaign.slug}
+                    iconType={'folder'}/>
                 )}
               </List>
-            </div>
-            <div className="col">
-              <h3>{this.props.dungeonMasters.title}</h3>
+            </Paper>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Paper className={classes.paper}>
+              <h2>{props.dungeonMasters.title}</h2>
               <List>
-                {this.props.dungeonMasters.dungeonMasters.map((dm, index) =>
+                {props.dungeonMasters.dungeonMasters.map((dm, index) =>
                   <ListItemLink title={dm.name}
                     subtitle={'Dungeon Master'}
                     path={`/dungeon_masters/${dm.username}`}
                     key={index}/>
                 )}
               </List>
-              { this.props.playerCharacters ? (
-                <div>
-                  <h3>{this.props.playerCharacters.title}</h3>
-                  <ul className="list-group list-group-flush">
-                    {this.props.playerCharacters.characters.map((character, index) => <li key={index} className="list-group-item">{character.name}</li>)}
-                  </ul>
-                </div>
-              ) : null}
-              { this.props.nonPlayerCharacters ? (
-                <div>
-                  <h3>{this.props.nonPlayerCharacters.title}</h3>
-                  <ul className="list-group list-group-flush">
-                    {this.props.nonPlayerCharacters.characters.map((character, index) => <li key={index} className="list-group-item">{character.name}</li>)}
-                  </ul>
-                </div>
-              ) : null}
-            </div>
-          </div>
-        </div>
-      </PageContainer>
-    );
-  }
+            </Paper>
+          </Grid>
+          { props.playerCharacters ? (
+            <Grid item xs={12} sm={6}>
+              <Paper className={classes.paper}>
+                <h3>{props.playerCharacters.title}</h3>
+                <ul className="list-group list-group-flush">
+                  {props.playerCharacters.characters.map((character, index) => <li key={index} className="list-group-item">{character.name}</li>)}
+                </ul>
+              </Paper>
+            </Grid>
+          ) : null}
+          { props.nonPlayerCharacters ? (
+            <Grid item xs={12} sm={6}>
+              <Paper className={classes.paper}>
+                <h3>{props.nonPlayerCharacters.title}</h3>
+                <ul className="list-group list-group-flush">
+                  {props.nonPlayerCharacters.characters.map((character, index) => <li key={index} className="list-group-item">{character.name}</li>)}
+                </ul>
+              </Paper>
+            </Grid>
+          ) : null}
+        </Grid>
+      </div>
+    </PageContainer>
+  );
 }
 
 HomePage.propTypes = {
