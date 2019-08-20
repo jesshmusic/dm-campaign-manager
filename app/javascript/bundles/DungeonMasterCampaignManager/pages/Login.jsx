@@ -5,26 +5,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import PageContainer from '../containers/PageContainer';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import { makeStyles } from '@material-ui/core/styles';
-import rest from '../actions/api';
 
-const useStyles = makeStyles((theme) => ({
-  button: {
-    margin: theme.spacing(1),
-  },
-  textField: {
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
-    maxWidth: 400,
-  },
-}));
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
+
+import PageContainer from '../containers/PageContainer';
+import rest from '../actions/api';
 
 const Login = (props) => {
   const {user, flashMessages, loginUser} = props;
-  const classes = useStyles();
 
   const [email, setEmail] = React.useState();
   const [password, setPassword] = React.useState();
@@ -44,27 +33,23 @@ const Login = (props) => {
 
   return (
     <PageContainer user={user} flashMessages={flashMessages} pageTitle={'Login'}>
-      <form>
-        <TextField
-          id="standard-email-input"
-          label="Email"
-          className={classes.textField}
-          type="email"
-          margin="normal"
-          onChange={handleEmailChange}
-        />
-        <TextField
-          id="standard-password-input"
-          label="Password"
-          className={classes.textField}
-          type="password"
-          margin="normal"
-          onChange={handlePasswordChange}
-        />
-        <Button color="primary" className={classes.button} onClick={handleUserLogin}>
-          Login
+      <Form>
+        <Form.Group controlId="formBasicEmail">
+          <Form.Label>Email address</Form.Label>
+          <Form.Control type="email" placeholder="Enter email" onChange={handleEmailChange} />
+        </Form.Group>
+
+        <Form.Group controlId="formBasicPassword">
+          <Form.Label>Password</Form.Label>
+          <Form.Control type="password" placeholder="Password" onChange={handlePasswordChange} />
+        </Form.Group>
+        <Form.Group controlId="formBasicChecbox">
+          <Form.Check type="checkbox" label="Check me out" />
+        </Form.Group>
+        <Button variant="primary" type="submit" onClick={handleUserLogin}>
+          Submit
         </Button>
-      </form>
+      </Form>
     </PageContainer>
   );
 };
