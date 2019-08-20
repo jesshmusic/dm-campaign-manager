@@ -7,6 +7,7 @@ import { Router } from '@reach/router';
 import HomePage from './HomePage';
 import Campaigns from './Campaigns';
 import Campaign from './Campaign';
+import Login from './Login';
 
 const store = (props) => configureStore({
   reducer: rootReducer,
@@ -19,6 +20,7 @@ const Home = (props) => (
       <HomePage path="/" />
       <Campaigns path='campaigns'/>
       <Campaign path='campaigns/:campaignSlug'/>
+      <Login path='login' />
     </Router>
   </Provider>
 );

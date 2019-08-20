@@ -35,6 +35,7 @@ const useStyles = makeStyles((theme) => ({
 
 function MenuBar (props) {
   const classes = useStyles();
+  const {onClick, user, handleLogoutUser} = props;
   return (
     <AppBar className={classes.appBar}>
       <Toolbar>
@@ -42,7 +43,7 @@ function MenuBar (props) {
           color="inherit"
           aria-label="open drawer"
           edge="start"
-          onClick={props.onClick}
+          onClick={onClick}
           className={classes.menuButton}
         >
           <MenuIcon/>
@@ -50,8 +51,8 @@ function MenuBar (props) {
         <Typography variant="h6" className={classes.title}>
           Dungeon Master&apos;s Campaign Manager
         </Typography>
-        {props.user ? (
-          <Button color="inherit" component={RouterLink} to='/logout'>Log Out</Button>
+        {user ? (
+          <Button color="inherit" onClick={handleLogoutUser}>Log Out</Button>
         ) : (
           <Button color="inherit" component={RouterLink} to='/login'>Log In</Button>
         )}
@@ -61,7 +62,8 @@ function MenuBar (props) {
 }
 
 MenuBar.propTypes = {
-  onClick: PropTypes.func,
+  handleLogoutUser: PropTypes.func.isRequired,
+  onClick: PropTypes.func.isRequired,
   user: PropTypes.any,
 };
 

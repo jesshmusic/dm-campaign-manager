@@ -17,15 +17,12 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 
 import { Link as RouterLink } from '@reach/router';
+import rest from '../actions/api';
 
 // Container
 import PageContainer from '../containers/PageContainer.jsx';
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-    paddingTop: theme.spacing(5),
-  },
   paper: {
     padding: theme.spacing(2),
     textAlign: 'center',
@@ -63,11 +60,8 @@ function HomePage (props) {
   const classes = useStyles();
 
   return (
-    <PageContainer user={props.user} flashMessages={props.flashMessages}>
-      <div className={classes.root}>
-        <Typography variant="h2" component="h1" gutterBottom>
-          Dashboard
-        </Typography>
+    <PageContainer user={props.user} flashMessages={props.flashMessages} pageTitle='Dashboard' logoutUser={props.logoutUser}>
+      <div>
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6}>
             <Paper className={classes.paper}>
@@ -145,6 +139,7 @@ HomePage.propTypes = {
   nonPlayerCharacters: PropTypes.object,
   playerCharacters: PropTypes.object,
   dungeonMasters: PropTypes.object,
+  logoutUser: PropTypes.func.isRequired,
   user: PropTypes.object,
   flashMessages: PropTypes.array,
 };
@@ -161,7 +156,11 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps (dispatch) {
-  return {};
+  return {
+    logoutUser: () => {
+      dispatch(rest.actions.userLogout());
+    },
+  };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomePage);

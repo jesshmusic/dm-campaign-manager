@@ -37,7 +37,10 @@ const useStyles = makeStyles(theme => ({
   },
   content: {
     flexGrow: 1,
-    padding: theme.spacing(6, 0, 2),
+    padding: theme.spacing(8, 0, 2),
+  },
+  pageContainer: {
+    padding: theme.spacing(2),
   },
   title: {
     flexGrow: 1,
@@ -45,13 +48,18 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const PageContainer = (props) => {
-  const { children, user, flashMessages } = props;
+  const { children, logoutUser, user, flashMessages, pageTitle } = props;
   const classes = useStyles();
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
-  function handleDrawerToggle () {
+  const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
-  }
+  };
+
+  const handleLogout = (event) => {
+    event.preventDefault();
+    logoutUser();
+  };
 
   return (
     <React.Fragment>
@@ -59,12 +67,15 @@ const PageContainer = (props) => {
       <ThemeProvider theme={theme}>
         <Typography component='div'>
           <div className={classes.root}>
-            <HeroBanner />
-            <FlashMessages messages={flashMessages}/>
             <Navbar user={user} mobileOpen={mobileOpen} handleDrawerToggle={handleDrawerToggle} />
-            <MenuBar onClick={handleDrawerToggle} user={user}/>
+            <MenuBar onClick={handleDrawerToggle} user={user} handleLogoutUser={handleLogout}/>
             <main className={classes.content}>
-              <Container maxWidth="lg">
+              <HeroBanner />
+              <FlashMessages messages={flashMessages}/>
+              <Container maxWidth="lg" className={classes.pageContainer}>
+                <Typography variant="h2" component="h1" gutterBottom>
+                  {pageTitle}
+                </Typography>
                 {children}
               </Container>
               <Footer user={user} />
@@ -77,9 +88,11 @@ const PageContainer = (props) => {
 };
 
 PageContainer.propTypes = {
-  children: PropTypes.element.isRequired,
-  user: PropTypes.object,
+  children: PropTypes.element,
   flashMessages: PropTypes.array,
+  logoutUser: PropTypes.func.isRequired,
+  pageTitle: PropTypes.string.isRequired,
+  user: PropTypes.object,
 };
 
 export default PageContainer;
