@@ -8,6 +8,8 @@ import {Link as RouterLink} from '@reach/router';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import rest from '../../actions/api';
+import {connect} from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -35,7 +37,12 @@ const useStyles = makeStyles((theme) => ({
 
 function MenuBar (props) {
   const classes = useStyles();
-  const {onClick, user, handleLogoutUser} = props;
+  const {onClick, user, logoutUser} = props;
+
+  const handleLogout = (event) => {
+    event.preventDefault();
+    logoutUser();
+  };
   return (
     <AppBar className={classes.appBar}>
       <Toolbar>
@@ -52,7 +59,7 @@ function MenuBar (props) {
           Dungeon Master&apos;s Campaign Manager
         </Typography>
         {user ? (
-          <Button color="inherit" onClick={handleLogoutUser}>Log Out</Button>
+          <Button color="inherit" onClick={handleLogout}>Log Out</Button>
         ) : (
           <Button color="inherit" component={RouterLink} to='/login'>Log In</Button>
         )}
@@ -62,9 +69,23 @@ function MenuBar (props) {
 }
 
 MenuBar.propTypes = {
-  handleLogoutUser: PropTypes.func.isRequired,
+  logoutUser: PropTypes.func.isRequired,
   onClick: PropTypes.func.isRequired,
   user: PropTypes.any,
 };
 
-export default MenuBar;
+function mapStateToProps (state) {
+  return {
+    user: state.user,
+  };
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    logoutUser: () => {
+      dispatch(rest.actions.userLogout());
+    },
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(MenuBar);

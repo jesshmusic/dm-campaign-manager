@@ -56,11 +56,6 @@ const PageContainer = (props) => {
     setMobileOpen(!mobileOpen);
   };
 
-  const handleLogout = (event) => {
-    event.preventDefault();
-    logoutUser();
-  };
-
   return (
     <React.Fragment>
       <CssBaseline />
@@ -68,7 +63,7 @@ const PageContainer = (props) => {
         <Typography component='div'>
           <div className={classes.root}>
             <Navbar user={user} mobileOpen={mobileOpen} handleDrawerToggle={handleDrawerToggle} />
-            <MenuBar onClick={handleDrawerToggle} user={user} handleLogoutUser={handleLogout}/>
+            <MenuBar onClick={handleDrawerToggle} user={user}/>
             <main className={classes.content}>
               <HeroBanner />
               <FlashMessages messages={flashMessages}/>
@@ -90,7 +85,6 @@ const PageContainer = (props) => {
 PageContainer.propTypes = {
   children: PropTypes.element,
   flashMessages: PropTypes.array,
-  logoutUser: PropTypes.func.isRequired,
   pageTitle: PropTypes.string.isRequired,
   user: PropTypes.object,
 };

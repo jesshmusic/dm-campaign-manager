@@ -60,7 +60,7 @@ function HomePage (props) {
   const classes = useStyles();
 
   return (
-    <PageContainer user={props.user} flashMessages={props.flashMessages} pageTitle='Dashboard' logoutUser={props.logoutUser}>
+    <PageContainer user={props.user} flashMessages={props.flashMessages} pageTitle='Dashboard'>
       <div>
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6}>
@@ -156,11 +156,7 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps (dispatch) {
-  return {
-    logoutUser: () => {
-      dispatch(rest.actions.userLogout());
-    },
-  };
+  return {};
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomePage);
