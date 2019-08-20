@@ -5,12 +5,13 @@ import adapterFetch from 'redux-api/lib/adapters/fetch';
 function getHeaders (contentType) {
   return ReactOnRails.authenticityHeaders({
     'Content-Type': contentType ? contentType : 'application/json',
+    'Accept': 'application/json',
   });
 }
 
 export default reduxApi({
   getCampaigns: {
-    url: '/v1/campaigns.json',
+    url: '/v1/campaigns',
     options () {
       const headers = getHeaders();
       return {
@@ -20,7 +21,7 @@ export default reduxApi({
     },
   },
   userLogin: {
-    url: '/users/sign_in.json',
+    url: '/users/sign_in',
     options () {
       const headers = getHeaders();
       return {
@@ -33,7 +34,7 @@ export default reduxApi({
     ],
   },
   userLogout: {
-    url: '/users/sign_out.json',
+    url: '/users/sign_out',
     options () {
       const headers = getHeaders();
       return {
@@ -41,6 +42,9 @@ export default reduxApi({
         headers,
       };
     },
+    postfetch: [
+      ({actions, dispatch}) => dispatch(actions.getCampaigns()),
+    ],
   },
 }).use('fetch', adapterFetch(customFetch));
 
