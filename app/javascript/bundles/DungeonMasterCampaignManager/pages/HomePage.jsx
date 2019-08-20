@@ -57,19 +57,20 @@ ListItemLink.propTypes = {
 };
 
 function HomePage (props) {
+  const {campaigns, nonPlayerCharacters, playerCharacters, dungeonMasters, user, flashMessages, getCampaigns} = props;
   const classes = useStyles();
-
+  // getCampaigns();
   return (
-    <PageContainer user={props.user} flashMessages={props.flashMessages} pageTitle='Dashboard'>
+    <PageContainer user={user} flashMessages={flashMessages} pageTitle='Dashboard'>
       <div>
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6}>
             <Paper className={classes.paper}>
               <Typography variant="h4" component="h2" gutterBottom>
-                {props.campaigns.title}
+                {campaigns.title}
               </Typography>
               <List>
-                {props.campaigns.campaigns.map((campaign) =>
+                {campaigns.campaigns.map((campaign) =>
                   <ListItemLink title={campaign.name}
                     subtitle={campaign.user.name}
                     path={`/campaigns/${campaign.slug}`}
@@ -82,10 +83,10 @@ function HomePage (props) {
           <Grid item xs={12} sm={6}>
             <Paper className={classes.paper}>
               <Typography variant="h4" component="h2" gutterBottom>
-                {props.dungeonMasters.title}
+                {dungeonMasters.title}
               </Typography>
               <List>
-                {props.dungeonMasters.dungeonMasters.map((dm, index) =>
+                {dungeonMasters.dungeonMasters.map((dm, index) =>
                   <ListItemLink title={dm.name}
                     subtitle={'Dungeon Master'}
                     path={`/dungeon_masters/${dm.username}`}
@@ -94,14 +95,14 @@ function HomePage (props) {
               </List>
             </Paper>
           </Grid>
-          { props.playerCharacters ? (
+          { playerCharacters ? (
             <Grid item xs={12} sm={6}>
               <Paper className={classes.paper}>
                 <Typography variant="h4" component="h2" gutterBottom>
-                  {props.playerCharacters.title}
+                  {playerCharacters.title}
                 </Typography>
                 <List>
-                  {props.playerCharacters.characters.map((character) =>
+                  {playerCharacters.characters.map((character) =>
                     <ListItemLink title={character.name}
                       subtitle={`Level ${character.level} ${character.race}`}
                       path={`/player_characters/${character.slug}`}
@@ -111,14 +112,14 @@ function HomePage (props) {
               </Paper>
             </Grid>
           ) : null}
-          { props.nonPlayerCharacters ? (
+          { nonPlayerCharacters ? (
             <Grid item xs={12} sm={6}>
               <Paper className={classes.paper}>
                 <Typography variant="h4" component="h2" gutterBottom>
-                  {props.nonPlayerCharacters.title}
+                  {nonPlayerCharacters.title}
                 </Typography>
                 <List>
-                  {props.nonPlayerCharacters.characters.map((character) =>
+                  {nonPlayerCharacters.characters.map((character) =>
                     <ListItemLink title={character.name}
                       subtitle={`Level ${character.level} ${character.race}`}
                       path={`/player_characters/${character.slug}`}
@@ -139,7 +140,6 @@ HomePage.propTypes = {
   nonPlayerCharacters: PropTypes.object,
   playerCharacters: PropTypes.object,
   dungeonMasters: PropTypes.object,
-  logoutUser: PropTypes.func.isRequired,
   user: PropTypes.object,
   flashMessages: PropTypes.array,
 };
@@ -156,7 +156,11 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps (dispatch) {
-  return {};
+  return {
+    // getCampaigns: () => {
+    //   dispatch(rest.actions.getCampaigns());
+    // },
+  };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomePage);

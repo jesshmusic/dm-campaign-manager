@@ -4,8 +4,6 @@ class HomeController < ApplicationController
   layout 'home'
 
   def index
-    puts flash.to_json
-    authorize :home, :index?
     if current_user&.admin?
       set_admin_props
     elsif current_user&.dungeon_master?
@@ -23,7 +21,7 @@ class HomeController < ApplicationController
 
   def set_admin_props
     @home_props = {
-      user: current_user,
+      user: current_user.as_json(include: [:player_campaigns ]),
       campaigns: {
         title: 'My Campaigns',
         campaigns: campaigns(current_user.campaigns)
@@ -46,7 +44,7 @@ class HomeController < ApplicationController
 
   def set_dm_props
     @home_props = {
-      user: current_user,
+      user: current_user.as_json(include: [:player_campaigns ]),
       campaigns: {
         title: 'My Campaigns',
         campaigns: campaigns(current_user.campaigns)
@@ -69,7 +67,7 @@ class HomeController < ApplicationController
 
   def set_player_props
     @home_props = {
-      user: current_user,
+      user: current_user.as_json(include: [:player_campaigns ]),
       campaigns: {
         title: 'My Campaigns',
         campaigns: campaigns(current_user.campaigns)

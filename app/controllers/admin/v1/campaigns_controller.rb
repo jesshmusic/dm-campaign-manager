@@ -8,11 +8,26 @@ module Admin::V1
     # GET /campaigns
     # GET /campaigns.json
     def index
+      @campaigns = if current_user&.role == 'player'
+                     current_user.player_campaigns
+                   elsif current_user&.role == 'dungeon_master'
+                     Campaign.where(user: current_user)
+                   else
+                     Campaign.all
+                   end
       authorize Campaign
-      if params[:search].present?
-        @pagy, @campaigns = pagy(Campaign.search_for(params[:search]))
-      else
-        @pagy, @campaigns = pagy(Campaign.all)
+      @campaigns = @campaigns.search_for(params[:search]) if params[:search].present?
+      respond_to do |format|
+        puts format
+        format.html { @pagy, @campaigns = pagy(@campaigns) }
+        format.json do
+          if current_user&.role == 'dungeon_master' || current_user&.role == 'admin'
+            render json: { title: 'My Campaigns',
+                           campaigns: campaigns(@campaigns) }
+          else
+            render json: { title: 'Campaigns', campaigns: campaigns(@campaigns) }
+          end
+        end
       end
     end
 
@@ -159,6 +174,15 @@ module Admin::V1
         world_locations_attributes: %i[id name description _destroy],
         world_events_attributes: %i[id when name description _destroy]
       )
+    end
+
+    def campaigns(campaigns_list)
+      campaigns_list.as_json(include: [:user, :users, :world_locations, :world_events,
+                                       adventures: { include: [:encounters] },
+                                       characters: { include: [:stat_block, :character_actions, :skills, :spells,
+                                                               equipment_items: {
+                                                                 include: [:items]
+                                                               }] }])
     end
   end
 end

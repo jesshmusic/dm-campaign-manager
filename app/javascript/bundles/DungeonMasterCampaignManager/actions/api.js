@@ -1,23 +1,26 @@
-// import axios from 'axios';
 import ReactOnRails from 'react-on-rails';
 import reduxApi from 'redux-api';
 import adapterFetch from 'redux-api/lib/adapters/fetch';
 
-// const axiosClient = axios.create({
-//   baseURL: '',
-//   headers: ReactOnRails.authenticityHeaders(),
-// });
-
 function getHeaders (contentType) {
-  console.log(ReactOnRails.authenticityToken());
   return ReactOnRails.authenticityHeaders({
     'Content-Type': contentType ? contentType : 'application/json',
   });
 }
 
 export default reduxApi({
+  getCampaigns: {
+    url: '/v1/campaigns.json',
+    options () {
+      const headers = getHeaders();
+      return {
+        method: 'get',
+        headers,
+      };
+    },
+  },
   userLogin: {
-    url: '/users/sign_in',
+    url: '/users/sign_in.json',
     options () {
       const headers = getHeaders();
       return {
@@ -25,9 +28,12 @@ export default reduxApi({
         headers,
       };
     },
+    postfetch: [
+      ({actions, dispatch}) => dispatch(actions.getCampaigns()),
+    ],
   },
   userLogout: {
-    url: '/users/sign_out',
+    url: '/users/sign_out.json',
     options () {
       const headers = getHeaders();
       return {

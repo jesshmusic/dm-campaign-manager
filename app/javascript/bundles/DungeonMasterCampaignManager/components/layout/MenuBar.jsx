@@ -58,6 +58,9 @@ function MenuBar (props) {
         <Typography variant="h6" className={classes.title}>
           Dungeon Master&apos;s Campaign Manager
         </Typography>
+        {user && user.role === 'admin' ? (
+          <Button color="inherit" href='/v1/dashboard'>Admin</Button>
+        ) : null}
         {user ? (
           <Button color="inherit" onClick={handleLogout}>Log Out</Button>
         ) : (

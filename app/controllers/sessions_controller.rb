@@ -10,7 +10,10 @@ class SessionsController < Devise::SessionsController
 
     if @user.valid_password?(user_params[:password])
       sign_in :user, @user
-      render json: @user
+      respond_to do |format|
+        format.html { redirect_to '/', notice: "User #{@user.name} logged in." }
+        format.json { render json: @user, include: [:player_campaigns ] }
+      end
     else
       invalid_login_attempt
     end
@@ -18,7 +21,10 @@ class SessionsController < Devise::SessionsController
 
   def destroy
     sign_out(@user)
-    render json: {success: true}
+    respond_to do |format|
+      format.html { redirect_to '/', notice: "User successfully logged out." }
+      format.json { render json: { success: true } }
+    end
   end
 
 
@@ -26,7 +32,7 @@ class SessionsController < Devise::SessionsController
 
   def invalid_login_attempt
     warden.custom_failure!
-    render json: {error: 'invalid login attempt'}, status: :unprocessable_entity
+    render json: { error: 'invalid login attempt' }, status: :unprocessable_entity
   end
 
   def user_params
