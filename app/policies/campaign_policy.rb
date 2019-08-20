@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 class CampaignPolicy < ApplicationPolicy
+  def index?
+    true
+  end
+
   def update?
     user && (user.admin? || record.user == user)
   end
