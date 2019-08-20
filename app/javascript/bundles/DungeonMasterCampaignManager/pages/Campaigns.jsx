@@ -10,9 +10,8 @@ const ReactMarkdown = require('react-markdown');
 import PageContainer from '../containers/PageContainer.jsx';
 
 const Campaigns = ({ campaigns, user, flashMessages }) => (
-  <PageContainer user={user} flashMessages={flashMessages}>
+  <PageContainer user={user} flashMessages={flashMessages} pageTitle={campaigns.title}>
     <div>
-      <h1>{campaigns.title}</h1>
       <ul>
         { campaigns.campaigns.map((campaign) => (
           <li key={campaign.id}>

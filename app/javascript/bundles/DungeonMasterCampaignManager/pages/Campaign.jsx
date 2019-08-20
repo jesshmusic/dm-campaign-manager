@@ -15,9 +15,8 @@ const Campaign = ({ campaigns, user, flashMessages, campaignSlug }) => {
   });
 
   return (
-    <PageContainer user={user} flashMessages={flashMessages}>
+    <PageContainer user={user} flashMessages={flashMessages} pageTitle={`${campaign.name}, a campaign by ${campaign.user.name}`}>
       <div>
-        <h1>{campaign.name} <small>a campaign by {campaign.user.name}</small></h1>
         <ReactMarkdown source={campaign.description} />
       </div>
     </PageContainer>
