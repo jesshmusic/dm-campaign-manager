@@ -19,8 +19,6 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 
 import { Link as RouterLink } from '@reach/router';
 
-import styles from './navbar.module.scss';
-
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
@@ -52,7 +50,7 @@ const useStyles = makeStyles(theme => ({
   },
   content: {
     flexGrow: 1,
-    padding: theme.spacing(3),
+    padding: theme.spacing(6, 0, 2),
   },
   title: {
     flexGrow: 1,

@@ -14,6 +14,7 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
 
 import { Link as RouterLink } from '@reach/router';
 
@@ -23,6 +24,7 @@ import PageContainer from '../containers/PageContainer.jsx';
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
+    paddingTop: theme.spacing(5),
   },
   paper: {
     padding: theme.spacing(2),
@@ -63,11 +65,15 @@ function HomePage (props) {
   return (
     <PageContainer user={props.user} flashMessages={props.flashMessages}>
       <div className={classes.root}>
-        <h1>Dashboard</h1>
+        <Typography variant="h2" component="h1" gutterBottom>
+          Dashboard
+        </Typography>
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6}>
             <Paper className={classes.paper}>
-              <h2>{props.campaigns.title}</h2>
+              <Typography variant="h4" component="h2" gutterBottom>
+                {props.campaigns.title}
+              </Typography>
               <List>
                 {props.campaigns.campaigns.map((campaign) =>
                   <ListItemLink title={campaign.name}
@@ -81,7 +87,9 @@ function HomePage (props) {
           </Grid>
           <Grid item xs={12} sm={6}>
             <Paper className={classes.paper}>
-              <h2>{props.dungeonMasters.title}</h2>
+              <Typography variant="h4" component="h2" gutterBottom>
+                {props.dungeonMasters.title}
+              </Typography>
               <List>
                 {props.dungeonMasters.dungeonMasters.map((dm, index) =>
                   <ListItemLink title={dm.name}
@@ -95,20 +103,34 @@ function HomePage (props) {
           { props.playerCharacters ? (
             <Grid item xs={12} sm={6}>
               <Paper className={classes.paper}>
-                <h3>{props.playerCharacters.title}</h3>
-                <ul className="list-group list-group-flush">
-                  {props.playerCharacters.characters.map((character, index) => <li key={index} className="list-group-item">{character.name}</li>)}
-                </ul>
+                <Typography variant="h4" component="h2" gutterBottom>
+                  {props.playerCharacters.title}
+                </Typography>
+                <List>
+                  {props.playerCharacters.characters.map((character) =>
+                    <ListItemLink title={character.name}
+                      subtitle={`Level ${character.level} ${character.race}`}
+                      path={`/player_characters/${character.slug}`}
+                      key={character.slug}/>
+                  )}
+                </List>
               </Paper>
             </Grid>
           ) : null}
           { props.nonPlayerCharacters ? (
             <Grid item xs={12} sm={6}>
               <Paper className={classes.paper}>
-                <h3>{props.nonPlayerCharacters.title}</h3>
-                <ul className="list-group list-group-flush">
-                  {props.nonPlayerCharacters.characters.map((character, index) => <li key={index} className="list-group-item">{character.name}</li>)}
-                </ul>
+                <Typography variant="h4" component="h2" gutterBottom>
+                  {props.nonPlayerCharacters.title}
+                </Typography>
+                <List>
+                  {props.nonPlayerCharacters.characters.map((character) =>
+                    <ListItemLink title={character.name}
+                      subtitle={`Level ${character.level} ${character.race}`}
+                      path={`/player_characters/${character.slug}`}
+                      key={character.slug}/>
+                  )}
+                </List>
               </Paper>
             </Grid>
           ) : null}

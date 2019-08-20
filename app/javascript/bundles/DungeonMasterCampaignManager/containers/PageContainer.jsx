@@ -22,6 +22,7 @@ let theme = createMuiTheme({
       main: '#ffc107',
     },
   },
+  spacing: 10,
   typography: {
     fontFamily: 'Lora',
   },

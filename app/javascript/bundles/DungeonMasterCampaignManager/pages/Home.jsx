@@ -8,8 +8,6 @@ import HomePage from './HomePage';
 import Campaigns from './Campaigns';
 import Campaign from './Campaign';
 
-import styles from './home.module.scss';
-
 const store = (props) => configureStore({
   reducer: rootReducer,
   preloadedState: props,
