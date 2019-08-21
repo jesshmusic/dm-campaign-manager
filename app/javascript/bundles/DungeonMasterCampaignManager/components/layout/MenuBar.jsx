@@ -12,14 +12,14 @@ import {connect} from 'react-redux';
 const NavLink = props => (
   <Link
     {...props}
-    getProps={({ isCurrent }) => ({ class: isCurrent ? 'nav-link active' : 'nav-link' })}
+    getProps={({ isCurrent }) => ({ className: isCurrent ? 'nav-link active' : 'nav-link' })}
   />
 );
 
 const DropdownLink = props => (
   <Link
     {...props}
-    getProps={({ isCurrent }) => ({ class: isCurrent ? 'dropdown-item active' : 'dropdown-item' })}
+    getProps={({ isCurrent }) => ({ className: isCurrent ? 'dropdown-item active' : 'dropdown-item' })}
   />
 );
 

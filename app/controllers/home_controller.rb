@@ -4,15 +4,19 @@ class HomeController < ApplicationController
   layout 'home'
 
   def index
-    if current_user&.admin?
-      set_admin_props
-    elsif current_user&.dungeon_master?
-      set_dm_props
-    elsif current_user
-      set_player_props
-    else
-      set_logged_out_props
-    end
+    @user = current_user ? current_user.as_json(include: [:player_campaigns ]) : nil
+    @home_props = {
+      user: @user
+    }
+    # if current_user&.admin?
+    #   set_admin_props
+    # elsif current_user&.dungeon_master?
+    #   set_dm_props
+    # elsif current_user
+    #   set_player_props
+    # else
+    #   set_logged_out_props
+    # end
   end
 
 

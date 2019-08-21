@@ -11,7 +11,14 @@ import Login from './Login';
 
 const store = (props) => configureStore({
   reducer: rootReducer,
-  preloadedState: props,
+  preloadedState: {
+    user: props.user,
+    campaigns: [],
+    nonPlayerCharacters: [],
+    playerCharacters: [],
+    dungeonMasters: [],
+    flashMessages: [],
+  },
 });
 
 const Home = (props) => (

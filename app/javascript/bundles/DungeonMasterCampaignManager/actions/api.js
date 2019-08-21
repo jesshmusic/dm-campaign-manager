@@ -1,6 +1,7 @@
 import ReactOnRails from 'react-on-rails';
 import reduxApi from 'redux-api';
-import adapterFetch from "redux-api/lib/adapters/fetch";
+import adapterFetch from 'redux-api/lib/adapters/fetch';
+import { navigate } from '@reach/router';
 
 function getHeaders (contentType) {
   return ReactOnRails.authenticityHeaders({
@@ -29,9 +30,10 @@ export default reduxApi({
         headers,
       };
     },
-    postfetch: [
-      ({actions, dispatch}) => dispatch(actions.getCampaigns()),
-    ],
+    postfetch: [({actions, dispatch}) => {
+      dispatch(actions.getCampaigns());
+      navigate('/');
+    }],
   },
   userLogout: {
     url: '/users/sign_out',
@@ -42,9 +44,10 @@ export default reduxApi({
         headers,
       };
     },
-    postfetch: [
-      ({actions, dispatch}) => dispatch(actions.getCampaigns()),
-    ],
+    postfetch: [({actions, dispatch}) => {
+      dispatch(actions.getCampaigns());
+      navigate('/');
+    }],
   },
 }).use('fetch', adapterFetch(fetch));
 

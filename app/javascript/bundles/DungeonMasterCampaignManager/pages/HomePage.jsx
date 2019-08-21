@@ -18,9 +18,9 @@ function HomePage (props) {
   return (
     <PageContainer user={user} flashMessages={flashMessages} pageTitle='Dashboard'>
       <div>
-        <h2>{campaigns.title}</h2>
+        <h2>Campaigns</h2>
         <ListGroup>
-          {campaigns.campaigns.map((campaign) =>
+          {campaigns.map((campaign) =>
             <ListGroup.Item key={campaign.slug}>
               <Link to={`/app/campaigns/${campaign.slug}`}>
                 {campaign.name} - {campaign.user.name}
@@ -28,19 +28,19 @@ function HomePage (props) {
             </ListGroup.Item>
           )}
         </ListGroup>
-        <h2>{dungeonMasters.title}</h2>
+        <h2>Dungeon Masters</h2>
         <ListGroup>
-          {dungeonMasters.dungeonMasters.map((dm) =>
+          {dungeonMasters.map((dm) =>
             <ListGroup.Item key={dm.username}>
               <Link to={`/app/dungeon_masters/${dm.username}`}>{dm.name}</Link>
             </ListGroup.Item>
           )}
         </ListGroup>
-        { playerCharacters ? (
+        { playerCharacters && playerCharacters.count > 0 ? (
           <div>
-            <h2>{playerCharacters.title}</h2>
+            <h2>Player Characters</h2>
             <ListGroup>
-              {playerCharacters.characters.map((character) =>
+              {playerCharacters.map((character) =>
                 <ListGroup.Item key={character.slug}>
                   <Link to={`/app/player_characters/${character.slug}`}>
                     {character.name}, Level {character.level} {character.race}
@@ -50,11 +50,11 @@ function HomePage (props) {
             </ListGroup>
           </div>
         ) : null}
-        { nonPlayerCharacters ? (
+        { nonPlayerCharacters && nonPlayerCharacters.count > 0 ? (
           <div>
-            <h2>{nonPlayerCharacters.title}</h2>
+            <h2>Non-player Characters</h2>
             <ListGroup>
-              {nonPlayerCharacters.characters.map((character) =>
+              {nonPlayerCharacters.map((character) =>
                 <ListGroup.Item key={character.slug}>
                   <Link to={`/app/non_player_characters/${character.slug}`}>
                     {character.name}, Level {character.level} {character.race}: <strong>{character.role}</strong>
@@ -70,10 +70,10 @@ function HomePage (props) {
 }
 
 HomePage.propTypes = {
-  campaigns: PropTypes.object,
-  nonPlayerCharacters: PropTypes.object,
-  playerCharacters: PropTypes.object,
-  dungeonMasters: PropTypes.object,
+  campaigns: PropTypes.array,
+  nonPlayerCharacters: PropTypes.array,
+  playerCharacters: PropTypes.array,
+  dungeonMasters: PropTypes.array,
   user: PropTypes.object,
   flashMessages: PropTypes.array,
 };
@@ -91,9 +91,9 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    // getCampaigns: () => {
-    //   dispatch(rest.actions.getCampaigns());
-    // },
+    getCampaigns: () => {
+      dispatch(rest.actions.getCampaigns());
+    },
   };
 }
 

@@ -6,15 +6,6 @@ import nonPlayerCharacters from './nonPlayerCharacters';
 import playerCharacters from './playerCharacters';
 import user from './user';
 
-const preloadedState = {
-  user: null,
-  campaigns: [],
-  nonPlayerCharacters: null,
-  playerCharacters: null,
-  dungeonMasters: [],
-  flashMessages: [],
-};
-
 export default combineReducers({
   campaigns,
   dungeonMasters,

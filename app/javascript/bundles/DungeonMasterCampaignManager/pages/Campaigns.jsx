@@ -8,25 +8,39 @@ const ReactMarkdown = require('react-markdown');
 
 // Container
 import PageContainer from '../containers/PageContainer.jsx';
+import rest from '../actions/api';
 
-const Campaigns = ({ campaigns, user, flashMessages }) => (
-  <PageContainer user={user} flashMessages={flashMessages} pageTitle={campaigns.title}>
-    <div>
-      <ul>
-        { campaigns.campaigns.map((campaign) => (
-          <li key={campaign.id}>
-            <Link to={`/app/campaigns/${campaign.slug}`}>{campaign.name}</Link>
-          </li>
-        )) }
-      </ul>
-    </div>
-  </PageContainer>
-);
+class Campaigns extends React.Component {
+  constructor (props) {
+    super(props);
+  }
+
+  componentDidMount () {
+    this.props.getCampaigns();
+  }
+
+  render () {
+    return (
+      <PageContainer user={this.props.user} flashMessages={this.props.flashMessages} pageTitle={'Campaigns'}>
+        <div>
+          <ul>
+            { this.props.campaigns.map((campaign) => (
+              <li key={campaign.id}>
+                <Link to={`/app/campaigns/${campaign.slug}`}>{campaign.name}</Link>
+              </li>
+            )) }
+          </ul>
+        </div>
+      </PageContainer>
+    );
+  }
+}
 
 Campaigns.propTypes = {
-  campaigns: PropTypes.object,
-  user: PropTypes.object,
+  campaigns: PropTypes.array,
   flashMessages: PropTypes.array,
+  getCampaigns: PropTypes.func.isRequired,
+  user: PropTypes.object,
 };
 
 function mapStateToProps (state) {
@@ -38,7 +52,11 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps (dispatch) {
-  return {};
+  return {
+    getCampaigns: () => {
+      dispatch(rest.actions.getCampaigns());
+    },
+  };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Campaigns);

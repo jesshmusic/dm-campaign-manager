@@ -21,12 +21,7 @@ module Admin::V1
         puts format
         format.html { @pagy, @campaigns = pagy(@campaigns) }
         format.json do
-          if current_user&.role == 'dungeon_master' || current_user&.role == 'admin'
-            render json: { title: 'My Campaigns',
-                           campaigns: campaigns(@campaigns) }
-          else
-            render json: { title: 'Campaigns', campaigns: campaigns(@campaigns) }
-          end
+          render json: campaigns(@campaigns)
         end
       end
     end
