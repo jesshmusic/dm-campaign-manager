@@ -9,6 +9,20 @@ import React from 'react';
 import rest from '../../actions/api';
 import {connect} from 'react-redux';
 
+const NavLink = props => (
+  <Link
+    {...props}
+    getProps={({ isCurrent }) => ({ class: isCurrent ? 'nav-link active' : 'nav-link' })}
+  />
+);
+
+const DropdownLink = props => (
+  <Link
+    {...props}
+    getProps={({ isCurrent }) => ({ class: isCurrent ? 'dropdown-item active' : 'dropdown-item' })}
+  />
+);
+
 function MenuBar (props) {
   const {user, logoutUser} = props;
 
@@ -17,24 +31,22 @@ function MenuBar (props) {
     logoutUser();
   };
   return (
-    <Navbar bg="light" expand="lg">
-      <Navbar.Brand href="/">React-Bootstrap</Navbar.Brand>
+    <Navbar bg="primary" variant="dark" expand="lg">
+      <Navbar.Brand href="/">DMCM</Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="mr-auto">
-          <Link to={'/'} className={'nav-link'}>Home</Link>
-          <Link to={'/campaigns'} className={'nav-link'}>Campaigns</Link>
-          <NavDropdown title="Dropdown" id="basic-nav-dropdown">
-            <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-            <NavDropdown.Item href="#action/3.2">Another action</NavDropdown.Item>
-            <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
-            <NavDropdown.Divider />
-            <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
+          <NavLink to={'/'}>Home</NavLink>
+          <NavLink to={'/app/campaigns'}>Campaigns</NavLink>
+          <NavDropdown title="Reference" id="basic-nav-dropdown">
+            <DropdownLink to={'/app/monsters'}>Monsters</DropdownLink>
+            <DropdownLink to={'/app/equipment'}>Equipment</DropdownLink>
+            <DropdownLink to={'/app/magic-items'}>Magic Items</DropdownLink>
           </NavDropdown>
           {user ? (
-            <Button onClick={handleLogout} variant="link">Sign Out</Button>
+            <Button onClick={handleLogout} variant="primary" size="sm">Sign Out</Button>
           ) : (
-            <Link to={'/login'} className={'nav-link'}>Sign In</Link>
+            <NavLink to={'/app/login'}>Sign In</NavLink>
           )}
         </Nav>
       </Navbar.Collapse>

@@ -21,7 +21,6 @@ Ruby enVironment Manager 1.29.9 (latest) (c) 2009-2017 Michal Papis, Piotr Kuczy
                    user_confirmation GET    /users/confirmation(.:format)                                                            devise/confirmations#show
                                      POST   /users/confirmation(.:format)                                                            devise/confirmations#create
                                 root GET    /                                                                                        home#index
-                                home GET    /home(.:format)                                                                          home#index
                                users GET    /users(.:format)                                                                         users#index
                            edit_user GET    /users/:slug/edit(.:format)                                                              users#edit
                                 user GET    /users/:slug(.:format)                                                                   users#show

@@ -22,7 +22,7 @@ function HomePage (props) {
         <ListGroup>
           {campaigns.campaigns.map((campaign) =>
             <ListGroup.Item key={campaign.slug}>
-              <Link to={`/campaigns/${campaign.slug}`}>
+              <Link to={`/app/campaigns/${campaign.slug}`}>
                 {campaign.name} - {campaign.user.name}
               </Link>
             </ListGroup.Item>
@@ -32,7 +32,7 @@ function HomePage (props) {
         <ListGroup>
           {dungeonMasters.dungeonMasters.map((dm) =>
             <ListGroup.Item key={dm.username}>
-              <Link to={`/dungeon_masters/${dm.username}`}>{dm.name}</Link>
+              <Link to={`/app/dungeon_masters/${dm.username}`}>{dm.name}</Link>
             </ListGroup.Item>
           )}
         </ListGroup>
@@ -42,7 +42,7 @@ function HomePage (props) {
             <ListGroup>
               {playerCharacters.characters.map((character) =>
                 <ListGroup.Item key={character.slug}>
-                  <Link to={`/player_characters/${character.slug}`}>
+                  <Link to={`/app/player_characters/${character.slug}`}>
                     {character.name}, Level {character.level} {character.race}
                   </Link>
                 </ListGroup.Item>
@@ -56,7 +56,7 @@ function HomePage (props) {
             <ListGroup>
               {nonPlayerCharacters.characters.map((character) =>
                 <ListGroup.Item key={character.slug}>
-                  <Link to={`/non_player_characters/${character.slug}`}>
+                  <Link to={`/app/non_player_characters/${character.slug}`}>
                     {character.name}, Level {character.level} {character.race}: <strong>{character.role}</strong>
                   </Link>
                 </ListGroup.Item>

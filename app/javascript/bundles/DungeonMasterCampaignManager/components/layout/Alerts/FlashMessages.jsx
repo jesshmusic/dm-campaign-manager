@@ -28,10 +28,12 @@ AlertDismissible.propTypes = {
 
 const FlashMessages = ({messages}) => (
   <div>
-    {messages.map((message) => <AlertDismissible key={message.id ? message.id : Date.now()}
-      messageHeading={message.heading ? message.heading : 'Error'}
-      messageText={message.text}
-      messageVariant={message.type === 'alert' ? 'danger' : message.type } />)}
+    {messages.map((message, index) =>
+      <AlertDismissible key={index}
+        messageHeading={message.heading ? message.heading : 'Error'}
+        messageText={message.text}
+        messageVariant={message.type === 'alert' ? 'danger' : message.type } />
+    )}
   </div>
 );
 

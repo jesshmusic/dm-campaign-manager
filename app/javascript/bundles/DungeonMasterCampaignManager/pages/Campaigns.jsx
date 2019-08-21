@@ -15,7 +15,7 @@ const Campaigns = ({ campaigns, user, flashMessages }) => (
       <ul>
         { campaigns.campaigns.map((campaign) => (
           <li key={campaign.id}>
-            <Link to={`/campaigns/${campaign.slug}`}>{campaign.name}</Link>
+            <Link to={`/app/campaigns/${campaign.slug}`}>{campaign.name}</Link>
           </li>
         )) }
       </ul>

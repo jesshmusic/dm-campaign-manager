@@ -6,6 +6,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 
+import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 
@@ -32,31 +33,38 @@ const Login = (props) => {
   };
 
   return (
-    <PageContainer user={user} flashMessages={flashMessages} pageTitle={'Login'}>
-      <Form>
-        <Form.Group controlId="formBasicEmail">
-          <Form.Label>Email address</Form.Label>
-          <Form.Control type="email" placeholder="Enter email" onChange={handleEmailChange} />
-        </Form.Group>
+    <PageContainer user={user} flashMessages={flashMessages} pageTitle={'Sign In'}>
+      {user ? (
+        <Card>
+          <Card.Body>
+            <Card.Title>User Logged In.</Card.Title>
+            <Card.Subtitle className="mb-2 text-muted">{user.name}</Card.Subtitle>
+          </Card.Body>
+        </Card>
+      ) : (
+        <Form>
+          <Form.Group controlId="formBasicEmail">
+            <Form.Label>Email address</Form.Label>
+            <Form.Control type="email" placeholder="Enter email" onChange={handleEmailChange} />
+          </Form.Group>
 
-        <Form.Group controlId="formBasicPassword">
-          <Form.Label>Password</Form.Label>
-          <Form.Control type="password" placeholder="Password" onChange={handlePasswordChange} />
-        </Form.Group>
-        <Form.Group controlId="formBasicChecbox">
-          <Form.Check type="checkbox" label="Check me out" />
-        </Form.Group>
-        <Button variant="primary" type="submit" onClick={handleUserLogin}>
-          Submit
-        </Button>
-      </Form>
+          <Form.Group controlId="formBasicPassword">
+            <Form.Label>Password</Form.Label>
+            <Form.Control type="password" placeholder="Password" onChange={handlePasswordChange} />
+          </Form.Group>
+          <Button variant="primary" type="submit" onClick={handleUserLogin}>
+            Submit
+          </Button>
+        </Form>
+      )}
     </PageContainer>
   );
 };
 
 Login.propTypes = {
-  user: PropTypes.any,
   flashMessages: PropTypes.array,
+  loginUser: PropTypes.func.isRequired,
+  user: PropTypes.any,
 };
 
 function mapStateToProps (state) {

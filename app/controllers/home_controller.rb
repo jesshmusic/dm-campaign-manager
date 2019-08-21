@@ -37,8 +37,7 @@ class HomeController < ApplicationController
       dungeonMasters: {
         title: 'My Dungeon Masters',
         dungeonMasters: current_user.campaigns.map(&:dungeon_master)
-      },
-      flashMessages: flash_messages
+      }
     }
   end
 
@@ -60,8 +59,7 @@ class HomeController < ApplicationController
       dungeonMasters: {
         title: 'My Dungeon Masters',
         dungeonMasters: current_user.campaigns.map(&:dungeon_master)
-      },
-      flashMessages: flash_messages
+      }
     }
   end
 
@@ -80,8 +78,7 @@ class HomeController < ApplicationController
       dungeonMasters: {
         title: 'My Dungeon Masters',
         dungeonMasters: current_user.player_campaigns.map(&:dungeon_master)
-      },
-      flashMessages: flash_messages
+      }
     }
   end
 
@@ -97,8 +94,7 @@ class HomeController < ApplicationController
       dungeonMasters: {
         title: 'Dungeon Masters',
         dungeonMasters: User.where(role: :dungeon_master).limit(5)
-      },
-      flashMessages: flash_messages
+      }
     }
   end
 

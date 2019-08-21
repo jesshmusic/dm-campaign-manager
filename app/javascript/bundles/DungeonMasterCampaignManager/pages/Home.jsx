@@ -18,9 +18,9 @@ const Home = (props) => (
   <Provider store={store(props)}>
     <Router>
       <HomePage path="/" />
-      <Campaigns path='campaigns'/>
-      <Campaign path='campaigns/:campaignSlug'/>
-      <Login path='login' />
+      <Campaigns path='/app/campaigns'/>
+      <Campaign path='/app/campaigns/:campaignSlug'/>
+      <Login path='/app/login' />
     </Router>
   </Provider>
 );

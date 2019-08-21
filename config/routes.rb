@@ -1,13 +1,12 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  devise_for :users, controllers: { registrations: 'registrations', sessions: 'sessions' }
   root to: 'home#index'
-  get 'home', to: 'home#index'
+  devise_for :users, controllers: { registrations: 'registrations', sessions: 'sessions' }
 
   resources :users, except: %i[create new], param: :slug
   patch '/users/:id/change_role', to: 'users#change_role', as: 'user_change_role'
-
+  get "app(/*all)", to: "home#index"
   scope module: 'admin' do
     namespace :v1 do
       get 'dashboard', to: 'dashboard#index'
@@ -51,6 +50,4 @@ Rails.application.routes.draw do
 
     end
   end
-
-  match '*path', to: 'home#index', via: :all
 end
