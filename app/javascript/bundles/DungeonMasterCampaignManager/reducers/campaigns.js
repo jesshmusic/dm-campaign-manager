@@ -7,11 +7,15 @@ const getCampaignFail = createAction('@@redux-api@getCampaign_fail');
 
 const campaigns = createReducer({
   campaigns: [],
+  dmCampaigns: [],
+  playerCampaigns: [],
   currentCampaign: null,
 }, {
   [getCampaignsSuccess]: (state, action) => {
     return {
-      campaigns: action.data.data,
+      campaigns: action.data.campaigns,
+      playerCampaigns: action.data.player_campaigns,
+      dmCampaigns: action.data.dm_campaigns,
       currentCampaign: state.currentCampaign,
     };
   },

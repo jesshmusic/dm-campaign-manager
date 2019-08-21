@@ -8,20 +8,22 @@ module Admin::V1
     # GET /campaigns
     # GET /campaigns.json
     def index
-      @campaigns = if current_user&.role == 'player'
-                     current_user.player_campaigns
-                   elsif current_user&.role == 'dungeon_master'
-                     Campaign.where(user: current_user)
-                   else
-                     Campaign.all
-                   end
+      @campaigns = Campaign.all
       authorize Campaign
+      @player_campaigns = current_user ? current_user.player_campaigns : []
+      @dm_campaigns = current_user&.dungeon_master? || current_user&.admin? ? Campaign.where(user: current_user) : []
       @campaigns = @campaigns.search_for(params[:search]) if params[:search].present?
+      @campaigns -= @dm_campaigns
+      @campaigns -= @player_campaigns
       respond_to do |format|
         puts format
         format.html { @pagy, @campaigns = pagy(@campaigns) }
         format.json do
-          render json: campaigns(@campaigns)
+          render json: {
+            campaigns: campaigns_small(@campaigns),
+            player_campaigns: campaigns_small(@player_campaigns),
+            dm_campaigns: campaigns(@dm_campaigns)
+          }
         end
       end
     end
@@ -41,7 +43,11 @@ module Admin::V1
           end
         }
         format.json do
-          render json: single_campaign(@campaign)
+          if current_user && @campaign.user == current_user
+            render json: single_campaign(@campaign)
+          else
+            render json: single_campaign_small(@campaign)
+          end
         end
       end
     end
@@ -189,6 +195,11 @@ module Admin::V1
                                                                }] }])
     end
 
+    def campaigns_small(campaigns_list)
+      campaigns_list.as_json(include: [:user, :users, :world_locations, :world_events,
+                                       characters: { include: %i[stat_block character_actions skills] }])
+    end
+
     def single_campaign(single_campaign)
       single_campaign.as_json(include: [:user, :users, :world_locations, :world_events,
                                         adventures: { include: [:encounters] },
@@ -196,6 +207,11 @@ module Admin::V1
                                                                 equipment_items: {
                                                                   include: [:items]
                                                                 }] }])
+    end
+
+    def single_campaign_msall(single_campaign)
+      single_campaign.as_json(include: [:user, :users, :world_locations, :world_events,
+                                        characters: { include: %i[stat_block character_actions skills] }])
     end
   end
 end

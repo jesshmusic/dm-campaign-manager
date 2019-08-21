@@ -11,6 +11,16 @@ function getHeaders (contentType) {
 }
 
 export default reduxApi({
+  joinCampaign: {
+    url: '/v1/campaigns/:id/join_campaign/:user_id',
+    options () {
+      const headers = getHeaders();
+      return {
+        method: 'patch',
+        headers,
+      };
+    },
+  },
   getCampaign: {
     url: '/v1/campaigns/:slug',
     options () {
@@ -60,42 +70,3 @@ export default reduxApi({
     }],
   },
 }).use('fetch', adapterFetch(fetch));
-
-// function status (response) {
-//   if (response.status >= 200 && response.status < 300) {
-//     return Promise.resolve(response);
-//   }
-//   console.log(response);
-//   return Promise.reject(new Error(response.statusText));
-// }
-//
-// function json (response) {
-//   try {
-//     return JSON.parse(response);
-//   } catch (err) {
-//     return response;
-//   }
-// }
-
-// export function customFetch (url, options) {
-//   return fetch(url, options)
-//     .then(status)
-//     .then(json)
-//     .then((data) => data).catch((error) => error);
-// }
-
-// export function apiFetch (url, options) {
-//   return fetch(`/${url}`, options)
-//     .then((response) =>
-//       response.json().then((result) => ({
-//         result,
-//         response,
-//       }))
-//     ).then(({
-//       result,
-//       response,
-//     }) => ({
-//       result,
-//       response,
-//     })).catch((err) => err);
-// }

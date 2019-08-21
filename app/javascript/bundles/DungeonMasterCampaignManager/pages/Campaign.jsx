@@ -9,6 +9,8 @@ const ReactMarkdown = require('react-markdown');
 // Container
 import PageContainer from '../containers/PageContainer.jsx';
 import rest from '../actions/api';
+import Breadcrumb from 'react-bootstrap/Breadcrumb';
+import BreadcrumbLink from '../components/layout/BreadcrumbLink';
 
 class Campaign extends React.Component {
   constructor (props) {
@@ -25,12 +27,26 @@ class Campaign extends React.Component {
       campaign ? (
         <PageContainer user={user} flashMessages={flashMessages} pageTitle={`${campaign.name}, a campaign by ${campaign.user.name}`}>
           <div>
-            <ReactMarkdown source={campaign.description} />
+            <Breadcrumb>
+              <BreadcrumbLink to='/' title={'Home'} />
+              <BreadcrumbLink to='/app/campaigns' title={'Campaigns'} />
+              <Breadcrumb.Item active>{campaign.name}</Breadcrumb.Item>
+            </Breadcrumb>
+            <div>
+              <ReactMarkdown source={campaign.description} />
+            </div>
           </div>
         </PageContainer>
       ) : (
         <PageContainer user={user} flashMessages={flashMessages} pageTitle='Campaign Loading...'>
-          <Spinner animation="border" variant="primary" />
+          <div>
+            <Breadcrumb>
+              <BreadcrumbLink to='/' title={'Home'} />
+              <BreadcrumbLink to='/app/campaigns' title={'Campaigns'} />
+              <Breadcrumb.Item active>Campaign</Breadcrumb.Item>
+            </Breadcrumb>
+            <Spinner animation="border" variant="primary" />
+          </div>
         </PageContainer>
       )
     );
