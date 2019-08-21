@@ -1,45 +1,64 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Link } from '@reach/router';
+import Spinner from 'react-bootstrap/Spinner';
 
 const ReactMarkdown = require('react-markdown');
 
 
 // Container
 import PageContainer from '../containers/PageContainer.jsx';
+import rest from '../actions/api';
 
-const Campaign = ({ campaigns, user, flashMessages, campaignSlug }) => {
-  const campaign = campaigns.campaigns.find(obj => {
-    return obj.slug === campaignSlug;
-  });
+class Campaign extends React.Component {
+  constructor (props) {
+    super(props);
+  }
 
-  return (
-    <PageContainer user={user} flashMessages={flashMessages} pageTitle={`${campaign.name}, a campaign by ${campaign.user.name}`}>
-      <div>
-        <ReactMarkdown source={campaign.description} />
-      </div>
-    </PageContainer>
-  );
+  componentDidMount () {
+    this.props.getCampaign(this.props.campaignSlug);
+  }
+
+  render () {
+    const { user, flashMessages, campaign } = this.props;
+    return (
+      campaign ? (
+        <PageContainer user={user} flashMessages={flashMessages} pageTitle={`${campaign.name}, a campaign by ${campaign.user.name}`}>
+          <div>
+            <ReactMarkdown source={campaign.description} />
+          </div>
+        </PageContainer>
+      ) : (
+        <PageContainer user={user} flashMessages={flashMessages} pageTitle='Campaign Loading...'>
+          <Spinner animation="border" variant="primary" />
+        </PageContainer>
+      )
+    );
+  }
 }
 
 Campaign.propTypes = {
-  campaigns: PropTypes.object,
-  user: PropTypes.object,
+  campaign: PropTypes.object,
+  campaignSlug: PropTypes.string.isRequired,
   flashMessages: PropTypes.array,
-  campaignSlug: PropTypes.string.isRequired
+  getCampaign: PropTypes.func.isRequired,
+  user: PropTypes.object,
 };
 
 function mapStateToProps (state) {
   return {
-    campaigns: state.campaigns,
+    campaign: state.campaigns.currentCampaign,
     user: state.user,
     flashMessages: state.flashMessages,
   };
 }
 
 function mapDispatchToProps (dispatch) {
-  return {};
+  return {
+    getCampaign: (campaignSlug) => {
+      dispatch(rest.actions.getCampaign({slug: campaignSlug}));
+    },
+  };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Campaign);

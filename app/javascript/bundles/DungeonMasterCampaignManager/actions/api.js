@@ -11,6 +11,16 @@ function getHeaders (contentType) {
 }
 
 export default reduxApi({
+  getCampaign: {
+    url: '/v1/campaigns/:slug',
+    options () {
+      const headers = getHeaders();
+      return {
+        method: 'get',
+        headers,
+      };
+    },
+  },
   getCampaigns: {
     url: '/v1/campaigns',
     options () {

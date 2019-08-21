@@ -30,10 +30,19 @@ module Admin::V1
     # GET /campaigns/1.json
     def show
       authorize @campaign
-      if params[:search].present?
-        @pagy, @adventures = pagy(Adventure.where(campaign_id: @campaign.id).search_for(params[:search]))
-      else
-        @pagy, @adventures = pagy(Adventure.where(campaign_id: @campaign.id))
+
+      respond_to do |format|
+        puts format
+        format.html {
+          if params[:search].present?
+            @pagy, @adventures = pagy(Adventure.where(campaign_id: @campaign.id).search_for(params[:search]))
+          else
+            @pagy, @adventures = pagy(Adventure.where(campaign_id: @campaign.id))
+          end
+        }
+        format.json do
+          render json: single_campaign(@campaign)
+        end
       end
     end
 
@@ -178,6 +187,15 @@ module Admin::V1
                                                                equipment_items: {
                                                                  include: [:items]
                                                                }] }])
+    end
+
+    def single_campaign(single_campaign)
+      single_campaign.as_json(include: [:user, :users, :world_locations, :world_events,
+                                        adventures: { include: [:encounters] },
+                                        characters: { include: [:stat_block, :character_actions, :skills, :spells,
+                                                                equipment_items: {
+                                                                  include: [:items]
+                                                                }] }])
     end
   end
 end

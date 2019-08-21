@@ -24,7 +24,7 @@ class Campaigns extends React.Component {
       <PageContainer user={this.props.user} flashMessages={this.props.flashMessages} pageTitle={'Campaigns'}>
         <div>
           <ul>
-            { this.props.campaigns.map((campaign) => (
+            { this.props.campaigns.campaigns.map((campaign) => (
               <li key={campaign.id}>
                 <Link to={`/app/campaigns/${campaign.slug}`}>{campaign.name}</Link>
               </li>
@@ -37,7 +37,7 @@ class Campaigns extends React.Component {
 }
 
 Campaigns.propTypes = {
-  campaigns: PropTypes.array,
+  campaigns: PropTypes.object,
   flashMessages: PropTypes.array,
   getCampaigns: PropTypes.func.isRequired,
   user: PropTypes.object,

@@ -13,7 +13,10 @@ const store = (props) => configureStore({
   reducer: rootReducer,
   preloadedState: {
     user: props.user,
-    campaigns: [],
+    campaigns: {
+      campaigns: [],
+      currentCampaign: null,
+    },
     nonPlayerCharacters: [],
     playerCharacters: [],
     dungeonMasters: [],
