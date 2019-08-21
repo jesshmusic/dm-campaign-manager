@@ -40,8 +40,7 @@ function MenuBar (props) {
           <NavLink to={'/app/campaigns'}>Campaigns</NavLink>
           <NavDropdown title="Reference" id="basic-nav-dropdown">
             <DropdownLink to={'/app/monsters'}>Monsters</DropdownLink>
-            <DropdownLink to={'/app/equipment'}>Equipment</DropdownLink>
-            <DropdownLink to={'/app/magic-items'}>Magic Items</DropdownLink>
+            <DropdownLink to={'/app/items'}>Items and Equipment</DropdownLink>
           </NavDropdown>
           {user ? (
             <Button onClick={handleLogout} variant="primary" size="sm">Sign Out</Button>

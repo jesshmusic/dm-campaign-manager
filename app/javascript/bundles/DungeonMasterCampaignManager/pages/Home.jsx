@@ -8,6 +8,7 @@ import HomePage from './HomePage';
 import Campaigns from './Campaigns';
 import Campaign from './Campaign';
 import Login from './Login';
+import Items from './Items';
 
 const store = (props) => configureStore({
   reducer: rootReducer,
@@ -30,6 +31,7 @@ const Home = (props) => (
       <HomePage path="/" />
       <Campaigns path='/app/campaigns'/>
       <Campaign path='/app/campaigns/:campaignSlug'/>
+      <Items path='/app/items' />
       <Login path='/app/login' />
     </Router>
   </Provider>

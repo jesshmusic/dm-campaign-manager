@@ -9,6 +9,10 @@ class ItemPolicy < ApplicationPolicy
     user && (user.admin? || user.dungeon_master?)
   end
 
+  def show?
+    true
+  end
+
   def destroy?
     user && (user.admin? || (record.user == user))
   end

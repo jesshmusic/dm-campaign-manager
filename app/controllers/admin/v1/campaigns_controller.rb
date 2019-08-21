@@ -16,7 +16,6 @@ module Admin::V1
       @campaigns -= @dm_campaigns
       @campaigns -= @player_campaigns
       respond_to do |format|
-        puts format
         format.html { @pagy, @campaigns = pagy(@campaigns) }
         format.json do
           render json: {

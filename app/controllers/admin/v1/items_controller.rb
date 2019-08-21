@@ -15,14 +15,18 @@ module Admin::V1
                  Item.all.order('name ASC')
                end
       @items = params[:type].present? ? @items.where(type: params[:type]) : @items
-
-      if !current_user
-        @pagy, @items = pagy(@items.where(user_id: nil))
-      elsif current_user.admin?
-        @pagy, @items = pagy(@items)
-      else
-        @pagy, @items = pagy(@items.where(user_id: nil).or(@items.where(user_id: current_user.id)))
+      @items = if !current_user
+                 @items.where(user_id: nil)
+               elsif current_user.admin?
+                 @items
+               else
+                 @items.where(user_id: nil).or(@items.where(user_id: current_user.id))
+               end
+      respond_to do |format|
+        format.html { @pagy, @items = pagy(@items) }
+        format.json { render json: @items.as_json(only: %i[id name type sub_category weight cost_value cost_unit slug]) }
       end
+
     end
 
     # GET /items/1
