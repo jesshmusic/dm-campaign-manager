@@ -32,9 +32,9 @@ function MenuBar (props) {
             <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
           </NavDropdown>
           {user ? (
-            <Link to={'/login'} className={'nav-link'}>Sign In</Link>
-          ) : (
             <Button onClick={handleLogout} variant="link">Sign Out</Button>
+          ) : (
+            <Link to={'/login'} className={'nav-link'}>Sign In</Link>
           )}
         </Nav>
       </Navbar.Collapse>

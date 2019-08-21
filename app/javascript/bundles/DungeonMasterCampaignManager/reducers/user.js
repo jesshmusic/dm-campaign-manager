@@ -1,7 +1,6 @@
 import {createAction, createReducer} from 'redux-starter-kit';
 
 const loginSucceeded = createAction('@@redux-api@userLogin_success');
-
 const logoutSucceeded = createAction('@@redux-api@userLogout_success');
 
 const user = createReducer({}, {
