@@ -1,6 +1,6 @@
 import ReactOnRails from 'react-on-rails';
 import reduxApi from 'redux-api';
-import adapterFetch from 'redux-api/lib/adapters/fetch';
+import adapterFetch from "redux-api/lib/adapters/fetch";
 
 function getHeaders (contentType) {
   return ReactOnRails.authenticityHeaders({
@@ -46,42 +46,43 @@ export default reduxApi({
       ({actions, dispatch}) => dispatch(actions.getCampaigns()),
     ],
   },
-}).use('fetch', adapterFetch(customFetch));
+}).use('fetch', adapterFetch(fetch));
 
-function status (response) {
-  if (response.status >= 200 && response.status < 300) {
-    return Promise.resolve(response);
-  }
-  return Promise.reject(new Error(response.statusText));
-}
+// function status (response) {
+//   if (response.status >= 200 && response.status < 300) {
+//     return Promise.resolve(response);
+//   }
+//   console.log(response);
+//   return Promise.reject(new Error(response.statusText));
+// }
+//
+// function json (response) {
+//   try {
+//     return JSON.parse(response);
+//   } catch (err) {
+//     return response;
+//   }
+// }
 
-function json (response) {
-  try {
-    return JSON.parse(response);
-  } catch (err) {
-    return response;
-  }
-}
+// export function customFetch (url, options) {
+//   return fetch(url, options)
+//     .then(status)
+//     .then(json)
+//     .then((data) => data).catch((error) => error);
+// }
 
-export function customFetch (url, options) {
-  return fetch(url, options)
-    .then(status)
-    .then(json)
-    .then((data) => data).catch((error) => error);
-}
-
-export function apiFetch (url, options) {
-  return fetch(`/${url}`, options)
-    .then((response) =>
-      response.json().then((result) => ({
-        result,
-        response,
-      }))
-    ).then(({
-      result,
-      response,
-    }) => ({
-      result,
-      response,
-    })).catch((err) => err);
-}
+// export function apiFetch (url, options) {
+//   return fetch(`/${url}`, options)
+//     .then((response) =>
+//       response.json().then((result) => ({
+//         result,
+//         response,
+//       }))
+//     ).then(({
+//       result,
+//       response,
+//     }) => ({
+//       result,
+//       response,
+//     })).catch((err) => err);
+// }

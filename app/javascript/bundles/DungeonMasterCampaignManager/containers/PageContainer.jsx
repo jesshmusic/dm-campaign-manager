@@ -7,7 +7,6 @@ import Container from 'react-bootstrap/Container';
 import Footer from '../components/layout/Footer/Footer.jsx';
 import HeroBanner from '../components/layout/HeroBanner/HeroBanner.jsx';
 import MenuBar from '../components/layout/MenuBar';
-// import Navbar from '../components/layout/Navbar/Navbar.jsx';
 import FlashMessages from '../components/layout/Alerts/FlashMessages.jsx';
 
 import '../stylesheets/_global.scss';
