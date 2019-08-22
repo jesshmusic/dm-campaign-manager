@@ -4,12 +4,12 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import PageContainer from '../containers/PageContainer';
-import BreadcrumbLink from '../components/layout/BreadcrumbLink';
+import PageContainer from '../../containers/PageContainer';
+import BreadcrumbLink from '../../components/layout/BreadcrumbLink';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import ListGroup from 'react-bootstrap/ListGroup';
 import {Link} from '@reach/router';
-import rest from '../actions/api';
+import rest from '../../actions/api';
 import {connect} from 'react-redux';
 
 class Armor extends React.Component {

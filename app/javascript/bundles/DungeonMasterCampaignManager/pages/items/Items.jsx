@@ -2,10 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from '@reach/router';
-import BreadcrumbLink from '../components/layout/BreadcrumbLink';
+import BreadcrumbLink from '../../components/layout/BreadcrumbLink';
 
 // Container
-import PageContainer from '../containers/PageContainer.jsx';
+import PageContainer from '../../containers/PageContainer.jsx';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
 

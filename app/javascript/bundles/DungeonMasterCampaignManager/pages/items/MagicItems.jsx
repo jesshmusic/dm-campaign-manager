@@ -4,15 +4,15 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import PageContainer from '../containers/PageContainer';
-import BreadcrumbLink from '../components/layout/BreadcrumbLink';
+import PageContainer from '../../containers/PageContainer';
+import BreadcrumbLink from '../../components/layout/BreadcrumbLink';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import ListGroup from 'react-bootstrap/ListGroup';
 import {Link} from '@reach/router';
-import rest from '../actions/api';
+import rest from '../../actions/api';
 import {connect} from 'react-redux';
 
-class Tools extends React.Component {
+class MagicItems extends React.Component {
   constructor (props) {
     super(props);
   }
@@ -24,17 +24,17 @@ class Tools extends React.Component {
   render () {
     const {items, flashMessages, user} = this.props;
     return (
-      <PageContainer user={user} flashMessages={flashMessages} pageTitle={'Tools'}>
+      <PageContainer user={user} flashMessages={flashMessages} pageTitle={'MagicItems'}>
         <div>
           <Breadcrumb>
             <BreadcrumbLink to='/' title={'Home'}/>
             <BreadcrumbLink to='/app/items/' title={'Items'}/>
-            <Breadcrumb.Item active>Tools</Breadcrumb.Item>
+            <Breadcrumb.Item active>MagicItems</Breadcrumb.Item>
           </Breadcrumb>
           <ListGroup>
             {items.map((item) =>
               <ListGroup.Item key={item.slug}>
-                <Link to={`/app/items/tools/${item.slug}`}>
+                <Link to={`/app/items/magic-items/${item.slug}`}>
                   {item.name}
                 </Link>
               </ListGroup.Item>
@@ -46,7 +46,7 @@ class Tools extends React.Component {
   }
 }
 
-Tools.propTypes = {
+MagicItems.propTypes = {
   items: PropTypes.array,
   flashMessages: PropTypes.array,
   getItems: PropTypes.func,
@@ -64,10 +64,10 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     getItems: () => {
-      dispatch(rest.actions.getItems({type: 'ToolItem'}));
+      dispatch(rest.actions.getItems({type: 'MagicItem'}));
     },
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Tools);
+export default connect(mapStateToProps, mapDispatchToProps)(MagicItems);
 
