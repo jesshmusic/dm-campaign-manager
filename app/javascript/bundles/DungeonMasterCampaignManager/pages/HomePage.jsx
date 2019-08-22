@@ -36,6 +36,34 @@ class HomePage extends React.Component {
               </ListGroup.Item>
             )}
           </ListGroup>
+          {user && campaigns.playerCampaigns ? (
+            <div>
+              <h2>My Campaigns</h2>
+              <ListGroup>
+                {campaigns.playerCampaigns.map((campaign) =>
+                  <ListGroup.Item key={campaign.slug}>
+                    <Link to={`/app/campaigns/${campaign.slug}`}>
+                      {campaign.name} - {campaign.user.name}
+                    </Link>
+                  </ListGroup.Item>
+                )}
+              </ListGroup>
+            </div>
+          ) : null}
+          {user && campaigns.dmCampaigns ? (
+            <div>
+              <h2>Campaigns I Run</h2>
+              <ListGroup>
+                {campaigns.dmCampaigns.map((campaign) =>
+                  <ListGroup.Item key={campaign.slug}>
+                    <Link to={`/app/campaigns/${campaign.slug}`}>
+                      {campaign.name} - {campaign.user.name}
+                    </Link>
+                  </ListGroup.Item>
+                )}
+              </ListGroup>
+            </div>
+          ) : null}
           <h2>Dungeon Masters</h2>
           <ListGroup>
             {dungeonMasters.map((dm) =>

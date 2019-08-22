@@ -70,8 +70,7 @@ export default reduxApi({
         headers,
       };
     },
-    postfetch: [({actions, dispatch}) => {
-      dispatch(actions.getCampaigns());
+    postfetch: [() => {
       navigate('/');
     }],
   },
@@ -84,8 +83,7 @@ export default reduxApi({
         headers,
       };
     },
-    postfetch: [({actions, dispatch}) => {
-      dispatch(actions.getCampaigns());
+    postfetch: [() => {
       navigate('/');
     }],
   },
