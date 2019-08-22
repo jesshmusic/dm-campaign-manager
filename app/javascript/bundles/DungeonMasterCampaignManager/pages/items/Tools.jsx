@@ -7,10 +7,10 @@ import PropTypes from 'prop-types';
 import PageContainer from '../../containers/PageContainer';
 import BreadcrumbLink from '../../components/layout/BreadcrumbLink';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
-import ListGroup from 'react-bootstrap/ListGroup';
 import {Link} from '@reach/router';
 import rest from '../../actions/api';
 import {connect} from 'react-redux';
+import Table from 'react-bootstrap/Table';
 
 class Tools extends React.Component {
   constructor (props) {
@@ -31,15 +31,30 @@ class Tools extends React.Component {
             <BreadcrumbLink to='/app/items/' title={'Items'}/>
             <Breadcrumb.Item active>Tools</Breadcrumb.Item>
           </Breadcrumb>
-          <ListGroup>
-            {items.map((item) =>
-              <ListGroup.Item key={item.slug}>
-                <Link to={`/app/items/tools/${item.slug}`}>
-                  {item.name}
-                </Link>
-              </ListGroup.Item>
-            )}
-          </ListGroup>
+          <Table>
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Category</th>
+                <th>Cost</th>
+                <th>Weight</th>
+              </tr>
+            </thead>
+            <tbody>
+              {items.map((item) =>
+                <tr key={item.slug}>
+                  <td>
+                    <Link to={`/app/items/armor/${item.slug}`}>
+                      {item.name}
+                    </Link>
+                  </td>
+                  <td>{item.sub_category}</td>
+                  <td>{item.cost_value ? `${item.cost_value.toLocaleString()}${item.cost_unit}` : 'N/A'}</td>
+                  <td>{item.weight}</td>
+                </tr>
+              )}
+            </tbody>
+          </Table>
         </div>
       </PageContainer>
     );
