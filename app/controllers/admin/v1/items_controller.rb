@@ -24,7 +24,7 @@ module Admin::V1
                end
       respond_to do |format|
         format.html { @pagy, @items = pagy(@items) }
-        format.json { render json: @items.as_json(only: %i[id name type sub_category weight cost_value cost_unit slug]) }
+        format.json { render json: @items.as_json(only: %i[id name type sub_category weight cost_value cost_unit rarity requires_attunement slug]) }
       end
 
     end
@@ -33,6 +33,10 @@ module Admin::V1
     # GET /items/1.json
     def show
       authorize @item
+      respond_to do |format|
+        format.html { @item }
+        format.json { render json: @item.as_json(include: %i[contained_items]) }
+      end
     end
 
     # GET /items/new

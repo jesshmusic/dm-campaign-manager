@@ -10,7 +10,11 @@ import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import {Link} from '@reach/router';
 import rest from '../../actions/api';
 import {connect} from 'react-redux';
-import Table from 'react-bootstrap/Table';
+// import Table from 'react-bootstrap/Table';
+import BootstrapTable from 'react-bootstrap-table-next';
+import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
+import filterFactory, { selectFilter } from 'react-bootstrap-table2-filter';
+import _ from 'lodash';
 
 class MagicItems extends React.Component {
   constructor (props) {
@@ -19,6 +23,52 @@ class MagicItems extends React.Component {
 
   componentDidMount () {
     this.props.getItems();
+  }
+
+  get columns () {
+    return [
+      {
+        dataField: 'name',
+        text: 'Item',
+        sort: true,
+      }, {
+        dataField: 'sub_category',
+        text: 'Category',
+        sort: true,
+        formatter: (cell) => this.selectCategoryOptions.find((opt) => opt.value === cell).label,
+        filter: selectFilter({
+          options: this.selectCategoryOptions,
+          placeholder: 'Category',
+        }),
+      }, {
+        dataField: 'rarity',
+        text: 'Rarity',
+        sort: true,
+        formatter: (cell) => this.selectRarityOptions.find((opt) => opt.value === cell).label,
+        filter: selectFilter({
+          options: this.selectRarityOptions,
+          placeholder: 'Rarity',
+        }),
+      }, {
+        dataField: 'requires_attunement',
+        text: 'Attunement',
+        sort: true,
+      },
+    ];
+  }
+
+  get selectCategoryOptions () {
+    return _.map(_.uniqBy(this.props.items, 'sub_category'), (item) => ({
+      value: item.sub_category,
+      label: item.sub_category
+    }));
+  }
+
+  get selectRarityOptions () {
+    return _.map(_.uniqBy(this.props.items, 'rarity'), (item) => ({
+      value: item.rarity,
+      label: item.rarity
+    }));
   }
 
   render () {
@@ -31,30 +81,7 @@ class MagicItems extends React.Component {
             <BreadcrumbLink to='/app/items/' title={'Items'}/>
             <Breadcrumb.Item active>MagicItems</Breadcrumb.Item>
           </Breadcrumb>
-          <Table>
-            <thead>
-              <tr>
-                <th>Item</th>
-                <th>Category</th>
-                <th>Cost</th>
-                <th>Weight</th>
-              </tr>
-            </thead>
-            <tbody>
-              {items.map((item) =>
-                <tr key={item.slug}>
-                  <td>
-                    <Link to={`/app/items/armor/${item.slug}`}>
-                      {item.name}
-                    </Link>
-                  </td>
-                  <td>{item.sub_category}</td>
-                  <td>{item.cost_value ? `${item.cost_value.toLocaleString()}${item.cost_unit}` : 'N/A'}</td>
-                  <td>{item.weight}</td>
-                </tr>
-              )}
-            </tbody>
-          </Table>
+          <BootstrapTable keyField='id' data={ items } columns={ this.columns } bootstrap4 filter={ filterFactory() } />
         </div>
       </PageContainer>
     );
