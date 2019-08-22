@@ -4,16 +4,13 @@ import { connect } from 'react-redux';
 import { Link } from '@reach/router';
 import BreadcrumbLink from '../components/layout/BreadcrumbLink';
 
-const ReactMarkdown = require('react-markdown');
-
-
 // Container
 import PageContainer from '../containers/PageContainer.jsx';
 import rest from '../actions/api';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
-import Col from 'react-bootstrap/Col';
-import Row from 'react-bootstrap/Row';
+import Card from 'react-bootstrap/Card';
+import Accordion from 'react-bootstrap/Accordion';
 
 class Items extends React.Component {
   constructor (props) {
@@ -56,84 +53,116 @@ class Items extends React.Component {
             <BreadcrumbLink to='/' title={'Home'} />
             <Breadcrumb.Item active>Campaigns</Breadcrumb.Item>
           </Breadcrumb>
-          <Row>
-            <Col>
-              <h3>Armor</h3>
-              <ListGroup>
-                {this.armor.map((item) =>
-                  <ListGroup.Item key={item.slug}>
-                    <Link to={`/app/items/${item.slug}`}>
-                      {item.name}
-                    </Link>
-                  </ListGroup.Item>
-                )}
-              </ListGroup>
-            </Col>
-            <Col>
-              <h3>Weapons</h3>
-              <ListGroup>
-                {this.weapons.map((item) =>
-                  <ListGroup.Item key={item.slug}>
-                    <Link to={`/app/items/${item.slug}`}>
-                      {item.name}
-                    </Link>
-                  </ListGroup.Item>
-                )}
-              </ListGroup>
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <h3>Adventuring Gear</h3>
-              <ListGroup>
-                {this.gear.map((item) =>
-                  <ListGroup.Item key={item.slug}>
-                    <Link to={`/app/items/${item.slug}`}>
-                      {item.name}
-                    </Link>
-                  </ListGroup.Item>
-                )}
-              </ListGroup>
-            </Col>
-            <Col>
-              <h3>Tools</h3>
-              <ListGroup>
-                {this.tools.map((item) =>
-                  <ListGroup.Item key={item.slug}>
-                    <Link to={`/app/items/${item.slug}`}>
-                      {item.name}
-                    </Link>
-                  </ListGroup.Item>
-                )}
-              </ListGroup>
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <h3>Mounts and Vehicles</h3>
-              <ListGroup>
-                {this.vehicles.map((item) =>
-                  <ListGroup.Item key={item.slug}>
-                    <Link to={`/app/items/${item.slug}`}>
-                      {item.name}
-                    </Link>
-                  </ListGroup.Item>
-                )}
-              </ListGroup>
-            </Col>
-            <Col>
-              <h3>Magic Items</h3>
-              <ListGroup>
-                {this.magicItems.map((item) =>
-                  <ListGroup.Item key={item.slug}>
-                    <Link to={`/app/items/${item.slug}`}>
-                      {item.name}
-                    </Link>
-                  </ListGroup.Item>
-                )}
-              </ListGroup>
-            </Col>
-          </Row>
+          <Accordion>
+            <Card>
+              <Accordion.Toggle as={Card.Header} variant="link" eventKey="0">
+                <h3>Armor</h3>
+              </Accordion.Toggle>
+              <Accordion.Collapse eventKey="0">
+                <Card.Body>
+                  <ListGroup>
+                    {this.armor.map((item) =>
+                      <ListGroup.Item key={item.slug}>
+                        <Link to={`/app/items/${item.slug}`}>
+                          {item.name}
+                        </Link>
+                      </ListGroup.Item>
+                    )}
+                  </ListGroup>
+                </Card.Body>
+              </Accordion.Collapse>
+            </Card>
+            <Card>
+              <Accordion.Toggle as={Card.Header} variant="link" eventKey="1">
+                <h3>Weapons</h3>
+              </Accordion.Toggle>
+              <Accordion.Collapse eventKey="1">
+                <Card.Body>
+                  <ListGroup>
+                    {this.weapons.map((item) =>
+                      <ListGroup.Item key={item.slug}>
+                        <Link to={`/app/items/${item.slug}`}>
+                          {item.name}
+                        </Link>
+                      </ListGroup.Item>
+                    )}
+                  </ListGroup>
+                </Card.Body>
+              </Accordion.Collapse>
+            </Card>
+            <Card>
+              <Accordion.Toggle as={Card.Header} variant="link" eventKey="2">
+                <h3>Adventuring Gear</h3>
+              </Accordion.Toggle>
+              <Accordion.Collapse eventKey="2">
+                <Card.Body>
+                  <ListGroup>
+                    {this.gear.map((item) =>
+                      <ListGroup.Item key={item.slug}>
+                        <Link to={`/app/items/${item.slug}`}>
+                          {item.name}
+                        </Link>
+                      </ListGroup.Item>
+                    )}
+                  </ListGroup>
+                </Card.Body>
+              </Accordion.Collapse>
+            </Card>
+            <Card>
+              <Accordion.Toggle as={Card.Header} variant="link" eventKey="3">
+                <h3>Tools</h3>
+              </Accordion.Toggle>
+              <Accordion.Collapse eventKey="3">
+                <Card.Body>
+                  <ListGroup>
+                    {this.tools.map((item) =>
+                      <ListGroup.Item key={item.slug}>
+                        <Link to={`/app/items/${item.slug}`}>
+                          {item.name}
+                        </Link>
+                      </ListGroup.Item>
+                    )}
+                  </ListGroup>
+                </Card.Body>
+              </Accordion.Collapse>
+            </Card>
+            <Card>
+              <Accordion.Toggle as={Card.Header} variant="link" eventKey="4">
+                <h3>Mounts and Vehicles</h3>
+              </Accordion.Toggle>
+              <Accordion.Collapse eventKey="4">
+                <Card.Body>
+                  <ListGroup>
+                    {this.vehicles.map((item) =>
+                      <ListGroup.Item key={item.slug}>
+                        <Link to={`/app/items/${item.slug}`}>
+                          {item.name}
+                        </Link>
+                      </ListGroup.Item>
+                    )}
+                  </ListGroup>
+                </Card.Body>
+              </Accordion.Collapse>
+            </Card>
+            <Card>
+              <Accordion.Toggle as={Card.Header} variant="link" eventKey="5">
+                <h3>Magic Items</h3>
+              </Accordion.Toggle>
+              <Accordion.Collapse eventKey="5">
+                <Card.Body>
+                  <ListGroup>
+                    {this.magicItems.map((item) =>
+                      <ListGroup.Item key={item.slug}>
+                        <Link to={`/app/items/${item.slug}`}>
+                          {item.name}
+                        </Link>
+                      </ListGroup.Item>
+                    )}
+                  </ListGroup>
+                </Card.Body>
+              </Accordion.Collapse>
+            </Card>
+          </Accordion>
         </div>
       </PageContainer>
     );
