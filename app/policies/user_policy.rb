@@ -2,7 +2,11 @@
 
 class UserPolicy < ApplicationPolicy
   def index?
-    user&.admin?
+    user
+  end
+
+  def show?
+    user
   end
 
   def edit?

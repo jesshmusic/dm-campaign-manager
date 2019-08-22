@@ -47,7 +47,7 @@ Items.propTypes = {
 
 function mapStateToProps (state) {
   return {
-    user: state.user,
+    user: state.users.user,
     flashMessages: state.flashMessages,
   };
 }

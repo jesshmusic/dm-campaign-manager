@@ -73,7 +73,7 @@ function mapStateToProps (state) {
     nonPlayerCharacters: state.nonPlayerCharacters,
     playerCharacters: state.playerCharacters,
     dungeonMasters: state.dungeonMasters,
-    user: state.user,
+    user: state.users.user,
     flashMessages: state.flashMessages,
   };
 }

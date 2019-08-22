@@ -61,6 +61,26 @@ export default reduxApi({
       };
     },
   },
+  getUser: {
+    url: '/users/:slug',
+    options () {
+      const headers = getHeaders();
+      return {
+        method: 'get',
+        headers,
+      };
+    },
+  },
+  getUsers: {
+    url: '/users',
+    options () {
+      const headers = getHeaders();
+      return {
+        method: 'get',
+        headers,
+      };
+    },
+  },
   userLogin: {
     url: '/users/sign_in',
     options () {

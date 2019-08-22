@@ -19,10 +19,11 @@ class HomePage extends React.Component {
 
   componentDidMount () {
     this.props.getCampaigns();
+    this.props.getUsers();
   }
 
   render () {
-    const {campaigns, nonPlayerCharacters, playerCharacters, dungeonMasters, user, flashMessages} = this.props;
+    const {campaigns, nonPlayerCharacters, playerCharacters, dungeonMasters, players, user, flashMessages} = this.props;
     return (
       <PageContainer user={user} flashMessages={flashMessages} pageTitle='Dashboard'>
         <div>
@@ -36,6 +37,7 @@ class HomePage extends React.Component {
               </ListGroup.Item>
             )}
           </ListGroup>
+
           {user && campaigns.playerCampaigns ? (
             <div>
               <h2>My Campaigns</h2>
@@ -50,6 +52,7 @@ class HomePage extends React.Component {
               </ListGroup>
             </div>
           ) : null}
+
           {user && campaigns.dmCampaigns ? (
             <div>
               <h2>Campaigns I Run</h2>
@@ -64,14 +67,37 @@ class HomePage extends React.Component {
               </ListGroup>
             </div>
           ) : null}
-          <h2>Dungeon Masters</h2>
-          <ListGroup>
-            {dungeonMasters.map((dm) =>
-              <ListGroup.Item key={dm.username}>
-                <Link to={`/app/dungeon_masters/${dm.username}`}>{dm.name}</Link>
-              </ListGroup.Item>
-            )}
-          </ListGroup>
+
+          {user ? (
+            <div>
+              <h2>Dungeon Masters</h2>
+              <ListGroup>
+                {dungeonMasters.map((dm) =>
+                  <ListGroup.Item key={dm.username}>
+                    <Link to={`/app/dungeon_masters/${dm.username}`}>
+                      {dm.name} &ldquo;<code>{dm.username}</code>&rdquo;, {dm.location}
+                    </Link>
+                  </ListGroup.Item>
+                )}
+              </ListGroup>
+            </div>
+          ) : null}
+
+          {user ? (
+            <div>
+              <h2>Players</h2>
+              <ListGroup>
+                {players.map((player) =>
+                  <ListGroup.Item key={player.username}>
+                    <Link to={`/app/dungeon_masters/${player.username}`}>
+                      {player.name} &ldquo;<code>{player.username}</code>&rdquo;, {player.location}
+                    </Link>
+                  </ListGroup.Item>
+                )}
+              </ListGroup>
+            </div>
+          ) : null}
+
           {playerCharacters && playerCharacters.count > 0 ? (
             <div>
               <h2>Player Characters</h2>
@@ -86,6 +112,7 @@ class HomePage extends React.Component {
               </ListGroup>
             </div>
           ) : null}
+
           {nonPlayerCharacters && nonPlayerCharacters.count > 0 ? (
             <div>
               <h2>Non-player Characters</h2>
@@ -109,8 +136,10 @@ class HomePage extends React.Component {
 HomePage.propTypes = {
   campaigns: PropTypes.object,
   dungeonMasters: PropTypes.array,
+  players: PropTypes.array,
   flashMessages: PropTypes.array,
   getCampaigns: PropTypes.func.isRequired,
+  getUsers: PropTypes.func.isRequired,
   nonPlayerCharacters: PropTypes.array,
   playerCharacters: PropTypes.array,
   user: PropTypes.object,
@@ -121,8 +150,9 @@ function mapStateToProps (state) {
     campaigns: state.campaigns,
     nonPlayerCharacters: state.nonPlayerCharacters,
     playerCharacters: state.playerCharacters,
-    dungeonMasters: state.dungeonMasters,
-    user: state.user,
+    user: state.users.user,
+    players: state.users.users.filter((user) => user.role === 'player'),
+    dungeonMasters: state.users.users.filter((user) => user.role === 'dungeon_master'),
     flashMessages: state.flashMessages,
   };
 }
@@ -131,6 +161,9 @@ function mapDispatchToProps (dispatch) {
   return {
     getCampaigns: () => {
       dispatch(rest.actions.getCampaigns());
+    },
+    getUsers: () => {
+      dispatch(rest.actions.getUsers());
     },
   };
 }

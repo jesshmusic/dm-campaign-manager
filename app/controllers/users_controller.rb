@@ -18,8 +18,8 @@ class UsersController < ApplicationController
     @pagy, @users = pagy(@users) if current_user.admin?
 
     respond_to do |format|
-      format.html { @users }
-      format.json { render json: @users, meta: { total: @users.total_entries } }
+      format.html { @pagy, @users = pagy(@users) }
+      format.json { render json: @users.as_json(only: %i[id name username role location info username slug last_sign_in_at]) }
     end
   end
 
@@ -29,7 +29,7 @@ class UsersController < ApplicationController
 
     respond_to do |format|
       format.html { @user }
-      format.json { render json: @user }
+      format.json { render json: @user.as_json(only: %i[id name username role location info username slug last_sign_in_at]) }
     end
   end
 

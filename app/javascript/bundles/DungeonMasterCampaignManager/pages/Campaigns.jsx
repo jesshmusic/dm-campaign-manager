@@ -83,7 +83,7 @@ Campaigns.propTypes = {
 function mapStateToProps (state) {
   return {
     campaigns: state.campaigns,
-    user: state.user,
+    user: state.users.user,
     flashMessages: state.flashMessages,
   };
 }

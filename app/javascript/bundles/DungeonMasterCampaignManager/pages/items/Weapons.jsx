@@ -56,7 +56,7 @@ Weapons.propTypes = {
 function mapStateToProps (state) {
   return {
     items: state.items.items,
-    user: state.user,
+    user: state.users.user,
     flashMessages: state.flashMessages,
   };
 }

@@ -13,8 +13,10 @@
 #  deleted_at             :datetime
 #  email                  :string           default(""), not null
 #  encrypted_password     :string           default(""), not null
+#  info                   :text
 #  last_sign_in_at        :datetime
 #  last_sign_in_ip        :inet
+#  location               :string
 #  name                   :string
 #  remember_created_at    :datetime
 #  reset_password_sent_at :datetime

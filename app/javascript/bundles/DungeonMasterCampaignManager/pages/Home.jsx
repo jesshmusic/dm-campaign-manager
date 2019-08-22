@@ -19,14 +19,17 @@ import Vehicles from './items/Vehicles';
 const store = (props) => configureStore({
   reducer: rootReducer,
   preloadedState: {
-    user: props.user,
+    users: {
+      user: props.user,
+      users: [],
+      currentUser: null,
+    },
     campaigns: {
       campaigns: [],
       currentCampaign: null,
     },
     nonPlayerCharacters: [],
     playerCharacters: [],
-    dungeonMasters: [],
     flashMessages: [],
   },
 });
