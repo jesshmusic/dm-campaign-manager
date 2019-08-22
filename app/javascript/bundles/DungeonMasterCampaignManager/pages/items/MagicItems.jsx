@@ -13,7 +13,9 @@ import {connect} from 'react-redux';
 // import Table from 'react-bootstrap/Table';
 import BootstrapTable from 'react-bootstrap-table-next';
 import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
+import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 import filterFactory, { selectFilter } from 'react-bootstrap-table2-filter';
+import paginationFactory from 'react-bootstrap-table2-paginator';
 import _ from 'lodash';
 
 class MagicItems extends React.Component {
@@ -60,14 +62,14 @@ class MagicItems extends React.Component {
   get selectCategoryOptions () {
     return _.map(_.uniqBy(this.props.items, 'sub_category'), (item) => ({
       value: item.sub_category,
-      label: item.sub_category
+      label: item.sub_category,
     }));
   }
 
   get selectRarityOptions () {
     return _.map(_.uniqBy(this.props.items, 'rarity'), (item) => ({
       value: item.rarity,
-      label: item.rarity
+      label: item.rarity,
     }));
   }
 
@@ -81,7 +83,12 @@ class MagicItems extends React.Component {
             <BreadcrumbLink to='/app/items/' title={'Items'}/>
             <Breadcrumb.Item active>MagicItems</Breadcrumb.Item>
           </Breadcrumb>
-          <BootstrapTable keyField='id' data={ items } columns={ this.columns } bootstrap4 filter={ filterFactory() } />
+          <BootstrapTable keyField='id'
+            data={ items }
+            columns={ this.columns }
+            bootstrap4
+            filter={ filterFactory() }
+            pagination={ paginationFactory() } />
         </div>
       </PageContainer>
     );
