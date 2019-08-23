@@ -9,7 +9,7 @@ import BreadcrumbLink from '../../components/layout/BreadcrumbLink';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import rest from '../../actions/api';
 import {connect} from 'react-redux';
-import BootstrapTable from 'react-bootstrap-table-next'
+import BootstrapTable from 'react-bootstrap-table-next';
 import filterFactory, { selectFilter, textFilter } from 'react-bootstrap-table2-filter';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import _ from 'lodash';
@@ -96,12 +96,12 @@ class MagicItems extends React.Component {
             <Breadcrumb.Item active>MagicItems</Breadcrumb.Item>
           </Breadcrumb>
           <BootstrapTable keyField='id'
-            data={ items }
-            columns={ this.columns }
-            bootstrap4
-            filter={ filterFactory() }
-            pagination={ paginationFactory() }
-            expandRow={ MagicItems.expandRow } />
+                          data={ items }
+                          columns={ this.columns }
+                          bootstrap4
+                          filter={ filterFactory() }
+                          pagination={ paginationFactory() }
+                          expandRow={ MagicItems.expandRow } />
         </div>
       </PageContainer>
     );

@@ -59,7 +59,10 @@
       1,
       2,
       {
-        "SwitchCase": 1
+        "SwitchCase": 1,
+        "ignoredNodes": [
+          "JSXAttribute"
+        ]
       }
     ],
     "max-len": [
@@ -102,6 +105,9 @@
       "single"
     ],
     "radix": 1,
+    "react/jsx-indent-props": [
+      1, "first"
+    ],
     "semi": 2,
     "space-before-function-paren": 1,
     "space-before-blocks": 1,

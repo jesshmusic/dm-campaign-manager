@@ -9,12 +9,13 @@ import BreadcrumbLink from '../../components/layout/BreadcrumbLink';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import rest from '../../actions/api';
 import {connect} from 'react-redux';
-import BootstrapTable from 'react-bootstrap-table-next';
-import filterFactory, { selectFilter, textFilter } from 'react-bootstrap-table2-filter';
-import paginationFactory from 'react-bootstrap-table2-paginator';
 import _ from 'lodash';
 import { MdDone } from 'react-icons/md';
 import ReactMarkdown from 'react-markdown';
+
+import BootstrapTable from 'react-bootstrap-table-next';
+import filterFactory, { selectFilter, textFilter } from 'react-bootstrap-table2-filter';
+import paginationFactory from 'react-bootstrap-table2-paginator';
 
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
@@ -127,13 +128,13 @@ class Armor extends React.Component {
             <Breadcrumb.Item active>Armor</Breadcrumb.Item>
           </Breadcrumb>
           <BootstrapTable keyField='id'
-            data={ items }
-            columns={ this.columns }
-            bootstrap4
-            hover
-            filter={ filterFactory() }
-            pagination={ paginationFactory() }
-            expandRow={ Armor.expandRow } />
+                          data={ items }
+                          columns={ this.columns }
+                          bootstrap4
+                          hover
+                          filter={ filterFactory() }
+                          pagination={ paginationFactory() }
+                          expandRow={ Armor.expandRow } />
         </div>
       </PageContainer>
     );
