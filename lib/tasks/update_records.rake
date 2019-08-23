@@ -30,6 +30,16 @@ namespace :update_records do
     ArmorItem.find_by(name: 'Mithral Armor, Shield').destroy!
   end
 
+  task fix_magic_weapon_cats: :environment do
+    WeaponItem.all.each do |weapon|
+      if weapon.weapon_range == 'Martial Melee' || weapon.weapon_range == 'Martial Ranged'
+        weapon.update_attribute(:sub_category, 'Martial')
+      else
+        weapon.update_attribute(:sub_category, 'Simple')
+      end
+    end
+  end
+
   task stat_blocks: :environment do
     Character.all.each do |char|
       stat_block = StatBlock.find_or_create_by(character_id: char.id) do |new_stat_block|
