@@ -24,7 +24,11 @@ module Admin::V1
                end
       respond_to do |format|
         format.html { @pagy, @items = pagy(@items) }
-        format.json { render json: @items }
+        format.json do
+          render json: @items.as_json(include: { contained_items: {
+                                        only: %i[id cost_unit cost_value name slug sub_category type weight]
+                                      } })
+        end
       end
 
     end

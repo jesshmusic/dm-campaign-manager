@@ -18,6 +18,9 @@ const Items = ({flashMessages, user}) => (
       </Breadcrumb>
       <ListGroup>
         <ListGroup.Item>
+          <Link to={'/app/items/all/'}>All Equipment and Items</Link>
+        </ListGroup.Item>
+        <ListGroup.Item>
           <Link to={'/app/items/armor/'}>Armor</Link>
         </ListGroup.Item>
         <ListGroup.Item>

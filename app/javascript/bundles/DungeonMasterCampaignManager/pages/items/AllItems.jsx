@@ -19,13 +19,13 @@ import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 import _ from 'lodash';
 import ReactMarkdown from 'react-markdown';
+import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import ListGroup from 'react-bootstrap/ListGroup';
 import ListGroupItem from 'react-bootstrap/ListGroupItem';
-import Container from 'react-bootstrap/Container';
+import ListGroup from 'react-bootstrap/ListGroup';
 
-class Gear extends React.Component {
+class AllItems extends React.Component {
   constructor (props) {
     super(props);
   }
@@ -54,7 +54,7 @@ class Gear extends React.Component {
         dataField: 'cost_value',
         text: 'Cost',
         sort: true,
-        formatter: Gear.costFormatter,
+        formatter: AllItems.costFormatter,
       }, {
         dataField: 'weight',
         text: 'Weight',
@@ -112,7 +112,7 @@ class Gear extends React.Component {
           <Breadcrumb>
             <BreadcrumbLink to='/' title={'Home'}/>
             <BreadcrumbLink to='/app/items/' title={'Items'}/>
-            <Breadcrumb.Item active>Adventuring Gear</Breadcrumb.Item>
+            <Breadcrumb.Item active>All Equipment</Breadcrumb.Item>
           </Breadcrumb>
           <BootstrapTable keyField='id'
                           data={ items }
@@ -121,14 +121,14 @@ class Gear extends React.Component {
                           hover
                           filter={ filterFactory() }
                           pagination={ paginationFactory() }
-                          expandRow={ Gear.expandRow } />
+                          expandRow={ AllItems.expandRow } />
         </div>
       </PageContainer>
     );
   }
 }
 
-Gear.propTypes = {
+AllItems.propTypes = {
   items: PropTypes.array,
   flashMessages: PropTypes.array,
   getItems: PropTypes.func,
@@ -146,10 +146,10 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     getItems: () => {
-      dispatch(rest.actions.getItems({type: 'GearItem'}));
+      dispatch(rest.actions.getItems());
     },
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Gear);
+export default connect(mapStateToProps, mapDispatchToProps)(AllItems);
 

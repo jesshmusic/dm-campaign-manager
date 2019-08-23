@@ -7,14 +7,15 @@ import { Router } from '@reach/router';
 import HomePage from './HomePage';
 import Campaigns from './Campaigns';
 import Campaign from './Campaign';
-import Armor from './items/Armor';
-import Weapons from './items/Weapons';
 import Login from './Login';
 import Items from './items/Items';
-import MagicItems from './items/MagicItems';
+import AllItems from './items/AllItems';
+import Armor from './items/Armor';
 import Gear from './items/Gear';
+import MagicItems from './items/MagicItems';
 import Tools from './items/Tools';
 import Vehicles from './items/Vehicles';
+import Weapons from './items/Weapons';
 
 const store = (props) => configureStore({
   reducer: rootReducer,
@@ -41,6 +42,7 @@ const Home = (props) => (
       <Campaigns path='/app/campaigns'/>
       <Campaign path='/app/campaigns/:campaignSlug'/>
       <Items path='/app/items' />
+      <AllItems path='/app/items/all/' />
       <Armor path='/app/items/armor/' />
       <Weapons path='/app/items/weapons/' />
       <MagicItems path='/app/items/magic-items/' />
