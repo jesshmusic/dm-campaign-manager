@@ -72,6 +72,58 @@ class Monster < ApplicationRecord
     end
   end
 
+  def description_text
+    monster_desc = [
+      "###_#{size}_ #{monster_type} #{monster_subtype if monster_subtype && monster_subtype != ''}",
+      "####Challenge Rating: #{challenge_rating}\n",
+      "**Armor Class**  #{stat_block.armor_class}",
+      "**Hit Points**  #{stat_block.hit_points}",
+      "**Speed**  #{stat_block.speed}",
+      "| STR | DEX | CON | INT | WIS | CHA |",
+      "|:---:|:---:|:---:|:---:|:---:|:---:|",
+      "|  #{stat_block.strength} |  #{stat_block.dexterity} |  #{stat_block.constitution} |  #{stat_block.intelligence} |  #{stat_block.wisdom} |  #{stat_block.charisma} |\n",
+      "**Senses** #{senses}",
+      "**Languages** #{languages}"
+    ]
+
+    monster_desc << "**Damage Vulnerabilities**  #{damage_vulnerabilities}" if damage_vulnerabilities
+    monster_desc << "**Damage Resistances**  #{damage_resistances}" if damage_resistances
+    monster_desc << "**Damage Immunities**  #{damage_immunities}" if damage_immunities
+    monster_desc << "**Condition Immunities**  #{condition_immunities}" if condition_immunities
+
+    unless skills.empty?
+      monster_desc << "\n####Skills"
+      skills.each do |skill|
+        monster_desc << "**#{skill.name.capitalize}** #{skill.score}"
+      end
+    end
+
+    unless monster_actions.empty?
+      monster_desc << "\n####Actions"
+      monster_actions.each do |monster_action|
+        monster_desc << "**#{monster_action.name}** \n#{monster_action.description}\n"
+        monster_desc << "**Attack Bonus** +#{monster_action.attack_bonus} | **Damage Bonus** +#{monster_action.damage_bonus} | **Damage Dice** +#{monster_action.damage_dice}"
+      end
+    end
+
+    unless monster_special_abilities.empty?
+      monster_desc << "\n####Special Abilities"
+      monster_special_abilities.each do |monster_action|
+        monster_desc << "**#{monster_action.name}** \n#{monster_action.description}\n"
+      end
+    end
+
+    unless monster_legendary_actions.empty?
+      monster_desc << "\n####Legendary Actions"
+      monster_desc << legendary_description
+      monster_legendary_actions.each do |monster_action|
+        monster_desc << "**#{monster_action.name}** \n#{monster_action.description}\n"
+      end
+    end
+
+    monster_desc.join('\n')
+  end
+
   include PgSearch::Model
 
   # PgSearch

@@ -1,6 +1,14 @@
 # frozen_string_literal: true
 
 class MonsterPolicy < ApplicationPolicy
+  def index?
+    true
+  end
+
+  def show?
+    true
+  end
+
   def update?
     user && (user.admin? || (record.user == user))
   end

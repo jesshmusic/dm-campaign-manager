@@ -14,7 +14,19 @@ module Admin::V1
                   else
                     Monster.all
                   end
-
+      @monsters = if !current_user
+                    @monsters.where(user_id: nil)
+                  elsif current_user.admin?
+                    @monsters
+                  else
+                    @monsters.where(user_id: nil).or(@items.where(user_id: current_user.id))
+                  end
+      respond_to do |format|
+        format.html { @pagy, @monsters = pagy(@monsters) }
+        format.json do
+          render json: @monsters.as_json(methods: :description_text)
+        end
+      end
       if !current_user
         @pagy, @monsters = pagy(@monsters.where(user_id: nil))
       elsif current_user.admin?
@@ -28,6 +40,10 @@ module Admin::V1
     # GET /monsters/1.json
     def show
       authorize @monster
+      respond_to do |format|
+        format.html { @monster }
+        format.json { render json: @monster.as_json(include: %i[monster_actions monster_legendary_actions monster_special_abilities monster_stat_block], methods: :description_text) }
+      end
     end
 
     # GET /monsters/new
