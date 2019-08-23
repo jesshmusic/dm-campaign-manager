@@ -1,6 +1,35 @@
 # frozen_string_literal: true
 
-namespace :update do
+namespace :update_records do
+  task fix_magic_armor_sub_cats: :environment do
+    ArmorItem.where(sub_category: 'Armor (medium or heavy)').or(ArmorItem.where(sub_category: 'Armor (medium or heavy')).each do |armor_item|
+
+      ['Chain Mail', 'Plate', 'Ring Mail', 'Splint'].each do |armor_str|
+        if armor_item.name.include? armor_str
+          armor_item.sub_category = 'Heavy'
+          armor_item.save!
+          break
+        end
+      end
+      ['Breastplate', 'Chain Shirt', 'Half Plate', 'Hide', 'Scale Mail'].each do |armor_str|
+        if armor_item.name.include? armor_str
+          armor_item.sub_category = 'Medium'
+          armor_item.save!
+          break
+        end
+      end
+    end
+
+    ArmorItem.where(sub_category: 'Armor (shield)').update_all(sub_category: 'Shield')
+    ArmorItem.where(sub_category: 'Armor (plate)').update_all(sub_category: 'Heavy')
+    ArmorItem.where(sub_category: 'Armor (light').update_all(sub_category: 'Light')
+    ArmorItem.where(sub_category: 'Armor (scale mail)').update_all(sub_category: 'Medium')
+    ArmorItem.where(sub_category: 'Armor (chain shirt)').update_all(sub_category: 'Medium')
+    ArmorItem.where(sub_category: 'Armor (studded leather)').update_all(sub_category: 'Light')
+    ArmorItem.find_by(name: 'Adamantine Armor, Shield').destroy!
+    ArmorItem.find_by(name: 'Mithral Armor, Shield').destroy!
+  end
+
   task stat_blocks: :environment do
     Character.all.each do |char|
       stat_block = StatBlock.find_or_create_by(character_id: char.id) do |new_stat_block|
