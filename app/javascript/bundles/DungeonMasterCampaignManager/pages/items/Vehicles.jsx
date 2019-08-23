@@ -18,7 +18,7 @@ import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 import _ from 'lodash';
-import ReactMarkdown from 'react-markdown';
+import ItemDescription from './components/ItemDescription';
 
 class Vehicles extends React.Component {
   constructor (props) {
@@ -78,7 +78,7 @@ class Vehicles extends React.Component {
       parentClassName: 'table-primary',
       onlyOneExpanding: true,
       renderer: (row) => (
-        <ReactMarkdown source={row.description} />
+        <ItemDescription item={row}/>
       ),
     };
   }

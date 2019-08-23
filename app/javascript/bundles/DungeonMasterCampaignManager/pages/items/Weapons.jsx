@@ -18,7 +18,7 @@ import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 import _ from 'lodash';
-import ReactMarkdown from 'react-markdown';
+import ItemDescription from './components/ItemDescription';
 
 class Weapons extends React.Component {
   constructor (props) {
@@ -105,34 +105,7 @@ class Weapons extends React.Component {
       parentClassName: 'table-primary',
       onlyOneExpanding: true,
       renderer: (row) => (
-        <div>
-          {row.weapon_properties && row.weapon_properties.length > 0 ? (
-            <p>
-              <strong>Properties: </strong> {row.weapon_properties.join(', ')}
-            </p>
-          ) : null}
-          {row.weapon_range_normal ? (
-            <p>
-              <strong>Range, normal: </strong> {row.weapon_range_normal}
-            </p>
-          ) : null}
-          {row.weapon_range_long ? (
-            <p>
-              <strong>Range, long: </strong> {row.weapon_range_long}
-            </p>
-          ) : null}
-          {row.weapon_thrown_range_normal ? (
-            <p>
-              <strong>Thrown Range, normal: </strong> {row.weapon_thrown_range_normal}
-            </p>
-          ) : null}
-          {row.weapon_thrown_range_long ? (
-            <p>
-              <strong>Thrown Range, long: </strong> {row.weapon_thrown_range_long}
-            </p>
-          ) : null}
-          <ReactMarkdown source={row.description} />
-        </div>
+        <ItemDescription item={row}/>
       ),
     };
   }

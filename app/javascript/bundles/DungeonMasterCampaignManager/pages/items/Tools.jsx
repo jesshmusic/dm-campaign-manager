@@ -7,7 +7,6 @@ import PropTypes from 'prop-types';
 import PageContainer from '../../containers/PageContainer';
 import BreadcrumbLink from '../../components/layout/BreadcrumbLink';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
-import {Link} from '@reach/router';
 import rest from '../../actions/api';
 import {connect} from 'react-redux';
 
@@ -19,7 +18,7 @@ import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 import _ from 'lodash';
-import ReactMarkdown from 'react-markdown';
+import ItemDescription from './components/ItemDescription';
 
 class Tools extends React.Component {
   constructor (props) {
@@ -79,7 +78,7 @@ class Tools extends React.Component {
       parentClassName: 'table-primary',
       onlyOneExpanding: true,
       renderer: (row) => (
-        <ReactMarkdown source={row.description} />
+        <ItemDescription item={row}/>
       ),
     };
   }

@@ -13,11 +13,11 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import filterFactory, { selectFilter, textFilter } from 'react-bootstrap-table2-filter';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import _ from 'lodash';
-import ReactMarkdown from 'react-markdown';
 
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
+import ItemDescription from './components/ItemDescription';
 
 class MagicItems extends React.Component {
   constructor (props) {
@@ -80,7 +80,7 @@ class MagicItems extends React.Component {
       parentClassName: 'table-primary',
       onlyOneExpanding: true,
       renderer: (row) => (
-        <ReactMarkdown source={row.description} />
+        <ItemDescription item={row}/>
       ),
     };
   }

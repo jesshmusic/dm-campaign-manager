@@ -18,12 +18,7 @@ import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 import _ from 'lodash';
-import ReactMarkdown from 'react-markdown';
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import ListGroupItem from 'react-bootstrap/ListGroupItem';
-import ListGroup from 'react-bootstrap/ListGroup';
+import ItemDescription from './components/ItemDescription';
 
 class AllItems extends React.Component {
   constructor (props) {
@@ -83,23 +78,7 @@ class AllItems extends React.Component {
       parentClassName: 'table-primary',
       onlyOneExpanding: true,
       renderer: (row) => (
-        <Container>
-          <Row>
-            <Col>
-              {row.contained_items.length > 0 ? (
-                <div>
-                  <h5>Contents:</h5>
-                  <ListGroup variant="flush">
-                    {row.contained_items.map((item, index) => (
-                      <ListGroupItem key={index}><strong>{item.name}</strong>, {item.sub_category}</ListGroupItem>
-                    ))}
-                  </ListGroup>
-                </div>
-              ) : null}
-              <ReactMarkdown source={row.description} />
-            </Col>
-          </Row>
-        </Container>
+        <ItemDescription item={row}/>
       ),
     };
   }
