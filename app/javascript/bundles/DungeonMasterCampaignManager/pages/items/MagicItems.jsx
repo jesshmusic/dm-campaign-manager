@@ -10,7 +10,6 @@ import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import {Link} from '@reach/router';
 import rest from '../../actions/api';
 import {connect} from 'react-redux';
-// import Table from 'react-bootstrap/Table';
 import BootstrapTable from 'react-bootstrap-table-next';
 import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
