@@ -30,14 +30,14 @@ const ItemDescription = ({item}) => (
             <strong>Range, long: </strong> {item.weapon_range_long}
           </p>
         ) : null}
-        {item.weapon_thitemn_range_normal ? (
+        {item.weapon_thrown_range_normal ? (
           <p>
-            <strong>Thitemn Range, normal: </strong> {item.weapon_thitemn_range_normal}
+            <strong>Thrown Range, normal: </strong> {item.weapon_thrown_range_normal}
           </p>
         ) : null}
-        {item.weapon_thitemn_range_long ? (
+        {item.weapon_thrown_range_long ? (
           <p>
-            <strong>Thitemn Range, long: </strong> {item.weapon_thitemn_range_long}
+            <strong>Thrown Range, long: </strong> {item.weapon_thrown_range_long}
           </p>
         ) : null}
         {item.contained_items.length > 0 ? (
