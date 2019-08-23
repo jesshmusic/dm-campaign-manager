@@ -7,15 +7,17 @@ import PropTypes from 'prop-types';
 import PageContainer from '../../containers/PageContainer';
 import BreadcrumbLink from '../../components/layout/BreadcrumbLink';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
-import {Link} from '@reach/router';
 import rest from '../../actions/api';
 import {connect} from 'react-redux';
-import BootstrapTable from 'react-bootstrap-table-next';
-import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
-import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
-import filterFactory, { selectFilter } from 'react-bootstrap-table2-filter';
+import BootstrapTable from 'react-bootstrap-table-next'
+import filterFactory, { selectFilter, textFilter } from 'react-bootstrap-table2-filter';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import _ from 'lodash';
+import ReactMarkdown from 'react-markdown';
+
+import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
+import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
+import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 
 class MagicItems extends React.Component {
   constructor (props) {
@@ -32,6 +34,7 @@ class MagicItems extends React.Component {
         dataField: 'name',
         text: 'Item',
         sort: true,
+        filter: textFilter(),
       }, {
         dataField: 'sub_category',
         text: 'Category',
@@ -72,6 +75,16 @@ class MagicItems extends React.Component {
     }));
   }
 
+  static get expandRow () {
+    return {
+      parentClassName: 'table-primary',
+      onlyOneExpanding: true,
+      renderer: (row) => (
+        <ReactMarkdown source={row.description} />
+      ),
+    };
+  }
+
   render () {
     const {items, flashMessages, user} = this.props;
     return (
@@ -87,7 +100,8 @@ class MagicItems extends React.Component {
             columns={ this.columns }
             bootstrap4
             filter={ filterFactory() }
-            pagination={ paginationFactory() } />
+            pagination={ paginationFactory() }
+            expandRow={ MagicItems.expandRow } />
         </div>
       </PageContainer>
     );

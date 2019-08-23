@@ -133,7 +133,7 @@ class Armor extends React.Component {
             hover
             filter={ filterFactory() }
             pagination={ paginationFactory() }
-            expandRow={ Armor.expandRow }/>
+            expandRow={ Armor.expandRow } />
         </div>
       </PageContainer>
     );
