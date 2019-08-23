@@ -74,54 +74,56 @@ class Monster < ApplicationRecord
 
   def description_text
     monster_desc = [
-      "###_#{size}_ #{monster_type} #{monster_subtype if monster_subtype && monster_subtype != ''}",
-      "####Challenge Rating: #{challenge_rating}\n",
-      "**Armor Class**  #{stat_block.armor_class}",
-      "**Hit Points**  #{stat_block.hit_points}",
-      "**Speed**  #{stat_block.speed}",
-      "| STR | DEX | CON | INT | WIS | CHA |",
-      "|:---:|:---:|:---:|:---:|:---:|:---:|",
-      "|  #{stat_block.strength} |  #{stat_block.dexterity} |  #{stat_block.constitution} |  #{stat_block.intelligence} |  #{stat_block.wisdom} |  #{stat_block.charisma} |\n",
-      "**Senses** #{senses}",
-      "**Languages** #{languages}"
+      '<div class="p-3">',
+      "<h5><em>#{size}</em> #{monster_type} #{monster_subtype if monster_subtype && monster_subtype != ''}</h5>",
+      "<h6>Challenge Rating: #{challenge_rating}</h6>",
+      "<p><strong>Armor Class</strong>  #{stat_block.armor_class}</p>",
+      "<p><strong>Hit Points</strong>  #{stat_block.hit_points}</p>",
+      "<p><strong>Speed</strong>  #{stat_block.speed}</p>",
+      "<table class='table'><thead><tr><th>STR</th><th>DEX</th><th>CON</th><th>INT</th><th>WIS</th><th>CHA</th></tr></thead>",
+      "<tbody><tr><td>#{stat_block.strength}</td><td>#{stat_block.dexterity}</td><td>#{stat_block.constitution}</td><td>#{stat_block.intelligence}</td><td>#{stat_block.wisdom}</td><td>#{stat_block.charisma}</td></tr></tbody></table>",
+      "<p><strong>Senses</strong>  #{senses}</p>",
+      "<p><strong>Languages</strong>  #{languages}</p>"
     ]
 
-    monster_desc << "**Damage Vulnerabilities**  #{damage_vulnerabilities}" if damage_vulnerabilities
-    monster_desc << "**Damage Resistances**  #{damage_resistances}" if damage_resistances
-    monster_desc << "**Damage Immunities**  #{damage_immunities}" if damage_immunities
-    monster_desc << "**Condition Immunities**  #{condition_immunities}" if condition_immunities
+    monster_desc << "<p><strong>Damage Vulnerabilities</strong>  #{damage_vulnerabilities}</p>" if damage_vulnerabilities && damage_vulnerabilities != ''
+    monster_desc << "<p><strong>Damage Resistances</strong>  #{damage_resistances}</p>" if damage_resistances && damage_resistances != ''
+    monster_desc << "<p><strong>Damage Immunities</strong>  #{damage_immunities}</p>" if damage_immunities && damage_immunities != ''
+    monster_desc << "<p><strong>Condition Immunities</strong>  #{condition_immunities}</p>" if condition_immunities && condition_immunities != ''
 
     unless skills.empty?
-      monster_desc << "\n####Skills"
+      monster_desc << '<h5 class="mt-3">Skills</h5>'
       skills.each do |skill|
-        monster_desc << "**#{skill.name.capitalize}** #{skill.score}"
+        monster_desc << "<p><strong>#{skill.name.capitalize}</strong>  #{skill.score}</p>"
       end
     end
 
     unless monster_actions.empty?
-      monster_desc << "\n####Actions"
+      monster_desc << '<h5 class="mt-3">Actions</h5>'
       monster_actions.each do |monster_action|
-        monster_desc << "**#{monster_action.name}** \n#{monster_action.description}\n"
-        monster_desc << "**Attack Bonus** +#{monster_action.attack_bonus} | **Damage Bonus** +#{monster_action.damage_bonus} | **Damage Dice** +#{monster_action.damage_dice}"
+        monster_desc << "<h6 class=\"mt-2\">#{monster_action.name}</h6><div>#{monster_action.description}</div>"
+        monster_desc << "<p><strong>Attack Bonus</strong> +#{monster_action.attack_bonus} | <strong>Damage Bonus</strong> +#{monster_action.damage_bonus} | <strong>Damage Dice</strong> #{monster_action.damage_dice}</p>"
       end
     end
 
     unless monster_special_abilities.empty?
-      monster_desc << "\n####Special Abilities"
+      monster_desc << '<h5 class="mt-3">Special Abilities</h5>'
       monster_special_abilities.each do |monster_action|
-        monster_desc << "**#{monster_action.name}** \n#{monster_action.description}\n"
+        monster_desc << "<h6 class=\"mt-2\">#{monster_action.name}</h6><div>#{monster_action.description}</div>"
       end
     end
 
     unless monster_legendary_actions.empty?
-      monster_desc << "\n####Legendary Actions"
+      monster_desc << '<h5 class="mt-3">Legendary Actions</h5>'
       monster_desc << legendary_description
       monster_legendary_actions.each do |monster_action|
-        monster_desc << "**#{monster_action.name}** \n#{monster_action.description}\n"
+        monster_desc << "<h6 class=\"mt-2\">#{monster_action.name}</h6><div>#{monster_action.description}</div>"
       end
     end
 
-    monster_desc.join('\n')
+    monster_desc << '</div>'
+
+    monster_desc.join
   end
 
   include PgSearch::Model

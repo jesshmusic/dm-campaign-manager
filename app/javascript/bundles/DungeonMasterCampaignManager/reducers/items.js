@@ -5,7 +5,7 @@ const getItemsFail = createAction('@@redux-api@getItems_fail');
 const getItemSuccess = createAction('@@redux-api@getItem_success');
 const getItemFail = createAction('@@redux-api@getItem_fail');
 
-const campaigns = createReducer({
+const items = createReducer({
   items: [],
   currentItem: null,
 }, {
@@ -25,4 +25,4 @@ const campaigns = createReducer({
   [getItemFail]: () => [],
 });
 
-export default campaigns;
+export default items;

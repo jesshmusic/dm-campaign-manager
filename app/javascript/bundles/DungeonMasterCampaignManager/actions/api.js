@@ -61,6 +61,26 @@ export default reduxApi({
       };
     },
   },
+  getMonster: {
+    url: '/v1/monsters/:slug',
+    options () {
+      const headers = getHeaders();
+      return {
+        method: 'get',
+        headers,
+      };
+    },
+  },
+  getMonsters: {
+    url: '/v1/monsters',
+    options () {
+      const headers = getHeaders();
+      return {
+        method: 'get',
+        headers,
+      };
+    },
+  },
   getUser: {
     url: '/users/:slug',
     options () {

@@ -2,6 +2,7 @@ do /Users/jesshendricks/Documents/GithubRepos/dm-campaign-manager/bin/bundle exe
 Ruby enVironment Manager 1.29.9 (latest) (c) 2009-2017 Michal Papis, Piotr Kuczynski, Wayne E. Seguin
 
                               Prefix Verb   URI Pattern                                                                              Controller#Action
+                                root GET    /                                                                                        home#index
                     new_user_session GET    /users/sign_in(.:format)                                                                 sessions#new
                         user_session POST   /users/sign_in(.:format)                                                                 sessions#create
                 destroy_user_session DELETE /users/sign_out(.:format)                                                                sessions#destroy
@@ -20,7 +21,6 @@ Ruby enVironment Manager 1.29.9 (latest) (c) 2009-2017 Michal Papis, Piotr Kuczy
                new_user_confirmation GET    /users/confirmation/new(.:format)                                                        devise/confirmations#new
                    user_confirmation GET    /users/confirmation(.:format)                                                            devise/confirmations#show
                                      POST   /users/confirmation(.:format)                                                            devise/confirmations#create
-                                root GET    /                                                                                        home#index
                                users GET    /users(.:format)                                                                         users#index
                            edit_user GET    /users/:slug/edit(.:format)                                                              users#edit
                                 user GET    /users/:slug(.:format)                                                                   users#show
@@ -28,6 +28,7 @@ Ruby enVironment Manager 1.29.9 (latest) (c) 2009-2017 Michal Papis, Piotr Kuczy
                                      PUT    /users/:slug(.:format)                                                                   users#update
                                      DELETE /users/:slug(.:format)                                                                   users#destroy
                     user_change_role PATCH  /users/:id/change_role(.:format)                                                         users#change_role
+                                     GET    /app(/*all)(.:format)                                                                    home#index
                         v1_dashboard GET    /v1/dashboard(.:format)                                                                  admin/v1/dashboard#index
     v1_campaign_adventure_encounters GET    /v1/campaigns/:campaign_slug/adventures/:adventure_id/encounters(.:format)               admin/v1/encounters#index
                                      POST   /v1/campaigns/:campaign_slug/adventures/:adventure_id/encounters(.:format)               admin/v1/encounters#create
