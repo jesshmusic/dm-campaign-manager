@@ -16,11 +16,17 @@ const users = createReducer({
   [loginSucceeded]: (state, action) => {
     return {
       user: action.data,
-      users: [],
-      currentUser: null,
+      users: state.users,
+      currentUser: state.currentUser,
     };
   },
-  [logoutSucceeded]: () => null,
+  [logoutSucceeded]: (state) => {
+    return {
+      user: null,
+      users: state.users,
+      currentUser: state.currentUser,
+    };
+  },
   [getUsersSuccess]: (state, action) => {
     return {
       user: state.user,
@@ -28,7 +34,13 @@ const users = createReducer({
       currentUser: state.currentUser,
     };
   },
-  [getUsersFail]: () => [],
+  [getUsersFail]: (state) => {
+    return {
+      user: state.user,
+      users: state.users,
+      currentUser: state.currentUser,
+    };
+  },
   [getUserSuccess]: (state, action) => {
     return {
       user: state.user,
@@ -36,7 +48,13 @@ const users = createReducer({
       currentUser: action.data,
     };
   },
-  [getUserFail]: () => [],
+  [getUserFail]: (state) => {
+    return {
+      user: state.user,
+      users: state.users,
+      currentUser: state.currentUser,
+    };
+  },
   // [userUpdate]: (state) => {
   //   state.error = null;
   // },
