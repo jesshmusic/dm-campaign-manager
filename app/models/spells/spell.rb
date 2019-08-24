@@ -72,6 +72,18 @@ class Spell < ApplicationRecord
     end
   end
 
+  def description_text
+    [
+      "<h4>#{spell_level} #{school} <small><em>#{'(ritual)' if ritual}</em></small></h4>",
+      "<p><strong>Range</strong> #{range}</p>",
+      "<p><strong>Components</strong> #{components.map(&:to_s).join(', ')}</p>",
+      "<p><strong>Material</strong> #{material}</p>",
+      "<p><strong>Duration</strong> #{'Concentration, ' if concentration}#{duration}</p>",
+      "<p><strong>Casting time</strong> #{casting_time}</p>",
+      "<div>#{description}</div>"
+    ].join
+  end
+
   # PgSearch
   pg_search_scope :search_for,
                   against: {

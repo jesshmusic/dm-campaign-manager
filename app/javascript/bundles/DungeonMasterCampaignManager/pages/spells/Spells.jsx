@@ -127,7 +127,7 @@ class Spells extends React.Component {
       parentClassName: 'table-primary',
       onlyOneExpanding: true,
       renderer: (row) => (
-        <ReactMarkdown source={row.description}
+        <ReactMarkdown source={row.description_text.replace(/â€™/g, '\'').replace(/â€œ/g, '"').replace(/â€�/g, '"')}
                        allowedTypes={Util.allowedTypes}
                        escapeHtml={false}
         />

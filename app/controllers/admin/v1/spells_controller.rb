@@ -24,7 +24,7 @@ module Admin::V1
       respond_to do |format|
         format.html { @pagy, @spells = pagy(@spells) }
         format.json do
-          render json: @spells.as_json(methods: :spell_classes)
+          render json: @spells.as_json(methods: %i[spell_classes description_text])
         end
       end
     end
@@ -35,7 +35,7 @@ module Admin::V1
       authorize @spell
       respond_to do |format|
         format.html { @spell }
-        format.json { render json: @spell.as_json(methods: :spell_classes) }
+        format.json { render json: @spell.as_json(methods: %i[spell_classes description_text]) }
       end
     end
 
