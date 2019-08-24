@@ -10,7 +10,10 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
 
 const Items = ({flashMessages, user}) => (
-  <PageContainer user={user} flashMessages={flashMessages} pageTitle={'Items and Equipment'}>
+  <PageContainer user={user}
+                 flashMessages={flashMessages}
+                 pageTitle={'Items and Equipment'}
+                 description={`All Dungeons and Dragons equipment, armor, weapons, and magic items. Dungeon Master's Campaign Manager is a free resource for DMs to manage their campaigns, adventures, and NPCs.`}>
     <div>
       <Breadcrumb>
         <BreadcrumbLink to='/' title={'Home'} />

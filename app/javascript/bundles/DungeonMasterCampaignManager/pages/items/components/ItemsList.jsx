@@ -28,7 +28,10 @@ const ItemsList = ({columns, items, flashMessages, user, pageTitle}) => {
   };
 
   return (
-    <PageContainer user={user} flashMessages={flashMessages} pageTitle={pageTitle}>
+    <PageContainer user={user}
+                   flashMessages={flashMessages}
+                   pageTitle={pageTitle}
+                   description={`${pageTitle} records with descriptions and stats. Dungeon Master's Campaign Manager is a free resource for DMs to manage their campaigns, adventures, and NPCs.`}>
       <div>
         <Breadcrumb>
           <BreadcrumbLink to='/' title={'Home'}/>

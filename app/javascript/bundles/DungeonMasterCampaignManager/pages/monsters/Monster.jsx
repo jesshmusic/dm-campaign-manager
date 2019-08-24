@@ -122,7 +122,10 @@ class Monsters extends React.Component {
   render () {
     const {monsters, flashMessages, user} = this.props;
     return (
-      <PageContainer user={user} flashMessages={flashMessages} pageTitle={'Monsters'}>
+      <PageContainer user={user}
+                     flashMessages={flashMessages}
+                     pageTitle={'Monsters'}
+                     description={`All monsters with descriptions and stats. Dungeon Master's Campaign Manager is a free resource for DMs to manage their campaigns, adventures, and NPCs.`}>
         <div>
           <Breadcrumb>
             <BreadcrumbLink to='/' title={'Home'}/>

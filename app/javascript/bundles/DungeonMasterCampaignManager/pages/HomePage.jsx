@@ -25,7 +25,10 @@ class HomePage extends React.Component {
   render () {
     const {campaigns, nonPlayerCharacters, playerCharacters, dungeonMasters, players, user, flashMessages} = this.props;
     return (
-      <PageContainer user={user} flashMessages={flashMessages} pageTitle='Dashboard'>
+      <PageContainer user={user}
+                     flashMessages={flashMessages}
+                     pageTitle='Dashboard'
+                     description={'Dungeon Master\'s Campaign Manager is a free resource for DMs to manage their campaigns, adventures, and NPCs.'}>
         <div>
           <h2>Campaigns</h2>
           <ListGroup>

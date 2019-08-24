@@ -139,7 +139,10 @@ class Spells extends React.Component {
   render () {
     const {spells, flashMessages, user} = this.props;
     return (
-      <PageContainer user={user} flashMessages={flashMessages} pageTitle={'Spells'}>
+      <PageContainer user={user}
+                     flashMessages={flashMessages}
+                     pageTitle={'Spells'}
+                     description={'All D&D spells. Dungeon Master\'s Campaign Manager is a free resource for DMs to manage their campaigns, adventures, and NPCs.'}>
         <div>
           <Breadcrumb>
             <BreadcrumbLink to='/' title={'Home'}/>

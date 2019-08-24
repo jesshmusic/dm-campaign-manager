@@ -33,7 +33,10 @@ const Login = (props) => {
   };
 
   return (
-    <PageContainer user={user} flashMessages={flashMessages} pageTitle={'Sign In'}>
+    <PageContainer user={user}
+                   flashMessages={flashMessages}
+                   pageTitle={'Sign In'}
+                   description={'Log into DMCM. Dungeon Master\'s Campaign Manager is a free resource for DMs to manage their campaigns, adventures, and NPCs.'}>
       {user ? (
         <Card>
           <Card.Body>

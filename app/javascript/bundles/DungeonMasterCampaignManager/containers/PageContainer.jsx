@@ -10,12 +10,17 @@ import MenuBar from '../components/layout/MenuBar';
 import FlashMessages from '../components/layout/Alerts/FlashMessages.jsx';
 
 import '../stylesheets/_global.scss';
+import {Helmet} from 'react-helmet';
 
 const PageContainer = (props) => {
-  const { children, user, flashMessages, pageTitle } = props;
+  const { children, description, user, flashMessages, pageTitle } = props;
 
   return (
     <div>
+      <Helmet>
+        <title>{pageTitle} | Dungeon Master&apos;s Campaign Manager</title>
+        <meta name="description" content={description} />
+      </Helmet>
       <MenuBar user={user}/>
       <HeroBanner />
       <FlashMessages messages={flashMessages}/>
@@ -32,6 +37,7 @@ PageContainer.propTypes = {
   children: PropTypes.element,
   flashMessages: PropTypes.array,
   pageTitle: PropTypes.string.isRequired,
+  description: PropTypes.string.isRequired,
   user: PropTypes.object,
 };
 

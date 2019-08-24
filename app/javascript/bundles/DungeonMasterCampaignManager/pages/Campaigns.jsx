@@ -24,7 +24,10 @@ class Campaigns extends React.Component {
 
   render () {
     return (
-      <PageContainer user={this.props.user} flashMessages={this.props.flashMessages} pageTitle={'Campaigns'}>
+      <PageContainer user={this.props.user}
+                     flashMessages={this.props.flashMessages}
+                     pageTitle={'Campaigns'}
+                     description={'All D&D campaigns. Dungeon Master\'s Campaign Manager is a free resource for DMs to manage their campaigns, adventures, and NPCs.'}>
         <div>
           <Breadcrumb>
             <BreadcrumbLink to='/' title={'Home'} />

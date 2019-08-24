@@ -27,8 +27,12 @@ class Campaign extends React.Component {
 
   render () {
     const { user, flashMessages, campaign } = this.props;
+    const campaignTitle = campaign ? `${campaign.name} by ${campaign.user.name}` : 'Campaign Loading...';
     return (
-      <PageContainer user={user} flashMessages={flashMessages} pageTitle={campaign ? campaign.name : 'Campaign Loading...'}>
+      <PageContainer user={user}
+                     flashMessages={flashMessages}
+                     pageTitle={campaignTitle}
+                     description={`Campaign: ${campaignTitle}. Dungeon Master's Campaign Manager is a free resource for DMs to manage their campaigns, adventures, and NPCs.`}>
         <div>
           <Breadcrumb>
             <BreadcrumbLink to='/' title={'Home'} />
