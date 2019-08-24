@@ -19,6 +19,7 @@ import BreadcrumbLink from '../../components/layout/BreadcrumbLink';
 import PageContainer from '../../containers/PageContainer';
 import ReactMarkdown from 'react-markdown';
 import Util from '../../utilities/utilities';
+import Spinner from 'react-bootstrap/Spinner';
 
 class Monsters extends React.Component {
   constructor (props) {
@@ -127,14 +128,18 @@ class Monsters extends React.Component {
             <BreadcrumbLink to='/' title={'Home'}/>
             <Breadcrumb.Item active>Monsters</Breadcrumb.Item>
           </Breadcrumb>
-          <BootstrapTable keyField='id'
-                          data={ monsters }
-                          columns={ this.columns }
-                          bootstrap4
-                          hover
-                          filter={ filterFactory() }
-                          pagination={ paginationFactory() }
-                          expandRow={ this.expandRow } />
+          {monsters && monsters.length > 0 ? (
+            <BootstrapTable keyField='id'
+                            data={ monsters }
+                            columns={ this.columns }
+                            bootstrap4
+                            hover
+                            filter={ filterFactory() }
+                            pagination={ paginationFactory() }
+                            expandRow={ this.expandRow } />
+          ) : (
+            <Spinner animation="border" variant="primary" />
+          )}
         </div>
       </PageContainer>
     );

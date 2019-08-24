@@ -28,14 +28,14 @@ class Campaign extends React.Component {
   render () {
     const { user, flashMessages, campaign } = this.props;
     return (
-      campaign ? (
-        <PageContainer user={user} flashMessages={flashMessages} pageTitle={campaign.name}>
-          <div>
-            <Breadcrumb>
-              <BreadcrumbLink to='/' title={'Home'} />
-              <BreadcrumbLink to='/app/campaigns' title={'Campaigns'} />
-              <Breadcrumb.Item active>{campaign.name}</Breadcrumb.Item>
-            </Breadcrumb>
+      <PageContainer user={user} flashMessages={flashMessages} pageTitle={campaign ? campaign.name : 'Campaign Loading...'}>
+        <div>
+          <Breadcrumb>
+            <BreadcrumbLink to='/' title={'Home'} />
+            <BreadcrumbLink to='/app/campaigns' title={'Campaigns'} />
+            <Breadcrumb.Item active>Campaign</Breadcrumb.Item>
+          </Breadcrumb>
+          { campaign ? (
             <Row>
               <Col>
                 <ReactMarkdown source={campaign.description} />
@@ -50,9 +50,9 @@ class Campaign extends React.Component {
                       <h4 className='h5 mb-0'>{user.name}</h4>
                       <ListGroup>
                         {campaign.characters.map((character, index) =>
-                          character.user_id === user.id ? (
+                          (character.user_id === user.id ? (
                             <ListGroupItem key={index}>{character.name}, Level {character.level}</ListGroupItem>
-                          ) : null
+                          ) : null)
                         )}
                       </ListGroup>
                     </ListGroupItem>
@@ -60,20 +60,11 @@ class Campaign extends React.Component {
                 </ListGroup>
               </Col>
             </Row>
-          </div>
-        </PageContainer>
-      ) : (
-        <PageContainer user={user} flashMessages={flashMessages} pageTitle='Campaign Loading...'>
-          <div>
-            <Breadcrumb>
-              <BreadcrumbLink to='/' title={'Home'} />
-              <BreadcrumbLink to='/app/campaigns' title={'Campaigns'} />
-              <Breadcrumb.Item active>Campaign</Breadcrumb.Item>
-            </Breadcrumb>
+          ) : (
             <Spinner animation="border" variant="primary" />
-          </div>
-        </PageContainer>
-      )
+          )}
+        </div>
+      </PageContainer>
     );
   }
 }

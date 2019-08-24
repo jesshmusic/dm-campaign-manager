@@ -208,7 +208,7 @@ module Admin::V1
                                                                 }] }])
     end
 
-    def single_campaign_msall(single_campaign)
+    def single_campaign_small(single_campaign)
       single_campaign.as_json(include: [:user, :users, :world_locations, :world_events,
                                         characters: { include: %i[stat_block character_actions skills] }])
     end

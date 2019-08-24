@@ -16,9 +16,9 @@ import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 import ItemDescription from './ItemDescription';
+import Spinner from 'react-bootstrap/Spinner';
 
 const ItemsList = ({columns, items, flashMessages, user, pageTitle}) => {
-
   const expandRow = {
     parentClassName: 'table-primary',
     onlyOneExpanding: true,
@@ -35,14 +35,18 @@ const ItemsList = ({columns, items, flashMessages, user, pageTitle}) => {
           <BreadcrumbLink to='/app/items/' title={'Items'}/>
           <Breadcrumb.Item active>{pageTitle}</Breadcrumb.Item>
         </Breadcrumb>
-        <BootstrapTable keyField='id'
-                        data={ items }
-                        columns={ columns }
-                        bootstrap4
-                        hover
-                        filter={ filterFactory() }
-                        pagination={ paginationFactory() }
-                        expandRow={ expandRow } />
+        {items && items.length > 0 ? (
+          <BootstrapTable keyField='id'
+                          data={ items }
+                          columns={ columns }
+                          bootstrap4
+                          hover
+                          filter={ filterFactory() }
+                          pagination={ paginationFactory() }
+                          expandRow={ expandRow } />
+        ) : (
+          <Spinner animation="border" variant="primary" />
+        )}
       </div>
     </PageContainer>
   );
