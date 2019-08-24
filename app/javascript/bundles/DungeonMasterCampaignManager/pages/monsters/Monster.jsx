@@ -18,6 +18,7 @@ import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import BreadcrumbLink from '../../components/layout/BreadcrumbLink';
 import PageContainer from '../../containers/PageContainer';
 import ReactMarkdown from 'react-markdown';
+import Util from '../../utilities/utilities';
 
 class Monsters extends React.Component {
   constructor (props) {
@@ -48,6 +49,11 @@ class Monsters extends React.Component {
         dataField: 'monster_type',
         text: 'Type',
         sort: true,
+        formatter: (cell) => this.selectTypeOptions.find((opt) => opt.value === cell).label,
+        filter: selectFilter({
+          options: this.selectTypeOptions,
+          placeholder: 'Type',
+        }),
       }, {
         dataField: 'monster_subtype',
         text: 'Subtype',
@@ -57,9 +63,45 @@ class Monsters extends React.Component {
   }
 
   get selectCROptions () {
-    return _.map(_.uniqBy(this.props.monsters, 'challenge_rating'), (monster) => ({
-      value: monster.challenge_rating,
-      label: monster.challenge_rating,
+    const crs = _.map(_.uniqBy(this.props.monsters, 'challenge_rating'), (monster) => {
+      if (monster.challenge_rating === '1/8') {
+        return 0.125;
+      } else if (monster.challenge_rating === '1/4') {
+        return 0.25;
+      } else if (monster.challenge_rating === '1/2') {
+        return 0.5;
+      }
+      return parseFloat(monster.challenge_rating);
+    }).sort((a, b) => a - b);
+
+    return crs.map((cr) => {
+      if (cr === 0.125) {
+        return {
+          value: '1/8',
+          label: '1/8',
+        };
+      } else if (cr === 0.25) {
+        return {
+          value: '1/4',
+          label: '1/4',
+        };
+      } else if (cr === 0.5) {
+        return {
+          value: '1/2',
+          label: '1/2',
+        };
+      }
+      return {
+        value: `${cr}`,
+        label: `${cr}`,
+      };
+    });
+  }
+
+  get selectTypeOptions () {
+    return _.map(_.uniqBy(this.props.monsters, 'monster_type'), (monster) => ({
+      value: monster.monster_type,
+      label: monster.monster_type,
     }));
   }
 
@@ -69,26 +111,7 @@ class Monsters extends React.Component {
       onlyOneExpanding: true,
       renderer: (row) => (
         <ReactMarkdown source={row.description_text}
-                       allowedTypes={[
-                         'paragraph',
-                         'text',
-                         'emphasis',
-                         'strong',
-                         'link',
-                         'blockquote',
-                         'delete',
-                         'list',
-                         'listItem',
-                         'heading',
-                         'code',
-                         'thematicBreak',
-                         'table',
-                         'tableHead',
-                         'tableBody',
-                         'tableRow',
-                         'tableCell',
-                         'html',
-                       ]}
+                       allowedTypes={Util.allowedTypes}
                        escapeHtml={false}
         />
       ),
