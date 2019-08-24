@@ -27,13 +27,6 @@ module Admin::V1
           render json: @monsters.as_json(methods: :description_text)
         end
       end
-      if !current_user
-        @pagy, @monsters = pagy(@monsters.where(user_id: nil))
-      elsif current_user.admin?
-        @pagy, @monsters = pagy(@monsters)
-      else
-        @pagy, @monsters = pagy(@monsters.where(user_id: nil).or(@monsters.where(user_id: current_user.id)).order('name ASC'))
-      end
     end
 
     # GET /monsters/1

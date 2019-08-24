@@ -62,6 +62,14 @@ class Spell < ApplicationRecord
     end
   end
 
+  def spell_classes
+    if current_user
+      dnd_classes.where(user_id: nil).or(dnd_classes.where(user_id: current_user.id)).map(&:name)
+    else
+      dnd_classes.where(user_id: nil).map(&:name)
+    end
+  end
+
   # PgSearch
   pg_search_scope :search_for,
                   against: {

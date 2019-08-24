@@ -14,13 +14,18 @@ module Admin::V1
                 else
                   Spell.all
                 end
-
-      if !current_user
-        @pagy, @spells = pagy(@spells.where(user_id: nil))
-      elsif current_user.admin?
-        @pagy, @spells = pagy(@spells)
-      else
-        @pagy, @spells = pagy(@spells.where(user_id: nil).or(@spells.where(user_id: current_user.id)).order('name ASC'))
+      @spells = if !current_user
+                  @spells.where(user_id: nil)
+                elsif current_user.admin?
+                  @spells
+                else
+                  @spells.where(user_id: nil).or(@items.where(user_id: current_user.id))
+                end
+      respond_to do |format|
+        format.html { @pagy, @spells = pagy(@spells) }
+        format.json do
+          render json: @spells.as_json(methods: :spell_classes)
+        end
       end
     end
 
@@ -28,6 +33,10 @@ module Admin::V1
     # GET /spells/1.json
     def show
       authorize @spell
+      respond_to do |format|
+        format.html { @spell }
+        format.json { render json: @spell.as_json(methods: :spell_classes) }
+      end
     end
 
     # GET /spells/new
