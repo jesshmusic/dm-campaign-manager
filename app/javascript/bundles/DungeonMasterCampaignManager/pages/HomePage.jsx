@@ -19,7 +19,9 @@ class HomePage extends React.Component {
 
   componentDidMount () {
     this.props.getCampaigns();
-    this.props.getUsers();
+    if (this.props.user) {
+      this.props.getUsers();
+    }
   }
 
   render () {
