@@ -4,8 +4,8 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import PageContainer from '../../containers/PageContainer';
-import BreadcrumbLink from '../../components/layout/BreadcrumbLink';
+import PageContainer from '../../../containers/PageContainer';
+import BreadcrumbLink from '../../../components/layout/BreadcrumbLink';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
 
 import BootstrapTable from 'react-bootstrap-table-next';
@@ -15,7 +15,7 @@ import paginationFactory from 'react-bootstrap-table2-paginator';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
-import ItemDescription from './components/ItemDescription';
+import ItemDescription from './ItemDescription';
 
 const ItemsList = ({columns, items, flashMessages, user, pageTitle}) => {
 
@@ -33,7 +33,7 @@ const ItemsList = ({columns, items, flashMessages, user, pageTitle}) => {
         <Breadcrumb>
           <BreadcrumbLink to='/' title={'Home'}/>
           <BreadcrumbLink to='/app/items/' title={'Items'}/>
-          <Breadcrumb.Item active>ItemsList</Breadcrumb.Item>
+          <Breadcrumb.Item active>{pageTitle}</Breadcrumb.Item>
         </Breadcrumb>
         <BootstrapTable keyField='id'
                         data={ items }

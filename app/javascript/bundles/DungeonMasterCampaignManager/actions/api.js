@@ -81,6 +81,26 @@ export default reduxApi({
       };
     },
   },
+  getSpell: {
+    url: '/v1/spells/:slug',
+    options () {
+      const headers = getHeaders();
+      return {
+        method: 'get',
+        headers,
+      };
+    },
+  },
+  getSpells: {
+    url: '/v1/spells',
+    options () {
+      const headers = getHeaders();
+      return {
+        method: 'get',
+        headers,
+      };
+    },
+  },
   getUser: {
     url: '/users/:slug',
     options () {

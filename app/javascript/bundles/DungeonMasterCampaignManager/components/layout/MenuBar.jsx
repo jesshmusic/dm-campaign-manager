@@ -41,6 +41,7 @@ function MenuBar (props) {
           <NavDropdown title="Reference" id="basic-nav-dropdown">
             <DropdownLink to={'/app/monsters'}>Monsters</DropdownLink>
             <DropdownLink to={'/app/items'}>Items and Equipment</DropdownLink>
+            <DropdownLink to={'/app/spells'}>Spells</DropdownLink>
           </NavDropdown>
           {user ? (
             <Button onClick={handleLogout} variant="primary" size="sm">Sign Out</Button>

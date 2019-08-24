@@ -17,6 +17,7 @@ import Tools from './items/Tools';
 import Vehicles from './items/Vehicles';
 import Weapons from './items/Weapons';
 import Monsters from './monsters/Monster';
+import Spells from './spells/Spells';
 
 const store = (props) => configureStore({
   reducer: rootReducer,
@@ -51,6 +52,7 @@ const Home = (props) => (
       <Tools path='/app/items/tools/' />
       <Vehicles path='/app/items/vehicles/' />
       <Monsters path='/app/monsters/' />
+      <Spells path='/app/spells/' />
       <Login path='/app/login' />
     </Router>
   </Provider>

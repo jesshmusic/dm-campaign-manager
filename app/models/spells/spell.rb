@@ -46,6 +46,8 @@ class Spell < ApplicationRecord
 
   belongs_to :user, optional: true
 
+  attr_accessor :current_user
+
   include PgSearch::Model
 
   def get_spell_level_text

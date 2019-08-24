@@ -9,7 +9,7 @@ import {connect} from 'react-redux';
 import _ from 'lodash';
 import { MdDone } from 'react-icons/md';
 import { selectFilter, textFilter } from 'react-bootstrap-table2-filter';
-import ItemsList from './ItemsList';
+import ItemsList from './components/ItemsList';
 
 class Armor extends React.Component {
   constructor (props) {

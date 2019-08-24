@@ -20,88 +20,47 @@ import PageContainer from '../../containers/PageContainer';
 import ReactMarkdown from 'react-markdown';
 import Util from '../../utilities/utilities';
 
-class Monsters extends React.Component {
+class Spells extends React.Component {
   constructor (props) {
     super(props);
   }
 
   componentDidMount () {
-    this.props.getMonsters();
+    this.props.getSpells();
   }
 
   get columns () {
     return [
       {
         dataField: 'name',
-        text: 'Monster',
+        text: 'Spell',
         sort: true,
         filter: textFilter(),
       }, {
-        dataField: 'challenge_rating',
-        text: 'CR',
+        dataField: 'spell_level',
+        text: 'Level',
         sort: true,
-        formatter: (cell) => this.selectCROptions.find((opt) => opt.value === cell).label,
-        filter: selectFilter({
-          options: this.selectCROptions,
-          placeholder: 'CR',
-        }),
       }, {
-        dataField: 'monster_type',
+        dataField: 'school',
         text: 'Type',
         sort: true,
-        formatter: (cell) => this.selectTypeOptions.find((opt) => opt.value === cell).label,
+        formatter: (cell) => this.selectSchoolOptions.find((opt) => opt.value === cell).label,
         filter: selectFilter({
-          options: this.selectTypeOptions,
-          placeholder: 'Type',
+          options: this.selectSchoolOptions,
+          placeholder: 'School',
         }),
       }, {
-        dataField: 'monster_subtype',
-        text: 'Subtype',
+        dataField: 'components',
+        text: 'Components',
         sort: true,
       },
     ];
   }
 
-  get selectCROptions () {
-    const crs = _.map(_.uniqBy(this.props.monsters, 'challenge_rating'), (monster) => {
-      if (monster.challenge_rating === '1/8') {
-        return 0.125;
-      } else if (monster.challenge_rating === '1/4') {
-        return 0.25;
-      } else if (monster.challenge_rating === '1/2') {
-        return 0.5;
-      }
-      return parseFloat(monster.challenge_rating);
-    }).sort((a, b) => a - b);
-
-    return crs.map((cr) => {
-      if (cr === 0.125) {
-        return {
-          value: '1/8',
-          label: '1/8',
-        };
-      } else if (cr === 0.25) {
-        return {
-          value: '1/4',
-          label: '1/4',
-        };
-      } else if (cr === 0.5) {
-        return {
-          value: '1/2',
-          label: '1/2',
-        };
-      }
-      return {
-        value: `${cr}`,
-        label: `${cr}`,
-      };
-    });
-  }
-
-  get selectTypeOptions () {
-    return _.map(_.uniqBy(this.props.monsters, 'monster_type'), (monster) => ({
-      value: monster.monster_type,
-      label: monster.monster_type,
+  get selectSchoolOptions () {
+    return _.map(_.uniqBy(this.props.spells, 'school'), (spell) => ({
+      value: spell.school,
+      label: spell.school,
     }));
   }
 
@@ -110,7 +69,7 @@ class Monsters extends React.Component {
       parentClassName: 'table-primary',
       onlyOneExpanding: true,
       renderer: (row) => (
-        <ReactMarkdown source={row.description_text}
+        <ReactMarkdown source={row.description}
                        allowedTypes={Util.allowedTypes}
                        escapeHtml={false}
         />
@@ -119,16 +78,16 @@ class Monsters extends React.Component {
   }
 
   render () {
-    const {monsters, flashMessages, user} = this.props;
+    const {spells, flashMessages, user} = this.props;
     return (
-      <PageContainer user={user} flashMessages={flashMessages} pageTitle={'Monsters'}>
+      <PageContainer user={user} flashMessages={flashMessages} pageTitle={'Spells'}>
         <div>
           <Breadcrumb>
             <BreadcrumbLink to='/' title={'Home'}/>
-            <Breadcrumb.Item active>Monsters</Breadcrumb.Item>
+            <Breadcrumb.Item active>Spells</Breadcrumb.Item>
           </Breadcrumb>
           <BootstrapTable keyField='id'
-                          data={ monsters }
+                          data={ spells }
                           columns={ this.columns }
                           bootstrap4
                           hover
@@ -141,16 +100,16 @@ class Monsters extends React.Component {
   }
 }
 
-Monsters.propTypes = {
-  monsters: PropTypes.array,
+Spells.propTypes = {
+  spells: PropTypes.array,
   flashMessages: PropTypes.array,
-  getMonsters: PropTypes.func,
+  getSpells: PropTypes.func,
   user: PropTypes.object.isRequired,
 };
 
 function mapStateToProps (state) {
   return {
-    monsters: state.monsters.monsters,
+    spells: state.spells.spells,
     user: state.users.user,
     flashMessages: state.flashMessages,
   };
@@ -158,10 +117,10 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    getMonsters: () => {
-      dispatch(rest.actions.getMonsters());
+    getSpells: () => {
+      dispatch(rest.actions.getSpells());
     },
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Monsters);
+export default connect(mapStateToProps, mapDispatchToProps)(Spells);

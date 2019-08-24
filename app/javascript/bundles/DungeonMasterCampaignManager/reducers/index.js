@@ -5,6 +5,7 @@ import items from './items';
 import monsters from './monsters';
 import nonPlayerCharacters from './nonPlayerCharacters';
 import playerCharacters from './playerCharacters';
+import spells from './spells';
 import users from './user';
 
 export default combineReducers({
@@ -14,5 +15,6 @@ export default combineReducers({
   monsters,
   nonPlayerCharacters,
   playerCharacters,
+  spells,
   users,
 });

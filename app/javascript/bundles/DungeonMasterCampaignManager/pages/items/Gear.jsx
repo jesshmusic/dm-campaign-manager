@@ -8,7 +8,7 @@ import rest from '../../actions/api';
 import {connect} from 'react-redux';
 import { selectFilter, textFilter } from 'react-bootstrap-table2-filter';
 import _ from 'lodash';
-import ItemsList from './ItemsList';
+import ItemsList from './components/ItemsList';
 
 class Gear extends React.Component {
   constructor (props) {
