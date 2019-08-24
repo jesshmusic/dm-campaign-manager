@@ -151,6 +151,10 @@ class Spells extends React.Component {
                           hover
                           filter={ filterFactory() }
                           pagination={ paginationFactory() }
+                          defaultSorted={[{
+                            dataField: 'spell_level',
+                            order: 'asc',
+                          }]}
                           expandRow={ this.expandRow } />
         </div>
       </PageContainer>
