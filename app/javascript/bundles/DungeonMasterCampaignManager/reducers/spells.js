@@ -15,14 +15,24 @@ const spells = createReducer({
       currentSpell: state.currentSpell,
     };
   },
-  [getSpellsFail]: () => [],
+  [getSpellsFail]: (state) => {
+    return {
+      spells: state.spells,
+      currentSpell: state.currentSpell,
+    };
+  },
   [getSpellSuccess]: (state, action) => {
     return {
       spells: state.spells,
       currentSpell: action.data,
     };
   },
-  [getSpellFail]: () => [],
+  [getSpellFail]: (state) => {
+    return {
+      spells: state.spells,
+      currentSpell: null,
+    };
+  },
 });
 
 export default spells;

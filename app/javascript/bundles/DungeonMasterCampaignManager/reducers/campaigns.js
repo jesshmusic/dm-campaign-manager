@@ -19,7 +19,14 @@ const campaigns = createReducer({
       currentCampaign: state.currentCampaign,
     };
   },
-  [getCampaignsFail]: () => [],
+  [getCampaignsFail]: (state) => {
+    return {
+      campaigns: state.campaigns,
+      playerCampaigns: state.playerCampaigns,
+      dmCampaigns: state.dmCampaigns,
+      currentCampaign: state.currentCampaign,
+    };
+  },
   [getCampaignSuccess]: (state, action) => {
     return {
       campaigns: state.campaigns,
@@ -28,7 +35,14 @@ const campaigns = createReducer({
       currentCampaign: action.data,
     };
   },
-  [getCampaignFail]: () => [],
+  [getCampaignFail]: () => (state) => {
+    return {
+      campaigns: state.campaigns,
+      playerCampaigns: state.playerCampaigns,
+      dmCampaigns: state.dmCampaigns,
+      currentCampaign: state.currentCampaign,
+    };
+  },
 });
 
 export default campaigns;

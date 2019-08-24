@@ -15,14 +15,24 @@ const monsters = createReducer({
       currentMonster: state.currentMonster,
     };
   },
-  [getMonstersFail]: () => [],
+  [getMonstersFail]: (state) => {
+    return {
+      monsters: state.monsters,
+      currentMonster: state.currentMonster,
+    };
+  },
   [getMonsterSuccess]: (state, action) => {
     return {
       monsters: state.monsters,
       currentMonster: action.data,
     };
   },
-  [getMonsterFail]: () => [],
+  [getMonsterFail]: () => (state) => {
+    return {
+      monsters: state.monsters,
+      currentMonster: null,
+    };
+  },
 });
 
 export default monsters;

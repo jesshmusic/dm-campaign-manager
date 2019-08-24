@@ -15,14 +15,24 @@ const items = createReducer({
       currentItem: state.currentItem,
     };
   },
-  [getItemsFail]: () => [],
+  [getItemsFail]: (state) => {
+    return {
+      items: state.items,
+      currentItem: state.currentItem,
+    };
+  },
   [getItemSuccess]: (state, action) => {
     return {
       items: state.items,
       currentItem: action.data,
     };
   },
-  [getItemFail]: () => [],
+  [getItemFail]: (state) => {
+    return {
+      items: state.items,
+      currentItem: null,
+    };
+  },
 });
 
 export default items;
