@@ -6,7 +6,7 @@ import classes from './hero-banner.module.scss';
 const HeroBanner = (props) => {
   const {imagePath} = props;
   return (
-    <div className={classes.heroBanner} style={{backgroundImage: imagePath ? `url(${imagePath})` : 'url(\'/images/rays-of-sun-through-trees.jpg\')'}}/>
+    <div className={classes.heroBanner} style={{backgroundImage: imagePath ? `url(${imagePath})` : 'url(\'/assets/rays-of-sun-through-trees.jpg\')'}}/>
   );
 };
 
