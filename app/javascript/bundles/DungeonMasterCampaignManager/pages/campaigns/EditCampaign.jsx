@@ -7,19 +7,21 @@ import PageContainer from '../../containers/PageContainer.jsx';
 import rest from '../../actions/api';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import BreadcrumbLink from '../../components/layout/BreadcrumbLink';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 
 import Form from 'react-bootstrap/Form';
-import InputGroup from 'react-bootstrap/InputGroup';
 import Button from 'react-bootstrap/Button';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Spinner from 'react-bootstrap/Spinner';
 
-import { Form as FinalForm, Field } from 'react-final-form';
+import { Form as FinalForm } from 'react-final-form';
+import arrayMutators from 'final-form-arrays';
+import { FieldArray } from 'react-final-form-arrays';
 
 import classes from './edit-campaign.module.scss';
 import FormField from '../../components/forms/FormField';
 import FormTextArea from '../../components/forms/FormTextArea';
+import WorldLocationFields from './partials/WorldLocationFields';
+import WorldEventFields from './partials/WorldEventFields';
 
 class EditCampaign extends React.Component {
   state = {
@@ -73,7 +75,17 @@ class EditCampaign extends React.Component {
             <FinalForm onSubmit={this.handleSubmit}
                        initialValues={currentCampaign}
                        validate={this.validate}
-                       render={({ handleSubmit, form, submitting, pristine, values }) => (
+                       mutators={{...arrayMutators }}
+                       render={({
+                         handleSubmit,
+                         form: {
+                           mutators: { push, pop },
+                         },
+                         submitting,
+                         form,
+                         pristine,
+                         values
+                       }) => (
                          <Form noValidate validated={validated} onSubmit={handleSubmit}>
                            <Form.Row>
                              <FormField label={'Campaign name'}
@@ -88,8 +100,46 @@ class EditCampaign extends React.Component {
                            <Form.Row>
                              <FormTextArea label={'Description'} colWidth={'12'} name={'description'}/>
                            </Form.Row>
-                           <Button type="submit" disabled={submitting}>Update Campaign</Button>
-                           <Button type="button" onClick={form.reset} disabled={submitting || pristine}>Reset</Button>
+                           <h2>World Locations</h2>
+                           <Form.Row>
+                             <ButtonGroup aria-label="World Locations Actions">
+                               <Button type="button" onClick={() => push('world_locations', undefined)} variant={'info'}>Add World Location</Button>
+                               <Button type="button" onClick={() => pop('world_locations')} variant={'warning'}>Remove World Location</Button>
+                             </ButtonGroup>
+                           </Form.Row>
+                           <FieldArray name="world_locations">
+                             {({ fields }) =>
+                               fields.map((world_location, index) => (
+                                 <WorldLocationFields location={world_location}
+                                                      fields={fields}
+                                                      index={index}
+                                                      key={index} />
+                               ))
+                             }
+                           </FieldArray>
+                           <h2>World Events</h2>
+                           <Form.Row>
+                             <ButtonGroup aria-label="World Events Actions">
+                               <Button type="button" onClick={() => push('world_events', undefined)} variant={'info'}>Add World Event</Button>
+                               <Button type="button" onClick={() => pop('world_events')} variant={'warning'}>Remove World Event</Button>
+                             </ButtonGroup>
+                           </Form.Row>
+                           <FieldArray name="world_events">
+                             {({ fields }) =>
+                               fields.map((event, index) => (
+                                 <WorldEventFields event={event}
+                                                   fields={fields}
+                                                   index={index}
+                                                   key={index} />
+                               ))
+                             }
+                           </FieldArray>
+                           <Form.Row>
+                             <ButtonGroup aria-label="Campaign actions">
+                               <Button type="submit" disabled={submitting}>Update Campaign</Button>
+                               <Button type="button" onClick={form.reset} disabled={submitting || pristine} variant={'secondary'}>Reset</Button>
+                             </ButtonGroup>
+                           </Form.Row>
                            <pre className={classes.preBlock}>{JSON.stringify(values, 0, 2)}</pre>
                          </Form>
                        )} />

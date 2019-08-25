@@ -9,7 +9,7 @@ import {Field} from 'react-final-form';
 import Form from 'react-bootstrap/Form';
 
 const FormField = ({name, label, type, colWidth}) => (
-  <Form.Group as={Col} md={colWidth} controlId="validationCustom02">
+  <Form.Group as={Col} md={colWidth}>
     <Field name={name}>
       {({ input, meta }) => (
         <div>
