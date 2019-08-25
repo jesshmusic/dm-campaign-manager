@@ -214,7 +214,19 @@ module Admin::V1
                                         },
                                         adventures: {
                                           include: [encounters: {
-                                                      except: %i[adventure_id created_at updated_at]
+                                                      except: %i[adventure_id created_at updated_at],
+                                                      include: [
+                                                        encounter_monsters: {
+                                                          include: [
+                                                            monster: {
+                                                              include: %i[stat_block]
+                                                            }
+                                                          ]
+                                                        },
+                                                        equipment_items: {
+                                                          include: %i[items]
+                                                        }
+                                                      ]
                                                     }],
                                           except: %i[campaign_id created_at updated_at]
                                         },
