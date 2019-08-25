@@ -18,6 +18,8 @@ import Spinner from 'react-bootstrap/Spinner';
 import { Form as FinalForm, Field } from 'react-final-form';
 
 import classes from './edit-campaign.module.scss';
+import FormField from '../../components/forms/FormField';
+import FormTextArea from '../../components/forms/FormTextArea';
 
 class EditCampaign extends React.Component {
   state = {
@@ -43,7 +45,13 @@ class EditCampaign extends React.Component {
     console.log('Submitted');
   };
 
-  required = (value) => (value ? undefined : 'Required');
+  validate = (values) => {
+    const errors = {};
+    if (!values.name) {
+      errors.name = 'Campaign name is required';
+    }
+    return errors;
+  };
 
   render () {
     const { user, flashMessages } = this.props;
@@ -64,64 +72,21 @@ class EditCampaign extends React.Component {
           { currentCampaign ? (
             <FinalForm onSubmit={this.handleSubmit}
                        initialValues={currentCampaign}
+                       validate={this.validate}
                        render={({ handleSubmit, form, submitting, pristine, values }) => (
                          <Form noValidate validated={validated} onSubmit={handleSubmit}>
                            <Form.Row>
-                             <Form.Group as={Col} md="7" controlId="validationCustom01">
-                               <Field name="name" validate={this.required}>
-                                 {({ input, meta }) => {
-                                   console.log(input);
-                                   console.log(meta);
-                                   return (
-                                     <div>
-                                       <Form.Label>Name</Form.Label>
-                                       <Form.Control
-                                         {...input}
-                                         type="text"
-                                         placeholder="Campaign name"
-                                         isValid={meta.touched && !meta.invalid}
-                                         isInvalid={meta.error && meta.touched}
-                                       />
-                                       <Form.Control.Feedback type="invalid">{meta.error}</Form.Control.Feedback>
-                                     </div>
-                                   );
-                                 }}
-                               </Field>
-                             </Form.Group>
-                             <Form.Group as={Col} md="5" controlId="validationCustom02">
-                               <Field name="world" validate={this.required}>
-                                 {({ input, meta }) => (
-                                   <div>
-                                     <Form.Label>World</Form.Label>
-                                     <Form.Control
-                                       {...input}
-                                       type="text"
-                                       placeholder="World"
-                                       isValid={meta.touched && !meta.invalid}
-                                       isInvalid={meta.error && meta.touched}
-                                     />
-                                     <Form.Control.Feedback type="invalid">{meta.error}</Form.Control.Feedback>
-                                   </div>
-                                 )}
-                               </Field>
-                             </Form.Group>
+                             <FormField label={'Campaign name'}
+                                        type={'text'}
+                                        colWidth={'7'}
+                                        name={'name'}/>
+                             <FormField label={'World'}
+                                        type={'text'}
+                                        colWidth={'5'}
+                                        name={'world'}/>
                            </Form.Row>
                            <Form.Row>
-                             <Form.Group as={Col} md="12" controlId="validationCustom03">
-                               <Field name="description" validate={this.required}>
-                                 {({ input, meta }) => (
-                                   <div>
-                                     <Form.Label>Description</Form.Label>
-                                     <Form.Control
-                                       {...input}
-                                       as="textarea"
-                                       placeholder="Description..."
-                                     />
-                                     {meta.error && meta.touched && <Form.Control.Feedback type="invalid">{meta.error}</Form.Control.Feedback>}
-                                   </div>
-                                 )}
-                               </Field>
-                             </Form.Group>
+                             <FormTextArea label={'Description'} colWidth={'12'} name={'description'}/>
                            </Form.Row>
                            <Button type="submit" disabled={submitting}>Update Campaign</Button>
                            <Button type="button" onClick={form.reset} disabled={submitting || pristine}>Reset</Button>

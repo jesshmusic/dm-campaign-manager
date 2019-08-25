@@ -200,12 +200,44 @@ module Admin::V1
     end
 
     def single_campaign(single_campaign)
-      single_campaign.as_json(include: [:user, :users, :world_locations, :world_events,
-                                        adventures: { include: [:encounters] },
-                                        characters: { include: [:stat_block, :character_actions, :skills, :spells,
+      single_campaign.as_json(include: [user: {
+                                          except: %i[email created_at updated_at deleted_at]
+                                        },
+                                        users: {
+                                          except: %i[email created_at updated_at deleted_at]
+                                        },
+                                        world_locations: {
+                                          except: %i[campaign_id created_at updated_at]
+                                        },
+                                        world_events: {
+                                          except: %i[campaign_id created_at updated_at]
+                                        },
+                                        adventures: {
+                                          include: [encounters: {
+                                                      except: %i[adventure_id created_at updated_at]
+                                                    }],
+                                          except: %i[campaign_id created_at updated_at]
+                                        },
+                                        characters: { include: [character_actions: {
+                                                                  except: %i[character_id created_at updated_at]
+                                                                },
+                                                                skills: {
+                                                                  except: %i[created_at updated_at monster_id character_id]
+                                                                },
+                                                                stat_block: {
+                                                                  except: %i[created_at updated_at character_id monster_id]
+                                                                },
                                                                 equipment_items: {
-                                                                  include: [:items]
-                                                                }] }])
+                                                                  include: [items: { only: %i[id name type sub_category]}],
+                                                                  only: %i[id quantity]
+                                                                },
+                                                                spells: {
+                                                                  only: %i[id name page slug spell_level level]
+                                                                }],
+                                                      only: %i[id name slug level alignment race stat_block]
+                                        }],
+                              only: %i[id description world name slug]
+      )
     end
 
     def single_campaign_small(single_campaign)
