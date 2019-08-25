@@ -21,6 +21,22 @@ export default reduxApi({
       };
     },
   },
+  editCampaign: {
+    url: '/v1/campaigns/:slug/',
+    options () {
+      const headers = getHeaders();
+      return {
+        method: 'patch',
+        headers,
+      };
+    },
+    postfetch: [({data, actions, dispatch, getState, request}) => {
+      console.log(data);
+      console.log(actions);
+      console.log(getState);
+      console.log(request);
+    }],
+  },
   getCampaign: {
     url: '/v1/campaigns/:slug',
     options () {

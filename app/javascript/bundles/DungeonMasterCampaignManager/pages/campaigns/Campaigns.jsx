@@ -2,14 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from '@reach/router';
-import BreadcrumbLink from '../components/layout/BreadcrumbLink';
+import BreadcrumbLink from '../../components/layout/BreadcrumbLink';
 
 const ReactMarkdown = require('react-markdown');
 
 
 // Container
-import PageContainer from '../containers/PageContainer.jsx';
-import rest from '../actions/api';
+import PageContainer from '../../containers/PageContainer.jsx';
+import rest from '../../actions/api';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
 

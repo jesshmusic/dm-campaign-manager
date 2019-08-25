@@ -5,8 +5,9 @@ import { Provider } from 'react-redux';
 import rootReducer from '../reducers';
 import { Router } from '@reach/router';
 import HomePage from './HomePage';
-import Campaigns from './Campaigns';
-import Campaign from './Campaign';
+import Campaigns from './campaigns/Campaigns';
+import Campaign from './campaigns/Campaign';
+import EditCampaign from './campaigns/EditCampaign';
 import Login from './Login';
 import Items from './items/Items';
 import AllItems from './items/AllItems';
@@ -43,6 +44,7 @@ const Home = (props) => (
       <HomePage path="/" />
       <Campaigns path='/app/campaigns'/>
       <Campaign path='/app/campaigns/:campaignSlug'/>
+      <EditCampaign path='/app/campaigns/:campaignSlug/edit'/>
       <Items path='/app/items' />
       <AllItems path='/app/items/all/' />
       <Armor path='/app/items/armor/' />

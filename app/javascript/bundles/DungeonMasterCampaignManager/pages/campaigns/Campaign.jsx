@@ -7,10 +7,10 @@ const ReactMarkdown = require('react-markdown');
 
 
 // Container
-import PageContainer from '../containers/PageContainer.jsx';
-import rest from '../actions/api';
+import PageContainer from '../../containers/PageContainer.jsx';
+import rest from '../../actions/api';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
-import BreadcrumbLink from '../components/layout/BreadcrumbLink';
+import BreadcrumbLink from '../../components/layout/BreadcrumbLink';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import ListGroup from 'react-bootstrap/ListGroup';
