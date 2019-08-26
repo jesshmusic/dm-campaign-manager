@@ -33,20 +33,11 @@ class Campaigns extends React.Component {
             <BreadcrumbLink to='/' title={'Home'} />
             <Breadcrumb.Item active>Campaigns</Breadcrumb.Item>
           </Breadcrumb>
-          <ListGroup>
-            {this.props.campaigns.campaigns.map((campaign) =>
-              <ListGroup.Item key={campaign.slug}>
-                <Link to={`/app/campaigns/${campaign.slug}`}>
-                  {campaign.name} - {campaign.user.name}
-                </Link>
-              </ListGroup.Item>
-            )}
-          </ListGroup>
-          {this.props.user && this.props.campaigns.playerCampaigns ? (
+          {this.props.user && this.props.campaigns.dmCampaigns ? (
             <div>
               <h2>My Campaigns</h2>
               <ListGroup>
-                {this.props.campaigns.playerCampaigns.map((campaign) =>
+                {this.props.campaigns.dmCampaigns.map((campaign) =>
                   <ListGroup.Item key={campaign.slug}>
                     <Link to={`/app/campaigns/${campaign.slug}`}>
                       {campaign.name}
@@ -56,14 +47,14 @@ class Campaigns extends React.Component {
               </ListGroup>
             </div>
           ) : null}
-          {this.props.user && this.props.campaigns.dmCampaigns ? (
+          {this.props.user && this.props.user.role === 'admin' ? (
             <div>
-              <h2>Campaigns I Run</h2>
+              <h2>Admin: All Campaigns</h2>
               <ListGroup>
-                {this.props.campaigns.dmCampaigns.map((campaign) =>
+                {this.props.campaigns.campaigns.map((campaign) =>
                   <ListGroup.Item key={campaign.slug}>
                     <Link to={`/app/campaigns/${campaign.slug}`}>
-                      {campaign.name}
+                      {campaign.name} - {campaign.user.name}
                     </Link>
                   </ListGroup.Item>
                 )}

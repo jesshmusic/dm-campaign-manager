@@ -34,7 +34,6 @@ def create_user(name, username, email, role)
   end
 end
 
-create_user('Jess Player', 'jesshplayer', 'jesshmusic+player72@gmail.com', 0)
 create_user('Jess Hendricks', 'jesshmusic', 'jesshmusic72@gmail.com', 2)
 dm_user = create_user('Jess DM', 'jesshdm', 'jesshmusic72+dm@gmail.com', 1)
 

@@ -7,17 +7,6 @@
                     <% end %>
 
   <div class="form-inputs">
-    <% if (current_user.admin? || current_user.dungeon_master?) %>
-        <%= form.association :campaigns,
-          collection: current_user.campaigns + current_user.player_campaigns,
-          include_blank: false,
-          include_hidden: false %>
-    <% else %>
-      <%= form.association :campaigns,
-        collection: current_user.player_campaigns,
-        include_blank: false,
-        include_hidden: false %>
-    <% end %>
 
     <%= form.hidden_field :user_id, value: form.object.user_id || current_user.id %>
     <%= form.hidden_field :type, value: 'PlayerCharacter' %>

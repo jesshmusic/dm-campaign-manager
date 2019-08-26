@@ -14,7 +14,6 @@ const campaigns = createReducer({
   [getCampaignsSuccess]: (state, action) => {
     return {
       campaigns: action.data.campaigns,
-      playerCampaigns: action.data.player_campaigns,
       dmCampaigns: action.data.dm_campaigns,
       currentCampaign: state.currentCampaign,
     };

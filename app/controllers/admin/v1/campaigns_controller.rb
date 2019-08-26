@@ -10,17 +10,13 @@ module Admin::V1
     def index
       @campaigns = Campaign.all
       authorize Campaign
-      @player_campaigns = current_user ? current_user.player_campaigns : []
-      @dm_campaigns = current_user&.dungeon_master? || current_user&.admin? ? Campaign.where(user: current_user) : []
+      @dm_campaigns = current_user ? Campaign.where(user: current_user) : []
       @campaigns = @campaigns.search_for(params[:search]) if params[:search].present?
-      @campaigns -= @dm_campaigns
-      @campaigns -= @player_campaigns
       respond_to do |format|
         format.html { @pagy, @campaigns = pagy(@campaigns) }
         format.json do
           render json: {
-            campaigns: campaigns_small(@campaigns),
-            player_campaigns: campaigns_small(@player_campaigns),
+            campaigns: current_user.admin? ? campaigns_small(@campaigns) : [],
             dm_campaigns: campaigns(@dm_campaigns)
           }
         end
@@ -186,7 +182,7 @@ module Admin::V1
     end
 
     def campaigns(campaigns_list)
-      campaigns_list.as_json(include: [:user, :users, :world_locations, :world_events,
+      campaigns_list.as_json(include: [:user, :world_locations, :world_events,
                                        adventures: { include: [:encounters] },
                                        characters: { include: [:stat_block, :character_actions, :skills, :spells,
                                                                equipment_items: {
@@ -195,15 +191,12 @@ module Admin::V1
     end
 
     def campaigns_small(campaigns_list)
-      campaigns_list.as_json(include: [:user, :users, :world_locations, :world_events,
+      campaigns_list.as_json(include: [:user, :world_locations, :world_events,
                                        characters: { include: %i[stat_block character_actions skills] }])
     end
 
     def single_campaign(single_campaign)
       single_campaign.as_json(include: [user: {
-                                          except: %i[email created_at updated_at deleted_at]
-                                        },
-                                        users: {
                                           except: %i[email created_at updated_at deleted_at]
                                         },
                                         world_locations: {
@@ -253,7 +246,7 @@ module Admin::V1
     end
 
     def single_campaign_small(single_campaign)
-      single_campaign.as_json(include: [:user, :users, :world_locations, :world_events,
+      single_campaign.as_json(include: [:user, :world_locations, :world_events,
                                         characters: { include: %i[stat_block character_actions skills] }])
     end
   end

@@ -25,42 +25,16 @@ class HomePage extends React.Component {
   }
 
   render () {
-    const {campaigns, nonPlayerCharacters, playerCharacters, dungeonMasters, players, user, flashMessages} = this.props;
+    const {campaigns, nonPlayerCharacters, playerCharacters, users, players, user, flashMessages} = this.props;
     return (
       <PageContainer user={user}
                      flashMessages={flashMessages}
                      pageTitle='Dashboard'
                      description={'Dungeon Master\'s Campaign Manager is a free resource for DMs to manage their campaigns, adventures, and NPCs.'}>
         <div>
-          <h2>Campaigns</h2>
-          <ListGroup>
-            {campaigns.campaigns.map((campaign) =>
-              <ListGroup.Item key={campaign.slug}>
-                <Link to={`/app/campaigns/${campaign.slug}`}>
-                  {campaign.name} - {campaign.user.name}
-                </Link>
-              </ListGroup.Item>
-            )}
-          </ListGroup>
-
-          {user && campaigns.playerCampaigns ? (
-            <div>
-              <h2>My Campaigns</h2>
-              <ListGroup>
-                {campaigns.playerCampaigns.map((campaign) =>
-                  <ListGroup.Item key={campaign.slug}>
-                    <Link to={`/app/campaigns/${campaign.slug}`}>
-                      {campaign.name} - {campaign.user.name}
-                    </Link>
-                  </ListGroup.Item>
-                )}
-              </ListGroup>
-            </div>
-          ) : null}
-
           {user && campaigns.dmCampaigns ? (
             <div>
-              <h2>Campaigns I Run</h2>
+              <h2>My Campaigns</h2>
               <ListGroup>
                 {campaigns.dmCampaigns.map((campaign) =>
                   <ListGroup.Item key={campaign.slug}>
@@ -73,59 +47,24 @@ class HomePage extends React.Component {
             </div>
           ) : null}
 
-          {user ? (
+          {user && user.role === 'admin' ? (
             <div>
-              <h2>Dungeon Masters</h2>
+              <h2>Admin: Users</h2>
               <ListGroup>
-                {dungeonMasters.map((dm) =>
-                  <ListGroup.Item key={dm.username}>
-                    <Link to={`/app/dungeon_masters/${dm.username}`}>
-                      {dm.name} &ldquo;<code>{dm.username}</code>&rdquo;, {dm.location}
+                {users.map((nextUser) =>
+                  <ListGroup.Item key={nextUser.username}>
+                    <Link to={`/app/dungeon_masters/${nextUser.username}`}>
+                      {nextUser.name} &ldquo;<code>{nextUser.username}</code>&rdquo;, {nextUser.location}, role: <strong>{nextUser.role}</strong>
                     </Link>
                   </ListGroup.Item>
                 )}
               </ListGroup>
-            </div>
-          ) : null}
-
-          {user ? (
-            <div>
-              <h2>Players</h2>
+              <h2>Admin: All Campaigns</h2>
               <ListGroup>
-                {players.map((player) =>
-                  <ListGroup.Item key={player.username}>
-                    <Link to={`/app/dungeon_masters/${player.username}`}>
-                      {player.name} &ldquo;<code>{player.username}</code>&rdquo;, {player.location}
-                    </Link>
-                  </ListGroup.Item>
-                )}
-              </ListGroup>
-            </div>
-          ) : null}
-
-          {playerCharacters && playerCharacters.count > 0 ? (
-            <div>
-              <h2>Player Characters</h2>
-              <ListGroup>
-                {playerCharacters.map((character) =>
-                  <ListGroup.Item key={character.slug}>
-                    <Link to={`/app/player_characters/${character.slug}`}>
-                      {character.name}, Level {character.level} {character.race}
-                    </Link>
-                  </ListGroup.Item>
-                )}
-              </ListGroup>
-            </div>
-          ) : null}
-
-          {nonPlayerCharacters && nonPlayerCharacters.count > 0 ? (
-            <div>
-              <h2>Non-player Characters</h2>
-              <ListGroup>
-                {nonPlayerCharacters.map((character) =>
-                  <ListGroup.Item key={character.slug}>
-                    <Link to={`/app/non_player_characters/${character.slug}`}>
-                      {character.name}, Level {character.level} {character.race}: <strong>{character.role}</strong>
+                {campaigns.campaigns.map((campaign) =>
+                  <ListGroup.Item key={campaign.slug}>
+                    <Link to={`/app/campaigns/${campaign.slug}`}>
+                      {campaign.name} - {campaign.user.name}
                     </Link>
                   </ListGroup.Item>
                 )}
@@ -140,24 +79,19 @@ class HomePage extends React.Component {
 
 HomePage.propTypes = {
   campaigns: PropTypes.object,
-  dungeonMasters: PropTypes.array,
+  users: PropTypes.array,
   players: PropTypes.array,
   flashMessages: PropTypes.array,
   getCampaigns: PropTypes.func.isRequired,
   getUsers: PropTypes.func.isRequired,
-  nonPlayerCharacters: PropTypes.array,
-  playerCharacters: PropTypes.array,
   user: PropTypes.object,
 };
 
 function mapStateToProps (state) {
   return {
     campaigns: state.campaigns,
-    nonPlayerCharacters: state.nonPlayerCharacters,
-    playerCharacters: state.playerCharacters,
     user: state.users.user,
-    players: state.users.users.filter((user) => user.role === 'player'),
-    dungeonMasters: state.users.users.filter((user) => user.role === 'dungeon_master'),
+    users: state.users.users,
     flashMessages: state.flashMessages,
   };
 }

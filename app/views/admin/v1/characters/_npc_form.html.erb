@@ -8,7 +8,7 @@
 
   <div class="form-inputs">
     <%= form.association :campaigns,
-      collection: current_user.campaigns + current_user.player_campaigns,
+      collection: current_user.campaigns,
       include_blank: false,
       include_hidden: false %>
 

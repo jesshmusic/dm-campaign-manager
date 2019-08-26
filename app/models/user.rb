@@ -43,25 +43,21 @@ class User < ApplicationRecord
          :confirmable, :omniauthable
   validates :username, uniqueness: true
 
-  enum role: %I[player dungeon_master admin]
+  enum role: %I[dungeon_master admin]
   after_initialize :set_default_role, if: :new_record?
   after_validation(on: :create) do
     self.slug = generate_slug
   end
 
   # User Associations
-  has_many :adventures, dependent: :destroy
   has_many :campaigns, dependent: :destroy
   has_many :dnd_classes, dependent: :destroy
   has_many :items, dependent: :destroy
   has_many :monsters, dependent: :destroy
   has_many :spells, dependent: :destroy
 
-  has_many :campaign_users
-  has_many :player_campaigns, through: :campaign_users, source: :campaign
-
   def set_default_role
-    self.role ||= :player
+    self.role ||= :dungeon_master
   end
 
   # instead of deleting, indicate the user requested a delete & timestamp it

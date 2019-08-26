@@ -27,7 +27,7 @@
         </div>
       </div>
       <%= form.association :campaigns,
-        collection: current_user.campaigns + current_user.player_campaigns,
+        collection: current_user.campaigns,
         include_blank: false,
         include_hidden: false %>
       <%= form.hidden_field :user, value: form.object.user || current_user %>

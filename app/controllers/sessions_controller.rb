@@ -12,7 +12,7 @@ class SessionsController < Devise::SessionsController
       sign_in :user, @user
       respond_to do |format|
         format.html { redirect_to '/', notice: "User #{@user.name} logged in." }
-        format.json { render json: @user, include: [:player_campaigns ] }
+        format.json { render json: @user, include: [:campaigns] }
       end
     else
       invalid_login_attempt
