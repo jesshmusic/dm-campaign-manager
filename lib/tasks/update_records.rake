@@ -1,6 +1,14 @@
 # frozen_string_literal: true
 
 namespace :update_records do
+  task remove_player_role: :environment do
+    User.all.each do |next_user|
+      next_user.role = :dungeon_master if next_user.role == 'admin'
+      next_user.role = :admin if next_user.role.nil?
+      next_user.save!
+    end
+  end
+
   task fix_magic_armor_sub_cats: :environment do
     ArmorItem.where(sub_category: 'Armor (medium or heavy)').or(ArmorItem.where(sub_category: 'Armor (medium or heavy')).each do |armor_item|
 

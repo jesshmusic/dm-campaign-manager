@@ -34,8 +34,8 @@ def create_user(name, username, email, role)
   end
 end
 
-create_user('Jess Hendricks', 'jesshmusic', 'jesshmusic72@gmail.com', 2)
-dm_user = create_user('Jess DM', 'jesshdm', 'jesshmusic72+dm@gmail.com', 1)
+create_user('Jess Hendricks', 'jesshmusic', 'jesshmusic72@gmail.com', :admin)
+dm_user = create_user('Jess DM', 'jesshdm', 'jesshmusic72+dm@gmail.com', :dungeon_master)
 
 Campaign.find_or_create_by(name: 'Greyhawk', user_id: dm_user.id) do |campaign|
   campaign.name = 'Greyhawk'
