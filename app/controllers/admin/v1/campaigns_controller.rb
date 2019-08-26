@@ -16,7 +16,7 @@ module Admin::V1
         format.html { @pagy, @campaigns = pagy(@campaigns) }
         format.json do
           render json: {
-            campaigns: current_user.admin? ? campaigns_small(@campaigns) : [],
+            campaigns: current_user&.admin? ? campaigns_small(@campaigns) : [],
             dm_campaigns: campaigns(@dm_campaigns)
           }
         end
