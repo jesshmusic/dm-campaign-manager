@@ -25,6 +25,18 @@ class Campaign extends React.Component {
     this.props.getCampaign(this.props.campaignSlug);
   }
 
+  get playerCharacters () {
+    return this.props.campaign.characters.filter((char) => {
+      return char.type === 'PlayerCharacter';
+    });
+  }
+
+  get nonPlayerCharacters () {
+    return this.props.campaign.characters.filter((char) => {
+      return char.type === 'NonPlayerCharacter';
+    });
+  }
+
   render () {
     const { user, flashMessages, campaign } = this.props;
     const campaignTitle = campaign ? `${campaign.name} by ${campaign.user.name}` : 'Campaign Loading...';
@@ -47,19 +59,16 @@ class Campaign extends React.Component {
               <Col>
                 <h3>Dungeon Master</h3>
                 <h4 className='h5 mb-0'>{campaign.user.name}</h4>
-                <h3>Players</h3>
+                <h3>Player Characters</h3>
                 <ListGroup>
-                  {campaign.users.map((user, index) =>
-                    <ListGroupItem key={index}>
-                      <h4 className='h5 mb-0'>{user.name}</h4>
-                      <ListGroup>
-                        {campaign.characters.map((character, index) =>
-                          (character.user_id === user.id ? (
-                            <ListGroupItem key={index}>{character.name}, Level {character.level}</ListGroupItem>
-                          ) : null)
-                        )}
-                      </ListGroup>
-                    </ListGroupItem>
+                  {this.playerCharacters.map((character, index) =>
+                    <ListGroupItem key={index}>{character.name}, Level {character.level} {character.dnd_class_string}</ListGroupItem>
+                  )}
+                </ListGroup>
+                <h3>Non-player Characters</h3>
+                <ListGroup>
+                  {this.nonPlayerCharacters.map((character, index) =>
+                    <ListGroupItem key={index}><strong>{character.role}</strong> - {character.name}, Level {character.level} {character.dnd_class_string}</ListGroupItem>
                   )}
                 </ListGroup>
               </Col>
