@@ -62,16 +62,6 @@ class Monster < ApplicationRecord
   accepts_nested_attributes_for :monster_special_abilities, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :skills, reject_if: :all_blank, allow_destroy: true
 
-  def hit_dice
-    if stat_block.hit_dice_modifier < 0
-      "#{stat_block.hit_dice_number}d#{stat_block.hit_dice_value} #{stat_block.hit_dice_modifier}"
-    elsif stat_block.hit_dice_modifier > 0
-      "#{stat_block.hit_dice_number}d#{stat_block.hit_dice_value} + #{stat_block.hit_dice_modifier}"
-    else
-      "#{stat_block.hit_dice_number}d#{stat_block.hit_dice_value}"
-    end
-  end
-
   def description_text
     monster_desc = [
       '<div class="p-3">',

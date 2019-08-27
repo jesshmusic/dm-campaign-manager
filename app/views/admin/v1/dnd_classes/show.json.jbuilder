@@ -1,3 +1,3 @@
 # frozen_string_literal: true
 
-json.partial! 'dnd_classes/dnd_class', dnd_class: @dnd_class
+json.partial! 'admin/v1/dnd_classes/dnd_class', dnd_class: @dnd_class

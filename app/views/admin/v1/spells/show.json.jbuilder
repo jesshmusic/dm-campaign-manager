@@ -1,3 +1,3 @@
 # frozen_string_literal: true
 
-json.partial! 'spells/spell', spell: @spell
+json.partial! 'admin/v1/spells/spell', spell: @spell

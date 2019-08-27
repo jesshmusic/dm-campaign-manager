@@ -38,84 +38,28 @@ export default reduxApi({
     }],
   },
   getCampaign: {
-    url: '/v1/campaigns/:slug',
-    options () {
-      const headers = getHeaders();
-      return {
-        method: 'get',
-        headers,
-      };
-    },
+    url: '/v1/campaigns/:slug.json',
   },
   getCampaigns: {
     url: '/v1/campaigns.json',
-    // options () {
-    //   const headers = getHeaders();
-    //   return {
-    //     method: 'get',
-    //     headers,
-    //   };
-    // },
   },
   getItem: {
-    url: '/v1/items/:slug',
-    options () {
-      const headers = getHeaders();
-      return {
-        method: 'get',
-        headers,
-      };
-    },
+    url: '/v1/items/:slug.json',
   },
   getItems: {
-    url: '/v1/items',
-    options () {
-      const headers = getHeaders();
-      return {
-        method: 'get',
-        headers,
-      };
-    },
+    url: '/v1/items.json',
   },
   getMonster: {
-    url: '/v1/monsters/:slug',
-    options () {
-      const headers = getHeaders();
-      return {
-        method: 'get',
-        headers,
-      };
-    },
+    url: '/v1/monsters/:slug.json',
   },
   getMonsters: {
-    url: '/v1/monsters',
-    options () {
-      const headers = getHeaders();
-      return {
-        method: 'get',
-        headers,
-      };
-    },
+    url: '/v1/monsters.json',
   },
   getSpell: {
-    url: '/v1/spells/:slug',
-    options () {
-      const headers = getHeaders();
-      return {
-        method: 'get',
-        headers,
-      };
-    },
+    url: '/v1/spells/:slug.json',
   },
   getSpells: {
-    url: '/v1/spells',
-    options () {
-      const headers = getHeaders();
-      return {
-        method: 'get',
-        headers,
-      };
-    },
+    url: '/v1/spells.json',
   },
   getUser: {
     url: '/users/:slug',

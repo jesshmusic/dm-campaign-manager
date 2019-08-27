@@ -1,3 +1,3 @@
 # frozen_string_literal: true
 
-json.array! @adventures, partial: 'adventures/adventure', as: :adventure
+json.array! @adventures, partial: 'admin/v1/adventures/adventure', as: :adventure

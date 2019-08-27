@@ -1,3 +1,3 @@
 # frozen_string_literal: true
 
-json.partial! 'characters/character', character: @character
+json.partial! 'admin/v1/characters/character', character: @character

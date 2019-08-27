@@ -80,7 +80,9 @@ class Spell < ApplicationRecord
       "<p><strong>Material</strong> #{material}</p>",
       "<p><strong>Duration</strong> #{'Concentration, ' if concentration}#{duration}</p>",
       "<p><strong>Casting time</strong> #{casting_time}</p>",
-      "<div>#{description}</div>"
+      "<div>#{description}</div>",
+      "<h4>Higher Level Effects</h4>",
+      "<div>#{higher_level}</div>"
     ].join
   end
 

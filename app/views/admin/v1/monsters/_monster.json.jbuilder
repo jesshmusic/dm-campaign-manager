@@ -1,4 +1,14 @@
 # frozen_string_literal: true
 
-json.extract! monster, :id, :name, :size, :type, :subtype, :alignment, :armor_class, :hit_points, :hit_dice, :speed, :strength, :dexterity, :constitution, :intelligence, :wisdom, :charisma, :damage_vulnerabilities, :damage_resistances, :damage_immunities, :condition_immunities, :senses, :languages, :challenge_rating, :api_url, :created_at, :updated_at
-json.url monster_url(monster, format: :json)
+json.key_format! camelize: :lower
+
+json.extract! monster, :id, :alignment, :challenge_rating, :charisma_save,
+              :condition_immunities, :constitution_save, :damage_immunities, :damage_resistances,
+              :damage_vulnerabilities, :dexterity_save, :intelligence_save, :languages,
+              :legendary_description, :monster_subtype, :monster_type, :name, :reactions,
+              :senses, :size, :slug, :strength_save, :wisdom_save
+json.descriptionText monster.description_text
+
+json.partial! 'admin/v1/stat_blocks/stat_block', stat_block: monster.stat_block
+
+json.url v1_monster_url(monster, format: :json)

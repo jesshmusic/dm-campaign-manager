@@ -1,3 +1,3 @@
 # frozen_string_literal: true
 
-json.partial! 'monsters/monster', monster: @monster
+json.partial! 'admin/v1/monsters/monster', monster: @monster

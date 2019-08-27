@@ -34,4 +34,14 @@
 class StatBlock < ApplicationRecord
   belongs_to :monster, optional: true
   belongs_to :character, optional: true
+
+  def hit_dice
+    if hit_dice_modifier < 0
+      "#{hit_dice_number}d#{hit_dice_value} #{hit_dice_modifier}"
+    elsif hit_dice_modifier > 0
+      "#{hit_dice_number}d#{hit_dice_value} + #{hit_dice_modifier}"
+    else
+      "#{hit_dice_number}d#{hit_dice_value}"
+    end
+  end
 end

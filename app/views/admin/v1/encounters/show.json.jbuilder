@@ -1,3 +1,3 @@
 # frozen_string_literal: true
 
-json.partial! 'encounters/encounter', encounter: @encounter
+json.partial! 'admin/v1/encounters/encounter', encounter: @encounter

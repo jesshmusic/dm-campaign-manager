@@ -54,7 +54,7 @@ class Campaigns extends React.Component {
                 {this.props.campaigns.campaigns.map((campaign) =>
                   <ListGroup.Item key={campaign.slug}>
                     <Link to={`/app/campaigns/${campaign.slug}`}>
-                      {campaign.name} - {campaign.user.name}
+                      {campaign.name} - {campaign.dungeonMaster.name}
                     </Link>
                   </ListGroup.Item>
                 )}
