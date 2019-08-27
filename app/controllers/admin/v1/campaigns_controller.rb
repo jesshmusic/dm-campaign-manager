@@ -12,6 +12,7 @@ module Admin::V1
       authorize Campaign
       @current_user = current_user
       @campaigns = @campaigns.search_for(params[:search]) if params[:search].present?
+      @pagy, @campaigns = pagy(@campaigns)
       # @dm_campaigns = current_user ? Campaign.where(user: current_user) : []
       # @campaigns = @campaigns.search_for(params[:search]) if params[:search].present?
       # respond_to do |format|

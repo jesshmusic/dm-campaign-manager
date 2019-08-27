@@ -70,6 +70,10 @@ class Item < ApplicationRecord
     'Item'
   end
 
+  def cost_string
+    "#{cost_value}#{cost_unit}"
+  end
+
   include PgSearch::Model
 
   # PgSearch
