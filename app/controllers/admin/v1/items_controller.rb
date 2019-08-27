@@ -22,25 +22,12 @@ module Admin::V1
                else
                  @items.where(user_id: nil).or(@items.where(user_id: current_user.id))
                end
-      respond_to do |format|
-        format.html { @pagy, @items = pagy(@items) }
-        format.json do
-          render json: @items.as_json(include: { contained_items: {
-                                        only: %i[id cost_unit cost_value name slug sub_category type weight]
-                                      } })
-        end
-      end
-
     end
 
     # GET /items/1
     # GET /items/1.json
     def show
       authorize @item
-      respond_to do |format|
-        format.html { @item }
-        format.json { render json: @item.as_json(include: %i[contained_items]) }
-      end
     end
 
     # GET /items/new
