@@ -39,7 +39,7 @@ class HomePage extends React.Component {
                 {campaigns.dmCampaigns.map((campaign) =>
                   <ListGroup.Item key={campaign.slug}>
                     <Link to={`/app/campaigns/${campaign.slug}`}>
-                      {campaign.name} - {campaign.user.name}
+                      {campaign.name} - {campaign.dungeonMaster.name}
                     </Link>
                   </ListGroup.Item>
                 )}
@@ -64,7 +64,7 @@ class HomePage extends React.Component {
                 {campaigns.campaigns.map((campaign) =>
                   <ListGroup.Item key={campaign.slug}>
                     <Link to={`/app/campaigns/${campaign.slug}`}>
-                      {campaign.name} - {campaign.user.name}
+                      {campaign.name} - {campaign.dungeonMaster.name}
                     </Link>
                   </ListGroup.Item>
                 )}

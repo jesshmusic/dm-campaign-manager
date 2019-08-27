@@ -20,7 +20,7 @@
       <div class="col">
         <%= form.association :characters,
                              label: 'Player Characters',
-                             collection: PlayerCharacter.where(user: form.object.users),
+                             collection: PlayerCharacter.where(user: form.object.user),
                              include_blank: false,
                              include_hidden: false,
                              input_html: { class: "pc-selection" } %>
@@ -28,7 +28,7 @@
       <div class="col">
         <%= form.association :characters,
                              label: 'Non-player Characters',
-                             collection: NonPlayerCharacter.all,
+                             collection: NonPlayerCharacter.where(user: form.object.user),
                              include_blank: false,
                              include_hidden: false,
                              input_html: {class: "npc-selection"} %>
