@@ -48,14 +48,14 @@ export default reduxApi({
     },
   },
   getCampaigns: {
-    url: '/v1/campaigns',
-    options () {
-      const headers = getHeaders();
-      return {
-        method: 'get',
-        headers,
-      };
-    },
+    url: '/v1/campaigns.json',
+    // options () {
+    //   const headers = getHeaders();
+    //   return {
+    //     method: 'get',
+    //     headers,
+    //   };
+    // },
   },
   getItem: {
     url: '/v1/items/:slug',

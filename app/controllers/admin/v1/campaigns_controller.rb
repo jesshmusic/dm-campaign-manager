@@ -10,17 +10,19 @@ module Admin::V1
     def index
       @campaigns = Campaign.all
       authorize Campaign
-      @dm_campaigns = current_user ? Campaign.where(user: current_user) : []
+      @current_user = current_user
       @campaigns = @campaigns.search_for(params[:search]) if params[:search].present?
-      respond_to do |format|
-        format.html { @pagy, @campaigns = pagy(@campaigns) }
-        format.json do
-          render json: {
-            campaigns: current_user&.admin? ? campaigns_small(@campaigns) : [],
-            dm_campaigns: campaigns(@dm_campaigns)
-          }
-        end
-      end
+      # @dm_campaigns = current_user ? Campaign.where(user: current_user) : []
+      # @campaigns = @campaigns.search_for(params[:search]) if params[:search].present?
+      # respond_to do |format|
+      #   format.html { @pagy, @campaigns = pagy(@campaigns) }
+      #   format.json do
+      #     render json: {
+      #       campaigns: current_user&.admin? ? @campaigns : [],
+      #       dm_campaigns: @dm_campaigns
+      #     }
+      #   end
+      # end
     end
 
     # GET /campaigns/1

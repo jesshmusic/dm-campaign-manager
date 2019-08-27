@@ -7,14 +7,22 @@ const getCampaignFail = createAction('@@redux-api@getCampaign_fail');
 
 const campaigns = createReducer({
   campaigns: [],
-  dmCampaigns: [],
   playerCampaigns: [],
   currentCampaign: null,
 }, {
   [getCampaignsSuccess]: (state, action) => {
+    const allCampaigns = [];
+    const dmCampaigns = [];
+    action.data.data.forEach((campaign) => {
+      if (campaign.isDmCampaign) {
+        dmCampaigns.push(campaign);
+      } else {
+        allCampaigns.push(campaign);
+      }
+    });
     return {
-      campaigns: action.data.campaigns,
-      dmCampaigns: action.data.dm_campaigns,
+      campaigns: allCampaigns,
+      dmCampaigns: dmCampaigns,
       currentCampaign: state.currentCampaign,
     };
   },
