@@ -23,11 +23,11 @@ const WorldLocationFields = ({location, fields, index}) => (
     <FormField label={'Map Grid X'}
                type={'number'}
                colWidth={'1'}
-               name={`${location}.map_x`}/>
+               name={`${location}.mapX`}/>
     <FormField label={'Map Grid Y'}
                type={'number'}
                colWidth={'1'}
-               name={`${location}.map_y`}/>
+               name={`${location}.mapY`}/>
     <Form.Group as={Col} md={'1'}>
       <Form.Label>Remove</Form.Label>
       <Button onClick={() => fields.remove(index)}

@@ -15,8 +15,6 @@ Rails.application.routes.draw do
           resources :encounters
         end
       end
-      patch '/campaigns/:id/join_campaign/:user_id', to: 'campaigns#join_campaign', as: 'campaign_join_campaign'
-      patch '/campaigns/:id/confirm_user/:user_id', to: 'campaigns#confirm_user', as: 'campaign_confirm_user'
       resources :characters, param: :slug
       get '/characters/new/generate_npc', to: 'characters#generate_npc', as: 'generate_npc'
       post '/characters/create_generated_npc', to: 'characters#create_generated_npc',

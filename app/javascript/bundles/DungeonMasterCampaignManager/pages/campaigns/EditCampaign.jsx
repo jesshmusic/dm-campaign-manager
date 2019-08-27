@@ -103,11 +103,11 @@ class EditCampaign extends React.Component {
                            <h2>World Locations</h2>
                            <Form.Row>
                              <ButtonGroup aria-label="World Locations Actions">
-                               <Button type="button" onClick={() => push('world_locations', undefined)} variant={'info'}>Add World Location</Button>
-                               <Button type="button" onClick={() => pop('world_locations')} variant={'warning'}>Remove World Location</Button>
+                               <Button type="button" onClick={() => push('worldLocations', undefined)} variant={'info'}>Add World Location</Button>
+                               <Button type="button" onClick={() => pop('worldLocations')} variant={'warning'}>Remove World Location</Button>
                              </ButtonGroup>
                            </Form.Row>
-                           <FieldArray name="world_locations">
+                           <FieldArray name="worldLocations">
                              {({ fields }) =>
                                fields.map((world_location, index) => (
                                  <WorldLocationFields location={world_location}
@@ -120,11 +120,11 @@ class EditCampaign extends React.Component {
                            <h2>World Events</h2>
                            <Form.Row>
                              <ButtonGroup aria-label="World Events Actions">
-                               <Button type="button" onClick={() => push('world_events', undefined)} variant={'info'}>Add World Event</Button>
-                               <Button type="button" onClick={() => pop('world_events')} variant={'warning'}>Remove World Event</Button>
+                               <Button type="button" onClick={() => push('worldEvents', undefined)} variant={'info'}>Add World Event</Button>
+                               <Button type="button" onClick={() => pop('worldEvents')} variant={'warning'}>Remove World Event</Button>
                              </ButtonGroup>
                            </Form.Row>
-                           <FieldArray name="world_events">
+                           <FieldArray name="worldEvents">
                              {({ fields }) =>
                                fields.map((event, index) => (
                                  <WorldEventFields event={event}

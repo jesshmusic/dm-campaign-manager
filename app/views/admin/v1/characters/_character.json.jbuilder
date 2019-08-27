@@ -7,7 +7,11 @@ json.extract! character, :id, :name, :alignment, :slug, :background,
               :level, :platinum_pieces, :race, :role, :silver_pieces, :spell_ability,
               :spell_attack_bonus, :spell_save_dc, :type, :xp
 
-json.partial! 'admin/v1/stat_blocks/stat_block', stat_block: character.stat_block
+json.stat_block do
+  json.partial! 'admin/v1/stat_blocks/stat_block', stat_block: character.stat_block
+end
+
+json.dnd_class character.dnd_class_string
 
 json.spells_level_one
 

@@ -25,21 +25,9 @@ class Campaign extends React.Component {
     this.props.getCampaign(this.props.campaignSlug);
   }
 
-  get playerCharacters () {
-    return this.props.campaign.characters.filter((char) => {
-      return char.type === 'PlayerCharacter';
-    });
-  }
-
-  get nonPlayerCharacters () {
-    return this.props.campaign.characters.filter((char) => {
-      return char.type === 'NonPlayerCharacter';
-    });
-  }
-
   render () {
     const { user, flashMessages, campaign } = this.props;
-    const campaignTitle = campaign ? `${campaign.name} by ${campaign.user.name}` : 'Campaign Loading...';
+    const campaignTitle = campaign ? `${campaign.name} by ${campaign.dungeonMaster.name}` : 'Campaign Loading...';
     return (
       <PageContainer user={user}
                      flashMessages={flashMessages}
@@ -58,17 +46,17 @@ class Campaign extends React.Component {
               </Col>
               <Col>
                 <h3>Dungeon Master</h3>
-                <h4 className='h5 mb-0'>{campaign.user.name}</h4>
+                <h4 className='h5 mb-0'>{campaign.dungeonMaster.name}</h4>
                 <h3>Player Characters</h3>
                 <ListGroup>
-                  {this.playerCharacters.map((character, index) =>
-                    <ListGroupItem key={index}>{character.name}, Level {character.level} {character.dnd_class_string}</ListGroupItem>
+                  {campaign.pcs.map((character, index) =>
+                    <ListGroupItem key={index}>{character.name}, Level {character.level} {character.dndClass}</ListGroupItem>
                   )}
                 </ListGroup>
                 <h3>Non-player Characters</h3>
                 <ListGroup>
-                  {this.nonPlayerCharacters.map((character, index) =>
-                    <ListGroupItem key={index}><strong>{character.role}</strong> - {character.name}, Level {character.level} {character.dnd_class_string}</ListGroupItem>
+                  {campaign.npcs.map((character, index) =>
+                    <ListGroupItem key={index}><strong>{character.role}</strong> - {character.name}, Level {character.level} {character.dndClass}</ListGroupItem>
                   )}
                 </ListGroup>
               </Col>
