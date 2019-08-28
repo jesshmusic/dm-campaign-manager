@@ -2,11 +2,15 @@
 #
 # Table name: character_classes
 #
-#  id           :bigint           not null, primary key
-#  created_at   :datetime         not null
-#  updated_at   :datetime         not null
-#  character_id :bigint
-#  dnd_class_id :bigint
+#  id                 :bigint           not null, primary key
+#  level              :integer          default(1)
+#  proficiency_bonus  :integer          default(2)
+#  spell_attack_bonus :integer          default(2)
+#  spell_save_dc      :integer          default(8)
+#  created_at         :datetime         not null
+#  updated_at         :datetime         not null
+#  character_id       :bigint
+#  dnd_class_id       :bigint
 #
 # Indexes
 #

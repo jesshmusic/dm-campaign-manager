@@ -46,6 +46,21 @@ class DndRules
       ]
     end
 
+    def proficiency_bonus_for_level(level)
+      case level
+      when 0..4
+        2
+      when 5..8
+        3
+      when 9..12
+        4
+      when 13..16
+        5
+      else
+        6
+      end
+    end
+
     def random_race
       player_races.sample
     end

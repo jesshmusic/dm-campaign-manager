@@ -2,14 +2,17 @@
 #
 # Table name: dnd_classes
 #
-#  id         :bigint           not null, primary key
-#  api_url    :string
-#  hit_die    :integer
-#  name       :string
-#  slug       :string
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  user_id    :bigint
+#  id                     :bigint           not null, primary key
+#  api_url                :string
+#  hit_die                :integer
+#  name                   :string
+#  primary_abilities      :string           default([]), is an Array
+#  saving_throw_abilities :string           default([]), is an Array
+#  slug                   :string
+#  spell_ability          :string
+#  created_at             :datetime         not null
+#  updated_at             :datetime         not null
+#  user_id                :bigint
 #
 # Indexes
 #

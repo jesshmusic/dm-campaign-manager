@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_26_000235) do
+ActiveRecord::Schema.define(version: 2019_08_28_201937) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -80,6 +80,10 @@ ActiveRecord::Schema.define(version: 2019_08_26_000235) do
     t.bigint "dnd_class_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "level", default: 1
+    t.integer "proficiency_bonus", default: 2
+    t.integer "spell_attack_bonus", default: 2
+    t.integer "spell_save_dc", default: 8
     t.index ["character_id"], name: "index_character_classes_on_character_id"
     t.index ["dnd_class_id"], name: "index_character_classes_on_dnd_class_id"
   end
@@ -110,9 +114,6 @@ ActiveRecord::Schema.define(version: 2019_08_26_000235) do
     t.string "alignment", default: "neutral"
     t.string "race", default: "Human", null: false
     t.string "languages", default: "Common"
-    t.string "spell_ability", default: "Intelligence"
-    t.integer "spell_save_dc", default: 8
-    t.integer "spell_attack_bonus", default: 0
     t.integer "copper_pieces", default: 0
     t.integer "silver_pieces", default: 0, null: false
     t.integer "electrum_pieces", default: 0
@@ -123,7 +124,6 @@ ActiveRecord::Schema.define(version: 2019_08_26_000235) do
     t.datetime "updated_at", null: false
     t.string "background", default: "Acolyte"
     t.string "type"
-    t.integer "level", default: 1
     t.index ["slug"], name: "index_characters_on_slug"
     t.index ["user_id"], name: "index_characters_on_user_id"
   end
@@ -146,6 +146,9 @@ ActiveRecord::Schema.define(version: 2019_08_26_000235) do
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.string "slug"
+    t.string "spell_ability"
+    t.string "primary_abilities", default: [], array: true
+    t.string "saving_throw_abilities", default: [], array: true
     t.index ["slug"], name: "index_dnd_classes_on_slug", unique: true
     t.index ["user_id"], name: "index_dnd_classes_on_user_id"
   end
