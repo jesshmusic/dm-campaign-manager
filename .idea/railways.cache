@@ -54,8 +54,6 @@ edit_v1_campaign_adventure_encounter GET    /v1/campaigns/:campaign_slug/adventu
                                      PATCH  /v1/campaigns/:slug(.:format)                                                            admin/v1/campaigns#update
                                      PUT    /v1/campaigns/:slug(.:format)                                                            admin/v1/campaigns#update
                                      DELETE /v1/campaigns/:slug(.:format)                                                            admin/v1/campaigns#destroy
-           v1_campaign_join_campaign PATCH  /v1/campaigns/:id/join_campaign/:user_id(.:format)                                       admin/v1/campaigns#join_campaign
-            v1_campaign_confirm_user PATCH  /v1/campaigns/:id/confirm_user/:user_id(.:format)                                        admin/v1/campaigns#confirm_user
                        v1_characters GET    /v1/characters(.:format)                                                                 admin/v1/characters#index
                                      POST   /v1/characters(.:format)                                                                 admin/v1/characters#create
                     new_v1_character GET    /v1/characters/new(.:format)                                                             admin/v1/characters#new

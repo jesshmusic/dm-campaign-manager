@@ -50,13 +50,17 @@ class Campaign extends React.Component {
                 <h3>Player Characters</h3>
                 <ListGroup>
                   {campaign.pcs.map((character, index) =>
-                    <ListGroupItem key={index}>{character.name}, Level {character.level} {character.dndClass}</ListGroupItem>
+                    <ListGroupItem key={index}>
+                      {character.name}, Level {character.level} {character.dndClass}
+                    </ListGroupItem>
                   )}
                 </ListGroup>
                 <h3>Non-player Characters</h3>
                 <ListGroup>
                   {campaign.npcs.map((character, index) =>
-                    <ListGroupItem key={index}><strong>{character.role}</strong> - {character.name}, Level {character.level} {character.dndClass}</ListGroupItem>
+                    <ListGroupItem key={index}>
+                      <strong>{character.role}</strong> - {character.name}, Level {character.level} {character.dndClass}
+                    </ListGroupItem>
                   )}
                 </ListGroup>
               </Col>

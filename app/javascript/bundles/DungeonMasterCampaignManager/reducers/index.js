@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux';
 import campaigns from './campaigns';
+import dndClasses from './dndClasses';
 import flashMessages from './flashMessages';
 import items from './items';
 import monsters from './monsters';
@@ -10,6 +11,7 @@ import users from './user';
 
 export default combineReducers({
   campaigns,
+  dndClasses,
   flashMessages,
   items,
   monsters,

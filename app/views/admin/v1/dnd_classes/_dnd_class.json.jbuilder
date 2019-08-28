@@ -14,4 +14,4 @@ json.proficiency_choices dnd_class.prof_choices do |prof_choice|
     json.extract! prof, :id, :name, :prof_type
   end
 end
-json.url dnd_class_url(dnd_class, format: :json)
+json.url v1_dnd_class_url(dnd_class, format: :json)

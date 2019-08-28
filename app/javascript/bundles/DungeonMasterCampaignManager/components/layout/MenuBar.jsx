@@ -40,6 +40,7 @@ function MenuBar (props) {
           <NavLink to={'/'}>Home</NavLink>
           <NavLink to={'/app/campaigns'}>Campaigns</NavLink>
           <NavDropdown title="Reference" id="reference-nav-dropdown">
+            <DropdownLink to={'/app/classes'}>Classes</DropdownLink>
             <DropdownLink to={'/app/monsters'}>Monsters</DropdownLink>
             <DropdownLink to={'/app/items'}>Items and Equipment</DropdownLink>
             <DropdownLink to={'/app/spells'}>Spells</DropdownLink>

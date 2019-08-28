@@ -19,6 +19,8 @@ import Vehicles from './items/Vehicles';
 import Weapons from './items/Weapons';
 import Monsters from './monsters/Monster';
 import Spells from './spells/Spells';
+import DndClass from './dnd-classes/DndClass';
+import DndClasses from './dnd-classes/DndClasses';
 
 const store = (props) => configureStore({
   reducer: rootReducer,
@@ -45,6 +47,8 @@ const Home = (props) => (
       <Campaigns path='/app/campaigns'/>
       <Campaign path='/app/campaigns/:campaignSlug'/>
       <EditCampaign path='/app/campaigns/:campaignSlug/edit'/>
+      <DndClass path='/app/classes/:dndClassSlug' />
+      <DndClasses path='/app/classes' />
       <Items path='/app/items' />
       <AllItems path='/app/items/all/' />
       <Armor path='/app/items/armor/' />

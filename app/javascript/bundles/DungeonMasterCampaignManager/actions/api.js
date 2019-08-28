@@ -43,6 +43,12 @@ export default reduxApi({
   getCampaigns: {
     url: '/v1/campaigns.json',
   },
+  getDndClass: {
+    url: '/v1/dnd_classes/:slug.json',
+  },
+  getDndClasses: {
+    url: '/v1/dnd_classes.json',
+  },
   getItem: {
     url: '/v1/items/:slug.json',
   },
