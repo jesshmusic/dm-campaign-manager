@@ -27,7 +27,7 @@ class MagicItems extends React.Component {
         sort: true,
         filter: textFilter(),
       }, {
-        dataField: 'sub_category',
+        dataField: 'subCategory',
         text: 'Category',
         sort: true,
         formatter: (cell) => this.selectCategoryOptions.find((opt) => opt.value === cell).label,
@@ -45,7 +45,7 @@ class MagicItems extends React.Component {
           placeholder: 'Rarity',
         }),
       }, {
-        dataField: 'requires_attunement',
+        dataField: 'requiresAttunement',
         text: 'Attunement',
         sort: true,
       },
@@ -53,9 +53,9 @@ class MagicItems extends React.Component {
   }
 
   get selectCategoryOptions () {
-    return _.map(_.uniqBy(this.props.items, 'sub_category'), (item) => ({
-      value: item.sub_category,
-      label: item.sub_category,
+    return _.map(_.uniqBy(this.props.items, 'subCategory'), (item) => ({
+      value: item.subCategory,
+      label: item.subCategory,
     }));
   }
 
