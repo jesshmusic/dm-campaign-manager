@@ -43,6 +43,11 @@ function MenuBar (props) {
             <DropdownLink to={'/app/items'}>Items and Equipment</DropdownLink>
             <DropdownLink to={'/app/spells'}>Spells</DropdownLink>
           </NavDropdown>
+          {user && user.role === 'admin' ? (
+            <Nav.Item>
+              <Nav.Link href="/v1/dashboard">Admin Dashboard</Nav.Link>
+            </Nav.Item>
+          ) : null}
           {user ? (
             <Button onClick={handleLogout} variant="primary" size="sm">Sign Out</Button>
           ) : (
