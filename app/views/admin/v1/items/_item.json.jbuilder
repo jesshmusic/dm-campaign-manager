@@ -10,4 +10,5 @@ json.extract! item, :id, :api_url, :armor_class, :armor_dex_bonus,
               :weapon_damage_dice_count, :weapon_damage_dice_value, :weapon_damage_type,
               :weapon_properties, :weapon_range, :weapon_range_long, :weapon_range_normal,
               :weapon_thrown_range_long, :weapon_thrown_range_normal, :weight, :type
+json.contained_items item.contained_items
 json.url v1_item_url(item, format: :json)

@@ -28,7 +28,7 @@ class Weapons extends React.Component {
         sort: true,
         filter: textFilter(),
       }, {
-        dataField: 'sub_category',
+        dataField: 'subCategory',
         text: 'Category',
         sort: true,
         formatter: (cell) => this.selectCategoryOptions.find((opt) => opt.value === cell).label,
@@ -37,7 +37,7 @@ class Weapons extends React.Component {
           placeholder: 'Category',
         }),
       }, {
-        dataField: 'weapon_range',
+        dataField: 'weaponRange',
         text: 'Sub-category',
         sort: true,
         formatter: (cell) => this.selectRangeOptions.find((opt) => opt.value === cell).label,
@@ -46,11 +46,11 @@ class Weapons extends React.Component {
           placeholder: 'Category',
         }),
       }, {
-        dataField: 'weapon_damage',
+        dataField: 'weaponDamage',
         text: 'Damage',
         formatter: Weapons.damageFormatter,
       }, {
-        dataField: 'cost_value',
+        dataField: 'costValue',
         text: 'Cost',
         sort: true,
         formatter: Weapons.costFormatter,
@@ -63,31 +63,31 @@ class Weapons extends React.Component {
   }
 
   static costFormatter (cell, row) {
-    if (row.cost_value) {
-      return `${row.cost_value.toLocaleString()}${row.cost_unit}`;
+    if (row.costValue) {
+      return `${row.costValue.toLocaleString()}${row.costUnit}`;
     }
     return 'N/A';
   }
 
   static damageFormatter (cell, row) {
-    let weaponRangeString = `${row.weapon_damage_dice_count}d${row.weapon_damage_dice_value} ${row.weapon_damage_type}`;
-    if (row.weapon_2h_damage_dice_count) {
-      weaponRangeString += `, 2H: ${row.weapon_2h_damage_dice_count}d${row.weapon_2h_damage_dice_value} ${row.weapon_2h_damage_type}`;
+    let weaponRangeString = `${row.weaponDamageDiceCount}d${row.weaponDamageDiceValue} ${row.weaponDamageType}`;
+    if (row.weapon2hDamageDiceCount) {
+      weaponRangeString += `, 2H: ${row.weapon2hDamageDiceCount}d${row.weapon2hDamageDiceValue} ${row.weapon2hDamageType}`;
     }
     return weaponRangeString;
   }
 
   get selectCategoryOptions () {
-    return _.map(_.uniqBy(this.props.items, 'sub_category'), (item) => ({
-      value: item.sub_category,
-      label: item.sub_category,
+    return _.map(_.uniqBy(this.props.items, 'subCategory'), (item) => ({
+      value: item.subCategory,
+      label: item.subCategory,
     }));
   }
 
   get selectRangeOptions () {
-    return _.map(_.uniqBy(this.props.items, 'weapon_range'), (item) => ({
-      value: item.weapon_range,
-      label: item.weapon_range,
+    return _.map(_.uniqBy(this.props.items, 'weaponRange'), (item) => ({
+      value: item.weaponRange,
+      label: item.weaponRange,
     }));
   }
 

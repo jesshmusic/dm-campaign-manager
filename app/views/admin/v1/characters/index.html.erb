@@ -43,5 +43,5 @@
       <% end %>
     </tbody>
   </table>
-  <%== pagy_bootstrap_nav_js(@pagy) if @pagy.pages > 1 %>
+  <%== pagy_bootstrap_nav(@pagy) if @pagy.pages > 1 %>
   <%= link_to 'New Player Character', new_v1_player_character_path, class: "btn btn-lg btn-success" if policy(PlayerCharacter).new? %>

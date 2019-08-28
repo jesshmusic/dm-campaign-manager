@@ -27,7 +27,7 @@ class Vehicles extends React.Component {
         sort: true,
         filter: textFilter(),
       }, {
-        dataField: 'sub_category',
+        dataField: 'subCategory',
         text: 'Category',
         sort: true,
         formatter: (cell) => this.selectCategoryOptions.find((opt) => opt.value === cell).label,
@@ -36,7 +36,7 @@ class Vehicles extends React.Component {
           placeholder: 'Category',
         }),
       }, {
-        dataField: 'cost_value',
+        dataField: 'costValue',
         text: 'Cost',
         sort: true,
         formatter: Vehicles.costFormatter,
@@ -49,17 +49,17 @@ class Vehicles extends React.Component {
   }
 
   static costFormatter (cell, row) {
-    if (row.cost_value) {
-      return `${row.cost_value.toLocaleString()}${row.cost_unit}`;
+    if (row.costValue) {
+      return `${row.costValue.toLocaleString()}${row.costUnit}`;
     }
     return 'N/A';
   }
 
 
   get selectCategoryOptions () {
-    return _.map(_.uniqBy(this.props.items, 'sub_category'), (item) => ({
-      value: item.sub_category,
-      label: item.sub_category,
+    return _.map(_.uniqBy(this.props.items, 'subCategory'), (item) => ({
+      value: item.subCategory,
+      label: item.subCategory,
     }));
   }
 

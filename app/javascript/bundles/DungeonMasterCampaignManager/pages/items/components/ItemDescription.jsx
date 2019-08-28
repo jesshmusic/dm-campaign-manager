@@ -15,38 +15,38 @@ const ItemDescription = ({item}) => (
   <Container>
     <Row>
       <Col>
-        {item.weapon_properties && item.weapon_properties.length > 0 ? (
+        {item.weaponProperties && item.weaponProperties.length > 0 ? (
           <p>
-            <strong>Properties: </strong> {item.weapon_properties.join(', ')}
+            <strong>Properties: </strong> {item.weaponProperties.join(', ')}
           </p>
         ) : null}
-        {item.weapon_range_normal ? (
+        {item.weaponRangeNormal ? (
           <p>
-            <strong>Range, normal: </strong> {item.weapon_range_normal}
+            <strong>Range, normal: </strong> {item.weaponRangeNormal}
           </p>
         ) : null}
-        {item.weapon_range_long ? (
+        {item.weaponRangeLong ? (
           <p>
-            <strong>Range, long: </strong> {item.weapon_range_long}
+            <strong>Range, long: </strong> {item.weaponRangeLong}
           </p>
         ) : null}
-        {item.weapon_thrown_range_normal ? (
+        {item.weaponThrownRangeNormal ? (
           <p>
-            <strong>Thrown Range, normal: </strong> {item.weapon_thrown_range_normal}
+            <strong>Thrown Range, normal: </strong> {item.weaponThrownRangeNormal}
           </p>
         ) : null}
-        {item.weapon_thrown_range_long ? (
+        {item.weaponThrownRangeLong ? (
           <p>
-            <strong>Thrown Range, long: </strong> {item.weapon_thrown_range_long}
+            <strong>Thrown Range, long: </strong> {item.weaponThrownRangeLong}
           </p>
         ) : null}
-        {item.contained_items.length > 0 ? (
+        {item.containedItems.length > 0 ? (
           <div>
             <h5>Contents:</h5>
             <ListGroup variant="flush">
-              {item.contained_items.map((contained_item, index) => (
+              {item.containedItems.map((containedItem, index) => (
                 <ListGroupItem key={index}>
-                  <strong>{contained_item.name}</strong>, {contained_item.sub_category}
+                  <strong>{containedItem.name}</strong>, {containedItem.subCategory}
                 </ListGroupItem>
               ))}
             </ListGroup>

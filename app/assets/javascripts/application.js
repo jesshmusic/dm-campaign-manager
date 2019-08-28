@@ -19,7 +19,6 @@
 //= require turbolinks
 //= require rails.validations
 //= require rails.validations.simple_form.bootstrap4
-//= require pagy
 //= require_tree .
 
 window.addEventListener("turbolinks:load", Pagy.init);

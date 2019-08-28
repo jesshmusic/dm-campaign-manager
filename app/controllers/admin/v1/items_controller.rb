@@ -22,6 +22,12 @@ module Admin::V1
                else
                  @items.where(user_id: nil).or(@items.where(user_id: current_user.id))
                end
+      respond_to do |format|
+        format.html {
+          @pagy, @items = pagy(@items)
+        }
+        format.json
+      end
     end
 
     # GET /items/1

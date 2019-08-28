@@ -28,7 +28,7 @@ class Armor extends React.Component {
         sort: true,
         filter: textFilter(),
       }, {
-        dataField: 'sub_category',
+        dataField: 'subCategory',
         text: 'Category',
         sort: true,
         formatter: (cell) => this.selectCategoryOptions.find((opt) => opt.value === cell).label,
@@ -38,25 +38,25 @@ class Armor extends React.Component {
         }),
       },
       {
-        dataField: 'armor_class',
+        dataField: 'armorClass',
         text: 'AC',
         sort: true,
       },
       {
-        dataField: 'armor_dex_bonus',
+        dataField: 'armorDexBonus',
         text: 'DEX Bonus?',
         formatter: Armor.dexBonusFormatter,
       },
       {
-        dataField: 'armor_str_minimum',
+        dataField: 'armorStrMinimum',
         text: 'Min STR',
       },
       {
-        dataField: 'armor_stealth_disadvantage',
+        dataField: 'armorStealthDisadvantage',
         text: 'Stealth Disadvantage',
         formatter: Armor.stealthDisadvantageFormatter,
       }, {
-        dataField: 'cost_value',
+        dataField: 'costValue',
         text: 'Cost',
         sort: true,
         formatter: Armor.costFormatter,
@@ -69,21 +69,21 @@ class Armor extends React.Component {
   }
 
   static costFormatter (cell, row) {
-    if (row.cost_value) {
-      return `${row.cost_value.toLocaleString()}${row.cost_unit}`;
+    if (row.costValue) {
+      return `${row.costValue.toLocaleString()}${row.costUnit}`;
     }
     return 'N/A';
   }
 
   static dexBonusFormatter (cell, row) {
-    if (row.armor_dex_bonus) {
+    if (row.armorDexBonus) {
       return <MdDone />;
     }
     return '';
   }
 
   static stealthDisadvantageFormatter (cell, row) {
-    if (row.armor_stealth_disadvantage) {
+    if (row.armorStealthDisadvantage) {
       return <MdDone />;
     }
     return '';
@@ -91,9 +91,9 @@ class Armor extends React.Component {
 
 
   get selectCategoryOptions () {
-    return _.map(_.uniqBy(this.props.items, 'sub_category'), (item) => ({
-      value: item.sub_category,
-      label: item.sub_category,
+    return _.map(_.uniqBy(this.props.items, 'subCategory'), (item) => ({
+      value: item.subCategory,
+      label: item.subCategory,
     }));
   }
 
