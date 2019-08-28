@@ -16,8 +16,7 @@
     <thead>
       <tr>
         <th>Name</th>
-        <th>Class</th>
-        <th>Level</th>
+        <th>Classes</th>
         <th>Race</th>
         <th>Player</th>
         <th>Campaigns</th>
@@ -29,8 +28,7 @@
       <% @characters.each do |character| %>
         <tr class="<%= character.type == 'PlayerCharacter' ? '' : 'table-danger' %>">
           <td><%= character.name %></td>
-          <td><%= character.dnd_classes.map {|dnd_class| dnd_class.name}.join(', ') %></td>
-          <td><%= character.level %></td>
+          <td><%= character.character_classes.map {|character_class| "#{character_class.dnd_class.name} - #{character_class.level}"}.join(', ') %></td>
           <td><%= character.race %></td>
           <td><%= character.user.name %></td>
           <td><%= character.campaigns.count %></td>

@@ -61,6 +61,19 @@ class DndRules
       end
     end
 
+    def spell_attack_bonus(proficiency_bonus, dnd_class, char_stat_block)
+      case dnd_class.name
+      when 'Bard', 'Paladin', 'Sorcerer', 'Warlock'
+        proficiency_bonus + DndRules.ability_score_modifier(char_stat_block.charisma)
+      when 'Cleric', 'Druid', 'Ranger'
+        proficiency_bonus + DndRules.ability_score_modifier(char_stat_block.wisdom)
+      when 'Wizard'
+        proficiency_bonus + DndRules.ability_score_modifier(char_stat_block.intelligence)
+      else
+        0
+      end
+    end
+
     def random_race
       player_races.sample
     end

@@ -73,7 +73,7 @@ module Admin::V1
 
       respond_to do |format|
         if @character.save
-          format.html { redirect_to @character, notice: ' character was successfully created.' }
+          format.html { redirect_to v1_character_path(@character), notice: ' character was successfully created.' }
           format.json { render :show, status: :created, location: @character }
         else
           format.html { render :new }
@@ -98,7 +98,7 @@ module Admin::V1
       authorize @character
       respond_to do |format|
         if @character.save
-          format.html { redirect_to @character, notice: 'NPC was successfully created.' }
+          format.html { redirect_to v1_character_path(@character), notice: 'NPC was successfully created.' }
           format.json { render :show, status: :created, location: @character }
         else
           format.html { render :new }
@@ -119,7 +119,7 @@ module Admin::V1
       authorize @character
       respond_to do |format|
         if @character.update(character_params(params[:type]))
-          format.html { redirect_to @character, notice: ' character was successfully updated.' }
+          format.html { redirect_to v1_character_path(@character), notice: ' character was successfully updated.' }
           format.json { render :show, status: :ok, location: @character }
         else
           format.html { render :edit }
@@ -134,7 +134,7 @@ module Admin::V1
       authorize @character
       @character.destroy
       respond_to do |format|
-        format.html { redirect_to characters_url, notice: ' character was successfully destroyed.' }
+        format.html { redirect_to v1_characters_url, notice: ' character was successfully destroyed.' }
         format.json { head :no_content }
       end
     end
@@ -149,16 +149,19 @@ module Admin::V1
     # Never trust parameters from the scary internet, only allow the white list through.
     def character_params(type)
       params.require(type.underscore.to_sym).permit(
-        :name, :description, :alignment, :type,
+        :name, :description, :alignment, :type, :background,
         :copper_pieces, :dexterity, :dnd_class_name, :electrum_pieces, :gold_pieces,
         :languages, :level, :platinum_pieces, :race, :role, :silver_pieces, :spell_ability,
         :spell_attack_bonus, :spell_save_dc, :user_id, :xp, :min_score,
-        campaign_ids: [], dnd_class_ids: [], spell_ids: [], magic_item_ids: [],
+        campaign_ids: [], spell_ids: [], magic_item_ids: [],
         stat_block_attributes: %i[
           id armor_class charisma constitution dexterity hit_dice_modifier hit_dice_number hit_dice_value hit_points hit_points_current initiative intelligence proficiency speed strength wisdom
         ],
         equipment_items_attributes: [
           :id, :quantity, :_destroy, item_ids: []
+        ],
+        character_classes_attributes: %i[
+          id level proficiency_bonus spell_attack_bonus spell_save_dc dnd_class_id _destroy
         ],
         skills_attributes: %i[
           id name score _destroy

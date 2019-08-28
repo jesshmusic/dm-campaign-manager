@@ -7,27 +7,25 @@
                    include_hidden: false %>
   </div>
   <div class="col">
-    <%= form.association :dnd_classes,
-                         collection: DndClass.where(user_id: nil),
-                         input_html: { multiple: true },
-                         include_blank: false,
-                         include_hidden: false,
-                         label: 'Class' %>
-  </div>
-  <div class="col">
     <%= form.input :race,
                    collection: DndRules.player_races,
                    include_blank: false,
                    include_hidden: false %>
   </div>
-</div>
-
-<div class="form-row">
-  <div class="col">
-    <%= form.input :level %>
-  </div>
   <div class="col">
     <%= form.input :xp, label: "Experience Points" %>
+  </div>
+</div>
+
+<h2>Classes</h2>
+<div class="form-row">
+  <div class="p-3 border-bottom border-top">
+    <%= form.simple_fields_for :character_classes do |p_form| %>
+      <%= render 'character_class_fields', f: p_form %>
+    <% end %>
+    <div class='links'>
+      <%= link_to_add_association 'Add Class', form, :character_classes, class: "btn btn-info" %>
+    </div>
   </div>
 </div>
 
@@ -96,17 +94,6 @@
 
 <div id="spellsForm">
   <h2>Spells</h2>
-  <div class="form-row">
-    <div class="col">
-      <%= form.input :spell_ability %>
-    </div>
-    <div class="col">
-      <%= form.input :spell_attack_bonus %>
-    </div>
-    <div class="col">
-      <%= form.input :spell_save_dc %>
-    </div>
-  </div>
   <div class="form-row" id="0_levelSpells">
     <div class="col">
       <%= form.association :spells,
@@ -245,6 +232,6 @@
     <%= render 'admin/v1/items/equipment_item_fields', f: equipment_item_form %>
   <% end %>
   <div class='links'>
-    <%= link_to_add_association 'Add Equipment', form, :equipment_items, class: "btn btn-info", partial: '/items/equipment_item_fields' %>
+    <%= link_to_add_association 'Add Equipment', form, :equipment_items, class: "btn btn-info", partial: '/admin/v1/items/equipment_item_fields' %>
   </div>
 </div>
