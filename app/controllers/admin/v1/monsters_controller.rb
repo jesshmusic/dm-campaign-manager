@@ -19,13 +19,11 @@ module Admin::V1
                   elsif current_user.admin?
                     @monsters
                   else
-                    @monsters.where(user_id: nil).or(@items.where(user_id: current_user.id))
+                    @monsters.where(user_id: nil).or(@monsters.where(user_id: current_user.id))
                   end
       respond_to do |format|
         format.html { @pagy, @monsters = pagy(@monsters) }
-        format.json do
-          render json: @monsters.as_json(methods: :description_text)
-        end
+        format.json
       end
     end
 

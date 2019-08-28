@@ -12,7 +12,10 @@ module Admin::V1
       authorize Campaign
       @current_user = current_user
       @campaigns = @campaigns.search_for(params[:search]) if params[:search].present?
-      @pagy, @campaigns = pagy(@campaigns)
+      respond_to do |format|
+        format.html { @pagy, @campaigns = pagy(@campaigns) }
+        format.json
+      end
     end
 
     # GET /campaigns/1

@@ -15,12 +15,16 @@ module Admin::V1
                        DndClass.all
                      end
 
-      if !current_user
-        @pagy, @dnd_classes = pagy(@dnd_classes.where(user_id: nil))
-      elsif current_user.admin?
-        @pagy, @dnd_classes = pagy(@dnd_classes)
-      else
-        @pagy, @dnd_classes = pagy(@dnd_classes.where(user_id: nil).or(@dnd_classes.where(user_id: current_user.id)).order('name ASC'))
+      @dnd_classes = if !current_user
+                       @dnd_classes.where(user_id: nil)
+                     elsif current_user.admin?
+                       @dnd_classes
+                     else
+                       @dnd_classes.where(user_id: nil).or(@dnd_classes.where(user_id: current_user.id))
+                     end
+      respond_to do |format|
+        format.html { @pagy, @dnd_classes = pagy(@dnd_classes) }
+        format.json
       end
     end
 

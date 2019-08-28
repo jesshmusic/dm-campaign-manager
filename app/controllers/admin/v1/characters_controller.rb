@@ -15,13 +15,14 @@ module Admin::V1
                       Character.all
                     end
       @characters = params[:type].present? ? @characters.where(type: params[:type]) : @characters
-
-      if !current_user
-        @pagy, @characters = pagy(@characters.where(user_id: nil))
-      elsif current_user.admin?
-        @pagy, @characters = pagy(@characters)
-      else
-        @pagy, @characters = pagy(@characters.where(user_id: current_user.id).order('name ASC'))
+      @characters = if current_user&.admin?
+                      @characters
+                    else
+                      @characters.where(user_id: current_user.id).order('name ASC')
+                    end
+      respond_to do |format|
+        format.html { @pagy, @characters = pagy(@characters) }
+        format.json
       end
     end
 

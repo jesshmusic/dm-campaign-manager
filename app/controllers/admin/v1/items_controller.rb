@@ -23,9 +23,7 @@ module Admin::V1
                  @items.where(user_id: nil).or(@items.where(user_id: current_user.id))
                end
       respond_to do |format|
-        format.html {
-          @pagy, @items = pagy(@items)
-        }
+        format.html { @pagy, @items = pagy(@items) }
         format.json
       end
     end

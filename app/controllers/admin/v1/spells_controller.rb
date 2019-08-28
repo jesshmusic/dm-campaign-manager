@@ -19,13 +19,11 @@ module Admin::V1
                 elsif current_user.admin?
                   @spells
                 else
-                  @spells.where(user_id: nil).or(@items.where(user_id: current_user.id))
+                  @spells.where(user_id: nil).or(@spells.where(user_id: current_user.id))
                 end
       respond_to do |format|
         format.html { @pagy, @spells = pagy(@spells) }
-        format.json do
-          render json: @spells.as_json(methods: %i[spell_classes description_text])
-        end
+        format.json
       end
     end
 

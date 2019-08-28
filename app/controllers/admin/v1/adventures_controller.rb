@@ -9,10 +9,14 @@ module Admin::V1
     # GET /campaigns/campaign_slug/adventures.json
     def index
       authorize Adventure
-      if params[:search].present?
-        @pagy, @adventures = pagy(Adventure.where(campaign_id: @campaign.id).search_for(params[:search]))
-      else
-        @pagy, @adventures = pagy(Adventure.where(campaign_id: @campaign.id))
+      @adventures = if params[:search].present?
+                      Adventure.where(campaign_id: @campaign.id).search_for(params[:search])
+                    else
+                      Adventure.where(campaign_id: @campaign.id)
+                    end
+      respond_to do |format|
+        format.html { @pagy, @adventures = pagy(@adventures) }
+        format.json
       end
     end
 
