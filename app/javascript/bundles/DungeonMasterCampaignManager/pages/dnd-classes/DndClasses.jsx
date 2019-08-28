@@ -1,17 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Link } from '@reach/router';
 import BreadcrumbLink from '../../components/layout/BreadcrumbLink';
-
-const ReactMarkdown = require('react-markdown');
-
 
 // Container
 import PageContainer from '../../containers/PageContainer.jsx';
 import rest from '../../actions/api';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
+import BootstrapTable from 'react-bootstrap-table-next';
+import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
+import paginationFactory from 'react-bootstrap-table2-paginator';
+import Spinner from 'react-bootstrap/Spinner';
+import Col from 'react-bootstrap/Col';
+import ListGroupItem from 'react-bootstrap/ListGroupItem';
+import Row from 'react-bootstrap/Row';
+import Container from 'react-bootstrap/Container';
 
 class DndClasses extends React.Component {
   constructor (props) {
@@ -20,6 +24,67 @@ class DndClasses extends React.Component {
 
   componentDidMount () {
     this.props.getDndClasses();
+  }
+
+  get columns () {
+    return [{
+      dataField: 'name',
+      text: 'Class',
+      sort: true,
+      filter: textFilter(),
+    }, {
+      dataField: 'hitDie',
+      text: 'Hit Dice',
+      sort: true,
+      formatter: DndClasses.hitDiceFormatter,
+    }];
+  }
+
+  static hitDiceFormatter (cell, row) {
+    if (row.hitDie) {
+      return `d${row.hitDie}`;
+    }
+    return 'N/A';
+  }
+
+  get expandRow () {
+    return {
+      parentClassName: 'table-primary',
+      onlyOneExpanding: true,
+      renderer: (row) => (
+        <Container>
+          <Row>
+            <Col>
+              <h2>Proficiencies</h2>
+              <ListGroup>
+                {row.proficiencies.map((prof, index) => (
+                  <ListGroupItem key={index}>
+                    <strong>{prof.name}</strong> - type: {prof.profType}
+                  </ListGroupItem>
+                ))}
+              </ListGroup>
+            </Col>
+            <Col>
+              <h2>Proficiency Choices</h2>
+              <ListGroup>
+                {row.proficiencyChoices.map((profChoice, index) => (
+                  <ListGroupItem key={index}>
+                    <strong>Choose {profChoice.numChoices} from </strong>
+                    <ListGroup>
+                      {profChoice.proficiencies.map((prof, index) => (
+                        <ListGroupItem key={index}>
+                          <strong>{prof.name}</strong> - type: {prof.profType}
+                        </ListGroupItem>
+                      ))}
+                    </ListGroup>
+                  </ListGroupItem>
+                ))}
+              </ListGroup>
+            </Col>
+          </Row>
+        </Container>
+      ),
+    };
   }
 
   render () {
@@ -33,18 +98,18 @@ class DndClasses extends React.Component {
             <BreadcrumbLink to='/' title={'Home'} />
             <Breadcrumb.Item active>DndClasses</Breadcrumb.Item>
           </Breadcrumb>
-          <div>
-            <h2>D&D Classes</h2>
-            <ListGroup>
-              {this.props.dndClasses.dndClasses.map((dndClass) =>
-                <ListGroup.Item key={dndClass.slug}>
-                  <Link to={`/app/classes/${dndClass.slug}`}>
-                    {dndClass.name}
-                  </Link>
-                </ListGroup.Item>
-              )}
-            </ListGroup>
-          </div>
+          {this.props.dndClasses.dndClasses && this.props.dndClasses.dndClasses.length > 0 ? (
+            <BootstrapTable keyField='id'
+                            data={ this.props.dndClasses.dndClasses }
+                            columns={ this.columns }
+                            bootstrap4
+                            hover
+                            filter={ filterFactory() }
+                            pagination={ paginationFactory() }
+                            expandRow={ this.expandRow } />
+          ) : (
+            <Spinner animation="border" variant="primary" />
+          )}
         </div>
       </PageContainer>
     );
