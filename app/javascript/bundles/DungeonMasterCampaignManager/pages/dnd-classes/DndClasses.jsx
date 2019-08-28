@@ -55,7 +55,23 @@ class DndClasses extends React.Component {
         <Container>
           <Row>
             <Col>
-              <h2>Proficiencies</h2>
+              <h2>Class Features</h2>
+              <ListGroup>
+                <ListGroupItem>
+                  <strong>Hit Dice</strong> 1d{row.hitDie} per {row.name} level
+                </ListGroupItem>
+                <ListGroupItem>
+                  <strong>Primary {row.primaryAbilities.length > 1 ? 'Abilities' : 'Ability'}</strong> {row.primaryAbilities.join(', ')}
+                </ListGroupItem>
+                <ListGroupItem>
+                  <strong>Saving Throw{row.savingThrowAbilities.length > 1 ? 's ' : ' '}</strong> {row.savingThrowAbilities.join(', ')}
+                </ListGroupItem>
+              </ListGroup>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <h3>Proficiencies</h3>
               <ListGroup>
                 {row.proficiencies.map((prof, index) => (
                   <ListGroupItem key={index}>
@@ -65,7 +81,7 @@ class DndClasses extends React.Component {
               </ListGroup>
             </Col>
             <Col>
-              <h2>Proficiency Choices</h2>
+              <h3>Proficiency Choices</h3>
               <ListGroup>
                 {row.proficiencyChoices.map((profChoice, index) => (
                   <ListGroupItem key={index}>

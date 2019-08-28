@@ -2,7 +2,9 @@
 
 json.key_format! camelize: :lower
 
-json.extract! dnd_class, :id, :name, :hit_die, :slug, :user_id
+json.extract! dnd_class, :id, :name, :hit_die,
+              :slug, :user_id, :spell_ability, :primary_abilities,
+              :saving_throw_abilities
 
 json.proficiencies dnd_class.profs do |prof|
   json.extract! prof, :id, :name, :prof_type
