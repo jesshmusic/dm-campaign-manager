@@ -1,4 +1,3 @@
-import {Link as RouterLink} from '@reach/router';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown';
@@ -10,10 +9,12 @@ import rest from '../../actions/api';
 import {connect} from 'react-redux';
 
 const NavLink = props => (
-  <Link
-    {...props}
-    getProps={({ isCurrent }) => ({ className: isCurrent ? 'nav-link active' : 'nav-link' })}
-  />
+  <Nav.Item>
+    <Link
+      {...props}
+      getProps={({ isCurrent }) => ({ className: isCurrent ? 'nav-link active' : 'nav-link' })}
+    />
+  </Nav.Item>
 );
 
 const DropdownLink = props => (
@@ -38,7 +39,7 @@ function MenuBar (props) {
         <Nav className="mr-auto">
           <NavLink to={'/'}>Home</NavLink>
           <NavLink to={'/app/campaigns'}>Campaigns</NavLink>
-          <NavDropdown title="Reference" id="basic-nav-dropdown">
+          <NavDropdown title="Reference" id="reference-nav-dropdown">
             <DropdownLink to={'/app/monsters'}>Monsters</DropdownLink>
             <DropdownLink to={'/app/items'}>Items and Equipment</DropdownLink>
             <DropdownLink to={'/app/spells'}>Spells</DropdownLink>
@@ -51,7 +52,9 @@ function MenuBar (props) {
           {user ? (
             <Button onClick={handleLogout} variant="primary" size="sm">Sign Out</Button>
           ) : (
-            <NavLink to={'/app/login'}>Sign In</NavLink>
+            <Nav.Item>
+              <NavLink to={'/app/login'}>Sign In</NavLink>
+            </Nav.Item>
           )}
         </Nav>
       </Navbar.Collapse>
