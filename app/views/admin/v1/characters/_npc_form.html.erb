@@ -39,10 +39,6 @@
   $('#non_player_character_alignment').select2({
     theme: "bootstrap"
   });
-  $('#non_player_character_dnd_class_ids').select2({
-    multiple: false,
-    theme: "bootstrap"
-  });
   $('#non_player_character_magic_item_ids').select2({
     theme: "bootstrap"
   });
@@ -50,34 +46,6 @@
     theme: "bootstrap"
   });
   $('.character_role').show();
-
-  function handleSpellsDisplay() {
-    var classValue = $('#non_player_character_dnd_class_ids :selected').text()
-    if (classValue === 'Bard' || classValue === 'Cleric' || classValue === 'Druid' || classValue === 'Sorcerer' || classValue === 'Warlock' || classValue === 'Wizard') {
-      $('#spellsForm').show();
-      showSpellLevels(0, 9);
-      loadSelect2();
-    } else if (classValue === 'Paladin' || classValue === 'Ranger') {
-      $('#spellsForm').show();
-      showSpellLevels(1, 5);
-      loadSelect2();
-    } else {
-      $('#spellsForm').hide();
-    }
-  }
-
-  function showSpellLevels(minLevel, maxLevel) {
-    for (var i = 0; i <= 9; i++) {
-      $(`#${i}_levelSpells`).hide();
-    }
-    for (var i = minLevel; i < maxLevel + 1; i++) {
-      $(`#${i}_levelSpells`).show();
-    }
-  }
-
-  $('#non_player_character_dnd_class_ids').on("select2:select", function (event) {
-    handleSpellsDisplay();
-  });
 
   $("#equipment_items_container").on('cocoon:after-insert', function(event, addedTask) {
     loadSelect2();
@@ -153,8 +121,6 @@
       $('#non_player_character_name').val(response.name);
     });
   });
-
-  handleSpellsDisplay();
   loadSelect2();
 
 </script>
