@@ -38,7 +38,7 @@ class Monsters extends React.Component {
         sort: true,
         filter: textFilter(),
       }, {
-        dataField: 'challenge_rating',
+        dataField: 'challengeRating',
         text: 'CR',
         sort: true,
         formatter: (cell) => this.selectCROptions.find((opt) => opt.value === cell).label,
@@ -47,7 +47,7 @@ class Monsters extends React.Component {
           placeholder: 'CR',
         }),
       }, {
-        dataField: 'monster_type',
+        dataField: 'monsterType',
         text: 'Type',
         sort: true,
         formatter: (cell) => this.selectTypeOptions.find((opt) => opt.value === cell).label,
@@ -56,7 +56,7 @@ class Monsters extends React.Component {
           placeholder: 'Type',
         }),
       }, {
-        dataField: 'monster_subtype',
+        dataField: 'monsterSubtype',
         text: 'Subtype',
         sort: true,
       },
@@ -64,15 +64,15 @@ class Monsters extends React.Component {
   }
 
   get selectCROptions () {
-    const crs = _.map(_.uniqBy(this.props.monsters, 'challenge_rating'), (monster) => {
-      if (monster.challenge_rating === '1/8') {
+    const crs = _.map(_.uniqBy(this.props.monsters, 'challengeRating'), (monster) => {
+      if (monster.challengeRating === '1/8') {
         return 0.125;
-      } else if (monster.challenge_rating === '1/4') {
+      } else if (monster.challengeRating === '1/4') {
         return 0.25;
-      } else if (monster.challenge_rating === '1/2') {
+      } else if (monster.challengeRating === '1/2') {
         return 0.5;
       }
-      return parseFloat(monster.challenge_rating);
+      return parseFloat(monster.challengeRating);
     }).sort((a, b) => a - b);
 
     return crs.map((cr) => {
@@ -100,9 +100,9 @@ class Monsters extends React.Component {
   }
 
   get selectTypeOptions () {
-    return _.map(_.uniqBy(this.props.monsters, 'monster_type'), (monster) => ({
-      value: monster.monster_type,
-      label: monster.monster_type,
+    return _.map(_.uniqBy(this.props.monsters, 'monsterType'), (monster) => ({
+      value: monster.monsterType,
+      label: monster.monsterType,
     }));
   }
 
@@ -111,7 +111,7 @@ class Monsters extends React.Component {
       parentClassName: 'table-primary',
       onlyOneExpanding: true,
       renderer: (row) => (
-        <ReactMarkdown source={row.description_text}
+        <ReactMarkdown source={row.descriptionText}
                        allowedTypes={Util.allowedTypes}
                        escapeHtml={false}
         />

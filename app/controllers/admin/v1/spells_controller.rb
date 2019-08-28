@@ -33,7 +33,7 @@ module Admin::V1
       authorize @spell
       respond_to do |format|
         format.html { @spell }
-        format.json { render json: @spell.as_json(methods: %i[spell_classes description_text]) }
+        format.json
       end
     end
 

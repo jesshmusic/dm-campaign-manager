@@ -38,12 +38,12 @@ class Spells extends React.Component {
         sort: true,
         filter: textFilter(),
       }, {
-        dataField: 'spell_level',
+        dataField: 'spellLevel',
         text: 'Level',
         sort: true,
-        formatter: (cell) => Spells.selectLevelOptions.find((opt) => opt.value === cell).label,
+        formatter: (cell) => this.selectLevelOptions.find((opt) => opt.value === cell).label,
         filter: selectFilter({
-          options: Spells.selectLevelOptions,
+          options: this.selectLevelOptions,
           placeholder: 'School',
         }),
       }, {
@@ -61,7 +61,7 @@ class Spells extends React.Component {
         sort: true,
         formatter: Spells.componentsFormatter,
       }, {
-        dataField: 'spell_classes',
+        dataField: 'spellClasses',
         text: 'Classes',
         sort: true,
         formatter: Spells.classesFormatter,
@@ -78,10 +78,10 @@ class Spells extends React.Component {
   }
 
   static classesFormatter (cell, row) {
-    return row.spell_classes.join(', ');
+    return row.spellClasses.join(', ');
   }
 
-  static get selectLevelOptions () {
+  get selectLevelOptions () {
     return [
       {value: 'Cantrip', label: 'Cantrip'},
       {value: '1st level', label: '1st level'},
@@ -118,7 +118,7 @@ class Spells extends React.Component {
 
   filterByClass (filterClass, data) {
     if (filterClass) {
-      return data.filter(spell => spell.spell_classes.includes(filterClass));
+      return data.filter(spell => spell.spellClasses.includes(filterClass));
     }
     return data;
   }
@@ -128,7 +128,7 @@ class Spells extends React.Component {
       parentClassName: 'table-primary',
       onlyOneExpanding: true,
       renderer: (row) => (
-        <ReactMarkdown source={row.description_text.replace(/â€™/g, '\'').replace(/â€œ/g, '"').replace(/â€�/g, '"')}
+        <ReactMarkdown source={row.descriptionText.replace(/â€™/g, '\'').replace(/â€œ/g, '"').replace(/â€�/g, '"')}
                        allowedTypes={Util.allowedTypes}
                        escapeHtml={false}
         />
