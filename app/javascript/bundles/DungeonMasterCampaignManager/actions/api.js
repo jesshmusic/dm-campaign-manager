@@ -62,24 +62,10 @@ export default reduxApi({
     url: '/v1/spells.json',
   },
   getUser: {
-    url: '/users/:slug',
-    options () {
-      const headers = getHeaders();
-      return {
-        method: 'get',
-        headers,
-      };
-    },
+    url: '/users/:slug.json',
   },
   getUsers: {
-    url: '/users',
-    options () {
-      const headers = getHeaders();
-      return {
-        method: 'get',
-        headers,
-      };
-    },
+    url: '/users.json',
   },
   userLogin: {
     url: '/users/sign_in',

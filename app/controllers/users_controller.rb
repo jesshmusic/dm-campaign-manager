@@ -14,12 +14,11 @@ class UsersController < ApplicationController
              else
                User.all
              end
-    @pagy, @users = pagy(@users.where(role: :dungeon_master).or(@users.where(role: :player))) unless current_user.admin?
-    @pagy, @users = pagy(@users) if current_user.admin?
+    @users = @users.where(role: :dungeon_master) unless current_user.admin?
 
     respond_to do |format|
       format.html { @pagy, @users = pagy(@users) }
-      format.json { render json: @users.as_json(only: %i[id name username role location info username slug last_sign_in_at]) }
+      format.json
     end
   end
 
@@ -29,7 +28,7 @@ class UsersController < ApplicationController
 
     respond_to do |format|
       format.html { @user }
-      format.json { render json: @user.as_json(only: %i[id name username role location info username slug last_sign_in_at]) }
+      format.json
     end
   end
 
@@ -43,7 +42,7 @@ class UsersController < ApplicationController
     respond_to do |format|
       if @user.update(user_params)
         format.html { redirect_to user_path, notice: 'User was successfully updated.' }
-        format.json { render json: @user }
+        format.json
       else
         format.html { render :edit }
         format.json { render json: @user.errors, status: :unprocessable_entity }
@@ -62,7 +61,7 @@ class UsersController < ApplicationController
     respond_to do |format|
       if @user.save
         format.html { redirect_to user_path, notice: 'User role was successfully changed.' }
-        format.json { render json: @user }
+        format.json
       else
         format.html { render :index }
         format.json { render json: @user.errors, status: :unprocessable_entity }
