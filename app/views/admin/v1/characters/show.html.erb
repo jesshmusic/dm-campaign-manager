@@ -163,25 +163,25 @@
             </div>
           </div>
           <div class="row">
-            <% cantrips = @character.spells.where("level <= 0") %>
+            <% cantrips = @character.character_spells.order('spell_class ASC').joins(:spell).where("level <= 0").order('name ASC') %>
             <% if cantrips.any? %>
               <div class="col-12 col-sm-6 col-md-4 py-5">
                 <h4>Cantrips</h4>
                 <ul class="list-group list-group-flush">
                   <% cantrips.order('name ASC').each do |cantrip| %>
-                    <li class="list-group-item"><%= cantrip.name %></li>
+                    <li class="list-group-item"><%= cantrip.spell.name %> <strong>(<%= cantrip.spell_class %>)</strong></li>
                   <% end %>
                 </ul>
               </div>
             <% end %>
             <% (1..9).each do |spell_level| %>
               <div class="col-12 col-sm-6 col-md-4 py-5">
-                <% spells = @character.spells.where(level: spell_level).order('name ASC') %>
+                <% spells = @character.character_spells.order('spell_class ASC').joins(:spell).where("level = ?", spell_level).order('name ASC') %>
                 <% if spells.any? %>
-                  <h4><%= spells.first.get_spell_level_text %></h4>
+                  <h4><%= spells.first.spell.get_spell_level_text %></h4>
                   <ul class="list-group list-group-flush">
                     <% spells.each do |spell| %>
-                      <li class="list-group-item"><%= spell.name %></li>
+                      <li class="list-group-item"><%= spell.spell.name %> <strong>(<%= spell.spell_class %>)</strong></li>
                     <% end %>
                   </ul>
                 <% end %>

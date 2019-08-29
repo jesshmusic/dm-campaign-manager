@@ -74,6 +74,10 @@ class DndRules
       end
     end
 
+    def spell_prepared_slots
+
+    end
+
     def random_race
       player_races.sample
     end

@@ -6,6 +6,7 @@
 #
 #  id           :bigint           not null, primary key
 #  is_prepared  :boolean          default(FALSE), not null
+#  spell_class  :string
 #  character_id :bigint
 #  spell_id     :bigint
 #

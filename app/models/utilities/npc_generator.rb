@@ -308,7 +308,9 @@ class NpcGenerator
             next if spell.nil?
 
             spells_known << spell
-            @new_npc.spells << spell
+            @new_npc.character_spells << CharacterSpell.new(is_prepared: false,
+                                                            spell_class: class_slots[:dnd_class],
+                                                            spell: spell)
           end
         end
       end
@@ -319,7 +321,9 @@ class NpcGenerator
       (1..num_spells).each do
         spell = SpellSlots.random_spell(dnd_class, level, spells_known)
         spells_known << spell
-        @new_npc.spells << spell
+        @new_npc.character_spells << CharacterSpell.new(is_prepared: dnd_class == 'Warlock',
+                                              spell_class: dnd_class,
+                                              spell: spell)
       end
     end
 

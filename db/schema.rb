@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_29_123133) do
+ActiveRecord::Schema.define(version: 2019_08_29_192034) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -92,6 +92,7 @@ ActiveRecord::Schema.define(version: 2019_08_29_123133) do
     t.bigint "spell_id"
     t.bigint "character_id"
     t.boolean "is_prepared", default: false, null: false
+    t.string "spell_class"
     t.index ["character_id"], name: "index_character_spells_on_character_id"
     t.index ["spell_id"], name: "index_character_spells_on_spell_id"
   end
