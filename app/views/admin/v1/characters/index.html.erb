@@ -27,7 +27,7 @@
     <tbody>
       <% @characters.each do |character| %>
         <tr class="<%= character.type == 'PlayerCharacter' ? '' : 'table-danger' %>">
-          <td><%= character.name %></td>
+          <td><%= character.name %><%= " - #{character.role}" if character.role %></td>
           <td><%= character.character_classes.map {|character_class| "#{character_class.dnd_class.name} - #{character_class.level}"}.join(', ') %></td>
           <td><%= character.race %></td>
           <td><%= character.user.name %></td>
