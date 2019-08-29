@@ -22,7 +22,7 @@
       <ul class="list-group list-group-flush">
         <% @campaign.pcs.each do |character| %>
           <li class="list-group-item">
-            <strong><%= character.name %></strong> -<%= character.level %>
+            <strong><%= character.name %></strong> - <%= character.classes %>
           </li>
         <% end %>
       </ul>
@@ -32,7 +32,7 @@
       <ul class="list-group list-group-flush">
         <% @campaign.npcs.each do |character| %>
           <li class="list-group-item">
-            <%= character.role %>: <strong><%= character.name %></strong> - <%= character.level %>
+            <%= character.role %>: <strong><%= character.name %></strong> - <%= character.classes %>
           </li>
         <% end %>
       </ul>

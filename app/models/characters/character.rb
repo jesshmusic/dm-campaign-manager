@@ -39,7 +39,7 @@ class Character < ApplicationRecord
   end
 
   before_save do
-    self.proficiency = proficiency_bonus_for_level(total_level)
+    self.proficiency = DndRules.proficiency_bonus_for_level(total_level)
   end
 
   attribute :min_score, :integer
@@ -71,6 +71,10 @@ class Character < ApplicationRecord
 
   belongs_to :user
 
+  def classes
+    character_classes.map { |character_class| character_class.class_and_level }.join(', ')
+  end
+
   def hit_dice
     hit_dice_array = []
     character_classes.each do |character_class|
@@ -80,7 +84,7 @@ class Character < ApplicationRecord
   end
 
   def total_level
-    character_classes.sum { |character_class| character_class.level }
+    character_classes.sum(&:level)
   end
 
   include PgSearch::Model

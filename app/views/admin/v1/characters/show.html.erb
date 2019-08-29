@@ -145,15 +145,21 @@
           <div class="row d-flex align-items-center ">
             <div class="col-4 text-center">
               <h4>Ability</h4>
-              <p class="lead"><%= @character.spell_ability %></p>
+              <% @character.character_classes.each do |character_class| %>
+                <p class="lead"><strong><%= character_class.dnd_class.name %>: </strong><%= character_class.dnd_class.spell_ability %></p>
+              <% end %>
             </div>
             <div class="col-4 text-center">
               <h4>Save DC</h4>
-              <p class="lead"><%= @character.spell_save_dc %></p>
+              <% @character.character_classes.each do |character_class| %>
+                <p class="lead"><strong><%= character_class.dnd_class.name %>: </strong><%= character_class.spell_save_dc %></p>
+              <% end %>
             </div>
             <div class="col-4 text-center">
               <h4>Attack Bonus</h4>
-              <p class="lead"><%= @character.spell_attack_bonus %></p>
+              <% @character.character_classes.each do |character_class| %>
+                <p class="lead"><strong><%= character_class.dnd_class.name %>: </strong><%= character_class.spell_attack_bonus %></p>
+              <% end %>
             </div>
           </div>
           <div class="row">

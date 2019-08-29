@@ -32,7 +32,7 @@ class NpcGenerator
                                            campaign_ids: npc_attributes[:campaign_ids],
                                            character_classes_attributes: npc_attributes[:character_classes_attributes])
 
-      @new_npc.build_stat_block
+      @new_npc.create_stat_block!
       generate_ability_scores(npc_attributes[:min_score])
       set_statistics
       add_armor
@@ -83,7 +83,11 @@ class NpcGenerator
     end
 
     def generate_ability_scores(min_score = 15)
-      primary_abilities = @new_npc.character_classes.map(&:dnd_class.primary_abilities)
+      primary_abilities = []
+      @new_npc.character_classes.each do |character_class|
+        primary_abilities += character_class.dnd_class.primary_abilities
+      end
+      primary_abilities = primary_abilities.uniq
       score_priorities = fill_score_priorities(primary_abilities)
       set_ability_scores(score_priorities, min_score)
     end
@@ -95,16 +99,24 @@ class NpcGenerator
 
     def set_statistics
       @new_npc.stat_block.initiative = DndRules.ability_score_modifier(@new_npc.stat_block.dexterity)
-      @new_npc.proficiency = proficiency_bonus_for_level(@new_npc.total_level)
+      @new_npc.proficiency = DndRules.proficiency_bonus_for_level(@new_npc.total_level)
       @new_npc.stat_block.hit_points = @new_npc.stat_block.hit_dice_value + DndRules.ability_score_modifier(@new_npc.stat_block.constitution)
       @new_npc.stat_block.hit_points += DndRules.roll_dice(@new_npc.stat_block.hit_dice_number - 1, @new_npc.stat_block.hit_dice_value)
       @new_npc.stat_block.hit_points_current = @new_npc.stat_block.hit_points
+      @new_npc.character_classes.each do |ch|
+        ch.setup_spell_scores(@new_npc.stat_block)
+      end
     end
 
     # Armor
 
     def add_armor
-      armor_profs = @new_npc.dnd_class.profs.where(prof_type: 'Armor').pluck(:name)
+      armor_profs = []
+      @new_npc.character_classes.each do |character_class|
+        cc_armor_profs = character_class.dnd_class.profs.where(prof_type: 'Armor').pluck(:name)
+        armor_profs += cc_armor_profs
+      end
+      armor_profs = armor_profs.uniq
       if armor_profs.any?
         armor_choices = get_armor_choices(armor_profs)
         armor = DndRules.get_weighted_random_record(armor_choices)
@@ -157,7 +169,12 @@ class NpcGenerator
     # Weapon
 
     def add_weapon
-      weapon_profs = @new_npc.dnd_class.profs.where(prof_type: 'Weapons').pluck(:name)
+      weapon_profs = []
+      @new_npc.character_classes.each do |character_class|
+        cc_weapon_profs = character_class.dnd_class.profs.where(prof_type: 'Weapons').pluck(:name)
+        weapon_profs += cc_weapon_profs
+      end
+      weapon_profs = weapon_profs.uniq
       if weapon_profs.any?
         weapon_choices = get_weapon_choices(weapon_profs)
         weapon = DndRules.get_weighted_random_record(weapon_choices)
@@ -225,7 +242,12 @@ class NpcGenerator
     end
 
     def add_skills
-      proficiency_choices = @new_npc.dnd_class.prof_choices
+      proficiency_choices = []
+      @new_npc.character_classes.each do |character_class|
+        cc_prof_choices = character_class.dnd_class.prof_choices
+        proficiency_choices += cc_prof_choices
+      end
+      proficiency_choices = proficiency_choices.uniq
       proficiency_choices.each do |prof_choice|
         next unless prof_choice.profs.first.prof_type == 'Skills'
         exclude_list = []
@@ -258,25 +280,34 @@ class NpcGenerator
 
     def add_spells
       # TODO: Simple initial implementation
-      spell_slots = SpellSlots.spell_slots(@new_npc)
-      if spell_slots
-        add_spells_for_level(0, spell_slots[:cantrips])
-        if @new_npc.dnd_class_string != 'Warlock'
-          add_spells_for_level(1, spell_slots[:level_1])
-          add_spells_for_level(2, spell_slots[:level_2])
-          add_spells_for_level(3, spell_slots[:level_3])
-          add_spells_for_level(4, spell_slots[:level_4])
-          add_spells_for_level(5, spell_slots[:level_5])
-          add_spells_for_level(6, spell_slots[:level_6])
-          add_spells_for_level(7, spell_slots[:level_7])
-          add_spells_for_level(8, spell_slots[:level_8])
-          add_spells_for_level(9, spell_slots[:level_9])
+      spell_slots = []
+      @new_npc.character_classes.each do |character_class|
+        slots = SpellSlots.spell_slots(character_class)
+        next if slots.nil?
+        spell_slots << {
+          dnd_class: character_class.dnd_class.name,
+          slots: slots
+        }
+      end
+      spell_slots.each do |class_slots|
+        add_spells_for_level(0, class_slots[:dnd_class], class_slots[:slots][:cantrips])
+        if class_slots[:dnd_class] != 'Warlock'
+          add_spells_for_level(1, class_slots[:dnd_class], class_slots[:slots][:level_1])
+          add_spells_for_level(2, class_slots[:dnd_class], class_slots[:slots][:level_2])
+          add_spells_for_level(3, class_slots[:dnd_class], class_slots[:slots][:level_3])
+          add_spells_for_level(4, class_slots[:dnd_class], class_slots[:slots][:level_4])
+          add_spells_for_level(5, class_slots[:dnd_class], class_slots[:slots][:level_5])
+          add_spells_for_level(6, class_slots[:dnd_class], class_slots[:slots][:level_6])
+          add_spells_for_level(7, class_slots[:dnd_class], class_slots[:slots][:level_7])
+          add_spells_for_level(8, class_slots[:dnd_class], class_slots[:slots][:level_8])
+          add_spells_for_level(9, class_slots[:dnd_class], class_slots[:slots][:level_9])
         else
           spells_known = []
-          (1..spell_slots[:total_known]).each do
-            spell_level = rand(1..spell_slots[:slot_level])
-            spell = SpellSlots.random_spell(@new_npc.dnd_class_string, spell_level, spells_known)
+          (1..class_slots[:slots][:total_known]).each do
+            spell_level = rand(1..class_slots[:slots][:slot_level])
+            spell = SpellSlots.random_spell(class_slots[:dnd_class], spell_level, spells_known)
             next if spell.nil?
+
             spells_known << spell
             @new_npc.spells << spell
           end
@@ -284,10 +315,10 @@ class NpcGenerator
       end
     end
 
-    def add_spells_for_level(level, num_spells)
+    def add_spells_for_level(level, dnd_class, num_spells)
       spells_known = []
       (1..num_spells).each do
-        spell = SpellSlots.random_spell(@new_npc.dnd_class_string, level, spells_known)
+        spell = SpellSlots.random_spell(dnd_class, level, spells_known)
         spells_known << spell
         @new_npc.spells << spell
       end

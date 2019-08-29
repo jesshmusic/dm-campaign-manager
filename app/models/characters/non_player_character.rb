@@ -33,6 +33,7 @@
 
 
 class NonPlayerCharacter < Character
+
   def challenge_rating
     DndRules.cr_for_npc(self)
   end

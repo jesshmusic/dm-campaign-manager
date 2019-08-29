@@ -294,7 +294,10 @@ class DndRules
       attack_bonus_total = attack_bonuses.inject(0, &:+)
       attack_bonus_avg = (attack_bonus_total.to_f / npc_actions_count).ceil
       attack_bonus_cr = cr_for_attack_bonus(attack_bonus_avg)
-      spell_save_dc = npc.spell_save_dc
+      spell_save_dc = 0
+      npc.character_classes.each do |character_class|
+        spell_save_dc = character_class.spell_save_dc if character_class.spell_save_dc > spell_save_dc
+      end
       spell_save_cr = cr_for_save_dc(spell_save_dc)
 
       offensive_cr_total = [damage_cr, attack_bonus_cr, spell_save_cr].inject(0, &:+)

@@ -2,9 +2,9 @@
 
 class SpellSlots
   class << self
-    def spell_slots(character)
-      character_level = character.level < 21 ? character.level : 20
-      case character.dnd_class_string
+    def spell_slots(character_class)
+      character_level = character_class.level < 21 ? character_class.level : 20
+      case character_class.dnd_class.name
       when 'Bard'
         bard(character_level)
       when 'Cleric'
@@ -21,6 +21,8 @@ class SpellSlots
         warlock(character_level)
       when 'Wizard'
         wizard(character_level)
+      else
+        nil
       end
     end
 
