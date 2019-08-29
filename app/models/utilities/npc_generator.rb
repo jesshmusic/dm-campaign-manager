@@ -23,17 +23,17 @@ class NpcGenerator
       end
     end
 
-    def generate_npc(name, dnd_class, race, alignment, level, role, user, campaign_ids, min_score = 15)
-      @new_npc = NonPlayerCharacter.create(name: name,
-                                           level: level,
-                                           role: role,
-                                           alignment: alignment)
-      @new_npc.dnd_classes << dnd_class
-      @new_npc.user = user
-      @new_npc.campaigns << Campaign.where(id: campaign_ids)
-      @new_npc.race = race
+    def generate_npc(npc_attributes)
+      @new_npc = NonPlayerCharacter.create(name: npc_attributes[:name],
+                                           race: npc_attributes[:race],
+                                           role: npc_attributes[:role],
+                                           user_id: npc_attributes[:user_id],
+                                           alignment: npc_attributes[:alignment],
+                                           campaign_ids: npc_attributes[:campaign_ids],
+                                           character_classes_attributes: npc_attributes[:character_classes_attributes])
+
       @new_npc.build_stat_block
-      generate_ability_scores(min_score)
+      generate_ability_scores(npc_attributes[:min_score])
       set_statistics
       add_armor
       add_weapon
@@ -51,164 +51,51 @@ class NpcGenerator
     def set_ability_scores(score_priority = [], min_score = 15)
       ability_scores = Array.new(6)
       ability_scores.each_with_index do |_, index|
-        rolls = [DndRules.roll_dice(1, 6), DndRules.roll_dice(1, 6), DndRules.roll_dice(1, 6), DndRules.roll_dice(1, 6)]
+        rolls = [DndRules.roll_dice(1, 6),
+                 DndRules.roll_dice(1, 6),
+                 DndRules.roll_dice(1, 6),
+                 DndRules.roll_dice(1, 6)]
         rolls.delete_at(rolls.index(rolls.min))
         ability_scores[index] = rolls.sum
       end
       score_priority.each_with_index do |ability, index|
-        min_score_calc = index.zero? ? min_score.to_i : 0
-        case ability
-        when 'strength'
-          @new_npc.stat_block.strength = DndRules.get_strength_for_race(
-            [ability_scores.delete_at(ability_scores.index(ability_scores.max)), min_score_calc].max,
-            @new_npc.race
-          )
-        when 'dexterity'
-          @new_npc.stat_block.dexterity = DndRules.get_dexterity_for_race(
-            [ability_scores.delete_at(ability_scores.index(ability_scores.max)), min_score_calc].max,
-            @new_npc.race
-          )
-        when 'constitution'
-          @new_npc.stat_block.constitution = DndRules.get_constitution_for_race(
-            [ability_scores.delete_at(ability_scores.index(ability_scores.max)), min_score_calc].max,
-            @new_npc.race
-          )
-        when 'intelligence'
-          @new_npc.stat_block.intelligence = DndRules.get_intelligence_for_race(
-            [ability_scores.delete_at(ability_scores.index(ability_scores.max)), min_score_calc].max,
-            @new_npc.race
-          )
-        when 'wisdom'
-          @new_npc.stat_block.wisdom = DndRules.get_wisdom_for_race(
-            [ability_scores.delete_at(ability_scores.index(ability_scores.max)), min_score_calc].max,
-            @new_npc.race
-          )
-        when 'charisma'
-          @new_npc.stat_block.charisma = DndRules.get_charisma_for_race(
-            [ability_scores.delete_at(ability_scores.index(ability_scores.max)), min_score_calc].max,
-            @new_npc.race
-          )
-        end
+        set_primary_ability(ability, ability_scores, index, min_score)
+      end
+    end
+
+    def set_primary_ability(ability, ability_scores, index, min_score)
+      min_score_calc = index.zero? ? min_score.to_i : 0
+      highest_score = [ability_scores.delete_at(ability_scores.index(ability_scores.max)), min_score_calc].max
+      case ability
+      when 'Strength'
+        @new_npc.stat_block.strength = DndRules.get_strength_for_race(highest_score, @new_npc.race)
+      when 'Dexterity'
+        @new_npc.stat_block.dexterity = DndRules.get_dexterity_for_race(highest_score, @new_npc.race)
+      when 'Constitution'
+        @new_npc.stat_block.constitution = DndRules.get_constitution_for_race(highest_score, @new_npc.race)
+      when 'Intelligence'
+        @new_npc.stat_block.intelligence = DndRules.get_intelligence_for_race(highest_score, @new_npc.race)
+      when 'Wisdom'
+        @new_npc.stat_block.wisdom = DndRules.get_wisdom_for_race(highest_score, @new_npc.race)
+      when 'Charisma'
+        @new_npc.stat_block.charisma = DndRules.get_charisma_for_race(highest_score, @new_npc.race)
       end
     end
 
     def generate_ability_scores(min_score = 15)
-      case @new_npc.dnd_class_string
-      when 'Barbarian'
-        set_ability_scores(score_priority_for_barbarian, min_score)
-      when 'Bard'
-        set_ability_scores(score_priority_for_bard, min_score)
-      when 'Cleric'
-        set_ability_scores(score_priority_for_cleric, min_score)
-      when 'Druid'
-        set_ability_scores(score_priority_for_druid, min_score)
-      when 'Fighter'
-        set_ability_scores(score_priority_for_fighter, min_score)
-      when 'Monk'
-        set_ability_scores(score_priority_for_monk, min_score)
-      when 'Paladin'
-        set_ability_scores(score_priority_for_paladin, min_score)
-      when 'Ranger'
-        set_ability_scores(score_priority_for_ranger, min_score)
-      when 'Rogue'
-        set_ability_scores(score_priority_for_rogue, min_score)
-      when 'Sorcerer'
-        set_ability_scores(score_priority_for_sorcerer, min_score)
-      when 'Warlock'
-        set_ability_scores(score_priority_for_warlock, min_score)
-      when 'Wizard'
-        set_ability_scores(score_priority_for_wizard, min_score)
-      else
-        set_ability_scores
-      end
-    end
-
-    def score_priority_for_barbarian
-      fill_score_priorities(%w[strength constitution])
-    end
-
-    def score_priority_for_bard
-      fill_score_priorities(%w[charisma dexterity])
-    end
-
-    def score_priority_for_cleric
-      fill_score_priorities(%w[wisdom constitution])
-    end
-
-    def score_priority_for_druid
-      fill_score_priorities(%w[wisdom charisma])
-    end
-
-    def score_priority_for_fighter
-      fill_score_priorities(%w[strength dexterity constitution])
-    end
-
-    def score_priority_for_monk
-      fill_score_priorities(%w[dexterity wisdom])
-    end
-
-    def score_priority_for_paladin
-      fill_score_priorities(%w[strength charisma])
-    end
-
-    def score_priority_for_ranger
-      fill_score_priorities(%w[dexterity wisdom])
-    end
-
-    def score_priority_for_rogue
-      fill_score_priorities(%w[dexterity charisma intelligence])
-    end
-
-    def score_priority_for_sorcerer
-      fill_score_priorities(%w[charisma intelligence])
-    end
-
-    def score_priority_for_warlock
-      fill_score_priorities(%w[charisma intelligence])
-    end
-
-    def score_priority_for_wizard
-      fill_score_priorities(%w[intelligence])
+      primary_abilities = @new_npc.character_classes.map(&:dnd_class.primary_abilities)
+      score_priorities = fill_score_priorities(primary_abilities)
+      set_ability_scores(score_priorities, min_score)
     end
 
     def fill_score_priorities(score_priorities)
-      remaining_scores = %w[strength dexterity constitution intelligence wisdom charisma] - score_priorities
+      remaining_scores = %w[Strength Dexterity Constitution Intelligence Wisdom Charisma] - score_priorities
       score_priorities + remaining_scores.shuffle
     end
 
     def set_statistics
       @new_npc.stat_block.initiative = DndRules.ability_score_modifier(@new_npc.stat_block.dexterity)
-      @new_npc.stat_block.proficiency = case @new_npc.level
-                                        when 0
-                                          1
-                                        when 1..4
-                                          2
-                                        when 5..8
-                                          3
-                                        when 9..12
-                                          4
-                                        when 13..16
-                                          5
-                                        else
-                                          6
-                             end
-      @new_npc.stat_block.hit_dice_value = case @new_npc.dnd_class_string
-                                           when 'Barbarian'
-                                             12
-                                           when 'Bard', 'Cleric', 'Druid', 'Monk', 'Rogue', 'Warlock'
-                                             8
-                                           when 'Fighter', 'Paladin', 'Ranger'
-                                             10
-                                           when 'Sorcerer', 'Wizard'
-                                             6
-                                           else
-                                             8
-                                end
-      spell_casting = SpellSlots.spell_ability(@new_npc)
-      @new_npc.spell_save_dc = spell_casting[:mod] + @new_npc.stat_block.proficiency + 8
-      @new_npc.spell_attack_bonus = spell_casting[:mod] + @new_npc.stat_block.proficiency
-      @new_npc.spell_ability = spell_casting[:ability]
-      @new_npc.stat_block.hit_dice_number = @new_npc.level
+      @new_npc.proficiency = proficiency_bonus_for_level(@new_npc.total_level)
       @new_npc.stat_block.hit_points = @new_npc.stat_block.hit_dice_value + DndRules.ability_score_modifier(@new_npc.stat_block.constitution)
       @new_npc.stat_block.hit_points += DndRules.roll_dice(@new_npc.stat_block.hit_dice_number - 1, @new_npc.stat_block.hit_dice_value)
       @new_npc.stat_block.hit_points_current = @new_npc.stat_block.hit_points
@@ -287,11 +174,11 @@ class NpcGenerator
           attack_action.damage_dice = "1h: #{weapon.weapon_damage_dice_count}d#{weapon.weapon_damage_dice_value} #{weapon.weapon_damage_type}"
         end
         if weapon.weapon_range.include? 'Ranged'
-          attack_action.attack_bonus = DndRules.ability_score_modifier(@new_npc.stat_block.dexterity) + @new_npc.stat_block.proficiency
-          attack_action.damage_bonus = DndRules.ability_score_modifier(@new_npc.stat_block.dexterity) + @new_npc.stat_block.proficiency
+          attack_action.attack_bonus = DndRules.ability_score_modifier(@new_npc.stat_block.dexterity) + @new_npc.proficiency
+          attack_action.damage_bonus = DndRules.ability_score_modifier(@new_npc.stat_block.dexterity) + @new_npc.proficiency
         else
-          attack_action.attack_bonus = DndRules.ability_score_modifier(@new_npc.stat_block.strength) + @new_npc.stat_block.proficiency
-          attack_action.damage_bonus = DndRules.ability_score_modifier(@new_npc.stat_block.strength) + @new_npc.stat_block.proficiency
+          attack_action.attack_bonus = DndRules.ability_score_modifier(@new_npc.stat_block.strength) + @new_npc.proficiency
+          attack_action.damage_bonus = DndRules.ability_score_modifier(@new_npc.stat_block.strength) + @new_npc.proficiency
         end
         @new_npc.character_actions << attack_action
       end
@@ -321,17 +208,17 @@ class NpcGenerator
     def get_weight_for_magic_item(rarity = nil, default_weight = 50)
       case rarity
       when 'common'
-        5 * @new_npc.level
-      when 'common'
-        5 * @new_npc.level
-      when 'common'
-        5 * @new_npc.level
-      when 'common'
-        5 * @new_npc.level
-      when 'common'
-        5 * @new_npc.level
-      when 'common'
-        5 * @new_npc.level
+        16 * @new_npc.total_level
+      when 'uncommon'
+        8 * @new_npc.total_level
+      when 'rare'
+        4 * @new_npc.total_level
+      when 'very rare'
+        2 * @new_npc.total_level
+      when 'legendary'
+        @new_npc.total_level
+      when 'artifact'
+        1
       else
         default_weight
       end

@@ -206,7 +206,7 @@ class DndRules
     end
 
     def proficiency_cr(npc)
-      case npc.stat_block.proficiency
+      case npc.proficiency
       when 0
         0.0
       when 1

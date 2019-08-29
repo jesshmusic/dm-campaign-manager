@@ -16,7 +16,6 @@
 #  hit_points_current :integer          default(8), not null
 #  initiative         :integer          default(0), not null
 #  intelligence       :integer          default(10), not null
-#  proficiency        :integer          default(2), not null
 #  speed              :string           default("30 feet"), not null
 #  strength           :integer          default(10), not null
 #  wisdom             :integer          default(10), not null

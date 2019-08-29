@@ -14,6 +14,7 @@
 #  languages       :string           default("Common")
 #  name            :string           not null
 #  platinum_pieces :integer          default(0)
+#  proficiency     :integer          default(2)
 #  race            :string           default("Human"), not null
 #  role            :string           default("Player Character")
 #  silver_pieces   :integer          default(0), not null
@@ -32,8 +33,13 @@
 
 class Character < ApplicationRecord
   validates :name, presence: true
+
   after_validation(on: :create) do
     self.slug = generate_slug
+  end
+
+  before_save do
+    self.proficiency = proficiency_bonus_for_level(total_level)
   end
 
   attribute :min_score, :integer
@@ -65,12 +71,16 @@ class Character < ApplicationRecord
 
   belongs_to :user
 
-  def dnd_class_string
-    dnd_classes.first.name
+  def hit_dice
+    hit_dice_array = []
+    character_classes.each do |character_class|
+      hit_dice_array << "#{character_class.level}d#{character_class.dnd_class.hit_die}"
+    end
+    hit_dice_array.join(', ')
   end
 
-  def dnd_class
-    dnd_classes.first
+  def total_level
+    character_classes.sum { |character_class| character_class.level }
   end
 
   include PgSearch::Model

@@ -9,7 +9,7 @@
 </nav>
 <div class="container">
   <h1>Generate NPC</h1>
-  <%= simple_form_for [:v1, @character], url: create_generated_npc_path, method: :post, validate: true do |form| %>
+  <%= simple_form_for [:v1, @character], url: v1_create_generated_npc_path, method: :post, validate: true do |form| %>
     <%= form.error_notification %>
     <%= form.error_notification message: form.object.errors[:base].to_sentence if form.object.errors[:base].present? %>
     <% @character.errors.full_messages.each do |msg| %><h4><%= msg %></h4><% end %>
@@ -33,41 +33,43 @@
       <%= form.hidden_field :user, value: form.object.user || current_user %>
       <%= form.hidden_field :type, value: 'NonPlayerCharacter' %>
 
-        <h2>Info</h2>
-        <div class="form-row">
-          <div class="col">
-            <%= form.input :alignment,
-              collection: DndRules.alignments,
-              include_blank: false,
-              include_hidden: false %>
-          </div>
-          <div class="col">
-            <%= form.association :dnd_classes,
-              collection: DndClass.where(user_id: nil),
-              input_html: { multiple: true },
-              include_blank: false,
-              include_hidden: false,
-              label: 'Class' %>
-          </div>
-          <div class="col">
-            <%= form.input :race,
-              collection: DndRules.player_races,
-              include_blank: false,
-              include_hidden: false %>
-          </div>
+      <h2>Info</h2>
+      <div class="form-row">
+        <div class="col">
+          <%= form.input :alignment,
+            collection: DndRules.alignments,
+            include_blank: false,
+            include_hidden: false %>
         </div>
+        <div class="col">
+          <%= form.input :race,
+            collection: DndRules.player_races,
+            include_blank: false,
+            include_hidden: false %>
+        </div>
+      </div>
 
-        <div class="form-row">
-          <div class="col">
-            <%= form.input :level %>
-          </div>
-          <div class="col">
-            <%= form.input :min_score,
-                  label: "Minimum Score for main ability",
-                  hint: 'This will ensure the primary ability is of a minimum value',
-                  input_html: { value: form.object.min_score || 15 } %>
+
+      <h2>Classes</h2>
+      <div class="form-row">
+        <div class="p-3 border-bottom border-top">
+          <%= form.simple_fields_for :character_classes do |p_form| %>
+            <%= render 'character_class_fields', f: p_form %>
+          <% end %>
+          <div class='links'>
+            <%= link_to_add_association 'Add Class', form, :character_classes, class: "btn btn-info" %>
           </div>
         </div>
+      </div>
+
+      <div class="form-row">
+        <div class="col">
+          <%= form.input :min_score,
+                label: "Minimum Score for main ability",
+                hint: 'This will ensure the primary ability is of a minimum value',
+                input_html: { value: form.object.min_score || 15 } %>
+        </div>
+      </div>
     </div>
 
     <div class="form-actions">

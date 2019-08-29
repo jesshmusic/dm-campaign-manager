@@ -27,7 +27,6 @@
 
 class CharacterClass < ApplicationRecord
   before_save do
-    self.proficiency_bonus = DndRules.proficiency_bonus_for_level(level)
     self.spell_attack_bonus = DndRules.spell_attack_bonus(proficiency_bonus, dnd_class, character.stat_block)
     self.spell_save_dc = 8 + spell_attack_bonus
   end

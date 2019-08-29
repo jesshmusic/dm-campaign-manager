@@ -12,6 +12,7 @@
 #  languages       :string           default("Common")
 #  name            :string           not null
 #  platinum_pieces :integer          default(0)
+#  proficiency     :integer          default(2)
 #  race            :string           default("Human"), not null
 #  role            :string           default("Player Character")
 #  silver_pieces   :integer          default(0), not null

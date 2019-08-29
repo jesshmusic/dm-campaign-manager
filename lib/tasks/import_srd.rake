@@ -108,7 +108,6 @@ namespace :srd do
           new_stat_block.hit_points_current = monster[:hit_points]
           new_stat_block.initiative = DndRules.ability_score_modifier(monster[:dexterity])
           new_stat_block.intelligence = monster[:intelligence]
-          new_stat_block.proficiency = DndRules.proficiency_for_cr(new_monster.challenge_rating)
           new_stat_block.speed = monster[:speed].map { |key, value| "#{value}ft. #{key}" }.join(', ')
           new_stat_block.strength = monster[:strength]
           new_stat_block.wisdom = monster[:wisdom]

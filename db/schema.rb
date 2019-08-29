@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_28_201937) do
+ActiveRecord::Schema.define(version: 2019_08_29_123133) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -124,6 +124,7 @@ ActiveRecord::Schema.define(version: 2019_08_28_201937) do
     t.datetime "updated_at", null: false
     t.string "background", default: "Acolyte"
     t.string "type"
+    t.integer "proficiency", default: 2
     t.index ["slug"], name: "index_characters_on_slug"
     t.index ["user_id"], name: "index_characters_on_user_id"
   end
@@ -397,7 +398,6 @@ ActiveRecord::Schema.define(version: 2019_08_28_201937) do
     t.integer "hit_points_current", default: 8, null: false
     t.integer "initiative", default: 0, null: false
     t.integer "intelligence", default: 10, null: false
-    t.integer "proficiency", default: 2, null: false
     t.string "speed", default: "30 feet", null: false
     t.integer "strength", default: 10, null: false
     t.integer "wisdom", default: 10, null: false
