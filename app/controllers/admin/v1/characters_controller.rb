@@ -85,15 +85,14 @@ module Admin::V1
     # POST /characters/generate_npc
     def create_generated_npc
       @character = NpcGenerator.generate_npc(
-        character_params('NonPlayerCharacter')[:name],
-        DndClass.find(character_params('NonPlayerCharacter')[:dnd_class_ids].first),
-        character_params('NonPlayerCharacter')[:race],
-        character_params('NonPlayerCharacter')[:alignment],
-        character_params('NonPlayerCharacter')[:level],
-        character_params('NonPlayerCharacter')[:role],
-        current_user,
-        character_params('NonPlayerCharacter')[:campaign_ids],
-        character_params('NonPlayerCharacter')[:min_score]
+        name: character_params('NonPlayerCharacter')[:name],
+        race: character_params('NonPlayerCharacter')[:race],
+        alignment: character_params('NonPlayerCharacter')[:alignment],
+        role: character_params('NonPlayerCharacter')[:role],
+        user_id: current_user.id,
+        min_score: character_params('NonPlayerCharacter')[:min_score],
+        campaign_ids: character_params('NonPlayerCharacter')[:campaign_ids],
+        character_classes_attributes: character_params('NonPlayerCharacter')[:character_classes_attributes]
       )
       authorize @character
       respond_to do |format|
