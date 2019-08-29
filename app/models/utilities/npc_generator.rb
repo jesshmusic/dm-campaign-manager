@@ -141,25 +141,25 @@ class NpcGenerator
         case armor_prof
         when 'Light armor'
           ArmorItem.where(sub_category: 'Light').each do |armor_item|
-            armor_choices << { item: armor_item, weight: get_weight_for_magic_item(armor_item.rarity, 50) }
+            armor_choices << { item: armor_item, weight: get_weight_for_magic_item(armor_item.rarity, 5000) }
           end
         when 'Medium armor'
           ArmorItem.where(sub_category: 'Medium').each do |armor_item|
-            armor_choices << { item: armor_item, weight: get_weight_for_magic_item(armor_item.rarity, 100) }
+            armor_choices << { item: armor_item, weight: get_weight_for_magic_item(armor_item.rarity, 10000) }
           end
         when 'Heavy armor'
           ArmorItem.where(sub_category: 'Heavy').each do |armor_item|
-            armor_choices << { item: armor_item, weight: get_weight_for_magic_item(armor_item.rarity, 200) }
+            armor_choices << { item: armor_item, weight: get_weight_for_magic_item(armor_item.rarity, 20000) }
           end
         when 'All armor'
           ArmorItem.where(sub_category: 'Light').each do |armor_item|
-            armor_choices << { item: armor_item, weight: get_weight_for_magic_item(armor_item.rarity, 50) }
+            armor_choices << { item: armor_item, weight: get_weight_for_magic_item(armor_item.rarity, 5000) }
           end
           ArmorItem.where(sub_category: 'Medium').each do |armor_item|
-            armor_choices << { item: armor_item, weight: get_weight_for_magic_item(armor_item.rarity, 100) }
+            armor_choices << { item: armor_item, weight: get_weight_for_magic_item(armor_item.rarity, 10000) }
           end
           ArmorItem.where(sub_category: 'Heavy').each do |armor_item|
-            armor_choices << { item: armor_item, weight: get_weight_for_magic_item(armor_item.rarity, 200) }
+            armor_choices << { item: armor_item, weight: get_weight_for_magic_item(armor_item.rarity, 20000) }
           end
         end
       end
@@ -207,34 +207,33 @@ class NpcGenerator
         case weapon_prof
         when 'Simple weapons'
           WeaponItem.where(sub_category: 'Simple').each do |weapon_item|
-            weapon_choices << { item: weapon_item, weight: get_weight_for_magic_item(weapon_item.rarity, 50) }
+            weapon_weight = get_weight_for_magic_item(weapon_item.rarity, 5000)
+            weapon_choices << { item: weapon_item, weight: weapon_weight }
           end
         when 'Martial weapons'
           WeaponItem.where(sub_category: 'Martial').each do |weapon_item|
-            weapon_choices << { item: weapon_item, weight: get_weight_for_magic_item(weapon_item.rarity, 150) }
+            weapon_weight = get_weight_for_magic_item(weapon_item.rarity, 15000)
+            weapon_choices << { item: weapon_item, weight: weapon_weight }
           end
         else
           WeaponItem.where('name like ?', "%#{weapon_prof.chomp('s')}").each do |weapon_item|
-            weapon_choices << { item: weapon_item, weight: get_weight_for_magic_item(weapon_item.rarity, 20) }
+            weapon_weight = get_weight_for_magic_item(weapon_item.rarity, 20000)
+            weapon_choices << { item: weapon_item, weight: weapon_weight }
           end
         end
       end
       weapon_choices
     end
 
-    def get_weight_for_magic_item(rarity = nil, default_weight = 50)
+    def get_weight_for_magic_item(rarity = nil, default_weight = 500)
       case rarity
       when 'common'
-        16 * @new_npc.total_level
+        3 * @new_npc.total_level
       when 'uncommon'
-        8 * @new_npc.total_level
-      when 'rare'
-        4 * @new_npc.total_level
-      when 'very rare'
         2 * @new_npc.total_level
-      when 'legendary'
+      when 'rare', 'very rare'
         @new_npc.total_level
-      when 'artifact'
+      when 'legendary', 'artifact'
         1
       else
         default_weight
