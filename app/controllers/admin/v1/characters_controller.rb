@@ -44,6 +44,7 @@ module Admin::V1
       authorize @character
       @character.role = ''
       @character.build_stat_block
+      @character.character_classes.build
     end
 
     # GET /characters/new/generate_npc

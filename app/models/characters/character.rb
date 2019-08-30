@@ -32,14 +32,21 @@
 #
 
 class Character < ApplicationRecord
-  validates :name, presence: true
+  validates :name, :stat_block, presence: true
+  validates :character_classes, length: { minimum: 1 }
 
   after_validation(on: :create) do
     self.slug = generate_slug
   end
 
   before_save do
+    stat_block.hit_points_current = stat_block.hit_points
+    stat_block.initiative = DndRules.ability_score_modifier(stat_block.dexterity)
     self.proficiency = DndRules.proficiency_bonus_for_level(total_level)
+    character_classes.each do |character_class|
+      character_class.proficiency_bonus = proficiency
+      character_class.setup_spell_scores(stat_block)
+    end
   end
 
   attribute :min_score, :integer

@@ -29,36 +29,18 @@
   </div>
 </div>
 
-<h3>Statistics</h3>
+<h2>Statistics</h2>
 <%= form.simple_fields_for :stat_block do |stats_form| %>
   <div class="form-row">
-    <div class="col-6 col-sm-4">
+    <div class="col">
       <%= stats_form.input :armor_class %>
     </div>
-    <div class="col-6 col-sm-4">
+    <div class="col">
       <%= stats_form.input :hit_points %>
     </div>
-    <div class="col-6 col-sm-4">
-      <%= stats_form.input :hit_points_current, label: 'Current Hit Points' %>
-    </div>
-    <div class="col-6 col-sm-4">
-      <%= stats_form.input :initiative %>
-    </div>
-    <div class="col-6 col-sm-4">
-      <%= stats_form.input :proficiency %>
-    </div>
-    <div class="col-6 col-sm-4">
-      <%= stats_form.input :speed %>
-    </div>
   </div>
 
-  <div class="form-row">
-    <div class="col d-flex align-items-center justify-content-between">
-      <%= stats_form.input :hit_dice_number %><strong> d </strong><%= stats_form.input :hit_dice_value %>
-    </div>
-  </div>
-
-  <h4>Ability Scores</h4>
+  <h3>Ability Scores</h3>
   <div class="form-row">
     <div class="col-4 col-md-2">
       <%= stats_form.input :strength %>
