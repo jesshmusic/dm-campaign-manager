@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_30_125720) do
+ActiveRecord::Schema.define(version: 2019_08_30_165152) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -408,29 +408,6 @@ ActiveRecord::Schema.define(version: 2019_08_30_125720) do
     t.string "slug"
     t.index ["slug"], name: "index_spells_on_slug", unique: true
     t.index ["user_id"], name: "index_spells_on_user_id"
-  end
-
-  create_table "stat_blocks", force: :cascade do |t|
-    t.bigint "character_id"
-    t.bigint "monster_id"
-    t.integer "armor_class", default: 10
-    t.integer "charisma", default: 10, null: false
-    t.integer "constitution", default: 10, null: false
-    t.integer "dexterity", default: 10, null: false
-    t.integer "hit_dice_number", default: 1, null: false
-    t.integer "hit_dice_value", default: 8, null: false
-    t.integer "hit_points", default: 8, null: false
-    t.integer "hit_points_current", default: 8, null: false
-    t.integer "initiative", default: 0, null: false
-    t.integer "intelligence", default: 10, null: false
-    t.string "speed", default: "30 feet", null: false
-    t.integer "strength", default: 10, null: false
-    t.integer "wisdom", default: 10, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "hit_dice_modifier", default: 0
-    t.index ["character_id"], name: "index_stat_blocks_on_character_id"
-    t.index ["monster_id"], name: "index_stat_blocks_on_monster_id"
   end
 
   create_table "users", force: :cascade do |t|
