@@ -33,7 +33,7 @@ module Admin::V1
       authorize @monster
       respond_to do |format|
         format.html { @monster }
-        format.json { render json: @monster.as_json(include: %i[monster_actions monster_legendary_actions monster_special_abilities monster_stat_block], methods: :description_text) }
+        format.json { render json: @monster.as_json(include: %i[monster_actions monster_legendary_actions monster_special_abilities], methods: :description_text) }
       end
     end
 
@@ -41,7 +41,6 @@ module Admin::V1
     def new
       @monster = Monster.new
       authorize @monster
-      @monster.build_stat_block
     end
 
     # GET /monsters/1/edit
@@ -109,9 +108,9 @@ module Admin::V1
         :alignment, :damage_vulnerabilities,
         :damage_resistances, :damage_immunities, :condition_immunities,
         :senses, :languages, :challenge_rating, :api_url,
-        stat_block_attributes: %i[
-          id armor_class charisma constitution dexterity hit_dice_modifier hit_dice_number hit_dice_value hit_points hit_points_current initiative intelligence proficiency speed strength wisdom
-        ],
+        :armor_class, :charisma, :constitution, :dexterity, :hit_dice_modifier,
+        :hit_dice_number, :hit_dice_value, :hit_points, :initiative,
+        :intelligence, :proficiency, :speed, :strength, :wisdom,
         monster_action_attributes: %i[
           id name description attack_bonus damage_bonus damage_dice _destroy
         ],

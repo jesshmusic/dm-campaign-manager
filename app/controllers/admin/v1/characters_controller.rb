@@ -43,7 +43,6 @@ module Admin::V1
                    end
       authorize @character
       @character.role = ''
-      @character.build_stat_block
       @character.character_classes.build
     end
 
@@ -157,9 +156,6 @@ module Admin::V1
         :initiative, :intelligence, :proficiency, :speed, :strength, :wisdom,
         campaign_ids: [], spell_ids: [],
         character_spells_attributes: %i[id is_prepared spell_class spell_id],
-        stat_block_attributes: %i[
-          id armor_class charisma constitution dexterity hit_dice_modifier hit_dice_number hit_dice_value hit_points hit_points_current initiative intelligence proficiency speed strength wisdom
-        ],
         equipment_items_attributes: [
           :id, :quantity, :_destroy, item_ids: []
         ],

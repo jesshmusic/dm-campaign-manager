@@ -32,7 +32,6 @@ class NpcGenerator
                                            campaign_ids: npc_attributes[:campaign_ids],
                                            character_classes_attributes: npc_attributes[:character_classes_attributes])
 
-      @new_npc.create_stat_block!
       generate_ability_scores(npc_attributes[:min_score])
       set_statistics
       add_armor
