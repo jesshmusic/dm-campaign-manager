@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_29_192034) do
+ActiveRecord::Schema.define(version: 2019_08_30_125720) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -126,6 +126,17 @@ ActiveRecord::Schema.define(version: 2019_08_29_192034) do
     t.string "background", default: "Acolyte"
     t.string "type"
     t.integer "proficiency", default: 2
+    t.integer "armor_class", default: 10, null: false
+    t.integer "charisma", default: 10, null: false
+    t.integer "constitution", default: 10, null: false
+    t.integer "dexterity", default: 10, null: false
+    t.integer "hit_points", default: 8, null: false
+    t.integer "hit_points_current", default: 8, null: false
+    t.integer "initiative", default: 0, null: false
+    t.integer "intelligence", default: 10, null: false
+    t.string "speed", default: "30 feet", null: false
+    t.integer "strength", default: 10, null: false
+    t.integer "wisdom", default: 10, null: false
     t.index ["slug"], name: "index_characters_on_slug"
     t.index ["user_id"], name: "index_characters_on_user_id"
   end
@@ -302,6 +313,19 @@ ActiveRecord::Schema.define(version: 2019_08_29_192034) do
     t.text "reactions"
     t.bigint "user_id"
     t.string "slug"
+    t.integer "armor_class", default: 10
+    t.integer "charisma", default: 10, null: false
+    t.integer "constitution", default: 10, null: false
+    t.integer "dexterity", default: 10, null: false
+    t.integer "hit_dice_modifier", default: 0
+    t.integer "hit_dice_number", default: 1, null: false
+    t.integer "hit_dice_value", default: 8, null: false
+    t.integer "hit_points", default: 8, null: false
+    t.integer "initiative", default: 0, null: false
+    t.integer "intelligence", default: 10, null: false
+    t.string "speed", default: "30 feet", null: false
+    t.integer "strength", default: 10, null: false
+    t.integer "wisdom", default: 10, null: false
     t.index ["slug"], name: "index_monsters_on_slug", unique: true
     t.index ["user_id"], name: "index_monsters_on_user_id"
   end
