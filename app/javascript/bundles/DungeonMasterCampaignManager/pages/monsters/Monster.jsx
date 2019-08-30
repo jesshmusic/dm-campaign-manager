@@ -38,14 +38,8 @@ class Monsters extends React.Component {
         sort: true,
         filter: textFilter(),
       }, {
-        dataField: 'challengeRating',
-        text: 'CR',
-        sort: true,
-        formatter: (cell) => this.selectCROptions.find((opt) => opt.value === cell).label,
-        filter: selectFilter({
-          options: this.selectCROptions,
-          placeholder: 'CR',
-        }),
+        dataField: 'hitDice',
+        text: 'Hit Dice',
       }, {
         dataField: 'monsterType',
         text: 'Type',
@@ -59,6 +53,14 @@ class Monsters extends React.Component {
         dataField: 'monsterSubtype',
         text: 'Subtype',
         sort: true,
+      }, {
+        dataField: 'challengeRating',
+        text: 'CR',
+        formatter: (cell) => this.selectCROptions.find((opt) => opt.value === cell).label,
+        filter: selectFilter({
+          options: this.selectCROptions,
+          placeholder: 'CR',
+        }),
       },
     ];
   }

@@ -30,38 +30,36 @@
 </div>
 
 <h2>Statistics</h2>
-<%= form.simple_fields_for :stat_block do |stats_form| %>
-  <div class="form-row">
-    <div class="col">
-      <%= stats_form.input :armor_class %>
-    </div>
-    <div class="col">
-      <%= stats_form.input :hit_points %>
-    </div>
+<div class="form-row">
+  <div class="col">
+    <%= form.input :armor_class %>
   </div>
+  <div class="col">
+    <%= form.input :hit_points %>
+  </div>
+</div>
 
-  <h3>Ability Scores</h3>
-  <div class="form-row">
-    <div class="col-4 col-md-2">
-      <%= stats_form.input :strength %>
-    </div>
-    <div class="col-4 col-md-2">
-      <%= stats_form.input :dexterity %>
-    </div>
-    <div class="col-4 col-md-2">
-      <%= stats_form.input :constitution %>
-    </div>
-    <div class="col-4 col-md-2">
-      <%= stats_form.input :intelligence %>
-    </div>
-    <div class="col-4 col-md-2">
-      <%= stats_form.input :wisdom %>
-    </div>
-    <div class="col-4 col-md-2">
-      <%= stats_form.input :charisma %>
-    </div>
+<h3>Ability Scores</h3>
+<div class="form-row">
+  <div class="col-4 col-md-2">
+    <%= form.input :strength %>
   </div>
-<% end %>
+  <div class="col-4 col-md-2">
+    <%= form.input :dexterity %>
+  </div>
+  <div class="col-4 col-md-2">
+    <%= form.input :constitution %>
+  </div>
+  <div class="col-4 col-md-2">
+    <%= form.input :intelligence %>
+  </div>
+  <div class="col-4 col-md-2">
+    <%= form.input :wisdom %>
+  </div>
+  <div class="col-4 col-md-2">
+    <%= form.input :charisma %>
+  </div>
+</div>
 
 <div class="form-row">
   <div class="col">

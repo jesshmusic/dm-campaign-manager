@@ -34,9 +34,9 @@
         <td><%= monster.monster_type.titleize %></td>
         <td class="d-none d-lg-table-cell"><%= monster.monster_subtype.titleize %></td>
         <td class="d-none d-lg-table-cell"><%= monster.alignment.titleize %></td>
-        <td class="d-none d-lg-table-cell"><%= monster.stat_block.armor_class %></td>
-        <td class="d-none d-lg-table-cell"><%= monster.stat_block.hit_points %></td>
-        <td class="d-none d-lg-table-cell"><%= monster.stat_block.hit_dice %></td>
+        <td class="d-none d-lg-table-cell"><%= monster.armor_class %></td>
+        <td class="d-none d-lg-table-cell"><%= monster.hit_points %></td>
+        <td class="d-none d-lg-table-cell"><%= monster.hit_dice %></td>
         <td><%= monster.challenge_rating %></td>
         <td>
           <%= link_to 'Show', v1_monster_path(monster), class: "btn btn-sm btn-primary" %>

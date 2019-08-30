@@ -153,6 +153,8 @@ module Admin::V1
         :copper_pieces, :dexterity, :dnd_class_name, :electrum_pieces, :gold_pieces,
         :languages, :level, :platinum_pieces, :race, :role, :silver_pieces, :spell_ability,
         :spell_attack_bonus, :spell_save_dc, :user_id, :xp, :min_score,
+        :armor_class, :charisma, :constitution, :dexterity, :hit_points, :hit_points_current,
+        :initiative, :intelligence, :proficiency, :speed, :strength, :wisdom,
         campaign_ids: [], spell_ids: [],
         character_spells_attributes: %i[id is_prepared spell_class spell_id],
         stat_block_attributes: %i[

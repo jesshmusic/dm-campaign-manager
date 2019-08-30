@@ -30,8 +30,8 @@ class CharacterClass < ApplicationRecord
   belongs_to :character
   belongs_to :dnd_class
 
-  def setup_spell_scores(stat_block)
-    self.spell_attack_bonus = DndRules.spell_attack_bonus(proficiency_bonus, dnd_class, stat_block)
+  def setup_spell_scores(char)
+    self.spell_attack_bonus = DndRules.spell_attack_bonus(proficiency_bonus, dnd_class, char)
     self.spell_save_dc = 8 + spell_attack_bonus
   end
 

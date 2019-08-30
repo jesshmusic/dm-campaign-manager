@@ -43,7 +43,7 @@
 #
 
 class Character < ApplicationRecord
-  validates :name, :stat_block, presence: true
+  validates :name, presence: true
   validates :character_classes, length: { minimum: 1 }
 
   after_validation(on: :create) do
@@ -51,12 +51,12 @@ class Character < ApplicationRecord
   end
 
   before_save do
-    stat_block.hit_points_current = stat_block.hit_points
-    stat_block.initiative = DndRules.ability_score_modifier(stat_block.dexterity)
+    self.hit_points_current = hit_points
+    self.initiative = DndRules.ability_score_modifier(dexterity)
     self.proficiency = DndRules.proficiency_bonus_for_level(total_level)
     character_classes.each do |character_class|
       character_class.proficiency_bonus = proficiency
-      character_class.setup_spell_scores(stat_block)
+      character_class.setup_spell_scores(self)
     end
     character_spells.each do |character_spell|
       dnd_class_first = dnd_classes.first.name
@@ -66,9 +66,6 @@ class Character < ApplicationRecord
   end
 
   attribute :min_score, :integer
-
-  has_one :stat_block, dependent: :destroy
-  accepts_nested_attributes_for :stat_block
 
   has_many :character_actions, dependent: :destroy
 
@@ -101,7 +98,7 @@ class Character < ApplicationRecord
   def hit_dice
     hit_dice_array = []
     character_classes.each do |character_class|
-      hit_dice_array << "#{character_class.level}d#{character_class.dnd_class.hit_die}"
+      hit_dice_array << "#{character_class.dnd_class.name}: #{character_class.level}d#{character_class.dnd_class.hit_die}"
     end
     hit_dice_array.join(', ')
   end

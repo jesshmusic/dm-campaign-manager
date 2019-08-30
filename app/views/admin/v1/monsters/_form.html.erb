@@ -30,60 +30,55 @@
     </div>
 
     <h3>Statistics</h3>
-    <%= form.simple_fields_for :stat_block do |stats_form| %>
-      <h4>Stats</h4>
-      <div class="form-row">
-        <div class="col">
-          <%= stats_form.input :armor_class %>
-        </div>
-        <div class="col">
-          <%= stats_form.input :hit_points %>
-        </div>
-        <div class="col">
-          <%= stats_form.input :hit_points_current %>
-        </div>
-        <div class="col">
-          <%= stats_form.input :initiative %>
-        </div>
-        <div class="col">
-          <%= stats_form.input :proficiency %>
-        </div>
+    <h4>Stats</h4>
+    <div class="form-row">
+      <div class="col">
+        <%= form.input :armor_class %>
       </div>
+      <div class="col">
+        <%= form.input :hit_points %>
+      </div>
+      <div class="col">
+        <%= form.input :initiative %>
+      </div>
+      <div class="col">
+        <%= form.input :proficiency %>
+      </div>
+    </div>
 
-      <h4>Abilities</h4>
-      <div class="form-row">
-        <div class="col-4 col-md-2">
-          <%= stats_form.input :strength %>
-        </div>
-        <div class="col-4 col-md-2">
-          <%= stats_form.input :dexterity %>
-        </div>
-        <div class="col-4 col-md-2">
-          <%= stats_form.input :constitution %>
-        </div>
-        <div class="col-4 col-md-2">
-          <%= stats_form.input :intelligence %>
-        </div>
-        <div class="col-4 col-md-2">
-          <%= stats_form.input :wisdom %>
-        </div>
-        <div class="col-4 col-md-2">
-          <%= stats_form.input :charisma %>
-        </div>
+    <h4>Abilities</h4>
+    <div class="form-row">
+      <div class="col-4 col-md-2">
+        <%= form.input :strength %>
       </div>
+      <div class="col-4 col-md-2">
+        <%= form.input :dexterity %>
+      </div>
+      <div class="col-4 col-md-2">
+        <%= form.input :constitution %>
+      </div>
+      <div class="col-4 col-md-2">
+        <%= form.input :intelligence %>
+      </div>
+      <div class="col-4 col-md-2">
+        <%= form.input :wisdom %>
+      </div>
+      <div class="col-4 col-md-2">
+        <%= form.input :charisma %>
+      </div>
+    </div>
 
-      <div class="form-row">
-        <div class="col d-flex align-items-center justify-content-between">
-          <%= stats_form.input :hit_dice_number %><strong> d </strong><%= stats_form.input :hit_dice_value %><strong> + </strong><%= stats_form.input :hit_dice_modifier %>
-        </div>
+    <div class="form-row">
+      <div class="col d-flex align-items-center justify-content-between">
+        <%= form.input :hit_dice_number %><strong> d </strong><%= form.input :hit_dice_value %><strong> + </strong><%= form.input :hit_dice_modifier %>
       </div>
+    </div>
 
-      <div class="form-row">
-        <div class="col">
-          <%= stats_form.input :speed %>
-        </div>
+    <div class="form-row">
+      <div class="col">
+        <%= form.input :speed %>
       </div>
-    <% end %>
+    </div>
 
     <div class="form-row">
       <div class="col">
@@ -92,9 +87,9 @@
       <div class="col">
         <%= form.input :languages %>
       </div>
-        <div class="col">
-          <%= form.input :size %>
-        </div>
+      <div class="col">
+        <%= form.input :size %>
+      </div>
     </div>
     <div class="form-row">
       <div class="col-12 col-md-6">

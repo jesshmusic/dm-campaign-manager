@@ -60,9 +60,6 @@ class Monster < ApplicationRecord
     self.slug = generate_slug
   end
 
-  has_one :stat_block, dependent: :destroy
-  accepts_nested_attributes_for :stat_block
-
   has_many :monster_actions, dependent: :destroy
   has_many :monster_legendary_actions, dependent: :destroy
   has_many :monster_special_abilities, dependent: :destroy
@@ -80,11 +77,11 @@ class Monster < ApplicationRecord
       '<div class="p-3">',
       "<h5><em>#{size}</em> #{monster_type} #{monster_subtype if monster_subtype && monster_subtype != ''}</h5>",
       "<h6>Challenge Rating: #{challenge_rating}</h6>",
-      "<p><strong>Armor Class</strong>  #{stat_block.armor_class}</p>",
-      "<p><strong>Hit Points</strong>  #{stat_block.hit_points}</p>",
-      "<p><strong>Speed</strong>  #{stat_block.speed}</p>",
+      "<p><strong>Armor Class</strong>  #{armor_class}</p>",
+      "<p><strong>Hit Points</strong>  #{hit_points}</p>",
+      "<p><strong>Speed</strong>  #{speed}</p>",
       "<table class='table'><thead><tr><th>STR</th><th>DEX</th><th>CON</th><th>INT</th><th>WIS</th><th>CHA</th></tr></thead>",
-      "<tbody><tr><td>#{stat_block.strength}</td><td>#{stat_block.dexterity}</td><td>#{stat_block.constitution}</td><td>#{stat_block.intelligence}</td><td>#{stat_block.wisdom}</td><td>#{stat_block.charisma}</td></tr></tbody></table>",
+      "<tbody><tr><td>#{strength}</td><td>#{dexterity}</td><td>#{constitution}</td><td>#{intelligence}</td><td>#{wisdom}</td><td>#{charisma}</td></tr></tbody></table>",
       "<p><strong>Senses</strong>  #{senses}</p>",
       "<p><strong>Languages</strong>  #{languages}</p>"
     ]
@@ -127,6 +124,16 @@ class Monster < ApplicationRecord
     monster_desc << '</div>'
 
     monster_desc.join
+  end
+
+  def hit_dice
+    if hit_dice_modifier < 0
+      "#{hit_dice_number}d#{hit_dice_value} #{hit_dice_modifier}"
+    elsif hit_dice_modifier > 0
+      "#{hit_dice_number}d#{hit_dice_value} + #{hit_dice_modifier}"
+    else
+      "#{hit_dice_number}d#{hit_dice_value}"
+    end
   end
 
   include PgSearch::Model

@@ -68,17 +68,17 @@ class NpcGenerator
       highest_score = [ability_scores.delete_at(ability_scores.index(ability_scores.max)), min_score_calc].max
       case ability
       when 'Strength'
-        @new_npc.stat_block.strength = DndRules.get_strength_for_race(highest_score, @new_npc.race)
+        @new_npc.strength = DndRules.get_strength_for_race(highest_score, @new_npc.race)
       when 'Dexterity'
-        @new_npc.stat_block.dexterity = DndRules.get_dexterity_for_race(highest_score, @new_npc.race)
+        @new_npc.dexterity = DndRules.get_dexterity_for_race(highest_score, @new_npc.race)
       when 'Constitution'
-        @new_npc.stat_block.constitution = DndRules.get_constitution_for_race(highest_score, @new_npc.race)
+        @new_npc.constitution = DndRules.get_constitution_for_race(highest_score, @new_npc.race)
       when 'Intelligence'
-        @new_npc.stat_block.intelligence = DndRules.get_intelligence_for_race(highest_score, @new_npc.race)
+        @new_npc.intelligence = DndRules.get_intelligence_for_race(highest_score, @new_npc.race)
       when 'Wisdom'
-        @new_npc.stat_block.wisdom = DndRules.get_wisdom_for_race(highest_score, @new_npc.race)
+        @new_npc.wisdom = DndRules.get_wisdom_for_race(highest_score, @new_npc.race)
       when 'Charisma'
-        @new_npc.stat_block.charisma = DndRules.get_charisma_for_race(highest_score, @new_npc.race)
+        @new_npc.charisma = DndRules.get_charisma_for_race(highest_score, @new_npc.race)
       end
     end
 
@@ -98,13 +98,13 @@ class NpcGenerator
     end
 
     def set_statistics
-      @new_npc.stat_block.initiative = DndRules.ability_score_modifier(@new_npc.stat_block.dexterity)
+      @new_npc.initiative = DndRules.ability_score_modifier(@new_npc.dexterity)
       @new_npc.proficiency = DndRules.proficiency_bonus_for_level(@new_npc.total_level)
-      @new_npc.stat_block.hit_points = @new_npc.stat_block.hit_dice_value + DndRules.ability_score_modifier(@new_npc.stat_block.constitution)
-      @new_npc.stat_block.hit_points += DndRules.roll_dice(@new_npc.stat_block.hit_dice_number - 1, @new_npc.stat_block.hit_dice_value)
-      @new_npc.stat_block.hit_points_current = @new_npc.stat_block.hit_points
-      @new_npc.character_classes.each do |ch|
-        ch.setup_spell_scores(@new_npc.stat_block)
+      @new_npc.hit_points = @new_npc.hit_dice_value + DndRules.ability_score_modifier(@new_npc.constitution)
+      @new_npc.hit_points += DndRules.roll_dice(@new_npc.hit_dice_number - 1, @new_npc.hit_dice_value)
+      @new_npc.hit_points_current = @new_npc.hit_points
+      @new_npc.each do |ch|
+        ch.setup_spell_scores(@new_npc)
       end
     end
 
@@ -123,14 +123,14 @@ class NpcGenerator
         armor_item = EquipmentItem.create(quantity: 1)
         armor_item.items << armor
         @new_npc.equipment_items << armor_item
-        @new_npc.stat_block.armor_class = if armor.armor_class
+        @new_npc.armor_class = if armor.armor_class
                                             if armor.armor_dex_bonus
-                                              armor.armor_class + DndRules.ability_score_modifier(@new_npc.stat_block.dexterity)
+                                              armor.armor_class + DndRules.ability_score_modifier(@new_npc.dexterity)
                                             else
                                               armor.armor_class
                                             end
                                           else
-                                            10 + DndRules.ability_score_modifier(@new_npc.stat_block.dexterity)
+                                            10 + DndRules.ability_score_modifier(@new_npc.dexterity)
                                end
       end
     end
@@ -191,11 +191,11 @@ class NpcGenerator
           attack_action.damage_dice = "1h: #{weapon.weapon_damage_dice_count}d#{weapon.weapon_damage_dice_value} #{weapon.weapon_damage_type}"
         end
         if weapon.weapon_range.include? 'Ranged'
-          attack_action.attack_bonus = DndRules.ability_score_modifier(@new_npc.stat_block.dexterity) + @new_npc.proficiency
-          attack_action.damage_bonus = DndRules.ability_score_modifier(@new_npc.stat_block.dexterity) + @new_npc.proficiency
+          attack_action.attack_bonus = DndRules.ability_score_modifier(@new_npc.dexterity) + @new_npc.proficiency
+          attack_action.damage_bonus = DndRules.ability_score_modifier(@new_npc.dexterity) + @new_npc.proficiency
         else
-          attack_action.attack_bonus = DndRules.ability_score_modifier(@new_npc.stat_block.strength) + @new_npc.proficiency
-          attack_action.damage_bonus = DndRules.ability_score_modifier(@new_npc.stat_block.strength) + @new_npc.proficiency
+          attack_action.attack_bonus = DndRules.ability_score_modifier(@new_npc.strength) + @new_npc.proficiency
+          attack_action.damage_bonus = DndRules.ability_score_modifier(@new_npc.strength) + @new_npc.proficiency
         end
         @new_npc.character_actions << attack_action
       end
@@ -254,17 +254,17 @@ class NpcGenerator
           skill_choice = DndRules.skill_from_profs(prof_choice.profs, exclude_list)
           skill_score = case skill_choice[:ability]
                         when 'strength'
-                          DndRules.ability_score_modifier(@new_npc.stat_block.strength)
+                          DndRules.ability_score_modifier(@new_npc.strength)
                         when 'dexterity'
-                          DndRules.ability_score_modifier(@new_npc.stat_block.dexterity)
+                          DndRules.ability_score_modifier(@new_npc.dexterity)
                         when 'constitution'
-                          DndRules.ability_score_modifier(@new_npc.stat_block.constitution)
+                          DndRules.ability_score_modifier(@new_npc.constitution)
                         when 'intelligence'
-                          DndRules.ability_score_modifier(@new_npc.stat_block.intelligence)
+                          DndRules.ability_score_modifier(@new_npc.intelligence)
                         when 'wisdom'
-                          DndRules.ability_score_modifier(@new_npc.stat_block.wisdom)
+                          DndRules.ability_score_modifier(@new_npc.wisdom)
                         when 'charisma'
-                          DndRules.ability_score_modifier(@new_npc.stat_block.charisma)
+                          DndRules.ability_score_modifier(@new_npc.charisma)
                         else
                           0
                         end

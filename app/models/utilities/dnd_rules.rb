@@ -61,21 +61,17 @@ class DndRules
       end
     end
 
-    def spell_attack_bonus(proficiency_bonus, dnd_class, char_stat_block)
+    def spell_attack_bonus(proficiency_bonus, dnd_class, char)
       case dnd_class.name
       when 'Bard', 'Paladin', 'Sorcerer', 'Warlock'
-        proficiency_bonus + DndRules.ability_score_modifier(char_stat_block.charisma)
+        proficiency_bonus + DndRules.ability_score_modifier(char.charisma)
       when 'Cleric', 'Druid', 'Ranger'
-        proficiency_bonus + DndRules.ability_score_modifier(char_stat_block.wisdom)
+        proficiency_bonus + DndRules.ability_score_modifier(char.wisdom)
       when 'Wizard'
-        proficiency_bonus + DndRules.ability_score_modifier(char_stat_block.intelligence)
+        proficiency_bonus + DndRules.ability_score_modifier(char.intelligence)
       else
         0
       end
-    end
-
-    def spell_prepared_slots
-
     end
 
     def random_race
@@ -235,7 +231,7 @@ class DndRules
     end
 
     def defensive_cr(npc)
-      [hit_points_cr(npc.stat_block.hit_points), armor_class_cr(npc.stat_block.armor_class)].min
+      [hit_points_cr(npc.hit_points), armor_class_cr(npc.armor_class)].min
     end
 
     def armor_class_cr(armor_class)

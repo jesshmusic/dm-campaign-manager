@@ -39,23 +39,23 @@ class SpellSlots
     def spell_ability(character)
       case character.dnd_class_string
       when 'Bard'
-        { ability: 'Charisma', mod: DndRules.ability_score_modifier(character.stat_block.charisma) }
+        { ability: 'Charisma', mod: DndRules.ability_score_modifier(character.charisma) }
       when 'Cleric'
-        { ability: 'Wisdom', mod: DndRules.ability_score_modifier(character.stat_block.wisdom) }
+        { ability: 'Wisdom', mod: DndRules.ability_score_modifier(character.wisdom) }
       when 'Druid'
-        { ability: 'Wisdom', mod: DndRules.ability_score_modifier(character.stat_block.wisdom) }
+        { ability: 'Wisdom', mod: DndRules.ability_score_modifier(character.wisdom) }
       when 'Paladin'
-        { ability: 'Charisma', mod: DndRules.ability_score_modifier(character.stat_block.charisma) }
+        { ability: 'Charisma', mod: DndRules.ability_score_modifier(character.charisma) }
       when 'Ranger'
-        { ability: 'Wisdom', mod: DndRules.ability_score_modifier(character.stat_block.wisdom) }
+        { ability: 'Wisdom', mod: DndRules.ability_score_modifier(character.wisdom) }
       when 'Sorcerer'
-        { ability: 'Charisma', mod: DndRules.ability_score_modifier(character.stat_block.charisma) }
+        { ability: 'Charisma', mod: DndRules.ability_score_modifier(character.charisma) }
       when 'Warlock'
-        { ability: 'Charisma', mod: DndRules.ability_score_modifier(character.stat_block.charisma) }
+        { ability: 'Charisma', mod: DndRules.ability_score_modifier(character.charisma) }
       when 'Wizard'
-        { ability: 'Intelligence', mod: DndRules.ability_score_modifier(character.stat_block.intelligence) }
+        { ability: 'Intelligence', mod: DndRules.ability_score_modifier(character.intelligence) }
       else
-        { ability: 'Intelligence', mod: DndRules.ability_score_modifier(character.stat_block.intelligence) }
+        { ability: 'Intelligence', mod: DndRules.ability_score_modifier(character.intelligence) }
       end
     end
 
