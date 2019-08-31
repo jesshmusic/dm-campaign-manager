@@ -206,13 +206,19 @@
       <div class="col-12 col-sm-6 col-md-4">
         <h3>Equipment</h3>
         <ul class="list-group list-group-flush">
-          <% @character.equipment_items.each do |item| %>
+          <% @character.character_items.each do |character_item| %>
             <li class="list-group-item">
-              <strong><%= item.items.first.name %> </strong>quantity: <%= item.quantity %>
-              <% if item.items.first.contained_items.any? %>
-                <h4>Contents:</h4>
+              <strong><%= character_item.item.name %> </strong>quantity: <%= character_item.quantity %>
+              <% if character_item.equipped %>
+                <span class="badge badge-secondary">Equipped</span>
+              <% end %>
+              <% if character_item.carrying %>
+                <span class="badge badge-primary">Carrying</span>
+              <% end %>
+              <% if character_item.item.contained_items.any? %>
+                <h6>Contents:</h6>
                 <ul class="list-group list-group-flush">
-                  <% item.items.first.contained_items.each do |content_item| %>
+                  <% character_item.item.contained_items.each do |content_item| %>
                     <li class="list-group-item"><%= content_item.name %></li>
                   <% end %>
                 </ul>

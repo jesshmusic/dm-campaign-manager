@@ -99,10 +99,15 @@ class NpcGenerator
     def set_statistics
       @new_npc.initiative = DndRules.ability_score_modifier(@new_npc.dexterity)
       @new_npc.proficiency = DndRules.proficiency_bonus_for_level(@new_npc.total_level)
-      @new_npc.hit_points = @new_npc.hit_dice_value + DndRules.ability_score_modifier(@new_npc.constitution)
-      @new_npc.hit_points += DndRules.roll_dice(@new_npc.hit_dice_number - 1, @new_npc.hit_dice_value)
+      @new_npc.hit_points = 0
+      @new_npc.character_classes.each do |character_class|
+        @new_npc.hit_points += character_class.dnd_class.hit_die + DndRules.ability_score_modifier(@new_npc.constitution)
+        if character_class.level > 1
+          @new_npc.hit_points += DndRules.roll_dice(character_class.level - 1, character_class.dnd_class.hit_die)
+        end
+      end
       @new_npc.hit_points_current = @new_npc.hit_points
-      @new_npc.each do |ch|
+      @new_npc.character_classes.each do |ch|
         ch.setup_spell_scores(@new_npc)
       end
     end
@@ -119,17 +124,20 @@ class NpcGenerator
       if armor_profs.any?
         armor_choices = get_armor_choices(armor_profs)
         armor = DndRules.get_weighted_random_record(armor_choices)
-        armor_item = EquipmentItem.create(quantity: 1)
-        armor_item.items << armor
-        @new_npc.equipment_items << armor_item
+        @new_npc.character_items.create(
+          quantity: 1,
+          equipped: true,
+          carrying: true,
+          item: armor
+        )
         @new_npc.armor_class = if armor.armor_class
-                                            if armor.armor_dex_bonus
-                                              armor.armor_class + DndRules.ability_score_modifier(@new_npc.dexterity)
-                                            else
-                                              armor.armor_class
-                                            end
-                                          else
-                                            10 + DndRules.ability_score_modifier(@new_npc.dexterity)
+                                 if armor.armor_dex_bonus
+                                   armor.armor_class + DndRules.ability_score_modifier(@new_npc.dexterity)
+                                 else
+                                   armor.armor_class
+                                 end
+                               else
+                                 10 + DndRules.ability_score_modifier(@new_npc.dexterity)
                                end
       end
     end
@@ -177,9 +185,12 @@ class NpcGenerator
       if weapon_profs.any?
         weapon_choices = get_weapon_choices(weapon_profs)
         weapon = DndRules.get_weighted_random_record(weapon_choices)
-        weapon_item = EquipmentItem.create(quantity: 1)
-        weapon_item.items << weapon
-        @new_npc.equipment_items << weapon_item
+        @new_npc.character_items.create(
+          quantity: 1,
+          equipped: true,
+          carrying: true,
+          item: weapon
+        )
         attack_action = CharacterAction.create(
           name: weapon.name,
           description: weapon.description

@@ -1,0 +1,9 @@
+<div class="nested-fields p-2 mb-2 border bg-light">
+  <div class="d-flex align-items-end">
+    <%= f.input :quantity, wrapper_html: {class: 'mr-3' }  %>
+    <%= f.input :equipped, wrapper_html: {class: 'mr-3' }  %>
+    <%= f.input :carrying, wrapper_html: {class: 'mr-3' }  %>
+    <%= f.association :item, input_html: { class: "equipment_item_item" }, wrapper_html: {class: 'mr-3' } %>
+    <%= link_to_remove_association "Remove", f, class: "btn btn-warning mb-3" %>
+  </div>
+</div>

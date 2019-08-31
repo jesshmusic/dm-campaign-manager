@@ -14,7 +14,7 @@
         <strong>Description:</strong> <%= @adventure.description %>
       </p>
       <p>
-        <strong>Campaign:</strong> <%= link_to @adventure.campaign.name, @adventure.campaign %>
+        <strong>Campaign:</strong> <%= link_to @adventure.campaign.name, v1_dnd_class_path(@adventure.campaign) %>
       </p>
     </div>
   </div>

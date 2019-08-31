@@ -32,7 +32,7 @@ module Admin::V1
 
       respond_to do |format|
         if @encounter.save
-          format.html { redirect_to campaign_adventure_encounter_url(@campaign, @adventure, @encounter), notice: 'Encounter was successfully created.' }
+          format.html { redirect_to v1_campaign_adventure_encounter_url(@campaign, @adventure, @encounter), notice: 'Encounter was successfully created.' }
           format.json { render :show, status: :created, location: @encounter }
         else
           format.html { render :new }
@@ -47,7 +47,7 @@ module Admin::V1
       authorize @encounter
       respond_to do |format|
         if @encounter.update(encounter_params)
-          format.html { redirect_to campaign_adventure_encounter_url(@campaign, @adventure, @encounter), notice: 'Encounter was successfully updated.' }
+          format.html { redirect_to v1_campaign_adventure_encounter_url(@campaign, @adventure, @encounter), notice: 'Encounter was successfully updated.' }
           format.json { render :show, status: :ok, location: @encounter }
         else
           format.html { render :edit }
@@ -62,7 +62,7 @@ module Admin::V1
       authorize @encounter
       @encounter.destroy
       respond_to do |format|
-        format.html { redirect_to campaign_adventures_url(@campaign), notice: 'Adventure was successfully destroyed.' }
+        format.html { redirect_to v1_campaign_adventures_url(@campaign), notice: 'Adventure was successfully destroyed.' }
         format.json { head :no_content }
       end
     end
