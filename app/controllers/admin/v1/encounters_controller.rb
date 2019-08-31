@@ -100,7 +100,7 @@ module Admin::V1
         :xp,
         :_destroy,
         encounter_monsters_attributes: %i[id number_of_monsters monster_id _destroy],
-        equipment_items_attributes: [:id, :quantity, :_destroy, item_ids: []]
+        encounter_items_attributes: %i[id quantity item_id _destroy]
       )
     end
   end

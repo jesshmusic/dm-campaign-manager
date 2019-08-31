@@ -26,7 +26,6 @@
 #  fk_rails_...  (user_id => users.id)
 #
 
-# TODO: Add the level field here and remove it from Character class. This will make multiclasses easier to deal with.
 class DndClass < ApplicationRecord
   validates :name, :hit_die, presence: true
 

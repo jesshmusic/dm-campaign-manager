@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_30_165152) do
+ActiveRecord::Schema.define(version: 2019_08_31_133714) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -86,6 +86,18 @@ ActiveRecord::Schema.define(version: 2019_08_30_165152) do
     t.integer "spell_save_dc", default: 8
     t.index ["character_id"], name: "index_character_classes_on_character_id"
     t.index ["dnd_class_id"], name: "index_character_classes_on_dnd_class_id"
+  end
+
+  create_table "character_items", force: :cascade do |t|
+    t.integer "quantity", default: 1, null: false
+    t.boolean "equipped", default: false, null: false
+    t.boolean "carrying", default: true, null: false
+    t.bigint "item_id"
+    t.bigint "character_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["character_id"], name: "index_character_items_on_character_id"
+    t.index ["item_id"], name: "index_character_items_on_item_id"
   end
 
   create_table "character_spells", force: :cascade do |t|
@@ -166,6 +178,16 @@ ActiveRecord::Schema.define(version: 2019_08_30_165152) do
     t.index ["user_id"], name: "index_dnd_classes_on_user_id"
   end
 
+  create_table "encounter_items", force: :cascade do |t|
+    t.integer "quantity", default: 1, null: false
+    t.bigint "encounter_id"
+    t.bigint "item_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["encounter_id"], name: "index_encounter_items_on_encounter_id"
+    t.index ["item_id"], name: "index_encounter_items_on_item_id"
+  end
+
   create_table "encounter_monsters", force: :cascade do |t|
     t.bigint "monster_id"
     t.bigint "encounter_id"
@@ -190,25 +212,6 @@ ActiveRecord::Schema.define(version: 2019_08_30_165152) do
     t.datetime "updated_at", null: false
     t.string "location", default: "New Location", null: false
     t.index ["adventure_id"], name: "index_encounters_on_adventure_id"
-  end
-
-  create_table "equipment_item_items", force: :cascade do |t|
-    t.bigint "item_id"
-    t.bigint "equipment_item_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["equipment_item_id"], name: "index_equipment_item_items_on_equipment_item_id"
-    t.index ["item_id"], name: "index_equipment_item_items_on_item_id"
-  end
-
-  create_table "equipment_items", force: :cascade do |t|
-    t.integer "quantity"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "character_id"
-    t.bigint "encounter_id"
-    t.index ["character_id"], name: "index_equipment_items_on_character_id"
-    t.index ["encounter_id"], name: "index_equipment_items_on_encounter_id"
   end
 
   create_table "items", force: :cascade do |t|
@@ -470,15 +473,18 @@ ActiveRecord::Schema.define(version: 2019_08_30_165152) do
   add_foreign_key "character_adventures", "characters"
   add_foreign_key "character_classes", "characters"
   add_foreign_key "character_classes", "dnd_classes"
+  add_foreign_key "character_items", "characters"
+  add_foreign_key "character_items", "items"
   add_foreign_key "character_world_locations", "characters"
   add_foreign_key "character_world_locations", "world_locations"
   add_foreign_key "container_items", "items"
   add_foreign_key "container_items", "items", column: "contained_item_id"
   add_foreign_key "dnd_classes", "users"
+  add_foreign_key "encounter_items", "encounters"
+  add_foreign_key "encounter_items", "items"
   add_foreign_key "encounter_monsters", "encounters"
   add_foreign_key "encounter_monsters", "monsters"
   add_foreign_key "encounters", "adventures"
-  add_foreign_key "equipment_items", "encounters"
   add_foreign_key "items", "users"
   add_foreign_key "monsters", "users"
   add_foreign_key "spells", "users"

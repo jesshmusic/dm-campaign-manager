@@ -33,10 +33,10 @@ class Encounter < ApplicationRecord
   belongs_to :adventure
 
   has_many :encounter_monsters, inverse_of: :encounter
-  has_many :equipment_items, inverse_of: :encounter
+  has_many :encounter_items, dependent: :destroy
 
   accepts_nested_attributes_for :encounter_monsters, reject_if: :all_blank, allow_destroy: true
-  accepts_nested_attributes_for :equipment_items, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :encounter_items, reject_if: :all_blank, allow_destroy: true
 
   def total_monsters
     sum_of_monsters = 0

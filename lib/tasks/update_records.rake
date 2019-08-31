@@ -1,6 +1,26 @@
 # frozen_string_literal: true
 
 namespace :update_records do
+  task update_items: :environment do
+    Character.all.each do |character|
+      character.equipment_items.each do |equipment_item|
+        character.character_items.create!(
+          quantity: equipment_item.quantity,
+          item: equipment_item.items.first
+        )
+      end
+    end
+
+    Encounter.all.each do |encounter|
+      encounter.equipment_items.each do |equipment_item|
+        encounter.encounter_items.create!(
+          quantity: equipment_item.quantity,
+          item: equipment_item.items.first
+        )
+      end
+    end
+  end
+
   task remove_player_role: :environment do
     User.all.each do |next_user|
       next_user.role = :dungeon_master if next_user.role == 'admin'
@@ -45,58 +65,6 @@ namespace :update_records do
       else
         weapon.update_attribute(:sub_category, 'Simple')
       end
-    end
-  end
-
-  task stat_blocks: :environment do
-    Character.all.each do |char|
-      stat_block = StatBlock.find_or_create_by(character_id: char.id) do |new_stat_block|
-        new_stat_block.armor_class = char.armor_class
-        new_stat_block.charisma = char.charisma
-        new_stat_block.constitution = char.constitution
-        new_stat_block.dexterity = char.dexterity
-        new_stat_block.hit_dice_number = char.hit_dice_number
-        new_stat_block.hit_dice_value = char.hit_dice_value
-        new_stat_block.hit_points = char.hit_points
-        new_stat_block.hit_points_current = char.hit_points_current
-        new_stat_block.initiative = char.initiative
-        new_stat_block.intelligence = char.intelligence
-        new_stat_block.proficiency = char.proficiency
-        new_stat_block.speed = char.speed
-        new_stat_block.strength = char.strength
-        new_stat_block.wisdom = char.wisdom
-      end
-      char.stat_block = stat_block
-      char.save!
-    end
-
-    Monster.all.each do |monster|
-      monster.stat_block = StatBlock.find_or_create_by(monster_id: monster.id) do |new_stat_block|
-        new_stat_block.armor_class = monster.armor_class
-        new_stat_block.charisma = monster.charisma
-        new_stat_block.constitution = monster.constitution
-        new_stat_block.dexterity = monster.dexterity
-        new_stat_block.hit_points = monster.hit_points
-        new_stat_block.hit_points_current = monster.hit_points
-        new_stat_block.initiative = DndRules.ability_score_modifier(monster.dexterity)
-        new_stat_block.intelligence = monster.intelligence
-        new_stat_block.proficiency = DndRules.proficiency_for_cr(monster.challenge_rating)
-        new_stat_block.speed = monster.speed
-        new_stat_block.strength = monster.strength
-        new_stat_block.wisdom = monster.wisdom
-
-        # Parse the Hit Dice String
-        hit_dice = if monster.slug == 'kobold'
-                     '2d6 - 2'
-                   else
-                     monster.hit_dice
-                   end
-        hit_die_values = DndRules.parse_dice_string(hit_dice)
-        new_stat_block.hit_dice_number = hit_die_values[:hit_dice_number]
-        new_stat_block.hit_dice_value = hit_die_values[:hit_dice_value]
-        new_stat_block.hit_dice_modifier = hit_die_values[:hit_dice_modifier]
-      end
-      monster.save!
     end
   end
 

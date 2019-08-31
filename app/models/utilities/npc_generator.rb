@@ -277,7 +277,6 @@ class NpcGenerator
     end
 
     def add_spells
-      # TODO: Simple initial implementation
       spell_slots = []
       @new_npc.character_classes.each do |character_class|
         slots = SpellSlots.spell_slots(character_class)

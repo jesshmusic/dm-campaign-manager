@@ -99,31 +99,29 @@ namespace :srd do
         new_monster.wisdom_save = monster[:wisdom_save]
 
         # Statistics
-        new_monster.stat_block = StatBlock.find_or_create_by(monster_id: new_monster.id) do |new_stat_block|
-          new_stat_block.armor_class = monster[:armor_class]
-          new_stat_block.charisma = monster[:charisma]
-          new_stat_block.constitution = monster[:constitution]
-          new_stat_block.dexterity = monster[:dexterity]
-          new_stat_block.hit_points = monster[:hit_points]
-          new_stat_block.hit_points_current = monster[:hit_points]
-          new_stat_block.initiative = DndRules.ability_score_modifier(monster[:dexterity])
-          new_stat_block.intelligence = monster[:intelligence]
-          new_stat_block.speed = monster[:speed].map { |key, value| "#{value}ft. #{key}" }.join(', ')
-          new_stat_block.strength = monster[:strength]
-          new_stat_block.wisdom = monster[:wisdom]
+        new_monster.armor_class = monster[:armor_class]
+        new_monster.charisma = monster[:charisma]
+        new_monster.constitution = monster[:constitution]
+        new_monster.dexterity = monster[:dexterity]
+        new_monster.hit_points = monster[:hit_points]
+        new_monster.hit_points_current = monster[:hit_points]
+        new_monster.initiative = DndRules.ability_score_modifier(monster[:dexterity])
+        new_monster.intelligence = monster[:intelligence]
+        new_monster.speed = monster[:speed].map { |key, value| "#{value}ft. #{key}" }.join(', ')
+        new_monster.strength = monster[:strength]
+        new_monster.wisdom = monster[:wisdom]
 
-          # Parse the Hit Dice String
-          # (handling a stupid edge case with the API encoding)
-          hit_dice = if monster[:slug] == 'kobold'
-                       '2d6 - 2'
-                     else
-                       monster[:hit_dice]
-                     end
-          hit_die_values = DndRules.parse_dice_string(hit_dice)
-          new_stat_block.hit_dice_number = hit_die_values[:hit_dice_number]
-          new_stat_block.hit_dice_value = hit_die_values[:hit_dice_value]
-          new_stat_block.hit_dice_modifier = hit_die_values[:hit_dice_modifier]
-        end
+        # Parse the Hit Dice String
+        # (handling a stupid edge case with the API encoding)
+        hit_dice = if monster[:slug] == 'kobold'
+                     '2d6 - 2'
+                   else
+                     monster[:hit_dice]
+                   end
+        hit_die_values = DndRules.parse_dice_string(hit_dice)
+        new_monster.hit_dice_number = hit_die_values[:hit_dice_number]
+        new_monster.hit_dice_value = hit_die_values[:hit_dice_value]
+        new_monster.hit_dice_modifier = hit_die_values[:hit_dice_modifier]
 
         # Skills
         new_monster.skills.delete_all

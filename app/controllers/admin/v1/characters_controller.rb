@@ -156,9 +156,7 @@ module Admin::V1
         :initiative, :intelligence, :proficiency, :speed, :strength, :wisdom,
         campaign_ids: [], spell_ids: [],
         character_spells_attributes: %i[id is_prepared spell_class spell_id],
-        equipment_items_attributes: [
-          :id, :quantity, :_destroy, item_ids: []
-        ],
+        character_items_attributes: %i[id quantity carrying equipped item_id _destroy],
         character_classes_attributes: %i[
           id level proficiency_bonus spell_attack_bonus spell_save_dc dnd_class_id _destroy
         ],

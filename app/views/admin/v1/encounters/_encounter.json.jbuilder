@@ -13,13 +13,10 @@ json.encounterMonsters encounter.encounter_monsters do |encounter_monster|
   end
 end
 
-json.equipment_items encounter.equipment_items do |equipment_item|
-  json.id equipment_item.id
-  json.quantity equipment_item.quantity
-
-  json.items equipment_item.items do |item|
-    json.partial! 'admin/v1/items/item_summary', item: item
-  end
+json.treasure encounter.encounter_items do |encounter_item|
+  json.id encounter_item.id
+  json.quantity encounter_item.quantity
+  json.partial! 'admin/v1/items/item_summary', item: encounter_item.item
 end
 
 json.url v1_campaign_adventure_encounter_url(campaign, adventure, encounter, format: :json)

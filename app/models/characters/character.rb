@@ -69,7 +69,7 @@ class Character < ApplicationRecord
 
   has_many :character_actions, dependent: :destroy
 
-  has_many :equipment_items, inverse_of: :character
+  has_many :character_items, dependent: :destroy
 
   has_many :skills, dependent: :destroy
 
@@ -85,14 +85,14 @@ class Character < ApplicationRecord
   has_many :character_adventures, dependent: :destroy
   has_many :adventures, through: :character_adventures
 
-  accepts_nested_attributes_for :equipment_items, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :character_items, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :skills, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :character_classes, reject_if: :all_blank, allow_destroy: true
 
   belongs_to :user
 
   def classes
-    character_classes.map { |character_class| character_class.class_and_level }.join(', ')
+    character_classes.map(&:class_and_level).join(', ')
   end
 
   def hit_dice

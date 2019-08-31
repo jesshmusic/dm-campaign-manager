@@ -20,12 +20,12 @@ json.character_classes character.character_classes do |character_class|
   json.spell_attack_bonus character_class.spell_attack_bonus
 end
 
-json.inventory character.equipment_items do |item|
-  json.name item.items.first.name
-  json.quantity item.quantity
-  json.items item.items do |next_item|
-    json.partial! 'admin/v1/items/item', item: next_item
-  end
+json.inventory character.character_items do |character_item|
+  json.name character_item.item.name
+  json.quantity character_item.quantity
+  json.equipped character_item.equipped
+  json.carrying character_item.carrying
+  json.partial! 'admin/v1/items/item_summary', item: character_item.item
 end
 
 json.url v1_character_url(character, format: :json)
