@@ -56,7 +56,7 @@ class EditCampaign extends React.Component {
       worldLocationsAttributes: values.worldLocations,
       worldEventsAttributes: values.worldEvents,
     };
-    this.props.updateCampaign(snakecaseKeys(campaignBody), this.props.campaignSlug);
+    this.props.updateCampaign(snakecaseKeys(campaignBody, {exclude: ['_destroy']}), this.props.campaignSlug);
   };
 
   validate = (values) => {
@@ -96,7 +96,7 @@ class EditCampaign extends React.Component {
                          submitting,
                          form,
                          pristine,
-                         values
+                         values,
                        }) => (
                          <Form noValidate validated={validated} onSubmit={handleSubmit}>
                            <Form.Row>
@@ -121,12 +121,12 @@ class EditCampaign extends React.Component {
                            </Form.Row>
                            <FieldArray name="worldLocations">
                              {({ fields }) =>
-                               fields.map((world_location, index) => (
+                               fields.map((world_location, index) => (!fields.value[index]._destroy ? (
                                  <WorldLocationFields location={world_location}
                                                       fields={fields}
                                                       index={index}
                                                       key={index} />
-                               ))
+                               ) : null))
                              }
                            </FieldArray>
                            <h2>World Events</h2>
@@ -138,12 +138,12 @@ class EditCampaign extends React.Component {
                            </Form.Row>
                            <FieldArray name="worldEvents">
                              {({ fields }) =>
-                               fields.map((event, index) => (
+                               fields.map((event, index) => (!fields.value[index]._destroy ? (
                                  <WorldEventFields event={event}
                                                    fields={fields}
                                                    index={index}
                                                    key={index} />
-                               ))
+                               ) : null))
                              }
                            </FieldArray>
                            <Form.Row>

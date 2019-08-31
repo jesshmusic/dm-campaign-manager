@@ -26,7 +26,13 @@ const WorldEventFields = ({event, fields, index}) => (
                name={`${event}.description`}/>
     <Form.Group as={Col} md={'1'}>
       <Form.Label>Remove</Form.Label>
-      <Button onClick={() => fields.remove(index)}
+      <Button onClick={() => fields.update(index, {
+        id: fields.value[index].id,
+        when: fields.value[index].when,
+        name: fields.value[index].name,
+        description: fields.value[index].description,
+        _destroy: true,
+      })}
               title={'Remove Location'}
               variant={'link'}
               className={'py-0'}>

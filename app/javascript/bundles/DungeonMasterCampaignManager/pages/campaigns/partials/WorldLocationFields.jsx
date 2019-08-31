@@ -30,7 +30,14 @@ const WorldLocationFields = ({location, fields, index}) => (
                name={`${location}.mapY`}/>
     <Form.Group as={Col} md={'1'}>
       <Form.Label>Remove</Form.Label>
-      <Button onClick={() => fields.remove(index)}
+      <Button onClick={() => fields.update(index, {
+        id: fields.value[index].id,
+        name: fields.value[index].name,
+        description: fields.value[index].description,
+        mapX: fields.value[index].mapX,
+        mapY: fields.value[index].mapY,
+        _destroy: true,
+      })}
               title={'Remove Location'}
               variant={'link'}
               className={'py-0'}>
