@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import snakecaseKeys from 'snakecase-keys';
 
 // Container
 import PageContainer from '../../containers/PageContainer.jsx';
@@ -44,7 +45,18 @@ class EditCampaign extends React.Component {
   }
 
   handleSubmit = async (values) => {
-    console.log('Submitted');
+    const pcIds = values.pcs.map((pc) => pc.id);
+    const npcIds = values.npcs.map((npc) => npc.id);
+    const campaignBody = {
+      id: values.id,
+      name: values.name,
+      description: values.description,
+      world: values.world,
+      characterIds: pcIds.concat(npcIds),
+      worldLocationsAttributes: values.worldLocations,
+      worldEventsAttributes: values.worldEvents,
+    };
+    this.props.updateCampaign(snakecaseKeys(campaignBody), this.props.campaignSlug);
   };
 
   validate = (values) => {
@@ -156,7 +168,7 @@ class EditCampaign extends React.Component {
 EditCampaign.propTypes = {
   campaign: PropTypes.object,
   campaignSlug: PropTypes.string.isRequired,
-  editCampaign: PropTypes.func.isRequired,
+  updateCampaign: PropTypes.func.isRequired,
   flashMessages: PropTypes.array,
   getCampaign: PropTypes.func.isRequired,
   user: PropTypes.object,
@@ -175,8 +187,8 @@ function mapDispatchToProps (dispatch) {
     getCampaign: (campaignSlug) => {
       dispatch(rest.actions.getCampaign({slug: campaignSlug}));
     },
-    editCampaign: (campaign) => {
-      dispatch(rest.actions.editCampaign({slug: campaign.slug}, {body: JSON.stringify({campaign})}));
+    updateCampaign: (campaign, campaginSlug) => {
+      dispatch(rest.actions.updateCampaign({slug: campaginSlug}, {body: JSON.stringify({campaign})}));
     },
   };
 }

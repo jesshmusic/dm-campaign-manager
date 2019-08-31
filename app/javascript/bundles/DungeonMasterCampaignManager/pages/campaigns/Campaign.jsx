@@ -15,6 +15,8 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import ListGroup from 'react-bootstrap/ListGroup';
 import ListGroupItem from 'react-bootstrap/ListGroupItem';
+import Container from 'react-bootstrap/Container';
+import { Link } from '@reach/router';
 
 class Campaign extends React.Component {
   constructor (props) {
@@ -40,31 +42,42 @@ class Campaign extends React.Component {
             <Breadcrumb.Item active>Campaign</Breadcrumb.Item>
           </Breadcrumb>
           { campaign ? (
-            <Row>
-              <Col>
-                <ReactMarkdown source={campaign.description} />
-              </Col>
-              <Col>
-                <h3>Dungeon Master</h3>
-                <h4 className='h5 mb-0'>{campaign.dungeonMaster.name}</h4>
-                <h3>Player Characters</h3>
-                <ListGroup>
-                  {campaign.pcs.map((character, index) =>
-                    <ListGroupItem key={index}>
-                      {character.name} ({character.classes})
-                    </ListGroupItem>
-                  )}
-                </ListGroup>
-                <h3>Non-player Characters</h3>
-                <ListGroup>
-                  {campaign.npcs.map((character, index) =>
-                    <ListGroupItem key={index}>
-                      <strong>{character.role}</strong> - {character.name} ({character.classes})
-                    </ListGroupItem>
-                  )}
-                </ListGroup>
-              </Col>
-            </Row>
+            <Container>
+              <Row>
+                <Col>
+                  <ReactMarkdown source={campaign.description} />
+                </Col>
+                <Col>
+                  <h3>Dungeon Master</h3>
+                  <h4 className='h5 mb-0'>{campaign.dungeonMaster.name}</h4>
+                  <h3>Player Characters</h3>
+                  <ListGroup>
+                    {campaign.pcs.map((character, index) =>
+                      <ListGroupItem key={index}>
+                        {character.name} ({character.classes})
+                      </ListGroupItem>
+                    )}
+                  </ListGroup>
+                  <h3>Non-player Characters</h3>
+                  <ListGroup>
+                    {campaign.npcs.map((character, index) =>
+                      <ListGroupItem key={index}>
+                        <strong>{character.role}</strong> - {character.name} ({character.classes})
+                      </ListGroupItem>
+                    )}
+                  </ListGroup>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  {user && user.id === campaign.dungeonMaster.id ? (
+                    <Link to={`/app/campaigns/${campaign.slug}/edit`} className={'btn btn-primary'}>
+                      Edit Campaign
+                    </Link>
+                  ) : null }
+                </Col>
+              </Row>
+            </Container>
           ) : (
             <Spinner animation="border" variant="primary" />
           )}

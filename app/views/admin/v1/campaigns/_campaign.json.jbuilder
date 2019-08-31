@@ -6,6 +6,15 @@ json.extract! campaign, :id, :name, :description, :world, :slug
 json.pcs_count campaign.pcs_count
 json.npcs_count campaign.npcs_count
 
+json.dungeon_master do
+  json.id campaign.dungeon_master.id
+  json.name campaign.dungeon_master.name
+  json.username campaign.dungeon_master.username
+  json.location campaign.dungeon_master.location
+  json.info campaign.dungeon_master.info
+  json.url user_url(campaign.dungeon_master)
+end
+
 json.pcs campaign.pcs do |pc|
   json.partial! 'admin/v1/characters/character', character: pc
 end

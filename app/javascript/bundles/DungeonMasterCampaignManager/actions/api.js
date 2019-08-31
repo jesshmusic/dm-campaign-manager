@@ -11,30 +11,17 @@ function getHeaders (contentType) {
 }
 
 export default reduxApi({
-  joinCampaign: {
-    url: '/v1/campaigns/:id/join_campaign/:user_id',
-    options () {
-      const headers = getHeaders();
-      return {
-        method: 'patch',
-        headers,
-      };
-    },
-  },
-  editCampaign: {
+  updateCampaign: {
     url: '/v1/campaigns/:slug/',
     options () {
       const headers = getHeaders();
       return {
-        method: 'patch',
+        method: 'put',
         headers,
       };
     },
-    postfetch: [({data, actions, dispatch, getState, request}) => {
-      console.log(data);
-      console.log(actions);
-      console.log(getState);
-      console.log(request);
+    postfetch: [({data}) => {
+      navigate(`/app/campaigns/${data.slug}`);
     }],
   },
   getCampaign: {

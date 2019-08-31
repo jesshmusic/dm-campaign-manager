@@ -66,7 +66,7 @@ module Admin::V1
       respond_to do |format|
         if @campaign.update(campaign_params)
           format.html { redirect_to v1_campaign_url(slug: @campaign.slug), notice: 'Campaign was successfully updated.' }
-          format.json { render :show, status: :ok, location: @campaign }
+          format.json { render :show, status: :ok }
         else
           format.html { render :edit }
           format.json { render json: @campaign.errors, status: :unprocessable_entity }
@@ -96,7 +96,7 @@ module Admin::V1
     def campaign_params
       params.require(:campaign).permit(
         :name, :description, :world,
-        character_ids: [],
+        character_ids: [], adventure_ids: [],
         adventures_attributes: [
           :id,
           :name,
@@ -121,7 +121,7 @@ module Admin::V1
             ]
           ]
         ],
-        world_locations_attributes: %i[id name description _destroy],
+        world_locations_attributes: %i[id name description map_x map_y _destroy],
         world_events_attributes: %i[id when name description _destroy]
       )
     end
