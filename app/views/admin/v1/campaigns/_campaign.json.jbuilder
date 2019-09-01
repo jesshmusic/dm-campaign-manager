@@ -16,11 +16,11 @@ json.dungeon_master do
 end
 
 json.pcs campaign.pcs do |pc|
-  json.partial! 'admin/v1/characters/character', character: pc
+  json.partial! 'admin/v1/characters/character_summary', character: pc
 end
 
 json.npcs campaign.npcs do |npc|
-  json.partial! 'admin/v1/characters/character', character: npc
+  json.partial! 'admin/v1/characters/character_summary', character: npc
 end
 
 json.dungeon_master do
