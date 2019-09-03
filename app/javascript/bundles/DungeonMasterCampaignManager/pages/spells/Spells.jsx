@@ -174,7 +174,7 @@ Spells.propTypes = {
   spells: PropTypes.array,
   flashMessages: PropTypes.array,
   getSpells: PropTypes.func,
-  user: PropTypes.object.isRequired,
+  user: PropTypes.object,
 };
 
 function mapStateToProps (state) {
