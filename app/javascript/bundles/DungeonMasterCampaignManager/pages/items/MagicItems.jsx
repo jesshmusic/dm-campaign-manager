@@ -82,7 +82,7 @@ MagicItems.propTypes = {
   items: PropTypes.array,
   flashMessages: PropTypes.array,
   getItems: PropTypes.func,
-  user: PropTypes.object.isRequired,
+  user: PropTypes.object,
 };
 
 function mapStateToProps (state) {

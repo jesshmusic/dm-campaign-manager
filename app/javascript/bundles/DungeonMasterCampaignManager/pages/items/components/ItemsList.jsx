@@ -61,7 +61,7 @@ ItemsList.propTypes = {
   flashMessages: PropTypes.array,
   getItems: PropTypes.func,
   pageTitle: PropTypes.string.isRequired,
-  user: PropTypes.object.isRequired,
+  user: PropTypes.object,
 };
 
 export default ItemsList;

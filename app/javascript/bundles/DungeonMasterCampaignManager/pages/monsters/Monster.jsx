@@ -155,7 +155,7 @@ Monsters.propTypes = {
   monsters: PropTypes.array,
   flashMessages: PropTypes.array,
   getMonsters: PropTypes.func,
-  user: PropTypes.object.isRequired,
+  user: PropTypes.object,
 };
 
 function mapStateToProps (state) {

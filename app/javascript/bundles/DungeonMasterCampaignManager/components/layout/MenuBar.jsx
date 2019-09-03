@@ -38,7 +38,7 @@ function MenuBar (props) {
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="mr-auto">
           <NavLink to={'/'}>Home</NavLink>
-          <NavLink to={'/app/campaigns'}>Campaigns</NavLink>
+          {user ? <NavLink to={'/app/campaigns'}>My Campaigns</NavLink> : null}
           <NavDropdown title="Reference" id="reference-nav-dropdown">
             <DropdownLink to={'/app/classes'}>Classes</DropdownLink>
             <DropdownLink to={'/app/monsters'}>Monsters</DropdownLink>
