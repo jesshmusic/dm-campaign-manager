@@ -14,5 +14,9 @@ module DmCampaignManager
     config.load_defaults 5.2
 
     config.autoload_paths += Dir[Rails.root.join('app', 'models', '{*/}')]
+
+    config.to_prepare do
+      DeviseController.respond_to :html, :json
+    end
   end
 end

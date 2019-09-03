@@ -2,6 +2,13 @@ body {
   font-size: .875rem;
 }
 
+.hero-banner {
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  height: 10rem;
+}
+
 .feather {
   height: 16px;
   vertical-align: text-bottom;
@@ -84,6 +91,9 @@ body {
 /*
  * Navbar
  */
+.navbar {
+  z-index: 150;
+}
 
 .navbar-brand {
   background-color: rgba(0, 0, 0, .25);

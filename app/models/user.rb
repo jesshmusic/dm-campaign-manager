@@ -41,6 +41,11 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable,
          :confirmable, :omniauthable
+
+  validates :name, presence: true
+  validates :email, presence: true
+  validates :email, uniqueness: true
+  validates :username, presence: true
   validates :username, uniqueness: true
 
   enum role: %I[dungeon_master admin]

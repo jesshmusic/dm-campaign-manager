@@ -8,7 +8,6 @@ import HomePage from './front-page/HomePage';
 import Campaigns from './campaigns/Campaigns';
 import Campaign from './campaigns/Campaign';
 import EditCampaign from './campaigns/EditCampaign';
-import Login from './Login';
 import Items from './items/Items';
 import AllItems from './items/AllItems';
 import Armor from './items/Armor';
@@ -84,7 +83,6 @@ const Home = (props) => (
       <Vehicles path='/app/items/vehicles/' />
       <Monsters path='/app/monsters/' />
       <Spells path='/app/spells/' />
-      <Login path='/app/login' />
     </Router>
   </Provider>
 );

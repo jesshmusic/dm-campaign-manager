@@ -15,17 +15,15 @@ const InfoBox = ({campaignsCount, pcsCount, npcsCount, monstersCount, itemsCount
       <Card>
         <Card.Body>
           <Card.Title>Dungeon Master&apos;s Campaign Manager</Card.Title>
-          <Card.Text>
-            <ListGroup variant="flush">
-              <ListGroup.Item>{userText}Campaigns: <strong>{campaignsCount}</strong></ListGroup.Item>
-              <ListGroup.Item>{userText}Player Characters: <strong>{pcsCount}</strong></ListGroup.Item>
-              <ListGroup.Item>{userText}Non-player Characters: <strong>{npcsCount}</strong></ListGroup.Item>
-              <ListGroup.Item>Monsters: <strong>{monstersCount}</strong></ListGroup.Item>
-              <ListGroup.Item>Equipment/Items/Armor/Weapons: <strong>{itemsCount}</strong></ListGroup.Item>
-              <ListGroup.Item>Spells: <strong>{spellsCount}</strong></ListGroup.Item>
-              <ListGroup.Item>Users: <strong>{usersCount}</strong></ListGroup.Item>
-            </ListGroup>
-          </Card.Text>
+          <ListGroup variant="flush">
+            <ListGroup.Item>{userText}Campaigns: <strong>{campaignsCount}</strong></ListGroup.Item>
+            <ListGroup.Item>{userText}Player Characters: <strong>{pcsCount}</strong></ListGroup.Item>
+            <ListGroup.Item>{userText}Non-player Characters: <strong>{npcsCount}</strong></ListGroup.Item>
+            <ListGroup.Item>Monsters: <strong>{monstersCount}</strong></ListGroup.Item>
+            <ListGroup.Item>Equipment/Items/Armor/Weapons: <strong>{itemsCount}</strong></ListGroup.Item>
+            <ListGroup.Item>Spells: <strong>{spellsCount}</strong></ListGroup.Item>
+            <ListGroup.Item>Users: <strong>{usersCount}</strong></ListGroup.Item>
+          </ListGroup>
         </Card.Body>
       </Card>
     </Col>

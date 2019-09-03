@@ -32,8 +32,8 @@ function MenuBar (props) {
     logoutUser();
   };
   return (
-    <Navbar bg="primary" variant="dark" expand="lg">
-      <Navbar.Brand href="/">DMCM</Navbar.Brand>
+    <Navbar bg="primary" variant="dark" expand="lg" className={'p-0 shadow'}>
+      <a className="navbar-brand col-sm-3 col-md-2 mr-0" href="/">DM's Campaign Manager</a>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="mr-auto">
@@ -54,7 +54,7 @@ function MenuBar (props) {
             <Button onClick={handleLogout} variant="primary" size="sm">Sign Out</Button>
           ) : (
             <Nav.Item>
-              <NavLink to={'/app/login'}>Sign In</NavLink>
+              <Nav.Link href="/users/sign_in">Sign In</Nav.Link>
             </Nav.Item>
           )}
         </Nav>

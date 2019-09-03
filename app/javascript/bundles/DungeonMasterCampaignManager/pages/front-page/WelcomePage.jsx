@@ -6,7 +6,7 @@ const WelcomePage = () => (
   <Col sm={8}>
     <p>
       The <strong>Dungeon Master&apos;s Campaign Manager</strong> is a tool for organizing and running a Campaign in D&D 5e.
-      To be able to create, edit, and manage accounts just sign up for a free account.
+      To be able to create, edit, and manage accounts just <a href="/users/sign_up/">sign up</a> for a free account.
     </p>
   </Col>
 );

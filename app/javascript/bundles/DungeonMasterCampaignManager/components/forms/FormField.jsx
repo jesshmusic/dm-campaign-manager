@@ -16,6 +16,7 @@ const FormField = ({name, label, type, colWidth}) => (
           <Form.Label>{label}</Form.Label>
           <Form.Control
             {...input}
+            autoComplete={''}
             type={type}
             placeholder={label}
             isValid={meta.touched && !meta.invalid}
