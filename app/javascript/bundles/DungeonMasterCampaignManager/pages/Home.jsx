@@ -4,7 +4,7 @@ import { configureStore } from 'redux-starter-kit';
 import { Provider } from 'react-redux';
 import rootReducer from '../reducers';
 import { Router } from '@reach/router';
-import HomePage from './HomePage';
+import HomePage from './front-page/HomePage';
 import Campaigns from './campaigns/Campaigns';
 import Campaign from './campaigns/Campaign';
 import EditCampaign from './campaigns/EditCampaign';
