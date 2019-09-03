@@ -6,7 +6,8 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import { Link } from '@reach/router';
 
 // Container
-import PageContainer from '../../containers/PageContainer.jsx';
+import Col from 'react-bootstrap/Col';
+import Alert from 'react-bootstrap/Alert';
 
 class UserDashboard extends React.Component {
   constructor (props) {
@@ -14,40 +15,39 @@ class UserDashboard extends React.Component {
   }
 
   componentDidMount () {
-    this.props.getCampaigns();
+    this.props.getCampaigns(this.props.user.id);
   }
 
   render () {
-    const {campaigns, user, flashMessages} = this.props;
+    const {campaigns, user} = this.props;
     return (
-      <PageContainer user={user}
-                     flashMessages={flashMessages}
-                     pageTitle='Dashboard'
-                     description={'Dungeon Master\'s Campaign Manager is a free resource for DMs to manage their campaigns, adventures, and NPCs.'}>
-        <div>
-          {user && campaigns.dmCampaigns ? (
-            <div>
-              <h2>My Campaigns</h2>
-              <ListGroup>
-                {campaigns.dmCampaigns.map((campaign) =>
-                  <ListGroup.Item key={campaign.slug}>
-                    <Link to={`/app/campaigns/${campaign.slug}`}>
-                      {campaign.name} - {campaign.dungeonMaster.name}
-                    </Link>
-                  </ListGroup.Item>
-                )}
-              </ListGroup>
-            </div>
-          ) : null}
-        </div>
-      </PageContainer>
+      user && campaigns.campaigns ? (
+        <Col sm={8}>
+          <h2>My Campaigns</h2>
+          <ListGroup>
+            {campaigns.campaigns.map((campaign) =>
+              <ListGroup.Item key={campaign.slug}>
+                <Link to={`/app/campaigns/${campaign.slug}`}>
+                  {campaign.name} - {campaign.dungeonMaster.name}
+                </Link>
+              </ListGroup.Item>
+            )}
+          </ListGroup>
+        </Col>
+      ) : (
+        <Col>
+          <h2>My Campaigns</h2>
+          <Alert>
+            Click here to create a new campaign.
+          </Alert>
+        </Col>
+      )
     );
   }
 }
 
 UserDashboard.propTypes = {
   campaigns: PropTypes.object,
-  flashMessages: PropTypes.array,
   getCampaigns: PropTypes.func.isRequired,
   user: PropTypes.object,
 };

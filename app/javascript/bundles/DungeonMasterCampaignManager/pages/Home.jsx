@@ -28,15 +28,40 @@ const store = (props) => configureStore({
     users: {
       user: props.user,
       users: [],
+      count: props.usersCount,
       currentUser: null,
     },
     campaigns: {
       campaigns: [],
+      count: props.campaignsCount,
       currentCampaign: null,
     },
-    nonPlayerCharacters: [],
-    playerCharacters: [],
+    items: {
+      items: [],
+      count: props.itemsCount,
+      currentItem: null,
+    },
+    monsters: {
+      monsters: [],
+      count: props.monstersCount,
+      currentMonster: null,
+    },
+    nonPlayerCharacters: {
+      characters: [],
+      count: props.npcsCount,
+      currentCharacter: null,
+    },
+    playerCharacters: {
+      characters: [],
+      count: props.pcsCount,
+      currentCharacter: null,
+    },
     flashMessages: [],
+    spells: {
+      spells: [],
+      count: props.spellsCount,
+      currentSpell: null,
+    },
   },
 });
 
@@ -66,11 +91,16 @@ const Home = (props) => (
 
 Home.propTypes = {
   campaigns: PropTypes.object,
-  nonPlayerCharacters: PropTypes.object,
-  playerCharacters: PropTypes.object,
-  dungeonMasters: PropTypes.object,
-  user: PropTypes.object,
+  campaignsCount: PropTypes.number.isRequired,
   flashMessages: PropTypes.array,
+  getCampaigns: PropTypes.func.isRequired,
+  itemsCount: PropTypes.number.isRequired,
+  monstersCount: PropTypes.number.isRequired,
+  npcsCount: PropTypes.number.isRequired,
+  pcsCount: PropTypes.number.isRequired,
+  spellsCount: PropTypes.number.isRequired,
+  user: PropTypes.object,
+  usersCount: PropTypes.number.isRequired,
 };
 
 export default Home;

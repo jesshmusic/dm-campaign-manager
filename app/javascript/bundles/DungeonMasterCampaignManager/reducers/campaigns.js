@@ -8,58 +8,34 @@ const updateCampaignSuccess = createAction('@@redux-api@updateCampaign_success')
 
 const campaigns = createReducer({
   campaigns: [],
-  playerCampaigns: [],
+  count: 0,
   currentCampaign: null,
 }, {
-  [getCampaignsSuccess]: (state, action) => {
-    const allCampaigns = [];
-    const dmCampaigns = [];
-    action.data.data.forEach((campaign) => {
-      if (campaign.isDmCampaign) {
-        dmCampaigns.push(campaign);
-      } else {
-        allCampaigns.push(campaign);
-      }
-    });
-    return {
-      campaigns: allCampaigns,
-      dmCampaigns: dmCampaigns,
-      currentCampaign: state.currentCampaign,
-    };
-  },
-  [getCampaignsFail]: (state) => {
-    return {
-      campaigns: state.campaigns,
-      playerCampaigns: state.playerCampaigns,
-      dmCampaigns: state.dmCampaigns,
-      currentCampaign: state.currentCampaign,
-    };
-  },
-  [getCampaignSuccess]: (state, action) => {
-
-    return {
-      campaigns: state.campaigns,
-      playerCampaigns: state.playerCampaigns,
-      dmCampaigns: state.dmCampaigns,
-      currentCampaign: action.data,
-    };
-  },
-  [getCampaignFail]: () => (state) => {
-    return {
-      campaigns: state.campaigns,
-      playerCampaigns: state.playerCampaigns,
-      dmCampaigns: state.dmCampaigns,
-      currentCampaign: state.currentCampaign,
-    };
-  },
-  [updateCampaignSuccess]: (state, action) => {
-    return {
-      campaigns: state.campaigns,
-      playerCampaigns: state.playerCampaigns,
-      dmCampaigns: state.dmCampaigns,
-      currentCampaign: action.data,
-    };
-  },
+  [getCampaignsSuccess]: (state, action) => ({
+    campaigns: action.data.data,
+    count: state.count,
+    currentCampaign: state.currentCampaign,
+  }),
+  [getCampaignsFail]: (state) => ({
+    campaigns: [],
+    count: state.count,
+    currentCampaign: state.currentCampaign,
+  }),
+  [getCampaignSuccess]: (state, action) => ({
+    campaigns: state.campaigns,
+    count: state.count,
+    currentCampaign: action.data,
+  }),
+  [getCampaignFail]: () => (state) => ({
+    campaigns: state.campaigns,
+    count: state.count,
+    currentCampaign: null,
+  }),
+  [updateCampaignSuccess]: (state, action) => ({
+    campaigns: state.campaigns,
+    count: state.count,
+    currentCampaign: action.data,
+  }),
 });
 
 export default campaigns;

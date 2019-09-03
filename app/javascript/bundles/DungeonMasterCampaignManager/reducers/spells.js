@@ -7,29 +7,34 @@ const getSpellFail = createAction('@@redux-api@getSpell_fail');
 
 const spells = createReducer({
   spells: [],
+  count: 0,
   currentSpell: null,
 }, {
   [getSpellsSuccess]: (state, action) => {
     return {
       spells: action.data.data,
+      count: state.count,
       currentSpell: state.currentSpell,
     };
   },
   [getSpellsFail]: (state) => {
     return {
       spells: state.spells,
+      count: state.count,
       currentSpell: state.currentSpell,
     };
   },
   [getSpellSuccess]: (state, action) => {
     return {
       spells: state.spells,
+      count: state.count,
       currentSpell: action.data,
     };
   },
   [getSpellFail]: (state) => {
     return {
       spells: state.spells,
+      count: state.count,
       currentSpell: null,
     };
   },

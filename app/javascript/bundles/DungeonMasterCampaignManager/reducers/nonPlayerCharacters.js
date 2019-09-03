@@ -1,6 +1,10 @@
 import { createReducer} from 'redux-starter-kit';
 
-const nonPlayerCharacters = createReducer({}, {
+const nonPlayerCharacters = createReducer({
+  characters: [],
+  count: 0,
+  currentCharacter: null,
+}, {
 
 });
 

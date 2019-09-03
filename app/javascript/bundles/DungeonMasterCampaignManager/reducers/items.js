@@ -7,29 +7,34 @@ const getItemFail = createAction('@@redux-api@getItem_fail');
 
 const items = createReducer({
   items: [],
+  count: 0,
   currentItem: null,
 }, {
   [getItemsSuccess]: (state, action) => {
     return {
       items: action.data.data,
+      count: state.count,
       currentItem: state.currentItem,
     };
   },
   [getItemsFail]: (state) => {
     return {
       items: state.items,
+      count: state.count,
       currentItem: state.currentItem,
     };
   },
   [getItemSuccess]: (state, action) => {
     return {
       items: state.items,
+      count: state.count,
       currentItem: action.data,
     };
   },
   [getItemFail]: (state) => {
     return {
       items: state.items,
+      count: state.count,
       currentItem: null,
     };
   },

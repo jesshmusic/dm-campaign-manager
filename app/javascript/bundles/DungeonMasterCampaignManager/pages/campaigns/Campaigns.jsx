@@ -19,7 +19,7 @@ class Campaigns extends React.Component {
   }
 
   componentDidMount () {
-    this.props.getCampaigns();
+    this.props.getCampaigns(this.props.user.id);
   }
 
   render () {
@@ -33,28 +33,14 @@ class Campaigns extends React.Component {
             <BreadcrumbLink to='/' title={'Home'} />
             <Breadcrumb.Item active>Campaigns</Breadcrumb.Item>
           </Breadcrumb>
-          {this.props.user && this.props.campaigns.dmCampaigns ? (
+          {this.props.user && this.props.campaigns.campaigns ? (
             <div>
               <h2>My Campaigns</h2>
-              <ListGroup>
-                {this.props.campaigns.dmCampaigns.map((campaign) =>
-                  <ListGroup.Item key={campaign.slug}>
-                    <Link to={`/app/campaigns/${campaign.slug}`}>
-                      {campaign.name}
-                    </Link>
-                  </ListGroup.Item>
-                )}
-              </ListGroup>
-            </div>
-          ) : null}
-          {this.props.user && this.props.user.role === 'admin' ? (
-            <div>
-              <h2>Admin: All Campaigns</h2>
               <ListGroup>
                 {this.props.campaigns.campaigns.map((campaign) =>
                   <ListGroup.Item key={campaign.slug}>
                     <Link to={`/app/campaigns/${campaign.slug}`}>
-                      {campaign.name} - {campaign.dungeonMaster.name}
+                      {campaign.name}
                     </Link>
                   </ListGroup.Item>
                 )}
@@ -84,8 +70,8 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    getCampaigns: () => {
-      dispatch(rest.actions.getCampaigns());
+    getCampaigns: (user_id) => {
+      dispatch(rest.actions.getCampaigns({user_id}));
     },
   };
 }
