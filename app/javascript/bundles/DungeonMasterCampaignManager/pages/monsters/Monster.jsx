@@ -137,6 +137,7 @@ class Monsters extends React.Component {
             <BootstrapTable keyField='id'
                             data={ monsters }
                             columns={ this.columns }
+                            bordered={ false }
                             bootstrap4
                             hover
                             filter={ filterFactory() }

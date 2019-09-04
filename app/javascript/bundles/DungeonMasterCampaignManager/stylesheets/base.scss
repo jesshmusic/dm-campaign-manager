@@ -1,0 +1,13 @@
+.container,
+.container-fluid {
+  @extend .py-3;
+}
+
+.row {
+  @extend .pt-3;
+  @extend .pb-4;
+}
+
+.list-group {
+  @extend .mb-4;
+}

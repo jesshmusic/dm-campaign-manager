@@ -42,6 +42,7 @@ const ItemsList = ({columns, items, flashMessages, user, pageTitle}) => {
           <BootstrapTable keyField='id'
                           data={ items }
                           columns={ columns }
+                          bordered={ false }
                           bootstrap4
                           hover
                           filter={ filterFactory() }
