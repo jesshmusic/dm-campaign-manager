@@ -20,7 +20,7 @@ const InfoBox = ({campaignsCount, pcsCount, npcsCount, monstersCount, itemsCount
             <ListGroup.Item>{userText}Player Characters: <strong>{pcsCount}</strong></ListGroup.Item>
             <ListGroup.Item>{userText}Non-player Characters: <strong>{npcsCount}</strong></ListGroup.Item>
             <ListGroup.Item>Monsters: <strong>{monstersCount}</strong></ListGroup.Item>
-            <ListGroup.Item>Equipment/Items/Armor/Weapons: <strong>{itemsCount}</strong></ListGroup.Item>
+            <ListGroup.Item>Equipment and Items: <strong>{itemsCount}</strong></ListGroup.Item>
             <ListGroup.Item>Spells: <strong>{spellsCount}</strong></ListGroup.Item>
             <ListGroup.Item>Users: <strong>{usersCount}</strong></ListGroup.Item>
           </ListGroup>

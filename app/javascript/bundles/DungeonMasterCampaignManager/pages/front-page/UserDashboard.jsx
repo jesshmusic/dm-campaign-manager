@@ -1,13 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import ListGroup from 'react-bootstrap/ListGroup';
-
-import { Link } from '@reach/router';
-
 // Container
 import Col from 'react-bootstrap/Col';
 import Alert from 'react-bootstrap/Alert';
+import CampaignsList from '../campaigns/CampaignsList';
 
 class UserDashboard extends React.Component {
   constructor (props) {
@@ -24,15 +21,7 @@ class UserDashboard extends React.Component {
       user && campaigns.campaigns ? (
         <Col sm={8}>
           <h2>My Campaigns</h2>
-          <ListGroup>
-            {campaigns.campaigns.map((campaign) =>
-              <ListGroup.Item key={campaign.slug}>
-                <Link to={`/app/campaigns/${campaign.slug}`}>
-                  {campaign.name} - {campaign.dungeonMaster.name}
-                </Link>
-              </ListGroup.Item>
-            )}
-          </ListGroup>
+          <CampaignsList campaigns={campaigns.campaigns}/>
         </Col>
       ) : (
         <Col>

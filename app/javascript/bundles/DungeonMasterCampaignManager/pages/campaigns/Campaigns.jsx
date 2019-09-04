@@ -1,17 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Link } from '@reach/router';
 import BreadcrumbLink from '../../components/layout/BreadcrumbLink';
-
-const ReactMarkdown = require('react-markdown');
 
 
 // Container
 import PageContainer from '../../containers/PageContainer.jsx';
 import rest from '../../actions/api';
-import ListGroup from 'react-bootstrap/ListGroup';
+
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
+import CampaignsList from './CampaignsList';
 
 class Campaigns extends React.Component {
   constructor (props) {
@@ -36,15 +34,7 @@ class Campaigns extends React.Component {
           {this.props.user && this.props.campaigns.campaigns ? (
             <div>
               <h2>My Campaigns</h2>
-              <ListGroup>
-                {this.props.campaigns.campaigns.map((campaign) =>
-                  <ListGroup.Item key={campaign.slug}>
-                    <Link to={`/app/campaigns/${campaign.slug}`}>
-                      {campaign.name}
-                    </Link>
-                  </ListGroup.Item>
-                )}
-              </ListGroup>
+              <CampaignsList campaigns={this.props.campaigns.campaigns}/>
             </div>
           ) : null}
         </div>
