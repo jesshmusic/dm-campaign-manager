@@ -17,6 +17,7 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import ListGroupItem from 'react-bootstrap/ListGroupItem';
 import Container from 'react-bootstrap/Container';
 import { Link } from '@reach/router';
+import CharactersList from '../characters/partials/CharactersList';
 
 class Campaign extends React.Component {
   constructor (props) {
@@ -48,39 +49,6 @@ class Campaign extends React.Component {
                   <ReactMarkdown source={campaign.description} />
                 </Col>
                 <Col>
-                  <h3>Player Characters</h3>
-                  <ListGroup variant="flush">
-                    {campaign.pcs.map((character, index) =>
-                      <ListGroupItem key={index}>
-                        {character.name} ({character.classes})
-                      </ListGroupItem>
-                    )}
-                  </ListGroup>
-                  <h3>Non-player Characters</h3>
-                  <ListGroup variant="flush">
-                    {campaign.npcs.map((character, index) =>
-                      <ListGroupItem key={index}>
-                        <strong>{character.role}</strong> - {character.name} ({character.classes})
-                      </ListGroupItem>
-                    )}
-                  </ListGroup>
-                </Col>
-              </Row>
-              <Row>
-                <Col>
-                  <h3>World Locations</h3>
-                  <ListGroup variant="flush">
-                    {campaign.worldLocations.map((location, index) =>
-                      <ListGroupItem key={index}>
-                        <h4 className={'h6'}>{location.name}</h4>
-                        <p>{location.description}</p>
-                      </ListGroupItem>
-                    )}
-                  </ListGroup>
-                </Col>
-              </Row>
-              <Row>
-                <Col>
                   <h3>Events</h3>
                   <ListGroup variant="flush">
                     {campaign.worldEvents.map((worldEvent, index) =>
@@ -90,6 +58,23 @@ class Campaign extends React.Component {
                       </ListGroupItem>
                     )}
                   </ListGroup>
+                  <h3>World Locations</h3>
+                  <ListGroup variant="flush">
+                    {campaign.worldLocations.map((location, index) =>
+                      <ListGroupItem key={index}>
+                        <h4 className={'h6'}>{location.name}</h4>
+                        <p>{location.description}</p>
+                      </ListGroupItem>
+                    )}
+                  </ListGroup>
+                  <h3>Player Characters</h3>
+                  <CharactersList characters={campaign.pcs} small/>
+                  <h3>Non-player Characters</h3>
+                  <CharactersList characters={campaign.npcs} small/>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
                 </Col>
               </Row>
               <Row>
