@@ -91,6 +91,10 @@ class Character < ApplicationRecord
 
   belongs_to :user
 
+  def campaigns_string
+    campaigns.map(&:name).join(', ')
+  end
+
   def classes
     character_classes.map(&:class_and_level).join(', ')
   end

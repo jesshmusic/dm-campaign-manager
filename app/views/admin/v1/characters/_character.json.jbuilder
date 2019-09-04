@@ -11,6 +11,7 @@ json.extract! character, :id, :name, :alignment, :proficiency, :slug, :backgroun
 json.total_level character.total_level
 json.hit_dice character.hit_dice
 json.classes character.classes
+json.campaigns_string character.campaigns_string
 
 json.character_classes character.character_classes do |character_class|
   json.dnd_class character_class.dnd_class.name

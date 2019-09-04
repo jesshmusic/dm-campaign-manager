@@ -15,11 +15,7 @@ module Admin::V1
                       Character.all
                     end
       @characters = params[:type].present? ? @characters.where(type: params[:type]) : @characters
-      @characters = if current_user&.admin?
-                      @characters
-                    else
-                      @characters.where(user_id: current_user.id).order('name ASC')
-                    end
+      @characters = params[:user_id].present? ? @characters.where(user_id: params[:user_id]) : @characters
       respond_to do |format|
         format.html { @pagy, @characters = pagy(@characters) }
         format.json

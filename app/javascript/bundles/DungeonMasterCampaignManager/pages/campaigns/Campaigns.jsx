@@ -9,7 +9,7 @@ import PageContainer from '../../containers/PageContainer.jsx';
 import rest from '../../actions/api';
 
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
-import CampaignsList from './CampaignsList';
+import CampaignsList from './partials/CampaignsList';
 
 class Campaigns extends React.Component {
   constructor (props) {

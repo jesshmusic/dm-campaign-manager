@@ -4,15 +4,12 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import CampaignCard from './partials/CampaignCard';
-import CardDeck from 'react-bootstrap/CardDeck';
+import CampaignCard from './CampaignCard';
 
 const CampaignsList = ({campaigns}) => (
-  <CardDeck>
-    {campaigns.map((campaign) =>
-      <CampaignCard campaign={campaign} key={campaign.slug}/>
-    )}
-  </CardDeck>
+  campaigns.map((campaign) =>
+    <CampaignCard campaign={campaign} key={campaign.slug}/>
+  )
 );
 
 CampaignsList.propTypes = {
