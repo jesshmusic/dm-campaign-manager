@@ -29,7 +29,7 @@ class Campaign extends React.Component {
 
   render () {
     const { user, flashMessages, campaign } = this.props;
-    const campaignTitle = campaign ? `${campaign.name} by ${campaign.dungeonMaster.name}` : 'Campaign Loading...';
+    const campaignTitle = campaign ? campaign.name : 'Campaign Loading...';
     return (
       <PageContainer user={user}
                      flashMessages={flashMessages}
@@ -39,7 +39,7 @@ class Campaign extends React.Component {
           <Breadcrumb>
             <BreadcrumbLink to='/' title={'Home'} />
             <BreadcrumbLink to='/app/campaigns' title={'Campaigns'} />
-            <Breadcrumb.Item active>Campaign</Breadcrumb.Item>
+            <Breadcrumb.Item active>{campaignTitle}</Breadcrumb.Item>
           </Breadcrumb>
           { campaign ? (
             <Container>
@@ -51,7 +51,7 @@ class Campaign extends React.Component {
                   <h3>Dungeon Master</h3>
                   <h4 className='h5 mb-0'>{campaign.dungeonMaster.name}</h4>
                   <h3>Player Characters</h3>
-                  <ListGroup>
+                  <ListGroup variant="flush">
                     {campaign.pcs.map((character, index) =>
                       <ListGroupItem key={index}>
                         {character.name} ({character.classes})
@@ -59,10 +59,36 @@ class Campaign extends React.Component {
                     )}
                   </ListGroup>
                   <h3>Non-player Characters</h3>
-                  <ListGroup>
+                  <ListGroup variant="flush">
                     {campaign.npcs.map((character, index) =>
                       <ListGroupItem key={index}>
                         <strong>{character.role}</strong> - {character.name} ({character.classes})
+                      </ListGroupItem>
+                    )}
+                  </ListGroup>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <h3>World Locations</h3>
+                  <ListGroup variant="flush">
+                    {campaign.worldLocations.map((location, index) =>
+                      <ListGroupItem key={index}>
+                        <h4 className={'h6'}>{location.name}</h4>
+                        <p>{location.description}</p>
+                      </ListGroupItem>
+                    )}
+                  </ListGroup>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <h3>Events</h3>
+                  <ListGroup variant="flush">
+                    {campaign.worldEvents.map((worldEvent, index) =>
+                      <ListGroupItem key={index}>
+                        <h4 className={'h6'}><strong>{worldEvent.when}</strong> -  {worldEvent.name}</h4>
+                        <p>{worldEvent.description}</p>
                       </ListGroupItem>
                     )}
                   </ListGroup>
