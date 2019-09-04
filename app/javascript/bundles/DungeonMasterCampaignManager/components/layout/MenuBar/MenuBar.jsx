@@ -5,14 +5,16 @@ import Button from 'react-bootstrap/Button';
 import { Link } from '@reach/router';
 import PropTypes from 'prop-types';
 import React from 'react';
-import rest from '../../actions/api';
+import rest from '../../../actions/api';
 import {connect} from 'react-redux';
 
+import classes from './menu-bar.module.scss';
+
 const NavLink = props => (
-  <Nav.Item>
+  <Nav.Item className={classes.navItem}>
     <Link
       {...props}
-      getProps={({ isCurrent }) => ({ className: isCurrent ? 'nav-link active' : 'nav-link' })}
+      getProps={({ isCurrent }) => ({ className: isCurrent ? classes.navLinkActive : classes.navLink })}
     />
   </Nav.Item>
 );
@@ -32,31 +34,31 @@ function MenuBar (props) {
     logoutUser();
   };
   return (
-    <Navbar bg="primary" variant="dark" expand="lg" className={'p-0 shadow'}>
-      <a className="navbar-brand col-sm-3 col-md-2 mr-0" href="/">DM's Campaign Manager</a>
+    <Navbar bg="primary" variant="dark" expand="lg" className={classes.navbar}>
+      <a className={classes.navbarBrand} href="/app/assets/stylesheets">DM&apos;s Campaign Manager</a>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="mr-auto">
           <NavLink to={'/'}>Home</NavLink>
           {user ? <NavLink to={'/app/campaigns'}>My Campaigns</NavLink> : null}
-          <NavDropdown title="Reference" id="reference-nav-dropdown">
+          <NavDropdown title="Reference" id="reference-nav-dropdown" className={classes.dropdown}>
             <DropdownLink to={'/app/classes'}>Classes</DropdownLink>
             <DropdownLink to={'/app/monsters'}>Monsters</DropdownLink>
             <DropdownLink to={'/app/items'}>Items and Equipment</DropdownLink>
             <DropdownLink to={'/app/spells'}>Spells</DropdownLink>
           </NavDropdown>
           {user && user.role === 'admin' ? (
-            <Nav.Item>
-              <Nav.Link href="/v1/dashboard">Admin Dashboard</Nav.Link>
+            <Nav.Item className={classes.navItem}>
+              <Nav.Link href="/v1/dashboard" className={classes.navLink}>Admin Dashboard</Nav.Link>
             </Nav.Item>
           ) : null}
-          {user ? (
-            <Button onClick={handleLogout} variant="primary" size="sm">Sign Out</Button>
-          ) : (
-            <Nav.Item>
-              <Nav.Link href="/users/sign_in">Sign In</Nav.Link>
-            </Nav.Item>
-          )}
+          <Nav.Item className={classes.navItem}>
+            {user ? (
+              <Nav.Link onClick={handleLogout} className={classes.navLink}>Sign Out</Nav.Link>
+            ) : (
+              <Nav.Link href="/users/sign_in" className={classes.navLink}>Sign In</Nav.Link>
+            )}
+          </Nav.Item>
         </Nav>
       </Navbar.Collapse>
     </Navbar>

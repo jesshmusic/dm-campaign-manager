@@ -48,8 +48,6 @@ class Campaign extends React.Component {
                   <ReactMarkdown source={campaign.description} />
                 </Col>
                 <Col>
-                  <h3>Dungeon Master</h3>
-                  <h4 className='h5 mb-0'>{campaign.dungeonMaster.name}</h4>
                   <h3>Player Characters</h3>
                   <ListGroup variant="flush">
                     {campaign.pcs.map((character, index) =>

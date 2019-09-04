@@ -17,9 +17,7 @@ const CampaignCard = ({campaign}) => (
       <Card.Subtitle className="mb-2 text-muted">World: {campaign.world}</Card.Subtitle>
     </Card.Header>
     <Card.Body>
-      <Card.Text>
-        <ReactMarkdown source={campaign.description} />
-      </Card.Text>
+      <ReactMarkdown source={campaign.description} />
     </Card.Body>
     <Card.Footer>
       <Link to={`/app/campaigns/${campaign.slug}`} className='btn btn-primary'>Details</Link>

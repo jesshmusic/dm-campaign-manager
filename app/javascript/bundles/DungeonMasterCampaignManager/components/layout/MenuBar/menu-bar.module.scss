@@ -1,0 +1,56 @@
+@import '../../../stylesheets/variables';
+@import '../../../stylesheets/bootstrap/dropdown';
+@import '../../../stylesheets/bootstrap/nav';
+@import '../../../stylesheets/bootstrap/navbar';
+
+/*
+ * Navbar
+ */
+.navbar {
+  padding: 0 !important;
+  box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15);
+}
+
+.navbarBrand {
+  background-color: rgba(0, 0, 0, .25);
+  box-shadow: inset -1px 0 0 rgba(0, 0, 0, .25);
+  color: #fff;
+  font-size: 1rem;
+  padding: .75rem 1rem;
+}
+
+.navbarNav {
+  flex-direction: row;
+}
+
+.navItem {
+  padding: 0 1.25rem;
+}
+
+.navLink {
+  @extend .nav-link;
+
+  color: $navbar-dark-color;
+  font-size: .875rem;
+
+  &:hover {
+    color: $navbar-dark-hover-color;
+  }
+}
+
+.navLinkActive {
+  @extend .nav-link;
+  @extend .active;
+
+  color: $navbar-dark-active-color;
+  font-size: .875rem;
+
+  &:hover {
+    color: $navbar-dark-hover-color;
+  }
+}
+
+.dropdown {
+  font-size: .875rem;
+  padding: 0 1.25rem;
+}
