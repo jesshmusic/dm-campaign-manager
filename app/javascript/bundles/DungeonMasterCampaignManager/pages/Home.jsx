@@ -20,6 +20,7 @@ import Monsters from './monsters/Monster';
 import Spells from './spells/Spells';
 import DndClass from './dnd-classes/DndClass';
 import DndClasses from './dnd-classes/DndClasses';
+import NewCampaign from './campaigns/NewCampaign';
 
 const store = (props) => configureStore({
   reducer: rootReducer,
@@ -70,6 +71,7 @@ const Home = (props) => (
       <HomePage path="/" />
       <Campaigns path='/app/campaigns'/>
       <Campaign path='/app/campaigns/:campaignSlug'/>
+      <NewCampaign path='/app/campaigns/new'/>
       <EditCampaign path='/app/campaigns/:campaignSlug/edit'/>
       <DndClass path='/app/classes/:dndClassSlug' />
       <DndClasses path='/app/classes' />

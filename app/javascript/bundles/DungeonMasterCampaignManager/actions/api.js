@@ -11,6 +11,19 @@ function getHeaders (contentType) {
 }
 
 export default reduxApi({
+  createCampaign: {
+    url: '/v1/campaigns/',
+    options () {
+      const headers = getHeaders();
+      return {
+        method: 'post',
+        headers,
+      };
+    },
+    postfetch: [({data}) => {
+      navigate(`/app/campaigns/${data.slug}`);
+    }],
+  },
   updateCampaign: {
     url: '/v1/campaigns/:slug/',
     options () {

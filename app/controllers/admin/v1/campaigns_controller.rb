@@ -52,7 +52,7 @@ module Admin::V1
       respond_to do |format|
         if @campaign.save
           format.html { redirect_to v1_campaign_url(slug: @campaign.slug), notice: 'Campaign was successfully created.' }
-          format.json { render :show, status: :created, location: @campaign }
+          format.json { render :show, status: :created }
         else
           format.html { render :new }
           format.json { render json: @campaign.errors, status: :unprocessable_entity }
