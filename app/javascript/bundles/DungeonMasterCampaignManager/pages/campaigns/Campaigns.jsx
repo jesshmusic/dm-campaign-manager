@@ -28,7 +28,11 @@ class Campaigns extends React.Component {
                      pageTitle={'Campaigns'}
                      description={'All D&D campaigns. Dungeon Master\'s Campaign Manager is a free resource for DMs to manage their campaigns, adventures, and NPCs.'}
                      breadcrumbs={[{url: null, isActive: true, title: 'Campaigns'}]}>
-        <PageTitle title={'My Campaigns'}/>
+        <PageTitle title={'My Campaigns'}
+                   hasButton={this.props.user !== null}
+                   buttonLink={'/app/campaigns/new/'}
+                   buttonTitle={'Add Campaign'}
+                   buttonVariant={'success'}/>
         {this.props.user && this.props.campaigns.campaigns ? (
           <CampaignsList campaigns={this.props.campaigns.campaigns}/>
         ) : null}

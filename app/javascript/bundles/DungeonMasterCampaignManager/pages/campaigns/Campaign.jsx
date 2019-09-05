@@ -20,6 +20,7 @@ import { Link } from '@reach/router';
 import CharactersList from '../characters/partials/CharactersList';
 import AdventuresList from '../adventures/AdventuresList';
 import Button from 'react-bootstrap/Button';
+import PageTitle from '../../components/layout/PageTitle';
 
 class Campaign extends React.Component {
   constructor (props) {
@@ -42,18 +43,11 @@ class Campaign extends React.Component {
                        {url: null, isActive: true, title: campaignTitle}]}>
         { campaign ? (
           <Container fluid>
-            <Row>
-              <Col>
-                <h1 className={'d-flex justify-content-between align-items-center'}>
-                  Campaign: {campaign.name}
-                  {user && user.id === campaign.dungeonMaster.id ? (
-                    <Link to={`/app/campaigns/${campaign.slug}/edit`} className={'btn btn-primary'}>
-                      Edit Campaign
-                    </Link>
-                  ) : null }
-                </h1>
-              </Col>
-            </Row>
+            <PageTitle title={`Campaign: ${campaign.name}`}
+                       hasButton={user && user.id === campaign.dungeonMaster.id}
+                       buttonLink={`/app/campaigns/${campaign.slug}/edit`}
+                       buttonTitle={'Edit Campaign'}
+                       buttonVariant={'primary'}/>
             <Row>
               <Col sm={7}>
                 <ReactMarkdown source={campaign.description} />
