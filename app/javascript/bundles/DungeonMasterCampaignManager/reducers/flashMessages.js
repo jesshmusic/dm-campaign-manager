@@ -5,6 +5,7 @@ const loginFailed = createAction('@@redux-api@userLogin_fail');
 const logoutFailed = createAction('@@redux-api@userLogout_fail');
 const getCampaignsFailed = createAction('@@redux-api@getCampaigns_fail');
 const getCampaignFailed = createAction('@@redux-api@getCampaign_fail');
+const createCampaignSuccess = createAction('@@redux-api@createCampaign_success');
 const updateCampaignSuccess = createAction('@@redux-api@updateCampaign_success');
 
 const flashMessages = createReducer([], {
@@ -14,6 +15,7 @@ const flashMessages = createReducer([], {
   [logoutFailed]: (state, action) => [...state, {type: 'danger', text: action.error.statusText, heading: `Error ${action.error.status}`}],
   [getCampaignsFailed]: (state, action) => [...state, {type: 'danger', text: action.error.statusText, heading: `Error ${action.error.status}`}],
   [getCampaignFailed]: (state, action) => [...state, {type: 'danger', text: action.error.statusText, heading: `Error ${action.error.status}`}],
+  [createCampaignSuccess]: (state, action) => [...state, {type: 'success', text: `"${action.data.name}" successfully created.`, heading: 'Campaign created'}],
   [updateCampaignSuccess]: (state, action) => [...state, {type: 'success', text: `"${action.data.name}" successfully updated.`, heading: 'Campaign updated'}],
 });
 
