@@ -14,12 +14,11 @@ import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 import _ from 'lodash';
-import Breadcrumb from 'react-bootstrap/Breadcrumb';
-import BreadcrumbLink from '../../components/layout/BreadcrumbLink';
 import PageContainer from '../../containers/PageContainer';
 import ReactMarkdown from 'react-markdown';
 import Util from '../../utilities/utilities';
 import Spinner from 'react-bootstrap/Spinner';
+import PageTitle from '../../components/layout/PageTitle';
 
 class Monsters extends React.Component {
   constructor (props) {
@@ -127,26 +126,22 @@ class Monsters extends React.Component {
       <PageContainer user={user}
                      flashMessages={flashMessages}
                      pageTitle={'Monsters'}
-                     description={`All monsters with descriptions and stats. Dungeon Master's Campaign Manager is a free resource for DMs to manage their campaigns, adventures, and NPCs.`}>
-        <div>
-          <Breadcrumb>
-            <BreadcrumbLink to='/' title={'Home'}/>
-            <Breadcrumb.Item active>Monsters</Breadcrumb.Item>
-          </Breadcrumb>
-          {monsters && monsters.length > 0 ? (
-            <BootstrapTable keyField='id'
-                            data={ monsters }
-                            columns={ this.columns }
-                            bordered={ false }
-                            bootstrap4
-                            hover
-                            filter={ filterFactory() }
-                            pagination={ paginationFactory() }
-                            expandRow={ this.expandRow } />
-          ) : (
-            <Spinner animation="border" variant="primary" />
-          )}
-        </div>
+                     description={`All monsters with descriptions and stats. Dungeon Master's Campaign Manager is a free resource for DMs to manage their campaigns, adventures, and NPCs.`}
+                     breadcrumbs={[{url: null, isActive: true, title: 'Monsters'}]}>
+        <PageTitle title={'Monsters'}/>
+        {monsters && monsters.length > 0 ? (
+          <BootstrapTable keyField='id'
+                          data={ monsters }
+                          columns={ this.columns }
+                          bordered={ false }
+                          bootstrap4
+                          hover
+                          filter={ filterFactory() }
+                          pagination={ paginationFactory() }
+                          expandRow={ this.expandRow } />
+        ) : (
+          <Spinner animation="border" variant="primary" />
+        )}
       </PageContainer>
     );
   }

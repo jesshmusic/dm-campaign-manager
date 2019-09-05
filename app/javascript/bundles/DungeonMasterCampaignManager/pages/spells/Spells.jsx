@@ -20,6 +20,9 @@ import PageContainer from '../../containers/PageContainer';
 import ReactMarkdown from 'react-markdown';
 import Util from '../../utilities/utilities';
 import Spinner from 'react-bootstrap/Spinner';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import PageTitle from '../../components/layout/PageTitle';
 
 class Spells extends React.Component {
   constructor (props) {
@@ -142,29 +145,25 @@ class Spells extends React.Component {
       <PageContainer user={user}
                      flashMessages={flashMessages}
                      pageTitle={'Spells'}
-                     description={'All D&D spells. Dungeon Master\'s Campaign Manager is a free resource for DMs to manage their campaigns, adventures, and NPCs.'}>
-        <div>
-          <Breadcrumb>
-            <BreadcrumbLink to='/' title={'Home'}/>
-            <Breadcrumb.Item active>Spells</Breadcrumb.Item>
-          </Breadcrumb>
-          {spells && spells.length > 0 ? (
-            <BootstrapTable keyField='id'
-                            data={ spells }
-                            columns={ this.columns }
-                            bootstrap4
-                            hover
-                            filter={ filterFactory() }
-                            pagination={ paginationFactory() }
-                            defaultSorted={[{
-                              dataField: 'spell_level',
-                              order: 'asc',
-                            }]}
-                            expandRow={ this.expandRow } />
-          ) : (
-            <Spinner animation="border" variant="primary" />
-          )}
-        </div>
+                     description={'All D&D spells. Dungeon Master\'s Campaign Manager is a free resource for DMs to manage their campaigns, adventures, and NPCs.'}
+                     breadcrumbs={[{url: null, isActive: true, title: 'Spells'}]}>
+        <PageTitle title={'Spells'}/>
+        {spells && spells.length > 0 ? (
+          <BootstrapTable keyField='id'
+                          data={ spells }
+                          columns={ this.columns }
+                          bootstrap4
+                          hover
+                          filter={ filterFactory() }
+                          pagination={ paginationFactory() }
+                          defaultSorted={[{
+                            dataField: 'spell_level',
+                            order: 'asc',
+                          }]}
+                          expandRow={ this.expandRow } />
+        ) : (
+          <Spinner animation="border" variant="primary" />
+        )}
       </PageContainer>
     );
   }

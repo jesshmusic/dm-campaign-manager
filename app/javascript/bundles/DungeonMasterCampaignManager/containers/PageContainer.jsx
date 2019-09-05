@@ -11,9 +11,13 @@ import FlashMessages from '../components/layout/Alerts/FlashMessages.jsx';
 
 import '../stylesheets/_global.scss';
 import {Helmet} from 'react-helmet';
+import Breadcrumb from 'react-bootstrap/Breadcrumb';
+import BreadcrumbLink from '../components/layout/BreadcrumbLink';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
 
 const PageContainer = (props) => {
-  const { children, description, user, flashMessages, pageTitle } = props;
+  const { breadcrumbs, children, description, flashMessages, pageTitle, user } = props;
 
   return (
     <div>
@@ -24,9 +28,24 @@ const PageContainer = (props) => {
       <MenuBar user={user}/>
       <HeroBanner />
       <FlashMessages messages={flashMessages}/>
-      <Container fluid={props.fluid}>
-        <h1>{pageTitle}</h1>
-        {children}
+      <Container fluid>
+        {breadcrumbs && breadcrumbs.length > 0 ? (
+          <Breadcrumb>
+            <BreadcrumbLink to='/' title={'Home'} />
+            {breadcrumbs.map((breadcrumb, index) =>
+              (!breadcrumb.isActive ? (
+                <BreadcrumbLink to={breadcrumb.url} title={breadcrumb.title} key={index} />
+              ) : (
+                <Breadcrumb.Item active key={index}>{breadcrumb.title}</Breadcrumb.Item>
+              ))
+            )}
+          </Breadcrumb>
+        ) : null}
+        <Row>
+          <Col>
+            {children}
+          </Col>
+        </Row>
       </Container>
       <Footer user={user} />
     </div>
@@ -34,11 +53,15 @@ const PageContainer = (props) => {
 };
 
 PageContainer.propTypes = {
-  children: PropTypes.element,
-  flashMessages: PropTypes.array,
-  fluid: PropTypes.bool,
-  pageTitle: PropTypes.string.isRequired,
+  breadcrumbs: PropTypes.arrayOf(PropTypes.shape({
+    isActive: PropTypes.bool,
+    title: PropTypes.string.isRequired,
+    url: PropTypes.string,
+  })),
+  children: PropTypes.any,
   description: PropTypes.string.isRequired,
+  flashMessages: PropTypes.array,
+  pageTitle: PropTypes.string.isRequired,
   user: PropTypes.object,
 };
 

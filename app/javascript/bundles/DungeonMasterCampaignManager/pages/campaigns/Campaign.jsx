@@ -37,73 +37,69 @@ class Campaign extends React.Component {
       <PageContainer user={user}
                      flashMessages={flashMessages}
                      pageTitle={campaignTitle}
-                     fluid
-                     description={`Campaign: ${campaignTitle}. Dungeon Master's Campaign Manager is a free resource for DMs to manage their campaigns, adventures, and NPCs.`}>
-        <div>
-          <Breadcrumb>
-            <BreadcrumbLink to='/' title={'Home'} />
-            <BreadcrumbLink to='/app/campaigns' title={'Campaigns'} />
-            <Breadcrumb.Item active>{campaignTitle}</Breadcrumb.Item>
-          </Breadcrumb>
-          { campaign ? (
-            <Container>
-              <Row>
-                <Col className={'d-flex justify-content-between align-items-center'}>
-                  <span className={'h2'}>Campaign: {campaign.name}</span>
+                     description={`Campaign: ${campaignTitle}. Dungeon Master's Campaign Manager is a free resource for DMs to manage their campaigns, adventures, and NPCs.`}
+                     breadcrumbs={[{url: '/app/campaigns', isActive: false, title: 'Campaigns'},
+                       {url: null, isActive: true, title: campaignTitle}]}>
+        { campaign ? (
+          <Container fluid>
+            <Row>
+              <Col>
+                <h1 className={'d-flex justify-content-between align-items-center'}>
+                  Campaign: {campaign.name}
                   {user && user.id === campaign.dungeonMaster.id ? (
                     <Link to={`/app/campaigns/${campaign.slug}/edit`} className={'btn btn-primary'}>
                       Edit Campaign
                     </Link>
                   ) : null }
-                </Col>
-              </Row>
-              <Row>
-                <Col sm={7}>
-                  <ReactMarkdown source={campaign.description} />
-                  <h3>Adventures</h3>
-                  <AdventuresList adventures={campaign.adventures} />
-                  <Button variant={'secondary'} block>New Adventure</Button>
-                </Col>
-                <Col sm={5}>
-                  <div className={'mb-4'}>
-                    <h3>Events</h3>
-                    <ListGroup variant="flush">
-                      {campaign.worldEvents.map((worldEvent, index) =>
-                        <ListGroupItem key={index}>
-                          <h4 className={'h6'}><strong>{worldEvent.when}</strong> -  {worldEvent.name}</h4>
-                          <p>{worldEvent.description}</p>
-                        </ListGroupItem>
-                      )}
-                    </ListGroup>
-                  </div>
-                  <div className={'mb-4'}>
-                    <h3>World Locations</h3>
-                    <ListGroup variant="flush">
-                      {campaign.worldLocations.map((location, index) =>
-                        <ListGroupItem key={index}>
-                          <h4 className={'h6'}>{location.name}</h4>
-                          <p>{location.description}</p>
-                        </ListGroupItem>
-                      )}
-                    </ListGroup>
-                  </div>
-                  <div className={'mb-4'}>
-                    <h3>Player Characters</h3>
-                    <CharactersList characters={campaign.pcs} small/>
-                    <Button variant={'success'} block>New PC</Button>
-                  </div>
-                  <div className={'mb-4'}>
-                    <h3>Non-player Characters</h3>
-                    <CharactersList characters={campaign.npcs} small/>
-                    <Button variant={'success'} block>New NPC</Button>
-                  </div>
-                </Col>
-              </Row>
-            </Container>
-          ) : (
-            <Spinner animation="border" variant="primary" />
-          )}
-        </div>
+                </h1>
+              </Col>
+            </Row>
+            <Row>
+              <Col sm={7}>
+                <ReactMarkdown source={campaign.description} />
+                <h3>Adventures</h3>
+                <AdventuresList adventures={campaign.adventures} />
+                <Button variant={'secondary'} block>New Adventure</Button>
+              </Col>
+              <Col sm={5}>
+                <div className={'mb-4'}>
+                  <h3>Events</h3>
+                  <ListGroup variant="flush">
+                    {campaign.worldEvents.map((worldEvent, index) =>
+                      <ListGroupItem key={index}>
+                        <h4 className={'h6'}><strong>{worldEvent.when}</strong> -  {worldEvent.name}</h4>
+                        <p>{worldEvent.description}</p>
+                      </ListGroupItem>
+                    )}
+                  </ListGroup>
+                </div>
+                <div className={'mb-4'}>
+                  <h3>World Locations</h3>
+                  <ListGroup variant="flush">
+                    {campaign.worldLocations.map((location, index) =>
+                      <ListGroupItem key={index}>
+                        <h4 className={'h6'}>{location.name}</h4>
+                        <p>{location.description}</p>
+                      </ListGroupItem>
+                    )}
+                  </ListGroup>
+                </div>
+                <div className={'mb-4'}>
+                  <h3>Player Characters</h3>
+                  <CharactersList characters={campaign.pcs} small/>
+                  <Button variant={'success'} block>New PC</Button>
+                </div>
+                <div className={'mb-4'}>
+                  <h3>Non-player Characters</h3>
+                  <CharactersList characters={campaign.npcs} small/>
+                  <Button variant={'success'} block>New NPC</Button>
+                </div>
+              </Col>
+            </Row>
+          </Container>
+        ) : (
+          <Spinner animation="border" variant="primary" />
+        )}
       </PageContainer>
     );
   }

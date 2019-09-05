@@ -23,6 +23,7 @@ import FormField from '../../components/forms/FormField';
 import FormTextArea from '../../components/forms/FormTextArea';
 import WorldLocationFields from './partials/WorldLocationFields';
 import WorldEventFields from './partials/WorldEventFields';
+import PageTitle from '../../components/layout/PageTitle';
 
 class EditCampaign extends React.Component {
   state = {
@@ -76,88 +77,83 @@ class EditCampaign extends React.Component {
       <PageContainer user={user}
                      flashMessages={flashMessages}
                      pageTitle={campaignTitle}
-                     description={`Edit Campaign: ${campaignTitle}. Dungeon Master's Campaign Manager is a free resource for DMs to manage their campaigns, adventures, and NPCs.`}>
-        <div>
-          <Breadcrumb>
-            <BreadcrumbLink to='/' title={'Home'} />
-            <BreadcrumbLink to='/app/campaigns' title={'Campaigns'} />
-            <Breadcrumb.Item active>Campaign</Breadcrumb.Item>
-          </Breadcrumb>
-          { currentCampaign ? (
-            <FinalForm onSubmit={this.handleSubmit}
-                       initialValues={currentCampaign}
-                       validate={this.validate}
-                       mutators={{...arrayMutators }}
-                       render={({
-                         handleSubmit,
-                         form: {
-                           mutators: { push, pop },
-                         },
-                         submitting,
-                         form,
-                         pristine,
-                         values,
-                       }) => (
-                         <Form noValidate validated={validated} onSubmit={handleSubmit}>
+                     description={`Edit Campaign: ${campaignTitle}. Dungeon Master's Campaign Manager is a free resource for DMs to manage their campaigns, adventures, and NPCs.`}
+                     breadcrumbs={[{url: '/app/campaigns', isActive: false, title: 'Campaigns'},
+                       {url: null, isActive: true, title: campaignTitle}]}>
+        <PageTitle title={campaignTitle}/>
+        { currentCampaign ? (
+          <FinalForm onSubmit={this.handleSubmit}
+                     initialValues={currentCampaign}
+                     validate={this.validate}
+                     mutators={{...arrayMutators }}
+                     render={({
+                       handleSubmit,
+                       form: {
+                         mutators: { push, pop },
+                       },
+                       submitting,
+                       form,
+                       pristine,
+                     }) => (
+                       <Form noValidate validated={validated} onSubmit={handleSubmit}>
+                         <Form.Row>
+                           <FormField label={'Campaign name'}
+                                      type={'text'}
+                                      colWidth={'7'}
+                                      name={'name'}/>
+                           <FormField label={'World'}
+                                      type={'text'}
+                                      colWidth={'5'}
+                                      name={'world'}/>
+                         </Form.Row>
+                         <Form.Row>
+                           <FormTextArea label={'Description'} colWidth={'12'} name={'description'}/>
+                         </Form.Row>
+                         <div className={'my-4 py-4 border-top'}>
+                           <h2>World Locations</h2>
+                           <FieldArray name="worldLocations">
+                             {({ fields }) =>
+                               // eslint-disable-next-line max-len
+                               fields.map((world_location, index) => (!fields.value[index] || !fields.value[index]._destroy ? (
+                                 <WorldLocationFields location={world_location}
+                                                      fields={fields}
+                                                      index={index}
+                                                      key={index} />
+                               ) : null))
+                             }
+                           </FieldArray>
                            <Form.Row>
-                             <FormField label={'Campaign name'}
-                                        type={'text'}
-                                        colWidth={'7'}
-                                        name={'name'}/>
-                             <FormField label={'World'}
-                                        type={'text'}
-                                        colWidth={'5'}
-                                        name={'world'}/>
+                             <Button type="button" onClick={() => push('worldLocations', undefined)} variant={'info'} block>Add World Location</Button>
                            </Form.Row>
+                         </div>
+                         <div className={'my-4 py-4 border-top border-bottom'}>
+                           <h2>World Events</h2>
+                           <FieldArray name="worldEvents">
+                             {({ fields }) =>
+                               fields.map((event, index) => (!fields.value[index] || !fields.value[index]._destroy ? (
+                                 <WorldEventFields event={event}
+                                                   fields={fields}
+                                                   index={index}
+                                                   key={index} />
+                               ) : null))
+                             }
+                           </FieldArray>
                            <Form.Row>
-                             <FormTextArea label={'Description'} colWidth={'12'} name={'description'}/>
+                             <Button type="button" onClick={() => push('worldEvents', undefined)} variant={'info'} block>Add World Event</Button>
                            </Form.Row>
-                           <div className={'my-4 py-4 border-top'}>
-                             <h2>World Locations</h2>
-                             <FieldArray name="worldLocations">
-                               {({ fields }) =>
-                                 fields.map((world_location, index) => (!fields.value[index] || !fields.value[index]._destroy ? (
-                                   <WorldLocationFields location={world_location}
-                                                        fields={fields}
-                                                        index={index}
-                                                        key={index} />
-                                 ) : null))
-                               }
-                             </FieldArray>
-                             <Form.Row>
-                               <Button type="button" onClick={() => push('worldLocations', undefined)} variant={'info'} block>Add World Location</Button>
-                             </Form.Row>
-                           </div>
-                           <div className={'my-4 py-4 border-top border-bottom'}>
-                             <h2>World Events</h2>
-                             <FieldArray name="worldEvents">
-                               {({ fields }) =>
-                                 fields.map((event, index) => (!fields.value[index] || !fields.value[index]._destroy ? (
-                                   <WorldEventFields event={event}
-                                                     fields={fields}
-                                                     index={index}
-                                                     key={index} />
-                                 ) : null))
-                               }
-                             </FieldArray>
-                             <Form.Row>
-                               <Button type="button" onClick={() => push('worldEvents', undefined)} variant={'info'} block>Add World Event</Button>
-                             </Form.Row>
-                           </div>
-                           <Form.Row>
-                             <ButtonGroup aria-label="Campaign actions">
-                               <Button type="submit" disabled={submitting}>Update Campaign</Button>
-                               <Button type="button" onClick={form.reset} disabled={submitting || pristine} variant={'secondary'}>Reset</Button>
-                             </ButtonGroup>
-                           </Form.Row>
-                           <pre className={classes.preBlock}>{JSON.stringify(values, 0, 2)}</pre>
-                         </Form>
-                       )} />
+                         </div>
+                         <Form.Row>
+                           <ButtonGroup aria-label="Campaign actions">
+                             <Button type="submit" disabled={submitting}>Update Campaign</Button>
+                             <Button type="button" onClick={form.reset} disabled={submitting || pristine} variant={'secondary'}>Reset</Button>
+                           </ButtonGroup>
+                         </Form.Row>
+                       </Form>
+                     )} />
 
-          ) : (
-            <Spinner animation="border" variant="primary" />
-          )}
-        </div>
+        ) : (
+          <Spinner animation="border" variant="primary" />
+        )}
       </PageContainer>
     );
   }

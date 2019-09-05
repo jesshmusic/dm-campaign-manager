@@ -9,26 +9,32 @@ import {connect} from 'react-redux';
 import Row from 'react-bootstrap/Row';
 import PageContainer from '../../containers/PageContainer';
 import InfoBox from '../../components/layout/InfoBox';
+import Col from 'react-bootstrap/Col';
+import PageTitle from '../../components/layout/PageTitle';
 
 const HomePage = (props) => (
   <PageContainer user={props.user}
                  flashMessages={props.flashMessages}
                  pageTitle={props.user ? 'Dashboard' : 'Welcome'}
-                 description={'Dungeon Master\'s Campaign Manager is a free resource for DMs to manage their campaigns, adventures, and NPCs.'}>
-    <Row>
-      {props.user ? (
-        <UserDashboard campaigns={props.campaigns.campaigns}
-                       user={props.user}
-                       getCampaigns={props.getCampaigns}
-                       getNonPlayerCharacters={props.getNonPlayerCharacters}
-                       getPlayerCharacters={props.getPlayerCharacters}
-                       nonPlayerCharacters={props.nonPlayerCharacters}
-                       playerCharacters={props.playerCharacters}/>
-      ) : (
-        <WelcomePage />
-      )}
-      <InfoBox {...props}/>
-    </Row>
+                 description={'Dungeon Master\'s Campaign Manager is a free resource for DMs to manage their campaigns, adventures, and NPCs.'}
+                 breadcrumbs={[]}>
+    <div>
+      <PageTitle title={'Dungeon Master\'s Campaign Manager'}/>
+      <Row>
+        {props.user ? (
+          <UserDashboard campaigns={props.campaigns.campaigns}
+                         user={props.user}
+                         getCampaigns={props.getCampaigns}
+                         getNonPlayerCharacters={props.getNonPlayerCharacters}
+                         getPlayerCharacters={props.getPlayerCharacters}
+                         nonPlayerCharacters={props.nonPlayerCharacters}
+                         playerCharacters={props.playerCharacters}/>
+        ) : (
+          <WelcomePage />
+        )}
+        <InfoBox {...props}/>
+      </Row>
+    </div>
   </PageContainer>
 );
 

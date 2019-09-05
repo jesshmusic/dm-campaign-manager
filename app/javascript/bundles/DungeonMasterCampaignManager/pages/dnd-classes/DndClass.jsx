@@ -15,6 +15,8 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import ListGroup from 'react-bootstrap/ListGroup';
 import ListGroupItem from 'react-bootstrap/ListGroupItem';
+import Container from 'react-bootstrap/Container';
+import PageTitle from '../../components/layout/PageTitle';
 
 class DndClass extends React.Component {
   constructor (props) {
@@ -32,47 +34,43 @@ class DndClass extends React.Component {
       <PageContainer user={user}
                      flashMessages={flashMessages}
                      pageTitle={dndClassTitle}
-                     description={`DndClass: ${dndClassTitle}. Dungeon Master's Campaign Manager is a free resource for DMs to manage their dndClasses, adventures, and NPCs.`}>
-        <div>
-          <Breadcrumb>
-            <BreadcrumbLink to='/' title={'Home'} />
-            <BreadcrumbLink to='/app/classes' title={'DndClasses'} />
-            <Breadcrumb.Item active>{dndClass ? dndClass.name : 'Class'}</Breadcrumb.Item>
-          </Breadcrumb>
-          { dndClass ? (
-            <Row>
-              <Col>
-                <h2>Proficiencies</h2>
-                <ListGroup>
-                  {dndClass.proficiencies.map((prof, index) => (
-                    <ListGroupItem key={index}>
-                      <strong>{prof.name}</strong> - type: {prof.profType}
-                    </ListGroupItem>
-                  ))}
-                </ListGroup>
-              </Col>
-              <Col>
-                <h2>Proficiency Choices</h2>
-                <ListGroup>
-                  {dndClass.proficiencyChoices.map((profChoice, index) => (
-                    <ListGroupItem key={index}>
-                      <strong>Choose {profChoice.numChoices} from </strong>
-                      <ListGroup>
-                        {profChoice.proficiencies.map((prof, index) => (
-                          <ListGroupItem key={index}>
-                            <strong>{prof.name}</strong> - type: {prof.profType}
-                          </ListGroupItem>
-                        ))}
-                      </ListGroup>
-                    </ListGroupItem>
-                  ))}
-                </ListGroup>
-              </Col>
-            </Row>
-          ) : (
-            <Spinner animation="border" variant="primary" />
-          )}
-        </div>
+                     description={`DndClass: ${dndClassTitle}. Dungeon Master's Campaign Manager is a free resource for DMs to manage their dndClasses, adventures, and NPCs.`}
+                     breadcrumbs={[{url: '/app/classes', isActive: false, title: 'Character Classes'},
+                       {url: null, isActive: true, title: dndClassTitle}]}>
+        <PageTitle title={'Character Classes'}/>
+        { dndClass ? (
+          <Row>
+            <Col>
+              <h2>Proficiencies</h2>
+              <ListGroup>
+                {dndClass.proficiencies.map((prof, index) => (
+                  <ListGroupItem key={index}>
+                    <strong>{prof.name}</strong> - type: {prof.profType}
+                  </ListGroupItem>
+                ))}
+              </ListGroup>
+            </Col>
+            <Col>
+              <h2>Proficiency Choices</h2>
+              <ListGroup>
+                {dndClass.proficiencyChoices.map((profChoice, index) => (
+                  <ListGroupItem key={index}>
+                    <strong>Choose {profChoice.numChoices} from </strong>
+                    <ListGroup>
+                      {profChoice.proficiencies.map((prof, index) => (
+                        <ListGroupItem key={index}>
+                          <strong>{prof.name}</strong> - type: {prof.profType}
+                        </ListGroupItem>
+                      ))}
+                    </ListGroup>
+                  </ListGroupItem>
+                ))}
+              </ListGroup>
+            </Col>
+          </Row>
+        ) : (
+          <Spinner animation="border" variant="primary" />
+        )}
       </PageContainer>
     );
   }

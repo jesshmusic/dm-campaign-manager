@@ -10,6 +10,7 @@ import rest from '../../actions/api';
 
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import CampaignsList from './partials/CampaignsList';
+import PageTitle from '../../components/layout/PageTitle';
 
 class Campaigns extends React.Component {
   constructor (props) {
@@ -25,19 +26,12 @@ class Campaigns extends React.Component {
       <PageContainer user={this.props.user}
                      flashMessages={this.props.flashMessages}
                      pageTitle={'Campaigns'}
-                     description={'All D&D campaigns. Dungeon Master\'s Campaign Manager is a free resource for DMs to manage their campaigns, adventures, and NPCs.'}>
-        <div>
-          <Breadcrumb>
-            <BreadcrumbLink to='/' title={'Home'} />
-            <Breadcrumb.Item active>Campaigns</Breadcrumb.Item>
-          </Breadcrumb>
-          {this.props.user && this.props.campaigns.campaigns ? (
-            <div>
-              <h2>My Campaigns</h2>
-              <CampaignsList campaigns={this.props.campaigns.campaigns}/>
-            </div>
-          ) : null}
-        </div>
+                     description={'All D&D campaigns. Dungeon Master\'s Campaign Manager is a free resource for DMs to manage their campaigns, adventures, and NPCs.'}
+                     breadcrumbs={[{url: null, isActive: true, title: 'Campaigns'}]}>
+        <PageTitle title={'My Campaigns'}/>
+        {this.props.user && this.props.campaigns.campaigns ? (
+          <CampaignsList campaigns={this.props.campaigns.campaigns}/>
+        ) : null}
       </PageContainer>
     );
   }
