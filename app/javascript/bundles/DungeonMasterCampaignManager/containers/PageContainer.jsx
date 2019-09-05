@@ -24,7 +24,7 @@ const PageContainer = (props) => {
       <MenuBar user={user}/>
       <HeroBanner />
       <FlashMessages messages={flashMessages}/>
-      <Container>
+      <Container fluid={props.fluid}>
         <h1>{pageTitle}</h1>
         {children}
       </Container>
@@ -36,6 +36,7 @@ const PageContainer = (props) => {
 PageContainer.propTypes = {
   children: PropTypes.element,
   flashMessages: PropTypes.array,
+  fluid: PropTypes.bool,
   pageTitle: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
   user: PropTypes.object,

@@ -18,6 +18,8 @@ import ListGroupItem from 'react-bootstrap/ListGroupItem';
 import Container from 'react-bootstrap/Container';
 import { Link } from '@reach/router';
 import CharactersList from '../characters/partials/CharactersList';
+import AdventuresList from '../adventures/AdventuresList';
+import Button from 'react-bootstrap/Button';
 
 class Campaign extends React.Component {
   constructor (props) {
@@ -30,11 +32,13 @@ class Campaign extends React.Component {
 
   render () {
     const { user, flashMessages, campaign } = this.props;
+    const isUsersCampaign = user && campaign && user.id === campaign.dungeonMaster.id;
     const campaignTitle = campaign ? campaign.name : 'Campaign Loading...';
     return (
       <PageContainer user={user}
                      flashMessages={flashMessages}
                      pageTitle={campaignTitle}
+                     fluid
                      description={`Campaign: ${campaignTitle}. Dungeon Master's Campaign Manager is a free resource for DMs to manage their campaigns, adventures, and NPCs.`}>
         <div>
           <Breadcrumb>
@@ -45,36 +49,47 @@ class Campaign extends React.Component {
           { campaign ? (
             <Container>
               <Row>
-                <Col>
+                <Col sm={7}>
                   <ReactMarkdown source={campaign.description} />
+                  <h3>Adventures</h3>
+                  <AdventuresList adventures={campaign.adventures} />
+                  <Button variant={'secondary'} block>New Adventure</Button>
                 </Col>
-                <Col>
-                  <h3>Events</h3>
-                  <ListGroup variant="flush">
-                    {campaign.worldEvents.map((worldEvent, index) =>
-                      <ListGroupItem key={index}>
-                        <h4 className={'h6'}><strong>{worldEvent.when}</strong> -  {worldEvent.name}</h4>
-                        <p>{worldEvent.description}</p>
-                      </ListGroupItem>
-                    )}
-                  </ListGroup>
-                  <h3>World Locations</h3>
-                  <ListGroup variant="flush">
-                    {campaign.worldLocations.map((location, index) =>
-                      <ListGroupItem key={index}>
-                        <h4 className={'h6'}>{location.name}</h4>
-                        <p>{location.description}</p>
-                      </ListGroupItem>
-                    )}
-                  </ListGroup>
-                  <h3>Player Characters</h3>
-                  <CharactersList characters={campaign.pcs} small/>
-                  <h3>Non-player Characters</h3>
-                  <CharactersList characters={campaign.npcs} small/>
-                </Col>
-              </Row>
-              <Row>
-                <Col>
+                <Col sm={5}>
+                  <div className={'mb-4'}>
+                    <h3>Events</h3>
+                    <ListGroup variant="flush">
+                      {campaign.worldEvents.map((worldEvent, index) =>
+                        <ListGroupItem key={index}>
+                          <h4 className={'h6'}><strong>{worldEvent.when}</strong> -  {worldEvent.name}</h4>
+                          <p>{worldEvent.description}</p>
+                        </ListGroupItem>
+                      )}
+                    </ListGroup>
+                    <Button variant={'info'} block>New World Location</Button>
+                  </div>
+                  <div className={'mb-4'}>
+                    <h3>World Locations</h3>
+                    <ListGroup variant="flush">
+                      {campaign.worldLocations.map((location, index) =>
+                        <ListGroupItem key={index}>
+                          <h4 className={'h6'}>{location.name}</h4>
+                          <p>{location.description}</p>
+                        </ListGroupItem>
+                      )}
+                    </ListGroup>
+                    <Button variant={'info'} block>New Event</Button>
+                  </div>
+                  <div className={'mb-4'}>
+                    <h3>Player Characters</h3>
+                    <CharactersList characters={campaign.pcs} small/>
+                    <Button variant={'success'} block>New PC</Button>
+                  </div>
+                  <div className={'mb-4'}>
+                    <h3>Non-player Characters</h3>
+                    <CharactersList characters={campaign.npcs} small/>
+                    <Button variant={'success'} block>New NPC</Button>
+                  </div>
                 </Col>
               </Row>
               <Row>
