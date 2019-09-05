@@ -112,40 +112,38 @@ class EditCampaign extends React.Component {
                            <Form.Row>
                              <FormTextArea label={'Description'} colWidth={'12'} name={'description'}/>
                            </Form.Row>
-                           <h2>World Locations</h2>
-                           <Form.Row>
-                             <ButtonGroup aria-label="World Locations Actions">
-                               <Button type="button" onClick={() => push('worldLocations', undefined)} variant={'info'}>Add World Location</Button>
-                               <Button type="button" onClick={() => pop('worldLocations')} variant={'warning'}>Remove World Location</Button>
-                             </ButtonGroup>
-                           </Form.Row>
-                           <FieldArray name="worldLocations">
-                             {({ fields }) =>
-                               fields.map((world_location, index) => (!fields.value[index]._destroy ? (
-                                 <WorldLocationFields location={world_location}
-                                                      fields={fields}
-                                                      index={index}
-                                                      key={index} />
-                               ) : null))
-                             }
-                           </FieldArray>
-                           <h2>World Events</h2>
-                           <Form.Row>
-                             <ButtonGroup aria-label="World Events Actions">
-                               <Button type="button" onClick={() => push('worldEvents', undefined)} variant={'info'}>Add World Event</Button>
-                               <Button type="button" onClick={() => pop('worldEvents')} variant={'warning'}>Remove World Event</Button>
-                             </ButtonGroup>
-                           </Form.Row>
-                           <FieldArray name="worldEvents">
-                             {({ fields }) =>
-                               fields.map((event, index) => (!fields.value[index]._destroy ? (
-                                 <WorldEventFields event={event}
-                                                   fields={fields}
-                                                   index={index}
-                                                   key={index} />
-                               ) : null))
-                             }
-                           </FieldArray>
+                           <div className={'my-4 py-4 border-top'}>
+                             <h2>World Locations</h2>
+                             <FieldArray name="worldLocations">
+                               {({ fields }) =>
+                                 fields.map((world_location, index) => (!fields.value[index] || !fields.value[index]._destroy ? (
+                                   <WorldLocationFields location={world_location}
+                                                        fields={fields}
+                                                        index={index}
+                                                        key={index} />
+                                 ) : null))
+                               }
+                             </FieldArray>
+                             <Form.Row>
+                               <Button type="button" onClick={() => push('worldLocations', undefined)} variant={'info'} block>Add World Location</Button>
+                             </Form.Row>
+                           </div>
+                           <div className={'my-4 py-4 border-top border-bottom'}>
+                             <h2>World Events</h2>
+                             <FieldArray name="worldEvents">
+                               {({ fields }) =>
+                                 fields.map((event, index) => (!fields.value[index] || !fields.value[index]._destroy ? (
+                                   <WorldEventFields event={event}
+                                                     fields={fields}
+                                                     index={index}
+                                                     key={index} />
+                                 ) : null))
+                               }
+                             </FieldArray>
+                             <Form.Row>
+                               <Button type="button" onClick={() => push('worldEvents', undefined)} variant={'info'} block>Add World Event</Button>
+                             </Form.Row>
+                           </div>
                            <Form.Row>
                              <ButtonGroup aria-label="Campaign actions">
                                <Button type="submit" disabled={submitting}>Update Campaign</Button>

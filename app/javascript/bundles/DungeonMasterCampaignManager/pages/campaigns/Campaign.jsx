@@ -32,7 +32,6 @@ class Campaign extends React.Component {
 
   render () {
     const { user, flashMessages, campaign } = this.props;
-    const isUsersCampaign = user && campaign && user.id === campaign.dungeonMaster.id;
     const campaignTitle = campaign ? campaign.name : 'Campaign Loading...';
     return (
       <PageContainer user={user}
@@ -48,6 +47,16 @@ class Campaign extends React.Component {
           </Breadcrumb>
           { campaign ? (
             <Container>
+              <Row>
+                <Col className={'d-flex justify-content-between align-items-center'}>
+                  <span className={'h2'}>Campaign: {campaign.name}</span>
+                  {user && user.id === campaign.dungeonMaster.id ? (
+                    <Link to={`/app/campaigns/${campaign.slug}/edit`} className={'btn btn-primary'}>
+                      Edit Campaign
+                    </Link>
+                  ) : null }
+                </Col>
+              </Row>
               <Row>
                 <Col sm={7}>
                   <ReactMarkdown source={campaign.description} />
@@ -66,7 +75,6 @@ class Campaign extends React.Component {
                         </ListGroupItem>
                       )}
                     </ListGroup>
-                    <Button variant={'info'} block>New World Location</Button>
                   </div>
                   <div className={'mb-4'}>
                     <h3>World Locations</h3>
@@ -78,7 +86,6 @@ class Campaign extends React.Component {
                         </ListGroupItem>
                       )}
                     </ListGroup>
-                    <Button variant={'info'} block>New Event</Button>
                   </div>
                   <div className={'mb-4'}>
                     <h3>Player Characters</h3>
@@ -90,15 +97,6 @@ class Campaign extends React.Component {
                     <CharactersList characters={campaign.npcs} small/>
                     <Button variant={'success'} block>New NPC</Button>
                   </div>
-                </Col>
-              </Row>
-              <Row>
-                <Col>
-                  {user && user.id === campaign.dungeonMaster.id ? (
-                    <Link to={`/app/campaigns/${campaign.slug}/edit`} className={'btn btn-primary'}>
-                      Edit Campaign
-                    </Link>
-                  ) : null }
                 </Col>
               </Row>
             </Container>
