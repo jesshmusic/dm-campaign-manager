@@ -65,6 +65,7 @@ class EditCampaign extends React.Component {
                      pageTitle={campaignTitle}
                      description={`Edit Campaign: ${campaignTitle}. Dungeon Master's Campaign Manager is a free resource for DMs to manage their campaigns, adventures, and NPCs.`}
                      breadcrumbs={[{url: '/app/campaigns', isActive: false, title: 'Campaigns'},
+                       {url: `/app/campaigns/${this.props.campaignSlug}`, isActive: false, title: currentCampaign.name},
                        {url: null, isActive: true, title: campaignTitle}]}>
         <PageTitle title={campaignTitle}/>
         { currentCampaign ? (
@@ -80,6 +81,7 @@ class EditCampaign extends React.Component {
       </PageContainer>
     );
   }
+
 }
 
 EditCampaign.propTypes = {

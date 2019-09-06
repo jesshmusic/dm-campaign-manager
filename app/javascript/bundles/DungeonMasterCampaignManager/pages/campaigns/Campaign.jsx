@@ -9,8 +9,6 @@ const ReactMarkdown = require('react-markdown');
 // Container
 import PageContainer from '../../containers/PageContainer.jsx';
 import rest from '../../actions/api';
-import Breadcrumb from 'react-bootstrap/Breadcrumb';
-import BreadcrumbLink from '../../components/layout/BreadcrumbLink';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import ListGroup from 'react-bootstrap/ListGroup';
@@ -81,7 +79,7 @@ class Campaign extends React.Component {
                 <div className={'mb-4'}>
                   <h3>Player Characters</h3>
                   <CharactersList characters={campaign.pcs} small/>
-                  <Button variant={'success'} block>New PC</Button>
+                  <Link to={`/app/campaigns/${campaign.id}/pcs/new`} className={'btn btn-success btn-block'}>New PC</Link>
                 </div>
                 <div className={'mb-4'}>
                   <h3>Non-player Characters</h3>

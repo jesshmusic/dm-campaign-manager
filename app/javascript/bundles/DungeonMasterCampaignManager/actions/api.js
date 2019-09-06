@@ -43,11 +43,37 @@ export default reduxApi({
   getCampaigns: {
     url: '/v1/campaigns.json',
   },
+  createNonPlayerCharacter: {
+    url: '/v1/non_player_characters/',
+    options () {
+      const headers = getHeaders();
+      return {
+        method: 'post',
+        headers,
+      };
+    },
+    postfetch: [({data}) => {
+      navigate(`/app/characters/${data.slug}`);
+    }],
+  },
   getNonPlayerCharacter: {
     url: '/v1/non_player_characters/:slug.json',
   },
   getNonPlayerCharacters: {
     url: '/v1/non_player_characters.json',
+  },
+  createPlayerCharacter: {
+    url: '/v1/player_characters/',
+    options () {
+      const headers = getHeaders();
+      return {
+        method: 'post',
+        headers,
+      };
+    },
+    postfetch: [({data}) => {
+      navigate(`/app/characters/${data.slug}`);
+    }],
   },
   getPlayerCharacter: {
     url: '/v1/player_characters/:slug.json',
