@@ -13,6 +13,7 @@ import Button from 'react-bootstrap/Button';
 import WorldEventFields from './WorldEventFields';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import {Form as FinalForm} from 'react-final-form';
+import Col from 'react-bootstrap/Col';
 
 const CampaignForm = ({arrayMutators, initialValues, onFormSubmit, submitButtonText, validated, validateForm }) => (
   <FinalForm onSubmit={onFormSubmit}
@@ -42,39 +43,37 @@ const CampaignForm = ({arrayMutators, initialValues, onFormSubmit, submitButtonT
                  <Form.Row>
                    <FormTextArea label={'Description'} colWidth={'12'} name={'description'}/>
                  </Form.Row>
-                 <div className={'my-4 py-4 border-top'}>
-                   <h2>World Locations</h2>
-                   <FieldArray name="worldLocations">
-                     {({ fields }) =>
-                       // eslint-disable-next-line max-len
-                       fields.map((world_location, index) => (!fields.value[index] || !fields.value[index]._destroy ? (
-                         <WorldLocationFields location={world_location}
-                                              fields={fields}
-                                              index={index}
-                                              key={index} />
-                       ) : null))
-                     }
-                   </FieldArray>
-                   <Form.Row>
+                 <Form.Row className={'my-4 py-4 border-top'}>
+                   <Col xs={12} lg={6}>
+                     <h2>World Locations</h2>
+                     <FieldArray name="worldLocations">
+                       {({ fields }) =>
+                         // eslint-disable-next-line max-len
+                         fields.map((world_location, index) => (!fields.value[index] || !fields.value[index]._destroy ? (
+                           <WorldLocationFields location={world_location}
+                                                fields={fields}
+                                                index={index}
+                                                key={index} />
+                         ) : null))
+                       }
+                     </FieldArray>
                      <Button type="button" onClick={() => push('worldLocations', undefined)} variant={'info'} block>Add World Location</Button>
-                   </Form.Row>
-                 </div>
-                 <div className={'my-4 py-4 border-top border-bottom'}>
-                   <h2>World Events</h2>
-                   <FieldArray name="worldEvents">
-                     {({ fields }) =>
-                       fields.map((event, index) => (!fields.value[index] || !fields.value[index]._destroy ? (
-                         <WorldEventFields event={event}
-                                           fields={fields}
-                                           index={index}
-                                           key={index} />
-                       ) : null))
-                     }
-                   </FieldArray>
-                   <Form.Row>
+                   </Col>
+                   <Col xs={12} lg={6}>
+                     <h2>World Events</h2>
+                     <FieldArray name="worldEvents">
+                       {({ fields }) =>
+                         fields.map((event, index) => (!fields.value[index] || !fields.value[index]._destroy ? (
+                           <WorldEventFields event={event}
+                                             fields={fields}
+                                             index={index}
+                                             key={index} />
+                         ) : null))
+                       }
+                     </FieldArray>
                      <Button type="button" onClick={() => push('worldEvents', undefined)} variant={'info'} block>Add World Event</Button>
-                   </Form.Row>
-                 </div>
+                   </Col>
+                 </Form.Row>
                  <Form.Row>
                    <ButtonGroup aria-label="Campaign actions">
                      <Button type="submit" disabled={submitting}>{submitButtonText}</Button>
