@@ -78,12 +78,12 @@ class Campaign extends React.Component {
                 </div>
                 <div className={'mb-4'}>
                   <h3>Player Characters</h3>
-                  <CharactersList characters={campaign.pcs} small/>
+                  <CharactersList campaign={campaign} characters={campaign.pcs} small/>
                   <Link to={`/app/campaigns/${campaign.id}/pcs/new`} className={'btn btn-success btn-block'}>New PC</Link>
                 </div>
                 <div className={'mb-4'}>
                   <h3>Non-player Characters</h3>
-                  <CharactersList characters={campaign.npcs} small/>
+                  <CharactersList campaign={campaign} characters={campaign.npcs} small/>
                   <Button variant={'success'} block>New NPC</Button>
                 </div>
               </Col>

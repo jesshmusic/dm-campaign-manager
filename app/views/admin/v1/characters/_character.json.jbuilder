@@ -29,4 +29,6 @@ json.inventory character.character_items do |character_item|
   json.partial! 'admin/v1/items/item_summary', item: character_item.item
 end
 
+json.user_id character.user_id
+
 json.url v1_character_url(character, format: :json)

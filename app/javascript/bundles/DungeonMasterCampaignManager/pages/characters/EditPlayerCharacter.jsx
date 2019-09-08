@@ -5,8 +5,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import rest from '../../actions/api';
-import arrayMutators from 'final-form-arrays';
 import {connect} from 'react-redux';
+
+import arrayMutators from 'final-form-arrays';
 import PageContainer from '../../containers/PageContainer';
 import CharacterForm from './partials/CharacterForm';
 import PageTitle from '../../components/layout/PageTitle';
@@ -67,7 +68,7 @@ class EditPlayerCharacter extends React.Component {
 }
 
 EditPlayerCharacter.propTypes = {
-  campaignId: PropTypes.string,
+  campaignId: PropTypes.string.isRequired,
   playerCharacter: PropTypes.object.isRequired,
   getPlayerCharacter: PropTypes.func.isRequired,
   updatePlayerCharacter: PropTypes.func.isRequired,

@@ -7,10 +7,14 @@ import PropTypes from 'prop-types';
 import Card from 'react-bootstrap/Card';
 import { Link } from '@reach/router';
 
-const CharacterCard = ({character, small}) => (
+const CharacterCard = ({campaign, character, small}) => (
   <Card className={'mb-4'}>
     <Card.Body>
-      <Card.Title>{character.name} {character.type === 'NonPlayerCharacter' ? <small className="text-muted">&ldquo;{character.role}&rdquo;</small> : ''} </Card.Title>
+      <Card.Title>
+        <Link to={character.type === 'PlayerCharacter' ? `/app/campaigns/${campaign.id}/pcs/${character.slug}` : `/app/campaigns/${campaign.id}/npcs/${character.slug}`}>
+          {character.name} {character.type === 'NonPlayerCharacter' ? <small className="text-muted">&ldquo;{character.role}&rdquo;</small> : ''}
+        </Link>
+      </Card.Title>
       <Card.Subtitle className="text-muted">{character.classes}</Card.Subtitle>
       {small ? null : (
         <div>
@@ -25,13 +29,14 @@ const CharacterCard = ({character, small}) => (
     </Card.Body>
     {small ? null : (
       <Card.Footer>
-        <Link to={`/app/characters/${character.slug}`} className='btn btn-primary'>Details</Link>
+        <Link to={character.type === 'PlayerCharacter' ? `/app/campaigns/${campaign.id}/pcs/${character.slug}` : `/app/campaigns/${campaign.id}/npcs/${character.slug}`} className='btn btn-primary'>Details</Link>
       </Card.Footer>
     )}
   </Card>
 );
 
 CharacterCard.propTypes = {
+  campaign: PropTypes.object.isRequired,
   character: PropTypes.object.isRequired,
   small: PropTypes.bool,
 };

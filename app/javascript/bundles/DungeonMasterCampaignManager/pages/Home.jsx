@@ -23,6 +23,8 @@ import DndClasses from './dnd-classes/DndClasses';
 import NewCampaign from './campaigns/NewCampaign';
 import NewPlayerCharacter from './characters/NewPlayerCharacter';
 import EditPlayerCharacter from './characters/EditPlayerCharacter';
+import PlayerCharacter from './characters/PlayerCharacter';
+import NonPlayerCharacter from './characters/NonPlayerCharacter';
 
 const store = (props) => configureStore({
   reducer: rootReducer,
@@ -75,6 +77,8 @@ const Home = (props) => (
       <Campaign path='/app/campaigns/:campaignSlug'/>
       <NewCampaign path='/app/campaigns/new'/>
       <EditCampaign path='/app/campaigns/:campaignSlug/edit'/>
+      <PlayerCharacter path='/app/campaigns/:campaignId/pcs/:pcSlug' />
+      <NonPlayerCharacter path='/app/campaigns/:campaignId/npcs/:npcSlug' />
       <EditPlayerCharacter path='/app/campaigns/:campaignId/pcs/:pcSlug/edit'/>
       <NewPlayerCharacter path='/app/campaigns/:campaignId/pcs/new' />
       <DndClass path='/app/classes/:dndClassSlug' />
