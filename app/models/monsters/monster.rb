@@ -76,6 +76,7 @@ class Monster < ApplicationRecord
     monster_desc = [
       '<div class="p-3">',
       "<h5><em>#{size}</em> #{monster_type} #{monster_subtype if monster_subtype && monster_subtype != ''}</h5>",
+      "<h6>Alignment: <strong>#{alignment}</strong></h6>",
       "<h6>Challenge Rating: #{challenge_rating}</h6>",
       "<p><strong>Armor Class</strong>  #{armor_class}</p>",
       "<p><strong>Hit Points</strong>  #{hit_points}</p>",
