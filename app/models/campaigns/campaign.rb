@@ -25,10 +25,8 @@ class Campaign < ApplicationRecord
     self.slug = generate_slug
   end
 
-  has_many :campaign_characters, dependent: :destroy
-  has_many :characters, through: :campaign_characters
-
   has_many :adventures, dependent: :destroy
+  has_many :characters, dependent: :destroy
   has_many :world_locations, dependent: :destroy
   has_many :world_events, dependent: :destroy
 

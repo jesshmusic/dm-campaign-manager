@@ -10,7 +10,7 @@
   </nav>
 
   <h1>Characters</h1>
-  <%= render 'shared/search_form', url: v1_characters_path %>
+  <%= render 'shared/search_form', url: v1_campaign_characters_path(@campaign) %>
 
   <table>
     <thead>
@@ -19,7 +19,7 @@
         <th>Classes</th>
         <th>Race</th>
         <th>Player</th>
-        <th>Campaigns</th>
+        <th>Campaign</th>
         <th></th>
       </tr>
     </thead>
@@ -31,11 +31,11 @@
           <td><%= character.character_classes.map {|character_class| "#{character_class.dnd_class.name} - #{character_class.level}"}.join(', ') %></td>
           <td><%= character.race %></td>
           <td><%= character.user.name %></td>
-          <td><%= character.campaigns.count %></td>
+          <td><%= character.campaign.name %></td>
           <td>
-            <%= link_to 'Show', v1_character_path(character), class: "btn btn-sm btn-primary" %>
-            <%= link_to 'Edit', edit_v1_character_path(character), class: "btn btn-sm btn-success" if policy(character).edit? %>
-            <%= link_to 'Destroy', v1_character_path(character), class: "btn btn-sm btn-danger", method: :delete, data: { confirm: 'Are you sure?' } if policy(character).destroy? %>
+            <%= link_to 'Show',  v1_campaign_character_path(@campaign, character), class: "btn btn-sm btn-primary" %>
+            <%= link_to 'Edit', edit_ v1_campaign_character_path(@campaign, character), class: "btn btn-sm btn-success" if policy(character).edit? %>
+            <%= link_to 'Destroy',  v1_campaign_character_path(@campaign, character), class: "btn btn-sm btn-danger", method: :delete, data: { confirm: 'Are you sure?' } if policy(character).destroy? %>
           </td>
         </tr>
       <% end %>

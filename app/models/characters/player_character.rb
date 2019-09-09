@@ -34,12 +34,16 @@
 #  xp                 :integer          default(0), not null
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
-#  user_id            :bigint
+#  campaign_id        :bigint
 #
 # Indexes
 #
-#  index_characters_on_slug     (slug)
-#  index_characters_on_user_id  (user_id)
+#  index_characters_on_campaign_id  (campaign_id)
+#  index_characters_on_slug         (slug)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (campaign_id => campaigns.id)
 #
 
 

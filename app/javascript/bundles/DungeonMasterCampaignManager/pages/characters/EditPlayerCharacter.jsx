@@ -17,14 +17,13 @@ class EditPlayerCharacter extends React.Component {
     currentPlayerCharacter: {
       name: '',
       race: '',
-      campaignIds: this.props.campaignId ? [this.props.campaignId] : [],
     },
     validated: false,
   };
 
   componentDidMount () {
     this.props.getDndClasses();
-    this.props.getPlayerCharacter(this.props.pcSlug);
+    this.props.getPlayerCharacter(this.props.campaignSlug, this.props.playerCharacter.slug);
   }
 
   componentDidUpdate (prevProps, prevState) {
@@ -68,7 +67,7 @@ class EditPlayerCharacter extends React.Component {
 }
 
 EditPlayerCharacter.propTypes = {
-  campaignId: PropTypes.string.isRequired,
+  campaignSlug: PropTypes.string.isRequired,
   playerCharacter: PropTypes.object.isRequired,
   getPlayerCharacter: PropTypes.func.isRequired,
   updatePlayerCharacter: PropTypes.func.isRequired,
@@ -90,11 +89,11 @@ function mapDispatchToProps (dispatch) {
     getDndClasses: () => {
       dispatch(rest.actions.getDndClasses());
     },
-    getPlayerCharacter: (characterSlug) => {
-      dispatch(rest.actions.getPlayerCharacter({slug: characterSlug}));
+    getPlayerCharacter: (campaignSlug, characterSlug) => {
+      dispatch(rest.actions.getPlayerCharacter({campaign_slug: campaignSlug, slug: characterSlug}));
     },
-    updatePlayerCharacter: (newCharacter, characterSlug) => {
-      dispatch(rest.actions.updatePlayerCharacter({slug: characterSlug}, {body: JSON.stringify({newCharacter})}));
+    updatePlayerCharacter: (newCharacter, campaignSlug, characterSlug) => {
+      dispatch(rest.actions.updatePlayerCharacter({campaign_slug: campaignSlug, slug: characterSlug}, {body: JSON.stringify({newCharacter})}));
     },
   };
 }

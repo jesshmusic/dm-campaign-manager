@@ -6,7 +6,6 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Alert from 'react-bootstrap/Alert';
 import CampaignsList from '../campaigns/partials/CampaignsList';
-import CharactersList from '../characters/partials/CharactersList';
 
 class UserDashboard extends React.Component {
   constructor (props) {
@@ -15,12 +14,10 @@ class UserDashboard extends React.Component {
 
   componentDidMount () {
     this.props.getCampaigns(this.props.user.id);
-    this.props.getNonPlayerCharacters(this.props.user.id);
-    this.props.getPlayerCharacters(this.props.user.id);
   }
 
   render () {
-    const {campaigns, nonPlayerCharacters, playerCharacters} = this.props;
+    const {campaigns} = this.props;
     return (
       <Col sm={8}>
         <Row>
@@ -46,10 +43,6 @@ class UserDashboard extends React.Component {
 UserDashboard.propTypes = {
   campaigns: PropTypes.array,
   getCampaigns: PropTypes.func.isRequired,
-  getNonPlayerCharacters: PropTypes.func.isRequired,
-  getPlayerCharacters: PropTypes.func.isRequired,
-  nonPlayerCharacters: PropTypes.array,
-  playerCharacters: PropTypes.array,
   user: PropTypes.object,
 };
 

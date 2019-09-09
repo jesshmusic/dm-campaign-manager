@@ -11,7 +11,7 @@ json.extract! character, :id, :name, :alignment, :proficiency, :slug, :backgroun
 json.total_level character.total_level
 json.hit_dice character.hit_dice
 json.classes character.classes
-json.campaigns_string character.campaigns_string
+json.campaign character.campaign
 
 json.character_classes character.character_classes do |character_class|
   json.dnd_class character_class.dnd_class.name
@@ -28,7 +28,3 @@ json.inventory character.character_items do |character_item|
   json.carrying character_item.carrying
   json.partial! 'admin/v1/items/item_summary', item: character_item.item
 end
-
-json.user_id character.user_id
-
-json.url v1_character_url(character, format: :json)

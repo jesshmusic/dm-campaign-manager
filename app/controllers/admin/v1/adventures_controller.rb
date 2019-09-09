@@ -52,7 +52,7 @@ module Admin::V1
 
       respond_to do |format|
         if @adventure.save
-          format.html { redirect_to campaign_adventure_url(@campaign, @adventure), notice: 'Adventure was successfully created.' }
+          format.html { redirect_to v1_campaign_adventure_url(@campaign, @adventure), notice: 'Adventure was successfully created.' }
           format.json { render :show, status: :created, location: @adventure }
         else
           format.html { render :new }
@@ -67,7 +67,7 @@ module Admin::V1
       authorize @adventure
       respond_to do |format|
         if @adventure.update(adventure_params)
-          format.html { redirect_to campaign_adventure_url(@campaign, @adventure), notice: 'Adventure was successfully updated.' }
+          format.html { redirect_to v1_campaign_adventure_url(@campaign, @adventure), notice: 'Adventure was successfully updated.' }
           format.json { render :show, status: :ok, location: @adventure }
         else
           format.html { render :edit }

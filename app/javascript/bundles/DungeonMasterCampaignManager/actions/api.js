@@ -44,7 +44,7 @@ export default reduxApi({
     url: '/v1/campaigns.json',
   },
   createNonPlayerCharacter: {
-    url: '/v1/non_player_characters/',
+    url: '/v1/campaigns/:campaign_slug/non_player_characters/',
     options () {
       const headers = getHeaders();
       return {
@@ -57,13 +57,13 @@ export default reduxApi({
     }],
   },
   getNonPlayerCharacter: {
-    url: '/v1/non_player_characters/:slug.json',
+    url: '/v1/campaigns/:campaign_slug/non_player_characters/:slug.json',
   },
   getNonPlayerCharacters: {
-    url: '/v1/non_player_characters.json',
+    url: '/v1/campaigns/:campaign_slug/non_player_characters.json',
   },
   createPlayerCharacter: {
-    url: '/v1/player_characters/',
+    url: '/v1/campaigns/:campaign_slug/player_characters/',
     options () {
       const headers = getHeaders();
       return {
@@ -76,10 +76,10 @@ export default reduxApi({
     }],
   },
   getPlayerCharacter: {
-    url: '/v1/player_characters/:slug.json',
+    url: '/v1/campaigns/:campaign_slug/player_characters/:slug.json',
   },
   getPlayerCharacters: {
-    url: '/v1/player_characters.json',
+    url: '/v1/campaigns/:campaign_slug/player_characters.json',
   },
   getDndClass: {
     url: '/v1/dnd_classes/:slug.json',

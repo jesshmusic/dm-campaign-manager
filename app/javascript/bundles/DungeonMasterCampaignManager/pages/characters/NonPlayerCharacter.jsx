@@ -14,11 +14,11 @@ import PageTitle from '../../components/layout/PageTitle';
 class NonPlayerCharacter extends React.Component {
 
   componentDidMount () {
-    this.props.getNonPlayerCharacter(this.props.npcSlug);
+    this.props.getNonPlayerCharacter(this.props.campaignSlug, this.props.npcSlug);
   }
 
   render () {
-    const { user, flashMessages, character, campaignId } = this.props;
+    const { user, flashMessages, character, campaignSlug } = this.props;
     const characterTitle = character ? character.name : 'Character Loading...';
     return (
       <PageContainer user={user}
@@ -27,14 +27,14 @@ class NonPlayerCharacter extends React.Component {
                      description={`PC: ${characterTitle}. Dungeon Master's Campaign Manager is a free resource for DMs to manage their campaigns, adventures, and NPCs.`}
                      breadcrumbs={[
                        {url: '/app/campaigns/', isActive: false, title: 'Campaigns'},
-                       {url: `/app/campaigns/${campaignId}/npcs/`, isActive: false, title: 'Non-player Characters'},
+                       {url: `/app/campaigns/${campaignSlug}/`, isActive: false, title: character ? `Campaign: ${character.campaign.name}` : 'Loading...'},
                        {url: null, isActive: true, title: characterTitle},
                      ]}>
         {character ? (
           <div>
             <PageTitle title={`Player Character: ${characterTitle}`}
                        hasButton={user && user.id === character.userId}
-                       buttonLink={`/app/campaigns/${campaignId}/npcs/${character.slug}/edit`}
+                       buttonLink={`/app/campaigns/${campaignSlug}/npcs/${character.slug}/edit`}
                        buttonTitle={'Edit NPC'}
                        buttonVariant={'primary'}/>
             <CharacterBody character={character}/>
@@ -46,7 +46,7 @@ class NonPlayerCharacter extends React.Component {
 }
 
 NonPlayerCharacter.propTypes = {
-  campaignId: PropTypes.string.isRequired,
+  campaignSlug: PropTypes.string.isRequired,
   character: PropTypes.object,
   npcSlug: PropTypes.string.isRequired,
   flashMessages: PropTypes.array,
@@ -64,9 +64,9 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    getNonPlayerCharacter: (npcSlug) => {
-      dispatch(rest.actions.getNonPlayerCharacter({slug: npcSlug}));
-    }
+    getNonPlayerCharacter: (campaignSlug, characterSlug) => {
+      dispatch(rest.actions.getNonPlayerCharacter({campaign_slug: campaignSlug, slug: characterSlug}));
+    },
   };
 }
 

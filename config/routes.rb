@@ -14,8 +14,12 @@ Rails.application.routes.draw do
         resources :adventures do
           resources :encounters
         end
+        resources :characters, param: :slug
+        # noinspection RailsParamDefResolve
+        resources :player_characters, param: :slug, controller: 'characters', type: 'PlayerCharacter'
+        # noinspection RailsParamDefResolve
+        resources :non_player_characters, param: :slug, controller: 'characters', type: 'NonPlayerCharacter'
       end
-      resources :characters, param: :slug
       get '/characters/new/generate_npc', to: 'characters#generate_npc', as: 'generate_npc'
       post '/characters/create_generated_npc', to: 'characters#create_generated_npc',
            as: 'create_generated_npc'
@@ -25,10 +29,6 @@ Rails.application.routes.draw do
       get '/random_individual_treasure',
           to: 'encounters#random_individual_treasure',
           as: 'random_individual_treasure', constraints: { format: 'json' }
-      # noinspection RailsParamDefResolve
-      resources :player_characters, param: :slug, controller: 'characters', type: 'PlayerCharacter'
-      # noinspection RailsParamDefResolve
-      resources :non_player_characters, param: :slug, controller: 'characters', type: 'NonPlayerCharacter'
       resources :dnd_classes, param: :slug
       resources :items, param: :slug
       # noinspection RailsParamDefResolve

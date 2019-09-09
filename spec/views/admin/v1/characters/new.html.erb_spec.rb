@@ -8,7 +8,7 @@ RSpec.describe "characters/new", type: :view do
   it "renders new character form" do
     render
 
-    assert_select "form[action=?][method=?]", v1_characters_path, "post" do
+    assert_select "form[action=?][method=?]", v1_campaign_characters_path(@campaign), "post" do
     end
   end
 end

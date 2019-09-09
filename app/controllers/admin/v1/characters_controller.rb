@@ -4,6 +4,7 @@ module Admin::V1
   class CharactersController < ApplicationController
     before_action :set_character, only: %i[show edit update destroy]
     before_action :authenticate_user!, except: %i[index show]
+    before_action :set_campaign
 
     # GET /characters
     # GET /characters.json
@@ -69,8 +70,15 @@ module Admin::V1
 
       respond_to do |format|
         if @character.save
-          format.html { redirect_to v1_character_path(@character), notice: ' character was successfully created.' }
-          format.json { render :show, status: :created, location: @character }
+          redirect_path = if @character.type == 'NonPlayerCharacter'
+                            v1_campaign_non_player_character_path(@campaign, @character)
+                          elsif @character.type == 'PlayerCharacter'
+                            v1_campaign_player_character_path(@campaign, @character)
+                          else
+                            v1_campaign_character_path(@campaign, @character)
+                          end
+          format.html { redirect_to redirect_path, notice: ' character was successfully created.' }
+          format.json { render :show, status: :created }
         else
           format.html { render :new }
           format.json { render json: @character.errors, status: :unprocessable_entity }
@@ -87,13 +95,20 @@ module Admin::V1
         role: character_params('NonPlayerCharacter')[:role],
         user_id: current_user.id,
         min_score: character_params('NonPlayerCharacter')[:min_score],
-        campaign_ids: character_params('NonPlayerCharacter')[:campaign_ids],
+        campaign_id: @campaign.id,
         character_classes_attributes: character_params('NonPlayerCharacter')[:character_classes_attributes]
       )
       authorize @character
       respond_to do |format|
         if @character.save
-          format.html { redirect_to v1_character_path(@character), notice: 'NPC was successfully created.' }
+          redirect_path = if @character.type == 'NonPlayerCharacter'
+                            v1_campaign_non_player_character_path(@campaign, @character)
+                          elsif @character.type == 'PlayerCharacter'
+                            v1_campaign_player_character_path(@campaign, @character)
+                          else
+                            v1_campaign_character_path(@campaign, @character)
+                          end
+          format.html { redirect_to redirect_path, notice: 'NPC was successfully created.' }
           format.json { render :show, status: :created, location: @character }
         else
           format.html { render :new }
@@ -114,8 +129,15 @@ module Admin::V1
       authorize @character
       respond_to do |format|
         if @character.update(character_params(params[:type]))
-          format.html { redirect_to v1_character_path(@character), notice: ' character was successfully updated.' }
-          format.json { render :show, status: :ok, location: @character }
+          redirect_path = if @character.type == 'NonPlayerCharacter'
+                            v1_campaign_non_player_character_path(@campaign, @character)
+                          elsif @character.type == 'PlayerCharacter'
+                            v1_campaign_player_character_path(@campaign, @character)
+                          else
+                            v1_campaign_character_path(@campaign, @character)
+                          end
+          format.html { redirect_to redirect_path, notice: ' character was successfully updated.' }
+          format.json { render :show, status: :ok }
         else
           format.html { render :edit }
           format.json { render json: @character.errors, status: :unprocessable_entity }
@@ -129,7 +151,7 @@ module Admin::V1
       authorize @character
       @character.destroy
       respond_to do |format|
-        format.html { redirect_to v1_characters_url, notice: ' character was successfully destroyed.' }
+        format.html { redirect_to v1_campaign_url(@campaign), notice: ' character was successfully destroyed.' }
         format.json { head :no_content }
       end
     end
@@ -139,6 +161,10 @@ module Admin::V1
     # Use callbacks to share common setup or constraints between actions.
     def set_character
       @character = Character.find_by(slug: params[:slug])
+    end
+
+    def set_campaign
+      @campaign = Campaign.find_by(slug: params[:campaign_slug])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

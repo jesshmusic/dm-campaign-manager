@@ -17,7 +17,3 @@ json.character_classes character.character_classes do |character_class|
   json.spell_save_dc character_class.spell_save_dc
   json.spell_attack_bonus character_class.spell_attack_bonus
 end
-
-json.user_id character.user_id
-
-json.url v1_character_url(character, format: :json)

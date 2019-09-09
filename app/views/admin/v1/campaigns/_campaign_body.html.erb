@@ -22,7 +22,7 @@
       <ul class="list-group list-group-flush">
         <% @campaign.pcs.each do |character| %>
           <li class="list-group-item">
-            <strong><%= character.name %></strong> - <%= character.classes %>
+            <%= link_to raw("<strong>#{character.name}</strong> - #{character.classes}"), v1_campaign_player_character_path(@campaign, character) %>
           </li>
         <% end %>
       </ul>
@@ -32,7 +32,7 @@
       <ul class="list-group list-group-flush">
         <% @campaign.npcs.each do |character| %>
           <li class="list-group-item">
-            <%= character.role %>: <strong><%= character.name %></strong> - <%= character.classes %>
+            <%= link_to raw("#{character.role}: <strong>#{character.name}</strong> - #{character.classes}"), v1_campaign_player_character_path(@campaign, character) %>
           </li>
         <% end %>
       </ul>
@@ -112,8 +112,8 @@
 
   <% if current_user == @campaign.user %>
     <%= link_to 'New Adventure', new_v1_campaign_adventure_path(@campaign), class: "btn btn-lg btn-success" if policy(Adventure).new? %>
-    <%= link_to 'New Player Character', new_v1_player_character_path, class: "btn btn-lg btn-success" if policy(PlayerCharacter).new? %>
-    <%= link_to 'New Non-player Character', new_v1_non_player_character_path(@campaign), class: "btn btn-lg btn-danger" if policy(NonPlayerCharacter).new? %>
+    <%= link_to 'New Player Character', new_v1_campaign_player_character_path(@campaign), class: "btn btn-lg btn-success" if policy(PlayerCharacter).new? %>
+    <%= link_to 'New Non-player Character', new_v1_campaign_non_player_character_path(@campaign), class: "btn btn-lg btn-danger" if policy(NonPlayerCharacter).new? %>
     <%= link_to 'Generate NPC', v1_generate_npc_path(@campaign), class: "btn btn-lg btn-danger" if policy(Character).generate_npc? %>
     <div class="d-flex align-items-center justify-content-start py-3 btn-group">
       <%= link_to 'Edit', edit_v1_campaign_path(@campaign), class: "btn btn-success" if policy(@campaign).edit? %>

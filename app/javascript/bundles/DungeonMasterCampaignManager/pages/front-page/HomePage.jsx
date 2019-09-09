@@ -24,11 +24,7 @@ const HomePage = (props) => (
         {props.user ? (
           <UserDashboard campaigns={props.campaigns.campaigns}
                          user={props.user}
-                         getCampaigns={props.getCampaigns}
-                         getNonPlayerCharacters={props.getNonPlayerCharacters}
-                         getPlayerCharacters={props.getPlayerCharacters}
-                         nonPlayerCharacters={props.nonPlayerCharacters}
-                         playerCharacters={props.playerCharacters}/>
+                         getCampaigns={props.getCampaigns}/>
         ) : (
           <WelcomePage />
         )}
@@ -43,14 +39,10 @@ HomePage.propTypes = {
   campaignsCount: PropTypes.number.isRequired,
   flashMessages: PropTypes.array,
   getCampaigns: PropTypes.func.isRequired,
-  getNonPlayerCharacters: PropTypes.func.isRequired,
-  getPlayerCharacters: PropTypes.func.isRequired,
   itemsCount: PropTypes.number.isRequired,
   monstersCount: PropTypes.number.isRequired,
   npcsCount: PropTypes.number.isRequired,
   pcsCount: PropTypes.number.isRequired,
-  nonPlayerCharacters: PropTypes.array,
-  playerCharacters: PropTypes.array,
   spellsCount: PropTypes.number.isRequired,
   user: PropTypes.object,
 };
@@ -64,8 +56,6 @@ function mapStateToProps (state) {
     monstersCount: state.monsters.count,
     npcsCount: state.nonPlayerCharacters.count,
     pcsCount: state.playerCharacters.count,
-    nonPlayerCharacters: state.nonPlayerCharacters.characters,
-    playerCharacters: state.playerCharacters.characters,
     spellsCount: state.spells.count,
     user: state.users.user,
     usersCount: state.users.count,
@@ -76,12 +66,6 @@ function mapDispatchToProps (dispatch) {
   return {
     getCampaigns: (user_id) => {
       dispatch(rest.actions.getCampaigns({user_id}));
-    },
-    getNonPlayerCharacters: (user_id) => {
-      dispatch(rest.actions.getNonPlayerCharacters({user_id}));
-    },
-    getPlayerCharacters: (user_id) => {
-      dispatch(rest.actions.getPlayerCharacters({user_id}));
     },
   };
 }

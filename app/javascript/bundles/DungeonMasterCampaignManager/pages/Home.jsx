@@ -77,10 +77,10 @@ const Home = (props) => (
       <Campaign path='/app/campaigns/:campaignSlug'/>
       <NewCampaign path='/app/campaigns/new'/>
       <EditCampaign path='/app/campaigns/:campaignSlug/edit'/>
-      <PlayerCharacter path='/app/campaigns/:campaignId/pcs/:pcSlug' />
-      <NonPlayerCharacter path='/app/campaigns/:campaignId/npcs/:npcSlug' />
-      <EditPlayerCharacter path='/app/campaigns/:campaignId/pcs/:pcSlug/edit'/>
-      <NewPlayerCharacter path='/app/campaigns/:campaignId/pcs/new' />
+      <PlayerCharacter path='/app/campaigns/:campaignSlug/pcs/:pcSlug' />
+      <NonPlayerCharacter path='/app/campaigns/:campaignSlug/npcs/:npcSlug' />
+      <EditPlayerCharacter path='/app/campaigns/:campaignSlug/pcs/:pcSlug/edit'/>
+      <NewPlayerCharacter path='/app/campaigns/:campaignSlug/pcs/new' />
       <DndClass path='/app/classes/:dndClassSlug' />
       <DndClasses path='/app/classes' />
       <Items path='/app/items' />

@@ -11,14 +11,14 @@ const CharacterCard = ({campaign, character, small}) => (
   <Card className={'mb-4'}>
     <Card.Body>
       <Card.Title>
-        <Link to={character.type === 'PlayerCharacter' ? `/app/campaigns/${campaign.id}/pcs/${character.slug}` : `/app/campaigns/${campaign.id}/npcs/${character.slug}`}>
+        <Link to={character.type === 'PlayerCharacter' ? `/app/campaigns/${campaign.slug}/pcs/${character.slug}` : `/app/campaigns/${campaign.id}/npcs/${character.slug}`}>
           {character.name} {character.type === 'NonPlayerCharacter' ? <small className="text-muted">&ldquo;{character.role}&rdquo;</small> : ''}
         </Link>
       </Card.Title>
       <Card.Subtitle className="text-muted">{character.classes}</Card.Subtitle>
       {small ? null : (
         <div>
-          <h6><strong>Campaigns: </strong> {character.campaignsString}</h6>
+          <h6><strong>Campaign: </strong> {character.campaign.name}</h6>
           <div className={'d-flex'}>
             <span className={'mr-4'}><strong>Alignment: </strong>{character.alignment}</span>
             <span className={'mr-4'}><strong>Armor Class: </strong>{character.armorClass}</span>
@@ -29,7 +29,7 @@ const CharacterCard = ({campaign, character, small}) => (
     </Card.Body>
     {small ? null : (
       <Card.Footer>
-        <Link to={character.type === 'PlayerCharacter' ? `/app/campaigns/${campaign.id}/pcs/${character.slug}` : `/app/campaigns/${campaign.id}/npcs/${character.slug}`} className='btn btn-primary'>Details</Link>
+        <Link to={character.type === 'PlayerCharacter' ? `/app/campaigns/${campaign.slug}/pcs/${character.slug}` : `/app/campaigns/${campaign.id}/npcs/${character.slug}`} className='btn btn-primary'>Details</Link>
       </Card.Footer>
     )}
   </Card>

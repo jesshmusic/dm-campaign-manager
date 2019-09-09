@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_31_133714) do
+ActiveRecord::Schema.define(version: 2019_09_09_123701) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -31,15 +31,6 @@ ActiveRecord::Schema.define(version: 2019_08_31_133714) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["campaign_id"], name: "index_adventures_on_campaign_id"
-  end
-
-  create_table "campaign_characters", force: :cascade do |t|
-    t.bigint "campaign_id"
-    t.bigint "character_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["campaign_id"], name: "index_campaign_characters_on_campaign_id"
-    t.index ["character_id"], name: "index_campaign_characters_on_character_id"
   end
 
   create_table "campaigns", force: :cascade do |t|
@@ -132,7 +123,6 @@ ActiveRecord::Schema.define(version: 2019_08_31_133714) do
     t.integer "electrum_pieces", default: 0
     t.integer "gold_pieces", default: 0
     t.integer "platinum_pieces", default: 0
-    t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "background", default: "Acolyte"
@@ -149,8 +139,9 @@ ActiveRecord::Schema.define(version: 2019_08_31_133714) do
     t.string "speed", default: "30 feet", null: false
     t.integer "strength", default: 10, null: false
     t.integer "wisdom", default: 10, null: false
+    t.bigint "campaign_id"
+    t.index ["campaign_id"], name: "index_characters_on_campaign_id"
     t.index ["slug"], name: "index_characters_on_slug"
-    t.index ["user_id"], name: "index_characters_on_user_id"
   end
 
   create_table "container_items", force: :cascade do |t|
@@ -467,8 +458,6 @@ ActiveRecord::Schema.define(version: 2019_08_31_133714) do
   add_foreign_key "adventure_world_locations", "adventures"
   add_foreign_key "adventure_world_locations", "world_locations"
   add_foreign_key "adventures", "campaigns"
-  add_foreign_key "campaign_characters", "campaigns"
-  add_foreign_key "campaign_characters", "characters"
   add_foreign_key "character_adventures", "adventures"
   add_foreign_key "character_adventures", "characters"
   add_foreign_key "character_classes", "characters"
@@ -477,6 +466,7 @@ ActiveRecord::Schema.define(version: 2019_08_31_133714) do
   add_foreign_key "character_items", "items"
   add_foreign_key "character_world_locations", "characters"
   add_foreign_key "character_world_locations", "world_locations"
+  add_foreign_key "characters", "campaigns"
   add_foreign_key "container_items", "items"
   add_foreign_key "container_items", "items", column: "contained_item_id"
   add_foreign_key "dnd_classes", "users"

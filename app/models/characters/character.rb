@@ -34,12 +34,16 @@
 #  xp                 :integer          default(0), not null
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
-#  user_id            :bigint
+#  campaign_id        :bigint
 #
 # Indexes
 #
-#  index_characters_on_slug     (slug)
-#  index_characters_on_user_id  (user_id)
+#  index_characters_on_campaign_id  (campaign_id)
+#  index_characters_on_slug         (slug)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (campaign_id => campaigns.id)
 #
 
 class Character < ApplicationRecord
@@ -73,9 +77,6 @@ class Character < ApplicationRecord
 
   has_many :skills, dependent: :destroy
 
-  has_many :campaign_characters, dependent: :destroy
-  has_many :campaigns, through: :campaign_characters
-
   has_many :character_classes, dependent: :destroy
   has_many :dnd_classes, through: :character_classes
 
@@ -89,10 +90,10 @@ class Character < ApplicationRecord
   accepts_nested_attributes_for :skills, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :character_classes, reject_if: :all_blank, allow_destroy: true
 
-  belongs_to :user
+  belongs_to :campaign
 
   def campaigns_string
-    campaigns.map(&:name).join(', ')
+    campaign.name
   end
 
   def classes
