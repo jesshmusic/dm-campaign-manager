@@ -5,13 +5,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Card from 'react-bootstrap/Card';
-import ListGroup from 'react-bootstrap/ListGroup';
 import { Link } from '@reach/router';
 import ReactMarkdown from 'react-markdown';
-import Col from 'react-bootstrap/Col';
+
+import classes from './campaign-card.module.scss';
 
 const CampaignCard = ({campaign}) => (
-  <Card>
+  <Card className={classes.campaignCard}>
     <Card.Header>
       <Card.Title>{campaign.name}</Card.Title>
       <Card.Subtitle className="mb-2 text-muted">World: {campaign.world}</Card.Subtitle>

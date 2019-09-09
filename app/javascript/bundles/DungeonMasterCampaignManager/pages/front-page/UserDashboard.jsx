@@ -38,36 +38,6 @@ class UserDashboard extends React.Component {
             </Col>
           )}
         </Row>
-        <Row>
-          {playerCharacters ? (
-            <Col>
-              <h2>My Player Characters</h2>
-              <CharactersList characters={playerCharacters}/>
-            </Col>
-          ) : (
-            <Col>
-              <h2>My Player Characters</h2>
-              <Alert>
-                Click here to create a new player character.
-              </Alert>
-            </Col>
-          )}
-        </Row>
-        <Row>
-          {nonPlayerCharacters ? (
-            <Col>
-              <h2>My Non-player Characters</h2>
-              <CharactersList characters={nonPlayerCharacters}/>
-            </Col>
-          ) : (
-            <Col>
-              <h2>My Non-player Characters</h2>
-              <Alert>
-                Click here to create a new non-player character.
-              </Alert>
-            </Col>
-          )}
-        </Row>
       </Col>
     );
   }
