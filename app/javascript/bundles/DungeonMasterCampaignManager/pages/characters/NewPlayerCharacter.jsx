@@ -15,7 +15,11 @@ class NewPlayerCharacter extends React.Component {
     newPlayerCharacter: {
       name: '',
       race: '',
-      campaignIds: this.props.campaignId ? [this.props.campaignId] : [],
+      alignment: 'neutral',
+      background: 'Acolyte',
+      languages: 'Common',
+      armorClass: 10,
+      hitPoints: 8,
     },
     validated: false,
   };
