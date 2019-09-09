@@ -154,6 +154,14 @@ edit_v1_campaign_non_player_character GET    /v1/campaigns/:campaign_slug/non_pl
                                       PATCH  /v1/monsters/:slug(.:format)                                                             admin/v1/monsters#update
                                       PUT    /v1/monsters/:slug(.:format)                                                             admin/v1/monsters#update
                                       DELETE /v1/monsters/:slug(.:format)                                                             admin/v1/monsters#destroy
+                             v1_races GET    /v1/races(.:format)                                                                      admin/v1/races#index
+                                      POST   /v1/races(.:format)                                                                      admin/v1/races#create
+                          new_v1_race GET    /v1/races/new(.:format)                                                                  admin/v1/races#new
+                         edit_v1_race GET    /v1/races/:slug/edit(.:format)                                                           admin/v1/races#edit
+                              v1_race GET    /v1/races/:slug(.:format)                                                                admin/v1/races#show
+                                      PATCH  /v1/races/:slug(.:format)                                                                admin/v1/races#update
+                                      PUT    /v1/races/:slug(.:format)                                                                admin/v1/races#update
+                                      DELETE /v1/races/:slug(.:format)                                                                admin/v1/races#destroy
                             v1_spells GET    /v1/spells(.:format)                                                                     admin/v1/spells#index
                                       POST   /v1/spells(.:format)                                                                     admin/v1/spells#create
                          new_v1_spell GET    /v1/spells/new(.:format)                                                                 admin/v1/spells#new

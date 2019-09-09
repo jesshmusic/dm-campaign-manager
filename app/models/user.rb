@@ -59,6 +59,7 @@ class User < ApplicationRecord
   has_many :dnd_classes, dependent: :destroy
   has_many :items, dependent: :destroy
   has_many :monsters, dependent: :destroy
+  has_many :races, dependent: :destroy
   has_many :spells, dependent: :destroy
 
   def set_default_role

@@ -44,6 +44,7 @@ Rails.application.routes.draw do
       # noinspection RailsParamDefResolve
       resources :weapon_items, param: :slug, controller: 'items', type: 'WeaponItem'
       resources :monsters, param: :slug
+      resources :races, param: :slug
       resources :spells, param: :slug
 
     end

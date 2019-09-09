@@ -1,0 +1,17 @@
+<% title "New Race" %>
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/app/assets/config">Home</a></li>
+    <li class="breadcrumb-item"><%= link_to 'Dashboard', v1_dashboard_path %></li>
+    <li class="breadcrumb-item"><%= link_to 'Races', races_path %></li>
+    <li class="breadcrumb-item active" aria-current="page">New Race</li>
+  </ol>
+</nav>
+<div class="container">
+  <h1>New Race</h1>
+  <%= render 'form', race: @race %>
+  <div class="admin__footer">
+    <%= link_to 'Back', races_path, class: "btn btn-primary" %>
+    <%= link_to 'Dashboard', v1_dashboard_path, class: "btn btn-info" %>
+  </div>
+</div>

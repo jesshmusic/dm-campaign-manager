@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_09_123701) do
+ActiveRecord::Schema.define(version: 2019_09_09_210203) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -360,6 +360,24 @@ ActiveRecord::Schema.define(version: 2019_09_09_123701) do
     t.index ["name"], name: "index_profs_on_name", unique: true
   end
 
+  create_table "races", force: :cascade do |t|
+    t.string "name", default: "New Race...", null: false
+    t.string "speed", default: "30 feet", null: false
+    t.integer "strength_modifier", default: 0, null: false
+    t.integer "dexterity_modifier", default: 0, null: false
+    t.integer "constitution_modifier", default: 0, null: false
+    t.integer "intelligence_modifier", default: 0, null: false
+    t.integer "wisdom_modifier", default: 0, null: false
+    t.integer "charisma_modifier", default: 0, null: false
+    t.string "slug", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.index ["name"], name: "index_races_on_name"
+    t.index ["slug"], name: "index_races_on_slug"
+    t.index ["user_id"], name: "index_races_on_user_id"
+  end
+
   create_table "skills", force: :cascade do |t|
     t.string "name"
     t.integer "score"
@@ -477,6 +495,7 @@ ActiveRecord::Schema.define(version: 2019_09_09_123701) do
   add_foreign_key "encounters", "adventures"
   add_foreign_key "items", "users"
   add_foreign_key "monsters", "users"
+  add_foreign_key "races", "users"
   add_foreign_key "spells", "users"
   add_foreign_key "world_events", "campaigns"
   add_foreign_key "world_locations", "campaigns"

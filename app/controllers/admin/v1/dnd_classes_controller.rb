@@ -54,11 +54,11 @@ module Admin::V1
 
       respond_to do |format|
         if @current_user.dungeon_master? && @current_user.dnd_classes << @dnd_class
-          format.html { redirect_to dnd_class_url(slug: @dnd_class.slug), notice: 'Dnd class was successfully created.' }
-          format.json { render :show, status: :created, location: @dnd_class }
+          format.html { redirect_to v1_dnd_class_url(slug: @dnd_class.slug), notice: 'Dnd class was successfully created.' }
+          format.json { render :show, status: :created }
         elsif @dnd_class.save
-          format.html { redirect_to dnd_class_url(slug: @dnd_class.slug), notice: 'Dnd class was successfully created.' }
-          format.json { render :show, status: :created, location: @dnd_class }
+          format.html { redirect_to v1_dnd_class_url(slug: @dnd_class.slug), notice: 'Dnd class was successfully created.' }
+          format.json { render :show, status: :created }
         else
           format.html { render :new }
           format.json { render json: @dnd_class.errors, status: :unprocessable_entity }
@@ -72,8 +72,8 @@ module Admin::V1
       authorize @dnd_class
       respond_to do |format|
         if @dnd_class.update(dnd_class_params)
-          format.html { redirect_to dnd_class_url(slug: @dnd_class.slug), notice: 'Dnd class was successfully updated.' }
-          format.json { render :show, status: :ok, location: @dnd_class }
+          format.html { redirect_to v1_dnd_class_url(slug: @dnd_class.slug), notice: 'Dnd class was successfully updated.' }
+          format.json { render :show, status: :ok }
         else
           format.html { render :edit }
           format.json { render json: @dnd_class.errors, status: :unprocessable_entity }
@@ -87,7 +87,7 @@ module Admin::V1
       authorize @dnd_class
       @dnd_class.destroy
       respond_to do |format|
-        format.html { redirect_to dnd_classes_url, notice: 'Dnd class was successfully destroyed.' }
+        format.html { redirect_to v1_dnd_classes_url, notice: 'Dnd class was successfully destroyed.' }
         format.json { head :no_content }
       end
     end
