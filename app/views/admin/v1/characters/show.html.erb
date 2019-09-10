@@ -16,7 +16,7 @@
   <div class="container">
     <div class="row mb-3 pb-3 border-bottom">
       <div class="col">
-        <h1>Character: <%= @character.name %></h1>
+        <h1>Character: <%= @character.name %> <small><%= @character.race.name %></small></h1>
         <h2>Classes: <%= @character.character_classes.map {|character_class| "#{character_class.dnd_class.name} - #{character_class.level}"}.join(', ') %> <% if @character.type == 'NonPlayerCharacter' %><span class="badge badge-pill badge-warning">Challenge Rating: <%= @character.challenge_rating %></span><% end %></h2>
         <h3>Experience Points <% if @character.type == 'NonPlayerCharacter' %>Reward<% end %></h3>
         <div class="progress" style="height: 30px;">

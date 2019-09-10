@@ -21,7 +21,6 @@
 #  name               :string           not null
 #  platinum_pieces    :integer          default(0)
 #  proficiency        :integer          default(2)
-#  race               :string           default("Human"), not null
 #  role               :string           default("Player Character")
 #  silver_pieces      :integer          default(0), not null
 #  slug               :string           not null
@@ -33,6 +32,7 @@
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
 #  campaign_id        :bigint
+#  race_id            :integer          default(1), not null
 #
 # Indexes
 #

@@ -6,12 +6,13 @@ json.extract! character, :id, :name, :alignment, :proficiency, :slug, :backgroun
               :copper_pieces, :description, :electrum_pieces, :gold_pieces, :languages,
               :platinum_pieces, :race, :role, :silver_pieces, :type, :xp, :armor_class, :strength,
               :dexterity, :constitution, :intelligence, :wisdom, :charisma, :hit_points,
-              :hit_points_current, :initiative, :speed
+              :hit_points_current, :initiative, :speed, :race_id
 
 json.total_level character.total_level
 json.hit_dice character.hit_dice
 json.classes character.classes
 json.campaign character.campaign
+json.race character.race.name
 
 json.character_classes character.character_classes do |character_class|
   json.dnd_class character_class.dnd_class.name

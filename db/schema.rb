@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_09_210203) do
+ActiveRecord::Schema.define(version: 2019_09_10_153144) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -116,7 +116,6 @@ ActiveRecord::Schema.define(version: 2019_09_09_210203) do
     t.string "role", default: "Player Character"
     t.integer "xp", default: 0, null: false
     t.string "alignment", default: "neutral"
-    t.string "race", default: "Human", null: false
     t.string "languages", default: "Common"
     t.integer "copper_pieces", default: 0
     t.integer "silver_pieces", default: 0, null: false
@@ -140,6 +139,7 @@ ActiveRecord::Schema.define(version: 2019_09_09_210203) do
     t.integer "strength", default: 10, null: false
     t.integer "wisdom", default: 10, null: false
     t.bigint "campaign_id"
+    t.integer "race_id", default: 1, null: false
     t.index ["campaign_id"], name: "index_characters_on_campaign_id"
     t.index ["slug"], name: "index_characters_on_slug"
   end

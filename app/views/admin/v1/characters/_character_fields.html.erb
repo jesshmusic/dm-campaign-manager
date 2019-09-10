@@ -7,10 +7,11 @@
                    include_hidden: false %>
   </div>
   <div class="col">
-    <%= form.input :race,
-                   collection: DndRules.player_races,
-                   include_blank: false,
-                   include_hidden: false %>
+    <%= form.input :race_id,
+                        label: 'Race',
+                        collection: Race.all,
+                        include_blank: false,
+                        include_hidden: false %>
   </div>
   <div class="col">
     <%= form.input :xp, label: "Experience Points" %>
