@@ -8,20 +8,18 @@
 </nav>
 
 <h1>Races</h1>
-<%= render 'shared/search_form', url: races_path %>
 
 <table>
   <thead>
     <tr>
-              <th>Name</th>
-              <th>Speed</th>
-              <th>Strength modifier</th>
-              <th>Dexterity modifier</th>
-              <th>Constitution modifier</th>
-              <th>Intelligence modifier</th>
-              <th>Wisdom modifier</th>
-              <th>Charisma modifier</th>
-
+      <th>Name</th>
+      <th>Speed</th>
+      <th>Strength modifier</th>
+      <th>Dexterity modifier</th>
+      <th>Constitution modifier</th>
+      <th>Intelligence modifier</th>
+      <th>Wisdom modifier</th>
+      <th>Charisma modifier</th>
       <th></th>
     </tr>
   </thead>
@@ -29,23 +27,21 @@
   <tbody>
     <% @races.each do |race| %>
       <tr>
-                  <td><%= race.name %></td>
-                  <td><%= race.speed %></td>
-                  <td><%= race.strength_modifier %></td>
-                  <td><%= race.dexterity_modifier %></td>
-                  <td><%= race.constitution_modifier %></td>
-                  <td><%= race.intelligence_modifier %></td>
-                  <td><%= race.wisdom_modifier %></td>
-                  <td><%= race.charisma_modifier %></td>
-
+        <td><%= race.name %></td>
+        <td><%= race.speed %></td>
+        <td><%= race.strength_modifier %></td>
+        <td><%= race.dexterity_modifier %></td>
+        <td><%= race.constitution_modifier %></td>
+        <td><%= race.intelligence_modifier %></td>
+        <td><%= race.wisdom_modifier %></td>
+        <td><%= race.charisma_modifier %></td>
         <td>
-          <%= link_to 'Show', race, class: "btn btn-sm btn-primary" %>
-          <%= link_to 'Edit', edit_race_path(race), class: "btn btn-sm btn-success" if policy(race).edit? %>
-          <%= link_to 'Destroy', race, class: "btn btn-sm btn-danger", method: :delete, data: { confirm: 'Are you sure?' } if policy(race).destroy? %>
+          <%= link_to 'Show', v1_race_path(race), class: "btn btn-sm btn-primary" %>
+          <%= link_to 'Edit', edit_v1_race_path(race), class: "btn btn-sm btn-success" if policy(race).edit? %>
+          <%= link_to 'Destroy', v1_race_path(race), class: "btn btn-sm btn-danger", method: :delete, data: { confirm: 'Are you sure?' } if policy(race).destroy? %>
         </td>
       </tr>
     <% end %>
   </tbody>
 </table>
-<%== pagy_bootstrap_nav(@pagy) if @pagy.pages > 1 %>
-<%= link_to 'New Race', new_race_path, class: "btn btn-lg btn-success" if policy(Race).new? %>
+<%= link_to 'New Race', new_v1_race_path, class: "btn btn-lg btn-success" if policy(Race).new? %>

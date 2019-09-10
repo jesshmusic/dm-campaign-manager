@@ -5,7 +5,7 @@
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="/app/assets/config">Home</a></li>
         <li class="breadcrumb-item"><%= link_to 'Dashboard', v1_dashboard_path %></li>
-        <li class="breadcrumb-item"><%= link_to 'Races', races_path %></li>
+        <li class="breadcrumb-item"><%= link_to 'Races', v1_races_path %></li>
         <li class="breadcrumb-item active" aria-current="page"><%= @race.name %></li>
       </ol>
     </nav>
@@ -20,35 +20,35 @@
 
   <div class="row mb-3 pb-3 border-bottom">
     <div class="col">
-              <p>
-          <strong>Name:</strong> <%= @race.name %> %>
-        </p>
-              <p>
-          <strong>Speed:</strong> <%= @race.speed %> %>
-        </p>
-              <p>
-          <strong>Strength modifier:</strong> <%= @race.strength_modifier %> %>
-        </p>
-              <p>
-          <strong>Dexterity modifier:</strong> <%= @race.dexterity_modifier %> %>
-        </p>
-              <p>
-          <strong>Constitution modifier:</strong> <%= @race.constitution_modifier %> %>
-        </p>
-              <p>
-          <strong>Intelligence modifier:</strong> <%= @race.intelligence_modifier %> %>
-        </p>
-              <p>
-          <strong>Wisdom modifier:</strong> <%= @race.wisdom_modifier %> %>
-        </p>
-              <p>
-          <strong>Charisma modifier:</strong> <%= @race.charisma_modifier %> %>
-        </p>
-          </div>
+      <p>
+        <strong>Name:</strong> <%= @race.name %>
+      </p>
+      <p>
+        <strong>Speed:</strong> <%= @race.speed %>
+      </p>
+      <p>
+        <strong>Strength modifier:</strong> <%= @race.strength_modifier %>
+      </p>
+      <p>
+        <strong>Dexterity modifier:</strong> <%= @race.dexterity_modifier %>
+      </p>
+      <p>
+        <strong>Constitution modifier:</strong> <%= @race.constitution_modifier %>
+      </p>
+      <p>
+        <strong>Intelligence modifier:</strong> <%= @race.intelligence_modifier %>
+      </p>
+      <p>
+        <strong>Wisdom modifier:</strong> <%= @race.wisdom_modifier %>
+      </p>
+      <p>
+        <strong>Charisma modifier:</strong> <%= @race.charisma_modifier %>
+      </p>
+    </div>
   </div>
 
   <div class="d-flex align-items-center justify-content-start py-3">
-    <%= link_to 'Edit', edit_race_path(@race), class: "btn btn-success" if policy(@race).edit? %>
-    <%= link_to 'Back', races_path, class: "btn btn-info" %>
+    <%= link_to 'Edit', edit_v1_race_path(@race), class: "btn btn-success" if policy(@race).edit? %>
+    <%= link_to 'Back', v1_races_path, class: "btn btn-info" %>
   </div>
 </div>
