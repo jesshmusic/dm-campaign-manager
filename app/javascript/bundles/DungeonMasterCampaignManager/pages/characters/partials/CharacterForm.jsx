@@ -16,6 +16,7 @@ import classes from './character-form.module.scss';
 import Col from 'react-bootstrap/Col';
 import {FieldArray} from 'react-final-form-arrays';
 import CharacterClassFields from './CharacterClassFields';
+import FormSelectAync from '../../../components/forms/FormSelectAsync';
 
 const alignmentOptions = [
   { value: 'Lawful Good', label: 'Lawful Good' },
@@ -35,6 +36,7 @@ const FormComponent = ({
   submitting,
   submitButtonText,
   form,
+  getArmor,
   pristine,
   values,
   dndClasses,
@@ -155,6 +157,17 @@ const FormComponent = ({
                  colWidth={'2'}
                  name={'platinumPieces'}/>
     </Form.Row>
+    <h2>Equipment</h2>
+    <h3>Armor</h3>
+    <Form.Row>
+      <FormSelectAync
+        label={'Armor'}
+        colWidth={'12'}
+        name={'character_items[item]'}
+        getOptions={getArmor}
+        isMulti
+      />
+    </Form.Row>
     <Form.Row>
       <ButtonGroup aria-label="Character actions">
         <Button type="submit" disabled={submitting}>{submitButtonText}</Button>
@@ -171,6 +184,7 @@ FormComponent.propTypes = {
   submitting: PropTypes.bool,
   submitButtonText: PropTypes.string.isRequired,
   form: PropTypes.any,
+  getArmor: PropTypes.func.isRequired,
   pristine: PropTypes.bool,
   values: PropTypes.object,
   dndClasses: PropTypes.array.isRequired,
@@ -212,6 +226,7 @@ class CharacterForm extends React.Component {
     const {
       arrayMutators,
       dndClasses,
+      getArmor,
       initialValues,
       races,
       submitButtonText,
@@ -242,7 +257,9 @@ class CharacterForm extends React.Component {
                                       values={values}
                                       dndClasses={dndClasses}
                                       races={races}
-                                      push={push}/>} />
+                                      push={push}
+                                      getArmor={getArmor}/>}
+      />
     );
   }
 }
@@ -250,6 +267,7 @@ class CharacterForm extends React.Component {
 CharacterForm.propTypes = {
   arrayMutators: PropTypes.any,
   dndClasses: PropTypes.array.isRequired,
+  getArmor: PropTypes.func.isRequired,
   initialValues: PropTypes.object,
   onFormSubmit: PropTypes.func.isRequired,
   races: PropTypes.array.isRequired,

@@ -11,6 +11,12 @@ import PageContainer from '../../containers/PageContainer';
 import CharacterForm from './partials/CharacterForm';
 import PageTitle from '../../components/layout/PageTitle';
 
+const filterOptions = (results) => {
+  return results.map((nextItem) => {
+    return {value: nextItem.id, label: nextItem.name};
+  });
+}
+
 class PlayerCharacterEditor extends React.Component {
   state = {
     editingPlayerCharacter: {
@@ -54,6 +60,14 @@ class PlayerCharacterEditor extends React.Component {
     }
   }
 
+  getArmor (inputValue, callback) {
+    fetch('/v1/armor_items.json')
+      .then((response) => response.json())
+      .then((jsonResult) => {
+        callback(filterOptions(jsonResult));
+      });
+  }
+
   handleSubmit (newChar) {
     console.log(newChar);
   }
@@ -81,6 +95,7 @@ class PlayerCharacterEditor extends React.Component {
                        validated={validated}
                        validateForm={this.validate}
                        dndClasses={dndClasses ? dndClasses : []}
+                       getArmor={this.getArmor}
                        races={races ? races : []}/>
       </PageContainer>
     );
@@ -115,6 +130,9 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
+    getItems: () => {
+      dispatch(rest.actions.getItems());
+    },
     getDndClasses: () => {
       dispatch(rest.actions.getDndClasses());
     },
@@ -122,7 +140,7 @@ function mapDispatchToProps (dispatch) {
       dispatch(rest.actions.getPlayerCharacter({campaign_slug: campaignSlug, slug: characterSlug}));
     },
     editingPlayerCharacter: (campaignSlug) => {
-      dispatch(rest.actions.editingPlayerCharacter({campaign_slug: campaignSlug}));
+      dispatch(rest.actions.newPlayerCharacter({campaign_slug: campaignSlug}));
     },
     getRaces: () => {
       dispatch(rest.actions.getRaces());
