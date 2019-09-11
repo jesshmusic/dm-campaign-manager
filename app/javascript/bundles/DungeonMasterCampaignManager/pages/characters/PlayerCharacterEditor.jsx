@@ -35,11 +35,6 @@ const alignmentOptions = [
 
 const filterOptions = (results) => results.map((nextItem) => ({value: nextItem.id, label: nextItem.name}));
 
-const getArmor = (items) => {
-  const armorItems = items.filter((item) => item.type === 'ArmorItem');
-  return filterOptions(armorItems);
-};
-
 class PlayerCharacterEditor extends React.Component {
   state = {
     editingPlayerCharacter: { name: '' },
@@ -100,6 +95,22 @@ class PlayerCharacterEditor extends React.Component {
     if (prevProps.dndClasses !== this.props.dndClasses) {
       this.setState({ classOptions: filterOptions(this.props.dndClasses) });
     }
+
+    if (prevProps.items !== this.props.items) {
+      this.setState({
+        armor: this.props.items.filter((item) => item.type === 'ArmorItem'),
+        armorOptions: filterOptions(this.props.items.filter((item) => item.type === 'ArmorItem')),
+        weaponOptions: filterOptions(
+          this.props.items.filter((item) => item.type === 'WeaponItem' &&
+              (!item.weaponProperties || !item.weaponProperties.includes('Two-Handed')))
+        ),
+        weaponTwoHandedOptions: filterOptions(
+          this.props.items.filter((item) => item.type === 'WeaponItem' &&
+              (item.weapon2hDamageType || (item.weaponProperties  && item.weaponProperties.includes('Two-Handed'))))
+        ),
+        weapons: this.props.items.filter((item) => item.type === 'WeaponItem'),
+      });
+    }
   }
 
   handleSubmit = async (values) => {
@@ -131,8 +142,15 @@ class PlayerCharacterEditor extends React.Component {
   };
 
   render () {
-    const { flashMessages, items, user } = this.props;
-    const { classOptions, editingPlayerCharacter, raceOptions, validated } = this.state;
+    const { flashMessages, user } = this.props;
+    const {
+      armorOptions,
+      classOptions,
+      editingPlayerCharacter,
+      raceOptions,
+      weaponOptions,
+      weaponTwoHandedOptions,
+      validated } = this.state;
     const currentCampaign = editingPlayerCharacter.campaign ? `Campaign: ${editingPlayerCharacter.campaign.name}` : 'Campaign';
     const pageTitle = this.props.pcSlug ? `Edit Player Character "${editingPlayerCharacter.name}"` : 'New Player Character';
     return (
@@ -219,9 +237,12 @@ class PlayerCharacterEditor extends React.Component {
                          <FormField label={'Platinum'} type={'number'} colWidth={'2'} name={'platinumPieces'}/>
                        </Form.Row>
                        <h2>Equipment</h2>
-                       <h3>Armor</h3>
+                       <h3>Armor and Weapons</h3>
                        <Form.Row>
-                         <FormSelect label={'Armor'} colWidth={'3'} name={'characterArmor'} options={getArmor(items)}/>
+                         <FormSelect label={'Armor'} colWidth={'3'} name={'characterArmor'} options={armorOptions}/>
+                         <FormSelect label={'Weapon - Left hand'} colWidth={'3'} name={'characterWeaponLH'} options={weaponOptions}/>
+                         <FormSelect label={'Weapon - Right hand'} colWidth={'3'} name={'characterWeaponRH'} options={weaponOptions}/>
+                         <FormSelect label={'Weapon - two-hand'} colWidth={'3'} name={'characterWeapon2H'} options={weaponTwoHandedOptions}/>
                        </Form.Row>
                        <Form.Row>
                          <ButtonGroup aria-label="Character actions">
