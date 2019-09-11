@@ -33,8 +33,13 @@
 #  xp                 :integer          default(0), not null
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
+#  armor_id           :integer
 #  campaign_id        :bigint
 #  race_id            :integer          default(1), not null
+#  shield_id          :integer
+#  weapon_2h_id       :integer
+#  weapon_lh_id       :integer
+#  weapon_rh_id       :integer
 #
 # Indexes
 #

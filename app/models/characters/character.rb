@@ -33,8 +33,13 @@
 #  xp                 :integer          default(0), not null
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
+#  armor_id           :integer
 #  campaign_id        :bigint
 #  race_id            :integer          default(1), not null
+#  shield_id          :integer
+#  weapon_2h_id       :integer
+#  weapon_lh_id       :integer
+#  weapon_rh_id       :integer
 #
 # Indexes
 #
@@ -92,6 +97,10 @@ class Character < ApplicationRecord
 
   belongs_to :campaign
 
+  def armor
+    ArmorItem.find(armor_id) unless armor_id.nil?
+  end
+
   def campaigns_string
     campaign.name
   end
@@ -112,8 +121,24 @@ class Character < ApplicationRecord
     Race.find(race_id)
   end
 
+  def shield
+    ArmorItem.find(shield_id) unless shield_id.nil?
+  end
+
   def total_level
     character_classes.sum(&:level)
+  end
+
+  def weapon_lh
+    WeaponItem.find(weapon_lh_id) unless weapon_lh_id.nil?
+  end
+
+  def weapon_rh
+    WeaponItem.find(weapon_rh_id) unless weapon_rh_id.nil?
+  end
+
+  def weapon_2h
+    WeaponItem.find(weapon_2h_id) unless weapon_2h_id.nil?
   end
 
   include PgSearch::Model

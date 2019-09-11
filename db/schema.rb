@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_10_153144) do
+ActiveRecord::Schema.define(version: 2019_09_11_183715) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -140,6 +140,11 @@ ActiveRecord::Schema.define(version: 2019_09_10_153144) do
     t.integer "wisdom", default: 10, null: false
     t.bigint "campaign_id"
     t.integer "race_id", default: 1, null: false
+    t.integer "armor_id"
+    t.integer "shield_id"
+    t.integer "weapon_lh_id"
+    t.integer "weapon_rh_id"
+    t.integer "weapon_2h_id"
     t.index ["campaign_id"], name: "index_characters_on_campaign_id"
     t.index ["slug"], name: "index_characters_on_slug"
   end
