@@ -99,6 +99,12 @@ export default reduxApi({
   getMonsters: {
     url: '/v1/monsters.json',
   },
+  getRace: {
+    url: '/v1/race/:slug.json',
+  },
+  getRaces: {
+    url: '/v1/races.json',
+  },
   getSpell: {
     url: '/v1/spells/:slug.json',
   },

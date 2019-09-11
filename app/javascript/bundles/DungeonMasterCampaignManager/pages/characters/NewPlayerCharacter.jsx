@@ -25,53 +25,61 @@ class NewPlayerCharacter extends React.Component {
   };
 
   componentDidMount () {
+    this.props.getCampaign(this.props.campaignSlug);
     this.props.getDndClasses();
+    this.props.getRaces();
   }
 
-  handleSubmit = async (values) => {
-    console.log(values);
-  };
-
-  validate = (values) => {
-    const errors = {};
-    if (!values.name) {
-      errors.name = 'Character name is required';
-    }
-    return errors;
-  };
+  handleSubmit (newChar) {
+    console.log(newChar);
+  }
 
   render () {
-    const { user, flashMessages } = this.props;
+    const { currentCampaign, dndClasses, flashMessages, races, user } = this.props;
     const {newPlayerCharacter, validated} = this.state;
     return (
       <PageContainer user={user}
                      flashMessages={flashMessages}
                      pageTitle={'New Player Character'}
                      description={'New Player Character form. Dungeon Master\'s Campaign Manager is a free resource for DMs to manage their campaigns, adventures, and NPCs.'}
-                     breadcrumbs={[{url: null, isActive: true, title: 'New Player Character'}]}>
+                     breadcrumbs={[
+                       {url: '/app/campaigns', isActive: false, title: 'Campaigns'},
+                       {url: `/app/campaigns/${this.props.campaignSlug}`, isActive: false, title: currentCampaign ? `Campaign: ${currentCampaign.name}` : 'Campaign'},
+                       {url: null, isActive: true, title: 'New Player Character'},
+                     ]}>
         <CharacterForm onFormSubmit={this.handleSubmit}
                        submitButtonText={'Create PC'}
                        arrayMutators={arrayMutators}
                        initialValues={newPlayerCharacter}
                        validated={validated}
-                       validateForm={this.validate} />
+                       validateForm={this.validate}
+                       dndClasses={dndClasses ? dndClasses : []}
+                       races={races ? races : []}/>
       </PageContainer>
     );
   }
 }
 
 NewPlayerCharacter.propTypes = {
-  campaignId: PropTypes.string,
+  campaignSlug: PropTypes.string,
   createPlayerCharacter: PropTypes.func.isRequired,
+  currentCampaign: PropTypes.object,
+  dndClasses: PropTypes.array,
   flashMessages: PropTypes.array,
+  getCampaign: PropTypes.func.isRequired,
   getDndClasses: PropTypes.func.isRequired,
+  getRaces: PropTypes.func.isRequired,
+  races: PropTypes.array,
   user: PropTypes.object,
 };
 
 function mapStateToProps (state) {
   return {
-    user: state.users.user,
+    currentCampaign: state.campaigns.currentCampaign,
+    dndClasses: state.dndClasses.dndClasses,
     flashMessages: state.flashMessages,
+    races: state.races.races,
+    user: state.users.user,
   };
 }
 
@@ -79,6 +87,12 @@ function mapDispatchToProps (dispatch) {
   return {
     getDndClasses: () => {
       dispatch(rest.actions.getDndClasses());
+    },
+    getCampaign: (campaignSlug) => {
+      dispatch(rest.actions.getCampaign({slug: campaignSlug}));
+    },
+    getRaces: () => {
+      dispatch(rest.actions.getRaces());
     },
     createPlayerCharacter: (newCharacter) => {
       dispatch(rest.actions.updateCampaign({}, {body: JSON.stringify({newCharacter})}));

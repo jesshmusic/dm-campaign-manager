@@ -60,6 +60,10 @@ const store = (props) => configureStore({
       count: props.pcsCount,
       currentCharacter: null,
     },
+    races: {
+      races: [],
+      currentRace: null,
+    },
     flashMessages: [],
     spells: {
       spells: [],
