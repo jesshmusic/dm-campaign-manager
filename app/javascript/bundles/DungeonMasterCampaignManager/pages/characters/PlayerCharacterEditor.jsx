@@ -98,8 +98,14 @@ class PlayerCharacterEditor extends React.Component {
 
     if (prevProps.items !== this.props.items) {
       this.setState({
-        armor: this.props.items.filter((item) => item.type === 'ArmorItem'),
-        armorOptions: filterOptions(this.props.items.filter((item) => item.type === 'ArmorItem')),
+        armor: this.props.items.filter((item) => item.type === 'ArmorItem' && item.subCategory !== 'Shield'),
+        armorOptions: filterOptions(
+          this.props.items.filter((item) => item.type === 'ArmorItem' && item.subCategory !== 'Shield')
+        ),
+        shields: this.props.items.filter((item) => item.type === 'ArmorItem' && item.subCategory === 'Shield'),
+        shieldOptions: filterOptions(
+          this.props.items.filter((item) => item.type === 'ArmorItem' && item.subCategory === 'Shield')
+        ),
         weaponOptions: filterOptions(
           this.props.items.filter((item) => item.type === 'WeaponItem' &&
               (!item.weaponProperties || !item.weaponProperties.includes('Two-Handed')))
@@ -148,6 +154,7 @@ class PlayerCharacterEditor extends React.Component {
       classOptions,
       editingPlayerCharacter,
       raceOptions,
+      shieldOptions,
       weaponOptions,
       weaponTwoHandedOptions,
       validated } = this.state;
@@ -239,10 +246,11 @@ class PlayerCharacterEditor extends React.Component {
                        <h2>Equipment</h2>
                        <h3>Armor and Weapons</h3>
                        <Form.Row>
-                         <FormSelect label={'Armor'} colWidth={'3'} name={'characterArmor'} options={armorOptions}/>
-                         <FormSelect label={'Weapon - Left hand'} colWidth={'3'} name={'characterWeaponLH'} options={weaponOptions}/>
-                         <FormSelect label={'Weapon - Right hand'} colWidth={'3'} name={'characterWeaponRH'} options={weaponOptions}/>
-                         <FormSelect label={'Weapon - two-hand'} colWidth={'3'} name={'characterWeapon2H'} options={weaponTwoHandedOptions}/>
+                         <FormSelect label={'Armor'} colWidth={'6'} name={'characterShield'} options={armorOptions}/>
+                         <FormSelect label={'Shield'} colWidth={'6'} name={'characterArmor'} options={shieldOptions}/>
+                         <FormSelect label={'Weapon - Left hand'} colWidth={'4'} name={'characterWeaponLH'} options={weaponOptions}/>
+                         <FormSelect label={'Weapon - Right hand'} colWidth={'4'} name={'characterWeaponRH'} options={weaponOptions}/>
+                         <FormSelect label={'Weapon - two-hand'} colWidth={'4'} name={'characterWeapon2H'} options={weaponTwoHandedOptions}/>
                        </Form.Row>
                        <Form.Row>
                          <ButtonGroup aria-label="Character actions">
