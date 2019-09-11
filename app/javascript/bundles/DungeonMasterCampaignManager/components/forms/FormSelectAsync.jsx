@@ -9,17 +9,31 @@ import {Field} from 'react-final-form';
 import Form from 'react-bootstrap/Form';
 import AsyncSelect from 'react-select/async';
 
-const ReactSelectAdapter = ({ input, isMulti, getOptions, ...rest }) => (
-  <AsyncSelect
-    isMulti={isMulti}
-    cacheOptions
-    defaultOptions
-    {...input}
-    {...rest}
-    searchable
-    loadOptions={getOptions}
-  />
-);
+class ReactSelectAdapter extends React.Component {
+  state = { inputValue: '' };
+
+  onChange = (newValue) => {
+    const inputValue = newValue.replace(/\W/g, '');
+    this.setState({ inputValue });
+    return inputValue;
+  };
+
+  render() {
+    const { input, isMulti, getOptions, ...rest } = this.props;
+
+    return (
+      <AsyncSelect
+        isMulti={isMulti}
+        cacheOptions
+        defaultOptions
+        {...input}
+        {...rest}
+        searchable
+        loadOptions={getOptions}
+      />
+    );
+  }
+}
 
 const FormSelectAync = ({name, label, colWidth, isMulti, getOptions}) => (
   <Form.Group as={Col} md={colWidth}>
