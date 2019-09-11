@@ -78,6 +78,9 @@ export default reduxApi({
   getPlayerCharacter: {
     url: '/v1/campaigns/:campaign_slug/player_characters/:slug.json',
   },
+  newPlayerCharacter: {
+    url: '/v1/campaigns/:campaign_slug/player_characters/new.json',
+  },
   getPlayerCharacters: {
     url: '/v1/campaigns/:campaign_slug/player_characters.json',
   },

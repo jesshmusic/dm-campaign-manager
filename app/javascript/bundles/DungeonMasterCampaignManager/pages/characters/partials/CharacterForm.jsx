@@ -132,6 +132,29 @@ const FormComponent = ({
                  colWidth={'2'}
                  name={'charisma'}/>
     </Form.Row>
+    <h2>Coin</h2>
+    <Form.Row>
+      <FormField label={'Copper'}
+                 type={'number'}
+                 colWidth={'2'}
+                 name={'copperPieces'}/>
+      <FormField label={'Silver'}
+                 type={'number'}
+                 colWidth={'2'}
+                 name={'silverPieces'}/>
+      <FormField label={'Electrum'}
+                 type={'number'}
+                 colWidth={'2'}
+                 name={'electrumPieces'}/>
+      <FormField label={'Gold'}
+                 type={'number'}
+                 colWidth={'2'}
+                 name={'goldPieces'}/>
+      <FormField label={'Platinum'}
+                 type={'number'}
+                 colWidth={'2'}
+                 name={'platinumPieces'}/>
+    </Form.Row>
     <Form.Row>
       <ButtonGroup aria-label="Character actions">
         <Button type="submit" disabled={submitting}>{submitButtonText}</Button>

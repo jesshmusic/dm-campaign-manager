@@ -21,8 +21,7 @@ import Spells from './spells/Spells';
 import DndClass from './dnd-classes/DndClass';
 import DndClasses from './dnd-classes/DndClasses';
 import NewCampaign from './campaigns/NewCampaign';
-import NewPlayerCharacter from './characters/NewPlayerCharacter';
-import EditPlayerCharacter from './characters/EditPlayerCharacter';
+import PlayerCharacterEditor from './characters/PlayerCharacterEditor';
 import PlayerCharacter from './characters/PlayerCharacter';
 import NonPlayerCharacter from './characters/NonPlayerCharacter';
 
@@ -83,8 +82,8 @@ const Home = (props) => (
       <EditCampaign path='/app/campaigns/:campaignSlug/edit'/>
       <PlayerCharacter path='/app/campaigns/:campaignSlug/pcs/:pcSlug' />
       <NonPlayerCharacter path='/app/campaigns/:campaignSlug/npcs/:npcSlug' />
-      <EditPlayerCharacter path='/app/campaigns/:campaignSlug/pcs/:pcSlug/edit'/>
-      <NewPlayerCharacter path='/app/campaigns/:campaignSlug/pcs/new' />
+      <PlayerCharacterEditor path='/app/campaigns/:campaignSlug/pcs/:pcSlug/edit'/>
+      <PlayerCharacterEditor path='/app/campaigns/:campaignSlug/pcs/new' />
       <DndClass path='/app/classes/:dndClassSlug' />
       <DndClasses path='/app/classes' />
       <Items path='/app/items' />
