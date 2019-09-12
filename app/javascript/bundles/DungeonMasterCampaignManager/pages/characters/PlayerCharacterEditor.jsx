@@ -5,21 +5,28 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import rest from '../../actions/api';
+import { connect } from 'react-redux';
+
+import { Form as FinalForm } from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
-import {connect} from 'react-redux';
+import {FieldArray} from 'react-final-form-arrays';
+import createDecorator from 'final-form-calculate';
+
+import Button from 'react-bootstrap/Button';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import Col from 'react-bootstrap/Col';
+import Form from 'react-bootstrap/Form';
+
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/layout/PageTitle';
-import {Form as FinalForm} from 'react-final-form';
-import Form from 'react-bootstrap/Form';
 import FormField from '../../components/forms/FormField';
 import FormSelect from '../../components/forms/FormSelect';
 import FormTextArea from '../../components/forms/FormTextArea';
-import Col from 'react-bootstrap/Col';
-import {FieldArray} from 'react-final-form-arrays';
 import CharacterClassFields from './partials/CharacterClassFields';
-import Button from 'react-bootstrap/Button';
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
+
 import classes from './partials/character-form.module.scss';
+
+import { AbilityScoreModifier, CalculateArmorClass } from '../../utilities/character-utilities';
 
 const alignmentOptions = [
   { value: 'Lawful Good', label: 'Lawful Good' },
@@ -33,7 +40,42 @@ const alignmentOptions = [
   { value: 'Chaotic Evil', label: 'Chaotic Evil' },
 ];
 
-const filterOptions = (results) => results.map((nextItem) => ({value: nextItem.id, label: nextItem.name}));
+const filterOptions = (results) => results.map((nextItem) => (
+  {value: nextItem.id, label: nextItem.name, data: nextItem}
+));
+
+const characterCalculations = createDecorator(
+  {
+    field: 'dexterity',
+    updates: {
+      armorClass: (dexValue, allValues) => CalculateArmorClass({
+        armor: allValues.characterArmor,
+        dexterity: dexValue,
+        shield: allValues.characterShield,
+      }),
+    },
+  },
+  {
+    field: 'characterArmor',
+    updates: {
+      armorClass: (characterArmor, allValues) => CalculateArmorClass({
+        armor: characterArmor,
+        dexterity: allValues.dexterity,
+        shield: allValues.characterShield,
+      }),
+    },
+  },
+  {
+    field: 'characterShield',
+    updates: {
+      armorClass: (characterShield, allValues) => CalculateArmorClass({
+        armor: allValues.characterArmor,
+        dexterity: allValues.dexterity,
+        shield: characterShield,
+      }),
+    },
+  },
+);
 
 class PlayerCharacterEditor extends React.Component {
   state = {
@@ -45,6 +87,10 @@ class PlayerCharacterEditor extends React.Component {
     weapons: [],
     items: [],
     shields: [],
+    armorOptions: [],
+    shieldOptions: [],
+    weaponOptions: [],
+    weaponTwoHandedOptions: [],
   };
 
   componentDidMount () {
@@ -75,10 +121,12 @@ class PlayerCharacterEditor extends React.Component {
           dndClass: {
             value: dndClass.dndClassId ? dndClass.dndClassId : 153,
             label: dndClass.dndClass ? dndClass.dndClass : 'Fighter',
+            data: dndClass ? dndClass : {},
           },
           level: dndClass.level,
         })),
       };
+      charObject.armorClass = 10 + AbilityScoreModifier(charObject.dexterity);
       if (this.props.currentPlayerCharacter.armor) {
         charObject.characterArmor = {
           value: this.props.currentPlayerCharacter.armor.id,
@@ -112,7 +160,7 @@ class PlayerCharacterEditor extends React.Component {
         ),
         weaponTwoHandedOptions: filterOptions(
           this.props.items.filter((item) => item.type === 'WeaponItem' &&
-              (item.weapon2hDamageType || (item.weaponProperties  && item.weaponProperties.includes('Two-Handed'))))
+              (item.weapon2hDamageType || (item.weaponProperties && item.weaponProperties.includes('Two-Handed'))))
         ),
         weapons: this.props.items.filter((item) => item.type === 'WeaponItem'),
       });
@@ -174,6 +222,7 @@ class PlayerCharacterEditor extends React.Component {
         <FinalForm onSubmit={this.handleSubmit}
                    initialValues={editingPlayerCharacter}
                    validate={this.validate}
+                   decorators={[characterCalculations]}
                    mutators={{...arrayMutators }}
                    render={({
                      handleSubmit,
@@ -222,7 +271,7 @@ class PlayerCharacterEditor extends React.Component {
                        </Form.Row>
                        <h2>Statistics</h2>
                        <Form.Row>
-                         <FormField label={'Armor Class'} type={'number'} colWidth={'4'} name={'armorClass'}/>
+                         <FormField label={'Armor Class'} type={'number'} colWidth={'4'} name={'armorClass'} readOnly defaultValue={values.armorClass}/>
                          <FormField label={'Hit Points'} type={'number'} colWidth={'4'} name={'hitPoints'}/>
                          <FormField label={'Experience Points'} type={'number'} colWidth={'4'} name={'xp'}/>
                        </Form.Row>
@@ -246,11 +295,11 @@ class PlayerCharacterEditor extends React.Component {
                        <h2>Equipment</h2>
                        <h3>Armor and Weapons</h3>
                        <Form.Row>
-                         <FormSelect label={'Armor'} colWidth={'6'} name={'characterShield'} options={armorOptions}/>
-                         <FormSelect label={'Shield'} colWidth={'6'} name={'characterArmor'} options={shieldOptions}/>
-                         <FormSelect label={'Weapon - Left hand'} colWidth={'4'} name={'characterWeaponLH'} options={weaponOptions}/>
-                         <FormSelect label={'Weapon - Right hand'} colWidth={'4'} name={'characterWeaponRH'} options={weaponOptions}/>
-                         <FormSelect label={'Weapon - two-hand'} colWidth={'4'} name={'characterWeapon2H'} options={weaponTwoHandedOptions}/>
+                         <FormSelect label={'Armor'} colWidth={'6'} name={'characterArmor'} options={armorOptions} isClearable/>
+                         <FormSelect label={'Shield'} colWidth={'6'} name={'characterShield'} options={shieldOptions} isClearable/>
+                         <FormSelect label={'Weapon - Left hand'} colWidth={'4'} name={'characterWeaponLH'} options={weaponOptions} isClearable/>
+                         <FormSelect label={'Weapon - Right hand'} colWidth={'4'} name={'characterWeaponRH'} options={weaponOptions} isClearable/>
+                         <FormSelect label={'Weapon - two-hand'} colWidth={'4'} name={'characterWeapon2H'} options={weaponTwoHandedOptions} isClearable/>
                        </Form.Row>
                        <Form.Row>
                          <ButtonGroup aria-label="Character actions">

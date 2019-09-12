@@ -8,7 +8,7 @@ import Col from 'react-bootstrap/Col';
 import {Field} from 'react-final-form';
 import Form from 'react-bootstrap/Form';
 
-const FormField = ({name, label, type, colWidth}) => (
+const FormField = ({colWidth, defaultValue, label, name, readOnly, type}) => (
   <Form.Group as={Col} md={colWidth}>
     <Field name={name}>
       {({ input, meta }) => (
@@ -19,6 +19,8 @@ const FormField = ({name, label, type, colWidth}) => (
             autoComplete={''}
             type={type}
             placeholder={label}
+            readOnly={readOnly}
+            defaultValue={defaultValue}
             isValid={meta.touched && !meta.invalid}
             isInvalid={meta.error && meta.touched}
           />
@@ -32,7 +34,9 @@ const FormField = ({name, label, type, colWidth}) => (
 FormField.propTypes = {
   name: PropTypes.string.isRequired,
   colWidth: PropTypes.string.isRequired,
+  defaultValue: PropTypes.any,
   label: PropTypes.string.isRequired,
+  readOnly: PropTypes.bool,
   type: PropTypes.string.isRequired,
 };
 
