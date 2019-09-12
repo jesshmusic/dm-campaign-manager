@@ -46,11 +46,23 @@ const filterOptions = (results) => results.map((nextItem) => (
 
 const characterCalculations = createDecorator(
   {
+    field: 'armorClassModifier',
+    updates: {
+      armorClass: (armorClassModifier, allValues) => CalculateArmorClass({
+        armor: allValues.characterArmor,
+        armorClassModifier: parseInt(armorClassModifier, 10) || 0,
+        dexterity: allValues.dexterity || 10,
+        shield: allValues.characterShield,
+      }),
+    },
+  },
+  {
     field: 'dexterity',
     updates: {
       armorClass: (dexValue, allValues) => CalculateArmorClass({
         armor: allValues.characterArmor,
-        dexterity: dexValue,
+        armorClassModifier: parseInt(allValues.armorClassModifier, 10) || 0,
+        dexterity: dexValue || 10,
         shield: allValues.characterShield,
       }),
     },
@@ -60,7 +72,8 @@ const characterCalculations = createDecorator(
     updates: {
       armorClass: (characterArmor, allValues) => CalculateArmorClass({
         armor: characterArmor,
-        dexterity: allValues.dexterity,
+        armorClassModifier: parseInt(allValues.armorClassModifier, 10) || 0,
+        dexterity: allValues.dexterity || 10,
         shield: allValues.characterShield,
       }),
     },
@@ -70,7 +83,8 @@ const characterCalculations = createDecorator(
     updates: {
       armorClass: (characterShield, allValues) => CalculateArmorClass({
         armor: allValues.characterArmor,
-        dexterity: allValues.dexterity,
+        armorClassModifier: parseInt(allValues.armorClassModifier, 10) || 0,
+        dexterity: allValues.dexterity || 10,
         shield: characterShield,
       }),
     },
@@ -271,7 +285,13 @@ class PlayerCharacterEditor extends React.Component {
                        </Form.Row>
                        <h2>Statistics</h2>
                        <Form.Row>
-                         <FormField label={'Armor Class'} type={'number'} colWidth={'4'} name={'armorClass'} readOnly defaultValue={values.armorClass}/>
+                         <FormField label={'Armor Class'} type={'number'} colWidth={'2'} name={'armorClass'} readOnly defaultValue={values.armorClass}/>
+                         <FormField label={'AC Mod'}
+                                    type={'number'}
+                                    colWidth={'2'}
+                                    name={'armorClassModifier'}
+                                    infoText={'Magic item or special ability'}
+                         />
                          <FormField label={'Hit Points'} type={'number'} colWidth={'4'} name={'hitPoints'}/>
                          <FormField label={'Experience Points'} type={'number'} colWidth={'4'} name={'xp'}/>
                        </Form.Row>

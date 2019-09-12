@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_11_183715) do
+ActiveRecord::Schema.define(version: 2019_09_12_151916) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -145,6 +145,7 @@ ActiveRecord::Schema.define(version: 2019_09_11_183715) do
     t.integer "weapon_lh_id"
     t.integer "weapon_rh_id"
     t.integer "weapon_2h_id"
+    t.integer "armor_class_modifier", default: 0, null: false
     t.index ["campaign_id"], name: "index_characters_on_campaign_id"
     t.index ["slug"], name: "index_characters_on_slug"
   end

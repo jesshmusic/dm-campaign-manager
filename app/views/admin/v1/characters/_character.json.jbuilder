@@ -4,7 +4,7 @@ json.key_format! camelize: :lower
 
 json.extract! character, :id, :name, :alignment, :proficiency, :slug, :background,
               :copper_pieces, :description, :electrum_pieces, :gold_pieces, :languages,
-              :platinum_pieces, :role, :silver_pieces, :type, :xp, :armor_class, :strength,
+              :platinum_pieces, :role, :silver_pieces, :type, :xp, :armor_class, :armor_class_modifier, :strength,
               :dexterity, :constitution, :intelligence, :wisdom, :charisma, :hit_points,
               :hit_points_current, :initiative
 

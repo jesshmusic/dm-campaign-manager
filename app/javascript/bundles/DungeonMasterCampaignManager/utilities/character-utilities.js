@@ -9,17 +9,17 @@ export const AbilityScoreModifier = (abilityScore) => {
   return mods[abilityScore];
 };
 
-export const CalculateArmorClass = ({armor, dexterity, shield}) => {
+export const CalculateArmorClass = ({armor, armorClassModifier, dexterity, shield}) => {
   if (armor && armor.data.armorDexBonus && shield) {
-    return armor.data.armorClass + AbilityScoreModifier(dexterity) + shield.data.armorClass;
+    return armor.data.armorClass + AbilityScoreModifier(dexterity) + shield.data.armorClass + armorClassModifier;
   } else if (armor && armor.data.armorDexBonus && !shield) {
-    return armor.data.armorClass + AbilityScoreModifier(dexterity);
+    return armor.data.armorClass + AbilityScoreModifier(dexterity) + armorClassModifier;
   } else if (armor && shield) {
-    return armor.data.armorClass + shield.data.armorClass;
+    return armor.data.armorClass + shield.data.armorClass + armorClassModifier;
   } else if (armor) {
-    return armor.data.armorClass;
+    return armor.data.armorClass + armorClassModifier;
   } else if (shield) {
-    return 10 + AbilityScoreModifier(dexterity) + shield.data.armorClass;
+    return 10 + AbilityScoreModifier(dexterity) + shield.data.armorClass + armorClassModifier;
   }
-  return 10 + AbilityScoreModifier(dexterity);
+  return 10 + AbilityScoreModifier(dexterity) + armorClassModifier;
 };
