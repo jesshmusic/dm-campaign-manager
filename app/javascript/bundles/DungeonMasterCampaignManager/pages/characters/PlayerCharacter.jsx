@@ -19,7 +19,7 @@ class PlayerCharacter extends React.Component {
 
   render () {
     const { user, flashMessages, character, campaignSlug } = this.props;
-    const characterTitle = character ? character.name : 'Character Loading...';
+    const characterTitle = character && character.name ? character.name : 'Character Loading...';
     return (
       <PageContainer user={user}
                      flashMessages={flashMessages}
@@ -27,13 +27,13 @@ class PlayerCharacter extends React.Component {
                      description={`PC: ${characterTitle}. Dungeon Master's Campaign Manager is a free resource for DMs to manage their campaigns, adventures, and NPCs.`}
                      breadcrumbs={[
                        {url: '/app/campaigns/', isActive: false, title: 'Campaigns'},
-                       {url: `/app/campaigns/${campaignSlug}/`, isActive: false, title: character ? `Campaign: ${character.campaign.name}` : 'Loading...'},
+                       {url: `/app/campaigns/${campaignSlug}/`, isActive: false, title: character && character.campaign ? `Campaign: ${character.campaign.name}` : 'Loading...'},
                        {url: null, isActive: true, title: characterTitle},
                      ]}>
         {character ? (
           <div>
             <PageTitle title={`Player Character: ${characterTitle}`}
-                       hasButton={user && user.id === character.userId}
+                       hasButton={user && character.campaign && character.campaign.userId === user.id}
                        buttonLink={`/app/campaigns/${campaignSlug}/pcs/${character.slug}/edit`}
                        buttonTitle={'Edit PC'}
                        buttonVariant={'primary'}/>

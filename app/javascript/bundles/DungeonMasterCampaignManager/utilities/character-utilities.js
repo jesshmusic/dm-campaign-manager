@@ -23,7 +23,7 @@ export const alignmentOptions = [
   { value: 'Chaotic Evil', label: 'Chaotic Evil' },
 ];
 
-export const CalculateArmorClass = ({armor, armorClassModifier, dexterity, shield}) => {
+const CalculateArmorClass = ({armor, armorClassModifier, dexterity, shield}) => {
   if (armor && armor.data.armorDexBonus && shield) {
     return armor.data.armorClass + AbilityScoreModifier(dexterity) + shield.data.armorClass + armorClassModifier;
   } else if (armor && armor.data.armorDexBonus && !shield) {
@@ -39,7 +39,6 @@ export const CalculateArmorClass = ({armor, armorClassModifier, dexterity, shiel
 };
 
 export const SetupCharacterState = (newChar, races) => {
-
   // Initial character state object
   const charObject = {
     ...newChar,
@@ -120,7 +119,7 @@ export const SetupCharacterState = (newChar, races) => {
   return charObject;
 };
 
-export const abilityScoreUpdates = {
+const abilityScoreUpdates = {
   strength: (value, allValues) => (allValues.applyRaceMods ? (
     allValues.baseAbilities.strength + allValues.characterRace.data.strengthModifier
   ) : (
