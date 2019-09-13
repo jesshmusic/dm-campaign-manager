@@ -18,7 +18,7 @@ class ReactSelectAdapter extends React.Component {
     return inputValue;
   };
 
-  render() {
+  render () {
     const { input, isMulti, getOptions, ...rest } = this.props;
 
     return (
@@ -35,7 +35,7 @@ class ReactSelectAdapter extends React.Component {
   }
 }
 
-const FormSelectAync = ({name, label, colWidth, isMulti, getOptions}) => (
+const FormSelectAsync = ({name, label, colWidth, isMulti, getOptions}) => (
   <Form.Group as={Col} md={colWidth}>
     <Form.Label>{label}</Form.Label>
     <Field name={name}
@@ -46,7 +46,7 @@ const FormSelectAync = ({name, label, colWidth, isMulti, getOptions}) => (
   </Form.Group>
 );
 
-FormSelectAync.propTypes = {
+FormSelectAsync.propTypes = {
   name: PropTypes.string.isRequired,
   colWidth: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
@@ -54,4 +54,4 @@ FormSelectAync.propTypes = {
   getOptions: PropTypes.func.isRequired,
 };
 
-export default FormSelectAync;
+export default FormSelectAsync;
