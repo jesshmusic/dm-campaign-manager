@@ -9,11 +9,16 @@ module Admin::V1
     # GET /spells.json
     def index
       authorize Spell
-      @spells = if params[:search].present?
+      @spells = if params[:dnd_class].present? && params[:search].present?
+                  Spell.includes(:dnd_classes).where(dnd_classes: { name: params[:dnd_class] }).search_for(params[:search])
+                elsif params[:dnd_class].present?
+                  Spell.includes(:dnd_classes).where(dnd_classes: { name: params[:dnd_class] })
+                elsif params[:search].present?
                   Spell.search_for(params[:search])
                 else
                   Spell.all
                 end
+      @spells = @spells.where(level: params[:level]) if params[:level].present?
       @spells = if !current_user
                   @spells.where(user_id: nil)
                 elsif current_user.admin?

@@ -24,13 +24,25 @@ import FormSelect from '../../components/forms/FormSelect';
 import FormTextArea from '../../components/forms/FormTextArea';
 import CharacterClassFields from './partials/CharacterClassFields';
 
+// Spell Selects
+import BardSpellSelect from './partials/spell-fields/BardSpellSelect';
+import ClericSpellSelect from './partials/spell-fields/ClericSpellSelect';
+
 import classes from './partials/character-form.module.scss';
 
-import { alignmentOptions, SetupCharacterState, characterCalculations } from '../../utilities/character-utilities';
+import {
+  alignmentOptions,
+  SetupCharacterState,
+  characterCalculations,
+  filterOptions,
+} from '../../utilities/character-utilities';
+import DruidSpellSelect from './partials/spell-fields/DruidSpellSelect';
+import PaladinSpellSelect from './partials/spell-fields/PaladinSpellSelect';
+import RangerSpellSelect from './partials/spell-fields/RangerSpellSelect';
+import SorcererSpellSelect from './partials/spell-fields/SorcererSpellSelect';
+import WarlockSpellSelect from './partials/spell-fields/WarlockSpellSelect';
+import WizardSpellSelect from './partials/spell-fields/WizardSpellSelect';
 
-const filterOptions = (results) => results.map((nextItem) => (
-  {value: nextItem.id, label: nextItem.name, data: nextItem}
-));
 
 class PlayerCharacterEditor extends React.Component {
   state = {
@@ -46,6 +58,9 @@ class PlayerCharacterEditor extends React.Component {
     shieldOptions: [],
     weaponOptions: [],
     weaponTwoHandedOptions: [],
+    showSpellsSection: false,
+    hasCantrips: false,
+    hasHighLevelSpells: false,
   };
 
   componentDidMount () {
@@ -59,11 +74,15 @@ class PlayerCharacterEditor extends React.Component {
     }
   }
 
+
   componentDidUpdate (prevProps) {
     if (prevProps.currentPlayerCharacter !== this.props.currentPlayerCharacter ) {
-      this.setState({ editingPlayerCharacter: SetupCharacterState(
-        this.props.currentPlayerCharacter,
-        this.props.races) });
+      this.setState({
+        editingPlayerCharacter: SetupCharacterState(
+          this.props.currentPlayerCharacter,
+          this.props.races
+        ),
+      });
     }
 
     if (prevProps.races !== this.props.races) {
@@ -246,8 +265,16 @@ class PlayerCharacterEditor extends React.Component {
                            <FormSelect label={'Shield'} colWidth={'6'} name={'characterShield'} options={shieldOptions} isClearable/>
                            <FormSelect label={'Weapon - Left hand'} colWidth={'4'} name={'characterWeaponLH'} options={weaponOptions} isClearable/>
                            <FormSelect label={'Weapon - Right hand'} colWidth={'4'} name={'characterWeaponRH'} options={weaponOptions} isClearable/>
-                           <FormSelect label={'Weapon - two-hand'} colWidth={'4'} name={'characterWeapon2H'} options={weaponTwoHandedOptions} isClearable/>
+                           <FormSelect label={'Weapon - Two-hand'} colWidth={'4'} name={'characterWeapon2H'} options={weaponTwoHandedOptions} isClearable/>
                          </Form.Row>
+                         <BardSpellSelect showBardSpells={values.showBardSpells}/>
+                         <ClericSpellSelect showClericSpells={values.showClericSpells}/>
+                         <DruidSpellSelect showDruidSpells={values.showDruidSpells}/>
+                         <PaladinSpellSelect showPaladinSpells={values.showPaladinSpells}/>
+                         <RangerSpellSelect showRangerSpells={values.showRangerSpells}/>
+                         <SorcererSpellSelect showSorcererSpells={values.showSorcererSpells}/>
+                         <WarlockSpellSelect showWarlockSpells={values.showWarlockSpells}/>
+                         <WizardSpellSelect showWizardSpells={values.showWizardSpells}/>
                          <Form.Row>
                            <ButtonGroup aria-label="Character actions">
                              <Button type="submit" disabled={submitting}>Save</Button>

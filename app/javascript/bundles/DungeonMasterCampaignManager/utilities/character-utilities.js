@@ -1,5 +1,9 @@
 import createDecorator from 'final-form-calculate';
 
+export const filterOptions = (results) => results.map((nextItem) => (
+  {value: nextItem.id, label: nextItem.name, data: nextItem}
+));
+
 const AbilityScoreModifier = (abilityScore) => {
   const mods = {
     1: -5, 2: -4, 3: -4, 4: -3, 5: -3, 6: -2, 7: -2,
@@ -106,6 +110,16 @@ export const SetupCharacterState = (newChar, races) => {
       },
     };
   }
+
+  // Spells
+  charObject.showBardSpells = charObject.dndClasses.some(dndClass => dndClass.dndClass.label === 'Bard');
+  charObject.showClericSpells = charObject.dndClasses.some(dndClass => dndClass.dndClass.label === 'Cleric');
+  charObject.showDruidSpells = charObject.dndClasses.some(dndClass => dndClass.dndClass.label === 'Druid');
+  charObject.showPaladinSpells = charObject.dndClasses.some(dndClass => dndClass.dndClass.label === 'Paladin');
+  charObject.showRangerSpells = charObject.dndClasses.some(dndClass => dndClass.dndClass.label === 'Ranger');
+  charObject.showSorcererSpells = charObject.dndClasses.some(dndClass => dndClass.dndClass.label === 'Sorcerer');
+  charObject.showWarlockSpells = charObject.dndClasses.some(dndClass => dndClass.dndClass.label === 'Warlock');
+  charObject.showWizardSpells = charObject.dndClasses.some(dndClass => dndClass.dndClass.label === 'Wizard');
 
   // Add armor
   if (newChar.armor) {
