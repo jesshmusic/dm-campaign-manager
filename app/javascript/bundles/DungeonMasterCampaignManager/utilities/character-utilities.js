@@ -286,4 +286,17 @@ export const characterCalculations = createDecorator(
     field: 'characterRace',
     updates: abilityScoreUpdates,
   },
+  {
+    field: 'dndClasses',
+    updates: {
+      showBardSpells: (newValue) => newValue.some((dndClass) => dndClass.dndClass.label === 'Bard'),
+      showClericSpells: (newValue) => newValue.some((dndClass) => dndClass.dndClass.label === 'Cleric'),
+      showDruidSpells: (newValue) => newValue.some((dndClass) => dndClass.dndClass.label === 'Druid'),
+      showPaladinSpells: (newValue) => newValue.some((dndClass) => dndClass.dndClass.label === 'Paladin'),
+      showRangerSpells: (newValue) => newValue.some((dndClass) => dndClass.dndClass.label === 'Ranger'),
+      showSorcererSpells: (newValue) => newValue.some((dndClass) => dndClass.dndClass.label === 'Sorcerer'),
+      showWarlockSpells: (newValue) => newValue.some((dndClass) => dndClass.dndClass.label === 'Warlock'),
+      showWizardSpells: (newValue) => newValue.some((dndClass) => dndClass.dndClass.label === 'Wizard'),
+    },
+  },
 );
