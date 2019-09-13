@@ -10,12 +10,12 @@ import { connect } from 'react-redux';
 import { Form as FinalForm } from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
 import {FieldArray} from 'react-final-form-arrays';
-import createDecorator from 'final-form-calculate';
 
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
+import Spinner from 'react-bootstrap/Spinner';
 
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/layout/PageTitle';
@@ -26,74 +26,15 @@ import CharacterClassFields from './partials/CharacterClassFields';
 
 import classes from './partials/character-form.module.scss';
 
-import { AbilityScoreModifier, CalculateArmorClass } from '../../utilities/character-utilities';
-
-const alignmentOptions = [
-  { value: 'Lawful Good', label: 'Lawful Good' },
-  { value: 'Neutral Good', label: 'Neutral Good' },
-  { value: 'Chaotic Good', label: 'Chaotic Good' },
-  { value: 'Lawful Neutral', label: 'Lawful Neutral' },
-  { value: 'Neutral', label: 'Neutral' },
-  { value: 'Chaotic Neutral', label: 'Chaotic Neutral' },
-  { value: 'Lawful Evil', label: 'Lawful Evil' },
-  { value: 'Neutral Evil', label: 'Neutral Evil' },
-  { value: 'Chaotic Evil', label: 'Chaotic Evil' },
-];
+import { alignmentOptions, SetupCharacterState, characterCalculations } from '../../utilities/character-utilities';
 
 const filterOptions = (results) => results.map((nextItem) => (
   {value: nextItem.id, label: nextItem.name, data: nextItem}
 ));
 
-const characterCalculations = createDecorator(
-  {
-    field: 'armorClassModifier',
-    updates: {
-      armorClass: (armorClassModifier, allValues) => CalculateArmorClass({
-        armor: allValues.characterArmor,
-        armorClassModifier: parseInt(armorClassModifier, 10) || 0,
-        dexterity: allValues.dexterity || 10,
-        shield: allValues.characterShield,
-      }),
-    },
-  },
-  {
-    field: 'dexterity',
-    updates: {
-      armorClass: (dexValue, allValues) => CalculateArmorClass({
-        armor: allValues.characterArmor,
-        armorClassModifier: parseInt(allValues.armorClassModifier, 10) || 0,
-        dexterity: dexValue || 10,
-        shield: allValues.characterShield,
-      }),
-    },
-  },
-  {
-    field: 'characterArmor',
-    updates: {
-      armorClass: (characterArmor, allValues) => CalculateArmorClass({
-        armor: characterArmor,
-        armorClassModifier: parseInt(allValues.armorClassModifier, 10) || 0,
-        dexterity: allValues.dexterity || 10,
-        shield: allValues.characterShield,
-      }),
-    },
-  },
-  {
-    field: 'characterShield',
-    updates: {
-      armorClass: (characterShield, allValues) => CalculateArmorClass({
-        armor: allValues.characterArmor,
-        armorClassModifier: parseInt(allValues.armorClassModifier, 10) || 0,
-        dexterity: allValues.dexterity || 10,
-        shield: characterShield,
-      }),
-    },
-  },
-);
-
 class PlayerCharacterEditor extends React.Component {
   state = {
-    editingPlayerCharacter: { name: '' },
+    editingPlayerCharacter: null,
     raceOptions: [],
     classOptions: [],
     validated: false,
@@ -120,38 +61,15 @@ class PlayerCharacterEditor extends React.Component {
 
   componentDidUpdate (prevProps) {
     if (prevProps.currentPlayerCharacter !== this.props.currentPlayerCharacter ) {
-      const charObject = {
-        ...this.props.currentPlayerCharacter,
-        characterAlignment: {
-          value: this.props.currentPlayerCharacter.alignment,
-          label: this.props.currentPlayerCharacter.alignment,
-        },
-        characterRace: {
-          value: this.props.currentPlayerCharacter.race ? this.props.currentPlayerCharacter.race.id : 1,
-          label: this.props.currentPlayerCharacter.race ? this.props.currentPlayerCharacter.race.name : 'Human',
-        },
-        dndClasses: this.props.currentPlayerCharacter.characterClasses.map((dndClass) => ({
-          id: dndClass.id,
-          dndClass: {
-            value: dndClass.dndClassId ? dndClass.dndClassId : 153,
-            label: dndClass.dndClass ? dndClass.dndClass : 'Fighter',
-            data: dndClass ? dndClass : {},
-          },
-          level: dndClass.level,
-        })),
-      };
-      charObject.armorClass = 10 + AbilityScoreModifier(charObject.dexterity);
-      if (this.props.currentPlayerCharacter.armor) {
-        charObject.characterArmor = {
-          value: this.props.currentPlayerCharacter.armor.id,
-          label: this.props.currentPlayerCharacter.armor.name,
-        };
-      }
-      this.setState({ editingPlayerCharacter: charObject });
+      this.setState({ editingPlayerCharacter: SetupCharacterState(
+        this.props.currentPlayerCharacter,
+        this.props.races) });
     }
 
     if (prevProps.races !== this.props.races) {
-      this.setState({ raceOptions: filterOptions(this.props.races) });
+      this.setState({
+        raceOptions: filterOptions(this.props.races),
+      });
     }
 
     if (prevProps.dndClasses !== this.props.dndClasses) {
@@ -220,8 +138,8 @@ class PlayerCharacterEditor extends React.Component {
       weaponOptions,
       weaponTwoHandedOptions,
       validated } = this.state;
-    const currentCampaign = editingPlayerCharacter.campaign ? `Campaign: ${editingPlayerCharacter.campaign.name}` : 'Campaign';
-    const pageTitle = this.props.pcSlug ? `Edit Player Character "${editingPlayerCharacter.name}"` : 'New Player Character';
+    const currentCampaign = editingPlayerCharacter && editingPlayerCharacter.campaign ? `Campaign: ${editingPlayerCharacter.campaign.name}` : 'Campaign';
+    const pageTitle = this.props.pcSlug ? `Edit Player Character "${editingPlayerCharacter ? editingPlayerCharacter.name : 'Loading...'}"` : 'New Player Character';
     return (
       <PageContainer user={user}
                      flashMessages={flashMessages}
@@ -233,104 +151,113 @@ class PlayerCharacterEditor extends React.Component {
                        {url: null, isActive: true, title: pageTitle},
                      ]}>
         <PageTitle title={pageTitle}/>
-        <FinalForm onSubmit={this.handleSubmit}
-                   initialValues={editingPlayerCharacter}
-                   validate={this.validate}
-                   decorators={[characterCalculations]}
-                   mutators={{...arrayMutators }}
-                   render={({
-                     handleSubmit,
-                     form: {
-                       mutators: { push },
-                     },
-                     submitting,
-                     form,
-                     pristine,
-                     values,
-                   }) => (
-                     <Form noValidate validated={validated} onSubmit={handleSubmit}>
-                       <Form.Row>
-                         <FormField label={'Character name'} type={'text'} colWidth={'3'} name={'name'}/>
-                         <FormSelect label={'Alignment'} colWidth={'3'} name={'characterAlignment'} options={alignmentOptions}/>
-                         <FormSelect label={'Race'} colWidth={'3'} name={'characterRace'} options={raceOptions}/>
-                         <FormField label={'Background'} type={'text'} colWidth={'3'} name={'background'}/>
-                       </Form.Row>
-                       <Form.Row>
-                         <FormTextArea label={'Description'} colWidth={'7'} name={'description'}/>
-                         <FormField label={'Languages'} type={'text'} colWidth={'5'} name={'languages'}/>
-                       </Form.Row>
-                       <h2>Classes</h2>
-                       <Form.Row>
-                         <Col md={6}>
-                           <FieldArray name="dndClasses">
-                             {({ fields }) =>
-                               fields.map((characterClass, index) => (
-                                 !fields.value[index] || !fields.value[index]._destroy ? (
-                                   <CharacterClassFields characterClass={characterClass}
-                                                         fields={fields}
-                                                         index={index}
-                                                         key={index}
-                                                         classOptions={classOptions}/>
-                                 ) : null))
-                             }
-                           </FieldArray>
-                           <Button type="button" onClick={() => push('dndClasses', {
-                             dndClass: {
-                               value: 153,
-                               label: 'Fighter',
-                             },
-                             level: 1,
-                           })} variant={'info'} block>Add Class</Button>
-                         </Col>
-                       </Form.Row>
-                       <h2>Statistics</h2>
-                       <Form.Row>
-                         <FormField label={'Armor Class'} type={'number'} colWidth={'2'} name={'armorClass'} readOnly defaultValue={values.armorClass}/>
-                         <FormField label={'AC Mod'}
-                                    type={'number'}
-                                    colWidth={'2'}
-                                    name={'armorClassModifier'}
-                                    infoText={'Magic item or special ability'}
-                         />
-                         <FormField label={'Hit Points'} type={'number'} colWidth={'4'} name={'hitPoints'}/>
-                         <FormField label={'Experience Points'} type={'number'} colWidth={'4'} name={'xp'}/>
-                       </Form.Row>
-                       <h2>Ability Scores</h2>
-                       <Form.Row>
-                         <FormField label={'STR'} type={'number'} colWidth={'2'} name={'strength'}/>
-                         <FormField label={'DEX'} type={'number'} colWidth={'2'} name={'dexterity'}/>
-                         <FormField label={'CON'} type={'number'} colWidth={'2'} name={'constitution'}/>
-                         <FormField label={'INT'} type={'number'} colWidth={'2'} name={'intelligence'}/>
-                         <FormField label={'WIS'} type={'number'} colWidth={'2'} name={'wisdom'}/>
-                         <FormField label={'CHA'} type={'number'} colWidth={'2'} name={'charisma'}/>
-                       </Form.Row>
-                       <h2>Coin</h2>
-                       <Form.Row>
-                         <FormField label={'Copper'} type={'number'} colWidth={'2'} name={'copperPieces'}/>
-                         <FormField label={'Silver'} type={'number'} colWidth={'2'} name={'silverPieces'}/>
-                         <FormField label={'Electrum'} type={'number'} colWidth={'2'} name={'electrumPieces'}/>
-                         <FormField label={'Gold'} type={'number'} colWidth={'2'} name={'goldPieces'}/>
-                         <FormField label={'Platinum'} type={'number'} colWidth={'2'} name={'platinumPieces'}/>
-                       </Form.Row>
-                       <h2>Equipment</h2>
-                       <h3>Armor and Weapons</h3>
-                       <Form.Row>
-                         <FormSelect label={'Armor'} colWidth={'6'} name={'characterArmor'} options={armorOptions} isClearable/>
-                         <FormSelect label={'Shield'} colWidth={'6'} name={'characterShield'} options={shieldOptions} isClearable/>
-                         <FormSelect label={'Weapon - Left hand'} colWidth={'4'} name={'characterWeaponLH'} options={weaponOptions} isClearable/>
-                         <FormSelect label={'Weapon - Right hand'} colWidth={'4'} name={'characterWeaponRH'} options={weaponOptions} isClearable/>
-                         <FormSelect label={'Weapon - two-hand'} colWidth={'4'} name={'characterWeapon2H'} options={weaponTwoHandedOptions} isClearable/>
-                       </Form.Row>
-                       <Form.Row>
-                         <ButtonGroup aria-label="Character actions">
-                           <Button type="submit" disabled={submitting}>Save</Button>
-                           <Button type="button" onClick={form.reset} disabled={submitting || pristine} variant={'secondary'}>Reset</Button>
-                         </ButtonGroup>
-                       </Form.Row>
-                       <pre className={classes.preBlock}>{JSON.stringify(values, 0, 2)}</pre>
-                     </Form>
-                   )}
-        />
+        {editingPlayerCharacter ? (
+          <FinalForm onSubmit={this.handleSubmit}
+                     initialValues={editingPlayerCharacter}
+                     validate={this.validate}
+                     decorators={[characterCalculations]}
+                     mutators={{...arrayMutators }}
+                     render={({
+                       handleSubmit,
+                       form: {
+                         mutators: { push },
+                       },
+                       submitting,
+                       form,
+                       pristine,
+                       values,
+                     }) => (
+                       <Form noValidate validated={validated} onSubmit={handleSubmit}>
+                         <Form.Row>
+                           <FormField label={'Character name'} type={'text'} colWidth={'3'} name={'name'}/>
+                           <FormSelect label={'Alignment'} colWidth={'3'} name={'characterAlignment'} options={alignmentOptions}/>
+                           <FormSelect label={'Race'} colWidth={'3'} name={'characterRace'} options={raceOptions}/>
+                           <FormField label={'Background'} type={'text'} colWidth={'3'} name={'background'}/>
+                         </Form.Row>
+                         <Form.Row>
+                           <FormTextArea label={'Description'} colWidth={'7'} name={'description'}/>
+                           <FormField label={'Languages'} type={'text'} colWidth={'5'} name={'languages'}/>
+                         </Form.Row>
+                         <h2>Classes</h2>
+                         <Form.Row>
+                           <Col md={6}>
+                             <FieldArray name="dndClasses">
+                               {({ fields }) =>
+                                 fields.map((characterClass, index) => (
+                                   !fields.value[index] || !fields.value[index]._destroy ? (
+                                     <CharacterClassFields characterClass={characterClass}
+                                                           fields={fields}
+                                                           index={index}
+                                                           key={index}
+                                                           classOptions={classOptions}/>
+                                   ) : null))
+                               }
+                             </FieldArray>
+                             <Button type="button" onClick={() => push('dndClasses', {
+                               dndClass: {
+                                 value: 153,
+                                 label: 'Fighter',
+                               },
+                               level: 1,
+                             })} variant={'info'} block>Add Class</Button>
+                           </Col>
+                         </Form.Row>
+                         <h2>Statistics</h2>
+                         <Form.Row>
+                           <FormField label={'Armor Class'} type={'number'} colWidth={'2'} name={'armorClass'} readOnly />
+                           <FormField label={'AC Mod'}
+                                      type={'number'}
+                                      colWidth={'2'}
+                                      name={'armorClassModifier'}
+                                      infoText={'Magic item or special ability'}
+                           />
+                           <FormField label={'Hit Points'} type={'number'} colWidth={'4'} name={'hitPoints'}/>
+                           <FormField label={'Experience Points'} type={'number'} colWidth={'4'} name={'xp'}/>
+                         </Form.Row>
+                         <h2>Ability Scores</h2>
+                         <Form.Row>
+                           <FormField label={'Use Race Modifiers'}
+                                      name={'applyRaceMods'}
+                                      colWidth={'12'}
+                                      type={'checkbox'}
+                                      infoText={'Add racial bonuses to ability scores.'}
+                           />
+                         </Form.Row>
+                         <Form.Row>
+                           <FormField label={'STR'} type={'number'} colWidth={'2'} name={'strength'}/>
+                           <FormField label={'DEX'} type={'number'} colWidth={'2'} name={'dexterity'}/>
+                           <FormField label={'CON'} type={'number'} colWidth={'2'} name={'constitution'}/>
+                           <FormField label={'INT'} type={'number'} colWidth={'2'} name={'intelligence'}/>
+                           <FormField label={'WIS'} type={'number'} colWidth={'2'} name={'wisdom'}/>
+                           <FormField label={'CHA'} type={'number'} colWidth={'2'} name={'charisma'}/>
+                         </Form.Row>
+                         <h2>Coin</h2>
+                         <Form.Row>
+                           <FormField label={'Copper'} type={'number'} colWidth={'2'} name={'copperPieces'}/>
+                           <FormField label={'Silver'} type={'number'} colWidth={'2'} name={'silverPieces'}/>
+                           <FormField label={'Electrum'} type={'number'} colWidth={'2'} name={'electrumPieces'}/>
+                           <FormField label={'Gold'} type={'number'} colWidth={'2'} name={'goldPieces'}/>
+                           <FormField label={'Platinum'} type={'number'} colWidth={'2'} name={'platinumPieces'}/>
+                         </Form.Row>
+                         <h2>Equipment</h2>
+                         <h3>Armor and Weapons</h3>
+                         <Form.Row>
+                           <FormSelect label={'Armor'} colWidth={'6'} name={'characterArmor'} options={armorOptions} isClearable/>
+                           <FormSelect label={'Shield'} colWidth={'6'} name={'characterShield'} options={shieldOptions} isClearable/>
+                           <FormSelect label={'Weapon - Left hand'} colWidth={'4'} name={'characterWeaponLH'} options={weaponOptions} isClearable/>
+                           <FormSelect label={'Weapon - Right hand'} colWidth={'4'} name={'characterWeaponRH'} options={weaponOptions} isClearable/>
+                           <FormSelect label={'Weapon - two-hand'} colWidth={'4'} name={'characterWeapon2H'} options={weaponTwoHandedOptions} isClearable/>
+                         </Form.Row>
+                         <Form.Row>
+                           <ButtonGroup aria-label="Character actions">
+                             <Button type="submit" disabled={submitting}>Save</Button>
+                             <Button type="button" onClick={form.reset} disabled={submitting || pristine} variant={'secondary'}>Reset</Button>
+                           </ButtonGroup>
+                         </Form.Row>
+                         <pre className={classes.preBlock}>{JSON.stringify(values, 0, 2)}</pre>
+                       </Form>
+                     )}
+          />) : <Spinner/>}
       </PageContainer>
     );
   }
