@@ -19,13 +19,14 @@ class ReactSelectAdapter extends React.Component {
   };
 
   render () {
-    const { input, isMulti, getOptions, defaultOptions, ...rest } = this.props;
+    const { input, isMulti, getOptions, defaultOptions, isClearable, ...rest } = this.props;
     return (
       <div>
         <AsyncSelect
           isMulti={isMulti}
           cacheOptions
           defaultOptions={defaultOptions}
+          isClearable={isClearable}
           {...input}
           {...rest}
           searchable
@@ -39,12 +40,13 @@ class ReactSelectAdapter extends React.Component {
 
 ReactSelectAdapter.propTypes = {
   input: PropTypes.any,
+  isClearable: PropTypes.bool,
   isMulti: PropTypes.bool,
   getOptions: PropTypes.func.isRequired,
   defaultOptions: PropTypes.any,
 };
 
-const FormSelectAsync = ({name, label, colWidth, isMulti, getOptions, defaultOptions = true}) => (
+const FormSelectAsync = ({name, label, colWidth, isMulti, getOptions, defaultOptions = true, isClearable = false}) => (
   <Form.Group as={Col} md={colWidth}>
     <Form.Label>{label}</Form.Label>
     <Field name={name}
@@ -52,6 +54,7 @@ const FormSelectAsync = ({name, label, colWidth, isMulti, getOptions, defaultOpt
            label={label}
            isMulti={isMulti}
            getOptions={getOptions}
+           isClearable={isClearable}
            component={ReactSelectAdapter}/>
   </Form.Group>
 );

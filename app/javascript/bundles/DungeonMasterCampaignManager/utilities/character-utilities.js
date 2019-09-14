@@ -65,6 +65,7 @@ export const SetupCharacterState = (newChar, races) => {
     })),
     armorClass: newChar.armorClass,
     armorClassModifier: newChar.armorClassModifier,
+    characterArmor: newChar.characterArmor,
     hitPoints: newChar.hitPoints,
     xp: newChar.xp,
     strength:  newChar.strength,
@@ -99,6 +100,10 @@ export const SetupCharacterState = (newChar, races) => {
     dexterity: charObject.dexterity || 10,
     shield: charObject.characterShield,
   });
+
+  if (newChar.characterArmor) {
+    charObject.armorId = newChar.characterArmor.value;
+  }
 
   // Set Race
   if (newChar.race) {
@@ -340,6 +345,7 @@ export const characterCalculations = createDecorator (
         dexterity: allValues.dexterity || 10,
         shield: allValues.characterShield,
       }),
+      armorId: (characterArmor) => characterArmor.value,
     },
   },
   {

@@ -14,7 +14,8 @@ module Admin::V1
                else
                  Item.all.order('name ASC')
                end
-      @items = params[:type].present? ? @items.where(type: params[:type]) : @items
+      @items = @items.where(type: params[:type]) if params[:type].present?
+      @items = @items.where.not(sub_category: 'Shield') if params[:no_shield].present?
       @items = if !current_user
                  @items.where(user_id: nil)
                elsif current_user.admin?
