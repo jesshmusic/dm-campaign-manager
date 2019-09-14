@@ -50,10 +50,6 @@ class PlayerCharacterEditor extends React.Component {
     raceOptions: [],
     classOptions: [],
     validated: false,
-    armors: [],
-    weapons: [],
-    items: [],
-    shields: [],
     armorOptions: [],
     shieldOptions: [],
     weaponOptions: [],
@@ -97,11 +93,9 @@ class PlayerCharacterEditor extends React.Component {
 
     if (prevProps.items !== this.props.items) {
       this.setState({
-        armor: this.props.items.filter((item) => item.type === 'ArmorItem' && item.subCategory !== 'Shield'),
         armorOptions: filterOptions(
           this.props.items.filter((item) => item.type === 'ArmorItem' && item.subCategory !== 'Shield')
         ),
-        shields: this.props.items.filter((item) => item.type === 'ArmorItem' && item.subCategory === 'Shield'),
         shieldOptions: filterOptions(
           this.props.items.filter((item) => item.type === 'ArmorItem' && item.subCategory === 'Shield')
         ),
@@ -113,7 +107,6 @@ class PlayerCharacterEditor extends React.Component {
           this.props.items.filter((item) => item.type === 'WeaponItem' &&
               (item.weapon2hDamageType || (item.weaponProperties && item.weaponProperties.includes('Two-Handed'))))
         ),
-        weapons: this.props.items.filter((item) => item.type === 'WeaponItem'),
       });
     }
   }
