@@ -194,7 +194,22 @@ export const SetupCharacterState = (newChar, races) => {
     charObject.characterArmor = {
       value: newChar.armor.id,
       label: newChar.armor.name,
-      data: newChar.armor,
+      data: {
+        armorDexBonus: newChar.armor.armorDexBonus,
+        armorClass: newChar.armor.armorClass,
+      },
+    };
+  }
+
+  // Add shield
+  if (newChar.shield) {
+    charObject.characterShield = {
+      value: newChar.shield.id,
+      label: newChar.shield.name,
+      data: {
+        armorDexBonus: newChar.shield.armorDexBonus,
+        armorClass: newChar.shield.armorClass,
+      },
     };
   }
 
@@ -345,7 +360,7 @@ export const characterCalculations = createDecorator (
         dexterity: allValues.dexterity || 10,
         shield: allValues.characterShield,
       }),
-      armorId: (characterArmor) => characterArmor.value,
+      armorId: (characterArmor) => characterArmor ? characterArmor.value : null,
     },
   },
   {
@@ -397,12 +412,14 @@ export const characterCalculations = createDecorator (
     field: /spells*/,
     updates: {
       characterSpellsAttributes: (newValues, allValues) => {
-        const parsedSpells = newValues.map((spell) => parseSpell(spell));
-        parsedSpells.forEach((parsedSpell) => {
-          if (!allValues.characterSpellsAttributes.some((spell) => spell.spellId === parsedSpell.spellId)) {
-            allValues.characterSpellsAttributes.push(parsedSpell);
-          }
-        });
+        if (newValues) {
+          const parsedSpells = newValues.map((spell) => parseSpell(spell));
+          parsedSpells.forEach((parsedSpell) => {
+            if (!allValues.characterSpellsAttributes.some((spell) => spell.spellId === parsedSpell.spellId)) {
+              allValues.characterSpellsAttributes.push(parsedSpell);
+            }
+          });
+        }
         return allValues.characterSpellsAttributes;
       },
     },

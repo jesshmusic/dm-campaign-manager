@@ -176,6 +176,7 @@ module Admin::V1
         :spell_attack_bonus, :spell_save_dc, :user_id, :xp, :min_score,
         :armor_class, :charisma, :constitution, :dexterity, :hit_points, :hit_points_current,
         :initiative, :intelligence, :proficiency, :speed, :strength, :wisdom, :race_id,
+        :armor_id, :shield_id, :weapon_2h_id, :weapon_lh_id, :weapon_rh_id,
         spell_ids: [],
         character_spells_attributes: %i[id is_prepared spell_class spell_id],
         character_items_attributes: %i[id quantity carrying equipped item_id _destroy],

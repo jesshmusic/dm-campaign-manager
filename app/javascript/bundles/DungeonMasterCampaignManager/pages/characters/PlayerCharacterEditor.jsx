@@ -44,6 +44,7 @@ import {
 } from '../../utilities/character-utilities';
 import RaceSelect from './partials/races/RaceSelect';
 import ArmorSelect from './partials/items/ArmorSelect';
+import ShieldSelect from './partials/items/ShieldSelect';
 
 
 class PlayerCharacterEditor extends React.Component {
@@ -257,7 +258,7 @@ class PlayerCharacterEditor extends React.Component {
                          <h3>Armor and Weapons</h3>
                          <Form.Row>
                            <ArmorSelect colWidth={'6'}/>
-                           <FormSelect label={'Shield'} colWidth={'6'} name={'characterShield'} options={shieldOptions} isClearable/>
+                           <ShieldSelect colWidth={'6'}/>
                            <FormSelect label={'Weapon - Left hand'} colWidth={'4'} name={'characterWeaponLH'} options={weaponOptions} isClearable/>
                            <FormSelect label={'Weapon - Right hand'} colWidth={'4'} name={'characterWeaponRH'} options={weaponOptions} isClearable/>
                            <FormSelect label={'Weapon - Two-hand'} colWidth={'4'} name={'characterWeapon2H'} options={weaponTwoHandedOptions} isClearable/>

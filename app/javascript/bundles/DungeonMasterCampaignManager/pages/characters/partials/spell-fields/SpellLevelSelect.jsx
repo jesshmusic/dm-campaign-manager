@@ -31,6 +31,8 @@ const SpellLevelSelect = ({spellLevelText, levelNumber, dndClassName}) => (
       colWidth={'12'}
       getOptions={(inputValue, callback) => getSpells(dndClassName, inputValue, `${levelNumber}`, callback)}
       name={`spells${spellLevelText.replace(/\s+/g, '')}${dndClassName}`}
+      defaultOptions={[]}
+      placeholder={'Search for Spells...'}
       isMulti={true} />
   </Form.Row>
 );

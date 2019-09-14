@@ -17,28 +17,28 @@ export const filterOptions = (results) => results.map((nextItem) => (
   }
 ));
 
-const getArmors = (inputValue, callback) => {
-  fetch(`/v1/armor_items.json?shield=false&search=${inputValue}`)
+const getShields = (inputValue, callback) => {
+  fetch(`/v1/armor_items.json?shield=true&search=${inputValue}`)
     .then((response) => response.json())
     .then((jsonResult) => {
       callback(filterOptions(jsonResult));
     });
 };
 
-const ArmorSelect = ({colWidth}) => (
+const ShieldSelect = ({colWidth}) => (
   <FormSelectAsync
-    label={'Armor'}
+    label={'Shield'}
     colWidth={colWidth}
-    getOptions={getArmors}
-    name={'characterArmor'}
-    placeholder={'Search for Armor...'}
-    defaultOptions={[]}
+    getOptions={getShields}
+    name={'characterShield'}
+    placeholder={'Search for Shield...'}
+    defaultOptions={true}
     isClearable
   />
 );
 
-ArmorSelect.propTypes = {
+ShieldSelect.propTypes = {
   colWidth: PropTypes.string.isRequired,
 };
 
-export default ArmorSelect;
+export default ShieldSelect;
