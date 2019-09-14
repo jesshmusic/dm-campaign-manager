@@ -185,26 +185,50 @@ if character.shield
 end
 
 if character.weapon_lh
-  json.armor character.weapon_lh do |weapon_lh|
-    json.extract! weapon_lh, :id, :name, :description, :category_range, :weapon_damage_dice_count,
-                  :weapon_damage_dice_value, :weapon_damage_type, :weapon_properties, :weapon_range, :weapon_range_long,
-                  :weapon_range_normal, :weapon_thrown_range_long, :weapon_thrown_range_normal
+  json.weapon_lh character.weapon_lh do |weapon_lh|
+    json.value weapon_lh.id
+    json.label weapon_lh.name
+    json.data do
+      json.weapon_damage_dice_count weapon_lh.weapon_damage_dice_count
+      json.weapon_damage_dice_value weapon_lh.weapon_damage_dice_value
+      json.weapon_damage_type weapon_lh.weapon_damage_type
+      json.weapon_range weapon_lh.weapon_range
+      json.subcategory weapon_lh.subcategory
+      json.weapon_properties weapon_lh.weapon_properties
+    end
   end
 end
 
 if character.weapon_rh
-  json.armor character.weapon_rh do |weapon_rh|
-    json.extract! weapon_rh, :id, :name, :description, :category_range, :weapon_damage_dice_count,
-                  :weapon_damage_dice_value, :weapon_damage_type, :weapon_properties, :weapon_range,
-                  :weapon_range_long, :weapon_range_normal, :weapon_thrown_range_long, :weapon_thrown_range_normal
+  json.weapon_rh character.weapon_rh do |weapon_rh|
+    json.value weapon_rh.id
+    json.label weapon_rh.name
+    json.data do
+      json.weapon_damage_dice_count weapon_rh.weapon_damage_dice_count
+      json.weapon_damage_dice_value weapon_rh.weapon_damage_dice_value
+      json.weapon_damage_type weapon_rh.weapon_damage_type
+      json.weapon_range weapon_rh.weapon_range
+      json.subcategory weapon_rh.subcategory
+      json.weapon_properties weapon_rh.weapon_properties
+    end
   end
 end
 
 if character.weapon_2h
-  json.armor character.weapon_2h do |weapon_2h|
-    json.extract! weapon_2h, :id, :name, :description, :category_range, :weapon_2h_damage_dice_count,
-                  :weapon_2h_damage_dice_value, :weapon_2h_damage_type, :weapon_properties, :weapon_range,
-                  :weapon_range_long, :weapon_range_normal, :weapon_thrown_range_long, :weapon_thrown_range_normal
+  json.weapon_2h character.weapon_2h do |weapon_2h|
+    json.value weapon_2h.id
+    json.label weapon_2h.name
+    json.data do
+      json.weapon_2h_damage_dice_count weapon_2h.weapon_2h_damage_dice_count
+      json.weapon_2h_damage_dice_value weapon_2h.weapon_2h_damage_dice_value
+      json.weapon_2h_damage_type weapon_2h.weapon_2h_damage_type
+      json.weapon_damage_dice_count weapon_2h.weapon_damage_dice_count
+      json.weapon_damage_dice_value weapon_2h.weapon_damage_dice_value
+      json.weapon_damage_type weapon_2h.weapon_damage_type
+      json.weapon_range weapon_2h.weapon_range
+      json.subcategory weapon_2h.subcategory
+      json.weapon_properties weapon_2h.weapon_properties
+    end
   end
 end
 
