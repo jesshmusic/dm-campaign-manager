@@ -143,43 +143,43 @@ class Character < ApplicationRecord
   end
 
   def cantrips
-    spells.where(level: 0)
+    character_spells.includes(:spell).where(spells: { level: 0 })
   end
 
   def spells_level_1
-    spells.where(level: 1)
+    character_spells.includes(:spell).where(spells: { level: 1 })
   end
 
   def spells_level_2
-    spells.where(level: 2)
+    character_spells.includes(:spell).where(spells: { level: 2 })
   end
 
   def spells_level_3
-    spells.where(level: 3)
+    character_spells.includes(:spell).where(spells: { level: 3 })
   end
 
   def spells_level_4
-    spells.where(level: 4)
+    character_spells.includes(:spell).where(spells: { level: 4 })
   end
 
   def spells_level_5
-    spells.where(level: 5)
+    character_spells.includes(:spell).where(spells: { level: 5 })
   end
 
   def spells_level_6
-    spells.where(level: 6)
+    character_spells.includes(:spell).where(spells: { level: 6 })
   end
 
   def spells_level_7
-    spells.where(level: 7)
+    character_spells.includes(:spell).where(spells: { level: 7 })
   end
 
   def spells_level_8
-    spells.where(level: 8)
+    character_spells.includes(:spell).where(spells: { level: 8 })
   end
 
   def spells_level_9
-    spells.where(level: 9)
+    character_spells.includes(:spell).where(spells: { level: 9 })
   end
 
   include PgSearch::Model

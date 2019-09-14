@@ -111,6 +111,19 @@ export const SetupCharacterState = (newChar, races) => {
     };
   }
 
+  newChar.characterClasses.forEach((nextClass) => {
+    charObject[`spellsCantrips${nextClass.dndClass}`] = nextClass.spellsCantrips;
+    charObject[`spellsLevel1${nextClass.dndClass}`] = nextClass.spellsLevel1;
+    charObject[`spellsLevel2${nextClass.dndClass}`] = nextClass.spellsLevel2;
+    charObject[`spellsLevel3${nextClass.dndClass}`] = nextClass.spellsLevel3;
+    charObject[`spellsLevel4${nextClass.dndClass}`] = nextClass.spellsLevel4;
+    charObject[`spellsLevel5${nextClass.dndClass}`] = nextClass.spellsLevel5;
+    charObject[`spellsLevel6${nextClass.dndClass}`] = nextClass.spellsLevel6;
+    charObject[`spellsLevel7${nextClass.dndClass}`] = nextClass.spellsLevel7;
+    charObject[`spellsLevel8${nextClass.dndClass}`] = nextClass.spellsLevel8;
+    charObject[`spellsLevel9${nextClass.dndClass}`] = nextClass.spellsLevel9;
+  });
+
   // Spells
   charObject.showBardSpells = charObject.dndClasses.some(dndClass => dndClass.dndClass.label === 'Bard');
   charObject.showClericSpells = charObject.dndClasses.some(dndClass => dndClass.dndClass.label === 'Cleric');

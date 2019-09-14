@@ -29,6 +29,166 @@ json.character_classes character.character_classes do |character_class|
   json.spell_ability character_class.dnd_class.spell_ability
   json.spell_save_dc character_class.spell_save_dc
   json.spell_attack_bonus character_class.spell_attack_bonus
+
+  if character.cantrips&.count&.positive?
+    json.spells_cantrips character.cantrips do |cantrip|
+      next unless cantrip.spell_class == character_class.dnd_class.name
+
+      json.id cantrip.id
+      json.label cantrip.spell.name
+      json.data do
+        json.is_prepared cantrip.is_prepared
+        json.spell_class cantrip.spell_class
+        json.spell do
+          json.partial! 'admin/v1/spells/spell', spell: cantrip.spell
+        end
+      end
+    end
+  end
+
+  if character.spells_level_1&.count&.positive?
+    json.spells_level_1 character.spells_level_1 do |spell|
+      next unless spell.spell_class == character_class.dnd_class.name
+
+      json.id spell.id
+      json.label spell.spell.name
+      json.data do
+        json.is_prepared spell.is_prepared
+        json.spell_class spell.spell_class
+        json.spell do
+          json.partial! 'admin/v1/spells/spell', spell: spell.spell
+        end
+      end
+    end
+  end
+
+  if character.spells_level_2&.count&.positive?
+    json.spells_level_2 character.spells_level_2 do |spell|
+      next unless spell.spell_class == character_class.dnd_class.name
+
+      json.id spell.id
+      json.label spell.spell.name
+      json.data do
+        json.is_prepared spell.is_prepared
+        json.spell_class spell.spell_class
+        json.spell do
+          json.partial! 'admin/v1/spells/spell', spell: spell.spell
+        end
+      end
+    end
+  end
+
+  if character.spells_level_3&.count&.positive?
+    json.spells_level_3 character.spells_level_3 do |spell|
+      next unless spell.spell_class == character_class.dnd_class.name
+
+      json.id spell.id
+      json.label spell.spell.name
+      json.data do
+        json.is_prepared spell.is_prepared
+        json.spell_class spell.spell_class
+        json.spell do
+          json.partial! 'admin/v1/spells/spell', spell: spell.spell
+        end
+      end
+    end
+  end
+
+  if character.spells_level_4&.count&.positive?
+    json.spells_level_4 character.spells_level_4 do |spell|
+      next unless spell.spell_class == character_class.dnd_class.name
+
+      json.id spell.id
+      json.label spell.spell.name
+      json.data do
+        json.is_prepared spell.is_prepared
+        json.spell_class spell.spell_class
+        json.spell do
+          json.partial! 'admin/v1/spells/spell', spell: spell.spell
+        end
+      end
+    end
+  end
+
+  if character.spells_level_5&.count&.positive?
+    json.spells_level_5 character.spells_level_5 do |spell|
+      next unless spell.spell_class == character_class.dnd_class.name
+
+      json.id spell.id
+      json.label spell.spell.name
+      json.data do
+        json.is_prepared spell.is_prepared
+        json.spell_class spell.spell_class
+        json.spell do
+          json.partial! 'admin/v1/spells/spell', spell: spell.spell
+        end
+      end
+    end
+  end
+
+  if character.spells_level_6&.count&.positive?
+    json.spells_level_6 character.spells_level_6 do |spell|
+      next unless spell.spell_class == character_class.dnd_class.name
+
+      json.id spell.id
+      json.label spell.spell.name
+      json.data do
+        json.is_prepared spell.is_prepared
+        json.spell_class spell.spell_class
+        json.spell do
+          json.partial! 'admin/v1/spells/spell', spell: spell.spell
+        end
+      end
+    end
+  end
+
+  if character.spells_level_7&.count&.positive?
+    json.spells_level_7 character.spells_level_7 do |spell|
+      next unless spell.spell_class == character_class.dnd_class.name
+
+      json.id spell.id
+      json.label spell.spell.name
+      json.data do
+        json.is_prepared spell.is_prepared
+        json.spell_class spell.spell_class
+        json.spell do
+          json.partial! 'admin/v1/spells/spell', spell: spell.spell
+        end
+      end
+    end
+  end
+
+  if character.spells_level_8&.count&.positive?
+    json.spells_level_8 character.spells_level_8 do |spell|
+      next unless spell.spell_class == character_class.dnd_class.name
+
+      json.id spell.id
+      json.label spell.spell.name
+      json.data do
+        json.is_prepared spell.is_prepared
+        json.spell_class spell.spell_class
+        json.spell do
+          json.partial! 'admin/v1/spells/spell', spell: spell.spell
+        end
+      end
+    end
+  end
+
+  if character.spells_level_9&.count&.positive?
+    json.spells_level_9 character.spells_level_9 do |spell|
+      next unless spell.spell_class == character_class.dnd_class.name
+
+      json.id spell.id
+      json.label spell.spell.name
+      json.data do
+        json.is_prepared spell.is_prepared
+        json.spell_class spell.spell_class
+        json.spell do
+          json.partial! 'admin/v1/spells/spell', spell: spell.spell
+        end
+      end
+    end
+  end
 end
 
 if character.armor
@@ -65,106 +225,6 @@ if character.weapon_2h
     json.extract! weapon_2h, :id, :name, :description, :category_range, :weapon_2h_damage_dice_count,
                   :weapon_2h_damage_dice_value, :weapon_2h_damage_type, :weapon_properties, :weapon_range,
                   :weapon_range_long, :weapon_range_normal, :weapon_thrown_range_long, :weapon_thrown_range_normal
-  end
-end
-
-if character.cantrips&.count&.positive?
-  json.spells_cantrips character.cantrips do |cantrip|
-    json.id cantrip.id
-    json.label cantrip.name
-    json.data do
-      json.partial! 'admin/v1/spells/spell', spell: cantrip
-    end
-  end
-end
-
-if character.spells_level_1&.count&.positive?
-  json.spells_level_1 character.spells_level_1 do |spell|
-    json.id spell.id
-    json.label spell.name
-    json.data do
-      json.partial! 'admin/v1/spells/spell', spell: spell
-    end
-  end
-end
-
-if character.spells_level_2&.count&.positive?
-  json.spells_level_2 character.spells_level_2 do |spell|
-    json.id spell.id
-    json.label spell.name
-    json.data do
-      json.partial! 'admin/v1/spells/spell', spell: spell
-    end
-  end
-end
-
-if character.spells_level_3&.count&.positive?
-  json.spells_level_3 character.spells_level_3 do |spell|
-    json.id spell.id
-    json.label spell.name
-    json.data do
-      json.partial! 'admin/v1/spells/spell', spell: spell
-    end
-  end
-end
-
-if character.spells_level_4&.count&.positive?
-  json.spells_level_4 character.spells_level_4 do |spell|
-    json.id spell.id
-    json.label spell.name
-    json.data do
-      json.partial! 'admin/v1/spells/spell', spell: spell
-    end
-  end
-end
-
-if character.spells_level_5&.count&.positive?
-  json.spells_level_5 character.spells_level_5 do |spell|
-    json.id spell.id
-    json.label spell.name
-    json.data do
-      json.partial! 'admin/v1/spells/spell', spell: spell
-    end
-  end
-end
-
-if character.spells_level_6&.count&.positive?
-  json.spells_level_6 character.spells_level_6 do |spell|
-    json.id spell.id
-    json.label spell.name
-    json.data do
-      json.partial! 'admin/v1/spells/spell', spell: spell
-    end
-  end
-end
-
-if character.spells_level_7&.count&.positive?
-  json.spells_level_7 character.spells_level_7 do |spell|
-    json.id spell.id
-    json.label spell.name
-    json.data do
-      json.partial! 'admin/v1/spells/spell', spell: spell
-    end
-  end
-end
-
-if character.spells_level_8&.count&.positive?
-  json.spells_level_8 character.spells_level_8 do |spell|
-    json.id spell.id
-    json.label spell.name
-    json.data do
-      json.partial! 'admin/v1/spells/spell', spell: spell
-    end
-  end
-end
-
-if character.spells_level_9&.count&.positive?
-  json.spells_level_9 character.spells_level_9 do |spell|
-    json.id spell.id
-    json.label spell.name
-    json.data do
-      json.partial! 'admin/v1/spells/spell', spell: spell
-    end
   end
 end
 

@@ -22,7 +22,7 @@ const SpellLevelSelect = ({spellLevelText, levelNumber, dndClassName}) => (
       label={spellLevelText}
       colWidth={'12'}
       getOptions={(inputValue, callback) => getSpells(dndClassName, inputValue, `${levelNumber}`, callback)}
-      name={`spells${spellLevelText.replace(/\s+/g, '')}`}
+      name={`spells${spellLevelText.replace(/\s+/g, '')}${dndClassName}`}
       isMulti={true} />
   </Form.Row>
 );

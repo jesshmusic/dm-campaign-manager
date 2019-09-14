@@ -27,6 +27,12 @@ import CharacterClassFields from './partials/CharacterClassFields';
 // Spell Selects
 import BardSpellSelect from './partials/spell-fields/BardSpellSelect';
 import ClericSpellSelect from './partials/spell-fields/ClericSpellSelect';
+import DruidSpellSelect from './partials/spell-fields/DruidSpellSelect';
+import PaladinSpellSelect from './partials/spell-fields/PaladinSpellSelect';
+import RangerSpellSelect from './partials/spell-fields/RangerSpellSelect';
+import SorcererSpellSelect from './partials/spell-fields/SorcererSpellSelect';
+import WarlockSpellSelect from './partials/spell-fields/WarlockSpellSelect';
+import WizardSpellSelect from './partials/spell-fields/WizardSpellSelect';
 
 import classes from './partials/character-form.module.scss';
 
@@ -36,12 +42,6 @@ import {
   characterCalculations,
   filterOptions,
 } from '../../utilities/character-utilities';
-import DruidSpellSelect from './partials/spell-fields/DruidSpellSelect';
-import PaladinSpellSelect from './partials/spell-fields/PaladinSpellSelect';
-import RangerSpellSelect from './partials/spell-fields/RangerSpellSelect';
-import SorcererSpellSelect from './partials/spell-fields/SorcererSpellSelect';
-import WarlockSpellSelect from './partials/spell-fields/WarlockSpellSelect';
-import WizardSpellSelect from './partials/spell-fields/WizardSpellSelect';
 
 
 class PlayerCharacterEditor extends React.Component {
@@ -60,7 +60,7 @@ class PlayerCharacterEditor extends React.Component {
   };
 
   componentDidMount () {
-    this.props.getItems();
+    // this.props.getItems();
     this.props.getDndClasses();
     this.props.getRaces();
     if (this.props.pcSlug) {
