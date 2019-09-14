@@ -60,7 +60,6 @@ export const SetupCharacterState = (newChar, races) => {
       dndClass: {
         value: dndClass.dndClassId ? dndClass.dndClassId : 153,
         label: dndClass.dndClass ? dndClass.dndClass : 'Fighter',
-        data: dndClass,
       },
       level: dndClass.level,
     })),
