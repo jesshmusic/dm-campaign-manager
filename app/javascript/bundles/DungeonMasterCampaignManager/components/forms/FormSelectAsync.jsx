@@ -12,7 +12,7 @@ import AsyncSelect from 'react-select/async';
 class ReactSelectAdapter extends React.Component {
   state = { inputValue: '' };
 
-  onChange = (newValue) => {
+  handleInputChange = (newValue) => {
     const inputValue = newValue.replace(/\W/g, '');
     this.setState({ inputValue });
     return inputValue;
@@ -21,19 +21,27 @@ class ReactSelectAdapter extends React.Component {
   render () {
     const { input, isMulti, getOptions, ...rest } = this.props;
     return (
-      <AsyncSelect
-        isMulti={isMulti}
-        cacheOptions
-        defaultOptions
-        {...input}
-        {...rest}
-        searchable
-        getOptionValue={(option) => option.id}
-        loadOptions={getOptions}
-      />
+      <div>
+        <AsyncSelect
+          isMulti={isMulti}
+          cacheOptions
+          defaultOptions
+          {...input}
+          {...rest}
+          searchable
+          onInputChange={this.handleInputChange}
+          loadOptions={getOptions}
+        />
+      </div>
     );
   }
 }
+
+ReactSelectAdapter.propTypes = {
+  input: PropTypes.any,
+  isMulti: PropTypes.bool,
+  getOptions: PropTypes.func.isRequired,
+};
 
 const FormSelectAsync = ({name, label, colWidth, isMulti, getOptions}) => (
   <Form.Group as={Col} md={colWidth}>

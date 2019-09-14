@@ -6,13 +6,21 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import FormSelectAsync from '../../../../components/forms/FormSelectAsync';
 import Form from 'react-bootstrap/Form';
-import {filterOptions} from '../../../../utilities/character-utilities';
+
+const filterSpellOptions = (results, dndClassName) => results.map((nextItem) => ({
+  value: nextItem.id,
+  label: nextItem.name,
+  data: {
+    isPrepared: false,
+    spellClass: dndClassName,
+  },
+}));
 
 const getSpells = (dndClassName, inputValue, level, callback) => {
   fetch(`/v1/spells.json?search=${inputValue}&level=${level}&dnd_class=${dndClassName}`)
     .then((response) => response.json())
     .then((jsonResult) => {
-      callback(filterOptions(jsonResult));
+      callback(filterSpellOptions(jsonResult, dndClassName));
     });
 };
 

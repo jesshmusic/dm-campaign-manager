@@ -10,6 +10,7 @@ import Button from 'react-bootstrap/Button';
 import { GiTrashCan } from 'react-icons/gi';
 import Col from 'react-bootstrap/Col';
 import FormSelect from '../../../components/forms/FormSelect';
+import DndClassSelect from './dnd-classes/DndClassSelect';
 
 const CharacterClassFields = ({characterClass, classOptions, fields, index}) => {
   const removeItem = () => {
@@ -30,10 +31,7 @@ const CharacterClassFields = ({characterClass, classOptions, fields, index}) => 
 
   return (
     <Form.Row>
-      <FormSelect label={'Class'}
-                  colWidth={'8'}
-                  name={`${characterClass}.dndClass`}
-                  options={classOptions}/>
+      <DndClassSelect colWidth={'8'} characterClass={characterClass}/>
       <FormField label={'Level'}
                  type={'number'}
                  colWidth={'3'}

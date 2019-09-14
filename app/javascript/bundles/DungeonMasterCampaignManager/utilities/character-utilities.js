@@ -45,21 +45,41 @@ const CalculateArmorClass = ({armor, armorClassModifier, dexterity, shield}) => 
 export const SetupCharacterState = (newChar, races) => {
   // Initial character state object
   const charObject = {
-    ...newChar,
+    id: newChar.id,
+    name: newChar.name,
     characterAlignment: {
       value: newChar.alignment,
       label: newChar.alignment,
     },
+    background: newChar.background,
+    description: newChar.description,
+    languages: newChar.languages,
+    role: newChar.role,
     dndClasses: newChar.characterClasses.map((dndClass) => ({
       id: dndClass.id,
       dndClass: {
         value: dndClass.dndClassId ? dndClass.dndClassId : 153,
         label: dndClass.dndClass ? dndClass.dndClass : 'Fighter',
-        data: dndClass ? dndClass : {},
       },
       level: dndClass.level,
     })),
+    armorClass: newChar.armorClass,
+    armorClassModifier: newChar.armorClassModifier,
+    hitPoints: newChar.hitPoints,
+    xp: newChar.xp,
+    strength:  newChar.strength,
+    dexterity: newChar.dexterity,
+    constitution: newChar.constitution,
+    intelligence: newChar.intelligence,
+    wisdom: newChar.wisdom,
+    charisma: newChar.charisma,
+    copperPieces: newChar.copperPieces,
+    silverPieces: newChar.silverPieces,
+    electrumPieces: newChar.electrumPieces,
+    goldPieces: newChar.goldPieces,
+    platinumPieces: newChar.platinumPieces,
     applyRaceMods: false,
+    characterSpellsAttributes: [],
   };
 
   // Set initial ability scores
@@ -112,16 +132,46 @@ export const SetupCharacterState = (newChar, races) => {
   }
 
   newChar.characterClasses.forEach((nextClass) => {
-    charObject[`spellsCantrips${nextClass.dndClass}`] = nextClass.spellsCantrips;
-    charObject[`spellsLevel1${nextClass.dndClass}`] = nextClass.spellsLevel1;
-    charObject[`spellsLevel2${nextClass.dndClass}`] = nextClass.spellsLevel2;
-    charObject[`spellsLevel3${nextClass.dndClass}`] = nextClass.spellsLevel3;
-    charObject[`spellsLevel4${nextClass.dndClass}`] = nextClass.spellsLevel4;
-    charObject[`spellsLevel5${nextClass.dndClass}`] = nextClass.spellsLevel5;
-    charObject[`spellsLevel6${nextClass.dndClass}`] = nextClass.spellsLevel6;
-    charObject[`spellsLevel7${nextClass.dndClass}`] = nextClass.spellsLevel7;
-    charObject[`spellsLevel8${nextClass.dndClass}`] = nextClass.spellsLevel8;
-    charObject[`spellsLevel9${nextClass.dndClass}`] = nextClass.spellsLevel9;
+    if (nextClass.spellsCantrips) {
+      charObject[`spellsCantrips${nextClass.dndClass}`] = nextClass.spellsCantrips;
+      nextClass.spellsCantrips.forEach((spell) => charObject.characterSpellsAttributes.push(parseSpell(spell)));
+    }
+    if (nextClass.spellsLevel1) {
+      charObject[`spellsLevel1${nextClass.dndClass}`] = nextClass.spellsLevel1;
+      nextClass.spellsLevel1.forEach((spell) => charObject.characterSpellsAttributes.push(parseSpell(spell)));
+    }
+    if (nextClass.spellsLevel2) {
+      charObject[`spellsLevel2${nextClass.dndClass}`] = nextClass.spellsLevel2;
+      nextClass.spellsLevel2.forEach((spell) => charObject.characterSpellsAttributes.push(parseSpell(spell)));
+    }
+    if (nextClass.spellsLevel3) {
+      charObject[`spellsLevel3${nextClass.dndClass}`] = nextClass.spellsLevel3;
+      nextClass.spellsLevel3.forEach((spell) => charObject.characterSpellsAttributes.push(parseSpell(spell)));
+    }
+    if (nextClass.spellsLevel4) {
+      charObject[`spellsLevel4${nextClass.dndClass}`] = nextClass.spellsLevel4;
+      nextClass.spellsLevel4.forEach((spell) => charObject.characterSpellsAttributes.push(parseSpell(spell)));
+    }
+    if (nextClass.spellsLevel5) {
+      charObject[`spellsLevel5${nextClass.dndClass}`] = nextClass.spellsLevel5;
+      nextClass.spellsLevel5.forEach((spell) => charObject.characterSpellsAttributes.push(parseSpell(spell)));
+    }
+    if (nextClass.spellsLevel6) {
+      charObject[`spellsLevel6${nextClass.dndClass}`] = nextClass.spellsLevel6;
+      nextClass.spellsLevel6.forEach((spell) => charObject.characterSpellsAttributes.push(parseSpell(spell)));
+    }
+    if (nextClass.spellsLevel7) {
+      charObject[`spellsLevel7${nextClass.dndClass}`] = nextClass.spellsLevel7;
+      nextClass.spellsLevel7.forEach((spell) => charObject.characterSpellsAttributes.push(parseSpell(spell)));
+    }
+    if (nextClass.spellsLevel8) {
+      charObject[`spellsLevel8${nextClass.dndClass}`] = nextClass.spellsLevel8;
+      nextClass.spellsLevel8.forEach((spell) => charObject.characterSpellsAttributes.push(parseSpell(spell)));
+    }
+    if (nextClass.spellsLevel9) {
+      charObject[`spellsLevel9${nextClass.dndClass}`] = nextClass.spellsLevel9;
+      nextClass.spellsLevel9.forEach((spell) => charObject.characterSpellsAttributes.push(parseSpell(spell)));
+    }
   });
 
   // Spells
@@ -145,6 +195,13 @@ export const SetupCharacterState = (newChar, races) => {
 
   return charObject;
 };
+
+const parseSpell = (spell) => ({
+  id: spell.data.characterSpellId ? spell.data.characterSpellId : null,
+  isPrepared: spell.data.isPrepared,
+  spellClass: spell.data.spellClass,
+  spellId: spell.value,
+});
 
 const abilityScoreUpdates = {
   strength: (value, allValues) => (allValues.applyRaceMods ? (
@@ -179,7 +236,7 @@ const abilityScoreUpdates = {
   )),
 };
 
-export const characterCalculations = createDecorator(
+export const characterCalculations = createDecorator (
   {
     field: 'applyRaceMods',
     updates: abilityScoreUpdates,
@@ -312,4 +369,18 @@ export const characterCalculations = createDecorator(
       showWizardSpells: (newValue) => newValue.some((dndClass) => dndClass.dndClass.label === 'Wizard'),
     },
   },
+  {
+    field: /spells*/,
+    updates: {
+      characterSpellsAttributes: (newValues, allValues) => {
+        const parsedSpells = newValues.map((spell) => parseSpell(spell));
+        parsedSpells.forEach((parsedSpell) => {
+          if (!allValues.characterSpellsAttributes.some((spell) => spell.spellId === parsedSpell.spellId)) {
+            allValues.characterSpellsAttributes.push(parsedSpell);
+          }
+        });
+        return allValues.characterSpellsAttributes;
+      },
+    },
+  }
 );

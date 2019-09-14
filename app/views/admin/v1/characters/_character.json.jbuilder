@@ -34,15 +34,13 @@ json.character_classes character.character_classes do |character_class|
     json.spells_cantrips character.cantrips do |cantrip|
       next unless cantrip.spell_class == character_class.dnd_class.name
 
-      json.id cantrip.id
+      json.value cantrip.spell_id
       json.label cantrip.spell.name
-      # json.data do
-      #   json.is_prepared cantrip.is_prepared
-      #   json.spell_class cantrip.spell_class
-      #   json.spell do
-      #     json.partial! 'admin/v1/spells/spell', spell: cantrip.spell
-      #   end
-      # end
+      json.data do
+        json.is_prepared cantrip.is_prepared
+        json.spell_class cantrip.spell_class
+        json.character_spell_id cantrip.id
+      end
     end
   end
 
@@ -50,15 +48,13 @@ json.character_classes character.character_classes do |character_class|
     json.spells_level_1 character.spells_level_1 do |spell|
       next unless spell.spell_class == character_class.dnd_class.name
 
-      json.id spell.id
+      json.value spell.spell_id
       json.label spell.spell.name
-      # json.data do
-      #   json.is_prepared spell.is_prepared
-      #   json.spell_class spell.spell_class
-      #   json.spell do
-      #     json.partial! 'admin/v1/spells/spell', spell: spell.spell
-      #   end
-      # end
+      json.data do
+        json.is_prepared spell.is_prepared
+        json.spell_class spell.spell_class
+        json.character_spell_id spell.id
+      end
     end
   end
 
@@ -66,15 +62,13 @@ json.character_classes character.character_classes do |character_class|
     json.spells_level_2 character.spells_level_2 do |spell|
       next unless spell.spell_class == character_class.dnd_class.name
 
-      json.id spell.id
+      json.value spell.spell_id
       json.label spell.spell.name
-      # json.data do
-      #   json.is_prepared spell.is_prepared
-      #   json.spell_class spell.spell_class
-      #   json.spell do
-      #     json.partial! 'admin/v1/spells/spell', spell: spell.spell
-      #   end
-      # end
+      json.data do
+        json.is_prepared spell.is_prepared
+        json.spell_class spell.spell_class
+        json.character_spell_id spell.id
+      end
     end
   end
 
@@ -82,15 +76,13 @@ json.character_classes character.character_classes do |character_class|
     json.spells_level_3 character.spells_level_3 do |spell|
       next unless spell.spell_class == character_class.dnd_class.name
 
-      json.id spell.id
+      json.value spell.spell_id
       json.label spell.spell.name
-      # json.data do
-      #   json.is_prepared spell.is_prepared
-      #   json.spell_class spell.spell_class
-      #   json.spell do
-      #     json.partial! 'admin/v1/spells/spell', spell: spell.spell
-      #   end
-      # end
+      json.data do
+        json.is_prepared spell.is_prepared
+        json.spell_class spell.spell_class
+        json.character_spell_id spell.id
+      end
     end
   end
 
@@ -98,15 +90,13 @@ json.character_classes character.character_classes do |character_class|
     json.spells_level_4 character.spells_level_4 do |spell|
       next unless spell.spell_class == character_class.dnd_class.name
 
-      json.id spell.id
+      json.value spell.spell_id
       json.label spell.spell.name
-      # json.data do
-      #   json.is_prepared spell.is_prepared
-      #   json.spell_class spell.spell_class
-      #   json.spell do
-      #     json.partial! 'admin/v1/spells/spell', spell: spell.spell
-      #   end
-      # end
+      json.data do
+        json.is_prepared spell.is_prepared
+        json.spell_class spell.spell_class
+        json.character_spell_id spell.id
+      end
     end
   end
 
@@ -114,15 +104,13 @@ json.character_classes character.character_classes do |character_class|
     json.spells_level_5 character.spells_level_5 do |spell|
       next unless spell.spell_class == character_class.dnd_class.name
 
-      json.id spell.id
+      json.value spell.spell_id
       json.label spell.spell.name
-      # json.data do
-      #   json.is_prepared spell.is_prepared
-      #   json.spell_class spell.spell_class
-      #   json.spell do
-      #     json.partial! 'admin/v1/spells/spell', spell: spell.spell
-      #   end
-      # end
+      json.data do
+        json.is_prepared spell.is_prepared
+        json.spell_class spell.spell_class
+        json.character_spell_id spell.id
+      end
     end
   end
 
@@ -130,15 +118,13 @@ json.character_classes character.character_classes do |character_class|
     json.spells_level_6 character.spells_level_6 do |spell|
       next unless spell.spell_class == character_class.dnd_class.name
 
-      json.id spell.id
+      json.value spell.spell_id
       json.label spell.spell.name
-      # json.data do
-      #   json.is_prepared spell.is_prepared
-      #   json.spell_class spell.spell_class
-      #   json.spell do
-      #     json.partial! 'admin/v1/spells/spell', spell: spell.spell
-      #   end
-      # end
+      json.data do
+        json.is_prepared spell.is_prepared
+        json.spell_class spell.spell_class
+        json.character_spell_id spell.id
+      end
     end
   end
 
@@ -146,15 +132,13 @@ json.character_classes character.character_classes do |character_class|
     json.spells_level_7 character.spells_level_7 do |spell|
       next unless spell.spell_class == character_class.dnd_class.name
 
-      json.id spell.id
+      json.value spell.spell_id
       json.label spell.spell.name
-      # json.data do
-      #   json.is_prepared spell.is_prepared
-      #   json.spell_class spell.spell_class
-      #   json.spell do
-      #     json.partial! 'admin/v1/spells/spell', spell: spell.spell
-      #   end
-      # end
+      json.data do
+        json.is_prepared spell.is_prepared
+        json.spell_class spell.spell_class
+        json.character_spell_id spell.id
+      end
     end
   end
 
@@ -162,15 +146,13 @@ json.character_classes character.character_classes do |character_class|
     json.spells_level_8 character.spells_level_8 do |spell|
       next unless spell.spell_class == character_class.dnd_class.name
 
-      json.id spell.id
+      json.value spell.spell_id
       json.label spell.spell.name
-      # json.data do
-      #   json.is_prepared spell.is_prepared
-      #   json.spell_class spell.spell_class
-      #   json.spell do
-      #     json.partial! 'admin/v1/spells/spell', spell: spell.spell
-      #   end
-      # end
+      json.data do
+        json.is_prepared spell.is_prepared
+        json.spell_class spell.spell_class
+        json.character_spell_id spell.id
+      end
     end
   end
 
@@ -178,15 +160,13 @@ json.character_classes character.character_classes do |character_class|
     json.spells_level_9 character.spells_level_9 do |spell|
       next unless spell.spell_class == character_class.dnd_class.name
 
-      json.id spell.id
+      json.value spell.spell_id
       json.label spell.spell.name
-      # json.data do
-      #   json.is_prepared spell.is_prepared
-      #   json.spell_class spell.spell_class
-      #   json.spell do
-      #     json.partial! 'admin/v1/spells/spell', spell: spell.spell
-      #   end
-      # end
+      json.data do
+        json.is_prepared spell.is_prepared
+        json.spell_class spell.spell_class
+        json.character_spell_id spell.id
+      end
     end
   end
 end

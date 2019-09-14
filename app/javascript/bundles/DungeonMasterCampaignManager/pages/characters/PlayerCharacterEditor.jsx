@@ -61,8 +61,8 @@ class PlayerCharacterEditor extends React.Component {
 
   componentDidMount () {
     // this.props.getItems();
-    this.props.getDndClasses();
-    this.props.getRaces();
+    // this.props.getDndClasses();
+    // this.props.getRaces();
     if (this.props.pcSlug) {
       this.props.getPlayerCharacter(this.props.campaignSlug, this.props.pcSlug);
     } else {
