@@ -9,7 +9,6 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { GiTrashCan } from 'react-icons/gi';
 import Col from 'react-bootstrap/Col';
-import FormSelect from '../../../components/forms/FormSelect';
 import DndClassSelect from './dnd-classes/DndClassSelect';
 
 const CharacterClassFields = ({characterClass, classOptions, fields, index}) => {
@@ -20,6 +19,7 @@ const CharacterClassFields = ({characterClass, classOptions, fields, index}) => 
         dndClass: {
           value: fields.value[index].value,
           label: fields.value[index].label,
+          data: fields.value[index].data,
         },
         level: fields.value[index].level,
         _destroy: true,

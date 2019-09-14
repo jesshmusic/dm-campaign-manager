@@ -60,6 +60,7 @@ export const SetupCharacterState = (newChar, races) => {
       dndClass: {
         value: dndClass.dndClassId ? dndClass.dndClassId : 153,
         label: dndClass.dndClass ? dndClass.dndClass : 'Fighter',
+        data: dndClass,
       },
       level: dndClass.level,
     })),
@@ -234,6 +235,7 @@ const abilityScoreUpdates = {
   ) : (
     allValues.baseAbilities.charisma
   )),
+  raceId: (value) => value.value,
 };
 
 export const characterCalculations = createDecorator (
@@ -367,6 +369,23 @@ export const characterCalculations = createDecorator (
       showSorcererSpells: (newValue) => newValue.some((dndClass) => dndClass.dndClass.label === 'Sorcerer'),
       showWarlockSpells: (newValue) => newValue.some((dndClass) => dndClass.dndClass.label === 'Warlock'),
       showWizardSpells: (newValue) => newValue.some((dndClass) => dndClass.dndClass.label === 'Wizard'),
+      characterClassesAttributes: (newValue) => {
+        const newCharacterClassesAttributes = [];
+        newValue.forEach((nextClass) => {
+          const charClass = {
+            level: nextClass.level,
+            dndClassId: nextClass.dndClass.value,
+          };
+          if (nextClass.id) {
+            charClass.id = nextClass.id;
+          }
+          if (nextClass._destroy) {
+            charClass._destroy = nextClass._destroy;
+          }
+          newCharacterClassesAttributes.push(charClass);
+        });
+        return newCharacterClassesAttributes;
+      },
     },
   },
   {

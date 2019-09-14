@@ -42,6 +42,7 @@ import {
   characterCalculations,
   filterOptions,
 } from '../../utilities/character-utilities';
+import RaceSelect from './partials/races/RaceSelect';
 
 
 class PlayerCharacterEditor extends React.Component {
@@ -183,7 +184,7 @@ class PlayerCharacterEditor extends React.Component {
                          <Form.Row>
                            <FormField label={'Character name'} type={'text'} colWidth={'3'} name={'name'}/>
                            <FormSelect label={'Alignment'} colWidth={'3'} name={'characterAlignment'} options={alignmentOptions}/>
-                           <FormSelect label={'Race'} colWidth={'3'} name={'characterRace'} options={raceOptions}/>
+                           <RaceSelect colWidth={'3'}/>
                            <FormField label={'Background'} type={'text'} colWidth={'3'} name={'background'}/>
                          </Form.Row>
                          <Form.Row>

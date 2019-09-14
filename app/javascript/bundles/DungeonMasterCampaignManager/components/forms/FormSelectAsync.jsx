@@ -19,13 +19,13 @@ class ReactSelectAdapter extends React.Component {
   };
 
   render () {
-    const { input, isMulti, getOptions, ...rest } = this.props;
+    const { input, isMulti, getOptions, defaultOptions, ...rest } = this.props;
     return (
       <div>
         <AsyncSelect
           isMulti={isMulti}
           cacheOptions
-          defaultOptions
+          defaultOptions={defaultOptions}
           {...input}
           {...rest}
           searchable
@@ -41,12 +41,14 @@ ReactSelectAdapter.propTypes = {
   input: PropTypes.any,
   isMulti: PropTypes.bool,
   getOptions: PropTypes.func.isRequired,
+  defaultOptions: PropTypes.any,
 };
 
-const FormSelectAsync = ({name, label, colWidth, isMulti, getOptions}) => (
+const FormSelectAsync = ({name, label, colWidth, isMulti, getOptions, defaultOptions = true}) => (
   <Form.Group as={Col} md={colWidth}>
     <Form.Label>{label}</Form.Label>
     <Field name={name}
+           defaultOptions={defaultOptions}
            label={label}
            isMulti={isMulti}
            getOptions={getOptions}
@@ -60,6 +62,7 @@ FormSelectAsync.propTypes = {
   label: PropTypes.string.isRequired,
   isMulti: PropTypes.bool,
   getOptions: PropTypes.func.isRequired,
+  defaultOptions: PropTypes.any,
 };
 
 export default FormSelectAsync;

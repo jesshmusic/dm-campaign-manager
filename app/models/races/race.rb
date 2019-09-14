@@ -39,6 +39,13 @@ class Race < ApplicationRecord
 
   belongs_to :user, optional: true
 
+  include PgSearch::Model
+
+  # PgSearch
+  pg_search_scope :search_for,
+                  against: { name: 'A' },
+                  using: { tsearch: { prefix: true } }
+
   def to_param
     slug
   end

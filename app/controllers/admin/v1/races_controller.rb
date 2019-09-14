@@ -9,7 +9,11 @@ module Admin::V1
     # GET /races.json
     def index
       authorize Race
-      @races = Race.all
+      @races = if params[:search].present?
+                 Race.search_for(params[:search])
+               else
+                 Race.all
+               end
       @races = if !current_user
                  @races.where(user_id: nil).order(name: :asc)
                elsif current_user.admin?
