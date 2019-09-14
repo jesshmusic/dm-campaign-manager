@@ -45,6 +45,9 @@ import {
 import RaceSelect from './partials/races/RaceSelect';
 import ArmorSelect from './partials/items/ArmorSelect';
 import ShieldSelect from './partials/items/ShieldSelect';
+import WeaponLHSelect from './partials/items/WeaponLHSelect';
+import WeaponRHSelect from './partials/items/WeaponRHSelect';
+import Weapon2HSelect from './partials/items/Weapon2HSelect';
 
 
 class PlayerCharacterEditor extends React.Component {
@@ -259,9 +262,9 @@ class PlayerCharacterEditor extends React.Component {
                          <Form.Row>
                            <ArmorSelect colWidth={'6'}/>
                            <ShieldSelect colWidth={'6'}/>
-                           <FormSelect label={'Weapon - Left hand'} colWidth={'4'} name={'characterWeaponLH'} options={weaponOptions} isClearable/>
-                           <FormSelect label={'Weapon - Right hand'} colWidth={'4'} name={'characterWeaponRH'} options={weaponOptions} isClearable/>
-                           <FormSelect label={'Weapon - Two-hand'} colWidth={'4'} name={'characterWeapon2H'} options={weaponTwoHandedOptions} isClearable/>
+                           <WeaponLHSelect colWidth={'4'}/>
+                           <WeaponRHSelect colWidth={'4'}/>
+                           <Weapon2HSelect colWidth={'4'}/>
                          </Form.Row>
                          <BardSpellSelect showBardSpells={values.showBardSpells}/>
                          <ClericSpellSelect showClericSpells={values.showClericSpells}/>

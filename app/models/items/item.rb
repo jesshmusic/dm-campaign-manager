@@ -82,7 +82,7 @@ class Item < ApplicationRecord
                     name: 'A',
                     type: 'B',
                     sub_category: 'C',
-                    type: 'D'
+                    weapon_range: 'D'
                   },
                   using: {
                     tsearch: {

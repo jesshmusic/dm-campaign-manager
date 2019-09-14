@@ -32,7 +32,7 @@ const ShieldSelect = ({colWidth}) => (
     getOptions={getShields}
     name={'characterShield'}
     placeholder={'Search for Shield...'}
-    defaultOptions={true}
+    defaultOptions={[]}
     isClearable
   />
 );
