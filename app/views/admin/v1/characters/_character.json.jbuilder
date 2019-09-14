@@ -36,13 +36,13 @@ json.character_classes character.character_classes do |character_class|
 
       json.id cantrip.id
       json.label cantrip.spell.name
-      json.data do
-        json.is_prepared cantrip.is_prepared
-        json.spell_class cantrip.spell_class
-        json.spell do
-          json.partial! 'admin/v1/spells/spell', spell: cantrip.spell
-        end
-      end
+      # json.data do
+      #   json.is_prepared cantrip.is_prepared
+      #   json.spell_class cantrip.spell_class
+      #   json.spell do
+      #     json.partial! 'admin/v1/spells/spell', spell: cantrip.spell
+      #   end
+      # end
     end
   end
 
@@ -52,13 +52,13 @@ json.character_classes character.character_classes do |character_class|
 
       json.id spell.id
       json.label spell.spell.name
-      json.data do
-        json.is_prepared spell.is_prepared
-        json.spell_class spell.spell_class
-        json.spell do
-          json.partial! 'admin/v1/spells/spell', spell: spell.spell
-        end
-      end
+      # json.data do
+      #   json.is_prepared spell.is_prepared
+      #   json.spell_class spell.spell_class
+      #   json.spell do
+      #     json.partial! 'admin/v1/spells/spell', spell: spell.spell
+      #   end
+      # end
     end
   end
 
@@ -68,13 +68,13 @@ json.character_classes character.character_classes do |character_class|
 
       json.id spell.id
       json.label spell.spell.name
-      json.data do
-        json.is_prepared spell.is_prepared
-        json.spell_class spell.spell_class
-        json.spell do
-          json.partial! 'admin/v1/spells/spell', spell: spell.spell
-        end
-      end
+      # json.data do
+      #   json.is_prepared spell.is_prepared
+      #   json.spell_class spell.spell_class
+      #   json.spell do
+      #     json.partial! 'admin/v1/spells/spell', spell: spell.spell
+      #   end
+      # end
     end
   end
 
@@ -84,13 +84,13 @@ json.character_classes character.character_classes do |character_class|
 
       json.id spell.id
       json.label spell.spell.name
-      json.data do
-        json.is_prepared spell.is_prepared
-        json.spell_class spell.spell_class
-        json.spell do
-          json.partial! 'admin/v1/spells/spell', spell: spell.spell
-        end
-      end
+      # json.data do
+      #   json.is_prepared spell.is_prepared
+      #   json.spell_class spell.spell_class
+      #   json.spell do
+      #     json.partial! 'admin/v1/spells/spell', spell: spell.spell
+      #   end
+      # end
     end
   end
 
@@ -100,13 +100,13 @@ json.character_classes character.character_classes do |character_class|
 
       json.id spell.id
       json.label spell.spell.name
-      json.data do
-        json.is_prepared spell.is_prepared
-        json.spell_class spell.spell_class
-        json.spell do
-          json.partial! 'admin/v1/spells/spell', spell: spell.spell
-        end
-      end
+      # json.data do
+      #   json.is_prepared spell.is_prepared
+      #   json.spell_class spell.spell_class
+      #   json.spell do
+      #     json.partial! 'admin/v1/spells/spell', spell: spell.spell
+      #   end
+      # end
     end
   end
 
@@ -116,13 +116,13 @@ json.character_classes character.character_classes do |character_class|
 
       json.id spell.id
       json.label spell.spell.name
-      json.data do
-        json.is_prepared spell.is_prepared
-        json.spell_class spell.spell_class
-        json.spell do
-          json.partial! 'admin/v1/spells/spell', spell: spell.spell
-        end
-      end
+      # json.data do
+      #   json.is_prepared spell.is_prepared
+      #   json.spell_class spell.spell_class
+      #   json.spell do
+      #     json.partial! 'admin/v1/spells/spell', spell: spell.spell
+      #   end
+      # end
     end
   end
 
@@ -132,13 +132,13 @@ json.character_classes character.character_classes do |character_class|
 
       json.id spell.id
       json.label spell.spell.name
-      json.data do
-        json.is_prepared spell.is_prepared
-        json.spell_class spell.spell_class
-        json.spell do
-          json.partial! 'admin/v1/spells/spell', spell: spell.spell
-        end
-      end
+      # json.data do
+      #   json.is_prepared spell.is_prepared
+      #   json.spell_class spell.spell_class
+      #   json.spell do
+      #     json.partial! 'admin/v1/spells/spell', spell: spell.spell
+      #   end
+      # end
     end
   end
 
@@ -148,13 +148,13 @@ json.character_classes character.character_classes do |character_class|
 
       json.id spell.id
       json.label spell.spell.name
-      json.data do
-        json.is_prepared spell.is_prepared
-        json.spell_class spell.spell_class
-        json.spell do
-          json.partial! 'admin/v1/spells/spell', spell: spell.spell
-        end
-      end
+      # json.data do
+      #   json.is_prepared spell.is_prepared
+      #   json.spell_class spell.spell_class
+      #   json.spell do
+      #     json.partial! 'admin/v1/spells/spell', spell: spell.spell
+      #   end
+      # end
     end
   end
 
@@ -164,13 +164,13 @@ json.character_classes character.character_classes do |character_class|
 
       json.id spell.id
       json.label spell.spell.name
-      json.data do
-        json.is_prepared spell.is_prepared
-        json.spell_class spell.spell_class
-        json.spell do
-          json.partial! 'admin/v1/spells/spell', spell: spell.spell
-        end
-      end
+      # json.data do
+      #   json.is_prepared spell.is_prepared
+      #   json.spell_class spell.spell_class
+      #   json.spell do
+      #     json.partial! 'admin/v1/spells/spell', spell: spell.spell
+      #   end
+      # end
     end
   end
 
@@ -180,13 +180,13 @@ json.character_classes character.character_classes do |character_class|
 
       json.id spell.id
       json.label spell.spell.name
-      json.data do
-        json.is_prepared spell.is_prepared
-        json.spell_class spell.spell_class
-        json.spell do
-          json.partial! 'admin/v1/spells/spell', spell: spell.spell
-        end
-      end
+      # json.data do
+      #   json.is_prepared spell.is_prepared
+      #   json.spell_class spell.spell_class
+      #   json.spell do
+      #     json.partial! 'admin/v1/spells/spell', spell: spell.spell
+      #   end
+      # end
     end
   end
 end

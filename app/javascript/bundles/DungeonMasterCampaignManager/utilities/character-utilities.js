@@ -1,7 +1,7 @@
 import createDecorator from 'final-form-calculate';
 
 export const filterOptions = (results) => results.map((nextItem) => (
-  {value: nextItem.id, label: nextItem.name, data: nextItem}
+  {value: nextItem.id, label: nextItem.name}
 ));
 
 const AbilityScoreModifier = (abilityScore) => {

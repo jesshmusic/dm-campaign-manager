@@ -20,7 +20,6 @@ class ReactSelectAdapter extends React.Component {
 
   render () {
     const { input, isMulti, getOptions, ...rest } = this.props;
-
     return (
       <AsyncSelect
         isMulti={isMulti}
@@ -29,6 +28,7 @@ class ReactSelectAdapter extends React.Component {
         {...input}
         {...rest}
         searchable
+        getOptionValue={(option) => option.id}
         loadOptions={getOptions}
       />
     );
