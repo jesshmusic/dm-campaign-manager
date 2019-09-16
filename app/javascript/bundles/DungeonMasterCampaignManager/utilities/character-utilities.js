@@ -42,6 +42,21 @@ const CalculateArmorClass = ({armor, armorClassModifier, dexterity, shield}) => 
   return 10 + AbilityScoreModifier(dexterity) + armorClassModifier;
 };
 
+const calculateProficiency = (totalLevel) => {
+  switch (true) {
+    case (totalLevel < 5):
+      return 2;
+    case (totalLevel < 9):
+      return 3;
+    case (totalLevel < 13):
+      return 4;
+    case (totalLevel < 17):
+      return 5;
+    default:
+      return 6;
+  }
+};
+
 export const SetupCharacterState = (newChar) => {
   // Initial character state object
   const charObject = {
@@ -63,6 +78,7 @@ export const SetupCharacterState = (newChar) => {
       },
       level: dndClass.level,
     })),
+    totalLevel: newChar.totalLevel,
     armorClass: newChar.armorClass,
     armorClassModifier: newChar.armorClassModifier,
     hitPoints: newChar.hitPoints,
@@ -73,11 +89,13 @@ export const SetupCharacterState = (newChar) => {
     intelligence: newChar.intelligence,
     wisdom: newChar.wisdom,
     charisma: newChar.charisma,
+    proficiency: calculateProficiency(newChar.totalLevel),
     armor: newChar.armor,
     shield: newChar.shield,
     weapon2h: newChar.weapon2h,
     weaponLh: newChar.weaponLh,
     weaponRh: newChar.weaponRh,
+    actions: newChar.actions,
     copperPieces: newChar.copperPieces,
     silverPieces: newChar.silverPieces,
     electrumPieces: newChar.electrumPieces,

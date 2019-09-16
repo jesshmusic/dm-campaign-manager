@@ -241,6 +241,15 @@ if character.weapon_2h
   end
 end
 
+json.actions character.character_actions do |action|
+  json.id action.id
+  json.attack_bonus action.attack_bonus
+  json.damage_bonus action.damage_bonus
+  json.damage_dice action.damage_dice
+  json.description action.description
+  json.name action.name
+end
+
 json.inventory character.character_items do |character_item|
   json.name character_item.item.name
   json.quantity character_item.quantity
