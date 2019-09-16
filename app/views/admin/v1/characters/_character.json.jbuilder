@@ -172,62 +172,71 @@ json.character_classes character.character_classes do |character_class|
 end
 
 if character.armor
-  json.armor character.armor do |armor|
-    json.extract! armor, :id, :name, :description, :armor_class, :armor_dex_bonus,
-                  :armor_max_bonus, :armor_stealth_disadvantage, :armor_str_minimum
+  json.armor do
+    json.value character.armor.id
+    json.label character.armor.name
+    json.data do
+      json.armor_dex_bonus character.armor.armor_dex_bonus
+      json.armor_class character.armor.armor_class
+    end
   end
 end
 
 if character.shield
-  json.armor character.shield do |shield|
-    json.extract! shield, :id, :name, :description
+  json.shield do
+    json.value character.shield.id
+    json.label character.shield.name
+    json.data do
+      json.armor_dex_bonus character.shield.armor_dex_bonus
+      json.armor_class character.shield.armor_class
+    end
   end
 end
 
 if character.weapon_lh
-  json.weapon_lh character.weapon_lh do |weapon_lh|
-    json.value weapon_lh.id
-    json.label weapon_lh.name
+  json.weapon_lh do
+    json.value character.weapon_lh.id
+    json.label character.weapon_lh.name
     json.data do
-      json.weapon_damage_dice_count weapon_lh.weapon_damage_dice_count
-      json.weapon_damage_dice_value weapon_lh.weapon_damage_dice_value
-      json.weapon_damage_type weapon_lh.weapon_damage_type
-      json.weapon_range weapon_lh.weapon_range
-      json.subcategory weapon_lh.subcategory
-      json.weapon_properties weapon_lh.weapon_properties
+      json.weapon_damage_dice_count character.weapon_lh.weapon_damage_dice_count
+      json.weapon_damage_dice_value character.weapon_lh.weapon_damage_dice_value
+      json.weapon_damage_type character.weapon_lh.weapon_damage_type
+      json.weapon_range character.weapon_lh.weapon_range
+      json.subcategory character.weapon_lh.sub_category
+      json.weapon_properties character.weapon_lh.weapon_properties
     end
   end
 end
 
 if character.weapon_rh
-  json.weapon_rh character.weapon_rh do |weapon_rh|
-    json.value weapon_rh.id
-    json.label weapon_rh.name
+  json.weapon_rh do
+    json.value character.weapon_rh.id
+    json.label character.weapon_rh.name
     json.data do
-      json.weapon_damage_dice_count weapon_rh.weapon_damage_dice_count
-      json.weapon_damage_dice_value weapon_rh.weapon_damage_dice_value
-      json.weapon_damage_type weapon_rh.weapon_damage_type
-      json.weapon_range weapon_rh.weapon_range
-      json.subcategory weapon_rh.subcategory
-      json.weapon_properties weapon_rh.weapon_properties
+      json.weapon_damage_dice_count character.weapon_rh.weapon_damage_dice_count
+      json.weapon_damage_dice_value character.weapon_rh.weapon_damage_dice_value
+      json.weapon_damage_type character.weapon_rh.weapon_damage_type
+      json.weapon_range character.weapon_rh.weapon_range
+      json.subcategory character.weapon_rh.sub_category
+      json.weapon_properties character.weapon_rh.weapon_properties
     end
   end
 end
 
 if character.weapon_2h
-  json.weapon_2h character.weapon_2h do |weapon_2h|
-    json.value weapon_2h.id
-    json.label weapon_2h.name
+  json.weapon_2h do
+    json.value character.weapon_2h.id
+    json.label character.weapon_2h.name
     json.data do
-      json.weapon_2h_damage_dice_count weapon_2h.weapon_2h_damage_dice_count
-      json.weapon_2h_damage_dice_value weapon_2h.weapon_2h_damage_dice_value
-      json.weapon_2h_damage_type weapon_2h.weapon_2h_damage_type
-      json.weapon_damage_dice_count weapon_2h.weapon_damage_dice_count
-      json.weapon_damage_dice_value weapon_2h.weapon_damage_dice_value
-      json.weapon_damage_type weapon_2h.weapon_damage_type
-      json.weapon_range weapon_2h.weapon_range
-      json.subcategory weapon_2h.subcategory
-      json.weapon_properties weapon_2h.weapon_properties
+      json.weapon_2h_damage_dice_count character.weapon_2h.weapon_2h_damage_dice_count
+      json.weapon_2h_damage_dice_value character.weapon_2h.weapon_2h_damage_dice_value
+      json.weapon_2h_damage_type character.weapon_2h.weapon_2h_damage_type
+      json.weapon_damage_dice_count character.weapon_2h.weapon_damage_dice_count
+      json.weapon_damage_dice_value character.weapon_2h.weapon_damage_dice_value
+      json.weapon_damage_type character.weapon_2h.weapon_damage_type
+      json.weapon_range character.weapon_2h.weapon_range
+      json.subcategory character.weapon_2h.sub_category
+      json.weapon_properties character.weapon_2h.weapon_properties
     end
   end
 end

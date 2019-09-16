@@ -59,6 +59,9 @@ export default reduxApi({
   getNonPlayerCharacter: {
     url: '/v1/campaigns/:campaign_slug/non_player_characters/:slug.json',
   },
+  newNonPlayerCharacter: {
+    url: '/v1/campaigns/:campaign_slug/non_player_characters/new.json',
+  },
   getNonPlayerCharacters: {
     url: '/v1/campaigns/:campaign_slug/non_player_characters.json',
   },

@@ -1,10 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import Spinner from 'react-bootstrap/Spinner';
-
 const ReactMarkdown = require('react-markdown');
-
 
 // Container
 import PageContainer from '../../containers/PageContainer.jsx';
@@ -19,6 +16,7 @@ import CharactersList from '../characters/partials/CharactersList';
 import AdventuresList from '../adventures/AdventuresList';
 import Button from 'react-bootstrap/Button';
 import PageTitle from '../../components/layout/PageTitle';
+import DndSpinner from '../../components/layout/DndSpinner';
 
 class Campaign extends React.Component {
   constructor (props) {
@@ -90,7 +88,7 @@ class Campaign extends React.Component {
             </Row>
           </Container>
         ) : (
-          <Spinner animation="border" variant="primary" />
+          <DndSpinner/>
         )}
       </PageContainer>
     );

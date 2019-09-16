@@ -7,17 +7,19 @@ import PropTypes from 'prop-types';
 import rest from '../../actions/api';
 import { connect } from 'react-redux';
 
+import Spinner from 'react-bootstrap/Spinner';
+
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/layout/PageTitle';
 import CharacterEditor from './CharacterEditor';
 import DndSpinner from '../../components/layout/DndSpinner';
 
 
-class PlayerCharacterEditor extends React.Component {
+class NonPlayerCharacterEditor extends React.Component {
 
   componentDidMount () {
-    if (this.props.pcSlug) {
-      this.props.getCharacter(this.props.campaignSlug, this.props.pcSlug);
+    if (this.props.npcSlug) {
+      this.props.getCharacter(this.props.campaignSlug, this.props.npcSlug);
     } else {
       this.props.editCharacter(this.props.campaignSlug);
     }
@@ -29,12 +31,12 @@ class PlayerCharacterEditor extends React.Component {
       character,
       createCharacter,
       flashMessages,
-      pcSlug,
+      npcSlug,
       updateCharacter,
       user,
     } = this.props;
     const currentCampaign = character && character.campaign ? `Campaign: ${character.campaign.name}` : 'Campaign';
-    const pageTitle = this.props.pcSlug ? `Edit "${character ? character.name : 'Loading...'}"` : 'New Player Character';
+    const pageTitle = this.props.npcSlug ? `Edit "${character ? character.name : 'Loading...'}"` : 'New Non-player Character';
     return (
       <PageContainer user={user}
                      flashMessages={flashMessages}
@@ -45,15 +47,15 @@ class PlayerCharacterEditor extends React.Component {
                        {url: `/app/campaigns/${this.props.campaignSlug}`, isActive: false, title: currentCampaign},
                        {url: null, isActive: true, title: pageTitle},
                      ]}>
-        <PageTitle title={pageTitle} badge={{title: 'PC', variant: 'success'}}/>
+        <PageTitle title={pageTitle} badge={{title: 'NPC', variant: 'secondary'}}/>
         {character ? (
           <CharacterEditor
             campaignSlug={campaignSlug}
             character={character}
             createCharacter={createCharacter}
             updateCharacter={updateCharacter}
-            characterSlug={pcSlug}
-            isNPC={false}
+            characterSlug={npcSlug}
+            isNPC={true}
           />
         ) : <DndSpinner/>}
       </PageContainer>
@@ -61,14 +63,14 @@ class PlayerCharacterEditor extends React.Component {
   }
 }
 
-PlayerCharacterEditor.propTypes = {
+NonPlayerCharacterEditor.propTypes = {
   campaignSlug: PropTypes.string,
   createCharacter: PropTypes.func.isRequired,
   character: PropTypes.object,
   editCharacter: PropTypes.func.isRequired,
   flashMessages: PropTypes.array,
   getCharacter: PropTypes.func.isRequired,
-  pcSlug: PropTypes.string,
+  npcSlug: PropTypes.string,
   updateCharacter: PropTypes.func.isRequired,
   user: PropTypes.object,
 };
@@ -76,7 +78,7 @@ PlayerCharacterEditor.propTypes = {
 function mapStateToProps (state) {
   return {
     flashMessages: state.flashMessages,
-    character: state.playerCharacters.currentCharacter,
+    character: state.nonPlayerCharacters.currentCharacter,
     user: state.users.user,
   };
 }
@@ -84,19 +86,19 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     getCharacter: (campaignSlug, characterSlug) => {
-      dispatch(rest.actions.getPlayerCharacter({campaign_slug: campaignSlug, slug: characterSlug}));
+      dispatch(rest.actions.getNonPlayerCharacter({campaign_slug: campaignSlug, slug: characterSlug}));
     },
     editCharacter: (campaignSlug) => {
-      dispatch(rest.actions.newPlayerCharacter({campaign_slug: campaignSlug}));
+      dispatch(rest.actions.newNonPlayerCharacter({campaign_slug: campaignSlug}));
     },
     createCharacter: (newCharacter, campaignSlug) => {
-      dispatch(rest.actions.createPlayerCharacter(
+      dispatch(rest.actions.createNonPlayerCharacter(
         {campaign_slug: campaignSlug},
         {body: JSON.stringify({newCharacter})}
       ));
     },
     updateCharacter: (newCharacter, campaignSlug, characterSlug) => {
-      dispatch(rest.actions.updatePlayerCharacter(
+      dispatch(rest.actions.updateNonPlayerCharacter(
         {campaign_slug: campaignSlug, slug: characterSlug},
         {body: JSON.stringify({newCharacter})}
       ));
@@ -104,4 +106,4 @@ function mapDispatchToProps (dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PlayerCharacterEditor);
+export default connect(mapStateToProps, mapDispatchToProps)(NonPlayerCharacterEditor);

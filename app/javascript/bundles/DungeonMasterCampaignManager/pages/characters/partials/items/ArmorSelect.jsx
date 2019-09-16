@@ -30,7 +30,7 @@ const ArmorSelect = ({colWidth}) => (
     label={'Armor'}
     colWidth={colWidth}
     getOptions={getArmors}
-    name={'characterArmor'}
+    name={'armor'}
     placeholder={'Search for Armor...'}
     defaultOptions={[]}
     isClearable

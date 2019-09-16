@@ -30,7 +30,7 @@ const ShieldSelect = ({colWidth}) => (
     label={'Shield'}
     colWidth={colWidth}
     getOptions={getShields}
-    name={'characterShield'}
+    name={'shield'}
     placeholder={'Search for Shield...'}
     defaultOptions={[]}
     isClearable

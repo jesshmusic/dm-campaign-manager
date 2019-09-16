@@ -6,10 +6,10 @@ import snakecaseKeys from 'snakecase-keys';
 // Container
 import PageContainer from '../../containers/PageContainer.jsx';
 import rest from '../../actions/api';
-import Spinner from 'react-bootstrap/Spinner';
 import arrayMutators from 'final-form-arrays';
 import PageTitle from '../../components/layout/PageTitle';
 import CampaignForm from './partials/CampaignForm';
+import DndSpinner from '../../components/layout/DndSpinner';
 
 class EditCampaign extends React.Component {
   state = {
@@ -76,7 +76,7 @@ class EditCampaign extends React.Component {
                         validated={validated}
                         validateForm={this.validate} />
         ) : (
-          <Spinner animation="border" variant="primary" />
+          <DndSpinner/>
         )}
       </PageContainer>
     );

@@ -14,15 +14,12 @@ import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 import _ from 'lodash';
-import Breadcrumb from 'react-bootstrap/Breadcrumb';
-import BreadcrumbLink from '../../components/layout/BreadcrumbLink';
+
 import PageContainer from '../../containers/PageContainer';
 import ReactMarkdown from 'react-markdown';
 import Util from '../../utilities/utilities';
-import Spinner from 'react-bootstrap/Spinner';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 import PageTitle from '../../components/layout/PageTitle';
+import DndSpinner from '../../components/layout/DndSpinner';
 
 class Spells extends React.Component {
   constructor (props) {
@@ -162,7 +159,7 @@ class Spells extends React.Component {
                           }]}
                           expandRow={ this.expandRow } />
         ) : (
-          <Spinner animation="border" variant="primary" />
+          <DndSpinner/>
         )}
       </PageContainer>
     );

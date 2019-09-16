@@ -42,7 +42,7 @@ const CalculateArmorClass = ({armor, armorClassModifier, dexterity, shield}) => 
   return 10 + AbilityScoreModifier(dexterity) + armorClassModifier;
 };
 
-export const SetupCharacterState = (newChar, races) => {
+export const SetupCharacterState = (newChar) => {
   // Initial character state object
   const charObject = {
     id: newChar.id,
@@ -65,7 +65,6 @@ export const SetupCharacterState = (newChar, races) => {
     })),
     armorClass: newChar.armorClass,
     armorClassModifier: newChar.armorClassModifier,
-    characterArmor: newChar.characterArmor,
     hitPoints: newChar.hitPoints,
     xp: newChar.xp,
     strength:  newChar.strength,
@@ -74,6 +73,11 @@ export const SetupCharacterState = (newChar, races) => {
     intelligence: newChar.intelligence,
     wisdom: newChar.wisdom,
     charisma: newChar.charisma,
+    armor: newChar.armor,
+    shield: newChar.shield,
+    weapon2h: newChar.weapon2h,
+    weaponLh: newChar.weaponLh,
+    weaponRh: newChar.weaponRh,
     copperPieces: newChar.copperPieces,
     silverPieces: newChar.silverPieces,
     electrumPieces: newChar.electrumPieces,
@@ -95,14 +99,14 @@ export const SetupCharacterState = (newChar, races) => {
 
   // Calculate AC
   charObject.armorClass = CalculateArmorClass({
-    armor: charObject.characterArmor,
+    armor: charObject.armor,
     armorClassModifier: parseInt(charObject.armorClassModifier, 10) || 0,
     dexterity: charObject.dexterity || 10,
-    shield: charObject.characterShield,
+    shield: charObject.shield,
   });
 
-  if (newChar.characterArmor) {
-    charObject.armorId = newChar.characterArmor.value;
+  if (newChar.armor) {
+    charObject.armorId = newChar.armor.value;
   }
 
   // Set Race
@@ -111,12 +115,6 @@ export const SetupCharacterState = (newChar, races) => {
       value: newChar.race.id,
       label: newChar.race.name,
       data: newChar.race,
-    };
-  } else if (races.length > 0) {
-    charObject.characterRace = {
-      value: 1,
-      label: 'Human',
-      data: races.find((race) => race.name === 'Human'),
     };
   } else {
     charObject.characterRace = {
@@ -189,30 +187,6 @@ export const SetupCharacterState = (newChar, races) => {
   charObject.showWarlockSpells = charObject.dndClasses.some(dndClass => dndClass.dndClass.label === 'Warlock');
   charObject.showWizardSpells = charObject.dndClasses.some(dndClass => dndClass.dndClass.label === 'Wizard');
 
-  // Add armor
-  if (newChar.armor) {
-    charObject.characterArmor = {
-      value: newChar.armor.id,
-      label: newChar.armor.name,
-      data: {
-        armorDexBonus: newChar.armor.armorDexBonus,
-        armorClass: newChar.armor.armorClass,
-      },
-    };
-  }
-
-  // Add shield
-  if (newChar.shield) {
-    charObject.characterShield = {
-      value: newChar.shield.id,
-      label: newChar.shield.name,
-      data: {
-        armorDexBonus: newChar.shield.armorDexBonus,
-        armorClass: newChar.shield.armorClass,
-      },
-    };
-  }
-
   return charObject;
 };
 
@@ -266,10 +240,10 @@ export const characterCalculations = createDecorator (
     field: 'armorClassModifier',
     updates: {
       armorClass: (armorClassModifier, allValues) => CalculateArmorClass({
-        armor: allValues.characterArmor,
+        armor: allValues.armor,
         armorClassModifier: parseInt(armorClassModifier, 10) || 0,
         dexterity: allValues.dexterity || 10,
-        shield: allValues.characterShield,
+        shield: allValues.shield,
       }),
     },
   },
@@ -289,10 +263,10 @@ export const characterCalculations = createDecorator (
     field: 'dexterity',
     updates: {
       armorClass: (newValue, allValues) => CalculateArmorClass({
-        armor: allValues.characterArmor,
+        armor: allValues.armor,
         armorClassModifier: parseInt(allValues.armorClassModifier, 10) || 0,
         dexterity: newValue || 10,
-        shield: allValues.characterShield,
+        shield: allValues.shield,
       }),
       'baseAbilities.dexterity': (newValue, allValues) => {
         let score = parseInt(newValue, 10);
@@ -358,7 +332,7 @@ export const characterCalculations = createDecorator (
         armor: characterArmor,
         armorClassModifier: parseInt(allValues.armorClassModifier, 10) || 0,
         dexterity: allValues.dexterity || 10,
-        shield: allValues.characterShield,
+        shield: allValues.shield,
       }),
       armorId: (characterArmor) => characterArmor ? characterArmor.value : null,
     },
@@ -367,7 +341,7 @@ export const characterCalculations = createDecorator (
     field: 'characterShield',
     updates: {
       armorClass: (characterShield, allValues) => CalculateArmorClass({
-        armor: allValues.characterArmor,
+        armor: allValues.armor,
         armorClassModifier: parseInt(allValues.armorClassModifier, 10) || 0,
         dexterity: allValues.dexterity || 10,
         shield: characterShield,

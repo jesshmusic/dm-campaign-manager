@@ -51,7 +51,6 @@ const CharacterClassFields = ({characterClass, classOptions, fields, index}) => 
 
 CharacterClassFields.propTypes = {
   characterClass: PropTypes.string.isRequired,
-  classOptions: PropTypes.array.isRequired,
   index: PropTypes.number.isRequired,
   fields: PropTypes.object.isRequired,
 };

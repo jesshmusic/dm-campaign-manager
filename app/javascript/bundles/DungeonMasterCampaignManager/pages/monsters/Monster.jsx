@@ -17,8 +17,8 @@ import _ from 'lodash';
 import PageContainer from '../../containers/PageContainer';
 import ReactMarkdown from 'react-markdown';
 import Util from '../../utilities/utilities';
-import Spinner from 'react-bootstrap/Spinner';
 import PageTitle from '../../components/layout/PageTitle';
+import DndSpinner from '../../components/layout/DndSpinner';
 
 class Monsters extends React.Component {
   constructor (props) {
@@ -140,7 +140,7 @@ class Monsters extends React.Component {
                           pagination={ paginationFactory() }
                           expandRow={ this.expandRow } />
         ) : (
-          <Spinner animation="border" variant="primary" />
+          <DndSpinner/>
         )}
       </PageContainer>
     );

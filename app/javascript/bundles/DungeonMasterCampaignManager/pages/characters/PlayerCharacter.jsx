@@ -8,8 +8,8 @@ import rest from '../../actions/api';
 import {connect} from 'react-redux';
 import PageContainer from '../../containers/PageContainer';
 import CharacterBody from './partials/CharacterBody';
-import Spinner from 'react-bootstrap/Spinner';
 import PageTitle from '../../components/layout/PageTitle';
+import DndSpinner from '../../components/layout/DndSpinner';
 
 class PlayerCharacter extends React.Component {
 
@@ -33,13 +33,14 @@ class PlayerCharacter extends React.Component {
         {character ? (
           <div>
             <PageTitle title={`Player Character: ${characterTitle}`}
+                       badge={{title: 'PC', variant: 'success'}}
                        hasButton={user && character.campaign && character.campaign.userId === user.id}
                        buttonLink={`/app/campaigns/${campaignSlug}/pcs/${character.slug}/edit`}
                        buttonTitle={'Edit PC'}
                        buttonVariant={'primary'}/>
             <CharacterBody character={character}/>
           </div>
-        ) : <Spinner/>}
+        ) : <DndSpinner/>}
       </PageContainer>
     );
   }

@@ -9,12 +9,12 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import BootstrapTable from 'react-bootstrap-table-next';
 import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
 import paginationFactory from 'react-bootstrap-table2-paginator';
-import Spinner from 'react-bootstrap/Spinner';
 import Col from 'react-bootstrap/Col';
 import ListGroupItem from 'react-bootstrap/ListGroupItem';
 import Row from 'react-bootstrap/Row';
 import Container from 'react-bootstrap/Container';
 import PageTitle from '../../components/layout/PageTitle';
+import DndSpinner from '../../components/layout/DndSpinner';
 
 class DndClasses extends React.Component {
   constructor (props) {
@@ -120,7 +120,7 @@ class DndClasses extends React.Component {
                           pagination={ paginationFactory() }
                           expandRow={ this.expandRow } />
         ) : (
-          <Spinner animation="border" variant="primary" />
+          <DndSpinner/>
         )}
       </PageContainer>
     );

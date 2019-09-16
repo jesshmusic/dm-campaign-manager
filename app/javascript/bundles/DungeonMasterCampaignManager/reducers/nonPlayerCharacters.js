@@ -4,6 +4,8 @@ const getNonPlayerCharactersSuccess = createAction('@@redux-api@getNonPlayerChar
 const getNonPlayerCharactersFail = createAction('@@redux-api@getNonPlayerCharacters_fail');
 const getNonPlayerCharacterSuccess = createAction('@@redux-api@getNonPlayerCharacter_success');
 const getNonPlayerCharacterFail = createAction('@@redux-api@getNonPlayerCharacter_fail');
+const newNonPlayerCharacterSuccess = createAction('@@redux-api@newNonPlayerCharacter_success');
+const newNonPlayerCharacterFail = createAction('@@redux-api@newNonPlayerCharacter_fail');
 
 const nonPlayerCharacters = createReducer({
   characters: [],
@@ -26,6 +28,16 @@ const nonPlayerCharacters = createReducer({
     currentCharacter: action.data,
   }),
   [getNonPlayerCharacterFail]: () => (state) => ({
+    characters: state.characters,
+    count: state.count,
+    currentCharacter: null,
+  }),
+  [newNonPlayerCharacterSuccess]: (state, action) => ({
+    characters: state.characters,
+    count: state.count,
+    currentCharacter: action.data,
+  }),
+  [newNonPlayerCharacterFail]: () => (state) => ({
     characters: state.characters,
     count: state.count,
     currentCharacter: null,

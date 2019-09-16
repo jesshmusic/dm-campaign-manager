@@ -8,8 +8,8 @@ import rest from '../../actions/api';
 import {connect} from 'react-redux';
 import PageContainer from '../../containers/PageContainer';
 import CharacterBody from './partials/CharacterBody';
-import Spinner from 'react-bootstrap/Spinner';
 import PageTitle from '../../components/layout/PageTitle';
+import DndSpinner from '../../components/layout/DndSpinner';
 
 class NonPlayerCharacter extends React.Component {
 
@@ -32,14 +32,15 @@ class NonPlayerCharacter extends React.Component {
                      ]}>
         {character ? (
           <div>
-            <PageTitle title={`Player Character: ${characterTitle}`}
-                       hasButton={user && user.id === character.userId}
+            <PageTitle title={`Non-player Character: ${characterTitle}`}
+                       badge={{title: 'NPC', variant: 'secondary'}}
+                       hasButton={user && character.campaign && character.campaign.userId === user.id}
                        buttonLink={`/app/campaigns/${campaignSlug}/npcs/${character.slug}/edit`}
                        buttonTitle={'Edit NPC'}
                        buttonVariant={'primary'}/>
             <CharacterBody character={character}/>
           </div>
-        ) : <Spinner/>}
+        ) : <DndSpinner/>}
       </PageContainer>
     );
   }

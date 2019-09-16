@@ -34,7 +34,7 @@ const Weapon2HSelect = ({colWidth}) => (
     label={'Weapon - Two-hand'}
     colWidth={colWidth}
     getOptions={getWeapon2Hs}
-    name={'characterWeapon2H'}
+    name={'weapon2h'}
     placeholder={'Search for Weapon...'}
     defaultOptions={[]}
     isClearable

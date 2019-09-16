@@ -14,8 +14,8 @@ import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 import ItemDescription from './ItemDescription';
-import Spinner from 'react-bootstrap/Spinner';
 import PageTitle from '../../../components/layout/PageTitle';
+import DndSpinner from '../../../components/layout/DndSpinner';
 
 const ItemsList = ({columns, items, flashMessages, user, pageTitle}) => {
   const expandRow = {
@@ -45,7 +45,7 @@ const ItemsList = ({columns, items, flashMessages, user, pageTitle}) => {
                         pagination={ paginationFactory() }
                         expandRow={ expandRow } />
       ) : (
-        <Spinner animation="border" variant="primary" />
+        <DndSpinner/>
       )}
     </PageContainer>
   );

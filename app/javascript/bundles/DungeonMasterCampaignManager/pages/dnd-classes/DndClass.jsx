@@ -1,22 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import Spinner from 'react-bootstrap/Spinner';
-
-const ReactMarkdown = require('react-markdown');
-
 
 // Container
 import PageContainer from '../../containers/PageContainer.jsx';
 import rest from '../../actions/api';
-import Breadcrumb from 'react-bootstrap/Breadcrumb';
-import BreadcrumbLink from '../../components/layout/BreadcrumbLink';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import ListGroup from 'react-bootstrap/ListGroup';
 import ListGroupItem from 'react-bootstrap/ListGroupItem';
-import Container from 'react-bootstrap/Container';
 import PageTitle from '../../components/layout/PageTitle';
+import DndSpinner from '../../components/layout/DndSpinner';
 
 class DndClass extends React.Component {
   constructor (props) {
@@ -69,7 +63,7 @@ class DndClass extends React.Component {
             </Col>
           </Row>
         ) : (
-          <Spinner animation="border" variant="primary" />
+          <DndSpinner/>
         )}
       </PageContainer>
     );

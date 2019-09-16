@@ -7,8 +7,9 @@ import PropTypes from 'prop-types';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import {Link} from '@reach/router';
+import Badge from 'react-bootstrap/Badge';
 
-const PageTitle = ({hasButton, buttonLink, buttonTitle, buttonVariant, title}) => (
+const PageTitle = ({hasButton, buttonLink, buttonTitle, buttonVariant, title, badge}) => (
   <Row>
     <Col>
       <h1 className={'d-flex justify-content-between align-items-center'}>
@@ -18,12 +19,18 @@ const PageTitle = ({hasButton, buttonLink, buttonTitle, buttonVariant, title}) =
             {buttonTitle}
           </Link>
         ) : null}
+        {badge ? (
+          <Badge variant={badge.variant}>
+            {badge.title}
+          </Badge>
+        ) : null}
       </h1>
     </Col>
   </Row>
 );
 
 PageTitle.propTypes = {
+  badge: PropTypes.object,
   hasButton: PropTypes.bool,
   buttonLink: PropTypes.string,
   buttonTitle: PropTypes.string,

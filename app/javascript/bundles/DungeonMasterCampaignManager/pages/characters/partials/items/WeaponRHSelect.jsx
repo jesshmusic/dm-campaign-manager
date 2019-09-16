@@ -31,10 +31,10 @@ const getWeaponRHs = (inputValue, callback) => {
 
 const WeaponRHSelect = ({colWidth}) => (
   <FormSelectAsync
-    label={'Weapon - Right hand'}
+    label={'Weapon - Main hand'}
     colWidth={colWidth}
     getOptions={getWeaponRHs}
-    name={'characterWeaponRH'}
+    name={'weaponRh'}
     placeholder={'Search for Weapon...'}
     defaultOptions={[]}
     isClearable

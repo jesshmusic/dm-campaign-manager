@@ -11,7 +11,7 @@ const CharacterCard = ({campaign, character, small}) => (
   <Card className={'mb-4'}>
     <Card.Body>
       <Card.Title>
-        <Link to={character.type === 'PlayerCharacter' ? `/app/campaigns/${campaign.slug}/pcs/${character.slug}` : `/app/campaigns/${campaign.id}/npcs/${character.slug}`}>
+        <Link to={character.type === 'PlayerCharacter' ? `/app/campaigns/${campaign.slug}/pcs/${character.slug}` : `/app/campaigns/${campaign.slug}/npcs/${character.slug}`}>
           {character.name} {character.type === 'NonPlayerCharacter' ? <small className="text-muted">&ldquo;{character.role}&rdquo;</small> : ''}
         </Link>
       </Card.Title>
@@ -29,7 +29,7 @@ const CharacterCard = ({campaign, character, small}) => (
     </Card.Body>
     {small ? null : (
       <Card.Footer>
-        <Link to={character.type === 'PlayerCharacter' ? `/app/campaigns/${campaign.slug}/pcs/${character.slug}` : `/app/campaigns/${campaign.id}/npcs/${character.slug}`} className='btn btn-primary'>Details</Link>
+        <Link to={character.type === 'PlayerCharacter' ? `/app/campaigns/${campaign.slug}/pcs/${character.slug}` : `/app/campaigns/${campaign.slug}/npcs/${character.slug}`} className='btn btn-primary'>Details</Link>
       </Card.Footer>
     )}
   </Card>
