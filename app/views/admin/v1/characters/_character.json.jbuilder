@@ -204,6 +204,8 @@ if character.weapon_lh
       json.weapon_range character.weapon_lh.weapon_range
       json.subcategory character.weapon_lh.sub_category
       json.weapon_properties character.weapon_lh.weapon_properties
+      json.weapon_attack_bonus character.weapon_lh.weapon_attack_bonus
+      json.weapon_damage_bonus character.weapon_lh.weapon_damage_bonus
     end
   end
 end
@@ -219,6 +221,8 @@ if character.weapon_rh
       json.weapon_range character.weapon_rh.weapon_range
       json.subcategory character.weapon_rh.sub_category
       json.weapon_properties character.weapon_rh.weapon_properties
+      json.weapon_attack_bonus character.weapon_rh.weapon_attack_bonus
+      json.weapon_damage_bonus character.weapon_rh.weapon_damage_bonus
     end
   end
 end
@@ -237,6 +241,8 @@ if character.weapon_2h
       json.weapon_range character.weapon_2h.weapon_range
       json.subcategory character.weapon_2h.sub_category
       json.weapon_properties character.weapon_2h.weapon_properties
+      json.weapon_attack_bonus character.weapon_2h.weapon_attack_bonus
+      json.weapon_damage_bonus character.weapon_2h.weapon_damage_bonus
     end
   end
 end

@@ -1,6 +1,134 @@
 # frozen_string_literal: true
 
 namespace :update_records do
+  task parse_weapon_bonuses: :environment do
+    WeaponItem.all.each do |weapon|
+      if weapon.name.include? "+1"
+        weapon.weapon_attack_bonus = 1
+        weapon.weapon_damage_bonus = 1
+      elsif weapon.name.include? "+2"
+        weapon.weapon_attack_bonus = 2
+        weapon.weapon_damage_bonus = 2
+      elsif weapon.name.include? "3"
+        weapon.weapon_attack_bonus = 3
+        weapon.weapon_damage_bonus = 3
+      else
+        weapon.weapon_attack_bonus = 0
+        weapon.weapon_damage_bonus = 0
+      end
+      weapon.save!
+    end
+  end
+
+  task armor_class_bonuses: :environment do
+    ArmorItem.where(rarity: nil).each do |standard_armor|
+      ArmorItem.create!(
+        name: "#{standard_armor.name}, +1",
+        rarity: 'rare',
+        armor_class_bonus: 1,
+        description: 'You have a bonus to AC while wearing this armor.',
+        sub_category: standard_armor.sub_category,
+        armor_class: standard_armor.armor_class,
+        armor_dex_bonus: standard_armor.armor_dex_bonus,
+        armor_max_bonus: standard_armor.armor_max_bonus,
+        armor_stealth_disadvantage: standard_armor.armor_stealth_disadvantage,
+        armor_str_minimum: standard_armor.armor_str_minimum,
+        weight: standard_armor.weight,
+      )
+      ArmorItem.create!(
+        name: "#{standard_armor.name}, +2",
+        rarity: 'very rare',
+        armor_class_bonus: 2,
+        description: 'You have a bonus to AC while wearing this armor.',
+        sub_category: standard_armor.sub_category,
+        armor_class: standard_armor.armor_class,
+        armor_dex_bonus: standard_armor.armor_dex_bonus,
+        armor_max_bonus: standard_armor.armor_max_bonus,
+        armor_stealth_disadvantage: standard_armor.armor_stealth_disadvantage,
+        armor_str_minimum: standard_armor.armor_str_minimum,
+        weight: standard_armor.weight,
+        )
+      ArmorItem.create!(
+        name: "#{standard_armor.name}, +3",
+        rarity: 'legendary',
+        armor_class_bonus: 3,
+        description: 'You have a bonus to AC while wearing this armor.',
+        sub_category: standard_armor.sub_category,
+        armor_class: standard_armor.armor_class,
+        armor_dex_bonus: standard_armor.armor_dex_bonus,
+        armor_max_bonus: standard_armor.armor_max_bonus,
+        armor_stealth_disadvantage: standard_armor.armor_stealth_disadvantage,
+        armor_str_minimum: standard_armor.armor_str_minimum,
+        weight: standard_armor.weight,
+        )
+    end
+
+    # Demon Armor
+    updated_armor = ArmorItem.find_by(name: 'Demon Armor, Plate')
+    updated_armor.armor_class_bonus = 1
+    updated_armor.name = 'Demon Armor'
+    updated_armor.save!
+
+    # Dragon Scale Armor
+    updated_armor = ArmorItem.find_by(name: 'Dragon Scale Mail, Scale Mail')
+    updated_armor.armor_class_bonus = 1
+    updated_armor.name = 'Dragon Scale Mail'
+    updated_armor.save!
+
+    # Elven Chain Armor
+    updated_armor = ArmorItem.find_by(name: 'Elven Chain, Chain Shirt')
+    updated_armor.armor_class_bonus = 1
+    updated_armor.name = 'Elven Chain'
+    updated_armor.save!
+
+    # Glamoured Studded Leather Armor
+    updated_armor = ArmorItem.find_by(name: 'Glamoured Studded Leather, Studded Leather')
+    updated_armor.armor_class_bonus = 1
+    updated_armor.name = 'Glamoured Studded Leather'
+    updated_armor.save!
+
+    # Mithral Armor
+    updated_armors = ArmorItem.where("name like ?", "%Mithral Armor%")
+    updated_armors.each do |next_armor|
+      next_armor.armor_class_bonus = 0
+      next_armor.armor_stealth_disadvantage = false
+      next_armor.armor_str_minimum = 0
+      next_armor.save!
+    end
+
+    ArmorItem.where(sub_category: 'Shield').each do |next_shield|
+      next_shield.armor_class = nil
+      next_shield.armor_class_bonus = 2
+      next_shield.save!
+    end
+
+    # Shields
+    ArmorItem.create!(
+      name: "Shield, +1",
+      rarity: 'rare',
+      armor_class_bonus: 3,
+      description: 'While holding this shield, you have a bonus to AC',
+      sub_category: 'Shield',
+      weight: 6,
+      )
+    ArmorItem.create!(
+      name: "Shield, +2",
+      rarity: 'very rare',
+      armor_class_bonus: 4,
+      description: 'While holding this shield, you have a bonus to AC',
+      sub_category: 'Shield',
+      weight: 6,
+      )
+    ArmorItem.create!(
+      name: "Shield, +3",
+      rarity: 'legendary',
+      armor_class_bonus: 5,
+      description: 'While holding this shield, you have a bonus to AC',
+      sub_category: 'Shield',
+      weight: 6,
+      )
+  end
+
   task update_items: :environment do
     Character.all.each do |character|
       character.equipment_items.each do |equipment_item|

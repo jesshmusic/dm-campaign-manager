@@ -7,6 +7,7 @@
 #  id                          :bigint           not null, primary key
 #  api_url                     :string
 #  armor_class                 :integer
+#  armor_class_bonus           :integer
 #  armor_dex_bonus             :boolean
 #  armor_max_bonus             :integer
 #  armor_stealth_disadvantage  :boolean
@@ -27,6 +28,8 @@
 #  weapon_2h_damage_dice_count :integer
 #  weapon_2h_damage_dice_value :integer
 #  weapon_2h_damage_type       :string
+#  weapon_attack_bonus         :integer
+#  weapon_damage_bonus         :integer
 #  weapon_damage_dice_count    :integer
 #  weapon_damage_dice_value    :integer
 #  weapon_damage_type          :string
