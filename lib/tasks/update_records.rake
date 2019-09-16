@@ -129,6 +129,13 @@ namespace :update_records do
       )
   end
 
+  task armor_defaults: :environment do
+    ArmorItem.where(armor_class_bonus: nil).each do |armor|
+      armor.armor_class_bonus = 0
+      armor.save!
+    end
+  end
+
   task update_items: :environment do
     Character.all.each do |character|
       character.equipment_items.each do |equipment_item|

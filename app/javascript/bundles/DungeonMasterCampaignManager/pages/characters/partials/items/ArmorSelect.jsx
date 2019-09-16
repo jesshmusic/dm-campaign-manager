@@ -13,6 +13,7 @@ export const filterOptions = (results) => results.map((nextItem) => (
     data: {
       armorDexBonus: nextItem.armorDexBonus,
       armorClass: nextItem.armorClass,
+      armorClassBonus: nextItem.armorClassBonus,
     },
   }
 ));

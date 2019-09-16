@@ -12,7 +12,7 @@ export const filterOptions = (results) => results.map((nextItem) => (
     label: nextItem.name,
     data: {
       armorDexBonus: nextItem.armorDexBonus,
-      armorClass: nextItem.armorClass,
+      armorClassBonus: nextItem.armorClassBonus,
     },
   }
 ));

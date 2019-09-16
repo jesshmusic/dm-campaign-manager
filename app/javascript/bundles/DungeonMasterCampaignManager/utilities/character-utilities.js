@@ -29,15 +29,15 @@ export const alignmentOptions = [
 
 const CalculateArmorClass = ({armor, armorClassModifier, dexterity, shield}) => {
   if (armor && armor.data.armorDexBonus && shield) {
-    return armor.data.armorClass + AbilityScoreModifier(dexterity) + shield.data.armorClass + armorClassModifier;
+    return armor.data.armorClass + armor.data.armorClassBonus + AbilityScoreModifier(dexterity) + shield.data.armorClassBonus + armorClassModifier;
   } else if (armor && armor.data.armorDexBonus && !shield) {
-    return armor.data.armorClass + AbilityScoreModifier(dexterity) + armorClassModifier;
+    return armor.data.armorClass + armor.data.armorClassBonus + AbilityScoreModifier(dexterity) + armorClassModifier;
   } else if (armor && shield) {
-    return armor.data.armorClass + shield.data.armorClass + armorClassModifier;
+    return armor.data.armorClass + armor.data.armorClassBonus + shield.data.armorClassBonus + armorClassModifier;
   } else if (armor) {
-    return armor.data.armorClass + armorClassModifier;
+    return armor.data.armorClass + armor.data.armorClassBonus + armorClassModifier;
   } else if (shield) {
-    return 10 + AbilityScoreModifier(dexterity) + shield.data.armorClass + armorClassModifier;
+    return 10 + AbilityScoreModifier(dexterity) + shield.data.armorClassBonus + armorClassModifier;
   }
   return 10 + AbilityScoreModifier(dexterity) + armorClassModifier;
 };
@@ -344,10 +344,10 @@ export const characterCalculations = createDecorator (
     },
   },
   {
-    field: 'characterArmor',
+    field: 'armor',
     updates: {
-      armorClass: (characterArmor, allValues) => CalculateArmorClass({
-        armor: characterArmor,
+      armorClass: (armor, allValues) => CalculateArmorClass({
+        armor,
         armorClassModifier: parseInt(allValues.armorClassModifier, 10) || 0,
         dexterity: allValues.dexterity || 10,
         shield: allValues.shield,
@@ -356,13 +356,13 @@ export const characterCalculations = createDecorator (
     },
   },
   {
-    field: 'characterShield',
+    field: 'shield',
     updates: {
-      armorClass: (characterShield, allValues) => CalculateArmorClass({
+      armorClass: (shield, allValues) => CalculateArmorClass({
         armor: allValues.armor,
         armorClassModifier: parseInt(allValues.armorClassModifier, 10) || 0,
         dexterity: allValues.dexterity || 10,
-        shield: characterShield,
+        shield,
       }),
     },
   },

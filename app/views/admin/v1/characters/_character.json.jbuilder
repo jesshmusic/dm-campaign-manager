@@ -178,6 +178,7 @@ if character.armor
     json.data do
       json.armor_dex_bonus character.armor.armor_dex_bonus
       json.armor_class character.armor.armor_class
+      json.armor_class_bonus character.armor.armor_class_bonus
     end
   end
 end
@@ -188,7 +189,7 @@ if character.shield
     json.label character.shield.name
     json.data do
       json.armor_dex_bonus character.shield.armor_dex_bonus
-      json.armor_class character.shield.armor_class
+      json.armor_class_bonus character.shield.armor_class_bonus
     end
   end
 end
