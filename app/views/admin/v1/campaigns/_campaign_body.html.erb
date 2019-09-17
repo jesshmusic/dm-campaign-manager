@@ -23,6 +23,8 @@
         <% @campaign.pcs.each do |character| %>
           <li class="list-group-item">
             <%= link_to raw("<strong>#{character.name}</strong> - #{character.classes}"), v1_campaign_player_character_path(@campaign, character) %>
+            <%= link_to 'Edit', edit_v1_campaign_character_path(@campaign, character), class: "btn btn-sm btn-success" if policy(character).edit? %>
+            <%= link_to 'Destroy',  v1_campaign_character_path(@campaign, character), class: "btn btn-sm btn-danger", method: :delete, data: { confirm: 'Are you sure?' } if policy(character).destroy? %>
           </li>
         <% end %>
       </ul>
@@ -33,6 +35,8 @@
         <% @campaign.npcs.each do |character| %>
           <li class="list-group-item">
             <%= link_to raw("#{character.role}: <strong>#{character.name}</strong> - #{character.classes}"), v1_campaign_player_character_path(@campaign, character) %>
+            <%= link_to 'Edit', edit_v1_campaign_character_path(@campaign, character), class: "btn btn-sm btn-success" if policy(character).edit? %>
+            <%= link_to 'Destroy',  v1_campaign_character_path(@campaign, character), class: "btn btn-sm btn-danger", method: :delete, data: { confirm: 'Are you sure?' } if policy(character).destroy? %>
           </li>
         <% end %>
       </ul>

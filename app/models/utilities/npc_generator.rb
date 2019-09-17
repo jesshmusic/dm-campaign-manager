@@ -13,11 +13,13 @@ class NpcGenerator
 
       generate_ability_scores(npc_attributes[:min_score])
       set_statistics
+      armor_ids = []
       rand(1..3).times do
-        add_armor
+        armor_ids << add_armor(armor_ids)
       end
+      weapon_ids = []
       rand(1..5).times do
-        add_weapon
+        weapon_ids << add_weapon(weapon_ids)
       end
       add_skills
       add_spells
@@ -100,7 +102,7 @@ class NpcGenerator
 
     # Armor
 
-    def add_armor
+    def add_armor(armor_ids)
       armor_profs = []
       @new_npc.character_classes.each do |character_class|
         cc_armor_profs = character_class.dnd_class.profs.where(prof_type: 'Armor').pluck(:name)
@@ -108,42 +110,61 @@ class NpcGenerator
       end
       armor_profs = armor_profs.uniq
       if armor_profs.any?
-        armor_choices = get_armor_choices(armor_profs)
-        armor = DndRules.get_weighted_random_record(armor_choices)
+        armor_choices = get_armor_choices(armor_profs, armor_ids)
+        armor = armor_choices.sample
         @new_npc.character_items.create(
           quantity: 1,
           equipped: false,
           carrying: true,
           item: armor
         )
+        armor.id
       end
     end
 
-    def get_armor_choices(armor_profs)
+    def get_armor_choices(armor_profs, armor_ids)
       armor_choices = []
       armor_profs.each do |armor_prof|
         case armor_prof
         when 'Light armor'
           ArmorItem.where(sub_category: 'Light').each do |armor_item|
-            armor_choices << { item: armor_item, weight: get_weight_for_magic_item(armor_item.rarity, 5000) }
+            if armor_ids.exclude?(armor_item.id)
+              armor_weight = get_weight_for_magic_item(armor_item.rarity, 200)
+              armor_weight.times { armor_choices << armor_item }
+            end
           end
         when 'Medium armor'
           ArmorItem.where(sub_category: 'Medium').each do |armor_item|
-            armor_choices << { item: armor_item, weight: get_weight_for_magic_item(armor_item.rarity, 10000) }
+            if armor_ids.exclude?(armor_item.id)
+              armor_weight = get_weight_for_magic_item(armor_item.rarity, 200)
+              armor_weight.times { armor_choices << armor_item }
+            end
           end
         when 'Heavy armor'
           ArmorItem.where(sub_category: 'Heavy').each do |armor_item|
-            armor_choices << { item: armor_item, weight: get_weight_for_magic_item(armor_item.rarity, 20000) }
+            if armor_ids.exclude?(armor_item.id)
+              armor_weight = get_weight_for_magic_item(armor_item.rarity, 200)
+              armor_weight.times { armor_choices << armor_item }
+            end
           end
         when 'All armor'
           ArmorItem.where(sub_category: 'Light').each do |armor_item|
-            armor_choices << { item: armor_item, weight: get_weight_for_magic_item(armor_item.rarity, 5000) }
+            if armor_ids.exclude?(armor_item.id)
+              armor_weight = get_weight_for_magic_item(armor_item.rarity, 25)
+              armor_weight.times { armor_choices << armor_item }
+            end
           end
           ArmorItem.where(sub_category: 'Medium').each do |armor_item|
-            armor_choices << { item: armor_item, weight: get_weight_for_magic_item(armor_item.rarity, 10000) }
+            if armor_ids.exclude?(armor_item.id)
+              armor_weight = get_weight_for_magic_item(armor_item.rarity, 100)
+              armor_weight.times { armor_choices << armor_item }
+            end
           end
           ArmorItem.where(sub_category: 'Heavy').each do |armor_item|
-            armor_choices << { item: armor_item, weight: get_weight_for_magic_item(armor_item.rarity, 20000) }
+            if armor_ids.exclude?(armor_item.id)
+              armor_weight = get_weight_for_magic_item(armor_item.rarity, 250)
+              armor_weight.times { armor_choices << armor_item }
+            end
           end
         end
       end
@@ -152,7 +173,7 @@ class NpcGenerator
 
     # Weapon
 
-    def add_weapon
+    def add_weapon(weapon_ids)
       weapon_profs = []
       @new_npc.character_classes.each do |character_class|
         cc_weapon_profs = character_class.dnd_class.profs.where(prof_type: 'Weapons').pluck(:name)
@@ -160,42 +181,49 @@ class NpcGenerator
       end
       weapon_profs = weapon_profs.uniq
       if weapon_profs.any?
-        weapon_choices = get_weapon_choices(weapon_profs)
-        weapon = DndRules.get_weighted_random_record(weapon_choices)
+        weapon_choices = get_weapon_choices(weapon_profs, weapon_ids)
+        weapon = weapon_choices.sample
         @new_npc.character_items.create(
           quantity: 1,
           equipped: false,
           carrying: true,
           item: weapon
         )
+        weapon.id
       end
     end
 
-    def get_weapon_choices(weapon_profs)
+    def get_weapon_choices(weapon_profs, weapon_ids)
       weapon_choices = []
       weapon_profs.each do |weapon_prof|
         case weapon_prof
         when 'Simple weapons'
           WeaponItem.where(sub_category: 'Simple').each do |weapon_item|
-            weapon_weight = get_weight_for_magic_item(weapon_item.rarity, 5000)
-            weapon_choices << { item: weapon_item, weight: weapon_weight }
+            if weapon_ids.exclude?(weapon_item.id)
+              weapon_weight = get_weight_for_magic_item(weapon_item.rarity, 75)
+              weapon_weight.times { weapon_choices << weapon_item }
+            end
           end
         when 'Martial weapons'
           WeaponItem.where(sub_category: 'Martial').each do |weapon_item|
-            weapon_weight = get_weight_for_magic_item(weapon_item.rarity, 15000)
-            weapon_choices << { item: weapon_item, weight: weapon_weight }
+            if weapon_ids.exclude?(weapon_item.id)
+              weapon_weight = get_weight_for_magic_item(weapon_item.rarity, 150)
+              weapon_weight.times { weapon_choices << weapon_item }
+            end
           end
         else
           WeaponItem.where('name like ?', "%#{weapon_prof.chomp('s')}").each do |weapon_item|
-            weapon_weight = get_weight_for_magic_item(weapon_item.rarity, 20000)
-            weapon_choices << { item: weapon_item, weight: weapon_weight }
+            if weapon_ids.exclude?(weapon_item.id)
+              weapon_weight = get_weight_for_magic_item(weapon_item.rarity, 200)
+              weapon_weight.times { weapon_choices << weapon_item }
+            end
           end
         end
       end
       weapon_choices
     end
 
-    def get_weight_for_magic_item(rarity = nil, default_weight = 5000)
+    def get_weight_for_magic_item(rarity = nil, default_weight = 200)
       case rarity
       when 'common'
         3 * @new_npc.total_level

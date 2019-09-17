@@ -529,47 +529,5 @@ class DndRules
       end
       hit_die
     end
-
-    # Probability Calculation
-    # Pass array of hashes as such: `[{ item: Model, weight: Integer }]`
-    def get_weighted_random_record(weighted_items)
-      probabilities = probabilities(weighted_items)
-      choice_weight = get_weight(probabilities)
-      by_weight(weighted_items, choice_weight).sample[:item]
-    end
-
-    def sum_of_weights(weighted_items)
-      weighted_items.sum { |weighted_item| weighted_item[:weight].to_f }
-    end
-
-    def probabilities(weighted_items)
-      sum_of_weights = sum_of_weights(weighted_items)
-
-      # initial probability
-      probability = 0.0
-
-      weights = weighted_items.map { |w| w[:weight] }.uniq.sort
-      weights.map do |w|
-        current_probability = (w / sum_of_weights).round(3)
-        # sum the current_probability with the previous
-        probability += current_probability
-        { weight: w, probability: probability }
-      end
-    end
-
-    def get_weight(probabilities)
-      r = rand
-      probabilities.each do |p|
-        # puts "Weight: #{p[:weight]} - rand: #{r}, probability: #{p[:probability]}"
-        return p[:weight] if r < p[:probability]
-      end
-      probabilities.first[:weight]
-    end
-
-    def by_weight(items, weight)
-      # puts items
-      # puts "Item weight: #{weight}"
-      items.select { |el| el[:weight] == weight }
-    end
   end
 end
