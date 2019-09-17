@@ -90,10 +90,9 @@ module Admin::V1
     def create_generated_npc
       @character = NpcGenerator.generate_npc(
         name: character_params('NonPlayerCharacter')[:name],
-        race: character_params('NonPlayerCharacter')[:race],
-        alignment: character_params('NonPlayerCharacter')[:alignment],
+        race_id: character_params('NonPlayerCharacter')[:race_id],
         role: character_params('NonPlayerCharacter')[:role],
-        user_id: current_user.id,
+        alignment: character_params('NonPlayerCharacter')[:alignment],
         min_score: character_params('NonPlayerCharacter')[:min_score],
         campaign_id: @campaign.id,
         character_classes_attributes: character_params('NonPlayerCharacter')[:character_classes_attributes]

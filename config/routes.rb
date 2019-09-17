@@ -19,10 +19,10 @@ Rails.application.routes.draw do
         resources :player_characters, param: :slug, controller: 'characters', type: 'PlayerCharacter'
         # noinspection RailsParamDefResolve
         resources :non_player_characters, param: :slug, controller: 'characters', type: 'NonPlayerCharacter'
+        get '/characters/new/generate_npc', to: 'characters#generate_npc', as: 'generate_npc'
+        post '/characters/create_generated_npc', to: 'characters#create_generated_npc',
+             as: 'create_generated_npc'
       end
-      get '/characters/new/generate_npc', to: 'characters#generate_npc', as: 'generate_npc'
-      post '/characters/create_generated_npc', to: 'characters#create_generated_npc',
-           as: 'create_generated_npc'
       get '/random_fantasy_name', to: 'characters#random_fantasy_name',
           as: 'random_fantasy_name',
           constraints: { format: 'json' }

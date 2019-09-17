@@ -9,7 +9,7 @@
 </nav>
 <div class="container">
   <h1>Generate NPC</h1>
-  <%= simple_form_for [:v1, @character], url: v1_create_generated_npc_path, method: :post, validate: true do |form| %>
+  <%= simple_form_for [:v1, @character], url: v1_campaign_create_generated_npc_path(@campaign), method: :post, validate: true do |form| %>
     <%= form.error_notification %>
     <%= form.error_notification message: form.object.errors[:base].to_sentence if form.object.errors[:base].present? %>
     <% @character.errors.full_messages.each do |msg| %><h4><%= msg %></h4><% end %>
@@ -26,11 +26,7 @@
           <%= form.input :role, hint: 'Villain, Lord, Vendor, etc.' %>
         </div>
       </div>
-      <%= form.association :campaigns,
-        collection: current_user.campaigns,
-        include_blank: false,
-        include_hidden: false %>
-      <%= form.hidden_field :user, value: form.object.user || current_user %>
+      <%= form.hidden_field :campaign_id, value: @campaign.id %>
       <%= form.hidden_field :type, value: 'NonPlayerCharacter' %>
 
       <h2>Info</h2>
@@ -42,10 +38,11 @@
             include_hidden: false %>
         </div>
         <div class="col">
-          <%= form.input :race,
-            collection: DndRules.player_races,
-            include_blank: false,
-            include_hidden: false %>
+          <%= form.input :race_id,
+                         label: 'Race',
+                         collection: Race.all,
+                         include_blank: false,
+                         include_hidden: false %>
         </div>
       </div>
 

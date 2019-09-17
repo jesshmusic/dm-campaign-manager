@@ -2,40 +2,23 @@
 
 class NpcGenerator
   class << self
-    def test_generate_npc(level = nil, dnd_class = nil)
-      campaign = Campaign.first
-      user = User.find_by(username: 'jesshdm')
-      random_name = NameGen.random_name(%w[male female].sample)
-      random_class = dnd_class || DndClass.all.sample
-      random_level = level.nil? ? rand(6..15) : level
-      puts "Creating NPC #{random_name}, level #{random_level} #{random_class}"
-      puts DndRules.xp_for_cr('1/4')
-      random_race = DndRules.random_race
-      test_npc = generate_npc(
-        random_name, random_class, random_race,
-        DndRules.random_alignment, random_level, 'Test NPC',
-        user, campaign, 14
-      )
-      if test_npc.save
-        puts "Generated test NPC: #{test_npc.name}, level #{test_npc.level} #{test_npc.race} #{test_npc.dnd_class_string}"
-      else
-        puts test_npc.errors
-      end
-    end
 
     def generate_npc(npc_attributes)
       @new_npc = NonPlayerCharacter.create(name: npc_attributes[:name],
-                                           race: npc_attributes[:race],
+                                           race_id: npc_attributes[:race_id],
                                            role: npc_attributes[:role],
-                                           user_id: npc_attributes[:user_id],
                                            alignment: npc_attributes[:alignment],
-                                           campaign_ids: npc_attributes[:campaign_ids],
+                                           campaign_id: npc_attributes[:campaign_id],
                                            character_classes_attributes: npc_attributes[:character_classes_attributes])
 
       generate_ability_scores(npc_attributes[:min_score])
       set_statistics
-      add_armor
-      add_weapon
+      rand(1..3).times do
+        add_armor
+      end
+      rand(1..5).times do
+        add_weapon
+      end
       add_skills
       add_spells
       add_treasure
@@ -67,17 +50,17 @@ class NpcGenerator
       highest_score = [ability_scores.delete_at(ability_scores.index(ability_scores.max)), min_score_calc].max
       case ability
       when 'Strength'
-        @new_npc.strength = DndRules.get_strength_for_race(highest_score, @new_npc.race)
+        @new_npc.strength = highest_score + @new_npc.race.strength_modifier
       when 'Dexterity'
-        @new_npc.dexterity = DndRules.get_dexterity_for_race(highest_score, @new_npc.race)
+        @new_npc.dexterity = highest_score + @new_npc.race.dexterity_modifier
       when 'Constitution'
-        @new_npc.constitution = DndRules.get_constitution_for_race(highest_score, @new_npc.race)
+        @new_npc.constitution = highest_score + @new_npc.race.constitution_modifier
       when 'Intelligence'
-        @new_npc.intelligence = DndRules.get_intelligence_for_race(highest_score, @new_npc.race)
+        @new_npc.intelligence = highest_score + @new_npc.race.intelligence_modifier
       when 'Wisdom'
-        @new_npc.wisdom = DndRules.get_wisdom_for_race(highest_score, @new_npc.race)
+        @new_npc.wisdom = highest_score + @new_npc.race.wisdom_modifier
       when 'Charisma'
-        @new_npc.charisma = DndRules.get_charisma_for_race(highest_score, @new_npc.race)
+        @new_npc.charisma = highest_score + @new_npc.race.charisma_modifier
       end
     end
 
@@ -110,6 +93,9 @@ class NpcGenerator
       @new_npc.character_classes.each do |ch|
         ch.setup_spell_scores(@new_npc)
       end
+
+      @new_npc.armor_class = 10 + DndRules.ability_score_modifier(@new_npc.dexterity)
+      @new_npc.speed = @new_npc.race.speed
     end
 
     # Armor
@@ -126,19 +112,10 @@ class NpcGenerator
         armor = DndRules.get_weighted_random_record(armor_choices)
         @new_npc.character_items.create(
           quantity: 1,
-          equipped: true,
+          equipped: false,
           carrying: true,
           item: armor
         )
-        @new_npc.armor_class = if armor.armor_class
-                                 if armor.armor_dex_bonus
-                                   armor.armor_class + DndRules.ability_score_modifier(@new_npc.dexterity)
-                                 else
-                                   armor.armor_class
-                                 end
-                               else
-                                 10 + DndRules.ability_score_modifier(@new_npc.dexterity)
-                               end
       end
     end
 
@@ -187,27 +164,10 @@ class NpcGenerator
         weapon = DndRules.get_weighted_random_record(weapon_choices)
         @new_npc.character_items.create(
           quantity: 1,
-          equipped: true,
+          equipped: false,
           carrying: true,
           item: weapon
         )
-        attack_action = CharacterAction.create(
-          name: weapon.name,
-          description: weapon.description
-        )
-        if weapon.weapon_2h_damage_type
-          attack_action.damage_dice = "1h: #{weapon.weapon_damage_dice_count}d#{weapon.weapon_damage_dice_value} #{weapon.weapon_damage_type}, 2h: #{weapon.weapon_2h_damage_dice_count}d#{weapon.weapon_2h_damage_dice_value} #{weapon.weapon_2h_damage_type}"
-        else
-          attack_action.damage_dice = "1h: #{weapon.weapon_damage_dice_count}d#{weapon.weapon_damage_dice_value} #{weapon.weapon_damage_type}"
-        end
-        if weapon.weapon_range.include? 'Ranged'
-          attack_action.attack_bonus = DndRules.ability_score_modifier(@new_npc.dexterity) + @new_npc.proficiency
-          attack_action.damage_bonus = DndRules.ability_score_modifier(@new_npc.dexterity) + @new_npc.proficiency
-        else
-          attack_action.attack_bonus = DndRules.ability_score_modifier(@new_npc.strength) + @new_npc.proficiency
-          attack_action.damage_bonus = DndRules.ability_score_modifier(@new_npc.strength) + @new_npc.proficiency
-        end
-        @new_npc.character_actions << attack_action
       end
     end
 
@@ -235,7 +195,7 @@ class NpcGenerator
       weapon_choices
     end
 
-    def get_weight_for_magic_item(rarity = nil, default_weight = 500)
+    def get_weight_for_magic_item(rarity = nil, default_weight = 5000)
       case rarity
       when 'common'
         3 * @new_npc.total_level

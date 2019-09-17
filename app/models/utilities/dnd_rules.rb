@@ -288,12 +288,17 @@ class DndRules
         max_damage += action.damage_bonus if action.damage_bonus
         damage_maximums << max_damage
       end
-      damage_max_total = damage_maximums.inject(0, &:+)
-      damage_per_round = (damage_max_total.to_f / npc_actions_count).ceil
-      damage_cr = cr_for_damage(damage_per_round)
-      attack_bonus_total = attack_bonuses.inject(0, &:+)
-      attack_bonus_avg = (attack_bonus_total.to_f / npc_actions_count).ceil
-      attack_bonus_cr = cr_for_attack_bonus(attack_bonus_avg)
+      if damage_maximums.count.positive? && npc_actions_count.positive?
+        damage_max_total = damage_maximums.inject(0, &:+)
+        damage_per_round = (damage_max_total.to_f / npc_actions_count).ceil
+        damage_cr = cr_for_damage(damage_per_round)
+        attack_bonus_total = attack_bonuses.inject(0, &:+)
+        attack_bonus_avg = (attack_bonus_total.to_f / npc_actions_count).ceil
+        attack_bonus_cr = cr_for_attack_bonus(attack_bonus_avg)
+      else
+        damage_cr = cr_for_damage(0)
+        attack_bonus_cr = cr_for_attack_bonus(0)
+      end
       spell_save_dc = 0
       npc.character_classes.each do |character_class|
         spell_save_dc = character_class.spell_save_dc if character_class.spell_save_dc > spell_save_dc
@@ -446,100 +451,6 @@ class DndRules
         16 => 3, 17 => 3, 18 => 4, 19 => 4, 20 => 5, 21 => 5, 22 => 6, 23 => 6,
         24 => 7, 25 => 7, 26 => 8, 27 => 8, 28 => 9, 29 => 9, 30 => 10, 31 => 10
       }[ability_score]
-    end
-
-    def get_strength_for_race(score, race)
-      case race.parameterize
-      when 'Human'
-        score + 1
-      when 'Mountain Dwarf'
-        score + 2
-      when 'Dragonborn'
-        score + 2
-      when 'Half-orc'
-        score + 2
-      else
-        score
-      end
-    end
-
-    def get_dexterity_for_race(score, race)
-      case race.parameterize
-      when 'Human'
-        score + 1
-      when 'Elf', 'High Elf', 'Wood Elf'
-        score + 2
-      when 'Forest Gnome'
-        score + 1
-      when 'Halfling', 'Stout Halfling', 'Lightfoot Halfling'
-        score + 2
-      else
-        score
-      end
-    end
-
-    def get_constitution_for_race(score, race)
-      case race.parameterize
-      when 'Human'
-        score + 1
-      when 'Dwarf', 'Mountain Dwarf', 'Hill Dwarf'
-        score + 2
-      when 'Stout Halfling'
-        score + 1
-      when 'Half-orc'
-        score + 1
-      when 'Rock Gnome'
-        score + 1
-      else
-        score
-      end
-    end
-
-    def get_intelligence_for_race(score, race)
-      case race.parameterize
-      when 'Human'
-        score + 1
-      when 'High Elf'
-        score + 1
-      when 'Gnome', 'Rock Gnome', 'Forest Gnome'
-        score + 2
-      when 'Tiefling'
-        score + 1
-      else
-        score
-      end
-    end
-
-    def get_wisdom_for_race(score, race)
-      case race.parameterize
-      when 'Human'
-        score + 1
-      when 'Hill Dwarf'
-        score + 1
-      when 'Wood Elf'
-        score + 1
-      else
-        score
-      end
-    end
-
-    def get_charisma_for_race(score, race)
-      case race.parameterize
-      when 'Human'
-        score + 1
-      when 'Drow'
-        score + 1
-      when 'Half-elf'
-        score + 2
-      when 'Dragonborn'
-        score + 1
-      when 'Lightfoot Halfling'
-        score + 1
-      when 'Tiefling'
-        score + 2
-      else
-        score
-      end
     end
 
     # Skills

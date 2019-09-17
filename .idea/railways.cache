@@ -70,6 +70,8 @@ edit_v1_campaign_non_player_character GET    /v1/campaigns/:campaign_slug/non_pl
                                       PATCH  /v1/campaigns/:campaign_slug/non_player_characters/:slug(.:format)                       admin/v1/characters#update {:type=>"NonPlayerCharacter"}
                                       PUT    /v1/campaigns/:campaign_slug/non_player_characters/:slug(.:format)                       admin/v1/characters#update {:type=>"NonPlayerCharacter"}
                                       DELETE /v1/campaigns/:campaign_slug/non_player_characters/:slug(.:format)                       admin/v1/characters#destroy {:type=>"NonPlayerCharacter"}
+             v1_campaign_generate_npc GET    /v1/campaigns/:campaign_slug/characters/new/generate_npc(.:format)                       admin/v1/characters#generate_npc
+     v1_campaign_create_generated_npc POST   /v1/campaigns/:campaign_slug/characters/create_generated_npc(.:format)                   admin/v1/characters#create_generated_npc
                          v1_campaigns GET    /v1/campaigns(.:format)                                                                  admin/v1/campaigns#index
                                       POST   /v1/campaigns(.:format)                                                                  admin/v1/campaigns#create
                       new_v1_campaign GET    /v1/campaigns/new(.:format)                                                              admin/v1/campaigns#new
@@ -78,8 +80,6 @@ edit_v1_campaign_non_player_character GET    /v1/campaigns/:campaign_slug/non_pl
                                       PATCH  /v1/campaigns/:slug(.:format)                                                            admin/v1/campaigns#update
                                       PUT    /v1/campaigns/:slug(.:format)                                                            admin/v1/campaigns#update
                                       DELETE /v1/campaigns/:slug(.:format)                                                            admin/v1/campaigns#destroy
-                      v1_generate_npc GET    /v1/characters/new/generate_npc(.:format)                                                admin/v1/characters#generate_npc
-              v1_create_generated_npc POST   /v1/characters/create_generated_npc(.:format)                                            admin/v1/characters#create_generated_npc
                v1_random_fantasy_name GET    /v1/random_fantasy_name(.:format)                                                        admin/v1/characters#random_fantasy_name {:format=>"json"}
         v1_random_individual_treasure GET    /v1/random_individual_treasure(.:format)                                                 admin/v1/encounters#random_individual_treasure {:format=>"json"}
                        v1_dnd_classes GET    /v1/dnd_classes(.:format)                                                                admin/v1/dnd_classes#index
