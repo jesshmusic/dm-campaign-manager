@@ -77,7 +77,7 @@ class Character < ApplicationRecord
     self.armor_class = calculate_armor_class(has_shield)
     character_actions.delete_all
     create_attack_action(weapon_rh) if weapon_rh_id && !weapon_2h_id
-    create_attack_action(weapon_lh) if weapon_lh_id && !has_shield
+    create_attack_action(weapon_lh, true) if weapon_lh_id && !has_shield
     create_attack_action(weapon_2h) if weapon_2h_id
   end
 
@@ -146,6 +146,19 @@ class Character < ApplicationRecord
 
   def weapon_2h
     WeaponItem.find(weapon_2h_id) unless weapon_2h_id.nil?
+  end
+
+  def armors
+    character_items.includes(:item).where(items: {type: 'ArmorItem'})
+  end
+
+  def one_handed_weapons
+    character_items.includes(:item).where(items: {type: 'WeaponItem'})
+  end
+
+  def two_handed_weapons
+    weapons = character_items.includes(:item).where(items: {type: 'WeaponItem'})
+    weapons.where("'Two-Handed' = ANY (weapon_properties)")
   end
 
   def cantrips
@@ -225,7 +238,7 @@ class Character < ApplicationRecord
     end
   end
 
-  def create_attack_action(weapon)
+  def create_attack_action(weapon, is_offhand = false)
     attack_action = CharacterAction.create(
       name: weapon.name,
       description: weapon.description
@@ -233,6 +246,9 @@ class Character < ApplicationRecord
     if weapon.weapon_range.include? 'Ranged'
       attack_action.attack_bonus = DndRules.ability_score_modifier(dexterity) + proficiency + weapon.weapon_attack_bonus
       attack_action.damage_bonus = DndRules.ability_score_modifier(dexterity) + weapon.weapon_damage_bonus
+    elsif is_offhand
+      attack_action.attack_bonus = DndRules.ability_score_modifier(strength) + proficiency + weapon.weapon_attack_bonus
+      attack_action.damage_bonus = weapon.weapon_damage_bonus
     else
       attack_action.attack_bonus = DndRules.ability_score_modifier(strength) + proficiency + weapon.weapon_attack_bonus
       attack_action.damage_bonus = DndRules.ability_score_modifier(strength) + weapon.weapon_damage_bonus

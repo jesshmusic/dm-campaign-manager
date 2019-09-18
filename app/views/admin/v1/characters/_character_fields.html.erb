@@ -189,6 +189,36 @@
   </div>
 </div>
 
+<h2>Armor and Weapons</h2>
+<div class="form-row">
+  <%= form.input :armor_id,
+                 label: 'Armor',
+                 collection: @character.armors.map { |item| [item.item.name, item.item.id] },
+                 include_blank: true,
+                 include_hidden: false %>
+</div>
+<div class="form-row">
+  <%= form.input :weapon_rh_id,
+                 label: 'Weapon - main hand',
+                 collection: @character.one_handed_weapons.map { |item| [item.item.name, item.item.id] },
+                 include_blank: true,
+                 include_hidden: false %>
+</div>
+<div class="form-row">
+  <%= form.input :weapon_lh_id,
+                 label: 'Weapon - off hand',
+                 collection: @character.one_handed_weapons.map { |item| [item.item.name, item.item.id] },
+                 include_blank: true,
+                 include_hidden: false %>
+</div>
+<div class="form-row">
+  <%= form.input :weapon_2h_id,
+                 label: 'Weapon - Two-hand',
+                 collection: @character.two_handed_weapons.map { |item| [item.item.name, item.item.id] },
+                 include_blank: true,
+                 include_hidden: false %>
+</div>
+
 <h2>Inventory</h2>
 <div class="form-row">
   <div class="col">
