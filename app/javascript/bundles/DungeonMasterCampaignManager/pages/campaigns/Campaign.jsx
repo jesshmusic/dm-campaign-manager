@@ -83,6 +83,7 @@ class Campaign extends React.Component {
                   <h3>Non-player Characters</h3>
                   <CharactersList campaign={campaign} characters={campaign.npcs} small/>
                   <Link to={`/app/campaigns/${campaign.slug}/npcs/new`} className={'btn btn-success btn-block'}>New NPC</Link>
+                  <Link to={`/app/campaigns/${campaign.slug}/npcs/generate/`} className={'btn btn-secondary btn-block'}>Quick NPC</Link>
                 </div>
               </Col>
             </Row>

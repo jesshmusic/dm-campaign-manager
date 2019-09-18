@@ -56,6 +56,19 @@ export default reduxApi({
       navigate(`/app/characters/${data.slug}`);
     }],
   },
+  generateNonPlayerCharacter: {
+    url: '/v1/campaigns/:campaign_slug/characters/create_generated_npc',
+    options () {
+      const headers = getHeaders();
+      return {
+        method: 'post',
+        headers,
+      };
+    },
+    postfetch: [({data}) => {
+      navigate(`/app/characters/${data.slug}`);
+    }],
+  },
   getNonPlayerCharacter: {
     url: '/v1/campaigns/:campaign_slug/non_player_characters/:slug.json',
   },

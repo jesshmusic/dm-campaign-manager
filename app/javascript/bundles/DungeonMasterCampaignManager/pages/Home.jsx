@@ -25,6 +25,7 @@ import PlayerCharacter from './characters/PlayerCharacter';
 import NonPlayerCharacter from './characters/NonPlayerCharacter';
 import PlayerCharacterEditor from './characters/PlayerCharacterEditor';
 import NonPlayerCharacterEditor from './characters/NonPlayerCharacterEditor';
+import GenerateNPC from './characters/GenerateNPC';
 
 const store = (props) => configureStore({
   reducer: rootReducer,
@@ -87,6 +88,7 @@ const Home = (props) => (
       <PlayerCharacterEditor path='/app/campaigns/:campaignSlug/pcs/new' />
       <NonPlayerCharacterEditor path='/app/campaigns/:campaignSlug/npcs/:npcSlug/edit'/>
       <NonPlayerCharacterEditor path='/app/campaigns/:campaignSlug/npcs/new' />
+      <GenerateNPC path='/app/campaigns/:campaignSlug/npcs/generate' />
       <DndClass path='/app/classes/:dndClassSlug' />
       <DndClasses path='/app/classes' />
       <Items path='/app/items' />

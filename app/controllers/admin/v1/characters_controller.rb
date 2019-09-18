@@ -108,7 +108,7 @@ module Admin::V1
                             v1_campaign_character_path(@campaign, @character)
                           end
           format.html { redirect_to redirect_path, notice: 'NPC was successfully created.' }
-          format.json { render :show, status: :created, location: @character }
+          format.json { render :show, status: :created }
         else
           format.html { render :new }
           format.json { render json: @character.errors, status: :unprocessable_entity }

@@ -85,7 +85,7 @@ class CharacterEditor extends React.Component {
   };
 
   render () {
-    const { classOptions, character, validated } = this.state;
+    const { character, validated } = this.state;
     return (
       <FinalForm onSubmit={this.handleSubmit}
                  initialValues={character}
@@ -134,8 +134,7 @@ class CharacterEditor extends React.Component {
                                  <CharacterClassFields characterClass={characterClass}
                                                        fields={fields}
                                                        index={index}
-                                                       key={index}
-                                                       classOptions={classOptions}/>
+                                                       key={index}/>
                                ) : null))
                            }
                          </FieldArray>

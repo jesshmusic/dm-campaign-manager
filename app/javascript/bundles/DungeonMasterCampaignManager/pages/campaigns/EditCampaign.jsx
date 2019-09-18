@@ -106,8 +106,8 @@ function mapDispatchToProps (dispatch) {
     getCampaign: (campaignSlug) => {
       dispatch(rest.actions.getCampaign({slug: campaignSlug}));
     },
-    updateCampaign: (campaign, campaginSlug) => {
-      dispatch(rest.actions.updateCampaign({slug: campaginSlug}, {body: JSON.stringify({campaign})}));
+    updateCampaign: (campaign, campaignSlug) => {
+      dispatch(rest.actions.updateCampaign({slug: campaignSlug}, {body: JSON.stringify({campaign})}));
     },
   };
 }
