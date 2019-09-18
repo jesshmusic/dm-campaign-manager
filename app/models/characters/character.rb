@@ -73,6 +73,12 @@ class Character < ApplicationRecord
       character_spell.spell_class = dnd_class_first if character_spell.spell_class.nil?
       character_spell.save!
     end
+    has_shield = shield_id && !weapon_2h_id
+    self.armor_class = calculate_armor_class(has_shield)
+    character_actions.delete_all
+    create_attack_action(weapon_rh) if weapon_rh_id && !weapon_2h_id
+    create_attack_action(weapon_lh) if weapon_lh_id && !has_shield
+    create_attack_action(weapon_2h) if weapon_2h_id
   end
 
   attribute :min_score, :integer
@@ -197,5 +203,54 @@ class Character < ApplicationRecord
 
   def generate_slug
     self.slug = Character.exists?(name.parameterize) ? "#{name.parameterize}-#{id}" : name.parameterize
+  end
+
+  def calculate_armor_class(has_shield)
+    if armor_id && has_shield
+      if armor.armor_dex_bonus
+        armor.armor_class + armor.armor_class_bonus + DndRules.ability_score_modifier(dexterity) + shield.armor_class_bonus
+      else
+        armor.armor_class + armor.armor_class_bonus + shield.armor_class_bonus
+      end
+    elsif armor_id
+      if armor.armor_dex_bonus
+        armor.armor_class + armor.armor_class_bonus + DndRules.ability_score_modifier(dexterity)
+      else
+        armor.armor_class + armor.armor_class_bonus
+      end
+    elsif has_shield
+      10 + DndRules.ability_score_modifier(dexterity) + shield.armor_class_bonus
+    else
+      10 + DndRules.ability_score_modifier(dexterity)
+    end
+  end
+
+  def create_attack_action(weapon)
+    attack_action = CharacterAction.create(
+      name: weapon.name,
+      description: weapon.description
+    )
+    if weapon.weapon_range.include? 'Ranged'
+      attack_action.attack_bonus = DndRules.ability_score_modifier(dexterity) + proficiency + weapon.weapon_attack_bonus
+      attack_action.damage_bonus = DndRules.ability_score_modifier(dexterity) + weapon.weapon_damage_bonus
+    else
+      attack_action.attack_bonus = DndRules.ability_score_modifier(strength) + proficiency + weapon.weapon_attack_bonus
+      attack_action.damage_bonus = DndRules.ability_score_modifier(strength) + weapon.weapon_damage_bonus
+    end
+    if weapon.weapon_2h_damage_type
+      weapon_2h_damage = "2h: #{weapon.weapon_2h_damage_dice_count}d#{weapon.weapon_2h_damage_dice_value} #{weapon.weapon_2h_damage_type}"
+      weapon_1h_damage = "1h: #{weapon.weapon_damage_dice_count}d#{weapon.weapon_damage_dice_value} #{weapon.weapon_damage_type}"
+      weapon_2h_damage += " + #{attack_action.damage_bonus}" if attack_action.damage_bonus&.positive?
+      weapon_1h_damage += " + #{attack_action.damage_bonus}" if attack_action.damage_bonus&.positive?
+      weapon_2h_damage += " - #{attack_action.damage_bonus}" if attack_action.damage_bonus&.negative?
+      weapon_1h_damage += " - #{attack_action.damage_bonus}" if attack_action.damage_bonus&.negative?
+      attack_action.damage_dice = "#{weapon_1h_damage}, #{weapon_2h_damage}"
+    else
+      weapon_damage = "#{weapon.weapon_damage_dice_count}d#{weapon.weapon_damage_dice_value} #{weapon.weapon_damage_type}"
+      weapon_damage += " + #{attack_action.damage_bonus}" if attack_action.damage_bonus&.positive?
+      weapon_damage += " - #{attack_action.damage_bonus}" if attack_action.damage_bonus&.negative?
+      attack_action.damage_dice = "#{weapon_damage}"
+    end
+    character_actions << attack_action
   end
 end

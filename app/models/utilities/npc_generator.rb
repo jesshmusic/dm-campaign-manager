@@ -18,9 +18,11 @@ class NpcGenerator
         armor_ids << add_armor(armor_ids)
       end
       weapon_ids = []
-      rand(1..5).times do
+      rand(2..5).times do
         weapon_ids << add_weapon(weapon_ids)
       end
+      equip_armor
+      equip_weapon
       add_skills
       add_spells
       add_treasure
@@ -226,17 +228,48 @@ class NpcGenerator
     def get_weight_for_magic_item(rarity = nil, default_weight = 200)
       case rarity
       when 'common'
-        3 * @new_npc.total_level
+        (1.5 * @new_npc.total_level).ceil
       when 'uncommon'
-        2 * @new_npc.total_level
+        (@new_npc.total_level).ceil
       when 'rare', 'very rare'
-        @new_npc.total_level
+        (0.5 * @new_npc.total_level).ceil
       when 'legendary', 'artifact'
         1
       else
         default_weight
       end
     end
+
+    # Equipped Items
+
+    def equip_armor
+      armors = @new_npc.character_items.includes(:item).where(items: {type: 'ArmorItem'})
+      max_ac = -1
+      armors.each do |armor|
+        if armor.item.armor_class > max_ac
+          @new_npc.armor_id = armor.item.id
+          max_ac = armor.item.armor_class
+        end
+      end
+    end
+
+    def equip_weapon
+      weapons = @new_npc.character_items.includes(:item).where(items: {type: 'WeaponItem'})
+      max_dam = -1
+      weapons.each do |weapon_item|
+        weapon = weapon_item.item
+        next unless weapon.weapon_damage_dice_count * weapon.weapon_damage_dice_value > max_dam
+
+        if weapon.weapon_properties.include?('Two-Handed')
+          @new_npc.weapon_2h_id = weapon.id
+        else
+          @new_npc.weapon_rh_id = weapon.id
+        end
+        max_dam = weapon.weapon_damage_dice_count * weapon.weapon_damage_dice_value
+      end
+    end
+
+    # Skills
 
     def add_skills
       proficiency_choices = []
@@ -274,6 +307,8 @@ class NpcGenerator
         end
       end
     end
+
+    # Spells
 
     def add_spells
       spell_slots = []

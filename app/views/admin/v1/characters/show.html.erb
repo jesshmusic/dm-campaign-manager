@@ -67,7 +67,7 @@
         <h3>Statistics</h3>
         <ul class="list-group list-group-flush">
           <li class="list-group-item">
-            <strong>Armor Class</strong> <%= @character.armor_class %>
+            <strong>Armor Class</strong> <%= @character.armor_class %> (<%= @character.armor.name %>)
           </li>
           <li class="list-group-item">
             <strong>Initiative</strong> <%= '+' if @character.initiative > 0 %><%= @character.initiative %>
@@ -112,27 +112,27 @@
         <div class="row d-flex align-items-center ">
           <div class="col-4 col-sm-2 text-center">
             <h4>STR</h4>
-            <p class="lead"><%= @character.strength %></p>
+            <p class="lead"><%= @character.strength %> (<%= DndRules.ability_score_modifier(@character.strength).positive? ? "+#{DndRules.ability_score_modifier(@character.strength)}" : DndRules.ability_score_modifier(@character.strength) %>)</p>
           </div>
           <div class="col-4 col-sm-2 text-center">
             <h4>DEX</h4>
-            <p class="lead"><%= @character.dexterity %></p>
+            <p class="lead"><%= @character.dexterity %> (<%= DndRules.ability_score_modifier(@character.dexterity).positive? ? "+#{DndRules.ability_score_modifier(@character.dexterity)}" : DndRules.ability_score_modifier(@character.dexterity) %>)</p>
           </div>
           <div class="col-4 col-sm-2 text-center">
             <h4>CON</h4>
-            <p class="lead"><%= @character.constitution %></p>
+            <p class="lead"><%= @character.constitution %> (<%= DndRules.ability_score_modifier(@character.constitution).positive? ? "+#{DndRules.ability_score_modifier(@character.constitution)}" : DndRules.ability_score_modifier(@character.constitution) %>)</p>
           </div>
           <div class="col-4 col-sm-2 text-center">
             <h4>INT</h4>
-            <p class="lead"><%= @character.intelligence %></p>
+            <p class="lead"><%= @character.intelligence %> (<%= DndRules.ability_score_modifier(@character.intelligence).positive? ? "+#{DndRules.ability_score_modifier(@character.intelligence)}" : DndRules.ability_score_modifier(@character.intelligence) %>)</p>
           </div>
           <div class="col-4 col-sm-2 text-center">
             <h4>WIS</h4>
-            <p class="lead"><%= @character.wisdom %></p>
+            <p class="lead"><%= @character.wisdom %> (<%= DndRules.ability_score_modifier(@character.wisdom).positive? ? "+#{DndRules.ability_score_modifier(@character.wisdom)}" : DndRules.ability_score_modifier(@character.wisdom) %>)</p>
           </div>
           <div class="col-4 col-sm-2 text-center">
             <h4>CHA</h4>
-            <p class="lead"><%= @character.charisma %></p>
+            <p class="lead"><%= @character.charisma %> (<%= DndRules.ability_score_modifier(@character.charisma).positive? ? "+#{DndRules.ability_score_modifier(@character.charisma)}" : DndRules.ability_score_modifier(@character.charisma) %>)</p>
           </div>
         </div>
       </div>
