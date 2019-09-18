@@ -4,6 +4,10 @@ export const filterOptions = (results) => results.map((nextItem) => (
   {value: nextItem.id, label: nextItem.name}
 ));
 
+export const filterOptionsWithData = (results) => results.map((nextItem) => (
+  {value: nextItem.id, label: nextItem.name, data: nextItem}
+));
+
 const AbilityScoreModifier = (abilityScore) => {
   const mods = {
     1: -5, 2: -4, 3: -4, 4: -3, 5: -3, 6: -2, 7: -2,

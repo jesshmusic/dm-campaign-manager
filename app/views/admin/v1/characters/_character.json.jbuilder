@@ -258,9 +258,34 @@ json.actions character.character_actions do |action|
 end
 
 json.inventory character.character_items do |character_item|
-  json.name character_item.item.name
-  json.quantity character_item.quantity
-  json.equipped character_item.equipped
-  json.carrying character_item.carrying
-  json.partial! 'admin/v1/items/item_summary', item: character_item.item
+  if character_item.item.type != 'ArmorItem' && character_item.item.type != 'WeaponItem'
+    json.name character_item.item.name
+    json.quantity character_item.quantity
+    json.equipped character_item.equipped
+    json.carrying character_item.carrying
+    json.partial! 'admin/v1/items/item_summary', item: character_item.item
+  end
+end
+
+json.armors character.armors do |armor|
+  json.extract! armor.item, :id, :name, :category, :sub_category, :cost_unit, :cost_value, :description, :weight, :type
+  json.extract! armor.item, :armor_class, :armor_dex_bonus,
+                :armor_max_bonus, :armor_stealth_disadvantage, :armor_str_minimum,
+                :armor_class_bonus
+end
+
+json.one_handed_weapons character.one_handed_weapons do |one_handed_weapon|
+  json.extract! one_handed_weapon.item, :id, :name, :category, :sub_category, :cost_unit, :cost_value, :description, :weight, :type
+  json.extract! one_handed_weapon.item, :category_range, :weapon_2h_damage_dice_count, :weapon_2h_damage_dice_value,
+                :weapon_2h_damage_type, :weapon_damage_dice_count, :weapon_damage_dice_value, :weapon_damage_type,
+                :weapon_properties, :weapon_range, :weapon_range_long, :weapon_range_normal, :weapon_thrown_range_long,
+                :weapon_thrown_range_normal, :weapon_attack_bonus, :weapon_damage_bonus
+end
+
+json.two_handed_weapons character.two_handed_weapons do |two_handed_weapon|
+  json.extract! two_handed_weapon.item, :id, :name, :category, :sub_category, :cost_unit, :cost_value, :description, :weight, :type
+  json.extract! two_handed_weapon.item, :category_range, :weapon_2h_damage_dice_count, :weapon_2h_damage_dice_value,
+                :weapon_2h_damage_type, :weapon_damage_dice_count, :weapon_damage_dice_value, :weapon_damage_type,
+                :weapon_properties, :weapon_range, :weapon_range_long, :weapon_range_normal, :weapon_thrown_range_long,
+                :weapon_thrown_range_normal, :weapon_attack_bonus, :weapon_damage_bonus
 end

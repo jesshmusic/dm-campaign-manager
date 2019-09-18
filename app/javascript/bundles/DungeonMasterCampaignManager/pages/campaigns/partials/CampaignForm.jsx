@@ -44,7 +44,7 @@ const CampaignForm = ({arrayMutators, initialValues, onFormSubmit, submitButtonT
                    <FormTextArea label={'Description'} colWidth={'12'} name={'description'}/>
                  </Form.Row>
                  <Form.Row className={'my-4 py-4 border-top'}>
-                   <Col xs={12} lg={6}>
+                   <Col>
                      <h2>World Locations</h2>
                      <FieldArray name="worldLocations">
                        {({ fields }) =>
@@ -59,7 +59,9 @@ const CampaignForm = ({arrayMutators, initialValues, onFormSubmit, submitButtonT
                      </FieldArray>
                      <Button type="button" onClick={() => push('worldLocations', undefined)} variant={'info'} block>Add World Location</Button>
                    </Col>
-                   <Col xs={12} lg={6}>
+                 </Form.Row>
+                 <Form.Row className={'my-4 py-4 border-top'}>
+                   <Col>
                      <h2>World Events</h2>
                      <FieldArray name="worldEvents">
                        {({ fields }) =>

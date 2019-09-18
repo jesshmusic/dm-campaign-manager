@@ -15,7 +15,7 @@ elsif item.type == 'WeaponItem'
   json.extract! item, :category_range, :weapon_2h_damage_dice_count, :weapon_2h_damage_dice_value,
                 :weapon_2h_damage_type, :weapon_damage_dice_count, :weapon_damage_dice_value, :weapon_damage_type,
                 :weapon_properties, :weapon_range, :weapon_range_long, :weapon_range_normal, :weapon_thrown_range_long,
-                :weapon_thrown_range_normal, :weapon_attack_bonus, :weapon_damange_bonus
+                :weapon_thrown_range_normal, :weapon_attack_bonus, :weapon_damage_bonus
 end
 json.contained_items item.contained_items
 json.url v1_item_url(item, format: :json)
