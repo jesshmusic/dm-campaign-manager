@@ -61,6 +61,13 @@ const calculateProficiency = (totalLevel) => {
   }
 };
 
+export const WeaponState = {
+  DUAL: 'Dual Wield',
+  SHIELD: 'Main hand and shield',
+  TWOHAND: 'Two handed weapon',
+  SINGLE: 'Main hand only',
+};
+
 export const SetupCharacterState = (newChar) => {
   // Initial character state object
   const charObject = {
@@ -108,6 +115,16 @@ export const SetupCharacterState = (newChar) => {
     applyRaceMods: false,
     characterSpellsAttributes: [],
   };
+
+  if (newChar.weapon2h) {
+    charObject.weaponState = WeaponState.TWOHAND;
+  } else if (newChar.shield) {
+    charObject.weaponState = WeaponState.SHIELD;
+  } else if (newChar.weaponRh && newChar.weaponLh) {
+    charObject.weaponState = WeaponState.DUAL;
+  } else {
+    charObject.weaponState = WeaponState.SINGLE;
+  }
 
   // Set initial ability scores
   charObject.baseAbilities = {

@@ -8,16 +8,29 @@ import Col from 'react-bootstrap/Col';
 import {Field} from 'react-final-form';
 import Form from 'react-bootstrap/Form';
 
-const FormField = ({colWidth, defaultValue, infoText, label, name, readOnly, type}) => (
+const FormField = ({
+  colWidth,
+  defaultValue,
+  id,
+  infoText,
+  label,
+  name,
+  readOnly,
+  type,
+  value,
+}) => (
   <Form.Group as={Col} md={colWidth}>
-    {type === 'checkbox' ? (
-      <Field name={name} type={type}>
+    {type === 'checkbox' || type === 'radio' ? (
+      <Field name={name} type={type} value={value}>
         {({ input }) => (
           <div>
             <Form.Check
               {...input}
               type={type}
               label={label}
+              name={name}
+              value={value}
+              id={id}
             />
             {infoText ? (
               <Form.Text className="text-muted">
@@ -60,9 +73,11 @@ FormField.propTypes = {
   colWidth: PropTypes.string.isRequired,
   defaultValue: PropTypes.any,
   infoText: PropTypes.string,
+  id: PropTypes.string,
   label: PropTypes.string.isRequired,
   readOnly: PropTypes.bool,
   type: PropTypes.string.isRequired,
+  value: PropTypes.any,
 };
 
 export default FormField;

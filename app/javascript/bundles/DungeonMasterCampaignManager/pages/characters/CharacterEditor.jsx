@@ -35,6 +35,7 @@ import {
   alignmentOptions,
   SetupCharacterState,
   characterCalculations,
+  WeaponState,
 } from '../../utilities/character-utilities';
 import RaceSelect from './partials/races/RaceSelect';
 import ArmorSelect from './partials/items/ArmorSelect';
@@ -42,6 +43,7 @@ import ShieldSelect from './partials/items/ShieldSelect';
 import WeaponLHSelect from './partials/items/WeaponLHSelect';
 import WeaponRHSelect from './partials/items/WeaponRHSelect';
 import Weapon2HSelect from './partials/items/Weapon2HSelect';
+import WeaponRadios from './partials/items/WeaponRadios';
 
 
 class CharacterEditor extends React.Component {
@@ -187,12 +189,31 @@ class CharacterEditor extends React.Component {
                      <h2>Equipment</h2>
                      <h3>Armor and Weapons</h3>
                      <Form.Row>
-                       <ArmorSelect colWidth={'6'}/>
-                       <ShieldSelect colWidth={'6'}/>
-                       <WeaponLHSelect colWidth={'4'}/>
-                       <WeaponRHSelect colWidth={'4'}/>
-                       <Weapon2HSelect colWidth={'4'}/>
+                       <ArmorSelect colWidth={'12'}/>
                      </Form.Row>
+                     <WeaponRadios/>
+                     {values.weaponState === WeaponState.SINGLE ? (
+                       <Form.Row>
+                         <WeaponRHSelect colWidth={'12'}/>
+                       </Form.Row>
+                     ) : null}
+                     {values.weaponState === WeaponState.DUAL ? (
+                       <Form.Row>
+                         <WeaponRHSelect colWidth={'6'}/>
+                         <WeaponLHSelect colWidth={'6'}/>
+                       </Form.Row>
+                     ) : null}
+                     {values.weaponState === WeaponState.SHIELD ? (
+                       <Form.Row>
+                         <WeaponRHSelect colWidth={'6'}/>
+                         <ShieldSelect colWidth={'6'}/>
+                       </Form.Row>
+                     ) : null}
+                     {values.weaponState === WeaponState.TWOHAND ? (
+                       <Form.Row>
+                         <Weapon2HSelect colWidth={'12'}/>
+                       </Form.Row>
+                     ) : null}
                      <BardSpellSelect showBardSpells={values.showBardSpells}/>
                      <ClericSpellSelect showClericSpells={values.showClericSpells}/>
                      <DruidSpellSelect showDruidSpells={values.showDruidSpells}/>
