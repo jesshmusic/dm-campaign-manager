@@ -9,5 +9,3 @@ json.extract! spell, :id, :name, :higher_level, :page,
 json.description_text spell.description_text
 json.spell_classes spell.spell_classes
 json.spell_level spell.spell_level
-
-json.url v1_spell_url(spell, format: :json)

@@ -32,13 +32,13 @@ class NonPlayerCharacter extends React.Component {
                      ]}>
         {character ? (
           <div>
-            <PageTitle title={`Non-player Character: ${characterTitle}`}
+            <PageTitle title={characterTitle}
                        badge={{title: 'NPC', variant: 'secondary'}}
                        hasButton={user && character.campaign && character.campaign.userId === user.id}
                        buttonLink={`/app/campaigns/${campaignSlug}/npcs/${character.slug}/edit`}
                        buttonTitle={'Edit NPC'}
                        buttonVariant={'primary'}/>
-            <CharacterBody character={character}/>
+            <CharacterBody character={character} isNPC={true}/>
           </div>
         ) : <DndSpinner/>}
       </PageContainer>

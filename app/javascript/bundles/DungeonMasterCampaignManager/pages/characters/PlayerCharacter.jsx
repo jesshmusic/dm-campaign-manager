@@ -32,12 +32,13 @@ class PlayerCharacter extends React.Component {
                      ]}>
         {character ? (
           <div>
-            <PageTitle title={`Player Character: ${characterTitle}`}
+            <PageTitle title={characterTitle}
                        badge={{title: 'PC', variant: 'success'}}
                        hasButton={user && character.campaign && character.campaign.userId === user.id}
                        buttonLink={`/app/campaigns/${campaignSlug}/pcs/${character.slug}/edit`}
                        buttonTitle={'Edit PC'}
                        buttonVariant={'primary'}/>
+            <h2>{character.classes}</h2>
             <CharacterBody character={character}/>
           </div>
         ) : <DndSpinner/>}

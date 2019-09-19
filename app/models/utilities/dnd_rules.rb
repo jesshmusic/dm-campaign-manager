@@ -201,7 +201,7 @@ class DndRules
       when 0.5...1.1
         '1/2'
       else
-        cr.floor.to_s
+        cr.ceil.to_s
       end
     end
 

@@ -4,13 +4,18 @@ json.key_format! camelize: :lower
 
 json.extract! character, :id, :name, :alignment, :proficiency, :slug, :background,
               :copper_pieces, :description, :electrum_pieces, :gold_pieces, :languages,
-              :platinum_pieces, :role, :silver_pieces, :type, :xp, :armor_class, :armor_class_modifier, :strength,
+              :platinum_pieces, :silver_pieces, :type, :xp, :armor_class, :armor_class_modifier, :strength,
               :dexterity, :constitution, :intelligence, :wisdom, :charisma, :hit_points,
               :hit_points_current, :initiative
 
 json.total_level character.total_level
 json.hit_dice character.hit_dice
 json.classes character.classes
+
+if character.type == 'NonPlayerCharacter'
+  json.role character.role
+  json.challenge_rating character.challenge_rating
+end
 
 json.campaign do
   json.extract! character.campaign, :id, :name, :description, :world, :slug, :user_id
@@ -19,6 +24,10 @@ end
 json.race do
   json.extract! character.race, :id, :name, :speed, :strength_modifier, :dexterity_modifier,
                 :constitution_modifier, :intelligence_modifier, :wisdom_modifier, :charisma_modifier
+end
+
+json.skills character.skills do |skill|
+  json.extract! skill, :id, :name, :score
 end
 
 json.character_classes character.character_classes do |character_class|
@@ -272,6 +281,8 @@ json.armors character.armors do |armor|
   json.extract! armor.item, :armor_class, :armor_dex_bonus,
                 :armor_max_bonus, :armor_stealth_disadvantage, :armor_str_minimum,
                 :armor_class_bonus
+  json.equipped_armor armor.item.id == character.armor_id
+  json.equipped_shield armor.item.id == character.shield_id
 end
 
 json.one_handed_weapons character.one_handed_weapons do |one_handed_weapon|
@@ -280,6 +291,8 @@ json.one_handed_weapons character.one_handed_weapons do |one_handed_weapon|
                 :weapon_2h_damage_type, :weapon_damage_dice_count, :weapon_damage_dice_value, :weapon_damage_type,
                 :weapon_properties, :weapon_range, :weapon_range_long, :weapon_range_normal, :weapon_thrown_range_long,
                 :weapon_thrown_range_normal, :weapon_attack_bonus, :weapon_damage_bonus
+  json.equipped_main_hand one_handed_weapon.item.id == character.weapon_rh_id
+  json.equipped_off_hand one_handed_weapon.item.id == character.weapon_lh_id
 end
 
 json.two_handed_weapons character.two_handed_weapons do |two_handed_weapon|
@@ -288,4 +301,65 @@ json.two_handed_weapons character.two_handed_weapons do |two_handed_weapon|
                 :weapon_2h_damage_type, :weapon_damage_dice_count, :weapon_damage_dice_value, :weapon_damage_type,
                 :weapon_properties, :weapon_range, :weapon_range_long, :weapon_range_normal, :weapon_thrown_range_long,
                 :weapon_thrown_range_normal, :weapon_attack_bonus, :weapon_damage_bonus
+  json.equipped_two_hand two_handed_weapon.item.id == character.weapon_2h_id
+end
+
+if character.cantrips&.count&.positive?
+  json.cantrips character.cantrips do |cantrip|
+    json.partial! 'admin/v1/spells/spell', spell: cantrip.spell
+  end
+end
+
+if character.spells_level_1&.count&.positive?
+  json.spells_level_1 character.spells_level_1 do |spell|
+    json.partial! 'admin/v1/spells/spell', spell: spell.spell
+  end
+end
+
+if character.spells_level_2&.count&.positive?
+  json.spells_level_2 character.spells_level_2 do |spell|
+    json.partial! 'admin/v1/spells/spell', spell: spell.spell
+  end
+end
+
+if character.spells_level_3&.count&.positive?
+  json.spells_level_3 character.spells_level_3 do |spell|
+    json.partial! 'admin/v1/spells/spell', spell: spell.spell
+  end
+end
+
+if character.spells_level_4&.count&.positive?
+  json.spells_level_4 character.spells_level_4 do |spell|
+    json.partial! 'admin/v1/spells/spell', spell: spell.spell
+  end
+end
+
+if character.spells_level_5&.count&.positive?
+  json.spells_level_5 character.spells_level_5 do |spell|
+    json.partial! 'admin/v1/spells/spell', spell: spell.spell
+  end
+end
+
+if character.spells_level_6&.count&.positive?
+  json.spells_level_6 character.spells_level_6 do |spell|
+    json.partial! 'admin/v1/spells/spell', spell: spell.spell
+  end
+end
+
+if character.spells_level_7&.count&.positive?
+  json.spells_level_7 character.spells_level_7 do |spell|
+    json.partial! 'admin/v1/spells/spell', spell: spell.spell
+  end
+end
+
+if character.spells_level_8&.count&.positive?
+  json.spells_level_8 character.spells_level_8 do |spell|
+    json.partial! 'admin/v1/spells/spell', spell: spell.spell
+  end
+end
+
+if character.spells_level_9&.count&.positive?
+  json.spells_level_9 character.spells_level_9 do |spell|
+    json.partial! 'admin/v1/spells/spell', spell: spell.spell
+  end
 end
