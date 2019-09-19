@@ -56,6 +56,19 @@ export default reduxApi({
       navigate(`/app/characters/${data.slug}`);
     }],
   },
+  updateNonPlayerCharacter: {
+    url: '/v1/campaigns/:campaign_slug/non_player_characters/:slug',
+    options () {
+      const headers = getHeaders();
+      return {
+        method: 'put',
+        headers,
+      };
+    },
+    postfetch: [({data}) => {
+      navigate(`/app/characters/${data.slug}`);
+    }],
+  },
   generateNonPlayerCharacter: {
     url: '/v1/campaigns/:campaign_slug/characters/create_generated_npc',
     options () {
@@ -84,6 +97,19 @@ export default reduxApi({
       const headers = getHeaders();
       return {
         method: 'post',
+        headers,
+      };
+    },
+    postfetch: [({data}) => {
+      navigate(`/app/characters/${data.slug}`);
+    }],
+  },
+  updatePlayerCharacter: {
+    url: '/v1/campaigns/:campaign_slug/player_characters/:slug',
+    options () {
+      const headers = getHeaders();
+      return {
+        method: 'put',
         headers,
       };
     },

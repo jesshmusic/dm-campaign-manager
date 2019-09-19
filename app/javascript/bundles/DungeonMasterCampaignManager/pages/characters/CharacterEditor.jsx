@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 import { Form as FinalForm } from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
 import {FieldArray} from 'react-final-form-arrays';
+import snakecaseKeys from 'snakecase-keys';
 
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
@@ -33,10 +34,12 @@ import classes from './partials/character-form.module.scss';
 
 import {
   alignmentOptions,
-  SetupCharacterState,
   characterCalculations,
+  getCharacterObject,
+  SetupCharacterState,
   WeaponState,
 } from '../../utilities/character-utilities';
+
 import RaceSelect from './partials/races/RaceSelect';
 import ArmorSelect from './partials/items/ArmorSelect';
 import ShieldSelect from './partials/items/ShieldSelect';
@@ -59,23 +62,12 @@ class CharacterEditor extends React.Component {
   }
 
   handleSubmit = async (values) => {
-    const newChar = {
-      name: values.name,
-      alignment: values.characterAlignment.value,
-      description: values.description,
-      race_id: values.characterRace.value,
-      character_classes_attributes: values.dndClasses.map((dndClass) => {
-        const returnClass = {
-          level: dndClass.level,
-          dnd_class_id: dndClass.dndClass.value,
-        };
-        if (dndClass.id) {
-          returnClass.id = dndClass.id;
-        }
-        return returnClass;
-      }),
-    };
-    console.log(newChar);
+    const parsedChar = getCharacterObject(values);
+    if (parsedChar.id) {
+      this.props.updateCharacter(parsedChar, this.props.campaignSlug, this.props.characterSlug);
+    } else {
+      this.props.createCharacter(parsedChar, this.props.campaignSlug);
+    }
   };
 
   validate = (values) => {

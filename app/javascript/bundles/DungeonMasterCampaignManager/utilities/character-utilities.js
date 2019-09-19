@@ -1,4 +1,5 @@
 import createDecorator from 'final-form-calculate';
+import snakecaseKeys from 'snakecase-keys';
 
 export const filterOptions = (results) => results.map((nextItem) => (
   {value: nextItem.id, label: nextItem.name}
@@ -436,5 +437,91 @@ export const characterCalculations = createDecorator (
         return allValues.characterSpellsAttributes;
       },
     },
+  },
+  {
+    field: 'weaponState',
+    updates: {
+      weaponRh: (newState, allValues) => {
+        switch (newState) {
+          case WeaponState.DUAL:
+          case WeaponState.SINGLE:
+          case WeaponState.SHIELD:
+            return allValues.weaponRh;
+          default:
+            return null;
+        }
+      },
+      weaponLh: (newState, allValues) => {
+        switch (newState) {
+          case WeaponState.DUAL:
+            return allValues.weaponLh;
+          default:
+            return null;
+        }
+      },
+      shield: (newState, allValues) => {
+        switch (newState) {
+          case WeaponState.SHIELD:
+            return allValues.shield;
+          default:
+            return null;
+        }
+      },
+      weapon2h: (newState, allValues) => {
+        switch (newState) {
+          case WeaponState.TWOHAND:
+            return allValues.weapon2h;
+          default:
+            return null;
+        }
+      },
+    },
   }
 );
+
+export const getCharacterObject = (values) => {
+  let returnChar = {
+    name: values.name,
+    alignment: values.characterAlignment.value,
+    background: values.background,
+    description: values.description,
+    languages: values.languages,
+    role: values.role,
+    race_id: values.characterRace.value,
+    armorClassModifier: values.armorClassModifier,
+    hitPoints: values.hitPoints,
+    xp: values.xp,
+    strength:  values.strength,
+    dexterity: values.dexterity,
+    constitution: values.constitution,
+    intelligence: values.intelligence,
+    wisdom: values.wisdom,
+    charisma: values.charisma,
+    copperPieces: values.copperPieces,
+    silverPieces: values.silverPieces,
+    electrumPieces: values.electrumPieces,
+    goldPieces: values.goldPieces,
+    platinumPieces: values.platinumPieces,
+    weaponRhId: values.weaponRh ? values.weaponRh.value : null,
+    weaponLhId: values.weaponLh ? values.weaponLh.value : null,
+    weapon_2h_id: values.weapon2h ? values.weapon2h.value : null,
+    shieldId: values.shield ? values.shield.value : null,
+    armorId: values.armor ? values.armor.value : null,
+    characterClassesAttributes: values.dndClasses.map((dndClass) => {
+      const returnClass = {
+        level: dndClass.level,
+        dnd_class_id: dndClass.dndClass.value,
+      };
+      if (dndClass.id) {
+        returnClass.id = dndClass.id;
+      }
+      return returnClass;
+    }),
+    characterSpellsAttributes: values.characterSpellsAttributes,
+  };
+  if (values.id) {
+    returnChar.id = values.id;
+  }
+
+  return snakecaseKeys(returnChar);
+};

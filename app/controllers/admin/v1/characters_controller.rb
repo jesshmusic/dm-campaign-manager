@@ -169,10 +169,10 @@ module Admin::V1
     # Never trust parameters from the scary internet, only allow the white list through.
     def character_params(type)
       params.require(type.underscore.to_sym).permit(
-        :name, :description, :alignment, :type, :background,
+        :id, :name, :description, :alignment, :type, :background,
         :copper_pieces, :dexterity, :dnd_class_name, :electrum_pieces, :gold_pieces,
         :languages, :level, :platinum_pieces, :race, :role, :silver_pieces, :spell_ability,
-        :spell_attack_bonus, :spell_save_dc, :user_id, :xp, :min_score,
+        :spell_attack_bonus, :spell_save_dc, :xp, :min_score, :armor_class_modifier,
         :armor_class, :charisma, :constitution, :dexterity, :hit_points, :hit_points_current,
         :initiative, :intelligence, :proficiency, :speed, :strength, :wisdom, :race_id,
         :armor_id, :shield_id, :weapon_2h_id, :weapon_lh_id, :weapon_rh_id,

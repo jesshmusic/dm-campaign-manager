@@ -101,6 +101,7 @@ class Character < ApplicationRecord
   accepts_nested_attributes_for :character_items, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :skills, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :character_classes, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :character_spells, reject_if: :all_blank, allow_destroy: true
 
   belongs_to :campaign
 

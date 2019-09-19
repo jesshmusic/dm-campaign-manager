@@ -89,16 +89,16 @@ function mapDispatchToProps (dispatch) {
     editCharacter: (campaignSlug) => {
       dispatch(rest.actions.newPlayerCharacter({campaign_slug: campaignSlug}));
     },
-    createCharacter: (newCharacter, campaignSlug) => {
+    createCharacter: (player_character, campaignSlug) => {
       dispatch(rest.actions.createPlayerCharacter(
         {campaign_slug: campaignSlug},
-        {body: JSON.stringify({newCharacter})}
+        {body: JSON.stringify({player_character})}
       ));
     },
-    updateCharacter: (newCharacter, campaignSlug, characterSlug) => {
+    updateCharacter: (player_character, campaignSlug, characterSlug) => {
       dispatch(rest.actions.updatePlayerCharacter(
         {campaign_slug: campaignSlug, slug: characterSlug},
-        {body: JSON.stringify({newCharacter})}
+        {body: JSON.stringify({player_character})}
       ));
     },
   };
