@@ -22,7 +22,7 @@ const FormField = ({
   <Form.Group as={Col} md={colWidth}>
     {type === 'checkbox' || type === 'radio' ? (
       <Field name={name} type={type} value={value}>
-        {({ input }) => (
+        {({input, meta}) => (
           <div>
             <Form.Check
               {...input}
@@ -31,6 +31,8 @@ const FormField = ({
               name={name}
               value={value}
               id={id}
+              isValid={meta.touched && !meta.invalid}
+              isInvalid={meta.error && meta.touched}
             />
             {infoText ? (
               <Form.Text className="text-muted">
@@ -42,7 +44,7 @@ const FormField = ({
       </Field>
     ) : (
       <Field name={name} type={type}>
-        {({ input, meta }) => (
+        {({input, meta}) => (
           <div>
             <Form.Label>{label}</Form.Label>
             <Form.Control
