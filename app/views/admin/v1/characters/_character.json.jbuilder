@@ -311,11 +311,19 @@ end
 
 json.inventory character.character_items do |character_item|
   if character_item.item.type != 'ArmorItem' && character_item.item.type != 'WeaponItem'
+    json.id character_item.id
     json.name character_item.item.name
     json.quantity character_item.quantity
     json.equipped character_item.equipped
     json.carrying character_item.carrying
-    json.partial! 'admin/v1/items/item_summary', item: character_item.item
+    json.item_id character_item.item.id
+    json.extract! character_item.item, :type, :cost_unit, :cost_value, :description,
+                  :name, :sub_category, :rarity, :requires_attunement, :weight, :slug
+
+    json.contained_items character_item.item.contained_items do |next_item|
+      json.extract! next_item, :id, :type, :cost_unit, :cost_value, :description,
+                    :name, :sub_category, :rarity, :requires_attunement, :weight, :slug
+    end
   end
 end
 

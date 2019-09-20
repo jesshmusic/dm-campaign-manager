@@ -41,7 +41,6 @@ const actionColumns = [
 
 const isCaster = (character) => {
   let isCaster = false;
-  console.log(character);
   character.characterClasses.forEach((dndClass) => {
     if (dndClass.spellAbility) {
       isCaster = true;

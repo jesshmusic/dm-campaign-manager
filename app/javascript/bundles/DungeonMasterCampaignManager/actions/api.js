@@ -1,7 +1,7 @@
 import ReactOnRails from 'react-on-rails';
 import reduxApi from 'redux-api';
 import adapterFetch from 'redux-api/lib/adapters/fetch';
-import { navigate } from '@reach/router';
+import {navigate} from '@reach/router';
 
 function getHeaders (contentType) {
   return ReactOnRails.authenticityHeaders({
@@ -53,7 +53,7 @@ export default reduxApi({
       };
     },
     postfetch: [({data}) => {
-      navigate(`/app/characters/${data.slug}`);
+      navigate(`/app/campaigns/${data.campaign.slug}/npcs/${data.slug}`);
     }],
   },
   updateNonPlayerCharacter: {
@@ -66,7 +66,7 @@ export default reduxApi({
       };
     },
     postfetch: [({data}) => {
-      navigate(`/app/characters/${data.slug}`);
+      navigate(`/app/campaigns/${data.campaign.slug}/npcs/${data.slug}`);
     }],
   },
   generateNonPlayerCharacter: {
@@ -79,7 +79,7 @@ export default reduxApi({
       };
     },
     postfetch: [({data}) => {
-      navigate(`/app/characters/${data.slug}`);
+      navigate(`/app/campaigns/${data.campaign.slug}/npcs/${data.slug}`);
     }],
   },
   getNonPlayerCharacter: {
@@ -101,7 +101,7 @@ export default reduxApi({
       };
     },
     postfetch: [({data}) => {
-      navigate(`/app/characters/${data.slug}`);
+      navigate(`/app/campaigns/${data.campaign.slug}/pcs/${data.slug}`);
     }],
   },
   updatePlayerCharacter: {
@@ -114,7 +114,7 @@ export default reduxApi({
       };
     },
     postfetch: [({data}) => {
-      navigate(`/app/characters/${data.slug}`);
+      navigate(`/app/campaigns/${data.campaign.slug}/pcs/${data.slug}`);
     }],
   },
   getPlayerCharacter: {

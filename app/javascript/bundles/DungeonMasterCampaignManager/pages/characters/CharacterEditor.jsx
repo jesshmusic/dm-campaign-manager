@@ -28,8 +28,6 @@ import SorcererSpellSelect from './partials/spell-fields/SorcererSpellSelect';
 import WarlockSpellSelect from './partials/spell-fields/WarlockSpellSelect';
 import WizardSpellSelect from './partials/spell-fields/WizardSpellSelect';
 
-import classes from './partials/character-form.module.scss';
-
 import {
   alignmentOptions,
   characterCalculations,
@@ -240,7 +238,6 @@ class CharacterEditor extends React.Component {
                                  variant={'secondary'}>Reset</Button>
                        </ButtonGroup>
                      </Form.Row>
-                     <pre className={classes.preBlock}>{JSON.stringify(values, 0, 2)}</pre>
                    </Form>
                  )}
       />

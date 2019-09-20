@@ -16,10 +16,9 @@ const CharacterItemFields = ({characterItem, fields, index}) => {
     if (fields.value[index] && fields.value[index].id) {
       fields.update(index, {
         id: fields.value[index].id,
-        dndClass: {
+        item: {
           value: fields.value[index].value,
           label: fields.value[index].label,
-          data: fields.value[index].data,
         },
         level: fields.value[index].level,
         _destroy: true,

@@ -90,6 +90,15 @@ export const SetupCharacterState = (newChar) => {
       },
       level: dndClass.level,
     })),
+    characterItems: newChar.inventory.map((item) => ({
+      id: item.id,
+      quantity: item.quantity,
+      carrying: item.carrying,
+      item: {
+        value: item.itemId,
+        label: item.name,
+      },
+    })),
     totalLevel: newChar.totalLevel,
     armorClass: newChar.armorClass,
     armorClassModifier: newChar.armorClassModifier,
@@ -537,5 +546,5 @@ export const getCharacterObject = (values) => {
     returnChar.id = values.id;
   }
 
-  return snakecaseKeys(returnChar);
+  return snakecaseKeys(returnChar, {exclude: ['_destroy']});
 };
