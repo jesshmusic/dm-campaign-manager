@@ -5,10 +5,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Form as FinalForm } from 'react-final-form';
+import {Form as FinalForm} from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
 import {FieldArray} from 'react-final-form-arrays';
-import snakecaseKeys from 'snakecase-keys';
 
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
@@ -19,7 +18,6 @@ import FormField from '../../components/forms/FormField';
 import FormSelect from '../../components/forms/FormSelect';
 import FormTextArea from '../../components/forms/FormTextArea';
 import CharacterClassFields from './partials/CharacterClassFields';
-
 // Spell Selects
 import BardSpellSelect from './partials/spell-fields/BardSpellSelect';
 import ClericSpellSelect from './partials/spell-fields/ClericSpellSelect';
@@ -47,6 +45,7 @@ import WeaponLHSelect from './partials/items/WeaponLHSelect';
 import WeaponRHSelect from './partials/items/WeaponRHSelect';
 import Weapon2HSelect from './partials/items/Weapon2HSelect';
 import WeaponRadios from './partials/items/WeaponRadios';
+import CharacterItemFields from './partials/CharacterItemFields';
 
 
 class CharacterEditor extends React.Component {
@@ -79,17 +78,17 @@ class CharacterEditor extends React.Component {
   };
 
   render () {
-    const { character, validated } = this.state;
+    const {character, validated} = this.state;
     return (
       <FinalForm onSubmit={this.handleSubmit}
                  initialValues={character}
                  validate={this.validate}
                  decorators={[characterCalculations]}
-                 mutators={{...arrayMutators }}
+                 mutators={{...arrayMutators}}
                  render={({
                    handleSubmit,
                    form: {
-                     mutators: { push },
+                     mutators: {push},
                    },
                    submitting,
                    form,
@@ -107,10 +106,11 @@ class CharacterEditor extends React.Component {
                            infoText={'(Villain, Lord, Blacksmith, etc.)'}
                          />
                        </Form.Row>
-                     ) : null }
+                     ) : null}
                      <Form.Row>
                        <FormField label={'Character name'} type={'text'} colWidth={'3'} name={'name'}/>
-                       <FormSelect label={'Alignment'} colWidth={'3'} name={'characterAlignment'} options={alignmentOptions}/>
+                       <FormSelect label={'Alignment'} colWidth={'3'} name={'characterAlignment'}
+                                   options={alignmentOptions}/>
                        <RaceSelect colWidth={'3'}/>
                        <FormField label={'Background'} type={'text'} colWidth={'3'} name={'background'}/>
                      </Form.Row>
@@ -122,7 +122,7 @@ class CharacterEditor extends React.Component {
                      <Form.Row>
                        <Col md={6}>
                          <FieldArray name="dndClasses">
-                           {({ fields }) =>
+                           {({fields}) =>
                              fields.map((characterClass, index) => (
                                !fields.value[index] || !fields.value[index]._destroy ? (
                                  <CharacterClassFields characterClass={characterClass}
@@ -143,7 +143,7 @@ class CharacterEditor extends React.Component {
                      </Form.Row>
                      <h2>Statistics</h2>
                      <Form.Row>
-                       <FormField label={'Armor Class'} type={'number'} colWidth={'2'} name={'armorClass'} readOnly />
+                       <FormField label={'Armor Class'} type={'number'} colWidth={'2'} name={'armorClass'} readOnly/>
                        <FormField label={'AC Mod'}
                                   type={'number'}
                                   colWidth={'2'}
@@ -206,6 +206,25 @@ class CharacterEditor extends React.Component {
                          <Weapon2HSelect colWidth={'12'}/>
                        </Form.Row>
                      ) : null}
+                     <h3>Gear</h3>
+                     <Form.Row>
+                       <Col md={6}>
+                         <FieldArray name="characterItems">
+                           {({fields}) =>
+                             fields.map((characterItem, index) => (
+                               !fields.value[index] || !fields.value[index]._destroy ? (
+                                 <CharacterItemFields characterItem={characterItem}
+                                                      fields={fields}
+                                                      index={index}
+                                                      key={index}/>
+                               ) : null))
+                           }
+                         </FieldArray>
+                         <Button type="button" onClick={() => push('characterItems', {
+                           quantity: 1,
+                         })} variant={'info'} block>Add Item</Button>
+                       </Col>
+                     </Form.Row>
                      <BardSpellSelect showBardSpells={values.showBardSpells}/>
                      <ClericSpellSelect showClericSpells={values.showClericSpells}/>
                      <DruidSpellSelect showDruidSpells={values.showDruidSpells}/>
@@ -217,7 +236,8 @@ class CharacterEditor extends React.Component {
                      <Form.Row>
                        <ButtonGroup aria-label="Character actions">
                          <Button type="submit" disabled={submitting}>Save</Button>
-                         <Button type="button" onClick={form.reset} disabled={submitting || pristine} variant={'secondary'}>Reset</Button>
+                         <Button type="button" onClick={form.reset} disabled={submitting || pristine}
+                                 variant={'secondary'}>Reset</Button>
                        </ButtonGroup>
                      </Form.Row>
                      <pre className={classes.preBlock}>{JSON.stringify(values, 0, 2)}</pre>

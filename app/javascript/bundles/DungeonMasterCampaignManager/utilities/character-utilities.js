@@ -14,22 +14,22 @@ const AbilityScoreModifier = (abilityScore) => {
     1: -5, 2: -4, 3: -4, 4: -3, 5: -3, 6: -2, 7: -2,
     8: -1, 9: -1, 10: 0, 11: 0, 12: 1, 13: 1, 14: 2, 15: 2,
     16: 3, 17: 3, 18: 4, 19: 4, 20: 5, 21: 5, 22: 6, 23: 6,
-    24: 7, 25: 7, 26: 8, 27: 8, 28: 9, 29: 9, 30: 10, 31: 10
+    24: 7, 25: 7, 26: 8, 27: 8, 28: 9, 29: 9, 30: 10, 31: 10,
   };
 
   return mods[abilityScore];
 };
 
 export const alignmentOptions = [
-  { value: 'Lawful Good', label: 'Lawful Good' },
-  { value: 'Neutral Good', label: 'Neutral Good' },
-  { value: 'Chaotic Good', label: 'Chaotic Good' },
-  { value: 'Lawful Neutral', label: 'Lawful Neutral' },
-  { value: 'Neutral', label: 'Neutral' },
-  { value: 'Chaotic Neutral', label: 'Chaotic Neutral' },
-  { value: 'Lawful Evil', label: 'Lawful Evil' },
-  { value: 'Neutral Evil', label: 'Neutral Evil' },
-  { value: 'Chaotic Evil', label: 'Chaotic Evil' },
+  {value: 'Lawful Good', label: 'Lawful Good'},
+  {value: 'Neutral Good', label: 'Neutral Good'},
+  {value: 'Chaotic Good', label: 'Chaotic Good'},
+  {value: 'Lawful Neutral', label: 'Lawful Neutral'},
+  {value: 'Neutral', label: 'Neutral'},
+  {value: 'Chaotic Neutral', label: 'Chaotic Neutral'},
+  {value: 'Lawful Evil', label: 'Lawful Evil'},
+  {value: 'Neutral Evil', label: 'Neutral Evil'},
+  {value: 'Chaotic Evil', label: 'Chaotic Evil'},
 ];
 
 const CalculateArmorClass = ({armor, armorClassModifier, dexterity, shield}) => {
@@ -95,7 +95,7 @@ export const SetupCharacterState = (newChar) => {
     armorClassModifier: newChar.armorClassModifier,
     hitPoints: newChar.hitPoints,
     xp: newChar.xp,
-    strength:  newChar.strength,
+    strength: newChar.strength,
     dexterity: newChar.dexterity,
     constitution: newChar.constitution,
     intelligence: newChar.intelligence,
@@ -271,7 +271,7 @@ const abilityScoreUpdates = {
   raceId: (value) => value.value,
 };
 
-export const characterCalculations = createDecorator (
+export const characterCalculations = createDecorator(
   {
     field: 'applyRaceMods',
     updates: abilityScoreUpdates,
@@ -452,35 +452,32 @@ export const characterCalculations = createDecorator (
         }
       },
       weaponLh: (newState, allValues) => {
-        switch (newState) {
-          case WeaponState.DUAL:
-            return allValues.weaponLh;
-          default:
-            return null;
+        if (newState === WeaponState.DUAL) {
+          return allValues.weaponLh;
+        } else {
+          return null;
         }
       },
       shield: (newState, allValues) => {
-        switch (newState) {
-          case WeaponState.SHIELD:
-            return allValues.shield;
-          default:
-            return null;
+        if (newState === WeaponState.SHIELD) {
+          return allValues.shield;
+        } else {
+          return null;
         }
       },
       weapon2h: (newState, allValues) => {
-        switch (newState) {
-          case WeaponState.TWOHAND:
-            return allValues.weapon2h;
-          default:
-            return null;
+        if (newState === WeaponState.TWOHAND) {
+          return allValues.weapon2h;
+        } else {
+          return null;
         }
       },
     },
-  }
+  },
 );
 
 export const getCharacterObject = (values) => {
-  let returnChar = {
+  const returnChar = {
     name: values.name,
     alignment: values.characterAlignment.value,
     background: values.background,
@@ -491,7 +488,7 @@ export const getCharacterObject = (values) => {
     armorClassModifier: values.armorClassModifier,
     hitPoints: values.hitPoints,
     xp: values.xp,
-    strength:  values.strength,
+    strength: values.strength,
     dexterity: values.dexterity,
     constitution: values.constitution,
     intelligence: values.intelligence,
@@ -515,7 +512,24 @@ export const getCharacterObject = (values) => {
       if (dndClass.id) {
         returnClass.id = dndClass.id;
       }
+      if (dndClass._destroy) {
+        returnClass._destroy = dndClass._destroy;
+      }
       return returnClass;
+    }),
+    characterItemsAttributes: values.characterItems.map((item) => {
+      const returnItem = {
+        quantity: item.quantity,
+        carrying: item.carrying,
+        item_id: item.item.value,
+      };
+      if (item.id) {
+        returnItem.id = item.id;
+      }
+      if (item._destroy) {
+        returnItem._destroy = item._destroy;
+      }
+      return returnItem;
     }),
     characterSpellsAttributes: values.characterSpellsAttributes,
   };
