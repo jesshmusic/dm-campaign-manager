@@ -212,8 +212,11 @@ json.character_classes character.character_classes do |character_class|
         json.spell_class spell.spell_class
         json.character_spell_id spell.id
         json.info do
-          json.extract! spell.spell, :casting_time, :components, :concentration, :description, :duration,
-                        :higher_level, :material, :range, :ritual, :school
+          json.extract! spell.spell, :casting_time, :components, :concentration,
+                        :duration, :material, :range, :ritual, :school
+
+          json.description spell.spell.description
+          json.higher_level spell.spell.higher_level
         end
       end
     end

@@ -10,9 +10,9 @@ module Admin::V1
     def index
       authorize Spell
       @spells = if params[:dnd_class].present? && params[:search].present?
-                  Spell.includes(:dnd_classes).where(dnd_classes: { name: params[:dnd_class] }).search_for(params[:search])
+                  Spell.includes(:dnd_classes).where(dnd_classes: {name: params[:dnd_class]}).search_for(params[:search])
                 elsif params[:dnd_class].present?
-                  Spell.includes(:dnd_classes).where(dnd_classes: { name: params[:dnd_class] })
+                  Spell.includes(:dnd_classes).where(dnd_classes: {name: params[:dnd_class]})
                 elsif params[:search].present?
                   Spell.search_for(params[:search])
                 else
@@ -62,7 +62,7 @@ module Admin::V1
 
       respond_to do |format|
         if @spell.save
-          format.html { redirect_to spell_url(slug: @spell.slug), notice: 'Spell was successfully created.' }
+          format.html { redirect_to v1_spell_url(slug: @spell.slug), notice: 'Spell was successfully created.' }
           format.json { render :show, status: :created, location: @spell }
         else
           format.html { render :new }
@@ -78,7 +78,7 @@ module Admin::V1
 
       respond_to do |format|
         if @spell.update(spell_params)
-          format.html { redirect_to spell_url(slug: @spell.slug), notice: 'Spell was successfully updated.' }
+          format.html { redirect_to v1_spell_url(slug: @spell.slug), notice: 'Spell was successfully updated.' }
           format.json { render :show, status: :ok, location: @spell }
         else
           format.html { render :edit }
@@ -94,7 +94,7 @@ module Admin::V1
       @spell.destroy
 
       respond_to do |format|
-        format.html { redirect_to spells_url, notice: 'Spell was successfully destroyed.' }
+        format.html { redirect_to v1_spells_url, notice: 'Spell was successfully destroyed.' }
         format.json { head :no_content }
       end
     end
