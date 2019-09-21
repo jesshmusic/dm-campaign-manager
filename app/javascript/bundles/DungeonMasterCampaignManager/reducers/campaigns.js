@@ -4,6 +4,7 @@ const getCampaignsSuccess = createAction('@@redux-api@getCampaigns_success');
 const getCampaignsFail = createAction('@@redux-api@getCampaigns_fail');
 const getCampaignSuccess = createAction('@@redux-api@getCampaign_success');
 const getCampaignFail = createAction('@@redux-api@getCampaign_fail');
+const createCampaignSuccess = createAction('@@redux-api@createCampaign_success');
 const updateCampaignSuccess = createAction('@@redux-api@updateCampaign_success');
 
 const campaigns = createReducer({
@@ -30,6 +31,11 @@ const campaigns = createReducer({
     campaigns: state.campaigns,
     count: state.count,
     currentCampaign: null,
+  }),
+  [createCampaignSuccess]: (state, action) => ({
+    campaigns: state.campaigns,
+    count: state.count,
+    currentCampaign: action.data,
   }),
   [updateCampaignSuccess]: (state, action) => ({
     campaigns: state.campaigns,

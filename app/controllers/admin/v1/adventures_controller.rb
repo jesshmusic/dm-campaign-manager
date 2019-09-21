@@ -56,7 +56,7 @@ module Admin::V1
           format.json { render :show, status: :created, location: @adventure }
         else
           format.html { render :new }
-          format.json { render json: @adventure.errors, status: :unprocessable_entity }
+          format.json { render json: @adventure.errors.full_messages.join(', '), status: :unprocessable_entity }
         end
       end
     end
@@ -71,7 +71,7 @@ module Admin::V1
           format.json { render :show, status: :ok, location: @adventure }
         else
           format.html { render :edit }
-          format.json { render json: @adventure.errors, status: :unprocessable_entity }
+          format.json { render json: @adventure.errors.full_messages.join(', '), status: :unprocessable_entity }
         end
       end
     end

@@ -60,7 +60,7 @@ module Admin::V1
           format.json { render :show, status: :created }
         else
           format.html { render :new }
-          format.json { render json: @race.errors, status: :unprocessable_entity }
+          format.json { render json: @race.errors.full_messages.join(', '), status: :unprocessable_entity }
         end
       end
     end
@@ -75,7 +75,7 @@ module Admin::V1
           format.json { render :show, status: :ok }
         else
           format.html { render :edit }
-          format.json { render json: @race.errors, status: :unprocessable_entity }
+          format.json { render json: @race.errors.full_messages.join(', '), status: :unprocessable_entity }
         end
       end
     end
@@ -92,6 +92,7 @@ module Admin::V1
     end
 
     private
+
     # Use callbacks to share common setup or constraints between actions.
     def set_race
       @race = Race.find_by(slug: params[:slug])

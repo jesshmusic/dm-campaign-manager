@@ -1,6 +1,5 @@
 import ReactOnRails from 'react-on-rails';
 import reduxApi from 'redux-api';
-import adapterFetch from 'redux-api/lib/adapters/fetch';
 import {navigate} from '@reach/router';
 
 function getHeaders (contentType) {
@@ -9,6 +8,41 @@ function getHeaders (contentType) {
     'Accept': 'application/json',
   });
 }
+
+const processData = (data) => {
+  try {
+    return JSON.parse(data);
+  } catch (err) {
+    return data;
+  }
+};
+
+const toJSON = (resp) => {
+  if (resp.text) {
+    return resp.text().then(processData);
+  } else if (resp instanceof Promise) {
+    return resp.then(processData);
+  }
+  return Promise.resolve(resp).then(processData);
+};
+
+const dmFetch = (fetch) => {
+  return (url, opts) =>
+    fetch(url, opts)
+      .then((response) => {
+        const status = response.status === 1223 ? 204 : response.status;
+        const statusText = response.status === 1223 ? 'No Content' : response.statusText;
+
+        return toJSON(response).then((data) => {
+          if (status >= 200 && status < 400) {
+            return data;
+          }
+          data.status = status;
+          data.statusText = statusText;
+          return Promise.reject(data);
+        });
+      });
+};
 
 export default reduxApi({
   createCampaign: {
@@ -188,4 +222,4 @@ export default reduxApi({
       navigate('/');
     }],
   },
-}).use('fetch', adapterFetch(fetch));
+}).use('fetch', dmFetch(fetch));

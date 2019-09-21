@@ -1,13 +1,28 @@
 # frozen_string_literal: true
 
 class CharacterPolicy < ApplicationPolicy
+  def index?
+    true
+  end
+
+  def show?
+    user&.dungeon_master? || user&.admin?
+  end
+
   def update?
-    user&.admin
+    user&.dungeon_master? || user&.admin?
+  end
+
+  def new?
+    user&.dungeon_master? || user&.admin?
   end
 
   def create?
-    user_has_campaigns = user.campaign_users.where(confirmed: true).count.positive?
-    (user && user_has_campaigns) || user&.dungeon_master? || user&.admin?
+    user&.dungeon_master? || user&.admin?
+  end
+
+  def destroy?
+    user&.dungeon_master? || user&.admin?
   end
 
   def generate_npc?
@@ -20,9 +35,5 @@ class CharacterPolicy < ApplicationPolicy
 
   def random_fantasy_name?
     true
-  end
-
-  def destroy?
-    user && (user.admin? || (record.user == user))
   end
 end

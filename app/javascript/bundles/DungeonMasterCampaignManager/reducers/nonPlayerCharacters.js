@@ -44,11 +44,6 @@ const nonPlayerCharacters = createReducer({
     count: state.count,
     currentCharacter: action.data,
   }),
-  [getNonPlayerCharacterFail]: () => (state) => ({
-    characters: state.characters,
-    count: state.count,
-    currentCharacter: null,
-  }),
   [newNonPlayerCharacter]: (state) => ({
     characters: state.characters,
     count: state.count,

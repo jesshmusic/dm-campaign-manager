@@ -5,7 +5,7 @@ import Alert from 'react-bootstrap/Alert';
 /**
  * @return {null}
  */
-const AlertDismissible = ({ messageText, messageHeading, messageVariant }) => {
+const AlertDismissible = ({messageText, messageHeading, messageVariant}) => {
   const [show, setShow] = React.useState(true);
 
   if (show) {
@@ -30,9 +30,9 @@ const FlashMessages = ({messages}) => (
   <div>
     {messages.map((message, index) =>
       <AlertDismissible key={index}
-        messageHeading={message.heading ? message.heading : 'Error'}
-        messageText={message.text}
-        messageVariant={message.type === 'alert' ? 'danger' : message.type } />
+                        messageHeading={message.heading ? message.heading : 'Error'}
+                        messageText={message.text}
+                        messageVariant={message.type === 'alert' ? 'danger' : message.type}/>,
     )}
   </div>
 );

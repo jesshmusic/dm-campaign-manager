@@ -23,11 +23,6 @@ module Admin::V1
     # GET /campaigns/1.json
     def show
       authorize @campaign
-      if params[:search].present?
-        @pagy, @adventures = pagy(Adventure.where(campaign_id: @campaign.id).search_for(params[:search]))
-      else
-        @pagy, @adventures = pagy(Adventure.where(campaign_id: @campaign.id))
-      end
     end
 
     # GET /campaigns/new
@@ -55,7 +50,7 @@ module Admin::V1
           format.json { render :show, status: :created }
         else
           format.html { render :new }
-          format.json { render json: @campaign.errors, status: :unprocessable_entity }
+          format.json { render json: @campaign.errors.full_messages.join(', '), status: :unprocessable_entity }
         end
       end
     end
@@ -70,7 +65,7 @@ module Admin::V1
           format.json { render :show, status: :ok }
         else
           format.html { render :edit }
-          format.json { render json: @campaign.errors, status: :unprocessable_entity }
+          format.json { render json: @campaign.errors.full_messages.join(', '), status: :unprocessable_entity }
         end
       end
     end

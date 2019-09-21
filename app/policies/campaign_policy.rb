@@ -6,11 +6,15 @@ class CampaignPolicy < ApplicationPolicy
   end
 
   def show?
-    true
+    user && (user.admin? || record.user == user)
   end
 
   def update?
     user && (user.admin? || record.user == user)
+  end
+
+  def new?
+    user && (user.admin? || (record.user == user))
   end
 
   def create?

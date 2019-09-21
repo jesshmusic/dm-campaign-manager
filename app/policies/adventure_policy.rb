@@ -1,15 +1,27 @@
 # frozen_string_literal: true
 
 class AdventurePolicy < ApplicationPolicy
+  def index?
+    true
+  end
+
+  def show?
+    true
+  end
+
   def update?
-    user && (user.admin? || (record.user == user))
+    user&.dungeon_master? || user&.admin?
+  end
+
+  def new?
+    user&.dungeon_master? || user&.admin?
   end
 
   def create?
-    user && (user.admin? || user.dungeon_master?)
+    user&.dungeon_master? || user&.admin?
   end
 
   def destroy?
-    user && (user.admin? || (record.user == user))
+    user&.dungeon_master? || user&.admin?
   end
 end

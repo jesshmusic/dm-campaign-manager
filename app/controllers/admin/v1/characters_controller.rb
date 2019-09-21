@@ -65,8 +65,9 @@ module Admin::V1
                    else
                      Character.new(character_params('Character'))
                    end
+      authorize @campaign
       authorize @character
-      @character.user = current_user
+      @character.campaign = @campaign
 
       respond_to do |format|
         if @character.save
@@ -80,8 +81,9 @@ module Admin::V1
           format.html { redirect_to redirect_path, notice: ' character was successfully created.' }
           format.json { render :show, status: :created }
         else
+          puts @character.errors.to_json
           format.html { render :new }
-          format.json { render json: @character.errors, status: :unprocessable_entity }
+          format.json { render json: {errors: @character.errors.full_messages.join(', ')}, status: :unprocessable_entity }
         end
       end
     end
@@ -97,6 +99,7 @@ module Admin::V1
         campaign_id: @campaign.id,
         character_classes_attributes: character_params('NonPlayerCharacter')[:character_classes_attributes]
       )
+      authorize @campaign
       authorize @character
       respond_to do |format|
         if @character.save
@@ -111,7 +114,7 @@ module Admin::V1
           format.json { render :show, status: :created }
         else
           format.html { render :new }
-          format.json { render json: @character.errors, status: :unprocessable_entity }
+          format.json { render json: @character.errors.full_messages.join(', '), status: :unprocessable_entity }
         end
       end
     end
@@ -119,12 +122,13 @@ module Admin::V1
     def random_fantasy_name
       authorize Character
       random_npc_gender = params[:random_npc_gender] || %w[male female].sample
-      render json: { name: NameGen.random_name(random_npc_gender) }
+      render json: {name: NameGen.random_name(random_npc_gender)}
     end
 
     # PATCH/PUT /characters/1
     # PATCH/PUT /characters/1.json
     def update
+      authorize @campaign
       authorize @character
       respond_to do |format|
         if @character.update(character_params(params[:type]))
@@ -139,7 +143,7 @@ module Admin::V1
           format.json { render :show, status: :ok }
         else
           format.html { render :edit }
-          format.json { render json: @character.errors, status: :unprocessable_entity }
+          format.json { render json: @character.errors.full_messages.join(', '), status: :unprocessable_entity }
         end
       end
     end
@@ -147,6 +151,7 @@ module Admin::V1
     # DELETE /characters/1
     # DELETE /characters/1.json
     def destroy
+      authorize @campaign
       authorize @character
       @character.destroy
       respond_to do |format|

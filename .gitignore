@@ -43,3 +43,4 @@ coverage
 rspec_results.html
 results.html
 mydb.dump
+test.html

@@ -61,7 +61,7 @@ module Admin::V1
           format.json { render :show, status: :created }
         else
           format.html { render :new }
-          format.json { render json: @dnd_class.errors, status: :unprocessable_entity }
+          format.json { render json: @dnd_class.errors.full_messages.join(', '), status: :unprocessable_entity }
         end
       end
     end
@@ -76,7 +76,7 @@ module Admin::V1
           format.json { render :show, status: :ok }
         else
           format.html { render :edit }
-          format.json { render json: @dnd_class.errors, status: :unprocessable_entity }
+          format.json { render json: @dnd_class.errors.full_messages.join(', '), status: :unprocessable_entity }
         end
       end
     end

@@ -20,7 +20,7 @@ module Admin::V1
       @items = @items.where.not("'Two-Handed' = ANY (weapon_properties)") if params[:two_hand].present? && params[:two_hand] == 'false'
       if params[:two_hand].present? && params[:two_hand] == 'true'
         @items = @items.where("'Two-Handed' = ANY (weapon_properties)")
-                       .or(@items.where.not(weapon_2h_damage_type: [nil, '']))
+                   .or(@items.where.not(weapon_2h_damage_type: [nil, '']))
       end
       @items = if !current_user
                  @items.where(user_id: nil)
@@ -65,7 +65,7 @@ module Admin::V1
           format.json { render :show, status: :created, location: @item }
         else
           format.html { render :new }
-          format.json { render json: @item.errors, status: :unprocessable_entity }
+          format.json { render json: @item.errors.full_messages.join(', '), status: :unprocessable_entity }
         end
       end
     end
@@ -80,7 +80,7 @@ module Admin::V1
           format.json { render :show, status: :ok, location: @item }
         else
           format.html { render :edit }
-          format.json { render json: @item.errors, status: :unprocessable_entity }
+          format.json { render json: @item.errors.full_messages.join(', '), status: :unprocessable_entity }
         end
       end
     end

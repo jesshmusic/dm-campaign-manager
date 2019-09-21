@@ -66,7 +66,7 @@ module Admin::V1
           format.json { render :show, status: :created, location: @spell }
         else
           format.html { render :new }
-          format.json { render json: @spell.errors, status: :unprocessable_entity }
+          format.json { render json: @spell.errors.full_messages.join(', '), status: :unprocessable_entity }
         end
       end
     end
@@ -82,7 +82,7 @@ module Admin::V1
           format.json { render :show, status: :ok, location: @spell }
         else
           format.html { render :edit }
-          format.json { render json: @spell.errors, status: :unprocessable_entity }
+          format.json { render json: @spell.errors.full_messages.join(', '), status: :unprocessable_entity }
         end
       end
     end
