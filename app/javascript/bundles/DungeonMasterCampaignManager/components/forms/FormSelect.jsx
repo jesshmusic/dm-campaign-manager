@@ -9,12 +9,12 @@ import {Field} from 'react-final-form';
 import Form from 'react-bootstrap/Form';
 import Select from 'react-select';
 
-const ReactSelectAdapter = ({ input, isClearable, ...rest }) => (
+const ReactSelectAdapter = ({input, isClearable, ...rest}) => (
   <Select
     {...input}
     {...rest}
     isClearable={isClearable}
-    searchable />
+    searchable/>
 );
 
 const FormSelect = ({name, label, colWidth, isClearable = false, options}) => (
