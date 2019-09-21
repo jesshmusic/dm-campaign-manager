@@ -25,6 +25,14 @@ class CampaignPolicy < ApplicationPolicy
     user && (user.admin? || record.user == user)
   end
 
+  def generate_npc?
+    create_generated_npc?
+  end
+
+  def create_generated_npc?
+    user&.dungeon_master? || user&.admin?
+  end
+
   def confirm_user?
     user&.admin? || (user&.dungeon_master? && record.user == user)
   end

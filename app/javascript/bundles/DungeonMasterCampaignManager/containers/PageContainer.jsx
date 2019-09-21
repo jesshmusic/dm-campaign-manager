@@ -17,27 +17,27 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 
 const PageContainer = (props) => {
-  const { breadcrumbs, children, description, flashMessages, pageTitle, user } = props;
+  const {breadcrumbs, children, description, pageTitle, user} = props;
 
   return (
     <div>
       <Helmet>
         <title>{pageTitle} | Dungeon Master&apos;s Campaign Manager</title>
-        <meta name="description" content={description} />
+        <meta name="description" content={description}/>
       </Helmet>
       <MenuBar user={user}/>
-      <HeroBanner />
-      <FlashMessages messages={flashMessages}/>
+      <HeroBanner/>
+      <FlashMessages/>
       <Container fluid>
         {breadcrumbs && breadcrumbs.length > 0 ? (
           <Breadcrumb>
-            <BreadcrumbLink to='/' title={'Home'} />
+            <BreadcrumbLink to='/' title={'Home'}/>
             {breadcrumbs.map((breadcrumb, index) =>
               (!breadcrumb.isActive ? (
-                <BreadcrumbLink to={breadcrumb.url} title={breadcrumb.title} key={index} />
+                <BreadcrumbLink to={breadcrumb.url} title={breadcrumb.title} key={index}/>
               ) : (
                 <Breadcrumb.Item active key={index}>{breadcrumb.title}</Breadcrumb.Item>
-              ))
+              )),
             )}
           </Breadcrumb>
         ) : null}
@@ -47,7 +47,7 @@ const PageContainer = (props) => {
           </Col>
         </Row>
       </Container>
-      <Footer user={user} />
+      <Footer user={user}/>
     </div>
   );
 };
@@ -60,7 +60,6 @@ PageContainer.propTypes = {
   })),
   children: PropTypes.any,
   description: PropTypes.string.isRequired,
-  flashMessages: PropTypes.array,
   pageTitle: PropTypes.string.isRequired,
   user: PropTypes.object,
 };
