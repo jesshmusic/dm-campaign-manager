@@ -5,7 +5,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import rest from '../../actions/api';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/layout/PageTitle';
@@ -20,9 +20,9 @@ import {FieldArray} from 'react-final-form-arrays';
 import CharacterClassFields from './partials/CharacterClassFields';
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import classes from './partials/character-form.module.scss';
 import {Form as FinalForm} from 'react-final-form';
 import snakecaseKeys from 'snakecase-keys';
+import NameField from './partials/NameField';
 
 
 class GenerateNPC extends React.Component {
@@ -89,7 +89,7 @@ class GenerateNPC extends React.Component {
       flashMessages,
       user,
     } = this.props;
-    const { character, validated } = this.state;
+    const {character, validated} = this.state;
     return (
       <PageContainer user={user}
                      flashMessages={flashMessages}
@@ -104,11 +104,11 @@ class GenerateNPC extends React.Component {
         <FinalForm onSubmit={this.handleSubmit}
                    initialValues={character}
                    validate={this.validate}
-                   mutators={{...arrayMutators }}
+                   mutators={{...arrayMutators}}
                    render={({
                      handleSubmit,
                      form: {
-                       mutators: { push },
+                       mutators: {push},
                      },
                      submitting,
                      form,
@@ -117,11 +117,7 @@ class GenerateNPC extends React.Component {
                    }) => (
                      <Form noValidate validated={validated} onSubmit={handleSubmit}>
                        <Form.Row>
-                         <FormField
-                           label={'Character name'}
-                           type={'text'}
-                           colWidth={'5'}
-                           name={'name'}/>
+                         <NameField colWidth={'5'}/>
                          <FormField
                            label={'NPC Role'}
                            type={'text'}
@@ -138,14 +134,15 @@ class GenerateNPC extends React.Component {
                          />
                        </Form.Row>
                        <Form.Row>
-                         <FormSelect label={'Alignment'} colWidth={'6'} name={'characterAlignment'} options={alignmentOptions}/>
+                         <FormSelect label={'Alignment'} colWidth={'6'} name={'characterAlignment'}
+                                     options={alignmentOptions}/>
                          <RaceSelect colWidth={'6'}/>
                        </Form.Row>
                        <h2>Classes</h2>
                        <Form.Row>
-                         <Col md={{ span: 8, offset: 2 }} className={'mb-5'}>
+                         <Col md={{span: 8, offset: 2}} className={'mb-5'}>
                            <FieldArray name="dndClasses">
-                             {({ fields }) =>
+                             {({fields}) =>
                                fields.map((characterClass, index) => (
                                  !fields.value[index] || !fields.value[index]._destroy ? (
                                    <CharacterClassFields characterClass={characterClass}
@@ -167,7 +164,8 @@ class GenerateNPC extends React.Component {
                        <Form.Row>
                          <ButtonGroup aria-label="Character actions">
                            <Button type="submit" disabled={submitting}>Generate NPC</Button>
-                           <Button type="button" onClick={form.reset} disabled={submitting || pristine} variant={'secondary'}>Reset</Button>
+                           <Button type="button" onClick={form.reset} disabled={submitting || pristine}
+                                   variant={'secondary'}>Reset</Button>
                          </ButtonGroup>
                        </Form.Row>
                      </Form>
@@ -197,7 +195,7 @@ function mapDispatchToProps (dispatch) {
     generateNonPlayerCharacter: (non_player_character, campaignSlug) => {
       dispatch(rest.actions.generateNonPlayerCharacter(
         {campaign_slug: campaignSlug},
-        {body: JSON.stringify({non_player_character})}
+        {body: JSON.stringify({non_player_character})},
       ));
     },
   };

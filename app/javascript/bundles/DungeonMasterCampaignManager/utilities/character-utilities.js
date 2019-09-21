@@ -90,7 +90,7 @@ export const SetupCharacterState = (newChar) => {
       },
       level: dndClass.level,
     })),
-    characterItems: newChar.inventory.map((item) => ({
+    characterItems: newChar.inventory ? (newChar.inventory.map((item) => ({
       id: item.id,
       quantity: item.quantity,
       carrying: item.carrying,
@@ -98,7 +98,7 @@ export const SetupCharacterState = (newChar) => {
         value: item.itemId,
         label: item.name,
       },
-    })),
+    }))) : [],
     totalLevel: newChar.totalLevel,
     armorClass: newChar.armorClass,
     armorClassModifier: newChar.armorClassModifier,

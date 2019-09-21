@@ -53,8 +53,9 @@
 #
 
 class Character < ApplicationRecord
-  validates :name, presence: true
-  validates :character_classes, length: { minimum: 1 }
+  validates :name, :hit_points, :alignment, :charisma, :constitution, :dexterity, :intelligence,
+            :strength, :type, :wisdom, presence: true
+  validates :character_classes, length: {minimum: 1}
 
   after_validation(on: :create) do
     self.slug = generate_slug
@@ -163,51 +164,51 @@ class Character < ApplicationRecord
   end
 
   def cantrips
-    character_spells.includes(:spell).where(spells: { level: 0 })
+    character_spells.includes(:spell).where(spells: {level: 0})
   end
 
   def spells_level_1
-    character_spells.includes(:spell).where(spells: { level: 1 })
+    character_spells.includes(:spell).where(spells: {level: 1})
   end
 
   def spells_level_2
-    character_spells.includes(:spell).where(spells: { level: 2 })
+    character_spells.includes(:spell).where(spells: {level: 2})
   end
 
   def spells_level_3
-    character_spells.includes(:spell).where(spells: { level: 3 })
+    character_spells.includes(:spell).where(spells: {level: 3})
   end
 
   def spells_level_4
-    character_spells.includes(:spell).where(spells: { level: 4 })
+    character_spells.includes(:spell).where(spells: {level: 4})
   end
 
   def spells_level_5
-    character_spells.includes(:spell).where(spells: { level: 5 })
+    character_spells.includes(:spell).where(spells: {level: 5})
   end
 
   def spells_level_6
-    character_spells.includes(:spell).where(spells: { level: 6 })
+    character_spells.includes(:spell).where(spells: {level: 6})
   end
 
   def spells_level_7
-    character_spells.includes(:spell).where(spells: { level: 7 })
+    character_spells.includes(:spell).where(spells: {level: 7})
   end
 
   def spells_level_8
-    character_spells.includes(:spell).where(spells: { level: 8 })
+    character_spells.includes(:spell).where(spells: {level: 8})
   end
 
   def spells_level_9
-    character_spells.includes(:spell).where(spells: { level: 9 })
+    character_spells.includes(:spell).where(spells: {level: 9})
   end
 
   include PgSearch::Model
 
   # PgSearch
   pg_search_scope :search_for,
-                  against: { name: 'A', description: 'B' },
-                  using: { tsearch: { prefix: true } }
+                  against: {name: 'A', description: 'B'},
+                  using: {tsearch: {prefix: true}}
 
   def to_param
     slug
