@@ -80,6 +80,7 @@ class Character < ApplicationRecord
     create_attack_action(weapon_rh) if weapon_rh_id && !weapon_2h_id
     create_attack_action(weapon_lh, true) if weapon_lh_id && !has_shield
     create_attack_action(weapon_2h) if weapon_2h_id
+    self.xp = DndRules.xp_for_cr(challenge_rating) if type == 'NonPlayerCharacter'
   end
 
   attribute :min_score, :integer
