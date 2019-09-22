@@ -41,12 +41,14 @@ module Admin::V1
       authorize @character
       @character.role = ''
       @character.character_classes.build
+      @character.campaign = @campaign
     end
 
     # GET /characters/new/generate_npc
     def generate_npc
       @character = NonPlayerCharacter.new
       authorize @character
+      @character.campaign = @campaign
       @character.role = ''
     end
 

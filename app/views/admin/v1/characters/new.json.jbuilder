@@ -8,3 +8,7 @@ json.extract! @character, :name, :alignment, :background,
               :dexterity, :constitution, :intelligence, :wisdom, :charisma, :hit_points
 
 json.character_classes @character.character_classes
+
+json.campaign do
+  json.extract! @character.campaign, :id, :name, :description, :world, :slug, :user_id
+end
