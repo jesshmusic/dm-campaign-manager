@@ -8,7 +8,7 @@
 #  description :text
 #  map_x       :integer          default(0)
 #  map_y       :integer          default(0)
-#  name        :string
+#  name        :string           default(""), not null
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #  campaign_id :bigint

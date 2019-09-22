@@ -67,7 +67,6 @@
     <thead>
     <tr>
       <th>Date</th>
-      <th>Name</th>
       <th>Description</th>
     </tr>
     </thead>
@@ -76,7 +75,6 @@
     <% @campaign.world_events.each do |world_event| %>
       <tr>
         <td class="bg-light"><%= world_event.when %></td>
-        <td><%= world_event.name %></td>
         <td><%= world_event.description %></td>
       </tr>
     <% end %>

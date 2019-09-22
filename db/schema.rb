@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_16_174925) do
+ActiveRecord::Schema.define(version: 2019_09_22_175728) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -462,7 +462,6 @@ ActiveRecord::Schema.define(version: 2019_09_16_174925) do
   end
 
   create_table "world_events", force: :cascade do |t|
-    t.string "name"
     t.text "description"
     t.bigint "campaign_id"
     t.datetime "created_at", null: false
@@ -472,13 +471,13 @@ ActiveRecord::Schema.define(version: 2019_09_16_174925) do
   end
 
   create_table "world_locations", force: :cascade do |t|
-    t.string "name"
     t.text "description"
     t.integer "map_x", default: 0
     t.integer "map_y", default: 0
     t.bigint "campaign_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "name", default: "", null: false
     t.index ["campaign_id"], name: "index_world_locations_on_campaign_id"
   end
 

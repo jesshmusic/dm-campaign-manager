@@ -325,7 +325,7 @@ class CharacterEditor extends React.Component {
                          </ButtonGroup>
                        </Form.Row>
                      </Accordion>
-                     <pre className={classes.preBlock}>{JSON.stringify(values, 0, 2)}</pre>
+                     {/*<pre className={classes.preBlock}>{JSON.stringify(values, 0, 2)}</pre>*/}
                    </Form>
                  )}
       />

@@ -31,13 +31,9 @@ const WorldEventFields = ({event, fields, index}) => {
                  type={'text'}
                  colWidth={'3'}
                  name={`${event}.when`}/>
-      <FormField label={'Name'}
-                 type={'text'}
-                 colWidth={'3'}
-                 name={`${event}.name`}/>
       <FormField label={'Description'}
                  type={'text'}
-                 colWidth={'5'}
+                 colWidth={'8'}
                  name={`${event}.description`}/>
       <Form.Group as={Col} md={'1'}>
         <Form.Label>Remove</Form.Label>

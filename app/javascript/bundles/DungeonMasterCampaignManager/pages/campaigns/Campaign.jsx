@@ -57,7 +57,7 @@ class Campaign extends React.Component {
                   <ListGroup variant="flush">
                     {campaign.worldEvents.map((worldEvent, index) =>
                       <ListGroupItem key={index}>
-                        <h4 className={'h6'}><strong>{worldEvent.when}</strong> -  {worldEvent.name}</h4>
+                        <h4 className={'h6'}><strong>{worldEvent.when}</strong></h4>
                         <p>{worldEvent.description}</p>
                       </ListGroupItem>
                     )}

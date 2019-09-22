@@ -457,7 +457,7 @@ export const characterCalculations = createDecorator(
               label: armor.label,
             },
           });
-        } else if (!armor) {
+        } else if (!armor && prevValues.armor) {
           const removeIndex = newItems.map((item) => item.item.value).indexOf(prevValues.armor.value);
           if (removeIndex >= 0) {
             newItems.splice(removeIndex, 1);
@@ -488,7 +488,7 @@ export const characterCalculations = createDecorator(
               label: shield.label,
             },
           });
-        } else if (!shield) {
+        } else if (!shield && prevValues.shield) {
           const removeIndex = newItems.map((item) => item.item.value).indexOf(prevValues.shield.value);
           if (removeIndex >= 0) {
             newItems.splice(removeIndex, 1);
@@ -513,8 +513,8 @@ export const characterCalculations = createDecorator(
               label: weapon.label,
             },
           });
-        } else if (!weapon) {
-          const removeIndex = newItems.map((item) => item.item.value).indexOf(prevValues.weapon.value);
+        } else if (!weapon && prevValues.weaponLh) {
+          const removeIndex = newItems.map((item) => item.item.value).indexOf(prevValues.weaponLh.value);
           if (removeIndex >= 0) {
             newItems.splice(removeIndex, 1);
           }
@@ -538,8 +538,8 @@ export const characterCalculations = createDecorator(
               label: weapon.label,
             },
           });
-        } else if (!weapon) {
-          const removeIndex = newItems.map((item) => item.item.value).indexOf(prevValues.weapon.value);
+        } else if (!weapon && prevValues.weaponRh) {
+          const removeIndex = newItems.map((item) => item.item.value).indexOf(prevValues.weaponRh.value);
           if (removeIndex >= 0) {
             newItems.splice(removeIndex, 1);
           }
@@ -563,8 +563,8 @@ export const characterCalculations = createDecorator(
               label: weapon.label,
             },
           });
-        } else if (!weapon) {
-          const removeIndex = newItems.map((item) => item.item.value).indexOf(prevValues.weapon.value);
+        } else if (!weapon && prevValues.weapon2h) {
+          const removeIndex = newItems.map((item) => item.item.value).indexOf(prevValues.weapon2h.value);
           if (removeIndex >= 0) {
             newItems.splice(removeIndex, 1);
           }
