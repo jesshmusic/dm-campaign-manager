@@ -155,7 +155,8 @@ class Character < ApplicationRecord
   end
 
   def one_handed_weapons
-    character_items.includes(:item).where(items: {type: 'WeaponItem'})
+    weapons = character_items.includes(:item).where(items: {type: 'WeaponItem'})
+    weapons.where.not("'Two-Handed' = ANY (weapon_properties)")
   end
 
   def two_handed_weapons

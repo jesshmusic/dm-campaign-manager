@@ -328,7 +328,12 @@ json.inventory character.character_items do |character_item|
 end
 
 json.armors character.armors do |armor|
-  json.extract! armor.item, :id, :name, :category, :sub_category, :cost_unit, :cost_value, :description, :weight, :type
+  json.id armor.id
+  json.armor_id armor.item.id
+  json.quantity armor.quantity
+  json.carrying armor.carrying
+  json.equipped armor.equipped
+  json.extract! armor.item, :name, :category, :sub_category, :cost_unit, :cost_value, :description, :weight, :type
   json.extract! armor.item, :armor_class, :armor_dex_bonus,
                 :armor_max_bonus, :armor_stealth_disadvantage, :armor_str_minimum,
                 :armor_class_bonus
@@ -337,7 +342,12 @@ json.armors character.armors do |armor|
 end
 
 json.one_handed_weapons character.one_handed_weapons do |one_handed_weapon|
-  json.extract! one_handed_weapon.item, :id, :name, :category, :sub_category, :cost_unit, :cost_value, :description, :weight, :type
+  json.id one_handed_weapon.id
+  json.weapon_id one_handed_weapon.item.id
+  json.quantity one_handed_weapon.quantity
+  json.carrying one_handed_weapon.carrying
+  json.equipped one_handed_weapon.equipped
+  json.extract! one_handed_weapon.item, :name, :category, :sub_category, :cost_unit, :cost_value, :description, :weight, :type
   json.extract! one_handed_weapon.item, :category_range, :weapon_2h_damage_dice_count, :weapon_2h_damage_dice_value,
                 :weapon_2h_damage_type, :weapon_damage_dice_count, :weapon_damage_dice_value, :weapon_damage_type,
                 :weapon_properties, :weapon_range, :weapon_range_long, :weapon_range_normal, :weapon_thrown_range_long,
@@ -347,7 +357,12 @@ json.one_handed_weapons character.one_handed_weapons do |one_handed_weapon|
 end
 
 json.two_handed_weapons character.two_handed_weapons do |two_handed_weapon|
-  json.extract! two_handed_weapon.item, :id, :name, :category, :sub_category, :cost_unit, :cost_value, :description, :weight, :type
+  json.id two_handed_weapon.id
+  json.weapon_id two_handed_weapon.item.id
+  json.quantity two_handed_weapon.quantity
+  json.carrying two_handed_weapon.carrying
+  json.equipped two_handed_weapon.equipped
+  json.extract! two_handed_weapon.item, :name, :category, :sub_category, :cost_unit, :cost_value, :description, :weight, :type
   json.extract! two_handed_weapon.item, :category_range, :weapon_2h_damage_dice_count, :weapon_2h_damage_dice_value,
                 :weapon_2h_damage_type, :weapon_damage_dice_count, :weapon_damage_dice_value, :weapon_damage_type,
                 :weapon_properties, :weapon_range, :weapon_range_long, :weapon_range_normal, :weapon_thrown_range_long,

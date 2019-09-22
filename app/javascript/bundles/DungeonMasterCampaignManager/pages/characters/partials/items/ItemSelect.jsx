@@ -21,9 +21,9 @@ const getItems = (inputValue, callback) => {
     });
 };
 
-const ItemSelect = ({characterItem, colWidth}) => (
+const ItemSelect = ({characterItem, colWidth, label}) => (
   <FormSelectAsync
-    label={'Item'}
+    label={label}
     colWidth={colWidth}
     getOptions={getItems}
     name={`${characterItem}.item`}
@@ -36,6 +36,7 @@ const ItemSelect = ({characterItem, colWidth}) => (
 ItemSelect.propTypes = {
   characterItem: PropTypes.string.isRequired,
   colWidth: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
 };
 
 export default ItemSelect;

@@ -28,6 +28,7 @@ import SorcererSpellSelect from './partials/spell-fields/SorcererSpellSelect';
 import WarlockSpellSelect from './partials/spell-fields/WarlockSpellSelect';
 import WizardSpellSelect from './partials/spell-fields/WizardSpellSelect';
 
+import classes from './partials/character-form.module.scss';
 import {
   alignmentOptions,
   characterCalculations,
@@ -43,7 +44,7 @@ import WeaponLHSelect from './partials/items/WeaponLHSelect';
 import WeaponRHSelect from './partials/items/WeaponRHSelect';
 import Weapon2HSelect from './partials/items/Weapon2HSelect';
 import WeaponRadios from './partials/items/WeaponRadios';
-import CharacterItemFields from './partials/CharacterItemFields';
+import CharacterItemFields from './partials/items/CharacterItemFields';
 import Accordion from 'react-bootstrap/Accordion';
 import useAccordionToggle from 'react-bootstrap/useAccordionToggle';
 import {FiChevronDown} from 'react-icons/all';
@@ -289,12 +290,15 @@ class CharacterEditor extends React.Component {
                                        <CharacterItemFields characterItem={characterItem}
                                                             fields={fields}
                                                             index={index}
-                                                            key={index}/>
+                                                            key={index}
+                                                            label={fields.value[index].label}/>
                                      ) : null))
                                  }
                                </FieldArray>
                                <Button type="button" onClick={() => push('characterItems', {
                                  quantity: 1,
+                                 label: 'Item',
+                                 carrying: true,
                                })} variant={'info'} block>Add Item</Button>
                              </Col>
                            </Form.Row>
@@ -321,6 +325,7 @@ class CharacterEditor extends React.Component {
                          </ButtonGroup>
                        </Form.Row>
                      </Accordion>
+                     <pre className={classes.preBlock}>{JSON.stringify(values, 0, 2)}</pre>
                    </Form>
                  )}
       />

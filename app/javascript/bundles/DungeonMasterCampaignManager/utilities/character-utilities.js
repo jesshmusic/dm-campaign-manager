@@ -34,17 +34,32 @@ export const alignmentOptions = [
 
 const CalculateArmorClass = ({armor, armorClassModifier, dexterity, shield}) => {
   if (armor && armor.data.armorDexBonus && shield) {
-    return armor.data.armorClass + armor.data.armorClassBonus + AbilityScoreModifier(dexterity) + shield.data.armorClassBonus + armorClassModifier;
+    return armor.data.armorClass
+      + armor.data.armorClassBonus
+      + AbilityScoreModifier(dexterity)
+      + shield.data.armorClassBonus
+      + armorClassModifier;
   } else if (armor && armor.data.armorDexBonus && !shield) {
-    return armor.data.armorClass + armor.data.armorClassBonus + AbilityScoreModifier(dexterity) + armorClassModifier;
+    return armor.data.armorClass
+      + armor.data.armorClassBonus
+      + AbilityScoreModifier(dexterity)
+      + armorClassModifier;
   } else if (armor && shield) {
-    return armor.data.armorClass + armor.data.armorClassBonus + shield.data.armorClassBonus + armorClassModifier;
+    return armor.data.armorClass
+      + armor.data.armorClassBonus
+      + shield.data.armorClassBonus
+      + armorClassModifier;
   } else if (armor) {
-    return armor.data.armorClass + armor.data.armorClassBonus + armorClassModifier;
+    return armor.data.armorClass
+      + armor.data.armorClassBonus
+      + armorClassModifier;
   } else if (shield) {
-    return 10 + AbilityScoreModifier(dexterity) + shield.data.armorClassBonus + armorClassModifier;
+    return 10 + AbilityScoreModifier(dexterity)
+      + shield.data.armorClassBonus
+      + armorClassModifier;
   }
-  return 10 + AbilityScoreModifier(dexterity) + armorClassModifier;
+  return 10 + AbilityScoreModifier(dexterity)
+    + armorClassModifier;
 };
 
 const calculateProficiency = (totalLevel) => {
@@ -94,6 +109,7 @@ export const SetupCharacterState = (newChar) => {
       id: item.id,
       quantity: item.quantity,
       carrying: item.carrying,
+      label: 'Item',
       item: {
         value: item.itemId,
         label: item.name,
@@ -156,6 +172,51 @@ export const SetupCharacterState = (newChar) => {
 
   if (newChar.armor) {
     charObject.armorId = newChar.armor.value;
+  }
+
+  if (newChar.armors) {
+    newChar.armors.forEach((nextArmor) => {
+      charObject.characterItems.push({
+        id: nextArmor.id,
+        quantity: nextArmor.quantity,
+        carrying: nextArmor.carrying,
+        label: 'Armor',
+        item: {
+          value: nextArmor.armorId,
+          label: nextArmor.name,
+        },
+      });
+    });
+  }
+
+  if (newChar.oneHandedWeapons) {
+    newChar.oneHandedWeapons.forEach((nextWeapon) => {
+      charObject.characterItems.push({
+        id: nextWeapon.id,
+        quantity: nextWeapon.quantity,
+        carrying: nextWeapon.carrying,
+        label: 'One-handed Weapon',
+        item: {
+          value: nextWeapon.weaponId,
+          label: nextWeapon.name,
+        },
+      });
+    });
+  }
+
+  if (newChar.twoHandedWeapons) {
+    newChar.twoHandedWeapons.forEach((nextWeapon) => {
+      charObject.characterItems.push({
+        id: nextWeapon.id,
+        quantity: nextWeapon.quantity,
+        carrying: nextWeapon.carrying,
+        label: 'Two-handed Weapon',
+        item: {
+          value: nextWeapon.weaponId,
+          label: nextWeapon.name,
+        },
+      });
+    });
   }
 
   // Set Race
@@ -384,6 +445,26 @@ export const characterCalculations = createDecorator(
         shield: allValues.shield,
       }),
       armorId: (characterArmor) => characterArmor ? characterArmor.value : null,
+      characterItems: (armor, allValues, prevValues) => {
+        const newItems = allValues.characterItems;
+        if (armor && !newItems.find((nextItem) => nextItem.item.value === armor.value)) {
+          newItems.push({
+            quantity: 1,
+            carrying: true,
+            label: 'Armor',
+            item: {
+              value: armor.value,
+              label: armor.label,
+            },
+          });
+        } else if (!armor) {
+          const removeIndex = newItems.map((item) => item.item.value).indexOf(prevValues.armor.value);
+          if (removeIndex >= 0) {
+            newItems.splice(removeIndex, 1);
+          }
+        }
+        return newItems;
+      },
     },
   },
   {
@@ -395,6 +476,101 @@ export const characterCalculations = createDecorator(
         dexterity: allValues.dexterity || 10,
         shield,
       }),
+      characterItems: (shield, allValues, prevValues) => {
+        const newItems = allValues.characterItems;
+        if (shield && !newItems.find((nextItem) => nextItem.item.value === shield.value)) {
+          newItems.push({
+            quantity: 1,
+            carrying: true,
+            label: 'Shield',
+            item: {
+              value: shield.value,
+              label: shield.label,
+            },
+          });
+        } else if (!shield) {
+          const removeIndex = newItems.map((item) => item.item.value).indexOf(prevValues.shield.value);
+          if (removeIndex >= 0) {
+            newItems.splice(removeIndex, 1);
+          }
+        }
+        return newItems;
+      },
+    },
+  },
+  {
+    field: 'weaponLh',
+    updates: {
+      characterItems: (weapon, allValues, prevValues) => {
+        const newItems = allValues.characterItems;
+        if (weapon && !newItems.find((nextItem) => nextItem.item.value === weapon.value)) {
+          newItems.push({
+            quantity: 1,
+            carrying: true,
+            label: 'One-handed Weapon',
+            item: {
+              value: weapon.value,
+              label: weapon.label,
+            },
+          });
+        } else if (!weapon) {
+          const removeIndex = newItems.map((item) => item.item.value).indexOf(prevValues.weapon.value);
+          if (removeIndex >= 0) {
+            newItems.splice(removeIndex, 1);
+          }
+        }
+        return newItems;
+      },
+    },
+  },
+  {
+    field: 'weaponRh',
+    updates: {
+      characterItems: (weapon, allValues, prevValues) => {
+        const newItems = allValues.characterItems;
+        if (weapon && !newItems.find((nextItem) => nextItem.item.value === weapon.value)) {
+          newItems.push({
+            quantity: 1,
+            carrying: true,
+            label: 'One-handed Weapon',
+            item: {
+              value: weapon.value,
+              label: weapon.label,
+            },
+          });
+        } else if (!weapon) {
+          const removeIndex = newItems.map((item) => item.item.value).indexOf(prevValues.weapon.value);
+          if (removeIndex >= 0) {
+            newItems.splice(removeIndex, 1);
+          }
+        }
+        return newItems;
+      },
+    },
+  },
+  {
+    field: 'weapon2h',
+    updates: {
+      characterItems: (weapon, allValues, prevValues) => {
+        const newItems = allValues.characterItems;
+        if (weapon && !newItems.find((nextItem) => nextItem.item.value === weapon.value)) {
+          newItems.push({
+            quantity: 1,
+            carrying: true,
+            label: 'Two-handed Weapon',
+            item: {
+              value: weapon.value,
+              label: weapon.label,
+            },
+          });
+        } else if (!weapon) {
+          const removeIndex = newItems.map((item) => item.item.value).indexOf(prevValues.weapon.value);
+          if (removeIndex >= 0) {
+            newItems.splice(removeIndex, 1);
+          }
+        }
+        return newItems;
+      },
     },
   },
   {

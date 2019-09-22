@@ -225,8 +225,8 @@ const CharacterBody = ({character, isNPC}) => {
               character.inventory.map((item) => (
                 <ListGroup.Item key={item.id} className={'d-flex justify-content-between align-items-center'}>
                   {item.quantity} {item.name} {item.carrying ? (
-                  <Badge pill variant={'success'}>Carrying</Badge>
-                ) : null}
+                    <Badge pill variant={ 'success' }>Carrying</Badge>
+                  ) : null }
                 </ListGroup.Item>
               ))
             ) : <ListGroup.Item>None</ListGroup.Item>}
@@ -281,14 +281,7 @@ const CharacterBody = ({character, isNPC}) => {
         </Col>
       </Row>
       {isCaster(character) ? (
-        <Row>
-          <Col>
-            <h3>Spell Casting</h3>
-            {character.characterClasses.map((charClass) => (
-              <CharacterClassSpellCasting charClass={charClass} key={charClass.id}/>
-            ))}
-          </Col>
-        </Row>
+        <CharacterClassSpellCasting characterClasses={character.characterClasses}/>
       ) : null}
     </Container>
   );
