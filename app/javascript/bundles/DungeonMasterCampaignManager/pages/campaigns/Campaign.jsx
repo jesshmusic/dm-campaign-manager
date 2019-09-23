@@ -18,25 +18,42 @@ import Button from 'react-bootstrap/Button';
 import PageTitle from '../../components/layout/PageTitle';
 import DndSpinner from '../../components/layout/DndSpinner';
 import AdventureForm from '../adventures/AdventureForm';
+import snakecaseKeys from 'snakecase-keys';
 
 class Campaign extends React.Component {
   state = {
     showingNewAdventureForm: false,
-    editingAdventureId: null,
+    editingAdventure: null,
   };
 
   componentDidMount () {
     this.props.getCampaign(this.props.campaignSlug);
   }
 
+  stopEditAdventure () {
+    this.setState({ editingAdventure: null });
+  }
+
+  editAdventure (adventure) {
+    this.setState({ editingAdventure: adventure });
+  }
+
   showNewAdventureForm () {
     this.setState({
       showingNewAdventureForm: !this.state.showingNewAdventureForm,
-    })
+    });
+  }
+
+  onUpdateCampaign (campaignBody) {
+    this.props.updateCampaign(snakecaseKeys(campaignBody, {exclude: ['_destroy']}), this.props.campaign.slug);
+    this.setState({
+      showingNewAdventureForm: false,
+      editingAdventure: null,
+    });
   }
 
   render () {
-    const { showingNewAdventureForm, editingAdventureId } = this.state;
+    const { showingNewAdventureForm, editingAdventure } = this.state;
     const { user, flashMessages, campaign } = this.props;
     const campaignTitle = campaign ? campaign.name : 'Campaign Loading...';
     return (
@@ -57,9 +74,15 @@ class Campaign extends React.Component {
               <Col sm={7}>
                 <ReactMarkdown source={campaign.description} />
                 <h3>Adventures</h3>
-                <AdventuresList adventures={campaign.adventures} />
-                {showingNewAdventureForm ? (
-                  <AdventureForm campaign={campaign}/>
+                <AdventuresList
+                  adventures={campaign.adventures}
+                  editAdventure={(adventure) => this.editAdventure(adventure)}
+                  stopEditAdventure={() => this.stopEditAdventure()} />
+                {showingNewAdventureForm || editingAdventure !== null ? (
+                  <AdventureForm
+                    campaign={campaign}
+                    adventure={editingAdventure}
+                    handleUpdateCampaign={(campaignBody) => this.onUpdateCampaign(campaignBody)}/>
                 ) : (
                   <Button variant={'secondary'} block onClick={() => this.showNewAdventureForm()}>New Adventure</Button>
                 )}
@@ -114,6 +137,7 @@ Campaign.propTypes = {
   campaignSlug: PropTypes.string.isRequired,
   flashMessages: PropTypes.array,
   getCampaign: PropTypes.func.isRequired,
+  updateCampaign: PropTypes.func.isRequired,
   user: PropTypes.object,
 };
 
@@ -129,6 +153,9 @@ function mapDispatchToProps (dispatch) {
   return {
     getCampaign: (campaignSlug) => {
       dispatch(rest.actions.getCampaign({slug: campaignSlug}));
+    },
+    updateCampaign: (campaign, campaignSlug) => {
+      dispatch(rest.actions.updateCampaign({slug: campaignSlug}, {body: JSON.stringify({campaign})}));
     },
   };
 }

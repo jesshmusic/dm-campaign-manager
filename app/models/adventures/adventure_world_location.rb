@@ -24,4 +24,6 @@
 class AdventureWorldLocation < ApplicationRecord
   belongs_to :adventure
   belongs_to :world_location
+
+  accepts_nested_attributes_for :world_location
 end

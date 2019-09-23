@@ -24,4 +24,6 @@
 
 class WorldLocation < ApplicationRecord
   belongs_to :campaign
+
+  has_many :adventure_world_locations
 end

@@ -65,7 +65,7 @@ module Admin::V1
           format.json { render :show, status: :ok }
         else
           format.html { render :edit }
-          format.json { render json: @campaign.errors.full_messages.join(', '), status: :unprocessable_entity }
+          format.json { render json: @campaign.errors, status: :unprocessable_entity }
         end
       end
     end
@@ -102,7 +102,7 @@ module Admin::V1
           adventure_world_location_attributes: [
             :id,
             :world_location_id,
-            world_location_attributes: %i[name description map_x map_y]
+            world_location_attributes: %i[name description map_x map_y campaign_id]
           ],
           encounters_attributes: [
             :id,
