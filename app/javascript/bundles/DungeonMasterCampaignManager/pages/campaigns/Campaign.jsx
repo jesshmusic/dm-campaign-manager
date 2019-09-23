@@ -65,7 +65,7 @@ class Campaign extends React.Component {
                        buttonTitle={'Edit Campaign'}
                        buttonVariant={'primary'}/>
             <Row>
-              <Col sm={7}>
+              <Col sm={7} md={8}>
                 <ReactMarkdown source={campaign.description} />
                 <h3>Adventures</h3>
                 <AdventuresList
@@ -80,7 +80,7 @@ class Campaign extends React.Component {
                   <Button variant={'secondary'} block onClick={() => this.showNewAdventureForm()}>New Adventure</Button>
                 )}
               </Col>
-              <Col sm={5}>
+              <Col sm={5} md={4}>
                 <div className={'mb-4'}>
                   <h3>Events</h3>
                   <ListGroup variant="flush">

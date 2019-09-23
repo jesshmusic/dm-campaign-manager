@@ -13,6 +13,9 @@ import classes from '../characters/partials/character-form.module.scss';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Button from 'react-bootstrap/Button';
 import FormSelect from '../../components/forms/FormSelect';
+import Col from 'react-bootstrap/Col';
+import {FieldArray} from 'react-final-form-arrays';
+import EncounterFields from '../campaigns/partials/EncounterFields';
 
 const setAdventureObject = (values, campaignID) => {
   let adventureWorldLocationAttributes = {
@@ -61,7 +64,7 @@ const setAdventureObject = (values, campaignID) => {
           platinumPieces: encounter.platinumPieces,
           silverPieces: encounter.silverPieces,
           xp: encounter.xp,
-          encounterMonstersAttributes: values.encounterMonsters.map((encounterMonster) => {
+          encounterMonstersAttributes: encounter.encounterMonsters.map((encounterMonster) => {
             const newMonsters = {
               numberOfMonsters: encounterMonster.numberOfMonsters,
               monsterId: encounterMonster.monster.value,
@@ -74,7 +77,7 @@ const setAdventureObject = (values, campaignID) => {
             }
             return newMonsters;
           }),
-          encounterItemsAttributes: values.equipmentItems.map((item) => {
+          encounterItemsAttributes: encounter.encounterItems.map((item) => {
             const itemFields = {
               quantity: item.quantity,
               itemId: item.item.value,
@@ -161,6 +164,8 @@ class AdventureForm extends React.Component {
   render () {
     const {adventure, submitButtonTitle, validated, worldLocationOptions} = this.state;
     const {campaign, onCancelEditing} = this.props;
+    const nonPlayerCharacterOptions = campaign.npcs.map((pc) => ({value: pc.id, label: pc.name}));
+    const playerCharacterOptions = campaign.pcs.map((pc) => ({value: pc.id, label: pc.name}));
 
     return (
       <FinalForm onSubmit={this.handleSubmit}
@@ -204,7 +209,7 @@ class AdventureForm extends React.Component {
                          label={'Player Characters'}
                          name={'playerCharacters'}
                          colWidth={'6'}
-                         options={campaign.pcs.map((pc) => ({value: pc.id, label: pc.name}))}
+                         options={playerCharacterOptions}
                          isClearable
                          isMulti
                        />
@@ -212,12 +217,34 @@ class AdventureForm extends React.Component {
                          label={'Non-player Characters'}
                          name={'nonPlayerCharacters'}
                          colWidth={'6'}
-                         options={campaign.npcs.map((pc) => ({value: pc.id, label: pc.name}))}
+                         options={nonPlayerCharacterOptions}
                          isClearable
                          isMulti
                        />
                      </Form.Row>
                      <Form.Row>
+                       <Col md={12}>
+                         <h3>Encounters</h3>
+                         <FieldArray name="encounters">
+                           {({fields}) => (
+                             fields.map((encounter, index) => (
+                               !fields.value[index] || !fields.value[index]._destroy ? (
+                                 <EncounterFields encounter={encounter}
+                                                  fields={fields}
+                                                  index={index}
+                                                  key={index}/>
+                               ) : null))
+                           )}
+                         </FieldArray>
+                         <Button type="button" onClick={() => push('encounters', {
+                           name: '',
+                           description: '',
+                           encounterMonsters: [],
+                           encounterItems: [],
+                         })} variant={'success'} block>Add Encounter</Button>
+                       </Col>
+                     </Form.Row>
+                     <Form.Row className={'my-4'}>
                        <ButtonGroup aria-label="Campaign actions">
                          <Button type="button" onClick={onCancelEditing} variant={'info'}>Cancel</Button>
                          <Button type="button" onClick={form.reset} disabled={submitting || pristine} variant={'secondary'}>Reset</Button>
