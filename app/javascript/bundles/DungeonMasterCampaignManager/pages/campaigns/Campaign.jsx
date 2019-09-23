@@ -17,17 +17,26 @@ import AdventuresList from '../adventures/AdventuresList';
 import Button from 'react-bootstrap/Button';
 import PageTitle from '../../components/layout/PageTitle';
 import DndSpinner from '../../components/layout/DndSpinner';
+import AdventureForm from '../adventures/AdventureForm';
 
 class Campaign extends React.Component {
-  constructor (props) {
-    super(props);
-  }
+  state = {
+    showingNewAdventureForm: false,
+    editingAdventureId: null,
+  };
 
   componentDidMount () {
     this.props.getCampaign(this.props.campaignSlug);
   }
 
+  showNewAdventureForm () {
+    this.setState({
+      showingNewAdventureForm: !this.state.showingNewAdventureForm,
+    })
+  }
+
   render () {
+    const { showingNewAdventureForm, editingAdventureId } = this.state;
     const { user, flashMessages, campaign } = this.props;
     const campaignTitle = campaign ? campaign.name : 'Campaign Loading...';
     return (
@@ -49,7 +58,11 @@ class Campaign extends React.Component {
                 <ReactMarkdown source={campaign.description} />
                 <h3>Adventures</h3>
                 <AdventuresList adventures={campaign.adventures} />
-                <Button variant={'secondary'} block>New Adventure</Button>
+                {showingNewAdventureForm ? (
+                  <AdventureForm campaign={campaign}/>
+                ) : (
+                  <Button variant={'secondary'} block onClick={() => this.showNewAdventureForm()}>New Adventure</Button>
+                )}
               </Col>
               <Col sm={5}>
                 <div className={'mb-4'}>

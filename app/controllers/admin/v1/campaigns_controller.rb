@@ -99,7 +99,11 @@ module Admin::V1
           :description,
           :_destroy,
           character_ids: [],
-          adventure_world_location_attributes: %i[id _destroy world_location_id],
+          adventure_world_location_attributes: [
+            :id,
+            :world_location_id,
+            world_location_attributes: %i[name description map_x map_y]
+          ],
           encounters_attributes: [
             :id,
             :copper_pieces,
@@ -112,9 +116,7 @@ module Admin::V1
             :xp,
             :_destroy,
             encounter_monsters_attributes: %i[id number_of_monsters monster_id _destroy],
-            equipment_items_attributes: [
-              :id, :quantity, :_destroy, item_ids: []
-            ]
+            encounter_items_attributes: %i[id quantity _destroy item_id]
           ]
         ],
         world_locations_attributes: %i[id name description map_x map_y _destroy],
