@@ -44,14 +44,6 @@ class Campaign < ApplicationRecord
     characters.where(type: 'NonPlayerCharacter').count
   end
 
-  def players_pcs
-    chars = []
-    users.each do |player|
-      chars << PlayerCharacter.where(user_id: player.id)
-    end
-    chars
-  end
-
   def pcs
     characters.where(type: 'PlayerCharacter')
   end

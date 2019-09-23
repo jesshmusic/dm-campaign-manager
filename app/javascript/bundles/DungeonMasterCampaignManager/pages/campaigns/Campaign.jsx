@@ -23,19 +23,10 @@ import snakecaseKeys from 'snakecase-keys';
 class Campaign extends React.Component {
   state = {
     showingNewAdventureForm: false,
-    editingAdventure: null,
   };
 
   componentDidMount () {
     this.props.getCampaign(this.props.campaignSlug);
-  }
-
-  stopEditAdventure () {
-    this.setState({ editingAdventure: null });
-  }
-
-  editAdventure (adventure) {
-    this.setState({ editingAdventure: adventure });
   }
 
   showNewAdventureForm () {
@@ -44,16 +35,19 @@ class Campaign extends React.Component {
     });
   }
 
-  onUpdateCampaign (campaignBody) {
+  handleUpdateCampaign (campaignBody) {
     this.props.updateCampaign(snakecaseKeys(campaignBody, {exclude: ['_destroy']}), this.props.campaign.slug);
     this.setState({
       showingNewAdventureForm: false,
-      editingAdventure: null,
     });
   }
 
+  handleCancelEditing () {
+    this.setState({showingNewAdventureForm: false});
+  }
+
   render () {
-    const { showingNewAdventureForm, editingAdventure } = this.state;
+    const { showingNewAdventureForm } = this.state;
     const { user, flashMessages, campaign } = this.props;
     const campaignTitle = campaign ? campaign.name : 'Campaign Loading...';
     return (
@@ -75,14 +69,13 @@ class Campaign extends React.Component {
                 <ReactMarkdown source={campaign.description} />
                 <h3>Adventures</h3>
                 <AdventuresList
-                  adventures={campaign.adventures}
-                  editAdventure={(adventure) => this.editAdventure(adventure)}
-                  stopEditAdventure={() => this.stopEditAdventure()} />
-                {showingNewAdventureForm || editingAdventure !== null ? (
+                  campaign={campaign}
+                  handleUpdateCampaign={(campaignBody) => this.handleUpdateCampaign(campaignBody)} />
+                {showingNewAdventureForm ? (
                   <AdventureForm
                     campaign={campaign}
-                    adventure={editingAdventure}
-                    handleUpdateCampaign={(campaignBody) => this.onUpdateCampaign(campaignBody)}/>
+                    onUpdateCampaign={(campaignBody) => this.handleUpdateCampaign(campaignBody)}
+                    onCancelEditing={() => this.handleCancelEditing()}/>
                 ) : (
                   <Button variant={'secondary'} block onClick={() => this.showNewAdventureForm()}>New Adventure</Button>
                 )}

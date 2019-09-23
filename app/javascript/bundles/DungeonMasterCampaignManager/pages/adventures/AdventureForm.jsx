@@ -42,12 +42,15 @@ const setAdventureObject = (values, campaignID) => {
       adventureWorldLocationAttributes.id = values.worldLocation.data.adventureLocationId;
     }
   }
+
+  const characterIds = values.playerCharacters.map((pc) => pc.value).concat(values.nonPlayerCharacters.map((npc) => npc.value));
+
   return {
     adventuresAttributes: [{
       id: values.id,
       name: values.name,
       description: values.description,
-      characterIds: values.playerCharacters.map((character) => character.id),
+      characterIds,
       encountersAttributes: values.encounters.map((encounter) => {
         const encounterFields = {
           copperPieces: encounter.copperPieces,
@@ -96,7 +99,7 @@ const setAdventureObject = (values, campaignID) => {
       adventureWorldLocationAttributes,
     }],
   };
-}
+};
 
 class AdventureForm extends React.Component {
   state = {
@@ -119,8 +122,10 @@ class AdventureForm extends React.Component {
       initialValues.id = adventure.id;
       initialValues.name = adventure.name;
       initialValues.description = adventure.description;
-      initialValues.playerCharacters = adventure.characters ? adventure.characters : [];
-      initialValues.nonPlayerCharacters = adventure.characters ? adventure.characters : [];
+      const playerCharacterOptions = adventure.pcs.map((pc) => ({value: pc.id, label: pc.name}));
+      const nonPlayerCharacterOptions = adventure.npcs.map((npc) => ({value: npc.id, label: npc.name}));
+      initialValues.playerCharacters = playerCharacterOptions;
+      initialValues.nonPlayerCharacters = nonPlayerCharacterOptions;
       initialValues.worldLocation = adventure.worldLocation;
       initialValues.encounters = adventure.encounters ? adventure.encounters : [];
     }
@@ -139,7 +144,7 @@ class AdventureForm extends React.Component {
 
   handleSubmit = async (values) => {
     const campaignBody = setAdventureObject(values, this.props.campaign.id);
-    this.props.handleUpdateCampaign(campaignBody);
+    this.props.onUpdateCampaign(campaignBody);
   };
 
   validate = (values) => {
@@ -155,6 +160,7 @@ class AdventureForm extends React.Component {
 
   render () {
     const {adventure, submitButtonTitle, validated, worldLocationOptions} = this.state;
+    const {campaign, onCancelEditing} = this.props;
 
     return (
       <FinalForm onSubmit={this.handleSubmit}
@@ -194,9 +200,28 @@ class AdventureForm extends React.Component {
                        />
                      </Form.Row>
                      <Form.Row>
+                       <FormSelect
+                         label={'Player Characters'}
+                         name={'playerCharacters'}
+                         colWidth={'6'}
+                         options={campaign.pcs.map((pc) => ({value: pc.id, label: pc.name}))}
+                         isClearable
+                         isMulti
+                       />
+                       <FormSelect
+                         label={'Non-player Characters'}
+                         name={'nonPlayerCharacters'}
+                         colWidth={'6'}
+                         options={campaign.npcs.map((pc) => ({value: pc.id, label: pc.name}))}
+                         isClearable
+                         isMulti
+                       />
+                     </Form.Row>
+                     <Form.Row>
                        <ButtonGroup aria-label="Campaign actions">
-                         <Button type="submit" disabled={!dirty || submitting || invalid}>{submitButtonTitle}</Button>
+                         <Button type="button" onClick={onCancelEditing} variant={'info'}>Cancel</Button>
                          <Button type="button" onClick={form.reset} disabled={submitting || pristine} variant={'secondary'}>Reset</Button>
+                         <Button type="submit" disabled={!dirty || submitting || invalid}>{submitButtonTitle}</Button>
                        </ButtonGroup>
                      </Form.Row>
                      <pre className={classes.preBlock}>{JSON.stringify(values, 0, 2)}</pre>
@@ -209,7 +234,8 @@ class AdventureForm extends React.Component {
 AdventureForm.propTypes = {
   adventure: PropTypes.object,
   campaign: PropTypes.object.isRequired,
-  handleUpdateCampaign: PropTypes.func.isRequired,
+  onUpdateCampaign: PropTypes.func.isRequired,
+  onCancelEditing: PropTypes.func.isRequired,
 };
 
 export default AdventureForm;

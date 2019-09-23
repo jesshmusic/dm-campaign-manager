@@ -33,6 +33,14 @@ class Adventure < ApplicationRecord
   accepts_nested_attributes_for :encounters, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :adventure_world_location
 
+  def pcs
+    characters.where(type: 'PlayerCharacter')
+  end
+
+  def npcs
+    characters.where(type: 'NonPlayerCharacter')
+  end
+
   include PgSearch::Model
 
   # PgSearch

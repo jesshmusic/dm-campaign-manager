@@ -6,21 +6,20 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import AdventureCard from './AdventureCard';
 
-const AdventuresList = ({adventures, editAdventure, small, stopEditAdventure}) => (
-  adventures.map((adventure) =>
+const AdventuresList = ({campaign, handleUpdateCampaign, small}) => (
+  campaign.adventures.map((adventure) =>
     <AdventureCard adventure={adventure}
-                   editAdventure={editAdventure}
+                   campaign={campaign}
+                   updateCampaign={handleUpdateCampaign}
                    key={adventure.id}
-                   small={small}
-                   stopEditAdventure={stopEditAdventure}/>
+                   small={small}/>
   )
 );
 
 AdventuresList.propTypes = {
-  adventures: PropTypes.array.isRequired,
-  editAdventure: PropTypes.func.isRequired,
+  campaign: PropTypes.object.isRequired,
+  handleUpdateCampaign: PropTypes.func.isRequired,
   small: PropTypes.bool,
-  stopEditAdventure: PropTypes.func.isRequired,
 };
 
 export default AdventuresList;
