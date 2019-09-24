@@ -8,7 +8,7 @@ module Admin::V1
     # GET /campaigns
     # GET /campaigns.json
     def index
-      @campaigns = Campaign.all
+      @campaigns = Campaign.all.order(created_at: :asc)
       authorize Campaign
       @current_user = current_user
       @campaigns = @campaigns.search_for(params[:search]) if params[:search].present?
