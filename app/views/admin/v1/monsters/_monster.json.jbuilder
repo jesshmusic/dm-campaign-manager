@@ -12,5 +12,6 @@ json.extract! monster, :id, :alignment, :challenge_rating, :charisma_save,
 
 json.descriptionText monster.description_text
 json.hit_dice monster.hit_dice
+json.xp monster.xp
 
 json.url v1_monster_url(monster, format: :json)

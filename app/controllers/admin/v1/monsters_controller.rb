@@ -21,6 +21,7 @@ module Admin::V1
                   else
                     @monsters.where(user_id: nil).or(@monsters.where(user_id: current_user.id))
                   end
+      @monsters = @monsters.where(challenge_rating: params[:challenge_rating]) if params[:challenge_rating].present?
       respond_to do |format|
         format.html { @pagy, @monsters = pagy(@monsters) }
         format.json

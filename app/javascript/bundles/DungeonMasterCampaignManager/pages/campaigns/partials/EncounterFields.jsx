@@ -12,6 +12,7 @@ import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import FormTextArea from '../../../components/forms/FormTextArea';
 import Accordion from 'react-bootstrap/Accordion';
+import MonsterSelect from './MonsterSelect';
 
 const EncounterFields = ({encounter, fields, index}) => {
   const removeItem = () => {
@@ -61,6 +62,8 @@ const EncounterFields = ({encounter, fields, index}) => {
           <FormField label={'Gold'} type={'number'} colWidth={'2'} name={`${encounter}.goldPieces`}/>
           <FormField label={'Platinum'} type={'number'} colWidth={'2'} name={`${encounter}.platinumPieces`}/>
         </Form.Row>
+        <h4>Monsters</h4>
+        <MonsterSelect/>
       </Card.Body>
       <Card.Footer>
         <Form.Row>

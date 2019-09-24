@@ -137,6 +137,10 @@ class Monster < ApplicationRecord
     end
   end
 
+  def xp
+    DndRules.xp_for_cr(challenge_rating)
+  end
+
   include PgSearch::Model
 
   # PgSearch
