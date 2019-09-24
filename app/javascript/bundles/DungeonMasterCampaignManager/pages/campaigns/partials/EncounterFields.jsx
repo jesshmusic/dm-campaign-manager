@@ -13,6 +13,7 @@ import Card from 'react-bootstrap/Card';
 import FormTextArea from '../../../components/forms/FormTextArea';
 import {FieldArray} from 'react-final-form-arrays';
 import EncounterMonsterFields from './EncounterMonsterFields';
+import EncounterItemFields from '../../adventures/partials/EncounterItemFields';
 
 const EncounterFields = ({encounter, fields, index, push}) => {
   const removeItem = () => {
@@ -79,6 +80,25 @@ const EncounterFields = ({encounter, fields, index, push}) => {
             <Button type="button" onClick={() => push(`${encounter}.encounterMonsters`, {
               numberOfMonsters: 1,
             })} variant={'link'} block>Add Monster...</Button>
+          </Col>
+        </Form.Row>
+        <Form.Row>
+          <Col md={12}>
+            <h4>Items/Treasure/Equipment</h4>
+            <FieldArray name={`${encounter}.encounterItems`}>
+              {({fields}) => (
+                fields.map((encounterItem, index) => (
+                  !fields.value[index] || !fields.value[index]._destroy ? (
+                    <EncounterItemFields encounterItem={encounterItem}
+                                         fields={fields}
+                                         index={index}
+                                         key={index}/>
+                  ) : null))
+              )}
+            </FieldArray>
+            <Button type="button" onClick={() => push(`${encounter}.encounterItems`, {
+              quantity: 1,
+            })} variant={'link'} block>Add Item...</Button>
           </Col>
         </Form.Row>
       </Card.Body>

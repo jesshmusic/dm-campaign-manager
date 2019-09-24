@@ -4,19 +4,18 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import FormField from '../../../../components/forms/FormField';
+import FormField from '../../../components/forms/FormField';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import { GiTrashCan, GiSwordAltar } from 'react-icons/gi';
+import { GiTrashCan } from 'react-icons/gi';
 import Col from 'react-bootstrap/Col';
-import ItemSelect from './ItemSelect';
+import ItemSelect from '../../characters/partials/items/ItemSelect';
 
-const CharacterItemFields = ({characterItem, fields, index, label}) => {
+const EncounterItemFields = ({encounterItem, fields, index}) => {
   const removeItem = () => {
     if (fields.value[index] && fields.value[index].id) {
       fields.update(index, {
         id: fields.value[index].id,
-        carrying: fields.value[index].carrying,
         label: fields.value[index].label,
         item: {
           value: fields.value[index].value,
@@ -31,36 +30,27 @@ const CharacterItemFields = ({characterItem, fields, index, label}) => {
 
   return (
     <Form.Row>
-      <ItemSelect colWidth={'6'} itemName={characterItem} label={label}/>
+      <ItemSelect colWidth={'8'} itemName={encounterItem} label={'Item'}/>
       <FormField label={'Quantity'}
                  type={'number'}
                  colWidth={'3'}
-                 name={`${characterItem}.quantity`}/>
+                 name={`${encounterItem}.quantity`}/>
       <Form.Group as={Col} md={'1'}>
-        <Form.Label>Carrying?</Form.Label>
-        <FormField label={''}
-                   type={'checkbox'}
-                   colWidth={'2'}
-                   name={`${characterItem}.carrying`}/>
-      </Form.Group>
-      <Form.Group as={Col} md={'1'}>
+        <Form.Label>Remove</Form.Label>
         <Button onClick={() => removeItem()}
                 title={'Remove Item'}
-                variant={'link'}
-                className={'py-0 d-flex align-items-center'}>
+                variant={'link'}>
           <GiTrashCan size={32}/>
-          <span className={'pt-2 pb-1'}>Remove Item</span>
         </Button>
       </Form.Group>
     </Form.Row>
   );
 };
 
-CharacterItemFields.propTypes = {
-  characterItem: PropTypes.string.isRequired,
+EncounterItemFields.propTypes = {
+  encounterItem: PropTypes.string.isRequired,
   index: PropTypes.number.isRequired,
   fields: PropTypes.object.isRequired,
-  label: PropTypes.string.isRequired,
 };
 
-export default CharacterItemFields;
+export default EncounterItemFields;

@@ -21,12 +21,12 @@ const getItems = (inputValue, callback) => {
     });
 };
 
-const ItemSelect = ({characterItem, colWidth, label}) => (
+const ItemSelect = ({itemName, colWidth, label}) => (
   <FormSelectAsync
     label={label}
     colWidth={colWidth}
     getOptions={getItems}
-    name={`${characterItem}.item`}
+    name={`${itemName}.item`}
     placeholder={'Search for Equipment...'}
     defaultOptions={[]}
     isClearable
@@ -34,7 +34,7 @@ const ItemSelect = ({characterItem, colWidth, label}) => (
 );
 
 ItemSelect.propTypes = {
-  characterItem: PropTypes.string.isRequired,
+  itemName: PropTypes.string.isRequired,
   colWidth: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
 };
