@@ -16,7 +16,6 @@ json.extract! encounter,
 json.encounter_monsters encounter.encounter_monsters do |encounter_monster|
   json.id encounter_monster.id
   json.numberOfMonsters encounter_monster.number_of_monsters
-  json.monsterId encounter_monster.monster_id
   json.monster do
     json.partial! 'admin/v1/monsters/monster_summary', monster: encounter_monster.monster
   end

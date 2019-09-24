@@ -9,7 +9,7 @@ import Form from 'react-bootstrap/Form';
 
 const filterMonsterOptions = (results) => results.map((nextItem) => ({
   value: nextItem.id,
-  label: nextItem.name,
+  label: `${nextItem.name}: CR ${nextItem.challengeRating} - ${nextItem.xp}xp`,
   challengeRating: nextItem.challengeRating,
   xp: nextItem.xp,
   armorClass: nextItem.armorClass,
@@ -25,13 +25,13 @@ const getMonsters = (challengeRating, inputValue, callback) => {
     });
 };
 
-const MonsterSelect = ({challengeRating}) => (
+const MonsterSelect = ({challengeRating, name}) => (
   <Form.Row>
     <FormSelectAsync
       label={'Monster'}
       colWidth={'12'}
       getOptions={(inputValue, callback) => getMonsters(challengeRating, inputValue, callback)}
-      name={'monster'}
+      name={name}
       defaultOptions={[]}
       isClearable
       placeholder={'Search for Monsters...'} />
@@ -40,6 +40,7 @@ const MonsterSelect = ({challengeRating}) => (
 
 MonsterSelect.propTypes = {
   challengeRating: PropTypes.string,
+  name: PropTypes.string.isRequired,
 };
 
 export default MonsterSelect;

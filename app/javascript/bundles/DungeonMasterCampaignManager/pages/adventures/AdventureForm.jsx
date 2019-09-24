@@ -46,9 +46,10 @@ const setAdventureObject = (values, campaignID) => {
     }
   }
 
-  const characterIds = values.playerCharacters.map((pc) => pc.value).concat(values.nonPlayerCharacters.map((npc) => npc.value));
+  const characterIds = values.playerCharacters.map((pc) => pc.value)
+    .concat(values.nonPlayerCharacters.map((npc) => npc.value));
 
-  return {
+  const adventureObject = {
     adventuresAttributes: [{
       id: values.id,
       name: values.name,
@@ -63,7 +64,6 @@ const setAdventureObject = (values, campaignID) => {
           name: encounter.name,
           platinumPieces: encounter.platinumPieces,
           silverPieces: encounter.silverPieces,
-          xp: encounter.xp,
           encounterMonstersAttributes: encounter.encounterMonsters.map((encounterMonster) => {
             const newMonsters = {
               numberOfMonsters: encounterMonster.numberOfMonsters,
@@ -75,6 +75,7 @@ const setAdventureObject = (values, campaignID) => {
             if (encounterMonster._destroy) {
               newMonsters._destroy = encounterMonster._destroy;
             }
+            console.log(newMonsters);
             return newMonsters;
           }),
           encounterItemsAttributes: encounter.encounterItems.map((item) => {
@@ -102,6 +103,7 @@ const setAdventureObject = (values, campaignID) => {
       adventureWorldLocationAttributes,
     }],
   };
+  return adventureObject;
 };
 
 class AdventureForm extends React.Component {
@@ -232,7 +234,8 @@ class AdventureForm extends React.Component {
                                  <EncounterFields encounter={encounter}
                                                   fields={fields}
                                                   index={index}
-                                                  key={index}/>
+                                                  key={index}
+                                                  push={push}/>
                                ) : null))
                            )}
                          </FieldArray>

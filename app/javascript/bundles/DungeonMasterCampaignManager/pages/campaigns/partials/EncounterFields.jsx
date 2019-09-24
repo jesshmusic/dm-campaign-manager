@@ -11,10 +11,10 @@ import { GiTrashCan } from 'react-icons/gi';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import FormTextArea from '../../../components/forms/FormTextArea';
-import Accordion from 'react-bootstrap/Accordion';
-import MonsterSelect from './MonsterSelect';
+import {FieldArray} from 'react-final-form-arrays';
+import EncounterMonsterFields from './EncounterMonsterFields';
 
-const EncounterFields = ({encounter, fields, index}) => {
+const EncounterFields = ({encounter, fields, index, push}) => {
   const removeItem = () => {
     if (fields.value[index] && fields.value[index].id) {
       fields.update(index, {
@@ -62,8 +62,25 @@ const EncounterFields = ({encounter, fields, index}) => {
           <FormField label={'Gold'} type={'number'} colWidth={'2'} name={`${encounter}.goldPieces`}/>
           <FormField label={'Platinum'} type={'number'} colWidth={'2'} name={`${encounter}.platinumPieces`}/>
         </Form.Row>
-        <h4>Monsters</h4>
-        <MonsterSelect/>
+        <Form.Row>
+          <Col md={12}>
+            <h3>Monsters</h3>
+            <FieldArray name={`${encounter}.encounterMonsters`}>
+              {({fields}) => (
+                fields.map((monster, index) => (
+                  !fields.value[index] || !fields.value[index]._destroy ? (
+                    <EncounterMonsterFields encounterMonster={monster}
+                                            fields={fields}
+                                            index={index}
+                                            key={index}/>
+                  ) : null))
+              )}
+            </FieldArray>
+            <Button type="button" onClick={() => push(`${encounter}.encounterMonsters`, {
+              numberOfMonsters: 1,
+            })} variant={'success'} block>Add Monster</Button>
+          </Col>
+        </Form.Row>
       </Card.Body>
       <Card.Footer>
         <Form.Row>
@@ -86,6 +103,7 @@ EncounterFields.propTypes = {
   encounter: PropTypes.string.isRequired,
   index: PropTypes.number.isRequired,
   fields: PropTypes.object.isRequired,
+  push: PropTypes.func.isRequired,
 };
 
 export default EncounterFields;
