@@ -41,13 +41,13 @@ const EncounterMonsterFields = ({encounterMonster, fields, index}) => {
       </Card.Body>
       <Card.Footer>
         <Form.Row>
-          <Form.Group as={Col} md={'12'}>
-            <Form.Label>Remove</Form.Label>
+          <Form.Group as={Col} md={'12'} className={'my-0'}>
             <Button onClick={() => removeItem()}
                     title={'Remove Monster'}
                     variant={'link'}
-                    className={'py-0'}>
-              <GiTrashCan size={32}/>
+                    className={'py-0 d-flex align-items-center'}>
+              <GiTrashCan size={24}/>
+              <span className={'pt-2 pb-1'}>Remove Monster</span>
             </Button>
           </Form.Group>
         </Form.Row>

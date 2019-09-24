@@ -64,7 +64,7 @@ const EncounterFields = ({encounter, fields, index, push}) => {
         </Form.Row>
         <Form.Row>
           <Col md={12}>
-            <h3>Monsters</h3>
+            <h4>Monsters</h4>
             <FieldArray name={`${encounter}.encounterMonsters`}>
               {({fields}) => (
                 fields.map((monster, index) => (
@@ -78,19 +78,19 @@ const EncounterFields = ({encounter, fields, index, push}) => {
             </FieldArray>
             <Button type="button" onClick={() => push(`${encounter}.encounterMonsters`, {
               numberOfMonsters: 1,
-            })} variant={'success'} block>Add Monster</Button>
+            })} variant={'link'} block>Add Monster...</Button>
           </Col>
         </Form.Row>
       </Card.Body>
       <Card.Footer>
         <Form.Row>
-          <Form.Group as={Col} md={'12'}>
-            <Form.Label>Remove</Form.Label>
+          <Form.Group as={Col} md={'12'} className={'my-0'}>
             <Button onClick={() => removeItem()}
                     title={'Remove Encounter'}
                     variant={'link'}
-                    className={'py-0'}>
+                    className={'py-0 d-flex align-items-center'}>
               <GiTrashCan size={32}/>
+              <span className={'pt-2 pb-1'}>Remove Encounter</span>
             </Button>
           </Form.Group>
         </Form.Row>
