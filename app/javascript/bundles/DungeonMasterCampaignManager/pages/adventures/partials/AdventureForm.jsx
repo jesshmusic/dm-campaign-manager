@@ -7,15 +7,15 @@ import PropTypes from 'prop-types';
 import {Form as FinalForm} from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
 import Form from 'react-bootstrap/Form';
-import FormField from '../../components/forms/FormField';
-import FormTextArea from '../../components/forms/FormTextArea';
-import classes from '../characters/partials/character-form.module.scss';
+import FormField from '../../../components/forms/FormField';
+import FormTextArea from '../../../components/forms/FormTextArea';
+import classes from '../../characters/partials/character-form.module.scss';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Button from 'react-bootstrap/Button';
-import FormSelect from '../../components/forms/FormSelect';
+import FormSelect from '../../../components/forms/FormSelect';
 import Col from 'react-bootstrap/Col';
 import {FieldArray} from 'react-final-form-arrays';
-import EncounterFields from '../campaigns/partials/EncounterFields';
+import EncounterFields from './EncounterFields';
 
 const setAdventureObject = (values, campaignID) => {
   let adventureWorldLocationAttributes = {

@@ -12,7 +12,7 @@ import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import FormTextArea from '../../../components/forms/FormTextArea';
 import Accordion from 'react-bootstrap/Accordion';
-import MonsterSelect from './MonsterSelect';
+import MonsterSelect from '../../campaigns/partials/MonsterSelect';
 
 const EncounterMonsterFields = ({encounterMonster, fields, index}) => {
   const removeItem = () => {

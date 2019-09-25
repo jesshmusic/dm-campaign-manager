@@ -11,6 +11,7 @@ import Button from 'react-bootstrap/Button';
 import AdventureForm from './AdventureForm';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import {Link} from '@reach/router';
 
 class AdventureCard extends React.Component {
   state = {
@@ -51,7 +52,9 @@ class AdventureCard extends React.Component {
     ) : (
       <Card className={'mb-3'}>
         <Card.Header>
-          <h4 className={'my-2'}>{adventure.name}</h4>
+          <Link to={`/app/campaigns/${campaign.slug}/adventures/${adventure.id}`}>
+            <h4 className={'my-2'}>{adventure.name}</h4>
+          </Link>
         </Card.Header>
         <Card.Body>
           <Row>
@@ -59,9 +62,13 @@ class AdventureCard extends React.Component {
               <h5 className={'mb-0'}>Total XP</h5>
               {this.totalXP}
             </Col>
-            <Col md={9} sm={8}>
+            <Col md={6} sm={4}>
               <h5 className={'mb-0'}>World location</h5>
               {adventure.worldLocation.label}
+            </Col>
+            <Col md={3} sm={4}>
+              <h5 className={'mb-0'}>Encounters</h5>
+              {adventure.encounters.length}
             </Col>
           </Row>
           <Row className={'border-bottom'}>

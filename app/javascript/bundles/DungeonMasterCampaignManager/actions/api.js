@@ -67,15 +67,34 @@ export default reduxApi({
         headers,
       };
     },
-    postfetch: [({data}) => {
-      navigate(`/app/campaigns/${data.slug}`);
-    }],
   },
   getCampaign: {
     url: '/v1/campaigns/:slug.json',
   },
   getCampaigns: {
     url: '/v1/campaigns.json',
+  },
+  getAdventure: {
+    url: '/v1/campaigns/:campaign_slug/adventures/:id.json',
+    prefetch: [
+      ({actions, dispatch, getState, request}, cb) => {
+        const {campaigns: {currentCampaign}} = getState();
+        const {pathvars: {campaign_slug}} = request;
+        currentCampaign !== null ? cb() :
+          dispatch(actions.getCampaign({slug: campaign_slug}, cb));
+      },
+    ],
+  },
+  getEncounter: {
+    url: '/v1/campaigns/:campaign_slug/adventures/:adventure_id/encounters/:id.json',
+    prefetch: [
+      ({actions, dispatch, getState, request}, cb) => {
+        const {campaigns: {currentAdventure}} = getState();
+        const {pathvars: {campaign_slug, adventure_id}} = request;
+        currentAdventure !== null ? cb() :
+          dispatch(actions.getAdventure({id: adventure_id, campaign_slug}, cb));
+      },
+    ],
   },
   createNonPlayerCharacter: {
     url: '/v1/campaigns/:campaign_slug/non_player_characters/',
@@ -86,9 +105,6 @@ export default reduxApi({
         headers,
       };
     },
-    postfetch: [({data}) => {
-      navigate(`/app/campaigns/${data.campaign.slug}/npcs/${data.slug}`);
-    }],
   },
   updateNonPlayerCharacter: {
     url: '/v1/campaigns/:campaign_slug/non_player_characters/:slug',
@@ -99,9 +115,6 @@ export default reduxApi({
         headers,
       };
     },
-    postfetch: [({data}) => {
-      navigate(`/app/campaigns/${data.campaign.slug}/npcs/${data.slug}`);
-    }],
   },
   generateNonPlayerCharacter: {
     url: '/v1/campaigns/:campaign_slug/characters/create_generated_npc',
@@ -147,9 +160,6 @@ export default reduxApi({
         headers,
       };
     },
-    postfetch: [({data}) => {
-      navigate(`/app/campaigns/${data.campaign.slug}/pcs/${data.slug}`);
-    }],
   },
   getPlayerCharacter: {
     url: '/v1/campaigns/:campaign_slug/player_characters/:slug.json',

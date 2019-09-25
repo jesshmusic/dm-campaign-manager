@@ -13,7 +13,7 @@ import Card from 'react-bootstrap/Card';
 import FormTextArea from '../../../components/forms/FormTextArea';
 import {FieldArray} from 'react-final-form-arrays';
 import EncounterMonsterFields from './EncounterMonsterFields';
-import EncounterItemFields from '../../adventures/partials/EncounterItemFields';
+import EncounterItemFields from './EncounterItemFields';
 
 const EncounterFields = ({encounter, fields, index, push}) => {
   const removeItem = () => {

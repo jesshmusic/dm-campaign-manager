@@ -26,6 +26,7 @@ import NonPlayerCharacter from './characters/NonPlayerCharacter';
 import PlayerCharacterEditor from './characters/PlayerCharacterEditor';
 import NonPlayerCharacterEditor from './characters/NonPlayerCharacterEditor';
 import GenerateNPC from './characters/GenerateNPC';
+import Adventure from './adventures/Adventure';
 
 const store = (props) => configureStore({
   reducer: rootReducer,
@@ -39,7 +40,9 @@ const store = (props) => configureStore({
     campaigns: {
       campaigns: [],
       count: props.campaignsCount,
+      currentAdventure: null,
       currentCampaign: null,
+      currentEncounter: null,
     },
     items: {
       items: [],
@@ -82,6 +85,7 @@ const Home = (props) => (
       <Campaign path='/app/campaigns/:campaignSlug'/>
       <NewCampaign path='/app/campaigns/new'/>
       <EditCampaign path='/app/campaigns/:campaignSlug/edit'/>
+      <Adventure path='/app/campaigns/:campaignSlug/adventures/:id'/>
       <PlayerCharacter path='/app/campaigns/:campaignSlug/pcs/:pcSlug' />
       <NonPlayerCharacter path='/app/campaigns/:campaignSlug/npcs/:npcSlug' />
       <PlayerCharacterEditor path='/app/campaigns/:campaignSlug/pcs/:pcSlug/edit'/>

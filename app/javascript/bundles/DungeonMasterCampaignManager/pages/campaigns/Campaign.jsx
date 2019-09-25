@@ -13,11 +13,11 @@ import ListGroupItem from 'react-bootstrap/ListGroupItem';
 import Container from 'react-bootstrap/Container';
 import { Link } from '@reach/router';
 import CharactersList from '../characters/partials/CharactersList';
-import AdventuresList from '../adventures/AdventuresList';
+import AdventuresList from '../adventures/partials/AdventuresList';
 import Button from 'react-bootstrap/Button';
 import PageTitle from '../../components/layout/PageTitle';
 import DndSpinner from '../../components/layout/DndSpinner';
-import AdventureForm from '../adventures/AdventureForm';
+import AdventureForm from '../adventures/partials/AdventureForm';
 import snakecaseKeys from 'snakecase-keys';
 
 class Campaign extends React.Component {
@@ -29,12 +29,6 @@ class Campaign extends React.Component {
     this.props.getCampaign(this.props.campaignSlug);
   }
 
-  showNewAdventureForm () {
-    this.setState({
-      showingNewAdventureForm: !this.state.showingNewAdventureForm,
-    });
-  }
-
   handleUpdateCampaign (campaignBody) {
     this.props.updateCampaign(snakecaseKeys(campaignBody, {exclude: ['_destroy']}), this.props.campaign.slug);
     this.setState({
@@ -44,6 +38,12 @@ class Campaign extends React.Component {
 
   handleCancelEditing () {
     this.setState({showingNewAdventureForm: false});
+  }
+
+  showNewAdventureForm () {
+    this.setState({
+      showingNewAdventureForm: !this.state.showingNewAdventureForm,
+    });
   }
 
   render () {

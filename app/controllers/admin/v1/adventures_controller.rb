@@ -24,11 +24,6 @@ module Admin::V1
     # GET /campaigns/campaign_slug/adventures/1.json
     def show
       authorize @adventure
-      if params[:search].present?
-        @pagy, @encounters = pagy(Encounter.where(adventure_id: @adventure.id).search_for(params[:search]))
-      else
-        @pagy, @encounters = pagy(Encounter.where(adventure_id: @adventure.id).order('location ASC'))
-      end
     end
 
     # GET /campaigns/campaign_slug/adventures/new
