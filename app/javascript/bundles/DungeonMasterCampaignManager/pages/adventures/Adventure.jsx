@@ -17,6 +17,7 @@ import EncountersList from './partials/EncountersList';
 import snakecaseKeys from 'snakecase-keys';
 import EncounterForm from './partials/EncounterForm';
 import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 
 class Adventure extends React.Component {
   state = {
@@ -120,16 +121,21 @@ class Adventure extends React.Component {
                 <h3>Encounters</h3>
                 <EncountersList handleUpdateCampaign={(values) => this.handleUpdateCampaign(values)}
                                 adventure={adventure}
-                                campaign={campaign}/>
-                {showingNewEncounterForm ? (
-                  <EncounterForm
-                    adventure={adventure}
-                    campaign={campaign}
-                    onUpdateCampaign={(campaignBody) => this.handleUpdateCampaign(campaignBody)}
-                    onCancelEditing={() => this.handleCancelEditing()}/>
-                ) : (
-                  <Button variant={'secondary'} block onClick={() => this.showNewEncounterForm()}>New Encounter</Button>
-                )}
+                                campaign={campaign}
+                                small/>
+                <Button variant={'secondary'} block onClick={() => this.showNewEncounterForm()}>New Encounter</Button>
+                <Modal size={'lg'} show={showingNewEncounterForm} onHide={() => this.handleCancelEditing()}>
+                  <Modal.Header closeButton>
+                    <Modal.Title>New Encounter</Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body>
+                    <EncounterForm
+                      adventure={adventure}
+                      campaign={campaign}
+                      onUpdateCampaign={(campaignBody) => this.handleUpdateCampaign(campaignBody)}
+                      onCancelEditing={() => this.handleCancelEditing()}/>
+                  </Modal.Body>
+                </Modal>
               </Col>
             </Row>
           </Container>

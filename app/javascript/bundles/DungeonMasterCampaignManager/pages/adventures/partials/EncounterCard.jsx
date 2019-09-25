@@ -6,13 +6,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Card from 'react-bootstrap/Card';
 import ReactMarkdown from 'react-markdown';
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import {Link} from '@reach/router';
 import ListGroup from 'react-bootstrap/ListGroup';
 import EncounterForm from './EncounterForm';
+import Modal from 'react-bootstrap/Modal';
 
 class EncounterCard extends React.Component {
   state = {
@@ -33,17 +33,40 @@ class EncounterCard extends React.Component {
   }
 
   render () {
-    const {adventure, encounter, campaign} = this.props;
+    const {adventure, encounter, campaign, small} = this.props;
     const {editing} = this.state;
-
-    return (editing ? (
-      <EncounterForm
-        campaign={campaign}
-        onUpdateCampaign={(values) => this.handleUpdateForm(values)}
-        onCancelEditing={() => this.handleCancelEditing()}
-        adventure={adventure}
-        encounter={encounter}
-      />
+    let encounterCard = small ? (
+      <Row>
+        <Col>
+          <span className={'h5 my-2'}>
+            <Link to={`/app/campaigns/${campaign.slug}/adventures/${adventure.id}/encounters/${encounter.id}`}>
+              {encounter.name}
+            </Link>
+          </span> {encounter.description.split(' ').splice(0, 15).join(' ')}...
+          <Button
+            className={'float-sm-right'}
+            size={'sm'}
+            variant={'info'}
+            onClick={() => this.handleEditEncounter()}>
+            Edit
+          </Button>
+          <Modal size={'lg'} show={editing} onHide={() => this.handleCancelEditing()}>
+            <Modal.Header closeButton>
+              <Modal.Title>Edit Encounter</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <EncounterForm
+                campaign={campaign}
+                onUpdateCampaign={(values) => this.handleUpdateForm(values)}
+                onCancelEditing={() => this.handleCancelEditing()}
+                adventure={adventure}
+                encounter={encounter}
+                showing={editing}
+              />
+            </Modal.Body>
+          </Modal>
+        </Col>
+      </Row>
     ) : (
       <Card className={'mb-3'}>
         <Card.Header>
@@ -81,28 +104,28 @@ class EncounterCard extends React.Component {
                 {encounter.silverPieces && encounter.silverPieces > 0 ? (
                   <ListGroup.Item>
                     <strong className={'text-muted'}>
-                    Silver
+                      Silver
                     </strong>&nbsp;&nbsp;{encounter.silverPieces}
                   </ListGroup.Item>
                 ) : null}
                 {encounter.electrumPieces && encounter.electrumPieces > 0 ? (
                   <ListGroup.Item>
                     <strong className={'text-muted'}>
-                    Electrum
+                      Electrum
                     </strong>&nbsp;&nbsp;{encounter.electrumPieces}
                   </ListGroup.Item>
                 ) : null}
                 {encounter.goldPieces && encounter.goldPieces > 0 ? (
                   <ListGroup.Item>
                     <strong className={'text-muted'}>
-                    Gold
+                      Gold
                     </strong>&nbsp;&nbsp;{encounter.goldPieces}
                   </ListGroup.Item>
                 ) : null}
                 {encounter.platinumPieces && encounter.platinumPieces > 0 ? (
                   <ListGroup.Item>
                     <strong className={'text-muted'}>
-                    Platinum
+                      Platinum
                     </strong>&nbsp;&nbsp;{encounter.platinumPieces}
                   </ListGroup.Item>
                 ) : null}
@@ -111,17 +134,28 @@ class EncounterCard extends React.Component {
           </Row>
         </Card.Body>
         <Card.Footer>
-          <ButtonGroup>
-            <Button variant={'secondary'} onClick={() => this.handleEditEncounter()}>
-              Edit
-            </Button>
-            <Button variant={'danger'}>
-              Delete
-            </Button>
-          </ButtonGroup>
+          <Button variant={'info'} onClick={() => this.handleEditEncounter()}>
+            Edit
+          </Button>
         </Card.Footer>
+        <Modal show={editing} onHide={() => this.handleCancelEditing()}>
+          <Modal.Header closeButton>
+            <Modal.Title>{encounter ? 'Edit ' : 'New '} Encounter</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <EncounterForm
+              campaign={campaign}
+              onUpdateCampaign={(values) => this.handleUpdateForm(values)}
+              onCancelEditing={() => this.handleCancelEditing()}
+              adventure={adventure}
+              encounter={encounter}
+            />
+          </Modal.Body>
+        </Modal>
       </Card>
-    ));
+    );
+
+    return encounterCard;
   }
 }
 

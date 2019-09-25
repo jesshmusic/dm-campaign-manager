@@ -151,10 +151,9 @@ class EncounterForm extends React.Component {
                                   name={'name'}/>
                      </Form.Row>
                      <Form.Row>
-                       <FormTextArea
-                         label={'Description'}
-                         colWidth={'12'}
-                         name={'description'}/>
+                       <FormTextArea label={'Description'}
+                                     colWidth={'12'}
+                                     name={'description'}/>
                      </Form.Row>
                      <h4>Treasure</h4>
                      <Form.Row>
@@ -202,14 +201,11 @@ class EncounterForm extends React.Component {
                          })} variant={'link'} block>Add Item...</Button>
                        </Col>
                      </Form.Row>
-                     <Form.Row className={'my-4'}>
-                       <ButtonGroup aria-label="Encounter actions">
-                         <Button type="button" onClick={onCancelEditing} variant={'info'}>Cancel</Button>
-                         <Button type="button" onClick={form.reset} disabled={submitting || pristine} variant={'secondary'}>Reset</Button>
-                         <Button type="submit" disabled={!dirty || submitting || invalid}>{submitButtonTitle}</Button>
-                       </ButtonGroup>
-                     </Form.Row>
-                     <pre className={classes.preBlock}>{JSON.stringify(values, 0, 2)}</pre>
+                     <ButtonGroup aria-label="Encounter actions">
+                       <Button type="button" onClick={onCancelEditing} variant={'info'}>Cancel</Button>
+                       <Button type="button" onClick={form.reset} disabled={submitting || pristine} variant={'secondary'}>Reset</Button>
+                       <Button type="submit" disabled={!dirty || submitting || invalid}>{submitButtonTitle}</Button>
+                     </ButtonGroup>
                    </Form>
                  )} />
     );
@@ -222,6 +218,7 @@ EncounterForm.propTypes = {
   campaign: PropTypes.object.isRequired,
   onUpdateCampaign: PropTypes.func.isRequired,
   onCancelEditing: PropTypes.func.isRequired,
+  showing: PropTypes.bool,
 };
 
 export default EncounterForm;
