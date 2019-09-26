@@ -26,8 +26,8 @@ class AdventureCard extends React.Component {
     this.setState({editing: false});
   }
 
-  handleUpdateForm (campaignBody) {
-    this.props.updateCampaign(campaignBody);
+  handleUpdateForm (adventureBody) {
+    this.props.updateAdventure(adventureBody, this.props.adventure.id);
     this.setState({editing: false});
   }
 
@@ -46,7 +46,7 @@ class AdventureCard extends React.Component {
     return (editing ? (
       <AdventureForm
         campaign={campaign}
-        onUpdateCampaign={(values) => this.handleUpdateForm(values)}
+        onUpdateAdventure={(values) => this.handleUpdateForm(values)}
         onCancelEditing={() => this.handleCancelEditing()}
         adventure={adventure}/>
     ) : (
@@ -113,7 +113,7 @@ class AdventureCard extends React.Component {
 AdventureCard.propTypes = {
   adventure: PropTypes.object.isRequired,
   campaign: PropTypes.object.isRequired,
-  updateCampaign: PropTypes.func.isRequired,
+  updateAdventure: PropTypes.func.isRequired,
   small: PropTypes.bool,
 };
 

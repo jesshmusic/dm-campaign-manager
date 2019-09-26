@@ -9,7 +9,6 @@ import arrayMutators from 'final-form-arrays';
 import Form from 'react-bootstrap/Form';
 import FormField from '../../../components/forms/FormField';
 import FormTextArea from '../../../components/forms/FormTextArea';
-import classes from '../../characters/partials/character-form.module.scss';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Button from 'react-bootstrap/Button';
 import FormSelect from '../../../components/forms/FormSelect';
@@ -49,61 +48,57 @@ const setAdventureObject = (values, campaignID) => {
   const characterIds = values.playerCharacters.map((pc) => pc.value)
     .concat(values.nonPlayerCharacters.map((npc) => npc.value));
 
-  const adventureObject = {
-    adventuresAttributes: [{
-      id: values.id,
-      name: values.name,
-      description: values.description,
-      characterIds,
-      encountersAttributes: values.encounters.map((encounter) => {
-        const encounterFields = {
-          copperPieces: encounter.copperPieces,
-          description: encounter.description,
-          electrumPieces: encounter.electrumPieces,
-          goldPieces: encounter.goldPieces,
-          name: encounter.name,
-          platinumPieces: encounter.platinumPieces,
-          silverPieces: encounter.silverPieces,
-          encounterMonstersAttributes: encounter.encounterMonsters.map((encounterMonster) => {
-            const newMonsters = {
-              numberOfMonsters: encounterMonster.numberOfMonsters,
-              monsterId: encounterMonster.monster.value,
-            };
-            if (encounterMonster.id) {
-              newMonsters.id = encounterMonster.id;
-            }
-            if (encounterMonster._destroy) {
-              newMonsters._destroy = encounterMonster._destroy;
-            }
-            console.log(newMonsters);
-            return newMonsters;
-          }),
-          encounterItemsAttributes: encounter.encounterItems.map((item) => {
-            const itemFields = {
-              quantity: item.quantity,
-              itemId: item.item.value,
-            };
-            if (item.id) {
-              itemFields.id = item.id;
-            }
-            if (item._destroy) {
-              itemFields._destroy = item._destroy;
-            }
-            return itemFields;
-          }),
-        };
-        if (encounter.id) {
-          encounterFields.id = encounter.id;
-        }
-        if (encounter._destroy) {
-          encounterFields._destroy = encounter._destroy;
-        }
-        return encounterFields;
-      }),
-      adventureWorldLocationAttributes,
-    }],
+  return {
+    id: values.id,
+    name: values.name,
+    description: values.description,
+    characterIds,
+    encountersAttributes: values.encounters.map((encounter) => {
+      const encounterFields = {
+        copperPieces: encounter.copperPieces,
+        description: encounter.description,
+        electrumPieces: encounter.electrumPieces,
+        goldPieces: encounter.goldPieces,
+        name: encounter.name,
+        platinumPieces: encounter.platinumPieces,
+        silverPieces: encounter.silverPieces,
+        encounterMonstersAttributes: encounter.encounterMonsters.map((encounterMonster) => {
+          const newMonsters = {
+            numberOfMonsters: encounterMonster.numberOfMonsters,
+            monsterId: encounterMonster.monster.value,
+          };
+          if (encounterMonster.id) {
+            newMonsters.id = encounterMonster.id;
+          }
+          if (encounterMonster._destroy) {
+            newMonsters._destroy = encounterMonster._destroy;
+          }
+          return newMonsters;
+        }),
+        encounterItemsAttributes: encounter.encounterItems.map((item) => {
+          const itemFields = {
+            quantity: item.quantity,
+            itemId: item.item.value,
+          };
+          if (item.id) {
+            itemFields.id = item.id;
+          }
+          if (item._destroy) {
+            itemFields._destroy = item._destroy;
+          }
+          return itemFields;
+        }),
+      };
+      if (encounter.id) {
+        encounterFields.id = encounter.id;
+      }
+      if (encounter._destroy) {
+        encounterFields._destroy = encounter._destroy;
+      }
+      return encounterFields;
+    }),
+    adventureWorldLocationAttributes,
   };
-  return adventureObject;
 };
 
 class AdventureForm extends React.Component {
@@ -148,8 +143,8 @@ class AdventureForm extends React.Component {
   }
 
   handleSubmit = async (values) => {
-    const campaignBody = setAdventureObject(values, this.props.campaign.id);
-    this.props.onUpdateCampaign(campaignBody);
+    const adventureBody = setAdventureObject(values, this.props.campaign.id);
+    this.props.onUpdateAdventure(adventureBody);
   };
 
   validate = (values) => {
@@ -249,12 +244,14 @@ class AdventureForm extends React.Component {
                      </Form.Row>
                      <Form.Row className={'my-4'}>
                        <ButtonGroup aria-label="Campaign actions">
-                         <Button type="button" onClick={onCancelEditing} variant={'info'}>Cancel</Button>
+                         {onCancelEditing ? (
+                           <Button type="button" onClick={onCancelEditing} variant={'info'}>Cancel</Button>
+                         ) : null}
                          <Button type="button" onClick={form.reset} disabled={submitting || pristine} variant={'secondary'}>Reset</Button>
                          <Button type="submit" disabled={!dirty || submitting || invalid}>{submitButtonTitle}</Button>
                        </ButtonGroup>
                      </Form.Row>
-                     <pre className={classes.preBlock}>{JSON.stringify(values, 0, 2)}</pre>
+                     {/*<pre className={classes.preBlock}>{JSON.stringify(values, 0, 2)}</pre>*/}
                    </Form>
                  )} />
     );
@@ -264,8 +261,8 @@ class AdventureForm extends React.Component {
 AdventureForm.propTypes = {
   adventure: PropTypes.object,
   campaign: PropTypes.object.isRequired,
-  onUpdateCampaign: PropTypes.func.isRequired,
-  onCancelEditing: PropTypes.func.isRequired,
+  onUpdateAdventure: PropTypes.func.isRequired,
+  onCancelEditing: PropTypes.func,
 };
 
 export default AdventureForm;

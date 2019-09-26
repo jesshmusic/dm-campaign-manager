@@ -33,7 +33,7 @@ module Admin::V1
       respond_to do |format|
         if @encounter.save
           format.html { redirect_to v1_campaign_adventure_encounter_url(@campaign, @adventure, @encounter), notice: 'Encounter was successfully created.' }
-          format.json { render :show, status: :created, location: @encounter }
+          format.json { render :show, status: :created }
         else
           format.html { render :new }
           format.json { render json: @encounter.errors.full_messages.join(', '), status: :unprocessable_entity }
@@ -48,7 +48,7 @@ module Admin::V1
       respond_to do |format|
         if @encounter.update(encounter_params)
           format.html { redirect_to v1_campaign_adventure_encounter_url(@campaign, @adventure, @encounter), notice: 'Encounter was successfully updated.' }
-          format.json { render :show, status: :ok, location: @encounter }
+          format.json { render :show, status: :ok }
         else
           format.html { render :edit }
           format.json { render json: @encounter.errors.full_messages.join(', '), status: :unprocessable_entity }

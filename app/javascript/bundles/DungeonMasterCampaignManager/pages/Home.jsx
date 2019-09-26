@@ -27,15 +27,13 @@ import PlayerCharacterEditor from './characters/PlayerCharacterEditor';
 import NonPlayerCharacterEditor from './characters/NonPlayerCharacterEditor';
 import GenerateNPC from './characters/GenerateNPC';
 import Adventure from './adventures/Adventure';
+import EditAdventure from './adventures/EditAdventure';
 
 const store = (props) => configureStore({
   reducer: rootReducer,
   preloadedState: {
-    users: {
-      user: props.user,
-      users: [],
-      count: props.usersCount,
-      currentUser: null,
+    adventures: {
+      currentAdventure: null,
     },
     campaigns: {
       campaigns: [],
@@ -44,6 +42,10 @@ const store = (props) => configureStore({
       currentCampaign: null,
       currentEncounter: null,
     },
+    encounters: {
+      currentEncounter: null,
+    },
+    flashMessages: [],
     items: {
       items: [],
       count: props.itemsCount,
@@ -68,11 +70,16 @@ const store = (props) => configureStore({
       races: [],
       currentRace: null,
     },
-    flashMessages: [],
     spells: {
       spells: [],
       count: props.spellsCount,
       currentSpell: null,
+    },
+    users: {
+      user: props.user,
+      users: [],
+      count: props.usersCount,
+      currentUser: null,
     },
   },
 });
@@ -86,6 +93,7 @@ const Home = (props) => (
       <NewCampaign path='/app/campaigns/new'/>
       <EditCampaign path='/app/campaigns/:campaignSlug/edit'/>
       <Adventure path='/app/campaigns/:campaignSlug/adventures/:id'/>
+      <EditAdventure path={'/app/campaigns/:campaignSlug/adventures/:id/edit'}/>
       <PlayerCharacter path='/app/campaigns/:campaignSlug/pcs/:pcSlug' />
       <NonPlayerCharacter path='/app/campaigns/:campaignSlug/npcs/:npcSlug' />
       <PlayerCharacterEditor path='/app/campaigns/:campaignSlug/pcs/:pcSlug/edit'/>

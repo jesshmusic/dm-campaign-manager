@@ -6,11 +6,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import AdventureCard from './AdventureCard';
 
-const AdventuresList = ({campaign, handleUpdateCampaign, small}) => (
+const AdventuresList = ({campaign, onUpdateAdventure, small}) => (
   campaign.adventures.map((adventure) =>
     <AdventureCard adventure={adventure}
                    campaign={campaign}
-                   updateCampaign={handleUpdateCampaign}
+                   updateAdventure={onUpdateAdventure}
                    key={adventure.id}
                    small={small}/>
   )
@@ -18,7 +18,7 @@ const AdventuresList = ({campaign, handleUpdateCampaign, small}) => (
 
 AdventuresList.propTypes = {
   campaign: PropTypes.object.isRequired,
-  handleUpdateCampaign: PropTypes.func.isRequired,
+  onUpdateAdventure: PropTypes.func.isRequired,
   small: PropTypes.bool,
 };
 

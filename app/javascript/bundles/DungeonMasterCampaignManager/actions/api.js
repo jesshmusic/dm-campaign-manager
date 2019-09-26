@@ -45,6 +45,29 @@ const dmFetch = (fetch) => {
 };
 
 export default reduxApi({
+  createAdventure: {
+    url: '/v1/campaigns/:campaign_slug/adventures/',
+    options () {
+      const headers = getHeaders();
+      return {
+        method: 'post',
+        headers,
+      };
+    },
+    postfetch: [({data}) => {
+      navigate(`/app/campaigns/${data.campaign_slug}/advantures/${data.id}`);
+    }],
+  },
+  updateAdventure: {
+    url: '/v1/campaigns/:campaign_slug/adventures/:id',
+    options () {
+      const headers = getHeaders();
+      return {
+        method: 'put',
+        headers,
+      };
+    },
+  },
   createCampaign: {
     url: '/v1/campaigns/',
     options () {

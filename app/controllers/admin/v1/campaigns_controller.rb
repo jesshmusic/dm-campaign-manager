@@ -110,13 +110,14 @@ module Admin::V1
             :description,
             :electrum_pieces,
             :gold_pieces,
+            :location,
             :name,
             :platinum_pieces,
             :silver_pieces,
             :xp,
             :_destroy,
             encounter_monsters_attributes: %i[id number_of_monsters monster_id _destroy],
-            encounter_items_attributes: %i[id quantity _destroy item_id]
+            encounter_items_attributes: %i[id quantity item_id _destroy]
           ]
         ],
         world_locations_attributes: %i[id name description map_x map_y _destroy],

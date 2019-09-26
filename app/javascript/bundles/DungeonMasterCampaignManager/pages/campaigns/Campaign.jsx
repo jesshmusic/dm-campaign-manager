@@ -11,7 +11,7 @@ import Col from 'react-bootstrap/Col';
 import ListGroup from 'react-bootstrap/ListGroup';
 import ListGroupItem from 'react-bootstrap/ListGroupItem';
 import Container from 'react-bootstrap/Container';
-import { Link } from '@reach/router';
+import {Link, navigate} from '@reach/router';
 import CharactersList from '../characters/partials/CharactersList';
 import AdventuresList from '../adventures/partials/AdventuresList';
 import Button from 'react-bootstrap/Button';
@@ -29,8 +29,8 @@ class Campaign extends React.Component {
     this.props.getCampaign(this.props.campaignSlug);
   }
 
-  handleUpdateCampaign (campaignBody) {
-    this.props.updateCampaign(snakecaseKeys(campaignBody, {exclude: ['_destroy']}), this.props.campaign.slug);
+  handleUpdateAdventure (adventureBody, adventureID) {
+    this.props.updateAdventure(snakecaseKeys(adventureBody, {exclude: ['_destroy']}), this.props.campaignSlug, adventureID);
     this.setState({
       showingNewAdventureForm: false,
     });
@@ -70,11 +70,15 @@ class Campaign extends React.Component {
                 <h3>Adventures</h3>
                 <AdventuresList
                   campaign={campaign}
-                  handleUpdateCampaign={(campaignBody) => this.handleUpdateCampaign(campaignBody)} />
+                  onUpdateAdventure={
+                    (adventureBody, adventureID) => this.handleUpdateAdventure(adventureBody, adventureID)
+                  } />
                 {showingNewAdventureForm ? (
                   <AdventureForm
                     campaign={campaign}
-                    onUpdateCampaign={(campaignBody) => this.handleUpdateCampaign(campaignBody)}
+                    onUpdateAdventure={
+                      (adventureBody, adventureID) => this.handleUpdateAdventure(adventureBody, adventureID)
+                    }
                     onCancelEditing={() => this.handleCancelEditing()}/>
                 ) : (
                   <Button variant={'secondary'} block onClick={() => this.showNewAdventureForm()}>New Adventure</Button>
@@ -130,7 +134,7 @@ Campaign.propTypes = {
   campaignSlug: PropTypes.string.isRequired,
   flashMessages: PropTypes.array,
   getCampaign: PropTypes.func.isRequired,
-  updateCampaign: PropTypes.func.isRequired,
+  updateAdventure: PropTypes.func.isRequired,
   user: PropTypes.object,
 };
 
@@ -147,8 +151,10 @@ function mapDispatchToProps (dispatch) {
     getCampaign: (campaignSlug) => {
       dispatch(rest.actions.getCampaign({slug: campaignSlug}));
     },
-    updateCampaign: (campaign, campaignSlug) => {
-      dispatch(rest.actions.updateCampaign({slug: campaignSlug}, {body: JSON.stringify({campaign})}));
+    updateAdventure: (adventure, campaignSlug, adventureId) => {
+      dispatch(rest.actions.updateAdventure({
+        campaign_slug: campaignSlug,
+        id: adventureId }, {body: JSON.stringify({adventure})}));
     },
   };
 }

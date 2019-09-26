@@ -9,10 +9,14 @@ import playerCharacters from './playerCharacters';
 import races from './races';
 import spells from './spells';
 import users from './user';
+import adventures from './adventures';
+import encounters from './encounters';
 
 export default combineReducers({
+  adventures,
   campaigns,
   dndClasses,
+  encounters,
   flashMessages,
   items,
   monsters,
