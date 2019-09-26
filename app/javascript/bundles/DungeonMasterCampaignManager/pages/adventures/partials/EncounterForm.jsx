@@ -7,22 +7,20 @@ import PropTypes from 'prop-types';
 import {Form as FinalForm} from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
 import Form from 'react-bootstrap/Form';
-import FormField from '../../../components/forms/FormField';
-import FormTextArea from '../../../components/forms/FormTextArea';
-import classes from '../../characters/partials/character-form.module.scss';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Button from 'react-bootstrap/Button';
-import Col from 'react-bootstrap/Col';
-import {FieldArray} from 'react-final-form-arrays';
-import EncounterMonsterFields from './EncounterMonsterFields';
-import EncounterItemFields from './EncounterItemFields';
+import EncounterFields from './EncounterFields';
+import rest from '../../../actions/api';
+import {connect} from 'react-redux';
+import snakecaseKeys from 'snakecase-keys';
 
-const setEncounterObject = (values, campaignId, adventureId) => {
+const setEncounterObject = (values) => {
   const encounterFields = {
     copperPieces: values.copperPieces,
     description: values.description,
     electrumPieces: values.electrumPieces,
     goldPieces: values.goldPieces,
+    location: values.location,
     name: values.name,
     platinumPieces: values.platinumPieces,
     silverPieces: values.silverPieces,
@@ -56,16 +54,7 @@ const setEncounterObject = (values, campaignId, adventureId) => {
   if (values.id) {
     encounterFields.id = values.id;
   }
-  if (values._destroy) {
-    encounterFields._destroy = values._destroy;
-  }
-  return {
-    id: campaignId,
-    adventuresAttributes: [{
-      id: adventureId,
-      encountersAttributes: [ encounterFields ],
-    }],
-  };
+  return snakecaseKeys(encounterFields);
 };
 
 class EncounterForm extends React.Component {
@@ -81,6 +70,7 @@ class EncounterForm extends React.Component {
       description: '',
       electrumPieces: 0,
       goldPieces: 0,
+      location: '',
       name: '',
       platinumPieces: 0,
       silverPieces: 0,
@@ -91,6 +81,7 @@ class EncounterForm extends React.Component {
       const encounter = this.props.encounter;
       initialValues.id = encounter.id;
       initialValues.name = encounter.name;
+      initialValues.location = encounter.location;
       initialValues.description = encounter.description;
       initialValues.copperPieces = encounter.copperPieces;
       initialValues.silverPieces = encounter.silverPieces;
@@ -107,8 +98,20 @@ class EncounterForm extends React.Component {
   }
 
   handleSubmit = async (values) => {
-    const campaignBody = setEncounterObject(values, this.props.campaign.id, this.props.adventure.id);
-    this.props.onUpdateCampaign(campaignBody);
+    const encounterBody = setEncounterObject(values);
+    if (this.props.encounter) {
+      this.props.updateEncounter(
+        encounterBody,
+        this.props.campaign.slug,
+        this.props.adventure.id,
+        this.props.encounter.id);
+    } else {
+      this.props.createEncounter(
+        encounterBody,
+        this.props.campaign.slug,
+        this.props.adventure.id);
+    }
+    this.props.onCancelEditing();
   };
 
   validate = (values) => {
@@ -127,87 +130,38 @@ class EncounterForm extends React.Component {
     const {onCancelEditing} = this.props;
 
     return (
-      <FinalForm onSubmit={this.handleSubmit}
-                 initialValues={encounter}
-                 validate={this.validate}
-                 mutators={{...arrayMutators }}
-                 render={({
-                   dirty,
-                   form,
-                   form: {
-                     mutators: { push, pop },
-                   },
-                   handleSubmit,
-                   invalid,
-                   pristine,
-                   submitting,
-                   values,
-                 }) => (
-                   <Form noValidate validated={validated} onSubmit={handleSubmit}>
-                     <Form.Row>
-                       <FormField label={'Name'}
-                                  type={'text'}
-                                  colWidth={'12'}
-                                  name={'name'}/>
-                     </Form.Row>
-                     <Form.Row>
-                       <FormTextArea label={'Description'}
-                                     colWidth={'12'}
-                                     name={'description'}/>
-                     </Form.Row>
-                     <h4>Treasure</h4>
-                     <Form.Row>
-                       <FormField label={'Copper'} type={'number'} colWidth={'2'} name={'copperPieces'}/>
-                       <FormField label={'Silver'} type={'number'} colWidth={'2'} name={'silverPieces'}/>
-                       <FormField label={'Electrum'} type={'number'} colWidth={'2'} name={'electrumPieces'}/>
-                       <FormField label={'Gold'} type={'number'} colWidth={'2'} name={'goldPieces'}/>
-                       <FormField label={'Platinum'} type={'number'} colWidth={'2'} name={'platinumPieces'}/>
-                     </Form.Row>
-                     <Form.Row>
-                       <Col md={12}>
-                         <h4>Monsters</h4>
-                         <FieldArray name={'encounterMonsters'}>
-                           {({fields}) => (
-                             fields.map((monster, index) => (
-                               !fields.value[index] || !fields.value[index]._destroy ? (
-                                 <EncounterMonsterFields encounterMonster={monster}
-                                                         fields={fields}
-                                                         index={index}
-                                                         key={index}/>
-                               ) : null))
-                           )}
-                         </FieldArray>
-                         <Button type="button" onClick={() => push('encounterMonsters', {
-                           numberOfMonsters: 1,
-                         })} variant={'link'} block>Add Monster...</Button>
-                       </Col>
-                     </Form.Row>
-                     <Form.Row>
-                       <Col md={12}>
-                         <h4>Items/Treasure/Equipment</h4>
-                         <FieldArray name={'encounterItems'}>
-                           {({fields}) => (
-                             fields.map((encounterItem, index) => (
-                               !fields.value[index] || !fields.value[index]._destroy ? (
-                                 <EncounterItemFields encounterItem={encounterItem}
-                                                      fields={fields}
-                                                      index={index}
-                                                      key={index}/>
-                               ) : null))
-                           )}
-                         </FieldArray>
-                         <Button type="button" onClick={() => push('encounterItems', {
-                           quantity: 1,
-                         })} variant={'link'} block>Add Item...</Button>
-                       </Col>
-                     </Form.Row>
-                     <ButtonGroup aria-label="Encounter actions">
-                       <Button type="button" onClick={onCancelEditing} variant={'info'}>Cancel</Button>
-                       <Button type="button" onClick={form.reset} disabled={submitting || pristine} variant={'secondary'}>Reset</Button>
-                       <Button type="submit" disabled={!dirty || submitting || invalid}>{submitButtonTitle}</Button>
-                     </ButtonGroup>
-                   </Form>
-                 )} />
+      <FinalForm
+        onSubmit={this.handleSubmit}
+        initialValues={encounter}
+        validate={this.validate}
+        mutators={{...arrayMutators }}
+        render={({
+          dirty,
+          form,
+          form: {
+            mutators: { push, pop },
+          },
+          handleSubmit,
+          invalid,
+          pristine,
+          submitting,
+          values,
+        }) => (
+          <Form noValidate validated={validated} onSubmit={handleSubmit}>
+            <EncounterFields encounterFieldName={''} push={push}/>
+            <ButtonGroup aria-label="Encounter actions">
+              <Button type="button"
+                      onClick={onCancelEditing}
+                      variant={'info'}>Cancel</Button>
+              <Button type="button"
+                      onClick={form.reset}
+                      disabled={submitting || pristine}
+                      variant={'secondary'}>Reset</Button>
+              <Button type="submit"
+                      disabled={!dirty || submitting || invalid}>{submitButtonTitle}</Button>
+            </ButtonGroup>
+          </Form>
+        )} />
     );
   }
 }
@@ -216,12 +170,37 @@ EncounterForm.propTypes = {
   adventure: PropTypes.object,
   encounter: PropTypes.object,
   campaign: PropTypes.object.isRequired,
-  onUpdateCampaign: PropTypes.func.isRequired,
+  createEncounter: PropTypes.func.isRequired,
+  updateEncounter: PropTypes.func.isRequired,
   onCancelEditing: PropTypes.func.isRequired,
   showing: PropTypes.bool,
 };
 
-export default EncounterForm;
+function mapStateToProps (state) {
+  return {
+    adventure: state.adventures.currentAdventure,
+    campaign: state.campaigns.currentCampaign,
+    flashMessages: state.flashMessages,
+    user: state.users.user,
+  };
+}
 
-// A large steel door, which is in surprisingly good shape, blocks the way into the catacombs. It is locked with a relatively easily picked lock (DC 10). If no one can pick the lock, it can be opened with an athletics check at DC 15.
-// If the door is broken down, the skeletons on the other side will have surprise. If it is picked the party can make perception checks at DC 15 to see if they hear the skeletons stirring.
+function mapDispatchToProps (dispatch) {
+  return {
+    createEncounter: (encounter, campaignSlug, adventureId) => {
+      dispatch(rest.actions.createEncounter({
+        campaign_slug: campaignSlug,
+        adventure_id: adventureId,
+      }, {body: JSON.stringify({encounter})}));
+    },
+    updateEncounter: (encounter, campaignId, adventureId, encounterId) => {
+      dispatch(rest.actions.updateEncounter({
+        campaign_slug: campaignId,
+        adventure_id: adventureId,
+        id: encounterId,
+      }, {body: JSON.stringify({encounter})}));
+    },
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(EncounterForm);

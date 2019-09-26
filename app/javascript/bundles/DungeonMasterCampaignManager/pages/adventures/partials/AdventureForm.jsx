@@ -14,7 +14,8 @@ import Button from 'react-bootstrap/Button';
 import FormSelect from '../../../components/forms/FormSelect';
 import Col from 'react-bootstrap/Col';
 import {FieldArray} from 'react-final-form-arrays';
-import EncounterFields from './EncounterFields';
+import EncounterFormCard from './EncounterFormCard';
+import classes from '../../characters/partials/character-form.module.scss';
 
 const setAdventureObject = (values, campaignID) => {
   let adventureWorldLocationAttributes = {
@@ -60,6 +61,7 @@ const setAdventureObject = (values, campaignID) => {
         electrumPieces: encounter.electrumPieces,
         goldPieces: encounter.goldPieces,
         name: encounter.name,
+        location: encounter.location,
         platinumPieces: encounter.platinumPieces,
         silverPieces: encounter.silverPieces,
         encounterMonstersAttributes: encounter.encounterMonsters.map((encounterMonster) => {
@@ -224,13 +226,13 @@ class AdventureForm extends React.Component {
                          <h3>Encounters</h3>
                          <FieldArray name="encounters">
                            {({fields}) => (
-                             fields.map((encounter, index) => (
+                             fields.map((encounterFieldName, index) => (
                                !fields.value[index] || !fields.value[index]._destroy ? (
-                                 <EncounterFields encounter={encounter}
-                                                  fields={fields}
-                                                  index={index}
-                                                  key={index}
-                                                  push={push}/>
+                                 <EncounterFormCard encounterFieldName={encounterFieldName}
+                                                    fields={fields}
+                                                    index={index}
+                                                    key={index}
+                                                    push={push}/>
                                ) : null))
                            )}
                          </FieldArray>
@@ -251,7 +253,7 @@ class AdventureForm extends React.Component {
                          <Button type="submit" disabled={!dirty || submitting || invalid}>{submitButtonTitle}</Button>
                        </ButtonGroup>
                      </Form.Row>
-                     {/*<pre className={classes.preBlock}>{JSON.stringify(values, 0, 2)}</pre>*/}
+                     <pre className={classes.preBlock}>{JSON.stringify(values, 0, 2)}</pre>
                    </Form>
                  )} />
     );

@@ -28,13 +28,6 @@ class Adventure extends React.Component {
     this.props.getAdventure(this.props.campaignSlug, this.props.id);
   }
 
-  handleUpdateAdventure(adventureBody) {
-    this.props.updateAdventure(snakecaseKeys(adventureBody, {exclude: ['_destroy']}), this.props.id);
-    this.setState({
-      showingNewEncounterForm: false,
-    });
-  }
-
   handleCancelEditing () {
     this.setState({showingNewEncounterForm: false});
   }
@@ -119,11 +112,12 @@ class Adventure extends React.Component {
             <Row>
               <Col>
                 <h3>Encounters</h3>
-                <EncountersList handleUpdateAdventure={(values) => this.handleUpdateAdventure(values)}
-                                adventure={adventure}
+                <EncountersList adventure={adventure}
                                 campaign={campaign}
                                 small/>
-                <Button variant={'secondary'} block onClick={() => this.showNewEncounterForm()}>New Encounter</Button>
+                <Button variant={'secondary'} block onClick={() => this.showNewEncounterForm()}>
+                  New Encounter
+                </Button>
                 <Modal size={'lg'} show={showingNewEncounterForm} onHide={() => this.handleCancelEditing()}>
                   <Modal.Header closeButton>
                     <Modal.Title>New Encounter</Modal.Title>
@@ -132,7 +126,6 @@ class Adventure extends React.Component {
                     <EncounterForm
                       adventure={adventure}
                       campaign={campaign}
-                      onUpdateCampaign={(campaignBody) => this.handleUpdateAdventure(campaignBody)}
                       onCancelEditing={() => this.handleCancelEditing()}/>
                   </Modal.Body>
                 </Modal>
@@ -154,7 +147,6 @@ Adventure.propTypes = {
   flashMessages: PropTypes.array,
   getAdventure: PropTypes.func.isRequired,
   id: PropTypes.string.isRequired,
-  updateAdventure: PropTypes.func.isRequired,
   user: PropTypes.object,
 };
 
@@ -171,9 +163,6 @@ function mapDispatchToProps (dispatch) {
   return {
     getAdventure(campaignSlug, adventureId) {
       dispatch(rest.actions.getAdventure({id: adventureId, campaign_slug: campaignSlug}));
-    },
-    updateAdventure: (adventure, adventureId) => {
-      dispatch(rest.actions.updateAdventure({id: adventureId}, {body: JSON.stringify({adventure})}));
     },
   };
 }

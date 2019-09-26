@@ -147,8 +147,9 @@ class Monster < ApplicationRecord
   pg_search_scope :search_for,
                   against: {
                     name: 'A',
-                    challenge_rating: 'B',
-                    alignment: 'C'
+                    monster_type: 'B',
+                    challenge_rating: 'C',
+                    alignment: 'D'
                   },
                   using: {
                     tsearch: {

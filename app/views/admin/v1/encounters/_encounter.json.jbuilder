@@ -6,6 +6,7 @@ json.extract! encounter,
               :id,
               :name,
               :description,
+              :location,
               :copper_pieces,
               :silver_pieces,
               :electrum_pieces,
@@ -38,5 +39,3 @@ json.encounter_items encounter.encounter_items do |encounter_item|
     json.weight encounter_item.item.weight
   end
 end
-
-json.url v1_campaign_adventure_encounter_url(campaign, adventure, encounter, format: :json)

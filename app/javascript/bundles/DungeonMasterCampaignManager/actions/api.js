@@ -45,6 +45,17 @@ const dmFetch = (fetch) => {
 };
 
 export default reduxApi({
+  getAdventure: {
+    url: '/v1/campaigns/:campaign_slug/adventures/:id.json',
+    prefetch: [
+      ({actions, dispatch, getState, request}, cb) => {
+        const {campaigns: {currentCampaign}} = getState();
+        const {pathvars: {campaign_slug}} = request;
+        currentCampaign !== null ? cb() :
+          dispatch(actions.getCampaign({slug: campaign_slug}, cb));
+      },
+    ],
+  },
   createAdventure: {
     url: '/v1/campaigns/:campaign_slug/adventures/',
     options () {
@@ -67,6 +78,9 @@ export default reduxApi({
         headers,
       };
     },
+    postfetch: [({data}) => {
+      navigate(`/app/campaigns/${data.campaign_slug}/advantures/${data.id}`);
+    }],
   },
   createCampaign: {
     url: '/v1/campaigns/',
@@ -97,17 +111,6 @@ export default reduxApi({
   getCampaigns: {
     url: '/v1/campaigns.json',
   },
-  getAdventure: {
-    url: '/v1/campaigns/:campaign_slug/adventures/:id.json',
-    prefetch: [
-      ({actions, dispatch, getState, request}, cb) => {
-        const {campaigns: {currentCampaign}} = getState();
-        const {pathvars: {campaign_slug}} = request;
-        currentCampaign !== null ? cb() :
-          dispatch(actions.getCampaign({slug: campaign_slug}, cb));
-      },
-    ],
-  },
   getEncounter: {
     url: '/v1/campaigns/:campaign_slug/adventures/:adventure_id/encounters/:id.json',
     prefetch: [
@@ -118,6 +121,36 @@ export default reduxApi({
           dispatch(actions.getAdventure({id: adventure_id, campaign_slug}, cb));
       },
     ],
+  },
+  createEncounter: {
+    url: '/v1/campaigns/:campaign_slug/adventures/:adventure_id/encounters/',
+    options () {
+      const headers = getHeaders();
+      return {
+        method: 'post',
+        headers,
+      };
+    },
+    postfetch: [({actions, dispatch, request}) => {
+      const {pathvars: {campaign_slug, adventure_id}} = request;
+      dispatch(actions.getCampaign({slug: campaign_slug}));
+      dispatch(actions.getAdventure({id: adventure_id, campaign_slug}));
+    }],
+  },
+  updateEncounter: {
+    url: '/v1/campaigns/:campaign_slug/adventures/:adventure_id/encounters/:id',
+    options () {
+      const headers = getHeaders();
+      return {
+        method: 'put',
+        headers,
+      };
+    },
+    postfetch: [({actions, dispatch, request}) => {
+      const {pathvars: {campaign_slug, adventure_id}} = request;
+      dispatch(actions.getCampaign({slug: campaign_slug}));
+      dispatch(actions.getAdventure({id: adventure_id, campaign_slug}));
+    }],
   },
   createNonPlayerCharacter: {
     url: '/v1/campaigns/:campaign_slug/non_player_characters/',

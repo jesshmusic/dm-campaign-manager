@@ -57,11 +57,8 @@ class Character < ApplicationRecord
             :strength, :type, :wisdom, presence: true
   validates :character_classes, length: {minimum: 1}
 
-  after_validation(on: :create) do
-    self.slug = generate_slug
-  end
-
   before_save do
+    self.slug = generate_slug
     self.hit_points_current = hit_points
     self.initiative = DndRules.ability_score_modifier(dexterity)
     self.proficiency = DndRules.proficiency_bonus_for_level(total_level)

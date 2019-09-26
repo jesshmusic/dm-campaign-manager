@@ -21,7 +21,7 @@
 
 class Campaign < ApplicationRecord
   validates :name, :world, presence: true
-  after_validation(on: :create) do
+  before_save do
     self.slug = generate_slug
   end
 

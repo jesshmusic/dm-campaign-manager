@@ -2,7 +2,7 @@
 
 json.key_format! camelize: :lower
 
-json.extract! encounter, :id, :name, :location, :xp
+json.extract! encounter, :id, :name, :description, :location, :xp
 
 json.encounterMonsters encounter.encounter_monsters do |encounter_monster|
   json.id encounter_monster.id
