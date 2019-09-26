@@ -70,8 +70,10 @@ class Character < ApplicationRecord
       character_class.setup_spell_scores(self)
     end
     character_spells.each do |character_spell|
+      next unless character_spell.spell_class.nil? || dnd_classes.nil?
+
       dnd_class_first = dnd_classes.first.name
-      character_spell.spell_class = dnd_class_first if character_spell.spell_class.nil?
+      character_spell.spell_class = dnd_class_first
       character_spell.save!
     end
     has_shield = shield_id && !weapon_2h_id

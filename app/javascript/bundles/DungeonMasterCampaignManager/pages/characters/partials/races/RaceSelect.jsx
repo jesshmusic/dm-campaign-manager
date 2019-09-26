@@ -5,13 +5,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import FormSelectAsync from '../../../../components/forms/FormSelectAsync';
-import {filterOptions} from '../../../../utilities/character-utilities';
+import {filterOptionsWithData} from '../../../../utilities/character-utilities';
 
 const getRaces = (inputValue, callback) => {
   fetch(`/v1/races.json?search=${inputValue}`)
     .then((response) => response.json())
     .then((jsonResult) => {
-      callback(filterOptions(jsonResult));
+      callback(filterOptionsWithData(jsonResult));
     });
 };
 
