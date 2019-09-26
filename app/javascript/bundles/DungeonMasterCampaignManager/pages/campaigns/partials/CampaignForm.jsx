@@ -14,8 +14,9 @@ import WorldEventFields from './WorldEventFields';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import {Form as FinalForm} from 'react-final-form';
 import Col from 'react-bootstrap/Col';
+import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
 
-const CampaignForm = ({arrayMutators, initialValues, onFormSubmit, submitButtonText, validated, validateForm }) => (
+const CampaignForm = ({arrayMutators, initialValues, onDelete, onFormSubmit, submitButtonText, validated, validateForm }) => (
   <FinalForm onSubmit={onFormSubmit}
              initialValues={initialValues}
              validate={validateForm}
@@ -76,12 +77,17 @@ const CampaignForm = ({arrayMutators, initialValues, onFormSubmit, submitButtonT
                      <Button type="button" onClick={() => push('worldEvents', undefined)} variant={'info'} block>Add World Event</Button>
                    </Col>
                  </Form.Row>
-                 <Form.Row>
+                 <ButtonToolbar className={'justify-content-between'}>
                    <ButtonGroup aria-label="Campaign actions">
-                     <Button type="submit" disabled={submitting}>{submitButtonText}</Button>
-                     <Button type="button" onClick={form.reset} disabled={submitting || pristine} variant={'secondary'}>Reset</Button>
+                     {onDelete ? (
+                       <Button type="button" variant={'danger'} onClick={onDelete}>Delete Campaign</Button>
+                     ) : null}
                    </ButtonGroup>
-                 </Form.Row>
+                   <ButtonGroup aria-label="Campaign actions">
+                     <Button type="button" onClick={form.reset} disabled={submitting || pristine} variant={'secondary'}>Reset</Button>
+                     <Button type="submit" disabled={submitting} variant={'success'}>{submitButtonText}</Button>
+                   </ButtonGroup>
+                 </ButtonToolbar>
                </Form>
              )} />
 );
@@ -89,6 +95,7 @@ const CampaignForm = ({arrayMutators, initialValues, onFormSubmit, submitButtonT
 CampaignForm.propTypes = {
   arrayMutators: PropTypes.any,
   initialValues: PropTypes.object,
+  onDelete: PropTypes.func,
   onFormSubmit: PropTypes.func.isRequired,
   submitButtonText: PropTypes.string.isRequired,
   validated: PropTypes.bool,

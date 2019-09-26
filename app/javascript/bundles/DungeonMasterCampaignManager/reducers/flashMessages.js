@@ -5,7 +5,7 @@ const dismissFlashMessage = createAction('@@dmcm@dismissFlashMessage');
 
 // Campaigns
 const createCampaignSuccess = createAction('@@redux-api@createCampaign_success');
-const createCampaignFail = createAction('@@redux-api@createCampaign_success');
+const createCampaignFail = createAction('@@redux-api@createCampaign_fail');
 const updateCampaignSuccess = createAction('@@redux-api@updateCampaign_success');
 const updateCampaignFail = createAction('@@redux-api@updateCampaign_fail');
 const getCampaignFailed = createAction('@@redux-api@getCampaign_fail');

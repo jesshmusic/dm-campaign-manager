@@ -148,8 +148,9 @@ class Monster < ApplicationRecord
                   against: {
                     name: 'A',
                     monster_type: 'B',
-                    challenge_rating: 'C',
-                    alignment: 'D'
+                    monster_subtype: 'C',
+                    challenge_rating: 'D',
+                    alignment: 'E'
                   },
                   using: {
                     tsearch: {

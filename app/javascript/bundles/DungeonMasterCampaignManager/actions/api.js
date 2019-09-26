@@ -105,6 +105,19 @@ export default reduxApi({
       };
     },
   },
+  deleteCampaign: {
+    url: '/v1/campaigns/:slug/',
+    options () {
+      const headers = getHeaders();
+      return {
+        method: 'delete',
+        headers,
+      };
+    },
+    postfetch: [() => {
+      navigate('/app/campaigns/');
+    }],
+  },
   getCampaign: {
     url: '/v1/campaigns/:slug.json',
   },

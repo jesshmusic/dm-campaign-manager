@@ -10,6 +10,13 @@ import arrayMutators from 'final-form-arrays';
 import PageTitle from '../../components/layout/PageTitle';
 import CampaignForm from './partials/CampaignForm';
 import DndSpinner from '../../components/layout/DndSpinner';
+import Modal from 'react-bootstrap/Modal';
+import EncounterForm from '../adventures/partials/EncounterForm';
+import Button from 'react-bootstrap/Button';
+import FormControl from 'react-bootstrap/FormControl';
+import FormLabel from 'react-bootstrap/FormLabel';
+import FormGroup from 'react-bootstrap/FormGroup';
+import ConfirmModal from '../../components/ConfirmModal';
 
 class EditCampaign extends React.Component {
   state = {
@@ -18,6 +25,8 @@ class EditCampaign extends React.Component {
       world: '',
       description: '',
     },
+    deleteCampaignConfirm: false,
+    deleteConfirmInput: '',
     validated: false,
   };
 
@@ -25,13 +34,29 @@ class EditCampaign extends React.Component {
     this.props.getCampaign(this.props.campaignSlug);
   }
 
-  componentDidUpdate (prevProps, prevState) {
+  componentDidUpdate (prevProps) {
     if (prevProps.campaign !== this.props.campaign ) {
       this.setState({currentCampaign: this.props.campaign});
     }
   }
 
-  handleSubmit = async (values) => {
+  confirmDeleteCampaign = () => {
+    this.props.deleteCampaign(this.props.campaignSlug);
+  };
+
+  cancelDeleteCampaign = () => {
+    this.setState({
+      deleteCampaignConfirm: false,
+    });
+  };
+
+  handleDeleteCampaign = () => {
+    this.setState({
+      deleteCampaignConfirm: true,
+    });
+  };
+
+  handleSubmitCampaign = async (values) => {
     const pcIds = values.pcs.map((pc) => pc.id);
     const npcIds = values.npcs.map((npc) => npc.id);
     const campaignBody = {
@@ -56,7 +81,7 @@ class EditCampaign extends React.Component {
 
   render () {
     const { user, flashMessages } = this.props;
-    const {currentCampaign, validated} = this.state;
+    const {currentCampaign, deleteCampaignConfirm, validated} = this.state;
     const campaignTitle = `Edit Campaign: ${currentCampaign.name}`;
 
     return (
@@ -68,8 +93,22 @@ class EditCampaign extends React.Component {
                        {url: `/app/campaigns/${this.props.campaignSlug}`, isActive: false, title: currentCampaign.name},
                        {url: null, isActive: true, title: campaignTitle}]}>
         <PageTitle title={campaignTitle}/>
+        <ConfirmModal title={currentCampaign ? currentCampaign.name : 'Campaign'}
+                      message={(
+                        <p>
+                          {/* eslint-disable-next-line max-len */}
+                          This will <strong>permanently</strong> delete this campaign, all adventures, and all PCs and NPCs
+                        </p>
+                      )}
+                      confirm={this.confirmDeleteCampaign}
+                      buttonEnabledText={'delete'}
+                      buttonText={'DELETE CAMPAIGN'}
+                      inputLabel={'Type "DELETE" to confirm.'}
+                      onCancel={this.cancelDeleteCampaign}
+                      show={deleteCampaignConfirm}/>
         { currentCampaign ? (
-          <CampaignForm onFormSubmit={this.handleSubmit}
+          <CampaignForm onFormSubmit={this.handleSubmitCampaign}
+                        onDelete={this.handleDeleteCampaign}
                         submitButtonText={'Update Campaign'}
                         arrayMutators={arrayMutators}
                         initialValues={currentCampaign}
@@ -87,6 +126,7 @@ class EditCampaign extends React.Component {
 EditCampaign.propTypes = {
   campaign: PropTypes.object,
   campaignSlug: PropTypes.string.isRequired,
+  deleteCampaign: PropTypes.func.isRequired,
   updateCampaign: PropTypes.func.isRequired,
   flashMessages: PropTypes.array,
   getCampaign: PropTypes.func.isRequired,
@@ -103,6 +143,9 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
+    deleteCampaign: (campaignSlug) => {
+      dispatch(rest.actions.deleteCampaign({slug: campaignSlug}));
+    },
     getCampaign: (campaignSlug) => {
       dispatch(rest.actions.getCampaign({slug: campaignSlug}));
     },
