@@ -83,7 +83,7 @@ class AdventureCard extends React.Component {
             </Col>
             <Col md={6} sm={4}>
               <h5 className={'mb-0'}>World location</h5>
-              {adventure.worldLocation.label}
+              {adventure.worldLocation ? adventure.worldLocation.label : 'No Location Set...'}
             </Col>
             <Col md={3} sm={4}>
               <h5 className={'mb-0'}>Encounters</h5>
