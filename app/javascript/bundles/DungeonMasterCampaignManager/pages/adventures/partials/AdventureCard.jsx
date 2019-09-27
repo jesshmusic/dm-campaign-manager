@@ -12,24 +12,25 @@ import AdventureForm from './AdventureForm';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import {Link} from '@reach/router';
+import Modal from 'react-bootstrap/Modal';
 
 class AdventureCard extends React.Component {
   state = {
     editing: false,
   };
 
-  handleEditAdventure () {
+  handleEditAdventure = () => {
     this.setState({editing: !this.state.editing});
-  }
+  };
 
-  handleCancelEditing () {
+  handleCancelEditing = () => {
     this.setState({editing: false});
-  }
+  };
 
-  handleUpdateForm (adventureBody) {
+  handleUpdateForm = (adventureBody) => {
     this.props.updateAdventure(adventureBody, this.props.adventure.id);
     this.setState({editing: false});
-  }
+  };
 
   get totalXP () {
     let totalXP = 0;
@@ -43,13 +44,7 @@ class AdventureCard extends React.Component {
     const {adventure, campaign} = this.props;
     const {editing} = this.state;
 
-    return (editing ? (
-      <AdventureForm
-        campaign={campaign}
-        onUpdateAdventure={(values) => this.handleUpdateForm(values)}
-        onCancelEditing={() => this.handleCancelEditing()}
-        adventure={adventure}/>
-    ) : (
+    return (
       <Card className={'mb-3'}>
         <Card.Header>
           <Link to={`/app/campaigns/${campaign.slug}/adventures/${adventure.id}`}>
@@ -97,7 +92,7 @@ class AdventureCard extends React.Component {
         </Card.Body>
         <Card.Footer>
           <ButtonGroup>
-            <Button variant={'secondary'} onClick={() => this.handleEditAdventure()}>
+            <Button variant={'secondary'} onClick={this.handleEditAdventure}>
               Edit
             </Button>
             <Button variant={'danger'}>
@@ -105,8 +100,20 @@ class AdventureCard extends React.Component {
             </Button>
           </ButtonGroup>
         </Card.Footer>
+        <Modal size={ 'lg' } show={ editing } onHide={this.handleCancelEditing}>
+          <Modal.Header closeButton>
+            <Modal.Title>New Adventure</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <AdventureForm
+              campaign={campaign}
+              onUpdateAdventure={this.handleUpdateForm}
+              onCancelEditing={this.handleCancelEditing}
+              adventure={adventure}/>
+          </Modal.Body>
+        </Modal>
       </Card>
-    ));
+    );
   }
 }
 

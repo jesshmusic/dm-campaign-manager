@@ -19,6 +19,90 @@ import PageTitle from '../../components/layout/PageTitle';
 import DndSpinner from '../../components/layout/DndSpinner';
 import AdventureForm from '../adventures/partials/AdventureForm';
 import snakecaseKeys from 'snakecase-keys';
+import Modal from 'react-bootstrap/Modal';
+
+const CampaignBody = ({
+  campaign,
+  handleCancelEditing,
+  handleUpdateAdventure,
+  showNewAdventureForm,
+  showingNewAdventureForm,
+}) => (
+  campaign ? (
+    <Row>
+      <Col sm={7} md={8}>
+        <ReactMarkdown source={campaign.description} />
+        <h3>Adventures</h3>
+        <AdventuresList
+          campaign={campaign}
+          onUpdateAdventure={handleUpdateAdventure} />
+        <Modal size={ 'lg' } show={ showingNewAdventureForm } onHide={handleCancelEditing}>
+          <Modal.Header closeButton>
+            <Modal.Title>New Adventure</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <AdventureForm
+              campaign={campaign}
+              onUpdateAdventure={handleUpdateAdventure}
+              onCancelEditing={handleCancelEditing}/>
+          </Modal.Body>
+        </Modal>
+        <Button variant={'secondary'} block onClick={showNewAdventureForm}>
+          New Adventure
+        </Button>
+      </Col>
+      <Col sm={5} md={4}>
+        <div className={'mb-4'}>
+          <h3>Events</h3>
+          <ListGroup variant="flush">
+            {campaign.worldEvents.map((worldEvent, index) =>
+              <ListGroupItem key={index}>
+                <h4 className={'h6'}><strong>{worldEvent.when}</strong></h4>
+                <p>{worldEvent.description}</p>
+              </ListGroupItem>
+            )}
+          </ListGroup>
+        </div>
+        <div className={'mb-4'}>
+          <h3>World Locations</h3>
+          <ListGroup variant="flush">
+            {campaign.worldLocations.map((location, index) =>
+              <ListGroupItem key={index}>
+                <h4 className={'h6'}>{location.name}</h4>
+                <p>{location.description}</p>
+              </ListGroupItem>
+            )}
+          </ListGroup>
+        </div>
+        <div className={'mb-4'}>
+          <h3>Player Characters</h3>
+          <CharactersList campaign={campaign} characters={campaign.pcs} small/>
+          <Link to={`/app/campaigns/${campaign.slug}/pcs/new`} className={'btn btn-success btn-block'}>New PC</Link>
+        </div>
+        <div className={'mb-4'}>
+          <h3>Non-player Characters</h3>
+          <CharactersList campaign={campaign} characters={campaign.npcs} small/>
+          <Link to={`/app/campaigns/${campaign.slug}/npcs/new`} className={'btn btn-success btn-block'}>New NPC</Link>
+          <Link to={`/app/campaigns/${campaign.slug}/npcs/generate/`} className={'btn btn-secondary btn-block'}>Quick NPC</Link>
+        </div>
+      </Col>
+    </Row>
+  ) : (
+    <Row>
+      <Col>
+        <h3>Campaign not found.</h3>
+      </Col>
+    </Row>
+  )
+);
+
+CampaignBody.propTypes = {
+  campaign: PropTypes.object,
+  handleCancelEditing: PropTypes.func.isRequired,
+  handleUpdateAdventure: PropTypes.func.isRequired,
+  showNewAdventureForm: PropTypes.func.isRequired,
+  showingNewAdventureForm: PropTypes.bool,
+};
 
 class Campaign extends React.Component {
   state = {
@@ -29,26 +113,26 @@ class Campaign extends React.Component {
     this.props.getCampaign(this.props.campaignSlug);
   }
 
-  handleUpdateAdventure (adventureBody, adventureID) {
+  handleUpdateAdventure = (adventureBody, adventureID) => {
     this.props.updateAdventure(snakecaseKeys(adventureBody, {exclude: ['_destroy']}), this.props.campaignSlug, adventureID);
     this.setState({
       showingNewAdventureForm: false,
     });
-  }
+  };
 
-  handleCancelEditing () {
+  handleCancelEditing = () => {
     this.setState({showingNewAdventureForm: false});
-  }
+  };
 
-  showNewAdventureForm () {
+  showNewAdventureForm = () => {
     this.setState({
       showingNewAdventureForm: !this.state.showingNewAdventureForm,
     });
-  }
+  };
 
   render () {
     const { showingNewAdventureForm } = this.state;
-    const { user, flashMessages, campaign } = this.props;
+    const { campaign, flashMessages, loading, user } = this.props;
     const campaignTitle = campaign ? campaign.name : 'Campaign Loading...';
     return (
       <PageContainer user={user}
@@ -57,72 +141,22 @@ class Campaign extends React.Component {
                      description={`Campaign: ${campaignTitle}. Dungeon Master's Campaign Manager is a free resource for DMs to manage their campaigns, adventures, and NPCs.`}
                      breadcrumbs={[{url: '/app/campaigns', isActive: false, title: 'Campaigns'},
                        {url: null, isActive: true, title: campaignTitle}]}>
-        { campaign ? (
+        { loading ? (
+          <DndSpinner />
+        ) : (
           <Container fluid>
-            <PageTitle title={`Campaign: ${campaign.name}`}
-                       hasButton={user && user.id === campaign.dungeonMaster.id}
-                       buttonLink={`/app/campaigns/${campaign.slug}/edit`}
+            <PageTitle title={`Campaign: ${campaign ? campaign.name : 'Campaign not found'}`}
+                       hasButton={user && campaign && user.id === campaign.dungeonMaster.id}
+                       buttonLink={campaign ? `/app/campaigns/${campaign.slug}/edit` : ''}
                        buttonTitle={'Edit Campaign'}
                        buttonVariant={'primary'}/>
-            <Row>
-              <Col sm={7} md={8}>
-                <ReactMarkdown source={campaign.description} />
-                <h3>Adventures</h3>
-                <AdventuresList
-                  campaign={campaign}
-                  onUpdateAdventure={
-                    (adventureBody, adventureID) => this.handleUpdateAdventure(adventureBody, adventureID)
-                  } />
-                {showingNewAdventureForm ? (
-                  <AdventureForm
-                    campaign={campaign}
-                    onUpdateAdventure={
-                      (adventureBody, adventureID) => this.handleUpdateAdventure(adventureBody, adventureID)
-                    }
-                    onCancelEditing={() => this.handleCancelEditing()}/>
-                ) : (
-                  <Button variant={'secondary'} block onClick={() => this.showNewAdventureForm()}>New Adventure</Button>
-                )}
-              </Col>
-              <Col sm={5} md={4}>
-                <div className={'mb-4'}>
-                  <h3>Events</h3>
-                  <ListGroup variant="flush">
-                    {campaign.worldEvents.map((worldEvent, index) =>
-                      <ListGroupItem key={index}>
-                        <h4 className={'h6'}><strong>{worldEvent.when}</strong></h4>
-                        <p>{worldEvent.description}</p>
-                      </ListGroupItem>
-                    )}
-                  </ListGroup>
-                </div>
-                <div className={'mb-4'}>
-                  <h3>World Locations</h3>
-                  <ListGroup variant="flush">
-                    {campaign.worldLocations.map((location, index) =>
-                      <ListGroupItem key={index}>
-                        <h4 className={'h6'}>{location.name}</h4>
-                        <p>{location.description}</p>
-                      </ListGroupItem>
-                    )}
-                  </ListGroup>
-                </div>
-                <div className={'mb-4'}>
-                  <h3>Player Characters</h3>
-                  <CharactersList campaign={campaign} characters={campaign.pcs} small/>
-                  <Link to={`/app/campaigns/${campaign.slug}/pcs/new`} className={'btn btn-success btn-block'}>New PC</Link>
-                </div>
-                <div className={'mb-4'}>
-                  <h3>Non-player Characters</h3>
-                  <CharactersList campaign={campaign} characters={campaign.npcs} small/>
-                  <Link to={`/app/campaigns/${campaign.slug}/npcs/new`} className={'btn btn-success btn-block'}>New NPC</Link>
-                  <Link to={`/app/campaigns/${campaign.slug}/npcs/generate/`} className={'btn btn-secondary btn-block'}>Quick NPC</Link>
-                </div>
-              </Col>
-            </Row>
+            <CampaignBody campaign={campaign}
+                          handleCancelEditing={this.handleCancelEditing}
+                          handleUpdateAdventure={this.handleUpdateAdventure}
+                          showNewAdventureForm={this.showNewAdventureForm}
+                          showingNewAdventureForm={showingNewAdventureForm}
+            />
           </Container>
-        ) : (
-          <DndSpinner/>
         )}
       </PageContainer>
     );
@@ -134,6 +168,7 @@ Campaign.propTypes = {
   campaignSlug: PropTypes.string.isRequired,
   flashMessages: PropTypes.array,
   getCampaign: PropTypes.func.isRequired,
+  loading: PropTypes.bool,
   updateAdventure: PropTypes.func.isRequired,
   user: PropTypes.object,
 };
@@ -141,6 +176,7 @@ Campaign.propTypes = {
 function mapStateToProps (state) {
   return {
     campaign: state.campaigns.currentCampaign,
+    loading: state.campaigns.loading,
     user: state.users.user,
     flashMessages: state.flashMessages,
   };

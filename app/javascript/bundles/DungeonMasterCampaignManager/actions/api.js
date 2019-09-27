@@ -65,8 +65,8 @@ export default reduxApi({
         headers,
       };
     },
-    postfetch: [({data}) => {
-      navigate(`/app/campaigns/${data.campaign_slug}/advantures/${data.id}`);
+    postfetch: [({data, request}) => {
+      navigate(`/app/campaigns/${request.pathvars.campaign_slug}/adventures/${data.id}`);
     }],
   },
   updateAdventure: {
@@ -78,8 +78,8 @@ export default reduxApi({
         headers,
       };
     },
-    postfetch: [({data}) => {
-      navigate(`/app/campaigns/${data.campaign_slug}/advantures/${data.id}`);
+    postfetch: [({data, request}) => {
+      navigate(`/app/campaigns/${request.pathvars.campaign_slug}/adventures/${data.id}`);
     }],
   },
   createCampaign: {
