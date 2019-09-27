@@ -40,7 +40,9 @@ class ConfirmModal extends React.Component {
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={this.handleCancel}>Cancel</Button>
-          <Button variant="danger" disabled={inputText.toLowerCase() !== buttonEnabledText} onClick={confirm}>{buttonText}</Button>
+          <Button variant="danger" disabled={inputText.toLowerCase() !== buttonEnabledText} onClick={confirm}>
+            {buttonText}
+          </Button>
         </Modal.Footer>
       </Modal>
     );

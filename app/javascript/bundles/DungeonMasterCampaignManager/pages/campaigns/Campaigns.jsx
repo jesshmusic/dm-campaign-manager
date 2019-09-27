@@ -11,6 +11,7 @@ import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import CampaignsList from './partials/CampaignsList';
 import PageTitle from '../../components/layout/PageTitle';
 import {navigate} from '@reach/router';
+import DndSpinner from '../../components/layout/DndSpinner';
 
 class Campaigns extends React.Component {
   constructor (props) {
@@ -26,20 +27,23 @@ class Campaigns extends React.Component {
   }
 
   render () {
+    const { campaigns, loading, user, flashMessages } = this.props;
     return (
-      <PageContainer user={this.props.user}
-                     flashMessages={this.props.flashMessages}
+      <PageContainer user={user}
+                     flashMessages={flashMessages}
                      pageTitle={'Campaigns'}
                      description={'All D&D campaigns. Dungeon Master\'s Campaign Manager is a free resource for DMs to manage their campaigns, adventures, and NPCs.'}
                      breadcrumbs={[{url: null, isActive: true, title: 'Campaigns'}]}>
         <PageTitle title={'My Campaigns'}
-                   hasButton={this.props.user !== null}
+                   hasButton={user !== null}
                    buttonLink={'/app/campaigns/new/'}
                    buttonTitle={'Add Campaign'}
                    buttonVariant={'success'}/>
-        {this.props.user && this.props.campaigns.campaigns ? (
-          <CampaignsList campaigns={this.props.campaigns.campaigns}/>
-        ) : null}
+        {loading ? (
+          <DndSpinner/>
+        ) : (
+          <CampaignsList campaigns={campaigns}/>
+        )}
       </PageContainer>
     );
   }
@@ -49,12 +53,14 @@ Campaigns.propTypes = {
   campaigns: PropTypes.object,
   flashMessages: PropTypes.array,
   getCampaigns: PropTypes.func.isRequired,
+  loading: PropTypes.bool,
   user: PropTypes.object,
 };
 
 function mapStateToProps (state) {
   return {
-    campaigns: state.campaigns,
+    campaigns: state.campaigns.campaigns,
+    loading: state.campaigns.loading,
     user: state.users.user,
     flashMessages: state.flashMessages,
   };

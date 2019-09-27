@@ -13,11 +13,11 @@ import DndSpinner from '../../components/layout/DndSpinner';
 import AdventureForm from './partials/AdventureForm';
 import PageTitle from '../../components/layout/PageTitle';
 import { navigate } from '@reach/router';
+import ConfirmModal from '../../components/ConfirmModal';
 
 class EditAdventure extends React.Component {
   state = {
     deleteAdventureConfirm: false,
-    deleteConfirmInput: '',
   };
 
   componentDidMount () {
@@ -29,7 +29,7 @@ class EditAdventure extends React.Component {
   }
 
   confirmDeleteAdventure = () => {
-    this.props.deleteAdventure(this.props.campaignSlug, this.props.adventureId);
+    this.props.deleteAdventure(this.props.campaignSlug, this.props.id);
   };
 
   cancelDeleteAdventure = () => {
@@ -38,7 +38,7 @@ class EditAdventure extends React.Component {
     });
   };
 
-  handleDeleteCampaign = () => {
+  handleDeleteAdventure = () => {
     this.setState({
       deleteAdventureConfirm: true,
     });
@@ -49,7 +49,8 @@ class EditAdventure extends React.Component {
   }
 
   render () {
-    const { adventure, campaign, campaignSlug, flashMessages, id, user } = this.props;
+    const { adventure, campaign, campaignSlug, flashMessages, id, loading, user } = this.props;
+    const { deleteAdventureConfirm } = this.state;
     const adventureTitle = adventure ? adventure.name : 'Adventure Loading...';
     return (
       <PageContainer user={user}
@@ -62,16 +63,29 @@ class EditAdventure extends React.Component {
                        {url: `/app/campaigns/${campaignSlug}/adventures/${id}`, isActive: false, title: adventureTitle},
                        {url: null, isActive: true, title: 'Edit'},
                      ]}>
-        { campaign && adventure ? (
+        { loading ? (
+          <DndSpinner/>
+        ) : (
           <Container>
             <PageTitle title={`Edit "${adventureTitle}"`} />
+            <ConfirmModal title={adventure ? adventure.name : 'Adventure'}
+                          message={(
+                            <p>
+                              This will <strong>permanently</strong> delete this adventure.
+                            </p>
+                          )}
+                          confirm={this.confirmDeleteAdventure}
+                          buttonEnabledText={'delete'}
+                          buttonText={'DELETE ADVENTURE'}
+                          inputLabel={'Type "DELETE" to confirm.'}
+                          onCancel={this.cancelDeleteAdventure}
+                          show={deleteAdventureConfirm}/>
             <AdventureForm
               adventure={adventure}
               campaign={campaign}
+              onDelete={this.handleDeleteAdventure}
               onUpdateAdventure={(adventureBody) => this.handleUpdateAdventure(adventureBody)}/>
           </Container>
-        ) : (
-          <DndSpinner/>
         )}
       </PageContainer>
     );
@@ -82,9 +96,11 @@ EditAdventure.propTypes = {
   adventure: PropTypes.object,
   campaign: PropTypes.object,
   campaignSlug: PropTypes.string.isRequired,
+  deleteAdventure: PropTypes.func.isRequired,
   flashMessages: PropTypes.array,
   getAdventure: PropTypes.func.isRequired,
   id: PropTypes.string.isRequired,
+  loading: PropTypes.bool,
   updateAdventure: PropTypes.func.isRequired,
   user: PropTypes.object,
 };
@@ -94,19 +110,29 @@ function mapStateToProps (state) {
     adventure: state.adventures.currentAdventure,
     campaign: state.campaigns.currentCampaign,
     flashMessages: state.flashMessages,
+    loading: state.campaigns.loading ||
+      state.adventures.loading ||
+      !state.campaigns.currentCampaign ||
+      !state.adventures.currentAdventure,
     user: state.users.user,
   };
 }
 
 function mapDispatchToProps (dispatch) {
   return {
+    deleteAdventure: (campaignSlug, adventureId) => {
+      dispatch(rest.actions.deleteAdventure({
+        campaign_slug: campaignSlug,
+        id: adventureId,
+      }));
+    },
     getAdventure(campaignSlug, adventureId) {
       dispatch(rest.actions.getAdventure({id: adventureId, campaign_slug: campaignSlug}));
     },
     updateAdventure: (adventure, campaignSlug, adventureId) => {
       dispatch(rest.actions.updateAdventure({
         campaign_slug: campaignSlug,
-        id: adventureId
+        id: adventureId,
       }, {body: JSON.stringify({adventure})}, () => {
         navigate(`/app/campaigns/${campaignSlug}/adventures/${adventureId}`);
       }));

@@ -78,7 +78,7 @@ const CampaignForm = ({arrayMutators, initialValues, onDelete, onFormSubmit, sub
                    </Col>
                  </Form.Row>
                  <ButtonToolbar className={'justify-content-between'}>
-                   <ButtonGroup aria-label="Campaign actions">
+                   <ButtonGroup aria-label="Campaign delete">
                      {onDelete ? (
                        <Button type="button" variant={'danger'} onClick={onDelete}>Delete Campaign</Button>
                      ) : null}

@@ -23,6 +23,7 @@ import Modal from 'react-bootstrap/Modal';
 
 const CampaignBody = ({
   campaign,
+  deleteAdventure,
   handleCancelEditing,
   handleUpdateAdventure,
   showNewAdventureForm,
@@ -35,6 +36,7 @@ const CampaignBody = ({
         <h3>Adventures</h3>
         <AdventuresList
           campaign={campaign}
+          deleteAdventure={deleteAdventure}
           onUpdateAdventure={handleUpdateAdventure} />
         <Modal size={ 'lg' } show={ showingNewAdventureForm } onHide={handleCancelEditing}>
           <Modal.Header closeButton>
@@ -98,6 +100,7 @@ const CampaignBody = ({
 
 CampaignBody.propTypes = {
   campaign: PropTypes.object,
+  deleteAdventure: PropTypes.func.isRequired,
   handleCancelEditing: PropTypes.func.isRequired,
   handleUpdateAdventure: PropTypes.func.isRequired,
   showNewAdventureForm: PropTypes.func.isRequired,
@@ -118,7 +121,11 @@ class Campaign extends React.Component {
   }
 
   handleUpdateAdventure = (adventureBody, adventureID) => {
-    this.props.updateAdventure(snakecaseKeys(adventureBody, {exclude: ['_destroy']}), this.props.campaignSlug, adventureID);
+    if (adventureID) {
+      this.props.updateAdventure(snakecaseKeys(adventureBody, {exclude: ['_destroy']}), this.props.campaignSlug, adventureID);
+    } else {
+      this.props.createAdventure(snakecaseKeys(adventureBody), this.props.campaignSlug);
+    }
     this.setState({
       showingNewAdventureForm: false,
     });
@@ -155,11 +162,11 @@ class Campaign extends React.Component {
                        buttonTitle={'Edit Campaign'}
                        buttonVariant={'primary'}/>
             <CampaignBody campaign={campaign}
+                          deleteAdventure={this.props.deleteAdventure}
                           handleCancelEditing={this.handleCancelEditing}
                           handleUpdateAdventure={this.handleUpdateAdventure}
                           showNewAdventureForm={this.showNewAdventureForm}
-                          showingNewAdventureForm={showingNewAdventureForm}
-            />
+                          showingNewAdventureForm={showingNewAdventureForm} />
           </Container>
         )}
       </PageContainer>
@@ -170,6 +177,8 @@ class Campaign extends React.Component {
 Campaign.propTypes = {
   campaign: PropTypes.object,
   campaignSlug: PropTypes.string.isRequired,
+  createAdventure: PropTypes.func.isRequired,
+  deleteAdventure: PropTypes.func.isRequired,
   flashMessages: PropTypes.array,
   getCampaign: PropTypes.func.isRequired,
   loading: PropTypes.bool,
@@ -180,7 +189,7 @@ Campaign.propTypes = {
 function mapStateToProps (state) {
   return {
     campaign: state.campaigns.currentCampaign,
-    loading: state.campaigns.loading,
+    loading: state.campaigns.loading || !state.campaigns.currentCampaign,
     user: state.users.user,
     flashMessages: state.flashMessages,
   };
@@ -188,13 +197,35 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
+    createAdventure: (adventure, campaignSlug) => {
+      dispatch(rest.actions.createAdventure(
+        {
+          campaign_slug: campaignSlug,
+        },
+        {
+          body: JSON.stringify({adventure}),
+        })
+      );
+    },
+    deleteAdventure: (campaignSlug, adventureId) => {
+      dispatch(rest.actions.deleteAdventure({
+        campaign_slug: campaignSlug,
+        id: adventureId,
+      }));
+    },
     getCampaign: (campaignSlug) => {
       dispatch(rest.actions.getCampaign({slug: campaignSlug}));
     },
     updateAdventure: (adventure, campaignSlug, adventureId) => {
-      dispatch(rest.actions.updateAdventure({
-        campaign_slug: campaignSlug,
-        id: adventureId }, {body: JSON.stringify({adventure})}));
+      dispatch(rest.actions.updateAdventure(
+        {
+          campaign_slug: campaignSlug,
+          id: adventureId,
+        },
+        {
+          body: JSON.stringify({adventure})
+        })
+      );
     },
   };
 }

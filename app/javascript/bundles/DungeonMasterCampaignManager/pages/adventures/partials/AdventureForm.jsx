@@ -16,6 +16,7 @@ import Col from 'react-bootstrap/Col';
 import {FieldArray} from 'react-final-form-arrays';
 import EncounterFormCard from './EncounterFormCard';
 import classes from '../../characters/partials/character-form.module.scss';
+import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
 
 const setAdventureObject = (values, campaignID) => {
   let adventureWorldLocationAttributes = {
@@ -162,7 +163,7 @@ class AdventureForm extends React.Component {
 
   render () {
     const {adventure, submitButtonTitle, validated, worldLocationOptions} = this.state;
-    const {campaign, onCancelEditing} = this.props;
+    const {campaign, onCancelEditing, onDelete} = this.props;
     const nonPlayerCharacterOptions = campaign.npcs.map((pc) => ({value: pc.id, label: pc.name}));
     const playerCharacterOptions = campaign.pcs.map((pc) => ({value: pc.id, label: pc.name}));
 
@@ -244,15 +245,20 @@ class AdventureForm extends React.Component {
                          })} variant={'success'} block>Add Encounter</Button>
                        </Col>
                      </Form.Row>
-                     <Form.Row className={'my-4'}>
-                       <ButtonGroup aria-label="Campaign actions">
+                     <ButtonToolbar className={'justify-content-between my-4'}>
+                       <ButtonGroup aria-label="Adventure delete">
+                         {onDelete ? (
+                           <Button type="button" variant={'danger'} onClick={onDelete}>Delete Adventure</Button>
+                         ) : null}
+                       </ButtonGroup>
+                       <ButtonGroup aria-label="Adventure actions">
                          {onCancelEditing ? (
                            <Button type="button" onClick={onCancelEditing} variant={'info'}>Cancel</Button>
                          ) : null}
                          <Button type="button" onClick={form.reset} disabled={submitting || pristine} variant={'secondary'}>Reset</Button>
-                         <Button type="submit" disabled={!dirty || submitting || invalid}>{submitButtonTitle}</Button>
+                         <Button type="submit" disabled={submitting} variant={'success'}>{submitButtonTitle}</Button>
                        </ButtonGroup>
-                     </Form.Row>
+                     </ButtonToolbar>
                      <pre className={classes.preBlock}>{JSON.stringify(values, 0, 2)}</pre>
                    </Form>
                  )} />
@@ -263,6 +269,7 @@ class AdventureForm extends React.Component {
 AdventureForm.propTypes = {
   adventure: PropTypes.object,
   campaign: PropTypes.object.isRequired,
+  onDelete: PropTypes.func,
   onUpdateAdventure: PropTypes.func.isRequired,
   onCancelEditing: PropTypes.func,
 };

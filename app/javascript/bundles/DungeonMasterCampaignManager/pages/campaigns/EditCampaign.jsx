@@ -26,7 +26,6 @@ class EditCampaign extends React.Component {
       description: '',
     },
     deleteCampaignConfirm: false,
-    deleteConfirmInput: '',
     validated: false,
   };
 
@@ -84,18 +83,20 @@ class EditCampaign extends React.Component {
   };
 
   render () {
-    const { user, flashMessages } = this.props;
+    const { flashMessages, loading, user } = this.props;
     const {currentCampaign, deleteCampaignConfirm, validated} = this.state;
-    const campaignTitle = `Edit Campaign: ${currentCampaign.name}`;
+    const campaignTitle = `Edit Campaign: ${currentCampaign ? currentCampaign.name : 'Loading...'}`;
 
     return (
       <PageContainer user={user}
                      flashMessages={flashMessages}
                      pageTitle={campaignTitle}
                      description={`Edit Campaign: ${campaignTitle}. Dungeon Master's Campaign Manager is a free resource for DMs to manage their campaigns, adventures, and NPCs.`}
-                     breadcrumbs={[{url: '/app/campaigns', isActive: false, title: 'Campaigns'},
-                       {url: `/app/campaigns/${this.props.campaignSlug}`, isActive: false, title: currentCampaign.name},
-                       {url: null, isActive: true, title: campaignTitle}]}>
+                     breadcrumbs={[
+                       {url: '/app/campaigns', isActive: false, title: 'Campaigns'},
+                       {url: `/app/campaigns/${this.props.campaignSlug}`, isActive: false, title: currentCampaign ? currentCampaign.name : 'Loading...'},
+                       {url: null, isActive: true, title: campaignTitle},
+                     ]}>
         <PageTitle title={campaignTitle}/>
         <ConfirmModal title={currentCampaign ? currentCampaign.name : 'Campaign'}
                       message={(
@@ -110,7 +111,9 @@ class EditCampaign extends React.Component {
                       inputLabel={'Type "DELETE" to confirm.'}
                       onCancel={this.cancelDeleteCampaign}
                       show={deleteCampaignConfirm}/>
-        { currentCampaign ? (
+        { loading ? (
+          <DndSpinner/>
+        ) : (
           <CampaignForm onFormSubmit={this.handleSubmitCampaign}
                         onDelete={this.handleDeleteCampaign}
                         submitButtonText={'Update Campaign'}
@@ -118,8 +121,6 @@ class EditCampaign extends React.Component {
                         initialValues={currentCampaign}
                         validated={validated}
                         validateForm={this.validate} />
-        ) : (
-          <DndSpinner/>
         )}
       </PageContainer>
     );
@@ -131,15 +132,17 @@ EditCampaign.propTypes = {
   campaign: PropTypes.object,
   campaignSlug: PropTypes.string.isRequired,
   deleteCampaign: PropTypes.func.isRequired,
-  updateCampaign: PropTypes.func.isRequired,
   flashMessages: PropTypes.array,
   getCampaign: PropTypes.func.isRequired,
+  loading: PropTypes.bool,
+  updateCampaign: PropTypes.func.isRequired,
   user: PropTypes.object,
 };
 
 function mapStateToProps (state) {
   return {
     campaign: state.campaigns.currentCampaign,
+    loading: state.campaigns.loading || !state.campaigns.currentCampaign,
     user: state.users.user,
     flashMessages: state.flashMessages,
   };

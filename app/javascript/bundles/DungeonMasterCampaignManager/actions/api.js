@@ -82,6 +82,23 @@ export default reduxApi({
       navigate(`/app/campaigns/${request.pathvars.campaign_slug}/adventures/${data.id}`);
     }],
   },
+  deleteAdventure: {
+    url: '/v1/campaigns/:campaign_slug/adventures/:id',
+    options () {
+      const headers = getHeaders();
+      return {
+        method: 'delete',
+        headers,
+      };
+    },
+    postfetch: [
+      ({dispatch, actions, request}) => {
+        dispatch(actions.getCampaign({slug: request.pathvars.campaign_slug}, () => {
+          navigate(`/app/campaigns/${request.pathvars.campaign_slug}`);
+        }));
+      },
+    ],
+  },
   createCampaign: {
     url: '/v1/campaigns/',
     options () {
