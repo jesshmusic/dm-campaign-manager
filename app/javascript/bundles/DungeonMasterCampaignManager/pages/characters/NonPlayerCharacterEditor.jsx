@@ -18,10 +18,12 @@ import DndSpinner from '../../components/layout/DndSpinner';
 class NonPlayerCharacterEditor extends React.Component {
 
   componentDidMount () {
-    if (this.props.npcSlug) {
+    if (this.props.user && this.props.npcSlug) {
       this.props.getCharacter(this.props.campaignSlug, this.props.npcSlug);
-    } else {
+    } else if (this.props.user) {
       this.props.editCharacter(this.props.campaignSlug);
+    } else {
+      window.location.href = '/users/sign_in';
     }
   }
 

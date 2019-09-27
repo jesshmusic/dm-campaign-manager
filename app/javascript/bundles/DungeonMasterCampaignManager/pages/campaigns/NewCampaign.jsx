@@ -20,6 +20,12 @@ class NewCampaign extends React.Component {
     validated: false,
   };
 
+  componentDidMount () {
+    if (!this.props.user) {
+      window.location.href = '/users/sign_in';
+    }
+  }
+
   handleSubmit = async (values) => {
     const campaignBody = {
       id: values.id,

@@ -21,7 +21,11 @@ class EditAdventure extends React.Component {
   };
 
   componentDidMount () {
-    this.props.getAdventure(this.props.campaignSlug, this.props.id);
+    if (this.props.user) {
+      this.props.getAdventure(this.props.campaignSlug, this.props.id);
+    } else {
+      window.location.href = '/users/sign_in';
+    }
   }
 
   confirmDeleteAdventure = () => {

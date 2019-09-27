@@ -14,7 +14,11 @@ import DndSpinner from '../../components/layout/DndSpinner';
 class NonPlayerCharacter extends React.Component {
 
   componentDidMount () {
-    this.props.getNonPlayerCharacter(this.props.campaignSlug, this.props.npcSlug);
+    if (this.props.user) {
+      this.props.getNonPlayerCharacter(this.props.campaignSlug, this.props.npcSlug);
+    } else {
+      window.location.href = '/users/sign_in';
+    }
   }
 
   render () {

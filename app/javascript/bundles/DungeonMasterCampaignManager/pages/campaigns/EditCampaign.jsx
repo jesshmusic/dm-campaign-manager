@@ -31,7 +31,11 @@ class EditCampaign extends React.Component {
   };
 
   componentDidMount () {
-    this.props.getCampaign(this.props.campaignSlug);
+    if (this.props.user) {
+      this.props.getCampaign(this.props.campaignSlug);
+    } else {
+      window.location.href = '/users/sign_in';
+    }
   }
 
   componentDidUpdate (prevProps) {

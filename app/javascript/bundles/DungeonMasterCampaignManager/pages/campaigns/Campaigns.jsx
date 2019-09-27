@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import BreadcrumbLink from '../../components/layout/BreadcrumbLink';
 
 
 // Container
@@ -11,6 +10,7 @@ import rest from '../../actions/api';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import CampaignsList from './partials/CampaignsList';
 import PageTitle from '../../components/layout/PageTitle';
+import {navigate} from '@reach/router';
 
 class Campaigns extends React.Component {
   constructor (props) {
@@ -18,7 +18,11 @@ class Campaigns extends React.Component {
   }
 
   componentDidMount () {
-    this.props.getCampaigns(this.props.user.id);
+    if (this.props.user) {
+      this.props.getCampaigns(this.props.user.id);
+    } else {
+      window.location.href = '/users/sign_in';
+    }
   }
 
   render () {
