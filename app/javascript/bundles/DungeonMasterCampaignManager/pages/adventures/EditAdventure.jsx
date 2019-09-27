@@ -15,10 +15,30 @@ import PageTitle from '../../components/layout/PageTitle';
 import { navigate } from '@reach/router';
 
 class EditAdventure extends React.Component {
+  state = {
+    deleteAdventureConfirm: false,
+    deleteConfirmInput: '',
+  };
 
   componentDidMount () {
     this.props.getAdventure(this.props.campaignSlug, this.props.id);
   }
+
+  confirmDeleteAdventure = () => {
+    this.props.deleteAdventure(this.props.campaignSlug, this.props.adventureId);
+  };
+
+  cancelDeleteAdventure = () => {
+    this.setState({
+      deleteAdventureConfirm: false,
+    });
+  };
+
+  handleDeleteCampaign = () => {
+    this.setState({
+      deleteAdventureConfirm: true,
+    });
+  };
 
   handleUpdateAdventure (adventureBody) {
     this.props.updateAdventure(snakecaseKeys(adventureBody), this.props.campaignSlug, this.props.id);
