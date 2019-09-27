@@ -161,10 +161,8 @@ export default reduxApi({
         headers,
       };
     },
-    postfetch: [({actions, dispatch, request}) => {
-      const {pathvars: {campaign_slug, adventure_id}} = request;
-      dispatch(actions.getCampaign({slug: campaign_slug}));
-      dispatch(actions.getAdventure({id: adventure_id, campaign_slug}));
+    postfetch: [({data, request}) => {
+      navigate(`/app/campaigns/${request.pathvars.campaign_slug}/adventures/${request.pathvars.adventure_id}/encounters/${data.id}`);
     }],
   },
   updateEncounter: {
@@ -176,10 +174,8 @@ export default reduxApi({
         headers,
       };
     },
-    postfetch: [({actions, dispatch, request}) => {
-      const {pathvars: {campaign_slug, adventure_id}} = request;
-      dispatch(actions.getCampaign({slug: campaign_slug}));
-      dispatch(actions.getAdventure({id: adventure_id, campaign_slug}));
+    postfetch: [({data, request}) => {
+      navigate(`/app/campaigns/${request.pathvars.campaign_slug}/adventures/${request.pathvars.adventure_id}/encounters/${data.id}`);
     }],
   },
   createNonPlayerCharacter: {

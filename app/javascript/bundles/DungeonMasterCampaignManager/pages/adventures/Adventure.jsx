@@ -13,8 +13,8 @@ import PageTitle from '../../components/layout/PageTitle';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import ReactMarkdown from 'react-markdown';
-import EncountersList from './partials/EncountersList';
-import EncounterForm from './partials/EncounterForm';
+import EncountersList from '../encounters/partials/EncountersList';
+import EncounterForm from '../encounters/partials/EncounterForm';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 

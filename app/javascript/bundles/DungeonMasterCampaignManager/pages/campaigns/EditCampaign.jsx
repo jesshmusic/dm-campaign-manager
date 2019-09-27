@@ -11,7 +11,7 @@ import PageTitle from '../../components/layout/PageTitle';
 import CampaignForm from './partials/CampaignForm';
 import DndSpinner from '../../components/layout/DndSpinner';
 import Modal from 'react-bootstrap/Modal';
-import EncounterForm from '../adventures/partials/EncounterForm';
+import EncounterForm from '../encounters/partials/EncounterForm';
 import Button from 'react-bootstrap/Button';
 import FormControl from 'react-bootstrap/FormControl';
 import FormLabel from 'react-bootstrap/FormLabel';

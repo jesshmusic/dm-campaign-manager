@@ -14,7 +14,7 @@ import Button from 'react-bootstrap/Button';
 import FormSelect from '../../../components/forms/FormSelect';
 import Col from 'react-bootstrap/Col';
 import {FieldArray} from 'react-final-form-arrays';
-import EncounterFormCard from './EncounterFormCard';
+import EncounterFormCard from '../../encounters/partials/EncounterFormCard';
 import classes from '../../characters/partials/character-form.module.scss';
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
 
