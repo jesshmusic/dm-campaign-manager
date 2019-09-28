@@ -48,7 +48,7 @@ class Adventure extends React.Component {
       totalXP += encounter.xp;
     });
     return adventure.pcs.length > 0 ? (
-      `${totalXP / adventure.pcs.length}xp per character`
+      `${Math.ceil(totalXP / adventure.pcs.length)}xp per character`
     ) : (
       `${totalXP}xp divided by number of party members`
     );
@@ -56,7 +56,7 @@ class Adventure extends React.Component {
 
   render () {
     const { showingNewEncounterForm } = this.state;
-    const { adventure, campaign, campaignSlug, flashMessages, user } = this.props;
+    const { adventure, campaign, campaignSlug, flashMessages, loading, user } = this.props;
     const adventureTitle = adventure ? adventure.name : 'Adventure Loading...';
     return (
       <PageContainer user={user}
@@ -68,27 +68,16 @@ class Adventure extends React.Component {
                        {url: `/app/campaigns/${campaignSlug}`, isActive: false, title: (campaign ? campaign.name : 'Campaign loading...')},
                        {url: null, isActive: true, title: adventureTitle}
                      ]}>
-        { campaign && adventure ? (
+        { loading ? (
+          <DndSpinner/>
+        ) : (
           <Container>
             <PageTitle title={adventure.name}
+                       subtitle={`${adventure.worldLocation ? adventure.worldLocation.label : ''} - ${this.totalXP}`}
                        hasButton={user && user.id === campaign.dungeonMaster.id}
                        buttonLink={`/app/campaigns/${campaign.slug}/adventures/${adventure.id}/edit`}
                        buttonTitle={'Edit Adventure'}
                        buttonVariant={'primary'}/>
-            <Row>
-              <Col md={3} sm={4}>
-                <h5 className={'mb-0'}>Total XP</h5>
-                {this.totalXP}
-              </Col>
-              <Col md={6} sm={4}>
-                <h5 className={'mb-0'}>World location</h5>
-                {adventure.worldLocation.label}
-              </Col>
-              <Col md={3} sm={4}>
-                <h5 className={'mb-0'}>Encounters</h5>
-                {adventure.encounters.length}
-              </Col>
-            </Row>
             <Row className={'border-bottom'}>
               <Col lg={6}>
                 <h5 className={'mb-0'}>Players</h5>
@@ -135,8 +124,6 @@ class Adventure extends React.Component {
               </Col>
             </Row>
           </Container>
-        ) : (
-          <DndSpinner/>
         )}
       </PageContainer>
     );
@@ -150,6 +137,7 @@ Adventure.propTypes = {
   flashMessages: PropTypes.array,
   getAdventure: PropTypes.func.isRequired,
   id: PropTypes.string.isRequired,
+  loading: PropTypes.bool,
   user: PropTypes.object,
 };
 
@@ -158,6 +146,7 @@ function mapStateToProps (state) {
     adventure: state.adventures.currentAdventure,
     campaign: state.campaigns.currentCampaign,
     flashMessages: state.flashMessages,
+    loading: state.adventures.loading || !state.adventures.currentAdventure || ! state.campaigns.currentCampaign,
     user: state.users.user,
   };
 }

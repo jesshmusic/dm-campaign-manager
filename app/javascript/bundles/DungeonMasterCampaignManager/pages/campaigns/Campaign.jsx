@@ -157,6 +157,7 @@ class Campaign extends React.Component {
         ) : (
           <Container fluid>
             <PageTitle title={`Campaign: ${campaign ? campaign.name : 'Campaign not found'}`}
+                       subtitle={campaign ? campaign.world : ''}
                        hasButton={user && campaign && user.id === campaign.dungeonMaster.id}
                        buttonLink={campaign ? `/app/campaigns/${campaign.slug}/edit` : ''}
                        buttonTitle={'Edit Campaign'}
