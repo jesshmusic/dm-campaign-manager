@@ -9,7 +9,7 @@ import Row from 'react-bootstrap/Row';
 import {Link} from '@reach/router';
 import Badge from 'react-bootstrap/Badge';
 
-const PageTitle = ({hasButton, buttonLink, buttonTitle, buttonVariant, title, badge}) => (
+const PageTitle = ({hasButton, buttonLink, buttonTitle, buttonVariant, subtitle, title, badge}) => (
   <Row>
     <Col>
       <h1 className={'d-flex justify-content-between align-items-center'}>
@@ -25,6 +25,9 @@ const PageTitle = ({hasButton, buttonLink, buttonTitle, buttonVariant, title, ba
           </Badge>
         ) : null}
       </h1>
+      {subtitle ? (
+        <p className={'h5 text-muted'}>{subtitle}</p>
+      ) : null}
     </Col>
   </Row>
 );
@@ -35,6 +38,7 @@ PageTitle.propTypes = {
   buttonLink: PropTypes.string,
   buttonTitle: PropTypes.string,
   buttonVariant: PropTypes.string,
+  subtitle: PropTypes.string,
   title: PropTypes.string.isRequired,
 };
 

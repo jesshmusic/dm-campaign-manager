@@ -46,20 +46,15 @@ class Encounter extends React.Component {
         ) : (
           <Container>
             <PageTitle title={encounter.name}
+                       subtitle={adventure.pcs.length > 0 ? (
+                         `${encounter.xp / adventure.pcs.length}xp per character`
+                       ) : (
+                         `${encounter.xp}xp divided by number of party members`
+                       )}
                        hasButton={user && user.id === campaign.dungeonMaster.id}
                        buttonLink={`/app/campaigns/${campaignSlug}/adventures/${adventureId}/encounters/${id}/edit`}
                        buttonTitle={'Edit Encounter'}
                        buttonVariant={'primary'}/>
-            <Row>
-              <Col>
-                <h4 className={ 'mb-0' }>XP</h4>
-                { adventure.pcs.length > 0 ? (
-                  `${encounter.xp / adventure.pcs.length}xp per character`
-                ) : (
-                  `${encounter.xp}xp divided by number of party members`
-                ) }
-              </Col>
-            </Row>
             <Row>
               <Col>
                 <ReactMarkdown source={ encounter.description }/>
@@ -68,6 +63,10 @@ class Encounter extends React.Component {
             <Row>
               <Col>
                 <h4>Treasure</h4>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={4} sm={6}>
                 <h5>Coin</h5>
                 <ListGroup variant="flush">
                   { encounter.copperPieces && encounter.copperPieces > 0 ? (
@@ -106,6 +105,8 @@ class Encounter extends React.Component {
                     </ListGroup.Item>
                   ) : null }
                 </ListGroup>
+              </Col>
+              <Col md={8} sm={6}>
                 <h5>Items</h5>
                 <ListGroup variant="flush">
                   {encounter.encounterItems.map((item) => (

@@ -73,7 +73,11 @@ class EditEncounter extends React.Component {
           <DndSpinner/>
         ) : (
           <Container>
-            <PageTitle title={`Edit "${encounterTitle}"`} />
+            <PageTitle title={`Edit "${encounterTitle}"`}
+                       hasButton={true}
+                       buttonLink={`/app/campaigns/${campaignSlug}/adventures/${adventureId}/encounters/${id}`}
+                       buttonTitle={'Cancel Editing'}
+                       buttonVariant={'secondary'}/>
             <ConfirmModal title={encounter ? encounter.name : 'Encounter'}
                           message={(
                             <p>

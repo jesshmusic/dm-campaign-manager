@@ -83,7 +83,7 @@ class EditCampaign extends React.Component {
   };
 
   render () {
-    const { flashMessages, loading, user } = this.props;
+    const { flashMessages, loading, campaignSlug, user } = this.props;
     const {currentCampaign, deleteCampaignConfirm, validated} = this.state;
     const campaignTitle = `Edit Campaign: ${currentCampaign ? currentCampaign.name : 'Loading...'}`;
 
@@ -94,10 +94,14 @@ class EditCampaign extends React.Component {
                      description={`Edit Campaign: ${campaignTitle}. Dungeon Master's Campaign Manager is a free resource for DMs to manage their campaigns, adventures, and NPCs.`}
                      breadcrumbs={[
                        {url: '/app/campaigns', isActive: false, title: 'Campaigns'},
-                       {url: `/app/campaigns/${this.props.campaignSlug}`, isActive: false, title: currentCampaign ? currentCampaign.name : 'Loading...'},
+                       {url: `/app/campaigns/${campaignSlug}`, isActive: false, title: currentCampaign ? currentCampaign.name : 'Loading...'},
                        {url: null, isActive: true, title: campaignTitle},
                      ]}>
-        <PageTitle title={campaignTitle}/>
+        <PageTitle title={campaignTitle}
+                   hasButton={true}
+                   buttonLink={`/app/campaigns/${campaignSlug}`}
+                   buttonTitle={'Cancel Editing'}
+                   buttonVariant={'secondary'}/>
         <ConfirmModal title={currentCampaign ? currentCampaign.name : 'Campaign'}
                       message={(
                         <p>
