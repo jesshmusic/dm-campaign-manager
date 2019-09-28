@@ -13,6 +13,7 @@ import EncounterFields from './EncounterFields';
 import rest from '../../../actions/api';
 import {connect} from 'react-redux';
 import snakecaseKeys from 'snakecase-keys';
+import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
 
 const setEncounterObject = (values) => {
   const encounterFields = {
@@ -127,7 +128,7 @@ class EncounterForm extends React.Component {
 
   render () {
     const {encounter, submitButtonTitle, validated} = this.state;
-    const {onCancelEditing} = this.props;
+    const {onCancelEditing, onDelete} = this.props;
 
     return (
       <FinalForm
@@ -149,17 +150,23 @@ class EncounterForm extends React.Component {
         }) => (
           <Form noValidate validated={validated} onSubmit={handleSubmit}>
             <EncounterFields encounterFieldName={''} push={push}/>
-            <ButtonGroup aria-label="Encounter actions">
-              <Button type="button"
-                      onClick={onCancelEditing}
-                      variant={'info'}>Cancel</Button>
-              <Button type="button"
-                      onClick={form.reset}
-                      disabled={submitting || pristine}
-                      variant={'secondary'}>Reset</Button>
-              <Button type="submit"
-                      disabled={!dirty || submitting || invalid}>{submitButtonTitle}</Button>
-            </ButtonGroup>
+            <ButtonToolbar className={'justify-content-between my-4'}>
+              <ButtonGroup aria-label="Encounter delete">
+                {onDelete ? (
+                  <Button type="button" variant={'danger'} onClick={onDelete}>Delete Encounter</Button>
+                ) : null}
+              </ButtonGroup>
+              <ButtonGroup aria-label="Encounter actions">
+                {onCancelEditing ? (
+                  <Button type="button" onClick={onCancelEditing} variant={'info'}>Cancel</Button>
+                ) : null}
+                <Button type="button"
+                        onClick={form.reset}
+                        disabled={submitting || pristine}
+                        variant={'secondary'}>Reset</Button>
+                <Button type="submit" disabled={submitting} variant={'success'}>{submitButtonTitle}</Button>
+              </ButtonGroup>
+            </ButtonToolbar>
           </Form>
         )} />
     );
@@ -172,7 +179,8 @@ EncounterForm.propTypes = {
   campaign: PropTypes.object.isRequired,
   createEncounter: PropTypes.func.isRequired,
   updateEncounter: PropTypes.func.isRequired,
-  onCancelEditing: PropTypes.func.isRequired,
+  onCancelEditing: PropTypes.func,
+  onDelete: PropTypes.func,
   showing: PropTypes.bool,
 };
 
