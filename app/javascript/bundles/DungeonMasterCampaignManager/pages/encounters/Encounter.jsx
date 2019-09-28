@@ -52,7 +52,7 @@ class Encounter extends React.Component {
                        buttonVariant={'primary'}/>
             <Row>
               <Col>
-                <h5 className={ 'mb-0' }>XP</h5>
+                <h4 className={ 'mb-0' }>XP</h4>
                 { adventure.pcs.length > 0 ? (
                   `${encounter.xp / adventure.pcs.length}xp per character`
                 ) : (
@@ -67,7 +67,8 @@ class Encounter extends React.Component {
             </Row>
             <Row>
               <Col>
-                <h5>Treasure</h5>
+                <h4>Treasure</h4>
+                <h5>Coin</h5>
                 <ListGroup variant="flush">
                   { encounter.copperPieces && encounter.copperPieces > 0 ? (
                     <ListGroup.Item>
@@ -104,6 +105,26 @@ class Encounter extends React.Component {
                       </strong>&nbsp;&nbsp;{ encounter.platinumPieces }
                     </ListGroup.Item>
                   ) : null }
+                </ListGroup>
+                <h5>Items</h5>
+                <ListGroup variant="flush">
+                  {encounter.encounterItems.map((item) => (
+                    <ListGroup.Item key={item.id}>
+                      <strong>{item.item.name}</strong> quantity: {item.quantity}
+                    </ListGroup.Item>
+                  ))}
+                </ListGroup>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <h4>Monsters</h4>
+                <ListGroup variant="flush">
+                  {encounter.encounterMonsters.map((monster) => (
+                    <ListGroup.Item key={monster.id}>
+                      <strong>{monster.monster.name}</strong> : {monster.numberOfMonsters} - <strong className={'text-muted'}>CR: {monster.monster.challengeRating}</strong>
+                    </ListGroup.Item>
+                  ))}
                 </ListGroup>
               </Col>
             </Row>
