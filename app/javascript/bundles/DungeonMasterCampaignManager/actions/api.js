@@ -2,7 +2,7 @@ import ReactOnRails from 'react-on-rails';
 import reduxApi from 'redux-api';
 import {navigate} from '@reach/router';
 
-function getHeaders (contentType) {
+export function getHeaders (contentType) {
   return ReactOnRails.authenticityHeaders({
     'Content-Type': contentType ? contentType : 'application/json',
     'Accept': 'application/json',

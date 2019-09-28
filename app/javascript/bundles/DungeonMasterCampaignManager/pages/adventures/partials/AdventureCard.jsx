@@ -14,6 +14,9 @@ import Col from 'react-bootstrap/Col';
 import {Link} from '@reach/router';
 import Modal from 'react-bootstrap/Modal';
 import ConfirmModal from '../../../components/ConfirmModal';
+import {sortableElement, sortableHandle} from 'react-sortable-hoc';
+
+const DragHandle = sortableHandle(() => <span>::</span>);
 
 class AdventureCard extends React.Component {
   state = {
@@ -72,28 +75,15 @@ class AdventureCard extends React.Component {
     if (small) {
       return (
         <Card className={'mb-3'}>
-          <Card.Header>
+          <Card.Body className={'d-flex justify-content-between'}>
+            <DragHandle />
             <Link to={`/app/campaigns/${campaign.slug}/adventures/${adventure.id}`}>
-              <h4 className={'my-2'}>{adventure.name}</h4>
+              <h4 className={'my-2'}>{adventure.name}
+                <small className={'text-muted ml-3'}>
+                  {adventure.worldLocation ? adventure.worldLocation.label : 'No Location Set...'}
+                </small>
+              </h4>
             </Link>
-          </Card.Header>
-          <Card.Body>
-            <Row>
-              <Col md={3} sm={4}>
-                <h5 className={'mb-0'}>Total XP</h5>
-                {this.totalXP}xp
-              </Col>
-              <Col md={6} sm={4}>
-                <h5 className={'mb-0'}>World location</h5>
-                {adventure.worldLocation ? adventure.worldLocation.label : 'No Location Set...'}
-              </Col>
-              <Col md={3} sm={4}>
-                <h5 className={'mb-0'}>Encounters</h5>
-                {adventure.encounters.length}
-              </Col>
-            </Row>
-          </Card.Body>
-          <Card.Footer>
             <ButtonGroup>
               <Button variant={'secondary'} onClick={this.handleEditAdventure}>
                 Edit
@@ -102,7 +92,7 @@ class AdventureCard extends React.Component {
                 Delete
               </Button>
             </ButtonGroup>
-          </Card.Footer>
+          </Card.Body>
           <Modal size={ 'lg' } show={ editing } onHide={this.handleCancelEditing}>
             <Modal.Header closeButton>
               <Modal.Title>New Adventure</Modal.Title>
@@ -224,4 +214,4 @@ AdventureCard.propTypes = {
   small: PropTypes.bool,
 };
 
-export default AdventureCard;
+export default sortableElement(AdventureCard);

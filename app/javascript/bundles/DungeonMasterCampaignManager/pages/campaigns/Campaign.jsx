@@ -3,16 +3,15 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 const ReactMarkdown = require('react-markdown');
 import VirtualList from 'react-tiny-virtual-list';
+import arrayMove from 'array-move';
 
 // Container
 import PageContainer from '../../containers/PageContainer.jsx';
 import rest from '../../actions/api';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import ListGroup from 'react-bootstrap/ListGroup';
-import ListGroupItem from 'react-bootstrap/ListGroupItem';
 import Container from 'react-bootstrap/Container';
-import {Link, navigate} from '@reach/router';
+import {Link} from '@reach/router';
 import CharactersList from '../characters/partials/CharactersList';
 import AdventuresList from '../adventures/partials/AdventuresList';
 import Button from 'react-bootstrap/Button';
