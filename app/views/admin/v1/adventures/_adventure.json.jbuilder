@@ -2,7 +2,7 @@
 
 json.key_format! camelize: :lower
 
-json.extract! adventure, :id, :name, :description
+json.extract! adventure, :id, :name, :description, :sort
 
 json.world_location do
   if adventure.adventure_world_location
@@ -22,6 +22,6 @@ json.npcs adventure.npcs do |npc|
   json.partial! 'admin/v1/characters/character_summary', character: npc
 end
 
-json.encounters adventure.encounters do |encounter|
+json.encounters adventure.encounters.order(sort: :asc) do |encounter|
   json.partial! 'admin/v1/encounters/encounter', encounter: encounter, adventure: adventure, campaign: campaign
 end

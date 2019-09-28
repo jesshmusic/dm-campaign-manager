@@ -13,6 +13,7 @@
 #  name            :string           default("New Encounter")
 #  platinum_pieces :integer          default(0)
 #  silver_pieces   :integer          default(0)
+#  sort            :integer          default(0), not null
 #  xp              :integer          default(0)
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null

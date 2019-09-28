@@ -39,7 +39,7 @@ json.worldEvents campaign.world_events do |world_event|
   json.partial! 'admin/v1/campaigns/world_event', world_event: world_event
 end
 
-json.adventures campaign.adventures do |adventure|
+json.adventures campaign.adventures.order(sort: :asc) do |adventure|
   json.partial! 'admin/v1/adventures/adventure', adventure: adventure, campaign: campaign
 end
 

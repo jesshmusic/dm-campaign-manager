@@ -6,6 +6,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import AdventureCard from './AdventureCard';
 import AdventureForm from './AdventureForm';
+import VirtualList from 'react-tiny-virtual-list';
+
+const adventureItemsRendered = ({startIndex, stopIndex}) => {
+  console.log(`startIndex: ${startIndex} stopIndex: ${stopIndex}`);
+};
+
+const adventuresScrolled = ({scrollTop, event}) => {
+  console.log(`scrollTop: ${scrollTop}`);
+};
 
 const AdventuresList = ({
   campaign,
@@ -13,14 +22,22 @@ const AdventuresList = ({
   onUpdateAdventure,
   small,
 }) => (
-  campaign.adventures.map((adventure) =>
-    <AdventureCard adventure={adventure}
-                   campaign={campaign}
-                   deleteAdventure={deleteAdventure}
-                   updateAdventure={onUpdateAdventure}
-                   key={adventure.id}
-                   small={small}/>
-  )
+  <VirtualList
+    height={800}
+    renderItem={({index, style}) =>
+      <AdventureCard adventure={campaign.adventures[index]}
+                     campaign={campaign}
+                     deleteAdventure={deleteAdventure}
+                     updateAdventure={onUpdateAdventure}
+                     key={index}
+                     small={small}
+                     style={style}
+      />
+    }
+    onItemsRendered={adventureItemsRendered}
+    onScroll={adventuresScrolled}
+    itemCount={campaign.adventures.length}
+    itemSize={272}/>
 );
 
 AdventuresList.propTypes = {

@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 const ReactMarkdown = require('react-markdown');
+import VirtualList from 'react-tiny-virtual-list';
 
 // Container
 import PageContainer from '../../containers/PageContainer.jsx';
@@ -20,6 +21,7 @@ import DndSpinner from '../../components/layout/DndSpinner';
 import AdventureForm from '../adventures/partials/AdventureForm';
 import snakecaseKeys from 'snakecase-keys';
 import Modal from 'react-bootstrap/Modal';
+import Card from 'react-bootstrap/Card';
 
 const CampaignBody = ({
   campaign,
@@ -34,10 +36,18 @@ const CampaignBody = ({
       <Col sm={7} md={8}>
         <ReactMarkdown source={campaign.description} />
         <h3>Adventures</h3>
+        <Button variant={'success'}
+                block
+                className={'mb-3'}
+                onClick={showNewAdventureForm}>
+          New Adventure
+        </Button>
         <AdventuresList
           campaign={campaign}
           deleteAdventure={deleteAdventure}
-          onUpdateAdventure={handleUpdateAdventure} />
+          onUpdateAdventure={handleUpdateAdventure}
+          small
+        />
         <Modal size={ 'lg' } show={ showingNewAdventureForm } onHide={handleCancelEditing}>
           <Modal.Header closeButton>
             <Modal.Title>New Adventure</Modal.Title>
@@ -49,32 +59,43 @@ const CampaignBody = ({
               onCancelEditing={handleCancelEditing}/>
           </Modal.Body>
         </Modal>
-        <Button variant={'secondary'} block onClick={showNewAdventureForm}>
-          New Adventure
-        </Button>
       </Col>
       <Col sm={5} md={4}>
         <div className={'mb-4'}>
           <h3>Events</h3>
-          <ListGroup variant="flush">
-            {campaign.worldEvents.map((worldEvent, index) =>
-              <ListGroupItem key={index}>
-                <h4 className={'h6'}><strong>{worldEvent.when}</strong></h4>
-                <p>{worldEvent.description}</p>
-              </ListGroupItem>
-            )}
-          </ListGroup>
+          {campaign.worldEvents.length > 0 ? (
+            <VirtualList
+              width='100%'
+              height={200}
+              itemCount={campaign.worldEvents.length}
+              itemSize={50}
+              renderItem={({index, style}) =>
+                <Card key={index} style={style}>
+                  <Card.Body>
+                    <strong>{campaign.worldEvents[index].when}</strong>
+                    <p>{campaign.worldEvents[index].description}</p>
+                  </Card.Body>
+                </Card>
+              }
+            />
+          ) : 'None' }
         </div>
         <div className={'mb-4'}>
           <h3>World Locations</h3>
-          <ListGroup variant="flush">
-            {campaign.worldLocations.map((location, index) =>
-              <ListGroupItem key={index}>
-                <h4 className={'h6'}>{location.name}</h4>
-                <p>{location.description}</p>
-              </ListGroupItem>
-            )}
-          </ListGroup>
+          <VirtualList
+            width='100%'
+            height={200}
+            itemCount={campaign.worldLocations.length}
+            itemSize={100}
+            renderItem={({index, style}) =>
+              <Card key={index} style={style}>
+                <Card.Body>
+                  <strong>{campaign.worldLocations[index].name}</strong>
+                  <p>{campaign.worldLocations[index].description}</p>
+                </Card.Body>
+              </Card>
+            }
+          />
         </div>
         <div className={'mb-4'}>
           <h3>Player Characters</h3>

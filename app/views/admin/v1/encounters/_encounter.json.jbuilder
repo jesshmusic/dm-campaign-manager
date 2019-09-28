@@ -12,6 +12,7 @@ json.extract! encounter,
               :electrum_pieces,
               :gold_pieces,
               :platinum_pieces,
+              :sort,
               :xp
 
 json.encounter_monsters encounter.encounter_monsters do |encounter_monster|

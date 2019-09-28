@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_22_175728) do
+ActiveRecord::Schema.define(version: 2019_09_28_132824) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -30,6 +30,7 @@ ActiveRecord::Schema.define(version: 2019_09_22_175728) do
     t.bigint "campaign_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "sort", default: 0, null: false
     t.index ["campaign_id"], name: "index_adventures_on_campaign_id"
   end
 
@@ -208,6 +209,7 @@ ActiveRecord::Schema.define(version: 2019_09_22_175728) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "location", default: "New Location", null: false
+    t.integer "sort", default: 0, null: false
     t.index ["adventure_id"], name: "index_encounters_on_adventure_id"
   end
 
