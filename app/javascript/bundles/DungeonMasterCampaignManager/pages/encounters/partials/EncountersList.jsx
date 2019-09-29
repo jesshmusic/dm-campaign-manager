@@ -85,6 +85,7 @@ class EncountersList extends React.Component {
         encounters={encounters}
         onSortEnd={this.onSortEnd}
         small={small}
+        useDragHandle
       />
     );
   }

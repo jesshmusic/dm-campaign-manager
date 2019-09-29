@@ -90,6 +90,7 @@ class AdventuresList extends React.Component {
         onUpdateAdventure={onUpdateAdventure}
         onSortEnd={this.onSortEnd}
         small={small}
+        useDragHandle
       />
     );
   }

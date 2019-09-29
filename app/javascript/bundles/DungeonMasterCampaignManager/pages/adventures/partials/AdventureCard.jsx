@@ -78,7 +78,7 @@ class AdventureCard extends React.Component {
         <Card className={'mb-3'}>
           <Card.Body className={'d-flex justify-content-between'}>
             <DragHandle />
-            <Link to={`/app/campaigns/${campaign.slug}/adventures/${adventure.id}`}>
+            <Link to={`/app/campaigns/${campaign.slug}/adventures/${adventure.id}`} className={'ml-3'}>
               <h4 className={'my-2'}>{adventure.name}
                 <small className={'text-muted ml-3'}>
                   {adventure.worldLocation ? adventure.worldLocation.label : 'No Location Set...'}
