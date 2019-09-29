@@ -68,11 +68,7 @@ class AdventuresList extends React.Component {
             })),
           },
         })),
-      })
-        .then((response) => response.json())
-        .then((jsonResult) => {
-          console.log(jsonResult);
-        });
+      }).then((response) => response.json());
     });
   };
 
@@ -93,7 +89,8 @@ class AdventuresList extends React.Component {
         deleteAdventure={deleteAdventure}
         onUpdateAdventure={onUpdateAdventure}
         onSortEnd={this.onSortEnd}
-        small={small}/>
+        small={small}
+      />
     );
   }
 }

@@ -13,6 +13,10 @@ import {Link} from '@reach/router';
 import ListGroup from 'react-bootstrap/ListGroup';
 import EncounterForm from './EncounterForm';
 import Modal from 'react-bootstrap/Modal';
+import {sortableElement, sortableHandle} from 'react-sortable-hoc';
+import { FaBars } from 'react-icons/fa';
+
+const DragHandle = sortableHandle(() => <span><FaBars/></span>);
 
 class EncounterCard extends React.Component {
   state = {
@@ -31,13 +35,12 @@ class EncounterCard extends React.Component {
     const {adventure, encounter, campaign, small} = this.props;
     const {editing} = this.state;
     return small ? (
-      <Row>
-        <Col>
-          <span className={ 'h5 my-2' }>
-            <Link to={ `/app/campaigns/${campaign.slug}/adventures/${adventure.id}/encounters/${encounter.id}` }>
-              { encounter.name }
-            </Link>
-          </span>
+      <Card className={'mb-3'}>
+        <Card.Body className={'d-flex justify-content-between'}>
+          <DragHandle />
+          <Link to={ `/app/campaigns/${campaign.slug}/adventures/${adventure.id}/encounters/${encounter.id}` }>
+            { encounter.name }
+          </Link>
           <strong className={ 'text-muted' }> -- { encounter.location }</strong>
           <Button
             className={ 'float-sm-right' }
@@ -46,22 +49,22 @@ class EncounterCard extends React.Component {
             onClick={ () => this.handleEditEncounter() }>
             Edit
           </Button>
-          <Modal size={ 'lg' } show={ editing } onHide={ () => this.handleCancelEditing() }>
-            <Modal.Header closeButton>
-              <Modal.Title>Edit Encounter</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <EncounterForm
-                campaign={ campaign }
-                onCancelEditing={ () => this.handleCancelEditing() }
-                adventure={ adventure }
-                encounter={ encounter }
-                showing={ editing }
-              />
-            </Modal.Body>
-          </Modal>
-        </Col>
-      </Row>
+        </Card.Body>
+        <Modal size={ 'lg' } show={ editing } onHide={ () => this.handleCancelEditing() }>
+          <Modal.Header closeButton>
+            <Modal.Title>Edit Encounter</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <EncounterForm
+              campaign={ campaign }
+              onCancelEditing={ () => this.handleCancelEditing() }
+              adventure={ adventure }
+              encounter={ encounter }
+              showing={ editing }
+            />
+          </Modal.Body>
+        </Modal>
+      </Card>
     ) : (
       <Card className={ 'mb-3' }>
         <Card.Header>
@@ -158,4 +161,4 @@ EncounterCard.propTypes = {
   small: PropTypes.bool,
 };
 
-export default EncounterCard;
+export default sortableElement(EncounterCard);

@@ -97,6 +97,7 @@ module Admin::V1
         :name,
         :platinum_pieces,
         :silver_pieces,
+        :sort,
         :xp,
         :_destroy,
         encounter_monsters_attributes: %i[id number_of_monsters monster_id _destroy],

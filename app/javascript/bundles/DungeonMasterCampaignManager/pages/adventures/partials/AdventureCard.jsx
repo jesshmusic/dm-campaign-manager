@@ -15,8 +15,9 @@ import {Link} from '@reach/router';
 import Modal from 'react-bootstrap/Modal';
 import ConfirmModal from '../../../components/ConfirmModal';
 import {sortableElement, sortableHandle} from 'react-sortable-hoc';
+import { FaBars } from 'react-icons/fa';
 
-const DragHandle = sortableHandle(() => <span>::</span>);
+const DragHandle = sortableHandle(() => <span><FaBars/></span>);
 
 class AdventureCard extends React.Component {
   state = {
