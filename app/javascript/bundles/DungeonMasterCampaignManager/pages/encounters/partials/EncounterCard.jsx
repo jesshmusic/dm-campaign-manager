@@ -13,10 +13,8 @@ import {Link} from '@reach/router';
 import ListGroup from 'react-bootstrap/ListGroup';
 import EncounterForm from './EncounterForm';
 import Modal from 'react-bootstrap/Modal';
-import {sortableElement, sortableHandle} from 'react-sortable-hoc';
-import { FaBars } from 'react-icons/fa';
-
-const DragHandle = sortableHandle(() => <span><FaBars/></span>);
+import { sortableElement } from 'react-sortable-hoc';
+import DragHandle from '../../../components/DragHandle';
 
 class EncounterCard extends React.Component {
   state = {
@@ -38,10 +36,14 @@ class EncounterCard extends React.Component {
       <Card className={'mb-3'}>
         <Card.Body className={'d-flex justify-content-between'}>
           <DragHandle />
-          <Link to={ `/app/campaigns/${campaign.slug}/adventures/${adventure.id}/encounters/${encounter.id}` }>
-            { encounter.name }
+          <Link to={ `/app/campaigns/${campaign.slug}/adventures/${adventure.id}/encounters/${encounter.id}` }
+                className={'ml-3 flex-grow-1'}>
+            <p className={'h5 my-2'}>{encounter.name}
+              <small className={'text-muted ml-3'}>
+                { encounter.location }
+              </small>
+            </p>
           </Link>
-          <strong className={ 'text-muted' }> -- { encounter.location }</strong>
           <Button
             className={ 'float-sm-right' }
             size={ 'sm' }

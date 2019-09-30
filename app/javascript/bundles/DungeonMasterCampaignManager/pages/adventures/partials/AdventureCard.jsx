@@ -9,39 +9,16 @@ import ReactMarkdown from 'react-markdown';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Button from 'react-bootstrap/Button';
 import AdventureForm from './AdventureForm';
+import DragHandle from '../../../components/DragHandle';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import {Link} from '@reach/router';
+import { Link } from '@reach/router';
 import Modal from 'react-bootstrap/Modal';
-import ConfirmModal from '../../../components/ConfirmModal';
-import {sortableElement, sortableHandle} from 'react-sortable-hoc';
-import { FaBars } from 'react-icons/fa';
-
-const DragHandle = sortableHandle(() => <span><FaBars/></span>);
+import { sortableElement } from 'react-sortable-hoc';
 
 class AdventureCard extends React.Component {
   state = {
     editing: false,
-    deleteAdventureConfirm: false,
-  };
-
-  confirmDeleteAdventure = () => {
-    this.props.deleteAdventure(this.props.campaign.slug, this.props.adventure.id);
-    this.setState({
-      deleteAdventureConfirm: false,
-    });
-  };
-
-  cancelDeleteAdventure = () => {
-    this.setState({
-      deleteAdventureConfirm: false,
-    });
-  };
-
-  handleDeleteAdventure = () => {
-    this.setState({
-      deleteAdventureConfirm: true,
-    });
   };
 
   handleEditAdventure = () => {
@@ -71,28 +48,24 @@ class AdventureCard extends React.Component {
       campaign,
       small,
     } = this.props;
-    const { editing, deleteAdventureConfirm } = this.state;
+    const { editing } = this.state;
 
     if (small) {
       return (
         <Card className={'mb-3'}>
           <Card.Body className={'d-flex justify-content-between'}>
-            <DragHandle />
-            <Link to={`/app/campaigns/${campaign.slug}/adventures/${adventure.id}`} className={'ml-3'}>
-              <h4 className={'my-2'}>{adventure.name}
+            <DragHandle/>
+            <Link to={`/app/campaigns/${campaign.slug}/adventures/${adventure.id}`}
+                  className={'ml-3 flex-grow-1'}>
+              <p className={'h5 my-2'}>{adventure.name}
                 <small className={'text-muted ml-3'}>
                   {adventure.worldLocation ? adventure.worldLocation.label : 'No Location Set...'}
                 </small>
-              </h4>
+              </p>
             </Link>
-            <ButtonGroup>
-              <Button variant={'secondary'} onClick={this.handleEditAdventure}>
-                Edit
-              </Button>
-              <Button variant={'danger'} onClick={this.handleDeleteAdventure}>
-                Delete
-              </Button>
-            </ButtonGroup>
+            <Button variant={'secondary'} onClick={this.handleEditAdventure}>
+              Edit
+            </Button>
           </Card.Body>
           <Modal size={ 'lg' } show={ editing } onHide={this.handleCancelEditing}>
             <Modal.Header closeButton>
@@ -106,18 +79,6 @@ class AdventureCard extends React.Component {
                 adventure={adventure}/>
             </Modal.Body>
           </Modal>
-          <ConfirmModal title={adventure ? adventure.name : 'Adventure'}
-                        message={(
-                          <p>
-                            This will <strong>permanently</strong> delete this adventure.
-                          </p>
-                        )}
-                        confirm={this.confirmDeleteAdventure}
-                        buttonEnabledText={'delete'}
-                        buttonText={'DELETE ADVENTURE'}
-                        inputLabel={'Type "DELETE" to confirm.'}
-                        onCancel={this.cancelDeleteAdventure}
-                        show={deleteAdventureConfirm}/>
         </Card>
       );
     }
@@ -190,18 +151,6 @@ class AdventureCard extends React.Component {
               adventure={adventure}/>
           </Modal.Body>
         </Modal>
-        <ConfirmModal title={adventure ? adventure.name : 'Adventure'}
-                      message={(
-                        <p>
-                          This will <strong>permanently</strong> delete this adventure.
-                        </p>
-                      )}
-                      confirm={this.confirmDeleteAdventure}
-                      buttonEnabledText={'delete'}
-                      buttonText={'DELETE ADVENTURE'}
-                      inputLabel={'Type "DELETE" to confirm.'}
-                      onCancel={this.cancelDeleteAdventure}
-                      show={deleteAdventureConfirm}/>
       </Card>
     );
   }
@@ -210,7 +159,6 @@ class AdventureCard extends React.Component {
 AdventureCard.propTypes = {
   adventure: PropTypes.object.isRequired,
   campaign: PropTypes.object.isRequired,
-  deleteAdventure: PropTypes.func.isRequired,
   updateAdventure: PropTypes.func.isRequired,
   small: PropTypes.bool,
 };
