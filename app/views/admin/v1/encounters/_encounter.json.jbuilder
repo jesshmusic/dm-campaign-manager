@@ -40,3 +40,6 @@ json.encounter_items encounter.encounter_items do |encounter_item|
     json.weight encounter_item.item.weight
   end
 end
+
+json.next_encounter_id encounter.next_encounter_id
+json.prev_encounter_id encounter.prev_encounter_id

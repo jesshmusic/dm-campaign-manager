@@ -14,6 +14,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import ReactMarkdown from 'react-markdown';
 import ListGroup from 'react-bootstrap/ListGroup';
+import {Link} from '@reach/router';
 
 class Encounter extends React.Component {
   state = {};
@@ -23,6 +24,12 @@ class Encounter extends React.Component {
       this.props.getEncounter(this.props.campaignSlug, this.props.adventureId, this.props.id);
     } else {
       window.location.href = '/users/sign_in';
+    }
+  }
+
+  componentDidUpdate (prevProps) {
+    if (this.props.id !== prevProps.id && this.props.user) {
+      this.props.getEncounter(this.props.campaignSlug, this.props.adventureId, this.props.id);
     }
   }
 
@@ -55,6 +62,20 @@ class Encounter extends React.Component {
                        buttonLink={`/app/campaigns/${campaignSlug}/adventures/${adventureId}/encounters/${id}/edit`}
                        buttonTitle={'Edit Encounter'}
                        buttonVariant={'primary'}/>
+            <Row>
+              <Col xs={'6'}>
+                <Link to={`/app/campaigns/${campaignSlug}/adventures/${adventureId}/encounters/${encounter.prevEncounterId}`}
+                      className={'d-block text-sm-left'}>
+                  Previous
+                </Link>
+              </Col>
+              <Col xs={'6'}>
+                <Link to={`/app/campaigns/${campaignSlug}/adventures/${adventureId}/encounters/${encounter.nextEncounterId}`}
+                      className={'d-block text-sm-right'}>
+                  Next
+                </Link>
+              </Col>
+            </Row>
             <Row>
               <Col>
                 <ReactMarkdown source={ encounter.description }/>

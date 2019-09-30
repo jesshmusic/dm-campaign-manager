@@ -56,6 +56,26 @@ class Encounter < ApplicationRecord
     end
   end
 
+  def next_encounter_id
+    encounters = adventure.encounters.order(sort: :asc)
+    next_encounter = encounters.find_by(sort: sort + 1)
+    if next_encounter.present?
+      next_encounter.id
+    else
+      encounters.find_by(sort: 0)&.id
+    end
+  end
+
+  def prev_encounter_id
+    encounters = adventure.encounters.order(sort: :asc)
+    next_encounter = encounters.find_by(sort: sort - 1)
+    if next_encounter.present?
+      next_encounter.id
+    else
+      encounters.find_by(sort: encounters.count - 1)&.id
+    end
+  end
+
   include PgSearch::Model
 
   # PgSearch
