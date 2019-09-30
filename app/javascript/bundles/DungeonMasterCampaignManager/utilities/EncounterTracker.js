@@ -8,7 +8,7 @@ const mobTypes = {
   NPC: 'npc',
 };
 
-export default class Encounter {
+export default class EncounterTracker {
   monsters = [];
   npcs = [];
   pcs = [];
@@ -19,16 +19,7 @@ export default class Encounter {
   };
 
   constructor (monsters, npcs, pcs) {
-    this.monsters = monsters.map((monster, index) => ({
-      mobId: index + 1,
-      name: `${monster.name} ${index + 1}`,
-      armorClass: monster.armorClass,
-      hitPoints: monster.hitPoints,
-      currentHitPoints: monster.hitPoints,
-      xp: monster.xp,
-      initiativeRoll: 0,
-      type: mobTypes.MONSTER,
-    }));
+    this.setupMonsters(monsters);
     this.npcs = npcs.map((npc, index) => ({
       mobId: this.monsters.length + index + 1,
       name: `${npc.name}`,
@@ -49,6 +40,26 @@ export default class Encounter {
       initiativeRoll: 0,
       type: mobTypes.PC,
     }));
+    console.log(this);
+  }
+
+  setupMonsters(encounterMonsters) {
+    this.monsters = [];
+    encounterMonsters.forEach((nextEncounterMonster) => {
+      for (let i = 0; i < nextEncounterMonster.numberOfMonsters; i++) {
+        const monster = {
+          mobId: i + 1,
+          name: `${nextEncounterMonster.monster.name} ${i + 1}`,
+          armorClass: nextEncounterMonster.monster.armorClass,
+          hitPoints: nextEncounterMonster.monster.hitPoints,
+          currentHitPoints: nextEncounterMonster.monster.hitPoints,
+          xp: nextEncounterMonster.monster.xp,
+          initiativeRoll: 0,
+          type: mobTypes.MONSTER,
+        };
+        this.monsters.push(monster);
+      }
+    });
   }
 
   /**

@@ -15,9 +15,13 @@ import Col from 'react-bootstrap/Col';
 import ReactMarkdown from 'react-markdown';
 import ListGroup from 'react-bootstrap/ListGroup';
 import {Link} from '@reach/router';
+import EncounterTracker from '../../utilities/EncounterTracker';
 
 class Encounter extends React.Component {
-  state = {};
+  state = {
+    RunEncounter: null,
+    encounterRunning: false,
+  };
 
   componentDidMount () {
     if (this.props.user) {
@@ -31,7 +35,28 @@ class Encounter extends React.Component {
     if (this.props.id !== prevProps.id && this.props.user) {
       this.props.getEncounter(this.props.campaignSlug, this.props.adventureId, this.props.id);
     }
+    if ( this.props.encounter &&
+     ( (this.props.encounter && !prevProps.encounter) ||
+      this.props.encounter.id !== prevProps.encounter.id)) {
+      this.initializeEncounter();
+    }
   }
+
+  initializeEncounter () {
+    const currentEncounter = this.props.encounter;
+    this.setState({
+      RunEncounter: new EncounterTracker(
+        currentEncounter.encounterMonsters,
+        this.props.adventure.npcs,
+        this.props.adventure.pcs),
+    });
+  }
+
+  onStartEncounter = () => {
+    this.setState({
+      encounterRunning: true,
+    });
+  };
 
   render () {
     // const {} = this.state;
@@ -75,6 +100,9 @@ class Encounter extends React.Component {
                   Next
                 </Link>
               </Col>
+            </Row>
+            <Row>
+
             </Row>
             <Row>
               <Col>
