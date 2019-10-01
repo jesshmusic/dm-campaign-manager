@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_28_132824) do
+ActiveRecord::Schema.define(version: 2019_09_30_204841) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -194,6 +194,15 @@ ActiveRecord::Schema.define(version: 2019_09_28_132824) do
     t.datetime "updated_at", null: false
     t.index ["encounter_id"], name: "index_encounter_monsters_on_encounter_id"
     t.index ["monster_id"], name: "index_encounter_monsters_on_monster_id"
+  end
+
+  create_table "encounter_npcs", force: :cascade do |t|
+    t.bigint "character_id"
+    t.bigint "encounter_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["character_id"], name: "index_encounter_npcs_on_character_id"
+    t.index ["encounter_id"], name: "index_encounter_npcs_on_encounter_id"
   end
 
   create_table "encounters", force: :cascade do |t|
@@ -502,6 +511,8 @@ ActiveRecord::Schema.define(version: 2019_09_28_132824) do
   add_foreign_key "encounter_items", "items"
   add_foreign_key "encounter_monsters", "encounters"
   add_foreign_key "encounter_monsters", "monsters"
+  add_foreign_key "encounter_npcs", "characters"
+  add_foreign_key "encounter_npcs", "encounters"
   add_foreign_key "encounters", "adventures"
   add_foreign_key "items", "users"
   add_foreign_key "monsters", "users"

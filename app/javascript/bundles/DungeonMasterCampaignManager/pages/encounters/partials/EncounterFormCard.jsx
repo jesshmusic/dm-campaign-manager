@@ -9,7 +9,7 @@ import { GiTrashCan } from 'react-icons/gi';
 import Card from 'react-bootstrap/Card';
 import EncounterFields from './EncounterFields';
 
-const EncounterFormCard = ({encounterFieldName, fields, index, push}) => {
+const EncounterFormCard = ({encounterFieldName, fields, index, npcOptions, push}) => {
   const removeItem = () => {
     if (fields.value[index] && fields.value[index].id) {
       fields.update(index, {
@@ -37,7 +37,9 @@ const EncounterFormCard = ({encounterFieldName, fields, index, push}) => {
         <Card.Title>{fields.value[index].name ? fields.value[index].name : 'New Encounter'}</Card.Title>
       </Card.Header>
       <Card.Body>
-        <EncounterFields push={push} encounterFieldName={encounterFieldName}/>
+        <EncounterFields push={push}
+                         npcOptions={npcOptions}
+                         encounterFieldName={encounterFieldName}/>
       </Card.Body>
       <Card.Footer>
         <Button onClick={() => removeItem()}
@@ -56,6 +58,7 @@ EncounterFormCard.propTypes = {
   encounterFieldName: PropTypes.string.isRequired,
   index: PropTypes.number.isRequired,
   fields: PropTypes.object.isRequired,
+  npcOptions: PropTypes.array.isRequired,
   push: PropTypes.func.isRequired,
 };
 

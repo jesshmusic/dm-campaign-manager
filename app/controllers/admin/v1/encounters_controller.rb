@@ -100,6 +100,7 @@ module Admin::V1
         :sort,
         :xp,
         :_destroy,
+        character_ids: [],
         encounter_monsters_attributes: %i[id number_of_monsters monster_id _destroy],
         encounter_items_attributes: %i[id quantity item_id _destroy]
       )

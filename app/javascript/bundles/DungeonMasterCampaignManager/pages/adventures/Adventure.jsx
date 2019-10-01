@@ -104,12 +104,15 @@ class Adventure extends React.Component {
             <Row>
               <Col>
                 <h3>Encounters</h3>
+                <Button variant={'secondary'}
+                        block
+                        className={'mb-3'}
+                        onClick={() => this.showNewEncounterForm()}>
+                  New Encounter
+                </Button>
                 <EncountersList adventure={adventure}
                                 campaign={campaign}
                                 small/>
-                <Button variant={'secondary'} block onClick={() => this.showNewEncounterForm()}>
-                  New Encounter
-                </Button>
                 <Modal size={'lg'} show={showingNewEncounterForm} onHide={() => this.handleCancelEditing()}>
                   <Modal.Header closeButton>
                     <Modal.Title>New Encounter</Modal.Title>

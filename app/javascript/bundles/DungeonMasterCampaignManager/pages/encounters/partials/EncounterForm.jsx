@@ -14,6 +14,7 @@ import rest from '../../../actions/api';
 import {connect} from 'react-redux';
 import snakecaseKeys from 'snakecase-keys';
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
+import classes from '../../characters/partials/character-form.module.scss';
 
 const setEncounterObject = (values) => {
   const encounterFields = {
@@ -25,6 +26,7 @@ const setEncounterObject = (values) => {
     name: values.name,
     platinumPieces: values.platinumPieces,
     silverPieces: values.silverPieces,
+    characterIds: values.npcs.map((npc) => npc.value),
     encounterMonstersAttributes: values.encounterMonsters.map((encounterMonster) => {
       const newMonsters = {
         numberOfMonsters: encounterMonster.numberOfMonsters,
@@ -77,6 +79,7 @@ class EncounterForm extends React.Component {
       silverPieces: 0,
       encounterMonsters: [],
       encounterItems: [],
+      npcs: [],
     };
     if (this.props.encounter) {
       const encounter = this.props.encounter;
@@ -91,6 +94,10 @@ class EncounterForm extends React.Component {
       initialValues.platinumPieces = encounter.platinumPieces;
       initialValues.encounterItems = encounter.encounterItems;
       initialValues.encounterMonsters = encounter.encounterMonsters;
+      initialValues.npcs = encounter.npcs.map((npc) => ({
+        value: npc.id,
+        label: `${npc.name} -- ${npc.classes}`,
+      }));
     }
     this.setState({
       encounter: initialValues,
@@ -128,7 +135,11 @@ class EncounterForm extends React.Component {
 
   render () {
     const {encounter, submitButtonTitle, validated} = this.state;
-    const {onCancelEditing, onDelete} = this.props;
+    const {adventure, onCancelEditing, onDelete} = this.props;
+    const npcOptions = adventure.npcs.map((npc) => ({
+      value: npc.id,
+      label: `${npc.name} -- ${npc.classes} -- ${npc.role}`,
+    }));
 
     return (
       <FinalForm
@@ -137,19 +148,19 @@ class EncounterForm extends React.Component {
         validate={this.validate}
         mutators={{...arrayMutators }}
         render={({
-          dirty,
           form,
           form: {
-            mutators: { push, pop },
+            mutators: { push },
           },
           handleSubmit,
-          invalid,
           pristine,
           submitting,
           values,
         }) => (
           <Form noValidate validated={validated} onSubmit={handleSubmit}>
-            <EncounterFields encounterFieldName={''} push={push}/>
+            <EncounterFields encounterFieldName={''}
+                             npcOptions={npcOptions}
+                             push={push}/>
             <ButtonToolbar className={'justify-content-between my-4'}>
               <ButtonGroup aria-label="Encounter delete">
                 {onDelete ? (
@@ -167,6 +178,7 @@ class EncounterForm extends React.Component {
                 <Button type="submit" disabled={submitting} variant={'success'}>{submitButtonTitle}</Button>
               </ButtonGroup>
             </ButtonToolbar>
+            <pre className={classes.preBlock}>{JSON.stringify(values, 0, 2)}</pre>
           </Form>
         )} />
     );
@@ -174,7 +186,7 @@ class EncounterForm extends React.Component {
 }
 
 EncounterForm.propTypes = {
-  adventure: PropTypes.object,
+  adventure: PropTypes.object.isRequired,
   encounter: PropTypes.object,
   campaign: PropTypes.object.isRequired,
   createEncounter: PropTypes.func.isRequired,

@@ -41,5 +41,14 @@ json.encounter_items encounter.encounter_items do |encounter_item|
   end
 end
 
+json.npcs encounter.npcs do |npc|
+  json.partial! 'admin/v1/characters/character_summary', character: npc
+end
+
+json.npc_options encounter.npc_options do |npc_option|
+  json.value npc_option.id
+  json.label "#{npc_option.name} -- #{npc_option.classes}"
+end
+
 json.next_encounter_id encounter.next_encounter_id
 json.prev_encounter_id encounter.prev_encounter_id

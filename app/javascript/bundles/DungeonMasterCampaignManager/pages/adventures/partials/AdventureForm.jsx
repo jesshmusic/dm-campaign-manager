@@ -65,6 +65,7 @@ const setAdventureObject = (values, campaignID) => {
         location: encounter.location,
         platinumPieces: encounter.platinumPieces,
         silverPieces: encounter.silverPieces,
+        characterIds: encounter.npcs.map((npc) => npc.value),
         encounterMonstersAttributes: encounter.encounterMonsters.map((encounterMonster) => {
           const newMonsters = {
             numberOfMonsters: encounterMonster.numberOfMonsters,
@@ -126,7 +127,9 @@ class AdventureForm extends React.Component {
       initialValues.name = adventure.name;
       initialValues.description = adventure.description;
       const playerCharacterOptions = adventure.pcs.map((pc) => ({value: pc.id, label: pc.name}));
-      const nonPlayerCharacterOptions = adventure.npcs.map((npc) => ({value: npc.id, label: npc.name}));
+      const nonPlayerCharacterOptions = adventure.npcs.map((npc) => ({
+        value: npc.id,
+        label: `${npc.name} -- ${npc.classes} -- ${npc.role}`}));
       initialValues.playerCharacters = playerCharacterOptions;
       initialValues.nonPlayerCharacters = nonPlayerCharacterOptions;
       initialValues.worldLocation = adventure.worldLocation;
@@ -166,6 +169,7 @@ class AdventureForm extends React.Component {
     const {campaign, onCancelEditing, onDelete} = this.props;
     const nonPlayerCharacterOptions = campaign.npcs.map((pc) => ({value: pc.id, label: pc.name}));
     const playerCharacterOptions = campaign.pcs.map((pc) => ({value: pc.id, label: pc.name}));
+    const adventureNpcOptions = adventure ? adventure.nonPlayerCharacters : [];
 
     return (
       <FinalForm onSubmit={this.handleSubmit}
@@ -233,6 +237,7 @@ class AdventureForm extends React.Component {
                                                     fields={fields}
                                                     index={index}
                                                     key={index}
+                                                    npcOptions={adventureNpcOptions}
                                                     push={push}/>
                                ) : null))
                            )}

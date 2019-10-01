@@ -12,8 +12,9 @@ import FormTextArea from '../../../components/forms/FormTextArea';
 import {FieldArray} from 'react-final-form-arrays';
 import EncounterMonsterFields from './EncounterMonsterFields';
 import EncounterItemFields from './EncounterItemFields';
+import FormSelect from '../../../components/forms/FormSelect';
 
-const EncounterFields = ({encounterFieldName, push}) => (
+const EncounterFields = ({encounterFieldName, npcOptions, push}) => (
   <div>
     <Form.Row>
       <FormField label={'Name'}
@@ -38,6 +39,14 @@ const EncounterFields = ({encounterFieldName, push}) => (
       <FormField label={'Electrum'} type={'number'} colWidth={'2'} name={`${encounterFieldName}electrumPieces`}/>
       <FormField label={'Gold'} type={'number'} colWidth={'2'} name={`${encounterFieldName}goldPieces`}/>
       <FormField label={'Platinum'} type={'number'} colWidth={'2'} name={`${encounterFieldName}platinumPieces`}/>
+    </Form.Row>
+    <Form.Row>
+      <FormSelect label={'Encounter NPCs'}
+                  name={`${encounterFieldName}npcs`}
+                  colWidth={'12'}
+                  options={npcOptions}
+                  isClearable
+                  isMulti/>
     </Form.Row>
     <Form.Row>
       <Col md={12}>
@@ -82,6 +91,7 @@ const EncounterFields = ({encounterFieldName, push}) => (
 
 EncounterFields.propTypes = {
   encounterFieldName: PropTypes.string.isRequired,
+  npcOptions: PropTypes.array.isRequired,
   push: PropTypes.func.isRequired,
 };
 

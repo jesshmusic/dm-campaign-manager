@@ -33,8 +33,10 @@ class Encounter < ApplicationRecord
 
   belongs_to :adventure
 
-  has_many :encounter_monsters, inverse_of: :encounter
   has_many :encounter_items, dependent: :destroy
+  has_many :encounter_monsters, inverse_of: :encounter
+  has_many :encounter_npcs, dependent: :destroy
+  has_many :characters, through: :encounter_npcs
 
   accepts_nested_attributes_for :encounter_monsters, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :encounter_items, reject_if: :all_blank, allow_destroy: true
@@ -74,6 +76,14 @@ class Encounter < ApplicationRecord
     else
       encounters.find_by(sort: encounters.count - 1)&.id
     end
+  end
+
+  def npcs
+    encounter_npcs.map(&:character)
+  end
+
+  def npc_options
+    adventure.npcs
   end
 
   include PgSearch::Model
