@@ -56,12 +56,12 @@ json.npc_options encounter.npc_options do |npc_option|
   json.label "#{npc_option.name} -- #{npc_option.classes}"
 end
 
-json.combatants encounter.encounter_combatants do |encounter_combatant|
+json.combatants encounter.encounter_combatants.order(combat_order_number: :asc) do |encounter_combatant|
   json.id encounter_combatant.id
   json.combat_order_number encounter_combatant.combat_order_number
   json.current_hit_points encounter_combatant.current_hit_points
   json.initiative_roll encounter_combatant.initiative_roll
-  json.note encounter_combatant.notes
+  json.notes encounter_combatant.notes
   json.combatant do
     json.partial! 'admin/v1/monsters/monster_summary', monster: encounter_combatant.monster unless encounter_combatant.monster.nil?
     json.partial! 'admin/v1/characters/character_summary', character: encounter_combatant.character unless encounter_combatant.character.nil?

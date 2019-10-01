@@ -19,6 +19,8 @@ import snakecaseKeys from 'snakecase-keys';
 import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
 
 class Encounter extends React.Component {
   state = {
@@ -29,12 +31,16 @@ class Encounter extends React.Component {
   };
 
   updateCombat = (changes) => {
+    console.log(changes);
     const encounterFields = {
       encounter: {
-        inProgress: changes.inProgress !== undefined ? changes.inProgress : this.state.inProgress,
-        currentMobIndex: changes.currentCombatant ? changes.currentCombatant : this.state.currentCombatant,
-        round: changes.round ? changes.round : this.state.round,
-        encounterCombatantsAttributes: changes.encounterCombatants ?
+        inProgress: changes.inProgress !== undefined ?
+          changes.inProgress : this.state.inProgress,
+        currentMobIndex: changes.currentCombatant !== undefined ?
+          changes.currentCombatant : this.state.currentCombatant,
+        round: changes.round !== undefined ?
+          changes.round : this.state.round,
+        encounterCombatantsAttributes: changes.encounterCombatants !== undefined ?
           changes.encounterCombatants.map((combatant) => ({
             id: combatant.id,
             combatOrderNumber: combatant.combatOrderNumber,
@@ -129,18 +135,33 @@ class Encounter extends React.Component {
   };
 
   resetEncounter = () => {
-    const encounterFields = {
+    const encounterCombatants = [...this.state.encounterCombatants];
+    encounterCombatants.sort((a, b) => a.id - b.id);
+    this.setState({
       inProgress: false,
       currentMobIndex: 0,
       round: 1,
-      encounterCombatants: this.state.encounterCombatants.map((combatant) => ({
-        combatOrderNumber: combatant.combatOrderNumber,
+      encounterCombatants: encounterCombatants.map((combatant, index) => ({
+        id: combatant.id,
+        combatOrderNumber: index,
+        currentHitPoints: combatant.combatant.hitPoints,
+        initiativeRoll: 0,
+        notes: '',
+        combatant: combatant.combatant,
+      })),
+    });
+    this.updateCombat({
+      inProgress: false,
+      currentMobIndex: 0,
+      round: 1,
+      encounterCombatants: encounterCombatants.map((combatant, index) => ({
+        id: combatant.id,
+        combatOrderNumber: index,
         currentHitPoints: combatant.combatant.hitPoints,
         initiativeRoll: 0,
         notes: '',
       })),
-    };
-    this.updateCombat(encounterFields);
+    });
   };
 
   componentDidMount () {
@@ -224,7 +245,15 @@ class Encounter extends React.Component {
                     </Card.Header>
                     <Card.Body>
                       <p className={'lead'}><strong>Round:</strong> {round}</p>
-                      <Button variant={'secondary'} onClick={this.sortCombatants}>Set Combat Order</Button>
+                      <ButtonToolbar aria-label={'Encounter actions'} className={'justify-content-between'}>
+                        <ButtonGroup>
+                          <Button variant={'secondary'} onClick={this.sortCombatants}>Set Combat Order</Button>
+                          <Button variant={'primary'} onClick={this.incrementCombatant}>Next Combatant</Button>
+                        </ButtonGroup>
+                        <ButtonGroup>
+                          <Button variant={'dark'} onClick={this.resetEncounter}>Reset Encounter</Button>
+                        </ButtonGroup>
+                      </ButtonToolbar>
                     </Card.Body>
                     {this.state.encounterCombatants.map((nextMob, index) => (
                       <Card key={nextMob.id} className={`m-2${this.state.currentCombatant === index ? ' text-white bg-primary' : ''}`}>
