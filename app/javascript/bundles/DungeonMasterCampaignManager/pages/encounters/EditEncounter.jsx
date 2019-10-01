@@ -44,9 +44,9 @@ class EditEncounter extends React.Component {
     });
   };
 
-  handleUpdateEncounter = (adventureBody) => {
+  handleUpdateEncounter = (encounterBody) => {
     this.props.updateEncounter(
-      snakecaseKeys(adventureBody),
+      snakecaseKeys(encounterBody),
       this.props.campaignSlug,
       this.props.adventureId,
       this.props.id);

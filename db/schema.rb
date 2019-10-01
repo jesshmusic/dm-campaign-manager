@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_30_204841) do
+ActiveRecord::Schema.define(version: 2019_10_01_151050) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -176,6 +176,21 @@ ActiveRecord::Schema.define(version: 2019_09_30_204841) do
     t.index ["user_id"], name: "index_dnd_classes_on_user_id"
   end
 
+  create_table "encounter_combatants", force: :cascade do |t|
+    t.bigint "encounter_id"
+    t.bigint "character_id"
+    t.bigint "monster_id"
+    t.integer "current_hit_points", default: 0
+    t.integer "initiative_roll", default: 0
+    t.integer "combat_order_number", default: 0
+    t.text "notes", default: ""
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["character_id"], name: "index_encounter_combatants_on_character_id"
+    t.index ["encounter_id"], name: "index_encounter_combatants_on_encounter_id"
+    t.index ["monster_id"], name: "index_encounter_combatants_on_monster_id"
+  end
+
   create_table "encounter_items", force: :cascade do |t|
     t.integer "quantity", default: 1, null: false
     t.bigint "encounter_id"
@@ -219,6 +234,9 @@ ActiveRecord::Schema.define(version: 2019_09_30_204841) do
     t.datetime "updated_at", null: false
     t.string "location", default: "New Location", null: false
     t.integer "sort", default: 0, null: false
+    t.integer "round", default: 1
+    t.integer "current_mob_index", default: 0
+    t.boolean "in_progress", default: false
     t.index ["adventure_id"], name: "index_encounters_on_adventure_id"
   end
 
@@ -507,6 +525,9 @@ ActiveRecord::Schema.define(version: 2019_09_30_204841) do
   add_foreign_key "container_items", "items"
   add_foreign_key "container_items", "items", column: "contained_item_id"
   add_foreign_key "dnd_classes", "users"
+  add_foreign_key "encounter_combatants", "characters"
+  add_foreign_key "encounter_combatants", "encounters"
+  add_foreign_key "encounter_combatants", "monsters"
   add_foreign_key "encounter_items", "encounters"
   add_foreign_key "encounter_items", "items"
   add_foreign_key "encounter_monsters", "encounters"

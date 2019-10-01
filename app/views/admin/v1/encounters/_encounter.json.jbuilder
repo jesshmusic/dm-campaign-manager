@@ -15,6 +15,12 @@ json.extract! encounter,
               :sort,
               :xp
 
+json.encounter_state do
+  json.in_progress encounter.in_progress
+  json.round encounter.round
+  json.current_combatant encounter.current_mob_index
+end
+
 json.encounter_monsters encounter.encounter_monsters do |encounter_monster|
   json.id encounter_monster.id
   json.numberOfMonsters encounter_monster.number_of_monsters
@@ -48,6 +54,18 @@ end
 json.npc_options encounter.npc_options do |npc_option|
   json.value npc_option.id
   json.label "#{npc_option.name} -- #{npc_option.classes}"
+end
+
+json.combatants encounter.encounter_combatants do |encounter_combatant|
+  json.id encounter_combatant.id
+  json.combat_order_number encounter_combatant.combat_order_number
+  json.current_hit_points encounter_combatant.current_hit_points
+  json.initiative_roll encounter_combatant.initiative_roll
+  json.note encounter_combatant.notes
+  json.combatant do
+    json.partial! 'admin/v1/monsters/monster_summary', monster: encounter_combatant.monster unless encounter_combatant.monster.nil?
+    json.partial! 'admin/v1/characters/character_summary', character: encounter_combatant.character unless encounter_combatant.character.nil?
+  end
 end
 
 json.next_encounter_id encounter.next_encounter_id

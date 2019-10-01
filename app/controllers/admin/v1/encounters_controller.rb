@@ -90,19 +90,23 @@ module Admin::V1
       params.require(:encounter).permit(
         :id,
         :copper_pieces,
+        :current_mob_index,
         :description,
         :electrum_pieces,
         :gold_pieces,
+        :in_progress,
         :location,
         :name,
         :platinum_pieces,
+        :round,
         :silver_pieces,
         :sort,
         :xp,
         :_destroy,
         character_ids: [],
         encounter_monsters_attributes: %i[id number_of_monsters monster_id _destroy],
-        encounter_items_attributes: %i[id quantity item_id _destroy]
+        encounter_items_attributes: %i[id quantity item_id _destroy],
+        encounter_combatants_attributes: %i[id combat_order_number current_hit_points initiative_roll notes character_id monster_id]
       )
     end
   end

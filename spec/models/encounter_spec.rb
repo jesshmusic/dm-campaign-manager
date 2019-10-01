@@ -2,20 +2,23 @@
 #
 # Table name: encounters
 #
-#  id              :bigint           not null, primary key
-#  copper_pieces   :integer          default(0)
-#  description     :text
-#  electrum_pieces :integer          default(0)
-#  gold_pieces     :integer          default(0)
-#  location        :string           default("New Location"), not null
-#  name            :string           default("New Encounter")
-#  platinum_pieces :integer          default(0)
-#  silver_pieces   :integer          default(0)
-#  sort            :integer          default(0), not null
-#  xp              :integer          default(0)
-#  created_at      :datetime         not null
-#  updated_at      :datetime         not null
-#  adventure_id    :bigint
+#  id                :bigint           not null, primary key
+#  copper_pieces     :integer          default(0)
+#  current_mob_index :integer          default(0)
+#  description       :text
+#  electrum_pieces   :integer          default(0)
+#  gold_pieces       :integer          default(0)
+#  in_progress       :boolean          default(FALSE)
+#  location          :string           default("New Location"), not null
+#  name              :string           default("New Encounter")
+#  platinum_pieces   :integer          default(0)
+#  round             :integer          default(1)
+#  silver_pieces     :integer          default(0)
+#  sort              :integer          default(0), not null
+#  xp                :integer          default(0)
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#  adventure_id      :bigint
 #
 # Indexes
 #

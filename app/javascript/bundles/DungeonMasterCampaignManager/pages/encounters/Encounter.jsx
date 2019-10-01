@@ -4,7 +4,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import rest from '../../actions/api';
+import rest, {getHeaders} from '../../actions/api';
 import {connect} from 'react-redux';
 import PageContainer from '../../containers/PageContainer';
 import DndSpinner from '../../components/layout/DndSpinner';
@@ -14,13 +14,133 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import ReactMarkdown from 'react-markdown';
 import ListGroup from 'react-bootstrap/ListGroup';
-import {Link} from '@reach/router';
-import EncounterTracker from '../../utilities/EncounterTracker';
+import {Link, navigate} from '@reach/router';
+import snakecaseKeys from 'snakecase-keys';
+import Card from 'react-bootstrap/Card';
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
 
 class Encounter extends React.Component {
   state = {
-    RunEncounter: null,
-    encounterRunning: false,
+    currentCombatant: 0,
+    encounterCombatants: [],
+    inProgress: false,
+    round: 1,
+  };
+
+  updateCombat = (changes) => {
+    const encounterFields = {
+      encounter: {
+        inProgress: changes.inProgress !== undefined ? changes.inProgress : this.state.inProgress,
+        currentMobIndex: changes.currentCombatant ? changes.currentCombatant : this.state.currentCombatant,
+        round: changes.round ? changes.round : this.state.round,
+        encounterCombatantsAttributes: changes.encounterCombatants ?
+          changes.encounterCombatants.map((combatant) => ({
+            id: combatant.id,
+            combatOrderNumber: combatant.combatOrderNumber,
+            currentHitPoints: combatant.currentHitPoints,
+            initiativeRoll: combatant.initiativeRoll,
+            notes: combatant.notes ? combatant.notes : '',
+          })) :
+          this.state.encounterCombatants.map((combatant) => ({
+            id: combatant.id,
+            combatOrderNumber: combatant.combatOrderNumber,
+            currentHitPoints: combatant.currentHitPoints,
+            initiativeRoll: combatant.initiativeRoll,
+            notes: combatant.notes ? combatant.notes : '',
+          })),
+      },
+    };
+    fetch(`/v1/campaigns/${this.props.campaignSlug}/adventures/${this.props.adventureId}/encounters/${this.props.id}`, {
+      method: 'PUT',
+      headers: getHeaders(),
+      body: JSON.stringify(snakecaseKeys(encounterFields)),
+    }).then((response) => response.json())
+      .then((jsonResponse) => {
+        console.log(jsonResponse);
+      });
+  };
+
+  incrementCombatant = () => {
+    let currentRound = this.state.round;
+    let currentCombatant = this.state.currentCombatant;
+    if (this.state.currentCombatant + 1 < this.state.encounterCombatants.length) {
+      currentCombatant = this.state.currentCombatant + 1;
+      this.setState({ currentCombatant });
+    } else {
+      currentCombatant = 0;
+      currentRound += 1;
+      this.setState({
+        currentCombatant,
+        round: currentRound,
+      });
+    }
+
+    this.updateCombat({currentCombatant, round: currentRound});
+  };
+
+  addIntiativeForCombatant = (combatantIndex, initiative) => {
+    const initiativeInt = initiative ? parseInt(initiative, 10) : 0;
+    if (combatantIndex < this.state.encounterCombatants.length && combatantIndex >= 0) {
+      const encounterCombatants = [...this.state.encounterCombatants];
+      encounterCombatants[combatantIndex].initiativeRoll = initiativeInt;
+      this.setState({
+        encounterCombatants,
+      });
+    }
+  };
+
+  sortCombatants = () => {
+    const encounterCombatants = [...this.state.encounterCombatants];
+    encounterCombatants.sort((a, b) => b.initiativeRoll - a.initiativeRoll);
+    encounterCombatants.forEach((encounterCombatant, index) => {
+      encounterCombatant.combatOrderNumber = index;
+    });
+    this.setState({
+      encounterCombatants,
+    });
+    this.updateCombat({encounterCombatants});
+  };
+
+  adjustHitPointsForCombatant = (combatantIndex, hitPointChange) => {
+    if (combatantIndex < this.state.encounterCombatants.length && combatantIndex > 0) {
+      const encounterCombatants = [...this.state.encounterCombatants];
+      encounterCombatants[combatantIndex].currentHitPoints += hitPointChange;
+      this.setState({
+        encounterCombatants,
+      });
+
+      this.updateCombat({encounterCombatants});
+    }
+  };
+
+  onStartEncounter = () => {
+    this.setState({
+      inProgress: true,
+    });
+    this.updateCombat({inProgress: true});
+  };
+
+  onStopEncounter = () => {
+    this.setState({
+      inProgress: false,
+    });
+    this.updateCombat({inProgress: false});
+  };
+
+  resetEncounter = () => {
+    const encounterFields = {
+      inProgress: false,
+      currentMobIndex: 0,
+      round: 1,
+      encounterCombatants: this.state.encounterCombatants.map((combatant) => ({
+        combatOrderNumber: combatant.combatOrderNumber,
+        currentHitPoints: combatant.combatant.hitPoints,
+        initiativeRoll: 0,
+        notes: '',
+      })),
+    };
+    this.updateCombat(encounterFields);
   };
 
   componentDidMount () {
@@ -45,21 +165,15 @@ class Encounter extends React.Component {
   initializeEncounter () {
     const currentEncounter = this.props.encounter;
     this.setState({
-      RunEncounter: new EncounterTracker(
-        currentEncounter.encounterMonsters,
-        this.props.adventure.npcs,
-        this.props.adventure.pcs),
+      currentCombatant: currentEncounter.encounterState.currentCombatant,
+      encounterCombatants: currentEncounter.combatants,
+      inProgress: currentEncounter.encounterState.inProgress,
+      round: currentEncounter.encounterState.round,
     });
   }
 
-  onStartEncounter = () => {
-    this.setState({
-      encounterRunning: true,
-    });
-  };
-
   render () {
-    // const {} = this.state;
+    const { inProgress, round } = this.state;
     const { adventure, adventureId, campaign, campaignSlug, encounter, flashMessages, id, loading, user } = this.props;
     const encounterTitle = encounter ? encounter.name : 'Encounter Loading...';
     return (
@@ -101,12 +215,60 @@ class Encounter extends React.Component {
                 </Link>
               </Col>
             </Row>
-            <Row>
-
-            </Row>
+            {inProgress ? (
+              <Row>
+                <Col>
+                  <Card>
+                    <Card.Header>
+                      <Card.Title>In Progress...</Card.Title>
+                    </Card.Header>
+                    <Card.Body>
+                      <p className={'lead'}><strong>Round:</strong> {round}</p>
+                      <Button variant={'secondary'} onClick={this.sortCombatants}>Set Combat Order</Button>
+                    </Card.Body>
+                    {this.state.encounterCombatants.map((nextMob, index) => (
+                      <Card key={nextMob.id} className={`m-2${this.state.currentCombatant === index ? ' text-white bg-primary' : ''}`}>
+                        <Card.Body>
+                          <strong>{nextMob.combatant.name}, Initiative: </strong>
+                          {nextMob.initiativeRoll} -- <strong>AC: </strong>
+                          {nextMob.combatant.armorClass} -- <strong>HP: </strong>
+                          {nextMob.currentHitPoints}/{nextMob.combatant.hitPoints}
+                          <Form.Group controlId={`initiativeRoll${nextMob.id}`}>
+                            <Form.Label>
+                              Initiative
+                            </Form.Label>
+                            <Form.Control
+                              placeholder={'Initiative'}
+                              onChange={(event) => this.addIntiativeForCombatant(index, event.target.value)}
+                              type={'number'}
+                              defaultValue={this.state.encounterCombatants[index].initiativeRoll}
+                            />
+                          </Form.Group>
+                        </Card.Body>
+                      </Card>
+                    ))}
+                    <Button variant={'primary'} onClick={this.onStopEncounter} block>Stop Encounter</Button>
+                  </Card>
+                </Col>
+              </Row>
+            ) : (
+              <Button variant={'primary'} onClick={this.onStartEncounter} block>Run Encounter</Button>
+            )}
             <Row>
               <Col>
                 <ReactMarkdown source={ encounter.description }/>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <h4>NPCs</h4>
+                <ListGroup variant="flush">
+                  {encounter.npcs.map((npc) => (
+                    <ListGroup.Item key={npc.id}>
+                      <strong>{npc.name}</strong> : {npc.classes} - <strong className={'text-muted'}>{npc.role}</strong>
+                    </ListGroup.Item>
+                  ))}
+                </ListGroup>
               </Col>
             </Row>
             <Row>
@@ -195,6 +357,7 @@ Encounter.propTypes = {
   getEncounter: PropTypes.func.isRequired,
   id: PropTypes.string.isRequired,
   loading: PropTypes.bool,
+  updateEncounter: PropTypes.func.isRequired,
   user: PropTypes.object,
 };
 
@@ -214,11 +377,20 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    getEncounter(campaignSlug, adventureId, encounterId) {
+    getEncounter (campaignSlug, adventureId, encounterId) {
       dispatch(rest.actions.getEncounter({
         id: encounterId,
         campaign_slug: campaignSlug,
         adventure_id: adventureId,
+      }));
+    },
+    updateEncounter: (encounter, campaignSlug, adventureId, encounterId) => {
+      dispatch(rest.actions.updateEncounter({
+        campaign_slug: campaignSlug,
+        adventure_id: adventureId,
+        id: encounterId,
+      }, {body: JSON.stringify({encounter})}, () => {
+        navigate(`/app/campaigns/${campaignSlug}/adventures/${adventureId}/encounters/${encounterId}`);
       }));
     },
   };

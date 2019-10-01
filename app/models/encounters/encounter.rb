@@ -4,20 +4,23 @@
 #
 # Table name: encounters
 #
-#  id              :bigint           not null, primary key
-#  copper_pieces   :integer          default(0)
-#  description     :text
-#  electrum_pieces :integer          default(0)
-#  gold_pieces     :integer          default(0)
-#  location        :string           default("New Location"), not null
-#  name            :string           default("New Encounter")
-#  platinum_pieces :integer          default(0)
-#  silver_pieces   :integer          default(0)
-#  sort            :integer          default(0), not null
-#  xp              :integer          default(0)
-#  created_at      :datetime         not null
-#  updated_at      :datetime         not null
-#  adventure_id    :bigint
+#  id                :bigint           not null, primary key
+#  copper_pieces     :integer          default(0)
+#  current_mob_index :integer          default(0)
+#  description       :text
+#  electrum_pieces   :integer          default(0)
+#  gold_pieces       :integer          default(0)
+#  in_progress       :boolean          default(FALSE)
+#  location          :string           default("New Location"), not null
+#  name              :string           default("New Encounter")
+#  platinum_pieces   :integer          default(0)
+#  round             :integer          default(1)
+#  silver_pieces     :integer          default(0)
+#  sort              :integer          default(0), not null
+#  xp                :integer          default(0)
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#  adventure_id      :bigint
 #
 # Indexes
 #
@@ -30,8 +33,10 @@
 
 class Encounter < ApplicationRecord
   before_save :calculate_xp
+  after_create :setup_encounter
 
   belongs_to :adventure
+  has_many :encounter_combatants, dependent: :destroy
 
   has_many :encounter_items, dependent: :destroy
   has_many :encounter_monsters, inverse_of: :encounter
@@ -40,6 +45,7 @@ class Encounter < ApplicationRecord
 
   accepts_nested_attributes_for :encounter_monsters, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :encounter_items, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :encounter_combatants
 
   def total_monsters
     sum_of_monsters = 0
@@ -55,6 +61,36 @@ class Encounter < ApplicationRecord
       (1..encounter_monster.number_of_monsters).each do
         self.xp += DndRules.xp_for_cr encounter_monster.monster.challenge_rating
       end
+    end
+  end
+
+  def setup_encounter
+    combat_order_num = 0
+    encounter_monsters.each do |encounter_monster|
+      (1..encounter_monster.number_of_monsters).each do
+        encounter_combatants << EncounterCombatant.create(
+          combat_order_number: combat_order_num,
+          current_hit_points: encounter_monster.monster.hit_points,
+          monster: encounter_monster.monster
+        )
+        combat_order_num += 1
+      end
+    end
+    npcs.each do |npc|
+      encounter_combatants << EncounterCombatant.create(
+        combat_order_number: combat_order_num,
+        current_hit_points: npc.hit_points,
+        character: npc
+      )
+      combat_order_num += 1
+    end
+    adventure.pcs.each do |pc|
+      encounter_combatants << EncounterCombatant.create(
+        combat_order_number: combat_order_num,
+        current_hit_points: pc.hit_points,
+        character: pc
+      )
+      combat_order_num += 1
     end
   end
 
