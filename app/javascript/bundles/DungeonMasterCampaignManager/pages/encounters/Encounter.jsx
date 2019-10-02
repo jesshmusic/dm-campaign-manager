@@ -21,6 +21,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
+import InputGroup from 'react-bootstrap/InputGroup';
 
 class Encounter extends React.Component {
   state = {
@@ -256,17 +257,26 @@ class Encounter extends React.Component {
                       </ButtonToolbar>
                     </Card.Body>
                     {this.state.encounterCombatants.map((nextMob, index) => (
-                      <Card key={nextMob.id} className={`m-2${this.state.currentCombatant === index ? ' text-white bg-primary' : ''}`}>
-                        <Card.Body>
-                          <strong>{nextMob.combatant.name}, Initiative: </strong>
-                          {nextMob.initiativeRoll} -- <strong>AC: </strong>
-                          {nextMob.combatant.armorClass} -- <strong>HP: </strong>
-                          {nextMob.currentHitPoints}/{nextMob.combatant.hitPoints}
-                          <Form.Group controlId={`initiativeRoll${nextMob.id}`}>
-                            <Form.Label>
+                      <Card key={nextMob.id}
+                            className={`m-2${
+                              this.state.currentCombatant === index ? ' text-white bg-primary' : ''
+                            }${
+                              nextMob.currentHitPoints <= 0 ? ' text-muted' : ''
+                            }`}>
+                        <Card.Body className={'d-flex justify-content-between align-items-center'}>
+                          <span>
+                            <strong>{nextMob.combatant.name}, Initiative: </strong>
+                            {nextMob.initiativeRoll} -- <strong>AC: </strong>
+                            {nextMob.combatant.armorClass} -- <strong>HP: </strong>
+                            {nextMob.currentHitPoints}/{nextMob.combatant.hitPoints}
+                          </span>
+                          <Form.Group controlId={`initiativeRoll${nextMob.id}`}
+                                      className={'d-flex align-items-center mb-0'}>
+                            <Form.Label className={'mr-1 mb-0'}>
                               Initiative
                             </Form.Label>
                             <Form.Control
+                              className={'mb-0'}
                               placeholder={'Initiative'}
                               onChange={(event) => this.addIntiativeForCombatant(index, event.target.value)}
                               type={'number'}
@@ -274,6 +284,22 @@ class Encounter extends React.Component {
                             />
                           </Form.Group>
                         </Card.Body>
+                        {this.state.currentCombatant === index ? (
+                          <Card.Footer>
+                            <InputGroup>
+                              <Form.Control
+                                placeholder="Hit Points Change"
+                                aria-label="Hit Points Change"
+                                aria-describedby="basic-addon2"
+                                type={'number'}
+                              />
+                              <InputGroup.Append>
+                                <Button variant="success">Heal</Button>
+                                <Button variant="secondary">Damage</Button>
+                              </InputGroup.Append>
+                            </InputGroup>
+                          </Card.Footer>
+                        ) : null}
                       </Card>
                     ))}
                     <Button variant={'primary'} onClick={this.onStopEncounter} block>Stop Encounter</Button>
