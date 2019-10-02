@@ -33,6 +33,7 @@
 
 class Encounter < ApplicationRecord
   before_save :calculate_xp
+  before_save :update_encounter
   after_create :setup_encounter
 
   belongs_to :adventure
@@ -62,6 +63,14 @@ class Encounter < ApplicationRecord
         self.xp += DndRules.xp_for_cr encounter_monster.monster.challenge_rating
       end
     end
+  end
+
+  def update_encounter
+    encounter_combatants.destroy_all
+    self.in_progress = false
+    self.round = 1
+    self.current_mob_index = 0
+    setup_encounter
   end
 
   def setup_encounter
