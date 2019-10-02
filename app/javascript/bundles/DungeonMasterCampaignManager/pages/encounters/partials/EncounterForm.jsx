@@ -57,7 +57,7 @@ const setEncounterObject = (values) => {
   if (values.id) {
     encounterFields.id = values.id;
   }
-  return snakecaseKeys(encounterFields);
+  return snakecaseKeys(encounterFields, {exclude: ['_destroy']});
 };
 
 class EncounterForm extends React.Component {

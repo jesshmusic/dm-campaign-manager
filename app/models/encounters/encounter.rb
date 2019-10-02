@@ -33,7 +33,7 @@
 
 class Encounter < ApplicationRecord
   before_save :calculate_xp
-  before_save :update_encounter
+  # before_save :update_encounter
   after_create :setup_encounter
 
   belongs_to :adventure
@@ -62,6 +62,10 @@ class Encounter < ApplicationRecord
       (1..encounter_monster.number_of_monsters).each do
         self.xp += DndRules.xp_for_cr encounter_monster.monster.challenge_rating
       end
+    end
+
+    npcs.each do |npc|
+      self.xp += DndRules.xp_for_cr npc.challenge_rating
     end
   end
 

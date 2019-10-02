@@ -47,6 +47,10 @@ module Admin::V1
       authorize @encounter
       respond_to do |format|
         if @encounter.update(encounter_params)
+          unless params[:encounter_tracker]
+            reset_encounter
+            @encounter.save!
+          end
           format.html { redirect_to v1_campaign_adventure_encounter_url(@campaign, @adventure, @encounter), notice: 'Encounter was successfully updated.' }
           format.json { render :show, status: :ok }
         else
@@ -83,6 +87,10 @@ module Admin::V1
 
     def set_encounter
       @encounter = Encounter.find(params[:id])
+    end
+
+    def reset_encounter
+      @encounter.update_encounter
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

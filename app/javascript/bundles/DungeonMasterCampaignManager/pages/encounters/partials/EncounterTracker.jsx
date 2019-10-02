@@ -10,18 +10,18 @@ import Card from 'react-bootstrap/Card';
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
-import InputGroup from 'react-bootstrap/InputGroup';
 import {getHeaders} from '../../../actions/api';
 import snakecaseKeys from 'snakecase-keys';
 import EncounterTrackerDamageInput from './EncounterTrackerDamageInput';
 import Figure from 'react-bootstrap/Figure';
 import ProgressBar from 'react-bootstrap/ProgressBar';
 import EncounterTrackerNotes from './EncounterTrackerNotes';
+import EncounterTrackerInitiatives from './EncounterTrackerInitiatives';
 
 class EncounterTracker extends React.Component {
   state = {
     currentCombatant: 0,
+    editingInitiatives: false,
     encounterCombatants: [],
     inProgress: false,
     round: 1,
@@ -58,7 +58,7 @@ class EncounterTracker extends React.Component {
           })),
       },
     };
-    fetch(`/v1/campaigns/${this.props.campaignSlug}/adventures/${this.props.adventureId}/encounters/${this.props.encounterId}`, {
+    fetch(`/v1/campaigns/${this.props.campaignSlug}/adventures/${this.props.adventureId}/encounters/${this.props.encounterId}?encounter_tracker=true`, {
       method: 'PUT',
       headers: getHeaders(),
       body: JSON.stringify(snakecaseKeys(encounterFields)),
@@ -86,25 +86,23 @@ class EncounterTracker extends React.Component {
     this.updateCombat({currentCombatant, round: currentRound});
   };
 
-  addIntiativeForCombatant = (combatantIndex, initiative) => {
-    const initiativeInt = initiative ? parseInt(initiative, 10) : 0;
-    if (combatantIndex < this.state.encounterCombatants.length && combatantIndex >= 0) {
-      const encounterCombatants = [...this.state.encounterCombatants];
-      encounterCombatants[combatantIndex].initiativeRoll = initiativeInt;
-      this.setState({
-        encounterCombatants,
-      });
-    }
+  handleSetInitiatives = () => {
+    this.setState({ editingInitiatives: true });
   };
 
-  sortCombatants = () => {
-    const encounterCombatants = [...this.state.encounterCombatants];
+  handleCancelInitiatives = () => {
+    this.setState({ editingInitiatives: false });
+  };
+
+  sortCombatants = (newCombatants) => {
+    const encounterCombatants = [...newCombatants];
     encounterCombatants.sort((a, b) => b.initiativeRoll - a.initiativeRoll);
     encounterCombatants.forEach((encounterCombatant, index) => {
       encounterCombatant.combatOrderNumber = index;
     });
     this.setState({
       encounterCombatants,
+      editingInitiatives: false,
     });
     this.updateCombat({encounterCombatants});
   };
@@ -190,7 +188,7 @@ class EncounterTracker extends React.Component {
   }
 
   render () {
-    const { inProgress, round } = this.state;
+    const { editingInitiatives, inProgress, round } = this.state;
 
     return (
       inProgress ? (
@@ -204,13 +202,19 @@ class EncounterTracker extends React.Component {
                 <p className={'lead'}><strong>Round:</strong> {round}</p>
                 <ButtonToolbar aria-label={'Encounter actions'} className={'justify-content-between'}>
                   <ButtonGroup>
-                    <Button variant={'secondary'} onClick={this.sortCombatants}>Set Combat Order</Button>
+                    <Button variant={'info'} onClick={this.handleSetInitiatives}>Set Initiatives</Button>
                     <Button variant={'primary'} onClick={this.incrementCombatant}>Next Combatant</Button>
                   </ButtonGroup>
                   <ButtonGroup>
                     <Button variant={'dark'} onClick={this.resetEncounter}>Reset Encounter</Button>
                   </ButtonGroup>
                 </ButtonToolbar>
+                <EncounterTrackerInitiatives
+                  editingInitiatives={editingInitiatives}
+                  encounterCombatants={this.state.encounterCombatants}
+                  onSubmit={this.sortCombatants}
+                  onCancelInitiatives={this.handleCancelInitiatives}
+                />
               </Card.Body>
               {this.state.encounterCombatants.map((nextMob, index) => (
                 <Card key={nextMob.id}
@@ -243,19 +247,6 @@ class EncounterTracker extends React.Component {
                         </Figure>
                       ) : null}
                     </span>
-                    <Form.Group controlId={`initiativeRoll${nextMob.id}`}
-                                className={'d-flex align-items-center mb-0'}>
-                      <Form.Label className={'mr-1 mb-0'}>
-                        Initiative
-                      </Form.Label>
-                      <Form.Control
-                        className={'mb-0'}
-                        placeholder={'Initiative'}
-                        onChange={(event) => this.addIntiativeForCombatant(index, event.target.value)}
-                        type={'number'}
-                        defaultValue={this.state.encounterCombatants[index].initiativeRoll}
-                      />
-                    </Form.Group>
                   </Card.Body>
                   {this.state.currentCombatant === index ? (
                     <Card.Footer>

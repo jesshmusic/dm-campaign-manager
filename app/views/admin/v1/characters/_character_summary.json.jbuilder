@@ -18,3 +18,7 @@ json.character_classes character.character_classes do |character_class|
   json.spell_save_dc character_class.spell_save_dc
   json.spell_attack_bonus character_class.spell_attack_bonus
 end
+
+if character.type == 'NonPlayerCharacter'
+  json.challenge_rating character.challenge_rating
+end

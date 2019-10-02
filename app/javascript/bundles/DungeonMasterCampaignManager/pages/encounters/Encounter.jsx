@@ -75,22 +75,22 @@ class Encounter extends React.Component {
                 </Link>
               </Col>
             </Row>
+            <Row>
+              <Col>
+                <ReactMarkdown source={ encounter.description }/>
+              </Col>
+            </Row>
             <EncounterTracker adventureId={adventureId}
                               campaignSlug={campaignSlug}
                               encounter={encounter}
                               encounterId={id}/>
             <Row>
               <Col>
-                <ReactMarkdown source={ encounter.description }/>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
                 <h4>NPCs</h4>
                 <ListGroup variant="flush">
                   {encounter.npcs.map((npc) => (
                     <ListGroup.Item key={npc.id}>
-                      <strong>{npc.name}</strong> : {npc.classes} - <strong className={'text-muted'}>{npc.role}</strong>
+                      <strong>{npc.name}</strong> : {npc.classes} - <strong className={'text-muted'}>{npc.role}</strong> - <strong className={'text-muted'}>CR: {npc.challengeRating}</strong>
                     </ListGroup.Item>
                   ))}
                 </ListGroup>
