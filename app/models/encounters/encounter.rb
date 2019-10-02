@@ -76,8 +76,9 @@ class Encounter < ApplicationRecord
   def setup_encounter
     combat_order_num = 0
     encounter_monsters.each do |encounter_monster|
-      (1..encounter_monster.number_of_monsters).each do
+      (1..encounter_monster.number_of_monsters).each do |value|
         encounter_combatants << EncounterCombatant.create(
+          name: "#{encounter_monster.monster.name} #{value}",
           combat_order_number: combat_order_num,
           current_hit_points: encounter_monster.monster.hit_points,
           monster: encounter_monster.monster
@@ -87,6 +88,7 @@ class Encounter < ApplicationRecord
     end
     npcs.each do |npc|
       encounter_combatants << EncounterCombatant.create(
+        name: npc.name,
         combat_order_number: combat_order_num,
         current_hit_points: npc.hit_points,
         character: npc
@@ -95,6 +97,7 @@ class Encounter < ApplicationRecord
     end
     adventure.pcs.each do |pc|
       encounter_combatants << EncounterCombatant.create(
+        name: pc.name,
         combat_order_number: combat_order_num,
         current_hit_points: pc.hit_points,
         character: pc

@@ -58,6 +58,7 @@ end
 
 json.combatants encounter.encounter_combatants.order(combat_order_number: :asc) do |encounter_combatant|
   json.id encounter_combatant.id
+  json.name encounter_combatant.name
   json.combat_order_number encounter_combatant.combat_order_number
   json.current_hit_points encounter_combatant.current_hit_points
   json.initiative_roll encounter_combatant.initiative_roll

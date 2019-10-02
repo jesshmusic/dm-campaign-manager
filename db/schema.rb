@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_01_151050) do
+ActiveRecord::Schema.define(version: 2019_10_02_141643) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -186,6 +186,7 @@ ActiveRecord::Schema.define(version: 2019_10_01_151050) do
     t.text "notes", default: ""
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "name"
     t.index ["character_id"], name: "index_encounter_combatants_on_character_id"
     t.index ["encounter_id"], name: "index_encounter_combatants_on_encounter_id"
     t.index ["monster_id"], name: "index_encounter_combatants_on_monster_id"

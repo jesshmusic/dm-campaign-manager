@@ -8,6 +8,7 @@
 #  combat_order_number :integer          default(0)
 #  current_hit_points  :integer          default(0)
 #  initiative_roll     :integer          default(0)
+#  name                :string
 #  notes               :text             default("")
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null

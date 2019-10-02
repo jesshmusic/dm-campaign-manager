@@ -119,7 +119,9 @@ class EncounterForm extends React.Component {
         this.props.campaign.slug,
         this.props.adventure.id);
     }
-    this.props.onCancelEditing();
+    if (this.props.onCancelEditing) {
+      this.props.onCancelEditing();
+    }
   };
 
   validate = (values) => {

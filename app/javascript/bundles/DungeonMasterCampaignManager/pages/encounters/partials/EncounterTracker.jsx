@@ -221,7 +221,7 @@ class EncounterTracker extends React.Component {
                       }`}>
                   <Card.Body className={'d-flex justify-content-between align-items-center'}>
                     <span className={'flex-grow-1 pr-3'}>
-                      <strong>{nextMob.combatant.name}, Initiative: </strong>
+                      <strong>{nextMob.name}, Initiative: </strong>
                       {nextMob.initiativeRoll} -- <strong>AC: </strong>
                       {nextMob.combatant.armorClass}
                       <Figure className={'w-100'}>
