@@ -7,10 +7,11 @@ import PropTypes from 'prop-types';
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 
 class EncounterTrackerDamageInput extends React.Component {
   state = {
-    fieldValue: 0,
+    fieldValue: null,
   };
 
   changeFieldValue = (value) => {
@@ -18,38 +19,46 @@ class EncounterTrackerDamageInput extends React.Component {
   };
 
   onDamage = () => {
-    this.props.handleChangeHitPoints(this.props.combatantIndex, -1 * parseInt(this.state.fieldValue, 10));
+    this.props.handleChangeHitPoints(-1 * parseInt(this.state.fieldValue, 10));
     this.setState({ fieldValue: 0 });
   };
 
   onHeal = () => {
-    this.props.handleChangeHitPoints(this.props.combatantIndex, parseInt(this.state.fieldValue, 10));
+    this.props.handleChangeHitPoints(parseInt(this.state.fieldValue, 10));
     this.setState({ fieldValue: 0 });
   };
 
   render () {
+    const { showDamageModal, onHideDamageModal } = this.props;
+    const { fieldValue } = this.state;
     return (
-      <InputGroup>
-        <Form.Control
-          placeholder="Hit Points Change"
-          aria-label="Hit Points Change"
-          aria-describedby="basic-addon2"
-          onChange={(event) => this.changeFieldValue(event.target.value)}
-          type={'number'}
-          value={this.state.fieldValue}
-        />
-        <InputGroup.Append>
-          <Button variant="success" onClick={this.onHeal}>Heal</Button>
-          <Button variant="secondary" onClick={this.onDamage}>Damage</Button>
-        </InputGroup.Append>
-      </InputGroup>
+      <Modal show={ showDamageModal } onHide={ onHideDamageModal }>
+        <Modal.Body>
+          <InputGroup>
+            <Form.Control
+              placeholder="Hit Points Change"
+              aria-label="Hit Points Change"
+              aria-describedby="basic-addon2"
+              onChange={(event) => this.changeFieldValue(event.target.value)}
+              type={'number'}
+              min={'0'}
+            />
+            <InputGroup.Append>
+              <Button variant="success" onClick={this.onHeal} disabled={fieldValue === null}>Heal</Button>
+              <Button variant="secondary" onClick={this.onDamage} disabled={fieldValue === null}>Damage</Button>
+            </InputGroup.Append>
+          </InputGroup>
+        </Modal.Body>
+      </Modal>
     );
   }
 }
 
 EncounterTrackerDamageInput.propTypes = {
-  combatantIndex: PropTypes.number.isRequired,
+  combatant: PropTypes.object.isRequired,
   handleChangeHitPoints: PropTypes.func.isRequired,
+  onHideDamageModal: PropTypes.func.isRequired,
+  showDamageModal: PropTypes.bool,
 };
 
 export default EncounterTrackerDamageInput;

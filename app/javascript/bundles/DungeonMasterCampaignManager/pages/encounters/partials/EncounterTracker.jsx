@@ -12,11 +12,8 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Button from 'react-bootstrap/Button';
 import {getHeaders} from '../../../actions/api';
 import snakecaseKeys from 'snakecase-keys';
-import EncounterTrackerDamageInput from './EncounterTrackerDamageInput';
-import Figure from 'react-bootstrap/Figure';
-import ProgressBar from 'react-bootstrap/ProgressBar';
-import EncounterTrackerNotes from './EncounterTrackerNotes';
 import EncounterTrackerInitiatives from './EncounterTrackerInitiatives';
+import EncounterTrackerMob from './EncounterTrackerMob';
 
 class EncounterTracker extends React.Component {
   state = {
@@ -107,28 +104,16 @@ class EncounterTracker extends React.Component {
     this.updateCombat({encounterCombatants});
   };
 
-  adjustHitPointsForCombatant = (index, hitPointChange) => {
-    if (index < this.state.encounterCombatants.length && index > 0) {
+  updateCombatant = (index, combatant) => {
+    console.log(`${index} out of ${this.state.encounterCombatants.length}`)
+    console.log(combatant);
+    if (index < this.state.encounterCombatants.length && index >= 0) {
       const encounterCombatants = [...this.state.encounterCombatants];
-      encounterCombatants[index].currentHitPoints += hitPointChange;
-      if (encounterCombatants[index].currentHitPoints > encounterCombatants[index].combatant.hitPoints) {
-        encounterCombatants[index].currentHitPoints = encounterCombatants[index].combatant.hitPoints;
-      }
+      encounterCombatants[index] = combatant;
       this.setState({
         encounterCombatants,
       });
 
-      this.updateCombat({encounterCombatants});
-    }
-  };
-
-  changeNotes = (index, notes) => {
-    if (index < this.state.encounterCombatants.length && index > 0) {
-      const encounterCombatants = [...this.state.encounterCombatants];
-      encounterCombatants[index].notes = notes;
-      this.setState({
-        encounterCombatants,
-      });
       this.updateCombat({encounterCombatants});
     }
   };
@@ -216,48 +201,12 @@ class EncounterTracker extends React.Component {
                   onCancelInitiatives={this.handleCancelInitiatives}
                 />
               </Card.Body>
-              {this.state.encounterCombatants.map((nextMob, index) => (
-                <Card key={nextMob.id}
-                      className={`m-2${
-                        this.state.currentCombatant === index ? ' text-white bg-primary' : ''
-                      }${
-                        nextMob.currentHitPoints <= 0 ? ' text-muted' : ''
-                      }`}>
-                  <Card.Body className={'d-flex justify-content-between align-items-center'}>
-                    <span className={'flex-grow-1 pr-3'}>
-                      <strong>{nextMob.name}, Initiative: </strong>
-                      {nextMob.initiativeRoll} -- <strong>AC: </strong>
-                      {nextMob.combatant.armorClass}
-                      <Figure className={'w-100'}>
-                        <Figure.Caption>
-                          Hit Points
-                        </Figure.Caption>
-                        <ProgressBar now={nextMob.currentHitPoints}
-                                     label={`${nextMob.currentHitPoints}/${nextMob.combatant.hitPoints}`}
-                                     max={nextMob.combatant.hitPoints}
-                                     style={{height: '30px'}}
-                                     variant={'success'}/>
-                      </Figure>
-                      {this.state.currentCombatant !== index ? (
-                        <Figure className={'w-100'}>
-                          <Figure.Caption>
-                            Notes
-                          </Figure.Caption>
-                          <p>{nextMob.notes}</p>
-                        </Figure>
-                      ) : null}
-                    </span>
-                  </Card.Body>
-                  {this.state.currentCombatant === index ? (
-                    <Card.Footer>
-                      <EncounterTrackerDamageInput handleChangeHitPoints={this.adjustHitPointsForCombatant}
-                                                   combatantIndex={index}/>
-                      <EncounterTrackerNotes handleChangeNotes={this.changeNotes}
-                                             currentNotes={nextMob.notes}
-                                             combatantIndex={index}/>
-                    </Card.Footer>
-                  ) : null}
-                </Card>
+              {this.state.encounterCombatants.map((nextCombatant, index) => (
+                <EncounterTrackerMob currentIndex={this.state.currentCombatant}
+                                     index={index}
+                                     key={nextCombatant.id}
+                                     combatant={nextCombatant}
+                                     updateCombatant={this.updateCombatant}/>
               ))}
               <Button variant={'primary'} onClick={this.onStopEncounter} block>Stop Encounter</Button>
             </Card>
