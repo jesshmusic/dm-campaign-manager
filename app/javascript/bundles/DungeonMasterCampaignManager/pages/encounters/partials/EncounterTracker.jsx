@@ -17,6 +17,7 @@ import snakecaseKeys from 'snakecase-keys';
 import EncounterTrackerDamageInput from './EncounterTrackerDamageInput';
 import Figure from 'react-bootstrap/Figure';
 import ProgressBar from 'react-bootstrap/ProgressBar';
+import EncounterTrackerNotes from './EncounterTrackerNotes';
 
 class EncounterTracker extends React.Component {
   state = {
@@ -123,6 +124,17 @@ class EncounterTracker extends React.Component {
     }
   };
 
+  changeNotes = (index, notes) => {
+    if (index < this.state.encounterCombatants.length && index > 0) {
+      const encounterCombatants = [...this.state.encounterCombatants];
+      encounterCombatants[index].notes = notes;
+      this.setState({
+        encounterCombatants,
+      });
+      this.updateCombat({encounterCombatants});
+    }
+  };
+
   onStartEncounter = () => {
     this.setState({
       inProgress: true,
@@ -222,6 +234,14 @@ class EncounterTracker extends React.Component {
                                      style={{height: '30px'}}
                                      variant={'success'}/>
                       </Figure>
+                      {this.state.currentCombatant !== index ? (
+                        <Figure className={'w-100'}>
+                          <Figure.Caption>
+                            Notes
+                          </Figure.Caption>
+                          <p>{nextMob.notes}</p>
+                        </Figure>
+                      ) : null}
                     </span>
                     <Form.Group controlId={`initiativeRoll${nextMob.id}`}
                                 className={'d-flex align-items-center mb-0'}>
@@ -241,6 +261,9 @@ class EncounterTracker extends React.Component {
                     <Card.Footer>
                       <EncounterTrackerDamageInput handleChangeHitPoints={this.adjustHitPointsForCombatant}
                                                    combatantIndex={index}/>
+                      <EncounterTrackerNotes handleChangeNotes={this.changeNotes}
+                                             currentNotes={nextMob.notes}
+                                             combatantIndex={index}/>
                     </Card.Footer>
                   ) : null}
                 </Card>
