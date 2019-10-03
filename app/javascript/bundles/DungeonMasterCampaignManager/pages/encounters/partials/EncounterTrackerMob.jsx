@@ -48,14 +48,14 @@ const EncounterTrackerMob = ({
           className={`m-2${combatant.currentHitPoints <= 0 ? ' text-muted' : ''}`}
           style={isCurrent ? {borderWidth: '3px'} : null}>
       <Card.Body>
-        <Row>
+        <div className={'py-0 d-flex flex-wrap align-items-center'}>
           <Col xs={12} md={4}>
-            <h6>
+            <h5 className={'mb-sm-0'}>
               {combatant.name}
               <Badge variant={'primary'} className={'ml-3'}>
                 AC {combatant.combatant.armorClass}
               </Badge>
-            </h6>
+            </h5>
           </Col>
           <Col xs={12} md={4}>
             <Button onClick={() => setShowNotesModal(true)} block variant={'secondary'}>
@@ -76,7 +76,7 @@ const EncounterTrackerMob = ({
                            variant={'success'}/>
             </Button>
           </Col>
-        </Row>
+        </div>
         {isCurrent && combatant.combatant.descriptionText ? (
           <Row>
             <Col>
