@@ -26,7 +26,7 @@ const setEncounterObject = (values) => {
     name: values.name,
     platinumPieces: values.platinumPieces,
     silverPieces: values.silverPieces,
-    characterIds: values.npcs.map((npc) => npc.value),
+    characterIds: values.npcs ? values.npcs.map((npc) => npc.value) : [],
     encounterMonstersAttributes: values.encounterMonsters.map((encounterMonster) => {
       const newMonsters = {
         numberOfMonsters: encounterMonster.numberOfMonsters,
