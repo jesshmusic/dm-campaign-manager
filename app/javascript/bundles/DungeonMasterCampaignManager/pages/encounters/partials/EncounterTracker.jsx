@@ -105,15 +105,12 @@ class EncounterTracker extends React.Component {
   };
 
   updateCombatant = (index, combatant) => {
-    console.log(`${index} out of ${this.state.encounterCombatants.length}`)
-    console.log(combatant);
     if (index < this.state.encounterCombatants.length && index >= 0) {
       const encounterCombatants = [...this.state.encounterCombatants];
       encounterCombatants[index] = combatant;
       this.setState({
         encounterCombatants,
       });
-
       this.updateCombat({encounterCombatants});
     }
   };

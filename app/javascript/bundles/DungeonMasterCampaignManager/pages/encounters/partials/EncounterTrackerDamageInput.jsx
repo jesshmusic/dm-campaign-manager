@@ -33,6 +33,9 @@ class EncounterTrackerDamageInput extends React.Component {
     const { fieldValue } = this.state;
     return (
       <Modal show={ showDamageModal } onHide={ onHideDamageModal }>
+        <Modal.Header closeButton>
+          <Modal.Title>Enter Damage or Healing</Modal.Title>
+        </Modal.Header>
         <Modal.Body>
           <InputGroup>
             <Form.Control

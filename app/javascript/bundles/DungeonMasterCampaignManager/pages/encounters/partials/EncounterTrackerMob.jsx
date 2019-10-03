@@ -10,6 +10,8 @@ import ProgressBar from 'react-bootstrap/ProgressBar';
 import EncounterTrackerDamageInput from './EncounterTrackerDamageInput';
 import EncounterTrackerNotes from './EncounterTrackerNotes';
 import cloneDeep from 'lodash/cloneDeep';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
 
 const EncounterTrackerMob = ({
   currentIndex,
@@ -18,6 +20,7 @@ const EncounterTrackerMob = ({
   updateCombatant,
 }) => {
   const [showDamageModal, setShowDamageModal] = useState(false);
+  const [showNotesModal, setShowNotesModal] = useState(false);
 
   const adjustHitPointsForCombatant = (hitPointChange) => {
     const adjustedCombatant = cloneDeep(combatant);
@@ -29,8 +32,11 @@ const EncounterTrackerMob = ({
     setShowDamageModal(false);
   };
 
-  const handleAddNotes = () => {
-    console.log('Notes added');
+  const handleAddNotes = (newNotes) => {
+    const adjustedCombatant = cloneDeep(combatant);
+    adjustedCombatant.notes = newNotes;
+    updateCombatant(index, adjustedCombatant);
+    setShowNotesModal(false);
   };
 
   const isCurrent = currentIndex === index;
@@ -41,29 +47,42 @@ const EncounterTrackerMob = ({
           }${
             combatant.currentHitPoints <= 0 ? ' text-muted' : ''
           }`}>
-      <Card.Body className={'d-flex justify-content-between align-items-center'}>
-        <span className={'flex-grow-1 pr-3'}>
-          <strong>{combatant.name} -- AC: </strong>{combatant.combatant.armorClass} &#8220;{combatant.notes}&#8221;
-        </span>
-        <Button className={'p-1'}
-                onClick={() => setShowDamageModal(true)}
-                style={{width: '30%'}}
-                variant={'secondary'}>
-          <ProgressBar now={combatant.currentHitPoints}
-                       label={`${combatant.currentHitPoints}/${combatant.combatant.hitPoints} Hit Points`}
-                       max={combatant.combatant.hitPoints}
-                       style={{height: '30px', width: '100%'}}
-                       variant={'success'}/>
-        </Button>
+      <Card.Body>
+        <Row>
+          <Col xs={12} md={4}>
+            <strong>{combatant.name} -- AC: </strong>{combatant.combatant.armorClass}
+          </Col>
+          <Col xs={12} md={4}>
+            <Button onClick={() => setShowNotesModal(true)} block variant={'secondary'}>
+              {combatant.notes && combatant.notes !== '' ? (
+                <span><strong>Notes: </strong>{combatant.notes}</span>
+              ) : 'Add notes...'}
+            </Button>
+          </Col>
+          <Col xs={12} md={4}>
+            <Button className={'p-1'}
+                    block
+                    onClick={() => setShowDamageModal(true)}
+                    variant={'secondary'}>
+              <ProgressBar now={combatant.currentHitPoints}
+                           label={`${combatant.currentHitPoints}/${combatant.combatant.hitPoints} Hit Points`}
+                           max={combatant.combatant.hitPoints}
+                           style={{height: '30px', width: '100%'}}
+                           variant={'success'}/>
+            </Button>
+          </Col>
+        </Row>
       </Card.Body>
       <EncounterTrackerDamageInput combatant={combatant}
                                    handleChangeHitPoints={adjustHitPointsForCombatant}
                                    onHideDamageModal={() => setShowDamageModal(false)}
                                    showDamageModal={showDamageModal}
       />
-      {/*<EncounterTrackerNotes handleChangeNotes={handleAddNotes}*/}
-      {/*                       currentNotes={combatant.notes}*/}
-      {/*                       combatantIndex={index}/>*/}
+      <EncounterTrackerNotes handleChangeNotes={handleAddNotes}
+                             currentNotes={combatant.notes}
+                             onHideNotesModal={() => setShowNotesModal(false)}
+                             showNotesModal={showNotesModal}
+      />
     </Card>
   );
 };
