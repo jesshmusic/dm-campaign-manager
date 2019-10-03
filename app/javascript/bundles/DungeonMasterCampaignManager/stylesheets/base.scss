@@ -11,3 +11,7 @@
 .list-group {
   @extend .mb-4;
 }
+
+h6 {
+  font-weight: $font-weight-bold;
+}

@@ -179,8 +179,6 @@ class EncounterTracker extends React.Component {
             <Card>
               <Card.Header>
                 <Card.Title>In Progress...</Card.Title>
-              </Card.Header>
-              <Card.Body>
                 <p className={'lead'}><strong>Round:</strong> {round}</p>
                 <ButtonToolbar aria-label={'Encounter actions'} className={'justify-content-between'}>
                   <ButtonGroup>
@@ -197,15 +195,19 @@ class EncounterTracker extends React.Component {
                   onSubmit={this.sortCombatants}
                   onCancelInitiatives={this.handleCancelInitiatives}
                 />
+              </Card.Header>
+              <Card.Body>
+                {this.state.encounterCombatants.map((nextCombatant, index) => (
+                  <EncounterTrackerMob currentIndex={this.state.currentCombatant}
+                                       index={index}
+                                       key={nextCombatant.id}
+                                       combatant={nextCombatant}
+                                       updateCombatant={this.updateCombatant}/>
+                ))}
               </Card.Body>
-              {this.state.encounterCombatants.map((nextCombatant, index) => (
-                <EncounterTrackerMob currentIndex={this.state.currentCombatant}
-                                     index={index}
-                                     key={nextCombatant.id}
-                                     combatant={nextCombatant}
-                                     updateCombatant={this.updateCombatant}/>
-              ))}
-              <Button variant={'primary'} onClick={this.onStopEncounter} block>Stop Encounter</Button>
+              <Card.Footer>
+                <Button variant={'primary'} onClick={this.onStopEncounter} block>Stop Encounter</Button>
+              </Card.Footer>
             </Card>
           </Col>
         </Row>

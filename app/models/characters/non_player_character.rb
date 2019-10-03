@@ -58,4 +58,37 @@ class NonPlayerCharacter < Character
   def challenge_rating
     DndRules.cr_for_npc(self)
   end
+
+  def description_text
+    npc_desc = [
+      '<div class="p-3">',
+      "<h6>Alignment: <strong>#{alignment}</strong></h6>",
+      "<h6>Challenge Rating: #{challenge_rating}</h6>",
+      "<p><strong>Armor Class</strong>  #{armor_class}</p>",
+      "<p><strong>Hit Points</strong>  #{hit_points}</p>",
+      "<p><strong>Speed</strong>  #{speed}</p>",
+      "<table class='table'><thead><tr><th>STR</th><th>DEX</th><th>CON</th><th>INT</th><th>WIS</th><th>CHA</th></tr></thead>",
+      "<tbody><tr><td>#{strength}</td><td>#{dexterity}</td><td>#{constitution}</td><td>#{intelligence}</td><td>#{wisdom}</td><td>#{charisma}</td></tr></tbody></table>",
+      "<p><strong>Languages</strong>  #{languages}</p>"
+    ]
+
+    unless character_actions.empty?
+      npc_desc << '<h5 class="mt-3">Actions</h5>'
+      character_actions.each do |npc_action|
+        npc_desc << "<h6 class=\"mt-2\">#{npc_action.name}</h6><div>#{npc_action.description}</div>"
+        npc_desc << "<p><strong>Attack Bonus</strong> +#{npc_action.attack_bonus} | <strong>Damage Bonus</strong> +#{npc_action.damage_bonus} | <strong>Damage Dice</strong> #{npc_action.damage_dice}</p>"
+      end
+    end
+
+    unless spells.empty?
+      npc_desc << '<h5 class="mt-3">Spells</h5>'
+      npc_desc << spells.order(level: :asc).map { |spell|
+        "<strong>#{spell.name} <small>(#{spell.level != 0 ? "level #{spell.level}" : 'Cantrip'})</small></strong>"
+      }.join(', ')
+    end
+
+    npc_desc << '</div>'
+
+    npc_desc.join
+  end
 end

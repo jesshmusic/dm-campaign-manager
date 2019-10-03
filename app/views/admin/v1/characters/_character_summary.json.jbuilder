@@ -21,4 +21,5 @@ end
 
 if character.type == 'NonPlayerCharacter'
   json.challenge_rating character.challenge_rating
+  json.description_text character.description_text
 end

@@ -12,6 +12,9 @@ import EncounterTrackerNotes from './EncounterTrackerNotes';
 import cloneDeep from 'lodash/cloneDeep';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
+import Badge from 'react-bootstrap/Badge';
+import PageTitle from '../../../components/layout/PageTitle';
+import CharacterBody from '../../characters/partials/CharacterBody';
 
 const EncounterTrackerMob = ({
   currentIndex,
@@ -42,15 +45,17 @@ const EncounterTrackerMob = ({
   const isCurrent = currentIndex === index;
   return (
     <Card key={combatant.id}
-          className={`m-2${
-            isCurrent ? ' text-white bg-primary' : ''
-          }${
-            combatant.currentHitPoints <= 0 ? ' text-muted' : ''
-          }`}>
+          className={`m-2${combatant.currentHitPoints <= 0 ? ' text-muted' : ''}`}
+          style={isCurrent ? {borderWidth: '3px'} : null}>
       <Card.Body>
         <Row>
           <Col xs={12} md={4}>
-            <strong>{combatant.name} -- AC: </strong>{combatant.combatant.armorClass}
+            <h6>
+              {combatant.name}
+              <Badge variant={'primary'} className={'ml-3'}>
+                AC {combatant.combatant.armorClass}
+              </Badge>
+            </h6>
           </Col>
           <Col xs={12} md={4}>
             <Button onClick={() => setShowNotesModal(true)} block variant={'secondary'}>
@@ -63,7 +68,7 @@ const EncounterTrackerMob = ({
             <Button className={'p-1'}
                     block
                     onClick={() => setShowDamageModal(true)}
-                    variant={'secondary'}>
+                    variant={'link'}>
               <ProgressBar now={combatant.currentHitPoints}
                            label={`${combatant.currentHitPoints}/${combatant.combatant.hitPoints} Hit Points`}
                            max={combatant.combatant.hitPoints}
@@ -72,6 +77,13 @@ const EncounterTrackerMob = ({
             </Button>
           </Col>
         </Row>
+        {isCurrent && combatant.combatant.descriptionText ? (
+          <Row>
+            <Col>
+              <div dangerouslySetInnerHTML={{ __html: combatant.combatant.descriptionText }} />
+            </Col>
+          </Row>
+        ) : null}
       </Card.Body>
       <EncounterTrackerDamageInput combatant={combatant}
                                    handleChangeHitPoints={adjustHitPointsForCombatant}
