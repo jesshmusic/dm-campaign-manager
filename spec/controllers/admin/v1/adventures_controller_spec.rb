@@ -42,22 +42,26 @@ RSpec.describe Admin::V1::AdventuresController, type: :controller do
   # AdventuresController. Be sure to keep this updated too.
   let(:valid_session) { {} }
 
-  describe 'GET #index' do
-    let!(:adventure1) { create :adventure }
-    let!(:adventure2) { create :adventure }
-    let!(:adventure3) { create :adventure }
-    it 'returns a success response' do
+  let!(:dungeon_master) { create :dungeon_master_user }
+  let!(:campaign) { create :campaign, user: dungeon_master }
 
-      get :index, params: {}, session: valid_session
+  describe 'GET #index' do
+    let!(:adventure1) { create :adventure, campaign: campaign }
+    let!(:adventure2) { create :adventure, campaign: campaign }
+    let!(:adventure3) { create :adventure, campaign: campaign }
+    it 'returns a success response' do
+      puts campaign
+      get :index, params: { use_route: v1_campaign_adventures_path(campaign.slug) }
       expect(response).to be_successful
     end
   end
 
   describe 'GET #show' do
+    let!(:adventure) { create :adventure, campaign: campaign }
     it 'returns a success response' do
-      adventure = Adventure.create! valid_attributes
-      get :show, params: { id: adventure.to_param }, session: valid_session
+      get :show, params: { use_route: v1_campaign_adventure_path(campaign.to_param, adventure.to_param), id: adventure.to_param }, format: :json
       expect(response).to be_successful
+      expect(response.body).to eq({})
     end
   end
 
