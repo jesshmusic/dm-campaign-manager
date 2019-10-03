@@ -40,7 +40,7 @@ class Encounter < ApplicationRecord
   has_many :encounter_combatants, dependent: :destroy
 
   has_many :encounter_items, dependent: :destroy
-  has_many :encounter_monsters, inverse_of: :encounter
+  has_many :encounter_monsters, dependent: :destroy
   has_many :encounter_npcs, dependent: :destroy
   has_many :characters, through: :encounter_npcs
 
