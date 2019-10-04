@@ -29,10 +29,17 @@ RSpec.describe Admin::V1::CharactersController, type: :controller do
   # Character. As you add validations to Character, be sure to
   # adjust the attributes here as well.
   let!(:dnd_class) { create :dnd_class }
-  let(:valid_attributes) {
+  let!(:race) { create :race, name: 'Half-elf', speed: '30 feet' }
+  let(:valid_pc_attributes) {
     attributes_for(
       :player_character,
       character_classes_attributes: [ {level: 1, dnd_class_id: dnd_class.id} ]
+    )
+  }
+  let(:valid_npc_attributes) {
+    attributes_for(
+      :non_player_character,
+      character_classes_attributes: [ {level: 5, dnd_class_id: dnd_class.id} ]
     )
   }
 
@@ -49,32 +56,32 @@ RSpec.describe Admin::V1::CharactersController, type: :controller do
   describe "GET #index" do
     it "returns a success response" do
       sign_in dungeon_master
-      get :index, params: { campaign_slug: campaign.slug }
+      get :index, format: :json, params: { campaign_slug: campaign.slug }
       expect(response).to be_successful
     end
 
     it 'returns characters with character classes' do
       sign_in dungeon_master
-      get :index, params: { campaign_slug: campaign.slug, type: 'PlayerCharacter' }
+      get :index, format: :json, params: { campaign_slug: campaign.slug, type: 'PlayerCharacter' }
       expect(assigns(:characters).first.character_classes).not_to eq([])
     end
 
     it 'returns 5 player characters' do
       sign_in dungeon_master
-      get :index, params: { campaign_slug: campaign.slug, type: 'PlayerCharacter' }
+      get :index, format: :json, params: { campaign_slug: campaign.slug, type: 'PlayerCharacter' }
       expect(assigns(:characters).count).to eq 5
     end
 
     it 'returns 10 non-player characters' do
       sign_in dungeon_master
-      get :index, params: { campaign_slug: campaign.slug, type: 'NonPlayerCharacter' }
+      get :index, format: :json, params: { campaign_slug: campaign.slug, type: 'NonPlayerCharacter' }
       expect(assigns(:characters).count).to eq 10
     end
 
 
     it 'does NOT return a success response' do
       sign_in dungeon_master
-      get :index, params: { campaign_slug: campaign_unowned.slug }
+      get :index, format: :json, params: { campaign_slug: campaign_unowned.slug }
       expect(response).not_to be_successful
     end
   end
@@ -83,15 +90,29 @@ RSpec.describe Admin::V1::CharactersController, type: :controller do
     it "returns a success response" do
       sign_in dungeon_master
       character_slug = campaign.characters.first.slug
-      get :show, params: {campaign_slug: campaign.slug, slug: character_slug}
+      get :show, format: :json, params: {campaign_slug: campaign.slug, slug: character_slug}
       expect(response).to be_successful
+    end
+
+    it "returns a player character" do
+      sign_in dungeon_master
+      character_slug = campaign.pcs.first.slug
+      get :show, format: :json, params: {campaign_slug: campaign.slug, slug: character_slug}
+      expect(assigns(:character).type).to eq('PlayerCharacter')
+    end
+
+    it "returns a non-player character" do
+      sign_in dungeon_master
+      character_slug = campaign.npcs.first.slug
+      get :show, format: :json, params: {campaign_slug: campaign.slug, slug: character_slug}
+      expect(assigns(:character).type).to eq('NonPlayerCharacter')
     end
   end
 
   describe "GET #new" do
     it "returns a success response" do
       sign_in dungeon_master
-      get :new, params: {campaign_slug: campaign.slug}
+      get :new, format: :json, params: {campaign_slug: campaign.slug}
       expect(response).to be_successful
     end
   end
@@ -107,11 +128,28 @@ RSpec.describe Admin::V1::CharactersController, type: :controller do
 
   describe "POST #create" do
     context "with valid params" do
-      it "creates a new Player Character" do
+      it "creates a new Character" do
         sign_in dungeon_master
         expect {
-          post :create, params: {campaign_slug: campaign.slug, type: :player_character, player_character: valid_attributes}
+          post :create, format: :json, params: {campaign_slug: campaign.slug, type: :player_character, player_character: valid_pc_attributes}
         }.to change(Character, :count).by(1)
+      end
+
+      it "creates a new Player Character" do
+        sign_in dungeon_master
+        post :create, format: :json, params: {campaign_slug: campaign.slug,
+                               type: :player_character,
+                               player_character: valid_pc_attributes}
+        expect(assigns(:character).type).to eq('PlayerCharacter')
+      end
+
+      it "creates a new Non-Player Character" do
+        sign_in dungeon_master
+        post :create, format: :json, params: {
+          campaign_slug: campaign.slug,
+          type: :non_player_character,
+          non_player_character: valid_npc_attributes}
+        expect(assigns(:character).type).to eq('NonPlayerCharacter')
       end
     end
   end
@@ -121,10 +159,58 @@ RSpec.describe Admin::V1::CharactersController, type: :controller do
       it "updates the requested character" do
         sign_in dungeon_master
         character_slug = campaign.pcs.first.slug
-        put :update, params: {campaign_slug: campaign.slug, slug: character_slug, type: :player_character, player_character: { name: 'Luke Skywalker'}}
+        put :update, format: :json, params: {
+          campaign_slug: campaign.slug,
+          slug: character_slug,
+          type: :player_character,
+          player_character: { name: 'Luke Skywalker'}
+        }
         campaign.characters.first.reload
         expect(campaign.characters.first.name).to eq('Luke Skywalker')
       end
+    end
+  end
+
+  describe "GET #generate_npc" do
+    it "returns a success response" do
+      sign_in dungeon_master
+      get :generate_npc, params: {campaign_slug: campaign.slug}
+      expect(response).to be_successful
+    end
+    it "returns a new NPC" do
+      sign_in dungeon_master
+      get :generate_npc, params: {campaign_slug: campaign.slug}
+      expect(assigns(:character).type).to eq('NonPlayerCharacter')
+    end
+  end
+
+  describe "POST #create_generated_npc" do
+    it "returns a generated non-player character" do
+      sign_in dungeon_master
+      post :create_generated_npc,
+           format: :json,
+           params: {
+        campaign_slug: campaign.slug,
+        non_player_character: {
+          name: 'Test NPC',
+          race_id: race.id,
+          role: 'Simple NPC',
+          alignment: 'Chaotic Neutral',
+          min_score: 17,
+          character_classes_attributes: [ {level: 5, dnd_class_id: dnd_class.id} ],
+        }
+      }
+      expect(assigns(:character).proficiency).to eq(3)
+      expect(assigns(:character).name).to eq('Test NPC')
+    end
+  end
+
+  describe "GET random_fantasy_name" do
+    it "returns a random name in JSON format" do
+      sign_in dungeon_master
+      get :random_fantasy_name
+      name_response = JSON.parse(response.body)
+      expect(name_response.keys).to contain_exactly('name')
     end
   end
 
@@ -133,7 +219,7 @@ RSpec.describe Admin::V1::CharactersController, type: :controller do
       sign_in dungeon_master
       character_slug = campaign.characters.first.slug
       expect {
-        delete :destroy, params: {campaign_slug: campaign.slug, slug: character_slug}
+        delete :destroy, format: :json, params: {campaign_slug: campaign.slug, slug: character_slug}
       }.to change(Character, :count).by(-1)
     end
   end
