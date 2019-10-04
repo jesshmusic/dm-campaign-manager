@@ -44,8 +44,8 @@ RSpec.describe Admin::V1::AdventuresController, type: :controller do
 
   let!(:admin) { create :admin_user }
   let!(:dungeon_master) { create :dungeon_master_user }
-  let!(:campaign) { create :campaign_with_adventures, user: dungeon_master }
-  let!(:campaign_unowned) { create :campaign_with_adventures }
+  let!(:campaign) { create :campaign_with_assoc, user: dungeon_master }
+  let!(:campaign_unowned) { create :campaign_with_assoc }
   let!(:world_location) { create :world_location, campaign: campaign }
 
   describe 'GET #index' do

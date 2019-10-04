@@ -9,13 +9,14 @@ module Admin::V1
     # GET /characters
     # GET /characters.json
     def index
+      authorize @campaign, :show?
       authorize Character
       @characters = if params[:search].present?
                       Character.search_for(params[:search])
                     else
                       Character.all
                     end
-      @characters = params[:type].present? ? @characters.where(type: params[:type]) : @characters
+      @characters = params[:type].present? ? @characters.where(type: params[:type], campaign: @campaign) : @characters
       @characters = params[:user_id].present? ? @characters.where(user_id: params[:user_id]) : @characters
       respond_to do |format|
         format.html { @pagy, @characters = pagy(@characters) }
@@ -26,11 +27,13 @@ module Admin::V1
     # GET /characters/1
     # GET /characters/1.json
     def show
+      authorize @campaign
       authorize @character
     end
 
     # GET /characters/new
     def new
+      authorize @campaign, :show?
       @character = if params[:type] && params[:type] == 'PlayerCharacter'
                      PlayerCharacter.new
                    elsif params[:type] && params[:type] == 'NonPlayerCharacter'
@@ -46,6 +49,7 @@ module Admin::V1
 
     # GET /characters/new/generate_npc
     def generate_npc
+      authorize @campaign, :show?
       @character = NonPlayerCharacter.new
       authorize @character
       @character.campaign = @campaign
@@ -54,12 +58,14 @@ module Admin::V1
 
     # GET /characters/1/edit
     def edit
+      authorize @campaign, :show?
       authorize @character
     end
 
     # POST /characters
     # POST /characters.json
     def create
+      authorize @campaign, :show?
       @character = if params[:player_character]
                      PlayerCharacter.new(character_params('PlayerCharacter'))
                    elsif params[:non_player_character]
@@ -67,7 +73,6 @@ module Admin::V1
                    else
                      Character.new(character_params('Character'))
                    end
-      authorize @campaign
       authorize @character
       @character.campaign = @campaign
 
@@ -92,6 +97,7 @@ module Admin::V1
 
     # POST /characters/generate_npc
     def create_generated_npc
+      authorize @campaign, :show?
       @character = NpcGenerator.generate_npc(
         name: character_params('NonPlayerCharacter')[:name],
         race_id: character_params('NonPlayerCharacter')[:race_id],
@@ -101,7 +107,6 @@ module Admin::V1
         campaign_id: @campaign.id,
         character_classes_attributes: character_params('NonPlayerCharacter')[:character_classes_attributes]
       )
-      authorize @campaign
       authorize @character
       respond_to do |format|
         if @character.save
@@ -130,7 +135,7 @@ module Admin::V1
     # PATCH/PUT /characters/1
     # PATCH/PUT /characters/1.json
     def update
-      authorize @campaign
+      authorize @campaign, :show?
       authorize @character
       respond_to do |format|
         if @character.update(character_params(params[:type]))
@@ -153,7 +158,7 @@ module Admin::V1
     # DELETE /characters/1
     # DELETE /characters/1.json
     def destroy
-      authorize @campaign
+      authorize @campaign, :show?
       authorize @character
       @character.destroy
       respond_to do |format|

@@ -55,7 +55,7 @@
 class Character < ApplicationRecord
   validates :name, :hit_points, :alignment, :charisma, :constitution, :dexterity, :intelligence,
             :strength, :type, :wisdom, presence: true
-  validates :character_classes, length: {minimum: 1}
+  validates :character_classes, length: { minimum: 1 }
 
   before_save do
     self.slug = generate_slug

@@ -84,7 +84,10 @@ class DndRules
 
     # Challenge Rating Calculations
     def proficiency_for_cr(challenge_rating)
-      return 2 if challenge_rating == '1/8' || '1/4' || '1/2' || '0'
+      return 2 if challenge_rating == '1/8' ||
+                  challenge_rating == '1/4' ||
+                  challenge_rating == '1/2' ||
+                  challenge_rating == '0'
 
       challenge = challenge_rating.to_i
       case challenge
@@ -189,10 +192,10 @@ class DndRules
       prof_cr = proficiency_cr(npc)
       def_cr = defensive_cr(npc)
       off_cr = offensive_cr(npc)
-      puts "#{npc.name} challenge rating calculation - proficiency CR: #{prof_cr} defense CR: #{def_cr} offense CR: #{off_cr}"
+      # puts "#{npc.name} challenge rating calculation - proficiency CR: #{prof_cr} defense CR: #{def_cr} offense CR: #{off_cr}"
       cr_total = [prof_cr, def_cr, off_cr].inject(0, &:+)
       cr = (cr_total.to_f / 3.0)
-      puts "#{npc.name} CR value: #{cr}"
+      # puts "#{npc.name} CR value: #{cr}"
       case cr
       when 0...0.25
         '1/8'

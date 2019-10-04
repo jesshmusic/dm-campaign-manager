@@ -52,6 +52,11 @@
 
 FactoryBot.define do
   factory :player_character do
-    
+    name { Faker::Games::ElderScrolls.name }
+    type { 'PlayerCharacter' }
+
+    before(:create) do |character|
+      character.character_classes << FactoryBot.build(:character_class, character: character)
+    end
   end
 end

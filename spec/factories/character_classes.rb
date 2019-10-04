@@ -25,7 +25,7 @@
 
 FactoryBot.define do
   factory :character_class do
-    character { nil }
-    dnd_class { nil }
+    level { Faker::Number.between(from: 1, to: 10) }
+    association :dnd_class, factory: :dnd_class
   end
 end

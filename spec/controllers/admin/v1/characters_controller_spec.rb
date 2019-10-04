@@ -28,113 +28,113 @@ RSpec.describe Admin::V1::CharactersController, type: :controller do
   # This should return the minimal set of attributes required to create a valid
   # Character. As you add validations to Character, be sure to
   # adjust the attributes here as well.
+  let!(:dnd_class) { create :dnd_class }
   let(:valid_attributes) {
-    attributes_for(:character)
+    attributes_for(
+      :player_character,
+      character_classes_attributes: [ {level: 1, dnd_class_id: dnd_class.id} ]
+    )
   }
 
   let(:invalid_attributes) {
     skip("Add a hash of attributes invalid for your model")
   }
 
-  # This should return the minimal set of values that should be in the session
-  # in order to pass any filters (e.g. authentication) defined in
-  # CharactersController. Be sure to keep this updated too.
-  let(:valid_session) { {} }
+
+  let!(:admin) { create :admin_user }
+  let!(:dungeon_master) { create :dungeon_master_user }
+  let!(:campaign) { create :campaign_with_assoc, user: dungeon_master }
+  let!(:campaign_unowned) { create :campaign_with_assoc }
 
   describe "GET #index" do
     it "returns a success response" do
-      Character.create! valid_attributes
-      get :index, params: {}, session: valid_session
+      sign_in dungeon_master
+      get :index, params: { campaign_slug: campaign.slug }
       expect(response).to be_successful
+    end
+
+    it 'returns characters with character classes' do
+      sign_in dungeon_master
+      get :index, params: { campaign_slug: campaign.slug, type: 'PlayerCharacter' }
+      expect(assigns(:characters).first.character_classes).not_to eq([])
+    end
+
+    it 'returns 5 player characters' do
+      sign_in dungeon_master
+      get :index, params: { campaign_slug: campaign.slug, type: 'PlayerCharacter' }
+      expect(assigns(:characters).count).to eq 5
+    end
+
+    it 'returns 10 non-player characters' do
+      sign_in dungeon_master
+      get :index, params: { campaign_slug: campaign.slug, type: 'NonPlayerCharacter' }
+      expect(assigns(:characters).count).to eq 10
+    end
+
+
+    it 'does NOT return a success response' do
+      sign_in dungeon_master
+      get :index, params: { campaign_slug: campaign_unowned.slug }
+      expect(response).not_to be_successful
     end
   end
 
   describe "GET #show" do
     it "returns a success response" do
-      character = Character.create! valid_attributes
-      get :show, params: {id: character.to_param}, session: valid_session
+      sign_in dungeon_master
+      character_slug = campaign.characters.first.slug
+      get :show, params: {campaign_slug: campaign.slug, slug: character_slug}
       expect(response).to be_successful
     end
   end
 
   describe "GET #new" do
     it "returns a success response" do
-      get :new, params: {}, session: valid_session
+      sign_in dungeon_master
+      get :new, params: {campaign_slug: campaign.slug}
       expect(response).to be_successful
     end
   end
 
   describe "GET #edit" do
     it "returns a success response" do
-      character = Character.create! valid_attributes
-      get :edit, params: {id: character.to_param}, session: valid_session
+      sign_in admin
+      character_slug = campaign.characters.first.slug
+      get :edit, params: {campaign_slug: campaign.slug, slug: character_slug}
       expect(response).to be_successful
     end
   end
 
   describe "POST #create" do
     context "with valid params" do
-      it "creates a new Character" do
+      it "creates a new Player Character" do
+        sign_in dungeon_master
         expect {
-          post :create, params: {character: valid_attributes}, session: valid_session
+          post :create, params: {campaign_slug: campaign.slug, type: :player_character, player_character: valid_attributes}
         }.to change(Character, :count).by(1)
-      end
-
-      it "redirects to the created character" do
-        post :create, params: {character: valid_attributes}, session: valid_session
-        expect(response).to redirect_to(Character.last)
-      end
-    end
-
-    context "with invalid params" do
-      it "returns a success response (i.e. to display the 'new' template)" do
-        post :create, params: {character: invalid_attributes}, session: valid_session
-        expect(response).to be_successful
       end
     end
   end
 
   describe "PUT #update" do
     context "with valid params" do
-      let(:new_attributes) {
-        skip("Add a hash of attributes valid for your model")
-      }
-
       it "updates the requested character" do
-        character = Character.create! valid_attributes
-        put :update, params: {id: character.to_param, character: new_attributes}, session: valid_session
-        character.reload
-        skip("Add assertions for updated state")
-      end
-
-      it "redirects to the character" do
-        character = Character.create! valid_attributes
-        put :update, params: {id: character.to_param, character: valid_attributes}, session: valid_session
-        expect(response).to redirect_to(character)
-      end
-    end
-
-    context "with invalid params" do
-      it "returns a success response (i.e. to display the 'edit' template)" do
-        character = Character.create! valid_attributes
-        put :update, params: {id: character.to_param, character: invalid_attributes}, session: valid_session
-        expect(response).to be_successful
+        sign_in dungeon_master
+        character_slug = campaign.pcs.first.slug
+        put :update, params: {campaign_slug: campaign.slug, slug: character_slug, type: :player_character, player_character: { name: 'Luke Skywalker'}}
+        campaign.characters.first.reload
+        expect(campaign.characters.first.name).to eq('Luke Skywalker')
       end
     end
   end
 
   describe "DELETE #destroy" do
     it "destroys the requested character" do
-      character = Character.create! valid_attributes
+      sign_in dungeon_master
+      character_slug = campaign.characters.first.slug
       expect {
-        delete :destroy, params: {id: character.to_param}, session: valid_session
+        delete :destroy, params: {campaign_slug: campaign.slug, slug: character_slug}
       }.to change(Character, :count).by(-1)
-    end
-
-    it "redirects to the characters list" do
-      character = Character.create! valid_attributes
-      delete :destroy, params: {id: character.to_param}, session: valid_session
-      expect(response).to redirect_to(characters_url)
     end
   end
 
