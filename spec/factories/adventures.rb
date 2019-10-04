@@ -23,8 +23,7 @@
 
 FactoryBot.define do
   factory :adventure do
-    name { 'Test Adventure' }
-    description { 'An Adventure description' }
-    association :campaign, factory: :campaign
+    name { Faker::TvShows::GameOfThrones.house }
+    description { Faker::TvShows::GameOfThrones.quote }
   end
 end

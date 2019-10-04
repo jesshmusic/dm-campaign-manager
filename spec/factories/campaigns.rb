@@ -22,6 +22,15 @@ FactoryBot.define do
     name { Faker::TvShows::GameOfThrones.city }
     description { Faker::Movies::HarryPotter.quote }
     world { Faker::Movies::LordOfTheRings.location }
-    association :user, factory: :dungeon_master_user
+    association :user, factory: :other_user
+    factory :campaign_with_adventures do
+      transient do
+        adventures_count { 5 }
+      end
+
+      after(:create) do |campaign, evaluator|
+        create_list(:adventure, evaluator.adventures_count, campaign: campaign)
+      end
+    end
   end
 end

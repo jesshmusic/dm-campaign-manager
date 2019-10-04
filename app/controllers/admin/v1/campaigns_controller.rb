@@ -8,11 +8,12 @@ module Admin::V1
     # GET /campaigns
     # GET /campaigns.json
     def index
-      @campaigns = Campaign.all.order(created_at: :asc)
       authorize Campaign
+      @campaigns = Campaign.all.order(created_at: :asc)
       @current_user = current_user
       @campaigns = @campaigns.search_for(params[:search]) if params[:search].present?
-      @campaigns = @campaigns.where(user: params[:user_id]) if params[:user_id].present?
+      @campaigns = @campaigns.where(user_id: current_user.id) if current_user.role == 'dungeon_master'
+      puts current_user.role
       respond_to do |format|
         format.html { @pagy, @campaigns = pagy(@campaigns) }
         format.json
@@ -28,8 +29,8 @@ module Admin::V1
     # GET /campaigns/new
     def new
       @campaign = Campaign.new
-      authorize @campaign
       @campaign.user = current_user
+      authorize @campaign
     end
 
     # GET /campaigns/1/edit

@@ -8,6 +8,7 @@ module Admin::V1
     # GET /campaigns/campaign_slug/adventures
     # GET /campaigns/campaign_slug/adventures.json
     def index
+      authorize @campaign, :show?
       authorize Adventure
       @adventures = if params[:search].present?
                       Adventure.where(campaign_id: @campaign.id).search_for(params[:search])
@@ -23,11 +24,13 @@ module Admin::V1
     # GET /campaigns/campaign_slug/adventures/1
     # GET /campaigns/campaign_slug/adventures/1.json
     def show
+      authorize @campaign
       authorize @adventure
     end
 
     # GET /campaigns/campaign_slug/adventures/new
     def new
+      authorize @campaign, :show?
       @adventure = Adventure.new
       @adventure.campaign = @campaign
       authorize @adventure
@@ -35,12 +38,14 @@ module Admin::V1
 
     # GET /campaigns/campaign_slug/adventures/1/edit
     def edit
+      authorize @campaign
       authorize @adventure
     end
 
     # POST /campaigns/campaign_slug/adventures
     # POST /campaigns/campaign_slug/adventures.json
     def create
+      authorize @campaign, :show?
       @adventure = Adventure.new(adventure_params)
       @adventure.campaign = @campaign
       authorize @adventure
@@ -59,6 +64,7 @@ module Admin::V1
     # PATCH/PUT /campaigns/campaign_slug/adventures/1
     # PATCH/PUT /campaigns/campaign_slug/adventures/1.json
     def update
+      authorize @campaign, :show?
       authorize @adventure
       respond_to do |format|
         if @adventure.update(adventure_params)
@@ -74,6 +80,7 @@ module Admin::V1
     # DELETE /campaigns/campaign_slug/adventures/1
     # DELETE /campaigns/campaign_slug/adventures/1.json
     def destroy
+      authorize @campaign, :show?
       authorize @adventure
       @adventure.destroy
       respond_to do |format|

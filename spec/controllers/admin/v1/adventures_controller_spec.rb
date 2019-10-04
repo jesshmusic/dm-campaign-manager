@@ -42,107 +42,173 @@ RSpec.describe Admin::V1::AdventuresController, type: :controller do
   # AdventuresController. Be sure to keep this updated too.
   let(:valid_session) { {} }
 
+  let!(:admin) { create :admin_user }
   let!(:dungeon_master) { create :dungeon_master_user }
-  let!(:campaign) { create :campaign, user: dungeon_master }
+  let!(:campaign) { create :campaign_with_adventures, user: dungeon_master }
+  let!(:campaign_unowned) { create :campaign_with_adventures }
+  let!(:world_location) { create :world_location, campaign: campaign }
 
   describe 'GET #index' do
-    let!(:adventure1) { create :adventure, campaign: campaign }
-    let!(:adventure2) { create :adventure, campaign: campaign }
-    let!(:adventure3) { create :adventure, campaign: campaign }
     it 'returns a success response' do
-      puts campaign
-      get :index, params: { use_route: v1_campaign_adventures_path(campaign.slug) }
+      sign_in dungeon_master
+      get :index, params: { campaign_slug: campaign.slug }
       expect(response).to be_successful
+    end
+
+    it 'returns 5 adventures' do
+      sign_in dungeon_master
+      get :index, params: { campaign_slug: campaign.slug }
+      expect(assigns(:adventures).count).to eq 5
+    end
+
+
+    it 'does NOT return a success response' do
+      sign_in dungeon_master
+      get :index, params: { campaign_slug: campaign_unowned.slug }
+      expect(response).not_to be_successful
     end
   end
 
   describe 'GET #show' do
-    let!(:adventure) { create :adventure, campaign: campaign }
     it 'returns a success response' do
-      get :show, params: { use_route: v1_campaign_adventure_path(campaign.to_param, adventure.to_param), id: adventure.to_param }, format: :json
+      sign_in dungeon_master
+      adventure_id = campaign.adventures.first.id
+      get :show,
+          params: {
+            campaign_slug: campaign.slug,
+            id: adventure_id
+          },
+          format: :json
       expect(response).to be_successful
-      expect(response.body).to eq({})
+    end
+
+    it 'returns the first adventure' do
+      sign_in dungeon_master
+      adventure_id = campaign.adventures.first.id
+      get :show,
+          params: {
+            campaign_slug: campaign.slug,
+            id: adventure_id
+          },
+          format: :json
+      expect(assigns(:adventure)).to eq(campaign.adventures.first)
+    end
+
+
+    it 'does NOT return a success response' do
+      sign_in dungeon_master
+      adventure_id = campaign_unowned.adventures.first.id
+      get :show,
+          params: {
+            campaign_slug: campaign_unowned.slug,
+            id: adventure_id
+          },
+          format: :json
+      expect(response).not_to be_successful
     end
   end
 
   describe 'GET #new' do
     it 'returns a success response' do
-      get :new, params: {}, session: valid_session
+      sign_in dungeon_master
+      get :new, params: { campaign_slug: campaign.slug }
       expect(response).to be_successful
+    end
+
+    it 'does NOT return a success response' do
+      sign_in dungeon_master
+      get :new, params: { campaign_slug: campaign_unowned.slug }
+      expect(response).not_to be_successful
     end
   end
 
   describe 'GET #edit' do
-    it 'returns a success response' do
-      adventure = Adventure.create! valid_attributes
-      get :edit, params: { id: adventure.to_param }, session: valid_session
+    it "returns a success response for ADMIN only" do
+      sign_in admin
+      adventure_id = campaign.adventures.first.id
+      get :edit, params: {
+        campaign_slug: campaign.slug,
+        id: adventure_id
+      }
       expect(response).to be_successful
+    end
+
+    it "does not return a success response for non-ADMIN users" do
+      sign_in dungeon_master
+      adventure_id = campaign.adventures.first.id
+      get :edit, params: {
+        campaign_slug: campaign.slug,
+        id: adventure_id
+      }
+      expect(response).not_to be_successful
     end
   end
 
   describe 'POST #create' do
     context 'with valid params' do
       it 'creates a new Adventure' do
+        sign_in dungeon_master
         expect do
-          post :create, params: { adventure: valid_attributes }, session: valid_session
+          post :create, params: { campaign_slug: campaign.slug, adventure: valid_attributes }
         end.to change(Adventure, :count).by(1)
       end
 
-      it 'redirects to the created adventure' do
-        post :create, params: { adventure: valid_attributes }, session: valid_session
-        expect(response).to redirect_to(Adventure.last)
-      end
-    end
-
-    context 'with invalid params' do
-      it "returns a success response (i.e. to display the 'new' template)" do
-        post :create, params: { adventure: invalid_attributes }, session: valid_session
-        expect(response).to be_successful
+      it 'does NOT create a new Adventure' do
+        sign_in dungeon_master
+        expect do
+          post :create, params: { campaign_slug: campaign_unowned.slug, adventure: valid_attributes }
+        end.to change(Adventure, :count).by(0)
       end
     end
   end
 
   describe 'PUT #update' do
     context 'with valid params' do
-      let(:new_attributes) do
-        skip('Add a hash of attributes valid for your model')
-      end
-
       it 'updates the requested adventure' do
-        adventure = Adventure.create! valid_attributes
-        put :update, params: { id: adventure.to_param, adventure: new_attributes }, session: valid_session
-        adventure.reload
-        skip('Add assertions for updated state')
+        sign_in dungeon_master
+        adventure_id = campaign.adventures.first.id
+        put :update, params: {
+          campaign_slug: campaign.slug,
+          id: adventure_id,
+          adventure: {name: 'New Adventure Name'}, }
+        campaign.reload
+        expect(campaign.adventures.first.name).to eq('New Adventure Name')
       end
 
-      it 'redirects to the adventure' do
-        adventure = Adventure.create! valid_attributes
-        put :update, params: { id: adventure.to_param, adventure: valid_attributes }, session: valid_session
-        expect(response).to redirect_to(adventure)
-      end
-    end
-
-    context 'with invalid params' do
-      it "returns a success response (i.e. to display the 'edit' template)" do
-        adventure = Adventure.create! valid_attributes
-        put :update, params: { id: adventure.to_param, adventure: invalid_attributes }, session: valid_session
-        expect(response).to be_successful
+      it 'does NOT update the requested adventure' do
+        sign_in dungeon_master
+        adventure_id = campaign_unowned.adventures.first.id
+        put :update, params: {
+          campaign_slug: campaign_unowned.slug,
+          id: adventure_id,
+          adventure: {name: 'New Adventure Name'}, }
+        campaign_unowned.reload
+        expect(campaign_unowned.adventures.first.name).not_to eq('New Adventure Name')
       end
     end
   end
 
   describe 'DELETE #destroy' do
     it 'destroys the requested adventure' do
-      adventure = Adventure.create! valid_attributes
+      sign_in dungeon_master
+      adventure_id = campaign.adventures.first.id
       expect do
-        delete :destroy, params: { id: adventure.to_param }, session: valid_session
+        delete :destroy, params: {
+          campaign_slug: campaign.slug,
+          id: adventure_id,
+        }
       end.to change(Adventure, :count).by(-1)
     end
 
-    it 'redirects to the adventures list' do
-      adventure = Adventure.create! valid_attributes
-      delete :destroy, params: { id: adventure.to_param }, session: valid_session
-      expect(response).to redirect_to(adventures_url)
+    it 'does NOT destroy the requested adventure' do
+      sign_in dungeon_master
+      adventure_id = campaign_unowned.adventures.first.id
+      expect do
+        delete :destroy, params: {
+          campaign_slug: campaign_unowned.slug,
+          id: adventure_id,
+        }
+      end.to change(Adventure, :count).by(0)
     end
   end
 end

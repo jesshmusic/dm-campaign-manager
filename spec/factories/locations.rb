@@ -28,12 +28,10 @@
 
 FactoryBot.define do
   factory :world_location do
-    name { "MyString" }
-    description { "MyText" }
+    name { Faker::Movies::LordOfTheRings.location }
+    description { Faker::Movies::Hobbit.quote }
     map_x { 1 }
     map_y { 1 }
     campaign { nil }
-    adventure { nil }
-    encounter { nil }
   end
 end

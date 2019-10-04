@@ -40,124 +40,125 @@ RSpec.describe Admin::V1::CampaignsController, type: :controller do
   # in order to pass any filters (e.g. authentication) defined in
   # CampaignsController. Be sure to keep this updated too.
   let(:valid_session) { {} }
+  let!(:admin) { create :admin_user }
+  let!(:dungeon_master) { create :dungeon_master_user }
+  let!(:campaign1) { create :campaign }
+  let!(:campaign2) { create :campaign }
+  let!(:campaign3) { create :campaign }
+  let!(:campaign4) { create :campaign, user: dungeon_master }
 
   describe "GET #index" do
-    let!(:campaign1) { build :campaign }
-    let!(:campaign2) { build :campaign }
-    let!(:campaign3) { build :campaign }
-    let(:admin_user) { create :admin_user }
-    let(:dungeon_master_user) { create :dungeon_master_user }
+
     context 'for admin' do
-      # login_admin
+
+      it 'returns success' do
+        sign_in admin
+        get :index, format: :json
+        expect(response).to be_successful
+      end
+
+      it 'renders the index template' do
+        sign_in admin
+        get :index, format: :json
+        expect(response).to render_template("index")
+      end
 
       it 'returns all campaigns (admin)' do
-        campaign1.user = admin_user
-        campaign2.user = dungeon_master_user
-        campaign3.user = dungeon_master_user
-        campaign1.save!
-        campaign2.save!
-        campaign3.save!
-        get :index
-        expect(response).to be_successful
+        sign_in admin
+        get :index, format: :json
+        expect(assigns(:campaigns)).to eq([campaign1, campaign2, campaign3, campaign4])
       end
     end
 
     context 'for dungeon master' do
-      login_dungeon_master
 
       it 'returns only dungeon masters campaigns' do
-        get :index, params: { published: true }, format: :json
-        expect(JSON.parse(response.body)['articles'].length).to eq(2)
+        sign_in dungeon_master
+        get :index, format: :json
+        expect(assigns(:campaigns)).to eq([campaign4])
+      end
+    end
+
+    context 'for logged out user' do
+      it 'does not return a success response' do
+        get :index, format: :json
+        expect(response).not_to be_successful
+        expect(assigns(:campaigns)).to eq(nil)
       end
     end
   end
 
   describe "GET #show" do
+
     it "returns a success response" do
-      campaign = Campaign.create! valid_attributes
-      get :show, params: {id: campaign.to_param}, session: valid_session
+      sign_in dungeon_master
+      get :show, params: {slug: campaign4.to_param}
       expect(response).to be_successful
     end
   end
 
   describe "GET #new" do
     it "returns a success response" do
-      get :new, params: {}, session: valid_session
+      sign_in dungeon_master
+      get :new, params: {}
       expect(response).to be_successful
     end
   end
 
   describe "GET #edit" do
-    it "returns a success response" do
-      campaign = Campaign.create! valid_attributes
-      get :edit, params: {id: campaign.to_param}, session: valid_session
+    it "returns a success response for ADMIN only" do
+      sign_in admin
+      get :edit, params: {slug: campaign4.to_param}
       expect(response).to be_successful
+    end
+
+    it "does not return a success response for non-ADMIN users" do
+      sign_in dungeon_master
+      get :edit, params: {slug: campaign4.to_param}
+      expect(response).not_to be_successful
     end
   end
 
   describe "POST #create" do
     context "with valid params" do
       it "creates a new Campaign" do
+        sign_in dungeon_master
         expect {
-          post :create, params: {campaign: valid_attributes}, session: valid_session
+          post :create, params: {campaign: valid_attributes}
         }.to change(Campaign, :count).by(1)
-      end
-
-      it "redirects to the created campaign" do
-        post :create, params: {campaign: valid_attributes}, session: valid_session
-        expect(response).to redirect_to(Campaign.last)
-      end
-    end
-
-    context "with invalid params" do
-      it "returns a success response (i.e. to display the 'new' template)" do
-        post :create, params: {campaign: invalid_attributes}, session: valid_session
-        expect(response).to be_successful
       end
     end
   end
 
   describe "PUT #update" do
     context "with valid params" do
-      let(:new_attributes) {
-        skip("Add a hash of attributes valid for your model")
-      }
 
       it "updates the requested campaign" do
-        campaign = Campaign.create! valid_attributes
-        put :update, params: {id: campaign.to_param, campaign: new_attributes}, session: valid_session
-        campaign.reload
-        skip("Add assertions for updated state")
-      end
-
-      it "redirects to the campaign" do
-        campaign = Campaign.create! valid_attributes
-        put :update, params: {id: campaign.to_param, campaign: valid_attributes}, session: valid_session
-        expect(response).to redirect_to(campaign)
-      end
-    end
-
-    context "with invalid params" do
-      it "returns a success response (i.e. to display the 'edit' template)" do
-        campaign = Campaign.create! valid_attributes
-        put :update, params: {id: campaign.to_param, campaign: invalid_attributes}, session: valid_session
-        expect(response).to be_successful
+        sign_in dungeon_master
+        put :update,
+            params: {
+              slug: campaign4.to_param,
+              campaign: {name: 'New Campaign Name'}
+            }
+        campaign4.reload
+        expect(campaign4.name).to eq('New Campaign Name')
       end
     end
   end
 
   describe "DELETE #destroy" do
     it "destroys the requested campaign" do
-      campaign = Campaign.create! valid_attributes
+      sign_in dungeon_master
       expect {
-        delete :destroy, params: {id: campaign.to_param}, session: valid_session
+        delete :destroy, params: {slug: campaign4.to_param}
       }.to change(Campaign, :count).by(-1)
     end
 
-    it "redirects to the campaigns list" do
-      campaign = Campaign.create! valid_attributes
-      delete :destroy, params: {id: campaign.to_param}, session: valid_session
-      expect(response).to redirect_to(campaigns_url)
+    it "does NOT destroy the requested campaign" do
+      sign_in dungeon_master
+      expect {
+        delete :destroy, params: {slug: campaign3.to_param}
+      }.to change(Campaign, :count).by(0)
     end
   end
 

@@ -2,7 +2,7 @@
 
 class CampaignPolicy < ApplicationPolicy
   def index?
-    true
+    user&.admin? || user&.dungeon_master?
   end
 
   def show?

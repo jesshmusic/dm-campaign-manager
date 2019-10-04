@@ -43,11 +43,6 @@ FactoryBot.define do
     password { 'testpass1234' }
     password_confirmation { 'testpass1234' }
     confirmed_at { Date.today }
-    factory :player_user do
-      role { :player }
-      email { 'plyr_user@example.com' }
-      username { 'jesshplayer' }
-    end
     factory :dungeon_master_user do
       role { :dungeon_master }
       email { 'dm_user@example.com' }
@@ -59,11 +54,10 @@ FactoryBot.define do
       username { 'jesshadmin' }
     end
     factory :other_user do |user|
-      user.first_name { Faker::Name.first_name }
-      user.last_name { Faker::Name.last_name }
+      role { :dungeon_master }
+      user.name { Faker::Name.first_name }
       user.sequence(:email) { |n| "testuser#{n}@example.com" }
-      user.sequence(:uid) { |n| "testuser#{n}@example.com" }
-      user.description { Faker::TvShows::TwinPeaks.quote }
+      user.sequence(:username) { |n| "testuser#{n}" }
     end
   end
 end

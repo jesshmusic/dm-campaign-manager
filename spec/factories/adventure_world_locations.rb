@@ -24,6 +24,6 @@
 FactoryBot.define do
   factory :adventure_world_location do
     adventure { nil }
-    world_location { nil }
+    association :world_location, factory: :world_location
   end
 end
