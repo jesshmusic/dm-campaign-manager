@@ -25,116 +25,111 @@ require 'rails_helper'
 
 RSpec.describe Admin::V1::ItemsController, type: :controller do
 
+  let!(:admin) { create :admin_user }
+  let!(:dungeon_master) { create :dungeon_master_user }
+
   # This should return the minimal set of attributes required to create a valid
   # Item. As you add validations to Item, be sure to
   # adjust the attributes here as well.
   let(:valid_attributes) {
-    attributes_for(:item)
+    attributes_for(:item, user: dungeon_master)
   }
 
   let(:invalid_attributes) {
     skip("Add a hash of attributes invalid for your model")
   }
-
-  # This should return the minimal set of values that should be in the session
-  # in order to pass any filters (e.g. authentication) defined in
-  # ItemsController. Be sure to keep this updated too.
-  let(:valid_session) { {} }
+  let!(:item) { create :item }
+  let!(:armor_item) { create :item,
+                             type: 'ArmorItem',
+                             armor_class: 14,
+                             armor_class_bonus: 0 }
+  let!(:weapon_item) { create :item,
+                              type: 'WeaponItem',
+                              weapon_attack_bonus: 0,
+                              weapon_damage_bonus: 0,
+                              weapon_damage_dice_count: 1,
+                              weapon_damage_dice_value: 8,
+                              weapon_damage_type: 'bludgeoning' }
+  let!(:gear_item) { create :item, type: 'GearItem' }
+  let!(:magic_item) { create :item, type: 'MagicItem', rarity: 'uncommon' }
 
   describe "GET #index" do
     it "returns a success response" do
-      Item.create! valid_attributes
-      get :index, params: {}, session: valid_session
-      expect(response).to be_successful
+      get :index, params: {}
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "returns 5 items" do
+      get :index, params: {}
+      expect(assigns(:items).count).to eq(5)
     end
   end
 
   describe "GET #show" do
     it "returns a success response" do
-      item = Item.create! valid_attributes
-      get :show, params: {id: item.to_param}, session: valid_session
-      expect(response).to be_successful
+      get :show, params: {slug: item.slug}
+      expect(response).to have_http_status(:ok)
     end
   end
 
   describe "GET #new" do
     it "returns a success response" do
-      get :new, params: {}, session: valid_session
-      expect(response).to be_successful
+      sign_in dungeon_master
+      get :new, params: {}
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "returns a new item" do
+      sign_in dungeon_master
+      get :new, params: {}
+      expect(assigns(:item)).to be_a_new(Item)
     end
   end
 
   describe "GET #edit" do
     it "returns a success response" do
-      item = Item.create! valid_attributes
-      get :edit, params: {id: item.to_param}, session: valid_session
-      expect(response).to be_successful
+      sign_in admin
+      get :edit, params: {slug: item.slug}
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "does NOT return a success response" do
+      sign_in dungeon_master
+      get :edit, params: {slug: item.slug}
+      expect(response).to have_http_status(:forbidden)
     end
   end
 
   describe "POST #create" do
-    context "with valid params" do
+    context "with valid params belonging to DM" do
       it "creates a new Item" do
+        sign_in dungeon_master
         expect {
-          post :create, params: {item: valid_attributes}, session: valid_session
+          post :create, params: {item: valid_attributes}
         }.to change(Item, :count).by(1)
-      end
-
-      it "redirects to the created item" do
-        post :create, params: {item: valid_attributes}, session: valid_session
-        expect(response).to redirect_to(Item.last)
-      end
-    end
-
-    context "with invalid params" do
-      it "returns a success response (i.e. to display the 'new' template)" do
-        post :create, params: {item: invalid_attributes}, session: valid_session
-        expect(response).to be_successful
       end
     end
   end
 
   describe "PUT #update" do
     context "with valid params" do
-      let(:new_attributes) {
-        skip("Add a hash of attributes valid for your model")
-      }
-
-      it "updates the requested item" do
-        item = Item.create! valid_attributes
-        put :update, params: {id: item.to_param, item: new_attributes}, session: valid_session
-        item.reload
-        skip("Add assertions for updated state")
-      end
-
-      it "redirects to the item" do
-        item = Item.create! valid_attributes
-        put :update, params: {id: item.to_param, item: valid_attributes}, session: valid_session
-        expect(response).to redirect_to(item)
-      end
-    end
-
-    context "with invalid params" do
-      it "returns a success response (i.e. to display the 'edit' template)" do
-        item = Item.create! valid_attributes
-        put :update, params: {id: item.to_param, item: invalid_attributes}, session: valid_session
-        expect(response).to be_successful
+      it "updates the requested item belonging to DM" do
+        sign_in dungeon_master
+        dm_item = Item.create!(name: 'Test Item', user: dungeon_master)
+        put :update, params: {slug: dm_item.slug, item: {name: 'Test Item Edited'}}
+        dm_item.reload
+        expect(dm_item.name).to eq('Test Item Edited')
       end
     end
   end
 
   describe "DELETE #destroy" do
     it "destroys the requested item" do
-      item = Item.create! valid_attributes
+      sign_in dungeon_master
+      dm_item = Item.create!(name: 'Test Item', user: dungeon_master)
       expect {
-        delete :destroy, params: {id: item.to_param}, session: valid_session
+        delete :destroy, params: {slug: dm_item.slug}
       }.to change(Item, :count).by(-1)
-    end
-
-    it "redirects to the items list" do
-      item = Item.create! valid_attributes
-      delete :destroy, params: {id: item.to_param}, session: valid_session
-      expect(response).to redirect_to(items_url)
     end
   end
 

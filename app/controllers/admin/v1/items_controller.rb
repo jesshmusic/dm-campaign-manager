@@ -61,7 +61,7 @@ module Admin::V1
 
       respond_to do |format|
         if @item.save
-          format.html { redirect_to item_url(slug: @item.slug), notice: 'Item was successfully created.' }
+          format.html { redirect_to v1_item_url(slug: @item.slug), notice: 'Item was successfully created.' }
           format.json { render :show, status: :created, location: @item }
         else
           format.html { render :new }
@@ -76,7 +76,7 @@ module Admin::V1
       authorize @item
       respond_to do |format|
         if @item.update(item_params)
-          format.html { redirect_to item_url(slug: @item.slug), notice: 'Item was successfully updated.' }
+          format.html { redirect_to v1_item_url(slug: @item.slug), notice: 'Item was successfully updated.' }
           format.json { render :show, status: :ok, location: @item }
         else
           format.html { render :edit }
@@ -91,7 +91,7 @@ module Admin::V1
       authorize @item
       @item.destroy
       respond_to do |format|
-        format.html { redirect_to items_url, notice: 'Item was successfully destroyed.' }
+        format.html { redirect_to v1_items_url, notice: 'Item was successfully destroyed.' }
         format.json { head :no_content }
       end
     end
