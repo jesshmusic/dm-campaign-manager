@@ -28,6 +28,9 @@
 
 class DndClass < ApplicationRecord
   validates :name, :hit_die, presence: true
+  before_save do
+    self.slug = generate_slug
+  end
 
   has_many :prof_choices, inverse_of: :dnd_class
 

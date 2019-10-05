@@ -190,14 +190,19 @@ RSpec.describe Admin::V1::CharactersController, type: :controller do
       post :create_generated_npc,
            format: :json,
            params: {
-        campaign_slug: campaign.slug,
-        non_player_character: {
-          name: 'Test NPC',
-          race_id: race.id,
-          role: 'Simple NPC',
-          alignment: 'Chaotic Neutral',
-          min_score: 17,
-          character_classes_attributes: [ {level: 5, dnd_class_id: dnd_class.id} ],
+             campaign_slug: campaign.slug,
+             non_player_character: {
+               name: 'Test NPC',
+               race_id: race.id,
+               role: 'Simple NPC',
+               alignment: 'Chaotic Neutral',
+               min_score: 17,
+               character_classes_attributes: [
+                 {
+                   level: 5,
+                   dnd_class_id: dnd_class.id
+                 }
+               ],
         }
       }
       expect(assigns(:character).proficiency).to eq(3)

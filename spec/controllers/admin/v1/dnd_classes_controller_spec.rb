@@ -41,33 +41,47 @@ RSpec.describe Admin::V1::DndClassesController, type: :controller do
   # DndClassesController. Be sure to keep this updated too.
   let(:valid_session) { {} }
 
+  let!(:admin) { create :admin_user }
+  let!(:dungeon_master) { create :dungeon_master_user }
+  let!(:user) { create :other_user }
+
+  let!(:dnd_class) { create :dnd_class, user: dungeon_master }
+  let!(:dnd_class_other) { create :dnd_class, user: user }
+
   describe "GET #index" do
     it "returns a success response" do
       DndClass.create! valid_attributes
-      get :index, params: {}, session: valid_session
+      get :index, params: {}
       expect(response).to be_successful
     end
   end
 
   describe "GET #show" do
     it "returns a success response" do
-      dnd_class = DndClass.create! valid_attributes
-      get :show, params: {id: dnd_class.to_param}, session: valid_session
+      sign_in dungeon_master
+      get :show, params: {slug: dnd_class.slug}
       expect(response).to be_successful
+    end
+
+    it "does NOT return a success response" do
+      sign_in dungeon_master
+      get :show, params: {slug: dnd_class_other.slug}
+      expect(response).not_to be_successful
     end
   end
 
   describe "GET #new" do
     it "returns a success response" do
-      get :new, params: {}, session: valid_session
+      sign_in dungeon_master
+      get :new, params: {}
       expect(response).to be_successful
     end
   end
 
   describe "GET #edit" do
     it "returns a success response" do
-      dnd_class = DndClass.create! valid_attributes
-      get :edit, params: {id: dnd_class.to_param}, session: valid_session
+      sign_in admin
+      get :edit, params: {slug: dnd_class.slug}
       expect(response).to be_successful
     end
   end
@@ -75,21 +89,10 @@ RSpec.describe Admin::V1::DndClassesController, type: :controller do
   describe "POST #create" do
     context "with valid params" do
       it "creates a new DndClass" do
+        sign_in dungeon_master
         expect {
-          post :create, params: {dnd_class: valid_attributes}, session: valid_session
+          post :create, params: {dnd_class: valid_attributes}
         }.to change(DndClass, :count).by(1)
-      end
-
-      it "redirects to the created dnd_class" do
-        post :create, params: {dnd_class: valid_attributes}, session: valid_session
-        expect(response).to redirect_to(DndClass.last)
-      end
-    end
-
-    context "with invalid params" do
-      it "returns a success response (i.e. to display the 'new' template)" do
-        post :create, params: {dnd_class: invalid_attributes}, session: valid_session
-        expect(response).to be_successful
       end
     end
   end
@@ -97,44 +100,24 @@ RSpec.describe Admin::V1::DndClassesController, type: :controller do
   describe "PUT #update" do
     context "with valid params" do
       let(:new_attributes) {
-        skip("Add a hash of attributes valid for your model")
+        {name: 'Death Knight'}
       }
 
       it "updates the requested dnd_class" do
-        dnd_class = DndClass.create! valid_attributes
-        put :update, params: {id: dnd_class.to_param, dnd_class: new_attributes}, session: valid_session
+        sign_in dungeon_master
+        put :update, params: {slug: dnd_class.slug, dnd_class: new_attributes}
         dnd_class.reload
-        skip("Add assertions for updated state")
-      end
-
-      it "redirects to the dnd_class" do
-        dnd_class = DndClass.create! valid_attributes
-        put :update, params: {id: dnd_class.to_param, dnd_class: valid_attributes}, session: valid_session
-        expect(response).to redirect_to(dnd_class)
-      end
-    end
-
-    context "with invalid params" do
-      it "returns a success response (i.e. to display the 'edit' template)" do
-        dnd_class = DndClass.create! valid_attributes
-        put :update, params: {id: dnd_class.to_param, dnd_class: invalid_attributes}, session: valid_session
-        expect(response).to be_successful
+        expect(dnd_class.name).to eq('Death Knight')
       end
     end
   end
 
   describe "DELETE #destroy" do
     it "destroys the requested dnd_class" do
-      dnd_class = DndClass.create! valid_attributes
+      sign_in dungeon_master
       expect {
-        delete :destroy, params: {id: dnd_class.to_param}, session: valid_session
+        delete :destroy, params: {slug: dnd_class.slug}
       }.to change(DndClass, :count).by(-1)
-    end
-
-    it "redirects to the dnd_classes list" do
-      dnd_class = DndClass.create! valid_attributes
-      delete :destroy, params: {id: dnd_class.to_param}, session: valid_session
-      expect(response).to redirect_to(dnd_classes_url)
     end
   end
 

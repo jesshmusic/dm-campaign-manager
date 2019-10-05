@@ -26,7 +26,7 @@
 
 FactoryBot.define do
   factory :dnd_class do
-    name { "MyText" }
+    name { Faker::Games::ElderScrolls.race }
     hit_die { 1 }
   end
 end
