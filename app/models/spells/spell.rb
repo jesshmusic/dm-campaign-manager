@@ -36,9 +36,10 @@
 #
 
 class Spell < ApplicationRecord
-  validates :name, :level, :casting_time, :duration, :range, :school, presence: true
-  after_validation(on: :create) do
-    self.slug = generate_slug
+  validates :name, :level, :casting_time, :duration, :range, :school, :slug, presence: true
+
+  before_validation do
+    self.slug = generate_slug if will_save_change_to_name?
   end
 
   has_many :spell_classes
@@ -107,10 +108,23 @@ class Spell < ApplicationRecord
   private
 
   def generate_slug
-    self.slug = if user
-                  Spell.exists?(name.parameterize) ? "#{name.parameterize}-#{user.username}-#{id}" : "#{name.parameterize}-#{user.username}"
+    self.slug = if user && !user.admin?
+                  slug_from_string "#{name.parameterize}-#{user.username}"
                 else
-                  Spell.exists?(name.parameterize) ? "#{name.parameterize}-#{id}" : name.parameterize.to_s
+                  slug_from_string name.parameterize
                 end
+  end
+
+  def slug_from_string(slug_string)
+    class_num = 0
+    new_slug = slug_string
+    loop do
+      new_slug = slug_string if class_num == 0
+      new_slug = "#{slug_string}-#{class_num}" if class_num > 0
+      break unless Spell.exists?(slug: new_slug)
+
+      class_num += 1
+    end
+    new_slug
   end
 end

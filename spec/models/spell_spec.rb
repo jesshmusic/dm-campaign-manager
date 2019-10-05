@@ -36,5 +36,50 @@
 require 'rails_helper'
 
 RSpec.describe Spell, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  context "with the same name" do
+    before(:each) do
+      dungeon_master = FactoryBot.create(:dungeon_master_user)
+      @spell = Spell.create!(name: 'Chaos Missile From Hell',
+                             level: 2,
+                             casting_time: '1 Action',
+                             duration: 'Instant',
+                             range: '30 yards',
+                             school: 'Evocation')
+      @spell1 = Spell.create!(name: 'Chaos Missile From Hell',
+                              level: 2,
+                              casting_time: '1 Action',
+                              duration: 'Instant',
+                              range: '30 yards',
+                              school: 'Evocation')
+      @user_spell = Spell.create!(name: 'Chaos Missile From Hell',
+                                  level: 2,
+                                  casting_time: '1 Action',
+                                  duration: 'Instant',
+                                  range: '30 yards',
+                                  school: 'Evocation',
+                                  user: dungeon_master)
+    end
+
+    it "generates unique slugs" do
+      expect(@spell.slug).to eq('chaos-missile-from-hell')
+      expect(@spell1.slug).to eq('chaos-missile-from-hell-1')
+      expect(@user_spell.slug).to eq('chaos-missile-from-hell-jesshdm')
+    end
+
+    it "maintains same slug on update with no name change" do
+      expect(@spell.slug).to eq('chaos-missile-from-hell')
+      @spell.update(level: 2)
+      expect(Spell.all.count).to eq(3)
+      @spell.reload
+      expect(@spell.slug).to eq('chaos-missile-from-hell')
+      @spell.update(level: 3)
+      expect(Spell.all.count).to eq(3)
+      @spell.reload
+      expect(@spell.slug).to eq('chaos-missile-from-hell')
+      @spell.update(level: 4)
+      expect(Spell.all.count).to eq(3)
+      @spell.reload
+      expect(@spell.slug).to eq('chaos-missile-from-hell')
+    end
+  end
 end
