@@ -62,7 +62,7 @@ module Admin::V1
       respond_to do |format|
         if @item.save
           format.html { redirect_to v1_item_url(slug: @item.slug), notice: 'Item was successfully created.' }
-          format.json { render :show, status: :created, location: @item }
+          format.json { render :show, status: :created }
         else
           format.html { render :new }
           format.json { render json: @item.errors.full_messages.join(', '), status: :unprocessable_entity }
@@ -77,7 +77,7 @@ module Admin::V1
       respond_to do |format|
         if @item.update(item_params)
           format.html { redirect_to v1_item_url(slug: @item.slug), notice: 'Item was successfully updated.' }
-          format.json { render :show, status: :ok, location: @item }
+          format.json { render :show, status: :ok }
         else
           format.html { render :edit }
           format.json { render json: @item.errors.full_messages.join(', '), status: :unprocessable_entity }
