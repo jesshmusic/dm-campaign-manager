@@ -33,8 +33,9 @@ class Race < ApplicationRecord
   validates :name, :speed, :strength_modifier, :dexterity_modifier, :constitution_modifier,
             :intelligence_modifier, :wisdom_modifier, :charisma_modifier,
             presence: true
-  after_validation(on: :create) do
-    self.slug = generate_slug
+
+  before_validation do
+    self.slug = generate_slug if will_save_change_to_name?
   end
 
   belongs_to :user, optional: true
@@ -53,6 +54,23 @@ class Race < ApplicationRecord
   private
 
   def generate_slug
-    self.slug = Race.exists?(name.parameterize) ? "race-#{name.parameterize}-#{id}" : "race-#{name.parameterize}"
+    self.slug = if user && !user.admin?
+                  slug_from_string "#{name.parameterize}-#{user.username}"
+                else
+                  slug_from_string name.parameterize
+                end
+  end
+
+  def slug_from_string(slug_string)
+    class_num = 0
+    new_slug = slug_string
+    loop do
+      new_slug = slug_string if class_num == 0
+      new_slug = "#{slug_string}-#{class_num}" if class_num > 0
+      break unless Race.exists?(slug: new_slug)
+
+      class_num += 1
+    end
+    new_slug
   end
 end

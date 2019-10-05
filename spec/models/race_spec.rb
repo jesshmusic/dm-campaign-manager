@@ -30,5 +30,35 @@
 require 'rails_helper'
 
 RSpec.describe Race, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  context "with the same name" do
+    before(:each) do
+      dungeon_master = FactoryBot.create(:dungeon_master_user)
+      @race = Race.create!(name: 'Goober Fish',)
+      @race1 = Race.create!(name: 'Goober Fish',)
+      @user_race = Race.create!(name: 'Goober Fish',
+                                      user: dungeon_master,)
+    end
+
+    it "generates unique slugs" do
+      expect(@race.slug).to eq('goober-fish')
+      expect(@race1.slug).to eq('goober-fish-1')
+      expect(@user_race.slug).to eq('goober-fish-jesshdm')
+    end
+
+    it "maintains same slug on update with no name change" do
+      expect(@race.slug).to eq('goober-fish')
+      @race.update(dexterity_modifier: 2)
+      expect(Race.all.count).to eq(3)
+      @race.reload
+      expect(@race.slug).to eq('goober-fish')
+      @race.update(dexterity_modifier: 1)
+      expect(Race.all.count).to eq(3)
+      @race.reload
+      expect(@race.slug).to eq('goober-fish')
+      @race.update(dexterity_modifier: 2)
+      expect(Race.all.count).to eq(3)
+      @race.reload
+      expect(@race.slug).to eq('goober-fish')
+    end
+  end
 end
