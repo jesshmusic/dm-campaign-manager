@@ -2,17 +2,19 @@
 
 module Admin::V1
   class EncountersController < ApplicationController
-    before_action :set_encounter, only: %i[show edit update]
+    before_action :set_encounter, only: %i[show edit update destroy]
     before_action :set_campaign_and_adventure, except: [:random_individual_treasure]
 
     # GET /encounters/1
     # GET /encounters/1.json
     def show
+      authorize @campaign, :show?
       authorize @encounter
     end
 
     # GET /campaigns/campaign_slug/adventures/1/encounters/new
     def new
+      authorize @campaign, :show?
       @encounter = Encounter.new
       @encounter.adventure = @adventure
       authorize @encounter
@@ -20,12 +22,14 @@ module Admin::V1
 
     # GET /encounters/1/edit
     def edit
+      authorize @campaign, :show?
       authorize @encounter
     end
 
     # POST /campaigns/campaign_slug/adventures/encounters
     # POST /campaigns/campaign_slug/adventures/encounters.json
     def create
+      authorize @campaign, :show?
       @encounter = Encounter.new(encounter_params)
       @encounter.adventure = @adventure
       authorize @encounter
@@ -44,6 +48,7 @@ module Admin::V1
     # PATCH/PUT /campaigns/campaign_slug/adventures/1/encounters/1
     # PATCH/PUT /campaigns/campaign_slug/adventures/1/encounters/1.json
     def update
+      authorize @campaign, :show?
       authorize @encounter
       respond_to do |format|
         if @encounter.update(encounter_params)
@@ -63,6 +68,7 @@ module Admin::V1
     # DELETE /campaigns/campaign_slug/adventures/1/encounters/1
     # DELETE /campaigns/campaign_slug/adventures/1/encounters/1.json
     def destroy
+      authorize @campaign, :show?
       authorize @encounter
       @encounter.destroy
       respond_to do |format|
@@ -73,7 +79,7 @@ module Admin::V1
 
     def random_individual_treasure
       authorize Encounter
-      challenge_rating = params[:xp] ? DndRules.challenge_raiting_for_xp(params[:xp]) : DndRules.challenge_raiting_for_xp(params[600])
+      challenge_rating = params[:xp] ? DndRules.challenge_rating_for_xp(params[:xp]) : DndRules.challenge_rating_for_xp(600)
       render json: TreasureUtility.create_individual_treasure(challenge_rating)
     end
 

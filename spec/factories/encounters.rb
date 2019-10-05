@@ -31,8 +31,9 @@
 
 FactoryBot.define do
   factory :encounter do
-    name { "MyString" }
-    description { "MyText" }
+    name { Faker::Games::ElderScrolls.region }
+    description { Faker::TvShows::BreakingBad.episode }
+    location { Faker::Movies::Hobbit.location }
     platinum_pieces { 1 }
     gold_pieces { 1 }
     electrum_pieces { 1 }

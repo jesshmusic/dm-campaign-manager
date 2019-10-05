@@ -110,7 +110,7 @@ class DndRules
       end
     end
 
-    def challenge_raiting_for_xp(xp)
+    def challenge_rating_for_xp(xp)
       case xp.to_i
       when 0..449
         '1'

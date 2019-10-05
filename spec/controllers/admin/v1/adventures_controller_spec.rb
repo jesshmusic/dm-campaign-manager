@@ -33,15 +33,6 @@ RSpec.describe Admin::V1::AdventuresController, type: :controller do
     attributes_for(:adventure)
   end
 
-  let(:invalid_attributes) do
-    skip('Add a hash of attributes invalid for your model')
-  end
-
-  # This should return the minimal set of values that should be in the session
-  # in order to pass any filters (e.g. authentication) defined in
-  # AdventuresController. Be sure to keep this updated too.
-  let(:valid_session) { {} }
-
   let!(:admin) { create :admin_user }
   let!(:dungeon_master) { create :dungeon_master_user }
   let!(:campaign) { create :campaign_with_assoc, user: dungeon_master }
