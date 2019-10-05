@@ -55,5 +55,34 @@
 require 'rails_helper'
 
 RSpec.describe ToolItem, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  context "with the same name" do
+    before(:each) do
+      dungeon_master = FactoryBot.create(:dungeon_master_user)
+      @item = ToolItem.create!(name: 'Torch', weight: 10)
+      @item1 = ToolItem.create!(name: 'Torch', weight: 10)
+      @user_item = ToolItem.create!(name: 'Torch', weight: 10, user: dungeon_master)
+    end
+
+    it "generates unique slugs" do
+      expect(@item.slug).to eq('torch')
+      expect(@item1.slug).to eq('torch-1')
+      expect(@user_item.slug).to eq('torch-jesshdm')
+    end
+
+    it "maintains same slug on update with no name change" do
+      expect(@item.slug).to eq('torch')
+      @item.update(weight: 12)
+      expect(ToolItem.all.count).to eq(3)
+      @item.reload
+      expect(@item.slug).to eq('torch')
+      @item.update(weight: 8)
+      expect(ToolItem.all.count).to eq(3)
+      @item.reload
+      expect(@item.slug).to eq('torch')
+      @item.update(weight: 12)
+      expect(ToolItem.all.count).to eq(3)
+      @item.reload
+      expect(@item.slug).to eq('torch')
+    end
+  end
 end

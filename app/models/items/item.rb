@@ -55,11 +55,10 @@
 #
 
 class Item < ApplicationRecord
-  validates :name, presence: true
-  before_save :generate_slug, if: :will_save_change_to_name?
+  validates :name, :slug, presence: true
 
-  after_validation(on: :create) do
-    self.slug = generate_slug
+  before_validation do
+    self.slug = generate_slug if will_save_change_to_name?
   end
 
   has_many :container_items, dependent: :destroy

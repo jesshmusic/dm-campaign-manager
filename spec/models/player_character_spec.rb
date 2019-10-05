@@ -67,6 +67,7 @@ RSpec.describe PlayerCharacter, type: :model do
       @pc2.character_classes << char_class2
       @pc2.save!
     end
+
     it "generates unique slugs for PCs" do
 
       expect(@pc.slug).to eq('test-campaign-bob')

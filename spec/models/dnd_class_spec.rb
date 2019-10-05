@@ -28,28 +28,33 @@ require 'rails_helper'
 
 RSpec.describe DndClass, type: :model do
   context "with the same name" do
+    before(:each) do
+      dungeon_master = FactoryBot.create(:dungeon_master_user)
+      @dnd_class = DndClass.create!(name: 'Fighter', hit_die: 10)
+      @dnd_class1 = DndClass.create!(name: 'Fighter', hit_die: 10)
+      @user_dnd_class = DndClass.create!(name: 'Fighter', hit_die: 20, user: dungeon_master)
+    end
+
     it "generates unique slugs" do
-      dnd_class1 = DndClass.create(name: 'Fighter', hit_die: 10)
-      dnd_class2 = DndClass.create(name: 'Fighter', hit_die: 10)
-      expect(dnd_class1.slug).to eq('fighter')
-      expect(dnd_class2.slug).to eq('fighter-1')
+      expect(@dnd_class.slug).to eq('fighter')
+      expect(@dnd_class1.slug).to eq('fighter-1')
+      expect(@user_dnd_class.slug).to eq('fighter-jesshdm')
     end
 
     it "maintains same slug on update with no name change" do
-      dnd_class = DndClass.create(name: 'Fighter', hit_die: 10)
-      expect(dnd_class.slug).to eq('fighter')
-      dnd_class.update(hit_die: 12)
-      expect(DndClass.all.count).to eq(1)
-      dnd_class.reload
-      expect(dnd_class.slug).to eq('fighter')
-      dnd_class.update(hit_die: 8)
-      expect(DndClass.all.count).to eq(1)
-      dnd_class.reload
-      expect(dnd_class.slug).to eq('fighter')
-      dnd_class.update(hit_die: 12)
-      expect(DndClass.all.count).to eq(1)
-      dnd_class.reload
-      expect(dnd_class.slug).to eq('fighter')
+      expect(@dnd_class.slug).to eq('fighter')
+      @dnd_class.update(hit_die: 12)
+      expect(DndClass.all.count).to eq(3)
+      @dnd_class.reload
+      expect(@dnd_class.slug).to eq('fighter')
+      @dnd_class.update(hit_die: 8)
+      expect(DndClass.all.count).to eq(3)
+      @dnd_class.reload
+      expect(@dnd_class.slug).to eq('fighter')
+      @dnd_class.update(hit_die: 12)
+      expect(DndClass.all.count).to eq(3)
+      @dnd_class.reload
+      expect(@dnd_class.slug).to eq('fighter')
     end
   end
 end
