@@ -54,11 +54,14 @@
 
 class Character < ApplicationRecord
   validates :name, :hit_points, :alignment, :charisma, :constitution, :dexterity, :intelligence,
-            :strength, :type, :wisdom, presence: true
+            :strength, :type, :wisdom, :slug, presence: true
   validates :character_classes, length: { minimum: 1 }
 
+  before_validation do
+    self.slug = generate_slug if will_save_change_to_name?
+  end
+
   before_save do
-    self.slug = generate_slug
     self.hit_points_current = hit_points
     self.initiative = DndRules.ability_score_modifier(dexterity)
     self.proficiency = DndRules.proficiency_bonus_for_level(total_level)
@@ -217,10 +220,6 @@ class Character < ApplicationRecord
 
   private
 
-  def generate_slug
-    self.slug = Character.exists?(name.parameterize) ? "#{name.parameterize}-#{id}" : name.parameterize
-  end
-
   def calculate_armor_class(has_shield)
     if armor_id && has_shield
       if armor.armor_dex_bonus
@@ -271,5 +270,22 @@ class Character < ApplicationRecord
       attack_action.damage_dice = "#{weapon_damage}"
     end
     character_actions << attack_action
+  end
+
+  def generate_slug
+    slug_from_string "#{campaign.name.parameterize}-#{name.parameterize}"
+  end
+
+  def slug_from_string(slug_string)
+    class_num = 0
+    new_slug = slug_string
+    loop do
+      new_slug = slug_string if class_num == 0
+      new_slug = "#{slug_string}-#{class_num}" if class_num > 0
+      break unless Character.exists?(slug: new_slug)
+
+      class_num += 1
+    end
+    new_slug
   end
 end

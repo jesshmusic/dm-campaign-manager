@@ -53,5 +53,39 @@
 require 'rails_helper'
 
 RSpec.describe NonPlayerCharacter, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  context "with the same name" do
+    before(:each) do
+      dungeon_master = FactoryBot.create(:dungeon_master_user)
+      campaign = FactoryBot.create(:campaign, user: dungeon_master, name: 'Test Campaign')
+      dnd_class = DndClass.create!(name: 'Fighter', hit_die: 10)
+      char_class = CharacterClass.create(level: 1, dnd_class: dnd_class)
+      char_class2 = CharacterClass.create(level: 1, dnd_class: dnd_class)
+      @npc = NonPlayerCharacter.create(name: 'Bob', campaign: campaign)
+      @npc.character_classes << char_class
+      @npc.save!
+      @npc2 = NonPlayerCharacter.create(name: 'Bob', campaign: campaign)
+      @npc2.character_classes << char_class2
+      @npc2.save!
+    end
+    it "generates unique slugs for PCs" do
+
+      expect(@npc.slug).to eq('test-campaign-bob')
+      expect(@npc2.slug).to eq('test-campaign-bob-1')
+    end
+
+    it "maintains same slug on update with no name change for PCs" do
+      @npc.update(strength: 12)
+      expect(NonPlayerCharacter.all.count).to eq(2)
+      @npc.reload
+      expect(@npc.slug).to eq('test-campaign-bob')
+      @npc.update(strength: 8)
+      expect(NonPlayerCharacter.all.count).to eq(2)
+      @npc.reload
+      expect(@npc.slug).to eq('test-campaign-bob')
+      @npc.update(strength: 12)
+      expect(NonPlayerCharacter.all.count).to eq(2)
+      @npc.reload
+      expect(@npc.slug).to eq('test-campaign-bob')
+    end
+  end
 end

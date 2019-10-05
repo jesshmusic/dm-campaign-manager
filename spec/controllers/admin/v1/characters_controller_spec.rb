@@ -50,7 +50,7 @@ RSpec.describe Admin::V1::CharactersController, type: :controller do
 
   let!(:admin) { create :admin_user }
   let!(:dungeon_master) { create :dungeon_master_user }
-  let!(:campaign) { create :campaign_with_assoc, user: dungeon_master }
+  let!(:campaign) { create :campaign_many_chars, user: dungeon_master }
   let!(:campaign_unowned) { create :campaign_with_assoc }
 
   describe "GET #index" do
@@ -72,10 +72,10 @@ RSpec.describe Admin::V1::CharactersController, type: :controller do
       expect(assigns(:characters).count).to eq 5
     end
 
-    it 'returns 10 non-player characters' do
+    it 'returns 100 non-player characters' do
       sign_in dungeon_master
       get :index, format: :json, params: { campaign_slug: campaign.slug, type: 'NonPlayerCharacter' }
-      expect(assigns(:characters).count).to eq 10
+      expect(assigns(:characters).count).to eq 100
     end
 
 

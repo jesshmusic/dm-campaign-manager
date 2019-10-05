@@ -59,6 +59,8 @@ RSpec.describe Admin::V1::DndClassesController, type: :controller do
   describe "GET #show" do
     it "returns a success response" do
       sign_in dungeon_master
+      puts dnd_class.to_json
+      puts dnd_class_other.to_json
       get :show, params: {slug: dnd_class.slug}
       expect(response).to be_successful
     end

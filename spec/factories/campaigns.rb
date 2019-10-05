@@ -36,5 +36,18 @@ FactoryBot.define do
         create_list(:non_player_character, evaluator.non_player_characters_count, campaign: campaign)
       end
     end
+    factory :campaign_many_chars do
+      transient do
+        adventures_count { 5 }
+        player_characters_count { 5 }
+        non_player_characters_count { 100 }
+      end
+
+      after(:create) do |campaign, evaluator|
+        create_list(:adventure, evaluator.adventures_count, campaign: campaign)
+        create_list(:player_character, evaluator.player_characters_count, campaign: campaign)
+        create_list(:non_player_character, evaluator.non_player_characters_count, campaign: campaign)
+      end
+    end
   end
 end
