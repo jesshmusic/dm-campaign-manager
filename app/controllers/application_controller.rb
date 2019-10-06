@@ -14,6 +14,14 @@ class ApplicationController < ActionController::Base
   private
 
   def user_not_authorized
-    redirect_to root_path, status: :forbidden, notice: 'User action not allowed.'
+    respond_to do |format|
+      format.html { redirect_to root_path, status: :forbidden, notice: 'User action not allowed.' }
+      format.json {
+        render json: {
+          errors: 'User action not allowed.'
+        }, status: :forbidden
+      }
+    end
+
   end
 end

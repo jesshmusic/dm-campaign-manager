@@ -55,7 +55,21 @@ module Admin::V1
     # POST /items
     # POST /items.json
     def create
-      @item = Item.new(item_params)
+      @item = if params[:armor_item]
+                ArmorItem.new(item_params('ArmorItem'))
+              elsif params[:gear_item]
+                GearItem.new(item_params('GearItem'))
+              elsif params[:gear_item]
+                MagicItem.new(item_params('MagicItem'))
+              elsif params[:gear_item]
+                ToolItem.new(item_params('ToolItem'))
+              elsif params[:gear_item]
+                VehicleItem.new(item_params('VehicleItem'))
+              elsif params[:gear_item]
+                WeaponItem.new(item_params('WeaponItem'))
+              else
+                Item.new(item_params('Item'))
+              end
       authorize @item
       @item.user = current_user if current_user.dungeon_master?
 
@@ -74,8 +88,23 @@ module Admin::V1
     # PATCH/PUT /items/1.json
     def update
       authorize @item
+      type_param = if params[:armor_item]
+                     'ArmorItem'
+                   elsif params[:gear_item]
+                     'GearItem'
+                   elsif params[:gear_item]
+                     'MagicItem'
+                   elsif params[:gear_item]
+                     'ToolItem'
+                   elsif params[:gear_item]
+                     'VehicleItem'
+                   elsif params[:gear_item]
+                     'WeaponItem'
+                   else
+                     'Item'
+                   end
       respond_to do |format|
-        if @item.update(item_params)
+        if @item.update(item_params(type_param))
           format.html { redirect_to v1_item_url(slug: @item.slug), notice: 'Item was successfully updated.' }
           format.json { render :show, status: :ok }
         else
@@ -104,8 +133,19 @@ module Admin::V1
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
-    def item_params
-      params.require(:item).permit(:api_url, :armor_class, :armor_dex_bonus, :armor_max_bonus, :armor_stealth_disadvantage, :armor_str_minimum, :category, :category_range, :cost_unit, :cost_value, :description, :name, :sub_category, :vehicle_capacity, :vehicle_speed, :vehicle_speed_unit, :weapon_2h_damage_dice_count, :weapon_2h_damage_dice_value, :weapon_2h_damage_type, :weapon_damage_dice_count, :weapon_damage_dice_value, :weapon_damage_type, :weapon_properties, :weapon_range, :weapon_range_long, :weapon_range_normal, :weapon_thrown_range_long, :weapon_thrown_range_normal, :weight)
+    def item_params(type)
+      params.require(type.underscore.to_sym).permit(:api_url, :armor_class, :armor_class_bonus, :armor_dex_bonus,
+                                                    :armor_max_bonus, :armor_stealth_disadvantage,
+                                                    :armor_str_minimum, :category, :category_range,
+                                                    :cost_unit, :cost_value, :description, :name,
+                                                    :sub_category, :vehicle_capacity, :vehicle_speed,
+                                                    :vehicle_speed_unit, :weapon_2h_damage_dice_count,
+                                                    :weapon_2h_damage_dice_value, :weapon_2h_damage_type,
+                                                    :weapon_damage_dice_count, :weapon_damage_dice_value,
+                                                    :weapon_damage_type, :weapon_properties, :weapon_range,
+                                                    :weapon_range_long, :weapon_range_normal,
+                                                    :weapon_thrown_range_long, :weapon_thrown_range_normal,
+                                                    :weight)
     end
   end
 end

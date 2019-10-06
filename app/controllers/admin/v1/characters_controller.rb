@@ -90,7 +90,11 @@ module Admin::V1
         else
           puts @character.errors.to_json
           format.html { render :new }
-          format.json { render json: {errors: @character.errors.full_messages.join(', ')}, status: :unprocessable_entity }
+          format.json {
+            render json: {
+              errors: @character.errors.full_messages.join(', ')
+            }, status: :unprocessable_entity
+          }
         end
       end
     end
