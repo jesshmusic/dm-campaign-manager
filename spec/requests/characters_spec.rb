@@ -19,7 +19,7 @@ RSpec.describe "Characters", type: :request do
   }
   let!(:admin) { create :admin_user }
   let!(:dungeon_master) { create :dungeon_master_user }
-  let!(:campaign) { create :campaign_many_chars, user: dungeon_master }
+  let!(:campaign) { create :campaign_with_assoc, user: dungeon_master }
   let!(:campaign_unowned) { create :campaign_with_assoc }
 
   describe "GET /characters" do
@@ -41,11 +41,18 @@ RSpec.describe "Characters", type: :request do
         expect(result_items['errors']).to eq("User action not allowed.")
       end
 
-      it "returns 5 items" do
+      it "returns 5 PCs" do
         sign_in dungeon_master
         get "/v1/campaigns/#{campaign.slug}/player_characters.json"
         result_items = JSON.parse(response.body)
         expect(result_items.count).to eq(5)
+      end
+
+      it "returns 10 NPCs" do
+        sign_in dungeon_master
+        get "/v1/campaigns/#{campaign.slug}/non_player_characters.json"
+        result_items = JSON.parse(response.body)
+        expect(result_items.count).to eq(10)
       end
     end
 
@@ -72,6 +79,15 @@ RSpec.describe "Characters", type: :request do
         expect(result_item['name']).to eq(campaign.pcs.first.name)
         expect(result_item['type']).to eq('PlayerCharacter')
       end
+
+      it "returns Non-player Character" do
+        sign_in dungeon_master
+        character = campaign.npcs.first
+        get "/v1/campaigns/#{campaign.slug}/non_player_characters/#{character.slug}.json"
+        result_item = JSON.parse(response.body)
+        expect(result_item['name']).to eq(campaign.npcs.first.name)
+        expect(result_item['type']).to eq('NonPlayerCharacter')
+      end
     end
 
     describe "GET /v1/campaigns/:campaign_slug/player_characters/:slug/edit" do
@@ -89,10 +105,23 @@ RSpec.describe "Characters", type: :request do
         it "creates a new Player Character" do
           sign_in dungeon_master
           expect {
-            post "/v1/campaigns/#{campaign.slug}/player_characters.json", params: {character: valid_pc_attributes}
+            post "/v1/campaigns/#{campaign.slug}/player_characters.json", params: {player_character: valid_pc_attributes}
           }.to change(PlayerCharacter, :count).by(1)
           result_item = JSON.parse(response.body)
           expect(result_item['name']).to eq('Test PC')
+          campaign.reload
+          expect(campaign.pcs.count).to eq(6)
+        end
+
+        it "creates a new Non-player Character" do
+          sign_in dungeon_master
+          expect {
+            post "/v1/campaigns/#{campaign.slug}/non_player_characters.json", params: {non_player_character: valid_npc_attributes}
+          }.to change(NonPlayerCharacter, :count).by(1)
+          result_item = JSON.parse(response.body)
+          expect(result_item['name']).to eq('Test NPC')
+          campaign.reload
+          expect(campaign.npcs.count).to eq(11)
         end
 
         it "returns an error for non-user creating item" do
@@ -107,11 +136,23 @@ RSpec.describe "Characters", type: :request do
 
     describe "PUT /v1/campaigns/:campaign_slug/player_characters/:slug" do
       context "with valid params" do
-        it "updates the requested item belonging to DM" do
+        it "updates the requested PC belonging to DM" do
           sign_in dungeon_master
           character = campaign.pcs.first
           put "/v1/campaigns/#{campaign.slug}/player_characters/#{character.slug}.json", params: {
             player_character: {
+              name: 'Test Character Edited',
+            }
+          }
+          result_item = JSON.parse(response.body)
+          expect(result_item['name']).to eq('Test Character Edited')
+        end
+
+        it "updates the requested NPC belonging to DM" do
+          sign_in dungeon_master
+          character = campaign.npcs.first
+          put "/v1/campaigns/#{campaign.slug}/non_player_characters/#{character.slug}.json", params: {
+            non_player_character: {
               name: 'Test Character Edited',
             }
           }
@@ -146,11 +187,22 @@ RSpec.describe "Characters", type: :request do
 
     describe "DELETE /v1/campaigns/:campaign_slug/player_characters/:slug" do
       context "with valid params" do
-        it "deletes the requested item belonging to DM" do
+        it "deletes the requested PC belonging to DM" do
           sign_in dungeon_master
           character = campaign.pcs.first
           delete "/v1/campaigns/#{campaign.slug}/player_characters/#{character.slug}.json"
           expect(response).to have_http_status(204)
+          campaign.reload
+          expect(campaign.pcs.count).to eq(4)
+        end
+
+        it "deletes the requested NPC belonging to DM" do
+          sign_in dungeon_master
+          character = campaign.npcs.first
+          delete "/v1/campaigns/#{campaign.slug}/non_player_characters/#{character.slug}.json"
+          expect(response).to have_http_status(204)
+          campaign.reload
+          expect(campaign.npcs.count).to eq(9)
         end
 
         it "returns an error for non-user delete" do
