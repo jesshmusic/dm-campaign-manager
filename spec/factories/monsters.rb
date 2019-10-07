@@ -54,28 +54,23 @@
 
 FactoryBot.define do
   factory :monster do
-    name { "MyString" }
-    size { "MyString" }
-    type { "" }
-    subtype { "MyString" }
-    alignment { "MyString" }
-    armor_class { 1 }
-    hit_points { 1 }
-    hit_dice { "MyString" }
-    speed { "MyString" }
-    strength { 1 }
-    dexterity { 1 }
-    constitution { 1 }
-    intelligence { 1 }
-    wisdom { 1 }
-    charisma { 1 }
-    damage_vulnerabilities { "MyString" }
-    damage_resistances { "MyString" }
-    damage_immunities { "MyString" }
-    condition_immunities { "MyString" }
-    senses { "MyString" }
-    languages { "MyString" }
-    challenge_rating { 1 }
-    api_url { "MyString" }
+    hit_dice_number = Faker::Number.between(from: 1, to: 20)
+    hit_dice_value = [8, 10, 12].sample
+    name { Faker::Games::ElderScrolls.creature }
+    size { %w(small medium large gigantic) }
+    monster_type { %w(aberration dragon humanoid undead).sample }
+    alignment { DndRules.alignments.sample }
+    armor_class { Faker::Number.between(from: 10, to: 25) }
+    hit_points { hit_dice_value * hit_dice_number }
+    hit_dice_number { hit_dice_number }
+    hit_dice_value { hit_dice_value }
+    speed { "30 feet" }
+    strength { Faker::Number.between(from: 8, to: 22) }
+    dexterity { Faker::Number.between(from: 8, to: 22) }
+    constitution { Faker::Number.between(from: 8, to: 22) }
+    intelligence { Faker::Number.between(from: 8, to: 22) }
+    wisdom { Faker::Number.between(from: 8, to: 22) }
+    charisma { Faker::Number.between(from: 8, to: 22) }
+    challenge_rating { hit_dice_value }
   end
 end

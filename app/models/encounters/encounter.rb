@@ -33,7 +33,6 @@
 
 class Encounter < ApplicationRecord
   before_save :calculate_xp
-  # before_save :update_encounter
   after_create :setup_encounter
 
   belongs_to :adventure

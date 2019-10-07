@@ -25,5 +25,13 @@ FactoryBot.define do
   factory :adventure do
     name { Faker::TvShows::GameOfThrones.house }
     description { Faker::TvShows::GameOfThrones.quote }
+
+    transient do
+      encounters_count { rand(1..3) }
+    end
+
+    after(:create) do |adventure, evaluator|
+      create_list(:encounter, evaluator.encounters_count, adventure: adventure)
+    end
   end
 end

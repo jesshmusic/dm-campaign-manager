@@ -22,8 +22,7 @@
 
 FactoryBot.define do
   factory :encounter_item do
-    quantity { 1 }
-    encounter { nil }
-    item { nil }
+    quantity { Faker::Number.between(from: 1, to: 3) }
+    association :item
   end
 end

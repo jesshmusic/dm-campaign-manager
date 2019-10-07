@@ -34,11 +34,20 @@ FactoryBot.define do
     name { Faker::Games::ElderScrolls.region }
     description { Faker::TvShows::BreakingBad.episode }
     location { Faker::Movies::Hobbit.location }
-    platinum_pieces { 1 }
-    gold_pieces { 1 }
-    electrum_pieces { 1 }
-    silver_pieces { 1 }
-    copper_pieces { 1 }
-    xp { 1 }
+    platinum_pieces { Faker::Number.between(from: 0, to: 10) }
+    gold_pieces { Faker::Number.between(from: 0, to: 10) }
+    electrum_pieces { Faker::Number.between(from: 0, to: 10) }
+    silver_pieces { Faker::Number.between(from: 0, to: 10) }
+    copper_pieces { Faker::Number.between(from: 0, to: 10) }
+
+    transient do
+      encounter_items { rand(1..3) }
+      encounter_monsters { rand(1..3) }
+    end
+
+    before(:create) do |encounter, evaluator|
+      create_list(:encounter_item, evaluator.encounter_items, encounter: encounter)
+      create_list(:encounter_monster, evaluator.encounter_monsters, encounter: encounter)
+    end
   end
 end

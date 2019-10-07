@@ -31,9 +31,12 @@ FactoryBot.define do
       end
 
       after(:create) do |campaign, evaluator|
-        create_list(:adventure, evaluator.adventures_count, campaign: campaign)
         create_list(:player_character, evaluator.player_characters_count, campaign: campaign)
-        create_list(:non_player_character, evaluator.non_player_characters_count, campaign: campaign)
+        create_list(:non_player_character, evaluator.non_player_characters_count,
+                    campaign: campaign)
+        create_list(:adventure, evaluator.adventures_count,
+                    campaign: campaign,
+                    character_ids: campaign.pcs.map(&:id))
       end
     end
     factory :campaign_many_chars do

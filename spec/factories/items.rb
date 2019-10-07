@@ -59,7 +59,7 @@ FactoryBot.define do
     cost_unit { "gp" }
     cost_value {  Faker::Number.between(from: 1, to: 10)  }
     description { Faker::Game.title }
-    name { Faker::Games::ElderScrolls.dragon }
+    name { Faker::Games::Zelda.item }
     weight { Faker::Number.between(from: 1, to: 10) }
   end
 end

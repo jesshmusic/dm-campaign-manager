@@ -22,8 +22,7 @@
 
 FactoryBot.define do
   factory :encounter_monster do
-    monster { nil }
-    encounter { nil }
-    number_of_monsters { 1 }
+    number_of_monsters { Faker::Number.between(from: 1, to: 3) }
+    association :monster
   end
 end

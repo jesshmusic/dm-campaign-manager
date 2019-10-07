@@ -6,6 +6,7 @@ RSpec.describe 'Adventures', type: :request do
   let(:valid_attributes) do
     attributes_for(:adventure, name: 'Test Adventure')
   end
+  let!(:race) { create :race, id: 1, name: 'Human'}
 
   let!(:admin) { create :admin_user }
   let!(:dungeon_master) { create :dungeon_master_user }
