@@ -65,6 +65,7 @@ class Monster < ApplicationRecord
   has_many :monster_legendary_actions, dependent: :destroy
   has_many :monster_special_abilities, dependent: :destroy
   has_many :skills, dependent: :destroy
+  has_many :encounter_combatants, dependent: :destroy
 
   belongs_to :user, optional: true
 

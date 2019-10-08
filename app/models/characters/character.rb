@@ -102,6 +102,8 @@ class Character < ApplicationRecord
   has_many :character_adventures, dependent: :destroy
   has_many :adventures, through: :character_adventures
 
+  has_many :encounter_combatants, dependent: :destroy
+
   accepts_nested_attributes_for :character_items, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :skills, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :character_classes, reject_if: :all_blank, allow_destroy: true
