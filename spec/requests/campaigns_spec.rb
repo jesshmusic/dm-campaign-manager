@@ -123,7 +123,7 @@ RSpec.describe "Campaigns", type: :request do
 
   describe "GET Campaign back end Edit Page (admin only)" do
     context "for Logged Out Users" do
-      it "returns a forbidden response" do
+      it "returns a redirect response" do
         get "/v1/campaigns/#{campaign.slug}/edit"
         # Redirects to sign in page
         expect(response).to have_http_status(302)
