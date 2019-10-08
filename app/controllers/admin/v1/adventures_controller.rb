@@ -38,7 +38,7 @@ module Admin::V1
 
     # GET /campaigns/campaign_slug/adventures/1/edit
     def edit
-      authorize @campaign
+      authorize @campaign, :edit?
       authorize @adventure
     end
 

@@ -150,7 +150,7 @@ RSpec.describe 'Adventures', type: :request do
         sign_in admin
       end
 
-      it "returns a forbidden response" do
+      it "returns a success response" do
         adventure = campaign.adventures.first
         get "/v1/campaigns/#{campaign.slug}/adventures/#{adventure.id}/edit"
         expect(response).to have_http_status(200)
