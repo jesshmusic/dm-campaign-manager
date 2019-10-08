@@ -10,6 +10,10 @@ class DndRules
       ]
     end
 
+    def abilities
+      %w[Strength Dexterity Constitution Intelligence Wisdom Charisma]
+    end
+
     def player_races
       [
         'Dragonborn',

@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe "Items", type: :request do
-
   let!(:admin) { create :admin_user }
   let!(:dungeon_master) { create :dungeon_master_user }
 
