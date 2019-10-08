@@ -2,7 +2,9 @@
 
 json.key_format! camelize: :lower
 
-json.extract! item, :id, :name, :category, :sub_category, :cost_unit, :cost_value, :description, :weight, :type
+json.extract! item, :id, :name, :category,
+              :sub_category, :cost_unit, :cost_value,
+              :description, :weight, :type, :user_id
 if item.type == 'ArmorItem'
   json.extract! item, :armor_class, :armor_dex_bonus,
                 :armor_max_bonus, :armor_stealth_disadvantage, :armor_str_minimum,
