@@ -283,25 +283,16 @@ RSpec.describe "Items", type: :request do
       end
 
       it "updates the requested item belonging to DM" do
-        sign_in dungeon_master
-        armor_item.user = dungeon_master
-        armor_item.save!
-        put "/v1/armor_items/#{armor_item.slug}.json", params: {
+        put "/v1/items/#{item_custom1.slug}.json", params: {
           armor_item: {
-            name: 'Test Item Edited',
-            armor_class: 19,
-            armor_class_bonus: 2
+            name: 'Test Item Edited'
           }
         }
         result_item = JSON.parse(response.body)
         expect(result_item['name']).to eq('Test Item Edited')
-        expect(result_item['type']).to eq('ArmorItem')
-        expect(result_item['armorClass']).to eq(19)
-        expect(result_item['armorClassBonus']).to eq(2)
       end
 
       it "returns an error for non-admin editing default item" do
-        sign_in dungeon_master
         put "/v1/armor_items/#{armor_item.slug}.json", params: {
           armor_item: {
             name: 'Test Item Edited',
@@ -314,7 +305,6 @@ RSpec.describe "Items", type: :request do
       end
 
       it "returns an error for non-admin editing other DM's item" do
-        sign_in dungeon_master
         put "/v1/armor_items/#{item_custom2.slug}.json", params: {
           armor_item: {
             name: 'Test Item Edited',

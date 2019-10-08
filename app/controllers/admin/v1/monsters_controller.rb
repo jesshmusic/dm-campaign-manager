@@ -59,7 +59,7 @@ module Admin::V1
       respond_to do |format|
         if @monster.save
           format.html { redirect_to monster_url(slug: @monster.slug), notice: 'Monster was successfully created.' }
-          format.json { render :show, status: :created, location: @monster }
+          format.json { render :show, status: :created }
         else
           format.html { render :new }
           format.json { render json: @monster.errors.full_messages.join(', '), status: :unprocessable_entity }
@@ -75,7 +75,7 @@ module Admin::V1
       respond_to do |format|
         if @monster.update(monster_params)
           format.html { redirect_to monster_url(slug: @monster.slug), notice: 'Monster was successfully updated.' }
-          format.json { render :show, status: :ok, location: @monster }
+          format.json { render :show, status: :ok }
         else
           format.html { render :edit }
           format.json { render json: @monster.errors.full_messages.join(', '), status: :unprocessable_entity }
@@ -90,7 +90,7 @@ module Admin::V1
       @monster.destroy
 
       respond_to do |format|
-        format.html { redirect_to monsters_url, notice: 'Monster was successfully destroyed.' }
+        format.html { redirect_to v1_monsters_url, notice: 'Monster was successfully destroyed.' }
         format.json { head :no_content }
       end
     end
