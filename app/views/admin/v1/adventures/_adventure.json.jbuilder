@@ -23,5 +23,5 @@ json.npcs adventure.npcs do |npc|
 end
 
 json.encounters adventure.encounters.order(sort: :asc) do |encounter|
-  json.partial! 'admin/v1/encounters/encounter', encounter: encounter, adventure: adventure, campaign: campaign
+  json.partial! 'admin/v1/encounters/encounter', encounter: encounter, adventure: adventure, campaign: adventure.campaign
 end
