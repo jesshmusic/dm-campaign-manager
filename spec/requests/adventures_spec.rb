@@ -172,32 +172,6 @@ RSpec.describe 'Adventures', type: :request do
 
   describe "POST Create an Adventure" do
     context "for Logged Out Users" do
-
-    end
-
-    context "for Admins" do
-      before(:each) do
-        sign_in admin
-      end
-
-    end
-
-    context "for Dungeon Masters" do
-      before(:each) do
-        sign_in dungeon_master
-      end
-
-    end
-    context "with valid params belonging to DM" do
-      it "creates a new Adventure" do
-        sign_in dungeon_master
-        expect {
-          post "/v1/campaigns/#{campaign.slug}/adventures.json", params: {adventure: valid_attributes}
-        }.to change(Adventure, :count).by(1)
-        result_item = JSON.parse(response.body)
-        expect(result_item['name']).to eq('Test Adventure')
-      end
-
       it "returns an error for non-user creating item" do
         expect {
           post "/v1/campaigns/#{campaign.slug}/adventures.json", params: {adventure: valid_attributes}
@@ -206,18 +180,19 @@ RSpec.describe 'Adventures', type: :request do
         expect(result_item['errors']).to eq('User action not allowed.')
       end
     end
-  end
-
-  describe "PUT Update an Adventure" do
-    context "for Logged Out Users" do
-
-    end
 
     context "for Admins" do
       before(:each) do
         sign_in admin
       end
 
+      it "creates a new Adventure as Admin (rare)" do
+        expect {
+          post "/v1/campaigns/#{campaign.slug}/adventures.json", params: {adventure: valid_attributes}
+        }.to change(Adventure, :count).by(1)
+        result_item = JSON.parse(response.body)
+        expect(result_item['name']).to eq('Test Adventure')
+      end
     end
 
     context "for Dungeon Masters" do
@@ -225,20 +200,19 @@ RSpec.describe 'Adventures', type: :request do
         sign_in dungeon_master
       end
 
-    end
-    context "with valid params" do
-      it "updates the requested item belonging to DM" do
+      it "creates a new Adventure" do
         sign_in dungeon_master
-        adventure = campaign.adventures.first
-        put "/v1/campaigns/#{campaign.slug}/adventures/#{adventure.id}.json", params: {
-          adventure: {
-            name: 'Test Adventure Edited',
-          }
-        }
+        expect {
+          post "/v1/campaigns/#{campaign.slug}/adventures.json", params: {adventure: valid_attributes}
+        }.to change(Adventure, :count).by(1)
         result_item = JSON.parse(response.body)
-        expect(result_item['name']).to eq('Test Adventure Edited')
+        expect(result_item['name']).to eq('Test Adventure')
       end
+    end
+  end
 
+  describe "PUT Update an Adventure" do
+    context "for Logged Out Users" do
       it "returns an error for non-user editing" do
         adventure = campaign.adventures.first
         put "/v1/campaigns/#{campaign.slug}/adventures/#{adventure.id}.json", params: {
@@ -249,10 +223,43 @@ RSpec.describe 'Adventures', type: :request do
         result_item = JSON.parse(response.body)
         expect(result_item['errors']).to eq('User action not allowed.')
       end
+    end
+
+    context "for Admins" do
+      before(:each) do
+        sign_in admin
+      end
+
+      it "updates the requested item belonging to DM (rare)" do
+        adventure = campaign.adventures.first
+        put "/v1/campaigns/#{campaign.slug}/adventures/#{adventure.id}.json", params: {
+          adventure: {
+            name: 'Test Adventure Edited',
+          }
+        }
+        result_item = JSON.parse(response.body)
+        expect(result_item['name']).to eq('Test Adventure Edited')
+      end
+    end
+
+    context "for Dungeon Masters" do
+      before(:each) do
+        sign_in dungeon_master
+      end
+
+      it "updates the requested item belonging to DM" do
+        adventure = campaign.adventures.first
+        put "/v1/campaigns/#{campaign.slug}/adventures/#{adventure.id}.json", params: {
+          adventure: {
+            name: 'Test Adventure Edited',
+          }
+        }
+        result_item = JSON.parse(response.body)
+        expect(result_item['name']).to eq('Test Adventure Edited')
+      end
 
       it "returns an error for non-admin editing" do
         adventure = campaign_unowned.adventures.first
-        sign_in dungeon_master
         put "/v1/campaigns/#{campaign_unowned.slug}/adventures/#{adventure.id}.json", params: {
           adventure: {
             name: 'Test Item Edited',
@@ -266,7 +273,12 @@ RSpec.describe 'Adventures', type: :request do
 
   describe "DELETE an Adventure" do
     context "for Logged Out Users" do
-
+      it "returns an error for non-user delete" do
+        adventure = campaign.adventures.first
+        delete "/v1/campaigns/#{campaign.slug}/adventures/#{adventure.id}.json"
+        result_item = JSON.parse(response.body)
+        expect(result_item['errors']).to eq('User action not allowed.')
+      end
     end
 
     context "for Admins" do
@@ -274,6 +286,11 @@ RSpec.describe 'Adventures', type: :request do
         sign_in admin
       end
 
+      it "deletes the requested item belonging to DM" do
+        adventure = campaign.adventures.first
+        delete "/v1/campaigns/#{campaign.slug}/adventures/#{adventure.id}.json"
+        expect(response).to have_http_status(204)
+      end
     end
 
     context "for Dungeon Masters" do
@@ -281,20 +298,10 @@ RSpec.describe 'Adventures', type: :request do
         sign_in dungeon_master
       end
 
-    end
-    context "with valid params" do
       it "deletes the requested item belonging to DM" do
-        sign_in dungeon_master
         adventure = campaign.adventures.first
         delete "/v1/campaigns/#{campaign.slug}/adventures/#{adventure.id}.json"
         expect(response).to have_http_status(204)
-      end
-
-      it "returns an error for non-user delete" do
-        adventure = campaign.adventures.first
-        delete "/v1/campaigns/#{campaign.slug}/adventures/#{adventure.id}.json"
-        result_item = JSON.parse(response.body)
-        expect(result_item['errors']).to eq('User action not allowed.')
       end
     end
   end
