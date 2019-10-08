@@ -17,7 +17,7 @@
       <div class="col">
         <%= form.association :characters,
                              label: 'Player Characters',
-                             collection: PlayerCharacter.joins(:campaigns).where(campaigns: {id: form.object.campaign.id}),
+                             collection: PlayerCharacter.where(campaign: @campaign),
                              include_blank: false,
                              include_hidden: false,
                              input_html: { class: "pc-selection" } %>
@@ -27,7 +27,7 @@
       <div class="col">
         <%= form.association :characters,
                              label: 'NPCs',
-                             collection: NonPlayerCharacter.where(user_id: form.object.campaign.user.id),
+                             collection: NonPlayerCharacter.where(campaign: @campaign),
                              include_blank: false,
                              include_hidden: false,
                              input_html: { class: "npc-selection" } %>
@@ -45,7 +45,7 @@
                                       form,
                                       :encounters,
                                       class: "btn btn-info",
-                                      partial: '/encounters/encounter_fields' %>
+                                      partial: '/admin/v1/encounters/encounter_fields' %>
         </div>
       </div>
     </div>

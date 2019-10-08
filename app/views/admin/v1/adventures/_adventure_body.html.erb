@@ -28,7 +28,7 @@
       <% @adventure.characters.where(type: 'PlayerCharacter').each do |pc| %>
         <div class="row">
           <div class="col">
-            <strong><%= pc.name %></strong>; <%= pc.level %>
+            <strong><%= pc.name %></strong>; <%= pc.classes %>
           </div>
         </div>
       <% end %>
@@ -38,7 +38,7 @@
       <% @adventure.characters.where(type: 'NonPlayerCharacter').each do |npc| %>
         <div class="row">
           <div class="col">
-            <%= npc.role %>: <strong><%= npc.name %></strong>; <%= npc.level %>
+            <%= npc.role %>: <strong><%= npc.name %></strong>; <%= npc.classes %>
           </div>
         </div>
       <% end %>
@@ -59,7 +59,7 @@
     </thead>
 
     <tbody>
-    <% @encounters.each do |encounter| %>
+    <% @adventure.encounters.each do |encounter| %>
       <tr>
         <td><%= encounter.location %></td>
         <td><%= encounter.name %></td>
@@ -77,7 +77,7 @@
     <% end %>
     </tbody>
   </table>
-  <%== pagy_bootstrap_nav(@pagy) if @pagy.pages > 1 %>
+  <%== pagy_bootstrap_nav(@pagy) if @pagy && @pagy.pages > 1 %>
   <%= link_to 'New Encounter', new_v1_campaign_adventure_encounter_path(@campaign, @adventure), class: "btn btn-lg btn-success" if policy(Encounter).new? %>
 
   <div class="d-flex align-items-center justify-content-start py-3">

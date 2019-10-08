@@ -81,7 +81,7 @@
     </tbody>
   </table>
 
-  <% if current_user == @campaign.user %>
+  <% if current_user == @campaign.user || current_user.admin? %>
     <h3>Adventures</h3>
     <%= render 'shared/search_form', url: v1_campaign_adventures_path(@campaign) %>
     <table>
@@ -96,7 +96,7 @@
       </thead>
 
       <tbody>
-        <% @adventures.each do |adventure| %>
+        <% @campaign.adventures.each do |adventure| %>
           <tr>
             <td><%= adventure.name %></td>
             <td>TBD</td>
@@ -109,7 +109,7 @@
         <% end %>
       </tbody>
     </table>
-  <%== pagy_bootstrap_nav(@pagy) if @pagy.pages > 1 %>
+  <%== pagy_bootstrap_nav(@pagy) if @pagy && @pagy.pages > 1 %>
   <% end %>
 
   <% if current_user == @campaign.user %>
