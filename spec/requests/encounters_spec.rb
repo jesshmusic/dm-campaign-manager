@@ -77,49 +77,89 @@ RSpec.describe "Encounters", type: :request do
   end
 
   describe "GET single Encounter" do
-    it "returns a success response" do
-      sign_in dungeon_master
-      get "/v1/campaigns/#{campaign.slug}/adventures/#{@adventure.id}/encounters/#{@encounter.id}.json"
-      expect(response).to have_http_status(200)
+    context "for Logged Out Users" do
+      it "returns an error for forbidden" do
+        get "/v1/campaigns/#{campaign.slug}/adventures/#{@adventure.id}/encounters/#{@encounter.id}.json"
+        result_items = JSON.parse(response.body)
+        expect(result_items['errors']).to eq("User action not allowed.")
+      end
     end
 
-    it "returns an error for forbidden" do
-      get "/v1/campaigns/#{campaign.slug}/adventures/#{@adventure.id}/encounters/#{@encounter.id}.json"
-      result_items = JSON.parse(response.body)
-      expect(result_items['errors']).to eq("User action not allowed.")
+    context "for Admins" do
+      before(:each) do
+        sign_in admin
+      end
+
+      it "returns a success response" do
+        get "/v1/campaigns/#{campaign.slug}/adventures/#{@adventure.id}/encounters/#{@encounter.id}.json"
+        expect(response).to have_http_status(200)
+      end
+
+      it "returns an Encounter" do
+        get "/v1/campaigns/#{campaign.slug}/adventures/#{@adventure.id}/encounters/#{@encounter.id}.json"
+        result_item = JSON.parse(response.body)
+        expect(result_item['combatants'].count).to eq(8)
+        expect(result_item['name']).to eq('Ambush!')
+        expect(result_item['description']).to eq('The first room of the dungeon')
+      end
     end
 
-    it "returns an Encounter" do
-      sign_in dungeon_master
-      get "/v1/campaigns/#{campaign.slug}/adventures/#{@adventure.id}/encounters/#{@encounter.id}.json"
-      result_item = JSON.parse(response.body)
-      expect(result_item['combatants'].count).to eq(8)
-      expect(result_item['name']).to eq('Ambush!')
-      expect(result_item['description']).to eq('The first room of the dungeon')
+    context "for Dungeon Masters" do
+      before(:each) do
+        sign_in dungeon_master
+      end
+
+      it "returns a success response" do
+        get "/v1/campaigns/#{campaign.slug}/adventures/#{@adventure.id}/encounters/#{@encounter.id}.json"
+        expect(response).to have_http_status(200)
+      end
+
+      it "returns an Encounter" do
+        get "/v1/campaigns/#{campaign.slug}/adventures/#{@adventure.id}/encounters/#{@encounter.id}.json"
+        result_item = JSON.parse(response.body)
+        expect(result_item['combatants'].count).to eq(8)
+        expect(result_item['name']).to eq('Ambush!')
+        expect(result_item['description']).to eq('The first room of the dungeon')
+      end
     end
   end
 
   describe "GET Encounter Edit Page (admin only)" do
+    context "for Logged Out Users" do
 
-    it "returns a forbidden response" do
-      sign_in dungeon_master
-      get "/v1/campaigns/#{campaign.slug}/adventures/#{@adventure.id}/encounters/#{@encounter.id}/edit"
-      expect(response).to have_http_status(403)
+      it "returns a forbidden response" do
+        get "/v1/campaigns/#{campaign.slug}/adventures/#{@adventure.id}/encounters/#{@encounter.id}/edit"
+        expect(response).to have_http_status(403)
+      end
     end
+
+    context "for Admins" do
+      before(:each) do
+        sign_in admin
+      end
+
+      it "returns a success response" do
+        get "/v1/campaigns/#{campaign.slug}/adventures/#{@adventure.id}/encounters/#{@encounter.id}/edit"
+        expect(response).to have_http_status(200)
+      end
+
+    end
+
+    context "for Dungeon Masters" do
+      before(:each) do
+        sign_in dungeon_master
+      end
+
+      it "returns a forbidden response" do
+        get "/v1/campaigns/#{campaign.slug}/adventures/#{@adventure.id}/encounters/#{@encounter.id}/edit"
+        expect(response).to have_http_status(403)
+      end
+    end
+
   end
 
   describe "POST Create Encounter" do
-    context "with valid params belonging to DM" do
-      it "creates a new Encounter" do
-        sign_in dungeon_master
-        expect {
-          post "/v1/campaigns/#{campaign.slug}/adventures/#{@adventure.id}/encounters.json",
-               params: {encounter: valid_attributes}
-        }.to change(Encounter, :count).by(1)
-        result_item = JSON.parse(response.body)
-        expect(result_item['name']).to eq('Test Encounter - NEW')
-      end
-
+    context "for Logged Out Users" do
       it "returns an error for non-user creating Encounter" do
         expect {
           post "/v1/campaigns/#{campaign.slug}/adventures/#{@adventure.id}/encounters.json",
@@ -129,12 +169,45 @@ RSpec.describe "Encounters", type: :request do
         expect(result_item['errors']).to eq('User action not allowed.')
       end
     end
+
+    context "for Admins" do
+      before(:each) do
+        sign_in admin
+      end
+
+      it "creates a new Encounter" do
+        expect {
+          post "/v1/campaigns/#{campaign.slug}/adventures/#{@adventure.id}/encounters.json",
+               params: {encounter: valid_attributes}
+        }.to change(Encounter, :count).by(1)
+        result_item = JSON.parse(response.body)
+        expect(result_item['name']).to eq('Test Encounter - NEW')
+      end
+    end
+
+    context "for Dungeon Masters" do
+      before(:each) do
+        sign_in dungeon_master
+      end
+
+      it "creates a new Encounter" do
+        expect {
+          post "/v1/campaigns/#{campaign.slug}/adventures/#{@adventure.id}/encounters.json",
+               params: {encounter: valid_attributes}
+        }.to change(Encounter, :count).by(1)
+        result_item = JSON.parse(response.body)
+        expect(result_item['name']).to eq('Test Encounter - NEW')
+      end
+    end
   end
 
   describe "PUT Encounter Tracker" do
-    context "with valid params" do
-      it "Starts the Encounter, returns correct `encounterState`" do
+    context "for Dungeon Masters" do
+      before(:each) do
         sign_in dungeon_master
+      end
+
+      it "Starts the Encounter, returns correct `encounterState`" do
         put "/v1/campaigns/#{campaign.slug}/adventures/#{@adventure.id}/encounters/#{@encounter.id}.json",
             params: {
               encounter: {
@@ -156,7 +229,6 @@ RSpec.describe "Encounters", type: :request do
       end
 
       it "Increments combatants past last, sets to zero and increments round in result" do
-        sign_in dungeon_master
         put "/v1/campaigns/#{campaign.slug}/adventures/#{@adventure.id}/encounters/#{@encounter.id}.json",
             params: {
               encounter: {
@@ -179,7 +251,6 @@ RSpec.describe "Encounters", type: :request do
       end
 
       it "Sorts combatants by initiative" do
-        sign_in dungeon_master
         new_initiatives = [20, 5, 19, 6, 22, 7, 17, 8]
         put "/v1/campaigns/#{campaign.slug}/adventures/#{@adventure.id}/encounters/#{@encounter.id}.json",
             params: {
@@ -215,19 +286,7 @@ RSpec.describe "Encounters", type: :request do
   end
 
   describe "PUT Update Encounter" do
-    context "with valid params" do
-      it "updates the requested Encounter" do
-        sign_in dungeon_master
-        put "/v1/campaigns/#{campaign.slug}/adventures/#{@adventure.id}/encounters/#{@encounter.id}.json",
-            params: {
-              encounter: {
-                name: 'Test Encounter Edited',
-              }
-            }
-        result_item = JSON.parse(response.body)
-        expect(result_item['name']).to eq('Test Encounter Edited')
-      end
-
+    context "for Logged Out Users" do
       it "returns an error for non-user editing" do
         put "/v1/campaigns/#{campaign.slug}/adventures/#{@adventure.id}/encounters/#{@encounter.id}.json",
             params: {
@@ -238,10 +297,43 @@ RSpec.describe "Encounters", type: :request do
         result_item = JSON.parse(response.body)
         expect(result_item['errors']).to eq('User action not allowed.')
       end
+    end
 
-      it "returns an error for non-admin editing" do
-        encounter = campaign_unowned.adventures.first.encounters.first
+    context "for Admins" do
+      before(:each) do
+        sign_in admin
+      end
+
+      it "updates the requested Encounter" do
+        put "/v1/campaigns/#{campaign.slug}/adventures/#{@adventure.id}/encounters/#{@encounter.id}.json",
+            params: {
+              encounter: {
+                name: 'Test Encounter Edited',
+              }
+            }
+        result_item = JSON.parse(response.body)
+        expect(result_item['name']).to eq('Test Encounter Edited')
+      end
+    end
+
+    context "for Dungeon Masters" do
+      before(:each) do
         sign_in dungeon_master
+      end
+
+      it "updates the requested Encounter" do
+        put "/v1/campaigns/#{campaign.slug}/adventures/#{@adventure.id}/encounters/#{@encounter.id}.json",
+            params: {
+              encounter: {
+                name: 'Test Encounter Edited',
+              }
+            }
+        result_item = JSON.parse(response.body)
+        expect(result_item['name']).to eq('Test Encounter Edited')
+      end
+
+      it "returns an error for editing someone else's encounter" do
+        encounter = campaign_unowned.adventures.first.encounters.first
         put "/v1/campaigns/#{campaign_unowned.slug}/adventures/#{campaign_unowned.adventures.first.id}/encounters/#{encounter.id}.json",
             params: {
               encounter: {
@@ -255,17 +347,33 @@ RSpec.describe "Encounters", type: :request do
   end
 
   describe "DELETE Delete Encounter" do
-    context "with valid params" do
-      it "deletes the requested item belonging to DM" do
-        sign_in dungeon_master
-        delete "/v1/campaigns/#{campaign.slug}/adventures/#{@adventure.id}/encounters/#{@encounter.id}.json"
-        expect(response).to have_http_status(204)
-      end
-
+    context "for Logged Out Users" do
       it "returns an error for non-user delete" do
         delete "/v1/campaigns/#{campaign.slug}/adventures/#{@adventure.id}/encounters/#{@encounter.id}.json"
         result_item = JSON.parse(response.body)
         expect(result_item['errors']).to eq('User action not allowed.')
+      end
+    end
+
+    context "for Admins" do
+      before(:each) do
+        sign_in admin
+      end
+
+      it "deletes the requested item belonging to DM (rare)" do
+        delete "/v1/campaigns/#{campaign.slug}/adventures/#{@adventure.id}/encounters/#{@encounter.id}.json"
+        expect(response).to have_http_status(204)
+      end
+    end
+
+    context "for Dungeon Masters" do
+      before(:each) do
+        sign_in dungeon_master
+      end
+
+      it "deletes the requested item belonging to DM" do
+        delete "/v1/campaigns/#{campaign.slug}/adventures/#{@adventure.id}/encounters/#{@encounter.id}.json"
+        expect(response).to have_http_status(204)
       end
     end
   end
