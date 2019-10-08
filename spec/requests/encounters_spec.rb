@@ -5,7 +5,6 @@ RSpec.describe "Encounters", type: :request do
     attributes_for(:encounter, name: 'Test Encounter - NEW', location: 'An awesome cave!')
   end
   let!(:race) { create :race, id: 1, name: 'Human'}
-
   let!(:admin) { create :admin_user }
   let!(:dungeon_master) { create :dungeon_master_user }
   let!(:test_item) {
@@ -77,7 +76,7 @@ RSpec.describe "Encounters", type: :request do
     @other_encounter = @adventure.encounters.sample
   end
 
-  describe "GET /v1/campaigns/:campaign_slug/adventures/:id" do
+  describe "GET single Encounter" do
     it "returns a success response" do
       sign_in dungeon_master
       get "/v1/campaigns/#{campaign.slug}/adventures/#{@adventure.id}/encounters/#{@encounter.id}.json"
@@ -100,7 +99,7 @@ RSpec.describe "Encounters", type: :request do
     end
   end
 
-  describe "GET /v1/campaigns/:campaign_slug/adventures/:id/edit" do
+  describe "GET Encounter Edit Page (admin only)" do
 
     it "returns a forbidden response" do
       sign_in dungeon_master
@@ -109,7 +108,7 @@ RSpec.describe "Encounters", type: :request do
     end
   end
 
-  describe "POST /v1/campaigns/:campaign_slug/adventures/" do
+  describe "POST Create Encounter" do
     context "with valid params belonging to DM" do
       it "creates a new Encounter" do
         sign_in dungeon_master
@@ -132,7 +131,90 @@ RSpec.describe "Encounters", type: :request do
     end
   end
 
-  describe "PUT /v1/campaigns/:campaign_slug/adventures/:id" do
+  describe "PUT Encounter Tracker" do
+    context "with valid params" do
+      it "Starts the Encounter, returns correct `encounterState`" do
+        sign_in dungeon_master
+        put "/v1/campaigns/#{campaign.slug}/adventures/#{@adventure.id}/encounters/#{@encounter.id}.json",
+            params: {
+              encounter: {
+                in_progress: true,
+              },
+              encounter_tracker: true,
+            }
+        @encounter.reload
+        expect(@encounter.in_progress).to eq(true)
+        result_item = JSON.parse(response.body)
+        expect(result_item['encounterState'].keys)
+          .to contain_exactly('currentCombatant', 'inProgress', 'round')
+        expect(result_item['encounterState']['inProgress'])
+          .to eq(true)
+        expect(result_item['encounterState']['currentCombatant'])
+          .to eq(0)
+        expect(result_item['encounterState']['round'])
+          .to eq(1)
+      end
+
+      it "Increments combatants past last, sets to zero and increments round in result" do
+        sign_in dungeon_master
+        put "/v1/campaigns/#{campaign.slug}/adventures/#{@adventure.id}/encounters/#{@encounter.id}.json",
+            params: {
+              encounter: {
+                current_mob_index: @encounter.encounter_combatants.count,
+                in_progress: true,
+              },
+              encounter_tracker: true,
+            }
+        @encounter.reload
+        expect(@encounter.in_progress).to eq(true)
+        result_item = JSON.parse(response.body)
+        expect(result_item['encounterState'].keys)
+          .to contain_exactly('currentCombatant', 'inProgress', 'round')
+        expect(result_item['encounterState']['inProgress'])
+          .to eq(true)
+        expect(result_item['encounterState']['currentCombatant'])
+          .to eq(0)
+        expect(result_item['encounterState']['round'])
+          .to eq(2)
+      end
+
+      it "Sorts combatants by initiative" do
+        sign_in dungeon_master
+        new_initiatives = [20, 5, 19, 6, 22, 7, 17, 8]
+        put "/v1/campaigns/#{campaign.slug}/adventures/#{@adventure.id}/encounters/#{@encounter.id}.json",
+            params: {
+              encounter: {
+                in_progress: true,
+                encounter_combatants_attributes: @encounter.encounter_combatants.map.with_index { |combatant, index|
+                  {
+                    id: combatant.id,
+                    notes: "Combatant initiative: #{new_initiatives[index]}",
+                    initiative_roll: new_initiatives[index],
+                  }
+                }
+              },
+              encounter_tracker: true,
+            }
+        @encounter.reload
+        expect(@encounter.in_progress).to eq(true)
+        result_item = JSON.parse(response.body)
+        expect(result_item['combatants'][0]['notes'])
+          .to eq('Combatant initiative: 22')
+        expect(result_item['combatants'][0]['initiativeRoll'])
+          .to eq(22)
+        expect(result_item['combatants'][1]['notes'])
+          .to eq('Combatant initiative: 20')
+        expect(result_item['combatants'][1]['initiativeRoll'])
+          .to eq(20)
+        expect(result_item['combatants'][2]['notes'])
+          .to eq('Combatant initiative: 19')
+        expect(result_item['combatants'][2]['initiativeRoll'])
+          .to eq(19)
+      end
+    end
+  end
+
+  describe "PUT Update Encounter" do
     context "with valid params" do
       it "updates the requested Encounter" do
         sign_in dungeon_master
@@ -172,7 +254,7 @@ RSpec.describe "Encounters", type: :request do
     end
   end
 
-  describe "DELETE /v1/campaigns/:campaign_slug/adventures/:id" do
+  describe "DELETE Delete Encounter" do
     context "with valid params" do
       it "deletes the requested item belonging to DM" do
         sign_in dungeon_master

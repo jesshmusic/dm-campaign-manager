@@ -29,7 +29,6 @@ class EncounterTracker extends React.Component {
   }
 
   updateCombat = (changes) => {
-    console.log(changes);
     const encounterFields = {
       encounter: {
         inProgress: changes.inProgress !== undefined ?
@@ -60,27 +59,20 @@ class EncounterTracker extends React.Component {
       headers: getHeaders(),
       body: JSON.stringify(snakecaseKeys(encounterFields)),
     }).then((response) => response.json())
-      .then((jsonResponse) => {
-        console.log(jsonResponse);
+      .then((currentEncounter) => {
+        console.log(currentEncounter);
+        this.setState({
+          currentCombatant: currentEncounter.encounterState.currentCombatant,
+          editingInitiatives: false,
+          encounterCombatants: currentEncounter.combatants,
+          inProgress: currentEncounter.encounterState.inProgress,
+          round: currentEncounter.encounterState.round,
+        });
       });
   };
 
   incrementCombatant = () => {
-    let currentRound = this.state.round;
-    let currentCombatant = this.state.currentCombatant;
-    if (this.state.currentCombatant + 1 < this.state.encounterCombatants.length) {
-      currentCombatant = this.state.currentCombatant + 1;
-      this.setState({ currentCombatant });
-    } else {
-      currentCombatant = 0;
-      currentRound += 1;
-      this.setState({
-        currentCombatant,
-        round: currentRound,
-      });
-    }
-
-    this.updateCombat({currentCombatant, round: currentRound});
+    this.updateCombat({ currentCombatant: this.state.currentCombatant + 1 });
   };
 
   handleSetInitiatives = () => {
@@ -92,59 +84,28 @@ class EncounterTracker extends React.Component {
   };
 
   sortCombatants = (newCombatants) => {
-    const encounterCombatants = [...newCombatants];
-    encounterCombatants.sort((a, b) => b.initiativeRoll - a.initiativeRoll);
-    encounterCombatants.forEach((encounterCombatant, index) => {
-      encounterCombatant.combatOrderNumber = index;
-    });
-    this.setState({
-      encounterCombatants,
-      editingInitiatives: false,
-    });
-    this.updateCombat({encounterCombatants});
+    this.updateCombat({newCombatants});
   };
 
   updateCombatant = (index, combatant) => {
     if (index < this.state.encounterCombatants.length && index >= 0) {
       const encounterCombatants = [...this.state.encounterCombatants];
       encounterCombatants[index] = combatant;
-      this.setState({
-        encounterCombatants,
-      });
       this.updateCombat({encounterCombatants});
     }
   };
 
   onStartEncounter = () => {
-    this.setState({
-      inProgress: true,
-    });
     this.updateCombat({inProgress: true});
   };
 
   onStopEncounter = () => {
-    this.setState({
-      inProgress: false,
-    });
     this.updateCombat({inProgress: false});
   };
 
   resetEncounter = () => {
     const encounterCombatants = [...this.state.encounterCombatants];
     encounterCombatants.sort((a, b) => a.id - b.id);
-    this.setState({
-      inProgress: false,
-      currentMobIndex: 0,
-      round: 1,
-      encounterCombatants: encounterCombatants.map((combatant, index) => ({
-        id: combatant.id,
-        combatOrderNumber: index,
-        currentHitPoints: combatant.combatant.hitPoints,
-        initiativeRoll: 0,
-        notes: '',
-        combatant: combatant.combatant,
-      })),
-    });
     this.updateCombat({
       inProgress: false,
       currentMobIndex: 0,

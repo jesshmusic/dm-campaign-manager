@@ -50,8 +50,9 @@ module Admin::V1
     def update
       authorize @campaign, :show?
       authorize @encounter
+      updated_params = process_encounter_tracker_params
       respond_to do |format|
-        if @encounter.update(encounter_params)
+        if @encounter.update(updated_params)
           unless params[:encounter_tracker]
             reset_encounter
             @encounter.save!
@@ -122,6 +123,25 @@ module Admin::V1
         encounter_items_attributes: %i[id quantity item_id _destroy],
         encounter_combatants_attributes: %i[id combat_order_number current_hit_points initiative_roll notes character_id monster_id]
       )
+    end
+
+    def process_encounter_tracker_params
+      updated_params = encounter_params
+      if updated_params[:encounter_combatants_attributes]
+        updated_params[:encounter_combatants_attributes] = updated_params[:encounter_combatants_attributes].sort! { |a, b|
+          b[:initiative_roll].to_i - a[:initiative_roll].to_i
+        }
+        updated_params[:encounter_combatants_attributes].each_with_index do |combatant, index|
+          updated_params[:encounter_combatants_attributes][index][:combat_order_number] = index
+        end
+      end
+
+      return updated_params unless updated_params[:current_mob_index] &&
+                                   updated_params[:current_mob_index].to_i >= @encounter.encounter_combatants.count
+
+      updated_params[:current_mob_index] = 0
+      updated_params[:round] = @encounter.round + 1
+      return updated_params
     end
   end
 end
