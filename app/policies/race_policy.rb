@@ -1,8 +1,12 @@
 # frozen_string_literal: true
 
 class RacePolicy < ApplicationPolicy
-  def edit?
-    user && (user.admin? || (record.user == user))
+  def index?
+    true
+  end
+
+  def show?
+    user&.admin? || (user && record.user == user) || record.user.nil?
   end
 
   def update?
