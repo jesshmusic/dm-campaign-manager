@@ -60,7 +60,6 @@ class EncounterTracker extends React.Component {
       body: JSON.stringify(snakecaseKeys(encounterFields)),
     }).then((response) => response.json())
       .then((currentEncounter) => {
-        console.log(currentEncounter);
         this.setState({
           currentCombatant: currentEncounter.encounterState.currentCombatant,
           editingInitiatives: false,
