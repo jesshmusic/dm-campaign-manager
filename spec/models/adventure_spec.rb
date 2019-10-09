@@ -24,5 +24,52 @@
 require 'rails_helper'
 
 RSpec.describe Adventure, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  let!(:race) { create :race, id: 1, name: 'Human'}
+
+  let!(:admin) { create :admin_user }
+  let!(:dungeon_master) { create :dungeon_master_user }
+  let!(:campaign) { create :campaign_with_full_adventure, user: dungeon_master }
+
+  describe 'Adventure Object' do
+    context 'has associations' do
+      before(:each) do
+        @adventure = campaign.adventures.first
+        @adventure.characters << campaign.npcs.first
+        @adventure.save!
+      end
+
+      it "is named\"Introduction - Catacombs Raid\"" do
+        expect(@adventure.name).to eq('Introduction - Catacombs Raid')
+      end
+
+      it "is have at least 1 encounter" do
+        expect(@adventure.encounters.count).to be >= 1
+      end
+
+      it "is has 5 PCs" do
+        expect(@adventure.pcs.count).to eq(5)
+      end
+
+      it "is has 1 NPC" do
+        expect(@adventure.npcs.count).to eq(1)
+      end
+    end
+
+    context 'Creating Adventures' do
+      before(:each) do
+        @adventure = Adventure.create(name: 'New Adventure', description: 'This is a new adventure', campaign: campaign)
+      end
+      it "creates a new adventure associated with the campaign" do
+        expect(@adventure.campaign).not_to be_nil
+        campaign.reload
+        expect(campaign.adventures.last.id).to eq(@adventure.id)
+      end
+
+      it "Adds all Campaign PCs to the adventure" do
+        @adventure.add_all_campaign_pcs
+        @adventure.reload
+        expect(@adventure.pcs.count).to eq(5)
+      end
+    end
+  end
 end

@@ -45,17 +45,6 @@ const dmFetch = (fetch) => {
 };
 
 export default reduxApi({
-  getAdventure: {
-    url: '/v1/campaigns/:campaign_slug/adventures/:id.json',
-    prefetch: [
-      ({actions, dispatch, getState, request}, cb) => {
-        const {campaigns: {currentCampaign}} = getState();
-        const {pathvars: {campaign_slug}} = request;
-        currentCampaign !== null ? cb() :
-          dispatch(actions.getCampaign({slug: campaign_slug}, cb));
-      },
-    ],
-  },
   createAdventure: {
     url: '/v1/campaigns/:campaign_slug/adventures/',
     options () {
@@ -68,6 +57,17 @@ export default reduxApi({
     postfetch: [({data, request}) => {
       navigate(`/app/campaigns/${request.pathvars.campaign_slug}/adventures/${data.id}`);
     }],
+  },
+  getAdventure: {
+    url: '/v1/campaigns/:campaign_slug/adventures/:id.json',
+    prefetch: [
+      ({actions, dispatch, getState, request}, cb) => {
+        const {campaigns: {currentCampaign}} = getState();
+        const {pathvars: {campaign_slug}} = request;
+        currentCampaign !== null ? cb() :
+          dispatch(actions.getCampaign({slug: campaign_slug}, cb));
+      },
+    ],
   },
   updateAdventure: {
     url: '/v1/campaigns/:campaign_slug/adventures/:id',

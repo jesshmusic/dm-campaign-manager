@@ -33,5 +33,11 @@ FactoryBot.define do
     after(:create) do |adventure, evaluator|
       create_list(:encounter, evaluator.encounters_count, adventure: adventure)
     end
+
+    factory :adventure_full do
+      name { 'Introduction - Catacombs Raid' }
+      description { '**Introductory Adventure:** This is a quick adventure where the party is tasked by a mysterious woman at the local tavern to retrieve a small chest from catacombs right outside the city.
+Little does the party know, the quest giver is sending them into a trap. The NPCs name is Ingbed Moncref who works for Wimarc Ravenchaser.' }
+    end
   end
 end

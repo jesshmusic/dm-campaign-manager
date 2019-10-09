@@ -43,11 +43,13 @@ FactoryBot.define do
     transient do
       encounter_items { rand(1..3) }
       encounter_monsters { rand(1..3) }
+      encounter_npcs { rand(0..2) }
     end
 
     before(:create) do |encounter, evaluator|
       create_list(:encounter_item, evaluator.encounter_items, encounter: encounter)
       create_list(:encounter_monster, evaluator.encounter_monsters, encounter: encounter)
+      create_list(:encounter_npc, evaluator.encounter_npcs, encounter: encounter)
     end
   end
 end

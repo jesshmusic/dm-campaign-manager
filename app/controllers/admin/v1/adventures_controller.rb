@@ -33,6 +33,7 @@ module Admin::V1
       authorize @campaign, :show?
       @adventure = Adventure.new
       @adventure.campaign = @campaign
+      @adventure.add_all_campaign_pcs
       authorize @adventure
     end
 

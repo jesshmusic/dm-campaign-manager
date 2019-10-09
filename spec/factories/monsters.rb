@@ -72,5 +72,9 @@ FactoryBot.define do
     wisdom { Faker::Number.between(from: 8, to: 22) }
     charisma { Faker::Number.between(from: 8, to: 22) }
     challenge_rating { hit_dice_value }
+
+    factory :monster_dragon do
+
+    end
   end
 end

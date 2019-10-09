@@ -42,6 +42,10 @@ class Adventure < ApplicationRecord
     characters.where(type: 'NonPlayerCharacter')
   end
 
+  def add_all_campaign_pcs
+    characters << campaign.pcs
+  end
+
   include PgSearch::Model
 
   # PgSearch

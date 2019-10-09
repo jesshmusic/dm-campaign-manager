@@ -39,6 +39,24 @@ FactoryBot.define do
                     character_ids: campaign.pcs.map(&:id))
       end
     end
+
+    factory :campaign_with_full_adventure do
+      transient do
+        adventures_count { 1 }
+        player_characters_count { 5 }
+        non_player_characters_count { 10 }
+      end
+
+      after(:create) do |campaign, evaluator|
+        create_list(:player_character, evaluator.player_characters_count, campaign: campaign)
+        create_list(:non_player_character, evaluator.non_player_characters_count,
+                    campaign: campaign)
+        create_list(:adventure_full, evaluator.adventures_count,
+                    campaign: campaign,
+                    character_ids: campaign.pcs.map(&:id))
+      end
+    end
+
     factory :campaign_many_chars do
       transient do
         adventures_count { 5 }

@@ -54,8 +54,20 @@ FactoryBot.define do
   factory :non_player_character do
     name { Faker::Games::ElderScrolls.name }
     type { 'NonPlayerCharacter' }
+    alignment { DndRules.alignments.sample }
+    armor_class { Faker::Number.between(from: 10, to: 25) }
+    armor_class_modifier { [0, 0, 0, 0, 1, 1, 2].sample }
+    strength { Faker::Number.between(from: 7, to: 22) }
+    dexterity { Faker::Number.between(from: 7, to: 22) }
+    constitution { Faker::Number.between(from: 7, to: 22) }
+    intelligence { Faker::Number.between(from: 7, to: 22) }
+    wisdom { Faker::Number.between(from: 7, to: 22) }
+    charisma { Faker::Number.between(from: 7, to: 22) }
+    role { ['Main Villain', 'Minor Villain', 'Lord', 'Ally'].sample }
+    hit_points { Faker::Number.between(from: 12, to: 100) }
 
     before(:create) do |character|
+      character.race_id = FactoryBot.create(:race, name: 'Human').id
       character.character_classes << FactoryBot.build(:character_class, character: character)
     end
   end

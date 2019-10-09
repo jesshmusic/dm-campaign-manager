@@ -105,6 +105,29 @@ const setAdventureObject = (values, campaignID) => {
   };
 };
 
+const setupInitialValues = (adventure) => {
+  const initialValues = {
+    name: '',
+    description: '',
+    playerCharacters: [],
+    nonPlayerCharacters: [],
+    encounters: [],
+  };
+
+  initialValues.id = adventure.id;
+  initialValues.name = adventure.name;
+  initialValues.description = adventure.description;
+  const playerCharacterOptions = adventure.pcs.map((pc) => ({value: pc.id, label: pc.name}));
+  const nonPlayerCharacterOptions = adventure.npcs.map((npc) => ({
+    value: npc.id,
+    label: `${npc.name} -- ${npc.classes} -- ${npc.role}`}));
+  initialValues.playerCharacters = playerCharacterOptions;
+  initialValues.nonPlayerCharacters = nonPlayerCharacterOptions;
+  initialValues.worldLocation = adventure.worldLocation;
+  initialValues.encounters = adventure.encounters ? adventure.encounters : [];
+  return initialValues;
+};
+
 class AdventureForm extends React.Component {
   state = {
     adventure: null,
@@ -114,29 +137,21 @@ class AdventureForm extends React.Component {
   };
 
   componentDidMount () {
-    const initialValues = {
-      name: '',
-      description: '',
-      playerCharacters: [],
-      nonPlayerCharacters: [],
-      encounters: [],
-    };
     if (this.props.adventure) {
       const adventure = this.props.adventure;
-      initialValues.id = adventure.id;
-      initialValues.name = adventure.name;
-      initialValues.description = adventure.description;
-      const playerCharacterOptions = adventure.pcs.map((pc) => ({value: pc.id, label: pc.name}));
-      const nonPlayerCharacterOptions = adventure.npcs.map((npc) => ({
-        value: npc.id,
-        label: `${npc.name} -- ${npc.classes} -- ${npc.role}`}));
-      initialValues.playerCharacters = playerCharacterOptions;
-      initialValues.nonPlayerCharacters = nonPlayerCharacterOptions;
-      initialValues.worldLocation = adventure.worldLocation;
-      initialValues.encounters = adventure.encounters ? adventure.encounters : [];
+      this.setState({
+        adventure: setupInitialValues(adventure),
+      });
+    } else {
+      fetch(`/v1/campaigns/${this.props.campaign.slug}/adventures/new.json`)
+        .then((response) => response.json())
+        .then((adventure) => {
+          this.setState({
+            adventure: setupInitialValues(adventure),
+          });
+        });
     }
     this.setState({
-      adventure: initialValues,
       submitButtonTitle: this.props.adventure ? 'Save' : 'Add',
       worldLocationOptions: this.props.campaign.worldLocations.map((location) => ({
         value: location.id,
