@@ -1,158 +1,215 @@
 require 'rails_helper'
 
 RSpec.describe "Spells", type: :request do
-  describe "GET all Spells" do
+  let!(:admin) { create :admin_user }
+  let!(:dungeon_master) { create :dungeon_master_user }
+  let!(:other_user) { create :other_user }
+
+  let(:valid_attributes) {
+    attributes_for(:spell, user: dungeon_master, name: 'New Spell')
+  }
+
+  let!(:spell) { create :spell }
+  let!(:spell1) { create :spell }
+  let!(:spell2) { create :spell }
+  let!(:spell_custom1) { create :spell,
+                                user: dungeon_master,
+                                name: 'DM Spell' }
+  let!(:spell_custom2) { create :spell,
+                                user: other_user,
+                                name: 'Other User Spell' }
+
+  describe "GET Return all Spells" do
     context "for Logged Out Users" do
       it "returns a success response" do
-        get v1_spells_path
+        get '/v1/spells.json'
         expect(response).to have_http_status(200)
       end
 
-      it "returns 5 Spells for logged out user" do
+      it "returns 3 spells" do
         get '/v1/spells.json'
-        result_items = JSON.parse(response.body)
-        expect(result_items.count).to eq(5)
+        result_spells = JSON.parse(response.body)
+        expect(result_spells.count).to eq(3)
       end
     end
 
     context "for Admins" do
-      it "returns 7 Spells for signed in admin (Admins can see all classes)" do
+      before(:each) do
         sign_in admin
+      end
+
+      it "returns 5 spells" do
         get '/v1/spells.json'
-        result_items = JSON.parse(response.body)
-        expect(result_items.count).to eq(7)
+        result_spells = JSON.parse(response.body)
+        expect(result_spells.count).to eq(5)
       end
     end
 
     context "for Dungeon Masters" do
-      it "returns 6 Spells for signed in user who has created a custom class" do
-        sign_in dungeon_master
-        get '/v1/spells.json'
-        result_items = JSON.parse(response.body)
-        expect(result_items.count).to eq(6)
-      end
-    end
-  end
-
-  describe "GET a single Spell" do
-    context 'for Logged Out users' do
-      it "returns error for logged out user" do
-        get "/v1/spells/#{fighter_class.slug}.json"
-        result_item = JSON.parse(response.body)
-        expect(result_item['errors']).to eq("User action not allowed.")
-      end
-    end
-
-    context 'for Admin users' do
-      it "returns a user's Death Knight class" do
-        sign_in admin
-        get "/v1/spells/#{death_knight_class.slug}.json"
-        result_item = JSON.parse(response.body)
-        expect(result_item['slug']).to eq('death-knight-jesshdm')
-        expect(result_item['name']).to eq('Death Knight')
-      end
-    end
-
-    context 'for Dungeon Master users' do
       before(:each) do
         sign_in dungeon_master
       end
 
+      it "returns 4 spells that are only default or owned by this DM" do
+        get '/v1/spells.json'
+        result_spells = JSON.parse(response.body)
+        expect(result_spells.count).to eq(4)
+        expect(result_spells.find { |spell|
+          spell['name'] == 'DM Spell'
+        }).not_to be_nil
+        expect(result_spells.find { |spell|
+          spell['name'] == 'Other User Spell'
+        }).to be_nil
+      end
+    end
+
+
+
+  end
+
+  describe "GET Return single Spell" do
+    context "for Logged Out Users" do
       it "returns a success response" do
-        get "/v1/spells/#{fighter_class.slug}.json"
+        get "/v1/spells/#{spell1.slug}.json"
         expect(response).to have_http_status(200)
       end
 
-      it "returns Death Knight class for logged in DM with proper slug" do
-        get "/v1/spells/#{death_knight_class.slug}.json"
-        result_item = JSON.parse(response.body)
-        expect(result_item['slug']).to eq('death-knight-jesshdm')
-        expect(result_item['name']).to eq('Death Knight')
+      it "returns error for logged out user trying to get custom spell" do
+        get "/v1/spells/#{spell_custom1.slug}.json"
+        result_spell = JSON.parse(response.body)
+        expect(result_spell['errors']).to eq("User action not allowed.")
+      end
+    end
+
+    context "for Admins" do
+      before(:each) do
+        sign_in admin
       end
 
-      it "returns the other Death Knight class for logged in DM with proper slug" do
-        sign_in other_user
-        other_username = other_user.username
-        get "/v1/spells/#{death_knight_class_other.slug}.json"
-        result_item = JSON.parse(response.body)
-        expect(result_item['slug']).not_to eq('death-knight-jesshdm')
-        expect(result_item['slug']).to eq("death-knight-#{other_username}")
-        expect(result_item['name']).to eq('Death Knight')
+      it "returns a default spell" do
+        get "/v1/spells/#{spell.slug}.json"
+        result_spell = JSON.parse(response.body)
+        expect(result_spell['name']).to eq(spell.name)
+        expect(result_spell['slug']).to eq(spell.slug)
       end
 
-      it "returns error for wrong user" do
-        get "/v1/spells/#{death_knight_class_other.slug}.json"
-        result_item = JSON.parse(response.body)
-        expect(result_item['errors']).to eq("User action not allowed.")
+      it "returns custom spell for a DM" do
+        get "/v1/spells/#{spell_custom2.slug}.json"
+        result_spell = JSON.parse(response.body)
+        expect(result_spell['name']).to eq('Other User Spell')
+      end
+    end
+
+    context "for Dungeon Masters" do
+      before(:each) do
+        sign_in dungeon_master
+      end
+
+      it "returns a default spell" do
+        get "/v1/spells/#{spell.slug}.json"
+        result_spell = JSON.parse(response.body)
+        expect(result_spell['name']).to eq(spell.name)
+        expect(result_spell['slug']).to eq(spell.slug)
+      end
+
+      it "returns a custom DM spell" do
+        get "/v1/spells/#{spell_custom1.slug}.json"
+        result_spell = JSON.parse(response.body)
+        expect(result_spell['name']).to eq('DM Spell')
+        expect(result_spell['slug']).to eq('dm-spell-jesshdm')
+      end
+
+      it "returns error for DM trying to get custom spell by another user" do
+        get "/v1/spells/#{spell_custom2.slug}.json"
+        result_spell = JSON.parse(response.body)
+        expect(result_spell['errors']).to eq("User action not allowed.")
       end
     end
   end
 
-  describe "POST Create Spells" do
+  describe "GET Spell back end Edit Page (admin only)" do
     context "for Logged Out Users" do
-      it "returns an error" do
+      it "returns a redirect response" do
+        get "/v1/spells/#{spell1.slug}/edit"
+        expect(response).to have_http_status(302)
+      end
+    end
+
+    context "for Admins" do
+      before(:each) do
+        sign_in admin
+      end
+
+      it "returns a success response" do
+        get "/v1/spells/#{spell1.slug}/edit"
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context "for Dungeon Masters" do
+      before(:each) do
+        sign_in dungeon_master
+      end
+
+      it "returns a forbidden response" do
+        get "/v1/spells/#{spell1.slug}/edit"
+        expect(response).to have_http_status(403)
+      end
+    end
+  end
+
+  describe "POST Create Spell" do
+    context "for Logged Out Users" do
+      it "returns an error for non-user creating spell" do
         expect {
-          post "/v1/spells.json", params: {spell: valid_attributes}
+          post '/v1/spells.json', params: {spell: valid_attributes}
         }.to change(Spell, :count).by(0)
-        result_item = JSON.parse(response.body)
-        expect(result_item['error']).to eq("You need to sign in or sign up before continuing.")
+        result_spell = JSON.parse(response.body)
+        expect(result_spell['error']).to eq('You need to sign in or sign up before continuing.')
       end
     end
 
     context "for Admins" do
-      it "creates a new Spell" do
-        sign_in admin
-        expect {
-          post "/v1/spells.json", params: {spell: valid_attributes}
-        }.to change(Spell, :count).by(1)
-        result_item = JSON.parse(response.body)
-        expect(result_item['userId']).to be_nil
-        expect(result_item['name']).to eq('Sorcerer')
-      end
-    end
-
-    context "for Dungeon Masters" do
       before(:each) do
-        sign_in dungeon_master
+        sign_in admin
       end
 
       it "creates a new Spell" do
         expect {
-          post "/v1/spells.json", params: {spell: valid_attributes}
+          post '/v1/spells.json', params: {spell: valid_attributes}
         }.to change(Spell, :count).by(1)
-        result_item = JSON.parse(response.body)
-        expect(result_item['userId']).not_to be_nil
-        expect(result_item['name']).to eq('Sorcerer')
-        expect(result_item['slug']).to eq('sorcerer-jesshdm')
+        result_spell = JSON.parse(response.body)
+        expect(result_spell['name']).to eq('New Spell')
+        expect(result_spell['userId']).to be_nil
+      end
+    end
+
+    context "for Dungeon Masters" do
+      before(:each) do
+        sign_in dungeon_master
       end
 
-      it "creates a new Spells with unique slugs" do
-        post "/v1/spells.json", params: {spell: valid_attributes}
-
-        sign_in other_user
-        other_username = other_user.username
+      it "creates a new Spell with a user" do
         expect {
-          post "/v1/spells.json", params: {spell: valid_attributes}
+          post '/v1/spells.json', params: {spell: valid_attributes}
         }.to change(Spell, :count).by(1)
-        result_item = JSON.parse(response.body)
-        expect(result_item['userId']).not_to be_nil
-        expect(result_item['userId']).to eq(other_user.id)
-        expect(result_item['name']).to eq('Sorcerer')
-        expect(result_item['slug']).to eq("sorcerer-#{other_username}")
+        result_spell = JSON.parse(response.body)
+        expect(result_spell['name']).to eq('New Spell')
+        expect(result_spell['userId']).not_to be_nil
       end
     end
   end
 
-  describe "PUT update Spells" do
+  describe "PUT Update Spell" do
     context "for Logged Out Users" do
       it "returns an error for non-user editing" do
-        put "/v1/spells/#{fighter_class.slug}.json", params: {
+        put "/v1/spells/#{spell1.slug}.json", params: {
           spell: {
-            name: 'Fighter Edited',
+            name: 'Test Spell Edited'
           }
         }
-        result_item = JSON.parse(response.body)
-        expect(result_item['error']).to eq('You need to sign in or sign up before continuing.')
+        result_spell = JSON.parse(response.body)
+        expect(result_spell['error']).to eq('You need to sign in or sign up before continuing.')
       end
     end
 
@@ -161,28 +218,6 @@ RSpec.describe "Spells", type: :request do
         sign_in admin
       end
 
-      it "updates a default class" do
-        put "/v1/spells/#{barbarian_class.slug}.json", params: {
-          spell: {
-            name: 'Barbarian Edited',
-          }
-        }
-        result_item = JSON.parse(response.body)
-        expect(result_item['userId']).to be_nil
-        expect(result_item['name']).to eq('Barbarian Edited')
-        expect(result_item['slug']).to eq('barbarian-edited')
-      end
-
-      it "updates a DM's class (rare) and persists the DM's ownership of the class" do
-        put "/v1/spells/#{death_knight_class.slug}.json", params: {
-          spell: {
-            name: 'Death Knight Edited',
-          }
-        }
-        result_item = JSON.parse(response.body)
-        expect(result_item['name']).to eq('Death Knight Edited')
-        expect(result_item['slug']).to eq('death-knight-edited-jesshdm')
-      end
     end
 
     context "for Dungeon Masters" do
@@ -190,45 +225,45 @@ RSpec.describe "Spells", type: :request do
         sign_in dungeon_master
       end
 
-      it "updates the requested item belonging to DM" do
-        put "/v1/spells/#{death_knight_class.slug}.json", params: {
+      it "updates the requested spell belonging to DM" do
+        put "/v1/spells/#{spell_custom1.slug}.json", params: {
           spell: {
-            name: 'Death Knight Edited',
+            name: 'Test Spell Edited'
           }
         }
-        result_item = JSON.parse(response.body)
-        expect(result_item['name']).to eq('Death Knight Edited')
-        expect(result_item['slug']).to eq('death-knight-edited-jesshdm')
+        result_spell = JSON.parse(response.body)
+        expect(result_spell['name']).to eq('Test Spell Edited')
+        expect(result_spell['userId']).to eq(dungeon_master.id)
       end
 
-      it "returns an error for attempting to edit another user's Spell" do
-        put "/v1/spells/#{death_knight_class_other.slug}.json", params: {
+      it "returns an error for non-admin editing default spell" do
+        put "/v1/spells/#{spell1.slug}.json", params: {
           spell: {
-            name: 'Death Knight Edited',
+            name: 'Test Spell Edited'
           }
         }
-        result_item = JSON.parse(response.body)
-        expect(result_item['errors']).to eq('User action not allowed.')
+        result_spell = JSON.parse(response.body)
+        expect(result_spell['errors']).to eq('User action not allowed.')
       end
 
-      it "returns an error for non-admin editing" do
-        put "/v1/spells/#{fighter_class.slug}.json", params: {
+      it "returns an error for non-admin editing other DM's spell" do
+        put "/v1/spells/#{spell_custom2.slug}.json", params: {
           spell: {
-            name: 'Fighter Edited',
+            name: 'Test Spell Edited'
           }
         }
-        result_item = JSON.parse(response.body)
-        expect(result_item['errors']).to eq('User action not allowed.')
+        result_spell = JSON.parse(response.body)
+        expect(result_spell['errors']).to eq('User action not allowed.')
       end
     end
   end
 
-  describe "DELETE Spells" do
+  describe "DELETE Delete Spell" do
     context "for Logged Out Users" do
-      it "returns an error for non-user editing" do
-        delete "/v1/spells/#{fighter_class.slug}.json"
-        result_item = JSON.parse(response.body)
-        expect(result_item['error']).to eq('You need to sign in or sign up before continuing.')
+      it "returns an error for non-user delete" do
+        delete "/v1/spells/#{spell1.slug}.json"
+        result_spell = JSON.parse(response.body)
+        expect(result_spell['error']).to eq('You need to sign in or sign up before continuing.')
       end
     end
 
@@ -237,13 +272,13 @@ RSpec.describe "Spells", type: :request do
         sign_in admin
       end
 
-      it "deletes a default class" do
-        delete "/v1/spells/#{fighter_class.slug}.json"
+      it "deletes the requested spell belonging to DM" do
+        delete "/v1/spells/#{spell_custom1.slug}.json"
         expect(response).to have_http_status(204)
       end
 
-      it "updates a DM's class (rare) and persists the DM's ownership of the class" do
-        delete "/v1/spells/#{death_knight_class.slug}.json"
+      it "deletes the requested default spell" do
+        delete "/v1/spells/#{spell1.slug}.json"
         expect(response).to have_http_status(204)
       end
     end
@@ -253,21 +288,21 @@ RSpec.describe "Spells", type: :request do
         sign_in dungeon_master
       end
 
-      it "deletes the requested item belonging to DM" do
-        delete "/v1/spells/#{death_knight_class.slug}.json"
+      it "deletes the requested spell belonging to DM" do
+        delete "/v1/spells/#{spell_custom1.slug}.json"
         expect(response).to have_http_status(204)
       end
 
-      it "returns an error for attempting to delete another user's Spell" do
-        delete "/v1/spells/#{death_knight_class_other.slug}.json"
-        result_item = JSON.parse(response.body)
-        expect(result_item['errors']).to eq('User action not allowed.')
+      it "returns an error for non-admin deleting default spell" do
+        delete "/v1/spells/#{spell1.slug}.json"
+        result_spell = JSON.parse(response.body)
+        expect(result_spell['errors']).to eq('User action not allowed.')
       end
 
-      it "returns an error for DM attempting to delete a default Spell" do
-        delete "/v1/spells/#{fighter_class.slug}.json"
-        result_item = JSON.parse(response.body)
-        expect(result_item['errors']).to eq('User action not allowed.')
+      it "returns an error for non-admin deleting other DM's spell" do
+        delete "/v1/spells/#{spell_custom2.slug}.json"
+        result_spell = JSON.parse(response.body)
+        expect(result_spell['errors']).to eq('User action not allowed.')
       end
     end
   end

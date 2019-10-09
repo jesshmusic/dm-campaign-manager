@@ -35,17 +35,16 @@
 
 FactoryBot.define do
   factory :spell do
-    name { "MyText" }
-    description { "MyText" }
-    higher_level { "MyText" }
-    page { "MyText" }
-    range { "MyText" }
-    components { "MyText" }
-    material { "MyText" }
-    ritual { false }
-    duration { "MyText" }
-    concentration { false }
-    casting_time { "MyString" }
-    level { 1 }
+    name { Faker::Games::ElderScrolls.dragon }
+    description { Faker::Games::Witcher.quote }
+    range { "60 feet" }
+    components { [%w(V S M), %w(V S), %w(V), %w(S), %w(M), %w(V M), %w(S M)].sample }
+    material { Faker::Games::Zelda.item }
+    ritual { [false, true].sample }
+    duration { ['1 Round', '1 minute', '10 minutes', '1 hour'].sample }
+    concentration { [false, true].sample }
+    casting_time { ['Instant', 'Reaction', '1 Round'].sample }
+    school { %w(Evocation Conjuration Necromancy Illusion).sample }
+    level { Faker::Number.between(from: 1, to: 9) }
   end
 end

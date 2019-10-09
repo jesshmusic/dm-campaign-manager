@@ -6,7 +6,7 @@ class SpellPolicy < ApplicationPolicy
   end
 
   def show?
-    true
+    user&.admin? || (user && record.user == user) || record.user.nil?
   end
 
   def update?

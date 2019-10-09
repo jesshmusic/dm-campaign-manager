@@ -63,7 +63,7 @@ module Admin::V1
       respond_to do |format|
         if @spell.save
           format.html { redirect_to v1_spell_url(slug: @spell.slug), notice: 'Spell was successfully created.' }
-          format.json { render :show, status: :created, location: @spell }
+          format.json { render :show, status: :created }
         else
           format.html { render :new }
           format.json { render json: @spell.errors.full_messages.join(', '), status: :unprocessable_entity }
@@ -79,7 +79,7 @@ module Admin::V1
       respond_to do |format|
         if @spell.update(spell_params)
           format.html { redirect_to v1_spell_url(slug: @spell.slug), notice: 'Spell was successfully updated.' }
-          format.json { render :show, status: :ok, location: @spell }
+          format.json { render :show, status: :ok }
         else
           format.html { render :edit }
           format.json { render json: @spell.errors.full_messages.join(', '), status: :unprocessable_entity }
@@ -108,7 +108,12 @@ module Admin::V1
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def spell_params
-      params.require(:spell).permit(:name, :description, :higher_level, :page, :range, :material, :ritual, :duration, :concentration, :casting_time, :level, components: [], dnd_class_ids: [])
+      params.require(:spell).permit(:name, :description, :higher_level,
+                                    :page, :range, :material, :ritual,
+                                    :duration, :concentration, :casting_time,
+                                    :level, :school,
+                                    components: [],
+                                    dnd_class_ids: [])
     end
   end
 end

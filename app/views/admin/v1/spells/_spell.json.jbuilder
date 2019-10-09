@@ -3,8 +3,8 @@
 json.key_format! camelize: :lower
 
 json.extract! spell, :id, :name, :higher_level, :page,
-              :range, :components, :material, :ritual, :duration,
-              :concentration, :casting_time, :level, :school
+              :range, :components, :material, :ritual, :duration, :slug,
+              :concentration, :casting_time, :level, :school, :user_id
 
 json.description_text spell.description_text
 json.spell_classes spell.spell_classes
