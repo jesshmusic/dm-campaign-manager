@@ -136,6 +136,50 @@ RSpec.describe 'Adventures', type: :request do
     end
   end
 
+  describe "GET New Adventure(unsaved, initial values)" do
+    context "for Logged Out Users" do
+      it "returns an error for forbidden" do
+        get "/v1/campaigns/#{campaign.slug}/adventures/new.json"
+        result_items = JSON.parse(response.body)
+        expect(result_items['errors']).to eq("User action not allowed.")
+      end
+    end
+
+    context "for Admins" do
+      before(:each) do
+        sign_in admin
+      end
+
+      it "returns a success response" do
+        get "/v1/campaigns/#{campaign.slug}/adventures/new.json"
+        expect(response).to have_http_status(200)
+      end
+
+      it "returns Adventure" do
+        get "/v1/campaigns/#{campaign.slug}/adventures/new.json"
+        result_item = JSON.parse(response.body)
+        expect(result_item['pcs'].count).to eq(5)
+      end
+    end
+
+    context "for Dungeon Masters" do
+      before(:each) do
+        sign_in dungeon_master
+      end
+
+      it "returns a success response" do
+        get "/v1/campaigns/#{campaign.slug}/adventures/new.json"
+        expect(response).to have_http_status(200)
+      end
+
+      it "returns new Adventure with 5 PCs" do
+        get "/v1/campaigns/#{campaign.slug}/adventures/new.json"
+        result_item = JSON.parse(response.body)
+        expect(result_item['pcs'].count).to eq(5)
+      end
+    end
+  end
+
   describe "GET Edit an Adventure (admin only)" do
     context "for Logged Out Users" do
       it "returns a forbidden response" do
