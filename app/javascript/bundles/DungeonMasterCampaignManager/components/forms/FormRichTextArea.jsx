@@ -35,8 +35,7 @@ const FormRichTextArea = ({name, label, colWidth}) => (
                     alignleft aligncenter alignright alignjustify | \
                     bullist numlist outdent indent | removeformat | help',
                 }}
-                onEditorChange={(content, editor) => handleEditorChange(content, input, editor)}
-                // onChange={(event) => input.onChange(event.target.getContent())}
+                onEditorChange={(content) => input.onChange(content)}
           />
           <Form.Control.Feedback type="invalid">{meta.error}</Form.Control.Feedback>
         </div>
