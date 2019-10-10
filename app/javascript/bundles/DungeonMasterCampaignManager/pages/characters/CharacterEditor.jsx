@@ -46,7 +46,7 @@ import Weapon2HSelect from './partials/items/Weapon2HSelect';
 import WeaponRadios from './partials/items/WeaponRadios';
 import CharacterItemFields from './partials/items/CharacterItemFields';
 import Accordion from 'react-bootstrap/Accordion';
-import useAccordionToggle from 'react-bootstrap/useAccordionToggle';
+import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
 import {FiChevronDown} from 'react-icons/all';
 import Alert from 'react-bootstrap/Alert';
 import NameField from './partials/NameField';
