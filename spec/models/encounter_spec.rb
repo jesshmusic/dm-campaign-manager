@@ -42,6 +42,9 @@ RSpec.describe Encounter, type: :model do
 
   describe 'Encounter Model' do
     before(:each) do
+      @campaign_npc = campaign.npcs.first
+      @campaign_npc.name = 'Andrade Mirrius'
+      @campaign_npc.save!
       @adventure = campaign.adventures.first
       @prev_encounter = @adventure.encounters.last
       @encounter = Encounter.create(
@@ -84,6 +87,15 @@ RSpec.describe Encounter, type: :model do
         expect(@encounter.encounter_items.first.quantity).to eq(2)
         expect(@encounter.encounter_items.first.item).to eq(item)
       end
+
+      it "is has 1 NPC" do
+        @encounter.characters << @campaign_npc
+        @encounter.save!
+        @encounter.reload
+        expect(@encounter.npcs.count).to eq(1)
+        expect(@encounter.npcs.first).not_to be_nil
+        expect(@encounter.npcs.first).to eq(@campaign_npc)
+      end
     end
 
     context 'Encounter methods' do
@@ -101,13 +113,17 @@ RSpec.describe Encounter, type: :model do
         expect(@encounter.encounter_combatants.count).to eq(10)
       end
 
+      it 'has 11 combatants when NPC is added and the encounter is reset' do
+        @encounter.characters << @campaign_npc
+        @encounter.update_encounter
+        @encounter.save!
+        @encounter.reload
+        expect(@encounter.encounter_combatants.count).to eq(11)
+      end
+
       it 'starts with the proper encounter state' do
         expect(@encounter.round).to eq(1)
         expect(@encounter.current_mob_index).to eq(0)
-      end
-
-      it 'sets the initiative order' do
-
       end
     end
   end

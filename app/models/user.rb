@@ -78,6 +78,8 @@ class User < ApplicationRecord
 
   # provide a custom message for a deleted account
   def inactive_message
+    return :active if active_for_authentication?
+
     !deleted_at ? super : :deleted_account
   end
 

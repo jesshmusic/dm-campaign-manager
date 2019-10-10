@@ -38,5 +38,49 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  let!(:user) {create :user}
+
+  context 'Defaults' do
+    it 'should set role to "Dungeon Master"' do
+      expect(user.role == :dungeon_master)
+    end
+
+    it 'should set slug to "test-dm"' do
+      expect(user.slug).to eq('jesshmusic')
+    end
+
+    it 'should return true for active_for_authentication' do
+      expect(user.active_for_authentication?).to eq(true)
+    end
+
+    it 'should return :active for the inactive_message' do
+      expect(user.inactive_message).to eq(:active)
+    end
+
+    it 'should return the slug for to_param' do
+      expect(user.to_param).to eq('jesshmusic')
+    end
+  end
+
+  context 'Soft Deletes' do
+    before(:each) do
+      user.soft_delete
+      user.reload
+    end
+    it 'should not delete a user' do
+      expect(User.all.count).to eq(1)
+    end
+
+    it 'should set deleted_at instead of deleting the user' do
+      expect(user.deleted_at).not_to be_nil
+    end
+
+    it 'should return false for active_for_authentication' do
+      expect(user.active_for_authentication?).to eq(false)
+    end
+
+    it 'should return :deleted_account for the inactive_message' do
+      expect(user.inactive_message).to eq(:deleted_account)
+    end
+  end
 end
