@@ -15,6 +15,8 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import {Form as FinalForm} from 'react-final-form';
 import Col from 'react-bootstrap/Col';
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
+import FormRichTextArea from '../../../components/forms/FormRichTextArea';
+import classes from '../../characters/partials/character-form.module.scss';
 
 const CampaignForm = ({arrayMutators, initialValues, onDelete, onFormSubmit, submitButtonText, validated, validateForm }) => (
   <FinalForm onSubmit={onFormSubmit}
@@ -29,6 +31,7 @@ const CampaignForm = ({arrayMutators, initialValues, onDelete, onFormSubmit, sub
                submitting,
                form,
                pristine,
+               values,
              }) => (
                <Form noValidate validated={validated} onSubmit={handleSubmit}>
                  <Form.Row>
@@ -42,7 +45,7 @@ const CampaignForm = ({arrayMutators, initialValues, onDelete, onFormSubmit, sub
                               name={'world'}/>
                  </Form.Row>
                  <Form.Row>
-                   <FormTextArea label={'Description'} colWidth={'12'} name={'description'}/>
+                   <FormRichTextArea label={'Description'} colWidth={'12'} name={'description'}/>
                  </Form.Row>
                  <Form.Row className={'my-4 py-4 border-top'}>
                    <Col>
@@ -88,6 +91,7 @@ const CampaignForm = ({arrayMutators, initialValues, onDelete, onFormSubmit, sub
                      <Button type="submit" disabled={submitting} variant={'success'}>{submitButtonText}</Button>
                    </ButtonGroup>
                  </ButtonToolbar>
+                 <pre className={classes.preBlock}>{JSON.stringify(values, 0, 2)}</pre>
                </Form>
              )} />
 );

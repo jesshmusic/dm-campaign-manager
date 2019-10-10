@@ -33,7 +33,7 @@ const CampaignBody = ({
   campaign ? (
     <Row>
       <Col sm={7} md={8}>
-        <ReactMarkdown source={campaign.description} />
+        <div dangerouslySetInnerHTML={{ __html: campaign.description }} />
         <h3>Adventures</h3>
         <Button variant={'success'}
                 block
