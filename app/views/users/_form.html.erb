@@ -4,26 +4,13 @@
 
   <h2><%= 'Admin' if current_user.admin? %></h2>
   <h2><%= 'Dungeon Master' if current_user.dungeon_master? %></h2>
-  <h2><%= 'Player' if current_user.player? %></h2>
 
   <div class="form-inputs">
-    <%= form.input :email %>
+    <%= form.input :email, required: true %>
     <%= form.input :name, required: true %>
     <%= form.input :username, required: true %>
-
-    <% if current_user.admin? %>
-        <%= form.input :role,
-                   as: :radio_buttons,
-                   collection: [['player', 'Player'], ['dungeon_master', 'Dungeon Master'], ['admin', 'Admin']],
-                   label_method: :second,
-                   value_method: :first %>
-    <% else %>
-        <%= form.input :role,
-                   as: :radio_buttons,
-                   collection: [['player', 'Player'], ['dungeon_master', 'Dungeon Master']],
-                   label_method: :second,
-                   value_method: :first %>
-    <% end %>
+    <%= form.input :location %>
+    <%= form.input :info %>
   </div>
 
   <div class="form-actions">

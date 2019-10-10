@@ -30,5 +30,10 @@
   <div class="wrapper__footer">
     <%= link_to 'Edit', edit_user_path(@user), class: "btn btn-success" %>
     <%= link_to 'Back', users_path, class: "btn btn-primary" %>
+    <% if @user.deleted_at? %>
+      <%= link_to 'Activate', user_path(@user, user: { deleted_at: nil }), class: "btn btn-sm btn-success", method: :put, data: { confirm: "Reactivate the account for #{@user.email}?" } %>
+    <% else %>
+      <%= link_to 'Deactivate', user_path(@user), class: "btn btn-sm btn-danger", method: :delete, data: { confirm: 'Are you sure?' } %>
+    <% end %>
   </div>
 </div>

@@ -2,11 +2,11 @@
 
 class UserPolicy < ApplicationPolicy
   def index?
-    user
+    user.admin?
   end
 
   def show?
-    user
+    user.admin? || (user == record)
   end
 
   def edit?

@@ -7,8 +7,8 @@
   </ol>
 </nav>
 <h1>Edit - <small><em><%= @user.name %> <%= @user.username %></em></small></h1>
-<% if !@user.confirmed_at? %>
-  <h3>Currently waiting confirmation.</h3>
+<% unless @user.confirmed_at? %>
+<h3>Currently waiting confirmation.</h3>
 <% end %>
 <%= render 'form', user: @user %>
 <div class="admin__footer">
