@@ -25,11 +25,6 @@ class UsersController < ApplicationController
   # GET /v1/users/{id}
   def show
     authorize @user
-
-    respond_to do |format|
-      format.html { @user }
-      format.json
-    end
   end
 
   def edit
