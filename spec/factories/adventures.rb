@@ -27,7 +27,7 @@ FactoryBot.define do
     description { Faker::TvShows::GameOfThrones.quote }
 
     transient do
-      encounters_count { rand(1..3) }
+      encounters_count { 3 }
     end
 
     after(:create) do |adventure, evaluator|

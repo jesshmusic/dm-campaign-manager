@@ -30,7 +30,7 @@ RSpec.describe Adventure, type: :model do
   let!(:dungeon_master) { create :dungeon_master_user }
   let!(:campaign) { create :campaign_with_full_adventure, user: dungeon_master }
 
-  describe 'Adventure Object' do
+  describe 'Adventure Model' do
     context 'has associations' do
       before(:each) do
         @adventure = campaign.adventures.first
