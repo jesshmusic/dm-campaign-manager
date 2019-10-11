@@ -58,6 +58,14 @@ class Adventure extends React.Component {
     const { showingNewEncounterForm } = this.state;
     const { adventure, campaign, campaignSlug, flashMessages, loading, user } = this.props;
     const adventureTitle = adventure ? adventure.name : 'Adventure Loading...';
+    let sortNum = 0;
+    if (adventure) {
+      adventure.encounters.forEach((nextEncounter) => {
+        if (nextEncounter.sort >= sortNum) {
+          sortNum = nextEncounter.sort + 1;
+        }
+      });
+    }
     return (
       <PageContainer user={user}
                      flashMessages={flashMessages}
@@ -121,6 +129,7 @@ class Adventure extends React.Component {
                     <EncounterForm
                       adventure={adventure}
                       campaign={campaign}
+                      newEncounterSort={sortNum}
                       onCancelEditing={() => this.handleCancelEditing()}/>
                   </Modal.Body>
                 </Modal>

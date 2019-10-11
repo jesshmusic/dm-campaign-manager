@@ -26,7 +26,7 @@ const setEncounterObject = (values) => {
     name: values.name,
     platinumPieces: values.platinumPieces,
     silverPieces: values.silverPieces,
-    characterIds: values.npcs ? values.npcs.map((npc) => npc.value) : [],
+    sort: values.sort,
     encounterMonstersAttributes: values.encounterMonsters.map((encounterMonster) => {
       const newMonsters = {
         numberOfMonsters: encounterMonster.numberOfMonsters,
@@ -53,6 +53,19 @@ const setEncounterObject = (values) => {
       }
       return itemFields;
     }),
+    encounterNpcsAttributes: values.encounterNpcs.map((npc) => {
+      const npcFields = {
+        isCombatant: npc.isCombatant,
+        characterId: npc.npc.value,
+      };
+      if (npc.id) {
+        npcFields.id = npc.id;
+      }
+      if (npc._destroy) {
+        npcFields._destroy = npc._destroy;
+      }
+      return npcFields;
+    }),
   };
   if (values.id) {
     encounterFields.id = values.id;
@@ -77,6 +90,7 @@ class EncounterForm extends React.Component {
       name: '',
       platinumPieces: 0,
       silverPieces: 0,
+      sort: this.props.newEncounterSort ? this.props.newEncounterSort : 0,
       encounterMonsters: [],
       encounterItems: [],
       npcs: [],
@@ -92,13 +106,12 @@ class EncounterForm extends React.Component {
       initialValues.electrumPieces = encounter.electrumPieces;
       initialValues.goldPieces = encounter.goldPieces;
       initialValues.platinumPieces = encounter.platinumPieces;
+      initialValues.sort = encounter.sort;
       initialValues.encounterItems = encounter.encounterItems;
       initialValues.encounterMonsters = encounter.encounterMonsters;
-      initialValues.npcs = encounter.npcs.map((npc) => ({
-        value: npc.id,
-        label: `${npc.name} -- ${npc.classes}`,
-      }));
+      initialValues.encounterNpcs = encounter.encounterNpcs;
     }
+    console.log(initialValues);
     this.setState({
       encounter: initialValues,
       submitButtonTitle: this.props.encounter ? 'Save' : 'Add',
@@ -189,13 +202,14 @@ class EncounterForm extends React.Component {
 
 EncounterForm.propTypes = {
   adventure: PropTypes.object.isRequired,
-  encounter: PropTypes.object,
   campaign: PropTypes.object.isRequired,
   createEncounter: PropTypes.func.isRequired,
-  updateEncounter: PropTypes.func.isRequired,
+  encounter: PropTypes.object,
+  newEncounterSort: PropTypes.number,
   onCancelEditing: PropTypes.func,
   onDelete: PropTypes.func,
   showing: PropTypes.bool,
+  updateEncounter: PropTypes.func.isRequired,
 };
 
 function mapStateToProps (state) {

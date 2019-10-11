@@ -88,9 +88,9 @@ class Encounter extends React.Component {
               <Col>
                 <h4>NPCs</h4>
                 <ListGroup variant="flush">
-                  {encounter.npcs.map((npc) => (
-                    <ListGroup.Item key={npc.id}>
-                      <strong>{npc.name}</strong> : {npc.classes} - <strong className={'text-muted'}>{npc.role}</strong> - <strong className={'text-muted'}>CR: {npc.challengeRating}</strong>
+                  {encounter.encounterNpcs.map((encounterNPC) => (
+                    <ListGroup.Item key={encounterNPC.npc.id}>
+                      <strong>{encounterNPC.npc.name}</strong> : {encounterNPC.npc.classes} - <strong className={'text-muted'}>{encounterNPC.npc.role}</strong> - <strong className={'text-muted'}>CR: {encounterNPC.npc.challengeRating}</strong>
                     </ListGroup.Item>
                   ))}
                 </ListGroup>

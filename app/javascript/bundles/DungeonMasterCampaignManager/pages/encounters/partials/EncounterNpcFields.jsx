@@ -10,15 +10,15 @@ import Button from 'react-bootstrap/Button';
 import { GiTrashCan } from 'react-icons/gi';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
-import MonsterSelect from '../../monsters/partials/MonsterSelect';
+import NpcSelect from '../../characters/partials/NpcSelect';
 
-const EncounterMonsterFields = ({encounterMonster, fields, index}) => {
+const EncounterNpcFields = ({encounterNpc, fields, index, npcOptions}) => {
   const removeItem = () => {
     if (fields.value[index] && fields.value[index].id) {
       fields.update(index, {
         id: fields.value[index].id,
-        numberOfMonsters: fields.value[index].numberOfMonsters,
-        monster: fields.value[index].monster,
+        isCombatant: fields.value[index].isCombatant,
+        npc: fields.value[index].npc,
         _destroy: true,
       });
     } else {
@@ -30,22 +30,22 @@ const EncounterMonsterFields = ({encounterMonster, fields, index}) => {
     <Card className={'mb-3'}>
       <Card.Body>
         <Form.Row>
-          <FormField label={'Number of Monsters'}
-                     type={'number'}
+          <FormField label={'Is Combatant?'}
+                     type={'checkbox'}
                      colWidth={'12'}
-                     name={`${encounterMonster}.numberOfMonsters`}/>
+                     name={`${encounterNpc}.isCombatant`}/>
         </Form.Row>
-        <MonsterSelect name={`${encounterMonster}.monster`}/>
+        <NpcSelect name={`${encounterNpc}.npc`} npcOptions={npcOptions}/>
       </Card.Body>
       <Card.Footer>
         <Form.Row>
           <Form.Group as={Col} md={'12'} className={'my-0'}>
             <Button onClick={() => removeItem()}
-                    title={'Remove Monster'}
+                    title={'Remove NPC'}
                     variant={'link'}
                     className={'py-0 d-flex align-items-center'}>
               <GiTrashCan size={24}/>
-              <span className={'pt-2 pb-1'}>Remove Monster</span>
+              <span className={'pt-2 pb-1'}>Remove NPC</span>
             </Button>
           </Form.Group>
         </Form.Row>
@@ -54,10 +54,11 @@ const EncounterMonsterFields = ({encounterMonster, fields, index}) => {
   );
 };
 
-EncounterMonsterFields.propTypes = {
-  encounterMonster: PropTypes.string.isRequired,
+EncounterNpcFields.propTypes = {
+  encounterNpc: PropTypes.string.isRequired,
   index: PropTypes.number.isRequired,
   fields: PropTypes.object.isRequired,
+  npcOptions: PropTypes.array.isRequired,
 };
 
-export default EncounterMonsterFields;
+export default EncounterNpcFields;

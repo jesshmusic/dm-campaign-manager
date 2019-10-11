@@ -32,6 +32,7 @@
 #
 
 class Encounter < ApplicationRecord
+  before_create :set_sort_order
   before_save :pre_setup_encounter
   after_create :setup_encounter
 
@@ -56,6 +57,10 @@ class Encounter < ApplicationRecord
     sum_of_monsters
   end
 
+  def set_sort_order
+    self.sort = adventure.encounters.count - 1
+  end
+
   def pre_setup_encounter
     self.xp = 0
     encounter_monsters.each do |encounter_monster|
@@ -78,7 +83,6 @@ class Encounter < ApplicationRecord
   end
 
   def setup_encounter
-    self.sort = adventure.encounters.count - 1
     combat_order_num = 0
     encounter_monsters.each do |encounter_monster|
       (1..encounter_monster.number_of_monsters).each do |value|

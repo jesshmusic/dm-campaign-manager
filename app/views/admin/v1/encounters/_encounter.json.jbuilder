@@ -49,8 +49,13 @@ json.encounter_items encounter.encounter_items do |encounter_item|
   end
 end
 
-json.npcs encounter.npcs do |npc|
-  json.partial! 'admin/v1/characters/character_summary', character: npc
+json.encounter_npcs encounter.encounter_npcs do |encounter_npc|
+  json.id encounter_npc.id
+  json.is_combatant encounter_npc.is_combatant
+
+  json.npc do
+    json.partial! 'admin/v1/characters/character_summary', character: encounter_npc.character
+  end
 end
 
 json.npc_options encounter.npc_options do |npc_option|

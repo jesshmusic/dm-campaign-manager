@@ -12,7 +12,7 @@ import FormRichTextArea from '../../../components/forms/FormRichTextArea';
 import {FieldArray} from 'react-final-form-arrays';
 import EncounterMonsterFields from './EncounterMonsterFields';
 import EncounterItemFields from './EncounterItemFields';
-import FormSelect from '../../../components/forms/FormSelect';
+import EncounterNpcFields from './EncounterNpcFields';
 
 const EncounterFields = ({encounterFieldName, npcOptions, push}) => (
   <div>
@@ -41,12 +41,24 @@ const EncounterFields = ({encounterFieldName, npcOptions, push}) => (
       <FormField label={'Platinum'} type={'number'} colWidth={'2'} name={`${encounterFieldName}platinumPieces`}/>
     </Form.Row>
     <Form.Row>
-      <FormSelect label={'Encounter NPCs'}
-                  name={`${encounterFieldName}npcs`}
-                  colWidth={'12'}
-                  options={npcOptions}
-                  isClearable
-                  isMulti/>
+      <Col md={12}>
+        <h4>NPCs</h4>
+        <FieldArray name={`${encounterFieldName}encounterNpcs`}>
+          {({fields}) => (
+            fields.map((npc, index) => (
+              !fields.value[index] || !fields.value[index]._destroy ? (
+                <EncounterNpcFields encounterNpc={npc}
+                                    fields={fields}
+                                    index={index}
+                                    key={index}
+                                    npcOptions={npcOptions}/>
+              ) : null))
+          )}
+        </FieldArray>
+        <Button type="button" onClick={() => push(`${encounterFieldName}encounterNpcs`, {
+          isCombatant: false,
+        })} variant={'link'} block>Add NPC...</Button>
+      </Col>
     </Form.Row>
     <Form.Row>
       <Col md={12}>
