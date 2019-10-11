@@ -98,7 +98,7 @@ class Adventure extends React.Component {
             </Row>
             <Row>
               <Col>
-                <ReactMarkdown source={adventure.description} />
+                <div dangerouslySetInnerHTML={{ __html: adventure.description }} />
               </Col>
             </Row>
             <Row>

@@ -8,7 +8,7 @@ import {Form as FinalForm} from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
 import Form from 'react-bootstrap/Form';
 import FormField from '../../../components/forms/FormField';
-import FormTextArea from '../../../components/forms/FormTextArea';
+import FormRichTextArea from '../../../components/forms/FormRichTextArea';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Button from 'react-bootstrap/Button';
 import FormSelect from '../../../components/forms/FormSelect';
@@ -211,7 +211,7 @@ class AdventureForm extends React.Component {
                                   name={'name'}/>
                      </Form.Row>
                      <Form.Row>
-                       <FormTextArea label={'Description'} colWidth={'12'} name={'description'}/>
+                       <FormRichTextArea label={'Description'} colWidth={'12'} name={'description'}/>
                      </Form.Row>
                      <Form.Row>
                        <FormSelect

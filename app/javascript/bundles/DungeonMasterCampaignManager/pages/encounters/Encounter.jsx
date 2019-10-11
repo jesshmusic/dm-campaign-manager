@@ -77,7 +77,7 @@ class Encounter extends React.Component {
             </Row>
             <Row>
               <Col>
-                <ReactMarkdown source={ encounter.description }/>
+                <div dangerouslySetInnerHTML={{ __html: encounter.description }} />
               </Col>
             </Row>
             <EncounterTracker adventureId={adventureId}

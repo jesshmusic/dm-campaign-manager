@@ -8,7 +8,7 @@ import FormField from '../../../components/forms/FormField';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
-import FormTextArea from '../../../components/forms/FormTextArea';
+import FormRichTextArea from '../../../components/forms/FormRichTextArea';
 import {FieldArray} from 'react-final-form-arrays';
 import EncounterMonsterFields from './EncounterMonsterFields';
 import EncounterItemFields from './EncounterItemFields';
@@ -27,7 +27,7 @@ const EncounterFields = ({encounterFieldName, npcOptions, push}) => (
                  name={`${encounterFieldName}location`}/>
     </Form.Row>
     <Form.Row>
-      <FormTextArea
+      <FormRichTextArea
         label={'Description'}
         colWidth={'12'}
         name={`${encounterFieldName}description`}/>

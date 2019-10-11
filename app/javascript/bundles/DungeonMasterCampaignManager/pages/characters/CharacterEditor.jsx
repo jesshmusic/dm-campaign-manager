@@ -16,7 +16,7 @@ import Form from 'react-bootstrap/Form';
 
 import FormField from '../../components/forms/FormField';
 import FormSelect from '../../components/forms/FormSelect';
-import FormTextArea from '../../components/forms/FormTextArea';
+import FormRichTextArea from '../../components/forms/FormRichTextArea';
 import CharacterClassFields from './partials/CharacterClassFields';
 // Spell Selects
 import BardSpellSelect from './partials/spell-fields/BardSpellSelect';
@@ -176,7 +176,7 @@ class CharacterEditor extends React.Component {
                          <FormField label={'Background'} type={'text'} colWidth={'3'} name={'background'}/>
                        </Form.Row>
                        <Form.Row>
-                         <FormTextArea label={'Description'} colWidth={'7'} name={'description'}/>
+                         <FormRichTextArea label={'Description'} colWidth={'7'} name={'description'}/>
                          <FormField label={'Languages'} type={'text'} colWidth={'5'} name={'languages'}/>
                        </Form.Row>
                        <SectionHeading eventKey={'0'} title={'Classes'}/>
