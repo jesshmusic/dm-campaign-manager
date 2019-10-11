@@ -102,6 +102,14 @@ RSpec.describe "Encounters", type: :request do
         expect(result_item['name']).to eq('Ambush!')
         expect(result_item['description']).to eq('The first room of the dungeon')
       end
+
+      it "should have EncounterCombatants with proper fields" do
+        get "/v1/campaigns/#{campaign.slug}/adventures/#{@adventure.id}/encounters/#{@encounter.id}.json"
+        result_item = JSON.parse(response.body)
+        combatants = result_item['combatants']
+        expect(combatants.first['name']).not_to be_nil
+        expect(combatants.first['combatant']).not_to be_nil
+      end
     end
 
     context "for Dungeon Masters" do
