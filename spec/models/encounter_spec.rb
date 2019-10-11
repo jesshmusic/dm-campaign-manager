@@ -37,7 +37,12 @@ RSpec.describe Encounter, type: :model do
   let!(:admin) { create :admin_user }
   let!(:dungeon_master) { create :dungeon_master_user }
   let!(:campaign) { create :campaign_with_full_adventure, user: dungeon_master }
-  let!(:monster) { create :monster, name: 'Orc', hit_dice_number: 2, hit_dice_value: 10}
+  let!(:monster) { create :monster,
+                          name: 'Orc',
+                          hit_dice_number: 2,
+                          hit_dice_value: 10,
+                          challenge_rating: '1/2',
+                          hit_points: 15 }
   let!(:item) { create :armor_item, name: 'Mithril Armor' }
 
   describe 'Encounter Model' do
@@ -58,37 +63,37 @@ RSpec.describe Encounter, type: :model do
         silver_pieces: 10,
         adventure: @adventure
       )
-
       @encounter.encounter_monsters << EncounterMonster.create(number_of_monsters: 5, monster: monster)
       @encounter.encounter_items << EncounterItem.create(quantity: 2, item: item)
       @encounter.update_encounter
       @encounter.save!
+      @encounter.reload
       @adventure.reload
     end
     context 'has associations' do
-      it "is named\"Test Encounter\"" do
+      it "should be named\"Test Encounter\"" do
         expect(@encounter.name).to eq('Test Encounter')
       end
 
-      it "is associated with the adventure" do
+      it "should be associated with the adventure" do
         expect(@encounter.adventure).to eq(@adventure)
       end
 
-      it "is has 1 EncounterMonster with 5 Orcs" do
+      it "should have 1 EncounterMonster with 5 Orcs" do
         expect(@encounter.encounter_monsters.count).to eq(1)
         expect(@encounter.encounter_monsters.first).not_to be_nil
         expect(@encounter.encounter_monsters.first.number_of_monsters).to eq(5)
         expect(@encounter.encounter_monsters.first.monster).to eq(monster)
       end
 
-      it "is has 2 Mithril Armor Items" do
+      it "should have 2 Mithril Armor Items" do
         expect(@encounter.encounter_items.count).to eq(1)
         expect(@encounter.encounter_items.first).not_to be_nil
         expect(@encounter.encounter_items.first.quantity).to eq(2)
         expect(@encounter.encounter_items.first.item).to eq(item)
       end
 
-      it "is has 1 NPC" do
+      it "should have 1 NPC" do
         @encounter.characters << @campaign_npc
         @encounter.save!
         @encounter.reload
@@ -99,21 +104,35 @@ RSpec.describe Encounter, type: :model do
     end
 
     context 'Encounter methods' do
-      it 'has the correct next encounter id' do
+      it 'should have the correct next encounter id' do
         expect(@encounter.next_encounter_id).to eq(@adventure.encounters.first.id)
       end
 
-      it 'has the correct previous encounter id' do
+      it 'should have the correct previous encounter id' do
         expect(@encounter.prev_encounter_id).to eq(@prev_encounter.id)
+      end
+
+      it "should calculate the correct XP for combatants only" do
+        @encounter.encounter_npcs << EncounterNpc.create(is_combatant: false, character: @campaign_npc)
+        @encounter.save!
+        @encounter.reload
+        expect(@encounter.xp).to eq(500)
+      end
+
+      it "should calculate the correct XP for combatants including NPC" do
+        @encounter.encounter_npcs << EncounterNpc.create(is_combatant: true, character: @campaign_npc)
+        @encounter.save!
+        @encounter.reload
+        expect(@encounter.xp).to be > 500
       end
     end
 
     context 'Encounter Tracker' do
-      it 'has 10 combatants' do
+      it 'should have 10 combatants' do
         expect(@encounter.encounter_combatants.count).to eq(10)
       end
 
-      it 'has 11 combatants when NPC is added and the encounter is reset' do
+      it 'should have 11 combatants when NPC is added and the encounter is reset' do
         @encounter.characters << @campaign_npc
         @encounter.update_encounter
         @encounter.save!
@@ -121,7 +140,7 @@ RSpec.describe Encounter, type: :model do
         expect(@encounter.encounter_combatants.count).to eq(11)
       end
 
-      it 'starts with the proper encounter state' do
+      it 'should start with the proper encounter state' do
         expect(@encounter.round).to eq(1)
         expect(@encounter.current_mob_index).to eq(0)
       end

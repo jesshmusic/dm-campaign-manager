@@ -43,9 +43,10 @@ class Encounter < ApplicationRecord
   has_many :encounter_npcs, dependent: :destroy
   has_many :characters, through: :encounter_npcs
 
-  accepts_nested_attributes_for :encounter_monsters, reject_if: :all_blank, allow_destroy: true
-  accepts_nested_attributes_for :encounter_items, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :encounter_combatants
+  accepts_nested_attributes_for :encounter_items, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :encounter_monsters, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :encounter_npcs, reject_if: :all_blank, allow_destroy: true
 
   def total_monsters
     sum_of_monsters = 0
@@ -59,12 +60,12 @@ class Encounter < ApplicationRecord
     self.xp = 0
     encounter_monsters.each do |encounter_monster|
       (1..encounter_monster.number_of_monsters).each do
-        self.xp += DndRules.xp_for_cr encounter_monster.monster.challenge_rating
+        self.xp += encounter_monster.monster.xp
       end
     end
 
-    npcs.each do |npc|
-      self.xp += DndRules.xp_for_cr npc.challenge_rating
+    encounter_npcs.each do |npc|
+      self.xp += npc.character.xp if npc.is_combatant
     end
   end
 
@@ -90,12 +91,14 @@ class Encounter < ApplicationRecord
         combat_order_num += 1
       end
     end
-    npcs.each do |npc|
+    encounter_npcs.each do |npc|
+      next unless npc.is_combatant
+
       encounter_combatants << EncounterCombatant.create(
-        name: npc.name,
+        name: npc.character.name,
         combat_order_number: combat_order_num,
-        current_hit_points: npc.hit_points,
-        character: npc
+        current_hit_points: npc.character.hit_points,
+        character: npc.character
       )
       combat_order_num += 1
     end

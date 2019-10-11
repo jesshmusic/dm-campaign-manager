@@ -5,6 +5,7 @@
 # Table name: encounter_npcs
 #
 #  id           :bigint           not null, primary key
+#  is_combatant :boolean          default(FALSE), not null
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
 #  character_id :bigint

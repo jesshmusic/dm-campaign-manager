@@ -1,23 +1,23 @@
 # == Schema Information
 #
-# Table name: encounter_items
+# Table name: encounter_npcs
 #
 #  id           :bigint           not null, primary key
-#  quantity     :integer          default(1), not null
+#  is_combatant :boolean          default(FALSE), not null
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
+#  character_id :bigint
 #  encounter_id :bigint
-#  item_id      :bigint
 #
 # Indexes
 #
-#  index_encounter_items_on_encounter_id  (encounter_id)
-#  index_encounter_items_on_item_id       (item_id)
+#  index_encounter_npcs_on_character_id  (character_id)
+#  index_encounter_npcs_on_encounter_id  (encounter_id)
 #
 # Foreign Keys
 #
+#  fk_rails_...  (character_id => characters.id)
 #  fk_rails_...  (encounter_id => encounters.id)
-#  fk_rails_...  (item_id => items.id)
 #
 
 FactoryBot.define do

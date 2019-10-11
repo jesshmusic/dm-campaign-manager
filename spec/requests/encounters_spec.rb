@@ -351,6 +351,63 @@ RSpec.describe "Encounters", type: :request do
         result_item = JSON.parse(response.body)
         expect(result_item['errors']).to eq('User action not allowed.')
       end
+
+      it "should add an NPC to the encounter that is not a combatant" do
+        new_encounter_npc = campaign.npcs.first
+        old_combatants_count = @encounter.encounter_combatants.count
+        put "/v1/campaigns/#{campaign.slug}/adventures/#{@adventure.id}/encounters/#{@encounter.id}.json",
+            params: {
+              encounter: {
+                encounter_npcs_attributes: [{
+                  character_id: new_encounter_npc.id,
+                }]
+              }
+            }
+        @encounter.reload
+        expect(@encounter.encounter_combatants.count).to eq(old_combatants_count)
+      end
+
+      it "should add an NPC to the encounter that IS a combatant" do
+        new_encounter_npc = campaign.npcs.first
+        old_combatants_count = @encounter.encounter_combatants.count
+        put "/v1/campaigns/#{campaign.slug}/adventures/#{@adventure.id}/encounters/#{@encounter.id}.json",
+            params: {
+              encounter: {
+                encounter_npcs_attributes: [{
+                                              character_id: new_encounter_npc.id,
+                                              is_combatant: true,
+                                            }]
+              }
+            }
+        @encounter.reload
+        expect(@encounter.encounter_combatants.count).to eq(old_combatants_count + 1)
+      end
+
+      it "should change a non-combatant NPC to a combatant_NPC" do
+        new_encounter_npc = campaign.npcs.first
+        old_combatants_count = @encounter.encounter_combatants.count
+        put "/v1/campaigns/#{campaign.slug}/adventures/#{@adventure.id}/encounters/#{@encounter.id}.json",
+            params: {
+              encounter: {
+                encounter_npcs_attributes: [{
+                                              character_id: new_encounter_npc.id,
+                                            }]
+              }
+            }
+        @encounter.reload
+        expect(@encounter.encounter_combatants.count).to eq(old_combatants_count)
+        put "/v1/campaigns/#{campaign.slug}/adventures/#{@adventure.id}/encounters/#{@encounter.id}.json",
+            params: {
+              encounter: {
+                encounter_npcs_attributes: [{
+                                              character_id: new_encounter_npc.id,
+                                              is_combatant: true,
+                                            }]
+              }
+            }
+        @encounter.reload
+        expect(@encounter.encounter_combatants.count).to eq(old_combatants_count + 1)
+      end
     end
   end
 
