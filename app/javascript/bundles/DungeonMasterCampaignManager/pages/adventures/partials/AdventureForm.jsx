@@ -9,14 +9,13 @@ import arrayMutators from 'final-form-arrays';
 import Form from 'react-bootstrap/Form';
 import FormField from '../../../components/forms/FormField';
 import FormRichTextArea from '../../../components/forms/FormRichTextArea';
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Button from 'react-bootstrap/Button';
 import FormSelect from '../../../components/forms/FormSelect';
 import Col from 'react-bootstrap/Col';
 import {FieldArray} from 'react-final-form-arrays';
 import EncounterFormCard from '../../encounters/partials/EncounterFormCard';
-import classes from '../../characters/partials/character-form.module.scss';
-import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
+// import classes from '../../characters/partials/character-form.module.scss';
+import Row from 'react-bootstrap/Row';
 
 const setAdventureObject = (values, campaignID) => {
   let adventureWorldLocationAttributes = {
@@ -65,7 +64,6 @@ const setAdventureObject = (values, campaignID) => {
         location: encounter.location,
         platinumPieces: encounter.platinumPieces,
         silverPieces: encounter.silverPieces,
-        characterIds: encounter.npcs.map((npc) => npc.value),
         encounterMonstersAttributes: encounter.encounterMonsters.map((encounterMonster) => {
           const newMonsters = {
             numberOfMonsters: encounterMonster.numberOfMonsters,
@@ -91,6 +89,19 @@ const setAdventureObject = (values, campaignID) => {
             itemFields._destroy = item._destroy;
           }
           return itemFields;
+        }),
+        encounterNpcsAttributes: encounter.encounterNpcs.map((npc) => {
+          const npcFields = {
+            isCombatant: npc.isCombatant,
+            characterId: npc.npc.value,
+          };
+          if (npc.id) {
+            npcFields.id = npc.id;
+          }
+          if (npc._destroy) {
+            npcFields._destroy = npc._destroy;
+          }
+          return npcFields;
         }),
       };
       if (encounter.id) {
@@ -204,82 +215,84 @@ class AdventureForm extends React.Component {
                    values,
                  }) => (
                    <Form noValidate validated={validated} onSubmit={handleSubmit}>
-                     <Form.Row>
-                       <FormField label={'Adventure name'}
-                                  type={'text'}
-                                  colWidth={'12'}
-                                  name={'name'}/>
-                     </Form.Row>
-                     <Form.Row>
-                       <FormRichTextArea label={'Description'} colWidth={'12'} name={'description'}/>
-                     </Form.Row>
-                     <Form.Row>
-                       <FormSelect
-                         label={'World Location (required)'}
-                         name={'worldLocation'}
-                         colWidth={'12'}
-                         options={worldLocationOptions}
-                         isClearable
-                         isCreateable
-                       />
-                     </Form.Row>
-                     <Form.Row>
-                       <FormSelect
-                         label={'Player Characters'}
-                         name={'playerCharacters'}
-                         colWidth={'6'}
-                         options={playerCharacterOptions}
-                         isClearable
-                         isMulti
-                       />
-                       <FormSelect
-                         label={'Non-player Characters'}
-                         name={'nonPlayerCharacters'}
-                         colWidth={'6'}
-                         options={nonPlayerCharacterOptions}
-                         isClearable
-                         isMulti
-                       />
-                     </Form.Row>
-                     <Form.Row>
-                       <Col md={12}>
-                         <h3>Encounters</h3>
-                         <FieldArray name="encounters">
-                           {({fields}) => (
-                             fields.map((encounterFieldName, index) => (
-                               !fields.value[index] || !fields.value[index]._destroy ? (
-                                 <EncounterFormCard encounterFieldName={encounterFieldName}
-                                                    fields={fields}
-                                                    index={index}
-                                                    key={index}
-                                                    npcOptions={adventureNpcOptions}
-                                                    push={push}/>
-                               ) : null))
-                           )}
-                         </FieldArray>
-                         <Button type="button" onClick={() => push('encounters', {
-                           name: '',
-                           description: '',
-                           encounterMonsters: [],
-                           encounterItems: [],
-                         })} variant={'success'} block>Add Encounter</Button>
+                     <Row>
+                       <Col xs={{span: 12, order: 2}} sm={{span: 10, order: 1}}>
+                         <Form.Row>
+                           <FormField label={'Adventure name'}
+                                      type={'text'}
+                                      colWidth={'12'}
+                                      name={'name'}/>
+                         </Form.Row>
+                         <Form.Row>
+                           <FormRichTextArea label={'Description'} colWidth={'12'} name={'description'}/>
+                         </Form.Row>
+                         <Form.Row>
+                           <FormSelect
+                             label={'World Location (required)'}
+                             name={'worldLocation'}
+                             colWidth={'12'}
+                             options={worldLocationOptions}
+                             isClearable
+                             isCreateable
+                           />
+                         </Form.Row>
+                         <Form.Row>
+                           <FormSelect
+                             label={'Player Characters'}
+                             name={'playerCharacters'}
+                             colWidth={'6'}
+                             options={playerCharacterOptions}
+                             isClearable
+                             isMulti
+                           />
+                           <FormSelect
+                             label={'Non-player Characters'}
+                             name={'nonPlayerCharacters'}
+                             colWidth={'6'}
+                             options={nonPlayerCharacterOptions}
+                             isClearable
+                             isMulti
+                           />
+                         </Form.Row>
+                         <Form.Row>
+                           <Col md={12}>
+                             <h3>Encounters</h3>
+                             <FieldArray name="encounters">
+                               {({fields}) => (
+                                 fields.map((encounterFieldName, index) => (
+                                   !fields.value[index] || !fields.value[index]._destroy ? (
+                                     <EncounterFormCard encounterFieldName={encounterFieldName}
+                                                        fields={fields}
+                                                        index={index}
+                                                        key={index}
+                                                        npcOptions={adventureNpcOptions}
+                                                        push={push}/>
+                                   ) : null))
+                               )}
+                             </FieldArray>
+                             <Button type="button" onClick={() => push('encounters', {
+                               name: '',
+                               description: '',
+                               encounterMonsters: [],
+                               encounterItems: [],
+                             })} variant={'success'} block>Add Encounter</Button>
+                           </Col>
+                         </Form.Row>
                        </Col>
-                     </Form.Row>
-                     <ButtonToolbar className={'justify-content-between my-4'}>
-                       <ButtonGroup aria-label="Adventure delete">
-                         {onDelete ? (
-                           <Button type="button" variant={'danger'} onClick={onDelete}>Delete Adventure</Button>
-                         ) : null}
-                       </ButtonGroup>
-                       <ButtonGroup aria-label="Adventure actions">
-                         {onCancelEditing ? (
-                           <Button type="button" onClick={onCancelEditing} variant={'info'}>Cancel</Button>
-                         ) : null}
-                         <Button type="button" onClick={form.reset} disabled={submitting || pristine} variant={'secondary'}>Reset</Button>
-                         <Button type="submit" disabled={submitting} variant={'success'}>{submitButtonTitle}</Button>
-                       </ButtonGroup>
-                     </ButtonToolbar>
-                     <pre className={classes.preBlock}>{JSON.stringify(values, 0, 2)}</pre>
+                       <Col xs={{span: 12, order: 1}} sm={{span: 2, order: 2}}>
+                         <div className={'sticky-top pt-3'}>
+                           <Button type="submit" disabled={submitting} variant={'success'} block>{submitButtonTitle}</Button>
+                           <Button type="button" onClick={form.reset} disabled={submitting || pristine} variant={'link'}>Reset Form</Button>
+                           {onCancelEditing ? (
+                             <Button type="button" onClick={onCancelEditing} variant={'info'}>Cancel</Button>
+                           ) : null}
+                           {onDelete ? (
+                             <Button type="button" variant={'link'} onClick={onDelete}>Delete Adventure</Button>
+                           ) : null}
+                         </div>
+                       </Col>
+                     </Row>
+                     {/*<pre className={classes.preBlock}>{JSON.stringify(values, 0, 2)}</pre>*/}
                    </Form>
                  )} />
     );

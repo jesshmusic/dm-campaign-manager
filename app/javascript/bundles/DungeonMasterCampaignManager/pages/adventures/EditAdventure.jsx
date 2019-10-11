@@ -66,7 +66,7 @@ class EditAdventure extends React.Component {
         { loading ? (
           <DndSpinner/>
         ) : (
-          <Container>
+          <Container fluid>
             <PageTitle title={`Edit "${adventureTitle}"`}
                        hasButton={true}
                        buttonLink={`/app/campaigns/${campaignSlug}/adventures/${id}`}

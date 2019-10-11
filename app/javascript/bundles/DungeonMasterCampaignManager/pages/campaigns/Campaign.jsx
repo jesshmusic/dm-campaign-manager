@@ -1,9 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-const ReactMarkdown = require('react-markdown');
-import VirtualList from 'react-tiny-virtual-list';
-import arrayMove from 'array-move';
 
 // Container
 import PageContainer from '../../containers/PageContainer.jsx';
@@ -62,39 +59,25 @@ const CampaignBody = ({
       <Col sm={5} md={4}>
         <div className={'mb-4'}>
           <h3>Events</h3>
-          {campaign.worldEvents.length > 0 ? (
-            <VirtualList
-              width='100%'
-              height={200}
-              itemCount={campaign.worldEvents.length}
-              itemSize={50}
-              renderItem={({index, style}) =>
-                <Card key={index} style={style}>
-                  <Card.Body>
-                    <strong>{campaign.worldEvents[index].when}</strong>
-                    <p>{campaign.worldEvents[index].description}</p>
-                  </Card.Body>
-                </Card>
-              }
-            />
-          ) : 'None' }
+          {campaign.worldEvents.map((worldEvent, index) => (
+            <Card key={index} className={'mb-1'}>
+              <Card.Body>
+                <strong>{worldEvent.when}</strong>
+                <p>{worldEvent.description}</p>
+              </Card.Body>
+            </Card>
+          ))}
         </div>
         <div className={'mb-4'}>
           <h3>World Locations</h3>
-          <VirtualList
-            width='100%'
-            height={200}
-            itemCount={campaign.worldLocations.length}
-            itemSize={100}
-            renderItem={({index, style}) =>
-              <Card key={index} style={style}>
-                <Card.Body>
-                  <strong>{campaign.worldLocations[index].name}</strong>
-                  <p>{campaign.worldLocations[index].description}</p>
-                </Card.Body>
-              </Card>
-            }
-          />
+          {campaign.worldLocations.map((worldLocation, index) => (
+            <Card key={index} className={'mb-1'}>
+              <Card.Body>
+                <strong>{worldLocation.name}</strong>
+                <p>{worldLocation.description}</p>
+              </Card.Body>
+            </Card>
+          ))}
         </div>
         <div className={'mb-4'}>
           <h3>Player Characters</h3>

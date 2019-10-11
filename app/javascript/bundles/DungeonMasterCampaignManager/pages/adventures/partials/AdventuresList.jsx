@@ -6,7 +6,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { sortableContainer } from 'react-sortable-hoc';
 import AdventureCard from './AdventureCard';
-import VirtualList from 'react-tiny-virtual-list';
 import arrayMove from 'array-move';
 import { getHeaders } from '../../../actions/api';
 import snakecaseKeys from 'snakecase-keys';
@@ -18,21 +17,18 @@ const SortableAdventuresList = sortableContainer(({
   onUpdateAdventure,
   small,
 }) => (
-  <VirtualList
-    height={800}
-    renderItem={({index, style}) =>
-      <AdventureCard adventure={adventures[index]}
+  <div>
+    {adventures.map((adventure, index) => (
+      <AdventureCard adventure={adventure}
                      campaign={campaign}
                      deleteAdventure={deleteAdventure}
                      updateAdventure={onUpdateAdventure}
-                     key={adventures[index].id}
+                     key={adventure.id}
                      index={index}
                      small={small}
-                     style={style}
       />
-    }
-    itemCount={adventures.length}
-    itemSize={272}/>
+    ))}
+  </div>
 ));
 SortableAdventuresList.propTypes = {
   adventures: PropTypes.array.isRequired,

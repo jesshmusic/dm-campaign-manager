@@ -6,7 +6,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import EncounterCard from './EncounterCard';
 import {sortableContainer} from 'react-sortable-hoc';
-import VirtualList from 'react-tiny-virtual-list';
 import arrayMove from 'array-move';
 import {getHeaders} from '../../../actions/api';
 import snakecaseKeys from 'snakecase-keys';
@@ -17,20 +16,17 @@ const SortableEncountersList = sortableContainer(({
   campaign,
   small,
 }) => (
-  <VirtualList
-    height={800}
-    renderItem={({index, style}) =>
+  <div>
+    {encounters.map((encounter, index) => (
       <EncounterCard adventure={adventure}
                      campaign={campaign}
-                     encounter={encounters[index]}
-                     key={encounters[index].id}
+                     encounter={encounter}
+                     key={encounter.id}
                      index={index}
                      small={small}
-                     style={style}
       />
-    }
-    itemCount={encounters.length}
-    itemSize={272}/>
+    ))}
+  </div>
 ));
 SortableEncountersList.propTypes = {
   adventure: PropTypes.object.isRequired,
