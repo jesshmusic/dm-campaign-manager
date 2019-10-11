@@ -3,6 +3,7 @@
 json.key_format! camelize: :lower
 
 json.extract! campaign, :id, :name, :description, :world, :slug
+json.excerpt strip_tags(campaign.description).truncate_words(25, omission: '...')
 json.pcs_count campaign.pcs_count
 json.npcs_count campaign.npcs_count
 

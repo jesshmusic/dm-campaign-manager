@@ -15,6 +15,8 @@ json.extract! encounter,
               :sort,
               :xp
 
+json.excerpt strip_tags(encounter.description).truncate_words(20, omission: '...')
+
 json.encounter_state do
   json.in_progress encounter.in_progress
   json.round encounter.round

@@ -3,6 +3,7 @@
 json.key_format! camelize: :lower
 
 json.extract! adventure, :id, :name, :description, :sort
+json.excerpt strip_tags(adventure.description).truncate_words(20, omission: '...')
 
 json.world_location do
   if adventure.adventure_world_location

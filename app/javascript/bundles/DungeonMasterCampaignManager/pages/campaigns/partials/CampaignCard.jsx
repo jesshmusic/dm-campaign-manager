@@ -6,7 +6,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Card from 'react-bootstrap/Card';
 import { Link } from '@reach/router';
-import ReactMarkdown from 'react-markdown';
 
 import classes from './campaign-card.module.scss';
 
@@ -17,7 +16,9 @@ const CampaignCard = ({campaign}) => (
       <Card.Subtitle className="mb-2 text-muted">World: {campaign.world}</Card.Subtitle>
     </Card.Header>
     <Card.Body>
-      <ReactMarkdown source={campaign.description} />
+      <Card.Text>
+        {campaign.excerpt}
+      </Card.Text>
     </Card.Body>
     <Card.Footer>
       <Link to={`/app/campaigns/${campaign.slug}`} className='btn btn-primary'>Details</Link>
@@ -26,7 +27,7 @@ const CampaignCard = ({campaign}) => (
 );
 
 CampaignCard.propTypes = {
-  campaign: PropTypes.object.isRequired
+  campaign: PropTypes.object.isRequired,
 };
 
 export default CampaignCard;
