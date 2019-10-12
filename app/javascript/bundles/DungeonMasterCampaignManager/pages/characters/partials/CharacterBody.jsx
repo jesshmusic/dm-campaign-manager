@@ -65,6 +65,11 @@ const CharacterBody = ({character, isNPC}) => {
         </Col>
       </Row>
       <Row>
+        <Col>
+          <div dangerouslySetInnerHTML={{ __html: character.description }} />
+        </Col>
+      </Row>
+      <Row>
         <Col md={4}>
           <h3>Health</h3>
           <Figure className={'w-100'}>

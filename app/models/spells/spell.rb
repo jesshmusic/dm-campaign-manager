@@ -74,17 +74,22 @@ class Spell < ApplicationRecord
   end
 
   def description_text
-    [
+    text_array = [
+      '<div class="p-3">',
       "<h4>#{spell_level} #{school} <small><em>#{'(ritual)' if ritual}</em></small></h4>",
       "<p><strong>Range</strong> #{range}</p>",
       "<p><strong>Components</strong> #{components.map(&:to_s).join(', ')}</p>",
       "<p><strong>Material</strong> #{material}</p>",
       "<p><strong>Duration</strong> #{'Concentration, ' if concentration}#{duration}</p>",
       "<p><strong>Casting time</strong> #{casting_time}</p>",
-      "<div>#{description}</div>",
-      "<h4>Higher Level Effects</h4>",
-      "<div>#{higher_level}</div>"
-    ].join
+      "<div>#{description}</div>"
+    ]
+    unless !higher_level || higher_level == ''
+      text_array << '<h4 class="mt-3">Higher Level Effects</h4>'
+      text_array << "<div>#{higher_level}</div>"
+    end
+    text_array << '</div>'
+    text_array.join
   end
 
   # PgSearch

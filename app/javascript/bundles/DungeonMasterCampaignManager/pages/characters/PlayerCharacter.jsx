@@ -22,7 +22,7 @@ class PlayerCharacter extends React.Component {
   }
 
   render () {
-    const {user, flashMessages, character, campaignSlug} = this.props;
+    const {character, campaignSlug, flashMessages, loading, user } = this.props;
     const characterTitle = character && character.name ? character.name : 'Character Loading...';
     return (
       <PageContainer user={user}
@@ -47,7 +47,11 @@ class PlayerCharacter extends React.Component {
                        buttonTitle={'Edit PC'}
                        buttonVariant={'primary'}/>
             <h2>{character.classes}</h2>
-            <CharacterBody character={character}/>
+            {loading ? (
+              <DndSpinner/>
+            ) : (
+              <CharacterBody character={character}/>
+            )}
           </div>
         ) : <DndSpinner/>}
       </PageContainer>
@@ -58,6 +62,7 @@ class PlayerCharacter extends React.Component {
 PlayerCharacter.propTypes = {
   campaignSlug: PropTypes.string.isRequired,
   character: PropTypes.object,
+  loading: PropTypes.bool,
   pcSlug: PropTypes.string.isRequired,
   flashMessages: PropTypes.array,
   getPlayerCharacter: PropTypes.func.isRequired,
@@ -67,6 +72,7 @@ PlayerCharacter.propTypes = {
 function mapStateToProps (state) {
   return {
     character: state.playerCharacters.currentCharacter,
+    loading: state.playerCharacters.loading || !state.playerCharacters.currentCharacter || !state.playerCharacters.currentCharacter.name,
     user: state.users.user,
     flashMessages: state.flashMessages,
   };

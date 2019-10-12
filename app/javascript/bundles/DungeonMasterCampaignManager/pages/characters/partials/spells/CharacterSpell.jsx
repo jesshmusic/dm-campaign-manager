@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import Card from 'react-bootstrap/Card';
 import Badge from 'react-bootstrap/Badge';
 import Accordion from 'react-bootstrap/Accordion';
+import Col from 'react-bootstrap/Col';
 
 const CharacterSpell = ({spell}) => {
   return (
@@ -14,9 +15,7 @@ const CharacterSpell = ({spell}) => {
       <Accordion.Toggle as={Card.Header} variant="link" eventKey={`${spell.value}`}>
         <span className={'mr-4'}>{spell.label}</span>
         <small className={'mr-3'}>
-          {spell.data.info.components.reduce((prev, curr) => [
-            prev, ', ', curr,
-          ])}
+          {spell.data.info.components.join(', ')}
         </small>
         <small className={'mr-3'}>
           Duration: {spell.data.info.duration}
@@ -28,22 +27,11 @@ const CharacterSpell = ({spell}) => {
           <Badge variant={'secondary'}>Ritual Casting</Badge>
         ) : null}
       </Accordion.Toggle>
-      <Card.Body>
-        <Accordion.Collapse eventKey={`${spell.value}`}>
-          <div>
-            <strong className={'mr-2'}>
-              Description
-            </strong>
-            {spell.data.info.description}
-            {spell.data.info.higherLevel ? (
-              <div className={'my-3'}>
-                <strong className={'mr-2'}>Higher Level Effect</strong>
-                {spell.data.info.higherLevel}
-              </div>
-            ) : null}
-          </div>
-        </Accordion.Collapse>
-      </Card.Body>
+      <Accordion.Collapse eventKey={`${spell.value}`}>
+        <Card.Body className={'p-0'}>
+          <div dangerouslySetInnerHTML={{ __html: spell.data.descriptionText }} />
+        </Card.Body>
+      </Accordion.Collapse>
     </Card>
   );
 };

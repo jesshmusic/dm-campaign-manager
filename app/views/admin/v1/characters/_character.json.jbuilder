@@ -49,6 +49,7 @@ json.character_classes character.character_classes do |character_class|
         json.is_prepared cantrip.is_prepared
         json.spell_class cantrip.spell_class
         json.character_spell_id cantrip.id
+        json.description_text cantrip.spell.description_text
         json.info do
           json.extract! cantrip.spell, :casting_time, :components, :concentration, :description, :duration,
                         :higher_level, :material, :range, :ritual, :school
@@ -67,6 +68,7 @@ json.character_classes character.character_classes do |character_class|
         json.is_prepared spell.is_prepared
         json.spell_class spell.spell_class
         json.character_spell_id spell.id
+        json.description_text spell.spell.description_text
         json.info do
           json.extract! spell.spell, :casting_time, :components, :concentration, :description, :duration,
                         :higher_level, :material, :range, :ritual, :school
@@ -85,6 +87,7 @@ json.character_classes character.character_classes do |character_class|
         json.is_prepared spell.is_prepared
         json.spell_class spell.spell_class
         json.character_spell_id spell.id
+        json.description_text spell.spell.description_text
         json.info do
           json.extract! spell.spell, :casting_time, :components, :concentration, :description, :duration,
                         :higher_level, :material, :range, :ritual, :school
@@ -103,6 +106,7 @@ json.character_classes character.character_classes do |character_class|
         json.is_prepared spell.is_prepared
         json.spell_class spell.spell_class
         json.character_spell_id spell.id
+        json.description_text spell.spell.description_text
         json.info do
           json.extract! spell.spell, :casting_time, :components, :concentration, :description, :duration,
                         :higher_level, :material, :range, :ritual, :school
@@ -121,6 +125,7 @@ json.character_classes character.character_classes do |character_class|
         json.is_prepared spell.is_prepared
         json.spell_class spell.spell_class
         json.character_spell_id spell.id
+        json.description_text spell.spell.description_text
         json.info do
           json.extract! spell.spell, :casting_time, :components, :concentration, :description, :duration,
                         :higher_level, :material, :range, :ritual, :school
@@ -139,6 +144,7 @@ json.character_classes character.character_classes do |character_class|
         json.is_prepared spell.is_prepared
         json.spell_class spell.spell_class
         json.character_spell_id spell.id
+        json.description_text spell.spell.description_text
         json.info do
           json.extract! spell.spell, :casting_time, :components, :concentration, :description, :duration,
                         :higher_level, :material, :range, :ritual, :school
@@ -157,6 +163,7 @@ json.character_classes character.character_classes do |character_class|
         json.is_prepared spell.is_prepared
         json.spell_class spell.spell_class
         json.character_spell_id spell.id
+        json.description_text spell.spell.description_text
         json.info do
           json.extract! spell.spell, :casting_time, :components, :concentration, :description, :duration,
                         :higher_level, :material, :range, :ritual, :school
@@ -175,6 +182,7 @@ json.character_classes character.character_classes do |character_class|
         json.is_prepared spell.is_prepared
         json.spell_class spell.spell_class
         json.character_spell_id spell.id
+        json.description_text spell.spell.description_text
         json.info do
           json.extract! spell.spell, :casting_time, :components, :concentration, :description, :duration,
                         :higher_level, :material, :range, :ritual, :school
@@ -193,6 +201,7 @@ json.character_classes character.character_classes do |character_class|
         json.is_prepared spell.is_prepared
         json.spell_class spell.spell_class
         json.character_spell_id spell.id
+        json.description_text spell.spell.description_text
         json.info do
           json.extract! spell.spell, :casting_time, :components, :concentration, :description, :duration,
                         :higher_level, :material, :range, :ritual, :school
@@ -211,6 +220,7 @@ json.character_classes character.character_classes do |character_class|
         json.is_prepared spell.is_prepared
         json.spell_class spell.spell_class
         json.character_spell_id spell.id
+        json.description_text spell.spell.description_text
         json.info do
           json.extract! spell.spell, :casting_time, :components, :concentration,
                         :duration, :material, :range, :ritual, :school
