@@ -52,69 +52,71 @@ const setAdventureObject = (values, campaignID) => {
     description: values.description,
     characterIds,
     encountersAttributes: values.encounters.map((encounter) => {
-      const encounterFields = {
-        copperPieces: encounter.copperPieces,
-        description: encounter.description,
-        electrumPieces: encounter.electrumPieces,
-        goldPieces: encounter.goldPieces,
-        name: encounter.name,
-        location: encounter.location,
-        platinumPieces: encounter.platinumPieces,
-        silverPieces: encounter.silverPieces,
-        encounterMonstersAttributes: encounter.encounterMonsters.reduce((result, encounterMonster) => {
-          if (encounterMonster.monster) {
-            const newMonsters = {
-              numberOfMonsters: encounterMonster.numberOfMonsters,
-              monsterId: encounterMonster.monster.value,
-            };
-            if (encounterMonster.id) {
-              newMonsters.id = encounterMonster.id;
-            }
-            if (encounterMonster._destroy) {
-              newMonsters._destroy = encounterMonster._destroy;
-            }
-            result.push(newMonsters);
-          }
-          return result;
-        }, []),
-        encounterItemsAttributes: encounter.encounterItems.reduce((result, item) => {
-          if (item.item) {
-            const itemFields = {
-              quantity: item.quantity,
-              itemId: item.item.value,
-            };
-            if (item.id) {
-              itemFields.id = item.id;
-            }
-            if (item._destroy) {
-              itemFields._destroy = item._destroy;
-            }
-            result.push(itemFields);
-          }
-          return result;
-        }, []),
-        encounterNpcsAttributes: encounter.encounterNpcs.reduce((result, npc) => {
-          if (npc.npc) {
-            const npcFields = {
-              isCombatant: npc.isCombatant,
-              characterId: npc.npc.value,
-            };
-            if (npc.id) {
-              npcFields.id = npc.id;
-            }
-            if (npc._destroy) {
-              npcFields._destroy = npc._destroy;
-            }
-            result.push(npcFields);
-          }
-          return result;
-        }, []),
-      };
-      if (encounter.id) {
-        encounterFields.id = encounter.id;
-      }
+      let encounterFields = {};
       if (encounter._destroy) {
         encounterFields._destroy = encounter._destroy;
+      } else {
+        encounterFields = {
+          copperPieces: encounter.copperPieces,
+          description: encounter.description,
+          electrumPieces: encounter.electrumPieces,
+          goldPieces: encounter.goldPieces,
+          name: encounter.name,
+          location: encounter.location,
+          platinumPieces: encounter.platinumPieces,
+          silverPieces: encounter.silverPieces,
+          encounterMonstersAttributes: encounter.encounterMonsters.reduce((result, encounterMonster) => {
+            if (encounterMonster.monster) {
+              const newMonsters = {
+                numberOfMonsters: encounterMonster.numberOfMonsters,
+                monsterId: encounterMonster.monster.value,
+              };
+              if (encounterMonster.id) {
+                newMonsters.id = encounterMonster.id;
+              }
+              if (encounterMonster._destroy) {
+                newMonsters._destroy = encounterMonster._destroy;
+              }
+              result.push(newMonsters);
+            }
+            return result;
+          }, []),
+          encounterItemsAttributes: encounter.encounterItems.reduce((result, item) => {
+            if (item.item) {
+              const itemFields = {
+                quantity: item.quantity,
+                itemId: item.item.value,
+              };
+              if (item.id) {
+                itemFields.id = item.id;
+              }
+              if (item._destroy) {
+                itemFields._destroy = item._destroy;
+              }
+              result.push(itemFields);
+            }
+            return result;
+          }, []),
+          encounterNpcsAttributes: encounter.encounterNpcs.reduce((result, npc) => {
+            if (npc.npc) {
+              const npcFields = {
+                isCombatant: npc.isCombatant,
+                characterId: npc.npc.value,
+              };
+              if (npc.id) {
+                npcFields.id = npc.id;
+              }
+              if (npc._destroy) {
+                npcFields._destroy = npc._destroy;
+              }
+              result.push(npcFields);
+            }
+            return result;
+          }, []),
+        };
+      }
+      if (encounter.id) {
+        encounterFields.id = encounter.id;
       }
       return encounterFields;
     }),
@@ -182,6 +184,15 @@ class AdventureForm extends React.Component {
         },
       })),
     });
+  }
+
+  componentDidUpdate (prevProps) {
+    if (prevProps.adventure !== this.props.adventure ) {
+      const adventure = this.props.adventure;
+      this.setState({
+        adventure: setupInitialValues(adventure),
+      });
+    }
   }
 
   componentWillUnmount() {

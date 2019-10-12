@@ -12,7 +12,6 @@ import Container from 'react-bootstrap/Container';
 import DndSpinner from '../../components/layout/DndSpinner';
 import AdventureForm from './partials/AdventureForm';
 import PageTitle from '../../components/layout/PageTitle';
-import { navigate } from '@reach/router';
 import ConfirmModal from '../../components/ConfirmModal';
 
 class EditAdventure extends React.Component {
@@ -45,7 +44,7 @@ class EditAdventure extends React.Component {
   };
 
   handleUpdateAdventure (adventureBody) {
-    this.props.updateAdventure(snakecaseKeys(adventureBody), this.props.campaignSlug, this.props.id);
+    this.props.updateAdventure(snakecaseKeys(adventureBody, {exclude: ['_destroy']}), this.props.campaignSlug, this.props.id);
   }
 
   render () {
@@ -137,8 +136,8 @@ function mapDispatchToProps (dispatch) {
       dispatch(rest.actions.updateAdventure({
         campaign_slug: campaignSlug,
         id: adventureId,
-      }, {body: JSON.stringify({adventure})}, () => {
-        navigate(`/app/campaigns/${campaignSlug}/adventures/${adventureId}`);
+      }, {
+        body: JSON.stringify({adventure}),
       }));
     },
   };

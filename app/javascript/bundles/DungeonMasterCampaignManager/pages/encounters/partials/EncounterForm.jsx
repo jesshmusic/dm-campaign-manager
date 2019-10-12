@@ -82,6 +82,39 @@ const setEncounterObject = (values) => {
   return snakecaseKeys(encounterFields, {exclude: ['_destroy']});
 };
 
+const setupInitialValues = (encounter, newEncounterSort = 0) => {
+  const initialValues = {
+    copperPieces: 0,
+    description: '',
+    electrumPieces: 0,
+    goldPieces: 0,
+    location: '',
+    name: '',
+    platinumPieces: 0,
+    silverPieces: 0,
+    sort: newEncounterSort,
+    encounterMonsters: [],
+    encounterItems: [],
+    encounterNpcs: [],
+  };
+  if (encounter) {
+    initialValues.id = encounter.id;
+    initialValues.name = encounter.name;
+    initialValues.location = encounter.location;
+    initialValues.description = encounter.description;
+    initialValues.copperPieces = encounter.copperPieces;
+    initialValues.silverPieces = encounter.silverPieces;
+    initialValues.electrumPieces = encounter.electrumPieces;
+    initialValues.goldPieces = encounter.goldPieces;
+    initialValues.platinumPieces = encounter.platinumPieces;
+    initialValues.sort = encounter.sort;
+    initialValues.encounterItems = encounter.encounterItems;
+    initialValues.encounterMonsters = encounter.encounterMonsters;
+    initialValues.encounterNpcs = encounter.encounterNpcs;
+  }
+  return initialValues;
+};
+
 class EncounterForm extends React.Component {
   state = {
     encounter: null,
@@ -89,39 +122,15 @@ class EncounterForm extends React.Component {
   };
 
   componentDidMount () {
-    const initialValues = {
-      copperPieces: 0,
-      description: '',
-      electrumPieces: 0,
-      goldPieces: 0,
-      location: '',
-      name: '',
-      platinumPieces: 0,
-      silverPieces: 0,
-      sort: this.props.newEncounterSort ? this.props.newEncounterSort : 0,
-      encounterMonsters: [],
-      encounterItems: [],
-      encounterNpcs: [],
-    };
-    if (this.props.encounter) {
-      const encounter = this.props.encounter;
-      initialValues.id = encounter.id;
-      initialValues.name = encounter.name;
-      initialValues.location = encounter.location;
-      initialValues.description = encounter.description;
-      initialValues.copperPieces = encounter.copperPieces;
-      initialValues.silverPieces = encounter.silverPieces;
-      initialValues.electrumPieces = encounter.electrumPieces;
-      initialValues.goldPieces = encounter.goldPieces;
-      initialValues.platinumPieces = encounter.platinumPieces;
-      initialValues.sort = encounter.sort;
-      initialValues.encounterItems = encounter.encounterItems;
-      initialValues.encounterMonsters = encounter.encounterMonsters;
-      initialValues.encounterNpcs = encounter.encounterNpcs;
-    }
     this.setState({
-      encounter: initialValues,
+      encounter: setupInitialValues(this.props.encounter, this.props.newEncounterSort),
     });
+  }
+
+  componentDidUpdate (prevProps) {
+    if (prevProps.encounter !== this.props.encounter ) {
+      this.setState({encounter: setupInitialValues(this.props.encounter, this.props.newEncounterSort)});
+    }
   }
 
   handleSubmit = async (values) => {
@@ -247,7 +256,9 @@ function mapDispatchToProps (dispatch) {
         campaign_slug: campaignId,
         adventure_id: adventureId,
         id: encounterId,
-      }, {body: JSON.stringify({encounter})}));
+      }, {
+        body: JSON.stringify({encounter}),
+      }));
     },
   };
 }

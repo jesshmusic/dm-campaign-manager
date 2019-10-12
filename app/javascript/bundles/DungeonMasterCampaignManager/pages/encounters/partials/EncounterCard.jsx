@@ -23,6 +23,13 @@ const EncounterCard = ({adventure, encounter, campaign, small}) => {
           <p className={'h5 my-2'}>{encounter.name}
             <small className={'text-muted ml-3'}>
               { encounter.location }
+              <span className={'ml-3'}>
+                { adventure.pcs.length > 0 ? (
+                  `${encounter.xp / adventure.pcs.length}xp per character`
+                ) : (
+                  `${encounter.xp}xp divided by number of party members`
+                ) }
+              </span>
             </small>
           </p>
         </Link>

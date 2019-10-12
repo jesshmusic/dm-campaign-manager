@@ -78,9 +78,6 @@ export default reduxApi({
         headers,
       };
     },
-    postfetch: [({data, request}) => {
-      navigate(`/app/campaigns/${request.pathvars.campaign_slug}/adventures/${data.id}`);
-    }],
   },
   deleteAdventure: {
     url: '/v1/campaigns/:campaign_slug/adventures/:id',
@@ -174,9 +171,6 @@ export default reduxApi({
         headers,
       };
     },
-    postfetch: [({data, request}) => {
-      navigate(`/app/campaigns/${request.pathvars.campaign_slug}/adventures/${request.pathvars.adventure_id}/encounters/${data.id}`);
-    }],
   },
   createNonPlayerCharacter: {
     url: '/v1/campaigns/:campaign_slug/non_player_characters/',
@@ -187,6 +181,9 @@ export default reduxApi({
         headers,
       };
     },
+    postfetch: [({data, request}) => {
+      navigate(`/app/campaigns/${request.pathvars.campaign_slug}/npcs/${data.slug}`);
+    }],
   },
   updateNonPlayerCharacter: {
     url: '/v1/campaigns/:campaign_slug/non_player_characters/:slug',

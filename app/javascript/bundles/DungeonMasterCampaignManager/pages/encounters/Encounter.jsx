@@ -4,7 +4,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import rest, {getHeaders} from '../../actions/api';
+import rest from '../../actions/api';
 import {connect} from 'react-redux';
 import PageContainer from '../../containers/PageContainer';
 import DndSpinner from '../../components/layout/DndSpinner';
@@ -12,7 +12,6 @@ import Container from 'react-bootstrap/Container';
 import PageTitle from '../../components/layout/PageTitle';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import ReactMarkdown from 'react-markdown';
 import ListGroup from 'react-bootstrap/ListGroup';
 import {Link, navigate} from '@reach/router';
 import EncounterTracker from './partials/EncounterTracker';

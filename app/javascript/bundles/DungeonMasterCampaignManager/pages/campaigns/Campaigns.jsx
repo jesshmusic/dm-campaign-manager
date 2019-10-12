@@ -6,11 +6,8 @@ import { connect } from 'react-redux';
 // Container
 import PageContainer from '../../containers/PageContainer.jsx';
 import rest from '../../actions/api';
-
-import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import CampaignsList from './partials/CampaignsList';
 import PageTitle from '../../components/layout/PageTitle';
-import {navigate} from '@reach/router';
 import DndSpinner from '../../components/layout/DndSpinner';
 
 class Campaigns extends React.Component {

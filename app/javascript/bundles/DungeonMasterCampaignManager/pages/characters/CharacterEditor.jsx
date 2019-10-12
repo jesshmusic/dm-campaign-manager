@@ -9,7 +9,6 @@ import {Form as FinalForm} from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
 
 import Button from 'react-bootstrap/Button';
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 
@@ -21,7 +20,6 @@ import {
 } from '../../utilities/character-utilities';
 import CharacterFormFields from './partials/CharacterFormFields';
 import Row from 'react-bootstrap/Row';
-import AdventureFields from '../adventures/partials/AdventureFields';
 
 
 class CharacterEditor extends React.Component {
@@ -34,6 +32,12 @@ class CharacterEditor extends React.Component {
     this.setState({
       character: SetupCharacterState(this.props.character),
     });
+  }
+
+  componentDidUpdate (prevProps) {
+    if (prevProps.character !== this.props.character ) {
+      this.setState({character: SetupCharacterState(this.props.character)});
+    }
   }
 
   handleSubmit = async (values) => {

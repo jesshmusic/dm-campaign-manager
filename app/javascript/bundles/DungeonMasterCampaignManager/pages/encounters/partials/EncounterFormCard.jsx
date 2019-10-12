@@ -14,16 +14,6 @@ const EncounterFormCard = ({encounterFieldName, fields, index, npcOptions, push}
     if (fields.value[index] && fields.value[index].id) {
       fields.update(index, {
         id: fields.value[index].id,
-        name: fields.value[index].name,
-        description: fields.value[index].description,
-        copperPieces: fields.value[index].copperPieces,
-        electrumPieces: fields.value[index].electrumPieces,
-        silver_pieces: fields.value[index].electrumPieces,
-        gold_pieces: fields.value[index].gold_pieces,
-        platinum_pieces: fields.value[index].platinum_pieces,
-        xp: fields.value[index].xp,
-        encounterMonstersAttributes: fields.values[index].encounterMonstersAttributes,
-        encounterItemsAttributes: fields.values[index].encounterItemsAttributes,
         _destroy: true,
       });
     } else {

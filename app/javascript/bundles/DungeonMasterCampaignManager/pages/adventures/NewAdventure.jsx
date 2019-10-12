@@ -23,7 +23,7 @@ class NewAdventure extends React.Component {
   }
 
   handleCreateAdventure (adventureBody) {
-    this.props.createAdventure(snakecaseKeys(adventureBody), this.props.campaignSlug);
+    this.props.createAdventure(snakecaseKeys(adventureBody, {exclude: ['_destroy']}), this.props.campaignSlug);
   }
 
   render () {
