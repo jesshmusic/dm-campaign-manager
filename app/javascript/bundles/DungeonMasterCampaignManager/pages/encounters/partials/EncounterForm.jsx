@@ -110,7 +110,6 @@ class EncounterForm extends React.Component {
       initialValues.encounterMonsters = encounter.encounterMonsters;
       initialValues.encounterNpcs = encounter.encounterNpcs;
     }
-    console.log(initialValues);
     this.setState({
       encounter: initialValues,
     });

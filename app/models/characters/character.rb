@@ -51,6 +51,7 @@
 #
 #  fk_rails_...  (campaign_id => campaigns.id)
 #
+# TODO: add status attribute (living, dead, etc.)
 
 class Character < ApplicationRecord
   validates :name, :hit_points, :alignment, :charisma, :constitution, :dexterity, :intelligence,

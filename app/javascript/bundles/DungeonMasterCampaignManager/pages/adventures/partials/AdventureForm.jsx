@@ -14,7 +14,7 @@ import FormSelect from '../../../components/forms/FormSelect';
 import Col from 'react-bootstrap/Col';
 import {FieldArray} from 'react-final-form-arrays';
 import EncounterFormCard from '../../encounters/partials/EncounterFormCard';
-// import classes from '../../characters/partials/character-form.module.scss';
+import classes from '../../characters/partials/character-form.module.scss';
 import Row from 'react-bootstrap/Row';
 
 const setAdventureObject = (values, campaignID) => {
@@ -64,45 +64,55 @@ const setAdventureObject = (values, campaignID) => {
         location: encounter.location,
         platinumPieces: encounter.platinumPieces,
         silverPieces: encounter.silverPieces,
-        encounterMonstersAttributes: encounter.encounterMonsters.map((encounterMonster) => {
-          const newMonsters = {
-            numberOfMonsters: encounterMonster.numberOfMonsters,
-            monsterId: encounterMonster.monster.value,
-          };
-          if (encounterMonster.id) {
-            newMonsters.id = encounterMonster.id;
+        encounterMonstersAttributes: encounter.encounterMonsters.reduce((result, encounterMonster) => {
+          if (encounterMonster.monster) {
+            const newMonsters = {
+              numberOfMonsters: encounterMonster.numberOfMonsters,
+              monsterId: encounterMonster.monster.value,
+            };
+            if (encounterMonster.id) {
+              newMonsters.id = encounterMonster.id;
+            }
+            if (encounterMonster._destroy) {
+              newMonsters._destroy = encounterMonster._destroy;
+            }
+            result.push(newMonsters);
           }
-          if (encounterMonster._destroy) {
-            newMonsters._destroy = encounterMonster._destroy;
+          return result;
+        }, []),
+        encounterItemsAttributes: encounter.encounterItems.reduce((result, item) => {
+          if (item.item) {
+            const itemFields = {
+              quantity: item.quantity,
+              itemId: item.item.value,
+            };
+            if (item.id) {
+              itemFields.id = item.id;
+            }
+            if (item._destroy) {
+              itemFields._destroy = item._destroy;
+            }
+            result.push(itemFields);
           }
-          return newMonsters;
-        }),
-        encounterItemsAttributes: encounter.encounterItems.map((item) => {
-          const itemFields = {
-            quantity: item.quantity,
-            itemId: item.item.value,
-          };
-          if (item.id) {
-            itemFields.id = item.id;
+          return result;
+        }, []),
+        encounterNpcsAttributes: encounter.encounterNpcs.reduce((result, npc) => {
+          if (npc.npc) {
+            const npcFields = {
+              isCombatant: npc.isCombatant,
+              characterId: npc.npc.value,
+            };
+            if (npc.id) {
+              npcFields.id = npc.id;
+            }
+            if (npc._destroy) {
+              npcFields._destroy = npc._destroy;
+            }
+            result.push(npcFields);
+
           }
-          if (item._destroy) {
-            itemFields._destroy = item._destroy;
-          }
-          return itemFields;
-        }),
-        encounterNpcsAttributes: encounter.encounterNpcs.map((npc) => {
-          const npcFields = {
-            isCombatant: npc.isCombatant,
-            characterId: npc.npc.value,
-          };
-          if (npc.id) {
-            npcFields.id = npc.id;
-          }
-          if (npc._destroy) {
-            npcFields._destroy = npc._destroy;
-          }
-          return npcFields;
-        }),
+          return result;
+        }, []),
       };
       if (encounter.id) {
         encounterFields.id = encounter.id;
@@ -308,7 +318,7 @@ class AdventureForm extends React.Component {
                          </div>
                        </Col>
                      </Row>
-                     {/*<pre className={classes.preBlock}>{JSON.stringify(values, 0, 2)}</pre>*/}
+                     <pre className={classes.preBlock}>{JSON.stringify(values, 0, 2)}</pre>
                    </Form>
                  )} />
     );
