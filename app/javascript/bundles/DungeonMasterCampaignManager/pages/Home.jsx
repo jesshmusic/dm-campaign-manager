@@ -39,10 +39,9 @@ const store = (props) => configureStore({
     },
     campaigns: {
       campaigns: [],
-      count: props.campaignsCount,
-      currentAdventure: null,
+      count: 0,
       currentCampaign: null,
-      currentEncounter: null,
+      loading: true,
     },
     encounters: {
       currentEncounter: null,

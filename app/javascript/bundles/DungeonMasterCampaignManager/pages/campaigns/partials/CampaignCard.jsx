@@ -8,12 +8,18 @@ import Card from 'react-bootstrap/Card';
 import { Link } from '@reach/router';
 
 import classes from './campaign-card.module.scss';
+import Badge from 'react-bootstrap/Badge';
 
-const CampaignCard = ({campaign}) => (
+const CampaignCard = ({campaign, userName}) => (
   <Card className={classes.campaignCard}>
     <Card.Header>
       <Card.Title>{campaign.name}</Card.Title>
-      <Card.Subtitle className="mb-2 text-muted">World: {campaign.world}</Card.Subtitle>
+      <Card.Subtitle className="mb-2 text-muted">
+        World: {campaign.world}
+        {!campaign.isDmCampaign ? (
+          <Badge variant={'info'}>DM: {userName}</Badge>
+        ) : null}
+      </Card.Subtitle>
     </Card.Header>
     <Card.Body>
       <Card.Text>
@@ -28,6 +34,7 @@ const CampaignCard = ({campaign}) => (
 
 CampaignCard.propTypes = {
   campaign: PropTypes.object.isRequired,
+  userName: PropTypes.string.isRequired,
 };
 
 export default CampaignCard;

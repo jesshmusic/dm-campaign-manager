@@ -17,14 +17,14 @@ class UserDashboard extends React.Component {
   }
 
   render () {
-    const {campaigns} = this.props;
+    const {campaigns, user} = this.props;
     return (
       <Col sm={8}>
         <Row>
           {campaigns ? (
             <Col>
               <h2>My Campaigns</h2>
-              <CampaignsList campaigns={campaigns}/>
+              <CampaignsList campaigns={campaigns} user={user}/>
             </Col>
           ) : (
             <Col>

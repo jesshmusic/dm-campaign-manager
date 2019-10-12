@@ -42,7 +42,7 @@ class Campaigns extends React.Component {
         {loading ? (
           <DndSpinner/>
         ) : (
-          <CampaignsList campaigns={campaigns}/>
+          <CampaignsList campaigns={campaigns} user={user}/>
         )}
       </PageContainer>
     );

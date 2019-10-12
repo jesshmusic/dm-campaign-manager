@@ -15,7 +15,7 @@ const campaigns = createReducer({
   campaigns: [],
   count: 0,
   currentCampaign: null,
-  loading: false,
+  loading: true,
 }, {
   [getCampaigns]: (state) => ({
     campaigns: [],
