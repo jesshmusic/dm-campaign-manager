@@ -17,28 +17,15 @@ import EncountersList from '../encounters/partials/EncountersList';
 import EncounterForm from '../encounters/partials/EncounterForm';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import {Link} from '@reach/router';
 
 class Adventure extends React.Component {
-  state = {
-    showingNewEncounterForm: false,
-  };
-
   componentDidMount () {
     if (this.props.user) {
       this.props.getAdventure(this.props.campaignSlug, this.props.id);
     } else {
       window.location.href = '/users/sign_in';
     }
-  }
-
-  handleCancelEditing () {
-    this.setState({showingNewEncounterForm: false});
-  }
-
-  showNewEncounterForm () {
-    this.setState({
-      showingNewEncounterForm: !this.state.showingNewEncounterForm,
-    });
   }
 
   get totalXP () {
@@ -55,7 +42,6 @@ class Adventure extends React.Component {
   }
 
   render () {
-    const { showingNewEncounterForm } = this.state;
     const { adventure, campaign, campaignSlug, flashMessages, loading, user } = this.props;
     const adventureTitle = adventure ? adventure.name : 'Adventure Loading...';
     let sortNum = 0;
@@ -112,27 +98,13 @@ class Adventure extends React.Component {
             <Row>
               <Col>
                 <h3>Encounters</h3>
-                <Button variant={'secondary'}
-                        block
-                        className={'mb-3'}
-                        onClick={() => this.showNewEncounterForm()}>
+                <Link to={`/app/campaigns/${campaign.slug}/adventures/${adventure.id}/encounters/new`}
+                      className={'btn btn-secondary btn-block mb-3'}>
                   New Encounter
-                </Button>
+                </Link>
                 <EncountersList adventure={adventure}
                                 campaign={campaign}
                                 small/>
-                <Modal size={'lg'} show={showingNewEncounterForm} onHide={() => this.handleCancelEditing()}>
-                  <Modal.Header closeButton>
-                    <Modal.Title>New Encounter</Modal.Title>
-                  </Modal.Header>
-                  <Modal.Body>
-                    <EncounterForm
-                      adventure={adventure}
-                      campaign={campaign}
-                      newEncounterSort={sortNum}
-                      onCancelEditing={() => this.handleCancelEditing()}/>
-                  </Modal.Body>
-                </Modal>
               </Col>
             </Row>
           </Container>

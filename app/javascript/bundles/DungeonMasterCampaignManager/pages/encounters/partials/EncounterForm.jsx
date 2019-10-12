@@ -14,7 +14,7 @@ import rest from '../../../actions/api';
 import {connect} from 'react-redux';
 import snakecaseKeys from 'snakecase-keys';
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
-import classes from '../../characters/partials/character-form.module.scss';
+// import classes from '../../characters/partials/character-form.module.scss';
 
 const setEncounterObject = (values) => {
   const encounterFields = {
@@ -76,7 +76,6 @@ const setEncounterObject = (values) => {
 class EncounterForm extends React.Component {
   state = {
     encounter: null,
-    submitButtonTitle: 'Add',
     validated: false,
   };
 
@@ -93,7 +92,7 @@ class EncounterForm extends React.Component {
       sort: this.props.newEncounterSort ? this.props.newEncounterSort : 0,
       encounterMonsters: [],
       encounterItems: [],
-      npcs: [],
+      encounterNpcs: [],
     };
     if (this.props.encounter) {
       const encounter = this.props.encounter;
@@ -114,7 +113,6 @@ class EncounterForm extends React.Component {
     console.log(initialValues);
     this.setState({
       encounter: initialValues,
-      submitButtonTitle: this.props.encounter ? 'Save' : 'Add',
     });
   }
 
@@ -149,7 +147,7 @@ class EncounterForm extends React.Component {
   };
 
   render () {
-    const {encounter, submitButtonTitle, validated} = this.state;
+    const {encounter, validated} = this.state;
     const {adventure, onCancelEditing, onDelete} = this.props;
     const npcOptions = adventure.npcs.map((npc) => ({
       value: npc.id,
@@ -190,10 +188,10 @@ class EncounterForm extends React.Component {
                         onClick={form.reset}
                         disabled={submitting || pristine}
                         variant={'secondary'}>Reset</Button>
-                <Button type="submit" disabled={submitting} variant={'success'}>{submitButtonTitle}</Button>
+                <Button type="submit" disabled={submitting} variant={'success'}>Save</Button>
               </ButtonGroup>
             </ButtonToolbar>
-            <pre className={classes.preBlock}>{JSON.stringify(values, 0, 2)}</pre>
+            {/*<pre className={classes.preBlock}>{JSON.stringify(values, 0, 2)}</pre>*/}
           </Form>
         )} />
     );
