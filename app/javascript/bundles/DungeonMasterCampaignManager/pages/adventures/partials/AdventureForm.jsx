@@ -14,8 +14,9 @@ import FormSelect from '../../../components/forms/FormSelect';
 import Col from 'react-bootstrap/Col';
 import {FieldArray} from 'react-final-form-arrays';
 import EncounterFormCard from '../../encounters/partials/EncounterFormCard';
-import classes from '../../characters/partials/character-form.module.scss';
 import Row from 'react-bootstrap/Row';
+
+// import classes from '../../characters/partials/character-form.module.scss';
 
 const setAdventureObject = (values, campaignID) => {
   let adventureWorldLocationAttributes = {
@@ -109,7 +110,6 @@ const setAdventureObject = (values, campaignID) => {
               npcFields._destroy = npc._destroy;
             }
             result.push(npcFields);
-
           }
           return result;
         }, []),
@@ -318,7 +318,7 @@ class AdventureForm extends React.Component {
                          </div>
                        </Col>
                      </Row>
-                     <pre className={classes.preBlock}>{JSON.stringify(values, 0, 2)}</pre>
+                     {/*<pre className={classes.preBlock}>{JSON.stringify(values, 0, 2)}</pre>*/}
                    </Form>
                  )} />
     );

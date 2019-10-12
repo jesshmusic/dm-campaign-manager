@@ -27,45 +27,54 @@ const setEncounterObject = (values) => {
     platinumPieces: values.platinumPieces,
     silverPieces: values.silverPieces,
     sort: values.sort,
-    encounterMonstersAttributes: values.encounterMonsters.map((encounterMonster) => {
-      const newMonsters = {
-        numberOfMonsters: encounterMonster.numberOfMonsters,
-        monsterId: encounterMonster.monster.value,
-      };
-      if (encounterMonster.id) {
-        newMonsters.id = encounterMonster.id;
+    encounterMonstersAttributes: values.encounterMonsters.reduce((result, encounterMonster) => {
+      if (encounterMonster.monster) {
+        const newMonsters = {
+          numberOfMonsters: encounterMonster.numberOfMonsters,
+          monsterId: encounterMonster.monster.value,
+        };
+        if (encounterMonster.id) {
+          newMonsters.id = encounterMonster.id;
+        }
+        if (encounterMonster._destroy) {
+          newMonsters._destroy = encounterMonster._destroy;
+        }
+        result.push(newMonsters);
       }
-      if (encounterMonster._destroy) {
-        newMonsters._destroy = encounterMonster._destroy;
+      return result;
+    }, []),
+    encounterItemsAttributes: values.encounterItems.reduce((result, item) => {
+      if (item.item) {
+        const itemFields = {
+          quantity: item.quantity,
+          itemId: item.item.value,
+        };
+        if (item.id) {
+          itemFields.id = item.id;
+        }
+        if (item._destroy) {
+          itemFields._destroy = item._destroy;
+        }
+        result.push(itemFields);
       }
-      return newMonsters;
-    }),
-    encounterItemsAttributes: values.encounterItems.map((item) => {
-      const itemFields = {
-        quantity: item.quantity,
-        itemId: item.item.value,
-      };
-      if (item.id) {
-        itemFields.id = item.id;
+      return result;
+    }, []),
+    encounterNpcsAttributes: values.encounterNpcs.reduce((result, npc) => {
+      if (npc.npc) {
+        const npcFields = {
+          isCombatant: npc.isCombatant,
+          characterId: npc.npc.value,
+        };
+        if (npc.id) {
+          npcFields.id = npc.id;
+        }
+        if (npc._destroy) {
+          npcFields._destroy = npc._destroy;
+        }
+        result.push(npcFields);
       }
-      if (item._destroy) {
-        itemFields._destroy = item._destroy;
-      }
-      return itemFields;
-    }),
-    encounterNpcsAttributes: values.encounterNpcs.map((npc) => {
-      const npcFields = {
-        isCombatant: npc.isCombatant,
-        characterId: npc.npc.value,
-      };
-      if (npc.id) {
-        npcFields.id = npc.id;
-      }
-      if (npc._destroy) {
-        npcFields._destroy = npc._destroy;
-      }
-      return npcFields;
-    }),
+      return result;
+    }, []),
   };
   if (values.id) {
     encounterFields.id = values.id;
