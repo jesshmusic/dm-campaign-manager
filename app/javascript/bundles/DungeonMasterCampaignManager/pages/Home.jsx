@@ -30,6 +30,7 @@ import Adventure from './adventures/Adventure';
 import EditAdventure from './adventures/EditAdventure';
 import Encounter from './encounters/Encounter';
 import EditEncounter from './encounters/EditEncounter';
+import NewAdventure from './adventures/NewAdventure';
 
 const store = (props) => configureStore({
   reducer: rootReducer,
@@ -95,6 +96,7 @@ const Home = (props) => (
       <EditCampaign path='/app/campaigns/:campaignSlug/edit'/>
       <Adventure path='/app/campaigns/:campaignSlug/adventures/:id'/>
       <EditAdventure path={'/app/campaigns/:campaignSlug/adventures/:id/edit'}/>
+      <NewAdventure path={'/app/campaigns/:campaignSlug/adventures/new'}/>
       <Encounter path='/app/campaigns/:campaignSlug/adventures/:adventureId/encounters/:id'/>
       <EditEncounter path={'/app/campaigns/:campaignSlug/adventures/:adventureId/encounters/:id/edit'}/>
       <PlayerCharacter path='/app/campaigns/:campaignSlug/pcs/:pcSlug' />

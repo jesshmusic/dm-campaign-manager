@@ -21,40 +21,19 @@ import Card from 'react-bootstrap/Card';
 
 const CampaignBody = ({
   campaign,
-  deleteAdventure,
-  handleCancelEditing,
-  handleUpdateAdventure,
-  showNewAdventureForm,
-  showingNewAdventureForm,
 }) => (
   campaign ? (
     <Row>
       <Col sm={7} md={8}>
         <div dangerouslySetInnerHTML={{ __html: campaign.description }} />
         <h3>Adventures</h3>
-        <Button variant={'success'}
-                block
-                className={'mb-3'}
-                onClick={showNewAdventureForm}>
+        <Link to={`/app/campaigns/${campaign.slug}/adventures/new`} className={'btn btn-success btn-block mb-3'}>
           New Adventure
-        </Button>
+        </Link>
         <AdventuresList
           campaign={campaign}
-          deleteAdventure={deleteAdventure}
-          onUpdateAdventure={handleUpdateAdventure}
           small
         />
-        <Modal size={ 'xl' } show={ showingNewAdventureForm } onHide={handleCancelEditing}>
-          <Modal.Header closeButton>
-            <Modal.Title>New Adventure</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <AdventureForm
-              campaign={campaign}
-              onUpdateAdventure={handleUpdateAdventure}
-              onCancelEditing={handleCancelEditing}/>
-          </Modal.Body>
-        </Modal>
       </Col>
       <Col sm={5} md={4}>
         <div className={'mb-4'}>
@@ -103,17 +82,9 @@ const CampaignBody = ({
 
 CampaignBody.propTypes = {
   campaign: PropTypes.object,
-  deleteAdventure: PropTypes.func.isRequired,
-  handleCancelEditing: PropTypes.func.isRequired,
-  handleUpdateAdventure: PropTypes.func.isRequired,
-  showNewAdventureForm: PropTypes.func.isRequired,
-  showingNewAdventureForm: PropTypes.bool,
 };
 
 class Campaign extends React.Component {
-  state = {
-    showingNewAdventureForm: false,
-  };
 
   componentDidMount () {
     if (this.props.user) {
@@ -123,29 +94,7 @@ class Campaign extends React.Component {
     }
   }
 
-  handleUpdateAdventure = (adventureBody, adventureID) => {
-    if (adventureID) {
-      this.props.updateAdventure(snakecaseKeys(adventureBody, {exclude: ['_destroy']}), this.props.campaignSlug, adventureID);
-    } else {
-      this.props.createAdventure(snakecaseKeys(adventureBody), this.props.campaignSlug);
-    }
-    this.setState({
-      showingNewAdventureForm: false,
-    });
-  };
-
-  handleCancelEditing = () => {
-    this.setState({showingNewAdventureForm: false});
-  };
-
-  showNewAdventureForm = () => {
-    this.setState({
-      showingNewAdventureForm: !this.state.showingNewAdventureForm,
-    });
-  };
-
   render () {
-    const { showingNewAdventureForm } = this.state;
     const { campaign, flashMessages, loading, user } = this.props;
     const campaignTitle = campaign ? campaign.name : 'Campaign Loading...';
     return (
@@ -165,12 +114,7 @@ class Campaign extends React.Component {
                        buttonLink={campaign ? `/app/campaigns/${campaign.slug}/edit` : ''}
                        buttonTitle={'Edit Campaign'}
                        buttonVariant={'primary'}/>
-            <CampaignBody campaign={campaign}
-                          deleteAdventure={this.props.deleteAdventure}
-                          handleCancelEditing={this.handleCancelEditing}
-                          handleUpdateAdventure={this.handleUpdateAdventure}
-                          showNewAdventureForm={this.showNewAdventureForm}
-                          showingNewAdventureForm={showingNewAdventureForm} />
+            <CampaignBody campaign={campaign} />
           </Container>
         )}
       </PageContainer>
@@ -181,12 +125,9 @@ class Campaign extends React.Component {
 Campaign.propTypes = {
   campaign: PropTypes.object,
   campaignSlug: PropTypes.string.isRequired,
-  createAdventure: PropTypes.func.isRequired,
-  deleteAdventure: PropTypes.func.isRequired,
   flashMessages: PropTypes.array,
   getCampaign: PropTypes.func.isRequired,
   loading: PropTypes.bool,
-  updateAdventure: PropTypes.func.isRequired,
   user: PropTypes.object,
 };
 
@@ -201,35 +142,8 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    createAdventure: (adventure, campaignSlug) => {
-      dispatch(rest.actions.createAdventure(
-        {
-          campaign_slug: campaignSlug,
-        },
-        {
-          body: JSON.stringify({adventure}),
-        })
-      );
-    },
-    deleteAdventure: (campaignSlug, adventureId) => {
-      dispatch(rest.actions.deleteAdventure({
-        campaign_slug: campaignSlug,
-        id: adventureId,
-      }));
-    },
     getCampaign: (campaignSlug) => {
       dispatch(rest.actions.getCampaign({slug: campaignSlug}));
-    },
-    updateAdventure: (adventure, campaignSlug, adventureId) => {
-      dispatch(rest.actions.updateAdventure(
-        {
-          campaign_slug: campaignSlug,
-          id: adventureId,
-        },
-        {
-          body: JSON.stringify({adventure})
-        })
-      );
     },
   };
 }

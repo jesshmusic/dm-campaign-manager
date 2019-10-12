@@ -140,6 +140,8 @@ const setupInitialValues = (adventure) => {
 };
 
 class AdventureForm extends React.Component {
+  _isMounted = false;
+
   state = {
     adventure: null,
     validated: false,
@@ -147,6 +149,8 @@ class AdventureForm extends React.Component {
   };
 
   componentDidMount () {
+    this._isMounted = true;
+
     if (this.props.adventure) {
       const adventure = this.props.adventure;
       this.setState({
@@ -156,9 +160,11 @@ class AdventureForm extends React.Component {
       fetch(`/v1/campaigns/${this.props.campaign.slug}/adventures/new.json`)
         .then((response) => response.json())
         .then((adventure) => {
-          this.setState({
-            adventure: setupInitialValues(adventure),
-          });
+          if (this._isMounted) {
+            this.setState({
+              adventure: setupInitialValues(adventure),
+            });
+          }
         });
     }
     this.setState({
@@ -170,6 +176,10 @@ class AdventureForm extends React.Component {
         },
       })),
     });
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   handleSubmit = async (values) => {

@@ -13,16 +13,12 @@ import snakecaseKeys from 'snakecase-keys';
 const SortableAdventuresList = sortableContainer(({
   adventures,
   campaign,
-  deleteAdventure,
-  onUpdateAdventure,
   small,
 }) => (
   <div>
     {adventures.map((adventure, index) => (
       <AdventureCard adventure={adventure}
                      campaign={campaign}
-                     deleteAdventure={deleteAdventure}
-                     updateAdventure={onUpdateAdventure}
                      key={adventure.id}
                      index={index}
                      small={small}
@@ -33,8 +29,6 @@ const SortableAdventuresList = sortableContainer(({
 SortableAdventuresList.propTypes = {
   adventures: PropTypes.array.isRequired,
   campaign: PropTypes.object.isRequired,
-  deleteAdventure: PropTypes.func.isRequired,
-  onUpdateAdventure: PropTypes.func.isRequired,
   small: PropTypes.bool,
 };
 
@@ -71,8 +65,6 @@ class AdventuresList extends React.Component {
   render () {
     const {
       campaign,
-      deleteAdventure,
-      onUpdateAdventure,
       small,
     } = this.props;
 
@@ -82,8 +74,6 @@ class AdventuresList extends React.Component {
       <SortableAdventuresList
         adventures={adventures}
         campaign={campaign}
-        deleteAdventure={deleteAdventure}
-        onUpdateAdventure={onUpdateAdventure}
         onSortEnd={this.onSortEnd}
         small={small}
         useDragHandle
@@ -94,8 +84,6 @@ class AdventuresList extends React.Component {
 
 AdventuresList.propTypes = {
   campaign: PropTypes.object.isRequired,
-  deleteAdventure: PropTypes.func.isRequired,
-  onUpdateAdventure: PropTypes.func.isRequired,
   small: PropTypes.bool,
 };
 

@@ -8,32 +8,13 @@ import Card from 'react-bootstrap/Card';
 import ReactMarkdown from 'react-markdown';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Button from 'react-bootstrap/Button';
-import AdventureForm from './AdventureForm';
 import DragHandle from '../../../components/DragHandle';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { Link } from '@reach/router';
-import Modal from 'react-bootstrap/Modal';
 import { sortableElement } from 'react-sortable-hoc';
 
 class AdventureCard extends React.Component {
-  state = {
-    editing: false,
-  };
-
-  handleEditAdventure = () => {
-    this.setState({editing: !this.state.editing});
-  };
-
-  handleCancelEditing = () => {
-    this.setState({editing: false});
-  };
-
-  handleUpdateForm = (adventureBody) => {
-    this.props.updateAdventure(adventureBody, this.props.adventure.id);
-    this.setState({editing: false});
-  };
-
   get totalXP () {
     let totalXP = 0;
     this.props.adventure.encounters.forEach((encounter) => {
@@ -48,7 +29,6 @@ class AdventureCard extends React.Component {
       campaign,
       small,
     } = this.props;
-    const { editing } = this.state;
 
     if (small) {
       return (
@@ -63,22 +43,10 @@ class AdventureCard extends React.Component {
                 </small>
               </p>
             </Link>
-            <Button variant={'secondary'} onClick={this.handleEditAdventure}>
+            <Link to={`/app/campaigns/${campaign.slug}/adventures/${adventure.id}/edit`} className={'btn btn-secondary'}>
               Edit
-            </Button>
+            </Link>
           </Card.Body>
-          <Modal size={ 'lg' } show={ editing } onHide={this.handleCancelEditing}>
-            <Modal.Header closeButton>
-              <Modal.Title>New Adventure</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <AdventureForm
-                campaign={campaign}
-                onUpdateAdventure={this.handleUpdateForm}
-                onCancelEditing={this.handleCancelEditing}
-                adventure={adventure}/>
-            </Modal.Body>
-          </Modal>
         </Card>
       );
     }
@@ -131,26 +99,14 @@ class AdventureCard extends React.Component {
         </Card.Body>
         <Card.Footer>
           <ButtonGroup>
-            <Button variant={'secondary'} onClick={this.handleEditAdventure}>
+            <Link to={`/app/campaigns/${campaign.slug}/adventures/${adventure.id}/edit`} className={'btn btn-secondary'}>
               Edit
-            </Button>
+            </Link>
             <Button variant={'danger'} onClick={this.handleDeleteAdventure}>
               Delete
             </Button>
           </ButtonGroup>
         </Card.Footer>
-        <Modal size={ 'lg' } show={ editing } onHide={this.handleCancelEditing}>
-          <Modal.Header closeButton>
-            <Modal.Title>New Adventure</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <AdventureForm
-              campaign={campaign}
-              onUpdateAdventure={this.handleUpdateForm}
-              onCancelEditing={this.handleCancelEditing}
-              adventure={adventure}/>
-          </Modal.Body>
-        </Modal>
       </Card>
     );
   }
@@ -159,7 +115,6 @@ class AdventureCard extends React.Component {
 AdventureCard.propTypes = {
   adventure: PropTypes.object.isRequired,
   campaign: PropTypes.object.isRequired,
-  updateAdventure: PropTypes.func.isRequired,
   small: PropTypes.bool,
 };
 
