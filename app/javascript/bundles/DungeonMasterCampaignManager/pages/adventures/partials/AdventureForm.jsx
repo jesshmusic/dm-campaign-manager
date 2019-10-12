@@ -7,14 +7,10 @@ import PropTypes from 'prop-types';
 import {Form as FinalForm} from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
 import Form from 'react-bootstrap/Form';
-import FormField from '../../../components/forms/FormField';
-import FormRichTextArea from '../../../components/forms/FormRichTextArea';
 import Button from 'react-bootstrap/Button';
-import FormSelect from '../../../components/forms/FormSelect';
 import Col from 'react-bootstrap/Col';
-import {FieldArray} from 'react-final-form-arrays';
-import EncounterFormCard from '../../encounters/partials/EncounterFormCard';
 import Row from 'react-bootstrap/Row';
+import AdventureFields from './AdventureFields';
 
 // import classes from '../../characters/partials/character-form.module.scss';
 
@@ -235,67 +231,11 @@ class AdventureForm extends React.Component {
                    <Form noValidate validated={validated} onSubmit={handleSubmit}>
                      <Row>
                        <Col sm={{span: 12, order: 2}} md={{span: 10, order: 1}}>
-                         <Form.Row>
-                           <FormField label={'Adventure name'}
-                                      type={'text'}
-                                      colWidth={'12'}
-                                      name={'name'}/>
-                         </Form.Row>
-                         <Form.Row>
-                           <FormRichTextArea label={'Description'} colWidth={'12'} name={'description'}/>
-                         </Form.Row>
-                         <Form.Row>
-                           <FormSelect
-                             label={'World Location (required)'}
-                             name={'worldLocation'}
-                             colWidth={'12'}
-                             options={worldLocationOptions}
-                             isClearable
-                             isCreateable
-                           />
-                         </Form.Row>
-                         <Form.Row>
-                           <FormSelect
-                             label={'Player Characters'}
-                             name={'playerCharacters'}
-                             colWidth={'6'}
-                             options={playerCharacterOptions}
-                             isClearable
-                             isMulti
-                           />
-                           <FormSelect
-                             label={'Non-player Characters'}
-                             name={'nonPlayerCharacters'}
-                             colWidth={'6'}
-                             options={nonPlayerCharacterOptions}
-                             isClearable
-                             isMulti
-                           />
-                         </Form.Row>
-                         <Form.Row>
-                           <Col md={12}>
-                             <h3>Encounters</h3>
-                             <FieldArray name="encounters">
-                               {({fields}) => (
-                                 fields.map((encounterFieldName, index) => (
-                                   !fields.value[index] || !fields.value[index]._destroy ? (
-                                     <EncounterFormCard encounterFieldName={encounterFieldName}
-                                                        fields={fields}
-                                                        index={index}
-                                                        key={index}
-                                                        npcOptions={adventureNpcOptions}
-                                                        push={push}/>
-                                   ) : null))
-                               )}
-                             </FieldArray>
-                             <Button type="button" onClick={() => push('encounters', {
-                               name: '',
-                               description: '',
-                               encounterMonsters: [],
-                               encounterItems: [],
-                             })} variant={'success'} block>Add Encounter</Button>
-                           </Col>
-                         </Form.Row>
+                         <AdventureFields worldLocationOptions={worldLocationOptions}
+                                          nonPlayerCharacterOptions={nonPlayerCharacterOptions}
+                                          adventureNpcOptions={adventureNpcOptions}
+                                          push={push}
+                                          playerCharacterOptions={playerCharacterOptions} />
                        </Col>
                        <Col sm={{span: 12, order: 1}} md={{span: 2, order: 2}} className={'pl-md-0'}>
                          <div className={'sticky-top py-3'}>
