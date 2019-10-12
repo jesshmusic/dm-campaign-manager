@@ -44,7 +44,7 @@ const CampaignBody = ({
           onUpdateAdventure={handleUpdateAdventure}
           small
         />
-        <Modal size={ 'lg' } show={ showingNewAdventureForm } onHide={handleCancelEditing}>
+        <Modal size={ 'xl' } show={ showingNewAdventureForm } onHide={handleCancelEditing}>
           <Modal.Header closeButton>
             <Modal.Title>New Adventure</Modal.Title>
           </Modal.Header>

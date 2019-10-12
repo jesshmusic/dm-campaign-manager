@@ -142,7 +142,6 @@ const setupInitialValues = (adventure) => {
 class AdventureForm extends React.Component {
   state = {
     adventure: null,
-    submitButtonTitle: 'Add',
     validated: false,
     worldLocationOptions: [],
   };
@@ -163,7 +162,6 @@ class AdventureForm extends React.Component {
         });
     }
     this.setState({
-      submitButtonTitle: this.props.adventure ? 'Save' : 'Add',
       worldLocationOptions: this.props.campaign.worldLocations.map((location) => ({
         value: location.id,
         label: location.name,
@@ -191,7 +189,7 @@ class AdventureForm extends React.Component {
   };
 
   render () {
-    const {adventure, submitButtonTitle, validated, worldLocationOptions} = this.state;
+    const {adventure, validated, worldLocationOptions} = this.state;
     const {campaign, onCancelEditing, onDelete} = this.props;
     const nonPlayerCharacterOptions = campaign.npcs.map((pc) => ({value: pc.id, label: pc.name}));
     const playerCharacterOptions = campaign.pcs.map((pc) => ({value: pc.id, label: pc.name}));
@@ -216,7 +214,7 @@ class AdventureForm extends React.Component {
                  }) => (
                    <Form noValidate validated={validated} onSubmit={handleSubmit}>
                      <Row>
-                       <Col xs={{span: 12, order: 2}} sm={{span: 10, order: 1}}>
+                       <Col sm={{span: 12, order: 2}} md={{span: 10, order: 1}}>
                          <Form.Row>
                            <FormField label={'Adventure name'}
                                       type={'text'}
@@ -279,15 +277,23 @@ class AdventureForm extends React.Component {
                            </Col>
                          </Form.Row>
                        </Col>
-                       <Col xs={{span: 12, order: 1}} sm={{span: 2, order: 2}}>
-                         <div className={'sticky-top pt-3'}>
-                           <Button type="submit" disabled={submitting} variant={'success'} block>{submitButtonTitle}</Button>
-                           <Button type="button" onClick={form.reset} disabled={submitting || pristine} variant={'link'}>Reset Form</Button>
+                       <Col sm={{span: 12, order: 1}} md={{span: 2, order: 2}} className={'pl-md-0'}>
+                         <div className={'sticky-top py-3'}>
+                           <Button type="submit" disabled={submitting || pristine} variant={'success'} block>
+                             Save
+                           </Button>
+                           <Button type="button" onClick={form.reset} disabled={submitting || pristine} variant={'link'} block>
+                             Reset Form
+                           </Button>
                            {onCancelEditing ? (
-                             <Button type="button" onClick={onCancelEditing} variant={'info'}>Cancel</Button>
+                             <Button type="button" onClick={onCancelEditing} variant={'link'} block>
+                               Cancel
+                             </Button>
                            ) : null}
                            {onDelete ? (
-                             <Button type="button" variant={'link'} onClick={onDelete}>Delete Adventure</Button>
+                             <Button type="button" variant={'link'} onClick={onDelete} block>
+                               Delete Adventure
+                             </Button>
                            ) : null}
                          </div>
                        </Col>
