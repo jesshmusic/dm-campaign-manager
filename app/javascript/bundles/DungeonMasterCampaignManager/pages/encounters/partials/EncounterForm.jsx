@@ -7,13 +7,13 @@ import PropTypes from 'prop-types';
 import {Form as FinalForm} from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
 import Form from 'react-bootstrap/Form';
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Button from 'react-bootstrap/Button';
 import EncounterFields from './EncounterFields';
 import rest from '../../../actions/api';
 import {connect} from 'react-redux';
 import snakecaseKeys from 'snakecase-keys';
-import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
 // import classes from '../../characters/partials/character-form.module.scss';
 
 const setEncounterObject = (values) => {
@@ -171,27 +171,34 @@ class EncounterForm extends React.Component {
           values,
         }) => (
           <Form noValidate validated={validated} onSubmit={handleSubmit}>
-            <EncounterFields encounterFieldName={''}
-                             npcOptions={npcOptions}
-                             push={push}/>
-            <ButtonToolbar className={'justify-content-between my-4'}>
-              <ButtonGroup aria-label="Encounter delete">
-                {onDelete ? (
-                  <Button type="button" variant={'danger'} onClick={onDelete}>Delete Encounter</Button>
-                ) : null}
-              </ButtonGroup>
-              <ButtonGroup aria-label="Encounter actions">
-                {onCancelEditing ? (
-                  <Button type="button" onClick={onCancelEditing} variant={'info'}>Cancel</Button>
-                ) : null}
-                <Button type="button"
-                        onClick={form.reset}
-                        disabled={submitting || pristine}
-                        variant={'secondary'}>Reset</Button>
-                <Button type="submit" disabled={submitting} variant={'success'}>Save</Button>
-              </ButtonGroup>
-            </ButtonToolbar>
-            {/*<pre className={classes.preBlock}>{JSON.stringify(values, 0, 2)}</pre>*/}
+            <Row>
+              <Col sm={{span: 12, order: 2}} md={{span: 10, order: 1}}>
+                <EncounterFields encounterFieldName={''}
+                                 npcOptions={npcOptions}
+                                 push={push}/>
+              </Col>
+              <Col sm={{span: 12, order: 1}} md={{span: 2, order: 2}} className={'pl-md-0'}>
+                <div className={'sticky-top py-3'}>
+                  <Button type="submit" disabled={submitting || pristine} variant={'success'} block>
+                    Save
+                  </Button>
+                  <Button type="button" onClick={form.reset} disabled={submitting || pristine} variant={'link'} block>
+                    Reset Form
+                  </Button>
+                  {onCancelEditing ? (
+                    <Button type="button" onClick={onCancelEditing} variant={'link'} block>
+                      Cancel
+                    </Button>
+                  ) : null}
+                  {onDelete ? (
+                    <Button type="button" variant={'link'} onClick={onDelete} block>
+                      Delete Encounter
+                    </Button>
+                  ) : null}
+                </div>
+              </Col>
+            </Row>
+            {/* <pre className={classes.preBlock}>{JSON.stringify(values, 0, 2)}</pre>*/}
           </Form>
         )} />
     );
