@@ -21,7 +21,8 @@
     "Set": true,
     "window": true,
     "require": true,
-    "module": true
+    "module": true,
+    "ClassicEditor": true
   },
   "parser": "babel-eslint",
   "parserOptions": {
