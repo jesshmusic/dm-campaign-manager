@@ -53,20 +53,20 @@
 require 'rails_helper'
 
 RSpec.describe PlayerCharacter, type: :model do
+  before(:each) do
+    dungeon_master = FactoryBot.create(:dungeon_master_user)
+    campaign = FactoryBot.create(:campaign, user: dungeon_master, name: 'Test Campaign')
+    dnd_class = DndClass.create!(name: 'Fighter', hit_die: 10)
+    char_class = CharacterClass.create(level: 1, dnd_class: dnd_class)
+    char_class2 = CharacterClass.create(level: 1, dnd_class: dnd_class)
+    @pc = PlayerCharacter.create(name: 'Bob', campaign: campaign, hit_points: 24, current_hit_points: 24)
+    @pc.character_classes << char_class
+    @pc.save!
+    @pc2 = PlayerCharacter.create(name: 'Bob', campaign: campaign)
+    @pc2.character_classes << char_class2
+    @pc2.save!
+  end
   context "with the same name" do
-    before(:each) do
-      dungeon_master = FactoryBot.create(:dungeon_master_user)
-      campaign = FactoryBot.create(:campaign, user: dungeon_master, name: 'Test Campaign')
-      dnd_class = DndClass.create!(name: 'Fighter', hit_die: 10)
-      char_class = CharacterClass.create(level: 1, dnd_class: dnd_class)
-      char_class2 = CharacterClass.create(level: 1, dnd_class: dnd_class)
-      @pc = PlayerCharacter.create(name: 'Bob', campaign: campaign)
-      @pc.character_classes << char_class
-      @pc.save!
-      @pc2 = PlayerCharacter.create(name: 'Bob', campaign: campaign)
-      @pc2.character_classes << char_class2
-      @pc2.save!
-    end
 
     it "generates unique slugs for PCs" do
 
@@ -87,6 +87,17 @@ RSpec.describe PlayerCharacter, type: :model do
       expect(PlayerCharacter.all.count).to eq(2)
       @pc.reload
       expect(@pc.slug).to eq('test-campaign-bob')
+    end
+  end
+
+  context 'maintains status based on current hit points' do
+    it 'should be status "dead"' do
+      @pc.update(hit_points_current: 0)
+      expect(@pc.status).to eq(:dead)
+    end
+
+    it 'should be status "alive"' do
+      expect(@pc.status).to eq(:alive)
     end
   end
 end

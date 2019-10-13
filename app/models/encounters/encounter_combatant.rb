@@ -33,4 +33,8 @@ class EncounterCombatant < ApplicationRecord
   belongs_to :encounter
   belongs_to :character, optional: true
   belongs_to :monster, optional: true
+
+  before_save do
+    character&.update(hit_points_current: current_hit_points)
+  end
 end

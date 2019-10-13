@@ -133,7 +133,7 @@ RSpec.describe Encounter, type: :model do
       end
 
       it 'should have 11 combatants when NPC is added and the encounter is reset' do
-        @encounter.characters << @campaign_npc
+        @encounter.encounter_npcs << EncounterNpc.create(character: @campaign_npc, is_combatant: true)
         @encounter.update_encounter
         @encounter.save!
         @encounter.reload
@@ -143,6 +143,50 @@ RSpec.describe Encounter, type: :model do
       it 'should start with the proper encounter state' do
         expect(@encounter.round).to eq(1)
         expect(@encounter.current_mob_index).to eq(0)
+      end
+
+      it 'should reflect current hit points in player character records initially' do
+        pcs = []
+        @encounter.encounter_combatants.each { |encounter_combatant|
+          pcs << encounter_combatant if encounter_combatant.character&.type == 'PlayerCharacter'
+        }
+        expect(pcs.first.character.hit_points_current).to eq(pcs.first.current_hit_points)
+      end
+
+      it 'should reflect current hit points in player character records after damage' do
+        pcs = []
+        @encounter.encounter_combatants.each { |encounter_combatant|
+          pcs << encounter_combatant if encounter_combatant.character&.type == 'PlayerCharacter'
+        }
+        @encounter.update(encounter_combatants_attributes: { id: pcs.first.id, current_hit_points: 1 })
+        @encounter.reload
+        expect(pcs.first.character.hit_points_current).to eq(pcs.first.current_hit_points)
+      end
+
+      it 'should reflect current hit points in non-player character records initially' do
+        @encounter.encounter_npcs << EncounterNpc.create(character: @campaign_npc, is_combatant: true)
+        @encounter.update_encounter
+        @encounter.save!
+        @encounter.reload
+        npcs = []
+        @encounter.encounter_combatants.each { |encounter_combatant|
+          npcs << encounter_combatant if encounter_combatant.character&.type == 'NonPlayerCharacter'
+        }
+        expect(npcs.first.character.hit_points_current).to eq(npcs.first.current_hit_points)
+      end
+
+      it 'should reflect current hit points in non-player character records after damage' do
+        @encounter.encounter_npcs << EncounterNpc.create(character: @campaign_npc, is_combatant: true)
+        @encounter.update_encounter
+        @encounter.save!
+        @encounter.reload
+        npcs = []
+        @encounter.encounter_combatants.each { |encounter_combatant|
+          npcs << encounter_combatant if encounter_combatant.character&.type == 'NonPlayerCharacter'
+        }
+        @encounter.update(encounter_combatants_attributes: { id: npcs.first.id, current_hit_points: 1 })
+        @encounter.reload
+        expect(npcs.first.character.hit_points_current).to eq(npcs.first.current_hit_points)
       end
     end
   end

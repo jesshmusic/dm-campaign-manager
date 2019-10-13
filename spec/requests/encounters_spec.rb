@@ -73,6 +73,20 @@ RSpec.describe "Encounters", type: :request do
       encounter.save!
     end
     @encounter = @adventure.encounters.first
+    @campaign_pc = @adventure.pcs.first
+    @campaign_npc = campaign.npcs.first
+    @campaign_npc.name = 'Andrade Mirrius'
+    @campaign_npc.save!
+    @encounter.encounter_npcs << EncounterNpc.create(character: @campaign_npc, is_combatant: true)
+    @encounter.update_encounter
+    @encounter.save!
+    @encounter.reload
+    @encounter_combatant_pc = @encounter.encounter_combatants.find { |encounter_combatant|
+      encounter_combatant.character&.id == @campaign_pc.id
+    }
+    @encounter_combatant_npc = @encounter.encounter_combatants.find { |encounter_combatant|
+      encounter_combatant.character&.id == @campaign_npc.id
+    }
     @other_encounter = @adventure.encounters.sample
   end
 
@@ -98,7 +112,7 @@ RSpec.describe "Encounters", type: :request do
       it "returns an Encounter" do
         get "/v1/campaigns/#{campaign.slug}/adventures/#{@adventure.id}/encounters/#{@encounter.id}.json"
         result_item = JSON.parse(response.body)
-        expect(result_item['combatants'].count).to eq(8)
+        expect(result_item['combatants'].count).to eq(9)
         expect(result_item['name']).to eq('Ambush!')
         expect(result_item['description']).to eq('The first room of the dungeon')
       end
@@ -125,7 +139,7 @@ RSpec.describe "Encounters", type: :request do
       it "returns an Encounter" do
         get "/v1/campaigns/#{campaign.slug}/adventures/#{@adventure.id}/encounters/#{@encounter.id}.json"
         result_item = JSON.parse(response.body)
-        expect(result_item['combatants'].count).to eq(8)
+        expect(result_item['combatants'].count).to eq(9)
         expect(result_item['name']).to eq('Ambush!')
         expect(result_item['description']).to eq('The first room of the dungeon')
       end
@@ -210,11 +224,11 @@ RSpec.describe "Encounters", type: :request do
   end
 
   describe "PUT Encounter Tracker" do
-    context "for Dungeon Masters" do
-      before(:each) do
-        sign_in dungeon_master
-      end
+    before(:each) do
+      sign_in dungeon_master
+    end
 
+    context "Encounter Tracker stats and order" do
       it "Starts the Encounter, returns correct `encounterState`" do
         put "/v1/campaigns/#{campaign.slug}/adventures/#{@adventure.id}/encounters/#{@encounter.id}.json",
             params: {
@@ -259,7 +273,7 @@ RSpec.describe "Encounters", type: :request do
       end
 
       it "Sorts combatants by initiative" do
-        new_initiatives = [20, 5, 19, 6, 22, 7, 17, 8]
+        new_initiatives = [20, 5, 19, 6, 22, 7, 17, 8, 5]
         put "/v1/campaigns/#{campaign.slug}/adventures/#{@adventure.id}/encounters/#{@encounter.id}.json",
             params: {
               encounter: {
@@ -289,6 +303,82 @@ RSpec.describe "Encounters", type: :request do
           .to eq('Combatant initiative: 19')
         expect(result_item['combatants'][2]['initiativeRoll'])
           .to eq(19)
+      end
+    end
+
+    context 'Encounter Damage' do
+      it 'should reflect damage on non-player character records in addition to EncounterCombatant' do
+        put "/v1/campaigns/#{campaign.slug}/adventures/#{@adventure.id}/encounters/#{@encounter.id}.json",
+            params: {
+              encounter: {
+                in_progress: true,
+                encounter_combatants_attributes: [{
+                  id: @encounter_combatant_npc.id,
+                  current_hit_points: @campaign_npc.hit_points - 10
+                }]
+              },
+              encounter_tracker: true,
+            }
+        expect(response).to have_http_status(200)
+        @campaign_npc.reload
+        @encounter_combatant_npc.reload
+        expect(@encounter_combatant_npc.current_hit_points).to eq(@campaign_npc.hit_points - 10)
+        expect(@campaign_npc.hit_points_current).to eq(@encounter_combatant_npc.current_hit_points)
+        expect(@campaign_npc.hit_points_current).to eq(@campaign_npc.hit_points - 10)
+      end
+
+      it 'should change status to "dead" on non-player character' do
+        put "/v1/campaigns/#{campaign.slug}/adventures/#{@adventure.id}/encounters/#{@encounter.id}.json",
+            params: {
+              encounter: {
+                in_progress: true,
+                encounter_combatants_attributes: [{
+                                                    id: @encounter_combatant_npc.id,
+                                                    current_hit_points: 0
+                                                  }]
+              },
+              encounter_tracker: true,
+            }
+        expect(response).to have_http_status(200)
+        @campaign_npc.reload
+        expect(@campaign_npc.status).to eq(:dead)
+      end
+
+      it 'should reflect damage on player character records in addition to EncounterCombatant' do
+        put "/v1/campaigns/#{campaign.slug}/adventures/#{@adventure.id}/encounters/#{@encounter.id}.json",
+            params: {
+              encounter: {
+                in_progress: true,
+                encounter_combatants_attributes: [{
+                                                    id: @encounter_combatant_pc.id,
+                                                    current_hit_points: @campaign_pc.hit_points - 10
+                                                  }]
+              },
+              encounter_tracker: true,
+            }
+        expect(response).to have_http_status(200)
+        @campaign_pc.reload
+        @encounter_combatant_pc.reload
+        expect(@encounter_combatant_pc.current_hit_points).to eq(@campaign_pc.hit_points - 10)
+        expect(@campaign_pc.hit_points_current).to eq(@encounter_combatant_pc.current_hit_points)
+        expect(@campaign_pc.hit_points_current).to eq(@campaign_pc.hit_points - 10)
+      end
+
+      it 'should change status to "dead" on player character' do
+        put "/v1/campaigns/#{campaign.slug}/adventures/#{@adventure.id}/encounters/#{@encounter.id}.json",
+            params: {
+              encounter: {
+                in_progress: true,
+                encounter_combatants_attributes: [{
+                                                    id: @encounter_combatant_pc.id,
+                                                    current_hit_points: 0
+                                                  }]
+              },
+              encounter_tracker: true,
+            }
+        expect(response).to have_http_status(200)
+        @campaign_pc.reload
+        expect(@campaign_pc.status).to eq(:dead)
       end
     end
   end

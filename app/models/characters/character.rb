@@ -62,8 +62,11 @@ class Character < ApplicationRecord
     self.slug = generate_slug if will_save_change_to_name?
   end
 
-  before_save do
+  before_create do
     self.hit_points_current = hit_points
+  end
+
+  before_save do
     self.initiative = DndRules.ability_score_modifier(dexterity)
     self.proficiency = DndRules.proficiency_bonus_for_level(total_level)
     character_classes.each do |character_class|
@@ -276,7 +279,7 @@ class Character < ApplicationRecord
   end
 
   def generate_slug
-    slug_from_string "#{campaign.name.parameterize}-#{name.parameterize}"
+    slug_from_string "#{name.parameterize}-#{name.parameterize}"
   end
 
   def slug_from_string(slug_string)
