@@ -27,8 +27,8 @@ const PageContainer = (props) => {
       </Helmet>
       <MenuBar user={user}/>
       <HeroBanner/>
-      <FlashMessages/>
       <Container fluid>
+        <FlashMessages/>
         {breadcrumbs && breadcrumbs.length > 0 ? (
           <Breadcrumb>
             <BreadcrumbLink to='/' title={'Home'}/>

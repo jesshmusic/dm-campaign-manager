@@ -1,7 +1,11 @@
 import {createAction, createReducer} from 'redux-starter-kit';
+import rest from '../actions/api';
 
 // Flash Messages
 const dismissFlashMessage = createAction('@@dmcm@dismissFlashMessage');
+
+// Adventures
+const getAdventureFail = createAction(rest.events.getAdventure.actionFail);
 
 // Campaigns
 const createCampaignSuccess = createAction('@@redux-api@createCampaign_success');
@@ -34,6 +38,20 @@ const logoutSucceeded = createAction('@@redux-api@userLogout_success');
 const loginFailed = createAction('@@redux-api@userLogin_fail');
 const logoutFailed = createAction('@@redux-api@userLogout_fail');
 
+const flashErrorMessage = (state, action) => [...state, {
+  id: Date.now(),
+  type: 'danger',
+  text: action.error.errors,
+  heading: `Error ${action.error.status} ${action.error.statusText}`,
+}];
+
+const flashSuccessMessage = (state, message, heading) => [...state, {
+  id: Date.now(),
+  type: 'success',
+  text: message,
+  heading,
+}];
+
 const flashMessages = createReducer([], {
   [dismissFlashMessage]: (state, action) => {
     const removeIndex = state.map((flash) => flash.id).indexOf(action.id);
@@ -41,145 +59,31 @@ const flashMessages = createReducer([], {
     newState.splice(removeIndex, 1);
     return newState;
   },
-  [loginSucceeded]: (state, action) => [...state, {
-    id: Date.now(),
-    type: 'success',
-    text: `User, ${action.data.name}, successfully logged in.`,
-    heading: 'Welcome!',
-  }],
-  [logoutSucceeded]: (state) => [...state, {type: 'success', text: 'User logged out', heading: 'Goodbye!'}],
-  [loginFailed]: (state, action) => [...state, {
-    id: Date.now(),
-    type: 'danger',
-    text: action.error.errors,
-    heading: `Error ${action.error.status} ${action.error.statusText}`,
-  }],
-  [logoutFailed]: (state, action) => [...state, {
-    id: Date.now(),
-    type: 'danger',
-    text: action.error.errors,
-    heading: `Error ${action.error.status} ${action.error.statusText}`,
-  }],
-  [getCampaignsFailed]: (state, action) => [...state, {
-    id: Date.now(),
-    type: 'danger',
-    text: action.error.errors,
-    heading: `Error ${action.error.status} ${action.error.statusText}`,
-  }],
-  [getCampaignFailed]: (state, action) => [...state, {
-    id: Date.now(),
-    type: 'danger',
-    text: action.error.errors,
-    heading: `Error ${action.error.status} ${action.error.statusText}`,
-  }],
-  [createCampaignSuccess]: (state, action) => [...state, {
-    id: Date.now(),
-    type: 'success',
-    text: `"${action.data.name}" successfully created.`,
-    heading: 'Campaign created',
-  }],
-  [updateCampaignSuccess]: (state, action) => [...state, {
-    id: Date.now(),
-    type: 'success',
-    text: `"${action.data.name}" successfully updated.`,
-    heading: 'Campaign updated',
-  }],
-  [createCampaignFail]: (state, action) => [...state, {
-    id: Date.now(),
-    type: 'danger',
-    text: action.error.errors,
-    heading: `Error ${action.error.status} ${action.error.statusText}`,
-  }],
-  [updateCampaignFail]: (state, action) => [...state, {
-    id: Date.now(),
-    type: 'danger',
-    text: action.error.errors,
-    heading: `Error ${action.error.status} ${action.error.statusText}`,
-  }],
-  [getNonPlayerCharactersFailed]: (state, action) => [...state, {
-    id: Date.now(),
-    type: 'danger',
-    text: action.error.errors,
-    heading: `Error ${action.error.status} ${action.error.statusText}`,
-  }],
-  [getNonPlayerCharacterFailed]: (state, action) => [...state, {
-    id: Date.now(),
-    type: 'danger',
-    text: action.error.errors,
-    heading: `Error ${action.error.status} ${action.error.statusText}`,
-  }],
-  [createNonPlayerCharacterSuccess]: (state, action) => [...state, {
-    id: Date.now(),
-    type: 'success',
-    text: `"${action.data.name}" successfully created.`,
-    heading: 'NonPlayerCharacter created',
-  }],
-  [updateNonPlayerCharacterSuccess]: (state, action) => [...state, {
-    id: Date.now(),
-    type: 'success',
-    text: `"${action.data.name}" successfully updated.`,
-    heading: 'NonPlayerCharacter updated',
-  }],
-  [createNonPlayerCharacterFail]: (state, action) => [...state, {
-    id: Date.now(),
-    type: 'danger',
-    text: action.error.errors,
-    heading: `Error ${action.error.status} ${action.error.statusText}`,
-  }],
-  [generateNPCSuccess]: (state, action) => [...state, {
-    id: Date.now(),
-    type: 'success',
-    text: `"${action.data.name}" successfully created.`,
-    heading: 'NonPlayerCharacter generated',
-  }],
-  [generateNPCFail]: (state, action) => [...state, {
-    id: Date.now(),
-    type: 'danger',
-    text: action.error.errors,
-    heading: `Error ${action.error.status} ${action.error.statusText}`,
-  }],
-  [updateNonPlayerCharacterFail]: (state, action) => [...state, {
-    id: Date.now(),
-    type: 'danger',
-    text: action.error.errors,
-    heading: `Error ${action.error.status} ${action.error.statusText}`,
-  }],
-  [getPlayerCharactersFailed]: (state, action) => [...state, {
-    id: Date.now(),
-    type: 'danger',
-    text: action.error.errors,
-    heading: `Error ${action.error.status} ${action.error.statusText}`,
-  }],
-  [getPlayerCharacterFailed]: (state, action) => [...state, {
-    id: Date.now(),
-    type: 'danger',
-    text: action.error.errors,
-    heading: `Error ${action.error.status} ${action.error.statusText}`,
-  }],
-  [createPlayerCharacterSuccess]: (state, action) => [...state, {
-    id: Date.now(),
-    type: 'success',
-    text: `"${action.data.name}" successfully created.`,
-    heading: 'PlayerCharacter created',
-  }],
-  [updatePlayerCharacterSuccess]: (state, action) => [...state, {
-    id: Date.now(),
-    type: 'success',
-    text: `"${action.data.name}" successfully updated.`,
-    heading: 'PlayerCharacter updated',
-  }],
-  [createPlayerCharacterFail]: (state, action) => [...state, {
-    id: Date.now(),
-    type: 'danger',
-    text: action.error.errors,
-    heading: `Error ${action.error.status} ${action.error.statusText}`,
-  }],
-  [updatePlayerCharacterFail]: (state, action) => [...state, {
-    id: Date.now(),
-    type: 'danger',
-    text: action.error.errors,
-    heading: `Error ${action.error.status} ${action.error.statusText}`,
-  }],
+  [loginSucceeded]: (state, action) => flashSuccessMessage(state, `User, ${action.data.name}, successfully logged in.`, 'Welcome!'),
+  [logoutSucceeded]: (state) => flashSuccessMessage(state, 'User logged out', 'Goodbye!'),
+  [loginFailed]: (state, action) => flashErrorMessage(state, action),
+  [logoutFailed]: (state, action) => flashErrorMessage(state, action),
+  [getAdventureFail]: (state, action) => flashErrorMessage(state, action),
+  [getCampaignsFailed]: (state, action) => flashErrorMessage(state, action),
+  [getCampaignFailed]: (state, action) => flashErrorMessage(state, action),
+  [createCampaignSuccess]: (state, action) => flashSuccessMessage(state, `"${action.data.name}" successfully created.`, 'Campaign created'),
+  [updateCampaignSuccess]: (state, action) => flashSuccessMessage(state, `"${action.data.name}" successfully updated.`, 'Campaign updated'),
+  [createCampaignFail]: (state, action) => flashErrorMessage(state, action),
+  [updateCampaignFail]: (state, action) => flashErrorMessage(state, action),
+  [getNonPlayerCharactersFailed]: (state, action) => flashErrorMessage(state, action),
+  [getNonPlayerCharacterFailed]: (state, action) => flashErrorMessage(state, action),
+  [createNonPlayerCharacterSuccess]: (state, action) => flashSuccessMessage(state, `"${action.data.name}" successfully created.`, 'Non-Player Character created'),
+  [updateNonPlayerCharacterSuccess]: (state, action) => flashSuccessMessage(state, `"${action.data.name}" successfully updated.`, 'Non-Player Character updated'),
+  [createNonPlayerCharacterFail]: (state, action) => flashErrorMessage(state, action),
+  [generateNPCSuccess]: (state, action) => flashSuccessMessage(state, `"${action.data.name}" successfully created.`, 'Non-Player Character generated'),
+  [generateNPCFail]: (state, action) => flashErrorMessage(state, action),
+  [updateNonPlayerCharacterFail]: (state, action) => flashErrorMessage(state, action),
+  [getPlayerCharactersFailed]: (state, action) => flashErrorMessage(state, action),
+  [getPlayerCharacterFailed]: (state, action) => flashErrorMessage(state, action),
+  [createPlayerCharacterSuccess]: (state, action) => flashSuccessMessage(state, `"${action.data.name}" successfully created.`, 'Player Character created'),
+  [updatePlayerCharacterSuccess]: (state, action) => flashSuccessMessage(state, `"${action.data.name}" successfully updated.`, 'Player Character updated'),
+  [createPlayerCharacterFail]: (state, action) => flashErrorMessage(state, action),
+  [updatePlayerCharacterFail]: (state, action) => flashErrorMessage(state, action),
 });
 
 export default flashMessages;

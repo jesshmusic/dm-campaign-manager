@@ -1,7 +1,8 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import PropTypes from 'prop-types';
 import Alert from 'react-bootstrap/Alert';
 import {connect} from 'react-redux';
+import Toast from 'react-bootstrap/Toast';
 
 /**
  * @return {null}
@@ -12,12 +13,30 @@ const AlertDismissible = ({
   messageText,
   messageHeading,
   messageVariant,
-}) => (
-  <Alert variant={messageVariant} onClose={() => dismissFlashMessage(messageId)} dismissible>
-    <Alert.Heading>{messageHeading}</Alert.Heading>
-    {messageText}
-  </Alert>
-);
+}) => {
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      dismissFlashMessage(messageId);
+    }, 4000);
+    return () => clearTimeout(timer);
+  });
+
+  return (
+    <Toast show={true}
+           onClose={() => dismissFlashMessage(messageId)}
+           style={{
+             position: 'absolute',
+             top: 20,
+             right: 20,
+           }}>
+      <Toast.Header>
+        <strong className="mr-auto">{messageHeading}</strong>
+        <small>{messageVariant}</small>
+      </Toast.Header>
+      <Toast.Body>{messageText}</Toast.Body>
+    </Toast>
+  );
+};
 
 AlertDismissible.propTypes = {
   dismissFlashMessage: PropTypes.func.isRequired,

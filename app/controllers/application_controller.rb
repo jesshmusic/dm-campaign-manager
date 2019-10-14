@@ -5,6 +5,7 @@ class ApplicationController < ActionController::Base
   include Pagy::Backend
   protect_from_forgery
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
+  rescue_from ActiveRecord::RecordNotFound, with: :not_found
 
   # @return [User]
   def current_user
@@ -22,6 +23,16 @@ class ApplicationController < ActionController::Base
         }, status: :forbidden
       }
     end
+  end
 
+  def not_found
+    respond_to do |format|
+      format.html { redirect_to root_path, status: :forbidden, notice: 'Page not found.' }
+      format.json {
+        render json: {
+          errors: 'Page not found.'
+        }, status: :not_found
+      }
+    end
   end
 end
