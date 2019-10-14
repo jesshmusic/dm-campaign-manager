@@ -1,8 +1,8 @@
 import React, {useEffect} from 'react';
 import PropTypes from 'prop-types';
-import Alert from 'react-bootstrap/Alert';
 import {connect} from 'react-redux';
 import Toast from 'react-bootstrap/Toast';
+import { GiBroadsword, GiSkullCrossedBones } from 'react-icons/gi';
 
 /**
  * @return {null}
@@ -30,6 +30,11 @@ const AlertDismissible = ({
              right: 20,
            }}>
       <Toast.Header>
+        {messageVariant === 'success' ? (
+          <GiBroadsword/>
+        ) : (
+          <GiSkullCrossedBones/>
+        )}
         <strong className="mr-auto">{messageHeading}</strong>
         <small>{messageVariant}</small>
       </Toast.Header>
