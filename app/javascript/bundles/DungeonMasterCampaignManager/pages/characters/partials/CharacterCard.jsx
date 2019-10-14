@@ -6,22 +6,18 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Card from 'react-bootstrap/Card';
 import { Link } from '@reach/router';
-import { GiSkullMask, GiSwordAltar } from 'react-icons/gi';
+import CharacterStatusButton from './CharacterStatusButton';
 
-const CharacterCard = ({campaign, character, small}) => (
+const CharacterCard = ({campaign, character, onReviveCharacter, small}) => (
   <Card className={'mb-4'}>
     <Card.Body>
       <Card.Title>
         <Link to={character.type === 'PlayerCharacter' ? (`/app/campaigns/${campaign.slug}/pcs/${character.slug}`) :
-          (`/app/campaigns/${campaign.slug}/npcs/${character.slug})`)}
+          (`/app/campaigns/${campaign.slug}/npcs/${character.slug}`)}
               className={`d-flex justify-content-between ${character.status === 'dead' ? 'text-muted' : null}`}>
           {character.name} {character.type === 'NonPlayerCharacter' ? <small className="text-muted">&ldquo;{character.role}&rdquo;</small> : ''}
-          {character.status === 'dead' ? (
-            <GiSkullMask/>
-          ) : (
-            <GiSwordAltar/>
-          )}
         </Link>
+        <CharacterStatusButton character={character} handleReviveCharacter={onReviveCharacter}/>
       </Card.Title>
       <Card.Subtitle className="text-muted">{character.classes}</Card.Subtitle>
       {small ? null : (
@@ -46,6 +42,7 @@ const CharacterCard = ({campaign, character, small}) => (
 CharacterCard.propTypes = {
   campaign: PropTypes.object.isRequired,
   character: PropTypes.object.isRequired,
+  onReviveCharacter: PropTypes.func.isRequired,
   small: PropTypes.bool,
 };
 

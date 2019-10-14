@@ -16,6 +16,7 @@ import filterFactory from 'react-bootstrap-table2-filter';
 import Table from 'react-bootstrap/Table';
 import CharacterClassSpellCasting from './spells/CharacterClassSpellCasting';
 import { GiSkullMask, GiSwordAltar } from 'react-icons/gi';
+import CharacterStatusButton from './CharacterStatusButton';
 
 const actionColumns = [
   {
@@ -50,7 +51,7 @@ const isCaster = (character) => {
   return isCaster;
 };
 
-const CharacterBody = ({character, isNPC}) => (
+const CharacterBody = ({character, isNPC, onReviveCharacter}) => (
   <Container>
     <Row>
       <Col>
@@ -59,11 +60,7 @@ const CharacterBody = ({character, isNPC}) => (
             <Badge pill variant={'secondary'}>Challenge Rating: {character.challengeRating}</Badge>
           </small>
         ) : null}
-        {character.status === 'dead' ? (
-          <GiSkullMask/>
-        ) : (
-          <GiSwordAltar/>
-        )}
+        <CharacterStatusButton character={character} handleReviveCharacter={onReviveCharacter}/>
         </h2>
         {isNPC ? (
           <h3>{character.role}</h3>
@@ -300,6 +297,7 @@ const CharacterBody = ({character, isNPC}) => (
 CharacterBody.propTypes = {
   character: PropTypes.object.isRequired,
   isNPC: PropTypes.bool,
+  onReviveCharacter: PropTypes.func.isRequired,
 };
 
 export default CharacterBody;

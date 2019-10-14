@@ -3,7 +3,6 @@ import {createAction, createReducer} from 'redux-starter-kit';
 const getCampaigns = createAction('@@redux-api@getCampaigns');
 const getCampaignsSuccess = createAction('@@redux-api@getCampaigns_success');
 const getCampaignsFail = createAction('@@redux-api@getCampaigns_fail');
-const getCampaign = createAction('@@redux-api@getCampaign');
 const getCampaignSuccess = createAction('@@redux-api@getCampaign_success');
 const getCampaignFail = createAction('@@redux-api@getCampaign_fail');
 const createCampaign = createAction('@@redux-api@createCampaign');
@@ -34,12 +33,6 @@ const campaigns = createReducer({
     count: state.count,
     currentCampaign: state.currentCampaign,
     loading: false,
-  }),
-  [getCampaign]: (state) => ({
-    campaigns: state.campaigns,
-    count: state.count,
-    currentCampaign: null,
-    loading: true,
   }),
   [getCampaignSuccess]: (state, action) => ({
     campaigns: state.campaigns,

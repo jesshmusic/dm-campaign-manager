@@ -21,6 +21,8 @@ import Card from 'react-bootstrap/Card';
 
 const CampaignBody = ({
   campaign,
+  onRevivePC,
+  onReviveNPC,
 }) => (
   campaign ? (
     <Row>
@@ -60,12 +62,18 @@ const CampaignBody = ({
         </div>
         <div className={'mb-4'}>
           <h3>Player Characters</h3>
-          <CharactersList campaign={campaign} characters={campaign.pcs} small/>
+          <CharactersList campaign={campaign}
+                          characters={campaign.pcs}
+                          small
+                          onReviveCharacter={onRevivePC}/>
           <Link to={`/app/campaigns/${campaign.slug}/pcs/new`} className={'btn btn-success btn-block'}>New PC</Link>
         </div>
         <div className={'mb-4'}>
           <h3>Non-player Characters</h3>
-          <CharactersList campaign={campaign} characters={campaign.npcs} small/>
+          <CharactersList campaign={campaign}
+                          characters={campaign.npcs}
+                          small
+                          onReviveCharacter={onReviveNPC}/>
           <Link to={`/app/campaigns/${campaign.slug}/npcs/new`} className={'btn btn-success btn-block'}>New NPC</Link>
           <Link to={`/app/campaigns/${campaign.slug}/npcs/generate/`} className={'btn btn-secondary btn-block'}>Quick NPC</Link>
         </div>
@@ -82,10 +90,11 @@ const CampaignBody = ({
 
 CampaignBody.propTypes = {
   campaign: PropTypes.object,
+  onRevivePC: PropTypes.func.isRequired,
+  onReviveNPC: PropTypes.func.isRequired,
 };
 
 class Campaign extends React.Component {
-
   componentDidMount () {
     if (this.props.user) {
       this.props.getCampaign(this.props.campaignSlug);
@@ -93,6 +102,21 @@ class Campaign extends React.Component {
       window.location.href = '/users/sign_in';
     }
   }
+
+  onRevivePC = (character) => {
+    this.props.updatePlayerCharacter(snakecaseKeys({
+      status: 'alive',
+      hit_points_current: 1,
+    }),
+    this.props.campaignSlug, character.slug);
+  };
+
+  onReviveNPC = (character) => {
+    this.props.updateNonPlayerCharacter(snakecaseKeys({
+      status: 'alive',
+      hit_points_current: 1,
+    }), this.props.campaignSlug, character.slug);
+  };
 
   render () {
     const { campaign, flashMessages, loading, user } = this.props;
@@ -114,7 +138,9 @@ class Campaign extends React.Component {
                        buttonLink={campaign ? `/app/campaigns/${campaign.slug}/edit` : ''}
                        buttonTitle={'Edit Campaign'}
                        buttonVariant={'primary'}/>
-            <CampaignBody campaign={campaign} />
+            <CampaignBody campaign={campaign}
+                          onRevivePC={this.onRevivePC}
+                          onReviveNPC={this.onReviveNPC} />
           </Container>
         )}
       </PageContainer>
@@ -128,6 +154,8 @@ Campaign.propTypes = {
   flashMessages: PropTypes.array,
   getCampaign: PropTypes.func.isRequired,
   loading: PropTypes.bool,
+  updateNonPlayerCharacter: PropTypes.func.isRequired,
+  updatePlayerCharacter: PropTypes.func.isRequired,
   user: PropTypes.object,
 };
 
@@ -144,6 +172,18 @@ function mapDispatchToProps (dispatch) {
   return {
     getCampaign: (campaignSlug) => {
       dispatch(rest.actions.getCampaign({slug: campaignSlug}));
+    },
+    updateNonPlayerCharacter: (non_player_character, campaignSlug, characterSlug) => {
+      dispatch(rest.actions.updateNonPlayerCharacter(
+        {campaign_slug: campaignSlug, slug: characterSlug},
+        {body: JSON.stringify({non_player_character})}
+      ));
+    },
+    updatePlayerCharacter: (player_character, campaignSlug, characterSlug) => {
+      dispatch(rest.actions.updatePlayerCharacter(
+        {campaign_slug: campaignSlug, slug: characterSlug},
+        {body: JSON.stringify({player_character})}
+      ));
     },
   };
 }

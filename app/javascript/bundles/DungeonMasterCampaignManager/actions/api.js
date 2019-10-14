@@ -142,7 +142,7 @@ export default reduxApi({
     url: '/v1/campaigns/:campaign_slug/adventures/:adventure_id/encounters/:id.json',
     prefetch: [
       ({actions, dispatch, getState, request}, cb) => {
-        const {campaigns: {currentAdventure}} = getState();
+        const {adventures: {currentAdventure}} = getState();
         const {pathvars: {campaign_slug, adventure_id}} = request;
         currentAdventure !== null ? cb() :
           dispatch(actions.getAdventure({id: adventure_id, campaign_slug}, cb));
@@ -194,6 +194,12 @@ export default reduxApi({
         headers,
       };
     },
+    postfetch: [
+      ({actions, dispatch, request}, cb) => {
+        const {pathvars: {campaign_slug}} = request;
+        dispatch(actions.getCampaign({slug: campaign_slug}, cb));
+      },
+    ],
   },
   generateNonPlayerCharacter: {
     url: '/v1/campaigns/:campaign_slug/characters/create_generated_npc',
@@ -239,6 +245,12 @@ export default reduxApi({
         headers,
       };
     },
+    postfetch: [
+      ({actions, dispatch, request}, cb) => {
+        const {pathvars: {campaign_slug}} = request;
+        dispatch(actions.getCampaign({slug: campaign_slug}, cb));
+      },
+    ],
   },
   getPlayerCharacter: {
     url: '/v1/campaigns/:campaign_slug/player_characters/:slug.json',
