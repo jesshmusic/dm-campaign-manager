@@ -10,6 +10,7 @@ import PageContainer from '../../containers/PageContainer';
 import CharacterBody from './partials/CharacterBody';
 import PageTitle from '../../components/layout/PageTitle';
 import DndSpinner from '../../components/layout/DndSpinner';
+import snakecaseKeys from 'snakecase-keys';
 
 class NonPlayerCharacter extends React.Component {
 
@@ -20,6 +21,13 @@ class NonPlayerCharacter extends React.Component {
       window.location.href = '/users/sign_in';
     }
   }
+
+  onReviveCharacter = (character) => {
+    this.props.updateCharacter(snakecaseKeys({
+      status: 'alive',
+      hit_points_current: 1,
+    }), this.props.campaignSlug, character.slug);
+  };
 
   render () {
     const { user, flashMessages, character, campaignSlug } = this.props;
@@ -42,7 +50,9 @@ class NonPlayerCharacter extends React.Component {
                        buttonLink={`/app/campaigns/${campaignSlug}/npcs/${character.slug}/edit`}
                        buttonTitle={'Edit NPC'}
                        buttonVariant={'primary'}/>
-            <CharacterBody character={character} isNPC={true}/>
+            <CharacterBody character={character}
+                           isNPC={true}
+                           onReviveCharacter={this.onReviveCharacter}/>
           </div>
         ) : <DndSpinner/>}
       </PageContainer>
@@ -56,6 +66,7 @@ NonPlayerCharacter.propTypes = {
   npcSlug: PropTypes.string.isRequired,
   flashMessages: PropTypes.array,
   getNonPlayerCharacter: PropTypes.func.isRequired,
+  updateCharacter: PropTypes.func.isRequired,
   user: PropTypes.object,
 };
 
@@ -71,6 +82,12 @@ function mapDispatchToProps (dispatch) {
   return {
     getNonPlayerCharacter: (campaignSlug, characterSlug) => {
       dispatch(rest.actions.getNonPlayerCharacter({campaign_slug: campaignSlug, slug: characterSlug}));
+    },
+    updateCharacter: (non_player_character, campaignSlug, characterSlug) => {
+      dispatch(rest.actions.updateNonPlayerCharacter(
+        {campaign_slug: campaignSlug, slug: characterSlug},
+        {body: JSON.stringify({non_player_character})}
+      ));
     },
   };
 }

@@ -3,7 +3,6 @@ import {createAction, createReducer} from 'redux-starter-kit';
 const getNonPlayerCharacters = createAction('@@redux-api@getNonPlayerCharacters');
 const getNonPlayerCharactersSuccess = createAction('@@redux-api@getNonPlayerCharacters_success');
 const getNonPlayerCharactersFail = createAction('@@redux-api@getNonPlayerCharacters_fail');
-const getNonPlayerCharacter = createAction('@@redux-api@getNonPlayerCharacter');
 const getNonPlayerCharacterSuccess = createAction('@@redux-api@getNonPlayerCharacter_success');
 const getNonPlayerCharacterFail = createAction('@@redux-api@getNonPlayerCharacter_fail');
 const newNonPlayerCharacter = createAction('@@redux-api@newNonPlayerCharacter');
@@ -33,11 +32,6 @@ const nonPlayerCharacters = createReducer({
     characters: [],
     count: state.count,
     currentCharacter: state.currentCharacter,
-  }),
-  [getNonPlayerCharacter]: (state) => ({
-    characters: state.characters,
-    count: state.count,
-    currentCharacter: null,
   }),
   [getNonPlayerCharacterSuccess]: (state, action) => ({
     characters: state.characters,

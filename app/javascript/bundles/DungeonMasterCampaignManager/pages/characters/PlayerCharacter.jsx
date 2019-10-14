@@ -10,6 +10,7 @@ import PageContainer from '../../containers/PageContainer';
 import CharacterBody from './partials/CharacterBody';
 import PageTitle from '../../components/layout/PageTitle';
 import DndSpinner from '../../components/layout/DndSpinner';
+import snakecaseKeys from 'snakecase-keys';
 
 class PlayerCharacter extends React.Component {
 
@@ -20,6 +21,13 @@ class PlayerCharacter extends React.Component {
       window.location.href = '/users/sign_in';
     }
   }
+
+  onReviveCharacter = (character) => {
+    this.props.updateCharacter(snakecaseKeys({
+      status: 'alive',
+      hit_points_current: 1,
+    }), this.props.campaignSlug, character.slug);
+  };
 
   render () {
     const {character, campaignSlug, flashMessages, loading, user } = this.props;
@@ -49,7 +57,8 @@ class PlayerCharacter extends React.Component {
             {loading ? (
               <DndSpinner/>
             ) : (
-              <CharacterBody character={character}/>
+              <CharacterBody character={character}
+                             onReviveCharacter={this.onReviveCharacter}/>
             )}
           </div>
         ) : <DndSpinner/>}
@@ -65,6 +74,7 @@ PlayerCharacter.propTypes = {
   pcSlug: PropTypes.string.isRequired,
   flashMessages: PropTypes.array,
   getPlayerCharacter: PropTypes.func.isRequired,
+  updateCharacter: PropTypes.func.isRequired,
   user: PropTypes.object,
 };
 
@@ -81,6 +91,12 @@ function mapDispatchToProps (dispatch) {
   return {
     getPlayerCharacter: (campaignSlug, characterSlug) => {
       dispatch(rest.actions.getPlayerCharacter({campaign_slug: campaignSlug, slug: characterSlug}));
+    },
+    updateCharacter: (player_character, campaignSlug, characterSlug) => {
+      dispatch(rest.actions.updatePlayerCharacter(
+        {campaign_slug: campaignSlug, slug: characterSlug},
+        {body: JSON.stringify({player_character})}
+      ));
     },
   };
 }
