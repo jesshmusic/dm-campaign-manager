@@ -46,7 +46,6 @@ class PlayerCharacter extends React.Component {
                        buttonLink={`/app/campaigns/${campaignSlug}/pcs/${character.slug}/edit`}
                        buttonTitle={'Edit PC'}
                        buttonVariant={'primary'}/>
-            <h2>{character.classes}</h2>
             {loading ? (
               <DndSpinner/>
             ) : (

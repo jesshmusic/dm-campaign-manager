@@ -14,15 +14,15 @@ const PageTitle = ({hasButton, buttonLink, buttonTitle, buttonVariant, subtitle,
     <Col>
       <h1 className={'d-flex justify-content-between align-items-center'}>
         {title}
-        {hasButton ? (
-          <Link to={buttonLink} className={`btn btn-${buttonVariant}`}>
-            {buttonTitle}
-          </Link>
-        ) : null}
         {badge ? (
           <Badge variant={badge.variant}>
             {badge.title}
           </Badge>
+        ) : null}
+        {hasButton ? (
+          <Link to={buttonLink} className={`btn btn-${buttonVariant}`}>
+            {buttonTitle}
+          </Link>
         ) : null}
       </h1>
       {subtitle ? (

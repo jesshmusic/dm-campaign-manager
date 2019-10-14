@@ -6,13 +6,21 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Card from 'react-bootstrap/Card';
 import { Link } from '@reach/router';
+import { GiSkullMask, GiSwordAltar } from 'react-icons/gi';
 
 const CharacterCard = ({campaign, character, small}) => (
   <Card className={'mb-4'}>
     <Card.Body>
       <Card.Title>
-        <Link to={character.type === 'PlayerCharacter' ? `/app/campaigns/${campaign.slug}/pcs/${character.slug}` : `/app/campaigns/${campaign.slug}/npcs/${character.slug}`}>
+        <Link to={character.type === 'PlayerCharacter' ? (`/app/campaigns/${campaign.slug}/pcs/${character.slug}`) :
+          (`/app/campaigns/${campaign.slug}/npcs/${character.slug})`)}
+              className={`d-flex justify-content-between ${character.status === 'dead' ? 'text-muted' : null}`}>
           {character.name} {character.type === 'NonPlayerCharacter' ? <small className="text-muted">&ldquo;{character.role}&rdquo;</small> : ''}
+          {character.status === 'dead' ? (
+            <GiSkullMask/>
+          ) : (
+            <GiSwordAltar/>
+          )}
         </Link>
       </Card.Title>
       <Card.Subtitle className="text-muted">{character.classes}</Card.Subtitle>

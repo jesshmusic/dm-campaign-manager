@@ -26,6 +26,7 @@
 #  silver_pieces        :integer          default(0), not null
 #  slug                 :string           not null
 #  speed                :string           default("30 feet"), not null
+#  status               :integer          default("alive"), not null
 #  strength             :integer          default(10), not null
 #  type                 :string
 #  wisdom               :integer          default(10), not null
@@ -53,20 +54,21 @@
 require 'rails_helper'
 
 RSpec.describe NonPlayerCharacter, type: :model do
+  before(:each) do
+    dungeon_master = FactoryBot.create(:dungeon_master_user)
+    campaign = FactoryBot.create(:campaign, user: dungeon_master, name: 'Test Campaign')
+    dnd_class = DndClass.create!(name: 'Fighter', hit_die: 10)
+    char_class = CharacterClass.create(level: 1, dnd_class: dnd_class)
+    char_class2 = CharacterClass.create(level: 1, dnd_class: dnd_class)
+    @npc = NonPlayerCharacter.create(name: 'Bob', campaign: campaign)
+    @npc.character_classes << char_class
+    @npc.save!
+    @npc2 = NonPlayerCharacter.create(name: 'Bob', campaign: campaign)
+    @npc2.character_classes << char_class2
+    @npc2.save!
+  end
+
   context "with the same name" do
-    before(:each) do
-      dungeon_master = FactoryBot.create(:dungeon_master_user)
-      campaign = FactoryBot.create(:campaign, user: dungeon_master, name: 'Test Campaign')
-      dnd_class = DndClass.create!(name: 'Fighter', hit_die: 10)
-      char_class = CharacterClass.create(level: 1, dnd_class: dnd_class)
-      char_class2 = CharacterClass.create(level: 1, dnd_class: dnd_class)
-      @npc = NonPlayerCharacter.create(name: 'Bob', campaign: campaign)
-      @npc.character_classes << char_class
-      @npc.save!
-      @npc2 = NonPlayerCharacter.create(name: 'Bob', campaign: campaign)
-      @npc2.character_classes << char_class2
-      @npc2.save!
-    end
     it "generates unique slugs for PCs" do
 
       expect(@npc.slug).to eq('test-campaign-bob')
@@ -86,6 +88,17 @@ RSpec.describe NonPlayerCharacter, type: :model do
       expect(NonPlayerCharacter.all.count).to eq(2)
       @npc.reload
       expect(@npc.slug).to eq('test-campaign-bob')
+    end
+  end
+
+  context 'maintains status based on current hit points' do
+    it 'should be status "dead"' do
+      @npc.update(hit_points_current: 0)
+      expect(@npc.status).to eq('dead')
+    end
+
+    it 'should be status "alive"' do
+      expect(@npc.status).to eq('alive')
     end
   end
 end

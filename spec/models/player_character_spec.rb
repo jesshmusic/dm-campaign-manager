@@ -26,6 +26,7 @@
 #  silver_pieces        :integer          default(0), not null
 #  slug                 :string           not null
 #  speed                :string           default("30 feet"), not null
+#  status               :integer          default("alive"), not null
 #  strength             :integer          default(10), not null
 #  type                 :string
 #  wisdom               :integer          default(10), not null
@@ -59,7 +60,7 @@ RSpec.describe PlayerCharacter, type: :model do
     dnd_class = DndClass.create!(name: 'Fighter', hit_die: 10)
     char_class = CharacterClass.create(level: 1, dnd_class: dnd_class)
     char_class2 = CharacterClass.create(level: 1, dnd_class: dnd_class)
-    @pc = PlayerCharacter.create(name: 'Bob', campaign: campaign, hit_points: 24, current_hit_points: 24)
+    @pc = PlayerCharacter.create(name: 'Bob', campaign: campaign, hit_points: 24)
     @pc.character_classes << char_class
     @pc.save!
     @pc2 = PlayerCharacter.create(name: 'Bob', campaign: campaign)
@@ -93,11 +94,11 @@ RSpec.describe PlayerCharacter, type: :model do
   context 'maintains status based on current hit points' do
     it 'should be status "dead"' do
       @pc.update(hit_points_current: 0)
-      expect(@pc.status).to eq(:dead)
+      expect(@pc.status).to eq('dead')
     end
 
     it 'should be status "alive"' do
-      expect(@pc.status).to eq(:alive)
+      expect(@pc.status).to eq('alive')
     end
   end
 end

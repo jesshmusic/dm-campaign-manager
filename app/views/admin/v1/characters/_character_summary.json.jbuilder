@@ -4,7 +4,7 @@ json.key_format! camelize: :lower
 
 json.extract! character, :id, :name, :alignment, :proficiency, :slug, :race_id, :role,
               :type, :xp, :armor_class, :strength, :dexterity, :constitution, :intelligence,
-              :wisdom, :charisma, :hit_points
+              :wisdom, :charisma, :hit_points, :hit_points_current, :status
 
 json.total_level character.total_level
 json.hit_dice character.hit_dice

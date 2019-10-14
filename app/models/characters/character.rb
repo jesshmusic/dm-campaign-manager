@@ -28,6 +28,7 @@
 #  silver_pieces        :integer          default(0), not null
 #  slug                 :string           not null
 #  speed                :string           default("30 feet"), not null
+#  status               :integer          default("alive"), not null
 #  strength             :integer          default(10), not null
 #  type                 :string
 #  wisdom               :integer          default(10), not null
@@ -51,7 +52,6 @@
 #
 #  fk_rails_...  (campaign_id => campaigns.id)
 #
-# TODO: add status attribute (living, dead, etc.)
 
 class Character < ApplicationRecord
   validates :name, :hit_points, :alignment, :charisma, :constitution, :dexterity, :intelligence,
@@ -67,6 +67,7 @@ class Character < ApplicationRecord
   end
 
   before_save do
+    self.status = hit_points_current <= 0 ? :dead : :alive
     self.initiative = DndRules.ability_score_modifier(dexterity)
     self.proficiency = DndRules.proficiency_bonus_for_level(total_level)
     character_classes.each do |character_class|
@@ -88,6 +89,8 @@ class Character < ApplicationRecord
     create_attack_action(weapon_2h) if weapon_2h_id
     self.xp = DndRules.xp_for_cr(challenge_rating) if type == 'NonPlayerCharacter'
   end
+
+  enum status: %I[alive dead]
 
   attribute :min_score, :integer
 
@@ -279,7 +282,7 @@ class Character < ApplicationRecord
   end
 
   def generate_slug
-    slug_from_string "#{name.parameterize}-#{name.parameterize}"
+    slug_from_string "#{campaign.name.parameterize}-#{name.parameterize}"
   end
 
   def slug_from_string(slug_string)

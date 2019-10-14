@@ -6,7 +6,7 @@ json.extract! character, :id, :name, :alignment, :proficiency, :slug, :backgroun
               :copper_pieces, :description, :electrum_pieces, :gold_pieces, :languages,
               :platinum_pieces, :silver_pieces, :type, :xp, :armor_class, :armor_class_modifier, :strength,
               :dexterity, :constitution, :intelligence, :wisdom, :charisma, :hit_points,
-              :hit_points_current, :initiative
+              :hit_points_current, :initiative, :hit_points_current, :status
 
 json.total_level character.total_level
 json.hit_dice character.hit_dice

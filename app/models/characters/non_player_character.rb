@@ -28,6 +28,7 @@
 #  silver_pieces        :integer          default(0), not null
 #  slug                 :string           not null
 #  speed                :string           default("30 feet"), not null
+#  status               :integer          default("alive"), not null
 #  strength             :integer          default(10), not null
 #  type                 :string
 #  wisdom               :integer          default(10), not null
