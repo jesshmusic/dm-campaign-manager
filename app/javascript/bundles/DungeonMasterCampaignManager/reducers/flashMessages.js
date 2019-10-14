@@ -6,6 +6,10 @@ const dismissFlashMessage = createAction('@@dmcm@dismissFlashMessage');
 
 // Adventures
 const getAdventureFail = createAction(rest.events.getAdventure.actionFail);
+const createAdventureFail = createAction(rest.events.createAdventure.actionFail);
+const createAdventureSuccess = createAction(rest.events.createAdventure.actionSuccess);
+const updateAdventureFail = createAction(rest.events.updateAdventure.actionFail);
+const updateAdventureSuccess = createAction(rest.events.updateAdventure.actionSuccess);
 
 // Campaigns
 const createCampaignSuccess = createAction('@@redux-api@createCampaign_success');
@@ -14,6 +18,13 @@ const updateCampaignSuccess = createAction('@@redux-api@updateCampaign_success')
 const updateCampaignFail = createAction('@@redux-api@updateCampaign_fail');
 const getCampaignFailed = createAction('@@redux-api@getCampaign_fail');
 const getCampaignsFailed = createAction('@@redux-api@getCampaigns_fail');
+
+// Encounters
+const getEncounterFail = createAction(rest.events.getEncounter.actionFail);
+const createEncounterFail = createAction(rest.events.createEncounter.actionFail);
+const createEncounterSuccess = createAction(rest.events.createEncounter.actionSuccess);
+const updateEncounterFail = createAction(rest.events.updateEncounter.actionFail);
+const updateEncounterSuccess = createAction(rest.events.updateEncounter.actionSuccess);
 
 // NPCs
 const createNonPlayerCharacterSuccess = createAction('@@redux-api@createNonPlayerCharacter_success');
@@ -64,12 +75,21 @@ const flashMessages = createReducer([], {
   [loginFailed]: (state, action) => flashErrorMessage(state, action),
   [logoutFailed]: (state, action) => flashErrorMessage(state, action),
   [getAdventureFail]: (state, action) => flashErrorMessage(state, action),
+  [createAdventureSuccess]: (state, action) => flashSuccessMessage(state, `"${action.data.name}" successfully created.`, 'Adventure created'),
+  [updateAdventureSuccess]: (state, action) => flashSuccessMessage(state, `"${action.data.name}" successfully updated.`, 'Adventure updated'),
+  [createAdventureFail]: (state, action) => flashErrorMessage(state, action),
+  [updateAdventureFail]: (state, action) => flashErrorMessage(state, action),
   [getCampaignsFailed]: (state, action) => flashErrorMessage(state, action),
   [getCampaignFailed]: (state, action) => flashErrorMessage(state, action),
   [createCampaignSuccess]: (state, action) => flashSuccessMessage(state, `"${action.data.name}" successfully created.`, 'Campaign created'),
   [updateCampaignSuccess]: (state, action) => flashSuccessMessage(state, `"${action.data.name}" successfully updated.`, 'Campaign updated'),
   [createCampaignFail]: (state, action) => flashErrorMessage(state, action),
   [updateCampaignFail]: (state, action) => flashErrorMessage(state, action),
+  [getEncounterFail]: (state, action) => flashErrorMessage(state, action),
+  [createEncounterSuccess]: (state, action) => flashSuccessMessage(state, `"${action.data.name}" successfully created.`, 'Encounter created'),
+  [updateEncounterSuccess]: (state, action) => flashSuccessMessage(state, `"${action.data.name}" successfully updated.`, 'Encounter updated'),
+  [createEncounterFail]: (state, action) => flashErrorMessage(state, action),
+  [updateEncounterFail]: (state, action) => flashErrorMessage(state, action),
   [getNonPlayerCharactersFailed]: (state, action) => flashErrorMessage(state, action),
   [getNonPlayerCharacterFailed]: (state, action) => flashErrorMessage(state, action),
   [createNonPlayerCharacterSuccess]: (state, action) => flashSuccessMessage(state, `"${action.data.name}" successfully created.`, 'Non-Player Character created'),
