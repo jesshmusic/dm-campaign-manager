@@ -3,6 +3,10 @@ require 'rails_helper'
 RSpec.describe "Characters", type: :request do
   let!(:dnd_class) { create :dnd_class }
   let!(:race) { create :race, id: 1, name: 'Human'}
+  let!(:admin) { create :admin_user }
+  let!(:dungeon_master) { create :dungeon_master_user }
+  let!(:campaign) { create :campaign_with_assoc, user: dungeon_master }
+  let!(:campaign_unowned) { create :campaign_with_assoc }
   let(:valid_pc_attributes) {
     attributes_for(
       :player_character,
@@ -14,13 +18,10 @@ RSpec.describe "Characters", type: :request do
     attributes_for(
       :non_player_character,
       name: 'Test NPC',
+      guild_id: campaign.guilds.first.id,
       character_classes_attributes: [ {level: 5, dnd_class_id: dnd_class.id} ]
     )
   }
-  let!(:admin) { create :admin_user }
-  let!(:dungeon_master) { create :dungeon_master_user }
-  let!(:campaign) { create :campaign_with_assoc, user: dungeon_master }
-  let!(:campaign_unowned) { create :campaign_with_assoc }
 
   describe "GET All PCs and NPCs for a campaign" do
     context "for Logged Out Users" do
@@ -111,6 +112,7 @@ RSpec.describe "Characters", type: :request do
         result_item = JSON.parse(response.body)
         expect(result_item['name']).to eq(campaign.pcs.first.name)
         expect(result_item['type']).to eq('PlayerCharacter')
+        expect(result_item['guild']).to be_nil
       end
 
       it "returns Non-player Character" do
@@ -119,6 +121,7 @@ RSpec.describe "Characters", type: :request do
         result_item = JSON.parse(response.body)
         expect(result_item['name']).to eq(campaign.npcs.first.name)
         expect(result_item['type']).to eq('NonPlayerCharacter')
+        expect(result_item['guild']).not_to be_nil
       end
     end
 
@@ -139,6 +142,7 @@ RSpec.describe "Characters", type: :request do
         result_item = JSON.parse(response.body)
         expect(result_item['name']).to eq(campaign.pcs.first.name)
         expect(result_item['type']).to eq('PlayerCharacter')
+        expect(result_item['guild']).to be_nil
       end
 
       it "returns Non-player Character" do
@@ -147,6 +151,7 @@ RSpec.describe "Characters", type: :request do
         result_item = JSON.parse(response.body)
         expect(result_item['name']).to eq(campaign.npcs.first.name)
         expect(result_item['type']).to eq('NonPlayerCharacter')
+        expect(result_item['guild']).not_to be_nil
       end
     end
   end
@@ -210,6 +215,7 @@ RSpec.describe "Characters", type: :request do
         }.to change(PlayerCharacter, :count).by(1)
         result_item = JSON.parse(response.body)
         expect(result_item['name']).to eq('Test PC')
+        expect(result_item['guild']).to be_nil
         campaign.reload
         expect(campaign.pcs.count).to eq(6)
       end
@@ -220,6 +226,7 @@ RSpec.describe "Characters", type: :request do
         }.to change(NonPlayerCharacter, :count).by(1)
         result_item = JSON.parse(response.body)
         expect(result_item['name']).to eq('Test NPC')
+        expect(result_item['guild']).not_to be_nil
         campaign.reload
         expect(campaign.npcs.count).to be >= 11
       end
@@ -236,6 +243,7 @@ RSpec.describe "Characters", type: :request do
         }.to change(PlayerCharacter, :count).by(1)
         result_item = JSON.parse(response.body)
         expect(result_item['name']).to eq('Test PC')
+        expect(result_item['guild']).to be_nil
         campaign.reload
         expect(campaign.pcs.count).to eq(6)
       end
@@ -246,6 +254,7 @@ RSpec.describe "Characters", type: :request do
         }.to change(NonPlayerCharacter, :count).by(1)
         result_item = JSON.parse(response.body)
         expect(result_item['name']).to eq('Test NPC')
+        expect(result_item['guild']).not_to be_nil
       end
     end
   end

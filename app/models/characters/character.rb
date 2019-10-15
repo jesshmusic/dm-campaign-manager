@@ -54,7 +54,8 @@
 #
 
 class Character < ApplicationRecord
-  validates :name, :hit_points, :alignment, :charisma, :constitution, :dexterity, :intelligence,
+  validates :name, :hit_points, :alignment, :charisma,
+            :constitution, :dexterity, :intelligence,
             :strength, :type, :wisdom, :slug, presence: true
   validates :character_classes, length: { minimum: 1 }
 

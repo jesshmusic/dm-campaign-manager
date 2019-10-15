@@ -44,6 +44,17 @@ json.adventures campaign.adventures.order(sort: :asc) do |adventure|
   json.partial! 'admin/v1/adventures/adventure', adventure: adventure, campaign: campaign
 end
 
+json.guilds campaign.guilds do |guild|
+  json.name guild.name
+  json.description guild.description
+  json.slug guild.slug
+  json.characters guild.characters do |character|
+    json.slug character.slug
+    json.type character.type
+    json.role character.role
+  end
+end
+
 json.isDmCampaign campaign.user.id == @current_user&.id
 
 json.url v1_campaign_url(campaign, format: :json)

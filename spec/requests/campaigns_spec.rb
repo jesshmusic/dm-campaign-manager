@@ -4,9 +4,12 @@ RSpec.describe "Campaigns", type: :request do
   let!(:admin) { create :admin_user }
   let!(:dungeon_master) { create :dungeon_master_user }
   let!(:race) { create :race, id: 1, name: 'Human'}
+  let!(:dnd_class) { create :dnd_class }
 
   let(:valid_attributes) do
-    attributes_for(:campaign_with_assoc, name: 'Test Campaign', user: dungeon_master)
+    attributes_for(:campaign_with_assoc,
+                   name: 'Test Campaign',
+                   user: dungeon_master)
   end
 
   let!(:campaign) {
@@ -113,6 +116,7 @@ RSpec.describe "Campaigns", type: :request do
         result_item = JSON.parse(response.body)
         expect(result_item['name']).to eq('Test Campaign')
         expect(result_item['world']).to eq('Greyhawk')
+        expect(result_item['guilds'].count).to eq(2)
       end
     end
   end
@@ -185,6 +189,27 @@ RSpec.describe "Campaigns", type: :request do
         }.to change(Campaign, :count).by(1)
         result_item = JSON.parse(response.body)
         expect(result_item['name']).to eq('Test Campaign')
+      end
+
+      it "creates a new Campaign from JSON" do
+        test_campaign = {
+          name: 'Test Campaign with Guilds',
+          description: 'A test of creating a campaign with a guild',
+          world: 'Ragnorak',
+          guilds_attributes: [{
+            name: "Thieves' Guild",
+            description: "A test guild"
+          }]
+        }
+        expect {
+          post "/v1/campaigns.json", params: {campaign: test_campaign}
+        }.to change(Campaign, :count).by(1)
+        result_item = JSON.parse(response.body)
+        expect(result_item['name']).to eq('Test Campaign with Guilds')
+        expect(result_item['description']).to eq('A test of creating a campaign with a guild')
+        expect(result_item['world']).to eq('Ragnorak')
+        expect(result_item['guilds'].count).to eq(1)
+        expect(result_item['guilds'][0]['name']).to eq("Thieves' Guild")
       end
     end
   end

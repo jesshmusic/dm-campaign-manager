@@ -30,6 +30,13 @@ json.skills character.skills do |skill|
   json.extract! skill, :id, :name, :score
 end
 
+json.guild do
+  if character.guild
+    json.name character.guild.name
+    json.slug character.guild.slug
+  end
+end
+
 json.character_classes character.character_classes do |character_class|
   json.id character_class.id
   json.dnd_class_id character_class.dnd_class.id

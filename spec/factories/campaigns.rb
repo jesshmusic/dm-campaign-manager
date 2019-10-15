@@ -25,16 +25,23 @@ FactoryBot.define do
     association :user, factory: :other_user
     factory :campaign_with_assoc do
       transient do
+        guilds_count { 2 }
         adventures_count { 5 }
         player_characters_count { 5 }
         non_player_characters_count { 10 }
       end
 
       after(:create) do |campaign, evaluator|
-        create_list(:player_character, evaluator.player_characters_count, campaign: campaign)
-        create_list(:non_player_character, evaluator.non_player_characters_count,
+        create_list(:guild, evaluator.guilds_count, campaign: campaign)
+        create_list(:player_character,
+                    evaluator.player_characters_count,
                     campaign: campaign)
-        create_list(:adventure, evaluator.adventures_count,
+        create_list(:non_player_character,
+                    evaluator.non_player_characters_count,
+                    campaign: campaign,
+                    guild: campaign.guilds.sample)
+        create_list(:adventure,
+                    evaluator.adventures_count,
                     campaign: campaign,
                     character_ids: campaign.pcs.map(&:id))
       end
@@ -42,15 +49,22 @@ FactoryBot.define do
 
     factory :campaign_with_full_adventure do
       transient do
+        guilds_count { 2 }
         adventures_count { 1 }
         player_characters_count { 5 }
         non_player_characters_count { 10 }
       end
 
       after(:create) do |campaign, evaluator|
-        create_list(:player_character, evaluator.player_characters_count, campaign: campaign)
-        create_list(:non_player_character, evaluator.non_player_characters_count,
+        create_list(:guild, evaluator.guilds_count, campaign: campaign)
+        puts campaign.guilds.to_json
+        create_list(:player_character,
+                    evaluator.player_characters_count,
                     campaign: campaign)
+        create_list(:non_player_character,
+                    evaluator.non_player_characters_count,
+                    campaign: campaign,
+                    guild: campaign.guilds.sample)
         create_list(:adventure_full, evaluator.adventures_count,
                     campaign: campaign,
                     character_ids: campaign.pcs.map(&:id))
@@ -59,15 +73,22 @@ FactoryBot.define do
 
     factory :campaign_many_chars do
       transient do
+        guilds_count { 2 }
         adventures_count { 5 }
         player_characters_count { 5 }
         non_player_characters_count { 100 }
       end
 
       after(:create) do |campaign, evaluator|
+        create_list(:guild, evaluator.guilds_count, campaign: campaign)
         create_list(:adventure, evaluator.adventures_count, campaign: campaign)
-        create_list(:player_character, evaluator.player_characters_count, campaign: campaign)
-        create_list(:non_player_character, evaluator.non_player_characters_count, campaign: campaign)
+        create_list(:player_character,
+                    evaluator.player_characters_count,
+                    campaign: campaign)
+        create_list(:non_player_character,
+                    evaluator.non_player_characters_count,
+                    campaign: campaign,
+                    guild: campaign.guilds.sample)
       end
     end
   end

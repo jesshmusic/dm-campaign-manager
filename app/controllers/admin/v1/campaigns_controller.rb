@@ -100,7 +100,6 @@ module Admin::V1
     def campaign_params
       params.require(:campaign).permit(
         :name, :description, :world,
-        character_ids: [], adventure_ids: [],
         adventures_attributes: [
           :id,
           :name,
@@ -132,7 +131,13 @@ module Admin::V1
         ],
         world_locations_attributes: %i[id name description map_x map_y _destroy],
         world_events_attributes: %i[id when name description _destroy],
-        guilds_attributes: %i[id name description _destroy]
+        guilds_attributes: [
+          :id,
+          :name,
+          :description,
+          :_destroy,
+          character_ids: []
+        ]
       )
     end
   end
