@@ -21,8 +21,7 @@
 
 FactoryBot.define do
   factory :guild do
-    name { "MyString" }
-    description { "MyText" }
-    campaign { nil }
+    name { Faker::Games::ElderScrolls.city }
+    description { Faker::TvShows::Stargate.planet }
   end
 end

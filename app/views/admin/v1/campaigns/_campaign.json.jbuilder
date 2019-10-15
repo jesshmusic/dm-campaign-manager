@@ -16,15 +16,12 @@ json.dungeon_master do
   json.url user_url(campaign.dungeon_master)
 end
 
-json.guilds campaign.guilds do |guild|
-  json.extract! guild, :id, :slug, :name, :description
-  json.pcs guild.pcs do |pc|
-    json.partial! 'admin/v1/characters/character_summary', character: pc
-  end
+json.pcs campaign.pcs do |pc|
+  json.partial! 'admin/v1/characters/character_summary', character: pc
+end
 
-  json.npcs guild.npcs do |npc|
-    json.partial! 'admin/v1/characters/character_summary', character: npc
-  end
+json.npcs campaign.npcs do |npc|
+  json.partial! 'admin/v1/characters/character_summary', character: npc
 end
 
 json.dungeon_master do

@@ -16,7 +16,7 @@ class NonPlayerCharacter extends React.Component {
 
   componentDidMount () {
     if (this.props.user) {
-      this.props.getNonPlayerCharacter(this.props.campaignSlug, this.props.guildSlug, this.props.npcSlug);
+      this.props.getNonPlayerCharacter(this.props.campaignSlug, this.props.npcSlug);
     } else {
       window.location.href = '/users/sign_in';
     }
@@ -26,11 +26,11 @@ class NonPlayerCharacter extends React.Component {
     this.props.updateCharacter(snakecaseKeys({
       status: 'alive',
       hit_points_current: 1,
-    }), this.props.campaignSlug, this.props.guildSlug, character.slug);
+    }), this.props.campaignSlug, character.slug);
   };
 
   render () {
-    const { user, flashMessages, character, campaignSlug, guildSlug } = this.props;
+    const { user, flashMessages, character, campaignSlug } = this.props;
     const characterTitle = character ? character.name : 'Character Loading...';
     return (
       <PageContainer user={user}
@@ -47,7 +47,7 @@ class NonPlayerCharacter extends React.Component {
             <PageTitle title={characterTitle}
                        badge={{title: 'NPC', variant: 'secondary'}}
                        hasButton={user && character.guild && character.guild.campaign.userId === user.id}
-                       buttonLink={`/app/campaigns/${campaignSlug}/guilds/${guildSlug}/npcs/${character.slug}/edit`}
+                       buttonLink={`/app/campaigns/${campaignSlug}/npcs/${character.slug}/edit`}
                        buttonTitle={'Edit NPC'}
                        buttonVariant={'primary'}/>
             <CharacterBody character={character}
@@ -63,7 +63,6 @@ class NonPlayerCharacter extends React.Component {
 NonPlayerCharacter.propTypes = {
   campaignSlug: PropTypes.string.isRequired,
   character: PropTypes.object,
-  guildSlug: PropTypes.string.isRequired,
   npcSlug: PropTypes.string.isRequired,
   flashMessages: PropTypes.array,
   getNonPlayerCharacter: PropTypes.func.isRequired,
@@ -81,20 +80,12 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    getNonPlayerCharacter: (campaignSlug, guildSlug, characterSlug) => {
-      dispatch(rest.actions.getNonPlayerCharacter({
-        campaign_slug: campaignSlug,
-        guild_slug: guildSlug,
-        slug: characterSlug,
-      }));
+    getNonPlayerCharacter: (campaignSlug, characterSlug) => {
+      dispatch(rest.actions.getNonPlayerCharacter({campaign_slug: campaignSlug, slug: characterSlug}));
     },
-    updateCharacter: (non_player_character, campaignSlug, guildSlug, characterSlug) => {
+    updateCharacter: (non_player_character, campaignSlug, characterSlug) => {
       dispatch(rest.actions.updateNonPlayerCharacter(
-        {
-          campaign_slug: campaignSlug,
-          guild_slug: guildSlug,
-          slug: characterSlug,
-        },
+        {campaign_slug: campaignSlug, slug: characterSlug},
         {body: JSON.stringify({non_player_character})}
       ));
     },

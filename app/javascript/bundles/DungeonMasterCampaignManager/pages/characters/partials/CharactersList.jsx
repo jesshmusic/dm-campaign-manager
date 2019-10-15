@@ -6,11 +6,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import CharacterCard from './CharacterCard';
 
-const CharactersList = ({campaign, characters, guild, onReviveCharacter, small}) => (
+const CharactersList = ({campaign, characters, onReviveCharacter, small}) => (
   characters.map((character) =>
     <CharacterCard campaign={campaign}
                    character={character}
-                   guild={guild}
                    key={character.slug}
                    small={small}
                    onReviveCharacter={onReviveCharacter}/>
@@ -20,7 +19,6 @@ const CharactersList = ({campaign, characters, guild, onReviveCharacter, small})
 CharactersList.propTypes = {
   campaign: PropTypes.object.isRequired,
   characters: PropTypes.array.isRequired,
-  guild: PropTypes.object.isRequired,
   onReviveCharacter: PropTypes.func.isRequired,
   small: PropTypes.bool,
 };

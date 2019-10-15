@@ -30,7 +30,7 @@ class Guild < ApplicationRecord
   end
 
   belongs_to :campaign
-  has_many :characters, dependent: :destroy
+  has_many :characters
 
   include PgSearch::Model
 
@@ -54,7 +54,7 @@ class Guild < ApplicationRecord
   private
 
   def generate_slug
-    slug_from_string "#{campaign.slug}-#{name.parameterize}"
+    slug_from_string name.parameterize
   end
 
   def slug_from_string(slug_string)

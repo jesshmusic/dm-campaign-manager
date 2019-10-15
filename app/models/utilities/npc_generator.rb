@@ -8,7 +8,7 @@ class NpcGenerator
                                            race_id: npc_attributes[:race_id],
                                            role: npc_attributes[:role],
                                            alignment: npc_attributes[:alignment],
-                                           guild_id: npc_attributes[:guild_id],
+                                           campaign_id: npc_attributes[:campaign_id],
                                            character_classes_attributes: npc_attributes[:character_classes_attributes])
 
       generate_ability_scores(npc_attributes[:min_score])

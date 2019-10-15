@@ -17,9 +17,9 @@ class PlayerCharacterEditor extends React.Component {
 
   componentDidMount () {
     if (this.props.user && this.props.pcSlug) {
-      this.props.getCharacter(this.props.campaignSlug, this.props.guildSlug, this.props.pcSlug);
+      this.props.getCharacter(this.props.campaignSlug, this.props.pcSlug);
     } else if (this.props.user) {
-      this.props.newCharacter(this.props.campaignSlug, this.props.guildSlug);
+      this.props.editCharacter(this.props.campaignSlug);
     } else {
       window.location.href = '/users/sign_in';
     }
@@ -31,7 +31,6 @@ class PlayerCharacterEditor extends React.Component {
       character,
       createCharacter,
       flashMessages,
-      guildSlug,
       pcSlug,
       updateCharacter,
       user,
@@ -52,7 +51,6 @@ class PlayerCharacterEditor extends React.Component {
         {character ? (
           <CharacterEditor
             campaignSlug={campaignSlug}
-            guildSlug={guildSlug}
             character={character}
             createCharacter={createCharacter}
             updateCharacter={updateCharacter}
@@ -72,7 +70,7 @@ PlayerCharacterEditor.propTypes = {
   newCharacter: PropTypes.func.isRequired,
   flashMessages: PropTypes.array,
   getCharacter: PropTypes.func.isRequired,
-  guildSlug: PropTypes.string.isRequired,
+  guildSlug: PropTypes.string,
   pcSlug: PropTypes.string,
   updateCharacter: PropTypes.func.isRequired,
   user: PropTypes.object,
@@ -88,12 +86,8 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    getCharacter: (campaignSlug, guildSlug, characterSlug) => {
-      dispatch(rest.actions.getPlayerCharacter({
-        campaign_slug: campaignSlug,
-        guild_slug: guildSlug,
-        slug: characterSlug,
-      }));
+    getCharacter: (campaignSlug, characterSlug) => {
+      dispatch(rest.actions.getPlayerCharacter({campaign_slug: campaignSlug, slug: characterSlug}));
     },
     newCharacter: (campaignSlug, guildSlug) => {
       dispatch(rest.actions.newPlayerCharacter({
@@ -101,22 +95,15 @@ function mapDispatchToProps (dispatch) {
         guild_slug: guildSlug,
       }));
     },
-    createCharacter: (player_character, guildSlug, campaignSlug) => {
+    createCharacter: (player_character, campaignSlug) => {
       dispatch(rest.actions.createPlayerCharacter(
-        {
-          campaign_slug: campaignSlug,
-          guild_slug: guildSlug,
-        },
+        {campaign_slug: campaignSlug, guild_slug: guildSlug},
         {body: JSON.stringify({player_character})}
       ));
     },
-    updateCharacter: (player_character, campaignSlug, guildSlug, characterSlug) => {
+    updateCharacter: (player_character, campaignSlug, characterSlug) => {
       dispatch(rest.actions.updatePlayerCharacter(
-        {
-          campaign_slug: campaignSlug,
-          guild_slug: guildSlug,
-          slug: characterSlug,
-        },
+        {campaign_slug: campaignSlug, slug: characterSlug},
         {body: JSON.stringify({player_character})}
       ));
     },

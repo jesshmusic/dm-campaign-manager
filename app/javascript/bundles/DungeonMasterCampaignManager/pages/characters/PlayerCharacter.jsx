@@ -16,7 +16,7 @@ class PlayerCharacter extends React.Component {
 
   componentDidMount () {
     if (this.props.user) {
-      this.props.getPlayerCharacter(this.props.campaignSlug, this.props.guildSlug, this.props.pcSlug);
+      this.props.getPlayerCharacter(this.props.campaignSlug, this.props.pcSlug);
     } else {
       window.location.href = '/users/sign_in';
     }
@@ -26,11 +26,11 @@ class PlayerCharacter extends React.Component {
     this.props.updateCharacter(snakecaseKeys({
       status: 'alive',
       hit_points_current: 1,
-    }), this.props.campaignSlug, this.props.guildSlug, character.slug);
+    }), this.props.campaignSlug, character.slug);
   };
 
   render () {
-    const {character, campaignSlug, flashMessages, guildSlug, loading, user } = this.props;
+    const {character, campaignSlug, flashMessages, loading, user } = this.props;
     const characterTitle = character && character.name ? character.name : 'Character Loading...';
     return (
       <PageContainer user={user}
@@ -51,7 +51,7 @@ class PlayerCharacter extends React.Component {
             <PageTitle title={characterTitle}
                        badge={{title: 'PC', variant: 'success'}}
                        hasButton={user && character.guild && character.guild.campaign.userId === user.id}
-                       buttonLink={`/app/campaigns/${campaignSlug}/guilds/${guildSlug}/pcs/${character.slug}/edit`}
+                       buttonLink={`/app/campaigns/${campaignSlug}/pcs/${character.slug}/edit`}
                        buttonTitle={'Edit PC'}
                        buttonVariant={'primary'}/>
             {loading ? (
@@ -70,7 +70,6 @@ class PlayerCharacter extends React.Component {
 PlayerCharacter.propTypes = {
   campaignSlug: PropTypes.string.isRequired,
   character: PropTypes.object,
-  guildSlug: PropTypes.string.isRequired,
   loading: PropTypes.bool,
   pcSlug: PropTypes.string.isRequired,
   flashMessages: PropTypes.array,
@@ -90,15 +89,12 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    getPlayerCharacter: (campaignSlug, guildSlug, characterSlug) => {
-      dispatch(rest.actions.getPlayerCharacter({campaign_slug: campaignSlug, guild_slug: guildSlug, slug: characterSlug}));
+    getPlayerCharacter: (campaignSlug, characterSlug) => {
+      dispatch(rest.actions.getPlayerCharacter({campaign_slug: campaignSlug, slug: characterSlug}));
     },
-    updateCharacter: (player_character, campaignSlug, guildSlug, characterSlug) => {
+    updateCharacter: (player_character, campaignSlug, characterSlug) => {
       dispatch(rest.actions.updatePlayerCharacter(
-        {
-          campaign_slug: campaignSlug,
-          guild_slug: guildSlug,
-          slug: characterSlug},
+        {campaign_slug: campaignSlug, slug: characterSlug},
         {body: JSON.stringify({player_character})}
       ));
     },

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_14_222612) do
+ActiveRecord::Schema.define(version: 2019_10_15_123011) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -148,6 +148,8 @@ ActiveRecord::Schema.define(version: 2019_10_14_222612) do
     t.integer "armor_class_modifier", default: 0, null: false
     t.integer "status", default: 0, null: false
     t.bigint "guild_id"
+    t.bigint "campaign_id"
+    t.index ["campaign_id"], name: "index_characters_on_campaign_id"
     t.index ["guild_id"], name: "index_characters_on_guild_id"
     t.index ["slug"], name: "index_characters_on_slug"
   end
@@ -534,6 +536,7 @@ ActiveRecord::Schema.define(version: 2019_10_14_222612) do
   add_foreign_key "character_items", "items"
   add_foreign_key "character_world_locations", "characters"
   add_foreign_key "character_world_locations", "world_locations"
+  add_foreign_key "characters", "campaigns"
   add_foreign_key "characters", "guilds"
   add_foreign_key "container_items", "items"
   add_foreign_key "container_items", "items", column: "contained_item_id"

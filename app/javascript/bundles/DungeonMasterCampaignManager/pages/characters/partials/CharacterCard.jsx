@@ -8,12 +8,12 @@ import Card from 'react-bootstrap/Card';
 import { Link } from '@reach/router';
 import CharacterStatusButton from './CharacterStatusButton';
 
-const CharacterCard = ({campaign, character, guild, onReviveCharacter, small}) => (
+const CharacterCard = ({campaign, character, onReviveCharacter, small}) => (
   <Card className={'mb-4'}>
     <Card.Body>
       <Card.Title>
-        <Link to={character.type === 'PlayerCharacter' ? (`/app/campaigns/${campaign.slug}/guilds/${guild.slug}/pcs/${character.slug}`) :
-          (`/app/campaigns/${campaign.slug}/guilds/${guild.slug}/npcs/${character.slug}`)}
+        <Link to={character.type === 'PlayerCharacter' ? (`/app/campaigns/${campaign.slug}/pcs/${character.slug}`) :
+          (`/app/campaigns/${campaign.slug}/npcs/${character.slug}`)}
               className={`d-flex justify-content-between ${character.status === 'dead' ? 'text-muted' : null}`}>
           {character.name} {character.type === 'NonPlayerCharacter' ? <small className="text-muted">&ldquo;{character.role}&rdquo;</small> : ''}
         </Link>
@@ -34,7 +34,7 @@ const CharacterCard = ({campaign, character, guild, onReviveCharacter, small}) =
     </Card.Body>
     {small ? null : (
       <Card.Footer>
-        <Link to={character.type === 'PlayerCharacter' ? `/app/campaigns/${campaign.slug}/guilds/${guild.slug}/pcs/${character.slug}` : `/app/campaigns/${campaign.slug}/guilds/${guild.slug}/npcs/${character.slug}`} className='btn btn-primary'>Details</Link>
+        <Link to={character.type === 'PlayerCharacter' ? `/app/campaigns/${campaign.slug}/pcs/${character.slug}` : `/app/campaigns/${campaign.slug}/npcs/${character.slug}`} className='btn btn-primary'>Details</Link>
       </Card.Footer>
     )}
   </Card>
@@ -43,7 +43,6 @@ const CharacterCard = ({campaign, character, guild, onReviveCharacter, small}) =
 CharacterCard.propTypes = {
   campaign: PropTypes.object.isRequired,
   character: PropTypes.object.isRequired,
-  guild: PropTypes.object.isRequired,
   onReviveCharacter: PropTypes.func.isRequired,
   small: PropTypes.bool,
 };

@@ -29,8 +29,9 @@ module Admin::V1
     # GET /campaigns/new
     def new
       @campaign = Campaign.new
-      @campaign.user = current_user
       authorize @campaign
+      @campaign.user = current_user
+      @campaign.guilds.build
     end
 
     # GET /campaigns/1/edit
@@ -44,6 +45,12 @@ module Admin::V1
       @campaign = Campaign.new(campaign_params)
       authorize @campaign
       @campaign.user = current_user
+      if @campaign.guilds.empty?
+        @campaign.guilds << Guild.create(
+          name: 'Default',
+          description: 'Characters with no affiliation'
+        )
+      end
 
       respond_to do |format|
         if @campaign.save
@@ -124,7 +131,8 @@ module Admin::V1
           ]
         ],
         world_locations_attributes: %i[id name description map_x map_y _destroy],
-        world_events_attributes: %i[id when name description _destroy]
+        world_events_attributes: %i[id when name description _destroy],
+        guilds_attributes: %i[id name description _destroy]
       )
     end
   end

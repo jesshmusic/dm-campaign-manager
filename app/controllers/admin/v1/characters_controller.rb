@@ -17,7 +17,7 @@ module Admin::V1
                     else
                       Character.all
                     end
-      @characters = params[:type].present? ? @characters.where(type: params[:type], guild: @guild) : @characters
+      @characters = params[:type].present? ? @characters.where(type: params[:type], campaign: @campaign) : @characters
       @characters = params[:user_id].present? ? @characters.where(user_id: params[:user_id]) : @characters
       respond_to do |format|
         format.html { @pagy, @characters = pagy(@characters) }
@@ -45,28 +45,29 @@ module Admin::V1
       authorize @character
       @character.role = ''
       @character.character_classes.build
+      @character.campaign = @campaign
       @character.guild = @guild
     end
 
     # GET /characters/new/generate_npc
     def generate_npc
-      authorize @guild, :show?
+      authorize @campaign, :show?
       @character = NonPlayerCharacter.new
       authorize @character
-      @character.guild = @guild
+      @character.campaign = @campaign
       @character.role = ''
     end
 
     # GET /characters/1/edit
     def edit
-      authorize @guild, :show?
+      authorize @campaign, :show?
       authorize @character
     end
 
     # POST /characters
     # POST /characters.json
     def create
-      authorize @guild, :show?
+      authorize @campaign, :show?
       @character = if params[:player_character]
                      PlayerCharacter.new(character_params('PlayerCharacter'))
                    elsif params[:non_player_character]
@@ -75,16 +76,17 @@ module Admin::V1
                      Character.new(character_params('Character'))
                    end
       authorize @character
+      @character.campaign = @campaign
       @character.guild = @guild
 
       respond_to do |format|
         if @character.save
           redirect_path = if @character.type == 'NonPlayerCharacter'
-                            v1_campaign_guild_non_player_character_path(@campaign, @guild, @character)
+                            v1_campaign_non_player_character_path(@campaign, @character)
                           elsif @character.type == 'PlayerCharacter'
-                            v1_campaign_guild_player_character_path(@campaign, @guild, @character)
+                            v1_campaign_player_character_path(@campaign, @character)
                           else
-                            v1_campaign_guild_character_path(@campaign, @guild, @character)
+                            v1_campaign_character_path(@campaign, @character)
                           end
           format.html { redirect_to redirect_path, notice: ' character was successfully created.' }
           format.json { render :show, status: :created }
@@ -102,25 +104,25 @@ module Admin::V1
 
     # POST /characters/generate_npc
     def create_generated_npc
-      authorize @guild, :show?
+      authorize @campaign, :show?
       @character = NpcGenerator.generate_npc(
         name: character_params('NonPlayerCharacter')[:name],
         race_id: character_params('NonPlayerCharacter')[:race_id],
         role: character_params('NonPlayerCharacter')[:role],
         alignment: character_params('NonPlayerCharacter')[:alignment],
         min_score: character_params('NonPlayerCharacter')[:min_score],
-        guild_id: @guild.id,
+        campaign_id: @campaign.id,
         character_classes_attributes: character_params('NonPlayerCharacter')[:character_classes_attributes]
       )
       authorize @character
       respond_to do |format|
         if @character.save
           redirect_path = if @character.type == 'NonPlayerCharacter'
-                            v1_campaign_guild_non_player_character_path(@campaign, @guild, @character)
+                            v1_campaign_non_player_character_path(@campaign, @character)
                           elsif @character.type == 'PlayerCharacter'
-                            v1_campaign_guild_player_character_path(@campaign, @guild, @character)
+                            v1_campaign_player_character_path(@campaign, @character)
                           else
-                            v1_campaign_guild_character_path(@campaign, @guild, @character)
+                            v1_campaign_character_path(@campaign, @character)
                           end
           format.html { redirect_to redirect_path, notice: 'NPC was successfully created.' }
           format.json { render :show, status: :created }
@@ -140,16 +142,16 @@ module Admin::V1
     # PATCH/PUT /characters/1
     # PATCH/PUT /characters/1.json
     def update
-      authorize @guild, :show?
+      authorize @campaign, :show?
       authorize @character
       respond_to do |format|
         if @character.update(character_params(params[:type]))
           redirect_path = if @character.type == 'NonPlayerCharacter'
-                            v1_campaign_guild_non_player_character_path(@campaign, @guild, @character)
+                            v1_campaign_non_player_character_path(@campaign, @character)
                           elsif @character.type == 'PlayerCharacter'
-                            v1_campaign_guild_player_character_path(@campaign, @guild, @character)
+                            v1_campaign_player_character_path(@campaign, @character)
                           else
-                            v1_campaign_guild_character_path(@campaign, @guild, @character)
+                            v1_campaign_character_path(@campaign, @character)
                           end
           format.html { redirect_to redirect_path, notice: ' character was successfully updated.' }
           format.json { render :show, status: :ok }
@@ -163,7 +165,7 @@ module Admin::V1
     # DELETE /characters/1
     # DELETE /characters/1.json
     def destroy
-      authorize @guild, :show?
+      authorize @campaign, :show?
       authorize @character
       @character.destroy
       respond_to do |format|
@@ -178,9 +180,6 @@ module Admin::V1
       @campaign = Campaign.find_by(slug: params[:campaign_slug])
     end
 
-    def set_guild
-      @guild = Guild.find_by(slug: params[:guild_slug])
-    end
 
     def set_character
       @character = Character.find_by(slug: params[:slug])

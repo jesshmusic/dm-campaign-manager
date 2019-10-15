@@ -9,9 +9,6 @@ json.extract! @character, :name, :alignment, :background,
 
 json.character_classes @character.character_classes
 
-json.guild do
-  json.extract! @character.guild, :id, :name, :description
-  json.campaign do
-    json.extract! @character.guild.campaign, :id, :name, :description, :slug, :user_id
-  end
+json.campaign do
+  json.extract! @character.campaign, :id, :name, :description, :world, :slug, :user_id
 end

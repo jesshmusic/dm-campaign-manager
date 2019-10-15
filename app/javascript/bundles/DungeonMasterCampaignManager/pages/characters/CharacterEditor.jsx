@@ -43,9 +43,9 @@ class CharacterEditor extends React.Component {
   handleSubmit = async (values) => {
     const parsedChar = getCharacterObject(values);
     if (parsedChar.id) {
-      this.props.updateCharacter(parsedChar, this.props.campaignSlug, this.props.guildSlug, this.props.characterSlug);
+      this.props.updateCharacter(parsedChar, this.props.campaignSlug, this.props.characterSlug);
     } else {
-      this.props.createCharacter(parsedChar, this.props.campaignSlug, this.props.guildSlug);
+      this.props.createCharacter(parsedChar, this.props.campaignSlug);
     }
   };
 
@@ -144,7 +144,6 @@ CharacterEditor.propTypes = {
   character: PropTypes.object.isRequired,
   characterSlug: PropTypes.string,
   createCharacter: PropTypes.func.isRequired,
-  guildSlug: PropTypes.string.isRequired,
   isNPC: PropTypes.bool,
   onDelete: PropTypes.func,
   onCancelEditing: PropTypes.func,

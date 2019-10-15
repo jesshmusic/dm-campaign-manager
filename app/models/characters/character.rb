@@ -116,8 +116,8 @@ class Character < ApplicationRecord
   accepts_nested_attributes_for :character_classes, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :character_spells, reject_if: :all_blank, allow_destroy: true
 
-  belongs_to :campaign, optional: true
-  belongs_to :guild
+  belongs_to :campaign
+  belongs_to :guild, optional: true
 
   def armor
     ArmorItem.find(armor_id) unless armor_id.nil?
@@ -229,7 +229,7 @@ class Character < ApplicationRecord
   end
 
   def generate_slug
-    slug_from_string "#{guild.slug}-#{name.parameterize}"
+    slug_from_string name.parameterize
   end
 
   private

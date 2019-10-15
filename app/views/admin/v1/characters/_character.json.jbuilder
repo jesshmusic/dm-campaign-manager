@@ -17,13 +17,8 @@ if character.type == 'NonPlayerCharacter'
   json.challenge_rating character.challenge_rating
 end
 
-json.guild do
-  json.extract! character.guild, :id, :name, :description
-  json.campaign do
-    json.id character.guild.campaign.id
-    json.slug character.guild.campaign.slug
-    json.name character.guild.campaign.name
-  end
+json.campaign do
+  json.extract! character.campaign, :id, :name, :description, :world, :slug, :user_id
 end
 
 json.race do
