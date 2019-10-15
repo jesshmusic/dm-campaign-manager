@@ -19,6 +19,11 @@ end
 
 json.guild do
   json.extract! character.guild, :id, :name, :description
+  json.campaign do
+    json.id character.guild.campaign.id
+    json.slug character.guild.campaign.slug
+    json.name character.guild.campaign.name
+  end
 end
 
 json.race do

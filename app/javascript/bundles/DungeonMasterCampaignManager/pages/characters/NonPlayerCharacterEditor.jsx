@@ -19,9 +19,9 @@ class NonPlayerCharacterEditor extends React.Component {
 
   componentDidMount () {
     if (this.props.user && this.props.npcSlug) {
-      this.props.getCharacter(this.props.campaignSlug, this.props.npcSlug);
+      this.props.getCharacter(this.props.campaignSlug, this.props.guildSlug, this.props.npcSlug);
     } else if (this.props.user) {
-      this.props.editCharacter(this.props.campaignSlug);
+      this.props.newCharacter(this.props.campaignSlug, this.props.guildSlug);
     } else {
       window.location.href = '/users/sign_in';
     }
@@ -33,6 +33,7 @@ class NonPlayerCharacterEditor extends React.Component {
       character,
       createCharacter,
       flashMessages,
+      guildSlug,
       npcSlug,
       updateCharacter,
       user,
@@ -55,6 +56,7 @@ class NonPlayerCharacterEditor extends React.Component {
             campaignSlug={campaignSlug}
             character={character}
             createCharacter={createCharacter}
+            guildSlug={guildSlug}
             updateCharacter={updateCharacter}
             characterSlug={npcSlug}
             isNPC={true}
@@ -69,10 +71,10 @@ NonPlayerCharacterEditor.propTypes = {
   campaignSlug: PropTypes.string,
   createCharacter: PropTypes.func.isRequired,
   character: PropTypes.object,
-  editCharacter: PropTypes.func.isRequired,
+  newCharacter: PropTypes.func.isRequired,
   flashMessages: PropTypes.array,
   getCharacter: PropTypes.func.isRequired,
-  guildSlug: PropTypes.string,
+  guildSlug: PropTypes.string.isRequired,
   npcSlug: PropTypes.string,
   updateCharacter: PropTypes.func.isRequired,
   user: PropTypes.object,
@@ -88,21 +90,35 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    getCharacter: (campaignSlug, characterSlug) => {
-      dispatch(rest.actions.getNonPlayerCharacter({campaign_slug: campaignSlug, slug: characterSlug}));
+    getCharacter: (campaignSlug, guildSlug, characterSlug) => {
+      dispatch(rest.actions.getNonPlayerCharacter({
+        campaign_slug: campaignSlug,
+        guild_slug: guildSlug,
+        slug: characterSlug,
+      }));
     },
-    editCharacter: (campaignSlug) => {
-      dispatch(rest.actions.newNonPlayerCharacter({campaign_slug: campaignSlug}));
+    newCharacter: (campaignSlug, guildSlug) => {
+      dispatch(rest.actions.newNonPlayerCharacter({
+        campaign_slug: campaignSlug,
+        guild_slug: guildSlug,
+      }));
     },
-    createCharacter: (non_player_character, campaignSlug) => {
+    createCharacter: (non_player_character, guildSlug, campaignSlug) => {
       dispatch(rest.actions.createNonPlayerCharacter(
-        {campaign_slug: campaignSlug, guild_slug: guildSlug},
+        {
+          campaign_slug: campaignSlug,
+          guild_slug: guildSlug,
+        },
         {body: JSON.stringify({non_player_character})}
       ));
     },
-    updateCharacter: (non_player_character, campaignSlug, characterSlug) => {
+    updateCharacter: (non_player_character, campaignSlug, guildSlug, characterSlug) => {
       dispatch(rest.actions.updateNonPlayerCharacter(
-        {campaign_slug: campaignSlug, slug: characterSlug},
+        {
+          campaign_slug: campaignSlug,
+          guild_slug: guildSlug,
+          slug: characterSlug,
+        },
         {body: JSON.stringify({non_player_character})}
       ));
     },

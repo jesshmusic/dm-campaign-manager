@@ -67,6 +67,7 @@ const CampaignBody = ({
               <h4>{guild.name}</h4>
               <CharactersList campaign={campaign}
                               characters={guild.pcs}
+                              guild={guild}
                               small
                               onReviveCharacter={onRevivePC}/>
             </div>
@@ -80,6 +81,7 @@ const CampaignBody = ({
               <h4>{guild.name}</h4>
               <CharactersList campaign={campaign}
                               characters={guild.npcs}
+                              guild={guild}
                               small
                               onReviveCharacter={onReviveNPC}/>
             </div>
