@@ -1,1 +1,1 @@
-json.partial! "guilds/guild", guild: @guild
+json.partial! 'admin/v1/guilds/guild', guild: @guild

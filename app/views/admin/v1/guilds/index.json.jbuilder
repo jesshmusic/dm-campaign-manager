@@ -1,1 +1,1 @@
-json.array! @guilds, partial: "guilds/guild", as: :guild
+json.array! @guilds, partial: 'admin/v1/guilds/guild', as: :guild

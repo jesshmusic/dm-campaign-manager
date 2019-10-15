@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_15_123011) do
+ActiveRecord::Schema.define(version: 2019_10_15_220105) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -537,7 +537,6 @@ ActiveRecord::Schema.define(version: 2019_10_15_123011) do
   add_foreign_key "character_world_locations", "characters"
   add_foreign_key "character_world_locations", "world_locations"
   add_foreign_key "characters", "campaigns"
-  add_foreign_key "characters", "guilds"
   add_foreign_key "container_items", "items"
   add_foreign_key "container_items", "items", column: "contained_item_id"
   add_foreign_key "dnd_classes", "users"
