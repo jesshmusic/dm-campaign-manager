@@ -36,7 +36,7 @@
 #  created_at           :datetime         not null
 #  updated_at           :datetime         not null
 #  armor_id             :integer
-#  campaign_id          :bigint
+#  guild_id             :bigint
 #  race_id              :integer          default(1), not null
 #  shield_id            :integer
 #  weapon_2h_id         :integer
@@ -45,12 +45,12 @@
 #
 # Indexes
 #
-#  index_characters_on_campaign_id  (campaign_id)
-#  index_characters_on_slug         (slug)
+#  index_characters_on_guild_id  (guild_id)
+#  index_characters_on_slug      (slug)
 #
 # Foreign Keys
 #
-#  fk_rails_...  (campaign_id => campaigns.id)
+#  fk_rails_...  (guild_id => guilds.id)
 #
 
 class Character < ApplicationRecord
@@ -116,7 +116,8 @@ class Character < ApplicationRecord
   accepts_nested_attributes_for :character_classes, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :character_spells, reject_if: :all_blank, allow_destroy: true
 
-  belongs_to :campaign
+  belongs_to :campaign, optional: true
+  belongs_to :guild
 
   def armor
     ArmorItem.find(armor_id) unless armor_id.nil?
@@ -227,6 +228,10 @@ class Character < ApplicationRecord
     slug
   end
 
+  def generate_slug
+    slug_from_string "#{guild.slug}-#{name.parameterize}"
+  end
+
   private
 
   def calculate_armor_class(has_shield)
@@ -279,10 +284,6 @@ class Character < ApplicationRecord
       attack_action.damage_dice = "#{weapon_damage}"
     end
     character_actions << attack_action
-  end
-
-  def generate_slug
-    slug_from_string "#{campaign.name.parameterize}-#{name.parameterize}"
   end
 
   def slug_from_string(slug_string)

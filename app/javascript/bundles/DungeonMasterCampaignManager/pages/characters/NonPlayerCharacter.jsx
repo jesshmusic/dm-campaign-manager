@@ -39,14 +39,14 @@ class NonPlayerCharacter extends React.Component {
                      description={`PC: ${characterTitle}. Dungeon Master's Campaign Manager is a free resource for DMs to manage their campaigns, adventures, and NPCs.`}
                      breadcrumbs={[
                        {url: '/app/campaigns/', isActive: false, title: 'Campaigns'},
-                       {url: `/app/campaigns/${campaignSlug}/`, isActive: false, title: character ? `Campaign: ${character.campaign.name}` : 'Loading...'},
+                       {url: `/app/campaigns/${campaignSlug}/`, isActive: false, title: character ? `Campaign: ${character.guild.campaign.name}` : 'Loading...'},
                        {url: null, isActive: true, title: characterTitle},
                      ]}>
         {character ? (
           <div>
             <PageTitle title={characterTitle}
                        badge={{title: 'NPC', variant: 'secondary'}}
-                       hasButton={user && character.campaign && character.campaign.userId === user.id}
+                       hasButton={user && character.guild && character.guild.campaign.userId === user.id}
                        buttonLink={`/app/campaigns/${campaignSlug}/npcs/${character.slug}/edit`}
                        buttonTitle={'Edit NPC'}
                        buttonVariant={'primary'}/>

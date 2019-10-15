@@ -37,7 +37,7 @@ class NonPlayerCharacterEditor extends React.Component {
       updateCharacter,
       user,
     } = this.props;
-    const currentCampaign = character && character.campaign ? `Campaign: ${character.campaign.name}` : 'Campaign';
+    const currentCampaign = character && character.guild ? `Campaign: ${character.guild.campaign.name}` : 'Campaign';
     const pageTitle = this.props.npcSlug ? `Edit "${character ? character.name : 'Loading...'}"` : 'New Non-player Character';
     return (
       <PageContainer user={user}
@@ -72,6 +72,7 @@ NonPlayerCharacterEditor.propTypes = {
   editCharacter: PropTypes.func.isRequired,
   flashMessages: PropTypes.array,
   getCharacter: PropTypes.func.isRequired,
+  guildSlug: PropTypes.string,
   npcSlug: PropTypes.string,
   updateCharacter: PropTypes.func.isRequired,
   user: PropTypes.object,
@@ -95,7 +96,7 @@ function mapDispatchToProps (dispatch) {
     },
     createCharacter: (non_player_character, campaignSlug) => {
       dispatch(rest.actions.createNonPlayerCharacter(
-        {campaign_slug: campaignSlug},
+        {campaign_slug: campaignSlug, guild_slug: guildSlug},
         {body: JSON.stringify({non_player_character})}
       ));
     },

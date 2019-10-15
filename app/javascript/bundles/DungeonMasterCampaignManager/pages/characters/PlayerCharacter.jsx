@@ -42,7 +42,7 @@ class PlayerCharacter extends React.Component {
                        {
                          url: `/app/campaigns/${campaignSlug}/`,
                          isActive: false,
-                         title: character && character.campaign ? `Campaign: ${character.campaign.name}` : 'Loading...',
+                         title: character && character.guild ? `Campaign: ${character.guild.campaign.name}` : 'Loading...',
                        },
                        {url: null, isActive: true, title: characterTitle},
                      ]}>
@@ -50,7 +50,7 @@ class PlayerCharacter extends React.Component {
           <div>
             <PageTitle title={characterTitle}
                        badge={{title: 'PC', variant: 'success'}}
-                       hasButton={user && character.campaign && character.campaign.userId === user.id}
+                       hasButton={user && character.guild && character.guild.campaign.userId === user.id}
                        buttonLink={`/app/campaigns/${campaignSlug}/pcs/${character.slug}/edit`}
                        buttonTitle={'Edit PC'}
                        buttonVariant={'primary'}/>

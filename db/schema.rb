@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_13_185242) do
+ActiveRecord::Schema.define(version: 2019_10_14_222612) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -139,7 +139,6 @@ ActiveRecord::Schema.define(version: 2019_10_13_185242) do
     t.string "speed", default: "30 feet", null: false
     t.integer "strength", default: 10, null: false
     t.integer "wisdom", default: 10, null: false
-    t.bigint "campaign_id"
     t.integer "race_id", default: 1, null: false
     t.integer "armor_id"
     t.integer "shield_id"
@@ -148,7 +147,8 @@ ActiveRecord::Schema.define(version: 2019_10_13_185242) do
     t.integer "weapon_2h_id"
     t.integer "armor_class_modifier", default: 0, null: false
     t.integer "status", default: 0, null: false
-    t.index ["campaign_id"], name: "index_characters_on_campaign_id"
+    t.bigint "guild_id"
+    t.index ["guild_id"], name: "index_characters_on_guild_id"
     t.index ["slug"], name: "index_characters_on_slug"
   end
 
@@ -241,6 +241,16 @@ ActiveRecord::Schema.define(version: 2019_10_13_185242) do
     t.integer "current_mob_index", default: 0
     t.boolean "in_progress", default: false
     t.index ["adventure_id"], name: "index_encounters_on_adventure_id"
+  end
+
+  create_table "guilds", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.string "slug"
+    t.bigint "campaign_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["campaign_id"], name: "index_guilds_on_campaign_id"
   end
 
   create_table "items", force: :cascade do |t|
@@ -524,7 +534,7 @@ ActiveRecord::Schema.define(version: 2019_10_13_185242) do
   add_foreign_key "character_items", "items"
   add_foreign_key "character_world_locations", "characters"
   add_foreign_key "character_world_locations", "world_locations"
-  add_foreign_key "characters", "campaigns"
+  add_foreign_key "characters", "guilds"
   add_foreign_key "container_items", "items"
   add_foreign_key "container_items", "items", column: "contained_item_id"
   add_foreign_key "dnd_classes", "users"
@@ -538,6 +548,7 @@ ActiveRecord::Schema.define(version: 2019_10_13_185242) do
   add_foreign_key "encounter_npcs", "characters"
   add_foreign_key "encounter_npcs", "encounters"
   add_foreign_key "encounters", "adventures"
+  add_foreign_key "guilds", "campaigns"
   add_foreign_key "items", "users"
   add_foreign_key "monsters", "users"
   add_foreign_key "races", "users"

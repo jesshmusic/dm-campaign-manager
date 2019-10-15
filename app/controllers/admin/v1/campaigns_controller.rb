@@ -3,7 +3,7 @@
 module Admin::V1
   class CampaignsController < ApplicationController
     before_action :set_campaign, only: %i[show edit update destroy]
-    before_action :authenticate_user!, except: %i[index show]
+    before_action :authenticate_user!
 
     # GET /campaigns
     # GET /campaigns.json

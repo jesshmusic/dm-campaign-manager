@@ -27,9 +27,9 @@ class Campaign < ApplicationRecord
   end
 
   has_many :adventures, dependent: :destroy
-  has_many :characters, dependent: :destroy
   has_many :world_locations, dependent: :destroy
   has_many :world_events, dependent: :destroy
+  has_many :guilds, dependent: :destroy
 
   belongs_to :user
 
@@ -38,19 +38,20 @@ class Campaign < ApplicationRecord
   accepts_nested_attributes_for :world_events, reject_if: :all_blank, allow_destroy: true
 
   def pcs_count
-    characters.where(type: 'PlayerCharacter').count
+    new_pcs_count = 0
+    guilds.each do |guild|
+      new_pcs_count += guild.characters.where(type: 'PlayerCharacter').count
+    end
+    new_pcs_count
   end
 
   def npcs_count
-    characters.where(type: 'NonPlayerCharacter').count
-  end
-
-  def pcs
-    characters.where(type: 'PlayerCharacter')
-  end
-
-  def npcs
-    characters.where(type: 'NonPlayerCharacter')
+    return 0 if guilds.count == 0
+    new_npcs_count = 0
+    guilds.each do |guild|
+      new_npcs_count += guild.characters.where(type: 'NonPlayerCharacter').count
+    end
+    new_npcs_count
   end
 
   def dungeon_master

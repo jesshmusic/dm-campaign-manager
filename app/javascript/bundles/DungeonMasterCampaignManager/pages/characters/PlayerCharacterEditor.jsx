@@ -35,7 +35,7 @@ class PlayerCharacterEditor extends React.Component {
       updateCharacter,
       user,
     } = this.props;
-    const currentCampaign = character && character.campaign ? `Campaign: ${character.campaign.name}` : 'Campaign';
+    const currentCampaign = character && character.guild ? `Campaign: ${character.guild.campaign.name}` : 'Campaign';
     const pageTitle = this.props.pcSlug ? `Edit "${character ? character.name : 'Loading...'}"` : 'New Player Character';
     return (
       <PageContainer user={user}
@@ -70,6 +70,7 @@ PlayerCharacterEditor.propTypes = {
   editCharacter: PropTypes.func.isRequired,
   flashMessages: PropTypes.array,
   getCharacter: PropTypes.func.isRequired,
+  guildSlug: PropTypes.string,
   pcSlug: PropTypes.string,
   updateCharacter: PropTypes.func.isRequired,
   user: PropTypes.object,
@@ -93,7 +94,7 @@ function mapDispatchToProps (dispatch) {
     },
     createCharacter: (player_character, campaignSlug) => {
       dispatch(rest.actions.createPlayerCharacter(
-        {campaign_slug: campaignSlug},
+        {campaign_slug: campaignSlug, guild_slug: guildSlug},
         {body: JSON.stringify({player_character})}
       ));
     },

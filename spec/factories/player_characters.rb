@@ -34,7 +34,7 @@
 #  created_at           :datetime         not null
 #  updated_at           :datetime         not null
 #  armor_id             :integer
-#  campaign_id          :bigint
+#  guild_id             :bigint
 #  race_id              :integer          default(1), not null
 #  shield_id            :integer
 #  weapon_2h_id         :integer
@@ -43,12 +43,12 @@
 #
 # Indexes
 #
-#  index_characters_on_campaign_id  (campaign_id)
-#  index_characters_on_slug         (slug)
+#  index_characters_on_guild_id  (guild_id)
+#  index_characters_on_slug      (slug)
 #
 # Foreign Keys
 #
-#  fk_rails_...  (campaign_id => campaigns.id)
+#  fk_rails_...  (guild_id => guilds.id)
 #
 
 FactoryBot.define do

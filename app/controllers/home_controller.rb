@@ -9,8 +9,8 @@ class HomeController < ApplicationController
     npcsCount = 0
     if @user
       Campaign.where(user: current_user).each do |campaign|
-        pcsCount += campaign.characters.where(type: 'PlayerCharacter').count
-        npcsCount += campaign.characters.where(type: 'NonPlayerCharacter').count
+        pcsCount += campaign.pcs_count
+        npcsCount += campaign.npcs_count
       end
     end
     @home_props = {

@@ -17,7 +17,7 @@ const AlertDismissible = ({
   useEffect(() => {
     const timer = setTimeout(() => {
       dismissFlashMessage(messageId);
-    }, 4000);
+    }, 10000);
     return () => clearTimeout(timer);
   });
 
