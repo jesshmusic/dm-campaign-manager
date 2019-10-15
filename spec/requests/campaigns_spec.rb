@@ -28,15 +28,11 @@ RSpec.describe "Campaigns", type: :request do
 
   describe "GET all Campaigns" do
     context "for Logged Out Users" do
-      it "returns a forbidden response" do
-        get "/v1/campaigns.json"
-        expect(response).to have_http_status(403)
-      end
 
       it "returns an error for forbidden" do
         get "/v1/campaigns.json"
         result_items = JSON.parse(response.body)
-        expect(result_items['errors']).to eq("User action not allowed.")
+        expect(result_items['error']).to eq("You need to sign in or sign up before continuing.")
       end
     end
 
@@ -80,7 +76,7 @@ RSpec.describe "Campaigns", type: :request do
       it "returns an error for forbidden" do
         get "/v1/campaigns/#{campaign.slug}.json"
         result_items = JSON.parse(response.body)
-        expect(result_items['errors']).to eq("User action not allowed.")
+        expect(result_items['error']).to eq("You need to sign in or sign up before continuing.")
       end
     end
 

@@ -5,12 +5,11 @@ module Admin::V1
     before_action :set_character, only: %i[show edit update destroy]
     before_action :authenticate_user!, except: %i[index show]
     before_action :set_campaign
-    before_action :set_guild
 
     # GET /characters
     # GET /characters.json
     def index
-      authorize @guild, :show?
+      authorize @campaign, :show?
       authorize Character
       @characters = if params[:search].present?
                       Character.search_for(params[:search])
@@ -28,13 +27,13 @@ module Admin::V1
     # GET /characters/1
     # GET /characters/1.json
     def show
-      authorize @guild
+      authorize @campaign
       authorize @character
     end
 
     # GET /characters/new
     def new
-      authorize @guild, :show?
+      authorize @campaign, :show?
       @character = if params[:type] && params[:type] == 'PlayerCharacter'
                      PlayerCharacter.new
                    elsif params[:type] && params[:type] == 'NonPlayerCharacter'
@@ -46,7 +45,6 @@ module Admin::V1
       @character.role = ''
       @character.character_classes.build
       @character.campaign = @campaign
-      @character.guild = @guild
     end
 
     # GET /characters/new/generate_npc
@@ -77,7 +75,6 @@ module Admin::V1
                    end
       authorize @character
       @character.campaign = @campaign
-      @character.guild = @guild
 
       respond_to do |format|
         if @character.save
