@@ -47,7 +47,7 @@ class NonPlayerCharacter extends React.Component {
             <PageTitle title={characterTitle}
                        badge={{title: 'NPC', variant: 'secondary'}}
                        hasButton={user && character.guild && character.guild.campaign.userId === user.id}
-                       buttonLink={`/app/campaigns/${campaignSlug}/npcs/${character.slug}/edit`}
+                       buttonLink={`/app/campaigns/${campaignSlug}/guilds/${guildSlug}/npcs/${character.slug}/edit`}
                        buttonTitle={'Edit NPC'}
                        buttonVariant={'primary'}/>
             <CharacterBody character={character}
