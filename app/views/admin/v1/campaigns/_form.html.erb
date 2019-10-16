@@ -16,24 +16,6 @@
     <%= form.input :name %>
     <%= form.input :world %>
     <%= form.input :description %>
-    <div class="form-row">
-      <div class="col">
-        <%= form.association :characters,
-                             label: 'Player Characters',
-                             collection: PlayerCharacter.where(campaign: form.object),
-                             include_blank: false,
-                             include_hidden: false,
-                             input_html: { class: "pc-selection" } %>
-      </div>
-      <div class="col">
-        <%= form.association :characters,
-                             label: 'Non-player Characters',
-                             collection: NonPlayerCharacter.where(campaign: form.object),
-                             include_blank: false,
-                             include_hidden: false,
-                             input_html: {class: "npc-selection"} %>
-      </div>
-    </div>
 
     <h2>Notable World Locations</h2>
     <div class="form-row">

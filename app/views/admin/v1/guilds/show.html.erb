@@ -20,16 +20,40 @@
 
   <div class="row mb-3 pb-3 border-bottom">
     <div class="col">
-              <p>
-          <strong>Name:</strong> <%= @guild.name %> %>
-        </p>
-              <p>
-          <strong>Description:</strong> <%= @guild.description %> %>
-        </p>
-              <p>
-          <strong>Campaign:</strong> <%= @guild.campaign_id %> %>
-        </p>
-          </div>
+      <p>
+        <strong>Name:</strong> <%= @guild.name %>
+      </p>
+      <p>
+        <strong>Description:</strong> <%= @guild.description %>
+      </p>
+    </div>
+  </div>
+
+  <div class="row mb-3 pb-3 border-bottom">
+    <div class="col">
+      <h2>Player Characters</h2>
+      <ul class="list-group list-group-flush">
+        <% @guild.pcs.each do |character| %>
+          <li class="list-group-item">
+            <%= link_to raw("<strong>#{character.name}</strong> - #{character.classes}"), v1_campaign_player_character_path(@campaign, character) %>
+            <%= link_to 'Edit', edit_v1_campaign_character_path(@campaign, character), class: "btn btn-sm btn-success" if policy(character).edit? %>
+            <%= link_to 'Destroy',  v1_campaign_character_path(@campaign, character), class: "btn btn-sm btn-danger", method: :delete, data: { confirm: 'Are you sure?' } if policy(character).destroy? %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+    <div class="col">
+      <h2>Non-player Characters</h2>
+      <ul class="list-group list-group-flush">
+        <% @guild.npcs.each do |character| %>
+          <li class="list-group-item">
+            <%= link_to raw("#{character.role}: <strong>#{character.name}</strong> - #{character.classes}"), v1_campaign_player_character_path(@campaign, character) %>
+            <%= link_to 'Edit', edit_v1_campaign_character_path(@campaign, character), class: "btn btn-sm btn-success" if policy(character).edit? %>
+            <%= link_to 'Destroy',  v1_campaign_character_path(@campaign, character), class: "btn btn-sm btn-danger", method: :delete, data: { confirm: 'Are you sure?' } if policy(character).destroy? %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
   </div>
 
   <div class="d-flex align-items-center justify-content-start py-3">

@@ -8,7 +8,7 @@
 </nav>
 
 <h1>Guilds</h1>
-<%= render 'shared/search_form', url: guilds_path %>
+<%= render 'shared/search_form', url: v1_campaign_guilds_path(@campaign) %>
 
 <table>
   <thead>
@@ -29,13 +29,13 @@
                   <td><%= guild.campaign_id %></td>
 
         <td>
-          <%= link_to 'Show', guild, class: "btn btn-sm btn-primary" %>
+          <%= link_to 'Show', v1_campaign_guild_path(@campaign, guild), class: "btn btn-sm btn-primary" %>
           <%= link_to 'Edit', edit_v1_campaign_guild_path(@campaign, guild), class: "btn btn-sm btn-success" if policy(guild).edit? %>
-          <%= link_to 'Destroy', guild, class: "btn btn-sm btn-danger", method: :delete, data: { confirm: 'Are you sure?' } if policy(guild).destroy? %>
+          <%= link_to 'Destroy', v1_campaign_guild_path(@campaign, guild), class: "btn btn-sm btn-danger", method: :delete, data: { confirm: 'Are you sure?' } if policy(guild).destroy? %>
         </td>
       </tr>
     <% end %>
   </tbody>
 </table>
 <%== pagy_bootstrap_nav(@pagy) if @pagy.pages > 1 %>
-<%= link_to 'New Guild', new_campaign_guild_path(@campaign), class: "btn btn-lg btn-success" if policy(Guild).new? %>
+<%= link_to 'New Guild', new_v1_campaign_guild_path(@campaign), class: "btn btn-lg btn-success" if policy(Guild).new? %>
