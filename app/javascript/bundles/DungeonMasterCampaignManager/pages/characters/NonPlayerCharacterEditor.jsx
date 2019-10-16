@@ -37,7 +37,7 @@ class NonPlayerCharacterEditor extends React.Component {
       updateCharacter,
       user,
     } = this.props;
-    const currentCampaign = character && character.guild ? `Campaign: ${character.guild.campaign.name}` : 'Campaign';
+    const currentCampaign = character && character.campaign ? `Campaign: ${character.campaign.name}` : 'Campaign';
     const pageTitle = this.props.npcSlug ? `Edit "${character ? character.name : 'Loading...'}"` : 'New Non-player Character';
     return (
       <PageContainer user={user}

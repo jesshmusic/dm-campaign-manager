@@ -35,7 +35,7 @@ class PlayerCharacterEditor extends React.Component {
       updateCharacter,
       user,
     } = this.props;
-    const currentCampaign = character && character.guild ? `Campaign: ${character.guild.campaign.name}` : 'Campaign';
+    const currentCampaign = character && character.campaign ? `Campaign: ${character.campaign.name}` : 'Campaign';
     const pageTitle = this.props.pcSlug ? `Edit "${character ? character.name : 'Loading...'}"` : 'New Player Character';
     return (
       <PageContainer user={user}

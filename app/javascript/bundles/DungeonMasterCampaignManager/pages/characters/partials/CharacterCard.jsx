@@ -22,7 +22,7 @@ const CharacterCard = ({campaign, character, onReviveCharacter, small}) => (
       <Card.Subtitle className="text-muted">{character.classes}</Card.Subtitle>
       {small ? null : (
         <div>
-          <h6><strong>Campaign: </strong> {character.guild.campaign.name}</h6>
+          <h6><strong>Campaign: </strong> {character.campaign.name}</h6>
           <h6><strong>Guild: </strong> {character.guild.name}</h6>
           <div className={'d-flex'}>
             <span className={'mr-4'}><strong>Alignment: </strong>{character.alignment}</span>

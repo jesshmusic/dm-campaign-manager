@@ -62,30 +62,18 @@ const CampaignBody = ({
         </div>
         <div className={'mb-4'}>
           <h3>Player Characters</h3>
-          {campaign.guilds.map((guild) => (
-            <div key={guild.id}>
-              <h4>{guild.name}</h4>
-              <CharactersList campaign={campaign}
-                              characters={guild.pcs}
-                              guild={guild}
-                              small
-                              onReviveCharacter={onRevivePC}/>
-            </div>
-          ))}
+          <CharactersList campaign={campaign}
+                          characters={campaign.pcs}
+                          small
+                          onReviveCharacter={onRevivePC}/>
           <Link to={`/app/campaigns/${campaign.slug}/pcs/new`} className={'btn btn-success btn-block'}>New PC</Link>
         </div>
         <div className={'mb-4'}>
           <h3>Non-player Characters</h3>
-          {campaign.guilds.map((guild) => (
-            <div key={guild.id}>
-              <h4>{guild.name}</h4>
-              <CharactersList campaign={campaign}
-                              characters={guild.npcs}
-                              guild={guild}
-                              small
-                              onReviveCharacter={onReviveNPC}/>
-            </div>
-          ))}
+          <CharactersList campaign={campaign}
+                          characters={campaign.npcs}
+                          small
+                          onReviveCharacter={onReviveNPC}/>
           <Link to={`/app/campaigns/${campaign.slug}/npcs/new`} className={'btn btn-success btn-block'}>New NPC</Link>
           <Link to={`/app/campaigns/${campaign.slug}/npcs/generate/`} className={'btn btn-secondary btn-block'}>Quick NPC</Link>
         </div>
