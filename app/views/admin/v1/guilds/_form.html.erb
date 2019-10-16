@@ -1,4 +1,4 @@
-<%= simple_form_for @guild, validate: true do |form| %>
+<%= simple_form_for [:v1, @campaign, @guild], validate: true do |form| %>
   <%= form.error_notification %>
   <%= form.error_notification message: form.object.errors[:base].to_sentence if form.object.errors[:base].present? %>
 

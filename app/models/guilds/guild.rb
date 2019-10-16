@@ -44,11 +44,12 @@ class Guild < ApplicationRecord
   end
 
   def pcs
-    characters.where(type: 'PlayerCharacter')
+    self.characters.where(type: 'PlayerCharacter')
   end
 
   def npcs
-    characters.where(type: 'NonPlayerCharacter')
+    puts characters.where(type: 'NonPlayerCharacter')
+    self.characters.where(type: 'NonPlayerCharacter')
   end
 
   private

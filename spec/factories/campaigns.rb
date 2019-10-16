@@ -37,8 +37,7 @@ FactoryBot.define do
                     campaign: campaign)
         create_list(:non_player_character,
                     evaluator.non_player_characters_count,
-                    campaign: campaign,
-                    guild: campaign.guilds.sample)
+                    campaign: campaign)
         create_list(:adventure,
                     evaluator.adventures_count,
                     campaign: campaign,

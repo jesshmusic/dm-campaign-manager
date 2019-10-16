@@ -27,4 +27,12 @@ else
   json.label "#{character.name}: #{character.classes}"
 end
 
+if character.guild
+  json.guild do
+    json.id character.guild.id
+    json.name character.guild.name
+    json.slug character.guild.slug
+  end
+end
+
 json.value character.id
