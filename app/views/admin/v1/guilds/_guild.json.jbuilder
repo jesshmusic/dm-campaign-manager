@@ -4,6 +4,6 @@ json.pcs guild.pcs do |pc|
   json.partial! 'admin/v1/characters/character_summary', character: pc
 end
 
-json.npcs guild.pcs do |npc|
+json.npcs guild.npcs do |npc|
   json.partial! 'admin/v1/characters/character_summary', character: npc
 end
