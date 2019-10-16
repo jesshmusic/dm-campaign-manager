@@ -15,6 +15,7 @@
 # Indexes
 #
 #  index_guilds_on_campaign_id  (campaign_id)
+#  index_guilds_on_slug         (slug)
 #
 # Foreign Keys
 #
@@ -44,12 +45,11 @@ class Guild < ApplicationRecord
   end
 
   def pcs
-    self.characters.where(type: 'PlayerCharacter')
+    characters.where(type: 'PlayerCharacter')
   end
 
   def npcs
-    puts characters.where(type: 'NonPlayerCharacter')
-    self.characters.where(type: 'NonPlayerCharacter')
+    characters.where(type: 'NonPlayerCharacter')
   end
 
   private

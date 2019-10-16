@@ -13,6 +13,7 @@
 # Indexes
 #
 #  index_guilds_on_campaign_id  (campaign_id)
+#  index_guilds_on_slug         (slug)
 #
 # Foreign Keys
 #
