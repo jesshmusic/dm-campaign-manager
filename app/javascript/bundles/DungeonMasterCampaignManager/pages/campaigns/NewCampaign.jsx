@@ -34,6 +34,12 @@ class NewCampaign extends React.Component {
       world: values.world,
       worldLocationsAttributes: values.worldLocations,
       worldEventsAttributes: values.worldEvents,
+      guildsAttributes: values.guilds ? values.guilds.map((guild) => ({
+        id: guild.id,
+        name: guild.name,
+        description: guild.description,
+        _destroy: guild._destroy,
+      })) : null,
     };
     this.props.createCampaign(snakecaseKeys(campaignBody, {exclude: ['_destroy']}));
   };

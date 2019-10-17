@@ -7,15 +7,16 @@ import PropTypes from 'prop-types';
 import Form from 'react-bootstrap/Form';
 import FormField from '../../../components/forms/FormField';
 import FormRichTextArea from '../../../components/forms/FormRichTextArea';
-import FormSelect from '../../../components/forms/FormSelect';
 import Col from 'react-bootstrap/Col';
 import {FieldArray} from 'react-final-form-arrays';
-import EncounterFormCard from '../../encounters/partials/EncounterFormCard';
 import Button from 'react-bootstrap/Button';
 import WorldLocationFields from './WorldLocationFields';
 import WorldEventFields from './WorldEventFields';
+import GuildFields from './GuildFields';
 
-const CampaignFields = ({ push }) => {
+const CampaignFields = ({
+  push,
+}) => {
   return (
     <div>
       <Form.Row>
@@ -69,15 +70,15 @@ const CampaignFields = ({ push }) => {
           <h2>Guilds, Groups, or Affiliations</h2>
           <FieldArray name="guilds">
             {({ fields }) =>
-              fields.map((event, index) => (!fields.value[index] || !fields.value[index]._destroy ? (
-                <WorldEventFields event={event}
-                                  fields={fields}
-                                  index={index}
-                                  key={index} />
+              fields.map((guild, index) => (!fields.value[index] || !fields.value[index]._destroy ? (
+                <GuildFields guild={guild}
+                             fields={fields}
+                             index={index}
+                             key={index}/>
               ) : null))
             }
           </FieldArray>
-          <Button type="button" onClick={() => push('worldEvents', undefined)} variant={'info'} block>Add World Event</Button>
+          <Button type="button" onClick={() => push('guilds', undefined)} variant={'info'} block>Add Guild</Button>
         </Col>
       </Form.Row>
     </div>

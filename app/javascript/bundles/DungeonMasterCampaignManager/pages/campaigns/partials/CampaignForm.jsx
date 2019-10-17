@@ -12,7 +12,14 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import CampaignFields from './CampaignFields';
 
-const CampaignForm = ({arrayMutators, initialValues, onDelete, onFormSubmit, validated, validateForm }) => (
+const CampaignForm = ({
+  arrayMutators,
+  initialValues,
+  onDelete,
+  onFormSubmit,
+  validated,
+  validateForm,
+}) => (
   <FinalForm onSubmit={onFormSubmit}
              initialValues={initialValues}
              validate={validateForm}
@@ -48,7 +55,7 @@ const CampaignForm = ({arrayMutators, initialValues, onDelete, onFormSubmit, val
                      </div>
                    </Col>
                  </Row>
-                 {/* <pre className={classes.preBlock}>{JSON.stringify(values, 0, 2)}</pre>*/}
+                 {/*<pre className={classes.preBlock}>{JSON.stringify(values, 0, 2)}</pre>*/}
                </Form>
              )} />
 );

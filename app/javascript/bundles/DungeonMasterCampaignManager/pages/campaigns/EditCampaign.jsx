@@ -70,6 +70,12 @@ class EditCampaign extends React.Component {
       characterIds: pcIds.concat(npcIds),
       worldLocationsAttributes: values.worldLocations,
       worldEventsAttributes: values.worldEvents,
+      guildsAttributes: values.guilds ? values.guilds.map((guild) => ({
+        id: guild.id,
+        name: guild.name,
+        description: guild.description,
+        _destroy: guild._destroy,
+      })) : null,
     };
     this.props.updateCampaign(snakecaseKeys(campaignBody, {exclude: ['_destroy']}), this.props.campaignSlug);
   };
@@ -86,7 +92,6 @@ class EditCampaign extends React.Component {
     const { flashMessages, loading, campaignSlug, user } = this.props;
     const {currentCampaign, deleteCampaignConfirm, validated} = this.state;
     const campaignTitle = `Edit Campaign: ${currentCampaign ? currentCampaign.name : 'Loading...'}`;
-
     return (
       <PageContainer user={user}
                      flashMessages={flashMessages}
