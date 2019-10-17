@@ -19,6 +19,10 @@ end
 
 json.campaign do
   json.extract! character.campaign, :id, :name, :description, :world, :slug, :user_id
+  json.guilds character.campaign.guilds do |guild|
+    json.value guild.id
+    json.label guild.name
+  end
 end
 
 json.race do
@@ -34,6 +38,7 @@ json.guild do
   if character.guild
     json.name character.guild.name
     json.slug character.guild.slug
+    json.id character.guild.id
   end
 end
 

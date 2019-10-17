@@ -49,7 +49,7 @@ SectionHeading.propTypes = {
   title: PropTypes.string.isRequired,
 };
 
-const CharacterFormFields = ({dirty, errors, isNPC, values}) => {
+const CharacterFormFields = ({dirty, errors, guildOptions, isNPC, values}) => {
   return (
     <div>
       {dirty && errors && Object.keys(errors).length > 0 ? (
@@ -78,14 +78,21 @@ const CharacterFormFields = ({dirty, errors, isNPC, values}) => {
       <Accordion>
         <Form.Row>
           <NameField colWidth={'3'} value={values.name}/>
-          <FormSelect label={'Alignment'} colWidth={'3'} name={'characterAlignment'}
+          <FormSelect label={'Alignment'}
+                      colWidth={'3'}
+                      name={'characterAlignment'}
                       options={alignmentOptions}/>
           <RaceSelect colWidth={'3'}/>
           <FormField label={'Background'} type={'text'} colWidth={'3'} name={'background'}/>
         </Form.Row>
         <Form.Row>
-          <FormRichTextArea label={'Description'} colWidth={'7'} name={'description'}/>
-          <FormField label={'Languages'} type={'text'} colWidth={'5'} name={'languages'}/>
+          <FormRichTextArea label={'Description'} colWidth={'6'} name={'description'}/>
+          <FormField label={'Languages'} type={'text'} colWidth={'3'} name={'languages'}/>
+          <FormSelect label={'Guild or Affiliation'}
+                      colWidth={'3'}
+                      isClearable
+                      name={'guild'}
+                      options={guildOptions}/>
         </Form.Row>
         <SectionHeading eventKey={'0'} title={'Classes'}/>
         <Accordion.Collapse eventKey={'0'}>
@@ -233,6 +240,7 @@ const CharacterFormFields = ({dirty, errors, isNPC, values}) => {
 CharacterFormFields.propTypes = {
   dirty: PropTypes.bool,
   errors: PropTypes.object,
+  guildOptions: PropTypes.array.isRequired,
   isNPC: PropTypes.bool,
   values: PropTypes.object.isRequired,
 };

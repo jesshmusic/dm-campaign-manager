@@ -140,6 +140,7 @@ export const SetupCharacterState = (newChar) => {
     platinumPieces: newChar.platinumPieces,
     applyRaceMods: false,
     characterSpellsAttributes: [],
+    guildOptions: newChar.campaign.guilds,
   };
 
   if (newChar.weapon2h) {
@@ -241,6 +242,13 @@ export const SetupCharacterState = (newChar) => {
         wisdomModifier: 1,
         charismaModifier: 1,
       },
+    };
+  }
+
+  if (newChar.guild) {
+    charObject.guild = {
+      value: newChar.guild.id,
+      label: newChar.guild.name,
     };
   }
 
@@ -689,6 +697,7 @@ export const getCharacterObject = (values) => {
     weapon_2h_id: values.weapon2h ? values.weapon2h.value : null,
     shieldId: values.shield ? values.shield.value : null,
     armorId: values.armor ? values.armor.value : null,
+    guildId: values.guild ? values.guild.value : null,
     characterClassesAttributes: values.dndClasses.map((dndClass) => {
       const returnClass = {
         level: dndClass.level,

@@ -20,6 +20,7 @@ import {
 } from '../../utilities/character-utilities';
 import CharacterFormFields from './partials/CharacterFormFields';
 import Row from 'react-bootstrap/Row';
+import DndSpinner from '../../components/layout/DndSpinner';
 
 
 class CharacterEditor extends React.Component {
@@ -87,54 +88,62 @@ class CharacterEditor extends React.Component {
   render () {
     const {character, onCancelEditing, onDelete, validated} = this.state;
     return (
-      <FinalForm onSubmit={this.handleSubmit}
-                 initialValues={character}
-                 validate={this.validate}
-                 decorators={[characterCalculations]}
-                 mutators={{...arrayMutators}}
-                 render={({
-                   handleSubmit,
-                   dirty,
-                   errors,
-                   form: {
-                     mutators: {push},
-                   },
-                   invalid,
-                   submitting,
-                   form,
-                   pristine,
-                   values,
-                 }) => (
-                   <Form noValidate validated={validated} onSubmit={handleSubmit}>
-                     <Row>
-                       <Col sm={{span: 12, order: 2}} md={{span: 10, order: 1}}>
-                         <CharacterFormFields dirty={dirty} isNPC={this.props.isNPC} values={values} errors={errors}/>
-                       </Col>
-                       <Col sm={{span: 12, order: 1}} md={{span: 2, order: 2}} className={'pl-md-0'}>
-                         <div className={'sticky-top py-3'}>
-                           <Button type="submit" disabled={submitting || pristine} variant={'success'} block>
+      character ? (
+        <FinalForm onSubmit={this.handleSubmit}
+                   initialValues={character}
+                   validate={this.validate}
+                   decorators={[characterCalculations]}
+                   mutators={{...arrayMutators}}
+                   render={({
+                     handleSubmit,
+                     dirty,
+                     errors,
+                     form: {
+                       mutators: {push},
+                     },
+                     invalid,
+                     submitting,
+                     form,
+                     pristine,
+                     values,
+                   }) => (
+                     <Form noValidate validated={validated} onSubmit={handleSubmit}>
+                       <Row>
+                         <Col sm={{span: 12, order: 2}} md={{span: 10, order: 1}}>
+                           <CharacterFormFields dirty={dirty}
+                                                isNPC={this.props.isNPC}
+                                                values={values}
+                                                errors={errors}
+                                                guildOptions={character.guildOptions}/>
+                         </Col>
+                         <Col sm={{span: 12, order: 1}} md={{span: 2, order: 2}} className={'pl-md-0'}>
+                           <div className={'sticky-top py-3'}>
+                             <Button type="submit" disabled={submitting || pristine} variant={'success'} block>
                              Save
-                           </Button>
-                           <Button type="button" onClick={form.reset} disabled={submitting || pristine} variant={'link'} block>
+                             </Button>
+                             <Button type="button" onClick={form.reset} disabled={submitting || pristine} variant={'link'} block>
                              Reset Form
-                           </Button>
-                           {onCancelEditing ? (
-                             <Button type="button" onClick={onCancelEditing} variant={'link'} block>
+                             </Button>
+                             {onCancelEditing ? (
+                               <Button type="button" onClick={onCancelEditing} variant={'link'} block>
                                Cancel
-                             </Button>
-                           ) : null}
-                           {onDelete ? (
-                             <Button type="button" variant={'link'} onClick={onDelete} block>
+                               </Button>
+                             ) : null}
+                             {onDelete ? (
+                               <Button type="button" variant={'link'} onClick={onDelete} block>
                                Delete Adventure
-                             </Button>
-                           ) : null}
-                         </div>
-                       </Col>
-                     </Row>
-                     {/*<pre className={classes.preBlock}>{JSON.stringify(values, 0, 2)}</pre>*/}
-                   </Form>
-                 )}
-      />
+                               </Button>
+                             ) : null}
+                           </div>
+                         </Col>
+                       </Row>
+                       {/*<pre className={classes.preBlock}>{JSON.stringify(values, 0, 2)}</pre>*/}
+                     </Form>
+                   )}
+        />
+      ) : (
+        <DndSpinner/>
+      )
     );
   }
 }

@@ -19,7 +19,7 @@ const CharacterCard = ({campaign, character, onReviveCharacter, small}) => (
         </Link>
         <CharacterStatusButton character={character} handleReviveCharacter={onReviveCharacter}/>
       </Card.Title>
-      <Card.Subtitle className="text-muted">{character.classes}</Card.Subtitle>
+      <Card.Subtitle className="text-muted">{character.classes}{character.guild ? ` -- ${character.guild.name}` : null}</Card.Subtitle>
       {small ? null : (
         <div>
           <h6><strong>Campaign: </strong> {character.campaign.name}</h6>
