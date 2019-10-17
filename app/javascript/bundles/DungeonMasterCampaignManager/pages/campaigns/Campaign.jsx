@@ -18,6 +18,8 @@ import AdventureForm from '../adventures/partials/AdventureForm';
 import snakecaseKeys from 'snakecase-keys';
 import Modal from 'react-bootstrap/Modal';
 import Card from 'react-bootstrap/Card';
+import GuildsList from './partials/GuildsList';
+import EventsList from './partials/EventsList';
 
 const CampaignBody = ({
   campaign,
@@ -28,6 +30,8 @@ const CampaignBody = ({
     <Row>
       <Col sm={7} md={8}>
         <div dangerouslySetInnerHTML={{ __html: campaign.description }} />
+        <h3>Guilds, Organizations, and Groups</h3>
+        <GuildsList guilds={campaign.guilds} campaignSlug={campaign.slug}/>
         <h3>Adventures</h3>
         <Link to={`/app/campaigns/${campaign.slug}/adventures/new`} className={'btn btn-success btn-block mb-3'}>
           New Adventure
@@ -40,14 +44,7 @@ const CampaignBody = ({
       <Col sm={5} md={4}>
         <div className={'mb-4'}>
           <h3>Events</h3>
-          {campaign.worldEvents.map((worldEvent, index) => (
-            <Card key={index} className={'mb-1'}>
-              <Card.Body>
-                <strong>{worldEvent.when}</strong>
-                <p>{worldEvent.description}</p>
-              </Card.Body>
-            </Card>
-          ))}
+          <EventsList worldEvents={campaign.worldEvents}/>
         </div>
         <div className={'mb-4'}>
           <h3>World Locations</h3>

@@ -65,6 +65,9 @@ const CharacterBody = ({character, isNPC, onReviveCharacter}) => (
         {isNPC ? (
           <h3>{character.role}</h3>
         ) : null}
+        {character.guild ? (
+          <h4><small className={'text-muted'}>Affiliation:</small> {character.guild.name}</h4>
+        ) : null}
       </Col>
     </Row>
     <Row>
