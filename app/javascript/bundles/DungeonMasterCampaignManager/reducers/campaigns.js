@@ -1,4 +1,4 @@
-import {createAction, createReducer} from 'redux-starter-kit';
+import {createAction, createReducer} from '@reduxjs/toolkit';
 
 const getCampaigns = createAction('@@redux-api@getCampaigns');
 const getCampaignsSuccess = createAction('@@redux-api@getCampaigns_success');

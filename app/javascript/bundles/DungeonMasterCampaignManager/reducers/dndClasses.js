@@ -1,4 +1,4 @@
-import {createAction, createReducer} from 'redux-starter-kit';
+import {createAction, createReducer} from '@reduxjs/toolkit';
 
 const getDndClassesSuccess = createAction('@@redux-api@getDndClasses_success');
 const getDndClassesFail = createAction('@@redux-api@getDndClasses_fail');

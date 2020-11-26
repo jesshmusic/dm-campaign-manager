@@ -1,4 +1,4 @@
-import {createAction, createReducer} from 'redux-starter-kit';
+import {createAction, createReducer} from '@reduxjs/toolkit';
 
 const getNonPlayerCharacters = createAction('@@redux-api@getNonPlayerCharacters');
 const getNonPlayerCharactersSuccess = createAction('@@redux-api@getNonPlayerCharacters_success');

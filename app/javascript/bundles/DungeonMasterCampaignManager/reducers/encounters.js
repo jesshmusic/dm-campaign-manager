@@ -1,4 +1,4 @@
-import {createAction, createReducer} from 'redux-starter-kit';
+import {createAction, createReducer} from '@reduxjs/toolkit';
 
 const getEncounter = createAction('@@redux-api@getEncounter');
 const getEncounterSuccess = createAction('@@redux-api@getEncounter_success');

@@ -1,4 +1,4 @@
-import {createAction, createReducer} from 'redux-starter-kit';
+import {createAction, createReducer} from '@reduxjs/toolkit';
 
 const getSpellsSuccess = createAction('@@redux-api@getSpells_success');
 const getSpellsFail = createAction('@@redux-api@getSpells_fail');

@@ -23,6 +23,8 @@ default: &default
 development:
   <<: *default
   database: dm_campaign_manager_dev
+  username: postgres
+  password: Flashy7151
   pool: 5
 
 # Warning: The database defined as "test" will be erased and
