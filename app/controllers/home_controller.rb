@@ -4,7 +4,7 @@ class HomeController < ApplicationController
   layout 'home'
 
   def index
-    @user = current_user ? current_user.as_json(include: [:campaigns]) : nil
+    @user = current_user ? current_user.as_json : nil
     @home_props = {
       user: @user,
       npcsCount: Monster.all.count,

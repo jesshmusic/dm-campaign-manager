@@ -8,7 +8,6 @@ module Admin::V1
     def index
       authorize :dashboard, :index?
       @dms = User.where(role: :dungeon_master)
-      @campaigns = Campaign.all
     end
   end
 end

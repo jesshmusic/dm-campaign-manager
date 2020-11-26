@@ -55,7 +55,6 @@ class User < ApplicationRecord
   end
 
   # User Associations
-  has_many :campaigns, dependent: :destroy
   has_many :dnd_classes, dependent: :destroy
   has_many :items, dependent: :destroy
   has_many :monsters, dependent: :destroy

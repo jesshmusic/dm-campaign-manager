@@ -10,149 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_26_172602) do
+ActiveRecord::Schema.define(version: 2020_11_26_222419) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-
-  create_table "adventure_world_locations", force: :cascade do |t|
-    t.bigint "adventure_id"
-    t.bigint "world_location_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["adventure_id"], name: "index_adventure_world_locations_on_adventure_id"
-    t.index ["world_location_id"], name: "index_adventure_world_locations_on_world_location_id"
-  end
-
-  create_table "adventures", force: :cascade do |t|
-    t.string "name"
-    t.text "description"
-    t.bigint "campaign_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "sort", default: 0, null: false
-    t.index ["campaign_id"], name: "index_adventures_on_campaign_id"
-  end
-
-  create_table "campaigns", force: :cascade do |t|
-    t.bigint "user_id"
-    t.string "name"
-    t.text "description"
-    t.string "world"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "slug"
-    t.index ["slug"], name: "index_campaigns_on_slug", unique: true
-    t.index ["user_id"], name: "index_campaigns_on_user_id"
-  end
-
-  create_table "character_actions", force: :cascade do |t|
-    t.string "name", default: "New Action"
-    t.text "description", default: ""
-    t.integer "attack_bonus"
-    t.integer "damage_bonus"
-    t.string "damage_dice"
-    t.bigint "character_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["character_id"], name: "index_character_actions_on_character_id"
-  end
-
-  create_table "character_adventures", force: :cascade do |t|
-    t.bigint "adventure_id"
-    t.bigint "character_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["adventure_id"], name: "index_character_adventures_on_adventure_id"
-    t.index ["character_id"], name: "index_character_adventures_on_character_id"
-  end
-
-  create_table "character_classes", force: :cascade do |t|
-    t.bigint "character_id"
-    t.bigint "dnd_class_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "level", default: 1
-    t.integer "proficiency_bonus", default: 2
-    t.integer "spell_attack_bonus", default: 2
-    t.integer "spell_save_dc", default: 8
-    t.index ["character_id"], name: "index_character_classes_on_character_id"
-    t.index ["dnd_class_id"], name: "index_character_classes_on_dnd_class_id"
-  end
-
-  create_table "character_items", force: :cascade do |t|
-    t.integer "quantity", default: 1, null: false
-    t.boolean "equipped", default: false, null: false
-    t.boolean "carrying", default: true, null: false
-    t.bigint "item_id"
-    t.bigint "character_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["character_id"], name: "index_character_items_on_character_id"
-    t.index ["item_id"], name: "index_character_items_on_item_id"
-  end
-
-  create_table "character_spells", force: :cascade do |t|
-    t.bigint "spell_id"
-    t.bigint "character_id"
-    t.boolean "is_prepared", default: false, null: false
-    t.string "spell_class"
-    t.index ["character_id"], name: "index_character_spells_on_character_id"
-    t.index ["spell_id"], name: "index_character_spells_on_spell_id"
-  end
-
-  create_table "character_world_locations", force: :cascade do |t|
-    t.bigint "character_id"
-    t.bigint "world_location_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["character_id"], name: "index_character_world_locations_on_character_id"
-    t.index ["world_location_id"], name: "index_character_world_locations_on_world_location_id"
-  end
-
-  create_table "characters", force: :cascade do |t|
-    t.string "name", null: false
-    t.text "description", default: "Enter this character's backstory, history, or notes here."
-    t.string "slug", null: false
-    t.string "role", default: "Player Character"
-    t.integer "xp", default: 0, null: false
-    t.string "alignment", default: "neutral"
-    t.string "languages", default: "Common"
-    t.integer "copper_pieces", default: 0
-    t.integer "silver_pieces", default: 0, null: false
-    t.integer "electrum_pieces", default: 0
-    t.integer "gold_pieces", default: 0
-    t.integer "platinum_pieces", default: 0
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "background", default: "Acolyte"
-    t.string "type"
-    t.integer "proficiency", default: 2
-    t.integer "armor_class", default: 10, null: false
-    t.integer "charisma", default: 10, null: false
-    t.integer "constitution", default: 10, null: false
-    t.integer "dexterity", default: 10, null: false
-    t.integer "hit_points", default: 8, null: false
-    t.integer "hit_points_current", default: 8, null: false
-    t.integer "initiative", default: 0, null: false
-    t.integer "intelligence", default: 10, null: false
-    t.string "speed", default: "30 feet", null: false
-    t.integer "strength", default: 10, null: false
-    t.integer "wisdom", default: 10, null: false
-    t.integer "race_id", default: 1, null: false
-    t.integer "armor_id"
-    t.integer "shield_id"
-    t.integer "weapon_lh_id"
-    t.integer "weapon_rh_id"
-    t.integer "weapon_2h_id"
-    t.integer "armor_class_modifier", default: 0, null: false
-    t.integer "status", default: 0, null: false
-    t.bigint "guild_id"
-    t.bigint "campaign_id"
-    t.index ["campaign_id"], name: "index_characters_on_campaign_id"
-    t.index ["guild_id"], name: "index_characters_on_guild_id"
-    t.index ["slug"], name: "index_characters_on_slug"
-  end
 
   create_table "container_items", force: :cascade do |t|
     t.bigint "item_id"
@@ -177,83 +38,6 @@ ActiveRecord::Schema.define(version: 2020_11_26_172602) do
     t.string "saving_throw_abilities", default: [], array: true
     t.index ["slug"], name: "index_dnd_classes_on_slug", unique: true
     t.index ["user_id"], name: "index_dnd_classes_on_user_id"
-  end
-
-  create_table "encounter_combatants", force: :cascade do |t|
-    t.bigint "encounter_id"
-    t.bigint "character_id"
-    t.bigint "monster_id"
-    t.integer "current_hit_points", default: 0
-    t.integer "initiative_roll", default: 0
-    t.integer "combat_order_number", default: 0
-    t.text "notes", default: ""
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "name"
-    t.index ["character_id"], name: "index_encounter_combatants_on_character_id"
-    t.index ["encounter_id"], name: "index_encounter_combatants_on_encounter_id"
-    t.index ["monster_id"], name: "index_encounter_combatants_on_monster_id"
-  end
-
-  create_table "encounter_items", force: :cascade do |t|
-    t.integer "quantity", default: 1, null: false
-    t.bigint "encounter_id"
-    t.bigint "item_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["encounter_id"], name: "index_encounter_items_on_encounter_id"
-    t.index ["item_id"], name: "index_encounter_items_on_item_id"
-  end
-
-  create_table "encounter_monsters", force: :cascade do |t|
-    t.bigint "monster_id"
-    t.bigint "encounter_id"
-    t.integer "number_of_monsters", default: 1
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["encounter_id"], name: "index_encounter_monsters_on_encounter_id"
-    t.index ["monster_id"], name: "index_encounter_monsters_on_monster_id"
-  end
-
-  create_table "encounter_npcs", force: :cascade do |t|
-    t.bigint "character_id"
-    t.bigint "encounter_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.boolean "is_combatant", default: false, null: false
-    t.index ["character_id"], name: "index_encounter_npcs_on_character_id"
-    t.index ["encounter_id"], name: "index_encounter_npcs_on_encounter_id"
-  end
-
-  create_table "encounters", force: :cascade do |t|
-    t.string "name", default: "New Encounter"
-    t.text "description"
-    t.integer "platinum_pieces", default: 0
-    t.integer "gold_pieces", default: 0
-    t.integer "electrum_pieces", default: 0
-    t.integer "silver_pieces", default: 0
-    t.integer "copper_pieces", default: 0
-    t.integer "xp", default: 0
-    t.bigint "adventure_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "location", default: "New Location", null: false
-    t.integer "sort", default: 0, null: false
-    t.integer "round", default: 1
-    t.integer "current_mob_index", default: 0
-    t.boolean "in_progress", default: false
-    t.index ["adventure_id"], name: "index_encounters_on_adventure_id"
-  end
-
-  create_table "guilds", force: :cascade do |t|
-    t.string "name"
-    t.text "description"
-    t.string "slug"
-    t.bigint "campaign_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["campaign_id"], name: "index_guilds_on_campaign_id"
-    t.index ["slug"], name: "index_guilds_on_slug"
   end
 
   create_table "items", force: :cascade do |t|
@@ -506,56 +290,11 @@ ActiveRecord::Schema.define(version: 2020_11_26_172602) do
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 
-  create_table "world_events", force: :cascade do |t|
-    t.text "description"
-    t.bigint "campaign_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "when"
-    t.index ["campaign_id"], name: "index_world_events_on_campaign_id"
-  end
-
-  create_table "world_locations", force: :cascade do |t|
-    t.text "description"
-    t.integer "map_x", default: 0
-    t.integer "map_y", default: 0
-    t.bigint "campaign_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "name", default: "", null: false
-    t.index ["campaign_id"], name: "index_world_locations_on_campaign_id"
-  end
-
-  add_foreign_key "adventure_world_locations", "adventures"
-  add_foreign_key "adventure_world_locations", "world_locations"
-  add_foreign_key "adventures", "campaigns"
-  add_foreign_key "character_adventures", "adventures"
-  add_foreign_key "character_adventures", "characters"
-  add_foreign_key "character_classes", "characters"
-  add_foreign_key "character_classes", "dnd_classes"
-  add_foreign_key "character_items", "characters"
-  add_foreign_key "character_items", "items"
-  add_foreign_key "character_world_locations", "characters"
-  add_foreign_key "character_world_locations", "world_locations"
-  add_foreign_key "characters", "campaigns"
   add_foreign_key "container_items", "items"
   add_foreign_key "container_items", "items", column: "contained_item_id"
   add_foreign_key "dnd_classes", "users"
-  add_foreign_key "encounter_combatants", "characters"
-  add_foreign_key "encounter_combatants", "encounters"
-  add_foreign_key "encounter_combatants", "monsters"
-  add_foreign_key "encounter_items", "encounters"
-  add_foreign_key "encounter_items", "items"
-  add_foreign_key "encounter_monsters", "encounters"
-  add_foreign_key "encounter_monsters", "monsters"
-  add_foreign_key "encounter_npcs", "characters"
-  add_foreign_key "encounter_npcs", "encounters"
-  add_foreign_key "encounters", "adventures"
-  add_foreign_key "guilds", "campaigns"
   add_foreign_key "items", "users"
   add_foreign_key "monsters", "users"
   add_foreign_key "races", "users"
   add_foreign_key "spells", "users"
-  add_foreign_key "world_events", "campaigns"
-  add_foreign_key "world_locations", "campaigns"
 end

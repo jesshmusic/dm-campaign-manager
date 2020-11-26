@@ -9,26 +9,9 @@ Rails.application.routes.draw do
     scope module: 'admin' do
       namespace :v1 do
         get 'dashboard', to: 'dashboard#index'
-        resources :campaigns, param: :slug do
-          resources :adventures do
-            resources :encounters
-          end
-          resources :guilds, param: :slug
-          resources :characters, param: :slug
-          # noinspection RailsParamDefResolve
-          resources :player_characters, param: :slug, controller: 'characters', type: 'PlayerCharacter'
-          # noinspection RailsParamDefResolve
-          resources :non_player_characters, param: :slug, controller: 'characters', type: 'NonPlayerCharacter'
-          get '/characters/new/generate_npc', to: 'characters#generate_npc', as: 'generate_npc'
-          post '/characters/create_generated_npc', to: 'characters#create_generated_npc',
-               as: 'create_generated_npc'
-        end
         get '/random_fantasy_name', to: 'characters#random_fantasy_name',
             as: 'random_fantasy_name',
             constraints: { format: 'json' }
-        get '/random_individual_treasure',
-            to: 'encounters#random_individual_treasure',
-            as: 'random_individual_treasure', constraints: { format: 'json' }
         resources :dnd_classes, param: :slug
         resources :items, param: :slug
         # noinspection RailsParamDefResolve
