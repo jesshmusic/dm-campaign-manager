@@ -40,7 +40,7 @@
 class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable,
-         :confirmable, :omniauthable
+         :confirmable
 
   validates :name, presence: true
   validates :email, presence: true

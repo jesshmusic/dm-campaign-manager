@@ -2,10 +2,13 @@
 
 class SessionsController < Devise::SessionsController
 
+  def new
+    super
+  end
+
   # POST /v1/login
   def create
     @user = User.find_by_email(user_params[:email])
-    puts @user
     return invalid_login_attempt unless @user
 
     if @user.valid_password?(user_params[:password])

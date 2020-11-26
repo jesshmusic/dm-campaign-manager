@@ -52,9 +52,11 @@ function MenuBar (props) {
             </Nav.Item>
           ) : null}
           <Nav.Item className={classes.navItem}>
-            {user && user.role === 'admin' ? (
+            {user ? (
               <Nav.Link onClick={handleLogout} className={classes.navLink}>Sign Out</Nav.Link>
-            ) : null}
+            ) : (
+              <Nav.Link href="/users/sign_in" className={classes.navLink}>Sign In</Nav.Link>
+            )}
           </Nav.Item>
         </Nav>
       </Navbar.Collapse>

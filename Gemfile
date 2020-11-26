@@ -18,9 +18,9 @@ gem 'react_on_rails', '12.0.4'
 gem 'redcarpet'
 gem 'select2-rails'
 # Use SCSS for stylesheets
-gem 'sass-rails', '~> 6.0.0'
+gem 'sass-rails'
 # Use Uglifier as compressor for JavaScript assets
-gem 'uglifier', '>= 1.3.0'
+gem 'uglifier'
 # Transpile app-like JavaScript. Read more: https://github.com/rails/webpacker
 gem 'webpacker'
 # See https://github.com/rails/execjs#readme for more supported runtimes
@@ -38,7 +38,7 @@ gem 'simple_form'
 # gem 'will_paginate-bootstrap'
 
 # Use CoffeeScript for .coffee assets and views
-gem 'coffee-rails', '~> 5.0'
+gem 'coffee-rails'
 gem 'jquery-rails'
 
 # Auth for Users
@@ -49,9 +49,9 @@ gem 'omniauth'
 gem 'paperclip'
 
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
-gem 'turbolinks', '~> 5'
+gem 'turbolinks'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem 'jbuilder', '~> 2.10.1'
+gem 'jbuilder'
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 4.0'
 # Use ActiveModel has_secure_password
