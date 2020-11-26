@@ -61,7 +61,7 @@ class EditEncounter extends React.Component {
       <PageContainer user={user}
                      flashMessages={flashMessages}
                      pageTitle={adventureTitle}
-                     description={`Encounter: ${adventureTitle}. Dungeon Master's Campaign Manager is a free resource for DMs to manage their campaigns, adventures, and NPCs.`}
+                     description={`Encounter: ${adventureTitle}. Dungeon Master's Toolbox is a free resource for DMs to manage their campaigns, adventures, and NPCs.`}
                      breadcrumbs={[
                        {url: '/app/campaigns', isActive: false, title: 'Campaigns'},
                        {url: `/app/campaigns/${campaignSlug}`, isActive: false, title: (campaign ? campaign.name : 'Campaign loading...')},

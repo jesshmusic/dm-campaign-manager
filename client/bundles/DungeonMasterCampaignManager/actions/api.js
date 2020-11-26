@@ -273,10 +273,10 @@ export default reduxApi({
   getItems: {
     url: '/v1/items.json',
   },
-  getMonster: {
+  getNPC: {
     url: '/v1/monsters/:slug.json',
   },
-  getMonsters: {
+  getNPCs: {
     url: '/v1/monsters.json',
   },
   getRace: {

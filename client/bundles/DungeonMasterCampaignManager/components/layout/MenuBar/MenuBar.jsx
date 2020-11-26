@@ -34,7 +34,7 @@ function MenuBar (props) {
   };
   return (
     <Navbar bg="primary" variant="dark" expand="lg" className={classes.navbar}>
-      <a className={classes.navbarBrand} href="/app/assets/stylesheets">DM&apos;s Campaign Manager</a>
+      <a className={classes.navbarBrand} href="/app/assets/stylesheets">DM&apos;s Toolbox</a>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="mr-auto">
@@ -43,7 +43,7 @@ function MenuBar (props) {
           <NavLink to={'/app/names'}>Name Generator</NavLink>
           <NavDropdown title="Reference" id="reference-nav-dropdown" className={classes.dropdown}>
             <DropdownLink to={'/app/classes'}>Classes</DropdownLink>
-            <DropdownLink to={'/app/monsters'}>Monsters</DropdownLink>
+            <DropdownLink to={'/app/npcs'}>NPCs</DropdownLink>
             <DropdownLink to={'/app/items'}>Items and Equipment</DropdownLink>
             <DropdownLink to={'/app/spells'}>Spells</DropdownLink>
           </NavDropdown>

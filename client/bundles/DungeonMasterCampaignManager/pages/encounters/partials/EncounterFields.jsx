@@ -10,7 +10,7 @@ import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import FormRichTextArea from '../../../components/forms/FormRichTextArea';
 import {FieldArray} from 'react-final-form-arrays';
-import EncounterMonsterFields from './EncounterMonsterFields';
+import EncounterNPCFields from './EncounterNPCFields';
 import EncounterItemFields from './EncounterItemFields';
 import EncounterNpcFields from './EncounterNpcFields';
 
@@ -62,21 +62,21 @@ const EncounterFields = ({encounterFieldName, npcOptions, push}) => (
     </Form.Row>
     <Form.Row>
       <Col md={12}>
-        <h4>Monsters</h4>
-        <FieldArray name={`${encounterFieldName}encounterMonsters`}>
+        <h4>NPCs</h4>
+        <FieldArray name={`${encounterFieldName}encounterNPCs`}>
           {({fields}) => (
             fields.map((monster, index) => (
               !fields.value[index] || !fields.value[index]._destroy ? (
-                <EncounterMonsterFields encounterMonster={monster}
+                <EncounterNPCFields encounterNPC={monster}
                                         fields={fields}
                                         index={index}
                                         key={index}/>
               ) : null))
           )}
         </FieldArray>
-        <Button type="button" onClick={() => push(`${encounterFieldName}encounterMonsters`, {
-          numberOfMonsters: 1,
-        })} variant={'link'} block>Add Monster...</Button>
+        <Button type="button" onClick={() => push(`${encounterFieldName}encounterNPCs`, {
+          numberOfNPCs: 1,
+        })} variant={'link'} block>Add NPC...</Button>
       </Col>
     </Form.Row>
     <Form.Row>

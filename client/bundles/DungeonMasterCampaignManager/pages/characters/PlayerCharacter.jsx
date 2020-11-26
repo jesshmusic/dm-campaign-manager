@@ -36,7 +36,7 @@ class PlayerCharacter extends React.Component {
       <PageContainer user={user}
                      flashMessages={flashMessages}
                      pageTitle={characterTitle}
-                     description={`PC: ${characterTitle}. Dungeon Master's Campaign Manager is a free resource for DMs to manage their campaigns, adventures, and NPCs.`}
+                     description={`PC: ${characterTitle}. Dungeon Master's Toolbox is a free resource for DMs to manage their campaigns, adventures, and NPCs.`}
                      breadcrumbs={[
                        {url: '/app/campaigns/', isActive: false, title: 'Campaigns'},
                        {

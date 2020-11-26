@@ -78,7 +78,7 @@ const AdventureFields = ({
           <Button type="button" onClick={() => push('encounters', {
             name: '',
             description: '',
-            encounterMonsters: [],
+            encounterNPCs: [],
             encounterItems: [],
           })} variant={'success'} block>Add Encounter</Button>
         </Col>

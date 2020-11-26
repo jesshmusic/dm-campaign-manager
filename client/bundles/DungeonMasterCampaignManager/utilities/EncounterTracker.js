@@ -19,7 +19,7 @@ export default class EncounterTracker {
   };
 
   constructor (monsters, npcs, pcs) {
-    this.setupMonsters(monsters);
+    this.setupNPCs(monsters);
     this.npcs = npcs.map((npc, index) => ({
       mobId: this.monsters.length + index + 1,
       name: `${npc.name}`,
@@ -43,17 +43,17 @@ export default class EncounterTracker {
     console.log(this);
   }
 
-  setupMonsters(encounterMonsters) {
+  setupNPCs(encounterNPCs) {
     this.monsters = [];
-    encounterMonsters.forEach((nextEncounterMonster) => {
-      for (let i = 0; i < nextEncounterMonster.numberOfMonsters; i++) {
+    encounterNPCs.forEach((nextEncounterNPC) => {
+      for (let i = 0; i < nextEncounterNPC.numberOfNPCs; i++) {
         const monster = {
           mobId: i + 1,
-          name: `${nextEncounterMonster.monster.name} ${i + 1}`,
-          armorClass: nextEncounterMonster.monster.armorClass,
-          hitPoints: nextEncounterMonster.monster.hitPoints,
-          currentHitPoints: nextEncounterMonster.monster.hitPoints,
-          xp: nextEncounterMonster.monster.xp,
+          name: `${nextEncounterNPC.monster.name} ${i + 1}`,
+          armorClass: nextEncounterNPC.monster.armorClass,
+          hitPoints: nextEncounterNPC.monster.hitPoints,
+          currentHitPoints: nextEncounterNPC.monster.hitPoints,
+          xp: nextEncounterNPC.monster.xp,
           initiativeRoll: 0,
           type: mobTypes.MONSTER,
         };
@@ -87,7 +87,7 @@ export default class EncounterTracker {
 
   /**
    * Sets the current round to the next mob's turn.
-   * Skips monsters at 0 hit points because they are dead!
+   * Skips npcs at 0 hit points because they are dead!
    * Does not skip PCs and NPCs with 0 hit points because they might have options and need to make death saves.
    */
   incrementTurn () {

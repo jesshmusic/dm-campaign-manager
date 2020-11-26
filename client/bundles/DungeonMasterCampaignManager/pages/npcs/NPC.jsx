@@ -20,20 +20,20 @@ import Util from '../../utilities/utilities';
 import PageTitle from '../../components/layout/PageTitle';
 import DndSpinner from '../../components/layout/DndSpinner';
 
-class Monsters extends React.Component {
+class NPCs extends React.Component {
   constructor (props) {
     super(props);
   }
 
   componentDidMount () {
-    this.props.getMonsters();
+    this.props.getNPCs();
   }
 
   get columns () {
     return [
       {
         dataField: 'name',
-        text: 'Monster',
+        text: 'NPC',
         sort: true,
         filter: textFilter(),
       }, {
@@ -65,15 +65,15 @@ class Monsters extends React.Component {
   }
 
   get selectCROptions () {
-    const crs = _.map(_.uniqBy(this.props.monsters, 'challengeRating'), (monster) => {
-      if (monster.challengeRating === '1/8') {
+    const crs = _.map(_.uniqBy(this.props.npcs, 'challengeRating'), (npc) => {
+      if (npc.challengeRating === '1/8') {
         return 0.125;
-      } else if (monster.challengeRating === '1/4') {
+      } else if (npc.challengeRating === '1/4') {
         return 0.25;
-      } else if (monster.challengeRating === '1/2') {
+      } else if (npc.challengeRating === '1/2') {
         return 0.5;
       }
-      return parseFloat(monster.challengeRating);
+      return parseFloat(npc.challengeRating);
     }).sort((a, b) => a - b);
 
     return crs.map((cr) => {
@@ -101,9 +101,9 @@ class Monsters extends React.Component {
   }
 
   get selectTypeOptions () {
-    return _.map(_.uniqBy(this.props.monsters, 'monsterType'), (monster) => ({
-      value: monster.monsterType,
-      label: monster.monsterType,
+    return _.map(_.uniqBy(this.props.npcs, 'monsterType'), (npc) => ({
+      value: npc.monsterType,
+      label: npc.monsterType,
     }));
   }
 
@@ -121,17 +121,17 @@ class Monsters extends React.Component {
   }
 
   render () {
-    const {monsters, flashMessages, user} = this.props;
+    const {npcs, flashMessages, user} = this.props;
     return (
       <PageContainer user={user}
                      flashMessages={flashMessages}
-                     pageTitle={'Monsters'}
-                     description={`All monsters with descriptions and stats. Dungeon Master's Campaign Manager is a free resource for DMs to manage their campaigns, adventures, and NPCs.`}
-                     breadcrumbs={[{url: null, isActive: true, title: 'Monsters'}]}>
-        <PageTitle title={'Monsters'}/>
-        {monsters && monsters.length > 0 ? (
+                     pageTitle={'NPCs'}
+                     description={`All npcs with descriptions and stats. Dungeon Master's Toolbox is a free resource for DMs to manage their campaigns, adventures, and NPCs.`}
+                     breadcrumbs={[{url: null, isActive: true, title: 'NPCs'}]}>
+        <PageTitle title={'NPCs'}/>
+        {npcs && npcs.length > 0 ? (
           <BootstrapTable keyField='id'
-                          data={ monsters }
+                          data={ npcs }
                           columns={ this.columns }
                           bordered={ false }
                           bootstrap4
@@ -147,16 +147,16 @@ class Monsters extends React.Component {
   }
 }
 
-Monsters.propTypes = {
-  monsters: PropTypes.array,
+NPCs.propTypes = {
+  npcs: PropTypes.array,
   flashMessages: PropTypes.array,
-  getMonsters: PropTypes.func,
+  getNPCs: PropTypes.func,
   user: PropTypes.object,
 };
 
 function mapStateToProps (state) {
   return {
-    monsters: state.monsters.monsters,
+    npcs: state.npcs.npcs,
     user: state.users.user,
     flashMessages: state.flashMessages,
   };
@@ -164,10 +164,10 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    getMonsters: () => {
-      dispatch(rest.actions.getMonsters());
+    getNPCs: () => {
+      dispatch(rest.actions.getNPCs());
     },
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Monsters);
+export default connect(mapStateToProps, mapDispatchToProps)(NPCs);

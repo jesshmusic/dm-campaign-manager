@@ -96,7 +96,7 @@ class EditCampaign extends React.Component {
       <PageContainer user={user}
                      flashMessages={flashMessages}
                      pageTitle={campaignTitle}
-                     description={`Edit Campaign: ${campaignTitle}. Dungeon Master's Campaign Manager is a free resource for DMs to manage their campaigns, adventures, and NPCs.`}
+                     description={`Edit Campaign: ${campaignTitle}. Dungeon Master's Toolbox is a free resource for DMs to manage their campaigns, adventures, and NPCs.`}
                      breadcrumbs={[
                        {url: '/app/campaigns', isActive: false, title: 'Campaigns'},
                        {url: `/app/campaigns/${campaignSlug}`, isActive: false, title: currentCampaign ? currentCampaign.name : 'Loading...'},

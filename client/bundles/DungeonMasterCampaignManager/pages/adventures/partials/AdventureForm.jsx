@@ -65,19 +65,19 @@ const setAdventureObject = (values, campaignID) => {
           location: encounter.location,
           platinumPieces: encounter.platinumPieces,
           silverPieces: encounter.silverPieces,
-          encounterMonstersAttributes: encounter.encounterMonsters.reduce((result, encounterMonster) => {
-            if (encounterMonster.monster) {
-              const newMonsters = {
-                numberOfMonsters: encounterMonster.numberOfMonsters,
-                monsterId: encounterMonster.monster.value,
+          encounterNPCsAttributes: encounter.encounterNPCs.reduce((result, encounterNPC) => {
+            if (encounterNPC.monster) {
+              const newNPCs = {
+                numberOfNPCs: encounterNPC.numberOfNPCs,
+                monsterId: encounterNPC.monster.value,
               };
-              if (encounterMonster.id) {
-                newMonsters.id = encounterMonster.id;
+              if (encounterNPC.id) {
+                newNPCs.id = encounterNPC.id;
               }
-              if (encounterMonster._destroy) {
-                newMonsters._destroy = encounterMonster._destroy;
+              if (encounterNPC._destroy) {
+                newNPCs._destroy = encounterNPC._destroy;
               }
-              result.push(newMonsters);
+              result.push(newNPCs);
             }
             return result;
           }, []),

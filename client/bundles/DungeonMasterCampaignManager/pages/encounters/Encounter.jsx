@@ -39,7 +39,7 @@ class Encounter extends React.Component {
       <PageContainer user={user}
                      flashMessages={flashMessages}
                      pageTitle={encounterTitle}
-                     description={`Encounter: ${encounterTitle}. Dungeon Master's Campaign Manager is a free resource for DMs to manage their campaigns, adventures, and NPCs.`}
+                     description={`Encounter: ${encounterTitle}. Dungeon Master's Toolbox is a free resource for DMs to manage their campaigns, adventures, and NPCs.`}
                      breadcrumbs={[
                        {url: '/app/campaigns', isActive: false, title: 'Campaigns'},
                        {url: `/app/campaigns/${campaignSlug}`, isActive: false, title: (campaign ? campaign.name : 'Campaign loading...')},
@@ -154,11 +154,11 @@ class Encounter extends React.Component {
             </Row>
             <Row>
               <Col>
-                <h4>Monsters</h4>
+                <h4>NPCs</h4>
                 <ListGroup variant="flush">
-                  {encounter.encounterMonsters.map((monster) => (
+                  {encounter.encounterNPCs.map((monster) => (
                     <ListGroup.Item key={monster.id}>
-                      <strong>{monster.monster.name}</strong> : {monster.numberOfMonsters} - <strong className={'text-muted'}>CR: {monster.monster.challengeRating}</strong>
+                      <strong>{monster.monster.name}</strong> : {monster.numberOfNPCs} - <strong className={'text-muted'}>CR: {monster.monster.challengeRating}</strong>
                     </ListGroup.Item>
                   ))}
                 </ListGroup>

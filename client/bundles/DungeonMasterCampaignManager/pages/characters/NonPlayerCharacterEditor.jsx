@@ -43,7 +43,7 @@ class NonPlayerCharacterEditor extends React.Component {
       <PageContainer user={user}
                      flashMessages={flashMessages}
                      pageTitle={pageTitle}
-                     description={`${pageTitle} Dungeon Master's Campaign Manager is a free resource for DMs to manage their campaigns, adventures, and NPCs.`}
+                     description={`${pageTitle} Dungeon Master's Toolbox is a free resource for DMs to manage their campaigns, adventures, and NPCs.`}
                      breadcrumbs={[
                        {url: '/app/campaigns', isActive: false, title: 'Campaigns'},
                        {url: `/app/campaigns/${this.props.campaignSlug}`, isActive: false, title: currentCampaign},

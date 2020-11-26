@@ -107,7 +107,7 @@ class DndClasses extends React.Component {
       <PageContainer user={this.props.user}
                      flashMessages={this.props.flashMessages}
                      pageTitle={'DndClasses'}
-                     description={'All D&D dndClasses. Dungeon Master\'s Campaign Manager is a free resource for DMs to manage their dndClasses, adventures, and NPCs.'}
+                     description={'All D&D dndClasses. Dungeon Master\'s Toolbox is a free resource for DMs to manage their dndClasses, adventures, and NPCs.'}
                      breadcrumbs={[{url: null, isActive: true, title: 'Character Classes'}]}>
         <PageTitle title={'Character Classes'}/>
         {this.props.dndClasses.dndClasses && this.props.dndClasses.dndClasses.length > 0 ? (

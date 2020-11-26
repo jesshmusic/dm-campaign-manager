@@ -22,7 +22,7 @@ const PageContainer = (props) => {
   return (
     <div>
       <Helmet>
-        <title>{pageTitle} | Dungeon Master&apos;s Campaign Manager</title>
+        <title>{pageTitle} | Dungeon Master&apos;s Toolbox</title>
         <meta name="description" content={description}/>
       </Helmet>
       <MenuBar user={user}/>

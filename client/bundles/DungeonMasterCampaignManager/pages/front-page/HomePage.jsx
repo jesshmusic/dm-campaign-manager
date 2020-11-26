@@ -13,10 +13,10 @@ const HomePage = (props) => (
   <PageContainer user={props.user}
                  flashMessages={props.flashMessages}
                  pageTitle={props.user ? 'Dashboard' : 'Welcome'}
-                 description={'Dungeon Master\'s Campaign Manager is a free resource for DMs to manage their campaigns, adventures, and NPCs.'}
+                 description={'Dungeon Master\'s Toolbox is a free resource for DMs for reference that includes tools for smooth games.'}
                  breadcrumbs={[]}>
     <div>
-      <PageTitle title={'Dungeon Master\'s Campaign Manager'}/>
+      <PageTitle title={'Dungeon Master\'s Toolbox'}/>
       <Row>
         <WelcomePage />
         <InfoBox {...props}/>
@@ -28,7 +28,7 @@ const HomePage = (props) => (
 HomePage.propTypes = {
   flashMessages: PropTypes.array,
   itemsCount: PropTypes.number.isRequired,
-  monstersCount: PropTypes.number.isRequired,
+  npcsCount: PropTypes.number.isRequired,
   spellsCount: PropTypes.number.isRequired,
   user: PropTypes.object,
 };
@@ -37,7 +37,7 @@ function mapStateToProps (state) {
   return {
     flashMessages: state.flashMessages,
     itemsCount: state.items.count,
-    monstersCount: state.monsters.count,
+    npcsCount: state.npcs.count,
     spellsCount: state.spells.count,
   };
 }

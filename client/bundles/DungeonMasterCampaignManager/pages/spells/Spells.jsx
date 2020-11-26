@@ -142,7 +142,7 @@ class Spells extends React.Component {
       <PageContainer user={user}
                      flashMessages={flashMessages}
                      pageTitle={'Spells'}
-                     description={'All D&D spells. Dungeon Master\'s Campaign Manager is a free resource for DMs to manage their campaigns, adventures, and NPCs.'}
+                     description={'All D&D spells. Dungeon Master\'s Toolbox is a free resource for DMs to manage their campaigns, adventures, and NPCs.'}
                      breadcrumbs={[{url: null, isActive: true, title: 'Spells'}]}>
         <PageTitle title={'Spells'}/>
         {spells && spells.length > 0 ? (

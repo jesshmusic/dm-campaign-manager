@@ -27,19 +27,19 @@ const setEncounterObject = (values) => {
     platinumPieces: values.platinumPieces,
     silverPieces: values.silverPieces,
     sort: values.sort,
-    encounterMonstersAttributes: values.encounterMonsters.reduce((result, encounterMonster) => {
-      if (encounterMonster.monster) {
-        const newMonsters = {
-          numberOfMonsters: encounterMonster.numberOfMonsters,
-          monsterId: encounterMonster.monster.value,
+    encounterNPCsAttributes: values.encounterNPCs.reduce((result, encounterNPC) => {
+      if (encounterNPC.monster) {
+        const newNPCs = {
+          numberOfNPCs: encounterNPC.numberOfNPCs,
+          monsterId: encounterNPC.monster.value,
         };
-        if (encounterMonster.id) {
-          newMonsters.id = encounterMonster.id;
+        if (encounterNPC.id) {
+          newNPCs.id = encounterNPC.id;
         }
-        if (encounterMonster._destroy) {
-          newMonsters._destroy = encounterMonster._destroy;
+        if (encounterNPC._destroy) {
+          newNPCs._destroy = encounterNPC._destroy;
         }
-        result.push(newMonsters);
+        result.push(newNPCs);
       }
       return result;
     }, []),
@@ -93,7 +93,7 @@ const setupInitialValues = (encounter, newEncounterSort = 0) => {
     platinumPieces: 0,
     silverPieces: 0,
     sort: newEncounterSort,
-    encounterMonsters: [],
+    encounterNPCs: [],
     encounterItems: [],
     encounterNpcs: [],
   };
@@ -109,7 +109,7 @@ const setupInitialValues = (encounter, newEncounterSort = 0) => {
     initialValues.platinumPieces = encounter.platinumPieces;
     initialValues.sort = encounter.sort;
     initialValues.encounterItems = encounter.encounterItems;
-    initialValues.encounterMonsters = encounter.encounterMonsters;
+    initialValues.encounterNPCs = encounter.encounterNPCs;
     initialValues.encounterNpcs = encounter.encounterNpcs;
   }
   return initialValues;

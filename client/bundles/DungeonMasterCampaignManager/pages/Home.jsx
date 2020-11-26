@@ -13,7 +13,7 @@ import MagicItems from './items/MagicItems';
 import Tools from './items/Tools';
 import Vehicles from './items/Vehicles';
 import Weapons from './items/Weapons';
-import Monsters from './monsters/Monster';
+import NPCs from './npcs/NPC';
 import Spells from './spells/Spells';
 import DndClass from './dnd-classes/DndClass';
 import DndClasses from './dnd-classes/DndClasses';
@@ -27,10 +27,10 @@ const store = (props) => configureStore({
       count: props.itemsCount,
       currentItem: null,
     },
-    monsters: {
-      monsters: [],
-      count: props.monstersCount,
-      currentMonster: null,
+    npcs: {
+      npcs: [],
+      count: props.npcsCount,
+      currentNPC: null,
     },
     races: {
       races: [],
@@ -63,7 +63,7 @@ const Home = (props) => (
       <Gear path='/app/items/gear/' />
       <Tools path='/app/items/tools/' />
       <Vehicles path='/app/items/vehicles/' />
-      <Monsters path='/app/monsters/' />
+      <NPCs path='/app/npcs/' />
       <Spells path='/app/spells/' />
     </Router>
   </Provider>
@@ -72,7 +72,7 @@ const Home = (props) => (
 Home.propTypes = {
   flashMessages: PropTypes.array,
   itemsCount: PropTypes.number.isRequired,
-  monstersCount: PropTypes.number.isRequired,
+  npcsCount: PropTypes.number.isRequired,
   spellsCount: PropTypes.number.isRequired,
   user: PropTypes.object,
 };

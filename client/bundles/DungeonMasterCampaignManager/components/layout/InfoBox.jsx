@@ -8,14 +8,14 @@ import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import ListGroup from 'react-bootstrap/ListGroup';
 
-const InfoBox = ({monstersCount, itemsCount, spellsCount, user}) => {
+const InfoBox = ({npcsCount, itemsCount, spellsCount, user}) => {
   return(
     <Col sm={4}>
       <Card>
         <Card.Body>
-          <Card.Title>Dungeon Master&apos;s Campaign Manager</Card.Title>
+          <Card.Title>Dungeon Master&apos;s Toolbox</Card.Title>
           <ListGroup variant="flush">
-            <ListGroup.Item>NPCs: <strong>{monstersCount}</strong></ListGroup.Item>
+            <ListGroup.Item>NPCs: <strong>{npcsCount}</strong></ListGroup.Item>
             <ListGroup.Item>Equipment and Items: <strong>{itemsCount}</strong></ListGroup.Item>
             <ListGroup.Item>Spells: <strong>{spellsCount}</strong></ListGroup.Item>
           </ListGroup>
@@ -26,7 +26,7 @@ const InfoBox = ({monstersCount, itemsCount, spellsCount, user}) => {
 };
 
 InfoBox.propTypes = {
-  monstersCount: PropTypes.number.isRequired,
+  npcsCount: PropTypes.number.isRequired,
   itemsCount: PropTypes.number.isRequired,
   spellsCount: PropTypes.number.isRequired,
   user: PropTypes.object,
