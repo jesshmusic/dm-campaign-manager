@@ -1,7 +1,6 @@
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown';
-import Button from 'react-bootstrap/Button';
 import { Link } from '@reach/router';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -40,7 +39,8 @@ function MenuBar (props) {
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="mr-auto">
           <NavLink to={'/'}>Home</NavLink>
-          {user ? <NavLink to={'/app/campaigns'}>My Campaigns</NavLink> : null}
+          <NavLink to={'/app/npc-generator'}>NPC Generator</NavLink>
+          <NavLink to={'/app/names'}>Name Generator</NavLink>
           <NavDropdown title="Reference" id="reference-nav-dropdown" className={classes.dropdown}>
             <DropdownLink to={'/app/classes'}>Classes</DropdownLink>
             <DropdownLink to={'/app/monsters'}>Monsters</DropdownLink>
@@ -53,11 +53,9 @@ function MenuBar (props) {
             </Nav.Item>
           ) : null}
           <Nav.Item className={classes.navItem}>
-            {user ? (
+            {user && user.role === 'admin' ? (
               <Nav.Link onClick={handleLogout} className={classes.navLink}>Sign Out</Nav.Link>
-            ) : (
-              <Nav.Link href="/users/sign_in" className={classes.navLink}>Sign In</Nav.Link>
-            )}
+            ) : null}
           </Nav.Item>
         </Nav>
       </Navbar.Collapse>

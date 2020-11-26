@@ -5,9 +5,6 @@ import { Provider } from 'react-redux';
 import rootReducer from '../reducers';
 import { Router } from '@reach/router';
 import HomePage from './front-page/HomePage';
-import Campaigns from './campaigns/Campaigns';
-import Campaign from './campaigns/Campaign';
-import EditCampaign from './campaigns/EditCampaign';
 import Items from './items/Items';
 import AllItems from './items/AllItems';
 import Armor from './items/Armor';
@@ -20,18 +17,6 @@ import Monsters from './monsters/Monster';
 import Spells from './spells/Spells';
 import DndClass from './dnd-classes/DndClass';
 import DndClasses from './dnd-classes/DndClasses';
-import NewCampaign from './campaigns/NewCampaign';
-import PlayerCharacter from './characters/PlayerCharacter';
-import NonPlayerCharacter from './characters/NonPlayerCharacter';
-import PlayerCharacterEditor from './characters/PlayerCharacterEditor';
-import NonPlayerCharacterEditor from './characters/NonPlayerCharacterEditor';
-import GenerateNPC from './characters/GenerateNPC';
-import Adventure from './adventures/Adventure';
-import EditAdventure from './adventures/EditAdventure';
-import Encounter from './encounters/Encounter';
-import EditEncounter from './encounters/EditEncounter';
-import NewAdventure from './adventures/NewAdventure';
-import NewEncounter from './encounters/NewEncounter';
 
 const store = (props) => configureStore({
   reducer: rootReducer,
@@ -91,23 +76,6 @@ const Home = (props) => (
   <Provider store={store(props)}>
     <Router>
       <HomePage path="/" />
-      <Campaigns path='/app/campaigns'/>
-      <Campaign path='/app/campaigns/:campaignSlug'/>
-      <NewCampaign path='/app/campaigns/new'/>
-      <EditCampaign path='/app/campaigns/:campaignSlug/edit'/>
-      <Adventure path='/app/campaigns/:campaignSlug/adventures/:id'/>
-      <EditAdventure path={'/app/campaigns/:campaignSlug/adventures/:id/edit'}/>
-      <NewAdventure path={'/app/campaigns/:campaignSlug/adventures/new'}/>
-      <Encounter path='/app/campaigns/:campaignSlug/adventures/:adventureId/encounters/:id'/>
-      <EditEncounter path={'/app/campaigns/:campaignSlug/adventures/:adventureId/encounters/:id/edit'}/>
-      <NewEncounter path='/app/campaigns/:campaignSlug/adventures/:adventureId/encounters/new'/>
-      <PlayerCharacter path='/app/campaigns/:campaignSlug/pcs/:pcSlug' />
-      <NonPlayerCharacter path='/app/campaigns/:campaignSlug/npcs/:npcSlug' />
-      <PlayerCharacterEditor path='/app/campaigns/:campaignSlug/pcs/:pcSlug/edit'/>
-      <PlayerCharacterEditor path='/app/campaigns/:campaignSlug/pcs/new' />
-      <NonPlayerCharacterEditor path='/app/campaigns/:campaignSlug/npcs/:npcSlug/edit'/>
-      <NonPlayerCharacterEditor path='/app/campaigns/:campaignSlug/npcs/new' />
-      <GenerateNPC path='/app/campaigns/:campaignSlug/npcs/generate' />
       <DndClass path='/app/classes/:dndClassSlug' />
       <DndClasses path='/app/classes' />
       <Items path='/app/items' />
