@@ -21,18 +21,6 @@ import DndClasses from './dnd-classes/DndClasses';
 const store = (props) => configureStore({
   reducer: rootReducer,
   preloadedState: {
-    adventures: {
-      currentAdventure: null,
-    },
-    campaigns: {
-      campaigns: [],
-      count: 0,
-      currentCampaign: null,
-      loading: true,
-    },
-    encounters: {
-      currentEncounter: null,
-    },
     flashMessages: [],
     items: {
       items: [],
@@ -43,16 +31,6 @@ const store = (props) => configureStore({
       monsters: [],
       count: props.monstersCount,
       currentMonster: null,
-    },
-    nonPlayerCharacters: {
-      characters: [],
-      count: props.npcsCount,
-      currentCharacter: null,
-    },
-    playerCharacters: {
-      characters: [],
-      count: props.pcsCount,
-      currentCharacter: null,
     },
     races: {
       races: [],
@@ -66,7 +44,6 @@ const store = (props) => configureStore({
     users: {
       user: props.user,
       users: [],
-      count: props.usersCount,
       currentUser: null,
     },
   },
@@ -93,17 +70,11 @@ const Home = (props) => (
 );
 
 Home.propTypes = {
-  campaigns: PropTypes.object,
-  campaignsCount: PropTypes.number.isRequired,
   flashMessages: PropTypes.array,
-  getCampaigns: PropTypes.func.isRequired,
   itemsCount: PropTypes.number.isRequired,
   monstersCount: PropTypes.number.isRequired,
-  npcsCount: PropTypes.number.isRequired,
-  pcsCount: PropTypes.number.isRequired,
   spellsCount: PropTypes.number.isRequired,
   user: PropTypes.object,
-  usersCount: PropTypes.number.isRequired,
 };
 
 export default Home;
