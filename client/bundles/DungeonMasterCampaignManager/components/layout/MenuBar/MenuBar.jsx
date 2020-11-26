@@ -40,7 +40,6 @@ function MenuBar (props) {
         <Nav className="mr-auto">
           <NavLink to={'/'}>Home</NavLink>
           <NavLink to={'/app/npc-generator'}>NPC Generator</NavLink>
-          <NavLink to={'/app/names'}>Name Generator</NavLink>
           <NavDropdown title="Reference" id="reference-nav-dropdown" className={classes.dropdown}>
             <DropdownLink to={'/app/classes'}>Classes</DropdownLink>
             <DropdownLink to={'/app/npcs'}>NPCs</DropdownLink>

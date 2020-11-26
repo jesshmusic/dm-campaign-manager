@@ -4,12 +4,12 @@ import PropTypes from 'prop-types';
 // Container
 import WelcomePage from './WelcomePage';
 import {connect} from 'react-redux';
+import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/layout/PageTitle';
 import InfoBox from '../../components/layout/InfoBox';
 import NameField from '../characters/partials/NameField';
-// import Form from 'react-bootstrap/Form';
 
 const HomePage = (props) => (
   <PageContainer user={props.user}
@@ -17,7 +17,7 @@ const HomePage = (props) => (
                  pageTitle={props.user ? 'Dashboard' : 'Welcome'}
                  description={'Dungeon Master\'s Toolbox is a free resource for DMs for reference that includes tools for smooth games.'}
                  breadcrumbs={[]}>
-    <div>
+    <Container>
       <PageTitle title={'Dungeon Master\'s Toolbox'}/>
       <Row>
         <WelcomePage />
@@ -27,7 +27,7 @@ const HomePage = (props) => (
         <h2>Random Character Name</h2>
         <NameField colWidth={'12'}/>
       </Row>
-    </div>
+    </Container>
   </PageContainer>
 );
 
