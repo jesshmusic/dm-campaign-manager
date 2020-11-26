@@ -3,7 +3,7 @@
 module Admin::V1
   class CharactersController < ApplicationController
     before_action :set_character, only: %i[show edit update destroy]
-    before_action :authenticate_user!, except: %i[index show]
+    before_action :authenticate_user!, except: %i[index show random_fantasy_name]
     before_action :set_campaign
 
     # GET /characters

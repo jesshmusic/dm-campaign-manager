@@ -8,6 +8,8 @@ import Row from 'react-bootstrap/Row';
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/layout/PageTitle';
 import InfoBox from '../../components/layout/InfoBox';
+import NameField from '../characters/partials/NameField';
+// import Form from 'react-bootstrap/Form';
 
 const HomePage = (props) => (
   <PageContainer user={props.user}
@@ -20,6 +22,10 @@ const HomePage = (props) => (
       <Row>
         <WelcomePage />
         <InfoBox {...props}/>
+      </Row>
+      <Row>
+        <h2>Random Character Name</h2>
+        <NameField colWidth={'12'}/>
       </Row>
     </div>
   </PageContainer>

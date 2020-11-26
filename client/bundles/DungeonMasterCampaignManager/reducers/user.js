@@ -54,19 +54,7 @@ const users = createReducer({
       users: state.users,
       currentUser: state.currentUser,
     };
-  },
-  // [userUpdate]: (state) => {
-  //   state.error = null;
-  // },
-  // [userUpdateSucceeded]: (state, action) => {
-  //   state.user = action.payload.user;
-  //   state.isLoading = false;
-  //   state.error = null;
-  // },
-  // [userUpdateFailed]: (state, action) => {
-  //   state.isLoading = false;
-  //   state.error = action.payload;
-  // },
+  }
 });
 
 export default users;
