@@ -4,8 +4,6 @@ import PropTypes from 'prop-types';
 // Container
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
-import Alert from 'react-bootstrap/Alert';
-import CampaignsList from '../campaigns/partials/CampaignsList';
 
 class UserDashboard extends React.Component {
   constructor (props) {
@@ -13,27 +11,15 @@ class UserDashboard extends React.Component {
   }
 
   componentDidMount () {
-    this.props.getCampaigns(this.props.user.id);
+    // this.props.getCampaigns(this.props.user.id);
   }
 
   render () {
-    const {campaigns, user} = this.props;
+    const {user} = this.props;
     return (
       <Col sm={8}>
         <Row>
-          {campaigns ? (
-            <Col>
-              <h2>My Campaigns</h2>
-              <CampaignsList campaigns={campaigns} user={user}/>
-            </Col>
-          ) : (
-            <Col>
-              <h2>My Campaigns</h2>
-              <Alert>
-                Click here to create a new campaign.
-              </Alert>
-            </Col>
-          )}
+          Welcome {user.name}
         </Row>
       </Col>
     );
@@ -41,8 +27,6 @@ class UserDashboard extends React.Component {
 }
 
 UserDashboard.propTypes = {
-  campaigns: PropTypes.array,
-  getCampaigns: PropTypes.func.isRequired,
   user: PropTypes.object,
 };
 
