@@ -58,7 +58,7 @@ module Admin::V1
 
       respond_to do |format|
         if @monster.save
-          format.html { redirect_to monster_url(slug: @monster.slug), notice: 'Monster was successfully created.' }
+          format.html { redirect_to v1_monster_url(slug: @monster.slug), notice: 'Monster was successfully created.' }
           format.json { render :show, status: :created }
         else
           format.html { render :new }
@@ -74,7 +74,7 @@ module Admin::V1
 
       respond_to do |format|
         if @monster.update(monster_params)
-          format.html { redirect_to monster_url(slug: @monster.slug), notice: 'Monster was successfully updated.' }
+          format.html { redirect_to v1_monster_url(slug: @monster.slug), notice: 'Monster was successfully updated.' }
           format.json { render :show, status: :ok }
         else
           format.html { render :edit }
@@ -112,13 +112,14 @@ module Admin::V1
         :armor_class, :charisma, :constitution, :dexterity, :hit_dice_modifier,
         :hit_dice_number, :hit_dice_value, :hit_points, :initiative,
         :intelligence, :proficiency, :speed, :strength, :wisdom,
-        monster_action_attributes: %i[
+        :legendary_description,
+        monster_actions_attributes: %i[
           id name description attack_bonus damage_bonus damage_dice _destroy
         ],
         monster_legendary_action_attributes: %i[
           id name description attack_bonus damage_bonus damage_dice _destroy
         ],
-        monster_special_ability_attributes: %i[
+        monster_special_abilities_attributes: %i[
           id name description attack_bonus damage_bonus damage_dice _destroy
         ],
         skills_attributes: %i[
