@@ -10,24 +10,16 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 
-const getRandomMaleName = (callback) => {
-  fetch('/v1/random_fantasy_name?random_npc_gender=male')
-    .then((response) => response.json())
-    .then((jsonResult) => {
-      callback(jsonResult);
-    });
-};
-
-const getRandomFemaleName = (callback) => {
-  fetch('/v1/random_fantasy_name?random_npc_gender=female')
-    .then((response) => response.json())
-    .then((jsonResult) => {
-      callback(jsonResult);
-    });
-};
-
-const getName = (callback) => {
-  fetch('/v1/random_fantasy_name')
+const getRandomName = (callback, options = {gender: null, race: null}) => {
+  let apiURL = '/v1/random_fantasy_name';
+  if (options && options.gender && !options.race) {
+    apiURL += `?random_npc_gender=${options.gender}`;
+  } else if (options && options.gender && options.race) {
+    apiURL += `?random_npc_gender=${options.gender}&random_npc_race=${options.race}`;
+  } else if (options && !options.gender && options.race) {
+    apiURL += `?random_npc_gender=${options.race}`;
+  }
+  fetch(apiURL)
     .then((response) => response.json())
     .then((jsonResult) => {
       callback(jsonResult);
@@ -37,6 +29,8 @@ const getName = (callback) => {
 const NameField = ({colWidth}) => {
   const [nameValue, setNameValue] = useState('');
   const [copySuccess, setCopySuccess] = useState(false);
+  const [gender, setGender] = useState('female');
+  const [race, setRace] = useState('human');
   const nameFieldRef = useRef(null);
 
   const handleCopyToClipboard = () => {
@@ -45,23 +39,14 @@ const NameField = ({colWidth}) => {
     setCopySuccess(true);
   };
 
-  const handleGenerateName = (gender) => {
-    if (gender === 'male') {
-      setCopySuccess(false);
-      getRandomMaleName((jsonName) => {
-        setNameValue(jsonName.name);
-      });
-    } else if (gender === 'female') {
-      setCopySuccess(false);
-      getRandomFemaleName((jsonName) => {
-        setNameValue(jsonName.name);
-      });
-    } else {
-      setCopySuccess(false);
-      getName((jsonName) => {
-        setNameValue(jsonName.name);
-      });
-    }
+  const handleGenerateName = () => {
+    setCopySuccess(false);
+    getRandomName((jsonName) => {
+      setNameValue(jsonName.name);
+    }, {
+      gender,
+      race,
+    });
   };
 
   return (
@@ -88,17 +73,56 @@ const NameField = ({colWidth}) => {
             <Button
               variant={ 'primary' }
               onClick={ () => handleGenerateName() }>
-              Random Name
+              Get{gender ? ` ${gender.charAt(0).toUpperCase() + gender.slice(1)}` : ''}{race ? ` ${race.charAt(0).toUpperCase() + race.slice(1)}` : ''}  Name
             </Button>
+          </ButtonGroup>
+          <ButtonGroup className={ 'mt-1' } size="md">
             <Button
               variant={ 'secondary' }
-              onClick={ () => handleGenerateName('male') }>
+              onClick={ () => setGender('male') }>
               Male
             </Button>
             <Button
               variant={ 'success' }
-              onClick={ () => handleGenerateName('female') }>
+              onClick={ () => setGender('female') }>
               Female
+            </Button>
+          </ButtonGroup>
+          <ButtonGroup className={ 'mt-1' } size="sm">
+            <Button
+              variant={ 'primary' }
+              onClick={ () => setRace('human') }>
+              Human
+            </Button>
+            <Button
+              variant={ 'secondary' }
+              onClick={ () => setRace('goblin') }>
+              Goblin
+            </Button>
+            <Button
+              variant={ 'success' }
+              onClick={ () => setRace('orc') }>
+              Orc
+            </Button>
+            <Button
+              variant={ 'info' }
+              onClick={ () => setRace('ogre') }>
+              Ogre
+            </Button>
+            <Button
+              variant={ 'primary' }
+              onClick={ () => setRace('dwarf') }>
+              Dwarf
+            </Button>
+            <Button
+              variant={ 'secondary' }
+              onClick={ () => setRace('elf') }>
+              Elf
+            </Button>
+            <Button
+              variant={ 'success' }
+              onClick={ () => setRace('halfling') }>
+              Halfling
             </Button>
           </ButtonGroup>
         </Col>

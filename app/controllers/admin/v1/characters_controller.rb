@@ -5,7 +5,8 @@ module Admin::V1
 
     def random_fantasy_name
       random_npc_gender = params[:random_npc_gender] || %w[male female].sample
-      render json: {name: NameGen.random_name(random_npc_gender)}
+      random_npc_race = params[:random_npc_race] || 'human'
+      render json: {name: NameGen.random_name(random_npc_gender, random_npc_race)}
     end
 
   end
