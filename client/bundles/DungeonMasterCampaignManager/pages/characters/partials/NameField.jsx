@@ -2,13 +2,14 @@
  * Created by jesshendricks on 9/13/19
  */
 
-import React, {useRef, useState} from 'react';
+import React, {useState} from 'react';
 import PropTypes from 'prop-types';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import CopyField from '../../../components/CopyField';
 
 const getRandomName = (callback, options = {gender: null, race: null}) => {
   let apiURL = '/v1/random_fantasy_name';
@@ -31,13 +32,6 @@ const NameField = ({colWidth}) => {
   const [copySuccess, setCopySuccess] = useState(false);
   const [gender, setGender] = useState('female');
   const [race, setRace] = useState('human');
-  const nameFieldRef = useRef(null);
-
-  const handleCopyToClipboard = () => {
-    nameFieldRef.current.select();
-    document.execCommand('copy');
-    setCopySuccess(true);
-  };
 
   const handleGenerateName = () => {
     setCopySuccess(false);
@@ -54,18 +48,12 @@ const NameField = ({colWidth}) => {
       <Row>
         <Col xs={'12'} sm={'6'} md={'8'}>
           <Form>
-            <Form.Group controlId="randomFantasyName">
-              <Form.Label>Random Name</Form.Label>
-              <Form.Control type="text"
-                            placeholder="Random Name"
-                            value={nameValue}
-                            readOnly
-                            ref={nameFieldRef}
-                            onClick={handleCopyToClipboard} />
-              <Form.Text className="text-muted">
-                {copySuccess ? 'Copied.' : 'Click to copy to clipboard.'}
-              </Form.Text>
-            </Form.Group>
+            <CopyField placeHolder={"Random Name..."}
+                       fieldId={"randomFantasyName"}
+                       label={"Random Name"}
+                       copySuccess={copySuccess}
+                       setCopySuccess={setCopySuccess}
+                       text={nameValue} />
           </Form>
         </Col>
         <Col xs={'12'} sm={'6'} md={'4'}>

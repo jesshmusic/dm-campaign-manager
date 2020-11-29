@@ -10,6 +10,22 @@ class DndRules
       ]
     end
 
+    def alignments_non_evil
+      [
+        'Lawful Good', 'Lawful Neutral',
+        'Neutral Good', 'Neutral',
+        'Chaotic Good', 'Chaotic Neutral'
+      ]
+    end
+
+    def alignments_non_good
+      [
+        'Lawful Neutral', 'Lawful Evil',
+        'Neutral', 'Neutral Evil',
+        'Chaotic Neutral', 'Chaotic Evil'
+      ]
+    end
+
     def abilities
       %w[Strength Dexterity Constitution Intelligence Wisdom Charisma]
     end

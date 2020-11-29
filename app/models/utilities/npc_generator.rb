@@ -4,30 +4,42 @@ class NpcGenerator
   class << self
 
     def generate_npc(npc_attributes)
-      @new_npc = NonPlayerCharacter.create(name: npc_attributes[:name],
-                                           race_id: npc_attributes[:race_id],
-                                           role: npc_attributes[:role],
-                                           alignment: npc_attributes[:alignment],
-                                           campaign_id: npc_attributes[:campaign_id],
-                                           character_classes_attributes: npc_attributes[:character_classes_attributes])
+      @new_npc = Monster.new(name: npc_attributes[:name],
+                             size: npc_attributes[:size],
+                             alignment: npc_attributes[:alignment],
+                             hit_dice_number: npc_attributes[:hit_dice_number],
+                             monster_type: npc_attributes[:monster_type],
+                             strength: npc_attributes[:strength],
+                             dexterity: npc_attributes[:dexterity],
+                             constitution: npc_attributes[:constitution],
+                             intelligence: npc_attributes[:intelligence],
+                             wisdom: npc_attributes[:wisdom],
+                             charisma: npc_attributes[:charisma])
 
-      generate_ability_scores(npc_attributes[:min_score])
       set_statistics
-      armor_ids = []
-      rand(1..3).times do
-        armor_ids << add_armor(armor_ids)
-      end
-      weapon_ids = []
-      rand(2..5).times do
-        weapon_ids << add_weapon(weapon_ids)
-      end
-      equip_armor
-      equip_weapon
-      add_skills
-      add_spells
-      add_treasure
-      @new_npc.xp = DndRules.xp_for_cr(@new_npc.challenge_rating)
+      # armor_ids = []
+      # rand(1..3).times do
+      #   armor_ids << add_armor(armor_ids)
+      # end
+      # weapon_ids = []
+      # rand(2..5).times do
+      #   weapon_ids << add_weapon(weapon_ids)
+      # end
+      # equip_armor
+      # equip_weapon
+      # add_skills
+      # add_spells if npc_attributes[:caster_dc]
+      # @new_npc.xp = DndRules.xp_for_cr(@new_npc.challenge_rating)
       @new_npc
+    end
+
+    def generate_commoner(random_npc_gender, random_npc_race)
+      commoner = Monster.where(name: 'Commoner').first
+      @new_npc = Monster.new commoner.attributes
+      @new_npc.name = NameGen.random_name(random_npc_gender, random_npc_race)
+      @new_npc.monster_subtype = random_npc_race
+      @new_npc.alignment = DndRules.alignments_non_evil.sample
+      @new_npc.as_json(include: %i[monster_actions monster_legendary_actions monster_special_abilities], methods: :description_text)
     end
 
     private
@@ -84,22 +96,22 @@ class NpcGenerator
     end
 
     def set_statistics
+      @new_npc.hit_dice_value = if @new_npc.size == 'tiny' then 4
+                                elsif @new_npc.size == 'small' then 6
+                                elsif @new_npc.size == 'medium' then 8
+                                elsif @new_npc.size == 'large' then 10
+                                elsif @new_npc.size == 'huge' then 12
+                                elsif @new_npc.size == 'gargantuan' then 20
+                                else
+                                  8
+                                end
       @new_npc.initiative = DndRules.ability_score_modifier(@new_npc.dexterity)
-      @new_npc.proficiency = DndRules.proficiency_bonus_for_level(@new_npc.total_level)
+      # @new_npc.proficiency = DndRules.proficiency_bonus_for_level(@new_npc.hit_dice_number)
       @new_npc.hit_points = 0
-      @new_npc.character_classes.each do |character_class|
-        @new_npc.hit_points += character_class.dnd_class.hit_die + DndRules.ability_score_modifier(@new_npc.constitution)
-        if character_class.level > 1
-          @new_npc.hit_points += DndRules.roll_dice(character_class.level - 1, character_class.dnd_class.hit_die)
-        end
-      end
-      @new_npc.hit_points_current = @new_npc.hit_points
-      @new_npc.character_classes.each do |ch|
-        ch.setup_spell_scores(@new_npc)
-      end
-
+      @new_npc.hit_dice_modifier = DndRules.ability_score_modifier(@new_npc.constitution) * @new_npc.hit_dice_number
+      @new_npc.hit_points = (@new_npc.hit_dice_value * 0.55 * @new_npc.hit_dice_number).ceil
       @new_npc.armor_class = 10 + DndRules.ability_score_modifier(@new_npc.dexterity)
-      @new_npc.speed = @new_npc.race.speed
+      @new_npc.speed = @new_npc.speed || '30 ft.'
     end
 
     # Armor
@@ -370,5 +382,7 @@ class NpcGenerator
       @new_npc.gold_pieces = individual_treasure[:gold_pieces]
       @new_npc.platinum_pieces = individual_treasure[:platinum_pieces]
     end
+
+
   end
 end
