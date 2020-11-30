@@ -1,12 +1,23 @@
 import createDecorator from 'final-form-calculate';
 import snakecaseKeys from 'snakecase-keys';
 
+export const toSnakeCase = (str) =>
+  str &&
+  str
+    .match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g)
+    .map(x => x.toLowerCase())
+    .join('_');
+
 export const filterOptions = (results) => results.map((nextItem) => (
   {value: nextItem.id, label: nextItem.name}
 ));
 
 export const filterOptionsWithData = (results) => results.map((nextItem) => (
   {value: nextItem.id, label: nextItem.name, data: nextItem}
+));
+
+export const filterSnakeCaseOptionsWithData = (results) => results.map((nextItem) => (
+  {value: toSnakeCase(nextItem.name), label: nextItem.name}
 ));
 
 const AbilityScoreModifier = (abilityScore) => {
@@ -31,6 +42,26 @@ export const alignmentOptions = [
   {value: 'Neutral Evil', label: 'Neutral Evil'},
   {value: 'Chaotic Evil', label: 'Chaotic Evil'},
 ];
+
+export const npcVariantOptions = [
+  {value: 'fighter', label: 'Fighter'},
+  {value: 'caster_wizard', label: 'Caster - Wizard'},
+  {value: 'caster_cleric', label: 'Caster - Cleric'},
+  {value: 'creature', label: 'Creature'},
+];
+
+export const getChallengeRatingOptions = () => {
+  const crs = [
+    {value: '0', label: '0'},
+    {value: '1/8', label: '1/8'},
+    {value: '1/4', label: '1/4'},
+    {value: '1/2', label: '1/2'},
+  ];
+  for (let i = 1; i < 31; i++) {
+    crs.push({value: `${i}`, label: `${i}`});
+  }
+  return crs;
+};
 
 const CalculateArmorClass = ({armor, armorClassModifier, dexterity, shield}) => {
   if (armor && armor.data.armorDexBonus && shield) {

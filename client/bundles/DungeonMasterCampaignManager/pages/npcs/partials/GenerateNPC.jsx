@@ -6,19 +6,35 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import rest from '../../../actions/api';
 import {connect} from 'react-redux';
-
-import {alignmentOptions} from '../../../utilities/character-utilities';
 import arrayMutators from 'final-form-arrays';
 import Form from 'react-bootstrap/Form';
-import FormField from '../../../components/forms/FormField';
-import FormSelect from '../../../components/forms/FormSelect';
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import {Form as FinalForm} from 'react-final-form';
+import createDecorator from 'final-form-calculate';
 import snakecaseKeys from 'snakecase-keys';
-import NameField from './NameField';
-import RaceSelect from '../../characters/partials/races/RaceSelect';
 
+import {alignmentOptions, getChallengeRatingOptions} from '../../../utilities/character-utilities';
+import FormField from '../../../components/forms/FormField';
+import FormSelect from '../../../components/forms/FormSelect';
+import NameFormField from './NameFormField';
+import RaceSelect from '../../characters/partials/races/RaceSelect';
+import NpcVariationSelect from './NpcVariationSelect';
+
+const npcFormDecorator = createDecorator(
+  {
+    field: 'characterAlignment',
+    updates: {
+      alignment: ((value) => value.value),
+    },
+  },
+  {
+    field: 'characterRace',
+    updates: {
+      monsterSubtype: ((value) => value.value),
+    },
+  }
+);
 
 class GenerateNPC extends React.Component {
   state = {
@@ -26,19 +42,37 @@ class GenerateNPC extends React.Component {
       name: '',
       alignment: '',
       monsterType: 'humanoid',
+      challengeRating: '0',
       characterRace: 'human',
-      minScore: 15,
+      npcVariant: 'fighter',
     },
+    challengeRatingOptions: [],
     validated: false,
+  };
+
+  componentDidMount () {
+    this.setState({
+      challengeRatingOptions: getChallengeRatingOptions(),
+    });
+  }
+
+  handleGenerateName = (gender, race, callback) => {
+    const apiURL = `/v1/random_fantasy_name?random_npc_gender=${gender}&random_npc_race=${race ? race : 'human'}`;
+    fetch(apiURL)
+      .then((response) => response.json())
+      .then((jsonResult) => {
+        callback(jsonResult.name);
+      });
   };
 
   handleSubmit = async (values) => {
     const nonPlayerCharacter = {
       name: values.name,
-      alignment: values.characterAlignment.value,
-      minScore: values.minScore,
+      alignment: values.alignment,
+      challengeRating: values.challengeRating.value,
+      npcVariant: values.npcVariant.value,
       monsterType: 'humanoid',
-      monsterSubtype: values.characterRace.label,
+      monsterSubtype: values.monsterSubtype,
     };
     console.log(nonPlayerCharacter);
     // this.props.generateNonPlayerCharacter(snakecaseKeys(nonPlayerCharacter));
@@ -59,6 +93,7 @@ class GenerateNPC extends React.Component {
     const {npc, validated} = this.state;
     return (
       <FinalForm onSubmit={this.handleSubmit}
+                 decorators={[npcFormDecorator]}
                  initialValues={npc}
                  validate={this.validate}
                  mutators={{...arrayMutators}}
@@ -74,19 +109,15 @@ class GenerateNPC extends React.Component {
                  }) => (
                    <Form noValidate validated={validated} onSubmit={handleSubmit}>
                      <Form.Row>
-                       <NameField colWidth={'5'} noFormWrapper/>
-                       <FormField
-                           label={'Min Score'}
-                           type={'number'}
-                           colWidth={'2'}
-                           name={'minScore'}
-                           infoText={'Make sure the primary ability is at least this score.'}
-                       />
+                       <NameFormField colWidth={'6'} values={values} handleGenerateName={this.handleGenerateName}/>
+                       <NpcVariationSelect colWidth={'6'}/>
                      </Form.Row>
                      <Form.Row>
-                       <FormSelect label={'Alignment'} colWidth={'6'} name={'characterAlignment'}
+                       <FormSelect label={'Alignment'} colWidth={'4'} name={'characterAlignment'}
                                    options={alignmentOptions}/>
-                       <RaceSelect colWidth={'6'}/>
+                       <RaceSelect colWidth={'5'}/>
+                       <FormSelect label={'Challenge Rating'} colWidth={'3'} name={'challengeRating'}
+                                   options={this.state.challengeRatingOptions}/>
                      </Form.Row>
                      <Form.Row>
                        <ButtonGroup aria-label="Character actions">

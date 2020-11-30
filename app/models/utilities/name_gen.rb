@@ -151,8 +151,8 @@ class NameGen
       when 'goblin' then get_goblin_name(gender)
       when 'orc' then get_orc_name(gender)
       when 'ogre' then get_ogre_name(gender)
-      when 'dwarf' then get_dwarf_name(gender)
-      when 'elf' then get_elf_name(gender)
+      when /dwarf/ then get_dwarf_name(gender)
+      when /elf/ then get_elf_name(gender)
       when 'halfling' then get_halfling_name(gender)
       else
         get_goblin_name
