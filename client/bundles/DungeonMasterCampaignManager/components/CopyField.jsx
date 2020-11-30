@@ -9,12 +9,11 @@ const CopyField = ({
   label,
   fieldId,
   placeHolder,
-  copySuccess,
-  setCopySuccess,
   isTextArea,
   colWidth = '12'}) => {
   const copyFieldRef = useRef(null);
-  const [currentValue ] = useState('');// you can manage data with it
+  const [currentValue ] = useState('');
+  const [copySuccess, setCopySuccess] = useState(false);
 
   useEffect(() => {
     if (isTextArea) {
@@ -64,7 +63,7 @@ CopyField.propTypes = {
   fieldId: PropTypes.string.isRequired,
   placeHolder: PropTypes.string.isRequired,
   copySuccess: PropTypes.bool,
-  setCopySuccess: PropTypes.func.isRequired,
+  setCopySuccess: PropTypes.func,
   colWidth: PropTypes.string,
   isTextArea: PropTypes.bool,
 };

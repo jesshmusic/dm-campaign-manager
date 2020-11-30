@@ -11,36 +11,18 @@ import Row from 'react-bootstrap/Row';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import CopyField from '../../../components/CopyField';
 
-const getRandomName = (callback, options = {gender: null, race: null}) => {
-  let apiURL = '/v1/random_fantasy_name';
-  if (options && options.gender && !options.race) {
-    apiURL += `?random_npc_gender=${options.gender}`;
-  } else if (options && options.gender && options.race) {
-    apiURL += `?random_npc_gender=${options.gender}&random_npc_race=${options.race}`;
-  } else if (options && !options.gender && options.race) {
-    apiURL += `?random_npc_gender=${options.race}`;
-  }
-  fetch(apiURL)
-    .then((response) => response.json())
-    .then((jsonResult) => {
-      callback(jsonResult);
-    });
-};
-
 const NameField = ({colWidth}) => {
   const [nameValue, setNameValue] = useState('');
-  const [copySuccess, setCopySuccess] = useState(false);
   const [gender, setGender] = useState('female');
   const [race, setRace] = useState('human');
 
   const handleGenerateName = () => {
-    setCopySuccess(false);
-    getRandomName((jsonName) => {
-      setNameValue(jsonName.name);
-    }, {
-      gender,
-      race,
-    });
+    const apiURL = `/v1/random_fantasy_name?random_npc_gender=${gender}&random_npc_race=${race}`;
+    fetch(apiURL)
+      .then((response) => response.json())
+      .then((jsonResult) => {
+        setNameValue(jsonResult.name);
+      });
   };
 
   return (
@@ -48,11 +30,9 @@ const NameField = ({colWidth}) => {
       <Row>
         <Col xs={'12'} sm={'6'} md={'8'}>
           <Form>
-            <CopyField placeHolder={"Random Name..."}
-                       fieldId={"randomFantasyName"}
-                       label={"Random Name"}
-                       copySuccess={copySuccess}
-                       setCopySuccess={setCopySuccess}
+            <CopyField placeHolder={'Random Name...'}
+                       fieldId={'randomFantasyName'}
+                       label={'Random Name'}
                        text={nameValue} />
           </Form>
         </Col>

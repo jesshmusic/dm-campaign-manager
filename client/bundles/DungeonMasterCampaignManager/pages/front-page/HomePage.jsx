@@ -8,7 +8,7 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/layout/PageTitle';
-import InfoBox from '../../components/layout/InfoBox';
+// import InfoBox from '../../components/layout/InfoBox';
 import NameField from '../characters/partials/NameField';
 
 const HomePage = (props) => (
