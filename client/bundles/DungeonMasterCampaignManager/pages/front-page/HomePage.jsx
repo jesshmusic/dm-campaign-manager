@@ -21,7 +21,6 @@ const HomePage = (props) => (
       <PageTitle title={'Dungeon Master\'s Toolbox'}/>
       <Row>
         <WelcomePage />
-        <InfoBox {...props}/>
       </Row>
       <Row>
         <h2>Random Character Name</h2>

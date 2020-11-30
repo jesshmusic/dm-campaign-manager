@@ -51,7 +51,7 @@ const WelcomePage = () => {
   };
 
   return (
-    <Col sm={ 8 }>
+    <Col sm={ 12 }>
       <p>
         The <strong>Dungeon Master&apos;s Toolbox</strong> is a set of tools and references utilizing the D&D 5e SRD
         data.
@@ -74,7 +74,7 @@ const WelcomePage = () => {
                          copySuccess={copySuccess}
                          setCopySuccess={setCopySuccess}
                          colWidth={'4'}
-                         text={`${npc.size} (${npc.monster_subtype})`} />
+                         text={npc.size_and_type} />
               <CopyField placeHolder={'Alignment'}
                          fieldId={'npcAlignment'}
                          label={'Alignment'}
@@ -82,13 +82,20 @@ const WelcomePage = () => {
                          setCopySuccess={setCopySuccess}
                          colWidth={'4'}
                          text={npc.alignment} />
-              <CopyField placeHolder={'Challenge Rating'}
+              <CopyField placeHolder={'CR'}
                          fieldId={'npcChallengeRating'}
-                         label={'Challenge Rating'}
+                         label={'CR'}
                          copySuccess={copySuccess}
                          setCopySuccess={setCopySuccess}
-                         colWidth={'4'}
+                         colWidth={'2'}
                          text={npc.challenge_rating} />
+              <CopyField placeHolder={'XP'}
+                         fieldId={'npcXP'}
+                         label={'XP'}
+                         copySuccess={copySuccess}
+                         setCopySuccess={setCopySuccess}
+                         colWidth={'2'}
+                         text={npc.xp} />
               <CopyField placeHolder={'Armor Class'}
                          fieldId={'npcArmorClass'}
                          label={'Armor Class'}
@@ -109,7 +116,7 @@ const WelcomePage = () => {
                          copySuccess={copySuccess}
                          setCopySuccess={setCopySuccess}
                          colWidth={'3'}
-                         text={`(${npc.hit_dice_number}d${npc.hit_dice_value} ${npc.hit_dice_modifier > 0 ? '+ ' + npc.hit_dice_modifier : ''})`} />
+                         text={npc.hit_dice} />
               <CopyField placeHolder={'Speed'}
                          fieldId={'npcSpeed'}
                          label={'Speed'}
@@ -159,6 +166,18 @@ const WelcomePage = () => {
                          setCopySuccess={setCopySuccess}
                          colWidth={'2'}
                          text={npc.charisma} />
+              <CopyField placeHolder={'None'}
+                         fieldId={'npcSavingThrows'}
+                         label={'Saving Throws'}
+                         copySuccess={copySuccess}
+                         setCopySuccess={setCopySuccess}
+                         text={npc.saving_throws} />
+              <CopyField placeHolder={'None'}
+                         fieldId={'npcSkills'}
+                         label={'Skills'}
+                         copySuccess={copySuccess}
+                         setCopySuccess={setCopySuccess}
+                         text={npc.skills_string} />
               <CopyField placeHolder={'Senses'}
                          fieldId={'npcSenses'}
                          label={'Senses'}
@@ -173,6 +192,80 @@ const WelcomePage = () => {
                          setCopySuccess={setCopySuccess}
                          colWidth={'6'}
                          text={npc.languages} />
+              <CopyField placeHolder={'None'}
+                         fieldId={'npcImmunities'}
+                         label={'Immunities'}
+                         copySuccess={copySuccess}
+                         setCopySuccess={setCopySuccess}
+                         colWidth={'12'}
+                         text={npc.damage_immunities} />
+              <CopyField placeHolder={'None'}
+                         fieldId={'npcResistances'}
+                         label={'Resistances'}
+                         copySuccess={copySuccess}
+                         setCopySuccess={setCopySuccess}
+                         colWidth={'12'}
+                         text={npc.damage_resistances} />
+              <CopyField placeHolder={'None'}
+                         fieldId={'npcVulnerabilites'}
+                         label={'Vulnerabilites'}
+                         copySuccess={copySuccess}
+                         setCopySuccess={setCopySuccess}
+                         colWidth={'12'}
+                         text={npc.damage_vulnerabilities} />
+              <Col md={'12'}>
+                <h4>Actions</h4>
+              </Col>
+              {npc.monster_actions.map((action) => (
+                <CopyField placeHolder={action.name}
+                           key={action.id}
+                           fieldId={`npcAction${action.id}`}
+                           label={action.name}
+                           copySuccess={copySuccess}
+                           setCopySuccess={setCopySuccess}
+                           colWidth={'12'}
+                           text={action.description} />
+              )) }
+              {npc.monster_legendary_actions.length > 0 ? (
+                <Col md={'12'}>
+                  <Row>
+                    <Col md={'12'}>
+                      <h4>Legendary Actions</h4>
+                    </Col>
+                    {npc.monster_legendary_actions.map((action) => (
+                      <CopyField placeHolder={action.name}
+                                 key={action.id}
+                                 fieldId={`npcLegendaryAction${action.id}`}
+                                 label={action.name}
+                                 copySuccess={copySuccess}
+                                 setCopySuccess={setCopySuccess}
+                                 colWidth={'12'}
+                                 isTextArea
+                                 text={action.description} />
+                    )) }
+                  </Row>
+                </Col>
+              ) : null}
+              {npc.monster_special_abilities.length > 0 ? (
+                <Col md={'12'}>
+                  <Row>
+                    <Col md={'12'}>
+                      <h4>Special Abilities</h4>
+                    </Col>
+                    {npc.monster_special_abilities.map((ability) => (
+                      <CopyField placeHolder={ability.name}
+                                 key={ability.id}
+                                 fieldId={`npcSpecialAbility${ability.id}`}
+                                 label={ability.name}
+                                 copySuccess={copySuccess}
+                                 setCopySuccess={setCopySuccess}
+                                 colWidth={'12'}
+                                 isTextArea
+                                 text={ability.description} />
+                    )) }
+                  </Row>
+                </Col>
+              ) : null}
             </Row>
           </Form>
         </div>

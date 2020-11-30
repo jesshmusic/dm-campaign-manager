@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import PropTypes from 'prop-types';
 import Col from 'react-bootstrap/Col';
 import {Form} from 'react-bootstrap';
@@ -11,8 +11,18 @@ const CopyField = ({
   placeHolder,
   copySuccess,
   setCopySuccess,
+  isTextArea,
   colWidth = '12'}) => {
   const copyFieldRef = useRef(null);
+  const [currentValue ] = useState('');// you can manage data with it
+
+  useEffect(() => {
+    if (isTextArea) {
+      copyFieldRef.current.style.height = '0px';
+      const scrollHeight = copyFieldRef.current.scrollHeight;
+      copyFieldRef.current.style.height = `${scrollHeight}px`;
+    }
+  }, [currentValue]);
 
   const handleCopyToClipboard = () => {
     copyFieldRef.current.select();
@@ -24,12 +34,22 @@ const CopyField = ({
     <Col md={colWidth}>
       <Form.Group controlId={fieldId}>
         <Form.Label>{label}</Form.Label>
-        <Form.Control type="text"
-                      placeholder={placeHolder}
-                      value={text}
-                      readOnly
-                      ref={copyFieldRef}
-                      onClick={handleCopyToClipboard} />
+        {isTextArea ? (
+          <Form.Control as="textarea"
+                        placeholder={placeHolder}
+                        value={text}
+                        readOnly
+                        ref={copyFieldRef}
+                        style={{whiteSpace: 'pre-wrap', height: 'auto'}}
+                        onClick={handleCopyToClipboard}/>
+        ) : (
+          <Form.Control type="text"
+                        placeholder={placeHolder}
+                        value={text}
+                        readOnly
+                        ref={copyFieldRef}
+                        onClick={handleCopyToClipboard} />
+        )}
         <Form.Text className="text-muted">
           {copySuccess ? 'Copied.' : 'Click to copy to clipboard.'}
         </Form.Text>
@@ -46,6 +66,7 @@ CopyField.propTypes = {
   copySuccess: PropTypes.bool,
   setCopySuccess: PropTypes.func.isRequired,
   colWidth: PropTypes.string,
+  isTextArea: PropTypes.bool,
 };
 
 export default CopyField;

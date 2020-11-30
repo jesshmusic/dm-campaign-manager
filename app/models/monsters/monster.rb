@@ -139,6 +139,45 @@ class Monster < ApplicationRecord
     end
   end
 
+  def saving_throws
+    saving_throws_array = []
+    saving_throws_array << "Strength +#{strength_save}" if strength_save && strength_save > 0
+    saving_throws_array << "Strength #{strength_save}" if strength_save && strength_save <= 0
+    saving_throws_array << "Dexterity +#{dexterity_save}" if dexterity_save && dexterity_save > 0
+    saving_throws_array << "Dexterity #{dexterity_save}" if dexterity_save && dexterity_save <= 0
+    saving_throws_array << "Constitution +#{constitution_save}" if constitution_save && constitution_save > 0
+    saving_throws_array << "Constitution #{constitution_save}" if constitution_save && constitution_save <= 0
+    saving_throws_array << "Intelligence +#{intelligence_save}" if intelligence_save && intelligence_save > 0
+    saving_throws_array << "Intelligence #{intelligence_save}" if intelligence_save && intelligence_save <= 0
+    saving_throws_array << "Wisdom +#{wisdom_save}" if wisdom_save && wisdom_save > 0
+    saving_throws_array << "Wisdom #{wisdom_save}" if wisdom_save && wisdom_save <= 0
+    saving_throws_array << "Charisma +#{charisma_save}" if charisma_save && charisma_save > 0
+    saving_throws_array << "Charisma #{charisma_save}" if charisma_save && charisma_save <= 0
+    saving_throws_array.join(', ')
+  end
+
+  def size_and_type
+    size_string = "#{size} #{monster_type}"
+    size_string += " (#{monster_subtype})" if monster_subtype && monster_subtype != ''
+    size_string
+  end
+
+  def skills_string
+    skills_array = []
+    unless skills.empty?
+      skills.each do |skill|
+        skills_str = "#{skill.name.capitalize}"
+        if skill.score >= 0
+          skills_str += " +#{skill.score}"
+        else
+          skills_str += " #{skill.score}"
+        end
+        skills_array << skills_str
+      end
+    end
+    skills_array.join(', ')
+  end
+
   def xp
     DndRules.xp_for_cr(challenge_rating)
   end
