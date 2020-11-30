@@ -22,7 +22,7 @@ import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import {Form as FinalForm} from 'react-final-form';
 import snakecaseKeys from 'snakecase-keys';
-import NameField from './partials/NameField';
+import NameField from '../npcs/partials/NameField';
 
 
 class GenerateNPC extends React.Component {

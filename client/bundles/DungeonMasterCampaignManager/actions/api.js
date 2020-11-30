@@ -46,7 +46,7 @@ const dmFetch = (fetch) => {
 
 export default reduxApi({
   generateNonPlayerCharacter: {
-    url: '/v1/campaigns/:campaign_slug/characters/create_generated_npc',
+    url: '/v1/generate_npc',
     options () {
       const headers = getHeaders();
       return {
@@ -54,9 +54,6 @@ export default reduxApi({
         headers,
       };
     },
-    postfetch: [({data}) => {
-      navigate(`/app/campaigns/${data.campaign.slug}/npcs/${data.slug}`);
-    }],
   },
   getDndClass: {
     url: '/v1/dnd_classes/:slug.json',

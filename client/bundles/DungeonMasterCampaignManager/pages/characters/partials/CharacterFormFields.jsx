@@ -9,7 +9,7 @@ import Form from 'react-bootstrap/Form';
 import FormField from '../../../components/forms/FormField';
 import Accordion from 'react-bootstrap/Accordion';
 import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
-import NameField from './NameField';
+import NameField from '../../npcs/partials/NameField';
 import FormSelect from '../../../components/forms/FormSelect';
 import {alignmentOptions, WeaponState} from '../../../utilities/character-utilities';
 import RaceSelect from './races/RaceSelect';

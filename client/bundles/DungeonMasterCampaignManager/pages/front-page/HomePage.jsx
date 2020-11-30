@@ -9,7 +9,7 @@ import Row from 'react-bootstrap/Row';
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/layout/PageTitle';
 // import InfoBox from '../../components/layout/InfoBox';
-import NameField from '../characters/partials/NameField';
+import NameField from '../npcs/partials/NameField';
 
 const HomePage = (props) => (
   <PageContainer user={props.user}

@@ -4,6 +4,7 @@ import {Button} from 'react-bootstrap';
 import {getHeaders} from '../../actions/api';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import NPCDisplay from '../../components/NPCDisplay';
+import GenerateNPC from '../npcs/partials/GenerateNPC';
 
 
 const WelcomePage = () => {
@@ -119,11 +120,12 @@ const WelcomePage = () => {
       </div>
       <div>
         <h3>Random NPC Generator</h3>
-        <Button
-          variant={ 'primary' }
-          onClick={ () => handleGenerateNpc() }>
-          TEST
-        </Button>
+        <GenerateNPC />
+        {/*<Button*/}
+        {/*  variant={ 'primary' }*/}
+        {/*  onClick={ () => handleGenerateNpc() }>*/}
+        {/*  TEST*/}
+        {/*</Button>*/}
       </div>
     </Col>
   );
