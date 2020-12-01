@@ -55,6 +55,9 @@ export default reduxApi({
       };
     },
   },
+  generateCommoner: {
+    url: '/v1/generate_commoner?random_npc_gender=:gender&random_npc_race=:race',
+  },
   getDndClass: {
     url: '/v1/dnd_classes/:slug.json',
   },

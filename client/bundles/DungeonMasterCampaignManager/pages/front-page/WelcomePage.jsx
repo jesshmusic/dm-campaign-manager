@@ -1,52 +1,20 @@
 import React, {useState} from 'react';
+import PropTypes from 'prop-types';
 import Col from 'react-bootstrap/Col';
 import {Button} from 'react-bootstrap';
-import {getHeaders} from '../../actions/api';
+import rest from '../../actions/api';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import NPCDisplay from '../../components/NPCDisplay';
 import GenerateNPC from '../npcs/partials/GenerateNPC';
+import {connect} from 'react-redux';
 
 
-const WelcomePage = () => {
-  const [npc, setNpc] = useState(null);
+const WelcomePage = ({npc, generateCommoner}) => {
   const [gender, setGender] = useState('female');
   const [race, setRace] = useState('human');
 
-  const handleGenerateNpc = () => {
-    fetch('/v1/generate_npc', {
-      method: 'POST',
-      headers: getHeaders(),
-      body: JSON.stringify({
-        npc_attributes: {
-          name: 'Test',
-          size: 'medium',
-          alignment: 'Chaotic Evil',
-          hit_dice_number: 5,
-          monster_type: 'humanoid',
-          strength: 16,
-          dexterity: 13,
-          constitution: 18,
-          intelligence: 10,
-          wisdom: 12,
-          charisma: 10,
-        },
-      }),
-    })
-      .then((response) => response.json())
-      .then((jsonResult) => {
-        console.log(jsonResult);
-        setNpc(jsonResult.npc);
-      });
-  };
-
   const handleGenerateCommoner = () => {
-    const apiURL = `/v1/generate_commoner?random_npc_gender=${gender}&random_npc_race=${race}`;
-    fetch(apiURL)
-      .then((response) => response.json())
-      .then((jsonResult) => {
-        console.log(jsonResult);
-        setNpc(jsonResult.npc);
-      });
+    generateCommoner(gender, race);
   };
 
   return (
@@ -121,14 +89,30 @@ const WelcomePage = () => {
       <div>
         <h3>Random NPC Generator</h3>
         <GenerateNPC />
-        {/*<Button*/}
-        {/*  variant={ 'primary' }*/}
-        {/*  onClick={ () => handleGenerateNpc() }>*/}
-        {/*  TEST*/}
-        {/*</Button>*/}
       </div>
     </Col>
   );
 };
 
-export default WelcomePage;
+WelcomePage.propTypes = {
+  npc: PropTypes.any,
+  generateCommoner: PropTypes.func.isRequired,
+};
+
+function mapStateToProps (state) {
+  return {
+    npc: state.npcs.currentNPC,
+    flashMessages: state.flashMessages,
+    user: state.users.user,
+  };
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    generateCommoner: (gender, race) => {
+      dispatch(rest.actions.generateCommoner({gender, race}));
+    },
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(WelcomePage);

@@ -50,6 +50,15 @@ export const npcVariantOptions = [
   {value: 'creature', label: 'Creature'},
 ];
 
+export const npcSizeOptions = [
+  {value: 'tiny', label: 'Tiny'},
+  {value: 'small', label: 'Small'},
+  {value: 'medium', label: 'Medium'},
+  {value: 'large', label: 'Large'},
+  {value: 'huge', label: 'Huge'},
+  {value: 'gargantuan', label: 'Gargantuan'},
+];
+
 export const getChallengeRatingOptions = () => {
   const crs = [
     {value: '0', label: '0'},

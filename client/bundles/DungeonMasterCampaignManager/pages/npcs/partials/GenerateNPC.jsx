@@ -14,7 +14,7 @@ import {Form as FinalForm} from 'react-final-form';
 import createDecorator from 'final-form-calculate';
 import snakecaseKeys from 'snakecase-keys';
 
-import {alignmentOptions, getChallengeRatingOptions} from '../../../utilities/character-utilities';
+import {alignmentOptions, getChallengeRatingOptions, npcSizeOptions} from '../../../utilities/character-utilities';
 import FormField from '../../../components/forms/FormField';
 import FormSelect from '../../../components/forms/FormSelect';
 import NameFormField from './NameFormField';
@@ -43,8 +43,9 @@ class GenerateNPC extends React.Component {
       alignment: '',
       monsterType: 'humanoid',
       challengeRating: '0',
-      characterRace: 'human',
+      characterRace: 'Human',
       npcVariant: 'fighter',
+      size: 'Medium',
     },
     challengeRatingOptions: [],
     validated: false,
@@ -73,6 +74,7 @@ class GenerateNPC extends React.Component {
       npcVariant: values.npcVariant.value,
       monsterType: 'humanoid',
       monsterSubtype: values.monsterSubtype,
+      size: values.size.value,
     };
     console.log(nonPlayerCharacter);
     // this.props.generateNonPlayerCharacter(snakecaseKeys(nonPlayerCharacter));
@@ -83,7 +85,7 @@ class GenerateNPC extends React.Component {
     if (!values.name) {
       errors.name = 'Character name is required.';
     }
-    if (!values.characterAlignment) {
+    if (!values.alignment) {
       errors.characterAlignment = 'Character alignment is required.';
     }
     return errors;
@@ -113,11 +115,13 @@ class GenerateNPC extends React.Component {
                        <NpcVariationSelect colWidth={'6'}/>
                      </Form.Row>
                      <Form.Row>
-                       <FormSelect label={'Alignment'} colWidth={'4'} name={'characterAlignment'}
+                       <FormSelect label={'Alignment'} colWidth={'3'} name={'characterAlignment'}
                                    options={alignmentOptions}/>
-                       <RaceSelect colWidth={'5'}/>
+                       <RaceSelect colWidth={'3'}/>
                        <FormSelect label={'Challenge Rating'} colWidth={'3'} name={'challengeRating'}
                                    options={this.state.challengeRatingOptions}/>
+                       <FormSelect label={'Size'} colWidth={'3'} name={'size'}
+                                   options={npcSizeOptions}/>
                      </Form.Row>
                      <Form.Row>
                        <ButtonGroup aria-label="Character actions">

@@ -4,18 +4,18 @@ class NpcGenerator
   class << self
 
     def generate_npc(npc_attributes)
-      # @new_npc = Monster.new(name: npc_attributes[:name],
-      #                        size: npc_attributes[:size],
-      #                        alignment: npc_attributes[:alignment],
-      #                        hit_dice_number: npc_attributes[:hit_dice_number],
-      #                        monster_type: npc_attributes[:monster_type],
-      #                        strength: npc_attributes[:strength],
-      #                        dexterity: npc_attributes[:dexterity],
-      #                        constitution: npc_attributes[:constitution],
-      #                        intelligence: npc_attributes[:intelligence],
-      #                        wisdom: npc_attributes[:wisdom],
-      #                        charisma: npc_attributes[:charisma])
-      #
+      @new_npc = Monster.new(name: npc_attributes[:name],
+                             size: npc_attributes[:size],
+                             alignment: npc_attributes[:alignment],
+                             hit_dice_number: npc_attributes[:hit_dice_number],
+                             monster_type: npc_attributes[:monster_type],
+                             strength: npc_attributes[:strength],
+                             dexterity: npc_attributes[:dexterity],
+                             constitution: npc_attributes[:constitution],
+                             intelligence: npc_attributes[:intelligence],
+                             wisdom: npc_attributes[:wisdom],
+                             charisma: npc_attributes[:charisma])
+
       # set_statistics
       # @new_npc.challenge_rating = npc_attributes[:hit_dice_number]
       # armor_ids = []
