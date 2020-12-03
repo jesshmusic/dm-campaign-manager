@@ -17,6 +17,7 @@ import NPCs from './npcs/NPC';
 import Spells from './spells/Spells';
 import DndClass from './dnd-classes/DndClass';
 import DndClasses from './dnd-classes/DndClasses';
+import NpcGenerator from './npc-generator/NpcGenerator';
 
 const store = (props) => configureStore({
   reducer: rootReducer,
@@ -65,6 +66,7 @@ const Home = (props) => (
       <Vehicles path='/app/items/vehicles/' />
       <NPCs path='/app/npcs/' />
       <Spells path='/app/spells/' />
+      <NpcGenerator path='/app/npc-generator/' />
     </Router>
   </Provider>
 );

@@ -22,12 +22,7 @@ class NpcGenerator
       end
 
       # Hit dice and hit points
-      con_modifier = DndRules.ability_score_modifier(npc_attributes[:constitution].to_i)
-      hit_points_info = DndRules.num_hit_die_for_size(npc_attributes[:size], npc_attributes[:challenge_rating], con_modifier)
-      @new_npc.hit_dice_number = hit_points_info[:num_hit_die]
-      @new_npc.hit_points = hit_points_info[:hit_points]
-      @new_npc.hit_dice_modifier = @new_npc.hit_dice_number * con_modifier
-      cr_info = DndRules.challenge_ratings[npc_attributes[:challenge_rating].to_sym]
+      cr_info = set_npc_hit_points
 
       # Other statistics
       @new_npc.armor_class = cr_info[:armor_class]
@@ -41,8 +36,17 @@ class NpcGenerator
     def generate_commoner(random_npc_gender, random_npc_race)
       commoner = Monster.where(name: 'Commoner').first
       @new_npc = Monster.new commoner.attributes
+      @new_npc.strength = rand(8..12)
+      @new_npc.dexterity = rand(8..12)
+      @new_npc.constitution = rand(8..12)
+      @new_npc.intelligence = rand(8..12)
+      @new_npc.wisdom = rand(8..12)
+      @new_npc.charisma = rand(8..12)
       @new_npc.name = NameGen.random_name(random_npc_gender, random_npc_race)
       @new_npc.monster_subtype = random_npc_race
+      cr_info = set_npc_hit_points
+      # Other statistics
+      @new_npc.armor_class = cr_info[:armor_class]
       @new_npc.alignment = DndRules.alignments_non_evil.sample
       @new_npc.as_json(
         include: %i[monster_actions monster_legendary_actions monster_special_abilities skills],
@@ -50,6 +54,16 @@ class NpcGenerator
     end
 
     private
+
+    def set_npc_hit_points()
+      puts @new_npc.to_json
+      con_modifier = DndRules.ability_score_modifier(@new_npc.constitution)
+      hit_points_info = DndRules.num_hit_die_for_size(@new_npc.size, @new_npc.challenge_rating, con_modifier)
+      @new_npc.hit_dice_number = hit_points_info[:num_hit_die]
+      @new_npc.hit_points = hit_points_info[:hit_points]
+      @new_npc.hit_dice_modifier = @new_npc.hit_dice_number * con_modifier
+      DndRules.challenge_ratings[@new_npc.challenge_rating.to_sym]
+    end
 
     # Statistics
 

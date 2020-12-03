@@ -10,6 +10,7 @@ import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/layout/PageTitle';
 // import InfoBox from '../../components/layout/InfoBox';
 import NameField from '../npcs/partials/NameField';
+import {Link} from '@reach/router';
 
 const HomePage = (props) => (
   <PageContainer user={props.user}
@@ -20,7 +21,7 @@ const HomePage = (props) => (
     <Container>
       <PageTitle title={'Dungeon Master\'s Toolbox'}/>
       <Row>
-        <WelcomePage />
+        <h2><Link to={'/app/npc-generator'}>Generate NPC</Link></h2>
       </Row>
       <Row>
         <h2>Random Character Name</h2>

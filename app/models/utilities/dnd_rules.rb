@@ -89,6 +89,7 @@ class DndRules
     end
 
     def num_hit_die_for_size (size, challenge_rating, constitution_bonus = 0)
+      size = size.downcase
       hp_min = challenge_ratings[challenge_rating.to_sym][:hit_points_min]
       hp_max = challenge_ratings[challenge_rating.to_sym][:hit_points_max]
       hp = rand(hp_min..hp_max)
