@@ -66,6 +66,35 @@ class DndRules
       ]
     end
 
+    def hit_die_for_size
+      {
+        "tiny": 4,
+        "small": 6,
+        "medium": 8,
+        "large": 10,
+        "huge": 12,
+        "gargantuan": 20
+      }
+    end
+
+    def hit_point_average_for_size
+      {
+        "tiny": 2.5,
+        "small": 3.5,
+        "medium": 4.5,
+        "large": 5.5,
+        "huge": 6.5,
+        "gargantuan": 10.5
+      }
+    end
+
+    def num_hit_die_for_size (size, challenge_rating, constitution_bonus = 0)
+      hp_min = challenge_ratings[challenge_rating.to_sym][:hit_points_min]
+      hp_max = challenge_ratings[challenge_rating.to_sym][:hit_points_max]
+      hp = rand(hp_min..hp_max)
+      {hit_points: hp, num_hit_die: hp / (hit_point_average_for_size[size.to_sym] + constitution_bonus)}
+    end
+
     def challenge_ratings
       {
         "0": {
@@ -83,8 +112,8 @@ class DndRules
           "xp": 200,
           "prof_bonus": 2,
           "armor_class": 14,
-          "hit_points_min": 71,
-          "hit_points_max": 85,
+          "hit_points_min": 20,
+          "hit_points_max": 40,
           "attack_bonus": 3,
           "damage_min": 9,
           "damage_max": 14,
@@ -94,8 +123,8 @@ class DndRules
           "xp": 450,
           "prof_bonus": 2,
           "armor_class": 14,
-          "hit_points_min": 86,
-          "hit_points_max": 100,
+          "hit_points_min": 32,
+          "hit_points_max": 65,
           "attack_bonus": 3,
           "damage_min": 15,
           "damage_max": 20,
@@ -105,8 +134,8 @@ class DndRules
           "xp": 700,
           "prof_bonus": 2,
           "armor_class": 14,
-          "hit_points_min": 101,
-          "hit_points_max": 115,
+          "hit_points_min": 50,
+          "hit_points_max": 80,
           "attack_bonus": 4,
           "damage_min": 21,
           "damage_max": 26,
@@ -116,8 +145,8 @@ class DndRules
           "xp": 1100,
           "prof_bonus": 2,
           "armor_class": 15,
-          "hit_points_min": 116,
-          "hit_points_max": 130,
+          "hit_points_min": 65,
+          "hit_points_max": 100,
           "attack_bonus": 5,
           "damage_min": 27,
           "damage_max": 32,
@@ -127,8 +156,8 @@ class DndRules
           "xp": 1800,
           "prof_bonus": 3,
           "armor_class": 15,
-          "hit_points_min": 131,
-          "hit_points_max": 145,
+          "hit_points_min": 90,
+          "hit_points_max": 120,
           "attack_bonus": 6,
           "damage_min": 33,
           "damage_max": 38,
@@ -138,8 +167,8 @@ class DndRules
           "xp": 2300,
           "prof_bonus": 3,
           "armor_class": 15,
-          "hit_points_min": 146,
-          "hit_points_max": 160,
+          "hit_points_min": 115,
+          "hit_points_max": 140,
           "attack_bonus": 6,
           "damage_min": 39,
           "damage_max": 44,
@@ -149,8 +178,8 @@ class DndRules
           "xp": 2900,
           "prof_bonus": 3,
           "armor_class": 16,
-          "hit_points_min": 161,
-          "hit_points_max": 175,
+          "hit_points_min": 130,
+          "hit_points_max": 165,
           "attack_bonus": 6,
           "damage_min": 45,
           "damage_max": 50,
@@ -160,7 +189,7 @@ class DndRules
           "xp": 3900,
           "prof_bonus": 3,
           "armor_class": 16,
-          "hit_points_min": 176,
+          "hit_points_min": 150,
           "hit_points_max": 190,
           "attack_bonus": 7,
           "damage_min": 51,
@@ -171,7 +200,7 @@ class DndRules
           "xp": 5000,
           "prof_bonus": 4,
           "armor_class": 16,
-          "hit_points_min": 191,
+          "hit_points_min": 175,
           "hit_points_max": 205,
           "attack_bonus": 7,
           "damage_min": 57,
@@ -182,8 +211,8 @@ class DndRules
           "xp": 5900,
           "prof_bonus": 4,
           "armor_class": 17,
-          "hit_points_min": 206,
-          "hit_points_max": 220,
+          "hit_points_min": 190,
+          "hit_points_max": 230,
           "attack_bonus": 7,
           "damage_min": 63,
           "damage_max": 68,
@@ -193,8 +222,8 @@ class DndRules
           "xp": 7200,
           "prof_bonus": 4,
           "armor_class": 17,
-          "hit_points_min": 221,
-          "hit_points_max": 235,
+          "hit_points_min": 215,
+          "hit_points_max": 255,
           "attack_bonus": 8,
           "damage_min": 69,
           "damage_max": 74,
@@ -413,8 +442,8 @@ class DndRules
           "xp": 25,
           "prof_bonus": 2,
           "armor_class": 12,
-          "hit_points_min": 7,
-          "hit_points_max": 35,
+          "hit_points_min": 5,
+          "hit_points_max": 11,
           "attack_bonus": 3,
           "damage_min": 2,
           "damage_max": 3,
@@ -424,8 +453,8 @@ class DndRules
           "xp": 50,
           "prof_bonus": 2,
           "armor_class": 13,
-          "hit_points_min": 36,
-          "hit_points_max": 69,
+          "hit_points_min": 13,
+          "hit_points_max": 24,
           "attack_bonus": 3,
           "damage_min": 4,
           "damage_max": 5,
@@ -435,8 +464,8 @@ class DndRules
           "xp": 100,
           "prof_bonus": 2,
           "armor_class": 13,
-          "hit_points_min": 50,
-          "hit_points_max": 70,
+          "hit_points_min": 16,
+          "hit_points_max": 30,
           "attack_bonus": 3,
           "damage_min": 6,
           "damage_max": 8,

@@ -25,6 +25,7 @@ import NameFormField from './NameFormField';
 import NpcVariationSelect from './NpcVariationSelect';
 import MonsterTypeSelect from './MonsterTypeSelect';
 import RaceSelect from '../../characters/partials/races/RaceSelect';
+import FormField from '../../../components/forms/FormField';
 
 const npcFormDecorator = createDecorator(
   {
@@ -71,6 +72,12 @@ class GenerateNPC extends React.Component {
         value: 'humanoid',
         label: 'Humanoid',
       },
+      strength: 10,
+      dexterity: 10,
+      constitution: 10,
+      intelligence: 10,
+      wisdom: 10,
+      charisma: 10,
     },
     monsterSubtypeOptions: [],
     challengeRatingOptions: [],
@@ -101,6 +108,12 @@ class GenerateNPC extends React.Component {
       monsterType: values.monsterType.value,
       monsterSubtype: values.monsterSubtype,
       size: values.size.value,
+      strength: values.strength,
+      dexterity: values.dexterity,
+      constitution: values.constitution,
+      intelligence: values.intelligence,
+      wisdom: values.wisdom,
+      charisma: values.charisma,
     };
     this.props.generateNonPlayerCharacter(snakecaseKeys(npc));
   };
@@ -112,6 +125,24 @@ class GenerateNPC extends React.Component {
     }
     if (!values.alignment) {
       errors.characterAlignment = 'Character alignment is required.';
+    }
+    if (!values.charisma) {
+      errors.charisma = 'Charisma is required';
+    }
+    if (!values.constitution) {
+      errors.constitution = 'Constitution is required';
+    }
+    if (!values.dexterity) {
+      errors.dexterity = 'Dexterity is required';
+    }
+    if (!values.intelligence) {
+      errors.intelligence = 'Intelligence is required';
+    }
+    if (!values.strength) {
+      errors.strength = 'Strength is required';
+    }
+    if (!values.wisdom) {
+      errors.wisdom = 'Wisdom is required';
     }
     return errors;
   };
@@ -146,6 +177,14 @@ class GenerateNPC extends React.Component {
                        {values.monsterType.value === 'humanoid' ? (
                          <NpcVariationSelect colWidth={'4'}/>
                        ) : null}
+                     </Form.Row>
+                     <Form.Row>
+                       <FormField label={'STR'} type={'number'} colWidth={'2'} name={'strength'}/>
+                       <FormField label={'DEX'} type={'number'} colWidth={'2'} name={'dexterity'}/>
+                       <FormField label={'CON'} type={'number'} colWidth={'2'} name={'constitution'}/>
+                       <FormField label={'INT'} type={'number'} colWidth={'2'} name={'intelligence'}/>
+                       <FormField label={'WIS'} type={'number'} colWidth={'2'} name={'wisdom'}/>
+                       <FormField label={'CHA'} type={'number'} colWidth={'2'} name={'charisma'}/>
                      </Form.Row>
                      <Form.Row>
                        <FormSelect label={'Alignment'}

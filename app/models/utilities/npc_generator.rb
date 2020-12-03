@@ -9,7 +9,30 @@ class NpcGenerator
                              size: npc_attributes[:size],
                              alignment: npc_attributes[:alignment],
                              challenge_rating: npc_attributes[:challenge_rating],
-                             monster_type: npc_attributes[:monster_type])
+                             monster_type: npc_attributes[:monster_type],
+                             strength: npc_attributes[:strength],
+                             dexterity:  npc_attributes[:dexterity],
+                             constitution: npc_attributes[:constitution],
+                             intelligence: npc_attributes[:intelligence],
+                             wisdom: npc_attributes[:wisdom],
+                             charisma: npc_attributes[:charisma],
+                             hit_dice_value: DndRules.hit_die_for_size[npc_attributes[:size].to_sym])
+      if npc_attributes[:monster_subtype]
+        @new_npc.monster_subtype = npc_attributes[:monster_subtype]
+      end
+
+      # Hit dice and hit points
+      con_modifier = DndRules.ability_score_modifier(npc_attributes[:constitution].to_i)
+      hit_points_info = DndRules.num_hit_die_for_size(npc_attributes[:size], npc_attributes[:challenge_rating], con_modifier)
+      @new_npc.hit_dice_number = hit_points_info[:num_hit_die]
+      @new_npc.hit_points = hit_points_info[:hit_points]
+      @new_npc.hit_dice_modifier = @new_npc.hit_dice_number * con_modifier
+      cr_info = DndRules.challenge_ratings[npc_attributes[:challenge_rating].to_sym]
+
+      # Other statistics
+      @new_npc.armor_class = cr_info[:armor_class]
+
+      # Return
       @new_npc.as_json(
         include: %i[monster_actions monster_legendary_actions monster_special_abilities skills],
         methods: %i[description_text hit_dice size_and_type saving_throws skills_string xp])
@@ -350,8 +373,8 @@ class NpcGenerator
         spell = SpellSlots.random_spell(dnd_class, level, spells_known)
         spells_known << spell
         @new_npc.character_spells << CharacterSpell.new(is_prepared: dnd_class == 'Warlock',
-                                              spell_class: dnd_class,
-                                              spell: spell)
+                                                        spell_class: dnd_class,
+                                                        spell: spell)
       end
     end
 

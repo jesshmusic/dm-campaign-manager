@@ -36,7 +36,7 @@ const CopyField = ({
         {isTextArea ? (
           <Form.Control as="textarea"
                         placeholder={placeHolder}
-                        value={text}
+                        value={text ? text : ''}
                         readOnly
                         ref={copyFieldRef}
                         style={{whiteSpace: 'pre-wrap', height: 'auto'}}
@@ -44,7 +44,7 @@ const CopyField = ({
         ) : (
           <Form.Control type="text"
                         placeholder={placeHolder}
-                        value={text}
+                        value={text ? text : ''}
                         readOnly
                         ref={copyFieldRef}
                         onClick={handleCopyToClipboard} />
@@ -59,7 +59,7 @@ const CopyField = ({
 
 CopyField.propTypes = {
   label: PropTypes.string.isRequired,
-  text: PropTypes.any.isRequired,
+  text: PropTypes.any,
   fieldId: PropTypes.string.isRequired,
   placeHolder: PropTypes.string.isRequired,
   copySuccess: PropTypes.bool,

@@ -25,7 +25,7 @@ const WelcomePage = ({npc, generateCommoner}) => {
       </p>
 
       {npc ? (
-        <NPCDisplay npc={npc} />
+        <NPCDisplay npc={npc} shortDisplay />
       ) : null}
       <div>
         <h3>Generate Commoner</h3>

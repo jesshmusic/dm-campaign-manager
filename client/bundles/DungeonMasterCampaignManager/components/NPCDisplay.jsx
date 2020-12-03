@@ -5,7 +5,7 @@ import CopyField from './CopyField';
 import Col from 'react-bootstrap/Col';
 import PropTypes from 'prop-types';
 
-const NPCDisplay = ({npc}) => {
+const NPCDisplay = ({npc, shortDisplay = false}) => {
   return (
     <div>
       <h3>{npc.name}</h3>
@@ -85,39 +85,45 @@ const NPCDisplay = ({npc}) => {
                      label={'Charisma'}
                      colWidth={'2'}
                      text={npc.charisma} />
-          <CopyField placeHolder={'None'}
-                     fieldId={'npcSavingThrows'}
-                     label={'Saving Throws'}
-                     text={npc.saving_throws} />
-          <CopyField placeHolder={'None'}
-                     fieldId={'npcSkills'}
-                     label={'Skills'}
-                     text={npc.skills_string} />
-          <CopyField placeHolder={'Senses'}
-                     fieldId={'npcSenses'}
-                     label={'Senses'}
-                     colWidth={'6'}
-                     text={npc.senses} />
-          <CopyField placeHolder={'Languages'}
-                     fieldId={'npcLanguages'}
-                     label={'Languages'}
-                     colWidth={'6'}
-                     text={npc.languages} />
-          <CopyField placeHolder={'None'}
-                     fieldId={'npcImmunities'}
-                     label={'Immunities'}
-                     colWidth={'12'}
-                     text={npc.damage_immunities} />
-          <CopyField placeHolder={'None'}
-                     fieldId={'npcResistances'}
-                     label={'Resistances'}
-                     colWidth={'12'}
-                     text={npc.damage_resistances} />
-          <CopyField placeHolder={'None'}
-                     fieldId={'npcVulnerabilites'}
-                     label={'Vulnerabilites'}
-                     colWidth={'12'}
-                     text={npc.damage_vulnerabilities} />
+          {!shortDisplay ? (
+            <Col md={'12'}>
+              <Row>
+                <CopyField placeHolder={'None'}
+                           fieldId={'npcSavingThrows'}
+                           label={'Saving Throws'}
+                           text={npc.saving_throws} />
+                <CopyField placeHolder={'None'}
+                           fieldId={'npcSkills'}
+                           label={'Skills'}
+                           text={npc.skills_string} />
+                <CopyField placeHolder={'Senses'}
+                           fieldId={'npcSenses'}
+                           label={'Senses'}
+                           colWidth={'6'}
+                           text={npc.senses} />
+                <CopyField placeHolder={'Languages'}
+                           fieldId={'npcLanguages'}
+                           label={'Languages'}
+                           colWidth={'6'}
+                           text={npc.languages} />
+                <CopyField placeHolder={'None'}
+                           fieldId={'npcImmunities'}
+                           label={'Immunities'}
+                           colWidth={'12'}
+                           text={npc.damage_immunities} />
+                <CopyField placeHolder={'None'}
+                           fieldId={'npcResistances'}
+                           label={'Resistances'}
+                           colWidth={'12'}
+                           text={npc.damage_resistances} />
+                <CopyField placeHolder={'None'}
+                           fieldId={'npcVulnerabilites'}
+                           label={'Vulnerabilites'}
+                           colWidth={'12'}
+                           text={npc.damage_vulnerabilities} />
+              </Row>
+            </Col>
+          ) : null}
           <Col md={'12'}>
             <h4>Actions</h4>
           </Col>
@@ -172,7 +178,8 @@ const NPCDisplay = ({npc}) => {
 }
 
 NPCDisplay.propTypes = {
-  npc: PropTypes.object.isRequired
-}
+  npc: PropTypes.object.isRequired,
+  shortDisplay: PropTypes.bool,
+};
 
 export default NPCDisplay;

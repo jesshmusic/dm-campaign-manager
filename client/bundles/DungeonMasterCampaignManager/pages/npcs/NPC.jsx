@@ -40,6 +40,12 @@ class NPCs extends React.Component {
         dataField: 'hitDice',
         text: 'Hit Dice',
       }, {
+        dataField: 'hitPoints',
+        text: 'Hit Points',
+      }, {
+        dataField: 'armorClass',
+        text: 'Armor Class',
+      }, {
         dataField: 'monsterType',
         text: 'Type',
         sort: true,
