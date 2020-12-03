@@ -232,7 +232,6 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     generateNonPlayerCharacter: (npc) => {
-      console.log(npc);
       dispatch(rest.actions.generateNonPlayerCharacter(npc));
     },
   };

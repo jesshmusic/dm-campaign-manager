@@ -40,7 +40,6 @@ export default class EncounterTracker {
       initiativeRoll: 0,
       type: mobTypes.PC,
     }));
-    console.log(this);
   }
 
   setupNPCs(encounterNPCs) {
