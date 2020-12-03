@@ -4,37 +4,12 @@ class NpcGenerator
   class << self
 
     def generate_npc(npc_attributes)
+      puts npc_attributes
       @new_npc = Monster.new(name: npc_attributes[:name],
                              size: npc_attributes[:size],
                              alignment: npc_attributes[:alignment],
-                             hit_dice_number: npc_attributes[:hit_dice_number],
-                             monster_type: npc_attributes[:monster_type],
-                             strength: npc_attributes[:strength],
-                             dexterity: npc_attributes[:dexterity],
-                             constitution: npc_attributes[:constitution],
-                             intelligence: npc_attributes[:intelligence],
-                             wisdom: npc_attributes[:wisdom],
-                             charisma: npc_attributes[:charisma])
-
-      # set_statistics
-      # @new_npc.challenge_rating = npc_attributes[:hit_dice_number]
-      # armor_ids = []
-      # rand(1..3).times do
-      #   armor_ids << add_armor(armor_ids)
-      # end
-      # weapon_ids = []
-      # rand(2..5).times do
-      #   weapon_ids << add_weapon(weapon_ids)
-      # end
-      # equip_armor
-      # equip_weapon
-      # add_skills
-      # add_spells if npc_attributes[:caster_dc]
-      # @new_npc.xp = DndRules.xp_for_cr(@new_npc.challenge_rating)
-      # test_npc = Monster.where(name: 'Archmage').first
-      test_npc = Monster.find(332)
-      @new_npc = Monster.new test_npc.attributes
-      # @new_npc.name = NameGen.random_name('male', 'human')
+                             challenge_rating: npc_attributes[:challenge_rating],
+                             monster_type: npc_attributes[:monster_type])
       @new_npc.as_json(
         include: %i[monster_actions monster_legendary_actions monster_special_abilities skills],
         methods: %i[description_text hit_dice size_and_type saving_throws skills_string xp])

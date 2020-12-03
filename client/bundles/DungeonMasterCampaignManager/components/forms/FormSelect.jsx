@@ -14,6 +14,7 @@ const ReactSelectAdapter = ({input, isClearable, ...rest}) => (
   <Select
     {...input}
     {...rest}
+    defaultValue={input.value}
     isClearable={isClearable}
     searchable/>
 );
@@ -34,7 +35,14 @@ ReactSelectCreateAdapter.propTypes = {
   isClearable: PropTypes.bool,
 };
 
-const FormSelect = ({name, label, colWidth, isClearable = false, options, isCreateable = false, isMulti = false}) => (
+const FormSelect = ({
+  name,
+  label,
+  colWidth,
+  isClearable = false,
+  options,
+  isCreateable = false,
+  isMulti = false}) => (
   <Form.Group as={Col} md={colWidth}>
     <Form.Label>{label}</Form.Label>
     <Field name={name}
@@ -53,7 +61,7 @@ FormSelect.propTypes = {
   isCreateable: PropTypes.bool,
   isMulti: PropTypes.bool,
   label: PropTypes.string.isRequired,
-  options: PropTypes.array.isRequired,
+  options: PropTypes.array,
 };
 
 export default FormSelect;

@@ -46,14 +46,7 @@ const dmFetch = (fetch) => {
 
 export default reduxApi({
   generateNonPlayerCharacter: {
-    url: '/v1/generate_npc',
-    options () {
-      const headers = getHeaders();
-      return {
-        method: 'post',
-        headers,
-      };
-    },
+    url: '/v1/generate_npc?name=:name&alignment=:alignment&challenge_rating=:challenge_rating&npc_variant=:npc_variant&monster_type=:monster_type&monster_subtype=:monster_subtype&size=:size',
   },
   generateCommoner: {
     url: '/v1/generate_commoner?random_npc_gender=:gender&random_npc_race=:race',

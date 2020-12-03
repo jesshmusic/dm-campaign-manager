@@ -1,4 +1,5 @@
 import {createAction, createReducer} from '@reduxjs/toolkit';
+import _ from 'lodash';
 
 const generateNonPlayerCharacterSuccess = createAction('@@redux-api@generateNonPlayerCharacter_success');
 const generateNonPlayerCharacterFail = createAction('@@redux-api@generateNonPlayerCharacter_fail');
@@ -11,12 +12,14 @@ const getNPCFail = createAction('@@redux-api@getNPC_fail');
 
 const npcs = createReducer({
   npcs: [],
+  npcTypes: [],
   count: 0,
   currentNPC: null,
 }, {
   [generateNonPlayerCharacterSuccess]: (state, action) => {
     return {
       npcs: state.npcs,
+      npcTypes: state.npcTypes,
       count: state.count,
       currentNPC: action.data.npc,
     };
@@ -24,6 +27,7 @@ const npcs = createReducer({
   [generateNonPlayerCharacterFail]: (state) => {
     return {
       npcs: state.npcs,
+      npcTypes: state.npcTypes,
       count: state.count,
       currentNPC: null,
     };
@@ -31,6 +35,7 @@ const npcs = createReducer({
   [generateCommonerSuccess]: (state, action) => {
     return {
       npcs: state.npcs,
+      npcTypes: state.npcTypes,
       count: state.count,
       currentNPC: action.data.npc,
     };
@@ -38,6 +43,7 @@ const npcs = createReducer({
   [generateCommonerFail]: (state) => {
     return {
       npcs: state.npcs,
+      npcTypes: state.npcTypes,
       count: state.count,
       currentNPC: null,
     };
@@ -45,6 +51,10 @@ const npcs = createReducer({
   [getNPCsSuccess]: (state, action) => {
     return {
       npcs: action.data.data,
+      npcTypes: _.map(_.uniqBy(action.data.data, 'monsterType'), (npc) => ({
+        value: npc.monsterType,
+        label: npc.monsterType,
+      })),
       count: action.data.data.length,
       currentNPC: state.currentNPC,
     };
@@ -52,6 +62,7 @@ const npcs = createReducer({
   [getNPCsFail]: (state) => {
     return {
       npcs: state.npcs,
+      npcTypes: state.npcTypes,
       count: state.count,
       currentNPC: state.currentNPC,
     };
@@ -59,6 +70,7 @@ const npcs = createReducer({
   [getNPCSuccess]: (state, action) => {
     return {
       npcs: state.npcs,
+      npcTypes: state.npcTypes,
       count: state.count,
       currentNPC: action.data,
     };
@@ -66,6 +78,7 @@ const npcs = createReducer({
   [getNPCFail]: () => (state) => {
     return {
       npcs: state.npcs,
+      npcTypes: state.npcTypes,
       count: state.count,
       currentNPC: null,
     };

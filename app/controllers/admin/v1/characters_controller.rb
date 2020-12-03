@@ -10,7 +10,7 @@ module Admin::V1
     end
 
     def generate_npc
-      render json: {npc: NpcGenerator.generate_npc(params[:npc_attributes])}
+      render json: {npc: NpcGenerator.generate_npc(params)}
     end
 
     def generate_commoner

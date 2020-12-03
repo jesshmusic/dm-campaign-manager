@@ -126,7 +126,7 @@ class NPCs extends React.Component {
       <PageContainer user={user}
                      flashMessages={flashMessages}
                      pageTitle={'NPCs'}
-                     description={`All npcs with descriptions and stats. Dungeon Master's Toolbox is a free resource for DMs to manage their campaigns, adventures, and NPCs.`}
+                     description={'All npcs with descriptions and stats. Dungeon Master\'s Toolbox is a free resource for DMs to manage their campaigns, adventures, and NPCs.'}
                      breadcrumbs={[{url: null, isActive: true, title: 'NPCs'}]}>
         <PageTitle title={'NPCs'}/>
         {npcs && npcs.length > 0 ? (
@@ -149,6 +149,7 @@ class NPCs extends React.Component {
 
 NPCs.propTypes = {
   npcs: PropTypes.array,
+  npcTypes: PropTypes.array,
   flashMessages: PropTypes.array,
   getNPCs: PropTypes.func,
   user: PropTypes.object,
@@ -157,6 +158,7 @@ NPCs.propTypes = {
 function mapStateToProps (state) {
   return {
     npcs: state.npcs.npcs,
+    npcTypes: state.npcs.npcTypes,
     user: state.users.user,
     flashMessages: state.flashMessages,
   };

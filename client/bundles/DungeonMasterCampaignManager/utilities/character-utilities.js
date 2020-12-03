@@ -47,7 +47,6 @@ export const npcVariantOptions = [
   {value: 'fighter', label: 'Fighter'},
   {value: 'caster_wizard', label: 'Caster - Wizard'},
   {value: 'caster_cleric', label: 'Caster - Cleric'},
-  {value: 'creature', label: 'Creature'},
 ];
 
 export const npcSizeOptions = [

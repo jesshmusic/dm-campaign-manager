@@ -14,12 +14,17 @@ import {Form as FinalForm} from 'react-final-form';
 import createDecorator from 'final-form-calculate';
 import snakecaseKeys from 'snakecase-keys';
 
-import {alignmentOptions, getChallengeRatingOptions, npcSizeOptions} from '../../../utilities/character-utilities';
-import FormField from '../../../components/forms/FormField';
+import {
+  alignmentOptions,
+  filterSnakeCaseOptionsWithData,
+  getChallengeRatingOptions,
+  npcSizeOptions,
+} from '../../../utilities/character-utilities';
 import FormSelect from '../../../components/forms/FormSelect';
 import NameFormField from './NameFormField';
-import RaceSelect from '../../characters/partials/races/RaceSelect';
 import NpcVariationSelect from './NpcVariationSelect';
+import MonsterTypeSelect from './MonsterTypeSelect';
+import RaceSelect from '../../characters/partials/races/RaceSelect';
 
 const npcFormDecorator = createDecorator(
   {
@@ -29,9 +34,15 @@ const npcFormDecorator = createDecorator(
     },
   },
   {
-    field: 'characterRace',
+    field: 'monsterType',
     updates: {
-      monsterSubtype: ((value) => value.value),
+      npcVariant: ((value) => (value.value === 'humanoid' ? {
+        label: 'Fighter',
+        value: 'fighter',
+      } : {
+        label: 'Creature',
+        value: 'creature',
+      })),
     },
   }
 );
@@ -39,14 +50,29 @@ const npcFormDecorator = createDecorator(
 class GenerateNPC extends React.Component {
   state = {
     npc: {
-      name: '',
-      alignment: '',
-      monsterType: 'humanoid',
-      challengeRating: '0',
-      characterRace: 'Human',
-      npcVariant: 'fighter',
-      size: 'Medium',
+      name: 'New NPC',
+      alignment: 'Neutral',
+      challengeRating: {
+        label: '0',
+        value: '0',
+      },
+      npcVariant: {
+        label: 'Fighter',
+        value: 'fighter'},
+      size: {
+        label: 'Medium',
+        value: 'medium',
+      },
+      characterAlignment: {
+        value: 'Neutral',
+        label: 'Neutral',
+      },
+      monsterType: {
+        value: 'humanoid',
+        label: 'Humanoid',
+      },
     },
+    monsterSubtypeOptions: [],
     challengeRatingOptions: [],
     validated: false,
   };
@@ -67,17 +93,16 @@ class GenerateNPC extends React.Component {
   };
 
   handleSubmit = async (values) => {
-    const nonPlayerCharacter = {
+    const npc = {
       name: values.name,
       alignment: values.alignment,
       challengeRating: values.challengeRating.value,
       npcVariant: values.npcVariant.value,
-      monsterType: 'humanoid',
+      monsterType: values.monsterType.value,
       monsterSubtype: values.monsterSubtype,
       size: values.size.value,
     };
-    console.log(nonPlayerCharacter);
-    // this.props.generateNonPlayerCharacter(snakecaseKeys(nonPlayerCharacter));
+    this.props.generateNonPlayerCharacter(snakecaseKeys(npc));
   };
 
   validate = (values) => {
@@ -111,16 +136,32 @@ class GenerateNPC extends React.Component {
                  }) => (
                    <Form noValidate validated={validated} onSubmit={handleSubmit}>
                      <Form.Row>
-                       <NameFormField colWidth={'6'} values={values} handleGenerateName={this.handleGenerateName}/>
-                       <NpcVariationSelect colWidth={'6'}/>
+                       <NameFormField colWidth={'12'} values={values} handleGenerateName={this.handleGenerateName}/>
                      </Form.Row>
                      <Form.Row>
-                       <FormSelect label={'Alignment'} colWidth={'3'} name={'characterAlignment'}
+                       <MonsterTypeSelect colWidth={values.monsterType.value === 'humanoid' ? '4' : '12'} />
+                       {values.monsterType.value === 'humanoid' ? (
+                         <RaceSelect colWidth={'4'}/>
+                       ) : null}
+                       {values.monsterType.value === 'humanoid' ? (
+                         <NpcVariationSelect colWidth={'4'}/>
+                       ) : null}
+                     </Form.Row>
+                     <Form.Row>
+                       <FormSelect label={'Alignment'}
+                                   colWidth={'3'}
+                                   name={'characterAlignment'}
+                                   value={values.alignment}
                                    options={alignmentOptions}/>
-                       <RaceSelect colWidth={'3'}/>
-                       <FormSelect label={'Challenge Rating'} colWidth={'3'} name={'challengeRating'}
+                       <FormSelect label={'Challenge Rating'}
+                                   colWidth={'3'}
+                                   name={'challengeRating'}
+                                   value={values.challengeRating}
                                    options={this.state.challengeRatingOptions}/>
-                       <FormSelect label={'Size'} colWidth={'3'} name={'size'}
+                       <FormSelect label={'Size'}
+                                   colWidth={'3'}
+                                   name={'size'}
+                                   value={values.size}
                                    options={npcSizeOptions}/>
                      </Form.Row>
                      <Form.Row>
@@ -151,10 +192,9 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    generateNonPlayerCharacter: (non_player_character) => {
-      dispatch(rest.actions.generateNonPlayerCharacter(
-        {body: JSON.stringify({non_player_character})},
-      ));
+    generateNonPlayerCharacter: (npc) => {
+      console.log(npc);
+      dispatch(rest.actions.generateNonPlayerCharacter(npc));
     },
   };
 }
