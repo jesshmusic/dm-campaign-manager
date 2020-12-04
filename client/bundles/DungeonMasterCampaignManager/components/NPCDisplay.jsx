@@ -135,6 +135,7 @@ const NPCDisplay = ({npc, shortDisplay = false}) => (
                        fieldId={`npcAction${action.id}`}
                        label={action.name}
                        colWidth={'12'}
+                       isTextArea
                        text={action.description} />
           )) }
           {npc.monster_legendary_actions.length > 0 ? (

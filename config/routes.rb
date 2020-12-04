@@ -12,7 +12,7 @@ Rails.application.routes.draw do
         get '/random_fantasy_name', to: 'characters#random_fantasy_name',
             as: 'random_fantasy_name',
             constraints: { format: 'json' }
-        get '/generate_npc', to: 'characters#generate_npc',
+        post '/generate_npc', to: 'characters#generate_npc',
             as: 'generate_npc',
             constraints: { format: 'json' }
         get '/generate_commoner', to: 'characters#generate_commoner',

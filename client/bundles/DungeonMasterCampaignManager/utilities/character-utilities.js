@@ -1,12 +1,13 @@
 import createDecorator from 'final-form-calculate';
 import snakecaseKeys from 'snakecase-keys';
 
-export const toSnakeCase = (str) =>
-  str &&
-  str
+export const toSnakeCase = (str) => {
+  return (str && str
     .match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g)
     .map(x => x.toLowerCase())
-    .join('_');
+    .join('_')
+  );
+}
 
 export const filterOptions = (results) => results.map((nextItem) => (
   {value: nextItem.id, label: nextItem.name}
@@ -707,6 +708,74 @@ export const characterCalculations = createDecorator(
     },
   },
 );
+
+export const getSpellLevelArray = (spells) => {
+  return spells.map(spell => spell.value);
+}
+
+export const getNPCObject = (values) => {
+  const returnChar = {
+    name: values.name,
+    alignment: values.alignment,
+    challengeRating: values.challengeRating.value,
+    npcVariant: values.npcVariant.value,
+    monsterType: values.monsterType.value,
+    monsterSubtype: values.monsterSubtype,
+    size: values.size.value,
+    strength: values.strength,
+    dexterity: values.dexterity,
+    constitution: values.constitution,
+    intelligence: values.intelligence,
+    wisdom: values.wisdom,
+    charisma: values.charisma,
+    ...(values.spellsCantrips && {spellsCantrips: getSpellLevelArray(values.spellsCantrips)}),
+    ...(values.spellsLevel1 && {spellsLevel1: getSpellLevelArray(values.spellsLevel1)}),
+    ...(values.spellsLevel2 && {spellsLevel2: getSpellLevelArray(values.spellsLevel2)}),
+    ...(values.spellsLevel3 && {spellsLevel3: getSpellLevelArray(values.spellsLevel3)}),
+    ...(values.spellsLevel4 && {spellsLevel4: getSpellLevelArray(values.spellsLevel4)}),
+    ...(values.spellsLevel5 && {spellsLevel5: getSpellLevelArray(values.spellsLevel5)}),
+    ...(values.spellsLevel6 && {spellsLevel6: getSpellLevelArray(values.spellsLevel6)}),
+    ...(values.spellsLevel7 && {spellsLevel7: getSpellLevelArray(values.spellsLevel7)}),
+    ...(values.spellsLevel8 && {spellsLevel8: getSpellLevelArray(values.spellsLevel8)}),
+    ...(values.spellsLevel9 && {spellsLevel9: getSpellLevelArray(values.spellsLevel9)}),
+  };
+  console.log(returnChar);
+  // if (values.spellsCantrips) {
+  //   returnChar.spellsCantrips = values.spellsCantrips.value;
+  // }
+  // if (values.spellsLevel1) {
+  //   returnChar.spellsLevel1 = values.spellsLevel1.value;
+  // }
+  // if (values.spellsLevel2) {
+  //   returnChar.spellsLevel2 = values.spellsLevel2.value;
+  // }
+  // if (values.spellsLevel3) {
+  //   returnChar.spellsLevel3 = values.spellsLevel3.value;
+  // }
+  // if (values.spellsLevel4) {
+  //   returnChar.spellsLevel4 = values.spellsLevel4.value;
+  // }
+  // if (values.spellsLevel5) {
+  //   returnChar.spellsLevel5 = values.spellsLevel5.value;
+  // }
+  // if (values.spellsLevel6) {
+  //   returnChar.spellsLevel6 = values.spellsLevel6.value;
+  // }
+  // if (values.spellsLevel7) {
+  //   returnChar.spellsLevel7 = values.spellsLevel7.value;
+  // }
+  // if (values.spellsLevel8) {
+  //   returnChar.spellsLevel8 = values.spellsLevel8.value;
+  // }
+  // if (values.spellsLevel9) {
+  //   returnChar.spellsLevel9 = values.spellsLevel9.value;
+  // }
+  if (values.id) {
+    returnChar.id = values.id;
+  }
+
+  return snakecaseKeys(returnChar, {exclude: ['_destroy']});
+};
 
 export const getCharacterObject = (values) => {
   const returnChar = {

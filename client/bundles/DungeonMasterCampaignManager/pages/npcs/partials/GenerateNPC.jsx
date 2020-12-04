@@ -16,9 +16,8 @@ import snakecaseKeys from 'snakecase-keys';
 
 import {
   alignmentOptions,
-  filterSnakeCaseOptionsWithData,
-  getChallengeRatingOptions,
-  npcSizeOptions,
+  getChallengeRatingOptions, getNPCObject,
+  npcSizeOptions, parseSpells,
 } from '../../../utilities/character-utilities';
 import FormSelect from '../../../components/forms/FormSelect';
 import NameFormField from './NameFormField';
@@ -27,6 +26,8 @@ import MonsterTypeSelect from './MonsterTypeSelect';
 import RaceSelect from '../../characters/partials/races/RaceSelect';
 import FormField from '../../../components/forms/FormField';
 import Card from 'react-bootstrap/Card';
+import WizardSpellSelect from '../../characters/partials/spell-fields/WizardSpellSelect';
+import ClericSpellSelect from '../../characters/partials/spell-fields/ClericSpellSelect';
 
 const npcFormDecorator = createDecorator(
   {
@@ -101,21 +102,7 @@ class GenerateNPC extends React.Component {
   };
 
   handleSubmit = async (values) => {
-    const npc = {
-      name: values.name,
-      alignment: values.alignment,
-      challengeRating: values.challengeRating.value,
-      npcVariant: values.npcVariant.value,
-      monsterType: values.monsterType.value,
-      monsterSubtype: values.monsterSubtype,
-      size: values.size.value,
-      strength: values.strength,
-      dexterity: values.dexterity,
-      constitution: values.constitution,
-      intelligence: values.intelligence,
-      wisdom: values.wisdom,
-      charisma: values.charisma,
-    };
+    const npc = getNPCObject(values);
     this.props.generateNonPlayerCharacter(snakecaseKeys(npc));
   };
 
@@ -208,6 +195,12 @@ class GenerateNPC extends React.Component {
                                        value={values.size}
                                        options={npcSizeOptions}/>
                          </Form.Row>
+                         {values.npcVariant.value === 'caster_wizard' ? (
+                           <WizardSpellSelect showWizardSpells={true}/>
+                         ) : null}
+                         {values.npcVariant.value === 'caster_cleric' ? (
+                           <ClericSpellSelect showClericSpells={true}/>
+                         ) : null}
                          <Form.Row>
                            <ButtonGroup aria-label="Character actions">
                              <Button type="submit" disabled={submitting}>Generate NPC</Button>
@@ -239,7 +232,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     generateNonPlayerCharacter: (npc) => {
-      dispatch(rest.actions.generateNonPlayerCharacter(npc));
+      dispatch(rest.actions.generateNonPlayerCharacter({}, {body: JSON.stringify(npc)}));
     },
   };
 }

@@ -120,8 +120,7 @@ class NPCs extends React.Component {
       renderer: (row) => (
         <ReactMarkdown source={row.descriptionText}
                        allowedTypes={Util.allowedTypes}
-                       escapeHtml={false}
-        />
+                       escapeHtml={false} />
       ),
     };
   }

@@ -21,6 +21,8 @@ class NpcGenerator
         @new_npc.monster_subtype = npc_attributes[:monster_subtype]
       end
 
+      parse_spells_action npc_attributes
+
       # Hit dice and hit points
       cr_info = set_npc_hit_points
 
@@ -64,6 +66,67 @@ class NpcGenerator
       @new_npc.hit_points = hit_points_info[:hit_points]
       @new_npc.hit_dice_modifier = @new_npc.hit_dice_number * con_modifier
       DndRules.challenge_ratings[@new_npc.challenge_rating.to_sym]
+    end
+
+    def parse_spells_action(atts)
+      spellcasting_level = if @new_npc.challenge_rating == '1' ||
+                             @new_npc.challenge_rating == '0' ||
+                             @new_npc.challenge_rating == '1/8' ||
+                             @new_npc.challenge_rating == '1/4' ||
+                             @new_npc.challenge_rating == '1/2'
+                             "1st-level"
+                           elsif @new_npc.challenge_rating == '2'
+                             "2nd-level"
+                           elsif @new_npc.challenge_rating == '3'
+                             "3rd-level"
+                           elsif @new_npc.challenge_rating == '21'
+                             "21st-level"
+                           elsif @new_npc.challenge_rating == '22'
+                             "22nd-level"
+                           elsif @new_npc.challenge_rating == '23'
+                             "23rd-level"
+                           else
+                             "#{@new_npc.challenge_rating}th-level"
+                           end
+      spell_save_dc = DndRules.challenge_ratings[@new_npc.challenge_rating.to_sym][:save_dc]
+      spell_attack = DndRules.challenge_ratings[@new_npc.challenge_rating.to_sym][:attack_bonus]
+      spellcaster_ability = atts[:npc_variant] == 'caster_wizard' ? 'Intelligence' : 'Wisdom'
+      spellcasting_action = MonsterAction.new(
+        name: 'Spellcasting'
+      )
+      spell_desc = ["The #{@new_npc.name} is a #{spellcasting_level} spellcaster. Its spellcasting ability is #{spellcaster_ability} (spell save DC #{spell_save_dc}, +#{spell_attack} to hit with spell attacks). #{@new_npc.name} has the following spells prepared.\n\n"]
+      if atts[:spells_cantrips]
+        spell_desc << "Cantrips (at will): #{atts[:spells_cantrips].join(', ')}\n"
+      end
+      if atts[:spells_level1]
+        spell_desc << "1st level (#{atts[:spells_level1].length} slots): #{atts[:spells_level1].join(', ')}\n"
+      end
+      if atts[:spells_level2]
+        spell_desc << "2nd level (#{atts[:spells_level2].length} slots): #{atts[:spells_level2].join(', ')}\n"
+      end
+      if atts[:spells_level3]
+        spell_desc << "3rd level (#{atts[:spells_level3].length} slots): #{atts[:spells_level3].join(', ')}\n"
+      end
+      if atts[:spells_level4]
+        spell_desc << "4th level (#{atts[:spells_level4].length} slots): #{atts[:spells_level4].join(', ')}\n"
+      end
+      if atts[:spells_level5]
+        spell_desc << "5th level (#{atts[:spells_level5].length} slots): #{atts[:spells_level5].join(', ')}\n"
+      end
+      if atts[:spells_level6]
+        spell_desc << "6th level (#{atts[:spells_level6].length} slots): #{atts[:spells_level6].join(', ')}\n"
+      end
+      if atts[:spells_level7]
+        spell_desc << "7th level (#{atts[:spells_level7].length} slots): #{atts[:spells_level7].join(', ')}\n"
+      end
+      if atts[:spells_level8]
+        spell_desc << "8th level (#{atts[:spells_level8].length} slots): #{atts[:spells_level8].join(', ')}\n"
+      end
+      if atts[:spells_level9]
+        spell_desc << "9th level (#{atts[:spells_level9].length} slots): #{atts[:spells_level9].join(', ')}"
+      end
+      spellcasting_action.description = spell_desc.join
+      @new_npc.monster_actions << spellcasting_action
     end
 
     # Statistics
