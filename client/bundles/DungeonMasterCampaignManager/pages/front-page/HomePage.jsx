@@ -11,6 +11,9 @@ import PageTitle from '../../components/layout/PageTitle';
 // import InfoBox from '../../components/layout/InfoBox';
 import NameField from '../npcs/partials/NameField';
 import {Link} from '@reach/router';
+import Col from 'react-bootstrap/Col';
+import Card from 'react-bootstrap/Card';
+import {Form} from 'react-bootstrap';
 
 const HomePage = (props) => (
   <PageContainer user={props.user}
@@ -20,12 +23,21 @@ const HomePage = (props) => (
                  breadcrumbs={[]}>
     <Container>
       <PageTitle title={'Dungeon Master\'s Toolbox'}/>
-      <Row>
-        <h2><Link to={'/app/npc-generator'}>Generate NPC</Link></h2>
+      <Row className={'mb-5'}>
+        <Col>
+          <Link to={'/app/npc-generator'} className={'btn btn-primary btn-lg btn-block'}>Generate NPC</Link>
+        </Col>
       </Row>
-      <Row>
-        <h2>Random Character Name</h2>
-        <NameField colWidth={'12'}/>
+      <Row className={'mb-5'}>
+        <Col>
+          <Card className={'shadow mb-5'}>
+            <Card.Body>
+              <Card.Title>Random Character Name</Card.Title>
+              <Card.Subtitle>Generate a random fantasy name based on gender and race</Card.Subtitle>
+              <NameField colWidth={'12'}/>
+            </Card.Body>
+          </Card>
+        </Col>
       </Row>
     </Container>
   </PageContainer>

@@ -4,11 +4,13 @@ import Row from 'react-bootstrap/Row';
 import CopyField from './CopyField';
 import Col from 'react-bootstrap/Col';
 import PropTypes from 'prop-types';
+import Card from 'react-bootstrap/Card';
 
-const NPCDisplay = ({npc, shortDisplay = false}) => {
-  return (
-    <div>
-      <h3>{npc.name}</h3>
+const NPCDisplay = ({npc, shortDisplay = false}) => (
+  <Card className={'shadow mb-5'}>
+    <Card.Body>
+      <Card.Title>New NPC: "{ npc.name }"</Card.Title>
+      <Card.Subtitle>Click individual fields to copy to the clipboard</Card.Subtitle>
       <Form>
         <Row>
           <CopyField placeHolder={'Name'}
@@ -173,9 +175,9 @@ const NPCDisplay = ({npc, shortDisplay = false}) => {
           ) : null}
         </Row>
       </Form>
-    </div>
-  );
-}
+    </Card.Body>
+  </Card>
+);
 
 NPCDisplay.propTypes = {
   npc: PropTypes.object.isRequired,

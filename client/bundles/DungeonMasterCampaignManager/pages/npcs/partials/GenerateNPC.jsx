@@ -26,6 +26,7 @@ import NpcVariationSelect from './NpcVariationSelect';
 import MonsterTypeSelect from './MonsterTypeSelect';
 import RaceSelect from '../../characters/partials/races/RaceSelect';
 import FormField from '../../../components/forms/FormField';
+import Card from 'react-bootstrap/Card';
 
 const npcFormDecorator = createDecorator(
   {
@@ -150,69 +151,75 @@ class GenerateNPC extends React.Component {
   render () {
     const {npc, validated} = this.state;
     return (
-      <FinalForm onSubmit={this.handleSubmit}
-                 decorators={[npcFormDecorator]}
-                 initialValues={npc}
-                 validate={this.validate}
-                 mutators={{...arrayMutators}}
-                 render={({
-                   handleSubmit,
-                   form: {
-                     mutators: {push},
-                   },
-                   submitting,
-                   form,
-                   pristine,
-                   values,
-                 }) => (
-                   <Form noValidate validated={validated} onSubmit={handleSubmit}>
-                     <Form.Row>
-                       <NameFormField colWidth={'12'} values={values} handleGenerateName={this.handleGenerateName}/>
-                     </Form.Row>
-                     <Form.Row>
-                       <MonsterTypeSelect colWidth={values.monsterType.value === 'humanoid' ? '4' : '12'} />
-                       {values.monsterType.value === 'humanoid' ? (
-                         <RaceSelect colWidth={'4'}/>
-                       ) : null}
-                       {values.monsterType.value === 'humanoid' ? (
-                         <NpcVariationSelect colWidth={'4'}/>
-                       ) : null}
-                     </Form.Row>
-                     <Form.Row>
-                       <FormField label={'STR'} type={'number'} colWidth={'2'} name={'strength'}/>
-                       <FormField label={'DEX'} type={'number'} colWidth={'2'} name={'dexterity'}/>
-                       <FormField label={'CON'} type={'number'} colWidth={'2'} name={'constitution'}/>
-                       <FormField label={'INT'} type={'number'} colWidth={'2'} name={'intelligence'}/>
-                       <FormField label={'WIS'} type={'number'} colWidth={'2'} name={'wisdom'}/>
-                       <FormField label={'CHA'} type={'number'} colWidth={'2'} name={'charisma'}/>
-                     </Form.Row>
-                     <Form.Row>
-                       <FormSelect label={'Alignment'}
-                                   colWidth={'3'}
-                                   name={'characterAlignment'}
-                                   value={values.alignment}
-                                   options={alignmentOptions}/>
-                       <FormSelect label={'Challenge Rating'}
-                                   colWidth={'3'}
-                                   name={'challengeRating'}
-                                   value={values.challengeRating}
-                                   options={this.state.challengeRatingOptions}/>
-                       <FormSelect label={'Size'}
-                                   colWidth={'3'}
-                                   name={'size'}
-                                   value={values.size}
-                                   options={npcSizeOptions}/>
-                     </Form.Row>
-                     <Form.Row>
-                       <ButtonGroup aria-label="Character actions">
-                         <Button type="submit" disabled={submitting}>Generate NPC</Button>
-                         <Button type="button" onClick={form.reset} disabled={submitting || pristine}
-                                 variant={'secondary'}>Reset</Button>
-                       </ButtonGroup>
-                     </Form.Row>
-                   </Form>
-                 )}
-      />
+      <Card className={'shadow mb-5'}>
+        <Card.Body>
+          <Card.Title>Random NPC Generator</Card.Title>
+          <Card.Subtitle>Select options to create a new NPC</Card.Subtitle>
+          <FinalForm onSubmit={this.handleSubmit}
+                     decorators={[npcFormDecorator]}
+                     initialValues={npc}
+                     validate={this.validate}
+                     mutators={{...arrayMutators}}
+                     render={({
+                       handleSubmit,
+                       form: {
+                         mutators: {push},
+                       },
+                       submitting,
+                       form,
+                       pristine,
+                       values,
+                     }) => (
+                       <Form noValidate validated={validated} onSubmit={handleSubmit}>
+                         <Form.Row>
+                           <NameFormField colWidth={'12'} values={values} handleGenerateName={this.handleGenerateName}/>
+                         </Form.Row>
+                         <Form.Row>
+                           <MonsterTypeSelect colWidth={values.monsterType.value === 'humanoid' ? '4' : '12'} />
+                           {values.monsterType.value === 'humanoid' ? (
+                             <RaceSelect colWidth={'4'}/>
+                           ) : null}
+                           {values.monsterType.value === 'humanoid' ? (
+                             <NpcVariationSelect colWidth={'4'}/>
+                           ) : null}
+                         </Form.Row>
+                         <Form.Row>
+                           <FormField label={'STR'} type={'number'} colWidth={'2'} name={'strength'}/>
+                           <FormField label={'DEX'} type={'number'} colWidth={'2'} name={'dexterity'}/>
+                           <FormField label={'CON'} type={'number'} colWidth={'2'} name={'constitution'}/>
+                           <FormField label={'INT'} type={'number'} colWidth={'2'} name={'intelligence'}/>
+                           <FormField label={'WIS'} type={'number'} colWidth={'2'} name={'wisdom'}/>
+                           <FormField label={'CHA'} type={'number'} colWidth={'2'} name={'charisma'}/>
+                         </Form.Row>
+                         <Form.Row>
+                           <FormSelect label={'Alignment'}
+                                       colWidth={'3'}
+                                       name={'characterAlignment'}
+                                       value={values.alignment}
+                                       options={alignmentOptions}/>
+                           <FormSelect label={'Challenge Rating'}
+                                       colWidth={'3'}
+                                       name={'challengeRating'}
+                                       value={values.challengeRating}
+                                       options={this.state.challengeRatingOptions}/>
+                           <FormSelect label={'Size'}
+                                       colWidth={'3'}
+                                       name={'size'}
+                                       value={values.size}
+                                       options={npcSizeOptions}/>
+                         </Form.Row>
+                         <Form.Row>
+                           <ButtonGroup aria-label="Character actions">
+                             <Button type="submit" disabled={submitting}>Generate NPC</Button>
+                             <Button type="button" onClick={form.reset} disabled={submitting || pristine}
+                                     variant={'secondary'}>Reset</Button>
+                           </ButtonGroup>
+                         </Form.Row>
+                       </Form>
+                     )}
+          />
+        </Card.Body>
+      </Card>
     );
   }
 }

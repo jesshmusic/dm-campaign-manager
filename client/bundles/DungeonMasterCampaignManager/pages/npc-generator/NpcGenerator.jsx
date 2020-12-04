@@ -14,6 +14,8 @@ import GenerateNPC from '../npcs/partials/GenerateNPC';
 import Col from 'react-bootstrap/Col';
 import rest from '../../actions/api';
 import NameOptions from '../../components/forms/NameOptions';
+import Card from 'react-bootstrap/Card';
+import {Form as FinalForm} from 'react-final-form';
 
 const NpcGenerator = (props) => {
   const handleGenerateCommoner = (gender, race) => {
@@ -37,14 +39,14 @@ const NpcGenerator = (props) => {
             { props.npc ? (
               <NPCDisplay npc={ props.npc } shortDisplay/>
             ) : null }
-            <div>
-              <h3>Generate Commoner</h3>
-              <NameOptions onFormSubmit={handleGenerateCommoner} submitText={'Commoner'}/>
-            </div>
-            <div>
-              <h3>Random NPC Generator</h3>
-              <GenerateNPC/>
-            </div>
+            <Card className={'shadow mb-5'}>
+              <Card.Body>
+                <Card.Title>Generate Commoner</Card.Title>
+                <Card.Subtitle>Quick generate a random commoner</Card.Subtitle>
+                <NameOptions onFormSubmit={handleGenerateCommoner} submitText={'Commoner'}/>
+              </Card.Body>
+            </Card>
+            <GenerateNPC/>
           </Col>
         </Row>
       </Container>
