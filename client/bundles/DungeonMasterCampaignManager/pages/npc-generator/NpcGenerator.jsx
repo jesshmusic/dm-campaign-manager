@@ -13,12 +13,10 @@ import {Button} from 'react-bootstrap';
 import GenerateNPC from '../npcs/partials/GenerateNPC';
 import Col from 'react-bootstrap/Col';
 import rest from '../../actions/api';
+import NameOptions from '../../components/forms/NameOptions';
 
 const NpcGenerator = (props) => {
-  const [gender, setGender] = useState('female');
-  const [race, setRace] = useState('human');
-
-  const handleGenerateCommoner = () => {
+  const handleGenerateCommoner = (gender, race) => {
     props.generateCommoner(gender, race);
   };
 
@@ -41,62 +39,7 @@ const NpcGenerator = (props) => {
             ) : null }
             <div>
               <h3>Generate Commoner</h3>
-              <ButtonGroup className={ 'mt-1' } size="lg">
-                <Button
-                  variant={ 'primary' }
-                  onClick={ () => handleGenerateCommoner() }>
-                  Get{ gender ? ` ${gender.charAt(0).toUpperCase() + gender.slice(1)}` : '' }{ race ? ` ${race.charAt(0).toUpperCase() + race.slice(1)}` : '' } Commoner
-                </Button>
-              </ButtonGroup>
-              <ButtonGroup className={ 'mt-1' } size="md">
-                <Button
-                  variant={ 'secondary' }
-                  onClick={ () => setGender('male') }>
-                  Male
-                </Button>
-                <Button
-                  variant={ 'success' }
-                  onClick={ () => setGender('female') }>
-                  Female
-                </Button>
-              </ButtonGroup>
-              <ButtonGroup className={ 'mt-1' } size="sm">
-                <Button
-                  variant={ 'primary' }
-                  onClick={ () => setRace('human') }>
-                  Human
-                </Button>
-                <Button
-                  variant={ 'secondary' }
-                  onClick={ () => setRace('goblin') }>
-                  Goblin
-                </Button>
-                <Button
-                  variant={ 'success' }
-                  onClick={ () => setRace('orc') }>
-                  Orc
-                </Button>
-                <Button
-                  variant={ 'info' }
-                  onClick={ () => setRace('ogre') }>
-                  Ogre
-                </Button>
-                <Button
-                  variant={ 'primary' }
-                  onClick={ () => setRace('dwarf') }>
-                  Dwarf
-                </Button>
-                <Button
-                  variant={ 'secondary' }
-                  onClick={ () => setRace('elf') }>
-                  Elf
-                </Button>
-                <Button
-                  variant={ 'success' }
-                  onClick={ () => setRace('halfling') }>
-                  Halfling
-                </Button>
-              </ButtonGroup>
+              <NameOptions onFormSubmit={handleGenerateCommoner} submitText={'Commoner'}/>
             </div>
             <div>
               <h3>Random NPC Generator</h3>

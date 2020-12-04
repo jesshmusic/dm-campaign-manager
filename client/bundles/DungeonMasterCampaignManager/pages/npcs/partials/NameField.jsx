@@ -10,13 +10,12 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import CopyField from '../../../components/CopyField';
+import NameOptions from '../../../components/forms/NameOptions';
 
 const NameField = ({colWidth}) => {
   const [nameValue, setNameValue] = useState('');
-  const [gender, setGender] = useState('female');
-  const [race, setRace] = useState('human');
 
-  const handleGenerateName = () => {
+  const handleGenerateName = (gender, race) => {
     const apiURL = `/v1/random_fantasy_name?random_npc_gender=${gender}&random_npc_race=${race}`;
     fetch(apiURL)
       .then((response) => response.json())
@@ -28,7 +27,7 @@ const NameField = ({colWidth}) => {
   return (
     <Col md={colWidth}>
       <Row>
-        <Col xs={'12'} sm={'6'} md={'8'}>
+        <Col md={'12'}>
           <Form>
             <CopyField placeHolder={'Random Name...'}
                        fieldId={'randomFantasyName'}
@@ -36,63 +35,8 @@ const NameField = ({colWidth}) => {
                        text={nameValue} />
           </Form>
         </Col>
-        <Col xs={'12'} sm={'6'} md={'4'}>
-          <ButtonGroup className={ 'mt-1' } size="lg">
-            <Button
-              variant={ 'primary' }
-              onClick={ () => handleGenerateName() }>
-              Get{gender ? ` ${gender.charAt(0).toUpperCase() + gender.slice(1)}` : ''}{race ? ` ${race.charAt(0).toUpperCase() + race.slice(1)}` : ''}  Name
-            </Button>
-          </ButtonGroup>
-          <ButtonGroup className={ 'mt-1' } size="md">
-            <Button
-              variant={ 'secondary' }
-              onClick={ () => setGender('male') }>
-              Male
-            </Button>
-            <Button
-              variant={ 'success' }
-              onClick={ () => setGender('female') }>
-              Female
-            </Button>
-          </ButtonGroup>
-          <ButtonGroup className={ 'mt-1' } size="sm">
-            <Button
-              variant={ 'primary' }
-              onClick={ () => setRace('human') }>
-              Human
-            </Button>
-            <Button
-              variant={ 'secondary' }
-              onClick={ () => setRace('goblin') }>
-              Goblin
-            </Button>
-            <Button
-              variant={ 'success' }
-              onClick={ () => setRace('orc') }>
-              Orc
-            </Button>
-            <Button
-              variant={ 'info' }
-              onClick={ () => setRace('ogre') }>
-              Ogre
-            </Button>
-            <Button
-              variant={ 'primary' }
-              onClick={ () => setRace('dwarf') }>
-              Dwarf
-            </Button>
-            <Button
-              variant={ 'secondary' }
-              onClick={ () => setRace('elf') }>
-              Elf
-            </Button>
-            <Button
-              variant={ 'success' }
-              onClick={ () => setRace('halfling') }>
-              Halfling
-            </Button>
-          </ButtonGroup>
+        <Col md={'12'}>
+          <NameOptions onFormSubmit={handleGenerateName} submitText={'Name'}/>
         </Col>
       </Row>
     </Col>
