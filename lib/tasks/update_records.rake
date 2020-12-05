@@ -203,9 +203,6 @@ namespace :update_records do
     end
   end
 
-  task monsters: :environment do
-  end
-
   task spell_cantrips: :environment do
     Spell.where('level < 0').update_all(level: 0)
   end
@@ -325,6 +322,37 @@ namespace :update_records do
       else
         create_magic_item_from_old_magic_items(magic_item)
       end
+    end
+  end
+
+  task update_weapons: :environment do
+    WeaponItem.all.each do |weapon|
+      if weapon.weapon_properties.include?('Reach')
+        weapon.weapon_range_normal = 10
+      end
+      if weapon.weapon_properties.include?('Ammunition')
+        if weapon.name.include?('Sling') || weapon.name.include?('Crossbow, hand')
+          weapon.weapon_range_normal = 30
+          weapon.weapon_range_long = 120
+        end
+        if weapon.name.include?('Shortbow') || weapon.name.include?('Crossbow, light')
+          weapon.weapon_range_normal = 80
+          weapon.weapon_range_long = 320
+        end
+        if weapon.name.include?('Blowgun')
+          weapon.weapon_range_normal = 25
+          weapon.weapon_range_long = 100
+        end
+        if weapon.name.include?('Crossbow, heavy')
+          weapon.weapon_range_normal = 100
+          weapon.weapon_range_long = 400
+        end
+        if weapon.name.include?('Longbow')
+          weapon.weapon_range_normal = 150
+          weapon.weapon_range_long = 600
+        end
+      end
+      weapon.save!
     end
   end
 

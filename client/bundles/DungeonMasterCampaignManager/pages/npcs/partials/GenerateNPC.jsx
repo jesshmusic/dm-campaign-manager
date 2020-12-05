@@ -17,7 +17,7 @@ import snakecaseKeys from 'snakecase-keys';
 import {
   alignmentOptions,
   getChallengeRatingOptions, getNPCObject,
-  npcSizeOptions, parseSpells,
+  npcSizeOptions,
 } from '../../../utilities/character-utilities';
 import FormSelect from '../../../components/forms/FormSelect';
 import NameFormField from './NameFormField';
@@ -28,6 +28,7 @@ import FormField from '../../../components/forms/FormField';
 import Card from 'react-bootstrap/Card';
 import WizardSpellSelect from '../../characters/partials/spell-fields/WizardSpellSelect';
 import ClericSpellSelect from '../../characters/partials/spell-fields/ClericSpellSelect';
+import WeaponSelect from './WeaponSelect';
 
 const npcFormDecorator = createDecorator(
   {
@@ -80,6 +81,7 @@ class GenerateNPC extends React.Component {
       intelligence: 10,
       wisdom: 10,
       charisma: 10,
+      numberOfAttacks: 1,
     },
     monsterSubtypeOptions: [],
     challengeRatingOptions: [],
@@ -194,6 +196,13 @@ class GenerateNPC extends React.Component {
                                        name={'size'}
                                        value={values.size}
                                        options={npcSizeOptions}/>
+                           <FormField label={'Number of Attacks'}
+                                      type={'number'}
+                                      colWidth={'3'}
+                                      name={'numberOfAttacks'}/>
+                         </Form.Row>
+                         <Form.Row>
+                           <WeaponSelect colWidth={'12'}/>
                          </Form.Row>
                          {values.npcVariant.value === 'caster_wizard' ? (
                            <WizardSpellSelect showWizardSpells={true}/>
