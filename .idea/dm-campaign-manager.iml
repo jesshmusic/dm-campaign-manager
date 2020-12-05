@@ -724,13 +724,13 @@
               <RakeTaskImpl description="" fullCommand="update_records:fix_magic_armor_sub_cats" id="fix_magic_armor_sub_cats" />
               <RakeTaskImpl description="" fullCommand="update_records:fix_magic_weapon_cats" id="fix_magic_weapon_cats" />
               <RakeTaskImpl description="" fullCommand="update_records:generate_slugs" id="generate_slugs" />
-              <RakeTaskImpl description="" fullCommand="update_records:monsters" id="monsters" />
               <RakeTaskImpl description="" fullCommand="update_records:parse_weapon_bonuses" id="parse_weapon_bonuses" />
               <RakeTaskImpl description="" fullCommand="update_records:remove_player_role" id="remove_player_role" />
               <RakeTaskImpl description="" fullCommand="update_records:set_prof_choices_for_class" id="set_prof_choices_for_class" />
               <RakeTaskImpl description="" fullCommand="update_records:spell_cantrips" id="spell_cantrips" />
               <RakeTaskImpl description="" fullCommand="update_records:spells" id="spells" />
               <RakeTaskImpl description="" fullCommand="update_records:update_items" id="update_items" />
+              <RakeTaskImpl description="" fullCommand="update_records:update_weapons" id="update_weapons" />
             </subtasks>
           </RakeTaskImpl>
         </subtasks>
