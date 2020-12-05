@@ -29,6 +29,8 @@ import Card from 'react-bootstrap/Card';
 import WizardSpellSelect from '../../characters/partials/spell-fields/WizardSpellSelect';
 import ClericSpellSelect from '../../characters/partials/spell-fields/ClericSpellSelect';
 import WeaponSelect from './WeaponSelect';
+import {FieldArray} from 'react-final-form-arrays';
+import Col from 'react-bootstrap/Col';
 
 const npcFormDecorator = createDecorator(
   {
@@ -82,6 +84,7 @@ class GenerateNPC extends React.Component {
       wisdom: 10,
       charisma: 10,
       numberOfAttacks: 1,
+      weaponActions: [],
     },
     monsterSubtypeOptions: [],
     challengeRatingOptions: [],
@@ -202,7 +205,40 @@ class GenerateNPC extends React.Component {
                                       name={'numberOfAttacks'}/>
                          </Form.Row>
                          <Form.Row>
-                           <WeaponSelect colWidth={'12'}/>
+                           <Col md={'12'}>
+                             <FieldArray name="weaponActions">
+                               {({fields}) => (
+                                 fields.map((weaponAction, index) => (
+                                   !fields.value[index] || !fields.value[index]._destroy ? (
+                                     <WeaponSelect colWidth={'10'}
+                                                   weaponAction={weaponAction}
+                                                   key={index}
+                                                   fields={fields}
+                                                   index={index}/>
+                                   ) : null))
+                               )}
+                             </FieldArray>
+                             <Button type="button" onClick={() => push('weaponActions', {
+                               weaponAction: {
+                                 value: 761,
+                                 label: 'Longsword',
+                                 data:{
+                                   attackBonus: 0,
+                                   damageBonus: 0,
+                                   damageDiceCount: 1,
+                                   damageDiceValue: 8,
+                                   damageType: 'Slashing',
+                                   range: 'Martial Melee',
+                                   rangeNormal: 5,
+                                   rangeLong: null,
+                                   thrownRangeLong: null,
+                                   thrownRangeNormal: null,
+                                   category: 'Martial',
+                                   properties: ['Versatile'],
+                                 },
+                               },
+                             })} variant={'info'} block>Add Weapon Action</Button>
+                           </Col>
                          </Form.Row>
                          {values.npcVariant.value === 'caster_wizard' ? (
                            <WizardSpellSelect showWizardSpells={true}/>

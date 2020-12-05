@@ -730,6 +730,7 @@ export const getNPCObject = (values) => {
     weapon: values.weapon,
     charisma: values.charisma,
     numberOfAttacks: values.numberOfAttacks,
+    weaponActions: values.weaponActions,
     ...(values.spellsCantrips && {spellsCantrips: getSpellLevelArray(values.spellsCantrips)}),
     ...(values.spellsLevel1 && {spellsLevel1: getSpellLevelArray(values.spellsLevel1)}),
     ...(values.spellsLevel2 && {spellsLevel2: getSpellLevelArray(values.spellsLevel2)}),
@@ -741,41 +742,6 @@ export const getNPCObject = (values) => {
     ...(values.spellsLevel8 && {spellsLevel8: getSpellLevelArray(values.spellsLevel8)}),
     ...(values.spellsLevel9 && {spellsLevel9: getSpellLevelArray(values.spellsLevel9)}),
   };
-  console.log(returnChar);
-  // if (values.spellsCantrips) {
-  //   returnChar.spellsCantrips = values.spellsCantrips.value;
-  // }
-  // if (values.spellsLevel1) {
-  //   returnChar.spellsLevel1 = values.spellsLevel1.value;
-  // }
-  // if (values.spellsLevel2) {
-  //   returnChar.spellsLevel2 = values.spellsLevel2.value;
-  // }
-  // if (values.spellsLevel3) {
-  //   returnChar.spellsLevel3 = values.spellsLevel3.value;
-  // }
-  // if (values.spellsLevel4) {
-  //   returnChar.spellsLevel4 = values.spellsLevel4.value;
-  // }
-  // if (values.spellsLevel5) {
-  //   returnChar.spellsLevel5 = values.spellsLevel5.value;
-  // }
-  // if (values.spellsLevel6) {
-  //   returnChar.spellsLevel6 = values.spellsLevel6.value;
-  // }
-  // if (values.spellsLevel7) {
-  //   returnChar.spellsLevel7 = values.spellsLevel7.value;
-  // }
-  // if (values.spellsLevel8) {
-  //   returnChar.spellsLevel8 = values.spellsLevel8.value;
-  // }
-  // if (values.spellsLevel9) {
-  //   returnChar.spellsLevel9 = values.spellsLevel9.value;
-  // }
-  if (values.id) {
-    returnChar.id = values.id;
-  }
-
   return snakecaseKeys(returnChar, {exclude: ['_destroy']});
 };
 

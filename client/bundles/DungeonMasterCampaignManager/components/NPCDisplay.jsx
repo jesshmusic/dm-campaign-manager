@@ -129,10 +129,10 @@ const NPCDisplay = ({npc, shortDisplay = false}) => (
           <Col md={'12'}>
             <h4>Actions</h4>
           </Col>
-          {npc.monster_actions.map((action) => (
+          {npc.monster_actions.map((action, index) => (
             <CopyField placeHolder={action.name}
-                       key={action.id}
-                       fieldId={`npcAction${action.id}`}
+                       key={`npcAction${index}`}
+                       fieldId={`npcAction${index}`}
                        label={action.name}
                        colWidth={'12'}
                        isTextArea
@@ -144,10 +144,10 @@ const NPCDisplay = ({npc, shortDisplay = false}) => (
                 <Col md={'12'}>
                   <h4>Legendary Actions</h4>
                 </Col>
-                {npc.monster_legendary_actions.map((action) => (
+                {npc.monster_legendary_actions.map((action, index) => (
                   <CopyField placeHolder={action.name}
                              key={action.id}
-                             fieldId={`npcLegendaryAction${action.id}`}
+                             fieldId={`npcLegendaryAction${index}`}
                              label={action.name}
                              colWidth={'12'}
                              isTextArea
@@ -162,9 +162,9 @@ const NPCDisplay = ({npc, shortDisplay = false}) => (
                 <Col md={'12'}>
                   <h4>Traits</h4>
                 </Col>
-                {npc.monster_special_abilities.map((ability) => (
+                {npc.monster_special_abilities.map((ability, index) => (
                   <CopyField placeHolder={ability.name}
-                             key={ability.id}
+                             key={`npcTrait${index}`}
                              fieldId={`npcSpecialAbility${ability.id}`}
                              label={ability.name}
                              colWidth={'12'}
