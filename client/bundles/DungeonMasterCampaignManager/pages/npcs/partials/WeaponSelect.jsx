@@ -68,7 +68,7 @@ const WeaponSelect = ({weaponAction, colWidth, fields, index}) => {
         label={ 'Weapon Action' }
         colWidth={ colWidth }
         getOptions={ getWeapons }
-        value={ fields.value[index] }
+        value={ fields.value[index].weaponAction }
         name={ weaponAction }/>
       <Form.Group as={ Col } md={ '1' }>
         <Form.Label>Remove</Form.Label>

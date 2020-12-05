@@ -219,23 +219,21 @@ class GenerateNPC extends React.Component {
                                )}
                              </FieldArray>
                              <Button type="button" onClick={() => push('weaponActions', {
-                               weaponAction: {
-                                 value: 761,
-                                 label: 'Longsword',
-                                 data:{
-                                   attackBonus: 0,
-                                   damageBonus: 0,
-                                   damageDiceCount: 1,
-                                   damageDiceValue: 8,
-                                   damageType: 'Slashing',
-                                   range: 'Martial Melee',
-                                   rangeNormal: 5,
-                                   rangeLong: null,
-                                   thrownRangeLong: null,
-                                   thrownRangeNormal: null,
-                                   category: 'Martial',
-                                   properties: ['Versatile'],
-                                 },
+                               value: 761,
+                               label: 'Longsword',
+                               data:{
+                                 attackBonus: 0,
+                                 damageBonus: 0,
+                                 damageDiceCount: 1,
+                                 damageDiceValue: 8,
+                                 damageType: 'Slashing',
+                                 range: 'Martial Melee',
+                                 rangeNormal: 5,
+                                 rangeLong: null,
+                                 thrownRangeLong: null,
+                                 thrownRangeNormal: null,
+                                 category: 'Martial',
+                                 properties: ['Versatile'],
                                },
                              })} variant={'info'} block>Add Weapon Action</Button>
                            </Col>
