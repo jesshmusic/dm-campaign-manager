@@ -160,7 +160,7 @@ const NPCDisplay = ({npc, shortDisplay = false}) => (
             <Col md={'12'}>
               <Row>
                 <Col md={'12'}>
-                  <h4>Special Abilities</h4>
+                  <h4>Traits</h4>
                 </Col>
                 {npc.monster_special_abilities.map((ability) => (
                   <CopyField placeHolder={ability.name}

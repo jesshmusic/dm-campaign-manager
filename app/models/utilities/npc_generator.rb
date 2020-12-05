@@ -69,29 +69,8 @@ class NpcGenerator
     end
 
     def parse_spells_action(atts)
-      spellcasting_level = if @new_npc.challenge_rating == '1' ||
-                             @new_npc.challenge_rating == '0' ||
-                             @new_npc.challenge_rating == '1/8' ||
-                             @new_npc.challenge_rating == '1/4' ||
-                             @new_npc.challenge_rating == '1/2'
-                             "1st-level"
-                           elsif @new_npc.challenge_rating == '2'
-                             "2nd-level"
-                           elsif @new_npc.challenge_rating == '3'
-                             "3rd-level"
-                           elsif @new_npc.challenge_rating == '21'
-                             "21st-level"
-                           elsif @new_npc.challenge_rating == '22'
-                             "22nd-level"
-                           elsif @new_npc.challenge_rating == '23'
-                             "23rd-level"
-                           else
-                             "#{@new_npc.challenge_rating}th-level"
-                           end
-      spell_save_dc = DndRules.challenge_ratings[@new_npc.challenge_rating.to_sym][:save_dc]
-      spell_attack = DndRules.challenge_ratings[@new_npc.challenge_rating.to_sym][:attack_bonus]
-      spellcaster_ability = atts[:npc_variant] == 'caster_wizard' ? 'Intelligence' : 'Wisdom'
-      spellcasting_action = MonsterAction.new(
+      spell_attack, spell_save_dc, spellcaster_ability, spellcasting_level = get_spellcasting_stats(atts)
+      spellcasting_ability = MonsterSpecialAbility.new(
         name: 'Spellcasting'
       )
       spell_desc = ["The #{@new_npc.name} is a #{spellcasting_level} spellcaster. Its spellcasting ability is #{spellcaster_ability} (spell save DC #{spell_save_dc}, +#{spell_attack} to hit with spell attacks). #{@new_npc.name} has the following spells prepared.\n\n"]
@@ -125,8 +104,34 @@ class NpcGenerator
       if atts[:spells_level9]
         spell_desc << "9th level (#{atts[:spells_level9].length} slots): #{atts[:spells_level9].join(', ')}"
       end
-      spellcasting_action.description = spell_desc.join
-      @new_npc.monster_actions << spellcasting_action
+      spellcasting_ability.description = spell_desc.join
+      @new_npc.monster_special_abilities << spellcasting_ability
+    end
+
+    def get_spellcasting_stats(atts)
+      spellcasting_level = if @new_npc.challenge_rating == '1' ||
+        @new_npc.challenge_rating == '0' ||
+        @new_npc.challenge_rating == '1/8' ||
+        @new_npc.challenge_rating == '1/4' ||
+        @new_npc.challenge_rating == '1/2'
+                             "1st-level"
+                           elsif @new_npc.challenge_rating == '2'
+                             "2nd-level"
+                           elsif @new_npc.challenge_rating == '3'
+                             "3rd-level"
+                           elsif @new_npc.challenge_rating == '21'
+                             "21st-level"
+                           elsif @new_npc.challenge_rating == '22'
+                             "22nd-level"
+                           elsif @new_npc.challenge_rating == '23'
+                             "23rd-level"
+                           else
+                             "#{@new_npc.challenge_rating}th-level"
+                           end
+      spell_save_dc = DndRules.challenge_ratings[@new_npc.challenge_rating.to_sym][:save_dc]
+      spell_attack = DndRules.challenge_ratings[@new_npc.challenge_rating.to_sym][:attack_bonus]
+      spellcaster_ability = atts[:npc_variant] == 'caster_wizard' ? 'Intelligence' : 'Wisdom'
+      [spell_attack, spell_save_dc, spellcaster_ability, spellcasting_level]
     end
 
     # Statistics
