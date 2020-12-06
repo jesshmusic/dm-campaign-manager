@@ -4,8 +4,8 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import FormSelectAsync from '../../../../components/forms/FormSelectAsync';
-import {filterSnakeCaseOptionsWithData} from '../../../../utilities/character-utilities';
+import FormSelectAsync from '../../../components/forms/FormSelectAsync';
+import {filterSnakeCaseOptionsWithData} from '../../../utilities/character-utilities';
 
 const getRaces = (inputValue, callback) => {
   fetch(`/v1/races.json?search=${inputValue}`)

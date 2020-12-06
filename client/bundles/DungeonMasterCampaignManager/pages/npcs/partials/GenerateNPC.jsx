@@ -23,7 +23,7 @@ import FormSelect from '../../../components/forms/FormSelect';
 import NameFormField from './NameFormField';
 import NpcVariationSelect from './NpcVariationSelect';
 import MonsterTypeSelect from './MonsterTypeSelect';
-import RaceSelect from '../../characters/partials/races/RaceSelect';
+import RaceSelect from './RaceSelect';
 import FormField from '../../../components/forms/FormField';
 import Card from 'react-bootstrap/Card';
 import WizardSpellSelect from '../../characters/partials/spell-fields/WizardSpellSelect';

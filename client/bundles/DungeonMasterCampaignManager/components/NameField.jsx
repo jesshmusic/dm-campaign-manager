@@ -4,13 +4,11 @@
 
 import React, {useState} from 'react';
 import PropTypes from 'prop-types';
-import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import CopyField from '../../../components/CopyField';
-import NameOptions from '../../../components/forms/NameOptions';
+import CopyField from './CopyField';
+import NameOptions from './forms/NameOptions';
 
 const NameField = ({colWidth}) => {
   const [nameValue, setNameValue] = useState('');
@@ -27,17 +25,17 @@ const NameField = ({colWidth}) => {
   return (
     <Col md={colWidth}>
       <Row>
-        <Col md={'12'}>
-          <Form>
+        <Form>
+          <Col md={'12'}>
             <CopyField placeHolder={'Random Name...'}
                        fieldId={'randomFantasyName'}
                        label={'Random Name'}
                        text={nameValue} />
-          </Form>
-        </Col>
-        <Col md={'12'}>
-          <NameOptions onFormSubmit={handleGenerateName} submitText={'Name'}/>
-        </Col>
+          </Col>
+          <Col md={'12'}>
+            <NameOptions onFormSubmit={handleGenerateName} submitText={'Name'}/>
+          </Col>
+        </Form>
       </Row>
     </Col>
   );

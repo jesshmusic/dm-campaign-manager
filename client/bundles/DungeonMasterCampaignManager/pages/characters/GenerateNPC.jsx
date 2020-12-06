@@ -14,7 +14,7 @@ import arrayMutators from 'final-form-arrays';
 import Form from 'react-bootstrap/Form';
 import FormField from '../../components/forms/FormField';
 import FormSelect from '../../components/forms/FormSelect';
-import RaceSelect from './partials/races/RaceSelect';
+import RaceSelect from '../npcs/partials/RaceSelect';
 import Col from 'react-bootstrap/Col';
 import {FieldArray} from 'react-final-form-arrays';
 import CharacterClassFields from './partials/CharacterClassFields';

@@ -43,6 +43,26 @@ class DndRules
       ]
     end
 
+    def race_values
+      {
+        "dragonborn": "Dragonborn",
+        "dwarf": "Dwarf",
+        "dwarf_hill": "Dwarf (hill)",
+        "dwarf_mountain": "Dwarf (mountain)",
+        "elf": "Elf",
+        "elf_high": "Elf (high)",
+        "elf_wood": "Elf (wood)",
+        "gnome": "Gnome",
+        "half_elf": "Half-elf",
+        "half_orc": "Half-orc",
+        "halfling": "Halfling",
+        "halfling_lightfoot": "Halfling (lightfoot)",
+        "halfling_stout": "Halfling (stout)",
+        "human": "Human",
+        "tiefling": "Tiefling"
+      }
+    end
+
     def skills
       [
         'Skill: Animal Handling',

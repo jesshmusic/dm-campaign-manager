@@ -4,7 +4,6 @@ class NpcGenerator
   class << self
 
     def generate_npc(npc_attributes)
-      puts npc_attributes
       @new_npc = Monster.new(name: npc_attributes[:name],
                              size: npc_attributes[:size],
                              alignment: npc_attributes[:alignment],
@@ -20,6 +19,9 @@ class NpcGenerator
       if npc_attributes[:monster_subtype]
         @new_npc.monster_subtype = npc_attributes[:monster_subtype]
       end
+
+      # Race
+      set_npc_race(npc_attributes[:monster_subtype])
 
       # Spellcasting
       parse_spells_action npc_attributes
@@ -43,12 +45,8 @@ class NpcGenerator
       commoner = Monster.where(name: 'Commoner').first
       @new_npc = Monster.new commoner.attributes
       @new_npc.challenge_rating = %w[0 0 0 0 0 1/8 1/8 1/8 1/4 1/4 1/2].sample
-      @new_npc.strength = [8, 9, 10, 10, 10, 11, 11, 12, 12, 13, 14, 15, 16].sample
-      @new_npc.dexterity = [8, 9, 10, 10, 10, 11, 11, 12, 12, 13, 14, 15, 16].sample
-      @new_npc.constitution = [8, 9, 10, 10, 10, 11, 11, 12, 12, 13, 14, 15, 16].sample
-      @new_npc.intelligence = [8, 9, 10, 10, 10, 11, 11, 12, 12, 13, 14, 15, 16].sample
-      @new_npc.wisdom = [8, 9, 10, 10, 10, 11, 11, 12, 12, 13, 14, 15, 16].sample
-      @new_npc.charisma = [8, 9, 10, 10, 10, 11, 11, 12, 12, 13, 14, 15, 16].sample
+      ability_score_order = %w[Strength Dexterity Constitution Intelligence Wisdom Charisma].shuffle
+      set_ability_scores(ability_score_order, 8)
       @new_npc.name = NameGen.random_name(random_npc_gender, random_npc_race)
       @new_npc.monster_subtype = random_npc_race
       cr_info = set_npc_hit_points
@@ -62,7 +60,14 @@ class NpcGenerator
 
     private
 
-    def set_npc_hit_points()
+    def set_npc_race(race_string)
+      unless race_string.blank?
+        race_name = DndRules.race_values[race_string.to_sym]
+        @npc_race = Race.where(name: race_name).first
+      end
+    end
+
+    def set_npc_hit_points
       con_modifier = DndRules.ability_score_modifier(@new_npc.constitution)
       hit_points_info = DndRules.num_hit_die_for_size(@new_npc.size, @new_npc.challenge_rating, con_modifier)
       @new_npc.hit_dice_number = hit_points_info[:num_hit_die]
@@ -143,7 +148,7 @@ class NpcGenerator
 
     # Statistics
 
-    def set_ability_scores(score_priority = [], min_score = 15)
+    def set_ability_scores(score_priority = [], min_score = 10)
       ability_scores = Array.new(6)
       ability_scores.each_with_index do |_, index|
         rolls = [DndRules.roll_dice(1, 6),
@@ -163,17 +168,25 @@ class NpcGenerator
       highest_score = [ability_scores.delete_at(ability_scores.index(ability_scores.max)), min_score_calc].max
       case ability
       when 'Strength'
-        @new_npc.strength = highest_score + @new_npc.race.strength_modifier
+        @new_npc.strength = highest_score
+        @new_npc.strength += @npc_race.strength_modifier unless @npc_race.nil?
       when 'Dexterity'
-        @new_npc.dexterity = highest_score + @new_npc.race.dexterity_modifier
+        @new_npc.dexterity = highest_score
+        @new_npc.dexterity += @npc_race.dexterity_modifier unless @npc_race.nil?
       when 'Constitution'
-        @new_npc.constitution = highest_score + @new_npc.race.constitution_modifier
+        @new_npc.constitution = highest_score
+        @new_npc.constitution += @npc_race.constitution_modifier unless @npc_race.nil?
       when 'Intelligence'
-        @new_npc.intelligence = highest_score + @new_npc.race.intelligence_modifier
+        @new_npc.intelligence = highest_score
+        @new_npc.intelligence += @npc_race.intelligence_modifier unless @npc_race.nil?
       when 'Wisdom'
-        @new_npc.wisdom = highest_score + @new_npc.race.wisdom_modifier
+        @new_npc.wisdom = highest_score
+        @new_npc.wisdom += @npc_race.wisdom_modifier unless @npc_race.nil?
       when 'Charisma'
-        @new_npc.charisma = highest_score + @new_npc.race.charisma_modifier
+        @new_npc.charisma = highest_score
+        @new_npc.charisma += @npc_race.charisma_modifier unless @npc_race.nil?
+      else
+        puts "Ability #{ability} not found!"
       end
     end
 
