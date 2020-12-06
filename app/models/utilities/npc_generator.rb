@@ -33,7 +33,7 @@ class NpcGenerator
       @new_npc.armor_class = cr_info[:armor_class]
 
       # Add Actions
-      create_weapon_actions(npc_attributes[:weapon_actions], npc_attributes[:number_of_attacks].to_i, npc_attributes[:challenge_rating].to_sym)
+      create_actions(npc_attributes[:actions], npc_attributes[:number_of_attacks].to_i, npc_attributes[:challenge_rating].to_sym)
 
       # Return
       @new_npc.as_json(
@@ -192,27 +192,27 @@ class NpcGenerator
 
     # Actions
 
-    def create_weapon_actions(weapon_actions, number_of_attacks, challenge_rating)
-      if weapon_actions.length > 0
+    def create_actions(actions, number_of_attacks, challenge_rating)
+      if actions.length > 0
         if number_of_attacks > 1
-          weapon_name = weapon_actions.first[:label]
+          weapon_name = actions.first[:label]
           multi_attack = MonsterAction.new(
             name: 'Multiattack',
             description: "The #{@new_npc.name} makes #{number_of_attacks} #{weapon_name.downcase} attacks."
           )
           @new_npc.monster_actions << multi_attack
         end
-        weapon_actions.each do |action|
+        actions.each do |action|
           puts action.inspect
           action_description = ""
-          if action[:data][:properties].include?('Ammunition')
+          if action[:data][:properties] && action[:data][:properties].include?('Ammunition')
             npc_dam_bonus = DndRules.ability_score_modifier(@new_npc.dexterity)
             action_damage_bonus, base_damage = action_damage(action, npc_dam_bonus)
             action_description += "Ranged Weapon Attack: +#{DndRules.challenge_ratings[challenge_rating][:attack_bonus]} to hit,"
             action_description += " range #{action[:data][:range_normal]}/#{action[:data][:range_long]} ft., one target. "
             action_description += "Hit: #{base_damage} (#{action[:data][:damage_dice_count]}d#{action[:data][:damage_dice_value]} #{action_damage_bonus})"
             action_description +=" #{action[:data][:damage_type].downcase} damage."
-          elsif action[:data][:properties].include?('Versatile')
+          elsif action[:data][:properties] && action[:data][:properties].include?('Versatile')
             npc_dam_bonus = DndRules.ability_score_modifier(@new_npc.strength)
             action_damage_bonus, base_damage = action_damage(action, npc_dam_bonus)
             base_2h_damage = ((action[:data][:damage_dice2_h_count] * action[:data][:damage_dice2_h_value] + npc_dam_bonus) * 0.55).ceil
@@ -230,7 +230,7 @@ class NpcGenerator
             action_description += "Hit: #{base_damage} (#{action[:data][:damage_dice_count]}d#{action[:data][:damage_dice_value]} #{action_damage_bonus})"
             action_description +=" #{action[:data][:damage_type].downcase} damage."
           end
-          if action[:data][:properties].include?('Thrown')
+          if action[:data][:properties] && action[:data][:properties].include?('Thrown')
             npc_dam_bonus = DndRules.ability_score_modifier(@new_npc.dexterity)
             action_damage_bonus, base_damage = action_damage(action, npc_dam_bonus)
             action_description += " Or Ranged Weapon Attack: +#{DndRules.challenge_ratings[challenge_rating][:attack_bonus]} to hit,"
@@ -238,11 +238,11 @@ class NpcGenerator
             action_description += "Hit: #{base_damage} (#{action[:data][:damage_dice_count]}d#{action[:data][:damage_dice_value]} #{action_damage_bonus})"
             action_description +=" #{action[:data][:damage_type].downcase} damage."
           end
-          weapon_action = MonsterAction.new(
+          action = MonsterAction.new(
             name: action[:label],
             description: action_description
           )
-          @new_npc.monster_actions << weapon_action
+          @new_npc.monster_actions << action
         end
       end
     end
@@ -255,8 +255,10 @@ class NpcGenerator
                             else
                               "- #{npc_dam_bonus.abs}"
                             end
-      base_damage = ((action[:data][:damage_dice_count] * action[:data][:damage_dice_value] + npc_dam_bonus) * 0.55).ceil
-      return action_damage_bonus, base_damage
+      damage_dice_count = action[:data][:damage_dice_count].to_i
+      damage_dice_value = action[:data][:damage_dice_value].to_i
+      base_damage = ((damage_dice_count * damage_dice_value + npc_dam_bonus) * 0.55).ceil
+      [action_damage_bonus, base_damage]
     end
 
     # def generate_ability_scores(min_score = 15)

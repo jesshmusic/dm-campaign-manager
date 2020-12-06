@@ -28,7 +28,7 @@ import FormField from '../../../components/forms/FormField';
 import Card from 'react-bootstrap/Card';
 import WizardSpellSelect from '../../characters/partials/spell-fields/WizardSpellSelect';
 import ClericSpellSelect from '../../characters/partials/spell-fields/ClericSpellSelect';
-import WeaponSelect from './WeaponSelect';
+import ActionSelect from './ActionSelect';
 import {FieldArray} from 'react-final-form-arrays';
 import Col from 'react-bootstrap/Col';
 
@@ -84,7 +84,7 @@ class GenerateNPC extends React.Component {
       wisdom: 10,
       charisma: 10,
       numberOfAttacks: 1,
-      weaponActions: [],
+      actions: [],
     },
     monsterSubtypeOptions: [],
     challengeRatingOptions: [],
@@ -204,38 +204,42 @@ class GenerateNPC extends React.Component {
                                       colWidth={'3'}
                                       name={'numberOfAttacks'}/>
                          </Form.Row>
-                         <Form.Row>
+                         <Form.Row className={'mb-4'}>
                            <Col md={'12'}>
-                             <FieldArray name="weaponActions">
+                             <h3>Actions</h3>
+                             <FieldArray name="actions" className={'mb-3'}>
                                {({fields}) => (
-                                 fields.map((weaponAction, index) => (
+                                 fields.map((action, index) => (
                                    !fields.value[index] || !fields.value[index]._destroy ? (
-                                     <WeaponSelect colWidth={'10'}
-                                                   weaponAction={weaponAction}
+                                     <ActionSelect colWidth={'10'}
+                                                   action={action}
                                                    key={index}
                                                    fields={fields}
                                                    index={index}/>
                                    ) : null))
                                )}
                              </FieldArray>
-                             <Button type="button" onClick={() => push('weaponActions', {
-                               value: 761,
-                               label: 'Longsword',
-                               data:{
-                                 attackBonus: 0,
-                                 damageBonus: 0,
-                                 damageDiceCount: 1,
-                                 damageDiceValue: 8,
-                                 damageType: 'Slashing',
-                                 range: 'Martial Melee',
-                                 rangeNormal: 5,
-                                 rangeLong: null,
-                                 thrownRangeLong: null,
-                                 thrownRangeNormal: null,
-                                 category: 'Martial',
-                                 properties: ['Versatile'],
-                               },
-                             })} variant={'info'} block>Add Weapon Action</Button>
+                             <Button type="button"
+                                     onClick={() => push('actions', {
+                                       value: 761,
+                                       label: 'Longsword',
+                                       data:{
+                                         attackBonus: 0,
+                                         damageBonus: 0,
+                                         damageDiceCount: 1,
+                                         damageDiceValue: 8,
+                                         damageDice2HCount: 1,
+                                         damageDice2HValue: 10,
+                                         damageType: 'Slashing',
+                                         range: 'Martial Melee',
+                                         rangeNormal: 5,
+                                         rangeLong: null,
+                                         thrownRangeLong: null,
+                                         thrownRangeNormal: null,
+                                         category: 'Martial',
+                                         properties: ['Versatile'],
+                                       },
+                                     })} variant={'info'} block>Add Action</Button>
                            </Col>
                          </Form.Row>
                          {values.npcVariant.value === 'caster_wizard' ? (
@@ -244,7 +248,7 @@ class GenerateNPC extends React.Component {
                          {values.npcVariant.value === 'caster_cleric' ? (
                            <ClericSpellSelect showClericSpells={true}/>
                          ) : null}
-                         <Form.Row>
+                         <Form.Row className={'mb-4'}>
                            <ButtonGroup aria-label="Character actions">
                              <Button type="submit" disabled={submitting}>Generate NPC</Button>
                              <Button type="button" onClick={form.reset} disabled={submitting || pristine}

@@ -730,7 +730,7 @@ export const getNPCObject = (values) => {
     weapon: values.weapon,
     charisma: values.charisma,
     numberOfAttacks: values.numberOfAttacks,
-    weaponActions: values.weaponActions,
+    actions: values.actions,
     ...(values.spellsCantrips && {spellsCantrips: getSpellLevelArray(values.spellsCantrips)}),
     ...(values.spellsLevel1 && {spellsLevel1: getSpellLevelArray(values.spellsLevel1)}),
     ...(values.spellsLevel2 && {spellsLevel2: getSpellLevelArray(values.spellsLevel2)}),
