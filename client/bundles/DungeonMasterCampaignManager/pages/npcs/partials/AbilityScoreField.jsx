@@ -49,9 +49,7 @@ const FormField = ({
       Math.floor(Math.random() * 6) + 1,
       Math.floor(Math.random() * 6) + 1,
     ];
-    console.log(rolls);
     const abilityScore = removeSmallest(rolls).reduce((a, b) => a + b, 0);
-    console.log(abilityScore);
     input.onChange(abilityScore);
   };
 
