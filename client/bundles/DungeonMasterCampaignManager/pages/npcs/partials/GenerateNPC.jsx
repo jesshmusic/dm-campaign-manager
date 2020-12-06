@@ -31,6 +31,7 @@ import ClericSpellSelect from '../../characters/partials/spell-fields/ClericSpel
 import ActionSelect from './ActionSelect';
 import {FieldArray} from 'react-final-form-arrays';
 import Col from 'react-bootstrap/Col';
+import AbilityScoreField from './AbilityScoreField';
 
 const npcFormDecorator = createDecorator(
   {
@@ -176,12 +177,12 @@ class GenerateNPC extends React.Component {
                            ) : null}
                          </Form.Row>
                          <Form.Row>
-                           <FormField label={'STR'} type={'number'} colWidth={'2'} name={'strength'}/>
-                           <FormField label={'DEX'} type={'number'} colWidth={'2'} name={'dexterity'}/>
-                           <FormField label={'CON'} type={'number'} colWidth={'2'} name={'constitution'}/>
-                           <FormField label={'INT'} type={'number'} colWidth={'2'} name={'intelligence'}/>
-                           <FormField label={'WIS'} type={'number'} colWidth={'2'} name={'wisdom'}/>
-                           <FormField label={'CHA'} type={'number'} colWidth={'2'} name={'charisma'}/>
+                           <AbilityScoreField label={'STR'} type={'number'} colWidth={'2'} name={'strength'}/>
+                           <AbilityScoreField label={'DEX'} type={'number'} colWidth={'2'} name={'dexterity'}/>
+                           <AbilityScoreField label={'CON'} type={'number'} colWidth={'2'} name={'constitution'}/>
+                           <AbilityScoreField label={'INT'} type={'number'} colWidth={'2'} name={'intelligence'}/>
+                           <AbilityScoreField label={'WIS'} type={'number'} colWidth={'2'} name={'wisdom'}/>
+                           <AbilityScoreField label={'CHA'} type={'number'} colWidth={'2'} name={'charisma'}/>
                          </Form.Row>
                          <Form.Row>
                            <FormSelect label={'Alignment'}
