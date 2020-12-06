@@ -11,6 +11,7 @@ import Col from 'react-bootstrap/Col';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 
 const NameFormField = ({colWidth, handleGenerateName, values}) => {
+  const characterRace = values.characterRace && values.characterRace.value ? values.characterRace.value : 'human';
   return (
     <Form.Group as={ Col } md={ colWidth }>
       <Field name={ 'name' } type={ 'text' }>
@@ -29,21 +30,21 @@ const NameFormField = ({colWidth, handleGenerateName, values}) => {
               <ButtonGroup className={ 'mt-1' } size="sm">
                 <Button
                   variant={ 'primary' }
-                  onClick={ () => handleGenerateName('male', values.monsterSubtype, (jsonName) => {
+                  onClick={ () => handleGenerateName('female', characterRace, (jsonName) => {
                     input.onChange(jsonName);
                   }) }>
                   Random Name
                 </Button>
                 <Button
                   variant={ 'secondary' }
-                  onClick={ () => handleGenerateName('male', values.monsterSubtype, (jsonName) => {
+                  onClick={ () => handleGenerateName('male', characterRace, (jsonName) => {
                     input.onChange(jsonName);
                   }) }>
                   Male
                 </Button>
                 <Button
                   variant={ 'success' }
-                  onClick={ () => handleGenerateName('female', values.monsterSubtype, (jsonName) => {
+                  onClick={ () => handleGenerateName('female', characterRace, (jsonName) => {
                     input.onChange(jsonName);
                   }) }>
                   Female

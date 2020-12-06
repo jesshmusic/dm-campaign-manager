@@ -86,12 +86,44 @@ class NameGen
 
     NAME_POSTFIX = %w[axe glow beam blade blood bone cloud dane crag crest doom dream feather fire fist flame forest hammer heart hell leaf light moon rage river rock shade claw shadow shield snow spirit star steel stone swift tree whisper wind wolf wood gloom glory orb ash blaze arm arrow bane bash basher beard belly bend bender binder bleeder blight bloom blossom blower glade bluff bough bow brace braid branch brand breaker breath breeze brew bringer brook brow caller chaser reaper chewer cleaver creek crusher cut cutter dancer dew down draft dreamer drifter dust eye eyes fall fang flare flaw flayer flow follower flower force forge fury gaze gazer gem gleam glide grain grip grove guard gust hair hand helm hide horn hunter jumper keep keeper killer lance lash less mane mantle mark maul maw might more mourn oak ore peak pelt pike punch reaver rider ridge ripper roar run runner scar scream scribe seeker shaper shard shot shout singer sky slayer snarl snout soar song sorrow spark spear spell spire splitter sprinter stalker steam stream strength stride strider strike striker sun surge sword sworn tail taker talon thorn tide toe track trap trapper vale valor vigor walker ward watcher water weaver whirl whisk winds wing woods wound brooke fall fallow horn root shine swallow thorne willow wood].freeze
 
+    def get_dragon_name
+      "#{@names[:draconic][:prefixes].sample.capitalize}#{@names[:draconic][:suffixes].sample}"
+    end
+
+    def get_demon_name
+      first_part = [:softs, :dulls, :sharps].sample
+      second_part = [:softs, :dulls, :sharps].sample
+      third_part = [:softs, :dulls, :sharps].sample
+      name = "#{@names[:infernal][first_part].sample.capitalize}#{@names[:infernal][second_part].sample}"
+      if rand < 0.3
+        "#{name}-#{@names[:infernal][third_part].sample}"
+      else
+        name
+      end
+    end
+
     def get_goblin_name(gender = nil)
       "#{@names[:vileAndCrude][:small].sample.capitalize}#{rand(8) < 3 ? @names[:vileAndCrude][:small].sample : ''}#{!gender.nil? && gender == 'female' ? @names[:homely][:femaleSuffixes].sample : ''}"
     end
 
+    def get_gnome_name(gender = nil)
+      if rand < 0.5
+        "#{@names[:faerykind][:prefixes].sample.capitalize}#{rand < 0.1 ? @names[:faerykind][:prefixes].sample : ''}#{!gender.nil? && gender == 'female' ? @names[:faerykind][:femaleSuffixes].sample : @names[:faerykind][:maleSuffixes].sample}"
+      else
+        "#{@names[:alternativeFaerykind][:prefixes].sample.capitalize}#{rand < 0.1 ? @names[:alternativeFaerykind][:prefixes].sample : ''}#{!gender.nil? && gender == 'female' ? @names[:alternativeFaerykind][:femaleSuffixes].sample : @names[:alternativeFaerykind][:maleSuffixes].sample}"
+      end
+    end
+
     def get_orc_name(gender = nil)
       "#{@names[:vileAndCrude][:medium].sample.capitalize}#{rand(8) < 5 ?@names[:vileAndCrude][:medium].sample : ''}#{!gender.nil? && gender == 'female' ? @names[:homely][:femaleSuffixes].sample : ''}"
+    end
+
+    def get_half_orc_name(gender = nil)
+      name = "#{@names[:vileAndCrude][:medium].sample.capitalize}#{rand(8) < 5 ?@names[:vileAndCrude][:medium].sample : ''}"
+      if !gender.nil? && gender == 'female'
+        name = "#{name}#{@names[:homely][:femaleSuffixes].sample}"
+      end
+      "#{name} #{generate_surname(@surname_types.sample)}"
     end
 
     def get_ogre_name(gender = nil)
@@ -150,12 +182,16 @@ class NameGen
       when 'human' then get_human_name(gender)
       when 'goblin' then get_goblin_name(gender)
       when 'orc' then get_orc_name(gender)
+      when 'half_orc' then get_half_orc_name(gender)
       when 'ogre' then get_ogre_name(gender)
+      when 'tiefling' then get_demon_name
+      when 'gnome' then get_gnome_name(gender)
+      when /dragon/ then get_dragon_name
       when /dwarf/ then get_dwarf_name(gender)
       when /elf/ then get_elf_name(gender)
       when /halfling/ then get_halfling_name(gender)
       else
-        get_goblin_name
+        get_human_name(gender)
       end
     end
 
