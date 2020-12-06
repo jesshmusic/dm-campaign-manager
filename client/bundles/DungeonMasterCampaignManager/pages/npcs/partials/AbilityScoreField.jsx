@@ -13,7 +13,7 @@ const removeSmallest = (numbers) => {
   const min = Math.min.apply(null, numbers);
 
   if(numbers.length > 0) {
-    for(let i = 0; i < numbers.length; i++) {
+    for(let i = 0; i < numbers.length; i = i + 1) {
       if(numbers[i] === min) {
         numbers.splice(i, 1);
         return numbers;
@@ -22,7 +22,7 @@ const removeSmallest = (numbers) => {
   } else {
     return numbers;
   }
-}
+};
 
 const FormField = ({
   colWidth,
@@ -95,7 +95,7 @@ const FormField = ({
       </Field>
     </Form.Group>
   );
-}
+};
 
 FormField.propTypes = {
   name: PropTypes.string.isRequired,
