@@ -8,7 +8,6 @@ import Alert from 'react-bootstrap/Alert';
 import Form from 'react-bootstrap/Form';
 import FormField from '../../../components/forms/FormField';
 import Accordion from 'react-bootstrap/Accordion';
-import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
 import NameField from '../../../components/NameField';
 import FormSelect from '../../../components/forms/FormSelect';
 import {alignmentOptions, WeaponState} from '../../../utilities/character-utilities';
@@ -33,21 +32,7 @@ import RangerSpellSelect from './spell-fields/RangerSpellSelect';
 import SorcererSpellSelect from './spell-fields/SorcererSpellSelect';
 import WarlockSpellSelect from './spell-fields/WarlockSpellSelect';
 import WizardSpellSelect from './spell-fields/WizardSpellSelect';
-import { FiChevronDown } from 'react-icons/all';
-
-const SectionHeading = ({title, eventKey}) => {
-  const decoratedOnClick = useAccordionToggle(eventKey);
-
-  return (
-    <Button variant="link" size="lg" className={'mt-3'} block onClick={decoratedOnClick}>
-      <h2>{title} <FiChevronDown/></h2>
-    </Button>
-  );
-};
-SectionHeading.propTypes = {
-  eventKey: PropTypes.string.isRequired,
-  title: PropTypes.string.isRequired,
-};
+import SectionHeading from '../../../components/SectionHeading';
 
 const CharacterFormFields = ({dirty, errors, guildOptions, isNPC, values}) => {
   return (

@@ -24,12 +24,13 @@ const removeSmallest = (numbers) => {
   }
 };
 
-const FormField = ({
+const AbilityScoreField = ({
   colWidth,
   defaultValue,
   infoText,
   label,
   name,
+  hideRoll,
   readOnly,
 }) => {
   const handleRollAbility = (input) => {
@@ -58,19 +59,23 @@ const FormField = ({
       <Field name={ name } type={ 'number' }>
         { ({input, meta}) => (
           <div>
-            <Form.Label className={ 'd-flex justify-content-between' }>
-              { label }
-              <Button variant={ 'primary' }
-                      size={ 'sm' }
-                      onClick={ () => handleRollAbility(input) }>
-                Roll
-              </Button>
-              <Button variant={ 'primary' }
-                      size={ 'sm' }
-                      onClick={ () => handleDropLowestRollAbility(input) }>
-                Roll (hi)
-              </Button>
-            </Form.Label>
+            {hideRoll ? (
+              <Form.Label>{ label }</Form.Label>
+            ) : (
+              <Form.Label className={ 'd-flex justify-content-between' }>
+                { label }
+                <Button variant={ 'primary' }
+                        size={ 'sm' }
+                        onClick={ () => handleRollAbility(input) }>
+                  Roll
+                </Button>
+                <Button variant={ 'primary' }
+                        size={ 'sm' }
+                        onClick={ () => handleDropLowestRollAbility(input) }>
+                  Roll (hi)
+                </Button>
+              </Form.Label>
+            )}
 
             <Form.Control
               { ...input }
@@ -95,7 +100,7 @@ const FormField = ({
   );
 };
 
-FormField.propTypes = {
+AbilityScoreField.propTypes = {
   name: PropTypes.string.isRequired,
   colWidth: PropTypes.string.isRequired,
   defaultValue: PropTypes.any,
@@ -103,8 +108,9 @@ FormField.propTypes = {
   id: PropTypes.string,
   label: PropTypes.string.isRequired,
   readOnly: PropTypes.bool,
+  hideRoll: PropTypes.bool,
   type: PropTypes.string.isRequired,
   value: PropTypes.any,
 };
 
-export default FormField;
+export default AbilityScoreField;

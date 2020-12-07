@@ -1,0 +1,289 @@
+/**
+ * Created by jesshendricks on 9/6/19
+ */
+
+import React from 'react';
+import PropTypes from 'prop-types';
+import rest from '../../../actions/api';
+import {connect} from 'react-redux';
+import arrayMutators from 'final-form-arrays';
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import {Form as FinalForm} from 'react-final-form';
+import createDecorator from 'final-form-calculate';
+import snakecaseKeys from 'snakecase-keys';
+
+import {
+  alignmentOptions,
+  getChallengeRatingOptions, getNPCObject,
+  npcSizeOptions,
+} from '../../../utilities/character-utilities';
+import FormSelect from '../../../components/forms/FormSelect';
+import NameFormField from './NameFormField';
+import NpcVariationSelect from './NpcVariationSelect';
+import MonsterTypeSelect from './MonsterTypeSelect';
+import RaceSelect from './RaceSelect';
+import FormField from '../../../components/forms/FormField';
+import Card from 'react-bootstrap/Card';
+import WizardSpellSelect from '../../characters/partials/spell-fields/WizardSpellSelect';
+import ClericSpellSelect from '../../characters/partials/spell-fields/ClericSpellSelect';
+import ActionSelect from './ActionSelect';
+import {FieldArray} from 'react-final-form-arrays';
+import Col from 'react-bootstrap/Col';
+import AbilityScoreField from './AbilityScoreField';
+import DndClassSelect from '../../characters/partials/dnd-classes/DndClassSelect';
+import CharacterClassFields from '../../characters/partials/CharacterClassFields';
+
+const npcFormDecorator = createDecorator(
+  {
+    field: 'characterAlignment',
+    updates: {
+      alignment: ((value) => value.value),
+    },
+  }
+);
+
+class Convert2eNPC extends React.Component {
+  state = {
+    npc: {
+      name: '',
+      alignment: 'Neutral',
+      characterAlignment: {
+        value: 'Neutral',
+        label: 'Neutral',
+      },
+      armorClass: 10,
+      hitPoints: 10,
+      strength: 10,
+      dexterity: 10,
+      constitution: 10,
+      intelligence: 10,
+      wisdom: 10,
+      charisma: 10,
+      thaco: 10,
+      numberOfAttacks: 1,
+      actions: [],
+      dndClasses: [],
+    },
+    validated: false,
+  };
+
+  componentDidMount () {
+    this.setState({
+      challengeRatingOptions: getChallengeRatingOptions(),
+    });
+  }
+
+  handleSubmit = async (values) => {
+    const npc = getNPCObject(values);
+    this.props.generateNonPlayerCharacter(snakecaseKeys(npc));
+  };
+
+  validate = (values) => {
+    const errors = {};
+    if (!values.name) {
+      errors.name = 'Character name is required.';
+    }
+    if (!values.alignment) {
+      errors.characterAlignment = 'Character alignment is required.';
+    }
+    if (!values.charisma) {
+      errors.charisma = 'Charisma is required';
+    }
+    if (!values.constitution) {
+      errors.constitution = 'Constitution is required';
+    }
+    if (!values.dexterity) {
+      errors.dexterity = 'Dexterity is required';
+    }
+    if (!values.intelligence) {
+      errors.intelligence = 'Intelligence is required';
+    }
+    if (!values.strength) {
+      errors.strength = 'Strength is required';
+    }
+    if (!values.wisdom) {
+      errors.wisdom = 'Wisdom is required';
+    }
+    if (!values.thaco) {
+      errors.thaco = 'THAC0 is required';
+    }
+    if (!values.armorClass) {
+      errors.armorClass = 'Armor Class is required';
+    }
+    if (!values.hitPoints) {
+      errors.hitPoints = 'Hit Points are required';
+    }
+    if (!values.dndClasses || values.dndClasses.length < 1) {
+      errors.dndClasses = 'At least one Class is required';
+    }
+    return errors;
+  };
+
+  render () {
+    const {npc, validated} = this.state;
+    return (
+      <Card className={'shadow mb-5'}>
+        <Card.Body>
+          <Card.Title>D&D 2nd Edition NPC Convertor</Card.Title>
+          <Card.Subtitle>Enter stats for a 2E NPC to generate its 5E equivalent (roughly)</Card.Subtitle>
+          <FinalForm onSubmit={this.handleSubmit}
+                     decorators={[npcFormDecorator]}
+                     initialValues={npc}
+                     validate={this.validate}
+                     mutators={{...arrayMutators}}
+                     render={({
+                       handleSubmit,
+                       form: {
+                         mutators: {push},
+                       },
+                       submitting,
+                       form,
+                       pristine,
+                       values,
+                     }) => (
+                       <Form noValidate validated={validated} onSubmit={handleSubmit}>
+                         <Form.Row>
+                           <FormField label={'Name'}
+                                      type={'text'}
+                                      colWidth={'12'}
+                                      name={'name'}/>
+                         </Form.Row>
+                         <h3>Classes</h3>
+                         <Form.Row>
+                           <Col md={'12'} className={'mb-5'}>
+                             <FieldArray name="dndClasses">
+                               {({fields}) =>
+                                 fields.map((characterClass, index) => (
+                                   !fields.value[index] || !fields.value[index]._destroy ? (
+                                     <CharacterClassFields characterClass={characterClass}
+                                                           fields={fields}
+                                                           index={index}
+                                                           key={index}/>
+                                   ) : null))
+                               }
+                             </FieldArray>
+                             <Button type="button" onClick={() => push('dndClasses', {
+                               dndClass: {
+                                 value: 153,
+                                 label: 'Fighter',
+                               },
+                               level: 1,
+                             })} variant={'info'} block>Add Class</Button>
+                           </Col>
+                         </Form.Row>
+                         <Form.Row>
+                           <FormField label={'THAC0'}
+                                      type={'number'}
+                                      colWidth={'4'}
+                                      name={'thaco'}/>
+                           <FormField label={'Armor Class'}
+                                      type={'number'}
+                                      colWidth={'4'}
+                                      name={'armorClass'}/>
+                           <FormField label={'Hit Points'}
+                                      type={'number'}
+                                      colWidth={'4'}
+                                      name={'hitPoints'}/>
+                         </Form.Row>
+                         <Form.Row>
+                           <AbilityScoreField label={'STR'} type={'number'} colWidth={'2'} name={'strength'} hideRoll/>
+                           <AbilityScoreField label={'DEX'} type={'number'} colWidth={'2'} name={'dexterity'} hideRoll/>
+                           <AbilityScoreField label={'CON'} type={'number'} colWidth={'2'} name={'constitution'} hideRoll/>
+                           <AbilityScoreField label={'INT'} type={'number'} colWidth={'2'} name={'intelligence'} hideRoll/>
+                           <AbilityScoreField label={'WIS'} type={'number'} colWidth={'2'} name={'wisdom'} hideRoll/>
+                           <AbilityScoreField label={'CHA'} type={'number'} colWidth={'2'} name={'charisma'} hideRoll/>
+                         </Form.Row>
+                         <Form.Row>
+                           <FormSelect label={'Alignment'}
+                                       colWidth={'6'}
+                                       name={'characterAlignment'}
+                                       value={values.alignment}
+                                       options={alignmentOptions}/>
+                           <FormField label={'Number of Attacks'}
+                                      type={'number'}
+                                      colWidth={'6'}
+                                      name={'numberOfAttacks'}/>
+                         </Form.Row>
+                         <Form.Row className={'mb-4'}>
+                           <Col md={'12'}>
+                             <h3>Actions</h3>
+                             <FieldArray name="actions" className={'mb-3'}>
+                               {({fields}) => (
+                                 fields.map((action, index) => (
+                                   !fields.value[index] || !fields.value[index]._destroy ? (
+                                     <ActionSelect colWidth={'10'}
+                                                   action={action}
+                                                   key={index}
+                                                   fields={fields}
+                                                   index={index}/>
+                                   ) : null))
+                               )}
+                             </FieldArray>
+                             <Button type="button"
+                                     onClick={() => push('actions', {
+                                       value: 761,
+                                       label: 'Longsword',
+                                       data:{
+                                         attackBonus: 0,
+                                         damageBonus: 0,
+                                         damageDiceCount: 1,
+                                         damageDiceValue: 8,
+                                         damageDice2HCount: 1,
+                                         damageDice2HValue: 10,
+                                         damageType: 'Slashing',
+                                         range: 'Martial Melee',
+                                         rangeNormal: 5,
+                                         rangeLong: null,
+                                         thrownRangeLong: null,
+                                         thrownRangeNormal: null,
+                                         category: 'Martial',
+                                         properties: ['Versatile'],
+                                       },
+                                     })} variant={'info'} block>Add Action</Button>
+                           </Col>
+                         </Form.Row>
+                         {/*{values.npcVariant.value === 'caster_wizard' ? (*/}
+                         {/*  <WizardSpellSelect showWizardSpells={true}/>*/}
+                         {/*) : null}*/}
+                         {/*{values.npcVariant.value === 'caster_cleric' ? (*/}
+                         {/*  <ClericSpellSelect showClericSpells={true}/>*/}
+                         {/*) : null}*/}
+                         <Form.Row className={'mb-4'}>
+                           <ButtonGroup aria-label="Character actions">
+                             <Button type="submit" disabled={submitting}>Convert NPC</Button>
+                             <Button type="button" onClick={form.reset} disabled={submitting || pristine}
+                                     variant={'secondary'}>Reset</Button>
+                           </ButtonGroup>
+                         </Form.Row>
+                       </Form>
+                     )}
+          />
+        </Card.Body>
+      </Card>
+    );
+  }
+}
+
+Convert2eNPC.propTypes = {
+  generateNonPlayerCharacter: PropTypes.func.isRequired,
+  user: PropTypes.object,
+};
+
+function mapStateToProps (state) {
+  return {
+    flashMessages: state.flashMessages,
+    user: state.users.user,
+  };
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    generateNonPlayerCharacter: (npc) => {
+      dispatch(rest.actions.generateNonPlayerCharacter({}, {body: JSON.stringify(npc)}));
+    },
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Convert2eNPC);

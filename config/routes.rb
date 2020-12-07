@@ -15,6 +15,9 @@ Rails.application.routes.draw do
         post '/generate_npc', to: 'characters#generate_npc',
             as: 'generate_npc',
             constraints: { format: 'json' }
+        post '/convert_2e_npc', to: 'characters#convert_2e_npc',
+             as: 'convert_2e_npc',
+             constraints: { format: 'json' }
         get '/generate_commoner', to: 'characters#generate_commoner',
              as: 'generate_commoner',
              constraints: { format: 'json' }

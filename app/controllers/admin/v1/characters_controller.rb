@@ -13,6 +13,10 @@ module Admin::V1
       render json: {npc: NpcGenerator.generate_npc(params)}
     end
 
+    def convert_2e_npc
+      render json: {npc: NpcGenerator.convert_2e_npc(params)}
+    end
+
     def generate_commoner
       random_npc_gender = params[:random_npc_gender] || %w[male female].sample
       random_npc_race = params[:random_npc_race] || 'human'
