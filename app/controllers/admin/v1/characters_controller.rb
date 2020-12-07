@@ -23,5 +23,8 @@ module Admin::V1
       render json: {npc: NpcGenerator.generate_commoner(random_npc_gender, random_npc_race)}
     end
 
+    def random_tavern_name
+      render json: {name: NameGen.random_tavern_name}
+    end
   end
 end

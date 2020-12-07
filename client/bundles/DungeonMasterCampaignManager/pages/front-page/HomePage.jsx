@@ -10,7 +10,7 @@ import PageTitle from '../../components/layout/PageTitle';
 import NameField from '../../components/NameField';
 import {Link} from '@reach/router';
 import Col from 'react-bootstrap/Col';
-import Card from 'react-bootstrap/Card';
+import TavernNameField from '../../components/TavernNameField';
 
 const HomePage = (props) => (
   <PageContainer user={props.user}
@@ -27,13 +27,12 @@ const HomePage = (props) => (
       </Row>
       <Row className={'mb-5'}>
         <Col>
-          <Card className={'shadow mb-5'}>
-            <Card.Body>
-              <Card.Title>Random Character Name</Card.Title>
-              <Card.Subtitle>Generate a random fantasy name based on gender and race</Card.Subtitle>
-              <NameField colWidth={'12'}/>
-            </Card.Body>
-          </Card>
+          <NameField colWidth={'12'}/>
+        </Col>
+      </Row>
+      <Row className={'mb-5'}>
+        <Col>
+          <TavernNameField colWidth={'12'}/>
         </Col>
       </Row>
     </Container>

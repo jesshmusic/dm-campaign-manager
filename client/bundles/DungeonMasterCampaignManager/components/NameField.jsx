@@ -5,12 +5,12 @@
 import React, {useState} from 'react';
 import PropTypes from 'prop-types';
 import Form from 'react-bootstrap/Form';
-import Col from 'react-bootstrap/Col';
-import Row from 'react-bootstrap/Row';
 import CopyField from './CopyField';
 import NameOptions from './forms/NameOptions';
+import Card from 'react-bootstrap/Card';
+import Row from 'react-bootstrap/Row';
 
-const NameField = ({colWidth}) => {
+const NameField = () => {
   const [nameValue, setNameValue] = useState('');
 
   const handleGenerateName = (gender, race) => {
@@ -23,21 +23,21 @@ const NameField = ({colWidth}) => {
   };
 
   return (
-    <Col md={colWidth}>
-      <Row>
+    <Card className={'shadow mb-5'}>
+      <Card.Body>
+        <Card.Title>Random Character Name</Card.Title>
+        <Card.Subtitle>Generate a random fantasy name based on gender and race</Card.Subtitle>
         <Form>
-          <Col md={'12'}>
+          <Row>
             <CopyField placeHolder={'Random Name...'}
                        fieldId={'randomFantasyName'}
                        label={'Random Name'}
                        text={nameValue} />
-          </Col>
-          <Col md={'12'}>
-            <NameOptions onFormSubmit={handleGenerateName} submitText={'Name'}/>
-          </Col>
+          </Row>
+          <NameOptions onFormSubmit={handleGenerateName} submitText={'Name'}/>
         </Form>
-      </Row>
-    </Col>
+      </Card.Body>
+    </Card>
   );
 };
 
