@@ -7,7 +7,7 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/layout/PageTitle';
-import NPCDisplay from '../../components/NPCDisplay';
+import NPCDisplay from '../npcs/partials/NPCDisplay';
 import GenerateNPC from '../npcs/partials/GenerateNPC';
 import Col from 'react-bootstrap/Col';
 import rest from '../../actions/api';

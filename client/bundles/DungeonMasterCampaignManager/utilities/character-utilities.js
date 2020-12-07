@@ -711,7 +711,7 @@ export const characterCalculations = createDecorator(
 
 export const getSpellLevelArray = (spells) => {
   return spells.map(spell => spell.value);
-}
+};
 
 export const getNPCObject = (values) => {
   const returnChar = {
@@ -730,6 +730,39 @@ export const getNPCObject = (values) => {
     weapon: values.weapon,
     charisma: values.charisma,
     numberOfAttacks: values.numberOfAttacks,
+    actions: values.actions,
+    ...(values.spellsCantrips && {spellsCantrips: getSpellLevelArray(values.spellsCantrips)}),
+    ...(values.spellsLevel1 && {spellsLevel1: getSpellLevelArray(values.spellsLevel1)}),
+    ...(values.spellsLevel2 && {spellsLevel2: getSpellLevelArray(values.spellsLevel2)}),
+    ...(values.spellsLevel3 && {spellsLevel3: getSpellLevelArray(values.spellsLevel3)}),
+    ...(values.spellsLevel4 && {spellsLevel4: getSpellLevelArray(values.spellsLevel4)}),
+    ...(values.spellsLevel5 && {spellsLevel5: getSpellLevelArray(values.spellsLevel5)}),
+    ...(values.spellsLevel6 && {spellsLevel6: getSpellLevelArray(values.spellsLevel6)}),
+    ...(values.spellsLevel7 && {spellsLevel7: getSpellLevelArray(values.spellsLevel7)}),
+    ...(values.spellsLevel8 && {spellsLevel8: getSpellLevelArray(values.spellsLevel8)}),
+    ...(values.spellsLevel9 && {spellsLevel9: getSpellLevelArray(values.spellsLevel9)}),
+  };
+  return snakecaseKeys(returnChar, {exclude: ['_destroy']});
+};
+
+export const get2eNPCObject = (values) => {
+  const returnChar = {
+    name: values.name,
+    race: values.characterRace.value,
+    dndClasses: values.dndClasses,
+    thaco: values.thaco,
+    armorClass: values.armorClass,
+    hitPoints: values.hitPoints,
+    strength: values.strength,
+    dexterity: values.dexterity,
+    constitution: values.constitution,
+    intelligence: values.intelligence,
+    wisdom: values.wisdom,
+    weapon: values.weapon,
+    charisma: values.charisma,
+    alignment: values.alignment,
+    numberOfAttacks: values.numberOfAttacks,
+    speed: values.speed,
     actions: values.actions,
     ...(values.spellsCantrips && {spellsCantrips: getSpellLevelArray(values.spellsCantrips)}),
     ...(values.spellsLevel1 && {spellsLevel1: getSpellLevelArray(values.spellsLevel1)}),

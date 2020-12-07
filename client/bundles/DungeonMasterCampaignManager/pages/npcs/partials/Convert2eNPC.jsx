@@ -15,15 +15,9 @@ import createDecorator from 'final-form-calculate';
 import snakecaseKeys from 'snakecase-keys';
 
 import {
-  alignmentOptions,
-  getChallengeRatingOptions, getNPCObject,
-  npcSizeOptions,
+  alignmentOptions, get2eNPCObject,
 } from '../../../utilities/character-utilities';
 import FormSelect from '../../../components/forms/FormSelect';
-import NameFormField from './NameFormField';
-import NpcVariationSelect from './NpcVariationSelect';
-import MonsterTypeSelect from './MonsterTypeSelect';
-import RaceSelect from './RaceSelect';
 import FormField from '../../../components/forms/FormField';
 import Card from 'react-bootstrap/Card';
 import WizardSpellSelect from '../../characters/partials/spell-fields/WizardSpellSelect';
@@ -32,8 +26,14 @@ import ActionSelect from './ActionSelect';
 import {FieldArray} from 'react-final-form-arrays';
 import Col from 'react-bootstrap/Col';
 import AbilityScoreField from './AbilityScoreField';
-import DndClassSelect from '../../characters/partials/dnd-classes/DndClassSelect';
 import CharacterClassFields from '../../characters/partials/CharacterClassFields';
+import RaceSelect from './RaceSelect';
+import BardSpellSelect from '../../characters/partials/spell-fields/BardSpellSelect';
+import DruidSpellSelect from '../../characters/partials/spell-fields/DruidSpellSelect';
+import PaladinSpellSelect from '../../characters/partials/spell-fields/PaladinSpellSelect';
+import RangerSpellSelect from '../../characters/partials/spell-fields/RangerSpellSelect';
+import SorcererSpellSelect from '../../characters/partials/spell-fields/SorcererSpellSelect';
+import WarlockSpellSelect from '../../characters/partials/spell-fields/WarlockSpellSelect';
 
 const npcFormDecorator = createDecorator(
   {
@@ -53,6 +53,10 @@ class Convert2eNPC extends React.Component {
         value: 'Neutral',
         label: 'Neutral',
       },
+      characterRace: {
+        value: 'human',
+        label: 'Human',
+      },
       armorClass: 10,
       hitPoints: 10,
       strength: 10,
@@ -63,20 +67,15 @@ class Convert2eNPC extends React.Component {
       charisma: 10,
       thaco: 10,
       numberOfAttacks: 1,
+      speed: '12',
       actions: [],
       dndClasses: [],
     },
     validated: false,
   };
 
-  componentDidMount () {
-    this.setState({
-      challengeRatingOptions: getChallengeRatingOptions(),
-    });
-  }
-
   handleSubmit = async (values) => {
-    const npc = getNPCObject(values);
+    const npc = get2eNPCObject(values);
     this.props.generateNonPlayerCharacter(snakecaseKeys(npc));
   };
 
@@ -121,13 +120,19 @@ class Convert2eNPC extends React.Component {
     return errors;
   };
 
+  containsDndClass = (dndClass, dndClasses) => {
+    return dndClasses.some((dndCls) => dndCls.dndClass.label === dndClass);
+  }
+
   render () {
     const {npc, validated} = this.state;
     return (
       <Card className={'shadow mb-5'}>
         <Card.Body>
           <Card.Title>D&D 2nd Edition NPC Convertor</Card.Title>
-          <Card.Subtitle>Enter stats for a 2E NPC to generate its 5E equivalent (roughly)</Card.Subtitle>
+          <Card.Subtitle>
+            Enter stats for a 2E NPC to generate its 5E equivalent (roughly) for <em>humanoid</em> NPCs.
+          </Card.Subtitle>
           <FinalForm onSubmit={this.handleSubmit}
                      decorators={[npcFormDecorator]}
                      initialValues={npc}
@@ -147,8 +152,9 @@ class Convert2eNPC extends React.Component {
                          <Form.Row>
                            <FormField label={'Name'}
                                       type={'text'}
-                                      colWidth={'12'}
+                                      colWidth={'8'}
                                       name={'name'}/>
+                           <RaceSelect colWidth={'4'}/>
                          </Form.Row>
                          <h3>Classes</h3>
                          <Form.Row>
@@ -203,8 +209,12 @@ class Convert2eNPC extends React.Component {
                                        options={alignmentOptions}/>
                            <FormField label={'Number of Attacks'}
                                       type={'number'}
-                                      colWidth={'6'}
+                                      colWidth={'3'}
                                       name={'numberOfAttacks'}/>
+                           <FormField label={'Speed (MV)'}
+                                      type={'number'}
+                                      colWidth={'3'}
+                                      name={'speed'}/>
                          </Form.Row>
                          <Form.Row className={'mb-4'}>
                            <Col md={'12'}>
@@ -244,12 +254,14 @@ class Convert2eNPC extends React.Component {
                                      })} variant={'info'} block>Add Action</Button>
                            </Col>
                          </Form.Row>
-                         {/*{values.npcVariant.value === 'caster_wizard' ? (*/}
-                         {/*  <WizardSpellSelect showWizardSpells={true}/>*/}
-                         {/*) : null}*/}
-                         {/*{values.npcVariant.value === 'caster_cleric' ? (*/}
-                         {/*  <ClericSpellSelect showClericSpells={true}/>*/}
-                         {/*) : null}*/}
+                         <WizardSpellSelect showWizardSpells={this.containsDndClass('Wizard', values.dndClasses)}/>
+                         <ClericSpellSelect showClericSpells={this.containsDndClass('Cleric', values.dndClasses)}/>
+                         <BardSpellSelect showBardSpells={this.containsDndClass('Bard', values.dndClasses) }/>
+                         <DruidSpellSelect showDruidSpells={this.containsDndClass('Druid', values.dndClasses)}/>
+                         <PaladinSpellSelect showPaladinSpells={this.containsDndClass('Paladin', values.dndClasses)}/>
+                         <RangerSpellSelect showRangerSpells={this.containsDndClass('Ranger', values.dndClasses)}/>
+                         <SorcererSpellSelect showSorcererSpells={this.containsDndClass('Sorcerer', values.dndClasses)}/>
+                         <WarlockSpellSelect showWarlockSpells={this.containsDndClass('Warlock', values.dndClasses)}/>
                          <Form.Row className={'mb-4'}>
                            <ButtonGroup aria-label="Character actions">
                              <Button type="submit" disabled={submitting}>Convert NPC</Button>
@@ -281,7 +293,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     generateNonPlayerCharacter: (npc) => {
-      dispatch(rest.actions.generateNonPlayerCharacter({}, {body: JSON.stringify(npc)}));
+      dispatch(rest.actions.convert2eNonPlayerCharacter({}, {body: JSON.stringify(npc)}));
     },
   };
 }

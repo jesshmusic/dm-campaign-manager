@@ -55,6 +55,16 @@ export default reduxApi({
       };
     },
   },
+  convert2eNonPlayerCharacter: {
+    url: '/v1/convert_2e_npc',
+    options () {
+      const headers = getHeaders();
+      return {
+        method: 'post',
+        headers,
+      };
+    },
+  },
   generateCommoner: {
     url: '/v1/generate_commoner?random_npc_gender=:gender&random_npc_race=:race',
   },

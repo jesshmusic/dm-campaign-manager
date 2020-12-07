@@ -41,6 +41,37 @@ class NpcGenerator
         methods: %i[description_text hit_dice size_and_type saving_throws skills_string xp])
     end
 
+    def convert_2e_npc(npc_attributes)
+      @new_npc = Monster.new(name: npc_attributes[:name],
+                             size: 'Medium',
+                             alignment: npc_attributes[:alignment],
+                             monster_type: 'humanoid',
+                             strength: npc_attributes[:strength],
+                             dexterity:  npc_attributes[:dexterity],
+                             constitution: npc_attributes[:constitution],
+                             intelligence: npc_attributes[:intelligence],
+                             wisdom: npc_attributes[:wisdom],
+                             charisma: npc_attributes[:charisma])
+
+      @new_npc.monster_subtype = npc_attributes[:race]
+
+      convert_2e_stats(npc_attributes)
+
+      # Race
+      set_npc_race(npc_attributes[:monster_subtype])
+
+      # Spellcasting
+      parse_spells_action npc_attributes
+
+      # Add Actions
+      create_actions(npc_attributes[:actions], npc_attributes[:number_of_attacks].to_i, @new_npc.challenge_rating.to_sym)
+
+      # Return
+      @new_npc.as_json(
+        include: %i[monster_actions monster_legendary_actions monster_special_abilities skills],
+        methods: %i[description_text hit_dice size_and_type saving_throws skills_string xp])
+    end
+
     def generate_commoner(random_npc_gender, random_npc_race)
       commoner = Monster.where(name: 'Commoner').first
       @new_npc = Monster.new commoner.attributes
@@ -259,6 +290,39 @@ class NpcGenerator
       damage_dice_value = action[:data][:damage_dice_value].to_i
       base_damage = ((damage_dice_count * damage_dice_value + npc_dam_bonus) * 0.55).ceil
       [action_damage_bonus, base_damage]
+    end
+
+    # 2e conversions
+
+    def convert_2e_stats(stats)
+      convert_2e_armor_class(stats[:armor_class].to_i)
+      convert_2e_calculate_cr(stats[:hit_points].to_i)
+      convert_2e_speed(stats[:speed].to_i)
+    end
+
+    def convert_2e_armor_class(armor_class)
+      @new_npc.armor_class = 19 - armor_class
+    end
+
+    def convert_2e_calculate_cr(hit_points)
+      crs = DndRules.challenge_ratings
+      @new_npc.hit_points = hit_points * 2
+      crs.each do |key, cr_object|
+        if @new_npc.hit_points >= cr_object[:hit_points_min] && @new_npc.hit_points < cr_object[:hit_points_max]
+          @new_npc.challenge_rating = key
+          con_modifier = DndRules.ability_score_modifier(@new_npc.constitution)
+          hit_points_info = DndRules.num_hit_die_for_size(@new_npc.size, @new_npc.challenge_rating, con_modifier, @new_npc.hit_points)
+          @new_npc.hit_dice_number = hit_points_info[:num_hit_die]
+          @new_npc.hit_points = hit_points_info[:hit_points]
+          @new_npc.hit_dice_modifier = @new_npc.hit_dice_number * con_modifier
+        end
+      end
+    end
+
+    # @todo check this out with monsters, but for now this is just for humanoids
+    def convert_2e_speed(speed)
+      speed_5e = ((speed.to_f / 4) * 10).ceil
+      @new_npc.speed = "#{speed_5e} ft."
     end
 
     # def generate_ability_scores(min_score = 15)

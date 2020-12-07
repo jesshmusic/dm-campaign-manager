@@ -3,6 +3,8 @@ import _ from 'lodash';
 
 const generateNonPlayerCharacterSuccess = createAction('@@redux-api@generateNonPlayerCharacter_success');
 const generateNonPlayerCharacterFail = createAction('@@redux-api@generateNonPlayerCharacter_fail');
+const convert2eNonPlayerCharacterSuccess = createAction('@@redux-api@convert2eNonPlayerCharacter_success');
+const convert2eNonPlayerCharacterFail = createAction('@@redux-api@convert2eNonPlayerCharacter_fail');
 const generateCommonerSuccess = createAction('@@redux-api@generateCommoner_success');
 const generateCommonerFail = createAction('@@redux-api@generateCommoner_fail');
 const getNPCsSuccess = createAction('@@redux-api@getNPCs_success');
@@ -25,6 +27,22 @@ const npcs = createReducer({
     };
   },
   [generateNonPlayerCharacterFail]: (state) => {
+    return {
+      npcs: state.npcs,
+      npcTypes: state.npcTypes,
+      count: state.count,
+      currentNPC: null,
+    };
+  },
+  [convert2eNonPlayerCharacterSuccess]: (state, action) => {
+    return {
+      npcs: state.npcs,
+      npcTypes: state.npcTypes,
+      count: state.count,
+      currentNPC: action.data.npc,
+    };
+  },
+  [convert2eNonPlayerCharacterFail]: (state) => {
     return {
       npcs: state.npcs,
       npcTypes: state.npcTypes,
