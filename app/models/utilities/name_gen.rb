@@ -218,15 +218,11 @@ class NameGen
         adjective: @tavern_adjectives.clone.map(&:clone),
         title: @tavern_titles.clone.map(&:clone)
       }
-      tavern_name = ''
-      pattern = @tavern_patterns.sample
-
-
-      # def try_replacement(match)
-      #   match = match.gsub(/<|>/, '')
-      #   puts match
-      # end
-      # try_replacement(@tavern_patterns.first)
+      tavern_name = @tavern_patterns.sample
+      tavern_name.gsub(/<([\w\W]*?)>/) { |match|
+        match = match.gsub(/<|>/, '')
+        options[match.to_sym].sample
+      }.titleize
     end
 
     private
