@@ -15,25 +15,18 @@ import createDecorator from 'final-form-calculate';
 import snakecaseKeys from 'snakecase-keys';
 
 import {
-  alignmentOptions, get2eNPCObject,
+  alignmentOptions, defaultFighterClass, get2eNPCObject,
 } from '../../../utilities/character-utilities';
 import FormSelect from '../../../components/forms/FormSelect';
 import FormField from '../../../components/forms/FormField';
 import Card from 'react-bootstrap/Card';
-import WizardSpellSelect from '../../characters/partials/spell-fields/WizardSpellSelect';
-import ClericSpellSelect from '../../characters/partials/spell-fields/ClericSpellSelect';
 import ActionSelect from './ActionSelect';
 import {FieldArray} from 'react-final-form-arrays';
 import Col from 'react-bootstrap/Col';
 import AbilityScoreField from './AbilityScoreField';
-import CharacterClassFields from '../../characters/partials/CharacterClassFields';
+import CharacterClassFields from './CharacterClassFields';
 import RaceSelect from './RaceSelect';
-import BardSpellSelect from '../../characters/partials/spell-fields/BardSpellSelect';
-import DruidSpellSelect from '../../characters/partials/spell-fields/DruidSpellSelect';
-import PaladinSpellSelect from '../../characters/partials/spell-fields/PaladinSpellSelect';
-import RangerSpellSelect from '../../characters/partials/spell-fields/RangerSpellSelect';
-import SorcererSpellSelect from '../../characters/partials/spell-fields/SorcererSpellSelect';
-import WarlockSpellSelect from '../../characters/partials/spell-fields/WarlockSpellSelect';
+import DndClassSpellSelect from './spell-fields/DndClassSpellSelect';
 
 const npcFormDecorator = createDecorator(
   {
@@ -120,10 +113,6 @@ class Convert2eNPC extends React.Component {
     return errors;
   };
 
-  containsDndClass = (dndClass, dndClasses) => {
-    return dndClasses.some((dndCls) => dndCls.dndClass.label === dndClass);
-  }
-
   render () {
     const {npc, validated} = this.state;
     return (
@@ -170,13 +159,12 @@ class Convert2eNPC extends React.Component {
                                    ) : null))
                                }
                              </FieldArray>
-                             <Button type="button" onClick={() => push('dndClasses', {
-                               dndClass: {
-                                 value: 153,
-                                 label: 'Fighter',
-                               },
-                               level: 1,
-                             })} variant={'info'} block>Add Class</Button>
+                             <Button type="button"
+                                     onClick={() => push('dndClasses', defaultFighterClass)}
+                                     variant={'info'}
+                                     block>
+                               Add Class
+                             </Button>
                            </Col>
                          </Form.Row>
                          <Form.Row>
@@ -254,14 +242,9 @@ class Convert2eNPC extends React.Component {
                                      })} variant={'info'} block>Add Action</Button>
                            </Col>
                          </Form.Row>
-                         <WizardSpellSelect showWizardSpells={this.containsDndClass('Wizard', values.dndClasses)}/>
-                         <ClericSpellSelect showClericSpells={this.containsDndClass('Cleric', values.dndClasses)}/>
-                         <BardSpellSelect showBardSpells={this.containsDndClass('Bard', values.dndClasses) }/>
-                         <DruidSpellSelect showDruidSpells={this.containsDndClass('Druid', values.dndClasses)}/>
-                         <PaladinSpellSelect showPaladinSpells={this.containsDndClass('Paladin', values.dndClasses)}/>
-                         <RangerSpellSelect showRangerSpells={this.containsDndClass('Ranger', values.dndClasses)}/>
-                         <SorcererSpellSelect showSorcererSpells={this.containsDndClass('Sorcerer', values.dndClasses)}/>
-                         <WarlockSpellSelect showWarlockSpells={this.containsDndClass('Warlock', values.dndClasses)}/>
+                         {values.dndClasses.map((dndClass, index) => (
+                           <DndClassSpellSelect dndClass={dndClass} key={index} />
+                         ))}
                          <Form.Row className={'mb-4'}>
                            <ButtonGroup aria-label="Character actions">
                              <Button type="submit" disabled={submitting}>Convert NPC</Button>

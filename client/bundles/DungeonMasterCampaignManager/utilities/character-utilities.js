@@ -389,6 +389,46 @@ const abilityScoreUpdates = {
   raceId: (value) => value.value,
 };
 
+export const defaultFighterClass = {
+  dndClass: {
+    value: 153,
+    label: 'Fighter',
+    data: {
+      id: 153,
+      name: 'Fighter',
+      hitDie: 10,
+      slug: 'fighter',
+      userId: null,
+      spellAbility: null,
+      primaryAbilities: [ 'Strength' ],
+      savingThrowAbilities: ['Strength', 'Constitution'],
+      proficiencies:[
+        {
+          id:4,
+          name: 'All armor',
+          profType: 'Armor',
+        }, {
+          id: 18,
+          name: 'Shields',
+          'profType':'Armor'},
+        {'id':19, 'name':'Simple weapons', 'profType':'Weapons'},
+        {'id':20, 'name':'Martial weapons', 'profType':'Weapons'},
+      ],
+      'proficiencyChoices': [{'id':118, 'name':'Fighter 0', 'numChoices':2, 'profChoiceType':'proficiencies',
+        'proficiencies':[
+          {'id':105, 'name':'Skill: Acrobatics', 'profType':'Skills'},
+          {'id':106, 'name':'Skill: Animal Handling', 'profType':'Skills'},
+          {'id':108, 'name':'Skill: Athletics', 'profType':'Skills'},
+          {'id':110, 'name':'Skill: History', 'profType':'Skills'},
+          {'id':111, 'name':'Skill: Insight', 'profType':'Skills'},
+          {'id':112, 'name':'Skill: Intimidation', 'profType':'Skills'},
+          {'id':116, 'name':'Skill: Perception', 'profType':'Skills'},
+          {'id':122, 'name':'Skill: Survival', 'profType':'Skills'},
+        ]}],
+      'url':'http://127.0.0.1:3000/v1/dnd_classes/fighter.json'}},
+  level: 1,
+};
+
 export const characterCalculations = createDecorator(
   {
     field: 'applyRaceMods',
@@ -710,7 +750,7 @@ export const characterCalculations = createDecorator(
 );
 
 export const getSpellLevelArray = (spells) => {
-  return spells.map(spell => spell.value);
+  return spells.map((spell) => spell.value);
 };
 
 export const getNPCObject = (values) => {

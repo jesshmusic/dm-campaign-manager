@@ -5,13 +5,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import FormSelectAsync from '../../../../components/forms/FormSelectAsync';
-import {filterOptions} from '../../../../utilities/character-utilities';
+import {filterOptionsWithData} from '../../../../utilities/character-utilities';
 
 const getDndClasses = (inputValue, callback) => {
   fetch(`/v1/dnd_classes.json?search=${inputValue}`)
     .then((response) => response.json())
     .then((jsonResult) => {
-      callback(filterOptions(jsonResult));
+      const options = filterOptionsWithData(jsonResult);
+      callback(options);
     });
 };
 

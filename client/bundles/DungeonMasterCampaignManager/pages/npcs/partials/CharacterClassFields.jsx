@@ -11,7 +11,10 @@ import { GiTrashCan } from 'react-icons/gi';
 import Col from 'react-bootstrap/Col';
 import DndClassSelect from './dnd-classes/DndClassSelect';
 
-const CharacterClassFields = ({characterClass, classOptions, fields, index}) => {
+const CharacterClassFields = ({characterClass, fields, index}) => {
+  if (index === 0) {
+    console.log(fields.value[index]);
+  }
   const removeItem = () => {
     if (fields.value[index] && fields.value[index].id) {
       fields.update(index, {
@@ -47,7 +50,7 @@ const CharacterClassFields = ({characterClass, classOptions, fields, index}) => 
       </Form.Group>
     </Form.Row>
   );
-}
+};
 
 CharacterClassFields.propTypes = {
   characterClass: PropTypes.string.isRequired,
