@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import FormSelectAsync from '../../../../components/forms/FormSelectAsync';
 import Form from 'react-bootstrap/Form';
 
-const SpellLevelSelect = ({spellLevelText, levelNumber, dndClassName}) => {
+const SpellLevelSelect = ({spellLevelText, levelNumber, dndClassName, name}) => {
   const filterSpellOptions = (results) => results.map((nextItem) => ({
     value: nextItem.name.toLowerCase(),
     label: nextItem.name,
@@ -25,13 +25,16 @@ const SpellLevelSelect = ({spellLevelText, levelNumber, dndClassName}) => {
       });
   };
 
+  const fieldName = `spells${spellLevelText.replace(/\s+/g, '')}`.replace(/ *\([^)]*\) */g, '');
+
+
   return (
     <Form.Row>
       <FormSelectAsync
         label={ spellLevelText }
         colWidth={ '12' }
         getOptions={ getSpells }
-        name={ `spells${spellLevelText.replace(/\s+/g, '')}` }
+        name={ fieldName }
         placeholder={ 'Search for Spells...' }
         isMulti={ true }/>
     </Form.Row>

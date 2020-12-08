@@ -61,7 +61,8 @@ class NpcGenerator
       set_npc_race(npc_attributes[:monster_subtype])
 
       # Spellcasting
-      parse_spells_action npc_attributes
+      spell_attack, spell_save_dc, spellcasting_ability, spellcasting_level = spellcasting_for_class(npc_attributes)
+      create_spells_trait(npc_attributes, spell_attack, spell_save_dc, spellcasting_ability, spellcasting_level)
 
       # Add Actions
       create_actions(npc_attributes[:actions], npc_attributes[:number_of_attacks].to_i, @new_npc.challenge_rating.to_sym)
@@ -91,6 +92,33 @@ class NpcGenerator
 
     private
 
+    def spellcasting_for_class(npc_attributes)
+      spellcasting_classes = npc_attributes[:dnd_classes].select { |dnd_class|
+        dnd_class_name = dnd_class[:dnd_class][:label]
+        dnd_class_name == 'Bard' || dnd_class_name == 'Cleric' || dnd_class_name == 'Druid' ||
+          dnd_class_name == 'Sorcerer' || dnd_class_name == 'Wizard' || dnd_class_name == 'Paladin' ||
+          dnd_class_name == 'Ranger' || dnd_class_name == 'Warlock'
+      }
+      spellcasting_class = spellcasting_classes.max_by do |dnd_class|
+        dnd_class[:level].to_i
+      end
+      spell_class = DndClass.find(spellcasting_class[:dnd_class][:value])
+      prof_bonus = DndRules.proficiency_bonus_for_level(spellcasting_class[:level].to_i)
+      spell_attack = DndRules.spell_attack_bonus(prof_bonus, spell_class, @new_npc)
+      spell_save_dc = DndRules.challenge_ratings[spellcasting_class[:level].to_sym][:save_dc]
+      spellcasting_ability = if spellcasting_class[:dnd_class][:label] == 'Wizard'
+                               'Intelligence'
+                             elsif spellcasting_class[:dnd_class][:label] == 'Cleric' ||
+                               spellcasting_class[:dnd_class][:label] == 'Druid' ||
+                               spellcasting_class[:dnd_class][:label] == 'Ranger'
+                               'Wisdom'
+                             else
+                               'Charisma'
+                             end
+      spellcasting_level = "#{spellcasting_class[:level].to_i.ordinalize}-level"
+      [spell_attack, spell_save_dc, spellcasting_ability, spellcasting_level]
+    end
+
     def set_npc_race(race_string)
       unless race_string.blank?
         race_name = DndRules.race_values[race_string.to_sym]
@@ -110,45 +138,50 @@ class NpcGenerator
     # Spellcasting
 
     def parse_spells_action(atts)
+      puts atts[:npc_variant] == 'caster_wizard' || atts[:npc_variant] == 'caster_cleric'
       if atts[:npc_variant] == 'caster_wizard' || atts[:npc_variant] == 'caster_cleric'
         spell_attack, spell_save_dc, spellcaster_ability, spellcasting_level = get_spellcasting_stats(atts)
-        spellcasting_ability = MonsterSpecialAbility.new(
-          name: 'Spellcasting'
-        )
-        spell_desc = ["The #{@new_npc.name} is a #{spellcasting_level} spellcaster. Its spellcasting ability is #{spellcaster_ability} (spell save DC #{spell_save_dc}, +#{spell_attack} to hit with spell attacks). #{@new_npc.name} has the following spells prepared.\n\n"]
-        if atts[:spells_cantrips]
-          spell_desc << "Cantrips (at will): #{atts[:spells_cantrips].join(', ')}\n"
-        end
-        if atts[:spells_level1]
-          spell_desc << "1st level (#{atts[:spells_level1].length} slots): #{atts[:spells_level1].join(', ')}\n"
-        end
-        if atts[:spells_level2]
-          spell_desc << "2nd level (#{atts[:spells_level2].length} slots): #{atts[:spells_level2].join(', ')}\n"
-        end
-        if atts[:spells_level3]
-          spell_desc << "3rd level (#{atts[:spells_level3].length} slots): #{atts[:spells_level3].join(', ')}\n"
-        end
-        if atts[:spells_level4]
-          spell_desc << "4th level (#{atts[:spells_level4].length} slots): #{atts[:spells_level4].join(', ')}\n"
-        end
-        if atts[:spells_level5]
-          spell_desc << "5th level (#{atts[:spells_level5].length} slots): #{atts[:spells_level5].join(', ')}\n"
-        end
-        if atts[:spells_level6]
-          spell_desc << "6th level (#{atts[:spells_level6].length} slots): #{atts[:spells_level6].join(', ')}\n"
-        end
-        if atts[:spells_level7]
-          spell_desc << "7th level (#{atts[:spells_level7].length} slots): #{atts[:spells_level7].join(', ')}\n"
-        end
-        if atts[:spells_level8]
-          spell_desc << "8th level (#{atts[:spells_level8].length} slots): #{atts[:spells_level8].join(', ')}\n"
-        end
-        if atts[:spells_level9]
-          spell_desc << "9th level (#{atts[:spells_level9].length} slots): #{atts[:spells_level9].join(', ')}"
-        end
-        spellcasting_ability.description = spell_desc.join
-        @new_npc.monster_special_abilities << spellcasting_ability
+        create_spells_trait(atts, spell_attack, spell_save_dc, spellcaster_ability, spellcasting_level)
       end
+    end
+
+    def create_spells_trait(atts, spell_attack, spell_save_dc, spellcaster_ability, spellcasting_level)
+      spellcasting_ability = MonsterSpecialAbility.new(
+        name: 'Spellcasting'
+      )
+      spell_desc = ["The #{@new_npc.name} is a #{spellcasting_level} spellcaster. Its spellcasting ability is #{spellcaster_ability} (spell save DC #{spell_save_dc}, +#{spell_attack} to hit with spell attacks). #{@new_npc.name} has the following spells prepared.\n\n"]
+      if atts[:spells_cantrips]
+        spell_desc << "Cantrips (at will): #{atts[:spells_cantrips].join(', ')}\n"
+      end
+      if atts[:spells_level1]
+        spell_desc << "1st level (#{atts[:spells_level1].length} slots): #{atts[:spells_level1].join(', ')}\n"
+      end
+      if atts[:spells_level2]
+        spell_desc << "2nd level (#{atts[:spells_level2].length} slots): #{atts[:spells_level2].join(', ')}\n"
+      end
+      if atts[:spells_level3]
+        spell_desc << "3rd level (#{atts[:spells_level3].length} slots): #{atts[:spells_level3].join(', ')}\n"
+      end
+      if atts[:spells_level4]
+        spell_desc << "4th level (#{atts[:spells_level4].length} slots): #{atts[:spells_level4].join(', ')}\n"
+      end
+      if atts[:spells_level5]
+        spell_desc << "5th level (#{atts[:spells_level5].length} slots): #{atts[:spells_level5].join(', ')}\n"
+      end
+      if atts[:spells_level6]
+        spell_desc << "6th level (#{atts[:spells_level6].length} slots): #{atts[:spells_level6].join(', ')}\n"
+      end
+      if atts[:spells_level7]
+        spell_desc << "7th level (#{atts[:spells_level7].length} slots): #{atts[:spells_level7].join(', ')}\n"
+      end
+      if atts[:spells_level8]
+        spell_desc << "8th level (#{atts[:spells_level8].length} slots): #{atts[:spells_level8].join(', ')}\n"
+      end
+      if atts[:spells_level9]
+        spell_desc << "9th level (#{atts[:spells_level9].length} slots): #{atts[:spells_level9].join(', ')}"
+      end
+      spellcasting_ability.description = spell_desc.join
+      @new_npc.monster_special_abilities << spellcasting_ability
     end
 
     def get_spellcasting_stats(atts)

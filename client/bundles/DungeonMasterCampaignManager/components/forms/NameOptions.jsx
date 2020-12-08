@@ -14,7 +14,6 @@ const getRaces = (inputValue, callback) => {
   fetch(`/v1/races.json?search=${inputValue}`)
     .then((response) => response.json())
     .then((jsonResult) => {
-      console.log(jsonResult);
       callback(filterSnakeCaseOptionsWithData(jsonResult));
     });
 };
