@@ -11,7 +11,7 @@ const races = createReducer({
 }, {
   [getRacesSuccess]: (state, action) => {
     return {
-      races: action.data.data,
+      races: action.data.results,
       currentRace: state.currentRace,
     };
   },

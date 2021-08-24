@@ -68,12 +68,12 @@ const npcs = createReducer({
   },
   [getNPCsSuccess]: (state, action) => {
     return {
-      npcs: action.data.data,
-      npcTypes: _.map(_.uniqBy(action.data.data, 'monsterType'), (npc) => ({
+      npcs: action.data.results,
+      npcTypes: _.map(_.uniqBy(action.data.results, 'monsterType'), (npc) => ({
         value: npc.monsterType,
         label: npc.monsterType,
       })),
-      count: action.data.data.length,
+      count: action.data.count,
       currentNPC: state.currentNPC,
     };
   },

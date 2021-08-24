@@ -37,16 +37,16 @@ end
 create_user('Jess Hendricks', 'jesshmusic', 'jesshmusic72@gmail.com', :admin)
 dm_user = create_user('Jess DM', 'jesshdm', 'jesshmusic72+dm@gmail.com', :dungeon_master)
 
-Campaign.find_or_create_by(name: 'Greyhawk', user_id: dm_user.id) do |campaign|
-  campaign.name = 'Greyhawk'
-  campaign.world = 'Oerth - Continent of Oerik, the Flaeness'
-  campaign.description = 'Greyhawk, also known as the World of Greyhawk, is a fictional world designed as a campaign setting for the Dungeons & Dragons fantasy roleplaying game.'
-  dm_user.campaigns << campaign
-end
-
-Campaign.find_or_create_by(name: 'Dragonlance', user_id: dm_user.id) do |campaign|
-  campaign.name = 'Dragonlance'
-  campaign.world = 'Krynn'
-  campaign.description = 'Dragonlance is a shared universe created by Laura and Tracy Hickman, and expanded by Tracy Hickman and Margaret Weis under the direction of TSR, Inc. into a series of fantasy novels. The Hickmans conceived Dragonlance while driving in their car on the way to TSR for a job interview.'
-  dm_user.campaigns << campaign
-end
+# Campaign.find_or_create_by(name: 'Greyhawk', user_id: dm_user.id) do |campaign|
+#   campaign.name = 'Greyhawk'
+#   campaign.world = 'Oerth - Continent of Oerik, the Flaeness'
+#   campaign.description = 'Greyhawk, also known as the World of Greyhawk, is a fictional world designed as a campaign setting for the Dungeons & Dragons fantasy roleplaying game.'
+#   dm_user.campaigns << campaign
+# end
+#
+# Campaign.find_or_create_by(name: 'Dragonlance', user_id: dm_user.id) do |campaign|
+#   campaign.name = 'Dragonlance'
+#   campaign.world = 'Krynn'
+#   campaign.description = 'Dragonlance is a shared universe created by Laura and Tracy Hickman, and expanded by Tracy Hickman and Margaret Weis under the direction of TSR, Inc. into a series of fantasy novels. The Hickmans conceived Dragonlance while driving in their car on the way to TSR for a job interview.'
+#   dm_user.campaigns << campaign
+# end

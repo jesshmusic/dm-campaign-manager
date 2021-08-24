@@ -11,7 +11,7 @@ const dndClasses = createReducer({
 }, {
   [getDndClassesSuccess]: (state, action) => {
     return {
-      dndClasses: action.data.data,
+      dndClasses: action.data.results,
       currentDndClass: state.currentDndClass,
     };
   },

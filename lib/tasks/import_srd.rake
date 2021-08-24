@@ -12,16 +12,16 @@
 # - `rails srd:import_items`
 
 namespace :srd do
-  dnd_api_url = 'http://www.dnd5eapi.co/api/'
-  dnd_open5e_url = 'https://api-beta.open5e.com/'
+  dnd_api_url = 'http://www.dnd5eapi.co'
+  dnd_open5e_url = 'https://api.open5e.com/'
 
   task import_proficiencies: :environment do
-    uri = URI("#{dnd_api_url}proficiencies")
+    uri = URI("#{dnd_api_url}/api/proficiencies")
     response = Net::HTTP.get(uri)
     result = JSON.parse response, symbolize_names: true
     count = 0
     result[:results].each do |prof|
-      prof_uri = URI(prof[:url])
+      prof_uri = URI("#{dnd_api_url}#{prof[:url]}")
       prof_response = Net::HTTP.get(prof_uri)
       prof_result = JSON.parse prof_response, symbolize_names: true
       Prof.find_or_create_by(name: prof[:name]) do |new_prof|
@@ -33,16 +33,16 @@ namespace :srd do
       end
       count += 1
     end
-    puts "#{count} D&D classes imported."
+    puts "#{count} Proficiencies imported."
   end
 
   task import_classes: :environment do
-    uri = URI("#{dnd_api_url}classes")
+    uri = URI("#{dnd_api_url}/api/classes")
     response = Net::HTTP.get(uri)
     result = JSON.parse response, symbolize_names: true
     count = 0
     result[:results].each do |dnd_class|
-      class_uri = URI(dnd_class[:url])
+      class_uri = URI("#{dnd_api_url}#{dnd_class[:url]}")
       class_response = Net::HTTP.get(class_uri)
       class_result = JSON.parse class_response, symbolize_names: true
       DndClass.find_or_create_by(name: dnd_class[:name], slug: dnd_class[:name].parameterize) do |new_class|
@@ -104,7 +104,6 @@ namespace :srd do
         new_monster.constitution = monster[:constitution]
         new_monster.dexterity = monster[:dexterity]
         new_monster.hit_points = monster[:hit_points]
-        new_monster.hit_points_current = monster[:hit_points]
         new_monster.initiative = DndRules.ability_score_modifier(monster[:dexterity])
         new_monster.intelligence = monster[:intelligence]
         new_monster.speed = monster[:speed].map { |key, value| "#{value}ft. #{key}" }.join(', ')
@@ -185,12 +184,12 @@ namespace :srd do
   end
 
   task import_spells: :environment do
-    uri = URI("#{dnd_api_url}spells")
+    uri = URI("#{dnd_api_url}/api/spells")
     response = Net::HTTP.get(uri)
     result = JSON.parse response, symbolize_names: true
     count = 0
     result[:results].each do |spell|
-      spell_uri = URI(spell[:url])
+      spell_uri = URI("#{dnd_api_url}#{spell[:url]}")
       spell_response = Net::HTTP.get(spell_uri)
       spell_result = JSON.parse spell_response, symbolize_names: true
       Spell.find_or_create_by(name: spell[:name]) do |new_spell|
@@ -234,13 +233,13 @@ namespace :srd do
   end
 
   task import_items: :environment do
-    uri = URI("#{dnd_api_url}equipment")
+    uri = URI("#{dnd_api_url}/api/equipment")
     response = Net::HTTP.get(uri)
     result = JSON.parse response, symbolize_names: true
     count = 0
 
     result[:results].each do |equipment_item|
-      item_uri = URI(equipment_item[:url])
+      item_uri = URI("#{dnd_api_url}#{equipment_item[:url]}")
       item_response = Net::HTTP.get(item_uri)
       item_result = JSON.parse item_response
       saved_item = Item.find_or_create_by(name: equipment_item[:name]) do |new_item|
@@ -370,7 +369,7 @@ namespace :srd do
   task fix_combined_magic_items: :environment do
     combined_magic_items = MagicItem.where.not(rarity: ['common', 'uncommon', 'rare', 'very rare', 'legendary', 'artifact'])
     combined_magic_items.each do |magic_item|
-      magic_item_name = magic_item.name
+      magic_item_name = magic_item[:name]
       puts "Splitting #{magic_item_name}"
       case magic_item_name
       when 'Belt of Giant Strength'
@@ -447,9 +446,9 @@ namespace :srd do
     giant_fly = MagicItem.find_by(name: 'Giant Fly')
     figurines.each do |figurine|
       MagicItem.find_or_create_by!(name: figurine[:name]) do |magic_figure|
-        magic_figure.description = magic_item.description + giant_fly.description
-        magic_figure.magic_item_type = magic_item.magic_item_type
-        magic_figure.requires_attunement = magic_item.requires_attunement
+        magic_figure.description = magic_item[:description] + giant_fly.description
+        magic_figure.type = magic_item[:type]
+        magic_figure.requires_attunement = magic_item[:requires_attunement]
         magic_figure.rarity = figurine[:rarity]
         magic_figure.slug = magic_figure.name.parameterize
       end
@@ -566,11 +565,11 @@ namespace :srd do
   def create_magic_items(magic_items, original_item)
     magic_items.each do |magic_item|
       MagicItem.find_or_create_by!(name: magic_item[:name]) do |new_magic_item|
-        new_magic_item.description = original_item.description
-        new_magic_item.magic_item_type = original_item.magic_item_type
-        new_magic_item.requires_attunement = original_item.requires_attunement
-        new_magic_item.rarity = magic_item[:rarity]
-        new_magic_item.slug = new_magic_item.name.parameterize
+        new_magic_item[:description] = original_item.description
+        new_magic_item.type = original_item.type
+        new_magic_item[:requires_attunement] = original_item.requires_attunement
+        new_magic_item[:rarity] = magic_item[:rarity]
+        new_magic_item.slug = new_magic_item[:name].parameterize
       end
     end
   end

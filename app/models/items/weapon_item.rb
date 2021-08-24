@@ -127,13 +127,13 @@ class WeaponItem < Item
               new_magic_weapon(magic_item, weapon_name)
             end
           end
-        elsif !WeaponItem.basic_magic_weapons.include?(magic_item.name)
+        elsif !WeaponItem.basic_magic_weapons.include?(magic_item[:name])
           WeaponItem.all_weapons.each do |weapon_name|
             new_magic_weapon(magic_item, weapon_name)
           end
         end
       else
-        puts "WEAPON unidentified: #{magic_item.name} - TYPE #{magic_item[:type]} - ID: #{magic_item.id}"
+        puts "WEAPON unidentified: #{magic_item[:name]} - TYPE #{magic_item[:type]} - ID: #{magic_item.id}"
       end
     end
 

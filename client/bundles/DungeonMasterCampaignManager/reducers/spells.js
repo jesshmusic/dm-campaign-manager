@@ -12,8 +12,8 @@ const spells = createReducer({
 }, {
   [getSpellsSuccess]: (state, action) => {
     return {
-      spells: action.data.data,
-      count: state.count,
+      spells: action.data.results,
+      count: action.data.count,
       currentSpell: state.currentSpell,
     };
   },

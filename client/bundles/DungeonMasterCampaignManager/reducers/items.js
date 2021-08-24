@@ -12,8 +12,8 @@ const items = createReducer({
 }, {
   [getItemsSuccess]: (state, action) => {
     return {
-      items: action.data.data,
-      count: state.count,
+      items: action.data.results,
+      count: action.data.count,
       currentItem: state.currentItem,
     };
   },

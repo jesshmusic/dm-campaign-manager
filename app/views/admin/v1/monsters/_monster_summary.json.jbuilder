@@ -11,6 +11,7 @@ json.hit_points monster.hit_points
 json.initiative monster.initiative
 json.speed monster.speed
 json.hit_dice monster.hit_dice
+json.monster_type monster.monster_type
 json.descriptionText monster.description_text
 
 json.value monster.id

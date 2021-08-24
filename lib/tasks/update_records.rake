@@ -9,7 +9,7 @@ namespace :update_records do
       elsif weapon.name.include? "+2"
         weapon.weapon_attack_bonus = 2
         weapon.weapon_damage_bonus = 2
-      elsif weapon.name.include? "3"
+      elsif weapon.name.include? "+3"
         weapon.weapon_attack_bonus = 3
         weapon.weapon_damage_bonus = 3
       else
@@ -245,7 +245,7 @@ namespace :update_records do
 
     magic_items = MagicItem.where('slug IS NULL')
     magic_items.find_each do |magic_item|
-      magic_item_slug = magic_item.name.parameterize.truncate(80, omission: '')
+      magic_item_slug = magic_item[:name].parameterize.truncate(80, omission: '')
       magic_item.slug = MagicItem.exists?(slug: magic_item_slug) ? "#{magic_item_slug}_#{magic_item.id}" : magic_item_slug
       magic_item.save!
     end
@@ -315,9 +315,9 @@ namespace :update_records do
 
   task convert_old_magic_items: :environment do
     MagicItemOld.all.each do |magic_item|
-      if magic_item.magic_item_type.include? 'Armor'
+      if magic_item[:type].include? 'Armor'
         create_magic_armors_from_old_magic_items(magic_item)
-      elsif magic_item.magic_item_type.include? 'Weapon'
+      elsif magic_item[:type].include? 'Weapon'
         create_magic_weapons_from_old_magic_items(magic_item)
       else
         create_magic_item_from_old_magic_items(magic_item)
@@ -357,93 +357,93 @@ namespace :update_records do
   end
 
   def create_magic_weapons_from_old_magic_items(magic_item)
-    if magic_item.magic_item_type == 'Weapon (trident)'
+    if magic_item[:type] == 'Weapon (trident)'
       new_magic_weapon(magic_item, 'Trident')
-    elsif magic_item.magic_item_type == 'Weapon (scimitar)'
+    elsif magic_item[:type] == 'Weapon (scimitar)'
       new_magic_weapon(magic_item, 'Scimitar')
-    elsif magic_item.magic_item_type == 'Weapon (longsword)'
+    elsif magic_item[:type] == 'Weapon (longsword)'
       new_magic_weapon(magic_item, 'Longsword')
-    elsif magic_item.magic_item_type == 'Weapon (maul)'
+    elsif magic_item[:type] == 'Weapon (maul)'
       new_magic_weapon(magic_item, 'Maul')
-    elsif magic_item.magic_item_type == 'Weapon (warhammer)'
+    elsif magic_item[:type] == 'Weapon (warhammer)'
       new_magic_weapon(magic_item, 'Warhammer')
-    elsif magic_item.magic_item_type == 'Weapon (longbow)'
+    elsif magic_item[:type] == 'Weapon (longbow)'
       new_magic_weapon(magic_item, 'Longbow')
-    elsif magic_item.magic_item_type == 'Weapon (dagger)'
+    elsif magic_item[:type] == 'Weapon (dagger)'
       new_magic_weapon(magic_item, 'Dagger')
-    elsif magic_item.magic_item_type == 'Weapon (mace)'
+    elsif magic_item[:type] == 'Weapon (mace)'
       new_magic_weapon(magic_item, 'Mace')
-    elsif magic_item.magic_item_type == 'Weapon (javelin)'
+    elsif magic_item[:type] == 'Weapon (javelin)'
       new_magic_weapon(magic_item, 'Javelin')
-    elsif magic_item.magic_item_type == 'Weapon (arrow)'
+    elsif magic_item[:type] == 'Weapon (arrow)'
       create_magic_item_from_old_magic_items(magic_item)
-    elsif magic_item.magic_item_type == 'Weapon (any axe)'
+    elsif magic_item[:type] == 'Weapon (any axe)'
       WeaponItem.all_axes.each do |weapon_name|
         new_magic_weapon(magic_item, weapon_name)
       end
-    elsif magic_item.magic_item_type == 'Weapon (any axe or sword)'
+    elsif magic_item[:type] == 'Weapon (any axe or sword)'
       weapons = WeaponItem.all_axes + WeaponItem.all_swords
       weapons.each do |weapon_name|
         new_magic_weapon(magic_item, weapon_name)
       end
-    elsif magic_item.magic_item_type == 'Weapon (any sword)'
+    elsif magic_item[:type] == 'Weapon (any sword)'
       WeaponItem.all_swords.each do |weapon_name|
         new_magic_weapon(magic_item, weapon_name)
       end
-    elsif magic_item.magic_item_type == 'Weapon (any sword that deals slashing damage)'
+    elsif magic_item[:type] == 'Weapon (any sword that deals slashing damage)'
       slashing_swords = WeaponItem.all_swords - ['Shortsword']
       slashing_swords.each do |weapon_name|
         new_magic_weapon(magic_item, weapon_name)
       end
-    elsif magic_item.magic_item_type == 'Weapon (any)'
-      if magic_item.name == 'Weapon +1' || magic_item.name == 'Weapon +2' || magic_item.name == 'Weapon +3'
+    elsif magic_item[:type] == 'Weapon (any)'
+      if magic_item[:name] == 'Weapon +1' || magic_item[:name] == 'Weapon +2' || magic_item[:name] == 'Weapon +3'
         WeaponItem.all_weapons.each do |weapon_name|
           new_magic_weapon(magic_item, weapon_name)
         end
-      elsif !WeaponItem.basic_magic_weapons.include?(magic_item.name)
+      elsif !WeaponItem.basic_magic_weapons.include?(magic_item[:name])
         WeaponItem.all_weapons.each do |weapon_name|
           new_magic_weapon(magic_item, weapon_name)
         end
       end
     else
-      puts "WEAPON unidentified: #{magic_item.name} - TYPE #{magic_item.magic_item_type} - ID: #{magic_item.id}"
+      puts "WEAPON unidentified: #{magic_item[:name]} - TYPE #{magic_item[:type]} - ID: #{magic_item.id}"
     end
   end
 
   def create_magic_armors_from_old_magic_items(magic_item)
-    if magic_item.magic_item_type.include? 'scale mail'
+    if magic_item[:type].include? 'scale mail'
       new_magic_armor(magic_item, 'Scale Mail')
-    elsif magic_item.magic_item_type.include? 'chain shirt'
+    elsif magic_item[:type].include? 'chain shirt'
       new_magic_armor(magic_item, 'Chain Shirt')
-    elsif magic_item.magic_item_type.include? 'studded leather'
+    elsif magic_item[:type].include? 'studded leather'
       new_magic_armor(magic_item, 'Studded Leather')
-    elsif magic_item.magic_item_type.include? 'shield'
+    elsif magic_item[:type].include? 'shield'
       new_magic_armor(magic_item, 'Shield')
-    elsif magic_item.magic_item_type.include? 'plate'
+    elsif magic_item[:type].include? 'plate'
       new_magic_armor(magic_item, 'Plate')
-    elsif magic_item.magic_item_type.include? 'medium or heavy'
+    elsif magic_item[:type].include? 'medium or heavy'
       medium_heavy_armors = ArmorItem.basic_armors - ['Studded Leather', 'Leather', 'Padded']
       medium_heavy_armors.each do |armor_name|
         new_magic_armor(magic_item, armor_name)
       end
-    elsif magic_item.magic_item_type.include? 'light'
+    elsif magic_item[:type].include? 'light'
       new_magic_armor(magic_item, 'Studded Leather')
       new_magic_armor(magic_item, 'Leather')
       new_magic_armor(magic_item, 'Padded')
     else
-      puts "ARMOR unidentified: #{magic_item.name} - TYPE #{magic_item.magic_item_type} - ID: #{magic_item.id}"
+      puts "ARMOR unidentified: #{magic_item[:name]} - TYPE #{magic_item[:type]} - ID: #{magic_item.id}"
     end
   end
 
   def new_magic_armor(magic_item, armor_name)
     armor_item = ArmorItem.find_by(name: armor_name)
-    new_item = ArmorItem.find_or_create_by(name: "#{magic_item.name}, #{armor_name}")
-    new_item.description = magic_item.description
-    new_item.rarity = magic_item.rarity
-    new_item.requires_attunement = magic_item.requires_attunement
-    new_item.sub_category = magic_item.magic_item_type
+    new_item = ArmorItem.find_or_create_by(name: "#{magic_item[:name]}, #{armor_name}")
+    new_item.description = magic_item[:description]
+    new_item.rarity = magic_item[:rarity]
+    new_item.requires_attunement = magic_item[:requires_attunement]
+    new_item.sub_category = magic_item[:type]
     new_item.slug = new_item.name.parameterize
-    new_item.sub_category = magic_item.magic_item_type
+    new_item.sub_category = magic_item[:type]
     new_item.armor_class = armor_item.armor_class
     new_item.armor_dex_bonus = armor_item.armor_dex_bonus
     new_item.armor_max_bonus = armor_item.armor_max_bonus
@@ -455,13 +455,13 @@ namespace :update_records do
 
   def new_magic_weapon(magic_item, weapon_name)
     weapon_item = WeaponItem.find_by(name: weapon_name)
-    new_item = WeaponItem.find_or_create_by(name: "#{magic_item.name}, #{weapon_name}")
-    new_item.description = magic_item.description
-    new_item.rarity = magic_item.rarity
-    new_item.requires_attunement = magic_item.requires_attunement
-    new_item.sub_category = magic_item.magic_item_type
+    new_item = WeaponItem.find_or_create_by(name: "#{magic_item[:name]}, #{weapon_name}")
+    new_item.description = magic_item[:description]
+    new_item.rarity = magic_item[:rarity]
+    new_item.requires_attunement = magic_item[:requires_attunement]
+    new_item.sub_category = magic_item[:type]
     new_item.slug = new_item.name.parameterize
-    new_item.sub_category = magic_item.magic_item_type
+    new_item.sub_category = magic_item[:type]
     new_item.weapon_2h_damage_dice_count = weapon_item.weapon_2h_damage_dice_count
     new_item.weapon_2h_damage_dice_value = weapon_item.weapon_2h_damage_dice_value
     new_item.weapon_2h_damage_type = weapon_item.weapon_2h_damage_type
@@ -480,12 +480,12 @@ namespace :update_records do
   end
 
   def create_magic_item_from_old_magic_items(magic_item)
-    new_item = MagicItem.find_or_create_by(name: magic_item.name)
-    new_item.description = magic_item.description
-    new_item.rarity = magic_item.rarity
-    new_item.requires_attunement = magic_item.requires_attunement
+    new_item = MagicItem.find_or_create_by(name: magic_item[:name])
+    new_item.description = magic_item[:description]
+    new_item.rarity = magic_item[:rarity]
+    new_item.requires_attunement = magic_item[:requires_attunement]
     new_item.slug = new_item.name.parameterize
-    new_item.sub_category = magic_item.magic_item_type
+    new_item.sub_category = magic_item[:type]
     new_item.save!
   end
 end
