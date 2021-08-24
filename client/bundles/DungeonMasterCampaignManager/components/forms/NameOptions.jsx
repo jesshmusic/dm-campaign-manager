@@ -14,16 +14,17 @@ const getRaces = (inputValue, callback) => {
   fetch(`/v1/races.json?search=${inputValue}`)
     .then((response) => response.json())
     .then((jsonResult) => {
+      console.log(jsonResult);
       callback(filterSnakeCaseOptionsWithData(jsonResult));
     });
 };
 
 const NameOptions = ({onFormSubmit, submitText}) => {
-  const [gender, setGender] = useState('female');
-  const [race, setRace] = useState('human');
+  const [gender, setGender] = useState({ value: 'female', label: 'Female' });
+  const [race, setRace] = useState({ value: 'human', label: 'Human' });
 
   const handleSubmit = () => {
-    onFormSubmit(gender, race);
+    onFormSubmit(gender.value, race.value);
   };
 
   return (
@@ -34,14 +35,14 @@ const NameOptions = ({onFormSubmit, submitText}) => {
           variant={ 'primary' }
           className={'w-100'}
           onClick={ () => handleSubmit() }>
-          Get{ gender ? ` ${gender.charAt(0).toUpperCase() + gender.slice(1)}` : '' }{ race ? ` ${race.charAt(0).toUpperCase() + race.slice(1)}` : '' } {submitText}
+          Get{ gender ? ` ${gender.label}` : '' }{ race ? ` ${race.label}` : '' } {submitText}
         </Button>
       </Form.Group>
       <Form.Group as={Col} controlId={'nameGeneratorGender'}>
         <Form.Label>Gender</Form.Label>
         <Select options={genderOptions}
                 onChange={(option) => {
-                  setGender(option.value);
+                  setGender(option);
                 }}
                 className={'flex-grow-1 mr-3'} />
       </Form.Group>
@@ -49,8 +50,9 @@ const NameOptions = ({onFormSubmit, submitText}) => {
         <Form.Label>Race</Form.Label>
         <AsyncSelect loadOptions={getRaces}
                      cacheOptions
+                     defaultOptions
                      onChange={(option) => {
-                       setRace(option.value);
+                       setRace(option);
                      }}
                      className={'flex-grow-1'} />
       </Form.Group>

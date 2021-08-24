@@ -6,7 +6,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import FormSelectAsync from '../../../../components/forms/FormSelectAsync';
 
-export const filterOptions = (results) => results.map((nextItem) => (
+export const filterOptions = (results) => results.results.map((nextItem) => (
   {
     value: nextItem.id,
     label: nextItem.name,

@@ -1,23 +1,21 @@
 import createDecorator from 'final-form-calculate';
 import snakecaseKeys from 'snakecase-keys';
 
-export const toSnakeCase = (str) => {
-  return (str && str
-    .match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g)
-    .map(x => x.toLowerCase())
-    .join('_')
-  );
-}
+export const toSnakeCase = (str) => (str && str
+  .match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g)
+  .map((x) => x.toLowerCase())
+  .join('_')
+);
 
-export const filterOptions = (results) => results.map((nextItem) => (
+export const filterOptions = (results) => results.results.map((nextItem) => (
   {value: nextItem.id, label: nextItem.name}
 ));
 
-export const filterOptionsWithData = (results) => results.map((nextItem) => (
+export const filterOptionsWithData = (results) => results.results.map((nextItem) => (
   {value: nextItem.id, label: nextItem.name, data: nextItem}
 ));
 
-export const filterSnakeCaseOptionsWithData = (results) => results.map((nextItem) => (
+export const filterSnakeCaseOptionsWithData = (results) => results.results.map((nextItem) => (
   {value: toSnakeCase(nextItem.name), label: nextItem.name}
 ));
 
@@ -336,14 +334,14 @@ export const SetupCharacterState = (newChar) => {
   });
 
   // Spells
-  charObject.showBardSpells = charObject.dndClasses.some(dndClass => dndClass.dndClass.label === 'Bard');
-  charObject.showClericSpells = charObject.dndClasses.some(dndClass => dndClass.dndClass.label === 'Cleric');
-  charObject.showDruidSpells = charObject.dndClasses.some(dndClass => dndClass.dndClass.label === 'Druid');
-  charObject.showPaladinSpells = charObject.dndClasses.some(dndClass => dndClass.dndClass.label === 'Paladin');
-  charObject.showRangerSpells = charObject.dndClasses.some(dndClass => dndClass.dndClass.label === 'Ranger');
-  charObject.showSorcererSpells = charObject.dndClasses.some(dndClass => dndClass.dndClass.label === 'Sorcerer');
-  charObject.showWarlockSpells = charObject.dndClasses.some(dndClass => dndClass.dndClass.label === 'Warlock');
-  charObject.showWizardSpells = charObject.dndClasses.some(dndClass => dndClass.dndClass.label === 'Wizard');
+  charObject.showBardSpells = charObject.dndClasses.some((dndClass) => dndClass.dndClass.label === 'Bard');
+  charObject.showClericSpells = charObject.dndClasses.some((dndClass) => dndClass.dndClass.label === 'Cleric');
+  charObject.showDruidSpells = charObject.dndClasses.some((dndClass) => dndClass.dndClass.label === 'Druid');
+  charObject.showPaladinSpells = charObject.dndClasses.some((dndClass) => dndClass.dndClass.label === 'Paladin');
+  charObject.showRangerSpells = charObject.dndClasses.some((dndClass) => dndClass.dndClass.label === 'Ranger');
+  charObject.showSorcererSpells = charObject.dndClasses.some((dndClass) => dndClass.dndClass.label === 'Sorcerer');
+  charObject.showWarlockSpells = charObject.dndClasses.some((dndClass) => dndClass.dndClass.label === 'Warlock');
+  charObject.showWizardSpells = charObject.dndClasses.some((dndClass) => dndClass.dndClass.label === 'Wizard');
 
   return charObject;
 };
@@ -532,7 +530,7 @@ export const characterCalculations = createDecorator(
         dexterity: allValues.dexterity || 10,
         shield: allValues.shield,
       }),
-      armorId: (characterArmor) => characterArmor ? characterArmor.value : null,
+      armorId: (characterArmor) => (characterArmor ? characterArmor.value : null),
       characterItems: (armor, allValues, prevValues) => {
         const newItems = allValues.characterItems;
         if (armor && !newItems.find((nextItem) => nextItem.item.value === armor.value)) {
@@ -727,31 +725,26 @@ export const characterCalculations = createDecorator(
       weaponLh: (newState, allValues) => {
         if (newState === WeaponState.DUAL) {
           return allValues.weaponLh;
-        } else {
-          return null;
         }
+        return null;
       },
       shield: (newState, allValues) => {
         if (newState === WeaponState.SHIELD) {
           return allValues.shield;
-        } else {
-          return null;
         }
+        return null;
       },
       weapon2h: (newState, allValues) => {
         if (newState === WeaponState.TWOHAND) {
           return allValues.weapon2h;
-        } else {
-          return null;
         }
+        return null;
       },
     },
   },
 );
 
-export const getSpellLevelArray = (spells) => {
-  return spells.map((spell) => spell.value);
-};
+export const getSpellLevelArray = (spells) => spells.map((spell) => spell.value);
 
 export const getNPCObject = (values) => {
   const returnChar = {

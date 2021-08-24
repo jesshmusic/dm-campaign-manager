@@ -18,7 +18,7 @@ export const filterOptions = (results) => {
     label: 'Create Custom Action...',
   }];
 
-  const weapons = results.map((nextItem) => (
+  const weapons = results.results.map((nextItem) => (
     {
       value: nextItem.id,
       label: nextItem.name,

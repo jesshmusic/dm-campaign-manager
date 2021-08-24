@@ -8,7 +8,7 @@ import FormSelectAsync from '../../../../components/forms/FormSelectAsync';
 import Form from 'react-bootstrap/Form';
 
 const SpellLevelSelect = ({spellLevelText, levelNumber, dndClassName, name}) => {
-  const filterSpellOptions = (results) => results.map((nextItem) => ({
+  const filterSpellOptions = (results) => results.results.map((nextItem) => ({
     value: nextItem.name.toLowerCase(),
     label: nextItem.name,
   }));

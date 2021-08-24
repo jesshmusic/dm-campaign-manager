@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import FormSelectAsync from '../../../components/forms/FormSelectAsync';
 import Form from 'react-bootstrap/Form';
 
-const filterNPCOptions = (results) => results.map((nextItem) => ({
+const filterNPCOptions = (results) => results.results.map((nextItem) => ({
   value: nextItem.id,
   label: `${nextItem.name}: CR ${nextItem.challengeRating} - ${nextItem.xp}xp`,
   challengeRating: nextItem.challengeRating,
