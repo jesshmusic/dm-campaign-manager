@@ -42,21 +42,21 @@ RSpec.describe "Items", type: :request do
       it "returns 5 items" do
         get '/v1/items.json'
         result_items = JSON.parse(response.body)
-        expect(result_items.count).to eq(5)
+        expect(result_items['count']).to eq(5)
       end
 
       it "returns 1 armor item" do
         get '/v1/armor_items.json'
         result_items = JSON.parse(response.body)
-        expect(result_items.count).to be >= 1
-        expect(result_items.first['type']).to eq('ArmorItem')
+        expect(result_items['count']).to be >= 1
+        expect(result_items['results'].first['type']).to eq('ArmorItem')
       end
 
       it "returns 1 magic item" do
         get '/v1/magic_items.json'
         result_items = JSON.parse(response.body)
-        expect(result_items.count).to be >= 1
-        expect(result_items.first['type']).to eq('MagicItem')
+        expect(result_items['count']).to be >= 1
+        expect(result_items['results'].first['type']).to eq('MagicItem')
       end
     end
 
@@ -68,7 +68,7 @@ RSpec.describe "Items", type: :request do
       it "returns 7 items" do
         get '/v1/items.json'
         result_items = JSON.parse(response.body)
-        expect(result_items.count).to eq(7)
+        expect(result_items['count']).to eq(7)
       end
     end
 
@@ -80,11 +80,11 @@ RSpec.describe "Items", type: :request do
       it "returns 6 items that are only default or owned by this DM" do
         get '/v1/items.json'
         result_items = JSON.parse(response.body)
-        expect(result_items.count).to eq(6)
-        expect(result_items.find { |item|
+        expect(result_items['count']).to eq(6)
+        expect(result_items['results'].find { |item|
           item['name'] == 'DM Item'
         }).not_to be_nil
-        expect(result_items.find { |item|
+        expect(result_items['results'].find { |item|
           item['name'] == 'Other User Item'
         }).to be_nil
       end

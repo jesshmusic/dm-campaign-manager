@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe "spells/index", type: :view do
+RSpec.describe "admin/v1/spells/index", type: :view do
   before(:each) do
     assign(:spells, [
       Spell.create!(

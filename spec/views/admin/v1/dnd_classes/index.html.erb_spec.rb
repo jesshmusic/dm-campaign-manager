@@ -1,23 +1,19 @@
 require 'rails_helper'
 
-RSpec.describe "dnd_classes/index", type: :view do
+RSpec.describe "admin/v1/dnd_classes/index", type: :view do
   before(:each) do
     assign(:dnd_classes, [
       DndClass.create!(
         :name => "Name",
         :hit_die => 2,
         :api_url => "Api Url",
-        :proficiencies => "Proficiencies",
-        :saving_throws => "Saving Throws",
-        :proficiency_choices => ""
+        :slug => "name-1",
       ),
       DndClass.create!(
         :name => "Name",
         :hit_die => 2,
         :api_url => "Api Url",
-        :proficiencies => "Proficiencies",
-        :saving_throws => "Saving Throws",
-        :proficiency_choices => ""
+        :slug => "name-2",
       )
     ])
   end

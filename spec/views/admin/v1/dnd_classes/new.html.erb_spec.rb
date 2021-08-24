@@ -1,14 +1,12 @@
 require 'rails_helper'
 
-RSpec.describe "dnd_classes/new", type: :view do
+RSpec.describe "admin/v1/dnd_classes/new", type: :view do
   before(:each) do
     assign(:dnd_class, DndClass.new(
       :name => "MyString",
       :hit_die => 1,
       :api_url => "MyString",
-      :proficiencies => "MyString",
-      :saving_throws => "MyString",
-      :proficiency_choices => ""
+      :slug => "my-string",
     ))
   end
 
@@ -20,14 +18,6 @@ RSpec.describe "dnd_classes/new", type: :view do
       assert_select "input[name=?]", "dnd_class[name]"
 
       assert_select "input[name=?]", "dnd_class[hit_die]"
-
-      assert_select "input[name=?]", "dnd_class[api_url]"
-
-      assert_select "input[name=?]", "dnd_class[proficiencies]"
-
-      assert_select "input[name=?]", "dnd_class[saving_throws]"
-
-      assert_select "input[name=?]", "dnd_class[proficiency_choices]"
     end
   end
 end

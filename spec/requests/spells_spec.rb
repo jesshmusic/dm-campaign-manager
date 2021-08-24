@@ -29,7 +29,7 @@ RSpec.describe "Spells", type: :request do
       it "returns 3 spells" do
         get '/v1/spells.json'
         result_spells = JSON.parse(response.body)
-        expect(result_spells.count).to eq(3)
+        expect(result_spells['count']).to eq(3)
       end
     end
 
@@ -41,7 +41,7 @@ RSpec.describe "Spells", type: :request do
       it "returns 5 spells" do
         get '/v1/spells.json'
         result_spells = JSON.parse(response.body)
-        expect(result_spells.count).to eq(5)
+        expect(result_spells['count']).to eq(5)
       end
     end
 
@@ -53,11 +53,11 @@ RSpec.describe "Spells", type: :request do
       it "returns 4 spells that are only default or owned by this DM" do
         get '/v1/spells.json'
         result_spells = JSON.parse(response.body)
-        expect(result_spells.count).to eq(4)
-        expect(result_spells.find { |spell|
+        expect(result_spells['count']).to eq(4)
+        expect(result_spells['results'].find { |spell|
           spell['name'] == 'DM Spell'
         }).not_to be_nil
-        expect(result_spells.find { |spell|
+        expect(result_spells['results'].find { |spell|
           spell['name'] == 'Other User Spell'
         }).to be_nil
       end

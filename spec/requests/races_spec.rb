@@ -29,7 +29,7 @@ RSpec.describe "Races", type: :request do
       it "returns 3 races" do
         get '/v1/races.json'
         result_races = JSON.parse(response.body)
-        expect(result_races.count).to eq(3)
+        expect(result_races['count']).to eq(3)
       end
     end
 
@@ -41,7 +41,7 @@ RSpec.describe "Races", type: :request do
       it "returns 5 races" do
         get '/v1/races.json'
         result_races = JSON.parse(response.body)
-        expect(result_races.count).to eq(5)
+        expect(result_races['count']).to eq(5)
       end
     end
 
@@ -53,11 +53,11 @@ RSpec.describe "Races", type: :request do
       it "returns 4 races that are only default or owned by this DM" do
         get '/v1/races.json'
         result_races = JSON.parse(response.body)
-        expect(result_races.count).to eq(4)
-        expect(result_races.find { |race|
+        expect(result_races['count']).to eq(4)
+        expect(result_races['results'].find { |race|
           race['name'] == 'DM Race'
         }).not_to be_nil
-        expect(result_races.find { |race|
+        expect(result_races['results'].find { |race|
           race['name'] == 'Other User Race'
         }).to be_nil
       end

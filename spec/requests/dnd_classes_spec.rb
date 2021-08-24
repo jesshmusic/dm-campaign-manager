@@ -39,7 +39,8 @@ RSpec.describe "DndClasses", type: :request do
       it "returns 5 DndClasses for logged out user" do
         get '/v1/dnd_classes.json'
         result_items = JSON.parse(response.body)
-        expect(result_items.count).to eq(5)
+        expect(result_items['count']).to eq(5)
+        expect(result_items['results'].count).to eq(5)
       end
     end
 
@@ -48,7 +49,8 @@ RSpec.describe "DndClasses", type: :request do
         sign_in admin
         get '/v1/dnd_classes.json'
         result_items = JSON.parse(response.body)
-        expect(result_items.count).to eq(7)
+        expect(result_items['count']).to eq(7)
+        expect(result_items['results'].count).to eq(7)
       end
     end
 
@@ -57,7 +59,8 @@ RSpec.describe "DndClasses", type: :request do
         sign_in dungeon_master
         get '/v1/dnd_classes.json'
         result_items = JSON.parse(response.body)
-        expect(result_items.count).to eq(6)
+        expect(result_items['count']).to eq(6)
+        expect(result_items['results'].count).to eq(6)
       end
     end
   end

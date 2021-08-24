@@ -4,10 +4,6 @@ json.key_format! camelize: :lower
 
 json.extract! user, :id, :name, :username, :role, :location, :info
 
-json.campaigns user.campaigns do |campaign|
-  json.partial! 'admin/v1/campaigns/campaign', campaign: campaign
-end
-
 json.dnd_classes user.dnd_classes do |dnd_class|
   json.partial! 'admin/v1/dnd_classes/dnd_class', dnd_class: dnd_class
 end

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe "races/edit", type: :view do
+RSpec.describe "admin/v1/races/edit", type: :view do
   before(:each) do
     @race = assign(:race, Race.create!(
       :name => "MyString",

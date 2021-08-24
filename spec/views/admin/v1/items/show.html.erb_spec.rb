@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe "items/show", type: :view do
+RSpec.describe "admin/v1/items/show", type: :view do
   before(:each) do
     @item = assign(:item, Item.create!(
       :api_url => "Api Url",

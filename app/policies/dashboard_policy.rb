@@ -11,4 +11,8 @@ class DashboardPolicy < Struct.new(:user, :dashboard)
   def index?
     @user&.admin?
   end
+
+  def update_from_srd?
+    @user&.admin?
+  end
 end

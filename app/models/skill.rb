@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: skills
@@ -14,9 +16,8 @@
 #  index_skills_on_monster_id  (monster_id)
 #
 
-FactoryBot.define do
-  factory :skill do
-    name { "MyString" }
-    score { 1 }
-  end
+class Skill < ApplicationRecord
+  validates :name, :score, presence: true
+
+  belongs_to :monster, optional: true
 end

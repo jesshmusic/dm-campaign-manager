@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe "items/index", type: :view do
+RSpec.describe "admin/v1/items/index", type: :view do
   before(:each) do
     assign(:items, [
       Item.create!(

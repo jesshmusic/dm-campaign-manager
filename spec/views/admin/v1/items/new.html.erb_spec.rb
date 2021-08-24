@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe "items/new", type: :view do
+RSpec.describe "admin/v1/items/new", type: :view do
   before(:each) do
     assign(:item, Item.new(
       :api_url => "MyString",

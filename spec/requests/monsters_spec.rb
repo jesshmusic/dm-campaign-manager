@@ -25,7 +25,7 @@ RSpec.describe "Monsters", type: :request do
       it "returns 3 monsters" do
         get '/v1/monsters.json'
         result_monsters = JSON.parse(response.body)
-        expect(result_monsters.count).to eq(3)
+        expect(result_monsters['count']).to eq(3)
       end
     end
 
@@ -37,7 +37,7 @@ RSpec.describe "Monsters", type: :request do
       it "returns 5 monsters" do
         get '/v1/monsters.json'
         result_monsters = JSON.parse(response.body)
-        expect(result_monsters.count).to eq(5)
+        expect(result_monsters['count']).to eq(5)
       end
     end
 
@@ -49,11 +49,11 @@ RSpec.describe "Monsters", type: :request do
       it "returns 4 monsters that are only default or owned by this DM" do
         get '/v1/monsters.json'
         result_monsters = JSON.parse(response.body)
-        expect(result_monsters.count).to eq(4)
-        expect(result_monsters.find { |monster|
+        expect(result_monsters['count']).to eq(4)
+        expect(result_monsters['results'].find { |monster|
           monster['name'] == 'DM Monster'
         }).not_to be_nil
-        expect(result_monsters.find { |monster|
+        expect(result_monsters['results'].find { |monster|
           monster['name'] == 'Other User Monster'
         }).to be_nil
       end

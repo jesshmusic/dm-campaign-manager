@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe "races/show", type: :view do
+RSpec.describe "admin/v1/races/show", type: :view do
   before(:each) do
     @race = assign(:race, Race.create!(
       :name => "Name",

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe "spells/edit", type: :view do
+RSpec.describe "admin/v1/spells/edit", type: :view do
   before(:each) do
     @spell = assign(:spell, Spell.create!(
       :name => "MyText",

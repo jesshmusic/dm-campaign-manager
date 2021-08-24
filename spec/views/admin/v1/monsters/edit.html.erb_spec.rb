@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe "monsters/edit", type: :view do
+RSpec.describe "admin/v1/monsters/edit", type: :view do
   before(:each) do
     @monster = assign(:monster, Monster.create!(
       :name => "MyString",
