@@ -12,7 +12,6 @@
     <tr>
       <th>Name</th>
       <th>Role</th>
-      <th class="d-none d-lg-table-cell">Campaigns</th>
       <th class="d-none d-lg-table-cell">Player Characters</th>
       <th></th>
     </tr>
@@ -27,7 +26,6 @@
       <tr class="<%= user_role_class %>">
         <td><%= user.name %></td>
         <td><%= user.role.capitalize %></td>
-        <td class="d-none d-lg-table-cell"><%= user.campaigns.count %></td>
         <td class="d-none d-lg-table-cell">0</td>
         <td>
           <%= link_to 'Show', user, class: "btn btn-sm btn-primary" %>
