@@ -3,6 +3,7 @@ json.key_format! camelize: :lower
 
 json.id monster.id
 json.name monster.name
+json.slug monster.slug
 json.alignment monster.alignment
 json.challenge_rating monster.challenge_rating
 json.xp monster.xp

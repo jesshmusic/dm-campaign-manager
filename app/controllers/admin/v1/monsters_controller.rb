@@ -3,29 +3,50 @@
 module Admin::V1
   class MonstersController < ApplicationController
     before_action :set_monster, only: %i[show edit update destroy]
-    before_action :authenticate_user!, except: %i[index show]
+    before_action :authenticate_user!, except: %i[index show monster_refs]
 
     # GET /monsters
     # GET /monsters.json
     def index
       authorize Monster
-      @monsters = if params[:search].present?
+      @monsters = if params[:refs].present?
+                    @monsters = Monster.all.order(name: :asc).map { |monster|
+                      {
+                        name: monster.name,
+                        slug: monster.slug
+                      }
+                    }
+                    render json: {count: @monsters.count, results: @monsters}
+                  elsif params[:search].present?
                     Monster.search_for(params[:search]).order(monster_type: :asc, name: :asc)
                   else
                     Monster.all.order(monster_type: :asc, name: :asc)
                   end
-      @monsters = if !current_user
-                    @monsters.where(user_id: nil)
-                  elsif current_user.admin?
-                    @monsters
-                  else
-                    @monsters.where(user_id: nil).or(@monsters.where(user_id: current_user.id))
-                  end
-      @monsters = @monsters.where(challenge_rating: params[:challenge_rating]) if params[:challenge_rating].present?
+      unless params[:refs].present?
+        @monsters = if !current_user
+                      @monsters.where(user_id: nil)
+                    elsif current_user.admin? && !params[:refs].present?
+                      @monsters
+                    else
+                      @monsters.where(user_id: nil).or(@monsters.where(user_id: current_user.id))
+                    end
+        @monsters = @monsters.where(challenge_rating: params[:challenge_rating]) if params[:challenge_rating].present?
+      end
       respond_to do |format|
         format.html { @pagy, @monsters = pagy(@monsters) }
         format.json
       end
+    end
+
+    def monster_refs
+      authorize Monster
+      @monsters = Monster.all.order(name: :asc).map { |monster|
+        {
+          name: monster.name,
+          slug: monster.slug
+        }
+      }
+      render json: {count: @monsters.count, results: @monsters}
     end
 
     # GET /monsters/1

@@ -5,6 +5,10 @@ class MonsterPolicy < ApplicationPolicy
     true
   end
 
+  def monster_refs?
+    true
+  end
+
   def show?
     user&.admin? || (user && record.user == user) || record.user.nil?
   end
