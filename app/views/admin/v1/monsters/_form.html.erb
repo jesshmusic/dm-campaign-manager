@@ -39,6 +39,9 @@
         <%= form.input :hit_points %>
       </div>
       <div class="col">
+        <%= form.input :hit_dice %>
+      </div>
+      <div class="col">
         <%= form.input :initiative %>
       </div>
     </div>
@@ -66,12 +69,6 @@
     </div>
 
     <div class="form-row">
-      <div class="col d-flex align-items-center justify-content-between">
-        <%= form.input :hit_dice_number %><strong> d </strong><%= form.input :hit_dice_value %><strong> + </strong><%= form.input :hit_dice_modifier %>
-      </div>
-    </div>
-
-    <div class="form-row">
       <div class="col">
         <%= form.input :speed %>
       </div>
@@ -79,7 +76,7 @@
 
     <div class="form-row">
       <div class="col">
-        <%= form.input :senses %>
+        <%= form.input :sense %>
       </div>
       <div class="col">
         <%= form.input :languages %>
@@ -144,6 +141,18 @@
       <div class="p-3 mx-3 my-5 border-bottom border-top" id="prof_choices_container">
         <h3>Skills</h3>
         <%= form.simple_fields_for :skills do |p_form| %>
+          <%= render 'skill_fields', f: p_form %>
+        <% end %>
+        <div class='links'>
+          <%= link_to_add_association 'Add Skill', form, :skills, class: "btn btn-info" %>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="p-3 mx-3 my-5 border-bottom border-top" id="prof_choices_container">
+        <h3>Skills</h3>
+        <%= form.simple_fields_for :reactions do |p_form| %>
           <%= render 'skill_fields', f: p_form %>
         <% end %>
         <div class='links'>

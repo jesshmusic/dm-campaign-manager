@@ -37,7 +37,7 @@ class NpcGenerator
 
       # Return
       @new_npc.as_json(
-        include: %i[monster_actions monster_legendary_actions monster_special_abilities skills],
+        include: %i[actions legendary_actions special_abilities skills],
         methods: %i[description_text hit_dice size_and_type saving_throws skills_string xp])
     end
 

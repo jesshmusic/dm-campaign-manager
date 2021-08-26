@@ -3,28 +3,22 @@
 json.key_format! camelize: :lower
 
 json.extract! monster, :id,
+              :actions,
               :alignment,
+              :api_url,
               :armor_class,
               :challenge_rating,
               :charisma,
-              :charisma_save,
-              :condition_immunities,
               :constitution,
-              :constitution_save,
               :damage_immunities,
               :damage_resistances,
               :damage_vulnerabilities,
               :dexterity,
-              :dexterity_save,
-              :hit_dice_modifier,
-              :hit_dice_number,
-              :hit_dice_value,
+              :hit_dice,
               :hit_points,
-              :initiative,
               :intelligence,
-              :intelligence_save,
               :languages,
-              :legendary_description,
+              :legendary_actions,
               :monster_subtype,
               :monster_type,
               :name,
@@ -32,15 +26,16 @@ json.extract! monster, :id,
               :senses,
               :size,
               :slug,
+              :special_abilities,
               :strength,
-              :strength_save,
-              :wisdom_save,
               :wisdom,
               :speed,
               :user_id
 
-json.descriptionText monster.description_text
-json.hit_dice monster.hit_dice
+json.condition_immunities monster.condition_immunities do |cond_imm|
+  json.extract! cond_imm.condition, :name, :index, :description
+end
+
 json.xp monster.xp
 
 json.url v1_monster_url(monster, format: :json)

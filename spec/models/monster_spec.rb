@@ -3,40 +3,34 @@
 # Table name: monsters
 #
 #  id                     :bigint           not null, primary key
+#  actions                :jsonb            is an Array
 #  alignment              :string
 #  api_url                :string
 #  armor_class            :integer          default(10)
 #  challenge_rating       :string
 #  charisma               :integer          default(10), not null
-#  charisma_save          :integer
-#  condition_immunities   :string
 #  constitution           :integer          default(10), not null
-#  constitution_save      :integer
-#  damage_immunities      :string
-#  damage_resistances     :string
-#  damage_vulnerabilities :string
+#  damage_immunities      :string           default([]), is an Array
+#  damage_resistances     :string           default([]), is an Array
+#  damage_vulnerabilities :string           default([]), is an Array
 #  dexterity              :integer          default(10), not null
-#  dexterity_save         :integer
-#  hit_dice_modifier      :integer          default(0)
-#  hit_dice_number        :integer          default(1), not null
-#  hit_dice_value         :integer          default(8), not null
+#  hit_dice               :string
 #  hit_points             :integer          default(8), not null
-#  initiative             :integer          default(0), not null
 #  intelligence           :integer          default(10), not null
-#  intelligence_save      :integer
 #  languages              :string
+#  legendary_actions      :jsonb            is an Array
 #  legendary_description  :text
 #  monster_subtype        :string
 #  monster_type           :string
 #  name                   :string
-#  senses                 :string
+#  reactions              :jsonb            is an Array
+#  senses                 :jsonb
 #  size                   :string
 #  slug                   :string
-#  speed                  :string           default("30 feet"), not null
+#  special_abilities      :jsonb            is an Array
+#  speed                  :jsonb
 #  strength               :integer          default(10), not null
-#  strength_save          :integer
 #  wisdom                 :integer          default(10), not null
-#  wisdom_save            :integer
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #  user_id                :bigint

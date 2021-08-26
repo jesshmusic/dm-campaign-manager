@@ -38,6 +38,7 @@ class Race < ApplicationRecord
     self.slug = generate_slug if will_save_change_to_name?
   end
 
+  has_and_belongs_to_many :profs
   belongs_to :user, optional: true
 
   include PgSearch::Model

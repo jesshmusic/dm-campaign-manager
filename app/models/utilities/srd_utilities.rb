@@ -19,14 +19,27 @@ class SrdUtilities
       import_and_fix_magic_items
     end
 
+    def import_races
+
+    end
+
     def import_conditions
       uri = URI("#{dnd_api_url}/api/conditions")
       response = Net::HTTP.get(uri)
       result = JSON.parse response, symbolize_names: true
       count = 0
       result[:results].each do |condition|
-
+        condition_uri = URI("#{dnd_api_url}#{condition[:url]}")
+        condition_response = Net::HTTP.get(condition_uri)
+        condition_result = JSON.parse condition_response, symbolize_names: true
+        new_cond = Condition.find_or_initialize_by(index: condition[:index])
+        new_cond.description = condition_result[:desc]
+        new_cond.name = condition_result[:name]
+        new_cond.index = condition_result[:index]
+        new_cond.save!
+        count += 1
       end
+      puts "#{count} Conditions imported or updated."
     end
 
     def import_and_fix_magic_items
@@ -43,16 +56,20 @@ class SrdUtilities
         prof_uri = URI("#{dnd_api_url}#{prof[:url]}")
         prof_response = Net::HTTP.get(prof_uri)
         prof_result = JSON.parse prof_response, symbolize_names: true
-        Prof.find_or_create_by(name: prof[:name]) do |new_prof|
-          new_prof.prof_type = prof_result[:type]
-          prof_result[:classes].each do |dnd_class|
-            prof_class = DndClass.find_by(name: dnd_class[:name])
-            prof_class.profs << new_prof
-          end
+        new_prof = Prof.find_or_initialize_by(name: prof[:name])
+        new_prof.prof_type = prof_result[:type]
+        prof_result[:classes].each do |dnd_class|
+          prof_class = DndClass.find_by(name: dnd_class[:name])
+          prof_class.profs << new_prof
         end
+        prof_result[:races].each do |race|
+          prof_race = Race.find_by(slug: "race-#{race[:index]}")
+          prof_race.profs << new_prof
+        end
+        new_prof.save!
         count += 1
       end
-      puts "#{count} Proficiencies imported."
+      puts "#{count} Proficiencies imported or updated."
     end
 
     def import_classes
@@ -88,34 +105,35 @@ class SrdUtilities
     end
 
     def import_monsters
-      next_uri = URI("#{dnd_api_url}monsters/")
+      next_uri = URI("#{dnd_api_url}/api/monsters/")
       count = 0
       while next_uri
         response = Net::HTTP.get(next_uri)
         result = JSON.parse response, symbolize_names: true
         next_uri = result[:next] ? URI(result[:next]) : false
-        result[:results].each do |monster|
+        result[:results].each do |monster_ref|
+          # monster_ref = result[:results].first
+          monster_uri = URI("#{dnd_api_url}#{monster_ref[:url]}")
+          monster_response = Net::HTTP.get(monster_uri)
+          monster = JSON.parse monster_response, symbolize_names: true
           new_monster = Monster.find_or_initialize_by(name: monster[:name])
+
+          # Required Fields
           new_monster.slug = new_monster.slug || monster[:index]
-          new_monster.alignment = monster[:alignment]
-          new_monster.api_url = "/v1/monsters/#{new_monster.slug}"
+          new_monster.alignment = monster[:alignment] || "unaligned"
           new_monster.challenge_rating = DndRules.cr_num_to_string(monster[:challenge_rating])
-          # new_monster.charisma_save = monster[:charisma_save]
-          new_monster.condition_immunities = monster[:condition_immunities]
-          # new_monster.constitution_save = monster[:constitution_save]
+          new_monster.monster_type = monster[:type]
+          new_monster.save!
+
+          new_monster.api_url = "/v1/monsters/#{new_monster.slug}"
           new_monster.damage_immunities = monster[:damage_immunities]
           new_monster.damage_resistances = monster[:damage_resistances]
           new_monster.damage_vulnerabilities = monster[:damage_vulnerabilities]
-          # new_monster.dexterity_save = monster[:dexterity_save]
-          # new_monster.intelligence_save = monster[:intelligence_save]
           new_monster.languages = monster[:languages]
-          # new_monster.reactions = monster[:reactions]
-          # new_monster.senses = monster[:senses]
           new_monster.size = monster[:size]
-          # new_monster.strength_save = monster[:strength_save]
-          new_monster.monster_subtype = monster[:subtype]
-          new_monster.monster_type = monster[:type]
-          # new_monster.wisdom_save = monster[:wisdom_save]
+          new_monster.monster_subtype = monster[:subtype] || ""
+          new_monster.speed = monster[:speed]
+          new_monster.senses = monster[:senses]
 
           # Statistics
           new_monster.armor_class = monster[:armor_class]
@@ -123,79 +141,42 @@ class SrdUtilities
           new_monster.constitution = monster[:constitution]
           new_monster.dexterity = monster[:dexterity]
           new_monster.hit_points = monster[:hit_points]
-          new_monster.initiative = DndRules.ability_score_modifier(monster[:dexterity])
           new_monster.intelligence = monster[:intelligence]
-          new_monster.speed = monster[:speed].map { |key, value| "#{value}ft. #{key}" }.join(', ')
           new_monster.strength = monster[:strength]
           new_monster.wisdom = monster[:wisdom]
+          new_monster.hit_dice = monster[:hit_dice]
 
-          # Parse the Hit Dice String
-          # (handling a stupid edge case with the API encoding)
-          hit_dice = if monster[:slug] == 'kobold'
-                       '2d6 - 2'
-                     else
-                       monster[:hit_dice]
-                     end
-          hit_die_values = DndRules.parse_dice_string(hit_dice)
-          new_monster.hit_dice_number = hit_die_values[:hit_dice_number]
-          new_monster.hit_dice_value = hit_die_values[:hit_dice_value]
-          new_monster.hit_dice_modifier = hit_die_values[:hit_dice_modifier]
+          # Actions
+          new_monster.actions = monster[:actions] || []
+          new_monster.legendary_actions = monster[:legendary_actions] || []
+          new_monster.special_abilities = monster[:special_abilities] || []
+          new_monster.reactions = monster[:reactions] || []
 
-          # Skills
-          new_monster.skills.delete_all
-          monster[:skills].each do |skill, value|
-            new_skill = Skill.create(
-              name: skill,
-              score: value
-            )
-            new_monster.skills << new_skill
-          end
-
-          # Monster Actions
-          new_monster.monster_actions.delete_all
-          if monster[:actions].is_a?(Array)
-            monster[:actions].each do |monster_action|
-              new_action = MonsterAction.new(
-                name: monster_action[:name],
-                description: monster_action[:desc],
-                attack_bonus: monster_action[:attack_bonus],
-                damage_bonus: monster_action[:damage_bonus],
-                damage_dice: monster_action[:damage_dice]
+          # Proficiencies
+          new_monster.monster_proficiencies.delete_all
+          if monster[:proficiencies] && monster[:proficiencies].is_a?(Array)
+            monster[:proficiencies].each do |prof|
+              new_prof = Prof.find_by(name: prof[:proficiency][:name])
+              new_monster_prof = MonsterProficiency.create(
+                value: prof[:value]
               )
-              new_monster.monster_actions << new_action
+              new_monster_prof.prof = new_prof
+              new_monster.monster_proficiencies << new_monster_prof
             end
           end
 
-          # Legendary Actions
-          new_monster.legendary_description = monster[:legendary_desc]
-          new_monster.monster_legendary_actions.delete_all
-          if monster[:legendary_actions].is_a?(Array)
-            monster[:legendary_actions].each do |monster_action|
-              new_action = MonsterLegendaryAction.new(
-                name: monster_action[:name],
-                description: monster_action[:desc],
-                attack_bonus: monster_action[:attack_bonus],
-                damage_bonus: monster_action[:damage_bonus],
-                damage_dice: monster_action[:damage_dice]
-              )
-              new_monster.monster_legendary_actions << new_action
+          # Condition Immunities
+          new_monster.condition_immunities.delete_all
+          if monster[:condition_immunities] && monster[:condition_immunities].is_a?(Array)
+            monster[:condition_immunities].each do |cond_imm|
+              new_cond = Condition.find_by(index: cond_imm[:index])
+              new_cond_imm = ConditionImmunity.create()
+              new_cond_imm.condition = new_cond
+              new_monster.condition_immunities << new_cond_imm
             end
           end
 
-          # Special Abilities
-          new_monster.monster_special_abilities.delete_all
-          if monster[:special_abilities].is_a?(Array)
-            monster[:special_abilities].each do |monster_action|
-              new_action = MonsterSpecialAbility.new(
-                name: monster_action[:name],
-                description: monster_action[:desc],
-                attack_bonus: monster_action[:attack_bonus],
-                damage_bonus: monster_action[:damage_bonus],
-                damage_dice: monster_action[:damage_dice]
-              )
-              new_monster.monster_special_abilities << new_action
-            end
-          end
+          new_monster.save!
           count += 1
         end
       end

@@ -10,31 +10,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_26_013043) do
+ActiveRecord::Schema.define(version: 2021_08_26_185917) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "action_damages", force: :cascade do |t|
-    t.string "damage_dice"
-    t.bigint "monster_action_id"
-    t.bigint "monster_legendary_action_id"
-    t.bigint "monster_special_ability_id"
+  create_table "condition_immunities", force: :cascade do |t|
+    t.bigint "monster_id"
+    t.bigint "condition_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["monster_action_id"], name: "index_action_damages_on_monster_action_id"
-    t.index ["monster_legendary_action_id"], name: "index_action_damages_on_monster_legendary_action_id"
-    t.index ["monster_special_ability_id"], name: "index_action_damages_on_monster_special_ability_id"
+    t.index ["condition_id"], name: "index_condition_immunities_on_condition_id"
+    t.index ["monster_id"], name: "index_condition_immunities_on_monster_id"
   end
 
   create_table "conditions", force: :cascade do |t|
     t.string "index"
     t.string "name"
     t.string "description", default: [], array: true
-    t.bigint "monster_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["monster_id"], name: "index_conditions_on_monster_id"
   end
 
   create_table "container_items", force: :cascade do |t|
@@ -45,15 +40,6 @@ ActiveRecord::Schema.define(version: 2021_08_26_013043) do
     t.index ["contained_item_id"], name: "index_container_items_on_contained_item_id"
     t.index ["item_id", "contained_item_id"], name: "index_container_items_on_item_id_and_contained_item_id", unique: true
     t.index ["item_id"], name: "index_container_items_on_item_id"
-  end
-
-  create_table "damage_types", force: :cascade do |t|
-    t.string "name"
-    t.string "index"
-    t.bigint "action_damage_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["action_damage_id"], name: "index_damage_types_on_action_damage_id"
   end
 
   create_table "dnd_classes", force: :cascade do |t|
@@ -114,40 +100,14 @@ ActiveRecord::Schema.define(version: 2021_08_26_013043) do
     t.index ["user_id"], name: "index_items_on_user_id"
   end
 
-  create_table "monster_actions", force: :cascade do |t|
-    t.string "name"
-    t.text "description"
-    t.integer "attack_bonus"
-    t.integer "damage_bonus"
-    t.string "damage_dice"
+  create_table "monster_proficiencies", force: :cascade do |t|
     t.bigint "monster_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["monster_id"], name: "index_monster_actions_on_monster_id"
-  end
-
-  create_table "monster_legendary_actions", force: :cascade do |t|
-    t.string "name"
-    t.text "description"
-    t.integer "attack_bonus"
-    t.integer "damage_bonus"
-    t.string "damage_dice"
-    t.bigint "monster_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["monster_id"], name: "index_monster_legendary_actions_on_monster_id"
-  end
-
-  create_table "monster_special_abilities", force: :cascade do |t|
-    t.string "name"
-    t.text "description"
-    t.integer "attack_bonus"
-    t.integer "damage_bonus"
-    t.string "damage_dice"
-    t.bigint "monster_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["monster_id"], name: "index_monster_special_abilities_on_monster_id"
+    t.bigint "prof_id"
+    t.integer "value"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["monster_id"], name: "index_monster_proficiencies_on_monster_id"
+    t.index ["prof_id"], name: "index_monster_proficiencies_on_prof_id"
   end
 
   create_table "monsters", force: :cascade do |t|
@@ -176,6 +136,12 @@ ActiveRecord::Schema.define(version: 2021_08_26_013043) do
     t.string "damage_immunities", default: [], array: true
     t.string "damage_resistances", default: [], array: true
     t.string "damage_vulnerabilities", default: [], array: true
+    t.jsonb "senses"
+    t.jsonb "speed"
+    t.jsonb "actions", default: [], array: true
+    t.jsonb "legendary_actions", default: [], array: true
+    t.jsonb "special_abilities", default: [], array: true
+    t.jsonb "reactions", default: [], array: true
     t.index ["slug"], name: "index_monsters_on_slug", unique: true
     t.index ["user_id"], name: "index_monsters_on_user_id"
   end
@@ -216,6 +182,12 @@ ActiveRecord::Schema.define(version: 2021_08_26_013043) do
     t.index ["name"], name: "index_profs_on_name", unique: true
   end
 
+  create_table "profs_races", id: false, force: :cascade do |t|
+    t.bigint "race_id", null: false
+    t.bigint "prof_id", null: false
+    t.index ["race_id", "prof_id"], name: "index_profs_races_on_race_id_and_prof_id"
+  end
+
   create_table "races", force: :cascade do |t|
     t.string "name", default: "New Race...", null: false
     t.string "speed", default: "30 feet", null: false
@@ -232,49 +204,6 @@ ActiveRecord::Schema.define(version: 2021_08_26_013043) do
     t.index ["name"], name: "index_races_on_name"
     t.index ["slug"], name: "index_races_on_slug"
     t.index ["user_id"], name: "index_races_on_user_id"
-  end
-
-  create_table "reactions", force: :cascade do |t|
-    t.string "name"
-    t.string "desc"
-    t.bigint "monster_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["monster_id"], name: "index_reactions_on_monster_id"
-  end
-
-  create_table "senses", force: :cascade do |t|
-    t.string "blindsight"
-    t.string "darkvision"
-    t.integer "passive_perception"
-    t.string "tremorsense"
-    t.string "truesight"
-    t.bigint "monster_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["monster_id"], name: "index_senses_on_monster_id"
-  end
-
-  create_table "skills", force: :cascade do |t|
-    t.string "name"
-    t.integer "score"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "monster_id"
-    t.index ["monster_id"], name: "index_skills_on_monster_id"
-  end
-
-  create_table "speeds", force: :cascade do |t|
-    t.string "burrow"
-    t.string "climb"
-    t.string "fly"
-    t.boolean "hover"
-    t.string "swim"
-    t.string "walk"
-    t.bigint "monster_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["monster_id"], name: "index_speeds_on_monster_id"
   end
 
   create_table "spell_classes", force: :cascade do |t|
@@ -340,19 +269,11 @@ ActiveRecord::Schema.define(version: 2021_08_26_013043) do
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 
-  add_foreign_key "action_damages", "monster_actions"
-  add_foreign_key "action_damages", "monster_legendary_actions"
-  add_foreign_key "action_damages", "monster_special_abilities"
-  add_foreign_key "conditions", "monsters"
   add_foreign_key "container_items", "items"
   add_foreign_key "container_items", "items", column: "contained_item_id"
-  add_foreign_key "damage_types", "action_damages"
   add_foreign_key "dnd_classes", "users"
   add_foreign_key "items", "users"
   add_foreign_key "monsters", "users"
   add_foreign_key "races", "users"
-  add_foreign_key "reactions", "monsters"
-  add_foreign_key "senses", "monsters"
-  add_foreign_key "speeds", "monsters"
   add_foreign_key "spells", "users"
 end

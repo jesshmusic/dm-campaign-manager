@@ -12,6 +12,9 @@
 # - `rails srd:import_items`
 
 namespace :srd do
+  task import_conditions: :environment do
+    SrdUtilities.import_conditions
+  end
 
   task import_proficiencies: :environment do
     SrdUtilities.import_proficiencies

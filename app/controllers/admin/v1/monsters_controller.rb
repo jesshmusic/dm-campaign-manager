@@ -55,7 +55,7 @@ module Admin::V1
       authorize @monster
       respond_to do |format|
         format.html { @monster }
-        format.json { render json: @monster.as_json(include: %i[monster_actions monster_legendary_actions monster_special_abilities], methods: :description_text) }
+        format.json
       end
     end
 
@@ -130,21 +130,20 @@ module Admin::V1
         :alignment, :damage_vulnerabilities,
         :damage_resistances, :damage_immunities, :condition_immunities,
         :senses, :languages, :challenge_rating, :api_url,
-        :armor_class, :charisma, :constitution, :dexterity, :hit_dice_modifier,
-        :hit_dice_number, :hit_dice_value, :hit_points, :initiative,
-        :intelligence, :proficiency, :speed, :strength, :wisdom,
+        :armor_class, :charisma, :constitution, :dexterity, :hit_dice,
+        :hit_points, :intelligence, :speed, :strength, :wisdom,
         :legendary_description,
-        monster_actions_attributes: %i[
+        actions_attributes: %i[
           id name description attack_bonus damage_bonus damage_dice _destroy
         ],
-        monster_legendary_action_attributes: %i[
+        legendary_action_attributes: %i[
           id name description attack_bonus damage_bonus damage_dice _destroy
         ],
-        monster_special_abilities_attributes: %i[
+        special_abilities_attributes: %i[
           id name description attack_bonus damage_bonus damage_dice _destroy
         ],
-        skills_attributes: %i[
-          id name score _destroy
+        reactions_attributes: %i[
+          id name description attack_bonus damage_bonus damage_dice _destroy
         ]
       )
     end

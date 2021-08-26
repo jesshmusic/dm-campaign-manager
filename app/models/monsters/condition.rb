@@ -19,4 +19,6 @@
 #  fk_rails_...  (monster_id => monsters.id)
 #
 class Condition < ApplicationRecord
+
+  has_many :condition_immunities
 end

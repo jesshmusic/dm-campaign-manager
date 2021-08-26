@@ -31,6 +31,10 @@ module Admin::V1
     # GET /races/1.json
     def show
       authorize @race
+      respond_to do |format|
+        format.html { @race }
+        format.json { render json: @race.as_json(include: %i[profs]) }
+      end
     end
 
     # GET /races/new

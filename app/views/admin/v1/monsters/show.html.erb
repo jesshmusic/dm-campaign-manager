@@ -84,7 +84,7 @@
           <dd><%= @monster.condition_immunities %></dd>
         <% end %>
         <dt>Senses</dt>
-        <dd><%= @monster.senses %></dd>
+        <dd><%= @monster.sense %></dd>
         <dt>Languages</dt>
         <dd><%= @monster.languages %></dd>
       </dl>
@@ -132,6 +132,17 @@
       <div class="col">
         <h3>Special Abilities</h3>
         <% @monster.monster_special_abilities.each do |monster_action| %>
+          <%= render 'action', monster_action: monster_action %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+  <% if !@monster.reactions.empty? %>
+    <div class="row">
+      <div class="col">
+        <h3>Special Abilities</h3>
+        <% @monster.reactions.each do |monster_action| %>
           <%= render 'action', monster_action: monster_action %>
         <% end %>
       </div>

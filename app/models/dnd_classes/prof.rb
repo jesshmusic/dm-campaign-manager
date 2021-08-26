@@ -18,5 +18,6 @@
 class Prof < ApplicationRecord
   validates :name, presence: true
 
-  has_many :dnd_classes
+  has_many :monster_proficiencies
+  has_and_belongs_to_many :races
 end
