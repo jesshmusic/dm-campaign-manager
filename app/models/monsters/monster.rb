@@ -79,109 +79,109 @@ class Monster < ApplicationRecord
   accepts_nested_attributes_for :skills, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :sense, reject_if: :all_blank, allow_destroy: true
 
-  def description_text
-    monster_desc = [
-      '<div class="p-3">',
-      "<h5><em>#{size}</em> #{monster_type} #{monster_subtype if monster_subtype && monster_subtype != ''}</h5>",
-      "<h6>Alignment: <strong>#{alignment}</strong></h6>",
-      "<h6>Challenge Rating: #{challenge_rating}</h6>",
-      "<p><strong>Armor Class</strong>  #{armor_class}</p>",
-      "<p><strong>Hit Points</strong>  #{hit_points}</p>",
-      "<p><strong>Speed</strong>  #{speed}</p>",
-      "<table class='table'><thead><tr><th>STR</th><th>DEX</th><th>CON</th><th>INT</th><th>WIS</th><th>CHA</th></tr></thead>",
-      "<tbody><tr><td>#{strength}</td><td>#{dexterity}</td><td>#{constitution}</td><td>#{intelligence}</td><td>#{wisdom}</td><td>#{charisma}</td></tr></tbody></table>",
-      "<p><strong>Senses</strong>  #{senses}</p>",
-      "<p><strong>Languages</strong>  #{languages}</p>"
-    ]
+  # def description_text
+  #   monster_desc = [
+  #     '<div class="p-3">',
+  #     "<h5><em>#{size}</em> #{monster_type} #{monster_subtype if monster_subtype && monster_subtype != ''}</h5>",
+  #     "<h6>Alignment: <strong>#{alignment}</strong></h6>",
+  #     "<h6>Challenge Rating: #{challenge_rating}</h6>",
+  #     "<p><strong>Armor Class</strong>  #{armor_class}</p>",
+  #     "<p><strong>Hit Points</strong>  #{hit_points}</p>",
+  #     "<p><strong>Speed</strong>  #{speed}</p>",
+  #     "<table class='table'><thead><tr><th>STR</th><th>DEX</th><th>CON</th><th>INT</th><th>WIS</th><th>CHA</th></tr></thead>",
+  #     "<tbody><tr><td>#{strength}</td><td>#{dexterity}</td><td>#{constitution}</td><td>#{intelligence}</td><td>#{wisdom}</td><td>#{charisma}</td></tr></tbody></table>",
+  #     "<p><strong>Senses</strong>  #{senses}</p>",
+  #     "<p><strong>Languages</strong>  #{languages}</p>"
+  #   ]
+  #
+  #   monster_desc << "<p><strong>Damage Vulnerabilities</strong>  #{damage_vulnerabilities}</p>" if damage_vulnerabilities && damage_vulnerabilities != ''
+  #   monster_desc << "<p><strong>Damage Resistances</strong>  #{damage_resistances}</p>" if damage_resistances && damage_resistances != ''
+  #   monster_desc << "<p><strong>Damage Immunities</strong>  #{damage_immunities}</p>" if damage_immunities && damage_immunities != ''
+  #   monster_desc << "<p><strong>Condition Immunities</strong>  #{condition_immunities}</p>" if condition_immunities && condition_immunities != ''
+  #
+  #   unless skills.empty?
+  #     monster_desc << '<h5 class="mt-3">Skills</h5>'
+  #     skills.each do |skill|
+  #       monster_desc << "<p><strong>#{skill.name.capitalize}</strong>  #{skill.score}</p>"
+  #     end
+  #   end
+  #
+  #   unless monster_actions.empty?
+  #     monster_desc << '<h5 class="mt-3">Actions</h5>'
+  #     monster_actions.each do |monster_action|
+  #       monster_desc << "<h6 class=\"mt-2\">#{monster_action.name}</h6><div>#{monster_action.description}</div>"
+  #       monster_desc << "<p><strong>Attack Bonus</strong> +#{monster_action.attack_bonus} | <strong>Damage Bonus</strong> +#{monster_action.damage_bonus} | <strong>Damage Dice</strong> #{monster_action.damage_dice}</p>"
+  #     end
+  #   end
+  #
+  #   unless monster_special_abilities.empty?
+  #     monster_desc << '<h5 class="mt-3">Special Abilities</h5>'
+  #     monster_special_abilities.each do |monster_action|
+  #       monster_desc << "<h6 class=\"mt-2\">#{monster_action.name}</h6><div>#{monster_action.description}</div>"
+  #     end
+  #   end
+  #
+  #   unless monster_legendary_actions.empty?
+  #     monster_desc << '<h5 class="mt-3">Legendary Actions</h5>'
+  #     monster_desc << legendary_description
+  #     monster_legendary_actions.each do |monster_action|
+  #       monster_desc << "<h6 class=\"mt-2\">#{monster_action.name}</h6><div>#{monster_action.description}</div>"
+  #     end
+  #   end
+  #
+  #   monster_desc << '</div>'
+  #
+  #   monster_desc.join
+  # end
 
-    monster_desc << "<p><strong>Damage Vulnerabilities</strong>  #{damage_vulnerabilities}</p>" if damage_vulnerabilities && damage_vulnerabilities != ''
-    monster_desc << "<p><strong>Damage Resistances</strong>  #{damage_resistances}</p>" if damage_resistances && damage_resistances != ''
-    monster_desc << "<p><strong>Damage Immunities</strong>  #{damage_immunities}</p>" if damage_immunities && damage_immunities != ''
-    monster_desc << "<p><strong>Condition Immunities</strong>  #{condition_immunities}</p>" if condition_immunities && condition_immunities != ''
+  # def hit_dice
+  #   if hit_dice_modifier < 0
+  #     "#{hit_dice_number}d#{hit_dice_value} #{hit_dice_modifier}"
+  #   elsif hit_dice_modifier > 0
+  #     "#{hit_dice_number}d#{hit_dice_value} + #{hit_dice_modifier}"
+  #   else
+  #     "#{hit_dice_number}d#{hit_dice_value}"
+  #   end
+  # end
 
-    unless skills.empty?
-      monster_desc << '<h5 class="mt-3">Skills</h5>'
-      skills.each do |skill|
-        monster_desc << "<p><strong>#{skill.name.capitalize}</strong>  #{skill.score}</p>"
-      end
-    end
+  # def saving_throws
+  #   saving_throws_array = []
+  #   saving_throws_array << "Strength +#{strength_save}" if strength_save && strength_save > 0
+  #   saving_throws_array << "Strength #{strength_save}" if strength_save && strength_save <= 0
+  #   saving_throws_array << "Dexterity +#{dexterity_save}" if dexterity_save && dexterity_save > 0
+  #   saving_throws_array << "Dexterity #{dexterity_save}" if dexterity_save && dexterity_save <= 0
+  #   saving_throws_array << "Constitution +#{constitution_save}" if constitution_save && constitution_save > 0
+  #   saving_throws_array << "Constitution #{constitution_save}" if constitution_save && constitution_save <= 0
+  #   saving_throws_array << "Intelligence +#{intelligence_save}" if intelligence_save && intelligence_save > 0
+  #   saving_throws_array << "Intelligence #{intelligence_save}" if intelligence_save && intelligence_save <= 0
+  #   saving_throws_array << "Wisdom +#{wisdom_save}" if wisdom_save && wisdom_save > 0
+  #   saving_throws_array << "Wisdom #{wisdom_save}" if wisdom_save && wisdom_save <= 0
+  #   saving_throws_array << "Charisma +#{charisma_save}" if charisma_save && charisma_save > 0
+  #   saving_throws_array << "Charisma #{charisma_save}" if charisma_save && charisma_save <= 0
+  #   saving_throws_array.join(', ')
+  # end
 
-    unless monster_actions.empty?
-      monster_desc << '<h5 class="mt-3">Actions</h5>'
-      monster_actions.each do |monster_action|
-        monster_desc << "<h6 class=\"mt-2\">#{monster_action.name}</h6><div>#{monster_action.description}</div>"
-        monster_desc << "<p><strong>Attack Bonus</strong> +#{monster_action.attack_bonus} | <strong>Damage Bonus</strong> +#{monster_action.damage_bonus} | <strong>Damage Dice</strong> #{monster_action.damage_dice}</p>"
-      end
-    end
+  # def size_and_type
+  #   size_string = "#{size} #{monster_type}"
+  #   size_string += " (#{monster_subtype})" if monster_subtype && monster_subtype != ''
+  #   size_string
+  # end
 
-    unless monster_special_abilities.empty?
-      monster_desc << '<h5 class="mt-3">Special Abilities</h5>'
-      monster_special_abilities.each do |monster_action|
-        monster_desc << "<h6 class=\"mt-2\">#{monster_action.name}</h6><div>#{monster_action.description}</div>"
-      end
-    end
-
-    unless monster_legendary_actions.empty?
-      monster_desc << '<h5 class="mt-3">Legendary Actions</h5>'
-      monster_desc << legendary_description
-      monster_legendary_actions.each do |monster_action|
-        monster_desc << "<h6 class=\"mt-2\">#{monster_action.name}</h6><div>#{monster_action.description}</div>"
-      end
-    end
-
-    monster_desc << '</div>'
-
-    monster_desc.join
-  end
-
-  def hit_dice
-    if hit_dice_modifier < 0
-      "#{hit_dice_number}d#{hit_dice_value} #{hit_dice_modifier}"
-    elsif hit_dice_modifier > 0
-      "#{hit_dice_number}d#{hit_dice_value} + #{hit_dice_modifier}"
-    else
-      "#{hit_dice_number}d#{hit_dice_value}"
-    end
-  end
-
-  def saving_throws
-    saving_throws_array = []
-    saving_throws_array << "Strength +#{strength_save}" if strength_save && strength_save > 0
-    saving_throws_array << "Strength #{strength_save}" if strength_save && strength_save <= 0
-    saving_throws_array << "Dexterity +#{dexterity_save}" if dexterity_save && dexterity_save > 0
-    saving_throws_array << "Dexterity #{dexterity_save}" if dexterity_save && dexterity_save <= 0
-    saving_throws_array << "Constitution +#{constitution_save}" if constitution_save && constitution_save > 0
-    saving_throws_array << "Constitution #{constitution_save}" if constitution_save && constitution_save <= 0
-    saving_throws_array << "Intelligence +#{intelligence_save}" if intelligence_save && intelligence_save > 0
-    saving_throws_array << "Intelligence #{intelligence_save}" if intelligence_save && intelligence_save <= 0
-    saving_throws_array << "Wisdom +#{wisdom_save}" if wisdom_save && wisdom_save > 0
-    saving_throws_array << "Wisdom #{wisdom_save}" if wisdom_save && wisdom_save <= 0
-    saving_throws_array << "Charisma +#{charisma_save}" if charisma_save && charisma_save > 0
-    saving_throws_array << "Charisma #{charisma_save}" if charisma_save && charisma_save <= 0
-    saving_throws_array.join(', ')
-  end
-
-  def size_and_type
-    size_string = "#{size} #{monster_type}"
-    size_string += " (#{monster_subtype})" if monster_subtype && monster_subtype != ''
-    size_string
-  end
-
-  def skills_string
-    skills_array = []
-    unless skills.empty?
-      skills.each do |skill|
-        skills_str = "#{skill.name.capitalize}"
-        if skill.score >= 0
-          skills_str += " +#{skill.score}"
-        else
-          skills_str += " #{skill.score}"
-        end
-        skills_array << skills_str
-      end
-    end
-    skills_array.join(', ')
-  end
+  # def skills_string
+  #   skills_array = []
+  #   unless skills.empty?
+  #     skills.each do |skill|
+  #       skills_str = "#{skill.name.capitalize}"
+  #       if skill.score >= 0
+  #         skills_str += " +#{skill.score}"
+  #       else
+  #         skills_str += " #{skill.score}"
+  #       end
+  #       skills_array << skills_str
+  #     end
+  #   end
+  #   skills_array.join(', ')
+  # end
 
   def xp
     DndRules.xp_for_cr(challenge_rating)

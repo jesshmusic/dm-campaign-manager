@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_26_011733) do
+ActiveRecord::Schema.define(version: 2021_08_26_013043) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -156,17 +156,6 @@ ActiveRecord::Schema.define(version: 2021_08_26_011733) do
     t.string "monster_type"
     t.string "monster_subtype"
     t.string "alignment"
-    t.integer "strength_save"
-    t.integer "dexterity_save"
-    t.integer "constitution_save"
-    t.integer "intelligence_save"
-    t.integer "wisdom_save"
-    t.integer "charisma_save"
-    t.string "damage_vulnerabilities"
-    t.string "damage_resistances"
-    t.string "damage_immunities"
-    t.string "condition_immunities"
-    t.string "senses"
     t.string "languages"
     t.string "challenge_rating"
     t.string "api_url"
@@ -179,15 +168,14 @@ ActiveRecord::Schema.define(version: 2021_08_26_011733) do
     t.integer "charisma", default: 10, null: false
     t.integer "constitution", default: 10, null: false
     t.integer "dexterity", default: 10, null: false
-    t.integer "hit_dice_modifier", default: 0
-    t.integer "hit_dice_number", default: 1, null: false
-    t.integer "hit_dice_value", default: 8, null: false
     t.integer "hit_points", default: 8, null: false
-    t.integer "initiative", default: 0, null: false
     t.integer "intelligence", default: 10, null: false
-    t.string "speed", default: "30 feet", null: false
     t.integer "strength", default: 10, null: false
     t.integer "wisdom", default: 10, null: false
+    t.string "hit_dice"
+    t.string "damage_immunities", default: [], array: true
+    t.string "damage_resistances", default: [], array: true
+    t.string "damage_vulnerabilities", default: [], array: true
     t.index ["slug"], name: "index_monsters_on_slug", unique: true
     t.index ["user_id"], name: "index_monsters_on_user_id"
   end
