@@ -29,7 +29,6 @@
 #  monster_subtype        :string
 #  monster_type           :string
 #  name                   :string
-#  reactions              :text
 #  senses                 :string
 #  size                   :string
 #  slug                   :string

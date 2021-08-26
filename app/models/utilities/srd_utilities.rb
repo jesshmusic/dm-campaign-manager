@@ -10,12 +10,23 @@ class SrdUtilities
     end
 
     def import_all
-      SrdUtilities.import_proficiencies
-      SrdUtilities.import_classes
-      SrdUtilities.import_monsters
-      SrdUtilities.import_spells
-      SrdUtilities.import_items
-      SrdUtilities.import_and_fix_magic_items
+      import_conditions
+      import_proficiencies
+      import_classes
+      import_monsters
+      import_spells
+      import_items
+      import_and_fix_magic_items
+    end
+
+    def import_conditions
+      uri = URI("#{dnd_api_url}/api/conditions")
+      response = Net::HTTP.get(uri)
+      result = JSON.parse response, symbolize_names: true
+      count = 0
+      result[:results].each do |condition|
+
+      end
     end
 
     def import_and_fix_magic_items
@@ -77,34 +88,34 @@ class SrdUtilities
     end
 
     def import_monsters
-      next_uri = URI("#{dnd_open5e_url}monsters/")
+      next_uri = URI("#{dnd_api_url}monsters/")
       count = 0
       while next_uri
         response = Net::HTTP.get(next_uri)
         result = JSON.parse response, symbolize_names: true
         next_uri = result[:next] ? URI(result[:next]) : false
         result[:results].each do |monster|
-          new_monster = Monster.find_or_create_by(name: monster[:name])
-          new_monster.slug = new_monster.slug || monster[:slug]
+          new_monster = Monster.find_or_initialize_by(name: monster[:name])
+          new_monster.slug = new_monster.slug || monster[:index]
           new_monster.alignment = monster[:alignment]
-          new_monster.api_url = "#{dnd_open5e_url}monsters/#{monster[:slug]}"
-          new_monster.challenge_rating = monster[:challenge_rating]
-          new_monster.charisma_save = monster[:charisma_save]
+          new_monster.api_url = "/v1/monsters/#{new_monster.slug}"
+          new_monster.challenge_rating = DndRules.cr_num_to_string(monster[:challenge_rating])
+          # new_monster.charisma_save = monster[:charisma_save]
           new_monster.condition_immunities = monster[:condition_immunities]
-          new_monster.constitution_save = monster[:constitution_save]
+          # new_monster.constitution_save = monster[:constitution_save]
           new_monster.damage_immunities = monster[:damage_immunities]
           new_monster.damage_resistances = monster[:damage_resistances]
           new_monster.damage_vulnerabilities = monster[:damage_vulnerabilities]
-          new_monster.dexterity_save = monster[:dexterity_save]
-          new_monster.intelligence_save = monster[:intelligence_save]
+          # new_monster.dexterity_save = monster[:dexterity_save]
+          # new_monster.intelligence_save = monster[:intelligence_save]
           new_monster.languages = monster[:languages]
-          new_monster.reactions = monster[:reactions]
-          new_monster.senses = monster[:senses]
+          # new_monster.reactions = monster[:reactions]
+          # new_monster.senses = monster[:senses]
           new_monster.size = monster[:size]
-          new_monster.strength_save = monster[:strength_save]
+          # new_monster.strength_save = monster[:strength_save]
           new_monster.monster_subtype = monster[:subtype]
           new_monster.monster_type = monster[:type]
-          new_monster.wisdom_save = monster[:wisdom_save]
+          # new_monster.wisdom_save = monster[:wisdom_save]
 
           # Statistics
           new_monster.armor_class = monster[:armor_class]

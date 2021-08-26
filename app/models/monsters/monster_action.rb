@@ -22,5 +22,6 @@
 class MonsterAction < ApplicationRecord
   validates :name, presence: true
 
+  has_many :action_damages, dependent: :destroy
   belongs_to :monster
 end

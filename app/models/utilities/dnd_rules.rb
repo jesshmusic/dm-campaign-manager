@@ -662,6 +662,19 @@ class DndRules
       end
     end
 
+    def cr_num_to_string(challenge_rating)
+      case challenge_rating
+      when 0.125
+        '1/8'
+      when 0.25
+        '1/4'
+      when 0.5
+        '1/2'
+      else
+        "#{challenge_rating}"
+      end
+    end
+
     def proficiency_cr(npc)
       case npc.proficiency
       when 0

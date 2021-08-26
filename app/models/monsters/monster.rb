@@ -31,7 +31,6 @@
 #  monster_subtype        :string
 #  monster_type           :string
 #  name                   :string
-#  reactions              :text
 #  senses                 :string
 #  size                   :string
 #  slug                   :string
@@ -61,17 +60,24 @@ class Monster < ApplicationRecord
     self.slug = generate_slug if will_save_change_to_name?
   end
 
+  has_many :condition_immunities, class_name: 'Condition'
   has_many :monster_actions, dependent: :destroy
   has_many :monster_legendary_actions, dependent: :destroy
   has_many :monster_special_abilities, dependent: :destroy
+  has_many :reactions, dependent: :destroy
   has_many :skills, dependent: :destroy
+
+  has_one :sense, dependent: :destroy
+  has_one :speed, dependent: :destroy
 
   belongs_to :user, optional: true
 
   accepts_nested_attributes_for :monster_actions, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :monster_legendary_actions, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :monster_special_abilities, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :reactions, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :skills, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :sense, reject_if: :all_blank, allow_destroy: true
 
   def description_text
     monster_desc = [
