@@ -6,7 +6,7 @@ json.extract! item, :id, :name, :category,
               :sub_category, :cost_unit, :cost_value,
               :description, :weight, :type, :user_id
 
-json.excerpt strip_tags(item.description).truncate_words(20, omission: '...')
+json.excerpt strip_tags(item.description).truncate_words(20, omission: '...') unless item.description.nil?
 
 if item.type == 'ArmorItem'
   json.extract! item, :armor_class, :armor_dex_bonus,

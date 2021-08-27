@@ -151,7 +151,7 @@ class SrdUtilities
           new_monster.intelligence = monster[:intelligence]
           new_monster.strength = monster[:strength]
           new_monster.wisdom = monster[:wisdom]
-          new_monster.hit_dice = monster[:hit_dice]
+          new_monster.hit_dice = monster[:hit_dice] || ""
 
           # Actions
           new_monster.actions = monster[:actions] || []
