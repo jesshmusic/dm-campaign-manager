@@ -36,6 +36,11 @@ json.condition_immunities monster.condition_immunities do |cond_imm|
   json.extract! cond_imm.condition, :name, :index, :description
 end
 
+json.monster_proficiencies monster.monster_proficiencies do |monster_prof|
+  json.extract! monster_prof.prof, :name, :prof_type
+  json.value monster_prof.value
+end
+
 json.xp monster.xp
 
 json.url v1_monster_url(monster, format: :json)

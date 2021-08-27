@@ -63,6 +63,16 @@ class DndRules
       }
     end
 
+    def senses
+      {
+        "blindsight": "Blind Sight",
+        "darkvision": "Dark Vision",
+        "passive_perception": "Passive Perception",
+        "tremorsense": "Tremor Sense",
+        "truesight": "Blind Sight"
+      }
+    end
+
     def skills
       [
         'Skill: Animal Handling',
@@ -539,9 +549,9 @@ class DndRules
     # Challenge Rating Calculations
     def proficiency_for_cr(challenge_rating)
       return 2 if challenge_rating == '1/8' ||
-                  challenge_rating == '1/4' ||
-                  challenge_rating == '1/2' ||
-                  challenge_rating == '0'
+        challenge_rating == '1/4' ||
+        challenge_rating == '1/2' ||
+        challenge_rating == '0'
 
       challenge = challenge_rating.to_i
       case challenge

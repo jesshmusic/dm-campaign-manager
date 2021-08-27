@@ -41,9 +41,6 @@
       <div class="col">
         <%= form.input :hit_dice %>
       </div>
-      <div class="col">
-        <%= form.input :initiative %>
-      </div>
     </div>
 
     <h4>Abilities</h4>
@@ -68,16 +65,30 @@
       </div>
     </div>
 
+    <h4>Speed</h4>
     <div class="form-row">
-      <div class="col">
-        <%= form.input :speed %>
-      </div>
+      <%= form.simple_fields_for :speed, OpenStruct.new(form.object.speed) do |speed_form| %>
+        <%= speed_form.input :burrow %>
+        <%= speed_form.input :climb %>
+        <%= speed_form.input :fly %>
+        <%= speed_form.input :hover, as: :boolean %>
+        <%= speed_form.input :swim %>
+        <%= speed_form.input :walk %>
+      <% end %>
+    </div>
+
+    <h4>Senses</h4>
+    <div class="form-row">
+      <%= form.simple_fields_for :senses, OpenStruct.new(form.object.senses) do |senses_form| %>
+        <%= senses_form.input :blindsight %>
+        <%= senses_form.input :darkvision %>
+        <%= senses_form.input :passive_perception %>
+        <%= senses_form.input :tremorsense %>
+        <%= senses_form.input :truesight %>
+      <% end %>
     </div>
 
     <div class="form-row">
-      <div class="col">
-        <%= form.input :sense %>
-      </div>
       <div class="col">
         <%= form.input :languages %>
       </div>
@@ -96,73 +107,81 @@
         <%= form.input :damage_immunities %>
       </div>
       <div class="col-12 col-md-6">
-        <%= form.input :condition_immunities %>
+        <%= form.association :conditions %>
       </div>
     </div>
 
     <div class="form-row">
       <div class="p-3 mx-3 my-5 border-bottom border-top" id="prof_choices_container">
-        <h3>Actions</h3>
-        <%= form.simple_fields_for :monster_actions do |p_form| %>
-          <%= render 'monster_action_fields', f: p_form %>
+        <h3>Proficiencies</h3>
+        <%= form.simple_fields_for :monster_proficiencies do |p_form| %>
+          <%= render 'monster_proficiency_fields', f: p_form %>
         <% end %>
         <div class='links'>
-          <%= link_to_add_association 'Add Action', form, :monster_actions, class: "btn btn-info" %>
+          <%= link_to_add_association 'Add Proficiency', form, :monster_proficiencies, class: "btn btn-info" %>
         </div>
       </div>
     </div>
 
-    <div class="form-row">
-      <div class="p-3 mx-3 my-5 border-bottom border-top" id="prof_choices_container">
-        <h3>Legendary Actions</h3>
-        <%= form.input :legendary_description %>
-        <%= form.simple_fields_for :monster_legendary_actions do |p_form| %>
-          <%= render 'monster_legendary_action_fields', f: p_form %>
-        <% end %>
-        <div class='links'>
-          <%= link_to_add_association 'Add Action', form, :monster_legendary_actions, class: "btn btn-info" %>
-        </div>
-      </div>
-    </div>
+    <!--    <div class="form-row">-->
+    <!--      <div class="p-3 mx-3 my-5 border-bottom border-top" id="prof_choices_container">-->
+    <!--        <h3>Actions</h3>-->
+    <%#= form.simple_fields_for :actions do |p_form| %>
+    <%#= render 'monster_action_fields', f: p_form %>
+    <%# end %>
+    <!--        <div class='links'>-->
+    <%#= link_to_add_association 'Add Action', form, :actions, class: "btn btn-info" %>
+    <!--        </div>-->
+    <!--      </div>-->
+    <!--    </div>-->
 
-    <div class="form-row">
-      <div class="p-3 mx-3 my-5 border-bottom border-top" id="prof_choices_container">
-        <h3>Special Abilities</h3>
-        <%= form.simple_fields_for :monster_special_abilities do |p_form| %>
-          <%= render 'monster_special_ability_fields', f: p_form %>
-        <% end %>
-        <div class='links'>
-          <%= link_to_add_association 'Add Action', form, :monster_special_abilities, class: "btn btn-info" %>
-        </div>
-      </div>
-    </div>
+    <!--    <div class="form-row">-->
+    <!--      <div class="p-3 mx-3 my-5 border-bottom border-top" id="prof_choices_container">-->
+    <!--        <h3>Legendary Actions</h3>-->
+    <%#= form.input :legendary_description %>
+    <%#= form.simple_fields_for :legendary_actions do |p_form| %>
+    <%#= render 'monster_action_fields', f: p_form %>
+    <%# end %>
+    <!--        <div class='links'>-->
+    <%#= link_to_add_association 'Add Action', form, :legendary_actions, class: "btn btn-info" %>
+    <!--        </div>-->
+    <!--      </div>-->
+    <!--    </div>-->
 
-    <div class="form-row">
-      <div class="p-3 mx-3 my-5 border-bottom border-top" id="prof_choices_container">
-        <h3>Skills</h3>
-        <%= form.simple_fields_for :skills do |p_form| %>
-          <%= render 'skill_fields', f: p_form %>
-        <% end %>
-        <div class='links'>
-          <%= link_to_add_association 'Add Skill', form, :skills, class: "btn btn-info" %>
-        </div>
-      </div>
-    </div>
+    <!--    <div class="form-row">-->
+    <!--      <div class="p-3 mx-3 my-5 border-bottom border-top" id="prof_choices_container">-->
+    <!--        <h3>Special Abilities</h3>-->
+    <%#= form.simple_fields_for :special_abilities do |p_form| %>
+    <%#= render 'monster_action_fields', f: p_form %>
+    <%# end %>
+    <!--        <div class='links'>-->
+    <%#= link_to_add_association 'Add Action', form, :special_abilities, class: "btn btn-info" %>
+    <!--        </div>-->
+    <!--      </div>-->
+    <!--    </div>-->
 
-    <div class="form-row">
-      <div class="p-3 mx-3 my-5 border-bottom border-top" id="prof_choices_container">
-        <h3>Skills</h3>
-        <%= form.simple_fields_for :reactions do |p_form| %>
-          <%= render 'skill_fields', f: p_form %>
-        <% end %>
-        <div class='links'>
-          <%= link_to_add_association 'Add Skill', form, :skills, class: "btn btn-info" %>
-        </div>
-      </div>
-    </div>
+    <!--    <div class="form-row">-->
+    <!--      <div class="p-3 mx-3 my-5 border-bottom border-top" id="prof_choices_container">-->
+    <!--        <h3>Reactions</h3>-->
+    <%#= form.simple_fields_for :reactions do |p_form| %>
+    <%#= render 'monster_action_fields', f: p_form %>
+    <%# end %>
+    <!--        <div class='links'>-->
+    <%#= link_to_add_association 'Add Action', form, :reactions, class: "btn btn-info" %>
+    <!--        </div>-->
+    <!--      </div>-->
+    <!--    </div>-->
   </div>
 
   <div class="form-actions">
     <%= form.button :submit, class: 'btn btn-success mb-3' %>
   </div>
 <% end %>
+
+<script>
+  $(document).ready(function() {
+    $( "#monster_condition_ids" ).select2({
+      theme: "bootstrap"
+    });
+  });
+</script>

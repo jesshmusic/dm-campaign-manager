@@ -2,19 +2,18 @@
 
 # == Schema Information
 #
-# Table name: monster_proficiencies
+# Table name: condition_immunities
 #
-#  id         :bigint           not null, primary key
-#  value      :integer
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  monster_id :bigint
-#  prof_id    :bigint
+#  id           :bigint           not null, primary key
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#  condition_id :bigint
+#  monster_id   :bigint
 #
 # Indexes
 #
-#  index_monster_proficiencies_on_monster_id  (monster_id)
-#  index_monster_proficiencies_on_prof_id     (prof_id)
+#  index_condition_immunities_on_condition_id  (condition_id)
+#  index_condition_immunities_on_monster_id    (monster_id)
 #
 
 class ConditionImmunity < ApplicationRecord

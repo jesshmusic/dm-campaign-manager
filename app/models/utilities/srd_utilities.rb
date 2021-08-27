@@ -132,7 +132,14 @@ class SrdUtilities
           new_monster.languages = monster[:languages]
           new_monster.size = monster[:size]
           new_monster.monster_subtype = monster[:subtype] || ""
-          new_monster.speed = monster[:speed]
+          new_monster.speed = {
+            burrow: monster[:speed][:burrow] ? monster[:speed][:burrow]: "",
+            climb: monster[:speed][:climb] ? monster[:speed][:climb]: "",
+            fly: monster[:speed][:fly] ? monster[:speed][:fly]: "",
+            hover: monster[:speed][:hover] ? monster[:speed][:hover]: false,
+            swim: monster[:speed][:swim] ? monster[:speed][:swim]: "",
+            walk: monster[:speed][:walk] ? monster[:speed][:walk]: "",
+          }
           new_monster.senses = monster[:senses]
 
           # Statistics

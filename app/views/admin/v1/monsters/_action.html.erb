@@ -1,26 +1,23 @@
 <div class="row">
   <div class="col">
-    <h4><%= monster_action.name %> </h4>
-    <%= markdown(monster_action.description) %>
+    <h4><%= monster_action['name'] %> </h4>
+    <%= monster_action['desc'] %>
   </div>
 </div>
-<div class="row pt-1 pb-4">
-  <% if monster_action.attack_bonus %>
+<% if monster_action['attack_bonus'] %>
+  <div class="row pt-1 pb-4">
     <div class="col">
       <strong>Attack Bonus </strong>
-      +<%= monster_action.attack_bonus %>
+      +<%= monster_action['attack_bonus'] %>
     </div>
-  <% end %>
-  <% if monster_action.damage_bonus %>
+  </div>
+<% end %>
+<% if monster_action['damage'] %>
+  <div class="row pt-1 pb-4">
     <div class="col">
-      <strong>Damage Bonus </strong>
-      +<%= monster_action.damage_bonus %>
+      <% monster_action['damage'].each do |damage| %>
+        <strong>Damage </strong> <%= damage['damage_dice'] %>, <%= damage['damage_type']['name'] %>
+      <% end %>
     </div>
-  <% end %>
-  <% if monster_action.damage_dice %>
-    <div class="col">
-      <strong>Damage Dice </strong>
-      <%= monster_action.damage_dice %>
-    </div>
-  <% end %>
-</div>
+  </div>
+<% end %>

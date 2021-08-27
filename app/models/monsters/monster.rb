@@ -62,8 +62,15 @@ class Monster < ApplicationRecord
 
   belongs_to :user, optional: true
 
+  accepts_nested_attributes_for :monster_proficiencies, allow_destroy: true
+  accepts_nested_attributes_for :condition_immunities, allow_destroy: true
+
   def xp
     DndRules.xp_for_cr(challenge_rating)
+  end
+
+  def initiative
+    DndRules.ability_score_modifier(self.dexterity)
   end
 
   include PgSearch::Model

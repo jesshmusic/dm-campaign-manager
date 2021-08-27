@@ -31,7 +31,13 @@
         <dt>Hit Points</dt>
         <dd><%= @monster.hit_points %> (<%= @monster.hit_dice %>)</dd>
         <dt>Speed</dt>
-        <dd><%= @monster.speed %></dd>
+        <dd>
+        <% @monster.speed.to_h.each do |key, value| %>
+            <% unless value == "0" || value == "" %>
+              <%= key %><%= value == "1" ? "" : ": #{value}" %>
+            <% end %>
+        <% end %>
+        </dd>
       </dl>
     </div>
   </div>
@@ -81,57 +87,64 @@
         <% end %>
         <% if !@monster.condition_immunities.empty? %>
           <dt>Condition immunities</dt>
-          <dd><%= @monster.condition_immunities %></dd>
+          <dd><%= @monster.condition_immunities.map {|cond_imm|
+            cond_imm.condition.name
+          }.join(', ') %></dd>
         <% end %>
         <dt>Senses</dt>
-        <dd><%= @monster.sense %></dd>
+        <% @monster.senses.to_h.each do |key, value| %>
+          <dd>
+            <% unless value == 0 || value == "" %>
+              <%= DndRules.senses[key.to_sym] %>: <%= value %>
+            <% end %>
+          </dd>
+        <% end %>
         <dt>Languages</dt>
         <dd><%= @monster.languages %></dd>
       </dl>
     </div>
   </div>
 
-  <% if !@monster.skills.empty? %>
+  <% if !@monster.monster_proficiencies.empty? %>
     <div class="row">
       <div class="col">
-        <h3>Skills</h3>
+        <h3>Proficiencies</h3>
         <ul>
-          <% @monster.skills.each do |monster_skill| %>
-            <li><strong><%= monster_skill.name.capitalize %> </strong><%= monster_skill.score %></li>
+          <% @monster.monster_proficiencies.each do |monster_prof| %>
+            <li><strong><%= monster_prof.prof.name.capitalize %> </strong><%= monster_prof.value %></li>
           <% end %>
         </ul>
       </div>
     </div>
   <% end %>
 
-  <% if !@monster.monster_actions.empty? %>
+  <% if !@monster.actions.empty? %>
     <div class="row">
       <div class="col">
         <h3>Actions</h3>
-        <% @monster.monster_actions.each do |monster_action| %>
-          <%= render 'action', monster_action: monster_action %>
+        <% @monster.actions.each do |monster_action| %>
+          <%= render 'action', monster_action: monster_action.to_h %>
         <% end %>
       </div>
     </div>
   <% end %>
 
-  <% if !@monster.monster_legendary_actions.empty? %>
+  <% if !@monster.legendary_actions.empty? %>
     <div class="row">
       <div class="col">
         <h3>Legendary Actions</h3>
-        <%= markdown(@monster.legendary_description) %>
-        <% @monster.monster_legendary_actions.each do |monster_action| %>
+        <% @monster.legendary_actions.each do |monster_action| %>
           <%= render 'action', monster_action: monster_action %>
         <% end %>
       </div>
     </div>
   <% end %>
 
-  <% if !@monster.monster_special_abilities.empty? %>
+  <% if !@monster.special_abilities.empty? %>
     <div class="row">
       <div class="col">
         <h3>Special Abilities</h3>
-        <% @monster.monster_special_abilities.each do |monster_action| %>
+        <% @monster.special_abilities.each do |monster_action| %>
           <%= render 'action', monster_action: monster_action %>
         <% end %>
       </div>

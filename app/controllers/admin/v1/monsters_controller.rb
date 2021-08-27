@@ -129,21 +129,29 @@ module Admin::V1
         :name, :size, :monster_type, :monster_subtype,
         :alignment, :damage_vulnerabilities,
         :damage_resistances, :damage_immunities, :condition_immunities,
-        :senses, :languages, :challenge_rating, :api_url,
+        :languages, :challenge_rating, :api_url,
         :armor_class, :charisma, :constitution, :dexterity, :hit_dice,
-        :hit_points, :intelligence, :speed, :strength, :wisdom,
+        :hit_points, :intelligence, :strength, :wisdom,
         :legendary_description,
+        condition_ids: [],
+        monster_proficiencies_attributes: %i[id prof_id value _destroy],
+        senses: %i[
+          blindsight darkvision passive_perception tremorsense truesight
+        ],
+        speed: %i[
+          burrow climb fly hover swim walk
+        ],
         actions_attributes: %i[
-          id name description attack_bonus damage_bonus damage_dice _destroy
+          name description attack_bonus damage_bonus damage_dice
         ],
         legendary_action_attributes: %i[
-          id name description attack_bonus damage_bonus damage_dice _destroy
+          name description attack_bonus damage_bonus damage_dice
         ],
         special_abilities_attributes: %i[
-          id name description attack_bonus damage_bonus damage_dice _destroy
+          name description attack_bonus damage_bonus damage_dice
         ],
         reactions_attributes: %i[
-          id name description attack_bonus damage_bonus damage_dice _destroy
+          name description attack_bonus damage_bonus damage_dice
         ]
       )
     end
