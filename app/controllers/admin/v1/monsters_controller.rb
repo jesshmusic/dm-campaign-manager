@@ -3,7 +3,7 @@
 module Admin::V1
   class MonstersController < ApplicationController
     before_action :set_monster, only: %i[show edit update destroy]
-    before_action :authenticate_user!, except: %i[index show monster_refs]
+    before_action :authenticate_user!, except: %i[index show monster_refs monster_categories]
 
     # GET /monsters
     # GET /monsters.json
@@ -47,6 +47,24 @@ module Admin::V1
         }
       }
       render json: {count: @monsters.count, results: @monsters}
+    end
+
+    def monster_categories
+      authorize Monster
+      monster_types = Monster.pluck(:monster_type).uniq
+      monster_cats = []
+      monster_types.each do |monster_type|
+        monster_cats << {
+          name: monster_type.capitalize,
+          monsters: Monster.where(monster_type: monster_type).map { |monster|
+            {
+              name: monster.name,
+              slug: monster.slug
+            }
+          }
+        }
+      end
+      render json: {count: monster_cats.count, results: monster_cats.sort_by{|e| e[:name]}}
     end
 
     # GET /monsters/1

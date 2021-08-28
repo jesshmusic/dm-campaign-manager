@@ -9,6 +9,10 @@ class MonsterPolicy < ApplicationPolicy
     true
   end
 
+  def monster_categories?
+    true
+  end
+
   def show?
     user&.admin? || (user && record.user == user) || record.user.nil?
   end

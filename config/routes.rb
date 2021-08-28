@@ -24,6 +24,9 @@ Rails.application.routes.draw do
       get '/generate_commoner', to: 'characters#generate_commoner',
           as: 'generate_commoner',
           constraints: { format: 'json' }
+      get '/monster-categories', to: 'monsters#monster_categories',
+          as: 'monster_categories',
+          constraints: { format: 'json' }
       resources :dnd_classes, param: :slug
       resources :items, param: :slug
       # noinspection RailsParamDefResolve
