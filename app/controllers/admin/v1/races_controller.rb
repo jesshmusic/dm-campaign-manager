@@ -9,21 +9,31 @@ module Admin::V1
     # GET /races.json
     def index
       authorize Race
-      @races = if params[:search].present?
-                 Race.search_for(params[:search])
-               else
-                 Race.all
-               end
-      @races = if !current_user
-                 @races.where(user_id: nil).order(name: :asc)
-               elsif current_user.admin?
-                 @races.order(name: :asc)
-               else
-                 @races.where(user_id: nil).or(@races.where(user_id: current_user.id)).order(name: :asc)
-               end
-      respond_to do |format|
-        format.html { @races }
-        format.json
+      if params[:list].present?
+        @races = Race.all.order(name: :asc).map { |race|
+          {
+            name: race.name,
+            slug: race.slug
+          }
+        }
+        render json: {count: @races.count, results: @races}
+      else
+        @races = if params[:search].present?
+                   Race.search_for(params[:search])
+                 else
+                   Race.all
+                 end
+        @races = if !current_user
+                   @races.where(user_id: nil).order(name: :asc)
+                 elsif current_user.admin?
+                   @races.order(name: :asc)
+                 else
+                   @races.where(user_id: nil).or(@races.where(user_id: current_user.id)).order(name: :asc)
+                 end
+        respond_to do |format|
+          format.html { @races }
+          format.json
+        end
       end
     end
 

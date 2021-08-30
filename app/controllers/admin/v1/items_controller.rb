@@ -9,29 +9,39 @@ module Admin::V1
     # GET /items.json
     def index
       authorize Item
-      @items = if params[:search].present?
-                 Item.search_for(params[:search])
-               else
-                 Item.all.order('name ASC')
-               end
-      @items = @items.where(type: params[:type]) if params[:type].present?
-      @items = @items.where.not(sub_category: 'Shield') if params[:shield].present? && params[:shield] == 'false'
-      @items = @items.where(sub_category: 'Shield') if params[:shield].present? && params[:shield] == 'true'
-      @items = @items.where.not("'Two-Handed' = ANY (weapon_properties)") if params[:two_hand].present? && params[:two_hand] == 'false'
-      if params[:two_hand].present? && params[:two_hand] == 'true'
-        @items = @items.where("'Two-Handed' = ANY (weapon_properties)")
-                   .or(@items.where.not(weapon_2h_damage_type: [nil, '']))
-      end
-      @items = if !current_user
-                 @items.where(user_id: nil)
-               elsif current_user.admin?
-                 @items
-               else
-                 @items.where(user_id: nil).or(@items.where(user_id: current_user.id))
-               end
-      respond_to do |format|
-        format.html { @pagy, @items = pagy(@items) }
-        format.json
+      if params[:list].present?
+        @items = Item.all.order(name: :asc).map { |item|
+          {
+            name: item.name,
+            slug: item.slug
+          }
+        }
+        render json: {count: @items.count, results: @items}
+      else
+        @items = if params[:search].present?
+                   Item.search_for(params[:search])
+                 else
+                   Item.all.order('name ASC')
+                 end
+        @items = @items.where(type: params[:type]) if params[:type].present?
+        @items = @items.where.not(sub_category: 'Shield') if params[:shield].present? && params[:shield] == 'false'
+        @items = @items.where(sub_category: 'Shield') if params[:shield].present? && params[:shield] == 'true'
+        @items = @items.where.not("'Two-Handed' = ANY (weapon_properties)") if params[:two_hand].present? && params[:two_hand] == 'false'
+        if params[:two_hand].present? && params[:two_hand] == 'true'
+          @items = @items.where("'Two-Handed' = ANY (weapon_properties)")
+                         .or(@items.where.not(weapon_2h_damage_type: [nil, '']))
+        end
+        @items = if !current_user
+                   @items.where(user_id: nil)
+                 elsif current_user.admin?
+                   @items
+                 else
+                   @items.where(user_id: nil).or(@items.where(user_id: current_user.id))
+                 end
+        respond_to do |format|
+          format.html { @pagy, @items = pagy(@items) }
+          format.json
+        end
       end
     end
 

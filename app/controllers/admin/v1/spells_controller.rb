@@ -9,26 +9,36 @@ module Admin::V1
     # GET /spells.json
     def index
       authorize Spell
-      @spells = if params[:dnd_class].present? && params[:search].present?
-                  Spell.includes(:dnd_classes).where(dnd_classes: {name: params[:dnd_class]}).search_for(params[:search])
-                elsif params[:dnd_class].present?
-                  Spell.includes(:dnd_classes).where(dnd_classes: {name: params[:dnd_class]})
-                elsif params[:search].present?
-                  Spell.search_for(params[:search])
-                else
-                  Spell.all
-                end
-      @spells = @spells.where(level: params[:level]) if params[:level].present?
-      @spells = if !current_user
-                  @spells.where(user_id: nil)
-                elsif current_user.admin?
-                  @spells
-                else
-                  @spells.where(user_id: nil).or(@spells.where(user_id: current_user.id))
-                end
-      respond_to do |format|
-        format.html { @pagy, @spells = pagy(@spells) }
-        format.json
+      if params[:list].present?
+        @spells = Race.all.order(name: :asc).map { |spell|
+          {
+            name: spell.name,
+            slug: spell.slug
+          }
+        }
+        render json: {count: @spells.count, results: @spells}
+      else
+        @spells = if params[:dnd_class].present? && params[:search].present?
+                    Spell.includes(:dnd_classes).where(dnd_classes: {name: params[:dnd_class]}).search_for(params[:search])
+                  elsif params[:dnd_class].present?
+                    Spell.includes(:dnd_classes).where(dnd_classes: {name: params[:dnd_class]})
+                  elsif params[:search].present?
+                    Spell.search_for(params[:search])
+                  else
+                    Spell.all
+                  end
+        @spells = @spells.where(level: params[:level]) if params[:level].present?
+        @spells = if !current_user
+                    @spells.where(user_id: nil)
+                  elsif current_user.admin?
+                    @spells
+                  else
+                    @spells.where(user_id: nil).or(@spells.where(user_id: current_user.id))
+                  end
+        respond_to do |format|
+          format.html { @pagy, @spells = pagy(@spells) }
+          format.json
+        end
       end
     end
 

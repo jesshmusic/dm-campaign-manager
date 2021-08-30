@@ -9,22 +9,32 @@ module Admin::V1
     # GET /dnd_classes.json
     def index
       authorize DndClass
-      @dnd_classes = if params[:search].present?
-                       DndClass.search_for(params[:search])
-                     else
-                       DndClass.all
-                     end
+      if params[:list].present?
+        @dnd_classes = DndClass.all.order(name: :asc).map { |dnd_class|
+          {
+            name: dnd_class.name,
+            slug: dnd_class.slug
+          }
+        }
+        render json: {count: @dnd_classes.count, results: @dnd_classes}
+      else
+        @dnd_classes = if params[:search].present?
+                         DndClass.search_for(params[:search])
+                       else
+                         DndClass.all
+                       end
 
-      @dnd_classes = if !current_user
-                       @dnd_classes.where(user_id: nil)
-                     elsif current_user.admin?
-                       @dnd_classes
-                     else
-                       @dnd_classes.where(user_id: nil).or(@dnd_classes.where(user_id: current_user.id))
-                     end
-      respond_to do |format|
-        format.html { @pagy, @dnd_classes = pagy(@dnd_classes) }
-        format.json
+        @dnd_classes = if !current_user
+                         @dnd_classes.where(user_id: nil)
+                       elsif current_user.admin?
+                         @dnd_classes
+                       else
+                         @dnd_classes.where(user_id: nil).or(@dnd_classes.where(user_id: current_user.id))
+                       end
+        respond_to do |format|
+          format.html { @pagy, @dnd_classes = pagy(@dnd_classes) }
+          format.json
+        end
       end
     end
 
