@@ -112,11 +112,13 @@ module Admin::V1
     # Never trust parameters from the scary internet, only allow the white list through.
     def dnd_class_params
       params.require(:dnd_class).permit(
-        :name,
-        :hit_die,
         :api_url,
+        :hit_die,
+        :name,
+        ability_score_ids: [],
         prof_ids: [],
         spell_ids: [],
+        skill_ids: [],
         prof_choices_attributes: [
           :id,
           :name,

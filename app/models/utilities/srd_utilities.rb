@@ -10,6 +10,7 @@ class SrdUtilities
     end
 
     def import_all
+      import_ability_scores
       import_conditions
       import_classes
       import_proficiencies
@@ -18,6 +19,12 @@ class SrdUtilities
       import_spells
       import_items
       import_and_fix_magic_items
+    end
+
+    def import_dnd_classes
+      import_ability_scores
+      import_proficiencies
+      import_classes
     end
 
     def clean_database
@@ -46,6 +53,99 @@ class SrdUtilities
       Condition.delete_all
       puts "All #{count} conditions deleted"
       # import_all
+    end
+
+    private
+
+    def import_ability_scores
+      AbilityScore.delete_all
+      uri = URI("#{dnd_api_url}/api/ability-scores")
+      response = Net::HTTP.get(uri)
+      result = JSON.parse response, symbolize_names: true
+      count = 0
+      result[:results].each do |ability_ref|
+        # First create an ApiReference for usage elsewhere
+        ApiReference.find_or_create_by(slug: ability_ref[:index], name: ability_ref[:index], api_url: "")
+
+        # Fetch the full class record
+        ability_uri = URI("#{dnd_api_url}#{ability_ref[:url]}")
+        ability_response = Net::HTTP.get(ability_uri)
+        ability_result = JSON.parse ability_response, symbolize_names: true
+
+        ability_score = AbilityScore.find_or_create_by(name: ability_result[:name],
+                                       slug: ability_result[:slug],
+                                       full_name: ability_result[:full_name])
+        ability_score.desc = ability_result[:desc]
+        ability_score.save!
+        count += 1
+      end
+      puts "#{count} Abilities imported."
+    end
+
+    def import_proficiencies
+      uri = URI("#{dnd_api_url}/api/proficiencies")
+      response = Net::HTTP.get(uri)
+      result = JSON.parse response, symbolize_names: true
+      count = 0
+      result[:results].each do |prof|
+        import_prof(prof[:url])
+        count += 1
+      end
+      puts "#{count} Proficiencies imported or updated."
+    end
+
+    def import_classes
+      DndClass.delete_all
+      uri = URI("#{dnd_api_url}/api/classes")
+      response = Net::HTTP.get(uri)
+      result = JSON.parse response, symbolize_names: true
+      count = 0
+      result[:results].each do |dnd_class_ref|
+        # First create an ApiReference for usage elsewhere
+        ApiReference.find_or_create_by(slug: dnd_class_ref[:index], name: dnd_class_ref[:index], api_url: "/v1/dnd_classes/#{dnd_class_ref[:index]}")
+
+        # Fetch the full class record
+        class_uri = URI("#{dnd_api_url}#{dnd_class_ref[:url]}")
+        class_response = Net::HTTP.get(class_uri)
+        class_result = JSON.parse class_response, symbolize_names: true
+
+        #Create or update the class
+        dnd_class = DndClass.find_or_create_by(slug: class_result[:index],
+                                               name: class_result[:name],
+                                               api_url: "/v1/dnd_classes/#{class_result[:index]}",
+                                               hit_die: class_result[:hit_die])
+        if class_result[:saving_throws]
+          class_result[:saving_throws].each do |saving_throw|
+            ability_score = AbilityScore.find_by(slug: saving_throw[:index])
+            dnd_class.ability_scores |= [ability_score]
+          end
+        end
+
+        class_result[:proficiency_choices].each_with_index do |prof_choice_block, index|
+          new_prof_choice = ProfChoice.find_or_initialize_by(name: "#{dnd_class.name} #{index}")
+          new_prof_choice.num_choices = prof_choice_block[:choose]
+          new_prof_choice.prof_choice_type = prof_choice_block[:type]
+          prof_choice_block[:from].each do |prof|
+            new_prof = import_prof(prof[:url], dnd_class)
+            new_prof_choice.profs |= [new_prof]
+          end
+          dnd_class.prof_choices |= [new_prof_choice]
+        end
+
+        class_result[:proficiencies].each do |prof|
+          new_prof = import_prof(prof[:url], dnd_class)
+          dnd_class.profs |= [new_prof]
+        end
+
+        class_result[:starting_equipment].each do |item|
+          # new_item = Item.find_by(slug: item[:equipment][:index])
+          # dnd_class.items |= new_item
+        end
+
+        dnd_class.save!
+        count += 1
+      end
+      puts "#{count} D&D classes imported."
     end
 
     def import_races
@@ -133,18 +233,6 @@ class SrdUtilities
       fix_combined_magic_items
     end
 
-    def import_proficiencies
-      uri = URI("#{dnd_api_url}/api/proficiencies")
-      response = Net::HTTP.get(uri)
-      result = JSON.parse response, symbolize_names: true
-      count = 0
-      result[:results].each do |prof|
-        import_prof(prof[:url])
-        count += 1
-      end
-      puts "#{count} Proficiencies imported or updated."
-    end
-
     def import_prof(prof_url, new_dnd_class = nil )
       prof_uri = URI("#{dnd_api_url}#{prof_url}")
       prof_response = Net::HTTP.get(prof_uri)
@@ -161,46 +249,6 @@ class SrdUtilities
       end
       new_prof.save!
       new_prof
-    end
-
-    def import_classes
-      DndClass.delete_all
-      uri = URI("#{dnd_api_url}/api/classes")
-      response = Net::HTTP.get(uri)
-      result = JSON.parse response, symbolize_names: true
-      count = 0
-      result[:results].each do |dnd_class|
-        class_uri = URI("#{dnd_api_url}#{dnd_class[:url]}")
-        class_response = Net::HTTP.get(class_uri)
-        class_result = JSON.parse class_response, symbolize_names: true
-        new_class = DndClass.find_or_initialize_by(name: dnd_class[:name])
-        new_class.slug = class_result[:index]
-        new_class.api_url = class_result[:url]
-        new_class.hit_die = class_result[:hit_die]
-        if class_result[:saving_throws]
-          class_result[:saving_throws].each do |saving_throw|
-            new_class.saving_throw_abilities |= [saving_throw[:name]]
-            new_class.primary_abilities |= [saving_throw[:name]]
-          end
-        end
-        class_result[:proficiency_choices].each_with_index do |prof_choice_block, index|
-          new_prof_choice = ProfChoice.find_or_initialize_by(name: "#{new_class.name} #{index}")
-          new_prof_choice.num_choices = prof_choice_block[:choose]
-          new_prof_choice.prof_choice_type = prof_choice_block[:type]
-          prof_choice_block[:from].each do |prof|
-            new_prof = import_prof(prof[:url], new_class)
-            new_prof_choice.profs |= [new_prof]
-          end
-          new_class.prof_choices |= [new_prof_choice]
-        end
-        class_result[:proficiencies].each do |prof|
-          new_prof = import_prof(prof[:url], new_class)
-          new_class.profs |= [new_prof]
-        end
-        new_class.save!
-        count += 1
-      end
-      puts "#{count} D&D classes imported."
     end
 
     def import_monsters
@@ -402,8 +450,6 @@ class SrdUtilities
       end
       puts "#{count} Items imported."
     end
-
-    private
 
     def import_magic_items
       next_uri = URI("#{dnd_open5e_url}magicitems/")

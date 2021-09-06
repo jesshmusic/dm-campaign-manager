@@ -5,7 +5,9 @@
   <div class="form-inputs">
     <%= form.input :name %>
     <%= form.input :hit_die %>
+    <%= form.association :ability_scores %>
     <%= form.association :profs %>
+    <%= form.association :skills %>
     <%= form.association :spells %>
 
     <div class="p-3 mx-3 my-5 border-bottom border-top" id="prof_choices_container">

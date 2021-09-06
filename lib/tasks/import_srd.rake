@@ -12,37 +12,6 @@
 # - `rails srd:import_items`
 
 namespace :srd do
-  task import_conditions: :environment do
-    SrdUtilities.import_conditions
-  end
-
-  task import_proficiencies: :environment do
-    SrdUtilities.import_proficiencies
-  end
-
-  task import_classes: :environment do
-    SrdUtilities.import_classes
-  end
-
-  task import_monsters: :environment do
-    SrdUtilities.import_monsters
-  end
-
-  task import_spells: :environment do
-    SrdUtilities.import_spells
-  end
-
-  task import_items: :environment do
-    SrdUtilities.import_items
-  end
-
-  task import_and_fix_magic_items: :environment do
-    SrdUtilities.import_and_fix_magic_items
-  end
-
-  task import_races: :environment do
-    SrdUtilities.import_races
-  end
 
   task import_all: :environment do
     SrdUtilities.import_all
@@ -50,5 +19,9 @@ namespace :srd do
 
   task clean_all: :environment do
     SrdUtilities.clean_database
+  end
+
+  task import_dnd_classes: :environment do
+    SrdUtilities.import_dnd_classes
   end
 end

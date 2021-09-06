@@ -4,17 +4,16 @@
 #
 # Table name: dnd_classes
 #
-#  id                     :bigint           not null, primary key
-#  api_url                :string
-#  hit_die                :integer
-#  name                   :string
-#  primary_abilities      :string           default([]), is an Array
-#  saving_throw_abilities :string           default([]), is an Array
-#  slug                   :string
-#  spell_ability          :string
-#  created_at             :datetime         not null
-#  updated_at             :datetime         not null
-#  user_id                :bigint
+#  id            :bigint           not null, primary key
+#  api_url       :string
+#  hit_die       :integer
+#  name          :string
+#  slug          :string
+#  spell_ability :string
+#  subclasses    :string           default([]), is an Array
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#  user_id       :bigint
 #
 # Indexes
 #
@@ -33,10 +32,19 @@ class DndClass < ApplicationRecord
     self.slug = generate_slug if will_save_change_to_name?
   end
 
-  has_many :prof_choices, inverse_of: :dnd_class
+  has_many :ability_score_dnd_classes, dependent: :destroy
+  has_many :ability_scores, through: :ability_score_dnd_classes
 
+  # has_many :dnd_class_items, dependent: :destroy
+  # has_many :items, through: :dnd_class_items
+  #
+  # has_many :dnd_class_item_options, inverse_of: :dnd_class
+
+  has_many :prof_choices, inverse_of: :dnd_class
   has_many :prof_classes, dependent: :destroy
   has_many :profs, through: :prof_classes
+
+  has_one :spell_casting, dependent: :destroy
 
   has_many :spell_classes, dependent: :destroy
   has_many :spells, through: :spell_classes

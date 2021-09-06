@@ -10,10 +10,36 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_06_015607) do
+ActiveRecord::Schema.define(version: 2021_09_06_165216) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "ability_score_dnd_classes", force: :cascade do |t|
+    t.bigint "dnd_class_id", null: false
+    t.bigint "ability_score_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["ability_score_id"], name: "index_ability_score_dnd_classes_on_ability_score_id"
+    t.index ["dnd_class_id"], name: "index_ability_score_dnd_classes_on_dnd_class_id"
+  end
+
+  create_table "ability_scores", force: :cascade do |t|
+    t.string "desc", default: [], array: true
+    t.string "full_name"
+    t.string "name"
+    t.string "slug"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "api_references", force: :cascade do |t|
+    t.string "name"
+    t.string "slug"
+    t.string "api_url"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
 
   create_table "condition_immunities", force: :cascade do |t|
     t.bigint "monster_id"
@@ -41,8 +67,7 @@ ActiveRecord::Schema.define(version: 2021_09_06_015607) do
     t.bigint "user_id"
     t.string "slug"
     t.string "spell_ability"
-    t.string "primary_abilities", default: [], array: true
-    t.string "saving_throw_abilities", default: [], array: true
+    t.string "subclasses", default: [], array: true
     t.index ["slug"], name: "index_dnd_classes_on_slug", unique: true
     t.index ["user_id"], name: "index_dnd_classes_on_user_id"
   end
@@ -137,6 +162,51 @@ ActiveRecord::Schema.define(version: 2021_09_06_015607) do
     t.index ["user_id"], name: "index_monsters_on_user_id"
   end
 
+  create_table "multi_class_prereqs", force: :cascade do |t|
+    t.string "ability_score"
+    t.integer "minimum_score"
+    t.bigint "multi_classing_id"
+    t.bigint "multi_classing_prereq_option_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["multi_classing_id"], name: "index_multi_class_prereqs_on_multi_classing_id"
+    t.index ["multi_classing_prereq_option_id"], name: "index_multi_class_prereqs_on_multi_classing_prereq_option_id"
+  end
+
+  create_table "multi_classing_prereq_options", force: :cascade do |t|
+    t.bigint "multi_classing_id", null: false
+    t.integer "choose"
+    t.string "type"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["multi_classing_id"], name: "index_multi_classing_prereq_options_on_multi_classing_id"
+  end
+
+  create_table "multi_classing_profs", force: :cascade do |t|
+    t.bigint "prof_id", null: false
+    t.bigint "multi_classing_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["multi_classing_id"], name: "index_multi_classing_profs_on_multi_classing_id"
+    t.index ["prof_id"], name: "index_multi_classing_profs_on_prof_id"
+  end
+
+  create_table "multi_classings", force: :cascade do |t|
+    t.bigint "dnd_class_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["dnd_class_id"], name: "index_multi_classings_on_dnd_class_id"
+  end
+
+  create_table "multi_prof_choices", force: :cascade do |t|
+    t.bigint "prof_id", null: false
+    t.bigint "multi_classing_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["multi_classing_id"], name: "index_multi_prof_choices_on_multi_classing_id"
+    t.index ["prof_id"], name: "index_multi_prof_choices_on_prof_id"
+  end
+
   create_table "prof_choice_profs", force: :cascade do |t|
     t.bigint "prof_id"
     t.bigint "prof_choice_id"
@@ -209,6 +279,32 @@ ActiveRecord::Schema.define(version: 2021_09_06_015607) do
     t.index ["user_id"], name: "index_races_on_user_id"
   end
 
+  create_table "spell_casting_abilities", force: :cascade do |t|
+    t.bigint "spell_casting_id", null: false
+    t.bigint "ability_score_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["ability_score_id"], name: "index_spell_casting_abilities_on_ability_score_id"
+    t.index ["spell_casting_id"], name: "index_spell_casting_abilities_on_spell_casting_id"
+  end
+
+  create_table "spell_casting_infos", force: :cascade do |t|
+    t.string "name"
+    t.bigint "spell_casting_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.string "desc", default: [], array: true
+    t.index ["spell_casting_id"], name: "index_spell_casting_infos_on_spell_casting_id"
+  end
+
+  create_table "spell_castings", force: :cascade do |t|
+    t.integer "level"
+    t.bigint "dnd_class_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["dnd_class_id"], name: "index_spell_castings_on_dnd_class_id"
+  end
+
   create_table "spell_classes", force: :cascade do |t|
     t.bigint "spell_id"
     t.bigint "dnd_class_id"
@@ -272,9 +368,21 @@ ActiveRecord::Schema.define(version: 2021_09_06_015607) do
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 
+  add_foreign_key "ability_score_dnd_classes", "ability_scores"
+  add_foreign_key "ability_score_dnd_classes", "dnd_classes"
   add_foreign_key "dnd_classes", "users"
   add_foreign_key "items", "users"
   add_foreign_key "monsters", "users"
+  add_foreign_key "multi_classing_prereq_options", "multi_classings"
+  add_foreign_key "multi_classing_profs", "multi_classings"
+  add_foreign_key "multi_classing_profs", "profs"
+  add_foreign_key "multi_classings", "dnd_classes"
+  add_foreign_key "multi_prof_choices", "multi_classings"
+  add_foreign_key "multi_prof_choices", "profs"
   add_foreign_key "races", "users"
+  add_foreign_key "spell_casting_abilities", "ability_scores"
+  add_foreign_key "spell_casting_abilities", "spell_castings"
+  add_foreign_key "spell_casting_infos", "spell_castings"
+  add_foreign_key "spell_castings", "dnd_classes"
   add_foreign_key "spells", "users"
 end
