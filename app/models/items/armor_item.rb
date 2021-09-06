@@ -4,50 +4,51 @@
 #
 # Table name: items
 #
-#  id                          :bigint           not null, primary key
-#  api_url                     :string
-#  armor_class                 :integer
-#  armor_class_bonus           :integer
-#  armor_dex_bonus             :boolean
-#  armor_max_bonus             :integer
-#  armor_stealth_disadvantage  :boolean
-#  armor_str_minimum           :integer
-#  category_range              :string
-#  cost_unit                   :string
-#  cost_value                  :integer
-#  description                 :text
-#  name                        :string
-#  rarity                      :string
-#  requires_attunement         :string
-#  slug                        :string
-#  sub_category                :string
-#  type                        :string
-#  vehicle_capacity            :string
-#  vehicle_speed               :integer
-#  vehicle_speed_unit          :string
-#  weapon_2h_damage_dice_count :integer
-#  weapon_2h_damage_dice_value :integer
-#  weapon_2h_damage_type       :string
-#  weapon_attack_bonus         :integer
-#  weapon_damage_bonus         :integer
-#  weapon_damage_dice_count    :integer
-#  weapon_damage_dice_value    :integer
-#  weapon_damage_type          :string
-#  weapon_properties           :string           default([]), is an Array
-#  weapon_range                :string
-#  weapon_range_long           :integer
-#  weapon_range_normal         :integer
-#  weapon_thrown_range_long    :integer
-#  weapon_thrown_range_normal  :integer
-#  weight                      :integer
-#  created_at                  :datetime         not null
-#  updated_at                  :datetime         not null
-#  user_id                     :bigint
+#  id                   :bigint           not null, primary key
+#  api_url              :string
+#  armor_category       :string
+#  armor_class          :jsonb
+#  armor_class_bonus    :integer
+#  capacity             :string
+#  category_range       :string
+#  contents             :jsonb            is an Array
+#  cost                 :jsonb
+#  damage               :jsonb
+#  desc                 :string           default([]), is an Array
+#  equipment_category   :string
+#  gear_category        :string
+#  name                 :string
+#  properties           :string           default([]), is an Array
+#  quantity             :integer
+#  range                :jsonb
+#  rarity               :string
+#  requires_attunement  :string
+#  slug                 :string
+#  special              :string           default([]), is an Array
+#  speed                :jsonb
+#  stealth_disadvantage :boolean
+#  str_minimum          :integer
+#  throw_range          :jsonb
+#  tool_category        :string
+#  two_handed_damage    :jsonb
+#  type                 :string
+#  vehicle_category     :string
+#  weapon_category      :string
+#  weapon_range         :string
+#  weight               :integer
+#  created_at           :datetime         not null
+#  updated_at           :datetime         not null
+#  user_id              :bigint
 #
 # Indexes
 #
-#  index_items_on_slug     (slug) UNIQUE
-#  index_items_on_user_id  (user_id)
+#  index_items_on_armor_category    (armor_category)
+#  index_items_on_category_range    (category_range)
+#  index_items_on_slug              (slug) UNIQUE
+#  index_items_on_tool_category     (tool_category)
+#  index_items_on_user_id           (user_id)
+#  index_items_on_vehicle_category  (vehicle_category)
+#  index_items_on_weapon_category   (weapon_category)
 #
 # Foreign Keys
 #
@@ -100,12 +101,13 @@ class ArmorItem < Item
       new_item.requires_attunement = magic_item[:requires_attunement]
       new_item.sub_category = magic_item[:type]
       new_item.slug = new_item_slug
-      new_item.armor_class = armor_item.armor_class
-      new_item.armor_dex_bonus = armor_item.armor_dex_bonus
-      new_item.armor_max_bonus = armor_item.armor_max_bonus
-      new_item.armor_stealth_disadvantage = armor_item.armor_stealth_disadvantage
-      new_item.armor_str_minimum = armor_item.armor_str_minimum
-      new_item.weight = armor_item.weight
+      new_item.armor_class = armor_item ? armor_item.armor_class : 10
+      new_item.armor_dex_bonus = armor_item ? armor_item.armor_dex_bonus : true
+      new_item.armor_max_bonus = armor_item ? armor_item.armor_max_bonus : 2
+      new_item.armor_stealth_disadvantage = armor_item ? armor_item.armor_stealth_disadvantage : true
+      new_item.armor_str_minimum = armor_item.armor_str_minimum unless armor_item.nil?
+      new_item.weight = armor_item ? armor_item.weight : 10
+      # new_item.cost_unit =
       new_item.save!
     end
   end

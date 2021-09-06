@@ -43,7 +43,7 @@ module Admin::V1
       authorize @race
       respond_to do |format|
         format.html { @race }
-        format.json { render json: @race.as_json(include: %i[profs]) }
+        format.json
       end
     end
 

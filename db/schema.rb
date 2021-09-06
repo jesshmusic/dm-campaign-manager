@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_26_185917) do
+ActiveRecord::Schema.define(version: 2021_09_06_015607) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -32,16 +32,6 @@ ActiveRecord::Schema.define(version: 2021_08_26_185917) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "container_items", force: :cascade do |t|
-    t.bigint "item_id"
-    t.bigint "contained_item_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["contained_item_id"], name: "index_container_items_on_contained_item_id"
-    t.index ["item_id", "contained_item_id"], name: "index_container_items_on_item_id_and_contained_item_id", unique: true
-    t.index ["item_id"], name: "index_container_items_on_item_id"
-  end
-
   create_table "dnd_classes", force: :cascade do |t|
     t.string "name"
     t.integer "hit_die"
@@ -59,45 +49,46 @@ ActiveRecord::Schema.define(version: 2021_08_26_185917) do
 
   create_table "items", force: :cascade do |t|
     t.string "name"
-    t.string "sub_category"
-    t.integer "armor_class"
-    t.boolean "armor_dex_bonus"
-    t.integer "armor_max_bonus"
-    t.integer "armor_str_minimum"
-    t.boolean "armor_stealth_disadvantage"
+    t.integer "str_minimum"
+    t.boolean "stealth_disadvantage"
     t.string "weapon_range"
-    t.integer "weapon_damage_dice_count"
-    t.integer "weapon_damage_dice_value"
-    t.string "weapon_damage_type"
-    t.integer "weapon_range_normal"
-    t.integer "weapon_range_long"
-    t.string "weapon_properties", default: [], array: true
-    t.integer "weapon_thrown_range_normal"
-    t.integer "weapon_thrown_range_long"
-    t.integer "weapon_2h_damage_dice_count"
-    t.integer "weapon_2h_damage_dice_value"
-    t.string "weapon_2h_damage_type"
     t.string "category_range"
-    t.text "description"
     t.integer "weight"
-    t.integer "cost_value"
-    t.string "cost_unit"
     t.string "api_url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "vehicle_speed"
-    t.string "vehicle_speed_unit"
-    t.string "vehicle_capacity"
     t.bigint "user_id"
     t.string "slug"
     t.string "rarity"
     t.string "requires_attunement"
     t.string "type"
-    t.integer "weapon_attack_bonus"
-    t.integer "weapon_damage_bonus"
     t.integer "armor_class_bonus"
+    t.string "armor_category"
+    t.jsonb "armor_class"
+    t.string "capacity"
+    t.jsonb "cost"
+    t.jsonb "contents", default: [], array: true
+    t.jsonb "damage"
+    t.string "desc", default: [], array: true
+    t.string "equipment_category"
+    t.string "gear_category"
+    t.string "properties", default: [], array: true
+    t.integer "quantity"
+    t.jsonb "range"
+    t.string "special", default: [], array: true
+    t.jsonb "speed"
+    t.jsonb "throw_range"
+    t.string "tool_category"
+    t.jsonb "two_handed_damage"
+    t.string "vehicle_category"
+    t.string "weapon_category"
+    t.index ["armor_category"], name: "index_items_on_armor_category"
+    t.index ["category_range"], name: "index_items_on_category_range"
     t.index ["slug"], name: "index_items_on_slug", unique: true
+    t.index ["tool_category"], name: "index_items_on_tool_category"
     t.index ["user_id"], name: "index_items_on_user_id"
+    t.index ["vehicle_category"], name: "index_items_on_vehicle_category"
+    t.index ["weapon_category"], name: "index_items_on_weapon_category"
   end
 
   create_table "monster_proficiencies", force: :cascade do |t|
@@ -190,7 +181,6 @@ ActiveRecord::Schema.define(version: 2021_08_26_185917) do
 
   create_table "races", force: :cascade do |t|
     t.string "name", default: "New Race...", null: false
-    t.string "speed", default: "30 feet", null: false
     t.integer "strength_modifier", default: 0, null: false
     t.integer "dexterity_modifier", default: 0, null: false
     t.integer "constitution_modifier", default: 0, null: false
@@ -201,6 +191,19 @@ ActiveRecord::Schema.define(version: 2021_08_26_185917) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id"
+    t.text "alignment"
+    t.text "age"
+    t.string "size"
+    t.text "size_description"
+    t.string "languages", default: [], array: true
+    t.text "language_description"
+    t.jsonb "traits", default: [], array: true
+    t.integer "speed"
+    t.integer "starting_languages"
+    t.string "language_choices", default: [], array: true
+    t.integer "ability_bonus_options"
+    t.string "ability_bonus_option_choices", default: [], array: true
+    t.string "subraces", default: [], array: true
     t.index ["name"], name: "index_races_on_name"
     t.index ["slug"], name: "index_races_on_slug"
     t.index ["user_id"], name: "index_races_on_user_id"
@@ -269,8 +272,6 @@ ActiveRecord::Schema.define(version: 2021_08_26_185917) do
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 
-  add_foreign_key "container_items", "items"
-  add_foreign_key "container_items", "items", column: "contained_item_id"
   add_foreign_key "dnd_classes", "users"
   add_foreign_key "items", "users"
   add_foreign_key "monsters", "users"

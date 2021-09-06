@@ -4,19 +4,31 @@
 #
 # Table name: races
 #
-#  id                    :bigint           not null, primary key
-#  charisma_modifier     :integer          default(0), not null
-#  constitution_modifier :integer          default(0), not null
-#  dexterity_modifier    :integer          default(0), not null
-#  intelligence_modifier :integer          default(0), not null
-#  name                  :string           default("New Race..."), not null
-#  slug                  :string           not null
-#  speed                 :string           default("30 feet"), not null
-#  strength_modifier     :integer          default(0), not null
-#  wisdom_modifier       :integer          default(0), not null
-#  created_at            :datetime         not null
-#  updated_at            :datetime         not null
-#  user_id               :bigint
+#  id                           :bigint           not null, primary key
+#  ability_bonus_option_choices :string           default([]), is an Array
+#  ability_bonus_options        :integer
+#  age                          :text
+#  alignment                    :text
+#  charisma_modifier            :integer          default(0), not null
+#  constitution_modifier        :integer          default(0), not null
+#  dexterity_modifier           :integer          default(0), not null
+#  intelligence_modifier        :integer          default(0), not null
+#  language_choices             :string           default([]), is an Array
+#  language_description         :text
+#  languages                    :string           default([]), is an Array
+#  name                         :string           default("New Race..."), not null
+#  size                         :string
+#  size_description             :text
+#  slug                         :string           not null
+#  speed                        :integer
+#  starting_languages           :integer
+#  strength_modifier            :integer          default(0), not null
+#  subraces                     :string           default([]), is an Array
+#  traits                       :jsonb            is an Array
+#  wisdom_modifier              :integer          default(0), not null
+#  created_at                   :datetime         not null
+#  updated_at                   :datetime         not null
+#  user_id                      :bigint
 #
 # Indexes
 #

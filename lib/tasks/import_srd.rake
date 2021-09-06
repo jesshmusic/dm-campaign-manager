@@ -40,7 +40,15 @@ namespace :srd do
     SrdUtilities.import_and_fix_magic_items
   end
 
+  task import_races: :environment do
+    SrdUtilities.import_races
+  end
+
   task import_all: :environment do
     SrdUtilities.import_all
+  end
+
+  task clean_all: :environment do
+    SrdUtilities.clean_database
   end
 end

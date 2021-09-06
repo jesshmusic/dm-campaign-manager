@@ -11,16 +11,102 @@ class SrdUtilities
 
     def import_all
       import_conditions
-      import_proficiencies
       import_classes
+      import_proficiencies
+      import_races
       import_monsters
       import_spells
       import_items
       import_and_fix_magic_items
     end
 
-    def import_races
+    def clean_database
+      count = Race.count
+      Race.delete_all
+      puts "All #{count} races deleted"
+      count = Monster.count
+      Monster.delete_all
+      puts "All #{count} monsters deleted"
+      count = Item.count
+      Item.delete_all
+      puts "All #{count} items deleted"
+      count = MagicItem.count
+      MagicItem.delete_all
+      puts "All #{count} magic items deleted"
+      count = Spell.count
+      Spell.delete_all
+      puts "All #{count} spells deleted"
+      count = DndClass.count
+      DndClass.delete_all
+      puts "All #{count} classes deleted"
+      count = Prof.count
+      Prof.delete_all
+      puts "All #{count} proficiencies deleted"
+      count = Condition.count
+      Condition.delete_all
+      puts "All #{count} conditions deleted"
+      # import_all
+    end
 
+    def import_races
+      uri = URI("#{dnd_api_url}/api/races")
+      response = Net::HTTP.get(uri)
+      result = JSON.parse response, symbolize_names: true
+      count = 0
+      result[:results].each do |race|
+        race_uri = URI("#{dnd_api_url}#{race[:url]}")
+        race_response = Net::HTTP.get(race_uri)
+        race_result = JSON.parse race_response, symbolize_names: true
+        current_race = Race.find_or_initialize_by(name: race[:name])
+        current_race.slug = race_result[:index]
+        if race_result[:ability_bonus_options]
+          current_race.ability_bonus_options = race_result[:ability_bonus_options][:choose]
+          race_result[:ability_bonus_options][:from].each do |bonus_option|
+            current_race.ability_bonus_option_choices << "#{bonus_option[:ability_score][:name]}: #{bonus_option[:bonus]}"
+          end
+        end
+        current_race.age = race_result[:age]
+        current_race.alignment = race_result[:alignment]
+        race_result[:ability_bonuses].each do |bonus|
+          current_race.charisma_modifier = bonus[:bonus] if bonus[:ability_score][:name] == "CHA"
+          current_race.constitution_modifier = bonus[:bonus] if bonus[:ability_score][:name] == "CON"
+          current_race.dexterity_modifier = bonus[:bonus] if bonus[:ability_score][:name] == "DEX"
+          current_race.intelligence_modifier = bonus[:bonus] if bonus[:ability_score][:name] == "INT"
+          current_race.strength_modifier = bonus[:bonus] if bonus[:ability_score][:name] == "STR"
+          current_race.wisdom_modifier = bonus[:bonus] if bonus[:ability_score][:name] == "WIS"
+        end
+        if race_result[:language_options]
+          current_race.starting_languages = race_result[:language_options][:choose]
+          race_result[:language_options][:from].each do |option|
+            current_race.language_choices << option[:name]
+          end
+        end
+        current_race.language_description = race_result[:language_desc]
+        race_result[:languages].each do |language|
+          current_race.languages << language[:name]
+        end
+        current_race.size = race_result[:size]
+        current_race.size_description = race_result[:size_description]
+        current_race.speed = race_result[:speed]
+        current_race.subraces = race_result[:subraces] ? race_result[:subraces] : []
+        if race_result[:traits]
+          race_result[:traits].each do |trait|
+            trait_uri = URI("#{dnd_api_url}#{trait[:url]}")
+            trait_response = Net::HTTP.get(trait_uri)
+            trait_result = JSON.parse trait_response, symbolize_names: true
+            current_race.traits << {
+              description: trait_result[:desc],
+              name: trait_result[:name],
+              proficiencies: trait_result[:proficiencies],
+              proficiency_choices: trait_result[:proficiency_choices],
+              trait_specific: trait_result[:trait_specific]
+            }
+          end
+        end
+        current_race.save!
+        count += 1
+      end
+      puts "#{count} Races imported or updated."
     end
 
     def import_conditions
@@ -53,26 +139,32 @@ class SrdUtilities
       result = JSON.parse response, symbolize_names: true
       count = 0
       result[:results].each do |prof|
-        prof_uri = URI("#{dnd_api_url}#{prof[:url]}")
-        prof_response = Net::HTTP.get(prof_uri)
-        prof_result = JSON.parse prof_response, symbolize_names: true
-        new_prof = Prof.find_or_initialize_by(name: prof[:name])
-        new_prof.prof_type = prof_result[:type]
-        prof_result[:classes].each do |dnd_class|
-          prof_class = DndClass.find_by(name: dnd_class[:name])
-          prof_class.profs << new_prof
-        end
-        prof_result[:races].each do |race|
-          prof_race = Race.find_by(slug: "race-#{race[:index]}")
-          prof_race.profs << new_prof
-        end
-        new_prof.save!
+        import_prof(prof[:url])
         count += 1
       end
       puts "#{count} Proficiencies imported or updated."
     end
 
+    def import_prof(prof_url, new_dnd_class = nil )
+      prof_uri = URI("#{dnd_api_url}#{prof_url}")
+      prof_response = Net::HTTP.get(prof_uri)
+      prof_result = JSON.parse prof_response, symbolize_names: true
+      new_prof = Prof.find_or_initialize_by(name: prof_result[:name])
+      new_prof.prof_type = prof_result[:type]
+      prof_result[:classes].each do |dnd_class|
+        prof_class = new_dnd_class.nil? ? DndClass.find_by(name: dnd_class[:name]) : new_dnd_class
+        prof_class.profs |= [new_prof]
+      end
+      prof_result[:races].each do |race|
+        prof_race = Race.find_by(slug: "race-#{race[:index]}")
+        prof_race.profs |= [new_prof] unless prof_race.nil?
+      end
+      new_prof.save!
+      new_prof
+    end
+
     def import_classes
+      DndClass.delete_all
       uri = URI("#{dnd_api_url}/api/classes")
       response = Net::HTTP.get(uri)
       result = JSON.parse response, symbolize_names: true
@@ -81,24 +173,31 @@ class SrdUtilities
         class_uri = URI("#{dnd_api_url}#{dnd_class[:url]}")
         class_response = Net::HTTP.get(class_uri)
         class_result = JSON.parse class_response, symbolize_names: true
-        DndClass.find_or_create_by(name: dnd_class[:name], slug: dnd_class[:name].parameterize) do |new_class|
-          new_class.api_url = class_result[:url]
-          new_class.hit_die = class_result[:hit_die]
-          class_result[:proficiency_choices].each_with_index do |prof_choice_block, index|
-            new_class.prof_choices << ProfChoice.find_or_create_by(name: "#{new_class.name} #{index}") do |new_prof_choice|
-              new_prof_choice.num_choices = prof_choice_block[:choose]
-              new_prof_choice.prof_choice_type = prof_choice_block[:type]
-              prof_choice_block[:from].each do |prof|
-                new_prof = Prof.find_by(name: prof[:name])
-                new_prof_choice.profs << new_prof
-              end
-            end
-          end
-          class_result[:proficiencies].each do |prof|
-            new_prof = Prof.find_by(name: prof[:name])
-            new_class.profs << new_prof
+        new_class = DndClass.find_or_initialize_by(name: dnd_class[:name])
+        new_class.slug = class_result[:index]
+        new_class.api_url = class_result[:url]
+        new_class.hit_die = class_result[:hit_die]
+        if class_result[:saving_throws]
+          class_result[:saving_throws].each do |saving_throw|
+            new_class.saving_throw_abilities |= [saving_throw[:name]]
+            new_class.primary_abilities |= [saving_throw[:name]]
           end
         end
+        class_result[:proficiency_choices].each_with_index do |prof_choice_block, index|
+          new_prof_choice = ProfChoice.find_or_initialize_by(name: "#{new_class.name} #{index}")
+          new_prof_choice.num_choices = prof_choice_block[:choose]
+          new_prof_choice.prof_choice_type = prof_choice_block[:type]
+          prof_choice_block[:from].each do |prof|
+            new_prof = import_prof(prof[:url], new_class)
+            new_prof_choice.profs |= [new_prof]
+          end
+          new_class.prof_choices |= [new_prof_choice]
+        end
+        class_result[:proficiencies].each do |prof|
+          new_prof = import_prof(prof[:url], new_class)
+          new_class.profs |= [new_prof]
+        end
+        new_class.save!
         count += 1
       end
       puts "#{count} D&D classes imported."
@@ -248,105 +347,57 @@ class SrdUtilities
       result[:results].each do |equipment_item|
         item_uri = URI("#{dnd_api_url}#{equipment_item[:url]}")
         item_response = Net::HTTP.get(item_uri)
-        item_result = JSON.parse item_response
-        saved_item = Item.find_or_create_by(name: equipment_item[:name]) do |new_item|
-          new_item.api_url = item_result['url']
-          new_item.type = case item_result['equipment_category']
-                          when 'Armor'
-                            'ArmorItem'
-                          when 'Weapon'
-                            'WeaponItem'
-                          when 'Tools'
-                            'ToolItem'
-                          when 'Adventuring Gear'
-                            'GearItem'
-                          when 'Mounts and Vehicles'
-                            'VehicleItem'
-                          else
-                            'GearItem'
-                          end
-          new_item.cost_unit = item_result['cost']['unit']
-          new_item.cost_value = item_result['cost']['quantity']
-          new_item.weight = item_result['weight'] || 0
-          new_item.description = ''
-
-          if item_result['desc']
-            new_item.description = "Description: \n"
-            item_result['desc'].each do |desc_text|
-              new_item.description += "#{desc_text}\n"
-            end
-          end
-
-          if item_result['weapon_category:']
-            new_item.sub_category = item_result['weapon_category:']
-            new_item.weapon_range = item_result['category_range']
-            new_item.weapon_damage_type = item_result['damage']['damage_type']['name']
-            new_item.weapon_damage_dice_count = item_result['damage']['dice_count']
-            new_item.weapon_damage_dice_value = item_result['damage']['dice_value']
-            new_item.weapon_range_normal = item_result['range']['normal']
-            new_item.weapon_range_long = item_result['range']['long']
-
-            item_slug = item[:name].parameterize.truncate(80, omission: '')
-            new_item.slug = Item.exists?(slug: item_slug) ? "#{item_slug}_#{new_item.id}" : item_slug
-
-            item_result['properties'].each do |item_result_prop|
-              new_item.weapon_properties << item_result_prop['name']
-            end
-
-            if item_result['throw_range']
-              new_item.weapon_thrown_range_normal = item_result['throw_range']['normal']
-              new_item.weapon_thrown_range_long = item_result['throw_range']['long']
-            end
-
-            if item_result['2h_damage']
-              new_item.weapon_2h_damage_type = item_result['2h_damage']['damage_type']['name']
-              new_item.weapon_2h_damage_dice_count = item_result['2h_damage']['dice_count']
-              new_item.weapon_2h_damage_dice_value = item_result['2h_damage']['dice_value']
-            end
-
-            if item_result['special']
-              special_description = "Special: \n"
-              item_result['special'].each do |special_text|
-                special_description += special_text
-              end
-              new_item.description += "#{special_description}\n"
-            end
-          elsif item_result['armor_category']
-            new_item.sub_category = item_result['armor_category']
-            new_item.armor_class = item_result['armor_class']['base']
-            new_item.armor_dex_bonus = item_result['armor_class']['dex_bonus']
-            new_item.armor_max_bonus = item_result['armor_class']['max_bonus']
-            new_item.armor_stealth_disadvantage = item_result['stealth_disadvantage']
-            new_item.armor_str_minimum = item_result['str_minimum']
-
-          elsif item_result['gear_category']
-            new_item.sub_category = item_result['gear_category']
-            item_result['contents']&.each do |next_item|
-              content_item = Item.find_by(api_url: next_item['item_url'])
-              if content_item
-                content_item.quantity = next_item['quantity']
-                new_item.contained_items << content_item
-              end
-            end
-
-          elsif item_result['tool_category']
-            new_item.sub_category = item_result['tool_category']
-
-          elsif item_result['vehicle_category']
-            new_item.sub_category = item_result['vehicle_category']
-            if item_result['speed']
-              new_item.vehicle_speed = item_result['speed']['quantity']
-              new_item.vehicle_speed_unit = item_result['speed']['unit']
-            end
-            new_item.vehicle_capacity = item_result['capacity']
+        item_result = JSON.parse item_response, symbolize_names: true
+        db_item = Item.find_or_initialize_by(name: equipment_item[:name])
+        db_item.api_url = "/v1/items/#{item_result[:index]}"
+        db_item.armor_category = item_result[:armor_category]
+        db_item.armor_class = item_result[:armor_class]
+        db_item.capacity = item_result[:capacity]
+        db_item.category_range = item_result[:category_range]
+        db_item.contents = item_result[:contents]
+        db_item.cost = item_result[:cost]
+        db_item.damage = item_result[:damage]
+        db_item.desc = item_result[:desc]
+        db_item.equipment_category = item_result[:equipment_category][:name]
+        db_item.gear_category = item_result[:gear_category][:name] unless item_result[:gear_category].nil?
+        unless item_result[:properties].nil?
+          item_result[:properties].each do |prop|
+            db_item.properties |= [prop[:name]]
           end
         end
-        if !saved_item.sub_category || saved_item.sub_category == ''
-          if item_result['weapon_category:']
-            saved_item.sub_category = item_result['weapon_category:']
-            saved_item.save!
-          end
+        db_item.quantity = item_result[:quantity]
+        db_item.range = item_result[:range]
+        db_item.slug = item_result[:index]
+        db_item.special = item_result[:special]
+        db_item.speed = item_result[:speed]
+        db_item.stealth_disadvantage = item_result[:stealth_disadvantage]
+        db_item.str_minimum = item_result[:str_minimum]
+        db_item.throw_range = item_result[:throw_range]
+        db_item.tool_category = item_result[:tool_category]
+        db_item.two_handed_damage = item_result[:two_handed_damage]
+        if !item_result[:equipment_category].nil?
+        db_item.type = case item_result[:equipment_category][:name]
+                        when 'Armor'
+                          'ArmorItem'
+                        when 'Weapon'
+                          'WeaponItem'
+                        when 'Tools'
+                          'ToolItem'
+                        when 'Adventuring Gear'
+                          'GearItem'
+                        when 'Mounts and Vehicles'
+                          'VehicleItem'
+                        else
+                          'GearItem'
+                       end
+        else
+          db_item.type = 'GearItem'
         end
+        db_item.vehicle_category = item_result[:vehicle_category]
+        db_item.weapon_category = item_result[:weapon_category]
+        db_item.weapon_range = item_result[:weapon_range]
+        db_item.weight = item_result[:weight] || 0
+        db_item.save!
         count += 1
       end
       puts "#{count} Items imported."
@@ -362,6 +413,7 @@ class SrdUtilities
         result = JSON.parse response, symbolize_names: true
         next_uri = result[:next] ? URI(result[:next]) : false
         result[:results].each do |magic_item|
+
           if magic_item[:type].include? 'Armor'
             ArmorItem.create_magic_armor_from_old_magic_items(magic_item)
           elsif magic_item[:type].include? 'Weapon'
