@@ -10,55 +10,61 @@ class SrdUtilities
     end
 
     def import_all
-      import_ability_scores
-      import_conditions
-      import_classes
-      import_proficiencies
-      import_races
-      import_monsters
-      import_spells
+      import_dependencies
       import_items
+      import_classes
+      import_races
+      import_spells
       import_and_fix_magic_items
+      import_monsters
+    end
+
+    def import_dependencies
+      import_ability_scores
+      import_proficiencies
+      import_conditions
     end
 
     def import_dnd_classes
-      import_ability_scores
-      import_proficiencies
       import_classes
     end
 
     def clean_database
+      AbilityScoreDndClass.destroy_all
+      count = AbilityScore.count
+      AbilityScore.destroy_all
+      puts "All #{count} ability scores deleted"
+      Condition.destroy_all
+      Equipment.destroy_all
+
+      ApiReference.destroy_all
       count = Race.count
-      Race.delete_all
+      Race.destroy_all
       puts "All #{count} races deleted"
       count = Monster.count
-      Monster.delete_all
+      Monster.destroy_all
       puts "All #{count} monsters deleted"
       count = Item.count
-      Item.delete_all
+      Item.destroy_all
       puts "All #{count} items deleted"
       count = MagicItem.count
-      MagicItem.delete_all
+      MagicItem.destroy_all
       puts "All #{count} magic items deleted"
       count = Spell.count
-      Spell.delete_all
+      Spell.destroy_all
       puts "All #{count} spells deleted"
       count = DndClass.count
-      DndClass.delete_all
+      DndClass.destroy_all
       puts "All #{count} classes deleted"
       count = Prof.count
-      Prof.delete_all
+      Prof.destroy_all
       puts "All #{count} proficiencies deleted"
-      count = Condition.count
-      Condition.delete_all
-      puts "All #{count} conditions deleted"
       # import_all
     end
 
     private
 
     def import_ability_scores
-      AbilityScore.delete_all
       uri = URI("#{dnd_api_url}/api/ability-scores")
       response = Net::HTTP.get(uri)
       result = JSON.parse response, symbolize_names: true
@@ -73,8 +79,8 @@ class SrdUtilities
         ability_result = JSON.parse ability_response, symbolize_names: true
 
         ability_score = AbilityScore.find_or_create_by(name: ability_result[:name],
-                                       slug: ability_result[:slug],
-                                       full_name: ability_result[:full_name])
+                                                       slug: ability_result[:index],
+                                                       full_name: ability_result[:full_name])
         ability_score.desc = ability_result[:desc]
         ability_score.save!
         count += 1
@@ -95,7 +101,6 @@ class SrdUtilities
     end
 
     def import_classes
-      DndClass.delete_all
       uri = URI("#{dnd_api_url}/api/classes")
       response = Net::HTTP.get(uri)
       result = JSON.parse response, symbolize_names: true
@@ -138,8 +143,29 @@ class SrdUtilities
         end
 
         class_result[:starting_equipment].each do |item|
-          # new_item = Item.find_by(slug: item[:equipment][:index])
-          # dnd_class.items |= new_item
+          equip = Equipment.create(name: item[:equipment][:name], quantity: item[:quantity])
+          db_item = Item.find_by(name: item[:equipment][:name])
+          equip.item = db_item
+          dnd_class.equipments |= [equip]
+        end
+
+        class_result[:starting_equipment_options].each do |choice|
+          options = StartingEquipmentOption.create(choose: choice[:choose], equipment_type: choice[:type])
+          choice[:from].each do |item|
+            if item[:equipment]
+              equip = Equipment.create(name: item[:equipment][:name],
+                                       quantity: item[:quantity])
+              equip.item = Item.find_by(name: item[:equipment][:name])
+              options.equipments |= [equip]
+            end
+          end
+          dnd_class.starting_equipment_options |= [options]
+        end
+
+        if class_result[:subclasses]
+          class_result[:subclasses].each do |subclass|
+            dnd_class.subclasses |= [subclass[:name]]
+          end
         end
 
         dnd_class.save!
@@ -241,7 +267,7 @@ class SrdUtilities
       new_prof.prof_type = prof_result[:type]
       prof_result[:classes].each do |dnd_class|
         prof_class = new_dnd_class.nil? ? DndClass.find_by(name: dnd_class[:name]) : new_dnd_class
-        prof_class.profs |= [new_prof]
+        prof_class.profs |= [new_prof] unless prof_class.nil?
       end
       prof_result[:races].each do |race|
         prof_race = Race.find_by(slug: "race-#{race[:index]}")
@@ -424,20 +450,20 @@ class SrdUtilities
         db_item.tool_category = item_result[:tool_category]
         db_item.two_handed_damage = item_result[:two_handed_damage]
         if !item_result[:equipment_category].nil?
-        db_item.type = case item_result[:equipment_category][:name]
-                        when 'Armor'
-                          'ArmorItem'
-                        when 'Weapon'
-                          'WeaponItem'
-                        when 'Tools'
-                          'ToolItem'
-                        when 'Adventuring Gear'
-                          'GearItem'
-                        when 'Mounts and Vehicles'
-                          'VehicleItem'
-                        else
-                          'GearItem'
-                       end
+          db_item.type = case item_result[:equipment_category][:name]
+                         when 'Armor'
+                           'ArmorItem'
+                         when 'Weapon'
+                           'WeaponItem'
+                         when 'Tools'
+                           'ToolItem'
+                         when 'Adventuring Gear'
+                           'GearItem'
+                         when 'Mounts and Vehicles'
+                           'VehicleItem'
+                         else
+                           'GearItem'
+                         end
         else
           db_item.type = 'GearItem'
         end

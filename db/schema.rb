@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_06_165216) do
+ActiveRecord::Schema.define(version: 2021_09_06_204300) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -39,6 +39,8 @@ ActiveRecord::Schema.define(version: 2021_09_06_165216) do
     t.string "api_url"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.bigint "equipment_id"
+    t.index ["equipment_id"], name: "index_api_references_on_equipment_id"
   end
 
   create_table "condition_immunities", force: :cascade do |t|
@@ -70,6 +72,26 @@ ActiveRecord::Schema.define(version: 2021_09_06_165216) do
     t.string "subclasses", default: [], array: true
     t.index ["slug"], name: "index_dnd_classes_on_slug", unique: true
     t.index ["user_id"], name: "index_dnd_classes_on_user_id"
+  end
+
+  create_table "equipment", force: :cascade do |t|
+    t.integer "quantity"
+    t.string "name"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "starting_equipment_option_id"
+    t.bigint "dnd_class_id"
+    t.index ["dnd_class_id"], name: "index_equipment_on_dnd_class_id"
+    t.index ["starting_equipment_option_id"], name: "index_equipment_on_starting_equipment_option_id"
+  end
+
+  create_table "equipment_items", force: :cascade do |t|
+    t.bigint "equipment_id", null: false
+    t.bigint "item_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["equipment_id"], name: "index_equipment_items_on_equipment_id"
+    t.index ["item_id"], name: "index_equipment_items_on_item_id"
   end
 
   create_table "items", force: :cascade do |t|
@@ -338,6 +360,15 @@ ActiveRecord::Schema.define(version: 2021_09_06_165216) do
     t.index ["user_id"], name: "index_spells_on_user_id"
   end
 
+  create_table "starting_equipment_options", force: :cascade do |t|
+    t.integer "choose"
+    t.string "equipment_type"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "dnd_class_id", null: false
+    t.index ["dnd_class_id"], name: "index_starting_equipment_options_on_dnd_class_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -371,6 +402,8 @@ ActiveRecord::Schema.define(version: 2021_09_06_165216) do
   add_foreign_key "ability_score_dnd_classes", "ability_scores"
   add_foreign_key "ability_score_dnd_classes", "dnd_classes"
   add_foreign_key "dnd_classes", "users"
+  add_foreign_key "equipment_items", "equipment"
+  add_foreign_key "equipment_items", "items"
   add_foreign_key "items", "users"
   add_foreign_key "monsters", "users"
   add_foreign_key "multi_classing_prereq_options", "multi_classings"
@@ -385,4 +418,5 @@ ActiveRecord::Schema.define(version: 2021_09_06_165216) do
   add_foreign_key "spell_casting_infos", "spell_castings"
   add_foreign_key "spell_castings", "dnd_classes"
   add_foreign_key "spells", "users"
+  add_foreign_key "starting_equipment_options", "dnd_classes"
 end

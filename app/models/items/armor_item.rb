@@ -96,18 +96,16 @@ class ArmorItem < Item
       new_item_slug = new_item_name.parameterize
       new_item = ArmorItem.find_or_create_by(slug: new_item_slug)
       new_item.name = new_item_name
-      new_item.description = magic_item[:desc]
+      new_item.desc = magic_item[:desc]
       new_item.rarity = magic_item[:rarity]
       new_item.requires_attunement = magic_item[:requires_attunement]
-      new_item.sub_category = magic_item[:type]
+      # new_item. = magic_item[:type]
       new_item.slug = new_item_slug
-      new_item.armor_class = armor_item ? armor_item.armor_class : 10
-      new_item.armor_dex_bonus = armor_item ? armor_item.armor_dex_bonus : true
-      new_item.armor_max_bonus = armor_item ? armor_item.armor_max_bonus : 2
-      new_item.armor_stealth_disadvantage = armor_item ? armor_item.armor_stealth_disadvantage : true
-      new_item.armor_str_minimum = armor_item.armor_str_minimum unless armor_item.nil?
+      new_item.armor_class = armor_item ? armor_item.armor_class : nil
+      new_item.stealth_disadvantage = armor_item ? armor_item.stealth_disadvantage : true
+      new_item.str_minimum = armor_item.str_minimum unless armor_item.nil?
       new_item.weight = armor_item ? armor_item.weight : 10
-      # new_item.cost_unit =
+      # new_item.cost = switch magic_item[:rarity]
       new_item.save!
     end
   end

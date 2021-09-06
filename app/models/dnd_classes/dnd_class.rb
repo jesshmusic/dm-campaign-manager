@@ -35,10 +35,8 @@ class DndClass < ApplicationRecord
   has_many :ability_score_dnd_classes, dependent: :destroy
   has_many :ability_scores, through: :ability_score_dnd_classes
 
-  # has_many :dnd_class_items, dependent: :destroy
-  # has_many :items, through: :dnd_class_items
-  #
-  # has_many :dnd_class_item_options, inverse_of: :dnd_class
+  has_many :equipments, dependent: :destroy
+  has_many :starting_equipment_options, dependent: :destroy
 
   has_many :prof_choices, inverse_of: :dnd_class
   has_many :prof_classes, dependent: :destroy
