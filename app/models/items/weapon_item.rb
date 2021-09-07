@@ -12,11 +12,11 @@
 #  capacity             :string
 #  category_range       :string
 #  contents             :jsonb            is an Array
-#  cost                 :jsonb
 #  damage               :jsonb
 #  desc                 :string           default([]), is an Array
 #  equipment_category   :string
 #  gear_category        :string
+#  magic_item_type      :string
 #  name                 :string
 #  properties           :string           default([]), is an Array
 #  quantity             :integer
@@ -142,22 +142,15 @@ class WeaponItem < Item
       weapon_item = WeaponItem.find_by(name: weapon_name)
       new_item = WeaponItem.find_or_create_by(name: "#{magic_item[:name]}, #{weapon_name}")
       new_item.description = magic_item[:desc]
-      new_item.rarity = magic_item[:rarity]
       new_item.requires_attunement = magic_item[:requires_attunement]
-      new_item.sub_category = magic_item[:type]
+      new_item.rarity = magic_item[:rarity]
+      new_item.cost = Cost.create(quantity: MagicItemsUtility.cost_for_rarity(magic_item[:rarity]), unit: 'gp')
       new_item.slug = new_item.name.parameterize
-      new_item.weapon_2h_damage_dice_count = weapon_item.weapon_2h_damage_dice_count
-      new_item.weapon_2h_damage_dice_value = weapon_item.weapon_2h_damage_dice_value
-      new_item.weapon_2h_damage_type = weapon_item.weapon_2h_damage_type
-      new_item.weapon_damage_dice_count = weapon_item.weapon_damage_dice_count
-      new_item.weapon_damage_dice_value = weapon_item.weapon_damage_dice_value
-      new_item.weapon_damage_type = weapon_item.weapon_damage_type
-      new_item.weapon_properties = weapon_item.weapon_properties
+      new_item.damage = weapon_item.damage
+      new_item.throw_range = weapon_item.throw_range
+      new_item.two_handed_damage = weapon_item.two_handed_damage
+      new_item.weapon_category = weapon_item.weapon_category
       new_item.weapon_range = weapon_item.weapon_range
-      new_item.weapon_range_long = weapon_item.weapon_range_long
-      new_item.weapon_range_normal = weapon_item.weapon_range_normal
-      new_item.weapon_thrown_range_long = weapon_item.weapon_thrown_range_long
-      new_item.weapon_thrown_range_normal = weapon_item.weapon_thrown_range_normal
       new_item.category_range = weapon_item.category_range
       new_item.weight = weapon_item.weight
       new_item.save!

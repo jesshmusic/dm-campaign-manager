@@ -26,6 +26,8 @@ class SrdUtilities
     end
 
     def import_dnd_classes
+      # import_dependencies
+      # import_items
       import_classes
     end
 
@@ -141,25 +143,18 @@ class SrdUtilities
           new_prof = import_prof(prof[:url], dnd_class)
           dnd_class.profs |= [new_prof]
         end
-
+        dnd_class.equipments.destroy_all
         class_result[:starting_equipment].each do |item|
-          equip = Equipment.create(name: item[:equipment][:name], quantity: item[:quantity])
+          equip = dnd_class.equipments.create(name: item[:equipment][:name], quantity: item[:quantity])
           db_item = Item.find_by(name: item[:equipment][:name])
           equip.item = db_item
-          dnd_class.equipments |= [equip]
         end
 
-        class_result[:starting_equipment_options].each do |choice|
-          options = StartingEquipmentOption.create(choose: choice[:choose], equipment_type: choice[:type])
-          choice[:from].each do |item|
-            if item[:equipment]
-              equip = Equipment.create(name: item[:equipment][:name],
-                                       quantity: item[:quantity])
-              equip.item = Item.find_by(name: item[:equipment][:name])
-              options.equipments |= [equip]
-            end
-          end
-          dnd_class.starting_equipment_options |= [options]
+        dnd_class.starting_equipment_options.destroy_all
+        class_result[:starting_equipment_options].each do |option|
+          starting_equipment_option = dnd_class.starting_equipment_options.create(choose: option[:choose], equipment_type: option[:type])
+          starting_equipment_option = create_equipment_option(option, starting_equipment_option)
+          starting_equipment_option.save!
         end
 
         if class_result[:subclasses]
@@ -168,10 +163,60 @@ class SrdUtilities
           end
         end
 
+        # s_options = dnd_class.starting_equipment_options
+        # num_equips = s_options.equipments.count
+        # num_equip_options = s_options.equipment_options.count
+        # puts "#{num_equips} equipment, #{num_equip_options} options"
+        # s_options.each do |s_option|
+        #   num_equips = s_option.equipments.count
+        #   num_equip_options = s_option.equipment_options.count
+        #   puts "#{num_equips} equipment, #{num_equip_options} options"
+        #   s_options.equipments.each do |equip|
+        #     name = equip.name
+        #     item_name = equip.item.name
+        #     puts "Equipment: #{name} item: #{item_name}"
+        #   end
+        #   s_options.equipment_options.each do |opt|
+        #     num_equips = opt.equipments.count
+        #     num_equip_options = opt.equipment_options.count
+        #     puts "#{num_equips} equipment, #{num_equip_options} options"
+        #   end
+        # end
+
         dnd_class.save!
         count += 1
       end
       puts "#{count} D&D classes imported."
+    end
+
+    def create_equipment_option(option, starting_equipment_option)
+      option[:from].each do |item|
+        if item.class == Hash
+          starting_equipment_option = parse_equipment_option(item, starting_equipment_option)
+        else
+          item_hash = {
+            item[0].to_sym => item[1]
+          }
+          starting_equipment_option = parse_equipment_option(item_hash, starting_equipment_option)
+        end
+      end
+      starting_equipment_option
+    end
+
+    def parse_equipment_option(item, starting_equipment_option)
+      if item[:equipment]
+        equip = starting_equipment_option.equipments.create(name: item[:equipment][:name],
+                                 quantity: item[:quantity])
+        equip.item = Item.find_by(name: item[:equipment][:name])
+        equip.save!
+      elsif item[:equipment_option]
+        new_equipment_option = starting_equipment_option.equipment_options.create(choose: item[:equipment_option][:choose], equipment_type: item[:equipment_option][:type])
+        new_equipment_option = create_equipment_option(item[:equipment_option], new_equipment_option)
+        new_equipment_option.save!
+      elsif item[:equipment_category]
+        starting_equipment_option.equipment_category = item[:equipment_category][:name]
+      end
+      starting_equipment_option
     end
 
     def import_races
@@ -429,7 +474,7 @@ class SrdUtilities
         db_item.capacity = item_result[:capacity]
         db_item.category_range = item_result[:category_range]
         db_item.contents = item_result[:contents]
-        db_item.cost = item_result[:cost]
+        db_item.cost = Cost.create(quantity: item_result[:cost][:quantity], unit: item_result[:cost][:unit]) if item_result[:cost]
         db_item.damage = item_result[:damage]
         db_item.desc = item_result[:desc]
         db_item.equipment_category = item_result[:equipment_category][:name]

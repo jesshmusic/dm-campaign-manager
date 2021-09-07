@@ -12,11 +12,11 @@
 #  capacity             :string
 #  category_range       :string
 #  contents             :jsonb            is an Array
-#  cost                 :jsonb
 #  damage               :jsonb
 #  desc                 :string           default([]), is an Array
 #  equipment_category   :string
 #  gear_category        :string
+#  magic_item_type      :string
 #  name                 :string
 #  properties           :string           default([]), is an Array
 #  quantity             :integer
@@ -97,15 +97,15 @@ class ArmorItem < Item
       new_item = ArmorItem.find_or_create_by(slug: new_item_slug)
       new_item.name = new_item_name
       new_item.desc = magic_item[:desc]
+      new_item.magic_item_type = magic_item[:type]
       new_item.rarity = magic_item[:rarity]
+      new_item.cost = Cost.create(quantity: MagicItemsUtility.cost_for_rarity(magic_item[:rarity]), unit: 'gp')
       new_item.requires_attunement = magic_item[:requires_attunement]
-      # new_item. = magic_item[:type]
       new_item.slug = new_item_slug
       new_item.armor_class = armor_item ? armor_item.armor_class : nil
       new_item.stealth_disadvantage = armor_item ? armor_item.stealth_disadvantage : true
       new_item.str_minimum = armor_item.str_minimum unless armor_item.nil?
       new_item.weight = armor_item ? armor_item.weight : 10
-      # new_item.cost = switch magic_item[:rarity]
       new_item.save!
     end
   end

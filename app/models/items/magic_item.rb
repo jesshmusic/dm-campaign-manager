@@ -12,11 +12,11 @@
 #  capacity             :string
 #  category_range       :string
 #  contents             :jsonb            is an Array
-#  cost                 :jsonb
 #  damage               :jsonb
 #  desc                 :string           default([]), is an Array
 #  equipment_category   :string
 #  gear_category        :string
+#  magic_item_type      :string
 #  name                 :string
 #  properties           :string           default([]), is an Array
 #  quantity             :integer
@@ -68,9 +68,9 @@ class MagicItem < Item
       new_item.name = new_item_name
       new_item.description = magic_item[:desc]
       new_item.rarity = magic_item[:rarity]
+      new_item.cost = Cost.create(quantity: MagicItemsUtility.cost_for_rarity(magic_item[:rarity]), unit: 'gp')
       new_item.requires_attunement = magic_item[:requires_attunement]
       new_item.slug = new_item_slug
-      new_item.sub_category = magic_item[:type]
       new_item.save!
     end
   end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_06_204300) do
+ActiveRecord::Schema.define(version: 2021_09_07_194616) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -58,6 +58,15 @@ ActiveRecord::Schema.define(version: 2021_09_06_204300) do
     t.string "description", default: [], array: true
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "costs", force: :cascade do |t|
+    t.integer "quantity"
+    t.string "unit"
+    t.bigint "item_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["item_id"], name: "index_costs_on_item_id"
   end
 
   create_table "dnd_classes", force: :cascade do |t|
@@ -113,7 +122,6 @@ ActiveRecord::Schema.define(version: 2021_09_06_204300) do
     t.string "armor_category"
     t.jsonb "armor_class"
     t.string "capacity"
-    t.jsonb "cost"
     t.jsonb "contents", default: [], array: true
     t.jsonb "damage"
     t.string "desc", default: [], array: true
@@ -129,6 +137,7 @@ ActiveRecord::Schema.define(version: 2021_09_06_204300) do
     t.jsonb "two_handed_damage"
     t.string "vehicle_category"
     t.string "weapon_category"
+    t.string "magic_item_type"
     t.index ["armor_category"], name: "index_items_on_armor_category"
     t.index ["category_range"], name: "index_items_on_category_range"
     t.index ["slug"], name: "index_items_on_slug", unique: true
@@ -365,8 +374,11 @@ ActiveRecord::Schema.define(version: 2021_09_06_204300) do
     t.string "equipment_type"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.bigint "dnd_class_id", null: false
+    t.bigint "dnd_class_id"
+    t.bigint "equipment_option_id"
+    t.string "equipment_category"
     t.index ["dnd_class_id"], name: "index_starting_equipment_options_on_dnd_class_id"
+    t.index ["equipment_option_id"], name: "index_starting_equipment_options_on_equipment_option_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -401,6 +413,7 @@ ActiveRecord::Schema.define(version: 2021_09_06_204300) do
 
   add_foreign_key "ability_score_dnd_classes", "ability_scores"
   add_foreign_key "ability_score_dnd_classes", "dnd_classes"
+  add_foreign_key "costs", "items"
   add_foreign_key "dnd_classes", "users"
   add_foreign_key "equipment_items", "equipment"
   add_foreign_key "equipment_items", "items"
@@ -419,4 +432,5 @@ ActiveRecord::Schema.define(version: 2021_09_06_204300) do
   add_foreign_key "spell_castings", "dnd_classes"
   add_foreign_key "spells", "users"
   add_foreign_key "starting_equipment_options", "dnd_classes"
+  add_foreign_key "starting_equipment_options", "starting_equipment_options", column: "equipment_option_id"
 end

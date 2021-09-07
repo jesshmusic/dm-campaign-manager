@@ -12,11 +12,11 @@
 #  capacity             :string
 #  category_range       :string
 #  contents             :jsonb            is an Array
-#  cost                 :jsonb
 #  damage               :jsonb
 #  desc                 :string           default([]), is an Array
 #  equipment_category   :string
 #  gear_category        :string
+#  magic_item_type      :string
 #  name                 :string
 #  properties           :string           default([]), is an Array
 #  quantity             :integer
@@ -63,6 +63,7 @@ class Item < ApplicationRecord
   end
 
   belongs_to :user, optional: true
+  has_one :cost, dependent: :destroy
 
   def category
     'Item'
