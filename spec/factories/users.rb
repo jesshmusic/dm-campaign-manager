@@ -39,19 +39,19 @@ FactoryBot.define do
   factory :user do
     name { 'Jess Hendricks' }
     email { 'user@example.com' }
-    username { 'jesshmusic' }
+    username { 'jesshmusic1' }
     password { 'testpass1234' }
     password_confirmation { 'testpass1234' }
     confirmed_at { Date.today }
     factory :dungeon_master_user do
       role { :dungeon_master }
       email { 'dm_user@example.com' }
-      username { 'jesshdm' }
+      username { 'jesshdm1' }
     end
     factory :admin_user do
       role { :admin }
       email { 'admin_user@example.com' }
-      username { 'jesshadmin' }
+      username { 'jesshadmin1' }
     end
     factory :other_user do |user|
       role { :dungeon_master }

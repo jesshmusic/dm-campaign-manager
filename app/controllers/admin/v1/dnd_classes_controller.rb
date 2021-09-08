@@ -59,7 +59,7 @@ module Admin::V1
       @dnd_class = DndClass.new(dnd_class_params)
       authorize @dnd_class
       @dnd_class.user = current_user if current_user.dungeon_master?
-
+      @dnd_class.multi_classing = MultiClassing.create()
       respond_to do |format|
         if @current_user.dungeon_master? && @current_user.dnd_classes << @dnd_class
           format.html { redirect_to v1_dnd_class_url(slug: @dnd_class.slug), notice: 'Dnd class was successfully created.' }

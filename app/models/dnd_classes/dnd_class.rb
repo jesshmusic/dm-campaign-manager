@@ -42,7 +42,7 @@ class DndClass < ApplicationRecord
   has_many :prof_classes, dependent: :destroy
   has_many :profs, through: :prof_classes
 
-  has_one :multi_classing
+  has_one :multi_classing, dependent: :destroy
 
   has_one :spell_casting, dependent: :destroy
 

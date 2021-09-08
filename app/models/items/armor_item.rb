@@ -86,7 +86,7 @@ class ArmorItem < Item
         new_magic_armor(magic_item, 'Leather')
         new_magic_armor(magic_item, 'Padded')
       else
-        puts "ARMOR unidentified: #{magic_item[:name]} - TYPE #{magic_item[:type]} - ID: #{magic_item.id}"
+        puts "ARMOR unidentified: #{magic_item[:name]} - TYPE #{magic_item[:type]}"
       end
     end
 

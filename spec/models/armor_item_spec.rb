@@ -57,33 +57,86 @@ require 'rails_helper'
 
 RSpec.describe ArmorItem, type: :model do
   context "with the same name" do
-    before(:each) do
-      dungeon_master = FactoryBot.create(:dungeon_master_user)
+    let!(:dungeon_master) { create :dungeon_master_user }
+
+    it "generates unique slugs" do
       @item = ArmorItem.create!(name: 'Torch', weight: 10)
       @item1 = ArmorItem.create!(name: 'Torch', weight: 10)
       @user_item = ArmorItem.create!(name: 'Torch', weight: 10, user: dungeon_master)
-    end
-
-    it "generates unique slugs" do
-      expect(@item.slug).to eq('torch')
-      expect(@item1.slug).to eq('torch-1')
-      expect(@user_item.slug).to eq('torch-jesshdm')
+      expect(@item.slug).to eq('torch-1')
+      expect(@item1.slug).to eq('torch-2')
+      expect(@user_item.slug).to eq('torch-jesshdm1')
     end
 
     it "maintains same slug on update with no name change" do
-      expect(@item.slug).to eq('torch')
+      @item = ArmorItem.create!(name: 'Torch', weight: 10)
+      @item1 = ArmorItem.create!(name: 'Torch', weight: 10)
+      @user_item = ArmorItem.create!(name: 'Torch', weight: 10, user: dungeon_master)
+      expect(@item.slug).to eq('torch-1')
       @item.update(weight: 12)
-      expect(ArmorItem.all.count).to eq(3)
+      expect(ArmorItem.all.count).to eq(16)
       @item.reload
-      expect(@item.slug).to eq('torch')
+      expect(@item.slug).to eq('torch-1')
       @item.update(weight: 8)
-      expect(ArmorItem.all.count).to eq(3)
+      expect(ArmorItem.all.count).to eq(16)
       @item.reload
-      expect(@item.slug).to eq('torch')
+      expect(@item.slug).to eq('torch-1')
       @item.update(weight: 12)
-      expect(ArmorItem.all.count).to eq(3)
+      expect(ArmorItem.all.count).to eq(16)
       @item.reload
-      expect(@item.slug).to eq('torch')
+      expect(@item.slug).to eq('torch-1')
+    end
+
+    it 'should have 13 ArmorItems' do
+      expect(ArmorItem.all.count).to eq(13)
+    end
+
+    it 'should have the Armor category' do
+      expect(ArmorItem.first.category).to eq('Armor')
+    end
+
+    armor_types = {'scale mail': 1, 'chain shirt': 1, 'studded leather': 1, 'shield': 1, 'plate': 1, 'medium or heavy': 10, 'light': 3}
+    armor_types.each do |armor_type, number_of_armors|
+      it 'should create a magic armor from an imported JSON' do
+        magic_item = {
+          "slug": "adamantine-armor-special",
+          "name": "Adamantine Armor Special",
+          "type": "Armor (#{armor_type})",
+          "desc": "This suit of armor is reinforced with adamantine, one of the hardest substances in existence. While you're wearing it, any critical hit against you becomes a normal hit.",
+          "rarity": "uncommon",
+          "requires_attunement": "",
+          "document__slug": "wotc-srd",
+          "document__title": "Systems Reference Document"
+        }
+        expect(ArmorItem.all.count).to eq(13)
+        ArmorItem.create_magic_armor_from_old_magic_items(magic_item)
+        expect(ArmorItem.all.count).to eq(13 + number_of_armors)
+        new_armors = ArmorItem.where('name like ?', '%Adamantine Armor Special%')
+        expect(new_armors).not_to be(nil)
+        expect(new_armors.count).to eq(number_of_armors)
+        expect(new_armors.first.cost.quantity).to eq(500)
+        expect(new_armors.first.cost.unit).to eq('gp')
+        expect(new_armors.first.name).to include('Adamantine Armor Special')
+      end
+    end
+
+    it 'should catch unidentified armor types' do
+      magic_item = {
+        "slug": "adamantine-armor-special",
+        "name": "Adamantine Armor Special",
+        "type": "Armor (oops)",
+        "desc": "This suit of armor is reinforced with adamantine, one of the hardest substances in existence. While you're wearing it, any critical hit against you becomes a normal hit.",
+        "rarity": "uncommon",
+        "requires_attunement": "",
+        "document__slug": "wotc-srd",
+        "document__title": "Systems Reference Document"
+      }
+      expect(ArmorItem.all.count).to eq(13)
+      expect {
+        ArmorItem.create_magic_armor_from_old_magic_items(magic_item)
+      }.to output("ARMOR unidentified: Adamantine Armor Special - TYPE Armor (oops)\n")
+             .to_stdout
+      expect(ArmorItem.all.count).to eq(13)
     end
   end
 end

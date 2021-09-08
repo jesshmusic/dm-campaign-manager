@@ -19,6 +19,17 @@ class SrdUtilities
       import_monsters
     end
 
+    def import_all_empty
+      has_dependencies = AbilityScore.count > 0 && Prof.count > 0 && Condition.count > 0
+      import_dependencies unless has_dependencies
+      import_items unless Item.count > 0
+      import_classes unless DndClass.count > 0
+      import_races unless Race.count > 0
+      import_spells unless Spell.count > 0
+      import_and_fix_magic_items unless Item.count > 0
+      import_monsters unless Monster.count > 0
+    end
+
     def import_dependencies
       import_ability_scores
       import_proficiencies
