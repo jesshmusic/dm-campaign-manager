@@ -2,7 +2,7 @@
 
 json.key_format! camelize: :lower
 
-json.extract! dnd_class, :id, :api_url, :hit_die, :name,
+json.extract! dnd_class, :api_url, :hit_die, :name,
               :slug, :subclasses, :user_id
 
 json.ability_scores dnd_class.ability_scores do |ability_score|
@@ -48,13 +48,28 @@ json.starting_equipment_options dnd_class.starting_equipment_options do |equip_o
 end
 
 json.proficiencies dnd_class.profs do |prof|
-  json.extract! prof, :id, :name, :prof_type
+  json.extract! prof, :name, :prof_type
 end
 
 json.proficiency_choices dnd_class.prof_choices do |prof_choice|
-  json.extract! prof_choice, :id, :name, :num_choices, :prof_choice_type
+  json.extract! prof_choice, :name, :num_choices, :prof_choice_type
   json.proficiencies prof_choice.profs do |prof|
-    json.extract! prof, :id, :name, :prof_type
+    json.extract! prof, :name, :prof_type
+  end
+end
+
+json.multi_classing do
+  json.prerequisites dnd_class.multi_classing.multi_class_prereqs do |prereq|
+    json.extract! prereq, :ability_score, :minimum_score
+  end
+  json.proficiencies dnd_class.multi_classing.profs do |prof|
+    json.extract! prof, :name, :prof_type
+  end
+  json.proficiency_choices dnd_class.multi_classing.prof_choices do |prof_choice|
+    json.extract! prof_choice, :name, :num_choices, :prof_choice_type
+    json.proficiencies prof_choice.profs do |prof|
+      json.extract! prof, :name, :prof_type
+    end
   end
 end
 

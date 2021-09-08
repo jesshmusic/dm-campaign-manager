@@ -8,7 +8,6 @@ module Admin::V1
     # GET /dnd_classes
     # GET /dnd_classes.json
     def index
-      authorize DndClass
       if params[:list].present?
         @dnd_classes = DndClass.all.order(name: :asc).map { |dnd_class|
           {
@@ -41,7 +40,6 @@ module Admin::V1
     # GET /dnd_classes/1
     # GET /dnd_classes/1.json
     def show
-      authorize @dnd_class
     end
 
     # GET /dnd_classes/new

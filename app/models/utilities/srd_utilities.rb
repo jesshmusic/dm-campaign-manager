@@ -126,6 +126,7 @@ class SrdUtilities
             ability_score = AbilityScore.find_by(slug: saving_throw[:index])
             dnd_class.ability_scores |= [ability_score]
           end
+          puts "#{dnd_class.name} - Added #{dnd_class.ability_scores.count} ability scores"
         end
 
         class_result[:proficiency_choices].each_with_index do |prof_choice_block, index|
@@ -138,6 +139,7 @@ class SrdUtilities
           end
           dnd_class.prof_choices |= [new_prof_choice]
         end
+        puts "#{dnd_class.name} - Added #{dnd_class.prof_choices.count} starting proficiency choices"
 
         class_result[:proficiencies].each do |prof|
           new_prof = import_prof(prof[:url], dnd_class)
@@ -149,6 +151,7 @@ class SrdUtilities
           db_item = Item.find_by(name: item[:equipment][:name])
           equip.item = db_item
         end
+        puts "#{dnd_class.name} - Added #{dnd_class.equipments.count} starting equipment items"
 
         dnd_class.starting_equipment_options.destroy_all
         class_result[:starting_equipment_options].each do |option|
@@ -156,32 +159,45 @@ class SrdUtilities
           starting_equipment_option = create_equipment_option(option, starting_equipment_option)
           starting_equipment_option.save!
         end
+        puts "#{dnd_class.name} - Added #{dnd_class.starting_equipment_options.count} starting equipment options"
 
         if class_result[:subclasses]
           class_result[:subclasses].each do |subclass|
             dnd_class.subclasses |= [subclass[:name]]
           end
+          puts "#{dnd_class.name} - Added #{dnd_class.subclasses.count} subclasses"
         end
 
-        # s_options = dnd_class.starting_equipment_options
-        # num_equips = s_options.equipments.count
-        # num_equip_options = s_options.equipment_options.count
-        # puts "#{num_equips} equipment, #{num_equip_options} options"
-        # s_options.each do |s_option|
-        #   num_equips = s_option.equipments.count
-        #   num_equip_options = s_option.equipment_options.count
-        #   puts "#{num_equips} equipment, #{num_equip_options} options"
-        #   s_options.equipments.each do |equip|
-        #     name = equip.name
-        #     item_name = equip.item.name
-        #     puts "Equipment: #{name} item: #{item_name}"
-        #   end
-        #   s_options.equipment_options.each do |opt|
-        #     num_equips = opt.equipments.count
-        #     num_equip_options = opt.equipment_options.count
-        #     puts "#{num_equips} equipment, #{num_equip_options} options"
-        #   end
-        # end
+        dnd_class.multi_classing.destroy unless dnd_class.multi_classing.nil?
+        unless class_result[:multi_classing].nil?
+          dnd_class.multi_classing = MultiClassing.create()
+          unless class_result[:multi_classing][:prerequisites].nil?
+            class_result[:multi_classing][:prerequisites].each do |prereq|
+              dnd_class.multi_classing.multi_class_prereqs.create(ability_score: prereq[:ability_score][:name],
+                                                     minimum_score: prereq[:minimum_score])
+            end
+            puts "#{dnd_class.name} - Added #{dnd_class.multi_classing.multi_class_prereqs.count} multiclassing prereqs"
+          end
+          unless class_result[:multi_classing][:proficiencies].nil?
+            class_result[:multi_classing][:proficiencies].each do |prof|
+              dnd_class.multi_classing.profs << Prof.find_by(name: prof[:name])
+            end
+            puts "#{dnd_class.name} - Added #{dnd_class.multi_classing.profs.count} multiclassing proficiencies"
+          end
+          unless class_result[:multi_classing][:proficiency_choices].nil?
+            class_result[:multi_classing][:proficiency_choices].each_with_index do |prof_choice, index|
+              choices = dnd_class.multi_classing.prof_choices.create(
+                name: "#{dnd_class.name} multiclassing #{index}",
+                num_choices: prof_choice[:choose],
+                prof_choice_type: prof_choice[:type])
+              prof_choice[:from].each do |prof|
+                choices.profs << Prof.find_by(name: prof[:name])
+              end
+              choices.save!
+            end
+            puts "#{dnd_class.name} - Added #{dnd_class.multi_classing.prof_choices.count} multiclassing proficiency choices"
+          end
+        end
 
         dnd_class.save!
         count += 1

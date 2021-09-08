@@ -22,6 +22,7 @@ class MultiClassing < ApplicationRecord
 
   has_many :multi_classing_profs, dependent: :destroy
   has_many :profs, through: :multi_classing_profs
+  has_many :prof_choices, dependent: :destroy
 
   has_many :multi_class_prereqs, dependent: :destroy
   has_one :multi_classing_prereq_option, inverse_of: :multi_classing

@@ -16,6 +16,6 @@
 #  index_multi_class_prereqs_on_multi_classing_prereq_option_id  (multi_classing_prereq_option_id)
 #
 class MultiClassPrereq < ApplicationRecord
-  belongs_to :multi_classing
-  belongs_to :multi_classing_prereq_option
+  belongs_to :multi_classing, optional: true
+  belongs_to :multi_classing_prereq_option, optional: true
 end
