@@ -56,10 +56,10 @@
 require 'rails_helper'
 
 RSpec.describe ArmorItem, type: :model do
-  context "with the same name" do
+  context 'with the same name' do
     let!(:dungeon_master) { create :dungeon_master_user }
 
-    it "generates unique slugs" do
+    it 'generates unique slugs' do
       @item = ArmorItem.create!(name: 'Torch', weight: 10)
       @item1 = ArmorItem.create!(name: 'Torch', weight: 10)
       @user_item = ArmorItem.create!(name: 'Torch', weight: 10, user: dungeon_master)
@@ -68,7 +68,7 @@ RSpec.describe ArmorItem, type: :model do
       expect(@user_item.slug).to eq('torch-jesshdm1')
     end
 
-    it "maintains same slug on update with no name change" do
+    it 'maintains same slug on update with no name change' do
       @item = ArmorItem.create!(name: 'Torch', weight: 10)
       @item1 = ArmorItem.create!(name: 'Torch', weight: 10)
       @user_item = ArmorItem.create!(name: 'Torch', weight: 10, user: dungeon_master)
@@ -86,7 +86,8 @@ RSpec.describe ArmorItem, type: :model do
       @item.reload
       expect(@item.slug).to eq('torch-1')
     end
-
+  end
+  context 'Implementation' do
     it 'should have 13 ArmorItems' do
       expect(ArmorItem.all.count).to eq(13)
     end
@@ -95,18 +96,18 @@ RSpec.describe ArmorItem, type: :model do
       expect(ArmorItem.first.category).to eq('Armor')
     end
 
-    armor_types = {'scale mail': 1, 'chain shirt': 1, 'studded leather': 1, 'shield': 1, 'plate': 1, 'medium or heavy': 10, 'light': 3}
+    armor_types = { 'scale mail': 1, 'chain shirt': 1, 'studded leather': 1, 'shield': 1, 'plate': 1, 'medium or heavy': 10, 'light': 3 }
     armor_types.each do |armor_type, number_of_armors|
       it 'should create a magic armor from an imported JSON' do
         magic_item = {
-          "slug": "adamantine-armor-special",
-          "name": "Adamantine Armor Special",
-          "type": "Armor (#{armor_type})",
-          "desc": "This suit of armor is reinforced with adamantine, one of the hardest substances in existence. While you're wearing it, any critical hit against you becomes a normal hit.",
-          "rarity": "uncommon",
-          "requires_attunement": "",
-          "document__slug": "wotc-srd",
-          "document__title": "Systems Reference Document"
+          'slug': 'adamantine-armor-special',
+          'name': 'Adamantine Armor Special',
+          'type': "Armor (#{armor_type})",
+          'desc': 'This suit of armor is reinforced with adamantine, one of the hardest substances in existence. While you\'re wearing it, any critical hit against you becomes a normal hit.',
+          'rarity': 'uncommon',
+          'requires_attunement': '',
+          'document__slug': 'wotc-srd',
+          'document__title': 'Systems Reference Document'
         }
         expect(ArmorItem.all.count).to eq(13)
         ArmorItem.create_magic_armor_from_old_magic_items(magic_item)

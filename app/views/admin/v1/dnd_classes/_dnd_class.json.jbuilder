@@ -9,6 +9,32 @@ json.ability_scores dnd_class.ability_scores do |ability_score|
   json.extract! ability_score, :desc, :full_name, :name
 end
 
+json.multi_classing do
+  json.prerequisites dnd_class.multi_classing.multi_class_prereqs do |prereq|
+    json.extract! prereq, :ability_score, :minimum_score
+  end
+  json.proficiencies dnd_class.multi_classing.profs do |prof|
+    json.extract! prof, :name, :prof_type
+  end
+  json.proficiency_choices dnd_class.multi_classing.prof_choices do |prof_choice|
+    json.extract! prof_choice, :name, :num_choices, :prof_choice_type
+    json.proficiencies prof_choice.profs do |prof|
+      json.extract! prof, :name, :prof_type
+    end
+  end
+end
+
+json.proficiencies dnd_class.profs do |prof|
+  json.extract! prof, :name, :prof_type
+end
+
+json.proficiency_choices dnd_class.prof_choices do |prof_choice|
+  json.extract! prof_choice, :name, :num_choices, :prof_choice_type
+  json.proficiencies prof_choice.profs do |prof|
+    json.extract! prof, :name, :prof_type
+  end
+end
+
 json.starting_equipment dnd_class.equipments do |equipment|
   json.extract! equipment, :name, :quantity
   json.extract! equipment.item, :name, :desc, :slug
@@ -46,33 +72,5 @@ json.starting_equipment_options dnd_class.starting_equipment_options do |equip_o
     end
   end
 end
-
-json.proficiencies dnd_class.profs do |prof|
-  json.extract! prof, :name, :prof_type
-end
-
-json.proficiency_choices dnd_class.prof_choices do |prof_choice|
-  json.extract! prof_choice, :name, :num_choices, :prof_choice_type
-  json.proficiencies prof_choice.profs do |prof|
-    json.extract! prof, :name, :prof_type
-  end
-end
-
-json.multi_classing do
-  json.prerequisites dnd_class.multi_classing.multi_class_prereqs do |prereq|
-    json.extract! prereq, :ability_score, :minimum_score
-  end
-  json.proficiencies dnd_class.multi_classing.profs do |prof|
-    json.extract! prof, :name, :prof_type
-  end
-  json.proficiency_choices dnd_class.multi_classing.prof_choices do |prof_choice|
-    json.extract! prof_choice, :name, :num_choices, :prof_choice_type
-    json.proficiencies prof_choice.profs do |prof|
-      json.extract! prof, :name, :prof_type
-    end
-  end
-end
-
-
 
 json.url v1_dnd_class_url(dnd_class, format: :json)
