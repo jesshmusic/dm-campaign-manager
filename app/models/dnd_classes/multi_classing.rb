@@ -18,8 +18,6 @@
 class MultiClassing < ApplicationRecord
   belongs_to :dnd_class
 
-  has_many :multi_prof_choices, inverse_of: :multi_classing
-
   has_many :multi_classing_profs, dependent: :destroy
   has_many :profs, through: :multi_classing_profs
   has_many :prof_choices, dependent: :destroy

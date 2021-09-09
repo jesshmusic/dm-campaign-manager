@@ -5,6 +5,7 @@ class SrdUtilities
     def dnd_api_url
       'http://www.dnd5eapi.co'
     end
+
     def dnd_open5e_url
       'https://api.open5e.com/'
     end
@@ -23,6 +24,7 @@ class SrdUtilities
       has_dependencies = AbilityScore.count > 0 && Prof.count > 0 && Condition.count > 0
       import_dependencies unless has_dependencies
       import_items unless Item.count > 0
+      # import_classes
       import_classes unless DndClass.count > 0
       import_races unless Race.count > 0
       import_spells unless Spell.count > 0
@@ -185,7 +187,7 @@ class SrdUtilities
           unless class_result[:multi_classing][:prerequisites].nil?
             class_result[:multi_classing][:prerequisites].each do |prereq|
               dnd_class.multi_classing.multi_class_prereqs.create(ability_score: prereq[:ability_score][:name],
-                                                     minimum_score: prereq[:minimum_score])
+                                                                  minimum_score: prereq[:minimum_score])
             end
             puts "#{dnd_class.name} - Added #{dnd_class.multi_classing.multi_class_prereqs.count} multiclassing prereqs"
           end
@@ -210,6 +212,15 @@ class SrdUtilities
           end
         end
 
+        dnd_class.spell_casting.destroy unless dnd_class.spell_casting.nil?
+        unless class_result[:spellcasting].nil?
+          spellcasting = class_result[:spellcasting]
+          dnd_class.spell_casting = SpellCasting.create(level: spellcasting[:level])
+          spellcasting[:info].each do |info|
+            dnd_class.spell_casting.spell_casting_infos |= [SpellCastingInfo.create(name: info[:name], desc: info[:desc])]
+          end
+          dnd_class.spell_casting.ability_score = AbilityScore.find_by(slug: spellcasting[:spellcasting_ability][:index])
+        end
         dnd_class.save!
         count += 1
       end
@@ -233,7 +244,7 @@ class SrdUtilities
     def parse_equipment_option(item, starting_equipment_option)
       if item[:equipment]
         equip = starting_equipment_option.equipments.create(name: item[:equipment][:name],
-                                 quantity: item[:quantity])
+                                                            quantity: item[:quantity])
         equip.item = Item.find_by(name: item[:equipment][:name])
         equip.save!
       elsif item[:equipment_option]
@@ -331,7 +342,7 @@ class SrdUtilities
       fix_combined_magic_items
     end
 
-    def import_prof(prof_url, new_dnd_class = nil )
+    def import_prof(prof_url, new_dnd_class = nil)
       prof_uri = URI("#{dnd_api_url}#{prof_url}")
       prof_response = Net::HTTP.get(prof_uri)
       prof_result = JSON.parse prof_response, symbolize_names: true
@@ -378,12 +389,12 @@ class SrdUtilities
           new_monster.size = monster[:size]
           new_monster.monster_subtype = monster[:subtype] || ""
           new_monster.speed = {
-            burrow: monster[:speed][:burrow] ? monster[:speed][:burrow]: "",
-            climb: monster[:speed][:climb] ? monster[:speed][:climb]: "",
-            fly: monster[:speed][:fly] ? monster[:speed][:fly]: "",
-            hover: monster[:speed][:hover] ? monster[:speed][:hover]: false,
-            swim: monster[:speed][:swim] ? monster[:speed][:swim]: "",
-            walk: monster[:speed][:walk] ? monster[:speed][:walk]: "",
+            burrow: monster[:speed][:burrow] ? monster[:speed][:burrow] : "",
+            climb: monster[:speed][:climb] ? monster[:speed][:climb] : "",
+            fly: monster[:speed][:fly] ? monster[:speed][:fly] : "",
+            hover: monster[:speed][:hover] ? monster[:speed][:hover] : false,
+            swim: monster[:speed][:swim] ? monster[:speed][:swim] : "",
+            walk: monster[:speed][:walk] ? monster[:speed][:walk] : "",
           }
           new_monster.senses = monster[:senses]
 

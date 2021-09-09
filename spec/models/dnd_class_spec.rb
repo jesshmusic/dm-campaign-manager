@@ -140,8 +140,8 @@ RSpec.describe DndClass, type: :model do
     it 'should have prof choices with lists of profs' do
       bard = DndClass.find_by(slug: 'bard')
       prof_choices = bard.prof_choices.first
-      expect(prof_choices.profs.count).to be(18)
-      expect(prof_choices.num_choices).to be(3)
+      expect(prof_choices.profs.count).to eq(18)
+      expect(prof_choices.num_choices).to eq(3)
     end
   end
 
@@ -150,8 +150,8 @@ RSpec.describe DndClass, type: :model do
       bard = DndClass.find_by(slug: 'bard')
       expect(bard.spell_casting).not_to be(nil)
       expect(bard.spell_casting.level).to be(1)
-      expect(bard.spell_casting.spell_casting_infos.count).to be(6)
-      expect(bard.spell_casting.ability_score.name).to be('CHA')
+      expect(bard.spell_casting.spell_casting_infos.count).to eq(6)
+      expect(bard.spell_casting.ability_score.name).to eq('CHA')
     end
   end
 

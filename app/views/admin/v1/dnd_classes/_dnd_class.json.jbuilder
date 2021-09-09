@@ -35,6 +35,14 @@ json.proficiency_choices dnd_class.prof_choices do |prof_choice|
   end
 end
 
+json.spell_casting do
+  json.extract! dnd_class.spell_casting, :level
+  json.spell_casting_ability dnd_class.spell_casting.ability_score.full_name
+  json.info dnd_class.spell_casting.spell_casting_infos do |info|
+    json.extract! info, :name, :desc
+  end
+end
+
 json.starting_equipment dnd_class.equipments do |equipment|
   json.extract! equipment, :name, :quantity
   json.extract! equipment.item, :name, :desc, :slug

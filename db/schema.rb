@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_08_132132) do
+ActiveRecord::Schema.define(version: 2021_09_09_022536) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -229,15 +229,6 @@ ActiveRecord::Schema.define(version: 2021_09_08_132132) do
     t.index ["dnd_class_id"], name: "index_multi_classings_on_dnd_class_id"
   end
 
-  create_table "multi_prof_choices", force: :cascade do |t|
-    t.bigint "prof_id", null: false
-    t.bigint "multi_classing_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["multi_classing_id"], name: "index_multi_prof_choices_on_multi_classing_id"
-    t.index ["prof_id"], name: "index_multi_prof_choices_on_prof_id"
-  end
-
   create_table "prof_choice_profs", force: :cascade do |t|
     t.bigint "prof_id"
     t.bigint "prof_choice_id"
@@ -425,8 +416,6 @@ ActiveRecord::Schema.define(version: 2021_09_08_132132) do
   add_foreign_key "multi_classing_profs", "multi_classings"
   add_foreign_key "multi_classing_profs", "profs"
   add_foreign_key "multi_classings", "dnd_classes"
-  add_foreign_key "multi_prof_choices", "multi_classings"
-  add_foreign_key "multi_prof_choices", "profs"
   add_foreign_key "races", "users"
   add_foreign_key "spell_casting_abilities", "ability_scores"
   add_foreign_key "spell_casting_abilities", "spell_castings"
