@@ -37,4 +37,4 @@
 # create_user('Jess Hendricks', 'jesshmusic', 'jesshmusic72@gmail.com', :admin)
 # dm_user = create_user('Jess DM', 'jesshdm', 'jesshmusic72+dm@gmail.com', :dungeon_master)
 
-SrdUtilities.import_all_empty
+SrdUtilities.import_all_empty(:classes)

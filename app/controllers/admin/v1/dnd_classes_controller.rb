@@ -15,7 +15,7 @@ module Admin::V1
             slug: dnd_class.slug
           }
         }
-        render json: {count: @dnd_classes.count, results: @dnd_classes}
+        render json: { count: @dnd_classes.count, results: @dnd_classes }
       else
         @dnd_classes = if params[:search].present?
                          DndClass.search_for(params[:search])
@@ -117,6 +117,12 @@ module Admin::V1
         prof_ids: [],
         spell_ids: [],
         skill_ids: [],
+        equipments_attributes: [
+          :id,
+          :name,
+          :quantity,
+          :_destroy
+        ],
         prof_choices_attributes: [
           :id,
           :name,

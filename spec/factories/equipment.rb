@@ -18,7 +18,6 @@
 FactoryBot.define do
   factory :equipment do
     quantity { 1 }
-    name { "MyString" }
-    item_slug { "MyString" }
+    name { 'MyString' }
   end
 end

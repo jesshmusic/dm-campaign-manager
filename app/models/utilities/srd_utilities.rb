@@ -20,16 +20,16 @@ class SrdUtilities
       import_monsters
     end
 
-    def import_all_empty
+    def import_all_empty(exclude)
       has_dependencies = AbilityScore.count > 0 && Prof.count > 0 && Condition.count > 0
       import_dependencies unless has_dependencies
-      import_items unless Item.count > 0
+      import_items unless Item.count > 0 || exclude != :items
       # import_classes
-      import_classes unless DndClass.count > 0
-      import_races unless Race.count > 0
-      import_spells unless Spell.count > 0
-      import_and_fix_magic_items unless Item.count > 0
-      import_monsters unless Monster.count > 0
+      import_classes unless DndClass.count > 0 || exclude != :classes
+      import_races unless Race.count > 0 || exclude != :races
+      import_spells unless Spell.count > 0 || exclude != :spells
+      import_and_fix_magic_items unless Item.count > 0 || exclude != :magic_items
+      import_monsters unless Monster.count > 0 || exclude != :monsters
     end
 
     def import_dependencies
@@ -142,6 +142,7 @@ class SrdUtilities
           puts "#{dnd_class.name} - Added #{dnd_class.ability_scores.count} ability scores"
         end
 
+        # Proficiency Choices
         class_result[:proficiency_choices].each_with_index do |prof_choice_block, index|
           new_prof_choice = ProfChoice.find_or_initialize_by(name: "#{dnd_class.name} #{index}")
           new_prof_choice.num_choices = prof_choice_block[:choose]
@@ -152,35 +153,35 @@ class SrdUtilities
           end
           dnd_class.prof_choices |= [new_prof_choice]
         end
-        puts "#{dnd_class.name} - Added #{dnd_class.prof_choices.count} starting proficiency choices"
 
+        # Proficiencies
         class_result[:proficiencies].each do |prof|
           new_prof = import_prof(prof[:url], dnd_class)
           dnd_class.profs |= [new_prof]
         end
+
+        # Starting Equipment
         dnd_class.equipments.destroy_all
         class_result[:starting_equipment].each do |item|
-          equip = dnd_class.equipments.create(name: item[:equipment][:name], quantity: item[:quantity])
-          db_item = Item.find_by(name: item[:equipment][:name])
-          equip.item = db_item
+          dnd_class.equipments.create(name: item[:equipment][:name], quantity: item[:quantity])
         end
-        puts "#{dnd_class.name} - Added #{dnd_class.equipments.count} starting equipment items"
 
+        # Starting Equipment Options
         dnd_class.starting_equipment_options.destroy_all
         class_result[:starting_equipment_options].each do |option|
           starting_equipment_option = dnd_class.starting_equipment_options.create(choose: option[:choose], equipment_type: option[:type])
           starting_equipment_option = create_equipment_option(option, starting_equipment_option)
           starting_equipment_option.save!
         end
-        puts "#{dnd_class.name} - Added #{dnd_class.starting_equipment_options.count} starting equipment options"
 
+        # Subclasses
         if class_result[:subclasses]
           class_result[:subclasses].each do |subclass|
             dnd_class.subclasses |= [subclass[:name]]
           end
-          puts "#{dnd_class.name} - Added #{dnd_class.subclasses.count} subclasses"
         end
 
+        # Multi-classing
         dnd_class.multi_classing.destroy unless dnd_class.multi_classing.nil?
         unless class_result[:multi_classing].nil?
           dnd_class.multi_classing = MultiClassing.create()
@@ -212,6 +213,7 @@ class SrdUtilities
           end
         end
 
+        # Spell Casting
         dnd_class.spell_casting.destroy unless dnd_class.spell_casting.nil?
         unless class_result[:spellcasting].nil?
           spellcasting = class_result[:spellcasting]
@@ -221,6 +223,8 @@ class SrdUtilities
           end
           dnd_class.spell_casting.ability_score = AbilityScore.find_by(slug: spellcasting[:spellcasting_ability][:index])
         end
+
+        # Save and increment count
         dnd_class.save!
         count += 1
       end
@@ -245,7 +249,6 @@ class SrdUtilities
       if item[:equipment]
         equip = starting_equipment_option.equipments.create(name: item[:equipment][:name],
                                                             quantity: item[:quantity])
-        equip.item = Item.find_by(name: item[:equipment][:name])
         equip.save!
       elsif item[:equipment_option]
         new_equipment_option = starting_equipment_option.equipment_options.create(choose: item[:equipment_option][:choose], equipment_type: item[:equipment_option][:type])

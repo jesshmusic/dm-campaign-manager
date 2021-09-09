@@ -7,16 +7,23 @@
     <%= form.input :hit_die %>
     <%= form.association :ability_scores %>
     <%= form.association :profs %>
-    <%= form.association :skills %>
     <%= form.association :spells %>
-
+    <div class="p-3 mx-3 my-5 border-bottom border-top" id="prof_choices_container">
+      <h5>Starting Equipment</h5>
+      <%= form.simple_fields_for :equipments, @dnd_class.equipments do |p_form| %>
+        <%= render 'equipment_fields', f: p_form %>
+      <% end %>
+      <div class='links'>
+        <%= link_to_add_association 'Add Equipment', form, :equipments, class: 'btn btn-info' %>
+      </div>
+    </div>
     <div class="p-3 mx-3 my-5 border-bottom border-top" id="prof_choices_container">
       <h5>Proficiency Choices</h5>
       <%= form.simple_fields_for :prof_choices do |p_form| %>
         <%= render 'prof_choice_fields', f: p_form %>
       <% end %>
       <div class='links'>
-        <%= link_to_add_association 'Add Proficiency Choices Set', form, :prof_choices, class: "btn btn-info" %>
+        <%= link_to_add_association 'Add Proficiency Choices Set', form, :prof_choices, class: 'btn btn-info' %>
       </div>
     </div>
   </div>
@@ -28,19 +35,20 @@
 <% end %>
 
 <script>
-  $(document).ready(function() {
-    $("#prof_choices_container").on('cocoon:after-insert', function(event, addedTask) {
+  $(document).ready(function () {
+    $('#prof_choices_container').on('cocoon:after-insert', function (event, addedTask) {
       loadSelect2();
     });
-    function loadSelect2() {
-      $( "#dnd_class_spell_ids" ).select2({
-        theme: "bootstrap"
+
+    function loadSelect2 () {
+      $('#dnd_class_spell_ids').select2({
+        theme: 'bootstrap',
       });
-      $( "#dnd_class_prof_ids" ).select2({
-        theme: "bootstrap"
+      $('#dnd_class_prof_ids').select2({
+        theme: 'bootstrap',
       });
-      $( ".prof_choice_profs" ).select2({
-        theme: "bootstrap"
+      $('.prof_choice_profs').select2({
+        theme: 'bootstrap',
       });
     }
 

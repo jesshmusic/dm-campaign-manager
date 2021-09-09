@@ -1,0 +1,17 @@
+<div class="nested-fields">
+  <div class="d-flex align-items-end">
+    <%= f.input :name,
+                as: :select,
+                collection: Item.where(user_id: nil),
+                label_method: :name,
+                value_method: :name,
+                include_blank: false,
+                label: 'Item',
+                input_html: { class: 'equipment_items' },
+                wrapper_html: { class: 'mr-3 flex-grow-1' } %>
+    <%= f.input :quantity, wrapper_html: { class: 'mr-3' } %>
+    <div>
+      <%= link_to_remove_association 'Remove', f, class: 'btn btn-warning mb-3' %>
+    </div>
+  </div>
+</div>

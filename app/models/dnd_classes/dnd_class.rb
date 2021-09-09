@@ -52,6 +52,7 @@ class DndClass < ApplicationRecord
   belongs_to :user, optional: true
 
   accepts_nested_attributes_for :prof_choices, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :equipments, reject_if: :all_blank, allow_destroy: true
 
   include PgSearch::Model
 

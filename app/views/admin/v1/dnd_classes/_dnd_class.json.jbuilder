@@ -45,21 +45,13 @@ end
 
 json.starting_equipment dnd_class.equipments do |equipment|
   json.extract! equipment, :name, :quantity
-  json.extract! equipment.item, :name, :desc, :slug
 end
 
 json.starting_equipment_options dnd_class.starting_equipment_options do |equip_option|
   json.extract! equip_option, :choose, :equipment_type, :equipment_category
   json.options do
     json.array! equip_option.equipments do |equipment|
-      json.equipment do
-        json.item do
-          json.name equipment.item.name
-          json.desc equipment.item.desc
-          json.slug equipment.item.slug
-        end
-        json.quantity equipment.quantity
-      end
+      json.extract! equipment, :name, :quantity
     end
     json.array! equip_option.equipment_options do |equip_opt|
       json.equipment_option do

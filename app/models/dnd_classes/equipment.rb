@@ -16,8 +16,6 @@
 #  index_equipment_on_starting_equipment_option_id  (starting_equipment_option_id)
 #
 class Equipment < ApplicationRecord
-  has_one :equipment_item, dependent: :destroy
-  has_one :item, through: :equipment_item
   belongs_to :dnd_class, optional: true
-  belongs_to :starting_equipment_option, optional:true
+  belongs_to :starting_equipment_option, optional: true
 end
