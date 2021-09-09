@@ -46,7 +46,7 @@ RSpec.describe User, type: :model do
     end
 
     it 'should set slug to "test-dm"' do
-      expect(user.slug).to eq('jesshmusic')
+      expect(user.slug).to eq('jesshmusic1')
     end
 
     it 'should return true for active_for_authentication' do
@@ -58,7 +58,7 @@ RSpec.describe User, type: :model do
     end
 
     it 'should return the slug for to_param' do
-      expect(user.to_param).to eq('jesshmusic')
+      expect(user.to_param).to eq('jesshmusic1')
     end
   end
 

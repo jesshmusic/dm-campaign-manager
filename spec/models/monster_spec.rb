@@ -49,8 +49,9 @@ require 'rails_helper'
 
 RSpec.describe Monster, type: :model do
   context "with the same name" do
-    before(:each) do
-      dungeon_master = FactoryBot.create(:dungeon_master_user)
+    let!(:dungeon_master) { create :dungeon_master_user }
+
+    def create_monsters
       @monster = Monster.create!(name: 'Goober Fish',
                                  hit_points: 10,
                                  alignment: 'Chaotic Neutral',
@@ -70,25 +71,31 @@ RSpec.describe Monster, type: :model do
     end
 
     it "generates unique slugs" do
+      create_monsters
       expect(@monster.slug).to eq('goober-fish')
       expect(@monster1.slug).to eq('goober-fish-1')
-      expect(@user_monster.slug).to eq('goober-fish-jesshdm')
+      expect(@user_monster.slug).to eq('goober-fish-jesshdm1')
     end
 
     it "maintains same slug on update with no name change" do
+      create_monsters
       expect(@monster.slug).to eq('goober-fish')
       @monster.update(hit_points: 12)
-      expect(Monster.all.count).to eq(3)
+      expect(Monster.all.count).to eq(335)
       @monster.reload
       expect(@monster.slug).to eq('goober-fish')
       @monster.update(hit_points: 8)
-      expect(Monster.all.count).to eq(3)
+      expect(Monster.all.count).to eq(335)
       @monster.reload
       expect(@monster.slug).to eq('goober-fish')
       @monster.update(hit_points: 12)
-      expect(Monster.all.count).to eq(3)
+      expect(Monster.all.count).to eq(335)
       @monster.reload
       expect(@monster.slug).to eq('goober-fish')
+    end
+
+    it 'should have 332 monsters' do
+      expect(Monster.all.count).to eq(332)
     end
   end
 end

@@ -57,9 +57,8 @@ FactoryBot.define do
   factory :item do
     type { %w(ArmorItem GearItem MagicItem ToolItem WeaponItem VehicleItem).sample }
     category_range { "MyString" }
-    cost_unit { "gp" }
-    cost_value {  Faker::Number.between(from: 1, to: 10)  }
-    description { Faker::Game.title }
+    association :cost, factory: :cost, strategy: :build
+    desc { Faker::Game.title }
     name { Faker::Games::Zelda.item }
     weight { Faker::Number.between(from: 1, to: 10) }
   end

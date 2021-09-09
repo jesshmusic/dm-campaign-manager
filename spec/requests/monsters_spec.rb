@@ -112,7 +112,7 @@ RSpec.describe "Monsters", type: :request do
         get "/v1/monsters/#{monster_custom1.slug}.json"
         result_monster = JSON.parse(response.body)
         expect(result_monster['name']).to eq('DM Monster')
-        expect(result_monster['slug']).to eq('dm-monster-jesshdm')
+        expect(result_monster['slug']).to eq('dm-monster-jesshdm1')
       end
 
       it "returns error for DM trying to get custom monster by another user" do

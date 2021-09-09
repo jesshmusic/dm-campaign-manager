@@ -42,12 +42,13 @@
 FactoryBot.define do
   factory :race do
     name { Faker::Games::ElderScrolls.race }
-    speed { "30 feet" }
+    speed { 30 }
     strength_modifier { Faker::Number.between(from: 0, to: 2) }
     dexterity_modifier { Faker::Number.between(from: 0, to: 2) }
     constitution_modifier { Faker::Number.between(from: 0, to: 2) }
     intelligence_modifier { Faker::Number.between(from: 0, to: 2) }
     wisdom_modifier { Faker::Number.between(from: 0, to: 2) }
     charisma_modifier { Faker::Number.between(from: 0, to: 2) }
+    size { 'medium' }
   end
 end

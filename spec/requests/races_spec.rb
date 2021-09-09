@@ -116,7 +116,7 @@ RSpec.describe "Races", type: :request do
         get "/v1/races/#{race_custom1.slug}.json"
         result_race = JSON.parse(response.body)
         expect(result_race['name']).to eq('DM Race')
-        expect(result_race['slug']).to eq('dm-race-jesshdm')
+        expect(result_race['slug']).to eq('dm-race-jesshdm1')
       end
 
       it "returns error for DM trying to get custom race by another user" do

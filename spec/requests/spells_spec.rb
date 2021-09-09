@@ -116,7 +116,7 @@ RSpec.describe "Spells", type: :request do
         get "/v1/spells/#{spell_custom1.slug}.json"
         result_spell = JSON.parse(response.body)
         expect(result_spell['name']).to eq('DM Spell')
-        expect(result_spell['slug']).to eq('dm-spell-jesshdm')
+        expect(result_spell['slug']).to eq('dm-spell-jesshdm1')
       end
 
       it "returns error for DM trying to get custom spell by another user" do

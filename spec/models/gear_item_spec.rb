@@ -57,33 +57,43 @@ require 'rails_helper'
 
 RSpec.describe GearItem, type: :model do
   context "with the same name" do
-    before(:each) do
-      dungeon_master = FactoryBot.create(:dungeon_master_user)
+    let!(:dungeon_master) { create :dungeon_master_user }
+
+    it "generates unique slugs" do
       @item = GearItem.create!(name: 'Torch', weight: 10)
       @item1 = GearItem.create!(name: 'Torch', weight: 10)
       @user_item = GearItem.create!(name: 'Torch', weight: 10, user: dungeon_master)
-    end
-
-    it "generates unique slugs" do
-      expect(@item.slug).to eq('torch')
-      expect(@item1.slug).to eq('torch-1')
-      expect(@user_item.slug).to eq('torch-jesshdm')
+      expect(@item.slug).to eq('torch-1')
+      expect(@item1.slug).to eq('torch-2')
+      expect(@user_item.slug).to eq('torch-jesshdm1')
     end
 
     it "maintains same slug on update with no name change" do
-      expect(@item.slug).to eq('torch')
+      expect(GearItem.all.count).to eq(116)
+      @item = GearItem.create!(name: 'Torch', weight: 10)
+      @item1 = GearItem.create!(name: 'Torch', weight: 10)
+      @user_item = GearItem.create!(name: 'Torch', weight: 10, user: dungeon_master)
+      expect(@item.slug).to eq('torch-1')
       @item.update(weight: 12)
-      expect(GearItem.all.count).to eq(3)
+      expect(GearItem.all.count).to eq(119)
       @item.reload
-      expect(@item.slug).to eq('torch')
+      expect(@item.slug).to eq('torch-1')
       @item.update(weight: 8)
-      expect(GearItem.all.count).to eq(3)
+      expect(GearItem.all.count).to eq(119)
       @item.reload
-      expect(@item.slug).to eq('torch')
+      expect(@item.slug).to eq('torch-1')
       @item.update(weight: 12)
-      expect(GearItem.all.count).to eq(3)
+      expect(GearItem.all.count).to eq(119)
       @item.reload
-      expect(@item.slug).to eq('torch')
+      expect(@item.slug).to eq('torch-1')
+    end
+
+    it 'should have 116 GearItems' do
+      expect(GearItem.all.count).to eq(116)
+    end
+
+    it 'should have the Adventuring Gear category' do
+      expect(GearItem.first.category).to eq('Adventuring Gear')
     end
   end
 end

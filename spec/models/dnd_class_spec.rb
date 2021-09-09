@@ -27,33 +27,38 @@ require 'rails_helper'
 
 RSpec.describe DndClass, type: :model do
   context "with the same name" do
-    before(:each) do
-      dungeon_master = FactoryBot.create(:dungeon_master_user)
+    let!(:dungeon_master) { create :dungeon_master_user }
+
+    it "generates unique slugs" do
       @dnd_class = DndClass.create!(name: 'Fighter', hit_die: 10)
       @dnd_class1 = DndClass.create!(name: 'Fighter', hit_die: 10)
       @user_dnd_class = DndClass.create!(name: 'Fighter', hit_die: 20, user: dungeon_master)
+      expect(@dnd_class.slug).to eq('fighter-1')
+      expect(@dnd_class1.slug).to eq('fighter-2')
+      expect(@user_dnd_class.slug).to eq('fighter-jesshdm1')
     end
 
-    it "generates unique slugs" do
-      expect(@dnd_class.slug).to eq('fighter')
-      expect(@dnd_class1.slug).to eq('fighter-1')
-      expect(@user_dnd_class.slug).to eq('fighter-jesshdm')
+    it 'should have 12 DndClasses' do
+      expect(DndClass.all.count).to eq(12)
     end
 
     it "maintains same slug on update with no name change" do
-      expect(@dnd_class.slug).to eq('fighter')
+      @dnd_class = DndClass.create!(name: 'Fighter', hit_die: 10)
+      @dnd_class1 = DndClass.create!(name: 'Fighter', hit_die: 10)
+      @user_dnd_class = DndClass.create!(name: 'Fighter', hit_die: 20, user: dungeon_master)
+      expect(@dnd_class.slug).to eq('fighter-1')
       @dnd_class.update(hit_die: 12)
-      expect(DndClass.all.count).to eq(3)
+      expect(DndClass.all.count).to eq(15)
       @dnd_class.reload
-      expect(@dnd_class.slug).to eq('fighter')
+      expect(@dnd_class.slug).to eq('fighter-1')
       @dnd_class.update(hit_die: 8)
-      expect(DndClass.all.count).to eq(3)
+      expect(DndClass.all.count).to eq(15)
       @dnd_class.reload
-      expect(@dnd_class.slug).to eq('fighter')
+      expect(@dnd_class.slug).to eq('fighter-1')
       @dnd_class.update(hit_die: 12)
-      expect(DndClass.all.count).to eq(3)
+      expect(DndClass.all.count).to eq(15)
       @dnd_class.reload
-      expect(@dnd_class.slug).to eq('fighter')
+      expect(@dnd_class.slug).to eq('fighter-1')
     end
   end
 end

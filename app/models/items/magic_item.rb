@@ -71,6 +71,7 @@ class MagicItem < Item
       new_item.cost = Cost.create(quantity: MagicItemsUtility.cost_for_rarity(magic_item[:rarity]), unit: 'gp')
       new_item.requires_attunement = magic_item[:requires_attunement]
       new_item.slug = new_item_slug
+      new_item.magic_item_type = magic_item[:type]
       new_item.save!
     end
   end

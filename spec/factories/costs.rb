@@ -19,8 +19,8 @@
 #
 FactoryBot.define do
   factory :cost do
-    quantity { 1 }
-    unit { "MyString" }
+    quantity { 500 }
+    unit { "gp" }
     item { nil }
   end
 end
