@@ -10,15 +10,15 @@
 // Read Sprockets README (https://github.com/rails/sprockets#sprockets-directives) for details
 // about supported directives.
 //
-//= require rails-ujs
-//= require activestorage
-//= require jquery
-//= require jquery_ujs
-//= require select2-full
-//= require cocoon
-//= require turbolinks
-//= require rails.validations
-//= require rails.validations.simple_form.bootstrap4
-//= require_tree .
+// = require rails-ujs
+// = require activestorage
+// = require jquery
+// = require jquery_ujs
+// = require select2-full
+// = require cocoon
+// = require turbolinks
+// = require rails.validations
+// = require rails.validations.simple_form.bootstrap4
+// = require_tree .
 
-window.addEventListener("turbolinks:load", Pagy.init);
+window.addEventListener('turbolinks:load', Pagy.init);

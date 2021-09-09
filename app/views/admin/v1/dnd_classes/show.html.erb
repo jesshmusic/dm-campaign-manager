@@ -7,34 +7,103 @@
     <li class="breadcrumb-item active" aria-current="page"><%= @dnd_class.name %></li>
   </ol>
 </nav>
-<h1>Class: <%= @dnd_class.name %></h1>
+<h1><small>Class:</small> <%= @dnd_class.name %></h1>
+<h2>Info</h2>
+<hr/>
 
-<p>
-  <strong>Hit die:</strong> d<%= @dnd_class.hit_die %>
-</p>
+<div class="container mr-auto ml-0">
+  <h3 class="h4"><strong>Hit die:</strong> d<%= @dnd_class.hit_die %></h3>
+  <hr/>
 
-<h4>Proficiencies</h4>
-<ul class="list-group list-group-flush py-4">
-  <% @dnd_class.profs.each do |proficiency| %>
-    <li class="list-group-item"><strong><%= proficiency.prof_type %></strong> <%= proficiency.name %></li>
-  <% end %>
-</ul>
+  <h3 class="h4"><strong>Subclasses: </strong> <%= @dnd_class.subclasses.join(', ') %></h3>
+  <hr/>
 
-<h4>Available Proficiencies</h4>
-<ul class="list-group list-group-flush py-4">
-  <% @dnd_class.prof_choices.each do |proficiency_choice| %>
-    <li class="list-group-item">
-      <strong>Choose <%= proficiency_choice.num_choices %> from</strong>
-      <ul class="list-group list-group-flush">
-        <% proficiency_choice.profs.each do |proficiency| %>
-          <li class="list-group-item"><strong><%= proficiency.prof_type %></strong> <%= proficiency.name %></li>
+  <h3 class="h4">Saving Throw Abilities</h3>
+  <ul class="list-group list-group-flush py-4">
+    <% @dnd_class.ability_scores.each do |ability| %>
+      <li class="list-group-item">
+        <h4 class="h5"><%= ability.full_name %></h4>
+        <% ability.desc.each do |desc_para| %>
+          <p><%= desc_para %></p>
         <% end %>
-      </ul>
-    </li>
-  <% end %>
-</ul>
+      </li>
+    <% end %>
+  </ul>
+  <hr/>
 
-<div class="d-flex align-items-center justify-content-start py-3">
-  <%= link_to 'Edit', edit_v1_dnd_class_path(@dnd_class), class: "btn btn-success" if policy(@dnd_class).edit? %>
-  <%= link_to 'Back', v1_dnd_classes_path, class: "btn btn-info" %>
+  <h3 class="h4">Starting Equipment</h3>
+  <ul class="list-group list-group-horizontal">
+    <% @dnd_class.equipments.each do |equipment| %>
+      <li class="list-group-item">
+        <h4 class="h6"><%= equipment.quantity %> <%= equipment.name %></h4>
+      </li>
+    <% end %>
+  </ul>
+  <hr/>
+
+  <h3 class="h4">Starting Equipment Options</h3>
+  <ul class="list-group list-group-horizontal">
+    <% @dnd_class.starting_equipment_options.each do |equip_option| %>
+      <li class="list-group-item">
+        <h4 class="h5">Choose <%= equip_option.choose %> from</h4>
+        <ul class="list-group list-group-flush">
+          <% equip_option.equipments.each do |equipment| %>
+            <li class="list-group-item">
+              <h4 class="h6"><%= equipment.quantity %> <%= equipment.name %></h4>
+            </li>
+          <% end %>
+          <% equip_option.equipment_options.each do |equipment_opt| %>
+            <li class="list-group-item">
+              <h4 class="h6"><%= equipment_opt.choose %> <%= equipment_opt.equipment_category %></h4>
+            </li>
+          <% end %>
+        </ul>
+      </li>
+    <% end %>
+  </ul>
+
+  <h3 class="h4">Proficiencies</h3>
+  <ul class="list-group list-group-flush py-4">
+    <% @dnd_class.profs.each do |proficiency| %>
+      <li class="list-group-item"><strong><%= proficiency.prof_type %></strong> <%= proficiency.name %></li>
+    <% end %>
+  </ul>
+  <hr/>
+
+  <h3 class="h4">Available Proficiencies</h3>
+
+  <div class="accordion" id="profChoicesAccordion">
+    <% @dnd_class.prof_choices.each_with_index do |proficiency_choice, index| %>
+      <div class="accordion-item">
+        <h4 class="accordion-header" id="#profChoiceHeading-<%= index %>">
+          <button class="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#profChoiceCollapse-<%= index %>"
+                  aria-expanded="false"
+                  aria-controls="profChoiceCollapse">
+            Choose <%= proficiency_choice.num_choices %> from
+          </button>
+        </h4>
+        <div id="profChoiceCollapse-<%= index %>"
+             class="accordion-collapse collapse show"
+             aria-labelledby="profChoiceHeading-<%= index %>"
+             data-bs-parent="#profChoicesAccordion">
+          <div class="accordion-body">
+            <ul class="list-group list-group-flush">
+              <% proficiency_choice.profs.each do |proficiency| %>
+                <li class="list-group-item"><strong><%= proficiency.prof_type %></strong> <%= proficiency.name %></li>
+              <% end %>
+            </ul>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+
+  <div class="d-flex align-items-center justify-content-start py-3">
+    <%= link_to 'Edit', edit_v1_dnd_class_path(@dnd_class), class: "btn btn-success" if policy(@dnd_class).edit? %>
+    <%= link_to 'Back', v1_dnd_classes_path, class: "btn btn-info" %>
+  </div>
 </div>
