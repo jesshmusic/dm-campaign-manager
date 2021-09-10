@@ -74,22 +74,22 @@ RSpec.describe ArmorItem, type: :model do
       @user_item = ArmorItem.create!(name: 'Torch', weight: 10, user: dungeon_master)
       expect(@item.slug).to eq('torch-1')
       @item.update(weight: 12)
-      expect(ArmorItem.all.count).to eq(16)
+      expect(ArmorItem.all.count).to eq(51)
       @item.reload
       expect(@item.slug).to eq('torch-1')
       @item.update(weight: 8)
-      expect(ArmorItem.all.count).to eq(16)
+      expect(ArmorItem.all.count).to eq(51)
       @item.reload
       expect(@item.slug).to eq('torch-1')
       @item.update(weight: 12)
-      expect(ArmorItem.all.count).to eq(16)
+      expect(ArmorItem.all.count).to eq(51)
       @item.reload
       expect(@item.slug).to eq('torch-1')
     end
   end
   context 'Implementation' do
     it 'should have 13 ArmorItems' do
-      expect(ArmorItem.all.count).to eq(13)
+      expect(ArmorItem.all.count).to eq(48)
     end
 
     it 'should have the Armor category' do
@@ -109,9 +109,9 @@ RSpec.describe ArmorItem, type: :model do
           'document__slug': 'wotc-srd',
           'document__title': 'Systems Reference Document'
         }
-        expect(ArmorItem.all.count).to eq(13)
+        expect(ArmorItem.all.count).to eq(48)
         ArmorItem.create_magic_armor_from_old_magic_items(magic_item)
-        expect(ArmorItem.all.count).to eq(13 + number_of_armors)
+        expect(ArmorItem.all.count).to eq(48 + number_of_armors)
         new_armors = ArmorItem.where('name like ?', '%Adamantine Armor Special%')
         expect(new_armors).not_to be(nil)
         expect(new_armors.count).to eq(number_of_armors)
@@ -123,21 +123,21 @@ RSpec.describe ArmorItem, type: :model do
 
     it 'should catch unidentified armor types' do
       magic_item = {
-        "slug": "adamantine-armor-special",
-        "name": "Adamantine Armor Special",
-        "type": "Armor (oops)",
-        "desc": "This suit of armor is reinforced with adamantine, one of the hardest substances in existence. While you're wearing it, any critical hit against you becomes a normal hit.",
-        "rarity": "uncommon",
-        "requires_attunement": "",
-        "document__slug": "wotc-srd",
-        "document__title": "Systems Reference Document"
+        'slug': 'adamantine-armor-special',
+        'name': 'Adamantine Armor Special',
+        'type': 'Armor (oops)',
+        'desc': 'This suit of armor is reinforced with adamantine, one of the hardest substances in existence. While you\'re wearing it, any critical hit against you becomes a normal hit.',
+        'rarity': 'uncommon',
+        'requires_attunement': '',
+        'document__slug': 'wotc-srd',
+        'document__title': 'Systems Reference Document'
       }
-      expect(ArmorItem.all.count).to eq(13)
+      expect(ArmorItem.all.count).to eq(48)
       expect {
         ArmorItem.create_magic_armor_from_old_magic_items(magic_item)
       }.to output("ARMOR unidentified: Adamantine Armor Special - TYPE Armor (oops)\n")
              .to_stdout
-      expect(ArmorItem.all.count).to eq(13)
+      expect(ArmorItem.all.count).to eq(48)
     end
   end
 end

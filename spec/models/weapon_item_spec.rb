@@ -56,10 +56,10 @@
 require 'rails_helper'
 
 RSpec.describe WeaponItem, type: :model do
-  context "with the same name" do
+  context 'with the same name' do
     let!(:dungeon_master) { create :dungeon_master_user }
 
-    it "generates unique slugs" do
+    it 'generates unique slugs' do
       @item = WeaponItem.create!(name: 'Torch', weight: 10)
       @item1 = WeaponItem.create!(name: 'Torch', weight: 10)
       @user_item = WeaponItem.create!(name: 'Torch', weight: 10, user: dungeon_master)
@@ -68,21 +68,21 @@ RSpec.describe WeaponItem, type: :model do
       expect(@user_item.slug).to eq('torch-jesshdm1')
     end
 
-    it "maintains same slug on update with no name change" do
+    it 'maintains same slug on update with no name change' do
       @item = WeaponItem.create!(name: 'Torch', weight: 10)
       @item1 = WeaponItem.create!(name: 'Torch', weight: 10)
       @user_item = WeaponItem.create!(name: 'Torch', weight: 10, user: dungeon_master)
       expect(@item.slug).to eq('torch-1')
       @item.update(weight: 12)
-      expect(WeaponItem.all.count).to eq(40)
+      expect(WeaponItem.all.count).to eq(268)
       @item.reload
       expect(@item.slug).to eq('torch-1')
       @item.update(weight: 8)
-      expect(WeaponItem.all.count).to eq(40)
+      expect(WeaponItem.all.count).to eq(268)
       @item.reload
       expect(@item.slug).to eq('torch-1')
       @item.update(weight: 12)
-      expect(WeaponItem.all.count).to eq(40)
+      expect(WeaponItem.all.count).to eq(268)
       @item.reload
       expect(@item.slug).to eq('torch-1')
     end

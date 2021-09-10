@@ -1,51 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title><%= content_for?(:title) ? yield(:title) : 'Game & campaign organization tool' %> | DM Campaign Manager</title>
+    <title><%= content_for?(:title) ? yield(:title) : 'Game & campaign organization tool' %> | Dungeon Master's Screen Online</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_pack_tag 'hello_react' %>
+    <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
   </head>
 
   <body>
-    <% if current_user&.admin? %>
-      <%= render "shared/admin-header" %>
-      <div class="container-fluid">
-        <div class="row">
-          <%= render "shared/admin-sidebar" %>
-          <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
-            <% if notice %>
-              <div id="notice" class="alert alert-success" role="alert"><%= notice %></div>
-            <% end %>
-            <% if alert %>
-              <div class="alert alert-danger" role="alert">
-                <%= alert %>
-              </div>
-            <% end %>
-            <%= yield %>
-          </main>
-        </div>
-      </div>
-    <% else %>
-      <%= render "shared/admin-header" %>
-      <div class="container">
-        <div class="row">
-          <main role="main" class="col">
-            <% if notice %>
-              <div id="notice" class="alert alert-success" role="alert"><%= notice %></div>
-            <% end %>
-            <% if alert %>
-              <div class="alert alert-danger" role="alert">
-                <%= alert %>
-              </div>
-            <% end %>
-            <%= yield %>
-          </main>
-        </div>
-      </div>
-    <% end %>
+    <%= yield %>
   </body>
 </html>

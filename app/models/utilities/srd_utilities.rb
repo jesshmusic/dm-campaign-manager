@@ -45,12 +45,6 @@ class SrdUtilities
     end
 
     def clean_database
-      AbilityScoreDndClass.destroy_all
-      count = AbilityScore.count
-      AbilityScore.destroy_all
-      puts "All #{count} ability scores deleted"
-      Condition.destroy_all
-      Equipment.destroy_all
 
       ApiReference.destroy_all
       count = Race.count
@@ -74,7 +68,12 @@ class SrdUtilities
       count = Prof.count
       Prof.destroy_all
       puts "All #{count} proficiencies deleted"
-      # import_all
+      AbilityScoreDndClass.destroy_all
+      count = AbilityScore.count
+      AbilityScore.destroy_all
+      puts "All #{count} ability scores deleted"
+      Condition.destroy_all
+      Equipment.destroy_all
     end
 
     private
@@ -651,9 +650,9 @@ class SrdUtilities
       giant_fly = MagicItem.find_by(name: 'Giant Fly')
       figurines.each do |figurine|
         MagicItem.find_or_create_by!(name: figurine[:name]) do |magic_figure|
-          magic_figure.description = magic_item[:description] + giant_fly.description
-          magic_figure.type = magic_item[:type]
-          magic_figure.requires_attunement = magic_item[:requires_attunement]
+          magic_figure.desc = magic_item.desc + giant_fly.desc
+          magic_figure.magic_item_type = magic_item.magic_item_type
+          magic_figure.requires_attunement = magic_item.requires_attunement
           magic_figure.rarity = figurine[:rarity]
           magic_figure.slug = magic_figure.name.parameterize
         end
@@ -770,10 +769,10 @@ class SrdUtilities
     def create_magic_items(magic_items, original_item)
       magic_items.each do |magic_item|
         MagicItem.find_or_create_by!(name: magic_item[:name]) do |new_magic_item|
-          new_magic_item[:description] = original_item.description
+          new_magic_item.desc = original_item.desc
           new_magic_item.type = original_item.type
-          new_magic_item[:requires_attunement] = original_item.requires_attunement
-          new_magic_item[:rarity] = magic_item[:rarity]
+          new_magic_item.requires_attunement = original_item.requires_attunement
+          new_magic_item.rarity = magic_item[:rarity]
           new_magic_item.slug = new_magic_item[:name].parameterize
         end
       end

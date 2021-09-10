@@ -1,71 +1,42 @@
-# frozen_string_literal: true
-
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '2.7.2'
 
-gem 'active_link_to'
-# Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 6.0'
+# Bundle edge Rails instead: gem 'rails', github: 'rails/rails', branch: 'main'
+gem 'rails', '~> 6.1.4', '>= 6.1.4.1'
 # Use postgresql as the database for Active Record
-gem 'pg'
+gem 'pg', '~> 1.1'
 gem 'pg_search'
 # Use Puma as the app server
 gem 'puma', '~> 5.0'
 gem 'pundit'
-gem 'react_on_rails', '12.0.4'
 gem 'redcarpet'
 gem 'select2-rails'
 # Use SCSS for stylesheets
-gem 'sass-rails'
-# Use Uglifier as compressor for JavaScript assets
-gem 'uglifier'
+gem 'sass-rails', '>= 6'
 # Transpile app-like JavaScript. Read more: https://github.com/rails/webpacker
-gem 'webpacker'
-# See https://github.com/rails/execjs#readme for more supported runtimes
-# gem 'mini_racer', platforms: :ruby
-
-gem 'bootstrap'
-gem 'client_side_validations'
-gem 'client_side_validations-simple_form'
-gem 'cocoon'
-gem 'coderay'
-gem 'foreman'
-gem 'pagy'
-gem 'simple_form'
-# gem 'will_paginate'
-# gem 'will_paginate-bootstrap'
-
-# Use CoffeeScript for .coffee assets and views
-gem 'coffee-rails'
-gem 'jquery-rails'
-
-# Auth for Users
-gem 'devise'
-gem 'omniauth'
-
-# Attachments
-gem 'paperclip'
-
+gem 'webpacker', '~> 5.0'
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
-gem 'turbolinks'
+gem 'turbolinks', '~> 5'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem 'jbuilder'
+gem 'jbuilder', '~> 2.7'
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 4.0'
-# Use ActiveModel has_secure_password
+# Use Active Model has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
-# Use ActiveStorage variant
-# gem 'mini_magick', '~> 4.8'
+gem 'devise'
+gem 'omniauth'
+gem 'pagy'
+gem 'react_on_rails'
+gem 'simple_form'
 
-# Use Capistrano for deployment
-# gem 'capistrano-rails', group: :development
+# Use Active Storage variant
+# gem 'image_processing', '~> 1.2'
 
 # Reduces boot times through caching; required in config/boot.rb
-gem 'bootsnap', '>= 1.5.1', require: false
-
+gem 'bootsnap', '>= 1.4.4', require: false
 
 group :development, :test do
   gem 'annotate'
@@ -74,7 +45,6 @@ group :development, :test do
   gem 'debase'
   gem 'factory_bot_rails'
   gem 'faker'
-  gem 'rails-controller-testing'
   gem 'rspec-core'
   gem 'rspec-rails'
   gem 'ruby-debug-ide'
@@ -88,23 +58,22 @@ end
 
 group :development do
   # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
-  gem 'listen', '>= 3.0.5', '< 3.2'
-  gem 'rails-erd'
-  gem 'web-console', '>= 3.3.0'
+  gem 'web-console', '>= 4.1.0'
+  # Display performance information such as SQL time and flame graphs for each request in your browser.
+  # Can be configured to work on production as well see: https://github.com/MiniProfiler/rack-mini-profiler/blob/master/README.md
+  gem 'listen', '~> 3.3'
+  gem 'rack-mini-profiler', '~> 2.0'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
-  gem 'spring-watcher-listen', '~> 2.0.0'
 end
 
 group :test do
   # Adds support for Capybara system testing and selenium driver
-  gem 'capybara', '>= 2.15'
+  gem 'capybara', '>= 3.26'
   gem 'selenium-webdriver'
-  # Easy installation and use of chromedriver to run system tests with Chrome
-  gem 'chromedriver-helper'
+  # Easy installation and use of web drivers to run system tests with browsers
+  gem 'webdrivers'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
-
-gem 'mini_racer', platforms: :ruby

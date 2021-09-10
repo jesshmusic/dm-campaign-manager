@@ -101,7 +101,7 @@ class WeaponItem < Item
       elsif magic_item[:type] == 'Weapon (javelin)'
         new_magic_weapon(magic_item, 'Javelin')
       elsif magic_item[:type] == 'Weapon (arrow)'
-        create_magic_item_from_old_magic_items(magic_item)
+        MagicItem.create_magic_item_from_old_magic_items(magic_item)
       elsif magic_item[:type] == 'Weapon (any axe)'
         WeaponItem.all_axes.each do |weapon_name|
           new_magic_weapon(magic_item, weapon_name)
@@ -141,7 +141,7 @@ class WeaponItem < Item
     def new_magic_weapon(magic_item, weapon_name)
       weapon_item = WeaponItem.find_by(name: weapon_name)
       new_item = WeaponItem.find_or_create_by(name: "#{magic_item[:name]}, #{weapon_name}")
-      new_item.description = magic_item[:desc]
+      new_item.desc = magic_item[:desc]
       new_item.requires_attunement = magic_item[:requires_attunement]
       new_item.rarity = magic_item[:rarity]
       new_item.cost = Cost.create(quantity: MagicItemsUtility.cost_for_rarity(magic_item[:rarity]), unit: 'gp')
