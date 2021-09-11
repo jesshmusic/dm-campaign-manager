@@ -92,20 +92,21 @@ class ArmorItem < Item
 
     def new_magic_armor(magic_item, armor_name)
       armor_item = ArmorItem.find_by(name: armor_name)
-      new_item_name = "#{magic_item[:name]}, #{armor_name}"
-      new_item_slug = new_item_name.parameterize
-      new_item = ArmorItem.find_or_create_by(slug: new_item_slug)
-      new_item.name = new_item_name
-      new_item.desc = magic_item[:desc]
-      new_item.magic_item_type = magic_item[:type]
-      new_item.rarity = magic_item[:rarity]
-      new_item.cost = Cost.create(quantity: MagicItemsUtility.cost_for_rarity(magic_item[:rarity]), unit: 'gp')
-      new_item.requires_attunement = magic_item[:requires_attunement]
-      new_item.slug = new_item_slug
+      new_item = ArmorItem.find_or_create_by(name: "#{magic_item[:name]}, #{armor_name}")
+      new_item.armor_category = armor_item ? armor_item.armor_category : nil
       new_item.armor_class = armor_item ? armor_item.armor_class : nil
+      new_item.armor_class_bonus = armor_item ? armor_item.armor_class_bonus : nil
+      new_item.desc = [magic_item[:desc]]
+      new_item.magic_item_type = magic_item[:type]
+      new_item.properties = armor_item.properties
+      new_item.rarity = magic_item[:rarity]
+      new_item.requires_attunement = magic_item[:requires_attunement]
+      new_item.slug = new_item.name.parameterize
+      new_item.special = armor_item.special
       new_item.stealth_disadvantage = armor_item ? armor_item.stealth_disadvantage : true
       new_item.str_minimum = armor_item.str_minimum unless armor_item.nil?
       new_item.weight = armor_item ? armor_item.weight : 10
+      new_item.cost = Cost.create(quantity: MagicItemsUtility.cost_for_rarity(magic_item[:rarity]), unit: 'gp')
       new_item.save!
     end
   end

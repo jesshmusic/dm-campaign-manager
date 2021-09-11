@@ -82,45 +82,46 @@ class WeaponItem < Item
 
   class << self
     def create_magic_weapon_from_old_magic_items(magic_item)
-      if magic_item[:type] == 'Weapon (trident)'
+      case magic_item[:type]
+      when 'Weapon (trident)'
         new_magic_weapon(magic_item, 'Trident')
-      elsif magic_item[:type] == 'Weapon (scimitar)'
+      when 'Weapon (scimitar)'
         new_magic_weapon(magic_item, 'Scimitar')
-      elsif magic_item[:type] == 'Weapon (longsword)'
+      when 'Weapon (longsword)'
         new_magic_weapon(magic_item, 'Longsword')
-      elsif magic_item[:type] == 'Weapon (maul)'
+      when 'Weapon (maul)'
         new_magic_weapon(magic_item, 'Maul')
-      elsif magic_item[:type] == 'Weapon (warhammer)'
+      when 'Weapon (warhammer)'
         new_magic_weapon(magic_item, 'Warhammer')
-      elsif magic_item[:type] == 'Weapon (longbow)'
+      when 'Weapon (longbow)'
         new_magic_weapon(magic_item, 'Longbow')
-      elsif magic_item[:type] == 'Weapon (dagger)'
+      when 'Weapon (dagger)'
         new_magic_weapon(magic_item, 'Dagger')
-      elsif magic_item[:type] == 'Weapon (mace)'
+      when 'Weapon (mace)'
         new_magic_weapon(magic_item, 'Mace')
-      elsif magic_item[:type] == 'Weapon (javelin)'
+      when 'Weapon (javelin)'
         new_magic_weapon(magic_item, 'Javelin')
-      elsif magic_item[:type] == 'Weapon (arrow)'
+      when 'Weapon (arrow)'
         MagicItem.create_magic_item_from_old_magic_items(magic_item)
-      elsif magic_item[:type] == 'Weapon (any axe)'
+      when 'Weapon (any axe)'
         WeaponItem.all_axes.each do |weapon_name|
           new_magic_weapon(magic_item, weapon_name)
         end
-      elsif magic_item[:type] == 'Weapon (any axe or sword)'
+      when 'Weapon (any axe or sword)'
         weapons = WeaponItem.all_axes + WeaponItem.all_swords
         weapons.each do |weapon_name|
           new_magic_weapon(magic_item, weapon_name)
         end
-      elsif magic_item[:type] == 'Weapon (any sword)'
+      when 'Weapon (any sword)'
         WeaponItem.all_swords.each do |weapon_name|
           new_magic_weapon(magic_item, weapon_name)
         end
-      elsif magic_item[:type] == 'Weapon (any sword that deals slashing damage)'
+      when 'Weapon (any sword that deals slashing damage)'
         slashing_swords = WeaponItem.all_swords - ['Shortsword']
         slashing_swords.each do |weapon_name|
           new_magic_weapon(magic_item, weapon_name)
         end
-      elsif magic_item[:type] == 'Weapon (any)'
+      when 'Weapon (any)'
         if magic_item[:name] == 'Weapon, +1, +2, or +3'
           ['Weapon +1', 'Weapon +2', 'Weapon +3'].each do |plus_weapon_name|
             magic_item[:name] = plus_weapon_name
@@ -141,18 +142,23 @@ class WeaponItem < Item
     def new_magic_weapon(magic_item, weapon_name)
       weapon_item = WeaponItem.find_by(name: weapon_name)
       new_item = WeaponItem.find_or_create_by(name: "#{magic_item[:name]}, #{weapon_name}")
-      new_item.desc = magic_item[:desc]
-      new_item.requires_attunement = magic_item[:requires_attunement]
-      new_item.rarity = magic_item[:rarity]
-      new_item.cost = Cost.create(quantity: MagicItemsUtility.cost_for_rarity(magic_item[:rarity]), unit: 'gp')
-      new_item.slug = new_item.name.parameterize
+      new_item.desc = magic_item[:desc] ? [magic_item[:desc]] : weapon_item.desc
+      new_item.category_range = weapon_item.category_range
       new_item.damage = weapon_item.damage
+      new_item.magic_item_type = magic_item[:type]
+      new_item.properties = weapon_item.properties
+      new_item.range = weapon_item.range
+      new_item.rarity = magic_item[:rarity]
+      new_item.requires_attunement = magic_item[:requires_attunement]
+      new_item.slug = new_item.name.parameterize
+      new_item.special = weapon_item.special
+      new_item.speed = weapon_item.speed
       new_item.throw_range = weapon_item.throw_range
       new_item.two_handed_damage = weapon_item.two_handed_damage
       new_item.weapon_category = weapon_item.weapon_category
       new_item.weapon_range = weapon_item.weapon_range
-      new_item.category_range = weapon_item.category_range
       new_item.weight = weapon_item.weight
+      new_item.cost = Cost.create(quantity: MagicItemsUtility.cost_for_rarity(magic_item[:rarity]), unit: 'gp')
       new_item.save!
     end
   end

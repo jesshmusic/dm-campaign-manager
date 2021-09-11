@@ -66,7 +66,7 @@ class MagicItem < Item
       new_item_slug = new_item_name.parameterize
       new_item = MagicItem.find_or_create_by(slug: new_item_slug)
       new_item.name = new_item_name
-      new_item.desc = magic_item[:desc]
+      new_item.desc = [magic_item[:desc]]
       new_item.rarity = magic_item[:rarity]
       new_item.cost = Cost.create(quantity: MagicItemsUtility.cost_for_rarity(magic_item[:rarity]), unit: 'gp')
       new_item.requires_attunement = magic_item[:requires_attunement]
