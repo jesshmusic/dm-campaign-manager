@@ -31,8 +31,8 @@
       <tr>
         <td><%= item.name %></td>
         <td class="d-none d-lg-table-cell"><%= item.type.chomp('Item') %></td>
-        <td class="d-none d-lg-table-cell"><%= item.sub_category.titleize %></td>
-        <td><%= "#{item.cost_value}#{item.cost_unit}" %></td>
+        <td class="d-none d-lg-table-cell"><%= item.category.titleize %></td>
+        <td><%= "#{item.cost.quantity}#{item.cost.unit}" %></td>
         <td class="d-none d-lg-table-cell"><%= item.weight %></td>
         <td>
           <%= link_to 'Show', v1_item_path(item), class: "btn btn-sm btn-primary" %>

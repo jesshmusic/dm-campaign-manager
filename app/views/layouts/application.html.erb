@@ -7,15 +7,15 @@
   <%= csp_meta_tag %>
   <%= javascript_pack_tag 'dmcm-bundle' %>
   <%#= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-  <%#= stylesheet_pack_tag 'dmcm-bundle', media: 'all' %>
+  <%= stylesheet_pack_tag 'dmcm-bundle', media: 'all' %>
 </head>
 
 <body>
   <% if current_user&.admin? %>
-    <%= render "shared/admin-header" %>
+    <%= render 'shared/admin-header' %>
     <div class="container-fluid">
       <div class="row">
-        <%= render "shared/admin-sidebar" %>
+        <%= render 'shared/admin-sidebar' %>
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
           <% if notice %>
             <div id="notice" class="alert alert-success" role="alert"><%= notice %></div>
@@ -30,7 +30,7 @@
       </div>
     </div>
   <% else %>
-    <%= render "shared/admin-header" %>
+    <%= render 'shared/admin-header' %>
     <div class="container">
       <div class="row">
         <main role="main" class="col">

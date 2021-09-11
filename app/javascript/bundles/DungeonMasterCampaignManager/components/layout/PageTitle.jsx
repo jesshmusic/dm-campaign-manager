@@ -9,31 +9,32 @@ import Row from 'react-bootstrap/Row';
 import {Link} from '@reach/router';
 import Badge from 'react-bootstrap/Badge';
 
-const PageTitle = ({hasButton, buttonLink, buttonTitle, buttonVariant, subtitle, title, badge}) => (
+const PageTitle = ({className, hasButton, buttonLink, buttonTitle, buttonVariant, subtitle, title, badge}) => (
   <Row>
     <Col>
-      <h1 className={'d-flex justify-content-between align-items-center'}>
-        {title}
-        {badge ? (
-          <Badge variant={badge.variant}>
-            {badge.title}
+      <h1 className={ `d-flex justify-content-between align-items-center ${ className }` }>
+        { title }
+        { badge ? (
+          <Badge variant={ badge.variant }>
+            { badge.title }
           </Badge>
-        ) : null}
-        {hasButton ? (
-          <Link to={buttonLink} className={`btn btn-${buttonVariant}`}>
-            {buttonTitle}
+        ) : null }
+        { hasButton ? (
+          <Link to={ buttonLink } className={ `btn btn-${ buttonVariant }` }>
+            { buttonTitle }
           </Link>
-        ) : null}
+        ) : null }
       </h1>
-      {subtitle ? (
-        <p className={'h5 text-muted'}>{subtitle}</p>
-      ) : null}
+      { subtitle ? (
+        <p className={ 'h5 text-muted' }>{ subtitle }</p>
+      ) : null }
     </Col>
   </Row>
 );
 
 PageTitle.propTypes = {
   badge: PropTypes.object,
+  className: PropTypes.string,
   hasButton: PropTypes.bool,
   buttonLink: PropTypes.string,
   buttonTitle: PropTypes.string,

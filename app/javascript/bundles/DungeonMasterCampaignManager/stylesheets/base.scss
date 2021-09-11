@@ -15,3 +15,14 @@
 h6 {
   font-weight: $font-weight-bold;
 }
+
+h1 {
+  &.home {
+    font-size: $display4-size;
+    font-family: 'Draconis Bold', serif;
+  }
+
+  color: $dark-red;
+  font-size: $h1-font-size;
+  font-family: 'Mr Eaves', serif;
+}

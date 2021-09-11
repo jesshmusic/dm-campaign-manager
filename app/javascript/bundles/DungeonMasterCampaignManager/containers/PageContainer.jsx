@@ -9,6 +9,7 @@ import HeroBanner from '../components/layout/HeroBanner/HeroBanner.jsx';
 import MenuBar from '../components/layout/MenuBar/MenuBar';
 import FlashMessages from '../components/layout/Alerts/FlashMessages.jsx';
 
+import '../stylesheets/_fonts.scss';
 import '../stylesheets/_global.scss';
 import {Helmet} from 'react-helmet';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
@@ -22,32 +23,33 @@ const PageContainer = (props) => {
   return (
     <div>
       <Helmet>
-        <title>{pageTitle} | Dungeon Master&apos;s Toolbox</title>
-        <meta name="description" content={description}/>
+        <title>{ pageTitle } | Dungeon Master&apos;s Toolbox</title>
+        <meta name="description" content={ description }/>
       </Helmet>
-      <MenuBar user={user}/>
+      <MenuBar user={ user }/>
       <HeroBanner/>
       <Container fluid>
         <FlashMessages/>
-        {breadcrumbs && breadcrumbs.length > 0 ? (
+        { breadcrumbs && breadcrumbs.length > 0 ? (
           <Breadcrumb>
-            <BreadcrumbLink to='/' title={'Home'}/>
-            {breadcrumbs.map((breadcrumb, index) =>
+            <BreadcrumbLink to="/" title={ 'Home' }/>
+            { breadcrumbs.map((breadcrumb, index) =>
               (!breadcrumb.isActive ? (
-                <BreadcrumbLink to={breadcrumb.url} title={breadcrumb.title} key={index}/>
+                <BreadcrumbLink to={ breadcrumb.url } title={ breadcrumb.title } key={ index }/>
               ) : (
-                <Breadcrumb.Item active key={index}>{breadcrumb.title}</Breadcrumb.Item>
-              )),
-            )}
+                <Breadcrumb.Item active key={ index }>{ breadcrumb.title }</Breadcrumb.Item>
+              )
+              ),
+            ) }
           </Breadcrumb>
-        ) : null}
+        ) : null }
         <Row>
           <Col>
-            {children}
+            { children }
           </Col>
         </Row>
       </Container>
-      <Footer user={user}/>
+      <Footer user={ user }/>
     </div>
   );
 };

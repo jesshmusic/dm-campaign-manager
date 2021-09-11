@@ -13,26 +13,26 @@ import Col from 'react-bootstrap/Col';
 import TavernNameField from '../../components/TavernNameField';
 
 const HomePage = (props) => (
-  <PageContainer user={props.user}
-                 flashMessages={props.flashMessages}
-                 pageTitle={props.user ? 'Dashboard' : 'Welcome'}
-                 description={'Dungeon Master\'s Toolbox is a free resource for DMs for reference that includes tools for smooth games.'}
-                 breadcrumbs={[]}>
+  <PageContainer user={ props.user }
+                 flashMessages={ props.flashMessages }
+                 pageTitle={ props.user ? 'Dashboard' : 'Welcome' }
+                 description={ 'Dungeon Master\'s Toolbox is a free resource for DMs for reference that includes tools for smooth games.' }
+                 breadcrumbs={ [] }>
     <Container>
-      <PageTitle title={'Dungeon Master\'s Toolbox'}/>
-      <Row className={'mb-5'}>
+      <PageTitle title={ 'Dungeon Master\'s Toolbox' } className={ 'home' }/>
+      <Row className={ 'mb-5' }>
         <Col>
-          <Link to={'/app/npc-generator'} className={'btn btn-primary btn-lg btn-block'}>Generate NPC</Link>
+          <Link to={ '/app/npc-generator' } className={ 'btn btn-primary btn-lg btn-block' }>Generate NPC</Link>
         </Col>
       </Row>
-      <Row className={'mb-5'}>
+      <Row className={ 'mb-5' }>
         <Col>
-          <NameField colWidth={'12'}/>
+          <NameField colWidth={ '12' }/>
         </Col>
       </Row>
-      <Row className={'mb-5'}>
+      <Row className={ 'mb-5' }>
         <Col>
-          <TavernNameField colWidth={'12'}/>
+          <TavernNameField colWidth={ '12' }/>
         </Col>
       </Row>
     </Container>
