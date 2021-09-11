@@ -30,7 +30,6 @@ class SessionsController < Devise::SessionsController
     end
   end
 
-
   private
 
   def invalid_login_attempt
@@ -39,7 +38,7 @@ class SessionsController < Devise::SessionsController
   end
 
   def user_params
-    params.require(:user).permit(:email, :password)
+    params.require(:user).permit(:email, :password, :remember_me)
   end
 
 end

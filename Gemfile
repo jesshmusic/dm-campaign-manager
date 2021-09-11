@@ -26,6 +26,7 @@ gem 'jbuilder', '~> 2.7'
 # Use Active Model has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
+gem 'active_link_to'
 gem 'devise'
 gem 'omniauth'
 gem 'pagy'
