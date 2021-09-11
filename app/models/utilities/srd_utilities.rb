@@ -44,6 +44,10 @@ class SrdUtilities
       import_classes
     end
 
+    def update_monsters
+      import_monsters
+    end
+
     def clean_database
 
       ApiReference.destroy_all

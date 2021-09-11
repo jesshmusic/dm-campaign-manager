@@ -38,7 +38,7 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  let!(:user) {create :user}
+  let!(:user) { create :user }
 
   context 'Defaults' do
     it 'should set role to "Dungeon Master"' do
@@ -68,7 +68,7 @@ RSpec.describe User, type: :model do
       user.reload
     end
     it 'should not delete a user' do
-      expect(User.all.count).to eq(1)
+      expect(User.all.count).to eq(3)
     end
 
     it 'should set deleted_at instead of deleting the user' do

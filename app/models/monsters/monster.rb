@@ -70,7 +70,7 @@ class Monster < ApplicationRecord
   end
 
   def initiative
-    DndRules.ability_score_modifier(self.dexterity)
+    DndRules.ability_score_modifier(dexterity)
   end
 
   def description_text
@@ -80,7 +80,7 @@ class Monster < ApplicationRecord
       "<p><strong>Armor Class</strong>  #{armor_class}</p>",
       "<p><strong>Hit Points</strong>  #{hit_points} (#{hit_dice})</p>",
       "<p><strong>Speed</strong>  #{speed_string}</p>",
-      "<table class='table'><thead><tr><th>STR</th><th>DEX</th><th>CON</th><th>INT</th><th>WIS</th><th>CHA</th></tr></thead>",
+      '<table class=\'table\'><thead><tr><th>STR</th><th>DEX</th><th>CON</th><th>INT</th><th>WIS</th><th>CHA</th></tr></thead>',
       "<tbody><tr><td>#{strength}</td><td>#{dexterity}</td><td>#{constitution}</td><td>#{intelligence}</td><td>#{wisdom}</td><td>#{charisma}</td></tr></tbody></table>"
     ]
 
@@ -91,14 +91,15 @@ class Monster < ApplicationRecord
       skills_arr = []
       monster_proficiencies.each do |monster_prof|
         prof = monster_prof.prof
-        if prof.prof_type == 'Saving Throws'
-          saving_throws_arr << "<span>#{prof.name.gsub("Saving Throw: ", "").titlecase} #{monster_prof.value >= 0 ? "+" : ""}#{monster_prof.value} </span>"
-        elsif prof.prof_type == 'Skills'
-          skills_arr << "<span>#{prof.name.gsub("Skill: ", "").titlecase} #{monster_prof.value >= 0 ? "+" : ""}#{monster_prof.value} </span>"
+        case prof.prof_type
+        when 'Saving Throws'
+          saving_throws_arr << "<span>#{prof.name.gsub('Saving Throw: ', '').titlecase} #{monster_prof.value >= 0 ? '+' : ''}#{monster_prof.value} </span>"
+        when 'Skills'
+          skills_arr << "<span>#{prof.name.gsub('Skill: ', '').titlecase} #{monster_prof.value >= 0 ? '+' : ''}#{monster_prof.value} </span>"
         end
       end
-      saving_throws_desc += saving_throws_arr.join(', ') + "</p>"
-      skills_desc += skills_arr.join(', ') + "</p>"
+      saving_throws_desc += "#{saving_throws_arr.join(', ')}</p>"
+      skills_desc += "#{skills_arr.join(', ')}</p>"
       monster_desc << saving_throws_desc
       monster_desc << skills_desc
     end
@@ -146,12 +147,12 @@ class Monster < ApplicationRecord
 
   def speed_string
     speeds = []
-    speeds << "#{speed['walk']}" unless speed['walk'] == ""
-    speeds << "fly #{speed['fly']}" unless speed['fly'] == ""
-    speeds << "swim #{speed['swim']}" unless speed['swim'] == ""
-    speeds << "climb #{speed['climb']}" unless speed['climb'] == ""
-    speeds << "burrow #{speed['burrow']}" unless speed['burrow'] == ""
-    speeds << "hover" unless speed['hover'] == false || speed['hover'] == '0'
+    speeds << speed['walk'].to_s unless speed['walk'] == ''
+    speeds << "fly #{speed['fly']}" unless speed['fly'] == ''
+    speeds << "swim #{speed['swim']}" unless speed['swim'] == ''
+    speeds << "climb #{speed['climb']}" unless speed['climb'] == ''
+    speeds << "burrow #{speed['burrow']}" unless speed['burrow'] == ''
+    speeds << 'hover' unless speed['hover'] == false || speed['hover'] == '0'
     speeds.join(', ')
   end
 
@@ -204,8 +205,8 @@ class Monster < ApplicationRecord
     class_num = 0
     new_slug = slug_string
     loop do
-      new_slug = slug_string if class_num == 0
-      new_slug = "#{slug_string}-#{class_num}" if class_num > 0
+      new_slug = slug_string if class_num.zero?
+      new_slug = "#{slug_string}-#{class_num}" if class_num.positive?
       break unless Monster.exists?(slug: new_slug)
 
       class_num += 1
