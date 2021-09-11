@@ -6,9 +6,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import rest from '../../actions/api';
 import {connect} from 'react-redux';
-import { selectFilter, textFilter } from 'react-bootstrap-table2-filter';
+import {selectFilter, textFilter} from 'react-bootstrap-table2-filter';
 import _ from 'lodash';
 import ItemsList from './components/ItemsList';
+import {costFormatter, selectCategoryOptions} from './AllItems';
 
 class MagicItems extends React.Component {
   constructor (props) {
@@ -27,14 +28,19 @@ class MagicItems extends React.Component {
         sort: true,
         filter: textFilter(),
       }, {
-        dataField: 'subCategory',
+        dataField: 'category',
         text: 'Category',
         sort: true,
-        formatter: (cell) => this.selectCategoryOptions.find((opt) => opt.value === cell).label,
+        formatter: (cell) => selectCategoryOptions(this.props.items).find((opt) => opt.value === cell).label,
         filter: selectFilter({
-          options: this.selectCategoryOptions,
+          options: selectCategoryOptions(this.props.items),
           placeholder: 'Category',
         }),
+      }, {
+        dataField: 'costValue',
+        text: 'Cost',
+        sort: true,
+        formatter: costFormatter,
       }, {
         dataField: 'rarity',
         text: 'Rarity',
@@ -52,28 +58,22 @@ class MagicItems extends React.Component {
     ];
   }
 
-  get selectCategoryOptions () {
-    return _.map(_.uniqBy(this.props.items, 'subCategory'), (item) => ({
-      value: item.subCategory,
-      label: item.subCategory,
-    }));
-  }
-
   get selectRarityOptions () {
     return _.map(_.uniqBy(this.props.items, 'rarity'), (item) => ({
-      value: item.rarity,
-      label: item.rarity,
-    }));
+        value: item.rarity,
+        label: item.rarity,
+      }
+    ));
   }
 
   render () {
     const {items, flashMessages, user} = this.props;
     return (
-      <ItemsList items={items}
-                 user={user}
-                 columns={this.columns}
-                 flashMessages={flashMessages}
-                 pageTitle={'Magic Items'} />
+      <ItemsList items={ items }
+                 user={ user }
+                 columns={ this.columns }
+                 flashMessages={ flashMessages }
+                 pageTitle={ 'Magic Items' }/>
     );
   }
 }

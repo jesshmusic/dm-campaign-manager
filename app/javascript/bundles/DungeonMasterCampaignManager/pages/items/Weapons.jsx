@@ -7,9 +7,10 @@ import PropTypes from 'prop-types';
 import rest from '../../actions/api';
 import {connect} from 'react-redux';
 
-import { selectFilter, textFilter } from 'react-bootstrap-table2-filter';
+import {selectFilter, textFilter} from 'react-bootstrap-table2-filter';
 import _ from 'lodash';
 import ItemsList from './components/ItemsList';
+import {selectCategoryOptions} from './AllItems';
 
 class Weapons extends React.Component {
   constructor (props) {
@@ -28,19 +29,19 @@ class Weapons extends React.Component {
         sort: true,
         filter: textFilter(),
       }, {
-        dataField: 'subCategory',
+        dataField: 'category',
         text: 'Category',
         sort: true,
-        formatter: (cell) => this.selectCategoryOptions.find((opt) => opt.value === cell).label,
+        formatter: (cell) => selectCategoryOptions(this.props.items).find((opt) => opt.value === cell).label,
         filter: selectFilter({
-          options: this.selectCategoryOptions,
+          options: selectCategoryOptions(this.props.items),
           placeholder: 'Category',
         }),
       }, {
         dataField: 'weaponRange',
         text: 'Sub-category',
         sort: true,
-        formatter: (cell) => this.selectRangeOptions.find((opt) => opt.value === cell).label,
+        formatter: (cell) => selectCategoryOptions(this.props.items).find((opt) => opt.value === cell).label,
         filter: selectFilter({
           options: this.selectRangeOptions,
           placeholder: 'Category',
@@ -53,7 +54,7 @@ class Weapons extends React.Component {
         dataField: 'costValue',
         text: 'Cost',
         sort: true,
-        formatter: Weapons.costFormatter,
+        formatter: costFormatter,
       }, {
         dataField: 'weight',
         text: 'Weight',
@@ -62,43 +63,30 @@ class Weapons extends React.Component {
     ];
   }
 
-  static costFormatter (cell, row) {
-    if (row.costValue) {
-      return `${row.costValue.toLocaleString()}${row.costUnit}`;
-    }
-    return 'N/A';
-  }
-
   static damageFormatter (cell, row) {
-    let weaponRangeString = `${row.weaponDamageDiceCount}d${row.weaponDamageDiceValue} ${row.weaponDamageType}`;
+    let weaponRangeString = `${ row.weaponDamageDiceCount }d${ row.weaponDamageDiceValue } ${ row.weaponDamageType }`;
     if (row.weapon2hDamageDiceCount) {
-      weaponRangeString += `, 2H: ${row.weapon2hDamageDiceCount}d${row.weapon2hDamageDiceValue} ${row.weapon2hDamageType}`;
+      weaponRangeString += `, 2H: ${ row.weapon2hDamageDiceCount }d${ row.weapon2hDamageDiceValue } ${ row.weapon2hDamageType }`;
     }
     return weaponRangeString;
   }
 
-  get selectCategoryOptions () {
-    return _.map(_.uniqBy(this.props.items, 'subCategory'), (item) => ({
-      value: item.subCategory,
-      label: item.subCategory,
-    }));
-  }
-
   get selectRangeOptions () {
     return _.map(_.uniqBy(this.props.items, 'weaponRange'), (item) => ({
-      value: item.weaponRange,
-      label: item.weaponRange,
-    }));
+        value: item.weaponRange,
+        label: item.weaponRange,
+      }
+    ));
   }
 
   render () {
     const {items, flashMessages, user} = this.props;
     return (
-      <ItemsList items={items}
-                 user={user}
-                 columns={this.columns}
-                 flashMessages={flashMessages}
-                 pageTitle={'Weapons'} />
+      <ItemsList items={ items }
+                 user={ user }
+                 columns={ this.columns }
+                 flashMessages={ flashMessages }
+                 pageTitle={ 'Weapons' }/>
     );
   }
 }

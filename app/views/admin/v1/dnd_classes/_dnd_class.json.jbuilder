@@ -43,11 +43,13 @@ json.proficiency_choices dnd_class.prof_choices do |prof_choice|
   end
 end
 
-json.spell_casting do
-  json.extract! dnd_class.spell_casting, :level
-  json.spell_casting_ability dnd_class.spell_casting.ability_score.full_name
-  json.info dnd_class.spell_casting.spell_casting_infos do |info|
-    json.extract! info, :name, :desc
+unless dnd_class.spell_casting.nil?
+  json.spell_casting do
+    json.extract! dnd_class.spell_casting, :level
+    json.spell_casting_ability dnd_class.spell_casting.ability_score.full_name
+    json.info dnd_class.spell_casting.spell_casting_infos do |info|
+      json.extract! info, :name, :desc
+    end
   end
 end
 

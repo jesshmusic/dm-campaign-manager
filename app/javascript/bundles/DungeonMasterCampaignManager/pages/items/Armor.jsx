@@ -7,9 +7,10 @@ import PropTypes from 'prop-types';
 import rest from '../../actions/api';
 import {connect} from 'react-redux';
 import _ from 'lodash';
-import { MdDone } from 'react-icons/md';
-import { selectFilter, textFilter } from 'react-bootstrap-table2-filter';
+import {MdDone} from 'react-icons/md';
+import {selectFilter, textFilter} from 'react-bootstrap-table2-filter';
 import ItemsList from './components/ItemsList';
+import {costFormatter, selectCategoryOptions} from './AllItems';
 
 class Armor extends React.Component {
   constructor (props) {
@@ -28,12 +29,12 @@ class Armor extends React.Component {
         sort: true,
         filter: textFilter(),
       }, {
-        dataField: 'subCategory',
+        dataField: 'category',
         text: 'Category',
         sort: true,
-        formatter: (cell) => this.selectCategoryOptions.find((opt) => opt.value === cell).label,
+        formatter: (cell) => selectCategoryOptions(this.props.items).find((opt) => opt.value === cell).label,
         filter: selectFilter({
-          options: this.selectCategoryOptions,
+          options: selectCategoryOptions(this.props.items),
           placeholder: 'Category',
         }),
       },
@@ -59,7 +60,7 @@ class Armor extends React.Component {
         dataField: 'costValue',
         text: 'Cost',
         sort: true,
-        formatter: Armor.costFormatter,
+        formatter: costFormatter,
       }, {
         dataField: 'weight',
         text: 'Weight',
@@ -68,43 +69,28 @@ class Armor extends React.Component {
     ];
   }
 
-  static costFormatter (cell, row) {
-    if (row.costValue) {
-      return `${row.costValue.toLocaleString()}${row.costUnit}`;
-    }
-    return 'N/A';
-  }
-
   static dexBonusFormatter (cell, row) {
     if (row.armorDexBonus) {
-      return <MdDone />;
+      return <MdDone/>;
     }
     return '';
   }
 
   static stealthDisadvantageFormatter (cell, row) {
     if (row.armorStealthDisadvantage) {
-      return <MdDone />;
+      return <MdDone/>;
     }
     return '';
-  }
-
-
-  get selectCategoryOptions () {
-    return _.map(_.uniqBy(this.props.items, 'subCategory'), (item) => ({
-      value: item.subCategory,
-      label: item.subCategory,
-    }));
   }
 
   render () {
     const {items, flashMessages, user} = this.props;
     return (
-      <ItemsList items={items}
-                 user={user}
-                 columns={this.columns}
-                 flashMessages={flashMessages}
-                 pageTitle={'Armor'} />
+      <ItemsList items={ items }
+                 user={ user }
+                 columns={ this.columns }
+                 flashMessages={ flashMessages }
+                 pageTitle={ 'Armor' }/>
     );
   }
 }

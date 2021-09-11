@@ -8,51 +8,41 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import ListGroup from 'react-bootstrap/ListGroup';
 import ListGroupItem from 'react-bootstrap/ListGroupItem';
-import ReactMarkdown from 'react-markdown';
 import Container from 'react-bootstrap/Container';
 
 const ItemDescription = ({item}) => (
   <Container>
     <Row>
       <Col>
-        {item.weaponProperties && item.weaponProperties.length > 0 ? (
+        { item.properties && item.properties.length > 0 ? (
           <p>
-            <strong>Properties: </strong> {item.weaponProperties.join(', ')}
+            <strong>Properties: </strong> { item.properties.join(', ') }
           </p>
-        ) : null}
-        {item.weaponRangeNormal ? (
+        ) : null }
+        { item.range && item.range.long ? (
           <p>
-            <strong>Range, normal: </strong> {item.weaponRangeNormal}
+            <strong>Range: </strong> ({ item.range.normal } / { item.range.long })
           </p>
-        ) : null}
-        {item.weaponRangeLong ? (
+        ) : null }
+        { item.throwRange ? (
           <p>
-            <strong>Range, long: </strong> {item.weaponRangeLong}
+            <strong>Thrownn Range: </strong> { item.throwRange }
           </p>
-        ) : null}
-        {item.weaponThrownRangeNormal ? (
-          <p>
-            <strong>Thrown Range, normal: </strong> {item.weaponThrownRangeNormal}
-          </p>
-        ) : null}
-        {item.weaponThrownRangeLong ? (
-          <p>
-            <strong>Thrown Range, long: </strong> {item.weaponThrownRangeLong}
-          </p>
-        ) : null}
-        {item.containedItems.length > 0 ? (
+        ) : null }
+        { item.contents && item.contents.length > 0 ? (
           <div>
             <h5>Contents:</h5>
             <ListGroup variant="flush">
-              {item.containedItems.map((containedItem, index) => (
-                <ListGroupItem key={index}>
-                  <strong>{containedItem.name}</strong>, {containedItem.subCategory}
+              { item.contents.map((containedItem, index) => (
+                <ListGroupItem key={ index }>
+                  <strong>{ containedItem.quantity } { containedItem.item.name }</strong>
                 </ListGroupItem>
-              ))}
+              )) }
             </ListGroup>
           </div>
-        ) : null}
-        <ReactMarkdown source={item.description} />
+        ) : null }
+        { item.desc ? (item.desc.join('\n')
+        ) : null }
       </Col>
     </Row>
   </Container>
