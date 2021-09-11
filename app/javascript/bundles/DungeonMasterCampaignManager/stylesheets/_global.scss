@@ -42,6 +42,9 @@
 
 // Utilities
 @import "~bootstrap/scss/utilities/api";
+@import "node_modules/select2/src/scss/core";
+@import "node_modules/select2-bootstrap-5-theme/src/include-all";
 @import 'mixins';
 @import 'base';
+@import 'admin/application';
 

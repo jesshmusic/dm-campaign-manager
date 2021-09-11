@@ -12,7 +12,6 @@ gem 'pg_search'
 gem 'puma', '~> 5.0'
 gem 'pundit'
 gem 'redcarpet'
-gem 'select2-rails'
 # Use SCSS for stylesheets
 gem 'sass-rails', '>= 6'
 # Transpile app-like JavaScript. Read more: https://github.com/rails/webpacker
@@ -27,6 +26,9 @@ gem 'jbuilder', '~> 2.7'
 # gem 'bcrypt', '~> 3.1.7'
 
 gem 'active_link_to'
+gem 'client_side_validations'
+gem 'client_side_validations-simple_form'
+gem 'cocoon'
 gem 'devise'
 gem 'omniauth'
 gem 'pagy'

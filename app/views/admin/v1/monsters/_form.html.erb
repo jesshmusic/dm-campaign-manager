@@ -124,17 +124,17 @@
       </div>
     </div>
 
-<!--    <div class="form-row">-->
-<!--      <div class="p-3 mx-3 my-5 border-bottom border-top" id="prof_choices_container">-->
-<!--        <h3>Actions</h3>-->
-        <%#= form.simple_fields_for :actions do |action_form| %>
-          <%#= render 'monster_action_fields', f: action_form %>
-        <%# end %>
-<!--        <div class='links'>-->
-          <%#= link_to_add_association 'Add Action', form, :actions, class: "btn btn-info" %>
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
+    <!--    <div class="form-row">-->
+    <!--      <div class="p-3 mx-3 my-5 border-bottom border-top" id="prof_choices_container">-->
+    <!--        <h3>Actions</h3>-->
+    <%#= form.simple_fields_for :actions do |action_form| %>
+    <%#= render 'monster_action_fields', f: action_form %>
+    <%# end %>
+    <!--        <div class='links'>-->
+    <%#= link_to_add_association 'Add Action', form, :actions, class: "btn btn-info" %>
+    <!--        </div>-->
+    <!--      </div>-->
+    <!--    </div>-->
 
     <!--    <div class="form-row">-->
     <!--      <div class="p-3 mx-3 my-5 border-bottom border-top" id="prof_choices_container">-->
@@ -178,11 +178,3 @@
     <%= form.button :submit, class: 'btn btn-success mb-3' %>
   </div>
 <% end %>
-
-<script>
-  $(document).ready(function() {
-    $( "#monster_condition_ids" ).select2({
-      theme: "bootstrap"
-    });
-  });
-</script>

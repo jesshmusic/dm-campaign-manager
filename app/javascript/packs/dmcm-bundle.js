@@ -1,4 +1,80 @@
 import ReactOnRails from 'react-on-rails';
+import Rails from '@rails/ujs';
+import Turbolinks from 'turbolinks';
+import * as ActiveStorage from '@rails/activestorage';
+import 'channels';
+import $ from 'jquery';
+import 'select2';
+import 'select2/dist/css/select2.css';
+import 'select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.min.css';
+
+require('@nathanvda/cocoon');
+
+$(document).ready(function () {
+  $('#monster_condition_ids').select2({
+    theme: 'bootstrap-5',
+  });
+  $('#prof_choices_container').on('cocoon:after-insert', function (event, addedTask) {
+    loadSelect2();
+  });
+  $('#spell_components').select2({
+    theme: 'bootstrap-5',
+  });
+  $('#spell_dnd_class_ids').select2({
+    theme: 'bootstrap-5',
+  });
+  $('#dnd_class_ability_score_ids').select2({
+    theme: 'bootstrap-5',
+  });
+
+  function loadSelect2 () {
+    $('#dnd_class_spell_ids').select2({
+      theme: 'bootstrap-5',
+    });
+    $('#dnd_class_prof_ids').select2({
+      theme: 'bootstrap-5',
+    });
+    $('.prof_choice_profs').select2({
+      theme: 'bootstrap-5',
+    });
+  }
+
+  loadSelect2();
+
+  $('#item_category').select2({theme: 'bootstrap-5'});
+
+  var $eventSelect = $('#item_category');
+
+  $eventSelect.select2();
+
+  $eventSelect.on('select2:select', function (event) {
+    handleSelectOptionType(event.params.data.text);
+  });
+
+  function handleSelectOptionType (selectValue) {
+    hideAllInputs();
+    if (selectValue === 'Armor') {
+      $('#armorFields').show();
+    } else if (selectValue === 'Mounts and Vehicles') {
+      $('#vehicleFields').show();
+    } else if (selectValue === 'Weapon') {
+      $('#weaponFields').show();
+    }
+  }
+
+  function hideAllInputs () {
+    $('#armorFields').hide();
+    $('#vehicleFields').hide();
+    $('#weaponFields').hide();
+  }
+
+  hideAllInputs();
+  handleSelectOptionType($('#item_category').text());
+});
+
+Rails.start();
+Turbolinks.start();
+ActiveStorage.start();
 
 import Home from '../bundles/DungeonMasterCampaignManager/pages/Home';
 

@@ -100,8 +100,8 @@ class NPCs extends React.Component {
         };
       }
       return {
-        value: `${cr}`,
-        label: `${cr}`,
+        value: `${ cr }`,
+        label: `${ cr }`,
       };
     });
   }
@@ -110,7 +110,8 @@ class NPCs extends React.Component {
     return _.map(_.uniqBy(this.props.npcs, 'monsterType'), (npc) => ({
       value: npc.monsterType,
       label: npc.monsterType,
-    }));
+    }
+    ));
   }
 
   get expandRow () {
@@ -118,9 +119,9 @@ class NPCs extends React.Component {
       parentClassName: 'table-primary',
       onlyOneExpanding: true,
       renderer: (row) => (
-        <ReactMarkdown source={row.descriptionText}
-                       allowedTypes={Util.allowedTypes}
-                       escapeHtml={false} />
+        <ReactMarkdown source={ row.descriptionText }
+                       allowedTypes={ Util.allowedTypes }
+                       escapeHtml={ false }/>
       ),
     };
   }
@@ -128,25 +129,27 @@ class NPCs extends React.Component {
   render () {
     const {npcs, flashMessages, user} = this.props;
     return (
-      <PageContainer user={user}
-                     flashMessages={flashMessages}
-                     pageTitle={'NPCs'}
-                     description={'All npcs with descriptions and stats. Dungeon Master\'s Toolbox is a free resource for DMs to manage their campaigns, adventures, and NPCs.'}
-                     breadcrumbs={[{url: null, isActive: true, title: 'NPCs'}]}>
-        <PageTitle title={'NPCs'}/>
-        {npcs && npcs.length > 0 ? (
-          <BootstrapTable keyField='id'
-                          data={ npcs }
-                          columns={ this.columns }
-                          bordered={ false }
-                          bootstrap4
-                          hover
-                          filter={ filterFactory() }
-                          pagination={ paginationFactory() }
-                          expandRow={ this.expandRow } />
-        ) : (
-          <DndSpinner/>
-        )}
+      <PageContainer user={ user }
+                     flashMessages={ flashMessages }
+                     pageTitle={ 'NPCs' }
+                     description={ 'All npcs with descriptions and stats. Dungeon Master\'s Toolbox is a free resource for DMs to manage their campaigns, adventures, and NPCs.' }
+                     breadcrumbs={ [{url: null, isActive: true, title: 'NPCs'}] }>
+        <PageTitle title={ 'NPCs' }/>
+        <div className={ 'table-frame' }>
+          { npcs && npcs.length > 0 ? (
+            <BootstrapTable keyField="id"
+                            data={ npcs }
+                            columns={ this.columns }
+                            bordered={ false }
+                            bootstrap4
+                            hover
+                            filter={ filterFactory() }
+                            pagination={ paginationFactory() }
+                            expandRow={ this.expandRow }/>
+          ) : (
+            <DndSpinner/>
+          ) }
+        </div>
       </PageContainer>
     );
   }

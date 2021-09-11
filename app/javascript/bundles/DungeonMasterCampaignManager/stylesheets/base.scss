@@ -1,6 +1,6 @@
 .container,
 .container-fluid {
-  @extend .py-3;
+  padding: 1rem 6rem;
 }
 
 .row {
@@ -25,4 +25,17 @@ h1 {
   color: $dark-red;
   font-size: $h1-font-size;
   font-family: 'Mr Eaves', serif;
+}
+
+.table-frame {
+  margin-top: 25px;
+  margin-bottom: 40px;
+  border-collapse: separate;
+  background-color: white;
+  border-style: solid;
+  border-image-outset: 25px 17px;
+  border-image-repeat: stretch;
+  border-image-slice: 150 200 150 200;
+  border-image-source: $background-frame;
+  border-image-width: 47px;
 }

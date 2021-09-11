@@ -36,22 +36,6 @@
 
 <script>
   $(document).ready(function () {
-    $('#prof_choices_container').on('cocoon:after-insert', function (event, addedTask) {
-      loadSelect2();
-    });
 
-    function loadSelect2 () {
-      $('#dnd_class_spell_ids').select2({
-        theme: 'bootstrap',
-      });
-      $('#dnd_class_prof_ids').select2({
-        theme: 'bootstrap',
-      });
-      $('.prof_choice_profs').select2({
-        theme: 'bootstrap',
-      });
-    }
-
-    loadSelect2();
   });
 </script>

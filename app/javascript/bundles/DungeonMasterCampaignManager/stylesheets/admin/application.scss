@@ -1,0 +1,26 @@
+//@import 'select2';
+//@import 'select2-bootstrap';
+
+// Dashboard
+@import 'dashboard';
+
+table {
+  @extend .table;
+  @extend .table-bordered;
+  @extend .table-sm;
+  @extend .table-dark;
+}
+
+.simple_form {
+  max-width: 900px;
+}
+
+h1,
+h2,
+h3 {
+  @extend .mt-3;
+}
+
+h4 {
+  font-weight: $font-weight-bold;
+}
