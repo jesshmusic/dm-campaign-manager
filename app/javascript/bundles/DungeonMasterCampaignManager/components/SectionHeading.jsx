@@ -1,11 +1,11 @@
-import {useAccordionToggle} from 'react-bootstrap/AccordionToggle';
+import {useAccordionButton} from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
 import {FiChevronDown} from 'react-icons/all';
 import React from 'react';
 import PropTypes from 'prop-types';
 
 const SectionHeading = ({title, eventKey}) => {
-  const decoratedOnClick = useAccordionToggle(eventKey);
+  const decoratedOnClick = useAccordionButton(eventKey);
 
   return (
     <Button variant="link" size="lg" className={ 'mt-3' } block onClick={ decoratedOnClick }>

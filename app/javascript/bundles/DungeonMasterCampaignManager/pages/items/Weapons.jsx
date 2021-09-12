@@ -7,7 +7,6 @@ import PropTypes from 'prop-types';
 import rest from '../../actions/api';
 import {connect} from 'react-redux';
 
-import {selectFilter, textFilter} from 'react-bootstrap-table2-filter';
 import _ from 'lodash';
 import ItemsList from './components/ItemsList';
 import {selectCategoryOptions} from './AllItems';
@@ -21,70 +20,70 @@ class Weapons extends React.Component {
     this.props.getItems();
   }
 
-  get columns () {
-    return [
-      {
-        dataField: 'name',
-        text: 'Item',
-        sort: true,
-        filter: textFilter(),
-      }, {
-        dataField: 'category',
-        text: 'Category',
-        sort: true,
-        formatter: (cell) => selectCategoryOptions(this.props.items).find((opt) => opt.value === cell).label,
-        filter: selectFilter({
-          options: selectCategoryOptions(this.props.items),
-          placeholder: 'Category',
-        }),
-      }, {
-        dataField: 'weaponRange',
-        text: 'Sub-category',
-        sort: true,
-        formatter: (cell) => selectCategoryOptions(this.props.items).find((opt) => opt.value === cell).label,
-        filter: selectFilter({
-          options: this.selectRangeOptions,
-          placeholder: 'Category',
-        }),
-      }, {
-        dataField: 'weaponDamage',
-        text: 'Damage',
-        formatter: Weapons.damageFormatter,
-      }, {
-        dataField: 'costValue',
-        text: 'Cost',
-        sort: true,
-        formatter: costFormatter,
-      }, {
-        dataField: 'weight',
-        text: 'Weight',
-        sort: true,
-      },
-    ];
-  }
+  // get columns () {
+  //   return [
+  //     {
+  //       dataField: 'name',
+  //       text: 'Item',
+  //       sort: true,
+  //       filter: textFilter(),
+  //     }, {
+  //       dataField: 'category',
+  //       text: 'Category',
+  //       sort: true,
+  //       formatter: (cell) => selectCategoryOptions(this.props.items).find((opt) => opt.value === cell).label,
+  //       filter: selectFilter({
+  //         options: selectCategoryOptions(this.props.items),
+  //         placeholder: 'Category',
+  //       }),
+  //     }, {
+  //       dataField: 'weaponRange',
+  //       text: 'Sub-category',
+  //       sort: true,
+  //       formatter: (cell) => selectCategoryOptions(this.props.items).find((opt) => opt.value === cell).label,
+  //       filter: selectFilter({
+  //         options: this.selectRangeOptions,
+  //         placeholder: 'Category',
+  //       }),
+  //     }, {
+  //       dataField: 'weaponDamage',
+  //       text: 'Damage',
+  //       formatter: Weapons.damageFormatter,
+  //     }, {
+  //       dataField: 'costValue',
+  //       text: 'Cost',
+  //       sort: true,
+  //       formatter: costFormatter,
+  //     }, {
+  //       dataField: 'weight',
+  //       text: 'Weight',
+  //       sort: true,
+  //     },
+  //   ];
+  // }
 
-  static damageFormatter (cell, row) {
-    let weaponRangeString = `${ row.weaponDamageDiceCount }d${ row.weaponDamageDiceValue } ${ row.weaponDamageType }`;
-    if (row.weapon2hDamageDiceCount) {
-      weaponRangeString += `, 2H: ${ row.weapon2hDamageDiceCount }d${ row.weapon2hDamageDiceValue } ${ row.weapon2hDamageType }`;
-    }
-    return weaponRangeString;
-  }
-
-  get selectRangeOptions () {
-    return _.map(_.uniqBy(this.props.items, 'weaponRange'), (item) => ({
-        value: item.weaponRange,
-        label: item.weaponRange,
-      }
-    ));
-  }
+  // static damageFormatter (cell, row) {
+  //   let weaponRangeString = `${ row.weaponDamageDiceCount }d${ row.weaponDamageDiceValue } ${ row.weaponDamageType }`;
+  //   if (row.weapon2hDamageDiceCount) {
+  //     weaponRangeString += `, 2H: ${ row.weapon2hDamageDiceCount }d${ row.weapon2hDamageDiceValue } ${ row.weapon2hDamageType }`;
+  //   }
+  //   return weaponRangeString;
+  // }
+  //
+  // get selectRangeOptions () {
+  //   return _.map(_.uniqBy(this.props.items, 'weaponRange'), (item) => ({
+  //       value: item.weaponRange,
+  //       label: item.weaponRange,
+  //     }
+  //   ));
+  // }
 
   render () {
     const {items, flashMessages, user} = this.props;
     return (
       <ItemsList items={ items }
                  user={ user }
-                 columns={ this.columns }
+                 columns={ items }
                  flashMessages={ flashMessages }
                  pageTitle={ 'Weapons' }/>
     );

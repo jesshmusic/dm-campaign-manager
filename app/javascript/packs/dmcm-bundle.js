@@ -5,8 +5,8 @@ import * as ActiveStorage from '@rails/activestorage';
 import 'channels';
 import $ from 'jquery';
 import 'select2';
-import 'select2/dist/css/select2.css';
-import 'select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.min.css';
+// import 'select2/dist/css/select2.css';
+// import 'select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.min.css';
 
 require('@nathanvda/cocoon');
 

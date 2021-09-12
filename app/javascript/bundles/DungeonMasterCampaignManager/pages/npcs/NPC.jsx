@@ -6,13 +6,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import rest from '../../actions/api';
 import {connect} from 'react-redux';
-import filterFactory, {selectFilter, textFilter} from 'react-bootstrap-table2-filter';
-import BootstrapTable from 'react-bootstrap-table-next';
-import paginationFactory from 'react-bootstrap-table2-paginator';
-
-import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
-import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
-import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 import _ from 'lodash';
 import PageContainer from '../../containers/PageContainer';
 import ReactMarkdown from 'react-markdown';
@@ -29,46 +22,45 @@ class NPCs extends React.Component {
     this.props.getNPCs();
   }
 
-  get columns () {
-    return [
-      {
-        dataField: 'name',
-        text: 'NPC',
-        sort: true,
-        filter: textFilter(),
-      }, {
-        dataField: 'hitDice',
-        text: 'Hit Dice',
-      }, {
-        dataField: 'hitPoints',
-        text: 'Hit Points',
-      }, {
-        dataField: 'armorClass',
-        text: 'Armor Class',
-      }, {
-        dataField: 'monsterType',
-        text: 'Type',
-        sort: true,
-        formatter: (cell) => this.selectTypeOptions.find((opt) => opt.value === cell).label,
-        filter: selectFilter({
-          options: this.selectTypeOptions,
-          placeholder: 'Type',
-        }),
-      }, {
-        dataField: 'monsterSubtype',
-        text: 'Subtype',
-        sort: true,
-      }, {
-        dataField: 'challengeRating',
-        text: 'CR',
-        formatter: (cell) => this.selectCROptions.find((opt) => opt.value === cell).label,
-        filter: selectFilter({
-          options: this.selectCROptions,
-          placeholder: 'CR',
-        }),
-      },
-    ];
-  }
+  // get columns () {
+  //   return [
+  //     {
+  //       dataField: 'name',
+  //       text: 'NPC',
+  //       sort: true,
+  //     }, {
+  //       dataField: 'hitDice',
+  //       text: 'Hit Dice',
+  //     }, {
+  //       dataField: 'hitPoints',
+  //       text: 'Hit Points',
+  //     }, {
+  //       dataField: 'armorClass',
+  //       text: 'Armor Class',
+  //     }, {
+  //       dataField: 'monsterType',
+  //       text: 'Type',
+  //       sort: true,
+  //       formatter: (cell) => this.selectTypeOptions.find((opt) => opt.value === cell).label,
+  //       filter: selectFilter({
+  //         options: this.selectTypeOptions,
+  //         placeholder: 'Type',
+  //       }),
+  //     }, {
+  //       dataField: 'monsterSubtype',
+  //       text: 'Subtype',
+  //       sort: true,
+  //     }, {
+  //       dataField: 'challengeRating',
+  //       text: 'CR',
+  //       formatter: (cell) => this.selectCROptions.find((opt) => opt.value === cell).label,
+  //       filter: selectFilter({
+  //         options: this.selectCROptions,
+  //         placeholder: 'CR',
+  //       }),
+  //     },
+  //   ];
+  // }
 
   get selectCROptions () {
     const crs = _.map(_.uniqBy(this.props.npcs, 'challengeRating'), (npc) => {
@@ -108,9 +100,9 @@ class NPCs extends React.Component {
 
   get selectTypeOptions () {
     return _.map(_.uniqBy(this.props.npcs, 'monsterType'), (npc) => ({
-      value: npc.monsterType,
-      label: npc.monsterType,
-    }
+        value: npc.monsterType,
+        label: npc.monsterType,
+      }
     ));
   }
 
@@ -137,15 +129,7 @@ class NPCs extends React.Component {
         <PageTitle title={ 'NPCs' }/>
         <div className={ 'table-frame' }>
           { npcs && npcs.length > 0 ? (
-            <BootstrapTable keyField="id"
-                            data={ npcs }
-                            columns={ this.columns }
-                            bordered={ false }
-                            bootstrap4
-                            hover
-                            filter={ filterFactory() }
-                            pagination={ paginationFactory() }
-                            expandRow={ this.expandRow }/>
+            <div>NPCs: { npcs.length }</div>
           ) : (
             <DndSpinner/>
           ) }

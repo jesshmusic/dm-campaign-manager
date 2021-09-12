@@ -6,13 +6,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import rest from '../../actions/api';
 import {connect} from 'react-redux';
-import filterFactory, {selectFilter, textFilter} from 'react-bootstrap-table2-filter';
-import BootstrapTable from 'react-bootstrap-table-next';
-import paginationFactory from 'react-bootstrap-table2-paginator';
-
-import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
-import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
-import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 import _ from 'lodash';
 
 import PageContainer from '../../containers/PageContainer';
@@ -100,7 +93,8 @@ class Spells extends React.Component {
     return _.map(_.uniqBy(this.props.spells, 'school'), (spell) => ({
       value: spell.school,
       label: spell.school,
-    }));
+    }
+    ));
   }
 
   static get selectClassOptions () {
@@ -123,44 +117,33 @@ class Spells extends React.Component {
     return data;
   }
 
-  get expandRow () {
-    return {
-      parentClassName: 'table-primary',
-      onlyOneExpanding: true,
-      renderer: (row) => (
-        <ReactMarkdown source={row.descriptionText.replace(/â€™/g, '\'').replace(/â€œ/g, '"').replace(/â€�/g, '"')}
-                       allowedTypes={Util.allowedTypes}
-                       escapeHtml={false}
-        />
-      ),
-    };
-  }
+  // get expandRow () {
+  //   return {
+  //     parentClassName: 'table-primary',
+  //     onlyOneExpanding: true,
+  //     renderer: (row) => (
+  //       <ReactMarkdown source={row.descriptionText.replace(/â€™/g, '\'').replace(/â€œ/g, '"').replace(/â€�/g, '"')}
+  //                      allowedTypes={Util.allowedTypes}
+  //                      escapeHtml={false}
+  //       />
+  //     ),
+  //   };
+  // }
 
   render () {
     const {spells, flashMessages, user} = this.props;
     return (
-      <PageContainer user={user}
-                     flashMessages={flashMessages}
-                     pageTitle={'Spells'}
-                     description={'All D&D spells. Dungeon Master\'s Toolbox is a free resource for DMs to manage their campaigns, adventures, and NPCs.'}
-                     breadcrumbs={[{url: null, isActive: true, title: 'Spells'}]}>
-        <PageTitle title={'Spells'}/>
-        {spells && spells.length > 0 ? (
-          <BootstrapTable keyField='id'
-                          data={ spells }
-                          columns={ this.columns }
-                          bootstrap4
-                          hover
-                          filter={ filterFactory() }
-                          pagination={ paginationFactory() }
-                          defaultSorted={[{
-                            dataField: 'spell_level',
-                            order: 'asc',
-                          }]}
-                          expandRow={ this.expandRow } />
+      <PageContainer user={ user }
+                     flashMessages={ flashMessages }
+                     pageTitle={ 'Spells' }
+                     description={ 'All D&D spells. Dungeon Master\'s Toolbox is a free resource for DMs to manage their campaigns, adventures, and NPCs.' }
+                     breadcrumbs={ [{url: null, isActive: true, title: 'Spells'}] }>
+        <PageTitle title={ 'Spells' }/>
+        { spells && spells.length > 0 ? (
+          <div>NPCs: { spells.length }</div>
         ) : (
           <DndSpinner/>
-        )}
+        ) }
       </PageContainer>
     );
   }
