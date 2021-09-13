@@ -30,7 +30,7 @@ RSpec.describe "Items", type: :request do
   let!(:gear_item) { create :item, type: 'GearItem' }
   let!(:magic_item) { create :item, type: 'MagicItem', rarity: 'uncommon' }
   let!(:item_custom1) { create :item, user: dungeon_master, name: 'DM Item' }
-  let!(:item_custom2) { create :item, user: other_user, name: 'Other User Item' }
+  let!(:item_custom2) { create :item, user: other_user, name: 'Other IUser Item' }
 
   describe "GET Return all Items" do
     context "for Logged Out Users" do
@@ -85,12 +85,10 @@ RSpec.describe "Items", type: :request do
           item['name'] == 'DM Item'
         }).not_to be_nil
         expect(result_items['results'].find { |item|
-          item['name'] == 'Other User Item'
+          item['name'] == 'Other IUser Item'
         }).to be_nil
       end
     end
-
-
 
   end
 
@@ -111,7 +109,7 @@ RSpec.describe "Items", type: :request do
       it "returns error for logged out user trying to get custom item" do
         get "/v1/items/#{item_custom1.slug}.json"
         result_item = JSON.parse(response.body)
-        expect(result_item['errors']).to eq("User action not allowed.")
+        expect(result_item['errors']).to eq("IUser action not allowed.")
       end
     end
 
@@ -130,7 +128,7 @@ RSpec.describe "Items", type: :request do
       it "returns custom item for a DM" do
         get "/v1/items/#{item_custom2.slug}.json"
         result_item = JSON.parse(response.body)
-        expect(result_item['name']).to eq('Other User Item')
+        expect(result_item['name']).to eq('Other IUser Item')
       end
     end
 
@@ -155,7 +153,7 @@ RSpec.describe "Items", type: :request do
       it "returns error for DM trying to get custom item by another user" do
         get "/v1/items/#{item_custom2.slug}.json"
         result_item = JSON.parse(response.body)
-        expect(result_item['errors']).to eq("User action not allowed.")
+        expect(result_item['errors']).to eq("IUser action not allowed.")
       end
     end
   end
@@ -195,7 +193,7 @@ RSpec.describe "Items", type: :request do
     context "for Logged Out Users" do
       it "returns an error for non-user creating item" do
         expect {
-          post '/v1/armor_items.json', params: {armor_item: armor_item_attributes}
+          post '/v1/armor_items.json', params: { armor_item: armor_item_attributes }
         }.to change(Item, :count).by(0)
         result_item = JSON.parse(response.body)
         expect(result_item['error']).to eq('You need to sign in or sign up before continuing.')
@@ -209,7 +207,7 @@ RSpec.describe "Items", type: :request do
 
       it "creates a new GearItem" do
         expect {
-          post '/v1/gear_items.json', params: {gear_item: gear_item_attributes}
+          post '/v1/gear_items.json', params: { gear_item: gear_item_attributes }
         }.to change(Item, :count).by(1)
         result_item = JSON.parse(response.body)
         expect(result_item['name']).to eq('New Gear Item')
@@ -219,7 +217,7 @@ RSpec.describe "Items", type: :request do
 
       it "creates a new ArmorItem" do
         expect {
-          post '/v1/armor_items.json', params: {armor_item: armor_item_attributes}
+          post '/v1/armor_items.json', params: { armor_item: armor_item_attributes }
         }.to change(Item, :count).by(1)
         result_item = JSON.parse(response.body)
         expect(result_item['name']).to eq('New Half Plate')
@@ -235,7 +233,7 @@ RSpec.describe "Items", type: :request do
 
       it "creates a new GearItem with a user" do
         expect {
-          post '/v1/gear_items.json', params: {gear_item: gear_item_attributes}
+          post '/v1/gear_items.json', params: { gear_item: gear_item_attributes }
         }.to change(Item, :count).by(1)
         result_item = JSON.parse(response.body)
         expect(result_item['name']).to eq('New Gear Item')
@@ -245,7 +243,7 @@ RSpec.describe "Items", type: :request do
 
       it "creates a new ArmorItem with a user" do
         expect {
-          post '/v1/armor_items.json', params: {armor_item: armor_item_attributes}
+          post '/v1/armor_items.json', params: { armor_item: armor_item_attributes }
         }.to change(Item, :count).by(1)
         result_item = JSON.parse(response.body)
         expect(result_item['name']).to eq('New Half Plate')
@@ -301,7 +299,7 @@ RSpec.describe "Items", type: :request do
           }
         }
         result_item = JSON.parse(response.body)
-        expect(result_item['errors']).to eq('User action not allowed.')
+        expect(result_item['errors']).to eq('IUser action not allowed.')
       end
 
       it "returns an error for non-admin editing other DM's item" do
@@ -313,7 +311,7 @@ RSpec.describe "Items", type: :request do
           }
         }
         result_item = JSON.parse(response.body)
-        expect(result_item['errors']).to eq('User action not allowed.')
+        expect(result_item['errors']).to eq('IUser action not allowed.')
       end
     end
   end
@@ -356,13 +354,13 @@ RSpec.describe "Items", type: :request do
       it "returns an error for non-admin deleting default item" do
         delete "/v1/armor_items/#{armor_item.slug}.json"
         result_item = JSON.parse(response.body)
-        expect(result_item['errors']).to eq('User action not allowed.')
+        expect(result_item['errors']).to eq('IUser action not allowed.')
       end
 
       it "returns an error for non-admin deleting other DM's item" do
         delete "/v1/armor_items/#{item_custom2.slug}.json"
         result_item = JSON.parse(response.body)
-        expect(result_item['errors']).to eq('User action not allowed.')
+        expect(result_item['errors']).to eq('IUser action not allowed.')
       end
     end
   end

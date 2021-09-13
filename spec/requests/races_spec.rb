@@ -13,11 +13,11 @@ RSpec.describe "Races", type: :request do
   let!(:race1) { create :race }
   let!(:race2) { create :race }
   let!(:race_custom1) { create :race,
-                                user: dungeon_master,
-                                name: 'DM Race' }
+                               user: dungeon_master,
+                               name: 'DM Race' }
   let!(:race_custom2) { create :race,
-                                user: other_user,
-                                name: 'Other User Race' }
+                               user: other_user,
+                               name: 'Other IUser Race' }
 
   describe "GET Return all Races" do
     context "for Logged Out Users" do
@@ -58,12 +58,10 @@ RSpec.describe "Races", type: :request do
           race['name'] == 'DM Race'
         }).not_to be_nil
         expect(result_races['results'].find { |race|
-          race['name'] == 'Other User Race'
+          race['name'] == 'Other IUser Race'
         }).to be_nil
       end
     end
-
-
 
   end
 
@@ -77,7 +75,7 @@ RSpec.describe "Races", type: :request do
       it "returns error for logged out user trying to get custom race" do
         get "/v1/races/#{race_custom1.slug}.json"
         result_race = JSON.parse(response.body)
-        expect(result_race['errors']).to eq("User action not allowed.")
+        expect(result_race['errors']).to eq("IUser action not allowed.")
       end
     end
 
@@ -96,7 +94,7 @@ RSpec.describe "Races", type: :request do
       it "returns custom race for a DM" do
         get "/v1/races/#{race_custom2.slug}.json"
         result_race = JSON.parse(response.body)
-        expect(result_race['name']).to eq('Other User Race')
+        expect(result_race['name']).to eq('Other IUser Race')
       end
     end
 
@@ -122,7 +120,7 @@ RSpec.describe "Races", type: :request do
       it "returns error for DM trying to get custom race by another user" do
         get "/v1/races/#{race_custom2.slug}.json"
         result_race = JSON.parse(response.body)
-        expect(result_race['errors']).to eq("User action not allowed.")
+        expect(result_race['errors']).to eq("IUser action not allowed.")
       end
     end
   end
@@ -162,7 +160,7 @@ RSpec.describe "Races", type: :request do
     context "for Logged Out Users" do
       it "returns an error for non-user creating race" do
         expect {
-          post '/v1/races.json', params: {race: valid_attributes}
+          post '/v1/races.json', params: { race: valid_attributes }
         }.to change(Race, :count).by(0)
         result_race = JSON.parse(response.body)
         expect(result_race['error']).to eq('You need to sign in or sign up before continuing.')
@@ -176,7 +174,7 @@ RSpec.describe "Races", type: :request do
 
       it "creates a new Race" do
         expect {
-          post '/v1/races.json', params: {race: valid_attributes}
+          post '/v1/races.json', params: { race: valid_attributes }
         }.to change(Race, :count).by(1)
         result_race = JSON.parse(response.body)
         expect(result_race['name']).to eq('New Race')
@@ -191,7 +189,7 @@ RSpec.describe "Races", type: :request do
 
       it "creates a new Race with a user" do
         expect {
-          post '/v1/races.json', params: {race: valid_attributes}
+          post '/v1/races.json', params: { race: valid_attributes }
         }.to change(Race, :count).by(1)
         result_race = JSON.parse(response.body)
         expect(result_race['name']).to eq('New Race')
@@ -243,7 +241,7 @@ RSpec.describe "Races", type: :request do
           }
         }
         result_race = JSON.parse(response.body)
-        expect(result_race['errors']).to eq('User action not allowed.')
+        expect(result_race['errors']).to eq('IUser action not allowed.')
       end
 
       it "returns an error for non-admin editing other DM's race" do
@@ -253,7 +251,7 @@ RSpec.describe "Races", type: :request do
           }
         }
         result_race = JSON.parse(response.body)
-        expect(result_race['errors']).to eq('User action not allowed.')
+        expect(result_race['errors']).to eq('IUser action not allowed.')
       end
     end
   end
@@ -296,13 +294,13 @@ RSpec.describe "Races", type: :request do
       it "returns an error for non-admin deleting default race" do
         delete "/v1/races/#{race1.slug}.json"
         result_race = JSON.parse(response.body)
-        expect(result_race['errors']).to eq('User action not allowed.')
+        expect(result_race['errors']).to eq('IUser action not allowed.')
       end
 
       it "returns an error for non-admin deleting other DM's race" do
         delete "/v1/races/#{race_custom2.slug}.json"
         result_race = JSON.parse(response.body)
-        expect(result_race['errors']).to eq('User action not allowed.')
+        expect(result_race['errors']).to eq('IUser action not allowed.')
       end
     end
   end

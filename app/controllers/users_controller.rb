@@ -36,7 +36,7 @@ class UsersController < ApplicationController
     authorize @user
     respond_to do |format|
       if @user.update(user_params)
-        format.html { redirect_to user_path, notice: 'User was successfully updated.' }
+        format.html { redirect_to user_path, notice: 'IUser was successfully updated.' }
         format.json
       else
         format.html { render :edit }
@@ -55,7 +55,7 @@ class UsersController < ApplicationController
     end
     respond_to do |format|
       if @user.save
-        format.html { redirect_to user_path, notice: 'User role was successfully changed.' }
+        format.html { redirect_to user_path, notice: 'IUser role was successfully changed.' }
         format.json
       else
         format.html { render :index }
@@ -69,7 +69,7 @@ class UsersController < ApplicationController
     authorize @user
     @user.soft_delete
     respond_to do |format|
-      format.html { redirect_to user_path, notice: 'User was successfully deleted.' }
+      format.html { redirect_to user_path, notice: 'IUser was successfully deleted.' }
       format.json { head :no_content }
     end
   end

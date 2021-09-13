@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 
 // Container
@@ -8,9 +7,18 @@ import rest from '../../actions/api';
 import PageTitle from '../../components/layout/PageTitle';
 import DndSpinner from '../../components/layout/DndSpinner';
 import DataTable from '../../components/layout/DataTable';
+import {RouteComponentProps} from "@reach/router";
+import {IDndClasses, IDndClassesResponse, IFlashMessage, IUser} from "../../utilities/types";
 
-const DndClasses = (props) => {
-  // const {dndClasses} = props.dndClasses.dndClasses ?? [];
+interface IDndClassesPage {
+  dndClasses?: IDndClasses;
+  dndClassSlug: string,
+  flashMessages: [IFlashMessage];
+  getDndClasses: () => void;
+  user: IUser,
+}
+
+const DndClasses: React.FC<RouteComponentProps> = (props: IDndClassesPage) => {
   React.useEffect(() => {
     props.getDndClasses();
   }, []);
@@ -19,7 +27,7 @@ const DndClasses = (props) => {
     return props.dndClasses.dndClasses.map((dndClass) => {
       return {
         name: dndClass.name,
-        hitDie: `d${ dndClass.hitDie }`,
+        hitDie: `d${dndClass.hitDie}`,
       };
     });
   }, [props.dndClasses.dndClasses]);
@@ -33,47 +41,26 @@ const DndClasses = (props) => {
       Header: 'Hit Die',
       accessor: 'hitDie',
     },
-  ]);
-
-  // const columns = () => {
-  //   return [{
-  //     dataField: 'name',
-  //     text: 'Class',
-  //     sort: true,
-  //     filter: textFilter(),
-  //   }, {
-  //     dataField: 'hitDie',
-  //     text: 'Hit Dice',
-  //     sort: true,
-  //     formatter: DndClasses.hitDiceFormatter,
-  //   }];
-  // }
+  ], []);
 
 
   return (
-    <PageContainer user={ props.user }
-                   flashMessages={ props.flashMessages }
-                   pageTitle={ 'DndClasses' }
-                   description={ 'All D&D dndClasses. Dungeon Master\'s Toolbox is a free resource for DMs to manage their dndClasses, adventures, and NPCs.' }
-                   breadcrumbs={ [{url: null, isActive: true, title: 'Character Classes'}] }>
-      <PageTitle title={ 'Character Classes' }/>
-      { props.dndClasses.dndClasses && props.dndClasses.dndClasses.length > 0 ? (
-        <DataTable columns={ columns } data={ data }/>
+    <PageContainer user={props.user}
+                   flashMessages={props.flashMessages}
+                   pageTitle={'DndClasses'}
+                   description={'All D&D dndClasses. Dungeon Master\'s Toolbox is a free resource for DMs to manage their dndClasses, adventures, and NPCs.'}
+                   breadcrumbs={[{url: null, isActive: true, title: 'Character Classes'}]}>
+      <PageTitle title={'Character Classes'}/>
+      {props.dndClasses.dndClasses && props.dndClasses.dndClasses.length > 0 ? (
+        <DataTable columns={columns} data={data}/>
       ) : (
         <DndSpinner/>
-      ) }
+      )}
     </PageContainer>
   );
 };
 
-DndClasses.propTypes = {
-  dndClasses: PropTypes.object,
-  flashMessages: PropTypes.array,
-  getDndClasses: PropTypes.func.isRequired,
-  user: PropTypes.object,
-};
-
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   return {
     dndClasses: state.dndClasses,
     user: state.users.user,
@@ -81,7 +68,7 @@ function mapStateToProps (state) {
   };
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
     getDndClasses: () => {
       dispatch(rest.actions.getDndClasses());
@@ -91,14 +78,7 @@ function mapDispatchToProps (dispatch) {
 
 export default connect(mapStateToProps, mapDispatchToProps)(DndClasses);
 
-// const hitDiceFormatter = (cell, row) => {
-//   if (row.hitDie) {
-//     return `d${ row.hitDie }`;
-//   }
-//   return 'N/A';
-// }
-//
-//
+
 // const expandRow = () => {
 //   return {
 //     parentClassName: 'table-primary',

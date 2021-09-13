@@ -13,7 +13,7 @@ const flashErrorMessage = (state, action) => [...state, {
   id: Date.now(),
   type: 'danger',
   text: action.error.errors,
-  heading: `Error ${action.error.status} ${action.error.statusText}`,
+  heading: `Error ${ action.error.status } ${ action.error.statusText }`,
 }];
 
 const flashSuccessMessage = (state, message, heading) => [...state, {
@@ -30,8 +30,8 @@ const flashMessages = createReducer([], {
     newState.splice(removeIndex, 1);
     return newState;
   },
-  [loginSucceeded]: (state, action) => flashSuccessMessage(state, `User, ${action.data.name}, successfully logged in.`, 'Welcome!'),
-  [logoutSucceeded]: (state) => flashSuccessMessage(state, 'User logged out', 'Goodbye!'),
+  [loginSucceeded]: (state, action) => flashSuccessMessage(state, `User, ${ action.data.name }, successfully logged in.`, 'Welcome!'),
+  [logoutSucceeded]: (state) => flashSuccessMessage(state, 'IUser logged out', 'Goodbye!'),
   [loginFailed]: (state, action) => flashErrorMessage(state, action),
   [logoutFailed]: (state, action) => flashErrorMessage(state, action),
 });

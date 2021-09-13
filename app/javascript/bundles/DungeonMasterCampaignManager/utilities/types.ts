@@ -3,10 +3,10 @@ export interface AppProps {
   npcsCount: number;
   spellsCount: number;
   usersCount: number;
-  user?: User;
+  user?: IUser;
 }
 
-export interface User {
+export interface IUser {
   created_at: string;
   deleted_at?: string;
   email: string;
@@ -20,16 +20,65 @@ export interface User {
   username: string;
 }
 
-export interface DndClass {
-
+export interface IFieldProps {
+  colWidth: string;
+  defaultValue?: string | number | null;
+  id?: string;
+  infoText?: string;
+  label: string;
+  name: string;
+  placeholder?: string;
+  readOnly?: boolean;
+  type: string;
+  value?: string | number | null;
 }
 
-export interface DndClasses {
-  dndClasses: [DndClass];
-  currentDndClass: DndClass;
+export interface ISelectProps {
+  colWidth: string;
+  defaultOptions?: boolean;
+  getOptions?: () => void;
+  input: any;
+  isClearable?: boolean;
+  isCreatable?: boolean;
+  isMulti?: boolean;
+  label: string;
+  name: string;
+  options?: [any];
+  placeholder?: string;
 }
 
-export interface DndClassesResponse {
+export interface IFlashMessage {
+  id: number;
+  heading: string;
+  text: string;
+  type: string;
+}
+
+export interface IDndClassesResponse {
   count: number;
-  results: [DndClasses];
+  results: [IDndClasses];
+}
+
+export interface IDndClasses {
+  dndClasses: [IDndClass];
+  currentDndClass: IDndClass;
+}
+
+export interface IDndClass {
+  name: string;
+  hitDie: string;
+  proficiencies: [IProf];
+  proficiencyChoices: [IProfChoice];
+}
+
+export interface IProf {
+  name: string;
+  profType: string;
+}
+
+export interface IProfChoice {
+  name: string;
+  numChoices: number;
+  profChoiceType: string;
+  proficiencies: [IProf];
 }

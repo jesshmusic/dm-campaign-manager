@@ -3,12 +3,12 @@
     <li class="breadcrumb-item"><a href="/">Home</a></li>
     <li class="breadcrumb-item"><%= link_to 'Dashboard', v1_dashboard_path %></li>
     <li class="breadcrumb-item"><%= link_to 'Users', users_path %></li>
-    <li class="breadcrumb-item active" aria-current="page">Edit User</li>
+    <li class="breadcrumb-item active" aria-current="page">Edit IUser</li>
   </ol>
 </nav>
 <h1>Edit - <small><em><%= @user.name %> <%= @user.username %></em></small></h1>
 <% unless @user.confirmed_at? %>
-<h3>Currently waiting confirmation.</h3>
+  <h3>Currently waiting confirmation.</h3>
 <% end %>
 <%= render 'form', user: @user %>
 <div class="admin__footer">

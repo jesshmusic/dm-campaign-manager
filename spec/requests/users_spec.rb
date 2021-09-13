@@ -38,12 +38,12 @@ RSpec.describe "Users", type: :request do
       it "returns error for logged out user trying to get the users list" do
         get "/users.json"
         result_users = JSON.parse(response.body)
-        expect(result_users['errors']).to eq("User action not allowed.")
+        expect(result_users['errors']).to eq("IUser action not allowed.")
       end
     end
   end
 
-  describe "GET Return single User" do
+  describe "GET Return single IUser" do
     context "for Logged Out Users" do
       it "returns an error for non-user creating user" do
         get "/users/#{dungeon_master.slug}"
@@ -80,7 +80,7 @@ RSpec.describe "Users", type: :request do
     end
   end
 
-  describe "GET User back end Edit Page (admin only)" do
+  describe "GET IUser back end Edit Page (admin only)" do
     context "for Logged Out Users" do
       it "returns a redirect response" do
         get "/users/#{dungeon_master.slug}/edit"
@@ -113,12 +113,12 @@ RSpec.describe "Users", type: :request do
     end
   end
 
-  describe "PUT Update User" do
+  describe "PUT Update IUser" do
     context "for Logged Out Users" do
       it "returns an error for non-user editing" do
         put "/users/#{dungeon_master.slug}", params: {
           user: {
-            name: 'Test User Edited'
+            name: 'Test IUser Edited'
           }
         }
         expect(response).to have_http_status(302)
@@ -133,12 +133,12 @@ RSpec.describe "Users", type: :request do
       it "updates the requested user belonging to DM" do
         put "/users/#{dungeon_master.slug}", params: {
           user: {
-            name: 'Test User Edited'
+            name: 'Test IUser Edited'
           }
         }
         expect(response).to have_http_status(302)
         dungeon_master.reload
-        expect(dungeon_master.name).to eq('Test User Edited')
+        expect(dungeon_master.name).to eq('Test IUser Edited')
       end
     end
 
@@ -150,18 +150,18 @@ RSpec.describe "Users", type: :request do
       it "updates the requested user belonging to DM" do
         put "/users/#{dungeon_master.slug}", params: {
           user: {
-            name: 'Test User Edited'
+            name: 'Test IUser Edited'
           }
         }
         expect(response).to have_http_status(302)
         dungeon_master.reload
-        expect(dungeon_master.name).to eq('Test User Edited')
+        expect(dungeon_master.name).to eq('Test IUser Edited')
       end
 
       it "returns an error for non-admin editing default user" do
         put "/users/#{other_user.slug}", params: {
           user: {
-            name: 'Test User Edited'
+            name: 'Test IUser Edited'
           }
         }
         expect(response).to have_http_status(403)
@@ -170,7 +170,7 @@ RSpec.describe "Users", type: :request do
     end
   end
 
-  describe "DELETE Delete User" do
+  describe "DELETE Delete IUser" do
     context "for Logged Out Users" do
       it "returns an error for non-user delete" do
         delete "/users/#{other_user.slug}"

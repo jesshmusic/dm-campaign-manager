@@ -3,24 +3,12 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import Col from 'react-bootstrap/Col';
 import {Field} from 'react-final-form';
 import Form from 'react-bootstrap/Form';
+import {IFieldProps} from "../../utilities/types";
 
-interface IFormField {
-  colWidth: string;
-  defaultValue?: string | number | null;
-  id?: string;
-  infoText?: string;
-  label: string;
-  name: string;
-  readOnly?: boolean;
-  type: string;
-  value?: string | number | null;
-}
-
-const FormField = (props: IFormField) => {
+const FormField = (props: IFieldProps) => {
   const {
     colWidth,
     defaultValue,
@@ -84,17 +72,5 @@ const FormField = (props: IFormField) => {
     </Form.Group>
   );
 }
-
-FormField.propTypes = {
-  name: PropTypes.string.isRequired,
-  colWidth: PropTypes.string.isRequired,
-  defaultValue: PropTypes.any,
-  id: PropTypes.string,
-  infoText: PropTypes.string,
-  label: PropTypes.string.isRequired,
-  readOnly: PropTypes.bool,
-  type: PropTypes.string.isRequired,
-  value: PropTypes.any,
-};
 
 export default FormField;
