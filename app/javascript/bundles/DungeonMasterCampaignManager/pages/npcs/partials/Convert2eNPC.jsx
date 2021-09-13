@@ -27,14 +27,16 @@ import AbilityScoreField from './AbilityScoreField';
 import CharacterClassFields from './CharacterClassFields';
 import RaceSelect from './RaceSelect';
 import DndClassSpellSelect from './spell-fields/DndClassSpellSelect';
+import Row from 'react-bootstrap/Row';
 
 const npcFormDecorator = createDecorator(
   {
     field: 'characterAlignment',
     updates: {
-      alignment: ((value) => value.value),
+      alignment: ((value) => value.value
+      ),
     },
-  }
+  },
 );
 
 class Convert2eNPC extends React.Component {
@@ -116,18 +118,18 @@ class Convert2eNPC extends React.Component {
   render () {
     const {npc, validated} = this.state;
     return (
-      <Card className={'shadow mb-5'}>
+      <Card className={ 'shadow mb-5' }>
         <Card.Body>
           <Card.Title>D&D 2nd Edition NPC Convertor</Card.Title>
           <Card.Subtitle>
             Enter stats for a 2E NPC to generate its 5E equivalent (roughly) for <em>humanoid</em> NPCs.
           </Card.Subtitle>
-          <FinalForm onSubmit={this.handleSubmit}
-                     decorators={[npcFormDecorator]}
-                     initialValues={npc}
-                     validate={this.validate}
-                     mutators={{...arrayMutators}}
-                     render={({
+          <FinalForm onSubmit={ this.handleSubmit }
+                     decorators={ [npcFormDecorator] }
+                     initialValues={ npc }
+                     validate={ this.validate }
+                     mutators={ {...arrayMutators} }
+                     render={ ({
                        handleSubmit,
                        form: {
                          mutators: {push},
@@ -137,93 +139,101 @@ class Convert2eNPC extends React.Component {
                        pristine,
                        values,
                      }) => (
-                       <Form noValidate validated={validated} onSubmit={handleSubmit}>
-                         <Form.Row>
-                           <FormField label={'Name'}
-                                      type={'text'}
-                                      colWidth={'8'}
-                                      name={'name'}/>
-                           <RaceSelect colWidth={'4'}/>
-                         </Form.Row>
+                       <Form noValidate validated={ validated } onSubmit={ handleSubmit }>
+                         <Row>
+                           <FormField label={ 'Name' }
+                                      type={ 'text' }
+                                      colWidth={ '8' }
+                                      name={ 'name' }/>
+                           <RaceSelect colWidth={ '4' }/>
+                         </Row>
                          <h3>Classes</h3>
-                         <Form.Row>
-                           <Col md={'12'} className={'mb-5'}>
+                         <Row>
+                           <Col md={ '12' } className={ 'mb-5' }>
                              <FieldArray name="dndClasses">
-                               {({fields}) =>
+                               { ({fields}) =>
                                  fields.map((characterClass, index) => (
                                    !fields.value[index] || !fields.value[index]._destroy ? (
-                                     <CharacterClassFields characterClass={characterClass}
-                                                           fields={fields}
-                                                           index={index}
-                                                           key={index}/>
-                                   ) : null))
+                                     <CharacterClassFields characterClass={ characterClass }
+                                                           fields={ fields }
+                                                           index={ index }
+                                                           key={ index }/>
+                                   ) : null
+                                 ))
                                }
                              </FieldArray>
                              <Button type="button"
-                                     onClick={() => push('dndClasses', defaultFighterClass)}
-                                     variant={'info'}
-                                     block>
+                                     onClick={ () => push('dndClasses', defaultFighterClass) }
+                                     variant={ 'info' }
+                                     size={ 'lg' }>
                                Add Class
                              </Button>
                            </Col>
-                         </Form.Row>
-                         <Form.Row>
-                           <FormField label={'THAC0'}
-                                      type={'number'}
-                                      colWidth={'4'}
-                                      name={'thaco'}/>
-                           <FormField label={'Armor Class'}
-                                      type={'number'}
-                                      colWidth={'4'}
-                                      name={'armorClass'}/>
-                           <FormField label={'Hit Points'}
-                                      type={'number'}
-                                      colWidth={'4'}
-                                      name={'hitPoints'}/>
-                         </Form.Row>
-                         <Form.Row>
-                           <AbilityScoreField label={'STR'} type={'number'} colWidth={'2'} name={'strength'} hideRoll/>
-                           <AbilityScoreField label={'DEX'} type={'number'} colWidth={'2'} name={'dexterity'} hideRoll/>
-                           <AbilityScoreField label={'CON'} type={'number'} colWidth={'2'} name={'constitution'} hideRoll/>
-                           <AbilityScoreField label={'INT'} type={'number'} colWidth={'2'} name={'intelligence'} hideRoll/>
-                           <AbilityScoreField label={'WIS'} type={'number'} colWidth={'2'} name={'wisdom'} hideRoll/>
-                           <AbilityScoreField label={'CHA'} type={'number'} colWidth={'2'} name={'charisma'} hideRoll/>
-                         </Form.Row>
-                         <Form.Row>
-                           <FormSelect label={'Alignment'}
-                                       colWidth={'6'}
-                                       name={'characterAlignment'}
-                                       value={values.alignment}
-                                       options={alignmentOptions}/>
-                           <FormField label={'Number of Attacks'}
-                                      type={'number'}
-                                      colWidth={'3'}
-                                      name={'numberOfAttacks'}/>
-                           <FormField label={'Speed (MV)'}
-                                      type={'number'}
-                                      colWidth={'3'}
-                                      name={'speed'}/>
-                         </Form.Row>
-                         <Form.Row className={'mb-4'}>
-                           <Col md={'12'}>
+                         </Row>
+                         <Row>
+                           <FormField label={ 'THAC0' }
+                                      type={ 'number' }
+                                      colWidth={ '4' }
+                                      name={ 'thaco' }/>
+                           <FormField label={ 'Armor Class' }
+                                      type={ 'number' }
+                                      colWidth={ '4' }
+                                      name={ 'armorClass' }/>
+                           <FormField label={ 'Hit Points' }
+                                      type={ 'number' }
+                                      colWidth={ '4' }
+                                      name={ 'hitPoints' }/>
+                         </Row>
+                         <Row>
+                           <AbilityScoreField label={ 'STR' } type={ 'number' } colWidth={ '2' } name={ 'strength' }
+                                              hideRoll/>
+                           <AbilityScoreField label={ 'DEX' } type={ 'number' } colWidth={ '2' } name={ 'dexterity' }
+                                              hideRoll/>
+                           <AbilityScoreField label={ 'CON' } type={ 'number' } colWidth={ '2' } name={ 'constitution' }
+                                              hideRoll/>
+                           <AbilityScoreField label={ 'INT' } type={ 'number' } colWidth={ '2' } name={ 'intelligence' }
+                                              hideRoll/>
+                           <AbilityScoreField label={ 'WIS' } type={ 'number' } colWidth={ '2' } name={ 'wisdom' }
+                                              hideRoll/>
+                           <AbilityScoreField label={ 'CHA' } type={ 'number' } colWidth={ '2' } name={ 'charisma' }
+                                              hideRoll/>
+                         </Row>
+                         <Row>
+                           <FormSelect label={ 'Alignment' }
+                                       colWidth={ '6' }
+                                       name={ 'characterAlignment' }
+                                       value={ values.alignment }
+                                       options={ alignmentOptions }/>
+                           <FormField label={ 'Number of Attacks' }
+                                      type={ 'number' }
+                                      colWidth={ '3' }
+                                      name={ 'numberOfAttacks' }/>
+                           <FormField label={ 'Speed (MV)' }
+                                      type={ 'number' }
+                                      colWidth={ '3' }
+                                      name={ 'speed' }/>
+                         </Row>
+                         <Row className={ 'mb-4' }>
+                           <Col md={ '12' }>
                              <h3>Actions</h3>
-                             <FieldArray name="actions" className={'mb-3'}>
-                               {({fields}) => (
+                             <FieldArray name="actions" className={ 'mb-3' }>
+                               { ({fields}) => (
                                  fields.map((action, index) => (
                                    !fields.value[index] || !fields.value[index]._destroy ? (
-                                     <ActionSelect colWidth={'10'}
-                                                   action={action}
-                                                   key={index}
-                                                   fields={fields}
-                                                   index={index}/>
-                                   ) : null))
-                               )}
+                                     <ActionSelect colWidth={ '10' }
+                                                   action={ action }
+                                                   key={ index }
+                                                   fields={ fields }
+                                                   index={ index }/>
+                                   ) : null
+                                 ))
+                               ) }
                              </FieldArray>
                              <Button type="button"
-                                     onClick={() => push('actions', {
+                                     onClick={ () => push('actions', {
                                        value: 761,
                                        label: 'Longsword',
-                                       data:{
+                                       data: {
                                          attackBonus: 0,
                                          damageBonus: 0,
                                          damageDiceCount: 1,
@@ -239,21 +249,21 @@ class Convert2eNPC extends React.Component {
                                          category: 'Martial',
                                          properties: ['Versatile'],
                                        },
-                                     })} variant={'info'} block>Add Action</Button>
+                                     }) } variant={ 'info' } size={ 'lg' }>Add Action</Button>
                            </Col>
-                         </Form.Row>
-                         {values.dndClasses.map((dndClass, index) => (
-                           <DndClassSpellSelect dndClass={dndClass} key={index} />
-                         ))}
-                         <Form.Row className={'mb-4'}>
+                         </Row>
+                         { values.dndClasses.map((dndClass, index) => (
+                           <DndClassSpellSelect dndClass={ dndClass } key={ index }/>
+                         )) }
+                         <Row className={ 'mb-4' }>
                            <ButtonGroup aria-label="Character actions">
-                             <Button type="submit" disabled={submitting}>Convert NPC</Button>
-                             <Button type="button" onClick={form.reset} disabled={submitting || pristine}
-                                     variant={'secondary'}>Reset</Button>
+                             <Button type="submit" disabled={ submitting }>Convert NPC</Button>
+                             <Button type="button" onClick={ form.reset } disabled={ submitting || pristine }
+                                     variant={ 'secondary' }>Reset</Button>
                            </ButtonGroup>
-                         </Form.Row>
+                         </Row>
                        </Form>
-                     )}
+                     ) }
           />
         </Card.Body>
       </Card>

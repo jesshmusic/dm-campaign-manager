@@ -14,7 +14,6 @@ import rest from '../../actions/api';
 import Convert2eNPC from '../npcs/partials/Convert2eNPC';
 import Accordion from 'react-bootstrap/Accordion';
 import GenerateCommoner from '../npcs/partials/GenerateCommoner';
-import SectionHeading from '../../components/SectionHeading';
 
 const NpcGenerator = (props) => {
   const handleGenerateCommoner = (gender, race) => {
@@ -38,19 +37,25 @@ const NpcGenerator = (props) => {
             { props.npc ? (
               <NPCDisplay npc={ props.npc } shortDisplay/>
             ) : null }
-            <Accordion>
-              <SectionHeading eventKey={'0'} title={'Commoner'}/>
-              <Accordion.Collapse eventKey={'0'}>
-                <GenerateCommoner onFormSubmit={ handleGenerateCommoner }/>
-              </Accordion.Collapse>
-              <SectionHeading eventKey={'1'} title={'Generate NPC'}/>
-              <Accordion.Collapse eventKey={'1'}>
-                <GenerateNPC/>
-              </Accordion.Collapse>
-              <SectionHeading eventKey={'2'} title={'Convert 2nd Edition'}/>
-              <Accordion.Collapse eventKey={'2'}>
-                <Convert2eNPC/>
-              </Accordion.Collapse>
+            <Accordion defaultActiveKey="0" flush>
+              <Accordion.Item eventKey={ '0' }>
+                <Accordion.Header>Commoner</Accordion.Header>
+                <Accordion.Body>
+                  <GenerateCommoner onFormSubmit={ handleGenerateCommoner }/>
+                </Accordion.Body>
+              </Accordion.Item>
+              <Accordion.Item eventKey={ '1' }>
+                <Accordion.Header>Generate NPC</Accordion.Header>
+                <Accordion.Body>
+                  <GenerateNPC/>
+                </Accordion.Body>
+              </Accordion.Item>
+              <Accordion.Item eventKey={ '2' }>
+                <Accordion.Header>Convert 2nd Edition</Accordion.Header>
+                <Accordion.Body>
+                  <Convert2eNPC/>
+                </Accordion.Body>
+              </Accordion.Item>
             </Accordion>
           </Col>
         </Row>

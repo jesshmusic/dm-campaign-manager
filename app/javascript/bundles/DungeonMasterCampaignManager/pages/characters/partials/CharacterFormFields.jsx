@@ -33,188 +33,191 @@ import SorcererSpellSelect from '../../npcs/partials/spell-fields/SorcererSpellS
 import WarlockSpellSelect from '../../npcs/partials/spell-fields/WarlockSpellSelect';
 import WizardSpellSelect from '../../npcs/partials/spell-fields/WizardSpellSelect';
 import SectionHeading from '../../../components/SectionHeading';
+import Row from 'react-bootstrap/Row';
 
 const CharacterFormFields = ({dirty, errors, guildOptions, isNPC, values}) => {
   return (
     <div>
-      {dirty && errors && Object.keys(errors).length > 0 ? (
-        <Alert variant={'danger'}>
+      { dirty && errors && Object.keys(errors).length > 0 ? (
+        <Alert variant={ 'danger' }>
           <Alert.Heading>Required fields</Alert.Heading>
           <ul>
-            {Object.keys(errors).map((keyName, i) =>
-              <li key={i}>
-                {errors[keyName]}
+            { Object.keys(errors).map((keyName, i) =>
+              <li key={ i }>
+                { errors[keyName] }
               </li>,
-            )}
+            ) }
           </ul>
         </Alert>
-      ) : null}
-      {isNPC ? (
-        <Form.Row>
+      ) : null }
+      { isNPC ? (
+        <Row>
           <FormField
-            label={'NPC Role'}
-            type={'text'}
-            colWidth={'12'}
-            name={'role'}
-            infoText={'(Villain, Lord, Blacksmith, etc.)'}
+            label={ 'NPC Role' }
+            type={ 'text' }
+            colWidth={ '12' }
+            name={ 'role' }
+            infoText={ '(Villain, Lord, Blacksmith, etc.)' }
           />
-        </Form.Row>
-      ) : null}
+        </Row>
+      ) : null }
       <Accordion>
-        <Form.Row>
-          <NameField colWidth={'3'} value={values.name}/>
-          <FormSelect label={'Alignment'}
-                      colWidth={'3'}
-                      name={'characterAlignment'}
-                      options={alignmentOptions}/>
-          <RaceSelect colWidth={'3'}/>
-          <FormField label={'Background'} type={'text'} colWidth={'3'} name={'background'}/>
-        </Form.Row>
-        <Form.Row>
-          <FormRichTextArea label={'Description'} colWidth={'6'} name={'description'}/>
-          <FormField label={'Languages'} type={'text'} colWidth={'3'} name={'languages'}/>
-          <FormSelect label={'Guild or Affiliation'}
-                      colWidth={'3'}
+        <Row>
+          <NameField colWidth={ '3' } value={ values.name }/>
+          <FormSelect label={ 'Alignment' }
+                      colWidth={ '3' }
+                      name={ 'characterAlignment' }
+                      options={ alignmentOptions }/>
+          <RaceSelect colWidth={ '3' }/>
+          <FormField label={ 'Background' } type={ 'text' } colWidth={ '3' } name={ 'background' }/>
+        </Row>
+        <Row>
+          <FormRichTextArea label={ 'Description' } colWidth={ '6' } name={ 'description' }/>
+          <FormField label={ 'Languages' } type={ 'text' } colWidth={ '3' } name={ 'languages' }/>
+          <FormSelect label={ 'Guild or Affiliation' }
+                      colWidth={ '3' }
                       isClearable
-                      name={'guild'}
-                      options={guildOptions}/>
-        </Form.Row>
-        <SectionHeading eventKey={'0'} title={'Classes'}/>
-        <Accordion.Collapse eventKey={'0'}>
-          <Form.Row>
-            <Col md={{span: 8, offset: 2}}>
+                      name={ 'guild' }
+                      options={ guildOptions }/>
+        </Row>
+        <SectionHeading eventKey={ '0' } title={ 'Classes' }/>
+        <Accordion.Collapse eventKey={ '0' }>
+          <Row>
+            <Col md={ {span: 8, offset: 2} }>
               <FieldArray name="dndClasses">
-                {({fields}) => (
+                { ({fields}) => (
                   fields.map((characterClass, index) => (
                     !fields.value[index] || !fields.value[index]._destroy ? (
-                      <CharacterClassFields characterClass={characterClass}
-                                            fields={fields}
-                                            index={index}
-                                            key={index}/>
-                    ) : null))
-                )}
+                      <CharacterClassFields characterClass={ characterClass }
+                                            fields={ fields }
+                                            index={ index }
+                                            key={ index }/>
+                    ) : null
+                  ))
+                ) }
               </FieldArray>
-              <Button type="button" onClick={() => push('dndClasses', {
+              <Button type="button" onClick={ () => push('dndClasses', {
                 dndClass: {
                   value: 153,
                   label: 'Fighter',
                 },
                 level: 1,
-              })} variant={'info'} block>Add Class</Button>
+              }) } variant={ 'info' } size={ 'lg' }>Add Class</Button>
             </Col>
-          </Form.Row>
+          </Row>
         </Accordion.Collapse>
-        <SectionHeading eventKey={'1'} title={'Statistics'}/>
-        <Accordion.Collapse eventKey={'1'}>
-          <Form.Row>
-            <FormField label={'Armor Class'} type={'number'} colWidth={'2'} name={'armorClass'}
+        <SectionHeading eventKey={ '1' } title={ 'Statistics' }/>
+        <Accordion.Collapse eventKey={ '1' }>
+          <Row>
+            <FormField label={ 'Armor Class' } type={ 'number' } colWidth={ '2' } name={ 'armorClass' }
                        readOnly/>
-            <FormField label={'AC Mod'}
-                       type={'number'}
-                       colWidth={'2'}
-                       name={'armorClassModifier'}
-                       infoText={'Magic item or special ability'}
+            <FormField label={ 'AC Mod' }
+                       type={ 'number' }
+                       colWidth={ '2' }
+                       name={ 'armorClassModifier' }
+                       infoText={ 'Magic item or special ability' }
             />
-            <FormField label={'Hit Points'} type={'number'} colWidth={'4'} name={'hitPoints'}/>
-            <FormField label={'Experience Points'} type={'number'} colWidth={'4'} name={'xp'}/>
-          </Form.Row>
+            <FormField label={ 'Hit Points' } type={ 'number' } colWidth={ '4' } name={ 'hitPoints' }/>
+            <FormField label={ 'Experience Points' } type={ 'number' } colWidth={ '4' } name={ 'xp' }/>
+          </Row>
         </Accordion.Collapse>
-        <SectionHeading eventKey={'2'} title={'Ability Scores'}/>
-        <Accordion.Collapse eventKey={'2'}>
+        <SectionHeading eventKey={ '2' } title={ 'Ability Scores' }/>
+        <Accordion.Collapse eventKey={ '2' }>
           <div>
-            <Form.Row>
-              <FormField label={'Use Race Modifiers'}
-                         name={'applyRaceMods'}
-                         colWidth={'12'}
-                         type={'checkbox'}
-                         infoText={'Add racial bonuses to ability scores.'}
+            <Row>
+              <FormField label={ 'Use Race Modifiers' }
+                         name={ 'applyRaceMods' }
+                         colWidth={ '12' }
+                         type={ 'checkbox' }
+                         infoText={ 'Add racial bonuses to ability scores.' }
               />
-            </Form.Row>
-            <Form.Row>
-              <FormField label={'STR'} type={'number'} colWidth={'2'} name={'strength'}/>
-              <FormField label={'DEX'} type={'number'} colWidth={'2'} name={'dexterity'}/>
-              <FormField label={'CON'} type={'number'} colWidth={'2'} name={'constitution'}/>
-              <FormField label={'INT'} type={'number'} colWidth={'2'} name={'intelligence'}/>
-              <FormField label={'WIS'} type={'number'} colWidth={'2'} name={'wisdom'}/>
-              <FormField label={'CHA'} type={'number'} colWidth={'2'} name={'charisma'}/>
-            </Form.Row>
+            </Row>
+            <Row>
+              <FormField label={ 'STR' } type={ 'number' } colWidth={ '2' } name={ 'strength' }/>
+              <FormField label={ 'DEX' } type={ 'number' } colWidth={ '2' } name={ 'dexterity' }/>
+              <FormField label={ 'CON' } type={ 'number' } colWidth={ '2' } name={ 'constitution' }/>
+              <FormField label={ 'INT' } type={ 'number' } colWidth={ '2' } name={ 'intelligence' }/>
+              <FormField label={ 'WIS' } type={ 'number' } colWidth={ '2' } name={ 'wisdom' }/>
+              <FormField label={ 'CHA' } type={ 'number' } colWidth={ '2' } name={ 'charisma' }/>
+            </Row>
           </div>
         </Accordion.Collapse>
-        <SectionHeading eventKey={'3'} title={'Coin'}/>
-        <Accordion.Collapse eventKey={'3'}>
-          <Form.Row>
-            <FormField label={'Copper'} type={'number'} colWidth={'2'} name={'copperPieces'}/>
-            <FormField label={'Silver'} type={'number'} colWidth={'2'} name={'silverPieces'}/>
-            <FormField label={'Electrum'} type={'number'} colWidth={'2'} name={'electrumPieces'}/>
-            <FormField label={'Gold'} type={'number'} colWidth={'2'} name={'goldPieces'}/>
-            <FormField label={'Platinum'} type={'number'} colWidth={'2'} name={'platinumPieces'}/>
-          </Form.Row>
+        <SectionHeading eventKey={ '3' } title={ 'Coin' }/>
+        <Accordion.Collapse eventKey={ '3' }>
+          <Row>
+            <FormField label={ 'Copper' } type={ 'number' } colWidth={ '2' } name={ 'copperPieces' }/>
+            <FormField label={ 'Silver' } type={ 'number' } colWidth={ '2' } name={ 'silverPieces' }/>
+            <FormField label={ 'Electrum' } type={ 'number' } colWidth={ '2' } name={ 'electrumPieces' }/>
+            <FormField label={ 'Gold' } type={ 'number' } colWidth={ '2' } name={ 'goldPieces' }/>
+            <FormField label={ 'Platinum' } type={ 'number' } colWidth={ '2' } name={ 'platinumPieces' }/>
+          </Row>
         </Accordion.Collapse>
-        <SectionHeading eventKey={'4'} title={'Equipment'}/>
-        <Accordion.Collapse eventKey={'4'}>
+        <SectionHeading eventKey={ '4' } title={ 'Equipment' }/>
+        <Accordion.Collapse eventKey={ '4' }>
           <div>
             <h3>Armor and Weapons</h3>
-            <Form.Row>
-              <ArmorSelect colWidth={'12'}/>
-            </Form.Row>
+            <Row>
+              <ArmorSelect colWidth={ '12' }/>
+            </Row>
             <WeaponRadios/>
-            {values.weaponState === WeaponState.SINGLE ? (
-              <Form.Row>
-                <WeaponRHSelect colWidth={'12'}/>
-              </Form.Row>
-            ) : null}
-            {values.weaponState === WeaponState.DUAL ? (
-              <Form.Row>
-                <WeaponRHSelect colWidth={'6'}/>
-                <WeaponLHSelect colWidth={'6'}/>
-              </Form.Row>
-            ) : null}
-            {values.weaponState === WeaponState.SHIELD ? (
-              <Form.Row>
-                <WeaponRHSelect colWidth={'6'}/>
-                <ShieldSelect colWidth={'6'}/>
-              </Form.Row>
-            ) : null}
-            {values.weaponState === WeaponState.TWOHAND ? (
-              <Form.Row>
-                <Weapon2HSelect colWidth={'12'}/>
-              </Form.Row>
-            ) : null}
+            { values.weaponState === WeaponState.SINGLE ? (
+              <Row>
+                <WeaponRHSelect colWidth={ '12' }/>
+              </Row>
+            ) : null }
+            { values.weaponState === WeaponState.DUAL ? (
+              <Row>
+                <WeaponRHSelect colWidth={ '6' }/>
+                <WeaponLHSelect colWidth={ '6' }/>
+              </Row>
+            ) : null }
+            { values.weaponState === WeaponState.SHIELD ? (
+              <Row>
+                <WeaponRHSelect colWidth={ '6' }/>
+                <ShieldSelect colWidth={ '6' }/>
+              </Row>
+            ) : null }
+            { values.weaponState === WeaponState.TWOHAND ? (
+              <Row>
+                <Weapon2HSelect colWidth={ '12' }/>
+              </Row>
+            ) : null }
             <h3>Gear</h3>
-            <Form.Row>
-              <Col md={{span: 8, offset: 2}}>
+            <Row>
+              <Col md={ {span: 8, offset: 2} }>
                 <FieldArray name="characterItems">
-                  {({fields}) =>
+                  { ({fields}) =>
                     fields.map((characterItem, index) => (
                       !fields.value[index] || !fields.value[index]._destroy ? (
-                        <CharacterItemFields characterItem={characterItem}
-                                             fields={fields}
-                                             index={index}
-                                             key={index}
-                                             label={fields.value[index].label}/>
-                      ) : null))
+                        <CharacterItemFields characterItem={ characterItem }
+                                             fields={ fields }
+                                             index={ index }
+                                             key={ index }
+                                             label={ fields.value[index].label }/>
+                      ) : null
+                    ))
                   }
                 </FieldArray>
-                <Button type="button" onClick={() => push('characterItems', {
+                <Button type="button" onClick={ () => push('characterItems', {
                   quantity: 1,
                   label: 'Item',
                   carrying: true,
-                })} variant={'info'} block>Add Item</Button>
+                }) } variant={ 'info' } size={ 'lg' }>Add Item</Button>
               </Col>
-            </Form.Row>
+            </Row>
           </div>
         </Accordion.Collapse>
-        <SectionHeading eventKey={'5'} title={'Spellcasting'}/>
-        <Accordion.Collapse eventKey={'5'}>
+        <SectionHeading eventKey={ '5' } title={ 'Spellcasting' }/>
+        <Accordion.Collapse eventKey={ '5' }>
           <div>
-            <BardSpellSelect showBardSpells={values.showBardSpells}/>
-            <ClericSpellSelect showClericSpells={values.showClericSpells}/>
-            <DruidSpellSelect showDruidSpells={values.showDruidSpells}/>
-            <PaladinSpellSelect showPaladinSpells={values.showPaladinSpells}/>
-            <RangerSpellSelect showRangerSpells={values.showRangerSpells}/>
-            <SorcererSpellSelect showSorcererSpells={values.showSorcererSpells}/>
-            <WarlockSpellSelect showWarlockSpells={values.showWarlockSpells}/>
-            <WizardSpellSelect showWizardSpells={values.showWizardSpells}/>
+            <BardSpellSelect showBardSpells={ values.showBardSpells }/>
+            <ClericSpellSelect showClericSpells={ values.showClericSpells }/>
+            <DruidSpellSelect showDruidSpells={ values.showDruidSpells }/>
+            <PaladinSpellSelect showPaladinSpells={ values.showPaladinSpells }/>
+            <RangerSpellSelect showRangerSpells={ values.showRangerSpells }/>
+            <SorcererSpellSelect showSorcererSpells={ values.showSorcererSpells }/>
+            <WarlockSpellSelect showWarlockSpells={ values.showWarlockSpells }/>
+            <WizardSpellSelect showWizardSpells={ values.showWizardSpells }/>
           </div>
         </Accordion.Collapse>
       </Accordion>

@@ -8,7 +8,7 @@ const SectionHeading = ({title, eventKey}) => {
   const decoratedOnClick = useAccordionButton(eventKey);
 
   return (
-    <Button variant="link" size="lg" className={ 'mt-3' } block onClick={ decoratedOnClick }>
+    <Button variant="link" size="lg" className={ 'mt-3' } onClick={ decoratedOnClick }>
       <h2>{ title } <FiChevronDown/></h2>
     </Button>
   );

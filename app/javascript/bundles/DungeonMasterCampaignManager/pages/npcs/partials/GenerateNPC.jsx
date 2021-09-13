@@ -32,27 +32,52 @@ import ActionSelect from './ActionSelect';
 import {FieldArray} from 'react-final-form-arrays';
 import Col from 'react-bootstrap/Col';
 import AbilityScoreField from './AbilityScoreField';
+import Row from 'react-bootstrap/Row';
 
 const npcFormDecorator = createDecorator(
   {
     field: 'characterAlignment',
     updates: {
-      alignment: ((value) => value.value),
+      alignment: ((value) => value.value
+      ),
     },
   },
   {
     field: 'monsterType',
     updates: {
       npcVariant: ((value) => (value.value === 'humanoid' ? {
-        label: 'Fighter',
-        value: 'fighter',
-      } : {
-        label: 'Creature',
-        value: 'creature',
-      })),
+            label: 'Fighter',
+            value: 'fighter',
+          } : {
+            label: 'Creature',
+            value: 'creature',
+          }
+        )
+      ),
     },
-  }
+  },
 );
+
+const longSword = {
+  value: 761,
+  label: 'Longsword',
+  data: {
+    attackBonus: 0,
+    damageBonus: 0,
+    damageDiceCount: 1,
+    damageDiceValue: 8,
+    damageDice2HCount: 1,
+    damageDice2HValue: 10,
+    damageType: 'Slashing',
+    range: 'Martial Melee',
+    rangeNormal: 5,
+    rangeLong: null,
+    thrownRangeLong: null,
+    thrownRangeNormal: null,
+    category: 'Martial',
+    properties: ['Versatile'],
+  },
+};
 
 class GenerateNPC extends React.Component {
   state = {
@@ -65,7 +90,8 @@ class GenerateNPC extends React.Component {
       },
       npcVariant: {
         label: 'Fighter',
-        value: 'fighter'},
+        value: 'fighter',
+      },
       size: {
         label: 'Medium',
         value: 'medium',
@@ -99,7 +125,7 @@ class GenerateNPC extends React.Component {
   }
 
   handleGenerateName = (gender, race, callback) => {
-    const apiURL = `/v1/random_fantasy_name?random_npc_gender=${gender}&random_npc_race=${race ? race : 'human'}`;
+    const apiURL = `/v1/random_fantasy_name?random_npc_gender=${ gender }&random_npc_race=${ race ? race : 'human' }`;
     fetch(apiURL)
       .then((response) => response.json())
       .then((jsonResult) => {
@@ -144,16 +170,16 @@ class GenerateNPC extends React.Component {
   render () {
     const {npc, validated} = this.state;
     return (
-      <Card className={'shadow mb-5'}>
+      <Card className={ 'shadow mb-5' }>
         <Card.Body>
           <Card.Title>Random NPC Generator</Card.Title>
           <Card.Subtitle>Select options to create a new NPC</Card.Subtitle>
-          <FinalForm onSubmit={this.handleSubmit}
-                     decorators={[npcFormDecorator]}
-                     initialValues={npc}
-                     validate={this.validate}
-                     mutators={{...arrayMutators}}
-                     render={({
+          <FinalForm onSubmit={ this.handleSubmit }
+                     decorators={ [npcFormDecorator] }
+                     initialValues={ npc }
+                     validate={ this.validate }
+                     mutators={ {...arrayMutators} }
+                     render={ ({
                        handleSubmit,
                        form: {
                          mutators: {push},
@@ -163,101 +189,88 @@ class GenerateNPC extends React.Component {
                        pristine,
                        values,
                      }) => (
-                       <Form noValidate validated={validated} onSubmit={handleSubmit}>
-                         <Form.Row>
-                           <NameFormField colWidth={'12'} values={values} handleGenerateName={this.handleGenerateName}/>
-                         </Form.Row>
-                         <Form.Row>
-                           <MonsterTypeSelect colWidth={values.monsterType.value === 'humanoid' ? '4' : '12'} />
-                           {values.monsterType.value === 'humanoid' ? (
-                             <RaceSelect colWidth={'4'}/>
-                           ) : null}
-                           {values.monsterType.value === 'humanoid' ? (
-                             <NpcVariationSelect colWidth={'4'}/>
-                           ) : null}
-                         </Form.Row>
-                         <Form.Row>
-                           <AbilityScoreField label={'STR'} type={'number'} colWidth={'2'} name={'strength'}/>
-                           <AbilityScoreField label={'DEX'} type={'number'} colWidth={'2'} name={'dexterity'}/>
-                           <AbilityScoreField label={'CON'} type={'number'} colWidth={'2'} name={'constitution'}/>
-                           <AbilityScoreField label={'INT'} type={'number'} colWidth={'2'} name={'intelligence'}/>
-                           <AbilityScoreField label={'WIS'} type={'number'} colWidth={'2'} name={'wisdom'}/>
-                           <AbilityScoreField label={'CHA'} type={'number'} colWidth={'2'} name={'charisma'}/>
-                         </Form.Row>
-                         <Form.Row>
-                           <FormSelect label={'Alignment'}
-                                       colWidth={'3'}
-                                       name={'characterAlignment'}
-                                       value={values.alignment}
-                                       options={alignmentOptions}/>
-                           <FormSelect label={'Challenge Rating'}
-                                       colWidth={'3'}
-                                       name={'challengeRating'}
-                                       value={values.challengeRating}
-                                       options={this.state.challengeRatingOptions}/>
-                           <FormSelect label={'Size'}
-                                       colWidth={'3'}
-                                       name={'size'}
-                                       value={values.size}
-                                       options={npcSizeOptions}/>
-                           <FormField label={'Number of Attacks'}
-                                      type={'number'}
-                                      colWidth={'3'}
-                                      name={'numberOfAttacks'}/>
-                         </Form.Row>
-                         <Form.Row className={'mb-4'}>
-                           <Col md={'12'}>
+                       <Form noValidate validated={ validated } onSubmit={ handleSubmit }>
+                         <Row>
+                           <NameFormField colWidth={ '12' } values={ values }
+                                          handleGenerateName={ this.handleGenerateName }/>
+                         </Row>
+                         <Row>
+                           <MonsterTypeSelect colWidth={ values.monsterType.value === 'humanoid' ? '4' : '12' }/>
+                           { values.monsterType.value === 'humanoid' ? (
+                             <RaceSelect colWidth={ '4' }/>
+                           ) : null }
+                           { values.monsterType.value === 'humanoid' ? (
+                             <NpcVariationSelect colWidth={ '4' }/>
+                           ) : null }
+                         </Row>
+                         <Row>
+                           <AbilityScoreField label={ 'STR' } type={ 'number' } colWidth={ '2' } name={ 'strength' }/>
+                           <AbilityScoreField label={ 'DEX' } type={ 'number' } colWidth={ '2' } name={ 'dexterity' }/>
+                           <AbilityScoreField label={ 'CON' } type={ 'number' } colWidth={ '2' }
+                                              name={ 'constitution' }/>
+                           <AbilityScoreField label={ 'INT' } type={ 'number' } colWidth={ '2' }
+                                              name={ 'intelligence' }/>
+                           <AbilityScoreField label={ 'WIS' } type={ 'number' } colWidth={ '2' } name={ 'wisdom' }/>
+                           <AbilityScoreField label={ 'CHA' } type={ 'number' } colWidth={ '2' } name={ 'charisma' }/>
+                         </Row>
+                         <Row>
+                           <FormSelect label={ 'Alignment' }
+                                       colWidth={ '3' }
+                                       name={ 'characterAlignment' }
+                                       value={ values.alignment }
+                                       options={ alignmentOptions }/>
+                           <FormSelect label={ 'Challenge Rating' }
+                                       colWidth={ '3' }
+                                       name={ 'challengeRating' }
+                                       value={ values.challengeRating }
+                                       options={ this.state.challengeRatingOptions }/>
+                           <FormSelect label={ 'Size' }
+                                       colWidth={ '3' }
+                                       name={ 'size' }
+                                       value={ values.size }
+                                       options={ npcSizeOptions }/>
+                           <FormField label={ 'Number of Attacks' }
+                                      type={ 'number' }
+                                      colWidth={ '3' }
+                                      name={ 'numberOfAttacks' }/>
+                         </Row>
+                         <Row className={ 'mb-4' }>
+                           <Col md={ '12' }>
                              <h3>Actions</h3>
-                             <FieldArray name="actions" className={'mb-3'}>
-                               {({fields}) => (
+                             <FieldArray name="actions" className={ 'mb-3' }>
+                               { ({fields}) => (
                                  fields.map((action, index) => (
                                    !fields.value[index] || !fields.value[index]._destroy ? (
-                                     <ActionSelect colWidth={'10'}
-                                                   action={action}
-                                                   key={index}
-                                                   fields={fields}
-                                                   index={index}/>
-                                   ) : null))
-                               )}
+                                     <ActionSelect colWidth={ '10' }
+                                                   action={ action }
+                                                   key={ index }
+                                                   fields={ fields }
+                                                   index={ index }/>
+                                   ) : null
+                                 ))
+                               ) }
                              </FieldArray>
                              <Button type="button"
-                                     onClick={() => push('actions', {
-                                       value: 761,
-                                       label: 'Longsword',
-                                       data:{
-                                         attackBonus: 0,
-                                         damageBonus: 0,
-                                         damageDiceCount: 1,
-                                         damageDiceValue: 8,
-                                         damageDice2HCount: 1,
-                                         damageDice2HValue: 10,
-                                         damageType: 'Slashing',
-                                         range: 'Martial Melee',
-                                         rangeNormal: 5,
-                                         rangeLong: null,
-                                         thrownRangeLong: null,
-                                         thrownRangeNormal: null,
-                                         category: 'Martial',
-                                         properties: ['Versatile'],
-                                       },
-                                     })} variant={'info'} block>Add Action</Button>
+                                     onClick={ () => push('actions', longSword) }
+                                     variant={ 'info' }
+                                     size="lg">Add Action</Button>
                            </Col>
-                         </Form.Row>
-                         {values.npcVariant.value === 'caster_wizard' ? (
-                           <WizardSpellSelect showWizardSpells={true}/>
-                         ) : null}
-                         {values.npcVariant.value === 'caster_cleric' ? (
-                           <ClericSpellSelect showClericSpells={true}/>
-                         ) : null}
-                         <Form.Row className={'mb-4'}>
+                         </Row>
+                         { values.npcVariant.value === 'caster_wizard' ? (
+                           <WizardSpellSelect showWizardSpells={ true }/>
+                         ) : null }
+                         { values.npcVariant.value === 'caster_cleric' ? (
+                           <ClericSpellSelect showClericSpells={ true }/>
+                         ) : null }
+                         <Row className={ 'mb-4' }>
                            <ButtonGroup aria-label="Character actions">
-                             <Button type="submit" disabled={submitting}>Generate NPC</Button>
-                             <Button type="button" onClick={form.reset} disabled={submitting || pristine}
-                                     variant={'secondary'}>Reset</Button>
+                             <Button type="submit" disabled={ submitting }>Generate NPC</Button>
+                             <Button type="button" onClick={ form.reset } disabled={ submitting || pristine }
+                                     variant={ 'secondary' }>Reset</Button>
                            </ButtonGroup>
-                         </Form.Row>
+                         </Row>
                        </Form>
-                     )}
+                     ) }
           />
         </Card.Body>
       </Card>

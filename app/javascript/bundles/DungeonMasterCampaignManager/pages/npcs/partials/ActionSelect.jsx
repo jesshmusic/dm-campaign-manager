@@ -11,6 +11,7 @@ import Button from 'react-bootstrap/Button';
 import {GiTrashCan} from 'react-icons/gi';
 import FormField from '../../../components/forms/FormField';
 import {Card} from 'react-bootstrap';
+import Row from 'react-bootstrap/Row';
 
 export const filterOptions = (results) => {
   const options = [{
@@ -44,7 +45,7 @@ export const filterOptions = (results) => {
 };
 
 const getWeapons = (inputValue, callback) => {
-  fetch(`/v1/weapon_items.json?search=${inputValue}`)
+  fetch(`/v1/weapon_items.json?search=${ inputValue }`)
     .then((response) => response.json())
     .then((jsonResult) => {
       callback(filterOptions(jsonResult));
@@ -70,33 +71,33 @@ const ActionSelect = ({action, colWidth, fields, index}) => {
   };
 
   return (
-    <Card className={'mb-3'}>
+    <Card className={ 'mb-3' }>
       <Card.Body>
-        <Form.Row>
-          {fields.value[index].value === 'newAction' ? (
+        <Row>
+          { fields.value[index].value === 'newAction' ? (
             <Form.Group as={ Col } md={ colWidth }>
-              <Form.Row>
-                <FormField label={'Action Name'}
-                           type={'text'}
-                           colWidth={'12'}
-                           name={`${action}.label`}/>
-                <FormField label={'Number of Damage Dice'}
-                           type={'number'}
-                           colWidth={'3'}
-                           name={`${action}.data.damageDiceCount`}/>
-                <FormField label={'Type of Damage Dice'}
-                           type={'number'}
-                           colWidth={'3'}
-                           name={`${action}.data.damageDiceValue`}/>
-                <FormField label={'Damage Type'}
-                           type={'text'}
-                           colWidth={'3'}
-                           name={`${action}.data.damageType`}/>
-                <FormField label={'Reach'}
-                           type={'number'}
-                           colWidth={'3'}
-                           name={`${action}.data.rangeNormal`}/>
-              </Form.Row>
+              <Row>
+                <FormField label={ 'Action Name' }
+                           type={ 'text' }
+                           colWidth={ '12' }
+                           name={ `${ action }.label` }/>
+                <FormField label={ 'Number of Damage Dice' }
+                           type={ 'number' }
+                           colWidth={ '3' }
+                           name={ `${ action }.data.damageDiceCount` }/>
+                <FormField label={ 'Type of Damage Dice' }
+                           type={ 'number' }
+                           colWidth={ '3' }
+                           name={ `${ action }.data.damageDiceValue` }/>
+                <FormField label={ 'Damage Type' }
+                           type={ 'text' }
+                           colWidth={ '3' }
+                           name={ `${ action }.data.damageType` }/>
+                <FormField label={ 'Reach' }
+                           type={ 'number' }
+                           colWidth={ '3' }
+                           name={ `${ action }.data.rangeNormal` }/>
+              </Row>
             </Form.Group>
           ) : (
             <FormSelectAsync
@@ -105,7 +106,7 @@ const ActionSelect = ({action, colWidth, fields, index}) => {
               getOptions={ getWeapons }
               value={ fields.value[index].action }
               name={ action }/>
-          )}
+          ) }
           <Form.Group as={ Col } md={ '1' }>
             <Form.Label>Remove</Form.Label>
             <Button onClick={ () => removeItem() }
@@ -115,7 +116,7 @@ const ActionSelect = ({action, colWidth, fields, index}) => {
               <GiTrashCan size={ 32 }/>
             </Button>
           </Form.Group>
-        </Form.Row>
+        </Row>
       </Card.Body>
     </Card>
   );

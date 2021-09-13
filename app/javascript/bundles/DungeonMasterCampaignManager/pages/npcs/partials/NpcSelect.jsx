@@ -6,19 +6,21 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import FormSelectAsync from '../../../components/forms/FormSelectAsync';
 import Form from 'react-bootstrap/Form';
+import Row from 'react-bootstrap/Row';
 
 const filterNPCOptions = (results) => results.results.map((nextItem) => ({
   value: nextItem.id,
-  label: `${nextItem.name}: CR ${nextItem.challengeRating} - ${nextItem.xp}xp`,
+  label: `${ nextItem.name }: CR ${ nextItem.challengeRating } - ${ nextItem.xp }xp`,
   challengeRating: nextItem.challengeRating,
   xp: nextItem.xp,
   armorClass: nextItem.armorClass,
   hitPoints: nextItem.hitPoints,
-}));
+}
+));
 
 const getNPCs = (challengeRating, inputValue, callback) => {
-  const challengeRatingParam = challengeRating ? `&challenge_rating=${challengeRating}` : '';
-  fetch(`/v1/monsters.json?search=${inputValue}${challengeRatingParam}`)
+  const challengeRatingParam = challengeRating ? `&challenge_rating=${ challengeRating }` : '';
+  fetch(`/v1/monsters.json?search=${ inputValue }${ challengeRatingParam }`)
     .then((response) => response.json())
     .then((jsonResult) => {
       callback(filterNPCOptions(jsonResult));
@@ -26,16 +28,16 @@ const getNPCs = (challengeRating, inputValue, callback) => {
 };
 
 const NPCSelect = ({challengeRating, name}) => (
-  <Form.Row>
+  <Row>
     <FormSelectAsync
-      label={'NPC'}
-      colWidth={'12'}
-      getOptions={(inputValue, callback) => getNPCs(challengeRating, inputValue, callback)}
-      name={name}
-      defaultOptions={[]}
+      label={ 'NPC' }
+      colWidth={ '12' }
+      getOptions={ (inputValue, callback) => getNPCs(challengeRating, inputValue, callback) }
+      name={ name }
+      defaultOptions={ [] }
       isClearable
-      placeholder={'Search for NPCs...'} />
-  </Form.Row>
+      placeholder={ 'Search for NPCs...' }/>
+  </Row>
 );
 
 NPCSelect.propTypes = {

@@ -6,16 +6,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Form from 'react-bootstrap/Form';
 import FormSelect from '../../../components/forms/FormSelect';
+import Row from 'react-bootstrap/Row';
 
 const NpcSelect = ({npcOptions, name}) => (
-  <Form.Row>
+  <Row>
     <FormSelect
-      label={'NPC'}
-      colWidth={'12'}
-      name={name}
-      options={npcOptions}
-      isClearable />
-  </Form.Row>
+      label={ 'NPC' }
+      colWidth={ '12' }
+      name={ name }
+      options={ npcOptions }
+      isClearable/>
+  </Row>
 );
 
 NpcSelect.propTypes = {
