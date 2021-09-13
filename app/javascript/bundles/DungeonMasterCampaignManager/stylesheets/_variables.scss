@@ -305,18 +305,19 @@ $navbar-light-toggler-border-color: rgba($black, 0.1);
 $table-cell-padding: 0.75rem;
 $table-cell-padding-sm: 0.3rem;
 $table-bg: transparent;
-$table-accent-bg: rgba($black, 0.05);
-$table-hover-bg: rgba($black, 0.075);
+$table-accent-bg: rgba($primary, 0.1);
+$table-hover-bg: rgba($black, 0);
 $table-active-bg: $table-hover-bg;
-$table-border-width: $border-width;
-$table-border-color: $gray-200;
-$table-head-bg: $gray-200;
-$table-head-color: $gray-700;
-$table-inverse-bg: $gray-900;
-$table-inverse-accent-bg: rgba($white, 0.05);
-$table-inverse-hover-bg: rgba($white, 0.075);
-$table-inverse-border-color: lighten($gray-900, 7.5%);
-$table-inverse-color: $body-bg;
+$table-striped-bg: transparent;
+$table-border-width: 0;
+$table-border-color: transparent;
+$table-head-bg: $ash;
+$table-head-color: $white;
+//$table-inverse-bg: transparent;
+//$table-inverse-accent-bg: rgba($white, 0.05);
+//$table-inverse-hover-bg: rgba($white, 0.075);
+//$table-inverse-border-color: lighten($gray-900, 7.5%);
+//$table-inverse-color: $body-bg;
 
 
 // Z Index

@@ -27,6 +27,12 @@ h1 {
   font-family: 'Mr Eaves', serif;
 }
 
+.dnd-table {
+  @extend .table;
+  @extend .table-borderless;
+  @extend .table-striped;
+}
+
 .table-frame {
   margin-top: 25px;
   margin-bottom: 40px;

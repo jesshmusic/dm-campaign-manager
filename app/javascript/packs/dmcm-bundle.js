@@ -1,7 +1,4 @@
 import ReactOnRails from 'react-on-rails';
-import Rails from '@rails/ujs';
-import Turbolinks from 'turbolinks';
-import * as ActiveStorage from '@rails/activestorage';
 import 'channels';
 import $ from 'jquery';
 import 'select2';
@@ -71,10 +68,6 @@ $(document).ready(function () {
   hideAllInputs();
   handleSelectOptionType($('#item_category').text());
 });
-
-Rails.start();
-Turbolinks.start();
-ActiveStorage.start();
 
 import Home from '../bundles/DungeonMasterCampaignManager/pages/Home';
 

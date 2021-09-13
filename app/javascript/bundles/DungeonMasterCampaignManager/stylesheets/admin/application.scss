@@ -4,12 +4,12 @@
 // Dashboard
 @import 'dashboard';
 
-table {
-  @extend .table;
-  @extend .table-bordered;
-  @extend .table-sm;
-  @extend .table-dark;
-}
+//table {
+//  @extend .table;
+//  @extend .table-bordered;
+//  @extend .table-sm;
+//  @extend .table-dark;
+//}
 
 .simple_form {
   max-width: 900px;
