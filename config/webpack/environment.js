@@ -12,4 +12,10 @@ if (!Array.isArray(nodeModulesLoader.exclude)) {
 }
 
 nodeModulesLoader.exclude.push(/react-table/);
+
+environment.loaders.append('typescript', {
+  test: /.(ts|tsx)$/,
+  loader: 'ts-loader',
+});
+
 module.exports = environment;

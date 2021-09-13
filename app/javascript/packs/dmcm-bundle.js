@@ -38,9 +38,10 @@ $(document).ready(function () {
 
   loadSelect2();
 
-  $('#item_category').select2({theme: 'bootstrap-5'});
+  const itemCategory = $('#item_category');
+  itemCategory.select2({theme: 'bootstrap-5'});
 
-  var $eventSelect = $('#item_category');
+  var $eventSelect = itemCategory;
 
   $eventSelect.select2();
 
@@ -66,7 +67,7 @@ $(document).ready(function () {
   }
 
   hideAllInputs();
-  handleSelectOptionType($('#item_category').text());
+  handleSelectOptionType(itemCategory.text());
 });
 
 import Home from '../bundles/DungeonMasterCampaignManager/pages/Home';

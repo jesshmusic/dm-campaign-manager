@@ -26,6 +26,7 @@ module.exports = function (api) {
           modules: 'commonjs',
         },
         '@babel/preset-react',
+        '@babel/preset-typescript',
       ],
       (isProductionEnv || isDevelopmentEnv
       ) && [
@@ -37,6 +38,7 @@ module.exports = function (api) {
           modules: false,
           exclude: ['transform-typeof-symbol'],
         },
+        '@babel/preset-typescript',
       ],
       [
         '@babel/preset-react',
@@ -44,6 +46,7 @@ module.exports = function (api) {
           development: isDevelopmentEnv || isTestEnv,
           useBuiltIns: true,
         },
+        '@babel/preset-typescript',
       ],
     ].filter(Boolean),
     plugins: [
