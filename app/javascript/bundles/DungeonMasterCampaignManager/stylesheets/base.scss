@@ -27,6 +27,17 @@ h1 {
   font-family: 'Mr Eaves', serif;
 }
 
+.card {
+  position: relative;
+  padding-top: 15px;
+  background-color: #FDF1DC;
+  border-style: solid;
+  border-width: 10px;
+  border-image: $orange-border;
+
+  font-family: 'Scaly Sans', sans-serif;
+}
+
 .dnd-table {
   @extend .table;
   @extend .table-borderless;

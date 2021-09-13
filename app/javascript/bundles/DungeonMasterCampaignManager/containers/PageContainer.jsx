@@ -17,6 +17,8 @@ import BreadcrumbLink from '../components/layout/BreadcrumbLink';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 
+import classes from './page-container.module.scss';
+
 const PageContainer = (props) => {
   const {breadcrumbs, children, description, pageTitle, user} = props;
 
@@ -28,17 +30,17 @@ const PageContainer = (props) => {
       </Helmet>
       <MenuBar user={ user }/>
       <HeroBanner/>
-      <Container fluid>
+      <Container fluid className={ classes.page }>
         <FlashMessages/>
         { breadcrumbs && breadcrumbs.length > 0 ? (
           <Breadcrumb>
             <BreadcrumbLink to="/" title={ 'Home' }/>
             { breadcrumbs.map((breadcrumb, index) =>
               (!breadcrumb.isActive ? (
-                <BreadcrumbLink to={ breadcrumb.url } title={ breadcrumb.title } key={ index }/>
-              ) : (
-                <Breadcrumb.Item active key={ index }>{ breadcrumb.title }</Breadcrumb.Item>
-              )
+                  <BreadcrumbLink to={ breadcrumb.url } title={ breadcrumb.title } key={ index }/>
+                ) : (
+                  <Breadcrumb.Item active key={ index }>{ breadcrumb.title }</Breadcrumb.Item>
+                )
               ),
             ) }
           </Breadcrumb>

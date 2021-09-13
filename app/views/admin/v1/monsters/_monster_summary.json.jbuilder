@@ -10,7 +10,7 @@ json.xp monster.xp
 json.armorClass monster.armor_class
 json.hit_points monster.hit_points
 json.speed monster.speed
-json.hit_dice monster.hit_dice
+json.hit_dice monster.hit_die_string
 json.monster_type monster.monster_type
 json.description_text monster.description_text
 

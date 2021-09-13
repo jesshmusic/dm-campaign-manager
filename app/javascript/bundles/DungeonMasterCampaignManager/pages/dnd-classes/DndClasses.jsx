@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {useTable} from 'react-table';
 
 // Container
 import PageContainer from '../../containers/PageContainer.jsx';
@@ -17,7 +16,6 @@ const DndClasses = (props) => {
   }, []);
 
   const data = React.useMemo(() => {
-    console.log(props.dndClasses.dndClasses.length);
     return props.dndClasses.dndClasses.map((dndClass) => {
       return {
         name: dndClass.name,

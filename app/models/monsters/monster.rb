@@ -73,6 +73,15 @@ class Monster < ApplicationRecord
     DndRules.ability_score_modifier(dexterity)
   end
 
+  def hit_die_string
+    constitution_bonus = DndRules.ability_score_modifier(constitution)
+    hit_dice_count = hit_dice.partition('d').first.to_i
+    constitution_bonus = constitution_bonus * hit_dice_count
+    modifier = constitution_bonus > 0 ? '+' : '-'
+    additional = constitution_bonus != 0 ? "#{modifier} #{constitution_bonus.abs}" : ''
+    "#{hit_dice} #{additional}"
+  end
+
   def description_text
     monster_desc = [
       '<div class="p-3">',
