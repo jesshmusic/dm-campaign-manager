@@ -170,7 +170,7 @@ class GenerateNPC extends React.Component {
   render () {
     const {npc, validated} = this.state;
     return (
-      <Card className={ 'shadow mb-5' }>
+      <Card className={ 'mb-5' }>
         <Card.Body>
           <Card.Title>Random NPC Generator</Card.Title>
           <Card.Subtitle>Select options to create a new NPC</Card.Subtitle>

@@ -7,11 +7,11 @@ import 'select2';
 
 require('@nathanvda/cocoon');
 
-$(document).ready(function () {
+$(document).ready(() => {
   $('#monster_condition_ids').select2({
     theme: 'bootstrap-5',
   });
-  $('#prof_choices_container').on('cocoon:after-insert', function (event, addedTask) {
+  $('#prof_choices_container').on('cocoon:after-insert', () => {
     loadSelect2();
   });
   $('#spell_components').select2({
@@ -41,11 +41,11 @@ $(document).ready(function () {
   const itemCategory = $('#item_category');
   itemCategory.select2({theme: 'bootstrap-5'});
 
-  var $eventSelect = itemCategory;
+  const $eventSelect = itemCategory;
 
   $eventSelect.select2();
 
-  $eventSelect.on('select2:select', function (event) {
+  $eventSelect.on('select2:select', (event) => {
     handleSelectOptionType(event.params.data.text);
   });
 

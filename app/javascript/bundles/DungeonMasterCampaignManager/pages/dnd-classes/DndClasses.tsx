@@ -1,14 +1,14 @@
 import React from 'react';
-import {connect} from 'react-redux';
 
 // Container
 import PageContainer from '../../containers/PageContainer.jsx';
-import rest from '../../actions/api';
+import {fetchData} from '../../actions/api';
 import PageTitle from '../../components/layout/PageTitle';
 import DndSpinner from '../../components/layout/DndSpinner';
 import DataTable from '../../components/layout/DataTable';
 import {RouteComponentProps} from "@reach/router";
-import {IDndClasses, IDndClassesResponse, IFlashMessage, IUser} from "../../utilities/types";
+import {IDndClass, IDndClasses, IFlashMessage, IUser} from "../../utilities/types";
+
 
 interface IDndClassesPage {
   dndClasses?: IDndClasses;
@@ -19,18 +19,28 @@ interface IDndClassesPage {
 }
 
 const DndClasses: React.FC<RouteComponentProps> = (props: IDndClassesPage) => {
+  const [dndClasses, setDndClasses] = React.useState([]);
+
   React.useEffect(() => {
-    props.getDndClasses();
+    const componentDidMount = async () => {
+      const response = await fetchData({
+        method: 'get',
+        url: '/v1/dnd_classes.json'
+      });
+      setDndClasses(response.data?.results);
+    }
+    componentDidMount();
   }, []);
 
   const data = React.useMemo(() => {
-    return props.dndClasses?.dndClasses.map((dndClass) => {
+    console.log(dndClasses);
+    return dndClasses.map((dndClass: IDndClass) => {
       return {
         name: dndClass.name,
         hitDie: `d${dndClass.hitDie}`,
       };
     });
-  }, [props.dndClasses?.dndClasses]);
+  }, [dndClasses]);
 
   const columns = React.useMemo(() => [
     {
@@ -51,7 +61,7 @@ const DndClasses: React.FC<RouteComponentProps> = (props: IDndClassesPage) => {
                    description={'All D&D dndClasses. Dungeon Master\'s Toolbox is a free resource for DMs to manage their dndClasses, adventures, and NPCs.'}
                    breadcrumbs={[{url: null, isActive: true, title: 'Character Classes'}]}>
       <PageTitle title={'Character Classes'}/>
-      {props.dndClasses?.dndClasses && props.dndClasses.dndClasses.length > 0 ? (
+      {dndClasses.length > 0 ? (
         <DataTable columns={columns} data={data}/>
       ) : (
         <DndSpinner/>
@@ -60,23 +70,25 @@ const DndClasses: React.FC<RouteComponentProps> = (props: IDndClassesPage) => {
   );
 };
 
-function mapStateToProps(state) {
-  return {
-    dndClasses: state.dndClasses,
-    user: state.users.user,
-    flashMessages: state.flashMessages,
-  };
-}
+export default DndClasses;
 
-function mapDispatchToProps(dispatch) {
-  return {
-    getDndClasses: () => {
-      dispatch(rest.actions.getDndClasses());
-    },
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(DndClasses);
+// function mapStateToProps(state) {
+//   return {
+//     dndClasses: state.dndClasses,
+//     user: state.users.user,
+//     flashMessages: state.flashMessages,
+//   };
+// }
+//
+// function mapDispatchToProps(dispatch) {
+//   return {
+//     getDndClasses: () => {
+//       dispatch(rest.actions.getDndClasses());
+//     },
+//   };
+// }
+//
+// export default connect(mapStateToProps, mapDispatchToProps)(DndClasses);
 
 
 // const expandRow = () => {

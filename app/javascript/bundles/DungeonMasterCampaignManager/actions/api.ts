@@ -1,10 +1,11 @@
 import ReactOnRails from 'react-on-rails';
 import reduxApi from 'redux-api';
 import {navigate} from '@reach/router';
+import axios, {AxiosRequestConfig, AxiosResponse} from "axios";
 
-export function getHeaders (contentType) {
+export function getHeaders() {
   return ReactOnRails.authenticityHeaders({
-    'Content-Type': contentType ? contentType : 'application/json',
+    'Content-Type': 'application/json',
     'Accept': 'application/json',
   });
 }
@@ -25,6 +26,18 @@ const toJSON = (resp) => {
   }
   return Promise.resolve(resp).then(processData);
 };
+
+export const fetchData = async (opts: AxiosRequestConfig): Promise<AxiosResponse> => {
+
+  const response = await axios({
+    method: opts.method,
+    url: opts.url,
+    data: opts.data,
+    headers: getHeaders()
+  });
+  // console.log(response);
+  return response;
+}
 
 const dmFetch = (fetch) => {
   return (url, opts) =>
@@ -47,7 +60,7 @@ const dmFetch = (fetch) => {
 export default reduxApi({
   generateNonPlayerCharacter: {
     url: '/v1/generate_npc',
-    options () {
+    options() {
       const headers = getHeaders();
       return {
         method: 'post',
@@ -57,7 +70,7 @@ export default reduxApi({
   },
   convert2eNonPlayerCharacter: {
     url: '/v1/convert_2e_npc',
-    options () {
+    options() {
       const headers = getHeaders();
       return {
         method: 'post',
@@ -106,7 +119,7 @@ export default reduxApi({
   },
   userLogin: {
     url: '/users/sign_in',
-    options () {
+    options() {
       const headers = getHeaders();
       return {
         method: 'post',
@@ -119,7 +132,7 @@ export default reduxApi({
   },
   userLogout: {
     url: '/users/sign_out',
-    options () {
+    options() {
       const headers = getHeaders();
       return {
         method: 'delete',

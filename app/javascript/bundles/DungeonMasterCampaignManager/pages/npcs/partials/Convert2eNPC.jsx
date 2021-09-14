@@ -118,7 +118,7 @@ class Convert2eNPC extends React.Component {
   render () {
     const {npc, validated} = this.state;
     return (
-      <Card className={ 'shadow mb-5' }>
+      <Card className={ 'mb-5' }>
         <Card.Body>
           <Card.Title>D&D 2nd Edition NPC Convertor</Card.Title>
           <Card.Subtitle>

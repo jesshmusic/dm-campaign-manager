@@ -53,20 +53,20 @@ const store = (props: AppProps) => configureStore({
 const Home = (props) => (
   <Provider store={store(props)}>
     <Router>
-      <HomePage path="/"/>
-      <DndClass path='/app/classes/:dndClassSlug'/>
-      <DndClasses path='/app/classes'/>
-      <Items path='/app/items'/>
-      <AllItems path='/app/items/all/'/>
-      <Armor path='/app/items/armor/'/>
-      <Weapons path='/app/items/weapons/'/>
-      <MagicItems path='/app/items/magic-items/'/>
-      <Gear path='/app/items/gear/'/>
-      <Tools path='/app/items/tools/'/>
-      <Vehicles path='/app/items/vehicles/'/>
-      <NPCs path='/app/npcs/'/>
-      <Spells path='/app/spells/'/>
-      <NpcGenerator path='/app/npc-generator/'/>
+      <HomePage path="/" {...props}/>
+      <DndClass path='/app/classes/:dndClassSlug' {...props}/>
+      <DndClasses path='/app/classes' {...props}/>
+      <Items path='/app/items' {...props}/>
+      <AllItems path='/app/items/all/' {...props}/>
+      <Armor path='/app/items/armor/' {...props}/>
+      <Weapons path='/app/items/weapons/' {...props}/>
+      <MagicItems path='/app/items/magic-items/' {...props}/>
+      <Gear path='/app/items/gear/' {...props}/>
+      <Tools path='/app/items/tools/' {...props}/>
+      <Vehicles path='/app/items/vehicles/' {...props}/>
+      <NPCs path='/app/npcs/' {...props}/>
+      <Spells path='/app/spells/' {...props}/>
+      <NpcGenerator path='/app/npc-generator/' {...props}/>
     </Router>
   </Provider>
 );

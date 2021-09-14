@@ -14,7 +14,7 @@ const NameField = () => {
   const [nameValue, setNameValue] = useState('');
 
   const handleGenerateName = (gender, race) => {
-    const apiURL = `/v1/random_fantasy_name?random_npc_gender=${gender}&random_npc_race=${race}`;
+    const apiURL = `/v1/random_fantasy_name?random_npc_gender=${ gender }&random_npc_race=${ race }`;
     fetch(apiURL)
       .then((response) => response.json())
       .then((jsonResult) => {
@@ -23,18 +23,18 @@ const NameField = () => {
   };
 
   return (
-    <Card className={'shadow mb-5'}>
+    <Card className={ 'mb-5' }>
       <Card.Body>
         <Card.Title>Random Character Name</Card.Title>
         <Card.Subtitle>Generate a random fantasy name based on gender and race</Card.Subtitle>
         <Form>
           <Row>
-            <CopyField placeHolder={'Random Name...'}
-                       fieldId={'randomFantasyName'}
-                       label={'Random Name'}
-                       text={nameValue} />
+            <CopyField placeHolder={ 'Random Name...' }
+                       fieldId={ 'randomFantasyName' }
+                       label={ 'Random Name' }
+                       text={ nameValue }/>
           </Row>
-          <NameOptions onFormSubmit={handleGenerateName} submitText={'Name'}/>
+          <NameOptions onFormSubmit={ handleGenerateName } submitText={ 'Name' }/>
         </Form>
       </Card.Body>
     </Card>

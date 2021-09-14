@@ -23,24 +23,24 @@ const TavernNameField = () => {
   };
 
   return (
-    <Card className={'shadow mb-5'}>
+    <Card className={ 'mb-5' }>
       <Card.Body>
         <Card.Title>Random Tavern Name</Card.Title>
         <Card.Subtitle>Generate a random tavern name.</Card.Subtitle>
         <Form>
           <Row>
-            <CopyField placeHolder={'Random Tavern Name...'}
-                       fieldId={'randomTavernName'}
-                       label={'Random TavernName'}
-                       text={nameValue} />
+            <CopyField placeHolder={ 'Random Tavern Name...' }
+                       fieldId={ 'randomTavernName' }
+                       label={ 'Random TavernName' }
+                       text={ nameValue }/>
           </Row>
-          <Form.Group controlId={'tavernNameGeneratorSubmit'}>
+          <Form.Group controlId={ 'tavernNameGeneratorSubmit' }>
             <Form.Label>Submit</Form.Label>
             <Button
-            variant={ 'primary' }
-            className={'w-100'}
-            onClick={ handleGenerateTavernName }>
-            Get Tavern Name
+              variant={ 'primary' }
+              className={ 'w-100' }
+              onClick={ handleGenerateTavernName }>
+              Get Tavern Name
             </Button>
           </Form.Group>
         </Form>

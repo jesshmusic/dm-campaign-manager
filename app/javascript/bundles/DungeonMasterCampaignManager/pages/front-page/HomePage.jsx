@@ -39,21 +39,23 @@ const HomePage = (props) => (
   </PageContainer>
 );
 
-HomePage.propTypes = {
-  flashMessages: PropTypes.array,
-  itemsCount: PropTypes.number.isRequired,
-  npcsCount: PropTypes.number.isRequired,
-  spellsCount: PropTypes.number.isRequired,
-  user: PropTypes.object,
-};
+export default HomePage;
 
-function mapStateToProps (state) {
-  return {
-    flashMessages: state.flashMessages,
-    itemsCount: state.items.count,
-    npcsCount: state.npcs.count,
-    spellsCount: state.spells.count,
-  };
-}
-
-export default connect(mapStateToProps)(HomePage);
+// HomePage.propTypes = {
+//   flashMessages: PropTypes.array,
+//   itemsCount: PropTypes.number.isRequired,
+//   npcsCount: PropTypes.number.isRequired,
+//   spellsCount: PropTypes.number.isRequired,
+//   user: PropTypes.object,
+// };
+//
+// function mapStateToProps (state) {
+//   return {
+//     flashMessages: state.flashMessages,
+//     itemsCount: state.items.count,
+//     npcsCount: state.npcs.count,
+//     spellsCount: state.spells.count,
+//   };
+// }
+//
+// export default connect(mapStateToProps)(HomePage);

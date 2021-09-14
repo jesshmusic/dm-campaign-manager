@@ -1,9 +1,8 @@
-import React from 'react';
-import {connect} from 'react-redux';
+import React from 'react'
 
 // Container
 import PageContainer from '../../containers/PageContainer.jsx';
-import rest from '../../actions/api';
+import {fetchData} from '../../actions/api';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import ListGroup from 'react-bootstrap/ListGroup';
@@ -22,10 +21,18 @@ interface IDndClassPage {
 }
 
 const DndClass: React.FC<RouteComponentProps> = (props: IDndClassPage) => {
+  const [dndClass, setDndClass] = React.useState<IDndClass | undefined>();
+  const {user, flashMessages, dndClassSlug} = props;
   React.useEffect(() => {
-    props.getDndClass(props.dndClassSlug);
+    const componentDidMount = async () => {
+      const response = await fetchData({
+        method: 'get',
+        url: `/v1/dnd_classes/${dndClassSlug}.json`
+      });
+      setDndClass(response.data);
+    }
+    componentDidMount();
   }, []);
-  const {user, flashMessages, dndClass} = props;
   const dndClassTitle = dndClass ? dndClass.name : 'Class Loading...';
   return (
     <PageContainer user={user}
@@ -34,9 +41,12 @@ const DndClass: React.FC<RouteComponentProps> = (props: IDndClassPage) => {
                    description={`DndClass: ${dndClassTitle}. Dungeon Master's Toolbox is a free resource for DMs to manage their dndClasses, adventures, and NPCs.`}
                    breadcrumbs={[{url: '/app/classes', isActive: false, title: 'Character Classes'},
                      {url: null, isActive: true, title: dndClassTitle}]}>
-      <PageTitle title={'Character Classes'}/>
+      <PageTitle title={`Class: ${dndClassTitle}`}/>
       {dndClass ? (
         <Row>
+          <Col>
+
+          </Col>
           <Col>
             <h2>Proficiencies</h2>
             <ListGroup>
@@ -72,20 +82,4 @@ const DndClass: React.FC<RouteComponentProps> = (props: IDndClassPage) => {
   );
 }
 
-function mapStateToProps(state) {
-  return {
-    dndClass: state.dndClasses.currentDndClass,
-    user: state.users.user,
-    flashMessages: state.flashMessages,
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    getDndClass: (dndClassSlug: string) => {
-      dispatch(rest.actions.getDndClass({slug: dndClassSlug}));
-    },
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(DndClass);
+export default DndClass;

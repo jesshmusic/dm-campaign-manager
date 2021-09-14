@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 const GenerateCommoner = (props) => {
-  return <Card className={ 'shadow mb-5' }>
+  return <Card className={ 'mb-5' }>
     <Card.Body>
       <Card.Title>Generate Commoner</Card.Title>
       <Card.Subtitle>Quick generate a random commoner</Card.Subtitle>
@@ -14,7 +14,7 @@ const GenerateCommoner = (props) => {
 };
 
 GenerateCommoner.propTypes = {
-  onFormSubmit: PropTypes.func
+  onFormSubmit: PropTypes.func,
 };
 
 export default GenerateCommoner;
