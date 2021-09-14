@@ -10,8 +10,8 @@ import MenuBar from '../components/layout/MenuBar/MenuBar';
 import FlashMessages from '../components/layout/Alerts/FlashMessages.jsx';
 
 import '../stylesheets/_fonts.scss';
-import '../stylesheets/_global.scss';
-import {Helmet} from 'react-helmet';
+import '../stylesheets/application.scss';
+import { Helmet } from 'react-helmet';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import BreadcrumbLink from '../components/layout/BreadcrumbLink';
 import Col from 'react-bootstrap/Col';
@@ -20,28 +20,28 @@ import Row from 'react-bootstrap/Row';
 import classes from './page-container.module.scss';
 
 const PageContainer = (props) => {
-  const {breadcrumbs, children, description, pageTitle, user} = props;
+  const { breadcrumbs, children, description, pageTitle, user } = props;
 
   return (
     <div>
       <Helmet>
         <title>{ pageTitle } | Dungeon Master&apos;s Toolbox</title>
-        <meta name="description" content={ description }/>
+        <meta name='description' content={ description } />
       </Helmet>
-      <MenuBar user={ user }/>
-      <HeroBanner/>
+      <MenuBar user={ user } />
+      <HeroBanner />
       <Container fluid className={ classes.page }>
-        <FlashMessages/>
+        <FlashMessages />
         { breadcrumbs && breadcrumbs.length > 0 ? (
           <Breadcrumb>
-            <BreadcrumbLink to="/" title={ 'Home' }/>
+            <BreadcrumbLink to='/' title={ 'Home' } />
             { breadcrumbs.map((breadcrumb, index) =>
               (!breadcrumb.isActive ? (
-                  <BreadcrumbLink to={ breadcrumb.url } title={ breadcrumb.title } key={ index }/>
+                  <BreadcrumbLink to={ breadcrumb.url } title={ breadcrumb.title } key={ index } />
                 ) : (
                   <Breadcrumb.Item active key={ index }>{ breadcrumb.title }</Breadcrumb.Item>
                 )
-              ),
+              )
             ) }
           </Breadcrumb>
         ) : null }
@@ -51,7 +51,7 @@ const PageContainer = (props) => {
           </Col>
         </Row>
       </Container>
-      <Footer user={ user }/>
+      <Footer user={ user } />
     </div>
   );
 };
@@ -60,12 +60,12 @@ PageContainer.propTypes = {
   breadcrumbs: PropTypes.arrayOf(PropTypes.shape({
     isActive: PropTypes.bool,
     title: PropTypes.string.isRequired,
-    url: PropTypes.string,
+    url: PropTypes.string
   })),
   children: PropTypes.any,
   description: PropTypes.string.isRequired,
   pageTitle: PropTypes.string.isRequired,
-  user: PropTypes.object,
+  user: PropTypes.object
 };
 
 export default PageContainer;

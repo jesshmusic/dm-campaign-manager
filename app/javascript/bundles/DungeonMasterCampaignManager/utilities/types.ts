@@ -54,21 +54,29 @@ export interface IFlashMessage {
   type: string;
 }
 
+export interface AbilityScore {
+  desc: [string];
+  fullName: string;
+  name: string;
+}
+
 export interface IDndClassesResponse {
   count: number;
-  results: [IDndClasses];
+  results: [DndClasses];
 }
 
-export interface IDndClasses {
-  dndClasses: [IDndClass];
-  currentDndClass: IDndClass;
+export interface DndClasses {
+  dndClasses: [DndClass];
+  currentDndClass: DndClass;
 }
 
-export interface IDndClass {
+export interface DndClass {
   name: string;
   hitDie: string;
+  abilityScores: [AbilityScore];
   proficiencies: [IProf];
   proficiencyChoices: [IProfChoice];
+  slug: string;
 }
 
 export interface IProf {

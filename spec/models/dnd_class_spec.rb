@@ -38,7 +38,7 @@ RSpec.describe DndClass, type: :model do
       expect(@user_dnd_class.slug).to eq('fighter-jesshdm1')
     end
 
-    it 'should have 12 IDndClasses' do
+    it 'should have 12 DndClasses' do
       expect(DndClass.all.count).to eq(12)
     end
 

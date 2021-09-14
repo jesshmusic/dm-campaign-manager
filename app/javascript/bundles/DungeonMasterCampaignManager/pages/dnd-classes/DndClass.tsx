@@ -1,19 +1,19 @@
-import React from 'react'
+import React from 'react';
 
 // Container
 import PageContainer from '../../containers/PageContainer.jsx';
-import {fetchData} from '../../actions/api';
+import { fetchData } from '../../actions/api';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import ListGroup from 'react-bootstrap/ListGroup';
 import ListGroupItem from 'react-bootstrap/ListGroupItem';
 import PageTitle from '../../components/layout/PageTitle';
 import DndSpinner from '../../components/layout/DndSpinner';
-import {IDndClass, IFlashMessage, IUser} from "../../utilities/types";
-import {RouteComponentProps} from "@reach/router";
+import { DndClass, IFlashMessage, IUser } from '../../utilities/types';
+import { RouteComponentProps } from '@reach/router';
 
 interface IDndClassPage {
-  dndClass?: IDndClass;
+  dndClass?: DndClass;
   dndClassSlug: string,
   flashMessages: [IFlashMessage];
   getDndClass: (dndClassSlug: string) => void;
@@ -21,8 +21,8 @@ interface IDndClassPage {
 }
 
 const DndClass: React.FC<RouteComponentProps> = (props: IDndClassPage) => {
-  const [dndClass, setDndClass] = React.useState<IDndClass | undefined>();
-  const {user, flashMessages, dndClassSlug} = props;
+  const [dndClass, setDndClass] = React.useState<DndClass | undefined>();
+  const { user, flashMessages, dndClassSlug } = props;
   React.useEffect(() => {
     const componentDidMount = async () => {
       const response = await fetchData({
@@ -30,7 +30,7 @@ const DndClass: React.FC<RouteComponentProps> = (props: IDndClassPage) => {
         url: `/v1/dnd_classes/${dndClassSlug}.json`
       });
       setDndClass(response.data);
-    }
+    };
     componentDidMount();
   }, []);
   const dndClassTitle = dndClass ? dndClass.name : 'Class Loading...';
@@ -39,9 +39,9 @@ const DndClass: React.FC<RouteComponentProps> = (props: IDndClassPage) => {
                    flashMessages={flashMessages}
                    pageTitle={dndClassTitle}
                    description={`DndClass: ${dndClassTitle}. Dungeon Master's Toolbox is a free resource for DMs to manage their dndClasses, adventures, and NPCs.`}
-                   breadcrumbs={[{url: '/app/classes', isActive: false, title: 'Character Classes'},
-                     {url: null, isActive: true, title: dndClassTitle}]}>
-      <PageTitle title={`Class: ${dndClassTitle}`}/>
+                   breadcrumbs={[{ url: '/app/classes', isActive: false, title: 'Character Classes' },
+                     { url: null, isActive: true, title: dndClassTitle }]}>
+      <PageTitle title={`Class: ${dndClassTitle}`} />
       {dndClass ? (
         <Row>
           <Col>
@@ -76,10 +76,10 @@ const DndClass: React.FC<RouteComponentProps> = (props: IDndClassPage) => {
           </Col>
         </Row>
       ) : (
-        <DndSpinner/>
+        <DndSpinner />
       )}
     </PageContainer>
   );
-}
+};
 
 export default DndClass;

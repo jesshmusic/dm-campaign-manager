@@ -1,21 +1,21 @@
 import React from 'react';
-import {Column, useTable} from 'react-table';
+import { Column, Row, useTable } from 'react-table';
 
 interface DataTableProps {
   columns: Array<Column<any>>,
   data: Array<any>
 }
 
-const DataTable = ({columns, data}: DataTableProps) => {
+const DataTable = ({ columns, data }: DataTableProps) => {
   const {
     getTableProps,
     getTableBodyProps,
     headerGroups,
     rows,
-    prepareRow,
+    prepareRow
   } = useTable({
     columns,
-    data,
+    data
   });
 
   return (
@@ -31,7 +31,7 @@ const DataTable = ({columns, data}: DataTableProps) => {
           ))}
         </thead>
         <tbody {...getTableBodyProps()}>
-          {rows.map((row, i) => {
+          {rows.map((row: Row<any>) => {
             prepareRow(row);
             return (
               <tr {...row.getRowProps()}>

@@ -1,0 +1,21 @@
+.sans-serif {
+  font-family: $font-family-sans-serif;
+}
+
+.serif {
+  font-family: $font-family-serif;
+}
+
+.mr-eaves {
+  font-family: 'Mr Eaves', sans-serif;
+}
+
+.breadcrumb-item {
+  @extend .sans-serif;
+
+  color: $primary;
+
+  &.active {
+    color: $body-color;
+  }
+}

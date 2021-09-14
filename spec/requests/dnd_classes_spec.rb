@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe "IDndClasses", type: :request do
+RSpec.describe "DndClasses", type: :request do
   let!(:admin) { create :admin_user }
   let!(:dungeon_master) { create :dungeon_master_user }
   let!(:other_user) { create :other_user }
@@ -24,7 +24,7 @@ RSpec.describe "IDndClasses", type: :request do
            user: other_user
   }
 
-  describe "GET all IDndClasses" do
+  describe "GET all DndClasses" do
     before() do
       death_knight_class.subclasses = ['Super Death Knight']
       death_knight_class_other.subclasses = ['Super Duper Death Knight']
@@ -35,7 +35,7 @@ RSpec.describe "IDndClasses", type: :request do
         expect(response).to have_http_status(200)
       end
 
-      it "returns 12 IDndClasses for logged out user" do
+      it "returns 12 DndClasses for logged out user" do
         get '/v1/dnd_classes.json'
         result_items = JSON.parse(response.body)
         expect(result_items['count']).to eq(12)
@@ -44,7 +44,7 @@ RSpec.describe "IDndClasses", type: :request do
     end
 
     context "for Admins" do
-      it "returns 14 IDndClasses for signed in admin (Admins can see all classes)" do
+      it "returns 14 DndClasses for signed in admin (Admins can see all classes)" do
         sign_in admin
         get '/v1/dnd_classes.json'
         result_items = JSON.parse(response.body)
@@ -54,7 +54,7 @@ RSpec.describe "IDndClasses", type: :request do
     end
 
     context "for Dungeon Masters" do
-      it "returns 13 IDndClasses for signed in user who has created a custom class" do
+      it "returns 13 DndClasses for signed in user who has created a custom class" do
         sign_in dungeon_master
         get '/v1/dnd_classes.json'
         result_items = JSON.parse(response.body)
@@ -64,7 +64,7 @@ RSpec.describe "IDndClasses", type: :request do
     end
   end
 
-  describe "GET a single IDndClass" do
+  describe "GET a single DndClass" do
     context 'for Logged Out users' do
       it "returns error for logged out user" do
         get "/v1/dnd_classes/fighter.json"
@@ -113,7 +113,7 @@ RSpec.describe "IDndClasses", type: :request do
     end
   end
 
-  describe "POST Create IDndClasses" do
+  describe "POST Create DndClasses" do
     context "for Logged Out Users" do
       it "returns an error" do
         expect {
@@ -125,7 +125,7 @@ RSpec.describe "IDndClasses", type: :request do
     end
 
     context "for Admins" do
-      it "creates a new IDndClass" do
+      it "creates a new DndClass" do
         sign_in admin
         expect {
           post "/v1/dnd_classes.json", params: { dnd_class: valid_attributes }
@@ -141,7 +141,7 @@ RSpec.describe "IDndClasses", type: :request do
         sign_in dungeon_master
       end
 
-      it "creates a new IDndClass" do
+      it "creates a new DndClass" do
         expect {
           post "/v1/dnd_classes.json", params: { dnd_class: valid_attributes_dm }
         }.to change(DndClass, :count).by(1)
@@ -151,7 +151,7 @@ RSpec.describe "IDndClasses", type: :request do
         expect(result_item['slug']).to eq('sorcerer-supreme-dm-jesshdm1')
       end
 
-      it "creates a new IDndClasses with unique slugs" do
+      it "creates a new DndClasses with unique slugs" do
         post "/v1/dnd_classes.json", params: { dnd_class: valid_attributes_dm }
 
         sign_in other_user
@@ -168,7 +168,7 @@ RSpec.describe "IDndClasses", type: :request do
     end
   end
 
-  describe "PUT update IDndClasses" do
+  describe "PUT update DndClasses" do
     context "for Logged Out Users" do
       it "returns an error for non-user editing" do
         put "/v1/dnd_classes/fighter.json", params: {
@@ -226,7 +226,7 @@ RSpec.describe "IDndClasses", type: :request do
         expect(result_item['slug']).to eq('death-knight-edited-jesshdm1')
       end
 
-      it "returns an error for attempting to edit another user's IDndClass" do
+      it "returns an error for attempting to edit another user's DndClass" do
         put "/v1/dnd_classes/#{death_knight_class_other.slug}.json", params: {
           dnd_class: {
             name: 'Death Knight Edited',
@@ -248,7 +248,7 @@ RSpec.describe "IDndClasses", type: :request do
     end
   end
 
-  # describe "DELETE IDndClasses" do
+  # describe "DELETE DndClasses" do
   #   context "for Logged Out Users" do
   #     it "returns an error for non-user editing" do
   #       delete "/v1/dnd_classes/fighter.json"
@@ -283,13 +283,13 @@ RSpec.describe "IDndClasses", type: :request do
   #     expect(response).to have_http_status(204)
   #   end
   #
-  #   it "returns an error for attempting to delete another user's IDndClass" do
+  #   it "returns an error for attempting to delete another user's DndClass" do
   #     delete "/v1/dnd_classes/#{death_knight_class_other.slug}.json"
   #     result_item = JSON.parse(response.body)
   #     expect(result_item['errors']).to eq('IUser action not allowed.')
   #   end
   #
-  #   it "returns an error for DM attempting to delete a default IDndClass" do
+  #   it "returns an error for DM attempting to delete a default DndClass" do
   #     delete "/v1/dnd_classes/fighter.json"
   #     result_item = JSON.parse(response.body)
   #     expect(result_item['errors']).to eq('IUser action not allowed.')

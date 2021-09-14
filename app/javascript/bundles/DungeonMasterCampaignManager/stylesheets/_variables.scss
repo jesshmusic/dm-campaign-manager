@@ -48,7 +48,8 @@ $enable-grid-classes: true;
 $enable-print-styles: true;
 
 // Shadow
-$box-shadow: 1px 4px 14px #888;
+$box-shadow: 10px 15px 15px rgba($gray-900, 0.75);
+
 
 // Body
 $body-bg: $background-color;
@@ -497,10 +498,10 @@ $figure-caption-color: $gray-600;
 
 
 // Breadcrumbs
-$breadcrumb-padding-y: 0.75rem;
+$breadcrumb-padding-y: 0.35rem;
 $breadcrumb-padding-x: 1rem;
 $breadcrumb-item-padding: 0.5rem;
-$breadcrumb-bg: $gray-200;
+$breadcrumb-bg: $background-med;
 $breadcrumb-divider-color: $gray-600;
 $breadcrumb-active-color: $gray-600;
 $breadcrumb-divider: '|';
