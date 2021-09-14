@@ -21,7 +21,7 @@ en:
     #       email: 'E-mail.'
     # hints:
     #   defaults:
-    #     username: 'IUser name to sign in.'
+    #     username: 'UserProps name to sign in.'
     #     password: 'No special characters, please.'
     # include_blanks:
     #   defaults:

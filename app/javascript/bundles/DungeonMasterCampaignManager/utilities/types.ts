@@ -1,12 +1,30 @@
+import React from 'react';
+import { Location, NavigateFn } from '@reach/router';
+
 export interface AppProps {
   itemsCount: number;
   npcsCount: number;
   spellsCount: number;
   usersCount: number;
-  user?: IUser;
+  user?: UserProps;
 }
 
-export interface IUser {
+export interface PageProps {
+  addFlashMessage: (flashMessage: FlashMessage) => void;
+  children?: React.ReactNode;
+  flashMessages: FlashMessage[];
+  itemsCount: number;
+  location: Location;
+  navigate: NavigateFn;
+  npcsCount: number;
+  path: string;
+  spellsCount: number;
+  uri: string;
+  user?: UserProps;
+  usersCount: number;
+}
+
+export interface UserProps {
   created_at: string;
   deleted_at?: string;
   email: string;
@@ -20,7 +38,7 @@ export interface IUser {
   username: string;
 }
 
-export interface IFieldProps {
+export interface FieldProps {
   colWidth: string;
   defaultValue?: string | number | readonly string[] | undefined;
   id?: string;
@@ -33,7 +51,7 @@ export interface IFieldProps {
   value?: string | number | readonly string[] | undefined;
 }
 
-export interface ISelectProps {
+export interface SelectProps {
   colWidth: string;
   defaultOptions?: boolean;
   getOptions?: () => void;
@@ -47,7 +65,7 @@ export interface ISelectProps {
   placeholder?: string;
 }
 
-export interface IFlashMessage {
+export interface FlashMessage {
   id: number;
   heading: string;
   text: string;
@@ -60,7 +78,7 @@ export interface AbilityScore {
   name: string;
 }
 
-export interface IDndClassesResponse {
+export interface DndClassesResponse {
   count: number;
   results: [DndClasses];
 }
@@ -74,20 +92,20 @@ export interface DndClass {
   name: string;
   hitDie: string;
   abilityScores: [AbilityScore];
-  proficiencies: [IProf];
-  proficiencyChoices: [IProfChoice];
+  proficiencies: [Prof];
+  proficiencyChoices: [ProfChoice];
   slug: string;
 }
 
-export interface IProf {
+export interface Prof {
   name: string;
   profType: string;
 }
 
-export interface IProfChoice {
+export interface ProfChoice {
   name: string;
   numChoices: number;
   profChoiceType: string;
-  proficiencies: [IProf];
+  proficiencies: [Prof];
 }
 

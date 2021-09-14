@@ -6,8 +6,7 @@ import { fetchData } from '../../actions/api';
 import PageTitle from '../../components/layout/PageTitle';
 import DndSpinner from '../../components/layout/DndSpinner';
 import { navigate } from '@reach/router';
-import { RouteComponentProps } from '@reach/router';
-import { DndClass, DndClasses, IFlashMessage, IUser } from '../../utilities/types';
+import { DndClass, DndClasses, PageProps } from '../../utilities/types';
 import { ListGroup } from 'react-bootstrap';
 import DndListItem from './components/DndListItem';
 
@@ -15,12 +14,10 @@ import DndListItem from './components/DndListItem';
 type DndClassesPageProps = {
   dndClasses?: DndClasses;
   dndClassSlug: string,
-  flashMessages: [IFlashMessage];
   getDndClasses: () => void;
-  user: IUser,
-}
+} & PageProps
 
-const DndClasses: React.FC<RouteComponentProps> = (props: DndClassesPageProps) => {
+const DndClasses = (props: DndClassesPageProps) => {
   const [dndClasses, setDndClasses] = React.useState([]);
 
   React.useEffect(() => {

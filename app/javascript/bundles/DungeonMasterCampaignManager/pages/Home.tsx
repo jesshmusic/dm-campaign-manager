@@ -1,8 +1,8 @@
 import React from 'react';
-import {configureStore} from '@reduxjs/toolkit';
-import {Provider} from 'react-redux';
+import { configureStore } from '@reduxjs/toolkit';
+import { Provider } from 'react-redux';
 import rootReducer from '../reducers';
-import {Router} from '@reach/router';
+import { Router } from '@reach/router';
 import HomePage from './front-page/HomePage';
 import Items from './items/Items';
 import AllItems from './items/AllItems';
@@ -17,7 +17,7 @@ import Spells from './spells/Spells';
 import DndClass from './dnd-classes/DndClass';
 import DndClasses from './dnd-classes/DndClasses';
 import NpcGenerator from './npc-generator/NpcGenerator';
-import {AppProps} from "../utilities/types";
+import { AppProps, FlashMessage } from '../utilities/types';
 
 const store = (props: AppProps) => configureStore({
   reducer: rootReducer,
@@ -26,49 +26,66 @@ const store = (props: AppProps) => configureStore({
     items: {
       items: [],
       count: props.itemsCount,
-      currentItem: null,
+      currentItem: null
     },
     npcs: {
       npcs: [],
       count: props.npcsCount,
-      currentNPC: null,
+      currentNPC: null
     },
     races: {
       races: [],
-      currentRace: null,
+      currentRace: null
     },
     spells: {
       spells: [],
       count: props.spellsCount,
-      currentSpell: null,
+      currentSpell: null
     },
     users: {
       user: props.user,
       users: [],
-      currentUser: null,
-    },
-  },
+      currentUser: null
+    }
+  }
 });
 
-const Home = (props) => (
-  <Provider store={store(props)}>
-    <Router>
-      <HomePage path="/" {...props}/>
-      <DndClass path='/app/classes/:dndClassSlug' {...props}/>
-      <DndClasses path='/app/classes' {...props}/>
-      <Items path='/app/items' {...props}/>
-      <AllItems path='/app/items/all/' {...props}/>
-      <Armor path='/app/items/armor/' {...props}/>
-      <Weapons path='/app/items/weapons/' {...props}/>
-      <MagicItems path='/app/items/magic-items/' {...props}/>
-      <Gear path='/app/items/gear/' {...props}/>
-      <Tools path='/app/items/tools/' {...props}/>
-      <Vehicles path='/app/items/vehicles/' {...props}/>
-      <NPCs path='/app/npcs/' {...props}/>
-      <Spells path='/app/spells/' {...props}/>
-      <NpcGenerator path='/app/npc-generator/' {...props}/>
-    </Router>
-  </Provider>
-);
+const Home = (props) => {
+  const [flashMessages, setFlashMessages] = React.useState<FlashMessage[]>([]);
+
+  const addFlashMessage = (flashMessage: FlashMessage) => {
+    setFlashMessages([
+      ...flashMessages,
+      flashMessage
+    ]);
+  };
+
+  const combinedProps = {
+    ...props,
+    flashMessages,
+    addFlashMessage
+  };
+
+  return (
+    <Provider store={store(props)}>
+      <Router>
+        <HomePage path='/' {...combinedProps} />
+        <DndClass path='/app/classes/:dndClassSlug' {...combinedProps} />
+        <DndClasses path='/app/classes' {...combinedProps} />
+        <Items path='/app/items' {...combinedProps} />
+        <AllItems path='/app/items/all/' {...combinedProps} />
+        <Armor path='/app/items/armor/' {...combinedProps} />
+        <Weapons path='/app/items/weapons/' {...combinedProps} />
+        <MagicItems path='/app/items/magic-items/' {...combinedProps} />
+        <Gear path='/app/items/gear/' {...combinedProps} />
+        <Tools path='/app/items/tools/' {...combinedProps} />
+        <Vehicles path='/app/items/vehicles/' {...combinedProps} />
+        <NPCs path='/app/npcs/' {...combinedProps} />
+        <Spells path='/app/spells/' {...combinedProps} />
+        <NpcGenerator path='/app/npc-generator/' {...combinedProps} />
+      </Router>
+    </Provider>
+  );
+};
 
 export default Home;

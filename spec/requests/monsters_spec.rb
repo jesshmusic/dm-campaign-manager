@@ -13,7 +13,7 @@ RSpec.describe "Monsters", type: :request do
   let!(:monster1) { create :monster }
   let!(:monster2) { create :monster }
   let!(:monster_custom1) { create :monster, user: dungeon_master, name: 'DM Monster' }
-  let!(:monster_custom2) { create :monster, user: other_user, name: 'Other IUser Monster' }
+  let!(:monster_custom2) { create :monster, user: other_user, name: 'Other UserProps Monster' }
 
   describe "GET Return all Monsters" do
     context "for Logged Out Users" do
@@ -54,7 +54,7 @@ RSpec.describe "Monsters", type: :request do
           monster['name'] == 'DM Monster'
         }).not_to be_nil
         expect(result_monsters['results'].find { |monster|
-          monster['name'] == 'Other IUser Monster'
+          monster['name'] == 'Other UserProps Monster'
         }).to be_nil
       end
     end
@@ -71,7 +71,7 @@ RSpec.describe "Monsters", type: :request do
       it "returns error for logged out user trying to get custom monster" do
         get "/v1/monsters/#{monster_custom1.slug}.json"
         result_monster = JSON.parse(response.body)
-        expect(result_monster['errors']).to eq("IUser action not allowed.")
+        expect(result_monster['errors']).to eq("UserProps action not allowed.")
       end
     end
 
@@ -90,7 +90,7 @@ RSpec.describe "Monsters", type: :request do
       it "returns custom monster for a DM" do
         get "/v1/monsters/#{monster_custom2.slug}.json"
         result_monster = JSON.parse(response.body)
-        expect(result_monster['name']).to eq('Other IUser Monster')
+        expect(result_monster['name']).to eq('Other UserProps Monster')
       end
     end
 
@@ -116,7 +116,7 @@ RSpec.describe "Monsters", type: :request do
       it "returns error for DM trying to get custom monster by another user" do
         get "/v1/monsters/#{monster_custom2.slug}.json"
         result_monster = JSON.parse(response.body)
-        expect(result_monster['errors']).to eq("IUser action not allowed.")
+        expect(result_monster['errors']).to eq("UserProps action not allowed.")
       end
     end
   end
@@ -241,7 +241,7 @@ RSpec.describe "Monsters", type: :request do
           }
         }
         result_monster = JSON.parse(response.body)
-        expect(result_monster['errors']).to eq('IUser action not allowed.')
+        expect(result_monster['errors']).to eq('UserProps action not allowed.')
       end
 
       it "returns an error for non-admin editing other DM's monster" do
@@ -252,7 +252,7 @@ RSpec.describe "Monsters", type: :request do
           }
         }
         result_monster = JSON.parse(response.body)
-        expect(result_monster['errors']).to eq('IUser action not allowed.')
+        expect(result_monster['errors']).to eq('UserProps action not allowed.')
       end
     end
   end
@@ -295,13 +295,13 @@ RSpec.describe "Monsters", type: :request do
       it "returns an error for non-admin deleting default monster" do
         delete "/v1/monsters/#{monster1.slug}.json"
         result_monster = JSON.parse(response.body)
-        expect(result_monster['errors']).to eq('IUser action not allowed.')
+        expect(result_monster['errors']).to eq('UserProps action not allowed.')
       end
 
       it "returns an error for non-admin deleting other DM's monster" do
         delete "/v1/monsters/#{monster_custom2.slug}.json"
         result_monster = JSON.parse(response.body)
-        expect(result_monster['errors']).to eq('IUser action not allowed.')
+        expect(result_monster['errors']).to eq('UserProps action not allowed.')
       end
     end
   end

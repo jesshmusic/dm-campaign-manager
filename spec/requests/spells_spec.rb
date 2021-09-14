@@ -17,7 +17,7 @@ RSpec.describe "Spells", type: :request do
                                 name: 'DM Spell' }
   let!(:spell_custom2) { create :spell,
                                 user: other_user,
-                                name: 'Other IUser Spell' }
+                                name: 'Other UserProps Spell' }
 
   describe "GET Return all Spells" do
     context "for Logged Out Users" do
@@ -58,7 +58,7 @@ RSpec.describe "Spells", type: :request do
           spell['name'] == 'DM Spell'
         }).not_to be_nil
         expect(result_spells['results'].find { |spell|
-          spell['name'] == 'Other IUser Spell'
+          spell['name'] == 'Other UserProps Spell'
         }).to be_nil
       end
     end
@@ -75,7 +75,7 @@ RSpec.describe "Spells", type: :request do
       it "returns error for logged out user trying to get custom spell" do
         get "/v1/spells/#{spell_custom1.slug}.json"
         result_spell = JSON.parse(response.body)
-        expect(result_spell['errors']).to eq("IUser action not allowed.")
+        expect(result_spell['errors']).to eq("UserProps action not allowed.")
       end
     end
 
@@ -94,7 +94,7 @@ RSpec.describe "Spells", type: :request do
       it "returns custom spell for a DM" do
         get "/v1/spells/#{spell_custom2.slug}.json"
         result_spell = JSON.parse(response.body)
-        expect(result_spell['name']).to eq('Other IUser Spell')
+        expect(result_spell['name']).to eq('Other UserProps Spell')
       end
     end
 
@@ -120,7 +120,7 @@ RSpec.describe "Spells", type: :request do
       it "returns error for DM trying to get custom spell by another user" do
         get "/v1/spells/#{spell_custom2.slug}.json"
         result_spell = JSON.parse(response.body)
-        expect(result_spell['errors']).to eq("IUser action not allowed.")
+        expect(result_spell['errors']).to eq("UserProps action not allowed.")
       end
     end
   end
@@ -241,7 +241,7 @@ RSpec.describe "Spells", type: :request do
           }
         }
         result_spell = JSON.parse(response.body)
-        expect(result_spell['errors']).to eq('IUser action not allowed.')
+        expect(result_spell['errors']).to eq('UserProps action not allowed.')
       end
 
       it "returns an error for non-admin editing other DM's spell" do
@@ -251,7 +251,7 @@ RSpec.describe "Spells", type: :request do
           }
         }
         result_spell = JSON.parse(response.body)
-        expect(result_spell['errors']).to eq('IUser action not allowed.')
+        expect(result_spell['errors']).to eq('UserProps action not allowed.')
       end
     end
   end
@@ -294,13 +294,13 @@ RSpec.describe "Spells", type: :request do
       it "returns an error for non-admin deleting default spell" do
         delete "/v1/spells/#{spell1.slug}.json"
         result_spell = JSON.parse(response.body)
-        expect(result_spell['errors']).to eq('IUser action not allowed.')
+        expect(result_spell['errors']).to eq('UserProps action not allowed.')
       end
 
       it "returns an error for non-admin deleting other DM's spell" do
         delete "/v1/spells/#{spell_custom2.slug}.json"
         result_spell = JSON.parse(response.body)
-        expect(result_spell['errors']).to eq('IUser action not allowed.')
+        expect(result_spell['errors']).to eq('UserProps action not allowed.')
       end
     end
   end

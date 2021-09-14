@@ -17,10 +17,10 @@ class ApplicationController < ActionController::Base
 
   def user_not_authorized
     respond_to do |format|
-      format.html { redirect_to root_path, status: :forbidden, notice: 'IUser action not allowed.' }
+      format.html { redirect_to root_path, status: :forbidden, notice: 'UserProps action not allowed.' }
       format.json {
         render json: {
-          errors: 'IUser action not allowed.'
+          errors: 'UserProps action not allowed.'
         }, status: :forbidden
       }
     end

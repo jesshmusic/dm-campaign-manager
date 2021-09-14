@@ -233,7 +233,7 @@ RSpec.describe "DndClasses", type: :request do
           }
         }
         result_item = JSON.parse(response.body)
-        expect(result_item['errors']).to eq('IUser action not allowed.')
+        expect(result_item['errors']).to eq('UserProps action not allowed.')
       end
 
       it "returns an error for non-admin editing" do
@@ -243,7 +243,7 @@ RSpec.describe "DndClasses", type: :request do
           }
         }
         result_item = JSON.parse(response.body)
-        expect(result_item['errors']).to eq('IUser action not allowed.')
+        expect(result_item['errors']).to eq('UserProps action not allowed.')
       end
     end
   end
@@ -286,13 +286,13 @@ RSpec.describe "DndClasses", type: :request do
   #   it "returns an error for attempting to delete another user's DndClass" do
   #     delete "/v1/dnd_classes/#{death_knight_class_other.slug}.json"
   #     result_item = JSON.parse(response.body)
-  #     expect(result_item['errors']).to eq('IUser action not allowed.')
+  #     expect(result_item['errors']).to eq('UserProps action not allowed.')
   #   end
   #
   #   it "returns an error for DM attempting to delete a default DndClass" do
   #     delete "/v1/dnd_classes/fighter.json"
   #     result_item = JSON.parse(response.body)
-  #     expect(result_item['errors']).to eq('IUser action not allowed.')
+  #     expect(result_item['errors']).to eq('UserProps action not allowed.')
   #   end
   # end
   # end

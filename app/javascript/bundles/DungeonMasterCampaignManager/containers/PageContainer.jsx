@@ -7,7 +7,7 @@ import Container from 'react-bootstrap/Container';
 import Footer from '../components/layout/Footer/Footer.jsx';
 import HeroBanner from '../components/layout/HeroBanner/HeroBanner.jsx';
 import MenuBar from '../components/layout/MenuBar/MenuBar';
-import FlashMessages from '../components/layout/Alerts/FlashMessages.jsx';
+import FlashMessages from '../components/layout/Alerts/FlashMessages.tsx';
 
 import '../stylesheets/_fonts.scss';
 import '../stylesheets/application.scss';
@@ -31,7 +31,7 @@ const PageContainer = (props) => {
       <MenuBar user={ user } />
       <HeroBanner />
       <Container fluid className={ classes.page }>
-        <FlashMessages />
+        <FlashMessages messages={ props.flashMessages || [] } />
         { breadcrumbs && breadcrumbs.length > 0 ? (
           <Breadcrumb>
             <BreadcrumbLink to='/' title={ 'Home' } />

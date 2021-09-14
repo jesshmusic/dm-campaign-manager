@@ -1,4 +1,4 @@
-import {createAction, createReducer} from '@reduxjs/toolkit';
+import { createAction, createReducer } from '@reduxjs/toolkit';
 // import rest from '../actions/api';
 
 // Flash Messages
@@ -13,14 +13,14 @@ const flashErrorMessage = (state, action) => [...state, {
   id: Date.now(),
   type: 'danger',
   text: action.error.errors,
-  heading: `Error ${ action.error.status } ${ action.error.statusText }`,
+  heading: `Error ${ action.error.status } ${ action.error.statusText }`
 }];
 
 const flashSuccessMessage = (state, message, heading) => [...state, {
   id: Date.now(),
   type: 'success',
   text: message,
-  heading,
+  heading
 }];
 
 const flashMessages = createReducer([], {
@@ -31,9 +31,9 @@ const flashMessages = createReducer([], {
     return newState;
   },
   [loginSucceeded]: (state, action) => flashSuccessMessage(state, `User, ${ action.data.name }, successfully logged in.`, 'Welcome!'),
-  [logoutSucceeded]: (state) => flashSuccessMessage(state, 'IUser logged out', 'Goodbye!'),
+  [logoutSucceeded]: (state) => flashSuccessMessage(state, 'UserProps logged out', 'Goodbye!'),
   [loginFailed]: (state, action) => flashErrorMessage(state, action),
-  [logoutFailed]: (state, action) => flashErrorMessage(state, action),
+  [logoutFailed]: (state, action) => flashErrorMessage(state, action)
 });
 
 export default flashMessages;

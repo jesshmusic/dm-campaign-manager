@@ -54,7 +54,7 @@ class User < ApplicationRecord
     self.slug = generate_slug
   end
 
-  # IUser Associations
+  # UserProps Associations
   has_many :dnd_classes, dependent: :destroy
   has_many :items, dependent: :destroy
   has_many :monsters, dependent: :destroy

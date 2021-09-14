@@ -19,7 +19,7 @@ const DndListItem = ({ dndClass, goToPage, index }: DndListItemProps) => {
         <strong>Primary Abilities: </strong>
         {
           dndClass.abilityScores
-            .map<React.ReactNode>((ability) => (<span>{ability.fullName}</span>))
+            .map<React.ReactNode>((ability) => (<span key={ability.name}>{ability.fullName}</span>))
             .reduce((prev, curr) => [prev, ', ', curr])
         }
       </p>

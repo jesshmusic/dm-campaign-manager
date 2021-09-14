@@ -2,12 +2,12 @@
  * Created by jesshendricks on 2019-08-25
  */
 
-import React, {PropsWithChildren} from 'react';
+import React, { PropsWithChildren } from 'react';
 import Col from 'react-bootstrap/Col';
-import {Field, FieldRenderProps} from 'react-final-form';
+import { Field, FieldRenderProps } from 'react-final-form';
 import Form from 'react-bootstrap/Form';
 import AsyncSelect from 'react-select/async';
-import {ISelectProps} from "../../utilities/types";
+import { SelectProps } from '../../utilities/types';
 
 const ReactSelectAdapter: React.ComponentType<FieldRenderProps<any>> = (props: PropsWithChildren<FieldRenderProps<any>>) => {
 
@@ -19,7 +19,7 @@ const ReactSelectAdapter: React.ComponentType<FieldRenderProps<any>> = (props: P
     return newValue;
   };
 
-  const {input, isMulti, getOptions, defaultOptions, isClearable, ...rest} = props;
+  const { input, isMulti, getOptions, defaultOptions, isClearable, ...rest } = props;
   return (
     <div>
       <AsyncSelect
@@ -35,7 +35,7 @@ const ReactSelectAdapter: React.ComponentType<FieldRenderProps<any>> = (props: P
       />
     </div>
   );
-}
+};
 
 const FormSelectAsync = ({
                            name,
@@ -46,7 +46,7 @@ const FormSelectAsync = ({
                            placeholder,
                            defaultOptions = true,
                            isClearable = false
-                         }: ISelectProps) => (
+                         }: SelectProps) => (
   <Form.Group as={Col} md={colWidth}>
     <Form.Label>{label}</Form.Label>
     <Field name={name}

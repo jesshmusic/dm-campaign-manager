@@ -14,7 +14,7 @@ class SessionsController < Devise::SessionsController
     if @user.valid_password?(user_params[:password])
       sign_in :user, @user
       respond_to do |format|
-        format.html { redirect_to '/', notice: "IUser #{@user.name} logged in." }
+        format.html { redirect_to '/', notice: "UserProps #{@user.name} logged in." }
         format.json { render json: @user, include: [:campaigns] }
       end
     else
@@ -25,7 +25,7 @@ class SessionsController < Devise::SessionsController
   def destroy
     sign_out(@user)
     respond_to do |format|
-      format.html { redirect_to '/', notice: "IUser successfully logged out." }
+      format.html { redirect_to '/', notice: "UserProps successfully logged out." }
       format.json { render json: { success: true } }
     end
   end

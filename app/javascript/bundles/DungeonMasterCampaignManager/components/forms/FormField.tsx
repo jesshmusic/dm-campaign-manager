@@ -4,11 +4,11 @@
 
 import React from 'react';
 import Col from 'react-bootstrap/Col';
-import {Field} from 'react-final-form';
+import { Field } from 'react-final-form';
 import Form from 'react-bootstrap/Form';
-import {IFieldProps} from "../../utilities/types";
+import { FieldProps } from '../../utilities/types';
 
-const FormField = (props: IFieldProps) => {
+const FormField = (props: FieldProps) => {
   const {
     colWidth,
     defaultValue,
@@ -18,13 +18,13 @@ const FormField = (props: IFieldProps) => {
     name,
     readOnly,
     type,
-    value,
+    value
   } = props;
   return (
     <Form.Group as={Col} md={colWidth}>
       {type === 'checkbox' || type === 'radio' ? (
         <Field name={name} type={type} value={value}>
-          {({input, meta}) => (
+          {({ input, meta }) => (
             <div>
               <Form.Check
                 {...input}
@@ -37,7 +37,7 @@ const FormField = (props: IFieldProps) => {
                 isInvalid={meta.error && meta.touched}
               />
               {infoText ? (
-                <Form.Text className="text-muted">
+                <Form.Text className='text-muted'>
                   {infoText}
                 </Form.Text>
               ) : null}
@@ -46,7 +46,7 @@ const FormField = (props: IFieldProps) => {
         </Field>
       ) : (
         <Field name={name} type={type}>
-          {({input, meta}) => (
+          {({ input, meta }) => (
             <div>
               <Form.Label>{label}</Form.Label>
               <Form.Control
@@ -60,17 +60,17 @@ const FormField = (props: IFieldProps) => {
                 isInvalid={meta.error && meta.touched}
               />
               {infoText ? (
-                <Form.Text className="text-muted">
+                <Form.Text className='text-muted'>
                   {infoText}
                 </Form.Text>
               ) : null}
-              <Form.Control.Feedback type="invalid">{meta.error}</Form.Control.Feedback>
+              <Form.Control.Feedback type='invalid'>{meta.error}</Form.Control.Feedback>
             </div>
           )}
         </Field>
       )}
     </Form.Group>
   );
-}
+};
 
 export default FormField;

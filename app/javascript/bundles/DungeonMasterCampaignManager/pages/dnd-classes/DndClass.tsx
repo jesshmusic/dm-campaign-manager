@@ -9,18 +9,15 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import ListGroupItem from 'react-bootstrap/ListGroupItem';
 import PageTitle from '../../components/layout/PageTitle';
 import DndSpinner from '../../components/layout/DndSpinner';
-import { DndClass, IFlashMessage, IUser } from '../../utilities/types';
-import { RouteComponentProps } from '@reach/router';
+import { DndClass, PageProps } from '../../utilities/types';
 
-interface IDndClassPage {
+type DndClassPageProps = {
   dndClass?: DndClass;
   dndClassSlug: string,
-  flashMessages: [IFlashMessage];
   getDndClass: (dndClassSlug: string) => void;
-  user: IUser,
-}
+} & PageProps;
 
-const DndClass: React.FC<RouteComponentProps> = (props: IDndClassPage) => {
+const DndClass = (props: DndClassPageProps) => {
   const [dndClass, setDndClass] = React.useState<DndClass | undefined>();
   const { user, flashMessages, dndClassSlug } = props;
   React.useEffect(() => {
