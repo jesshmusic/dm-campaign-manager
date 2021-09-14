@@ -14,9 +14,9 @@
     "jsx": "react",
     "allowSyntheticDefaultImports": true,
     "noImplicitAny": false,
-    "noImplicitThis": false,
-    "noImplicitReturns": false,
-    "strictNullChecks": false
+    "noImplicitThis": true,
+    "noImplicitReturns": true,
+    "strictNullChecks": true
   },
   "include": [
     "app/javascript"

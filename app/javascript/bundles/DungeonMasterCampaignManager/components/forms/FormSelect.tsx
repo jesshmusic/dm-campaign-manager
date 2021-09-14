@@ -8,7 +8,7 @@ import {Field, FieldRenderProps} from 'react-final-form';
 import Form from 'react-bootstrap/Form';
 import Select from 'react-select';
 import CreatableSelect from 'react-select/creatable';
-import {IFieldProps, ISelectProps} from "../../utilities/types";
+import {ISelectProps} from "../../utilities/types";
 
 const ReactSelectAdapter = ({input, isClearable, ...rest}: FieldRenderProps<any>) => (
   <Select

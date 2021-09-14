@@ -24,13 +24,13 @@ const DndClasses: React.FC<RouteComponentProps> = (props: IDndClassesPage) => {
   }, []);
 
   const data = React.useMemo(() => {
-    return props.dndClasses.dndClasses.map((dndClass) => {
+    return props.dndClasses?.dndClasses.map((dndClass) => {
       return {
         name: dndClass.name,
         hitDie: `d${dndClass.hitDie}`,
       };
     });
-  }, [props.dndClasses.dndClasses]);
+  }, [props.dndClasses?.dndClasses]);
 
   const columns = React.useMemo(() => [
     {
@@ -51,7 +51,7 @@ const DndClasses: React.FC<RouteComponentProps> = (props: IDndClassesPage) => {
                    description={'All D&D dndClasses. Dungeon Master\'s Toolbox is a free resource for DMs to manage their dndClasses, adventures, and NPCs.'}
                    breadcrumbs={[{url: null, isActive: true, title: 'Character Classes'}]}>
       <PageTitle title={'Character Classes'}/>
-      {props.dndClasses.dndClasses && props.dndClasses.dndClasses.length > 0 ? (
+      {props.dndClasses?.dndClasses && props.dndClasses.dndClasses.length > 0 ? (
         <DataTable columns={columns} data={data}/>
       ) : (
         <DndSpinner/>

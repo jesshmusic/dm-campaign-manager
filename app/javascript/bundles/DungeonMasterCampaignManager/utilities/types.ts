@@ -22,7 +22,7 @@ export interface IUser {
 
 export interface IFieldProps {
   colWidth: string;
-  defaultValue?: string | number | null;
+  defaultValue?: string | number | readonly string[] | undefined;
   id?: string;
   infoText?: string;
   label: string;
@@ -30,7 +30,7 @@ export interface IFieldProps {
   placeholder?: string;
   readOnly?: boolean;
   type: string;
-  value?: string | number | null;
+  value?: string | number | readonly string[] | undefined;
 }
 
 export interface ISelectProps {
@@ -82,3 +82,4 @@ export interface IProfChoice {
   profChoiceType: string;
   proficiencies: [IProf];
 }
+

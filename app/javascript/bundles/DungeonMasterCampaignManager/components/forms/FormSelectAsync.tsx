@@ -13,7 +13,7 @@ const ReactSelectAdapter: React.ComponentType<FieldRenderProps<any>> = (props: P
 
   const [inputValue, setInputValue] = React.useState('');
 
-  const handleInputChange = (newValue) => {
+  const handleInputChange = (newValue: string) => {
     const inputValue = newValue.replace(/\W/g, '');
     setInputValue(inputValue);
     return newValue;
