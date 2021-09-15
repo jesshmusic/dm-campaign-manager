@@ -5,8 +5,6 @@ import PageContainer from '../../containers/PageContainer.jsx';
 import { fetchData } from '../../actions/api';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import ListGroup from 'react-bootstrap/ListGroup';
-import ListGroupItem from 'react-bootstrap/ListGroupItem';
 import PageTitle from '../../components/layout/PageTitle';
 import DndSpinner from '../../components/layout/DndSpinner';
 import { DndClass, PageProps } from '../../utilities/types';
@@ -20,6 +18,7 @@ type DndClassPageProps = {
 const DndClass = (props: DndClassPageProps) => {
   const [dndClass, setDndClass] = React.useState<DndClass | undefined>();
   const { user, flashMessages, dndClassSlug } = props;
+
   React.useEffect(() => {
     const componentDidMount = async () => {
       const response = await fetchData({
@@ -30,7 +29,9 @@ const DndClass = (props: DndClassPageProps) => {
     };
     componentDidMount();
   }, []);
+
   const dndClassTitle = dndClass ? dndClass.name : 'Class Loading...';
+
   return (
     <PageContainer user={user}
                    flashMessages={flashMessages}
@@ -42,34 +43,82 @@ const DndClass = (props: DndClassPageProps) => {
       {dndClass ? (
         <Row>
           <Col>
-
-          </Col>
-          <Col>
-            <h2>Proficiencies</h2>
-            <ListGroup>
-              {dndClass.proficiencies.map((prof, index) => (
-                <ListGroupItem key={index}>
-                  <strong>{prof.name}</strong> - type: {prof.profType}
-                </ListGroupItem>
-              ))}
-            </ListGroup>
-          </Col>
-          <Col>
-            <h2>Proficiency Choices</h2>
-            <ListGroup>
-              {dndClass.proficiencyChoices.map((profChoice, index) => (
-                <ListGroupItem key={index}>
-                  <strong>Choose {profChoice.numChoices} from </strong>
-                  <ListGroup>
-                    {profChoice.proficiencies.map((prof, index) => (
-                      <ListGroupItem key={index}>
-                        <strong>{prof.name}</strong> - type: {prof.profType}
-                      </ListGroupItem>
-                    ))}
-                  </ListGroup>
-                </ListGroupItem>
-              ))}
-            </ListGroup>
+            <Row>
+              <Col className={'table-frame'}>
+                <h2 className={'h3 mr-eaves'}>Info</h2>
+                <Row className={'sans-serif'}>
+                  <Col>
+                    <h3 className={'h5'}>Hit Die: d{dndClass.hitDie}</h3>
+                    <p>
+                      <strong>Primary Abilities: </strong>
+                      {
+                        dndClass.abilityScores
+                          .map<React.ReactNode>((ability) => (<span key={ability.name}>{ability.fullName}</span>))
+                          .reduce((prev, curr) => [prev, ', ', curr])
+                      }
+                    </p>
+                    <p>
+                      <strong>Subclasses: </strong>
+                      {dndClass.subclasses.join(', ')}
+                    </p>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <div>
+                      <h3 className={'h5'}>Starting Equipment: </h3>
+                      {
+                        dndClass.startingEquipment
+                          .map<React.ReactNode>((item) => (
+                            <p key={item.name}>{item.quantity} {item.name}</p>
+                          ))
+                      }
+                    </div>
+                  </Col>
+                  <Col>
+                    <div>
+                      <h3 className={'h5'}>Equipment Options: </h3>
+                      {
+                        dndClass.startingEquipment
+                          .map<React.ReactNode>((item) => (
+                            <p key={item.name}>{item.quantity} {item.name}</p>
+                          ))
+                      }
+                    </div>
+                  </Col>
+                </Row>
+              </Col>
+            </Row>
+            <Row className={'table-frame'}>
+              <Col>
+                <h2 className={'h3'}>Proficiencies</h2>
+                {dndClass.proficiencies.map((prof, index) => (
+                  <p key={index}>
+                    <strong>{prof.name}</strong> {prof.profType}
+                  </p>
+                ))}
+              </Col>
+              <Col>
+                <h2 className={'h3 mb-0'}>Proficiency Choices</h2>
+                <Row className={'pt-0'}>
+                  {dndClass.proficiencyChoices.map((profChoice, index) => (
+                    <Col key={index}>
+                      <h3 className={'h4'}>Choose {profChoice.numChoices} from </h3>
+                      {profChoice.proficiencies.map((prof, index) => (
+                        <p key={index}>
+                          <strong>{prof.name}</strong> {prof.profType}
+                        </p>
+                      ))}
+                    </Col>
+                  ))}
+                </Row>
+              </Col>
+            </Row>
+            <Row>
+              <Col className={'table-frame'}>
+                <h2 className={'h3 mr-eaves'}>Multi-classing</h2>
+              </Col>
+            </Row>
           </Col>
         </Row>
       ) : (

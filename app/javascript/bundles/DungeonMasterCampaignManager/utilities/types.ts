@@ -73,7 +73,7 @@ export interface FlashMessage {
 }
 
 export interface AbilityScore {
-  desc: [string];
+  desc: string[];
   fullName: string;
   name: string;
 }
@@ -91,10 +91,18 @@ export interface DndClasses {
 export interface DndClass {
   name: string;
   hitDie: string;
-  abilityScores: [AbilityScore];
-  proficiencies: [Prof];
-  proficiencyChoices: [ProfChoice];
+  abilityScores: AbilityScore[];
+  proficiencies: Prof[];
+  proficiencyChoices: ProfChoice[];
   slug: string;
+  startingEquipment: StartingEquipment[];
+
+  subclasses: string[];
+}
+
+export interface StartingEquipment {
+  name: string;
+  quantity: number;
 }
 
 export interface Prof {
@@ -106,6 +114,6 @@ export interface ProfChoice {
   name: string;
   numChoices: number;
   profChoiceType: string;
-  proficiencies: [Prof];
+  proficiencies: Prof[];
 }
 
