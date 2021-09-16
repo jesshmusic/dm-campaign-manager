@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_09_155309) do
+ActiveRecord::Schema.define(version: 2021_09_16_203759) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -43,6 +43,90 @@ ActiveRecord::Schema.define(version: 2021_09_09_155309) do
     t.index ["equipment_id"], name: "index_api_references_on_equipment_id"
   end
 
+  create_table "class_features", force: :cascade do |t|
+    t.integer "level"
+    t.string "name"
+    t.string "reference"
+    t.bigint "dnd_class_level_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.string "desc", default: [], array: true
+    t.index ["dnd_class_level_id"], name: "index_class_features_on_dnd_class_level_id"
+  end
+
+  create_table "class_level_choices", force: :cascade do |t|
+    t.bigint "class_feature_id", null: false
+    t.integer "num_choices"
+    t.string "name"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.string "choices", default: [], array: true
+    t.index ["class_feature_id"], name: "index_class_level_choices_on_class_feature_id"
+  end
+
+  create_table "class_specific_spell_slots", force: :cascade do |t|
+    t.integer "sorcery_point_cost"
+    t.integer "spell_slot_level"
+    t.bigint "class_specific_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["class_specific_id"], name: "index_class_specific_spell_slots_on_class_specific_id"
+  end
+
+  create_table "class_specifics", force: :cascade do |t|
+    t.bigint "dnd_class_level_id", null: false
+    t.integer "action_surges"
+    t.integer "arcane_recovery_levels"
+    t.integer "aura_range"
+    t.integer "bardic_inspiration_die"
+    t.integer "brutal_critical_dice"
+    t.integer "channel_divinity_charges"
+    t.integer "destroy_undead_cr"
+    t.integer "extra_attacks"
+    t.integer "favored_enemies"
+    t.integer "favored_terrain"
+    t.integer "indomitable_uses"
+    t.integer "invocations_known"
+    t.integer "ki_points"
+    t.integer "magical_secrets_max_5"
+    t.integer "magical_secrets_max_7"
+    t.integer "magical_secrets_max_9"
+    t.integer "metamagic_known"
+    t.integer "mystic_arcanum_level_6"
+    t.integer "mystic_arcanum_level_7"
+    t.integer "mystic_arcanum_level_8"
+    t.integer "mystic_arcanum_level_9"
+    t.integer "rage_count"
+    t.integer "rage_damage_bonus"
+    t.integer "song_of_rest_die"
+    t.integer "sorcery_points"
+    t.integer "unarmored_movement"
+    t.boolean "wild_shape_fly"
+    t.boolean "wild_shape_max_cr"
+    t.boolean "wild_shape_swim"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["dnd_class_level_id"], name: "index_class_specifics_on_dnd_class_level_id"
+  end
+
+  create_table "class_spellcastings", force: :cascade do |t|
+    t.integer "cantrips_known"
+    t.integer "spells_known"
+    t.integer "spell_slots_level_1"
+    t.integer "spell_slots_level_2"
+    t.integer "spell_slots_level_3"
+    t.integer "spell_slots_level_4"
+    t.integer "spell_slots_level_5"
+    t.integer "spell_slots_level_6"
+    t.integer "spell_slots_level_7"
+    t.integer "spell_slots_level_8"
+    t.integer "spell_slots_level_9"
+    t.bigint "dnd_class_level_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["dnd_class_level_id"], name: "index_class_spellcastings_on_dnd_class_level_id"
+  end
+
   create_table "condition_immunities", force: :cascade do |t|
     t.bigint "monster_id"
     t.bigint "condition_id"
@@ -67,6 +151,16 @@ ActiveRecord::Schema.define(version: 2021_09_09_155309) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["item_id"], name: "index_costs_on_item_id"
+  end
+
+  create_table "dnd_class_levels", force: :cascade do |t|
+    t.integer "ability_score_bonuses"
+    t.bigint "dnd_class_id", null: false
+    t.integer "level"
+    t.integer "prof_bonus"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["dnd_class_id"], name: "index_dnd_class_levels_on_dnd_class_id"
   end
 
   create_table "dnd_classes", force: :cascade do |t|
@@ -136,6 +230,15 @@ ActiveRecord::Schema.define(version: 2021_09_09_155309) do
     t.index ["user_id"], name: "index_items_on_user_id"
     t.index ["vehicle_category"], name: "index_items_on_vehicle_category"
     t.index ["weapon_category"], name: "index_items_on_weapon_category"
+  end
+
+  create_table "martial_arts", force: :cascade do |t|
+    t.integer "dice_count"
+    t.integer "dice_value"
+    t.bigint "class_specific_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["class_specific_id"], name: "index_martial_arts_on_class_specific_id"
   end
 
   create_table "monster_proficiencies", force: :cascade do |t|
@@ -220,6 +323,15 @@ ActiveRecord::Schema.define(version: 2021_09_09_155309) do
     t.index ["dnd_class_id"], name: "index_multi_classings_on_dnd_class_id"
   end
 
+  create_table "prerequisites", force: :cascade do |t|
+    t.string "name"
+    t.integer "level"
+    t.bigint "class_feature_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["class_feature_id"], name: "index_prerequisites_on_class_feature_id"
+  end
+
   create_table "prof_choice_profs", force: :cascade do |t|
     t.bigint "prof_id"
     t.bigint "prof_choice_id"
@@ -292,6 +404,15 @@ ActiveRecord::Schema.define(version: 2021_09_09_155309) do
     t.index ["name"], name: "index_races_on_name"
     t.index ["slug"], name: "index_races_on_slug"
     t.index ["user_id"], name: "index_races_on_user_id"
+  end
+
+  create_table "sneak_attacks", force: :cascade do |t|
+    t.integer "dice_count"
+    t.integer "dice_value"
+    t.bigint "class_specific_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["class_specific_id"], name: "index_sneak_attacks_on_class_specific_id"
   end
 
   create_table "spell_casting_abilities", force: :cascade do |t|
@@ -397,15 +518,24 @@ ActiveRecord::Schema.define(version: 2021_09_09_155309) do
 
   add_foreign_key "ability_score_dnd_classes", "ability_scores"
   add_foreign_key "ability_score_dnd_classes", "dnd_classes"
+  add_foreign_key "class_features", "dnd_class_levels"
+  add_foreign_key "class_level_choices", "class_features"
+  add_foreign_key "class_specific_spell_slots", "class_specifics"
+  add_foreign_key "class_specifics", "dnd_class_levels"
+  add_foreign_key "class_spellcastings", "dnd_class_levels"
   add_foreign_key "costs", "items"
+  add_foreign_key "dnd_class_levels", "dnd_classes"
   add_foreign_key "dnd_classes", "users"
   add_foreign_key "items", "users"
+  add_foreign_key "martial_arts", "class_specifics"
   add_foreign_key "monsters", "users"
   add_foreign_key "multi_classing_prereq_options", "multi_classings"
   add_foreign_key "multi_classing_profs", "multi_classings"
   add_foreign_key "multi_classing_profs", "profs"
   add_foreign_key "multi_classings", "dnd_classes"
+  add_foreign_key "prerequisites", "class_features"
   add_foreign_key "races", "users"
+  add_foreign_key "sneak_attacks", "class_specifics"
   add_foreign_key "spell_casting_abilities", "ability_scores"
   add_foreign_key "spell_casting_abilities", "spell_castings"
   add_foreign_key "spell_casting_infos", "spell_castings"

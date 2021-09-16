@@ -68,4 +68,37 @@ json.multi_classing do
   end
 end
 
+json.levels dnd_class.dnd_class_levels do |level|
+  json.extract! level, :level, :ability_score_bonuses, :prof_bonus
+  json.features level.class_features do |feature|
+    json.extract! feature, :name, :desc, :reference
+    unless feature.prerequisites.nil?
+      json.prerequisites feature.prerequisites do |prereq|
+        json.extract! prereq, :name, :level
+      end
+    end
+    json.choice do
+      json.extract! feature.class_level_choice, :choices, :num_choices unless feature.class_level_choice.nil?
+    end
+    json.choice do
+      json.extract! feature.subfeature_options, :choices, :num_choices unless feature.subfeature_options.nil?
+    end
+    json.choice do
+      json.extract! feature.expertise_options, :choices, :num_choices unless feature.expertise_options.nil?
+    end
+  end
+  json.class_specific do
+    json.merge! level.class_specific.as_json.reject { |key, value| value.nil? || key.in?(%w[id created_at dnd_class_level_id updated_at]) }
+    json.sneak_attack do
+      json.extract! level.class_specific.sneak_attack, :dice_count, :dice_value unless level.class_specific.sneak_attack.nil?
+    end
+    json.martial_arts do
+      json.extract! level.class_specific.martial_art, :dice_count, :dice_value unless level.class_specific.martial_art.nil?
+    end
+  end
+  json.spellcasting do
+    json.merge! level.class_spellcasting.attributes.reject { |key, value| value.nil? || key.in?(%w[id created_at dnd_class_level_id updated_at]) } unless level.class_spellcasting.nil?
+  end
+end
+
 json.url v1_dnd_class_url(dnd_class, format: :json)

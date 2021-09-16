@@ -94,7 +94,7 @@
     <orderEntry type="library" scope="PROVIDED" name="concurrent-ruby (v1.1.9, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="connection_pool (v2.2.5, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="crass (v1.0.6, RVM: ruby-2.7.4) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="debase (v0.2.4.1, RVM: ruby-2.7.4) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="debase (v2.3.2, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="debase-ruby_core_source (v0.10.12, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="devise (v4.8.0, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="diff-lcs (v1.4.4, RVM: ruby-2.7.4) [gem]" level="application" />
@@ -145,7 +145,7 @@
     <orderEntry type="library" scope="PROVIDED" name="rb-fsevent (v0.11.0, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rb-inotify (v0.10.1, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rbtree (v0.4.4, RVM: ruby-2.7.4) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="react_on_rails (v12.2.0, RVM: ruby-2.7.4) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="react_on_rails (v12.3.0, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="redcarpet (v3.5.1, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="regexp_parser (v2.1.1, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="regexp_property_values (v1.0.0, RVM: ruby-2.7.4) [gem]" level="application" />
@@ -155,7 +155,7 @@
     <orderEntry type="library" scope="PROVIDED" name="rspec-mocks (v3.10.2, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rspec-rails (v5.0.2, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rspec-support (v3.10.2, RVM: ruby-2.7.4) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="ruby-debug-ide (v0.7.2, RVM: ruby-2.7.4) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="ruby-debug-ide (v2.3.1, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rubyzip (v2.3.2, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="sass (v3.7.4, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="sass-listen (v4.0.0, RVM: ruby-2.7.4) [gem]" level="application" />

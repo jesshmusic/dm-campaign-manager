@@ -14,14 +14,15 @@
 namespace :srd do
 
   task import_all: :environment do
-    SrdUtilities.import_all
+    ImportSrdUtilities.import_all
   end
 
   task clean_all: :environment do
-    SrdUtilities.clean_database
+    ImportSrdUtilities.clean_database
   end
 
   task import_dnd_classes: :environment do
-    SrdUtilities.import_dnd_classes
+    DndClass.destroy_all
+    ImportSrdUtilities.import_dnd_classes
   end
 end

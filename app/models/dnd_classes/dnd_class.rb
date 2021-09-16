@@ -35,6 +35,8 @@ class DndClass < ApplicationRecord
   has_many :ability_score_dnd_classes, dependent: :destroy
   has_many :ability_scores, through: :ability_score_dnd_classes
 
+  has_many :dnd_class_levels, dependent: :destroy
+
   has_many :equipments, dependent: :destroy
   has_many :starting_equipment_options, dependent: :destroy
 
