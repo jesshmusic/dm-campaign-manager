@@ -87,17 +87,20 @@ json.levels dnd_class.dnd_class_levels do |level|
       json.extract! feature.expertise_options, :choices, :num_choices unless feature.expertise_options.nil?
     end
   end
-  json.class_specific do
-    json.merge! level.class_specific.as_json.reject { |key, value| value.nil? || key.in?(%w[id created_at dnd_class_level_id updated_at]) }
-    json.sneak_attack do
-      json.extract! level.class_specific.sneak_attack, :dice_count, :dice_value unless level.class_specific.sneak_attack.nil?
-    end
-    json.martial_arts do
-      json.extract! level.class_specific.martial_art, :dice_count, :dice_value unless level.class_specific.martial_art.nil?
+  json.class_specifics level.class_specifics do |class_specific|
+    if class_specific.index == 'creating_spell_slots'
+      json.extract! class_specific, :name, :index
+      json.value class_specific.class_specific_spell_slots do |slot|
+        json.extract! slot, :sorcery_point_cost, :spell_slot_level
+      end
+    else
+      json.extract! class_specific, :name, :value, :index
     end
   end
   json.spellcasting do
-    json.merge! level.class_spellcasting.attributes.reject { |key, value| value.nil? || key.in?(%w[id created_at dnd_class_level_id updated_at]) } unless level.class_spellcasting.nil?
+    json.extract! level.class_spellcasting, :cantrips_known, :spell_slots_level_1, :spell_slots_level_2,
+                  :spell_slots_level_3, :spell_slots_level_4, :spell_slots_level_5, :spell_slots_level_6,
+                  :spell_slots_level_7, :spell_slots_level_8, :spell_slots_level_9, :spells_known
   end
 end
 

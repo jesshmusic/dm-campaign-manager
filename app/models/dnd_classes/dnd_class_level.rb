@@ -21,7 +21,7 @@
 class DndClassLevel < ApplicationRecord
   belongs_to :dnd_class
 
-  has_one :class_specific, dependent: :destroy
+  has_many :class_specifics, dependent: :destroy
   has_one :class_spellcasting, dependent: :destroy
   has_many :class_features, dependent: :destroy
 end

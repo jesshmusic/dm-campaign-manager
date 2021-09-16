@@ -141,27 +141,26 @@ class ImportSrd::DndClassesUtil
 
     def import_class_specific(class_level, level)
       if level[:class_specific]
-        class_level.class_specific = ClassSpecific.new
         level[:class_specific].each_key do |key|
+          key_string = key.to_s
+          class_spec = class_level.class_specifics.create(name: key_string.titleize, index: key)
           if key == :creating_spell_slots
             slots = level[:class_specific][:creating_spell_slots]
             slots.each do |slot|
-              class_level.class_specific.class_specific_spell_slots.create(sorcery_point_cost: slot[:sorcery_point_cost],
-                                                                           spell_slot_level: slot[:spell_slot_level])
+              class_spec.class_specific_spell_slots.create(sorcery_point_cost: slot[:sorcery_point_cost],
+                                                           spell_slot_level: slot[:spell_slot_level])
             end
           elsif key == :martial_arts
             martial = level[:class_specific][:martial_arts]
-            class_level.class_specific.martial_art = MartialArt.create(dice_count: martial[:dice_count],
-                                                                       dice_value: martial[:dice_value])
+            class_spec.value = "#{martial[:dice_count]}d#{martial[:dice_value]}"
           elsif key == :sneak_attack
             sneak_attack = level[:class_specific][:sneak_attack]
-            class_level.class_specific.sneak_attack = SneakAttack.create(dice_count: sneak_attack[:dice_count],
-                                                                         dice_value: sneak_attack[:dice_value])
+            class_spec.value = "#{sneak_attack[:dice_count]}d#{sneak_attack[:dice_value]}"
           else
-            class_level.class_specific[key] = level[:class_specific][key]
+            class_spec.value = level[:class_specific][key]
           end
+          class_spec.save!
         end
-        class_level.class_specific.save!
       end
     end
 

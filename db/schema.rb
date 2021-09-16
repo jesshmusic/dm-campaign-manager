@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_16_203759) do
+ActiveRecord::Schema.define(version: 2021_09_16_205732) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -75,35 +75,9 @@ ActiveRecord::Schema.define(version: 2021_09_16_203759) do
 
   create_table "class_specifics", force: :cascade do |t|
     t.bigint "dnd_class_level_id", null: false
-    t.integer "action_surges"
-    t.integer "arcane_recovery_levels"
-    t.integer "aura_range"
-    t.integer "bardic_inspiration_die"
-    t.integer "brutal_critical_dice"
-    t.integer "channel_divinity_charges"
-    t.integer "destroy_undead_cr"
-    t.integer "extra_attacks"
-    t.integer "favored_enemies"
-    t.integer "favored_terrain"
-    t.integer "indomitable_uses"
-    t.integer "invocations_known"
-    t.integer "ki_points"
-    t.integer "magical_secrets_max_5"
-    t.integer "magical_secrets_max_7"
-    t.integer "magical_secrets_max_9"
-    t.integer "metamagic_known"
-    t.integer "mystic_arcanum_level_6"
-    t.integer "mystic_arcanum_level_7"
-    t.integer "mystic_arcanum_level_8"
-    t.integer "mystic_arcanum_level_9"
-    t.integer "rage_count"
-    t.integer "rage_damage_bonus"
-    t.integer "song_of_rest_die"
-    t.integer "sorcery_points"
-    t.integer "unarmored_movement"
-    t.boolean "wild_shape_fly"
-    t.boolean "wild_shape_max_cr"
-    t.boolean "wild_shape_swim"
+    t.string "name"
+    t.string "index"
+    t.string "value"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["dnd_class_level_id"], name: "index_class_specifics_on_dnd_class_level_id"
@@ -230,15 +204,6 @@ ActiveRecord::Schema.define(version: 2021_09_16_203759) do
     t.index ["user_id"], name: "index_items_on_user_id"
     t.index ["vehicle_category"], name: "index_items_on_vehicle_category"
     t.index ["weapon_category"], name: "index_items_on_weapon_category"
-  end
-
-  create_table "martial_arts", force: :cascade do |t|
-    t.integer "dice_count"
-    t.integer "dice_value"
-    t.bigint "class_specific_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["class_specific_id"], name: "index_martial_arts_on_class_specific_id"
   end
 
   create_table "monster_proficiencies", force: :cascade do |t|
@@ -406,15 +371,6 @@ ActiveRecord::Schema.define(version: 2021_09_16_203759) do
     t.index ["user_id"], name: "index_races_on_user_id"
   end
 
-  create_table "sneak_attacks", force: :cascade do |t|
-    t.integer "dice_count"
-    t.integer "dice_value"
-    t.bigint "class_specific_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["class_specific_id"], name: "index_sneak_attacks_on_class_specific_id"
-  end
-
   create_table "spell_casting_abilities", force: :cascade do |t|
     t.bigint "spell_casting_id", null: false
     t.bigint "ability_score_id", null: false
@@ -527,7 +483,6 @@ ActiveRecord::Schema.define(version: 2021_09_16_203759) do
   add_foreign_key "dnd_class_levels", "dnd_classes"
   add_foreign_key "dnd_classes", "users"
   add_foreign_key "items", "users"
-  add_foreign_key "martial_arts", "class_specifics"
   add_foreign_key "monsters", "users"
   add_foreign_key "multi_classing_prereq_options", "multi_classings"
   add_foreign_key "multi_classing_profs", "multi_classings"
@@ -535,7 +490,6 @@ ActiveRecord::Schema.define(version: 2021_09_16_203759) do
   add_foreign_key "multi_classings", "dnd_classes"
   add_foreign_key "prerequisites", "class_features"
   add_foreign_key "races", "users"
-  add_foreign_key "sneak_attacks", "class_specifics"
   add_foreign_key "spell_casting_abilities", "ability_scores"
   add_foreign_key "spell_casting_abilities", "spell_castings"
   add_foreign_key "spell_casting_infos", "spell_castings"
