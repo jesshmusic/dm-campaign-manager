@@ -106,24 +106,6 @@ RSpec.describe Monster, type: :model do
       expect(monster.initiative).to eq(1)
     end
 
-    it 'should return a description text string' do
-      monster = Monster.find_by(slug: 'orc')
-      expect(monster).not_to be(nil)
-      expect(monster.description_text).not_to be(nil)
-      expect(monster.description_text).to include('<p><strong>Armor Class</strong>  13</p>')
-      expect(monster.description_text).to include('<p><strong>Saving Throws </strong>')
-      expect(monster.description_text).to include('<span>Intimidation +2 </span>')
-      expect(monster.description_text).to include('Melee or Ranged Weapon Attack: +5 to hit, reach 5 ft. or range 30/120 ft., one target. Hit: 6 (1d6 + 3) piercing damage.')
-      expect(monster.description_text).to include('Aggressive')
-      expect(monster.description_text).to include('As a bonus action, the orc can move up to its speed toward a hostile creature that it can see.')
-    end
-
-    it 'should return a description text string for a higher level monster (lich)' do
-      monster = Monster.find_by(slug: 'lich')
-      expect(monster.description_text).not_to be(nil)
-      expect(monster.description_text).to include('<span>Con +10 </span>, <span>Int +12 </span>, <span>Wis +9 </span>')
-    end
-
     it 'should return the slug for to_param' do
       monster = Monster.find_by(slug: 'orc')
       expect(monster).not_to be(nil)
@@ -132,7 +114,6 @@ RSpec.describe Monster, type: :model do
 
     it 'should return a damage resistances/immunities' do
       monster = Monster.find_by(slug: 'lich')
-      expect(monster.description_text).not_to be(nil)
       expect(monster.damage_resistances).to eq(%w[cold lightning necrotic])
       expect(monster.damage_immunities).to eq([
                                                 'poison',
@@ -147,10 +128,47 @@ RSpec.describe Monster, type: :model do
       condition = Condition.find_by(name: 'Charmed')
       expect(condition).not_to be(nil)
       expect(condition.index).to eq('charmed')
-      expect(condition.description).to eq([
-                                            '- A charmed creature can\'t attack the charmer or target the charmer with harmful abilities or magical effects.',
-                                            '- The charmer has advantage on any ability check to interact socially with the creature.'
-                                          ])
+      expect(condition.description).to eq(
+                                         [
+                                           '- A charmed creature can\'t attack the charmer or target the charmer with harmful abilities or magical effects.',
+                                           '- The charmer has advantage on any ability check to interact socially with the creature.'
+                                         ]
+                                       )
+    end
+
+    it 'should should have actions' do
+      monster = Monster.find_by(slug: 'gargoyle')
+      actions = monster.actions
+      expect(actions.count).to eq(3)
+      expect(actions[0].name).to eq('Multiattack')
+      expect(actions[1].name).to eq('Bite')
+      expect(actions[1].action_damages).to be_truthy
+      expect(actions[1].action_damages.count).to eq(1)
+      expect(actions[1].action_damages[0].damage_type).to eq('Piercing')
+      expect(actions[1].action_damages[0].damage_bonus).to eq(2)
+      expect(actions[1].action_damages[0].dice_count).to eq(1)
+      expect(actions[1].action_damages[0].dice_value).to eq(6)
+    end
+
+    it 'should should have legendary actions' do
+      monster = Monster.find_by(slug: 'ancient-red-dragon')
+      actions = monster.legendary_actions
+      expect(actions.count).to eq(3)
+      expect(actions[0].name).to eq('Detect')
+      expect(actions[2].name).to eq('Wing Attack (Costs 2 Actions)')
+      expect(actions[2].action_damages).to be_truthy
+      expect(actions[2].action_damages.count).to eq(1)
+      expect(actions[2].action_damages[0].damage_type).to eq('Bludgeoning')
+      expect(actions[2].action_damages[0].damage_bonus).to eq(10)
+      expect(actions[2].action_damages[0].dice_count).to eq(2)
+      expect(actions[2].action_damages[0].dice_value).to eq(6)
+    end
+
+    it 'should should have special abilities' do
+      monster = Monster.find_by(slug: 'ancient-red-dragon')
+      actions = monster.special_abilities
+      expect(actions.count).to eq(1)
+      expect(actions[0].name).to eq('Legendary Resistance')
     end
   end
 end

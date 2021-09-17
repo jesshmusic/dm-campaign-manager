@@ -10,7 +10,7 @@ class NpcGenerator
                              challenge_rating: npc_attributes[:challenge_rating],
                              monster_type: npc_attributes[:monster_type],
                              strength: npc_attributes[:strength],
-                             dexterity:  npc_attributes[:dexterity],
+                             dexterity: npc_attributes[:dexterity],
                              constitution: npc_attributes[:constitution],
                              intelligence: npc_attributes[:intelligence],
                              wisdom: npc_attributes[:wisdom],
@@ -38,7 +38,7 @@ class NpcGenerator
       # Return
       @new_npc.as_json(
         include: %i[actions legendary_actions special_abilities skills],
-        methods: %i[description_text hit_dice size_and_type saving_throws skills_string xp])
+        methods: %i[hit_dice size_and_type saving_throws skills_string xp])
     end
 
     def convert_2e_npc(npc_attributes)
@@ -47,7 +47,7 @@ class NpcGenerator
                              alignment: npc_attributes[:alignment],
                              monster_type: 'humanoid',
                              strength: npc_attributes[:strength],
-                             dexterity:  npc_attributes[:dexterity],
+                             dexterity: npc_attributes[:dexterity],
                              constitution: npc_attributes[:constitution],
                              intelligence: npc_attributes[:intelligence],
                              wisdom: npc_attributes[:wisdom],
@@ -275,7 +275,7 @@ class NpcGenerator
             action_description += "Ranged Weapon Attack: +#{DndRules.challenge_ratings[challenge_rating][:attack_bonus]} to hit,"
             action_description += " range #{action[:data][:range_normal]}/#{action[:data][:range_long]} ft., one target. "
             action_description += "Hit: #{base_damage} (#{action[:data][:damage_dice_count]}d#{action[:data][:damage_dice_value]} #{action_damage_bonus})"
-            action_description +=" #{action[:data][:damage_type].downcase} damage."
+            action_description += " #{action[:data][:damage_type].downcase} damage."
           elsif action[:data][:properties] && action[:data][:properties].include?('Versatile')
             npc_dam_bonus = DndRules.ability_score_modifier(@new_npc.strength)
             action_damage_bonus, base_damage = action_damage(action, npc_dam_bonus)
@@ -283,16 +283,16 @@ class NpcGenerator
             action_description += "Melee Weapon Attack: +#{DndRules.challenge_ratings[challenge_rating][:attack_bonus]} to hit,"
             action_description += " reach #{action[:data][:range_normal]} ft., one target. "
             action_description += "Hit: #{base_damage} (#{action[:data][:damage_dice_count]}d#{action[:data][:damage_dice_value]} #{action_damage_bonus})"
-            action_description +=" #{action[:data][:damage_type].downcase} damage, "
+            action_description += " #{action[:data][:damage_type].downcase} damage, "
             action_description += "or #{base_2h_damage} (#{action[:data][:damage_dice2_h_count]}d#{action[:data][:damage_dice2_h_value]} #{action_damage_bonus})"
-            action_description +=" #{action[:data][:damage_type].downcase} damage if used with two hands."
+            action_description += " #{action[:data][:damage_type].downcase} damage if used with two hands."
           else
             npc_dam_bonus = DndRules.ability_score_modifier(@new_npc.strength)
             action_damage_bonus, base_damage = action_damage(action, npc_dam_bonus)
             action_description += "Melee Weapon Attack: +#{DndRules.challenge_ratings[challenge_rating][:attack_bonus]} to hit,"
             action_description += " reach #{action[:data][:range_normal]} ft., one target. "
             action_description += "Hit: #{base_damage} (#{action[:data][:damage_dice_count]}d#{action[:data][:damage_dice_value]} #{action_damage_bonus})"
-            action_description +=" #{action[:data][:damage_type].downcase} damage."
+            action_description += " #{action[:data][:damage_type].downcase} damage."
           end
           if action[:data][:properties] && action[:data][:properties].include?('Thrown')
             npc_dam_bonus = DndRules.ability_score_modifier(@new_npc.dexterity)
@@ -300,7 +300,7 @@ class NpcGenerator
             action_description += " Or Ranged Weapon Attack: +#{DndRules.challenge_ratings[challenge_rating][:attack_bonus]} to hit,"
             action_description += " range #{action[:data][:thrown_range_normal]}/#{action[:data][:thrown_range_long]} ft., one target. "
             action_description += "Hit: #{base_damage} (#{action[:data][:damage_dice_count]}d#{action[:data][:damage_dice_value]} #{action_damage_bonus})"
-            action_description +=" #{action[:data][:damage_type].downcase} damage."
+            action_description += " #{action[:data][:damage_type].downcase} damage."
           end
           action = MonsterAction.new(
             name: action[:label],
@@ -398,7 +398,6 @@ class NpcGenerator
     #     end
     #   end
     # end
-
 
   end
 end

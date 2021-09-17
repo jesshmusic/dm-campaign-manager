@@ -13,6 +13,7 @@ json.extract! monster, :id,
               :damage_resistances,
               :damage_vulnerabilities,
               :dexterity,
+              :hit_dice,
               :hit_points,
               :intelligence,
               :languages,
@@ -24,8 +25,6 @@ json.extract! monster, :id,
               :strength,
               :wisdom,
               :user_id
-
-json.hit_dice monster.hit_die_string
 
 json.speeds monster.speeds do |speed|
   json.extract! speed, :name, :value

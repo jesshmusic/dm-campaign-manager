@@ -10,9 +10,8 @@ json.xp monster.xp
 json.armorClass monster.armor_class
 json.hit_points monster.hit_points
 json.speed monster.speed
-json.hit_dice monster.hit_die_string
+json.hit_dice monster.hit_dice
 json.monster_type monster.monster_type
-json.description_text monster.description_text
 
 json.value monster.id
 json.label "#{monster.name}: CR #{monster.challenge_rating} - #{monster.xp}xp"

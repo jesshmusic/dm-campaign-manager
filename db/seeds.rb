@@ -35,7 +35,7 @@ def create_user(name, username, email, role)
 end
 
 create_user('Jess Hendricks', 'jesshmusic', 'jesshmusic72@gmail.com', :admin)
-dm_user = create_user('Jess DM', 'jesshdm', 'jesshmusic72+dm@gmail.com', :dungeon_master)
+create_user('Jess DM', 'jesshdm', 'jesshmusic72+dm@gmail.com', :dungeon_master)
 
 # ImportSrdUtilities.import_all_empty(nil)
 # ImportSrdUtilities.clean_database
