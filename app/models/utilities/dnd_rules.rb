@@ -128,7 +128,7 @@ class DndRules
       else
         hp = hit_points
       end
-      {hit_points: hp, num_hit_die: hp / (hit_point_average_for_size[size.to_sym] + constitution_bonus)}
+      { hit_points: hp, num_hit_die: hp / (hit_point_average_for_size[size.to_sym] + constitution_bonus) }
     end
 
     def challenge_ratings
@@ -998,8 +998,8 @@ class DndRules
         else
           if part == :hit_dice
             values = str.split('d')
-            hit_die[:hit_dice_number] = values[0] || 1
-            hit_die[:hit_dice_value] = values[1]
+            hit_die[:hit_dice_number] = values[0].to_i || 1
+            hit_die[:hit_dice_value] = values[1].to_i
           elsif part == :sub
             hit_die[:hit_dice_modifier] = -str.to_i
           else

@@ -1,4 +1,4 @@
-class ImportSrd::SpellsUtil
+class SpellsUtil
   class << self
     def dnd_api_url
       ImportSrdUtilities.dnd_api_url

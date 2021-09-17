@@ -1,4 +1,4 @@
-class ImportSrd::MonstersUtil
+class MonstersUtil
   class << self
     def dnd_api_url
       ImportSrdUtilities.dnd_api_url
@@ -9,6 +9,7 @@ class ImportSrd::MonstersUtil
     end
 
     def import_monsters
+      puts 'Importing Monsters'
       next_uri = URI("#{dnd_api_url}/api/monsters/")
       count = 0
       while next_uri
@@ -26,11 +27,17 @@ class ImportSrd::MonstersUtil
 
           import_info(new_monster, monster)
 
+          import_speeds(new_monster, monster)
+          import_senses(new_monster, monster)
+
           # Statistics
           import_stats(new_monster, monster)
 
           # Actions
           import_actions(new_monster, monster)
+          import_legendary_actions(new_monster, monster)
+          import_reactions(new_monster, monster)
+          import_special_abilities(new_monster, monster)
 
           # Proficiencies
           import_profs(new_monster, monster)
@@ -39,19 +46,82 @@ class ImportSrd::MonstersUtil
           import_condition_immunities(new_monster, monster)
 
           new_monster.save!
+          puts "\tMonster: #{new_monster.name} added to database"
           count += 1
         end
       end
-      puts "#{count} monsters imported and updated or created."
+      puts "Monsters: #{count} monsters imported and updated or created."
     end
 
     private
 
     def import_actions(new_monster, monster)
-      new_monster.actions = monster[:actions] || []
-      new_monster.legendary_actions = monster[:legendary_actions] || []
-      new_monster.special_abilities = monster[:special_abilities] || []
-      new_monster.reactions = monster[:reactions] || []
+      unless monster[:actions].nil?
+        monster[:actions].each do |action|
+          act = new_monster.actions.create(name: action[:name], desc: action[:desc], attack_bonus: action[:attack_bonus])
+          parse_action(act, action)
+        end
+      end
+    end
+
+    def import_legendary_actions(new_monster, monster)
+      unless monster[:legendary_actions].nil?
+        monster[:legendary_actions].each do |action|
+          act = new_monster.legendary_actions.create(name: action[:name], desc: action[:desc], attack_bonus: action[:attack_bonus])
+          parse_action(act, action)
+        end
+      end
+    end
+
+    def import_reactions(new_monster, monster)
+      unless monster[:reactions].nil?
+        monster[:reactions].each do |action|
+          act = new_monster.reactions.create(name: action[:name], desc: action[:desc], attack_bonus: action[:attack_bonus])
+          parse_action(act, action)
+        end
+      end
+    end
+
+    def import_special_abilities(new_monster, monster)
+      unless monster[:special_abilities].nil?
+        monster[:special_abilities].each do |action|
+          act = new_monster.special_abilities.create(name: action[:name], desc: action[:desc], attack_bonus: action[:attack_bonus])
+          parse_action(act, action)
+        end
+      end
+    end
+
+    def parse_action(act, action)
+      unless action[:dc].nil?
+        act.dc_type = action[:dc][:dc_type][:name]
+        act.dc_value = action[:dc][:dc_value]
+        act.success_type = action[:dc][:success_type]
+      end
+      unless action[:usage].nil?
+        act.usage_dice = action[:usage][:dice]
+        act.usage_min_value = action[:usage][:min_value]
+        act.usage_type = action[:usage][:type]
+      end
+      unless action[:damage].nil?
+        action[:damage].each do |damage|
+          if damage[:type].nil?
+            damage_dice = DndRules.parse_dice_string(damage[:damage_dice])
+            act.action_damages.create(damage_bonus: damage_dice[:hit_dice_modifier],
+                                      damage_type: damage[:damage_type][:name],
+                                      dice_count: damage_dice[:hit_dice_number],
+                                      dice_value: damage_dice[:hit_dice_value])
+          else
+            damage[:from].each do |damage_choice|
+              damage_dice = DndRules.parse_dice_string(damage_choice[:damage_dice])
+              act.action_damages.create(damage_bonus: damage_dice[:hit_dice_modifier],
+                                        damage_type: damage_choice[:damage_type][:name],
+                                        dice_count: damage_dice[:hit_dice_number],
+                                        dice_value: damage_dice[:hit_dice_value])
+            end
+          end
+        end
+      end
+      act.save!
     end
 
     def import_required_fields(new_monster, monster)
@@ -70,15 +140,23 @@ class ImportSrd::MonstersUtil
       new_monster.languages = monster[:languages]
       new_monster.size = monster[:size]
       new_monster.monster_subtype = monster[:subtype] || ''
-      new_monster.senses = monster[:senses]
-      new_monster.speed = {
-        burrow: monster[:speed][:burrow] ? monster[:speed][:burrow] : '',
-        climb: monster[:speed][:climb] ? monster[:speed][:climb] : '',
-        fly: monster[:speed][:fly] ? monster[:speed][:fly] : '',
-        hover: monster[:speed][:hover] ? monster[:speed][:hover] : false,
-        swim: monster[:speed][:swim] ? monster[:speed][:swim] : '',
-        walk: monster[:speed][:walk] ? monster[:speed][:walk] : '',
-      }
+    end
+
+    def import_speeds(new_monster, monster)
+      unless monster[:speed].nil?
+        monster[:speed].each_key do |key|
+          value = monster[:speed][key] == true ? 1 : monster[:speed][key].to_i
+          new_monster.speeds.create(name: key.to_s.titleize, value: value)
+        end
+      end
+    end
+
+    def import_senses(new_monster, monster)
+      unless monster[:senses].nil?
+        monster[:senses].each_key do |key|
+          new_monster.senses.create(name: key.to_s.titleize, value: monster[:senses][key].to_s)
+        end
+      end
     end
 
     def import_stats(new_monster, monster)

@@ -5,7 +5,6 @@
 # Table name: monsters
 #
 #  id                     :bigint           not null, primary key
-#  actions                :jsonb            is an Array
 #  alignment              :string
 #  api_url                :string
 #  armor_class            :integer          default(10)
@@ -20,17 +19,12 @@
 #  hit_points             :integer          default(8), not null
 #  intelligence           :integer          default(10), not null
 #  languages              :string
-#  legendary_actions      :jsonb            is an Array
 #  legendary_description  :text
 #  monster_subtype        :string
 #  monster_type           :string
 #  name                   :string
-#  reactions              :jsonb            is an Array
-#  senses                 :jsonb
 #  size                   :string
 #  slug                   :string
-#  special_abilities      :jsonb            is an Array
-#  speed                  :jsonb
 #  strength               :integer          default(10), not null
 #  wisdom                 :integer          default(10), not null
 #  created_at             :datetime         not null
@@ -53,6 +47,14 @@ class Monster < ApplicationRecord
   before_validation do
     self.slug = generate_slug if will_save_change_to_name?
   end
+
+  has_many :actions, dependent: :destroy
+  has_many :legendary_actions, dependent: :destroy
+  has_many :reactions, dependent: :destroy
+  has_many :special_abilities, dependent: :destroy
+
+  has_many :senses, dependent: :destroy
+  has_many :speeds, dependent: :destroy
 
   has_many :monster_proficiencies
   has_many :profs, through: :monster_proficiencies

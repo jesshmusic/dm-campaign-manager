@@ -12,24 +12,24 @@ class ImportSrdUtilities
 
     def import_all
       import_dependencies
-      ImportSrd::ItemsUtil.import_items
+      ItemsUtil.import_items
       import_dnd_classes
-      ImportSrd::RacesUtil.import_races
-      ImportSrd::SpellsUtil.import_spells
-      ImportSrd::ItemsUtil.import_and_fix_magic_items
+      RacesUtil.import_races
+      SpellsUtil.import_spells
+      ItemsUtil.import_and_fix_magic_items
       import_monsters
     end
 
     def import_all_empty(exclude)
       has_dependencies = AbilityScore.count > 0 && Prof.count > 0 && Condition.count > 0
       import_dependencies unless has_dependencies
-      ImportSrd::ItemsUtil.import_items unless Item.count > 0 || exclude != :items
+      ItemsUtil.import_items unless Item.count > 0 || exclude != :items
       # import_classes
-      ImportSrd::DndClassesUtil.import_classes unless DndClass.count > 0 || exclude != :classes
-      ImportSrd::RacesUtil.import_races unless Race.count > 0 || exclude != :races
-      ImportSrd::SpellsUtil.import_spells unless Spell.count > 0 || exclude != :spells
-      ImportSrd::ItemsUtil.import_and_fix_magic_items unless Item.count > 0 || exclude != :magic_items
-      ImportSrd::MonstersUtil.import_monsters unless Monster.count > 0 || exclude != :monsters
+      DndClassesUtil.import_classes unless DndClass.count > 0 || exclude != :classes
+      RacesUtil.import_races unless Race.count > 0 || exclude != :races
+      SpellsUtil.import_spells unless Spell.count > 0 || exclude != :spells
+      ItemsUtil.import_and_fix_magic_items unless Item.count > 0 || exclude != :magic_items
+      MonstersUtil.import_monsters unless Monster.count > 0 || exclude != :monsters
     end
 
     def import_dependencies
@@ -41,11 +41,11 @@ class ImportSrdUtilities
     def import_dnd_classes
       # import_dependencies
       # import_items
-      ImportSrd::DndClassesUtil.import_classes
+      DndClassesUtil.import_classes
     end
 
     def import_monsters
-      ImportSrd::MonstersUtil.import_monsters
+      MonstersUtil.import_monsters
     end
 
     def clean_database
