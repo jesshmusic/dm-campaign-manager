@@ -23,10 +23,9 @@
 #
 FactoryBot.define do
   factory :action_damage do
-    dice_count { 1 }
-    dice_value { 1 }
-    damage_bonus { 1 }
-    action { nil }
-    damage_type { "MyString" }
+    dice_count { %w(111122334).sample }
+    dice_value { %w(4 6 8 10 12 20).sample }
+    damage_bonus { rand(0..10) }
+    damage_type { %w(Piercing Bludgeoning Slashing Fire Acid Cold).sample }
   end
 end

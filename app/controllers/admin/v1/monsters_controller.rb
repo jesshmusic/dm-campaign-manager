@@ -9,44 +9,24 @@ module Admin::V1
     # GET /monsters.json
     def index
       authorize Monster
-      @monsters = if params[:refs].present?
-                    @monsters = Monster.all.order(name: :asc).map { |monster|
-                      {
-                        name: monster.name,
-                        slug: monster.slug
-                      }
-                    }
-                    render json: {count: @monsters.count, results: @monsters}
-                  elsif params[:search].present?
+      @monsters = if params[:search].present?
                     Monster.search_for(params[:search]).order(monster_type: :asc, name: :asc)
                   else
                     Monster.all.order(monster_type: :asc, name: :asc)
                   end
-      unless params[:refs].present?
-        @monsters = if !current_user
-                      @monsters.where(user_id: nil)
-                    elsif current_user.admin? && !params[:refs].present?
-                      @monsters
-                    else
-                      @monsters.where(user_id: nil).or(@monsters.where(user_id: current_user.id))
-                    end
-        @monsters = @monsters.where(challenge_rating: params[:challenge_rating]) if params[:challenge_rating].present?
-      end
+      @monsters = if !current_user
+                    @monsters.where(user_id: nil)
+                  elsif current_user.admin? && !params[:refs].present?
+                    @monsters
+                  else
+                    @monsters.where(user_id: nil).or(@monsters.where(user_id: current_user.id))
+                  end
+      @monsters = @monsters.where(challenge_rating: params[:challenge_rating]) if params[:challenge_rating].present?
+
       respond_to do |format|
         format.html { @pagy, @monsters = pagy(@monsters) }
         format.json
       end
-    end
-
-    def monster_refs
-      authorize Monster
-      @monsters = Monster.all.order(name: :asc).map { |monster|
-        {
-          name: monster.name,
-          slug: monster.slug
-        }
-      }
-      render json: {count: @monsters.count, results: @monsters}
     end
 
     def monster_categories
@@ -64,7 +44,7 @@ module Admin::V1
           }
         }
       end
-      render json: {count: monster_cats.count, results: monster_cats.sort_by{|e| e[:name]}}
+      render json: { count: monster_cats.count, results: monster_cats.sort_by { |e| e[:name] } }
     end
 
     # GET /monsters/1
@@ -144,32 +124,33 @@ module Admin::V1
     # Never trust parameters from the scary internet, only allow the white list through.
     def monster_params
       params.require(:monster).permit(
-        :name, :size, :monster_type, :monster_subtype,
-        :alignment, :damage_vulnerabilities,
-        :damage_resistances, :damage_immunities, :condition_immunities,
-        :languages, :challenge_rating, :api_url,
-        :armor_class, :charisma, :constitution, :dexterity, :hit_dice,
-        :hit_points, :intelligence, :strength, :wisdom,
-        :legendary_description,
+        :alignment, :api_url, :armor_class, :challenge_rating,
+        :charisma, :constitution,
+        :dexterity, :hit_dice, :hit_points,
+        :intelligence, :languages, :legendary_description, :monster_subtype,
+        :monster_type, :name, :size, :slug, :strength, :wisdom,
+        damage_immunities_attributes: %i[name _destroy],
+        damage_vulnerabilities_attributes: %i[name _destroy],
+        damage_resistances_attributes: %i[name _destroy],
         condition_ids: [],
         monster_proficiencies_attributes: %i[id prof_id value _destroy],
-        senses: %i[
-          blindsight darkvision passive_perception tremorsense truesight
+        senses_attributes: %i[
+          name value _destroy
         ],
-        speed: %i[
-          burrow climb fly hover swim walk
+        speeds_attributes: %i[
+          name value _destroy
         ],
         actions_attributes: %i[
-          name description attack_bonus damage_bonus damage_dice
+          attack_bonus dc_type dc_value desc name success_type usage_dice usage_min_value usage_type _destroy
         ],
         legendary_action_attributes: %i[
-          name description attack_bonus damage_bonus damage_dice
+          attack_bonus dc_type dc_value desc name success_type usage_dice usage_min_value usage_type _destroy
         ],
         special_abilities_attributes: %i[
-          name description attack_bonus damage_bonus damage_dice
+          attack_bonus dc_type dc_value desc name success_type usage_dice usage_min_value usage_type _destroy
         ],
         reactions_attributes: %i[
-          name description attack_bonus damage_bonus damage_dice
+          attack_bonus dc_type dc_value desc name success_type usage_dice usage_min_value usage_type _destroy
         ]
       )
     end

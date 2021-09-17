@@ -1,10 +1,14 @@
 <div class="nested-fields">
   <div class="d-flex align-items-end">
-    <%= f.input :name, required: true, wrapper_html: {class: 'mr-3' } %>
-    <%= f.input :description, required: true, wrapper_html: {class: 'mr-3' } %>
-    <%= f.input :attack_bonus, wrapper_html: {class: 'mr-3' } %>
-    <%= f.input :damage_bonus, wrapper_html: {class: 'mr-3' } %>
-    <%= f.input :damage_dice, wrapper_html: {class: 'mr-3' } %>
-    <%= link_to_remove_association "Remove", f, class: "btn btn-warning mb-3" %>
+    <%= f.input :name, required: true, wrapper_html: { class: 'mr-3' } %>
+    <%= f.text :desc, required: true, wrapper_html: { class: 'mr-3' } %>
+    <%= f.input :attack_bonus, wrapper_html: { class: 'mr-3' } %>
+    <%= f.input :dc_type, wrapper_html: { class: 'mr-3' } %>
+    <%= f.input :dc_value, wrapper_html: { class: 'mr-3' } %>
+    <%= f.input :success_type, wrapper_html: { class: 'mr-3' } %>
+    <%= f.input :usage_dice, wrapper_html: { class: 'mr-3' } %>
+    <%= f.input :usage_min_value, wrapper_html: { class: 'mr-3' } %>
+    <%= f.input :usage_type, wrapper_html: { class: 'mr-3' } %>
+    <%= link_to_remove_association 'Remove', f, class: 'btn btn-warning mb-3' %>
   </div>
 </div>

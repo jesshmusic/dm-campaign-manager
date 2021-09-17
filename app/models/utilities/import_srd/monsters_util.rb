@@ -26,6 +26,9 @@ class MonstersUtil
           import_required_fields(new_monster, monster)
 
           import_info(new_monster, monster)
+          import_damage_immunities(new_monster, monster)
+          import_damage_resistances(new_monster, monster)
+          import_damage_vulnerabilities(new_monster, monster)
 
           import_speeds(new_monster, monster)
           import_senses(new_monster, monster)
@@ -134,12 +137,33 @@ class MonstersUtil
 
     def import_info(new_monster, monster)
       new_monster.api_url = "/v1/monsters/#{new_monster.slug}"
-      new_monster.damage_immunities = monster[:damage_immunities]
-      new_monster.damage_resistances = monster[:damage_resistances]
-      new_monster.damage_vulnerabilities = monster[:damage_vulnerabilities]
       new_monster.languages = monster[:languages]
       new_monster.size = monster[:size]
       new_monster.monster_subtype = monster[:subtype] || ''
+    end
+
+    def import_damage_resistances(new_monster, monster)
+      unless monster[:damage_resistances].nil?
+        monster[:damage_resistances].each do |damage|
+          new_monster.damage_resistances.create(name: damage)
+        end
+      end
+    end
+
+    def import_damage_vulnerabilities(new_monster, monster)
+      unless monster[:damage_vulnerabilities].nil?
+        monster[:damage_vulnerabilities].each do |damage|
+          new_monster.damage_vulnerabilities.create(name: damage)
+        end
+      end
+    end
+
+    def import_damage_immunities(new_monster, monster)
+      unless monster[:damage_immunities].nil?
+        monster[:damage_immunities].each do |damage|
+          new_monster.damage_immunities.create(name: damage)
+        end
+      end
     end
 
     def import_speeds(new_monster, monster)

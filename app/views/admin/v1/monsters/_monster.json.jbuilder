@@ -9,9 +9,6 @@ json.extract! monster, :id,
               :challenge_rating,
               :charisma,
               :constitution,
-              :damage_immunities,
-              :damage_resistances,
-              :damage_vulnerabilities,
               :dexterity,
               :hit_dice,
               :hit_points,
@@ -33,6 +30,12 @@ end
 json.senses monster.senses do |sense|
   json.extract! sense, :name, :value
 end
+
+json.damage_resistances monster.resistances
+
+json.damage_vulnerabilities monster.vulnerabilities
+
+json.damage_immunities monster.immunities
 
 json.condition_immunities monster.condition_immunities do |cond_imm|
   json.extract! cond_imm.condition, :name, :index, :description

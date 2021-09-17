@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_17_150249) do
+ActiveRecord::Schema.define(version: 2021_09_17_200723) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -160,6 +160,30 @@ ActiveRecord::Schema.define(version: 2021_09_17_150249) do
     t.index ["item_id"], name: "index_costs_on_item_id"
   end
 
+  create_table "damage_immunities", force: :cascade do |t|
+    t.string "name"
+    t.bigint "monster_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["monster_id"], name: "index_damage_immunities_on_monster_id"
+  end
+
+  create_table "damage_resistances", force: :cascade do |t|
+    t.string "name"
+    t.bigint "monster_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["monster_id"], name: "index_damage_resistances_on_monster_id"
+  end
+
+  create_table "damage_vulnerabilities", force: :cascade do |t|
+    t.string "name"
+    t.bigint "monster_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["monster_id"], name: "index_damage_vulnerabilities_on_monster_id"
+  end
+
   create_table "dnd_class_levels", force: :cascade do |t|
     t.integer "ability_score_bonuses"
     t.bigint "dnd_class_id", null: false
@@ -288,9 +312,6 @@ ActiveRecord::Schema.define(version: 2021_09_17_150249) do
     t.integer "strength", default: 10, null: false
     t.integer "wisdom", default: 10, null: false
     t.string "hit_dice"
-    t.string "damage_immunities", default: [], array: true
-    t.string "damage_resistances", default: [], array: true
-    t.string "damage_vulnerabilities", default: [], array: true
     t.index ["slug"], name: "index_monsters_on_slug", unique: true
     t.index ["user_id"], name: "index_monsters_on_user_id"
   end
@@ -574,6 +595,9 @@ ActiveRecord::Schema.define(version: 2021_09_17_150249) do
   add_foreign_key "class_specifics", "dnd_class_levels"
   add_foreign_key "class_spellcastings", "dnd_class_levels"
   add_foreign_key "costs", "items"
+  add_foreign_key "damage_immunities", "monsters"
+  add_foreign_key "damage_resistances", "monsters"
+  add_foreign_key "damage_vulnerabilities", "monsters"
   add_foreign_key "dnd_class_levels", "dnd_classes"
   add_foreign_key "dnd_classes", "users"
   add_foreign_key "items", "users"
