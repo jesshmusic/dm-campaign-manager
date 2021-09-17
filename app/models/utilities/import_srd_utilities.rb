@@ -13,11 +13,11 @@ class ImportSrdUtilities
     def import_all
       import_dependencies
       ImportSrd::ItemsUtil.import_items
-      ImportSrd::DndClassesUtil.import_classes
+      import_dnd_classes
       ImportSrd::RacesUtil.import_races
       ImportSrd::SpellsUtil.import_spells
       ImportSrd::ItemsUtil.import_and_fix_magic_items
-      ImportSrd::MonstersUtil.import_monsters
+      import_monsters
     end
 
     def import_all_empty(exclude)
@@ -44,7 +44,7 @@ class ImportSrdUtilities
       ImportSrd::DndClassesUtil.import_classes
     end
 
-    def update_monsters
+    def import_monsters
       ImportSrd::MonstersUtil.import_monsters
     end
 
