@@ -5,8 +5,8 @@ module Admin::V1
     before_action :set_monster, only: %i[show edit update destroy]
     before_action :authenticate_user!, except: %i[index show monster_refs monster_categories]
 
-    # GET /monsters
-    # GET /monsters.json
+    # GET /v1/monsters
+    # GET /v1/monsters.json
     def index
       authorize Monster
       @monsters = if params[:search].present?
@@ -29,6 +29,7 @@ module Admin::V1
       end
     end
 
+    # GET /v1/monster-categories
     def monster_categories
       authorize Monster
       monster_types = Monster.pluck(:monster_type).uniq
@@ -36,19 +37,17 @@ module Admin::V1
       monster_types.each do |monster_type|
         monster_cats << {
           name: monster_type.capitalize,
-          monsters: Monster.where(monster_type: monster_type).map { |monster|
-            {
-              name: monster.name,
-              slug: monster.slug
-            }
-          }
+          monsters: Monster.where(monster_type: monster_type).map { |monster| {
+            name: monster.name,
+            slug: monster.slug
+          } }
         }
       end
       render json: { count: monster_cats.count, results: monster_cats.sort_by { |e| e[:name] } }
     end
 
-    # GET /monsters/1
-    # GET /monsters/1.json
+    # GET /v1/monsters/:slug
+    # GET /v1/monsters/:slug.json
     def show
       authorize @monster
       respond_to do |format|
@@ -63,7 +62,7 @@ module Admin::V1
       authorize @monster
     end
 
-    # GET /monsters/1/edit
+    # GET /monsters/:slug/edit
     def edit
       authorize @monster
     end
@@ -86,8 +85,8 @@ module Admin::V1
       end
     end
 
-    # PATCH/PUT /monsters/1
-    # PATCH/PUT /monsters/1.json
+    # PATCH/PUT /monsters/:slug
+    # PATCH/PUT /monsters/:slug.json
     def update
       authorize @monster
 
@@ -102,8 +101,8 @@ module Admin::V1
       end
     end
 
-    # DELETE /monsters/1
-    # DELETE /monsters/1.json
+    # DELETE /monsters/:slug
+    # DELETE /monsters/:slug.json
     def destroy
       authorize @monster
       @monster.destroy

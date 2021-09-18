@@ -1,129 +1,107 @@
-<%=
-  simple_form_for [:v1, @monster], validate: true do |form|
-    form.error_notification
-    form.error_notification message: form.object.errors[:base].to_sentence if form.object.errors[:base].present?
+<%= simple_form_for [:v1, @monster], validate: true, wrapper_mappings: {
+  simple_fields_for: :horizontal_collection,
+  radio_buttons: :vertical_collection,
+  file: :custom_file,
+  boolean: :custom_boolean_switch
+} do |form| %>
+  <%= form.error_notification %>
+  <%= form.error_notification message: form.object.errors[:base].to_sentence if form.object.errors[:base].present? %>
 
-    form.input :name
-    form.input :challenge_rating
-    form.input :alignment
-    form.input :monster_type
-    form.input :monster_subtype
+  <%= form.input :name %>
+  <%= form.input :challenge_rating %>
+  <%= form.input :alignment %>
 
-    form.input :armor_class
-    form.input :hit_points
-    form.input :hit_dice
+  <h3>Type</h3>
+  <%= form.input :monster_type %>
+  <%= form.input :monster_subtype %>
 
-    form.input :strength
-    form.input :dexterity
-    form.input :constitution
-    form.input :intelligence
-    form.input :wisdom
-    form.input :charisma
+  <h3>Statistics</h3>
+  <h4>Stats</h4>
+  <%= form.input :armor_class %>
+  <%= form.input :hit_points %>
+  <%= form.input :hit_dice %>
 
-    form.input :languages
-    form.input :size
-    form.association :conditions %>
-  </div>
-  </div>
+  <h4>Abilities</h4>
+  <%= form.input :strength %>
+  <%= form.input :dexterity %>
+  <%= form.input :constitution %>
+  <%= form.input :intelligence %>
+  <%= form.input :wisdom %>
+  <%= form.input :charisma %>
 
-  <div class="form-row">
-    <div class="p-3 mx-3 my-5 border-bottom border-top" id="damage_vulnerabilities_container">
-      <h3>Damage Immunities</h3>
-      <%= form.simple_fields_for :damage_immunities do |d_form| %>
-        <%= render 'admin/v1/monsters/damage_immunity_fields', f: d_form %>
-      <% end %>
-      <div class='links'>
-        <%= link_to_add_association 'Add Damage Immunity', form, :damage_immunities, class: 'btn btn-info' %>
-      </div>
-    </div>
-  </div>
+  <h4>Speed</h4>
 
-  <div class="form-row">
-    <div class="p-3 mx-3 my-5 border-bottom border-top" id="damage_vulnerabilities_container">
-      <h3>Damage Resistances</h3>
-      <%= form.simple_fields_for :damage_resistances do |d_form| %>
-        <%= render 'admin/v1/monsters/damage_resistance_fields', f: d_form %>
-      <% end %>
-      <div class='links'>
-        <%= link_to_add_association 'Add Damage Resistance', form, :damage_resistances, class: 'btn btn-info' %>
-      </div>
-    </div>
+  <h4>Senses</h4>
+
+  <%= form.input :languages %>
+  <%= form.input :size %>
+
+  <%= form.association :conditions %>
+
+  <h3>Damage Immunities</h3>
+  <%= form.simple_fields_for :damage_immunities do |d_form| %>
+    <%= render 'admin/v1/monsters/damage_immunity_fields', f: d_form %>
+  <% end %>
+  <div class='links'>
+    <%= link_to_add_association 'Add Damage Immunity', form, :damage_immunities, class: 'btn btn-info' %>
   </div>
 
-  <div class="form-row">
-    <div class="p-3 mx-3 my-5 border-bottom border-top" id="damage_vulnerabilities_container">
-      <h3>Damage Vulnerabilities</h3>
-      <%= form.simple_fields_for :damage_vulnerabilities do |d_form| %>
-        <%= render 'admin/v1/monsters/damage_vulnerability_fields', f: d_form %>
-      <% end %>
-      <div class='links'>
-        <%= link_to_add_association 'Add Damage Vulnerability', form, :damage_vulnerabilities, class: 'btn btn-info' %>
-      </div>
-    </div>
+  <h3>Damage Resistances</h3>
+  <%= form.simple_fields_for :damage_resistances do |d_form| %>
+    <%= render 'admin/v1/monsters/damage_resistance_fields', f: d_form %>
+  <% end %>
+  <div class='links'>
+    <%= link_to_add_association 'Add Damage Resistance', form, :damage_resistances, class: 'btn btn-info' %>
   </div>
 
-  <div class="form-row">
-    <div class="p-3 mx-3 my-5 border-bottom border-top" id="prof_choices_container">
-      <h3>Proficiencies</h3>
-      <%= form.simple_fields_for :monster_proficiencies do |p_form| %>
-        <%= render 'monster_proficiency_fields', f: p_form %>
-      <% end %>
-      <div class='links'>
-        <%= link_to_add_association 'Add Proficiency', form, :monster_proficiencies, class: 'btn btn-info' %>
-      </div>
-    </div>
+  <h3>Damage Vulnerabilities</h3>
+  <%= form.simple_fields_for :damage_vulnerabilities do |d_form| %>
+    <%= render 'admin/v1/monsters/damage_vulnerability_fields', f: d_form %>
+  <% end %>
+  <div class='links'>
+    <%= link_to_add_association 'Add Damage Vulnerability', form, :damage_vulnerabilities, class: 'btn btn-info' %>
   </div>
 
-  <div class="form-row">
-    <div class="p-3 mx-3 my-5 border-bottom border-top" id="prof_choices_container">
-      <h3>Actions</h3>
-      <%= form.simple_fields_for :actions do |action_form| %>
-        <%= render 'monster_action_fields', f: action_form %>
-      <% end %>
-      <div class='links'>
-        <%= link_to_add_association 'Add Action', form, :actions, class: 'btn btn-info' %>
-      </div>
-    </div>
+  <h3>Proficiencies</h3>
+  <%= form.simple_fields_for :monster_proficiencies do |p_form| %>
+    <%= render 'monster_proficiency_fields', f: p_form %>
+  <% end %>
+  <%= link_to_add_association 'Add Proficiency', form, :monster_proficiencies, class: 'btn btn-info' %>
+
+
+  <h3>Actions</h3>
+  <%= form.simple_fields_for :actions do |action_form| %>
+    <%= render 'action_fields', f: action_form %>
+  <% end %>
+  <div class='links'>
+    <%= link_to_add_association 'Add Action', form, :actions, class: 'btn btn-info' %>
   </div>
 
-  <div class="form-row">
-    <div class="p-3 mx-3 my-5 border-bottom border-top" id="prof_choices_container">
-      <h3>Legendary Actions</h3>
-      <%= form.simple_fields_for :legendary_actions do |p_form| %>
-        <%= render 'monster_action_fields', f: p_form %>
-      <% end %>
-      <div class='links'>
-        <%= link_to_add_association 'Add Action', form, :legendary_actions, class: 'btn btn-info' %>
-      </div>
-    </div>
+  <h3>Legendary Actions</h3>
+  <%= form.simple_fields_for :legendary_actions do |p_form| %>
+    <%= render 'legendary_action_fields', f: p_form %>
+  <% end %>
+  <div class='links'>
+    <%= link_to_add_association 'Add Action', form, :legendary_actions, class: 'btn btn-info' %>
   </div>
 
-  <div class="form-row">
-    <div class="p-3 mx-3 my-5 border-bottom border-top" id="prof_choices_container">
-      <h3>Special Abilities</h3>
-      <%= form.simple_fields_for :special_abilities do |p_form| %>
-        <%= render 'monster_action_fields', f: p_form %>
-      <% end %>
-      <div class='links'>
-        <%= link_to_add_association 'Add Action', form, :special_abilities, class: 'btn btn-info' %>
-      </div>
-    </div>
+  <h3>Special Abilities</h3>
+  <%= form.simple_fields_for :special_abilities do |p_form| %>
+    <%= render 'special_ability_fields', f: p_form %>
+  <% end %>
+  <div class='links'>
+    <%= link_to_add_association 'Add Action', form, :special_abilities, class: 'btn btn-info' %>
   </div>
 
-  <div class="form-row">
-    <div class="p-3 mx-3 my-5 border-bottom border-top" id="prof_choices_container">
-      <h3>Reactions</h3>
-      <%= form.simple_fields_for :reactions do |p_form| %>
-        <%= render 'monster_action_fields', f: p_form %>
-      <% end %>
-      <div class='links'>
-        <%= link_to_add_association 'Add Action', form, :reactions, class: 'btn btn-info' %>
-      </div>
-    </div>
-  </div>
+  <h3>Reactions</h3>
+  <%= form.simple_fields_for :reactions do |p_form| %>
+    <%= render 'reaction_fields', f: p_form %>
+  <% end %>
+  <div class='links'>
+    <%= link_to_add_association 'Add Action', form, :reactions, class: 'btn btn-info' %>
   </div>
 
-  <div class="form-actions">
-    <%= form.button :submit, class: 'btn btn-success mb-3' %>
-  </div>
+
+  <%= form.button :submit, class: 'btn btn-success mb-3' %>
+
 <% end %>

@@ -46,9 +46,6 @@ FactoryBot.define do
     challenge_rating { "#{hit_dice_number}" }
     charisma { Faker::Number.between(from: 8, to: 22) }
     constitution { Faker::Number.between(from: 8, to: 22) }
-    damage_immunities { %w(unconscious charmed poison) }
-    damage_resistances { %w(fire piercing) }
-    damage_vulnerabilities { %w(slashing acid) }
     dexterity { Faker::Number.between(from: 8, to: 22) }
     hit_dice { "#{hit_dice_number}d#{hit_dice_value}" }
     hit_points { hit_dice_value * hit_dice_number }
@@ -68,6 +65,9 @@ FactoryBot.define do
       create_list(:legendary_action, rand(1..3), monster: monster)
       create_list(:reaction, rand(1..3), monster: monster)
       create_list(:special_ability, rand(1..3), monster: monster)
+      create_list(:damage_immunity, rand(1..3), monster: monster)
+      create_list(:damage_resistance, rand(1..3), monster: monster)
+      create_list(:damage_vulnerability, rand(1..3), monster: monster)
     end
 
     factory :monster_dragon do

@@ -37,7 +37,7 @@ end
 create_user('Jess Hendricks', 'jesshmusic', 'jesshmusic72@gmail.com', :admin)
 create_user('Jess DM', 'jesshdm', 'jesshmusic72+dm@gmail.com', :dungeon_master)
 
-# ImportSrdUtilities.import_all_empty(nil)
+ImportSrdUtilities.import_all_empty(nil)
 # ImportSrdUtilities.clean_database
 # ImportSrdUtilities.import_all
 # ImportSrdUtilities.update_monsters

@@ -1,18 +1,15 @@
-<%%= simple_form_for @<%= singular_table_name %>, validate: true do |form| %>
-  <%%= form.error_notification %>
-  <%%= form.error_notification message: form.object.errors[:base].to_sentence if form.object.errors[:base].present? %>
+<%# frozen_string_literal: true %>
+<%%= simple_form_for(@<%= singular_table_name %>) do |f| %>
+  <%%= f.error_notification %>
+  <%%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
 
   <div class="form-inputs">
   <%- attributes.each do |attribute| -%>
-    <div class="form-row">
-      <div class="col">
-        <%%= form.<%= attribute.reference? ? :association : :input %> :<%= attribute.name %> %>
-      </div>
-    </div>
+    <%%= f.<%= attribute.reference? ? :association : :input %> :<%= attribute.name %> %>
   <%- end -%>
   </div>
 
   <div class="form-actions">
-    <%%= form.button :submit, class: 'btn btn-success mb-3' %>
+    <%%= f.button :submit %>
   </div>
 <%% end %>
