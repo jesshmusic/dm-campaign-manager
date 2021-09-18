@@ -111,11 +111,10 @@ RSpec.describe Monster, type: :model do
 
     it 'should return a damage resistances/immunities' do
       monster = Monster.find_by(slug: 'lich')
-      expect(monster.damage_resistances).to eq(%w[cold lightning necrotic])
-      expect(monster.damage_immunities).to eq([
-                                                'poison',
-                                                'bludgeoning, piercing, and slashing from nonmagical weapons'
-                                              ])
+      expect(monster.damage_resistances.count).to eq(3)
+      expect(monster.damage_resistances.first.name).to eq('cold')
+      expect(monster.damage_immunities.count).to eq(2)
+      expect(monster.damage_immunities.first.name).to eq('poison')
     end
 
     it 'should have condition immunities' do

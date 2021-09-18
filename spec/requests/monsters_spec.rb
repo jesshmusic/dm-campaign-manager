@@ -203,9 +203,9 @@ RSpec.describe 'Monsters', type: :request do
         sign_in dungeon_master
       end
 
-      it 'should return a forbidden response' do
+      it 'should return a success response' do
         get '/v1/monsters/new'
-        expect(response).to have_http_status(403)
+        expect(response).to have_http_status(200)
       end
     end
   end

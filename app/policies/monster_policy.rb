@@ -21,6 +21,10 @@ class MonsterPolicy < ApplicationPolicy
     user && (user.admin? || (record.user == user))
   end
 
+  def new?
+    user && (user.admin? || user.dungeon_master?)
+  end
+
   def create?
     user && (user.admin? || user.dungeon_master?)
   end
