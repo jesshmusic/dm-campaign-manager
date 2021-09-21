@@ -16,7 +16,6 @@ class ImportSrdUtilities
       import_dnd_classes
       RacesUtil.import_races
       SpellsUtil.import_spells
-      ItemsUtil.import_and_fix_magic_items
       import_monsters
     end
 
@@ -28,7 +27,6 @@ class ImportSrdUtilities
       import_dnd_classes unless DndClass.count > 0 || exclude == :classes
       RacesUtil.import_races unless Race.count > 0 || exclude == :races
       SpellsUtil.import_spells unless Spell.count > 0 || exclude == :spells
-      ItemsUtil.import_and_fix_magic_items unless Item.count > 0 || exclude == :magic_items
       import_monsters unless Monster.count > 0 || exclude == :monsters
     end
 
@@ -36,6 +34,10 @@ class ImportSrdUtilities
       import_ability_scores
       import_proficiencies
       import_conditions
+    end
+
+    def import_items
+      ItemsUtil.import_items
     end
 
     def import_dnd_classes

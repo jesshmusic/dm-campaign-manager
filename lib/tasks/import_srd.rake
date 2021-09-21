@@ -30,4 +30,9 @@ namespace :srd do
     Monster.destroy_all
     ImportSrdUtilities.import_monsters
   end
+
+  task import_items: :environment do
+    Item.destroy_all
+    ImportSrdUtilities.import_items
+  end
 end

@@ -5,12 +5,9 @@
 #  id                   :bigint           not null, primary key
 #  api_url              :string
 #  armor_category       :string
-#  armor_class          :jsonb
 #  armor_class_bonus    :integer
 #  capacity             :string
 #  category_range       :string
-#  contents             :jsonb            is an Array
-#  damage               :jsonb
 #  desc                 :string           default([]), is an Array
 #  equipment_category   :string
 #  gear_category        :string
@@ -18,17 +15,14 @@
 #  name                 :string
 #  properties           :string           default([]), is an Array
 #  quantity             :integer
-#  range                :jsonb
 #  rarity               :string
 #  requires_attunement  :string
 #  slug                 :string
 #  special              :string           default([]), is an Array
-#  speed                :jsonb
+#  speed                :string
 #  stealth_disadvantage :boolean
 #  str_minimum          :integer
-#  throw_range          :jsonb
 #  tool_category        :string
-#  two_handed_damage    :jsonb
 #  type                 :string
 #  vehicle_category     :string
 #  weapon_category      :string

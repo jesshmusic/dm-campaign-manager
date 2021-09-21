@@ -7,12 +7,9 @@
 #  id                   :bigint           not null, primary key
 #  api_url              :string
 #  armor_category       :string
-#  armor_class          :jsonb
 #  armor_class_bonus    :integer
 #  capacity             :string
 #  category_range       :string
-#  contents             :jsonb            is an Array
-#  damage               :jsonb
 #  desc                 :string           default([]), is an Array
 #  equipment_category   :string
 #  gear_category        :string
@@ -20,17 +17,14 @@
 #  name                 :string
 #  properties           :string           default([]), is an Array
 #  quantity             :integer
-#  range                :jsonb
 #  rarity               :string
 #  requires_attunement  :string
 #  slug                 :string
 #  special              :string           default([]), is an Array
-#  speed                :jsonb
+#  speed                :string
 #  stealth_disadvantage :boolean
 #  str_minimum          :integer
-#  throw_range          :jsonb
 #  tool_category        :string
-#  two_handed_damage    :jsonb
 #  type                 :string
 #  vehicle_category     :string
 #  weapon_category      :string
@@ -144,17 +138,28 @@ class WeaponItem < Item
       new_item = WeaponItem.find_or_create_by(name: "#{magic_item[:name]}, #{weapon_name}")
       new_item.desc = magic_item[:desc] ? [magic_item[:desc]] : weapon_item.desc
       new_item.category_range = weapon_item.category_range
-      new_item.damage = weapon_item.damage
+      new_item.damage = Damage.create(
+        damage_dice: weapon_item.damage.damage_dice,
+        damage_type: weapon_item.damage.damage_type
+      ) unless weapon_item.damage.nil?
       new_item.magic_item_type = magic_item[:type]
       new_item.properties = weapon_item.properties
-      new_item.range = weapon_item.range
+      new_item.item_range = ItemRange.create(
+        long: weapon_item.item_range.long,
+        normal: weapon_item.item_range.normal
+      ) unless weapon_item.item_range.nil?
       new_item.rarity = magic_item[:rarity]
       new_item.requires_attunement = magic_item[:requires_attunement]
       new_item.slug = new_item.name.parameterize
       new_item.special = weapon_item.special
-      new_item.speed = weapon_item.speed
-      new_item.throw_range = weapon_item.throw_range
-      new_item.two_handed_damage = weapon_item.two_handed_damage
+      new_item.item_throw_range = ItemThrowRange.create(
+        long: weapon_item.item_throw_range.long,
+        normal: weapon_item.item_throw_range.normal
+      ) unless weapon_item.item_throw_range.nil?
+      new_item.two_handed_damage = TwoHandedDamage.create(
+        damage_dice: weapon_item.two_handed_damage.damage_dice,
+        damage_type: weapon_item.two_handed_damage.damage_type
+      ) unless weapon_item.two_handed_damage.nil?
       new_item.weapon_category = weapon_item.weapon_category
       new_item.weapon_range = weapon_item.weapon_range
       new_item.weight = weapon_item.weight

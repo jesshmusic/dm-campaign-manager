@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_17_200723) do
+ActiveRecord::Schema.define(version: 2021_09_21_163517) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -74,6 +74,16 @@ ActiveRecord::Schema.define(version: 2021_09_17_200723) do
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "equipment_id"
     t.index ["equipment_id"], name: "index_api_references_on_equipment_id"
+  end
+
+  create_table "armor_classes", force: :cascade do |t|
+    t.integer "ac_base"
+    t.boolean "has_dex_bonus"
+    t.integer "max_dex_bonus"
+    t.bigint "item_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["item_id"], name: "index_armor_classes_on_item_id"
   end
 
   create_table "class_features", force: :cascade do |t|
@@ -151,6 +161,16 @@ ActiveRecord::Schema.define(version: 2021_09_17_200723) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "content_items", force: :cascade do |t|
+    t.bigint "item_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.string "name", null: false
+    t.string "index", null: false
+    t.integer "quantity", default: 1
+    t.index ["item_id"], name: "index_content_items_on_item_id"
+  end
+
   create_table "costs", force: :cascade do |t|
     t.integer "quantity"
     t.string "unit"
@@ -182,6 +202,15 @@ ActiveRecord::Schema.define(version: 2021_09_17_200723) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["monster_id"], name: "index_damage_vulnerabilities_on_monster_id"
+  end
+
+  create_table "damages", force: :cascade do |t|
+    t.string "damage_type"
+    t.string "damage_dice"
+    t.bigint "item_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["item_id"], name: "index_damages_on_item_id"
   end
 
   create_table "dnd_class_levels", force: :cascade do |t|
@@ -219,6 +248,24 @@ ActiveRecord::Schema.define(version: 2021_09_17_200723) do
     t.index ["starting_equipment_option_id"], name: "index_equipment_on_starting_equipment_option_id"
   end
 
+  create_table "item_ranges", force: :cascade do |t|
+    t.integer "long"
+    t.integer "normal"
+    t.bigint "item_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["item_id"], name: "index_item_ranges_on_item_id"
+  end
+
+  create_table "item_throw_ranges", force: :cascade do |t|
+    t.integer "long"
+    t.integer "normal"
+    t.bigint "item_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["item_id"], name: "index_item_throw_ranges_on_item_id"
+  end
+
   create_table "items", force: :cascade do |t|
     t.string "name"
     t.integer "str_minimum"
@@ -236,24 +283,18 @@ ActiveRecord::Schema.define(version: 2021_09_17_200723) do
     t.string "type"
     t.integer "armor_class_bonus"
     t.string "armor_category"
-    t.jsonb "armor_class"
     t.string "capacity"
-    t.jsonb "contents", default: [], array: true
-    t.jsonb "damage"
     t.string "desc", default: [], array: true
     t.string "equipment_category"
     t.string "gear_category"
     t.string "properties", default: [], array: true
     t.integer "quantity"
-    t.jsonb "range"
     t.string "special", default: [], array: true
-    t.jsonb "speed"
-    t.jsonb "throw_range"
     t.string "tool_category"
-    t.jsonb "two_handed_damage"
     t.string "vehicle_category"
     t.string "weapon_category"
     t.string "magic_item_type"
+    t.string "speed"
     t.index ["armor_category"], name: "index_items_on_armor_category"
     t.index ["category_range"], name: "index_items_on_category_range"
     t.index ["slug"], name: "index_items_on_slug", unique: true
@@ -556,6 +597,15 @@ ActiveRecord::Schema.define(version: 2021_09_17_200723) do
     t.index ["equipment_option_id"], name: "index_starting_equipment_options_on_equipment_option_id"
   end
 
+  create_table "two_handed_damages", force: :cascade do |t|
+    t.string "damage_type"
+    t.string "damage_dice"
+    t.bigint "item_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["item_id"], name: "index_two_handed_damages_on_item_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -589,17 +639,22 @@ ActiveRecord::Schema.define(version: 2021_09_17_200723) do
   add_foreign_key "ability_score_dnd_classes", "ability_scores"
   add_foreign_key "ability_score_dnd_classes", "dnd_classes"
   add_foreign_key "actions", "monsters"
+  add_foreign_key "armor_classes", "items"
   add_foreign_key "class_features", "dnd_class_levels"
   add_foreign_key "class_level_choices", "class_features"
   add_foreign_key "class_specific_spell_slots", "class_specifics"
   add_foreign_key "class_specifics", "dnd_class_levels"
   add_foreign_key "class_spellcastings", "dnd_class_levels"
+  add_foreign_key "content_items", "items"
   add_foreign_key "costs", "items"
   add_foreign_key "damage_immunities", "monsters"
   add_foreign_key "damage_resistances", "monsters"
   add_foreign_key "damage_vulnerabilities", "monsters"
+  add_foreign_key "damages", "items"
   add_foreign_key "dnd_class_levels", "dnd_classes"
   add_foreign_key "dnd_classes", "users"
+  add_foreign_key "item_ranges", "items"
+  add_foreign_key "item_throw_ranges", "items"
   add_foreign_key "items", "users"
   add_foreign_key "legendary_actions", "monsters"
   add_foreign_key "monsters", "users"
@@ -620,4 +675,5 @@ ActiveRecord::Schema.define(version: 2021_09_17_200723) do
   add_foreign_key "spells", "users"
   add_foreign_key "starting_equipment_options", "dnd_classes"
   add_foreign_key "starting_equipment_options", "starting_equipment_options", column: "equipment_option_id"
+  add_foreign_key "two_handed_damages", "items"
 end
