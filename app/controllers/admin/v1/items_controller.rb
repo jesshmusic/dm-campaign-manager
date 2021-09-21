@@ -16,7 +16,7 @@ module Admin::V1
             slug: item.slug
           }
         }
-        render json: {count: @items.count, results: @items}
+        render json: { count: @items.count, results: @items }
       else
         @items = if params[:search].present?
                    Item.search_for(params[:search])
@@ -26,9 +26,9 @@ module Admin::V1
         @items = @items.where(type: params[:type]) if params[:type].present?
         @items = @items.where.not(sub_category: 'Shield') if params[:shield].present? && params[:shield] == 'false'
         @items = @items.where(sub_category: 'Shield') if params[:shield].present? && params[:shield] == 'true'
-        @items = @items.where.not("'Two-Handed' = ANY (weapon_properties)") if params[:two_hand].present? && params[:two_hand] == 'false'
+        @items = @items.where.not('\'Two-Handed\' = ANY (weapon_properties)') if params[:two_hand].present? && params[:two_hand] == 'false'
         if params[:two_hand].present? && params[:two_hand] == 'true'
-          @items = @items.where("'Two-Handed' = ANY (weapon_properties)")
+          @items = @items.where('\'Two-Handed\' = ANY (weapon_properties)')
                          .or(@items.where.not(weapon_2h_damage_type: [nil, '']))
         end
         @items = if !current_user

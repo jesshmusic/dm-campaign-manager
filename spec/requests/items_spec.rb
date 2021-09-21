@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe "Items", type: :request do
+RSpec.describe 'Items', type: :request do
   let!(:admin) { create :admin_user }
   let!(:dungeon_master) { create :dungeon_master_user }
   let!(:other_user) { create :other_user }
@@ -32,27 +32,27 @@ RSpec.describe "Items", type: :request do
   let!(:item_custom1) { create :item, user: dungeon_master, name: 'DM Item' }
   let!(:item_custom2) { create :item, user: other_user, name: 'Other UserProps Item' }
 
-  describe "GET Return all Items" do
-    context "for Logged Out Users" do
-      it "returns a success response" do
+  describe 'GET Return all Items' do
+    context 'for Logged Out Users' do
+      it 'returns a success response' do
         get '/v1/items.json'
         expect(response).to have_http_status(200)
       end
 
-      it "returns 5 items" do
+      it 'returns 5 items' do
         get '/v1/items.json'
         result_items = JSON.parse(response.body)
         expect(result_items['count']).to eq(5)
       end
 
-      it "returns 1 armor item" do
+      it 'returns 1 armor item' do
         get '/v1/armor_items.json'
         result_items = JSON.parse(response.body)
         expect(result_items['count']).to be >= 1
         expect(result_items['results'].first['type']).to eq('ArmorItem')
       end
 
-      it "returns 1 magic item" do
+      it 'returns 1 magic item' do
         get '/v1/magic_items.json'
         result_items = JSON.parse(response.body)
         expect(result_items['count']).to be >= 1
@@ -60,24 +60,24 @@ RSpec.describe "Items", type: :request do
       end
     end
 
-    context "for Admins" do
+    context 'for Admins' do
       before(:each) do
         sign_in admin
       end
 
-      it "returns 7 items" do
+      it 'returns 7 items' do
         get '/v1/items.json'
         result_items = JSON.parse(response.body)
         expect(result_items['count']).to eq(7)
       end
     end
 
-    context "for Dungeon Masters" do
+    context 'for Dungeon Masters' do
       before(:each) do
         sign_in dungeon_master
       end
 
-      it "returns 6 items that are only default or owned by this DM" do
+      it 'returns 6 items that are only default or owned by this DM' do
         get '/v1/items.json'
         result_items = JSON.parse(response.body)
         expect(result_items['count']).to eq(6)
@@ -92,106 +92,106 @@ RSpec.describe "Items", type: :request do
 
   end
 
-  describe "GET Return single Item" do
-    context "for Logged Out Users" do
-      it "returns a success response" do
+  describe 'GET Return single Item' do
+    context 'for Logged Out Users' do
+      it 'returns a success response' do
         get "/v1/armor_items/#{armor_item.slug}.json"
         expect(response).to have_http_status(200)
       end
 
-      it "returns Plate Armor" do
+      it 'returns Plate Armor' do
         get "/v1/armor_items/#{armor_item.slug}.json"
         result_item = JSON.parse(response.body)
         expect(result_item['name']).to eq('Plate Armor')
         expect(result_item['type']).to eq('ArmorItem')
       end
 
-      it "returns error for logged out user trying to get custom item" do
+      it 'returns error for logged out user trying to get custom item' do
         get "/v1/items/#{item_custom1.slug}.json"
         result_item = JSON.parse(response.body)
-        expect(result_item['errors']).to eq("UserProps action not allowed.")
+        expect(result_item['errors']).to eq('UserProps action not allowed.')
       end
     end
 
-    context "for Admins" do
+    context 'for Admins' do
       before(:each) do
         sign_in admin
       end
 
-      it "returns Plate Armor" do
+      it 'returns Plate Armor' do
         get "/v1/armor_items/#{armor_item.slug}.json"
         result_item = JSON.parse(response.body)
         expect(result_item['name']).to eq('Plate Armor')
         expect(result_item['type']).to eq('ArmorItem')
       end
 
-      it "returns custom item for a DM" do
+      it 'returns custom item for a DM' do
         get "/v1/items/#{item_custom2.slug}.json"
         result_item = JSON.parse(response.body)
         expect(result_item['name']).to eq('Other UserProps Item')
       end
     end
 
-    context "for Dungeon Masters" do
+    context 'for Dungeon Masters' do
       before(:each) do
         sign_in dungeon_master
       end
 
-      it "returns Plate Armor" do
+      it 'returns Plate Armor' do
         get "/v1/armor_items/#{armor_item.slug}.json"
         result_item = JSON.parse(response.body)
         expect(result_item['name']).to eq('Plate Armor')
         expect(result_item['type']).to eq('ArmorItem')
       end
 
-      it "returns a custom DM item" do
+      it 'returns a custom DM item' do
         get "/v1/items/#{item_custom1.slug}.json"
         result_item = JSON.parse(response.body)
         expect(result_item['name']).to eq('DM Item')
       end
 
-      it "returns error for DM trying to get custom item by another user" do
+      it 'returns error for DM trying to get custom item by another user' do
         get "/v1/items/#{item_custom2.slug}.json"
         result_item = JSON.parse(response.body)
-        expect(result_item['errors']).to eq("UserProps action not allowed.")
+        expect(result_item['errors']).to eq('UserProps action not allowed.')
       end
     end
   end
 
-  describe "GET Item back end Edit Page (admin only)" do
-    context "for Logged Out Users" do
-      it "returns a redirect response" do
+  describe 'GET Item back end Edit Page (admin only)' do
+    context 'for Logged Out Users' do
+      it 'returns a redirect response' do
         get "/v1/armor_items/#{armor_item.slug}/edit"
         expect(response).to have_http_status(302)
       end
     end
 
-    context "for Admins" do
+    context 'for Admins' do
       before(:each) do
         sign_in admin
       end
 
-      it "returns a success response" do
+      it 'returns a success response' do
         get "/v1/armor_items/#{armor_item.slug}/edit"
         expect(response).to have_http_status(200)
       end
     end
 
-    context "for Dungeon Masters" do
+    context 'for Dungeon Masters' do
       before(:each) do
         sign_in dungeon_master
       end
 
-      it "returns a forbidden response" do
+      it 'returns a forbidden response' do
         get "/v1/armor_items/#{armor_item.slug}/edit"
         expect(response).to have_http_status(403)
       end
     end
   end
 
-  describe "POST Create Item" do
-    context "for Logged Out Users" do
-      it "returns an error for non-user creating item" do
+  describe 'POST Create Item' do
+    context 'for Logged Out Users' do
+      it 'returns an error for non-user creating item' do
         expect {
           post '/v1/armor_items.json', params: { armor_item: armor_item_attributes }
         }.to change(Item, :count).by(0)
@@ -200,12 +200,12 @@ RSpec.describe "Items", type: :request do
       end
     end
 
-    context "for Admins" do
+    context 'for Admins' do
       before(:each) do
         sign_in admin
       end
 
-      it "creates a new GearItem" do
+      it 'creates a new GearItem' do
         expect {
           post '/v1/gear_items.json', params: { gear_item: gear_item_attributes }
         }.to change(Item, :count).by(1)
@@ -215,7 +215,7 @@ RSpec.describe "Items", type: :request do
         expect(result_item['userId']).to be_nil
       end
 
-      it "creates a new ArmorItem" do
+      it 'creates a new ArmorItem' do
         expect {
           post '/v1/armor_items.json', params: { armor_item: armor_item_attributes }
         }.to change(Item, :count).by(1)
@@ -226,12 +226,12 @@ RSpec.describe "Items", type: :request do
       end
     end
 
-    context "for Dungeon Masters" do
+    context 'for Dungeon Masters' do
       before(:each) do
         sign_in dungeon_master
       end
 
-      it "creates a new GearItem with a user" do
+      it 'creates a new GearItem with a user' do
         expect {
           post '/v1/gear_items.json', params: { gear_item: gear_item_attributes }
         }.to change(Item, :count).by(1)
@@ -241,7 +241,7 @@ RSpec.describe "Items", type: :request do
         expect(result_item['userId']).not_to be_nil
       end
 
-      it "creates a new ArmorItem with a user" do
+      it 'creates a new ArmorItem with a user' do
         expect {
           post '/v1/armor_items.json', params: { armor_item: armor_item_attributes }
         }.to change(Item, :count).by(1)
@@ -253,9 +253,9 @@ RSpec.describe "Items", type: :request do
     end
   end
 
-  describe "PUT Update Item" do
-    context "for Logged Out Users" do
-      it "returns an error for non-user editing" do
+  describe 'PUT Update Item' do
+    context 'for Logged Out Users' do
+      it 'returns an error for non-user editing' do
         put "/v1/armor_items/#{armor_item.slug}.json", params: {
           armor_item: {
             name: 'Test Item Edited',
@@ -268,19 +268,19 @@ RSpec.describe "Items", type: :request do
       end
     end
 
-    context "for Admins" do
+    context 'for Admins' do
       before(:each) do
         sign_in admin
       end
 
     end
 
-    context "for Dungeon Masters" do
+    context 'for Dungeon Masters' do
       before(:each) do
         sign_in dungeon_master
       end
 
-      it "updates the requested item belonging to DM" do
+      it 'updates the requested item belonging to DM' do
         put "/v1/items/#{item_custom1.slug}.json", params: {
           armor_item: {
             name: 'Test Item Edited'
@@ -290,7 +290,7 @@ RSpec.describe "Items", type: :request do
         expect(result_item['name']).to eq('Test Item Edited')
       end
 
-      it "returns an error for non-admin editing default item" do
+      it 'returns an error for non-admin editing default item' do
         put "/v1/armor_items/#{armor_item.slug}.json", params: {
           armor_item: {
             name: 'Test Item Edited',
@@ -302,7 +302,7 @@ RSpec.describe "Items", type: :request do
         expect(result_item['errors']).to eq('UserProps action not allowed.')
       end
 
-      it "returns an error for non-admin editing other DM's item" do
+      it 'returns an error for non-admin editing other DM\'s item' do
         put "/v1/armor_items/#{item_custom2.slug}.json", params: {
           armor_item: {
             name: 'Test Item Edited',
@@ -316,48 +316,48 @@ RSpec.describe "Items", type: :request do
     end
   end
 
-  describe "DELETE Delete Item" do
-    context "for Logged Out Users" do
-      it "returns an error for non-user delete" do
+  describe 'DELETE Delete Item' do
+    context 'for Logged Out Users' do
+      it 'returns an error for non-user delete' do
         delete "/v1/armor_items/#{armor_item.slug}.json"
         result_item = JSON.parse(response.body)
         expect(result_item['error']).to eq('You need to sign in or sign up before continuing.')
       end
     end
 
-    context "for Admins" do
+    context 'for Admins' do
       before(:each) do
         sign_in admin
       end
 
-      it "deletes the requested item belonging to DM" do
+      it 'deletes the requested item belonging to DM' do
         delete "/v1/armor_items/#{item_custom1.slug}.json"
         expect(response).to have_http_status(204)
       end
 
-      it "deletes the requested default item" do
+      it 'deletes the requested default item' do
         delete "/v1/armor_items/#{armor_item.slug}.json"
         expect(response).to have_http_status(204)
       end
     end
 
-    context "for Dungeon Masters" do
+    context 'for Dungeon Masters' do
       before(:each) do
         sign_in dungeon_master
       end
 
-      it "deletes the requested item belonging to DM" do
+      it 'deletes the requested item belonging to DM' do
         delete "/v1/armor_items/#{item_custom1.slug}.json"
         expect(response).to have_http_status(204)
       end
 
-      it "returns an error for non-admin deleting default item" do
+      it 'returns an error for non-admin deleting default item' do
         delete "/v1/armor_items/#{armor_item.slug}.json"
         result_item = JSON.parse(response.body)
         expect(result_item['errors']).to eq('UserProps action not allowed.')
       end
 
-      it "returns an error for non-admin deleting other DM's item" do
+      it 'returns an error for non-admin deleting other DM\'s item' do
         delete "/v1/armor_items/#{item_custom2.slug}.json"
         result_item = JSON.parse(response.body)
         expect(result_item['errors']).to eq('UserProps action not allowed.')

@@ -25,11 +25,11 @@ class ImportSrdUtilities
       import_dependencies unless has_dependencies
       ItemsUtil.import_items unless Item.count > 0 || exclude == :items
       # import_classes
-      DndClassesUtil.import_classes unless DndClass.count > 0 || exclude == :classes
+      import_dnd_classes unless DndClass.count > 0 || exclude == :classes
       RacesUtil.import_races unless Race.count > 0 || exclude == :races
       SpellsUtil.import_spells unless Spell.count > 0 || exclude == :spells
       ItemsUtil.import_and_fix_magic_items unless Item.count > 0 || exclude == :magic_items
-      MonstersUtil.import_monsters unless Monster.count > 0 || exclude == :monsters
+      import_monsters unless Monster.count > 0 || exclude == :monsters
     end
 
     def import_dependencies
