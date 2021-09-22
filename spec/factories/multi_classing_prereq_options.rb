@@ -4,7 +4,7 @@
 #
 #  id                :bigint           not null, primary key
 #  choose            :integer
-#  type              :string
+#  prereq_type       :string
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
 #  multi_classing_id :bigint           not null

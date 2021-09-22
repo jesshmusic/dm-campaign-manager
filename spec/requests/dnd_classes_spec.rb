@@ -5,23 +5,163 @@ RSpec.describe 'DndClasses', type: :request do
   let!(:dungeon_master) { create :dungeon_master_user }
   let!(:other_user) { create :other_user }
 
+  ability_score_ids = [
+    AbilityScore.find_by_full_name('Wisdom').id,
+    AbilityScore.find_by_full_name('Intelligence').id,
+  ]
+
   let(:valid_attributes) {
-    attributes_for(:dnd_class, name: 'Sorcerer Supreme')
+    {
+      api_url: '/v1/dnd_classes/sorcerer-supreme',
+      hit_die: 6,
+      name: 'Sorcerer Supreme',
+      slug: 'sorcerer-supreme',
+      spell_ability: 'WIS',
+      subclasses: [
+        'Wong',
+        'Doctor Strange'
+      ],
+      ability_score_ids: ability_score_ids,
+      spell_ids: [],
+      prof_ids: [],
+      dnd_class_levels_attributes: [
+        {
+          ability_score_bonuses: 2,
+          level: 1,
+          prof_bonus: 3,
+          class_features_attributes: [
+            level: 1,
+            name: 'Time Stone',
+            desc: [
+              'This is a test',
+              'Here is line 2.'
+            ],
+            class_level_choice_attributes: {
+              name: 'Spell Powers',
+              num_choices: 1,
+              choices: [
+                'awesome',
+                'lame',
+                'just ok'
+              ]
+            },
+            expertise_options_attributes: {
+              name: 'Spell Expertises',
+              num_choices: 1,
+              choices: [
+                'awesome',
+                'lame',
+                'just ok'
+              ]
+            },
+            subfeature_options_attributes: {
+              name: 'Spell Subfeature Options... what is this?',
+              num_choices: 1,
+              choices: [
+                'awesome',
+                'lame',
+                'just ok'
+              ]
+            },
+            prerequisites_attributes: [
+              { level: 1, name: 'Approval from the main sorcerer' }
+            ]
+          ],
+          class_specifics_attributes: [
+            {
+              index: 'time-stone-something',
+              name: 'Time Stone Something',
+              value: 'Eye of Agamoto',
+              class_specific_spell_slots_attributes: [
+                { sorcery_point_cost: 3, spell_slot_level: 1 }
+              ]
+            }
+          ],
+          class_spellcasting_attributes: {
+            cantrips_known: 2,
+            spell_slots_level_1: 1,
+            spell_slots_level_2: 0,
+            spell_slots_level_3: 0,
+            spell_slots_level_4: 0,
+            spell_slots_level_5: 0,
+            spell_slots_level_6: 0,
+            spell_slots_level_7: 0,
+            spell_slots_level_8: 0,
+            spell_slots_level_9: 0,
+            spells_known: 3
+          }
+        }
+      ],
+      equipments_attributes: [
+        { name: 'Eye of Agamoto', quantity: 1 },
+        { name: 'Cloak of Levitation', quantity: 1 }
+      ],
+      multi_classing_attributes: {
+        multi_class_prereqs_attributes: [
+          { ability_score: 'INT', minimum_score: 12 }
+        ],
+        multi_classing_prereq_option_attributes: {
+          choose: 1,
+          prereq_type: 'Something',
+          multi_class_prereqs_attributes: [
+            { ability_score: 'INT', minimum_score: 12 }
+          ],
+        },
+        prof_ids: [],
+        prof_choices_attributes: [
+          name: 'Test Prof Choice',
+          num_choices: 0,
+          prof_choice_type: 'Skill',
+          prof_ids: []
+        ]
+      },
+      prof_choices_attributes: [
+        name: 'Test Prof Choice',
+        num_choices: 0,
+        prof_choice_type: 'Skill',
+        prof_ids: []
+      ],
+      spell_casting_attributes: {
+        level: 1,
+        # ability_score_id: ability_score_ids.first,
+        spell_casting_infos_attributes: [
+          name: 'Info',
+          desc: [
+            'Sentence 1',
+            'Sentence 2'
+          ]
+        ]
+      },
+      starting_equipment_options_attributes: [
+        {
+          choose: 1,
+          equipment_category: 'Adventuring Gear',
+          equipment_type: 'Gear',
+          equipment_ids: [],
+          equipment_options_attributes: [
+            choose: 1,
+            equipment_category: 'Adventuring Gear',
+            equipment_type: 'Gear',
+            equipment_ids: [],
+          ]
+        }
+      ]
+    }
   }
 
   let(:valid_attributes_dm) {
-    attributes_for(:dnd_class, user: dungeon_master, name: 'Sorcerer Supreme DM')
+    attributes_for(:dnd_class, user_id: dungeon_master.id, name: 'Sorcerer Supreme DM')
   }
 
   let!(:death_knight_class) {
     create :dnd_class,
            name: 'Death Knight',
-           user: dungeon_master
+           user_id: dungeon_master.id
   }
   let!(:death_knight_class_other) {
     create :dnd_class,
            name: 'Death Knight',
-           user: other_user
+           user_id: other_user.id
   }
 
   describe 'GET /v1/dnd_classes' do
@@ -196,12 +336,15 @@ RSpec.describe 'DndClasses', type: :request do
     context 'for Admins' do
       it 'should create a new DndClass' do
         sign_in admin
-        expect {
-          post '/v1/dnd_classes.json', params: { dnd_class: valid_attributes }
-        }.to change(DndClass, :count).by(1)
+        post '/v1/dnd_classes.json', params: { dnd_class: valid_attributes }
         result_item = JSON.parse response.body, symbolize_names: true
         expect(result_item[:userId]).to be_nil
         expect(result_item[:name]).to eq('Sorcerer Supreme')
+        expect(result_item[:subclasses].count).to eq(2)
+        expect(result_item[:subclasses].first).to eq('Wong')
+        expect(result_item[:abilityScores].first[:desc].first).to eq('Wisdom reflects how attuned you are to the world around you and represents perceptiveness and intuition.')
+        expect(result_item[:levels].first[:spellcasting][:spellSlotsLevel1]).to eq(1)
+        expect(DndClass.count).to eq(15)
       end
     end
 

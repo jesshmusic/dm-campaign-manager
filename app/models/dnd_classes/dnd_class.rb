@@ -53,8 +53,12 @@ class DndClass < ApplicationRecord
 
   belongs_to :user, optional: true
 
-  accepts_nested_attributes_for :prof_choices, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :dnd_class_levels, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :equipments, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :multi_classing, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :prof_choices, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :spell_casting, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :starting_equipment_options, reject_if: :all_blank, allow_destroy: true
 
   include PgSearch::Model
 

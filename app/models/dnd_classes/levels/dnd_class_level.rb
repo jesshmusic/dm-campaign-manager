@@ -21,7 +21,11 @@
 class DndClassLevel < ApplicationRecord
   belongs_to :dnd_class
 
+  has_many :class_features, dependent: :destroy
   has_many :class_specifics, dependent: :destroy
   has_one :class_spellcasting, dependent: :destroy
-  has_many :class_features, dependent: :destroy
+
+  accepts_nested_attributes_for :class_features, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :class_specifics, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :class_spellcasting, reject_if: :all_blank, allow_destroy: true
 end

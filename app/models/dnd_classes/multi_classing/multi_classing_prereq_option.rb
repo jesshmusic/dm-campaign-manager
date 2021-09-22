@@ -4,7 +4,7 @@
 #
 #  id                :bigint           not null, primary key
 #  choose            :integer
-#  type              :string
+#  prereq_type       :string
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
 #  multi_classing_id :bigint           not null
@@ -21,4 +21,6 @@ class MultiClassingPrereqOption < ApplicationRecord
   belongs_to :multi_classing
 
   has_many :multi_class_prereqs, dependent: :destroy
+
+  accepts_nested_attributes_for :multi_class_prereqs, reject_if: :all_blank, allow_destroy: true
 end

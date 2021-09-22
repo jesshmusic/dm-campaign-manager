@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
   include Pagy::Backend
   protect_from_forgery
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
-  rescue_from ActiveRecord::RecordNotFound, with: :not_found
+  # rescue_from ActiveRecord::RecordNotFound, with: :not_found
   rescue_from ActionView::Template::Error, with: :template_error
 
   # @return [User]

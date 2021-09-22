@@ -21,4 +21,6 @@
 class ClassSpecific < ApplicationRecord
   belongs_to :dnd_class_level
   has_many :class_specific_spell_slots, dependent: :destroy
+
+  accepts_nested_attributes_for :class_specific_spell_slots, reject_if: :all_blank, allow_destroy: true
 end

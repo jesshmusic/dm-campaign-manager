@@ -28,4 +28,6 @@ class StartingEquipmentOption < ApplicationRecord
            dependent: :destroy
   belongs_to :dnd_class, optional: true
   belongs_to :starting_equipment_option, optional: true
+
+  accepts_nested_attributes_for :equipment_options, reject_if: :all_blank, allow_destroy: true
 end

@@ -67,8 +67,6 @@ class ImportSrdUtilities
       Equipment.destroy_all
     end
 
-    private
-
     def import_prof(prof_url, new_dnd_class = nil)
       prof_uri = URI("#{dnd_api_url}#{prof_url}")
       prof_response = Net::HTTP.get(prof_uri)
@@ -86,6 +84,8 @@ class ImportSrdUtilities
       new_prof.save!
       new_prof
     end
+
+    private
 
     def import_ability_scores
       uri = URI("#{dnd_api_url}/api/ability-scores")

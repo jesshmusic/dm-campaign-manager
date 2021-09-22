@@ -24,4 +24,8 @@ class MultiClassing < ApplicationRecord
 
   has_many :multi_class_prereqs, dependent: :destroy
   has_one :multi_classing_prereq_option, inverse_of: :multi_classing
+
+  accepts_nested_attributes_for :prof_choices, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :multi_classing_prereq_option, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :multi_class_prereqs, reject_if: :all_blank, allow_destroy: true
 end

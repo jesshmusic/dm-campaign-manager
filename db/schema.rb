@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_21_163517) do
+ActiveRecord::Schema.define(version: 2021_09_22_181045) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -371,7 +371,7 @@ ActiveRecord::Schema.define(version: 2021_09_21_163517) do
   create_table "multi_classing_prereq_options", force: :cascade do |t|
     t.bigint "multi_classing_id", null: false
     t.integer "choose"
-    t.string "type"
+    t.string "prereq_type"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["multi_classing_id"], name: "index_multi_classing_prereq_options_on_multi_classing_id"

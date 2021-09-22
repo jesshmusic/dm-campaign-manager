@@ -103,15 +103,120 @@ module Admin::V1
         :api_url,
         :hit_die,
         :name,
+        :slug,
+        :spell_ability,
+        :user,
         ability_score_ids: [],
         prof_ids: [],
         spell_ids: [],
         skill_ids: [],
+        subclasses: [],
+        dnd_class_levels_attributes: [
+          :id,
+          :ability_score_bonuses,
+          :level,
+          :prof_bonus,
+          :_destroy,
+          class_features_attributes: [
+            :id,
+            :level,
+            :name,
+            :reference,
+            :_destroy,
+            desc: [],
+            class_level_choice_attributes: [
+              :id,
+              :name,
+              :num_choices,
+              :_destroy,
+              choices: []
+            ],
+            expertise_options_attributes: [
+              :id,
+              :name,
+              :num_choices,
+              :_destroy,
+              choices: []
+            ],
+            subfeature_options_attributes: [
+              :id,
+              :name,
+              :num_choices,
+              :_destroy,
+              choices: []
+            ],
+            prerequisites_attributes: [
+              :id,
+              :level,
+              :name,
+              :_destroy,
+            ],
+          ],
+          class_specifics_attributes: [
+            :id,
+            :index,
+            :name,
+            :value,
+            :_destroy,
+            class_specific_spell_slots_attributes: [
+              :id,
+              :sorcery_point_cost,
+              :spell_slot_level,
+              :_destroy,
+            ]
+          ],
+          class_spellcasting_attributes: [
+            :id,
+            :cantrips_known,
+            :spell_slots_level_1,
+            :spell_slots_level_2,
+            :spell_slots_level_3,
+            :spell_slots_level_4,
+            :spell_slots_level_5,
+            :spell_slots_level_6,
+            :spell_slots_level_7,
+            :spell_slots_level_8,
+            :spell_slots_level_9,
+            :spells_known,
+            :_destroy,
+          ]
+        ],
         equipments_attributes: [
           :id,
           :name,
           :quantity,
           :_destroy
+        ],
+        multi_classing_attributes: [
+          :id,
+          :_destroy,
+          multi_class_prereqs_attributes: [
+            :id,
+            :ability_score,
+            :minimum_score,
+            :_destroy,
+          ],
+          multi_classing_prereq_option_attributes: [
+            :id,
+            :choose,
+            :prereq_type,
+            :_destroy,
+            multi_class_prereqs_attributes: [
+              :id,
+              :ability_score,
+              :minimum_score,
+              :_destroy,
+            ],
+          ],
+          prof_ids: [],
+          prof_choices_attributes: [
+            :id,
+            :name,
+            :num_choices,
+            :prof_choice_type,
+            :_destroy,
+            prof_ids: []
+          ],
         ],
         prof_choices_attributes: [
           :id,
@@ -120,6 +225,34 @@ module Admin::V1
           :prof_choice_type,
           :_destroy,
           prof_ids: []
+        ],
+        spell_casting_attributes: [
+          :id,
+          :level,
+          :ability_score,
+          :_destroy,
+          spell_casting_infos_attributes: [
+            :id,
+            :name,
+            :_destroy,
+            desc: []
+          ]
+        ],
+        starting_equipment_options_attributes: [
+          :id,
+          :choose,
+          :equipment_category,
+          :equipment_type,
+          :_destroy,
+          equipment_ids: [],
+          equipment_options_attributes: [
+            :id,
+            :choose,
+            :equipment_category,
+            :equipment_type,
+            :_destroy,
+            equipment_ids: [],
+          ]
         ]
       )
     end
