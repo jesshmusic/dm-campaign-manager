@@ -8,7 +8,7 @@ class MonstersUtil
       ImportSrdUtilities.dnd_open5e_url
     end
 
-    def import_monsters
+    def import
       puts 'Importing Monsters'
       next_uri = URI("#{dnd_api_url}/api/monsters/")
       count = 0

@@ -8,7 +8,7 @@ class DndClassesUtil
       ImportSrdUtilities.dnd_open5e_url
     end
 
-    def import_classes
+    def import
       uri = URI("#{dnd_api_url}/api/classes")
       response = Net::HTTP.get(uri)
       result = JSON.parse response, symbolize_names: true

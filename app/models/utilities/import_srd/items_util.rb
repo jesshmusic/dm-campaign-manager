@@ -8,7 +8,7 @@ class ItemsUtil
       ImportSrdUtilities.dnd_open5e_url
     end
 
-    def import_items
+    def import
       import_initial_items
       import_and_fix_magic_items
     end

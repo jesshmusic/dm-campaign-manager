@@ -12,42 +12,28 @@ class ImportSrdUtilities
 
     def import_all
       import_dependencies
-      ItemsUtil.import_items
-      import_dnd_classes
-      RacesUtil.import_races
-      SpellsUtil.import_spells
-      import_monsters
+      ItemsUtil.import
+      DndClassesUtil.import
+      RacesUtil.import
+      SpellsUtil.import
+      MonstersUtil.import
     end
 
     def import_all_empty(exclude)
       has_dependencies = AbilityScore.count > 0 && Prof.count > 0 && Condition.count > 0
       import_dependencies unless has_dependencies
-      ItemsUtil.import_items unless Item.count > 0 || exclude == :items
+      ItemsUtil.import unless Item.count > 0 || exclude == :items
       # import_classes
-      import_dnd_classes unless DndClass.count > 0 || exclude == :classes
-      RacesUtil.import_races unless Race.count > 0 || exclude == :races
-      SpellsUtil.import_spells unless Spell.count > 0 || exclude == :spells
-      import_monsters unless Monster.count > 0 || exclude == :monsters
+      DndClassesUtil.import unless DndClass.count > 0 || exclude == :classes
+      RacesUtil.import unless Race.count > 0 || exclude == :races
+      SpellsUtil.import unless Spell.count > 0 || exclude == :spells
+      MonstersUtil.import unless Monster.count > 0 || exclude == :monsters
     end
 
     def import_dependencies
       import_ability_scores
       import_proficiencies
       import_conditions
-    end
-
-    def import_items
-      ItemsUtil.import_items
-    end
-
-    def import_dnd_classes
-      # import_dependencies
-      # import_items
-      DndClassesUtil.import_classes
-    end
-
-    def import_monsters
-      MonstersUtil.import_monsters
     end
 
     def clean_database
@@ -81,6 +67,8 @@ class ImportSrdUtilities
       Equipment.destroy_all
     end
 
+    private
+
     def import_prof(prof_url, new_dnd_class = nil)
       prof_uri = URI("#{dnd_api_url}#{prof_url}")
       prof_response = Net::HTTP.get(prof_uri)
@@ -98,8 +86,6 @@ class ImportSrdUtilities
       new_prof.save!
       new_prof
     end
-
-    private
 
     def import_ability_scores
       uri = URI("#{dnd_api_url}/api/ability-scores")
