@@ -44,7 +44,8 @@ $enable-shadows: false;
 $enable-gradients: false;
 $enable-transitions: true;
 $enable-hover-media-query: false;
-$enable-grid-classes: true;
+$enable-grid-classes: false;
+$enable-cssgrid: true;
 $enable-print-styles: true;
 
 // Shadow
@@ -67,8 +68,8 @@ $link-hover-decoration: underline;
 $grid-breakpoints: (xs: 0, sm: 576px, md: 768px, lg: 992px, xl: 1200px);
 $container-max-widths: (sm: 540px, md: 720px, lg: 960px, xl: 1140px);
 $grid-columns: 12;
-$grid-gutter-width: 2rem;
-
+$grid-gutter-width: 0.5rem;
+$grid-gutter-height: 0.5rem;
 
 // Components
 $line-height-lg: 1.5;
@@ -96,12 +97,12 @@ $font-weight-normal: normal;
 $font-weight-bold: bold;
 $font-weight-base: $font-weight-normal;
 $line-height-base: 1.5;
-$h1-font-size: 2.5rem;
-$h2-font-size: 2rem;
-$h3-font-size: 1.75rem;
-$h4-font-size: 1.5rem;
-$h5-font-size: 1.25rem;
-$h6-font-size: 1rem;
+$h1-font-size: 1.75rem;
+$h2-font-size: 1.625rem;
+$h3-font-size: 1.5rem;
+$h4-font-size: 1.25rem;
+$h5-font-size: 1rem;
+$h6-font-size: 0.75rem;
 $headings-margin-bottom: $spacer;
 $headings-font-family: inherit;
 $headings-font-weight: 500;

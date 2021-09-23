@@ -1,6 +1,6 @@
 <% title "Monster: #{@monster.name}" %>
-<div class="row">
-  <div class="col">
+<div class="grid g-2 pt-1 pb-2">
+  <div class="g-col-12">
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="/">Home</a></li>
@@ -12,35 +12,32 @@
   </div>
 </div>
 <div class="container">
-  <div class="row mb-3 pb-3 border-bottom">
-    <div class="col">
-      <h1><%= @monster.name %></h1>
-      <h2 class="font-italic">
+  <div class="grid g-2 pt-1 pb-2">
+    <div class="g-col-12">
+      <h1 class='dnd-title'><%= @monster.name %></h1>
+      <h2 class="dnd-subtitle">
         <%= @monster.size %> <%= @monster.monster_type %><%= " (#{@monster.monster_subtype})" if @monster.monster_subtype && @monster.monster_subtype != '' %>
-        , <%= @monster.alignment %>
+        , <%= @monster.alignment.titleize %>
       </h2>
-      <h3><small>Challenge rating</small> <%= @monster.challenge_rating %></h3>
     </div>
   </div>
 
-  <div class="row mb-3 pb-3 border-bottom">
-    <div class="col">
-      <dl>
-        <dt>Armor Class</dt>
-        <dd><%= @monster.armor_class %></dd>
-        <dt>Hit Points</dt>
-        <dd><%= @monster.hit_points %> (<%= @monster.hit_dice %>)</dd>
-        <dt>Speed</dt>
+  <div class="grid g-2 pt-1 pb-2">
+    <div class="g-col-12">
+      <dl class='red'>
+        <dd><strong>Armor Class</strong> <%= @monster.armor_class %></dd>
+        <dd><strong>Hit Points</strong> <%= @monster.hit_points %> (<%= @monster.hit_dice %>)</dd>
         <dd>
+          <strong>Speed</strong>
           <% @monster.speeds.each do |speed| %>
-            <%= speed.name %><%= speed.value == 1 ? '' : ": #{speed.value} ft." %>
+            <%= speed.name.downcase != 'walk' ? "#{speed.name.downcase} " : ' ' %><%= speed.value == 1 ? '' : "#{speed.value} ft." %>
           <% end %>
         </dd>
       </dl>
     </div>
   </div>
 
-  <div class="row mb-3 pb-3 border-bottom">
+  <div class="grid g-2 pt-1 pb-2">
     <div class="col-4 col-sm-2">
       <strong>STR</strong><br />
       <%= @monster.strength %>
@@ -67,99 +64,105 @@
     </div>
   </div>
 
-
-  <div class="row mb-3 pb-3 border-bottom">
-    <div class="col">
-      <dl>
-        <% unless @monster.damage_vulnerabilities.empty? %>
-          <dt>Damage vulnerabilities</dt>
-          <dd><%= @monster.damage_vulnerabilities %></dd>
-        <% end %>
-        <% unless @monster.damage_resistances.empty? %>
-          <dt>Damage resistances</dt>
-          <dd><%= @monster.damage_resistances %></dd>
-        <% end %>
-        <% unless @monster.damage_immunities.empty? %>
-          <dt>Damage immunities</dt>
-          <dd><%= @monster.damage_immunities %></dd>
-        <% end %>
+  <div class="grid g-2 pt-1 pb-2">
+    <div class="g-col-12">
+      <dl class='red'>
         <% unless @monster.condition_immunities.empty? %>
-          <dt>Condition immunities</dt>
-          <dd><%= @monster.condition_immunities.map { |cond_imm|
+          <dd><strong>Condition immunities</strong> <%= @monster.condition_immunities.map { |cond_imm|
             cond_imm.condition.name
           }.join(', ') %></dd>
         <% end %>
-        <dt>Senses</dt>
-        <% @monster.senses.each do |sense| %>
-          <dd>
-            <%= sense.name %> <%= sense.value %>
-          </dd>
+        <% unless @monster.saving_throws.empty? %>
+          <dd><strong>Saving Throws</strong> <%= @monster.saving_throws.join(', ') %></dd>
         <% end %>
-        <dt>Languages</dt>
-        <dd><%= @monster.languages %></dd>
+        <% unless @monster.skills.empty? %>
+          <dd><strong>Skills</strong> <%= @monster.skills.join(', ') %></dd>
+        <% end %>
+        <% unless @monster.resistances.empty? %>
+          <dd><strong>Damage resistances</strong> <%= @monster.resistances.join(', ') %></dd>
+        <% end %>
+        <% unless @monster.immunities.empty? %>
+          <dd><strong>Damage immunities</strong> <%= @monster.immunities.join(', ') %></dd>
+        <% end %>
+        <% unless @monster.vulnerabilities.empty? %>
+          <dd><strong>Damage vulnerabilities</strong> <%= @monster.vulnerabilities.join(', ') %></dd>
+        <% end %>
+        <dd>
+          <strong>Senses</strong>&nbsp;
+          <% @monster.senses.each do |sense| %>
+            <%= sense.name %> <%= sense.value %>
+          <% end %>
+        </dd>
+        <dd><strong>Languages</strong> <%= @monster.languages %></dd>
+        <dd><strong>Challenge</strong> <%= @monster.challenge_rating %>
+          (<%= number_with_delimiter(@monster.xp, delimiter: ',') %> xp)
+        </dd>
       </dl>
     </div>
   </div>
 
-  <% unless @monster.monster_proficiencies.empty? %>
-    <div class="row">
-      <div class="col">
-        <h3>Proficiencies</h3>
-        <ul>
-          <% @monster.monster_proficiencies.each do |monster_prof| %>
-            <li><strong><%= monster_prof.prof.name.capitalize %> </strong><%= monster_prof.value %></li>
-          <% end %>
-        </ul>
-      </div>
-    </div>
-  <% end %>
-
   <% unless @monster.actions.empty? %>
-    <div class="row">
-      <div class="col">
-        <h3>Actions</h3>
-        <% @monster.actions.each do |monster_action| %>
-          <%= render 'action', monster_action: monster_action %>
-        <% end %>
+    <div class="grid g-2 pt-1 pb-2">
+      <div class="g-col-12">
+        <h3 class='dnd-section'>Actions</h3>
+        <dl>
+          <% @monster.actions.each do |monster_action| %>
+            <dd>
+              <strong><%= monster_action['name'] %>. </strong><%= monster_action['desc'] %>
+            </dd>
+          <% end %>
+        </dl>
       </div>
     </div>
   <% end %>
 
   <% unless @monster.legendary_actions.empty? %>
-    <div class="row">
-      <div class="col">
-        <h3>Legendary Actions</h3>
-        <% @monster.legendary_actions.each do |monster_action| %>
-          <%= render 'action', monster_action: monster_action %>
-        <% end %>
+    <div class="grid g-2 pt-1 pb-2">
+      <div class="g-col-12">
+        <h3 class='dnd-section'>Legendary Actions</h3>
+        <dl>
+          <% @monster.legendary_actions.each do |monster_action| %>
+            <dd>
+              <strong><%= monster_action['name'] %>. </strong><%= monster_action['desc'] %>
+            </dd>
+          <% end %>
+        </dl>
       </div>
     </div>
   <% end %>
 
   <% unless @monster.special_abilities.empty? %>
-    <div class="row">
-      <div class="col">
-        <h3>Special Abilities</h3>
-        <% @monster.special_abilities.each do |monster_action| %>
-          <%= render 'action', monster_action: monster_action %>
-        <% end %>
+    <div class="grid g-2 pt-1 pb-2">
+      <div class="g-col-12">
+        <h3 class='dnd-section'>Special Abilities</h3>
+        <dl>
+          <% @monster.special_abilities.each do |monster_action| %>
+            <dd>
+              <strong><%= monster_action['name'] %>. </strong><%= monster_action['desc'] %>
+            </dd>
+          <% end %>
+        </dl>
       </div>
     </div>
   <% end %>
 
   <% unless @monster.reactions.empty? %>
-    <div class="row">
-      <div class="col">
-        <h3>Special Abilities</h3>
-        <% @monster.reactions.each do |monster_action| %>
-          <%= render 'action', monster_action: monster_action %>
-        <% end %>
+    <div class="grid g-2 pt-1 pb-2">
+      <div class="g-col-12">
+        <h3 class='dnd-section'>Special Abilities</h3>
+        <dl>
+          <% @monster.reactions.each do |monster_action| %>
+            <dd>
+              <strong><%= monster_action['name'] %>. </strong><%= monster_action['desc'] %>
+            </dd>
+          <% end %>
+        </dl>
       </div>
     </div>
   <% end %>
 
   <div class="d-flex align-items-center justify-content-start py-3">
-    <%= link_to 'Edit', edit_v1_monster_path(@monster), class: 'btn btn-success' if policy(@monster).edit? %>
+    <%#= link_to 'Edit', edit_v1_monster_path(@monster), class: 'btn btn-success' if policy(@monster).edit? %>
     <%= link_to 'Back', v1_monsters_path, class: 'btn btn-info' %>
   </div>
 </div>

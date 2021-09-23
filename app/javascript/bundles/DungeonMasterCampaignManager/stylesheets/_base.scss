@@ -1,15 +1,9 @@
 .container,
 .container-fluid {
-  padding: 1rem 6rem;
-}
-
-.row {
-  @extend .pt-3;
-  @extend .pb-4;
-}
-
-.list-group {
-  @extend .mb-4;
+  @include media-breakpoint-up(lg) {
+    padding: 1rem 6rem;
+  }
+  padding: 1rem;
 }
 
 h6 {
@@ -43,3 +37,7 @@ h1 {
   @extend .table-borderless;
   @extend .table-striped;
 }
+
+//.row {
+//  @extend .py-2;
+//}

@@ -19,3 +19,45 @@
     color: $body-color;
   }
 }
+
+.dnd-title {
+  @extend .mr-eaves;
+  color: $dark-red;
+  font-size: $h2-font-size;
+}
+
+.dnd-subtitle {
+  @extend .sans-serif;
+  font-size: $font-size-sm;
+  font-style: italic;
+}
+
+.dnd-section {
+  @extend .sans-serif;
+  font-size: $font-size-lg;
+  color: $dark-red;
+}
+
+dl {
+  @extend .sans-serif;
+
+  &.red {
+    color: $dark-red;
+
+    dd {
+      strong {
+        font-style: normal;
+      }
+
+      margin-bottom: 0;
+    }
+  }
+
+  dd {
+    strong {
+      font-style: italic;
+    }
+
+    margin-bottom: $spacer;
+  }
+}

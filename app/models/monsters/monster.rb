@@ -97,6 +97,36 @@ class Monster < ApplicationRecord
     damage_vulnerabilities.map { |damage| damage.name }
   end
 
+  def saving_throws
+    saves = []
+    monster_proficiencies.each do |monster_prof|
+      if monster_prof.prof.prof_type == 'Saving Throws'
+        conditional = '+' if monster_prof.value > 0
+        conditional = '-' if monster_prof.value < 0
+        conditional = '' if monster_prof.value == 0
+        st_name = monster_prof.prof.name
+        st_name.slice!('Saving Throw: ')
+        saves << "#{st_name.titleize} #{conditional}#{monster_prof.value}"
+      end
+    end
+    saves
+  end
+
+  def skills
+    skills = []
+    monster_proficiencies.each do |monster_prof|
+      if monster_prof.prof.prof_type == 'Skills'
+        conditional = '+' if monster_prof.value > 0
+        conditional = '-' if monster_prof.value < 0
+        conditional = '' if monster_prof.value == 0
+        st_name = monster_prof.prof.name
+        st_name.slice!('Skill: ')
+        skills << "#{st_name.titleize} #{conditional}#{monster_prof.value}"
+      end
+    end
+    skills
+  end
+
   include PgSearch::Model
 
   # PgSearch

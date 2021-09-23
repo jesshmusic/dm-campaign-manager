@@ -59,6 +59,7 @@ class MonstersUtil
     private
 
     def import_actions(new_monster, monster)
+      new_monster.actions.destroy_all unless new_monster.actions.nil?
       unless monster[:actions].nil?
         monster[:actions].each do |action|
           act = new_monster.actions.create(name: action[:name], desc: action[:desc], attack_bonus: action[:attack_bonus])
@@ -68,6 +69,7 @@ class MonstersUtil
     end
 
     def import_legendary_actions(new_monster, monster)
+      new_monster.legendary_actions.destroy_all unless new_monster.legendary_actions.nil?
       unless monster[:legendary_actions].nil?
         monster[:legendary_actions].each do |action|
           act = new_monster.legendary_actions.create(name: action[:name], desc: action[:desc], attack_bonus: action[:attack_bonus])
@@ -77,6 +79,7 @@ class MonstersUtil
     end
 
     def import_reactions(new_monster, monster)
+      new_monster.reactions.destroy_all unless new_monster.reactions.nil?
       unless monster[:reactions].nil?
         monster[:reactions].each do |action|
           act = new_monster.reactions.create(name: action[:name], desc: action[:desc], attack_bonus: action[:attack_bonus])
@@ -86,6 +89,7 @@ class MonstersUtil
     end
 
     def import_special_abilities(new_monster, monster)
+      new_monster.special_abilities.destroy_all unless new_monster.special_abilities.nil?
       unless monster[:special_abilities].nil?
         monster[:special_abilities].each do |action|
           act = new_monster.special_abilities.create(name: action[:name], desc: action[:desc], attack_bonus: action[:attack_bonus])
@@ -143,6 +147,7 @@ class MonstersUtil
     end
 
     def import_damage_resistances(new_monster, monster)
+      new_monster.damage_resistances.destroy_all unless new_monster.damage_resistances.nil?
       unless monster[:damage_resistances].nil?
         monster[:damage_resistances].each do |damage|
           new_monster.damage_resistances.create(name: damage)
@@ -151,6 +156,7 @@ class MonstersUtil
     end
 
     def import_damage_vulnerabilities(new_monster, monster)
+      new_monster.damage_vulnerabilities.destroy_all unless new_monster.damage_vulnerabilities.nil?
       unless monster[:damage_vulnerabilities].nil?
         monster[:damage_vulnerabilities].each do |damage|
           new_monster.damage_vulnerabilities.create(name: damage)
@@ -159,6 +165,7 @@ class MonstersUtil
     end
 
     def import_damage_immunities(new_monster, monster)
+      new_monster.damage_immunities.destroy_all unless new_monster.damage_immunities.nil?
       unless monster[:damage_immunities].nil?
         monster[:damage_immunities].each do |damage|
           new_monster.damage_immunities.create(name: damage)
@@ -167,6 +174,7 @@ class MonstersUtil
     end
 
     def import_speeds(new_monster, monster)
+      new_monster.speeds.destroy_all unless new_monster.speeds.nil?
       unless monster[:speed].nil?
         monster[:speed].each_key do |key|
           value = monster[:speed][key] == true ? 1 : monster[:speed][key].to_i
@@ -176,6 +184,7 @@ class MonstersUtil
     end
 
     def import_senses(new_monster, monster)
+      new_monster.senses.destroy_all unless new_monster.senses.nil?
       unless monster[:senses].nil?
         monster[:senses].each_key do |key|
           new_monster.senses.create(name: key.to_s.titleize, value: monster[:senses][key].to_s)
@@ -196,7 +205,7 @@ class MonstersUtil
     end
 
     def import_profs(new_monster, monster)
-      new_monster.monster_proficiencies.delete_all
+      new_monster.monster_proficiencies.destroy_all unless new_monster.monster_proficiencies.nil?
       if monster[:proficiencies] && monster[:proficiencies].is_a?(Array)
         monster[:proficiencies].each do |prof|
           new_prof = Prof.find_by(name: prof[:proficiency][:name])
@@ -210,7 +219,7 @@ class MonstersUtil
     end
 
     def import_condition_immunities(new_monster, monster)
-      new_monster.condition_immunities.delete_all
+      new_monster.condition_immunities.destroy_all unless new_monster.condition_immunities.nil?
       if monster[:condition_immunities] && monster[:condition_immunities].is_a?(Array)
         monster[:condition_immunities].each do |cond_imm|
           new_cond = Condition.find_by(index: cond_imm[:index])
