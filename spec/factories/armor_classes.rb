@@ -20,7 +20,7 @@
 #
 FactoryBot.define do
   factory :armor_class do
-    ac_base { 1 }
+    ac_base { 14 }
     has_dex_bonus { false }
     max_dex_bonus { 1 }
     item { nil }

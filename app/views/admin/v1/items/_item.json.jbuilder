@@ -22,7 +22,7 @@ when 'ArmorItem'
   json.extract! item, :armor_category,
                 :armor_class_bonus, :stealth_disadvantage, :str_minimum
   json.armor_class do
-    json.extract! item.armor_class, :ac_base, :has_dex_bonus, :max_dex_bonus
+    json.extract! item.armor_class, :ac_base, :has_dex_bonus, :max_dex_bonus unless item.armor_class.nil?
   end
 when 'MagicItem'
   json.extract! item, :rarity, :requires_attunement

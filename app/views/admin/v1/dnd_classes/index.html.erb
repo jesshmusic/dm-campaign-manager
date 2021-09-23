@@ -28,8 +28,8 @@
         <td><%= dnd_class.user ? dnd_class.user.name : "Default" %></td>
         <td>
           <%= link_to 'Show', v1_dnd_class_path(dnd_class), class: "btn btn-sm btn-primary" %>
-          <%= link_to 'Edit', edit_v1_dnd_class_path(dnd_class), class: "btn btn-sm btn-success" if policy(dnd_class).edit? %>
-          <%= link_to 'Destroy', v1_dnd_class_path(dnd_class), class: "btn btn-sm btn-danger", method: :delete, data: { confirm: 'Are you sure?' } if policy(dnd_class).destroy? %>
+          <%#= link_to 'Edit', edit_v1_dnd_class_path(dnd_class), class: "btn btn-sm btn-success" if policy(dnd_class).edit? %>
+          <%#= link_to 'Destroy', v1_dnd_class_path(dnd_class), class: "btn btn-sm btn-danger", method: :delete, data: { confirm: 'Are you sure?' } if policy(dnd_class).destroy? %>
         </td>
       </tr>
     <% end %>
@@ -37,4 +37,4 @@
 </table>
 <%== pagy_bootstrap_nav(@pagy) if @pagy.pages > 1 %>
 
-<%= link_to 'New Class', new_v1_dnd_class_path, class: "btn btn-lg btn-success" if policy(DndClass).new? %>
+<%#= link_to 'New Class', new_v1_dnd_class_path, class: "btn btn-lg btn-success" if policy(DndClass).new? %>

@@ -273,9 +273,9 @@ RSpec.describe 'DndClasses', type: :request do
         sign_in admin
       end
 
-      it 'should return a success response' do
+      it 'should return a forbidden response' do
         get '/v1/dnd_classes/new'
-        expect(response).to have_http_status(200)
+        expect(response).to have_http_status(403)
       end
     end
 
@@ -284,9 +284,9 @@ RSpec.describe 'DndClasses', type: :request do
         sign_in dungeon_master
       end
 
-      it 'should return a success response' do
+      it 'should return a forbidden response' do
         get '/v1/dnd_classes/new'
-        expect(response).to have_http_status(200)
+        expect(response).to have_http_status(403)
       end
     end
   end
@@ -304,9 +304,9 @@ RSpec.describe 'DndClasses', type: :request do
         sign_in admin
       end
 
-      it 'should return a success response' do
+      it 'should return a forbidden response' do
         get '/v1/dnd_classes/fighter/edit'
-        expect(response).to have_http_status(200)
+        expect(response).to have_http_status(403)
       end
     end
 

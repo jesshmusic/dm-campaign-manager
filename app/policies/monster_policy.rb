@@ -22,7 +22,13 @@ class MonsterPolicy < ApplicationPolicy
   end
 
   def new?
-    user && (user.admin? || user.dungeon_master?)
+    # user && (user.admin? || user.dungeon_master?)
+    false
+  end
+
+  def edit?
+    # user && (user.admin? || user.dungeon_master?)
+    false
   end
 
   def create?

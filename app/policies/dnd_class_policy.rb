@@ -6,7 +6,8 @@ class DndClassPolicy < ApplicationPolicy
   end
 
   def edit?
-    user && (user.admin? || (record.user == user))
+    # user && (user.admin? || (record.user == user))
+    false
   end
 
   def update?
@@ -14,7 +15,8 @@ class DndClassPolicy < ApplicationPolicy
   end
 
   def new?
-    user && (user.admin? || user.dungeon_master?)
+    # user && (user.admin? || user.dungeon_master?)
+    false
   end
 
   def create?

@@ -6,7 +6,12 @@ class ItemPolicy < ApplicationPolicy
   end
 
   def new?
-    user&.admin? || user&.dungeon_master?
+    # user&.admin? || user&.dungeon_master?
+    false
+  end
+
+  def edit?
+    false
   end
 
   def create?

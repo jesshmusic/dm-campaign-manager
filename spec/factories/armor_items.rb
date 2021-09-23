@@ -49,6 +49,11 @@
 
 FactoryBot.define do
   factory :armor_item do
-    
+    type { 'ArmorItem' }
+    association :cost, factory: :cost, strategy: :build
+    association :armor_class, factory: :armor_class, strategy: :build
+    desc { Faker::Game.title }
+    name { Faker::Games::Zelda.item }
+    weight { Faker::Number.between(from: 1, to: 10) }
   end
 end

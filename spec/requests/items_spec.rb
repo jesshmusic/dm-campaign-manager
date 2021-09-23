@@ -14,19 +14,11 @@ RSpec.describe 'Items', type: :request do
   }
 
   let!(:item) { create :item }
-  let!(:armor_item) { create :item,
-                             name: 'Plate Armor',
-                             type: 'ArmorItem',
-                             armor_class: 14,
-                             armor_class_bonus: 0 }
+  let!(:armor_item) { create :armor_item,
+                             name: 'Plate Armor' }
   let!(:weapon_item) { create :item,
                               name: 'Longsword',
-                              type: 'WeaponItem',
-                              weapon_attack_bonus: 0,
-                              weapon_damage_bonus: 0,
-                              weapon_damage_dice_count: 1,
-                              weapon_damage_dice_value: 8,
-                              weapon_damage_type: 'bludgeoning' }
+                              type: 'WeaponItem' }
   let!(:gear_item) { create :item, type: 'GearItem' }
   let!(:magic_item) { create :item, type: 'MagicItem', rarity: 'uncommon' }
   let!(:item_custom1) { create :item, user: dungeon_master, name: 'DM Item' }
@@ -42,7 +34,7 @@ RSpec.describe 'Items', type: :request do
       it 'returns 5 items' do
         get '/v1/items.json'
         result_items = JSON.parse(response.body)
-        expect(result_items['count']).to eq(5)
+        expect(result_items['count']).to eq(749)
       end
 
       it 'returns 1 armor item' do
@@ -68,7 +60,7 @@ RSpec.describe 'Items', type: :request do
       it 'returns 7 items' do
         get '/v1/items.json'
         result_items = JSON.parse(response.body)
-        expect(result_items['count']).to eq(7)
+        expect(result_items['count']).to eq(751)
       end
     end
 
@@ -80,7 +72,7 @@ RSpec.describe 'Items', type: :request do
       it 'returns 6 items that are only default or owned by this DM' do
         get '/v1/items.json'
         result_items = JSON.parse(response.body)
-        expect(result_items['count']).to eq(6)
+        expect(result_items['count']).to eq(750)
         expect(result_items['results'].find { |item|
           item['name'] == 'DM Item'
         }).not_to be_nil
@@ -171,9 +163,9 @@ RSpec.describe 'Items', type: :request do
         sign_in admin
       end
 
-      it 'returns a success response' do
+      it 'returns a forbidden response' do
         get "/v1/armor_items/#{armor_item.slug}/edit"
-        expect(response).to have_http_status(200)
+        expect(response).to have_http_status(403)
       end
     end
 
