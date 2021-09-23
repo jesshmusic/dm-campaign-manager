@@ -8,11 +8,13 @@
   </ol>
 </nav>
 <h1><%= @item.category %>: <%= @item.name %></h1>
-<h3><%= @item.sub_category %></h3>
+<h3><%= @item.category_range %></h3>
 
 <p>
   <strong>Cost:</strong>
-  <%= @item.cost_value %><%= @item.cost_unit %>
+  <% unless @item.cost.nil? %>
+    <%= @item.cost.quantity %><%= @item.cost.unit %>
+  <% end %>
 </p>
 
 <p>
@@ -20,107 +22,71 @@
   <%= @item.weight %>
 </p>
 
-<% if @item.description && @item.description != "" %>
-  <% item_desc = @item.description.sub! 'Description:', '**Description:**' %>
-  <% item_desc = @item.description.sub! 'Special:', '**Special:**' if item_desc == nil %>
-  <%= markdown(item_desc ? item_desc : @item.description) %>
+<% unless @item.rarity.nil? %>
+  <p>
+    <strong>Rarity:</strong>
+    <%= @item.rarity %>
+  </p>
 <% end %>
 
-<% if @item.category == "Armor" %>
+<% if @item.category == 'Armor' %>
   <p>
     <strong>Armor class:</strong>
-    <%= @item.armor_class %>
+    <%= @item.armor_class.ac_base %>
   </p>
 
   <p>
     <strong>Dex bonus:</strong>
-    <%= @item.armor_dex_bonus %>
+    <%= @item.armor_class.has_dex_bonus ? ' yes' : ' no' %>
   </p>
 
   <p>
     <strong>Max bonus:</strong>
-    <%= @item.armor_max_bonus %>
+    <%= @item.armor_class.max_dex_bonus %>
   </p>
 
   <p>
     <strong>Stealth disadvantage:</strong>
-    <%= @item.armor_stealth_disadvantage %>
+    <%= @item.stealth_disadvantage ? ' yes' : ' no' %>
   </p>
 
   <p>
     <strong>Str minimum:</strong>
-    <%= @item.armor_str_minimum %>
+    <%= @item.str_minimum %>
   </p>
 <% end %>
 
-<% if @item.category == "Weapon" %>
+<% if @item.category == 'Weapon' %>
   <p>
-    <strong>Category range:</strong>
-    <%= @item.category_range %>
+    <strong><%= @item.category_range %></strong>
   </p>
 
-  <p>
-    <strong>Weapon 2h damage dice count:</strong>
-    <%= @item.weapon_2h_damage_dice_count %>
-  </p>
+  <% unless @item.damage.nil? %>
+    <p>
+      <strong>Damage</strong> <%= @item.damage.damage_dice %> <%= @item.damage.damage_type %>
+    </p>
+  <% end %>
 
-  <p>
-    <strong>Weapon 2h damage dice value:</strong>
-    <%= @item.weapon_2h_damage_dice_value %>
-  </p>
+  <% unless @item.two_handed_damage.nil? %>
+    <p>
+      <strong>2H Damage</strong> <%= @item.two_handed_damage.damage_dice %> <%= @item.two_handed_damage.damage_type %>
+    </p>
+  <% end %>
 
-  <p>
-    <strong>Weapon 2h damage type:</strong>
-    <%= @item.weapon_2h_damage_type %>
-  </p>
+  <% unless @item.item_range.nil? || @item.item_range.long.nil? %>
+    <p>
+      <strong>Range </strong> (<%= @item.item_range.normal %> / <%= @item.item_range.long %>)
+    </p>
+  <% end %>
 
-  <p>
-    <strong>Weapon damage dice count:</strong>
-    <%= @item.weapon_damage_dice_count %>
-  </p>
-
-  <p>
-    <strong>Weapon damage dice value:</strong>
-    <%= @item.weapon_damage_dice_value %>
-  </p>
-
-  <p>
-    <strong>Weapon damage type:</strong>
-    <%= @item.weapon_damage_type %>
-  </p>
-
-  <p>
-    <strong>Weapon properties:</strong>
-    <%= @item.weapon_properties %>
-  </p>
-
-  <p>
-    <strong>Weapon range:</strong>
-    <%= @item.weapon_range %>
-  </p>
-
-  <p>
-    <strong>Weapon range long:</strong>
-    <%= @item.weapon_range_long %>
-  </p>
-
-  <p>
-    <strong>Weapon range normal:</strong>
-    <%= @item.weapon_range_normal %>
-  </p>
-
-  <p>
-    <strong>Weapon thrown range long:</strong>
-    <%= @item.weapon_thrown_range_long %>
-  </p>
-
-  <p>
-    <strong>Weapon thrown range normal:</strong>
-    <%= @item.weapon_thrown_range_normal %>
-  </p>
+  <% unless @item.item_throw_range.nil? %>
+    <p>
+      <strong>Thrown Range </strong> (<%= @item.item_throw_range.normal %> / <%= @item.item_throw_range.long %>)
+    </p>
+  <% end %>
 <% end %>
 
-<% if @item.category == "Mounts and Vehicles" %>
+<% if @item.category == 'Mounts and Vehicles' %>
   <p>
     <strong>Vehicle capacity:</strong>
     <%= @item.vehicle_capacity %>
@@ -132,7 +98,21 @@
   </p>
 <% end %>
 
+<% unless @item.desc.nil? %>
+  <% @item.desc.each do |paragraph| %>
+    <%= paragraph %>
+  <% end %>
+<% end %>
+
+<% unless @item.content_items.nil? %>
+  <ul class='list-group-flush'>
+    <% @item.content_items.each do |content_item| %>
+      <li class="list-group-item"><%= content_item.quantity %> <%= content_item.name %></li>
+    <% end %>
+  </ul>
+<% end %>
+
 <div class="d-flex align-items-center justify-content-start py-3">
-  <%= link_to 'Edit', edit_v1_item_path(@item), class: "btn btn-success" if policy(@item).edit? %>
-  <%= link_to 'Back', v1_items_path, class: "btn btn-info" %>
+  <%#= link_to 'Edit', edit_v1_item_path(@item), class: 'btn btn-success' if policy(@item).edit? %>
+  <%= link_to 'Back', v1_items_path, class: 'btn btn-info' %>
 </div>

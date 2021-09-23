@@ -14,14 +14,14 @@
   <h3>Categories:</h3>
 </div>
 
-<table>
+<table class='table'>
   <thead>
     <tr>
       <th>Name</th>
-      <th class="d-none d-lg-table-cell">Type</th>
-      <th class="d-none d-lg-table-cell">Sub category</th>
+      <th scope='col'>Type</th>
+      <th scope='col'>Sub category</th>
       <th>Cost</th>
-      <th class="d-none d-lg-table-cell">Weight</th>
+      <th scope='col'>Weight</th>
       <th></th>
     </tr>
   </thead>
@@ -30,12 +30,12 @@
     <% @items.each do |item| %>
       <tr>
         <td><%= item.name %></td>
-        <td class="d-none d-lg-table-cell"><%= item.type.chomp('Item') %></td>
-        <td class="d-none d-lg-table-cell"><%= item.category.titleize %></td>
+        <td><%= item.type.chomp('Item') %></td>
+        <td><%= item.category.titleize %></td>
         <td>
           <%= "#{item.cost.quantity}#{item.cost.unit}" unless item.cost.nil? %>
         </td>
-        <td class="d-none d-lg-table-cell"><%= item.weight %></td>
+        <td><%= item.weight %></td>
         <td>
           <%= link_to 'Show', v1_item_path(item), class: "btn btn-sm btn-primary" %>
           <%#= link_to 'Edit', edit_v1_item_path(item), class: "btn btn-sm btn-success" if policy(item).edit? %>

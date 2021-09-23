@@ -10,17 +10,17 @@
 <h1>Monsters</h1>
 <%= render 'shared/search_form', url: v1_monsters_path %>
 
-<table>
+<table class='table'>
   <thead>
     <tr>
-      <th>Name</th>
-      <th class="d-none d-lg-table-cell">Size</th>
-      <th>Type</th>
-      <th class="d-none d-lg-table-cell">Subtype</th>
-      <th class="d-none d-lg-table-cell">Alignment</th>
-      <th class="d-none d-lg-table-cell">Armor class</th>
-      <th class="d-none d-lg-table-cell">Hit points</th>
-      <th class="d-none d-lg-table-cell">Hit dice</th>
+      <th scope='col'>Name</th>
+      <th scope='col'>Size</th>
+      <th scope='col'>Type</th>
+      <th scope='col'>Subtype</th>
+      <th scope='col'>Alignment</th>
+      <th scope='col'>Armor class</th>
+      <th scope='col'>Hit points</th>
+      <th scope='col'>Hit dice</th>
       <th>Challenge rating</th>
       <th></th>
     </tr>
@@ -30,18 +30,18 @@
     <% @monsters.each do |monster| %>
       <tr>
         <td><%= monster.name %></td>
-        <td class="d-none d-lg-table-cell"><%= monster.size %></td>
+        <td><%= monster.size %></td>
         <td><%= monster.monster_type.titleize %></td>
-        <td class="d-none d-lg-table-cell"><%= monster.monster_subtype.titleize %></td>
-        <td class="d-none d-lg-table-cell"><%= monster.alignment.titleize %></td>
-        <td class="d-none d-lg-table-cell"><%= monster.armor_class %></td>
-        <td class="d-none d-lg-table-cell"><%= monster.hit_points %></td>
-        <td class="d-none d-lg-table-cell"><%= monster.hit_dice %></td>
+        <td><%= monster.monster_subtype.titleize %></td>
+        <td><%= monster.alignment.titleize %></td>
+        <td><%= monster.armor_class %></td>
+        <td><%= monster.hit_points %></td>
+        <td><%= monster.hit_dice %></td>
         <td><%= monster.challenge_rating %></td>
         <td>
           <%= link_to 'Show', v1_monster_path(monster), class: "btn btn-sm btn-primary" %>
-          <%= link_to 'Edit', edit_v1_monster_path(monster), class: "btn btn-sm btn-success" if policy(monster).edit?  %>
-          <%= link_to 'Destroy', v1_monster_path(monster), class: "btn btn-sm btn-danger", method: :delete, data: { confirm: 'Are you sure?' } if policy(monster).destroy? %>
+          <%#= link_to 'Edit', edit_v1_monster_path(monster), class: "btn btn-sm btn-success" if policy(monster).edit? %>
+          <%#= link_to 'Destroy', v1_monster_path(monster), class: "btn btn-sm btn-danger", method: :delete, data: { confirm: 'Are you sure?' } if policy(monster).destroy? %>
         </td>
       </tr>
     <% end %>
@@ -49,4 +49,4 @@
 </table>
 <%== pagy_bootstrap_nav(@pagy) if @pagy.pages > 1 %>
 
-<%= link_to 'New Monster', new_v1_monster_path, class: "btn btn-lg btn-success" if policy(Monster).new? %>
+<%#= link_to 'New Monster', new_v1_monster_path, class: "btn btn-lg btn-success" if policy(Monster).new? %>
