@@ -1,6 +1,7 @@
 import snakecaseKeys from 'snakecase-keys';
+import { MonsterProps, NPCGeneratorFormFields } from '../../utilities/types';
 
-export const getNPCObject = (values) => {
+export const getNPCObject = (values: NPCGeneratorFormFields): MonsterProps => {
   const returnChar = {
     alignment: values.alignment,
     armorClass: values.armorClass,

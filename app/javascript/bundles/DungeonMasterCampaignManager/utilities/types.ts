@@ -114,15 +114,103 @@ export interface MonsterSummary {
   xpString: string;
 }
 
+type SelectOption = {
+  label: string;
+  value: string | number;
+}
+
+export type NPCGeneratorFormFields = {
+  name: string;
+  alignment: string;
+  armorClass: number;
+  challengeRating: SelectOption;
+  characterAlignment: SelectOption;
+  charisma: number;
+  constitution: number;
+  conditionImmunities?: [number];
+  dexterity: number;
+  hitDice: string;
+  hitDiceNumber: number;
+  hitDiceValue: SelectOption;
+  hitPoints: number;
+  intelligence: number;
+  languages: string;
+  monsterType: SelectOption;
+  monsterSubtype: string;
+  size: SelectOption;
+  strength: number;
+  wisdom: number;
+  conditions?: [number];
+  damageImmunities?: [Resistance];
+  damageResistances?: [Resistance];
+  damageVulnerabilities?: [Resistance];
+  actions?: [MonsterAction];
+  legendaryActions?: [MonsterAction];
+  reactions?: [MonsterAction];
+  specialAbilities?: [MonsterAction];
+  senses?: [MonsterInfoData];
+  speeds?: [MonsterInfoData];
+  monsterProficiencies?: [Prof];
+}
+
+type Resistance = {
+  name: string,
+  _destroy?: boolean;
+}
+
+type MonsterActionDamage = {
+  damageBonus: number;
+  damageType: string;
+  diceCount: number;
+  diceValue: number;
+}
+
+type MonsterAction = {
+  attackBonus?: number;
+  dcType?: string;
+  dcValue?: number;
+  desc: string;
+  name: string;
+  damages?: [MonsterActionDamage];
+  successType?: string;
+  usageDice?: string;
+  usageMinValue?: number;
+  usageType?: string;
+}
+
+type MonsterInfoData = {
+  name: string;
+  value: string | number;
+}
+
 export interface MonsterProps {
   alignment: string;
+  armorClass: number;
   challengeRating: string;
-  hitPoints: string;
+  charisma: number;
+  constitution: number;
+  dexterity: number;
   hitDice: string;
+  hitPoints: string;
+  intelligence: number;
+  languages: string;
+  monsterSubtype: string;
   monsterType: string;
   name: string;
-  slug: string;
-  xpString: string;
+  size: string;
+  strength: number;
+  wisdom: number;
+  conditions?: [number];
+  damageImmunities?: [Resistance];
+  damageResistances?: [Resistance];
+  damageVulnerabilities?: [Resistance];
+  actions?: [MonsterAction];
+  legendaryActions?: [MonsterAction];
+  reactions?: [MonsterAction];
+  specialAbilities?: [MonsterAction];
+  senses?: [MonsterInfoData];
+  speeds?: [MonsterInfoData];
+  monsterProficiencies?: [Prof];
 }
 
 export interface Monsters {

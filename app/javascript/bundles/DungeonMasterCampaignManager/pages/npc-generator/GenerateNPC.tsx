@@ -25,7 +25,7 @@ import { FieldArray } from 'react-final-form-arrays';
 import Col from 'react-bootstrap/Col';
 import AbilityScoreField from './components/AbilityScoreField';
 import Row from 'react-bootstrap/Row';
-import { MonsterProps, UserProps } from '../../utilities/types';
+import { MonsterProps, NPCGeneratorFormFields, UserProps } from '../../utilities/types';
 import axios from 'axios';
 import { getNPCObject } from './services';
 import { GiDiceTwentyFacesTwenty } from 'react-icons/gi';
@@ -87,10 +87,6 @@ const longSword = {
   }
 };
 
-type GenerateNPCProps = {
-  user: UserProps;
-}
-
 type NPCFormErrors = {
   name?: string;
   characterAlignment?: string;
@@ -102,31 +98,6 @@ type NPCFormErrors = {
   wisdom?: string;
 }
 
-type SelectOption = {
-  label: string;
-  value: string | number;
-}
-
-type NPCGeneratorFormFields = {
-  name: string;
-  alignment: string;
-  armorClass: number;
-  challengeRating: SelectOption;
-  hitDice: string;
-  hitDiceNumber: number;
-  hitDiceValue: SelectOption;
-  size: SelectOption;
-  characterAlignment: SelectOption;
-  monsterType: SelectOption;
-  strength: number;
-  dexterity: number;
-  constitution: number;
-  intelligence: number;
-  wisdom: number;
-  charisma: number;
-  actions: [any]
-}
-
 const hitDiceOptions = [
   { label: 'd4', value: 'd4' },
   { label: 'd6', value: 'd6' },
@@ -136,9 +107,13 @@ const hitDiceOptions = [
   { label: 'd20', value: 'd20' }
 ];
 
+type GenerateNPCProps = {
+  setMonster: (monster: MonsterProps) => void;
+}
+
 const GenerateNPC = (props: GenerateNPCProps) => {
-  const { user } = props;
-  const [monster, setMonster] = React.useState({
+  const { setMonster } = props;
+  const [monster] = React.useState({
     name: 'New NPC',
     alignment: 'Neutral',
     armorClass: 10,
@@ -175,7 +150,8 @@ const GenerateNPC = (props: GenerateNPCProps) => {
   const [validated, setValidated] = React.useState(false);
 
   const handleSubmit = (values) => {
-    const npc = getNPCObject(values);
+    const monster: MonsterProps = getNPCObject(values);
+    setMonster(monster);
   };
 
   const handleGenerateName = async (gender, race, callback) => {
