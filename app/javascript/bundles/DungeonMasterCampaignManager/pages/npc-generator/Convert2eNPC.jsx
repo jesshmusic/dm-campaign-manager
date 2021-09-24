@@ -20,7 +20,7 @@ import {
 import FormSelect from '../../components/forms/FormSelect';
 import FormField from '../../components/forms/FormField';
 import Card from 'react-bootstrap/Card';
-import ActionSelect from '../npcs/partials/ActionSelect';
+import ActionForm from './components/ActionForm';
 import { FieldArray } from 'react-final-form-arrays';
 import Col from 'react-bootstrap/Col';
 import AbilityScoreField from './components/AbilityScoreField';
@@ -221,11 +221,11 @@ class Convert2eNPC extends React.Component {
                                { ({ fields }) => (
                                  fields.map((action, index) => (
                                    !fields.value[index] || !fields.value[index]._destroy ? (
-                                     <ActionSelect colWidth={ '10' }
-                                                   action={ action }
-                                                   key={ index }
-                                                   fields={ fields }
-                                                   index={ index } />
+                                     <ActionForm colWidth={ '10' }
+                                                 action={ action }
+                                                 key={ index }
+                                                 fields={ fields }
+                                                 index={ index } />
                                    ) : null
                                  ))
                                ) }

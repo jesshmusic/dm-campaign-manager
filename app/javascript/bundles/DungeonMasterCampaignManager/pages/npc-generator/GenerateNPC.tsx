@@ -20,72 +20,15 @@ import NameFormField from '../npcs/partials/NameFormField';
 import MonsterTypeSelect from '../npcs/partials/MonsterTypeSelect';
 import FormField from '../../components/forms/FormField';
 import Card from 'react-bootstrap/Card';
-import ActionSelect from '../npcs/partials/ActionSelect';
+import ActionForm from './components/ActionForm';
 import { FieldArray } from 'react-final-form-arrays';
 import Col from 'react-bootstrap/Col';
 import AbilityScoreField from './components/AbilityScoreField';
 import Row from 'react-bootstrap/Row';
-import { MonsterProps, NPCGeneratorFormFields, UserProps } from '../../utilities/types';
+import { MonsterProps, NPCGeneratorFormFields, SelectOption } from '../../utilities/types';
 import axios from 'axios';
 import { getNPCObject } from './services';
 import { GiDiceTwentyFacesTwenty } from 'react-icons/gi';
-
-const npcFormDecorator = createDecorator(
-  {
-    field: 'characterAlignment',
-    updates: {
-      alignment: ((value) => value.value)
-    }
-  }, {
-    field: 'hitDiceNumber',
-    updates: {
-      hitDice: (hitDiceNumberValue, allValues: NPCGeneratorFormFields) => (
-        `${hitDiceNumberValue}${allValues.hitDiceValue.value}`
-      )
-    }
-  }, {
-    field: 'hitDiceValue',
-    updates: {
-      hitDice: (hitDiceValueValue, allValues: NPCGeneratorFormFields) => (
-        `${allValues.hitDiceValue}${hitDiceValueValue}`
-      )
-    }
-  }, {
-    field: 'monsterType',
-    updates: {
-      npcVariant: ((value) => (value.value === 'humanoid' ? {
-            label: 'Fighter',
-            value: 'fighter'
-          } : {
-            label: 'Creature',
-            value: 'creature'
-          }
-        )
-      )
-    }
-  }
-);
-
-const longSword = {
-  value: 761,
-  label: 'Longsword',
-  data: {
-    attackBonus: 0,
-    damageBonus: 0,
-    damageDiceCount: 1,
-    damageDiceValue: 8,
-    damageDice2HCount: 1,
-    damageDice2HValue: 10,
-    damageType: 'Slashing',
-    range: 'Martial Melee',
-    rangeNormal: 5,
-    rangeLong: null,
-    thrownRangeLong: null,
-    thrownRangeNormal: null,
-    category: 'Martial',
-    properties: ['Versatile']
-  }
-};
 
 type NPCFormErrors = {
   name?: string;
@@ -98,13 +41,13 @@ type NPCFormErrors = {
   wisdom?: string;
 }
 
-const hitDiceOptions = [
-  { label: 'd4', value: 'd4' },
-  { label: 'd6', value: 'd6' },
-  { label: 'd8', value: 'd8' },
-  { label: 'd10', value: 'd10' },
-  { label: 'd12', value: 'd12' },
-  { label: 'd20', value: 'd20' }
+export const diceOptions: SelectOption[] = [
+  { label: 'd4', value: 4 },
+  { label: 'd6', value: 6 },
+  { label: 'd8', value: 8 },
+  { label: 'd10', value: 10 },
+  { label: 'd12', value: 12 },
+  { label: 'd20', value: 20 }
 ];
 
 type GenerateNPCProps = {
@@ -148,6 +91,42 @@ const GenerateNPC = (props: GenerateNPCProps) => {
     actions: []
   });
   const [validated, setValidated] = React.useState(false);
+
+  const npcFormDecorator = React.useMemo(() => createDecorator(
+    {
+      field: 'characterAlignment',
+      updates: {
+        alignment: ((value) => value.value)
+      }
+    }, {
+      field: 'hitDiceNumber',
+      updates: {
+        hitDice: (hitDiceNumberValue, allValues: NPCGeneratorFormFields) => (
+          `${hitDiceNumberValue}${allValues.hitDiceValue.value}`
+        )
+      }
+    }, {
+      field: 'hitDiceValue',
+      updates: {
+        hitDice: (hitDiceValueValue, allValues: NPCGeneratorFormFields) => (
+          `${allValues.hitDiceValue}${hitDiceValueValue}`
+        )
+      }
+    }, {
+      field: 'monsterType',
+      updates: {
+        npcVariant: ((value) => (value.value === 'humanoid' ? {
+              label: 'Fighter',
+              value: 'fighter'
+            } : {
+              label: 'Creature',
+              value: 'creature'
+            }
+          )
+        )
+      }
+    }
+  ), []);
 
   const handleSubmit = (values) => {
     const monster: MonsterProps = getNPCObject(values);
@@ -279,17 +258,19 @@ const GenerateNPC = (props: GenerateNPCProps) => {
                              {({ fields }) => (
                                fields.map((action, index) => (
                                  !fields.value[index] || !fields.value[index]._destroy ? (
-                                   <ActionSelect colWidth={'10'}
-                                                 action={action}
-                                                 key={index}
-                                                 fields={fields}
-                                                 index={index} />
+                                   <ActionForm name='actions'
+                                               colWidth={'10'}
+                                               action={action}
+                                               key={`action-${index}`}
+                                               push={push}
+                                               onRemove={() => fields.remove(index)}
+                                               index={index} />
                                  ) : null
                                ))
                              )}
                            </FieldArray>
                            <Button type='button'
-                                   onClick={() => push('actions', longSword)}
+                                   onClick={() => push('actions', {})}
                                    variant={'info'}
                                    size='lg'>+</Button>
                          </Col>
@@ -297,21 +278,23 @@ const GenerateNPC = (props: GenerateNPCProps) => {
                        <Row>
                          <Col md={'12'}>
                            <h3>Legendary Actions</h3>
-                           <FieldArray name='actions' className={'mb-3'}>
+                           <FieldArray name='legendaryActions' className={'mb-3'}>
                              {({ fields }) => (
-                               fields.map((action, index) => (
+                               fields.map((legendaryAction, index) => (
                                  !fields.value[index] || !fields.value[index]._destroy ? (
-                                   <ActionSelect colWidth={'10'}
-                                                 action={action}
-                                                 key={index}
-                                                 fields={fields}
-                                                 index={index} />
+                                   <ActionForm name='legendaryActions'
+                                               colWidth={'10'}
+                                               action={legendaryAction}
+                                               key={`legendaryActions-${index}`}
+                                               onRemove={() => fields.remove(index)}
+                                               push={push}
+                                               index={index} />
                                  ) : null
                                ))
                              )}
                            </FieldArray>
                            <Button type='button'
-                                   onClick={() => push('actions', longSword)}
+                                   onClick={() => push('legendaryActions', {})}
                                    variant={'info'}
                                    size='lg'>+</Button>
                          </Col>
@@ -319,21 +302,23 @@ const GenerateNPC = (props: GenerateNPCProps) => {
                        <Row>
                          <Col md={'12'}>
                            <h3>Reactions</h3>
-                           <FieldArray name='actions' className={'mb-3'}>
+                           <FieldArray name='reactions' className={'mb-3'}>
                              {({ fields }) => (
-                               fields.map((action, index) => (
+                               fields.map((reaction, index) => (
                                  !fields.value[index] || !fields.value[index]._destroy ? (
-                                   <ActionSelect colWidth={'10'}
-                                                 action={action}
-                                                 key={index}
-                                                 fields={fields}
-                                                 index={index} />
+                                   <ActionForm name='reactions'
+                                               colWidth={'10'}
+                                               action={reaction}
+                                               key={`reactions-${index}`}
+                                               onRemove={() => fields.remove(index)}
+                                               push={push}
+                                               index={index} />
                                  ) : null
                                ))
                              )}
                            </FieldArray>
                            <Button type='button'
-                                   onClick={() => push('actions', longSword)}
+                                   onClick={() => push('reactions', {})}
                                    variant={'info'}
                                    size='lg'>+</Button>
                          </Col>
@@ -341,21 +326,23 @@ const GenerateNPC = (props: GenerateNPCProps) => {
                        <Row>
                          <Col md={'12'}>
                            <h3>Special Abilities</h3>
-                           <FieldArray name='actions' className={'mb-3'}>
+                           <FieldArray name='specialAbilities' className={'mb-3'}>
                              {({ fields }) => (
-                               fields.map((action, index) => (
+                               fields.map((specialAbility, index) => (
                                  !fields.value[index] || !fields.value[index]._destroy ? (
-                                   <ActionSelect colWidth={'10'}
-                                                 action={action}
-                                                 key={index}
-                                                 fields={fields}
-                                                 index={index} />
+                                   <ActionForm name='specialAbilities'
+                                               colWidth={'10'}
+                                               action={specialAbility}
+                                               key={`specialAbilities-${index}`}
+                                               onRemove={() => fields.remove(index)}
+                                               push={push}
+                                               index={index} />
                                  ) : null
                                ))
                              )}
                            </FieldArray>
                            <Button type='button'
-                                   onClick={() => push('actions', longSword)}
+                                   onClick={() => push('specialAbilities', {})}
                                    variant={'info'}
                                    size='lg'>+</Button>
                          </Col>

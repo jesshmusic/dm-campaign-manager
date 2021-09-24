@@ -8,6 +8,7 @@ import { Field, FieldRenderProps } from 'react-final-form';
 import Form from 'react-bootstrap/Form';
 import Select from 'react-select';
 import CreatableSelect from 'react-select/creatable';
+import { SelectOption } from '../../utilities/types';
 
 export type SelectProps = {
   colWidth: string;
@@ -19,7 +20,7 @@ export type SelectProps = {
   isMulti?: boolean;
   label: string;
   name: string;
-  options?: [any];
+  options?: SelectOption[];
   placeholder?: string;
   value?: any;
 }
