@@ -28,6 +28,7 @@ import Row from 'react-bootstrap/Row';
 import { MonsterProps, UserProps } from '../../utilities/types';
 import axios from 'axios';
 import { getNPCObject } from './services';
+import { GiDiceTwentyFacesTwenty } from 'react-icons/gi';
 
 const npcFormDecorator = createDecorator(
   {
@@ -385,7 +386,9 @@ const GenerateNPC = (props: GenerateNPCProps) => {
                        </Row>
                        <Row>
                          <ButtonGroup aria-label='Character actions'>
-                           <Button type='submit' disabled={submitting}>Generate NPC</Button>
+                           <Button type='submit' disabled={submitting}>
+                             <span>Generate NPC</span> <GiDiceTwentyFacesTwenty size={30} className={'ms-3'} />
+                           </Button>
                            <Button type='button' onClick={form.reset} disabled={submitting || pristine}
                                    variant={'secondary'}>Reset</Button>
                          </ButtonGroup>

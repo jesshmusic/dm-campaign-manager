@@ -14,6 +14,7 @@ import rest from '../../actions/api';
 import Convert2eNPC from './Convert2eNPC';
 import Accordion from 'react-bootstrap/Accordion';
 import GenerateCommoner from '../npcs/partials/GenerateCommoner';
+import { GiBlacksmith, GiOgre, GiSpikedDragonHead, SiConvertio } from 'react-icons/all';
 
 const NpcGenerator = (props) => {
   const handleGenerateCommoner = (gender, race) => {
@@ -39,19 +40,19 @@ const NpcGenerator = (props) => {
             ) : null }
             <Accordion defaultActiveKey='0' flush>
               <Accordion.Item eventKey={ '0' }>
-                <Accordion.Header>Commoner</Accordion.Header>
+                <Accordion.Header><GiBlacksmith className={ 'me-2' } size={ 30 } />Commoner</Accordion.Header>
                 <Accordion.Body>
                   <GenerateCommoner onFormSubmit={ handleGenerateCommoner } />
                 </Accordion.Body>
               </Accordion.Item>
               <Accordion.Item eventKey={ '1' }>
-                <Accordion.Header>Generate NPC</Accordion.Header>
+                <Accordion.Header><GiSpikedDragonHead className={ 'me-2' } size={ 30 } />Generate NPC</Accordion.Header>
                 <Accordion.Body>
                   <GenerateNPC />
                 </Accordion.Body>
               </Accordion.Item>
               <Accordion.Item eventKey={ '2' }>
-                <Accordion.Header>Convert 2nd Edition</Accordion.Header>
+                <Accordion.Header><SiConvertio className={ 'me-2' } size={ 30 } />Convert 2nd Edition</Accordion.Header>
                 <Accordion.Body>
                   <Convert2eNPC />
                 </Accordion.Body>
