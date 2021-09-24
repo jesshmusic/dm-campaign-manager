@@ -2,21 +2,21 @@ import createDecorator from 'final-form-calculate';
 import snakecaseKeys from 'snakecase-keys';
 
 export const toSnakeCase = (str) => (str && str
-  .match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g)
-  .map((x) => x.toLowerCase())
-  .join('_')
+    .match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g)
+    .map((x) => x.toLowerCase())
+    .join('_')
 );
 
 export const filterOptions = (results) => results.results.map((nextItem) => (
-  {value: nextItem.id, label: nextItem.name}
+  { value: nextItem.id, label: nextItem.name }
 ));
 
 export const filterOptionsWithData = (results) => results.results.map((nextItem) => (
-  {value: nextItem.id, label: nextItem.name, data: nextItem}
+  { value: nextItem.id, label: nextItem.name, data: nextItem }
 ));
 
 export const filterSnakeCaseOptionsWithData = (results) => results.results.map((nextItem) => (
-  {value: toSnakeCase(nextItem.name), label: nextItem.name}
+  { value: toSnakeCase(nextItem.name), label: nextItem.name }
 ));
 
 const AbilityScoreModifier = (abilityScore) => {
@@ -24,53 +24,53 @@ const AbilityScoreModifier = (abilityScore) => {
     1: -5, 2: -4, 3: -4, 4: -3, 5: -3, 6: -2, 7: -2,
     8: -1, 9: -1, 10: 0, 11: 0, 12: 1, 13: 1, 14: 2, 15: 2,
     16: 3, 17: 3, 18: 4, 19: 4, 20: 5, 21: 5, 22: 6, 23: 6,
-    24: 7, 25: 7, 26: 8, 27: 8, 28: 9, 29: 9, 30: 10, 31: 10,
+    24: 7, 25: 7, 26: 8, 27: 8, 28: 9, 29: 9, 30: 10, 31: 10
   };
 
   return mods[abilityScore];
 };
 
 export const alignmentOptions = [
-  {value: 'Lawful Good', label: 'Lawful Good'},
-  {value: 'Neutral Good', label: 'Neutral Good'},
-  {value: 'Chaotic Good', label: 'Chaotic Good'},
-  {value: 'Lawful Neutral', label: 'Lawful Neutral'},
-  {value: 'Neutral', label: 'Neutral'},
-  {value: 'Chaotic Neutral', label: 'Chaotic Neutral'},
-  {value: 'Lawful Evil', label: 'Lawful Evil'},
-  {value: 'Neutral Evil', label: 'Neutral Evil'},
-  {value: 'Chaotic Evil', label: 'Chaotic Evil'},
+  { value: 'Lawful Good', label: 'Lawful Good' },
+  { value: 'Neutral Good', label: 'Neutral Good' },
+  { value: 'Chaotic Good', label: 'Chaotic Good' },
+  { value: 'Lawful Neutral', label: 'Lawful Neutral' },
+  { value: 'Neutral', label: 'Neutral' },
+  { value: 'Chaotic Neutral', label: 'Chaotic Neutral' },
+  { value: 'Lawful Evil', label: 'Lawful Evil' },
+  { value: 'Neutral Evil', label: 'Neutral Evil' },
+  { value: 'Chaotic Evil', label: 'Chaotic Evil' }
 ];
 
 export const npcVariantOptions = [
-  {value: 'fighter', label: 'Fighter'},
-  {value: 'caster_wizard', label: 'Caster - Wizard'},
-  {value: 'caster_cleric', label: 'Caster - Cleric'},
+  { value: 'fighter', label: 'Fighter' },
+  { value: 'caster_wizard', label: 'Caster - Wizard' },
+  { value: 'caster_cleric', label: 'Caster - Cleric' }
 ];
 
 export const npcSizeOptions = [
-  {value: 'tiny', label: 'Tiny'},
-  {value: 'small', label: 'Small'},
-  {value: 'medium', label: 'Medium'},
-  {value: 'large', label: 'Large'},
-  {value: 'huge', label: 'Huge'},
-  {value: 'gargantuan', label: 'Gargantuan'},
+  { value: 'tiny', label: 'Tiny' },
+  { value: 'small', label: 'Small' },
+  { value: 'medium', label: 'Medium' },
+  { value: 'large', label: 'Large' },
+  { value: 'huge', label: 'Huge' },
+  { value: 'gargantuan', label: 'Gargantuan' }
 ];
 
 export const getChallengeRatingOptions = () => {
   const crs = [
-    {value: '0', label: '0'},
-    {value: '1/8', label: '1/8'},
-    {value: '1/4', label: '1/4'},
-    {value: '1/2', label: '1/2'},
+    { value: '0', label: '0' },
+    { value: '1/8', label: '1/8' },
+    { value: '1/4', label: '1/4' },
+    { value: '1/2', label: '1/2' }
   ];
   for (let i = 1; i < 31; i++) {
-    crs.push({value: `${i}`, label: `${i}`});
+    crs.push({ value: `${ i }`, label: `${ i }` });
   }
   return crs;
 };
 
-const CalculateArmorClass = ({armor, armorClassModifier, dexterity, shield}) => {
+const CalculateArmorClass = ({ armor, armorClassModifier, dexterity, shield }) => {
   if (armor && armor.data.armorDexBonus && shield) {
     return armor.data.armorClass
       + armor.data.armorClassBonus
@@ -102,13 +102,17 @@ const CalculateArmorClass = ({armor, armorClassModifier, dexterity, shield}) => 
 
 const calculateProficiency = (totalLevel) => {
   switch (true) {
-    case (totalLevel < 5):
+    case (totalLevel < 5
+    ):
       return 2;
-    case (totalLevel < 9):
+    case (totalLevel < 9
+    ):
       return 3;
-    case (totalLevel < 13):
+    case (totalLevel < 13
+    ):
       return 4;
-    case (totalLevel < 17):
+    case (totalLevel < 17
+    ):
       return 5;
     default:
       return 6;
@@ -119,7 +123,7 @@ export const WeaponState = {
   DUAL: 'Dual Wield',
   SHIELD: 'Main hand and shield',
   TWOHAND: 'Two handed weapon',
-  SINGLE: 'Main hand only',
+  SINGLE: 'Main hand only'
 };
 
 export const SetupCharacterState = (newChar) => {
@@ -129,30 +133,33 @@ export const SetupCharacterState = (newChar) => {
     name: newChar.name,
     characterAlignment: {
       value: newChar.alignment,
-      label: newChar.alignment,
+      label: newChar.alignment
     },
     background: newChar.background,
     description: newChar.description,
     languages: newChar.languages,
     role: newChar.role,
     dndClasses: newChar.characterClasses.map((dndClass) => ({
-      id: dndClass.id,
-      dndClass: {
-        value: dndClass.dndClassId ? dndClass.dndClassId : 153,
-        label: dndClass.dndClass ? dndClass.dndClass : 'Fighter',
-      },
-      level: dndClass.level,
-    })),
+        id: dndClass.id,
+        dndClass: {
+          value: dndClass.dndClassId ? dndClass.dndClassId : 153,
+          label: dndClass.dndClass ? dndClass.dndClass : 'Fighter'
+        },
+        level: dndClass.level
+      }
+    )),
     characterItems: newChar.inventory ? (newChar.inventory.map((item) => ({
-      id: item.id,
-      quantity: item.quantity,
-      carrying: item.carrying,
-      label: 'Item',
-      item: {
-        value: item.itemId,
-        label: item.name,
-      },
-    }))) : [],
+          id: item.id,
+          quantity: item.quantity,
+          carrying: item.carrying,
+          label: 'Item',
+          item: {
+            value: item.itemId,
+            label: item.name
+          }
+        }
+      ))
+    ) : [],
     totalLevel: newChar.totalLevel,
     armorClass: newChar.armorClass,
     armorClassModifier: newChar.armorClassModifier,
@@ -178,7 +185,7 @@ export const SetupCharacterState = (newChar) => {
     platinumPieces: newChar.platinumPieces,
     applyRaceMods: false,
     characterSpellsAttributes: [],
-    guildOptions: newChar.campaign.guilds,
+    guildOptions: newChar.campaign.guilds
   };
 
   if (newChar.weapon2h) {
@@ -198,7 +205,7 @@ export const SetupCharacterState = (newChar) => {
     constitution: newChar.constitution,
     intelligence: newChar.intelligence,
     wisdom: newChar.wisdom,
-    charisma: newChar.charisma,
+    charisma: newChar.charisma
   };
 
   // Calculate AC
@@ -206,7 +213,7 @@ export const SetupCharacterState = (newChar) => {
     armor: charObject.armor,
     armorClassModifier: parseInt(charObject.armorClassModifier, 10) || 0,
     dexterity: charObject.dexterity || 10,
-    shield: charObject.shield,
+    shield: charObject.shield
   });
 
   if (newChar.armor) {
@@ -222,8 +229,8 @@ export const SetupCharacterState = (newChar) => {
         label: 'Armor',
         item: {
           value: nextArmor.armorId,
-          label: nextArmor.name,
-        },
+          label: nextArmor.name
+        }
       });
     });
   }
@@ -237,8 +244,8 @@ export const SetupCharacterState = (newChar) => {
         label: 'One-handed Weapon',
         item: {
           value: nextWeapon.weaponId,
-          label: nextWeapon.name,
-        },
+          label: nextWeapon.name
+        }
       });
     });
   }
@@ -252,8 +259,8 @@ export const SetupCharacterState = (newChar) => {
         label: 'Two-handed Weapon',
         item: {
           value: nextWeapon.weaponId,
-          label: nextWeapon.name,
-        },
+          label: nextWeapon.name
+        }
       });
     });
   }
@@ -263,7 +270,7 @@ export const SetupCharacterState = (newChar) => {
     charObject.characterRace = {
       value: newChar.race.id,
       label: newChar.race.name,
-      data: newChar.race,
+      data: newChar.race
     };
   } else {
     charObject.characterRace = {
@@ -278,57 +285,57 @@ export const SetupCharacterState = (newChar) => {
         constitutionModifier: 1,
         intelligenceModifier: 1,
         wisdomModifier: 1,
-        charismaModifier: 1,
-      },
+        charismaModifier: 1
+      }
     };
   }
 
   if (newChar.guild) {
     charObject.guild = {
       value: newChar.guild.id,
-      label: newChar.guild.name,
+      label: newChar.guild.name
     };
   }
 
   newChar.characterClasses.forEach((nextClass) => {
     if (nextClass.spellsCantrips) {
-      charObject[`spellsCantrips${nextClass.dndClass}`] = nextClass.spellsCantrips;
+      charObject[`spellsCantrips${ nextClass.dndClass }`] = nextClass.spellsCantrips;
       nextClass.spellsCantrips.forEach((spell) => charObject.characterSpellsAttributes.push(parseSpell(spell)));
     }
     if (nextClass.spellsLevel1) {
-      charObject[`spellsLevel1${nextClass.dndClass}`] = nextClass.spellsLevel1;
+      charObject[`spellsLevel1${ nextClass.dndClass }`] = nextClass.spellsLevel1;
       nextClass.spellsLevel1.forEach((spell) => charObject.characterSpellsAttributes.push(parseSpell(spell)));
     }
     if (nextClass.spellsLevel2) {
-      charObject[`spellsLevel2${nextClass.dndClass}`] = nextClass.spellsLevel2;
+      charObject[`spellsLevel2${ nextClass.dndClass }`] = nextClass.spellsLevel2;
       nextClass.spellsLevel2.forEach((spell) => charObject.characterSpellsAttributes.push(parseSpell(spell)));
     }
     if (nextClass.spellsLevel3) {
-      charObject[`spellsLevel3${nextClass.dndClass}`] = nextClass.spellsLevel3;
+      charObject[`spellsLevel3${ nextClass.dndClass }`] = nextClass.spellsLevel3;
       nextClass.spellsLevel3.forEach((spell) => charObject.characterSpellsAttributes.push(parseSpell(spell)));
     }
     if (nextClass.spellsLevel4) {
-      charObject[`spellsLevel4${nextClass.dndClass}`] = nextClass.spellsLevel4;
+      charObject[`spellsLevel4${ nextClass.dndClass }`] = nextClass.spellsLevel4;
       nextClass.spellsLevel4.forEach((spell) => charObject.characterSpellsAttributes.push(parseSpell(spell)));
     }
     if (nextClass.spellsLevel5) {
-      charObject[`spellsLevel5${nextClass.dndClass}`] = nextClass.spellsLevel5;
+      charObject[`spellsLevel5${ nextClass.dndClass }`] = nextClass.spellsLevel5;
       nextClass.spellsLevel5.forEach((spell) => charObject.characterSpellsAttributes.push(parseSpell(spell)));
     }
     if (nextClass.spellsLevel6) {
-      charObject[`spellsLevel6${nextClass.dndClass}`] = nextClass.spellsLevel6;
+      charObject[`spellsLevel6${ nextClass.dndClass }`] = nextClass.spellsLevel6;
       nextClass.spellsLevel6.forEach((spell) => charObject.characterSpellsAttributes.push(parseSpell(spell)));
     }
     if (nextClass.spellsLevel7) {
-      charObject[`spellsLevel7${nextClass.dndClass}`] = nextClass.spellsLevel7;
+      charObject[`spellsLevel7${ nextClass.dndClass }`] = nextClass.spellsLevel7;
       nextClass.spellsLevel7.forEach((spell) => charObject.characterSpellsAttributes.push(parseSpell(spell)));
     }
     if (nextClass.spellsLevel8) {
-      charObject[`spellsLevel8${nextClass.dndClass}`] = nextClass.spellsLevel8;
+      charObject[`spellsLevel8${ nextClass.dndClass }`] = nextClass.spellsLevel8;
       nextClass.spellsLevel8.forEach((spell) => charObject.characterSpellsAttributes.push(parseSpell(spell)));
     }
     if (nextClass.spellsLevel9) {
-      charObject[`spellsLevel9${nextClass.dndClass}`] = nextClass.spellsLevel9;
+      charObject[`spellsLevel9${ nextClass.dndClass }`] = nextClass.spellsLevel9;
       nextClass.spellsLevel9.forEach((spell) => charObject.characterSpellsAttributes.push(parseSpell(spell)));
     }
   });
@@ -347,44 +354,51 @@ export const SetupCharacterState = (newChar) => {
 };
 
 const parseSpell = (spell) => ({
-  id: spell.data.characterSpellId ? spell.data.characterSpellId : null,
-  isPrepared: spell.data.isPrepared,
-  spellClass: spell.data.spellClass,
-  spellId: spell.value,
-});
+    id: spell.data.characterSpellId ? spell.data.characterSpellId : null,
+    isPrepared: spell.data.isPrepared,
+    spellClass: spell.data.spellClass,
+    spellId: spell.value
+  }
+);
 
 const abilityScoreUpdates = {
   strength: (value, allValues) => (allValues.applyRaceMods ? (
-    allValues.baseAbilities.strength + allValues.characterRace.data.strengthModifier
-  ) : (
-    allValues.baseAbilities.strength
-  )),
+      allValues.baseAbilities.strength + allValues.characterRace.data.strengthModifier
+    ) : (
+      allValues.baseAbilities.strength
+    )
+  ),
   dexterity: (value, allValues) => (allValues.applyRaceMods ? (
-    allValues.baseAbilities.dexterity + allValues.characterRace.data.dexterityModifier
-  ) : (
-    allValues.baseAbilities.dexterity
-  )),
+      allValues.baseAbilities.dexterity + allValues.characterRace.data.dexterityModifier
+    ) : (
+      allValues.baseAbilities.dexterity
+    )
+  ),
   constitution: (value, allValues) => (allValues.applyRaceMods ? (
-    allValues.baseAbilities.constitution + allValues.characterRace.data.constitutionModifier
-  ) : (
-    allValues.baseAbilities.constitution
-  )),
+      allValues.baseAbilities.constitution + allValues.characterRace.data.constitutionModifier
+    ) : (
+      allValues.baseAbilities.constitution
+    )
+  ),
   intelligence: (value, allValues) => (allValues.applyRaceMods ? (
-    allValues.baseAbilities.intelligence + allValues.characterRace.data.intelligenceModifier
-  ) : (
-    allValues.baseAbilities.intelligence
-  )),
+      allValues.baseAbilities.intelligence + allValues.characterRace.data.intelligenceModifier
+    ) : (
+      allValues.baseAbilities.intelligence
+    )
+  ),
   wisdom: (value, allValues) => (allValues.applyRaceMods ? (
-    allValues.baseAbilities.wisdom + allValues.characterRace.data.wisdomModifier
-  ) : (
-    allValues.baseAbilities.wisdom
-  )),
+      allValues.baseAbilities.wisdom + allValues.characterRace.data.wisdomModifier
+    ) : (
+      allValues.baseAbilities.wisdom
+    )
+  ),
   charisma: (value, allValues) => (allValues.applyRaceMods ? (
-    allValues.baseAbilities.charisma + allValues.characterRace.data.charismaModifier
-  ) : (
-    allValues.baseAbilities.charisma
-  )),
-  raceId: (value) => value.value,
+      allValues.baseAbilities.charisma + allValues.characterRace.data.charismaModifier
+    ) : (
+      allValues.baseAbilities.charisma
+    )
+  ),
+  raceId: (value) => value.value
 };
 
 export const defaultFighterClass = {
@@ -398,39 +412,45 @@ export const defaultFighterClass = {
       slug: 'fighter',
       userId: null,
       spellAbility: null,
-      primaryAbilities: [ 'Strength' ],
+      primaryAbilities: ['Strength'],
       savingThrowAbilities: ['Strength', 'Constitution'],
-      proficiencies:[
+      proficiencies: [
         {
-          id:4,
+          id: 4,
           name: 'All armor',
-          profType: 'Armor',
+          profType: 'Armor'
         }, {
           id: 18,
           name: 'Shields',
-          'profType':'Armor'},
-        {'id':19, 'name':'Simple weapons', 'profType':'Weapons'},
-        {'id':20, 'name':'Martial weapons', 'profType':'Weapons'},
+          'profType': 'Armor'
+        },
+        { 'id': 19, 'name': 'Simple weapons', 'profType': 'Weapons' },
+        { 'id': 20, 'name': 'Martial weapons', 'profType': 'Weapons' }
       ],
-      'proficiencyChoices': [{'id':118, 'name':'Fighter 0', 'numChoices':2, 'profChoiceType':'proficiencies',
-        'proficiencies':[
-          {'id':105, 'name':'Skill: Acrobatics', 'profType':'Skills'},
-          {'id':106, 'name':'Skill: Animal Handling', 'profType':'Skills'},
-          {'id':108, 'name':'Skill: Athletics', 'profType':'Skills'},
-          {'id':110, 'name':'Skill: History', 'profType':'Skills'},
-          {'id':111, 'name':'Skill: Insight', 'profType':'Skills'},
-          {'id':112, 'name':'Skill: Intimidation', 'profType':'Skills'},
-          {'id':116, 'name':'Skill: Perception', 'profType':'Skills'},
-          {'id':122, 'name':'Skill: Survival', 'profType':'Skills'},
-        ]}],
-      'url':'http://127.0.0.1:3000/v1/dnd_classes/fighter.json'}},
-  level: 1,
+      'proficiencyChoices': [{
+        'id': 118, 'name': 'Fighter 0', 'numChoices': 2, 'profChoiceType': 'proficiencies',
+        'proficiencies': [
+          { 'id': 105, 'name': 'Skill: Acrobatics', 'profType': 'Skills' },
+          { 'id': 106, 'name': 'Skill: Animal Handling', 'profType': 'Skills' },
+          { 'id': 108, 'name': 'Skill: Athletics', 'profType': 'Skills' },
+          { 'id': 110, 'name': 'Skill: History', 'profType': 'Skills' },
+          { 'id': 111, 'name': 'Skill: Insight', 'profType': 'Skills' },
+          { 'id': 112, 'name': 'Skill: Intimidation', 'profType': 'Skills' },
+          { 'id': 116, 'name': 'Skill: Perception', 'profType': 'Skills' },
+          { 'id': 122, 'name': 'Skill: Survival', 'profType': 'Skills' }
+        ]
+      }],
+      'url': 'http://127.0.0.1:3000/v1/dnd_classes/fighter.json'
+    }
+  },
+  level: 1
 };
 
-export const characterCalculations = createDecorator(
+export const characterCalculations = createDecorator
+(
   {
     field: 'applyRaceMods',
-    updates: abilityScoreUpdates,
+    updates: abilityScoreUpdates
   },
   {
     field: 'armorClassModifier',
@@ -439,9 +459,9 @@ export const characterCalculations = createDecorator(
         armor: allValues.armor,
         armorClassModifier: parseInt(armorClassModifier, 10) || 0,
         dexterity: allValues.dexterity || 10,
-        shield: allValues.shield,
-      }),
-    },
+        shield: allValues.shield
+      })
+    }
   },
   {
     field: 'strength',
@@ -452,8 +472,8 @@ export const characterCalculations = createDecorator(
           score -= allValues.characterRace.data.strengthModifier;
         }
         return score;
-      },
-    },
+      }
+    }
   },
   {
     field: 'dexterity',
@@ -462,7 +482,7 @@ export const characterCalculations = createDecorator(
         armor: allValues.armor,
         armorClassModifier: parseInt(allValues.armorClassModifier, 10) || 0,
         dexterity: newValue || 10,
-        shield: allValues.shield,
+        shield: allValues.shield
       }),
       'baseAbilities.dexterity': (newValue, allValues) => {
         let score = parseInt(newValue, 10);
@@ -470,8 +490,8 @@ export const characterCalculations = createDecorator(
           score -= allValues.characterRace.data.dexterityModifier;
         }
         return score;
-      },
-    },
+      }
+    }
   },
   {
     field: 'constitution',
@@ -482,8 +502,8 @@ export const characterCalculations = createDecorator(
           score -= allValues.characterRace.data.constitutionModifier;
         }
         return score;
-      },
-    },
+      }
+    }
   },
   {
     field: 'intelligence',
@@ -494,8 +514,8 @@ export const characterCalculations = createDecorator(
           score -= allValues.characterRace.data.intelligenceModifier;
         }
         return score;
-      },
-    },
+      }
+    }
   },
   {
     field: 'wisdom',
@@ -506,8 +526,8 @@ export const characterCalculations = createDecorator(
           score -= allValues.characterRace.data.wisdomModifier;
         }
         return score;
-      },
-    },
+      }
+    }
   },
   {
     field: 'charisma',
@@ -518,8 +538,8 @@ export const characterCalculations = createDecorator(
           score -= allValues.characterRace.data.charismaModifier;
         }
         return score;
-      },
-    },
+      }
+    }
   },
   {
     field: 'armor',
@@ -528,9 +548,10 @@ export const characterCalculations = createDecorator(
         armor,
         armorClassModifier: parseInt(allValues.armorClassModifier, 10) || 0,
         dexterity: allValues.dexterity || 10,
-        shield: allValues.shield,
+        shield: allValues.shield
       }),
-      armorId: (characterArmor) => (characterArmor ? characterArmor.value : null),
+      armorId: (characterArmor) => (characterArmor ? characterArmor.value : null
+      ),
       characterItems: (armor, allValues, prevValues) => {
         const newItems = allValues.characterItems;
         if (armor && !newItems.find((nextItem) => nextItem.item.value === armor.value)) {
@@ -540,8 +561,8 @@ export const characterCalculations = createDecorator(
             label: 'Armor',
             item: {
               value: armor.value,
-              label: armor.label,
-            },
+              label: armor.label
+            }
           });
         } else if (!armor && prevValues.armor) {
           const removeIndex = newItems.map((item) => item.item.value).indexOf(prevValues.armor.value);
@@ -550,8 +571,8 @@ export const characterCalculations = createDecorator(
           }
         }
         return newItems;
-      },
-    },
+      }
+    }
   },
   {
     field: 'shield',
@@ -560,7 +581,7 @@ export const characterCalculations = createDecorator(
         armor: allValues.armor,
         armorClassModifier: parseInt(allValues.armorClassModifier, 10) || 0,
         dexterity: allValues.dexterity || 10,
-        shield,
+        shield
       }),
       characterItems: (shield, allValues, prevValues) => {
         const newItems = allValues.characterItems;
@@ -571,8 +592,8 @@ export const characterCalculations = createDecorator(
             label: 'Shield',
             item: {
               value: shield.value,
-              label: shield.label,
-            },
+              label: shield.label
+            }
           });
         } else if (!shield && prevValues.shield) {
           const removeIndex = newItems.map((item) => item.item.value).indexOf(prevValues.shield.value);
@@ -581,8 +602,8 @@ export const characterCalculations = createDecorator(
           }
         }
         return newItems;
-      },
-    },
+      }
+    }
   },
   {
     field: 'weaponLh',
@@ -596,8 +617,8 @@ export const characterCalculations = createDecorator(
             label: 'One-handed Weapon',
             item: {
               value: weapon.value,
-              label: weapon.label,
-            },
+              label: weapon.label
+            }
           });
         } else if (!weapon && prevValues.weaponLh) {
           const removeIndex = newItems.map((item) => item.item.value).indexOf(prevValues.weaponLh.value);
@@ -606,8 +627,8 @@ export const characterCalculations = createDecorator(
           }
         }
         return newItems;
-      },
-    },
+      }
+    }
   },
   {
     field: 'weaponRh',
@@ -621,8 +642,8 @@ export const characterCalculations = createDecorator(
             label: 'One-handed Weapon',
             item: {
               value: weapon.value,
-              label: weapon.label,
-            },
+              label: weapon.label
+            }
           });
         } else if (!weapon && prevValues.weaponRh) {
           const removeIndex = newItems.map((item) => item.item.value).indexOf(prevValues.weaponRh.value);
@@ -631,8 +652,8 @@ export const characterCalculations = createDecorator(
           }
         }
         return newItems;
-      },
-    },
+      }
+    }
   },
   {
     field: 'weapon2h',
@@ -646,8 +667,8 @@ export const characterCalculations = createDecorator(
             label: 'Two-handed Weapon',
             item: {
               value: weapon.value,
-              label: weapon.label,
-            },
+              label: weapon.label
+            }
           });
         } else if (!weapon && prevValues.weapon2h) {
           const removeIndex = newItems.map((item) => item.item.value).indexOf(prevValues.weapon2h.value);
@@ -656,12 +677,12 @@ export const characterCalculations = createDecorator(
           }
         }
         return newItems;
-      },
-    },
+      }
+    }
   },
   {
     field: 'characterRace',
-    updates: abilityScoreUpdates,
+    updates: abilityScoreUpdates
   },
   {
     field: 'dndClasses',
@@ -679,7 +700,7 @@ export const characterCalculations = createDecorator(
         newValue.forEach((nextClass) => {
           const charClass = {
             level: nextClass.level,
-            dndClassId: nextClass.dndClass.value,
+            dndClassId: nextClass.dndClass.value
           };
           if (nextClass.id) {
             charClass.id = nextClass.id;
@@ -690,8 +711,8 @@ export const characterCalculations = createDecorator(
           newCharacterClassesAttributes.push(charClass);
         });
         return newCharacterClassesAttributes;
-      },
-    },
+      }
+    }
   },
   {
     field: /spells*/,
@@ -706,8 +727,8 @@ export const characterCalculations = createDecorator(
           });
         }
         return allValues.characterSpellsAttributes;
-      },
-    },
+      }
+    }
   },
   {
     field: 'weaponState',
@@ -739,77 +760,12 @@ export const characterCalculations = createDecorator(
           return allValues.weapon2h;
         }
         return null;
-      },
-    },
-  },
+      }
+    }
+  }
 );
 
 export const getSpellLevelArray = (spells) => spells.map((spell) => spell.value);
-
-export const getNPCObject = (values) => {
-  const returnChar = {
-    name: values.name,
-    alignment: values.alignment,
-    challengeRating: values.challengeRating.value,
-    npcVariant: values.npcVariant.value,
-    monsterType: values.monsterType.value,
-    monsterSubtype: values.monsterSubtype,
-    size: values.size.value,
-    strength: values.strength,
-    dexterity: values.dexterity,
-    constitution: values.constitution,
-    intelligence: values.intelligence,
-    wisdom: values.wisdom,
-    weapon: values.weapon,
-    charisma: values.charisma,
-    numberOfAttacks: values.numberOfAttacks,
-    actions: values.actions,
-    ...(values.spellsCantrips && {spellsCantrips: getSpellLevelArray(values.spellsCantrips)}),
-    ...(values.spellsLevel1 && {spellsLevel1: getSpellLevelArray(values.spellsLevel1)}),
-    ...(values.spellsLevel2 && {spellsLevel2: getSpellLevelArray(values.spellsLevel2)}),
-    ...(values.spellsLevel3 && {spellsLevel3: getSpellLevelArray(values.spellsLevel3)}),
-    ...(values.spellsLevel4 && {spellsLevel4: getSpellLevelArray(values.spellsLevel4)}),
-    ...(values.spellsLevel5 && {spellsLevel5: getSpellLevelArray(values.spellsLevel5)}),
-    ...(values.spellsLevel6 && {spellsLevel6: getSpellLevelArray(values.spellsLevel6)}),
-    ...(values.spellsLevel7 && {spellsLevel7: getSpellLevelArray(values.spellsLevel7)}),
-    ...(values.spellsLevel8 && {spellsLevel8: getSpellLevelArray(values.spellsLevel8)}),
-    ...(values.spellsLevel9 && {spellsLevel9: getSpellLevelArray(values.spellsLevel9)}),
-  };
-  return snakecaseKeys(returnChar, {exclude: ['_destroy']});
-};
-
-export const get2eNPCObject = (values) => {
-  const returnChar = {
-    name: values.name,
-    race: values.characterRace.value,
-    dndClasses: values.dndClasses,
-    thaco: values.thaco,
-    armorClass: values.armorClass,
-    hitPoints: values.hitPoints,
-    strength: values.strength,
-    dexterity: values.dexterity,
-    constitution: values.constitution,
-    intelligence: values.intelligence,
-    wisdom: values.wisdom,
-    weapon: values.weapon,
-    charisma: values.charisma,
-    alignment: values.alignment,
-    numberOfAttacks: values.numberOfAttacks,
-    speed: values.speed,
-    actions: values.actions,
-    ...(values.spellsCantrips && {spellsCantrips: getSpellLevelArray(values.spellsCantrips)}),
-    ...(values.spellsLevel1 && {spellsLevel1: getSpellLevelArray(values.spellsLevel1)}),
-    ...(values.spellsLevel2 && {spellsLevel2: getSpellLevelArray(values.spellsLevel2)}),
-    ...(values.spellsLevel3 && {spellsLevel3: getSpellLevelArray(values.spellsLevel3)}),
-    ...(values.spellsLevel4 && {spellsLevel4: getSpellLevelArray(values.spellsLevel4)}),
-    ...(values.spellsLevel5 && {spellsLevel5: getSpellLevelArray(values.spellsLevel5)}),
-    ...(values.spellsLevel6 && {spellsLevel6: getSpellLevelArray(values.spellsLevel6)}),
-    ...(values.spellsLevel7 && {spellsLevel7: getSpellLevelArray(values.spellsLevel7)}),
-    ...(values.spellsLevel8 && {spellsLevel8: getSpellLevelArray(values.spellsLevel8)}),
-    ...(values.spellsLevel9 && {spellsLevel9: getSpellLevelArray(values.spellsLevel9)}),
-  };
-  return snakecaseKeys(returnChar, {exclude: ['_destroy']});
-};
 
 export const getCharacterObject = (values) => {
   const returnChar = {
@@ -843,7 +799,7 @@ export const getCharacterObject = (values) => {
     characterClassesAttributes: values.dndClasses.map((dndClass) => {
       const returnClass = {
         level: dndClass.level,
-        dnd_class_id: dndClass.dndClass.value,
+        dnd_class_id: dndClass.dndClass.value
       };
       if (dndClass.id) {
         returnClass.id = dndClass.id;
@@ -857,7 +813,7 @@ export const getCharacterObject = (values) => {
       const returnItem = {
         quantity: item.quantity,
         carrying: item.carrying,
-        item_id: item.item.value,
+        item_id: item.item.value
       };
       if (item.id) {
         returnItem.id = item.id;
@@ -867,11 +823,11 @@ export const getCharacterObject = (values) => {
       }
       return returnItem;
     }),
-    characterSpellsAttributes: values.characterSpellsAttributes,
+    characterSpellsAttributes: values.characterSpellsAttributes
   };
   if (values.id) {
     returnChar.id = values.id;
   }
 
-  return snakecaseKeys(returnChar, {exclude: ['_destroy']});
+  return snakecaseKeys(returnChar, { exclude: ['_destroy'] });
 };

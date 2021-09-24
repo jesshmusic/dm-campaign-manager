@@ -86,7 +86,7 @@ module Admin::V1
     end
 
     def generate_npc
-      render json: { npc: NpcGenerator.generate_npc(params) }
+      render json: { npc: NpcGenerator.generate_npc(params, @current_user) }
     end
 
     def convert_2e_npc

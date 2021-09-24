@@ -4,39 +4,40 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import rest from '../../../actions/api';
-import {connect} from 'react-redux';
+import rest from '../../actions/api';
+import { connect } from 'react-redux';
 import arrayMutators from 'final-form-arrays';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import {Form as FinalForm} from 'react-final-form';
+import { Form as FinalForm } from 'react-final-form';
 import createDecorator from 'final-form-calculate';
 import snakecaseKeys from 'snakecase-keys';
 
 import {
-  alignmentOptions, defaultFighterClass, get2eNPCObject,
-} from '../../../utilities/character-utilities';
-import FormSelect from '../../../components/forms/FormSelect';
-import FormField from '../../../components/forms/FormField';
+  alignmentOptions, defaultFighterClass
+} from '../../utilities/character-utilities';
+import FormSelect from '../../components/forms/FormSelect';
+import FormField from '../../components/forms/FormField';
 import Card from 'react-bootstrap/Card';
-import ActionSelect from './ActionSelect';
-import {FieldArray} from 'react-final-form-arrays';
+import ActionSelect from '../npcs/partials/ActionSelect';
+import { FieldArray } from 'react-final-form-arrays';
 import Col from 'react-bootstrap/Col';
-import AbilityScoreField from './AbilityScoreField';
-import CharacterClassFields from './CharacterClassFields';
-import RaceSelect from './RaceSelect';
-import DndClassSpellSelect from './spell-fields/DndClassSpellSelect';
+import AbilityScoreField from './components/AbilityScoreField';
+import CharacterClassFields from '../npcs/partials/CharacterClassFields';
+import RaceSelect from '../npcs/partials/RaceSelect';
+import DndClassSpellSelect from '../npcs/partials/spell-fields/DndClassSpellSelect';
 import Row from 'react-bootstrap/Row';
+import { get2eNPCObject } from './services';
 
 const npcFormDecorator = createDecorator(
   {
     field: 'characterAlignment',
     updates: {
       alignment: ((value) => value.value
-      ),
-    },
-  },
+      )
+    }
+  }
 );
 
 class Convert2eNPC extends React.Component {
@@ -46,11 +47,11 @@ class Convert2eNPC extends React.Component {
       alignment: 'Neutral',
       characterAlignment: {
         value: 'Neutral',
-        label: 'Neutral',
+        label: 'Neutral'
       },
       characterRace: {
         value: 'human',
-        label: 'Human',
+        label: 'Human'
       },
       armorClass: 10,
       hitPoints: 10,
@@ -64,9 +65,9 @@ class Convert2eNPC extends React.Component {
       numberOfAttacks: 1,
       speed: '12',
       actions: [],
-      dndClasses: [],
+      dndClasses: []
     },
-    validated: false,
+    validated: false
   };
 
   handleSubmit = async (values) => {
@@ -116,7 +117,7 @@ class Convert2eNPC extends React.Component {
   };
 
   render () {
-    const {npc, validated} = this.state;
+    const { npc, validated } = this.state;
     return (
       <Card className={ 'mb-5' }>
         <Card.Body>
@@ -128,41 +129,41 @@ class Convert2eNPC extends React.Component {
                      decorators={ [npcFormDecorator] }
                      initialValues={ npc }
                      validate={ this.validate }
-                     mutators={ {...arrayMutators} }
+                     mutators={ { ...arrayMutators } }
                      render={ ({
                        handleSubmit,
                        form: {
-                         mutators: {push},
+                         mutators: { push }
                        },
                        submitting,
                        form,
                        pristine,
-                       values,
+                       values
                      }) => (
                        <Form noValidate validated={ validated } onSubmit={ handleSubmit }>
                          <Row>
                            <FormField label={ 'Name' }
                                       type={ 'text' }
                                       colWidth={ '8' }
-                                      name={ 'name' }/>
-                           <RaceSelect colWidth={ '4' }/>
+                                      name={ 'name' } />
+                           <RaceSelect colWidth={ '4' } />
                          </Row>
                          <h3>Classes</h3>
                          <Row>
                            <Col md={ '12' } className={ 'mb-5' }>
-                             <FieldArray name="dndClasses">
-                               { ({fields}) =>
+                             <FieldArray name='dndClasses'>
+                               { ({ fields }) =>
                                  fields.map((characterClass, index) => (
                                    !fields.value[index] || !fields.value[index]._destroy ? (
                                      <CharacterClassFields characterClass={ characterClass }
                                                            fields={ fields }
                                                            index={ index }
-                                                           key={ index }/>
+                                                           key={ index } />
                                    ) : null
                                  ))
                                }
                              </FieldArray>
-                             <Button type="button"
+                             <Button type='button'
                                      onClick={ () => push('dndClasses', defaultFighterClass) }
                                      variant={ 'info' }
                                      size={ 'lg' }>
@@ -174,62 +175,62 @@ class Convert2eNPC extends React.Component {
                            <FormField label={ 'THAC0' }
                                       type={ 'number' }
                                       colWidth={ '4' }
-                                      name={ 'thaco' }/>
+                                      name={ 'thaco' } />
                            <FormField label={ 'Armor Class' }
                                       type={ 'number' }
                                       colWidth={ '4' }
-                                      name={ 'armorClass' }/>
+                                      name={ 'armorClass' } />
                            <FormField label={ 'Hit Points' }
                                       type={ 'number' }
                                       colWidth={ '4' }
-                                      name={ 'hitPoints' }/>
+                                      name={ 'hitPoints' } />
                          </Row>
                          <Row>
                            <AbilityScoreField label={ 'STR' } type={ 'number' } colWidth={ '2' } name={ 'strength' }
-                                              hideRoll/>
+                                              hideRoll />
                            <AbilityScoreField label={ 'DEX' } type={ 'number' } colWidth={ '2' } name={ 'dexterity' }
-                                              hideRoll/>
+                                              hideRoll />
                            <AbilityScoreField label={ 'CON' } type={ 'number' } colWidth={ '2' } name={ 'constitution' }
-                                              hideRoll/>
+                                              hideRoll />
                            <AbilityScoreField label={ 'INT' } type={ 'number' } colWidth={ '2' } name={ 'intelligence' }
-                                              hideRoll/>
+                                              hideRoll />
                            <AbilityScoreField label={ 'WIS' } type={ 'number' } colWidth={ '2' } name={ 'wisdom' }
-                                              hideRoll/>
+                                              hideRoll />
                            <AbilityScoreField label={ 'CHA' } type={ 'number' } colWidth={ '2' } name={ 'charisma' }
-                                              hideRoll/>
+                                              hideRoll />
                          </Row>
                          <Row>
                            <FormSelect label={ 'Alignment' }
                                        colWidth={ '6' }
                                        name={ 'characterAlignment' }
                                        value={ values.alignment }
-                                       options={ alignmentOptions }/>
+                                       options={ alignmentOptions } />
                            <FormField label={ 'Number of Attacks' }
                                       type={ 'number' }
                                       colWidth={ '3' }
-                                      name={ 'numberOfAttacks' }/>
+                                      name={ 'numberOfAttacks' } />
                            <FormField label={ 'Speed (MV)' }
                                       type={ 'number' }
                                       colWidth={ '3' }
-                                      name={ 'speed' }/>
+                                      name={ 'speed' } />
                          </Row>
                          <Row className={ 'mb-4' }>
                            <Col md={ '12' }>
                              <h3>Actions</h3>
-                             <FieldArray name="actions" className={ 'mb-3' }>
-                               { ({fields}) => (
+                             <FieldArray name='actions' className={ 'mb-3' }>
+                               { ({ fields }) => (
                                  fields.map((action, index) => (
                                    !fields.value[index] || !fields.value[index]._destroy ? (
                                      <ActionSelect colWidth={ '10' }
                                                    action={ action }
                                                    key={ index }
                                                    fields={ fields }
-                                                   index={ index }/>
+                                                   index={ index } />
                                    ) : null
                                  ))
                                ) }
                              </FieldArray>
-                             <Button type="button"
+                             <Button type='button'
                                      onClick={ () => push('actions', {
                                        value: 761,
                                        label: 'Longsword',
@@ -247,18 +248,18 @@ class Convert2eNPC extends React.Component {
                                          thrownRangeLong: null,
                                          thrownRangeNormal: null,
                                          category: 'Martial',
-                                         properties: ['Versatile'],
-                                       },
+                                         properties: ['Versatile']
+                                       }
                                      }) } variant={ 'info' } size={ 'lg' }>Add Action</Button>
                            </Col>
                          </Row>
                          { values.dndClasses.map((dndClass, index) => (
-                           <DndClassSpellSelect dndClass={ dndClass } key={ index }/>
+                           <DndClassSpellSelect dndClass={ dndClass } key={ index } />
                          )) }
                          <Row className={ 'mb-4' }>
-                           <ButtonGroup aria-label="Character actions">
-                             <Button type="submit" disabled={ submitting }>Convert NPC</Button>
-                             <Button type="button" onClick={ form.reset } disabled={ submitting || pristine }
+                           <ButtonGroup aria-label='Character actions'>
+                             <Button type='submit' disabled={ submitting }>Convert NPC</Button>
+                             <Button type='button' onClick={ form.reset } disabled={ submitting || pristine }
                                      variant={ 'secondary' }>Reset</Button>
                            </ButtonGroup>
                          </Row>
@@ -273,21 +274,21 @@ class Convert2eNPC extends React.Component {
 
 Convert2eNPC.propTypes = {
   generateNonPlayerCharacter: PropTypes.func.isRequired,
-  user: PropTypes.object,
+  user: PropTypes.object
 };
 
 function mapStateToProps (state) {
   return {
     flashMessages: state.flashMessages,
-    user: state.users.user,
+    user: state.users.user
   };
 }
 
 function mapDispatchToProps (dispatch) {
   return {
     generateNonPlayerCharacter: (npc) => {
-      dispatch(rest.actions.convert2eNonPlayerCharacter({}, {body: JSON.stringify(npc)}));
-    },
+      dispatch(rest.actions.convert2eNonPlayerCharacter({}, { body: JSON.stringify(npc) }));
+    }
   };
 }
 

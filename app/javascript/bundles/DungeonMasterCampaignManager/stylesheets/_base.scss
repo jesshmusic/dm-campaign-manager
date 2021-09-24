@@ -37,3 +37,9 @@ h1 {
   @extend .table-borderless;
   @extend .table-striped;
 }
+
+.random-npc-generator {
+  .row {
+    @extend .py-3;
+  }
+}

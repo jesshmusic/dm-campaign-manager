@@ -51,20 +51,6 @@ export interface FieldProps {
   value?: string | number | readonly string[] | undefined;
 }
 
-export interface SelectProps {
-  colWidth: string;
-  defaultOptions?: boolean;
-  getOptions?: () => void;
-  input: any;
-  isClearable?: boolean;
-  isCreatable?: boolean;
-  isMulti?: boolean;
-  label: string;
-  name: string;
-  options?: [any];
-  placeholder?: string;
-}
-
 export interface FlashMessage {
   id: number;
   heading: string;
@@ -118,6 +104,17 @@ export interface ProfChoice {
 }
 
 export interface MonsterSummary {
+  alignment: string;
+  challengeRating: string;
+  hitPoints: string;
+  hitDice: string;
+  monsterType: string;
+  name: string;
+  slug: string;
+  xpString: string;
+}
+
+export interface MonsterProps {
   alignment: string;
   challengeRating: string;
   hitPoints: string;

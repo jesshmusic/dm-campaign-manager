@@ -7,7 +7,7 @@ import Col from 'react-bootstrap/Col';
 import { Field, FieldRenderProps } from 'react-final-form';
 import Form from 'react-bootstrap/Form';
 import AsyncSelect from 'react-select/async';
-import { SelectProps } from '../../utilities/types';
+import { SelectProps } from './FormSelect';
 
 const ReactSelectAdapter: React.ComponentType<FieldRenderProps<any>> = (props: PropsWithChildren<FieldRenderProps<any>>) => {
 

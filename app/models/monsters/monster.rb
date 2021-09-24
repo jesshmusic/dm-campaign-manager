@@ -45,6 +45,9 @@ class Monster < ApplicationRecord
     self.slug = generate_slug if will_save_change_to_name?
   end
 
+  has_many :condition_immunities
+  has_many :conditions, through: :condition_immunities
+
   has_many :damage_immunities, dependent: :destroy
   has_many :damage_resistances, dependent: :destroy
   has_many :damage_vulnerabilities, dependent: :destroy
@@ -59,9 +62,6 @@ class Monster < ApplicationRecord
 
   has_many :monster_proficiencies
   has_many :profs, through: :monster_proficiencies
-
-  has_many :condition_immunities
-  has_many :conditions, through: :condition_immunities
 
   belongs_to :user, optional: true
 
