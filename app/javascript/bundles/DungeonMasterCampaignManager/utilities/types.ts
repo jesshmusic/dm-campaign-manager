@@ -117,3 +117,18 @@ export interface ProfChoice {
   proficiencies: Prof[];
 }
 
+export interface MonsterSummary {
+  alignment: string;
+  challengeRating: string;
+  hitPoints: string;
+  hitDice: string;
+  monsterType: string;
+  name: string;
+  slug: string;
+  xpString: string;
+}
+
+export interface Monsters {
+  monsters: [MonsterSummary];
+}
+

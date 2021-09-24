@@ -87,7 +87,7 @@ export default class EncounterTracker {
   /**
    * Sets the current round to the next mob's turn.
    * Skips npcs at 0 hit points because they are dead!
-   * Does not skip PCs and NPCs with 0 hit points because they might have options and need to make death saves.
+   * Does not skip PCs and Monsters with 0 hit points because they might have options and need to make death saves.
    */
   incrementTurn () {
     this.currentRound.currentMobIndex += 1;

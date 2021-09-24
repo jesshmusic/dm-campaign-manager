@@ -24,7 +24,7 @@ const NpcGenerator = (props) => {
     <PageContainer user={ props.user }
                    flashMessages={ props.flashMessages }
                    pageTitle={ 'NPC Generators and Converters' }
-                   description={ 'Several generators to build quick NPCs. Fields can be copied and pasted into Fantasy Grounds.' }
+                   description={ 'Several generators to build quick Monsters. Fields can be copied and pasted into Fantasy Grounds.' }
                    breadcrumbs={ [{url: null, isActive: true, title: 'NPC Generator'}] }>
       <Container>
         <PageTitle title={ 'NPC Generators and Converters' }/>

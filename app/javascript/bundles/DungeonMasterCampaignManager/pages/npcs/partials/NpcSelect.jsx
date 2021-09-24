@@ -36,7 +36,7 @@ const NPCSelect = ({challengeRating, name}) => (
       name={ name }
       defaultOptions={ [] }
       isClearable
-      placeholder={ 'Search for NPCs...' }/>
+      placeholder={ 'Search for Monsters...' }/>
   </Row>
 );
 

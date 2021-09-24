@@ -6,18 +6,11 @@ import { fetchData } from '../../actions/api';
 import PageTitle from '../../components/layout/PageTitle';
 import DndSpinner from '../../components/layout/DndSpinner';
 import { navigate } from '@reach/router';
-import { DndClass, DndClasses, PageProps } from '../../utilities/types';
+import { DndClass, PageProps } from '../../utilities/types';
 import { ListGroup } from 'react-bootstrap';
 import DndListItem from './components/DndListItem';
 
-
-type DndClassesPageProps = {
-  dndClasses?: DndClasses;
-  dndClassSlug: string,
-  getDndClasses: () => void;
-} & PageProps
-
-const DndClasses = (props: DndClassesPageProps) => {
+const DndClasses = (props: PageProps) => {
   const [dndClasses, setDndClasses] = React.useState([]);
 
   React.useEffect(() => {
@@ -39,7 +32,7 @@ const DndClasses = (props: DndClassesPageProps) => {
     <PageContainer user={props.user}
                    flashMessages={props.flashMessages}
                    pageTitle={'DndClasses'}
-                   description={'All D&D dndClasses. Dungeon Master\'s Toolbox is a free resource for DMs to manage their dndClasses, adventures, and NPCs.'}
+                   description={'All D&D classes. Dungeon Master\'s Toolbox is a free resource for DMs to manage their classes, adventures, and Monsters.'}
                    breadcrumbs={[{ url: null, isActive: true, title: 'Character Classes' }]}>
       <PageTitle title={'Character Classes'} />
       {dndClasses.length > 0 ? (

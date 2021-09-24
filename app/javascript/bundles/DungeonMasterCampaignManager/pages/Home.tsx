@@ -12,7 +12,7 @@ import MagicItems from './items/MagicItems';
 import Tools from './items/Tools';
 import Vehicles from './items/Vehicles';
 import Weapons from './items/Weapons';
-import NPCs from './npcs/NPC';
+import Monsters from './npcs/Monsters';
 import Spells from './spells/Spells';
 import DndClass from './dnd-classes/DndClass';
 import DndClasses from './dnd-classes/DndClasses';
@@ -80,7 +80,7 @@ const Home = (props) => {
         <Gear path='/app/items/gear/' {...combinedProps} />
         <Tools path='/app/items/tools/' {...combinedProps} />
         <Vehicles path='/app/items/vehicles/' {...combinedProps} />
-        <NPCs path='/app/npcs/' {...combinedProps} />
+        <Monsters path='/app/npcs/' {...combinedProps} />
         <Spells path='/app/spells/' {...combinedProps} />
         <NpcGenerator path='/app/npc-generator/' {...combinedProps} />
       </Router>
