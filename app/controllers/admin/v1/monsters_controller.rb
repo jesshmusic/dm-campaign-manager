@@ -3,7 +3,7 @@
 module Admin::V1
   class MonstersController < ApplicationController
     before_action :set_monster, only: %i[show edit update destroy]
-    before_action :authenticate_user!, except: %i[index show monster_refs monster_categories]
+    before_action :authenticate_user!, except: %i[index show monster_refs monster_categories generate_npc convert_2e_npc generate_commoner]
 
     # GET /v1/monsters
     # GET /v1/monsters.json
@@ -83,6 +83,20 @@ module Admin::V1
           format.json { render json: @monster.errors.full_messages.join(', '), status: :unprocessable_entity }
         end
       end
+    end
+
+    def generate_npc
+      render json: { npc: NpcGenerator.generate_npc(params) }
+    end
+
+    def convert_2e_npc
+      render json: { npc: NpcGenerator.convert_2e_npc(params) }
+    end
+
+    def generate_commoner
+      random_npc_gender = params[:random_npc_gender] || %w[male female].sample
+      random_npc_race = params[:random_npc_race] || 'human'
+      render json: { npc: NpcGenerator.generate_commoner(random_npc_gender, random_npc_race) }
     end
 
     # PATCH/PUT /monsters/:slug
