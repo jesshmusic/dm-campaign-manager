@@ -10,18 +10,13 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import { Form as FinalForm } from 'react-final-form';
 import createDecorator from 'final-form-calculate';
 
-import {
-  alignmentOptions,
-  getChallengeRatingOptions,
-  npcSizeOptions
-} from '../../utilities/character-utilities';
+import { alignmentOptions, getChallengeRatingOptions, npcSizeOptions } from '../../utilities/character-utilities';
 import FormSelect from '../../components/forms/FormSelect';
 import NameFormField from '../npcs/partials/NameFormField';
 import MonsterTypeSelect from '../npcs/partials/MonsterTypeSelect';
 import FormField from '../../components/forms/FormField';
 import Card from 'react-bootstrap/Card';
 import ActionForm from './components/ActionForm';
-import { FieldArray } from 'react-final-form-arrays';
 import Col from 'react-bootstrap/Col';
 import AbilityScoreField from './components/AbilityScoreField';
 import Row from 'react-bootstrap/Row';
@@ -29,6 +24,8 @@ import { MonsterProps, NPCGeneratorFormFields, SelectOption } from '../../utilit
 import axios from 'axios';
 import { getNPCObject } from './services';
 import { GiDiceTwentyFacesTwenty } from 'react-icons/gi';
+import Senses from './components/Senses';
+import Speeds from './components/Speeds';
 
 type NPCFormErrors = {
   name?: string;
@@ -48,6 +45,23 @@ export const diceOptions: SelectOption[] = [
   { label: 'd10', value: 10 },
   { label: 'd12', value: 12 },
   { label: 'd20', value: 20 }
+];
+
+export const senses: SelectOption[] = [
+  { label: 'Blindsight', value: 'blindsight' },
+  { label: 'Darkvision', value: 'darkvision' },
+  { label: 'Tremorsense', value: 'tremorsense' },
+  { label: 'Truesight', value: 'truesight' },
+  { label: 'Passive Perception', value: 'darkvision' }
+];
+
+export const speeds: SelectOption[] = [
+  { label: 'Burrow', value: 'burrow' },
+  { label: 'Climb', value: 'climb' },
+  { label: 'Fly', value: 'fly' },
+  { label: 'Hover', value: 'hover' },
+  { label: 'Swim', value: 'swim' },
+  { label: 'Walk', value: 'walk' }
 ];
 
 type GenerateNPCProps = {
@@ -92,41 +106,43 @@ const GenerateNPC = (props: GenerateNPCProps) => {
   });
   const [validated, setValidated] = React.useState(false);
 
-  const npcFormDecorator = React.useMemo(() => createDecorator(
-    {
-      field: 'characterAlignment',
-      updates: {
-        alignment: ((value) => value.value)
-      }
-    }, {
-      field: 'hitDiceNumber',
-      updates: {
-        hitDice: (hitDiceNumberValue, allValues: NPCGeneratorFormFields) => (
-          `${hitDiceNumberValue}${allValues.hitDiceValue.value}`
-        )
-      }
-    }, {
-      field: 'hitDiceValue',
-      updates: {
-        hitDice: (hitDiceValueValue, allValues: NPCGeneratorFormFields) => (
-          `${allValues.hitDiceValue}${hitDiceValueValue}`
-        )
-      }
-    }, {
-      field: 'monsterType',
-      updates: {
-        npcVariant: ((value) => (value.value === 'humanoid' ? {
-              label: 'Fighter',
-              value: 'fighter'
-            } : {
-              label: 'Creature',
-              value: 'creature'
-            }
+  const npcFormDecorator = React.useMemo(() => {
+    return createDecorator(
+      {
+        field: 'characterAlignment',
+        updates: {
+          alignment: ((value) => value.value)
+        }
+      }, {
+        field: 'hitDiceNumber',
+        updates: {
+          hitDice: (hitDiceNumberValue, allValues: NPCGeneratorFormFields) => (
+            `${hitDiceNumberValue}${allValues.hitDiceValue.value}`
           )
-        )
+        }
+      }, {
+        field: 'hitDiceValue',
+        updates: {
+          hitDice: (hitDiceValueValue, allValues: NPCGeneratorFormFields) => (
+            `${allValues.hitDiceValue}${hitDiceValueValue}`
+          )
+        }
+      }, {
+        field: 'monsterType',
+        updates: {
+          npcVariant: ((value) => (value.value === 'humanoid' ? {
+                label: 'Fighter',
+                value: 'fighter'
+              } : {
+                label: 'Creature',
+                value: 'creature'
+              }
+            )
+          )
+        }
       }
-    }
-  ), []);
+    );
+  }, []);
 
   const handleSubmit = (values) => {
     const monster: MonsterProps = getNPCObject(values);
@@ -253,98 +269,44 @@ const GenerateNPC = (props: GenerateNPCProps) => {
                        </Row>
                        <Row>
                          <Col md={'12'}>
-                           <h3>Actions</h3>
-                           <FieldArray name='actions' className={'mb-3'}>
-                             {({ fields }) => (
-                               fields.map((action, index) => (
-                                 !fields.value[index] || !fields.value[index]._destroy ? (
-                                   <ActionForm name='actions'
-                                               colWidth={'10'}
-                                               action={action}
-                                               key={`action-${index}`}
-                                               push={push}
-                                               onRemove={() => fields.remove(index)}
-                                               index={index} />
-                                 ) : null
-                               ))
-                             )}
-                           </FieldArray>
-                           <Button type='button'
-                                   onClick={() => push('actions', {})}
-                                   variant={'info'}
-                                   size='lg'>+</Button>
+                           <Senses push={push} />
                          </Col>
                        </Row>
                        <Row>
                          <Col md={'12'}>
-                           <h3>Legendary Actions</h3>
-                           <FieldArray name='legendaryActions' className={'mb-3'}>
-                             {({ fields }) => (
-                               fields.map((legendaryAction, index) => (
-                                 !fields.value[index] || !fields.value[index]._destroy ? (
-                                   <ActionForm name='legendaryActions'
-                                               colWidth={'10'}
-                                               action={legendaryAction}
-                                               key={`legendaryActions-${index}`}
-                                               onRemove={() => fields.remove(index)}
-                                               push={push}
-                                               index={index} />
-                                 ) : null
-                               ))
-                             )}
-                           </FieldArray>
-                           <Button type='button'
-                                   onClick={() => push('legendaryActions', {})}
-                                   variant={'info'}
-                                   size='lg'>+</Button>
+                           <Speeds push={push} />
                          </Col>
                        </Row>
                        <Row>
                          <Col md={'12'}>
-                           <h3>Reactions</h3>
-                           <FieldArray name='reactions' className={'mb-3'}>
-                             {({ fields }) => (
-                               fields.map((reaction, index) => (
-                                 !fields.value[index] || !fields.value[index]._destroy ? (
-                                   <ActionForm name='reactions'
-                                               colWidth={'10'}
-                                               action={reaction}
-                                               key={`reactions-${index}`}
-                                               onRemove={() => fields.remove(index)}
-                                               push={push}
-                                               index={index} />
-                                 ) : null
-                               ))
-                             )}
-                           </FieldArray>
-                           <Button type='button'
-                                   onClick={() => push('reactions', {})}
-                                   variant={'info'}
-                                   size='lg'>+</Button>
+                           <ActionForm name='actions'
+                                       title='Actions'
+                                       colWidth={'10'}
+                                       push={push} />
                          </Col>
                        </Row>
                        <Row>
                          <Col md={'12'}>
-                           <h3>Special Abilities</h3>
-                           <FieldArray name='specialAbilities' className={'mb-3'}>
-                             {({ fields }) => (
-                               fields.map((specialAbility, index) => (
-                                 !fields.value[index] || !fields.value[index]._destroy ? (
-                                   <ActionForm name='specialAbilities'
-                                               colWidth={'10'}
-                                               action={specialAbility}
-                                               key={`specialAbilities-${index}`}
-                                               onRemove={() => fields.remove(index)}
-                                               push={push}
-                                               index={index} />
-                                 ) : null
-                               ))
-                             )}
-                           </FieldArray>
-                           <Button type='button'
-                                   onClick={() => push('specialAbilities', {})}
-                                   variant={'info'}
-                                   size='lg'>+</Button>
+                           <ActionForm name='legendaryActions'
+                                       title='Legendary Actions'
+                                       colWidth={'10'}
+                                       push={push} />
+                         </Col>
+                       </Row>
+                       <Row>
+                         <Col md={'12'}>
+                           <ActionForm name='reactions'
+                                       title='Reactions'
+                                       colWidth={'10'}
+                                       push={push} />
+                         </Col>
+                       </Row>
+                       <Row>
+                         <Col md={'12'}>
+                           <ActionForm name='specialAbilities'
+                                       title='Special Abilities'
+                                       colWidth={'10'}
+                                       push={push} />
                          </Col>
                        </Row>
                        <Row>

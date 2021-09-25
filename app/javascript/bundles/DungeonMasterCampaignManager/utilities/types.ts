@@ -178,9 +178,9 @@ type MonsterAction = {
   usageType?: string;
 }
 
-type MonsterInfoData = {
+export type MonsterInfoData = {
   name: string;
-  value: string | number;
+  value: string | number | boolean;
 }
 
 export interface MonsterProps {
