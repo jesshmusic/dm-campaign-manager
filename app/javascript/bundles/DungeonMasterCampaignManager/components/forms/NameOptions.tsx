@@ -31,7 +31,8 @@ const NameOptions = ({ className, onFormSubmit, title }: NameOptionsProps) => {
   const [gender, setGender] = useState({ value: 'female', label: 'Female' } as OptionTypeBase | null);
   const [race, setRace] = useState({ value: 'human', label: 'Human' } as OptionTypeBase | null);
 
-  const handleSubmit = () => {
+  const handleSubmit = (event) => {
+    event.preventDefault();
     onFormSubmit(gender?.value || '', race?.value || '');
   };
 
@@ -41,7 +42,7 @@ const NameOptions = ({ className, onFormSubmit, title }: NameOptionsProps) => {
         <button
           id={'nameGeneratorSubmit'}
           className={'w-100 btn btn-primary'}
-          onClick={() => handleSubmit()}>
+          onClick={(event) => handleSubmit(event)}>
           Get{gender ? ` ${gender.label}` : ''}{race ? ` ${race.label}` : ''} {title}
         </button>
       </div>

@@ -4,7 +4,7 @@ import PageTitle from '../../components/layout/PageTitle';
 import NPCDisplay from './NPCDisplay';
 import GenerateNPC from './GenerateNPC';
 import Convert2eNPC from './Convert2eNPC';
-import GenerateCommoner from '../npcs/partials/GenerateCommoner';
+import GenerateCommoner from './components/GenerateCommoner';
 import { GiBlacksmith, GiSpikedDragonHead, SiConvertio } from 'react-icons/all';
 import axios from 'axios';
 import { FlashMessage, MonsterProps, UserProps } from '../../utilities/types';
