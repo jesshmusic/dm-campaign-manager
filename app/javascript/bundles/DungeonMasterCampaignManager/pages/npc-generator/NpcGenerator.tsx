@@ -1,5 +1,4 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import PageContainer from '../../containers/PageContainer';
@@ -7,7 +6,6 @@ import PageTitle from '../../components/layout/PageTitle';
 import NPCDisplay from './NPCDisplay';
 import GenerateNPC from './GenerateNPC';
 import Col from 'react-bootstrap/Col';
-import rest from '../../actions/api';
 import Convert2eNPC from './Convert2eNPC';
 import Accordion from 'react-bootstrap/Accordion';
 import GenerateCommoner from '../npcs/partials/GenerateCommoner';
@@ -40,7 +38,7 @@ const NpcGenerator = (props: NpcGeneratorProps) => {
                    pageTitle={'NPC Generators and Converters'}
                    description={'Several generators to build quick Monsters. Fields can be copied and pasted into Fantasy Grounds.'}
                    breadcrumbs={[{ url: null, isActive: true, title: 'NPC Generator' }]}>
-      <Container>
+      <Container fluid>
         <PageTitle title={'NPC Generators and Converters'} />
         <Row>
           <Col sm={12}>
