@@ -26,7 +26,6 @@ const removeSmallest = (numbers) => {
 
 type AbilityScoreFieldProps = {
   name: string;
-  colWidth: string;
   defaultValue?: any;
   infoText?: string;
   id?: string;
@@ -39,7 +38,6 @@ type AbilityScoreFieldProps = {
 
 const AbilityScoreField = (props: AbilityScoreFieldProps) => {
   const {
-    colWidth,
     defaultValue,
     infoText,
     label,
@@ -60,7 +58,7 @@ const AbilityScoreField = (props: AbilityScoreFieldProps) => {
   };
 
   return (
-    <Form.Group as={Col} md={colWidth}>
+    <Form.Group>
       <Field name={name} type={'number'}>
         {({ input, meta }) => (
           <div>

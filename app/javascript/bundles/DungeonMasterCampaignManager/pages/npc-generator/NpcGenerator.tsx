@@ -1,13 +1,9 @@
 import React from 'react';
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/layout/PageTitle';
 import NPCDisplay from './NPCDisplay';
 import GenerateNPC from './GenerateNPC';
-import Col from 'react-bootstrap/Col';
 import Convert2eNPC from './Convert2eNPC';
-import Accordion from 'react-bootstrap/Accordion';
 import GenerateCommoner from '../npcs/partials/GenerateCommoner';
 import { GiBlacksmith, GiSpikedDragonHead, SiConvertio } from 'react-icons/all';
 import axios from 'axios';
@@ -38,42 +34,76 @@ const NpcGenerator = (props: NpcGeneratorProps) => {
                    pageTitle={'NPC Generators and Converters'}
                    description={'Several generators to build quick Monsters. Fields can be copied and pasted into Fantasy Grounds.'}
                    breadcrumbs={[{ url: null, isActive: true, title: 'NPC Generator' }]}>
-      <Container fluid>
-        <PageTitle title={'NPC Generators and Converters'} />
-        <Row>
-          <Col sm={12}>
-            <p>
-              Several generators to build quick NPCs. Fields can be copied and pasted into Fantasy Grounds.
-            </p>
+      <PageTitle title={'NPC Generators and Converters'} />
+      <div>
+        <p>
+          Several generators to build quick NPCs. Fields can be copied and pasted into Fantasy Grounds.
+        </p>
 
-            {monster ? (
-              <NPCDisplay npc={monster} shortDisplay />
-            ) : null}
-            <Accordion defaultActiveKey='0' flush>
-              <Accordion.Item eventKey={'0'}>
-                <Accordion.Header><GiBlacksmith className={'me-2'} size={30} />Commoner</Accordion.Header>
-                <Accordion.Body>
-                  <GenerateCommoner onFormSubmit={handleGenerateCommoner} />
-                </Accordion.Body>
-              </Accordion.Item>
-              <Accordion.Item eventKey={'1'}>
-                <Accordion.Header><GiSpikedDragonHead className={'me-2'} size={30} />Generate NPC</Accordion.Header>
-                <Accordion.Body>
-                  <GenerateNPC setMonster={handleSetMonster} />
-                </Accordion.Body>
-              </Accordion.Item>
-              <Accordion.Item eventKey={'2'}>
-                <Accordion.Header><SiConvertio className={'me-2'} size={30} />Convert 2nd Edition</Accordion.Header>
-                <Accordion.Body>
-                  <Convert2eNPC />
-                </Accordion.Body>
-              </Accordion.Item>
-            </Accordion>
-          </Col>
-        </Row>
-      </Container>
+        {monster ? (
+          <NPCDisplay npc={monster} shortDisplay />
+        ) : null}
+
+        <div className='accordion accordion-flush' id='npcGeneratorAccordion'>
+          <div className='accordion-item'>
+            <h3 className='accordion-header' id='commonerGeneratorHeading'>
+              <button className='accordion-button collapsed'
+                      type='button'
+                      data-bs-toggle='collapse'
+                      data-bs-target='#commonerGenerator'>
+                <GiBlacksmith className={'me-2'} size={30} /> Commoner
+              </button>
+            </h3>
+            <div id='commonerGenerator'
+                 className='accordion-collapse collapse'
+                 aria-labelledby='commonerGeneratorHeading'
+                 data-bs-parent='#npcGeneratorAccordion'>
+              <div className='accordion-body'>
+                <GenerateCommoner onFormSubmit={handleGenerateCommoner} />
+              </div>
+            </div>
+          </div>
+          <div className='accordion-item'>
+            <h3 className='accordion-header' id='monsterGeneratorHeading'>
+              <button className='accordion-button collapsed'
+                      type='button'
+                      data-bs-toggle='collapse'
+                      data-bs-target='#monsterGenerator'>
+                <GiSpikedDragonHead className={'me-2'} size={30} />Generate NPC
+              </button>
+            </h3>
+            <div id='monsterGenerator'
+                 className='accordion-collapse collapse'
+                 aria-labelledby='monsterGeneratorHeading'
+                 data-bs-parent='#npcGeneratorAccordion'>
+              <div className='accordion-body'>
+                <GenerateNPC setMonster={handleSetMonster} />
+              </div>
+            </div>
+          </div>
+          <div className='accordion-item'>
+            <h3 className='accordion-header' id='dnd2eGeneratorHeading'>
+              <button className='accordion-button collapsed'
+                      type='button'
+                      data-bs-toggle='collapse'
+                      data-bs-target='#dnd2eGenerator'>
+                <SiConvertio className={'me-2'} size={30} />Convert 2nd Edition
+              </button>
+            </h3>
+            <div id='dnd2eGenerator'
+                 className='accordion-collapse collapse'
+                 aria-labelledby='dnd2eGeneratorHeading'
+                 data-bs-parent='#npcGeneratorAccordion'>
+              <div className='accordion-body'>
+                <Convert2eNPC />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </PageContainer>
   );
+
 };
 
 export default NpcGenerator;

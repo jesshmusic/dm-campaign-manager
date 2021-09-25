@@ -3,11 +3,10 @@
  */
 
 import React, { PropsWithChildren } from 'react';
-import Col from 'react-bootstrap/Col';
 import { Field, FieldRenderProps } from 'react-final-form';
-import Form from 'react-bootstrap/Form';
 import AsyncSelect from 'react-select/async';
 import { SelectProps } from './FormSelect';
+import classNames from 'classnames';
 
 const ReactSelectAdapter: React.ComponentType<FieldRenderProps<any>> = (props: PropsWithChildren<FieldRenderProps<any>>) => {
 
@@ -40,15 +39,15 @@ const ReactSelectAdapter: React.ComponentType<FieldRenderProps<any>> = (props: P
 const FormSelectAsync = ({
                            name,
                            label,
-                           colWidth,
+                           className,
                            isMulti,
                            getOptions,
                            placeholder,
                            defaultOptions = true,
                            isClearable = false
                          }: SelectProps) => (
-  <Form.Group as={Col} md={colWidth}>
-    <Form.Label>{label}</Form.Label>
+  <div className={classNames(className, 'mb-3')}>
+    <label htmlFor={name} className='form-label'>{label}</label>
     <Field name={name}
            defaultOptions={defaultOptions}
            label={label}
@@ -58,7 +57,7 @@ const FormSelectAsync = ({
            component={ReactSelectAdapter}
            placeholder={placeholder}
     />
-  </Form.Group>
+  </div>
 );
 
 export default FormSelectAsync;

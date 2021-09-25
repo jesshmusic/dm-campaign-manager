@@ -24,7 +24,6 @@ const Speeds = (props: { push: (speeds1: string, p: {}) => void; }) => {
                             options={speeds} />
                 <FormField label={'Value'}
                            type={'text'}
-                           colWidth={'5'}
                            name={`${name}.value`} />
                 <Form.Group as={Col} md={'1'}>
                   <Form.Label>Remove</Form.Label>

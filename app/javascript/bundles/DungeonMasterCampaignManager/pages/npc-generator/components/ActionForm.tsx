@@ -14,12 +14,11 @@ import FormSelect from '../../../components/forms/FormSelect';
 import { diceOptions } from '../GenerateNPC';
 
 const ActionForm = (props: ({
-  colWidth: string,
   name: string,
   push: (name: string, object: {}) => void,
   title: string
 })) => {
-  const { colWidth, name, push, title } = props;
+  const { name, push, title } = props;
   return (
     <div>
       <h3>{title}</h3>
@@ -28,15 +27,14 @@ const ActionForm = (props: ({
           fields.map((action, index) => (
             !fields.value[index] || !fields.value[index]._destroy ? (
               <Row>
-                <Form.Group as={Col} md={colWidth}>
+                <Form.Group>
                   <Row>
                     <FormField label={'Name*'}
                                type={'text'}
-                               colWidth={'12'}
+                               required
                                name={`${action}.label`} />
                     <FormField label={'Description'}
                                type={'text'}
-                               colWidth={'12'}
                                name={`${action}.data.desc`} />
                   </Row>
                   <Row>
@@ -46,22 +44,22 @@ const ActionForm = (props: ({
                           <Row>
                             <Form.Group as={Col}>
                               <Row>
-                                <FormField label={''}
-                                           type={'number'}
-                                           colWidth={'2'}
-                                           name={`${name}.data.diceCount`} />
-                                <Col md={1}>d</Col>
-                                <FormSelect colWidth={'2'}
-                                            label={'Dice'}
-                                            name={`${name}.data.diceValue`}
-                                            options={diceOptions} />
+                                <div className='grid'>
+                                  <FormField label={''}
+                                             type={'number'}
+                                             name={`${name}.data.diceCount`} />
+                                  <span className='font-large-deco'>d</span>
+                                  <FormSelect colWidth={'2'}
+                                              label={'Dice'}
+                                              name={`${name}.data.diceValue`}
+                                              options={diceOptions} />
+                                </div>
                                 <FormField label={'Damage Type'}
                                            type={'text'}
-                                           colWidth={'3'}
+                                           required
                                            name={`${name}.data.damageType`} />
                                 <FormField label={'Damage Bonus'}
                                            type={'number'}
-                                           colWidth={'3'}
                                            name={`${name}.data.damageBonus`} />
                                 <Form.Group as={Col} md={'1'}>
                                   <Form.Label>Remove</Form.Label>

@@ -144,7 +144,6 @@ class Convert2eNPC extends React.Component {
                          <Row>
                            <FormField label={ 'Name' }
                                       type={ 'text' }
-                                      colWidth={ '8' }
                                       name={ 'name' } />
                            <RaceSelect colWidth={ '4' } />
                          </Row>
@@ -174,15 +173,12 @@ class Convert2eNPC extends React.Component {
                          <Row>
                            <FormField label={ 'THAC0' }
                                       type={ 'number' }
-                                      colWidth={ '4' }
                                       name={ 'thaco' } />
                            <FormField label={ 'Armor Class' }
                                       type={ 'number' }
-                                      colWidth={ '4' }
                                       name={ 'armorClass' } />
                            <FormField label={ 'Hit Points' }
                                       type={ 'number' }
-                                      colWidth={ '4' }
                                       name={ 'hitPoints' } />
                          </Row>
                          <Row>
@@ -201,17 +197,14 @@ class Convert2eNPC extends React.Component {
                          </Row>
                          <Row>
                            <FormSelect label={ 'Alignment' }
-                                       colWidth={ '6' }
                                        name={ 'characterAlignment' }
                                        value={ values.alignment }
                                        options={ alignmentOptions } />
                            <FormField label={ 'Number of Attacks' }
                                       type={ 'number' }
-                                      colWidth={ '3' }
                                       name={ 'numberOfAttacks' } />
                            <FormField label={ 'Speed (MV)' }
                                       type={ 'number' }
-                                      colWidth={ '3' }
                                       name={ 'speed' } />
                          </Row>
                          <Row className={ 'mb-4' }>

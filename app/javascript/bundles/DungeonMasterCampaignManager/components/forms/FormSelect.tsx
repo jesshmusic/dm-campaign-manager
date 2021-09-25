@@ -3,18 +3,17 @@
  */
 
 import React from 'react';
-import Col from 'react-bootstrap/Col';
 import { Field, FieldRenderProps } from 'react-final-form';
-import Form from 'react-bootstrap/Form';
 import Select from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 import { SelectOption } from '../../utilities/types';
+import classNames from 'classnames';
 
 export type SelectProps = {
+  className?: string;
   colWidth: string;
   defaultOptions?: boolean;
   getOptions?: () => void;
-  // input: any;
   isClearable?: boolean;
   isCreatable?: boolean;
   isMulti?: boolean;
@@ -45,21 +44,21 @@ const ReactSelectCreateAdapter = ({ input, isClearable, ...rest }: FieldRenderPr
 const FormSelect = ({
                       name,
                       label,
-                      colWidth,
+                      className = '',
                       isClearable = false,
                       options,
                       isCreatable = false,
                       isMulti = false
                     }: SelectProps) => (
-  <Form.Group as={Col} md={colWidth}>
-    <Form.Label>{label}</Form.Label>
+  <div className={classNames(className, 'mb-3')}>
+    <label htmlFor={name} className='form-label'>{label}</label>
     <Field name={name}
            label={label}
            options={options}
            isClearable={isClearable}
            isMulti={isMulti}
            component={isCreatable ? ReactSelectCreateAdapter : ReactSelectAdapter} />
-  </Form.Group>
+  </div>
 );
 
 export default FormSelect;

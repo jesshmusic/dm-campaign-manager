@@ -7,7 +7,11 @@
 }
 
 .mr-eaves {
-  font-family: 'Mr Eaves', sans-serif;
+  font-family: "Mr Eaves", sans-serif;
+}
+
+.draconis {
+  font-family: Draconis, serif;
 }
 
 .breadcrumb-item {
@@ -66,4 +70,10 @@ li.page-item,
 a.btn,
 .btn {
   @extend .mr-eaves;
+}
+
+.font-large-deco {
+  //@extend .draconis;
+  font-family: 'Dungeon Drop Case', serif;
+  font-size: $display4-size;
 }

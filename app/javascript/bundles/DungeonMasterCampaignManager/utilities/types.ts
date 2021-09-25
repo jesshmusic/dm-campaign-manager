@@ -39,7 +39,7 @@ export interface UserProps {
 }
 
 export interface FieldProps {
-  colWidth: string;
+  className?: string;
   defaultValue?: string | number | readonly string[] | undefined;
   id?: string;
   infoText?: string;
@@ -47,6 +47,7 @@ export interface FieldProps {
   name: string;
   placeholder?: string;
   readOnly?: boolean;
+  required?: boolean;
   type: string;
   value?: string | number | readonly string[] | undefined;
 }

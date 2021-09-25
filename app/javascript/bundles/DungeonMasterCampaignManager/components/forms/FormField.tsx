@@ -3,73 +3,76 @@
  */
 
 import React from 'react';
-import Col from 'react-bootstrap/Col';
 import { Field } from 'react-final-form';
-import Form from 'react-bootstrap/Form';
 import { FieldProps } from '../../utilities/types';
+import classNames from 'classnames';
 
 const FormField = (props: FieldProps) => {
   const {
-    colWidth,
+    className,
     defaultValue,
     id,
     infoText,
     label,
     name,
     readOnly,
+    required,
     type,
     value
   } = props;
+  if (type === 'checkbox' || type === 'radio') {
+    return (
+      <Field name={name} type={type} value={value} validate={(value) => !required || value ? undefined : 'Required'}>
+        {({ input, meta }) => (
+          <div className={classNames(className, 'form-check', 'mb-3')}>
+            <input
+              className={`form-check-input${meta.touched && !meta.invalid ? ' is-valid' : ''}${meta.error && meta.touched ? ' is-invalid' : ''}`}
+              {...input}
+              type={type}
+              name={name}
+              value={value}
+              required={required}
+              id={id} />
+            <label className='form-check-label' htmlFor={name}>
+              {label}
+            </label>
+            {infoText ? (
+              <div className='text-muted form-text'>
+                {infoText}
+              </div>
+            ) : null}
+            <div className='invalid-feedback'>{meta.error}</div>
+          </div>
+        )}
+      </Field>
+    );
+  }
   return (
-    <Form.Group as={Col} md={colWidth}>
-      {type === 'checkbox' || type === 'radio' ? (
-        <Field name={name} type={type} value={value}>
-          {({ input, meta }) => (
-            <div>
-              <Form.Check
-                {...input}
-                type={type}
-                label={label}
-                name={name}
-                value={value}
-                id={id}
-                isValid={meta.touched && !meta.invalid}
-                isInvalid={meta.error && meta.touched}
-              />
-              {infoText ? (
-                <Form.Text className='text-muted'>
-                  {infoText}
-                </Form.Text>
-              ) : null}
+    <Field name={name} type={type} validate={(value) => !required || value ? undefined : 'Required'}>
+      {({ input, meta }) => (
+        <div className={classNames(className, 'mb-3')}>
+          <label className='form-check-label' htmlFor={name}>
+            {label}
+          </label>
+          <input
+            className={`form-control${meta.touched && !meta.invalid ? ' is-valid' : ''}${meta.error && meta.touched ? ' is-invalid' : ''}`}
+            {...input}
+            autoComplete={''}
+            type={type}
+            placeholder={label}
+            readOnly={readOnly}
+            defaultValue={defaultValue}
+            required={required}
+          />
+          {infoText ? (
+            <div className='text-muted form-text'>
+              {infoText}
             </div>
-          )}
-        </Field>
-      ) : (
-        <Field name={name} type={type}>
-          {({ input, meta }) => (
-            <div>
-              <Form.Label>{label}</Form.Label>
-              <Form.Control
-                {...input}
-                autoComplete={''}
-                type={type}
-                placeholder={label}
-                readOnly={readOnly}
-                defaultValue={defaultValue}
-                isValid={meta.touched && !meta.invalid}
-                isInvalid={meta.error && meta.touched}
-              />
-              {infoText ? (
-                <Form.Text className='text-muted'>
-                  {infoText}
-                </Form.Text>
-              ) : null}
-              <Form.Control.Feedback type='invalid'>{meta.error}</Form.Control.Feedback>
-            </div>
-          )}
-        </Field>
+          ) : null}
+          <div className='invalid-feedback'>{meta.error}</div>
+        </div>
       )}
-    </Form.Group>
+    </Field>
   );
 };
 

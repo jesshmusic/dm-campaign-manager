@@ -2,6 +2,7 @@ import ReactOnRails from 'react-on-rails';
 import 'channels';
 import $ from 'jquery';
 import 'select2';
+import 'bootstrap';
 // import 'select2/dist/css/select2.css';
 // import 'select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.min.css';
 

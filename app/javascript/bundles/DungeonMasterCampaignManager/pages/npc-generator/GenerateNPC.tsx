@@ -4,10 +4,10 @@
 
 import React from 'react';
 import arrayMutators from 'final-form-arrays';
-import Form from 'react-bootstrap/Form';
+import classNames from 'classnames';
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import { Form as FinalForm } from 'react-final-form';
+import { Form } from 'react-final-form';
 import createDecorator from 'final-form-calculate';
 
 import { alignmentOptions, getChallengeRatingOptions, npcSizeOptions } from '../../utilities/character-utilities';
@@ -17,9 +17,7 @@ import MonsterTypeSelect from '../npcs/partials/MonsterTypeSelect';
 import FormField from '../../components/forms/FormField';
 import Card from 'react-bootstrap/Card';
 import ActionForm from './components/ActionForm';
-import Col from 'react-bootstrap/Col';
 import AbilityScoreField from './components/AbilityScoreField';
-import Row from 'react-bootstrap/Row';
 import { MonsterProps, NPCGeneratorFormFields, SelectOption } from '../../utilities/types';
 import axios from 'axios';
 import { getNPCObject } from './services';
@@ -193,133 +191,123 @@ const GenerateNPC = (props: GenerateNPCProps) => {
       <Card.Body>
         <Card.Title>Random NPC Generator</Card.Title>
         <Card.Subtitle>Select options to create a new NPC</Card.Subtitle>
-        <FinalForm onSubmit={handleSubmit}
-                   decorators={[npcFormDecorator]}
-                   initialValues={monster}
-                   validate={validate}
-                   mutators={{ ...arrayMutators }}
-                   render={({
-                              handleSubmit,
-                              form: {
-                                mutators: { push }
-                              },
-                              submitting,
-                              form,
-                              pristine,
-                              values
-                            }) => (
-                     <Form noValidate validated={validated} onSubmit={handleSubmit}>
-                       <Row>
-                         <NameFormField colWidth={'12'} values={values}
-                                        handleGenerateName={handleGenerateName} />
-                       </Row>
-                       <Row>
-                         <MonsterTypeSelect colWidth={'8'} />
-                         <FormField label={'Subtype'}
-                                    type={'text'}
-                                    colWidth={'4'}
-                                    name={'monsterSubtype'} />
-                       </Row>
-                       <Row>
-                         <FormSelect label={'Alignment'}
-                                     colWidth={'3'}
-                                     name={'characterAlignment'}
-                                     value={values.alignment}
-                                     options={alignmentOptions} />
-                         <FormSelect label={'Challenge Rating'}
-                                     colWidth={'3'}
-                                     name={'challengeRating'}
-                                     value={values.challengeRating}
-                                     options={getChallengeRatingOptions()} />
-                         <FormSelect label={'Size'}
-                                     colWidth={'3'}
-                                     name={'size'}
-                                     value={values.size}
-                                     options={npcSizeOptions} />
-                         <FormField label={'Armor Class'}
-                                    type={'number'}
-                                    colWidth={'3'}
-                                    name={'armorClass'} />
-                       </Row>
-                       <Row className={'py-4'}>
-                         <AbilityScoreField label={'STR'}
-                                            type={'number'}
-                                            colWidth={'2'}
-                                            name={'strength'} />
-                         <AbilityScoreField label={'DEX'}
-                                            type={'number'}
-                                            colWidth={'2'}
-                                            name={'dexterity'} />
-                         <AbilityScoreField label={'CON'}
-                                            type={'number'}
-                                            colWidth={'2'}
-                                            name={'constitution'} />
-                         <AbilityScoreField label={'INT'}
-                                            type={'number'}
-                                            colWidth={'2'}
-                                            name={'intelligence'} />
-                         <AbilityScoreField label={'WIS'}
-                                            type={'number'}
-                                            colWidth={'2'}
-                                            name={'wisdom'} />
-                         <AbilityScoreField label={'CHA'}
-                                            type={'number'}
-                                            colWidth={'2'}
-                                            name={'charisma'} />
-                       </Row>
-                       <Row>
-                         <Col md={'12'}>
-                           <Senses push={push} />
-                         </Col>
-                       </Row>
-                       <Row>
-                         <Col md={'12'}>
-                           <Speeds push={push} />
-                         </Col>
-                       </Row>
-                       <Row>
-                         <Col md={'12'}>
-                           <ActionForm name='actions'
-                                       title='Actions'
-                                       colWidth={'10'}
-                                       push={push} />
-                         </Col>
-                       </Row>
-                       <Row>
-                         <Col md={'12'}>
-                           <ActionForm name='legendaryActions'
-                                       title='Legendary Actions'
-                                       colWidth={'10'}
-                                       push={push} />
-                         </Col>
-                       </Row>
-                       <Row>
-                         <Col md={'12'}>
-                           <ActionForm name='reactions'
-                                       title='Reactions'
-                                       colWidth={'10'}
-                                       push={push} />
-                         </Col>
-                       </Row>
-                       <Row>
-                         <Col md={'12'}>
-                           <ActionForm name='specialAbilities'
-                                       title='Special Abilities'
-                                       colWidth={'10'}
-                                       push={push} />
-                         </Col>
-                       </Row>
-                       <Row>
-                         <ButtonGroup aria-label='Character actions'>
-                           <Button type='submit' disabled={submitting}>
-                             <span>Generate NPC</span> <GiDiceTwentyFacesTwenty size={30} className={'ms-3'} />
-                           </Button>
-                           <Button type='button' onClick={form.reset} disabled={submitting || pristine}
-                                   variant={'secondary'}>Reset</Button>
-                         </ButtonGroup>
-                       </Row>
-                     </Form>
-                   )}
+        <Form onSubmit={handleSubmit}
+              decorators={[npcFormDecorator]}
+              initialValues={monster}
+              validate={validate}
+              mutators={{ ...arrayMutators }}
+              render={({
+                         handleSubmit,
+                         form: {
+                           mutators: { push }
+                         },
+                         submitting,
+                         form,
+                         pristine,
+                         values
+                       }) => (
+                <form onSubmit={handleSubmit}
+                      className={classNames(validated && 'was-validated')}
+                      noValidate>
+                  <div>
+                    <NameFormField colWidth={'12'} values={values}
+                                   handleGenerateName={handleGenerateName} />
+                  </div>
+                  <div>
+                    <MonsterTypeSelect colWidth={'8'} />
+                    <FormField label={'Subtype'}
+                               type={'text'}
+                               name={'monsterSubtype'} />
+                  </div>
+                  <div>
+                    <FormSelect label={'Alignment'}
+                                colWidth={'3'}
+                                name={'characterAlignment'}
+                                value={values.alignment}
+                                options={alignmentOptions} />
+                    <FormSelect label={'Challenge Rating'}
+                                colWidth={'3'}
+                                name={'challengeRating'}
+                                value={values.challengeRating}
+                                options={getChallengeRatingOptions()} />
+                    <FormSelect label={'Size'}
+                                colWidth={'3'}
+                                name={'size'}
+                                value={values.size}
+                                options={npcSizeOptions} />
+                    <FormField label={'Armor Class'}
+                               type={'number'}
+                               name={'armorClass'} />
+                  </div>
+                  <div className={'py-4'}>
+                    <AbilityScoreField label={'STR'}
+                                       type={'number'}
+                                       name={'strength'} />
+                    <AbilityScoreField label={'DEX'}
+                                       type={'number'}
+                                       name={'dexterity'} />
+                    <AbilityScoreField label={'CON'}
+                                       type={'number'}
+                                       name={'constitution'} />
+                    <AbilityScoreField label={'INT'}
+                                       type={'number'}
+                                       name={'intelligence'} />
+                    <AbilityScoreField label={'WIS'}
+                                       type={'number'}
+                                       name={'wisdom'} />
+                    <AbilityScoreField label={'CHA'}
+                                       type={'number'}
+                                       name={'charisma'} />
+                  </div>
+                  <div>
+                    <div>
+                      <Senses push={push} />
+                    </div>
+                  </div>
+                  <div>
+                    <div>
+                      <Speeds push={push} />
+                    </div>
+                  </div>
+                  <div>
+                    <div>
+                      <ActionForm name='actions'
+                                  title='Actions'
+                                  push={push} />
+                    </div>
+                  </div>
+                  <div>
+                    <div>
+                      <ActionForm name='legendaryActions'
+                                  title='Legendary Actions'
+                                  push={push} />
+                    </div>
+                  </div>
+                  <div>
+                    <div>
+                      <ActionForm name='reactions'
+                                  title='Reactions'
+                                  push={push} />
+                    </div>
+                  </div>
+                  <div>
+                    <div>
+                      <ActionForm name='specialAbilities'
+                                  title='Special Abilities'
+                                  push={push} />
+                    </div>
+                  </div>
+                  <div>
+                    <ButtonGroup aria-label='Character actions'>
+                      <Button type='submit' disabled={submitting || pristine}>
+                        <span>Generate NPC</span> <GiDiceTwentyFacesTwenty size={30} className={'ms-3'} />
+                      </Button>
+                      <Button type='button' onClick={form.reset} disabled={submitting || pristine}
+                              variant={'secondary'}>Reset</Button>
+                    </ButtonGroup>
+                  </div>
+                </form>
+              )}
         />
       </Card.Body>
     </Card>
