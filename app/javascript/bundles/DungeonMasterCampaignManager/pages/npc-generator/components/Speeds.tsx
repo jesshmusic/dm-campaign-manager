@@ -19,7 +19,7 @@ const Speeds = (props: { push: (speeds1: string, p: {}) => void; }) => {
             <div>
               <Row>
                 <FormSelect colWidth={'6'}
-                            label={'Sense'}
+                            label={'Speed'}
                             name={`${name}.name`}
                             options={speeds} />
                 <FormField label={'Value'}
