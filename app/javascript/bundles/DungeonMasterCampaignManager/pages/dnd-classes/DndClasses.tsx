@@ -1,7 +1,7 @@
 import React from 'react';
 
 // Container
-import PageContainer from '../../containers/PageContainer.jsx';
+import PageContainer from '../../containers/PageContainer';
 import { fetchData } from '../../actions/api';
 import PageTitle from '../../components/layout/PageTitle';
 import DndSpinner from '../../components/layout/DndSpinner';
@@ -33,7 +33,7 @@ const DndClasses = (props: PageProps) => {
                    flashMessages={props.flashMessages}
                    pageTitle={'DndClasses'}
                    description={'All D&D classes. Dungeon Master\'s Toolbox is a free resource for DMs to manage their classes, adventures, and Monsters.'}
-                   breadcrumbs={[{ url: null, isActive: true, title: 'Character Classes' }]}>
+                   breadcrumbs={[{ isActive: true, title: 'Character Classes' }]}>
       <PageTitle title={'Character Classes'} />
       {dndClasses.length > 0 ? (
         <div className={'table-frame'}>

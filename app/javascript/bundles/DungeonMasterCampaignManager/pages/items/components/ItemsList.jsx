@@ -9,13 +9,13 @@ import ItemDescription from './ItemDescription';
 import PageTitle from '../../../components/layout/PageTitle';
 import DndSpinner from '../../../components/layout/DndSpinner';
 
-const ItemsList = ({columns, items, flashMessages, user, pageTitle}) => {
+const ItemsList = ({ columns, items, flashMessages, user, pageTitle }) => {
   const expandRow = {
     parentClassName: 'table-primary',
     onlyOneExpanding: true,
     renderer: (row) => (
-      <ItemDescription item={ row }/>
-    ),
+      <ItemDescription item={ row } />
+    )
   };
 
   return (
@@ -23,13 +23,13 @@ const ItemsList = ({columns, items, flashMessages, user, pageTitle}) => {
                    flashMessages={ flashMessages }
                    pageTitle={ pageTitle }
                    description={ `${ pageTitle } records with descriptions and stats. Dungeon Master's Toolbox is a free resource for DMs to manage their campaigns, adventures, and NPCs.` }
-                   breadcrumbs={ [{url: '/app/items/', isActive: false, title: 'Items'},
-                     {url: null, isActive: true, title: pageTitle}] }>
-      <PageTitle title={ pageTitle }/>
+                   breadcrumbs={ [{ url: '/app/items/', isActive: false, title: 'Items' },
+                     { isActive: true, title: pageTitle }] }>
+      <PageTitle title={ pageTitle } />
       { items && items.length > 0 ? (
         <div>Items: { items.length }</div>
       ) : (
-        <DndSpinner/>
+        <DndSpinner />
       ) }
     </PageContainer>
   );
@@ -41,7 +41,7 @@ ItemsList.propTypes = {
   flashMessages: PropTypes.array,
   getItems: PropTypes.func,
   pageTitle: PropTypes.string.isRequired,
-  user: PropTypes.object,
+  user: PropTypes.object
 };
 
 export default ItemsList;

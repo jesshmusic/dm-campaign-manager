@@ -1,7 +1,7 @@
 import React from 'react';
 
 // Container
-import PageContainer from '../../containers/PageContainer.jsx';
+import PageContainer from '../../containers/PageContainer';
 import { fetchData } from '../../actions/api';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -38,7 +38,7 @@ const DndClass = (props: DndClassPageProps) => {
                    pageTitle={dndClassTitle}
                    description={`DndClass: ${dndClassTitle}. Dungeon Master's Toolbox is a free resource for DMs to manage their dndClasses, adventures, and NPCs.`}
                    breadcrumbs={[{ url: '/app/classes', isActive: false, title: 'Character Classes' },
-                     { url: null, isActive: true, title: dndClassTitle }]}>
+                     { isActive: true, title: dndClassTitle }]}>
       <PageTitle title={`Class: ${dndClassTitle}`} />
       {dndClass ? (
         <Row>

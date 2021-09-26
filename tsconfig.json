@@ -16,7 +16,12 @@
     "noImplicitAny": false,
     "noImplicitThis": true,
     "noImplicitReturns": true,
-    "strictNullChecks": true
+    "strictNullChecks": true,
+    "plugins": [
+      {
+        "name": "typescript-plugin-css-modules"
+      }
+    ]
   },
   "include": [
     "app/javascript"
