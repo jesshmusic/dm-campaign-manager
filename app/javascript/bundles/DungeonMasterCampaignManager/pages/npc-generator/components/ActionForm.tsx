@@ -11,7 +11,7 @@ import FormField from '../../../components/forms/FormField';
 import Row from 'react-bootstrap/Row';
 import { FieldArray } from 'react-final-form-arrays';
 import FormSelect from '../../../components/forms/FormSelect';
-import { diceOptions } from '../GenerateNPC';
+import { diceOptions } from './GenerateNPC';
 
 const ActionForm = (props: ({
   name: string,

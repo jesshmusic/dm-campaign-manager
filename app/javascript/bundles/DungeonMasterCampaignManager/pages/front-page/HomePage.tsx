@@ -1,9 +1,9 @@
 import React from 'react';
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/layout/PageTitle';
-import NameField from '../../components/NameField';
+import NameField from './components/NameField';
 import { Link } from '@reach/router';
-import TavernNameField from '../../components/TavernNameField';
+import TavernNameField from './components/TavernNameField';
 import { PageProps } from '../../utilities/types';
 import { GiBarbute } from 'react-icons/all';
 
@@ -19,10 +19,10 @@ const HomePage = (props: PageProps) => (
         <Link to='/app/npc-generator' className='btn btn-secondary'><GiBarbute size={24} /> Generate NPC</Link>
       </div>
       <div className='mb-3'>
-        <NameField colWidth='12' />
+        <NameField />
       </div>
       <div className='mb-3'>
-        <TavernNameField colWidth='12' />
+        <TavernNameField />
       </div>
     </div>
   </PageContainer>

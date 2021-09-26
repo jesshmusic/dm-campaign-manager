@@ -2,7 +2,7 @@ import React from 'react';
 import FormSelect from '../../../components/forms/FormSelect';
 import FormField from '../../../components/forms/FormField';
 import { GiTrashCan } from 'react-icons/gi';
-import { senses } from '../GenerateNPC';
+import { senses } from './GenerateNPC';
 import { FieldArray } from 'react-final-form-arrays';
 import FormContainer from '../../../containers/FormContainer';
 

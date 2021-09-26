@@ -2,7 +2,7 @@ import React from 'react';
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/layout/PageTitle';
 import NPCDisplay from './NPCDisplay';
-import GenerateNPC from './GenerateNPC';
+import GenerateNPC from './components/GenerateNPC';
 import Convert2eNPC from './Convert2eNPC';
 import GenerateCommoner from './components/GenerateCommoner';
 import { GiBlacksmith, GiSpikedDragonHead, SiConvertio } from 'react-icons/all';

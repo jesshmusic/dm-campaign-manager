@@ -19,7 +19,6 @@ import {
 } from '../../utilities/character-utilities';
 import FormSelect from '../../components/forms/FormSelect';
 import FormField from '../../components/forms/FormField';
-import Card from 'react-bootstrap/Card';
 import ActionForm from './components/ActionForm';
 import { FieldArray } from 'react-final-form-arrays';
 import Col from 'react-bootstrap/Col';
@@ -29,6 +28,7 @@ import RaceSelect from '../npcs/partials/RaceSelect';
 import DndClassSpellSelect from '../npcs/partials/spell-fields/DndClassSpellSelect';
 import Row from 'react-bootstrap/Row';
 import { get2eNPCObject } from './services';
+import Frame from '../../components/Frame';
 
 const npcFormDecorator = createDecorator(
   {
@@ -119,148 +119,143 @@ class Convert2eNPC extends React.Component {
   render () {
     const { npc, validated } = this.state;
     return (
-      <Card className={ 'mb-5' }>
-        <Card.Body>
-          <Card.Title>D&D 2nd Edition NPC Convertor</Card.Title>
-          <Card.Subtitle>
-            Enter stats for a 2E NPC to generate its 5E equivalent (roughly) for <em>humanoid</em> NPCs.
-          </Card.Subtitle>
-          <FinalForm onSubmit={ this.handleSubmit }
-                     decorators={ [npcFormDecorator] }
-                     initialValues={ npc }
-                     validate={ this.validate }
-                     mutators={ { ...arrayMutators } }
-                     render={ ({
-                       handleSubmit,
-                       form: {
-                         mutators: { push }
-                       },
-                       submitting,
-                       form,
-                       pristine,
-                       values
-                     }) => (
-                       <Form noValidate validated={ validated } onSubmit={ handleSubmit }>
-                         <Row>
-                           <FormField label={ 'Name' }
-                                      type={ 'text' }
-                                      name={ 'name' } />
-                           <RaceSelect colWidth={ '4' } />
-                         </Row>
-                         <h3>Classes</h3>
-                         <Row>
-                           <Col md={ '12' } className={ 'mb-5' }>
-                             <FieldArray name='dndClasses'>
-                               { ({ fields }) =>
-                                 fields.map((characterClass, index) => (
-                                   !fields.value[index] || !fields.value[index]._destroy ? (
-                                     <CharacterClassFields characterClass={ characterClass }
-                                                           fields={ fields }
-                                                           index={ index }
-                                                           key={ index } />
-                                   ) : null
-                                 ))
-                               }
-                             </FieldArray>
-                             <Button type='button'
-                                     onClick={ () => push('dndClasses', defaultFighterClass) }
-                                     variant={ 'info' }
-                                     size={ 'lg' }>
-                               Add Class
-                             </Button>
-                           </Col>
-                         </Row>
-                         <Row>
-                           <FormField label={ 'THAC0' }
-                                      type={ 'number' }
-                                      name={ 'thaco' } />
-                           <FormField label={ 'Armor Class' }
-                                      type={ 'number' }
-                                      name={ 'armorClass' } />
-                           <FormField label={ 'Hit Points' }
-                                      type={ 'number' }
-                                      name={ 'hitPoints' } />
-                         </Row>
-                         <Row>
-                           <AbilityScoreField label={ 'STR' } type={ 'number' } colWidth={ '2' } name={ 'strength' }
-                                              hideRoll />
-                           <AbilityScoreField label={ 'DEX' } type={ 'number' } colWidth={ '2' } name={ 'dexterity' }
-                                              hideRoll />
-                           <AbilityScoreField label={ 'CON' } type={ 'number' } colWidth={ '2' } name={ 'constitution' }
-                                              hideRoll />
-                           <AbilityScoreField label={ 'INT' } type={ 'number' } colWidth={ '2' } name={ 'intelligence' }
-                                              hideRoll />
-                           <AbilityScoreField label={ 'WIS' } type={ 'number' } colWidth={ '2' } name={ 'wisdom' }
-                                              hideRoll />
-                           <AbilityScoreField label={ 'CHA' } type={ 'number' } colWidth={ '2' } name={ 'charisma' }
-                                              hideRoll />
-                         </Row>
-                         <Row>
-                           <FormSelect label={ 'Alignment' }
-                                       name={ 'characterAlignment' }
-                                       value={ values.alignment }
-                                       options={ alignmentOptions } />
-                           <FormField label={ 'Number of Attacks' }
-                                      type={ 'number' }
-                                      name={ 'numberOfAttacks' } />
-                           <FormField label={ 'Speed (MV)' }
-                                      type={ 'number' }
-                                      name={ 'speed' } />
-                         </Row>
-                         <Row className={ 'mb-4' }>
-                           <Col md={ '12' }>
-                             <h3>Actions</h3>
-                             <FieldArray name='actions' className={ 'mb-3' }>
-                               { ({ fields }) => (
-                                 fields.map((action, index) => (
-                                   !fields.value[index] || !fields.value[index]._destroy ? (
-                                     <ActionForm colWidth={ '10' }
-                                                 action={ action }
-                                                 key={ index }
-                                                 fields={ fields }
-                                                 index={ index } />
-                                   ) : null
-                                 ))
-                               ) }
-                             </FieldArray>
-                             <Button type='button'
-                                     onClick={ () => push('actions', {
-                                       value: 761,
-                                       label: 'Longsword',
-                                       data: {
-                                         attackBonus: 0,
-                                         damageBonus: 0,
-                                         damageDiceCount: 1,
-                                         damageDiceValue: 8,
-                                         damageDice2HCount: 1,
-                                         damageDice2HValue: 10,
-                                         damageType: 'Slashing',
-                                         range: 'Martial Melee',
-                                         rangeNormal: 5,
-                                         rangeLong: null,
-                                         thrownRangeLong: null,
-                                         thrownRangeNormal: null,
-                                         category: 'Martial',
-                                         properties: ['Versatile']
-                                       }
-                                     }) } variant={ 'info' } size={ 'lg' }>Add Action</Button>
-                           </Col>
-                         </Row>
-                         { values.dndClasses.map((dndClass, index) => (
-                           <DndClassSpellSelect dndClass={ dndClass } key={ index } />
-                         )) }
-                         <Row className={ 'mb-4' }>
-                           <ButtonGroup aria-label='Character actions'>
-                             <Button type='submit' disabled={ submitting }>Convert NPC</Button>
-                             <Button type='button' onClick={ form.reset } disabled={ submitting || pristine }
-                                     variant={ 'secondary' }>Reset</Button>
-                           </ButtonGroup>
-                         </Row>
-                       </Form>
-                     ) }
-          />
-        </Card.Body>
-      </Card>
+      <Frame title='D&D 2nd Edition NPC Convertor'
+             subtitle='Enter stats for a 2E NPC to generate its 5E equivalent (roughly) for humanoid NPCs.'>
+        <FinalForm onSubmit={ this.handleSubmit }
+                   decorators={ [npcFormDecorator] }
+                   initialValues={ npc }
+                   validate={ this.validate }
+                   mutators={ { ...arrayMutators } }
+                   render={ ({
+                     handleSubmit,
+                     form: {
+                       mutators: { push }
+                     },
+                     submitting,
+                     form,
+                     pristine,
+                     values
+                   }) => (
+                     <Form noValidate validated={ validated } onSubmit={ handleSubmit }>
+                       <Row>
+                         <FormField label={ 'Name' }
+                                    type={ 'text' }
+                                    name={ 'name' } />
+                         <RaceSelect colWidth={ '4' } />
+                       </Row>
+                       <h3>Classes</h3>
+                       <Row>
+                         <Col md={ '12' } className={ 'mb-5' }>
+                           <FieldArray name='dndClasses'>
+                             { ({ fields }) =>
+                               fields.map((characterClass, index) => (
+                                 !fields.value[index] || !fields.value[index]._destroy ? (
+                                   <CharacterClassFields characterClass={ characterClass }
+                                                         fields={ fields }
+                                                         index={ index }
+                                                         key={ index } />
+                                 ) : null
+                               ))
+                             }
+                           </FieldArray>
+                           <Button type='button'
+                                   onClick={ () => push('dndClasses', defaultFighterClass) }
+                                   variant={ 'info' }
+                                   size={ 'lg' }>
+                             Add Class
+                           </Button>
+                         </Col>
+                       </Row>
+                       <Row>
+                         <FormField label={ 'THAC0' }
+                                    type={ 'number' }
+                                    name={ 'thaco' } />
+                         <FormField label={ 'Armor Class' }
+                                    type={ 'number' }
+                                    name={ 'armorClass' } />
+                         <FormField label={ 'Hit Points' }
+                                    type={ 'number' }
+                                    name={ 'hitPoints' } />
+                       </Row>
+                       <Row>
+                         <AbilityScoreField label={ 'STR' } type={ 'number' } colWidth={ '2' } name={ 'strength' }
+                                            hideRoll />
+                         <AbilityScoreField label={ 'DEX' } type={ 'number' } colWidth={ '2' } name={ 'dexterity' }
+                                            hideRoll />
+                         <AbilityScoreField label={ 'CON' } type={ 'number' } colWidth={ '2' } name={ 'constitution' }
+                                            hideRoll />
+                         <AbilityScoreField label={ 'INT' } type={ 'number' } colWidth={ '2' } name={ 'intelligence' }
+                                            hideRoll />
+                         <AbilityScoreField label={ 'WIS' } type={ 'number' } colWidth={ '2' } name={ 'wisdom' }
+                                            hideRoll />
+                         <AbilityScoreField label={ 'CHA' } type={ 'number' } colWidth={ '2' } name={ 'charisma' }
+                                            hideRoll />
+                       </Row>
+                       <Row>
+                         <FormSelect label={ 'Alignment' }
+                                     name={ 'characterAlignment' }
+                                     value={ values.alignment }
+                                     options={ alignmentOptions } />
+                         <FormField label={ 'Number of Attacks' }
+                                    type={ 'number' }
+                                    name={ 'numberOfAttacks' } />
+                         <FormField label={ 'Speed (MV)' }
+                                    type={ 'number' }
+                                    name={ 'speed' } />
+                       </Row>
+                       <Row className={ 'mb-4' }>
+                         <Col md={ '12' }>
+                           <h3>Actions</h3>
+                           <FieldArray name='actions' className={ 'mb-3' }>
+                             { ({ fields }) => (
+                               fields.map((action, index) => (
+                                 !fields.value[index] || !fields.value[index]._destroy ? (
+                                   <ActionForm colWidth={ '10' }
+                                               action={ action }
+                                               key={ index }
+                                               fields={ fields }
+                                               index={ index } />
+                                 ) : null
+                               ))
+                             ) }
+                           </FieldArray>
+                           <Button type='button'
+                                   onClick={ () => push('actions', {
+                                     value: 761,
+                                     label: 'Longsword',
+                                     data: {
+                                       attackBonus: 0,
+                                       damageBonus: 0,
+                                       damageDiceCount: 1,
+                                       damageDiceValue: 8,
+                                       damageDice2HCount: 1,
+                                       damageDice2HValue: 10,
+                                       damageType: 'Slashing',
+                                       range: 'Martial Melee',
+                                       rangeNormal: 5,
+                                       rangeLong: null,
+                                       thrownRangeLong: null,
+                                       thrownRangeNormal: null,
+                                       category: 'Martial',
+                                       properties: ['Versatile']
+                                     }
+                                   }) } variant={ 'info' } size={ 'lg' }>Add Action</Button>
+                         </Col>
+                       </Row>
+                       { values.dndClasses.map((dndClass, index) => (
+                         <DndClassSpellSelect dndClass={ dndClass } key={ index } />
+                       )) }
+                       <Row className={ 'mb-4' }>
+                         <ButtonGroup aria-label='Character actions'>
+                           <Button type='submit' disabled={ submitting }>Convert NPC</Button>
+                           <Button type='button' onClick={ form.reset } disabled={ submitting || pristine }
+                                   variant={ 'secondary' }>Reset</Button>
+                         </ButtonGroup>
+                       </Row>
+                     </Form>
+                   ) }
+        />
+      </Frame>
     );
   }
 }

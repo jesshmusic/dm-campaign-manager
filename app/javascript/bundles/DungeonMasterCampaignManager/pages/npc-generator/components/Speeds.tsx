@@ -6,7 +6,7 @@ import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import { GiTrashCan } from 'react-icons/gi';
 import React from 'react';
-import { speeds } from '../GenerateNPC';
+import { speeds } from './GenerateNPC';
 import { FieldArray } from 'react-final-form-arrays';
 
 const Speeds = (props: { push: (speeds1: string, p: {}) => void; }) => {

@@ -46,29 +46,31 @@ const NameOptions = ({ className, onFormSubmit, title }: NameOptionsProps) => {
           Get{gender ? ` ${gender.label}` : ''}{race ? ` ${race.label}` : ''} {title}
         </button>
       </div>
-      <div className={classNames(className, 'mb-3')}>
-        <label className='form-check-label' htmlFor={'nameGeneratorGender'}>
-          Gender
-        </label>
-        <Select options={genderOptions}
-                id={'nameGeneratorGender'}
-                onChange={(option) => {
-                  setGender(option);
-                }}
-                className={'flex-grow-1 mr-3'} />
-      </div>
-      <div className={classNames(className, 'mb-3')}>
-        <label className='form-check-label' htmlFor={'nameGeneratorRace'}>
-          Race
-        </label>
-        <AsyncSelect loadOptions={getRaces}
-                     cacheOptions
-                     defaultOptions
-                     id={'nameGeneratorRace'}
-                     onChange={(option) => {
-                       setRace(option);
-                     }}
-                     className={'flex-grow-1'} />
+      <div className='grid mb-3'>
+        <div className={classNames(className, 'g-col-6')}>
+          <label className='form-check-label' htmlFor={'nameGeneratorGender'}>
+            Gender
+          </label>
+          <Select options={genderOptions}
+                  id={'nameGeneratorGender'}
+                  onChange={(option) => {
+                    setGender(option);
+                  }}
+                  className={'flex-grow-1 mr-3'} />
+        </div>
+        <div className={classNames(className, 'g-col-6')}>
+          <label className='form-check-label' htmlFor={'nameGeneratorRace'}>
+            Race
+          </label>
+          <AsyncSelect loadOptions={getRaces}
+                       cacheOptions
+                       defaultOptions
+                       id={'nameGeneratorRace'}
+                       onChange={(option) => {
+                         setRace(option);
+                       }}
+                       className={'flex-grow-1'} />
+        </div>
       </div>
     </div>
   );
