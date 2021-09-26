@@ -50,7 +50,7 @@ const FormField = (props: FieldProps) => {
   return (
     <Field name={name} type={type} validate={(value) => !required || value ? undefined : 'Required'}>
       {({ input, meta }) => (
-        <div className={className}>
+        <div className={`py-2 ${className}`}>
           <label className='form-label' htmlFor={name}>
             {label}
           </label>

@@ -48,7 +48,7 @@ const FormSelect = ({
                       isCreatable = false,
                       isMulti = false
                     }: SelectProps) => (
-  <div className={className}>
+  <div className={`py-2 ${className}`}>
     <label htmlFor={name} className='form-label'>{label}</label>
     <Field name={name}
            label={label}

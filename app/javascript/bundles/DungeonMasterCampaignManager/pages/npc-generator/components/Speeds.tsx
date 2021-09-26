@@ -16,7 +16,8 @@ const Speeds = (props: { push: (speeds1: string, p: {}) => void; }) => {
       <FieldArray name='speeds' className={'mb-3'}>
         {({ fields }) => (
           fields.map((name, index) => (
-            <div>
+            <div
+              key={`${name}-${index}`}>
               <Row>
                 <FormSelect label={'Speed'}
                             name={`${name}.name`}

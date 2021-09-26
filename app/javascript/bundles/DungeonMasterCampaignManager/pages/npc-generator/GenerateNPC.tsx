@@ -12,7 +12,6 @@ import createDecorator from 'final-form-calculate';
 
 import { alignmentOptions, getChallengeRatingOptions, npcSizeOptions } from '../../utilities/character-utilities';
 import FormSelect from '../../components/forms/FormSelect';
-import NameFormField from '../npcs/partials/NameFormField';
 import MonsterTypeSelect from '../npcs/partials/MonsterTypeSelect';
 import FormField from '../../components/forms/FormField';
 import Card from 'react-bootstrap/Card';
@@ -24,6 +23,7 @@ import { getNPCObject } from './services';
 import { GiDiceTwentyFacesTwenty } from 'react-icons/gi';
 import Senses from './components/Senses';
 import Speeds from './components/Speeds';
+import NameFormField from './components/NameFormField';
 
 type NPCFormErrors = {
   name?: string;
@@ -210,7 +210,7 @@ const GenerateNPC = (props: GenerateNPCProps) => {
                       className={classNames(validated && 'was-validated')}
                       noValidate>
                   <div className='mb-3'>
-                    <NameFormField colWidth={'12'} values={values}
+                    <NameFormField values={values}
                                    handleGenerateName={handleGenerateName} />
                   </div>
                   <div className='grid' style={{ '--bs-columns': 2 } as React.CSSProperties}>

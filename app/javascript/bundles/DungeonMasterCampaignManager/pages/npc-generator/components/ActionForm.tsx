@@ -41,7 +41,8 @@ const ActionForm = (props: ({
                     <FieldArray name={`${name}[${index}].damages`} className={'mb-3'}>
                       {({ fields }) => (
                         fields.map((name, index) => (
-                          <Row>
+                          <Row
+                            key={`${name}-${index}`}>
                             <Form.Group as={Col}>
                               <Row>
                                 <div className='grid'>
