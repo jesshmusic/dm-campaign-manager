@@ -20,8 +20,8 @@ const ActionForm = (props: ({
 })) => {
   const { name, push, title } = props;
   return (
-    <div>
-      <h3>{title}</h3>
+    <div className='mb-3'>
+      <h4>{title}</h4>
       <FieldArray name={name} className={'mb-3'}>
         {({ fields }) => (
           fields.map((action, index) => (
@@ -49,8 +49,7 @@ const ActionForm = (props: ({
                                              type={'number'}
                                              name={`${name}.data.diceCount`} />
                                   <span className='font-large-deco'>d</span>
-                                  <FormSelect colWidth={'2'}
-                                              label={'Dice'}
+                                  <FormSelect label={'Dice'}
                                               name={`${name}.data.diceValue`}
                                               options={diceOptions} />
                                 </div>

@@ -190,7 +190,7 @@ const GenerateNPC = (props: GenerateNPCProps) => {
     <Card className={'mb-5 random-npc-generator'}>
       <Card.Body>
         <Card.Title>Random NPC Generator</Card.Title>
-        <Card.Subtitle>Select options to create a new NPC</Card.Subtitle>
+        <Card.Subtitle className='mb-3'>Select options to create a new NPC</Card.Subtitle>
         <Form onSubmit={handleSubmit}
               decorators={[npcFormDecorator]}
               initialValues={monster}
@@ -209,29 +209,26 @@ const GenerateNPC = (props: GenerateNPCProps) => {
                 <form onSubmit={handleSubmit}
                       className={classNames(validated && 'was-validated')}
                       noValidate>
-                  <div>
+                  <div className='mb-3'>
                     <NameFormField colWidth={'12'} values={values}
                                    handleGenerateName={handleGenerateName} />
                   </div>
-                  <div>
+                  <div className='grid' style={{ '--bs-columns': 2 } as React.CSSProperties}>
                     <MonsterTypeSelect colWidth={'8'} />
                     <FormField label={'Subtype'}
                                type={'text'}
                                name={'monsterSubtype'} />
                   </div>
-                  <div>
+                  <div className='grid' style={{ '--bs-columns': 4 } as React.CSSProperties}>
                     <FormSelect label={'Alignment'}
-                                colWidth={'3'}
                                 name={'characterAlignment'}
                                 value={values.alignment}
                                 options={alignmentOptions} />
                     <FormSelect label={'Challenge Rating'}
-                                colWidth={'3'}
                                 name={'challengeRating'}
                                 value={values.challengeRating}
                                 options={getChallengeRatingOptions()} />
                     <FormSelect label={'Size'}
-                                colWidth={'3'}
                                 name={'size'}
                                 value={values.size}
                                 options={npcSizeOptions} />
@@ -239,7 +236,8 @@ const GenerateNPC = (props: GenerateNPCProps) => {
                                type={'number'}
                                name={'armorClass'} />
                   </div>
-                  <div className={'py-4'}>
+                  <h4>Ability Scores</h4>
+                  <div className='grid mb-3' style={{ '--bs-columns': 6 } as React.CSSProperties}>
                     <AbilityScoreField label={'STR'}
                                        type={'number'}
                                        name={'strength'} />
@@ -259,44 +257,20 @@ const GenerateNPC = (props: GenerateNPCProps) => {
                                        type={'number'}
                                        name={'charisma'} />
                   </div>
-                  <div>
-                    <div>
-                      <Senses push={push} />
-                    </div>
-                  </div>
-                  <div>
-                    <div>
-                      <Speeds push={push} />
-                    </div>
-                  </div>
-                  <div>
-                    <div>
-                      <ActionForm name='actions'
-                                  title='Actions'
-                                  push={push} />
-                    </div>
-                  </div>
-                  <div>
-                    <div>
-                      <ActionForm name='legendaryActions'
-                                  title='Legendary Actions'
-                                  push={push} />
-                    </div>
-                  </div>
-                  <div>
-                    <div>
-                      <ActionForm name='reactions'
-                                  title='Reactions'
-                                  push={push} />
-                    </div>
-                  </div>
-                  <div>
-                    <div>
-                      <ActionForm name='specialAbilities'
-                                  title='Special Abilities'
-                                  push={push} />
-                    </div>
-                  </div>
+                  <Senses push={push} />
+                  <Speeds push={push} />
+                  <ActionForm name='actions'
+                              title='Actions'
+                              push={push} />
+                  <ActionForm name='legendaryActions'
+                              title='Legendary Actions'
+                              push={push} />
+                  <ActionForm name='reactions'
+                              title='Reactions'
+                              push={push} />
+                  <ActionForm name='specialAbilities'
+                              title='Special Abilities'
+                              push={push} />
                   <div>
                     <ButtonGroup aria-label='Character actions'>
                       <Button type='submit' disabled={submitting || pristine}>

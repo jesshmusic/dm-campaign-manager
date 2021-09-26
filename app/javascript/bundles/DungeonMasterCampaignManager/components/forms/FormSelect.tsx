@@ -7,11 +7,9 @@ import { Field, FieldRenderProps } from 'react-final-form';
 import Select from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 import { SelectOption } from '../../utilities/types';
-import classNames from 'classnames';
 
 export type SelectProps = {
   className?: string;
-  colWidth: string;
   defaultOptions?: boolean;
   getOptions?: () => void;
   isClearable?: boolean;
@@ -50,7 +48,7 @@ const FormSelect = ({
                       isCreatable = false,
                       isMulti = false
                     }: SelectProps) => (
-  <div className={classNames(className, 'mb-3')}>
+  <div className={className}>
     <label htmlFor={name} className='form-label'>{label}</label>
     <Field name={name}
            label={label}

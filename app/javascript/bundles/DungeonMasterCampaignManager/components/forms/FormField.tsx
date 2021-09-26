@@ -24,7 +24,7 @@ const FormField = (props: FieldProps) => {
     return (
       <Field name={name} type={type} value={value} validate={(value) => !required || value ? undefined : 'Required'}>
         {({ input, meta }) => (
-          <div className={classNames(className, 'form-check', 'mb-3')}>
+          <div className={classNames(className, 'form-check')}>
             <input
               className={`form-check-input${meta.touched && !meta.invalid ? ' is-valid' : ''}${meta.error && meta.touched ? ' is-invalid' : ''}`}
               {...input}
@@ -50,8 +50,8 @@ const FormField = (props: FieldProps) => {
   return (
     <Field name={name} type={type} validate={(value) => !required || value ? undefined : 'Required'}>
       {({ input, meta }) => (
-        <div className={classNames(className, 'mb-3')}>
-          <label className='form-check-label' htmlFor={name}>
+        <div className={className}>
+          <label className='form-label' htmlFor={name}>
             {label}
           </label>
           <input

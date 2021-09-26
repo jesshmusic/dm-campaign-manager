@@ -11,15 +11,14 @@ import { FieldArray } from 'react-final-form-arrays';
 
 const Speeds = (props: { push: (speeds1: string, p: {}) => void; }) => {
   return (
-    <>
-      <h3>Speeds</h3>
+    <div className='mb-3'>
+      <h4>Speeds</h4>
       <FieldArray name='speeds' className={'mb-3'}>
         {({ fields }) => (
           fields.map((name, index) => (
             <div>
               <Row>
-                <FormSelect colWidth={'6'}
-                            label={'Speed'}
+                <FormSelect label={'Speed'}
                             name={`${name}.name`}
                             options={speeds} />
                 <FormField label={'Value'}
@@ -43,7 +42,7 @@ const Speeds = (props: { push: (speeds1: string, p: {}) => void; }) => {
               onClick={() => props.push('speeds', {})}
               variant={'info'}
               size='lg'>+</Button>
-    </>
+    </div>
   );
 };
 

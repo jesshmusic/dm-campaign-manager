@@ -3,10 +3,8 @@
  */
 
 import React from 'react';
-import Col from 'react-bootstrap/Col';
 import { Field } from 'react-final-form';
 import Form from 'react-bootstrap/Form';
-import { Button } from 'react-bootstrap';
 import { GiDiceTwentyFacesTwenty } from 'react-icons/gi/';
 
 const removeSmallest = (numbers) => {
@@ -66,9 +64,9 @@ const AbilityScoreField = (props: AbilityScoreFieldProps) => {
               <Form.Label>{label}</Form.Label>
             ) : (
               <div className={'d-grid pb-2'}>
-                <Button onClick={() => handleRollAbility(input)} variant={'warning'}>
+                <button onClick={() => handleRollAbility(input)} className='btn btn-warning'>
                   <span className={'sans-serif'}>{label}</span> <GiDiceTwentyFacesTwenty size={25} className={'ms-3'} />
-                </Button>
+                </button>
               </div>
             )}
 
