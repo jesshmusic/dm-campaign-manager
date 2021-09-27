@@ -64,7 +64,9 @@ const AbilityScoreField = (props: AbilityScoreFieldProps) => {
               <Form.Label>{label}</Form.Label>
             ) : (
               <div className={'d-grid pb-2'}>
-                <button onClick={() => handleRollAbility(input)} className='btn btn-warning'>
+                <button type='button'
+                        onClick={() => handleRollAbility(input)}
+                        className='btn btn-warning'>
                   <span className={'sans-serif'}>{label}</span> <GiDiceTwentyFacesTwenty size={25} className={'ms-3'} />
                 </button>
               </div>
