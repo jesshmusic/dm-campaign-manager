@@ -18,7 +18,7 @@ import ActionForm from './ActionForm';
 import AbilityScoreField from './AbilityScoreField';
 import { MonsterProps, NPCGeneratorFormFields, SelectOption } from '../../../utilities/types';
 import axios from 'axios';
-import { calculateCR, getNPCObject, hitDieForSize, hitPoints } from '../services';
+import { calculateCR, getNPCObject, hitDieForSize, hitPoints, npcCalculationsDecorator } from '../services';
 import { GiDiceTwentyFacesTwenty } from 'react-icons/gi';
 import Senses from './Senses';
 import Speeds from './Speeds';
@@ -37,15 +37,6 @@ type NPCFormErrors = {
   strength?: string;
   wisdom?: string;
 }
-
-export const diceOptions: SelectOption[] = [
-  { label: 'd4', value: 4 },
-  { label: 'd6', value: 6 },
-  { label: 'd8', value: 8 },
-  { label: 'd10', value: 10 },
-  { label: 'd12', value: 12 },
-  { label: 'd20', value: 20 }
-];
 
 export const senses: SelectOption[] = [
   { label: 'Blindsight', value: 'blindsight' },
@@ -109,42 +100,7 @@ const GenerateNPC = (props: GenerateNPCProps) => {
   const [validated, setValidated] = React.useState(false);
 
   const npcFormDecorator = React.useMemo(() => {
-    return createDecorator(
-      {
-        field: 'characterAlignment',
-        updates: {
-          alignment: ((value) => value.value)
-        }
-      }, {
-        field: 'hitDiceNumber',
-        updates: (value, name, allValues: NPCGeneratorFormFields) => {
-          return {
-            hitDice: `${value}${allValues.hitDiceValue}`,
-            hitPoints: hitPoints(allValues.constitution, value, allValues.hitDiceValue)
-          };
-        }
-      }, {
-        field: 'hitDiceValue',
-        updates: (value, name, allValues: NPCGeneratorFormFields) => {
-          return {
-            hitDice: `${allValues.hitDiceNumber}${value}`,
-            hitPoints: hitPoints(allValues.constitution, allValues.hitDiceNumber, value)
-          };
-        }
-      }, {
-        field: 'constitution',
-        updates: (value, name, allValues: NPCGeneratorFormFields) => {
-          return {
-            hitPoints: hitPoints(value, allValues.hitDiceNumber, allValues.hitDiceValue)
-          };
-        }
-      }, {
-        field: 'size',
-        updates: {
-          hitDiceValue: ((value) => hitDieForSize(value.value))
-        }
-      }
-    );
+    return npcCalculationsDecorator;
   }, []);
 
   const handleSubmit = (values: NPCGeneratorFormFields) => {
@@ -294,14 +250,22 @@ const GenerateNPC = (props: GenerateNPCProps) => {
                 <Speeds push={push} />
                 <ActionForm name='actions'
                             title='Actions'
+                            singularTitle='Action'
+                            values={values}
                             push={push} />
                 <ActionForm name='legendaryActions'
                             title='Legendary Actions'
+                            singularTitle='Legendary Action'
+                            values={values}
                             push={push} />
                 <ActionForm name='reactions'
                             title='Reactions'
+                            singularTitle='Reaction'
+                            values={values}
                             push={push} />
                 <ActionForm name='specialAbilities'
+                            singularTitle='Special Ability'
+                            values={values}
                             title='Special Abilities'
                             push={push} />
                 <div>

@@ -654,7 +654,7 @@ class DndRules
       raise TypeError, 'cr_for_npc expects a Character' unless npc.is_a?(Character)
 
       prof_cr = proficiency_cr(npc)
-      def_cr = defensive_cr(npc)
+      def_cr = defensive_cr(npc.hit_points, npc.armor_class)
       off_cr = offensive_cr(npc)
       # puts "#{npc.name} challenge rating calculation - proficiency CR: #{prof_cr} defense CR: #{def_cr} offense CR: #{off_cr}"
       cr_total = [prof_cr, def_cr, off_cr].inject(0, &:+)
@@ -710,8 +710,8 @@ class DndRules
       end
     end
 
-    def defensive_cr(npc)
-      [hit_points_cr(npc.hit_points), armor_class_cr(npc.armor_class)].min
+    def defensive_cr(hit_points, armor_class)
+      [hit_points_cr(hit_points), armor_class_cr(armor_class)].min
     end
 
     def armor_class_cr(armor_class)
@@ -755,7 +755,7 @@ class DndRules
       attack_bonuses = []
       damage_maximums = []
       npc_actions_count = 0
-      npc.character_actions.each do |action|
+      npc.actions.each do |action|
         npc_actions_count += 1
         attack_bonuses << action.attack_bonus if action.attack_bonus
         next unless action.damage_dice

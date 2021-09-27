@@ -40,6 +40,7 @@ export interface UserProps {
 
 export interface FieldProps {
   className?: string;
+  columnWidth?: number;
   defaultValue?: string | number | readonly string[] | undefined;
   id?: string;
   infoText?: string;
@@ -164,6 +165,7 @@ type MonsterActionDamage = {
   damageType: string;
   diceCount: number;
   diceValue: number;
+  addDamageBonus?: number | string;
 }
 
 type MonsterAction = {

@@ -10,6 +10,7 @@ import classNames from 'classnames';
 const FormField = (props: FieldProps) => {
   const {
     className,
+    columnWidth = 1,
     defaultValue,
     id,
     infoText,
@@ -26,7 +27,7 @@ const FormField = (props: FieldProps) => {
         {({ input, meta }) => (
           <div className={classNames(className, 'form-check')}>
             <input
-              className={`form-check-input${meta.touched && !meta.invalid ? ' is-valid' : ''}${meta.error && meta.touched ? ' is-invalid' : ''}`}
+              className='form-check-input'
               {...input}
               type={type}
               name={name}
@@ -36,12 +37,6 @@ const FormField = (props: FieldProps) => {
             <label className='form-check-label' htmlFor={name}>
               {label}
             </label>
-            {infoText ? (
-              <div className='text-muted form-text'>
-                {infoText}
-              </div>
-            ) : null}
-            <div className='invalid-feedback'>{meta.error}</div>
           </div>
         )}
       </Field>
@@ -50,7 +45,7 @@ const FormField = (props: FieldProps) => {
   return (
     <Field name={name} type={type} validate={(value) => !required || value ? undefined : 'Required'}>
       {({ input, meta }) => (
-        <div className={`py-2 ${className}`}>
+        <div className={`py-2 g-col-${props.columnWidth} ${className}`}>
           <label className='form-label' htmlFor={name}>
             {label}
           </label>

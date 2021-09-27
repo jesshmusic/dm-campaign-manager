@@ -3,110 +3,180 @@
  */
 
 import React from 'react';
-import Form from 'react-bootstrap/Form';
-import Col from 'react-bootstrap/Col';
-import Button from 'react-bootstrap/Button';
-import { GiTrashCan } from 'react-icons/gi';
-import FormField from '../../../components/forms/FormField';
-import Row from 'react-bootstrap/Row';
+import { GiSwordsPower, GiTrashCan } from 'react-icons/gi';
+import { Field } from 'react-final-form';
 import { FieldArray } from 'react-final-form-arrays';
+import FormField from '../../../components/forms/FormField';
+import FormContainer from '../../../containers/FormContainer';
+import { NPCGeneratorFormFields } from '../../../utilities/types';
+import { abilityScoreModifier } from '../../../utilities/character-utilities';
+import DiceFields from './DiceFields';
 import FormSelect from '../../../components/forms/FormSelect';
-import { diceOptions } from './GenerateNPC';
+import { damageTypes } from '../services';
+
+const styles = require('./action-form.module.scss');
+
+enum AttackType {
+  normal = 'normal',
+  multiattack = 'multiattack',
+  custom = 'custom'
+}
+
+const Condition = (props: { when: string, is: AttackType, children: React.ReactNode }) => (
+  <Field name={props.when} subscription={{ value: true }}>
+    {({ input: { value } }) => (value === props.is ? props.children : null)}
+  </Field>
+);
 
 const ActionForm = (props: ({
   name: string,
   push: (name: string, object: {}) => void,
-  title: string
+  title: string,
+  singularTitle: string,
+  values: NPCGeneratorFormFields
 })) => {
-  const { name, push, title } = props;
+  const { name, push, singularTitle, title, values } = props;
   return (
     <div className='mb-3'>
-      <h4>{title}</h4>
+      <div className={styles.header}>
+        <h4>{title}</h4>
+        <button type='button'
+                onClick={() => push(name, {
+                  name: 'New Action',
+                  actionType: AttackType.normal
+                })}
+                className={`btn btn-lg btn-success ${styles.addActionButton}`}>
+          <GiTrashCan size={22} />
+          <small>New {singularTitle}</small>
+        </button>
+      </div>
       <FieldArray name={name} className={'mb-3'}>
         {({ fields }) => (
           fields.map((action, index) => (
             !fields.value[index] || !fields.value[index]._destroy ? (
-              <Row>
-                <Form.Group>
-                  <Row>
-                    <FormField label={'Name*'}
-                               type={'text'}
-                               required
-                               name={`${action}.label`} />
-                    <FormField label={'Description'}
-                               type={'text'}
-                               name={`${action}.data.desc`} />
-                  </Row>
-                  <Row>
-                    <FieldArray name={`${name}[${index}].damages`} className={'mb-3'}>
-                      {({ fields }) => (
-                        fields.map((name, index) => (
-                          <Row
-                            key={`${name}-${index}`}>
-                            <Form.Group as={Col}>
-                              <Row>
-                                <div className='grid'>
-                                  <FormField label={''}
-                                             type={'number'}
-                                             name={`${name}.data.diceCount`} />
-                                  <span className='font-large-deco'>d</span>
-                                  <FormSelect label={'Dice'}
-                                              name={`${name}.data.diceValue`}
-                                              options={diceOptions} />
-                                </div>
-                                <FormField label={'Damage Type'}
-                                           type={'text'}
-                                           required
-                                           name={`${name}.data.damageType`} />
-                                <FormField label={'Damage Bonus'}
-                                           type={'number'}
-                                           name={`${name}.data.damageBonus`} />
-                                <Form.Group as={Col} md={'1'}>
-                                  <Form.Label>Remove</Form.Label>
-                                  <Button onClick={() => fields.remove(index)}
-                                          title={'Remove'}
-                                          variant={'link'}
-                                          className={'py-0'}>
-                                    <GiTrashCan size={32} />
-                                  </Button>
-                                </Form.Group>
-                              </Row>
-                            </Form.Group>
-                          </Row>
-                        ))
-                      )}
-                    </FieldArray>
-                    <Button type='button'
+              <FormContainer columns={1} key={index}>
+                <div className={styles.infoContainer}>
+                  <FormField label={'Name*'}
+                             type={'text'}
+                             className={styles.infoField}
+                             required
+                             name={`${action}.name`} />
+                  <div className={styles.descContainer}>
+                    <div className={styles.radioContainer}>
+                      <div className='mr-eaves'>Action Type</div>
+                      <FormField label={'Normal'}
+                                 name={`${action}.actionType`}
+                                 className='mb-0 me-2'
+                                 type={'radio'}
+                                 value={AttackType.normal} />
+                      <FormField label={'Multiattack'}
+                                 name={`${action}.actionType`}
+                                 className='mb-0 me-2'
+                                 type={'radio'}
+                                 value={AttackType.multiattack} />
+                      <FormField label={'Custom'}
+                                 name={`${action}.actionType`}
+                                 className='mb-0'
+                                 type={'radio'}
+                                 value={AttackType.custom} />
+                    </div>
+                    <Condition when={`${action}.actionType`} is={AttackType.normal}>
+                      <FormField label={'Description'}
+                                 className={styles.infoField}
+                                 type={'text'}
+                                 readOnly
+                                 value={'Melee. Here is the de facto attack description'}
+                                 name={`${action}.desc`} />
+                    </Condition>
+                    <Condition when={`${action}.actionType`} is={AttackType.multiattack}>
+                      <FormField label={'Number'}
+                                 type={'number'}
+                                 className={styles.infoFieldSm}
+                                 required
+                                 name={`${action}.numberOfAttacks`} />
+                      <FormField label={'Description'}
+                                 className={styles.infoField}
+                                 type={'text'}
+                                 readOnly
+                                 value={'Multiattack. Here is the de facto multiattack description'}
+                                 name={`${action}.desc`} />
+                    </Condition>
+                    <Condition when={`${action}.actionType`} is={AttackType.custom}>
+                      <FormField label={'Description'}
+                                 className={styles.infoField}
+                                 type={'text'}
+                                 name={`${action}.desc`} />
+                    </Condition>
+                  </div>
+                  <div className={styles.buttonContainer}>
+                    <button type='button'
                             onClick={() => {
                               push(`${name}[${index}].damages`, {
-                                damageBonus: 0,
-                                damageType: 'slashing',
+                                addDamageBonus: 0,
+                                damageBonus: abilityScoreModifier(values.strength ? values.strength : 10),
+                                damageType: { label: 'Slashing', value: 'slashing' },
                                 diceCount: 1,
-                                diceValue: 6
+                                diceValue: { label: 'd6', value: 6 }
                               });
                             }}
-                            variant={'info'}
-                            size='lg'>Add Damage</Button>
-                  </Row>
-                </Form.Group>
-                <Form.Group as={Col} md={'1'}>
-                  <Form.Label>Remove</Form.Label>
-                  <Button onClick={() => fields.remove(index)}
-                          title={'Remove'}
-                          variant={'link'}
-                          className={'py-0'}>
-                    <GiTrashCan size={32} />
-                  </Button>
-                </Form.Group>
-              </Row>
+                            title='Add Damage'
+                            className={`btn btn-lg btn-info ${styles.addDamageButton}`}>
+                      <GiSwordsPower size={22} />
+                      <small>Add Damage</small>
+                    </button>
+                  </div>
+                  <div className={styles.buttonContainer}>
+                    <button onClick={() => fields.remove(index)}
+                            type='button'
+                            className={`btn btn-lg btn-danger ${styles.addDamageButton}`}>
+                      <GiTrashCan size={22} />
+                      <small>Remove Action</small>
+                    </button>
+                  </div>
+                </div>
+                <FieldArray name={`${name}[${index}].damages`} className={'mb-3'}>
+                  {({ fields }) => (
+                    fields.map((name, damageIndex) => {
+                      console.log(fields);
+                      return (
+                        <FormContainer columns={1} key={damageIndex} className='g-col-8'>
+                          <div className={styles.damageContainer}>
+                            <DiceFields className={styles.diceFields}
+                                        countName={`${name}.diceCount`}
+                                        dieName={`${name}.diceValue`} />
+                            <FormSelect label={'Damage Type'}
+                                        name={`${name}.damageType`}
+                                        className={styles.infoField}
+                                        value={fields.value[damageIndex].damageType}
+                                        options={damageTypes} />
+                            <FormField label={'Damage Bonus'}
+                                       type={'text'}
+                                       className={styles.infoField}
+                                       readOnly
+                                       name={`${name}.damageBonus`} />
+                            <FormField label={'Additional Bonus'}
+                                       type={'number'}
+                                       className={styles.infoField}
+                                       name={`${name}.addDamageBonus`} />
+                            <div className={styles.buttonContainer}>
+                              <button onClick={() => fields.remove(damageIndex)}
+                                      title={'Remove'}
+                                      className={`btn btn-lg btn-danger ${styles.addDamageButton}`}>
+                                <GiTrashCan size={22} />
+                                <small>Remove Damage</small>
+                              </button>
+                            </div>
+                          </div>
+                        </FormContainer>
+                      );
+                    })
+                  )}
+                </FieldArray>
+              </FormContainer>
             ) : null
           ))
         )}
       </FieldArray>
-      <Button type='button'
-              onClick={() => push(name, {})}
-              variant={'info'}
-              size='lg'>+</Button>
     </div>
   );
 };

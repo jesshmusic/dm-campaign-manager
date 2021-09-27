@@ -3,8 +3,6 @@
   border-radius: .25rem;
   box-shadow: .1rem .1rem .25rem rgba(#000, .75);
   display: grid;
-  gap: var(--bs-gap, 0.5rem);
-  grid-template-rows: repeat(1, 1fr);
   grid-template-columns: repeat(var(--bs-columns, 12), 1fr);
   margin-bottom: 1rem;
   padding: 0.5rem 0.5rem 1rem;
