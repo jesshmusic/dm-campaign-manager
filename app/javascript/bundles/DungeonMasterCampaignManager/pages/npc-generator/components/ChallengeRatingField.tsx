@@ -29,7 +29,6 @@ const ChallengeRatingField = (props: ChallengeRatingFieldProps) => {
                     onClick={async (event) => {
                       event.preventDefault();
                       onCalculateCr(values, (jsonName) => {
-                        console.log(jsonName);
                         input.onChange(jsonName);
                       });
                     }}>

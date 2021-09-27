@@ -90,7 +90,9 @@ class NpcGenerator
 
     def calculate_cr(params)
       puts params
-      '0'
+      challenge_rating = '5'
+      cr_data = DndRules.challenge_ratings[challenge_rating.to_sym]
+      { name: challenge_rating, data: cr_data }.as_json
     end
 
     private

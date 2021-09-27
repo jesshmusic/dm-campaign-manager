@@ -59,7 +59,22 @@ export const get2eNPCObject = (values) => {
   return snakecaseKeys(returnChar, { exclude: ['_destroy'] });
 };
 
-export const calculateCR = async (allValues: NPCGeneratorFormFields): Promise<string> => {
+type CrResponse = {
+  name: string;
+  data: {
+    xp: number;
+    prof_bonus: number;
+    armor_class: number;
+    hit_points_min: number;
+    hit_points_max: number;
+    attack_bonus: number;
+    damage_min: number;
+    damage_max: number;
+    save_dc: number;
+  }
+}
+
+export const calculateCR = async (allValues: NPCGeneratorFormFields): Promise<CrResponse> => {
   const response = await axios.get('/v1/calculate_cr', {
     params: {
       monster: getNPCObject(allValues)

@@ -25,6 +25,7 @@ import Speeds from './Speeds';
 import NameFormField from './NameFormField';
 import Frame from '../../../components/Frame';
 import ChallengeRatingField from './ChallengeRatingField';
+import ReadOnlyField from '../../../components/forms/ReadOnlyField';
 
 type NPCFormErrors = {
   name?: string;
@@ -68,6 +69,11 @@ type GenerateNPCProps = {
 }
 
 const GenerateNPC = (props: GenerateNPCProps) => {
+  const [calcValues, setCalcValues] = React.useState({
+    profBonus: 2,
+    xp: 10,
+    saveDC: 13
+  });
   const { setMonster } = props;
   const [monster] = React.useState({
     name: 'New NPC',
@@ -78,6 +84,8 @@ const GenerateNPC = (props: GenerateNPCProps) => {
     hitDiceNumber: 1,
     hitDiceValue: 'd6',
     hitPoints: 4,
+    profBonus: 2,
+    xp: 10,
     size: {
       label: 'Medium',
       value: 'medium'
@@ -150,13 +158,25 @@ const GenerateNPC = (props: GenerateNPCProps) => {
       const response = await axios.get(apiURL);
       callback(response.data.name);
     } catch (error) {
-      callback(error);
+      console.error(error);
+      callback('Err');
     }
   };
 
   const handleCalculateCR = async (values: NPCGeneratorFormFields, callback: (newCr) => void) => {
-    const response = await calculateCR(values);
-    callback(response);
+    try {
+      const response = await calculateCR(values);
+      setCalcValues({
+        profBonus: response.data.prof_bonus,
+        xp: response.data.xp,
+        saveDC: response.data.save_dc
+      });
+      callback(response.name);
+    } catch (error) {
+      console.error(error);
+      callback('Err');
+    }
+
   };
 
   const validate = (values) => {
@@ -220,6 +240,9 @@ const GenerateNPC = (props: GenerateNPCProps) => {
                 </div>
                 <div className='grid' style={{ '--bs-columns': 4 } as React.CSSProperties}>
                   <ChallengeRatingField onCalculateCr={handleCalculateCR} values={values} />
+                  <ReadOnlyField label={'XP'}
+                                 name={'xp'}
+                                 value={calcValues.xp} />
                   <FormSelect label={'Alignment'}
                               name={'characterAlignment'}
                               value={values.alignment}
@@ -228,6 +251,9 @@ const GenerateNPC = (props: GenerateNPCProps) => {
                               name={'size'}
                               value={values.size}
                               options={npcSizeOptions} />
+                  <ReadOnlyField label={'Proficiency Bonus'}
+                                 name={'profBonus'}
+                                 value={calcValues.profBonus} />
                   <FormField label={'Armor Class'}
                              type={'number'}
                              name={'armorClass'} />
