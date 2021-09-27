@@ -88,6 +88,11 @@ class NpcGenerator
         methods: %i[description_text hit_dice size_and_type saving_throws skills_string xp])
     end
 
+    def calculate_cr(params)
+      puts params
+      '0'
+    end
+
     private
 
     def spellcasting_for_class(npc_attributes)

@@ -19,7 +19,7 @@ export const filterSnakeCaseOptionsWithData = (results) => results.results.map((
   { value: toSnakeCase(nextItem.name), label: nextItem.name }
 ));
 
-const AbilityScoreModifier = (abilityScore) => {
+export const abilityScoreModifier = (abilityScore) => {
   const mods = {
     1: -5, 2: -4, 3: -4, 4: -3, 5: -3, 6: -2, 7: -2,
     8: -1, 9: -1, 10: 0, 11: 0, 12: 1, 13: 1, 14: 2, 15: 2,
@@ -74,13 +74,13 @@ const CalculateArmorClass = ({ armor, armorClassModifier, dexterity, shield }) =
   if (armor && armor.data.armorDexBonus && shield) {
     return armor.data.armorClass
       + armor.data.armorClassBonus
-      + AbilityScoreModifier(dexterity)
+      + abilityScoreModifier(dexterity)
       + shield.data.armorClassBonus
       + armorClassModifier;
   } else if (armor && armor.data.armorDexBonus && !shield) {
     return armor.data.armorClass
       + armor.data.armorClassBonus
-      + AbilityScoreModifier(dexterity)
+      + abilityScoreModifier(dexterity)
       + armorClassModifier;
   } else if (armor && shield) {
     return armor.data.armorClass
@@ -92,11 +92,11 @@ const CalculateArmorClass = ({ armor, armorClassModifier, dexterity, shield }) =
       + armor.data.armorClassBonus
       + armorClassModifier;
   } else if (shield) {
-    return 10 + AbilityScoreModifier(dexterity)
+    return 10 + abilityScoreModifier(dexterity)
       + shield.data.armorClassBonus
       + armorClassModifier;
   }
-  return 10 + AbilityScoreModifier(dexterity)
+  return 10 + abilityScoreModifier(dexterity)
     + armorClassModifier;
 };
 

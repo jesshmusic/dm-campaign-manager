@@ -132,7 +132,7 @@ export type NPCGeneratorFormFields = {
   dexterity: number;
   hitDice: string;
   hitDiceNumber: number;
-  hitDiceValue: SelectOption;
+  hitDiceValue: string;
   hitPoints: number;
   intelligence: number;
   languages: string;

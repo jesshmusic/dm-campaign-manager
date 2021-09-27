@@ -3,7 +3,7 @@
 module Admin::V1
   class MonstersController < ApplicationController
     before_action :set_monster, only: %i[show edit update destroy]
-    before_action :authenticate_user!, except: %i[index show monster_refs monster_categories generate_npc convert_2e_npc generate_commoner]
+    before_action :authenticate_user!, except: %i[index show monster_refs monster_categories generate_npc convert_2e_npc generate_commoner calculate_cr]
 
     # GET /v1/monsters
     # GET /v1/monsters.json
@@ -87,6 +87,10 @@ module Admin::V1
 
     def generate_npc
       render json: { npc: NpcGenerator.generate_npc(params, @current_user) }
+    end
+
+    def calculate_cr
+      render json: { challenge: NpcGenerator.calculate_cr(params) }
     end
 
     def convert_2e_npc

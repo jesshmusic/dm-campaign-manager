@@ -10,7 +10,7 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import { Form } from 'react-final-form';
 import createDecorator from 'final-form-calculate';
 
-import { alignmentOptions, getChallengeRatingOptions, npcSizeOptions } from '../../../utilities/character-utilities';
+import { alignmentOptions, npcSizeOptions } from '../../../utilities/character-utilities';
 import FormSelect from '../../../components/forms/FormSelect';
 import MonsterTypeSelect from '../../npcs/partials/MonsterTypeSelect';
 import FormField from '../../../components/forms/FormField';
@@ -18,12 +18,13 @@ import ActionForm from './ActionForm';
 import AbilityScoreField from './AbilityScoreField';
 import { MonsterProps, NPCGeneratorFormFields, SelectOption } from '../../../utilities/types';
 import axios from 'axios';
-import { getNPCObject } from '../services';
+import { calculateCR, getNPCObject, hitDieForSize, hitPoints } from '../services';
 import { GiDiceTwentyFacesTwenty } from 'react-icons/gi';
 import Senses from './Senses';
 import Speeds from './Speeds';
 import NameFormField from './NameFormField';
 import Frame from '../../../components/Frame';
+import ChallengeRatingField from './ChallengeRatingField';
 
 type NPCFormErrors = {
   name?: string;
@@ -72,16 +73,11 @@ const GenerateNPC = (props: GenerateNPCProps) => {
     name: 'New NPC',
     alignment: 'Neutral',
     armorClass: 10,
-    challengeRating: {
-      label: '0',
-      value: '0'
-    },
+    challengeRating: '0',
     hitDice: '1d6',
     hitDiceNumber: 1,
-    hitDiceValue: {
-      label: 'd6',
-      value: 'd6'
-    },
+    hitDiceValue: 'd6',
+    hitPoints: 4,
     size: {
       label: 'Medium',
       value: 'medium'
@@ -113,36 +109,37 @@ const GenerateNPC = (props: GenerateNPCProps) => {
         }
       }, {
         field: 'hitDiceNumber',
-        updates: {
-          hitDice: (hitDiceNumberValue, allValues: NPCGeneratorFormFields) => (
-            `${hitDiceNumberValue}${allValues.hitDiceValue.value}`
-          )
+        updates: (value, name, allValues: NPCGeneratorFormFields) => {
+          return {
+            hitDice: `${value}${allValues.hitDiceValue}`,
+            hitPoints: hitPoints(allValues.constitution, value, allValues.hitDiceValue)
+          };
         }
       }, {
         field: 'hitDiceValue',
-        updates: {
-          hitDice: (hitDiceValueValue, allValues: NPCGeneratorFormFields) => (
-            `${allValues.hitDiceValue}${hitDiceValueValue}`
-          )
+        updates: (value, name, allValues: NPCGeneratorFormFields) => {
+          return {
+            hitDice: `${allValues.hitDiceNumber}${value}`,
+            hitPoints: hitPoints(allValues.constitution, allValues.hitDiceNumber, value)
+          };
         }
       }, {
-        field: 'monsterType',
+        field: 'constitution',
+        updates: (value, name, allValues: NPCGeneratorFormFields) => {
+          return {
+            hitPoints: hitPoints(value, allValues.hitDiceNumber, allValues.hitDiceValue)
+          };
+        }
+      }, {
+        field: 'size',
         updates: {
-          npcVariant: ((value) => (value.value === 'humanoid' ? {
-                label: 'Fighter',
-                value: 'fighter'
-              } : {
-                label: 'Creature',
-                value: 'creature'
-              }
-            )
-          )
+          hitDiceValue: ((value) => hitDieForSize(value.value))
         }
       }
     );
   }, []);
 
-  const handleSubmit = (values) => {
+  const handleSubmit = (values: NPCGeneratorFormFields) => {
     const monster: MonsterProps = getNPCObject(values);
     setMonster(monster);
   };
@@ -155,6 +152,11 @@ const GenerateNPC = (props: GenerateNPCProps) => {
     } catch (error) {
       callback(error);
     }
+  };
+
+  const handleCalculateCR = async (values: NPCGeneratorFormFields, callback: (newCr) => void) => {
+    const response = await calculateCR(values);
+    callback(response);
   };
 
   const validate = (values) => {
@@ -217,14 +219,11 @@ const GenerateNPC = (props: GenerateNPCProps) => {
                              name={'monsterSubtype'} />
                 </div>
                 <div className='grid' style={{ '--bs-columns': 4 } as React.CSSProperties}>
+                  <ChallengeRatingField onCalculateCr={handleCalculateCR} values={values} />
                   <FormSelect label={'Alignment'}
                               name={'characterAlignment'}
                               value={values.alignment}
                               options={alignmentOptions} />
-                  <FormSelect label={'Challenge Rating'}
-                              name={'challengeRating'}
-                              value={values.challengeRating}
-                              options={getChallengeRatingOptions()} />
                   <FormSelect label={'Size'}
                               name={'size'}
                               value={values.size}
@@ -232,6 +231,17 @@ const GenerateNPC = (props: GenerateNPCProps) => {
                   <FormField label={'Armor Class'}
                              type={'number'}
                              name={'armorClass'} />
+                  <FormField label={'Hit Dice Count'}
+                             type={'number'}
+                             name={'hitDiceNumber'} />
+                  <FormField label={'Hit Dice Value'}
+                             type={'text'}
+                             name={'hitDiceValue'}
+                             readOnly />
+                  <FormField label={'Hit Points'}
+                             type={'text'}
+                             name={'hitPoints'}
+                             readOnly />
                 </div>
                 <h4>Ability Scores</h4>
                 <div className='grid mb-3' style={{ '--bs-columns': 6 } as React.CSSProperties}>

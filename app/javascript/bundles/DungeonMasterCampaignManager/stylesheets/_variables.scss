@@ -169,7 +169,7 @@ $input-focus-bg: $input-bg;
 $input-focus-border-color: lighten($primary, 25%);
 $input-focus-box-shadow: $input-box-shadow, $btn-focus-box-shadow;
 $input-focus-color: $input-color;
-$input-placeholder-color: lighten($primary, 30%);
+$input-placeholder-color: lighten($black, 60%);
 $input-height-border: $input-btn-border-width * 2;
 $input-height-inner: ($font-size-base * $input-btn-line-height) + ($input-btn-padding-y * 2);
 $input-height: calc(#{$input-height-inner} + #{$input-height-border});
