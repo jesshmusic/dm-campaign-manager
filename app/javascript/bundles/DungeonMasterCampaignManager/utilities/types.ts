@@ -139,6 +139,7 @@ export type NPCGeneratorFormFields = {
   languages: string;
   monsterType: SelectOption;
   monsterSubtype: string;
+  profBonus: number;
   size: SelectOption;
   strength: number;
   wisdom: number;

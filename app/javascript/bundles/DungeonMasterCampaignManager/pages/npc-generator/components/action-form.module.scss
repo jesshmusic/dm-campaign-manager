@@ -8,7 +8,7 @@
 .infoContainer {
   display: grid;
   grid-gap: 0.5rem;
-  grid-template-columns: 1fr 3fr 4rem 4rem;
+  grid-template-columns: 1fr 8rem 3fr 4rem 4rem;
   grid-column: auto/span 1;
 }
 
@@ -19,6 +19,10 @@
 .infoFieldSm {
   flex: 0 0 8rem;
   margin-right: 0.5rem;
+}
+
+.attackBonus {
+  flex: 0 0 8rem;
 }
 
 .descContainer {

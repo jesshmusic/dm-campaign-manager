@@ -3,7 +3,6 @@ import { MonsterProps, NPCGeneratorFormFields } from '../../utilities/types';
 import { abilityScoreModifier } from '../../utilities/character-utilities';
 import axios from 'axios';
 import createDecorator from 'final-form-calculate';
-import { forEach } from 'react-bootstrap/ElementChildren';
 
 export const getNPCObject = (values: NPCGeneratorFormFields): MonsterProps => {
   const returnChar = {

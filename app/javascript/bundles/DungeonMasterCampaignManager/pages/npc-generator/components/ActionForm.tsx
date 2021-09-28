@@ -61,6 +61,11 @@ const ActionForm = (props: ({
                              className={styles.infoField}
                              required
                              name={`${action}.name`} />
+                  <FormField label={'Attack Bonus'}
+                             className={styles.attackBonus}
+                             type={'text'}
+                             readOnly
+                             name={`${action}.attackBonus`} />
                   <div className={styles.descContainer}>
                     <div className={styles.radioContainer}>
                       <div className='mr-eaves'>Action Type</div>

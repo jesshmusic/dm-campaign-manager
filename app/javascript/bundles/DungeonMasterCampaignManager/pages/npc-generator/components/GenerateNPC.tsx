@@ -8,7 +8,6 @@ import classNames from 'classnames';
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import { Form } from 'react-final-form';
-import createDecorator from 'final-form-calculate';
 
 import { alignmentOptions, npcSizeOptions } from '../../../utilities/character-utilities';
 import FormSelect from '../../../components/forms/FormSelect';
@@ -18,7 +17,7 @@ import ActionForm from './ActionForm';
 import AbilityScoreField from './AbilityScoreField';
 import { MonsterProps, NPCGeneratorFormFields, SelectOption } from '../../../utilities/types';
 import axios from 'axios';
-import { calculateCR, getNPCObject, hitDieForSize, hitPoints, npcCalculationsDecorator } from '../services';
+import { calculateCR, getNPCObject, hitPoints, npcCalculationsDecorator } from '../services';
 import { GiDiceTwentyFacesTwenty } from 'react-icons/gi';
 import Senses from './Senses';
 import Speeds from './Speeds';
