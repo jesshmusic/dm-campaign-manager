@@ -1,14 +1,15 @@
 import React from 'react';
-import { NPCGeneratorFormFields } from '../../../utilities/types';
 import { GiBullyMinion } from 'react-icons/all';
+import { UseFormRegister } from 'react-hook-form';
+import { FieldValues } from '../../../utilities/types';
 
 type ChallengeRatingFieldProps = {
-  onCalculateCr: (values: NPCGeneratorFormFields, callback: (jsonName: string) => void) => void;
-  values: any;
+  onCalculateCr: () => void;
+  register: UseFormRegister<FieldValues>;
 }
 
 const ChallengeRatingField = (props: ChallengeRatingFieldProps) => {
-  const { onCalculateCr, values } = props;
+  const { onCalculateCr, register } = props;
   return (
     <div className='py-2'>
       <label className='form-label'>Challenge</label>
@@ -19,15 +20,12 @@ const ChallengeRatingField = (props: ChallengeRatingFieldProps) => {
           type={'text'}
           placeholder={'Challenge'}
           readOnly
+          {...register('challengeRating')}
         />
         <button className='btn btn-primary p-1'
                 title='Calculate Challenge'
-                onClick={async (event) => {
-                  event.preventDefault();
-                  onCalculateCr(values, (jsonName) => {
-                    // input.onChange(jsonName);
-                  });
-                }}>
+                type='button'
+                onClick={onCalculateCr}>
           <GiBullyMinion size={22} />
         </button>
       </div>

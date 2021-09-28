@@ -6,10 +6,11 @@ import { senses } from './GenerateNPC';
 // import { FieldArray } from 'react-final-form-arrays';
 import FormContainer from '../../../containers/FormContainer';
 import { UseFormRegister } from 'react-hook-form';
-import { FieldValues } from '../../../utilities/types';
+import { FieldValues, NPCGeneratorFormFields } from '../../../utilities/types';
 
 const Senses = (props: { push: (senses1: string, p: {}) => void, register: UseFormRegister<FieldValues> }) => {
   const { push, register } = props;
+  const name = 'TEMP';
   return (
     <div className='mb-3'>
       <h4>Senses</h4>
@@ -19,13 +20,13 @@ const Senses = (props: { push: (senses1: string, p: {}) => void, register: UseFo
       <FormContainer columns={8}>
         <FormSelect className='g-col-5 mb-0'
                     label='Sense'
-                    name={`${name}.name`}
+                    name={`${name}.name` as keyof NPCGeneratorFormFields}
                     options={senses} />
         <FormField label='Value'
                    type='text'
                    register={register}
                    className='g-col-2 mb-0'
-                   name={`${name}.value`} />
+                   name={`${name}.value` as keyof NPCGeneratorFormFields} />
         <div className='g-col-1 d-flex justify-content-center mb-0'>
           <button title='Remove'
             // onClick={() => fields.remove(index)}

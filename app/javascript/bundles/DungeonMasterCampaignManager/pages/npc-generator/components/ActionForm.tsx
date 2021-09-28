@@ -24,7 +24,7 @@ enum AttackType {
 }
 
 const ActionForm = (props: ({
-  name: string,
+  name: keyof NPCGeneratorFormFields,
   title: string,
   singularTitle: string,
   register: UseFormRegister<FieldValues>
@@ -52,30 +52,30 @@ const ActionForm = (props: ({
                      className={styles.infoField}
                      register={register}
                      required
-                     name={`${action}.name`} />
+                     name={`${action}.name` as keyof NPCGeneratorFormFields} />
           <FormField label={'Attack Bonus'}
                      className={styles.attackBonus}
                      register={register}
                      type={'text'}
                      readOnly
-                     name={`${action}.attackBonus`} />
+                     name={`${action}.attackBonus` as keyof NPCGeneratorFormFields} />
           <div className={styles.descContainer}>
             <div className={styles.radioContainer}>
               <div className='mr-eaves'>Action Type</div>
               <FormField label={'Normal'}
-                         name={`${action}.actionType`}
+                         name={`${action}.actionType` as keyof NPCGeneratorFormFields}
                          register={register}
                          className='mb-0 me-2'
                          type={'radio'}
                          value={AttackType.normal} />
               <FormField label={'Multiattack'}
-                         name={`${action}.actionType`}
+                         name={`${action}.actionType` as keyof NPCGeneratorFormFields}
                          register={register}
                          className='mb-0 me-2'
                          type={'radio'}
                          value={AttackType.multiattack} />
               <FormField label={'Custom'}
-                         name={`${action}.actionType`}
+                         name={`${action}.actionType` as keyof NPCGeneratorFormFields}
                          register={register}
                          className='mb-0'
                          type={'radio'}
@@ -87,25 +87,25 @@ const ActionForm = (props: ({
                        register={register}
                        readOnly
                        value={'Melee. Here is the de facto attack description'}
-                       name={`${action}.desc`} />
+                       name={`${action}.desc` as keyof NPCGeneratorFormFields} />
             <FormField label={'Number'}
                        type={'number'}
                        className={styles.infoFieldSm}
                        register={register}
                        required
-                       name={`${action}.numberOfAttacks`} />
+                       name={`${action}.numberOfAttacks` as keyof NPCGeneratorFormFields} />
             <FormField label={'Description'}
                        className={styles.infoField}
                        type={'text'}
                        register={register}
                        readOnly
                        value={'Multiattack. Here is the de facto multiattack description'}
-                       name={`${action}.desc`} />
+                       name={`${action}.desc` as keyof NPCGeneratorFormFields} />
             <FormField label={'Description'}
                        className={styles.infoField}
                        register={register}
                        type={'text'}
-                       name={`${action}.desc`} />
+                       name={`${action}.desc` as keyof NPCGeneratorFormFields} />
           </div>
           <div className={styles.buttonContainer}>
             <button type='button'
@@ -137,11 +137,11 @@ const ActionForm = (props: ({
         <FormContainer columns={1} className='g-col-8'>
           <div className={styles.damageContainer}>
             <DiceFields className={styles.diceFields}
-                        countName={`${name}.diceCount`}
+                        countName={`${name}.diceCount` as keyof NPCGeneratorFormFields}
                         register={register}
-                        dieName={`${name}.diceValue`} />
+                        dieName={`${name}.diceValue` as keyof NPCGeneratorFormFields} />
             <FormSelect label={'Damage Type'}
-                        name={`${name}.damageType`}
+                        name={`${name}.damageType` as keyof NPCGeneratorFormFields}
                         className={styles.infoField}
                         options={damageTypes} />
             <FormField label={'Damage Bonus'}
@@ -149,12 +149,12 @@ const ActionForm = (props: ({
                        className={styles.infoField}
                        register={register}
                        readOnly
-                       name={`${name}.damageBonus`} />
+                       name={`${name}.damageBonus` as keyof NPCGeneratorFormFields} />
             <FormField label={'Additional Bonus'}
                        register={register}
                        type={'number'}
                        className={styles.infoField}
-                       name={`${name}.addDamageBonus`} />
+                       name={`${name}.addDamageBonus` as keyof NPCGeneratorFormFields} />
             <div className={styles.buttonContainer}>
               <button title={'Remove'}
                       onClick={() => true}

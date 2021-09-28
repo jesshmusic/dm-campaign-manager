@@ -2,83 +2,80 @@
  * Created by jesshendricks on 9/13/19
  */
 
-import React, {useState} from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import FormSelect from '../../../components/forms/FormSelect';
 
 const monsterTypeOptions = [
   {
     value: 'aberration',
-    label: 'Aberration',
+    label: 'Aberration'
   },
   {
     value: 'beast',
-    label: 'Beast',
+    label: 'Beast'
   },
   {
     value: 'celestial',
-    label: 'Celestial',
+    label: 'Celestial'
   },
   {
     value: 'construct',
-    label: 'Construct',
+    label: 'Construct'
   },
   {
     value: 'dragon',
-    label: 'Dragon',
+    label: 'Dragon'
   },
   {
     value: 'elemental',
-    label: 'Elemental',
+    label: 'Elemental'
   },
   {
     value: 'fey',
-    label: 'Fey',
+    label: 'Fey'
   },
   {
     value: 'fiend',
-    label: 'Fiend',
+    label: 'Fiend'
   },
   {
     value: 'giant',
-    label: 'Giant',
+    label: 'Giant'
   },
   {
     value: 'humanoid',
-    label: 'Humanoid',
+    label: 'Humanoid'
   },
   {
     value: 'monstrosity',
-    label: 'Monstrosity',
+    label: 'Monstrosity'
   },
   {
     value: 'ooze',
-    label: 'Ooze',
+    label: 'Ooze'
   },
   {
     value: 'plant',
-    label: 'Plant',
+    label: 'Plant'
   },
   {
     value: 'swarm of Tiny beasts',
-    label: 'Swarm of Tiny beasts',
+    label: 'Swarm of Tiny beasts'
   },
   {
     value: 'undead',
-    label: 'Undead',
-  },
+    label: 'Undead'
+  }
 ];
 
-const MonsterTypeSelect = ({colWidth}) => (
+const MonsterTypeSelect = ({ control, onChange }) => (
   <FormSelect
-      label={'Type'}
-      colWidth={colWidth}
-      options={monsterTypeOptions}
-      name={'monsterType'} />
+    label={'Type'}
+    control={control}
+    options={monsterTypeOptions}
+    onChange={onChange}
+    name={'monsterType'} />
 );
-
-MonsterTypeSelect.propTypes = {
-  colWidth: PropTypes.string.isRequired,
-};
 
 export default MonsterTypeSelect;

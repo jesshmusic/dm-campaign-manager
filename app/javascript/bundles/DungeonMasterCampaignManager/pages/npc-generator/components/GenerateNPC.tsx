@@ -1,21 +1,17 @@
-/**
- * Created by jesshendricks on 9/6/19
- */
-
 import React from 'react';
 import { MonsterProps, NPCGeneratorFormFields, SelectOption } from '../../../utilities/types';
 import { alignmentOptions, npcSizeOptions } from '../../../utilities/character-utilities';
 import axios from 'axios';
-import { calculateCR } from '../services';
+import { abilityScoreModifier, calculateCR, getNPCObject, hitPoints } from '../services';
 import Frame from '../../../components/Frame';
 import { useForm } from 'react-hook-form';
-import classNames from 'classnames';
 import NameFormField from './NameFormField';
 import FormField from '../../../components/forms/FormField';
 import ChallengeRatingField from './ChallengeRatingField';
-import ReadOnlyField from '../../../components/forms/ReadOnlyField';
 import FormSelect from '../../../components/forms/FormSelect';
-import MonsterTypeSelect from '../../npcs/partials/MonsterTypeSelect';
+import MonsterTypeSelect from './MonsterTypeSelect';
+import { GiDiceTwentyFacesTwenty } from 'react-icons/gi/';
+import AbilityScoreField from './AbilityScoreField';
 
 
 type NPCFormErrors = {
@@ -51,37 +47,94 @@ type GenerateNPCProps = {
 }
 
 const GenerateNPC = (props: GenerateNPCProps) => {
-  const [calcValues, setCalcValues] = React.useState({
+  const [monsterForm, setMonsterForm] = React.useState<NPCGeneratorFormFields>({
+    name: 'New NPC',
+    alignment: 'Neutral',
+    armorClass: 10,
+    attackBonus: 2,
+    baseDamageBonus: 0,
+    challengeRating: '0',
+    hitDice: '1d6',
+    hitDiceNumber: 1,
+    hitDiceValue: 'd6',
+    hitPoints: 4,
     profBonus: 2,
+    saveDC: 12,
     xp: 10,
-    saveDC: 13
+    size: {
+      label: 'Medium',
+      value: 'medium'
+    },
+    characterAlignment: {
+      value: 'Neutral',
+      label: 'Neutral'
+    },
+    monsterType: {
+      value: 'humanoid',
+      label: 'Humanoid'
+    },
+    strength: 10,
+    dexterity: 10,
+    constitution: 10,
+    intelligence: 10,
+    wisdom: 10,
+    charisma: 10,
+    actions: []
   });
-  const { register, handleSubmit } = useForm<NPCGeneratorFormFields>();
-  const onSubmit = data => console.log(data);
 
-  const handleGenerateName = async (gender, race, callback) => {
+  const { control, getValues, handleSubmit, register, setValue, watch } = useForm<NPCGeneratorFormFields>({
+    defaultValues: monsterForm
+  });
+
+  const watchMonsterName = watch('name', monsterForm.name);
+  const onSubmit = (data) => {
+    props.setMonster(getNPCObject(data));
+  };
+
+  const handleGenerateName = async (gender, race) => {
     const apiURL = `/v1/random_fantasy_name?random_npc_gender=${gender}&random_npc_race=${race ? race : 'human'}`;
     try {
       const response = await axios.get(apiURL);
-      callback(response.data.name);
+      setValue('name', response.data.name);
     } catch (error) {
       console.error(error);
-      callback('Err');
     }
   };
 
-  const handleCalculateCR = async (values: NPCGeneratorFormFields, callback: (newCr) => void) => {
+  const handleCalculateCR = async () => {
     try {
-      const response = await calculateCR(values);
-      setCalcValues({
-        profBonus: response.data.prof_bonus,
-        xp: response.data.xp,
-        saveDC: response.data.save_dc
-      });
-      callback(response.name);
+      const response = await calculateCR(getValues());
+      setValue('profBonus', response.data.prof_bonus);
+      setValue('xp', response.data.xp);
+      setValue('saveDC', response.data.save_dc);
+      setValue('challengeRating', response.name);
     } catch (error) {
       console.error(error);
-      callback('Err');
+    }
+  };
+
+  const handleChange = (name: string, value: number) => {
+    switch (name) {
+      case 'strength':
+        const profBonus = getValues('profBonus');
+        const strMod = abilityScoreModifier(value);
+        setValue('attackBonus', profBonus + strMod, { shouldDirty: true });
+        setValue('baseDamageBonus', strMod, { shouldDirty: true });
+        break;
+      case 'dexterity':
+        break;
+      case 'constitution':
+        setValue('hitPoints', hitPoints(value, getValues('hitDiceNumber'), getValues('hitDiceValue')), { shouldDirty: true });
+        break;
+      case 'intelligence':
+        break;
+      case 'wisdom':
+        break;
+      case 'charisma':
+        break;
+      case 'hitDiceNumber':
+        setValue('hitPoints', hitPoints(getValues('constitution'), value, getValues('hitDiceValue')), { shouldDirty: true });
+        break;
     }
   };
 
@@ -91,37 +144,33 @@ const GenerateNPC = (props: GenerateNPCProps) => {
         // className={classNames(validated && 'was-validated')}
             noValidate>
         <div className='mb-3'>
-          {/*<NameFormField values={values}*/}
-          {/*               handleGenerateName={handleGenerateName} />*/}
+          <NameFormField handleGenerateName={handleGenerateName}
+                         register={register} />
         </div>
-        <div className='grid' style={{ '--bs-columns': 2 } as React.CSSProperties}>
-          <MonsterTypeSelect colWidth={'8'} />
+        <div className='grid' style={{ '--bs-columns': 4 } as React.CSSProperties}>
+          <MonsterTypeSelect control={control} onChange={handleChange} />
           <FormField label={'Subtype'}
                      type={'text'}
                      register={register}
                      name={'monsterSubtype'} />
+          <FormSelect label={'Alignment'}
+                      name={'characterAlignment'}
+                      control={control}
+                      options={alignmentOptions} />
+          <FormSelect label={'Size'}
+                      name={'size'}
+                      control={control}
+                      onChange={handleChange}
+                      options={npcSizeOptions} />
         </div>
         <div className='grid' style={{ '--bs-columns': 4 } as React.CSSProperties}>
-          {/*<ChallengeRatingField onCalculateCr={handleCalculateCR} values={values} />*/}
-          <ReadOnlyField label={'XP'}
-                         name={'xp'}
-                         value={calcValues.xp} />
-          {/*<FormSelect label={'Alignment'}*/}
-          {/*            name={'characterAlignment'}*/}
-          {/*            value={values.alignment}*/}
-          {/*            options={alignmentOptions} />*/}
-          {/*<FormSelect label={'Size'}*/}
-          {/*            name={'size'}*/}
-          {/*            value={values.size}*/}
-          {/*            options={npcSizeOptions} />*/}
-          <ReadOnlyField label={'Proficiency Bonus'}
-                         name={'profBonus'}
-                         value={calcValues.profBonus} />
           <FormField label={'Armor Class'}
+                     onChange={handleChange}
                      type={'number'}
                      register={register}
                      name={'armorClass'} />
           <FormField label={'Hit Dice Count'}
+                     onChange={handleChange}
                      type={'number'}
                      register={register}
                      name={'hitDiceNumber'} />
@@ -135,6 +184,52 @@ const GenerateNPC = (props: GenerateNPCProps) => {
                      register={register}
                      name={'hitPoints'}
                      readOnly />
+          <ChallengeRatingField onCalculateCr={handleCalculateCR} register={register} />
+          <FormField label={'XP'}
+                     type={'number'}
+                     register={register}
+                     name={'xp'}
+                     readOnly />
+          <FormField label={'Proficiency Bonus'}
+                     type={'number'}
+                     register={register}
+                     name={'profBonus'}
+                     readOnly />
+        </div>
+        <h4>Ability Scores</h4>
+        <div className='grid mb-3' style={{ '--bs-columns': 6 } as React.CSSProperties}>
+          <AbilityScoreField label={'STR'}
+                             onChangeAbility={handleChange}
+                             register={register}
+                             name={'strength'} />
+          <AbilityScoreField label={'DEX'}
+                             onChangeAbility={handleChange}
+                             register={register}
+                             name={'dexterity'} />
+          <AbilityScoreField label={'CON'}
+                             onChangeAbility={handleChange}
+                             register={register}
+                             name={'constitution'} />
+          <AbilityScoreField label={'INT'}
+                             onChangeAbility={handleChange}
+                             register={register}
+                             name={'intelligence'} />
+          <AbilityScoreField label={'WIS'}
+                             onChangeAbility={handleChange}
+                             register={register}
+                             name={'wisdom'} />
+          <AbilityScoreField label={'CHA'}
+                             onChangeAbility={handleChange}
+                             register={register}
+                             name={'charisma'} />
+        </div>
+        <div>
+          <div className='btn-group' aria-label='Character actions'>
+            <button type='submit' className='btn btn-success'>
+              <span>Generate NPC</span> <GiDiceTwentyFacesTwenty size={30} className={'ms-3'} />
+            </button>
+            {/*<button type='button' onClick={reset}>Reset</button>*/}
+          </div>
         </div>
       </form>
     </Frame>
@@ -143,35 +238,7 @@ const GenerateNPC = (props: GenerateNPCProps) => {
 
   // const { setMonster } = props;
   // const [monster] = React.useState({
-  //   name: 'New NPC',
-  //   alignment: 'Neutral',
-  //   armorClass: 10,
-  //   challengeRating: '0',
-  //   hitDice: '1d6',
-  //   hitDiceNumber: 1,
-  //   hitDiceValue: 'd6',
-  //   hitPoints: 4,
-  //   profBonus: 2,
-  //   xp: 10,
-  //   size: {
-  //     label: 'Medium',
-  //     value: 'medium'
-  //   },
-  //   characterAlignment: {
-  //     value: 'Neutral',
-  //     label: 'Neutral'
-  //   },
-  //   monsterType: {
-  //     value: 'humanoid',
-  //     label: 'Humanoid'
-  //   },
-  //   strength: 10,
-  //   dexterity: 10,
-  //   constitution: 10,
-  //   intelligence: 10,
-  //   wisdom: 10,
-  //   charisma: 10,
-  //   actions: []
+
   // });
   // const [validated, setValidated] = React.useState(false);
   //
@@ -274,27 +341,7 @@ const GenerateNPC = (props: GenerateNPCProps) => {
   //                            name={'hitPoints'}
   //                            readOnly />
   //               </div>
-  //               <h4>Ability Scores</h4>
-  //               <div className='grid mb-3' style={{ '--bs-columns': 6 } as React.CSSProperties}>
-  //                 <AbilityScoreField label={'STR'}
-  //                                    type={'number'}
-  //                                    name={'strength'} />
-  //                 <AbilityScoreField label={'DEX'}
-  //                                    type={'number'}
-  //                                    name={'dexterity'} />
-  //                 <AbilityScoreField label={'CON'}
-  //                                    type={'number'}
-  //                                    name={'constitution'} />
-  //                 <AbilityScoreField label={'INT'}
-  //                                    type={'number'}
-  //                                    name={'intelligence'} />
-  //                 <AbilityScoreField label={'WIS'}
-  //                                    type={'number'}
-  //                                    name={'wisdom'} />
-  //                 <AbilityScoreField label={'CHA'}
-  //                                    type={'number'}
-  //                                    name={'charisma'} />
-  //               </div>
+
   //               <Senses push={push} />
   //               <Speeds push={push} />
   //               <ActionForm name='actions'
@@ -317,15 +364,7 @@ const GenerateNPC = (props: GenerateNPCProps) => {
   //                           values={values}
   //                           title='Special Abilities'
   //                           push={push} />
-  //               <div>
-  //                 <ButtonGroup aria-label='Character actions'>
-  //                   <Button type='submit' disabled={submitting || pristine}>
-  //                     <span>Generate NPC</span> <GiDiceTwentyFacesTwenty size={30} className={'ms-3'} />
-  //                   </Button>
-  //                   <Button type='button' onClick={form.reset} disabled={submitting || pristine}
-  //                           variant={'secondary'}>Reset</Button>
-  //                 </ButtonGroup>
-  //               </div>
+
   //             </form>
   //           )}
   //     />

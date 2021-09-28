@@ -1,7 +1,7 @@
 import React from 'react';
 import FormField from '../../../components/forms/FormField';
 import FormSelect from '../../../components/forms/FormSelect';
-import { FieldValues, SelectOption } from '../../../utilities/types';
+import { FieldValues, NPCGeneratorFormFields, SelectOption } from '../../../utilities/types';
 import { UseFormRegister } from 'react-hook-form';
 
 const styles = require('./dice-fields.module.scss');
@@ -15,7 +15,12 @@ export const diceOptions: SelectOption[] = [
   { label: 'd20', value: 20 }
 ];
 
-const DiceFields = (props: { countName: string, dieName: string, className: string, register: UseFormRegister<FieldValues> }) => {
+const DiceFields = (props: {
+  countName: keyof NPCGeneratorFormFields,
+  dieName: keyof NPCGeneratorFormFields,
+  className: string,
+  register: UseFormRegister<FieldValues>
+}) => {
   return (
     <div className={`${props.className} ${styles.container}`}>
       <FormField label={'Count'}

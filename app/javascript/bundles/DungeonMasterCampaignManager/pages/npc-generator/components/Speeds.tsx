@@ -9,22 +9,22 @@ import React from 'react';
 import { speeds } from './GenerateNPC';
 // import { FieldArray } from 'react-final-form-arrays';
 import { UseFormRegister } from 'react-hook-form';
-import { FieldValues } from '../../../utilities/types';
+import { FieldValues, NPCGeneratorFormFields } from '../../../utilities/types';
 
 const Speeds = (props: { push: (speeds1: string, p: {}) => void, register: UseFormRegister<FieldValues> }) => {
-  const name = 'TEMP';
+  const name = 'senses[0]';
   return (
     <div className='mb-3'>
       <h4>Speeds</h4>
       <div>
         <Row>
           <FormSelect label={'Speed'}
-                      name={`${name}.name`}
+                      name={`${name}.name` as keyof NPCGeneratorFormFields}
                       options={speeds} />
           <FormField label={'Value'}
                      type={'text'}
                      register={props.register}
-                     name={`${name}.value`} />
+                     name={`${name}.value` as keyof NPCGeneratorFormFields} />
           <Form.Group as={Col} md={'1'}>
             <Form.Label>Remove</Form.Label>
             <Button title={'Remove'}

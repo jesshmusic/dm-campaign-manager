@@ -6,6 +6,9 @@ import React from 'react';
 // import { Field } from 'react-final-form';
 import Form from 'react-bootstrap/Form';
 import { GiDiceTwentyFacesTwenty } from 'react-icons/gi/';
+import { UseFormRegister } from 'react-hook-form';
+import { FieldValues, NPCGeneratorFormFields } from '../../../utilities/types';
+import FormField from '../../../components/forms/FormField';
 
 const removeSmallest = (numbers) => {
   const min = Math.min.apply(null, numbers);
@@ -23,25 +26,25 @@ const removeSmallest = (numbers) => {
 };
 
 type AbilityScoreFieldProps = {
-  name: string;
+  name: keyof NPCGeneratorFormFields;
   defaultValue?: any;
   infoText?: string;
   id?: string;
   label: string;
   readOnly?: boolean;
   hideRoll?: boolean;
-  type: string;
+  onChangeAbility: (name: string, value: number) => void;
+  register: UseFormRegister<FieldValues>;
   value?: any;
 }
 
 const AbilityScoreField = (props: AbilityScoreFieldProps) => {
   const {
-    defaultValue,
-    infoText,
     label,
     name,
     hideRoll,
-    readOnly
+    onChangeAbility,
+    register
   } = props;
 
   const handleRollAbility = (input) => {
@@ -57,8 +60,6 @@ const AbilityScoreField = (props: AbilityScoreFieldProps) => {
 
   return (
     <Form.Group>
-      {/*<Field name={name} type={'number'}>*/}
-      {/*  {({ input, meta }) => (*/}
       <div>
         {hideRoll ? (
           <Form.Label>{label}</Form.Label>
@@ -71,26 +72,13 @@ const AbilityScoreField = (props: AbilityScoreFieldProps) => {
             </button>
           </div>
         )}
-
-        {/*<Form.Control*/}
-        {/*  {...input}*/}
-        {/*  autoComplete={''}*/}
-        {/*  type={'number'}*/}
-        {/*  placeholder={label}*/}
-        {/*  readOnly={readOnly}*/}
-        {/*  defaultValue={defaultValue}*/}
-        {/*  isValid={meta.touched && !meta.invalid}*/}
-        {/*  isInvalid={meta.error && meta.touched}*/}
-        {/*/>*/}
-        {infoText ? (
-          <Form.Text className='text-muted'>
-            {infoText}
-          </Form.Text>
-        ) : null}
-        {/*<Form.Control.Feedback type='invalid'>{meta.error}</Form.Control.Feedback>*/}
+        <FormField label={label}
+                   name={name}
+                   type='number'
+                   register={register}
+                   onChange={onChangeAbility}
+                   hideLabel />
       </div>
-      {/*  )}*/}
-      {/*</Field>*/}
     </Form.Group>
   );
 };

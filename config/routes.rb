@@ -26,9 +26,9 @@ Rails.application.routes.draw do
       get '/monster-categories', to: 'monsters#monster_categories',
           as: 'monster_categories',
           constraints: { format: 'json' }
-      get '/calculate_cr', to: 'monsters#calculate_cr',
-          as: 'calculate_cr',
-          constraints: { format: 'json' }
+      post '/calculate_cr', to: 'monsters#calculate_cr',
+           as: 'calculate_cr',
+           constraints: { format: 'json' }
       resources :dnd_classes, param: :slug
       resources :items, param: :slug
       # noinspection RailsParamDefResolve

@@ -1,6 +1,5 @@
 import React from 'react';
 import { Location, NavigateFn } from '@reach/router';
-import { RegisterOptions, UseFormRegister } from 'react-hook-form';
 
 export interface AppProps {
   itemsCount: number;
@@ -41,22 +40,6 @@ export interface UserProps {
 
 export type FieldValues = {
   [key: string]: string | number
-}
-
-export interface FieldProps {
-  className?: string;
-  columnWidth?: number;
-  defaultValue?: string | number | readonly string[] | undefined;
-  id?: string;
-  infoText?: string;
-  label: string;
-  name: string;
-  placeholder?: string;
-  readOnly?: boolean;
-  register: UseFormRegister<FieldValues>;
-  required?: boolean;
-  type: string;
-  value?: string | number | readonly string[] | undefined;
 }
 
 export interface FlashMessage {
@@ -131,35 +114,39 @@ export type NPCGeneratorFormFields = {
   name: string;
   alignment: string;
   armorClass: number;
-  challengeRating: SelectOption;
+  attackBonus: number;
+  baseDamageBonus: number;
+  challengeRating: string;
   characterAlignment: SelectOption;
   charisma: number;
   constitution: number;
-  conditionImmunities?: [number];
+  conditionImmunities?: number[];
   dexterity: number;
   hitDice: string;
   hitDiceNumber: number;
   hitDiceValue: string;
   hitPoints: number;
   intelligence: number;
-  languages: string;
+  languages?: string;
   monsterType: SelectOption;
-  monsterSubtype: string;
+  monsterSubtype?: string;
   profBonus: number;
+  saveDC?: number;
   size: SelectOption;
   strength: number;
   wisdom: number;
-  conditions?: [number];
-  damageImmunities?: [Resistance];
-  damageResistances?: [Resistance];
-  damageVulnerabilities?: [Resistance];
-  actions?: [MonsterAction];
-  legendaryActions?: [MonsterAction];
-  reactions?: [MonsterAction];
-  specialAbilities?: [MonsterAction];
-  senses?: [MonsterInfoData];
-  speeds?: [MonsterInfoData];
-  monsterProficiencies?: [Prof];
+  xp: number;
+  conditions?: number[];
+  damageImmunities?: Resistance[];
+  damageResistances?: Resistance[];
+  damageVulnerabilities?: Resistance[];
+  actions?: MonsterAction[];
+  legendaryActions?: MonsterAction[];
+  reactions?: MonsterAction[];
+  specialAbilities?: MonsterAction[];
+  senses?: MonsterInfoData[];
+  speeds?: MonsterInfoData[];
+  monsterProficiencies?: Prof[];
 }
 
 type Resistance = {

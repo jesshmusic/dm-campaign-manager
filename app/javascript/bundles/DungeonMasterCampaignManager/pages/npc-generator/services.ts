@@ -1,6 +1,5 @@
 import snakecaseKeys from 'snakecase-keys';
 import { MonsterProps, NPCGeneratorFormFields } from '../../utilities/types';
-import { abilityScoreModifier } from '../../utilities/character-utilities';
 import axios from 'axios';
 import createDecorator from 'final-form-calculate';
 
@@ -8,7 +7,7 @@ export const getNPCObject = (values: NPCGeneratorFormFields): MonsterProps => {
   const returnChar = {
     alignment: values.alignment,
     armorClass: values.armorClass,
-    challengeRating: values.challengeRating.value,
+    challengeRating: values.challengeRating,
     charisma: values.charisma,
     constitution: values.constitution,
     dexterity: values.dexterity,
@@ -92,13 +91,24 @@ export const damageTypes = [
 ];
 
 export const calculateCR = async (allValues: NPCGeneratorFormFields): Promise<CrResponse> => {
-  const response = await axios.get('/v1/calculate_cr', {
+  const response = await axios.post('/v1/calculate_cr', {
     params: {
       monster: getNPCObject(allValues)
     }
   });
 
   return response.data.challenge;
+};
+
+export const abilityScoreModifier = (abilityScore: number) => {
+  const mods = {
+    1: -5, 2: -4, 3: -4, 4: -3, 5: -3, 6: -2, 7: -2,
+    8: -1, 9: -1, 10: 0, 11: 0, 12: 1, 13: 1, 14: 2, 15: 2,
+    16: 3, 17: 3, 18: 4, 19: 4, 20: 5, 21: 5, 22: 6, 23: 6,
+    24: 7, 25: 7, 26: 8, 27: 8, 28: 9, 29: 9, 30: 10, 31: 10
+  };
+
+  return mods[abilityScore];
 };
 
 export const hitDieForSize = (size) => {
@@ -123,6 +133,7 @@ const diceNumberFromString = {
 };
 
 export const hitPoints = (constitution: number, hitDiceNumber: number, hitDiceValue: string) => {
+  console.log(`constitution: ${constitution}, hitDiceNumber: ${hitDiceNumber}, hitDiceValue: ${hitDiceValue}`);
   const dice = diceNumberFromString[hitDiceValue];
   let hitPoints = (dice / 2) + 0.5 + abilityScoreModifier(constitution);
   hitPoints = hitPoints * hitDiceNumber;

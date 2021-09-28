@@ -3,8 +3,26 @@
  */
 
 import React from 'react';
-import { FieldProps } from '../../utilities/types';
-import { useForm } from 'react-hook-form';
+import { UseFormRegister } from 'react-hook-form';
+import { FieldValues, NPCGeneratorFormFields } from '../../utilities/types';
+
+type FieldProps = {
+  className?: string;
+  columnWidth?: number;
+  defaultValue?: string | number | readonly string[] | undefined;
+  hideLabel?: boolean;
+  id?: string;
+  infoText?: string;
+  label: string;
+  name: keyof NPCGeneratorFormFields;
+  onChange?: (name: keyof NPCGeneratorFormFields, value: string | number) => void;
+  placeholder?: string;
+  readOnly?: boolean;
+  register?: UseFormRegister<FieldValues>;
+  required?: boolean;
+  type: string;
+  value?: string | number | readonly string[] | undefined;
+}
 
 const FormField = (props: FieldProps) => {
   const {
@@ -12,50 +30,50 @@ const FormField = (props: FieldProps) => {
     columnWidth = 1,
     defaultValue,
     id,
-    infoText,
+    hideLabel,
     label,
     name,
+    onChange,
     readOnly,
     register,
     required,
     type,
     value
   } = props;
-  // if (type === 'checkbox' || type === 'radio') {
-  //   return (
-  //     <Field name={name} type={type} value={value} validate={(value) => !required || value ? undefined : 'Required'}>
-  //       {({ input, meta }) => (
-  //         <div className={classNames(className, 'form-check')}>
-  //           <input
-  //             className='form-check-input'
-  //             {...input}
-  //             type={type}
-  //             name={name}
-  //             value={value}
-  //             required={required}
-  //             id={id} />
-  //           <label className='form-check-label' htmlFor={name}>
-  //             {label}
-  //           </label>
-  //         </div>
-  //       )}
-  //     </Field>
-  //   );
-  // }
+  if (type === 'checkbox' || type === 'radio') {
+    return (
+      <div className={`${className} form-check`}>
+        <input
+          className='form-check-input'
+          {...register ? register(name, { required }) : null}
+          type={type}
+          name={name}
+          defaultValue={defaultValue}
+          value={value}
+          required={required}
+          id={id} />
+        {hideLabel ? null : (
+          <label className='form-check-label' htmlFor={name}>
+            {label}
+          </label>
+        )}
+      </div>
+    );
+  }
   return (
-    <div className={`py-2 g-col-${props.columnWidth} ${className}`}>
-      <label className='form-label' htmlFor={name}>
-        {label}
-      </label>
+    <div className={`py-2 g-col-${columnWidth} ${className}`}>
+      {hideLabel ? null : (
+        <label className='form-label' htmlFor={name}>
+          {label}
+        </label>
+      )}
       <input className='form-control'
-             {...register(name, { required })}
+             readOnly={readOnly}
+             defaultValue={defaultValue}
+             {...register ? register(name, { required }) : null}
+             onChange={onChange ? (event) => onChange(name, event.target.value) : (event) => false}
+             type={type}
       />
-      {/*{infoText ? (*/}
-      {/*  <div className='text-muted form-text'>*/}
-      {/*    {infoText}*/}
-      {/*  </div>*/}
-      {/*) : null}*/}
-      {/*<div className='invalid-feedback'>{meta.error}</div>*/}
     </div>
   );
 };

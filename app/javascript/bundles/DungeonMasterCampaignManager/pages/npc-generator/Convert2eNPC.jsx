@@ -106,7 +106,6 @@ const Convert2eNPC = (props) => {
   //   return errors;
   // };
   const { npc, validated } = state;
-  console.log(register);
   return (
     <Frame title='D&D 2nd Edition NPC Convertor'
            subtitle='Enter stats for a 2E NPC to generate its 5E equivalent (roughly) for humanoid NPCs.'>
