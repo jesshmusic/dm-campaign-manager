@@ -1,6 +1,6 @@
 import React from 'react';
 import { Location, NavigateFn } from '@reach/router';
-import { RegisterOptions } from 'react-hook-form';
+import { RegisterOptions, UseFormRegister } from 'react-hook-form';
 
 export interface AppProps {
   itemsCount: number;
@@ -39,6 +39,10 @@ export interface UserProps {
   username: string;
 }
 
+export type FieldValues = {
+  [key: string]: string | number
+}
+
 export interface FieldProps {
   className?: string;
   columnWidth?: number;
@@ -49,7 +53,7 @@ export interface FieldProps {
   name: string;
   placeholder?: string;
   readOnly?: boolean;
-  register?: RegisterOptions;
+  register: UseFormRegister<FieldValues>;
   required?: boolean;
   type: string;
   value?: string | number | readonly string[] | undefined;

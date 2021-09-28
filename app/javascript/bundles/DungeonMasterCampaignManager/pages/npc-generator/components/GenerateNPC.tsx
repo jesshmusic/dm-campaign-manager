@@ -4,10 +4,19 @@
 
 import React from 'react';
 import { MonsterProps, NPCGeneratorFormFields, SelectOption } from '../../../utilities/types';
+import { alignmentOptions, npcSizeOptions } from '../../../utilities/character-utilities';
 import axios from 'axios';
 import { calculateCR } from '../services';
 import Frame from '../../../components/Frame';
 import { useForm } from 'react-hook-form';
+import classNames from 'classnames';
+import NameFormField from './NameFormField';
+import FormField from '../../../components/forms/FormField';
+import ChallengeRatingField from './ChallengeRatingField';
+import ReadOnlyField from '../../../components/forms/ReadOnlyField';
+import FormSelect from '../../../components/forms/FormSelect';
+import MonsterTypeSelect from '../../npcs/partials/MonsterTypeSelect';
+
 
 type NPCFormErrors = {
   name?: string;
@@ -42,6 +51,11 @@ type GenerateNPCProps = {
 }
 
 const GenerateNPC = (props: GenerateNPCProps) => {
+  const [calcValues, setCalcValues] = React.useState({
+    profBonus: 2,
+    xp: 10,
+    saveDC: 13
+  });
   const { register, handleSubmit } = useForm<NPCGeneratorFormFields>();
   const onSubmit = data => console.log(data);
 
@@ -59,11 +73,11 @@ const GenerateNPC = (props: GenerateNPCProps) => {
   const handleCalculateCR = async (values: NPCGeneratorFormFields, callback: (newCr) => void) => {
     try {
       const response = await calculateCR(values);
-      // setCalcValues({
-      //   profBonus: response.data.prof_bonus,
-      //   xp: response.data.xp,
-      //   saveDC: response.data.save_dc
-      // });
+      setCalcValues({
+        profBonus: response.data.prof_bonus,
+        xp: response.data.xp,
+        saveDC: response.data.save_dc
+      });
       callback(response.name);
     } catch (error) {
       console.error(error);
@@ -73,29 +87,60 @@ const GenerateNPC = (props: GenerateNPCProps) => {
 
   return (
     <Frame title='Random NPC Generator' subtitle='Select options to create a new NPC' className='random-npc-generator'>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <label className='form-label'>
-          Name
-          <input className='form-control' {...register('name', { required: true, maxLength: 20 })} />
-        </label>
-        <label className='form-label'>
-          Alignment
-          <input className='form-control' {...register('alignment', { pattern: /^[A-Za-z]+$/i })} />
-        </label>
-        <label className='form-label'>
-          Charisma
-          <input className='form-control' type='number' {...register('charisma', { min: 3, max: 30 })} />
-        </label>
-        <input className='form-control' type='submit' />
+      <form onSubmit={handleSubmit(onSubmit)}
+        // className={classNames(validated && 'was-validated')}
+            noValidate>
+        <div className='mb-3'>
+          {/*<NameFormField values={values}*/}
+          {/*               handleGenerateName={handleGenerateName} />*/}
+        </div>
+        <div className='grid' style={{ '--bs-columns': 2 } as React.CSSProperties}>
+          <MonsterTypeSelect colWidth={'8'} />
+          <FormField label={'Subtype'}
+                     type={'text'}
+                     register={register}
+                     name={'monsterSubtype'} />
+        </div>
+        <div className='grid' style={{ '--bs-columns': 4 } as React.CSSProperties}>
+          {/*<ChallengeRatingField onCalculateCr={handleCalculateCR} values={values} />*/}
+          <ReadOnlyField label={'XP'}
+                         name={'xp'}
+                         value={calcValues.xp} />
+          {/*<FormSelect label={'Alignment'}*/}
+          {/*            name={'characterAlignment'}*/}
+          {/*            value={values.alignment}*/}
+          {/*            options={alignmentOptions} />*/}
+          {/*<FormSelect label={'Size'}*/}
+          {/*            name={'size'}*/}
+          {/*            value={values.size}*/}
+          {/*            options={npcSizeOptions} />*/}
+          <ReadOnlyField label={'Proficiency Bonus'}
+                         name={'profBonus'}
+                         value={calcValues.profBonus} />
+          <FormField label={'Armor Class'}
+                     type={'number'}
+                     register={register}
+                     name={'armorClass'} />
+          <FormField label={'Hit Dice Count'}
+                     type={'number'}
+                     register={register}
+                     name={'hitDiceNumber'} />
+          <FormField label={'Hit Dice Value'}
+                     type={'text'}
+                     register={register}
+                     name={'hitDiceValue'}
+                     readOnly />
+          <FormField label={'Hit Points'}
+                     type={'text'}
+                     register={register}
+                     name={'hitPoints'}
+                     readOnly />
+        </div>
       </form>
     </Frame>
   );
 
-  // const [calcValues, setCalcValues] = React.useState({
-  //   profBonus: 2,
-  //   xp: 10,
-  //   saveDC: 13
-  // });
+
   // const { setMonster } = props;
   // const [monster] = React.useState({
   //   name: 'New NPC',

@@ -4,6 +4,7 @@
 
 import React from 'react';
 import { FieldProps } from '../../utilities/types';
+import { useForm } from 'react-hook-form';
 
 const FormField = (props: FieldProps) => {
   const {
@@ -14,8 +15,8 @@ const FormField = (props: FieldProps) => {
     infoText,
     label,
     name,
-    register,
     readOnly,
+    register,
     required,
     type,
     value
@@ -46,9 +47,9 @@ const FormField = (props: FieldProps) => {
       <label className='form-label' htmlFor={name}>
         {label}
       </label>
-      {/*<input className='form-control'*/}
-      {/*       {...register(name)}*/}
-      {/*/>*/}
+      <input className='form-control'
+             {...register(name, { required })}
+      />
       {/*{infoText ? (*/}
       {/*  <div className='text-muted form-text'>*/}
       {/*    {infoText}*/}

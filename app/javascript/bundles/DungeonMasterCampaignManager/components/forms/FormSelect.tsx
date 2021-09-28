@@ -3,7 +3,6 @@
  */
 
 import React from 'react';
-import { Field, FieldRenderProps } from 'react-final-form';
 import Select from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 import { SelectOption } from '../../utilities/types';
@@ -22,23 +21,6 @@ export type SelectProps = {
   value?: any;
 }
 
-const ReactSelectAdapter = ({ input, isClearable, ...rest }: FieldRenderProps<any>) => (
-  <Select
-    {...input}
-    {...rest}
-    defaultValue={input.value}
-    isClearable={isClearable}
-    searchable />
-);
-
-const ReactSelectCreateAdapter = ({ input, isClearable, ...rest }: FieldRenderProps<any>) => (
-  <CreatableSelect
-    {...input}
-    {...rest}
-    isClearable={isClearable}
-    searchable />
-);
-
 const FormSelect = ({
                       name,
                       label,
@@ -50,12 +32,15 @@ const FormSelect = ({
                     }: SelectProps) => (
   <div className={`py-2 ${className}`}>
     <label htmlFor={name} className='form-label'>{label}</label>
-    <Field name={name}
-           label={label}
-           options={options}
-           isClearable={isClearable}
-           isMulti={isMulti}
-           component={isCreatable ? ReactSelectCreateAdapter : ReactSelectAdapter} />
+    {isCreatable ? (
+      <CreatableSelect
+        isClearable={isClearable}
+        searchable />
+    ) : (
+      <Select
+        isClearable={isClearable}
+        searchable />
+    )}
   </div>
 );
 

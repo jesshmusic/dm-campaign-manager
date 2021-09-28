@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import { Field } from 'react-final-form';
+// import { Field } from 'react-final-form';
 import Form from 'react-bootstrap/Form';
 import { GiDiceTwentyFacesTwenty } from 'react-icons/gi/';
 
@@ -57,40 +57,40 @@ const AbilityScoreField = (props: AbilityScoreFieldProps) => {
 
   return (
     <Form.Group>
-      <Field name={name} type={'number'}>
-        {({ input, meta }) => (
-          <div>
-            {hideRoll ? (
-              <Form.Label>{label}</Form.Label>
-            ) : (
-              <div className={'d-grid pb-2'}>
-                <button type='button'
-                        onClick={() => handleRollAbility(input)}
-                        className='btn btn-warning'>
-                  <span className={'sans-serif'}>{label}</span> <GiDiceTwentyFacesTwenty size={25} className={'ms-3'} />
-                </button>
-              </div>
-            )}
-
-            <Form.Control
-              {...input}
-              autoComplete={''}
-              type={'number'}
-              placeholder={label}
-              readOnly={readOnly}
-              defaultValue={defaultValue}
-              isValid={meta.touched && !meta.invalid}
-              isInvalid={meta.error && meta.touched}
-            />
-            {infoText ? (
-              <Form.Text className='text-muted'>
-                {infoText}
-              </Form.Text>
-            ) : null}
-            <Form.Control.Feedback type='invalid'>{meta.error}</Form.Control.Feedback>
+      {/*<Field name={name} type={'number'}>*/}
+      {/*  {({ input, meta }) => (*/}
+      <div>
+        {hideRoll ? (
+          <Form.Label>{label}</Form.Label>
+        ) : (
+          <div className={'d-grid pb-2'}>
+            <button type='button'
+              // onClick={() => handleRollAbility(input)}
+                    className='btn btn-warning'>
+              <span className={'sans-serif'}>{label}</span> <GiDiceTwentyFacesTwenty size={25} className={'ms-3'} />
+            </button>
           </div>
         )}
-      </Field>
+
+        {/*<Form.Control*/}
+        {/*  {...input}*/}
+        {/*  autoComplete={''}*/}
+        {/*  type={'number'}*/}
+        {/*  placeholder={label}*/}
+        {/*  readOnly={readOnly}*/}
+        {/*  defaultValue={defaultValue}*/}
+        {/*  isValid={meta.touched && !meta.invalid}*/}
+        {/*  isInvalid={meta.error && meta.touched}*/}
+        {/*/>*/}
+        {infoText ? (
+          <Form.Text className='text-muted'>
+            {infoText}
+          </Form.Text>
+        ) : null}
+        {/*<Form.Control.Feedback type='invalid'>{meta.error}</Form.Control.Feedback>*/}
+      </div>
+      {/*  )}*/}
+      {/*</Field>*/}
     </Form.Group>
   );
 };
