@@ -1,5 +1,6 @@
 import React from 'react';
 import { Location, NavigateFn } from '@reach/router';
+import { RegisterOptions } from 'react-hook-form';
 
 export interface AppProps {
   itemsCount: number;
@@ -48,6 +49,7 @@ export interface FieldProps {
   name: string;
   placeholder?: string;
   readOnly?: boolean;
+  register?: RegisterOptions;
   required?: boolean;
   type: string;
   value?: string | number | readonly string[] | undefined;
