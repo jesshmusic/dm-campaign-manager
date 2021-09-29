@@ -52,7 +52,7 @@ const GenerateNPC = (props: GenerateNPCProps) => {
     alignment: 'Neutral',
     armorClass: 10,
     attackBonus: 2,
-    baseDamageBonus: 0,
+    damageBonus: 0,
     challengeRating: '0',
     hitDice: '1d6',
     hitDiceNumber: 1,
@@ -119,7 +119,7 @@ const GenerateNPC = (props: GenerateNPCProps) => {
         const profBonus = getValues('profBonus');
         const strMod = abilityScoreModifier(value);
         setValue('attackBonus', profBonus + strMod, { shouldDirty: true });
-        setValue('baseDamageBonus', strMod, { shouldDirty: true });
+        setValue('damageBonus', strMod, { shouldDirty: true });
         break;
       case 'dexterity':
         break;

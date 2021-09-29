@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_29_022239) do
+ActiveRecord::Schema.define(version: 2021_09_29_151248) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -57,9 +57,9 @@ ActiveRecord::Schema.define(version: 2021_09_29_022239) do
     t.bigint "monster_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.string "dc_type"
+    t.string "dc_ability"
     t.integer "dc_value"
-    t.string "success_type"
+    t.string "dc_success_type"
     t.string "usage_type"
     t.string "usage_dice"
     t.integer "usage_min_value"
@@ -326,7 +326,6 @@ ActiveRecord::Schema.define(version: 2021_09_29_022239) do
     t.string "api_url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.text "legendary_description"
     t.bigint "user_id"
     t.string "slug"
     t.integer "armor_class", default: 10
@@ -340,6 +339,8 @@ ActiveRecord::Schema.define(version: 2021_09_29_022239) do
     t.string "hit_dice"
     t.integer "attack_bonus"
     t.integer "xp"
+    t.integer "save_dc", default: 13
+    t.integer "prof_bonus", default: 2
     t.index ["slug"], name: "index_monsters_on_slug", unique: true
     t.index ["user_id"], name: "index_monsters_on_user_id"
   end

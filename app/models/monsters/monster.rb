@@ -4,31 +4,32 @@
 #
 # Table name: monsters
 #
-#  id                    :bigint           not null, primary key
-#  alignment             :string
-#  api_url               :string
-#  armor_class           :integer          default(10)
-#  attack_bonus          :integer
-#  challenge_rating      :string
-#  charisma              :integer          default(10), not null
-#  constitution          :integer          default(10), not null
-#  dexterity             :integer          default(10), not null
-#  hit_dice              :string
-#  hit_points            :integer          default(8), not null
-#  intelligence          :integer          default(10), not null
-#  languages             :string
-#  legendary_description :text
-#  monster_subtype       :string
-#  monster_type          :string
-#  name                  :string
-#  size                  :string
-#  slug                  :string
-#  strength              :integer          default(10), not null
-#  wisdom                :integer          default(10), not null
-#  xp                    :integer
-#  created_at            :datetime         not null
-#  updated_at            :datetime         not null
-#  user_id               :bigint
+#  id               :bigint           not null, primary key
+#  alignment        :string
+#  api_url          :string
+#  armor_class      :integer          default(10)
+#  attack_bonus     :integer
+#  challenge_rating :string
+#  charisma         :integer          default(10), not null
+#  constitution     :integer          default(10), not null
+#  dexterity        :integer          default(10), not null
+#  hit_dice         :string
+#  hit_points       :integer          default(8), not null
+#  intelligence     :integer          default(10), not null
+#  languages        :string
+#  monster_subtype  :string
+#  monster_type     :string
+#  name             :string
+#  prof_bonus       :integer          default(2)
+#  save_dc          :integer          default(13)
+#  size             :string
+#  slug             :string
+#  strength         :integer          default(10), not null
+#  wisdom           :integer          default(10), not null
+#  xp               :integer
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#  user_id          :bigint
 #
 # Indexes
 #
@@ -54,9 +55,9 @@ class Monster < ApplicationRecord
   has_many :damage_resistances, dependent: :destroy
   has_many :damage_vulnerabilities, dependent: :destroy
 
+  has_one :multiattack_action, dependent: :destroy
   has_many :actions, dependent: :destroy
   has_many :legendary_actions, dependent: :destroy
-  has_many :multiattack_actions, dependent: :destroy
   has_many :reactions, dependent: :destroy
   has_many :special_abilities, dependent: :destroy
 
@@ -70,7 +71,7 @@ class Monster < ApplicationRecord
 
   accepts_nested_attributes_for :actions, allow_destroy: true
   accepts_nested_attributes_for :legendary_actions, allow_destroy: true
-  accepts_nested_attributes_for :multiattack_actions, allow_destroy: true
+  accepts_nested_attributes_for :multiattack_action, allow_destroy: true
   accepts_nested_attributes_for :reactions, allow_destroy: true
   accepts_nested_attributes_for :special_abilities, allow_destroy: true
   accepts_nested_attributes_for :senses, allow_destroy: true

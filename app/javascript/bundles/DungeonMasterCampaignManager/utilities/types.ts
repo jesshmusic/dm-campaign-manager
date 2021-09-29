@@ -115,7 +115,7 @@ export type NPCGeneratorFormFields = {
   alignment: string;
   armorClass: number;
   attackBonus: number;
-  baseDamageBonus: number;
+  damageBonus: number;
   challengeRating: string;
   characterAlignment: SelectOption;
   charisma: number;
@@ -163,7 +163,6 @@ type MonsterActionDamage = {
 }
 
 type MonsterAction = {
-  attackBonus?: number;
   dcType?: string;
   dcValue?: number;
   desc: string;

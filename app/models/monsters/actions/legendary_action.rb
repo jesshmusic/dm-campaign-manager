@@ -4,11 +4,11 @@
 #
 #  id              :bigint           not null, primary key
 #  attack_bonus    :integer
-#  dc_type         :string
+#  dc_ability      :string
+#  dc_success_type :string
 #  dc_value        :integer
 #  desc            :string
 #  name            :string
-#  success_type    :string
 #  type            :string
 #  usage_dice      :string
 #  usage_min_value :integer

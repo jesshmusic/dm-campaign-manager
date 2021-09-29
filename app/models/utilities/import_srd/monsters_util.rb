@@ -58,25 +58,105 @@ class MonstersUtil
 
     private
 
+    def import_required_fields(new_monster, monster)
+      new_monster.slug = new_monster.slug || monster[:index]
+      new_monster.alignment = monster[:alignment] || 'unaligned'
+      monster_cr = DndRules.cr_num_to_string(monster[:challenge_rating])
+      new_monster.challenge_rating = monster_cr
+      new_monster.monster_type = monster[:type]
+      new_monster.prof_bonus = DndRules.proficiency_for_cr(monster[:challenge_rating])
+      new_monster.attack_bonus = new_monster.prof_bonus + DndRules.ability_score_modifier(monster[:strength])
+      new_monster.save_dc = DndRules.challenge_ratings[monster_cr.to_sym][:save_dc]
+      new_monster.save!
+    end
+
+    def import_info(new_monster, monster)
+      new_monster.api_url = "/v1/monsters/#{new_monster.slug}"
+      new_monster.languages = monster[:languages]
+      new_monster.size = monster[:size]
+      new_monster.monster_subtype = monster[:subtype] || ''
+      new_monster.xp = monster[:xp]
+    end
+
+    def import_damage_immunities(new_monster, monster)
+      new_monster.damage_immunities.destroy_all unless new_monster.damage_immunities.nil?
+      unless monster[:damage_immunities].nil?
+        monster[:damage_immunities].each do |damage|
+          new_monster.damage_immunities.create(name: damage)
+        end
+      end
+    end
+
+    def import_damage_resistances(new_monster, monster)
+      new_monster.damage_resistances.destroy_all unless new_monster.damage_resistances.nil?
+      unless monster[:damage_resistances].nil?
+        monster[:damage_resistances].each do |damage|
+          new_monster.damage_resistances.create(name: damage)
+        end
+      end
+    end
+
+    def import_damage_vulnerabilities(new_monster, monster)
+      new_monster.damage_vulnerabilities.destroy_all unless new_monster.damage_vulnerabilities.nil?
+      unless monster[:damage_vulnerabilities].nil?
+        monster[:damage_vulnerabilities].each do |damage|
+          new_monster.damage_vulnerabilities.create(name: damage)
+        end
+      end
+    end
+
+    def import_speeds(new_monster, monster)
+      new_monster.speeds.destroy_all unless new_monster.speeds.nil?
+      unless monster[:speed].nil?
+        monster[:speed].each_key do |key|
+          value = monster[:speed][key] == true ? 1 : monster[:speed][key].to_i
+          new_monster.speeds.create(name: key.to_s.titleize, value: value)
+        end
+      end
+    end
+
+    def import_senses(new_monster, monster)
+      new_monster.senses.destroy_all unless new_monster.senses.nil?
+      unless monster[:senses].nil?
+        monster[:senses].each_key do |key|
+          new_monster.senses.create(name: key.to_s.titleize, value: monster[:senses][key].to_s)
+        end
+      end
+    end
+
+    def import_stats(new_monster, monster)
+      new_monster.armor_class = monster[:armor_class]
+      new_monster.charisma = monster[:charisma]
+      new_monster.constitution = monster[:constitution]
+      new_monster.dexterity = monster[:dexterity]
+      new_monster.hit_points = monster[:hit_points]
+      new_monster.intelligence = monster[:intelligence]
+      new_monster.strength = monster[:strength]
+      new_monster.wisdom = monster[:wisdom]
+      new_monster.hit_dice = monster[:hit_dice] || ''
+    end
+
     def import_actions(new_monster, monster)
       new_monster.actions.destroy_all unless new_monster.actions.nil?
+      new_monster.multiattack_action.destroy unless new_monster.multiattack_action.nil?
       attack_bonuses = []
       unless monster[:actions].nil?
         monster[:actions].each do |action|
           if action[:name] == 'Multiattack'
-            multi_act = new_monster.multiattack_actions.create(name: action[:name], desc: action[:desc])
+            new_monster.multiattack_action = MultiattackAction.create(name: action[:name], desc: action[:desc])
             total_attacks = 0
             if action[:options] && action[:options][:from]
               action[:options][:from].each do |multi_action|
                 multi_action.each do |next_action|
-                  multi_act_action = multi_act.multi_action_attacks.create(name: next_action[:name], num_attacks: next_action[:count])
-                  multi_act_action.num_attacks += next_action[:count]
+                  multi_act_action = new_monster.multiattack_action.multi_action_attacks.create(name: next_action[:name], num_attacks: next_action[:count])
+                  multi_act_action.num_attacks = next_action[:count].to_i
+                  total_attacks += multi_act_action.num_attacks
                   multi_act_action.save!
                 end
               end
             end
-            multi_act.total_attacks = total_attacks
-            multi_act.save!
+            new_monster.multiattack_action.total_attacks = total_attacks
+            new_monster.multiattack_action.save!
           else
             act = new_monster.actions.create(name: action[:name], desc: action[:desc], attack_bonus: action[:attack_bonus])
             attack_bonuses << action[:attack_bonus] unless action[:attack_bonus].nil?
@@ -120,9 +200,9 @@ class MonstersUtil
 
     def parse_action(act, action)
       unless action[:dc].nil?
-        act.dc_type = action[:dc][:dc_type][:name]
+        act.dc_ability = action[:dc][:dc_type][:name]
         act.dc_value = action[:dc][:dc_value]
-        act.success_type = action[:dc][:success_type]
+        act.dc_success_type = action[:dc][:success_type]
       end
       unless action[:usage].nil?
         act.usage_dice = action[:usage][:dice]
@@ -149,80 +229,6 @@ class MonstersUtil
         end
       end
       act.save!
-    end
-
-    def import_required_fields(new_monster, monster)
-      new_monster.slug = new_monster.slug || monster[:index]
-      new_monster.alignment = monster[:alignment] || 'unaligned'
-      new_monster.challenge_rating = DndRules.cr_num_to_string(monster[:challenge_rating])
-      new_monster.monster_type = monster[:type]
-      new_monster.save!
-    end
-
-    def import_info(new_monster, monster)
-      new_monster.api_url = "/v1/monsters/#{new_monster.slug}"
-      new_monster.languages = monster[:languages]
-      new_monster.size = monster[:size]
-      new_monster.monster_subtype = monster[:subtype] || ''
-      new_monster.xp = monster[:xp]
-    end
-
-    def import_damage_resistances(new_monster, monster)
-      new_monster.damage_resistances.destroy_all unless new_monster.damage_resistances.nil?
-      unless monster[:damage_resistances].nil?
-        monster[:damage_resistances].each do |damage|
-          new_monster.damage_resistances.create(name: damage)
-        end
-      end
-    end
-
-    def import_damage_vulnerabilities(new_monster, monster)
-      new_monster.damage_vulnerabilities.destroy_all unless new_monster.damage_vulnerabilities.nil?
-      unless monster[:damage_vulnerabilities].nil?
-        monster[:damage_vulnerabilities].each do |damage|
-          new_monster.damage_vulnerabilities.create(name: damage)
-        end
-      end
-    end
-
-    def import_damage_immunities(new_monster, monster)
-      new_monster.damage_immunities.destroy_all unless new_monster.damage_immunities.nil?
-      unless monster[:damage_immunities].nil?
-        monster[:damage_immunities].each do |damage|
-          new_monster.damage_immunities.create(name: damage)
-        end
-      end
-    end
-
-    def import_speeds(new_monster, monster)
-      new_monster.speeds.destroy_all unless new_monster.speeds.nil?
-      unless monster[:speed].nil?
-        monster[:speed].each_key do |key|
-          value = monster[:speed][key] == true ? 1 : monster[:speed][key].to_i
-          new_monster.speeds.create(name: key.to_s.titleize, value: value)
-        end
-      end
-    end
-
-    def import_senses(new_monster, monster)
-      new_monster.senses.destroy_all unless new_monster.senses.nil?
-      unless monster[:senses].nil?
-        monster[:senses].each_key do |key|
-          new_monster.senses.create(name: key.to_s.titleize, value: monster[:senses][key].to_s)
-        end
-      end
-    end
-
-    def import_stats(new_monster, monster)
-      new_monster.armor_class = monster[:armor_class]
-      new_monster.charisma = monster[:charisma]
-      new_monster.constitution = monster[:constitution]
-      new_monster.dexterity = monster[:dexterity]
-      new_monster.hit_points = monster[:hit_points]
-      new_monster.intelligence = monster[:intelligence]
-      new_monster.strength = monster[:strength]
-      new_monster.wisdom = monster[:wisdom]
-      new_monster.hit_dice = monster[:hit_dice] || ''
     end
 
     def import_profs(new_monster, monster)
