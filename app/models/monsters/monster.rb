@@ -8,6 +8,7 @@
 #  alignment             :string
 #  api_url               :string
 #  armor_class           :integer          default(10)
+#  attack_bonus          :integer
 #  challenge_rating      :string
 #  charisma              :integer          default(10), not null
 #  constitution          :integer          default(10), not null
@@ -24,6 +25,7 @@
 #  slug                  :string
 #  strength              :integer          default(10), not null
 #  wisdom                :integer          default(10), not null
+#  xp                    :integer
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
 #  user_id               :bigint
@@ -54,6 +56,7 @@ class Monster < ApplicationRecord
 
   has_many :actions, dependent: :destroy
   has_many :legendary_actions, dependent: :destroy
+  has_many :multiattack_actions, dependent: :destroy
   has_many :reactions, dependent: :destroy
   has_many :special_abilities, dependent: :destroy
 
@@ -67,6 +70,7 @@ class Monster < ApplicationRecord
 
   accepts_nested_attributes_for :actions, allow_destroy: true
   accepts_nested_attributes_for :legendary_actions, allow_destroy: true
+  accepts_nested_attributes_for :multiattack_actions, allow_destroy: true
   accepts_nested_attributes_for :reactions, allow_destroy: true
   accepts_nested_attributes_for :special_abilities, allow_destroy: true
   accepts_nested_attributes_for :senses, allow_destroy: true
@@ -76,10 +80,6 @@ class Monster < ApplicationRecord
   accepts_nested_attributes_for :damage_immunities, allow_destroy: true
   accepts_nested_attributes_for :damage_resistances, allow_destroy: true
   accepts_nested_attributes_for :damage_vulnerabilities, allow_destroy: true
-
-  def xp
-    DndRules.xp_for_cr(challenge_rating)
-  end
 
   def initiative
     DndRules.ability_score_modifier(dexterity)

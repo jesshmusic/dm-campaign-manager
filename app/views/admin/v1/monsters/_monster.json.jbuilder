@@ -6,6 +6,7 @@ json.extract! monster, :id,
               :alignment,
               :api_url,
               :armor_class,
+              :attack_bonus,
               :challenge_rating,
               :charisma,
               :constitution,
@@ -14,6 +15,7 @@ json.extract! monster, :id,
               :hit_points,
               :intelligence,
               :languages,
+              :legendary_description,
               :monster_subtype,
               :monster_type,
               :name,
@@ -21,7 +23,8 @@ json.extract! monster, :id,
               :slug,
               :strength,
               :wisdom,
-              :user_id
+              :user_id,
+              :xp
 
 json.speeds monster.speeds do |speed|
   json.extract! speed, :name, :value
@@ -81,7 +84,5 @@ json.special_abilities monster.special_abilities do |action|
     end
   end
 end
-
-json.xp monster.xp
 
 json.url v1_monster_url(monster, format: :json)

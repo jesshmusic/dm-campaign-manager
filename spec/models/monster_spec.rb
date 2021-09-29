@@ -6,6 +6,7 @@
 #  alignment             :string
 #  api_url               :string
 #  armor_class           :integer          default(10)
+#  attack_bonus          :integer
 #  challenge_rating      :string
 #  charisma              :integer          default(10), not null
 #  constitution          :integer          default(10), not null
@@ -22,6 +23,7 @@
 #  slug                  :string
 #  strength              :integer          default(10), not null
 #  wisdom                :integer          default(10), not null
+#  xp                    :integer
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
 #  user_id               :bigint

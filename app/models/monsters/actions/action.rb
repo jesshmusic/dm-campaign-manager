@@ -9,6 +9,7 @@
 #  desc            :string
 #  name            :string
 #  success_type    :string
+#  type            :string
 #  usage_dice      :string
 #  usage_min_value :integer
 #  usage_type      :string

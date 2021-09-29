@@ -40,6 +40,64 @@ class ItemsUtil
       puts "#{count} Items imported."
     end
 
+    def set_item_info(db_item, item_result)
+      db_item.slug = item_result[:index]
+      db_item.api_url = "/v1/items/#{item_result[:index]}"
+      db_item.desc = item_result[:desc]
+      db_item.cost = Cost.create(
+        quantity: item_result[:cost][:quantity],
+        unit: item_result[:cost][:unit]
+      ) if item_result[:cost]
+      db_item.equipment_category = item_result[:equipment_category][:name]
+      db_item.gear_category = item_result[:gear_category][:name] unless item_result[:gear_category].nil?
+      db_item.quantity = item_result[:quantity]
+      db_item.special = item_result[:special]
+      db_item.tool_category = item_result[:tool_category]
+      db_item.weight = item_result[:weight] || 0
+    end
+
+    def set_equipment_category(db_item, item_result)
+      if !item_result[:equipment_category].nil?
+        db_item.type = case item_result[:equipment_category][:name]
+                       when 'Armor'
+                         'ArmorItem'
+                       when 'Weapon'
+                         'WeaponItem'
+                       when 'Tools'
+                         'ToolItem'
+                       when 'Adventuring Gear'
+                         'GearItem'
+                       when 'Mounts and Vehicles'
+                         'VehicleItem'
+                       else
+                         'GearItem'
+                       end
+      else
+        db_item.type = 'GearItem'
+      end
+    end
+
+    def set_armor_info(db_item, item_result)
+      db_item.armor_category = item_result[:armor_category]
+      db_item.armor_class = ArmorClass.create(
+        ac_base: item_result[:armor_class][:base],
+        has_dex_bonus: item_result[:armor_class][:dex_bonus],
+        max_dex_bonus: item_result[:armor_class][:max_bonus]
+      ) unless item_result[:armor_class].nil?
+      db_item.stealth_disadvantage = item_result[:stealth_disadvantage]
+      db_item.str_minimum = item_result[:str_minimum]
+    end
+
+    def set_contents(db_item, item_result)
+      unless item_result[:contents].nil? || item_result[:contents].count == 0
+        item_result[:contents].each do |item|
+          db_item.content_items.create(index: item[:item][:index],
+                                       name: item[:item][:name],
+                                       quantity: item[:quantity])
+        end
+      end
+    end
+
     def set_weapon_info(db_item, item_result)
       db_item.category_range = item_result[:category_range]
       db_item.damage = Damage.create(
@@ -67,68 +125,10 @@ class ItemsUtil
       db_item.weapon_range = item_result[:weapon_range]
     end
 
-    def set_item_info(db_item, item_result)
-      db_item.slug = item_result[:index]
-      db_item.api_url = "/v1/items/#{item_result[:index]}"
-      db_item.desc = item_result[:desc]
-      db_item.cost = Cost.create(
-        quantity: item_result[:cost][:quantity],
-        unit: item_result[:cost][:unit]
-      ) if item_result[:cost]
-      db_item.equipment_category = item_result[:equipment_category][:name]
-      db_item.gear_category = item_result[:gear_category][:name] unless item_result[:gear_category].nil?
-      db_item.quantity = item_result[:quantity]
-      db_item.special = item_result[:special]
-      db_item.tool_category = item_result[:tool_category]
-      db_item.weight = item_result[:weight] || 0
-    end
-
     def set_vehicle_info(db_item, item_result)
       db_item.capacity = item_result[:capacity]
       db_item.vehicle_category = item_result[:vehicle_category]
       db_item.speed = "#{item_result[:speed][:quantity]} #{item_result[:speed][:unit]}" unless item_result[:speed].nil?
-    end
-
-    def set_armor_info(db_item, item_result)
-      db_item.armor_category = item_result[:armor_category]
-      db_item.armor_class = ArmorClass.create(
-        ac_base: item_result[:armor_class][:base],
-        has_dex_bonus: item_result[:armor_class][:dex_bonus],
-        max_dex_bonus: item_result[:armor_class][:max_bonus]
-      ) unless item_result[:armor_class].nil?
-      db_item.stealth_disadvantage = item_result[:stealth_disadvantage]
-      db_item.str_minimum = item_result[:str_minimum]
-    end
-
-    def set_contents(db_item, item_result)
-      unless item_result[:contents].nil? || item_result[:contents].count == 0
-        item_result[:contents].each do |item|
-          db_item.content_items.create(index: item[:item][:index],
-                                       name: item[:item][:name],
-                                       quantity: item[:quantity])
-        end
-      end
-    end
-
-    def set_equipment_category(db_item, item_result)
-      if !item_result[:equipment_category].nil?
-        db_item.type = case item_result[:equipment_category][:name]
-                       when 'Armor'
-                         'ArmorItem'
-                       when 'Weapon'
-                         'WeaponItem'
-                       when 'Tools'
-                         'ToolItem'
-                       when 'Adventuring Gear'
-                         'GearItem'
-                       when 'Mounts and Vehicles'
-                         'VehicleItem'
-                       else
-                         'GearItem'
-                       end
-      else
-        db_item.type = 'GearItem'
-      end
     end
 
     def import_and_fix_magic_items

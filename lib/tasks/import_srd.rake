@@ -26,12 +26,12 @@ namespace :srd do
     DndClassesUtil.import_dnd_classes
   end
 
-  task import: :environment do
+  task import_monsters: :environment do
     Monster.destroy_all
     MonstersUtil.import
   end
 
-  task import: :environment do
+  task import_items: :environment do
     Item.destroy_all
     ItemsUtil.import
   end

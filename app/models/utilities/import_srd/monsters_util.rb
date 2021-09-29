@@ -60,12 +60,32 @@ class MonstersUtil
 
     def import_actions(new_monster, monster)
       new_monster.actions.destroy_all unless new_monster.actions.nil?
+      attack_bonuses = []
       unless monster[:actions].nil?
         monster[:actions].each do |action|
-          act = new_monster.actions.create(name: action[:name], desc: action[:desc], attack_bonus: action[:attack_bonus])
-          parse_action(act, action)
+          if action[:name] == 'Multiattack'
+            multi_act = new_monster.multiattack_actions.create(name: action[:name], desc: action[:desc])
+            total_attacks = 0
+            if action[:options] && action[:options][:from]
+              action[:options][:from].each do |multi_action|
+                multi_action.each do |next_action|
+                  multi_act_action = multi_act.multi_action_attacks.create(name: next_action[:name], num_attacks: next_action[:count])
+                  multi_act_action.num_attacks += next_action[:count]
+                  multi_act_action.save!
+                end
+              end
+            end
+            multi_act.total_attacks = total_attacks
+            multi_act.save!
+          else
+            act = new_monster.actions.create(name: action[:name], desc: action[:desc], attack_bonus: action[:attack_bonus])
+            attack_bonuses << action[:attack_bonus] unless action[:attack_bonus].nil?
+            parse_action(act, action)
+          end
         end
       end
+      raw_at_bonus = attack_bonuses.sum / attack_bonuses.size.to_f unless attack_bonuses.empty?
+      new_monster.attack_bonus = raw_at_bonus.ceil unless raw_at_bonus.nil?
     end
 
     def import_legendary_actions(new_monster, monster)
@@ -144,6 +164,7 @@ class MonstersUtil
       new_monster.languages = monster[:languages]
       new_monster.size = monster[:size]
       new_monster.monster_subtype = monster[:subtype] || ''
+      new_monster.xp = monster[:xp]
     end
 
     def import_damage_resistances(new_monster, monster)

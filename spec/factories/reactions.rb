@@ -1,14 +1,15 @@
 # == Schema Information
 #
-# Table name: reactions
+# Table name: actions
 #
 #  id              :bigint           not null, primary key
 #  attack_bonus    :integer
 #  dc_type         :string
-#  dc_value        :string
+#  dc_value        :integer
 #  desc            :string
 #  name            :string
 #  success_type    :string
+#  type            :string
 #  usage_dice      :string
 #  usage_min_value :integer
 #  usage_type      :string
@@ -18,7 +19,7 @@
 #
 # Indexes
 #
-#  index_reactions_on_monster_id  (monster_id)
+#  index_actions_on_monster_id  (monster_id)
 #
 # Foreign Keys
 #
