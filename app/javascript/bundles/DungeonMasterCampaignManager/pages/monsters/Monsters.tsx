@@ -34,7 +34,7 @@ const Monsters = (props: PageProps) => {
     <PageContainer user={props.user}
                    flashMessages={props.flashMessages}
                    pageTitle={'Monsters'}
-                   description={'All npcs with descriptions and stats. Dungeon Master\'s Toolbox is a free resource for DMs to manage their campaigns, adventures, and Monsters.'}
+                   description={'All monsters with descriptions and stats. Dungeon Master\'s Toolbox is a free resource for DMs to manage their campaigns, adventures, and Monsters.'}
                    breadcrumbs={[{ isActive: true, title: 'Monsters' }]}>
       <PageTitle title={'Monsters'} />
       {monsters.length > 0 ? (

@@ -19,7 +19,7 @@ const NameFormField = (props: NameFormFieldProps) => {
         {...register('name', { required: true })}
         autoComplete={''}
         type={'text'}
-        placeholder={'NPC name'}
+        placeholder={'Monster name'}
       />
       <div className='d-flex flex-column'>
         <div className='btn-group btn-group-sm mt-1'>

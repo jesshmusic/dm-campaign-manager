@@ -22,7 +22,7 @@ const ItemsList = ({ columns, items, flashMessages, user, pageTitle }) => {
     <PageContainer user={ user }
                    flashMessages={ flashMessages }
                    pageTitle={ pageTitle }
-                   description={ `${ pageTitle } records with descriptions and stats. Dungeon Master's Toolbox is a free resource for DMs to manage their campaigns, adventures, and NPCs.` }
+                   description={ `${ pageTitle } records with descriptions and stats. Dungeon Master's Toolbox is a free resource for DMs to manage their campaigns, adventures, and Monsters.` }
                    breadcrumbs={ [{ url: '/app/items/', isActive: false, title: 'Items' },
                      { isActive: true, title: pageTitle }] }>
       <PageTitle title={ pageTitle } />

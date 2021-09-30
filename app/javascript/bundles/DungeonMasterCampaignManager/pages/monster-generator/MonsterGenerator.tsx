@@ -1,9 +1,9 @@
 import React from 'react';
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/layout/PageTitle';
-import NPCDisplay from './NPCDisplay';
-import GenerateNPC from './components/GenerateNPC';
-import Convert2eNPC from './Convert2eNPC';
+import MonsterDisplay from './MonsterDisplay';
+import GenerateMonster from './components/GenerateMonster';
+import Convert2eMonster from './Convert2eMonster';
 import GenerateCommoner from './components/GenerateCommoner';
 import { GiBlacksmith, GiSpikedDragonHead, SiConvertio } from 'react-icons/all';
 import axios from 'axios';
@@ -14,11 +14,11 @@ type NpcGeneratorProps = {
   flashMessages?: [FlashMessage];
 }
 
-const NpcGenerator = (props: NpcGeneratorProps) => {
+const MonsterGenerator = (props: NpcGeneratorProps) => {
   const [monster, setMonster] = React.useState<MonsterProps | undefined>();
 
   const handleGenerateCommoner = (gender: string = 'Male', race: string = 'Human') => {
-    axios.get(`/v1/generate_commoner?random_npc_gender=${gender}&random_npc_race=${race}`)
+    axios.get(`/v1/generate_commoner?random_monster_gender=${gender}&random_monster_race=${race}`)
       .then((response) => {
         setMonster(response.data);
       });
@@ -31,20 +31,20 @@ const NpcGenerator = (props: NpcGeneratorProps) => {
   return (
     <PageContainer user={props.user}
                    flashMessages={props.flashMessages}
-                   pageTitle={'NPC Generators and Converters'}
+                   pageTitle={'Monster Generators and Converters'}
                    description={'Several generators to build quick Monsters. Fields can be copied and pasted into Fantasy Grounds.'}
-                   breadcrumbs={[{ isActive: true, title: 'NPC Generator' }]}>
-      <PageTitle title={'NPC Generators and Converters'} />
+                   breadcrumbs={[{ isActive: true, title: 'Monster Generator' }]}>
+      <PageTitle title={'Monster Generators and Converters'} />
       <div>
         <p>
-          Several generators to build quick NPCs. Fields can be copied and pasted into Fantasy Grounds.
+          Several generators to build quick Monsters. Fields can be copied and pasted into Fantasy Grounds.
         </p>
 
         {monster ? (
-          <NPCDisplay npc={monster} shortDisplay />
+          <MonsterDisplay monster={monster} shortDisplay />
         ) : null}
 
-        <div className='accordion accordion-flush' id='npcGeneratorAccordion'>
+        <div className='accordion accordion-flush' id='monsterGeneratorAccordion'>
           <div className='accordion-item'>
             <h3 className='accordion-header' id='commonerGeneratorHeading'>
               <button className='accordion-button collapsed'
@@ -57,7 +57,7 @@ const NpcGenerator = (props: NpcGeneratorProps) => {
             <div id='commonerGenerator'
                  className='accordion-collapse collapse'
                  aria-labelledby='commonerGeneratorHeading'
-                 data-bs-parent='#npcGeneratorAccordion'>
+                 data-bs-parent='#monsterGeneratorAccordion'>
               <div className='accordion-body'>
                 <GenerateCommoner onFormSubmit={handleGenerateCommoner} />
               </div>
@@ -69,15 +69,15 @@ const NpcGenerator = (props: NpcGeneratorProps) => {
                       type='button'
                       data-bs-toggle='collapse'
                       data-bs-target='#monsterGenerator'>
-                <GiSpikedDragonHead className={'me-2'} size={30} />Generate NPC
+                <GiSpikedDragonHead className={'me-2'} size={30} />Generate Monster
               </button>
             </h3>
             <div id='monsterGenerator'
                  className='accordion-collapse collapse'
                  aria-labelledby='monsterGeneratorHeading'
-                 data-bs-parent='#npcGeneratorAccordion'>
+                 data-bs-parent='#monsterGeneratorAccordion'>
               <div className='accordion-body'>
-                <GenerateNPC setMonster={handleSetMonster} />
+                <GenerateMonster setMonster={handleSetMonster} />
               </div>
             </div>
           </div>
@@ -93,9 +93,9 @@ const NpcGenerator = (props: NpcGeneratorProps) => {
             <div id='dnd2eGenerator'
                  className='accordion-collapse collapse'
                  aria-labelledby='dnd2eGeneratorHeading'
-                 data-bs-parent='#npcGeneratorAccordion'>
+                 data-bs-parent='#monsterGeneratorAccordion'>
               <div className='accordion-body'>
-                <Convert2eNPC />
+                <Convert2eMonster />
               </div>
             </div>
           </div>
@@ -106,5 +106,5 @@ const NpcGenerator = (props: NpcGeneratorProps) => {
 
 };
 
-export default NpcGenerator;
+export default MonsterGenerator;
 

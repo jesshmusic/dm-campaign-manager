@@ -6,61 +6,61 @@ import Col from 'react-bootstrap/Col';
 import PropTypes from 'prop-types';
 import Frame from '../../components/Frame';
 
-const NPCDisplay = ({ npc, shortDisplay = false }) => (
-  <Frame title={ `New NPC: "${ npc.name }"` } subtitle='Click individual fields to copy to the clipboard'>
+const MonsterDisplay = ({ monster, shortDisplay = false }) => (
+  <Frame title={ `New Monster: "${ monster.name }"` } subtitle='Click individual fields to copy to the clipboard'>
     <Form>
       <Row>
         <CopyField placeHolder={ 'Name' }
-                   fieldId={ 'npcName' }
+                   fieldId={ 'monsterName' }
                    label={ 'Name' }
-                   text={ npc.name } />
+                   text={ monster.name } />
         <CopyField placeHolder={ 'Size' }
-                   fieldId={ 'npcSize' }
+                   fieldId={ 'monsterSize' }
                    label={ 'Size' }
                    colWidth={ '4' }
-                   text={ npc.size_and_type } />
+                   text={ monster.size_and_type } />
         <CopyField placeHolder={ 'Alignment' }
-                   fieldId={ 'npcAlignment' }
+                   fieldId={ 'monsterAlignment' }
                    label={ 'Alignment' }
                    colWidth={ '4' }
-                   text={ npc.alignment } />
+                   text={ monster.alignment } />
         <CopyField placeHolder={ 'CR' }
-                   fieldId={ 'npcChallengeRating' }
+                   fieldId={ 'monsterChallengeRating' }
                    label={ 'CR' }
                    colWidth={ '2' }
-                   text={ npc.challenge_rating } />
+                   text={ monster.challenge_rating } />
         <CopyField placeHolder={ 'XP' }
-                   fieldId={ 'npcXP' }
+                   fieldId={ 'monsterXP' }
                    label={ 'XP' }
                    colWidth={ '2' }
-                   text={ npc.xp } />
+                   text={ monster.xp } />
         <CopyField placeHolder={ 'Armor Class' }
-                   fieldId={ 'npcArmorClass' }
+                   fieldId={ 'monsterArmorClass' }
                    label={ 'Armor Class' }
                    colWidth={ '2' }
-                   text={ npc.armor_class } />
+                   text={ monster.armor_class } />
         <CopyField placeHolder={ 'Hit Points' }
-                   fieldId={ 'npcHitPoints' }
+                   fieldId={ 'monsterHitPoints' }
                    label={ 'Hit Points' }
                    colWidth={ '2' }
-                   text={ npc.hit_points } />
+                   text={ monster.hit_points } />
         <CopyField placeHolder={ 'Hit Dice' }
-                   fieldId={ 'npcHitHitDice' }
+                   fieldId={ 'monsterHitHitDice' }
                    label={ 'Hit Dice' }
                    colWidth={ '3' }
-                   text={ npc.hit_dice } />
+                   text={ monster.hit_dice } />
         <CopyField placeHolder={ 'Speed' }
-                   fieldId={ 'npcSpeed' }
+                   fieldId={ 'monsterSpeed' }
                    label={ 'Speed' }
                    colWidth={ '5' }
-                   text={ npc.speed } />
+                   text={ monster.speed } />
         <CopyField placeHolder={ 'Strength' }
-                   fieldId={ 'npcStrength' }
+                   fieldId={ 'monsterStrength' }
                    label={ 'Strength' }
                    colWidth={ '2' }
-                   text={ npc.strength } />
+                   text={ monster.strength } />
         <CopyField placeHolder={ 'Dexterity' }
-                   fieldId={ 'npcDexterity' }
+                   fieldId={ 'monsterDexterity' }
                    label={ 'Dexterity' }
                    colWidth={ '2' }
                    text={ npc.dexterity } />
@@ -176,9 +176,9 @@ const NPCDisplay = ({ npc, shortDisplay = false }) => (
   </Frame>
 );
 
-NPCDisplay.propTypes = {
+MonsterDisplay.propTypes = {
   npc: PropTypes.object.isRequired,
   shortDisplay: PropTypes.bool
 };
 
-export default NPCDisplay;
+export default MonsterDisplay;

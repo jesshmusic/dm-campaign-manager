@@ -1,0 +1,264 @@
+Index: app/javascript/bundles/DungeonMasterCampaignManager/pages/npcs/components/MonsterListItem.tsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { MonsterSummary } from '../../../utilities/types';\nimport { ListGroup } from 'react-bootstrap';\nimport React from 'react';\n\ntype MonsterSummaryProps = {\n  monster: MonsterSummary;\n  index: number;\n  goToPage: (slug: string) => void;\n}\nconst MonsterListItem = ({ monster, goToPage, index }: MonsterSummaryProps) => {\n  return (\n    <ListGroup.Item action\n                    onClick={() => goToPage(monster.slug)}\n                    variant={index % 2 === 0 ? '' : 'primary'}>\n      <div className={'grid'}>\n        <span className={'g-col-4 fs-5 mr-eaves text-primary'}>{monster.name}</span>\n        <span className={'g-col-2 fs-6 serif fst-italic'}>{monster.alignment}</span>\n        <span className={'g-col-2 fs-6 sans-serif'}>{monster.challengeRating} {monster.xpString}</span>\n        <span className={'g-col-2 fs-6 sans-serif'}>{monster.hitPoints} ( {monster.hitDice} )</span>\n        <span className={'g-col-2 fs-6 sans-serif'}>{monster.monsterType}</span>\n      </div>\n    </ListGroup.Item>\n  );\n\n};\n\nexport default MonsterListItem;
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/javascript/bundles/DungeonMasterCampaignManager/pages/npcs/components/MonsterListItem.tsx b/app/javascript/bundles/DungeonMasterCampaignManager/pages/npcs/components/MonsterListItem.tsx
+--- a/app/javascript/bundles/DungeonMasterCampaignManager/pages/npcs/components/MonsterListItem.tsx	(revision a11a0d4592a22bf40e5e165245de16909bc6026b)
++++ b/app/javascript/bundles/DungeonMasterCampaignManager/pages/npcs/components/MonsterListItem.tsx	(date 1632950419345)
+@@ -13,10 +13,12 @@
+                     onClick={() => goToPage(monster.slug)}
+                     variant={index % 2 === 0 ? '' : 'primary'}>
+       <div className={'grid'}>
+-        <span className={'g-col-4 fs-5 mr-eaves text-primary'}>{monster.name}</span>
++        <span className={'g-col-2 fs-5 mr-eaves text-primary'}>{monster.name}</span>
+         <span className={'g-col-2 fs-6 serif fst-italic'}>{monster.alignment}</span>
+         <span className={'g-col-2 fs-6 sans-serif'}>{monster.challengeRating} {monster.xpString}</span>
+         <span className={'g-col-2 fs-6 sans-serif'}>{monster.hitPoints} ( {monster.hitDice} )</span>
++        <span
++          className={'g-col-2 fs-6 sans-serif'}>Attack Bonus: +{monster.attackBonus} Prof Bonus: +{monster.profBonus}</span>
+         <span className={'g-col-2 fs-6 sans-serif'}>{monster.monsterType}</span>
+       </div>
+     </ListGroup.Item>
+Index: app/javascript/bundles/DungeonMasterCampaignManager/actions/api.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import ReactOnRails from 'react-on-rails';\nimport reduxApi from 'redux-api';\nimport {navigate} from '@reach/router';\nimport axios, {AxiosRequestConfig, AxiosResponse} from \"axios\";\n\nexport function getHeaders() {\n  return ReactOnRails.authenticityHeaders({\n    'Content-Type': 'application/json',\n    'Accept': 'application/json',\n  });\n}\n\nconst processData = (data) => {\n  try {\n    return JSON.parse(data);\n  } catch (err) {\n    return data;\n  }\n};\n\nconst toJSON = (resp) => {\n  if (resp.text) {\n    return resp.text().then(processData);\n  } else if (resp instanceof Promise) {\n    return resp.then(processData);\n  }\n  return Promise.resolve(resp).then(processData);\n};\n\nexport const fetchData = async (opts: AxiosRequestConfig): Promise<AxiosResponse> => {\n\n  const response = await axios({\n    method: opts.method,\n    url: opts.url,\n    data: opts.data,\n    headers: getHeaders()\n  });\n  // console.log(response);\n  return response;\n}\n\nconst dmFetch = (fetch) => {\n  return (url, opts) =>\n    fetch(url, opts)\n      .then((response) => {\n        const status = response.status === 1223 ? 204 : response.status;\n        const statusText = response.status === 1223 ? 'No Content' : response.statusText;\n\n        return toJSON(response).then((data) => {\n          if (status >= 200 && status < 400) {\n            return data;\n          }\n          data.status = status;\n          data.statusText = statusText;\n          return Promise.reject(data);\n        });\n      });\n};\n\nexport default reduxApi({\n  generateNonPlayerCharacter: {\n    url: '/v1/generate_npc',\n    options() {\n      const headers = getHeaders();\n      return {\n        method: 'post',\n        headers,\n      };\n    },\n  },\n  convert2eNonPlayerCharacter: {\n    url: '/v1/convert_2e_npc',\n    options() {\n      const headers = getHeaders();\n      return {\n        method: 'post',\n        headers,\n      };\n    },\n  },\n  generateCommoner: {\n    url: '/v1/generate_commoner?random_npc_gender=:gender&random_npc_race=:race',\n  },\n  getDndClass: {\n    url: '/v1/dnd_classes/:slug.json',\n  },\n  getDndClasses: {\n    url: '/v1/dnd_classes.json',\n  },\n  getItem: {\n    url: '/v1/items/:slug.json',\n  },\n  getItems: {\n    url: '/v1/items.json',\n  },\n  getNPC: {\n    url: '/v1/monsters/:slug.json',\n  },\n  getNPCs: {\n    url: '/v1/monsters.json',\n  },\n  getRace: {\n    url: '/v1/race/:slug.json',\n  },\n  getRaces: {\n    url: '/v1/races.json',\n  },\n  getSpell: {\n    url: '/v1/spells/:slug.json',\n  },\n  getSpells: {\n    url: '/v1/spells.json',\n  },\n  getUser: {\n    url: '/users/:slug.json',\n  },\n  getUsers: {\n    url: '/users.json',\n  },\n  userLogin: {\n    url: '/users/sign_in',\n    options() {\n      const headers = getHeaders();\n      return {\n        method: 'post',\n        headers,\n      };\n    },\n    postfetch: [() => {\n      navigate('/');\n    }],\n  },\n  userLogout: {\n    url: '/users/sign_out',\n    options() {\n      const headers = getHeaders();\n      return {\n        method: 'delete',\n        headers,\n      };\n    },\n    postfetch: [() => {\n      navigate('/');\n    }],\n  },\n}).use('fetch', dmFetch(fetch));
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/javascript/bundles/DungeonMasterCampaignManager/actions/api.ts b/app/javascript/bundles/DungeonMasterCampaignManager/actions/api.ts
+--- a/app/javascript/bundles/DungeonMasterCampaignManager/actions/api.ts	(revision a11a0d4592a22bf40e5e165245de16909bc6026b)
++++ b/app/javascript/bundles/DungeonMasterCampaignManager/actions/api.ts	(date 1633013700938)
+@@ -1,12 +1,12 @@
+ import ReactOnRails from 'react-on-rails';
+ import reduxApi from 'redux-api';
+-import {navigate} from '@reach/router';
+-import axios, {AxiosRequestConfig, AxiosResponse} from "axios";
++import { navigate } from '@reach/router';
++import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+ 
+ export function getHeaders() {
+   return ReactOnRails.authenticityHeaders({
+     'Content-Type': 'application/json',
+-    'Accept': 'application/json',
++    'Accept': 'application/json'
+   });
+ }
+ 
+@@ -27,17 +27,14 @@
+   return Promise.resolve(resp).then(processData);
+ };
+ 
+-export const fetchData = async (opts: AxiosRequestConfig): Promise<AxiosResponse> => {
+-
+-  const response = await axios({
++export const fetchData = (opts: AxiosRequestConfig): Promise<AxiosResponse> => {
++  return axios({
+     method: opts.method,
+     url: opts.url,
+     data: opts.data,
+     headers: getHeaders()
+   });
+-  // console.log(response);
+-  return response;
+-}
++};
+ 
+ const dmFetch = (fetch) => {
+   return (url, opts) =>
+@@ -64,9 +61,9 @@
+       const headers = getHeaders();
+       return {
+         method: 'post',
+-        headers,
++        headers
+       };
+-    },
++    }
+   },
+   convert2eNonPlayerCharacter: {
+     url: '/v1/convert_2e_npc',
+@@ -74,48 +71,48 @@
+       const headers = getHeaders();
+       return {
+         method: 'post',
+-        headers,
++        headers
+       };
+-    },
++    }
+   },
+   generateCommoner: {
+-    url: '/v1/generate_commoner?random_npc_gender=:gender&random_npc_race=:race',
++    url: '/v1/generate_commoner?random_npc_gender=:gender&random_npc_race=:race'
+   },
+   getDndClass: {
+-    url: '/v1/dnd_classes/:slug.json',
++    url: '/v1/dnd_classes/:slug.json'
+   },
+   getDndClasses: {
+-    url: '/v1/dnd_classes.json',
++    url: '/v1/dnd_classes.json'
+   },
+   getItem: {
+-    url: '/v1/items/:slug.json',
++    url: '/v1/items/:slug.json'
+   },
+   getItems: {
+-    url: '/v1/items.json',
++    url: '/v1/items.json'
+   },
+   getNPC: {
+-    url: '/v1/monsters/:slug.json',
++    url: '/v1/monsters/:slug.json'
+   },
+   getNPCs: {
+-    url: '/v1/monsters.json',
++    url: '/v1/monsters.json'
+   },
+   getRace: {
+-    url: '/v1/race/:slug.json',
++    url: '/v1/race/:slug.json'
+   },
+   getRaces: {
+-    url: '/v1/races.json',
++    url: '/v1/races.json'
+   },
+   getSpell: {
+-    url: '/v1/spells/:slug.json',
++    url: '/v1/spells/:slug.json'
+   },
+   getSpells: {
+-    url: '/v1/spells.json',
++    url: '/v1/spells.json'
+   },
+   getUser: {
+-    url: '/users/:slug.json',
++    url: '/users/:slug.json'
+   },
+   getUsers: {
+-    url: '/users.json',
++    url: '/users.json'
+   },
+   userLogin: {
+     url: '/users/sign_in',
+@@ -123,12 +120,12 @@
+       const headers = getHeaders();
+       return {
+         method: 'post',
+-        headers,
++        headers
+       };
+     },
+     postfetch: [() => {
+       navigate('/');
+-    }],
++    }]
+   },
+   userLogout: {
+     url: '/users/sign_out',
+@@ -136,11 +133,11 @@
+       const headers = getHeaders();
+       return {
+         method: 'delete',
+-        headers,
++        headers
+       };
+     },
+     postfetch: [() => {
+       navigate('/');
+-    }],
+-  },
++    }]
++  }
+ }).use('fetch', dmFetch(fetch));
+\ No newline at end of file
+Index: app/javascript/bundles/DungeonMasterCampaignManager/utilities/types.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import React from 'react';\nimport { Location, NavigateFn } from '@reach/router';\n\nexport interface AppProps {\n  itemsCount: number;\n  npcsCount: number;\n  spellsCount: number;\n  usersCount: number;\n  user?: UserProps;\n}\n\nexport interface PageProps {\n  addFlashMessage: (flashMessage: FlashMessage) => void;\n  children?: React.ReactNode;\n  flashMessages: FlashMessage[];\n  itemsCount: number;\n  location: Location;\n  navigate: NavigateFn;\n  npcsCount: number;\n  path: string;\n  spellsCount: number;\n  uri: string;\n  user?: UserProps;\n  usersCount: number;\n}\n\nexport interface UserProps {\n  created_at: string;\n  deleted_at?: string;\n  email: string;\n  id: number;\n  info?: string;\n  location?: string;\n  name: string;\n  role: string;\n  slug: string;\n  updated_at?: string;\n  username: string;\n}\n\nexport type FieldValues = {\n  [key: string]: string | number\n}\n\nexport interface FlashMessage {\n  id: number;\n  heading: string;\n  text: string;\n  type: string;\n}\n\nexport interface AbilityScore {\n  desc: string[];\n  fullName: string;\n  name: string;\n}\n\nexport interface DndClassesResponse {\n  count: number;\n  results: [DndClasses];\n}\n\nexport interface DndClasses {\n  dndClasses: [DndClass];\n  currentDndClass: DndClass;\n}\n\nexport interface DndClass {\n  name: string;\n  hitDie: string;\n  abilityScores: AbilityScore[];\n  proficiencies: Prof[];\n  proficiencyChoices: ProfChoice[];\n  slug: string;\n  startingEquipment: StartingEquipment[];\n\n  subclasses: string[];\n}\n\nexport interface StartingEquipment {\n  name: string;\n  quantity: number;\n}\n\nexport interface Prof {\n  name: string;\n  profType: string;\n}\n\nexport interface ProfChoice {\n  name: string;\n  numChoices: number;\n  profChoiceType: string;\n  proficiencies: Prof[];\n}\n\nexport interface MonsterSummary {\n  alignment: string;\n  challengeRating: string;\n  hitPoints: string;\n  hitDice: string;\n  monsterType: string;\n  name: string;\n  slug: string;\n  xpString: string;\n}\n\nexport type SelectOption = {\n  label: string;\n  value: string | number;\n}\n\nexport type NPCGeneratorFormFields = {\n  name: string;\n  alignment: string;\n  armorClass: number;\n  attackBonus: number;\n  damageBonus: number;\n  challengeRating: string;\n  characterAlignment: SelectOption;\n  charisma: number;\n  constitution: number;\n  conditionImmunities?: number[];\n  dexterity: number;\n  hitDice: string;\n  hitDiceNumber: number;\n  hitDiceValue: string;\n  hitPoints: number;\n  intelligence: number;\n  languages?: string;\n  monsterType: SelectOption;\n  monsterSubtype?: string;\n  profBonus: number;\n  saveDC?: number;\n  size: SelectOption;\n  strength: number;\n  wisdom: number;\n  xp: number;\n  conditions?: number[];\n  damageImmunities?: Resistance[];\n  damageResistances?: Resistance[];\n  damageVulnerabilities?: Resistance[];\n  actions?: MonsterAction[];\n  legendaryActions?: MonsterAction[];\n  reactions?: MonsterAction[];\n  specialAbilities?: MonsterAction[];\n  senses?: MonsterInfoData[];\n  speeds?: MonsterInfoData[];\n  monsterProficiencies?: Prof[];\n}\n\ntype Resistance = {\n  name: string,\n  _destroy?: boolean;\n}\n\ntype MonsterActionDamage = {\n  damageBonus: number;\n  damageType: string;\n  diceCount: number;\n  diceValue: number;\n  addDamageBonus?: number | string;\n}\n\ntype MonsterAction = {\n  dcType?: string;\n  dcValue?: number;\n  desc: string;\n  name: string;\n  damages?: [MonsterActionDamage];\n  successType?: string;\n  usageDice?: string;\n  usageMinValue?: number;\n  usageType?: string;\n}\n\nexport type MonsterInfoData = {\n  name: string;\n  value: string | number | boolean;\n}\n\nexport interface MonsterProps {\n  alignment: string;\n  armorClass: number;\n  challengeRating: string;\n  charisma: number;\n  constitution: number;\n  dexterity: number;\n  hitDice: string;\n  hitPoints: string;\n  intelligence: number;\n  languages: string;\n  monsterSubtype: string;\n  monsterType: string;\n  name: string;\n  size: string;\n  strength: number;\n  wisdom: number;\n  conditions?: [number];\n  damageImmunities?: [Resistance];\n  damageResistances?: [Resistance];\n  damageVulnerabilities?: [Resistance];\n  actions?: [MonsterAction];\n  legendaryActions?: [MonsterAction];\n  reactions?: [MonsterAction];\n  specialAbilities?: [MonsterAction];\n  senses?: [MonsterInfoData];\n  speeds?: [MonsterInfoData];\n  monsterProficiencies?: [Prof];\n}\n\nexport interface Monsters {\n  monsters: [MonsterSummary];\n}\n\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/javascript/bundles/DungeonMasterCampaignManager/utilities/types.ts b/app/javascript/bundles/DungeonMasterCampaignManager/utilities/types.ts
+--- a/app/javascript/bundles/DungeonMasterCampaignManager/utilities/types.ts	(revision a11a0d4592a22bf40e5e165245de16909bc6026b)
++++ b/app/javascript/bundles/DungeonMasterCampaignManager/utilities/types.ts	(date 1633013210990)
+@@ -2,13 +2,40 @@
+ import { Location, NavigateFn } from '@reach/router';
+ 
+ export interface AppProps {
+-  itemsCount: number;
+-  npcsCount: number;
+-  spellsCount: number;
+-  usersCount: number;
++  flashMessages: FlashMessage[];
++  items: {
++    items: any[];
++    count: number;
++    currentItem?: any;
++  };
++  monsters: {
++    monsters: MonsterSummary[];
++    count: number;
++    currentMonster?: MonsterProps;
++  };
++  races: {
++    races: any[];
++    count: number;
++    currentRace?: any;
++  };
++  spells: {
++    spells: any[];
++    count: number;
++    currentSpell?: any;
++  };
++  users: {
++    users?: any[];
++    count: number;
++    currentUser?: UserProps;
++  };
+   user?: UserProps;
+ }
+ 
++export interface StateAction {
++  type: string;
++  payload: any;
++}
++
+ export interface PageProps {
+   addFlashMessage: (flashMessage: FlashMessage) => void;
+   children?: React.ReactNode;
+@@ -96,11 +123,14 @@
+ 
+ export interface MonsterSummary {
+   alignment: string;
++  attackBonus: number;
+   challengeRating: string;
+   hitPoints: string;
+   hitDice: string;
+   monsterType: string;
+   name: string;
++  profBonus: number;
++  saveDc: number;
+   slug: string;
+   xpString: string;
+ }
+@@ -182,6 +212,7 @@
+ export interface MonsterProps {
+   alignment: string;
+   armorClass: number;
++  attackBonus: number;
+   challengeRating: string;
+   charisma: number;
+   constitution: number;
+@@ -193,6 +224,7 @@
+   monsterSubtype: string;
+   monsterType: string;
+   name: string;
++  profBonus: number;
+   size: string;
+   strength: number;
+   wisdom: number;

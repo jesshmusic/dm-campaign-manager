@@ -138,7 +138,7 @@ class Spells extends React.Component {
                      breadcrumbs={ [{ isActive: true, title: 'Spells' }] }>
         <PageTitle title={ 'Spells' } />
         { spells && spells.length > 0 ? (
-          <div>NPCs: { spells.length }</div>
+          <div>Monsters: { spells.length }</div>
         ) : (
           <DndSpinner />
         ) }

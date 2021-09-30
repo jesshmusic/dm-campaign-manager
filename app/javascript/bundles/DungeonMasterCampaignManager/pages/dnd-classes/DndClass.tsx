@@ -36,7 +36,7 @@ const DndClass = (props: DndClassPageProps) => {
     <PageContainer user={user}
                    flashMessages={flashMessages}
                    pageTitle={dndClassTitle}
-                   description={`DndClass: ${dndClassTitle}. Dungeon Master's Toolbox is a free resource for DMs to manage their dndClasses, adventures, and NPCs.`}
+                   description={`DndClass: ${dndClassTitle}. Dungeon Master's Toolbox is a free resource for DMs to manage their dndClasses, adventures, and Monsters.`}
                    breadcrumbs={[{ url: '/app/classes', isActive: false, title: 'Character Classes' },
                      { isActive: true, title: dndClassTitle }]}>
       <PageTitle title={`Class: ${dndClassTitle}`} />

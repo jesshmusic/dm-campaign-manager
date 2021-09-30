@@ -1,8 +1,9 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import rest from '../../actions/api';
 
 // Container
 import PageContainer from '../../containers/PageContainer';
-import { fetchData } from '../../actions/api';
 import PageTitle from '../../components/layout/PageTitle';
 import DndSpinner from '../../components/layout/DndSpinner';
 import { navigate } from '@reach/router';
@@ -10,18 +11,10 @@ import { DndClass, PageProps } from '../../utilities/types';
 import { ListGroup } from 'react-bootstrap';
 import DndListItem from './components/DndListItem';
 
-const DndClasses = (props: PageProps) => {
-  const [dndClasses, setDndClasses] = React.useState([]);
-
+const DndClasses = (props: PageProps & { getDndClasses: () => void, dndClasses: DndClass[] }) => {
+  const { getDndClasses, dndClasses } = props;
   React.useEffect(() => {
-    const componentDidMount = async () => {
-      const response = await fetchData({
-        method: 'get',
-        url: '/v1/dnd_classes.json'
-      });
-      setDndClasses(response.data?.results);
-    };
-    componentDidMount();
+    getDndClasses();
   }, []);
 
   const goToPage = (dndClassSlug: string) => {
@@ -53,4 +46,20 @@ const DndClasses = (props: PageProps) => {
   );
 };
 
-export default DndClasses;
+function mapStateToProps(state) {
+  return {
+    dndClasses: state.dndClasses.dndClasses,
+    user: state.users.user,
+    flashMessages: state.flashMessages
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    getDndClasses: () => {
+      dispatch(rest.actions.getDndClasses());
+    }
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(DndClasses);

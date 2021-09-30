@@ -1,8 +1,8 @@
 import React from 'react';
 import { MonsterGeneratorFormFields, MonsterProps, SelectOption } from '../../../utilities/types';
-import { alignmentOptions, npcSizeOptions } from '../../../utilities/character-utilities';
+import { alignmentOptions, monsterSizeOptions } from '../../../utilities/character-utilities';
 import axios from 'axios';
-import { abilityScoreModifier, calculateCR, getNPCObject, hitPoints } from '../services';
+import { abilityScoreModifier, calculateCR, getMonsterObject, hitPoints } from '../services';
 import Frame from '../../../components/Frame';
 import { useForm } from 'react-hook-form';
 import NameFormField from './NameFormField';
@@ -14,7 +14,7 @@ import { GiDiceTwentyFacesTwenty } from 'react-icons/gi/';
 import AbilityScoreField from './AbilityScoreField';
 
 
-type NPCFormErrors = {
+type MonsterFormErrors = {
   name?: string;
   characterAlignment?: string;
   charisma?: string;
@@ -42,13 +42,13 @@ export const speeds: SelectOption[] = [
   { label: 'Walk', value: 'walk' }
 ];
 
-type GenerateNPCProps = {
+type GenerateMonsterProps = {
   setMonster: (monster: MonsterProps) => void;
 }
 
-const GenerateNPC = (props: GenerateNPCProps) => {
+const GenerateMonster = (props: GenerateMonsterProps) => {
   const [monsterForm, setMonsterForm] = React.useState<MonsterGeneratorFormFields>({
-    name: 'New NPC',
+    name: 'New Monster',
     alignment: 'Neutral',
     alignmentOption: {
       value: 'Neutral',
@@ -99,11 +99,11 @@ const GenerateNPC = (props: GenerateNPCProps) => {
 
   const watchMonsterName = watch('name', monsterForm.name);
   const onSubmit = (data) => {
-    props.setMonster(getNPCObject(data));
+    props.setMonster(getMonsterObject(data));
   };
 
   const handleGenerateName = async (gender, race) => {
-    const apiURL = `/v1/random_fantasy_name?random_npc_gender=${gender}&random_npc_race=${race ? race : 'human'}`;
+    const apiURL = `/v1/random_fantasy_name?random_monster_gender=${gender}&random_monster_race=${race ? race : 'human'}`;
     try {
       const response = await axios.get(apiURL);
       setValue('name', response.data.name);
@@ -150,7 +150,8 @@ const GenerateNPC = (props: GenerateNPCProps) => {
   };
 
   return (
-    <Frame title='Random NPC Generator' subtitle='Select options to create a new NPC' className='random-npc-generator'>
+    <Frame title='Random Monster Generator' subtitle='Select options to create a new Monster'
+           className='random-monster-generator'>
       <form onSubmit={handleSubmit(onSubmit)}
         // className={classNames(validated && 'was-validated')}
             noValidate>
@@ -172,7 +173,7 @@ const GenerateNPC = (props: GenerateNPCProps) => {
                       name={'size'}
                       control={control}
                       onChange={handleChange}
-                      options={npcSizeOptions} />
+                      options={monsterSizeOptions} />
         </div>
         <div className='grid' style={{ '--bs-columns': 4 } as React.CSSProperties}>
           <FormField label={'Armor Class'}
@@ -237,7 +238,7 @@ const GenerateNPC = (props: GenerateNPCProps) => {
         <div>
           <div className='btn-group' aria-label='Character actions'>
             <button type='submit' className='btn btn-success'>
-              <span>Generate NPC</span> <GiDiceTwentyFacesTwenty size={30} className={'ms-3'} />
+              <span>Generate Monster</span> <GiDiceTwentyFacesTwenty size={30} className={'ms-3'} />
             </button>
             {/*<button type='button' onClick={reset}>Reset</button>*/}
           </div>
@@ -258,12 +259,12 @@ const GenerateNPC = (props: GenerateNPCProps) => {
   // }, []);
   //
   // const handleSubmit = (values: MonsterGeneratorFormFields) => {
-  //   const monster: MonsterProps = getNPCObject(values);
+  //   const monster: MonsterProps = getMonsterObject(values);
   //   setMonster(monster);
   // };
 
   // const validate = (values) => {
-  //   const errors: NPCFormErrors = {};
+  //   const errors: MonsterFormErrors = {};
   //   if (!values.name) {
   //     errors.name = 'Character name is required.';
   //   }
@@ -292,7 +293,7 @@ const GenerateNPC = (props: GenerateNPCProps) => {
   // };
 
   // return (
-  //   <Frame title='Random NPC Generator' subtitle='Select options to create a new NPC' className='random-npc-generator'>
+  //   <Frame title='Random Monster Generator' subtitle='Select options to create a new Monster' className='random-monster-generator'>
   //     <Form onSubmit={handleSubmit}
   //           decorators={[npcFormDecorator]}
   //           initialValues={monster}
@@ -384,4 +385,4 @@ const GenerateNPC = (props: GenerateNPCProps) => {
 
 };
 
-export default GenerateNPC;
+export default GenerateMonster;

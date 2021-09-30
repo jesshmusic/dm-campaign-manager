@@ -12,7 +12,7 @@ const Items = ({ flashMessages, user }) => (
   <PageContainer user={ user }
                  flashMessages={ flashMessages }
                  pageTitle={ 'Items and Equipment' }
-                 description={ `All Dungeons and Dragons equipment, armor, weapons, and magic items. Dungeon Master's Toolbox is a free resource for DMs to manage their campaigns, adventures, and NPCs.` }
+                 description={ `All Dungeons and Dragons equipment, armor, weapons, and magic items. Dungeon Master's Toolbox is a free resource for DMs to manage their campaigns, adventures, and Monsters.` }
                  breadcrumbs={ [{ isActive: true, title: 'Items and Equipment' }] }>
     <PageTitle title={ 'Items and Equipment' } />
     <ListGroup>

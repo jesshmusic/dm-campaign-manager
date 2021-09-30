@@ -1,4 +1,4 @@
-import {createAction, createReducer} from '@reduxjs/toolkit';
+import { createAction, createReducer } from '@reduxjs/toolkit';
 import _ from 'lodash';
 
 const generateNonPlayerCharacterSuccess = createAction('@@redux-api@generateNonPlayerCharacter_success');
@@ -7,100 +7,101 @@ const convert2eNonPlayerCharacterSuccess = createAction('@@redux-api@convert2eNo
 const convert2eNonPlayerCharacterFail = createAction('@@redux-api@convert2eNonPlayerCharacter_fail');
 const generateCommonerSuccess = createAction('@@redux-api@generateCommoner_success');
 const generateCommonerFail = createAction('@@redux-api@generateCommoner_fail');
-const getNPCsSuccess = createAction('@@redux-api@getNPCs_success');
-const getNPCsFail = createAction('@@redux-api@getNPCs_fail');
-const getNPCSuccess = createAction('@@redux-api@getNPC_success');
-const getNPCFail = createAction('@@redux-api@getNPC_fail');
+const getMonstersSuccess = createAction('@@redux-api@getMonsters_success');
+const getMonstersFail = createAction('@@redux-api@getMonsters_fail');
+const getMonsterSuccess = createAction('@@redux-api@getMonster_success');
+const getMonsterFail = createAction('@@redux-api@getMonster_fail');
 
-const npcs = createReducer({
-  npcs: [],
-  npcTypes: [],
+const monsters = createReducer({
+  monsters: [],
+  monsterTypes: [],
   count: 0,
-  currentNPC: null,
+  currentMonster: null
 }, {
   [generateNonPlayerCharacterSuccess]: (state, action) => {
     return {
-      npcs: state.npcs,
-      npcTypes: state.npcTypes,
+      monsters: state.monsters,
+      monsterTypes: state.monsterTypes,
       count: state.count,
-      currentNPC: action.data.npc,
+      currentMonster: action.data.monster
     };
   },
   [generateNonPlayerCharacterFail]: (state) => {
     return {
-      npcs: state.npcs,
-      npcTypes: state.npcTypes,
+      monsters: state.monsters,
+      monsterTypes: state.monsterTypes,
       count: state.count,
-      currentNPC: null,
+      currentMonster: null
     };
   },
   [convert2eNonPlayerCharacterSuccess]: (state, action) => {
     return {
-      npcs: state.npcs,
-      npcTypes: state.npcTypes,
+      monsters: state.monsters,
+      monsterTypes: state.monsterTypes,
       count: state.count,
-      currentNPC: action.data.npc,
+      currentMonster: action.data.monster
     };
   },
   [convert2eNonPlayerCharacterFail]: (state) => {
     return {
-      npcs: state.npcs,
+      monsters: state.monsters,
       npcTypes: state.npcTypes,
       count: state.count,
-      currentNPC: null,
+      currentMonster: null
     };
   },
   [generateCommonerSuccess]: (state, action) => {
     return {
-      npcs: state.npcs,
+      monsters: state.monsters,
       npcTypes: state.npcTypes,
       count: state.count,
-      currentNPC: action.data.npc,
+      currentMonster: action.data.npc
     };
   },
   [generateCommonerFail]: (state) => {
     return {
-      npcs: state.npcs,
+      monsters: state.monsters,
       npcTypes: state.npcTypes,
       count: state.count,
-      currentNPC: null,
+      currentMonster: null
     };
   },
-  [getNPCsSuccess]: (state, action) => {
+  [getMonstersSuccess]: (state, action) => {
     return {
-      npcs: action.data.results,
+      monsters: action.data.results,
       npcTypes: _.map(_.uniqBy(action.data.results, 'monsterType'), (npc) => ({
-        value: npc.monsterType,
-        label: npc.monsterType,
-      })),
+          value: npc.monsterType,
+          label: npc.monsterType
+        }
+      )),
       count: action.data.count,
-      currentNPC: state.currentNPC,
+      currentMonster: state.currentMonster
     };
   },
-  [getNPCsFail]: (state) => {
+  [getMonstersFail]: (state) => {
     return {
-      npcs: state.npcs,
+      monsters: state.monsters,
       npcTypes: state.npcTypes,
       count: state.count,
-      currentNPC: state.currentNPC,
+      currentMonster: state.currentMonster
     };
   },
-  [getNPCSuccess]: (state, action) => {
+  [getMonsterSuccess]: (state, action) => {
     return {
-      npcs: state.npcs,
+      monsters: state.monsters,
       npcTypes: state.npcTypes,
       count: state.count,
-      currentNPC: action.data,
+      currentMonster: action.data
     };
   },
-  [getNPCFail]: () => (state) => {
+  [getMonsterFail]: () => (state) => {
     return {
-      npcs: state.npcs,
+      monsters: state.monsters,
       npcTypes: state.npcTypes,
       count: state.count,
-      currentNPC: null,
+      currentMonster: null
     };
-  },
+  }
 });
 
-export default npcs;
+export default monsters;

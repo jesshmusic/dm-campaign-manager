@@ -31,13 +31,13 @@ export const alignmentOptions = [
   { value: 'Chaotic Evil', label: 'Chaotic Evil' }
 ];
 
-export const npcVariantOptions = [
+export const monsterVariantOptions = [
   { value: 'fighter', label: 'Fighter' },
   { value: 'caster_wizard', label: 'Caster - Wizard' },
   { value: 'caster_cleric', label: 'Caster - Cleric' }
 ];
 
-export const npcSizeOptions = [
+export const monsterSizeOptions = [
   { value: 'tiny', label: 'Tiny' },
   { value: 'small', label: 'Small' },
   { value: 'medium', label: 'Medium' },

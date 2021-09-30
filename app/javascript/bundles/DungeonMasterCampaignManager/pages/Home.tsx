@@ -12,11 +12,11 @@ import MagicItems from './items/MagicItems';
 import Tools from './items/Tools';
 import Vehicles from './items/Vehicles';
 import Weapons from './items/Weapons';
-import Monsters from './npcs/Monsters';
+import Monsters from './monsters/Monsters';
 import Spells from './spells/Spells';
 import DndClass from './dnd-classes/DndClass';
 import DndClasses from './dnd-classes/DndClasses';
-import NpcGenerator from './npc-generator/NpcGenerator';
+import MonsterGenerator from './monster-generator/MonsterGenerator';
 import { AppProps, FlashMessage } from '../utilities/types';
 
 const store = (props: AppProps) => configureStore({
@@ -25,21 +25,22 @@ const store = (props: AppProps) => configureStore({
     flashMessages: [],
     items: {
       items: [],
-      count: props.itemsCount,
+      count: props.items.count,
       currentItem: null
     },
-    npcs: {
-      npcs: [],
-      count: props.npcsCount,
-      currentNPC: null
+    monsters: {
+      monsters: [],
+      count: props.monsters.count,
+      currentMonster: null
     },
     races: {
       races: [],
+      count: props.races.count,
       currentRace: null
     },
     spells: {
       spells: [],
-      count: props.spellsCount,
+      count: props.spells.count,
       currentSpell: null
     },
     users: {
@@ -80,9 +81,9 @@ const Home = (props) => {
         <Gear path='/app/items/gear/' {...combinedProps} />
         <Tools path='/app/items/tools/' {...combinedProps} />
         <Vehicles path='/app/items/vehicles/' {...combinedProps} />
-        <Monsters path='/app/npcs/' {...combinedProps} />
+        <Monsters path='/app/monsters/' {...combinedProps} />
         <Spells path='/app/spells/' {...combinedProps} />
-        <NpcGenerator path='/app/npc-generator/' {...combinedProps} />
+        <MonsterGenerator path='/app/monster-generator/' {...combinedProps} />
       </Router>
     </Provider>
   );

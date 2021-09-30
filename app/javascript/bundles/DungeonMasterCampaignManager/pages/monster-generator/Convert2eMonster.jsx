@@ -6,11 +6,11 @@ import React from 'react';
 import Frame from '../../components/Frame';
 import { useForm } from 'react-hook-form';
 
-const Convert2eNPC = (props) => {
+const Convert2eMonster = (props) => {
   const { register, handleSubmit } = useForm();
 
   const [state, setState] = React.useState({
-    npc: {
+    monster: {
       name: '',
       alignment: 'Neutral',
       characterAlignment: {
@@ -39,8 +39,8 @@ const Convert2eNPC = (props) => {
   });
 
   // const handleSubmit = async (values) => {
-  //   const npc = get2eNPCObject(values);
-  //   this.props.generateNonPlayerCharacter(snakecaseKeys(npc));
+  //   const monster = get2eMonsterObject(values);
+  //   this.props.generateNonPlayerCharacter(snakecaseKeys(monster));
   // };
 
   // const validate = (values) => {
@@ -83,10 +83,10 @@ const Convert2eNPC = (props) => {
   //   }
   //   return errors;
   // };
-  const { npc, validated } = state;
+  const { monster, validated } = state;
   return (
-    <Frame title='D&D 2nd Edition NPC Convertor'
-           subtitle='Enter stats for a 2E NPC to generate its 5E equivalent (roughly) for humanoid NPCs.'>
+    <Frame title='D&D 2nd Edition Monster Convertor'
+           subtitle='Enter stats for a 2E Monster to generate its 5E equivalent (roughly) for humanoid Monsters.'>
 
       {/* <Form noValidate validated={ validated } onSubmit={ handleSubmit }>
       //   <Row>
@@ -169,7 +169,7 @@ const Convert2eNPC = (props) => {
       //   </Row>
       //   <Row className={ 'mb-4' }>
       //     <ButtonGroup aria-label='Character actions'>
-      {/*      <Button type='submit'>Convert NPC</Button>*/ }
+      {/*      <Button type='submit'>Convert Monster</Button>*/ }
       {/*      <Button type='button'*/ }
       {/*              variant={ 'secondary' }>Reset</Button>*/ }
       {/*    </ButtonGroup>*/ }
@@ -179,9 +179,9 @@ const Convert2eNPC = (props) => {
   );
 };
 
-export default Convert2eNPC;
+export default Convert2eMonster;
 
-// Convert2eNPC.propTypes = {
+// Convert2eMonster.propTypes = {
 //   generateNonPlayerCharacter: PropTypes.func.isRequired,
 //   user: PropTypes.object
 // };
@@ -195,10 +195,10 @@ export default Convert2eNPC;
 //
 // function mapDispatchToProps (dispatch) {
 //   return {
-//     generateNonPlayerCharacter: (npc) => {
-//       dispatch(rest.actions.convert2eNonPlayerCharacter({}, { body: JSON.stringify(npc) }));
+//     generateNonPlayerCharacter: (monster) => {
+//       dispatch(rest.actions.convert2eNonPlayerCharacter({}, { body: JSON.stringify(monster) }));
 //     }
 //   };
 // }
 //
-// export default connect(mapStateToProps, mapDispatchToProps)(Convert2eNPC);
+// export default connect(mapStateToProps, mapDispatchToProps)(Convert2eMonster);

@@ -3,7 +3,7 @@ import { MonsterGeneratorFormFields, MonsterProps } from '../../utilities/types'
 import axios from 'axios';
 import createDecorator from 'final-form-calculate';
 
-export const getNPCObject = (values: MonsterGeneratorFormFields): MonsterProps => {
+export const getMonsterObject = (values: MonsterGeneratorFormFields): MonsterProps => {
   const returnChar = {
     alignment: values.alignment,
     armorClass: values.armorClass,
@@ -36,7 +36,7 @@ export const getNPCObject = (values: MonsterGeneratorFormFields): MonsterProps =
   return snakecaseKeys(returnChar, { exclude: ['_destroy'] });
 };
 
-export const get2eNPCObject = (values) => {
+export const get2eMonsterObject = (values) => {
   const returnChar = {
     name: values.name,
     race: values.characterRace.value,
@@ -93,7 +93,7 @@ export const damageTypes = [
 export const calculateCR = async (allValues: MonsterGeneratorFormFields): Promise<CrResponse> => {
   const response = await axios.post('/v1/calculate_cr', {
     params: {
-      monster: getNPCObject(allValues)
+      monster: getMonsterObject(allValues)
     }
   });
 
@@ -140,7 +140,7 @@ export const hitPoints = (constitution: number, hitDiceNumber: number, hitDiceVa
   return Math.floor(hitPoints);
 };
 
-export const npcCalculationsDecorator = createDecorator(
+export const monsterCalculationsDecorator = createDecorator(
   {
     field: 'characterAlignment',
     updates: {
@@ -173,24 +173,24 @@ export const npcCalculationsDecorator = createDecorator(
     field: 'strength',
     updates: (value, fieldName, allValues: MonsterGeneratorFormFields) => {
       let updateFields = {};
-      if (allValues.actions) {
-        const actions = allValues.actions;
-        for (let i = 0; i < actions.length; i++) {
-          const damages = actions[i].damages;
-          if (damages) {
-            for (let j = 0; j < damages.length; j++) {
-              const damage = damages[j];
-              const fieldName = `actions[${i}].damages[${j}].damageBonus`;
-              const addBonus = damage.addDamageBonus || 0;
-              if (typeof addBonus === 'string') {
-                updateFields[fieldName] = abilityScoreModifier(value) + parseInt(addBonus, 10);
-              } else {
-                updateFields[fieldName] = abilityScoreModifier(value) + addBonus;
-              }
-            }
-          }
-        }
-      }
+      // if (allValues.actions) {
+      //   const actions = allValues.actions;
+      //   for (let i = 0; i < actions.length; i++) {
+      //     const damages = actions[i].damages;
+      //     if (damages) {
+      //       for (let j = 0; j < damages.length; j++) {
+      //         const damage = damages[j];
+      //         const fieldName = `actions[${i}].damages[${j}].damageBonus`;
+      //         const addBonus = damage.addDamageBonus || 0;
+      //         if (typeof addBonus === 'string') {
+      //           updateFields[fieldName] = abilityScoreModifier(value) + parseInt(addBonus, 10);
+      //         } else {
+      //           updateFields[fieldName] = abilityScoreModifier(value) + addBonus;
+      //         }
+      //       }
+      //     }
+      //   }
+      // }
       return updateFields;
     }
   }, {

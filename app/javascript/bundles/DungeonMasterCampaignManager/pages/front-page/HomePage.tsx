@@ -16,7 +16,7 @@ const HomePage = (props: PageProps) => (
     <div className='container'>
       <PageTitle title={'DM Screen'} className={'home'} />
       <div className='d-grid gap-2 mb-3'>
-        <Link to='/app/npc-generator' className='btn btn-secondary'><GiBarbute size={24} /> Generate NPC</Link>
+        <Link to='/app/monster-generator' className='btn btn-secondary'><GiBarbute size={24} /> Generate Monster</Link>
       </div>
       <div className='mb-3'>
         <NameField />

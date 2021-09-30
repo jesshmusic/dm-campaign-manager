@@ -14,8 +14,8 @@ Rails.application.routes.draw do
       get '/random_tavern_name', to: 'dashboard#random_tavern_name',
           as: 'random_tavern_name',
           constraints: { format: 'json' }
-      post '/generate_npc', to: 'monsters#generate_npc',
-           as: 'generate_npc',
+      post '/generate_monster', to: 'monsters#generate_monster',
+           as: 'generate_monster',
            constraints: { format: 'json' }
       post '/convert_2e_npc', to: 'monsters#convert_2e_npc',
            as: 'convert_2e_npc',

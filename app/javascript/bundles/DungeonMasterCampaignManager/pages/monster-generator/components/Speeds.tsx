@@ -6,7 +6,7 @@ import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import { GiTrashCan } from 'react-icons/gi';
 import React from 'react';
-import { speeds } from './GenerateNPC';
+import { speeds } from './GenerateMonster';
 // import { FieldArray } from 'react-final-form-arrays';
 import { UseFormRegister } from 'react-hook-form';
 import { FieldValues, MonsterGeneratorFormFields } from '../../../utilities/types';

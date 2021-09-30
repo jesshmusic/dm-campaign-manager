@@ -8,10 +8,32 @@ export interface AbilityScore {
 }
 
 export interface AppProps {
-  itemsCount: number;
-  npcsCount: number;
-  spellsCount: number;
-  usersCount: number;
+  flashMessages: FlashMessage[];
+  items: {
+    items: any[];
+    count: number;
+    currentItem?: any;
+  };
+  monsters: {
+    monsters: MonsterSummary[];
+    count: number;
+    currentMonster?: MonsterProps;
+  };
+  races: {
+    races: any[];
+    count: number;
+    currentRace?: any;
+  };
+  spells: {
+    spells: any[];
+    count: number;
+    currentSpell?: any;
+  };
+  users: {
+    users?: any[];
+    count: number;
+    currentUser?: UserProps;
+  };
   user?: UserProps;
 }
 
@@ -61,6 +83,7 @@ export type MonsterInfoData = {
 export interface MonsterProps {
   alignment: string;
   armorClass: number;
+  attackBonus: number;
   challengeRating: string;
   charisma: number;
   constitution: number;
@@ -72,6 +95,7 @@ export interface MonsterProps {
   monsterSubtype: string;
   monsterType: string;
   name: string;
+  profBonus: number;
   size: string;
   strength: number;
   wisdom: number;
@@ -94,11 +118,14 @@ export interface Monsters {
 
 export interface MonsterSummary {
   alignment: string;
+  attackBonus: number;
   challengeRating: string;
   hitPoints: string;
   hitDice: string;
   monsterType: string;
   name: string;
+  profBonus: number;
+  saveDc: number;
   slug: string;
   xpString: string;
 }
@@ -142,6 +169,11 @@ export type MonsterGeneratorFormFields = {
   monsterProficiencies: Prof[];
 }
 
+export interface StateAction {
+  type: string;
+  payload: any;
+}
+
 export interface PageProps {
   addFlashMessage: (flashMessage: FlashMessage) => void;
   children?: React.ReactNode;
@@ -149,7 +181,7 @@ export interface PageProps {
   itemsCount: number;
   location: Location;
   navigate: NavigateFn;
-  npcsCount: number;
+  monstersCount: number;
   path: string;
   spellsCount: number;
   uri: string;

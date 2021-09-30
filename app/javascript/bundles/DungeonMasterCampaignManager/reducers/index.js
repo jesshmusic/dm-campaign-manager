@@ -2,7 +2,7 @@ import { combineReducers } from 'redux';
 import dndClasses from './dndClasses';
 import flashMessages from './flashMessages';
 import items from './items';
-import npcs from './npcs';
+import monsters from './monsters';
 import races from './races';
 import spells from './spells';
 import users from './user';
@@ -11,8 +11,8 @@ export default combineReducers({
   dndClasses,
   flashMessages,
   items,
-  npcs,
+  monsters,
   races,
   spells,
-  users,
+  users
 });
