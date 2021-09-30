@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: actions
+# Table name: monster_actions
 #
 #  id         :bigint           not null, primary key
 #  desc       :string
@@ -18,16 +18,10 @@
 #
 #  fk_rails_...  (monster_id => monsters.id)
 #
+
 FactoryBot.define do
   factory :action do
-    attack_bonus { %w(1 2 3 4 5 6 7 8 9 10).sample }
-    dc_type { [nil, 'CON', 'STR', 'DEX'].sample }
-    dc_value { [nil, 15, 18, 12].sample }
     desc { Faker::Games::Witcher.quote }
     name { Faker::Games::ElderScrolls.weapon }
-
-    after(:create) do |action|
-      create_list(:action_damage, rand(1..3), action: action)
-    end
   end
 end

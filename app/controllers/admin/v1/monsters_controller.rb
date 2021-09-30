@@ -141,11 +141,12 @@ module Admin::V1
     # Never trust parameters from the scary internet, only allow the white list through.
     def monster_params
       params.require(:monster).permit(
-        :alignment, :api_url, :armor_class, :challenge_rating,
-        :charisma, :constitution,
-        :dexterity, :hit_dice, :hit_points,
-        :intelligence, :languages, :legendary_description, :monster_subtype,
-        :monster_type, :name, :size, :slug, :strength, :wisdom,
+        :alignment, :api_url, :armor_class, :attack_bonus,
+        :challenge_rating, :charisma, :constitution,
+        :dexterity, :hit_dice, :hit_points, :intelligence,
+        :languages, :monster_subtype, :monster_type,
+        :name, :prof_bonus, :save_dc, :size, :slug,
+        :strength, :wisdom, :xp,
         damage_immunities_attributes: %i[name _destroy],
         damage_vulnerabilities_attributes: %i[name _destroy],
         damage_resistances_attributes: %i[name _destroy],
@@ -158,16 +159,16 @@ module Admin::V1
           name value _destroy
         ],
         actions_attributes: %i[
-          attack_bonus dc_type dc_value desc name success_type usage_dice usage_min_value usage_type _destroy
+          desc name _destroy
         ],
         legendary_action_attributes: %i[
-          attack_bonus dc_type dc_value desc name success_type usage_dice usage_min_value usage_type _destroy
+          desc name _destroy
         ],
         special_abilities_attributes: %i[
-          attack_bonus dc_type dc_value desc name success_type usage_dice usage_min_value usage_type _destroy
+          desc name _destroy
         ],
         reactions_attributes: %i[
-          attack_bonus dc_type dc_value desc name success_type usage_dice usage_min_value usage_type _destroy
+          desc name _destroy
         ]
       )
     end

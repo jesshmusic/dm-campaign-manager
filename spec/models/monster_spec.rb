@@ -138,15 +138,9 @@ RSpec.describe Monster, type: :model do
     it 'should should have actions' do
       monster = Monster.find_by(slug: 'gargoyle')
       actions = monster.actions
-      expect(actions.count).to eq(3)
+      expect(actions.count).to eq(4)
       expect(actions[0].name).to eq('Multiattack')
       expect(actions[1].name).to eq('Bite')
-      expect(actions[1].action_damages).to be_truthy
-      expect(actions[1].action_damages.count).to eq(1)
-      expect(actions[1].action_damages[0].damage_type).to eq('Piercing')
-      expect(actions[1].action_damages[0].damage_bonus).to eq(2)
-      expect(actions[1].action_damages[0].dice_count).to eq(1)
-      expect(actions[1].action_damages[0].dice_value).to eq(6)
     end
 
     it 'should should have legendary actions' do
@@ -155,12 +149,6 @@ RSpec.describe Monster, type: :model do
       expect(actions.count).to eq(3)
       expect(actions[0].name).to eq('Detect')
       expect(actions[2].name).to eq('Wing Attack (Costs 2 Actions)')
-      expect(actions[2].action_damages).to be_truthy
-      expect(actions[2].action_damages.count).to eq(1)
-      expect(actions[2].action_damages[0].damage_type).to eq('Bludgeoning')
-      expect(actions[2].action_damages[0].damage_bonus).to eq(10)
-      expect(actions[2].action_damages[0].dice_count).to eq(2)
-      expect(actions[2].action_damages[0].dice_value).to eq(6)
     end
 
     it 'should should have special abilities' do

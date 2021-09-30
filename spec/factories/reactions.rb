@@ -20,14 +20,7 @@
 #
 FactoryBot.define do
   factory :reaction do
-    attack_bonus { %w(1 2 3 4 5 6 7 8 9 10).sample }
-    dc_type { [nil, 'CON', 'STR', 'DEX'].sample }
-    dc_value { [nil, 15, 18, 12].sample }
     desc { Faker::Games::Witcher.quote }
     name { Faker::Games::ElderScrolls.weapon }
-
-    after(:create) do |action|
-      create_list(:action_damage, rand(1..3), reaction: action)
-    end
   end
 end

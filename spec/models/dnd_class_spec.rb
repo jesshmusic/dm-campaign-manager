@@ -128,7 +128,7 @@ RSpec.describe DndClass, type: :model do
     it 'should have 6 profs for Bard' do
       bard = DndClass.find_by(slug: 'bard')
       profs = bard.profs
-      expect(profs.count).to be(6)
+      expect(profs.count).to be(8)
     end
 
     it 'should have 2 prof choices for Bard' do
