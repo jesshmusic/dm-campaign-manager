@@ -5,8 +5,8 @@
 import React from 'react';
 import Select from 'react-select';
 import CreatableSelect from 'react-select/creatable';
-import { NPCGeneratorFormFields, SelectOption } from '../../utilities/types';
-import { Controller, Control } from 'react-hook-form';
+import { MonsterGeneratorFormFields, SelectOption } from '../../utilities/types';
+import { Control, Controller } from 'react-hook-form';
 
 export type SelectProps = {
   className?: string;
@@ -16,11 +16,11 @@ export type SelectProps = {
   isCreatable?: boolean;
   isMulti?: boolean;
   label: string;
-  name: keyof NPCGeneratorFormFields;
-  onChange?: (name: keyof NPCGeneratorFormFields, value: string | number) => void;
+  name: keyof MonsterGeneratorFormFields;
+  onChange?: (name: keyof MonsterGeneratorFormFields, value: string | number) => void;
   options?: SelectOption[];
   placeholder?: string;
-  control?: Control<NPCGeneratorFormFields>;
+  control?: Control<MonsterGeneratorFormFields>;
   value?: any;
 }
 

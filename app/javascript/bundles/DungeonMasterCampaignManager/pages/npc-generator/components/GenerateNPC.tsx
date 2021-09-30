@@ -1,5 +1,5 @@
 import React from 'react';
-import { MonsterProps, NPCGeneratorFormFields, SelectOption } from '../../../utilities/types';
+import { MonsterGeneratorFormFields, MonsterProps, SelectOption } from '../../../utilities/types';
 import { alignmentOptions, npcSizeOptions } from '../../../utilities/character-utilities';
 import axios from 'axios';
 import { abilityScoreModifier, calculateCR, getNPCObject, hitPoints } from '../services';
@@ -47,9 +47,13 @@ type GenerateNPCProps = {
 }
 
 const GenerateNPC = (props: GenerateNPCProps) => {
-  const [monsterForm, setMonsterForm] = React.useState<NPCGeneratorFormFields>({
+  const [monsterForm, setMonsterForm] = React.useState<MonsterGeneratorFormFields>({
     name: 'New NPC',
     alignment: 'Neutral',
+    alignmentOption: {
+      value: 'Neutral',
+      label: 'Neutral'
+    },
     armorClass: 10,
     attackBonus: 2,
     damageBonus: 0,
@@ -58,31 +62,38 @@ const GenerateNPC = (props: GenerateNPCProps) => {
     hitDiceNumber: 1,
     hitDiceValue: 'd6',
     hitPoints: 4,
-    profBonus: 2,
-    saveDC: 12,
-    xp: 10,
-    size: {
-      label: 'Medium',
-      value: 'medium'
-    },
-    characterAlignment: {
-      value: 'Neutral',
-      label: 'Neutral'
-    },
+    languages: [],
     monsterType: {
       value: 'humanoid',
       label: 'Humanoid'
     },
+    profBonus: 2,
+    saveDC: 12,
+    size: {
+      label: 'Medium',
+      value: 'medium'
+    },
+    xp: 10,
     strength: 10,
     dexterity: 10,
     constitution: 10,
     intelligence: 10,
     wisdom: 10,
     charisma: 10,
-    actions: []
+    conditions: [],
+    damageImmunities: [],
+    damageResistances: [],
+    damageVulnerabilities: [],
+    actions: [],
+    legendaryActions: [],
+    reactions: [],
+    specialAbilities: [],
+    senses: [],
+    speeds: [],
+    monsterProficiencies: []
   });
 
-  const { control, getValues, handleSubmit, register, setValue, watch } = useForm<NPCGeneratorFormFields>({
+  const { control, getValues, handleSubmit, register, setValue, watch } = useForm<MonsterGeneratorFormFields>({
     defaultValues: monsterForm
   });
 
@@ -154,7 +165,7 @@ const GenerateNPC = (props: GenerateNPCProps) => {
                      register={register}
                      name={'monsterSubtype'} />
           <FormSelect label={'Alignment'}
-                      name={'characterAlignment'}
+                      name={'alignmentOption'}
                       control={control}
                       options={alignmentOptions} />
           <FormSelect label={'Size'}
@@ -246,7 +257,7 @@ const GenerateNPC = (props: GenerateNPCProps) => {
   //   return npcCalculationsDecorator;
   // }, []);
   //
-  // const handleSubmit = (values: NPCGeneratorFormFields) => {
+  // const handleSubmit = (values: MonsterGeneratorFormFields) => {
   //   const monster: MonsterProps = getNPCObject(values);
   //   setMonster(monster);
   // };
@@ -257,7 +268,7 @@ const GenerateNPC = (props: GenerateNPCProps) => {
   //     errors.name = 'Character name is required.';
   //   }
   //   if (!values.alignment) {
-  //     errors.characterAlignment = 'Character alignment is required.';
+  //     errors.alignmentOption = 'Character alignment is required.';
   //   }
   //   if (!values.charisma) {
   //     errors.charisma = 'Charisma is required';
@@ -316,7 +327,7 @@ const GenerateNPC = (props: GenerateNPCProps) => {
   //                                name={'xp'}
   //                                value={calcValues.xp} />
   //                 <FormSelect label={'Alignment'}
-  //                             name={'characterAlignment'}
+  //                             name={'alignmentOption'}
   //                             value={values.alignment}
   //                             options={alignmentOptions} />
   //                 <FormSelect label={'Size'}

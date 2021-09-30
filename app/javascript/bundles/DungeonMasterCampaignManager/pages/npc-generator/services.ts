@@ -1,9 +1,9 @@
 import snakecaseKeys from 'snakecase-keys';
-import { MonsterProps, NPCGeneratorFormFields } from '../../utilities/types';
+import { MonsterGeneratorFormFields, MonsterProps } from '../../utilities/types';
 import axios from 'axios';
 import createDecorator from 'final-form-calculate';
 
-export const getNPCObject = (values: NPCGeneratorFormFields): MonsterProps => {
+export const getNPCObject = (values: MonsterGeneratorFormFields): MonsterProps => {
   const returnChar = {
     alignment: values.alignment,
     armorClass: values.armorClass,
@@ -90,7 +90,7 @@ export const damageTypes = [
   { label: 'Psychic', value: 'Psychic' }
 ];
 
-export const calculateCR = async (allValues: NPCGeneratorFormFields): Promise<CrResponse> => {
+export const calculateCR = async (allValues: MonsterGeneratorFormFields): Promise<CrResponse> => {
   const response = await axios.post('/v1/calculate_cr', {
     params: {
       monster: getNPCObject(allValues)
@@ -148,7 +148,7 @@ export const npcCalculationsDecorator = createDecorator(
     }
   }, {
     field: 'hitDiceNumber',
-    updates: (value, name, allValues: NPCGeneratorFormFields) => {
+    updates: (value, name, allValues: MonsterGeneratorFormFields) => {
       return {
         hitDice: `${value}${allValues.hitDiceValue}`,
         hitPoints: hitPoints(allValues.constitution, value, allValues.hitDiceValue)
@@ -156,7 +156,7 @@ export const npcCalculationsDecorator = createDecorator(
     }
   }, {
     field: 'hitDiceValue',
-    updates: (value, name, allValues: NPCGeneratorFormFields) => {
+    updates: (value, name, allValues: MonsterGeneratorFormFields) => {
       return {
         hitDice: `${allValues.hitDiceNumber}${value}`,
         hitPoints: hitPoints(allValues.constitution, allValues.hitDiceNumber, value)
@@ -164,14 +164,14 @@ export const npcCalculationsDecorator = createDecorator(
     }
   }, {
     field: 'constitution',
-    updates: (value, name, allValues: NPCGeneratorFormFields) => {
+    updates: (value, name, allValues: MonsterGeneratorFormFields) => {
       return {
         hitPoints: hitPoints(value, allValues.hitDiceNumber, allValues.hitDiceValue)
       };
     }
   }, {
     field: 'strength',
-    updates: (value, fieldName, allValues: NPCGeneratorFormFields) => {
+    updates: (value, fieldName, allValues: MonsterGeneratorFormFields) => {
       let updateFields = {};
       if (allValues.actions) {
         const actions = allValues.actions;
@@ -200,7 +200,7 @@ export const npcCalculationsDecorator = createDecorator(
     }
   }, {
     field: /actions\[\d\]\.damages\[\d\]\.addDamageBonus/,
-    updates: (value, fieldName, allValues: NPCGeneratorFormFields) => {
+    updates: (value, fieldName, allValues: MonsterGeneratorFormFields) => {
       const actionDamagesName = fieldName.replace('.addDamageBonus', '');
       const currentDamageBonus = abilityScoreModifier(allValues.strength);
       return {

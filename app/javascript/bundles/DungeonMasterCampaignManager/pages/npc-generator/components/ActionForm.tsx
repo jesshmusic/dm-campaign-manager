@@ -8,8 +8,7 @@ import { GiSwordsPower, GiTrashCan } from 'react-icons/gi';
 // import { FieldArray } from 'react-final-form-arrays';
 import FormField from '../../../components/forms/FormField';
 import FormContainer from '../../../containers/FormContainer';
-import { FieldValues, NPCGeneratorFormFields } from '../../../utilities/types';
-import { abilityScoreModifier } from '../../../utilities/character-utilities';
+import { FieldValues, MonsterGeneratorFormFields } from '../../../utilities/types';
 import DiceFields from './DiceFields';
 import FormSelect from '../../../components/forms/FormSelect';
 import { damageTypes } from '../services';
@@ -24,7 +23,7 @@ enum AttackType {
 }
 
 const ActionForm = (props: ({
-  name: keyof NPCGeneratorFormFields,
+  name: keyof MonsterGeneratorFormFields,
   title: string,
   singularTitle: string,
   register: UseFormRegister<FieldValues>
@@ -52,30 +51,30 @@ const ActionForm = (props: ({
                      className={styles.infoField}
                      register={register}
                      required
-                     name={`${action}.name` as keyof NPCGeneratorFormFields} />
+                     name={`${action}.name` as keyof MonsterGeneratorFormFields} />
           <FormField label={'Attack Bonus'}
                      className={styles.attackBonus}
                      register={register}
                      type={'text'}
                      readOnly
-                     name={`${action}.attackBonus` as keyof NPCGeneratorFormFields} />
+                     name={`${action}.attackBonus` as keyof MonsterGeneratorFormFields} />
           <div className={styles.descContainer}>
             <div className={styles.radioContainer}>
               <div className='mr-eaves'>Action Type</div>
               <FormField label={'Normal'}
-                         name={`${action}.actionType` as keyof NPCGeneratorFormFields}
+                         name={`${action}.actionType` as keyof MonsterGeneratorFormFields}
                          register={register}
                          className='mb-0 me-2'
                          type={'radio'}
                          value={AttackType.normal} />
               <FormField label={'Multiattack'}
-                         name={`${action}.actionType` as keyof NPCGeneratorFormFields}
+                         name={`${action}.actionType` as keyof MonsterGeneratorFormFields}
                          register={register}
                          className='mb-0 me-2'
                          type={'radio'}
                          value={AttackType.multiattack} />
               <FormField label={'Custom'}
-                         name={`${action}.actionType` as keyof NPCGeneratorFormFields}
+                         name={`${action}.actionType` as keyof MonsterGeneratorFormFields}
                          register={register}
                          className='mb-0'
                          type={'radio'}
@@ -87,25 +86,25 @@ const ActionForm = (props: ({
                        register={register}
                        readOnly
                        value={'Melee. Here is the de facto attack description'}
-                       name={`${action}.desc` as keyof NPCGeneratorFormFields} />
+                       name={`${action}.desc` as keyof MonsterGeneratorFormFields} />
             <FormField label={'Number'}
                        type={'number'}
                        className={styles.infoFieldSm}
                        register={register}
                        required
-                       name={`${action}.numberOfAttacks` as keyof NPCGeneratorFormFields} />
+                       name={`${action}.numberOfAttacks` as keyof MonsterGeneratorFormFields} />
             <FormField label={'Description'}
                        className={styles.infoField}
                        type={'text'}
                        register={register}
                        readOnly
                        value={'Multiattack. Here is the de facto multiattack description'}
-                       name={`${action}.desc` as keyof NPCGeneratorFormFields} />
+                       name={`${action}.desc` as keyof MonsterGeneratorFormFields} />
             <FormField label={'Description'}
                        className={styles.infoField}
                        register={register}
                        type={'text'}
-                       name={`${action}.desc` as keyof NPCGeneratorFormFields} />
+                       name={`${action}.desc` as keyof MonsterGeneratorFormFields} />
           </div>
           <div className={styles.buttonContainer}>
             <button type='button'
@@ -137,11 +136,11 @@ const ActionForm = (props: ({
         <FormContainer columns={1} className='g-col-8'>
           <div className={styles.damageContainer}>
             <DiceFields className={styles.diceFields}
-                        countName={`${name}.diceCount` as keyof NPCGeneratorFormFields}
+                        countName={`${name}.diceCount` as keyof MonsterGeneratorFormFields}
                         register={register}
-                        dieName={`${name}.diceValue` as keyof NPCGeneratorFormFields} />
+                        dieName={`${name}.diceValue` as keyof MonsterGeneratorFormFields} />
             <FormSelect label={'Damage Type'}
-                        name={`${name}.damageType` as keyof NPCGeneratorFormFields}
+                        name={`${name}.damageType` as keyof MonsterGeneratorFormFields}
                         className={styles.infoField}
                         options={damageTypes} />
             <FormField label={'Damage Bonus'}
@@ -149,12 +148,12 @@ const ActionForm = (props: ({
                        className={styles.infoField}
                        register={register}
                        readOnly
-                       name={`${name}.damageBonus` as keyof NPCGeneratorFormFields} />
+                       name={`${name}.damageBonus` as keyof MonsterGeneratorFormFields} />
             <FormField label={'Additional Bonus'}
                        register={register}
                        type={'number'}
                        className={styles.infoField}
-                       name={`${name}.addDamageBonus` as keyof NPCGeneratorFormFields} />
+                       name={`${name}.addDamageBonus` as keyof MonsterGeneratorFormFields} />
             <div className={styles.buttonContainer}>
               <button title={'Remove'}
                       onClick={() => true}

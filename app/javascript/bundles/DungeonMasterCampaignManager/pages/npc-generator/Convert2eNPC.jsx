@@ -3,30 +3,8 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
-import rest from '../../actions/api';
-import { connect } from 'react-redux';
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import snakecaseKeys from 'snakecase-keys';
-
-import {
-  alignmentOptions, defaultFighterClass
-} from '../../utilities/character-utilities';
-import FormSelect from '../../components/forms/FormSelect';
-import FormField from '../../components/forms/FormField';
-import ActionForm from './components/ActionForm';
-import Col from 'react-bootstrap/Col';
-import AbilityScoreField from './components/AbilityScoreField';
-import CharacterClassFields from '../npcs/partials/CharacterClassFields';
-import RaceSelect from '../npcs/partials/RaceSelect';
-import DndClassSpellSelect from '../npcs/partials/spell-fields/DndClassSpellSelect';
-import Row from 'react-bootstrap/Row';
-import { get2eNPCObject } from './services';
 import Frame from '../../components/Frame';
 import { useForm } from 'react-hook-form';
-import { NPCGeneratorFormFields } from '../../utilities/types';
 
 const Convert2eNPC = (props) => {
   const { register, handleSubmit } = useForm();
@@ -71,7 +49,7 @@ const Convert2eNPC = (props) => {
   //     errors.name = 'Character name is required.';
   //   }
   //   if (!values.alignment) {
-  //     errors.characterAlignment = 'Character alignment is required.';
+  //     errors.alignmentOption = 'Character alignment is required.';
   //   }
   //   if (!values.charisma) {
   //     errors.charisma = 'Charisma is required';
@@ -164,7 +142,7 @@ const Convert2eNPC = (props) => {
       //   </Row>
       //   <Row>
       //     <FormSelect label={ 'Alignment' }
-      //                 name={ 'characterAlignment' }
+      //                 name={ 'alignmentOption' }
       //                 options={ alignmentOptions } />
       //     <FormField label={ 'Number of Attacks' }
       //                type={ 'number' }

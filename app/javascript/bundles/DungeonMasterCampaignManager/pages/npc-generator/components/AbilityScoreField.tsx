@@ -7,7 +7,7 @@ import React from 'react';
 import Form from 'react-bootstrap/Form';
 import { GiDiceTwentyFacesTwenty } from 'react-icons/gi/';
 import { UseFormRegister } from 'react-hook-form';
-import { FieldValues, NPCGeneratorFormFields } from '../../../utilities/types';
+import { FieldValues, MonsterGeneratorFormFields } from '../../../utilities/types';
 import FormField from '../../../components/forms/FormField';
 
 const removeSmallest = (numbers) => {
@@ -26,7 +26,7 @@ const removeSmallest = (numbers) => {
 };
 
 type AbilityScoreFieldProps = {
-  name: keyof NPCGeneratorFormFields;
+  name: keyof MonsterGeneratorFormFields;
   defaultValue?: any;
   infoText?: string;
   id?: string;

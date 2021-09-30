@@ -4,7 +4,7 @@
 
 import React from 'react';
 import { UseFormRegister } from 'react-hook-form';
-import { FieldValues, NPCGeneratorFormFields } from '../../utilities/types';
+import { FieldValues, MonsterGeneratorFormFields } from '../../utilities/types';
 
 type FieldProps = {
   className?: string;
@@ -14,8 +14,8 @@ type FieldProps = {
   id?: string;
   infoText?: string;
   label: string;
-  name: keyof NPCGeneratorFormFields;
-  onChange?: (name: keyof NPCGeneratorFormFields, value: string | number) => void;
+  name: keyof MonsterGeneratorFormFields;
+  onChange?: (name: keyof MonsterGeneratorFormFields, value: string | number) => void;
   placeholder?: string;
   readOnly?: boolean;
   register?: UseFormRegister<FieldValues>;

@@ -9,7 +9,7 @@ import React from 'react';
 import { speeds } from './GenerateNPC';
 // import { FieldArray } from 'react-final-form-arrays';
 import { UseFormRegister } from 'react-hook-form';
-import { FieldValues, NPCGeneratorFormFields } from '../../../utilities/types';
+import { FieldValues, MonsterGeneratorFormFields } from '../../../utilities/types';
 
 const Speeds = (props: { push: (speeds1: string, p: {}) => void, register: UseFormRegister<FieldValues> }) => {
   const name = 'senses[0]';
@@ -19,12 +19,12 @@ const Speeds = (props: { push: (speeds1: string, p: {}) => void, register: UseFo
       <div>
         <Row>
           <FormSelect label={'Speed'}
-                      name={`${name}.name` as keyof NPCGeneratorFormFields}
+                      name={`${name}.name` as keyof MonsterGeneratorFormFields}
                       options={speeds} />
           <FormField label={'Value'}
                      type={'text'}
                      register={props.register}
-                     name={`${name}.value` as keyof NPCGeneratorFormFields} />
+                     name={`${name}.value` as keyof MonsterGeneratorFormFields} />
           <Form.Group as={Col} md={'1'}>
             <Form.Label>Remove</Form.Label>
             <Button title={'Remove'}
