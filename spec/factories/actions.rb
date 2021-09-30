@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: monster_actions
+# Table name: actions
 #
 #  id         :bigint           not null, primary key
 #  desc       :string

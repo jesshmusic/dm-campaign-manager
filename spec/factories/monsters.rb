@@ -43,10 +43,12 @@ FactoryBot.define do
   factory :monster do
     hit_dice_number = Faker::Number.between(from: 1, to: 20)
     hit_dice_value = [8, 10, 12].sample
+    challenge = "#{hit_dice_number}"
 
     alignment { DndRules.alignments.sample }
     armor_class { Faker::Number.between(from: 10, to: 25) }
-    challenge_rating { "#{hit_dice_number}" }
+    attack_bonus { Faker::Number.between(from: 0, to: 17) }
+    challenge_rating { challenge }
     charisma { Faker::Number.between(from: 8, to: 22) }
     constitution { Faker::Number.between(from: 8, to: 22) }
     dexterity { Faker::Number.between(from: 8, to: 22) }
@@ -57,9 +59,12 @@ FactoryBot.define do
     monster_subtype { %w(super wtf hmm yup).sample }
     monster_type { %w(aberration dragon humanoid undead).sample }
     name { Faker::Games::ElderScrolls.creature }
+    prof_bonus { Faker::Number.between(from: 3, to: 10) }
+    save_dc { Faker::Number.between(from: 13, to: 22) }
     size { %w(small medium large gigantic) }
     strength { Faker::Number.between(from: 8, to: 22) }
     wisdom { Faker::Number.between(from: 8, to: 22) }
+    xp { DndRules.xp_for_cr(challenge) }
 
     #Associations
 

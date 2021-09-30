@@ -145,7 +145,7 @@ module Admin::V1
         :challenge_rating, :charisma, :constitution,
         :dexterity, :hit_dice, :hit_points, :intelligence,
         :languages, :monster_subtype, :monster_type,
-        :name, :prof_bonus, :save_dc, :size, :slug,
+        :name, :prof_bonus, :save_dc, :size,
         :strength, :wisdom, :xp,
         damage_immunities_attributes: %i[name _destroy],
         damage_vulnerabilities_attributes: %i[name _destroy],
