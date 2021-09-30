@@ -138,30 +138,11 @@ class MonstersUtil
 
     def import_actions(new_monster, monster)
       new_monster.actions.destroy_all unless new_monster.actions.nil?
-      new_monster.multiattack_action.destroy unless new_monster.multiattack_action.nil?
       attack_bonuses = []
       unless monster[:actions].nil?
         monster[:actions].each do |action|
-          if action[:name] == 'Multiattack'
-            new_monster.multiattack_action = MultiattackAction.create(name: action[:name], desc: action[:desc])
-            total_attacks = 0
-            if action[:options] && action[:options][:from]
-              action[:options][:from].each do |multi_action|
-                multi_action.each do |next_action|
-                  multi_act_action = new_monster.multiattack_action.multi_action_attacks.create(name: next_action[:name], num_attacks: next_action[:count])
-                  multi_act_action.num_attacks = next_action[:count].to_i
-                  total_attacks += multi_act_action.num_attacks
-                  multi_act_action.save!
-                end
-              end
-            end
-            new_monster.multiattack_action.total_attacks = total_attacks
-            new_monster.multiattack_action.save!
-          else
-            act = new_monster.actions.create(name: action[:name], desc: action[:desc], attack_bonus: action[:attack_bonus])
-            attack_bonuses << action[:attack_bonus] unless action[:attack_bonus].nil?
-            parse_action(act, action)
-          end
+          new_monster.actions.create(name: action[:name], desc: action[:desc])
+          attack_bonuses << action[:attack_bonus] unless action[:attack_bonus].nil?
         end
       end
       raw_at_bonus = attack_bonuses.sum / attack_bonuses.size.to_f unless attack_bonuses.empty?
@@ -172,8 +153,7 @@ class MonstersUtil
       new_monster.legendary_actions.destroy_all unless new_monster.legendary_actions.nil?
       unless monster[:legendary_actions].nil?
         monster[:legendary_actions].each do |action|
-          act = new_monster.legendary_actions.create(name: action[:name], desc: action[:desc], attack_bonus: action[:attack_bonus])
-          parse_action(act, action)
+          new_monster.legendary_actions.create(name: action[:name], desc: action[:desc])
         end
       end
     end
@@ -182,8 +162,7 @@ class MonstersUtil
       new_monster.reactions.destroy_all unless new_monster.reactions.nil?
       unless monster[:reactions].nil?
         monster[:reactions].each do |action|
-          act = new_monster.reactions.create(name: action[:name], desc: action[:desc], attack_bonus: action[:attack_bonus])
-          parse_action(act, action)
+          new_monster.reactions.create(name: action[:name], desc: action[:desc])
         end
       end
     end
@@ -192,43 +171,9 @@ class MonstersUtil
       new_monster.special_abilities.destroy_all unless new_monster.special_abilities.nil?
       unless monster[:special_abilities].nil?
         monster[:special_abilities].each do |action|
-          act = new_monster.special_abilities.create(name: action[:name], desc: action[:desc], attack_bonus: action[:attack_bonus])
-          parse_action(act, action)
+          new_monster.special_abilities.create(name: action[:name], desc: action[:desc])
         end
       end
-    end
-
-    def parse_action(act, action)
-      unless action[:dc].nil?
-        act.dc_ability = action[:dc][:dc_type][:name]
-        act.dc_value = action[:dc][:dc_value]
-        act.dc_success_type = action[:dc][:success_type]
-      end
-      unless action[:usage].nil?
-        act.usage_dice = action[:usage][:dice]
-        act.usage_min_value = action[:usage][:min_value]
-        act.usage_type = action[:usage][:type]
-      end
-      unless action[:damage].nil?
-        action[:damage].each do |damage|
-          if damage[:type].nil?
-            damage_dice = DndRules.parse_dice_string(damage[:damage_dice])
-            act.action_damages.create(damage_bonus: damage_dice[:hit_dice_modifier],
-                                      damage_type: damage[:damage_type][:name],
-                                      dice_count: damage_dice[:hit_dice_number],
-                                      dice_value: damage_dice[:hit_dice_value])
-          else
-            damage[:from].each do |damage_choice|
-              damage_dice = DndRules.parse_dice_string(damage_choice[:damage_dice])
-              act.action_damages.create(damage_bonus: damage_dice[:hit_dice_modifier],
-                                        damage_type: damage_choice[:damage_type][:name],
-                                        dice_count: damage_dice[:hit_dice_number],
-                                        dice_value: damage_dice[:hit_dice_value])
-            end
-          end
-        end
-      end
-      act.save!
     end
 
     def import_profs(new_monster, monster)

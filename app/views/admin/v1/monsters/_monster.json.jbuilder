@@ -50,47 +50,20 @@ json.monster_proficiencies monster.monster_proficiencies do |monster_prof|
   json.value monster_prof.value
 end
 
-json.multiattack_action do
-  json.extract! monster.multiattack_action, :name, :desc, :total_attacks
-  json.attacks monster.multiattack_action.multi_action_attacks do |multi_act|
-    json.extract! multi_act, :name, :num_attacks
-  end
-end unless monster.multiattack_action.nil?
-
 json.actions monster.actions do |action|
-  json.extract! action, :name, :attack_bonus, :dc_ability, :dc_value, :dc_success_type, :desc, :usage_dice, :usage_min_value, :usage_type
-  unless action.action_damages.nil?
-    json.damage action.action_damages do |damage|
-      json.extract! damage, :damage_bonus, :damage_type, :dice_count, :dice_value
-    end
-  end
+  json.extract! action, :name, :desc
 end
 
 json.legendary_actions monster.legendary_actions do |action|
-  json.extract! action, :name, :attack_bonus, :dc_ability, :dc_value, :dc_success_type, :desc, :usage_dice, :usage_min_value, :usage_type
-  unless action.action_damages.nil?
-    json.damage action.action_damages do |damage|
-      json.extract! damage, :damage_bonus, :damage_type, :dice_count, :dice_value
-    end
-  end
+  json.extract! action, :name, :desc
 end
 
 json.reactions monster.reactions do |action|
-  json.extract! action, :name, :attack_bonus, :dc_ability, :dc_value, :dc_success_type, :desc, :usage_dice, :usage_min_value, :usage_type
-  unless action.action_damages.nil?
-    json.damage action.action_damages do |damage|
-      json.extract! damage, :damage_bonus, :damage_type, :dice_count, :dice_value
-    end
-  end
+  json.extract! action, :name, :desc
 end
 
 json.special_abilities monster.special_abilities do |action|
-  json.extract! action, :name, :attack_bonus, :dc_ability, :dc_value, :dc_success_type, :desc, :usage_dice, :usage_min_value, :usage_type
-  unless action.action_damages.nil?
-    json.damage action.action_damages do |damage|
-      json.extract! damage, :damage_bonus, :damage_type, :dice_count, :dice_value
-    end
-  end
+  json.extract! action, :name, :desc
 end
 
 json.url v1_monster_url(monster, format: :json)

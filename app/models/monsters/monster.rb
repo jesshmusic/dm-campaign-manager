@@ -55,7 +55,6 @@ class Monster < ApplicationRecord
   has_many :damage_resistances, dependent: :destroy
   has_many :damage_vulnerabilities, dependent: :destroy
 
-  has_one :multiattack_action, dependent: :destroy
   has_many :actions, dependent: :destroy
   has_many :legendary_actions, dependent: :destroy
   has_many :reactions, dependent: :destroy
@@ -71,7 +70,6 @@ class Monster < ApplicationRecord
 
   accepts_nested_attributes_for :actions, allow_destroy: true
   accepts_nested_attributes_for :legendary_actions, allow_destroy: true
-  accepts_nested_attributes_for :multiattack_action, allow_destroy: true
   accepts_nested_attributes_for :reactions, allow_destroy: true
   accepts_nested_attributes_for :special_abilities, allow_destroy: true
   accepts_nested_attributes_for :senses, allow_destroy: true
