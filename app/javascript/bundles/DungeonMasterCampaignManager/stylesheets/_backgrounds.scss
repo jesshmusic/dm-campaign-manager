@@ -14,4 +14,58 @@ $page-background: url("data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAA
   border-image: $background-frame 150 200 150 200 / 47px / 25px 17px;
 
   box-shadow: $box-shadow;
+
+  &.spinner-frame {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    min-height: 30rem;
+
+    svg {
+      animation: 10s linear infinite running loading-animation;
+      fill: $primary;
+      stroke: $primary;
+    }
+  }
+}
+
+@keyframes loading-animation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.dnd-table {
+  @extend .table;
+  @extend .table-borderless;
+  @extend .table-striped;
+  @extend .table-hover;
+
+  tbody {
+    tr {
+      &:hover {
+        background-color: $primary;
+        color: $white;
+        cursor: pointer;
+        transition: background-color .1s ease-in-out;
+      }
+
+      td {
+        @extend .sans-serif;
+        
+        &.name-row {
+          @extend .mr-eaves;
+          color: $primary;
+          font-size: 1.15rem;
+
+          &:hover {
+            color: $white;
+          }
+        }
+      }
+    }
+  }
 }

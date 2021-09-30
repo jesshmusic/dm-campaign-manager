@@ -37,6 +37,14 @@ export interface AppProps {
   user?: UserProps;
 }
 
+export interface DndClassSummary {
+  name: string;
+  hitDie: string;
+  primaryAbilities: string;
+  slug: string;
+}
+
+
 export interface DndClass {
   name: string;
   hitDie: string;

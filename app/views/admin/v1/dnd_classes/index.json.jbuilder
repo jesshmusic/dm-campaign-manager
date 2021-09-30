@@ -2,5 +2,5 @@
 #
 json.count @dnd_classes.count
 json.results do
-  json.array! @dnd_classes, partial: 'admin/v1/dnd_classes/dnd_class', as: :dnd_class
+  json.array! @dnd_classes, partial: 'admin/v1/dnd_classes/dnd_class_summary', as: :dnd_class
 end

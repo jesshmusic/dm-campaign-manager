@@ -7,19 +7,45 @@ import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/layout/PageTitle';
 import DndSpinner from '../../components/layout/DndSpinner';
 import { navigate } from '@reach/router';
-import { DndClass, PageProps } from '../../utilities/types';
-import { ListGroup } from 'react-bootstrap';
-import DndListItem from './components/DndListItem';
+import { DndClassSummary, PageProps } from '../../utilities/types';
+import DataTable from '../../components/layout/DataTable';
+import { Row } from 'react-table';
 
-const DndClasses = (props: PageProps & { getDndClasses: () => void, dndClasses: DndClass[] }) => {
+const DndClasses = (props: PageProps & { getDndClasses: () => void, dndClasses: DndClassSummary[] }) => {
   const { getDndClasses, dndClasses } = props;
   React.useEffect(() => {
     getDndClasses();
   }, []);
 
-  const goToPage = (dndClassSlug: string) => {
-    navigate(`/app/classes/${dndClassSlug}`);
+  const goToPage = (row: Row<any>) => {
+    navigate(`/app/classes/${row.original.slug}`);
   };
+
+  const data = React.useMemo(() => {
+    return dndClasses.map((dndClass: DndClassSummary) => {
+      return {
+        name: dndClass.name,
+        hitDie: `d${dndClass.hitDie}`,
+        primaryAbilities: dndClass.primaryAbilities,
+        slug: dndClass.slug
+      };
+    });
+  }, [dndClasses]);
+
+  const columns = React.useMemo(() => [
+    {
+      Header: 'Class',
+      accessor: 'name'
+    },
+    {
+      Header: 'Hit Die',
+      accessor: 'hitDie'
+    },
+    {
+      Header: 'Primary Abilities',
+      accessor: 'primaryAbilities'
+    }
+  ], []);
 
   return (
     <PageContainer user={props.user}
@@ -29,16 +55,7 @@ const DndClasses = (props: PageProps & { getDndClasses: () => void, dndClasses: 
                    breadcrumbs={[{ isActive: true, title: 'Character Classes' }]}>
       <PageTitle title={'Character Classes'} />
       {dndClasses.length > 0 ? (
-        <div className={'table-frame'}>
-          <ListGroup variant={'flush'}>
-            {dndClasses.map((dndClass: DndClass, index: number) => (
-              <DndListItem dndClass={dndClass}
-                           key={index}
-                           index={index}
-                           goToPage={() => goToPage(dndClass.slug)} />
-            ))}
-          </ListGroup>
-        </div>
+        <DataTable columns={columns} data={data} goToPage={goToPage} />
       ) : (
         <DndSpinner />
       )}

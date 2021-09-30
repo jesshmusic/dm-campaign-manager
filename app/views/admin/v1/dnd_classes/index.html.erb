@@ -1,4 +1,4 @@
-<% title "Classes" %>
+<% title 'Classes' %>
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="/">Home</a></li>
@@ -15,6 +15,7 @@
     <tr>
       <th>Name</th>
       <th scope='col'>Hit die</th>
+      <th>Primary Abilities</th>
       <th>Created By</th>
       <th></th>
     </tr>
@@ -25,9 +26,10 @@
       <tr>
         <td><%= dnd_class.name %></td>
         <td>d<%= dnd_class.hit_die %></td>
-        <td><%= dnd_class.user ? dnd_class.user.name : "Default" %></td>
+        <td><%= dnd_class.ability_scores.map { |ability| ability.full_name }.join(', ') %></td>
+        <td><%= dnd_class.user ? dnd_class.user.name : 'Default' %></td>
         <td>
-          <%= link_to 'Show', v1_dnd_class_path(dnd_class), class: "btn btn-sm btn-primary" %>
+          <%= link_to 'Show', v1_dnd_class_path(dnd_class), class: 'btn btn-sm btn-primary' %>
           <%#= link_to 'Edit', edit_v1_dnd_class_path(dnd_class), class: "btn btn-sm btn-success" if policy(dnd_class).edit? %>
           <%#= link_to 'Destroy', v1_dnd_class_path(dnd_class), class: "btn btn-sm btn-danger", method: :delete, data: { confirm: 'Are you sure?' } if policy(dnd_class).destroy? %>
         </td>

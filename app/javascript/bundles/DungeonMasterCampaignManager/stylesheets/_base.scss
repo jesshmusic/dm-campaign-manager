@@ -32,12 +32,6 @@ h1 {
   font-family: 'Scaly Sans', sans-serif;
 }
 
-.dnd-table {
-  @extend .table;
-  @extend .table-borderless;
-  @extend .table-striped;
-}
-
 .random-npc-generator {
   .row {
     @extend .py-3;

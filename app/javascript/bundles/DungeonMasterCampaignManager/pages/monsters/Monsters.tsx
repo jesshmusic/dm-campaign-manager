@@ -7,23 +7,17 @@ import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/layout/PageTitle';
 import DndSpinner from '../../components/layout/DndSpinner';
 import { MonsterSummary, PageProps } from '../../utilities/types';
-import { fetchData } from '../../actions/api';
+import rest from '../../actions/api';
 import { navigate } from '@reach/router';
 import { ListGroup } from 'react-bootstrap';
 import MonsterListItem from './components/MonsterListItem';
+import { connect } from 'react-redux';
 
-const Monsters = (props: PageProps) => {
-  const [monsters, setMonsters] = React.useState([]);
+const Monsters = (props: PageProps & { getMonsters: () => void, monsters: MonsterSummary[] }) => {
+  const { getMonsters, monsters } = props;
 
   React.useEffect(() => {
-    const componentDidMount = async () => {
-      const response = await fetchData({
-        method: 'get',
-        url: '/v1/monsters.json'
-      });
-      setMonsters(response.data?.results);
-    };
-    componentDidMount();
+    getMonsters();
   }, []);
 
   const goToPage = (monsterSlug: string) => {
@@ -55,4 +49,20 @@ const Monsters = (props: PageProps) => {
   );
 };
 
-export default Monsters;
+function mapStateToProps(state) {
+  return {
+    monsters: state.monsters.monsters,
+    user: state.users.user,
+    flashMessages: state.flashMessages
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    getMonsters: () => {
+      dispatch(rest.actions.getMonsters());
+    }
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Monsters);
