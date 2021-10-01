@@ -96,6 +96,9 @@ export default reduxApi({
   getMonsters: {
     url: '/v1/monsters.json'
   },
+  getMonsterCategories: {
+    url: '/v1/monster-categories.json'
+  },
   getRace: {
     url: '/v1/race/:slug.json'
   },

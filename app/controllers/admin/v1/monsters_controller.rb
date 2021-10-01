@@ -39,6 +39,9 @@ module Admin::V1
           name: monster_type.capitalize,
           monsters: Monster.where(monster_type: monster_type).map { |monster| {
             name: monster.name,
+            challenge: monster.challenge_string,
+            alignment: monster.alignment,
+            hitPoints: monster.hit_points_string,
             slug: monster.slug
           } }
         }

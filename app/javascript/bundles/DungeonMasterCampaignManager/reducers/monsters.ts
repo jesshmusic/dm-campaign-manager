@@ -12,6 +12,8 @@ const getMonstersSuccess = createAction('@@redux-api@getMonsters_success');
 const getMonstersFail = createAction('@@redux-api@getMonsters_fail');
 const getMonsterSuccess = createAction('@@redux-api@getMonster_success');
 const getMonsterFail = createAction('@@redux-api@getMonster_fail');
+const getMonsterCategoriesSuccess = createAction('@@redux-api@getMonsterCategories_success');
+const getMonsterCategoriesFail = createAction('@@redux-api@getMonsterCategories_fail');
 
 const monsters = createReducer({
     monsters: [],
@@ -70,11 +72,7 @@ const monsters = createReducer({
     .addCase(getMonstersSuccess, (state, action: AnyAction) => {
       return {
         monsters: action.data.results,
-        monsterTypes: _.map(_.uniqBy(action.data.results, 'monsterType'), (monster) => ({
-            value: monster.monsterType,
-            label: monster.monsterType
-          }
-        )),
+        monsterTypes: state.monsterTypes,
         count: action.data.count,
         currentMonster: state.currentMonster
       };
@@ -101,6 +99,22 @@ const monsters = createReducer({
         monsterTypes: state.monsterTypes,
         count: state.count,
         currentMonster: null
+      };
+    })
+    .addCase(getMonsterCategoriesSuccess, (state, action: AnyAction) => {
+      return {
+        monsters: state.monsters,
+        monsterTypes: action.data.results,
+        count: action.data.count,
+        currentMonster: state.currentMonster
+      };
+    })
+    .addCase(getMonsterCategoriesFail, (state, action: AnyAction) => {
+      return {
+        monsters: state.monsters,
+        monsterTypes: state.monsterTypes,
+        count: state.count,
+        currentMonster: state.currentMonster
       };
     })
 );

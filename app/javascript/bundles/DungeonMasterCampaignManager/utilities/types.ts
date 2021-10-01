@@ -138,6 +138,19 @@ export interface MonsterSummary {
   xpString: string;
 }
 
+export type MonsterStub = {
+  alignment: string;
+  challenge: string;
+  hitPoints: string;
+  slug: string;
+  name: string;
+}
+
+export type MonsterType = {
+  name: string;
+  monsters: MonsterStub[]
+}
+
 export type MonsterGeneratorFormFields = {
   name: string;
   alignment: string;

@@ -126,6 +126,14 @@ class Monster < ApplicationRecord
     skills
   end
 
+  def hit_points_string
+    "#{hit_points} (#{hit_dice})"
+  end
+
+  def challenge_string
+    "#{challenge_rating} (#{xp.to_s(:delimited)})"
+  end
+
   include PgSearch::Model
 
   # PgSearch

@@ -6,23 +6,82 @@ import React from 'react';
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/layout/PageTitle';
 import DndSpinner from '../../components/layout/DndSpinner';
-import { MonsterSummary, PageProps } from '../../utilities/types';
+import { MonsterType, MonsterSummary, PageProps } from '../../utilities/types';
 import rest from '../../actions/api';
 import { navigate } from '@reach/router';
-import { ListGroup } from 'react-bootstrap';
-import MonsterListItem from './components/MonsterListItem';
 import { connect } from 'react-redux';
+import DataTable from '../../components/layout/DataTable';
+import { Row } from 'react-table';
+import { GiClosedDoors, GiOpenBook, GiOpenGate } from 'react-icons/all';
 
-const Monsters = (props: PageProps & { getMonsters: () => void, monsters: MonsterSummary[] }) => {
-  const { getMonsters, monsters } = props;
+const Monsters = (props: PageProps & { getMonsterCategories: () => void, monsters: MonsterSummary[], monsterTypes: MonsterType[] }) => {
+  const { getMonsterCategories, monsterTypes } = props;
 
   React.useEffect(() => {
-    getMonsters();
+    getMonsterCategories();
   }, []);
 
-  const goToPage = (monsterSlug: string) => {
-    navigate(`/app/monsters/${monsterSlug}`);
+  const goToPage = (row: Row<any>) => {
+    navigate(`/app/monsters/${row.original.slug}`);
   };
+
+  const columns = React.useMemo(() => [{
+      id: 'expander',
+      Header: ({ getToggleAllRowsExpandedProps, isAllRowsExpanded }) => (
+        <span {...getToggleAllRowsExpandedProps()}>
+          {isAllRowsExpanded ? <GiOpenGate /> : <GiClosedDoors />}
+        </span>
+      ),
+      Cell: ({ row }) =>
+        row.canExpand ? (
+          <span
+            {...row.getToggleRowExpandedProps({
+              style: {
+                paddingLeft: `${row.depth * 2}rem`
+              }
+            })}>
+            {row.isExpanded ? <GiOpenGate /> : <GiClosedDoors />}
+          </span>
+        ) : null
+    },
+      {
+        Header: 'Monster Types',
+        columns: [
+          {
+            Header: 'Monster',
+            accessor: 'name'
+          },
+          {
+            Header: 'Challenge',
+            accessor: 'challenge'
+          },
+          {
+            Header: 'Alignment',
+            accessor: 'alignment'
+          },
+          {
+            Header: 'Hit Points',
+            accessor: 'hitPoints'
+          }
+        ]
+      }
+    ],
+    []);
+
+  const data = React.useMemo(() => {
+      return monsterTypes.map(
+        (monsterCat) => ({
+          name: monsterCat.name,
+          subRows: monsterCat.monsters.map((monster) => ({
+            name: monster.name,
+            alignment: monster.alignment,
+            challenge: monster.challenge,
+            hitPoints: monster.hitPoints,
+            slug: monster.slug
+          }))
+        }));
+    }, [monsterTypes]
+  );
 
   return (
     <PageContainer user={props.user}
@@ -31,17 +90,8 @@ const Monsters = (props: PageProps & { getMonsters: () => void, monsters: Monste
                    description={'All monsters with descriptions and stats. Dungeon Master\'s Toolbox is a free resource for DMs to manage their campaigns, adventures, and Monsters.'}
                    breadcrumbs={[{ isActive: true, title: 'Monsters' }]}>
       <PageTitle title={'Monsters'} />
-      {monsters.length > 0 ? (
-        <div className={'table-frame'}>
-          <ListGroup variant={'flush'}>
-            {monsters.map((monster: MonsterSummary, index: number) => (
-              <MonsterListItem monster={monster}
-                               key={index}
-                               index={index}
-                               goToPage={() => goToPage(monster.slug)} />
-            ))}
-          </ListGroup>
-        </div>
+      {monsterTypes.length > 0 ? (
+        <DataTable columns={columns} data={data} goToPage={goToPage} />
       ) : (
         <DndSpinner />
       )}
@@ -52,6 +102,7 @@ const Monsters = (props: PageProps & { getMonsters: () => void, monsters: Monste
 function mapStateToProps(state) {
   return {
     monsters: state.monsters.monsters,
+    monsterTypes: state.monsters.monsterTypes,
     user: state.users.user,
     flashMessages: state.flashMessages
   };
@@ -59,8 +110,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    getMonsters: () => {
-      dispatch(rest.actions.getMonsters());
+    getMonsterCategories: () => {
+      dispatch(rest.actions.getMonsterCategories());
     }
   };
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Column, Row, useTable } from 'react-table';
+import { Column, Row, useExpanded, useTable } from 'react-table';
 
 interface DataTableProps {
   columns: Array<Column<any>>;
@@ -15,9 +15,17 @@ const DataTable = ({ columns, data, goToPage }: DataTableProps) => {
     rows,
     prepareRow
   } = useTable({
-    columns,
-    data
-  });
+      columns,
+      data
+    },
+    useExpanded);
+
+  const handleGoToPage = (row: Row<any> & { canExpand?: boolean }) => {
+    console.log(row);
+    if (!row.canExpand) {
+      goToPage(row);
+    }
+  };
 
   return (
     <div className={'table-frame'}>
@@ -35,7 +43,7 @@ const DataTable = ({ columns, data, goToPage }: DataTableProps) => {
           {rows.map((row: Row<any>) => {
             prepareRow(row);
             return (
-              <tr {...row.getRowProps()} onClick={() => goToPage(row)}>
+              <tr {...row.getRowProps()} onClick={() => handleGoToPage(row)}>
                 {row.cells.map((cell, index) => {
                   return (
                     <td {...cell.getCellProps()}

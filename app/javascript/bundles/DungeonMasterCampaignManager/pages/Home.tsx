@@ -1,7 +1,5 @@
 import React from 'react';
-import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
-import rootReducer from '../reducers';
 import { Router } from '@reach/router';
 import HomePage from './front-page/HomePage';
 import Items from './items/Items';
