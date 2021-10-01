@@ -55,7 +55,7 @@ $page-background: url("data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAA
 
       td {
         @extend .sans-serif;
-        
+
         &.name-row {
           @extend .mr-eaves;
           color: $primary;

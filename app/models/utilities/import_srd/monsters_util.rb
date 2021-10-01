@@ -137,11 +137,11 @@ class MonstersUtil
     end
 
     def import_actions(new_monster, monster)
-      new_monster.actions.destroy_all unless new_monster.actions.nil?
+      new_monster.monster_actions.destroy_all unless new_monster.monster_actions.nil?
       attack_bonuses = []
       unless monster[:actions].nil?
         monster[:actions].each do |action|
-          new_monster.actions.create(name: action[:name], desc: action[:desc])
+          new_monster.monster_actions.create(name: action[:name], desc: action[:desc])
           attack_bonuses << action[:attack_bonus] unless action[:attack_bonus].nil?
         end
       end

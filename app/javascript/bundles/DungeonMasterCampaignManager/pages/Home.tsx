@@ -17,6 +17,7 @@ import DndClasses from './dnd-classes/DndClasses';
 import MonsterGenerator from './monster-generator/MonsterGenerator';
 import { FlashMessage } from '../utilities/types';
 import { store } from '../store/store';
+import Monster from './monsters/Monster';
 
 
 const Home = (props) => {
@@ -50,6 +51,7 @@ const Home = (props) => {
         <Tools path='/app/items/tools/' {...combinedProps} />
         <Vehicles path='/app/items/vehicles/' {...combinedProps} />
         <Monsters path='/app/monsters/' {...combinedProps} />
+        <Monster path='/app/monsters/:monsterSlug' {...combinedProps} />
         <Spells path='/app/spells/' {...combinedProps} />
         <MonsterGenerator path='/app/monster-generator/' {...combinedProps} />
       </Router>

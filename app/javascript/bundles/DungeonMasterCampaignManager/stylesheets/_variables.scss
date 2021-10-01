@@ -1,7 +1,9 @@
 // Brand Colors
 $background-color: #d8ddba;
 $background-med: #f3e8d4;
+$card-bg: #fdf1dc;
 $primary: #972c1d;
+$text-red: #58180d;
 $dark-red: #571a10;
 $orange: #dd9529;
 $light-purple: #ab6dac;
@@ -368,7 +370,6 @@ $card-border-radius: $border-radius;
 $card-border-color: rgba($black, 0.125);
 $card-inner-border-radius: calc(#{$card-border-radius} - #{$card-border-width});
 $card-cap-bg: rgba($black, 0.03);
-$card-bg: $white;
 $card-img-overlay-padding: 1.25rem;
 $card-deck-margin: ($grid-gutter-width / 2);
 $card-columns-count: 3;

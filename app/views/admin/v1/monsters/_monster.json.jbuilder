@@ -27,13 +27,13 @@ json.extract! monster, :id,
               :user_id,
               :api_url
 
-json.speeds monster.speeds do |speed|
-  json.extract! speed, :name, :value
-end
+json.hit_points_string monster.hit_points_string
 
-json.senses monster.senses do |sense|
-  json.extract! sense, :name, :value
-end
+json.challenge_string monster.challenge_string
+
+json.speeds monster.speeds_array
+
+json.senses monster.senses_array
 
 json.damage_resistances monster.resistances
 
@@ -41,16 +41,17 @@ json.damage_vulnerabilities monster.vulnerabilities
 
 json.damage_immunities monster.immunities
 
-json.condition_immunities monster.condition_immunities do |cond_imm|
-  json.extract! cond_imm.condition, :name, :index, :description
-end
+json.condition_immunities monster.condition_immunities_array
 
 json.monster_proficiencies monster.monster_proficiencies do |monster_prof|
   json.extract! monster_prof.prof, :name, :prof_type
   json.value monster_prof.value
 end
 
-json.actions monster.actions do |action|
+json.saving_throws monster.saving_throws
+json.skills monster.skills
+
+json.actions monster.monster_actions do |action|
   json.extract! action, :name, :desc
 end
 

@@ -2,12 +2,13 @@ import React from 'react';
 
 // Container
 import PageContainer from '../../containers/PageContainer';
-import { fetchData } from '../../actions/api';
+import rest, { fetchData } from '../../actions/api';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import PageTitle from '../../components/layout/PageTitle';
 import DndSpinner from '../../components/layout/DndSpinner';
 import { DndClass, PageProps } from '../../utilities/types';
+import { connect } from 'react-redux';
 
 type DndClassPageProps = {
   dndClass?: DndClass;
@@ -16,18 +17,10 @@ type DndClassPageProps = {
 } & PageProps;
 
 const DndClass = (props: DndClassPageProps) => {
-  const [dndClass, setDndClass] = React.useState<DndClass | undefined>();
-  const { user, flashMessages, dndClassSlug } = props;
+  const { user, flashMessages, dndClass, dndClassSlug, getDndClass } = props;
 
   React.useEffect(() => {
-    const componentDidMount = async () => {
-      const response = await fetchData({
-        method: 'get',
-        url: `/v1/dnd_classes/${dndClassSlug}.json`
-      });
-      setDndClass(response.data);
-    };
-    componentDidMount();
+    getDndClass(dndClassSlug);
   }, []);
 
   const dndClassTitle = dndClass ? dndClass.name : 'Class Loading...';
@@ -37,8 +30,10 @@ const DndClass = (props: DndClassPageProps) => {
                    flashMessages={flashMessages}
                    pageTitle={dndClassTitle}
                    description={`DndClass: ${dndClassTitle}. Dungeon Master's Toolbox is a free resource for DMs to manage their dndClasses, adventures, and Monsters.`}
-                   breadcrumbs={[{ url: '/app/classes', isActive: false, title: 'Character Classes' },
-                     { isActive: true, title: dndClassTitle }]}>
+                   breadcrumbs={[
+                     { url: '/app/classes', isActive: false, title: 'Character Classes' },
+                     { isActive: true, title: dndClassTitle }
+                   ]}>
       <PageTitle title={`Class: ${dndClassTitle}`} />
       {dndClass ? (
         <Row>
@@ -128,4 +123,20 @@ const DndClass = (props: DndClassPageProps) => {
   );
 };
 
-export default DndClass;
+function mapStateToProps(state) {
+  return {
+    dndClass: state.dndClasses.currentDndClass,
+    user: state.users.user,
+    flashMessages: state.flashMessages
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    getDndClass: (dndClassSlug: string) => {
+      dispatch(rest.actions.getDndClass({ slug: dndClassSlug }));
+    }
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(DndClass);

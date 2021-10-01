@@ -93,11 +93,13 @@ export interface MonsterProps {
   armorClass: number;
   attackBonus: number;
   challengeRating: string;
+  challengeString: string;
   charisma: number;
   constitution: number;
   dexterity: number;
   hitDice: string;
   hitPoints: string;
+  hitPointsString: string;
   intelligence: number;
   languages: string;
   monsterSubtype: string;
@@ -107,17 +109,18 @@ export interface MonsterProps {
   size: string;
   strength: number;
   wisdom: number;
-  conditions?: [number];
-  damageImmunities?: [Resistance];
-  damageResistances?: [Resistance];
-  damageVulnerabilities?: [Resistance];
-  actions?: [MonsterAction];
-  legendaryActions?: [MonsterAction];
-  reactions?: [MonsterAction];
-  specialAbilities?: [MonsterAction];
-  senses?: [MonsterInfoData];
-  speeds?: [MonsterInfoData];
-  monsterProficiencies?: [Prof];
+  conditionImmunities: string[];
+  damageImmunities: string[];
+  damageResistances: string[];
+  damageVulnerabilities: string[];
+  actions?: MonsterAction[];
+  legendaryActions?: MonsterAction[];
+  reactions?: MonsterAction[];
+  specialAbilities?: MonsterAction[];
+  senses: string[];
+  speeds: string[];
+  savingThrows: string[];
+  skills: string[];
 }
 
 export interface Monsters {

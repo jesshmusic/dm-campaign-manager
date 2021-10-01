@@ -56,6 +56,7 @@ class Monster < ApplicationRecord
   has_many :damage_vulnerabilities, dependent: :destroy
 
   has_many :actions, dependent: :destroy
+  has_many :monster_actions, dependent: :destroy
   has_many :legendary_actions, dependent: :destroy
   has_many :reactions, dependent: :destroy
   has_many :special_abilities, dependent: :destroy
@@ -68,7 +69,7 @@ class Monster < ApplicationRecord
 
   belongs_to :user, optional: true
 
-  accepts_nested_attributes_for :actions, allow_destroy: true
+  accepts_nested_attributes_for :monster_actions, allow_destroy: true
   accepts_nested_attributes_for :legendary_actions, allow_destroy: true
   accepts_nested_attributes_for :reactions, allow_destroy: true
   accepts_nested_attributes_for :special_abilities, allow_destroy: true
@@ -82,6 +83,10 @@ class Monster < ApplicationRecord
 
   def initiative
     DndRules.ability_score_modifier(dexterity)
+  end
+
+  def condition_immunities_array
+    condition_immunities.map { |cond| cond.condition.name }
   end
 
   def immunities
@@ -126,12 +131,46 @@ class Monster < ApplicationRecord
     skills
   end
 
+  def senses_array
+    sense_return = []
+    senses.each do |sense|
+      if sense.name.downcase == 'passive perception'
+        sense_return << "passive Perception #{sense.value}"
+      else
+        sense_return << "#{sense.name} #{sense.value}"
+      end
+    end
+    sense_return
+  end
+
+  def speeds_array
+    speed_return = []
+    speeds.each do |speed|
+      if speed.name.downcase == 'walk'
+        speed_return << "#{speed.value} ft."
+      elsif speed.name.downcase == 'hover'
+        speed_return << 'Hover'
+      else
+        speed_return << "#{speed.name} #{speed.value} ft."
+      end
+    end
+    speed_return
+  end
+
   def hit_points_string
-    "#{hit_points} (#{hit_dice})"
+    hp_str = "#{hit_points} (#{hit_dice})"
+    con_mod = DndRules.ability_score_modifier(constitution)
+    num_hit_die = hit_dice.scan(/\d+/).first.to_i
+    if con_mod > 0
+      hp_str = "#{hit_points} (#{hit_dice} + #{con_mod * num_hit_die})"
+    elsif con_mod < 0
+      hp_str = "#{hit_points} (#{hit_dice} - #{con_mod.abs * num_hit_die})"
+    end
+    hp_str
   end
 
   def challenge_string
-    "#{challenge_rating} (#{xp.to_s(:delimited)})"
+    "#{challenge_rating} (#{xp.to_s(:delimited)} XP)"
   end
 
   include PgSearch::Model
