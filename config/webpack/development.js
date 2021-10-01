@@ -2,7 +2,6 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const environment = require('./environment');
-
 const isWebpackDevServer = process.env.WEBPACK_DEV_SERVER;
 
 const config = environment.toWebpackConfig();
@@ -14,9 +13,9 @@ if (isWebpackDevServer) {
     'ReactRefreshWebpackPlugin',
     new ReactRefreshWebpackPlugin({
       overlay: {
-        sockPort: 8080,
-      },
-    }),
+        sockPort: 8080
+      }
+    })
   );
 }
 

@@ -17,39 +17,9 @@ import Spells from './spells/Spells';
 import DndClass from './dnd-classes/DndClass';
 import DndClasses from './dnd-classes/DndClasses';
 import MonsterGenerator from './monster-generator/MonsterGenerator';
-import { AppProps, FlashMessage } from '../utilities/types';
+import { FlashMessage } from '../utilities/types';
+import { store } from '../store/store';
 
-const store = (props: AppProps) => configureStore({
-  reducer: rootReducer,
-  preloadedState: {
-    flashMessages: [],
-    items: {
-      items: [],
-      count: props.items.count,
-      currentItem: null
-    },
-    monsters: {
-      monsters: [],
-      count: props.monsters.count,
-      currentMonster: null
-    },
-    races: {
-      races: [],
-      count: props.races.count,
-      currentRace: null
-    },
-    spells: {
-      spells: [],
-      count: props.spells.count,
-      currentSpell: null
-    },
-    users: {
-      user: props.user,
-      users: [],
-      currentUser: null
-    }
-  }
-});
 
 const Home = (props) => {
   const [flashMessages, setFlashMessages] = React.useState<FlashMessage[]>([]);
@@ -68,7 +38,7 @@ const Home = (props) => {
   };
 
   return (
-    <Provider store={store(props)}>
+    <Provider store={store}>
       <Router>
         <HomePage path='/' {...combinedProps} />
         <DndClass path='/app/classes/:dndClassSlug' {...combinedProps} />

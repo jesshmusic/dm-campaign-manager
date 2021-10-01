@@ -238,3 +238,11 @@ export interface UserProps {
   username: string;
 }
 
+export interface ReduxApiAction {
+  data: any;
+  origData: any;
+  request: any;
+  syncing: boolean;
+  type: string;
+}
+
