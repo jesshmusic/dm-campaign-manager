@@ -37,7 +37,7 @@ const Home = (props) => {
   };
 
   return (
-    <Provider store={store}>
+    <Provider store={store(props)}>
       <Router>
         <HomePage path='/' {...combinedProps} />
         <DndClass path='/app/classes/:dndClassSlug' {...combinedProps} />

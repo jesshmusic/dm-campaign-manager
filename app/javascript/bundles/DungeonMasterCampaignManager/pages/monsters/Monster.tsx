@@ -1,5 +1,5 @@
 import React from 'react';
-import { MonsterInfoData, MonsterProps, PageProps } from '../../utilities/types';
+import { MonsterProps, PageProps } from '../../utilities/types';
 import PageContainer from '../../containers/PageContainer';
 import rest from '../../actions/api';
 import { connect } from 'react-redux';
@@ -155,7 +155,6 @@ const Monster = (props: MonsterPageProps) => {
     </PageContainer>
   );
 };
-
 
 function mapStateToProps(state) {
   return {

@@ -30,7 +30,7 @@ export interface AppProps {
     currentSpell?: any;
   };
   users: {
-    users?: any[];
+    users: UserProps[];
     count: number;
     currentUser?: UserProps;
   };
@@ -252,13 +252,5 @@ export interface UserProps {
   slug: string;
   updated_at?: string;
   username: string;
-}
-
-export interface ReduxApiAction {
-  data: any;
-  origData: any;
-  request: any;
-  syncing: boolean;
-  type: string;
 }
 

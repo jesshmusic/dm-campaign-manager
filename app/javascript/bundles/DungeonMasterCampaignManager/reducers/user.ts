@@ -10,49 +10,49 @@ const getUserSuccess = createAction('@@redux-api@getUser_success');
 const getUserFail = createAction('@@redux-api@getUser_fail');
 
 const users = createReducer({
-    user: null,
     users: [],
+    count: 0,
     currentUser: null
   }, builder =>
     builder
       .addCase(loginSucceeded, (state, action: AnyAction) => {
         return {
-          user: action.data,
           users: state.users,
+          count: state.count,
           currentUser: state.currentUser
         };
       })
       .addCase(logoutSucceeded, (state) => {
         return {
-          user: null,
+          count: state.count,
           users: state.users,
           currentUser: state.currentUser
         };
       })
       .addCase(getUsersSuccess, (state, action: AnyAction) => {
         return {
-          user: state.user,
+          count: action.data.data.length,
           users: action.data.data,
           currentUser: state.currentUser
         };
       })
       .addCase(getUsersFail, (state) => {
         return {
-          user: state.user,
+          count: state.count,
           users: state.users,
           currentUser: state.currentUser
         };
       })
       .addCase(getUserSuccess, (state, action: AnyAction) => {
         return {
-          user: state.user,
+          count: state.count,
           users: state.users,
           currentUser: action.data
         };
       })
       .addCase(getUserFail, (state) => {
         return {
-          user: state.user,
+          count: state.count,
           users: state.users,
           currentUser: state.currentUser
         };

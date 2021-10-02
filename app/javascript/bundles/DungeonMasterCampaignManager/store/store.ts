@@ -1,38 +1,37 @@
 import { configureStore } from '@reduxjs/toolkit';
 import rootReducer from '../reducers';
+import { AppProps } from '../utilities/types';
 
-export const store = configureStore({
+export const store = (props: AppProps) => configureStore({
   reducer: rootReducer,
   preloadedState: {
     flashMessages: [],
     items: {
       items: [],
-      count: 0,
+      count: props.items.count,
       currentItem: null
     },
     monsters: {
       monsters: [],
       monsterTypes: [],
-      count: 0,
+      count: props.monsters.count,
       currentMonster: null
     },
     races: {
       races: [],
-      count: 0,
+      count: props.races.count,
       currentRace: null
     },
     spells: {
       spells: [],
-      count: 0,
+      count: props.spells.count,
       currentSpell: null
     },
     users: {
-      user: null,
       users: [],
-      currentUser: null
+      count: props.users.count,
+      // @ts-ignore
+      currentUser: props.user
     }
   }
 });
-
-export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
