@@ -7,42 +7,44 @@
   </ol>
 </nav>
 
-<h1>Spells</h1>
-<%= render 'shared/search_form', url: v1_spells_path %>
+<div class='table-frame'>
+  <h1>Spells</h1>
+  <%= render 'shared/search_form', url: v1_spells_path %>
 
-<table class='table'>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th scope='col'>Classes</th>
-      <th scope='col'>School</th>
-      <th>Level</th>
-      <th></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @spells.each do |spell| %>
+  <table class='dnd-table'>
+    <thead>
       <tr>
-        <td><%= spell.name %></td>
-        <td>
-          <% if current_user %>
-            <%= spell.dnd_classes.where(user_id: nil).or(spell.dnd_classes.where(user_id: current_user.id)).map { |spell_class| spell_class.name }.join(', ') %>
-          <% else %>
-            <%= spell.dnd_classes.where(user_id: nil).map { |spell_class| spell_class.name }.join(', ') %>
-          <% end %>
-        </td>
-        <td><%= spell.school.titleize %></td>
-        <td><%= spell.spell_level %></td>
-        <td>
-          <%= link_to 'Show', v1_spell_path(spell), class: "btn btn-sm btn-primary" %>
-          <%#= link_to 'Edit', edit_v1_spell_path(spell), class: "btn btn-sm btn-success" if policy(spell).edit? %>
-          <%#= link_to 'Destroy', v1_spell_path(spell), class: "btn btn-sm btn-danger", method: :delete, data: { confirm: 'Are you sure?' } if policy(spell).destroy? %>
-        </td>
+        <th>Name</th>
+        <th scope='col'>Classes</th>
+        <th scope='col'>School</th>
+        <th>Level</th>
+        <th></th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
-<%== pagy_bootstrap_nav(@pagy) if @pagy.pages > 1 %>
+    </thead>
+
+    <tbody>
+      <% @spells.each do |spell| %>
+        <tr>
+          <td><%= spell.name %></td>
+          <td>
+            <% if current_user %>
+              <%= spell.dnd_classes.where(user_id: nil).or(spell.dnd_classes.where(user_id: current_user.id)).map { |spell_class| spell_class.name }.join(', ') %>
+            <% else %>
+              <%= spell.dnd_classes.where(user_id: nil).map { |spell_class| spell_class.name }.join(', ') %>
+            <% end %>
+          </td>
+          <td><%= spell.school.titleize %></td>
+          <td><%= spell.spell_level %></td>
+          <td>
+            <%= link_to 'Show', v1_spell_path(spell), class: "btn btn-sm btn-primary" %>
+            <%#= link_to 'Edit', edit_v1_spell_path(spell), class: "btn btn-sm btn-success" if policy(spell).edit? %>
+            <%#= link_to 'Destroy', v1_spell_path(spell), class: "btn btn-sm btn-danger", method: :delete, data: { confirm: 'Are you sure?' } if policy(spell).destroy? %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <%== pagy_bootstrap_nav(@pagy) if @pagy.pages > 1 %>
+</div>
 
 <%= link_to 'New Spell', new_v1_spell_path, class: "btn btn-lg btn-success" if policy(Spell).new? %>

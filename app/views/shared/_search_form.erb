@@ -1,14 +1,12 @@
-<%= form_tag(url, method: :get, class: "form-inline") do %>
-  <div class="form-group mb-2 mr-sm-2 w-100">
-    <%= label_tag :search, nil, class: "sr-only" %>
-    <div class="input-group mr-sm-2 w-100">
-      <%= text_field_tag :search, params[:search], class: "form-control" %>
-      <div class="input-group-append">
-        <%= link_to url, class: "btn btn-light" do %>
-          <%= image_tag 'svg/x.svg' %>
-        <% end %>
-        <%= submit_tag 'Search', name: nil, class: "btn btn-primary" %>
-      </div>
+<%= form_tag(url, method: :get, class: 'form-inline') do %>
+  <div class="d-flex mb-2 w-100">
+    <%= label_tag :search, nil, class: 'visually-hidden' %>
+    <div class="input-group me-sm-2 w-100">
+      <%= text_field_tag :search, params[:search], class: 'form-control' %>
+      <%= link_to url, class: 'btn btn-outline-primary bg-white' do %>
+        <%= image_tag 'svg/x.svg' %>
+      <% end %>
     </div>
+    <%= submit_tag 'Search', name: nil, class: 'btn btn-primary' %>
   </div>
 <% end %>

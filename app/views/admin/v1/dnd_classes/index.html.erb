@@ -7,36 +7,38 @@
   </ol>
 </nav>
 
-<h1>Classes</h1>
-<%= render 'shared/search_form', url: v1_dnd_classes_path %>
+<div class='table-frame'>
+  <h1>Classes</h1>
+  <%= render 'shared/search_form', url: v1_dnd_classes_path %>
 
-<table class='table'>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th scope='col'>Hit die</th>
-      <th>Primary Abilities</th>
-      <th>Created By</th>
-      <th></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @dnd_classes.each do |dnd_class| %>
+  <table class='dnd-table'>
+    <thead>
       <tr>
-        <td><%= dnd_class.name %></td>
-        <td>d<%= dnd_class.hit_die %></td>
-        <td><%= dnd_class.ability_scores.map { |ability| ability.full_name }.join(', ') %></td>
-        <td><%= dnd_class.user ? dnd_class.user.name : 'Default' %></td>
-        <td>
-          <%= link_to 'Show', v1_dnd_class_path(dnd_class), class: 'btn btn-sm btn-primary' %>
-          <%#= link_to 'Edit', edit_v1_dnd_class_path(dnd_class), class: "btn btn-sm btn-success" if policy(dnd_class).edit? %>
-          <%#= link_to 'Destroy', v1_dnd_class_path(dnd_class), class: "btn btn-sm btn-danger", method: :delete, data: { confirm: 'Are you sure?' } if policy(dnd_class).destroy? %>
-        </td>
+        <th>Name</th>
+        <th scope='col'>Hit die</th>
+        <th>Primary Abilities</th>
+        <th>Created By</th>
+        <th></th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
-<%== pagy_bootstrap_nav(@pagy) if @pagy.pages > 1 %>
+    </thead>
+
+    <tbody>
+      <% @dnd_classes.each do |dnd_class| %>
+        <tr>
+          <td><%= dnd_class.name %></td>
+          <td>d<%= dnd_class.hit_die %></td>
+          <td><%= dnd_class.ability_scores.map { |ability| ability.full_name }.join(', ') %></td>
+          <td><%= dnd_class.user ? dnd_class.user.name : 'Default' %></td>
+          <td>
+            <%= link_to 'Show', v1_dnd_class_path(dnd_class), class: 'btn btn-sm btn-primary' %>
+            <%#= link_to 'Edit', edit_v1_dnd_class_path(dnd_class), class: "btn btn-sm btn-success" if policy(dnd_class).edit? %>
+            <%#= link_to 'Destroy', v1_dnd_class_path(dnd_class), class: "btn btn-sm btn-danger", method: :delete, data: { confirm: 'Are you sure?' } if policy(dnd_class).destroy? %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <%== pagy_bootstrap_nav(@pagy) if @pagy.pages > 1 %>
+</div>
 
 <%#= link_to 'New Class', new_v1_dnd_class_path, class: "btn btn-lg btn-success" if policy(DndClass).new? %>

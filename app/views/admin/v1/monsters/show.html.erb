@@ -101,12 +101,12 @@
     </div>
   </div>
 
-  <% unless @monster.actions.empty? %>
+  <% unless @monster.monster_actions.empty? %>
     <div class="grid g-2 pt-1 pb-2">
       <div class="g-col-12">
         <h3 class='dnd-section border-bottom border-primary'>Actions</h3>
         <dl>
-          <% @monster.actions.each do |monster_action| %>
+          <% @monster.monster_actions.each do |monster_action| %>
             <dd>
               <strong><%= monster_action['name'] %>. </strong><%= monster_action['desc'] %>
             </dd>
