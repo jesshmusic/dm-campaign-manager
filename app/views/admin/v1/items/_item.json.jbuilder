@@ -11,7 +11,7 @@ json.cost do
   json.extract! item.cost, :quantity, :unit unless item.cost.nil?
 end
 
-unless item.content_items.nil?
+unless item.content_items.nil? || item.content_items.count == 0
   json.contents item.content_items do |content_item|
     json.extract! content_item, :name, :quantity, :index
   end

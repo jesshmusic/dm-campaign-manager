@@ -1,7 +1,7 @@
 import React from 'react';
 import { Column, Row, useExpanded, useTable } from 'react-table';
 
-interface DataTableProps {
+export interface DataTableProps {
   columns: Array<Column<any>>;
   data: Array<any>;
   goToPage: (row: Row<any>) => void;

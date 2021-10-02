@@ -78,9 +78,59 @@ export interface FlashMessage {
   type: string;
 }
 
+export interface ItemSummary {
+  id: number;
+  name: string;
+  slug: string;
+  type: string;
+  category: string;
+  cost: string;
+  weight: string;
+  contents?: ItemSummary[];
+}
+
 type MonsterAction = {
   desc: string;
   name: string;
+}
+
+export type MonsterGeneratorFormFields = {
+  name: string;
+  alignment: string;
+  alignmentOption: SelectOption;
+  armorClass: number;
+  attackBonus: number;
+  damageBonus: number;
+  challengeRating: string;
+  charisma: number;
+  constitution: number;
+  conditionImmunities?: number[];
+  dexterity: number;
+  hitDice: string;
+  hitDiceNumber: number;
+  hitDiceValue: string;
+  hitPoints: number;
+  intelligence: number;
+  languages: string[];
+  monsterType: SelectOption;
+  monsterSubtype?: string;
+  profBonus: number;
+  saveDC: number;
+  size: SelectOption;
+  strength: number;
+  wisdom: number;
+  xp: number;
+  conditions: number[];
+  damageImmunities: Resistance[];
+  damageResistances: Resistance[];
+  damageVulnerabilities: Resistance[];
+  actions: MonsterAction[];
+  legendaryActions: MonsterAction[];
+  reactions: MonsterAction[];
+  specialAbilities: MonsterAction[];
+  senses: MonsterInfoData[];
+  speeds: MonsterInfoData[];
+  monsterProficiencies: Prof[];
 }
 
 export type MonsterInfoData = {
@@ -127,6 +177,14 @@ export interface Monsters {
   monsters: [MonsterSummary];
 }
 
+export type MonsterStub = {
+  alignment: string;
+  challenge: string;
+  hitPoints: string;
+  slug: string;
+  name: string;
+}
+
 export interface MonsterSummary {
   alignment: string;
   attackBonus: number;
@@ -141,61 +199,9 @@ export interface MonsterSummary {
   xpString: string;
 }
 
-export type MonsterStub = {
-  alignment: string;
-  challenge: string;
-  hitPoints: string;
-  slug: string;
-  name: string;
-}
-
 export type MonsterType = {
   name: string;
   monsters: MonsterStub[]
-}
-
-export type MonsterGeneratorFormFields = {
-  name: string;
-  alignment: string;
-  alignmentOption: SelectOption;
-  armorClass: number;
-  attackBonus: number;
-  damageBonus: number;
-  challengeRating: string;
-  charisma: number;
-  constitution: number;
-  conditionImmunities?: number[];
-  dexterity: number;
-  hitDice: string;
-  hitDiceNumber: number;
-  hitDiceValue: string;
-  hitPoints: number;
-  intelligence: number;
-  languages: string[];
-  monsterType: SelectOption;
-  monsterSubtype?: string;
-  profBonus: number;
-  saveDC: number;
-  size: SelectOption;
-  strength: number;
-  wisdom: number;
-  xp: number;
-  conditions: number[];
-  damageImmunities: Resistance[];
-  damageResistances: Resistance[];
-  damageVulnerabilities: Resistance[];
-  actions: MonsterAction[];
-  legendaryActions: MonsterAction[];
-  reactions: MonsterAction[];
-  specialAbilities: MonsterAction[];
-  senses: MonsterInfoData[];
-  speeds: MonsterInfoData[];
-  monsterProficiencies: Prof[];
-}
-
-export interface StateAction {
-  type: string;
-  payload: any;
 }
 
 export interface PageProps {
@@ -238,6 +244,11 @@ export type SelectOption = {
 export interface StartingEquipment {
   name: string;
   quantity: number;
+}
+
+export interface StateAction {
+  type: string;
+  payload: any;
 }
 
 export interface UserProps {
