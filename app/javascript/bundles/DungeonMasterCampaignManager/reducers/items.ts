@@ -1,18 +1,27 @@
 import { createAction, createReducer } from '@reduxjs/toolkit';
 import { AnyAction } from 'redux';
 
+const getItems = createAction('@@redux-api@getItems');
 const getItemsSuccess = createAction('@@redux-api@getItems_success');
 const getItemsFail = createAction('@@redux-api@getItems_fail');
 const getItemSuccess = createAction('@@redux-api@getItem_success');
 const getItemFail = createAction('@@redux-api@getItem_fail');
 
-const items = createReducer({
+const items = createReducer(
+  {
     items: [],
     count: 0,
     currentItem: null,
   },
-  builder =>
+  (builder) =>
     builder
+      .addCase(getItems, (state) => {
+        return {
+          items: [],
+          count: 0,
+          currentItem: state.currentItem,
+        };
+      })
       .addCase(getItemsSuccess, (state, action: AnyAction) => {
         return {
           items: action.data.results,

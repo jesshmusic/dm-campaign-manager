@@ -1,51 +1,76 @@
+/**
+ * Created by jesshendricks on 2019-08-21
+ */
+
 import React from 'react';
+import rest from '../../actions/api';
 import { connect } from 'react-redux';
-import { Link } from '@reach/router';
+import _ from 'lodash';
+import ItemsList from './components/ItemsList';
+import { ItemSummary, PageProps } from '../../utilities/types';
 
-// Container
-import PageContainer from '../../containers/PageContainer';
-import ListGroup from 'react-bootstrap/ListGroup';
-import PageTitle from '../../components/layout/PageTitle';
-import { FlashMessage, UserProps } from '../../utilities/types';
+export const selectCategoryOptions = (items) => {
+  return _.map(_.uniqBy(items, 'category'), (item) => {
+    return {
+      value: item.category,
+      label: item.category,
+    };
+  });
+};
 
-const Items = (props: { flashMessages: FlashMessage[], user?: UserProps }) => (
-  <PageContainer user={props.user}
-                 flashMessages={props.flashMessages}
-                 pageTitle={'Items and Equipment'}
-                 description={`All Dungeons and Dragons equipment, armor, weapons, and magic items. Dungeon Master's Toolbox is a free resource for DMs to manage their campaigns, adventures, and Monsters.`}
-                 breadcrumbs={[{ isActive: true, title: 'Items and Equipment' }]}>
-    <PageTitle title={'Items and Equipment'} />
-    <ListGroup>
-      <ListGroup.Item>
-        <Link to={'/app/items/all/'}>All Equipment and Items</Link>
-      </ListGroup.Item>
-      <ListGroup.Item>
-        <Link to={'/app/items/armor/'}>Armor</Link>
-      </ListGroup.Item>
-      <ListGroup.Item>
-        <Link to={'/app/items/weapons/'}>Weapons</Link>
-      </ListGroup.Item>
-      <ListGroup.Item>
-        <Link to={'/app/items/magic-items/'}>Magic Items</Link>
-      </ListGroup.Item>
-      <ListGroup.Item>
-        <Link to={'/app/items/gear/'}>Adventuring Gear</Link>
-      </ListGroup.Item>
-      <ListGroup.Item>
-        <Link to={'/app/items/tools/'}>Tools</Link>
-      </ListGroup.Item>
-      <ListGroup.Item>
-        <Link to={'/app/items/vehicles/'}>Mounts and Vehicles</Link>
-      </ListGroup.Item>
-    </ListGroup>
-  </PageContainer>
-);
+const Items = (
+  props: {
+    getItems: (itemType?: string) => void;
+    itemType?: string;
+    items: ItemSummary[];
+    pageTitle: string;
+  } & PageProps
+) => {
+  const { getItems } = props;
+
+  React.useEffect(() => {
+    getItems(props.itemType);
+  }, []);
+
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: 'Item',
+        accessor: 'name',
+      },
+      {
+        Header: 'Weight',
+        accessor: 'weight',
+      },
+      {
+        Header: 'Cost',
+        accessor: 'cost',
+      },
+    ],
+    []
+  );
+
+  return <ItemsList columns={columns} {...props} />;
+};
 
 function mapStateToProps(state) {
   return {
+    items: state.items.items,
     user: state.users.user,
-    flashMessages: state.flashMessages
+    flashMessages: state.flashMessages,
   };
 }
 
-export default connect(mapStateToProps, {})(Items);
+function mapDispatchToProps(dispatch) {
+  return {
+    getItems: (itemType?: string) => {
+      if (itemType) {
+        dispatch(rest.actions.getItems({ type: itemType }));
+      } else {
+        dispatch(rest.actions.getItems());
+      }
+    },
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Items);

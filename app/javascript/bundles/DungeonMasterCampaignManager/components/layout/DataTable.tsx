@@ -5,7 +5,7 @@ import { Column, Row, useExpanded, usePagination, useTable } from 'react-table';
 export interface DataTableProps {
   columns: Array<Column<any>>;
   data: Array<any>;
-  goToPage: (row: Row<any>) => void;
+  goToPage?: (row: Row<any>) => void;
   paginateExpandedRows?: boolean;
   perPage?: number;
 }
@@ -45,7 +45,9 @@ const DataTable = ({
   const handleGoToPage = (row: Row<any> & { canExpand?: boolean }) => {
     console.log(row);
     if (!row.canExpand) {
-      goToPage(row);
+      if (goToPage) {
+        goToPage(row);
+      }
     }
   };
 

@@ -3,13 +3,6 @@ import { Provider } from 'react-redux';
 import { Router } from '@reach/router';
 import HomePage from './front-page/HomePage';
 import Items from './items/Items';
-import AllItems from './items/AllItems';
-import Armor from './items/Armor';
-import Gear from './items/Gear';
-import MagicItems from './items/MagicItems';
-import Tools from './items/Tools';
-import Vehicles from './items/Vehicles';
-import Weapons from './items/Weapons';
 import Monsters from './monsters/Monsters';
 import Spells from './spells/Spells';
 import DndClass from './dnd-classes/DndClass';
@@ -19,41 +12,78 @@ import { FlashMessage } from '../utilities/types';
 import { store } from '../store/store';
 import Monster from './monsters/Monster';
 
-
 const Home = (props) => {
   const [flashMessages, setFlashMessages] = React.useState<FlashMessage[]>([]);
 
   const addFlashMessage = (flashMessage: FlashMessage) => {
-    setFlashMessages([
-      ...flashMessages,
-      flashMessage
-    ]);
+    setFlashMessages([...flashMessages, flashMessage]);
   };
 
   const combinedProps = {
     ...props,
     flashMessages,
-    addFlashMessage
+    addFlashMessage,
   };
 
   return (
     <Provider store={store(props)}>
       <Router>
-        <HomePage path='/' {...combinedProps} />
-        <DndClass path='/app/classes/:dndClassSlug' {...combinedProps} />
-        <DndClasses path='/app/classes' {...combinedProps} />
-        <Items path='/app/items' {...combinedProps} />
-        <AllItems path='/app/items/all/' {...combinedProps} />
-        <Armor path='/app/items/armor/' {...combinedProps} />
-        <Weapons path='/app/items/weapons/' {...combinedProps} />
-        <MagicItems path='/app/items/magic-items/' {...combinedProps} />
-        <Gear path='/app/items/gear/' {...combinedProps} />
-        <Tools path='/app/items/tools/' {...combinedProps} />
-        <Vehicles path='/app/items/vehicles/' {...combinedProps} />
-        <Monsters path='/app/monsters/' {...combinedProps} />
-        <Monster path='/app/monsters/:monsterSlug' {...combinedProps} />
-        <Spells path='/app/spells/' {...combinedProps} />
-        <MonsterGenerator path='/app/monster-generator/' {...combinedProps} />
+        <HomePage path="/" {...combinedProps} />
+        <DndClass path="/app/classes/:dndClassSlug" {...combinedProps} />
+        <DndClasses path="/app/classes" {...combinedProps} />
+        <Items
+          path="/app/items"
+          {...combinedProps}
+          itemType={null}
+          key="Items"
+          pageTitle="All Equipment and Items"
+        />
+        <Items
+          path="/app/items/armor/"
+          {...combinedProps}
+          itemType="ArmorItem"
+          key="ArmorItem"
+          pageTitle="Armor"
+        />
+        <Items
+          path="/app/items/weapons/"
+          {...combinedProps}
+          itemType="WeaponItem"
+          key="WeaponItem"
+          pageTitle="Weapons"
+        />
+        <Items
+          path="/app/items/magic-items/"
+          {...combinedProps}
+          itemType="MagicItem"
+          key="MagicItem"
+          pageTitle="Magic Items"
+        />
+        <Items
+          path="/app/items/gear/"
+          {...combinedProps}
+          itemType="GearItem"
+          key="GearItem"
+          pageTitle="Gear"
+        />
+        <Items
+          path="/app/items/tools/"
+          {...combinedProps}
+          itemType="ToolItem"
+          key="ToolItem"
+          pageTitle="Tools"
+        />
+        <Items
+          path="/app/items/vehicles/"
+          {...combinedProps}
+          itemType="VehicleItem"
+          key="VehicleItem"
+          pageTitle="Vehicles and Mounts"
+        />
+        <Monsters path="/app/monsters/" {...combinedProps} />
+        <Monster path="/app/monsters/:monsterSlug" {...combinedProps} />
+        <Spells path="/app/spells/" {...combinedProps} />
+        <MonsterGenerator path="/app/monster-generator/" {...combinedProps} />
       </Router>
     </Provider>
   );
