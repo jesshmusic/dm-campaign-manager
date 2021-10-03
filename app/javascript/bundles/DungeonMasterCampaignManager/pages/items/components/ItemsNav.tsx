@@ -2,13 +2,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from '@reach/router';
 
-// Container
-import ListGroup from 'react-bootstrap/ListGroup';
-
 const ItemsNav = () => (
   <ul className="nav justify-content-center">
     <li className="nav-item">
-      <Link to={'/app/items/all/'} className="nav-link">
+      <Link to={'/app/items/'} className="nav-link">
         All Equipment and Items
       </Link>
     </li>

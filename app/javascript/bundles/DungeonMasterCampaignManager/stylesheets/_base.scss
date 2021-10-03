@@ -1,9 +1,9 @@
 .container,
 .container-fluid {
+  padding: 1rem;
   @include media-breakpoint-up(lg) {
     padding: 1rem 6rem;
   }
-  padding: 1rem;
 }
 
 h6 {
@@ -11,25 +11,26 @@ h6 {
 }
 
 h1 {
-  &.home {
-    font-size: $display4-size;
-    font-family: 'Draconis Bold', serif;
-  }
 
   color: $dark-red;
-  font-size: $h1-font-size;
   font-family: 'Mr Eaves', serif;
+  font-size: $h1-font-size;
+
+  &.home {
+    font-family: 'Draconis Bold', serif;
+    font-size: $display4-size;
+  }
 }
 
 .card {
-  position: relative;
-  padding-top: 15px;
-  background-color: #FDF1DC;
+  background-color: #fdf1dc;
+  border-image: $orange-border;
   border-style: solid;
   border-width: 10px;
-  border-image: $orange-border;
   box-shadow: $box-shadow;
   font-family: 'Scaly Sans', sans-serif;
+  padding-top: 15px;
+  position: relative;
 }
 
 .random-npc-generator {

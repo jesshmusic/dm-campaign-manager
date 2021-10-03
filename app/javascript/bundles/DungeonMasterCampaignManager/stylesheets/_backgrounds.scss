@@ -40,9 +40,18 @@ $page-background: url('/images/dndBG.jpg');
   @extend .table;
   @extend .table-borderless;
   @extend .table-striped;
-  @extend .table-hover;
 
   tbody {
+    tr {
+      td {
+        @extend .sans-serif;
+      }
+    }
+  }
+
+  &__hover {
+    @extend .table-hover;
+
     tr {
       &:hover {
         background-color: $primary;
@@ -50,9 +59,11 @@ $page-background: url('/images/dndBG.jpg');
         cursor: pointer;
         transition: background-color 0.1s ease-in-out;
       }
+    }
 
-      td {
-        @extend .sans-serif;
+    .name-row {
+      &:hover {
+        color: lighten($primary, 25%);
       }
     }
   }
@@ -62,10 +73,6 @@ $page-background: url('/images/dndBG.jpg');
   @extend .mr-eaves;
   color: $primary;
   font-size: 1.15rem;
-
-  &:hover {
-    color: $white;
-  }
 }
 
 .admin-container {

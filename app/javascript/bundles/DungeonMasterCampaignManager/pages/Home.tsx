@@ -11,6 +11,7 @@ import MonsterGenerator from './monster-generator/MonsterGenerator';
 import { FlashMessage } from '../utilities/types';
 import { store } from '../store/store';
 import Monster from './monsters/Monster';
+import { ItemType } from './items/use-data';
 
 const Home = (props) => {
   const [flashMessages, setFlashMessages] = React.useState<FlashMessage[]>([]);
@@ -34,51 +35,51 @@ const Home = (props) => {
         <Items
           path="/app/items"
           {...combinedProps}
-          itemType={null}
-          key="Items"
+          itemType={ItemType.all}
+          key={ItemType.all}
           pageTitle="All Equipment and Items"
         />
         <Items
           path="/app/items/armor/"
           {...combinedProps}
-          itemType="ArmorItem"
-          key="ArmorItem"
+          itemType={ItemType.armor}
+          key={ItemType.armor}
           pageTitle="Armor"
-        />
-        <Items
-          path="/app/items/weapons/"
-          {...combinedProps}
-          itemType="WeaponItem"
-          key="WeaponItem"
-          pageTitle="Weapons"
-        />
-        <Items
-          path="/app/items/magic-items/"
-          {...combinedProps}
-          itemType="MagicItem"
-          key="MagicItem"
-          pageTitle="Magic Items"
         />
         <Items
           path="/app/items/gear/"
           {...combinedProps}
-          itemType="GearItem"
-          key="GearItem"
+          itemType={ItemType.gear}
+          key={ItemType.gear}
           pageTitle="Gear"
+        />
+        <Items
+          path="/app/items/magic-items/"
+          {...combinedProps}
+          itemType={ItemType.magic}
+          key={ItemType.magic}
+          pageTitle="Magic Items"
         />
         <Items
           path="/app/items/tools/"
           {...combinedProps}
-          itemType="ToolItem"
-          key="ToolItem"
+          itemType={ItemType.tool}
+          key={ItemType.tool}
           pageTitle="Tools"
         />
         <Items
           path="/app/items/vehicles/"
           {...combinedProps}
-          itemType="VehicleItem"
-          key="VehicleItem"
+          itemType={ItemType.vehicle}
+          key={ItemType.vehicle}
           pageTitle="Vehicles and Mounts"
+        />
+        <Items
+          path="/app/items/weapons/"
+          {...combinedProps}
+          itemType={ItemType.weapon}
+          key={ItemType.weapon}
+          pageTitle="Weapons"
         />
         <Monsters path="/app/monsters/" {...combinedProps} />
         <Monster path="/app/monsters/:monsterSlug" {...combinedProps} />

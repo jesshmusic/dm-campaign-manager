@@ -52,6 +52,23 @@
 # TODO: It seems like the ranged weapons are missing their range values.
 
 class WeaponItem < Item
+  def properties_str
+    prop_arr = []
+    properties.each do |property|
+      prop_str = "#{property}"
+      case property.downcase
+      when 'thrown'
+        prop_str = prop_str + " (range #{item_throw_range.normal}/#{item_throw_range.long})" unless item_throw_range.nil?
+      when 'ammunition'
+        prop_str = prop_str + " (range #{item_range.normal}/#{item_range.long})" unless item_range.nil?
+      when 'versatile'
+        prop_str = prop_str + " (#{two_handed_damage.damage_dice})" unless two_handed_damage.nil?
+      end
+      prop_arr << prop_str
+    end
+    prop_arr.join(', ')
+  end
+
   def self.all_weapons
     ['Shortsword', 'Mace', 'Pike', 'Crossbow, light', 'Halberd', 'Dart', 'Battleaxe', 'Glaive', 'Sling', 'Whip', 'Sickle', 'Crossbow, hand', 'Greataxe', 'Spear', 'Greatsword', 'Net', 'Javelin', 'Flail', 'Blowgun', 'Maul', 'Quarterstaff', 'Greatclub', 'Handaxe', 'War pick', 'Scimitar', 'Club', 'Longsword', 'Rapier', 'Trident', 'Dagger', 'Lance', 'Morningstar', 'Light hammer', 'Warhammer', 'Longbow', 'Shortbow', 'Crossbow, heavy']
   end

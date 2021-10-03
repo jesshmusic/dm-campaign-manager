@@ -7,7 +7,8 @@ import rest from '../../actions/api';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import ItemsList from './components/ItemsList';
-import { ItemSummary, PageProps } from '../../utilities/types';
+import { ItemsPageProps } from '../../utilities/types';
+import { ItemType, useData } from './use-data';
 
 export const selectCategoryOptions = (items) => {
   return _.map(_.uniqBy(items, 'category'), (item) => {
@@ -18,39 +19,10 @@ export const selectCategoryOptions = (items) => {
   });
 };
 
-const Items = (
-  props: {
-    getItems: (itemType?: string) => void;
-    itemType?: string;
-    items: ItemSummary[];
-    pageTitle: string;
-  } & PageProps
-) => {
-  const { getItems } = props;
+const Items = (props: ItemsPageProps) => {
+  const { columns, data } = useData(props);
 
-  React.useEffect(() => {
-    getItems(props.itemType);
-  }, []);
-
-  const columns = React.useMemo(
-    () => [
-      {
-        Header: 'Item',
-        accessor: 'name',
-      },
-      {
-        Header: 'Weight',
-        accessor: 'weight',
-      },
-      {
-        Header: 'Cost',
-        accessor: 'cost',
-      },
-    ],
-    []
-  );
-
-  return <ItemsList columns={columns} {...props} />;
+  return <ItemsList columns={columns} data={data} {...props} />;
 };
 
 function mapStateToProps(state) {
@@ -63,8 +35,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    getItems: (itemType?: string) => {
-      if (itemType) {
+    getItems: (itemType: ItemType) => {
+      if (itemType !== ItemType.all) {
         dispatch(rest.actions.getItems({ type: itemType }));
       } else {
         dispatch(rest.actions.getItems());

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Location, NavigateFn } from '@reach/router';
+import { ItemType } from '../pages/items/use-data';
 
 export interface AbilityScore {
   desc: string[];
@@ -44,7 +45,6 @@ export interface DndClassSummary {
   slug: string;
 }
 
-
 export interface DndClass {
   name: string;
   hitDie: string;
@@ -68,8 +68,8 @@ export interface DndClassesResponse {
 }
 
 export type FieldValues = {
-  [key: string]: string | number
-}
+  [key: string]: string | number;
+};
 
 export interface FlashMessage {
   id: number;
@@ -79,20 +79,36 @@ export interface FlashMessage {
 }
 
 export interface ItemSummary {
-  id: number;
-  name: string;
-  slug: string;
-  type: string;
-  category: string;
-  cost: string;
-  weight: string;
+  armorClass?: string;
+  armorType?: string;
+  capacity?: string;
   contents?: ItemSummary[];
+  cost: string;
+  damage?: string;
+  name: string;
+  properties?: string;
+  rarity?: string;
+  requiresAttunement?: string;
+  slug: string;
+  speed?: string;
+  stealth?: string;
+  strength?: string;
+  type: string;
+  vehicleCategory?: string;
+  weight: string;
 }
+
+export type ItemsPageProps = {
+  getItems: (itemType?: string) => void;
+  itemType: ItemType;
+  items: ItemSummary[];
+  pageTitle: string;
+} & PageProps;
 
 type MonsterAction = {
   desc: string;
   name: string;
-}
+};
 
 export type MonsterGeneratorFormFields = {
   name: string;
@@ -131,12 +147,12 @@ export type MonsterGeneratorFormFields = {
   senses: MonsterInfoData[];
   speeds: MonsterInfoData[];
   monsterProficiencies: Prof[];
-}
+};
 
 export type MonsterInfoData = {
   name: string;
   value: string | number | boolean;
-}
+};
 
 export interface MonsterProps {
   alignment: string;
@@ -183,7 +199,7 @@ export type MonsterStub = {
   hitPoints: string;
   slug: string;
   name: string;
-}
+};
 
 export interface MonsterSummary {
   alignment: string;
@@ -201,8 +217,8 @@ export interface MonsterSummary {
 
 export type MonsterType = {
   name: string;
-  monsters: MonsterStub[]
-}
+  monsters: MonsterStub[];
+};
 
 export interface PageProps {
   addFlashMessage: (flashMessage: FlashMessage) => void;
@@ -232,14 +248,14 @@ export interface ProfChoice {
 }
 
 type Resistance = {
-  name: string,
+  name: string;
   _destroy?: boolean;
-}
+};
 
 export type SelectOption = {
   label: string;
   value: string | number;
-}
+};
 
 export interface StartingEquipment {
   name: string;
@@ -264,4 +280,3 @@ export interface UserProps {
   updated_at?: string;
   username: string;
 }
-

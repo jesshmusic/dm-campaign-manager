@@ -11,39 +11,30 @@ import { ItemSummary, PageProps } from '../../../utilities/types';
 import { Column, Row } from 'react-table';
 import DataTable from '../../../components/layout/DataTable';
 import ItemsNav from './ItemsNav';
+import { ItemType } from '../use-data';
 
 type ItemsListProps = {
   columns: Array<Column<any>>;
-  items: ItemSummary[];
-  itemType?: string;
+  data: any[];
+  itemType: string;
   pageTitle: string;
 } & PageProps;
 
 const ItemsList = ({
   columns,
-  items,
+  data,
   flashMessages,
   user,
   pageTitle,
   itemType,
 }: ItemsListProps) => {
-  const data = React.useMemo(() => {
-    return items.map((item: ItemSummary) => {
-      return {
-        name: item.name,
-        cost: item.cost,
-        weight: item.weight ? item.weight : 0,
-        slug: item.slug,
-      };
-    });
-  }, [items]);
-
-  const breadCrumbs = itemType
-    ? [
-        { url: '/app/items/', isActive: false, title: 'Items' },
-        { isActive: true, title: pageTitle },
-      ]
-    : [{ isActive: true, title: pageTitle }];
+  const breadCrumbs =
+    itemType !== ItemType.all
+      ? [
+          { url: '/app/items/', isActive: false, title: 'Items' },
+          { isActive: true, title: pageTitle },
+        ]
+      : [{ isActive: true, title: pageTitle }];
 
   return (
     <PageContainer
@@ -55,8 +46,8 @@ const ItemsList = ({
     >
       <PageTitle title={pageTitle} />
       <ItemsNav />
-      {items && items.length > 0 ? (
-        <DataTable columns={columns} data={data} />
+      {data && data.length > 0 ? (
+        <DataTable columns={columns} data={data} perPage={10} noHover />
       ) : (
         <DndSpinner />
       )}
