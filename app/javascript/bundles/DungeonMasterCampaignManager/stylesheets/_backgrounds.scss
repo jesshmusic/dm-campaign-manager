@@ -72,7 +72,7 @@ $page-background: url('/images/dndBG.jpg');
   background-color: #eee5ce;
   background-image: url('/images/dndBG.jpg');
   margin: 0 auto;
-  padding-bottom: 6.25rem;
+  padding-bottom: 6.25rem !important;
   position: relative;
 
   &::after {
@@ -80,7 +80,7 @@ $page-background: url('/images/dndBG.jpg');
     background-size: cover;
     bottom: 0;
     content: '';
-    height: 100px;
+    height: 6.25rem;
     left: 0;
     position: absolute;
     width: 100%;

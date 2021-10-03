@@ -14,7 +14,13 @@ import DataTable from '../../components/layout/DataTable';
 import { Row } from 'react-table';
 import { GiClosedDoors, GiOpenBook, GiOpenGate } from 'react-icons/all';
 
-const Monsters = (props: PageProps & { getMonsterCategories: () => void, monsters: MonsterSummary[], monsterTypes: MonsterType[] }) => {
+const Monsters = (
+  props: PageProps & {
+    getMonsterCategories: () => void;
+    monsters: MonsterSummary[];
+    monsterTypes: MonsterType[];
+  }
+) => {
   const { getMonsterCategories, monsterTypes } = props;
 
   React.useEffect(() => {
@@ -25,73 +31,85 @@ const Monsters = (props: PageProps & { getMonsterCategories: () => void, monster
     navigate(`/app/monsters/${row.original.slug}`);
   };
 
-  const columns = React.useMemo(() => [{
-      id: 'expander',
-      Header: ({ getToggleAllRowsExpandedProps, isAllRowsExpanded }) => (
-        <span {...getToggleAllRowsExpandedProps()}>
-          {isAllRowsExpanded ? <GiOpenGate /> : <GiClosedDoors />}
-        </span>
-      ),
-      Cell: ({ row }) =>
-        row.canExpand ? (
-          <span
-            {...row.getToggleRowExpandedProps({
-              style: {
-                paddingLeft: `${row.depth * 2}rem`
-              }
-            })}>
-            {row.isExpanded ? <GiOpenGate /> : <GiClosedDoors />}
+  const columns = React.useMemo(
+    () => [
+      {
+        id: 'expander',
+        Header: ({ getToggleAllRowsExpandedProps, isAllRowsExpanded }) => (
+          <span {...getToggleAllRowsExpandedProps()}>
+            {isAllRowsExpanded ? <GiOpenGate /> : <GiClosedDoors />}
           </span>
-        ) : null
-    },
+        ),
+        Cell: ({ row }) =>
+          row.canExpand ? (
+            <span
+              {...row.getToggleRowExpandedProps({
+                style: {
+                  paddingLeft: `${row.depth * 2}rem`,
+                },
+              })}
+            >
+              {row.isExpanded ? <GiOpenGate /> : <GiClosedDoors />}
+            </span>
+          ) : null,
+      },
       {
         Header: 'Monster Types',
         columns: [
           {
             Header: 'Monster',
-            accessor: 'name'
+            accessor: 'name',
           },
           {
             Header: 'Challenge',
-            accessor: 'challenge'
+            accessor: 'challenge',
           },
           {
             Header: 'Alignment',
-            accessor: 'alignment'
+            accessor: 'alignment',
           },
           {
             Header: 'Hit Points',
-            accessor: 'hitPoints'
-          }
-        ]
-      }
+            accessor: 'hitPoints',
+          },
+        ],
+      },
     ],
-    []);
-
-  const data = React.useMemo(() => {
-      return monsterTypes.map(
-        (monsterCat) => ({
-          name: monsterCat.name,
-          subRows: monsterCat.monsters.map((monster) => ({
-            name: monster.name,
-            alignment: monster.alignment,
-            challenge: monster.challenge,
-            hitPoints: monster.hitPoints,
-            slug: monster.slug
-          }))
-        }));
-    }, [monsterTypes]
+    []
   );
 
+  const data = React.useMemo(() => {
+    return monsterTypes.map((monsterCat) => ({
+      name: monsterCat.name,
+      subRows: monsterCat.monsters.map((monster) => ({
+        name: monster.name,
+        alignment: monster.alignment,
+        challenge: monster.challenge,
+        hitPoints: monster.hitPoints,
+        slug: monster.slug,
+      })),
+    }));
+  }, [monsterTypes]);
+
   return (
-    <PageContainer user={props.user}
-                   flashMessages={props.flashMessages}
-                   pageTitle={'Monsters'}
-                   description={'All monsters with descriptions and stats. Dungeon Master\'s Toolbox is a free resource for DMs to manage their campaigns, adventures, and Monsters.'}
-                   breadcrumbs={[{ isActive: true, title: 'Monsters' }]}>
+    <PageContainer
+      user={props.user}
+      flashMessages={props.flashMessages}
+      pageTitle={'Monsters'}
+      description={
+        "All monsters with descriptions and stats. Dungeon Master's Toolbox is a free resource for DMs to manage their campaigns, adventures, and Monsters."
+      }
+      breadcrumbs={[{ isActive: true, title: 'Monsters' }]}
+    >
       <PageTitle title={'Monsters'} />
       {monsterTypes.length > 0 ? (
-        <DataTable columns={columns} data={data} goToPage={goToPage} />
+        <DataTable
+          columns={columns}
+          data={data}
+          goToPage={goToPage}
+          paginateExpandedRows={false}
+          perPage={15}
+        />
       ) : (
         <DndSpinner />
       )}
@@ -104,7 +122,7 @@ function mapStateToProps(state) {
     monsters: state.monsters.monsters,
     monsterTypes: state.monsters.monsterTypes,
     user: state.users.user,
-    flashMessages: state.flashMessages
+    flashMessages: state.flashMessages,
   };
 }
 
@@ -112,7 +130,7 @@ function mapDispatchToProps(dispatch) {
   return {
     getMonsterCategories: () => {
       dispatch(rest.actions.getMonsterCategories());
-    }
+    },
   };
 }
 

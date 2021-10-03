@@ -34,9 +34,9 @@
           <td><%= item.type.chomp('Item') %></td>
           <td><%= item.category.titleize %></td>
           <td>
-            <%= "#{item.cost.quantity}#{item.cost.unit}" unless item.cost.nil? %>
+            <%= "#{item.cost.quantity.to_s(:delimited)} #{item.cost.unit.upcase}" unless item.cost.nil? %>
           </td>
-          <td><%= item.weight %></td>
+          <td><%= item.weight || '-' %></td>
           <td>
             <%= link_to 'Show', v1_item_path(item), class: "btn btn-sm btn-primary" %>
             <%#= link_to 'Edit', edit_v1_item_path(item), class: "btn btn-sm btn-success" if policy(item).edit? %>
