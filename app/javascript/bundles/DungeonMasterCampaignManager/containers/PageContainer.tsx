@@ -14,14 +14,13 @@ import BreadcrumbLink from '../components/layout/BreadcrumbLink';
 
 import { FlashMessage, UserProps } from '../utilities/types';
 import classNames from 'classnames';
-
 const styles = require('./page-container.module.scss');
 
 type BreadCrumbProps = {
   isActive?: boolean;
   title: string;
   url?: string;
-}
+};
 
 type PageContainerProps = {
   breadcrumbs: BreadCrumbProps[];
@@ -30,7 +29,7 @@ type PageContainerProps = {
   flashMessages?: FlashMessage[];
   pageTitle: string;
   user?: UserProps;
-}
+};
 
 const PageContainer = (props: PageContainerProps) => {
   const { breadcrumbs, children, description, pageTitle, user } = props;
@@ -39,7 +38,7 @@ const PageContainer = (props: PageContainerProps) => {
     <div>
       <Helmet>
         <title>{pageTitle} | Dungeon Master&apos;s Screen</title>
-        <meta name='description' content={description} />
+        <meta name="description" content={description} />
       </Helmet>
       <MenuBar user={user} />
       <HeroBanner />
@@ -47,13 +46,18 @@ const PageContainer = (props: PageContainerProps) => {
         <FlashMessages messages={props.flashMessages || []} />
         {breadcrumbs && breadcrumbs.length > 0 ? (
           <Breadcrumb>
-            <BreadcrumbLink to='/' title={'Home'} />
+            <BreadcrumbLink to="/" title={'Home'} />
             {breadcrumbs.map((breadcrumb, index) =>
-              (!breadcrumb.isActive ? (
-                  <BreadcrumbLink to={breadcrumb.url} title={breadcrumb.title} key={index} />
-                ) : (
-                  <Breadcrumb.Item active key={index}>{breadcrumb.title}</Breadcrumb.Item>
-                )
+              !breadcrumb.isActive ? (
+                <BreadcrumbLink
+                  to={breadcrumb.url}
+                  title={breadcrumb.title}
+                  key={index}
+                />
+              ) : (
+                <Breadcrumb.Item active key={index}>
+                  {breadcrumb.title}
+                </Breadcrumb.Item>
               )
             )}
           </Breadcrumb>
