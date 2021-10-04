@@ -50,64 +50,7 @@
 #
 
 class ArmorItem < Item
-  def self.basic_armors
-    ['Chain Shirt', 'Plate', 'Breastplate', 'Leather', 'Scale Mail', 'Ring Mail', 'Chain Mail', 'Studded Leather', 'Hide', 'Padded', 'Splint', 'Shield', 'Half Plate']
-  end
-
   def category
     'Armor'
-  end
-
-  class << self
-    def create_magic_armor_from_old_magic_items(magic_item)
-      if magic_item[:type].include? 'scale mail'
-        new_magic_armor(magic_item, 'Scale Mail')
-      elsif magic_item[:type].include? 'chain shirt'
-        new_magic_armor(magic_item, 'Chain Shirt')
-      elsif magic_item[:type].include? 'studded leather'
-        new_magic_armor(magic_item, 'Studded Leather')
-      elsif magic_item[:type].include? 'shield'
-        new_magic_armor(magic_item, 'Shield')
-      elsif magic_item[:type].include? 'plate'
-        new_magic_armor(magic_item, 'Plate')
-      elsif magic_item[:type].include? 'medium or heavy'
-        medium_heavy_armors = ArmorItem.basic_armors - ['Studded Leather', 'Leather', 'Padded']
-        medium_heavy_armors.each do |armor_name|
-          new_magic_armor(magic_item, armor_name)
-        end
-      elsif magic_item[:type].include? 'light'
-        new_magic_armor(magic_item, 'Studded Leather')
-        new_magic_armor(magic_item, 'Leather')
-        new_magic_armor(magic_item, 'Padded')
-      else
-        puts "ARMOR unidentified: #{magic_item[:name]} - TYPE #{magic_item[:type]}"
-      end
-    end
-
-    def new_magic_armor(magic_item, armor_name)
-      armor_item = ArmorItem.find_by(name: armor_name)
-      new_item = ArmorItem.find_or_create_by(name: "#{magic_item[:name]}, #{armor_name}")
-      unless armor_item.nil?
-        new_item.armor_category = armor_item.armor_category
-        new_item.armor_class = ArmorClass.create(
-          ac_base: armor_item.armor_class.ac_base,
-          has_dex_bonus: armor_item.armor_class.has_dex_bonus,
-          max_dex_bonus: armor_item.armor_class.max_dex_bonus
-        )
-        new_item.armor_class_bonus = armor_item.armor_class_bonus
-        new_item.properties = armor_item.properties
-        new_item.special = armor_item.special
-        new_item.stealth_disadvantage = armor_item.stealth_disadvantage
-        new_item.str_minimum = armor_item.str_minimum
-        new_item.weight = armor_item.weight
-      end
-      new_item.desc = [magic_item[:desc]]
-      new_item.magic_item_type = magic_item[:type]
-      new_item.rarity = magic_item[:rarity]
-      new_item.requires_attunement = magic_item[:requires_attunement]
-      new_item.slug = new_item.name.parameterize
-      new_item.cost = Cost.create(quantity: MagicItemsUtility.cost_for_rarity(magic_item[:rarity]), unit: 'gp')
-      new_item.save!
-    end
   end
 end

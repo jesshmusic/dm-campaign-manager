@@ -61,6 +61,20 @@ const Home = (props) => {
           pageTitle="Magic Items"
         />
         <Items
+          path="/app/items/magic-armor/"
+          {...combinedProps}
+          itemType={ItemType.magicArmor}
+          key={ItemType.magicArmor}
+          pageTitle="Magic Armor"
+        />
+        <Items
+          path="/app/items/magic-weapons/"
+          {...combinedProps}
+          itemType={ItemType.magicWeapon}
+          key={ItemType.magicWeapon}
+          pageTitle="Magic Weapons"
+        />
+        <Items
           path="/app/items/tools/"
           {...combinedProps}
           itemType={ItemType.tool}

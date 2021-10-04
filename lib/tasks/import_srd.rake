@@ -34,5 +34,13 @@ namespace :srd do
   task import_items: :environment do
     Item.destroy_all
     ItemsUtil.import
+    MagicItemsUtil.import
+  end
+
+  task import_magic_items: :environment do
+    MagicItem.destroy_all
+    MagicArmorItem.destroy_all
+    MagicWeaponItem.destroy_all
+    MagicItemsUtil.import
   end
 end

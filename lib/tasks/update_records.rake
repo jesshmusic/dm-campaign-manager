@@ -422,7 +422,7 @@ namespace :update_records do
     elsif magic_item[:type].include? 'plate'
       new_magic_armor(magic_item, 'Plate')
     elsif magic_item[:type].include? 'medium or heavy'
-      medium_heavy_armors = ArmorItem.basic_armors - ['Studded Leather', 'Leather', 'Padded']
+      medium_heavy_armors = MagicArmorItem.basic_armors - ['Studded Leather', 'Leather', 'Padded']
       medium_heavy_armors.each do |armor_name|
         new_magic_armor(magic_item, armor_name)
       end

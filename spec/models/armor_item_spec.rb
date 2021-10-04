@@ -103,10 +103,10 @@ RSpec.describe ArmorItem, type: :model do
           'document__slug': 'wotc-srd',
           'document__title': 'Systems Reference Document'
         }
-        expect(ArmorItem.all.count).to eq(48)
-        ArmorItem.create_magic_armor_from_old_magic_items(magic_item)
-        expect(ArmorItem.all.count).to eq(48 + number_of_armors)
-        new_armors = ArmorItem.where('name like ?', '%Adamantine Armor Special%')
+        expect(MagicArmorItem.all.count).to eq(48)
+        MagicArmorItem.create_magic_armor_from_old_magic_items(magic_item)
+        expect(MagicArmorItem.all.count).to eq(48 + number_of_armors)
+        new_armors = MagicArmorItem.where('name like ?', '%Adamantine Armor Special%')
         expect(new_armors).not_to be(nil)
         expect(new_armors.count).to eq(number_of_armors)
         expect(new_armors.first.cost.quantity).to eq(500)
@@ -126,12 +126,12 @@ RSpec.describe ArmorItem, type: :model do
         'document__slug': 'wotc-srd',
         'document__title': 'Systems Reference Document'
       }
-      expect(ArmorItem.all.count).to eq(48)
+      expect(MagicArmorItem.all.count).to eq(48)
       expect {
-        ArmorItem.create_magic_armor_from_old_magic_items(magic_item)
+        MagicArmorItem.create_magic_armor_from_old_magic_items(magic_item)
       }.to output("ARMOR unidentified: Adamantine Armor Special - TYPE Armor (oops)\n")
              .to_stdout
-      expect(ArmorItem.all.count).to eq(48)
+      expect(MagicArmorItem.all.count).to eq(48)
     end
   end
 end

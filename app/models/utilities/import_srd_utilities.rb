@@ -13,6 +13,7 @@ class ImportSrdUtilities
     def import_all
       import_dependencies
       ItemsUtil.import
+      MagicItemsUtil.import
       DndClassesUtil.import
       RacesUtil.import
       SpellsUtil.import

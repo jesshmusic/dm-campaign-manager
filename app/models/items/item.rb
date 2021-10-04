@@ -52,9 +52,9 @@
 class Item < ApplicationRecord
   validates :name, :slug, presence: true
 
-  before_validation do
-    self.slug = generate_slug if will_save_change_to_name?
-  end
+  # before_validation do
+  #   self.slug = generate_slug if will_save_change_to_name?
+  # end
 
   belongs_to :user, optional: true
 

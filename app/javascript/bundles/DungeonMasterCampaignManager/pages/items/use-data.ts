@@ -6,6 +6,8 @@ export enum ItemType {
   armor = 'ArmorItem',
   gear = 'GearItem',
   magic = 'MagicItem',
+  magicArmor = 'MagicArmorItem',
+  magicWeapon = 'MagicWeaponItem',
   tool = 'ToolItem',
   vehicle = 'VehicleItem',
   weapon = 'WeaponItem',
@@ -17,7 +19,7 @@ const getRarityValue = (rarity: string): number => {
       return 0;
     case 'common':
       return 1;
-    case   'uncommon':
+    case 'uncommon':
       return 2;
     case 'rare':
       return 3;
@@ -30,8 +32,61 @@ const getRarityValue = (rarity: string): number => {
     default:
       return 15;
   }
-
 };
+
+const armorColumn = [
+  {
+    Header: 'Armor',
+    accessor: 'name',
+  },
+  {
+    Header: 'Type',
+    accessor: 'armorType',
+  },
+  {
+    Header: 'Cost',
+    accessor: 'cost',
+  },
+  {
+    Header: 'Armor Class (AC)',
+    accessor: 'armorClass',
+  },
+  {
+    Header: 'Strength',
+    accessor: 'strength',
+  },
+  {
+    Header: 'Stealth',
+    accessor: 'stealth',
+  },
+  {
+    Header: 'Weight',
+    accessor: 'weight',
+  },
+];
+
+const weaponColumn = [
+  {
+    Header: 'Name',
+    accessor: 'name',
+  },
+  {
+    Header: 'Cost',
+    accessor: 'cost',
+  },
+  {
+    Header: 'Damage',
+    accessor: 'damage',
+  },
+  {
+    Header: 'Weight',
+    accessor: 'weight',
+  },
+  {
+    Header: 'Properties',
+    accessor: 'properties',
+  },
+];
 
 export const useData = (props: ItemsPageProps) => {
   const { getItems, items, itemType } = props;
@@ -40,46 +95,20 @@ export const useData = (props: ItemsPageProps) => {
     [ItemType.all]: [
       {
         Header: 'Item',
-        accessor: 'name'
+        accessor: 'name',
       },
       {
         Header: 'Weight',
-        accessor: 'weight'
+        accessor: 'weight',
       },
       {
         Header: 'Cost',
-        accessor: 'cost'
-      }
+        accessor: 'cost',
+      },
     ],
-    [ItemType.armor]: [
-      {
-        Header: 'Armor',
-        accessor: 'name'
-      },
-      {
-        Header: 'Type',
-        accessor: 'armorType'
-      },
-      {
-        Header: 'Cost',
-        accessor: 'cost'
-      },
-      {
-        Header: 'Armor Class (AC)',
-        accessor: 'armorClass'
-      },
-      {
-        Header: 'Strength',
-        accessor: 'strength'
-      },
-      {
-        Header: 'Stealth',
-        accessor: 'stealth'
-      },
-      {
-        Header: 'Weight',
-        accessor: 'weight'
-      },
+    [ItemType.armor]: [...armorColumn],
+    [ItemType.magicArmor]: [
+      ...armorColumn,
       {
         Header: 'Rarity',
         accessor: 'rarity',
@@ -90,27 +119,27 @@ export const useData = (props: ItemsPageProps) => {
             return a > b ? 1 : -1;
           },
           []
-        )
-      }
+        ),
+      },
     ],
     [ItemType.gear]: [
       {
         Header: 'Item',
-        accessor: 'name'
+        accessor: 'name',
       },
       {
         Header: 'Weight',
-        accessor: 'weight'
+        accessor: 'weight',
       },
       {
         Header: 'Cost',
-        accessor: 'cost'
-      }
+        accessor: 'cost',
+      },
     ],
     [ItemType.magic]: [
       {
         Header: 'Name',
-        accessor: 'name'
+        accessor: 'name',
       },
       {
         Header: 'Rarity',
@@ -122,70 +151,55 @@ export const useData = (props: ItemsPageProps) => {
             return a > b ? 1 : -1;
           },
           []
-        )
+        ),
       },
       {
         Header: 'Attunement?',
-        accessor: 'requiresAttunement'
-      }
+        accessor: 'requiresAttunement',
+      },
     ],
     [ItemType.tool]: [
       {
         Header: 'Item',
-        accessor: 'name'
+        accessor: 'name',
       },
       {
         Header: 'Weight',
-        accessor: 'weight'
+        accessor: 'weight',
       },
       {
         Header: 'Cost',
-        accessor: 'cost'
-      }
+        accessor: 'cost',
+      },
     ],
     [ItemType.vehicle]: [
       {
         Header: 'Name',
-        accessor: 'name'
+        accessor: 'name',
       },
       {
         Header: 'Cost',
-        accessor: 'cost'
+        accessor: 'cost',
       },
       {
         Header: 'Category',
-        accessor: 'vehicleCategory'
+        accessor: 'vehicleCategory',
       },
       {
         Header: 'Speed',
-        accessor: 'speed'
+        accessor: 'speed',
       },
       {
         Header: 'Capacity',
-        accessor: 'capacity'
+        accessor: 'capacity',
       },
       {
         Header: 'Weight',
-        accessor: 'weight'
-      }
+        accessor: 'weight',
+      },
     ],
-    [ItemType.weapon]: [
-      {
-        Header: 'Name',
-        accessor: 'name'
-      },
-      {
-        Header: 'Cost',
-        accessor: 'cost'
-      },
-      {
-        Header: 'Damage',
-        accessor: 'damage'
-      },
-      {
-        Header: 'Weight',
-        accessor: 'weight'
-      },
+    [ItemType.magicWeapon]: [
+      ...weaponColumn,
       {
         Header: 'Rarity',
         accessor: 'rarity',
@@ -196,13 +210,10 @@ export const useData = (props: ItemsPageProps) => {
             return a > b ? 1 : -1;
           },
           []
-        )
+        ),
       },
-      {
-        Header: 'Properties',
-        accessor: 'properties'
-      }
-    ]
+    ],
+    [ItemType.weapon]: [...weaponColumn],
   };
 
   React.useEffect(() => {
@@ -228,7 +239,7 @@ export const useData = (props: ItemsPageProps) => {
         stealth: item.stealth,
         strength: item.strength,
         vehicleCategory: item.vehicleCategory,
-        weight: item.weight ? `${item.weight} lb.` : '-'
+        weight: item.weight ? `${item.weight} lb.` : '-',
       };
     });
   }, [items]);
@@ -237,6 +248,6 @@ export const useData = (props: ItemsPageProps) => {
 
   return {
     columns,
-    data
+    data,
   };
 };
