@@ -267,14 +267,14 @@ $dropdown-header-color: $gray-600;
 
 
 // Navs
-$nav-link-padding-y: 0.5rem;
+$nav-link-padding-y: 1rem;
 $nav-link-padding-x: 1rem;
 $nav-link-disabled-color: $gray-600;
 $nav-tabs-border-color: #ddd;
 $nav-tabs-border-width: $border-width;
 $nav-tabs-border-radius: $border-radius;
 $nav-tabs-link-hover-border-color: $gray-200;
-$nav-tabs-link-active-color: $gray-700;
+$nav-tabs-link-active-color: $white;
 $nav-tabs-link-active-bg: $body-bg;
 $nav-tabs-link-active-border-color: #ddd;
 $nav-pills-border-radius: $border-radius;
@@ -283,6 +283,7 @@ $nav-pills-link-active-bg: $component-active-bg;
 
 
 // Navbar
+$navbar-dark-color: lighten($primary, 45%);
 $navbar-padding-y: ($spacer / 2);
 $navbar-padding-x: $spacer;
 $navbar-brand-font-size: $font-size-lg;
@@ -293,16 +294,6 @@ $navbar-toggler-padding-y: 0.25rem;
 $navbar-toggler-padding-x: 0.75rem;
 $navbar-toggler-font-size: $font-size-lg;
 $navbar-toggler-border-radius: $btn-border-radius;
-$navbar-dark-color: $white;
-$navbar-dark-hover-color: lighten($yellow, 40%);
-$navbar-dark-active-color: lighten($yellow, 20%);
-$navbar-dark-disabled-color: rgba($white, 0.5);
-$navbar-dark-toggler-border-color: rgba($white, 0.1);
-$navbar-light-color: rgba($black, 0.5);
-$navbar-light-hover-color: rgba($black, 0.7);
-$navbar-light-active-color: rgba($black, 0.9);
-$navbar-light-disabled-color: rgba($black, 0.3);
-$navbar-light-toggler-border-color: rgba($black, 0.1);
 
 
 // Tables
@@ -317,21 +308,6 @@ $table-border-width: 0;
 $table-border-color: transparent;
 $table-head-bg: $ash;
 $table-head-color: $white;
-//$table-inverse-bg: transparent;
-//$table-inverse-accent-bg: rgba($white, 0.05);
-//$table-inverse-hover-bg: rgba($white, 0.075);
-//$table-inverse-border-color: lighten($gray-900, 7.5%);
-//$table-inverse-color: $body-bg;
-
-
-// Z Index
-$zindex-dropdown: 1000;
-$zindex-sticky: 1020;
-$zindex-fixed: 1030;
-$zindex-modal-backdrop: 1040;
-$zindex-modal: 1050;
-$zindex-popover: 1060;
-$zindex-tooltip: 1070;
 
 
 // Pagination
@@ -357,11 +333,6 @@ $pagination-disabled-bg: $white;
 $pagination-disabled-border-color: #ddd;
 
 
-// Jumbotron
-$jumbotron-padding: 2rem;
-$jumbotron-bg: $gray-200;
-
-
 // Cards
 $card-spacer-y: 0.75rem;
 $card-spacer-x: 1.25rem;
@@ -375,50 +346,6 @@ $card-deck-margin: ($grid-gutter-width / 2);
 $card-columns-count: 3;
 $card-columns-gap: 1.25rem;
 $card-columns-margin: $card-spacer-y;
-
-
-// Tooltip
-$tooltip-max-width: 200px;
-$tooltip-color: $white;
-$tooltip-bg: $black;
-$tooltip-opacity: 0.9;
-$tooltip-padding-y: 0.1875rem;
-$tooltip-padding-x: 0.5rem;
-$tooltip-margin: 0;
-$tooltip-arrow-width: 0.3125rem;
-$tooltip-arrow-height: 0.3125rem;
-$tooltip-arrow-color: $tooltip-bg;
-
-
-// Popovers
-$popover-inner-padding: 0.0625rem;
-$popover-bg: $white;
-$popover-max-width: 276px;
-$popover-border-width: $border-width;
-$popover-border-color: rgba($black, 0.2);
-$popover-box-shadow: 0 0.3125rem 0.625rem rgba($black, 0.2);
-$popover-header-bg: darken($popover-bg, 3%);
-$popover-header-color: $headings-color;
-$popover-header-padding-y: 0.5rem;
-$popover-header-padding-x: 0.875rem;
-$popover-body-color: $body-color;
-$popover-body-padding-y: 0.5625rem;
-$popover-body-padding-x: 0.875rem;
-$popover-arrow-width: 0.625rem;
-$popover-arrow-height: 0.3125rem;
-$popover-arrow-color: $popover-bg;
-$popover-arrow-outer-width: ($popover-arrow-width + 0.0625rem);
-$popover-arrow-outer-color: fade-in($popover-border-color, 0.05);
-
-
-// Badges
-$badge-color: $white;
-$badge-font-size: 75%;
-$badge-font-weight: $font-weight-bold;
-$badge-padding-y: 0.25em;
-$badge-padding-x: 0.4em;
-$badge-pill-padding-x: 0.6em;
-$badge-pill-border-radius: 10rem;
 
 
 // Modals
@@ -550,3 +477,15 @@ $enable-transitions: true;
 $enable-hover-media-query: false;
 $enable-grid-classes: true;
 $enable-print-styles: true;
+
+// Offcanvas
+
+// scss-docs-start offcanvas-variables
+$offcanvas-horizontal-width: 400px;
+$offcanvas-vertical-height: 30vh;
+$offcanvas-transition-duration: 0.3s;
+$offcanvas-bg-color: $dark-red;
+$offcanvas-color: $white;
+$offcanvas-backdrop-bg: $modal-backdrop-bg;
+$offcanvas-backdrop-opacity: $modal-backdrop-opacity;
+// scss-docs-end offcanvas-variables

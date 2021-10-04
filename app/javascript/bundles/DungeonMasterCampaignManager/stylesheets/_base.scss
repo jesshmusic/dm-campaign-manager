@@ -38,3 +38,13 @@ h1 {
     @extend .py-3;
   }
 }
+
+.navbar {
+  //box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  //padding: 0 !important;
+
+  .nav-link {
+    @extend .sans-serif;
+    @include font-size(1.1rem);
+  }
+}

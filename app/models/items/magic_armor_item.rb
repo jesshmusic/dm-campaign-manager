@@ -118,10 +118,6 @@ class MagicArmorItem < ArmorItem
       new_item.slug = new_item.name.parameterize
       new_item.cost = Cost.create(quantity: MagicItemsUtility.cost_for_rarity(magic_item[:rarity]), unit: 'gp')
 
-      if new_item.slug == 'chain-shirt-1'
-        puts new_item.attributes.to_yaml
-        puts magic_item.attributes.to_yaml
-      end
       new_item.save!
     end
   end

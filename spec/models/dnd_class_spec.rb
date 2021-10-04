@@ -128,9 +128,6 @@ RSpec.describe DndClass, type: :model do
     it 'should have 6 profs for Bard' do
       bard = DndClass.find_by(slug: 'bard')
       profs = bard.profs
-      profs.each do |prof|
-        puts prof.attributes.to_yaml
-      end
 
       expect(profs.count).to be(6)
     end

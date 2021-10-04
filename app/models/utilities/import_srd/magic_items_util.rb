@@ -166,9 +166,6 @@ class MagicItemsUtil
             new_armor.requires_attunement = ''
             new_armor.rarity = bonus[:rarity]
           end
-          if new_magic_item.name == 'Chain Shirt +1'
-            puts new_magic_item.attributes.to_yaml
-          end
           new_magic_item.save!
 
           MagicArmorItem.new_magic_armor(new_magic_item, armor_name)

@@ -40,7 +40,7 @@ const PageContainer = (props: PageContainerProps) => {
         <title>{pageTitle} | Dungeon Master&apos;s Screen</title>
         <meta name="description" content={description} />
       </Helmet>
-      <MenuBar user={user} />
+      <MenuBar />
       <HeroBanner />
       <div className={classNames('container-fluid', styles.page)}>
         <FlashMessages messages={props.flashMessages || []} />
