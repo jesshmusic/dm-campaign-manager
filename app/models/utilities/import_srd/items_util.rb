@@ -273,6 +273,34 @@ class ItemsUtil
       create_magic_items(wands, magic_item)
     end
 
+    # def create_armors()
+    #   bonuses = [
+    #     { bonus: '+1', rarity: 'rare' },
+    #     { bonus: '+2', rarity: 'very rare' },
+    #     { bonus: '+3', rarity: 'legendary' }
+    #   ]
+    #   armors = []
+    #   bonuses.each do |bonus|
+    #     armor_names = Item.where(category: 'Armor').pluck(:name)
+    #     armor_names << 'Shield'
+    #     armor_names.each do |armor_name|
+    #       armors << {
+    #         name: "#{armor_name} #{bonus[:bonus]}",
+    #         rarity: bonus[:rarity]
+    #       }
+    #     end
+    #   end
+    #   armors.each do |magic_item|
+    #     ArmorItem.find_or_create_by!(name: magic_item[:name]) do |new_magic_item|
+    #       new_magic_item.desc = original_item.desc
+    #       new_magic_item.type = original_item.type
+    #       new_magic_item.requires_attunement = original_item.requires_attunement
+    #       new_magic_item.rarity = original_item.rarity
+    #       new_magic_item.slug = new_magic_item[:name].parameterize
+    #     end
+    #   end
+    # end
+
     def create_weapons(magic_item)
       bonuses = [
         { bonus: '+1', rarity: 'uncommon' },

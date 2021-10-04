@@ -216,7 +216,7 @@ export const useData = (props: ItemsPageProps) => {
         armorType: item.armorType,
         capacity: item.capacity,
         contents: item.contents,
-        cost: item.cost,
+        cost: item.rarity && item.rarity !== '-' ? `~${item.cost}` : item.cost,
         damage: item.damage,
         name: item.name,
         properties: item.properties,
