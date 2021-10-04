@@ -57,8 +57,8 @@ RSpec.describe VehicleItem, type: :model do
       @item = VehicleItem.create!(name: 'Torch', weight: 10)
       @item1 = VehicleItem.create!(name: 'Torch', weight: 10)
       @user_item = VehicleItem.create!(name: 'Torch', weight: 10, user: dungeon_master)
-      expect(@item.slug).to eq('torch-1')
-      expect(@item1.slug).to eq('torch-2')
+      expect(@item.slug).to eq('torch__1')
+      expect(@item1.slug).to eq('torch__2')
       expect(@user_item.slug).to eq('torch-jesshdm1')
     end
 
@@ -66,19 +66,19 @@ RSpec.describe VehicleItem, type: :model do
       @item = VehicleItem.create!(name: 'Torch', weight: 10)
       @item1 = VehicleItem.create!(name: 'Torch', weight: 10)
       @user_item = VehicleItem.create!(name: 'Torch', weight: 10, user: dungeon_master)
-      expect(@item.slug).to eq('torch-1')
+      expect(@item.slug).to eq('torch__1')
       @item.update(weight: 12)
       expect(VehicleItem.all.count).to eq(43)
       @item.reload
-      expect(@item.slug).to eq('torch-1')
+      expect(@item.slug).to eq('torch__1')
       @item.update(weight: 8)
       expect(VehicleItem.all.count).to eq(43)
       @item.reload
-      expect(@item.slug).to eq('torch-1')
+      expect(@item.slug).to eq('torch__1')
       @item.update(weight: 12)
       expect(VehicleItem.all.count).to eq(43)
       @item.reload
-      expect(@item.slug).to eq('torch-1')
+      expect(@item.slug).to eq('torch__1')
     end
   end
 end

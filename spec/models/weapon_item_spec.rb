@@ -57,8 +57,8 @@ RSpec.describe WeaponItem, type: :model do
       @item = WeaponItem.create!(name: 'Torch', weight: 10)
       @item1 = WeaponItem.create!(name: 'Torch', weight: 10)
       @user_item = WeaponItem.create!(name: 'Torch', weight: 10, user: dungeon_master)
-      expect(@item.slug).to eq('torch-1')
-      expect(@item1.slug).to eq('torch-2')
+      expect(@item.slug).to eq('torch__1')
+      expect(@item1.slug).to eq('torch__2')
       expect(@user_item.slug).to eq('torch-jesshdm1')
     end
 
@@ -66,19 +66,19 @@ RSpec.describe WeaponItem, type: :model do
       @item = WeaponItem.create!(name: 'Torch', weight: 10)
       @item1 = WeaponItem.create!(name: 'Torch', weight: 10)
       @user_item = WeaponItem.create!(name: 'Torch', weight: 10, user: dungeon_master)
-      expect(@item.slug).to eq('torch-1')
+      expect(@item.slug).to eq('torch__1')
       @item.update(weight: 12)
-      expect(WeaponItem.all.count).to eq(268)
+      expect(WeaponItem.all.count).to eq(40)
       @item.reload
-      expect(@item.slug).to eq('torch-1')
+      expect(@item.slug).to eq('torch__1')
       @item.update(weight: 8)
-      expect(WeaponItem.all.count).to eq(268)
+      expect(WeaponItem.all.count).to eq(40)
       @item.reload
-      expect(@item.slug).to eq('torch-1')
+      expect(@item.slug).to eq('torch__1')
       @item.update(weight: 12)
-      expect(WeaponItem.all.count).to eq(268)
+      expect(WeaponItem.all.count).to eq(40)
       @item.reload
-      expect(@item.slug).to eq('torch-1')
+      expect(@item.slug).to eq('torch__1')
     end
   end
 end

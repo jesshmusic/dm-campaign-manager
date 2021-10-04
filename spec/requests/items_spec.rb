@@ -34,7 +34,7 @@ RSpec.describe 'Items', type: :request do
       it 'returns 5 items' do
         get '/v1/items.json'
         result_items = JSON.parse(response.body)
-        expect(result_items['count']).to eq(749)
+        expect(result_items['count']).to eq(788)
       end
 
       it 'returns 1 armor item' do
@@ -60,7 +60,7 @@ RSpec.describe 'Items', type: :request do
       it 'returns 7 items' do
         get '/v1/items.json'
         result_items = JSON.parse(response.body)
-        expect(result_items['count']).to eq(751)
+        expect(result_items['count']).to eq(790)
       end
     end
 
@@ -72,7 +72,7 @@ RSpec.describe 'Items', type: :request do
       it 'returns 6 items that are only default or owned by this DM' do
         get '/v1/items.json'
         result_items = JSON.parse(response.body)
-        expect(result_items['count']).to eq(750)
+        expect(result_items['count']).to eq(789)
         expect(result_items['results'].find { |item|
           item['name'] == 'DM Item'
         }).not_to be_nil
@@ -146,37 +146,6 @@ RSpec.describe 'Items', type: :request do
         get "/v1/items/#{item_custom2.slug}.json"
         result_item = JSON.parse(response.body)
         expect(result_item['errors']).to eq('UserProps action not allowed.')
-      end
-    end
-  end
-
-  describe 'GET Item back end Edit Page (admin only)' do
-    context 'for Logged Out Users' do
-      it 'returns a redirect response' do
-        get "/v1/armor_items/#{armor_item.slug}/edit"
-        expect(response).to have_http_status(302)
-      end
-    end
-
-    context 'for Admins' do
-      before(:each) do
-        sign_in admin
-      end
-
-      it 'returns a forbidden response' do
-        get "/v1/armor_items/#{armor_item.slug}/edit"
-        expect(response).to have_http_status(403)
-      end
-    end
-
-    context 'for Dungeon Masters' do
-      before(:each) do
-        sign_in dungeon_master
-      end
-
-      it 'returns a forbidden response' do
-        get "/v1/armor_items/#{armor_item.slug}/edit"
-        expect(response).to have_http_status(403)
       end
     end
   end

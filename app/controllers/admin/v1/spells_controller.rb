@@ -52,17 +52,6 @@ module Admin::V1
       end
     end
 
-    # GET /spells/new
-    def new
-      @spell = Spell.new
-      authorize @spell
-    end
-
-    # GET /spells/1/edit
-    def edit
-      authorize @spell
-    end
-
     # POST /spells
     # POST /spells.json
     def create

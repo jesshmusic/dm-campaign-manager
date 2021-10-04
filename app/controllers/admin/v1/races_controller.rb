@@ -47,17 +47,6 @@ module Admin::V1
       end
     end
 
-    # GET /races/new
-    def new
-      @race = Race.new
-      authorize @race
-    end
-
-    # GET /races/1/edit
-    def edit
-      authorize @race
-    end
-
     # POST /races
     # POST /races.json
     def create

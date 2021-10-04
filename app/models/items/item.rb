@@ -52,9 +52,9 @@
 class Item < ApplicationRecord
   validates :name, :slug, presence: true
 
-  # before_validation do
-  #   self.slug = generate_slug if will_save_change_to_name?
-  # end
+  before_validation do
+    self.slug = generate_slug if will_save_change_to_name? && self.slug.nil?
+  end
 
   belongs_to :user, optional: true
 
@@ -105,7 +105,7 @@ class Item < ApplicationRecord
     new_slug = slug_string
     loop do
       new_slug = slug_string if class_num == 0
-      new_slug = "#{slug_string}-#{class_num}" if class_num > 0
+      new_slug = "#{slug_string}__#{class_num}" if class_num > 0
       break unless Item.exists?(slug: new_slug)
 
       class_num += 1

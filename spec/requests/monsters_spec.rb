@@ -148,68 +148,6 @@ RSpec.describe 'Monsters', type: :request do
     end
   end
 
-  describe 'GET /v1/monsters/:slug/edit' do
-    context 'for Logged Out Users' do
-      it 'should return a redirect response' do
-        get "/v1/monsters/#{monster1.slug}/edit"
-        expect(response).to have_http_status(302)
-      end
-    end
-
-    context 'for Admins' do
-      before(:each) do
-        sign_in admin
-      end
-
-      it 'should return a forbidden response' do
-        get "/v1/monsters/#{monster1.slug}/edit"
-        expect(response).to have_http_status(403)
-      end
-    end
-
-    context 'for Dungeon Masters' do
-      before(:each) do
-        sign_in dungeon_master
-      end
-
-      it 'should return a forbidden response' do
-        get "/v1/monsters/#{monster1.slug}/edit"
-        expect(response).to have_http_status(403)
-      end
-    end
-  end
-
-  describe 'GET /v1/monsters/new' do
-    context 'for Logged Out Users' do
-      it 'should return a redirect response' do
-        get '/v1/monsters/new'
-        expect(response).to have_http_status(302)
-      end
-    end
-
-    context 'for Admins' do
-      before(:each) do
-        sign_in admin
-      end
-
-      it 'should return a forbidden response' do
-        get '/v1/monsters/new'
-        expect(response).to have_http_status(403)
-      end
-    end
-
-    context 'for Dungeon Masters' do
-      before(:each) do
-        sign_in dungeon_master
-      end
-
-      it 'should return a forbidden response' do
-        get '/v1/monsters/new'
-        expect(response).to have_http_status(403)
-      end
-    end
-  end
-
   describe 'POST /monsters' do
     context 'for Logged Out Users' do
       it 'should return an error for non-user creating monster' do

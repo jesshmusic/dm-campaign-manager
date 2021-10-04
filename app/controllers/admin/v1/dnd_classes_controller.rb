@@ -32,17 +32,6 @@ module Admin::V1
     def show
     end
 
-    # GET /v1/dnd_classes/new
-    def new
-      @dnd_class = DndClass.new
-      authorize @dnd_class
-    end
-
-    # GET /v1/dnd_classes/:slug/edit
-    def edit
-      authorize @dnd_class
-    end
-
     # POST /v1/dnd_classes
     # POST /v1/dnd_classes.json
     def create

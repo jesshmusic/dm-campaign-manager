@@ -5,16 +5,6 @@ class SpellPolicy < ApplicationPolicy
     true
   end
 
-  def new?
-    # user && (user.admin? || user.dungeon_master?)
-    false
-  end
-
-  def edit?
-    # user && (user.admin? || user.dungeon_master?)
-    false
-  end
-
   def show?
     user&.admin? || (user && record.user == user) || record.user.nil?
   end

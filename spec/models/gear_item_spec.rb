@@ -50,36 +50,36 @@
 require 'rails_helper'
 
 RSpec.describe GearItem, type: :model do
-  context "with the same name" do
+  context 'with the same name' do
     let!(:dungeon_master) { create :dungeon_master_user }
 
-    it "generates unique slugs" do
+    it 'generates unique slugs' do
       @item = GearItem.create!(name: 'Torch', weight: 10)
       @item1 = GearItem.create!(name: 'Torch', weight: 10)
       @user_item = GearItem.create!(name: 'Torch', weight: 10, user: dungeon_master)
-      expect(@item.slug).to eq('torch-1')
-      expect(@item1.slug).to eq('torch-2')
+      expect(@item.slug).to eq('torch__1')
+      expect(@item1.slug).to eq('torch__2')
       expect(@user_item.slug).to eq('torch-jesshdm1')
     end
 
-    it "maintains same slug on update with no name change" do
+    it 'maintains same slug on update with no name change' do
       expect(GearItem.all.count).to eq(116)
       @item = GearItem.create!(name: 'Torch', weight: 10)
       @item1 = GearItem.create!(name: 'Torch', weight: 10)
       @user_item = GearItem.create!(name: 'Torch', weight: 10, user: dungeon_master)
-      expect(@item.slug).to eq('torch-1')
+      expect(@item.slug).to eq('torch__1')
       @item.update(weight: 12)
       expect(GearItem.all.count).to eq(119)
       @item.reload
-      expect(@item.slug).to eq('torch-1')
+      expect(@item.slug).to eq('torch__1')
       @item.update(weight: 8)
       expect(GearItem.all.count).to eq(119)
       @item.reload
-      expect(@item.slug).to eq('torch-1')
+      expect(@item.slug).to eq('torch__1')
       @item.update(weight: 12)
       expect(GearItem.all.count).to eq(119)
       @item.reload
-      expect(@item.slug).to eq('torch-1')
+      expect(@item.slug).to eq('torch__1')
     end
 
     it 'should have 116 GearItems' do

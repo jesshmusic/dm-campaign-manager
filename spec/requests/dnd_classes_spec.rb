@@ -260,68 +260,6 @@ RSpec.describe 'DndClasses', type: :request do
     end
   end
 
-  describe 'GET /v1/dnd_classes/new' do
-    context 'for Logged Out Users' do
-      it 'should return a redirect response' do
-        get '/v1/dnd_classes/new'
-        expect(response).to have_http_status(302)
-      end
-    end
-
-    context 'for Admins' do
-      before(:each) do
-        sign_in admin
-      end
-
-      it 'should return a forbidden response' do
-        get '/v1/dnd_classes/new'
-        expect(response).to have_http_status(403)
-      end
-    end
-
-    context 'for Dungeon Masters' do
-      before(:each) do
-        sign_in dungeon_master
-      end
-
-      it 'should return a forbidden response' do
-        get '/v1/dnd_classes/new'
-        expect(response).to have_http_status(403)
-      end
-    end
-  end
-
-  describe 'GET /v1/dnd_classes/:slug/edit' do
-    context 'for Logged Out Users' do
-      it 'should return a redirect response' do
-        get '/v1/dnd_classes/fighter/edit'
-        expect(response).to have_http_status(302)
-      end
-    end
-
-    context 'for Admins' do
-      before(:each) do
-        sign_in admin
-      end
-
-      it 'should return a forbidden response' do
-        get '/v1/dnd_classes/fighter/edit'
-        expect(response).to have_http_status(403)
-      end
-    end
-
-    context 'for Dungeon Masters' do
-      before(:each) do
-        sign_in dungeon_master
-      end
-
-      it 'should return a forbidden response' do
-        get '/v1/dnd_classes/fighter/edit'
-        expect(response).to have_http_status(403)
-      end
-    end
-  end
-
   describe 'POST /v1/dnd_classes' do
     context 'for Logged Out Users' do
       it 'should return an error' do

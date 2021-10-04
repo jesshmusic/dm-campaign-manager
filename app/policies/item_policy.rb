@@ -5,15 +5,6 @@ class ItemPolicy < ApplicationPolicy
     user && (user.admin? || (record.user == user))
   end
 
-  def new?
-    # user&.admin? || user&.dungeon_master?
-    false
-  end
-
-  def edit?
-    false
-  end
-
   def create?
     user&.admin? || user&.dungeon_master?
   end

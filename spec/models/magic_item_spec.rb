@@ -75,8 +75,8 @@ RSpec.describe MagicItem, type: :model do
       @item = MagicItem.create!(name: 'Torch', weight: 10, rarity: 'uncommon')
       @item1 = MagicItem.create!(name: 'Torch', weight: 10, rarity: 'uncommon')
       @user_item = MagicItem.create!(name: 'Torch', weight: 10, user: dungeon_master, rarity: 'uncommon')
-      expect(@item.slug).to eq('torch-1')
-      expect(@item1.slug).to eq('torch-2')
+      expect(@item.slug).to eq('torch__1')
+      expect(@item1.slug).to eq('torch__2')
       expect(@user_item.slug).to eq('torch-jesshdm1')
     end
 
@@ -84,19 +84,19 @@ RSpec.describe MagicItem, type: :model do
       @item = MagicItem.create!(name: 'Torch', weight: 10, rarity: 'uncommon')
       @item1 = MagicItem.create!(name: 'Torch', weight: 10, rarity: 'uncommon')
       @user_item = MagicItem.create!(name: 'Torch', weight: 10, user: dungeon_master, rarity: 'uncommon')
-      expect(@item.slug).to eq('torch-1')
+      expect(@item.slug).to eq('torch__1')
       @item.update(weight: 12)
       expect(MagicItem.all.count).to eq(247)
       @item.reload
-      expect(@item.slug).to eq('torch-1')
+      expect(@item.slug).to eq('torch__1')
       @item.update(weight: 8)
       expect(MagicItem.all.count).to eq(247)
       @item.reload
-      expect(@item.slug).to eq('torch-1')
+      expect(@item.slug).to eq('torch__1')
       @item.update(weight: 12)
       expect(MagicItem.all.count).to eq(247)
       @item.reload
-      expect(@item.slug).to eq('torch-1')
+      expect(@item.slug).to eq('torch__1')
     end
 
     it 'should create a magic item from an imported JSON' do

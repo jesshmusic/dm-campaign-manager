@@ -51,17 +51,6 @@ module Admin::V1
       authorize @item
     end
 
-    # GET /items/new
-    def new
-      @item = Item.new
-      authorize @item
-    end
-
-    # GET /items/1/edit
-    def edit
-      authorize @item
-    end
-
     # POST /items
     # POST /items.json
     def create

@@ -54,36 +54,36 @@ RSpec.describe ArmorItem, type: :model do
     let!(:dungeon_master) { create :dungeon_master_user }
 
     it 'generates unique slugs' do
-      @item = ArmorItem.create!(name: 'Torch', weight: 10)
-      @item1 = ArmorItem.create!(name: 'Torch', weight: 10)
-      @user_item = ArmorItem.create!(name: 'Torch', weight: 10, user: dungeon_master)
-      expect(@item.slug).to eq('torch-1')
-      expect(@item1.slug).to eq('torch-2')
-      expect(@user_item.slug).to eq('torch-jesshdm1')
+      @item = ArmorItem.create!(name: 'Chain Shirt', weight: 10)
+      @item1 = ArmorItem.create!(name: 'Chain Shirt', weight: 10)
+      @user_item = ArmorItem.create!(name: 'Chain Shirt', weight: 10, user: dungeon_master)
+      expect(@item.slug).to eq('chain-shirt__1')
+      expect(@item1.slug).to eq('chain-shirt__2')
+      expect(@user_item.slug).to eq('chain-shirt-jesshdm1')
     end
 
     it 'maintains same slug on update with no name change' do
       @item = ArmorItem.create!(name: 'Torch', weight: 10)
       @item1 = ArmorItem.create!(name: 'Torch', weight: 10)
       @user_item = ArmorItem.create!(name: 'Torch', weight: 10, user: dungeon_master)
-      expect(@item.slug).to eq('torch-1')
+      expect(@item.slug).to eq('torch__1')
       @item.update(weight: 12)
-      expect(ArmorItem.all.count).to eq(51)
+      expect(ArmorItem.all.count).to eq(16)
       @item.reload
-      expect(@item.slug).to eq('torch-1')
+      expect(@item.slug).to eq('torch__1')
       @item.update(weight: 8)
-      expect(ArmorItem.all.count).to eq(51)
+      expect(ArmorItem.all.count).to eq(16)
       @item.reload
-      expect(@item.slug).to eq('torch-1')
+      expect(@item.slug).to eq('torch__1')
       @item.update(weight: 12)
-      expect(ArmorItem.all.count).to eq(51)
+      expect(ArmorItem.all.count).to eq(16)
       @item.reload
-      expect(@item.slug).to eq('torch-1')
+      expect(@item.slug).to eq('torch__1')
     end
   end
   context 'Implementation' do
     it 'should have 13 ArmorItems' do
-      expect(ArmorItem.all.count).to eq(48)
+      expect(ArmorItem.all.count).to eq(13)
     end
 
     it 'should have the Armor category' do
@@ -103,9 +103,9 @@ RSpec.describe ArmorItem, type: :model do
           'document__slug': 'wotc-srd',
           'document__title': 'Systems Reference Document'
         }
-        expect(MagicArmorItem.all.count).to eq(48)
+        expect(MagicArmorItem.all.count).to eq(74)
         MagicArmorItem.create_magic_armor_from_old_magic_items(magic_item)
-        expect(MagicArmorItem.all.count).to eq(48 + number_of_armors)
+        expect(MagicArmorItem.all.count).to eq(74 + number_of_armors)
         new_armors = MagicArmorItem.where('name like ?', '%Adamantine Armor Special%')
         expect(new_armors).not_to be(nil)
         expect(new_armors.count).to eq(number_of_armors)
@@ -126,12 +126,12 @@ RSpec.describe ArmorItem, type: :model do
         'document__slug': 'wotc-srd',
         'document__title': 'Systems Reference Document'
       }
-      expect(MagicArmorItem.all.count).to eq(48)
+      expect(MagicArmorItem.all.count).to eq(74)
       expect {
         MagicArmorItem.create_magic_armor_from_old_magic_items(magic_item)
       }.to output("ARMOR unidentified: Adamantine Armor Special - TYPE Armor (oops)\n")
              .to_stdout
-      expect(MagicArmorItem.all.count).to eq(48)
+      expect(MagicArmorItem.all.count).to eq(74)
     end
   end
 end

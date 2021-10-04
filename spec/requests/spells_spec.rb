@@ -125,37 +125,6 @@ RSpec.describe 'Spells', type: :request do
     end
   end
 
-  describe 'GET Spell back end Edit Page (admin only)' do
-    context 'for Logged Out Users' do
-      it 'returns a redirect response' do
-        get "/v1/spells/#{spell1.slug}/edit"
-        expect(response).to have_http_status(302)
-      end
-    end
-
-    context 'for Admins' do
-      before(:each) do
-        sign_in admin
-      end
-
-      it 'returns a forbidden response' do
-        get "/v1/spells/#{spell1.slug}/edit"
-        expect(response).to have_http_status(403)
-      end
-    end
-
-    context 'for Dungeon Masters' do
-      before(:each) do
-        sign_in dungeon_master
-      end
-
-      it 'returns a forbidden response' do
-        get "/v1/spells/#{spell1.slug}/edit"
-        expect(response).to have_http_status(403)
-      end
-    end
-  end
-
   describe 'POST Create Spell' do
     context 'for Logged Out Users' do
       it 'returns an error for non-user creating spell' do

@@ -59,17 +59,6 @@ module Admin::V1
       end
     end
 
-    # GET /monsters/new
-    def new
-      @monster = Monster.new
-      authorize @monster
-    end
-
-    # GET /monsters/:slug/edit
-    def edit
-      authorize @monster
-    end
-
     # POST /monsters
     # POST /monsters.json
     def create

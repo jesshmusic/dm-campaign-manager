@@ -39,88 +39,66 @@ Ruby enVironment Manager 1.29.10 (latest) (c) 2009-2017 Michal Papis, Piotr Kucz
                          v1_calculate_cr POST   /v1/calculate_cr(.:format)                                                                        admin/v1/monsters#calculate_cr {:format=>"json"}
                           v1_dnd_classes GET    /v1/dnd_classes(.:format)                                                                         admin/v1/dnd_classes#index
                                          POST   /v1/dnd_classes(.:format)                                                                         admin/v1/dnd_classes#create
-                        new_v1_dnd_class GET    /v1/dnd_classes/new(.:format)                                                                     admin/v1/dnd_classes#new
-                       edit_v1_dnd_class GET    /v1/dnd_classes/:slug/edit(.:format)                                                              admin/v1/dnd_classes#edit
                             v1_dnd_class GET    /v1/dnd_classes/:slug(.:format)                                                                   admin/v1/dnd_classes#show
                                          PATCH  /v1/dnd_classes/:slug(.:format)                                                                   admin/v1/dnd_classes#update
                                          PUT    /v1/dnd_classes/:slug(.:format)                                                                   admin/v1/dnd_classes#update
                                          DELETE /v1/dnd_classes/:slug(.:format)                                                                   admin/v1/dnd_classes#destroy
                                 v1_items GET    /v1/items(.:format)                                                                               admin/v1/items#index
                                          POST   /v1/items(.:format)                                                                               admin/v1/items#create
-                             new_v1_item GET    /v1/items/new(.:format)                                                                           admin/v1/items#new
-                            edit_v1_item GET    /v1/items/:slug/edit(.:format)                                                                    admin/v1/items#edit
                                  v1_item GET    /v1/items/:slug(.:format)                                                                         admin/v1/items#show
                                          PATCH  /v1/items/:slug(.:format)                                                                         admin/v1/items#update
                                          PUT    /v1/items/:slug(.:format)                                                                         admin/v1/items#update
                                          DELETE /v1/items/:slug(.:format)                                                                         admin/v1/items#destroy
                           v1_armor_items GET    /v1/armor_items(.:format)                                                                         admin/v1/items#index {:type=>"ArmorItem"}
                                          POST   /v1/armor_items(.:format)                                                                         admin/v1/items#create {:type=>"ArmorItem"}
-                       new_v1_armor_item GET    /v1/armor_items/new(.:format)                                                                     admin/v1/items#new {:type=>"ArmorItem"}
-                      edit_v1_armor_item GET    /v1/armor_items/:slug/edit(.:format)                                                              admin/v1/items#edit {:type=>"ArmorItem"}
                            v1_armor_item GET    /v1/armor_items/:slug(.:format)                                                                   admin/v1/items#show {:type=>"ArmorItem"}
                                          PATCH  /v1/armor_items/:slug(.:format)                                                                   admin/v1/items#update {:type=>"ArmorItem"}
                                          PUT    /v1/armor_items/:slug(.:format)                                                                   admin/v1/items#update {:type=>"ArmorItem"}
                                          DELETE /v1/armor_items/:slug(.:format)                                                                   admin/v1/items#destroy {:type=>"ArmorItem"}
                            v1_gear_items GET    /v1/gear_items(.:format)                                                                          admin/v1/items#index {:type=>"GearItem"}
                                          POST   /v1/gear_items(.:format)                                                                          admin/v1/items#create {:type=>"GearItem"}
-                        new_v1_gear_item GET    /v1/gear_items/new(.:format)                                                                      admin/v1/items#new {:type=>"GearItem"}
-                       edit_v1_gear_item GET    /v1/gear_items/:slug/edit(.:format)                                                               admin/v1/items#edit {:type=>"GearItem"}
                             v1_gear_item GET    /v1/gear_items/:slug(.:format)                                                                    admin/v1/items#show {:type=>"GearItem"}
                                          PATCH  /v1/gear_items/:slug(.:format)                                                                    admin/v1/items#update {:type=>"GearItem"}
                                          PUT    /v1/gear_items/:slug(.:format)                                                                    admin/v1/items#update {:type=>"GearItem"}
                                          DELETE /v1/gear_items/:slug(.:format)                                                                    admin/v1/items#destroy {:type=>"GearItem"}
                           v1_magic_items GET    /v1/magic_items(.:format)                                                                         admin/v1/items#index {:type=>"MagicItem"}
                                          POST   /v1/magic_items(.:format)                                                                         admin/v1/items#create {:type=>"MagicItem"}
-                       new_v1_magic_item GET    /v1/magic_items/new(.:format)                                                                     admin/v1/items#new {:type=>"MagicItem"}
-                      edit_v1_magic_item GET    /v1/magic_items/:slug/edit(.:format)                                                              admin/v1/items#edit {:type=>"MagicItem"}
                            v1_magic_item GET    /v1/magic_items/:slug(.:format)                                                                   admin/v1/items#show {:type=>"MagicItem"}
                                          PATCH  /v1/magic_items/:slug(.:format)                                                                   admin/v1/items#update {:type=>"MagicItem"}
                                          PUT    /v1/magic_items/:slug(.:format)                                                                   admin/v1/items#update {:type=>"MagicItem"}
                                          DELETE /v1/magic_items/:slug(.:format)                                                                   admin/v1/items#destroy {:type=>"MagicItem"}
                            v1_tool_items GET    /v1/tool_items(.:format)                                                                          admin/v1/items#index {:type=>"ToolItem"}
                                          POST   /v1/tool_items(.:format)                                                                          admin/v1/items#create {:type=>"ToolItem"}
-                        new_v1_tool_item GET    /v1/tool_items/new(.:format)                                                                      admin/v1/items#new {:type=>"ToolItem"}
-                       edit_v1_tool_item GET    /v1/tool_items/:slug/edit(.:format)                                                               admin/v1/items#edit {:type=>"ToolItem"}
                             v1_tool_item GET    /v1/tool_items/:slug(.:format)                                                                    admin/v1/items#show {:type=>"ToolItem"}
                                          PATCH  /v1/tool_items/:slug(.:format)                                                                    admin/v1/items#update {:type=>"ToolItem"}
                                          PUT    /v1/tool_items/:slug(.:format)                                                                    admin/v1/items#update {:type=>"ToolItem"}
                                          DELETE /v1/tool_items/:slug(.:format)                                                                    admin/v1/items#destroy {:type=>"ToolItem"}
                         v1_vehicle_items GET    /v1/vehicle_items(.:format)                                                                       admin/v1/items#index {:type=>"VehicleItem"}
                                          POST   /v1/vehicle_items(.:format)                                                                       admin/v1/items#create {:type=>"VehicleItem"}
-                     new_v1_vehicle_item GET    /v1/vehicle_items/new(.:format)                                                                   admin/v1/items#new {:type=>"VehicleItem"}
-                    edit_v1_vehicle_item GET    /v1/vehicle_items/:slug/edit(.:format)                                                            admin/v1/items#edit {:type=>"VehicleItem"}
                          v1_vehicle_item GET    /v1/vehicle_items/:slug(.:format)                                                                 admin/v1/items#show {:type=>"VehicleItem"}
                                          PATCH  /v1/vehicle_items/:slug(.:format)                                                                 admin/v1/items#update {:type=>"VehicleItem"}
                                          PUT    /v1/vehicle_items/:slug(.:format)                                                                 admin/v1/items#update {:type=>"VehicleItem"}
                                          DELETE /v1/vehicle_items/:slug(.:format)                                                                 admin/v1/items#destroy {:type=>"VehicleItem"}
                          v1_weapon_items GET    /v1/weapon_items(.:format)                                                                        admin/v1/items#index {:type=>"WeaponItem"}
                                          POST   /v1/weapon_items(.:format)                                                                        admin/v1/items#create {:type=>"WeaponItem"}
-                      new_v1_weapon_item GET    /v1/weapon_items/new(.:format)                                                                    admin/v1/items#new {:type=>"WeaponItem"}
-                     edit_v1_weapon_item GET    /v1/weapon_items/:slug/edit(.:format)                                                             admin/v1/items#edit {:type=>"WeaponItem"}
                           v1_weapon_item GET    /v1/weapon_items/:slug(.:format)                                                                  admin/v1/items#show {:type=>"WeaponItem"}
                                          PATCH  /v1/weapon_items/:slug(.:format)                                                                  admin/v1/items#update {:type=>"WeaponItem"}
                                          PUT    /v1/weapon_items/:slug(.:format)                                                                  admin/v1/items#update {:type=>"WeaponItem"}
                                          DELETE /v1/weapon_items/:slug(.:format)                                                                  admin/v1/items#destroy {:type=>"WeaponItem"}
                              v1_monsters GET    /v1/monsters(.:format)                                                                            admin/v1/monsters#index
                                          POST   /v1/monsters(.:format)                                                                            admin/v1/monsters#create
-                          new_v1_monster GET    /v1/monsters/new(.:format)                                                                        admin/v1/monsters#new
-                         edit_v1_monster GET    /v1/monsters/:slug/edit(.:format)                                                                 admin/v1/monsters#edit
                               v1_monster GET    /v1/monsters/:slug(.:format)                                                                      admin/v1/monsters#show
                                          PATCH  /v1/monsters/:slug(.:format)                                                                      admin/v1/monsters#update
                                          PUT    /v1/monsters/:slug(.:format)                                                                      admin/v1/monsters#update
                                          DELETE /v1/monsters/:slug(.:format)                                                                      admin/v1/monsters#destroy
                                 v1_races GET    /v1/races(.:format)                                                                               admin/v1/races#index
                                          POST   /v1/races(.:format)                                                                               admin/v1/races#create
-                             new_v1_race GET    /v1/races/new(.:format)                                                                           admin/v1/races#new
-                            edit_v1_race GET    /v1/races/:slug/edit(.:format)                                                                    admin/v1/races#edit
                                  v1_race GET    /v1/races/:slug(.:format)                                                                         admin/v1/races#show
                                          PATCH  /v1/races/:slug(.:format)                                                                         admin/v1/races#update
                                          PUT    /v1/races/:slug(.:format)                                                                         admin/v1/races#update
                                          DELETE /v1/races/:slug(.:format)                                                                         admin/v1/races#destroy
                                v1_spells GET    /v1/spells(.:format)                                                                              admin/v1/spells#index
                                          POST   /v1/spells(.:format)                                                                              admin/v1/spells#create
-                            new_v1_spell GET    /v1/spells/new(.:format)                                                                          admin/v1/spells#new
-                           edit_v1_spell GET    /v1/spells/:slug/edit(.:format)                                                                   admin/v1/spells#edit
                                 v1_spell GET    /v1/spells/:slug(.:format)                                                                        admin/v1/spells#show
                                          PATCH  /v1/spells/:slug(.:format)                                                                        admin/v1/spells#update
                                          PUT    /v1/spells/:slug(.:format)                                                                        admin/v1/spells#update

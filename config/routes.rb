@@ -29,23 +29,25 @@ Rails.application.routes.draw do
       post '/calculate_cr', to: 'monsters#calculate_cr',
            as: 'calculate_cr',
            constraints: { format: 'json' }
-      resources :dnd_classes, param: :slug
-      resources :items, param: :slug
-      # noinspection RailsParamDefResolve
-      resources :armor_items, param: :slug, controller: 'items', type: 'ArmorItem'
-      # noinspection RailsParamDefResolve
-      resources :gear_items, param: :slug, controller: 'items', type: 'GearItem'
-      # noinspection RailsParamDefResolve
-      resources :magic_items, param: :slug, controller: 'items', type: 'MagicItem'
-      # noinspection RailsParamDefResolve
-      resources :tool_items, param: :slug, controller: 'items', type: 'ToolItem'
-      # noinspection RailsParamDefResolve
-      resources :vehicle_items, param: :slug, controller: 'items', type: 'VehicleItem'
-      # noinspection RailsParamDefResolve
-      resources :weapon_items, param: :slug, controller: 'items', type: 'WeaponItem'
-      resources :monsters, param: :slug
-      resources :races, param: :slug
-      resources :spells, param: :slug
+      scope except: [:new, :edit] do
+        resources :dnd_classes, param: :slug
+        resources :items, param: :slug
+        # noinspection RailsParamDefResolve
+        resources :armor_items, param: :slug, controller: 'items', type: 'ArmorItem'
+        # noinspection RailsParamDefResolve
+        resources :gear_items, param: :slug, controller: 'items', type: 'GearItem'
+        # noinspection RailsParamDefResolve
+        resources :magic_items, param: :slug, controller: 'items', type: 'MagicItem'
+        # noinspection RailsParamDefResolve
+        resources :tool_items, param: :slug, controller: 'items', type: 'ToolItem'
+        # noinspection RailsParamDefResolve
+        resources :vehicle_items, param: :slug, controller: 'items', type: 'VehicleItem'
+        # noinspection RailsParamDefResolve
+        resources :weapon_items, param: :slug, controller: 'items', type: 'WeaponItem'
+        resources :monsters, param: :slug
+        resources :races, param: :slug
+        resources :spells, param: :slug
+      end
     end
   end
 end
