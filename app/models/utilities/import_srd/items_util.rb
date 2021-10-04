@@ -346,7 +346,7 @@ class ItemsUtil
           new_magic_item.desc = original_item.desc
           new_magic_item.type = original_item.type
           new_magic_item.requires_attunement = original_item.requires_attunement
-          new_magic_item.rarity = magic_item[:rarity]
+          new_magic_item.rarity = original_item.rarity
           new_magic_item.slug = new_magic_item[:name].parameterize
         end
       end

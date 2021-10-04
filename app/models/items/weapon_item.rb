@@ -152,7 +152,16 @@ class WeaponItem < Item
 
     def new_magic_weapon(magic_item, weapon_name)
       weapon_item = WeaponItem.find_by(name: weapon_name)
-      new_item = WeaponItem.find_or_create_by(name: "#{magic_item[:name]}, #{weapon_name}")
+      info = if magic_item[:name] == 'Weapon +1'
+               { name: "#{weapon_name} +1", rarity: 'uncommon' }
+             elsif magic_item[:name] == 'Weapon +2'
+               { name: "#{weapon_name} +2", rarity: 'rare' }
+             elsif magic_item[:name] == 'Weapon +3'
+               { name: "#{weapon_name} +3", rarity: 'very rare' }
+             else
+               { name: "#{magic_item[:name]}, #{weapon_name}", rarity: magic_item[:rarity] }
+             end
+      new_item = WeaponItem.find_or_create_by(name: info[:name])
       new_item.desc = magic_item[:desc] ? [magic_item[:desc]] : weapon_item.desc
       new_item.category_range = weapon_item.category_range
       new_item.damage = Damage.create(
@@ -165,13 +174,7 @@ class WeaponItem < Item
         long: weapon_item.item_range.long,
         normal: weapon_item.item_range.normal
       ) unless weapon_item.item_range.nil?
-      # rarity = if %w[common uncommon rare very-rare legendary artifact].include? magic_item[:rarity]
-      #            magic_item[:rarity]
-      #          else
-      #
-      #          end
-      # new_item.rarity = rarity
-      new_item.rarity = magic_item[:rarity]
+      new_item.rarity = info[:rarity]
       new_item.requires_attunement = magic_item[:requires_attunement]
       new_item.slug = new_item.name.parameterize
       new_item.special = weapon_item.special

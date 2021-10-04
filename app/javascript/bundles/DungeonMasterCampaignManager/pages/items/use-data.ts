@@ -79,6 +79,18 @@ export const useData = (props: ItemsPageProps) => {
       {
         Header: 'Weight',
         accessor: 'weight'
+      },
+      {
+        Header: 'Rarity',
+        accessor: 'rarity',
+        sortType: React.useMemo(
+          () => (rowA, rowB, columnId) => {
+            const a = getRarityValue(rowA.values[columnId]);
+            const b = getRarityValue(rowB.values[columnId]);
+            return a > b ? 1 : -1;
+          },
+          []
+        )
       }
     ],
     [ItemType.gear]: [
