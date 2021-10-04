@@ -165,6 +165,12 @@ class WeaponItem < Item
         long: weapon_item.item_range.long,
         normal: weapon_item.item_range.normal
       ) unless weapon_item.item_range.nil?
+      # rarity = if %w[common uncommon rare very-rare legendary artifact].include? magic_item[:rarity]
+      #            magic_item[:rarity]
+      #          else
+      #
+      #          end
+      # new_item.rarity = rarity
       new_item.rarity = magic_item[:rarity]
       new_item.requires_attunement = magic_item[:requires_attunement]
       new_item.slug = new_item.name.parameterize

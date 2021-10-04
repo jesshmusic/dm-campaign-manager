@@ -54,16 +54,18 @@ $page-background: url('/images/dndBG.jpg');
 
     tr {
       &:hover {
-        background-color: $primary;
+        background-color: $pine-green;
         color: $white;
         cursor: pointer;
         transition: background-color 0.1s ease-in-out;
-      }
-    }
 
-    .name-row {
-      &:hover {
-        color: lighten($primary, 25%);
+        td {
+          color: $white;
+        }
+
+        .name-row {
+          color: lighten($pine-green, 25%);
+        }
       }
     }
   }

@@ -1,19 +1,7 @@
 import React from 'react';
 import ReactPaginate from 'react-paginate';
-import {
-  Column,
-  HeaderGroup,
-  Row,
-  useExpanded,
-  usePagination,
-  useSortBy,
-  useTable,
-} from 'react-table';
-import {
-  TiArrowSortedDown,
-  TiArrowSortedUp,
-  TiArrowUnsorted,
-} from 'react-icons/all';
+import { Column, HeaderGroup, Row, useExpanded, usePagination, useSortBy, useTable } from 'react-table';
+import { TiArrowSortedDown, TiArrowSortedUp, TiArrowUnsorted } from 'react-icons/all';
 import classNames from 'classnames';
 
 export interface DataTableProps {
@@ -27,14 +15,14 @@ export interface DataTableProps {
 }
 
 const DataTable = ({
-  columns,
-  data,
-  goToPage,
-  noHover = false,
-  paginateExpandedRows = false,
-  perPage = 12,
-  renderRowSubComponent,
-}: DataTableProps) => {
+                     columns,
+                     data,
+                     goToPage,
+                     noHover = false,
+                     paginateExpandedRows = false,
+                     perPage = 12,
+                     renderRowSubComponent
+                   }: DataTableProps) => {
   const {
     getTableProps,
     getTableBodyProps,
@@ -46,16 +34,16 @@ const DataTable = ({
     gotoPage,
     setPageSize,
     state: { pageIndex, pageSize },
-    visibleColumns,
+    visibleColumns
   } = useTable(
     {
       columns,
       data,
       initialState: {
         pageIndex: 0,
-        pageSize: perPage,
+        pageSize: perPage
       },
-      paginateExpandedRows,
+      paginateExpandedRows
     },
     useSortBy,
     useExpanded,
@@ -77,11 +65,11 @@ const DataTable = ({
 
   const sortIcon = (column: HeaderGroup) => {
     if (column.isSorted && column.isSortedDesc) {
-      return <TiArrowSortedDown color="#555752" />;
+      return <TiArrowSortedDown color='#555752' />;
     } else if (column.isSorted) {
-      return <TiArrowSortedUp color="#555752" />;
+      return <TiArrowSortedUp color='#555752' />;
     }
-    return <TiArrowUnsorted color="#555752" />;
+    return <TiArrowUnsorted color='#555752' />;
   };
 
   return (
@@ -89,7 +77,7 @@ const DataTable = ({
       <table
         {...getTableProps()}
         className={classNames('dnd-table', {
-          'dnd-table__hover': !Boolean(renderRowSubComponent) && !noHover,
+          'dnd-table__hover': !Boolean(renderRowSubComponent) && !noHover
         })}
       >
         <thead>
@@ -106,9 +94,9 @@ const DataTable = ({
         <tbody {...getTableBodyProps()}>
           {page.map((row: Row<any>) => {
             prepareRow(row);
-            const rowProps = row.getRowProps();
+            const { role, ...rowProps } = row.getRowProps();
             return (
-              <React.Fragment {...row.getRowProps()}>
+              <React.Fragment {...rowProps}>
                 <tr {...row.getRowProps()} onClick={() => handleGoToPage(row)}>
                   {row.cells.map((cell, index) => {
                     return (
@@ -122,8 +110,8 @@ const DataTable = ({
                   })}
                 </tr>
                 {row.isExpanded &&
-                  renderRowSubComponent &&
-                  renderRowSubComponent({ row, rowProps, visibleColumns })}
+                renderRowSubComponent &&
+                renderRowSubComponent({ row, rowProps, visibleColumns })}
               </React.Fragment>
             );
           })}
@@ -131,8 +119,8 @@ const DataTable = ({
       </table>
       {pageCount > 1 && (
         <nav
-          aria-label="Table Pagination"
-          className="d-md-flex justify-content-between align-items-baseline"
+          aria-label='Table Pagination'
+          className='d-md-flex justify-content-between align-items-baseline'
         >
           <ReactPaginate
             previousLabel={'previous'}
@@ -153,17 +141,17 @@ const DataTable = ({
             containerClassName={'pagination'}
             activeClassName={'active'}
           />
-          <div className="fs-4 mr-eaves">
-            page <span className="text-primary">{pageIndex + 1}</span>
+          <div className='fs-4 mr-eaves'>
+            page <span className='text-primary'>{pageIndex + 1}</span>
             &nbsp;of&nbsp;
-            <span className="text-primary">{pageOptions.length}</span>
+            <span className='text-primary'>{pageOptions.length}</span>
           </div>
-          <div className="d-flex align-items-center">
-            <span className="d-flex me-2 align-items-center sans-serif">
+          <div className='d-flex align-items-center'>
+            <span className='d-flex me-2 align-items-center sans-serif'>
               Go to page:&nbsp;
               <input
-                className="form-control"
-                type="number"
+                className='form-control'
+                type='number'
                 defaultValue={pageIndex + 1}
                 onChange={(e) => {
                   const page = e.target.value ? Number(e.target.value) - 1 : 0;
@@ -173,7 +161,7 @@ const DataTable = ({
               />
             </span>{' '}
             <select
-              className="form-select sans-serif"
+              className='form-select sans-serif'
               value={pageSize}
               onChange={(e) => {
                 setPageSize(Number(e.target.value));
