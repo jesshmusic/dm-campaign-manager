@@ -49,8 +49,6 @@
 #  fk_rails_...  (user_id => users.id)
 #
 
-# TODO: It seems like the ranged weapons are missing their range values.
-
 class WeaponItem < Item
   def properties_str
     prop_arr = []

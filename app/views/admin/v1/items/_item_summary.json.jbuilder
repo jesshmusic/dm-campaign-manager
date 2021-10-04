@@ -20,7 +20,7 @@ unless item.content_items.nil? || item.content_items.count == 0
 end
 
 case item.type
-when 'ArmorItem'
+when 'ArmorItem', 'MagicArmorItem'
   json.armor_type item.armor_category
   dex_mod_string = ''
   if item.armor_class.has_dex_bonus && (item.armor_class.max_dex_bonus || item.armor_class.max_dex_bonus == 0)
@@ -33,7 +33,7 @@ when 'ArmorItem'
   json.stealth item.stealth_disadvantage ? 'Disadvantage' : '-'
 when 'VehicleItem'
   json.extract! item, :vehicle_category, :speed, :capacity
-when 'WeaponItem'
+when 'WeaponItem', 'MagicWeaponItem'
   json.extract! item, :category_range
   json.damage "#{item.damage.damage_dice} #{item.damage.damage_type}" unless item.damage.nil?
   json.properties item.properties_str

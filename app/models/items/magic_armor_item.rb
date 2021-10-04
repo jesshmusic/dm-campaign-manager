@@ -49,7 +49,7 @@
 #  fk_rails_...  (user_id => users.id)
 #
 
-class MagicArmorItem < Item
+class MagicArmorItem < ArmorItem
   def category
     'Magic Armor Item'
   end
