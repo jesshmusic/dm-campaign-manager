@@ -1,0 +1,42 @@
+import React from 'react';
+import PropTypes from 'prop-types';
+import { NavLink } from '../MenuBar/MenuBar';
+const styles = require('./footer.module.scss');
+
+const Footer = () => {
+  return (
+    <div className={styles.wrapper}>
+      <div className={styles.left}>
+        <h3 className="mr-eaves">The Dungeon Master Screen</h3>
+      </div>
+      <div className={styles.right}>
+        <ul className={styles.nav}>
+          <NavLink to={'/'} className={styles.footerLink}>
+            Home
+          </NavLink>
+          <NavLink to={'/app/monster-generator'} className={styles.footerLink}>
+            Monster Generator
+          </NavLink>
+          <NavLink to={'/app/classes'} className={styles.footerLink}>
+            Classes
+          </NavLink>
+          <NavLink to={'/app/monsters'} className={styles.footerLink}>
+            Monsters
+          </NavLink>
+          <NavLink to={'/app/items'} className={styles.footerLink}>
+            Items and Equipment
+          </NavLink>
+          <NavLink to={'/app/spells'} className={styles.footerLink}>
+            Spells
+          </NavLink>
+        </ul>
+      </div>
+    </div>
+  );
+};
+
+Footer.propTypes = {
+  user: PropTypes.object,
+};
+
+export default Footer;

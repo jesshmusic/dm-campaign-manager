@@ -1,7 +1,7 @@
 import React from 'react';
 
 // Bootstrap
-import Footer from '../components/layout/Footer/Footer.jsx';
+import Footer from '../components/layout/Footer/Footer';
 import HeroBanner from '../components/layout/HeroBanner/HeroBanner';
 import MenuBar from '../components/layout/MenuBar/MenuBar';
 import FlashMessages from '../components/layout/Alerts/FlashMessages';

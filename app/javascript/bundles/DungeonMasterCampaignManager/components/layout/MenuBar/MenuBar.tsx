@@ -7,26 +7,17 @@ import { UserProps } from '../../../utilities/types';
 
 const classes = require('./menu-bar.module.scss');
 
-const NavLink = (props) => (
-  <li className={`nav-item ${classes.navItem}`}>
+export const NavLink = (props) => (
+  <li className={`${classes.navItem} nav-item`}>
     <Link
       {...props}
       getProps={({ isCurrent }) => ({
         className: isCurrent
-          ? `nav-link active ${classes.navLinkActive}`
-          : `nav-link ${classes.navLink}`,
+          ? `${props.className} nav-link active ${classes.navLinkActive}`
+          : `${props.className} nav-link ${classes.navLink}`,
       })}
     />
   </li>
-);
-
-const DropdownLink = (props) => (
-  <Link
-    {...props}
-    getProps={({ isCurrent }) => ({
-      className: isCurrent ? 'dropdown-item active' : 'dropdown-item',
-    })}
-  />
 );
 
 function MenuBar(props: { user: UserProps; logoutUser: () => void }) {

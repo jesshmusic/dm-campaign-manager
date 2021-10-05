@@ -1,0 +1,35 @@
+@import '../../../stylesheets/application';
+
+.wrapper {
+  color: $white;
+  padding: 1rem 2rem;
+
+  @include media-breakpoint-up(md) {
+    display: flex;
+  }
+}
+
+.left,
+.right {
+  flex: 1;
+}
+
+.right {
+  .nav {
+    display: block;
+    list-style: none;
+    text-align: right;
+  }
+}
+
+.footerLink {
+  @extend .sans-serif;
+
+  color: $white !important;
+  padding: 0.5rem 1rem !important;
+
+  &:hover {
+    color: lighten($primary, 40%) !important;
+  }
+}
+
