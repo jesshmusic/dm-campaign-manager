@@ -10,7 +10,7 @@ type MonsterPageProps = {
   monster?: MonsterProps;
   monsterSlug: string;
   getMonster: (monsterSlug: string) => void;
-} & PageProps;
+};
 
 const MonsterStat = (props: { name: string; value: string | number }) => {
   return (
@@ -76,7 +76,7 @@ const AbilityScores = (props: { monster: MonsterProps }) => {
 };
 
 const Monster = (props: MonsterPageProps) => {
-  const { user, flashMessages, monster, monsterSlug, getMonster } = props;
+  const { monster, monsterSlug, getMonster } = props;
 
   React.useEffect(() => {
     getMonster(monsterSlug);
@@ -86,8 +86,6 @@ const Monster = (props: MonsterPageProps) => {
 
   return (
     <PageContainer
-      user={user}
-      flashMessages={flashMessages}
       breadcrumbs={[
         { url: '/app/monsters', isActive: false, title: 'Monsters' },
         { isActive: true, title: monsterTitle },
@@ -213,8 +211,6 @@ const Monster = (props: MonsterPageProps) => {
 function mapStateToProps(state) {
   return {
     monster: state.monsters.currentMonster,
-    user: state.users.user,
-    flashMessages: state.flashMessages,
   };
 }
 

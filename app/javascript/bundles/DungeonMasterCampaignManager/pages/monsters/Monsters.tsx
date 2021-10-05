@@ -14,13 +14,11 @@ import DataTable from '../../components/layout/DataTable';
 import { Row } from 'react-table';
 import { GiClosedDoors, GiOpenBook, GiOpenGate } from 'react-icons/all';
 
-const Monsters = (
-  props: PageProps & {
-    getMonsterCategories: () => void;
-    monsters: MonsterSummary[];
-    monsterTypes: MonsterType[];
-  }
-) => {
+const Monsters = (props: {
+  getMonsterCategories: () => void;
+  monsters: MonsterSummary[];
+  monsterTypes: MonsterType[];
+}) => {
   const { getMonsterCategories, monsterTypes } = props;
 
   React.useEffect(() => {
@@ -93,8 +91,6 @@ const Monsters = (
 
   return (
     <PageContainer
-      user={props.user}
-      flashMessages={props.flashMessages}
       pageTitle={'Monsters'}
       description={
         "All monsters with descriptions and stats. Dungeon Master's Toolbox is a free resource for DMs to manage their campaigns, adventures, and Monsters."

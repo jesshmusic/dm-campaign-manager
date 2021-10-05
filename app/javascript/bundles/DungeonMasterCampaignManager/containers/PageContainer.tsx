@@ -14,6 +14,9 @@ import BreadcrumbLink from '../components/layout/BreadcrumbLink';
 
 import { FlashMessage, UserProps } from '../utilities/types';
 import classNames from 'classnames';
+import SignInModal from '../components/layout/SignInModal';
+import rest from '../actions/api';
+import { connect } from 'react-redux';
 const styles = require('./page-container.module.scss');
 
 type BreadCrumbProps = {
@@ -29,10 +32,12 @@ type PageContainerProps = {
   flashMessages?: FlashMessage[];
   pageTitle: string;
   user?: UserProps;
+  userLogin: (username: string, password: string) => void;
 };
 
 const PageContainer = (props: PageContainerProps) => {
-  const { breadcrumbs, children, description, pageTitle, user } = props;
+  const { breadcrumbs, children, description, pageTitle, user, userLogin } =
+    props;
 
   return (
     <div>
@@ -65,8 +70,28 @@ const PageContainer = (props: PageContainerProps) => {
         {children}
       </div>
       <Footer user={user} />
+      <SignInModal user={user} userLogin={userLogin} />
     </div>
   );
 };
 
-export default PageContainer;
+function mapStateToProps(state) {
+  return {
+    flashMessages: state.flashMessages,
+    user: state.users.currentUser,
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    userLogin: (email: string, password: string) => {
+      dispatch(
+        rest.actions.userLogin({
+          user: { email, password },
+        })
+      );
+    },
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(PageContainer);

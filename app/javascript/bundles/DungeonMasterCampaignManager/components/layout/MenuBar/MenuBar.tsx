@@ -42,7 +42,7 @@ function MenuBar(props: { user: UserProps; logoutUser: () => void }) {
     >
       <div className="container-fluid">
         <a className={`navbar-brand ${classes.navbarBrand}`} href="#">
-          DM&apos;s Toolbox
+          The Dungeon Master Screen
         </a>
         <button
           className="navbar-toggler"
@@ -54,7 +54,7 @@ function MenuBar(props: { user: UserProps; logoutUser: () => void }) {
           <span className="navbar-toggler-icon" />
         </button>
         <div
-          className="offcanvas offcanvas-end"
+          className="offcanvas offcanvas-start"
           tabIndex={-1}
           id="offcanvasNavbar"
           aria-labelledby="offcanvasNavbarLabel"
@@ -74,40 +74,10 @@ function MenuBar(props: { user: UserProps; logoutUser: () => void }) {
             <ul className="navbar-nav justify-content-end flex-grow-1 pe-3">
               <NavLink to={'/'}>Home</NavLink>
               <NavLink to={'/app/monster-generator'}>Monster Generator</NavLink>
-              <li className="nav-item dropdown">
-                <a
-                  className="nav-link dropdown-toggle"
-                  href="#"
-                  id="offcanvasNavbarDropdown"
-                  role="button"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  Reference
-                </a>
-                <ul
-                  className="dropdown-menu"
-                  aria-labelledby="offcanvasNavbarDropdown"
-                >
-                  <li>
-                    <DropdownLink to={'/app/classes'}>Classes</DropdownLink>
-                  </li>
-                  <li>
-                    {' '}
-                    <DropdownLink to={'/app/monsters'}>Monsters</DropdownLink>
-                  </li>
-                  <li>
-                    {' '}
-                    <DropdownLink to={'/app/items'}>
-                      Items and Equipment
-                    </DropdownLink>
-                  </li>
-                  <li>
-                    {' '}
-                    <DropdownLink to={'/app/spells'}>Spells</DropdownLink>
-                  </li>
-                </ul>
-              </li>
+              <NavLink to={'/app/classes'}>Classes</NavLink>
+              <NavLink to={'/app/monsters'}>Monsters</NavLink>
+              <NavLink to={'/app/items'}>Items and Equipment</NavLink>
+              <NavLink to={'/app/spells'}>Spells</NavLink>
               {user && user.role === 'admin' ? (
                 <NavLink to={'/'}>Home</NavLink>
               ) : null}
@@ -118,14 +88,18 @@ function MenuBar(props: { user: UserProps; logoutUser: () => void }) {
                   </a>
                 </li>
               ) : (
-                <li>
-                  <a href="/users/sign_in" className={classes.navLink}>
+                <li className="nav-item">
+                  <button
+                    className="btn btn-link nav-link"
+                    data-bs-toggle="modal"
+                    data-bs-target="#userSigninModal"
+                  >
                     Sign In
-                  </a>
+                  </button>
                 </li>
               )}
             </ul>
-            <form className="d-flex">
+            <form className="d-flex pt-5">
               <input
                 className="form-control me-2"
                 type="search"

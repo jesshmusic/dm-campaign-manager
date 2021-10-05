@@ -15,7 +15,7 @@ class SessionsController < Devise::SessionsController
       sign_in :user, @user
       respond_to do |format|
         format.html { redirect_to '/', notice: "UserProps #{@user.name} logged in." }
-        format.json { render json: @user, include: [:campaigns] }
+        format.json { render json: @user }
       end
     else
       invalid_login_attempt
@@ -25,7 +25,7 @@ class SessionsController < Devise::SessionsController
   def destroy
     sign_out(@user)
     respond_to do |format|
-      format.html { redirect_to '/', notice: "UserProps successfully logged out." }
+      format.html { redirect_to '/', notice: 'UserProps successfully logged out.' }
       format.json { render json: { success: true } }
     end
   end

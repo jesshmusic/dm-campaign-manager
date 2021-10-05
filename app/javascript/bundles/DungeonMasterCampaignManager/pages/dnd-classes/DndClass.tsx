@@ -12,12 +12,12 @@ import { connect } from 'react-redux';
 
 type DndClassPageProps = {
   dndClass?: DndClass;
-  dndClassSlug: string,
+  dndClassSlug: string;
   getDndClass: (dndClassSlug: string) => void;
-} & PageProps;
+};
 
 const DndClass = (props: DndClassPageProps) => {
-  const { user, flashMessages, dndClass, dndClassSlug, getDndClass } = props;
+  const { dndClass, dndClassSlug, getDndClass } = props;
 
   React.useEffect(() => {
     getDndClass(dndClassSlug);
@@ -26,14 +26,14 @@ const DndClass = (props: DndClassPageProps) => {
   const dndClassTitle = dndClass ? dndClass.name : 'Class Loading...';
 
   return (
-    <PageContainer user={user}
-                   flashMessages={flashMessages}
-                   pageTitle={dndClassTitle}
-                   description={`DndClass: ${dndClassTitle}. Dungeon Master's Toolbox is a free resource for DMs to manage their dndClasses, adventures, and Monsters.`}
-                   breadcrumbs={[
-                     { url: '/app/classes', isActive: false, title: 'Character Classes' },
-                     { isActive: true, title: dndClassTitle }
-                   ]}>
+    <PageContainer
+      pageTitle={dndClassTitle}
+      description={`DndClass: ${dndClassTitle}. Dungeon Master's Toolbox is a free resource for DMs to manage their dndClasses, adventures, and Monsters.`}
+      breadcrumbs={[
+        { url: '/app/classes', isActive: false, title: 'Character Classes' },
+        { isActive: true, title: dndClassTitle },
+      ]}
+    >
       <PageTitle title={`Class: ${dndClassTitle}`} />
       {dndClass ? (
         <Row>
@@ -46,11 +46,11 @@ const DndClass = (props: DndClassPageProps) => {
                     <h3 className={'h5'}>Hit Die: d{dndClass.hitDie}</h3>
                     <p>
                       <strong>Primary Abilities: </strong>
-                      {
-                        dndClass.abilityScores
-                          .map<React.ReactNode>((ability) => (<span key={ability.name}>{ability.fullName}</span>))
-                          .reduce((prev, curr) => [prev, ', ', curr])
-                      }
+                      {dndClass.abilityScores
+                        .map<React.ReactNode>((ability) => (
+                          <span key={ability.name}>{ability.fullName}</span>
+                        ))
+                        .reduce((prev, curr) => [prev, ', ', curr])}
                     </p>
                     <p>
                       <strong>Subclasses: </strong>
@@ -62,23 +62,25 @@ const DndClass = (props: DndClassPageProps) => {
                   <Col>
                     <div>
                       <h3 className={'h5'}>Starting Equipment: </h3>
-                      {
-                        dndClass.startingEquipment
-                          .map<React.ReactNode>((item) => (
-                            <p key={item.name}>{item.quantity} {item.name}</p>
-                          ))
-                      }
+                      {dndClass.startingEquipment.map<React.ReactNode>(
+                        (item) => (
+                          <p key={item.name}>
+                            {item.quantity} {item.name}
+                          </p>
+                        )
+                      )}
                     </div>
                   </Col>
                   <Col>
                     <div>
                       <h3 className={'h5'}>Equipment Options: </h3>
-                      {
-                        dndClass.startingEquipment
-                          .map<React.ReactNode>((item) => (
-                            <p key={item.name}>{item.quantity} {item.name}</p>
-                          ))
-                      }
+                      {dndClass.startingEquipment.map<React.ReactNode>(
+                        (item) => (
+                          <p key={item.name}>
+                            {item.quantity} {item.name}
+                          </p>
+                        )
+                      )}
                     </div>
                   </Col>
                 </Row>
@@ -98,7 +100,9 @@ const DndClass = (props: DndClassPageProps) => {
                 <Row className={'pt-0'}>
                   {dndClass.proficiencyChoices.map((profChoice, index) => (
                     <Col key={index}>
-                      <h3 className={'h4'}>Choose {profChoice.numChoices} from </h3>
+                      <h3 className={'h4'}>
+                        Choose {profChoice.numChoices} from{' '}
+                      </h3>
                       {profChoice.proficiencies.map((prof, index) => (
                         <p key={index}>
                           <strong>{prof.name}</strong> {prof.profType}
@@ -127,7 +131,7 @@ function mapStateToProps(state) {
   return {
     dndClass: state.dndClasses.currentDndClass,
     user: state.users.user,
-    flashMessages: state.flashMessages
+    flashMessages: state.flashMessages,
   };
 }
 
@@ -135,7 +139,7 @@ function mapDispatchToProps(dispatch) {
   return {
     getDndClass: (dndClassSlug: string) => {
       dispatch(rest.actions.getDndClass({ slug: dndClassSlug }));
-    }
+    },
   };
 }
 

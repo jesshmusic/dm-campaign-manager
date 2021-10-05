@@ -18,16 +18,9 @@ type ItemsListProps = {
   data: any[];
   itemType: string;
   pageTitle: string;
-} & PageProps;
+};
 
-const ItemsList = ({
-  columns,
-  data,
-  flashMessages,
-  user,
-  pageTitle,
-  itemType,
-}: ItemsListProps) => {
+const ItemsList = ({ columns, data, pageTitle, itemType }: ItemsListProps) => {
   const breadCrumbs =
     itemType !== ItemType.all
       ? [
@@ -38,8 +31,6 @@ const ItemsList = ({
 
   return (
     <PageContainer
-      user={user}
-      flashMessages={flashMessages}
       pageTitle={pageTitle}
       description={`${pageTitle} records with descriptions and stats. Dungeon Master's Toolbox is a free resource for DMs to manage their campaigns, adventures, and Monsters.`}
       breadcrumbs={breadCrumbs}

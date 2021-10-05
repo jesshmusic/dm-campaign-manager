@@ -21,15 +21,20 @@ const TavernNameField = () => {
   };
 
   return (
-    <Frame title='Random Tavern Name' subtitle='Generate a random tavern name'>
+    <Frame title="Random Tavern Name" subtitle="Generate a random tavern name">
       <form>
-        <CopyField placeHolder={'Random Tavern Name...'}
-                   fieldId={'randomTavernName'}
-                   label={'Random TavernName'}
-                   text={nameValue} />
+        <CopyField
+          placeHolder={'Random Tavern Name...'}
+          fieldId={'randomTavernName'}
+          label={'Random TavernName'}
+          text={nameValue}
+        />
         <div id={'tavernNameGeneratorSubmit'}>
-          <button className='btn btn-primary w-100'
-                  onClick={handleGenerateTavernName}>
+          <button
+            className="btn btn-primary w-100"
+            type="button"
+            onClick={handleGenerateTavernName}
+          >
             Get Tavern Name
           </button>
         </div>
