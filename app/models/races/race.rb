@@ -9,10 +9,6 @@
 #  ability_bonus_options        :integer
 #  age                          :text
 #  alignment                    :text
-#  charisma_modifier            :integer          default(0), not null
-#  constitution_modifier        :integer          default(0), not null
-#  dexterity_modifier           :integer          default(0), not null
-#  intelligence_modifier        :integer          default(0), not null
 #  language_choices             :string           default([]), is an Array
 #  language_description         :text
 #  languages                    :string           default([]), is an Array
@@ -22,10 +18,8 @@
 #  slug                         :string           not null
 #  speed                        :integer
 #  starting_languages           :integer
-#  strength_modifier            :integer          default(0), not null
 #  subraces                     :string           default([]), is an Array
 #  traits                       :jsonb            is an Array
-#  wisdom_modifier              :integer          default(0), not null
 #  created_at                   :datetime         not null
 #  updated_at                   :datetime         not null
 #  user_id                      :bigint
@@ -51,6 +45,7 @@ class Race < ApplicationRecord
   end
 
   has_and_belongs_to_many :profs
+  has_many :ability_bonus_options, dependent: :destroy
   belongs_to :user, optional: true
 
   include PgSearch::Model

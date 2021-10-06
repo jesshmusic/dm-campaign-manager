@@ -10,10 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_30_012424) do
+ActiveRecord::Schema.define(version: 2021_10_06_140600) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "ability_bonus_options", force: :cascade do |t|
+    t.string "ability"
+    t.integer "bonus"
+    t.bigint "race_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["race_id"], name: "index_ability_bonus_options_on_race_id"
+  end
 
   create_table "ability_score_dnd_classes", force: :cascade do |t|
     t.bigint "dnd_class_id", null: false
@@ -412,12 +421,6 @@ ActiveRecord::Schema.define(version: 2021_09_30_012424) do
 
   create_table "races", force: :cascade do |t|
     t.string "name", default: "New Race...", null: false
-    t.integer "strength_modifier", default: 0, null: false
-    t.integer "dexterity_modifier", default: 0, null: false
-    t.integer "constitution_modifier", default: 0, null: false
-    t.integer "intelligence_modifier", default: 0, null: false
-    t.integer "wisdom_modifier", default: 0, null: false
-    t.integer "charisma_modifier", default: 0, null: false
     t.string "slug", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -568,6 +571,7 @@ ActiveRecord::Schema.define(version: 2021_09_30_012424) do
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 
+  add_foreign_key "ability_bonus_options", "races"
   add_foreign_key "ability_score_dnd_classes", "ability_scores"
   add_foreign_key "ability_score_dnd_classes", "dnd_classes"
   add_foreign_key "actions", "monsters"

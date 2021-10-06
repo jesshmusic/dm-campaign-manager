@@ -251,17 +251,17 @@ export type RaceSummary = {
   name: string;
   traits: any[];
   slug: string;
-}
+};
+
+export type AbilityBonusOption = {
+  ability: string;
+  bonus: number;
+};
 
 export type RaceProps = {
-  abilityBonusOptionChoices: string[];
-  abilityBonusOptions?: number;
+  abilityBonusOptions: AbilityBonusOption[];
   age?: string;
   alignment?: string;
-  charismaModifier: number;
-  constitutionModifier: number;
-  dexterityModifier: number;
-  intelligenceModifier: number;
   languageChoices: string[];
   languageDescription?: string;
   languages: string[];
@@ -271,18 +271,16 @@ export type RaceProps = {
   slug: string;
   speed: number;
   startingLanguages?: number;
-  strengthModifier: number;
   subraces: string[];
   traits?: RaceTrait[];
-  wisdomModifier: number;
-}
+};
 
 export type RaceTrait = {
   name: string;
   description: string[];
   proficiencyChoices: string[];
   traitSpecificChoices: string[];
-}
+};
 
 type Resistance = {
   name: string;

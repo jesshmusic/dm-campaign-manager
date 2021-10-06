@@ -26,30 +26,14 @@ const Race = (props: {
       if (race.name === 'Human') {
         return 'Your ability scores each increase by 1.';
       }
-      const mods: string[] = [];
-      if (race.strengthModifier !== 0) {
-        mods.push(`your strength increases by ${race.strengthModifier}`);
-      }
-      if (race.dexterityModifier !== 0) {
-        mods.push(`your dexterity increases by ${race.dexterityModifier}`);
-      }
-      if (race.constitutionModifier !== 0) {
-        mods.push(
-          `your constitution increases by ${race.constitutionModifier}`
-        );
-      }
-      if (race.intelligenceModifier !== 0) {
-        mods.push(
-          `your intelligence increases by ${race.intelligenceModifier}`
-        );
-      }
-      if (race.wisdomModifier !== 0) {
-        mods.push(`your wisdom increases by ${race.wisdomModifier}`);
-      }
-      if (race.charismaModifier !== 0) {
-        mods.push(`your charisma increases by ${race.charismaModifier}`);
-      }
-      const result = mods.join(', and ') + '.';
+      const result =
+        race.abilityBonusOptions
+          .map((ability) => {
+            return `your ${ability.ability.toLowerCase()} increases by ${
+              ability.bonus
+            }`;
+          })
+          .join(', and ') + '.';
       return result.charAt(0).toUpperCase() + result.slice(1);
     }
     return '';
