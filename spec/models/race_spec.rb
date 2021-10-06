@@ -17,7 +17,6 @@
 #  speed                        :integer
 #  starting_languages           :integer
 #  subraces                     :string           default([]), is an Array
-#  traits                       :jsonb            is an Array
 #  created_at                   :datetime         not null
 #  updated_at                   :datetime         not null
 #  user_id                      :bigint

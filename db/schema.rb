@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_06_140600) do
+ActiveRecord::Schema.define(version: 2021_10_06_164734) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -419,6 +419,15 @@ ActiveRecord::Schema.define(version: 2021_10_06_140600) do
     t.index ["race_id", "prof_id"], name: "index_profs_races_on_race_id_and_prof_id"
   end
 
+  create_table "race_traits", force: :cascade do |t|
+    t.string "name"
+    t.string "desc", default: [], array: true
+    t.bigint "race_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["race_id"], name: "index_race_traits_on_race_id"
+  end
+
   create_table "races", force: :cascade do |t|
     t.string "name", default: "New Race...", null: false
     t.string "slug", null: false
@@ -431,7 +440,6 @@ ActiveRecord::Schema.define(version: 2021_10_06_140600) do
     t.text "size_description"
     t.string "languages", default: [], array: true
     t.text "language_description"
-    t.jsonb "traits", default: [], array: true
     t.integer "speed"
     t.integer "starting_languages"
     t.string "language_choices", default: [], array: true
@@ -598,6 +606,7 @@ ActiveRecord::Schema.define(version: 2021_10_06_140600) do
   add_foreign_key "multi_classing_profs", "profs"
   add_foreign_key "multi_classings", "dnd_classes"
   add_foreign_key "prerequisites", "class_features"
+  add_foreign_key "race_traits", "races"
   add_foreign_key "races", "users"
   add_foreign_key "senses", "monsters"
   add_foreign_key "speeds", "monsters"

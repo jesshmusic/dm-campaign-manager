@@ -31,6 +31,11 @@ namespace :srd do
     MonstersUtil.import
   end
 
+  task import_races: :environment do
+    Race.destroy_all
+    RacesUtil.import
+  end
+
   task import_items: :environment do
     Item.destroy_all
     ItemsUtil.import

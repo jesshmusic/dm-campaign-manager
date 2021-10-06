@@ -19,7 +19,6 @@
 #  speed                        :integer
 #  starting_languages           :integer
 #  subraces                     :string           default([]), is an Array
-#  traits                       :jsonb            is an Array
 #  created_at                   :datetime         not null
 #  updated_at                   :datetime         not null
 #  user_id                      :bigint
@@ -36,9 +35,7 @@
 #
 
 class Race < ApplicationRecord
-  validates :name, :speed, :strength_modifier, :dexterity_modifier, :constitution_modifier,
-            :intelligence_modifier, :wisdom_modifier, :charisma_modifier,
-            presence: true
+  validates :name, presence: true
 
   before_validation do
     self.slug = generate_slug if will_save_change_to_name?
@@ -46,6 +43,7 @@ class Race < ApplicationRecord
 
   has_and_belongs_to_many :profs
   has_many :ability_bonus_options, dependent: :destroy
+  has_many :race_traits, dependent: :destroy
   belongs_to :user, optional: true
 
   include PgSearch::Model

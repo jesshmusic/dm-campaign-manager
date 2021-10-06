@@ -277,9 +277,7 @@ export type RaceProps = {
 
 export type RaceTrait = {
   name: string;
-  description: string[];
-  proficiencyChoices: string[];
-  traitSpecificChoices: string[];
+  desc: string[];
 };
 
 type Resistance = {

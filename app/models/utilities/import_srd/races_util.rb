@@ -19,22 +19,9 @@ class RacesUtil
         race_result = JSON.parse race_response, symbolize_names: true
         current_race = Race.find_or_initialize_by(name: race[:name])
         current_race.slug = race_result[:index]
-        if race_result[:ability_bonus_options]
-          current_race.ability_bonus_options = race_result[:ability_bonus_options][:choose]
-          race_result[:ability_bonus_options][:from].each do |bonus_option|
-            current_race.ability_bonus_option_choices << "#{bonus_option[:ability_score][:name]}: #{bonus_option[:bonus]}"
-          end
-        end
+
         current_race.age = race_result[:age]
         current_race.alignment = race_result[:alignment]
-        race_result[:ability_bonuses].each do |bonus|
-          current_race.charisma_modifier = bonus[:bonus] if bonus[:ability_score][:name] == "CHA"
-          current_race.constitution_modifier = bonus[:bonus] if bonus[:ability_score][:name] == "CON"
-          current_race.dexterity_modifier = bonus[:bonus] if bonus[:ability_score][:name] == "DEX"
-          current_race.intelligence_modifier = bonus[:bonus] if bonus[:ability_score][:name] == "INT"
-          current_race.strength_modifier = bonus[:bonus] if bonus[:ability_score][:name] == "STR"
-          current_race.wisdom_modifier = bonus[:bonus] if bonus[:ability_score][:name] == "WIS"
-        end
         if race_result[:language_options]
           current_race.starting_languages = race_result[:language_options][:choose]
           race_result[:language_options][:from].each do |option|
@@ -49,24 +36,54 @@ class RacesUtil
         current_race.size_description = race_result[:size_description]
         current_race.speed = race_result[:speed]
         current_race.subraces = race_result[:subraces] ? race_result[:subraces] : []
-        if race_result[:traits]
-          race_result[:traits].each do |trait|
-            trait_uri = URI("#{dnd_api_url}#{trait[:url]}")
-            trait_response = Net::HTTP.get(trait_uri)
-            trait_result = JSON.parse trait_response, symbolize_names: true
-            current_race.traits << {
-              description: trait_result[:desc],
-              name: trait_result[:name],
-              proficiencies: trait_result[:proficiencies],
-              proficiency_choices: trait_result[:proficiency_choices],
-              trait_specific: trait_result[:trait_specific]
-            }
-          end
-        end
         current_race.save!
+        import_abilities(current_race, race_result)
+        import_traits(current_race, race_result)
         count += 1
       end
       puts "#{count} Races imported or updated."
+    end
+
+    private
+
+    def ability_score_name(ability)
+      case ability
+      when 'STR'
+        'strength'
+      when 'DEX'
+        'dexterity'
+      when 'CON'
+        'constitution'
+      when 'INT'
+        'intelligence'
+      when 'WIS'
+        'wisdom'
+      when 'CHA'
+        'charisma'
+      else
+        'strength'
+      end
+    end
+
+    def import_abilities(race, race_result)
+      if race_result[:ability_bonuses]
+        race_result[:ability_bonuses].each do |ability|
+          race.ability_bonus_options.create(ability: ability_score_name(ability[:ability_score][:name]), bonus: ability[:bonus])
+        end
+        race.save!
+      end
+    end
+
+    def import_traits(race, race_result)
+      if race_result[:traits]
+        race_result[:traits].each do |trait|
+          trait_uri = URI("#{dnd_api_url}#{trait[:url]}")
+          trait_response = Net::HTTP.get(trait_uri)
+          trait_result = JSON.parse trait_response, symbolize_names: true
+          race.race_traits.create(name: trait_result[:name], desc: trait_result[:desc])
+        end
+        race.save!
+      end
     end
   end
 end

@@ -75,6 +75,20 @@ const Race = (props: {
                 <p>Choose from: {race.languageChoices.join(', ')}</p>
               ) : null}
             </div>
+            <div>
+              <h3 className="fs-4 sans-serif text-primary border-bottom border-primary">
+                Traits
+              </h3>
+              {race.traits &&
+                race.traits.map((trait) => (
+                  <div>
+                    <span className={styles.traitName}>{trait.name} </span>
+                    {trait.desc.map((descPara) => (
+                      <p>{descPara}</p>
+                    ))}
+                  </div>
+                ))}
+            </div>
           </div>
         </div>
       ) : (

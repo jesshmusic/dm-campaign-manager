@@ -103,8 +103,11 @@ module Admin::V1
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def race_params
-      params.require(:race).permit(:name, :speed, :strength_modifier, :dexterity_modifier, :constitution_modifier,
-                                   :intelligence_modifier, :wisdom_modifier, :charisma_modifier)
+      params.require(:race).permit(:name, :age, :alignment, :language_choices,
+                                   :language_description, :languages, :size, :size_descriptions,
+                                   :speed, :starting_languages,
+                                   ability_bonus_options_attributes: [:ability, :bonus],
+                                   race_traits_attributes: [:name, :desc])
     end
   end
 end
