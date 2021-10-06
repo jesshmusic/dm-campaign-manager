@@ -12,6 +12,7 @@ import { FlashMessage } from '../utilities/types';
 import { store } from '../store/store';
 import Monster from './monsters/Monster';
 import { ItemType } from './items/use-data';
+import Races from './races/Races';
 
 const Home = (props) => {
   const [flashMessages, setFlashMessages] = React.useState<FlashMessage[]>([]);
@@ -23,82 +24,83 @@ const Home = (props) => {
   const combinedProps = {
     ...props,
     flashMessages,
-    addFlashMessage,
+    addFlashMessage
   };
 
   return (
     <Provider store={store(props)}>
       <Router>
-        <HomePage path="/" {...combinedProps} />
-        <DndClass path="/app/classes/:dndClassSlug" {...combinedProps} />
-        <DndClasses path="/app/classes" {...combinedProps} />
+        <HomePage path='/' {...combinedProps} />
+        <DndClass path='/app/classes/:dndClassSlug' {...combinedProps} />
+        <DndClasses path='/app/classes' {...combinedProps} />
+        <Races path='/app/races' {...combinedProps} />
         <Items
-          path="/app/items"
+          path='/app/items'
           {...combinedProps}
           itemType={ItemType.all}
           key={ItemType.all}
-          pageTitle="All Equipment and Items"
+          pageTitle='All Equipment and Items'
         />
         <Items
-          path="/app/items/armor/"
+          path='/app/items/armor/'
           {...combinedProps}
           itemType={ItemType.armor}
           key={ItemType.armor}
-          pageTitle="Armor"
+          pageTitle='Armor'
         />
         <Items
-          path="/app/items/gear/"
+          path='/app/items/gear/'
           {...combinedProps}
           itemType={ItemType.gear}
           key={ItemType.gear}
-          pageTitle="Gear"
+          pageTitle='Gear'
         />
         <Items
-          path="/app/items/magic-items/"
+          path='/app/items/magic-items/'
           {...combinedProps}
           itemType={ItemType.magic}
           key={ItemType.magic}
-          pageTitle="Magic Items"
+          pageTitle='Magic Items'
         />
         <Items
-          path="/app/items/magic-armor/"
+          path='/app/items/magic-armor/'
           {...combinedProps}
           itemType={ItemType.magicArmor}
           key={ItemType.magicArmor}
-          pageTitle="Magic Armor"
+          pageTitle='Magic Armor'
         />
         <Items
-          path="/app/items/magic-weapons/"
+          path='/app/items/magic-weapons/'
           {...combinedProps}
           itemType={ItemType.magicWeapon}
           key={ItemType.magicWeapon}
-          pageTitle="Magic Weapons"
+          pageTitle='Magic Weapons'
         />
         <Items
-          path="/app/items/tools/"
+          path='/app/items/tools/'
           {...combinedProps}
           itemType={ItemType.tool}
           key={ItemType.tool}
-          pageTitle="Tools"
+          pageTitle='Tools'
         />
         <Items
-          path="/app/items/vehicles/"
+          path='/app/items/vehicles/'
           {...combinedProps}
           itemType={ItemType.vehicle}
           key={ItemType.vehicle}
-          pageTitle="Vehicles and Mounts"
+          pageTitle='Vehicles and Mounts'
         />
         <Items
-          path="/app/items/weapons/"
+          path='/app/items/weapons/'
           {...combinedProps}
           itemType={ItemType.weapon}
           key={ItemType.weapon}
-          pageTitle="Weapons"
+          pageTitle='Weapons'
         />
-        <Monsters path="/app/monsters/" {...combinedProps} />
-        <Monster path="/app/monsters/:monsterSlug" {...combinedProps} />
-        <Spells path="/app/spells/" {...combinedProps} />
-        <MonsterGenerator path="/app/monster-generator/" {...combinedProps} />
+        <Monsters path='/app/monsters/' {...combinedProps} />
+        <Monster path='/app/monsters/:monsterSlug' {...combinedProps} />
+        <Spells path='/app/spells/' {...combinedProps} />
+        <MonsterGenerator path='/app/monster-generator/' {...combinedProps} />
       </Router>
     </Provider>
   );
