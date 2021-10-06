@@ -1,54 +1,54 @@
 @font-face {
   font-family: 'Bookinsanity';
+  font-style: normal;
+  font-weight: normal;
   src: url('./fonts/Bookinsanity.otf') format('opentype');
-  font-weight: normal;
-  font-style: normal;
 }
 
 @font-face {
   font-family: 'Bookinsanity';
+  font-style: italic;
+  font-weight: normal;
   src: url('./fonts/BookinsanityItalic.otf') format('opentype');
-  font-weight: normal;
-  font-style: italic;
 }
 
 @font-face {
   font-family: 'Bookinsanity';
+  font-style: italic;
+  font-weight: bold;
   src: url('./fonts/BookinsanityBoldItalic.otf') format('opentype');
-  font-weight: bold;
-  font-style: italic;
 }
 
 @font-face {
   font-family: 'Bookinsanity';
-  src: url('./fonts/BookinsanityBold.otf') format('opentype');
-  font-weight: bold;
   font-style: normal;
+  font-weight: bold;
+  src: url('./fonts/BookinsanityBold.otf') format('opentype');
 }
 
 @font-face {
   font-family: 'Draconis Bold';
-  src: url('./fonts/DraconisBold.otf') format('opentype');
-  font-weight: normal;
   font-style: normal;
+  font-weight: normal;
+  src: url('./fonts/DraconisBold.otf') format('opentype');
 }
 
 @font-face {
   font-family: 'Scaly Sans';
-  src: url('./fonts/ScalySans.otf') format('opentype');
-  font-weight: normal;
   font-style: normal;
+  font-weight: normal;
+  src: url('./fonts/ScalySans.otf') format('opentype');
 }
 
 @font-face {
   font-family: 'Mr Eaves';
-  src: url('./fonts/MrEavesSmallCaps.otf') format('opentype');
-  font-weight: normal;
   font-style: normal;
+  font-weight: normal;
+  src: url('./fonts/MrEavesSmallCaps.otf') format('opentype');
 }
 
 @font-face {
-  font-family: "Dungeon Drop Case";
-  src: url("./fonts/DungeonDropCase.otf") format("opentype");
+  font-family: 'Dungeon Drop Case';
   font-weight: normal;
+  src: url('./fonts/DungeonDropCase.otf') format('opentype');
 }
