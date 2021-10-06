@@ -100,7 +100,7 @@ export default reduxApi({
     url: '/v1/monster-categories.json'
   },
   getRace: {
-    url: '/v1/race/:slug.json'
+    url: '/v1/races/:slug.json'
   },
   getRaces: {
     url: '/v1/races.json'

@@ -7,10 +7,11 @@ import rest from '../../actions/api';
 import { connect } from 'react-redux';
 import DataTable from '../../components/layout/DataTable';
 import DndSpinner from '../../components/layout/DndSpinner';
+import { RaceSummary } from '../../utilities/types';
 
 const Races = (props: {
   getRaces: () => void;
-  races: any[];
+  races: RaceSummary[];
 }) => {
   const { getRaces, races } = props;
 

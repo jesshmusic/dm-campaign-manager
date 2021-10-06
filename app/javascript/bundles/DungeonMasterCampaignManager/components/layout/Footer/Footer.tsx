@@ -1,13 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { NavLink } from '../MenuBar/MenuBar';
+
 const styles = require('./footer.module.scss');
 
 const Footer = () => {
   return (
     <div className={styles.wrapper}>
       <div className={styles.left}>
-        <h3 className="mr-eaves">The Dungeon Master Screen</h3>
+        <h3 className='mr-eaves'>The Dungeon Master Screen</h3>
       </div>
       <div className={styles.right}>
         <ul className={styles.nav}>
@@ -20,6 +21,7 @@ const Footer = () => {
           <NavLink to={'/app/classes'} className={styles.footerLink}>
             Classes
           </NavLink>
+          <NavLink to={'/app/races'} className={styles.footerLink}>Races</NavLink>
           <NavLink to={'/app/monsters'} className={styles.footerLink}>
             Monsters
           </NavLink>
@@ -36,7 +38,7 @@ const Footer = () => {
 };
 
 Footer.propTypes = {
-  user: PropTypes.object,
+  user: PropTypes.object
 };
 
 export default Footer;

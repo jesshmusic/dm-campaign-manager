@@ -247,6 +247,43 @@ export interface ProfChoice {
   proficiencies: Prof[];
 }
 
+export type RaceSummary = {
+  name: string;
+  traits: any[];
+  slug: string;
+}
+
+export type RaceProps = {
+  abilityBonusOptionChoices: string[];
+  abilityBonusOptions?: number;
+  age?: string;
+  alignment?: string;
+  charismaModifier: number;
+  constitutionModifier: number;
+  dexterityModifier: number;
+  intelligenceModifier: number;
+  languageChoices: string[];
+  languageDescription?: string;
+  languages: string[];
+  name: string;
+  size?: string;
+  sizeDescription?: string;
+  slug: string;
+  speed: number;
+  startingLanguages?: number;
+  strengthModifier: number;
+  subraces: string[];
+  traits?: RaceTrait[];
+  wisdomModifier: number;
+}
+
+export type RaceTrait = {
+  name: string;
+  description: string[];
+  proficiencyChoices: string[];
+  traitSpecificChoices: string[];
+}
+
 type Resistance = {
   name: string;
   _destroy?: boolean;

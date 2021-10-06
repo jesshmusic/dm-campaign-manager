@@ -13,6 +13,7 @@ import { store } from '../store/store';
 import Monster from './monsters/Monster';
 import { ItemType } from './items/use-data';
 import Races from './races/Races';
+import Race from './races/Race';
 
 const Home = (props) => {
   const [flashMessages, setFlashMessages] = React.useState<FlashMessage[]>([]);
@@ -34,6 +35,7 @@ const Home = (props) => {
         <DndClass path='/app/classes/:dndClassSlug' {...combinedProps} />
         <DndClasses path='/app/classes' {...combinedProps} />
         <Races path='/app/races' {...combinedProps} />
+        <Race path='/app/races/:raceSlug' {...combinedProps} />
         <Items
           path='/app/items'
           {...combinedProps}
