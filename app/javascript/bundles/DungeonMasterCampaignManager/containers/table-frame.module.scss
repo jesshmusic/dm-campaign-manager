@@ -1,0 +1,20 @@
+@import '../stylesheets/variables';
+/* stylelint-disable selector-class-pattern */
+.tableFrame {
+  background-color: $white;
+  border-collapse: separate;
+  border-image: $background-frame 150 200 150 200 / 47px / 25px 17px;
+  border-style: solid;
+
+  box-shadow: $box-shadow;
+  margin-bottom: 40px;
+  margin-top: 25px;
+}
+
+.spinnerFrame {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  min-height: 30rem;
+}
+/* stylelint-enable selector-class-pattern */

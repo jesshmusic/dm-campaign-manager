@@ -3,17 +3,15 @@
  */
 
 import React from 'react';
-
-import Spinner from 'react-bootstrap/Spinner';
 import { GiLinkedRings } from 'react-icons/all';
+import TableFrame from '../../containers/TableFrame';
 
 const DndSpinner = () => {
   return (
-
-    <div className='table-frame spinner-frame'>
-      <GiLinkedRings size={100} />
-      <span className='visually-hidden'>Loading...</span>
-    </div>
+    <TableFrame showSpinner={true}>
+      <GiLinkedRings size={100} className="spinner" />
+      <span className="visually-hidden">Loading...</span>
+    </TableFrame>
   );
 };
 

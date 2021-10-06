@@ -9,6 +9,7 @@ import PageTitle from '../../components/layout/PageTitle';
 import DndSpinner from '../../components/layout/DndSpinner';
 import { DndClass, PageProps } from '../../utilities/types';
 import { connect } from 'react-redux';
+import TableFrame from '../../containers/TableFrame';
 
 const styles = require('./dnd-class.module.scss');
 
@@ -41,7 +42,7 @@ const DndClass = (props: DndClassPageProps) => {
         <div className="page">
           <Col>
             <Row>
-              <Col className={'table-frame'}>
+              <TableFrame>
                 <h2 className={'h3 mr-eaves'}>Info</h2>
                 <Row className={'sans-serif'}>
                   <Col>
@@ -86,7 +87,7 @@ const DndClass = (props: DndClassPageProps) => {
                     </div>
                   </Col>
                 </Row>
-              </Col>
+              </TableFrame>
             </Row>
             <Row className={'table-frame'}>
               <Col>
