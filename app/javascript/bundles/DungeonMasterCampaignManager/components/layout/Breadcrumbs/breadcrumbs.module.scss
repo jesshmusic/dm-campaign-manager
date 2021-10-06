@@ -1,0 +1,35 @@
+@import '../../../stylesheets/variables';
+/* stylelint-disable selector-class-pattern */
+
+.breadcrumb {
+  background-color: $background-med;
+  border-collapse: separate;
+  border-image: $orange-border;
+  border-style: solid;
+  border-width: 5px;
+  box-shadow: $box-shadow;
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  margin-bottom: 1rem;
+  padding: 0.35rem 1rem;
+}
+
+.breadcrumbItem {
+  + .breadcrumbItem {
+    padding-left: $breadcrumb-item-padding;
+
+    &::before {
+      color: $breadcrumb-divider-color;
+      content: '|';
+      float: left;
+      padding-right: $breadcrumb-item-padding-x;
+    }
+  }
+
+  &.active {
+    color: $breadcrumb-active-color;
+  }
+}
+
+/* stylelint-enable selector-class-pattern */

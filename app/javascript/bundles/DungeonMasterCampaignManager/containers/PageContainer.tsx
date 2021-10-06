@@ -10,20 +10,16 @@ import '../stylesheets/_fonts.scss';
 import '../stylesheets/application.scss';
 import { Helmet } from 'react-helmet';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
-import BreadcrumbLink from '../components/layout/BreadcrumbLink';
+import BreadcrumbLink from '../components/layout/Breadcrumbs/BreadcrumbLink';
 
 import { FlashMessage, UserProps } from '../utilities/types';
-import classNames from 'classnames';
 import SignInModal from '../components/layout/SignInModal';
 import rest from '../actions/api';
 import { connect } from 'react-redux';
+import Breadcrumbs, {
+  BreadCrumbProps,
+} from '../components/layout/Breadcrumbs/Breadcrumbs';
 const styles = require('./page-container.module.scss');
-
-type BreadCrumbProps = {
-  isActive?: boolean;
-  title: string;
-  url?: string;
-};
 
 type PageContainerProps = {
   breadcrumbs: BreadCrumbProps[];
@@ -47,25 +43,10 @@ const PageContainer = (props: PageContainerProps) => {
       </Helmet>
       <MenuBar />
       <HeroBanner />
-      <div className={classNames('container-fluid', styles.page)}>
+      <div className={styles.page}>
         <FlashMessages messages={props.flashMessages || []} />
         {breadcrumbs && breadcrumbs.length > 0 ? (
-          <Breadcrumb>
-            <BreadcrumbLink to="/" title={'Home'} />
-            {breadcrumbs.map((breadcrumb, index) =>
-              !breadcrumb.isActive ? (
-                <BreadcrumbLink
-                  to={breadcrumb.url}
-                  title={breadcrumb.title}
-                  key={index}
-                />
-              ) : (
-                <Breadcrumb.Item active key={index}>
-                  {breadcrumb.title}
-                </Breadcrumb.Item>
-              )
-            )}
-          </Breadcrumb>
+          <Breadcrumbs breadcrumbs={breadcrumbs} />
         ) : null}
         {children}
       </div>

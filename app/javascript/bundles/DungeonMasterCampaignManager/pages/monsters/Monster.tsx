@@ -6,6 +6,8 @@ import { connect } from 'react-redux';
 import DndSpinner from '../../components/layout/DndSpinner';
 import { abilityScoreModifier } from '../monster-generator/services';
 
+const styles = require('./monsters.module.scss');
+
 type MonsterPageProps = {
   monster?: MonsterProps;
   monsterSlug: string;
@@ -14,7 +16,7 @@ type MonsterPageProps = {
 
 const MonsterStat = (props: { name: string; value: string | number }) => {
   return (
-    <div className="monster-frame__stat">
+    <div className={styles.frameStat}>
       <span>{props.name}</span> {props.value}
     </div>
   );
@@ -32,41 +34,41 @@ const AbilityScores = (props: { monster: MonsterProps }) => {
   };
 
   return (
-    <div className="ability-scores-block">
-      <div className="ability-scores-block__col">
-        <div className="ability-scores-block__col--name">STR</div>
+    <div className={styles.abilityScoresBlock}>
+      <div className={styles.abilityScoresCol}>
+        <div className={styles.abilityScoresName}>STR</div>
         <div>
           {props.monster.strength} {abilityModString(props.monster.strength)}
         </div>
       </div>
-      <div className="ability-scores-block__col">
-        <div className="ability-scores-block__col--name">DEX</div>
+      <div className={styles.abilityScoresCol}>
+        <div className={styles.abilityScoresName}>DEX</div>
         <div>
           {props.monster.dexterity} {abilityModString(props.monster.dexterity)}
         </div>
       </div>
-      <div className="ability-scores-block__col">
-        <div className="ability-scores-block__col--name">CON</div>
+      <div className={styles.abilityScoresCol}>
+        <div className={styles.abilityScoresName}>CON</div>
         <div>
           {props.monster.constitution}{' '}
           {abilityModString(props.monster.constitution)}
         </div>
       </div>
-      <div className="ability-scores-block__col">
-        <div className="ability-scores-block__col--name">INT</div>
+      <div className={styles.abilityScoresCol}>
+        <div className={styles.abilityScoresName}>INT</div>
         <div>
           {props.monster.intelligence}{' '}
           {abilityModString(props.monster.intelligence)}
         </div>
       </div>
-      <div className="ability-scores-block__col">
-        <div className="ability-scores-block__col--name">WIS</div>
+      <div className={styles.abilityScoresCol}>
+        <div className={styles.abilityScoresName}>WIS</div>
         <div>
           {props.monster.wisdom} {abilityModString(props.monster.wisdom)}
         </div>
       </div>
-      <div className="ability-scores-block__col">
-        <div className="ability-scores-block__col--name">CHA</div>
+      <div className={styles.abilityScoresCol}>
+        <div className={styles.abilityScoresName}>CHA</div>
         <div>
           {props.monster.charisma} {abilityModString(props.monster.charisma)}
         </div>
@@ -94,7 +96,7 @@ const Monster = (props: MonsterPageProps) => {
       pageTitle={monsterTitle}
     >
       {monster ? (
-        <div className="monster-frame">
+        <div className={styles.frame}>
           <div className="monster-frame__group">
             <h1>{monster.name}</h1>
             <h2>

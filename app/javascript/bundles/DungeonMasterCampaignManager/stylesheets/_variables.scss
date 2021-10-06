@@ -33,6 +33,10 @@ $theme-colors: (primary: $primary, secondary: $brown, success: $green, info: $or
 $colors: (blue: $blue, indigo: $light-purple, purple: $iris, pink: $light-purple, red: $blood-red, orange: $orange, yellow: $yellow, green: $green, teal: $pine-green, cyan: $green, white: $white, gray: $gray-600, gray-dark: $gray-800);
 $theme-color-interval: 8%;
 
+// Background Images
+$orange-border: url('/images/dndFrameOrange.png') 10;
+$background-frame: url('/images/dndFrame.png');
+$page-background: url('/images/dndBG.jpg');
 
 // Spacing
 $spacer: 1rem;
@@ -51,7 +55,7 @@ $enable-cssgrid: true;
 $enable-print-styles: true;
 
 // Shadow
-$box-shadow: 10px 15px 15px rgba($gray-900, 0.75);
+$box-shadow: 5px 7px 7px rgba($gray-900, 0.5);
 
 
 // Body
@@ -430,6 +434,7 @@ $figure-caption-color: $gray-600;
 $breadcrumb-padding-y: 0.35rem;
 $breadcrumb-padding-x: 1rem;
 $breadcrumb-item-padding: 0.5rem;
+$breadcrumb-item-padding-x: 0.5rem;
 $breadcrumb-bg: $background-med;
 $breadcrumb-divider-color: $gray-600;
 $breadcrumb-active-color: $gray-600;
@@ -489,3 +494,19 @@ $offcanvas-color: $white;
 $offcanvas-backdrop-bg: $modal-backdrop-bg;
 $offcanvas-backdrop-opacity: $modal-backdrop-opacity;
 // scss-docs-end offcanvas-variables
+
+@mixin respond-to($breakpoint) {
+  // If the key exists in the map
+  @if map-has-key($container-max-widths, $breakpoint) {
+    // Prints a media query based on the value
+    @media (min-width: map-get($container-max-widths, $breakpoint)) {
+      @content;
+    }
+  }
+
+  // If the key doesn't exist in the map
+  @else {
+    @warn 'Unfortunately, no value could be retrieved from `#{$breakpoint}`. '
+      + 'Available breakpoints are: #{map-keys($container-max-widths)}.';
+  }
+}

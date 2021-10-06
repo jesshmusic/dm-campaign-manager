@@ -10,6 +10,8 @@ import DndSpinner from '../../components/layout/DndSpinner';
 import { DndClass, PageProps } from '../../utilities/types';
 import { connect } from 'react-redux';
 
+const styles = require('./dnd-class.module.scss');
+
 type DndClassPageProps = {
   dndClass?: DndClass;
   dndClassSlug: string;
@@ -34,9 +36,9 @@ const DndClass = (props: DndClassPageProps) => {
         { isActive: true, title: dndClassTitle },
       ]}
     >
-      <PageTitle title={`Class: ${dndClassTitle}`} />
+      <PageTitle title={dndClassTitle} />
       {dndClass ? (
-        <Row>
+        <div className="page">
           <Col>
             <Row>
               <Col className={'table-frame'}>
@@ -119,7 +121,7 @@ const DndClass = (props: DndClassPageProps) => {
               </Col>
             </Row>
           </Col>
-        </Row>
+        </div>
       ) : (
         <DndSpinner />
       )}

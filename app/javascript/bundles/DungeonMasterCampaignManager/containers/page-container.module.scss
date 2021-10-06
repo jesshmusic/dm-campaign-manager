@@ -1,11 +1,16 @@
-//@import '../stylesheets/application';
+@import '../stylesheets/variables';
 
 .page {
   background-color: #eee5ce;
   background-image: url('/images/dndBG.jpg');
   margin: 0 auto;
-  padding-bottom: 6.25rem;
+  padding: 1rem 1rem 6.25rem;
   position: relative;
+  width: 100%;
+
+  @include respond-to(md) {
+    padding: 1rem 6.25rem 6rem;
+  }
 
   &::after {
     background-image: url('/images/dndBottomDeco.png');
