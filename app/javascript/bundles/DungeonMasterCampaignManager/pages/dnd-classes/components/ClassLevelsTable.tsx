@@ -3,6 +3,8 @@ import { DndClass } from '../../../utilities/types';
 import { buildData, buildLevelColumns } from '../services';
 import DataTable from '../../../components/layout/DataTable/DataTable';
 
+const styles = require('../dnd-class.module.scss');
+
 const ClassLevelsTable = (props: { dndClass: DndClass }) => {
   const { dndClass } = props;
 
@@ -13,13 +15,15 @@ const ClassLevelsTable = (props: { dndClass: DndClass }) => {
   );
 
   return (
-    <DataTable
-      columns={columns}
-      data={data}
-      loading={dndClass.levels.length === 0}
-      perPage={20}
-      noHover
-    />
+    <div className={styles.tableContainer}>
+      <DataTable
+        columns={columns}
+        data={data}
+        loading={dndClass.levels.length === 0}
+        perPage={20}
+        noHover
+      />
+    </div>
   );
 };
 
