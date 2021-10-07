@@ -39,7 +39,7 @@ const DndClass = (props: DndClassPageProps) => {
     >
       <PageTitle title={dndClassTitle} subtitle='D&D Character Class' />
       {dndClass ? (
-        <div className='page'>
+        <div className={styles.page}>
           <Col>
             <Row>
               <TableFrame>
