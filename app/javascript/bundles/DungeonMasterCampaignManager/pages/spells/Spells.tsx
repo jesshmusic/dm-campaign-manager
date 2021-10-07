@@ -5,13 +5,11 @@
 import React from 'react';
 import rest from '../../actions/api';
 import { connect } from 'react-redux';
-import _ from 'lodash';
 
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/layout/PageTitle/PageTitle';
-import DndSpinner from '../../components/layout/DndSpinners/DndSpinner';
-import { DndClassSummary, SpellProps } from '../../utilities/types';
-import DataTable from '../../components/layout/DataTable/DataTable';
+import { SpellProps } from '../../utilities/types';
+import DataTable from '../../components/DataTable/DataTable';
 import { Row } from 'react-table';
 import { navigate } from '@reach/router';
 
@@ -30,20 +28,20 @@ const Spells = (props: { getSpells: () => void; spells: SpellProps[] }) => {
     () => [
       {
         Header: 'Spell',
-        accessor: 'name',
+        accessor: 'name'
       },
       {
         Header: 'Level',
-        accessor: 'spellLevel',
+        accessor: 'spellLevel'
       },
       {
         Header: 'Components',
-        accessor: 'componentsString',
+        accessor: 'componentsString'
       },
       {
         Header: 'Classes',
-        accessor: 'classesString',
-      },
+        accessor: 'classesString'
+      }
     ],
     []
   );
@@ -55,7 +53,7 @@ const Spells = (props: { getSpells: () => void; spells: SpellProps[] }) => {
         spellLevel: spell.spellLevel,
         componentsString: spell.components.join(', '),
         classesString: spell.spellClasses.join(', '),
-        slug: spell.slug,
+        slug: spell.slug
       };
     });
   }, [spells]);
@@ -64,7 +62,7 @@ const Spells = (props: { getSpells: () => void; spells: SpellProps[] }) => {
     <PageContainer
       pageTitle={'Spells'}
       description={
-        "All D&D spells. Dungeon Master's Toolbox is a free resource for DMs to manage their campaigns, adventures, and Monsters."
+        'All D&D spells. Dungeon Master\'s Toolbox is a free resource for DMs to manage their campaigns, adventures, and Monsters.'
       }
       breadcrumbs={[{ isActive: true, title: 'Spells' }]}
     >
@@ -83,7 +81,7 @@ function mapStateToProps(state) {
   return {
     spells: state.spells.spells,
     user: state.users.user,
-    flashMessages: state.flashMessages,
+    flashMessages: state.flashMessages
   };
 }
 
@@ -91,7 +89,7 @@ function mapDispatchToProps(dispatch) {
   return {
     getSpells: () => {
       dispatch(rest.actions.getSpells());
-    },
+    }
   };
 }
 

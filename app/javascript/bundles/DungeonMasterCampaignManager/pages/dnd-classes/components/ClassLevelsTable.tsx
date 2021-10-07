@@ -1,7 +1,7 @@
 import React from 'react';
 import { DndClass } from '../../../utilities/types';
 import { buildData, buildLevelColumns } from '../services';
-import DataTable from '../../../components/layout/DataTable/DataTable';
+import DataTable from '../../../components/DataTable/DataTable';
 
 const styles = require('../dnd-class.module.scss');
 

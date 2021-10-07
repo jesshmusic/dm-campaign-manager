@@ -4,7 +4,7 @@ import React from 'react';
 import PageContainer from '../../containers/PageContainer';
 import rest from '../../actions/api';
 import PageTitle from '../../components/layout/PageTitle/PageTitle';
-import DndSpinner from '../../components/layout/DndSpinners/DndSpinner';
+import DndSpinner from '../../components/DndSpinners/DndSpinner';
 import { DndClass } from '../../utilities/types';
 import { connect } from 'react-redux';
 import HitPointsSection from './components/HitPointsSection';
@@ -36,7 +36,7 @@ const DndClass = (props: DndClassPageProps) => {
       description={`DndClass: ${dndClassTitle}. Dungeon Master's Toolbox is a free resource for DMs to manage their dndClasses, adventures, and Monsters.`}
       breadcrumbs={[
         { url: '/app/classes', isActive: false, title: 'Character Classes' },
-        { isActive: true, title: dndClassTitle },
+        { isActive: true, title: dndClassTitle }
       ]}
     >
       <PageTitle title={dndClassTitle} />
@@ -66,7 +66,7 @@ const DndClass = (props: DndClassPageProps) => {
 
 function mapStateToProps(state) {
   return {
-    dndClass: state.dndClasses.currentDndClass,
+    dndClass: state.dndClasses.currentDndClass
   };
 }
 
@@ -74,7 +74,7 @@ function mapDispatchToProps(dispatch) {
   return {
     getDndClass: (dndClassSlug: string) => {
       dispatch(rest.actions.getDndClass({ slug: dndClassSlug }));
-    },
+    }
   };
 }
 

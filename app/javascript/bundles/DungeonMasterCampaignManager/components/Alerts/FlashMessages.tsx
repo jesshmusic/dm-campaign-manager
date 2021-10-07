@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlashMessage } from '../../../utilities/types';
+import { FlashMessage } from '../../utilities/types';
 import AlertDismissible from './AlertDismissible';
 
 type FlashMessagesProps = {
