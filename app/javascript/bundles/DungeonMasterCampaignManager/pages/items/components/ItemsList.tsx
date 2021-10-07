@@ -5,10 +5,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import PageContainer from '../../../containers/PageContainer';
-import PageTitle from '../../../components/layout/PageTitle';
+import PageTitle from '../../../components/layout/PageTitle/PageTitle';
 import DndSpinner from '../../../components/layout/DndSpinner';
-import { ItemSummary, PageProps } from '../../../utilities/types';
-import { Column, Row } from 'react-table';
+import { Column } from 'react-table';
 import DataTable from '../../../components/layout/DataTable';
 import ItemsNav from './ItemsNav';
 import { ItemType } from '../use-data';
@@ -24,9 +23,9 @@ const ItemsList = ({ columns, data, pageTitle, itemType }: ItemsListProps) => {
   const breadCrumbs =
     itemType !== ItemType.all
       ? [
-          { url: '/app/items/', isActive: false, title: 'Items' },
-          { isActive: true, title: pageTitle },
-        ]
+        { url: '/app/items/', isActive: false, title: 'Items' },
+        { isActive: true, title: pageTitle }
+      ]
       : [{ isActive: true, title: pageTitle }];
 
   return (
@@ -52,7 +51,7 @@ ItemsList.propTypes = {
   flashMessages: PropTypes.array,
   getItems: PropTypes.func,
   pageTitle: PropTypes.string.isRequired,
-  user: PropTypes.object,
+  user: PropTypes.object
 };
 
 export default ItemsList;

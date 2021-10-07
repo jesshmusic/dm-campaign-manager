@@ -2,12 +2,12 @@ import React from 'react';
 
 // Container
 import PageContainer from '../../containers/PageContainer';
-import rest, { fetchData } from '../../actions/api';
+import rest from '../../actions/api';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import PageTitle from '../../components/layout/PageTitle';
+import PageTitle from '../../components/layout/PageTitle/PageTitle';
 import DndSpinner from '../../components/layout/DndSpinner';
-import { DndClass, PageProps } from '../../utilities/types';
+import { DndClass } from '../../utilities/types';
 import { connect } from 'react-redux';
 import TableFrame from '../../containers/TableFrame';
 
@@ -34,12 +34,12 @@ const DndClass = (props: DndClassPageProps) => {
       description={`DndClass: ${dndClassTitle}. Dungeon Master's Toolbox is a free resource for DMs to manage their dndClasses, adventures, and Monsters.`}
       breadcrumbs={[
         { url: '/app/classes', isActive: false, title: 'Character Classes' },
-        { isActive: true, title: dndClassTitle },
+        { isActive: true, title: dndClassTitle }
       ]}
     >
-      <PageTitle title={dndClassTitle} />
+      <PageTitle title={dndClassTitle} subtitle='D&D Character Class' />
       {dndClass ? (
-        <div className="page">
+        <div className='page'>
           <Col>
             <Row>
               <TableFrame>
@@ -134,7 +134,7 @@ function mapStateToProps(state) {
   return {
     dndClass: state.dndClasses.currentDndClass,
     user: state.users.user,
-    flashMessages: state.flashMessages,
+    flashMessages: state.flashMessages
   };
 }
 
@@ -142,7 +142,7 @@ function mapDispatchToProps(dispatch) {
   return {
     getDndClass: (dndClassSlug: string) => {
       dispatch(rest.actions.getDndClass({ slug: dndClassSlug }));
-    },
+    }
   };
 }
 

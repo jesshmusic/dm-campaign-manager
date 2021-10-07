@@ -1,6 +1,6 @@
 import React from 'react';
 import PageContainer from '../../containers/PageContainer';
-import PageTitle from '../../components/layout/PageTitle';
+import PageTitle from '../../components/layout/PageTitle/PageTitle';
 import DndSpinner from '../../components/layout/DndSpinner';
 import { MonsterSummary, MonsterType } from '../../utilities/types';
 import rest from '../../actions/api';

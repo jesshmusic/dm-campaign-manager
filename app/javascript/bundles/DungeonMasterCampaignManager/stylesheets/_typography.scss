@@ -7,7 +7,7 @@
 }
 
 .mr-eaves {
-  font-family: "Mr Eaves", sans-serif;
+  font-family: 'Mr Eaves', sans-serif;
 }
 
 .draconis {
@@ -38,8 +38,8 @@
 
 .dnd-section {
   @extend .sans-serif;
-  font-size: $font-size-lg;
   color: $dark-red;
+  font-size: $font-size-lg;
 }
 
 dl {
@@ -49,20 +49,22 @@ dl {
     color: $dark-red;
 
     dd {
+
+      margin-bottom: 0;
+
       strong {
         font-style: normal;
       }
-
-      margin-bottom: 0;
     }
   }
 
   dd {
+
+    margin-bottom: $spacer;
+
     strong {
       font-style: italic;
     }
-
-    margin-bottom: $spacer;
   }
 }
 

@@ -1,0 +1,30 @@
+@import '../../../stylesheets/variables';
+/* stylelint-disable selector-class-pattern */
+
+.pageTitle {
+  padding: $spacer 0;
+  width: 100%;
+
+  h1 {
+    align-items: center;
+    color: $dark-red;
+    display: flex;
+    font-size: $h1-font-size;
+    justify-content: space-between;
+    margin: 0;
+  }
+}
+
+.draconis {
+  color: $primary;
+  font-family: 'Draconis Bold', serif;
+  font-size: $display4-size;
+}
+
+.subtitle {
+  color: rgba($dark-red, 0.7);
+  font-size: $h5-font-size;
+  margin: 0;
+}
+
+/* stylelint-enable selector-class-pattern */

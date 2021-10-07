@@ -3,7 +3,7 @@ import rest from '../../actions/api';
 import { connect } from 'react-redux';
 import { RaceProps } from '../../utilities/types';
 import PageContainer from '../../containers/PageContainer';
-import PageTitle from '../../components/layout/PageTitle';
+import PageTitle from '../../components/layout/PageTitle/PageTitle';
 import DndSpinner from '../../components/layout/DndSpinner';
 
 const styles = require('./races.module.scss');

@@ -2,7 +2,7 @@ import React from 'react';
 import { navigate } from '@reach/router';
 import { Row } from 'react-table';
 import PageContainer from '../../containers/PageContainer';
-import PageTitle from '../../components/layout/PageTitle';
+import PageTitle from '../../components/layout/PageTitle/PageTitle';
 import rest from '../../actions/api';
 import { connect } from 'react-redux';
 import DataTable from '../../components/layout/DataTable';
