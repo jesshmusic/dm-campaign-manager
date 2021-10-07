@@ -1,3 +1,5 @@
+@import '~bootstrap/scss/vendor/rfs';
+
 // Brand Colors
 $background-color: #d8ddba;
 $background-med: #f3e8d4;
@@ -504,7 +506,7 @@ $offcanvas-backdrop-opacity: $modal-backdrop-opacity;
     }
   }
 
-  // If the key doesn't exist in the map
+    // If the key doesn't exist in the map
   @else {
     @warn 'Unfortunately, no value could be retrieved from `#{$breakpoint}`. '
       + 'Available breakpoints are: #{map-keys($container-max-widths)}.';

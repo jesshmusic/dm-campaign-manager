@@ -23,19 +23,20 @@ const DataTable = ({
                      perPage = 12,
                      renderRowSubComponent
                    }: DataTableProps) => {
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    prepareRow,
-    page,
-    pageOptions,
-    pageCount,
-    gotoPage,
-    setPageSize,
-    state: { pageIndex, pageSize },
-    visibleColumns
-  } = useTable(
+  // const {
+  //   getTableProps,
+  //   getTableBodyProps,
+  //   headerGroups,
+  //   prepareRow,
+  //   page,
+  //   pageOptions,
+  //   pageCount,
+  //   gotoPage,
+  //   setPageSize,
+  //   state: { pageIndex, pageSize },
+  //   visibleColumns
+  // }
+  const dataTable = useTable(
     {
       columns,
       data,
@@ -51,7 +52,6 @@ const DataTable = ({
   );
 
   const handleGoToPage = (row: Row<any> & { canExpand?: boolean }) => {
-    console.log(row);
     if (!row.canExpand) {
       if (goToPage) {
         goToPage(row);
@@ -60,7 +60,7 @@ const DataTable = ({
   };
 
   const handlePageClick = (data) => {
-    gotoPage(data.selected);
+    dataTable.gotoPage(data.selected);
   };
 
   const sortIcon = (column: HeaderGroup) => {
@@ -75,13 +75,13 @@ const DataTable = ({
   return (
     <div className={'table-frame'}>
       <table
-        {...getTableProps()}
+        {...dataTable.getTableProps()}
         className={classNames('dnd-table', {
           'dnd-table__hover': !Boolean(renderRowSubComponent) && !noHover
         })}
       >
         <thead>
-          {headerGroups.map((headerGroup) => (
+          {dataTable.headerGroups.map((headerGroup) => (
             <tr {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map((column) => (
                 <th {...column.getHeaderProps(column.getSortByToggleProps())}>
@@ -91,9 +91,9 @@ const DataTable = ({
             </tr>
           ))}
         </thead>
-        <tbody {...getTableBodyProps()}>
-          {page.map((row: Row<any>) => {
-            prepareRow(row);
+        <tbody {...dataTable.getTableBodyProps()}>
+          {dataTable.page.map((row: Row<any>) => {
+            dataTable.prepareRow(row);
             const { role, ...rowProps } = row.getRowProps();
             return (
               <React.Fragment {...rowProps}>
@@ -111,13 +111,13 @@ const DataTable = ({
                 </tr>
                 {row.isExpanded &&
                 renderRowSubComponent &&
-                renderRowSubComponent({ row, rowProps, visibleColumns })}
+                renderRowSubComponent({ row, rowProps, visibleColumns: dataTable.visibleColumns })}
               </React.Fragment>
             );
           })}
         </tbody>
       </table>
-      {pageCount > 1 && (
+      {dataTable.pageCount > 1 && (
         <nav
           aria-label='Table Pagination'
           className='d-md-flex justify-content-between align-items-baseline'
@@ -128,7 +128,7 @@ const DataTable = ({
             breakLabel={'...'}
             breakClassName={'page-item'}
             breakLinkClassName={'page-link'}
-            pageCount={pageCount}
+            pageCount={dataTable.pageCount}
             marginPagesDisplayed={2}
             nextClassName={'page-item'}
             nextLinkClassName={'page-link'}
@@ -142,9 +142,9 @@ const DataTable = ({
             activeClassName={'active'}
           />
           <div className='fs-4 mr-eaves'>
-            page <span className='text-primary'>{pageIndex + 1}</span>
+            page <span className='text-primary'>{dataTable.pageIndex + 1}</span>
             &nbsp;of&nbsp;
-            <span className='text-primary'>{pageOptions.length}</span>
+            <span className='text-primary'>{dataTable.pageOptions.length}</span>
           </div>
           <div className='d-flex align-items-center'>
             <span className='d-flex me-2 align-items-center sans-serif'>
@@ -152,19 +152,19 @@ const DataTable = ({
               <input
                 className='form-control'
                 type='number'
-                defaultValue={pageIndex + 1}
+                defaultValue={dataTable.pageIndex + 1}
                 onChange={(e) => {
                   const page = e.target.value ? Number(e.target.value) - 1 : 0;
-                  gotoPage(page);
+                  dataTable.gotoPage(page);
                 }}
                 style={{ width: '100px' }}
               />
             </span>{' '}
             <select
               className='form-select sans-serif'
-              value={pageSize}
+              value={dataTable.pageSize}
               onChange={(e) => {
-                setPageSize(Number(e.target.value));
+                dataTable.setPageSize(Number(e.target.value));
               }}
             >
               {[perPage, perPage * 2, perPage * 3, perPage * 4].map(

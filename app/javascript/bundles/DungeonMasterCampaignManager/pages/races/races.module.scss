@@ -1,7 +1,22 @@
 @import '../../stylesheets/variables';
+/* stylelint-disable selector-class-pattern */
+
+.racePage {
+  margin: 0 auto;
+  max-width: 1140px;
+}
+
+.subheading {
+  @include font-size($font-size-lg);
+  border-bottom: 0.05rem solid $primary;
+  color: $dark-red;
+  font-family: $font-family-sans-serif;
+}
 
 .traitName {
   font-family: $font-family-serif;
   font-style: italic;
   font-weight: bold;
 }
+
+/* stylelint-enable selector-class-pattern */

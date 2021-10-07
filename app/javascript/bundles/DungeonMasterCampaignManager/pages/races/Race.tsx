@@ -43,13 +43,13 @@ const Race = (props: {
     <PageContainer
       breadcrumbs={[
         { url: '/app/races', isActive: false, title: 'Races' },
-        { isActive: true, title: raceTitle },
+        { isActive: true, title: raceTitle }
       ]}
       description={`Monster: ${raceTitle}. Dungeon Master's Toolbox is a free resource for DMs to manage their dndClasses, adventures, and Monsters.`}
       pageTitle={raceTitle}
     >
       {race ? (
-        <div className="container">
+        <div className={styles.racePage}>
           <PageTitle title={raceTitle} />
           <div>
             <div>
@@ -76,18 +76,18 @@ const Race = (props: {
               ) : null}
             </div>
             <div>
-              <h3 className="fs-4 sans-serif text-primary border-bottom border-primary">
+              <h3 className={styles.subheading}>
                 Traits
               </h3>
               {race.traits &&
-                race.traits.map((trait) => (
-                  <div>
-                    <span className={styles.traitName}>{trait.name} </span>
-                    {trait.desc.map((descPara) => (
-                      <p>{descPara}</p>
-                    ))}
-                  </div>
-                ))}
+              race.traits.map((trait, index) => (
+                <div key={index}>
+                  <span className={styles.traitName}>{trait.name} </span>
+                  {trait.desc.map((descPara, index) => (
+                    <p key={index}>{descPara}</p>
+                  ))}
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -100,7 +100,7 @@ const Race = (props: {
 
 function mapStateToProps(state) {
   return {
-    race: state.races.currentRace,
+    race: state.races.currentRace
   };
 }
 
@@ -108,7 +108,7 @@ function mapDispatchToProps(dispatch) {
   return {
     getRace: (raceSlug: string) => {
       dispatch(rest.actions.getRace({ slug: raceSlug }));
-    },
+    }
   };
 }
 

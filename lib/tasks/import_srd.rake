@@ -21,19 +21,13 @@ namespace :srd do
     ImportSrdUtilities.clean_database
   end
 
+  task import_dependencies: :environment do
+    ImportSrdUtilities.import_dependencies
+  end
+
   task import_dnd_classes: :environment do
     DndClass.destroy_all
-    DndClassesUtil.import_dnd_classes
-  end
-
-  task import_monsters: :environment do
-    Monster.destroy_all
-    MonstersUtil.import
-  end
-
-  task import_races: :environment do
-    Race.destroy_all
-    RacesUtil.import
+    DndClassesUtil.import
   end
 
   task import_items: :environment do
@@ -47,5 +41,20 @@ namespace :srd do
     MagicArmorItem.destroy_all
     MagicWeaponItem.destroy_all
     MagicItemsUtil.import
+  end
+
+  task import_monsters: :environment do
+    Monster.destroy_all
+    MonstersUtil.import
+  end
+
+  task import_races: :environment do
+    Race.destroy_all
+    RacesUtil.import
+  end
+
+  task import_spells: :environment do
+    Spell.destroy_all
+    SpellsUtil.import
   end
 end
