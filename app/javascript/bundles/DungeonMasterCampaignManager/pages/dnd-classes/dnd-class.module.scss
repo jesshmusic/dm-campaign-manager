@@ -1,6 +1,38 @@
 @import '../../stylesheets/variables';
 /* stylelint-disable selector-class-pattern */
 
+.mrEaves {
+  color: $dark-red;
+  font-family: Mr Eaves, sans-serif;
+}
+
 .page {
   width: 100%;
 }
+
+.sectionHeading {
+  @extend .mrEaves;
+}
+
+.sectionGroup {
+  display: inline-block;
+  width: 100%;
+}
+
+.subsectionHeading {
+  @extend .mrEaves;
+  font-size: $font-size-lg;
+}
+
+.infoSection {
+  column-gap: 3rem;
+  columns: 400px 2;
+}
+
+.infoBlock {
+  span {
+    font-weight: bold;
+  }
+}
+
+/* stylelint-enable selector-class-pattern */

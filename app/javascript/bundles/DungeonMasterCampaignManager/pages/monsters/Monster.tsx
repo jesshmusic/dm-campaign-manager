@@ -1,5 +1,5 @@
 import React from 'react';
-import { MonsterProps, PageProps } from '../../utilities/types';
+import { MonsterProps } from '../../utilities/types';
 import PageContainer from '../../containers/PageContainer';
 import rest from '../../actions/api';
 import { connect } from 'react-redux';
@@ -90,27 +90,27 @@ const Monster = (props: MonsterPageProps) => {
     <PageContainer
       breadcrumbs={[
         { url: '/app/monsters', isActive: false, title: 'Monsters' },
-        { isActive: true, title: monsterTitle },
+        { isActive: true, title: monsterTitle }
       ]}
       description={`Monster: ${monsterTitle}. Dungeon Master's Toolbox is a free resource for DMs to manage their dndClasses, adventures, and Monsters.`}
       pageTitle={monsterTitle}
     >
       {monster ? (
-        <div className={styles.frame}>
-          <div className="monster-frame__group">
+        <div className={styles.monsterPage}>
+          <div className='monster-frame__group'>
             <h1>{monster.name}</h1>
             <h2>
               {monster.size} {monster.monsterType}, {monster.alignment}
             </h2>
             <hr />
-            <MonsterStat name="ArmorItems Class" value={monster.armorClass} />
-            <MonsterStat name="Hit Points" value={monster.hitPointsString} />
-            <MonsterStat name="Speed" value={monster.speeds.join(', ')} />
+            <MonsterStat name='ArmorItems Class' value={monster.armorClass} />
+            <MonsterStat name='Hit Points' value={monster.hitPointsString} />
+            <MonsterStat name='Speed' value={monster.speeds.join(', ')} />
             <hr />
             <AbilityScores monster={monster} />
             <hr />
             <MonsterStat
-              name="Condition Immunities"
+              name='Condition Immunities'
               value={
                 monster.conditionImmunities.length > 0
                   ? monster.conditionImmunities.join(', ')
@@ -118,7 +118,7 @@ const Monster = (props: MonsterPageProps) => {
               }
             />
             <MonsterStat
-              name="Saving Throws"
+              name='Saving Throws'
               value={
                 monster.savingThrows.length > 0
                   ? monster.savingThrows.join(', ')
@@ -126,13 +126,13 @@ const Monster = (props: MonsterPageProps) => {
               }
             />
             <MonsterStat
-              name="Skills"
+              name='Skills'
               value={
                 monster.skills.length > 0 ? monster.skills.join(', ') : ' None'
               }
             />
             <MonsterStat
-              name="Damage Resistances"
+              name='Damage Resistances'
               value={
                 monster.damageResistances.length > 0
                   ? monster.damageResistances.join(', ')
@@ -140,7 +140,7 @@ const Monster = (props: MonsterPageProps) => {
               }
             />
             <MonsterStat
-              name="Damage Immunities"
+              name='Damage Immunities'
               value={
                 monster.damageImmunities.length > 0
                   ? monster.damageImmunities.join(', ')
@@ -148,7 +148,7 @@ const Monster = (props: MonsterPageProps) => {
               }
             />
             <MonsterStat
-              name="Damage Vulnerabilities"
+              name='Damage Vulnerabilities'
               value={
                 monster.damageVulnerabilities.length > 0
                   ? monster.damageVulnerabilities.join(', ')
@@ -156,27 +156,27 @@ const Monster = (props: MonsterPageProps) => {
               }
             />
             <MonsterStat
-              name="Senses"
+              name='Senses'
               value={
                 monster.senses.length > 0 ? monster.senses.join(', ') : ' None'
               }
             />
-            <MonsterStat name="Languages" value={monster.languages} />
-            <MonsterStat name="Challenge" value={monster.challengeString} />
+            <MonsterStat name='Languages' value={monster.languages} />
+            <MonsterStat name='Challenge' value={monster.challengeString} />
             <hr />
           </div>
           {monster.specialAbilities &&
-            monster.specialAbilities.length > 0 &&
-            monster.specialAbilities.map((special) => (
-              <div className="monster-frame__action">
-                <em>{special.name}. </em> {special.desc}
-              </div>
-            ))}
+          monster.specialAbilities.length > 0 &&
+          monster.specialAbilities.map((special) => (
+            <div className='monster-frame__action'>
+              <em>{special.name}. </em> {special.desc}
+            </div>
+          ))}
           {monster.actions && monster.actions.length > 0 && (
             <>
               <h3>Actions</h3>
               {monster.actions.map((action) => (
-                <div className="monster-frame__action">
+                <div className='monster-frame__action'>
                   <em>{action.name}. </em> {action.desc}
                 </div>
               ))}
@@ -186,7 +186,7 @@ const Monster = (props: MonsterPageProps) => {
             <>
               <h3>Legendary Actions</h3>
               {monster.legendaryActions.map((action) => (
-                <div className="monster-frame__action">
+                <div className='monster-frame__action'>
                   <em>{action.name}. </em> {action.desc}
                 </div>
               ))}
@@ -196,7 +196,7 @@ const Monster = (props: MonsterPageProps) => {
             <>
               <h3>Reactions</h3>
               {monster.reactions.map((action) => (
-                <div className="monster-frame__action">
+                <div className='monster-frame__action'>
                   <em>{action.name}. </em> {action.desc}
                 </div>
               ))}
@@ -212,7 +212,7 @@ const Monster = (props: MonsterPageProps) => {
 
 function mapStateToProps(state) {
   return {
-    monster: state.monsters.currentMonster,
+    monster: state.monsters.currentMonster
   };
 }
 
@@ -220,7 +220,7 @@ function mapDispatchToProps(dispatch) {
   return {
     getMonster: (monsterSlug: string) => {
       dispatch(rest.actions.getMonster({ slug: monsterSlug }));
-    },
+    }
   };
 }
 

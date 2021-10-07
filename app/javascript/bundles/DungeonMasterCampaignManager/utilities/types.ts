@@ -47,13 +47,13 @@ export interface DndClassSummary {
 
 export interface DndClass {
   name: string;
-  hitDie: string;
+  hitDie: number;
   abilityScores: AbilityScore[];
   proficiencies: Prof[];
   proficiencyChoices: ProfChoice[];
   slug: string;
   startingEquipment: StartingEquipment[];
-
+  startingEquipmentOptions: StartingEquipmentOption[];
   subclasses: string[];
 }
 
@@ -293,6 +293,11 @@ export type SelectOption = {
 export interface StartingEquipment {
   name: string;
   quantity: number;
+}
+
+export interface StartingEquipmentOption {
+  choose: number;
+  options: StartingEquipment[];
 }
 
 export interface StateAction {
