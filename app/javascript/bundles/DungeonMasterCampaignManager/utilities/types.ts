@@ -1,6 +1,7 @@
 import React from 'react';
 import { Location, NavigateFn } from '@reach/router';
 import { ItemType } from '../pages/items/use-data';
+import htmlString = JQuery.htmlString;
 
 export interface AbilityScore {
   desc: string[];
@@ -324,6 +325,25 @@ export type SelectOption = {
   label: string;
   value: string | number;
 };
+
+export interface SpellProps {
+  name: string;
+  description: string;
+  higherLevel: string;
+  range: string;
+  components: string[];
+  material: string;
+  ritual: boolean;
+  duration: string;
+  slug: string;
+  concentration: boolean;
+  castingTime: string;
+  level: number;
+  school: string;
+  excerpt: string;
+  spellClasses: string[];
+  spellLevel: string;
+}
 
 export interface StartingEquipment {
   name: string;
