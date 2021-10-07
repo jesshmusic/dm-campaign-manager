@@ -24,6 +24,11 @@
   font-size: $font-size-lg;
 }
 
+.featureHeading {
+  @extend .mrEaves;
+  border-bottom: solid 0.125rem $yellow;
+}
+
 .infoSection {
   column-gap: 3rem;
   columns: 400px 2;

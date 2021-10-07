@@ -18,21 +18,44 @@ export default class Util {
       'tableBody',
       'tableRow',
       'tableCell',
-      'html'
+      'html',
     ];
   }
 
   static get numToWords() {
     return [
-      'zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven',
-      'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen',
-      'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'
+      'zero',
+      'one',
+      'two',
+      'three',
+      'four',
+      'five',
+      'six',
+      'seven',
+      'eight',
+      'nine',
+      'ten',
+      'eleven',
+      'twelve',
+      'thirteen',
+      'fourteen',
+      'fifteen',
+      'sixteen',
+      'seventeen',
+      'eighteen',
+      'nineteen',
     ];
   }
 
   static get indexToLetter() {
-    return [
-      'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i'
-    ];
+    return ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i'];
+  }
+
+  static camelize(str) {
+    return str
+      .replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
+        return index === 0 ? word.toLowerCase() : word.toUpperCase();
+      })
+      .replace(/\s+/g, '');
   }
 }

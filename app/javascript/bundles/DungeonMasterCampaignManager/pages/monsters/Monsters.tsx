@@ -1,12 +1,12 @@
 import React from 'react';
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/layout/PageTitle/PageTitle';
-import DndSpinner from '../../components/layout/DndSpinner';
+import DndSpinner from '../../components/layout/DndSpinners/DndSpinner';
 import { MonsterSummary, MonsterType } from '../../utilities/types';
 import rest from '../../actions/api';
 import { navigate } from '@reach/router';
 import { connect } from 'react-redux';
-import DataTable from '../../components/layout/DataTable';
+import DataTable from '../../components/layout/DataTable/DataTable';
 import { Row } from 'react-table';
 import { GiClosedDoors, GiOpenGate } from 'react-icons/all';
 
@@ -39,35 +39,35 @@ const Monsters = (props: {
             <span
               {...row.getToggleRowExpandedProps({
                 style: {
-                  paddingLeft: `${row.depth * 2}rem`
-                }
+                  paddingLeft: `${row.depth * 2}rem`,
+                },
               })}
             >
               {row.isExpanded ? <GiOpenGate /> : <GiClosedDoors />}
             </span>
-          ) : null
+          ) : null,
       },
       {
         Header: 'Monster Types',
         columns: [
           {
             Header: 'Monster',
-            accessor: 'name'
+            accessor: 'name',
           },
           {
             Header: 'Challenge',
-            accessor: 'challenge'
+            accessor: 'challenge',
           },
           {
             Header: 'Alignment',
-            accessor: 'alignment'
+            accessor: 'alignment',
           },
           {
             Header: 'Hit Points',
-            accessor: 'hitPoints'
-          }
-        ]
-      }
+            accessor: 'hitPoints',
+          },
+        ],
+      },
     ],
     []
   );
@@ -80,31 +80,28 @@ const Monsters = (props: {
         alignment: monster.alignment,
         challenge: monster.challenge,
         hitPoints: monster.hitPoints,
-        slug: monster.slug
-      }))
+        slug: monster.slug,
+      })),
     }));
   }, [monsterTypes]);
 
   return (
     <PageContainer
-      pageTitle='Monsters'
+      pageTitle="Monsters"
       description={
-        'All monsters with descriptions and stats. Dungeon Master\'s Toolbox is a free resource for DMs to manage their campaigns, adventures, and Monsters.'
+        "All monsters with descriptions and stats. Dungeon Master's Toolbox is a free resource for DMs to manage their campaigns, adventures, and Monsters."
       }
       breadcrumbs={[{ isActive: true, title: 'Monsters' }]}
     >
       <PageTitle title={'Monsters'} />
-      {monsterTypes.length > 0 ? (
-        <DataTable
-          columns={columns}
-          data={data}
-          goToPage={goToPage}
-          paginateExpandedRows={false}
-          perPage={15}
-        />
-      ) : (
-        <DndSpinner />
-      )}
+      <DataTable
+        columns={columns}
+        data={data}
+        goToPage={goToPage}
+        paginateExpandedRows={false}
+        perPage={15}
+        loading={!monsterTypes || monsterTypes.length === 0}
+      />
     </PageContainer>
   );
 };
@@ -112,7 +109,7 @@ const Monsters = (props: {
 function mapStateToProps(state) {
   return {
     monsters: state.monsters.monsters,
-    monsterTypes: state.monsters.monsterTypes
+    monsterTypes: state.monsters.monsterTypes,
   };
 }
 
@@ -120,7 +117,7 @@ function mapDispatchToProps(dispatch) {
   return {
     getMonsterCategories: () => {
       dispatch(rest.actions.getMonsterCategories());
-    }
+    },
   };
 }
 

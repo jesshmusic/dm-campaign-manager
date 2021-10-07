@@ -38,20 +38,55 @@ export interface AppProps {
   user?: UserProps;
 }
 
-export interface DndClassSummary {
+export type DndClassLevel = {
+  level: number;
+  abilityScoreBonuses: number;
+  profBonus: number;
+  features: {
+    name: string;
+    desc: string[];
+  }[];
+  classSpecifics: {
+    name: string;
+    value: string | number;
+  }[];
+  spellcasting?: {
+    cantripsKnown?: number;
+    spellSlotsLevel1?: number;
+    spellSlotsLevel2?: number;
+    spellSlotsLevel3?: number;
+    spellSlotsLevel4?: number;
+    spellSlotsLevel5?: number;
+    spellSlotsLevel6?: number;
+    spellSlotsLevel7?: number;
+    spellSlotsLevel8?: number;
+    spellSlotsLevel9?: number;
+    spellsKnown?: number;
+  };
+};
+
+export type DndClassSummary = {
   name: string;
   hitDie: string;
   primaryAbilities: string;
   slug: string;
-}
+};
+
+export type DndClassSpellCasting = {
+  level: number;
+  spellCastingAbility: string;
+  info: { name: string; desc: [] }[];
+};
 
 export interface DndClass {
   name: string;
   hitDie: number;
   abilityScores: AbilityScore[];
+  levels: DndClassLevel[];
   proficiencies: Prof[];
   proficiencyChoices: ProfChoice[];
   slug: string;
+  spellCasting: DndClassSpellCasting;
   startingEquipment: StartingEquipment[];
   startingEquipmentOptions: StartingEquipmentOption[];
   subclasses: string[];
