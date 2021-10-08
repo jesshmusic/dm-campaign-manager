@@ -3,7 +3,7 @@ import React from 'react';
 // Bootstrap
 import Footer from '../components/layout/Footer/Footer';
 import HeroBanner from '../components/layout/HeroBanner/HeroBanner';
-import MenuBar from '../components/layout/MenuBar/MenuBar';
+// import MenuBar from '../components/layout/MenuBar/MenuBar';
 import FlashMessages from '../components/Alerts/FlashMessages';
 
 import '../stylesheets/_fonts.scss';
@@ -14,7 +14,10 @@ import { FlashMessage, UserProps } from '../utilities/types';
 import SignInModal from '../components/layout/SignInModal';
 import rest from '../actions/api';
 import { connect } from 'react-redux';
-import Breadcrumbs, { BreadCrumbProps } from '../components/Breadcrumbs/Breadcrumbs';
+import Breadcrumbs, {
+  BreadCrumbProps,
+} from '../components/Breadcrumbs/Breadcrumbs';
+import SideBar from '../components/SideBar/SideBar';
 
 const styles = require('./page-container.module.scss');
 
@@ -36,16 +39,21 @@ const PageContainer = (props: PageContainerProps) => {
     <div>
       <Helmet>
         <title>{pageTitle} | Dungeon Master&apos;s Screen</title>
-        <meta name='description' content={description} />
+        <meta name="description" content={description} />
       </Helmet>
-      <MenuBar />
-      <HeroBanner />
-      <div className={styles.page}>
-        <FlashMessages messages={props.flashMessages || []} />
-        {breadcrumbs && breadcrumbs.length > 0 ? (
-          <Breadcrumbs breadcrumbs={breadcrumbs} />
-        ) : null}
-        {children}
+      <div className={styles.pageWrapper}>
+        {/*<MenuBar />*/}
+        <SideBar />
+        <div className={styles.pageContent}>
+          <HeroBanner />
+          <div className={styles.page}>
+            <FlashMessages messages={props.flashMessages || []} />
+            {breadcrumbs && breadcrumbs.length > 0 ? (
+              <Breadcrumbs breadcrumbs={breadcrumbs} />
+            ) : null}
+            {children}
+          </div>
+        </div>
       </div>
       <Footer user={user} />
       <SignInModal user={user} userLogin={userLogin} />
@@ -56,7 +64,7 @@ const PageContainer = (props: PageContainerProps) => {
 function mapStateToProps(state) {
   return {
     flashMessages: state.flashMessages,
-    user: state.users.currentUser
+    user: state.users.currentUser,
   };
 }
 
@@ -65,10 +73,10 @@ function mapDispatchToProps(dispatch) {
     userLogin: (email: string, password: string) => {
       dispatch(
         rest.actions.userLogin({
-          user: { email, password }
+          user: { email, password },
         })
       );
-    }
+    },
   };
 }
 

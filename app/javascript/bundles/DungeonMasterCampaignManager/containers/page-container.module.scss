@@ -4,6 +4,7 @@
   background-color: #eee5ce;
   background-image: url('/images/dndBG.jpg');
   margin: 0 auto;
+  min-height: calc(100vh - 18.75rem);
   padding: 1rem 1rem 6.25rem;
   position: relative;
   width: 100%;
@@ -23,5 +24,13 @@
     width: 100%;
     z-index: 1;
   }
+}
+
+.pageWrapper {
+  display: flex;
+}
+
+.pageContent {
+  flex: 1;
 }
 

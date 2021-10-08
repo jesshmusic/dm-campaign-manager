@@ -1,0 +1,98 @@
+@import '../../stylesheets/variables';
+
+.sideBar {
+  background-color: $dark-red;
+  display: flex;
+  flex: 0 0 20rem;
+  flex-direction: column;
+  padding: 0 1rem;
+}
+
+.navLink,
+.navLinkActive {
+  @include font-size(1.15rem);
+
+  font-family: 'Mr Eaves', sans-serif;
+  margin-bottom: $spacer * 1.25;
+}
+
+.navLink {
+  color: lighten($primary, 30%);
+  cursor: pointer;
+  transition: color ease-in-out 0.25s;
+
+  &:hover {
+    color: $white;
+    text-decoration: none;
+  }
+}
+
+.navLinkActive {
+  color: $white;
+  cursor: pointer;
+
+  &:hover {
+    color: $white;
+    text-decoration: none;
+  }
+}
+
+button {
+  &.navLink,
+  &.navLinkActive {
+    background-color: transparent;
+    border: 0;
+    cursor: pointer;
+    padding: 0;
+    text-align: left;
+  }
+}
+
+.searchBar {
+  align-items: stretch;
+  display: flex;
+  margin-bottom: $spacer;
+  position: relative;
+  width: 100%;
+
+  input {
+    @include font-size(1rem);
+
+    background-clip: padding-box;
+    background-color: transparent;
+    border: 0;
+    border-bottom: solid 1px lighten($primary, 30%);
+    color: $white;
+    display: block;
+    flex: 1;
+    font-family: $font-family-sans-serif;
+    line-height: 1.25;
+    margin-right: 0.5rem;
+    padding: 0.5rem;
+    transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+
+    &:focus {
+      border-color: $white;
+      outline: none;
+    }
+
+    &::placeholder {
+      color: rgba($white, 0.7);
+      font-family: $font-family-sans-serif;
+    }
+  }
+
+  button {
+    background-color: lighten($primary, 30%);
+    border: 0;
+    border-radius: 50%;
+    color: $white;
+    display: inline-block;
+    transition: background-color ease-in-out 0.15s, color ease-in-out 0.15s;
+
+    &:hover {
+      background-color: $white;
+      color: $dark-red;
+    }
+  }
+}
