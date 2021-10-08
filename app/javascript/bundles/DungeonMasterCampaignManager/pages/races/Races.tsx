@@ -54,6 +54,7 @@ const Races = (props: { getRaces: () => void; races: RaceSummary[] }) => {
         goToPage={goToPage}
         paginateExpandedRows={false}
         perPage={15}
+        results={data.length}
         loading={!races || races.length === 0}
       />
     </PageContainer>

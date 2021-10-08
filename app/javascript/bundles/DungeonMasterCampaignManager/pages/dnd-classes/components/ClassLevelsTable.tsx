@@ -22,6 +22,7 @@ const ClassLevelsTable = (props: { dndClass: DndClass }) => {
         loading={dndClass.levels.length === 0}
         perPage={20}
         noHover
+        results={data.length}
       />
     </div>
   );

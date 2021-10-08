@@ -16,6 +16,7 @@ export interface DataTableProps {
   paginateExpandedRows?: boolean;
   perPage?: number;
   renderRowSubComponent?: (row: any) => JSX.Element;
+  results: number;
 }
 
 const DataTable = ({
@@ -27,6 +28,7 @@ const DataTable = ({
                      noHover = false,
                      paginateExpandedRows = false,
                      perPage = 12,
+                     results,
                      renderRowSubComponent
                    }: DataTableProps) => {
   const dataTable = useTable(
@@ -87,6 +89,7 @@ const DataTable = ({
                    placeholder='Search...' />
             <button className='btn btn-outline-secondary' type='submit' id='button-addon2'>Search</button>
           </div>
+          <p className='text-muted'>{results} results.</p>
         </form>
       )}
       <table

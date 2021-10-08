@@ -13,7 +13,10 @@ import DataTable from '../../components/DataTable/DataTable';
 import { Row } from 'react-table';
 import { navigate } from '@reach/router';
 
-const Spells = (props: { getSpells: () => void; spells: SpellProps[] }) => {
+const Spells = (props: {
+  getSpells: (searchTerm?: string) => void;
+  spells: SpellProps[]
+}) => {
   const { getSpells, spells } = props;
 
   React.useEffect(() => {
@@ -58,6 +61,10 @@ const Spells = (props: { getSpells: () => void; spells: SpellProps[] }) => {
     });
   }, [spells]);
 
+  const onSearch = (searchTerm: string) => {
+    props.getSpells(searchTerm);
+  };
+
   return (
     <PageContainer
       pageTitle={'Spells'}
@@ -72,6 +79,8 @@ const Spells = (props: { getSpells: () => void; spells: SpellProps[] }) => {
         data={data}
         goToPage={goToPage}
         loading={!spells || spells.length === 0}
+        onSearch={onSearch}
+        results={data.length}
       />
     </PageContainer>
   );
@@ -87,122 +96,14 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    getSpells: () => {
-      dispatch(rest.actions.getSpells());
+    getSpells: (searchTerm?: string) => {
+      if (searchTerm) {
+        dispatch(rest.actions.getSpells({ search: searchTerm }));
+      } else {
+        dispatch(rest.actions.getSpells());
+      }
     }
   };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Spells);
-
-// get columns() {
-//   return [
-//     {
-//       dataField: 'name',
-//       text: 'Spell',
-//       sort: true,
-//       filter: textFilter(),
-//     },
-//     {
-//       dataField: 'spellLevel',
-//       text: 'Level',
-//       sort: true,
-//       formatter: (cell) =>
-//         this.selectLevelOptions.find((opt) => opt.value === cell).label,
-//       filter: selectFilter({
-//         options: this.selectLevelOptions,
-//         placeholder: 'School',
-//       }),
-//     },
-//     {
-//       dataField: 'school',
-//       text: 'Type',
-//       sort: true,
-//       formatter: (cell) =>
-//         this.selectSchoolOptions.find((opt) => opt.value === cell).label,
-//       filter: selectFilter({
-//         options: this.selectSchoolOptions,
-//         placeholder: 'School',
-//       }),
-//     },
-//     {
-//       dataField: 'components',
-//       text: 'Components',
-//       sort: true,
-//       formatter: Spells.componentsFormatter,
-//     },
-//     {
-//       dataField: 'spellClasses',
-//       text: 'Classes',
-//       sort: true,
-//       formatter: Spells.classesFormatter,
-//       filter: selectFilter({
-//         onFilter: this.filterByClass,
-//         options: Spells.selectClassOptions,
-//       }),
-//     },
-//   ];
-// }
-//
-// static componentsFormatter(cell, row) {
-//   return row.components.join(', ');
-// }
-//
-// static classesFormatter(cell, row) {
-//   return row.spellClasses.join(', ');
-// }
-//
-// get selectLevelOptions() {
-//   return [
-//     { value: 'Cantrip', label: 'Cantrip' },
-//     { value: '1st level', label: '1st level' },
-//     { value: '2nd level', label: '2nd level' },
-//     { value: '3rd level', label: '3rd level' },
-//     { value: '4th level', label: '4th level' },
-//     { value: '5th level', label: '5th level' },
-//     { value: '6th level', label: '6th Level' },
-//     { value: '7th level', label: '7th level' },
-//     { value: '8th level', label: '8th level' },
-//     { value: '9th level', label: '9th level' },
-//   ];
-// }
-//
-// get selectSchoolOptions() {
-//   return _.map(_.uniqBy(this.props.spells, 'school'), (spell) => ({
-//     value: spell.school,
-//     label: spell.school,
-//   }));
-// }
-//
-// static get selectClassOptions() {
-//   return [
-//     { value: 'Bard', label: 'Bard' },
-//     { value: 'Cleric', label: 'Cleric' },
-//     { value: 'Druid', label: 'Druid' },
-//     { value: 'Paladin', label: 'Paladin' },
-//     { value: 'Ranger', label: 'Ranger' },
-//     { value: 'Sorcerer', label: 'Sorcerer' },
-//     { value: 'Warlock', label: 'Warlock' },
-//     { value: 'Wizard', label: 'Wizard' },
-//   ];
-// }
-//
-// filterByClass(filterClass, data) {
-//   if (filterClass) {
-//     return data.filter((spell) => spell.spellClasses.includes(filterClass));
-//   }
-//   return data;
-// }
-
-// get expandRow () {
-//   return {
-//     parentClassName: 'table-primary',
-//     onlyOneExpanding: true,
-//     renderer: (row) => (
-//       <ReactMarkdown source={row.descriptionText.replace(/â€™/g, '\'').replace(/â€œ/g, '"').replace(/â€�/g, '"')}
-//                      allowedTypes={Util.allowedTypes}
-//                      escapeHtml={false}
-//       />
-//     ),
-//   };
-// }

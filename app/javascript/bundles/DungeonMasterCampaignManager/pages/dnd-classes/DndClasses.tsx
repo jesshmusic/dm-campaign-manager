@@ -65,6 +65,7 @@ const DndClasses = (props: {
         columns={columns}
         data={data}
         goToPage={goToPage}
+        results={data.length}
         loading={!dndClasses || dndClasses.length === 0}
       />
     </PageContainer>

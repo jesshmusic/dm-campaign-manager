@@ -10,7 +10,7 @@ import { Row } from 'react-table';
 import { GiClosedDoors, GiOpenGate } from 'react-icons/all';
 
 const Monsters = (props: {
-  getMonsterCategories: () => void;
+  getMonsterCategories: (searchTerm?: string) => void;
   monsters: MonsterSummary[];
   monsterTypes: MonsterType[];
 }) => {
@@ -22,6 +22,14 @@ const Monsters = (props: {
 
   const goToPage = (row: Row<any>) => {
     navigate(`/app/monsters/${row.original.slug}`);
+  };
+
+  const getNumResults = (): number => {
+    let count = 0;
+    monsterTypes.forEach((monsterType) => {
+      count += monsterType.monsters.length;
+    });
+    return count;
   };
 
   const columns = React.useMemo(
@@ -84,6 +92,10 @@ const Monsters = (props: {
     }));
   }, [monsterTypes]);
 
+  const onSearch = (searchTerm: string) => {
+    props.getMonsterCategories(searchTerm);
+  };
+
   return (
     <PageContainer
       pageTitle='Monsters'
@@ -97,9 +109,11 @@ const Monsters = (props: {
         columns={columns}
         data={data}
         goToPage={goToPage}
+        onSearch={onSearch}
         paginateExpandedRows={false}
         perPage={15}
-        loading={!monsterTypes || monsterTypes.length === 0}
+        loading={!monsterTypes}
+        results={getNumResults()}
       />
     </PageContainer>
   );
@@ -114,8 +128,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    getMonsterCategories: () => {
-      dispatch(rest.actions.getMonsterCategories());
+    getMonsterCategories: (searchTerm: string) => {
+      dispatch(rest.actions.getMonsterCategories({ search: searchTerm }));
     }
   };
 }

@@ -42,7 +42,8 @@ const ItemsList = ({ columns, data, onSearch, pageTitle, itemType }: ItemsListPr
         onSearch={onSearch}
         perPage={10}
         noHover
-        loading={!data || data.length === 0}
+        loading={!data}
+        results={data.length}
       />
     </PageContainer>
   );
