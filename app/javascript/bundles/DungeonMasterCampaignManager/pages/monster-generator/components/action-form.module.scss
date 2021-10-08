@@ -7,9 +7,9 @@
 
 .infoContainer {
   display: grid;
+  grid-column: auto/span 1;
   grid-gap: 0.5rem;
   grid-template-columns: 1fr 8rem 3fr 4rem 4rem;
-  grid-column: auto/span 1;
 }
 
 .infoField {
@@ -30,19 +30,19 @@
 }
 
 .buttonContainer {
+  align-items: center;
   display: flex;
   justify-content: center;
-  align-items: center;
 }
 
 .addDamageButton {
-  border: #2E2F30 solid 0.1rem;
+  align-items: center;
+  border: #2e2f30 solid 0.1rem;
   display: flex;
   flex-direction: column;
   height: 4rem;
   justify-content: center;
   padding: 0.5rem;
-  align-items: center;
   width: 4rem;
 
   small {
