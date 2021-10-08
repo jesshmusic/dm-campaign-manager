@@ -19,5 +19,6 @@ environment.loaders.append('typescript', {
   test: /.(ts|tsx)$/,
   loader: 'ts-loader',
 });
+environment.loaders.delete('nodeModules');
 
 module.exports = environment;
