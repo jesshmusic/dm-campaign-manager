@@ -15,10 +15,11 @@ type ItemsListProps = {
   columns: Array<Column<any>>;
   data: any[];
   itemType: string;
+  onSearch: (searchTerm: string) => void;
   pageTitle: string;
 };
 
-const ItemsList = ({ columns, data, pageTitle, itemType }: ItemsListProps) => {
+const ItemsList = ({ columns, data, onSearch, pageTitle, itemType }: ItemsListProps) => {
   const breadCrumbs =
     itemType !== ItemType.all
       ? [
@@ -38,6 +39,7 @@ const ItemsList = ({ columns, data, pageTitle, itemType }: ItemsListProps) => {
       <DataTable
         columns={columns}
         data={data}
+        onSearch={onSearch}
         perPage={10}
         noHover
         loading={!data || data.length === 0}
