@@ -12,7 +12,7 @@ import FormSelect from '../../../components/forms/FormSelect';
 import MonsterTypeSelect from './MonsterTypeSelect';
 import { GiDiceTwentyFacesTwenty } from 'react-icons/gi/';
 import AbilityScoreField from './AbilityScoreField';
-
+import { DevTool } from '@hookform/devtools';
 
 type MonsterFormErrors = {
   name?: string;
@@ -244,6 +244,7 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
           </div>
         </div>
       </form>
+      {process.env.NODE_ENV === 'development' ? (<DevTool control={control} />) : null}
     </Frame>
   );
 

@@ -1,7 +1,7 @@
 import { DndClass, ProfChoice } from '../../../utilities/types';
 import Util from '../../../utilities/utilities';
 import React from 'react';
-import InfoBlock from './InfoBlock';
+import InfoBlock from '../../../components/InfoBlock/InfoBlock';
 
 const styles = require('../dnd-class.module.scss');
 
@@ -35,25 +35,25 @@ const ProficienciesSection = (props: { dndClass: DndClass }) => {
     <div className={styles.sectionGroup}>
       <h3 className={styles.subsectionHeading}>Proficiencies</h3>
       <InfoBlock
-        title="Armor"
+        title='Armor'
         desc={getProfs(dndClass.proficiencies, 'Armor')}
       />
       <InfoBlock
-        title="Weapons"
+        title='Weapons'
         desc={getProfs(dndClass.proficiencies, 'Weapons')}
       />
       <InfoBlock
-        title="Tools"
+        title='Tools'
         desc={getProfs(dndClass.proficiencies, 'Other')}
       />
       <InfoBlock
-        title="Saving Throws"
+        title='Saving Throws'
         desc={dndClass.abilityScores
           .map((ability) => ability.fullName)
           .join(', ')}
       />
       <InfoBlock
-        title="Skills"
+        title='Skills'
         desc={getSkillChoices(dndClass.proficiencyChoices)}
       />
     </div>

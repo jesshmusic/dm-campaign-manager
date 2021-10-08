@@ -1,17 +1,16 @@
 import React from 'react';
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/layout/PageTitle/PageTitle';
-import DndSpinner from '../../components/layout/DndSpinners/DndSpinner';
 import { MonsterSummary, MonsterType } from '../../utilities/types';
 import rest from '../../actions/api';
 import { navigate } from '@reach/router';
 import { connect } from 'react-redux';
-import DataTable from '../../components/layout/DataTable/DataTable';
+import DataTable from '../../components/DataTable/DataTable';
 import { Row } from 'react-table';
 import { GiClosedDoors, GiOpenGate } from 'react-icons/all';
 
 const Monsters = (props: {
-  getMonsterCategories: () => void;
+  getMonsterCategories: (searchTerm?: string) => void;
   monsters: MonsterSummary[];
   monsterTypes: MonsterType[];
 }) => {
@@ -23,6 +22,14 @@ const Monsters = (props: {
 
   const goToPage = (row: Row<any>) => {
     navigate(`/app/monsters/${row.original.slug}`);
+  };
+
+  const getNumResults = (): number => {
+    let count = 0;
+    monsterTypes.forEach((monsterType) => {
+      count += monsterType.monsters.length;
+    });
+    return count;
   };
 
   const columns = React.useMemo(
@@ -39,35 +46,35 @@ const Monsters = (props: {
             <span
               {...row.getToggleRowExpandedProps({
                 style: {
-                  paddingLeft: `${row.depth * 2}rem`,
-                },
+                  paddingLeft: `${row.depth * 2}rem`
+                }
               })}
             >
               {row.isExpanded ? <GiOpenGate /> : <GiClosedDoors />}
             </span>
-          ) : null,
+          ) : null
       },
       {
         Header: 'Monster Types',
         columns: [
           {
             Header: 'Monster',
-            accessor: 'name',
+            accessor: 'name'
           },
           {
             Header: 'Challenge',
-            accessor: 'challenge',
+            accessor: 'challenge'
           },
           {
             Header: 'Alignment',
-            accessor: 'alignment',
+            accessor: 'alignment'
           },
           {
             Header: 'Hit Points',
-            accessor: 'hitPoints',
-          },
-        ],
-      },
+            accessor: 'hitPoints'
+          }
+        ]
+      }
     ],
     []
   );
@@ -80,16 +87,20 @@ const Monsters = (props: {
         alignment: monster.alignment,
         challenge: monster.challenge,
         hitPoints: monster.hitPoints,
-        slug: monster.slug,
-      })),
+        slug: monster.slug
+      }))
     }));
   }, [monsterTypes]);
 
+  const onSearch = (searchTerm: string) => {
+    props.getMonsterCategories(searchTerm);
+  };
+
   return (
     <PageContainer
-      pageTitle="Monsters"
+      pageTitle='Monsters'
       description={
-        "All monsters with descriptions and stats. Dungeon Master's Toolbox is a free resource for DMs to manage their campaigns, adventures, and Monsters."
+        'All monsters with descriptions and stats. Dungeon Master\'s Toolbox is a free resource for DMs to manage their campaigns, adventures, and Monsters.'
       }
       breadcrumbs={[{ isActive: true, title: 'Monsters' }]}
     >
@@ -98,9 +109,11 @@ const Monsters = (props: {
         columns={columns}
         data={data}
         goToPage={goToPage}
+        onSearch={onSearch}
         paginateExpandedRows={false}
         perPage={15}
-        loading={!monsterTypes || monsterTypes.length === 0}
+        loading={!monsterTypes}
+        results={getNumResults()}
       />
     </PageContainer>
   );
@@ -109,15 +122,15 @@ const Monsters = (props: {
 function mapStateToProps(state) {
   return {
     monsters: state.monsters.monsters,
-    monsterTypes: state.monsters.monsterTypes,
+    monsterTypes: state.monsters.monsterTypes
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    getMonsterCategories: () => {
-      dispatch(rest.actions.getMonsterCategories());
-    },
+    getMonsterCategories: (searchTerm: string) => {
+      dispatch(rest.actions.getMonsterCategories({ search: searchTerm }));
+    }
   };
 }
 

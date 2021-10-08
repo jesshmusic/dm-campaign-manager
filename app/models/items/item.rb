@@ -77,8 +77,8 @@ class Item < ApplicationRecord
                   against: {
                     name: 'A',
                     type: 'B',
-                    sub_category: 'C',
-                    weapon_range: 'D'
+                    desc: 'C',
+                    properties: 'D'
                   },
                   using: {
                     tsearch: {

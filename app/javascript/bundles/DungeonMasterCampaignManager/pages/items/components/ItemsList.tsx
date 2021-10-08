@@ -6,9 +6,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import PageContainer from '../../../containers/PageContainer';
 import PageTitle from '../../../components/layout/PageTitle/PageTitle';
-import DndSpinner from '../../../components/layout/DndSpinners/DndSpinner';
 import { Column } from 'react-table';
-import DataTable from '../../../components/layout/DataTable/DataTable';
+import DataTable from '../../../components/DataTable/DataTable';
 import ItemsNav from './ItemsNav';
 import { ItemType } from '../use-data';
 
@@ -16,16 +15,17 @@ type ItemsListProps = {
   columns: Array<Column<any>>;
   data: any[];
   itemType: string;
+  onSearch: (searchTerm: string) => void;
   pageTitle: string;
 };
 
-const ItemsList = ({ columns, data, pageTitle, itemType }: ItemsListProps) => {
+const ItemsList = ({ columns, data, onSearch, pageTitle, itemType }: ItemsListProps) => {
   const breadCrumbs =
     itemType !== ItemType.all
       ? [
-          { url: '/app/items/', isActive: false, title: 'Items' },
-          { isActive: true, title: pageTitle },
-        ]
+        { url: '/app/items/', isActive: false, title: 'Items' },
+        { isActive: true, title: pageTitle }
+      ]
       : [{ isActive: true, title: pageTitle }];
 
   return (
@@ -39,9 +39,11 @@ const ItemsList = ({ columns, data, pageTitle, itemType }: ItemsListProps) => {
       <DataTable
         columns={columns}
         data={data}
+        onSearch={onSearch}
         perPage={10}
         noHover
-        loading={!data || data.length === 0}
+        loading={!data}
+        results={data.length}
       />
     </PageContainer>
   );
@@ -53,7 +55,7 @@ ItemsList.propTypes = {
   flashMessages: PropTypes.array,
   getItems: PropTypes.func,
   pageTitle: PropTypes.string.isRequired,
-  user: PropTypes.object,
+  user: PropTypes.object
 };
 
 export default ItemsList;

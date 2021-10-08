@@ -1,7 +1,6 @@
 import React from 'react';
 import { Location, NavigateFn } from '@reach/router';
 import { ItemType } from '../pages/items/use-data';
-import htmlString = JQuery.htmlString;
 
 export interface AbilityScore {
   desc: string[];
@@ -135,7 +134,7 @@ export interface ItemSummary {
 }
 
 export type ItemsPageProps = {
-  getItems: (itemType?: string) => void;
+  getItems: (itemType?: string, searchTerm?: string) => void;
   itemType: ItemType;
   items: ItemSummary[];
   pageTitle: string;

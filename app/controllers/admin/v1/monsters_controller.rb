@@ -34,18 +34,35 @@ module Admin::V1
       authorize Monster
       monster_types = Monster.pluck(:monster_type).uniq
       monster_cats = []
-      monster_types.each do |monster_type|
-        monster_cats << {
-          name: monster_type.capitalize,
-          monsters: Monster.where(monster_type: monster_type).map { |monster| {
-            name: monster.name,
-            challenge: monster.challenge_string,
-            alignment: monster.alignment,
-            hitPoints: monster.hit_points_string,
-            slug: monster.slug
-          } }
-        }
+      if params[:search].present?
+        monster_types.each do |monster_type|
+          monster_results = {
+            name: monster_type.capitalize,
+            monsters: Monster.search_for(params[:search]).where(monster_type: monster_type).map { |monster| {
+              name: monster.name,
+              challenge: monster.challenge_string,
+              alignment: monster.alignment,
+              hitPoints: monster.hit_points_string,
+              slug: monster.slug
+            } }
+          }
+          monster_cats << monster_results unless monster_results[:monsters].count < 1
+        end
+      else
+        monster_types.each do |monster_type|
+          monster_cats << {
+            name: monster_type.capitalize,
+            monsters: Monster.where(monster_type: monster_type).map { |monster| {
+              name: monster.name,
+              challenge: monster.challenge_string,
+              alignment: monster.alignment,
+              hitPoints: monster.hit_points_string,
+              slug: monster.slug
+            } }
+          }
+        end
       end
+
       render json: { count: monster_cats.count, results: monster_cats.sort_by { |e| e[:name] } }
     end
 

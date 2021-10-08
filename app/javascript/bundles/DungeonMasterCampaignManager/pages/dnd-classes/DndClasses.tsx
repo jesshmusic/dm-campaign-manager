@@ -7,7 +7,7 @@ import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/layout/PageTitle/PageTitle';
 import { navigate } from '@reach/router';
 import { DndClassSummary } from '../../utilities/types';
-import DataTable from '../../components/layout/DataTable/DataTable';
+import DataTable from '../../components/DataTable/DataTable';
 import { Row } from 'react-table';
 
 const DndClasses = (props: {
@@ -29,7 +29,7 @@ const DndClasses = (props: {
         name: dndClass.name,
         hitDie: `d${dndClass.hitDie}`,
         primaryAbilities: dndClass.primaryAbilities,
-        slug: dndClass.slug,
+        slug: dndClass.slug
       };
     });
   }, [dndClasses]);
@@ -38,16 +38,16 @@ const DndClasses = (props: {
     () => [
       {
         Header: 'Class',
-        accessor: 'name',
+        accessor: 'name'
       },
       {
         Header: 'Hit Die',
-        accessor: 'hitDie',
+        accessor: 'hitDie'
       },
       {
         Header: 'Primary Abilities',
-        accessor: 'primaryAbilities',
-      },
+        accessor: 'primaryAbilities'
+      }
     ],
     []
   );
@@ -56,7 +56,7 @@ const DndClasses = (props: {
     <PageContainer
       pageTitle={'DndClasses'}
       description={
-        "All D&D classes. Dungeon Master's Toolbox is a free resource for DMs to manage their classes, adventures, and Monsters."
+        'All D&D classes. Dungeon Master\'s Toolbox is a free resource for DMs to manage their classes, adventures, and Monsters.'
       }
       breadcrumbs={[{ isActive: true, title: 'Character Classes' }]}
     >
@@ -65,6 +65,7 @@ const DndClasses = (props: {
         columns={columns}
         data={data}
         goToPage={goToPage}
+        results={data.length}
         loading={!dndClasses || dndClasses.length === 0}
       />
     </PageContainer>
@@ -75,7 +76,7 @@ function mapStateToProps(state) {
   return {
     dndClasses: state.dndClasses.dndClasses,
     user: state.users.user,
-    flashMessages: state.flashMessages,
+    flashMessages: state.flashMessages
   };
 }
 
@@ -83,7 +84,7 @@ function mapDispatchToProps(dispatch) {
   return {
     getDndClasses: () => {
       dispatch(rest.actions.getDndClasses());
-    },
+    }
   };
 }
 
