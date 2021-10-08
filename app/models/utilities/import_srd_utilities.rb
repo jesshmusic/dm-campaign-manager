@@ -18,6 +18,7 @@ class ImportSrdUtilities
       RacesUtil.import
       SpellsUtil.import
       MonstersUtil.import
+      SectionsUtil.import
     end
 
     def import_all_empty(exclude)

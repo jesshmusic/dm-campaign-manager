@@ -6,7 +6,7 @@ import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 export function getHeaders() {
   return ReactOnRails.authenticityHeaders({
     'Content-Type': 'application/json',
-    'Accept': 'application/json'
+    Accept: 'application/json',
   });
 }
 
@@ -32,26 +32,26 @@ export const fetchData = (opts: AxiosRequestConfig): Promise<AxiosResponse> => {
     method: opts.method,
     url: opts.url,
     data: opts.data,
-    headers: getHeaders()
+    headers: getHeaders(),
   });
 };
 
 const dmFetch = (fetch) => {
   return (url, opts) =>
-    fetch(url, opts)
-      .then((response) => {
-        const status = response.status === 1223 ? 204 : response.status;
-        const statusText = response.status === 1223 ? 'No Content' : response.statusText;
+    fetch(url, opts).then((response) => {
+      const status = response.status === 1223 ? 204 : response.status;
+      const statusText =
+        response.status === 1223 ? 'No Content' : response.statusText;
 
-        return toJSON(response).then((data) => {
-          if (status >= 200 && status < 400) {
-            return data;
-          }
-          data.status = status;
-          data.statusText = statusText;
-          return Promise.reject(data);
-        });
+      return toJSON(response).then((data) => {
+        if (status >= 200 && status < 400) {
+          return data;
+        }
+        data.status = status;
+        data.statusText = statusText;
+        return Promise.reject(data);
       });
+    });
 };
 
 export default reduxApi({
@@ -61,9 +61,9 @@ export default reduxApi({
       const headers = getHeaders();
       return {
         method: 'post',
-        headers
+        headers,
       };
-    }
+    },
   },
   convert2eNonPlayerCharacter: {
     url: '/v1/convert_2e_monster',
@@ -71,51 +71,57 @@ export default reduxApi({
       const headers = getHeaders();
       return {
         method: 'post',
-        headers
+        headers,
       };
-    }
+    },
   },
   generateCommoner: {
-    url: '/v1/generate_commoner?random_monster_gender=:gender&random_monster_race=:race'
+    url: '/v1/generate_commoner?random_monster_gender=:gender&random_monster_race=:race',
   },
   getDndClass: {
-    url: '/v1/dnd_classes/:slug.json'
+    url: '/v1/dnd_classes/:slug.json',
   },
   getDndClasses: {
-    url: '/v1/dnd_classes.json'
+    url: '/v1/dnd_classes.json',
   },
   getItem: {
-    url: '/v1/items/:slug.json'
+    url: '/v1/items/:slug.json',
   },
   getItems: {
-    url: '/v1/items.json'
+    url: '/v1/items.json',
   },
   getMonster: {
-    url: '/v1/monsters/:slug.json'
+    url: '/v1/monsters/:slug.json',
   },
   getMonsters: {
-    url: '/v1/monsters.json'
+    url: '/v1/monsters.json',
   },
   getMonsterCategories: {
-    url: '/v1/monster-categories.json'
+    url: '/v1/monster-categories.json',
   },
   getRace: {
-    url: '/v1/races/:slug.json'
+    url: '/v1/races/:slug.json',
   },
   getRaces: {
-    url: '/v1/races.json'
+    url: '/v1/races.json',
+  },
+  getSection: {
+    url: '/v1/sections/:slug.json',
+  },
+  getSections: {
+    url: '/v1/sections.json',
   },
   getSpell: {
-    url: '/v1/spells/:slug.json'
+    url: '/v1/spells/:slug.json',
   },
   getSpells: {
-    url: '/v1/spells.json'
+    url: '/v1/spells.json',
   },
   getUser: {
-    url: '/users/:slug.json'
+    url: '/users/:slug.json',
   },
   getUsers: {
-    url: '/users.json'
+    url: '/users.json',
   },
   userLogin: {
     url: '/users/sign_in',
@@ -123,12 +129,14 @@ export default reduxApi({
       const headers = getHeaders();
       return {
         method: 'post',
-        headers
+        headers,
       };
     },
-    postfetch: [() => {
-      navigate('/');
-    }]
+    postfetch: [
+      () => {
+        navigate('/');
+      },
+    ],
   },
   userLogout: {
     url: '/users/sign_out',
@@ -136,11 +144,13 @@ export default reduxApi({
       const headers = getHeaders();
       return {
         method: 'delete',
-        headers
+        headers,
       };
     },
-    postfetch: [() => {
-      navigate('/');
-    }]
-  }
+    postfetch: [
+      () => {
+        navigate('/');
+      },
+    ],
+  },
 }).use('fetch', dmFetch(fetch));

@@ -8,20 +8,19 @@ const Footer = () => {
   return (
     <div className={styles.wrapper}>
       <div className={styles.left}>
-        <h3 className='mr-eaves'>The Dungeon Master Screen</h3>
+        <h3 className="mr-eaves">The Dungeon Master Screen</h3>
       </div>
       <div className={styles.right}>
         <ul className={styles.nav}>
           <NavLink to={'/'} className={styles.footerLink}>
             Home
           </NavLink>
-          <NavLink to={'/app/monster-generator'} className={styles.footerLink}>
-            Monster Generator
-          </NavLink>
           <NavLink to={'/app/classes'} className={styles.footerLink}>
             Classes
           </NavLink>
-          <NavLink to={'/app/races'} className={styles.footerLink}>Races</NavLink>
+          <NavLink to={'/app/races'} className={styles.footerLink}>
+            Races
+          </NavLink>
           <NavLink to={'/app/monsters'} className={styles.footerLink}>
             Monsters
           </NavLink>
@@ -38,7 +37,7 @@ const Footer = () => {
 };
 
 Footer.propTypes = {
-  user: PropTypes.object
+  user: PropTypes.object,
 };
 
 export default Footer;

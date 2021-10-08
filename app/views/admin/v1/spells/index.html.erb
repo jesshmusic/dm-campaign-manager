@@ -37,8 +37,6 @@
           <td><%= spell.spell_level %></td>
           <td>
             <%= link_to 'Show', v1_spell_path(spell), class: "btn btn-sm btn-primary" %>
-            <%#= link_to 'Edit', edit_v1_spell_path(spell), class: "btn btn-sm btn-success" if policy(spell).edit? %>
-            <%#= link_to 'Destroy', v1_spell_path(spell), class: "btn btn-sm btn-danger", method: :delete, data: { confirm: 'Are you sure?' } if policy(spell).destroy? %>
           </td>
         </tr>
       <% end %>

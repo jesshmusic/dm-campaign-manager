@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_06_164734) do
+ActiveRecord::Schema.define(version: 2021_10_08_181952) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -449,6 +449,14 @@ ActiveRecord::Schema.define(version: 2021_10_06_164734) do
     t.index ["name"], name: "index_races_on_name"
     t.index ["slug"], name: "index_races_on_slug"
     t.index ["user_id"], name: "index_races_on_user_id"
+  end
+
+  create_table "sections", force: :cascade do |t|
+    t.string "name"
+    t.string "description"
+    t.string "slug"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "senses", force: :cascade do |t|

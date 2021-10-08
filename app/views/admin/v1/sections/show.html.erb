@@ -1,0 +1,38 @@
+<% title "Section: " + @section.name %>
+<div class="row">
+  <div class="col">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/app/assets/config">Home</a></li>
+        <li class="breadcrumb-item"><%= link_to 'Dashboard', v1_dashboard_path %></li>
+        <li class="breadcrumb-item"><%= link_to 'sections', sections_path %></li>
+        <li class="breadcrumb-item active" aria-current="page"><%= @section.name %></li>
+      </ol>
+    </nav>
+  </div>
+</div>
+<div class="container">
+  <div class="row mb-3 pb-3 border-bottom">
+    <div class="col">
+      <h1>Section: <%= @section.name %></h1>
+    </div>
+  </div>
+
+  <div class="row mb-3 pb-3 border-bottom">
+    <div class="col">
+              <p>
+          <strong>Name:</strong> <%= @section.name %> %>
+        </p>
+              <p>
+          <strong>Description:</strong> <%= @section.description %> %>
+        </p>
+              <p>
+          <strong>Slug:</strong> <%= @section.slug %> %>
+        </p>
+          </div>
+  </div>
+
+  <div class="d-flex align-items-center justify-content-start py-3">
+    <%= link_to 'Back', sections_path, class: "btn btn-info" %>
+  </div>
+</div>

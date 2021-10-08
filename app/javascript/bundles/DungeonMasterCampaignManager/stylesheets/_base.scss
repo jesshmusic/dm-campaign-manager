@@ -22,6 +22,19 @@ h1 {
   }
 }
 
+h2 {
+  border-bottom: 2px solid $yellow;
+  color: $dark-red;
+  font-family: 'Mr Eaves', serif;
+  font-size: $h2-font-size;
+}
+
+h3 {
+  color: $dark-red;
+  font-family: 'Mr Eaves', serif;
+  font-size: $h3-font-size;
+}
+
 .card {
   background-color: #fdf1dc;
   border-image: $orange-border;

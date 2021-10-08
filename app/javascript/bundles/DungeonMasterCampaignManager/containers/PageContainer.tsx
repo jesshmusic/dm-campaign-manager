@@ -53,9 +53,9 @@ const PageContainer = (props: PageContainerProps) => {
             ) : null}
             {children}
           </div>
+          <Footer user={user} />
         </div>
       </div>
-      <Footer user={user} />
       <SignInModal user={user} userLogin={userLogin} />
     </div>
   );

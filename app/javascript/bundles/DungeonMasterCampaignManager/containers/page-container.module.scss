@@ -10,7 +10,7 @@
   width: 100%;
 
   @include respond-to(md) {
-    padding: 1rem 6.25rem 6rem;
+    padding: 1rem 2rem 6rem;
   }
 
   &::after {

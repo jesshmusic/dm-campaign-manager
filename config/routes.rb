@@ -47,6 +47,7 @@ Rails.application.routes.draw do
         resources :monsters, param: :slug
         resources :races, param: :slug
         resources :spells, param: :slug
+        resources :sections, param: :slug
       end
     end
   end

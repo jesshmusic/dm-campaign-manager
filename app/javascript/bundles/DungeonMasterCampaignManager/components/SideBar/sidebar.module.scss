@@ -8,15 +8,39 @@
   padding: 0 1rem;
 }
 
-.navLink,
-.navLinkActive {
+.divider {
   @include font-size(1.15rem);
-
+  border-bottom: solid $yellow 2px;
+  color: $white;
   font-family: 'Mr Eaves', sans-serif;
-  margin-bottom: $spacer * 1.25;
+  margin-bottom: 0.33rem;
+  padding-top: 0.5rem;
 }
 
-.navLink {
+.navLink,
+.navLinkActive,
+.navLinkSmall,
+.navLinkSmallActive {
+  @include font-size(1.15rem);
+
+  align-items: center;
+  display: flex;
+  font-family: 'Mr Eaves', sans-serif;
+  justify-content: space-between;
+  margin-bottom: $spacer * 0.5;
+  width: 100%;
+}
+
+.navLinkSmall,
+.navLinkSmallActive {
+  @include font-size(1rem);
+
+  margin-bottom: 0;
+  padding-left: 1rem;
+}
+
+.navLink,
+.navLinkSmall {
   color: lighten($primary, 30%);
   cursor: pointer;
   transition: color ease-in-out 0.25s;
@@ -25,15 +49,27 @@
     color: $white;
     text-decoration: none;
   }
+
+  svg {
+    display: none;
+  }
 }
 
-.navLinkActive {
+.navLinkActive,
+.navLinkSmallActive {
   color: $white;
   cursor: pointer;
 
   &:hover {
     color: $white;
     text-decoration: none;
+  }
+
+  svg {
+    display: block;
+    height: 1.25rem;
+    transform: rotateY(-180deg);
+    width: 1.25rem;
   }
 }
 

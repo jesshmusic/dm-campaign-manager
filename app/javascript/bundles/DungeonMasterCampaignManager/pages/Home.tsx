@@ -15,6 +15,7 @@ import { ItemType } from './items/use-data';
 import Races from './races/Races';
 import Race from './races/Race';
 import Spell from './spells/Spell';
+import Section from './sections/Section';
 
 const Home = (props) => {
   const [flashMessages, setFlashMessages] = React.useState<FlashMessage[]>([]);
@@ -104,6 +105,7 @@ const Home = (props) => {
         <Monster path="/app/monsters/:monsterSlug" {...combinedProps} />
         <Spells path="/app/spells/" {...combinedProps} />
         <Spell path="/app/spells/:spellSlug" {...combinedProps} />
+        <Section path="/app/sections/:sectionSlug" {...combinedProps} />
         <MonsterGenerator path="/app/monster-generator/" {...combinedProps} />
       </Router>
     </Provider>

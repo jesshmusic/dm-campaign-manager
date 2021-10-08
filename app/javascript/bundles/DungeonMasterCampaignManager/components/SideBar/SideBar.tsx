@@ -3,7 +3,7 @@ import rest from '../../actions/api';
 import { connect } from 'react-redux';
 import { UserProps } from '../../utilities/types';
 import { Link } from '@reach/router';
-import { GiArchiveResearch } from 'react-icons/all';
+import { GiArchiveResearch, GiDragonHead } from 'react-icons/all';
 
 const styles = require('./sidebar.module.scss');
 
@@ -16,8 +16,26 @@ const NavLink = (props) => (
   />
 );
 
-const SideBar = (props: { user: UserProps; logoutUser: () => void }) => {
-  const { user, logoutUser } = props;
+const NavLinkSmall = (props) => (
+  <Link
+    {...props}
+    getProps={({ isCurrent }) => ({
+      className: isCurrent ? styles.navLinkSmallActive : styles.navLinkSmall,
+    })}
+  />
+);
+
+const SideBar = (props: {
+  user: UserProps;
+  logoutUser: () => void;
+  getSections: () => void;
+  sections: { name: string; slug: string }[];
+}) => {
+  const { user, logoutUser, getSections, sections } = props;
+
+  React.useEffect(() => {
+    getSections();
+  }, []);
 
   const handleLogout = (event) => {
     event.preventDefault();
@@ -39,20 +57,67 @@ const SideBar = (props: { user: UserProps; logoutUser: () => void }) => {
           </button>
         </div>
       </form>
-      <NavLink to={'/'}>Home</NavLink>
-      <NavLink to={'/app/monster-generator'}>Monster Generator</NavLink>
-      <NavLink to={'/app/classes'}>Classes</NavLink>
-      <NavLink to={'/app/races'}>Races</NavLink>
-      <NavLink to={'/app/monsters'}>Monsters</NavLink>
-      <NavLink to={'/app/items'}>Items and Equipment</NavLink>
-      <NavLink to={'/app/spells'}>Spells</NavLink>
+      <NavLink to={'/'}>
+        Home <GiDragonHead />
+      </NavLink>
+      <NavLink to={'/app/classes'}>
+        Classes <GiDragonHead />
+      </NavLink>
+      <NavLink to={'/app/races'}>
+        Races <GiDragonHead />
+      </NavLink>
+      <NavLink to={'/app/monsters'}>
+        Monsters <GiDragonHead />
+      </NavLink>
+      <NavLink to={'/app/spells'}>
+        Spells <GiDragonHead />
+      </NavLink>
+      <div className={styles.divider}>Items and Equipment</div>
+      <NavLinkSmall to={`/app/items/armor`}>
+        Armor <GiDragonHead />
+      </NavLinkSmall>
+      <NavLinkSmall to={`/app/items/gear`}>
+        Adventuring Gear <GiDragonHead />
+      </NavLinkSmall>
+      <NavLinkSmall to={`/app/items/magic-items`}>
+        Magic Items <GiDragonHead />
+      </NavLinkSmall>
+      <NavLinkSmall to={`/app/items/magic-armor`}>
+        Magic Armor <GiDragonHead />
+      </NavLinkSmall>
+      <NavLinkSmall to={`/app/items/magic-weapons`}>
+        Magic Weapons <GiDragonHead />
+      </NavLinkSmall>
+      <NavLinkSmall to={`/app/items/vehicles`}>
+        Mounts & Vehicles <GiDragonHead />
+      </NavLinkSmall>
+      <NavLinkSmall to={`/app/items/tools`}>
+        Tools <GiDragonHead />
+      </NavLinkSmall>
+      <NavLinkSmall to={`/app/items/weapons`}>
+        Weapons <GiDragonHead />
+      </NavLinkSmall>
+      <div className={styles.divider}>Rules</div>
+      {sections.map((section) => (
+        <NavLinkSmall to={`/app/sections/${section.slug}`}>
+          {section.name} <GiDragonHead />
+        </NavLinkSmall>
+      ))}
+      <div className={styles.divider}>User</div>
       {user && user.role === 'admin' ? (
-        <NavLink to={'/admin'}>Admin</NavLink>
+        <NavLink to={'/admin'}>
+          Admin <GiDragonHead />
+        </NavLink>
       ) : null}
       {user ? (
-        <a onClick={handleLogout} className={styles.navLink}>
-          Sign Out
-        </a>
+        <>
+          <NavLink to={'/app/monster-generator'}>
+            Monster Generator <GiDragonHead />
+          </NavLink>
+          <a onClick={handleLogout} className={styles.navLink}>
+            Sign Out
+          </a>
+        </>
       ) : (
         <button
           className={styles.navLink}
@@ -67,6 +132,7 @@ const SideBar = (props: { user: UserProps; logoutUser: () => void }) => {
 };
 function mapStateToProps(state) {
   return {
+    sections: state.sections.sections,
     user: state.users.currentUser,
   };
 }
@@ -75,6 +141,9 @@ function mapDispatchToProps(dispatch) {
   return {
     logoutUser: () => {
       dispatch(rest.actions.userLogout());
+    },
+    getSections: () => {
+      dispatch(rest.actions.getSections());
     },
   };
 }
