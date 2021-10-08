@@ -1,7 +1,19 @@
 import React from 'react';
 import ReactPaginate from 'react-paginate';
-import { Column, HeaderGroup, Row, useExpanded, usePagination, useSortBy, useTable } from 'react-table';
-import { TiArrowSortedDown, TiArrowSortedUp, TiArrowUnsorted } from 'react-icons/all';
+import {
+  Column,
+  HeaderGroup,
+  Row,
+  useExpanded,
+  usePagination,
+  useSortBy,
+  useTable,
+} from 'react-table';
+import {
+  TiArrowSortedDown,
+  TiArrowSortedUp,
+  TiArrowUnsorted,
+} from 'react-icons/all';
 import classNames from 'classnames';
 import DndSpinner from '../DndSpinners/DndSpinner';
 import { useForm } from 'react-hook-form';
@@ -20,31 +32,32 @@ export interface DataTableProps {
 }
 
 const DataTable = ({
-                     columns,
-                     data,
-                     goToPage,
-                     onSearch,
-                     loading,
-                     noHover = false,
-                     paginateExpandedRows = false,
-                     perPage = 12,
-                     results,
-                     renderRowSubComponent
-                   }: DataTableProps) => {
+  columns,
+  data,
+  goToPage,
+  onSearch,
+  loading,
+  noHover = false,
+  paginateExpandedRows = false,
+  perPage = 12,
+  results,
+  renderRowSubComponent,
+}: DataTableProps) => {
   const dataTable = useTable(
     {
       columns,
       data,
       initialState: {
         pageIndex: 0,
-        pageSize: perPage
+        pageSize: perPage,
       },
-      paginateExpandedRows
+      paginateExpandedRows,
     },
     useSortBy,
     useExpanded,
     usePagination
   );
+
   const { register, handleSubmit } = useForm();
 
   if (loading) {
@@ -71,31 +84,39 @@ const DataTable = ({
 
   const sortIcon = (column: HeaderGroup) => {
     if (column.isSorted && column.isSortedDesc) {
-      return <TiArrowSortedDown color='#555752' />;
+      return <TiArrowSortedDown color="#555752" />;
     } else if (column.isSorted) {
-      return <TiArrowSortedUp color='#555752' />;
+      return <TiArrowSortedUp color="#555752" />;
     }
-    return <TiArrowUnsorted color='#555752' />;
+    return <TiArrowUnsorted color="#555752" />;
   };
 
   return (
     <div className={'table-frame'}>
       {onSearch && (
         <form onSubmit={handleSubmit(handleSearch)}>
-          <div className='input-group mb-3'>
-            <input {...register('searchTerm')}
-                   type='text'
-                   className='form-control'
-                   placeholder='Search...' />
-            <button className='btn btn-outline-secondary' type='submit' id='button-addon2'>Search</button>
+          <div className="input-group mb-3">
+            <input
+              {...register('searchTerm')}
+              type="text"
+              className="form-control"
+              placeholder="Search..."
+            />
+            <button
+              className="btn btn-outline-secondary"
+              type="submit"
+              id="button-addon2"
+            >
+              Search
+            </button>
           </div>
-          <p className='text-muted'>{results} results.</p>
+          <p className="text-muted">{results} results.</p>
         </form>
       )}
       <table
         {...dataTable.getTableProps()}
         className={classNames('dnd-table', {
-          'dnd-table__hover': !Boolean(renderRowSubComponent) && !noHover
+          'dnd-table__hover': !Boolean(renderRowSubComponent) && !noHover,
         })}
       >
         <thead>
@@ -128,12 +149,12 @@ const DataTable = ({
                   })}
                 </tr>
                 {row.isExpanded &&
-                renderRowSubComponent &&
-                renderRowSubComponent({
-                  row,
-                  rowProps,
-                  visibleColumns: dataTable.visibleColumns
-                })}
+                  renderRowSubComponent &&
+                  renderRowSubComponent({
+                    row,
+                    rowProps,
+                    visibleColumns: dataTable.visibleColumns,
+                  })}
               </React.Fragment>
             );
           })}
@@ -141,8 +162,8 @@ const DataTable = ({
       </table>
       {dataTable.pageCount > 1 && (
         <nav
-          aria-label='Table Pagination'
-          className='d-md-flex justify-content-between align-items-baseline'
+          aria-label="Table Pagination"
+          className="d-md-flex justify-content-between align-items-baseline"
         >
           <ReactPaginate
             previousLabel={'previous'}
@@ -163,17 +184,20 @@ const DataTable = ({
             containerClassName={'pagination'}
             activeClassName={'active'}
           />
-          <div className='fs-4 mr-eaves'>
-            page <span className='text-primary'>{dataTable.pageIndex + 1}</span>
+          <div className="fs-4 mr-eaves">
+            page{' '}
+            <span className="text-primary">
+              {dataTable.state.pageIndex + 1}
+            </span>
             &nbsp;of&nbsp;
-            <span className='text-primary'>{dataTable.pageOptions.length}</span>
+            <span className="text-primary">{dataTable.pageOptions.length}</span>
           </div>
-          <div className='d-flex align-items-center'>
-            <span className='d-flex me-2 align-items-center sans-serif'>
+          <div className="d-flex align-items-center">
+            <span className="d-flex me-2 align-items-center sans-serif">
               Go to page:&nbsp;
               <input
-                className='form-control'
-                type='number'
+                className="form-control"
+                type="number"
                 defaultValue={dataTable.pageIndex + 1}
                 onChange={(e) => {
                   const page = e.target.value ? Number(e.target.value) - 1 : 0;
@@ -183,7 +207,7 @@ const DataTable = ({
               />
             </span>{' '}
             <select
-              className='form-select sans-serif'
+              className="form-select sans-serif"
               value={dataTable.pageSize}
               onChange={(e) => {
                 dataTable.setPageSize(Number(e.target.value));
