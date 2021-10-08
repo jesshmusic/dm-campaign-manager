@@ -20,6 +20,8 @@ const Spell = (props: {
 
   const spellTitle = spell ? spell.name : 'Spell Loading...';
 
+  const spellMats = spell && spell.material ? ` (${spell.material})` : '';
+
   return (
     <PageContainer
       pageTitle={spellTitle}
@@ -39,7 +41,7 @@ const Spell = (props: {
           <InfoBlock title='Range' desc={spell.range} />
           <InfoBlock
             title='Components'
-            desc={`${spell.components.join(', ')} (${spell.material})`}
+            desc={`${spell.components.join(', ')}${spellMats}`}
           />
           <InfoBlock title='Duration' desc={spell.duration} />
           <div>{spell.description}</div>

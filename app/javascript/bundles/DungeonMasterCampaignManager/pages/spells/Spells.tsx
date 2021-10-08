@@ -78,7 +78,7 @@ const Spells = (props: {
         columns={columns}
         data={data}
         goToPage={goToPage}
-        loading={!spells || spells.length === 0}
+        loading={!spells}
         onSearch={onSearch}
         results={data.length}
       />
