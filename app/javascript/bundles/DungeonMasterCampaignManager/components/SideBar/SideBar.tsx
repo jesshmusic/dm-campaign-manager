@@ -7,7 +7,7 @@ import { GiDragonHead } from 'react-icons/all';
 
 const styles = require('./sidebar.module.scss');
 
-const NavLink = (props) => (
+export const NavLink = (props) => (
   <Link
     {...props}
     getProps={({ isCurrent }) => ({
