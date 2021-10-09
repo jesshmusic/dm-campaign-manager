@@ -66,3 +66,33 @@
     }
   }
 }
+
+.navLink {
+  @include font-size(1.15rem);
+
+  align-items: center;
+  color: lighten($primary, 30%);
+  cursor: pointer;
+  display: flex;
+  font-family: 'Mr Eaves', sans-serif;
+  justify-content: space-between;
+  margin-bottom: $spacer * 0.75;
+  transition: color ease-in-out 0.25s;
+  width: 100%;
+
+  &:hover {
+    color: $white;
+    text-decoration: none;
+  }
+}
+
+button {
+  &.navLink,
+  &.navLinkActive {
+    background-color: transparent;
+    border: 0;
+    cursor: pointer;
+    padding: 0;
+    text-align: left;
+  }
+}

@@ -55,14 +55,3 @@
     width: 1.25rem;
   }
 }
-
-button {
-  &.navLink,
-  &.navLinkActive {
-    background-color: transparent;
-    border: 0;
-    cursor: pointer;
-    padding: 0;
-    text-align: left;
-  }
-}
