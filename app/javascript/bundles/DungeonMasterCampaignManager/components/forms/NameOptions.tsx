@@ -1,19 +1,23 @@
 import React, { useState } from 'react';
-import Select, { OptionsType, OptionTypeBase } from 'react-select';
+import Select, { Options } from 'react-select';
 import { filterSnakeCaseOptionsWithData } from '../../utilities/character-utilities';
 import AsyncSelect from 'react-select/async';
 import axios from 'axios';
 import classNames from 'classnames';
+import { RaceResults } from '../../utilities/types';
 
-const genderOptions: OptionsType<OptionTypeBase> = [
+const genderOptions: Options<any> = [
   { value: 'female', label: 'Female' },
   { value: 'male', label: 'Male' },
-  { value: '', label: 'Other' }
+  { value: '', label: 'Other' },
 ];
 
-
-const getRaces = (inputValue: string, callback: (options: OptionsType<OptionTypeBase>) => void) => {
-  axios.get(`/v1/races.json?search=${inputValue}`)
+const getRaces = (
+  inputValue: string,
+  callback: (options: Options<any>) => void
+) => {
+  axios
+    .get<RaceResults>(`/v1/races.json?search=${inputValue}`)
     .then((response) => {
       if (response.status === 200 && response?.data.results) {
         callback(filterSnakeCaseOptionsWithData(response.data));
@@ -28,8 +32,14 @@ interface NameOptionsProps {
 }
 
 const NameOptions = ({ className, onFormSubmit, title }: NameOptionsProps) => {
-  const [gender, setGender] = useState({ value: 'female', label: 'Female' } as OptionTypeBase | null);
-  const [race, setRace] = useState({ value: 'human', label: 'Human' } as OptionTypeBase | null);
+  const [gender, setGender] = useState({
+    value: 'female',
+    label: 'Female',
+  });
+  const [race, setRace] = useState({
+    value: 'human',
+    label: 'Human',
+  });
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -42,34 +52,40 @@ const NameOptions = ({ className, onFormSubmit, title }: NameOptionsProps) => {
         <button
           id={'nameGeneratorSubmit'}
           className={'w-100 btn btn-primary'}
-          onClick={(event) => handleSubmit(event)}>
-          Get{gender ? ` ${gender.label}` : ''}{race ? ` ${race.label}` : ''} {title}
+          onClick={(event) => handleSubmit(event)}
+        >
+          Get{gender ? ` ${gender.label}` : ''}
+          {race ? ` ${race.label}` : ''} {title}
         </button>
       </div>
-      <div className='grid mb-3'>
+      <div className="grid mb-3">
         <div className={classNames(className, 'g-col-6')}>
-          <label className='form-check-label' htmlFor={'nameGeneratorGender'}>
+          <label className="form-check-label" htmlFor={'nameGeneratorGender'}>
             Gender
           </label>
-          <Select options={genderOptions}
-                  id={'nameGeneratorGender'}
-                  onChange={(option) => {
-                    setGender(option);
-                  }}
-                  className={'flex-grow-1 mr-3'} />
+          <Select
+            options={genderOptions}
+            id={'nameGeneratorGender'}
+            onChange={(option) => {
+              setGender(option);
+            }}
+            className={'flex-grow-1 mr-3'}
+          />
         </div>
         <div className={classNames(className, 'g-col-6')}>
-          <label className='form-check-label' htmlFor={'nameGeneratorRace'}>
+          <label className="form-check-label" htmlFor={'nameGeneratorRace'}>
             Race
           </label>
-          <AsyncSelect loadOptions={getRaces}
-                       cacheOptions
-                       defaultOptions
-                       id={'nameGeneratorRace'}
-                       onChange={(option) => {
-                         setRace(option);
-                       }}
-                       className={'flex-grow-1'} />
+          <AsyncSelect
+            loadOptions={getRaces}
+            cacheOptions
+            defaultOptions
+            id={'nameGeneratorRace'}
+            onChange={(option) => {
+              setRace(option);
+            }}
+            className={'flex-grow-1'}
+          />
         </div>
       </div>
     </div>

@@ -2,6 +2,7 @@ import React from 'react';
 import {
   MonsterGeneratorFormFields,
   MonsterProps,
+  RandomNameResult,
   SelectOption,
 } from '../../../utilities/types';
 import {
@@ -112,7 +113,7 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
 
   const watchMonsterName = watch('name', monsterForm.name);
   const onSubmit = (data) => {
-    props.setMonster(getMonsterObject(data));
+    // props.setMonster(getMonsterObject(data));
   };
 
   const handleGenerateName = async (gender, race) => {
@@ -120,7 +121,7 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
       race ? race : 'human'
     }`;
     try {
-      const response = await axios.get(apiURL);
+      const response = await axios.get<RandomNameResult>(apiURL);
       setValue('name', response.data.name);
     } catch (error) {
       console.error(error);

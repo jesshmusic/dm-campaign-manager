@@ -8,15 +8,15 @@ import { SelectProps } from './FormSelect';
 import classNames from 'classnames';
 
 const FormSelectAsync = ({
-                           name,
-                           label,
-                           className,
-                           isMulti,
-                           getOptions,
-                           placeholder,
-                           defaultOptions = true,
-                           isClearable = false
-                         }: SelectProps) => {
+  name,
+  label,
+  className,
+  isMulti,
+  getOptions,
+  placeholder,
+  defaultOptions = true,
+  isClearable = false,
+}: SelectProps) => {
   const [inputValue, setInputValue] = React.useState('');
 
   const handleInputChange = (newValue: string) => {
@@ -27,20 +27,22 @@ const FormSelectAsync = ({
 
   return (
     <div className={classNames(className, 'mb-3')}>
-      <label htmlFor={name} className='form-label'>{label}</label>
+      <label htmlFor={name} className="form-label">
+        {label}
+      </label>
       <div>
         <AsyncSelect
           isMulti={isMulti}
           cacheOptions
           defaultOptions={defaultOptions}
           isClearable={isClearable}
-          searchable
+          isSearchable
           onInputChange={handleInputChange}
           loadOptions={getOptions}
         />
       </div>
     </div>
   );
-}
+};
 
 export default FormSelectAsync;

@@ -189,12 +189,27 @@ export type MonsterInfoData = {
   value: string | number | boolean;
 };
 
+export type MonsterCRCalcResult = {
+  name: string;
+  data: {
+    xp: number;
+    prof_bonus: number;
+    armorClass: number;
+    hit_points_min: number;
+    hit_points_max: number;
+    attack_bonus: number;
+    damage_min: number;
+    damage_max: number;
+    save_dc: number;
+  };
+};
+
 export interface MonsterProps {
   alignment: string;
   armorClass: number;
   attackBonus: number;
   challengeRating: string;
-  challengeString: string;
+  challengeString?: string;
   charisma: number;
   constitution: number;
   dexterity: number;
@@ -288,6 +303,11 @@ export type RaceSummary = {
   slug: string;
 };
 
+export interface RaceResults {
+  count: number;
+  results: RaceSummary[];
+}
+
 export type AbilityBonusOption = {
   ability: string;
   bonus: number;
@@ -313,6 +333,10 @@ export type RaceProps = {
 export type RaceTrait = {
   name: string;
   desc: string[];
+};
+
+export type RandomNameResult = {
+  name: string;
 };
 
 type Resistance = {
