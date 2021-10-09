@@ -62,9 +62,6 @@
     "webpack-dev-server": "^3.11.2"
   },
   "version": "0.1.0",
-  "scripts": {
-    "postinstall": "npm rebuild node-sass"
-  },
   "devDependencies": {
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-react": "^7.25.1",
