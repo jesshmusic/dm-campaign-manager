@@ -2,10 +2,11 @@
 
 .sideBar {
   background-color: $dark-red;
+  border-right: 0.25rem solid $orange;
   display: flex;
   flex: 0 0 20rem;
   flex-direction: column;
-  padding: 0 1rem;
+  padding: 3rem 1rem 0;
 }
 
 .divider {

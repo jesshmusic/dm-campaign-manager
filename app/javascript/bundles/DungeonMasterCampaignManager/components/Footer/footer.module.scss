@@ -1,6 +1,8 @@
-@import '../../../stylesheets/application';
+@import '../../stylesheets/application';
 
 .wrapper {
+  background-color: $dark-red;
+  border-top: 0.25rem solid $orange;
   color: $white;
   padding: 1rem 2rem;
 
@@ -31,5 +33,10 @@
   &:hover {
     color: lighten($primary, 40%) !important;
   }
+}
+
+.siteTitle {
+  color: lighten($blood-red, 40%);
+  text-shadow: 1px 1px $black;
 }
 
