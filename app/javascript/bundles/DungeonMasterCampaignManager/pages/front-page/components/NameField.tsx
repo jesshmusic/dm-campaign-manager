@@ -6,7 +6,7 @@ import React, { useState } from 'react';
 import CopyField from '../../../components/CopyField';
 import NameOptions from '../../../components/forms/NameOptions';
 import axios from 'axios';
-import Frame from '../../../components/Frame';
+import Frame from '../../../components/Frame/Frame';
 import { RandomNameResult } from '../../../utilities/types';
 
 const NameField = () => {

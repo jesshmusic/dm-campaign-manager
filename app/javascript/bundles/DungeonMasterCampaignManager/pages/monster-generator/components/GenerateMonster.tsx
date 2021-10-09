@@ -16,7 +16,7 @@ import {
   getMonsterObject,
   hitPoints,
 } from '../services';
-import Frame from '../../../components/Frame';
+import Frame from '../../../components/Frame/Frame';
 import { useForm } from 'react-hook-form';
 import NameFormField from './NameFormField';
 import FormField from '../../../components/forms/FormField';

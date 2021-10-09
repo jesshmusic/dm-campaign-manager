@@ -1,6 +1,6 @@
 import React from 'react';
 import CopyField from '../../components/CopyField';
-import Frame from '../../components/Frame';
+import Frame from '../../components/Frame/Frame';
 
 const MonsterDisplay = ({ monster, shortDisplay = false }) => (
   <Frame

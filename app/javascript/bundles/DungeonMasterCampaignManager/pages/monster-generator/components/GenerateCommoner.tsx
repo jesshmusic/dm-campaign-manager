@@ -1,6 +1,6 @@
 import React from 'react';
 import NameOptions from '../../../components/forms/NameOptions';
-import Frame from '../../../components/Frame';
+import Frame from '../../../components/Frame/Frame';
 
 const GenerateCommoner = (props: { onFormSubmit: () => void }) => {
   return (

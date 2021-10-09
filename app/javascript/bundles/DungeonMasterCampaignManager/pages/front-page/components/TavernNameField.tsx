@@ -4,7 +4,7 @@
 
 import React, { useState } from 'react';
 import CopyField from '../../../components/CopyField';
-import Frame from '../../../components/Frame';
+import Frame from '../../../components/Frame/Frame';
 import axios from 'axios';
 import { RandomNameResult } from '../../../utilities/types';
 
