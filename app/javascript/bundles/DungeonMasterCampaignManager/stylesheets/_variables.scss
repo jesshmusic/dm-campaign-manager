@@ -504,10 +504,7 @@ $offcanvas-backdrop-opacity: $modal-backdrop-opacity;
     @media (min-width: map-get($container-max-widths, $breakpoint)) {
       @content;
     }
-  }
-
-    // If the key doesn't exist in the map
-  @else {
+  } @else {
     @warn 'Unfortunately, no value could be retrieved from `#{$breakpoint}`. '
       + 'Available breakpoints are: #{map-keys($container-max-widths)}.';
   }
