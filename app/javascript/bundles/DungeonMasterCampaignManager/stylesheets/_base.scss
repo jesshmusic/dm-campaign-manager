@@ -60,7 +60,7 @@ h3 {
 }
 
 .spinner {
-  animation: 10s linear infinite running loading-animation;
+  animation: loading-animation 10s linear infinite running;
   fill: $primary;
   stroke: $primary;
 }
