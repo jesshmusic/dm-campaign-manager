@@ -7,6 +7,9 @@ import CopyField from '../../../components/CopyField';
 import Frame from '../../../components/Frame/Frame';
 import axios from 'axios';
 import { RandomNameResult } from '../../../utilities/types';
+import { Colors } from '../../../utilities/enums';
+import Button from '../../../components/Button/Button';
+import { GiBeerStein } from 'react-icons/all';
 
 const TavernNameField = () => {
   const [nameValue, setNameValue] = useState('');
@@ -31,13 +34,13 @@ const TavernNameField = () => {
           text={nameValue}
         />
         <div id={'tavernNameGeneratorSubmit'}>
-          <button
-            className="btn btn-primary w-100"
-            type="button"
+          <Button
+            id={'tavernNameGeneratorSubmit'}
+            color={Colors.primary}
+            icon={<GiBeerStein />}
             onClick={handleGenerateTavernName}
-          >
-            Get Tavern Name
-          </button>
+            title="Get Tavern Name"
+          />
         </div>
       </form>
     </Frame>

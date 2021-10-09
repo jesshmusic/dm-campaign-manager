@@ -10,6 +10,7 @@ import {
   useTable,
 } from 'react-table';
 import {
+  GiArchiveResearch,
   TiArrowSortedDown,
   TiArrowSortedUp,
   TiArrowUnsorted,
@@ -17,6 +18,9 @@ import {
 import classNames from 'classnames';
 import DndSpinner from '../DndSpinners/DndSpinner';
 import { useForm } from 'react-hook-form';
+import Button from '../Button/Button';
+import { Colors } from '../../utilities/enums';
+import { GiSwordsPower } from 'react-icons/gi';
 
 export interface DataTableProps {
   columns: Array<Column<any>>;
@@ -102,13 +106,12 @@ const DataTable = ({
               className="form-control"
               placeholder="Search..."
             />
-            <button
-              className="btn btn-outline-secondary"
+            <Button
+              color={Colors.secondary}
+              title="Search"
               type="submit"
-              id="button-addon2"
-            >
-              Search
-            </button>
+              icon={<GiArchiveResearch />}
+            />
           </div>
           <p className="text-muted">{results} results.</p>
         </form>

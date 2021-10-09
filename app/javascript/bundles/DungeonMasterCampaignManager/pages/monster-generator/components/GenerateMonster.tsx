@@ -25,6 +25,8 @@ import FormSelect from '../../../components/forms/FormSelect';
 import MonsterTypeSelect from './MonsterTypeSelect';
 import { GiDiceTwentyFacesTwenty } from 'react-icons/gi/';
 import AbilityScoreField from './AbilityScoreField';
+import { Colors } from '../../../utilities/enums';
+import Button from '../../../components/Button/Button';
 
 type MonsterFormErrors = {
   name?: string;
@@ -131,10 +133,11 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
   const handleCalculateCR = async () => {
     try {
       const response = await calculateCR(getValues());
-      setValue('profBonus', response.data.prof_bonus);
-      setValue('xp', response.data.xp);
-      setValue('saveDC', response.data.save_dc);
-      setValue('challengeRating', response.name);
+      const challenge = response.data.challenge;
+      setValue('profBonus', challenge.data.prof_bonus);
+      setValue('xp', challenge.data.xp);
+      setValue('saveDC', challenge.data.save_dc);
+      setValue('challengeRating', challenge.name);
     } catch (error) {
       console.error(error);
     }
@@ -318,10 +321,12 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
         </div>
         <div>
           <div className="btn-group" aria-label="Character actions">
-            <button type="submit" className="btn btn-success">
-              <span>Generate Monster</span>{' '}
-              <GiDiceTwentyFacesTwenty size={30} className={'ms-3'} />
-            </button>
+            <Button
+              color={Colors.success}
+              title="Generate Monster"
+              type="submit"
+              icon={<GiDiceTwentyFacesTwenty size={30} />}
+            />
             {/*<button type='button' onClick={reset}>Reset</button>*/}
           </div>
         </div>

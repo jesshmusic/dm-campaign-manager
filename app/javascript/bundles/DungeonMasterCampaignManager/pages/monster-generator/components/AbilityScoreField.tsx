@@ -11,6 +11,9 @@ import {
   MonsterGeneratorFormFields,
 } from '../../../utilities/types';
 import FormField from '../../../components/forms/FormField';
+import { Colors } from '../../../utilities/enums';
+import { GiArchiveResearch } from 'react-icons/all';
+import Button from '../../../components/Button/Button';
 
 const removeSmallest = (numbers) => {
   const min = Math.min.apply(null, numbers);
@@ -60,14 +63,12 @@ const AbilityScoreField = (props: AbilityScoreFieldProps) => {
         <label>{label}</label>
       ) : (
         <div className={'d-grid pb-2'}>
-          <button
-            type="button"
+          <Button
+            color={Colors.warning}
             // onClick={() => handleRollAbility(input)}
-            className="btn btn-warning"
-          >
-            <span className={'sans-serif'}>{label}</span>{' '}
-            <GiDiceTwentyFacesTwenty size={25} className={'ms-3'} />
-          </button>
+            title={label}
+            icon={<GiDiceTwentyFacesTwenty />}
+          />
         </div>
       )}
       <FormField

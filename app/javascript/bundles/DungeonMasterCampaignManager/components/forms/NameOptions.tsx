@@ -5,6 +5,9 @@ import AsyncSelect from 'react-select/async';
 import axios from 'axios';
 import classNames from 'classnames';
 import { RaceResults } from '../../utilities/types';
+import Button from '../Button/Button';
+import { Colors } from '../../utilities/enums';
+import { GiBattleGear } from 'react-icons/all';
 
 const genderOptions: Options<any> = [
   { value: 'female', label: 'Female' },
@@ -49,14 +52,15 @@ const NameOptions = ({ className, onFormSubmit, title }: NameOptionsProps) => {
   return (
     <div className={className}>
       <div className={'form-group mb-3'}>
-        <button
+        <Button
           id={'nameGeneratorSubmit'}
-          className={'w-100 btn btn-primary'}
-          onClick={(event) => handleSubmit(event)}
-        >
-          Get{gender ? ` ${gender.label}` : ''}
-          {race ? ` ${race.label}` : ''} {title}
-        </button>
+          color={Colors.primary}
+          icon={<GiBattleGear />}
+          onClick={handleSubmit}
+          title={`Get ${gender ? gender.label : ''} ${
+            race ? race.label : ''
+          } ${title}`}
+        />
       </div>
       <div className="grid mb-3">
         <div className={classNames(className, 'g-col-6')}>

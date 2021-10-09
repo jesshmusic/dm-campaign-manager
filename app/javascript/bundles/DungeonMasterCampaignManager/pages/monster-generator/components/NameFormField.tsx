@@ -1,11 +1,14 @@
 import React from 'react';
 import { UseFormRegister } from 'react-hook-form';
 import { FieldValues } from '../../../utilities/types';
+import { Colors } from '../../../utilities/enums';
+import { GiTrashCan } from 'react-icons/gi';
+import Button from '../../../components/Button/Button';
 
 type NameFormFieldProps = {
   handleGenerateName: (gender: string, race: string) => void;
   register: UseFormRegister<FieldValues>;
-}
+};
 
 const NameFormField = (props: NameFormFieldProps) => {
   const { handleGenerateName, register } = props;
@@ -13,32 +16,30 @@ const NameFormField = (props: NameFormFieldProps) => {
   // const characterRace = values.characterRace && values.characterRace.value ? values.characterRace.value : 'human';
   return (
     <>
-      <label className='form-label'>Name</label>
+      <label className="form-label">Name</label>
       <input
-        className='form-control'
+        className="form-control"
         {...register('name', { required: true })}
         autoComplete={''}
         type={'text'}
         placeholder={'Monster name'}
       />
-      <div className='d-flex flex-column'>
-        <div className='btn-group btn-group-sm mt-1'>
-          <button className='btn btn-primary'
-                  type='button'
-                  onClick={() => handleGenerateName('female', characterRace)}>
-            Random Name
-          </button>
-          <button className='btn btn-secondary'
-                  type='button'
-                  onClick={() => handleGenerateName('male', characterRace)}>
-            Male
-          </button>
-          <button className='btn btn-success'
-                  type='button'
-                  onClick={() => handleGenerateName('female', characterRace)}>
-            Female
-          </button>
-        </div>
+      <div>
+        <Button
+          color={Colors.primary}
+          title="Random Name"
+          onClick={() => handleGenerateName('female', characterRace)}
+        />
+        <Button
+          color={Colors.secondary}
+          title="Male"
+          onClick={() => handleGenerateName('male', characterRace)}
+        />
+        <Button
+          color={Colors.success}
+          title="Female"
+          onClick={() => handleGenerateName('female', characterRace)}
+        />
       </div>
     </>
   );

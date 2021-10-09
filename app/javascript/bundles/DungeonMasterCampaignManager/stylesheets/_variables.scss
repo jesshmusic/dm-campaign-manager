@@ -20,20 +20,29 @@ $ash: #555752;
 $blood-red: #992e2e;
 $iris: #7b469b;
 $white: #fff;
-$gray-100: #f8f9fa;
-$gray-200: #e9ecef;
-$gray-300: #dee2e6;
-$gray-400: #ced4da;
-$gray-500: #adb5bd;
-$gray-600: #868e96;
-$gray-700: #495057;
-$gray-800: #343a40;
-$gray-900: #212529;
+$gray-100: lighten($ash, 30%);
+$gray-200: lighten($ash, 20%);
+$gray-300: lighten($ash, 10%);
+$gray-400: $ash;
+$gray-500: darken($ash, 10%);
+$gray-600: darken($ash, 20%);
+$gray-700: darken($ash, 30%);
+$gray-800: darken($ash, 40%);
+$gray-900: darken($ash, 50%);
 $black: #000;
 $grays: (100: $gray-100, 200: $gray-200, 300: $gray-300, 400: $gray-400, 500: $gray-500, 600: $gray-600, 700: $gray-700, 800: $gray-800, 900: $gray-900);
 $theme-colors: (primary: $primary, secondary: $brown, success: $green, info: $orange, warning: $yellow, danger: $blood-red, light: $gray-100, dark: $gray-800);
 $colors: (blue: $blue, indigo: $light-purple, purple: $iris, pink: $light-purple, red: $blood-red, orange: $orange, yellow: $yellow, green: $green, teal: $pine-green, cyan: $green, white: $white, gray: $gray-600, gray-dark: $gray-800);
 $theme-color-interval: 8%;
+
+$primary-dark: $dark-red;
+$secondary: $brown;
+$success: $green;
+$info: $yellow;
+$warning: $orange;
+$danger: $blood-red;
+$light: $gray-100;
+$dark: $gray-800;
 
 // Background Images
 $orange-border: url('/images/dndFrameOrange.png') 10;
@@ -96,6 +105,7 @@ $transition-collapse: height 0.35s ease;
 // Fonts
 $font-family-sans-serif: 'Scaly Sans', BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 $font-family-serif: 'Bookinsanity', serif;
+$font-family-mr-eaves: 'Mr Eaves', serif;
 $font-family-monospace: Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
 $font-family-base: $font-family-serif;
 $font-size-base: 1rem;

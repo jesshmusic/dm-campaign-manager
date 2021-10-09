@@ -190,17 +190,21 @@ export type MonsterInfoData = {
 };
 
 export type MonsterCRCalcResult = {
-  name: string;
   data: {
-    xp: number;
-    prof_bonus: number;
-    armorClass: number;
-    hit_points_min: number;
-    hit_points_max: number;
-    attack_bonus: number;
-    damage_min: number;
-    damage_max: number;
-    save_dc: number;
+    challenge: {
+      name: string;
+      data: {
+        xp: number;
+        prof_bonus: number;
+        armorClass: number;
+        hit_points_min: number;
+        hit_points_max: number;
+        attack_bonus: number;
+        damage_min: number;
+        damage_max: number;
+        save_dc: number;
+      };
+    };
   };
 };
 

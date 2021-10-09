@@ -13,7 +13,7 @@ h6 {
 h1 {
 
   color: $dark-red;
-  font-family: 'Mr Eaves', serif;
+  font-family: $font-family-mr-eaves;
   font-size: $h1-font-size;
 
   &.home {
@@ -25,13 +25,13 @@ h1 {
 h2 {
   border-bottom: 2px solid $yellow;
   color: $dark-red;
-  font-family: 'Mr Eaves', serif;
+  font-family: $font-family-mr-eaves;
   font-size: $h2-font-size;
 }
 
 h3 {
   color: $dark-red;
-  font-family: 'Mr Eaves', serif;
+  font-family: $font-family-mr-eaves;
   font-size: $h3-font-size;
 }
 
