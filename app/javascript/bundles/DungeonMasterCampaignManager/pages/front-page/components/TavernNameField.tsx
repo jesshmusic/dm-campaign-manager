@@ -4,8 +4,9 @@
 
 import React, { useState } from 'react';
 import CopyField from '../../../components/CopyField';
-import Frame from '../../../components/Frame';
+import Frame from '../../../components/Frame/Frame';
 import axios from 'axios';
+import { RandomNameResult } from '../../../utilities/types';
 
 const TavernNameField = () => {
   const [nameValue, setNameValue] = useState('');
@@ -13,7 +14,7 @@ const TavernNameField = () => {
   const handleGenerateTavernName = async () => {
     const apiURL = '/v1/random_tavern_name';
     try {
-      const response = await axios.get(apiURL);
+      const response = await axios.get<RandomNameResult>(apiURL);
       setNameValue(response.data.name);
     } catch (error) {
       setNameValue(error);

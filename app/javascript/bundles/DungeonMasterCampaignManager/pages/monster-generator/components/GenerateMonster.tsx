@@ -1,9 +1,22 @@
 import React from 'react';
-import { MonsterGeneratorFormFields, MonsterProps, SelectOption } from '../../../utilities/types';
-import { alignmentOptions, monsterSizeOptions } from '../../../utilities/character-utilities';
+import {
+  MonsterGeneratorFormFields,
+  MonsterProps,
+  RandomNameResult,
+  SelectOption,
+} from '../../../utilities/types';
+import {
+  alignmentOptions,
+  monsterSizeOptions,
+} from '../../../utilities/character-utilities';
 import axios from 'axios';
-import { abilityScoreModifier, calculateCR, getMonsterObject, hitPoints } from '../services';
-import Frame from '../../../components/Frame';
+import {
+  abilityScoreModifier,
+  calculateCR,
+  getMonsterObject,
+  hitPoints,
+} from '../services';
+import Frame from '../../../components/Frame/Frame';
 import { useForm } from 'react-hook-form';
 import NameFormField from './NameFormField';
 import FormField from '../../../components/forms/FormField';
@@ -22,14 +35,14 @@ type MonsterFormErrors = {
   intelligence?: string;
   strength?: string;
   wisdom?: string;
-}
+};
 
 export const senses: SelectOption[] = [
   { label: 'Blindsight', value: 'blindsight' },
   { label: 'Darkvision', value: 'darkvision' },
   { label: 'Tremorsense', value: 'tremorsense' },
   { label: 'Truesight', value: 'truesight' },
-  { label: 'Passive Perception', value: 'darkvision' }
+  { label: 'Passive Perception', value: 'darkvision' },
 ];
 
 export const speeds: SelectOption[] = [
@@ -38,73 +51,77 @@ export const speeds: SelectOption[] = [
   { label: 'Fly', value: 'fly' },
   { label: 'Hover', value: 'hover' },
   { label: 'Swim', value: 'swim' },
-  { label: 'Walk', value: 'walk' }
+  { label: 'Walk', value: 'walk' },
 ];
 
 type GenerateMonsterProps = {
   setMonster: (monster: MonsterProps) => void;
-}
+};
 
 const GenerateMonster = (props: GenerateMonsterProps) => {
-  const [monsterForm, setMonsterForm] = React.useState<MonsterGeneratorFormFields>({
-    name: 'New Monster',
-    alignment: 'Neutral',
-    alignmentOption: {
-      value: 'Neutral',
-      label: 'Neutral'
-    },
-    armorClass: 10,
-    attackBonus: 2,
-    damageBonus: 0,
-    challengeRating: '0',
-    hitDice: '1d6',
-    hitDiceNumber: 1,
-    hitDiceValue: 'd6',
-    hitPoints: 4,
-    languages: [],
-    monsterType: {
-      value: 'humanoid',
-      label: 'Humanoid'
-    },
-    profBonus: 2,
-    saveDC: 12,
-    size: {
-      label: 'Medium',
-      value: 'medium'
-    },
-    xp: 10,
-    strength: 10,
-    dexterity: 10,
-    constitution: 10,
-    intelligence: 10,
-    wisdom: 10,
-    charisma: 10,
-    conditions: [],
-    damageImmunities: [],
-    damageResistances: [],
-    damageVulnerabilities: [],
-    actions: [],
-    legendaryActions: [],
-    reactions: [],
-    specialAbilities: [],
-    senses: [],
-    speeds: [],
-    monsterProficiencies: []
-  });
+  const [monsterForm, setMonsterForm] =
+    React.useState<MonsterGeneratorFormFields>({
+      name: 'New Monster',
+      alignment: 'Neutral',
+      alignmentOption: {
+        value: 'Neutral',
+        label: 'Neutral',
+      },
+      armorClass: 10,
+      attackBonus: 2,
+      damageBonus: 0,
+      challengeRating: '0',
+      hitDice: '1d6',
+      hitDiceNumber: 1,
+      hitDiceValue: 'd6',
+      hitPoints: 4,
+      languages: [],
+      monsterType: {
+        value: 'humanoid',
+        label: 'Humanoid',
+      },
+      profBonus: 2,
+      saveDC: 12,
+      size: {
+        label: 'Medium',
+        value: 'medium',
+      },
+      xp: 10,
+      strength: 10,
+      dexterity: 10,
+      constitution: 10,
+      intelligence: 10,
+      wisdom: 10,
+      charisma: 10,
+      conditions: [],
+      damageImmunities: [],
+      damageResistances: [],
+      damageVulnerabilities: [],
+      actions: [],
+      legendaryActions: [],
+      reactions: [],
+      specialAbilities: [],
+      senses: [],
+      speeds: [],
+      monsterProficiencies: [],
+    });
 
-  const { control, getValues, handleSubmit, register, setValue, watch } = useForm<MonsterGeneratorFormFields>({
-    defaultValues: monsterForm
-  });
+  const { control, getValues, handleSubmit, register, setValue, watch } =
+    useForm<MonsterGeneratorFormFields>({
+      defaultValues: monsterForm,
+    });
 
   const watchMonsterName = watch('name', monsterForm.name);
   const onSubmit = (data) => {
-    props.setMonster(getMonsterObject(data));
+    // props.setMonster(getMonsterObject(data));
   };
 
   const handleGenerateName = async (gender, race) => {
-    const apiURL = `/v1/random_fantasy_name?random_monster_gender=${gender}&random_monster_race=${race ? race : 'human'}`;
+    const apiURL = `/v1/random_fantasy_name?random_monster_gender=${gender}&random_monster_race=${
+      race ? race : 'human'
+    }`;
     try {
-      const response = await axios.get(apiURL);
+      const response = await axios.get<RandomNameResult>(apiURL);
       setValue('name', response.data.name);
     } catch (error) {
       console.error(error);
@@ -134,7 +151,15 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
       case 'dexterity':
         break;
       case 'constitution':
-        setValue('hitPoints', hitPoints(value, getValues('hitDiceNumber'), getValues('hitDiceValue')), { shouldDirty: true });
+        setValue(
+          'hitPoints',
+          hitPoints(
+            value,
+            getValues('hitDiceNumber'),
+            getValues('hitDiceValue')
+          ),
+          { shouldDirty: true }
+        );
         break;
       case 'intelligence':
         break;
@@ -143,101 +168,159 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
       case 'charisma':
         break;
       case 'hitDiceNumber':
-        setValue('hitPoints', hitPoints(getValues('constitution'), value, getValues('hitDiceValue')), { shouldDirty: true });
+        setValue(
+          'hitPoints',
+          hitPoints(
+            getValues('constitution'),
+            value,
+            getValues('hitDiceValue')
+          ),
+          { shouldDirty: true }
+        );
         break;
     }
   };
 
   return (
-    <Frame title='Random Monster Generator' subtitle='Select options to create a new Monster'
-           className='random-monster-generator'>
-      <form onSubmit={handleSubmit(onSubmit)}
+    <Frame
+      title="Random Monster Generator"
+      subtitle="Select options to create a new Monster"
+      className="random-monster-generator"
+    >
+      <form
+        onSubmit={handleSubmit(onSubmit)}
         // className={classNames(validated && 'was-validated')}
-            noValidate>
-        <div className='mb-3'>
-          <NameFormField handleGenerateName={handleGenerateName}
-                         register={register} />
+        noValidate
+      >
+        <div className="mb-3">
+          <NameFormField
+            handleGenerateName={handleGenerateName}
+            register={register}
+          />
         </div>
-        <div className='grid' style={{ '--bs-columns': 4 } as React.CSSProperties}>
+        <div
+          className="grid"
+          style={{ '--bs-columns': 4 } as React.CSSProperties}
+        >
           <MonsterTypeSelect control={control} onChange={handleChange} />
-          <FormField label={'Subtype'}
-                     type={'text'}
-                     register={register}
-                     name={'monsterSubtype'} />
-          <FormSelect label={'Alignment'}
-                      name={'alignmentOption'}
-                      control={control}
-                      options={alignmentOptions} />
-          <FormSelect label={'Size'}
-                      name={'size'}
-                      control={control}
-                      onChange={handleChange}
-                      options={monsterSizeOptions} />
+          <FormField
+            label={'Subtype'}
+            type={'text'}
+            register={register}
+            name={'monsterSubtype'}
+          />
+          <FormSelect
+            label={'Alignment'}
+            name={'alignmentOption'}
+            control={control}
+            options={alignmentOptions}
+          />
+          <FormSelect
+            label={'Size'}
+            name={'size'}
+            control={control}
+            onChange={handleChange}
+            options={monsterSizeOptions}
+          />
         </div>
-        <div className='grid' style={{ '--bs-columns': 4 } as React.CSSProperties}>
-          <FormField label={'Armor Class'}
-                     onChange={handleChange}
-                     type={'number'}
-                     register={register}
-                     name={'armorClass'} />
-          <FormField label={'Hit Dice Count'}
-                     onChange={handleChange}
-                     type={'number'}
-                     register={register}
-                     name={'hitDiceNumber'} />
-          <FormField label={'Hit Dice Value'}
-                     type={'text'}
-                     register={register}
-                     name={'hitDiceValue'}
-                     readOnly />
-          <FormField label={'Hit Points'}
-                     type={'text'}
-                     register={register}
-                     name={'hitPoints'}
-                     readOnly />
-          <ChallengeRatingField onCalculateCr={handleCalculateCR} register={register} />
-          <FormField label={'XP'}
-                     type={'number'}
-                     register={register}
-                     name={'xp'}
-                     readOnly />
-          <FormField label={'Proficiency Bonus'}
-                     type={'number'}
-                     register={register}
-                     name={'profBonus'}
-                     readOnly />
+        <div
+          className="grid"
+          style={{ '--bs-columns': 4 } as React.CSSProperties}
+        >
+          <FormField
+            label={'Armor Class'}
+            onChange={handleChange}
+            type={'number'}
+            register={register}
+            name={'armorClass'}
+          />
+          <FormField
+            label={'Hit Dice Count'}
+            onChange={handleChange}
+            type={'number'}
+            register={register}
+            name={'hitDiceNumber'}
+          />
+          <FormField
+            label={'Hit Dice Value'}
+            type={'text'}
+            register={register}
+            name={'hitDiceValue'}
+            readOnly
+          />
+          <FormField
+            label={'Hit Points'}
+            type={'text'}
+            register={register}
+            name={'hitPoints'}
+            readOnly
+          />
+          <ChallengeRatingField
+            onCalculateCr={handleCalculateCR}
+            register={register}
+          />
+          <FormField
+            label={'XP'}
+            type={'number'}
+            register={register}
+            name={'xp'}
+            readOnly
+          />
+          <FormField
+            label={'Proficiency Bonus'}
+            type={'number'}
+            register={register}
+            name={'profBonus'}
+            readOnly
+          />
         </div>
         <h4>Ability Scores</h4>
-        <div className='grid mb-3' style={{ '--bs-columns': 6 } as React.CSSProperties}>
-          <AbilityScoreField label={'STR'}
-                             onChangeAbility={handleChange}
-                             register={register}
-                             name={'strength'} />
-          <AbilityScoreField label={'DEX'}
-                             onChangeAbility={handleChange}
-                             register={register}
-                             name={'dexterity'} />
-          <AbilityScoreField label={'CON'}
-                             onChangeAbility={handleChange}
-                             register={register}
-                             name={'constitution'} />
-          <AbilityScoreField label={'INT'}
-                             onChangeAbility={handleChange}
-                             register={register}
-                             name={'intelligence'} />
-          <AbilityScoreField label={'WIS'}
-                             onChangeAbility={handleChange}
-                             register={register}
-                             name={'wisdom'} />
-          <AbilityScoreField label={'CHA'}
-                             onChangeAbility={handleChange}
-                             register={register}
-                             name={'charisma'} />
+        <div
+          className="grid mb-3"
+          style={{ '--bs-columns': 6 } as React.CSSProperties}
+        >
+          <AbilityScoreField
+            label={'STR'}
+            onChangeAbility={handleChange}
+            register={register}
+            name={'strength'}
+          />
+          <AbilityScoreField
+            label={'DEX'}
+            onChangeAbility={handleChange}
+            register={register}
+            name={'dexterity'}
+          />
+          <AbilityScoreField
+            label={'CON'}
+            onChangeAbility={handleChange}
+            register={register}
+            name={'constitution'}
+          />
+          <AbilityScoreField
+            label={'INT'}
+            onChangeAbility={handleChange}
+            register={register}
+            name={'intelligence'}
+          />
+          <AbilityScoreField
+            label={'WIS'}
+            onChangeAbility={handleChange}
+            register={register}
+            name={'wisdom'}
+          />
+          <AbilityScoreField
+            label={'CHA'}
+            onChangeAbility={handleChange}
+            register={register}
+            name={'charisma'}
+          />
         </div>
         <div>
-          <div className='btn-group' aria-label='Character actions'>
-            <button type='submit' className='btn btn-success'>
-              <span>Generate Monster</span> <GiDiceTwentyFacesTwenty size={30} className={'ms-3'} />
+          <div className="btn-group" aria-label="Character actions">
+            <button type="submit" className="btn btn-success">
+              <span>Generate Monster</span>{' '}
+              <GiDiceTwentyFacesTwenty size={30} className={'ms-3'} />
             </button>
             {/*<button type='button' onClick={reset}>Reset</button>*/}
           </div>
@@ -245,7 +328,6 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
       </form>
     </Frame>
   );
-
 
   // const { setMonster } = props;
   // const [monster] = React.useState({
@@ -381,7 +463,6 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
   //     />
   //   </Frame>
   // );
-
 };
 
 export default GenerateMonster;

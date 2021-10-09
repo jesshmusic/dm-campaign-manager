@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import Toast from 'react-bootstrap/Toast';
 import { GiBroadsword, GiSkullCrossedBones } from 'react-icons/gi';
 
 type AlertDismissibleProps = {
@@ -8,7 +7,7 @@ type AlertDismissibleProps = {
   messageText: string;
   messageHeading: string;
   messageVariant: string;
-}
+};
 
 const AlertDismissible = (props: AlertDismissibleProps) => {
   const {
@@ -16,7 +15,7 @@ const AlertDismissible = (props: AlertDismissibleProps) => {
     messageId,
     messageText,
     messageHeading,
-    messageVariant
+    messageVariant,
   } = props;
 
   useEffect(() => {
@@ -27,24 +26,26 @@ const AlertDismissible = (props: AlertDismissibleProps) => {
   });
 
   return (
-    <Toast show={true}
-           onClose={() => dismissFlashMessage(messageId)}
-           style={{
-             position: 'absolute',
-             top: 20,
-             right: 20
-           }}>
-      <Toast.Header>
-        {messageVariant === 'success' ? (
-          <GiBroadsword />
-        ) : (
-          <GiSkullCrossedBones />
-        )}
-        <strong className='mr-auto'>{messageHeading}</strong>
-        <small>{messageVariant}</small>
-      </Toast.Header>
-      <Toast.Body>{messageText}</Toast.Body>
-    </Toast>
+    <div className="position-fixed top-0 end-0 p-3" style={{ zIndex: 11 }}>
+      <div
+        id="liveToast"
+        className="toast"
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
+      >
+        <div className="toast-header">
+          {messageVariant === 'success' ? (
+            <GiBroadsword />
+          ) : (
+            <GiSkullCrossedBones />
+          )}
+          <strong className="mr-auto">{messageHeading}</strong>
+          <small>{messageVariant}</small>
+        </div>
+        <div className="toast-body">{messageText}</div>
+      </div>
+    </div>
   );
 };
 

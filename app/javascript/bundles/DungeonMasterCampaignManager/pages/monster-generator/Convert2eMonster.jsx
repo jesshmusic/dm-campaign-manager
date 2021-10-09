@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import Frame from '../../components/Frame';
+import Frame from '../../components/Frame/Frame';
 import { useForm } from 'react-hook-form';
 
 const Convert2eMonster = (props) => {
@@ -15,11 +15,11 @@ const Convert2eMonster = (props) => {
       alignment: 'Neutral',
       characterAlignment: {
         value: 'Neutral',
-        label: 'Neutral'
+        label: 'Neutral',
       },
       characterRace: {
         value: 'human',
-        label: 'Human'
+        label: 'Human',
       },
       armorClass: 10,
       hitPoints: 10,
@@ -33,9 +33,9 @@ const Convert2eMonster = (props) => {
       numberOfAttacks: 1,
       speed: '12',
       actions: [],
-      dndClasses: []
+      dndClasses: [],
     },
-    validated: false
+    validated: false,
   });
 
   // const handleSubmit = async (values) => {
@@ -85,9 +85,10 @@ const Convert2eMonster = (props) => {
   // };
   const { monster, validated } = state;
   return (
-    <Frame title='D&D 2nd Edition Monster Convertor'
-           subtitle='Enter stats for a 2E Monster to generate its 5E equivalent (roughly) for humanoid Monsters.'>
-
+    <Frame
+      title="D&D 2nd Edition Monster Convertor"
+      subtitle="Enter stats for a 2E Monster to generate its 5E equivalent (roughly) for humanoid Monsters."
+    >
       {/* <Form noValidate validated={ validated } onSubmit={ handleSubmit }>
       //   <Row>
       //     <FormField label={ 'Name' }
@@ -169,12 +170,12 @@ const Convert2eMonster = (props) => {
       //   </Row>
       //   <Row className={ 'mb-4' }>
       //     <ButtonGroup aria-label='Character actions'>
-      {/*      <Button type='submit'>Convert Monster</Button>*/ }
-      {/*      <Button type='button'*/ }
-      {/*              variant={ 'secondary' }>Reset</Button>*/ }
-      {/*    </ButtonGroup>*/ }
-      {/*  </Row>*/ }
-      {/*</Form>*/ }
+      {/*      <Button type='submit'>Convert Monster</Button>*/}
+      {/*      <Button type='button'*/}
+      {/*              variant={ 'secondary' }>Reset</Button>*/}
+      {/*    </ButtonGroup>*/}
+      {/*  </Row>*/}
+      {/*</Form>*/}
     </Frame>
   );
 };

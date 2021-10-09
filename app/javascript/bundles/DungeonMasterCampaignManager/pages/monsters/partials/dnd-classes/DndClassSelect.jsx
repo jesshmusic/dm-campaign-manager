@@ -3,9 +3,8 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import FormSelectAsync from '../../../../components/forms/FormSelectAsync';
-import {filterOptionsWithData} from '../../../../utilities/character-utilities';
+import { filterOptionsWithData } from '../../../../utilities/character-utilities';
 
 const getDndClasses = (inputValue, callback) => {
   fetch(`/v1/dnd_classes.json?search=${inputValue}`)
@@ -16,17 +15,18 @@ const getDndClasses = (inputValue, callback) => {
     });
 };
 
-const DndClassSelect = ({characterClass, colWidth}) => (
+const DndClassSelect = ({ characterClass, colWidth }) => (
   <FormSelectAsync
     label={'Class'}
     colWidth={colWidth}
     getOptions={getDndClasses}
-    name={`${characterClass}.dndClass`} />
+    name={`${characterClass}.dndClass`}
+  />
 );
 
-DndClassSelect.propTypes = {
-  characterClass: PropTypes.string.isRequired,
-  colWidth: PropTypes.string.isRequired,
-};
+// DndClassSelect.propTypes = {
+//   characterClass: PropTypes.string.isRequired,
+//   colWidth: PropTypes.string.isRequired,
+// };
 
 export default DndClassSelect;

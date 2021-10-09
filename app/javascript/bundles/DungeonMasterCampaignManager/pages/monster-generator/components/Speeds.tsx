@@ -1,45 +1,53 @@
-import Row from 'react-bootstrap/Row';
+import React from 'react';
 import FormSelect from '../../../components/forms/FormSelect';
 import FormField from '../../../components/forms/FormField';
-import Form from 'react-bootstrap/Form';
-import Col from 'react-bootstrap/Col';
-import Button from 'react-bootstrap/Button';
 import { GiTrashCan } from 'react-icons/gi';
-import React from 'react';
 import { speeds } from './GenerateMonster';
 // import { FieldArray } from 'react-final-form-arrays';
 import { UseFormRegister } from 'react-hook-form';
-import { FieldValues, MonsterGeneratorFormFields } from '../../../utilities/types';
+import {
+  FieldValues,
+  MonsterGeneratorFormFields,
+} from '../../../utilities/types';
 
-const Speeds = (props: { push: (speeds1: string, p: {}) => void, register: UseFormRegister<FieldValues> }) => {
+const Speeds = (props: {
+  push: (speeds1: string, p: {}) => void;
+  register: UseFormRegister<FieldValues>;
+}) => {
   const name = 'senses[0]';
   return (
-    <div className='mb-3'>
+    <div className="mb-3">
       <h4>Speeds</h4>
       <div>
-        <Row>
-          <FormSelect label={'Speed'}
-                      name={`${name}.name` as keyof MonsterGeneratorFormFields}
-                      options={speeds} />
-          <FormField label={'Value'}
-                     type={'text'}
-                     register={props.register}
-                     name={`${name}.value` as keyof MonsterGeneratorFormFields} />
-          <Form.Group as={Col} md={'1'}>
-            <Form.Label>Remove</Form.Label>
-            <Button title={'Remove'}
-              // onClick={() => fields.remove(index)}
-                    variant={'link'}
-                    className={'py-0'}>
-              <GiTrashCan size={32} />
-            </Button>
-          </Form.Group>
-        </Row>
+        <div className="row">
+          <FormSelect
+            label={'Speed'}
+            name={`${name}.name` as keyof MonsterGeneratorFormFields}
+            options={speeds}
+          />
+          <FormField
+            label={'Value'}
+            type={'text'}
+            register={props.register}
+            name={`${name}.value` as keyof MonsterGeneratorFormFields}
+          />
+          <label>Remove</label>
+          <button
+            title={'Remove'}
+            // onClick={() => fields.remove(index)}
+            className="btn btn-link py-0"
+          >
+            <GiTrashCan size={32} />
+          </button>
+        </div>
       </div>
-      <Button type='button'
-              onClick={() => true}
-              variant={'info'}
-              size='lg'>+</Button>
+      <button
+        type="button"
+        className="btn btn-lg btn-info"
+        onClick={() => true}
+      >
+        +
+      </button>
     </div>
   );
 };

@@ -17,18 +17,18 @@
 
 .breadcrumbItem {
   + .breadcrumbItem {
-    padding-left: $breadcrumb-item-padding;
+    padding-left: 0.5rem;
 
     &::before {
-      color: $breadcrumb-divider-color;
+      color: $dark-red;
       content: '|';
       float: left;
-      padding-right: $breadcrumb-item-padding-x;
+      padding-right: 1rem;
     }
   }
 
   &.active {
-    color: $breadcrumb-active-color;
+    color: $gray-600;
   }
 }
 
