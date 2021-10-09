@@ -1,6 +1,6 @@
 import React from 'react';
-import { NavLink } from '../layout/MenuBar/MenuBar';
 import { UserProps } from '../../utilities/types';
+import { NavLink } from '../SideBar/SideBar';
 
 const styles = require('./footer.module.scss');
 
