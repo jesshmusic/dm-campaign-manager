@@ -314,6 +314,8 @@ $pagination-disabled-color: $gray-600;
 $pagination-disabled-bg: $white;
 $pagination-disabled-border-color: #ddd;
 
+$accordion-icon-color: $white;
+
 
 @mixin respond-to($breakpoint) {
   // If the key exists in the map

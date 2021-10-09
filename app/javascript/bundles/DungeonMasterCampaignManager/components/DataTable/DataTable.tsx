@@ -20,7 +20,10 @@ import DndSpinner from '../DndSpinners/DndSpinner';
 import { useForm } from 'react-hook-form';
 import Button from '../Button/Button';
 import { Colors } from '../../utilities/enums';
-import { GiSwordsPower } from 'react-icons/gi';
+import Select from 'react-select';
+import { SelectOption } from '../../utilities/types';
+
+const styles = require('./data-table.module.scss');
 
 export interface DataTableProps {
   columns: Array<Column<any>>;
@@ -164,10 +167,7 @@ const DataTable = ({
         </tbody>
       </table>
       {dataTable.pageCount > 1 && (
-        <nav
-          aria-label="Table Pagination"
-          className="d-md-flex justify-content-between align-items-baseline"
-        >
+        <nav aria-label="Table Pagination" className={styles.pagination}>
           <ReactPaginate
             previousLabel={'previous'}
             nextLabel={'next'}
@@ -187,43 +187,21 @@ const DataTable = ({
             containerClassName={'pagination'}
             activeClassName={'active'}
           />
-          <div className="fs-4 mr-eaves">
-            page{' '}
-            <span className="text-primary">
-              {dataTable.state.pageIndex + 1}
-            </span>
+          <div className={styles.pageNumber}>
+            page <span>{dataTable.state.pageIndex + 1}</span>
             &nbsp;of&nbsp;
-            <span className="text-primary">{dataTable.pageOptions.length}</span>
+            <span>{dataTable.pageOptions.length}</span>
           </div>
-          <div className="d-flex align-items-center">
-            <span className="d-flex me-2 align-items-center sans-serif">
-              Go to page:&nbsp;
-              <input
-                className="form-control"
-                type="number"
-                defaultValue={dataTable.pageIndex + 1}
-                onChange={(e) => {
-                  const page = e.target.value ? Number(e.target.value) - 1 : 0;
-                  dataTable.gotoPage(page);
-                }}
-                style={{ width: '100px' }}
-              />
-            </span>{' '}
-            <select
-              className="form-select sans-serif"
-              value={dataTable.pageSize}
-              onChange={(e) => {
-                dataTable.setPageSize(Number(e.target.value));
-              }}
-            >
-              {[perPage, perPage * 2, perPage * 3, perPage * 4].map(
-                (pageSize) => (
-                  <option key={pageSize} value={pageSize}>
-                    Show {pageSize}
-                  </option>
-                )
+          <div className={styles.pageForm}>
+            <Select<SelectOption>
+              options={[perPage, perPage * 2, perPage * 3, perPage * 4].map(
+                (pageSize) => ({ label: `Show ${pageSize}`, value: pageSize })
               )}
-            </select>
+              defaultValue={{ label: `Show ${perPage}`, value: perPage }}
+              onChange={(option) => {
+                dataTable.setPageSize(Number(option ? option.value : perPage));
+              }}
+            />
           </div>
         </nav>
       )}

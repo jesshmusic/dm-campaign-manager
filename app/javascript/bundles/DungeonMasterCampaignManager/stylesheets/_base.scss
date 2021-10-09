@@ -35,6 +35,14 @@ h3 {
   font-size: $h3-font-size;
 }
 
+.accordion-button {
+  color: $white;
+
+  svg {
+    margin-right: 0.5rem;
+  }
+}
+
 .navbar {
 
   .nav-link {

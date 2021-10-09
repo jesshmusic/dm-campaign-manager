@@ -1,0 +1,23 @@
+@import '../../stylesheets/variables';
+
+.pagination {
+  @include respond-to(md) {
+    align-items: baseline;
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
+.pageNumber {
+  font-family: $font-family-mr-eaves;
+  font-size: $font-size-lg;
+
+  span {
+    color: $primary;
+  }
+}
+
+.pageForm {
+  align-items: center;
+  display: flex;
+}
