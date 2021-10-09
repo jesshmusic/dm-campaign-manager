@@ -3,7 +3,7 @@ import rest from '../../actions/api';
 import { connect } from 'react-redux';
 import { UserProps } from '../../utilities/types';
 import { Link } from '@reach/router';
-import { GiArchiveResearch, GiDragonHead } from 'react-icons/all';
+import { GiDragonHead } from 'react-icons/all';
 
 const styles = require('./sidebar.module.scss');
 
@@ -11,7 +11,7 @@ const NavLink = (props) => (
   <Link
     {...props}
     getProps={({ isCurrent }) => ({
-      className: isCurrent ? styles.navLinkActive : styles.navLink,
+      className: isCurrent ? styles.navLinkActive : styles.navLink
     })}
   />
 );
@@ -20,7 +20,7 @@ const NavLinkSmall = (props) => (
   <Link
     {...props}
     getProps={({ isCurrent }) => ({
-      className: isCurrent ? styles.navLinkSmallActive : styles.navLinkSmall,
+      className: isCurrent ? styles.navLinkSmallActive : styles.navLinkSmall
     })}
   />
 );
@@ -44,19 +44,19 @@ const SideBar = (props: {
 
   return (
     <nav className={styles.sideBar}>
-      <form className="d-flex pt-5">
-        <div className={styles.searchBar}>
-          <input
-            type="search"
-            placeholder="Search"
-            aria-label="Search"
-            aria-describedby="button-addon2"
-          />
-          <button type="submit" id="button-addon2">
-            <GiArchiveResearch size={30} />
-          </button>
-        </div>
-      </form>
+      {/*<form className="d-flex pt-5">*/}
+      {/*  <div className={styles.searchBar}>*/}
+      {/*    <input*/}
+      {/*      type="search"*/}
+      {/*      placeholder="Search"*/}
+      {/*      aria-label="Search"*/}
+      {/*      aria-describedby="button-addon2"*/}
+      {/*    />*/}
+      {/*    <button type="submit" id="button-addon2">*/}
+      {/*      <GiArchiveResearch size={30} />*/}
+      {/*    </button>*/}
+      {/*  </div>*/}
+      {/*</form>*/}
       <NavLink to={'/'}>
         Home <GiDragonHead />
       </NavLink>
@@ -121,8 +121,8 @@ const SideBar = (props: {
       ) : (
         <button
           className={styles.navLink}
-          data-bs-toggle="modal"
-          data-bs-target="#userSigninModal"
+          data-bs-toggle='modal'
+          data-bs-target='#userSigninModal'
         >
           Sign In
         </button>
@@ -130,10 +130,11 @@ const SideBar = (props: {
     </nav>
   );
 };
+
 function mapStateToProps(state) {
   return {
     sections: state.sections.sections,
-    user: state.users.currentUser,
+    user: state.users.currentUser
   };
 }
 
@@ -144,7 +145,7 @@ function mapDispatchToProps(dispatch) {
     },
     getSections: () => {
       dispatch(rest.actions.getSections());
-    },
+    }
   };
 }
 
