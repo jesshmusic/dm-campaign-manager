@@ -3,7 +3,6 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import PageContainer from '../../../containers/PageContainer';
 import PageTitle from '../../../components/layout/PageTitle/PageTitle';
 import { Column } from 'react-table';
@@ -19,13 +18,19 @@ type ItemsListProps = {
   pageTitle: string;
 };
 
-const ItemsList = ({ columns, data, onSearch, pageTitle, itemType }: ItemsListProps) => {
+const ItemsList = ({
+  columns,
+  data,
+  onSearch,
+  pageTitle,
+  itemType,
+}: ItemsListProps) => {
   const breadCrumbs =
     itemType !== ItemType.all
       ? [
-        { url: '/app/items/', isActive: false, title: 'Items' },
-        { isActive: true, title: pageTitle }
-      ]
+          { url: '/app/items/', isActive: false, title: 'Items' },
+          { isActive: true, title: pageTitle },
+        ]
       : [{ isActive: true, title: pageTitle }];
 
   return (
@@ -49,13 +54,13 @@ const ItemsList = ({ columns, data, onSearch, pageTitle, itemType }: ItemsListPr
   );
 };
 
-ItemsList.propTypes = {
-  columns: PropTypes.array.isRequired,
-  items: PropTypes.array.isRequired,
-  flashMessages: PropTypes.array,
-  getItems: PropTypes.func,
-  pageTitle: PropTypes.string.isRequired,
-  user: PropTypes.object
-};
+// ItemsList.propTypes = {
+//   columns: PropTypes.array.isRequired,
+//   items: PropTypes.array.isRequired,
+//   flashMessages: PropTypes.array,
+//   getItems: PropTypes.func,
+//   pageTitle: PropTypes.string.isRequired,
+//   user: PropTypes.object
+// };
 
 export default ItemsList;

@@ -1,10 +1,10 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { NavLink } from '../MenuBar/MenuBar';
+import { UserProps } from '../../../utilities/types';
 
 const styles = require('./footer.module.scss');
 
-const Footer = () => {
+const Footer = (props: { user?: UserProps }) => {
   return (
     <div className={styles.wrapper}>
       <div className={styles.left}>
@@ -34,10 +34,6 @@ const Footer = () => {
       </div>
     </div>
   );
-};
-
-Footer.propTypes = {
-  user: PropTypes.object,
 };
 
 export default Footer;
