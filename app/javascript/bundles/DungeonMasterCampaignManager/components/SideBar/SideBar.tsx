@@ -2,28 +2,10 @@ import React from 'react';
 import rest from '../../actions/api';
 import { connect } from 'react-redux';
 import { UserProps } from '../../utilities/types';
-import { Link } from '@reach/router';
 import { GiDragonHead } from 'react-icons/all';
+import { NavLink, NavLinkSmall } from '../NavLink/NavLink';
 
 const styles = require('./sidebar.module.scss');
-
-export const NavLink = (props) => (
-  <Link
-    {...props}
-    getProps={({ isCurrent }) => ({
-      className: isCurrent ? styles.navLinkActive : styles.navLink
-    })}
-  />
-);
-
-const NavLinkSmall = (props) => (
-  <Link
-    {...props}
-    getProps={({ isCurrent }) => ({
-      className: isCurrent ? styles.navLinkSmallActive : styles.navLinkSmall
-    })}
-  />
-);
 
 const SideBar = (props: {
   user: UserProps;
@@ -121,8 +103,8 @@ const SideBar = (props: {
       ) : (
         <button
           className={styles.navLink}
-          data-bs-toggle='modal'
-          data-bs-target='#userSigninModal'
+          data-bs-toggle="modal"
+          data-bs-target="#userSigninModal"
         >
           Sign In
         </button>
@@ -134,7 +116,7 @@ const SideBar = (props: {
 function mapStateToProps(state) {
   return {
     sections: state.sections.sections,
-    user: state.users.currentUser
+    user: state.users.currentUser,
   };
 }
 
@@ -145,7 +127,7 @@ function mapDispatchToProps(dispatch) {
     },
     getSections: () => {
       dispatch(rest.actions.getSections());
-    }
+    },
   };
 }
 
