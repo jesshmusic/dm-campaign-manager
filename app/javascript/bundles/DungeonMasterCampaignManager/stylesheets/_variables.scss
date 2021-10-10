@@ -67,6 +67,7 @@ $enable-print-styles: true;
 
 // Shadow
 $box-shadow: 5px 7px 7px rgba($gray-900, 0.5);
+$box-shadow-sm: 3px 5px 5px rgba($gray-900, 0.5);
 
 
 // Body
@@ -329,4 +330,22 @@ $accordion-icon-color: $white;
     @warn 'Unfortunately, no value could be retrieved from `#{$breakpoint}`. '
       + 'Available breakpoints are: #{map-keys($container-max-widths)}.';
   }
+}
+
+@mixin form-input {
+  appearance: none;
+  background-clip: padding-box;
+  background-color: transparent;
+  border: 0;
+  border-bottom: 0.0625rem solid $body-color;
+  border-radius: 0;
+  color: $body-color;
+  display: block;
+  font-size: 1rem;
+  font-weight: normal;
+  line-height: 1.25;
+  outline: none;
+  padding: 0.5rem 0.75rem 0.5rem 0;
+  transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+  width: 100%;
 }

@@ -2,7 +2,27 @@ import React from 'react';
 import rest from '../../actions/api';
 import { connect } from 'react-redux';
 import { UserProps } from '../../utilities/types';
-import { GiDragonHead } from 'react-icons/all';
+import {
+  AiOutlineHome,
+  BiLogIn,
+  BiLogOut,
+  GiCapeArmor,
+  GiChestArmor,
+  GiDragonHead,
+  GiDwarfFace,
+  GiHomeGarage,
+  GiHorseHead,
+  GiMagicAxe,
+  GiMagicPalm,
+  GiMagicPotion,
+  GiMonsterGrasp,
+  GiOrcHead,
+  GiPerson,
+  GiSwapBag,
+  GiSwordArray,
+  GiToolbox,
+  RiLoginCircleFill,
+} from 'react-icons/all';
 import { NavLink, NavLinkSmall } from '../NavLink/NavLink';
 
 const styles = require('./sidebar.module.scss');
@@ -39,65 +59,100 @@ const SideBar = (props: {
       {/*    </button>*/}
       {/*  </div>*/}
       {/*</form>*/}
-      <NavLink to={'/'}>
-        Home <GiDragonHead />
+      <NavLink to={'/'} icon={<AiOutlineHome />} showActiveIcon>
+        Home
       </NavLink>
-      <NavLink to={'/app/classes'}>
-        Classes <GiDragonHead />
+      <NavLink to={'/app/classes'} icon={<GiPerson />} showActiveIcon>
+        Classes
       </NavLink>
-      <NavLink to={'/app/races'}>
-        Races <GiDragonHead />
+      <NavLink to={'/app/races'} icon={<GiDwarfFace />} showActiveIcon>
+        Races
       </NavLink>
-      <NavLink to={'/app/monsters'}>
-        Monsters <GiDragonHead />
+      <NavLink to={'/app/monsters'} icon={<GiMonsterGrasp />} showActiveIcon>
+        Monsters
       </NavLink>
-      <NavLink to={'/app/spells'}>
-        Spells <GiDragonHead />
+      <NavLink to={'/app/spells'} icon={<GiMagicPalm />} showActiveIcon>
+        Spells
       </NavLink>
       <div className={styles.divider}>Items and Equipment</div>
-      <NavLinkSmall to={`/app/items/armor`}>
-        Armor <GiDragonHead />
+      <NavLinkSmall
+        to={`/app/items/armor`}
+        icon={<GiCapeArmor />}
+        showActiveIcon
+      >
+        Armor
       </NavLinkSmall>
-      <NavLinkSmall to={`/app/items/gear`}>
-        Adventuring Gear <GiDragonHead />
+      <NavLinkSmall to={`/app/items/gear`} icon={<GiSwapBag />} showActiveIcon>
+        Adventuring Gear
       </NavLinkSmall>
-      <NavLinkSmall to={`/app/items/magic-items`}>
-        Magic Items <GiDragonHead />
+      <NavLinkSmall
+        to={`/app/items/magic-items`}
+        icon={<GiMagicPotion />}
+        showActiveIcon
+      >
+        Magic Items
       </NavLinkSmall>
-      <NavLinkSmall to={`/app/items/magic-armor`}>
-        Magic Armor <GiDragonHead />
+      <NavLinkSmall
+        to={`/app/items/magic-armor`}
+        icon={<GiChestArmor />}
+        showActiveIcon
+      >
+        Magic Armor
       </NavLinkSmall>
-      <NavLinkSmall to={`/app/items/magic-weapons`}>
-        Magic Weapons <GiDragonHead />
+      <NavLinkSmall
+        to={`/app/items/magic-weapons`}
+        icon={<GiMagicAxe />}
+        showActiveIcon
+      >
+        Magic Weapons
       </NavLinkSmall>
-      <NavLinkSmall to={`/app/items/vehicles`}>
-        Mounts & Vehicles <GiDragonHead />
+      <NavLinkSmall
+        to={`/app/items/vehicles`}
+        icon={<GiHorseHead />}
+        showActiveIcon
+      >
+        Mounts & Vehicles
       </NavLinkSmall>
-      <NavLinkSmall to={`/app/items/tools`}>
-        Tools <GiDragonHead />
+      <NavLinkSmall to={`/app/items/tools`} icon={<GiToolbox />} showActiveIcon>
+        Tools
       </NavLinkSmall>
-      <NavLinkSmall to={`/app/items/weapons`}>
-        Weapons <GiDragonHead />
+      <NavLinkSmall
+        to={`/app/items/weapons`}
+        icon={<GiSwordArray />}
+        showActiveIcon
+      >
+        Weapons
       </NavLinkSmall>
       <div className={styles.divider}>Rules</div>
-      {sections.map((section) => (
-        <NavLinkSmall to={`/app/sections/${section.slug}`}>
-          {section.name} <GiDragonHead />
+      {sections.map((section, index) => (
+        <NavLinkSmall
+          to={`/app/sections/${section.slug}`}
+          key={`section-${index}`}
+          showActiveIcon
+        >
+          {section.name}
         </NavLinkSmall>
       ))}
       <div className={styles.divider}>User</div>
       {user && user.role === 'admin' ? (
-        <NavLink to={'/admin'}>
-          Admin <GiDragonHead />
+        <NavLink to={'/admin'} icon={<GiHomeGarage />} showActiveIcon>
+          Admin
         </NavLink>
       ) : null}
       {user ? (
         <>
-          <NavLink to={'/app/monster-generator'}>
-            Monster Generator <GiDragonHead />
+          <NavLink
+            to={'/app/monster-generator'}
+            icon={<GiOrcHead />}
+            showActiveIcon
+          >
+            Monster Generator
           </NavLink>
           <a onClick={handleLogout} className={styles.navLink}>
-            Sign Out
+            <span>
+              <BiLogOut />
+              &nbsp;Sign Out
+            </span>
           </a>
         </>
       ) : (
@@ -106,7 +161,10 @@ const SideBar = (props: {
           data-bs-toggle="modal"
           data-bs-target="#userSigninModal"
         >
-          Sign In
+          <span>
+            <BiLogIn />
+            &nbsp;Sign In
+          </span>
         </button>
       )}
     </nav>

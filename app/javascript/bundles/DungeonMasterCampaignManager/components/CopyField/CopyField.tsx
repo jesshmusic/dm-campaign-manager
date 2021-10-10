@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 
+const styles = require('./copy-field.module.scss');
+
 type CopyFieldProps = {
   text?: string;
   label: string;
@@ -7,18 +9,16 @@ type CopyFieldProps = {
   placeHolder: string;
   copySuccess?: boolean;
   setCopySuccess?: () => void;
-  colWidth?: string;
   isTextArea?: boolean;
-}
+};
 
 const CopyField = ({
-                     text,
-                     label,
-                     fieldId,
-                     placeHolder,
-                     isTextArea,
-                     colWidth = '12'
-                   }: CopyFieldProps) => {
+  text,
+  label,
+  fieldId,
+  placeHolder,
+  isTextArea,
+}: CopyFieldProps) => {
   const copyTextFieldRef = useRef<HTMLInputElement | null>(null);
   const copyTextAreaRef = useRef<HTMLTextAreaElement | null>(null);
   const [currentValue] = useState('');
@@ -45,26 +45,31 @@ const CopyField = ({
   };
 
   return (
-    <div className={`g-col-${colWidth} py-2`} id={fieldId}>
-      <label className='form-label'>{label}</label>
+    <div className={styles.copyField} id={fieldId}>
+      <label className={styles.label}>{label}</label>
       {isTextArea ? (
-        <textarea className='form-control'
-                  placeholder={placeHolder}
-                  value={text ? text : ''}
-                  readOnly
-                  ref={copyTextAreaRef}
-                  style={{ whiteSpace: 'pre-wrap', height: 'auto' }}
-                  onClick={handleCopyToClipboard} />
+        <textarea
+          className={styles.textArea}
+          placeholder={placeHolder}
+          value={text ? text : ''}
+          readOnly
+          ref={copyTextAreaRef}
+          rows={5}
+          style={{ whiteSpace: 'pre-wrap', height: 'auto' }}
+          onClick={handleCopyToClipboard}
+        />
       ) : (
-        <input className='form-control'
-               type='text'
-               placeholder={placeHolder}
-               value={text ? text : ''}
-               readOnly
-               ref={copyTextFieldRef}
-               onClick={handleCopyToClipboard} />
+        <input
+          className={styles.input}
+          type="text"
+          placeholder={placeHolder}
+          value={text ? text : ''}
+          readOnly
+          ref={copyTextFieldRef}
+          onClick={handleCopyToClipboard}
+        />
       )}
-      <small className='text-muted form-text'>
+      <small className={styles.helpText}>
         {copySuccess ? 'Copied.' : 'Click to copy to clipboard.'}
       </small>
     </div>

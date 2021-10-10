@@ -1,0 +1,14 @@
+@import '../../../stylesheets/variables';
+
+.nameOptions {
+  display: grid;
+  grid-gap: $spacer;
+  grid-template-columns: 1fr 1fr 1fr;
+  width: 100%;
+
+  button {
+    margin: 0;
+    width: 100%;
+  }
+}
+

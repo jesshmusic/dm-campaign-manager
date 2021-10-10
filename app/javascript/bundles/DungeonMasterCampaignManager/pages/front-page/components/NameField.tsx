@@ -3,8 +3,8 @@
  */
 
 import React, { useState } from 'react';
-import CopyField from '../../../components/CopyField';
-import NameOptions from '../../../components/forms/NameOptions';
+import CopyField from '../../../components/CopyField/CopyField';
+import NameOptions from './NameOptions';
 import axios from 'axios';
 import Frame from '../../../components/Frame/Frame';
 import { RandomNameResult } from '../../../utilities/types';

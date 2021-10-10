@@ -7,6 +7,8 @@ import TavernNameField from './components/TavernNameField';
 import { PageProps } from '../../utilities/types';
 import { GiBarbute } from 'react-icons/all';
 
+const styles = require('./home-page.module.scss');
+
 const HomePage = (props: PageProps) => (
   <PageContainer
     pageTitle={props.user ? 'Dashboard' : 'Welcome'}
@@ -15,21 +17,21 @@ const HomePage = (props: PageProps) => (
     }
     breadcrumbs={[]}
   >
-    <div className="container">
+    <div className={styles.wrapper}>
       <PageTitle title={'The Dungeon Master Screen'} isDraconis />
       {props.user &&
         (props.user.role === 'admin' ||
           props.user.role === 'dungeon_master') && (
-          <div className="d-grid gap-2 mb-3">
-            <Link to="/app/monster-generator" className="btn btn-secondary">
-              <GiBarbute size={24} /> Generate Monster
+          <div className={styles.section}>
+            <Link to="/app/monster-generator" className={styles.buttonBar}>
+              <GiBarbute size={24} /> NPC Generators
             </Link>
           </div>
         )}
-      <div className="mb-3">
+      <div className={styles.section}>
         <NameField />
       </div>
-      <div className="mb-3">
+      <div className={styles.section}>
         <TavernNameField />
       </div>
     </div>

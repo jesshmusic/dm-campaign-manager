@@ -1,0 +1,37 @@
+@import '../../stylesheets/variables';
+
+.copyField {
+  padding: ($spacer * 0.5) 0 $spacer;
+}
+
+.label {
+  display: inline-block;
+  font-family: $font-family-sans-serif;
+}
+
+.input {
+  @include form-input;
+  background-color: $background-color;
+  border-top-left-radius: 0.35rem;
+  border-top-right-radius: 0.35rem;
+  cursor: pointer;
+  padding-left: 0.5rem;
+}
+
+.helpText {
+  @include font-size($font-size-sm);
+
+  color: $gray-600;
+  margin-top: 0.25rem;
+}
+
+.textArea {
+  @include form-input;
+
+  background-color: $background-color;
+  border: 0;
+  border-radius: 0.25rem;
+  height: auto;
+  padding-left: 0.5rem;
+  white-space: pre-wrap;
+}
