@@ -1,6 +1,6 @@
 import React from 'react';
 import PageContainer from '../../containers/PageContainer';
-import PageTitle from '../../components/layout/PageTitle/PageTitle';
+import PageTitle from '../../components/PageTitle/PageTitle';
 import NameField from './components/NameField';
 import { Link } from '@reach/router';
 import TavernNameField from './components/TavernNameField';

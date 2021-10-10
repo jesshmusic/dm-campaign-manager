@@ -1,6 +1,6 @@
 import React from 'react';
 import PageContainer from '../../containers/PageContainer';
-import PageTitle from '../../components/layout/PageTitle/PageTitle';
+import PageTitle from '../../components/PageTitle/PageTitle';
 import { MonsterSummary, MonsterType } from '../../utilities/types';
 import rest from '../../actions/api';
 import { navigate } from '@reach/router';
@@ -46,35 +46,35 @@ const Monsters = (props: {
             <span
               {...row.getToggleRowExpandedProps({
                 style: {
-                  paddingLeft: `${row.depth * 2}rem`
-                }
+                  paddingLeft: `${row.depth * 2}rem`,
+                },
               })}
             >
               {row.isExpanded ? <GiOpenGate /> : <GiClosedDoors />}
             </span>
-          ) : null
+          ) : null,
       },
       {
         Header: 'Monster Types',
         columns: [
           {
             Header: 'Monster',
-            accessor: 'name'
+            accessor: 'name',
           },
           {
             Header: 'Challenge',
-            accessor: 'challenge'
+            accessor: 'challenge',
           },
           {
             Header: 'Alignment',
-            accessor: 'alignment'
+            accessor: 'alignment',
           },
           {
             Header: 'Hit Points',
-            accessor: 'hitPoints'
-          }
-        ]
-      }
+            accessor: 'hitPoints',
+          },
+        ],
+      },
     ],
     []
   );
@@ -87,8 +87,8 @@ const Monsters = (props: {
         alignment: monster.alignment,
         challenge: monster.challenge,
         hitPoints: monster.hitPoints,
-        slug: monster.slug
-      }))
+        slug: monster.slug,
+      })),
     }));
   }, [monsterTypes]);
 
@@ -98,9 +98,9 @@ const Monsters = (props: {
 
   return (
     <PageContainer
-      pageTitle='Monsters'
+      pageTitle="Monsters"
       description={
-        'All monsters with descriptions and stats. Dungeon Master\'s Toolbox is a free resource for DMs to manage their campaigns, adventures, and Monsters.'
+        "All monsters with descriptions and stats. Dungeon Master's Toolbox is a free resource for DMs to manage their campaigns, adventures, and Monsters."
       }
       breadcrumbs={[{ isActive: true, title: 'Monsters' }]}
     >
@@ -122,7 +122,7 @@ const Monsters = (props: {
 function mapStateToProps(state) {
   return {
     monsters: state.monsters.monsters,
-    monsterTypes: state.monsters.monsterTypes
+    monsterTypes: state.monsters.monsterTypes,
   };
 }
 
@@ -130,7 +130,7 @@ function mapDispatchToProps(dispatch) {
   return {
     getMonsterCategories: (searchTerm: string) => {
       dispatch(rest.actions.getMonsterCategories({ search: searchTerm }));
-    }
+    },
   };
 }
 

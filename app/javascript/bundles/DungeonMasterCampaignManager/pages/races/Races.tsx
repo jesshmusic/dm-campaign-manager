@@ -2,7 +2,7 @@ import React from 'react';
 import { navigate } from '@reach/router';
 import { Row } from 'react-table';
 import PageContainer from '../../containers/PageContainer';
-import PageTitle from '../../components/layout/PageTitle/PageTitle';
+import PageTitle from '../../components/PageTitle/PageTitle';
 import rest from '../../actions/api';
 import { connect } from 'react-redux';
 import DataTable from '../../components/DataTable/DataTable';
@@ -22,7 +22,7 @@ const Races = (props: { getRaces: () => void; races: RaceSummary[] }) => {
   const columns = React.useMemo(
     () => [
       { Header: 'Race', accessor: 'name' },
-      { Header: 'Traits', accessor: 'traits' }
+      { Header: 'Traits', accessor: 'traits' },
     ],
     []
   );
@@ -36,14 +36,14 @@ const Races = (props: { getRaces: () => void; races: RaceSummary[] }) => {
       return {
         name: race.name,
         traits: traits,
-        slug: race.slug
+        slug: race.slug,
       };
     });
   }, [races]);
 
   return (
     <PageContainer
-      pageTitle='Races'
+      pageTitle="Races"
       description="All races for characters. Dungeon Master's Toolbox is a free resource for DMs to manage their campaigns, adventures, and Monsters."
       breadcrumbs={[{ isActive: true, title: 'Races' }]}
     >
@@ -63,7 +63,7 @@ const Races = (props: { getRaces: () => void; races: RaceSummary[] }) => {
 
 function mapStateToProps(state) {
   return {
-    races: state.races.races
+    races: state.races.races,
   };
 }
 
@@ -71,7 +71,7 @@ function mapDispatchToProps(dispatch) {
   return {
     getRaces: () => {
       dispatch(rest.actions.getRaces());
-    }
+    },
   };
 }
 

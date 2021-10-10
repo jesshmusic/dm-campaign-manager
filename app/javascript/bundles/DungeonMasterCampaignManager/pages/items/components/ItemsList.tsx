@@ -4,7 +4,7 @@
 
 import React from 'react';
 import PageContainer from '../../../containers/PageContainer';
-import PageTitle from '../../../components/layout/PageTitle/PageTitle';
+import PageTitle from '../../../components/PageTitle/PageTitle';
 import { Column } from 'react-table';
 import DataTable from '../../../components/DataTable/DataTable';
 import ItemsNav from './ItemsNav';

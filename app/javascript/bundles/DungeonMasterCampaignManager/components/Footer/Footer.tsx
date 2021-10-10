@@ -1,6 +1,7 @@
 import React from 'react';
 import { UserProps } from '../../utilities/types';
 import { NavLink } from '../NavLink/NavLink';
+import DndLogo from '../HeroBanner/DMLogo';
 
 const styles = require('./footer.module.scss');
 
@@ -9,6 +10,7 @@ const Footer = (props: { user?: UserProps }) => {
     <div className={styles.wrapper}>
       <div className={styles.left}>
         <h3 className={styles.siteTitle}>The Dungeon Master Screen</h3>
+        <DndLogo className={styles.logo} />
       </div>
       <div className={styles.right}>
         <ul className={styles.nav}>

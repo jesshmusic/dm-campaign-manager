@@ -1,5 +1,5 @@
 import React from 'react';
-import PageTitle from '../../components/layout/PageTitle/PageTitle';
+import PageTitle from '../../components/PageTitle/PageTitle';
 import DndSpinner from '../../components/DndSpinners/DndSpinner';
 import PageContainer from '../../containers/PageContainer';
 import rest from '../../actions/api';

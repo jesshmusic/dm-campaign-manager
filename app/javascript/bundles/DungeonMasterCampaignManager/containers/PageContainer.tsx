@@ -2,16 +2,18 @@ import React from 'react';
 
 // Bootstrap
 import Footer from '../components/Footer/Footer';
-import HeroBanner from '../components/layout/HeroBanner/HeroBanner';
+import HeroBanner from '../components/HeroBanner/HeroBanner';
 import FlashMessages from '../components/Alerts/FlashMessages';
 import '../stylesheets/_fonts.scss';
 import '../stylesheets/application.scss';
 import { Helmet } from 'react-helmet';
 import { FlashMessage, UserProps } from '../utilities/types';
-import SignInModal from '../components/layout/SignInModal';
+import SignInModal from '../components/SignInModal';
 import rest from '../actions/api';
 import { connect } from 'react-redux';
-import Breadcrumbs, { BreadCrumbProps } from '../components/Breadcrumbs/Breadcrumbs';
+import Breadcrumbs, {
+  BreadCrumbProps,
+} from '../components/Breadcrumbs/Breadcrumbs';
 import SideBar from '../components/SideBar/SideBar';
 
 const styles = require('./page-container.module.scss');
@@ -34,7 +36,7 @@ const PageContainer = (props: PageContainerProps) => {
     <div>
       <Helmet>
         <title>{pageTitle} | Dungeon Master&apos;s Screen</title>
-        <meta name='description' content={description} />
+        <meta name="description" content={description} />
       </Helmet>
       <div className={styles.pageWrapper}>
         {/*<MenuBar />*/}
@@ -59,7 +61,7 @@ const PageContainer = (props: PageContainerProps) => {
 function mapStateToProps(state) {
   return {
     flashMessages: state.flashMessages,
-    user: state.users.currentUser
+    user: state.users.currentUser,
   };
 }
 
@@ -68,10 +70,10 @@ function mapDispatchToProps(dispatch) {
     userLogin: (email: string, password: string) => {
       dispatch(
         rest.actions.userLogin({
-          user: { email, password }
+          user: { email, password },
         })
       );
-    }
+    },
   };
 }
 

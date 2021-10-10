@@ -7,7 +7,7 @@ import rest from '../../actions/api';
 import { connect } from 'react-redux';
 
 import PageContainer from '../../containers/PageContainer';
-import PageTitle from '../../components/layout/PageTitle/PageTitle';
+import PageTitle from '../../components/PageTitle/PageTitle';
 import { SpellProps } from '../../utilities/types';
 import DataTable from '../../components/DataTable/DataTable';
 import { Row } from 'react-table';
@@ -15,7 +15,7 @@ import { navigate } from '@reach/router';
 
 const Spells = (props: {
   getSpells: (searchTerm?: string) => void;
-  spells: SpellProps[]
+  spells: SpellProps[];
 }) => {
   const { getSpells, spells } = props;
 
@@ -31,20 +31,20 @@ const Spells = (props: {
     () => [
       {
         Header: 'Spell',
-        accessor: 'name'
+        accessor: 'name',
       },
       {
         Header: 'Level',
-        accessor: 'spellLevel'
+        accessor: 'spellLevel',
       },
       {
         Header: 'Components',
-        accessor: 'componentsString'
+        accessor: 'componentsString',
       },
       {
         Header: 'Classes',
-        accessor: 'classesString'
-      }
+        accessor: 'classesString',
+      },
     ],
     []
   );
@@ -56,7 +56,7 @@ const Spells = (props: {
         spellLevel: spell.spellLevel,
         componentsString: spell.components.join(', '),
         classesString: spell.spellClasses.join(', '),
-        slug: spell.slug
+        slug: spell.slug,
       };
     });
   }, [spells]);
@@ -69,7 +69,7 @@ const Spells = (props: {
     <PageContainer
       pageTitle={'Spells'}
       description={
-        'All D&D spells. Dungeon Master\'s Toolbox is a free resource for DMs to manage their campaigns, adventures, and Monsters.'
+        "All D&D spells. Dungeon Master's Toolbox is a free resource for DMs to manage their campaigns, adventures, and Monsters."
       }
       breadcrumbs={[{ isActive: true, title: 'Spells' }]}
     >
@@ -90,7 +90,7 @@ function mapStateToProps(state) {
   return {
     spells: state.spells.spells,
     user: state.users.user,
-    flashMessages: state.flashMessages
+    flashMessages: state.flashMessages,
   };
 }
 
@@ -102,7 +102,7 @@ function mapDispatchToProps(dispatch) {
       } else {
         dispatch(rest.actions.getSpells());
       }
-    }
+    },
   };
 }
 

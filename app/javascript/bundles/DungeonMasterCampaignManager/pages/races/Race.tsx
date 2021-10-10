@@ -3,7 +3,7 @@ import rest from '../../actions/api';
 import { connect } from 'react-redux';
 import { RaceProps } from '../../utilities/types';
 import PageContainer from '../../containers/PageContainer';
-import PageTitle from '../../components/layout/PageTitle/PageTitle';
+import PageTitle from '../../components/PageTitle/PageTitle';
 import DndSpinner from '../../components/DndSpinners/DndSpinner';
 
 const styles = require('./races.module.scss');
@@ -43,7 +43,7 @@ const Race = (props: {
     <PageContainer
       breadcrumbs={[
         { url: '/app/races', isActive: false, title: 'Races' },
-        { isActive: true, title: raceTitle }
+        { isActive: true, title: raceTitle },
       ]}
       description={`Monster: ${raceTitle}. Dungeon Master's Toolbox is a free resource for DMs to manage their dndClasses, adventures, and Monsters.`}
       pageTitle={raceTitle}
@@ -78,14 +78,14 @@ const Race = (props: {
             <div>
               <h3 className={styles.subheading}>Traits</h3>
               {race.traits &&
-              race.traits.map((trait, index) => (
-                <div key={index}>
-                  <span className={styles.traitName}>{trait.name} </span>
-                  {trait.desc.map((descPara, index) => (
-                    <p key={index}>{descPara}</p>
-                  ))}
-                </div>
-              ))}
+                race.traits.map((trait, index) => (
+                  <div key={index}>
+                    <span className={styles.traitName}>{trait.name} </span>
+                    {trait.desc.map((descPara, index) => (
+                      <p key={index}>{descPara}</p>
+                    ))}
+                  </div>
+                ))}
             </div>
           </div>
         </div>
@@ -98,7 +98,7 @@ const Race = (props: {
 
 function mapStateToProps(state) {
   return {
-    race: state.races.currentRace
+    race: state.races.currentRace,
   };
 }
 
@@ -106,7 +106,7 @@ function mapDispatchToProps(dispatch) {
   return {
     getRace: (raceSlug: string) => {
       dispatch(rest.actions.getRace({ slug: raceSlug }));
-    }
+    },
   };
 }
 

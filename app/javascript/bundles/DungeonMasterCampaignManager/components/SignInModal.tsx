@@ -1,5 +1,5 @@
 import React from 'react';
-import { UserProps } from '../../utilities/types';
+import { UserProps } from '../utilities/types';
 import { useForm } from 'react-hook-form';
 
 const SignInModal = (props: {

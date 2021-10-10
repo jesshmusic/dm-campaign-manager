@@ -1,0 +1,21 @@
+@import '../../stylesheets/variables';
+
+.spell {
+  @include font-size($font-size-base);
+
+  margin: 0 auto;
+  padding: 0 1rem;
+  width: 100%;
+  @include respond-to(lg) {
+    max-width: map_get($container-max-widths, sm);
+  }
+  @include respond-to(xl) {
+    max-width: map_get($container-max-widths, md);
+  }
+}
+
+.description {
+  font-style: italic;
+  margin-bottom: 1rem;
+  margin-top: $spacer * -1;
+}
