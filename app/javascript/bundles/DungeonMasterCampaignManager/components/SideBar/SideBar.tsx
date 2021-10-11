@@ -20,12 +20,28 @@ import {
   GiRuleBook,
   GiSwapBag,
   GiSwordArray,
-  GiToolbox,
+  GiToolbox
 } from 'react-icons/all';
 import { NavLink, NavLinkSmall } from '../NavLink/NavLink';
 import gsap from 'gsap';
 
 const styles = require('./sidebar.module.scss');
+
+export const collapseMenu = (menuClass: string) => {
+  gsap.to(`.${menuClass}`, {
+    duration: 0.3,
+    height: 0,
+    ease: 'power4.inOut'
+  });
+};
+
+export const expandMenu = (menuClass: string) => {
+  gsap.to(`.${menuClass}`, {
+    duration: 0.3,
+    height: 'auto',
+    ease: 'power4.inOut'
+  });
+};
 
 const SideBar = (props: {
   user: UserProps;
@@ -35,6 +51,7 @@ const SideBar = (props: {
 }) => {
   const { user, logoutUser, getSections, sections } = props;
   const [isShowingRules, setIsShowingRules] = React.useState(false);
+  const [isShowingItems, setIsShowingItems] = React.useState(false);
 
   React.useEffect(() => {
     getSections();
@@ -46,7 +63,23 @@ const SideBar = (props: {
   };
 
   const handleRulesMenu = () => {
-    setIsShowingRules(!isShowingRules);
+    if (isShowingRules) {
+      collapseMenu(styles.rulesSection);
+      setIsShowingRules(!isShowingRules);
+    } else {
+      expandMenu(styles.rulesSection);
+      setIsShowingRules(!isShowingRules);
+    }
+  };
+
+  const handleItemsMenu = () => {
+    if (isShowingItems) {
+      collapseMenu(styles.itemsSection);
+      setIsShowingItems(!isShowingItems);
+    } else {
+      expandMenu(styles.itemsSection);
+      setIsShowingItems(!isShowingItems);
+    }
   };
 
   return (
@@ -79,16 +112,12 @@ const SideBar = (props: {
       <NavLink to={'/app/spells'} icon={<GiMagicPalm />} showActiveIcon>
         Spells
       </NavLink>
-      <button className={styles.navLink} onClick={handleRulesMenu}>
+      <button className={styles.expandButton} onClick={handleRulesMenu}>
         <span>
-          <GiRuleBook />
-          &nbsp;Rules
+          <span className={styles.icon}><GiRuleBook /></span><span className={styles.title}>Rules</span>
         </span>
       </button>
-      <div
-        className={styles.rulesSection}
-        style={{ height: isShowingRules ? '100%' : '0' }}
-      >
+      <div className={styles.rulesSection}>
         {sections.map((section, index) => (
           <NavLinkSmall
             to={`/app/sections/${section.slug}`}
@@ -99,55 +128,61 @@ const SideBar = (props: {
           </NavLinkSmall>
         ))}
       </div>
-      <div className={styles.divider}>Items and Equipment</div>
-      <NavLinkSmall
-        to={`/app/items/armor`}
-        icon={<GiCapeArmor />}
-        showActiveIcon
-      >
-        Armor
-      </NavLinkSmall>
-      <NavLinkSmall to={`/app/items/gear`} icon={<GiSwapBag />} showActiveIcon>
-        Adventuring Gear
-      </NavLinkSmall>
-      <NavLinkSmall
-        to={`/app/items/magic-items`}
-        icon={<GiMagicPotion />}
-        showActiveIcon
-      >
-        Magic Items
-      </NavLinkSmall>
-      <NavLinkSmall
-        to={`/app/items/magic-armor`}
-        icon={<GiChestArmor />}
-        showActiveIcon
-      >
-        Magic Armor
-      </NavLinkSmall>
-      <NavLinkSmall
-        to={`/app/items/magic-weapons`}
-        icon={<GiMagicAxe />}
-        showActiveIcon
-      >
-        Magic Weapons
-      </NavLinkSmall>
-      <NavLinkSmall
-        to={`/app/items/vehicles`}
-        icon={<GiHorseHead />}
-        showActiveIcon
-      >
-        Mounts & Vehicles
-      </NavLinkSmall>
-      <NavLinkSmall to={`/app/items/tools`} icon={<GiToolbox />} showActiveIcon>
-        Tools
-      </NavLinkSmall>
-      <NavLinkSmall
-        to={`/app/items/weapons`}
-        icon={<GiSwordArray />}
-        showActiveIcon
-      >
-        Weapons
-      </NavLinkSmall>
+      <button className={styles.expandButton} onClick={handleItemsMenu}>
+        <span>
+          <span className={styles.icon}><GiSwapBag /></span><span className={styles.title}>Items and Equipment</span>
+        </span>
+      </button>
+      <div className={styles.itemsSection}>
+        <NavLinkSmall
+          to={`/app/items/armor`}
+          icon={<GiCapeArmor />}
+          showActiveIcon
+        >
+          Armor
+        </NavLinkSmall>
+        <NavLinkSmall to={`/app/items/gear`} icon={<GiSwapBag />} showActiveIcon>
+          Adventuring Gear
+        </NavLinkSmall>
+        <NavLinkSmall
+          to={`/app/items/magic-items`}
+          icon={<GiMagicPotion />}
+          showActiveIcon
+        >
+          Magic Items
+        </NavLinkSmall>
+        <NavLinkSmall
+          to={`/app/items/magic-armor`}
+          icon={<GiChestArmor />}
+          showActiveIcon
+        >
+          Magic Armor
+        </NavLinkSmall>
+        <NavLinkSmall
+          to={`/app/items/magic-weapons`}
+          icon={<GiMagicAxe />}
+          showActiveIcon
+        >
+          Magic Weapons
+        </NavLinkSmall>
+        <NavLinkSmall
+          to={`/app/items/vehicles`}
+          icon={<GiHorseHead />}
+          showActiveIcon
+        >
+          Mounts & Vehicles
+        </NavLinkSmall>
+        <NavLinkSmall to={`/app/items/tools`} icon={<GiToolbox />} showActiveIcon>
+          Tools
+        </NavLinkSmall>
+        <NavLinkSmall
+          to={`/app/items/weapons`}
+          icon={<GiSwordArray />}
+          showActiveIcon
+        >
+          Weapons
+        </NavLinkSmall>
+      </div>
       <div className={styles.divider}>User</div>
       {user && user.role === 'admin' ? (
         <NavLink to={'/admin'} icon={<GiHomeGarage />} showActiveIcon>
@@ -173,8 +208,8 @@ const SideBar = (props: {
       ) : (
         <button
           className={styles.navLink}
-          data-bs-toggle="modal"
-          data-bs-target="#userSigninModal"
+          data-bs-toggle='modal'
+          data-bs-target='#userSigninModal'
         >
           <span>
             <BiLogIn />
@@ -189,7 +224,7 @@ const SideBar = (props: {
 function mapStateToProps(state) {
   return {
     sections: state.sections.sections,
-    user: state.users.currentUser,
+    user: state.users.currentUser
   };
 }
 
@@ -200,7 +235,7 @@ function mapDispatchToProps(dispatch) {
     },
     getSections: () => {
       dispatch(rest.actions.getSections());
-    },
+    }
   };
 }
 

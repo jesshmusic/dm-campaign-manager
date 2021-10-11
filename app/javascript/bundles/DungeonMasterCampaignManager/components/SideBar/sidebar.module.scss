@@ -6,7 +6,31 @@
   display: flex;
   flex: 0 0 20rem;
   flex-direction: column;
+  max-width: 10rem;
   padding: 3rem 1rem 0;
+
+  @include respond-to(md) {
+    max-width: 20rem;
+  }
+}
+
+.navLink {
+  @include font-size(1.15rem);
+
+  align-items: center;
+  color: lighten($primary, 30%);
+  cursor: pointer;
+  display: flex;
+  font-family: $font-family-mr-eaves;
+  justify-content: space-between;
+  margin-bottom: $spacer * 0.75;
+  transition: color ease-in-out 0.25s;
+  width: 100%;
+
+  &:hover {
+    color: $white;
+    text-decoration: none;
+  }
 }
 
 .divider {
@@ -16,6 +40,27 @@
   font-family: $font-family-mr-eaves;
   margin-bottom: 0.33rem;
   padding-top: 0.5rem;
+}
+
+.expandButton {
+  @include font-size(1.15rem);
+
+  align-items: center;
+  background: transparent;
+  border: 0;
+  //border-bottom: solid $yellow 2px;
+  color: lighten($primary, 30%);
+  cursor: pointer;
+  display: flex;
+  font-family: $font-family-mr-eaves;
+  margin-bottom: 0.33rem;
+  padding: 0.5rem 0 0.25rem;
+  transition: color ease-in-out 0.25s;
+
+  &:hover {
+    color: $white;
+    text-decoration: none;
+  }
 }
 
 .searchBar {
@@ -67,25 +112,6 @@
   }
 }
 
-.navLink {
-  @include font-size(1.15rem);
-
-  align-items: center;
-  color: lighten($primary, 30%);
-  cursor: pointer;
-  display: flex;
-  font-family: $font-family-mr-eaves;
-  justify-content: space-between;
-  margin-bottom: $spacer * 0.75;
-  transition: color ease-in-out 0.25s;
-  width: 100%;
-
-  &:hover {
-    color: $white;
-    text-decoration: none;
-  }
-}
-
 button {
   &.navLink,
   &.navLinkActive {
@@ -97,6 +123,12 @@ button {
   }
 }
 
-.rulesSection {
+.rulesSection,
+.itemsSection {
+  height: 0;
   overflow: hidden;
+}
+
+.icon {
+  margin-right: 0.5rem;
 }
