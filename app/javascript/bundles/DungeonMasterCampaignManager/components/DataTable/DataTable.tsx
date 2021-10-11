@@ -99,7 +99,7 @@ const DataTable = ({
   };
 
   return (
-    <div className={'table-frame'}>
+    <div className={`table-frame ${styles.tableWrapper}`}>
       {onSearch && (
         <form onSubmit={handleSubmit(handleSearch)}>
           <div className="input-group mb-3">

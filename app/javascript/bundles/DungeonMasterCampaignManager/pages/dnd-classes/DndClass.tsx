@@ -1,6 +1,5 @@
 import React from 'react';
 
-// Container
 import PageContainer from '../../containers/PageContainer';
 import rest from '../../actions/api';
 import PageTitle from '../../components/PageTitle/PageTitle';

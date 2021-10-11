@@ -19,3 +19,18 @@
 .pro-item-content {
   font-family: $font-family-mr-eaves;
 }
+
+.pro-sub-menu {
+  .pro-inner-item {
+    border-bottom: 0.125rem solid $yellow;
+  }
+}
+
+.pro-inner-list-item {
+  border-bottom: 0.125rem solid $yellow;
+  border-top: 0.125rem solid $yellow;
+
+  .pro-inner-item {
+    border: 0;
+  }
+}

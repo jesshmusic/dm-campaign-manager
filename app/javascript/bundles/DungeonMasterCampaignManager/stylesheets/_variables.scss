@@ -67,10 +67,10 @@ $enable-print-styles: true;
 
 // Sidebar
 $sidebar-bg-color: $dark-red;
-$sidebar-color: lighten($primary, 35%);
+$sidebar-color: lighten($primary, 45%);
 $icon-bg-color: transparent;
 $icon-size: 2rem;
-$submenu-bg-color: $primary;
+$submenu-bg-color: darken($dark-red, 10%);
 $sidebar-width: 20rem;
 $sidebar-collapsed-width: 5rem;
 //$highlight-color
