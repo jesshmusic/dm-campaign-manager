@@ -2,10 +2,13 @@
 
 json.key_format! camelize: :lower
 
-json.extract! item, :id, :slug, :api_url, :name, :category, :equipment_category, :desc, :properties,
-              :quantity, :special, :tool_category, :weight, :type, :user_id
+json.extract! item, :id, :slug, :api_url, :name, :category,
+              :desc, :properties, :quantity, :special,
+              :weight, :type, :user_id, :rarity, :magic_item_type,
+              :requires_attunement, :tool_category, :weapon_category,
+              :gear_category, :equipment_category
 
-json.category item.category
+              json.category item.category
 
 json.cost do
   json.extract! item.cost, :quantity, :unit unless item.cost.nil?
@@ -18,28 +21,21 @@ unless item.content_items.nil? || item.content_items.count == 0
 end
 
 case item.type
-when 'ArmorItem'
-  json.extract! item, :armor_category,
-                :armor_class_bonus, :stealth_disadvantage, :str_minimum
-  json.armor_class do
-    json.extract! item.armor_class, :ac_base, :has_dex_bonus, :max_dex_bonus unless item.armor_class.nil?
+when 'ArmorItem', 'MagicArmorItem'
+  json.armor_type item.armor_category
+  dex_mod_string = ''
+  if item.armor_class.has_dex_bonus && (item.armor_class.max_dex_bonus || item.armor_class.max_dex_bonus == 0)
+    dex_mod_string = " + Dex modifier (max #{item.armor_class.max_dex_bonus})"
+  elsif item.armor_class.has_dex_bonus
+    dex_mod_string = ' + Dex modifier'
   end
-when 'MagicItem'
-  json.extract! item, :rarity, :requires_attunement
+  json.armor_class "#{item.armor_class.ac_base}" + dex_mod_string
+  json.strength item.str_minimum.nil? || item.str_minimum == 0 ? '-' : "Str #{item.str_minimum}"
+  json.stealth item.stealth_disadvantage ? 'Disadvantage' : '-'
 when 'VehicleItem'
-  json.extract! item, :vehicle_category, :speed
-when 'WeaponItem'
-  json.extract! item, :category_range, :weapon_category, :weapon_range
-  json.damage do
-    json.extract! item.damage, :damage_dice, :damage_type unless item.damage.nil?
-  end
-  json.two_handed_damage do
-    json.extract! item.two_handed_damage, :damage_dice, :damage_type unless item.two_handed_damage.nil?
-  end
-  json.item_range do
-    json.extract! item.item_range, :long, :normal unless item.item_range.nil?
-  end
-  json.item_throw_range do
-    json.extract! item.item_throw_range, :long, :normal unless item.item_throw_range.nil?
-  end
+  json.extract! item, :vehicle_category, :speed, :capacity
+when 'WeaponItem', 'MagicWeaponItem'
+  json.extract! item, :category_range
+  json.damage "#{item.damage.damage_dice} #{item.damage.damage_type}" unless item.damage.nil?
+  json.properties item.properties_str
 end

@@ -133,6 +133,40 @@ export interface ItemSummary {
   weight: string;
 }
 
+export interface ItemProps {
+  armorClass?: string;
+  armorType?: string;
+  capacity?: string;
+  category: string;
+  contents?: {
+    name: string;
+    quantity: number;
+    index: string;
+  }[];
+  cost?: {
+    quantity: number;
+    unit: 'pp' | 'gp' | 'ep' | 'cp' | 'sp';
+  };
+  damage?: string;
+  desc?: string[];
+  name: string;
+  properties?: string[];
+  rarity?: string;
+  requiresAttunement?: string;
+  slug: string;
+  speed?: string;
+  stealth?: string;
+  strength?: string;
+  type: string;
+  weight: string;
+  magicItemType?: string;
+  equipmentCategory?: string;
+  toolCategory?: string;
+  gearCategory?: string;
+  vehicleCategory?: string;
+  weaponCategory?: string;
+}
+
 export type ItemsPageProps = {
   getItems: (itemType?: string, searchTerm?: string) => void;
   itemType: ItemType;

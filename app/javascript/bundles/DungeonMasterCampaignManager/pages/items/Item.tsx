@@ -5,17 +5,20 @@ import rest from '../../actions/api';
 import PageTitle from '../../components/PageTitle/PageTitle';
 import DndSpinner from '../../components/DndSpinners/DndSpinner';
 import { connect } from 'react-redux';
+import { ItemProps } from '../../utilities/types';
+import remarkGfm from 'remark-gfm';
+import ReactMarkdown from 'react-markdown';
 
 const styles = require('./item.module.scss');
 
 type ItemPageProps = {
-  item?: any;
+  item?: ItemProps;
   itemSlug: string;
   getItem: (itemSlug: string) => void;
   loading: boolean;
 };
 
-const getItemParentInfo = (item): { name: string; url: string } => {
+const getItemParentInfo = (item: ItemProps): { name: string; url: string } => {
   switch (item.category) {
     case 'Armor Item':
       return { name: 'Armor', url: '/app/items/armor' };
@@ -62,12 +65,31 @@ const Item = (props: ItemPageProps) => {
     >
       <PageTitle title={itemTitle} />
       {item ? (
-        <div className={styles.page}>
-          <div className={styles.infoSection}>
-            <div className={styles.sectionGroup}>
-              <h2 className={styles.sectionHeading}>Class Features</h2>
+        <div className={styles.section}>
+          {item.magicItemType ? (
+            <div className={styles.info}>
+              {item.magicItemType}, {item.rarity}{' '}
+              {item.requiresAttunement &&
+                item.requiresAttunement !== '' &&
+                `(${item.requiresAttunement})`}
             </div>
-          </div>
+          ) : null}
+          {item.desc &&
+            item.desc.map((itemDesc, index) => (
+              <ReactMarkdown
+                key={index}
+                className={styles.section}
+                children={itemDesc}
+                components={{
+                  table: ({ node, ...props }) => (
+                    <div className={styles.tableFrame}>
+                      <table {...props} />
+                    </div>
+                  ),
+                }}
+                remarkPlugins={[remarkGfm]}
+              />
+            ))}
         </div>
       ) : (
         <DndSpinner />

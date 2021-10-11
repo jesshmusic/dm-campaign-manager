@@ -1,0 +1,36 @@
+@import '~bootstrap/scss/functions';
+@import '../../stylesheets/variables';
+@import '~bootstrap/scss/variables';
+@import '~bootstrap/scss/mixins';
+@import '~bootstrap/scss/tables';
+
+.section {
+  column-gap: 5rem;
+  columns: 400px 2;
+
+  table {
+    @extend .table;
+    @extend .table-borderless;
+    @extend .table-striped;
+
+    tbody {
+      tr {
+        td {
+          font-family: $font-family-sans-serif;
+        }
+      }
+    }
+  }
+}
+
+.tableFrame {
+  background-color: $white;
+  border-collapse: separate;
+  border-image: $background-frame 150 200 150 200 / 47px / 25px 17px;
+  border-style: solid;
+  box-shadow: $box-shadow;
+  display: inline-block;
+  margin-bottom: 40px;
+  margin-top: 25px;
+  width: 100%;
+}
