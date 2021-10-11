@@ -5,9 +5,10 @@
 import React from 'react';
 import PageContainer from '../../../containers/PageContainer';
 import PageTitle from '../../../components/PageTitle/PageTitle';
-import { Column } from 'react-table';
+import { Column, Row } from 'react-table';
 import DataTable from '../../../components/DataTable/DataTable';
 import { ItemType } from '../use-data';
+import { navigate } from '@reach/router';
 
 type ItemsListProps = {
   columns: Array<Column<any>>;
@@ -29,10 +30,14 @@ const ItemsList = ({
   const breadCrumbs =
     itemType !== ItemType.all
       ? [
-          { url: '/app/items/', isActive: false, title: 'Items' },
+          { url: '/app/items/', isActive: false, title: 'Items & Equipment' },
           { isActive: true, title: pageTitle },
         ]
       : [{ isActive: true, title: pageTitle }];
+
+  const goToPage = (row: Row<any>) => {
+    navigate(`/app/items/${row.original.slug}`);
+  };
 
   return (
     <PageContainer
@@ -45,8 +50,8 @@ const ItemsList = ({
         columns={columns}
         data={data}
         onSearch={onSearch}
+        goToPage={goToPage}
         perPage={10}
-        noHover
         loading={loading}
         results={data.length}
       />

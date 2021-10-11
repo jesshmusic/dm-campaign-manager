@@ -18,6 +18,7 @@ import Spell from './spells/Spell';
 import Section from './sections/Section';
 import SideBar from '../components/SideBar/SideBar';
 import Util from '../utilities/utilities';
+import Item from './items/Item';
 
 const Home = (props) => {
   const [flashMessages, setFlashMessages] = React.useState<FlashMessage[]>([]);
@@ -113,6 +114,7 @@ const Home = (props) => {
           key={ItemType.weapon}
           pageTitle="Weapons"
         />
+        <Item path="/app/items/:itemSlug" {...combinedProps} />
         <Monsters path="/app/monsters/" {...combinedProps} />
         <Monster path="/app/monsters/:monsterSlug" {...combinedProps} />
         <Spells path="/app/spells/" {...combinedProps} />

@@ -104,7 +104,7 @@ const SideBar = (props: {
               />
             ))}
           </SubMenu>
-          <SubMenu title="Items and Equipment" icon={<GiSwapBag />}>
+          <SubMenu title="Items & Equipment" icon={<GiSwapBag />}>
             {itemTypes.map((itemType, index) => (
               <SidebarLink
                 key={`items-${index}`}
