@@ -8,7 +8,6 @@ import {
   BiLogOut,
   GiCapeArmor,
   GiChestArmor,
-  GiDragonHead,
   GiDwarfFace,
   GiHomeGarage,
   GiHorseHead,
@@ -18,12 +17,13 @@ import {
   GiMonsterGrasp,
   GiOrcHead,
   GiPerson,
+  GiRuleBook,
   GiSwapBag,
   GiSwordArray,
   GiToolbox,
-  RiLoginCircleFill,
 } from 'react-icons/all';
 import { NavLink, NavLinkSmall } from '../NavLink/NavLink';
+import gsap from 'gsap';
 
 const styles = require('./sidebar.module.scss');
 
@@ -34,6 +34,7 @@ const SideBar = (props: {
   sections: { name: string; slug: string }[];
 }) => {
   const { user, logoutUser, getSections, sections } = props;
+  const [isShowingRules, setIsShowingRules] = React.useState(false);
 
   React.useEffect(() => {
     getSections();
@@ -42,6 +43,10 @@ const SideBar = (props: {
   const handleLogout = (event) => {
     event.preventDefault();
     logoutUser();
+  };
+
+  const handleRulesMenu = () => {
+    setIsShowingRules(!isShowingRules);
   };
 
   return (
@@ -74,6 +79,26 @@ const SideBar = (props: {
       <NavLink to={'/app/spells'} icon={<GiMagicPalm />} showActiveIcon>
         Spells
       </NavLink>
+      <button className={styles.navLink} onClick={handleRulesMenu}>
+        <span>
+          <GiRuleBook />
+          &nbsp;Rules
+        </span>
+      </button>
+      <div
+        className={styles.rulesSection}
+        style={{ height: isShowingRules ? '100%' : '0' }}
+      >
+        {sections.map((section, index) => (
+          <NavLinkSmall
+            to={`/app/sections/${section.slug}`}
+            key={`section-${index}`}
+            showActiveIcon
+          >
+            {section.name}
+          </NavLinkSmall>
+        ))}
+      </div>
       <div className={styles.divider}>Items and Equipment</div>
       <NavLinkSmall
         to={`/app/items/armor`}
@@ -123,16 +148,6 @@ const SideBar = (props: {
       >
         Weapons
       </NavLinkSmall>
-      <div className={styles.divider}>Rules</div>
-      {sections.map((section, index) => (
-        <NavLinkSmall
-          to={`/app/sections/${section.slug}`}
-          key={`section-${index}`}
-          showActiveIcon
-        >
-          {section.name}
-        </NavLinkSmall>
-      ))}
       <div className={styles.divider}>User</div>
       {user && user.role === 'admin' ? (
         <NavLink to={'/admin'} icon={<GiHomeGarage />} showActiveIcon>
