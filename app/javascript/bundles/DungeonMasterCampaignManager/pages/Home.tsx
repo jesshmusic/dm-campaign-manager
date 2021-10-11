@@ -16,9 +16,20 @@ import Races from './races/Races';
 import Race from './races/Race';
 import Spell from './spells/Spell';
 import Section from './sections/Section';
+import SideBar from '../components/SideBar/SideBar';
+import Util from '../utilities/utilities';
 
 const Home = (props) => {
   const [flashMessages, setFlashMessages] = React.useState<FlashMessage[]>([]);
+  const [isMobile, setIsMobile] = React.useState(Util.isMobileWidth());
+
+  React.useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(Util.isMobileWidth());
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const addFlashMessage = (flashMessage: FlashMessage) => {
     setFlashMessages([...flashMessages, flashMessage]);
@@ -32,6 +43,7 @@ const Home = (props) => {
 
   return (
     <Provider store={store(props)}>
+      <SideBar isCollapsed={isMobile} />
       <Router>
         <HomePage path="/" {...combinedProps} />
         <DndClass path="/app/classes/:dndClassSlug" {...combinedProps} />
