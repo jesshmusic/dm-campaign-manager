@@ -15,6 +15,7 @@ import Breadcrumbs, {
   BreadCrumbProps,
 } from '../components/Breadcrumbs/Breadcrumbs';
 import SideBar from '../components/SideBar/SideBar';
+import Util from '../utilities/utilities';
 
 const styles = require('./page-container.module.scss');
 
@@ -31,6 +32,15 @@ type PageContainerProps = {
 const PageContainer = (props: PageContainerProps) => {
   const { breadcrumbs, children, description, pageTitle, user, userLogin } =
     props;
+  const [isMobile, setIsMobile] = React.useState(Util.isMobileWidth());
+
+  React.useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(Util.isMobileWidth());
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   return (
     <div>
@@ -40,7 +50,7 @@ const PageContainer = (props: PageContainerProps) => {
       </Helmet>
       <div className={styles.pageWrapper}>
         {/*<MenuBar />*/}
-        <SideBar />
+        <SideBar isCollapsed={isMobile} />
         <div className={styles.pageContent}>
           <HeroBanner />
           <div className={styles.page}>

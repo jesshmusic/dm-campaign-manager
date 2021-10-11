@@ -58,4 +58,9 @@ export default class Util {
       })
       .replace(/\s+/g, '');
   }
+
+  static isMobileWidth(): boolean {
+    const { innerWidth: width } = window;
+    return width < 720;
+  }
 }

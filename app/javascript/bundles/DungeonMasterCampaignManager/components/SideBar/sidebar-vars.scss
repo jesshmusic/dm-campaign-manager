@@ -1,0 +1,21 @@
+@import '../../stylesheets/variables';
+
+@import '~react-pro-sidebar/dist/scss/styles';
+
+.pro-sidebar {
+  border-right: 0.25rem solid $yellow;
+  height: 100vh;
+  position: fixed;
+
+  > .pro-sidebar-inner > .pro-sidebar-layout {
+    -ms-overflow-style: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+}
+
+.pro-item-content {
+  font-family: $font-family-mr-eaves;
+}

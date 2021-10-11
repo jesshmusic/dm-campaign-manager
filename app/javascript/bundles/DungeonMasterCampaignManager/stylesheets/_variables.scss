@@ -65,6 +65,16 @@ $enable-grid-classes: false;
 $enable-cssgrid: true;
 $enable-print-styles: true;
 
+// Sidebar
+$sidebar-bg-color: $dark-red;
+$sidebar-color: lighten($primary, 35%);
+$icon-bg-color: transparent;
+$icon-size: 2rem;
+$submenu-bg-color: $primary;
+$sidebar-width: 20rem;
+$sidebar-collapsed-width: 5rem;
+//$highlight-color
+
 // Shadow
 $box-shadow: 5px 7px 7px rgba($gray-900, 0.5);
 $box-shadow-sm: 3px 5px 5px rgba($gray-900, 0.5);

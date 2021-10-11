@@ -1,11 +1,14 @@
 @import '../../stylesheets/variables';
 
+@import '~react-pro-sidebar/dist/scss/styles';
+
 .sideBar {
   background-color: $dark-red;
   border-right: 0.25rem solid $orange;
   display: flex;
   flex: 0 0 20rem;
   flex-direction: column;
+  justify-content: space-between;
   max-width: 10rem;
   padding: 3rem 1rem 0;
 
@@ -39,7 +42,7 @@
   color: $white;
   font-family: $font-family-mr-eaves;
   margin-bottom: 0.33rem;
-  padding-top: 0.5rem;
+  padding: 1rem;
 }
 
 .expandButton {
