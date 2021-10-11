@@ -11,13 +11,11 @@ const styles = require('./spinner.module.scss');
 const DndSpinner = (props: { showTableFrame?: boolean }) => {
   return props.showTableFrame ? (
     <TableFrame showSpinner={true}>
-      <GiLinkedRings size={100} className='spinner' />
-      <span className='visually-hidden'>Loading...</span>
+      <GiLinkedRings size={100} className="spinner" />
     </TableFrame>
   ) : (
     <div className={styles.noFrame}>
-      <GiLinkedRings size={100} className='spinner' />
-      <span className='visually-hidden'>Loading...</span>
+      <GiLinkedRings size={100} className="spinner" />
     </div>
   );
 };

@@ -137,6 +137,7 @@ export type ItemsPageProps = {
   getItems: (itemType?: string, searchTerm?: string) => void;
   itemType: ItemType;
   items: ItemSummary[];
+  loading: boolean;
   pageTitle: string;
 } & PageProps;
 

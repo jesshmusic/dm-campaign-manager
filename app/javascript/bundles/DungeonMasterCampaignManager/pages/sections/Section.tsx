@@ -14,10 +14,11 @@ const Section = (props: {
     name: string;
     description: string;
   };
+  loading: boolean;
   sectionSlug: string;
   getSection: (sectionSlug: string) => void;
 }) => {
-  const { section, sectionSlug, getSection } = props;
+  const { section, loading, sectionSlug, getSection } = props;
 
   React.useEffect(() => {
     getSection(sectionSlug);
@@ -32,7 +33,7 @@ const Section = (props: {
       breadcrumbs={[{ isActive: true, title: sectionTitle }]}
     >
       <PageTitle title={sectionTitle} />
-      {section ? (
+      {!loading && section ? (
         <ReactMarkdown
           className={styles.section}
           children={section.description}
@@ -55,6 +56,7 @@ const Section = (props: {
 function mapStateToProps(state) {
   return {
     section: state.sections.currentSection,
+    loading: state.sections.loading,
   };
 }
 

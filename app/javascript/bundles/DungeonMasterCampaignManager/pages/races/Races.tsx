@@ -8,8 +8,12 @@ import { connect } from 'react-redux';
 import DataTable from '../../components/DataTable/DataTable';
 import { RaceSummary } from '../../utilities/types';
 
-const Races = (props: { getRaces: () => void; races: RaceSummary[] }) => {
-  const { getRaces, races } = props;
+const Races = (props: {
+  getRaces: () => void;
+  races: RaceSummary[];
+  loading: boolean;
+}) => {
+  const { getRaces, loading, races } = props;
 
   React.useEffect(() => {
     getRaces();
@@ -55,7 +59,7 @@ const Races = (props: { getRaces: () => void; races: RaceSummary[] }) => {
         paginateExpandedRows={false}
         perPage={15}
         results={data.length}
-        loading={!races || races.length === 0}
+        loading={loading}
       />
     </PageContainer>
   );
@@ -63,6 +67,7 @@ const Races = (props: { getRaces: () => void; races: RaceSummary[] }) => {
 
 function mapStateToProps(state) {
   return {
+    loading: state.races.loading,
     races: state.races.races,
   };
 }

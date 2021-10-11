@@ -13,8 +13,9 @@ import { Row } from 'react-table';
 const DndClasses = (props: {
   getDndClasses: () => void;
   dndClasses: DndClassSummary[];
+  loading: boolean;
 }) => {
-  const { getDndClasses, dndClasses } = props;
+  const { getDndClasses, dndClasses, loading } = props;
   React.useEffect(() => {
     getDndClasses();
   }, []);
@@ -66,7 +67,7 @@ const DndClasses = (props: {
         data={data}
         goToPage={goToPage}
         results={data.length}
-        loading={!dndClasses || dndClasses.length === 0}
+        loading={loading}
       />
     </PageContainer>
   );
@@ -77,6 +78,7 @@ function mapStateToProps(state) {
     dndClasses: state.dndClasses.dndClasses,
     user: state.users.user,
     flashMessages: state.flashMessages,
+    loading: state.dndClasses.loading,
   };
 }
 

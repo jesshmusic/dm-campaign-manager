@@ -16,17 +16,17 @@ const Items = (props: ItemsPageProps) => {
     props.getItems(props.itemType, searchTerm);
   };
 
-  return <ItemsList columns={columns}
-                    data={data}
-                    onSearch={onSearch}
-                    {...props} />;
+  return (
+    <ItemsList columns={columns} data={data} onSearch={onSearch} {...props} />
+  );
 };
 
 function mapStateToProps(state) {
   return {
     items: state.items.items,
+    loading: state.items.loading,
     user: state.users.user,
-    flashMessages: state.flashMessages
+    flashMessages: state.flashMessages,
   };
 }
 
@@ -42,7 +42,7 @@ function mapDispatchToProps(dispatch) {
       } else {
         dispatch(rest.actions.getItems());
       }
-    }
+    },
   };
 }
 

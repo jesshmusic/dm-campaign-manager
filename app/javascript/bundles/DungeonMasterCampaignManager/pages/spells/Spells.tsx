@@ -16,8 +16,9 @@ import { navigate } from '@reach/router';
 const Spells = (props: {
   getSpells: (searchTerm?: string) => void;
   spells: SpellProps[];
+  loading: boolean;
 }) => {
-  const { getSpells, spells } = props;
+  const { getSpells, loading, spells } = props;
 
   React.useEffect(() => {
     getSpells();
@@ -78,7 +79,7 @@ const Spells = (props: {
         columns={columns}
         data={data}
         goToPage={goToPage}
-        loading={!spells}
+        loading={loading}
         onSearch={onSearch}
         results={data.length}
       />
@@ -91,6 +92,7 @@ function mapStateToProps(state) {
     spells: state.spells.spells,
     user: state.users.user,
     flashMessages: state.flashMessages,
+    loading: state.spells.loading,
   };
 }
 

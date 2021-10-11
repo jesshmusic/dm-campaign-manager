@@ -13,8 +13,9 @@ const Monsters = (props: {
   getMonsterCategories: (searchTerm?: string) => void;
   monsters: MonsterSummary[];
   monsterTypes: MonsterType[];
+  loading: boolean;
 }) => {
-  const { getMonsterCategories, monsterTypes } = props;
+  const { getMonsterCategories, loading, monsterTypes } = props;
 
   React.useEffect(() => {
     getMonsterCategories();
@@ -112,7 +113,7 @@ const Monsters = (props: {
         onSearch={onSearch}
         paginateExpandedRows={false}
         perPage={15}
-        loading={!monsterTypes}
+        loading={loading}
         results={getNumResults()}
       />
     </PageContainer>
@@ -123,6 +124,7 @@ function mapStateToProps(state) {
   return {
     monsters: state.monsters.monsters,
     monsterTypes: state.monsters.monsterTypes,
+    loading: state.monsters.loading,
   };
 }
 

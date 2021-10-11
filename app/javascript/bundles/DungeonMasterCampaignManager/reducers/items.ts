@@ -12,6 +12,7 @@ const items = createReducer(
     items: [],
     count: 0,
     currentItem: null,
+    loading: false,
   },
   (builder) =>
     builder
@@ -20,6 +21,7 @@ const items = createReducer(
           items: [],
           count: 0,
           currentItem: state.currentItem,
+          loading: true,
         };
       })
       .addCase(getItemsSuccess, (state, action: AnyAction) => {
@@ -27,6 +29,7 @@ const items = createReducer(
           items: action.data.results,
           count: action.data.count,
           currentItem: state.currentItem,
+          loading: false,
         };
       })
       .addCase(getItemsFail, (state, action: AnyAction) => {
@@ -34,6 +37,7 @@ const items = createReducer(
           items: state.items,
           count: state.count,
           currentItem: state.currentItem,
+          loading: false,
         };
       })
       .addCase(getItemSuccess, (state, action: AnyAction) => {
@@ -41,6 +45,7 @@ const items = createReducer(
           items: state.items,
           count: state.count,
           currentItem: action.data,
+          loading: false,
         };
       })
       .addCase(getItemFail, (state, action: AnyAction) => {
@@ -48,6 +53,7 @@ const items = createReducer(
           items: state.items,
           count: state.count,
           currentItem: null,
+          loading: false,
         };
       })
 );

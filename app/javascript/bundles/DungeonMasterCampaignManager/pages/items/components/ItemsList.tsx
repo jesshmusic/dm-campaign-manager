@@ -7,13 +7,13 @@ import PageContainer from '../../../containers/PageContainer';
 import PageTitle from '../../../components/PageTitle/PageTitle';
 import { Column } from 'react-table';
 import DataTable from '../../../components/DataTable/DataTable';
-import ItemsNav from './ItemsNav';
 import { ItemType } from '../use-data';
 
 type ItemsListProps = {
   columns: Array<Column<any>>;
   data: any[];
   itemType: string;
+  loading: boolean;
   onSearch: (searchTerm: string) => void;
   pageTitle: string;
 };
@@ -21,6 +21,7 @@ type ItemsListProps = {
 const ItemsList = ({
   columns,
   data,
+  loading,
   onSearch,
   pageTitle,
   itemType,
@@ -40,27 +41,17 @@ const ItemsList = ({
       breadcrumbs={breadCrumbs}
     >
       <PageTitle title={pageTitle} />
-      <ItemsNav />
       <DataTable
         columns={columns}
         data={data}
         onSearch={onSearch}
         perPage={10}
         noHover
-        loading={!data}
+        loading={loading}
         results={data.length}
       />
     </PageContainer>
   );
 };
-
-// ItemsList.propTypes = {
-//   columns: PropTypes.array.isRequired,
-//   items: PropTypes.array.isRequired,
-//   flashMessages: PropTypes.array,
-//   getItems: PropTypes.func,
-//   pageTitle: PropTypes.string.isRequired,
-//   user: PropTypes.object
-// };
 
 export default ItemsList;
