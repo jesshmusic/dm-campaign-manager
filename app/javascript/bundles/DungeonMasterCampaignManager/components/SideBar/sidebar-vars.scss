@@ -7,11 +7,18 @@
   height: 100vh;
   position: fixed;
 
-  > .pro-sidebar-inner > .pro-sidebar-layout {
-    -ms-overflow-style: none;
+  > .pro-sidebar-inner {
+    img.sidebar-bg {
+      object-position: left;
+      opacity: 1;
+    }
 
-    &::-webkit-scrollbar {
-      display: none;
+    > .pro-sidebar-layout {
+      -ms-overflow-style: none;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
     }
   }
 }

@@ -2,37 +2,41 @@ import React from 'react';
 import { UserProps } from '../../utilities/types';
 import { NavLink } from '../NavLink/NavLink';
 import DndLogo from '../HeroBanner/DMLogo';
+const footerBg = require('./FooterBackground.jpg');
 
 const styles = require('./footer.module.scss');
 
 const Footer = (props: { user?: UserProps }) => {
   return (
     <div className={styles.wrapper}>
-      <div className={styles.left}>
-        <h3 className={styles.siteTitle}>The Dungeon Master Screen</h3>
-        <DndLogo className={styles.logo} />
-      </div>
-      <div className={styles.right}>
-        <ul className={styles.nav}>
-          <NavLink to={'/'} className={styles.footerLink}>
-            Home
-          </NavLink>
-          <NavLink to={'/app/classes'} className={styles.footerLink}>
-            Classes
-          </NavLink>
-          <NavLink to={'/app/races'} className={styles.footerLink}>
-            Races
-          </NavLink>
-          <NavLink to={'/app/monsters'} className={styles.footerLink}>
-            Monsters
-          </NavLink>
-          <NavLink to={'/app/items'} className={styles.footerLink}>
-            Items and Equipment
-          </NavLink>
-          <NavLink to={'/app/spells'} className={styles.footerLink}>
-            Spells
-          </NavLink>
-        </ul>
+      <img src={footerBg} className={styles.backgroundImage} />
+      <div className={styles.content}>
+        <div className={styles.left}>
+          <h3 className={styles.siteTitle}>The Dungeon Master Screen</h3>
+          <DndLogo className={styles.logo} />
+        </div>
+        <div className={styles.right}>
+          <ul className={styles.nav}>
+            <NavLink to={'/'} className={styles.footerLink}>
+              Home
+            </NavLink>
+            <NavLink to={'/app/classes'} className={styles.footerLink}>
+              Classes
+            </NavLink>
+            <NavLink to={'/app/races'} className={styles.footerLink}>
+              Races
+            </NavLink>
+            <NavLink to={'/app/monsters'} className={styles.footerLink}>
+              Monsters
+            </NavLink>
+            <NavLink to={'/app/items'} className={styles.footerLink}>
+              Items and Equipment
+            </NavLink>
+            <NavLink to={'/app/spells'} className={styles.footerLink}>
+              Spells
+            </NavLink>
+          </ul>
+        </div>
       </div>
     </div>
   );

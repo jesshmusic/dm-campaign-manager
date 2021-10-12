@@ -63,4 +63,8 @@ export default class Util {
     const { innerWidth: width } = window;
     return width < 720;
   }
+
+  static numberWithCommas(num) {
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
 }

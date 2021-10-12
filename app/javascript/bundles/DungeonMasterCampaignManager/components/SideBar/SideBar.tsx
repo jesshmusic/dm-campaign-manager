@@ -8,7 +8,6 @@ import {
   BiLogOut,
   GiCapeArmor,
   GiChestArmor,
-  GiDragonHead,
   GiDwarfFace,
   GiHomeGarage,
   GiHorseHead,
@@ -16,14 +15,13 @@ import {
   GiMagicPalm,
   GiMagicPotion,
   GiMonsterGrasp,
-  GiOrcHead,
   GiPerson,
   GiRuleBook,
   GiSwapBag,
   GiSwordArray,
   GiToolbox,
 } from 'react-icons/all';
-import { Link } from '@reach/router';
+
 import {
   ProSidebar,
   Menu,
@@ -34,6 +32,7 @@ import {
 } from 'react-pro-sidebar';
 import './sidebar-vars.scss';
 import { SidebarLink } from '../NavLink/NavLink';
+const sidebarBG = require('./SidebarBackground.jpg');
 
 const styles = require('./sidebar.module.scss');
 
@@ -83,7 +82,7 @@ const SideBar = (props: {
   };
 
   return (
-    <ProSidebar collapsed={isCollapsed}>
+    <ProSidebar collapsed={isCollapsed} image={sidebarBG}>
       <SidebarContent>
         <Menu iconShape="square">
           <SidebarLink to="/" title="Home" icon={<AiOutlineHome />} />
@@ -161,14 +160,14 @@ const SideBar = (props: {
   );
 };
 
-function mapStateToProps(state) {
+const mapStateToProps = (state) => {
   return {
     sections: state.sections.sections,
     user: state.users.currentUser,
   };
-}
+};
 
-function mapDispatchToProps(dispatch) {
+const mapDispatchToProps = (dispatch) => {
   return {
     logoutUser: () => {
       dispatch(rest.actions.userLogout());
@@ -177,6 +176,6 @@ function mapDispatchToProps(dispatch) {
       dispatch(rest.actions.getSections());
     },
   };
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(SideBar);

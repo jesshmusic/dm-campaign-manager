@@ -7,6 +7,7 @@
 .section {
   column-gap: 5rem;
   columns: 400px 2;
+  min-height: 30rem;
 
   table {
     @extend .table;
@@ -20,6 +21,42 @@
         }
       }
     }
+  }
+}
+
+.info {
+  display: inline-block;
+  font-family: $font-family-sans-serif;
+  margin-bottom: $spacer * 1.5;
+  width: 100%;
+
+  h2 {
+    @include font-size(0.9rem);
+    border: 0;
+    color: $body-color;
+    font-family: $font-family-sans-serif;
+    font-style: italic;
+    margin-top: -1rem;
+  }
+
+  span {
+    font-style: italic;
+    font-weight: bold;
+    margin-right: 0.5rem;
+    text-transform: capitalize;
+  }
+
+  p {
+    margin: 0;
+  }
+
+  ul {
+    list-style: none;
+    padding-left: 0;
+  }
+
+  li {
+    padding: 0.25rem 0;
   }
 }
 

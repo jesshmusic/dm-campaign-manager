@@ -150,7 +150,7 @@ export interface ItemProps {
   damage?: string;
   desc?: string[];
   name: string;
-  properties?: string[];
+  properties?: string;
   rarity?: string;
   requiresAttunement?: string;
   slug: string;
@@ -165,7 +165,22 @@ export interface ItemProps {
   gearCategory?: string;
   vehicleCategory?: string;
   weaponCategory?: string;
+  categoryRange?: string;
 }
+
+export type ItemPageProps = {
+  item?: ItemProps;
+  itemSlug: string;
+  getItem: (itemSlug: string) => void;
+  loading: boolean;
+};
+
+export type ItemInfoBlock = {
+  parentTitle: string;
+  parentUrl: string;
+  subtitle: string;
+  infoBlock: { title: string; desc: string }[];
+};
 
 export type ItemsPageProps = {
   getItems: (itemType?: string, searchTerm?: string) => void;

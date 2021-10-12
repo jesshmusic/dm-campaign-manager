@@ -1,7 +1,24 @@
 @import '../../stylesheets/variables';
 
+.backButton {
+  background-color: transparent;
+  border: 0;
+  color: $dark-red;
+  outline: none;
+  padding-right: 1rem;
+  transition: color 0.25s ease-in-out;
+
+  svg {
+    transform: scaleX(-1) rotate(-45deg);
+  }
+
+  &:hover {
+    color: $primary;
+  }
+}
 
 .breadcrumb {
+  align-items: center;
   background-color: $background-med;
   border-collapse: separate;
   border-image: $orange-border;

@@ -1,5 +1,12 @@
-import { ItemsPageProps, ItemSummary } from '../../utilities/types';
+import {
+  ItemInfoBlock,
+  ItemPageProps,
+  ItemProps,
+  ItemsPageProps,
+  ItemSummary,
+} from '../../utilities/types';
 import React from 'react';
+import Util from '../../utilities/utilities';
 
 export enum ItemType {
   all = 'All',
@@ -37,55 +44,55 @@ const getRarityValue = (rarity: string): number => {
 const armorColumn = [
   {
     Header: 'Armor',
-    accessor: 'name'
+    accessor: 'name',
   },
   {
     Header: 'Type',
-    accessor: 'armorType'
+    accessor: 'armorType',
   },
   {
     Header: 'Cost',
-    accessor: 'cost'
+    accessor: 'cost',
   },
   {
     Header: 'Armor Class (AC)',
-    accessor: 'armorClass'
+    accessor: 'armorClass',
   },
   {
     Header: 'Strength',
-    accessor: 'strength'
+    accessor: 'strength',
   },
   {
     Header: 'Stealth',
-    accessor: 'stealth'
+    accessor: 'stealth',
   },
   {
     Header: 'Weight',
-    accessor: 'weight'
-  }
+    accessor: 'weight',
+  },
 ];
 
 const weaponColumn = [
   {
     Header: 'Name',
-    accessor: 'name'
+    accessor: 'name',
   },
   {
     Header: 'Cost',
-    accessor: 'cost'
+    accessor: 'cost',
   },
   {
     Header: 'Damage',
-    accessor: 'damage'
+    accessor: 'damage',
   },
   {
     Header: 'Weight',
-    accessor: 'weight'
+    accessor: 'weight',
   },
   {
     Header: 'Properties',
-    accessor: 'properties'
-  }
+    accessor: 'properties',
+  },
 ];
 
 export const useData = (props: ItemsPageProps) => {
@@ -95,16 +102,16 @@ export const useData = (props: ItemsPageProps) => {
     [ItemType.all]: [
       {
         Header: 'Item',
-        accessor: 'name'
+        accessor: 'name',
       },
       {
         Header: 'Weight',
-        accessor: 'weight'
+        accessor: 'weight',
       },
       {
         Header: 'Cost',
-        accessor: 'cost'
-      }
+        accessor: 'cost',
+      },
     ],
     [ItemType.armor]: [...armorColumn],
     [ItemType.magicArmor]: [
@@ -119,27 +126,27 @@ export const useData = (props: ItemsPageProps) => {
             return a > b ? 1 : -1;
           },
           []
-        )
-      }
+        ),
+      },
     ],
     [ItemType.gear]: [
       {
         Header: 'Item',
-        accessor: 'name'
+        accessor: 'name',
       },
       {
         Header: 'Weight',
-        accessor: 'weight'
+        accessor: 'weight',
       },
       {
         Header: 'Cost',
-        accessor: 'cost'
-      }
+        accessor: 'cost',
+      },
     ],
     [ItemType.magic]: [
       {
         Header: 'Name',
-        accessor: 'name'
+        accessor: 'name',
       },
       {
         Header: 'Rarity',
@@ -151,52 +158,52 @@ export const useData = (props: ItemsPageProps) => {
             return a > b ? 1 : -1;
           },
           []
-        )
+        ),
       },
       {
         Header: 'Attunement?',
-        accessor: 'requiresAttunement'
-      }
+        accessor: 'requiresAttunement',
+      },
     ],
     [ItemType.tool]: [
       {
         Header: 'Item',
-        accessor: 'name'
+        accessor: 'name',
       },
       {
         Header: 'Weight',
-        accessor: 'weight'
+        accessor: 'weight',
       },
       {
         Header: 'Cost',
-        accessor: 'cost'
-      }
+        accessor: 'cost',
+      },
     ],
     [ItemType.vehicle]: [
       {
         Header: 'Name',
-        accessor: 'name'
+        accessor: 'name',
       },
       {
         Header: 'Cost',
-        accessor: 'cost'
+        accessor: 'cost',
       },
       {
         Header: 'Category',
-        accessor: 'vehicleCategory'
+        accessor: 'vehicleCategory',
       },
       {
         Header: 'Speed',
-        accessor: 'speed'
+        accessor: 'speed',
       },
       {
         Header: 'Capacity',
-        accessor: 'capacity'
+        accessor: 'capacity',
       },
       {
         Header: 'Weight',
-        accessor: 'weight'
-      }
+        accessor: 'weight',
+      },
     ],
     [ItemType.magicWeapon]: [
       ...weaponColumn,
@@ -210,10 +217,10 @@ export const useData = (props: ItemsPageProps) => {
             return a > b ? 1 : -1;
           },
           []
-        )
-      }
+        ),
+      },
     ],
-    [ItemType.weapon]: [...weaponColumn]
+    [ItemType.weapon]: [...weaponColumn],
   };
 
   const onSearch = (searchTerm: string) => {
@@ -243,7 +250,7 @@ export const useData = (props: ItemsPageProps) => {
         stealth: item.stealth,
         strength: item.strength,
         vehicleCategory: item.vehicleCategory,
-        weight: item.weight ? `${item.weight} lb.` : '-'
+        weight: item.weight ? `${item.weight} lb.` : '-',
       };
     });
   }, [items]);
@@ -253,6 +260,147 @@ export const useData = (props: ItemsPageProps) => {
   return {
     columns,
     data,
-    onSearch
+    onSearch,
+  };
+};
+
+export const singleItemUseData = (props: ItemPageProps) => {
+  const getCostString = (cost?: { quantity: number; unit: string }) => {
+    return cost
+      ? `${Util.numberWithCommas(cost.quantity)} ${cost.unit}`
+      : 'N/A';
+  };
+  const getItemParentInfo = (item: ItemProps): ItemInfoBlock => {
+    switch (item.category) {
+      case 'Armor':
+        return {
+          parentTitle: 'Armor',
+          parentUrl: '/app/items/armor',
+          subtitle: `${item.armorType} ${
+            item.armorType !== 'Shield' ? ' armor' : ''
+          }`,
+          infoBlock: [
+            { title: 'Armor Class', desc: item.armorClass || '' },
+            {
+              title: 'Cost',
+              desc: getCostString(item.cost),
+            },
+          ],
+        };
+      case 'Weapon':
+        return {
+          parentTitle: 'Weapons',
+          parentUrl: '/app/items/weapons',
+          subtitle: `${item.categoryRange} Weapon`,
+          infoBlock: [
+            { title: 'Damage', desc: item.damage || '' },
+            { title: 'Properties', desc: item.properties || '' },
+            {
+              title: 'Cost',
+              desc: getCostString(item.cost),
+            },
+          ],
+        };
+      case 'Adventuring Gear':
+        return {
+          parentTitle: 'Adventuring Gear',
+          parentUrl: '/app/items/gear',
+          subtitle: item.gearCategory || '',
+          infoBlock: [
+            {
+              title: 'Cost',
+              desc: getCostString(item.cost),
+            },
+          ],
+        };
+      case 'Mounts and Vehicles':
+        return {
+          parentTitle: 'Mounts & Vehicles',
+          parentUrl: '/app/items/vehicles',
+          subtitle: item.vehicleCategory || '',
+          infoBlock: [
+            {
+              title: 'Cost',
+              desc: getCostString(item.cost),
+            },
+          ],
+        };
+      case 'Magic Item':
+        return {
+          parentTitle: 'Magic Items',
+          parentUrl: '/app/items/magic-items',
+          subtitle: `${item.magicItemType}, ${item.rarity} ${
+            item.requiresAttunement &&
+            item.requiresAttunement !== '' &&
+            `(${item.requiresAttunement})`
+          }`,
+          infoBlock: [
+            {
+              title: 'Cost',
+              desc: getCostString(item.cost),
+            },
+          ],
+        };
+      case 'Magic Armor Item':
+        return {
+          parentTitle: 'Magic Armor',
+          parentUrl: '/app/items/magic-armor',
+          subtitle: `${item.armorType} ${
+            item.armorType !== 'Shield' ? ' armor' : ''
+          }, ${item.rarity} ${
+            item.requiresAttunement &&
+            item.requiresAttunement !== '' &&
+            `(${item.requiresAttunement})`
+          }`,
+          infoBlock: [
+            { title: 'Armor Class', desc: item.armorClass || '' },
+            {
+              title: 'Cost',
+              desc: getCostString(item.cost),
+            },
+          ],
+        };
+      case 'Magic Weapon Item':
+        return {
+          parentTitle: 'Magic Weapons',
+          parentUrl: '/app/items/magic-weapons',
+          subtitle: `${item.categoryRange} Weapon, ${item.rarity} ${
+            item.requiresAttunement &&
+            item.requiresAttunement !== '' &&
+            `(${item.requiresAttunement})`
+          }`,
+          infoBlock: [
+            { title: 'Damage', desc: item.damage || '' },
+            { title: 'Properties', desc: item.properties || '' },
+            {
+              title: 'Cost',
+              desc: getCostString(item.cost),
+            },
+          ],
+        };
+      case 'Tools':
+        return {
+          parentTitle: 'Tools',
+          parentUrl: '/app/items/tools',
+          subtitle: item.toolCategory || '',
+          infoBlock: [
+            {
+              title: 'Cost',
+              desc: getCostString(item.cost),
+            },
+          ],
+        };
+      default:
+        return {
+          parentTitle: 'All Items',
+          parentUrl: '/app/items',
+          subtitle: `Not found`,
+          infoBlock: [],
+        };
+    }
+  };
+
+  return {
+    getItemParentInfo,
   };
 };

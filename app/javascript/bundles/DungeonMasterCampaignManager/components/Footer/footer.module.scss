@@ -1,15 +1,33 @@
 @import '../../stylesheets/application';
 
-.wrapper {
-  background-color: $dark-red;
-  border-top: 0.25rem solid $orange;
-  color: $white;
-  padding: 1rem 2rem 1rem 6rem;
+.backgroundImage {
+  height: 100%;
+  left: 0;
+  object-fit: cover;
+  object-position: top;
+  opacity: 0.1;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: 100;
+}
+
+.content {
+  position: relative;
+  z-index: 101;
 
   @include media-breakpoint-up(md) {
     display: flex;
     padding: 1rem 2rem 1rem 22rem;
   }
+}
+
+.wrapper {
+  background-color: $dark-red;
+  border-top: 0.25rem solid $orange;
+  color: $white;
+  padding: 1rem 2rem 1rem 6rem;
+  position: relative;
 }
 
 .left,

@@ -1,5 +1,7 @@
 import React from 'react';
 import BreadcrumbLink from './BreadcrumbLink';
+import { navigate } from '@reach/router';
+import { GiPointing } from 'react-icons/all';
 
 const styles = require('./breadcrumbs.module.scss');
 
@@ -14,6 +16,9 @@ const Breadcrumbs = (props: { breadcrumbs: BreadCrumbProps[] }) => {
   return (
     <nav aria-label="breadcrumb">
       <ol className={styles.breadcrumb}>
+        <button className={styles.backButton} onClick={() => navigate(-1)}>
+          <GiPointing size={25} />
+        </button>
         <BreadcrumbLink to="/" title={'Home'} />
         {breadcrumbs.map((breadcrumb, index) =>
           !breadcrumb.isActive && breadcrumb.url ? (
