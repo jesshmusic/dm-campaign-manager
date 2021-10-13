@@ -70,7 +70,7 @@ $sidebar-bg-color: $dark-red;
 $sidebar-color: lighten($primary, 45%);
 $icon-bg-color: transparent;
 $icon-size: 2rem;
-$submenu-bg-color: darken($dark-red, 10%);
+$submenu-bg-color: rgba(darken($dark-red, 10%), 0.3);
 $sidebar-width: 20rem;
 $sidebar-collapsed-width: 5rem;
 //$highlight-color
