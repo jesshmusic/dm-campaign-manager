@@ -5,6 +5,9 @@
 import React from 'react';
 import { UseFormRegister } from 'react-hook-form';
 import { FieldValues, MonsterGeneratorFormFields } from '../../utilities/types';
+import classNames from 'classnames';
+
+const styles = require('./input.module.scss');
 
 type FieldProps = {
   className?: string;
@@ -15,14 +18,17 @@ type FieldProps = {
   infoText?: string;
   label: string;
   name: keyof MonsterGeneratorFormFields;
-  onChange?: (name: keyof MonsterGeneratorFormFields, value: string | number) => void;
+  onChange?: (
+    name: keyof MonsterGeneratorFormFields,
+    value: string | number
+  ) => void;
   placeholder?: string;
   readOnly?: boolean;
   register?: UseFormRegister<FieldValues>;
   required?: boolean;
   type: string;
   value?: string | number | readonly string[] | undefined;
-}
+};
 
 const FormField = (props: FieldProps) => {
   const {
@@ -38,22 +44,23 @@ const FormField = (props: FieldProps) => {
     register,
     required,
     type,
-    value
+    value,
   } = props;
   if (type === 'checkbox' || type === 'radio') {
     return (
       <div className={`${className} form-check`}>
         <input
-          className='form-check-input'
-          {...register ? register(name, { required }) : null}
+          className="form-check-input"
+          {...(register ? register(name, { required }) : null)}
           type={type}
           name={name}
           defaultValue={defaultValue}
           value={value}
           required={required}
-          id={id} />
+          id={id}
+        />
         {hideLabel ? null : (
-          <label className='form-check-label' htmlFor={name}>
+          <label className="form-check-label" htmlFor={name}>
             {label}
           </label>
         )}
@@ -61,18 +68,23 @@ const FormField = (props: FieldProps) => {
     );
   }
   return (
-    <div className={`py-2 g-col-${columnWidth} ${className}`}>
+    <div className={classNames(className, styles.wrapper)}>
       {hideLabel ? null : (
-        <label className='form-label' htmlFor={name}>
+        <label className={styles.label} htmlFor={name}>
           {label}
         </label>
       )}
-      <input className='form-control'
-             readOnly={readOnly}
-             defaultValue={defaultValue}
-             {...register ? register(name, { required }) : null}
-             onChange={onChange ? (event) => onChange(name, event.target.value) : (event) => false}
-             type={type}
+      <input
+        className={styles.input}
+        readOnly={readOnly}
+        defaultValue={defaultValue}
+        {...(register ? register(name, { required }) : null)}
+        onChange={
+          onChange
+            ? (event) => onChange(name, event.target.value)
+            : (event) => false
+        }
+        type={type}
       />
     </div>
   );

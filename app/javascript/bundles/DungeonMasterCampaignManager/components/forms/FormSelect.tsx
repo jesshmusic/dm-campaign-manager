@@ -10,6 +10,7 @@ import {
   SelectOption,
 } from '../../utilities/types';
 import { Control, Controller } from 'react-hook-form';
+import classNames from 'classnames';
 
 export type SelectProps = {
   className?: string;
@@ -30,6 +31,8 @@ export type SelectProps = {
   value?: any;
 };
 
+const styles = require('./input.module.scss');
+
 const FormSelect = ({
   name,
   label,
@@ -41,8 +44,8 @@ const FormSelect = ({
   isMulti = false,
 }: SelectProps) => {
   return (
-    <div className={`py-2 ${className}`}>
-      <label htmlFor={name} className="form-label">
+    <div className={classNames(className, styles.wrapper)}>
+      <label htmlFor={name} className={styles.label}>
         {label}
       </label>
       <Controller

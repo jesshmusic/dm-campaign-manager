@@ -28,6 +28,8 @@ import AbilityScoreField from './AbilityScoreField';
 import { Colors } from '../../../utilities/enums';
 import Button from '../../../components/Button/Button';
 
+const styles = require('./generator.module.scss');
+
 type MonsterFormErrors = {
   name?: string;
   characterAlignment?: string;
@@ -115,6 +117,7 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
 
   const watchMonsterName = watch('name', monsterForm.name);
   const onSubmit = (data) => {
+    console.log(getMonsterObject(data));
     // props.setMonster(getMonsterObject(data));
   };
 
@@ -192,19 +195,14 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
     >
       <form
         onSubmit={handleSubmit(onSubmit)}
-        // className={classNames(validated && 'was-validated')}
+        className={styles.genForm}
         noValidate
       >
-        <div className="mb-3">
-          <NameFormField
-            handleGenerateName={handleGenerateName}
-            register={register}
-          />
-        </div>
-        <div
-          className="grid"
-          style={{ '--bs-columns': 4 } as React.CSSProperties}
-        >
+        <NameFormField
+          handleGenerateName={handleGenerateName}
+          register={register}
+        />
+        <div className={styles.fourCol}>
           <MonsterTypeSelect control={control} onChange={handleChange} />
           <FormField
             label={'Subtype'}
@@ -226,10 +224,7 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
             options={monsterSizeOptions}
           />
         </div>
-        <div
-          className="grid"
-          style={{ '--bs-columns': 4 } as React.CSSProperties}
-        >
+        <div className={styles.fourCol}>
           <FormField
             label={'Armor Class'}
             onChange={handleChange}
@@ -278,10 +273,7 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
           />
         </div>
         <h4>Ability Scores</h4>
-        <div
-          className="grid mb-3"
-          style={{ '--bs-columns': 6 } as React.CSSProperties}
-        >
+        <div className={styles.sixCol}>
           <AbilityScoreField
             label={'STR'}
             onChangeAbility={handleChange}

@@ -2,8 +2,9 @@ import React from 'react';
 import { UseFormRegister } from 'react-hook-form';
 import { FieldValues } from '../../../utilities/types';
 import { Colors } from '../../../utilities/enums';
-import { GiTrashCan } from 'react-icons/gi';
 import Button from '../../../components/Button/Button';
+
+const styles = require('../../../components/forms/input.module.scss');
 
 type NameFormFieldProps = {
   handleGenerateName: (gender: string, race: string) => void;
@@ -15,16 +16,16 @@ const NameFormField = (props: NameFormFieldProps) => {
   const characterRace = 'human';
   // const characterRace = values.characterRace && values.characterRace.value ? values.characterRace.value : 'human';
   return (
-    <>
-      <label className="form-label">Name</label>
+    <div className={styles.wrapper}>
+      <label className={styles.label}>Name</label>
       <input
-        className="form-control"
+        className={styles.input}
         {...register('name', { required: true })}
         autoComplete={''}
         type={'text'}
         placeholder={'Monster name'}
       />
-      <div>
+      <div className={styles.buttonGroup}>
         <Button
           color={Colors.primary}
           title="Random Name"
@@ -41,7 +42,7 @@ const NameFormField = (props: NameFormFieldProps) => {
           onClick={() => handleGenerateName('female', characterRace)}
         />
       </div>
-    </>
+    </div>
   );
 };
 

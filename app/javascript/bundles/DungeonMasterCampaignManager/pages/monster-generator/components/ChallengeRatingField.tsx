@@ -1,9 +1,11 @@
 import React from 'react';
-import { GiArchiveResearch, GiBullyMinion } from 'react-icons/all';
+import { GiBullyMinion } from 'react-icons/all';
 import { UseFormRegister } from 'react-hook-form';
 import { FieldValues } from '../../../utilities/types';
 import { Colors } from '../../../utilities/enums';
 import Button from '../../../components/Button/Button';
+
+const styles = require('../../../components/forms/input.module.scss');
 
 type ChallengeRatingFieldProps = {
   onCalculateCr: () => void;
@@ -13,11 +15,11 @@ type ChallengeRatingFieldProps = {
 const ChallengeRatingField = (props: ChallengeRatingFieldProps) => {
   const { onCalculateCr, register } = props;
   return (
-    <div className="py-2">
-      <label className="form-label">Challenge</label>
-      <div className="input-group mb-3">
+    <div className={styles.wrapper}>
+      <label className={styles.label}>Challenge</label>
+      <div className={styles.inputGroup}>
         <input
-          className="form-control"
+          className={styles.input}
           autoComplete={''}
           type={'text'}
           placeholder={'Challenge'}

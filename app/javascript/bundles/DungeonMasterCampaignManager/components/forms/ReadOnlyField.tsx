@@ -1,14 +1,22 @@
 import React from 'react';
+import classNames from 'classnames';
 
-const ReadOnlyField = (props: { className?: string, label: string, name: string, value: string | number }) => {
+const styles = require('./input.module.scss');
+
+const ReadOnlyField = (props: {
+  className?: string;
+  label: string;
+  name: string;
+  value: string | number;
+}) => {
   const { className, label, name, value } = props;
   return (
-    <div className={`py-2 ${className}`}>
-      <label className='form-label' htmlFor={name}>
+    <div className={classNames(className, styles.wrapper)}>
+      <label className={styles.label} htmlFor={name}>
         {label}
       </label>
       <input
-        className={'form-control'}
+        className={styles.input}
         autoComplete={''}
         type={'text'}
         readOnly

@@ -12,8 +12,9 @@ import {
 } from '../../../utilities/types';
 import FormField from '../../../components/forms/FormField';
 import { Colors } from '../../../utilities/enums';
-import { GiArchiveResearch } from 'react-icons/all';
 import Button from '../../../components/Button/Button';
+
+const styles = require('../../../components/forms/input.module.scss');
 
 const removeSmallest = (numbers) => {
   const min = Math.min.apply(null, numbers);
@@ -58,18 +59,16 @@ const AbilityScoreField = (props: AbilityScoreFieldProps) => {
   };
 
   return (
-    <div>
+    <div className={styles.abilityWrapper}>
       {hideRoll ? (
-        <label>{label}</label>
+        <label className={styles.label}>{label}</label>
       ) : (
-        <div className={'d-grid pb-2'}>
-          <Button
-            color={Colors.warning}
-            // onClick={() => handleRollAbility(input)}
-            title={label}
-            icon={<GiDiceTwentyFacesTwenty />}
-          />
-        </div>
+        <Button
+          color={Colors.warning}
+          // onClick={() => handleRollAbility(input)}
+          title={label}
+          icon={<GiDiceTwentyFacesTwenty />}
+        />
       )}
       <FormField
         label={label}

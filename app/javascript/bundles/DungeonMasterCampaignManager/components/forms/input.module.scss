@@ -3,7 +3,7 @@
 .input {
   appearance: none;
   background-clip: padding-box;
-  background-color: transparent;
+  background-color: $white;
   border: 0.0625rem solid $gray-400;
   border-radius: 0.25rem;
   color: $gray-800;
@@ -14,4 +14,85 @@
   padding: 0.5rem 0.75rem;
   transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
   width: 100%;
+
+  &[readonly] {
+    background-color: lighten($orange, 30%);
+  }
+}
+
+.buttonGroup {
+  display: inline-flex;
+  padding: 0.5rem 0;
+  position: relative;
+  vertical-align: middle;
+  width: 100%;
+
+  > button {
+    flex: 1;
+    margin: 0;
+    position: relative;
+  }
+
+  // Reset rounded corners
+  > button:not(:last-child),
+  > .buttonGroup:not(:last-child) > button {
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+  }
+
+  > button:nth-child(n + 3),
+  > button:not(:first-child),
+  > .buttonGroup:not(:first-child) > button {
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+  }
+}
+
+.inputGroup {
+  align-items: stretch;
+  display: flex;
+  flex-wrap: nowrap;
+  position: relative;
+  width: 100%;
+
+  .input {
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+    flex: 1;
+    position: relative;
+  }
+
+  button {
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+    margin: 0;
+  }
+}
+
+.label {
+  margin-bottom: 0.25rem;
+}
+
+.abilityWrapper,
+.wrapper {
+  padding: 1rem 0;
+}
+
+.abilityWrapper {
+  button {
+    border: 0.0625rem solid $gray-400;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    margin: 0 0 -0.0625rem;
+    width: 100%;
+  }
+
+  .wrapper {
+    padding: 0;
+  }
+
+  .input {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
 }
