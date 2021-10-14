@@ -1,21 +1,8 @@
 import React from 'react';
-import {
-  MonsterGeneratorFormFields,
-  MonsterProps,
-  RandomNameResult,
-  SelectOption,
-} from '../../../utilities/types';
-import {
-  alignmentOptions,
-  monsterSizeOptions,
-} from '../../../utilities/character-utilities';
+import { MonsterGeneratorFormFields, MonsterProps, RandomNameResult, SelectOption } from '../../../utilities/types';
+import { alignmentOptions, monsterSizeOptions } from '../../../utilities/character-utilities';
 import axios from 'axios';
-import {
-  abilityScoreModifier,
-  calculateCR,
-  getMonsterObject,
-  hitPoints,
-} from '../services';
+import { abilityScoreModifier, calculateCR, getMonsterObject, hitPoints } from '../services';
 import Frame from '../../../components/Frame/Frame';
 import { useForm } from 'react-hook-form';
 import NameFormField from './NameFormField';
@@ -46,7 +33,7 @@ export const senses: SelectOption[] = [
   { label: 'Darkvision', value: 'darkvision' },
   { label: 'Tremorsense', value: 'tremorsense' },
   { label: 'Truesight', value: 'truesight' },
-  { label: 'Passive Perception', value: 'darkvision' },
+  { label: 'Passive Perception', value: 'darkvision' }
 ];
 
 export const speeds: SelectOption[] = [
@@ -55,7 +42,7 @@ export const speeds: SelectOption[] = [
   { label: 'Fly', value: 'fly' },
   { label: 'Hover', value: 'hover' },
   { label: 'Swim', value: 'swim' },
-  { label: 'Walk', value: 'walk' },
+  { label: 'Walk', value: 'walk' }
 ];
 
 type GenerateMonsterProps = {
@@ -69,7 +56,7 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
       alignment: 'Neutral',
       alignmentOption: {
         value: 'Neutral',
-        label: 'Neutral',
+        label: 'Neutral'
       },
       armorClass: 10,
       attackBonus: 2,
@@ -82,13 +69,13 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
       languages: [],
       monsterType: {
         value: 'humanoid',
-        label: 'Humanoid',
+        label: 'Humanoid'
       },
       profBonus: 2,
       saveDC: 12,
       size: {
         label: 'Medium',
-        value: 'medium',
+        value: 'medium'
       },
       xp: 10,
       strength: 10,
@@ -107,12 +94,12 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
       specialAbilities: [],
       senses: [],
       speeds: [],
-      monsterProficiencies: [],
+      monsterProficiencies: []
     });
 
   const { control, getValues, handleSubmit, register, setValue, watch } =
     useForm<MonsterGeneratorFormFields>({
-      defaultValues: monsterForm,
+      defaultValues: monsterForm
     });
 
   const watchMonsterName = watch('name', monsterForm.name);
@@ -189,9 +176,9 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
 
   return (
     <Frame
-      title="Random Monster Generator"
-      subtitle="Select options to create a new Monster"
-      className="random-monster-generator"
+      title='Random Monster Generator'
+      subtitle='Select options to create a new Monster'
+      className='random-monster-generator'
     >
       <form
         onSubmit={handleSubmit(onSubmit)}
@@ -205,20 +192,20 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
         <div className={styles.fourCol}>
           <MonsterTypeSelect control={control} onChange={handleChange} />
           <FormField
-            label={'Subtype'}
-            type={'text'}
+            label='Subtype'
+            type='text'
             register={register}
-            name={'monsterSubtype'}
+            name='monsterSubtype'
           />
           <FormSelect
-            label={'Alignment'}
-            name={'alignmentOption'}
+            label='Alignment'
+            name='alignmentOption'
             control={control}
             options={alignmentOptions}
           />
           <FormSelect
-            label={'Size'}
-            name={'size'}
+            label='Size'
+            name='size'
             control={control}
             onChange={handleChange}
             options={monsterSizeOptions}
@@ -226,31 +213,31 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
         </div>
         <div className={styles.fourCol}>
           <FormField
-            label={'Armor Class'}
+            label='Armor Class'
             onChange={handleChange}
-            type={'number'}
+            type='number'
             register={register}
-            name={'armorClass'}
+            name='armorClass'
           />
           <FormField
-            label={'Hit Dice Count'}
+            label='Hit Dice Count'
             onChange={handleChange}
-            type={'number'}
+            type='number'
             register={register}
-            name={'hitDiceNumber'}
+            name='hitDiceNumber'
           />
           <FormField
-            label={'Hit Dice Value'}
-            type={'text'}
+            label='Hit Dice Value'
+            type='text'
             register={register}
-            name={'hitDiceValue'}
+            name='hitDiceValue'
             readOnly
           />
           <FormField
-            label={'Hit Points'}
-            type={'text'}
+            label='Hit Points'
+            type='text'
             register={register}
-            name={'hitPoints'}
+            name='hitPoints'
             readOnly
           />
           <ChallengeRatingField
@@ -258,17 +245,17 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
             register={register}
           />
           <FormField
-            label={'XP'}
-            type={'number'}
+            label='XP'
+            type='number'
             register={register}
-            name={'xp'}
+            name='xp'
             readOnly
           />
           <FormField
-            label={'Proficiency Bonus'}
-            type={'number'}
+            label='Proficiency Bonus'
+            type='number'
             register={register}
-            name={'profBonus'}
+            name='profBonus'
             readOnly
           />
         </div>
@@ -312,11 +299,11 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
           />
         </div>
         <div>
-          <div className="btn-group" aria-label="Character actions">
+          <div className='btn-group' aria-label='Character actions'>
             <Button
               color={Colors.success}
-              title="Generate Monster"
-              type="submit"
+              title='Generate Monster'
+              type='submit'
               icon={<GiDiceTwentyFacesTwenty size={30} />}
             />
             {/*<button type='button' onClick={reset}>Reset</button>*/}

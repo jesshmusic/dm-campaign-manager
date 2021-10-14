@@ -4,7 +4,7 @@
 
 import React from 'react';
 import { UseFormRegister } from 'react-hook-form';
-import { FieldValues, MonsterGeneratorFormFields } from '../../utilities/types';
+import { FieldValues } from '../../utilities/types';
 import classNames from 'classnames';
 
 const styles = require('./input.module.scss');
@@ -13,13 +13,14 @@ type FieldProps = {
   className?: string;
   columnWidth?: number;
   defaultValue?: string | number | readonly string[] | undefined;
+  helpText?: string;
   hideLabel?: boolean;
   id?: string;
   infoText?: string;
   label: string;
-  name: keyof MonsterGeneratorFormFields;
+  name: string;
   onChange?: (
-    name: keyof MonsterGeneratorFormFields,
+    name: string,
     value: string | number
   ) => void;
   placeholder?: string;
@@ -33,9 +34,9 @@ type FieldProps = {
 const FormField = (props: FieldProps) => {
   const {
     className,
-    columnWidth = 1,
     defaultValue,
     id,
+    helpText,
     hideLabel,
     label,
     name,
@@ -44,13 +45,15 @@ const FormField = (props: FieldProps) => {
     register,
     required,
     type,
-    value,
+    value
   } = props;
+
   if (type === 'checkbox' || type === 'radio') {
     return (
       <div className={`${className} form-check`}>
         <input
-          className="form-check-input"
+          aria-describedby={`${name}-help-text`}
+          className='form-check-input'
           {...(register ? register(name, { required }) : null)}
           type={type}
           name={name}
@@ -60,9 +63,14 @@ const FormField = (props: FieldProps) => {
           id={id}
         />
         {hideLabel ? null : (
-          <label className="form-check-label" htmlFor={name}>
+          <label className='form-check-label' htmlFor={name}>
             {label}
           </label>
+        )}
+        {helpText && (
+          <div id={`${name}-help-text`} className='form-text'>
+            {helpText}
+          </div>
         )}
       </div>
     );
@@ -76,6 +84,7 @@ const FormField = (props: FieldProps) => {
       )}
       <input
         className={styles.input}
+        aria-describedby={`${name}-help-text`}
         readOnly={readOnly}
         defaultValue={defaultValue}
         {...(register ? register(name, { required }) : null)}
@@ -86,6 +95,11 @@ const FormField = (props: FieldProps) => {
         }
         type={type}
       />
+      {helpText && (
+        <div id={`${name}-help-text`} className='form-text'>
+          {helpText}
+        </div>
+      )}
     </div>
   );
 };

@@ -25,6 +25,17 @@
 
 .pro-item-content {
   font-family: $font-family-mr-eaves;
+
+  button {
+    background: 0;
+    border: 0;
+    color: lighten($primary, 30%);
+    transition: color ease-in-out 0.25s;
+
+    &:hover {
+      color: $white;
+    }
+  }
 }
 
 .pro-sub-menu {

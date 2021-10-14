@@ -8,12 +8,10 @@ import '../stylesheets/_fonts.scss';
 import '../stylesheets/application.scss';
 import { Helmet } from 'react-helmet';
 import { FlashMessage, UserProps } from '../utilities/types';
-import SignInModal from '../components/SignInModal';
+import SignInModal from '../components/SignInModal/SignInModal';
 import rest from '../actions/api';
 import { connect } from 'react-redux';
-import Breadcrumbs, {
-  BreadCrumbProps,
-} from '../components/Breadcrumbs/Breadcrumbs';
+import Breadcrumbs, { BreadCrumbProps } from '../components/Breadcrumbs/Breadcrumbs';
 
 const styles = require('./page-container.module.scss');
 
@@ -35,7 +33,7 @@ const PageContainer = (props: PageContainerProps) => {
     <div>
       <Helmet>
         <title>{pageTitle} | Dungeon Master&apos;s Screen</title>
-        <meta name="description" content={description} />
+        <meta name='description' content={description} />
       </Helmet>
       <div className={styles.pageWrapper}>
         <div className={styles.pageContent}>
@@ -58,7 +56,7 @@ const PageContainer = (props: PageContainerProps) => {
 function mapStateToProps(state) {
   return {
     flashMessages: state.flashMessages,
-    user: state.users.currentUser,
+    user: state.users.currentUser
   };
 }
 
@@ -67,10 +65,10 @@ function mapDispatchToProps(dispatch) {
     userLogin: (email: string, password: string) => {
       dispatch(
         rest.actions.userLogin({
-          user: { email, password },
+          user: { email, password }
         })
       );
-    },
+    }
   };
 }
 

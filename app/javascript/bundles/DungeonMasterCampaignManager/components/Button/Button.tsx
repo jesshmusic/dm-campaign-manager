@@ -6,6 +6,7 @@ const styles = require('./button.module.scss');
 
 const Button = (props: {
   id?: string;
+  dataBsDismiss?: string;
   disabled?: boolean;
   color: Colors;
   title: string;
@@ -14,7 +15,10 @@ const Button = (props: {
   icon?: React.ReactNode;
   hideTitle?: boolean;
 }) => {
-  const { id, icon, color, disabled, hideTitle, title, onClick, type } = props;
+  const {
+    id, icon, color, dataBsDismiss,
+    disabled, hideTitle, title, onClick, type
+  } = props;
 
   return (
     <button
@@ -27,10 +31,11 @@ const Button = (props: {
         [styles.warning]: color === Colors.warning,
         [styles.danger]: color === Colors.danger,
         [styles.light]: color === Colors.light,
-        [styles.dark]: color === Colors.dark,
+        [styles.dark]: color === Colors.dark
       })}
       onClick={onClick}
       id={id}
+      data-bs-dismiss={dataBsDismiss}
       disabled={disabled}
       type={type || 'button'}
     >
