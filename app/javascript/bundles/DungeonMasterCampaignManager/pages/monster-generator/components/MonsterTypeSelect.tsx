@@ -73,7 +73,7 @@ const MonsterTypeSelect = ({ control, onChange }) => (
     label={'Type'}
     control={control}
     options={monsterTypeOptions}
-    onChange={onChange}
+    handleSelectChange={onChange}
     name={'monsterType'}
   />
 );

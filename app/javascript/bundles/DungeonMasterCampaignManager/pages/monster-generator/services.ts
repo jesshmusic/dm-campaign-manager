@@ -130,15 +130,23 @@ export const abilityScoreModifier = (abilityScore: number) => {
 };
 
 export const hitDieForSize = (size) => {
-  const sizes = {
-    tiny: 'd4',
-    small: 'd6',
-    medium: 'd8',
-    large: 'd10',
-    huge: 'd12',
-    gargantuan: 'd20',
-  };
-  return sizes[size];
+  console.log(size);
+  switch (size.toLowerCase()) {
+    case 'tiny':
+      return 'd4';
+    case 'small':
+      return 'd6';
+    case 'medium':
+      return 'd8';
+    case 'large':
+      return 'd10';
+    case 'huge':
+      return 'd12';
+    case 'gargantuan':
+      return 'd20';
+    default:
+      return 'd8';
+  }
 };
 
 const diceNumberFromString = {

@@ -5,7 +5,10 @@
 import React from 'react';
 import Select from 'react-select';
 import CreatableSelect from 'react-select/creatable';
-import { MonsterGeneratorFormFields, SelectOption } from '../../utilities/types';
+import {
+  MonsterGeneratorFormFields,
+  SelectOption,
+} from '../../utilities/types';
 import { Control, Controller } from 'react-hook-form';
 import classNames from 'classnames';
 
@@ -18,10 +21,7 @@ export type SelectProps = {
   isMulti?: boolean;
   label: string;
   name: keyof MonsterGeneratorFormFields;
-  onChange?: (
-    name: keyof MonsterGeneratorFormFields,
-    value: string | number
-  ) => void;
+  handleSelectChange?: (name: string, value: string | number) => void;
   options?: SelectOption[];
   placeholder?: string;
   control?: Control<MonsterGeneratorFormFields>;
@@ -31,15 +31,24 @@ export type SelectProps = {
 const styles = require('./input.module.scss');
 
 const FormSelect = ({
-                      name,
-                      label,
-                      className = '',
-                      isClearable = false,
-                      options,
-                      control,
-                      isCreatable = false,
-                      isMulti = false
-                    }: SelectProps) => {
+  name,
+  label,
+  className = '',
+  isClearable = false,
+  handleSelectChange,
+  options,
+  control,
+  isCreatable = false,
+  isMulti = false,
+}: SelectProps) => {
+  const handleChange = (value, onChange) => {
+    console.log(value);
+    onChange(value);
+    if (handleSelectChange) {
+      handleSelectChange(name, value.value);
+    }
+  };
+
   return (
     <div className={classNames(className, styles.wrapper)}>
       <label htmlFor={name} className={styles.label}>
@@ -48,17 +57,18 @@ const FormSelect = ({
       <Controller
         control={control}
         name={name}
-        render={({
-                   field
-                   // field: { onChange, onBlur, value, name, ref },
-                 }) =>
+        render={({ field: { onChange, onBlur, value, name, ref } }) =>
           isCreatable ? (
             <CreatableSelect
               isClearable={isClearable}
               options={options}
               isMulti={isMulti}
               isSearchable
-              {...field}
+              onBlur={onBlur}
+              onChange={onChange}
+              value={value}
+              name={name}
+              ref={ref}
             />
           ) : (
             <Select
@@ -66,7 +76,13 @@ const FormSelect = ({
               options={options}
               isMulti={isMulti}
               isSearchable
-              {...field}
+              onBlur={onBlur}
+              // @ts-ignore
+              value={value}
+              onChange={(event) => handleChange(event, onChange)}
+              // value={value}
+              name={name}
+              ref={ref}
             />
           )
         }
