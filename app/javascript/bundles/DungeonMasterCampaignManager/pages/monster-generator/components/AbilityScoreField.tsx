@@ -39,7 +39,7 @@ type AbilityScoreFieldProps = {
   label: string;
   readOnly?: boolean;
   hideRoll?: boolean;
-  onChangeAbility: (name: string, value: number) => void;
+  onChangeAbility: (name: string, value: string) => void;
   register: UseFormRegister<FieldValues>;
   value?: any;
 };
@@ -47,7 +47,7 @@ type AbilityScoreFieldProps = {
 const AbilityScoreField = (props: AbilityScoreFieldProps) => {
   const { label, name, hideRoll, onChangeAbility, register } = props;
 
-  const handleRollAbility = (input) => {
+  const handleRollAbility = (input, register: UseFormRegister<FieldValues>) => {
     const rolls = [
       Math.floor(Math.random() * 6) + 1,
       Math.floor(Math.random() * 6) + 1,

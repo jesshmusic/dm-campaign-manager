@@ -147,21 +147,25 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
     }
   };
 
-  const handleChange = (name: string, value: number) => {
+  const handleChange = (name: string, value: string) => {
     switch (name) {
       case 'strength':
+        console.log(typeof value);
         const profBonus = getValues('profBonus');
-        const strMod = abilityScoreModifier(value);
+        const strMod = abilityScoreModifier(parseInt(value));
+        setValue('strength', parseInt(value), { shouldDirty: true });
         setValue('attackBonus', profBonus + strMod, { shouldDirty: true });
         setValue('damageBonus', strMod, { shouldDirty: true });
         break;
       case 'dexterity':
+        setValue('dexterity', parseInt(value), { shouldDirty: true });
         break;
       case 'constitution':
+        setValue('constitution', parseInt(value), { shouldDirty: true });
         setValue(
           'hitPoints',
           hitPoints(
-            value,
+            parseInt(value),
             getValues('hitDiceNumber'),
             getValues('hitDiceValue')
           ),
@@ -169,30 +173,55 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
         );
         break;
       case 'intelligence':
+        setValue('intelligence', parseInt(value), { shouldDirty: true });
         break;
       case 'wisdom':
+        setValue('wisdom', parseInt(value), { shouldDirty: true });
         break;
       case 'charisma':
+        setValue('charisma', parseInt(value), { shouldDirty: true });
         break;
       case 'hitDiceNumber':
+        setValue('hitDiceNumber', parseInt(value), { shouldDirty: true });
         setValue(
           'hitPoints',
           hitPoints(
             getValues('constitution'),
-            value,
+            parseInt(value),
             getValues('hitDiceValue')
           ),
           { shouldDirty: true }
         );
+        setValue('hitDice', `${value}${getValues('hitDiceValue')}`);
+        break;
+      case 'hitDiceValue':
+        setValue('hitDiceValue', value, { shouldDirty: true });
+        setValue(
+          'hitPoints',
+          hitPoints(
+            getValues('constitution'),
+            getValues('hitDiceNumber'),
+            value
+          ),
+          { shouldDirty: true }
+        );
+        setValue('hitDice', `${getValues('hitDiceNumber')}${value}`);
         break;
       case 'size':
         const size = getValues('size');
         const hitDice = hitDieForSize(size.value);
-        console.log(`New size: ${size.label} with hit die: ${hitDice}`);
         setValue('hitDiceValue', hitDice, {
           shouldDirty: true,
         });
+        const hitDiceCount = getValues('hitDiceNumber');
+        setValue(
+          'hitPoints',
+          hitPoints(getValues('constitution'), hitDiceCount, hitDice),
+          { shouldDirty: true }
+        );
         break;
+      default:
+        setValue(name as keyof MonsterGeneratorFormFields, value);
     }
   };
 

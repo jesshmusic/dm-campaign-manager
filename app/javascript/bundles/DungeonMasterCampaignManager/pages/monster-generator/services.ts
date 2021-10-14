@@ -7,6 +7,7 @@ import axios from 'axios';
 import createDecorator from 'final-form-calculate';
 
 export const getMonsterObject = (values: MonsterGeneratorFormFields) => {
+  console.log(values);
   const returnChar = {
     alignment: values.alignment,
     armorClass: values.armorClass,
@@ -130,7 +131,6 @@ export const abilityScoreModifier = (abilityScore: number) => {
 };
 
 export const hitDieForSize = (size) => {
-  console.log(size);
   switch (size.toLowerCase()) {
     case 'tiny':
       return 'd4';
