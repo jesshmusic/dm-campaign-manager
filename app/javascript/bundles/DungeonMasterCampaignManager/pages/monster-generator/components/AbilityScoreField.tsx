@@ -7,15 +7,12 @@ import { GiDiceTwentyFacesTwenty } from 'react-icons/gi/';
 import { UseFormRegister } from 'react-hook-form';
 import { DiceRoll } from 'rpg-dice-roller';
 import useSound from 'use-sound';
-const diceSound = require('../../../sounds/DiceRoll.mp3');
-
-import {
-  FieldValues,
-  MonsterGeneratorFormFields,
-} from '../../../utilities/types';
+import { FieldValues, MonsterGeneratorFormFields } from '../../../utilities/types';
 import FormField from '../../../components/forms/FormField';
 import { Colors } from '../../../utilities/enums';
 import Button from '../../../components/Button/Button';
+
+const diceSound = require('../../../sounds/DiceRoll.mp3');
 
 const styles = require('../../../components/forms/input.module.scss');
 
@@ -29,18 +26,17 @@ type AbilityScoreFieldProps = {
   hideRoll?: boolean;
   onChangeAbility: (name: string, value: string) => void;
   register: UseFormRegister<FieldValues>;
-  setValue: (name: string, value: unknown, config?: Object) => void;
   value?: any;
 };
 
 const AbilityScoreField = (props: AbilityScoreFieldProps) => {
-  const { label, name, hideRoll, onChangeAbility, register, setValue } = props;
+  const { label, name, hideRoll, onChangeAbility, register } = props;
   const [play] = useSound(diceSound, { volume: 0.5 });
 
   const handleRollAbility = (numDice: number = 3) => {
     const roll = new DiceRoll(`${numDice}d6dl1`);
     play();
-    setValue(name, roll.total);
+    onChangeAbility(name, `${roll.total}`);
   };
 
   return (
@@ -66,7 +62,7 @@ const AbilityScoreField = (props: AbilityScoreFieldProps) => {
       <FormField
         label={label}
         name={name}
-        type="number"
+        type='number'
         register={register}
         onChange={onChangeAbility}
         hideLabel
