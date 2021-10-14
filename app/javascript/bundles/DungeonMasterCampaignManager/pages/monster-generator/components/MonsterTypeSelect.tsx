@@ -68,12 +68,11 @@ const monsterTypeOptions = [
   },
 ];
 
-const MonsterTypeSelect = ({ control, onChange }) => (
+const MonsterTypeSelect = ({ control }) => (
   <FormSelect
     label={'Type'}
     control={control}
     options={monsterTypeOptions}
-    handleSelectChange={onChange}
     name={'monsterType'}
   />
 );

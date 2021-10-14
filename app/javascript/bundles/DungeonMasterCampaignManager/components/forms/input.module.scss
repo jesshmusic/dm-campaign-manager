@@ -115,7 +115,26 @@
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
     margin: 0 0 -0.0625rem;
+    padding: 0.5rem;
+    white-space: nowrap;
     width: 100%;
+
+    &:first-child {
+      flex: 3;
+      margin-right: -0.0625rem;
+    }
+
+    &:last-child {
+      flex: 2;
+    }
+
+    svg {
+      margin-left: auto;
+    }
+  }
+
+  .buttonGroup {
+    padding: 0;
   }
 
   .wrapper {

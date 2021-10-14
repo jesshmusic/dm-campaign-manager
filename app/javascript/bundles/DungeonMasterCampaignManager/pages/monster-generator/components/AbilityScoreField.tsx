@@ -3,9 +3,12 @@
  */
 
 import React from 'react';
-// import { Field } from 'react-final-form';
 import { GiDiceTwentyFacesTwenty } from 'react-icons/gi/';
 import { UseFormRegister } from 'react-hook-form';
+import { DiceRoll } from 'rpg-dice-roller';
+import useSound from 'use-sound';
+const diceSound = require('../../../sounds/DiceRoll.mp3');
+
 import {
   FieldValues,
   MonsterGeneratorFormFields,
@@ -15,21 +18,6 @@ import { Colors } from '../../../utilities/enums';
 import Button from '../../../components/Button/Button';
 
 const styles = require('../../../components/forms/input.module.scss');
-
-const removeSmallest = (numbers) => {
-  const min = Math.min.apply(null, numbers);
-
-  if (numbers.length > 0) {
-    for (let i = 0; i < numbers.length; i = i + 1) {
-      if (numbers[i] === min) {
-        numbers.splice(i, 1);
-        return numbers;
-      }
-    }
-  } else {
-    return numbers;
-  }
-};
 
 type AbilityScoreFieldProps = {
   name: keyof MonsterGeneratorFormFields;
@@ -41,21 +29,18 @@ type AbilityScoreFieldProps = {
   hideRoll?: boolean;
   onChangeAbility: (name: string, value: string) => void;
   register: UseFormRegister<FieldValues>;
+  setValue: (name: string, value: unknown, config?: Object) => void;
   value?: any;
 };
 
 const AbilityScoreField = (props: AbilityScoreFieldProps) => {
-  const { label, name, hideRoll, onChangeAbility, register } = props;
+  const { label, name, hideRoll, onChangeAbility, register, setValue } = props;
+  const [play] = useSound(diceSound, { volume: 0.5 });
 
-  const handleRollAbility = (input, register: UseFormRegister<FieldValues>) => {
-    const rolls = [
-      Math.floor(Math.random() * 6) + 1,
-      Math.floor(Math.random() * 6) + 1,
-      Math.floor(Math.random() * 6) + 1,
-      Math.floor(Math.random() * 6) + 1,
-    ];
-    const abilityScore = removeSmallest(rolls).reduce((a, b) => a + b, 0);
-    input.onChange(abilityScore);
+  const handleRollAbility = (numDice: number = 3) => {
+    const roll = new DiceRoll(`${numDice}d6dl1`);
+    play();
+    setValue(name, roll.total);
   };
 
   return (
@@ -63,12 +48,20 @@ const AbilityScoreField = (props: AbilityScoreFieldProps) => {
       {hideRoll ? (
         <label className={styles.label}>{label}</label>
       ) : (
-        <Button
-          color={Colors.warning}
-          // onClick={() => handleRollAbility(input)}
-          title={label}
-          icon={<GiDiceTwentyFacesTwenty />}
-        />
+        <div className={styles.buttonGroup}>
+          <Button
+            color={Colors.warning}
+            onClick={() => handleRollAbility()}
+            title={`${label} 3d6`}
+            icon={<GiDiceTwentyFacesTwenty />}
+          />
+          <Button
+            color={Colors.info}
+            onClick={() => handleRollAbility(4)}
+            title={'4d6'}
+            icon={<GiDiceTwentyFacesTwenty />}
+          />
+        </div>
       )}
       <FormField
         label={label}

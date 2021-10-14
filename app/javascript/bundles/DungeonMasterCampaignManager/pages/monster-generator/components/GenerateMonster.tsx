@@ -149,8 +149,10 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
 
   const handleChange = (name: string, value: string) => {
     switch (name) {
+      case 'alignmentOption':
+        setValue('alignment', value);
+        break;
       case 'strength':
-        console.log(typeof value);
         const profBonus = getValues('profBonus');
         const strMod = abilityScoreModifier(parseInt(value));
         setValue('strength', parseInt(value), { shouldDirty: true });
@@ -241,7 +243,7 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
           register={register}
         />
         <div className={styles.fourCol}>
-          <MonsterTypeSelect control={control} onChange={handleChange} />
+          <MonsterTypeSelect control={control} />
           <FormField
             label="Subtype"
             type="text"
@@ -317,36 +319,42 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
             label={'STR'}
             onChangeAbility={handleChange}
             register={register}
+            setValue={setValue}
             name={'strength'}
           />
           <AbilityScoreField
             label={'DEX'}
             onChangeAbility={handleChange}
             register={register}
+            setValue={setValue}
             name={'dexterity'}
           />
           <AbilityScoreField
             label={'CON'}
             onChangeAbility={handleChange}
             register={register}
+            setValue={setValue}
             name={'constitution'}
           />
           <AbilityScoreField
             label={'INT'}
             onChangeAbility={handleChange}
             register={register}
+            setValue={setValue}
             name={'intelligence'}
           />
           <AbilityScoreField
             label={'WIS'}
             onChangeAbility={handleChange}
             register={register}
+            setValue={setValue}
             name={'wisdom'}
           />
           <AbilityScoreField
             label={'CHA'}
             onChangeAbility={handleChange}
             register={register}
+            setValue={setValue}
             name={'charisma'}
           />
         </div>
