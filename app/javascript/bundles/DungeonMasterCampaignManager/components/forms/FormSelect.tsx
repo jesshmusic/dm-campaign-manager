@@ -5,10 +5,7 @@
 import React from 'react';
 import Select from 'react-select';
 import CreatableSelect from 'react-select/creatable';
-import {
-  MonsterGeneratorFormFields,
-  SelectOption,
-} from '../../utilities/types';
+import { MonsterGeneratorFormFields, SelectOption } from '../../utilities/types';
 import { Control, Controller } from 'react-hook-form';
 import classNames from 'classnames';
 
@@ -34,15 +31,15 @@ export type SelectProps = {
 const styles = require('./input.module.scss');
 
 const FormSelect = ({
-  name,
-  label,
-  className = '',
-  isClearable = false,
-  options,
-  control,
-  isCreatable = false,
-  isMulti = false,
-}: SelectProps) => {
+                      name,
+                      label,
+                      className = '',
+                      isClearable = false,
+                      options,
+                      control,
+                      isCreatable = false,
+                      isMulti = false
+                    }: SelectProps) => {
   return (
     <div className={classNames(className, styles.wrapper)}>
       <label htmlFor={name} className={styles.label}>
@@ -52,16 +49,16 @@ const FormSelect = ({
         control={control}
         name={name}
         render={({
-          field: { onChange, onBlur, value, name, ref },
-          fieldState: { invalid, isTouched, isDirty, error },
-          formState,
-        }) =>
+                   field
+                   // field: { onChange, onBlur, value, name, ref },
+                 }) =>
           isCreatable ? (
             <CreatableSelect
               isClearable={isClearable}
               options={options}
               isMulti={isMulti}
               isSearchable
+              {...field}
             />
           ) : (
             <Select
@@ -69,6 +66,7 @@ const FormSelect = ({
               options={options}
               isMulti={isMulti}
               isSearchable
+              {...field}
             />
           )
         }

@@ -2,7 +2,7 @@ import React from 'react';
 import { MonsterGeneratorFormFields, MonsterProps, RandomNameResult, SelectOption } from '../../../utilities/types';
 import { alignmentOptions, monsterSizeOptions } from '../../../utilities/character-utilities';
 import axios from 'axios';
-import { abilityScoreModifier, calculateCR, getMonsterObject, hitPoints } from '../services';
+import { abilityScoreModifier, calculateCR, getMonsterObject, hitDieForSize, hitPoints } from '../services';
 import Frame from '../../../components/Frame/Frame';
 import { useForm } from 'react-hook-form';
 import NameFormField from './NameFormField';
@@ -134,6 +134,7 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
   };
 
   const handleChange = (name: string, value: number) => {
+    console.log(name);
     switch (name) {
       case 'strength':
         const profBonus = getValues('profBonus');
@@ -169,6 +170,15 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
             getValues('hitDiceValue')
           ),
           { shouldDirty: true }
+        );
+        break;
+      case 'size':
+        console.log(getValues('size'));
+        setValue('hitDiceValue',
+          hitDieForSize(getValues('size')),
+          {
+            shouldDirty: true
+          }
         );
         break;
     }
@@ -207,7 +217,6 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
             label='Size'
             name='size'
             control={control}
-            onChange={handleChange}
             options={monsterSizeOptions}
           />
         </div>
