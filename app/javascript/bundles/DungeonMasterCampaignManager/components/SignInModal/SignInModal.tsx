@@ -1,6 +1,5 @@
 import React from 'react';
 import { UserProps } from '../../utilities/types';
-import { useForm } from 'react-hook-form';
 import Button from '../Button/Button';
 import { Colors } from '../../utilities/enums';
 import FormField from '../forms/FormField';
@@ -9,17 +8,15 @@ const styles = require('./sign-in-modal.module.scss');
 
 const SignInModal = (props: {
   user?: UserProps;
-  userLogin: (username: string, password: string) => void;
+  userLogin: (username: string, password: string, rememberMe: boolean) => void;
 }) => {
-  const { register, handleSubmit } = useForm({
-    defaultValues: {
-      email: '',
-      password: '',
-      remember_me: false
-    }
-  });
-  const onSubmit = (data) => {
-    props.userLogin(data.email, data.password);
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [rememberMe, setRememberMe] = React.useState(false);
+
+  const onSubmit = (event) => {
+    event.preventDefault();
+    props.userLogin(email, password, rememberMe);
   };
 
   return (
@@ -47,20 +44,28 @@ const SignInModal = (props: {
             />
           </div>
           <div className='modal-body'>
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form onSubmit={(event) => onSubmit(event)}>
               <FormField label='Email Address'
                          name='email'
                          type='email'
                          helpText="We'll never share your email with anyone else."
-                         register={register} />
+                         onChange={(name, value: string) => {
+                           setEmail(value);
+                         }}
+              />
               <FormField label='Password'
                          name='password'
                          type='password'
-                         register={register} />
+                         onChange={(name, value: string) => {
+                           setPassword(value);
+                         }} />
               <FormField label='Remember Me'
                          name='remember_me'
                          type='checkbox'
-                         register={register} />
+                         onChange={(name, value: boolean) => {
+                           console.log(value);
+                           setRememberMe(value);
+                         }} />
               <Button
                 title='Submit'
                 type='submit'

@@ -62,10 +62,10 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    userLogin: (email: string, password: string) => {
+    userLogin: (email: string, password: string, rememberMe: boolean) => {
       dispatch(
         rest.actions.userLogin({
-          user: { email, password }
+          user: { email, password, remember_me: rememberMe }
         })
       );
     }

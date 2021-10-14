@@ -21,7 +21,7 @@ type FieldProps = {
   name: string;
   onChange?: (
     name: string,
-    value: string | number
+    value: string | number | boolean
   ) => void;
   placeholder?: string;
   readOnly?: boolean;
@@ -55,6 +55,13 @@ const FormField = (props: FieldProps) => {
           aria-describedby={`${name}-help-text`}
           className='form-check-input'
           {...(register ? register(name, { required }) : null)}
+          onChange={
+            onChange
+              ? (event) => {
+                return onChange(name, event.target.checked);
+              }
+              : (event) => false
+          }
           type={type}
           name={name}
           defaultValue={defaultValue}
