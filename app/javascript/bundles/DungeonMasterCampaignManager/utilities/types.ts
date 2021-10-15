@@ -195,6 +195,37 @@ type MonsterAction = {
   name: string;
 };
 
+type MonsterActionField = {
+  name: string;
+  numAttacks: number;
+  hasDc: boolean;
+  dcResult?: string;
+  damages?: {
+    numDice: number;
+    diceValue: number;
+  };
+  hasUsages: boolean;
+  usesType?: string;
+  usesCount?: number;
+  hasSpellCasting: boolean;
+  spellCasting?: {
+    level: number;
+    ability: string;
+    slots: {
+      first: number;
+      second: number;
+      third: number;
+      fourth: number;
+      fifth: number;
+      sixth: number;
+      seventh: number;
+      eighth: number;
+      ninth: number;
+    };
+    spellIds: number[];
+  };
+};
+
 export type MonsterGeneratorFormFields = {
   name: string;
   alignment: string;
@@ -224,10 +255,10 @@ export type MonsterGeneratorFormFields = {
   damageImmunities: string[];
   damageResistances: string[];
   damageVulnerabilities: string[];
-  actions: MonsterAction[];
-  legendaryActions: MonsterAction[];
-  reactions: MonsterAction[];
-  specialAbilities: MonsterAction[];
+  actions: MonsterActionField[];
+  legendaryActions: MonsterActionField[];
+  reactions: MonsterActionField[];
+  specialAbilities: MonsterActionField[];
   senses: MonsterInfoData[];
   speeds: MonsterInfoData[];
   monsterProficiencies: Prof[];

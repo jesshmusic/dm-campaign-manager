@@ -209,6 +209,7 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
             name={'charisma'}
           />
         </div>
+        <div className={styles.actionsSection}></div>
         <div>
           <div className="btn-group" aria-label="Character actions">
             <Button

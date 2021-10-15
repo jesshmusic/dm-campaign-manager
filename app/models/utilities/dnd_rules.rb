@@ -630,9 +630,9 @@ class DndRules
 
     def cr_for_save_dc(save_dc)
       case save_dc
-      when 0..12
+      when 0..10
         0
-      when 13
+      when 11..13
         0.125
       when 14
         4.0
@@ -732,18 +732,38 @@ class DndRules
 
     def offensive_cr(monster, attack_bonus)
       damages = []
+      cr_for_spells = 0
       monster[:actions].each do |action|
-        num_dice = action[:num_dice]
-        damage_die = action[:dice_value]
-        damage = (((damage_die / 2) + 1) * num_dice) + attack_bonus
-        damages << damage
+        if action[:damages]
+          damage = 0
+          action[:damages].each do |damage_obj|
+            num_dice = damage_obj[:num_dice]
+            damage_die = damage_obj[:dice_value]
+            damage += (((damage_die / 2) + 1) * num_dice) + attack_bonus
+          end
+          damages << damage * action[:num_attacks]
+        elsif action[:spell_casting]
+          cr_for_spells = (action[:spell_casting][:level] / 2).to_i
+          cr_for_spells += 1 if action[:spell_casting][:slots][:third]
+          cr_for_spells += 1 if action[:spell_casting][:slots][:fourth]
+          cr_for_spells += 2 if action[:spell_casting][:slots][:fifth]
+          cr_for_spells += 2 if action[:spell_casting][:slots][:sixth]
+          cr_for_spells += 3 if action[:spell_casting][:slots][:seventh]
+          cr_for_spells += 3 if action[:spell_casting][:slots][:eighth]
+          cr_for_spells += 5 if action[:spell_casting][:slots][:ninth]
+        end
       end
       damage_per_round = damages.inject(0, :+)
       damage_cr = cr_for_damage(damage_per_round)
       attack_bonus_cr = cr_for_attack_bonus(attack_bonus)
       spell_save_cr = cr_for_save_dc(monster[:save_dc].to_i)
-      offensive_cr_total = [damage_cr, attack_bonus_cr, spell_save_cr].inject(0, &:+)
-      (offensive_cr_total.to_f / 3.0)
+      if cr_for_spells > 0
+        offensive_cr_total = [damage_cr, attack_bonus_cr, spell_save_cr, cr_for_spells].inject(0, &:+)
+        (offensive_cr_total.to_f / 4.0)
+      else
+        offensive_cr_total = [damage_cr, attack_bonus_cr, spell_save_cr].inject(0, &:+)
+        (offensive_cr_total.to_f / 3.0)
+      end
     end
 
     def parse_dice_string(dice_string)
