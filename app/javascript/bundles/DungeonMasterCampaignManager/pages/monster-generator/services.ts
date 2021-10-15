@@ -1,13 +1,9 @@
 import snakecaseKeys from 'snakecase-keys';
-import {
-  MonsterCRCalcResult,
-  MonsterGeneratorFormFields,
-} from '../../utilities/types';
+import { MonsterCRCalcResult, MonsterGeneratorFormFields } from '../../utilities/types';
 import axios from 'axios';
 import createDecorator from 'final-form-calculate';
 
 export const getMonsterObject = (values: MonsterGeneratorFormFields) => {
-  console.log(values);
   const returnChar = {
     alignment: values.alignment,
     armorClass: values.armorClass,
@@ -22,20 +18,21 @@ export const getMonsterObject = (values: MonsterGeneratorFormFields) => {
     monsterSubtype: values.monsterSubtype,
     monsterType: values.monsterType.value,
     name: values.name,
+    saveDc: values.saveDC,
     size: values.size.value,
     strength: values.strength,
     wisdom: values.wisdom,
-    conditions: values.conditionImmunities,
-    damageImmunities: values.damageImmunities,
-    damageResistances: values.damageResistances,
-    damageVulnerabilities: values.damageVulnerabilities,
-    actions: values.actions,
-    legendaryActions: values.legendaryActions,
-    reactions: values.reactions,
-    specialAbilities: values.specialAbilities,
-    senses: values.senses,
-    speeds: values.speeds,
-    monsterProficiencies: values.monsterProficiencies,
+    conditions: values.conditionImmunities || [],
+    damageImmunities: values.damageImmunities || [],
+    damageResistances: values.damageResistances || [],
+    damageVulnerabilities: values.damageVulnerabilities || [],
+    actions: values.actions || [],
+    legendaryActions: values.legendaryActions || [],
+    reactions: values.reactions || [],
+    specialAbilities: values.specialAbilities || [],
+    senses: values.senses || [],
+    speeds: values.speeds || [],
+    monsterProficiencies: values.monsterProficiencies || []
   };
   return snakecaseKeys(returnChar, { exclude: ['_destroy'] });
 };
@@ -58,7 +55,7 @@ export const get2eMonsterObject = (values) => {
     alignment: values.alignment,
     numberOfAttacks: values.numberOfAttacks,
     speed: values.speed,
-    actions: values.actions,
+    actions: values.actions
   };
   return snakecaseKeys(returnChar, { exclude: ['_destroy'] });
 };
@@ -76,7 +73,7 @@ export const damageTypes = [
   { label: 'Lightning', value: 'Lightning' },
   { label: 'Thunder', value: 'Thunder' },
   { label: 'Force', value: 'Force' },
-  { label: 'Psychic', value: 'Psychic' },
+  { label: 'Psychic', value: 'Psychic' }
 ];
 
 export const calculateCR = async (
@@ -86,8 +83,8 @@ export const calculateCR = async (
     '/v1/calculate_cr',
     {
       params: {
-        monster: getMonsterObject(allValues),
-      },
+        monster: getMonsterObject(allValues)
+      }
     }
   );
 };
@@ -124,7 +121,7 @@ export const abilityScoreModifier = (abilityScore: number) => {
     28: 9,
     29: 9,
     30: 10,
-    31: 10,
+    31: 10
   };
 
   return mods[abilityScore];
@@ -155,7 +152,7 @@ const diceNumberFromString = {
   d8: 8,
   d10: 10,
   d12: 12,
-  d20: 20,
+  d20: 20
 };
 
 export const hitPoints = (
@@ -163,9 +160,6 @@ export const hitPoints = (
   hitDiceNumber: number,
   hitDiceValue: string
 ) => {
-  console.log(
-    `constitution: ${constitution}, hitDiceNumber: ${hitDiceNumber}, hitDiceValue: ${hitDiceValue}`
-  );
   const dice = diceNumberFromString[hitDiceValue];
   let hitPoints = dice / 2 + 0.5 + abilityScoreModifier(constitution);
   hitPoints = hitPoints * hitDiceNumber;
@@ -176,8 +170,8 @@ export const monsterCalculationsDecorator = createDecorator(
   {
     field: 'characterAlignment',
     updates: {
-      alignment: (value) => value.value,
-    },
+      alignment: (value) => value.value
+    }
   },
   {
     field: 'hitDiceNumber',
@@ -188,9 +182,9 @@ export const monsterCalculationsDecorator = createDecorator(
           allValues.constitution,
           value,
           allValues.hitDiceValue
-        ),
+        )
       };
-    },
+    }
   },
   {
     field: 'hitDiceValue',
@@ -201,9 +195,9 @@ export const monsterCalculationsDecorator = createDecorator(
           allValues.constitution,
           allValues.hitDiceNumber,
           value
-        ),
+        )
       };
-    },
+    }
   },
   {
     field: 'constitution',
@@ -213,9 +207,9 @@ export const monsterCalculationsDecorator = createDecorator(
           value,
           allValues.hitDiceNumber,
           allValues.hitDiceValue
-        ),
+        )
       };
-    },
+    }
   },
   {
     field: 'strength',
@@ -240,13 +234,13 @@ export const monsterCalculationsDecorator = createDecorator(
       //   }
       // }
       return updateFields;
-    },
+    }
   },
   {
     field: 'size',
     updates: {
-      hitDiceValue: (value) => hitDieForSize(value.value),
-    },
+      hitDiceValue: (value) => hitDieForSize(value.value)
+    }
   },
   {
     field: /actions\[\d\]\.damages\[\d\]\.addDamageBonus/,
@@ -255,8 +249,8 @@ export const monsterCalculationsDecorator = createDecorator(
       const currentDamageBonus = abilityScoreModifier(allValues.strength);
       return {
         [`${actionDamagesName}.damageBonus`]:
-          parseInt(value, 10) + currentDamageBonus,
+        parseInt(value, 10) + currentDamageBonus
       };
-    },
+    }
   }
 );

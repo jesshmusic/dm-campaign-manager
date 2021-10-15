@@ -3,8 +3,9 @@ import { MonsterGeneratorFormFields, RandomNameResult } from '../../../utilities
 import { abilityScoreModifier, calculateCR, getMonsterObject, hitDieForSize, hitPoints } from '../services';
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
+import { GenerateMonsterProps } from './GenerateMonster';
 
-export const useData = () => {
+export const useData = (props: GenerateMonsterProps) => {
   const [monsterForm, setMonsterForm] =
     React.useState<MonsterGeneratorFormFields>({
       name: 'New Monster',
@@ -39,7 +40,7 @@ export const useData = () => {
       intelligence: 10,
       wisdom: 10,
       charisma: 10,
-      conditions: [],
+      conditionImmunities: [],
       damageImmunities: [],
       damageResistances: [],
       damageVulnerabilities: [],
@@ -76,11 +77,11 @@ export const useData = () => {
 
   const handleCalculateCR = async () => {
     try {
-      const response = await calculateCR(getValues());
+      const values = getValues();
+      const response = await calculateCR(values);
       const challenge = response.data.challenge;
       setValue('profBonus', challenge.data.prof_bonus);
       setValue('xp', challenge.data.xp);
-      setValue('saveDC', challenge.data.save_dc);
       setValue('challengeRating', challenge.name);
     } catch (error) {
       console.error(error);

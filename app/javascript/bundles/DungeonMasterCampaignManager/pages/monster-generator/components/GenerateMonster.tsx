@@ -43,7 +43,7 @@ export const speeds: SelectOption[] = [
   { label: 'Walk', value: 'walk' }
 ];
 
-type GenerateMonsterProps = {
+export type GenerateMonsterProps = {
   setMonster: (monster: MonsterProps) => void;
 };
 
@@ -56,7 +56,7 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
     handleSubmit,
     onSubmit,
     register
-  } = useData();
+  } = useData(props);
 
   return (
     <Frame
@@ -131,17 +131,23 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
           />
           <FormField
             label='XP'
-            type='number'
+            type='text'
             register={register}
             name='xp'
             readOnly
           />
           <FormField
             label='Proficiency Bonus'
-            type='number'
+            type='text'
             register={register}
             name='profBonus'
             readOnly
+          />
+          <FormField
+            label='Save DC'
+            type='number'
+            register={register}
+            name='saveDC'
           />
         </div>
         <h4>Ability Scores</h4>

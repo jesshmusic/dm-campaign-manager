@@ -205,7 +205,6 @@ export type MonsterGeneratorFormFields = {
   challengeRating: string;
   charisma: number;
   constitution: number;
-  conditionImmunities?: number[];
   dexterity: number;
   hitDice: string;
   hitDiceNumber: number;
@@ -221,10 +220,10 @@ export type MonsterGeneratorFormFields = {
   strength: number;
   wisdom: number;
   xp: number;
-  conditions: number[];
-  damageImmunities: Resistance[];
-  damageResistances: Resistance[];
-  damageVulnerabilities: Resistance[];
+  conditionImmunities: string[];
+  damageImmunities: string[];
+  damageResistances: string[];
+  damageVulnerabilities: string[];
   actions: MonsterAction[];
   legendaryActions: MonsterAction[];
   reactions: MonsterAction[];

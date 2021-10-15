@@ -90,8 +90,8 @@ class NpcGenerator
 
     def calculate_cr(params)
       monster = params[:params][:monster]
-      defensive_cr_num = DndRules.defensive_cr(monster[:hit_points], monster[:armor_class])
-      challenge_rating = "5"
+      attack_bonus = DndRules.ability_score_modifier(monster[:strength])
+      challenge_rating = DndRules.cr_for_npc(monster, attack_bonus)
       cr_data = DndRules.challenge_ratings[challenge_rating.to_sym].as_json
       { name: challenge_rating, data: cr_data }
     end

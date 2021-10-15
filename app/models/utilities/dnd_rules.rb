@@ -2,6 +2,19 @@
 
 class DndRules
   class << self
+    def abilities
+      %w[Strength Dexterity Constitution Intelligence Wisdom Charisma]
+    end
+
+    def ability_score_modifier(ability_score)
+      {
+        1 => -5, 2 => -4, 3 => -4, 4 => -3, 5 => -3, 6 => -2, 7 => -2,
+        8 => -1, 9 => -1, 10 => 0, 11 => 0, 12 => 1, 13 => 1, 14 => 2, 15 => 2,
+        16 => 3, 17 => 3, 18 => 4, 19 => 4, 20 => 5, 21 => 5, 22 => 6, 23 => 6,
+        24 => 7, 25 => 7, 26 => 8, 27 => 8, 28 => 9, 29 => 9, 30 => 10, 31 => 10
+      }[ability_score]
+    end
+
     def alignments
       [
         'Lawful Good', 'Lawful Neutral', 'Lawful Evil',
@@ -26,109 +39,90 @@ class DndRules
       ]
     end
 
-    def abilities
-      %w[Strength Dexterity Constitution Intelligence Wisdom Charisma]
-    end
-
-    def player_races
-      [
-        'Dragonborn',
-        'Dwarf', 'Mountain Dwarf', 'Hill Dwarf',
-        'Elf', 'High Elf', 'Wood Elf',
-        'Gnome', 'Rock Gnome', 'Forest Gnome',
-        'Half-orc', 'Half-elf',
-        'Halfling', 'Stout Halfling', 'Lightfoot Halfling',
-        'Human',
-        'Tiefling'
-      ]
-    end
-
-    def race_values
-      {
-        'dragonborn': 'Dragonborn',
-        'dwarf': 'Dwarf',
-        'dwarf_hill': 'Dwarf (hill)',
-        'dwarf_mountain': 'Dwarf (mountain)',
-        'elf': 'Elf',
-        'elf_high': 'Elf (high)',
-        'elf_wood': 'Elf (wood)',
-        'gnome': 'Gnome',
-        'half_elf': 'Half-elf',
-        'half_orc': 'Half-orc',
-        'halfling': 'Halfling',
-        'halfling_lightfoot': 'Halfling (lightfoot)',
-        'halfling_stout': 'Halfling (stout)',
-        'human': 'Human',
-        'tiefling': 'Tiefling'
-      }
-    end
-
-    def senses
-      {
-        'blindsight': 'Blind Sight',
-        'darkvision': 'Dark Vision',
-        'passive_perception': 'Passive Perception',
-        'tremorsense': 'Tremor Sense',
-        'truesight': 'Blind Sight'
-      }
-    end
-
-    def skills
-      [
-        'Skill: Animal Handling',
-        'Skill: Survival',
-        'Skill: Acrobatics',
-        'Skill: Athletics',
-        'Skill: Perception',
-        'Skill: Performance',
-        'Skill: Sleight of Hand',
-        'Skill: Stealth',
-        'Skill: Persuasion',
-        'Skill: Deception',
-        'Skill: Intimidation',
-        'Skill: Nature',
-        'Skill: Arcana',
-        'Skill: History',
-        'Skill: Insight',
-        'Skill: Investigation',
-        'Skill: Medicine',
-        'Skill: Religion'
-      ]
-    end
-
-    def hit_die_for_size
-      {
-        'tiny': 4,
-        'small': 6,
-        'medium': 8,
-        'large': 10,
-        'huge': 12,
-        'gargantuan': 20
-      }
-    end
-
-    def hit_point_average_for_size
-      {
-        'tiny': 2.5,
-        'small': 3.5,
-        'medium': 4.5,
-        'large': 5.5,
-        'huge': 6.5,
-        'gargantuan': 10.5
-      }
-    end
-
-    def num_hit_die_for_size (size, challenge_rating, constitution_bonus = 0, hit_points = nil)
-      size = size.downcase
-      hp_min = challenge_ratings[challenge_rating.to_sym][:hit_points_min]
-      hp_max = challenge_ratings[challenge_rating.to_sym][:hit_points_max]
-
-      if hit_points.nil?
-        hp = rand(hp_min..hp_max)
+    def armor_class_cr(armor_class)
+      case armor_class
+      when 0..12
+        0.0
+      when 13
+        0.125
+      when 14
+        4.0
+      when 15
+        5.0
+      when 16
+        8.0
+      when 17
+        10.0
+      when 18
+        13.0
       else
-        hp = hit_points
+        17.0
       end
-      { hit_points: hp, num_hit_die: hp / (hit_point_average_for_size[size.to_sym] + constitution_bonus) }
+    end
+
+    def challenge_rating_for_xp(xp)
+      case xp.to_i
+      when 0..449
+        '1'
+      when 450..699
+        '2'
+      when 700..1099
+        '3'
+      when 1100..1799
+        '4'
+      when 1800..2299
+        '5'
+      when 2300..2899
+        '6'
+      when 2900..3899
+        '7'
+      when 3900..4999
+        '8'
+      when 5000..5899
+        '9'
+      when 5900..7199
+        '10'
+      when 7200..8399
+        '11'
+      when 8400..9999
+        '12'
+      when 10_000..11_499
+        '13'
+      when 11_500..12_999
+        '14'
+      when 13_000..14_999
+        '15'
+      when 15_000..17_999
+        '16'
+      when 18_000..19_999
+        '17'
+      when 20_000..21_999
+        '18'
+      when 22_000..24_999
+        '19'
+      when 25_000..32_999
+        '20'
+      when 33_000..40_999
+        '21'
+      when 41_000..49_999
+        '22'
+      when 50_000..61_999
+        '23'
+      when 62_000..74_999
+        '24'
+      when 75_000..89_999
+        '25'
+      when 90_000..104_999
+        '26'
+      when 105_000..119_999
+        '27'
+      when 120_000..134_999
+        '28'
+      when 135_000..155_000
+        '29'
+      else
+        '30'
+      end
     end
 
     def challenge_ratings
@@ -510,285 +504,6 @@ class DndRules
       }
     end
 
-    def proficiency_bonus_for_level(level)
-      case level
-      when 0..4
-        2
-      when 5..8
-        3
-      when 9..12
-        4
-      when 13..16
-        5
-      else
-        6
-      end
-    end
-
-    def spell_attack_bonus(proficiency_bonus, dnd_class, char)
-      case dnd_class.name
-      when 'Bard', 'Paladin', 'Sorcerer', 'Warlock'
-        proficiency_bonus + DndRules.ability_score_modifier(char.charisma)
-      when 'Cleric', 'Druid', 'Ranger'
-        proficiency_bonus + DndRules.ability_score_modifier(char.wisdom)
-      when 'Wizard'
-        proficiency_bonus + DndRules.ability_score_modifier(char.intelligence)
-      else
-        0
-      end
-    end
-
-    def random_race
-      player_races.sample
-    end
-
-    def random_alignment
-      alignments.sample
-    end
-
-    # Challenge Rating Calculations
-    def proficiency_for_cr(challenge_rating)
-      return 2 if challenge_rating == '1/8' ||
-        challenge_rating == '1/4' ||
-        challenge_rating == '1/2' ||
-        challenge_rating == '0'
-
-      challenge = challenge_rating.to_i
-      case challenge
-      when 1..4
-        2
-      when 5..8
-        3
-      when 9..12
-        4
-      when 13..16
-        5
-      when 17..20
-        6
-      when 21..24
-        7
-      when 25..28
-        8
-      else
-        9
-      end
-    end
-
-    def challenge_rating_for_xp(xp)
-      case xp.to_i
-      when 0..449
-        '1'
-      when 450..699
-        '2'
-      when 700..1099
-        '3'
-      when 1100..1799
-        '4'
-      when 1800..2299
-        '5'
-      when 2300..2899
-        '6'
-      when 2900..3899
-        '7'
-      when 3900..4999
-        '8'
-      when 5000..5899
-        '9'
-      when 5900..7199
-        '10'
-      when 7200..8399
-        '11'
-      when 8400..9999
-        '12'
-      when 10_000..11_499
-        '13'
-      when 11_500..12_999
-        '14'
-      when 13_000..14_999
-        '15'
-      when 15_000..17_999
-        '16'
-      when 18_000..19_999
-        '17'
-      when 20_000..21_999
-        '18'
-      when 22_000..24_999
-        '19'
-      when 25_000..32_999
-        '20'
-      when 33_000..40_999
-        '21'
-      when 41_000..49_999
-        '22'
-      when 50_000..61_999
-        '23'
-      when 62_000..74_999
-        '24'
-      when 75_000..89_999
-        '25'
-      when 90_000..104_999
-        '26'
-      when 105_000..119_999
-        '27'
-      when 120_000..134_999
-        '28'
-      when 135_000..155_000
-        '29'
-      else
-        '30'
-      end
-    end
-
-    def xp_for_cr(challenge_rating)
-      xp = {
-        '0' => 10, '1/8' => 25, '1/4' => 50, '1/2' => 100, '1' => 200, '2' => 450, '3' => 700,
-        '4' => 1100, '5' => 1800, '6' => 2300, '7' => 2900, '8' => 3900, '9' => 5000, '10' => 5900,
-        '11' => 7200, '12' => 8400, '13' => 10_000, '14' => 11_500, '15' => 13_000, '16' => 15_000,
-        '17' => 18_000, '18' => 20_000, '19' => 22_000, '20' => 25_000, '21' => 33_000, '22' => 41_000,
-        '23' => 50_000, '24' => 62_000, '25' => 75_000, '26' => 90_000, '27' => 105_000, '28' => 120_000,
-        '29' => 135_000, '30' => 155_000
-      }[challenge_rating.to_s]
-    end
-
-    def cr_for_npc(npc)
-      raise TypeError, 'cr_for_npc expects a Character' unless npc.is_a?(Character)
-
-      prof_cr = proficiency_cr(npc)
-      def_cr = defensive_cr(npc.hit_points, npc.armor_class)
-      off_cr = offensive_cr(npc)
-      # puts "#{npc.name} challenge rating calculation - proficiency CR: #{prof_cr} defense CR: #{def_cr} offense CR: #{off_cr}"
-      cr_total = [prof_cr, def_cr, off_cr].inject(0, &:+)
-      cr = (cr_total.to_f / 3.0)
-      # puts "#{npc.name} CR value: #{cr}"
-      case cr
-      when 0...0.25
-        '1/8'
-      when 0.25...0.5
-        '1/4'
-      when 0.5...1.1
-        '1/2'
-      else
-        cr.ceil.to_s
-      end
-    end
-
-    def cr_num_to_string(challenge_rating)
-      case challenge_rating
-      when 0.125
-        '1/8'
-      when 0.25
-        '1/4'
-      when 0.5
-        '1/2'
-      else
-        "#{challenge_rating}"
-      end
-    end
-
-    def proficiency_cr(npc)
-      case npc.proficiency
-      when 0
-        0.0
-      when 1
-        0.125
-      when 2
-        0.25
-      when 3
-        5.0
-      when 4
-        9.0
-      when 5
-        13.0
-      when 6
-        17.0
-      when 7
-        21.0
-      when 8
-        25.0
-      else
-        30.0
-      end
-    end
-
-    def defensive_cr(hit_points, armor_class)
-      [hit_points_cr(hit_points), armor_class_cr(armor_class)].min
-    end
-
-    def armor_class_cr(armor_class)
-      case armor_class
-      when 0..12
-        0.0
-      when 13
-        0.125
-      when 14
-        4.0
-      when 15
-        5.0
-      when 16
-        8.0
-      when 17
-        10.0
-      when 18
-        13.0
-      else
-        17.0
-      end
-    end
-
-    def hit_points_cr(hit_points)
-      case hit_points
-      when 0..6
-        0.0
-      when 7..35
-        0.125
-      when 36..49
-        0.25
-      when 50..70
-        0.5
-      else
-        base_hp = hit_points - 70
-        base_hp.to_f / 14
-      end
-    end
-
-    def offensive_cr(npc)
-      attack_bonuses = []
-      damage_maximums = []
-      npc_actions_count = 0
-      npc.actions.each do |action|
-        npc_actions_count += 1
-        attack_bonuses << action.attack_bonus if action.attack_bonus
-        next unless action.damage_dice
-
-        damage_dice_str = action.damage_dice
-        damage_dice_str.slice! '1h: '
-        damage_dice_str.slice! '2h: '
-        damage_numbers = damage_dice_str.scan(/\d/).map(&:to_i)
-        max_damage = damage_numbers.reject(&:zero?).inject(:*)
-        max_damage += action.damage_bonus if action.damage_bonus
-        damage_maximums << max_damage
-      end
-      if damage_maximums.count.positive? && npc_actions_count.positive?
-        damage_max_total = damage_maximums.inject(0, &:+)
-        damage_per_round = (damage_max_total.to_f / npc_actions_count).ceil
-        damage_cr = cr_for_damage(damage_per_round)
-        attack_bonus_total = attack_bonuses.inject(0, &:+)
-        attack_bonus_avg = (attack_bonus_total.to_f / npc_actions_count).ceil
-        attack_bonus_cr = cr_for_attack_bonus(attack_bonus_avg)
-      else
-        damage_cr = cr_for_damage(0)
-        attack_bonus_cr = cr_for_attack_bonus(0)
-      end
-      spell_save_dc = 0
-      npc.character_classes.each do |character_class|
-        spell_save_dc = character_class.spell_save_dc if character_class.spell_save_dc > spell_save_dc
-      end
-      spell_save_cr = cr_for_save_dc(spell_save_dc)
-
-      offensive_cr_total = [damage_cr, attack_bonus_cr, spell_save_cr].inject(0, &:+)
-      (offensive_cr_total.to_f / 2.0)
-    end
-
     def cr_for_attack_bonus(attack_bonus)
       case attack_bonus
       when 0..2
@@ -893,6 +608,26 @@ class DndRules
       end
     end
 
+    def cr_for_npc(monster, attack_bonus)
+
+      def_cr = defensive_cr(monster)
+      off_cr = offensive_cr(monster, attack_bonus)
+      # puts "#{npc.name} challenge rating calculation - proficiency CR: #{prof_cr} defense CR: #{def_cr} offense CR: #{off_cr}"
+      cr_total = [def_cr, off_cr].inject(0, &:+)
+      cr = (cr_total.to_f / 2.0)
+      # puts "#{npc.name} CR value: #{cr}"
+      case cr
+      when 0...0.25
+        '1/8'
+      when 0.25...0.5
+        '1/4'
+      when 0.5...1.1
+        '1/2'
+      else
+        cr.ceil.to_s
+      end
+    end
+
     def cr_for_save_dc(save_dc)
       case save_dc
       when 0..12
@@ -922,18 +657,296 @@ class DndRules
       end
     end
 
-    # Ability Score Calculations
-
-    def ability_score_modifier(ability_score)
-      {
-        1 => -5, 2 => -4, 3 => -4, 4 => -3, 5 => -3, 6 => -2, 7 => -2,
-        8 => -1, 9 => -1, 10 => 0, 11 => 0, 12 => 1, 13 => 1, 14 => 2, 15 => 2,
-        16 => 3, 17 => 3, 18 => 4, 19 => 4, 20 => 5, 21 => 5, 22 => 6, 23 => 6,
-        24 => 7, 25 => 7, 26 => 8, 27 => 8, 28 => 9, 29 => 9, 30 => 10, 31 => 10
-      }[ability_score]
+    def cr_num_to_string(challenge_rating)
+      case challenge_rating
+      when 0.125
+        '1/8'
+      when 0.25
+        '1/4'
+      when 0.5
+        '1/2'
+      else
+        "#{challenge_rating}"
+      end
     end
 
-    # Skills
+    def defensive_cr(monster)
+      def_cr = [hit_points_cr(monster[:hit_points]), armor_class_cr(monster[:armor_class].to_i)].min
+      def_cr += monster[:conditions].count * 0.25 unless monster[:conditions].nil?
+      def_cr += monster[:damage_immunities].count * 0.25 unless monster[:damage_immunities].nil?
+      def_cr += monster[:damage_resistances].count * 0.125 unless monster[:damage_resistances].nil?
+      def_cr -= monster[:damage_vulnerabilities].count * 0.25 unless monster[:damage_vulnerabilities].nil?
+      def_cr
+    end
+
+    def hit_die_for_size
+      {
+        'tiny': 4,
+        'small': 6,
+        'medium': 8,
+        'large': 10,
+        'huge': 12,
+        'gargantuan': 20
+      }
+    end
+
+    def hit_point_average_for_size
+      {
+        'tiny': 2.5,
+        'small': 3.5,
+        'medium': 4.5,
+        'large': 5.5,
+        'huge': 6.5,
+        'gargantuan': 10.5
+      }
+    end
+
+    def hit_points_cr(hit_points)
+      case hit_points
+      when 0..6
+        0.0
+      when 7..35
+        0.125
+      when 36..49
+        0.25
+      when 50..70
+        0.5
+      else
+        base_hp = hit_points - 70
+        base_hp.to_f / 14
+      end
+    end
+
+    def num_hit_die_for_size (size, challenge_rating, constitution_bonus = 0, hit_points = nil)
+      size = size.downcase
+      hp_min = challenge_ratings[challenge_rating.to_sym][:hit_points_min]
+      hp_max = challenge_ratings[challenge_rating.to_sym][:hit_points_max]
+
+      if hit_points.nil?
+        hp = rand(hp_min..hp_max)
+      else
+        hp = hit_points
+      end
+      { hit_points: hp, num_hit_die: hp / (hit_point_average_for_size[size.to_sym] + constitution_bonus) }
+    end
+
+    def offensive_cr(monster, attack_bonus)
+      damages = []
+      monster[:actions].each do |action|
+        num_dice = action[:num_dice]
+        damage_die = action[:dice_value]
+        damage = (((damage_die / 2) + 1) * num_dice) + attack_bonus
+        damages << damage
+      end
+      damage_per_round = damages.inject(0, :+)
+      damage_cr = cr_for_damage(damage_per_round)
+      attack_bonus_cr = cr_for_attack_bonus(attack_bonus)
+      spell_save_cr = cr_for_save_dc(monster[:save_dc].to_i)
+      offensive_cr_total = [damage_cr, attack_bonus_cr, spell_save_cr].inject(0, &:+)
+      (offensive_cr_total.to_f / 2.0)
+    end
+
+    def parse_dice_string(dice_string)
+      # dice_string.gsub!(/\(.*?\)|\s/, '')
+      subs = dice_string.scan(/([+-]|[0-9*!xder]+)/i).flatten
+      hit_die = {
+        hit_dice_number: 0,
+        hit_dice_value: 0,
+        hit_dice_modifier: 0
+      }
+      part = :hit_dice
+      subs.each do |str|
+        # puts str
+        case str
+        when '+'
+          part = :add
+        when '-', '&#8722;'
+          part = :sub
+        else
+          if part == :hit_dice
+            values = str.split('d')
+            hit_die[:hit_dice_number] = values[0].to_i || 1
+            hit_die[:hit_dice_value] = values[1].to_i
+          elsif part == :sub
+            hit_die[:hit_dice_modifier] = -str.to_i
+          else
+            hit_die[:hit_dice_modifier] = str.to_i
+          end
+        end
+      end
+      hit_die
+    end
+
+    def player_races
+      [
+        'Dragonborn',
+        'Dwarf', 'Mountain Dwarf', 'Hill Dwarf',
+        'Elf', 'High Elf', 'Wood Elf',
+        'Gnome', 'Rock Gnome', 'Forest Gnome',
+        'Half-orc', 'Half-elf',
+        'Halfling', 'Stout Halfling', 'Lightfoot Halfling',
+        'Human',
+        'Tiefling'
+      ]
+    end
+
+    def proficiency_bonus_for_level(level)
+      case level
+      when 0..4
+        2
+      when 5..8
+        3
+      when 9..12
+        4
+      when 13..16
+        5
+      else
+        6
+      end
+    end
+
+    def proficiency_cr(prof_bonus)
+      case prof_bonus
+      when 0
+        0.0
+      when 1
+        0.125
+      when 2
+        0.25
+      when 3
+        5.0
+      when 4
+        9.0
+      when 5
+        13.0
+      when 6
+        17.0
+      when 7
+        21.0
+      when 8
+        25.0
+      else
+        30.0
+      end
+    end
+
+    def proficiency_for_cr(challenge_rating)
+      return 2 if challenge_rating == '1/8' ||
+        challenge_rating == '1/4' ||
+        challenge_rating == '1/2' ||
+        challenge_rating == '0'
+
+      challenge = challenge_rating.to_i
+      case challenge
+      when 1..4
+        2
+      when 5..8
+        3
+      when 9..12
+        4
+      when 13..16
+        5
+      when 17..20
+        6
+      when 21..24
+        7
+      when 25..28
+        8
+      else
+        9
+      end
+    end
+
+    def proficiency_for_hit_points(hit_points)
+      case hit_points
+      when 1..130
+        2
+      when 131..190
+        3
+      when 191..250
+        4
+      when 251..310
+        5
+      when 311..400
+        6
+      when 401..580
+        7
+      when 581..760
+        8
+      else
+        9
+      end
+    end
+
+    def race_values
+      {
+        'dragonborn': 'Dragonborn',
+        'dwarf': 'Dwarf',
+        'dwarf_hill': 'Dwarf (hill)',
+        'dwarf_mountain': 'Dwarf (mountain)',
+        'elf': 'Elf',
+        'elf_high': 'Elf (high)',
+        'elf_wood': 'Elf (wood)',
+        'gnome': 'Gnome',
+        'half_elf': 'Half-elf',
+        'half_orc': 'Half-orc',
+        'halfling': 'Halfling',
+        'halfling_lightfoot': 'Halfling (lightfoot)',
+        'halfling_stout': 'Halfling (stout)',
+        'human': 'Human',
+        'tiefling': 'Tiefling'
+      }
+    end
+
+    def random_alignment
+      alignments.sample
+    end
+
+    def random_race
+      player_races.sample
+    end
+
+    def roll_dice(num_dice, dice_value)
+      result = 0
+      (1..num_dice).each do
+        result += rand(1..dice_value)
+      end
+      result
+    end
+
+    def senses
+      {
+        'blindsight': 'Blind Sight',
+        'darkvision': 'Dark Vision',
+        'passive_perception': 'Passive Perception',
+        'tremorsense': 'Tremor Sense',
+        'truesight': 'Blind Sight'
+      }
+    end
+
+    def skills
+      [
+        'Skill: Animal Handling',
+        'Skill: Survival',
+        'Skill: Acrobatics',
+        'Skill: Athletics',
+        'Skill: Perception',
+        'Skill: Performance',
+        'Skill: Sleight of Hand',
+        'Skill: Stealth',
+        'Skill: Persuasion',
+        'Skill: Deception',
+        'Skill: Intimidation',
+        'Skill: Nature',
+        'Skill: Arcana',
+        'Skill: History',
+        'Skill: Insight',
+        'Skill: Investigation',
+        'Skill: Medicine',
+        'Skill: Religion'
+      ]
+    end
+
     def skill_from_profs(profs, exclude_list)
       profs_list = profs - exclude_list
       prof = profs_list.sample
@@ -969,45 +982,28 @@ class DndRules
       skill_result
     end
 
-    # Dice Rolls
-    def roll_dice(num_dice, dice_value)
-      result = 0
-      (1..num_dice).each do
-        result += rand(1..dice_value)
+    def spell_attack_bonus(proficiency_bonus, dnd_class, char)
+      case dnd_class.name
+      when 'Bard', 'Paladin', 'Sorcerer', 'Warlock'
+        proficiency_bonus + DndRules.ability_score_modifier(char.charisma)
+      when 'Cleric', 'Druid', 'Ranger'
+        proficiency_bonus + DndRules.ability_score_modifier(char.wisdom)
+      when 'Wizard'
+        proficiency_bonus + DndRules.ability_score_modifier(char.intelligence)
+      else
+        0
       end
-      result
     end
 
-    # Parse Dice String
-    def parse_dice_string(dice_string)
-      # dice_string.gsub!(/\(.*?\)|\s/, '')
-      subs = dice_string.scan(/([+-]|[0-9*!xder]+)/i).flatten
-      hit_die = {
-        hit_dice_number: 0,
-        hit_dice_value: 0,
-        hit_dice_modifier: 0
-      }
-      part = :hit_dice
-      subs.each do |str|
-        # puts str
-        case str
-        when '+'
-          part = :add
-        when '-', '&#8722;'
-          part = :sub
-        else
-          if part == :hit_dice
-            values = str.split('d')
-            hit_die[:hit_dice_number] = values[0].to_i || 1
-            hit_die[:hit_dice_value] = values[1].to_i
-          elsif part == :sub
-            hit_die[:hit_dice_modifier] = -str.to_i
-          else
-            hit_die[:hit_dice_modifier] = str.to_i
-          end
-        end
-      end
-      hit_die
+    def xp_for_cr(challenge_rating)
+      xp = {
+        '0' => 10, '1/8' => 25, '1/4' => 50, '1/2' => 100, '1' => 200, '2' => 450, '3' => 700,
+        '4' => 1100, '5' => 1800, '6' => 2300, '7' => 2900, '8' => 3900, '9' => 5000, '10' => 5900,
+        '11' => 7200, '12' => 8400, '13' => 10_000, '14' => 11_500, '15' => 13_000, '16' => 15_000,
+        '17' => 18_000, '18' => 20_000, '19' => 22_000, '20' => 25_000, '21' => 33_000, '22' => 41_000,
+        '23' => 50_000, '24' => 62_000, '25' => 75_000, '26' => 90_000, '27' => 105_000, '28' => 120_000,
+        '29' => 135_000, '30' => 155_000
+      }[challenge_rating.to_s]
     end
   end
 end
