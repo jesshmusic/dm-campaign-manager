@@ -1,6 +1,15 @@
 import React from 'react';
-import { MonsterGeneratorFormFields, RandomNameResult } from '../../../utilities/types';
-import { abilityScoreModifier, calculateCR, getMonsterObject, hitDieForSize, hitPoints } from '../services';
+import {
+  MonsterGeneratorFormFields,
+  RandomNameResult,
+} from '../../../utilities/types';
+import {
+  abilityScoreModifier,
+  calculateCR,
+  getMonsterObject,
+  hitDieForSize,
+  hitPoints,
+} from '../services';
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import { GenerateMonsterProps } from './GenerateMonster';
@@ -12,7 +21,7 @@ export const useData = (props: GenerateMonsterProps) => {
       alignment: 'Neutral',
       alignmentOption: {
         value: 'Neutral',
-        label: 'Neutral'
+        label: 'Neutral',
       },
       armorClass: 10,
       attackBonus: 2,
@@ -25,13 +34,13 @@ export const useData = (props: GenerateMonsterProps) => {
       languages: [],
       monsterType: {
         value: 'humanoid',
-        label: 'Humanoid'
+        label: 'Humanoid',
       },
       profBonus: 2,
       saveDC: 12,
       size: {
         label: 'Medium',
-        value: 'medium'
+        value: 'medium',
       },
       xp: 10,
       strength: 10,
@@ -50,12 +59,12 @@ export const useData = (props: GenerateMonsterProps) => {
       specialAbilities: [],
       senses: [],
       speeds: [],
-      monsterProficiencies: []
+      monsterProficiencies: [],
     });
 
   const { control, getValues, handleSubmit, register, setValue } =
     useForm<MonsterGeneratorFormFields>({
-      defaultValues: monsterForm
+      defaultValues: monsterForm,
     });
 
   const onSubmit = (data) => {
@@ -78,6 +87,7 @@ export const useData = (props: GenerateMonsterProps) => {
   const handleCalculateCR = async () => {
     try {
       const values = getValues();
+      console.info(values, 'Form Values');
       const response = await calculateCR(values);
       const challenge = response.data.challenge;
       setValue('profBonus', challenge.data.prof_bonus);
@@ -88,20 +98,22 @@ export const useData = (props: GenerateMonsterProps) => {
     }
   };
 
-  const handleChange = (name: string, value: string) => {
+  const handleChange = (
+    name: string,
+    value: string,
+    config?: {
+      shouldDirty?: boolean;
+      shouldValidate?: boolean;
+      shouldTouch?: boolean;
+    }
+  ) => {
     switch (name) {
-      case 'alignmentOption':
-        setValue('alignment', value);
-        break;
       case 'strength':
         const profBonus = getValues('profBonus');
         const strMod = abilityScoreModifier(parseInt(value));
         setValue('strength', parseInt(value), { shouldDirty: true });
         setValue('attackBonus', profBonus + strMod, { shouldDirty: true });
         setValue('damageBonus', strMod, { shouldDirty: true });
-        break;
-      case 'dexterity':
-        setValue('dexterity', parseInt(value), { shouldDirty: true });
         break;
       case 'constitution':
         setValue('constitution', parseInt(value), { shouldDirty: true });
@@ -114,15 +126,6 @@ export const useData = (props: GenerateMonsterProps) => {
           ),
           { shouldDirty: true }
         );
-        break;
-      case 'intelligence':
-        setValue('intelligence', parseInt(value), { shouldDirty: true });
-        break;
-      case 'wisdom':
-        setValue('wisdom', parseInt(value), { shouldDirty: true });
-        break;
-      case 'charisma':
-        setValue('charisma', parseInt(value), { shouldDirty: true });
         break;
       case 'hitDiceNumber':
         setValue('hitDiceNumber', parseInt(value), { shouldDirty: true });
@@ -154,7 +157,7 @@ export const useData = (props: GenerateMonsterProps) => {
         const size = getValues('size');
         const hitDice = hitDieForSize(size.value);
         setValue('hitDiceValue', hitDice, {
-          shouldDirty: true
+          shouldDirty: true,
         });
         const hitDiceCount = getValues('hitDiceNumber');
         setValue(
@@ -164,7 +167,7 @@ export const useData = (props: GenerateMonsterProps) => {
         );
         break;
       default:
-        setValue(name as keyof MonsterGeneratorFormFields, value);
+        setValue(name as keyof MonsterGeneratorFormFields, value, config);
     }
   };
 
@@ -175,6 +178,7 @@ export const useData = (props: GenerateMonsterProps) => {
     handleGenerateName,
     handleSubmit,
     onSubmit,
-    register
+    register,
+    setValue,
   };
 };

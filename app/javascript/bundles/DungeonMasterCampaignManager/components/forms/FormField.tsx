@@ -19,9 +19,14 @@ type FieldProps = {
   infoText?: string;
   label: string;
   name: string;
-  onChange?: (
+  onChange: (
     name: string,
-    value: string | number | boolean
+    value: string | number | boolean,
+    config?: {
+      shouldDirty?: boolean;
+      shouldValidate?: boolean;
+      shouldTouch?: boolean;
+    }
   ) => void;
   placeholder?: string;
   readOnly?: boolean;
@@ -45,7 +50,7 @@ const FormField = (props: FieldProps) => {
     register,
     required,
     type,
-    value
+    value,
   } = props;
 
   if (type === 'checkbox' || type === 'radio') {
@@ -53,15 +58,15 @@ const FormField = (props: FieldProps) => {
       <div className={`${className} form-check`}>
         <input
           aria-describedby={`${name}-help-text`}
-          className='form-check-input'
+          className="form-check-input"
           {...(register ? register(name, { required }) : null)}
-          onChange={
-            onChange
-              ? (event) => {
-                return onChange(name, event.target.checked);
-              }
-              : (event) => false
-          }
+          onChange={(event) => {
+            return onChange(name, event.target.checked, {
+              shouldDirty: true,
+              shouldTouch: true,
+              shouldValidate: required,
+            });
+          }}
           type={type}
           name={name}
           defaultValue={defaultValue}
@@ -70,12 +75,12 @@ const FormField = (props: FieldProps) => {
           id={id}
         />
         {hideLabel ? null : (
-          <label className='form-check-label' htmlFor={name}>
+          <label className="form-check-label" htmlFor={name}>
             {label}
           </label>
         )}
         {helpText && (
-          <div id={`${name}-help-text`} className='form-text'>
+          <div id={`${name}-help-text`} className="form-text">
             {helpText}
           </div>
         )}
@@ -95,15 +100,17 @@ const FormField = (props: FieldProps) => {
         readOnly={readOnly}
         defaultValue={defaultValue}
         {...(register ? register(name, { required }) : null)}
-        onChange={
-          onChange
-            ? (event) => onChange(name, event.target.value)
-            : (event) => false
+        onChange={(event) =>
+          onChange(name, event.target.value, {
+            shouldDirty: true,
+            shouldTouch: true,
+            shouldValidate: required,
+          })
         }
         type={type}
       />
       {helpText && (
-        <div id={`${name}-help-text`} className='form-text'>
+        <div id={`${name}-help-text`} className="form-text">
           {helpText}
         </div>
       )}

@@ -29,11 +29,20 @@ enum AttackType {
 
 const ActionForm = (props: {
   name: keyof MonsterGeneratorFormFields;
+  onChange: (
+    name: string,
+    value: string | number | boolean,
+    config?: {
+      shouldDirty?: boolean;
+      shouldValidate?: boolean;
+      shouldTouch?: boolean;
+    }
+  ) => void;
   title: string;
   singularTitle: string;
   register: UseFormRegister<FieldValues>;
 }) => {
-  const { name, register, singularTitle, title } = props;
+  const { name, onChange, register, singularTitle, title } = props;
   const action = 'TEMP';
   return (
     <div className="mb-3">
@@ -52,6 +61,7 @@ const ActionForm = (props: {
             label={'Name*'}
             type={'text'}
             className={styles.infoField}
+            onChange={onChange}
             register={register}
             required
             name={`${action}.name` as keyof MonsterGeneratorFormFields}
@@ -59,6 +69,7 @@ const ActionForm = (props: {
           <FormField
             label={'Attack Bonus'}
             className={styles.attackBonus}
+            onChange={onChange}
             register={register}
             type={'text'}
             readOnly
@@ -72,6 +83,7 @@ const ActionForm = (props: {
                 name={
                   `${action}.actionType` as keyof MonsterGeneratorFormFields
                 }
+                onChange={onChange}
                 register={register}
                 className="mb-0 me-2"
                 type={'radio'}
@@ -82,6 +94,7 @@ const ActionForm = (props: {
                 name={
                   `${action}.actionType` as keyof MonsterGeneratorFormFields
                 }
+                onChange={onChange}
                 register={register}
                 className="mb-0 me-2"
                 type={'radio'}
@@ -92,6 +105,7 @@ const ActionForm = (props: {
                 name={
                   `${action}.actionType` as keyof MonsterGeneratorFormFields
                 }
+                onChange={onChange}
                 register={register}
                 className="mb-0"
                 type={'radio'}
@@ -102,6 +116,7 @@ const ActionForm = (props: {
               label={'Description'}
               className={styles.infoField}
               type={'text'}
+              onChange={onChange}
               register={register}
               readOnly
               value={'Melee. Here is the de facto attack description'}
@@ -110,6 +125,7 @@ const ActionForm = (props: {
             <FormField
               label={'Number'}
               type={'number'}
+              onChange={onChange}
               className={styles.infoFieldSm}
               register={register}
               required
@@ -121,6 +137,7 @@ const ActionForm = (props: {
               label={'Description'}
               className={styles.infoField}
               type={'text'}
+              onChange={onChange}
               register={register}
               readOnly
               value={
@@ -131,6 +148,7 @@ const ActionForm = (props: {
             <FormField
               label={'Description'}
               className={styles.infoField}
+              onChange={onChange}
               register={register}
               type={'text'}
               name={`${action}.desc` as keyof MonsterGeneratorFormFields}
@@ -160,6 +178,7 @@ const ActionForm = (props: {
               countName={
                 `${name}.diceCount` as keyof MonsterGeneratorFormFields
               }
+              onChange={onChange}
               register={register}
               dieName={`${name}.diceValue` as keyof MonsterGeneratorFormFields}
             />
@@ -167,18 +186,21 @@ const ActionForm = (props: {
               label={'Damage Type'}
               name={`${name}.damageType` as keyof MonsterGeneratorFormFields}
               className={styles.infoField}
+              handleSelectChange={onChange}
               options={damageTypes}
             />
             <FormField
               label={'Damage Bonus'}
               type={'text'}
               className={styles.infoField}
+              onChange={onChange}
               register={register}
               readOnly
               name={`${name}.damageBonus` as keyof MonsterGeneratorFormFields}
             />
             <FormField
               label={'Additional Bonus'}
+              onChange={onChange}
               register={register}
               type={'number'}
               className={styles.infoField}

@@ -11,6 +11,15 @@ import {
 } from '../../../utilities/types';
 
 const Speeds = (props: {
+  onChange: (
+    name: string,
+    value: string | number | boolean,
+    config?: {
+      shouldDirty?: boolean;
+      shouldValidate?: boolean;
+      shouldTouch?: boolean;
+    }
+  ) => void;
   push: (speeds1: string, p: {}) => void;
   register: UseFormRegister<FieldValues>;
 }) => {
@@ -23,11 +32,13 @@ const Speeds = (props: {
           <FormSelect
             label={'Speed'}
             name={`${name}.name` as keyof MonsterGeneratorFormFields}
+            handleSelectChange={props.onChange}
             options={speeds}
           />
           <FormField
             label={'Value'}
             type={'text'}
+            onChange={props.onChange}
             register={props.register}
             name={`${name}.value` as keyof MonsterGeneratorFormFields}
           />

@@ -12,6 +12,7 @@
 }
 
 .fourCol,
+.fiveCol,
 .sixCol {
   display: grid;
   grid-gap: 0.5rem;
@@ -21,8 +22,10 @@
   grid-template-columns: repeat(4, 1fr);
 }
 
+.fiveCol {
+  grid-template-columns: repeat(5, 1fr);
+}
+
 .sixCol {
-  display: grid;
-  grid-gap: 0.5rem;
   grid-template-columns: repeat(6, 1fr);
 }

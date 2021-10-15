@@ -15,6 +15,15 @@ import { GiArchiveResearch } from 'react-icons/all';
 import Button from '../../../components/Button/Button';
 
 const Senses = (props: {
+  onChange: (
+    name: string,
+    value: string | number | boolean,
+    config?: {
+      shouldDirty?: boolean;
+      shouldValidate?: boolean;
+      shouldTouch?: boolean;
+    }
+  ) => void;
   push: (senses1: string, p: {}) => void;
   register: UseFormRegister<FieldValues>;
 }) => {
@@ -31,11 +40,13 @@ const Senses = (props: {
           className="g-col-5 mb-0"
           label="Sense"
           name={`${name}.name` as keyof MonsterGeneratorFormFields}
+          handleSelectChange={props.onChange}
           options={senses}
         />
         <FormField
           label="Value"
           type="text"
+          onChange={props.onChange}
           register={register}
           className="g-col-2 mb-0"
           name={`${name}.value` as keyof MonsterGeneratorFormFields}
