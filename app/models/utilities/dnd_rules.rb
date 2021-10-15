@@ -743,7 +743,7 @@ class DndRules
       attack_bonus_cr = cr_for_attack_bonus(attack_bonus)
       spell_save_cr = cr_for_save_dc(monster[:save_dc].to_i)
       offensive_cr_total = [damage_cr, attack_bonus_cr, spell_save_cr].inject(0, &:+)
-      (offensive_cr_total.to_f / 2.0)
+      (offensive_cr_total.to_f / 3.0)
     end
 
     def parse_dice_string(dice_string)

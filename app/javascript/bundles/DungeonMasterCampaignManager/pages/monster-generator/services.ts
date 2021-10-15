@@ -82,7 +82,6 @@ export const damageTypes = [
 export const calculateCR = async (
   allValues: MonsterGeneratorFormFields
 ): Promise<MonsterCRCalcResult> => {
-  console.info(allValues, 'All Values');
   return await axios.post<{ params: { monster: any } }, MonsterCRCalcResult>(
     '/v1/calculate_cr',
     {

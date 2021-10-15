@@ -192,19 +192,19 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
           />
           <AbilityScoreField
             label={'INT'}
-            onChangeAbility={handleChange}
+            onChangeAbility={setValue}
             register={register}
             name={'intelligence'}
           />
           <AbilityScoreField
             label={'WIS'}
-            onChangeAbility={handleChange}
+            onChangeAbility={setValue}
             register={register}
             name={'wisdom'}
           />
           <AbilityScoreField
             label={'CHA'}
-            onChangeAbility={handleChange}
+            onChangeAbility={setValue}
             register={register}
             name={'charisma'}
           />

@@ -87,7 +87,6 @@ export const useData = (props: GenerateMonsterProps) => {
   const handleCalculateCR = async () => {
     try {
       const values = getValues();
-      console.info(values, 'Form Values');
       const response = await calculateCR(values);
       const challenge = response.data.challenge;
       setValue('profBonus', challenge.data.prof_bonus);
@@ -111,12 +110,29 @@ export const useData = (props: GenerateMonsterProps) => {
       case 'strength':
         const profBonus = getValues('profBonus');
         const strMod = abilityScoreModifier(parseInt(value));
-        setValue('strength', parseInt(value), { shouldDirty: true });
-        setValue('attackBonus', profBonus + strMod, { shouldDirty: true });
-        setValue('damageBonus', strMod, { shouldDirty: true });
+        setValue('strength', parseInt(value), {
+          shouldDirty: true,
+          shouldTouch: true,
+        });
+        setValue('attackBonus', profBonus + strMod, {
+          shouldDirty: true,
+          shouldTouch: true,
+        });
+        setValue('damageBonus', strMod, {
+          shouldDirty: true,
+          shouldTouch: true,
+        });
         break;
+      case 'dexterity':
+        setValue('strength', parseInt(value), {
+          shouldDirty: true,
+          shouldTouch: true,
+        });
       case 'constitution':
-        setValue('constitution', parseInt(value), { shouldDirty: true });
+        setValue('constitution', parseInt(value), {
+          shouldDirty: true,
+          shouldTouch: true,
+        });
         setValue(
           'hitPoints',
           hitPoints(
@@ -128,7 +144,10 @@ export const useData = (props: GenerateMonsterProps) => {
         );
         break;
       case 'hitDiceNumber':
-        setValue('hitDiceNumber', parseInt(value), { shouldDirty: true });
+        setValue('hitDiceNumber', parseInt(value), {
+          shouldDirty: true,
+          shouldTouch: true,
+        });
         setValue(
           'hitPoints',
           hitPoints(
@@ -136,12 +155,15 @@ export const useData = (props: GenerateMonsterProps) => {
             parseInt(value),
             getValues('hitDiceValue')
           ),
-          { shouldDirty: true }
+          { shouldDirty: true, shouldTouch: true }
         );
         setValue('hitDice', `${value}${getValues('hitDiceValue')}`);
         break;
       case 'hitDiceValue':
-        setValue('hitDiceValue', value, { shouldDirty: true });
+        setValue('hitDiceValue', value, {
+          shouldDirty: true,
+          shouldTouch: true,
+        });
         setValue(
           'hitPoints',
           hitPoints(
@@ -149,7 +171,7 @@ export const useData = (props: GenerateMonsterProps) => {
             getValues('hitDiceNumber'),
             value
           ),
-          { shouldDirty: true }
+          { shouldDirty: true, shouldTouch: true }
         );
         setValue('hitDice', `${getValues('hitDiceNumber')}${value}`);
         break;
@@ -158,12 +180,13 @@ export const useData = (props: GenerateMonsterProps) => {
         const hitDice = hitDieForSize(size.value);
         setValue('hitDiceValue', hitDice, {
           shouldDirty: true,
+          shouldTouch: true,
         });
         const hitDiceCount = getValues('hitDiceNumber');
         setValue(
           'hitPoints',
           hitPoints(getValues('constitution'), hitDiceCount, hitDice),
-          { shouldDirty: true }
+          { shouldDirty: true, shouldTouch: true }
         );
         break;
       default:
