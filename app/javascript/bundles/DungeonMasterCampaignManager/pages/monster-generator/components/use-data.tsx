@@ -62,10 +62,9 @@ export const useData = (props: GenerateMonsterProps) => {
       monsterProficiencies: [],
     });
 
-  const { control, getValues, handleSubmit, register, setValue } =
-    useForm<MonsterGeneratorFormFields>({
-      defaultValues: monsterForm,
-    });
+  const UseForm = useForm<MonsterGeneratorFormFields>({
+    defaultValues: monsterForm,
+  });
 
   const onSubmit = (data) => {
     console.log(getMonsterObject(data));
@@ -78,7 +77,7 @@ export const useData = (props: GenerateMonsterProps) => {
     }`;
     try {
       const response = await axios.get<RandomNameResult>(apiURL);
-      setValue('name', response.data.name);
+      UseForm.setValue('name', response.data.name);
     } catch (error) {
       console.error(error);
     }
@@ -86,12 +85,12 @@ export const useData = (props: GenerateMonsterProps) => {
 
   const handleCalculateCR = async () => {
     try {
-      const values = getValues();
+      const values = UseForm.getValues();
       const response = await calculateCR(values);
       const challenge = response.data.challenge;
-      setValue('profBonus', challenge.data.prof_bonus);
-      setValue('xp', challenge.data.xp);
-      setValue('challengeRating', challenge.name);
+      UseForm.setValue('profBonus', challenge.data.prof_bonus);
+      UseForm.setValue('xp', challenge.data.xp);
+      UseForm.setValue('challengeRating', challenge.name);
     } catch (error) {
       console.error(error);
     }
@@ -108,100 +107,107 @@ export const useData = (props: GenerateMonsterProps) => {
   ) => {
     switch (name) {
       case 'strength':
-        const profBonus = getValues('profBonus');
+        const profBonus = UseForm.getValues('profBonus');
         const strMod = abilityScoreModifier(parseInt(value));
-        setValue('strength', parseInt(value), {
+        UseForm.setValue('strength', parseInt(value), {
           shouldDirty: true,
           shouldTouch: true,
         });
-        setValue('attackBonus', profBonus + strMod, {
+        UseForm.setValue('attackBonus', profBonus + strMod, {
           shouldDirty: true,
           shouldTouch: true,
         });
-        setValue('damageBonus', strMod, {
+        UseForm.setValue('damageBonus', strMod, {
           shouldDirty: true,
           shouldTouch: true,
         });
         break;
       case 'dexterity':
-        setValue('strength', parseInt(value), {
+        UseForm.setValue('strength', parseInt(value), {
           shouldDirty: true,
           shouldTouch: true,
         });
       case 'constitution':
-        setValue('constitution', parseInt(value), {
+        UseForm.setValue('constitution', parseInt(value), {
           shouldDirty: true,
           shouldTouch: true,
         });
-        setValue(
+        UseForm.setValue(
           'hitPoints',
           hitPoints(
             parseInt(value),
-            getValues('hitDiceNumber'),
-            getValues('hitDiceValue')
+            UseForm.getValues('hitDiceNumber'),
+            UseForm.getValues('hitDiceValue')
           ),
           { shouldDirty: true }
         );
         break;
       case 'hitDiceNumber':
-        setValue('hitDiceNumber', parseInt(value), {
+        UseForm.setValue('hitDiceNumber', parseInt(value), {
           shouldDirty: true,
           shouldTouch: true,
         });
-        setValue(
+        UseForm.setValue(
           'hitPoints',
           hitPoints(
-            getValues('constitution'),
+            UseForm.getValues('constitution'),
             parseInt(value),
-            getValues('hitDiceValue')
+            UseForm.getValues('hitDiceValue')
           ),
           { shouldDirty: true, shouldTouch: true }
         );
-        setValue('hitDice', `${value}${getValues('hitDiceValue')}`);
+        UseForm.setValue(
+          'hitDice',
+          `${value}${UseForm.getValues('hitDiceValue')}`
+        );
         break;
       case 'hitDiceValue':
-        setValue('hitDiceValue', value, {
+        UseForm.setValue('hitDiceValue', value, {
           shouldDirty: true,
           shouldTouch: true,
         });
-        setValue(
+        UseForm.setValue(
           'hitPoints',
           hitPoints(
-            getValues('constitution'),
-            getValues('hitDiceNumber'),
+            UseForm.getValues('constitution'),
+            UseForm.getValues('hitDiceNumber'),
             value
           ),
           { shouldDirty: true, shouldTouch: true }
         );
-        setValue('hitDice', `${getValues('hitDiceNumber')}${value}`);
+        UseForm.setValue(
+          'hitDice',
+          `${UseForm.getValues('hitDiceNumber')}${value}`
+        );
         break;
       case 'size':
-        const size = getValues('size');
+        const size = UseForm.getValues('size');
         const hitDice = hitDieForSize(size.value);
-        setValue('hitDiceValue', hitDice, {
+        UseForm.setValue('hitDiceValue', hitDice, {
           shouldDirty: true,
           shouldTouch: true,
         });
-        const hitDiceCount = getValues('hitDiceNumber');
-        setValue(
+        const hitDiceCount = UseForm.getValues('hitDiceNumber');
+        UseForm.setValue(
           'hitPoints',
-          hitPoints(getValues('constitution'), hitDiceCount, hitDice),
+          hitPoints(UseForm.getValues('constitution'), hitDiceCount, hitDice),
           { shouldDirty: true, shouldTouch: true }
         );
         break;
       default:
-        setValue(name as keyof MonsterGeneratorFormFields, value, config);
+        UseForm.setValue(
+          name as keyof MonsterGeneratorFormFields,
+          value,
+          config
+        );
     }
   };
 
   return {
-    control,
+    UseForm,
     handleCalculateCR,
     handleChange,
     handleGenerateName,
-    handleSubmit,
     onSubmit,
-    register,
-    setValue,
   };
 };

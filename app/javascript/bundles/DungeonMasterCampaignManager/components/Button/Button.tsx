@@ -13,11 +13,20 @@ const Button = (props: {
   onClick?: (event: any) => void;
   type?: 'button' | 'submit' | 'reset' | undefined;
   icon?: React.ReactNode;
+  style?: object;
   hideTitle?: boolean;
 }) => {
   const {
-    id, icon, color, dataBsDismiss,
-    disabled, hideTitle, title, onClick, type
+    id,
+    icon,
+    color,
+    dataBsDismiss,
+    style,
+    disabled,
+    hideTitle,
+    title,
+    onClick,
+    type,
   } = props;
 
   return (
@@ -31,15 +40,16 @@ const Button = (props: {
         [styles.warning]: color === Colors.warning,
         [styles.danger]: color === Colors.danger,
         [styles.light]: color === Colors.light,
-        [styles.dark]: color === Colors.dark
+        [styles.dark]: color === Colors.dark,
       })}
       onClick={onClick}
       id={id}
       data-bs-dismiss={dataBsDismiss}
       disabled={disabled}
+      style={style}
       type={type || 'button'}
     >
-      {!hideTitle && title}
+      {hideTitle ? '' : title}
       {icon && <> {icon}</>}
     </button>
   );

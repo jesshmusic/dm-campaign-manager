@@ -16,6 +16,7 @@ import AbilityScoreField from './AbilityScoreField';
 import { Colors } from '../../../utilities/enums';
 import Button from '../../../components/Button/Button';
 import { useData } from './use-data';
+import ActionsForm from './ActionsForm';
 
 const styles = require('./generator.module.scss');
 
@@ -53,14 +54,11 @@ export type GenerateMonsterProps = {
 
 const GenerateMonster = (props: GenerateMonsterProps) => {
   const {
-    control,
     handleCalculateCR,
     handleChange,
     handleGenerateName,
-    handleSubmit,
     onSubmit,
-    register,
-    setValue,
+    UseForm,
   } = useData(props);
 
   return (
@@ -70,34 +68,34 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
       className="random-monster-generator"
     >
       <form
-        onSubmit={handleSubmit(onSubmit)}
+        onSubmit={UseForm.handleSubmit(onSubmit)}
         className={styles.genForm}
         noValidate
       >
         <NameFormField
           handleGenerateName={handleGenerateName}
-          register={register}
+          register={UseForm.register}
         />
         <div className={styles.fourCol}>
-          <MonsterTypeSelect control={control} />
+          <MonsterTypeSelect control={UseForm.control} />
           <FormField
             label="Subtype"
             type="text"
-            register={register}
-            onChange={setValue}
+            register={UseForm.register}
+            onChange={UseForm.setValue}
             name="monsterSubtype"
           />
           <FormSelect
             label="Alignment"
             name="alignmentOption"
-            control={control}
+            control={UseForm.control}
             options={alignmentOptions}
-            handleSelectChange={setValue}
+            handleSelectChange={UseForm.setValue}
           />
           <FormSelect
             label="Size"
             name="size"
-            control={control}
+            control={UseForm.control}
             options={monsterSizeOptions}
             handleSelectChange={handleChange}
           />
@@ -107,28 +105,28 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
             label="Armor Class"
             onChange={handleChange}
             type="number"
-            register={register}
+            register={UseForm.register}
             name="armorClass"
           />
           <FormField
             label="Hit Dice Count"
             onChange={handleChange}
             type="number"
-            register={register}
+            register={UseForm.register}
             name="hitDiceNumber"
           />
           <FormField
             label="Attack Bonus"
             type="number"
-            onChange={setValue}
-            register={register}
+            onChange={UseForm.setValue}
+            register={UseForm.register}
             name="attackBonus"
           />
           <FormField
             label="Save DC"
             type="number"
-            onChange={setValue}
-            register={register}
+            onChange={UseForm.setValue}
+            register={UseForm.register}
             name="saveDC"
           />
         </div>
@@ -136,36 +134,36 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
           <FormField
             label="Hit Dice Value"
             type="text"
-            register={register}
-            onChange={setValue}
+            register={UseForm.register}
+            onChange={UseForm.setValue}
             name="hitDiceValue"
             readOnly
           />
           <FormField
             label="Hit Points"
             type="text"
-            register={register}
-            onChange={setValue}
+            register={UseForm.register}
+            onChange={UseForm.setValue}
             name="hitPoints"
             readOnly
           />
           <ChallengeRatingField
             onCalculateCr={handleCalculateCR}
-            register={register}
+            register={UseForm.register}
           />
           <FormField
             label="XP"
             type="text"
-            register={register}
-            onChange={setValue}
+            register={UseForm.register}
+            onChange={UseForm.setValue}
             name="xp"
             readOnly
           />
           <FormField
             label="Proficiency Bonus"
             type="text"
-            register={register}
-            onChange={setValue}
+            register={UseForm.register}
+            onChange={UseForm.setValue}
             name="profBonus"
             readOnly
           />
@@ -175,37 +173,37 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
           <AbilityScoreField
             label={'STR'}
             onChangeAbility={handleChange}
-            register={register}
+            register={UseForm.register}
             name={'strength'}
           />
           <AbilityScoreField
             label={'DEX'}
             onChangeAbility={handleChange}
-            register={register}
+            register={UseForm.register}
             name={'dexterity'}
           />
           <AbilityScoreField
             label={'CON'}
             onChangeAbility={handleChange}
-            register={register}
+            register={UseForm.register}
             name={'constitution'}
           />
           <AbilityScoreField
             label={'INT'}
-            onChangeAbility={setValue}
-            register={register}
+            onChangeAbility={UseForm.setValue}
+            register={UseForm.register}
             name={'intelligence'}
           />
           <AbilityScoreField
             label={'WIS'}
-            onChangeAbility={setValue}
-            register={register}
+            onChangeAbility={UseForm.setValue}
+            register={UseForm.register}
             name={'wisdom'}
           />
           <AbilityScoreField
             label={'CHA'}
-            onChangeAbility={setValue}
-            register={register}
+            onChangeAbility={UseForm.setValue}
+            register={UseForm.register}
             name={'charisma'}
           />
         </div>
@@ -221,8 +219,14 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
             {/*<button type='button' onClick={reset}>Reset</button>*/}
           </div>
         </div>
+        <ActionsForm
+          fieldName="actions"
+          title="Actions"
+          singularTitle="Action"
+          useForm={UseForm}
+        />
       </form>
-      <DevTool control={control} />
+      <DevTool control={UseForm.control} />
     </Frame>
   );
 
@@ -334,22 +338,22 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
 
   //               <Senses push={push} />
   //               <Speeds push={push} />
-  //               <ActionForm name='actions'
+  //               <ActionsForm name='actions'
   //                           title='Actions'
   //                           singularTitle='Action'
   //                           values={values}
   //                           push={push} />
-  //               <ActionForm name='legendaryActions'
+  //               <ActionsForm name='legendaryActions'
   //                           title='Legendary Actions'
   //                           singularTitle='Legendary Action'
   //                           values={values}
   //                           push={push} />
-  //               <ActionForm name='reactions'
+  //               <ActionsForm name='reactions'
   //                           title='Reactions'
   //                           singularTitle='Reaction'
   //                           values={values}
   //                           push={push} />
-  //               <ActionForm name='specialAbilities'
+  //               <ActionsForm name='specialAbilities'
   //                           singularTitle='Special Ability'
   //                           values={values}
   //                           title='Special Abilities'

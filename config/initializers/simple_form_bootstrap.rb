@@ -361,7 +361,7 @@ SimpleForm.setup do |config|
   end
 
 
-  # Input Group - custom component
+  # ControllerInput Group - custom component
   # see example app and config at https://github.com/rafaelfranca/simple_form-bootstrap
   # config.wrappers :input_group, tag: 'div', class: 'form-group', error_class: 'form-group-invalid', valid_class: 'form-group-valid' do |b|
   #   b.use :html5

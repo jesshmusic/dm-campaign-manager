@@ -92,7 +92,7 @@
 
   &.danger {
     background-color: $danger;
-    color: $black;
+    color: $white;
 
     &:hover {
       background-color: lighten($danger, 20%);
