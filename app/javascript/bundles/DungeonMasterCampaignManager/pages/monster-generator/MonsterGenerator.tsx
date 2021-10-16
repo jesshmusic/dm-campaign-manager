@@ -9,6 +9,8 @@ import { GiBlacksmith, GiSpikedDragonHead, SiConvertio } from 'react-icons/all';
 import axios from 'axios';
 import { MonsterProps } from '../../utilities/types';
 
+const styles = require('./monster-generator.module.scss');
+
 const MonsterGenerator = () => {
   const [monster, setMonster] = React.useState<MonsterProps | undefined>();
 
@@ -38,7 +40,7 @@ const MonsterGenerator = () => {
       breadcrumbs={[{ isActive: true, title: 'Monster Generator' }]}
     >
       <PageTitle title={'Monster Generators and Converters'} />
-      <div>
+      <div className={styles.monsterGenWrapper}>
         <p>
           Several generators to build quick Monsters. Fields can be copied and
           pasted into Fantasy Grounds.

@@ -342,6 +342,16 @@ $accordion-icon-color: $white;
   }
 }
 
+@mixin resp-container {
+  margin: 0 auto;
+
+  @each $breakpoint, $container-max-width in $container-max-widths {
+    @include respond-to($breakpoint) {
+      max-width: $container-max-width;
+    }
+  }
+}
+
 @mixin form-input {
   appearance: none;
   background-clip: padding-box;

@@ -1,6 +1,8 @@
 @import '../../stylesheets/variables';
 
 .monsterPage {
+  @include resp-container;
+  
   background: $card-bg;
   border-collapse: separate;
   border-image: $orange-border;
@@ -9,8 +11,6 @@
   box-shadow: 5px 7px 15px rgba($gray-900, 0.5);
   column-gap: 3rem;
   columns: 400px 2;
-  margin: 0 auto;
-  max-width: 1140px;
   padding: 1rem;
 
 

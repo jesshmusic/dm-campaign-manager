@@ -1,8 +1,7 @@
 @import '../../stylesheets/variables';
 
 .wrapper {
-  margin: 0 auto;
-  max-width: map_get($container-max-widths, lg);
+  @include resp-container;
 }
 
 .section {
