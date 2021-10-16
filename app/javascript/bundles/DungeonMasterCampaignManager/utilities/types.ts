@@ -198,6 +198,7 @@ type MonsterAction = {
 type MonsterActionField = {
   name: string;
   numAttacks: number;
+  attackType: 'attack' | 'spellcasting' | 'specialAbility',
   hasDc: boolean;
   dcResult?: string;
   damages?: {

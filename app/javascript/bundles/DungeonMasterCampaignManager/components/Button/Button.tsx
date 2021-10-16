@@ -26,7 +26,7 @@ const Button = (props: {
     hideTitle,
     title,
     onClick,
-    type,
+    type
   } = props;
 
   return (
@@ -40,7 +40,7 @@ const Button = (props: {
         [styles.warning]: color === Colors.warning,
         [styles.danger]: color === Colors.danger,
         [styles.light]: color === Colors.light,
-        [styles.dark]: color === Colors.dark,
+        [styles.dark]: color === Colors.dark
       })}
       onClick={onClick}
       id={id}
@@ -50,7 +50,7 @@ const Button = (props: {
       type={type || 'button'}
     >
       {hideTitle ? '' : title}
-      {icon && <> {icon}</>}
+      {icon && <span className={classNames('', { [styles.iconOnly]: hideTitle })}> {icon}</span>}
     </button>
   );
 };
