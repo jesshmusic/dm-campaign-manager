@@ -1,29 +1,87 @@
-//@import 'variables';
-//
-//@mixin phone {
-//  @media (min-width: #{$screen-xs}) {
-//    @content;
-//  }
-//}
-//
-//@mixin tablet {
-//  @media (min-width: #{$screen-sm}) {
-//    @content;
-//  }
-//}
-//
-//@mixin desktop {
-//  @media (min-width: #{$screen-md}) {
-//    @content;
-//  }
-//}
-//
-//@mixin desktop-lg {
-//  @media (min-width: #{$screen-lg}) {
-//    @content;
-//  }
-//}
-//
+
+@mixin respond-to($breakpoint) {
+  // If the key exists in the map
+  @if map-has-key($container-max-widths, $breakpoint) {
+    // Prints a media query based on the value
+    @media (min-width: map-get($container-max-widths, $breakpoint)) {
+      @content;
+    }
+  } @else {
+    @warn 'Unfortunately, no value could be retrieved from `#{$breakpoint}`. '
+      + 'Available breakpoints are: #{map-keys($container-max-widths)}.';
+  }
+}
+
+@mixin resp-container {
+  margin: 0 auto;
+
+  @each $breakpoint, $container-max-width in $container-max-widths {
+    @include respond-to($breakpoint) {
+      max-width: $container-max-width;
+    }
+  }
+}
+
+@mixin form-input {
+  appearance: none;
+  background-clip: padding-box;
+  background-color: $input-bg;
+  border: 1px solid rgba($primary, 0);
+  border-bottom: 0.0625rem solid rgba($body-color, 0);
+  border-radius: 0;
+  color: $body-color;
+  display: block;
+  font-size: 1rem;
+  font-weight: normal;
+  line-height: 1.25;
+  outline: none;
+  padding: 0.5rem 0.25rem;
+  transition: $transition-base;
+  width: 100%;
+
+  &:hover {
+    border-color: $primary;
+  }
+
+  &:focus {
+    background-color: $input-focus-bg;
+    border-color: rgba($primary, 0);
+    border-bottom-color: rgba($primary, 1);
+  }
+
+  &[readonly] {
+    background-color: lighten($primary, 30%);
+    border: 1px solid lighten($primary, 30%);
+  }
+
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    appearance: none;
+    margin: 0;
+  }
+
+  &[type=number] {
+    /* stylelint-disable-next-line property-no-vendor-prefix */
+    -moz-appearance: textfield;
+  }
+}
+
+//Padding mixin
+@mixin padding($top, $right, $bottom, $left) {
+  padding-bottom: $bottom;
+  padding-left: $left;
+  padding-right: $right;
+  padding-top: $top;
+}
+
+//Margin mixin
+@mixin margin($top, $right, $bottom, $left) {
+  margin-bottom: $bottom;
+  margin-left: $left;
+  margin-right: $right;
+  margin-top: $top;
+}
+
 //@mixin card-heading {
 //  background: $panel-heading-bg;
 //  display: flex;

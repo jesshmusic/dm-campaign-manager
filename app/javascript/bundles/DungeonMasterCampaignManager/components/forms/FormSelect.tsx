@@ -29,6 +29,7 @@ export type SelectProps = {
 };
 
 const styles = require('./input.module.scss');
+import './inputOverrides.scss';
 
 const FormSelect = ({
   name,
@@ -57,32 +58,26 @@ const FormSelect = ({
       <Controller
         control={control}
         name={name}
-        render={({ field: { onChange, onBlur, value, name, ref } }) =>
+        render={({ field }) =>
           isCreatable ? (
             <CreatableSelect
+              className={'reactSelect'}
+              classNamePrefix={'reactSelect'}
               isClearable={isClearable}
               options={options}
               isMulti={isMulti}
               isSearchable
-              onBlur={onBlur}
-              onChange={onChange}
-              value={value}
-              name={name}
-              ref={ref}
+              {...field}
             />
           ) : (
             <Select
+              className={'reactSelect'}
+              classNamePrefix={'reactSelect'}
               isClearable={isClearable}
               options={options}
               isMulti={isMulti}
               isSearchable
-              onBlur={onBlur}
-              // @ts-ignore
-              value={value}
-              onChange={(event) => handleChange(event, onChange)}
-              // value={value}
-              name={name}
-              ref={ref}
+              {...field}
             />
           )
         }

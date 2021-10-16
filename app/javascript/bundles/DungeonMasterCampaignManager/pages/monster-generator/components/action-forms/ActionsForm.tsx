@@ -12,6 +12,7 @@ import ControllerInput from '../../../../components/forms/ControllerInput';
 import Select from 'react-select';
 import AbilityForm from './AbilityForm';
 
+import '../../../../components/forms/inputOverrides.scss';
 const styles = require('./action-form.module.scss');
 const inputStyles = require('../../../../components/forms/input.module.scss');
 
@@ -108,6 +109,8 @@ const ActionsForm = (props: {
                 <div className={`${inputStyles.wrapper} ${styles.actionCol}`}>
                   <label className={inputStyles.label}>Action Type</label>
                   <Select
+                    className={inputStyles.selectStyle}
+                    classNamePrefix={'reactSelect'}
                     {...field}
                     defaultValue={{ value: 'ability', label: 'Ability' }}
                     isSearchable={false}

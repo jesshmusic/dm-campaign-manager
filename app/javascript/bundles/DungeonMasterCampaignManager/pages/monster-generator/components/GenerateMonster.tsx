@@ -82,6 +82,7 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
             type="text"
             register={UseForm.register}
             onChange={UseForm.setValue}
+            placeholder={'Subtype...'}
             name="monsterSubtype"
           />
           <FormSelect

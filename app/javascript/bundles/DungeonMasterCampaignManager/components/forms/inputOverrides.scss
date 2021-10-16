@@ -1,0 +1,46 @@
+@import '../../stylesheets/variables';
+
+.reactSelect {
+  &__control {
+    background-color: $input-bg !important;
+    border-color: transparent !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    transition: $transition-base;
+
+    &:hover {
+      border-color: $primary !important;
+    }
+
+    &:focus,
+    &:active {
+      outline: none !important;
+    }
+  }
+
+  &__indicator {
+    color: rgba($primary, 0.5) !important;
+  }
+
+  &__indicator-separator {
+    background-color: rgba($primary, 0.5) !important;
+  }
+
+  &__menu {
+    background-color: lighten($orange, 20%) !important;
+    border-radius: 0 !important;
+    margin-top: 0.125rem !important;
+  }
+
+  &__option {
+    &--is-focused {
+      background-color: lighten($primary, 25%) !important;
+      color: $white !important;
+    }
+
+    &--is-selected {
+      background-color: $primary !important;
+      color: $white !important;
+    }
+  }
+}

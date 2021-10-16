@@ -14,6 +14,8 @@
 .fourCol,
 .fiveCol,
 .sixCol {
+  @include margin(null, null, 1rem, null);
+
   display: grid;
   grid-gap: 0.5rem;
 }
