@@ -1,0 +1,14 @@
+.wrapper {
+  padding: 0.5rem;
+}
+
+.actionWrapper,
+.subformWrapper {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0 2.5rem 1rem;
+}
+
+.actionCol {
+  flex: 1;
+}

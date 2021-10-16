@@ -16,7 +16,7 @@ import AbilityScoreField from './AbilityScoreField';
 import { Colors } from '../../../utilities/enums';
 import Button from '../../../components/Button/Button';
 import { useData } from './use-data';
-import ActionsForm from './ActionsForm';
+import ActionsForm from './action-forms/ActionsForm';
 
 const styles = require('./generator.module.scss');
 
