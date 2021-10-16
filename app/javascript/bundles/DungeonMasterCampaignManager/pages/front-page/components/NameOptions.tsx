@@ -8,6 +8,7 @@ import Button from '../../../components/Button/Button';
 import { Colors } from '../../../utilities/enums';
 import { GiBattleGear } from 'react-icons/all';
 
+import '../../../components/forms/inputOverrides.scss';
 const styles = require('./name-options.module.scss');
 
 const genderOptions: Options<any> = [
@@ -66,6 +67,8 @@ const NameOptions = ({ onFormSubmit, title }: NameOptionsProps) => {
       <div>
         <label htmlFor={'nameGeneratorGender'}>Gender</label>
         <Select
+          className={'reactSelect'}
+          classNamePrefix={'reactSelect'}
           options={genderOptions}
           id={'nameGeneratorGender'}
           onChange={(option) => {
@@ -76,6 +79,8 @@ const NameOptions = ({ onFormSubmit, title }: NameOptionsProps) => {
       <div>
         <label htmlFor={'nameGeneratorRace'}>Race</label>
         <AsyncSelect
+          className={'reactSelect'}
+          classNamePrefix={'reactSelect'}
           loadOptions={getRaces}
           cacheOptions
           defaultOptions
