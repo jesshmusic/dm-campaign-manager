@@ -1,5 +1,4 @@
 import React from 'react';
-import { DevTool } from '@hookform/devtools';
 import { MonsterProps, SelectOption } from '../../../utilities/types';
 import {
   alignmentOptions,
@@ -207,7 +206,6 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
             name={'charisma'}
           />
         </div>
-        <div className={styles.actionsSection}></div>
         <div>
           <div className="btn-group" aria-label="Character actions">
             <Button
@@ -219,151 +217,17 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
             {/*<button type='button' onClick={reset}>Reset</button>*/}
           </div>
         </div>
-        <ActionsForm
-          fieldName="actions"
-          title="Actions"
-          singularTitle="Action"
-          useForm={UseForm}
-        />
+        <div className={styles.actionsSection}>
+          <ActionsForm
+            fieldName="actions"
+            title="Actions"
+            singularTitle="Action"
+            useForm={UseForm}
+          />
+        </div>
       </form>
-      <DevTool control={UseForm.control} />
     </Frame>
   );
-
-  // const { setMonster } = props;
-  // const [monster] = React.useState({
-
-  // });
-  // const [validated, setValidated] = React.useState(false);
-  //
-  // const npcFormDecorator = React.useMemo(() => {
-  //   return npcCalculationsDecorator;
-  // }, []);
-  //
-  // const handleSubmit = (values: MonsterGeneratorFormFields) => {
-  //   const monster: MonsterProps = getMonsterObject(values);
-  //   setMonster(monster);
-  // };
-
-  // const validate = (values) => {
-  //   const errors: MonsterFormErrors = {};
-  //   if (!values.name) {
-  //     errors.name = 'Character name is required.';
-  //   }
-  //   if (!values.alignment) {
-  //     errors.alignmentOption = 'Character alignment is required.';
-  //   }
-  //   if (!values.charisma) {
-  //     errors.charisma = 'Charisma is required';
-  //   }
-  //   if (!values.constitution) {
-  //     errors.constitution = 'Constitution is required';
-  //   }
-  //   if (!values.dexterity) {
-  //     errors.dexterity = 'Dexterity is required';
-  //   }
-  //   if (!values.intelligence) {
-  //     errors.intelligence = 'Intelligence is required';
-  //   }
-  //   if (!values.strength) {
-  //     errors.strength = 'Strength is required';
-  //   }
-  //   if (!values.wisdom) {
-  //     errors.wisdom = 'Wisdom is required';
-  //   }
-  //   return errors;
-  // };
-
-  // return (
-  //   <Frame title='Random Monster Generator' subtitle='Select options to create a new Monster' className='random-monster-generator'>
-  //     <Form onSubmit={handleSubmit}
-  //           decorators={[npcFormDecorator]}
-  //           initialValues={monster}
-  //           validate={validate}
-  //           mutators={{ ...arrayMutators }}
-  //           render={({
-  //                      handleSubmit,
-  //                      form: {
-  //                        mutators: { push }
-  //                      },
-  //                      submitting,
-  //                      form,
-  //                      pristine,
-  //                      values
-  //                    }) => (
-  //             <form onSubmit={handleSubmit}
-  //                   className={classNames(validated && 'was-validated')}
-  //                   noValidate>
-  //               <div className='mb-3'>
-  //                 <NameFormField values={values}
-  //                                handleGenerateName={handleGenerateName} />
-  //               </div>
-  //               <div className='grid' style={{ '--bs-columns': 2 } as React.CSSProperties}>
-  //                 <MonsterTypeSelect colWidth={'8'} />
-  //                 <FormField label={'Subtype'}
-  //                            type={'text'}
-  //                            name={'monsterSubtype'} />
-  //               </div>
-  //               <div className='grid' style={{ '--bs-columns': 4 } as React.CSSProperties}>
-  //                 <ChallengeRatingField onCalculateCr={handleCalculateCR} values={values} />
-  //                 <ReadOnlyField label={'XP'}
-  //                                name={'xp'}
-  //                                value={calcValues.xp} />
-  //                 <FormSelect label={'Alignment'}
-  //                             name={'alignmentOption'}
-  //                             value={values.alignment}
-  //                             options={alignmentOptions} />
-  //                 <FormSelect label={'Size'}
-  //                             name={'size'}
-  //                             value={values.size}
-  //                             options={npcSizeOptions} />
-  //                 <ReadOnlyField label={'Proficiency Bonus'}
-  //                                name={'profBonus'}
-  //                                value={calcValues.profBonus} />
-  //                 <FormField label={'Armor Class'}
-  //                            type={'number'}
-  //                            name={'armorClass'} />
-  //                 <FormField label={'Hit Dice Count'}
-  //                            type={'number'}
-  //                            name={'hitDiceNumber'} />
-  //                 <FormField label={'Hit Dice Value'}
-  //                            type={'text'}
-  //                            name={'hitDiceValue'}
-  //                            readOnly />
-  //                 <FormField label={'Hit Points'}
-  //                            type={'text'}
-  //                            name={'hitPoints'}
-  //                            readOnly />
-  //               </div>
-
-  //               <Senses push={push} />
-  //               <Speeds push={push} />
-  //               <ActionsForm name='actions'
-  //                           title='Actions'
-  //                           singularTitle='Action'
-  //                           values={values}
-  //                           push={push} />
-  //               <ActionsForm name='legendaryActions'
-  //                           title='Legendary Actions'
-  //                           singularTitle='Legendary Action'
-  //                           values={values}
-  //                           push={push} />
-  //               <ActionsForm name='reactions'
-  //                           title='Reactions'
-  //                           singularTitle='Reaction'
-  //                           values={values}
-  //                           push={push} />
-  //               <ActionsForm name='specialAbilities'
-  //                           singularTitle='Special Ability'
-  //                           values={values}
-  //                           title='Special Abilities'
-  //                           push={push} />
-
-  //             </form>
-  //           )}
-  //     />
-  //   </Frame>
-  // );
 };
 
 export default GenerateMonster;
