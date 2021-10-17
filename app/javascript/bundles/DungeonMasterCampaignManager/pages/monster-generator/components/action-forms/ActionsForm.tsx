@@ -5,7 +5,13 @@
 import React from 'react';
 import { GiSwordsPower, GiTrashCan } from 'react-icons/gi';
 import { MonsterGeneratorFormFields } from '../../../../utilities/types';
-import { Controller, useFieldArray, UseFormReturn } from 'react-hook-form';
+import {
+  Controller,
+  useFieldArray,
+  UseFieldArrayProps,
+  UseFieldArrayReturn,
+  UseFormReturn,
+} from 'react-hook-form';
 import Button from '../../../../components/Button/Button';
 import { Colors } from '../../../../utilities/enums';
 import ControllerInput from '../../../../components/forms/ControllerInput';
@@ -42,7 +48,6 @@ const ActionsForm = (props: {
   const { fields, append, prepend, remove, swap, move, insert } = useFieldArray(
     {
       control,
-      // @ts-ignore
       name: fieldName,
     }
   );
@@ -50,6 +55,7 @@ const ActionsForm = (props: {
   const addAction = () => {
     append({
       name: 'New Action',
+      attackType: { value: ActionTypes.ability, label: 'Ability' },
     });
   };
 
@@ -63,18 +69,6 @@ const ActionsForm = (props: {
     }
   }, [fields, register, setValue, unregister, trigger]);
 
-  React.useEffect(() => {
-    const subscription = watch((value, { name, type }) => {
-      const actionIndexStr = name?.replace(/^\D+/g, '');
-      if (actionIndexStr) {
-        const actionIndex = parseInt(actionIndexStr, 10);
-        const actionChanges = value.actions[actionIndex];
-        setActionFormState(actionChanges.attackType.value);
-      }
-    });
-    return () => subscription.unsubscribe();
-  }, [watch]);
-
   const handleChange = (
     name: string,
     value: string | number | boolean,
@@ -85,11 +79,12 @@ const ActionsForm = (props: {
     }
   ) => {};
 
+  console.log(actionFormState);
   return (
     <div className={styles.wrapper}>
       <h3>{title}</h3>
       {fields.map((action, actionIndex) => (
-        <div>
+        <div className={styles.actionContainer}>
           <div key={action.id} className={styles.actionWrapper}>
             <Controller
               render={({ field: { ref, ...rest } }) => (

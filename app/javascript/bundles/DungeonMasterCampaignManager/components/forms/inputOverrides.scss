@@ -19,11 +19,11 @@
   }
 
   &__indicator {
-    color: rgba($primary, 0.5) !important;
+    color: lighten($primary, 25%) !important;
   }
 
   &__indicator-separator {
-    background-color: rgba($primary, 0.5) !important;
+    background-color: lighten($primary, 25%) !important;
   }
 
   &__menu {

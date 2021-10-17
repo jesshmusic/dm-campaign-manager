@@ -28,9 +28,9 @@ class HomeController < ApplicationController
       },
       users: {
         users: [],
-        count: User.count
-      },
-      user: @user
+        count: User.count,
+        current_user: @user
+      }
     }
   end
 end

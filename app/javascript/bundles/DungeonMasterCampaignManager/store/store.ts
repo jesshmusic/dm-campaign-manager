@@ -42,7 +42,7 @@ export const store = (props: AppProps) =>
         users: [],
         count: props.users.count,
         // @ts-ignore
-        currentUser: props.user,
+        currentUser: props.users.currentUser,
       },
     },
   });

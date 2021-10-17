@@ -1,5 +1,5 @@
 import React from 'react';
-import { Provider } from 'react-redux';
+import { connect, Provider } from 'react-redux';
 import { Router, Link } from '@reach/router';
 import HomePage from './front-page/HomePage';
 import Items from './items/Items';

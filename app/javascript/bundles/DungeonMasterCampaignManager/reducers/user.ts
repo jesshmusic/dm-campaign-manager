@@ -13,7 +13,7 @@ const users = createReducer(
   {
     users: [],
     count: 0,
-    currentUser: null,
+    currentUser: undefined,
   },
   (builder) =>
     builder
@@ -28,7 +28,7 @@ const users = createReducer(
         return {
           count: state.count,
           users: state.users,
-          currentUser: null,
+          currentUser: undefined,
         };
       })
       .addCase(getUsersSuccess, (state, action: AnyAction) => {

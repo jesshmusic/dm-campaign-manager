@@ -186,7 +186,7 @@ $btn-transition: all 0.15s ease-in-out;
 
 
 // Forms
-$input-bg: rgba($orange, 0.35);
+$input-bg: lighten($orange, 35%);
 $input-disabled-bg: lighten($orange, 30%);
 $input-color: $gray-800;
 $input-border-color: $ash;

@@ -35,7 +35,6 @@ export interface AppProps {
     count: number;
     currentUser?: UserProps;
   };
-  user?: UserProps;
 }
 
 export type DndClassLevel = {
@@ -198,7 +197,7 @@ type MonsterAction = {
 type MonsterActionField = {
   name: string;
   numAttacks: number;
-  attackType: 'attack' | 'spellcasting' | 'specialAbility',
+  attackType: 'attack' | 'spellcasting' | 'specialAbility';
   hasDc: boolean;
   dcResult?: string;
   damages?: {

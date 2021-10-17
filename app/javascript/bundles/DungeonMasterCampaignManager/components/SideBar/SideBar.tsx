@@ -19,12 +19,20 @@ import {
   GiRuleBook,
   GiSwapBag,
   GiSwordArray,
-  GiToolbox
+  GiToolbox,
 } from 'react-icons/all';
 
-import { Menu, MenuItem, ProSidebar, SidebarContent, SidebarFooter, SubMenu } from 'react-pro-sidebar';
+import {
+  Menu,
+  MenuItem,
+  ProSidebar,
+  SidebarContent,
+  SidebarFooter,
+  SubMenu,
+} from 'react-pro-sidebar';
 import './sidebar-vars.scss';
 import { SidebarLink } from '../NavLink/NavLink';
+import SignInModal from '../SignInModal/SignInModal';
 
 const sidebarBG = require('./SidebarBackground.jpg');
 
@@ -37,24 +45,24 @@ const itemTypes = [
   {
     name: 'Mounts & Vehicles',
     link: '/app/items/vehicles',
-    icon: <GiHorseHead />
+    icon: <GiHorseHead />,
   },
   { name: 'Tools', link: '/app/items/tools', icon: <GiToolbox /> },
   {
     name: 'Magic Items',
     link: '/app/items/magic-items',
-    icon: <GiMagicPotion />
+    icon: <GiMagicPotion />,
   },
   {
     name: 'Magic Armor',
     link: '/app/items/magic-armor',
-    icon: <GiChestArmor />
+    icon: <GiChestArmor />,
   },
   {
     name: 'Magic Weapons',
     link: '/app/items/magic-weapons',
-    icon: <GiMagicAxe />
-  }
+    icon: <GiMagicAxe />,
+  },
 ];
 
 const SideBar = (props: {
@@ -63,8 +71,10 @@ const SideBar = (props: {
   logoutUser: () => void;
   getSections: () => void;
   sections: { name: string; slug: string }[];
+  userLogin: (username: string, password: string) => void;
 }) => {
-  const { user, logoutUser, isCollapsed, getSections, sections } = props;
+  const { user, logoutUser, isCollapsed, getSections, sections, userLogin } =
+    props;
 
   React.useEffect(() => {
     getSections();
@@ -76,87 +86,96 @@ const SideBar = (props: {
   };
 
   return (
-    <ProSidebar collapsed={isCollapsed} image={sidebarBG}>
-      <SidebarContent>
-        <Menu iconShape='square'>
-          <SidebarLink to='/' title='Home' icon={<AiOutlineHome />} />
-          <SidebarLink to='/app/classes' title='Classes' icon={<GiPerson />} />
-          <SidebarLink to='/app/races' title='Races' icon={<GiDwarfFace />} />
-          <SidebarLink
-            to='/app/monsters'
-            title='Monsters'
-            icon={<GiMonsterGrasp />}
-          />
-          <SidebarLink to='/app/spells' title='Spells' icon={<GiMagicPalm />} />
-          <SubMenu title='Rules' icon={<GiRuleBook />}>
-            {sections.map((section, index) => (
-              <SidebarLink
-                key={`rules-${index}`}
-                to={`/app/sections/${section.slug}`}
-                title={section.name}
-              />
-            ))}
-          </SubMenu>
-          <SubMenu title='Items & Equipment' icon={<GiSwapBag />}>
-            {itemTypes.map((itemType, index) => (
-              <SidebarLink
-                key={`items-${index}`}
-                to={itemType.link}
-                title={itemType.name}
-                icon={itemType.icon}
-              />
-            ))}
-          </SubMenu>
-        </Menu>
-      </SidebarContent>
-      <SidebarFooter>
-        <div className={styles.divider}>User</div>
-        <Menu>
-          {user && user.role === 'admin' ? (
+    <>
+      <ProSidebar collapsed={isCollapsed} image={sidebarBG}>
+        <SidebarContent>
+          <Menu iconShape="square">
+            <SidebarLink to="/" title="Home" icon={<AiOutlineHome />} />
             <SidebarLink
-              to='/app/admin'
-              title='Admin'
-              icon={<GiHomeGarage />}
+              to="/app/classes"
+              title="Classes"
+              icon={<GiPerson />}
             />
-          ) : null}
-          {user ? (
-            <>
+            <SidebarLink to="/app/races" title="Races" icon={<GiDwarfFace />} />
+            <SidebarLink
+              to="/app/monsters"
+              title="Monsters"
+              icon={<GiMonsterGrasp />}
+            />
+            <SidebarLink
+              to="/app/spells"
+              title="Spells"
+              icon={<GiMagicPalm />}
+            />
+            <SubMenu title="Rules" icon={<GiRuleBook />}>
+              {sections.map((section, index) => (
+                <SidebarLink
+                  key={`rules-${index}`}
+                  to={`/app/sections/${section.slug}`}
+                  title={section.name}
+                />
+              ))}
+            </SubMenu>
+            <SubMenu title="Items & Equipment" icon={<GiSwapBag />}>
+              {itemTypes.map((itemType, index) => (
+                <SidebarLink
+                  key={`items-${index}`}
+                  to={itemType.link}
+                  title={itemType.name}
+                  icon={itemType.icon}
+                />
+              ))}
+            </SubMenu>
+          </Menu>
+        </SidebarContent>
+        <SidebarFooter>
+          <div className={styles.divider}>User</div>
+          <Menu>
+            {user && user.role === 'admin' ? (
               <SidebarLink
-                to='/app/monster-generator'
-                title='Monster Generator'
+                to="/app/admin"
+                title="Admin"
                 icon={<GiHomeGarage />}
               />
-              <SidebarLink
-                to='/app/admin'
-                title='Admin'
-                icon={<GiHomeGarage />}
-              />
-              <MenuItem icon={<BiLogOut />}>
-                <a onClick={handleLogout}>
-                  Sign Out
-                </a>
+            ) : null}
+            {user ? (
+              <>
+                <SidebarLink
+                  to="/app/monster-generator"
+                  title="Monster Generator"
+                  icon={<GiHomeGarage />}
+                />
+                <SidebarLink
+                  to="/app/admin"
+                  title="Admin"
+                  icon={<GiHomeGarage />}
+                />
+                <MenuItem icon={<BiLogOut />}>
+                  <a onClick={handleLogout}>Sign Out</a>
+                </MenuItem>
+              </>
+            ) : (
+              <MenuItem icon={<BiLogIn />}>
+                <button
+                  data-bs-toggle="modal"
+                  data-bs-target="#userSigninModal"
+                >
+                  Sign In
+                </button>
               </MenuItem>
-            </>
-          ) : (
-            <MenuItem icon={<BiLogIn />}>
-              <button
-                data-bs-toggle='modal'
-                data-bs-target='#userSigninModal'
-              >
-                Sign In
-              </button>
-            </MenuItem>
-          )}
-        </Menu>
-      </SidebarFooter>
-    </ProSidebar>
+            )}
+          </Menu>
+        </SidebarFooter>
+      </ProSidebar>
+      <SignInModal user={user} userLogin={userLogin} />
+    </>
   );
 };
 
 const mapStateToProps = (state) => {
   return {
     sections: state.sections.sections,
-    user: state.users.currentUser
+    user: state.users.currentUser,
   };
 };
 
@@ -167,7 +186,14 @@ const mapDispatchToProps = (dispatch) => {
     },
     getSections: () => {
       dispatch(rest.actions.getSections());
-    }
+    },
+    userLogin: (email: string, password: string, rememberMe: boolean) => {
+      dispatch(
+        rest.actions.userLogin({
+          user: { email, password, remember_me: rememberMe },
+        })
+      );
+    },
   };
 };
 

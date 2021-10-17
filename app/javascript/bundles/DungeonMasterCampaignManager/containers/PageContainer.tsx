@@ -11,7 +11,9 @@ import { FlashMessage, UserProps } from '../utilities/types';
 import SignInModal from '../components/SignInModal/SignInModal';
 import rest from '../actions/api';
 import { connect } from 'react-redux';
-import Breadcrumbs, { BreadCrumbProps } from '../components/Breadcrumbs/Breadcrumbs';
+import Breadcrumbs, {
+  BreadCrumbProps,
+} from '../components/Breadcrumbs/Breadcrumbs';
 
 const styles = require('./page-container.module.scss');
 
@@ -22,18 +24,16 @@ type PageContainerProps = {
   flashMessages?: FlashMessage[];
   pageTitle: string;
   user?: UserProps;
-  userLogin: (username: string, password: string) => void;
 };
 
 const PageContainer = (props: PageContainerProps) => {
-  const { breadcrumbs, children, description, pageTitle, user, userLogin } =
-    props;
+  const { breadcrumbs, children, description, pageTitle, user } = props;
 
   return (
     <div>
       <Helmet>
         <title>{pageTitle} | Dungeon Master&apos;s Screen</title>
-        <meta name='description' content={description} />
+        <meta name="description" content={description} />
       </Helmet>
       <div className={styles.pageWrapper}>
         <div className={styles.pageContent}>
@@ -48,7 +48,6 @@ const PageContainer = (props: PageContainerProps) => {
           <Footer user={user} />
         </div>
       </div>
-      <SignInModal user={user} userLogin={userLogin} />
     </div>
   );
 };
@@ -56,20 +55,8 @@ const PageContainer = (props: PageContainerProps) => {
 function mapStateToProps(state) {
   return {
     flashMessages: state.flashMessages,
-    user: state.users.currentUser
+    user: state.users.currentUser,
   };
 }
 
-function mapDispatchToProps(dispatch) {
-  return {
-    userLogin: (email: string, password: string, rememberMe: boolean) => {
-      dispatch(
-        rest.actions.userLogin({
-          user: { email, password, remember_me: rememberMe }
-        })
-      );
-    }
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(PageContainer);
+export default connect(mapStateToProps)(PageContainer);

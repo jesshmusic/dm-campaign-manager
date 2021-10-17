@@ -1,3 +1,12 @@
+@import '../../../../stylesheets/variables';
+
+.actionContainer {
+  @include padding(1rem, 2.5rem, 1rem, 2.5rem);
+
+  background-color: $brown;
+  color: $white;
+}
+
 .wrapper {
   padding: 0;
 }
@@ -6,7 +15,6 @@
 .subformWrapper {
   display: flex;
   gap: 0.5rem;
-  padding: 0 2.5rem 1rem;
 
   .wrapper {
     padding: 0;
@@ -15,4 +23,10 @@
 
 .actionCol {
   flex: 1;
+}
+
+input {
+  &:focus {
+    color: $white;
+  }
 }
