@@ -1,3 +1,5 @@
+import { ItemType } from '../pages/items/use-data';
+
 export default class Util {
   static get allowedTypes() {
     return [
@@ -66,5 +68,55 @@ export default class Util {
 
   static numberWithCommas(num) {
     return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
+
+  static get itemPages() {
+    return [
+      {
+        path: '/app/items',
+        itemType: ItemType.all,
+        pageTitle: 'All Equipment and Items',
+      },
+      {
+        path: '/app/items/armor/',
+        itemType: ItemType.armor,
+        pageTitle: 'Armor',
+      },
+      {
+        path: '/app/items/gear/',
+        itemType: ItemType.gear,
+        pageTitle: 'Adventuring Gear',
+      },
+      {
+        path: '/app/items/magic-items/',
+        itemType: ItemType.magic,
+        pageTitle: 'Magic Items',
+      },
+      {
+        path: '/app/items/magic-armor/',
+        itemType: ItemType.magicArmor,
+        pageTitle: 'Magic Armor',
+      },
+      {
+        path: '/app/items/magic-weapons/',
+        itemType: ItemType.magicWeapon,
+        pageTitle: 'Magic Weapons',
+      },
+      {
+        path: '/app/items/tools/',
+        itemType: ItemType.tool,
+        pageTitle: 'Tools',
+      },
+      {
+        path: '/app/items/vehicles/',
+        itemType: ItemType.vehicle,
+        pageTitle: 'Vehicles and Mounts',
+      },
+      {
+        path: '/app/items/weapons/',
+        itemType: ItemType.weapon,
+        pageTitle: 'Weapons',
+      },
+    ];
   }
 }

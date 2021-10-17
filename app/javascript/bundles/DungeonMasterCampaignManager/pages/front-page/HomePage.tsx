@@ -6,6 +6,7 @@ import { Link } from '@reach/router';
 import TavernNameField from './components/TavernNameField';
 import { PageProps } from '../../utilities/types';
 import { GiBarbute } from 'react-icons/all';
+import { connect } from 'react-redux';
 
 const styles = require('./home-page.module.scss');
 
@@ -38,4 +39,10 @@ const HomePage = (props: PageProps) => (
   </PageContainer>
 );
 
-export default HomePage;
+function mapStateToProps(state) {
+  return {
+    user: state.users.currentUser,
+  };
+}
+
+export default connect(mapStateToProps)(HomePage);
