@@ -2,11 +2,17 @@ import { configureStore } from '@reduxjs/toolkit';
 import rootReducer from '../reducers';
 import { AppProps } from '../utilities/types';
 
-export const store = (props: AppProps) =>
-  configureStore({
+export const store = (props: AppProps) => {
+  return configureStore({
     reducer: rootReducer,
     preloadedState: {
       flashMessages: [],
+      dndClasses: {
+        dndClasses: [],
+        count: props.items.count,
+        currentDndClass: null,
+        loading: false,
+      },
       items: {
         items: [],
         count: props.items.count,
@@ -42,7 +48,8 @@ export const store = (props: AppProps) =>
         users: [],
         count: props.users.count,
         // @ts-ignore
-        currentUser: props.users.currentUser,
+        currentUser: props.users.user,
       },
     },
   });
+};

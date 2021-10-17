@@ -29,7 +29,7 @@ class HomeController < ApplicationController
       users: {
         users: [],
         count: User.count,
-        current_user: @user
+        user: @user
       }
     }
   end

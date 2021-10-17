@@ -33,7 +33,7 @@ export interface AppProps {
   users: {
     users: UserProps[];
     count: number;
-    currentUser?: UserProps;
+    user?: UserProps;
   };
 }
 
