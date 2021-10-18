@@ -2,6 +2,7 @@
   "name": "dungeon-master-screen-online",
   "private": true,
   "dependencies": {
+    "@auth0/auth0-react": "^1.8.0",
     "@babel/preset-react": "^7.14.5",
     "@ckeditor/ckeditor5-react": "^3.0.0",
     "@nathanvda/cocoon": "^1.2.14",

@@ -1,20 +1,15 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import { Redirect } from '@reach/router';
+import { useAuth0 } from '@auth0/auth0-react';
 
 const ProtectedRoute = ({ as: Component, ...props }) => {
   const { ...rest } = props;
-  return props.user ? (
+  const { isAuthenticated } = useAuth0();
+  return isAuthenticated ? (
     <Component {...rest} />
   ) : (
-    <Redirect from="" to="/" noThrow />
+    <Redirect from='' to='/' noThrow />
   );
 };
 
-function mapStateToProps(state) {
-  return {
-    user: state.users.currentUser,
-  };
-}
-
-export default connect(mapStateToProps)(ProtectedRoute);
+export default ProtectedRoute;

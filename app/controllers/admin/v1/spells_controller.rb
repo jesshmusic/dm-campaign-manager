@@ -3,7 +3,7 @@
 module Admin::V1
   class SpellsController < SecuredController
     before_action :set_spell, only: %i[show edit update destroy]
-    skip_before_action :authorize_request, %i[index show]
+    skip_before_action :authorize_request, only: %i[index show]
 
     # GET /spells
     # GET /spells.json

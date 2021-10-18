@@ -1,6 +1,7 @@
 import React from 'react';
-import { connect, Provider } from 'react-redux';
-import { Router, Link } from '@reach/router';
+import { Provider } from 'react-redux';
+import { Router } from '@reach/router';
+import { Auth0Provider } from '@auth0/auth0-react';
 import HomePage from './front-page/HomePage';
 import Items from './items/Items';
 import Monsters from './monsters/Monsters';
@@ -39,40 +40,46 @@ const Home = (props) => {
   const combinedProps = {
     ...props,
     flashMessages,
-    addFlashMessage,
+    addFlashMessage
   };
 
   return (
-    <Provider store={store(props)}>
-      <SideBar isCollapsed={isMobile} />
-      <Router>
-        <HomePage path="/" {...combinedProps} />
-        <DndClass path="/app/classes/:dndClassSlug" {...combinedProps} />
-        <DndClasses path="/app/classes" {...combinedProps} />
-        <Races path="/app/races" {...combinedProps} />
-        <Race path="/app/races/:raceSlug" {...combinedProps} />
-        {Util.itemPages.map((itemPage) => (
-          <Items
-            path={itemPage.path}
+    <Auth0Provider
+      domain='dev-yfmjdt5a.us.auth0.com'
+      clientId='8NlYHEqMlhW6W4kVyNQLtyRguyiGSzrd'
+      redirectUri={window.location.origin}
+    >
+      <Provider store={store(props)}>
+        <SideBar isCollapsed={isMobile} />
+        <Router>
+          <HomePage path='/' {...combinedProps} />
+          <DndClass path='/app/classes/:dndClassSlug' {...combinedProps} />
+          <DndClasses path='/app/classes' {...combinedProps} />
+          <Races path='/app/races' {...combinedProps} />
+          <Race path='/app/races/:raceSlug' {...combinedProps} />
+          {Util.itemPages.map((itemPage) => (
+            <Items
+              path={itemPage.path}
+              {...combinedProps}
+              itemType={itemPage.itemType}
+              key={itemPage.itemType}
+              pageTitle={itemPage.pageTitle}
+            />
+          ))}
+          <Item path='/app/items/:itemSlug' {...combinedProps} />
+          <Monsters path='/app/monsters/' {...combinedProps} />
+          <Monster path='/app/monsters/:monsterSlug' {...combinedProps} />
+          <Spells path='/app/spells/' {...combinedProps} />
+          <Spell path='/app/spells/:spellSlug' {...combinedProps} />
+          <Section path='/app/sections/:sectionSlug' {...combinedProps} />
+          <ProtectedRoute
+            path='/app/monster-generator/'
+            as={MonsterGenerator}
             {...combinedProps}
-            itemType={itemPage.itemType}
-            key={itemPage.itemType}
-            pageTitle={itemPage.pageTitle}
           />
-        ))}
-        <Item path="/app/items/:itemSlug" {...combinedProps} />
-        <Monsters path="/app/monsters/" {...combinedProps} />
-        <Monster path="/app/monsters/:monsterSlug" {...combinedProps} />
-        <Spells path="/app/spells/" {...combinedProps} />
-        <Spell path="/app/spells/:spellSlug" {...combinedProps} />
-        <Section path="/app/sections/:sectionSlug" {...combinedProps} />
-        <ProtectedRoute
-          path="/app/monster-generator/"
-          as={MonsterGenerator}
-          {...combinedProps}
-        />
-      </Router>
-    </Provider>
+        </Router>
+      </Provider>
+    </Auth0Provider>
   );
 };
 

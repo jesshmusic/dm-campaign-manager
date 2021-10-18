@@ -1,7 +1,7 @@
 module Admin::V1
   class SectionsController < SecuredController
     before_action :set_section, only: %i[ show edit update destroy ]
-    skip_before_action :authorize_request, %i[index show]
+    skip_before_action :authorize_request, only: %i[index show]
 
     # GET /sections or /sections.json
     def index

@@ -1,7 +1,6 @@
 import React from 'react';
 import rest from '../../actions/api';
 import { connect } from 'react-redux';
-import { UserProps } from '../../utilities/types';
 import {
   AiOutlineHome,
   BiLogIn,
@@ -19,20 +18,13 @@ import {
   GiRuleBook,
   GiSwapBag,
   GiSwordArray,
-  GiToolbox,
+  GiToolbox
 } from 'react-icons/all';
 
-import {
-  Menu,
-  MenuItem,
-  ProSidebar,
-  SidebarContent,
-  SidebarFooter,
-  SubMenu,
-} from 'react-pro-sidebar';
+import { Menu, MenuItem, ProSidebar, SidebarContent, SidebarFooter, SubMenu } from 'react-pro-sidebar';
 import './sidebar-vars.scss';
 import { SidebarLink } from '../NavLink/NavLink';
-import SignInModal from '../SignInModal/SignInModal';
+import { useAuth0 } from '@auth0/auth0-react';
 
 const sidebarBG = require('./SidebarBackground.jpg');
 
@@ -45,69 +37,62 @@ const itemTypes = [
   {
     name: 'Mounts & Vehicles',
     link: '/app/items/vehicles',
-    icon: <GiHorseHead />,
+    icon: <GiHorseHead />
   },
   { name: 'Tools', link: '/app/items/tools', icon: <GiToolbox /> },
   {
     name: 'Magic Items',
     link: '/app/items/magic-items',
-    icon: <GiMagicPotion />,
+    icon: <GiMagicPotion />
   },
   {
     name: 'Magic Armor',
     link: '/app/items/magic-armor',
-    icon: <GiChestArmor />,
+    icon: <GiChestArmor />
   },
   {
     name: 'Magic Weapons',
     link: '/app/items/magic-weapons',
-    icon: <GiMagicAxe />,
-  },
+    icon: <GiMagicAxe />
+  }
 ];
 
 const SideBar = (props: {
-  user: UserProps;
   isCollapsed: boolean;
-  logoutUser: () => void;
   getSections: () => void;
   sections: { name: string; slug: string }[];
-  userLogin: (username: string, password: string) => void;
 }) => {
-  const { user, logoutUser, isCollapsed, getSections, sections, userLogin } =
-    props;
+  const { isCollapsed, getSections, sections } = props;
+
+  const { user, isAuthenticated, loginWithRedirect, logout } = useAuth0();
 
   React.useEffect(() => {
     getSections();
   }, []);
 
-  const handleLogout = (event) => {
-    event.preventDefault();
-    logoutUser();
-  };
-
   return (
     <>
       <ProSidebar collapsed={isCollapsed} image={sidebarBG}>
         <SidebarContent>
-          <Menu iconShape="square">
-            <SidebarLink to="/" title="Home" icon={<AiOutlineHome />} />
+          <Menu iconShape='square'>
+            <SidebarLink to='/' title='Home' icon={<AiOutlineHome />} />
             <SidebarLink
-              to="/app/classes"
-              title="Classes"
+              to='/app/classes'
+              title='Classes'
               icon={<GiPerson />}
             />
-            <SidebarLink to="/app/races" title="Races" icon={<GiDwarfFace />} />
+            <SidebarLink to='/app/races' title='Races' icon={<GiDwarfFace />} />
             <SidebarLink
-              to="/app/monsters"
-              title="Monsters"
+              to='/app/monsters'
+              title='Monsters'
               icon={<GiMonsterGrasp />}
             />
             <SidebarLink
-              to="/app/spells"
-              title="Spells"
+              to='/app/spells'
+              title='Spells'
               icon={<GiMagicPalm />}
             />
-            <SubMenu title="Rules" icon={<GiRuleBook />}>
+            <SubMenu title='Rules' icon={<GiRuleBook />}>
               {sections.map((section, index) => (
                 <SidebarLink
                   key={`rules-${index}`}
@@ -116,7 +101,7 @@ const SideBar = (props: {
                 />
               ))}
             </SubMenu>
-            <SubMenu title="Items & Equipment" icon={<GiSwapBag />}>
+            <SubMenu title='Items & Equipment' icon={<GiSwapBag />}>
               {itemTypes.map((itemType, index) => (
                 <SidebarLink
                   key={`items-${index}`}
@@ -129,71 +114,56 @@ const SideBar = (props: {
           </Menu>
         </SidebarContent>
         <SidebarFooter>
-          <div className={styles.divider}>User</div>
+          <div className={styles.divider}>{isAuthenticated && user ? `Welcome, ${user.given_name}` : 'User'}</div>
           <Menu>
             {user && user.role === 'admin' ? (
               <SidebarLink
-                to="/app/admin"
-                title="Admin"
+                to='/app/admin'
+                title='Admin'
                 icon={<GiHomeGarage />}
               />
             ) : null}
-            {user ? (
+            {isAuthenticated && user ? (
               <>
                 <SidebarLink
-                  to="/app/monster-generator"
-                  title="Monster Generator"
+                  to='/app/monster-generator'
+                  title='Monster Generator'
                   icon={<GiHomeGarage />}
                 />
                 <SidebarLink
-                  to="/app/admin"
-                  title="Admin"
+                  to='/app/admin'
+                  title='Admin'
                   icon={<GiHomeGarage />}
                 />
                 <MenuItem icon={<BiLogOut />}>
-                  <a onClick={handleLogout}>Sign Out</a>
+                  <button onClick={() => logout({ returnTo: window.location.origin })}>
+                    Log Out
+                  </button>
                 </MenuItem>
               </>
             ) : (
               <MenuItem icon={<BiLogIn />}>
-                <button
-                  data-bs-toggle="modal"
-                  data-bs-target="#userSigninModal"
-                >
-                  Sign In
-                </button>
+                <button onClick={() => loginWithRedirect()}>Log In</button>
               </MenuItem>
             )}
           </Menu>
         </SidebarFooter>
       </ProSidebar>
-      <SignInModal user={user} userLogin={userLogin} />
     </>
   );
 };
 
 const mapStateToProps = (state) => {
   return {
-    sections: state.sections.sections,
-    user: state.users.currentUser,
+    sections: state.sections.sections
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    logoutUser: () => {
-      dispatch(rest.actions.userLogout());
-    },
     getSections: () => {
       dispatch(rest.actions.getSections());
-    },
-    userLogin: (email: string, password: string, rememberMe: boolean) => {
-      dispatch(
-        rest.actions.userLogin({
-          user: { email, password, remember_me: rememberMe },
-        })
-      );
-    },
+    }
   };
 };
 
