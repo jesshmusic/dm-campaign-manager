@@ -12,12 +12,14 @@ const styles = require('./home-page.module.scss');
 
 const HomePage = (props: PageProps) => {
   const { isAuthenticated, user } = useAuth0();
-  console.log(user);
+
   return (
     <PageContainer
-      pageTitle={isAuthenticated && user ? `Welcome, ${user.given_name}` : 'Welcome'}
+      pageTitle={
+        isAuthenticated && user ? `Welcome, ${user.given_name}` : 'Welcome'
+      }
       description={
-        'Dungeon Master\'s Screen is a free resource for DMs for reference that includes tools for smooth games.'
+        "Dungeon Master's Screen is a free resource for DMs for reference that includes tools for smooth games."
       }
       breadcrumbs={[]}
     >
@@ -25,7 +27,7 @@ const HomePage = (props: PageProps) => {
         <PageTitle title={'The Dungeon Master Screen'} isDraconis />
         {isAuthenticated && user && (
           <div className={styles.section}>
-            <Link to='/app/monster-generator' className={styles.buttonBar}>
+            <Link to="/app/monster-generator" className={styles.buttonBar}>
               <GiBarbute size={24} /> NPC Generators
             </Link>
           </div>

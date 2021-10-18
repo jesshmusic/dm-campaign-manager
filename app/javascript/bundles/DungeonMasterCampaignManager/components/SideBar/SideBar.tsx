@@ -18,10 +18,17 @@ import {
   GiRuleBook,
   GiSwapBag,
   GiSwordArray,
-  GiToolbox
+  GiToolbox,
 } from 'react-icons/all';
 
-import { Menu, MenuItem, ProSidebar, SidebarContent, SidebarFooter, SubMenu } from 'react-pro-sidebar';
+import {
+  Menu,
+  MenuItem,
+  ProSidebar,
+  SidebarContent,
+  SidebarFooter,
+  SubMenu,
+} from 'react-pro-sidebar';
 import './sidebar-vars.scss';
 import { SidebarLink } from '../NavLink/NavLink';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -37,34 +44,55 @@ const itemTypes = [
   {
     name: 'Mounts & Vehicles',
     link: '/app/items/vehicles',
-    icon: <GiHorseHead />
+    icon: <GiHorseHead />,
   },
   { name: 'Tools', link: '/app/items/tools', icon: <GiToolbox /> },
   {
     name: 'Magic Items',
     link: '/app/items/magic-items',
-    icon: <GiMagicPotion />
+    icon: <GiMagicPotion />,
   },
   {
     name: 'Magic Armor',
     link: '/app/items/magic-armor',
-    icon: <GiChestArmor />
+    icon: <GiChestArmor />,
   },
   {
     name: 'Magic Weapons',
     link: '/app/items/magic-weapons',
-    icon: <GiMagicAxe />
-  }
+    icon: <GiMagicAxe />,
+  },
 ];
 
 const SideBar = (props: {
   isCollapsed: boolean;
   getSections: () => void;
   sections: { name: string; slug: string }[];
+  setUser: (email: string, token: string) => void;
 }) => {
-  const { isCollapsed, getSections, sections } = props;
+  const { isCollapsed, getSections, sections, setUser } = props;
 
-  const { user, isAuthenticated, loginWithRedirect, logout } = useAuth0();
+  const {
+    user,
+    isAuthenticated,
+    loginWithPopup,
+    logout,
+    getAccessTokenSilently,
+  } = useAuth0();
+
+  React.useEffect(() => {
+    if (isAuthenticated && user) {
+      getAccessTokenSilently()
+        .then((token) => {
+          if (user.email) {
+            setUser(user.email, token);
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    }
+  }, [user]);
 
   React.useEffect(() => {
     getSections();
@@ -74,25 +102,25 @@ const SideBar = (props: {
     <>
       <ProSidebar collapsed={isCollapsed} image={sidebarBG}>
         <SidebarContent>
-          <Menu iconShape='square'>
-            <SidebarLink to='/' title='Home' icon={<AiOutlineHome />} />
+          <Menu iconShape="square">
+            <SidebarLink to="/" title="Home" icon={<AiOutlineHome />} />
             <SidebarLink
-              to='/app/classes'
-              title='Classes'
+              to="/app/classes"
+              title="Classes"
               icon={<GiPerson />}
             />
-            <SidebarLink to='/app/races' title='Races' icon={<GiDwarfFace />} />
+            <SidebarLink to="/app/races" title="Races" icon={<GiDwarfFace />} />
             <SidebarLink
-              to='/app/monsters'
-              title='Monsters'
+              to="/app/monsters"
+              title="Monsters"
               icon={<GiMonsterGrasp />}
             />
             <SidebarLink
-              to='/app/spells'
-              title='Spells'
+              to="/app/spells"
+              title="Spells"
               icon={<GiMagicPalm />}
             />
-            <SubMenu title='Rules' icon={<GiRuleBook />}>
+            <SubMenu title="Rules" icon={<GiRuleBook />}>
               {sections.map((section, index) => (
                 <SidebarLink
                   key={`rules-${index}`}
@@ -101,7 +129,7 @@ const SideBar = (props: {
                 />
               ))}
             </SubMenu>
-            <SubMenu title='Items & Equipment' icon={<GiSwapBag />}>
+            <SubMenu title="Items & Equipment" icon={<GiSwapBag />}>
               {itemTypes.map((itemType, index) => (
                 <SidebarLink
                   key={`items-${index}`}
@@ -114,36 +142,40 @@ const SideBar = (props: {
           </Menu>
         </SidebarContent>
         <SidebarFooter>
-          <div className={styles.divider}>{isAuthenticated && user ? `Welcome, ${user.given_name}` : 'User'}</div>
+          <div className={styles.divider}>
+            {isAuthenticated && user ? `Welcome, ${user.given_name}` : 'User'}
+          </div>
           <Menu>
             {user && user.role === 'admin' ? (
               <SidebarLink
-                to='/app/admin'
-                title='Admin'
+                to="/app/admin"
+                title="Admin"
                 icon={<GiHomeGarage />}
               />
             ) : null}
             {isAuthenticated && user ? (
               <>
                 <SidebarLink
-                  to='/app/monster-generator'
-                  title='Monster Generator'
+                  to="/app/monster-generator"
+                  title="Monster Generator"
                   icon={<GiHomeGarage />}
                 />
                 <SidebarLink
-                  to='/app/admin'
-                  title='Admin'
+                  to="/app/admin"
+                  title="Admin"
                   icon={<GiHomeGarage />}
                 />
                 <MenuItem icon={<BiLogOut />}>
-                  <button onClick={() => logout({ returnTo: window.location.origin })}>
+                  <button
+                    onClick={() => logout({ returnTo: window.location.origin })}
+                  >
                     Log Out
                   </button>
                 </MenuItem>
               </>
             ) : (
               <MenuItem icon={<BiLogIn />}>
-                <button onClick={() => loginWithRedirect()}>Log In</button>
+                <button onClick={() => loginWithPopup()}>Log In</button>
               </MenuItem>
             )}
           </Menu>
@@ -155,7 +187,7 @@ const SideBar = (props: {
 
 const mapStateToProps = (state) => {
   return {
-    sections: state.sections.sections
+    sections: state.sections.sections,
   };
 };
 
@@ -163,7 +195,18 @@ const mapDispatchToProps = (dispatch) => {
   return {
     getSections: () => {
       dispatch(rest.actions.getSections());
-    }
+    },
+    setUser: (email: string, token: string) => {
+      dispatch(
+        rest.actions.setUser(
+          {},
+          {
+            body: JSON.stringify({ user: { email } }),
+            token,
+          }
+        )
+      );
+    },
   };
 };
 

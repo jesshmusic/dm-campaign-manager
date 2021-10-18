@@ -5,8 +5,17 @@ class UserPolicy < ApplicationPolicy
     user.admin?
   end
 
+  def set_auth_user?
+    true
+  end
+
   def show?
     user.admin? || (user == record)
+  end
+
+  def create?
+    # user.admin? || (user == record)
+    true
   end
 
   def edit?

@@ -16,12 +16,14 @@
 #  last_sign_in_ip        :inet
 #  location               :string
 #  name                   :string
+#  provider               :string           default(""), not null
 #  remember_created_at    :datetime
 #  reset_password_sent_at :datetime
 #  reset_password_token   :string
 #  role                   :integer
 #  sign_in_count          :integer          default(0), not null
 #  slug                   :string
+#  uid                    :string           default(""), not null
 #  unconfirmed_email      :string
 #  username               :string
 #  created_at             :datetime         not null
@@ -31,7 +33,6 @@
 #
 #  index_users_on_email                 (email) UNIQUE
 #  index_users_on_reset_password_token  (reset_password_token) UNIQUE
-#  index_users_on_slug                  (slug) UNIQUE
 #  index_users_on_username              (username) UNIQUE
 #
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { Router } from '@reach/router';
-import { Auth0Provider } from '@auth0/auth0-react';
+import { AppState, Auth0Provider } from '@auth0/auth0-react';
 import HomePage from './front-page/HomePage';
 import Items from './items/Items';
 import Monsters from './monsters/Monsters';
@@ -40,23 +40,30 @@ const Home = (props) => {
   const combinedProps = {
     ...props,
     flashMessages,
-    addFlashMessage
+    addFlashMessage,
+  };
+
+  const handleRedirectCallback = (appState: AppState) => {
+    console.log(appState);
   };
 
   return (
     <Auth0Provider
-      domain='dev-yfmjdt5a.us.auth0.com'
-      clientId='8NlYHEqMlhW6W4kVyNQLtyRguyiGSzrd'
+      domain="dev-yfmjdt5a.us.auth0.com"
+      clientId="8NlYHEqMlhW6W4kVyNQLtyRguyiGSzrd"
       redirectUri={window.location.origin}
+      audience="https://dm-campaign-manager.herokuapp.com"
+      scope="read:user"
+      onRedirectCallback={(appState) => handleRedirectCallback(appState)}
     >
       <Provider store={store(props)}>
         <SideBar isCollapsed={isMobile} />
         <Router>
-          <HomePage path='/' {...combinedProps} />
-          <DndClass path='/app/classes/:dndClassSlug' {...combinedProps} />
-          <DndClasses path='/app/classes' {...combinedProps} />
-          <Races path='/app/races' {...combinedProps} />
-          <Race path='/app/races/:raceSlug' {...combinedProps} />
+          <HomePage path="/" {...combinedProps} />
+          <DndClass path="/app/classes/:dndClassSlug" {...combinedProps} />
+          <DndClasses path="/app/classes" {...combinedProps} />
+          <Races path="/app/races" {...combinedProps} />
+          <Race path="/app/races/:raceSlug" {...combinedProps} />
           {Util.itemPages.map((itemPage) => (
             <Items
               path={itemPage.path}
@@ -66,14 +73,14 @@ const Home = (props) => {
               pageTitle={itemPage.pageTitle}
             />
           ))}
-          <Item path='/app/items/:itemSlug' {...combinedProps} />
-          <Monsters path='/app/monsters/' {...combinedProps} />
-          <Monster path='/app/monsters/:monsterSlug' {...combinedProps} />
-          <Spells path='/app/spells/' {...combinedProps} />
-          <Spell path='/app/spells/:spellSlug' {...combinedProps} />
-          <Section path='/app/sections/:sectionSlug' {...combinedProps} />
+          <Item path="/app/items/:itemSlug" {...combinedProps} />
+          <Monsters path="/app/monsters/" {...combinedProps} />
+          <Monster path="/app/monsters/:monsterSlug" {...combinedProps} />
+          <Spells path="/app/spells/" {...combinedProps} />
+          <Spell path="/app/spells/:spellSlug" {...combinedProps} />
+          <Section path="/app/sections/:sectionSlug" {...combinedProps} />
           <ProtectedRoute
-            path='/app/monster-generator/'
+            path="/app/monster-generator/"
             as={MonsterGenerator}
             {...combinedProps}
           />

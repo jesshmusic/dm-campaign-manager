@@ -3,6 +3,7 @@ Rails.application.routes.draw do
 
   resources :users, except: %i[create new], param: :slug
   patch '/users/:id/change_role', to: 'users#change_role', as: 'user_change_role'
+  post '/users/set_user', to: 'users#set_auth_user', as: 'user_set_user'
   get 'app(/*all)', to: 'home#index'
   scope module: 'admin' do
     namespace :v1 do

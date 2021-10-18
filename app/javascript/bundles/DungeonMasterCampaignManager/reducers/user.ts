@@ -3,7 +3,9 @@ import { AnyAction } from 'redux';
 
 const loginSucceeded = createAction('@@redux-api@userLogin_success');
 const logoutSucceeded = createAction('@@redux-api@userLogout_success');
-
+// const setUser = createAction('@@redux-api@setUser');
+const setUserSuccess = createAction('@@redux-api@setUser_success');
+const setUserFail = createAction('@@redux-api@setUser_fail');
 const getUsersSuccess = createAction('@@redux-api@getUsers_success');
 const getUsersFail = createAction('@@redux-api@getUsers_fail');
 const getUserSuccess = createAction('@@redux-api@getUser_success');
@@ -25,6 +27,20 @@ const users = createReducer(
         };
       })
       .addCase(logoutSucceeded, (state) => {
+        return {
+          count: state.count,
+          users: state.users,
+          currentUser: undefined,
+        };
+      })
+      .addCase(setUserSuccess, (state, action: AnyAction) => {
+        return {
+          users: state.users,
+          count: state.count,
+          currentUser: action.data,
+        };
+      })
+      .addCase(setUserFail, (state) => {
         return {
           count: state.count,
           users: state.users,

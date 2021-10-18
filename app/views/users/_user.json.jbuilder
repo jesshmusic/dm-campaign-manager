@@ -19,5 +19,3 @@ end
 json.spells user.spells do |spell|
   json.partial! 'admin/v1/spells/spell', spell: spell
 end
-
-json.url user_url(user, format: :json)

@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
-class UsersController < ApplicationController
+class UsersController < SecuredController
   before_action :set_user, only: %i[show edit update change_role destroy]
   before_action :set_users, only: %i[index]
-  before_action :authenticate_user!
   after_action :verify_authorized
 
   # GET /v1/users
@@ -22,9 +21,20 @@ class UsersController < ApplicationController
     end
   end
 
+  # POST /users/set_user/
+  def set_auth_user
+    puts user_params
+    authorize User
+    @user = User.find_or_create_by(email: user_params[:email])
+  end
+
   # GET /v1/users/{id}
   def show
     authorize @user
+  end
+
+  def create
+    puts params
   end
 
   def edit
@@ -86,6 +96,6 @@ class UsersController < ApplicationController
   end
 
   def user_params
-    params.require(:user).permit(:name, :username, :deleted_at, :role)
+    params.require(:user).permit(:name, :email, :username, :deleted_at, :role)
   end
 end
