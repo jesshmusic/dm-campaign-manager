@@ -83,11 +83,10 @@
     <orderEntry type="library" scope="PROVIDED" name="activesupport (v6.1.4.1, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="addressable (v2.8.0, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="annotate (v3.1.1, RVM: ruby-2.7.4) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="bcrypt (v3.1.16, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="bindex (v0.8.1, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="bootsnap (v1.9.1, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="builder (v3.2.4, RVM: ruby-2.7.4) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="bundler (v2.1.4, RVM: ruby-2.7.4) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="bundler (v2.2.28, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="byebug (v11.1.3, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="capybara (v3.35.3, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="character_set (v1.4.1, RVM: ruby-2.7.4) [gem]" level="application" />
@@ -100,7 +99,6 @@
     <orderEntry type="library" scope="PROVIDED" name="crass (v1.0.6, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="debase (v2.3.2, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="debase-ruby_core_source (v0.10.12, RVM: ruby-2.7.4) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="devise (v4.8.0, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="diff-lcs (v1.4.4, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="docile (v1.4.0, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="erubi (v1.10.0, RVM: ruby-2.7.4) [gem]" level="application" />
@@ -111,10 +109,10 @@
     <orderEntry type="library" scope="PROVIDED" name="ffi (v1.15.4, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="foreman (v0.87.2, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="globalid (v0.5.2, RVM: ruby-2.7.4) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="hashie (v4.1.0, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="i18n (v1.8.10, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="jbuilder (v2.11.2, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="js_regex (v3.7.0, RVM: ruby-2.7.4) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="jwt (v2.3.0, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="listen (v3.7.0, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="loofah (v2.12.0, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="mail (v2.7.1, RVM: ruby-2.7.4) [gem]" level="application" />
@@ -126,8 +124,6 @@
     <orderEntry type="library" scope="PROVIDED" name="msgpack (v1.4.2, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="nio4r (v2.5.8, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="nokogiri (v1.12.5, RVM: ruby-2.7.4) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="omniauth (v2.0.4, RVM: ruby-2.7.4) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="orm_adapter (v0.5.0, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="pagy (v4.11.0, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="pg (v1.2.3, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="pg_search (v2.3.5, RVM: ruby-2.7.4) [gem]" level="application" />
@@ -137,7 +133,6 @@
     <orderEntry type="library" scope="PROVIDED" name="racc (v1.5.2, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rack (v2.2.3, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rack-mini-profiler (v2.3.3, RVM: ruby-2.7.4) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="rack-protection (v2.1.0, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rack-proxy (v0.7.0, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rack-test (v1.1.0, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rails (v6.1.4.1, RVM: ruby-2.7.4) [gem]" level="application" />
@@ -154,7 +149,6 @@
     <orderEntry type="library" scope="PROVIDED" name="redcarpet (v3.5.1, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="regexp_parser (v2.1.1, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="regexp_property_values (v1.0.0, RVM: ruby-2.7.4) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="responders (v3.0.1, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rspec-core (v3.10.1, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rspec-expectations (v3.10.1, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rspec-mocks (v3.10.2, RVM: ruby-2.7.4) [gem]" level="application" />
@@ -184,7 +178,6 @@
     <orderEntry type="library" scope="PROVIDED" name="turbolinks (v5.2.1, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="turbolinks-source (v5.2.0, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="tzinfo (v2.0.4, RVM: ruby-2.7.4) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="warden (v1.2.9, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="web-console (v4.1.0, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="webdrivers (v4.6.1, RVM: ruby-2.7.4) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="webpacker (v5.4.3, RVM: ruby-2.7.4) [gem]" level="application" />
@@ -201,7 +194,6 @@
     <option name="generators">
       <list>
         <option value="active_record:application_record" />
-        <option value="active_record:devise" />
         <option value="active_record:migration" />
         <option value="active_record:model" />
         <option value="annotate:install" />
@@ -213,10 +205,6 @@
         <option value="client_side_validations:install" />
         <option value="cocoon:install" />
         <option value="controller" />
-        <option value="devise" />
-        <option value="devise:controllers" />
-        <option value="devise:install" />
-        <option value="devise:views" />
         <option value="factory_bot:model" />
         <option value="generator" />
         <option value="helper" />
@@ -227,7 +215,6 @@
         <option value="mailer" />
         <option value="migration" />
         <option value="model" />
-        <option value="mongoid:devise" />
         <option value="pg_search:migration:dmetaphone" />
         <option value="pg_search:migration:multisearch" />
         <option value="pundit:install" />
@@ -235,8 +222,6 @@
         <option value="rack_profiler:install" />
         <option value="react_on_rails:install" />
         <option value="resource" />
-        <option value="responders:install" />
-        <option value="responders_controller" />
         <option value="rspec:channel" />
         <option value="rspec:controller" />
         <option value="rspec:feature" />
@@ -279,7 +264,6 @@
     <option name="myGenerators">
       <list>
         <option value="active_record:application_record" />
-        <option value="active_record:devise" />
         <option value="active_record:migration" />
         <option value="active_record:model" />
         <option value="annotate:install" />
@@ -291,10 +275,6 @@
         <option value="client_side_validations:install" />
         <option value="cocoon:install" />
         <option value="controller" />
-        <option value="devise" />
-        <option value="devise:controllers" />
-        <option value="devise:install" />
-        <option value="devise:views" />
         <option value="factory_bot:model" />
         <option value="generator" />
         <option value="helper" />
@@ -305,7 +285,6 @@
         <option value="mailer" />
         <option value="migration" />
         <option value="model" />
-        <option value="mongoid:devise" />
         <option value="pg_search:migration:dmetaphone" />
         <option value="pg_search:migration:multisearch" />
         <option value="pundit:install" />
@@ -313,8 +292,6 @@
         <option value="rack_profiler:install" />
         <option value="react_on_rails:install" />
         <option value="resource" />
-        <option value="responders:install" />
-        <option value="responders_controller" />
         <option value="rspec:channel" />
         <option value="rspec:controller" />
         <option value="rspec:feature" />
@@ -686,9 +663,15 @@
           <RakeTaskImpl id="srd">
             <subtasks>
               <RakeTaskImpl description="" fullCommand="srd:clean_all" id="clean_all" />
-              <RakeTaskImpl description="" fullCommand="srd:import" id="import" />
               <RakeTaskImpl description="" fullCommand="srd:import_all" id="import_all" />
+              <RakeTaskImpl description="" fullCommand="srd:import_dependencies" id="import_dependencies" />
               <RakeTaskImpl description="" fullCommand="srd:import_dnd_classes" id="import_dnd_classes" />
+              <RakeTaskImpl description="" fullCommand="srd:import_items" id="import_items" />
+              <RakeTaskImpl description="" fullCommand="srd:import_magic_items" id="import_magic_items" />
+              <RakeTaskImpl description="" fullCommand="srd:import_monsters" id="import_monsters" />
+              <RakeTaskImpl description="" fullCommand="srd:import_races" id="import_races" />
+              <RakeTaskImpl description="" fullCommand="srd:import_sections" id="import_sections" />
+              <RakeTaskImpl description="" fullCommand="srd:import_spells" id="import_spells" />
             </subtasks>
           </RakeTaskImpl>
           <RakeTaskImpl description="" fullCommand="tmp" id="tmp" />

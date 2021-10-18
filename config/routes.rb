@@ -1,6 +1,5 @@
 Rails.application.routes.draw do
   root to: 'home#index'
-  devise_for :users, controllers: { registrations: 'registrations', sessions: 'sessions' }
 
   resources :users, except: %i[create new], param: :slug
   patch '/users/:id/change_role', to: 'users#change_role', as: 'user_change_role'
