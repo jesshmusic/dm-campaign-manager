@@ -14,11 +14,6 @@ def create_user(name, username, email, role)
       name: name,
       username: username,
       email: email,
-      password: 'Flashy7151',
-      password_confirmation: 'Flashy7151',
-      reset_password_token: nil,
-      reset_password_sent_at: nil,
-      remember_created_at: nil,
       sign_in_count: 1,
       current_sign_in_at: '2015-02-06 14:02:10',
       last_sign_in_at: '2015-02-06 14:02:10',
@@ -26,7 +21,6 @@ def create_user(name, username, email, role)
       last_sign_in_ip: '127.0.0.1',
       role: role
     )
-    user.skip_confirmation!
     user.save!
     user
   else
@@ -36,6 +30,7 @@ end
 
 create_user('Jess Hendricks', 'jesshmusic', 'jesshmusic72@gmail.com', :admin)
 create_user('Jess DM', 'jesshdm', 'jesshmusic72+dm@gmail.com', :dungeon_master)
+create_user('Jess User', 'jesshuser', 'jesshmusic72+user@gmail.com', :dungeon_master)
 
 # ImportSrdUtilities.import_all_empty(nil)
 # ImportSrdUtilities.clean_database

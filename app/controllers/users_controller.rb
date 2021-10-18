@@ -87,7 +87,7 @@ class UsersController < SecuredController
   private
 
   def set_user
-    @user = User.find_by(slug: params[:slug])
+    @user = User.find(params[:id])
   end
 
   def set_users

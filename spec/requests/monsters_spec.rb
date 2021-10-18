@@ -42,7 +42,7 @@ RSpec.describe 'Monsters', type: :request do
 
     context 'for Admins' do
       before(:each) do
-        sign_in admin
+        # sign_in admin
       end
 
       it 'should return 335 monsters' do
@@ -54,7 +54,7 @@ RSpec.describe 'Monsters', type: :request do
 
     context 'for Dungeon Masters' do
       before(:each) do
-        sign_in dungeon_master
+        # sign_in dungeon_master
       end
 
       it 'should return 336 monsters that are only default or owned by this DM' do
@@ -104,7 +104,7 @@ RSpec.describe 'Monsters', type: :request do
 
     context 'for Admins' do
       before(:each) do
-        sign_in admin
+        # sign_in admin
       end
 
       it 'should return a default monster' do
@@ -123,7 +123,7 @@ RSpec.describe 'Monsters', type: :request do
 
     context 'for Dungeon Masters' do
       before(:each) do
-        sign_in dungeon_master
+        # sign_in dungeon_master
       end
 
       it 'should return a default monster' do
@@ -161,7 +161,7 @@ RSpec.describe 'Monsters', type: :request do
 
     context 'for Admins' do
       before(:each) do
-        sign_in admin
+        # sign_in admin
       end
 
       it 'should create a new Monster' do
@@ -176,7 +176,7 @@ RSpec.describe 'Monsters', type: :request do
 
     context 'for Dungeon Masters' do
       before(:each) do
-        sign_in dungeon_master
+        # sign_in dungeon_master
       end
 
       it 'should create a new Monster with a user' do
@@ -206,14 +206,14 @@ RSpec.describe 'Monsters', type: :request do
 
     context 'for Admins' do
       before(:each) do
-        sign_in admin
+        # sign_in admin
       end
 
     end
 
     context 'for Dungeon Masters' do
       before(:each) do
-        sign_in dungeon_master
+        # sign_in dungeon_master
       end
 
       it 'should update the requested monster belonging to DM' do
@@ -264,7 +264,7 @@ RSpec.describe 'Monsters', type: :request do
 
     context 'for Admins' do
       before(:each) do
-        sign_in admin
+        # sign_in admin
       end
 
       it 'should delete the requested monster belonging to DM' do
@@ -280,7 +280,7 @@ RSpec.describe 'Monsters', type: :request do
 
     context 'for Dungeon Masters' do
       before(:each) do
-        sign_in dungeon_master
+        # sign_in dungeon_master
       end
 
       it 'should delete the requested monster belonging to DM' do

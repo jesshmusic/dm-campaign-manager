@@ -24,7 +24,6 @@
 #  reset_password_token   :string
 #  role                   :integer
 #  sign_in_count          :integer          default(0), not null
-#  slug                   :string
 #  uid                    :string           default(""), not null
 #  unconfirmed_email      :string
 #  username               :string
@@ -40,17 +39,11 @@
 
 class User < ApplicationRecord
 
-  validates :name, presence: true
   validates :email, presence: true
   validates :email, uniqueness: true
-  validates :username, presence: true
-  validates :username, uniqueness: true
 
-  enum role: %I[dungeon_master admin]
+  enum role: %I[dungeon_master admin user]
   after_initialize :set_default_role, if: :new_record?
-  after_validation(on: :create) do
-    self.slug = generate_slug
-  end
 
   # UserProps Associations
   has_many :dnd_classes, dependent: :destroy
@@ -60,7 +53,7 @@ class User < ApplicationRecord
   has_many :spells, dependent: :destroy
 
   def set_default_role
-    self.role ||= :dungeon_master
+    self.role ||= :user
   end
 
   # instead of deleting, indicate the user requested a delete & timestamp it
@@ -94,14 +87,4 @@ class User < ApplicationRecord
                       prefix: true
                     }
                   }
-
-  def to_param
-    slug || username
-  end
-
-  private
-
-  def generate_slug
-    username.parameterize.truncate(80, omission: '')
-  end
 end

@@ -35,7 +35,7 @@ RSpec.describe 'Spells', type: :request do
 
     context 'for Admins' do
       before(:each) do
-        sign_in admin
+        # sign_in admin
       end
 
       it 'returns 5 spells' do
@@ -47,7 +47,7 @@ RSpec.describe 'Spells', type: :request do
 
     context 'for Dungeon Masters' do
       before(:each) do
-        sign_in dungeon_master
+        # sign_in dungeon_master
       end
 
       it 'returns 4 spells that are only default or owned by this DM' do
@@ -81,7 +81,7 @@ RSpec.describe 'Spells', type: :request do
 
     context 'for Admins' do
       before(:each) do
-        sign_in admin
+        # sign_in admin
       end
 
       it 'returns a default spell' do
@@ -100,7 +100,7 @@ RSpec.describe 'Spells', type: :request do
 
     context 'for Dungeon Masters' do
       before(:each) do
-        sign_in dungeon_master
+        # sign_in dungeon_master
       end
 
       it 'returns a default spell' do
@@ -138,7 +138,7 @@ RSpec.describe 'Spells', type: :request do
 
     context 'for Admins' do
       before(:each) do
-        sign_in admin
+        # sign_in admin
       end
 
       it 'creates a new Spell' do
@@ -153,7 +153,7 @@ RSpec.describe 'Spells', type: :request do
 
     context 'for Dungeon Masters' do
       before(:each) do
-        sign_in dungeon_master
+        # sign_in dungeon_master
       end
 
       it 'creates a new Spell with a user' do
@@ -182,14 +182,14 @@ RSpec.describe 'Spells', type: :request do
 
     context 'for Admins' do
       before(:each) do
-        sign_in admin
+        # sign_in admin
       end
 
     end
 
     context 'for Dungeon Masters' do
       before(:each) do
-        sign_in dungeon_master
+        # sign_in dungeon_master
       end
 
       it 'updates the requested spell belonging to DM' do
@@ -236,7 +236,7 @@ RSpec.describe 'Spells', type: :request do
 
     context 'for Admins' do
       before(:each) do
-        sign_in admin
+        # sign_in admin
       end
 
       it 'deletes the requested spell belonging to DM' do
@@ -252,7 +252,7 @@ RSpec.describe 'Spells', type: :request do
 
     context 'for Dungeon Masters' do
       before(:each) do
-        sign_in dungeon_master
+        # sign_in dungeon_master
       end
 
       it 'deletes the requested spell belonging to DM' do
@@ -281,14 +281,14 @@ RSpec.describe 'Spells', type: :request do
 
     context 'for Admins' do
       before(:each) do
-        sign_in admin
+        # sign_in admin
       end
 
     end
 
     context 'for Dungeon Masters' do
       before(:each) do
-        sign_in dungeon_master
+        # sign_in dungeon_master
       end
 
     end

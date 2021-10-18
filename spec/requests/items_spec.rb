@@ -54,7 +54,7 @@ RSpec.describe 'Items', type: :request do
 
     context 'for Admins' do
       before(:each) do
-        sign_in admin
+        # sign_in admin
       end
 
       it 'returns 7 items' do
@@ -66,7 +66,7 @@ RSpec.describe 'Items', type: :request do
 
     context 'for Dungeon Masters' do
       before(:each) do
-        sign_in dungeon_master
+        # sign_in dungeon_master
       end
 
       it 'returns 6 items that are only default or owned by this DM' do
@@ -107,7 +107,7 @@ RSpec.describe 'Items', type: :request do
 
     context 'for Admins' do
       before(:each) do
-        sign_in admin
+        # sign_in admin
       end
 
       it 'returns Plate Armor' do
@@ -126,7 +126,7 @@ RSpec.describe 'Items', type: :request do
 
     context 'for Dungeon Masters' do
       before(:each) do
-        sign_in dungeon_master
+        # sign_in dungeon_master
       end
 
       it 'returns Plate Armor' do
@@ -163,7 +163,7 @@ RSpec.describe 'Items', type: :request do
 
     context 'for Admins' do
       before(:each) do
-        sign_in admin
+        # sign_in admin
       end
 
       it 'creates a new GearItem' do
@@ -189,7 +189,7 @@ RSpec.describe 'Items', type: :request do
 
     context 'for Dungeon Masters' do
       before(:each) do
-        sign_in dungeon_master
+        # sign_in dungeon_master
       end
 
       it 'creates a new GearItem with a user' do
@@ -231,14 +231,14 @@ RSpec.describe 'Items', type: :request do
 
     context 'for Admins' do
       before(:each) do
-        sign_in admin
+        # sign_in admin
       end
 
     end
 
     context 'for Dungeon Masters' do
       before(:each) do
-        sign_in dungeon_master
+        # sign_in dungeon_master
       end
 
       it 'updates the requested item belonging to DM' do
@@ -288,7 +288,7 @@ RSpec.describe 'Items', type: :request do
 
     context 'for Admins' do
       before(:each) do
-        sign_in admin
+        # sign_in admin
       end
 
       it 'deletes the requested item belonging to DM' do
@@ -304,7 +304,7 @@ RSpec.describe 'Items', type: :request do
 
     context 'for Dungeon Masters' do
       before(:each) do
-        sign_in dungeon_master
+        # sign_in dungeon_master
       end
 
       it 'deletes the requested item belonging to DM' do

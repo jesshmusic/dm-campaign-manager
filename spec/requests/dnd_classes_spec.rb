@@ -171,7 +171,7 @@ RSpec.describe 'DndClasses', type: :request do
     end
     context 'for Logged Out Users' do
       it 'should return a success response' do
-        get v1_dnd_classes_path
+        get '/v1/dnd_classes.json'
         expect(response).to have_http_status(200)
       end
 
@@ -192,7 +192,7 @@ RSpec.describe 'DndClasses', type: :request do
 
     context 'for Admins' do
       it 'should return 14 DndClasses for signed in admin (Admins can see all classes)' do
-        sign_in admin
+        # sign_in admin
         get '/v1/dnd_classes.json'
         result_items = JSON.parse response.body, symbolize_names: true
         expect(result_items[:count]).to eq(14)
@@ -202,7 +202,7 @@ RSpec.describe 'DndClasses', type: :request do
 
     context 'for Dungeon Masters' do
       it 'should return 13 DndClasses for signed in user who has created a custom class' do
-        sign_in dungeon_master
+        # sign_in dungeon_master
         get '/v1/dnd_classes.json'
         result_items = JSON.parse response.body, symbolize_names: true
         expect(result_items[:count]).to eq(13)
@@ -223,7 +223,7 @@ RSpec.describe 'DndClasses', type: :request do
 
     context 'for Admin users' do
       it 'should return a user\'s Death Knight class' do
-        sign_in admin
+        # sign_in admin
         get "/v1/dnd_classes/#{death_knight_class.slug}.json"
         result_item = JSON.parse response.body, symbolize_names: true
         expect(result_item[:slug]).to eq('death-knight-jesshdm1')
@@ -233,7 +233,7 @@ RSpec.describe 'DndClasses', type: :request do
 
     context 'for Dungeon Master users' do
       before(:each) do
-        sign_in dungeon_master
+        # sign_in dungeon_master
       end
 
       it 'should return a success response' do
@@ -249,7 +249,7 @@ RSpec.describe 'DndClasses', type: :request do
       end
 
       it 'should return the other Death Knight class for logged in DM with proper slug' do
-        sign_in other_user
+        # sign_in other_user
         other_username = other_user.username
         get "/v1/dnd_classes/#{death_knight_class_other.slug}.json"
         result_item = JSON.parse response.body, symbolize_names: true
@@ -273,7 +273,7 @@ RSpec.describe 'DndClasses', type: :request do
 
     context 'for Admins' do
       it 'should create a new DndClass' do
-        sign_in admin
+        # sign_in admin
         post '/v1/dnd_classes.json', params: { dnd_class: valid_attributes }
         result_item = JSON.parse response.body, symbolize_names: true
         expect(result_item[:userId]).to be_nil
@@ -288,7 +288,7 @@ RSpec.describe 'DndClasses', type: :request do
 
     context 'for Dungeon Masters' do
       before(:each) do
-        sign_in dungeon_master
+        # sign_in dungeon_master
       end
 
       it 'should create a new DndClass' do
@@ -304,7 +304,7 @@ RSpec.describe 'DndClasses', type: :request do
       it 'should create a new DndClasses with unique slugs' do
         post '/v1/dnd_classes.json', params: { dnd_class: valid_attributes_dm }
 
-        sign_in other_user
+        # sign_in other_user
         other_username = other_user.username
         expect {
           post '/v1/dnd_classes.json', params: { dnd_class: valid_attributes }
@@ -333,7 +333,7 @@ RSpec.describe 'DndClasses', type: :request do
 
     context 'for Admins' do
       before(:each) do
-        sign_in admin
+        # sign_in admin
       end
 
       it 'should update a default class' do
@@ -362,7 +362,7 @@ RSpec.describe 'DndClasses', type: :request do
 
     context 'for Dungeon Masters' do
       before(:each) do
-        sign_in dungeon_master
+        # sign_in dungeon_master
       end
 
       it 'should update the requested item belonging to DM' do
@@ -409,7 +409,7 @@ RSpec.describe 'DndClasses', type: :request do
 
     context 'for Admins' do
       before(:each) do
-        sign_in admin
+        # sign_in admin
       end
 
       it 'should delete a default class' do
@@ -425,7 +425,7 @@ RSpec.describe 'DndClasses', type: :request do
 
     context 'for Dungeon Masters' do
       before(:each) do
-        sign_in dungeon_master
+        # sign_in dungeon_master
       end
 
       it 'should delete the requested item belonging to DM' do

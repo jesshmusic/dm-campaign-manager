@@ -54,15 +54,15 @@ RSpec.describe Race, type: :model do
       @user_race = Race.create!(name: 'Goober Fish', speed: 25,
                                 user: dungeon_master,)
       expect(@race.slug).to eq('goober-fish')
-      @race.update(dexterity_modifier: 2)
+      @race.update(size_description: 'Its really big I tell ya')
       expect(Race.all.count).to eq(12)
       @race.reload
       expect(@race.slug).to eq('goober-fish')
-      @race.update(dexterity_modifier: 1)
+      @race.update(size_description: '... so big')
       expect(Race.all.count).to eq(12)
       @race.reload
       expect(@race.slug).to eq('goober-fish')
-      @race.update(dexterity_modifier: 2)
+      @race.update(size_description: 'Its really big I tell ya')
       expect(Race.all.count).to eq(12)
       @race.reload
       expect(@race.slug).to eq('goober-fish')

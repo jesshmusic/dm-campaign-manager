@@ -263,12 +263,6 @@ namespace :update_records do
       spell.slug = Spell.exists?(slug: spell_slug) ? "#{spell_slug}_#{spell.id}" : spell_slug
       spell.save!
     end
-
-    users = User.where('slug IS NULL')
-    users.find_each do |user|
-      user.slug = user.username.parameterize.truncate(80, omission: '')
-      user.save!
-    end
   end
 
   task set_prof_choices_for_class: :environment do

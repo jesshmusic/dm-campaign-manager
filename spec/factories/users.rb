@@ -22,7 +22,6 @@
 #  reset_password_token   :string
 #  role                   :integer
 #  sign_in_count          :integer          default(0), not null
-#  slug                   :string
 #  uid                    :string           default(""), not null
 #  unconfirmed_email      :string
 #  username               :string
@@ -41,8 +40,6 @@ FactoryBot.define do
     name { 'Jess Hendricks' }
     email { 'user@example.com' }
     username { 'jesshmusic1' }
-    password { 'testpass1234' }
-    password_confirmation { 'testpass1234' }
     confirmed_at { Date.today }
     factory :dungeon_master_user do
       role { :dungeon_master }
