@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 module Admin::V1
-  class DndClassesController < ApplicationController
+  class DndClassesController < SecuredController
     before_action :set_dnd_class, only: %i[show edit update destroy]
-    before_action :authenticate_user!, except: %i[index show]
+    skip_before_action :authorize_request, only: %i[index show]
 
     # GET /v1/dnd_classes
     # GET /v1/dnd_classes.json

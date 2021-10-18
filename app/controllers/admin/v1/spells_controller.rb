@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 module Admin::V1
-  class SpellsController < ApplicationController
+  class SpellsController < SecuredController
     before_action :set_spell, only: %i[show edit update destroy]
-    before_action :authenticate_user!, except: %i[index show]
+    skip_before_action :authorize_request, %i[index show]
 
     # GET /spells
     # GET /spells.json
@@ -16,12 +16,12 @@ module Admin::V1
             slug: spell.slug
           }
         }
-        render json: {count: @spells.count, results: @spells}
+        render json: { count: @spells.count, results: @spells }
       else
         @spells = if params[:dnd_class].present? && params[:search].present?
-                    Spell.includes(:dnd_classes).where(dnd_classes: {name: params[:dnd_class]}).search_for(params[:search])
+                    Spell.includes(:dnd_classes).where(dnd_classes: { name: params[:dnd_class] }).search_for(params[:search])
                   elsif params[:dnd_class].present?
-                    Spell.includes(:dnd_classes).where(dnd_classes: {name: params[:dnd_class]})
+                    Spell.includes(:dnd_classes).where(dnd_classes: { name: params[:dnd_class] })
                   elsif params[:search].present?
                     Spell.search_for(params[:search])
                   else

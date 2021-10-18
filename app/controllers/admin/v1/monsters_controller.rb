@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 module Admin::V1
-  class MonstersController < ApplicationController
+  class MonstersController < SecuredController
     before_action :set_monster, only: %i[show edit update destroy]
-    before_action :authenticate_user!, except: %i[index show monster_refs monster_categories generate_npc convert_2e_npc generate_commoner calculate_cr]
+    skip_before_action :authorize_request, only: %i[index show monster_refs monster_categories generate_npc convert_2e_npc generate_commoner calculate_cr]
 
     # GET /v1/monsters
     # GET /v1/monsters.json

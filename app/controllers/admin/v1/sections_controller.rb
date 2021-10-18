@@ -1,7 +1,7 @@
 module Admin::V1
-  class SectionsController < ApplicationController
+  class SectionsController < SecuredController
     before_action :set_section, only: %i[ show edit update destroy ]
-    before_action :authenticate_user!, except: %i[index show]
+    skip_before_action :authorize_request, %i[index show]
 
     # GET /sections or /sections.json
     def index
@@ -53,6 +53,7 @@ module Admin::V1
     end
 
     private
+
     # Use callbacks to share common setup or constraints between actions.
     def set_section
       @section = Section.find_by(slug: params[:slug])

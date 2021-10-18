@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module Admin::V1
-  class DashboardController < ApplicationController
-    before_action :authenticate_user!, except: %i[index random_fantasy_name random_tavern_name]
+  class DashboardController < SecuredController
+    skip_before_action :authorize_request, only: %i[index random_fantasy_name random_tavern_name]
 
     # GET /index
     def index

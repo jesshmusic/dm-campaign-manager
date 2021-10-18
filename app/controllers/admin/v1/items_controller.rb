@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 module Admin::V1
-  class ItemsController < ApplicationController
+  class ItemsController < SecuredController
     before_action :set_item, only: %i[show edit update destroy]
-    before_action :authenticate_user!, except: %i[index show]
+    skip_before_action :authorize_request, only: %i[index show]
 
     # GET /items
     # GET /items.json

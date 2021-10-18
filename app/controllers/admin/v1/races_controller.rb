@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 module Admin::V1
-  class RacesController < ApplicationController
-    before_action :set_race, only: [:show, :edit, :update, :destroy]
-    before_action :authenticate_user!, except: %i[index show]
+  class RacesController < SecuredController
+    before_action :set_race, only: [:show, :update, :destroy]
+    skip_before_action :authorize_request, only: %i[index show]
 
     # GET /races
     # GET /races.json
@@ -16,7 +16,7 @@ module Admin::V1
             slug: race.slug
           }
         }
-        render json: {count: @races.count, results: @races}
+        render json: { count: @races.count, results: @races }
       else
         @races = if params[:search].present?
                    Race.search_for(params[:search])
