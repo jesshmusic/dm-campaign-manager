@@ -43,10 +43,6 @@ const Home = (props) => {
     addFlashMessage,
   };
 
-  const handleRedirectCallback = (appState: AppState) => {
-    console.log(appState);
-  };
-
   return (
     <Auth0Provider
       domain="dev-yfmjdt5a.us.auth0.com"
@@ -54,7 +50,7 @@ const Home = (props) => {
       redirectUri={window.location.origin}
       audience="dmScreenAPI"
       scope="read:user"
-      onRedirectCallback={(appState) => handleRedirectCallback(appState)}
+      useRefreshTokens
     >
       <Provider store={store(props)}>
         <SideBar isCollapsed={isMobile} />
