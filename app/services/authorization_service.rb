@@ -11,8 +11,6 @@ class AuthorizationService
   private
 
   def http_token
-    puts 'HEADERS'
-    puts @headers['Authorization']
     if @headers['Authorization'].present?
       @headers['Authorization'].split(' ').last
     end

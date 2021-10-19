@@ -7,13 +7,14 @@ import FlashMessages from '../components/Alerts/FlashMessages';
 import '../stylesheets/_fonts.scss';
 import '../stylesheets/application.scss';
 import { Helmet } from 'react-helmet';
-import { FlashMessage, UserProps } from '../utilities/types';
+import { FlashMessage } from '../utilities/types';
 import SignInModal from '../components/SignInModal/SignInModal';
 import rest from '../actions/api';
 import { connect } from 'react-redux';
 import Breadcrumbs, {
   BreadCrumbProps,
 } from '../components/Breadcrumbs/Breadcrumbs';
+import { User } from '@auth0/auth0-react';
 
 const styles = require('./page-container.module.scss');
 
@@ -23,7 +24,7 @@ type PageContainerProps = {
   description: string;
   flashMessages?: FlashMessage[];
   pageTitle: string;
-  user?: UserProps;
+  user?: User;
 };
 
 const PageContainer = (props: PageContainerProps) => {

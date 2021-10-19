@@ -25,7 +25,16 @@ class UsersController < SecuredController
   def set_auth_user
     puts user_params
     authorize User
-    @user = User.find_or_create_by(email: user_params[:email])
+    @user = User.find_or_create_by(auth_id: user_params[:auth_id])
+    @user.name = user_params[:name]
+    @user.email = user_params[:email]
+    @user.username = user_params[:username]
+    if user_params[:roles] && user_params[:roles].count > 0
+      @user.role = :user if user_params[:roles].include? 'User'
+      @user.role = :dungeon_master if user_params[:roles].include? 'Dungeon Master'
+      @user.role = :admin if user_params[:roles].include? 'Admin'
+    end
+    @user.save!
   end
 
   # GET /v1/users/{id}
@@ -96,6 +105,6 @@ class UsersController < SecuredController
   end
 
   def user_params
-    params.require(:user).permit(:name, :email, :username, :deleted_at, :role)
+    params.require(:user).permit(:name, :email, :username, :deleted_at, :role, :roles, :auth_id)
   end
 end

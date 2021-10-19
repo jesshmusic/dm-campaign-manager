@@ -31,7 +31,7 @@ import {
 } from 'react-pro-sidebar';
 import './sidebar-vars.scss';
 import { SidebarLink } from '../NavLink/NavLink';
-import { useAuth0 } from '@auth0/auth0-react';
+import { useAuth0, User } from '@auth0/auth0-react';
 
 const sidebarBG = require('./SidebarBackground.jpg');
 
@@ -68,14 +68,14 @@ const SideBar = (props: {
   isCollapsed: boolean;
   getSections: () => void;
   sections: { name: string; slug: string }[];
-  setUser: (email: string, token: string) => void;
+  setUser: (user: User, token: string) => void;
 }) => {
   const { isCollapsed, getSections, sections, setUser } = props;
 
   const {
     user,
     isAuthenticated,
-    loginWithPopup,
+    loginWithRedirect,
     logout,
     getAccessTokenSilently,
   } = useAuth0();
@@ -84,9 +84,7 @@ const SideBar = (props: {
     if (isAuthenticated && user) {
       getAccessTokenSilently()
         .then((token) => {
-          if (user.email) {
-            setUser(user.email, token);
-          }
+          setUser(user, token);
         })
         .catch((err) => {
           console.error(err);
@@ -175,7 +173,7 @@ const SideBar = (props: {
               </>
             ) : (
               <MenuItem icon={<BiLogIn />}>
-                <button onClick={() => loginWithPopup()}>Log In</button>
+                <button onClick={() => loginWithRedirect()}>Log In</button>
               </MenuItem>
             )}
           </Menu>
@@ -196,12 +194,25 @@ const mapDispatchToProps = (dispatch) => {
     getSections: () => {
       dispatch(rest.actions.getSections());
     },
-    setUser: (email: string, token: string) => {
+    setUser: (user: User, token: string) => {
+      let {
+        sub,
+        nickname,
+        given_name,
+        family_name,
+        locale,
+        picture,
+        updated_at,
+        email_verified,
+        ...userFields
+      } = user;
+      userFields.auth_id = sub;
+      userFields.username = nickname;
       dispatch(
         rest.actions.setUser(
           {},
           {
-            body: JSON.stringify({ user: { email } }),
+            body: JSON.stringify({ user: userFields }),
             token,
           }
         )

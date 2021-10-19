@@ -1,6 +1,7 @@
 import React from 'react';
 import { Location, NavigateFn } from '@reach/router';
 import { ItemType } from '../pages/items/use-data';
+import { User } from '@auth0/auth0-react';
 
 export interface AbilityScore {
   desc: string[];
@@ -31,9 +32,9 @@ export interface AppProps {
     currentSpell?: any;
   };
   users: {
-    users: UserProps[];
+    users: User[];
     count: number;
-    user?: UserProps;
+    user?: User;
   };
 }
 
@@ -365,7 +366,7 @@ export interface PageProps {
   path: string;
   spellsCount: number;
   uri: string;
-  user?: UserProps;
+  user?: User;
   usersCount: number;
 }
 
@@ -465,18 +466,4 @@ export interface StartingEquipmentOption {
 export interface StateAction {
   type: string;
   payload: any;
-}
-
-export interface UserProps {
-  created_at: string;
-  deleted_at?: string;
-  email: string;
-  id: number;
-  info?: string;
-  location?: string;
-  name: string;
-  role: string;
-  slug: string;
-  updated_at?: string;
-  username: string;
 }

@@ -52,7 +52,7 @@ const Home = (props) => {
       domain="dev-yfmjdt5a.us.auth0.com"
       clientId="8NlYHEqMlhW6W4kVyNQLtyRguyiGSzrd"
       redirectUri={window.location.origin}
-      audience="https://dm-campaign-manager.herokuapp.com"
+      audience="dmScreenAPI"
       scope="read:user"
       onRedirectCallback={(appState) => handleRedirectCallback(appState)}
     >

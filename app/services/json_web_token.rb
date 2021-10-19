@@ -9,7 +9,7 @@ class JsonWebToken
                algorithms: 'RS256',
                iss: 'https://dev-yfmjdt5a.us.auth0.com/',
                verify_iss: true,
-               aud: 'https://dm-campaign-manager.herokuapp.com',
+               aud: 'dmScreenAPI',
                verify_aud: true) do |header|
       jwks_hash[header['kid']]
     end
