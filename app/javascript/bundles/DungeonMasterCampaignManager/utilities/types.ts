@@ -2,6 +2,7 @@ import React from 'react';
 import { Location, NavigateFn } from '@reach/router';
 import { ItemType } from '../pages/items/use-data';
 import { User } from '@auth0/auth0-react';
+import { ActionTypes } from '../pages/monster-generator/components/action-forms/ActionsForm';
 
 export interface AbilityScore {
   desc: string[];
@@ -95,11 +96,6 @@ export interface DndClass {
 export interface DndClasses {
   dndClasses: [DndClass];
   currentDndClass: DndClass;
-}
-
-export interface DndClassesResponse {
-  count: number;
-  results: [DndClasses];
 }
 
 export type FieldValues = {
@@ -198,17 +194,11 @@ type MonsterAction = {
 type MonsterActionField = {
   name: string;
   numAttacks: number;
-  attackType: 'attack' | 'spellcasting' | 'specialAbility';
-  hasDc: boolean;
-  dcResult?: string;
-  damages?: {
+  attackType: ActionTypes;
+  damage?: {
     numDice: number;
     diceValue: number;
   };
-  hasUsages: boolean;
-  usesType?: string;
-  usesCount?: number;
-  hasSpellCasting: boolean;
   spellCasting?: {
     level: number;
     ability: string;

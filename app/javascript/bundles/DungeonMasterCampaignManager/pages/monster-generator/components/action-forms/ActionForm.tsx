@@ -7,6 +7,7 @@ import { Colors } from '../../../../utilities/enums';
 import { GiTrashCan } from 'react-icons/gi';
 import AbilityForm from './AbilityForm';
 import { ActionTypes } from './ActionsForm';
+import AttackForm from './AttackForm';
 
 const styles = require('./action-form.module.scss');
 const inputStyles = require('../../../../components/forms/input.module.scss');
@@ -78,11 +79,10 @@ const ActionForm = (props: {
         />
       </div>
       {actionFormState === ActionTypes.ability && (
-        <AbilityForm
-          fieldName='actions'
-          actionIndex={actionIndex}
-          control={control}
-        />
+        <AbilityForm fieldName={`actions.${actionIndex}`} control={control} />
+      )}
+      {actionFormState === ActionTypes.attack && (
+        <AttackForm fieldName={`actions.${actionIndex}`} control={control} />
       )}
     </div>
   );

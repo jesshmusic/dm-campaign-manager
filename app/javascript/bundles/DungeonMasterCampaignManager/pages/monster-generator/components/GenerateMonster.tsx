@@ -56,6 +56,15 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
     onSubmit,
     UseForm
   } = useData(props);
+  const [testState, setTestState] = React.useState();
+
+  React.useEffect(() => {
+    const subscription = UseForm.watch((value) => {
+      // @ts-ignore
+      setTestState(value);
+    });
+    return () => subscription.unsubscribe();
+  }, [UseForm.watch]);
 
   return (
     <Frame
@@ -68,6 +77,9 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
         className={styles.genForm}
         noValidate
       >
+        <pre>
+          {JSON.stringify(testState, null, 2)}
+        </pre>
         <NameFormField
           handleGenerateName={handleGenerateName}
           register={UseForm.register}
