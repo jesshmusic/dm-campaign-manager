@@ -21,7 +21,7 @@ export type SelectProps = {
   isMulti?: boolean;
   label: string;
   name: keyof MonsterGeneratorFormFields;
-  handleSelectChange?: (name: string, value: string | number) => void;
+  handleSelectChange: (name: string, value: string | number) => void;
   options?: SelectOption[];
   placeholder?: string;
   control?: Control<MonsterGeneratorFormFields>;
@@ -42,12 +42,8 @@ const FormSelect = ({
   isCreatable = false,
   isMulti = false,
 }: SelectProps) => {
-  const handleChange = (value, onChange) => {
-    console.log(value);
-    onChange(value);
-    if (handleSelectChange) {
-      handleSelectChange(name, value.value);
-    }
+  const handleChange = (value) => {
+    handleSelectChange(name, value.value);
   };
 
   return (
@@ -58,7 +54,7 @@ const FormSelect = ({
       <Controller
         control={control}
         name={name}
-        render={({ field }) =>
+        render={({ field: { onChange, ...rest } }) =>
           isCreatable ? (
             <CreatableSelect
               className={'reactSelect'}
@@ -67,7 +63,8 @@ const FormSelect = ({
               options={options}
               isMulti={isMulti}
               isSearchable
-              {...field}
+              onChange={handleChange}
+              {...rest}
             />
           ) : (
             <Select
@@ -77,7 +74,8 @@ const FormSelect = ({
               options={options}
               isMulti={isMulti}
               isSearchable
-              {...field}
+              onChange={handleChange}
+              {...rest}
             />
           )
         }

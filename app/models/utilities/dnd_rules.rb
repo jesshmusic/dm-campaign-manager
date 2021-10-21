@@ -671,7 +671,7 @@ class DndRules
     end
 
     def defensive_cr(monster)
-      def_cr = [hit_points_cr(monster[:hit_points]), armor_class_cr(monster[:armor_class].to_i)].min
+      def_cr = [hit_points_cr(monster[:hit_points]), armor_class_cr(monster[:armor_class].to_i)].inject(0, &:+).to_f / 2
       def_cr += monster[:conditions].count * 0.25 unless monster[:conditions].nil?
       def_cr += monster[:damage_immunities].count * 0.25 unless monster[:damage_immunities].nil?
       def_cr += monster[:damage_resistances].count * 0.125 unless monster[:damage_resistances].nil?
@@ -734,14 +734,13 @@ class DndRules
       damages = []
       cr_for_spells = 0
       monster[:actions].each do |action|
-        if action[:damages]
+        if action[:damage]
           damage = 0
-          action[:damages].each do |damage_obj|
-            num_dice = damage_obj[:num_dice]
-            damage_die = damage_obj[:dice_value]
-            damage += (((damage_die / 2) + 1) * num_dice) + attack_bonus
-          end
-          damages << damage * action[:num_attacks]
+          damage_obj = action[:damage]
+          num_dice = damage_obj[:num_dice].to_i
+          damage_die = damage_obj[:dice_value].to_i
+          damage += (((damage_die / 2) + 1) * num_dice) + attack_bonus
+          damages << damage * action[:num_attacks].to_i
         elsif action[:spell_casting]
           cr_for_spells = (action[:spell_casting][:level] / 2).to_i
           cr_for_spells += 1 if action[:spell_casting][:slots][:third]

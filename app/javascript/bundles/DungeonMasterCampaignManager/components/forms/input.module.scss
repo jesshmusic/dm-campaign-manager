@@ -34,31 +34,7 @@
 }
 
 .buttonGroup {
-  display: inline-flex;
-  padding: 0.5rem 0;
-  position: relative;
-  vertical-align: middle;
-  width: 100%;
-
-  > button {
-    flex: 1;
-    margin: 0;
-    position: relative;
-  }
-
-  // Reset rounded corners
-  > button:not(:last-child),
-  > .buttonGroup:not(:last-child) > button {
-    border-bottom-right-radius: 0;
-    border-top-right-radius: 0;
-  }
-
-  > button:nth-child(n + 3),
-  > button:not(:first-child),
-  > .buttonGroup:not(:first-child) > button {
-    border-bottom-left-radius: 0;
-    border-top-left-radius: 0;
-  }
+  @include button-group;
 }
 
 .inputGroup {
@@ -85,42 +61,4 @@
 .label {
   font-family: $font-family-sans-serif;
   margin-bottom: 0.25rem;
-}
-
-.abilityWrapper {
-  button {
-    border: 0.0625rem solid $gray-400;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-    margin: 0 0 -0.0625rem;
-    padding: 0.5rem;
-    white-space: nowrap;
-    width: 100%;
-
-    &:first-child {
-      flex: 3;
-      margin-right: -0.0625rem;
-    }
-
-    &:last-child {
-      flex: 2;
-    }
-
-    svg {
-      margin-left: auto;
-    }
-  }
-
-  .buttonGroup {
-    padding: 0;
-  }
-
-  .wrapper {
-    padding: 0;
-  }
-
-  .input {
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-  }
 }

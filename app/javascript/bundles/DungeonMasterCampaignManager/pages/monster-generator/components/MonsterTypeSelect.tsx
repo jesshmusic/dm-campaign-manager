@@ -4,6 +4,8 @@
 
 import React from 'react';
 import FormSelect from '../../../components/forms/FormSelect';
+import { Control } from 'react-hook-form';
+import { MonsterGeneratorFormFields } from '../../../utilities/types';
 
 const monsterTypeOptions = [
   {
@@ -68,12 +70,16 @@ const monsterTypeOptions = [
   },
 ];
 
-const MonsterTypeSelect = ({ control }) => (
+const MonsterTypeSelect = (props: {
+  control: Control<MonsterGeneratorFormFields>;
+  onChange: (name: string, value: string | number) => void;
+}) => (
   <FormSelect
     label={'Type'}
-    control={control}
+    control={props.control}
     options={monsterTypeOptions}
     name={'monsterType'}
+    handleSelectChange={props.onChange}
   />
 );
 

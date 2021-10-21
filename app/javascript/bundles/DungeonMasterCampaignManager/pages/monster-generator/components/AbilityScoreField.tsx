@@ -7,14 +7,17 @@ import { GiDiceTwentyFacesTwenty } from 'react-icons/gi/';
 import { UseFormRegister } from 'react-hook-form';
 import { DiceRoll } from 'rpg-dice-roller';
 import useSound from 'use-sound';
-import { FieldValues, MonsterGeneratorFormFields } from '../../../utilities/types';
+import {
+  FieldValues,
+  MonsterGeneratorFormFields,
+} from '../../../utilities/types';
 import FormField from '../../../components/forms/FormField';
 import { Colors } from '../../../utilities/enums';
 import Button from '../../../components/Button/Button';
 
 const diceSound = require('../../../sounds/DiceRoll.mp3');
 
-const styles = require('../../../components/forms/input.module.scss');
+const styles = require('./ability-score-field.module.scss');
 
 type AbilityScoreFieldProps = {
   name: keyof MonsterGeneratorFormFields;
@@ -59,14 +62,27 @@ const AbilityScoreField = (props: AbilityScoreFieldProps) => {
           />
         </div>
       )}
-      <FormField
-        label={label}
-        name={name}
-        type='number'
-        register={register}
-        onChange={onChangeAbility}
-        hideLabel
-      />
+      <div className={styles.abilityGroup}>
+        <FormField
+          className={styles.abilInput}
+          label={label}
+          name={name}
+          type="number"
+          register={register}
+          onChange={onChangeAbility}
+          hideLabel
+        />
+        <FormField
+          className={styles.modField}
+          label="Hit Dice Value"
+          type="text"
+          register={register}
+          onChange={onChangeAbility}
+          name={`${name}Mod`}
+          hideLabel
+          readOnly
+        />
+      </div>
     </div>
   );
 };

@@ -11,8 +11,25 @@ import {
   hitPoints,
 } from '../services';
 import axios from 'axios';
-import { useForm } from 'react-hook-form';
+import { useForm, UseFormSetValue } from 'react-hook-form';
 import { GenerateMonsterProps } from './GenerateMonster';
+import { monsterSizeOptions } from '../../../utilities/character-utilities';
+
+const setAbilityValue = (
+  setValue: UseFormSetValue<any>,
+  name: string,
+  value: string
+) => {
+  const mod = abilityScoreModifier(parseInt(value));
+  setValue(name, parseInt(value), {
+    shouldDirty: true,
+    shouldTouch: true,
+  });
+  setValue(`${name}Mod`, `${parseInt(String(mod), 10) > 0 ? '+' : ''}${mod}`, {
+    shouldDirty: true,
+    shouldTouch: true,
+  });
+};
 
 export const useData = (props: GenerateMonsterProps) => {
   const [monsterForm, setMonsterForm] =
@@ -49,6 +66,12 @@ export const useData = (props: GenerateMonsterProps) => {
       intelligence: 10,
       wisdom: 10,
       charisma: 10,
+      strengthMod: 0,
+      dexterityMod: 0,
+      constitutionMod: 0,
+      intelligenceMod: 0,
+      wisdomMod: 0,
+      charismaMod: 0,
       conditionImmunities: [],
       damageImmunities: [],
       damageResistances: [],
@@ -105,14 +128,12 @@ export const useData = (props: GenerateMonsterProps) => {
       shouldTouch?: boolean;
     }
   ) => {
+    console.log(name);
     switch (name) {
       case 'strength':
         const profBonus = UseForm.getValues('profBonus');
         const strMod = abilityScoreModifier(parseInt(value));
-        UseForm.setValue('strength', parseInt(value), {
-          shouldDirty: true,
-          shouldTouch: true,
-        });
+        setAbilityValue(UseForm.setValue, 'strength', value);
         UseForm.setValue('attackBonus', profBonus + strMod, {
           shouldDirty: true,
           shouldTouch: true,
@@ -121,17 +142,13 @@ export const useData = (props: GenerateMonsterProps) => {
           shouldDirty: true,
           shouldTouch: true,
         });
+        handleCalculateCR();
         break;
       case 'dexterity':
-        UseForm.setValue('strength', parseInt(value), {
-          shouldDirty: true,
-          shouldTouch: true,
-        });
+        setAbilityValue(UseForm.setValue, 'dexterity', value);
+        break;
       case 'constitution':
-        UseForm.setValue('constitution', parseInt(value), {
-          shouldDirty: true,
-          shouldTouch: true,
-        });
+        setAbilityValue(UseForm.setValue, 'constitution', value);
         UseForm.setValue(
           'hitPoints',
           hitPoints(
@@ -141,6 +158,37 @@ export const useData = (props: GenerateMonsterProps) => {
           ),
           { shouldDirty: true }
         );
+        handleCalculateCR();
+        break;
+      case 'intelligence':
+        setAbilityValue(UseForm.setValue, 'intelligence', value);
+        break;
+      case 'wisdom':
+        setAbilityValue(UseForm.setValue, 'wisdom', value);
+        break;
+      case 'charisma':
+        setAbilityValue(UseForm.setValue, 'charisma', value);
+        break;
+      case 'size':
+        const hitDice = hitDieForSize(value);
+        const newSizeValue = monsterSizeOptions.find(
+          (option) => option.value === value
+        );
+        UseForm.setValue('size', newSizeValue, {
+          shouldDirty: true,
+          shouldTouch: true,
+        });
+        UseForm.setValue('hitDiceValue', hitDice, {
+          shouldDirty: true,
+          shouldTouch: true,
+        });
+        const hitDiceCount = UseForm.getValues('hitDiceNumber');
+        UseForm.setValue(
+          'hitPoints',
+          hitPoints(UseForm.getValues('constitution'), hitDiceCount, hitDice),
+          { shouldDirty: true, shouldTouch: true }
+        );
+        handleCalculateCR();
         break;
       case 'hitDiceNumber':
         UseForm.setValue('hitDiceNumber', parseInt(value), {
@@ -160,6 +208,7 @@ export const useData = (props: GenerateMonsterProps) => {
           'hitDice',
           `${value}${UseForm.getValues('hitDiceValue')}`
         );
+        handleCalculateCR();
         break;
       case 'hitDiceValue':
         UseForm.setValue('hitDiceValue', value, {
@@ -179,20 +228,7 @@ export const useData = (props: GenerateMonsterProps) => {
           'hitDice',
           `${UseForm.getValues('hitDiceNumber')}${value}`
         );
-        break;
-      case 'size':
-        const size = UseForm.getValues('size');
-        const hitDice = hitDieForSize(size.value);
-        UseForm.setValue('hitDiceValue', hitDice, {
-          shouldDirty: true,
-          shouldTouch: true,
-        });
-        const hitDiceCount = UseForm.getValues('hitDiceNumber');
-        UseForm.setValue(
-          'hitPoints',
-          hitPoints(UseForm.getValues('constitution'), hitDiceCount, hitDice),
-          { shouldDirty: true, shouldTouch: true }
-        );
+        handleCalculateCR();
         break;
       default:
         UseForm.setValue(

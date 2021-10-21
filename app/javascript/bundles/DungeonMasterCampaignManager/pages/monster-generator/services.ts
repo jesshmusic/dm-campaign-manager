@@ -97,6 +97,7 @@ export const abilityScoreModifier = (abilityScore: number) => {
 };
 
 export const hitDieForSize = (size) => {
+  console.log(`hitDieForSize: ${size}`);
   switch (size.toLowerCase()) {
     case 'tiny':
       return 'd4';

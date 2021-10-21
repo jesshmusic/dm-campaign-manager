@@ -226,13 +226,17 @@ export type MonsterGeneratorFormFields = {
   damageBonus: number;
   challengeRating: string;
   charisma: number;
+  charismaMod: number | string;
   constitution: number;
+  constitutionMod: number | string;
   dexterity: number;
+  dexterityMod: number | string;
   hitDice: string;
   hitDiceNumber: number;
   hitDiceValue: string;
   hitPoints: number;
   intelligence: number;
+  intelligenceMod: number | string;
   languages: string[];
   monsterType: SelectOption;
   monsterSubtype?: string;
@@ -240,7 +244,9 @@ export type MonsterGeneratorFormFields = {
   saveDC: number;
   size: SelectOption;
   strength: number;
+  strengthMod: number | string;
   wisdom: number;
+  wisdomMod: number | string;
   xp: number;
   conditionImmunities: string[];
   damageImmunities: string[];
