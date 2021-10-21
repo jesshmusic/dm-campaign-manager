@@ -5,12 +5,10 @@
 import React from 'react';
 import Select from 'react-select';
 import CreatableSelect from 'react-select/creatable';
-import {
-  MonsterGeneratorFormFields,
-  SelectOption,
-} from '../../utilities/types';
+import { MonsterGeneratorFormFields, SelectOption } from '../../utilities/types';
 import { Control, Controller } from 'react-hook-form';
 import classNames from 'classnames';
+import './inputOverrides.scss';
 
 export type SelectProps = {
   className?: string;
@@ -29,7 +27,6 @@ export type SelectProps = {
 };
 
 const styles = require('./input.module.scss');
-import './inputOverrides.scss';
 
 const FormSelect = ({
   name,

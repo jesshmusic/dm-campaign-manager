@@ -128,7 +128,6 @@ export const useData = (props: GenerateMonsterProps) => {
       shouldTouch?: boolean;
     }
   ) => {
-    console.log(name);
     switch (name) {
       case 'strength':
         const profBonus = UseForm.getValues('profBonus');
