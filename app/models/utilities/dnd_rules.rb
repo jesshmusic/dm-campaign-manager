@@ -673,7 +673,8 @@ class DndRules
     end
 
     def defensive_cr(monster)
-      def_cr = [hit_points_cr(monster[:hit_points]), armor_class_cr(monster[:armor_class].to_i)].min
+      def_cr_total = [hit_points_cr(monster[:hit_points]), armor_class_cr(monster[:armor_class].to_i)].inject(0, &:+)
+      def_cr = (def_cr_total.to_f / 2.0)
       def_cr += monster[:conditions].count * 0.25 unless monster[:conditions].nil?
       def_cr += monster[:damage_immunities].count * 0.25 unless monster[:damage_immunities].nil?
       def_cr += monster[:damage_resistances].count * 0.125 unless monster[:damage_resistances].nil?

@@ -5,12 +5,10 @@
 import React from 'react';
 import Select from 'react-select';
 import CreatableSelect from 'react-select/creatable';
-import {
-  MonsterGeneratorFormFields,
-  SelectOption,
-} from '../../utilities/types';
+import { MonsterGeneratorFormFields, SelectOption } from '../../utilities/types';
 import { Control, Controller } from 'react-hook-form';
 import classNames from 'classnames';
+import './inputOverrides.scss';
 
 export type SelectProps = {
   className?: string;
@@ -29,22 +27,19 @@ export type SelectProps = {
 };
 
 const styles = require('./input.module.scss');
-import './inputOverrides.scss';
 
 const FormSelect = ({
-  name,
-  label,
-  className = '',
-  isClearable = false,
-  handleSelectChange,
-  options,
-  control,
-  isCreatable = false,
-  isMulti = false,
-}: SelectProps) => {
-  const handleChange = (value, onChange) => {
-    console.log(value);
-    onChange(value);
+                      name,
+                      label,
+                      className = '',
+                      isClearable = false,
+                      handleSelectChange,
+                      options,
+                      control,
+                      isCreatable = false,
+                      isMulti = false
+                    }: SelectProps) => {
+  const handleChange = (value) => {
     if (handleSelectChange) {
       handleSelectChange(name, value.value);
     }
@@ -58,7 +53,7 @@ const FormSelect = ({
       <Controller
         control={control}
         name={name}
-        render={({ field }) =>
+        render={({ field: { onChange, ...rest } }) =>
           isCreatable ? (
             <CreatableSelect
               className={'reactSelect'}
@@ -67,7 +62,8 @@ const FormSelect = ({
               options={options}
               isMulti={isMulti}
               isSearchable
-              {...field}
+              onChange={handleChange}
+              {...rest}
             />
           ) : (
             <Select
@@ -77,7 +73,8 @@ const FormSelect = ({
               options={options}
               isMulti={isMulti}
               isSearchable
-              {...field}
+              onChange={handleChange}
+              {...rest}
             />
           )
         }

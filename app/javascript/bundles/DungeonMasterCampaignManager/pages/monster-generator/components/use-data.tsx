@@ -1,18 +1,18 @@
 import React from 'react';
-import {
-  MonsterGeneratorFormFields,
-  RandomNameResult,
-} from '../../../utilities/types';
-import {
-  abilityScoreModifier,
-  calculateCR,
-  getMonsterObject,
-  hitDieForSize,
-  hitPoints,
-} from '../services';
+import { MonsterGeneratorFormFields, RandomNameResult } from '../../../utilities/types';
+import { abilityScoreModifier, calculateCR, getMonsterObject, hitDieForSize, hitPoints } from '../services';
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import { GenerateMonsterProps } from './GenerateMonster';
+
+const monsterSizeDict = {
+  tiny: { value: 'tiny', label: 'Tiny' },
+  small: { value: 'small', label: 'Small' },
+  medium: { value: 'medium', label: 'Medium' },
+  large: { value: 'large', label: 'Large' },
+  huge: { value: 'huge', label: 'Huge' },
+  gargantuan: { value: 'gargantuan', label: 'Gargantuan' }
+};
 
 export const useData = (props: GenerateMonsterProps) => {
   const [monsterForm, setMonsterForm] =
@@ -21,7 +21,7 @@ export const useData = (props: GenerateMonsterProps) => {
       alignment: 'Neutral',
       alignmentOption: {
         value: 'Neutral',
-        label: 'Neutral',
+        label: 'Neutral'
       },
       armorClass: 10,
       attackBonus: 2,
@@ -34,13 +34,13 @@ export const useData = (props: GenerateMonsterProps) => {
       languages: [],
       monsterType: {
         value: 'humanoid',
-        label: 'Humanoid',
+        label: 'Humanoid'
       },
       profBonus: 2,
       saveDC: 12,
       size: {
         label: 'Medium',
-        value: 'medium',
+        value: 'medium'
       },
       xp: 10,
       strength: 10,
@@ -59,11 +59,11 @@ export const useData = (props: GenerateMonsterProps) => {
       specialAbilities: [],
       senses: [],
       speeds: [],
-      monsterProficiencies: [],
+      monsterProficiencies: []
     });
 
   const UseForm = useForm<MonsterGeneratorFormFields>({
-    defaultValues: monsterForm,
+    defaultValues: monsterForm
   });
 
   const onSubmit = (data) => {
@@ -105,32 +105,34 @@ export const useData = (props: GenerateMonsterProps) => {
       shouldTouch?: boolean;
     }
   ) => {
+    console.log(name);
     switch (name) {
       case 'strength':
         const profBonus = UseForm.getValues('profBonus');
         const strMod = abilityScoreModifier(parseInt(value));
         UseForm.setValue('strength', parseInt(value), {
           shouldDirty: true,
-          shouldTouch: true,
+          shouldTouch: true
         });
         UseForm.setValue('attackBonus', profBonus + strMod, {
           shouldDirty: true,
-          shouldTouch: true,
+          shouldTouch: true
         });
         UseForm.setValue('damageBonus', strMod, {
           shouldDirty: true,
-          shouldTouch: true,
+          shouldTouch: true
         });
         break;
       case 'dexterity':
         UseForm.setValue('strength', parseInt(value), {
           shouldDirty: true,
-          shouldTouch: true,
+          shouldTouch: true
         });
+        break;
       case 'constitution':
         UseForm.setValue('constitution', parseInt(value), {
           shouldDirty: true,
-          shouldTouch: true,
+          shouldTouch: true
         });
         UseForm.setValue(
           'hitPoints',
@@ -145,7 +147,7 @@ export const useData = (props: GenerateMonsterProps) => {
       case 'hitDiceNumber':
         UseForm.setValue('hitDiceNumber', parseInt(value), {
           shouldDirty: true,
-          shouldTouch: true,
+          shouldTouch: true
         });
         UseForm.setValue(
           'hitPoints',
@@ -164,7 +166,7 @@ export const useData = (props: GenerateMonsterProps) => {
       case 'hitDiceValue':
         UseForm.setValue('hitDiceValue', value, {
           shouldDirty: true,
-          shouldTouch: true,
+          shouldTouch: true
         });
         UseForm.setValue(
           'hitPoints',
@@ -181,11 +183,11 @@ export const useData = (props: GenerateMonsterProps) => {
         );
         break;
       case 'size':
-        const size = UseForm.getValues('size');
-        const hitDice = hitDieForSize(size.value);
+        UseForm.setValue('size', monsterSizeDict[value]);
+        const hitDice = hitDieForSize(value);
         UseForm.setValue('hitDiceValue', hitDice, {
           shouldDirty: true,
-          shouldTouch: true,
+          shouldTouch: true
         });
         const hitDiceCount = UseForm.getValues('hitDiceNumber');
         UseForm.setValue(
@@ -208,6 +210,6 @@ export const useData = (props: GenerateMonsterProps) => {
     handleCalculateCR,
     handleChange,
     handleGenerateName,
-    onSubmit,
+    onSubmit
   };
 };
