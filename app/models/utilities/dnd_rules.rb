@@ -505,108 +505,10 @@ class DndRules
     end
 
     def cr_for_attack_bonus(attack_bonus)
-      # case attack_bonus
-      # when 0..2
-      #   0.0
-      # when 3
-      #   0.125
-      # when 4
-      #   3.0
-      # when 5
-      #   4.0
-      # when 6
-      #   5.0
-      # when 7
-      #   8.0
-      # when 8
-      #   11.0
-      # when 9
-      #   16.0
-      # when 10
-      #   17.0
-      # when 11
-      #   21.0
-      # when 12
-      #   24.0
-      # when 13
-      #   27.0
-      # else
-      #   30.0
-      # end
       (attack_bonus - 2) * 2
     end
 
     def cr_for_damage(damage)
-      # case damage
-      # when 0..1
-      #   0.0
-      # when 2..3
-      #   0.125
-      # when 4..5
-      #   0.25
-      # when 6..8
-      #   0.5
-      # when 9..14
-      #   1
-      # when 15..20
-      #   2
-      # when 21..26
-      #   3
-      # when 27..32
-      #   4
-      # when 33..38
-      #   5
-      # when 39..44
-      #   6
-      # when 45..50
-      #   7
-      # when 51..56
-      #   8
-      # when 57..62
-      #   9
-      # when 63..68
-      #   10
-      # when 69..74
-      #   11
-      # when 75..80
-      #   12
-      # when 81..86
-      #   13
-      # when 87..92
-      #   14
-      # when 93..98
-      #   15
-      # when 99..104
-      #   16
-      # when 105..110
-      #   17
-      # when 111..116
-      #   18
-      # when 117..122
-      #   19
-      # when 123..140
-      #   20
-      # when 141..158
-      #   21
-      # when 159..176
-      #   22
-      # when 177..194
-      #   23
-      # when 195..212
-      #   24
-      # when 213..230
-      #   25
-      # when 231..248
-      #   26
-      # when 249..266
-      #   27
-      # when 267..284
-      #   28
-      # when 285..302
-      #   29
-      # else
-      #   30
-      # end
       (damage.to_f / 10)
     end
 
