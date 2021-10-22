@@ -16,6 +16,7 @@ import { Colors } from '../../../utilities/enums';
 import Button from '../../../components/Button/Button';
 import { useData } from './use-data';
 import ActionsForm from './action-forms/ActionsForm';
+import { useWatch } from 'react-hook-form';
 
 const styles = require('./generator.module.scss');
 
@@ -69,6 +70,16 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
     });
     return () => subscription.unsubscribe();
   }, [UseForm.watch]);
+
+  const attackBonus = useWatch({
+    control: UseForm.control,
+    name: 'attackBonus',
+  });
+
+  const profBonus = useWatch({
+    control: UseForm.control,
+    name: 'profBonus',
+  });
 
   return (
     <>
@@ -257,9 +268,11 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
           </div>
           <div className={styles.actionsSection}>
             <ActionsForm
+              attackBonus={attackBonus}
               fieldName="actions"
-              title="Actions"
+              profBonus={profBonus}
               singularTitle="Action"
+              title="Actions"
               useForm={UseForm}
             />
           </div>

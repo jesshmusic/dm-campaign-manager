@@ -1,23 +1,27 @@
 import React from 'react';
 import ControllerInput from '../../../../components/forms/ControllerInput';
-import { Control, Controller, FieldValues } from 'react-hook-form';
+import { Control, Controller, FieldErrors, FieldValues } from 'react-hook-form';
 
 const styles = require('./action-form.module.scss');
 
 const AbilityForm = (props: {
   fieldName: string;
+  errors: FieldErrors;
   control: Control<FieldValues, object>;
+  readOnly: boolean;
 }) => {
-  const { fieldName, control } = props;
+  const { fieldName, errors, control, readOnly } = props;
   return (
     <div className={styles.subformWrapper}>
       <Controller
         render={({ field: { ref, ...rest } }) => (
           <ControllerInput
-            type='text'
-            label='Description'
+            type="text"
+            label="Description"
             className={styles.actionCol}
-            placeholder='Description text...'
+            placeholder="Description text..."
+            errors={errors}
+            readOnly={readOnly}
             {...rest}
           />
         )}

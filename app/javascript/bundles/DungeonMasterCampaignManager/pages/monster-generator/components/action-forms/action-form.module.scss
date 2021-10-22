@@ -1,10 +1,12 @@
 @import '../../../../stylesheets/variables';
 
 .actionContainer {
-  @include padding(1rem, 2.5rem, 1rem, 2.5rem);
+  @include padding(1rem, 1rem, 1rem, 1rem);
 
-  background-color: $brown;
+  background-color: lighten($brown, 15%);
+  border-radius: 0.25rem;
   color: $white;
+  margin-bottom: 1rem;
 }
 
 .wrapper {
@@ -15,6 +17,7 @@
 .subformWrapper {
   display: flex;
   gap: 0.5rem;
+  padding-bottom: 1rem;
 
   .wrapper {
     padding: 0;
@@ -22,8 +25,15 @@
 }
 
 .actionCol,
-.diceSelect {
+.diceSelect,
+.checkbox {
   flex: 1;
+}
+
+.checkbox {
+  align-items: center;
+  display: flex;
+  padding-left: 1.5rem;
 }
 
 .diceGroup {

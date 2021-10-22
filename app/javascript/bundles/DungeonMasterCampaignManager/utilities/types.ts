@@ -2,12 +2,17 @@ import React from 'react';
 import { Location, NavigateFn } from '@reach/router';
 import { ItemType } from '../pages/items/use-data';
 import { User } from '@auth0/auth0-react';
-import { ActionTypes } from '../pages/monster-generator/components/action-forms/ActionsForm';
 
 export interface AbilityScore {
   desc: string[];
   fullName: string;
   name: string;
+}
+
+export enum ActionTypes {
+  attack = 'attack',
+  ability = 'ability',
+  spellCasting = 'spellCasting',
 }
 
 export interface AppProps {
@@ -191,16 +196,18 @@ type MonsterAction = {
   name: string;
 };
 
-type MonsterActionField = {
+export type MonsterActionField = {
   name: string;
   desc: string;
   numAttacks: number;
-  attackType: ActionTypes;
+  actionType: SelectOption;
   damage?: {
     numDice: number;
     diceValue: number;
     diceValueOption: SelectOption;
-    totalDamagePerRound: number;
+    isRanged?: boolean;
+    rangeNormal?: number;
+    rangeLong?: number;
   };
   spellCasting?: {
     level: number;

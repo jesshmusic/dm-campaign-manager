@@ -92,7 +92,7 @@ export const useData = (props: GenerateMonsterProps) => {
 
   const UseForm = useForm<MonsterGeneratorFormFields>({
     defaultValues: monsterForm,
-    mode: 'onBlur',
+    mode: 'onChange',
   });
 
   const onSubmit = (data) => {

@@ -1,6 +1,4 @@
-import createDecorator from 'final-form-calculate';
-import snakecaseKeys from 'snakecase-keys';
-import { SelectOption } from './types';
+import { ActionTypes, MonsterActionField, SelectOption } from './types';
 
 export const toSnakeCase = (str: string) =>
   str &&
@@ -147,3 +145,38 @@ export const getChallengeRatingOptions = () => {
 
 export const getSpellLevelArray = (spells) =>
   spells.map((spell) => spell.value);
+
+export const plusNumberString = (value: number): string => {
+  return `${value > 0 ? '+' : ''}${value}`;
+};
+
+export const generateAttackDesc = (
+  actionFields: MonsterActionField,
+  monsterName: string,
+  attackBonus: number,
+  profBonus: number,
+  reachDistance?: number
+): string => {
+  let desc = '';
+  console.log(actionFields);
+  const actionType = actionFields.actionType.value;
+  if (actionType === ActionTypes.ability) {
+    return actionFields.desc;
+  } else if (actionType === ActionTypes.attack && actionFields.damage) {
+    desc += `_${actionFields.name}._ `;
+    const damageString = `${plusNumberString(
+      attackBonus + profBonus
+    )} to hit, `;
+    if (!actionFields.damage.isRanged) {
+      const reach = reachDistance
+        ? `${reachDistance} ft., one target.`
+        : '5 ft., one target.';
+      desc += `Melee Weapon Attack: ${damageString}, reach ${reach}`;
+    } else {
+      const range = `range (${actionFields.damage.rangeNormal} / ${actionFields.damage.rangeLong}), one target.`;
+      desc += `Ranged Weapon Attack: ${damageString}, ${range}`;
+    }
+    console.log(desc);
+  }
+  return desc;
+};
