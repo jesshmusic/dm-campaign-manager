@@ -5,7 +5,11 @@
 import React from 'react';
 import { GiSwordsPower } from 'react-icons/gi';
 import { MonsterGeneratorFormFields } from '../../../../utilities/types';
-import { useFieldArray, UseFormReturn } from 'react-hook-form';
+import {
+  useFieldArray,
+  UseFormGetValues,
+  UseFormReturn,
+} from 'react-hook-form';
 import Button from '../../../../components/Button/Button';
 import { Colors } from '../../../../utilities/enums';
 
@@ -30,21 +34,36 @@ const ActionsForm = (props: {
     fieldName,
     singularTitle,
     title,
-    useForm: { control, setValue, register, unregister, trigger, watch }
+    useForm: {
+      control,
+      getValues,
+      setValue,
+      register,
+      unregister,
+      trigger,
+      watch,
+    },
   } = props;
 
   const isInitialRender = React.useRef(true);
   const { fields, append, prepend, remove, swap, move, insert } = useFieldArray(
     {
       control,
-      name: fieldName
+      name: fieldName,
     }
   );
 
   const addAction = () => {
     append({
       name: 'New Action',
-      attackType: { value: ActionTypes.ability, label: 'Ability' }
+      attackType: { value: ActionTypes.attack, label: 'Attack' },
+      numAttacks: 1,
+      damage: {
+        numDice: 1,
+        diceValueOption: { label: 'd6', value: 6 },
+        diceValue: 6,
+        totalDamagePerRound: 4,
+      },
     });
   };
 
@@ -62,14 +81,17 @@ const ActionsForm = (props: {
     <div className={styles.wrapper}>
       <h3>{title}</h3>
       {fields.map((action, actionIndex) => (
-        <ActionForm key={action.id}
-                    actionIndex={actionIndex}
-                    control={control}
-                    remove={remove}
-                    setValue={setValue} />
+        <ActionForm
+          key={action.id}
+          actionIndex={actionIndex}
+          control={control}
+          getValues={getValues}
+          remove={remove}
+          setValue={setValue}
+        />
       ))}
       <Button
-        type='button'
+        type="button"
         onClick={addAction}
         color={Colors.success}
         icon={<GiSwordsPower size={30} />}

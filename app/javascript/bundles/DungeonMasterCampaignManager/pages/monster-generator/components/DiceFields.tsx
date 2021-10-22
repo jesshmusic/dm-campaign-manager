@@ -4,20 +4,11 @@ import FormSelect from '../../../components/forms/FormSelect';
 import {
   FieldValues,
   MonsterGeneratorFormFields,
-  SelectOption,
 } from '../../../utilities/types';
 import { FieldErrors, UseFormRegister } from 'react-hook-form';
+import { diceOptions } from '../../../utilities/character-utilities';
 
 const styles = require('./dice-fields.module.scss');
-
-export const diceOptions: SelectOption[] = [
-  { label: 'd4', value: 4 },
-  { label: 'd6', value: 6 },
-  { label: 'd8', value: 8 },
-  { label: 'd10', value: 10 },
-  { label: 'd12', value: 12 },
-  { label: 'd20', value: 20 },
-];
 
 const DiceFields = (props: {
   countName: keyof MonsterGeneratorFormFields;

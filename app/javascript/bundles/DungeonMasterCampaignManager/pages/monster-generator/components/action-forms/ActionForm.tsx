@@ -1,5 +1,10 @@
 import React from 'react';
-import { Control, Controller, UseFormSetValue } from 'react-hook-form';
+import {
+  Control,
+  Controller,
+  UseFormGetValues,
+  UseFormSetValue,
+} from 'react-hook-form';
 import ControllerInput from '../../../../components/forms/ControllerInput';
 import Select from 'react-select';
 import Button from '../../../../components/Button/Button';
@@ -13,15 +18,16 @@ const styles = require('./action-form.module.scss');
 const inputStyles = require('../../../../components/forms/input.module.scss');
 
 const ActionForm = (props: {
-  actionIndex: number,
-  control: Control
-  remove: (index?: number | number[] | undefined) => void,
-  setValue: UseFormSetValue<any>
+  actionIndex: number;
+  control: Control;
+  remove: (index?: number | number[] | undefined) => void;
+  getValues: UseFormGetValues<any>;
+  setValue: UseFormSetValue<any>;
 }) => {
   const [actionFormState, setActionFormState] = React.useState(
-    ActionTypes.ability
+    ActionTypes.attack
   );
-  const { actionIndex, control, remove, setValue } = props;
+  const { actionIndex, control, getValues, remove, setValue } = props;
 
   const handleChange = (data) => {
     setActionFormState(data.value);
@@ -34,10 +40,10 @@ const ActionForm = (props: {
         <Controller
           render={({ field: { ref, ...rest } }) => (
             <ControllerInput
-              label='Name'
+              label="Name"
               {...rest}
-              type='text'
-              placeholder='Action Title...'
+              type="text"
+              placeholder="Action Title..."
               className={styles.actionCol}
             />
           )}
@@ -60,8 +66,8 @@ const ActionForm = (props: {
                   { value: ActionTypes.attack, label: 'Attack' },
                   {
                     value: ActionTypes.spellCasting,
-                    label: 'Spell Casting'
-                  }
+                    label: 'Spell Casting',
+                  },
                 ]}
               />
             </div>
@@ -70,19 +76,24 @@ const ActionForm = (props: {
           control={control}
         />
         <Button
-          type='button'
+          type="button"
           onClick={() => remove(actionIndex)}
           color={Colors.danger}
           icon={<GiTrashCan size={30} />}
           hideTitle
-          title='Remove Action'
+          title="Remove Action"
         />
       </div>
       {actionFormState === ActionTypes.ability && (
         <AbilityForm fieldName={`actions.${actionIndex}`} control={control} />
       )}
       {actionFormState === ActionTypes.attack && (
-        <AttackForm fieldName={`actions.${actionIndex}`} control={control} />
+        <AttackForm
+          fieldName={`actions.${actionIndex}`}
+          getValues={getValues}
+          control={control}
+          setValue={setValue}
+        />
       )}
     </div>
   );

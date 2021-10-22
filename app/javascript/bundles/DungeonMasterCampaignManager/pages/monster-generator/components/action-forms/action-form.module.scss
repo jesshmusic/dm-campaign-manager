@@ -21,8 +21,20 @@
   }
 }
 
-.actionCol {
+.actionCol,
+.diceSelect {
   flex: 1;
+}
+
+.diceGroup {
+  align-items: center;
+  display: flex;
+  flex: 1;
+  gap: 0.5rem;
+
+  > div {
+    flex: 1;
+  }
 }
 
 input {
@@ -30,3 +42,9 @@ input {
     color: $white;
   }
 }
+
+.label {
+  font-family: $font-family-sans-serif;
+  margin-bottom: 0.25rem;
+}
+

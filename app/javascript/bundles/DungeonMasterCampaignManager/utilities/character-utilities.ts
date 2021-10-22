@@ -1,5 +1,6 @@
 import createDecorator from 'final-form-calculate';
 import snakecaseKeys from 'snakecase-keys';
+import { SelectOption } from './types';
 
 export const toSnakeCase = (str: string) =>
   str &&
@@ -29,7 +30,7 @@ export const filterSnakeCaseOptionsWithData = (results) =>
     label: nextItem.name,
   }));
 
-export const alignmentOptions: { label: string; value: string | number }[] = [
+export const alignmentOptions: SelectOption[] = [
   { value: 'Lawful Good', label: 'Lawful Good' },
   { value: 'Neutral Good', label: 'Neutral Good' },
   { value: 'Chaotic Good', label: 'Chaotic Good' },
@@ -50,7 +51,7 @@ export const monsterVariantOptions: {
   { value: 'caster_cleric', label: 'Caster - Cleric' },
 ];
 
-export const monsterSizeOptions: { label: string; value: string | number }[] = [
+export const monsterSizeOptions: SelectOption[] = [
   { value: 'tiny', label: 'Tiny' },
   { value: 'small', label: 'Small' },
   { value: 'medium', label: 'Medium' },
@@ -59,7 +60,7 @@ export const monsterSizeOptions: { label: string; value: string | number }[] = [
   { value: 'gargantuan', label: 'Gargantuan' },
 ];
 
-export const monsterTypeOptions: { label: string; value: string | number }[] = [
+export const monsterTypeOptions: SelectOption[] = [
   {
     value: 'aberration',
     label: 'Aberration',
@@ -120,6 +121,15 @@ export const monsterTypeOptions: { label: string; value: string | number }[] = [
     value: 'undead',
     label: 'Undead',
   },
+];
+
+export const diceOptions: SelectOption[] = [
+  { label: 'd4', value: 4 },
+  { label: 'd6', value: 6 },
+  { label: 'd8', value: 8 },
+  { label: 'd10', value: 10 },
+  { label: 'd12', value: 12 },
+  { label: 'd20', value: 20 },
 ];
 
 export const getChallengeRatingOptions = () => {

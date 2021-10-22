@@ -193,11 +193,14 @@ type MonsterAction = {
 
 type MonsterActionField = {
   name: string;
+  desc: string;
   numAttacks: number;
   attackType: ActionTypes;
   damage?: {
     numDice: number;
     diceValue: number;
+    diceValueOption: SelectOption;
+    totalDamagePerRound: number;
   };
   spellCasting?: {
     level: number;
