@@ -16,7 +16,7 @@ const MonsterTypeSelect = (props: {
     label={'Type'}
     control={props.control}
     options={monsterTypeOptions}
-    name={'monsterType'}
+    name={'monsterTypeOption'}
     handleSelectChange={props.onChange}
   />
 );

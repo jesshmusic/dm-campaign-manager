@@ -6,7 +6,7 @@ import {
   MonsterGeneratorFormFields,
   SelectOption,
 } from '../../../utilities/types';
-import { UseFormRegister } from 'react-hook-form';
+import { FieldErrors, UseFormRegister } from 'react-hook-form';
 
 const styles = require('./dice-fields.module.scss');
 
@@ -23,6 +23,7 @@ const DiceFields = (props: {
   countName: keyof MonsterGeneratorFormFields;
   dieName: keyof MonsterGeneratorFormFields;
   className: string;
+  errors: FieldErrors;
   register: UseFormRegister<FieldValues>;
   onChange: (
     name: string,
@@ -39,6 +40,7 @@ const DiceFields = (props: {
       <FormField
         label={'Count'}
         className={styles.dieCount}
+        errors={props.errors}
         onChange={props.onChange}
         register={props.register}
         type={'number'}

@@ -14,6 +14,7 @@ import axios from 'axios';
 import { useForm, UseFormSetValue } from 'react-hook-form';
 import { GenerateMonsterProps } from './GenerateMonster';
 import {
+  alignmentOptions,
   monsterSizeOptions,
   monsterTypeOptions,
 } from '../../../utilities/character-utilities';
@@ -52,7 +53,8 @@ export const useData = (props: GenerateMonsterProps) => {
       hitDiceValue: 'd8',
       hitPoints: 4,
       languages: [],
-      monsterType: {
+      monsterType: 'humanoid',
+      monsterTypeOption: {
         value: 'humanoid',
         label: 'Humanoid',
       },
@@ -90,6 +92,7 @@ export const useData = (props: GenerateMonsterProps) => {
 
   const UseForm = useForm<MonsterGeneratorFormFields>({
     defaultValues: monsterForm,
+    mode: 'onBlur',
   });
 
   const onSubmit = (data) => {
@@ -154,7 +157,9 @@ export const useData = (props: GenerateMonsterProps) => {
           shouldDirty: true,
           shouldTouch: true,
         });
-        handleCalculateCR();
+        if (value && value !== '') {
+          handleCalculateCR();
+        }
         break;
       case 'dexterity':
         setAbilityValue(UseForm.setValue, 'dexterity', value);
@@ -170,7 +175,9 @@ export const useData = (props: GenerateMonsterProps) => {
           ),
           { shouldDirty: true }
         );
-        handleCalculateCR();
+        if (value && value !== '') {
+          handleCalculateCR();
+        }
         break;
       case 'intelligence':
         setAbilityValue(UseForm.setValue, 'intelligence', value);
@@ -181,11 +188,28 @@ export const useData = (props: GenerateMonsterProps) => {
       case 'charisma':
         setAbilityValue(UseForm.setValue, 'charisma', value);
         break;
-      case 'monsterType':
+      case 'alignmentOption':
+        const newAlignment = alignmentOptions.find(
+          (option) => option.value === value
+        )!;
+        UseForm.setValue('alignmentOption', newAlignment, {
+          shouldDirty: true,
+          shouldTouch: true,
+        });
+        UseForm.setValue('alignment', newAlignment.value as string, {
+          shouldDirty: true,
+          shouldTouch: true,
+        });
+        break;
+      case 'monsterTypeOption':
         const newMonsterType = monsterTypeOptions.find(
           (option) => option.value === value
-        );
-        UseForm.setValue('monsterType', newMonsterType, {
+        )!;
+        UseForm.setValue('monsterTypeOption', newMonsterType, {
+          shouldDirty: true,
+          shouldTouch: true,
+        });
+        UseForm.setValue('monsterType', newMonsterType.value as string, {
           shouldDirty: true,
           shouldTouch: true,
         });
@@ -194,7 +218,7 @@ export const useData = (props: GenerateMonsterProps) => {
         const hitDice = hitDieForSize(value);
         const newSizeValue = monsterSizeOptions.find(
           (option) => option.value === value
-        );
+        )!;
         UseForm.setValue('size', newSizeValue, {
           shouldDirty: true,
           shouldTouch: true,
@@ -209,7 +233,9 @@ export const useData = (props: GenerateMonsterProps) => {
           hitPoints(UseForm.getValues('constitution'), hitDiceCount, hitDice),
           { shouldDirty: true, shouldTouch: true }
         );
-        handleCalculateCR();
+        if (value && value !== '') {
+          handleCalculateCR();
+        }
         break;
       case 'hitDiceNumber':
         UseForm.setValue('hitDiceNumber', parseInt(value), {
@@ -229,7 +255,9 @@ export const useData = (props: GenerateMonsterProps) => {
           'hitDice',
           `${value}${UseForm.getValues('hitDiceValue')}`
         );
-        handleCalculateCR();
+        if (value && value !== '') {
+          handleCalculateCR();
+        }
         break;
       case 'hitDiceValue':
         UseForm.setValue('hitDiceValue', value, {
@@ -249,7 +277,9 @@ export const useData = (props: GenerateMonsterProps) => {
           'hitDice',
           `${UseForm.getValues('hitDiceNumber')}${value}`
         );
-        handleCalculateCR();
+        if (value && value !== '') {
+          handleCalculateCR();
+        }
         break;
       default:
         UseForm.setValue(

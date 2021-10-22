@@ -3,9 +3,10 @@
  */
 
 import React from 'react';
-import { UseFormRegister } from 'react-hook-form';
+import { FieldErrors, UseFormRegister } from 'react-hook-form';
 import { FieldValues } from '../../utilities/types';
 import classNames from 'classnames';
+import { GiFire } from 'react-icons/all';
 
 const styles = require('./input.module.scss');
 
@@ -13,6 +14,7 @@ type FieldProps = {
   className?: string;
   columnWidth?: number;
   defaultValue?: string | number | readonly string[] | undefined;
+  errors: FieldErrors;
   helpText?: string;
   hideLabel?: boolean;
   id?: string;
@@ -40,6 +42,7 @@ const FormField = (props: FieldProps) => {
   const {
     className,
     defaultValue,
+    errors,
     id,
     helpText,
     hideLabel,
@@ -84,6 +87,11 @@ const FormField = (props: FieldProps) => {
             {helpText}
           </div>
         )}
+        {errors[name] && (
+          <p className={styles.error}>
+            <GiFire /> This is required
+          </p>
+        )}
       </div>
     );
   }
@@ -113,6 +121,11 @@ const FormField = (props: FieldProps) => {
         <div id={`${name}-help-text`} className="form-text">
           {helpText}
         </div>
+      )}
+      {errors[name] && (
+        <p className={styles.error}>
+          <GiFire /> This is required
+        </p>
       )}
     </div>
   );

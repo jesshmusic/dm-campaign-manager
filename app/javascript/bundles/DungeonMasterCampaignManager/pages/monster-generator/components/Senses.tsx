@@ -5,7 +5,7 @@ import { GiSwordsPower, GiTrashCan } from 'react-icons/gi';
 import { senses } from './GenerateMonster';
 // import { FieldArray } from 'react-final-form-arrays';
 import FormContainer from '../../../containers/FormContainer';
-import { UseFormRegister } from 'react-hook-form';
+import { FieldErrors, UseFormRegister } from 'react-hook-form';
 import {
   FieldValues,
   MonsterGeneratorFormFields,
@@ -24,6 +24,7 @@ const Senses = (props: {
       shouldTouch?: boolean;
     }
   ) => void;
+  errors: FieldErrors;
   push: (senses1: string, p: {}) => void;
   register: UseFormRegister<FieldValues>;
 }) => {
@@ -46,6 +47,7 @@ const Senses = (props: {
         <FormField
           label="Value"
           type="text"
+          errors={props.errors}
           onChange={props.onChange}
           register={register}
           className="g-col-2 mb-0"

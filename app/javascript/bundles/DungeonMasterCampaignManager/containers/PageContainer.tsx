@@ -8,8 +8,6 @@ import '../stylesheets/_fonts.scss';
 import '../stylesheets/application.scss';
 import { Helmet } from 'react-helmet';
 import { FlashMessage } from '../utilities/types';
-import SignInModal from '../components/SignInModal/SignInModal';
-import rest from '../actions/api';
 import { connect } from 'react-redux';
 import Breadcrumbs, {
   BreadCrumbProps,

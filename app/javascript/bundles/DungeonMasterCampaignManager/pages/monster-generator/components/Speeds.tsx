@@ -4,7 +4,7 @@ import FormField from '../../../components/forms/FormField';
 import { GiTrashCan } from 'react-icons/gi';
 import { speeds } from './GenerateMonster';
 // import { FieldArray } from 'react-final-form-arrays';
-import { UseFormRegister } from 'react-hook-form';
+import { FieldErrors, UseFormRegister } from 'react-hook-form';
 import {
   FieldValues,
   MonsterGeneratorFormFields,
@@ -20,6 +20,7 @@ const Speeds = (props: {
       shouldTouch?: boolean;
     }
   ) => void;
+  errors: FieldErrors;
   push: (speeds1: string, p: {}) => void;
   register: UseFormRegister<FieldValues>;
 }) => {
@@ -38,6 +39,7 @@ const Speeds = (props: {
           <FormField
             label={'Value'}
             type={'text'}
+            errors={props.errors}
             onChange={props.onChange}
             register={props.register}
             name={`${name}.value` as keyof MonsterGeneratorFormFields}

@@ -19,7 +19,7 @@ export const getMonsterObject = (values: MonsterGeneratorFormFields) => {
     intelligence: values.intelligence,
     languages: values.languages,
     monsterSubtype: values.monsterSubtype,
-    monsterType: values.monsterType.value,
+    monsterType: values.monsterType,
     name: values.name,
     saveDc: values.saveDC,
     size: values.size.value,

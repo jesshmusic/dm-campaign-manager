@@ -4,7 +4,7 @@
 
 import React from 'react';
 import { GiDiceTwentyFacesTwenty } from 'react-icons/gi/';
-import { UseFormRegister } from 'react-hook-form';
+import { FieldErrors, UseFormRegister } from 'react-hook-form';
 import { DiceRoll } from 'rpg-dice-roller';
 import useSound from 'use-sound';
 import {
@@ -22,6 +22,7 @@ const styles = require('./ability-score-field.module.scss');
 type AbilityScoreFieldProps = {
   name: keyof MonsterGeneratorFormFields;
   defaultValue?: any;
+  errors: FieldErrors;
   infoText?: string;
   id?: string;
   label: string;
@@ -33,7 +34,7 @@ type AbilityScoreFieldProps = {
 };
 
 const AbilityScoreField = (props: AbilityScoreFieldProps) => {
-  const { label, name, hideRoll, onChangeAbility, register } = props;
+  const { errors, label, name, hideRoll, onChangeAbility, register } = props;
   const [play] = useSound(diceSound, { volume: 0.5 });
 
   const handleRollAbility = (numDice: number = 3) => {
@@ -65,6 +66,7 @@ const AbilityScoreField = (props: AbilityScoreFieldProps) => {
       <div className={styles.abilityGroup}>
         <FormField
           className={styles.abilInput}
+          errors={errors}
           label={label}
           name={name}
           type="number"
@@ -74,6 +76,7 @@ const AbilityScoreField = (props: AbilityScoreFieldProps) => {
         />
         <FormField
           className={styles.modField}
+          errors={errors}
           label="Hit Dice Value"
           type="text"
           register={register}

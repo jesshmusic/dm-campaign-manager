@@ -37,6 +37,13 @@
   @include button-group;
 }
 
+.error {
+  align-items: center;
+  color: $danger;
+  display: flex;
+  margin-top: 0.25rem;
+}
+
 .inputGroup {
   align-items: stretch;
   display: flex;
