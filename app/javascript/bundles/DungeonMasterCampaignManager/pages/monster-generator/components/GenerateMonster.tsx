@@ -56,6 +56,7 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
     handleCalculateCR,
     handleChange,
     handleGenerateName,
+    handleGenerateMonsterName,
     onSubmit,
     UseForm,
   } = useData(props);
@@ -95,12 +96,14 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
         >
           <NameFormField
             handleGenerateName={handleGenerateName}
+            handleGenerateMonsterName={handleGenerateMonsterName}
             register={UseForm.register}
+            monsterType={UseForm.getValues('monsterType').value as string}
           />
           <div className={styles.fourCol}>
             <MonsterTypeSelect
               control={UseForm.control}
-              onChange={UseForm.setValue}
+              onChange={handleChange}
             />
             <FormField
               label="Subtype"

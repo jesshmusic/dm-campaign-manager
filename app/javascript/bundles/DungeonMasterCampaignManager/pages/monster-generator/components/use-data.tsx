@@ -13,7 +13,10 @@ import {
 import axios from 'axios';
 import { useForm, UseFormSetValue } from 'react-hook-form';
 import { GenerateMonsterProps } from './GenerateMonster';
-import { monsterSizeOptions } from '../../../utilities/character-utilities';
+import {
+  monsterSizeOptions,
+  monsterTypeOptions,
+} from '../../../utilities/character-utilities';
 
 const setAbilityValue = (
   setValue: UseFormSetValue<any>,
@@ -94,6 +97,16 @@ export const useData = (props: GenerateMonsterProps) => {
     // props.setMonster(getMonsterObject(data));
   };
 
+  const handleGenerateMonsterName = async () => {
+    const apiURL = '/v1/random_monster_name';
+    try {
+      const response = await axios.get<RandomNameResult>(apiURL);
+      UseForm.setValue('name', response.data.name);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const handleGenerateName = async (gender, race) => {
     const apiURL = `/v1/random_fantasy_name?random_monster_gender=${gender}&random_monster_race=${
       race ? race : 'human'
@@ -167,6 +180,15 @@ export const useData = (props: GenerateMonsterProps) => {
         break;
       case 'charisma':
         setAbilityValue(UseForm.setValue, 'charisma', value);
+        break;
+      case 'monsterType':
+        const newMonsterType = monsterTypeOptions.find(
+          (option) => option.value === value
+        );
+        UseForm.setValue('monsterType', newMonsterType, {
+          shouldDirty: true,
+          shouldTouch: true,
+        });
         break;
       case 'size':
         const hitDice = hitDieForSize(value);
@@ -243,6 +265,7 @@ export const useData = (props: GenerateMonsterProps) => {
     handleCalculateCR,
     handleChange,
     handleGenerateName,
+    handleGenerateMonsterName,
     onSubmit,
   };
 };

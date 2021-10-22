@@ -6,69 +6,7 @@ import React from 'react';
 import FormSelect from '../../../components/forms/FormSelect';
 import { Control } from 'react-hook-form';
 import { MonsterGeneratorFormFields } from '../../../utilities/types';
-
-const monsterTypeOptions = [
-  {
-    value: 'aberration',
-    label: 'Aberration',
-  },
-  {
-    value: 'beast',
-    label: 'Beast',
-  },
-  {
-    value: 'celestial',
-    label: 'Celestial',
-  },
-  {
-    value: 'construct',
-    label: 'Construct',
-  },
-  {
-    value: 'dragon',
-    label: 'Dragon',
-  },
-  {
-    value: 'elemental',
-    label: 'Elemental',
-  },
-  {
-    value: 'fey',
-    label: 'Fey',
-  },
-  {
-    value: 'fiend',
-    label: 'Fiend',
-  },
-  {
-    value: 'giant',
-    label: 'Giant',
-  },
-  {
-    value: 'humanoid',
-    label: 'Humanoid',
-  },
-  {
-    value: 'monstrosity',
-    label: 'Monstrosity',
-  },
-  {
-    value: 'ooze',
-    label: 'Ooze',
-  },
-  {
-    value: 'plant',
-    label: 'Plant',
-  },
-  {
-    value: 'swarm of Tiny beasts',
-    label: 'Swarm of Tiny beasts',
-  },
-  {
-    value: 'undead',
-    label: 'Undead',
-  },
-];
+import { monsterTypeOptions } from '../../../utilities/character-utilities';
 
 const MonsterTypeSelect = (props: {
   control: Control<MonsterGeneratorFormFields>;

@@ -8,11 +8,18 @@ const styles = require('../../../components/forms/input.module.scss');
 
 type NameFormFieldProps = {
   handleGenerateName: (gender: string, race: string) => void;
+  handleGenerateMonsterName: () => void;
   register: UseFormRegister<FieldValues>;
+  monsterType: string;
 };
 
 const NameFormField = (props: NameFormFieldProps) => {
-  const { handleGenerateName, register } = props;
+  const {
+    handleGenerateName,
+    handleGenerateMonsterName,
+    register,
+    monsterType,
+  } = props;
   const characterRace = 'human';
   // const characterRace = values.characterRace && values.characterRace.value ? values.characterRace.value : 'human';
   return (
@@ -25,21 +32,30 @@ const NameFormField = (props: NameFormFieldProps) => {
         type={'text'}
         placeholder={'Monster name'}
       />
-      <div className={styles.buttonGroup}>
+      <div className={styles.monsterTypeButtons}>
+        {monsterType === 'humanoid' && (
+          <>
+            <Button
+              color={Colors.primary}
+              title="Random NPC Name"
+              onClick={() => handleGenerateName('female', characterRace)}
+            />
+            <Button
+              color={Colors.secondary}
+              title="Random Male NPC Name"
+              onClick={() => handleGenerateName('male', characterRace)}
+            />
+            <Button
+              color={Colors.success}
+              title="Random Female NPC Name"
+              onClick={() => handleGenerateName('female', characterRace)}
+            />
+          </>
+        )}
         <Button
-          color={Colors.primary}
-          title="Random Name"
-          onClick={() => handleGenerateName('female', characterRace)}
-        />
-        <Button
-          color={Colors.secondary}
-          title="Male"
-          onClick={() => handleGenerateName('male', characterRace)}
-        />
-        <Button
-          color={Colors.success}
-          title="Female"
-          onClick={() => handleGenerateName('female', characterRace)}
+          color={Colors.warning}
+          title="Random Monster Name"
+          onClick={handleGenerateMonsterName}
         />
       </div>
     </div>

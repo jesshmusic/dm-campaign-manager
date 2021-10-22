@@ -2,7 +2,7 @@
 
 module Admin::V1
   class DashboardController < SecuredController
-    skip_before_action :authorize_request, only: %i[index random_fantasy_name random_tavern_name]
+    skip_before_action :authorize_request, only: %i[index random_fantasy_name random_tavern_name, random_monster_name]
 
     # GET /index
     def index
@@ -22,6 +22,10 @@ module Admin::V1
 
     def random_tavern_name
       render json: { name: NameGen.random_tavern_name }
+    end
+
+    def random_monster_name
+      render json: { name: NameGen.random_monster_name }
     end
   end
 end
