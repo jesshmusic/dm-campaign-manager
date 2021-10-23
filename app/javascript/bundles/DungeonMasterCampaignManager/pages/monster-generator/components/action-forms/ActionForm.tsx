@@ -7,7 +7,7 @@ import {
   UseFormSetValue,
   useWatch,
 } from 'react-hook-form';
-import ControllerInput from '../../../../components/forms/ControllerInput';
+import { ControllerInput } from '../../../../components/forms/ControllerInput';
 import Select from 'react-select';
 import Button from '../../../../components/Button/Button';
 import { Colors } from '../../../../utilities/enums';
@@ -56,7 +56,6 @@ const ActionForm = (props: {
       `actions.${actionIndex}.desc`,
       generateAttackDesc(
         getValues(`actions.${actionIndex}`),
-        getValues('name'),
         parseInt(`${attackBonus}`, 10),
         parseInt(`${profBonus}`, 10)
       )

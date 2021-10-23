@@ -8,9 +8,16 @@ import {
   UseFormSetValue,
   useWatch,
 } from 'react-hook-form';
-import ControllerInput from '../../../../components/forms/ControllerInput';
+import {
+  ControllerInput,
+  ControlledInput,
+  ControlledSelect,
+} from '../../../../components/forms/ControllerInput';
 import Select from 'react-select';
-import { diceOptions } from '../../../../utilities/character-utilities';
+import {
+  damageTypes,
+  diceOptions,
+} from '../../../../utilities/character-utilities';
 
 const styles = require('./action-form.module.scss');
 
@@ -23,9 +30,15 @@ const AttackForm = (props: {
   setValue: UseFormSetValue<any>;
 }) => {
   const { control, errors, fieldName, handleChange, setValue } = props;
-  const handleFormChange = (value) => {
+
+  const handleDiceFormChange = (value) => {
     handleChange(value, `${fieldName}.damage.diceValueOption`);
     handleChange(value.value, `${fieldName}.damage.diceValue`);
+  };
+
+  const handleDamageTypeFormChange = (value) => {
+    handleChange(value, `${fieldName}.damage.damageTypeOption`);
+    handleChange(value.value, `${fieldName}.damage.damageType`);
   };
 
   const isRanged = useWatch({
@@ -37,127 +50,95 @@ const AttackForm = (props: {
   return (
     <div className={styles.attackWrapper}>
       <div className={styles.subformWrapper}>
-        <Controller
-          render={({ field: { ref, onChange, ...rest } }) => (
-            <ControllerInput
-              type="number"
-              label="Number of Attacks"
-              className={styles.actionCol}
-              onChange={(event) =>
-                handleChange(event.target.value, `${fieldName}.numAttacks`)
-              }
-              placeholder="Number of Attacks..."
-              errors={errors}
-              min={1}
-              {...rest}
-            />
-          )}
-          name={`${fieldName}.numAttacks`}
+        <ControlledInput
+          className={styles.actionCol}
           control={control}
+          errors={errors}
+          fieldName={`${fieldName}.numAttacks`}
+          handleChange={handleChange}
+          label="Number of Attacks"
+          min={1}
+          type="number"
         />
-        <Controller
-          render={({ field: { ref, onChange, ...rest } }) => (
-            <ControllerInput
-              type="number"
-              label="Dice Count"
-              className={styles.actionCol}
-              onChange={(event) =>
-                handleChange(event.target.value, `${fieldName}.damage.numDice`)
-              }
-              placeholder="Dice Count..."
-              errors={errors}
-              min={1}
-              {...rest}
-            />
-          )}
-          name={`${fieldName}.damage.numDice`}
+        <ControlledInput
+          className={styles.actionCol}
           control={control}
+          errors={errors}
+          fieldName={`${fieldName}.damage.numDice`}
+          handleChange={handleChange}
+          label="Dice Count"
+          min={1}
+          type="number"
         />
-        <div className={styles.diceSelect}>
-          <label
-            htmlFor={`${fieldName}.damage.diceValueOption`}
-            className={styles.label}
-          >
-            Dice Type
-          </label>
-          <Controller
-            render={({ field: { onChange, ...rest } }) => (
-              <Select
-                className={'reactSelect'}
-                classNamePrefix={'reactSelect'}
-                options={diceOptions}
-                isSearchable
-                onChange={handleFormChange}
-                {...rest}
-              />
-            )}
-            name={`${fieldName}.damage.diceValueOption`}
+        <ControlledSelect
+          className={styles.diceSelect}
+          handleChange={handleDiceFormChange}
+          fieldName={`${fieldName}.damage.diceValueOption`}
+          control={control}
+          label="Dice Type"
+          options={diceOptions}
+        />
+        <ControlledSelect
+          className={styles.diceSelect}
+          handleChange={handleDamageTypeFormChange}
+          fieldName={`${fieldName}.damage.damageTypeOption`}
+          control={control}
+          label="Damage Type"
+          options={damageTypes}
+        />
+        <ControlledInput
+          className={styles.actionCol}
+          control={control}
+          errors={errors}
+          fieldName={`${fieldName}.damage.numTargets`}
+          handleChange={handleChange}
+          label="Number of Targets"
+          min={1}
+          type="number"
+        />
+        {!isRanged && (
+          <ControlledInput
+            className={styles.actionCol}
+            handleChange={handleChange}
+            fieldName={`${fieldName}.damage.reach`}
+            errors={errors}
             control={control}
+            label="Reach"
+            type="number"
+            min={0}
           />
-        </div>
-        <Controller
-          render={({ field: { ref, onChange, ...rest } }) => (
-            <ControllerInput
-              type="checkbox"
-              label="Ranged Attack"
-              className={styles.checkbox}
-              onChange={(event) =>
-                handleChange(
-                  event.target.checked,
-                  `${fieldName}.damage.isRanged`
-                )
-              }
-              errors={errors}
-              {...rest}
-            />
-          )}
-          name={`${fieldName}.damage.isRanged`}
+        )}
+        <ControlledInput
+          className={styles.checkbox}
+          handleChange={handleChange}
+          fieldName={`${fieldName}.damage.isRanged`}
+          errors={errors}
           control={control}
+          label="Ranged Attack"
+          type="checkbox"
         />
       </div>
       {isRanged && (
         <div className={styles.subformWrapper}>
-          <Controller
-            render={({ field: { ref, onChange, ...rest } }) => (
-              <ControllerInput
-                type="number"
-                label="Normal Range"
-                className={styles.actionCol}
-                onChange={(event) =>
-                  handleChange(
-                    event.target.value,
-                    `${fieldName}.damage.rangeNormal`
-                  )
-                }
-                placeholder="Normal Range..."
-                errors={errors}
-                min={0}
-                {...rest}
-              />
-            )}
-            name={`${fieldName}.damage.rangeNormal`}
+          <ControlledInput
+            className={styles.actionCol}
+            handleChange={handleChange}
+            fieldName={`${fieldName}.damage.rangeNormal`}
+            errors={errors}
             control={control}
+            label="Normal Range"
+            type="number"
+            min={0}
           />
-          <Controller
-            render={({ field: { ref, onChange, ...rest } }) => (
-              <ControllerInput
-                type="number"
-                label="Long Range"
-                className={styles.actionCol}
-                onChange={(event) =>
-                  handleChange(
-                    event.target.value,
-                    `${fieldName}.damage.rangeLong`
-                  )
-                }
-                placeholder="Long Range..."
-                errors={errors}
-                min={0}
-                {...rest}
-              />
-            )}
-            name={`${fieldName}.damage.rangeLong`}
+          <ControlledInput
+            className={styles.actionCol}
+            handleChange={handleChange}
+            fieldName={`${fieldName}.damage.rangeLong`}
+            errors={errors}
             control={control}
+            label="Long Range"
+            type="number"
+            min={0}
           />
         </div>
       )}

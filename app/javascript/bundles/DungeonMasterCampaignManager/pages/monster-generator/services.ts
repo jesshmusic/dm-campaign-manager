@@ -63,22 +63,6 @@ export const get2eMonsterObject = (values) => {
   return snakecaseKeys(returnChar, { exclude: ['_destroy'] });
 };
 
-export const damageTypes = [
-  { label: 'Slashing', value: 'Slashing' },
-  { label: 'Piercing', value: 'Piercing' },
-  { label: 'Bludgeoning', value: 'Bludgeoning' },
-  { label: 'Poison', value: 'Poison' },
-  { label: 'Acid', value: 'Acid' },
-  { label: 'Fire', value: 'Fire' },
-  { label: 'Cold', value: 'Cold' },
-  { label: 'Radiant', value: 'Radiant' },
-  { label: 'Necrotic', value: 'Necrotic' },
-  { label: 'Lightning', value: 'Lightning' },
-  { label: 'Thunder', value: 'Thunder' },
-  { label: 'Force', value: 'Force' },
-  { label: 'Psychic', value: 'Psychic' },
-];
-
 export const calculateCR = async (
   allValues: MonsterGeneratorFormFields
 ): Promise<MonsterCRCalcResult> => {

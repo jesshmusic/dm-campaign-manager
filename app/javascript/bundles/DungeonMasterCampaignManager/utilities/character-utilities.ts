@@ -1,4 +1,10 @@
-import { ActionTypes, MonsterActionField, SelectOption } from './types';
+import {
+  ActionTypes,
+  DamageTypes,
+  MonsterActionField,
+  SelectOption,
+} from './types';
+import { ToWords } from 'to-words';
 
 export const toSnakeCase = (str: string) =>
   str &&
@@ -130,6 +136,22 @@ export const diceOptions: SelectOption[] = [
   { label: 'd20', value: 20 },
 ];
 
+export const damageTypes: { label: string; value: DamageTypes }[] = [
+  { label: 'Slashing', value: 'slashing' },
+  { label: 'Piercing', value: 'piercing' },
+  { label: 'Bludgeoning', value: 'bludgeoning' },
+  { label: 'Poison', value: 'poison' },
+  { label: 'Acid', value: 'acid' },
+  { label: 'Fire', value: 'fire' },
+  { label: 'Cold', value: 'cold' },
+  { label: 'Radiant', value: 'radiant' },
+  { label: 'Necrotic', value: 'necrotic' },
+  { label: 'Lightning', value: 'lightning' },
+  { label: 'Thunder', value: 'thunder' },
+  { label: 'Force', value: 'force' },
+  { label: 'Psychic', value: 'psychic' },
+];
+
 export const getChallengeRatingOptions = () => {
   const crs = [
     { value: '0', label: '0' },
@@ -146,37 +168,60 @@ export const getChallengeRatingOptions = () => {
 export const getSpellLevelArray = (spells) =>
   spells.map((spell) => spell.value);
 
-export const plusNumberString = (value: number): string => {
-  return `${value > 0 ? '+' : ''}${value}`;
+export const plusNumberString = (value: number, space?: boolean): string => {
+  let sign = '+';
+  if (value === 0) {
+    sign = '';
+  } else if (value < 0) {
+    sign = '-';
+  }
+  return `${sign}${space ? ' ' : ''}${Math.abs(value)}`;
+};
+
+export const averageDamage = (
+  numDice: number,
+  diceValue: number,
+  attackBonus: number
+): number => {
+  return (numDice * diceValue) / 2 + 1 + attackBonus;
 };
 
 export const generateAttackDesc = (
   actionFields: MonsterActionField,
-  monsterName: string,
   attackBonus: number,
   profBonus: number,
   reachDistance?: number
 ): string => {
+  const toWords = new ToWords();
   let desc = '';
   console.log(actionFields);
   const actionType = actionFields.actionType.value;
   if (actionType === ActionTypes.ability) {
     return actionFields.desc;
   } else if (actionType === ActionTypes.attack && actionFields.damage) {
-    desc += `_${actionFields.name}._ `;
-    const damageString = `${plusNumberString(
-      attackBonus + profBonus
-    )} to hit, `;
+    const hitString = `${plusNumberString(attackBonus + profBonus)} to hit`;
+
+    const targetsString = `${toWords
+      .convert(actionFields.damage.numTargets)
+      .toLowerCase()} target${actionFields.damage.numTargets > 1 ? 's' : ''}`;
+
     if (!actionFields.damage.isRanged) {
-      const reach = reachDistance
-        ? `${reachDistance} ft., one target.`
-        : '5 ft., one target.';
-      desc += `Melee Weapon Attack: ${damageString}, reach ${reach}`;
+      const reach = reachDistance ? `${reachDistance} ft.` : '5 ft.';
+      desc += `Melee Weapon Attack: ${hitString}, reach ${reach}, ${targetsString}.`;
     } else {
-      const range = `range (${actionFields.damage.rangeNormal} / ${actionFields.damage.rangeLong}), one target.`;
-      desc += `Ranged Weapon Attack: ${damageString}, ${range}`;
+      const range = `range (${actionFields.damage.rangeNormal} / ${actionFields.damage.rangeLong}), ${targetsString}.`;
+      desc += `Ranged Weapon Attack: ${hitString}, ${range}`;
     }
-    console.log(desc);
+
+    const damageString = `Hit: ${averageDamage(
+      actionFields.damage.numDice,
+      actionFields.damage.diceValue,
+      attackBonus
+    )} (${actionFields.damage.numDice}d${actionFields.damage.diceValue}${
+      attackBonus > 0 ? plusNumberString(attackBonus, true) : ''
+    }) ${actionFields.damage.damageType} damage.`;
+
+    desc += ` ${damageString}`;
   }
   return desc;
 };

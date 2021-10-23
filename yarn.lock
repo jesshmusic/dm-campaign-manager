@@ -9527,6 +9527,11 @@ to-regex@^3.0.1, to-regex@^3.0.2:
     regex-not "^1.0.2"
     safe-regex "^1.1.0"
 
+to-words@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/to-words/-/to-words-3.0.1.tgz#52a512ba88191a29a8164c8562127630e9619941"
+  integrity sha512-Erbm3RSoPUmGsSrLquuxaIzYO5n0NdXOq2+8yheGGJOVkB1kT59cDV//975Q2ltjB2+0uXy8DGSMeE8GAqmFUA==
+
 toidentifier@1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/toidentifier/-/toidentifier-1.0.0.tgz#7e1be3470f1e77948bc43d94a3c8f4d7752ba553"

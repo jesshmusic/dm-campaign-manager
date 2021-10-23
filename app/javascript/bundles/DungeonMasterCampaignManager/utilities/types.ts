@@ -44,6 +44,21 @@ export interface AppProps {
   };
 }
 
+export type DamageTypes =
+  | 'slashing'
+  | 'piercing'
+  | 'bludgeoning'
+  | 'poison'
+  | 'acid'
+  | 'fire'
+  | 'cold'
+  | 'radiant'
+  | 'necrotic'
+  | 'lightning'
+  | 'thunder'
+  | 'force'
+  | 'psychic';
+
 export type DndClassLevel = {
   level: number;
   abilityScoreBonuses: number;
@@ -206,8 +221,12 @@ export type MonsterActionField = {
     diceValue: number;
     diceValueOption: SelectOption;
     isRanged?: boolean;
+    numTargets: number;
     rangeNormal?: number;
     rangeLong?: number;
+    reach: number;
+    damageType: DamageTypes;
+    damageTypeOption: { label: string; value: DamageTypes };
   };
   spellCasting?: {
     level: number;

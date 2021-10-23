@@ -57,12 +57,16 @@ const ActionsForm = (props: {
       actionType: { value: ActionTypes.attack, label: 'Attack' },
       numAttacks: 1,
       damage: {
-        numDice: 1,
+        damageTypeOption: { label: 'Slashing', value: 'slashing' },
+        damageType: 'slashing',
         diceValueOption: { label: 'd6', value: 6 },
         diceValue: 6,
         isRanged: false,
+        numDice: 1,
+        numTargets: 1,
         rangeNormal: 120,
         rangeLong: 300,
+        reach: 5,
       },
     });
   };
