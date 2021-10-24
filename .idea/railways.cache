@@ -21,8 +21,12 @@ Ruby enVironment Manager 1.29.10 (latest) (c) 2009-2017 Michal Papis, Piotr Kucz
                     v1_generate_commoner GET    /v1/generate_commoner(.:format)                                                                   admin/v1/monsters#generate_commoner {:format=>"json"}
                    v1_monster_categories GET    /v1/monster-categories(.:format)                                                                  admin/v1/monsters#monster_categories {:format=>"json"}
                          v1_calculate_cr POST   /v1/calculate_cr(.:format)                                                                        admin/v1/monsters#calculate_cr {:format=>"json"}
-                           v1_conditions GET    /v1/conditions(.:format)                                                                          admin/v1/conditions#index
-                            v1_condition GET    /v1/conditions/:slug(.:format)                                                                    admin/v1/conditions#show
+                           v1_conditions GET    /v1/conditions(.:format)                                                                          admin/v1/conditions#index {:format=>"json"}
+                            v1_condition GET    /v1/conditions/:slug(.:format)                                                                    admin/v1/conditions#show {:format=>"json"}
+                        v1_proficiencies GET    /v1/proficiencies(.:format)                                                                       admin/v1/proficiencies#index {:format=>"json"}
+                          v1_proficiency GET    /v1/proficiencies/:slug(.:format)                                                                 admin/v1/proficiencies#show {:format=>"json"}
+                               v1_skills GET    /v1/skills(.:format)                                                                              admin/v1/skills#index {:format=>"json"}
+                                v1_skill GET    /v1/skills/:slug(.:format)                                                                        admin/v1/skills#show {:format=>"json"}
                           v1_dnd_classes GET    /v1/dnd_classes(.:format)                                                                         admin/v1/dnd_classes#index
                                          POST   /v1/dnd_classes(.:format)                                                                         admin/v1/dnd_classes#create
                             v1_dnd_class GET    /v1/dnd_classes/:slug(.:format)                                                                   admin/v1/dnd_classes#show

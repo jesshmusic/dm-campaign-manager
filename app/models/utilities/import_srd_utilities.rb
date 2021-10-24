@@ -35,11 +35,11 @@ class ImportSrdUtilities
     def import_dependencies
       import_ability_scores
       import_proficiencies
+      import_skills
       import_conditions
     end
 
     def clean_database
-      ApiReference.destroy_all
       count = Race.count
       Race.destroy_all
       puts "All #{count} races deleted"
@@ -69,20 +69,46 @@ class ImportSrdUtilities
       Equipment.destroy_all
     end
 
-    def import_prof(prof_url, new_dnd_class = nil)
+    def import_proficiencies
+      uri = URI("#{dnd_api_url}/api/proficiencies")
+      response = Net::HTTP.get(uri)
+      result = JSON.parse response, symbolize_names: true
+      count = 0
+      result[:results].each do |prof|
+        import_prof(prof[:url])
+        count += 1
+        puts "\tProficiency #{prof[:name]} imported."
+      end
+      puts "#{count} Proficiencies imported or updated."
+    end
+
+    def import_skills
+      uri = URI("#{dnd_api_url}/api/skills")
+      response = Net::HTTP.get(uri)
+      result = JSON.parse response, symbolize_names: true
+      count = 0
+      result[:results].each do |skill|
+        skill_uri = URI("#{dnd_api_url}#{skill[:url]}")
+        skill_response = Net::HTTP.get(skill_uri)
+        skill_result = JSON.parse skill_response, symbolize_names: true
+        new_skill = Skill.create!(
+          slug: skill_result[:index],
+          name: skill_result[:name],
+          desc: skill_result[:desc].join("\n"),
+          ability_score: skill_result[:ability_score][:name]
+        )
+        count += 1
+        puts "\tSkill #{new_skill.name} imported."
+      end
+      puts "#{count} Proficiencies imported or updated."
+    end
+
+    def import_prof(prof_url)
       prof_uri = URI("#{dnd_api_url}#{prof_url}")
       prof_response = Net::HTTP.get(prof_uri)
       prof_result = JSON.parse prof_response, symbolize_names: true
-      new_prof = Prof.find_or_initialize_by(name: prof_result[:name])
+      new_prof = Prof.find_or_initialize_by(name: prof_result[:name], slug: prof_result[:index])
       new_prof.prof_type = prof_result[:type]
-      prof_result[:classes].each do |dnd_class|
-        prof_class = new_dnd_class.nil? ? DndClass.find_by(name: dnd_class[:name]) : new_dnd_class
-        prof_class.profs |= [new_prof] unless prof_class.nil?
-      end
-      prof_result[:races].each do |race|
-        prof_race = Race.find_by(slug: "race-#{race[:index]}")
-        prof_race.profs |= [new_prof] unless prof_race.nil?
-      end
       new_prof.save!
       new_prof
     end
@@ -95,9 +121,6 @@ class ImportSrdUtilities
       result = JSON.parse response, symbolize_names: true
       count = 0
       result[:results].each do |ability_ref|
-        # First create an ApiReference for usage elsewhere
-        ApiReference.find_or_create_by(slug: ability_ref[:index], name: ability_ref[:index], api_url: "")
-
         # Fetch the full class record
         ability_uri = URI("#{dnd_api_url}#{ability_ref[:url]}")
         ability_response = Net::HTTP.get(ability_uri)
@@ -111,18 +134,6 @@ class ImportSrdUtilities
         count += 1
       end
       puts "#{count} Abilities imported."
-    end
-
-    def import_proficiencies
-      uri = URI("#{dnd_api_url}/api/proficiencies")
-      response = Net::HTTP.get(uri)
-      result = JSON.parse response, symbolize_names: true
-      count = 0
-      result[:results].each do |prof|
-        import_prof(prof[:url])
-        count += 1
-      end
-      puts "#{count} Proficiencies imported or updated."
     end
 
     def import_conditions
@@ -140,6 +151,7 @@ class ImportSrdUtilities
         new_cond.slug = condition_result[:index]
         new_cond.save!
         count += 1
+        puts "\tCondition #{new_cond.name} imported."
       end
       puts "#{count} Conditions imported or updated."
     end

@@ -33,7 +33,7 @@ class DndClass < ApplicationRecord
   end
 
   has_many :ability_score_dnd_classes, dependent: :destroy
-  has_many :ability_scores, through: :ability_score_dnd_classes
+  has_many :ability_scores, -> { distinct }, through: :ability_score_dnd_classes
 
   has_many :dnd_class_levels, dependent: :destroy
 
@@ -42,14 +42,14 @@ class DndClass < ApplicationRecord
 
   has_many :prof_choices, inverse_of: :dnd_class
   has_many :prof_classes, dependent: :destroy
-  has_many :profs, through: :prof_classes
+  has_many :profs, -> { distinct }, through: :prof_classes
 
   has_one :multi_classing, dependent: :destroy
 
   has_one :spell_casting, dependent: :destroy
 
   has_many :spell_classes, dependent: :destroy
-  has_many :spells, through: :spell_classes
+  has_many :spells, -> { distinct }, through: :spell_classes
 
   belongs_to :user, optional: true
 

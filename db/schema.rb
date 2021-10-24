@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_24_152419) do
+ActiveRecord::Schema.define(version: 2021_10_24_194436) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -42,7 +42,7 @@ ActiveRecord::Schema.define(version: 2021_10_24_152419) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "api", force: :cascade do |t|
+  create_table "actions", force: :cascade do |t|
     t.string "desc"
     t.string "name"
     t.bigint "monster_id", null: false
@@ -411,6 +411,7 @@ ActiveRecord::Schema.define(version: 2021_10_24_152419) do
     t.string "prof_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "slug", null: false
     t.index ["name"], name: "index_profs_on_name", unique: true
   end
 
@@ -467,6 +468,15 @@ ActiveRecord::Schema.define(version: 2021_10_24_152419) do
     t.datetime "updated_at", precision: 6, null: false
     t.string "value"
     t.index ["monster_id"], name: "index_senses_on_monster_id"
+  end
+
+  create_table "skills", force: :cascade do |t|
+    t.string "slug"
+    t.string "name"
+    t.string "desc"
+    t.string "ability_score"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "speeds", force: :cascade do |t|
@@ -592,7 +602,7 @@ ActiveRecord::Schema.define(version: 2021_10_24_152419) do
   add_foreign_key "ability_bonus_options", "races"
   add_foreign_key "ability_score_dnd_classes", "ability_scores"
   add_foreign_key "ability_score_dnd_classes", "dnd_classes"
-  add_foreign_key "api", "monsters"
+  add_foreign_key "actions", "monsters"
   add_foreign_key "armor_classes", "items"
   add_foreign_key "class_features", "dnd_class_levels"
   add_foreign_key "class_level_choices", "class_features"

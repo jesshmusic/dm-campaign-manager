@@ -49,7 +49,7 @@ class Monster < ApplicationRecord
   end
 
   has_many :condition_immunities
-  has_many :conditions, through: :condition_immunities
+  has_many :conditions, -> { distinct }, through: :condition_immunities
 
   has_many :damage_immunities, dependent: :destroy
   has_many :damage_resistances, dependent: :destroy
@@ -65,7 +65,7 @@ class Monster < ApplicationRecord
   has_many :speeds, dependent: :destroy
 
   has_many :monster_proficiencies
-  has_many :profs, through: :monster_proficiencies
+  has_many :profs, -> { distinct }, through: :monster_proficiencies
 
   belongs_to :user, optional: true
 

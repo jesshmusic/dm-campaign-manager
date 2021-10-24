@@ -43,7 +43,7 @@ class Spell < ApplicationRecord
   end
 
   has_many :spell_classes
-  has_many :dnd_classes, through: :spell_classes
+  has_many :dnd_classes, -> { distinct }, through: :spell_classes
 
   belongs_to :user, optional: true
 

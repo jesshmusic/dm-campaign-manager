@@ -22,7 +22,7 @@ class SpellCasting < ApplicationRecord
   has_many :spell_casting_infos, dependent: :destroy
 
   has_one :spell_casting_ability, dependent: :destroy
-  has_one :ability_score, through: :spell_casting_ability
+  has_one :ability_score, -> { distinct }, through: :spell_casting_ability
 
   accepts_nested_attributes_for :spell_casting_infos, reject_if: :all_blank, allow_destroy: true
 end

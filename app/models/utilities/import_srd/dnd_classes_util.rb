@@ -14,9 +14,6 @@ class DndClassesUtil
       result = JSON.parse response, symbolize_names: true
       count = 0
       result[:results].each do |dnd_class_ref|
-        # First create an ApiReference for usage elsewhere
-        ApiReference.find_or_create_by(slug: dnd_class_ref[:index], name: dnd_class_ref[:index], api_url: "/v1/dnd_classes/#{dnd_class_ref[:index]}")
-
         # Fetch the full class record
         class_uri = URI("#{dnd_api_url}#{dnd_class_ref[:url]}")
         class_response = Net::HTTP.get(class_uri)
@@ -60,6 +57,123 @@ class DndClassesUtil
         count += 1
       end
       puts "#{count} D&D classes imported."
+    end
+
+    def import_saving_throws(dnd_class, class_result)
+      if class_result[:saving_throws]
+        class_result[:saving_throws].each do |saving_throw|
+          ability_score = AbilityScore.find_by(slug: saving_throw[:index])
+          dnd_class.ability_scores << ability_score
+        end
+      end
+    end
+
+    def import_prof_choices(dnd_class, class_result)
+      class_result[:proficiency_choices].each_with_index do |prof_choice_block, index|
+        new_prof_choice = ProfChoice.find_or_initialize_by(name: "#{dnd_class.name} #{index}")
+        new_prof_choice.num_choices = prof_choice_block[:choose]
+        new_prof_choice.prof_choice_type = prof_choice_block[:type]
+        prof_choice_block[:from].each do |prof|
+          new_prof = Prof.find_by(slug: prof[:index])
+          new_prof_choice.profs << new_prof
+        end
+        dnd_class.prof_choices << new_prof_choice
+      end
+    end
+
+    def import_profs(dnd_class, class_result)
+      class_result[:proficiencies].each do |prof|
+        new_prof = Prof.find_by(slug: prof[:index])
+        dnd_class.profs << new_prof
+      end
+    end
+
+    def import_starting_equipment(dnd_class, class_result)
+      dnd_class.equipments.destroy_all
+      class_result[:starting_equipment].each do |item|
+        dnd_class.equipments.create(name: item[:equipment][:name], quantity: item[:quantity])
+      end
+    end
+
+    def import_starting_equip_options(dnd_class, class_result)
+      dnd_class.starting_equipment_options.destroy_all
+      class_result[:starting_equipment_options].each do |option|
+        starting_equipment_option = dnd_class.starting_equipment_options.create(choose: option[:choose], equipment_type: option[:type])
+        starting_equipment_option = create_equipment_option(option, starting_equipment_option)
+        starting_equipment_option.save!
+      end
+    end
+
+    def import_subclasses(dnd_class, class_result)
+      if class_result[:subclasses]
+        class_result[:subclasses].each do |subclass|
+          dnd_class.subclasses << subclass[:name]
+        end
+        dnd_class.subclasses.uniq!
+      end
+    end
+
+    def import_multi_classing(dnd_class, class_result)
+      dnd_class.multi_classing.destroy unless dnd_class.multi_classing.nil?
+      unless class_result[:multi_classing].nil?
+        dnd_class.multi_classing = MultiClassing.create()
+        unless class_result[:multi_classing][:prerequisites].nil?
+          class_result[:multi_classing][:prerequisites].each do |prereq|
+            dnd_class.multi_classing.multi_class_prereqs.create(ability_score: prereq[:ability_score][:name],
+                                                                minimum_score: prereq[:minimum_score])
+          end
+        end
+        unless class_result[:multi_classing][:proficiencies].nil?
+          class_result[:multi_classing][:proficiencies].each do |prof|
+            dnd_class.multi_classing.profs << Prof.find_by(name: prof[:name])
+          end
+        end
+        unless class_result[:multi_classing][:proficiency_choices].nil?
+          class_result[:multi_classing][:proficiency_choices].each_with_index do |prof_choice, index|
+            choices = dnd_class.multi_classing.prof_choices.create(
+              name: "#{dnd_class.name} multiclassing #{index}",
+              num_choices: prof_choice[:choose],
+              prof_choice_type: prof_choice[:type])
+            prof_choice[:from].each do |prof|
+              choices.profs << Prof.find_by(name: prof[:name])
+            end
+            choices.save!
+          end
+        end
+      end
+    end
+
+    def import_spell_casting(dnd_class, class_result)
+      dnd_class.spell_casting.destroy unless dnd_class.spell_casting.nil?
+      unless class_result[:spellcasting].nil?
+        spellcasting = class_result[:spellcasting]
+        dnd_class.spell_casting = SpellCasting.create(level: spellcasting[:level])
+        spellcasting[:info].each do |info|
+          dnd_class.spell_casting.spell_casting_infos << SpellCastingInfo.create(name: info[:name], desc: info[:desc])
+        end
+        dnd_class.spell_casting.ability_score = AbilityScore.find_by(slug: spellcasting[:spellcasting_ability][:index])
+      end
+    end
+
+    def import_class_levels (dnd_class, class_result)
+      dnd_class.dnd_class_levels.destroy_all
+      class_levels_uri = URI("#{dnd_api_url}#{class_result[:class_levels]}")
+      class_levels_response = Net::HTTP.get(class_levels_uri)
+      class_levels_result = JSON.parse class_levels_response, symbolize_names: true
+      class_levels_result.each do |level|
+        if level[:subclass].nil?
+          class_level = dnd_class.dnd_class_levels.create(level: level[:level],
+                                                          ability_score_bonuses: level[:ability_score_bonuses],
+                                                          prof_bonus: level[:prof_bonus])
+          import_class_features(class_level, level)
+
+          import_class_spellcasting(class_level, level)
+
+          import_class_specific(class_level, level)
+
+          class_level.save!
+        end
+      end
     end
 
     def create_equipment_option(option, starting_equipment_option)
@@ -117,27 +231,6 @@ class DndClassesUtil
       end
     end
 
-    def import_class_levels (dnd_class, class_result)
-      dnd_class.dnd_class_levels.destroy_all
-      class_levels_uri = URI("#{dnd_api_url}#{class_result[:class_levels]}")
-      class_levels_response = Net::HTTP.get(class_levels_uri)
-      class_levels_result = JSON.parse class_levels_response, symbolize_names: true
-      class_levels_result.each do |level|
-        if level[:subclass].nil?
-          class_level = dnd_class.dnd_class_levels.create(level: level[:level],
-                                                          ability_score_bonuses: level[:ability_score_bonuses],
-                                                          prof_bonus: level[:prof_bonus])
-          import_class_features(class_level, level)
-
-          import_class_spellcasting(class_level, level)
-
-          import_class_specific(class_level, level)
-
-          class_level.save!
-        end
-      end
-    end
-
     def import_class_specific(class_level, level)
       if level[:class_specific]
         level[:class_specific].each_key do |key|
@@ -177,101 +270,6 @@ class DndClassesUtil
                                                                   spell_slots_level_7: spells[:spell_slots_level_7],
                                                                   spell_slots_level_8: spells[:spell_slots_level_8],
                                                                   spell_slots_level_9: spells[:spell_slots_level_9])
-      end
-    end
-
-    def import_multi_classing(dnd_class, class_result)
-      dnd_class.multi_classing.destroy unless dnd_class.multi_classing.nil?
-      unless class_result[:multi_classing].nil?
-        dnd_class.multi_classing = MultiClassing.create()
-        unless class_result[:multi_classing][:prerequisites].nil?
-          class_result[:multi_classing][:prerequisites].each do |prereq|
-            dnd_class.multi_classing.multi_class_prereqs.create(ability_score: prereq[:ability_score][:name],
-                                                                minimum_score: prereq[:minimum_score])
-          end
-        end
-        unless class_result[:multi_classing][:proficiencies].nil?
-          class_result[:multi_classing][:proficiencies].each do |prof|
-            dnd_class.multi_classing.profs << Prof.find_by(name: prof[:name])
-          end
-        end
-        unless class_result[:multi_classing][:proficiency_choices].nil?
-          class_result[:multi_classing][:proficiency_choices].each_with_index do |prof_choice, index|
-            choices = dnd_class.multi_classing.prof_choices.create(
-              name: "#{dnd_class.name} multiclassing #{index}",
-              num_choices: prof_choice[:choose],
-              prof_choice_type: prof_choice[:type])
-            prof_choice[:from].each do |prof|
-              choices.profs << Prof.find_by(name: prof[:name])
-            end
-            choices.save!
-          end
-        end
-      end
-    end
-
-    def import_prof_choices(dnd_class, class_result)
-      class_result[:proficiency_choices].each_with_index do |prof_choice_block, index|
-        new_prof_choice = ProfChoice.find_or_initialize_by(name: "#{dnd_class.name} #{index}")
-        new_prof_choice.num_choices = prof_choice_block[:choose]
-        new_prof_choice.prof_choice_type = prof_choice_block[:type]
-        prof_choice_block[:from].each do |prof|
-          new_prof = ImportSrdUtilities.import_prof(prof[:url], dnd_class)
-          new_prof_choice.profs |= [new_prof]
-        end
-        dnd_class.prof_choices |= [new_prof_choice]
-      end
-    end
-
-    def import_profs(dnd_class, class_result)
-      class_result[:proficiencies].each do |prof|
-        new_prof = ImportSrdUtilities.import_prof(prof[:url], dnd_class)
-        dnd_class.profs |= [new_prof]
-      end
-    end
-
-    def import_saving_throws(dnd_class, class_result)
-      if class_result[:saving_throws]
-        class_result[:saving_throws].each do |saving_throw|
-          ability_score = AbilityScore.find_by(slug: saving_throw[:index])
-          dnd_class.ability_scores |= [ability_score]
-        end
-      end
-    end
-
-    def import_spell_casting(dnd_class, class_result)
-      dnd_class.spell_casting.destroy unless dnd_class.spell_casting.nil?
-      unless class_result[:spellcasting].nil?
-        spellcasting = class_result[:spellcasting]
-        dnd_class.spell_casting = SpellCasting.create(level: spellcasting[:level])
-        spellcasting[:info].each do |info|
-          dnd_class.spell_casting.spell_casting_infos |= [SpellCastingInfo.create(name: info[:name], desc: info[:desc])]
-        end
-        dnd_class.spell_casting.ability_score = AbilityScore.find_by(slug: spellcasting[:spellcasting_ability][:index])
-      end
-    end
-
-    def import_starting_equipment(dnd_class, class_result)
-      dnd_class.equipments.destroy_all
-      class_result[:starting_equipment].each do |item|
-        dnd_class.equipments.create(name: item[:equipment][:name], quantity: item[:quantity])
-      end
-    end
-
-    def import_starting_equip_options(dnd_class, class_result)
-      dnd_class.starting_equipment_options.destroy_all
-      class_result[:starting_equipment_options].each do |option|
-        starting_equipment_option = dnd_class.starting_equipment_options.create(choose: option[:choose], equipment_type: option[:type])
-        starting_equipment_option = create_equipment_option(option, starting_equipment_option)
-        starting_equipment_option.save!
-      end
-    end
-
-    def import_subclasses(dnd_class, class_result)
-      if class_result[:subclasses]
-        class_result[:subclasses].each do |subclass|
-          dnd_class.subclasses |= [subclass[:name]]
-        end
       end
     end
 

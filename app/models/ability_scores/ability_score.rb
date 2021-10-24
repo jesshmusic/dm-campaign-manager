@@ -11,4 +11,17 @@
 #  updated_at :datetime         not null
 #
 class AbilityScore < ApplicationRecord
+  include PgSearch::Model
+
+  # PgSearch
+  pg_search_scope :search_for,
+                  against: {
+                    name: 'A',
+                    desc: 'B'
+                  },
+                  using: { tsearch: { prefix: true } }
+
+  def to_param
+    slug
+  end
 end

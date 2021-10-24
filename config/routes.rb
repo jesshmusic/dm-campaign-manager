@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+
   root to: 'home#index'
 
   resources :users, except: %i[create new], param: :slug
@@ -34,6 +35,8 @@ Rails.application.routes.draw do
            constraints: { format: 'json' }
       scope except: [:new, :edit] do
         resources :conditions, only: [:index, :show], param: :slug, constraints: { format: 'json' }
+        resources :proficiencies, only: [:index, :show], param: :slug, constraints: { format: 'json' }
+        resources :skills, only: [:index, :show], param: :slug, constraints: { format: 'json' }
         resources :dnd_classes, param: :slug
         resources :items, param: :slug
         # noinspection RailsParamDefResolve

@@ -7,6 +7,7 @@
 #  id         :bigint           not null, primary key
 #  name       :string
 #  prof_type  :string
+#  slug       :string           not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #
@@ -18,6 +19,17 @@
 class Prof < ApplicationRecord
   validates :name, presence: true
 
-  has_many :monster_proficiencies
-  has_and_belongs_to_many :races
+  include PgSearch::Model
+
+  # PgSearch
+  pg_search_scope :search_for,
+                  against: {
+                    name: 'A',
+                    description: 'B'
+                  },
+                  using: { tsearch: { prefix: true } }
+
+  def to_param
+    slug
+  end
 end

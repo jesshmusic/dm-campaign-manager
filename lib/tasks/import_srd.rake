@@ -26,7 +26,7 @@ namespace :srd do
   end
 
   task import_dnd_classes: :environment do
-    DndClass.destroy_all
+    ImportSrdUtilities.import_dependencies
     DndClassesUtil.import
   end
 
