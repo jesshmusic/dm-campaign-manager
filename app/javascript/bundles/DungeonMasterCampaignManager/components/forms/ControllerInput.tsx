@@ -67,7 +67,12 @@ export const ControlledInput = (props: {
           type={type ? type : 'text'}
           label={label}
           className={className}
-          onChange={(event) => handleChange(event.target.value, fieldName)}
+          onChange={(event) => {
+            if (type === 'checkbox' || type === 'radio') {
+              return handleChange(event.target.checked, fieldName);
+            }
+            return handleChange(event.target.value, fieldName);
+          }}
           placeholder={`${label}...`}
           errors={errors}
           min={min}

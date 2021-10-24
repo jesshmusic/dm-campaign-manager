@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   Control,
-  Controller,
   FieldErrors,
   FieldValues,
   UseFormGetValues,
@@ -9,11 +8,9 @@ import {
   useWatch,
 } from 'react-hook-form';
 import {
-  ControllerInput,
   ControlledInput,
   ControlledSelect,
 } from '../../../../components/forms/ControllerInput';
-import Select from 'react-select';
 import {
   damageTypes,
   diceOptions,
@@ -44,7 +41,6 @@ const AttackForm = (props: {
   const isRanged = useWatch({
     control,
     name: `${fieldName}.damage.isRanged`,
-    defaultValue: false,
   });
 
   return (

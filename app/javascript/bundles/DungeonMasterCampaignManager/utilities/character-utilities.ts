@@ -194,7 +194,7 @@ export const generateAttackDesc = (
 ): string => {
   const toWords = new ToWords();
   let desc = '';
-  console.log(actionFields);
+
   const actionType = actionFields.actionType.value;
   if (actionType === ActionTypes.ability) {
     return actionFields.desc;
