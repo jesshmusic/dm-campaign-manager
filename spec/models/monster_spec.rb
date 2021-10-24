@@ -135,7 +135,7 @@ RSpec.describe Monster, type: :model do
                                        )
     end
 
-    it 'should should have actions' do
+    it 'should should have api' do
       monster = Monster.find_by(slug: 'gargoyle')
       actions = monster.actions
       expect(actions.count).to eq(4)
@@ -143,7 +143,7 @@ RSpec.describe Monster, type: :model do
       expect(actions[1].name).to eq('Bite')
     end
 
-    it 'should should have legendary actions' do
+    it 'should should have legendary api' do
       monster = Monster.find_by(slug: 'ancient-red-dragon')
       actions = monster.legendary_actions
       expect(actions.count).to eq(3)

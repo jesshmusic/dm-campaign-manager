@@ -15,10 +15,27 @@ export enum ActionTypes {
   spellCasting = 'spellCasting',
 }
 
+export interface ApiReference {
+  name: string;
+  slug: string;
+}
+
 export interface AppProps {
   flashMessages: FlashMessage[];
+  conditions: {
+    conditions: ApiReference[];
+    count: number;
+    currentCondition?: any;
+    loading?: boolean;
+  };
+  dndClasses: {
+    dndClasses: DndClassSummary[];
+    count: number;
+    currentDndClass?: any;
+    loading?: boolean;
+  };
   items: {
-    items: any[];
+    items: ApiReference[];
     count: number;
     currentItem?: any;
   };
@@ -28,12 +45,12 @@ export interface AppProps {
     currentMonster?: MonsterProps;
   };
   races: {
-    races: any[];
+    races: ApiReference[];
     count: number;
     currentRace?: any;
   };
   spells: {
-    spells: any[];
+    spells: ApiReference[];
     count: number;
     currentSpell?: any;
   };
@@ -42,6 +59,12 @@ export interface AppProps {
     count: number;
     user?: User;
   };
+}
+
+export interface ConditionProps {
+  slug: string;
+  name: string;
+  description: string[];
 }
 
 export type DamageTypes =

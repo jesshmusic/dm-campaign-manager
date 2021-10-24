@@ -56,6 +56,7 @@ class DndClassesUtil
 
         # Save and increment count
         dnd_class.save!
+        puts "\tClass #{dnd_class.name} imported"
         count += 1
       end
       puts "#{count} D&D classes imported."
@@ -114,7 +115,6 @@ class DndClassesUtil
         end
         class_feat.save!
       end
-      puts "\t- Added #{class_level.class_features.count} class level features"
     end
 
     def import_class_levels (dnd_class, class_result)
@@ -136,7 +136,6 @@ class DndClassesUtil
           class_level.save!
         end
       end
-      puts "Added #{dnd_class.dnd_class_levels.count} class levels"
     end
 
     def import_class_specific(class_level, level)
@@ -190,13 +189,11 @@ class DndClassesUtil
             dnd_class.multi_classing.multi_class_prereqs.create(ability_score: prereq[:ability_score][:name],
                                                                 minimum_score: prereq[:minimum_score])
           end
-          puts "#{dnd_class.name} - Added #{dnd_class.multi_classing.multi_class_prereqs.count} multiclassing prereqs"
         end
         unless class_result[:multi_classing][:proficiencies].nil?
           class_result[:multi_classing][:proficiencies].each do |prof|
             dnd_class.multi_classing.profs << Prof.find_by(name: prof[:name])
           end
-          puts "#{dnd_class.name} - Added #{dnd_class.multi_classing.profs.count} multiclassing proficiencies"
         end
         unless class_result[:multi_classing][:proficiency_choices].nil?
           class_result[:multi_classing][:proficiency_choices].each_with_index do |prof_choice, index|
@@ -209,7 +206,6 @@ class DndClassesUtil
             end
             choices.save!
           end
-          puts "#{dnd_class.name} - Added #{dnd_class.multi_classing.prof_choices.count} multiclassing proficiency choices"
         end
       end
     end
@@ -240,7 +236,6 @@ class DndClassesUtil
           ability_score = AbilityScore.find_by(slug: saving_throw[:index])
           dnd_class.ability_scores |= [ability_score]
         end
-        puts "#{dnd_class.name} - Added #{dnd_class.ability_scores.count} ability scores"
       end
     end
 

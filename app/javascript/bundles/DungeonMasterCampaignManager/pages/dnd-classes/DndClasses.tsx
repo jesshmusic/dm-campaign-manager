@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import rest from '../../actions/api';
+import rest from '../../api/api';
 
 // Container
 import PageContainer from '../../containers/PageContainer';

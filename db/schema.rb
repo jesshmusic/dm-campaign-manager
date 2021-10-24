@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_19_144112) do
+ActiveRecord::Schema.define(version: 2021_10_24_152419) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -42,7 +42,7 @@ ActiveRecord::Schema.define(version: 2021_10_19_144112) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "actions", force: :cascade do |t|
+  create_table "api", force: :cascade do |t|
     t.string "desc"
     t.string "name"
     t.bigint "monster_id", null: false
@@ -140,11 +140,12 @@ ActiveRecord::Schema.define(version: 2021_10_19_144112) do
   end
 
   create_table "conditions", force: :cascade do |t|
-    t.string "index"
     t.string "name"
     t.string "description", default: [], array: true
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "slug", null: false
+    t.index ["slug"], name: "index_conditions_on_slug", unique: true
   end
 
   create_table "content_items", force: :cascade do |t|
@@ -591,7 +592,7 @@ ActiveRecord::Schema.define(version: 2021_10_19_144112) do
   add_foreign_key "ability_bonus_options", "races"
   add_foreign_key "ability_score_dnd_classes", "ability_scores"
   add_foreign_key "ability_score_dnd_classes", "dnd_classes"
-  add_foreign_key "actions", "monsters"
+  add_foreign_key "api", "monsters"
   add_foreign_key "armor_classes", "items"
   add_foreign_key "class_features", "dnd_class_levels"
   add_foreign_key "class_level_choices", "class_features"

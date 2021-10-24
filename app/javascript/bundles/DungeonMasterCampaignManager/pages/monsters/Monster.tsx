@@ -1,7 +1,7 @@
 import React from 'react';
 import { MonsterProps } from '../../utilities/types';
 import PageContainer from '../../containers/PageContainer';
-import rest from '../../actions/api';
+import rest from '../../api/api';
 import { connect } from 'react-redux';
 import DndSpinner from '../../components/DndSpinners/DndSpinner';
 import { abilityScoreModifier } from '../monster-generator/services';

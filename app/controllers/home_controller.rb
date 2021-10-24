@@ -6,8 +6,12 @@ class HomeController < ApplicationController
   def index
     @user = current_user ? current_user.as_json : nil
     @home_props = {
-      dnd_classes: {
-        dnd_classes: [],
+      conditions: {
+        conditions: [],
+        count: Condition.count,
+      },
+      dndClasses: {
+        dndClasses: [],
         count: DndClass.count,
       },
       items: {

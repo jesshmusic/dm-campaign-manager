@@ -4,7 +4,7 @@ import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
 import DndSpinner from '../../components/DndSpinners/DndSpinner';
 import InfoBlock from '../../components/InfoBlock/InfoBlock';
-import rest from '../../actions/api';
+import rest from '../../api/api';
 import { connect } from 'react-redux';
 
 const styles = require('./spells.module.scss');

@@ -1,5 +1,5 @@
 import React from 'react';
-import rest from '../../actions/api';
+import rest from '../../api/api';
 import { connect } from 'react-redux';
 import { RaceProps } from '../../utilities/types';
 import PageContainer from '../../containers/PageContainer';

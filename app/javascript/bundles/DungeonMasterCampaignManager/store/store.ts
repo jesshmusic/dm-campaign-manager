@@ -1,15 +1,21 @@
 import { configureStore } from '@reduxjs/toolkit';
 import rootReducer from '../reducers';
-import { AppProps } from '../utilities/types';
+import { ApiReference, AppProps } from '../utilities/types';
 
 export const store = (props: AppProps) => {
   return configureStore({
     reducer: rootReducer,
     preloadedState: {
       flashMessages: [],
+      conditions: {
+        conditions: [],
+        count: props.conditions.count,
+        currentCondition: null,
+        loading: false,
+      },
       dndClasses: {
         dndClasses: [],
-        count: props.items.count,
+        count: props.dndClasses.count,
         currentDndClass: null,
         loading: false,
       },

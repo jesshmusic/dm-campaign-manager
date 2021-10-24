@@ -13,9 +13,20 @@
 #
 #  index_conditions_on_slug  (slug) UNIQUE
 #
-FactoryBot.define do
-  factory :condition do
-    index { "MyString" }
-    name { "MyString" }
+class Condition < ApplicationRecord
+  has_many :condition_immunities
+
+  include PgSearch::Model
+
+  # PgSearch
+  pg_search_scope :search_for,
+                  against: {
+                    name: 'A',
+                    description: 'B'
+                  },
+                  using: { tsearch: { prefix: true } }
+
+  def to_param
+    slug
   end
 end

@@ -169,7 +169,7 @@ const Convert2eMonster = (props) => {
       //     </Col>
       //   </Row>
       //   <Row className={ 'mb-4' }>
-      //     <ButtonGroup aria-label='Character actions'>
+      //     <ButtonGroup aria-label='Character api'>
       {/*      <Button type='submit'>Convert Monster</Button>*/}
       {/*      <Button type='button'*/}
       {/*              variant={ 'secondary' }>Reset</Button>*/}
@@ -197,7 +197,7 @@ export default Convert2eMonster;
 // function mapDispatchToProps (dispatch) {
 //   return {
 //     generateNonPlayerCharacter: (monster) => {
-//       dispatch(rest.actions.convert2eNonPlayerCharacter({}, { body: JSON.stringify(monster) }));
+//       dispatch(rest.api.convert2eNonPlayerCharacter({}, { body: JSON.stringify(monster) }));
 //     }
 //   };
 // }

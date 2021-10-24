@@ -1,7 +1,7 @@
 import { createAction, createReducer } from '@reduxjs/toolkit';
 import { AnyAction } from 'redux';
 import { FlashMessage } from '../utilities/types';
-// import rest from '../actions/api';
+// import rest from '../api/api';
 
 // Flash Messages
 const dismissFlashMessage = createAction('@@dmcm@dismissFlashMessage');
@@ -11,33 +11,38 @@ const logoutSucceeded = createAction('@@redux-api@userLogout_success');
 const loginFailed = createAction('@@redux-api@userLogin_fail');
 const logoutFailed = createAction('@@redux-api@userLogout_fail');
 
+const flashErrorMessage = (state, action) => [
+  ...state,
+  {
+    id: Date.now(),
+    type: 'danger',
+    text: action.error.errors,
+    heading: `Error ${action.error.status} ${action.error.statusText}`,
+  },
+];
 
-const flashErrorMessage = (state, action) => [...state, {
-  id: Date.now(),
-  type: 'danger',
-  text: action.error.errors,
-  heading: `Error ${action.error.status} ${action.error.statusText}`
-}];
+const flashSuccessMessage = (state, message, heading) => [
+  ...state,
+  {
+    id: Date.now(),
+    type: 'success',
+    text: message,
+    heading,
+  },
+];
 
-const flashSuccessMessage = (state, message, heading) => [...state, {
-  id: Date.now(),
-  type: 'success',
-  text: message,
-  heading
-}];
-
-const flashMessages = createReducer([], builder =>
-  builder
-    .addCase(dismissFlashMessage, (state, action: AnyAction) => {
-      const removeIndex = state.map((flash: FlashMessage) => flash.id).indexOf(action.id);
-      const newState = [...state];
-      newState.splice(removeIndex, 1);
-      return newState;
-    })
+const flashMessages = createReducer([], (builder) =>
+  builder.addCase(dismissFlashMessage, (state, action: AnyAction) => {
+    const removeIndex = state
+      .map((flash: FlashMessage) => flash.id)
+      .indexOf(action.id);
+    const newState = [...state];
+    newState.splice(removeIndex, 1);
+    return newState;
+  })
 );
 
 export default flashMessages;
-
 
 // const old = {
 //   [dismissFlashMessage]: (state, action) => {

@@ -31,7 +31,7 @@ class NpcGenerator
       # @new_npc.armor_class = cr_info[:armor_class]
       #
       # # Add Actions
-      # create_actions(npc_attributes[:actions], npc_attributes[:number_of_attacks].to_i, npc_attributes[:challenge_rating].to_sym)
+      # create_actions(npc_attributes[:api], npc_attributes[:number_of_attacks].to_i, npc_attributes[:challenge_rating].to_sym)
       @new_npc.user = user
       # Return
       @new_npc.as_json(

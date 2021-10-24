@@ -1,0 +1,15 @@
+@import '../../stylesheets/variables';
+
+.spell {
+  @include font-size($font-size-base);
+  @include resp-container;
+
+  padding: 0 1rem;
+  width: 100%;
+}
+
+.description {
+  font-style: italic;
+  margin-bottom: 1rem;
+  margin-top: $spacer * -1;
+}

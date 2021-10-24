@@ -1,7 +1,7 @@
 import React from 'react';
 
 import PageContainer from '../../containers/PageContainer';
-import rest from '../../actions/api';
+import rest from '../../api/api';
 import PageTitle from '../../components/PageTitle/PageTitle';
 import DndSpinner from '../../components/DndSpinners/DndSpinner';
 import { DndClass } from '../../utilities/types';

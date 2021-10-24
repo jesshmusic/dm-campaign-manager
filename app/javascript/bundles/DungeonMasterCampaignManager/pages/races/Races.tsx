@@ -3,7 +3,7 @@ import { navigate } from '@reach/router';
 import { Row } from 'react-table';
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
-import rest from '../../actions/api';
+import rest from '../../api/api';
 import { connect } from 'react-redux';
 import DataTable from '../../components/DataTable/DataTable';
 import { RaceSummary } from '../../utilities/types';

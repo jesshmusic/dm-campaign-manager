@@ -2,7 +2,7 @@ import React from 'react';
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
 import { MonsterSummary, MonsterType } from '../../utilities/types';
-import rest from '../../actions/api';
+import rest from '../../api/api';
 import { navigate } from '@reach/router';
 import { connect } from 'react-redux';
 import DataTable from '../../components/DataTable/DataTable';

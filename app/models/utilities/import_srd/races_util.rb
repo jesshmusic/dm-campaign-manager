@@ -39,6 +39,7 @@ class RacesUtil
         current_race.save!
         import_abilities(current_race, race_result)
         import_traits(current_race, race_result)
+        puts "\tRace #{current_race.name} imported"
         count += 1
       end
       puts "#{count} Races imported or updated."

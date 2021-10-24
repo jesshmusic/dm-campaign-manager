@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: actions
+# Table name: api
 #
 #  id         :bigint           not null, primary key
 #  desc       :string

@@ -96,7 +96,7 @@ module Admin::V1
 
     private
 
-    # Use callbacks to share common setup or constraints between actions.
+    # Use callbacks to share common setup or constraints between api.
     def set_race
       @race = Race.find_by(slug: params[:slug])
     end

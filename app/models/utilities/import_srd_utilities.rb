@@ -134,10 +134,10 @@ class ImportSrdUtilities
         condition_uri = URI("#{dnd_api_url}#{condition[:url]}")
         condition_response = Net::HTTP.get(condition_uri)
         condition_result = JSON.parse condition_response, symbolize_names: true
-        new_cond = Condition.find_or_initialize_by(index: condition[:index])
+        new_cond = Condition.find_or_initialize_by(slug: condition[:index])
         new_cond.description = condition_result[:desc]
         new_cond.name = condition_result[:name]
-        new_cond.index = condition_result[:index]
+        new_cond.slug = condition_result[:index]
         new_cond.save!
         count += 1
       end

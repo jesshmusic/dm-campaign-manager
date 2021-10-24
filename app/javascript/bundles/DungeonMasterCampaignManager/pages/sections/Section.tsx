@@ -2,7 +2,7 @@ import React from 'react';
 import PageTitle from '../../components/PageTitle/PageTitle';
 import DndSpinner from '../../components/DndSpinners/DndSpinner';
 import PageContainer from '../../containers/PageContainer';
-import rest from '../../actions/api';
+import rest from '../../api/api';
 import { connect } from 'react-redux';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';

@@ -83,6 +83,12 @@ export default reduxApi({
   generateCommoner: {
     url: '/v1/generate_commoner?random_monster_gender=:gender&random_monster_race=:race',
   },
+  getCondition: {
+    url: '/v1/conditions/:slug',
+  },
+  getConditions: {
+    url: '/v1/conditions.json',
+  },
   getDndClass: {
     url: '/v1/dnd_classes/:slug.json',
   },

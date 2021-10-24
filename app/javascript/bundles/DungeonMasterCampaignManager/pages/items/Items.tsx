@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import rest from '../../actions/api';
+import rest from '../../api/api';
 import { connect } from 'react-redux';
 import ItemsList from './components/ItemsList';
 import { ItemsPageProps } from '../../utilities/types';

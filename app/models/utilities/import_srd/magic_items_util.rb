@@ -27,7 +27,7 @@ class MagicItemsUtil
           else
             MagicItem.create_magic_item_from_old_magic_items(magic_item)
           end
-          puts "Created new magic item: #{magic_item[:name]}"
+          puts "\t Magic Item #{magic_item[:name]} imported."
           count += 1
         end
       end
@@ -40,7 +40,6 @@ class MagicItemsUtil
       combined_magic_items = MagicItem.where.not(rarity: ['common', 'uncommon', 'rare', 'very rare', 'legendary', 'artifact'])
       combined_magic_items.each do |magic_item|
         magic_item_name = magic_item[:name]
-        puts "Splitting #{magic_item_name}"
         case magic_item_name
         when 'Belt of Giant Strength'
           create_belts_of_giant_strength(magic_item)
@@ -169,7 +168,6 @@ class MagicItemsUtil
           new_magic_item.save!
 
           MagicArmorItem.new_magic_armor(new_magic_item, armor_name)
-          puts "Created new magic armor: #{new_magic_item[:name]}"
           new_magic_item.destroy!
         end
       end

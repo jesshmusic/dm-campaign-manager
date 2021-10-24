@@ -9,7 +9,6 @@ class MonstersUtil
     end
 
     def import
-      puts 'Importing Monsters'
       next_uri = URI("#{dnd_api_url}/api/monsters/")
       count = 0
       while next_uri
@@ -49,7 +48,7 @@ class MonstersUtil
           import_condition_immunities(new_monster, monster)
 
           new_monster.save!
-          puts "\tMonster: #{new_monster.name} added to database"
+          puts "\tMonster: #{new_monster.name} imported."
           count += 1
         end
       end
@@ -194,8 +193,8 @@ class MonstersUtil
       new_monster.condition_immunities.destroy_all unless new_monster.condition_immunities.nil?
       if monster[:condition_immunities] && monster[:condition_immunities].is_a?(Array)
         monster[:condition_immunities].each do |cond_imm|
-          new_cond = Condition.find_by(index: cond_imm[:index])
-          new_cond_imm = ConditionImmunity.create()
+          new_cond = Condition.find_by(slug: cond_imm[:index])
+          new_cond_imm = ConditionImmunity.create
           new_cond_imm.condition = new_cond
           new_monster.condition_immunities << new_cond_imm
         end

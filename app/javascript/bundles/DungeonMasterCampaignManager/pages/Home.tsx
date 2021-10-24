@@ -20,6 +20,8 @@ import SideBar from '../components/SideBar/SideBar';
 import Util from '../utilities/utilities';
 import Item from './items/Item';
 import ProtectedRoute from '../components/ProtectedRoute';
+import Condition from './conditions/Condition';
+import Conditions from './conditions/Conditions';
 
 const Home = (props) => {
   const [flashMessages, setFlashMessages] = React.useState<FlashMessage[]>([]);
@@ -60,6 +62,8 @@ const Home = (props) => {
           <DndClasses path="/app/classes" {...combinedProps} />
           <Races path="/app/races" {...combinedProps} />
           <Race path="/app/races/:raceSlug" {...combinedProps} />
+          <Conditions path="/app/conditions/" {...combinedProps} />
+          <Condition path="/app/conditions/:conditionSlug" {...combinedProps} />
           {Util.itemPages.map((itemPage) => (
             <Items
               path={itemPage.path}

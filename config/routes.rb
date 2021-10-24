@@ -33,6 +33,7 @@ Rails.application.routes.draw do
            as: 'calculate_cr',
            constraints: { format: 'json' }
       scope except: [:new, :edit] do
+        resources :conditions, only: [:index, :show], param: :slug, constraints: { format: 'json' }
         resources :dnd_classes, param: :slug
         resources :items, param: :slug
         # noinspection RailsParamDefResolve

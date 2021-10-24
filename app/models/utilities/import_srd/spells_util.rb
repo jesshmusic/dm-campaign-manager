@@ -51,6 +51,7 @@ class SpellsUtil
 
           spell_slug = spell[:name].parameterize.truncate(80, omission: '')
           new_spell.slug = Spell.exists?(slug: spell_slug) ? "#{spell_slug}_#{new_spell.id}" : spell_slug
+          puts "\tSpell #{new_spell.name} imported"
         end
         count += 1
       end

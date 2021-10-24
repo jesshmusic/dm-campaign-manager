@@ -24,7 +24,6 @@ class ItemsUtil
         item_uri = URI("#{dnd_api_url}#{equipment_item[:url]}")
         item_response = Net::HTTP.get(item_uri)
         item_result = JSON.parse item_response, symbolize_names: true
-        puts "\tCreating Item: #{item_result[:name]}"
         db_item = Item.find_or_create_by!(name: equipment_item[:name], slug: item_result[:index])
         set_item_info(db_item, item_result)
         set_equipment_category(db_item, item_result)
@@ -33,7 +32,7 @@ class ItemsUtil
         set_weapon_info(db_item, item_result)
         set_vehicle_info(db_item, item_result)
         db_item.save!
-        puts "\t\tItem saved: #{db_item.name} (\"#{db_item.equipment_category}\")"
+        puts "\tItem #{db_item.name} (\"#{db_item.equipment_category}\") imported."
         count += 1
       end
       puts "#{count} Items imported."
