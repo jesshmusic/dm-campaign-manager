@@ -18,8 +18,9 @@
 #  fk_rails_...  (monster_id => monsters.id)
 #
 FactoryBot.define do
-  factory :damage_immunity do
+  factory :monster_immunity do
     name { "MyString" }
+    type { "" }
     monster { nil }
   end
 end

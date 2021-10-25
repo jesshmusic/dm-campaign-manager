@@ -17,9 +17,6 @@
 #
 #  fk_rails_...  (monster_id => monsters.id)
 #
-FactoryBot.define do
-  factory :damage_immunity do
-    name { "MyString" }
-    monster { nil }
-  end
+class MonsterImmunity < ApplicationRecord
+  belongs_to :monster
 end

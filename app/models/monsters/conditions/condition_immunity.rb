@@ -2,21 +2,23 @@
 
 # == Schema Information
 #
-# Table name: condition_immunities
+# Table name: monster_immunities
 #
-#  id           :bigint           not null, primary key
-#  created_at   :datetime         not null
-#  updated_at   :datetime         not null
-#  condition_id :bigint
-#  monster_id   :bigint
+#  id         :bigint           not null, primary key
+#  name       :string
+#  type       :string
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#  monster_id :bigint           not null
 #
 # Indexes
 #
-#  index_condition_immunities_on_condition_id  (condition_id)
-#  index_condition_immunities_on_monster_id    (monster_id)
+#  index_monster_immunities_on_monster_id  (monster_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (monster_id => monsters.id)
 #
 
-class ConditionImmunity < ApplicationRecord
-  belongs_to :condition
-  belongs_to :monster
+class ConditionImmunity < MonsterImmunity
 end

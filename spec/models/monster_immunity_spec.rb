@@ -17,9 +17,8 @@
 #
 #  fk_rails_...  (monster_id => monsters.id)
 #
-FactoryBot.define do
-  factory :damage_immunity do
-    name { "MyString" }
-    monster { nil }
-  end
+require 'rails_helper'
+
+RSpec.describe MonsterImmunity, type: :model do
+  pending "add some examples to (or delete) #{__FILE__}"
 end
