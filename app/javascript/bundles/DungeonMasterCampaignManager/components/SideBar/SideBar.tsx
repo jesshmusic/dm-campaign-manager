@@ -5,6 +5,7 @@ import {
   AiOutlineHome,
   BiLogIn,
   BiLogOut,
+  GiAchillesHeel,
   GiCapeArmor,
   GiChestArmor,
   GiDwarfFace,
@@ -18,17 +19,10 @@ import {
   GiRuleBook,
   GiSwapBag,
   GiSwordArray,
-  GiToolbox,
+  GiToolbox
 } from 'react-icons/all';
 
-import {
-  Menu,
-  MenuItem,
-  ProSidebar,
-  SidebarContent,
-  SidebarFooter,
-  SubMenu,
-} from 'react-pro-sidebar';
+import { Menu, MenuItem, ProSidebar, SidebarContent, SidebarFooter, SubMenu } from 'react-pro-sidebar';
 import './sidebar-vars.scss';
 import { SidebarLink } from '../NavLink/NavLink';
 import { useAuth0, User } from '@auth0/auth0-react';
@@ -44,24 +38,24 @@ const itemTypes = [
   {
     name: 'Mounts & Vehicles',
     link: '/app/items/vehicles',
-    icon: <GiHorseHead />,
+    icon: <GiHorseHead />
   },
   { name: 'Tools', link: '/app/items/tools', icon: <GiToolbox /> },
   {
     name: 'Magic Items',
     link: '/app/items/magic-items',
-    icon: <GiMagicPotion />,
+    icon: <GiMagicPotion />
   },
   {
     name: 'Magic Armor',
     link: '/app/items/magic-armor',
-    icon: <GiChestArmor />,
+    icon: <GiChestArmor />
   },
   {
     name: 'Magic Weapons',
     link: '/app/items/magic-weapons',
-    icon: <GiMagicAxe />,
-  },
+    icon: <GiMagicAxe />
+  }
 ];
 
 const SideBar = (props: {
@@ -77,7 +71,7 @@ const SideBar = (props: {
     isAuthenticated,
     loginWithRedirect,
     logout,
-    getAccessTokenSilently,
+    getAccessTokenSilently
   } = useAuth0();
 
   React.useEffect(() => {
@@ -100,25 +94,30 @@ const SideBar = (props: {
     <>
       <ProSidebar collapsed={isCollapsed} image={sidebarBG}>
         <SidebarContent>
-          <Menu iconShape="square">
-            <SidebarLink to="/" title="Home" icon={<AiOutlineHome />} />
+          <Menu iconShape='square'>
+            <SidebarLink to='/' title='Home' icon={<AiOutlineHome />} />
             <SidebarLink
-              to="/app/classes"
-              title="Classes"
+              to='/app/classes'
+              title='Classes'
               icon={<GiPerson />}
             />
-            <SidebarLink to="/app/races" title="Races" icon={<GiDwarfFace />} />
+            <SidebarLink to='/app/races' title='Races' icon={<GiDwarfFace />} />
             <SidebarLink
-              to="/app/monsters"
-              title="Monsters"
+              to='/app/monsters'
+              title='Monsters'
               icon={<GiMonsterGrasp />}
             />
             <SidebarLink
-              to="/app/spells"
-              title="Spells"
+              to='/app/spells'
+              title='Spells'
               icon={<GiMagicPalm />}
             />
-            <SubMenu title="Rules" icon={<GiRuleBook />}>
+            <SidebarLink
+              to='/app/conditions'
+              title='Conditions'
+              icon={<GiAchillesHeel />}
+            />
+            <SubMenu title='Rules' icon={<GiRuleBook />}>
               {sections.map((section, index) => (
                 <SidebarLink
                   key={`rules-${index}`}
@@ -127,7 +126,7 @@ const SideBar = (props: {
                 />
               ))}
             </SubMenu>
-            <SubMenu title="Items & Equipment" icon={<GiSwapBag />}>
+            <SubMenu title='Items & Equipment' icon={<GiSwapBag />}>
               {itemTypes.map((itemType, index) => (
                 <SidebarLink
                   key={`items-${index}`}
@@ -146,21 +145,21 @@ const SideBar = (props: {
           <Menu>
             {user && user.role === 'admin' ? (
               <SidebarLink
-                to="/app/admin"
-                title="Admin"
+                to='/app/admin'
+                title='Admin'
                 icon={<GiHomeGarage />}
               />
             ) : null}
             {isAuthenticated && user ? (
               <>
                 <SidebarLink
-                  to="/app/monster-generator"
-                  title="Monster Generator"
+                  to='/app/monster-generator'
+                  title='Monster Generator'
                   icon={<GiHomeGarage />}
                 />
                 <SidebarLink
-                  to="/app/admin"
-                  title="Admin"
+                  to='/app/admin'
+                  title='Admin'
                   icon={<GiHomeGarage />}
                 />
                 <MenuItem icon={<BiLogOut />}>
@@ -185,7 +184,7 @@ const SideBar = (props: {
 
 const mapStateToProps = (state) => {
   return {
-    sections: state.sections.sections,
+    sections: state.sections.sections
   };
 };
 
@@ -213,11 +212,11 @@ const mapDispatchToProps = (dispatch) => {
           {},
           {
             body: JSON.stringify({ user: userFields }),
-            token,
+            token
           }
         )
       );
-    },
+    }
   };
 };
 
