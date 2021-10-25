@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_24_194436) do
+ActiveRecord::Schema.define(version: 2021_10_25_145904) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -130,15 +130,6 @@ ActiveRecord::Schema.define(version: 2021_10_24_194436) do
     t.index ["dnd_class_level_id"], name: "index_class_spellcastings_on_dnd_class_level_id"
   end
 
-  create_table "condition_immunities", force: :cascade do |t|
-    t.bigint "monster_id"
-    t.bigint "condition_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["condition_id"], name: "index_condition_immunities_on_condition_id"
-    t.index ["monster_id"], name: "index_condition_immunities_on_monster_id"
-  end
-
   create_table "conditions", force: :cascade do |t|
     t.string "name"
     t.string "description", default: [], array: true
@@ -165,30 +156,6 @@ ActiveRecord::Schema.define(version: 2021_10_24_194436) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["item_id"], name: "index_costs_on_item_id"
-  end
-
-  create_table "damage_immunities", force: :cascade do |t|
-    t.string "name"
-    t.bigint "monster_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["monster_id"], name: "index_damage_immunities_on_monster_id"
-  end
-
-  create_table "damage_resistances", force: :cascade do |t|
-    t.string "name"
-    t.bigint "monster_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["monster_id"], name: "index_damage_resistances_on_monster_id"
-  end
-
-  create_table "damage_vulnerabilities", force: :cascade do |t|
-    t.string "name"
-    t.bigint "monster_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["monster_id"], name: "index_damage_vulnerabilities_on_monster_id"
   end
 
   create_table "damages", force: :cascade do |t|
@@ -289,6 +256,15 @@ ActiveRecord::Schema.define(version: 2021_10_24_194436) do
     t.index ["user_id"], name: "index_items_on_user_id"
     t.index ["vehicle_category"], name: "index_items_on_vehicle_category"
     t.index ["weapon_category"], name: "index_items_on_weapon_category"
+  end
+
+  create_table "monster_immunities", force: :cascade do |t|
+    t.string "name"
+    t.string "type"
+    t.bigint "monster_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["monster_id"], name: "index_monster_immunities_on_monster_id"
   end
 
   create_table "monster_proficiencies", force: :cascade do |t|
@@ -591,8 +567,6 @@ ActiveRecord::Schema.define(version: 2021_10_24_194436) do
     t.datetime "deleted_at"
     t.string "location"
     t.text "info"
-    t.string "provider", default: "", null: false
-    t.string "uid", default: "", null: false
     t.string "auth_id", default: "", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
@@ -611,15 +585,13 @@ ActiveRecord::Schema.define(version: 2021_10_24_194436) do
   add_foreign_key "class_spellcastings", "dnd_class_levels"
   add_foreign_key "content_items", "items"
   add_foreign_key "costs", "items"
-  add_foreign_key "damage_immunities", "monsters"
-  add_foreign_key "damage_resistances", "monsters"
-  add_foreign_key "damage_vulnerabilities", "monsters"
   add_foreign_key "damages", "items"
   add_foreign_key "dnd_class_levels", "dnd_classes"
   add_foreign_key "dnd_classes", "users"
   add_foreign_key "item_ranges", "items"
   add_foreign_key "item_throw_ranges", "items"
   add_foreign_key "items", "users"
+  add_foreign_key "monster_immunities", "monsters"
   add_foreign_key "monsters", "users"
   add_foreign_key "multi_classing_prereq_options", "multi_classings"
   add_foreign_key "multi_classing_profs", "multi_classings"
