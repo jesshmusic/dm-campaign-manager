@@ -19,7 +19,13 @@ class MonstersUtil
           monster_uri = URI("#{dnd_api_url}#{monster_ref[:url]}")
           monster_response = Net::HTTP.get(monster_uri)
           monster = JSON.parse monster_response, symbolize_names: true
-          new_monster = Monster.find_or_initialize_by(name: monster[:name])
+          new_monster = Monster.find_or_create_by!(
+            alignment: monster[:alignment] || 'unaligned',
+            challenge_rating: DndRules.cr_num_to_string(monster[:challenge_rating]),
+            monster_type: monster[:type],
+            name: monster[:name],
+            slug: monster[:index]
+          )
 
           # Required Fields
           import_required_fields(new_monster, monster)
@@ -58,14 +64,9 @@ class MonstersUtil
     private
 
     def import_required_fields(new_monster, monster)
-      new_monster.slug = new_monster.slug || monster[:index]
-      new_monster.alignment = monster[:alignment] || 'unaligned'
-      monster_cr = DndRules.cr_num_to_string(monster[:challenge_rating])
-      new_monster.challenge_rating = monster_cr
-      new_monster.monster_type = monster[:type]
       new_monster.prof_bonus = DndRules.proficiency_for_cr(monster[:challenge_rating])
       new_monster.attack_bonus = new_monster.prof_bonus + DndRules.ability_score_modifier(monster[:strength])
-      new_monster.save_dc = DndRules.challenge_ratings[monster_cr.to_sym][:save_dc]
+      new_monster.save_dc = DndRules.challenge_ratings[new_monster.challenge_rating.to_sym][:save_dc]
       new_monster.save!
     end
 
@@ -75,6 +76,15 @@ class MonstersUtil
       new_monster.size = monster[:size]
       new_monster.monster_subtype = monster[:subtype] || ''
       new_monster.xp = monster[:xp]
+    end
+
+    def import_condition_immunities(new_monster, monster)
+      new_monster.condition_immunities.destroy_all unless new_monster.condition_immunities.nil?
+      if monster[:condition_immunities] && monster[:condition_immunities].is_a?(Array)
+        monster[:condition_immunities].each do |cond_imm|
+          new_monster.condition_immunities.create(name: cond_imm[:name])
+        end
+      end
     end
 
     def import_damage_immunities(new_monster, monster)
@@ -185,18 +195,6 @@ class MonstersUtil
           )
           new_monster_prof.prof = new_prof
           new_monster.monster_proficiencies << new_monster_prof
-        end
-      end
-    end
-
-    def import_condition_immunities(new_monster, monster)
-      new_monster.condition_immunities.destroy_all unless new_monster.condition_immunities.nil?
-      if monster[:condition_immunities] && monster[:condition_immunities].is_a?(Array)
-        monster[:condition_immunities].each do |cond_imm|
-          new_cond = Condition.find_by(slug: cond_imm[:index])
-          new_cond_imm = ConditionImmunity.create
-          new_cond_imm.condition = new_cond
-          new_monster.condition_immunities << new_cond_imm
         end
       end
     end

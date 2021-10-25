@@ -44,7 +44,6 @@ namespace :srd do
   end
 
   task import_monsters: :environment do
-    Monster.destroy_all
     MonstersUtil.import
   end
 

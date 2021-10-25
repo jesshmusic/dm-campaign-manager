@@ -84,7 +84,7 @@ class Monster < ApplicationRecord
   end
 
   def condition_immunities_array
-    condition_immunities.map { |cond| cond.condition.name }
+    condition_immunities.map { |cond| cond.name.downcase }
   end
 
   def immunities
