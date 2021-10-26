@@ -5,7 +5,10 @@
 import React from 'react';
 import Select from 'react-select';
 import CreatableSelect from 'react-select/creatable';
-import { MonsterGeneratorFormFields, SelectOption } from '../../utilities/types';
+import {
+  MonsterGeneratorFormFields,
+  SelectOption,
+} from '../../utilities/types';
 import { Control, Controller } from 'react-hook-form';
 import classNames from 'classnames';
 import './inputOverrides.scss';
@@ -19,7 +22,6 @@ export type SelectProps = {
   isMulti?: boolean;
   label: string;
   name: keyof MonsterGeneratorFormFields;
-  handleSelectChange: (name: string, value: string | number) => void;
   options?: SelectOption[];
   placeholder?: string;
   control?: Control<MonsterGeneratorFormFields>;
@@ -33,16 +35,11 @@ const FormSelect = ({
   label,
   className = '',
   isClearable = false,
-  handleSelectChange,
   options,
   control,
   isCreatable = false,
   isMulti = false,
 }: SelectProps) => {
-  const handleChange = (value) => {
-    handleSelectChange(name, value.value);
-  };
-
   return (
     <div className={classNames(className, styles.wrapper)}>
       <label htmlFor={name} className={styles.label}>
@@ -51,7 +48,7 @@ const FormSelect = ({
       <Controller
         control={control}
         name={name}
-        render={({ field: { onChange, ...rest } }) =>
+        render={({ field }) =>
           isCreatable ? (
             <CreatableSelect
               className={'reactSelect'}
@@ -60,8 +57,7 @@ const FormSelect = ({
               options={options}
               isMulti={isMulti}
               isSearchable
-              onChange={handleChange}
-              {...rest}
+              {...field}
             />
           ) : (
             <Select
@@ -71,8 +67,7 @@ const FormSelect = ({
               options={options}
               isMulti={isMulti}
               isSearchable
-              onChange={handleChange}
-              {...rest}
+              {...field}
             />
           )
         }

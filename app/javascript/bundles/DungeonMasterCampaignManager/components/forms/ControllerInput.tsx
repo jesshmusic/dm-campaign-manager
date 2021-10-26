@@ -2,10 +2,8 @@ import React from 'react';
 import classNames from 'classnames';
 import { GiFire } from 'react-icons/all';
 import { Control, Controller, FieldErrors, FieldValues } from 'react-hook-form';
-import { FieldInputProps } from 'react-final-form';
 import { SelectOption } from '../../utilities/types';
 import Select, { ActionMeta } from 'react-select';
-import { diceOptions } from '../../utilities/character-utilities';
 
 const styles = require('./input.module.scss');
 
@@ -39,7 +37,6 @@ export const ControllerInput = (props) => {
 };
 
 export const ControlledInput = (props: {
-  handleChange: (data: string | number, fieldName: string) => void;
   fieldName: string;
   errors: FieldErrors;
   className?: string;
@@ -49,30 +46,15 @@ export const ControlledInput = (props: {
   required?: boolean;
   type?: string;
 }) => {
-  const {
-    handleChange,
-    fieldName,
-    errors,
-    className,
-    control,
-    label,
-    min,
-    required,
-    type,
-  } = props;
+  const { fieldName, errors, className, control, label, min, required, type } =
+    props;
   return (
     <Controller
-      render={({ field: { ref, onChange, ...rest } }) => (
+      render={({ field: { ref, ...rest } }) => (
         <ControllerInput
           type={type ? type : 'text'}
           label={label}
           className={className}
-          onChange={(event) => {
-            if (type === 'checkbox' || type === 'radio') {
-              return handleChange(event.target.checked, fieldName);
-            }
-            return handleChange(event.target.value, fieldName);
-          }}
           placeholder={`${label}...`}
           errors={errors}
           min={min}
@@ -87,14 +69,13 @@ export const ControlledInput = (props: {
 };
 
 export const ControlledSelect = (props: {
-  handleChange: (newValue: any, actionMeta: ActionMeta<any>) => void;
   fieldName: string;
   className?: string;
   control: Control<FieldValues, object>;
   label: string;
   options: SelectOption[];
 }) => {
-  const { handleChange, control, label, className, fieldName, options } = props;
+  const { control, label, className, fieldName, options } = props;
 
   return (
     <div className={className}>
@@ -108,7 +89,6 @@ export const ControlledSelect = (props: {
             classNamePrefix={'reactSelect'}
             options={options}
             isSearchable
-            onChange={handleChange}
             {...rest}
           />
         )}

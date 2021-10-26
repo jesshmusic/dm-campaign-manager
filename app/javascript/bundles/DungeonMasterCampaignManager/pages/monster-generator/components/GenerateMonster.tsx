@@ -55,31 +55,34 @@ export type GenerateMonsterProps = {
 const GenerateMonster = (props: GenerateMonsterProps) => {
   const {
     handleCalculateCR,
-    handleChange,
     handleGenerateName,
     handleGenerateMonsterName,
     onSubmit,
+    updateForm,
     UseForm,
   } = useData(props);
   const [testState, setTestState] = React.useState();
 
+  const attackBonus = useWatch({
+    control: UseForm.control,
+    name: 'attackBonus',
+  }) as unknown as number;
+
+  const profBonus = useWatch({
+    control: UseForm.control,
+    name: 'profBonus',
+  }) as unknown as number;
+
   React.useEffect(() => {
-    const subscription = UseForm.watch((value) => {
+    const subscription = UseForm.watch((value, { name }) => {
+      if (name) {
+        updateForm(name, value);
+      }
       // @ts-ignore
       setTestState(value);
     });
     return () => subscription.unsubscribe();
   }, [UseForm.watch]);
-
-  const attackBonus = useWatch({
-    control: UseForm.control,
-    name: 'attackBonus',
-  });
-
-  const profBonus = useWatch({
-    control: UseForm.control,
-    name: 'profBonus',
-  });
 
   return (
     <>
@@ -113,16 +116,12 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
             errors={UseForm.formState.errors}
           />
           <div className={styles.fourCol}>
-            <MonsterTypeSelect
-              control={UseForm.control}
-              onChange={handleChange}
-            />
+            <MonsterTypeSelect control={UseForm.control} />
             <FormField
               label="Subtype"
               type="text"
               errors={UseForm.formState.errors}
               register={UseForm.register}
-              onChange={UseForm.setValue}
               placeholder={'Subtype...'}
               name="monsterSubtype"
             />
@@ -131,20 +130,17 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
               name="alignmentOption"
               control={UseForm.control}
               options={alignmentOptions}
-              handleSelectChange={handleChange}
             />
             <FormSelect
               label="Size"
               name="size"
               control={UseForm.control}
               options={monsterSizeOptions}
-              handleSelectChange={handleChange}
             />
           </div>
           <div className={styles.fourCol}>
             <FormField
               label="Armor Class"
-              onChange={handleChange}
               errors={UseForm.formState.errors}
               type="number"
               register={UseForm.register}
@@ -153,7 +149,6 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
             />
             <FormField
               label="Hit Dice Count"
-              onChange={handleChange}
               errors={UseForm.formState.errors}
               type="number"
               register={UseForm.register}
@@ -164,7 +159,6 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
               label="Attack Bonus"
               type="number"
               errors={UseForm.formState.errors}
-              onChange={UseForm.setValue}
               register={UseForm.register}
               required
               name="attackBonus"
@@ -173,7 +167,6 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
               label="Save DC"
               type="number"
               errors={UseForm.formState.errors}
-              onChange={UseForm.setValue}
               register={UseForm.register}
               required
               name="saveDC"
@@ -185,7 +178,6 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
               type="text"
               errors={UseForm.formState.errors}
               register={UseForm.register}
-              onChange={UseForm.setValue}
               name="hitDiceValue"
               readOnly
             />
@@ -194,7 +186,6 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
               type="text"
               errors={UseForm.formState.errors}
               register={UseForm.register}
-              onChange={UseForm.setValue}
               name="hitPoints"
               readOnly
             />
@@ -207,7 +198,6 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
               type="text"
               errors={UseForm.formState.errors}
               register={UseForm.register}
-              onChange={UseForm.setValue}
               name="xp"
               readOnly
             />
@@ -216,7 +206,6 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
               type="text"
               errors={UseForm.formState.errors}
               register={UseForm.register}
-              onChange={UseForm.setValue}
               name="profBonus"
               readOnly
             />
@@ -226,44 +215,44 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
             <AbilityScoreField
               label={'STR'}
               errors={UseForm.formState.errors}
-              onChangeAbility={handleChange}
               register={UseForm.register}
               name={'strength'}
+              setValue={UseForm.setValue}
             />
             <AbilityScoreField
               label={'DEX'}
               errors={UseForm.formState.errors}
-              onChangeAbility={handleChange}
               register={UseForm.register}
               name={'dexterity'}
+              setValue={UseForm.setValue}
             />
             <AbilityScoreField
               label={'CON'}
               errors={UseForm.formState.errors}
-              onChangeAbility={handleChange}
               register={UseForm.register}
               name={'constitution'}
+              setValue={UseForm.setValue}
             />
             <AbilityScoreField
               label={'INT'}
               errors={UseForm.formState.errors}
-              onChangeAbility={handleChange}
               register={UseForm.register}
               name={'intelligence'}
+              setValue={UseForm.setValue}
             />
             <AbilityScoreField
               label={'WIS'}
               errors={UseForm.formState.errors}
-              onChangeAbility={handleChange}
               register={UseForm.register}
               name={'wisdom'}
+              setValue={UseForm.setValue}
             />
             <AbilityScoreField
               label={'CHA'}
               errors={UseForm.formState.errors}
-              onChangeAbility={handleChange}
               register={UseForm.register}
               name={'charisma'}
+              setValue={UseForm.setValue}
             />
           </div>
           <div className={styles.actionsSection}>

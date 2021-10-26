@@ -2,6 +2,7 @@ import React from 'react';
 import {
   MonsterGeneratorFormFields,
   RandomNameResult,
+  SelectOption,
 } from '../../../utilities/types';
 import {
   abilityScoreModifier,
@@ -15,6 +16,7 @@ import { useForm, UseFormSetValue } from 'react-hook-form';
 import { GenerateMonsterProps } from './GenerateMonster';
 import {
   alignmentOptions,
+  generateAttackDesc,
   monsterSizeOptions,
   monsterTypeOptions,
 } from '../../../utilities/character-utilities';
@@ -135,20 +137,26 @@ export const useData = (props: GenerateMonsterProps) => {
     }
   };
 
-  const handleChange = (
-    name: string,
-    value: string,
-    config?: {
-      shouldDirty?: boolean;
-      shouldValidate?: boolean;
-      shouldTouch?: boolean;
-    }
+  const setActionDesc = (
+    fields: MonsterGeneratorFormFields,
+    attackBonus: number,
+    profBonus: number
   ) => {
-    switch (name) {
+    fields.actions.forEach((action, index) => {
+      UseForm.setValue(
+        `actions.${index}.desc`,
+        generateAttackDesc(action, attackBonus, profBonus)
+      );
+    });
+  };
+
+  const updateForm = (fieldName: string | undefined, value: unknown) => {
+    const fields = value as MonsterGeneratorFormFields;
+    const attackBonus = fields.attackBonus;
+    const profBonus = fields.profBonus;
+    switch (fieldName) {
       case 'strength':
-        const profBonus = UseForm.getValues('profBonus');
-        const strMod = abilityScoreModifier(parseInt(value));
-        setAbilityValue(UseForm.setValue, 'strength', value);
+        const strMod = abilityScoreModifier(fields.strength);
         UseForm.setValue('attackBonus', profBonus + strMod, {
           shouldDirty: true,
           shouldTouch: true,
@@ -157,145 +165,124 @@ export const useData = (props: GenerateMonsterProps) => {
           shouldDirty: true,
           shouldTouch: true,
         });
-        if (value && value !== '') {
-          handleCalculateCR();
-        }
+        UseForm.setValue('strengthMod', strMod);
+        setActionDesc(fields, attackBonus, profBonus);
+        handleCalculateCR();
         break;
       case 'dexterity':
-        setAbilityValue(UseForm.setValue, 'dexterity', value);
+        UseForm.setValue(
+          'dexterityMod',
+          abilityScoreModifier(fields.dexterity)
+        );
+        setActionDesc(fields, attackBonus, profBonus);
+        handleCalculateCR();
         break;
       case 'constitution':
-        setAbilityValue(UseForm.setValue, 'constitution', value);
+        UseForm.setValue(
+          'constitutionMod',
+          abilityScoreModifier(fields.constitution)
+        );
         UseForm.setValue(
           'hitPoints',
           hitPoints(
-            parseInt(value),
-            UseForm.getValues('hitDiceNumber'),
-            UseForm.getValues('hitDiceValue')
+            fields.constitution,
+            fields.hitDiceNumber,
+            fields.hitDiceValue
           ),
           { shouldDirty: true }
         );
-        if (value && value !== '') {
-          handleCalculateCR();
-        }
+        setActionDesc(fields, attackBonus, profBonus);
+        handleCalculateCR();
         break;
       case 'intelligence':
-        setAbilityValue(UseForm.setValue, 'intelligence', value);
+        UseForm.setValue(
+          'intelligenceMod',
+          abilityScoreModifier(fields.intelligence)
+        );
         break;
       case 'wisdom':
-        setAbilityValue(UseForm.setValue, 'wisdom', value);
+        UseForm.setValue('wisdomMod', abilityScoreModifier(fields.wisdom));
         break;
       case 'charisma':
-        setAbilityValue(UseForm.setValue, 'charisma', value);
+        UseForm.setValue('charismaMod', abilityScoreModifier(fields.charisma));
         break;
       case 'alignmentOption':
-        const newAlignment = alignmentOptions.find(
-          (option) => option.value === value
-        )!;
-        UseForm.setValue('alignmentOption', newAlignment, {
-          shouldDirty: true,
-          shouldTouch: true,
-        });
-        UseForm.setValue('alignment', newAlignment.value as string, {
+        UseForm.setValue('alignment', fields.alignmentOption.label, {
           shouldDirty: true,
           shouldTouch: true,
         });
         break;
+      case 'attackBonus':
+        setActionDesc(fields, attackBonus, profBonus);
+        handleCalculateCR();
+        break;
       case 'monsterTypeOption':
-        const newMonsterType = monsterTypeOptions.find(
-          (option) => option.value === value
-        )!;
-        UseForm.setValue('monsterTypeOption', newMonsterType, {
-          shouldDirty: true,
-          shouldTouch: true,
-        });
-        UseForm.setValue('monsterType', newMonsterType.value as string, {
+        UseForm.setValue('monsterType', fields.monsterTypeOption.label, {
           shouldDirty: true,
           shouldTouch: true,
         });
         break;
       case 'size':
-        const hitDice = hitDieForSize(value);
-        const newSizeValue = monsterSizeOptions.find(
-          (option) => option.value === value
-        )!;
-        UseForm.setValue('size', newSizeValue, {
-          shouldDirty: true,
-          shouldTouch: true,
-        });
+        const hitDice = hitDieForSize(fields.size.value);
         UseForm.setValue('hitDiceValue', hitDice, {
           shouldDirty: true,
           shouldTouch: true,
         });
-        const hitDiceCount = UseForm.getValues('hitDiceNumber');
         UseForm.setValue(
           'hitPoints',
-          hitPoints(UseForm.getValues('constitution'), hitDiceCount, hitDice),
+          hitPoints(
+            fields.constitution,
+            fields.hitDiceNumber,
+            fields.hitDiceValue
+          ),
           { shouldDirty: true, shouldTouch: true }
         );
-        if (value && value !== '') {
-          handleCalculateCR();
-        }
+        setActionDesc(fields, attackBonus, profBonus);
+        handleCalculateCR();
         break;
       case 'hitDiceNumber':
-        UseForm.setValue('hitDiceNumber', parseInt(value), {
-          shouldDirty: true,
-          shouldTouch: true,
-        });
         UseForm.setValue(
           'hitPoints',
           hitPoints(
-            UseForm.getValues('constitution'),
-            parseInt(value),
-            UseForm.getValues('hitDiceValue')
+            fields.constitution,
+            fields.hitDiceNumber,
+            fields.hitDiceValue
           ),
           { shouldDirty: true, shouldTouch: true }
         );
         UseForm.setValue(
           'hitDice',
-          `${value}${UseForm.getValues('hitDiceValue')}`
+          `${fields.hitDiceNumber}${fields.hitDiceValue}`
         );
-        if (value && value !== '') {
-          handleCalculateCR();
-        }
+        setActionDesc(fields, attackBonus, profBonus);
+        handleCalculateCR();
         break;
       case 'hitDiceValue':
-        UseForm.setValue('hitDiceValue', value, {
-          shouldDirty: true,
-          shouldTouch: true,
-        });
         UseForm.setValue(
           'hitPoints',
           hitPoints(
-            UseForm.getValues('constitution'),
-            UseForm.getValues('hitDiceNumber'),
-            value
+            fields.constitution,
+            fields.hitDiceNumber,
+            fields.hitDiceValue
           ),
           { shouldDirty: true, shouldTouch: true }
         );
         UseForm.setValue(
           'hitDice',
-          `${UseForm.getValues('hitDiceNumber')}${value}`
+          `${fields.hitDiceNumber}${fields.hitDiceValue}`
         );
-        if (value && value !== '') {
-          handleCalculateCR();
-        }
+        setActionDesc(fields, attackBonus, profBonus);
+        handleCalculateCR();
         break;
-      default:
-        UseForm.setValue(
-          name as keyof MonsterGeneratorFormFields,
-          value,
-          config
-        );
     }
   };
 
   return {
-    UseForm,
     handleCalculateCR,
-    handleChange,
     handleGenerateName,
     handleGenerateMonsterName,
     onSubmit,
+    updateForm,
+    UseForm,
   };
 };

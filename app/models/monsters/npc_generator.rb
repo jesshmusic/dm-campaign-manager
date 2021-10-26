@@ -91,7 +91,6 @@ class NpcGenerator
     def calculate_cr(params)
       monster = params[:params][:monster]
       attack_bonus = monster[:attack_bonus]
-      attack_bonus = attack_bonus.to_i if attack_bonus.is_a? String
       challenge_rating = DndRules.cr_for_npc(monster, attack_bonus)
       cr_data = DndRules.challenge_ratings[challenge_rating.to_sym].as_json
       { name: challenge_rating, data: cr_data }

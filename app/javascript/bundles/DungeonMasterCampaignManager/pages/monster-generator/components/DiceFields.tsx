@@ -16,15 +16,6 @@ const DiceFields = (props: {
   className: string;
   errors: FieldErrors;
   register: UseFormRegister<FieldValues>;
-  onChange: (
-    name: string,
-    value: string | number | boolean,
-    config?: {
-      shouldDirty?: boolean;
-      shouldValidate?: boolean;
-      shouldTouch?: boolean;
-    }
-  ) => void;
 }) => {
   return (
     <div className={`${props.className} ${styles.container}`}>
@@ -32,7 +23,6 @@ const DiceFields = (props: {
         label={'Count'}
         className={styles.dieCount}
         errors={props.errors}
-        onChange={props.onChange}
         register={props.register}
         type={'number'}
         name={props.countName}
@@ -41,7 +31,6 @@ const DiceFields = (props: {
         label={'Dice'}
         name={props.dieName}
         className={styles.dieCount}
-        handleSelectChange={props.onChange}
         options={diceOptions}
       />
     </div>

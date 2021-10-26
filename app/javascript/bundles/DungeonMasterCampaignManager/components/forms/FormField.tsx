@@ -21,15 +21,6 @@ type FieldProps = {
   infoText?: string;
   label: string;
   name: string;
-  onChange: (
-    name: string,
-    value: string | number | boolean,
-    config?: {
-      shouldDirty?: boolean;
-      shouldValidate?: boolean;
-      shouldTouch?: boolean;
-    }
-  ) => void;
   placeholder?: string;
   readOnly?: boolean;
   register?: UseFormRegister<FieldValues>;
@@ -48,7 +39,6 @@ const FormField = (props: FieldProps) => {
     hideLabel,
     label,
     name,
-    onChange,
     readOnly,
     register,
     required,
@@ -63,13 +53,6 @@ const FormField = (props: FieldProps) => {
           aria-describedby={`${name}-help-text`}
           className="form-check-input"
           {...(register ? register(name, { required }) : null)}
-          onChange={(event) => {
-            return onChange(name, event.target.checked, {
-              shouldDirty: true,
-              shouldTouch: true,
-              shouldValidate: required,
-            });
-          }}
           type={type}
           name={name}
           defaultValue={defaultValue}
@@ -107,14 +90,9 @@ const FormField = (props: FieldProps) => {
         aria-describedby={`${name}-help-text`}
         readOnly={readOnly}
         defaultValue={defaultValue}
-        {...(register ? register(name, { required }) : null)}
-        onChange={(event) =>
-          onChange(name, event.target.value, {
-            shouldDirty: true,
-            shouldTouch: true,
-            shouldValidate: required,
-          })
-        }
+        {...(register
+          ? register(name, { required, valueAsNumber: type === 'number' })
+          : null)}
         type={type}
       />
       {helpText && (

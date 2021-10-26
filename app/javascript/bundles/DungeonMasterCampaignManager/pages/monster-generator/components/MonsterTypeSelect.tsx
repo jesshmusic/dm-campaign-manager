@@ -10,14 +10,12 @@ import { monsterTypeOptions } from '../../../utilities/character-utilities';
 
 const MonsterTypeSelect = (props: {
   control: Control<MonsterGeneratorFormFields>;
-  onChange: (name: string, value: string | number) => void;
 }) => (
   <FormSelect
     label={'Type'}
     control={props.control}
     options={monsterTypeOptions}
     name={'monsterTypeOption'}
-    handleSelectChange={props.onChange}
   />
 );
 

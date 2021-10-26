@@ -82,7 +82,7 @@ export const abilityScoreModifier = (abilityScore: number) => {
 
 export const hitDieForSize = (size) => {
   console.log(`hitDieForSize: ${size}`);
-  switch (size.toLowerCase()) {
+  switch (size) {
     case 'tiny':
       return 'd4';
     case 'small':
@@ -115,7 +115,7 @@ export const hitPoints = (
   hitDiceValue: string
 ) => {
   const dice = diceNumberFromString[hitDiceValue];
-  let hitPoints = dice / 2 + 0.5 + abilityScoreModifier(constitution);
+  let hitPoints = dice / 2 + 1 + abilityScoreModifier(constitution);
   hitPoints = hitPoints * hitDiceNumber;
   return Math.floor(hitPoints);
 };

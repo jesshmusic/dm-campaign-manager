@@ -1,5 +1,11 @@
 import React from 'react';
-import { Control, Controller, FieldErrors, UseFormGetValues, useWatch } from 'react-hook-form';
+import {
+  Control,
+  Controller,
+  FieldErrors,
+  UseFormGetValues,
+  useWatch,
+} from 'react-hook-form';
 import { ControllerInput } from '../../../../components/forms/ControllerInput';
 import Select from 'react-select';
 import Button from '../../../../components/Button/Button';
@@ -17,22 +23,14 @@ const ActionForm = (props: {
   control: Control;
   errors: FieldErrors;
   getValues: UseFormGetValues<any>;
-  handleChange: (data: any, inputName: string, actionIndex: number) => void;
   remove: (index?: number | number[] | undefined) => void;
 }) => {
-  const {
-    actionIndex,
-    control,
-    errors,
-    getValues,
-    handleChange,
-    remove
-  } = props;
+  const { actionIndex, control, errors, getValues, remove } = props;
 
   const actionType = useWatch({
     control,
     name: `actions.${actionIndex}.actionType`,
-    defaultValue: ActionTypes.attack
+    defaultValue: ActionTypes.attack,
   });
 
   return (
@@ -41,14 +39,11 @@ const ActionForm = (props: {
         <Controller
           render={({ field: { ref, ...rest } }) => (
             <ControllerInput
-              label='Name'
+              label="Name"
               {...rest}
-              type='text'
-              placeholder='Action Title...'
+              type="text"
+              placeholder="Action Title..."
               errors={errors}
-              onChange={(event) =>
-                handleChange(event.target.value, `actions.${actionIndex}.name`, actionIndex)
-              }
               className={styles.actionCol}
             />
           )}
@@ -65,16 +60,13 @@ const ActionForm = (props: {
                 {...field}
                 defaultValue={{ value: 'ability', label: 'Ability' }}
                 isSearchable={false}
-                onChange={(data) =>
-                  handleChange(data, `actions.${actionIndex}.actionType`, actionIndex)
-                }
                 options={[
                   { value: ActionTypes.ability, label: 'Ability' },
                   { value: ActionTypes.attack, label: 'Attack' },
                   {
                     value: ActionTypes.spellCasting,
-                    label: 'Spell Casting'
-                  }
+                    label: 'Spell Casting',
+                  },
                 ]}
               />
             </div>
@@ -83,12 +75,12 @@ const ActionForm = (props: {
           control={control}
         />
         <Button
-          type='button'
+          type="button"
           onClick={() => remove(actionIndex)}
           color={Colors.danger}
           icon={<GiTrashCan size={30} />}
           hideTitle
-          title='Remove Action'
+          title="Remove Action"
         />
       </div>
       <AbilityForm
@@ -104,7 +96,6 @@ const ActionForm = (props: {
           errors={errors}
           fieldName={`actions.${actionIndex}`}
           getValues={getValues}
-          handleChange={handleChange}
         />
       )}
     </div>

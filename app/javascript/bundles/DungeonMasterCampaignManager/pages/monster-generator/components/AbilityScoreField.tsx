@@ -4,7 +4,7 @@
 
 import React from 'react';
 import { GiDiceTwentyFacesTwenty } from 'react-icons/gi/';
-import { FieldErrors, UseFormRegister } from 'react-hook-form';
+import { FieldErrors, UseFormRegister, UseFormSetValue } from 'react-hook-form';
 import { DiceRoll } from 'rpg-dice-roller';
 import useSound from 'use-sound';
 import {
@@ -28,19 +28,22 @@ type AbilityScoreFieldProps = {
   label: string;
   readOnly?: boolean;
   hideRoll?: boolean;
-  onChangeAbility: (name: string, value: string) => void;
+  setValue: UseFormSetValue<any>;
   register: UseFormRegister<FieldValues>;
   value?: any;
 };
 
 const AbilityScoreField = (props: AbilityScoreFieldProps) => {
-  const { errors, label, name, hideRoll, onChangeAbility, register } = props;
+  const { errors, label, name, hideRoll, setValue, register } = props;
   const [play] = useSound(diceSound, { volume: 0.5 });
 
   const handleRollAbility = (numDice: number = 3) => {
     const roll = new DiceRoll(`${numDice}d6dl1`);
     play();
-    onChangeAbility(name, `${roll.total}`);
+    setValue(name, roll.total, {
+      shouldDirty: true,
+      shouldTouch: true,
+    });
   };
 
   return (
@@ -71,7 +74,6 @@ const AbilityScoreField = (props: AbilityScoreFieldProps) => {
           name={name}
           type="number"
           register={register}
-          onChange={onChangeAbility}
           hideLabel
         />
         <FormField
@@ -80,7 +82,6 @@ const AbilityScoreField = (props: AbilityScoreFieldProps) => {
           label="Hit Dice Value"
           type="text"
           register={register}
-          onChange={onChangeAbility}
           name={`${name}Mod`}
           hideLabel
           readOnly
