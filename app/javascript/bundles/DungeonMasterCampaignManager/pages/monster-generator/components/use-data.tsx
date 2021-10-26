@@ -2,7 +2,6 @@ import React from 'react';
 import {
   MonsterGeneratorFormFields,
   RandomNameResult,
-  SelectOption,
 } from '../../../utilities/types';
 import {
   abilityScoreModifier,
@@ -14,28 +13,7 @@ import {
 import axios from 'axios';
 import { useForm, UseFormSetValue } from 'react-hook-form';
 import { GenerateMonsterProps } from './GenerateMonster';
-import {
-  alignmentOptions,
-  generateAttackDesc,
-  monsterSizeOptions,
-  monsterTypeOptions,
-} from '../../../utilities/character-utilities';
-
-const setAbilityValue = (
-  setValue: UseFormSetValue<any>,
-  name: string,
-  value: string
-) => {
-  const mod = abilityScoreModifier(parseInt(value));
-  setValue(name, parseInt(value), {
-    shouldDirty: true,
-    shouldTouch: true,
-  });
-  setValue(`${name}Mod`, `${parseInt(String(mod), 10) > 0 ? '+' : ''}${mod}`, {
-    shouldDirty: true,
-    shouldTouch: true,
-  });
-};
+import { generateAttackDesc } from '../../../utilities/character-utilities';
 
 export const useData = (props: GenerateMonsterProps) => {
   const [monsterForm, setMonsterForm] =
@@ -155,12 +133,21 @@ export const useData = (props: GenerateMonsterProps) => {
     const attackBonus = fields.attackBonus;
     const profBonus = fields.profBonus;
     switch (fieldName) {
-      case 'strength':
-        const strMod = abilityScoreModifier(fields.strength);
-        UseForm.setValue('attackBonus', profBonus + strMod, {
+      case 'alignmentOption':
+        UseForm.setValue('alignment', fields.alignmentOption.label, {
           shouldDirty: true,
           shouldTouch: true,
         });
+        break;
+      case 'armorClass':
+        handleCalculateCR();
+        break;
+      case 'attackBonus':
+        setActionDesc(fields, attackBonus, profBonus);
+        handleCalculateCR();
+        break;
+      case 'strength':
+        const strMod = abilityScoreModifier(fields.strength);
         UseForm.setValue('damageBonus', strMod, {
           shouldDirty: true,
           shouldTouch: true,
@@ -205,16 +192,6 @@ export const useData = (props: GenerateMonsterProps) => {
         break;
       case 'charisma':
         UseForm.setValue('charismaMod', abilityScoreModifier(fields.charisma));
-        break;
-      case 'alignmentOption':
-        UseForm.setValue('alignment', fields.alignmentOption.label, {
-          shouldDirty: true,
-          shouldTouch: true,
-        });
-        break;
-      case 'attackBonus':
-        setActionDesc(fields, attackBonus, profBonus);
-        handleCalculateCR();
         break;
       case 'monsterTypeOption':
         UseForm.setValue('monsterType', fields.monsterTypeOption.label, {
@@ -274,6 +251,33 @@ export const useData = (props: GenerateMonsterProps) => {
         setActionDesc(fields, attackBonus, profBonus);
         handleCalculateCR();
         break;
+      case 'actions':
+        setActionDesc(fields, attackBonus, profBonus);
+        handleCalculateCR();
+        break;
+    }
+    if (fieldName?.includes('actions.')) {
+      const fieldNameArray = fieldName?.split('.');
+      if (fieldNameArray.length >= 3) {
+        const actionIndex = parseInt(fieldNameArray[1]);
+        if (
+          fieldName !== `actions.${actionIndex}.desc` &&
+          fieldName !== `actions.${actionIndex}.name` &&
+          fieldName !== `actions.${actionIndex}.actionType` &&
+          fieldName !== `actions.${actionIndex}.damage.damageType` &&
+          fieldName !== `actions.${actionIndex}.damage.damageTypeOption`
+        ) {
+          UseForm.setValue(
+            `actions.${actionIndex}.desc`,
+            generateAttackDesc(
+              fields.actions[actionIndex],
+              attackBonus,
+              profBonus
+            )
+          );
+          handleCalculateCR();
+        }
+      }
     }
   };
 
