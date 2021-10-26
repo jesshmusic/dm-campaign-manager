@@ -4,16 +4,14 @@
 
 import React from 'react';
 import { GiSwordsPower } from 'react-icons/gi';
-import {
-  ActionTypes,
-  MonsterGeneratorFormFields,
-} from '../../../../utilities/types';
+import { ActionTypes, MonsterGeneratorFormFields } from '../../../../utilities/types';
 import { useFieldArray, UseFormReturn } from 'react-hook-form';
 import Button from '../../../../components/Button/Button';
 import { Colors } from '../../../../utilities/enums';
 
 import '../../../../components/forms/inputOverrides.scss';
 import ActionForm from './ActionForm';
+import { generateAttackDesc } from '../../../../utilities/character-utilities';
 
 const styles = require('./action-form.module.scss');
 
@@ -39,15 +37,15 @@ const ActionsForm = (props: {
       register,
       unregister,
       trigger,
-      watch,
-    },
+      watch
+    }
   } = props;
 
   const isInitialRender = React.useRef(true);
   const { fields, append, prepend, remove, swap, move, insert } = useFieldArray(
     {
       control,
-      name: fieldName,
+      name: fieldName
     }
   );
 
@@ -66,8 +64,8 @@ const ActionsForm = (props: {
         numTargets: 1,
         rangeNormal: 120,
         rangeLong: 300,
-        reach: 5,
-      },
+        reach: 5
+      }
     });
   };
 
@@ -79,7 +77,36 @@ const ActionsForm = (props: {
     if (isInitialRender.current) {
       isInitialRender.current = false;
     }
+
+    if (fields.length > 0) {
+      setActionDesc(fields.length - 1);
+    }
   }, [fields, register, setValue, unregister, trigger]);
+
+  const setActionDesc = (actionIndex) => {
+    setValue(
+      `actions.${actionIndex}.desc`,
+      generateAttackDesc(
+        getValues(`actions.${actionIndex}`),
+        parseInt(`${attackBonus}`, 10),
+        parseInt(`${profBonus}`, 10)
+      )
+    );
+  };
+
+  const handleChange = (data, inputName, actionIndex) => {
+    if (inputName === `actions.${actionIndex}.actionType`) {
+      setValue(`actions.${actionIndex}.attackType`, data);
+    } else {
+      setValue(inputName, data, {
+        shouldTouch: true,
+        shouldDirty: true,
+        shouldValidate: true
+      });
+    }
+
+    setActionDesc(actionIndex);
+  };
 
   return (
     <div className={styles.wrapper}>
@@ -88,17 +115,15 @@ const ActionsForm = (props: {
         <ActionForm
           key={action.id}
           actionIndex={actionIndex}
-          attackBonus={attackBonus}
           control={control}
           errors={errors}
           getValues={getValues}
-          profBonus={profBonus}
+          handleChange={handleChange}
           remove={remove}
-          setValue={setValue}
         />
       ))}
       <Button
-        type="button"
+        type='button'
         onClick={addAction}
         color={Colors.success}
         icon={<GiSwordsPower size={30} />}
