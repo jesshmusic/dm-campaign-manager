@@ -8,6 +8,7 @@ const Button = (props: {
   id?: string;
   dataBsDismiss?: string;
   disabled?: boolean;
+  className?: string;
   color: Colors;
   title: string;
   onClick?: (event: any) => void;
@@ -19,6 +20,7 @@ const Button = (props: {
   const {
     id,
     icon,
+    className,
     color,
     dataBsDismiss,
     style,
@@ -26,12 +28,12 @@ const Button = (props: {
     hideTitle,
     title,
     onClick,
-    type
+    type,
   } = props;
 
   return (
     <button
-      className={classNames(styles.button, {
+      className={classNames(styles.button, className, {
         [styles.primary]: color === Colors.primary,
         [styles.secondary]: color === Colors.secondary,
         [styles.success]: color === Colors.success,
@@ -40,7 +42,7 @@ const Button = (props: {
         [styles.warning]: color === Colors.warning,
         [styles.danger]: color === Colors.danger,
         [styles.light]: color === Colors.light,
-        [styles.dark]: color === Colors.dark
+        [styles.dark]: color === Colors.dark,
       })}
       onClick={onClick}
       id={id}
@@ -50,7 +52,12 @@ const Button = (props: {
       type={type || 'button'}
     >
       {hideTitle ? '' : title}
-      {icon && <span className={classNames('', { [styles.iconOnly]: hideTitle })}> {icon}</span>}
+      {icon && (
+        <span className={classNames('', { [styles.iconOnly]: hideTitle })}>
+          {' '}
+          {icon}
+        </span>
+      )}
     </button>
   );
 };

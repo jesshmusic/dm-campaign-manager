@@ -1,35 +1,51 @@
 import React from 'react';
 import { FlashMessage } from '../../utilities/types';
 import AlertDismissible from './AlertDismissible';
+import { connect } from 'react-redux';
+import {
+  addFlashMessage,
+  dismissFlashMessage,
+  FlashMessageType,
+} from '../../reducers/flashMessages';
 
 type FlashMessagesProps = {
-  messages: FlashMessage[]
-}
+  onDismissFlashMessage: (messageId: number) => void;
+  messages: FlashMessage[];
+};
 
-const FlashMessages = ({ messages }: FlashMessagesProps) => {
-  const [state, setState] = React.useState({
-    flashMessages: messages
-  });
-
-  const dismissFlashMessage = (messageId: number) => {
-    const removeIndex = state.flashMessages.map((flash) => flash.id).indexOf(messageId);
-    const newState = [...state.flashMessages];
-    newState.splice(removeIndex, 1);
-    setState({ flashMessages: newState });
-  };
-
+const FlashMessages = ({
+  onDismissFlashMessage,
+  messages,
+}: FlashMessagesProps) => {
   return (
     <div>
-      {messages.map((message, index) =>
-        <AlertDismissible key={index}
-                          dismissFlashMessage={dismissFlashMessage}
-                          messageId={message.id}
-                          messageHeading={message.heading ? message.heading : 'Error'}
-                          messageText={message.text}
-                          messageVariant={message.type === 'alert' ? 'danger' : message.type} />
-      )}
+      {messages.map((message, index) => (
+        <AlertDismissible
+          key={message.id}
+          offset={index}
+          dismissFlashMessage={onDismissFlashMessage}
+          messageId={message.id}
+          messageHeading={message.heading ? message.heading : 'Error'}
+          messageText={message.text}
+          messageVariant={message.messageType}
+        />
+      ))}
     </div>
   );
 };
 
-export default FlashMessages;
+function mapStateToProps(state) {
+  return {
+    messages: state.flashMessages,
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    onDismissFlashMessage: (messageId: number) => {
+      dispatch(dismissFlashMessage(messageId));
+    },
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(FlashMessages);

@@ -1,6 +1,11 @@
 import React from 'react';
 import { MonsterProps, SelectOption } from '../../../utilities/types';
-import { alignmentOptions, damageTypes, filterOptionsWithData, monsterSizeOptions } from '../../../utilities/character-utilities';
+import {
+  alignmentOptions,
+  damageTypes,
+  filterOptionsWithData,
+  monsterSizeOptions,
+} from '../../../utilities/character-utilities';
 import Frame from '../../../components/Frame/Frame';
 import NameFormField from './NameFormField';
 import FormField from '../../../components/forms/FormField';
@@ -35,7 +40,7 @@ export const senses: SelectOption[] = [
   { label: 'Darkvision', value: 'darkvision' },
   { label: 'Tremorsense', value: 'tremorsense' },
   { label: 'Truesight', value: 'truesight' },
-  { label: 'Passive Perception', value: 'darkvision' }
+  { label: 'Passive Perception', value: 'darkvision' },
 ];
 
 export const speeds: SelectOption[] = [
@@ -44,7 +49,7 @@ export const speeds: SelectOption[] = [
   { label: 'Fly', value: 'fly' },
   { label: 'Hover', value: 'hover' },
   { label: 'Swim', value: 'swim' },
-  { label: 'Walk', value: 'walk' }
+  { label: 'Walk', value: 'walk' },
 ];
 
 export type GenerateMonsterProps = {
@@ -58,26 +63,28 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
     handleGenerateMonsterName,
     onSubmit,
     updateForm,
-    UseForm
+    UseForm,
   } = useData(props);
   const [testState, setTestState] = React.useState();
 
   const attackBonus = useWatch({
     control: UseForm.control,
-    name: 'attackBonus'
+    name: 'attackBonus',
   }) as unknown as number;
 
   const profBonus = useWatch({
     control: UseForm.control,
-    name: 'profBonus'
+    name: 'profBonus',
   }) as unknown as number;
 
   const getConditions = (inputValue: string, callback: any) => {
-    axios.get(`/v1/conditions.json?search=${inputValue}`)
+    axios
+      .get(`/v1/conditions.json?search=${inputValue}`)
       .then((response: AxiosResponse<any>) => {
         const options = filterOptionsWithData(response.data.results);
         callback(options);
-      });
+      })
+      .catch((error) => {});
   };
 
   React.useEffect(() => {
@@ -100,15 +107,15 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
           right: '0',
           backgroundColor: '#fff',
           width: '150px',
-          zIndex: 200
+          zIndex: 200,
         }}
       >
         {JSON.stringify(testState, null, 2)}
       </pre>
       <Frame
-        title='Random Monster Generator'
-        subtitle='Select options to create a new Monster'
-        className='random-monster-generator'
+        title="Random Monster Generator"
+        subtitle="Select options to create a new Monster"
+        className="random-monster-generator"
       >
         <form
           onSubmit={UseForm.handleSubmit(onSubmit)}
@@ -125,75 +132,75 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
           <div className={styles.fourCol}>
             <MonsterTypeSelect control={UseForm.control} />
             <FormField
-              label='Subtype'
-              type='text'
+              label="Subtype"
+              type="text"
               errors={UseForm.formState.errors}
               register={UseForm.register}
               placeholder={'Subtype...'}
-              name='monsterSubtype'
+              name="monsterSubtype"
             />
             <FormSelect
-              label='Alignment'
-              name='alignmentOption'
+              label="Alignment"
+              name="alignmentOption"
               control={UseForm.control}
               options={alignmentOptions}
             />
             <FormSelect
-              label='Size'
-              name='size'
+              label="Size"
+              name="size"
               control={UseForm.control}
               options={monsterSizeOptions}
             />
           </div>
           <div className={styles.fourCol}>
             <FormField
-              label='Armor Class'
+              label="Armor Class"
               errors={UseForm.formState.errors}
-              type='number'
+              type="number"
               register={UseForm.register}
               required
-              name='armorClass'
+              name="armorClass"
             />
             <FormField
-              label='Hit Dice Count'
+              label="Hit Dice Count"
               errors={UseForm.formState.errors}
-              type='number'
+              type="number"
               register={UseForm.register}
               required
-              name='hitDiceNumber'
+              name="hitDiceNumber"
             />
             <FormField
-              label='Attack Bonus'
-              type='number'
+              label="Attack Bonus"
+              type="number"
               errors={UseForm.formState.errors}
               register={UseForm.register}
               required
-              name='attackBonus'
+              name="attackBonus"
             />
             <FormField
-              label='Save DC'
-              type='number'
+              label="Save DC"
+              type="number"
               errors={UseForm.formState.errors}
               register={UseForm.register}
               required
-              name='saveDC'
+              name="saveDC"
             />
           </div>
           <div className={styles.fiveCol}>
             <FormField
-              label='Hit Dice Value'
-              type='text'
+              label="Hit Dice Value"
+              type="text"
               errors={UseForm.formState.errors}
               register={UseForm.register}
-              name='hitDiceValue'
+              name="hitDiceValue"
               readOnly
             />
             <FormField
-              label='Hit Points'
-              type='text'
+              label="Hit Points"
+              type="text"
               errors={UseForm.formState.errors}
               register={UseForm.register}
-              name='hitPoints'
+              name="hitPoints"
               readOnly
             />
             <ChallengeRatingField
@@ -201,19 +208,19 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
               register={UseForm.register}
             />
             <FormField
-              label='XP'
-              type='text'
+              label="XP"
+              type="text"
               errors={UseForm.formState.errors}
               register={UseForm.register}
-              name='xp'
+              name="xp"
               readOnly
             />
             <FormField
-              label='Proficiency Bonus'
-              type='text'
+              label="Proficiency Bonus"
+              type="text"
               errors={UseForm.formState.errors}
               register={UseForm.register}
-              name='profBonus'
+              name="profBonus"
               readOnly
             />
           </div>
@@ -264,31 +271,31 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
           </div>
           <div className={styles.fourCol}>
             <FormSelectAsync
-              label='Condition Immunities'
-              name='conditionImmunities'
+              label="Condition Immunities"
+              name="conditionImmunities"
               control={UseForm.control}
               getOptions={getConditions}
               isMulti
             />
             <FormSelect
-              label='Damage Resistances'
-              name='damageResistances'
+              label="Damage Resistances"
+              name="damageResistances"
               control={UseForm.control}
               isCreatable
               isMulti
               options={damageTypes}
             />
             <FormSelect
-              label='Damage Immunities'
-              name='damageImmunities'
+              label="Damage Immunities"
+              name="damageImmunities"
               control={UseForm.control}
               isCreatable
               isMulti
               options={damageTypes}
             />
             <FormSelect
-              label='Damage Vulnerabilities'
-              name='damageVulnerabilities'
+              label="Damage Vulnerabilities"
+              name="damageVulnerabilities"
               control={UseForm.control}
               isCreatable
               isMulti
@@ -298,19 +305,19 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
           <div className={styles.actionsSection}>
             <ActionsForm
               attackBonus={attackBonus}
-              fieldName='actions'
+              fieldName="actions"
               profBonus={profBonus}
-              singularTitle='Action'
-              title='Actions'
+              singularTitle="Action"
+              title="Actions"
               useForm={UseForm}
             />
           </div>
           <div>
-            <div className='btn-group' aria-label='Character actions'>
+            <div className="btn-group" aria-label="Character actions">
               <Button
                 color={Colors.success}
-                title='Generate Monster'
-                type='submit'
+                title="Generate Monster"
+                type="submit"
                 icon={<GiDiceTwentyFacesTwenty size={30} />}
               />
               {/*<button type='button' onClick={reset}>Reset</button>*/}

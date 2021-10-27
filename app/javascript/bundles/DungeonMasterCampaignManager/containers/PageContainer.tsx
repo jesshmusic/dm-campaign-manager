@@ -7,7 +7,6 @@ import FlashMessages from '../components/Alerts/FlashMessages';
 import '../stylesheets/_fonts.scss';
 import '../stylesheets/application.scss';
 import { Helmet } from 'react-helmet';
-import { FlashMessage } from '../utilities/types';
 import { connect } from 'react-redux';
 import Breadcrumbs, {
   BreadCrumbProps,
@@ -20,7 +19,6 @@ type PageContainerProps = {
   breadcrumbs: BreadCrumbProps[];
   children?: React.ReactNode;
   description: string;
-  flashMessages?: FlashMessage[];
   pageTitle: string;
   user?: User;
 };
@@ -30,6 +28,7 @@ const PageContainer = (props: PageContainerProps) => {
 
   return (
     <div>
+      <FlashMessages />
       <Helmet>
         <title>{pageTitle} | Dungeon Master&apos;s Screen</title>
         <meta name="description" content={description} />
@@ -38,7 +37,6 @@ const PageContainer = (props: PageContainerProps) => {
         <div className={styles.pageContent}>
           <HeroBanner />
           <div className={styles.page}>
-            <FlashMessages messages={props.flashMessages || []} />
             {breadcrumbs && breadcrumbs.length > 0 ? (
               <Breadcrumbs breadcrumbs={breadcrumbs} />
             ) : null}
@@ -53,7 +51,6 @@ const PageContainer = (props: PageContainerProps) => {
 
 function mapStateToProps(state) {
   return {
-    flashMessages: state.flashMessages,
     user: state.users.currentUser,
   };
 }

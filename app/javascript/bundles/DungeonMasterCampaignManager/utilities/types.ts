@@ -2,6 +2,7 @@ import React from 'react';
 import { Location, NavigateFn } from '@reach/router';
 import { ItemType } from '../pages/items/use-data';
 import { User } from '@auth0/auth0-react';
+import { FlashMessageType } from '../reducers/flashMessages';
 
 export interface AbilityScore {
   desc: string[];
@@ -149,7 +150,7 @@ export interface FlashMessage {
   id: number;
   heading: string;
   text: string;
-  type: string;
+  messageType: FlashMessageType;
 }
 
 export interface ItemSummary {
