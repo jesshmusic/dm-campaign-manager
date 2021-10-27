@@ -2,6 +2,7 @@ import snakecaseKeys from 'snakecase-keys';
 import { MonsterCRCalcResult, MonsterGeneratorFormFields } from '../../utilities/types';
 import axios from 'axios';
 
+// @TODO: add mapping and types for immunities
 export const getMonsterObject = (values: MonsterGeneratorFormFields) => {
   const returnChar = {
     alignment: values.alignment,

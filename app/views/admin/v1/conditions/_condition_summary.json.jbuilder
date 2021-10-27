@@ -2,4 +2,4 @@
 
 json.key_format! camelize: :lower
 
-json.extract! condition, :slug, :name
+json.extract! condition, :slug, :name, :id

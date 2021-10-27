@@ -5,42 +5,42 @@
 import React from 'react';
 import AsyncSelect from 'react-select/async';
 import { SelectProps } from './FormSelect';
+import { Controller } from 'react-hook-form';
 import classNames from 'classnames';
 
-const FormSelectAsync = ({
-  name,
-  label,
-  className,
-  isMulti,
-  getOptions,
-  placeholder,
-  defaultOptions = true,
-  isClearable = false,
-}: SelectProps) => {
-  const [inputValue, setInputValue] = React.useState('');
+const styles = require('./input.module.scss');
 
-  const handleInputChange = (newValue: string) => {
-    const inputValue = newValue.replace(/\W/g, '');
-    setInputValue(inputValue);
-    return newValue;
-  };
+const FormSelectAsync = ({
+                           name,
+                           label,
+                           className,
+                           control,
+                           isMulti,
+                           getOptions,
+                           defaultOptions = true,
+                           isClearable = false
+                         }: SelectProps) => {
 
   return (
-    <div className={classNames(className, 'mb-3')}>
-      <label htmlFor={name} className="form-label">
+    <div className={classNames(className, styles.wrapper)}>
+      <label htmlFor={name} className={styles.label}>
         {label}
       </label>
-      <div>
-        <AsyncSelect
-          isMulti={isMulti}
-          cacheOptions
-          defaultOptions={defaultOptions}
-          isClearable={isClearable}
-          isSearchable
-          onInputChange={handleInputChange}
-          loadOptions={getOptions}
-        />
-      </div>
+      <Controller
+        control={control}
+        name={name}
+        render={({ field }) =>
+          <AsyncSelect
+            isMulti={isMulti}
+            cacheOptions
+            defaultOptions={defaultOptions}
+            isClearable={isClearable}
+            isSearchable
+            loadOptions={getOptions}
+            {...field}
+          />
+        }
+      />
     </div>
   );
 };

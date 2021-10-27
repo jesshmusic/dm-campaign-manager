@@ -5,10 +5,7 @@
 import React from 'react';
 import Select from 'react-select';
 import CreatableSelect from 'react-select/creatable';
-import {
-  MonsterGeneratorFormFields,
-  SelectOption,
-} from '../../utilities/types';
+import { MonsterGeneratorFormFields, SelectOption } from '../../utilities/types';
 import { Control, Controller } from 'react-hook-form';
 import classNames from 'classnames';
 import './inputOverrides.scss';
@@ -16,7 +13,7 @@ import './inputOverrides.scss';
 export type SelectProps = {
   className?: string;
   defaultOptions?: boolean;
-  getOptions?: () => void;
+  getOptions?: (inputValue: string, callback: any) => void;
   isClearable?: boolean;
   isCreatable?: boolean;
   isMulti?: boolean;
@@ -31,15 +28,15 @@ export type SelectProps = {
 const styles = require('./input.module.scss');
 
 const FormSelect = ({
-  name,
-  label,
-  className = '',
-  isClearable = false,
-  options,
-  control,
-  isCreatable = false,
-  isMulti = false,
-}: SelectProps) => {
+                      name,
+                      label,
+                      className = '',
+                      isClearable = false,
+                      options,
+                      control,
+                      isCreatable = false,
+                      isMulti = false
+                    }: SelectProps) => {
   return (
     <div className={classNames(className, styles.wrapper)}>
       <label htmlFor={name} className={styles.label}>
