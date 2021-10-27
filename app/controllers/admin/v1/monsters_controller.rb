@@ -155,11 +155,9 @@ module Admin::V1
         :dexterity, :hit_dice, :hit_points, :intelligence,
         :languages, :monster_subtype, :monster_type,
         :name, :prof_bonus, :save_dc, :size,
-        :strength, :wisdom, :xp,
-        damage_immunities_attributes: %i[name _destroy],
-        damage_vulnerabilities_attributes: %i[name _destroy],
-        damage_resistances_attributes: %i[name _destroy],
-        condition_immunities: %i[name _destroy],
+        :strength, :wisdom, :xp, :damage_immunities,
+        :damage_vulnerabilities, :damage_resistances_,
+        :condition_immunities,
         monster_proficiencies_attributes: %i[id prof_id value _destroy],
         senses_attributes: %i[
           name value _destroy

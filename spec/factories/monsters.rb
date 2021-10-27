@@ -2,32 +2,36 @@
 #
 # Table name: monsters
 #
-#  id               :bigint           not null, primary key
-#  alignment        :string
-#  api_url          :string
-#  armor_class      :integer          default(10)
-#  attack_bonus     :integer
-#  challenge_rating :string
-#  charisma         :integer          default(10), not null
-#  constitution     :integer          default(10), not null
-#  dexterity        :integer          default(10), not null
-#  hit_dice         :string
-#  hit_points       :integer          default(8), not null
-#  intelligence     :integer          default(10), not null
-#  languages        :string
-#  monster_subtype  :string
-#  monster_type     :string
-#  name             :string
-#  prof_bonus       :integer          default(2)
-#  save_dc          :integer          default(13)
-#  size             :string
-#  slug             :string
-#  strength         :integer          default(10), not null
-#  wisdom           :integer          default(10), not null
-#  xp               :integer
-#  created_at       :datetime         not null
-#  updated_at       :datetime         not null
-#  user_id          :bigint
+#  id                     :bigint           not null, primary key
+#  alignment              :string
+#  api_url                :string
+#  armor_class            :integer          default(10)
+#  attack_bonus           :integer
+#  challenge_rating       :string
+#  charisma               :integer          default(10), not null
+#  condition_immunities   :string           default([]), is an Array
+#  constitution           :integer          default(10), not null
+#  damage_immunities      :string           default([]), is an Array
+#  damage_resistances     :string           default([]), is an Array
+#  damage_vulnerabilities :string           default([]), is an Array
+#  dexterity              :integer          default(10), not null
+#  hit_dice               :string
+#  hit_points             :integer          default(8), not null
+#  intelligence           :integer          default(10), not null
+#  languages              :string
+#  monster_subtype        :string
+#  monster_type           :string
+#  name                   :string
+#  prof_bonus             :integer          default(2)
+#  save_dc                :integer          default(13)
+#  size                   :string
+#  slug                   :string
+#  strength               :integer          default(10), not null
+#  wisdom                 :integer          default(10), not null
+#  xp                     :integer
+#  created_at             :datetime         not null
+#  updated_at             :datetime         not null
+#  user_id                :bigint
 #
 # Indexes
 #

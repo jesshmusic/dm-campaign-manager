@@ -17,6 +17,10 @@ json.extract! monster, :id,
               :attack_bonus,
               :prof_bonus,
               :save_dc,
+              :condition_immunities,
+              :damage_resistances,
+              :damage_immunities,
+              :damage_vulnerabilities,
               :languages,
               :strength,
               :dexterity,
@@ -34,14 +38,6 @@ json.challenge_string monster.challenge_string
 json.speeds monster.speeds_array
 
 json.senses monster.senses_array
-
-json.damage_resistances monster.resistances
-
-json.damage_vulnerabilities monster.vulnerabilities
-
-json.damage_immunities monster.immunities
-
-json.condition_immunities monster.condition_immunities_array
 
 json.monster_proficiencies monster.monster_proficiencies do |monster_prof|
   json.extract! monster_prof.prof, :name, :prof_type

@@ -79,37 +79,37 @@ class MonstersUtil
     end
 
     def import_condition_immunities(new_monster, monster)
-      new_monster.condition_immunities.destroy_all unless new_monster.condition_immunities.nil?
+      new_monster.condition_immunities = []
       if monster[:condition_immunities] && monster[:condition_immunities].is_a?(Array)
         monster[:condition_immunities].each do |cond_imm|
-          new_monster.condition_immunities.create(name: cond_imm[:name])
+          new_monster.condition_immunities << cond_imm[:name]
         end
       end
     end
 
     def import_damage_immunities(new_monster, monster)
-      new_monster.damage_immunities.destroy_all unless new_monster.damage_immunities.nil?
+      new_monster.damage_immunities = []
       unless monster[:damage_immunities].nil?
         monster[:damage_immunities].each do |damage|
-          new_monster.damage_immunities.create(name: damage)
+          new_monster.damage_immunities << damage
         end
       end
     end
 
     def import_damage_resistances(new_monster, monster)
-      new_monster.damage_resistances.destroy_all unless new_monster.damage_resistances.nil?
+      new_monster.damage_resistances = []
       unless monster[:damage_resistances].nil?
         monster[:damage_resistances].each do |damage|
-          new_monster.damage_resistances.create(name: damage)
+          new_monster.damage_resistances << damage
         end
       end
     end
 
     def import_damage_vulnerabilities(new_monster, monster)
-      new_monster.damage_vulnerabilities.destroy_all unless new_monster.damage_vulnerabilities.nil?
+      new_monster.damage_vulnerabilities = []
       unless monster[:damage_vulnerabilities].nil?
         monster[:damage_vulnerabilities].each do |damage|
-          new_monster.damage_vulnerabilities.create(name: damage)
+          new_monster.damage_vulnerabilities << damage
         end
       end
     end

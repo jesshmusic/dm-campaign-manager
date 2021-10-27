@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_26_140910) do
+ActiveRecord::Schema.define(version: 2021_10_27_010412) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -258,15 +258,6 @@ ActiveRecord::Schema.define(version: 2021_10_26_140910) do
     t.index ["weapon_category"], name: "index_items_on_weapon_category"
   end
 
-  create_table "monster_immunities", force: :cascade do |t|
-    t.string "name"
-    t.string "type"
-    t.bigint "monster_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["monster_id"], name: "index_monster_immunities_on_monster_id"
-  end
-
   create_table "monster_proficiencies", force: :cascade do |t|
     t.bigint "monster_id"
     t.bigint "prof_id"
@@ -303,6 +294,10 @@ ActiveRecord::Schema.define(version: 2021_10_26_140910) do
     t.integer "xp"
     t.integer "save_dc", default: 13
     t.integer "prof_bonus", default: 2
+    t.string "condition_immunities", default: [], array: true
+    t.string "damage_immunities", default: [], array: true
+    t.string "damage_resistances", default: [], array: true
+    t.string "damage_vulnerabilities", default: [], array: true
     t.index ["slug"], name: "index_monsters_on_slug", unique: true
     t.index ["user_id"], name: "index_monsters_on_user_id"
   end
@@ -591,7 +586,6 @@ ActiveRecord::Schema.define(version: 2021_10_26_140910) do
   add_foreign_key "item_ranges", "items"
   add_foreign_key "item_throw_ranges", "items"
   add_foreign_key "items", "users"
-  add_foreign_key "monster_immunities", "monsters"
   add_foreign_key "monsters", "users"
   add_foreign_key "multi_classing_prereq_options", "multi_classings"
   add_foreign_key "multi_classing_profs", "multi_classings"
