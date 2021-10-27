@@ -1,8 +1,5 @@
 import snakecaseKeys from 'snakecase-keys';
-import {
-  MonsterCRCalcResult,
-  MonsterGeneratorFormFields,
-} from '../../utilities/types';
+import { MonsterCRCalcResult, MonsterGeneratorFormFields } from '../../utilities/types';
 import axios from 'axios';
 
 export const getMonsterObject = (values: MonsterGeneratorFormFields) => {
@@ -29,13 +26,25 @@ export const getMonsterObject = (values: MonsterGeneratorFormFields) => {
     damageImmunities: values.damageImmunities || [],
     damageResistances: values.damageResistances || [],
     damageVulnerabilities: values.damageVulnerabilities || [],
-    actions: values.actions || [],
-    legendaryActions: values.legendaryActions || [],
-    reactions: values.reactions || [],
-    specialAbilities: values.specialAbilities || [],
+    actions: values.actions.map((action) => ({
+      name: action.name,
+      desc: action.desc
+    })) || [],
+    legendaryActions: values.legendaryActions.map((action) => ({
+      name: action.name,
+      desc: action.desc
+    })) || [],
+    reactions: values.reactions.map((action) => ({
+      name: action.name,
+      desc: action.desc
+    })) || [],
+    specialAbilities: values.specialAbilities.map((action) => ({
+      name: action.name,
+      desc: action.desc
+    })) || [],
     senses: values.senses || [],
     speeds: values.speeds || [],
-    monsterProficiencies: values.monsterProficiencies || [],
+    monsterProficiencies: values.monsterProficiencies || []
   };
   return snakecaseKeys(returnChar, { exclude: ['_destroy'] });
 };
@@ -58,7 +67,7 @@ export const get2eMonsterObject = (values) => {
     alignment: values.alignment,
     numberOfAttacks: values.numberOfAttacks,
     speed: values.speed,
-    actions: values.actions,
+    actions: values.actions
   };
   return snakecaseKeys(returnChar, { exclude: ['_destroy'] });
 };
@@ -70,8 +79,8 @@ export const calculateCR = async (
     '/v1/calculate_cr',
     {
       params: {
-        monster: getMonsterObject(allValues),
-      },
+        monster: getMonsterObject(allValues)
+      }
     }
   );
 };
@@ -106,7 +115,7 @@ const diceNumberFromString = {
   d8: 8,
   d10: 10,
   d12: 12,
-  d20: 20,
+  d20: 20
 };
 
 export const hitPoints = (

@@ -159,7 +159,7 @@ module Admin::V1
         damage_immunities_attributes: %i[name _destroy],
         damage_vulnerabilities_attributes: %i[name _destroy],
         damage_resistances_attributes: %i[name _destroy],
-        condition_ids: [],
+        condition_immunities: %i[name _destroy],
         monster_proficiencies_attributes: %i[id prof_id value _destroy],
         senses_attributes: %i[
           name value _destroy
