@@ -24,17 +24,6 @@ import axios, { AxiosResponse } from 'axios';
 
 const styles = require('./generator.module.scss');
 
-type MonsterFormErrors = {
-  name?: string;
-  characterAlignment?: string;
-  charisma?: string;
-  constitution?: string;
-  dexterity?: string;
-  intelligence?: string;
-  strength?: string;
-  wisdom?: string;
-};
-
 export const senses: SelectOption[] = [
   { label: 'Blindsight', value: 'blindsight' },
   { label: 'Darkvision', value: 'darkvision' },
