@@ -14,8 +14,6 @@ const ClassLevelsTable = (props: { dndClass: DndClass }) => {
     [dndClass.levels]
   );
 
-  console.log(data);
-
   return (
     <div className={styles.tableContainer}>
       <DataTable
