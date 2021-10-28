@@ -27,6 +27,7 @@ import Condition from './pages/conditions/Condition';
 import Conditions from './pages/conditions/Conditions';
 import HeroBanner from './components/HeroBanner/HeroBanner';
 import Breadcrumbs from './components/Breadcrumbs/Breadcrumbs';
+import Footer from './components/Footer/Footer';
 
 const styles = require('./app.module.scss');
 gsap.registerPlugin(ScrollToPlugin);
@@ -146,6 +147,7 @@ const App = (props) => {
               </>
             )}
           </Location>
+          <Footer user={combinedProps.user} />
         </div>
       </Provider>
     </Auth0Provider>

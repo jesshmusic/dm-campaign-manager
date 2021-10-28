@@ -34,13 +34,7 @@ const PageContainer = (props: PageContainerProps) => {
       </Helmet>
       <div className={styles.pageWrapper}>
         <div className={styles.pageContent}>
-          <div className={styles.page}>
-            {/*{breadcrumbs && breadcrumbs.length > 0 ? (*/}
-            {/*  <Breadcrumbs breadcrumbs={breadcrumbs} />*/}
-            {/*) : null}*/}
-            {children}
-          </div>
-          <Footer user={user} />
+          <div className={styles.page}>{children}</div>
         </div>
       </div>
     </div>
