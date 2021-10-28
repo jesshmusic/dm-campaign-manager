@@ -29,7 +29,11 @@
   flex-wrap: wrap;
   list-style: none;
   margin: 0 -2rem 1rem;
-  padding: 0.35rem 1rem;
+  padding: 0.35rem 1rem 0.35rem 6rem;
+
+  @include respond-to(md) {
+    padding: 0.35rem 1rem 0.35rem 22rem;
+  }
 }
 
 .breadcrumbItem {

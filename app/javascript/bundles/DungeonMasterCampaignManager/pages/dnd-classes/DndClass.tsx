@@ -29,6 +29,8 @@ const DndClass = (props: DndClassPageProps) => {
 
   const dndClassTitle = dndClass ? dndClass.name : 'Class Loading...';
 
+  console.log(dndClass);
+
   return (
     <PageContainer
       pageTitle={dndClassTitle}

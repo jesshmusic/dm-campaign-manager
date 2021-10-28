@@ -10,6 +10,9 @@ export const buildLevelColumns = (
     { Header: 'Features', accessor: 'featureString' },
   ];
   levels[0].classSpecifics.forEach((classSpecific) => {
+    if (classSpecific.name === 'Creating Spell Slots') {
+      return;
+    }
     const specCol = {
       Header: classSpecific.name,
       accessor: Util.camelize(classSpecific.name),
@@ -102,11 +105,15 @@ export const buildData = (levels: DndClassLevel[]) => {
       },
     };
     level.classSpecifics.forEach((classSpecific) => {
-      const value =
-        classSpecific.value === '0' || classSpecific.value === 'f'
-          ? '-'
-          : classSpecific.value;
-      data[Util.camelize(classSpecific.name)] = value === 't' ? '√' : value;
+      if (typeof classSpecific.value === 'object') {
+        return;
+      } else {
+        const value =
+          classSpecific.value === '0' || classSpecific.value === 'f'
+            ? '-'
+            : classSpecific.value;
+        data[Util.camelize(classSpecific.name)] = value === 't' ? '√' : value;
+      }
     });
     return data;
   });

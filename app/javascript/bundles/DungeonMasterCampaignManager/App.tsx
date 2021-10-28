@@ -25,6 +25,8 @@ import Item from './pages/items/Item';
 import ProtectedRoute from './components/ProtectedRoute';
 import Condition from './pages/conditions/Condition';
 import Conditions from './pages/conditions/Conditions';
+import HeroBanner from './components/HeroBanner/HeroBanner';
+import Breadcrumbs from './components/Breadcrumbs/Breadcrumbs';
 
 const styles = require('./app.module.scss');
 gsap.registerPlugin(ScrollToPlugin);
@@ -86,58 +88,62 @@ const App = (props) => {
       <Provider store={store(props)}>
         <div className={styles.appContainer} ref={parentNode}>
           <SideBar isCollapsed={isMobile} />
+          <HeroBanner />
           <Location>
             {({ location }) => (
-              <TransitionGroup component={null}>
-                <Transition
-                  timeout={500}
-                  key={location.pathname}
-                  onEnter={onEnterHandler}
-                  onExit={onExitHandler}
-                >
-                  <Router primary={false} location={location}>
-                    <HomePage path="/" {...combinedProps} />
-                    <DndClass
-                      path="/app/classes/:dndClassSlug"
-                      {...combinedProps}
-                    />
-                    <DndClasses path="/app/classes" {...combinedProps} />
-                    <Races path="/app/races" {...combinedProps} />
-                    <Race path="/app/races/:raceSlug" {...combinedProps} />
-                    <Conditions path="/app/conditions/" {...combinedProps} />
-                    <Condition
-                      path="/app/conditions/:conditionSlug"
-                      {...combinedProps}
-                    />
-                    {Util.itemPages.map((itemPage) => (
-                      <Items
-                        path={itemPage.path}
+              <>
+                <Breadcrumbs location={location} />
+                <TransitionGroup component={null}>
+                  <Transition
+                    timeout={500}
+                    key={location.pathname}
+                    onEnter={onEnterHandler}
+                    onExit={onExitHandler}
+                  >
+                    <Router primary={false} location={location}>
+                      <HomePage path="/" {...combinedProps} />
+                      <DndClass
+                        path="/app/classes/:dndClassSlug"
                         {...combinedProps}
-                        itemType={itemPage.itemType}
-                        key={itemPage.itemType}
-                        pageTitle={itemPage.pageTitle}
                       />
-                    ))}
-                    <Item path="/app/items/:itemSlug" {...combinedProps} />
-                    <Monsters path="/app/monsters/" {...combinedProps} />
-                    <Monster
-                      path="/app/monsters/:monsterSlug"
-                      {...combinedProps}
-                    />
-                    <Spells path="/app/spells/" {...combinedProps} />
-                    <Spell path="/app/spells/:spellSlug" {...combinedProps} />
-                    <Section
-                      path="/app/sections/:sectionSlug"
-                      {...combinedProps}
-                    />
-                    <ProtectedRoute
-                      path="/app/monster-generator/"
-                      as={MonsterGenerator}
-                      {...combinedProps}
-                    />
-                  </Router>
-                </Transition>
-              </TransitionGroup>
+                      <DndClasses path="/app/classes" {...combinedProps} />
+                      <Races path="/app/races" {...combinedProps} />
+                      <Race path="/app/races/:raceSlug" {...combinedProps} />
+                      <Conditions path="/app/conditions/" {...combinedProps} />
+                      <Condition
+                        path="/app/conditions/:conditionSlug"
+                        {...combinedProps}
+                      />
+                      {Util.itemPages.map((itemPage) => (
+                        <Items
+                          path={itemPage.path}
+                          {...combinedProps}
+                          itemType={itemPage.itemType}
+                          key={itemPage.itemType}
+                          pageTitle={itemPage.pageTitle}
+                        />
+                      ))}
+                      <Item path="/app/items/:itemSlug" {...combinedProps} />
+                      <Monsters path="/app/monsters/" {...combinedProps} />
+                      <Monster
+                        path="/app/monsters/:monsterSlug"
+                        {...combinedProps}
+                      />
+                      <Spells path="/app/spells/" {...combinedProps} />
+                      <Spell path="/app/spells/:spellSlug" {...combinedProps} />
+                      <Section
+                        path="/app/sections/:sectionSlug"
+                        {...combinedProps}
+                      />
+                      <ProtectedRoute
+                        path="/app/monster-generator/"
+                        as={MonsterGenerator}
+                        {...combinedProps}
+                      />
+                    </Router>
+                  </Transition>
+                </TransitionGroup>
+              </>
             )}
           </Location>
         </div>

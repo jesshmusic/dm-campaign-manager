@@ -2,7 +2,6 @@ import React from 'react';
 
 // Bootstrap
 import Footer from '../components/Footer/Footer';
-import HeroBanner from '../components/HeroBanner/HeroBanner';
 import FlashMessages from '../components/Alerts/FlashMessages';
 import '../stylesheets/_fonts.scss';
 import '../stylesheets/application.scss';
@@ -35,11 +34,10 @@ const PageContainer = (props: PageContainerProps) => {
       </Helmet>
       <div className={styles.pageWrapper}>
         <div className={styles.pageContent}>
-          <HeroBanner />
           <div className={styles.page}>
-            {breadcrumbs && breadcrumbs.length > 0 ? (
-              <Breadcrumbs breadcrumbs={breadcrumbs} />
-            ) : null}
+            {/*{breadcrumbs && breadcrumbs.length > 0 ? (*/}
+            {/*  <Breadcrumbs breadcrumbs={breadcrumbs} />*/}
+            {/*) : null}*/}
             {children}
           </div>
           <Footer user={user} />
