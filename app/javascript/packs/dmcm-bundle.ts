@@ -4,9 +4,9 @@ import 'bootstrap';
 
 require('@nathanvda/cocoon');
 
-import Home from '../bundles/DungeonMasterCampaignManager/pages/Home';
+import App from '../bundles/DungeonMasterCampaignManager/App';
 
-// This is how react_on_rails can see the Home in the browser.
+// This is how react_on_rails can see the App in the browser.
 ReactOnRails.register({
-  Home,
+  App,
 });

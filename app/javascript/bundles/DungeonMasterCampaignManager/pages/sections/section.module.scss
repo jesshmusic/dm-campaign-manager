@@ -7,16 +7,22 @@
 .section {
   column-gap: 5rem;
   columns: 400px 2;
+  //margin: 0 auto;
+  //max-width: 1400px;
 
   table {
     @extend .table;
     @extend .table-borderless;
     @extend .table-striped;
+    @extend .table-responsive;
+
+    table-layout: fixed;
 
     tbody {
       tr {
         td {
           font-family: $font-family-sans-serif;
+          word-wrap: break-word;
         }
       }
     }
