@@ -54,7 +54,7 @@ const Breadcrumbs = (props: { location: WindowLocation }) => {
             <GiPointing size={25} />
           </button>
         ) : (
-          <li className={`${styles.breadcrumbItem} active`}>
+          <li className={styles.homeIcon}>
             <GiCastle size={25} />
           </li>
         )}
