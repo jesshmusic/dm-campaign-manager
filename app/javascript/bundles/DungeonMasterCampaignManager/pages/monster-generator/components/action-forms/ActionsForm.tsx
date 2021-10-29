@@ -85,7 +85,7 @@ const ActionsForm = (props: {
 
   return (
     <div className={styles.wrapper}>
-      <h3>{title}</h3>
+      <h4>{title}</h4>
       {fields.map((action, actionIndex) => (
         <ActionForm
           key={action.id}

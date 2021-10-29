@@ -1,11 +1,12 @@
 import React from 'react';
-import { GiBullyMinion } from 'react-icons/all';
+import { GiMailedFist } from 'react-icons/all';
 import { UseFormRegister } from 'react-hook-form';
 import { FieldValues } from '../../../utilities/types';
 import { Colors } from '../../../utilities/enums';
 import Button from '../../../components/Button/Button';
 
 const styles = require('../../../components/forms/input.module.scss');
+const genStyles = require('./generator.module.scss');
 
 type ChallengeRatingFieldProps = {
   onCalculateCr: () => void;
@@ -15,7 +16,7 @@ type ChallengeRatingFieldProps = {
 const ChallengeRatingField = (props: ChallengeRatingFieldProps) => {
   const { onCalculateCr, register } = props;
   return (
-    <div className={styles.wrapper}>
+    <div className={`${styles.wrapper} ${genStyles.challenge}`}>
       <label className={styles.label}>Challenge</label>
       <div className={styles.inputGroup}>
         <input
@@ -31,7 +32,7 @@ const ChallengeRatingField = (props: ChallengeRatingFieldProps) => {
           title="Calculate Challenge"
           hideTitle
           onClick={onCalculateCr}
-          icon={<GiBullyMinion size={22} />}
+          icon={<GiMailedFist size={22} />}
         />
       </div>
     </div>

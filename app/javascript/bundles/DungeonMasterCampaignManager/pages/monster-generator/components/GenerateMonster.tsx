@@ -118,6 +118,8 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
             monsterType={UseForm.getValues('monsterType')}
             errors={UseForm.formState.errors}
           />
+
+          <h4>Stats</h4>
           <div className={styles.fourCol}>
             <MonsterTypeSelect control={UseForm.control} />
             <FormField
@@ -258,6 +260,7 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
               setValue={UseForm.setValue}
             />
           </div>
+          <h4>Resistances & Vulnerabilities</h4>
           <div className={styles.fourCol}>
             <FormSelectAsync
               label="Condition Immunities"

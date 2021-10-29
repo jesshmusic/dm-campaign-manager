@@ -11,16 +11,15 @@ import classNames from 'classnames';
 const styles = require('./input.module.scss');
 
 const FormSelectAsync = ({
-                           name,
-                           label,
-                           className,
-                           control,
-                           isMulti,
-                           getOptions,
-                           defaultOptions = true,
-                           isClearable = false
-                         }: SelectProps) => {
-
+  name,
+  label,
+  className,
+  control,
+  isMulti,
+  getOptions,
+  defaultOptions = true,
+  isClearable = false,
+}: SelectProps) => {
   return (
     <div className={classNames(className, styles.wrapper)}>
       <label htmlFor={name} className={styles.label}>
@@ -29,8 +28,10 @@ const FormSelectAsync = ({
       <Controller
         control={control}
         name={name}
-        render={({ field }) =>
+        render={({ field }) => (
           <AsyncSelect
+            className={'reactSelect'}
+            classNamePrefix={'reactSelect'}
             isMulti={isMulti}
             cacheOptions
             defaultOptions={defaultOptions}
@@ -39,7 +40,7 @@ const FormSelectAsync = ({
             loadOptions={getOptions}
             {...field}
           />
-        }
+        )}
       />
     </div>
   );

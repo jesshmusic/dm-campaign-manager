@@ -32,6 +32,15 @@
     margin-top: 0.125rem !important;
   }
 
+  &__multi-value {
+    background-color: $primary !important;
+    color: $white !important;
+
+    &__label {
+      color: $white !important;
+    }
+  }
+
   &__option {
     &--is-focused {
       background-color: lighten($primary, 25%) !important;

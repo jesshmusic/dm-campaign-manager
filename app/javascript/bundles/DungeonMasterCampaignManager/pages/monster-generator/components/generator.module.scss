@@ -1,13 +1,23 @@
 @import '../../../stylesheets/variables';
 
 .genForm {
-
-  &.validated {
-
+  button {
+    margin: 0.5rem 0.5rem 0 0;
   }
 
-  &.wasValidated {
+  h4 {
+    border-bottom: $orange solid 0.05rem;
+    color: $primary;
+    font-size: $h5-font-size;
+    font-weight: normal;
+    margin: 1.25rem 0 0.75rem;
+    padding-bottom: 0.25rem;
+  }
+}
 
+.challenge {
+  button {
+    margin: 0;
   }
 }
 
