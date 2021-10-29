@@ -8,9 +8,11 @@ import {
   GiAchillesHeel,
   GiCapeArmor,
   GiChestArmor,
+  GiDungeonGate,
   GiDwarfFace,
-  GiHomeGarage,
+  GiEvilMinion,
   GiHorseHead,
+  GiKing,
   GiMagicAxe,
   GiMagicPalm,
   GiMagicPotion,
@@ -33,6 +35,7 @@ import {
 import './sidebar-vars.scss';
 import { SidebarLink } from '../NavLink/NavLink';
 import { useAuth0, User } from '@auth0/auth0-react';
+import { UserProps } from '../../utilities/types';
 
 const sidebarBG = require('./SidebarBackground.jpg');
 
@@ -66,12 +69,13 @@ const itemTypes = [
 ];
 
 const SideBar = (props: {
-  isCollapsed: boolean;
+  currentUser?: UserProps;
   getSections: () => void;
+  isCollapsed: boolean;
   sections: { name: string; slug: string }[];
   setUser: (user: User, token: string) => void;
 }) => {
-  const { isCollapsed, getSections, sections, setUser } = props;
+  const { currentUser, isCollapsed, getSections, sections, setUser } = props;
 
   const {
     user,
@@ -146,28 +150,27 @@ const SideBar = (props: {
           </Menu>
         </SidebarContent>
         <SidebarFooter>
-          <div className={styles.divider}>
+          <div className={`${styles.divider} ${styles.userName}`}>
             {isAuthenticated && user ? `Welcome, ${user.given_name}` : 'User'}
+            {currentUser && currentUser.role && (
+              <span className={styles.roleLabel}>{currentUser.role}</span>
+            )}
           </div>
           <Menu>
-            {user && user.role === 'admin' ? (
-              <SidebarLink
-                to="/app/admin"
-                title="Admin"
-                icon={<GiHomeGarage />}
-              />
+            {currentUser && currentUser.role === 'admin' ? (
+              <SidebarLink to="/app/admin" title="Admin" icon={<GiKing />} />
             ) : null}
             {isAuthenticated && user ? (
               <>
                 <SidebarLink
                   to="/app/monster-generator"
                   title="Monster Generator"
-                  icon={<GiHomeGarage />}
+                  icon={<GiEvilMinion />}
                 />
                 <SidebarLink
                   to="/app/admin"
-                  title="Admin"
-                  icon={<GiHomeGarage />}
+                  title="Dashboard"
+                  icon={<GiDungeonGate />}
                 />
                 <MenuItem icon={<BiLogOut />}>
                   <button
@@ -192,6 +195,7 @@ const SideBar = (props: {
 const mapStateToProps = (state) => {
   return {
     sections: state.sections.sections,
+    currentUser: state.users.currentUser,
   };
 };
 

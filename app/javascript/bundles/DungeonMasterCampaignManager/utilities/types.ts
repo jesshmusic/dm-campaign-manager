@@ -513,7 +513,11 @@ export interface StartingEquipmentOption {
   options: StartingEquipment[];
 }
 
-export interface StateAction {
-  type: string;
-  payload: any;
+export interface UserProps {
+  id: number;
+  name: string;
+  email: string;
+  username: string;
+  role: 'admin' | 'dungeon-master' | 'user';
+  auth_id: string;
 }
