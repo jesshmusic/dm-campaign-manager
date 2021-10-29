@@ -1,7 +1,7 @@
 import React from 'react';
 import BreadcrumbLink from './BreadcrumbLink';
 import { navigate, WindowLocation } from '@reach/router';
-import { GiPointing } from 'react-icons/all';
+import { GiCastle, GiPointing, GiTwoHandedSword } from 'react-icons/all';
 
 const styles = require('./breadcrumbs.module.scss');
 
@@ -49,14 +49,21 @@ const Breadcrumbs = (props: { location: WindowLocation }) => {
   return (
     <nav aria-label="breadcrumb">
       <ol className={styles.breadcrumb}>
-        <button className={styles.backButton} onClick={() => navigate(-1)}>
-          <GiPointing size={25} />
-        </button>
+        {paths.length > 0 ? (
+          <button className={styles.backButton} onClick={() => navigate(-1)}>
+            <GiPointing size={25} />
+          </button>
+        ) : (
+          <li className={`${styles.breadcrumbItem} active`}>
+            <GiCastle size={25} />
+          </li>
+        )}
+
         <BreadcrumbLink to="/" title={'Home'} />
         {paths.map((path, index) =>
           index === paths.length - 1 || path.title === 'Sections' ? (
             <li className={`${styles.breadcrumbItem} active`} key={index}>
-              {path.title}
+              <GiTwoHandedSword /> {path.title}
             </li>
           ) : (
             <BreadcrumbLink to={path.url} title={path.title} key={index} />
