@@ -61,6 +61,10 @@ export const useData = (props: GenerateMonsterProps) => {
       damageImmunities: [],
       damageResistances: [],
       damageVulnerabilities: [],
+      conditionImmunitiesOptions: [],
+      damageImmunitiesOptions: [],
+      damageResistancesOptions: [],
+      damageVulnerabilitiesOptions: [],
       actions: [],
       legendaryActions: [],
       reactions: [],
@@ -253,6 +257,38 @@ export const useData = (props: GenerateMonsterProps) => {
         break;
       case 'actions':
         setActionDesc(fields, attackBonus, profBonus);
+        handleCalculateCR();
+        break;
+      case 'conditionImmunitiesOptions':
+        UseForm.setValue(
+          'conditionImmunities',
+          fields.conditionImmunitiesOptions.map(
+            (resistance) => resistance.label
+          )
+        );
+        handleCalculateCR();
+        break;
+      case 'damageResistancesOptions':
+        UseForm.setValue(
+          'damageResistances',
+          fields.damageResistancesOptions.map((resistance) => resistance.label)
+        );
+        handleCalculateCR();
+        break;
+      case 'damageImmunitiesOptions':
+        UseForm.setValue(
+          'damageImmunities',
+          fields.damageImmunitiesOptions.map((resistance) => resistance.label)
+        );
+        handleCalculateCR();
+        break;
+      case 'damageVulnerabilitiesOptions':
+        UseForm.setValue(
+          'damageVulnerabilities',
+          fields.damageVulnerabilitiesOptions.map(
+            (resistance) => resistance.label
+          )
+        );
         handleCalculateCR();
         break;
     }

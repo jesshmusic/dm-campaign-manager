@@ -264,14 +264,14 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
           <div className={styles.fourCol}>
             <FormSelectAsync
               label="Condition Immunities"
-              name="conditionImmunities"
+              name="conditionImmunitiesOptions"
               control={UseForm.control}
               getOptions={getConditions}
               isMulti
             />
             <FormSelect
               label="Damage Resistances"
-              name="damageResistances"
+              name="damageResistancesOptions"
               control={UseForm.control}
               isCreatable
               isMulti
@@ -279,7 +279,7 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
             />
             <FormSelect
               label="Damage Immunities"
-              name="damageImmunities"
+              name="damageImmunitiesOptions"
               control={UseForm.control}
               isCreatable
               isMulti
@@ -287,7 +287,7 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
             />
             <FormSelect
               label="Damage Vulnerabilities"
-              name="damageVulnerabilities"
+              name="damageVulnerabilitiesOptions"
               control={UseForm.control}
               isCreatable
               isMulti

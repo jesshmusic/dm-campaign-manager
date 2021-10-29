@@ -302,10 +302,14 @@ export type MonsterGeneratorFormFields = {
   wisdom: number;
   wisdomMod: number | string;
   xp: number;
-  conditionImmunities: SelectOption[];
-  damageImmunities: SelectOption[];
-  damageResistances: SelectOption[];
-  damageVulnerabilities: SelectOption[];
+  conditionImmunities: string[];
+  damageImmunities: string[];
+  damageResistances: string[];
+  damageVulnerabilities: string[];
+  conditionImmunitiesOptions: SelectOption[];
+  damageImmunitiesOptions: SelectOption[];
+  damageResistancesOptions: SelectOption[];
+  damageVulnerabilitiesOptions: SelectOption[];
   actions: MonsterActionField[];
   legendaryActions: MonsterActionField[];
   reactions: MonsterActionField[];

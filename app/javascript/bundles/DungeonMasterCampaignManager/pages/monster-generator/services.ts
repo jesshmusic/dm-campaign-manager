@@ -27,14 +27,10 @@ export const getMonsterObject = (values: MonsterGeneratorFormFields) => {
     size: values.size.value,
     strength: values.strength,
     wisdom: values.wisdom,
-    conditions:
-      values.conditionImmunities.map((resistance) => resistance.label) || [],
-    damageImmunities:
-      values.damageImmunities.map((resistance) => resistance.label) || [],
-    damageResistances:
-      values.damageResistances.map((resistance) => resistance.label) || [],
-    damageVulnerabilities:
-      values.damageVulnerabilities.map((resistance) => resistance.label) || [],
+    conditions: values.conditionImmunities || [],
+    damageImmunities: values.damageImmunities || [],
+    damageResistances: values.damageResistances || [],
+    damageVulnerabilities: values.damageVulnerabilities || [],
     actions:
       values.actions.map((action) => ({
         name: action.name,
