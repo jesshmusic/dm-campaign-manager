@@ -41,13 +41,23 @@ export const ControlledInput = (props: {
   errors: FieldErrors;
   className?: string;
   control: Control<FieldValues, object>;
+  defaultValue?: string | number | boolean;
   label: string;
   min?: number;
   required?: boolean;
   type?: string;
 }) => {
-  const { fieldName, errors, className, control, label, min, required, type } =
-    props;
+  const {
+    fieldName,
+    defaultValue,
+    errors,
+    className,
+    control,
+    label,
+    min,
+    required,
+    type,
+  } = props;
   return (
     <Controller
       render={({ field: { ref, ...rest } }) => (
@@ -56,6 +66,7 @@ export const ControlledInput = (props: {
           label={label}
           className={className}
           placeholder={`${label}...`}
+          defaultValue={defaultValue}
           errors={errors}
           min={min}
           required={required}

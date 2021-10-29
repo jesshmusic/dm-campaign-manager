@@ -56,16 +56,6 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
   } = useData(props);
   const [testState, setTestState] = React.useState();
 
-  const attackBonus = useWatch({
-    control: UseForm.control,
-    name: 'attackBonus',
-  }) as unknown as number;
-
-  const profBonus = useWatch({
-    control: UseForm.control,
-    name: 'profBonus',
-  }) as unknown as number;
-
   const getConditions = (inputValue: string, callback: any) => {
     axios
       .get(`/v1/conditions.json?search=${inputValue}`)

@@ -14,7 +14,6 @@ import { Colors } from '../../../../utilities/enums';
 
 import '../../../../components/forms/inputOverrides.scss';
 import ActionForm from './ActionForm';
-import { generateAttackDesc } from '../../../../utilities/character-utilities';
 
 const styles = require('./action-form.module.scss');
 
@@ -31,7 +30,6 @@ const ActionsForm = (props: {
     useForm: {
       control,
       formState: { errors },
-      getValues,
       setValue,
       register,
       unregister,
@@ -85,7 +83,6 @@ const ActionsForm = (props: {
           actionIndex={actionIndex}
           control={control}
           errors={errors}
-          getValues={getValues}
           remove={remove}
         />
       ))}

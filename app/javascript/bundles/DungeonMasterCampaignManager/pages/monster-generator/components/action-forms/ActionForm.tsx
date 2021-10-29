@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  Control,
-  Controller,
-  FieldErrors,
-  UseFormGetValues,
-  useWatch,
-} from 'react-hook-form';
+import { Control, Controller, FieldErrors, useWatch } from 'react-hook-form';
 import { ControllerInput } from '../../../../components/forms/ControllerInput';
 import Select from 'react-select';
 import Button from '../../../../components/Button/Button';
@@ -14,6 +8,7 @@ import { GiTrashCan } from 'react-icons/gi';
 import AbilityForm from './AbilityForm';
 import AttackForm from './AttackForm';
 import { ActionTypes } from '../../../../utilities/types';
+import SpellcastingForm from './SpellcastingForm';
 
 const styles = require('./action-form.module.scss');
 const inputStyles = require('../../../../components/forms/input.module.scss');
@@ -22,10 +17,9 @@ const ActionForm = (props: {
   actionIndex: number;
   control: Control;
   errors: FieldErrors;
-  getValues: UseFormGetValues<any>;
   remove: (index?: number | number[] | undefined) => void;
 }) => {
-  const { actionIndex, control, errors, getValues, remove } = props;
+  const { actionIndex, control, errors, remove } = props;
 
   const actionType = useWatch({
     control,
@@ -91,11 +85,16 @@ const ActionForm = (props: {
       />
       {actionType.value === ActionTypes.attack && (
         <AttackForm
-          actionIndex={actionIndex}
           control={control}
           errors={errors}
           fieldName={`actions.${actionIndex}`}
-          getValues={getValues}
+        />
+      )}
+      {actionType.value === ActionTypes.spellCasting && (
+        <SpellcastingForm
+          control={control}
+          errors={errors}
+          fieldName={`actions.${actionIndex}`}
         />
       )}
     </div>

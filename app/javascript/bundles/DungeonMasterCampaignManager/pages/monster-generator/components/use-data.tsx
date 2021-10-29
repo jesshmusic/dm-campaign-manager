@@ -313,6 +313,12 @@ export const useData = (props: GenerateMonsterProps) => {
           );
           handleCalculateCR();
         }
+        if (fieldName === `actions.${actionIndex}.spellCasting.abilityOption`) {
+          UseForm.setValue(
+            `actions.${actionIndex}.spellCasting.ability`,
+            fields.actions[actionIndex].spellCasting!.abilityOption.label
+          );
+        }
       }
     }
   };

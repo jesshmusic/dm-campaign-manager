@@ -5,7 +5,7 @@
 import React from 'react';
 import Select from 'react-select';
 import CreatableSelect from 'react-select/creatable';
-import { MonsterGeneratorFormFields, SelectOption } from '../../utilities/types';
+import { SelectOption } from '../../utilities/types';
 import { Control, Controller } from 'react-hook-form';
 import classNames from 'classnames';
 import './inputOverrides.scss';
@@ -13,30 +13,32 @@ import './inputOverrides.scss';
 export type SelectProps = {
   className?: string;
   defaultOptions?: boolean;
+  defaultValue?: SelectOption;
   getOptions?: (inputValue: string, callback: any) => void;
   isClearable?: boolean;
   isCreatable?: boolean;
   isMulti?: boolean;
   label: string;
-  name: keyof MonsterGeneratorFormFields;
+  name: string;
   options?: SelectOption[];
   placeholder?: string;
-  control?: Control<MonsterGeneratorFormFields>;
+  control?: Control<any>;
   value?: any;
 };
 
 const styles = require('./input.module.scss');
 
 const FormSelect = ({
-                      name,
-                      label,
-                      className = '',
-                      isClearable = false,
-                      options,
-                      control,
-                      isCreatable = false,
-                      isMulti = false
-                    }: SelectProps) => {
+  name,
+  label,
+  className = '',
+  defaultValue,
+  isClearable = false,
+  options,
+  control,
+  isCreatable = false,
+  isMulti = false,
+}: SelectProps) => {
   return (
     <div className={classNames(className, styles.wrapper)}>
       <label htmlFor={name} className={styles.label}>
@@ -50,6 +52,7 @@ const FormSelect = ({
             <CreatableSelect
               className={'reactSelect'}
               classNamePrefix={'reactSelect'}
+              defaultValue={defaultValue}
               isClearable={isClearable}
               options={options}
               isMulti={isMulti}
@@ -60,6 +63,7 @@ const FormSelect = ({
             <Select
               className={'reactSelect'}
               classNamePrefix={'reactSelect'}
+              defaultValue={defaultValue}
               isClearable={isClearable}
               options={options}
               isMulti={isMulti}

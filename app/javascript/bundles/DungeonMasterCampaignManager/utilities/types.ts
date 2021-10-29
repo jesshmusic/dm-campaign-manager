@@ -255,6 +255,7 @@ export type MonsterActionField = {
   spellCasting?: {
     level: number;
     ability: string;
+    abilityOption: SelectOption;
     slots: {
       first: number;
       second: number;

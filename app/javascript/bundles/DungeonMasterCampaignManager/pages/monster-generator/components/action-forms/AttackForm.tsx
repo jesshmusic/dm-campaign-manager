@@ -18,13 +18,11 @@ import {
 const styles = require('./action-form.module.scss');
 
 const AttackForm = (props: {
-  actionIndex: number;
   fieldName: string;
   errors: FieldErrors;
   control: Control<FieldValues, object>;
-  getValues: UseFormGetValues<any>;
 }) => {
-  const { control, errors, fieldName, actionIndex } = props;
+  const { control, errors, fieldName } = props;
 
   const isRanged = useWatch({
     control,
