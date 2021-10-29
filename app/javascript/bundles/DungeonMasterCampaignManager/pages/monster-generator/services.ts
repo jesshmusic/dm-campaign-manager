@@ -1,5 +1,9 @@
 import snakecaseKeys from 'snakecase-keys';
-import { MonsterCRCalcResult, MonsterGeneratorFormFields } from '../../utilities/types';
+import {
+  MonsterCRCalcResult,
+  MonsterGeneratorFormFields,
+  SelectOption,
+} from '../../utilities/types';
 import axios from 'axios';
 
 // @TODO: add mapping and types for immunities
@@ -23,29 +27,37 @@ export const getMonsterObject = (values: MonsterGeneratorFormFields) => {
     size: values.size.value,
     strength: values.strength,
     wisdom: values.wisdom,
-    conditions: values.conditionImmunities || [],
-    damageImmunities: values.damageImmunities || [],
-    damageResistances: values.damageResistances || [],
-    damageVulnerabilities: values.damageVulnerabilities || [],
-    actions: values.actions.map((action) => ({
-      name: action.name,
-      desc: action.desc
-    })) || [],
-    legendaryActions: values.legendaryActions.map((action) => ({
-      name: action.name,
-      desc: action.desc
-    })) || [],
-    reactions: values.reactions.map((action) => ({
-      name: action.name,
-      desc: action.desc
-    })) || [],
-    specialAbilities: values.specialAbilities.map((action) => ({
-      name: action.name,
-      desc: action.desc
-    })) || [],
+    conditions:
+      values.conditionImmunities.map((resistance) => resistance.label) || [],
+    damageImmunities:
+      values.damageImmunities.map((resistance) => resistance.label) || [],
+    damageResistances:
+      values.damageResistances.map((resistance) => resistance.label) || [],
+    damageVulnerabilities:
+      values.damageVulnerabilities.map((resistance) => resistance.label) || [],
+    actions:
+      values.actions.map((action) => ({
+        name: action.name,
+        desc: action.desc,
+      })) || [],
+    legendaryActions:
+      values.legendaryActions.map((action) => ({
+        name: action.name,
+        desc: action.desc,
+      })) || [],
+    reactions:
+      values.reactions.map((action) => ({
+        name: action.name,
+        desc: action.desc,
+      })) || [],
+    specialAbilities:
+      values.specialAbilities.map((action) => ({
+        name: action.name,
+        desc: action.desc,
+      })) || [],
     senses: values.senses || [],
     speeds: values.speeds || [],
-    monsterProficiencies: values.monsterProficiencies || []
+    monsterProficiencies: values.monsterProficiencies || [],
   };
   return snakecaseKeys(returnChar, { exclude: ['_destroy'] });
 };
@@ -68,7 +80,7 @@ export const get2eMonsterObject = (values) => {
     alignment: values.alignment,
     numberOfAttacks: values.numberOfAttacks,
     speed: values.speed,
-    actions: values.actions
+    actions: values.actions,
   };
   return snakecaseKeys(returnChar, { exclude: ['_destroy'] });
 };
@@ -80,8 +92,8 @@ export const calculateCR = async (
     '/v1/calculate_cr',
     {
       params: {
-        monster: getMonsterObject(allValues)
-      }
+        monster: getMonsterObject(allValues),
+      },
     }
   );
 };
@@ -116,7 +128,7 @@ const diceNumberFromString = {
   d8: 8,
   d10: 10,
   d12: 12,
-  d20: 20
+  d20: 20,
 };
 
 export const hitPoints = (

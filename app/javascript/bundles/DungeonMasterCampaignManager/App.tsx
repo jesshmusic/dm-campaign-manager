@@ -136,9 +136,8 @@ const App = (props) => {
                         path="/app/sections/:sectionSlug"
                         {...combinedProps}
                       />
-                      <ProtectedRoute
+                      <MonsterGenerator
                         path="/app/monster-generator/"
-                        as={MonsterGenerator}
                         {...combinedProps}
                       />
                     </Router>

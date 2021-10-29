@@ -157,16 +157,16 @@ const SideBar = (props: {
             )}
           </div>
           <Menu>
+            <SidebarLink
+              to="/app/monster-generator"
+              title="Monster Generator"
+              icon={<GiEvilMinion />}
+            />
             {currentUser && currentUser.role === 'admin' ? (
               <SidebarLink to="/app/admin" title="Admin" icon={<GiKing />} />
             ) : null}
             {isAuthenticated && user ? (
               <>
-                <SidebarLink
-                  to="/app/monster-generator"
-                  title="Monster Generator"
-                  icon={<GiEvilMinion />}
-                />
                 <SidebarLink
                   to="/app/admin"
                   title="Dashboard"

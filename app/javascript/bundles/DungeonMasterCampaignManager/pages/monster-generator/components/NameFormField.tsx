@@ -41,6 +41,11 @@ const NameFormField = (props: NameFormFieldProps) => {
         </p>
       )}
       <div className={styles.monsterTypeButtons}>
+        <Button
+          color={Colors.warning}
+          title="Random Monster Name"
+          onClick={handleGenerateMonsterName}
+        />
         {monsterType === 'humanoid' && (
           <>
             <Button
@@ -60,11 +65,6 @@ const NameFormField = (props: NameFormFieldProps) => {
             />
           </>
         )}
-        <Button
-          color={Colors.warning}
-          title="Random Monster Name"
-          onClick={handleGenerateMonsterName}
-        />
       </div>
     </div>
   );

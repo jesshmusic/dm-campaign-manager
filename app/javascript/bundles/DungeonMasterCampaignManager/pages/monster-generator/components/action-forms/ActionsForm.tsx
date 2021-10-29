@@ -19,16 +19,12 @@ import { generateAttackDesc } from '../../../../utilities/character-utilities';
 const styles = require('./action-form.module.scss');
 
 const ActionsForm = (props: {
-  attackBonus: number;
-  profBonus: number;
   fieldName: keyof MonsterGeneratorFormFields;
   title: string;
   singularTitle: string;
   useForm: UseFormReturn<any, object>;
 }) => {
   const {
-    attackBonus,
-    profBonus,
     fieldName,
     singularTitle,
     title,
@@ -40,17 +36,14 @@ const ActionsForm = (props: {
       register,
       unregister,
       trigger,
-      watch,
     },
   } = props;
 
   const isInitialRender = React.useRef(true);
-  const { fields, append, prepend, remove, swap, move, insert } = useFieldArray(
-    {
-      control,
-      name: fieldName,
-    }
-  );
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: fieldName,
+  });
 
   const addAction = () => {
     append({

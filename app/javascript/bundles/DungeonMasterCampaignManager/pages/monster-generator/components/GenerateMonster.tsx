@@ -296,9 +296,7 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
           </div>
           <div className={styles.actionsSection}>
             <ActionsForm
-              attackBonus={attackBonus}
               fieldName="actions"
-              profBonus={profBonus}
               singularTitle="Action"
               title="Actions"
               useForm={UseForm}

@@ -25,13 +25,11 @@ const HomePage = (props: PageProps) => {
     >
       <div className={styles.wrapper}>
         <PageTitle title={'The Dungeon Master Screen'} isDraconis />
-        {isAuthenticated && user && (
-          <div className={styles.section}>
-            <Link to="/app/monster-generator" className={styles.buttonBar}>
-              <GiBarbute size={24} /> NPC Generators
-            </Link>
-          </div>
-        )}
+        <div className={styles.section}>
+          <Link to="/app/monster-generator" className={styles.buttonBar}>
+            <GiBarbute size={24} /> NPC Generators
+          </Link>
+        </div>
         <div className={styles.section}>
           <NameField />
         </div>
