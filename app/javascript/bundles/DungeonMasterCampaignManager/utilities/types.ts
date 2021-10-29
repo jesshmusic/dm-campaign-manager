@@ -239,7 +239,7 @@ export type MonsterActionField = {
   name: string;
   desc: string;
   numAttacks: number;
-  actionType: SelectOption;
+  actionType: ActionTypes;
   damage?: {
     numDice: number;
     diceValue: number;

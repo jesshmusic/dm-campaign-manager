@@ -10,7 +10,7 @@ import FormSelect from '../../../../components/forms/FormSelect';
 
 const styles = require('./action-form.module.scss');
 
-const abilityOptions = [
+export const abilityOptions = [
   { label: 'Charisma', value: 'charisma' },
   { label: 'Constitution', value: 'constitution' },
   { label: 'Dexterity', value: 'dexterity' },

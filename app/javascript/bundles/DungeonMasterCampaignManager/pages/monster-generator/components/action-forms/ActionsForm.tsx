@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import { GiSwordsPower } from 'react-icons/gi';
+import { GiAbacus, GiSwordsPower } from 'react-icons/gi';
 import {
   ActionTypes,
   MonsterGeneratorFormFields,
@@ -14,6 +14,8 @@ import { Colors } from '../../../../utilities/enums';
 
 import '../../../../components/forms/inputOverrides.scss';
 import ActionForm from './ActionForm';
+import { abilityOptions } from './SpellcastingForm';
+import { GiMagicPalm } from 'react-icons/all';
 
 const styles = require('./action-form.module.scss');
 
@@ -46,7 +48,15 @@ const ActionsForm = (props: {
   const addAction = () => {
     append({
       name: 'New Action',
-      actionType: { value: ActionTypes.attack, label: 'Attack' },
+      desc: '',
+      actionType: ActionTypes.ability,
+    });
+  };
+
+  const addAttack = () => {
+    append({
+      name: 'New Action',
+      actionType: ActionTypes.attack,
       numAttacks: 1,
       desc: '',
       damage: {
@@ -60,6 +70,31 @@ const ActionsForm = (props: {
         rangeNormal: 120,
         rangeLong: 300,
         reach: 5,
+      },
+    });
+  };
+
+  const addSpellCasting = () => {
+    append({
+      name: 'New Action',
+      actionType: ActionTypes.spellCasting,
+      desc: '',
+      spellCasting: {
+        level: 1,
+        ability: 'Intelligence',
+        abilityOption: abilityOptions[3],
+        slots: {
+          first: 1,
+          second: 2,
+          third: 3,
+          fourth: 4,
+          fifth: 5,
+          sixth: 6,
+          seventh: 7,
+          eighth: 8,
+          ninth: 9,
+        },
+        spellIds: [],
       },
     });
   };
@@ -90,8 +125,22 @@ const ActionsForm = (props: {
         type="button"
         onClick={addAction}
         color={Colors.success}
+        icon={<GiAbacus size={30} />}
+        title={`Add Action`}
+      />
+      <Button
+        type="button"
+        onClick={addAttack}
+        color={Colors.danger}
         icon={<GiSwordsPower size={30} />}
-        title={`Add ${singularTitle}`}
+        title={`Add Attack`}
+      />
+      <Button
+        type="button"
+        onClick={addSpellCasting}
+        color={Colors.info}
+        icon={<GiMagicPalm size={30} />}
+        title={`Add Spellcasting`}
       />
     </div>
   );

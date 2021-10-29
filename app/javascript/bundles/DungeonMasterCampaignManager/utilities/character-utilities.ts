@@ -1,4 +1,9 @@
-import { ActionTypes, DamageTypes, MonsterActionField, SelectOption } from './types';
+import {
+  ActionTypes,
+  DamageTypes,
+  MonsterActionField,
+  SelectOption,
+} from './types';
 import { ToWords } from 'to-words';
 
 export const toSnakeCase = (str: string) =>
@@ -13,19 +18,19 @@ export const toSnakeCase = (str: string) =>
 export const filterOptions = (results) =>
   results.results.map((nextItem) => ({
     value: nextItem.id,
-    label: nextItem.name
+    label: nextItem.name,
   }));
 
 export const filterOptionsWithData = (results) =>
   results.map((nextItem) => ({
     value: nextItem.id,
-    label: nextItem.name
+    label: nextItem.name,
   }));
 
 export const filterSnakeCaseOptionsWithData = (results) =>
   results.results.map((nextItem) => ({
     value: toSnakeCase(nextItem.name),
-    label: nextItem.name
+    label: nextItem.name,
   }));
 
 export const alignmentOptions: SelectOption[] = [
@@ -37,7 +42,7 @@ export const alignmentOptions: SelectOption[] = [
   { value: 'Chaotic Neutral', label: 'Chaotic Neutral' },
   { value: 'Lawful Evil', label: 'Lawful Evil' },
   { value: 'Neutral Evil', label: 'Neutral Evil' },
-  { value: 'Chaotic Evil', label: 'Chaotic Evil' }
+  { value: 'Chaotic Evil', label: 'Chaotic Evil' },
 ];
 
 export const monsterVariantOptions: {
@@ -46,7 +51,7 @@ export const monsterVariantOptions: {
 }[] = [
   { value: 'fighter', label: 'Fighter' },
   { value: 'caster_wizard', label: 'Caster - Wizard' },
-  { value: 'caster_cleric', label: 'Caster - Cleric' }
+  { value: 'caster_cleric', label: 'Caster - Cleric' },
 ];
 
 export const monsterSizeOptions: SelectOption[] = [
@@ -55,70 +60,70 @@ export const monsterSizeOptions: SelectOption[] = [
   { value: 'medium', label: 'Medium' },
   { value: 'large', label: 'Large' },
   { value: 'huge', label: 'Huge' },
-  { value: 'gargantuan', label: 'Gargantuan' }
+  { value: 'gargantuan', label: 'Gargantuan' },
 ];
 
 export const monsterTypeOptions: SelectOption[] = [
   {
     value: 'aberration',
-    label: 'Aberration'
+    label: 'Aberration',
   },
   {
     value: 'beast',
-    label: 'Beast'
+    label: 'Beast',
   },
   {
     value: 'celestial',
-    label: 'Celestial'
+    label: 'Celestial',
   },
   {
     value: 'construct',
-    label: 'Construct'
+    label: 'Construct',
   },
   {
     value: 'dragon',
-    label: 'Dragon'
+    label: 'Dragon',
   },
   {
     value: 'elemental',
-    label: 'Elemental'
+    label: 'Elemental',
   },
   {
     value: 'fey',
-    label: 'Fey'
+    label: 'Fey',
   },
   {
     value: 'fiend',
-    label: 'Fiend'
+    label: 'Fiend',
   },
   {
     value: 'giant',
-    label: 'Giant'
+    label: 'Giant',
   },
   {
     value: 'humanoid',
-    label: 'Humanoid'
+    label: 'Humanoid',
   },
   {
     value: 'monstrosity',
-    label: 'Monstrosity'
+    label: 'Monstrosity',
   },
   {
     value: 'ooze',
-    label: 'Ooze'
+    label: 'Ooze',
   },
   {
     value: 'plant',
-    label: 'Plant'
+    label: 'Plant',
   },
   {
     value: 'swarm of Tiny beasts',
-    label: 'Swarm of Tiny beasts'
+    label: 'Swarm of Tiny beasts',
   },
   {
     value: 'undead',
-    label: 'Undead'
-  }
+    label: 'Undead',
+  },
 ];
 
 export const diceOptions: SelectOption[] = [
@@ -127,7 +132,7 @@ export const diceOptions: SelectOption[] = [
   { label: 'd8', value: 8 },
   { label: 'd10', value: 10 },
   { label: 'd12', value: 12 },
-  { label: 'd20', value: 20 }
+  { label: 'd20', value: 20 },
 ];
 
 export const damageTypes: { label: string; value: DamageTypes }[] = [
@@ -143,7 +148,7 @@ export const damageTypes: { label: string; value: DamageTypes }[] = [
   { label: 'Lightning', value: 'lightning' },
   { label: 'Thunder', value: 'thunder' },
   { label: 'Force', value: 'force' },
-  { label: 'Psychic', value: 'psychic' }
+  { label: 'Psychic', value: 'psychic' },
 ];
 
 export const getChallengeRatingOptions = () => {
@@ -151,7 +156,7 @@ export const getChallengeRatingOptions = () => {
     { value: '0', label: '0' },
     { value: '1/8', label: '1/8' },
     { value: '1/4', label: '1/4' },
-    { value: '1/2', label: '1/2' }
+    { value: '1/2', label: '1/2' },
   ];
   for (let i = 1; i < 31; i++) {
     crs.push({ value: `${i}`, label: `${i}` });
@@ -189,7 +194,7 @@ export const generateAttackDesc = (
   const toWords = new ToWords();
   let desc = '';
 
-  const actionType = actionFields.actionType.value;
+  const actionType = actionFields.actionType;
   if (actionType === ActionTypes.ability) {
     return actionFields.desc;
   } else if (actionType === ActionTypes.attack && actionFields.damage) {

@@ -1,7 +1,6 @@
 import React from 'react';
-import { Control, Controller, FieldErrors, useWatch } from 'react-hook-form';
-import { ControllerInput } from '../../../../components/forms/ControllerInput';
-import Select from 'react-select';
+import { Control, FieldErrors, useWatch } from 'react-hook-form';
+import { ControlledInput } from '../../../../components/forms/ControllerInput';
 import Button from '../../../../components/Button/Button';
 import { Colors } from '../../../../utilities/enums';
 import { GiTrashCan } from 'react-icons/gi';
@@ -30,43 +29,12 @@ const ActionForm = (props: {
   return (
     <div className={styles.actionContainer}>
       <div className={styles.actionWrapper}>
-        <Controller
-          render={({ field: { ref, ...rest } }) => (
-            <ControllerInput
-              label="Name"
-              {...rest}
-              type="text"
-              placeholder="Action Title..."
-              errors={errors}
-              className={styles.actionCol}
-            />
-          )}
-          name={`actions.${actionIndex}.name`}
+        <ControlledInput
+          fieldName={`actions.${actionIndex}.name`}
+          errors={errors}
+          className={styles.actionCol}
           control={control}
-        />
-        <Controller
-          render={({ field }) => (
-            <div className={`${inputStyles.wrapper} ${styles.actionCol}`}>
-              <label className={inputStyles.label}>Action Type</label>
-              <Select
-                className={inputStyles.selectStyle}
-                classNamePrefix={'reactSelect'}
-                {...field}
-                defaultValue={{ value: 'ability', label: 'Ability' }}
-                isSearchable={false}
-                options={[
-                  { value: ActionTypes.ability, label: 'Ability' },
-                  { value: ActionTypes.attack, label: 'Attack' },
-                  {
-                    value: ActionTypes.spellCasting,
-                    label: 'Spell Casting',
-                  },
-                ]}
-              />
-            </div>
-          )}
-          name={`actions.${actionIndex}.actionType`}
-          control={control}
+          label="Name"
         />
         <Button
           type="button"
@@ -81,16 +49,16 @@ const ActionForm = (props: {
         control={control}
         errors={errors}
         fieldName={`actions.${actionIndex}`}
-        readOnly={actionType.value !== ActionTypes.ability}
+        readOnly={actionType !== ActionTypes.ability}
       />
-      {actionType.value === ActionTypes.attack && (
+      {actionType === ActionTypes.attack && (
         <AttackForm
           control={control}
           errors={errors}
           fieldName={`actions.${actionIndex}`}
         />
       )}
-      {actionType.value === ActionTypes.spellCasting && (
+      {actionType === ActionTypes.spellCasting && (
         <SpellcastingForm
           control={control}
           errors={errors}
