@@ -4,10 +4,7 @@
 
 import React from 'react';
 import { GiAbacus, GiSwordsPower } from 'react-icons/gi';
-import {
-  ActionTypes,
-  MonsterGeneratorFormFields,
-} from '../../../../utilities/types';
+import { ActionTypes, MonsterGeneratorFormFields } from '../../../../utilities/types';
 import { useFieldArray, UseFormReturn } from 'react-hook-form';
 import Button from '../../../../components/Button/Button';
 import { Colors } from '../../../../utilities/enums';
@@ -35,21 +32,22 @@ const ActionsForm = (props: {
       setValue,
       register,
       unregister,
-      trigger,
-    },
+      trigger
+    }
   } = props;
+  const [hasSpellCasting, setHasSpellCasting] = React.useState(false);
 
   const isInitialRender = React.useRef(true);
   const { fields, append, remove } = useFieldArray({
     control,
-    name: fieldName,
+    name: fieldName
   });
 
   const addAction = () => {
     append({
       name: 'New Action',
       desc: '',
-      actionType: ActionTypes.ability,
+      actionType: ActionTypes.ability
     });
   };
 
@@ -69,12 +67,13 @@ const ActionsForm = (props: {
         numTargets: 1,
         rangeNormal: 120,
         rangeLong: 300,
-        reach: 5,
-      },
+        reach: 5
+      }
     });
   };
 
   const addSpellCasting = () => {
+    setHasSpellCasting(true);
     append({
       name: 'New Action',
       actionType: ActionTypes.spellCasting,
@@ -84,18 +83,18 @@ const ActionsForm = (props: {
         ability: 'Intelligence',
         abilityOption: abilityOptions[3],
         slots: {
-          first: 1,
-          second: 2,
-          third: 3,
-          fourth: 4,
-          fifth: 5,
-          sixth: 6,
-          seventh: 7,
-          eighth: 8,
-          ninth: 9,
+          first: 0,
+          second: 0,
+          third: 0,
+          fourth: 0,
+          fifth: 0,
+          sixth: 0,
+          seventh: 0,
+          eighth: 0,
+          ninth: 0
         },
-        spellIds: [],
-      },
+        spellIds: []
+      }
     });
   };
 
@@ -109,6 +108,13 @@ const ActionsForm = (props: {
     }
   }, [fields, register, setValue, unregister, trigger]);
 
+  const handleRemove = (index: number) => {
+    if (fields[index]['actionType'] === ActionTypes.spellCasting) {
+      setHasSpellCasting(false);
+    }
+    remove(index);
+  };
+
   return (
     <div className={styles.wrapper}>
       <h4>{title}</h4>
@@ -118,30 +124,32 @@ const ActionsForm = (props: {
           actionIndex={actionIndex}
           control={control}
           errors={errors}
-          remove={remove}
+          remove={handleRemove}
         />
       ))}
       <Button
-        type="button"
+        type='button'
         onClick={addAction}
         color={Colors.success}
         icon={<GiAbacus size={30} />}
-        title={`Add Action`}
+        title={`Add ${singularTitle}`}
       />
       <Button
-        type="button"
+        type='button'
         onClick={addAttack}
         color={Colors.danger}
         icon={<GiSwordsPower size={30} />}
-        title={`Add Attack`}
+        title={'Add Attack'}
       />
-      <Button
-        type="button"
-        onClick={addSpellCasting}
-        color={Colors.info}
-        icon={<GiMagicPalm size={30} />}
-        title={`Add Spellcasting`}
-      />
+      {!hasSpellCasting && (
+        <Button
+          type='button'
+          onClick={addSpellCasting}
+          color={Colors.info}
+          icon={<GiMagicPalm size={30} />}
+          title={'Add Spellcasting'}
+        />
+      )}
     </div>
   );
 };

@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { GiFire } from 'react-icons/all';
 import { Control, Controller, FieldErrors, FieldValues } from 'react-hook-form';
 import { SelectOption } from '../../utilities/types';
-import Select, { ActionMeta } from 'react-select';
+import Select from 'react-select';
 
 const styles = require('./input.module.scss');
 
@@ -41,7 +41,6 @@ export const ControlledInput = (props: {
   errors: FieldErrors;
   className?: string;
   control: Control<FieldValues, object>;
-  defaultValue?: string | number | boolean;
   label: string;
   min?: number;
   required?: boolean;
@@ -49,14 +48,13 @@ export const ControlledInput = (props: {
 }) => {
   const {
     fieldName,
-    defaultValue,
     errors,
     className,
     control,
     label,
     min,
     required,
-    type,
+    type
   } = props;
   return (
     <Controller
@@ -66,7 +64,6 @@ export const ControlledInput = (props: {
           label={label}
           className={className}
           placeholder={`${label}...`}
-          defaultValue={defaultValue}
           errors={errors}
           min={min}
           required={required}

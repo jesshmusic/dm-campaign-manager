@@ -1,8 +1,5 @@
 import React from 'react';
-import {
-  ControlledInput,
-  ControllerInput,
-} from '../../../../components/forms/ControllerInput';
+import { ControlledInput, ControllerInput } from '../../../../components/forms/ControllerInput';
 import { Control, Controller, FieldErrors, FieldValues } from 'react-hook-form';
 import axios, { AxiosResponse } from 'axios';
 import { filterOptionsWithData } from '../../../../utilities/character-utilities';
@@ -16,7 +13,7 @@ export const abilityOptions = [
   { label: 'Dexterity', value: 'dexterity' },
   { label: 'Intelligence', value: 'intelligence' },
   { label: 'Strength', value: 'strength' },
-  { label: 'Wisdom', value: 'wisdom' },
+  { label: 'Wisdom', value: 'wisdom' }
 ];
 
 const slotNames = [
@@ -28,7 +25,7 @@ const slotNames = [
   'sixth',
   'seventh',
   'eighth',
-  'ninth',
+  'ninth'
 ];
 
 const SpellcastingForm = (props: {
@@ -45,7 +42,8 @@ const SpellcastingForm = (props: {
         const options = filterOptionsWithData(response.data.results);
         callback(options);
       })
-      .catch((error) => {});
+      .catch((error) => {
+      });
   };
 
   return (
@@ -55,11 +53,10 @@ const SpellcastingForm = (props: {
         <Controller
           render={({ field: { ref, ...rest } }) => (
             <ControllerInput
-              type="number"
-              label="Spellcasting Level"
+              type='number'
+              label='Spellcasting Level'
               className={styles.actionCol}
               errors={errors}
-              defaultValue={1}
               {...rest}
             />
           )}
@@ -77,11 +74,11 @@ const SpellcastingForm = (props: {
       <div className={styles.spellSlots}>
         {slotNames.map((slotName, index) => (
           <ControlledInput
+            key={`${fieldName}.spellCasting.slots.${slotName}${index}`}
             fieldName={`${fieldName}.spellCasting.slots.${slotName}`}
             errors={errors}
             control={control}
-            defaultValue={0}
-            type="number"
+            type='number'
             label={index.toString()}
           />
         ))}

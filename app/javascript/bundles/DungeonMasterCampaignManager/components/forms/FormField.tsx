@@ -13,7 +13,6 @@ const styles = require('./input.module.scss');
 type FieldProps = {
   className?: string;
   columnWidth?: number;
-  defaultValue?: string | number | readonly string[] | undefined;
   errors: FieldErrors;
   helpText?: string;
   hideLabel?: boolean;
@@ -32,7 +31,6 @@ type FieldProps = {
 const FormField = (props: FieldProps) => {
   const {
     className,
-    defaultValue,
     errors,
     id,
     helpText,
@@ -43,7 +41,7 @@ const FormField = (props: FieldProps) => {
     register,
     required,
     type,
-    value,
+    value
   } = props;
 
   if (type === 'checkbox' || type === 'radio') {
@@ -51,22 +49,21 @@ const FormField = (props: FieldProps) => {
       <div className={`${className} form-check`}>
         <input
           aria-describedby={`${name}-help-text`}
-          className="form-check-input"
+          className='form-check-input'
           {...(register ? register(name, { required }) : null)}
           type={type}
           name={name}
-          defaultValue={defaultValue}
           value={value}
           required={required}
           id={id}
         />
         {hideLabel ? null : (
-          <label className="form-check-label" htmlFor={name}>
+          <label className='form-check-label' htmlFor={name}>
             {label}
           </label>
         )}
         {helpText && (
-          <div id={`${name}-help-text`} className="form-text">
+          <div id={`${name}-help-text`} className='form-text'>
             {helpText}
           </div>
         )}
@@ -89,14 +86,13 @@ const FormField = (props: FieldProps) => {
         className={styles.input}
         aria-describedby={`${name}-help-text`}
         readOnly={readOnly}
-        defaultValue={defaultValue}
         {...(register
           ? register(name, { required, valueAsNumber: type === 'number' })
           : null)}
         type={type}
       />
       {helpText && (
-        <div id={`${name}-help-text`} className="form-text">
+        <div id={`${name}-help-text`} className='form-text'>
           {helpText}
         </div>
       )}
