@@ -120,6 +120,26 @@
     }
   }
 
+  &.transparent {
+    background-color: transparent;
+    color: $body-color;
+
+    &:hover {
+      color: $primary;
+      text-decoration: none;
+    }
+  }
+
+  &.transparentLight {
+    background-color: transparent;
+    color: $white;
+
+    &:hover {
+      color: $primary;
+      text-decoration: none;
+    }
+  }
+
   svg {
     margin-left: 0.5rem;
   }

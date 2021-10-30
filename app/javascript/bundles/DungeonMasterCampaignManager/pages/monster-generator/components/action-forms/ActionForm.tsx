@@ -1,4 +1,5 @@
 import React from 'react';
+import { gsap } from 'gsap/gsap-core';
 import { Control, FieldErrors, useWatch } from 'react-hook-form';
 import { ControlledInput } from '../../../../components/forms/ControllerInput';
 import Button from '../../../../components/Button/Button';
@@ -8,9 +9,9 @@ import AbilityForm from './AbilityForm';
 import AttackForm from './AttackForm';
 import { ActionTypes } from '../../../../utilities/types';
 import SpellcastingForm from './SpellcastingForm';
+import { BsChevronDown, BsChevronUp } from 'react-icons/all';
 
 const styles = require('./action-form.module.scss');
-const inputStyles = require('../../../../components/forms/input.module.scss');
 
 const ActionForm = (props: {
   actionIndex: number;
@@ -19,6 +20,8 @@ const ActionForm = (props: {
   remove: (index?: number | number[] | undefined) => void;
 }) => {
   const { actionIndex, control, errors, remove } = props;
+  const [isShowingContent, setIsShowingContent] = React.useState(true);
+  const isFirstRender = React.useRef(true);
 
   const actionType = useWatch({
     control,
@@ -26,9 +29,47 @@ const ActionForm = (props: {
     defaultValue: ActionTypes.attack,
   });
 
+  const collapseActionContent = () => {
+    setIsShowingContent(!isShowingContent);
+  };
+
+  React.useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      gsap.set(`#actionContent${actionIndex}`, {
+        height: 'auto',
+      });
+    } else {
+      if (!isShowingContent) {
+        gsap.to(`#actionContent${actionIndex}`, {
+          height: 0,
+          duration: 1,
+        });
+      } else {
+        gsap.to(`#actionContent${actionIndex}`, {
+          height: 'auto',
+          duration: 1,
+        });
+      }
+    }
+  }, [isShowingContent]);
+
   return (
     <div className={styles.actionContainer}>
       <div className={styles.actionWrapper}>
+        <Button
+          color={Colors.transparentLight}
+          title="Collapse"
+          hideTitle
+          icon={
+            isShowingContent ? (
+              <BsChevronDown size={24} />
+            ) : (
+              <BsChevronUp size={24} />
+            )
+          }
+          onClick={collapseActionContent}
+        />
         <ControlledInput
           fieldName={`actions.${actionIndex}.name`}
           errors={errors}
@@ -45,26 +86,28 @@ const ActionForm = (props: {
           title="Remove Action"
         />
       </div>
-      <AbilityForm
-        control={control}
-        errors={errors}
-        fieldName={`actions.${actionIndex}`}
-        readOnly={actionType !== ActionTypes.ability}
-      />
-      {actionType === ActionTypes.attack && (
-        <AttackForm
+      <div id={`actionContent${actionIndex}`} className={styles.actionContent}>
+        <AbilityForm
           control={control}
           errors={errors}
           fieldName={`actions.${actionIndex}`}
+          readOnly={actionType !== ActionTypes.ability}
         />
-      )}
-      {actionType === ActionTypes.spellCasting && (
-        <SpellcastingForm
-          control={control}
-          errors={errors}
-          fieldName={`actions.${actionIndex}`}
-        />
-      )}
+        {actionType === ActionTypes.attack && (
+          <AttackForm
+            control={control}
+            errors={errors}
+            fieldName={`actions.${actionIndex}`}
+          />
+        )}
+        {actionType === ActionTypes.spellCasting && (
+          <SpellcastingForm
+            control={control}
+            errors={errors}
+            fieldName={`actions.${actionIndex}`}
+          />
+        )}
+      </div>
     </div>
   );
 };

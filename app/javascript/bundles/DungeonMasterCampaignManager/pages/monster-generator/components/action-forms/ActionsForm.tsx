@@ -4,7 +4,10 @@
 
 import React from 'react';
 import { GiAbacus, GiSwordsPower } from 'react-icons/gi';
-import { ActionTypes, MonsterGeneratorFormFields } from '../../../../utilities/types';
+import {
+  ActionTypes,
+  MonsterGeneratorFormFields,
+} from '../../../../utilities/types';
 import { useFieldArray, UseFormReturn } from 'react-hook-form';
 import Button from '../../../../components/Button/Button';
 import { Colors } from '../../../../utilities/enums';
@@ -32,28 +35,33 @@ const ActionsForm = (props: {
       setValue,
       register,
       unregister,
-      trigger
-    }
+      trigger,
+    },
   } = props;
   const [hasSpellCasting, setHasSpellCasting] = React.useState(false);
 
   const isInitialRender = React.useRef(true);
+
   const { fields, append, remove } = useFieldArray({
     control,
-    name: fieldName
+    name: fieldName,
   });
+
+  const actionNumber = (): string => {
+    return fields.length > 0 ? ` ${fields.length}` : '';
+  };
 
   const addAction = () => {
     append({
-      name: 'New Action',
+      name: `New Action${actionNumber()}`,
       desc: '',
-      actionType: ActionTypes.ability
+      actionType: ActionTypes.ability,
     });
   };
 
   const addAttack = () => {
     append({
-      name: 'New Action',
+      name: `New Action${actionNumber()}`,
       actionType: ActionTypes.attack,
       numAttacks: 1,
       desc: '',
@@ -67,15 +75,15 @@ const ActionsForm = (props: {
         numTargets: 1,
         rangeNormal: 120,
         rangeLong: 300,
-        reach: 5
-      }
+        reach: 5,
+      },
     });
   };
 
   const addSpellCasting = () => {
     setHasSpellCasting(true);
     append({
-      name: 'New Action',
+      name: `New Action${actionNumber()}`,
       actionType: ActionTypes.spellCasting,
       desc: '',
       spellCasting: {
@@ -91,10 +99,10 @@ const ActionsForm = (props: {
           sixth: 0,
           seventh: 0,
           eighth: 0,
-          ninth: 0
+          ninth: 0,
         },
-        spellIds: []
-      }
+        spellIds: [],
+      },
     });
   };
 
@@ -128,14 +136,14 @@ const ActionsForm = (props: {
         />
       ))}
       <Button
-        type='button'
+        type="button"
         onClick={addAction}
         color={Colors.success}
         icon={<GiAbacus size={30} />}
         title={`Add ${singularTitle}`}
       />
       <Button
-        type='button'
+        type="button"
         onClick={addAttack}
         color={Colors.danger}
         icon={<GiSwordsPower size={30} />}
@@ -143,7 +151,7 @@ const ActionsForm = (props: {
       />
       {!hasSpellCasting && (
         <Button
-          type='button'
+          type="button"
           onClick={addSpellCasting}
           color={Colors.info}
           icon={<GiMagicPalm size={30} />}

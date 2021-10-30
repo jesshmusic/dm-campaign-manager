@@ -8,4 +8,6 @@ export enum Colors {
   danger = 'danger',
   light = 'light',
   dark = 'dark',
+  transparent = 'transparent',
+  transparentLight = 'transparentLight',
 }

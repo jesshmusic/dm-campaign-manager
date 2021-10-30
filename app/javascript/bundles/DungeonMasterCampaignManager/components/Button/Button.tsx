@@ -43,6 +43,8 @@ const Button = (props: {
         [styles.danger]: color === Colors.danger,
         [styles.light]: color === Colors.light,
         [styles.dark]: color === Colors.dark,
+        [styles.transparent]: color === Colors.transparent,
+        [styles.transparentLight]: color === Colors.transparentLight,
       })}
       onClick={onClick}
       id={id}
