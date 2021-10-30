@@ -19,6 +19,7 @@ const FormSelectAsync = ({
   getOptions,
   defaultOptions = true,
   isClearable = false,
+  menuPlacement = 'auto',
 }: SelectProps) => {
   return (
     <div className={classNames(className, styles.wrapper)}>
@@ -38,6 +39,7 @@ const FormSelectAsync = ({
             isClearable={isClearable}
             isSearchable
             loadOptions={getOptions}
+            menuPlacement={menuPlacement}
             {...field}
           />
         )}

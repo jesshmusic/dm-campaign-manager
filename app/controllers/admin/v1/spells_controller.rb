@@ -10,12 +10,29 @@ module Admin::V1
     def index
       authorize Spell
       if params[:list].present?
-        @spells = Race.all.order(name: :asc).map { |spell|
-          {
-            name: spell.name,
-            slug: spell.slug
-          }
-        }
+        @spells = if params[:search].present?
+                    Spell.search_for(params[:search]).order(name: :asc).map { |spell|
+                      {
+                        name: spell.name,
+                        id: spell.id,
+                        data: {
+                          slug: spell.slug,
+                          level: spell.level
+                        }
+                      }
+                    }
+                  else
+                    Spell.all.order(name: :asc).map { |spell|
+                      {
+                        name: spell.name,
+                        id: spell.id,
+                        data: {
+                          slug: spell.slug,
+                          level: spell.level
+                        }
+                      }
+                    }
+                  end
         render json: { count: @spells.count, results: @spells }
       else
         @spells = if params[:dnd_class].present? && params[:search].present?

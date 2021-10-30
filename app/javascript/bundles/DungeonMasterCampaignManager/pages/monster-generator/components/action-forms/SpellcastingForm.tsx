@@ -1,9 +1,13 @@
 import React from 'react';
-import { ControlledInput, ControllerInput } from '../../../../components/forms/ControllerInput';
+import {
+  ControlledInput,
+  ControllerInput,
+} from '../../../../components/forms/ControllerInput';
 import { Control, Controller, FieldErrors, FieldValues } from 'react-hook-form';
 import axios, { AxiosResponse } from 'axios';
 import { filterOptionsWithData } from '../../../../utilities/character-utilities';
 import FormSelect from '../../../../components/forms/FormSelect';
+import FormSelectAsync from '../../../../components/forms/FormSelectAsync';
 
 const styles = require('./action-form.module.scss');
 
@@ -13,7 +17,7 @@ export const abilityOptions = [
   { label: 'Dexterity', value: 'dexterity' },
   { label: 'Intelligence', value: 'intelligence' },
   { label: 'Strength', value: 'strength' },
-  { label: 'Wisdom', value: 'wisdom' }
+  { label: 'Wisdom', value: 'wisdom' },
 ];
 
 const slotNames = [
@@ -25,7 +29,7 @@ const slotNames = [
   'sixth',
   'seventh',
   'eighth',
-  'ninth'
+  'ninth',
 ];
 
 const SpellcastingForm = (props: {
@@ -37,13 +41,12 @@ const SpellcastingForm = (props: {
 
   const getSpells = (inputValue: string, callback: any) => {
     axios
-      .get(`/v1/spells.json?search=${inputValue}`)
+      .get(`/v1/spells.json?list=true&search=${inputValue}`)
       .then((response: AxiosResponse<any>) => {
         const options = filterOptionsWithData(response.data.results);
         callback(options);
       })
-      .catch((error) => {
-      });
+      .catch((error) => {});
   };
 
   return (
@@ -53,8 +56,8 @@ const SpellcastingForm = (props: {
         <Controller
           render={({ field: { ref, ...rest } }) => (
             <ControllerInput
-              type='number'
-              label='Spellcasting Level'
+              type="number"
+              label="Spellcasting Level"
               className={styles.actionCol}
               errors={errors}
               {...rest}
@@ -64,6 +67,7 @@ const SpellcastingForm = (props: {
           control={control}
         />
         <FormSelect
+          className={styles.actionCol}
           label={'Spellcasting Ability'}
           name={`${fieldName}.spellCasting.abilityOption`}
           control={control}
@@ -78,10 +82,22 @@ const SpellcastingForm = (props: {
             fieldName={`${fieldName}.spellCasting.slots.${slotName}`}
             errors={errors}
             control={control}
-            type='number'
+            type="number"
             label={index.toString()}
           />
         ))}
+      </div>
+      <div className={styles.subformWrapper}>
+        <FormSelectAsync
+          className={styles.actionCol}
+          label={'Spells'}
+          name={`${fieldName}.spellCasting.spellOptions`}
+          getOptions={getSpells}
+          control={control}
+          menuPlacement="top"
+          isMulti
+          isClearable
+        />
       </div>
     </div>
   );

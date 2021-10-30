@@ -15,19 +15,14 @@ export const toSnakeCase = (str: string) =>
     .map((x) => x.toLowerCase())
     .join('_');
 
-export const filterOptions = (results) =>
-  results.results.map((nextItem) => ({
-    value: nextItem.id,
-    label: nextItem.name,
-  }));
-
 export const filterOptionsWithData = (results) =>
   results.map((nextItem) => ({
     value: nextItem.id,
     label: nextItem.name,
+    data: nextItem.data,
   }));
 
-export const filterSnakeCaseOptionsWithData = (results) =>
+export const filterSnakeCaseOptionsWithData = (results): SelectOption[] =>
   results.results.map((nextItem) => ({
     value: toSnakeCase(nextItem.name),
     label: nextItem.name,

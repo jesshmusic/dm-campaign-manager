@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import Select from 'react-select';
+import Select, { MenuPlacement } from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 import { SelectOption } from '../../utilities/types';
 import { Control, Controller } from 'react-hook-form';
@@ -19,6 +19,7 @@ export type SelectProps = {
   isCreatable?: boolean;
   isMulti?: boolean;
   label: string;
+  menuPlacement?: MenuPlacement | undefined;
   name: string;
   options?: SelectOption[];
   placeholder?: string;
@@ -34,6 +35,7 @@ const FormSelect = ({
   className = '',
   defaultValue,
   isClearable = false,
+  menuPlacement = 'auto',
   options,
   control,
   isCreatable = false,
@@ -57,6 +59,7 @@ const FormSelect = ({
               options={options}
               isMulti={isMulti}
               isSearchable
+              menuPlacement={menuPlacement}
               {...field}
             />
           ) : (
@@ -67,6 +70,7 @@ const FormSelect = ({
               isClearable={isClearable}
               options={options}
               isMulti={isMulti}
+              menuPlacement={menuPlacement}
               isSearchable
               {...field}
             />

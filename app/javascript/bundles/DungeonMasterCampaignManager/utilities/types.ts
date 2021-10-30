@@ -267,6 +267,7 @@ export type MonsterActionField = {
       eighth: number;
       ninth: number;
     };
+    spellOptions: SelectOption[];
     spellIds: number[];
   };
 };
@@ -487,6 +488,7 @@ type Resistance = {
 export type SelectOption = {
   label: string;
   value: string | number;
+  data?: { [key: string]: any };
 };
 
 export interface SpellProps {
