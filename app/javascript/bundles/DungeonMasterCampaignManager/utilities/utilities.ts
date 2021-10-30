@@ -53,6 +53,12 @@ export default class Util {
     return ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i'];
   }
 
+  static getNumberWithOrdinal(num) {
+    const ordinal = ['th', 'st', 'nd', 'rd'];
+    const value = num % 100;
+    return num + (ordinal[(value - 20) % 10] || ordinal[value] || ordinal[0]);
+  }
+
   static camelize(str) {
     return str
       .replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {

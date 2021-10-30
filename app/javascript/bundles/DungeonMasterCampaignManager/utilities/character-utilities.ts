@@ -5,6 +5,7 @@ import {
   SelectOption,
 } from './types';
 import { ToWords } from 'to-words';
+import Util from './utilities';
 
 export const toSnakeCase = (str: string) =>
   str &&
@@ -181,6 +182,7 @@ export const averageDamage = (
 };
 
 export const generateAttackDesc = (
+  monsterName: string,
   actionFields: MonsterActionField,
   attackBonus: number,
   profBonus: number,
@@ -216,6 +218,90 @@ export const generateAttackDesc = (
     }) ${actionFields.damage.damageType} damage.`;
 
     desc += ` ${damageString}`;
+  } else if (
+    actionType === ActionTypes.spellCasting &&
+    actionFields.spellCasting
+  ) {
+    desc += `The ${monsterName} is a ${Util.getNumberWithOrdinal(
+      actionFields.spellCasting.level
+    )} level spellcaster. Its spellcasting ability is ${
+      actionFields.spellCasting.ability
+    }. The ${monsterName} has the following spells prepared.\n`;
+    if (
+      actionFields.spellCasting.spellOptions &&
+      actionFields.spellCasting.spellOptions.length > 0
+    ) {
+      const cantripSpells = actionFields.spellCasting.spellOptions
+        .filter((spell) => spell.data!.level === 0)
+        .map((spell) => spell.label)
+        .join(', ');
+      const level1Spells = actionFields.spellCasting.spellOptions
+        .filter((spell) => spell.data!.level === 1)
+        .map((spell) => spell.label)
+        .join(', ');
+      const level2Spells = actionFields.spellCasting.spellOptions
+        .filter((spell) => spell.data!.level === 2)
+        .map((spell) => spell.label)
+        .join(', ');
+      const level3Spells = actionFields.spellCasting.spellOptions
+        .filter((spell) => spell.data!.level === 3)
+        .map((spell) => spell.label)
+        .join(', ');
+      const level4Spells = actionFields.spellCasting.spellOptions
+        .filter((spell) => spell.data!.level === 4)
+        .map((spell) => spell.label)
+        .join(', ');
+      const level5Spells = actionFields.spellCasting.spellOptions
+        .filter((spell) => spell.data!.level === 5)
+        .map((spell) => spell.label)
+        .join(', ');
+      const level6Spells = actionFields.spellCasting.spellOptions
+        .filter((spell) => spell.data!.level === 6)
+        .map((spell) => spell.label)
+        .join(', ');
+      const level7Spells = actionFields.spellCasting.spellOptions
+        .filter((spell) => spell.data!.level === 7)
+        .map((spell) => spell.label)
+        .join(', ');
+      const level8Spells = actionFields.spellCasting.spellOptions
+        .filter((spell) => spell.data!.level === 8)
+        .map((spell) => spell.label)
+        .join(', ');
+      const level9Spells = actionFields.spellCasting.spellOptions
+        .filter((spell) => spell.data!.level === 9)
+        .map((spell) => spell.label)
+        .join(', ');
+      if (cantripSpells && cantripSpells !== '') {
+        desc += `\nCantrips (at will): ${cantripSpells}`;
+      }
+      if (level1Spells && level1Spells !== '') {
+        desc += `\n1st level (${actionFields.spellCasting.slots.first} slots): ${level1Spells}`;
+      }
+      if (level2Spells && level2Spells !== '') {
+        desc += `\n2nd level (${actionFields.spellCasting.slots.second} slots): ${level2Spells}`;
+      }
+      if (level3Spells && level3Spells !== '') {
+        desc += `\n3rd level (${actionFields.spellCasting.slots.third} slots): ${level3Spells}`;
+      }
+      if (level4Spells && level4Spells !== '') {
+        desc += `\n4th level (${actionFields.spellCasting.slots.fourth} slots): ${level4Spells}`;
+      }
+      if (level5Spells && level5Spells !== '') {
+        desc += `\n5th level (${actionFields.spellCasting.slots.fifth} slots): ${level5Spells}`;
+      }
+      if (level6Spells && level6Spells !== '') {
+        desc += `\n6th level (${actionFields.spellCasting.slots.sixth} slots): ${level6Spells}`;
+      }
+      if (level7Spells && level7Spells !== '') {
+        desc += `\n7th level (${actionFields.spellCasting.slots.seventh} slots): ${level7Spells}`;
+      }
+      if (level8Spells && level8Spells !== '') {
+        desc += `\n8th level (${actionFields.spellCasting.slots.eighth} slots): ${level8Spells}`;
+      }
+      if (level9Spells && level9Spells !== '') {
+        desc += `\n8th level (${actionFields.spellCasting.slots.ninth} slots): ${level9Spells}`;
+      }
+    }
   }
   return desc;
 };

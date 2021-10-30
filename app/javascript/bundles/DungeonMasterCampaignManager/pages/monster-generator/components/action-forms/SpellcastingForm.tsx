@@ -83,7 +83,7 @@ const SpellcastingForm = (props: {
             errors={errors}
             control={control}
             type="number"
-            label={index.toString()}
+            label={(index + 1).toString()}
           />
         ))}
       </div>

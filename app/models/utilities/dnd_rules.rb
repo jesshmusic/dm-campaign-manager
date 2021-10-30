@@ -639,7 +639,8 @@ class DndRules
       damages = []
       cr_for_spells = 0
       ability_cr = 1
-      monster[:actions].each do |action|
+      monster[:actions].each do |action_obj|
+        action = action_obj[:data]
         if action[:damage]
           damage_obj = action[:damage]
           num_dice = damage_obj[:num_dice].to_i
@@ -647,14 +648,15 @@ class DndRules
           damage = (((damage_die / 2) + 1) * num_dice) + attack_bonus
           damages << damage * action[:num_attacks].to_i
         elsif action[:spell_casting]
-          cr_for_spells = (action[:spell_casting][:level] / 2).to_i
-          cr_for_spells += 1 if action[:spell_casting][:slots][:third]
-          cr_for_spells += 1 if action[:spell_casting][:slots][:fourth]
-          cr_for_spells += 2 if action[:spell_casting][:slots][:fifth]
-          cr_for_spells += 2 if action[:spell_casting][:slots][:sixth]
-          cr_for_spells += 3 if action[:spell_casting][:slots][:seventh]
-          cr_for_spells += 3 if action[:spell_casting][:slots][:eighth]
-          cr_for_spells += 5 if action[:spell_casting][:slots][:ninth]
+          puts action[:spell_casting][:slots]
+          cr_for_spells = (action[:spell_casting][:level].to_i / 2).to_i
+          cr_for_spells += 1 unless action[:spell_casting][:slots][:third].to_i == 0
+          cr_for_spells += 1 unless action[:spell_casting][:slots][:fourth].to_i == 0
+          cr_for_spells += 2 unless action[:spell_casting][:slots][:fifth].to_i == 0
+          cr_for_spells += 2 unless action[:spell_casting][:slots][:sixth].to_i == 0
+          cr_for_spells += 3 unless action[:spell_casting][:slots][:seventh].to_i == 0
+          cr_for_spells += 3 unless action[:spell_casting][:slots][:eighth].to_i == 0
+          cr_for_spells += 5 unless action[:spell_casting][:slots][:ninth].to_i == 0
         else
           ability_cr += 1
         end

@@ -83,7 +83,7 @@ const ActionsForm = (props: {
   const addSpellCasting = () => {
     setHasSpellCasting(true);
     append({
-      name: `New Action${actionNumber()}`,
+      name: `Spellcasting`,
       actionType: ActionTypes.spellCasting,
       desc: '',
       spellCasting: {
@@ -101,7 +101,6 @@ const ActionsForm = (props: {
           eighth: 0,
           ninth: 0,
         },
-        spellIds: [],
       },
     });
   };

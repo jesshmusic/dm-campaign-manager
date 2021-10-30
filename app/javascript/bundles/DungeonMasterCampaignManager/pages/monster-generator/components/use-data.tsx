@@ -11,7 +11,7 @@ import {
   hitPoints,
 } from '../services';
 import axios from 'axios';
-import { useForm, UseFormSetValue } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { GenerateMonsterProps } from './GenerateMonster';
 import { generateAttackDesc } from '../../../utilities/character-utilities';
 
@@ -127,7 +127,7 @@ export const useData = (props: GenerateMonsterProps) => {
     fields.actions.forEach((action, index) => {
       UseForm.setValue(
         `actions.${index}.desc`,
-        generateAttackDesc(action, attackBonus, profBonus)
+        generateAttackDesc(fields.name, action, attackBonus, profBonus)
       );
     });
   };
@@ -306,6 +306,7 @@ export const useData = (props: GenerateMonsterProps) => {
           UseForm.setValue(
             `actions.${actionIndex}.desc`,
             generateAttackDesc(
+              fields.name,
               fields.actions[actionIndex],
               attackBonus,
               profBonus

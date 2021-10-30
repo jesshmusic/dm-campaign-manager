@@ -1,8 +1,8 @@
 import snakecaseKeys from 'snakecase-keys';
 import {
+  ActionTypes,
   MonsterCRCalcResult,
   MonsterGeneratorFormFields,
-  SelectOption,
 } from '../../utilities/types';
 import axios from 'axios';
 
@@ -35,6 +35,16 @@ export const getMonsterObject = (values: MonsterGeneratorFormFields) => {
       values.actions.map((action) => ({
         name: action.name,
         desc: action.desc,
+        data: {
+          numAttacks: action.numAttacks,
+          actionType: action.actionType,
+          damage:
+            action.actionType === ActionTypes.attack ? action.damage : null,
+          spellCasting:
+            action.actionType === ActionTypes.spellCasting
+              ? action.spellCasting
+              : null,
+        },
       })) || [],
     legendaryActions:
       values.legendaryActions.map((action) => ({

@@ -8,7 +8,18 @@ import Select from 'react-select';
 const styles = require('./input.module.scss');
 
 export const ControllerInput = (props) => {
-  const { type, label, errors, className, name, placeholder, ...rest } = props;
+  const {
+    type,
+    label,
+    errors,
+    className,
+    name,
+    placeholder,
+    isTextArea,
+    ...rest
+  } = props;
+
+  console.log(...rest);
 
   if (type === 'checkbox' || type === 'radio') {
     return (
@@ -21,12 +32,21 @@ export const ControllerInput = (props) => {
   return (
     <div className={classNames(styles.wrapper, className)}>
       <label className={styles.label}>{label}</label>
-      <input
-        className={styles.input}
-        type={type || 'text'}
-        placeholder={placeholder}
-        {...rest}
-      />
+      {isTextArea ? (
+        <textarea
+          className={styles.input}
+          placeholder={placeholder}
+          {...rest}
+        />
+      ) : (
+        <input
+          className={styles.input}
+          type={type || 'text'}
+          placeholder={placeholder}
+          {...rest}
+        />
+      )}
+
       {errors[name] && (
         <p className={styles.error}>
           <GiFire /> This is required
@@ -42,19 +62,23 @@ export const ControlledInput = (props: {
   className?: string;
   control: Control<FieldValues, object>;
   label: string;
+  isTextArea?: boolean;
   min?: number;
   required?: boolean;
   type?: string;
+  readOnly?: boolean;
 }) => {
   const {
     fieldName,
     errors,
     className,
     control,
+    isTextArea,
     label,
     min,
+    readOnly,
     required,
-    type
+    type,
   } = props;
   return (
     <Controller
@@ -65,8 +89,10 @@ export const ControlledInput = (props: {
           className={className}
           placeholder={`${label}...`}
           errors={errors}
+          isTextArea={isTextArea}
           min={min}
           required={required}
+          readOnly={readOnly}
           {...rest}
         />
       )}

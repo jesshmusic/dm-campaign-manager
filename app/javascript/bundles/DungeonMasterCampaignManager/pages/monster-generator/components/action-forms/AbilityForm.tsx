@@ -1,5 +1,8 @@
 import React from 'react';
-import { ControllerInput } from '../../../../components/forms/ControllerInput';
+import {
+  ControlledInput,
+  ControllerInput,
+} from '../../../../components/forms/ControllerInput';
 import { Control, Controller, FieldErrors, FieldValues } from 'react-hook-form';
 
 const styles = require('./action-form.module.scss');
@@ -13,20 +16,14 @@ const AbilityForm = (props: {
   const { fieldName, errors, control, readOnly } = props;
   return (
     <div className={styles.subformWrapper}>
-      <Controller
-        render={({ field: { ref, ...rest } }) => (
-          <ControllerInput
-            type="text"
-            label="Description"
-            className={styles.actionCol}
-            placeholder="Description text..."
-            errors={errors}
-            readOnly={readOnly}
-            {...rest}
-          />
-        )}
-        name={`${fieldName}.desc`}
+      <ControlledInput
+        className={styles.actionCol}
+        fieldName={`${fieldName}.desc`}
+        errors={errors}
         control={control}
+        readOnly={readOnly}
+        isTextArea={true}
+        label="Description"
       />
     </div>
   );
