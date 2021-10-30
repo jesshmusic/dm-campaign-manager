@@ -10,7 +10,30 @@ module Admin::V1
     def index
       authorize Spell
       if params[:list].present?
-        @spells = if params[:search].present?
+        @spells = if params[:search].present? && params[:max].present?
+                    Spell.where('level <= ?', params[:max].to_i).search_for(params[:search]).order(name: :asc).map { |spell|
+                      {
+                        name: spell.name,
+                        id: spell.id,
+                        data: {
+                          slug: spell.slug,
+                          level: spell.level
+                        }
+                      }
+                    }
+                  elsif params[:max].present?
+                    puts Spell.where('level <= ?', params[:max].to_i).map { |spell| spell.name}
+                    Spell.where('level <= ?', params[:max].to_i).order(name: :asc).map { |spell|
+                      {
+                        name: spell.name,
+                        id: spell.id,
+                        data: {
+                          slug: spell.slug,
+                          level: spell.level
+                        }
+                      }
+                    }
+                  elsif params[:search].present?
                     Spell.search_for(params[:search]).order(name: :asc).map { |spell|
                       {
                         name: spell.name,

@@ -29,6 +29,11 @@ const ActionForm = (props: {
     defaultValue: ActionTypes.attack,
   });
 
+  const slots = useWatch({
+    control,
+    name: `actions.${actionIndex}.spellCasting.slots`,
+  });
+
   const collapseActionContent = () => {
     setIsShowingContent(!isShowingContent);
   };
@@ -43,12 +48,14 @@ const ActionForm = (props: {
       if (!isShowingContent) {
         gsap.to(`#actionContent${actionIndex}`, {
           height: 0,
-          duration: 1,
+          duration: 0.75,
+          ease: 'back.inOut',
         });
       } else {
         gsap.to(`#actionContent${actionIndex}`, {
           height: 'auto',
-          duration: 1,
+          duration: 0.75,
+          ease: 'back.inOut',
         });
       }
     }

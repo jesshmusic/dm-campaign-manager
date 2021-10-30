@@ -41,7 +41,7 @@ const SpellcastingForm = (props: {
 
   const getSpells = (inputValue: string, callback: any) => {
     axios
-      .get(`/v1/spells.json?list=true&search=${inputValue}`)
+      .get(`/v1/spells.json?list=true&search=${inputValue}}`)
       .then((response: AxiosResponse<any>) => {
         const options = filterOptionsWithData(response.data.results);
         callback(options);
@@ -90,7 +90,7 @@ const SpellcastingForm = (props: {
       <div className={styles.subformWrapper}>
         <FormSelectAsync
           className={styles.actionCol}
-          label={'Spells'}
+          label={'Spells (search by name, level, or school)'}
           name={`${fieldName}.spellCasting.spellOptions`}
           getOptions={getSpells}
           control={control}
