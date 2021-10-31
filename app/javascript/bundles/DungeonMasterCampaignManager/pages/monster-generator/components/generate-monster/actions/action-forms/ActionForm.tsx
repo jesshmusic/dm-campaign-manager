@@ -17,21 +17,22 @@ const ActionForm = (props: {
   actionIndex: number;
   control: Control;
   errors: FieldErrors;
+  fieldName: string;
   remove: (index?: number | number[] | undefined) => void;
 }) => {
-  const { actionIndex, control, errors, remove } = props;
+  const { actionIndex, control, errors, fieldName, remove } = props;
   const [isShowingContent, setIsShowingContent] = React.useState(true);
   const isFirstRender = React.useRef(true);
 
   const actionType = useWatch({
     control,
-    name: `actions.${actionIndex}.actionType`,
+    name: `${fieldName}.${actionIndex}.actionType`,
     defaultValue: ActionTypes.attack,
   });
 
   const slots = useWatch({
     control,
-    name: `actions.${actionIndex}.spellCasting.slots`,
+    name: `${fieldName}.${actionIndex}.spellCasting.slots`,
   });
 
   const collapseActionContent = () => {
@@ -78,7 +79,7 @@ const ActionForm = (props: {
           onClick={collapseActionContent}
         />
         <ControlledInput
-          fieldName={`actions.${actionIndex}.name`}
+          fieldName={`${fieldName}.${actionIndex}.name`}
           errors={errors}
           className={styles.actionCol}
           control={control}
@@ -97,21 +98,21 @@ const ActionForm = (props: {
         <AbilityForm
           control={control}
           errors={errors}
-          fieldName={`actions.${actionIndex}`}
+          fieldName={`${fieldName}.${actionIndex}`}
           readOnly={actionType !== ActionTypes.ability}
         />
         {actionType === ActionTypes.attack && (
           <AttackForm
             control={control}
             errors={errors}
-            fieldName={`actions.${actionIndex}`}
+            fieldName={`${fieldName}.${actionIndex}`}
           />
         )}
         {actionType === ActionTypes.spellCasting && (
           <SpellcastingForm
             control={control}
             errors={errors}
-            fieldName={`actions.${actionIndex}`}
+            fieldName={`${fieldName}.${actionIndex}`}
           />
         )}
       </div>

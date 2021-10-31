@@ -13,6 +13,7 @@ export interface AbilityScore {
 
 export interface ActionFormComponentProps {
   appendAction: (action: Partial<MonsterActionField>) => void;
+  fieldName: string;
   fields: any;
   handleRemove: (index: number) => void;
   singularTitle: string;

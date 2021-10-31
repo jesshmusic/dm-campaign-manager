@@ -17,6 +17,7 @@ import ActionForm from './ActionForm';
 const BasicActionsForm = (props: ActionFormComponentProps) => {
   const {
     appendAction,
+    fieldName,
     fields,
     handleRemove,
     singularTitle,
@@ -39,6 +40,7 @@ const BasicActionsForm = (props: ActionFormComponentProps) => {
         <ActionForm
           key={action.id}
           actionIndex={actionIndex}
+          fieldName={fieldName}
           control={control}
           errors={errors}
           remove={handleRemove}

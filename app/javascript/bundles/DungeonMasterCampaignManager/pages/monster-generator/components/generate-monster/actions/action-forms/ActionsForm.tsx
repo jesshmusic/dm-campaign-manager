@@ -21,6 +21,7 @@ const styles = require('./action-form.module.scss');
 const ActionsForm = (props: ActionFormComponentProps) => {
   const {
     appendAction,
+    fieldName,
     fields,
     handleRemove,
     singularTitle,
@@ -99,6 +100,7 @@ const ActionsForm = (props: ActionFormComponentProps) => {
           actionIndex={actionIndex}
           control={control}
           errors={errors}
+          fieldName={fieldName}
           remove={handleRemoveBasicAction}
         />
       ))}

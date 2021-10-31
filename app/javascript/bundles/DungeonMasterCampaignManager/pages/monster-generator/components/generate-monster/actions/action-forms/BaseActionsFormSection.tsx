@@ -61,6 +61,7 @@ const BaseActionsFormSection = (props: {
         <div className={styles.actionsSection}>
           <ActionsForm
             appendAction={addAction}
+            fieldName={fieldName}
             fields={fields}
             handleRemove={handleRemove}
             singularTitle={singularTitle}
@@ -73,6 +74,7 @@ const BaseActionsFormSection = (props: {
         <div className={styles.actionsSection}>
           <BasicActionsForm
             appendAction={addAction}
+            fieldName={fieldName}
             fields={fields}
             handleRemove={handleRemove}
             singularTitle={singularTitle}
