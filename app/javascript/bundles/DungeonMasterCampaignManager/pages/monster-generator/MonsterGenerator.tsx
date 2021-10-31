@@ -2,7 +2,7 @@ import React from 'react';
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
 import MonsterDisplay from './MonsterDisplay';
-import GenerateMonster from './components/GenerateMonster';
+import GenerateMonster from './components/generate-monster/GenerateMonster';
 import Convert2eMonster from './Convert2eMonster';
 import GenerateCommoner from './components/GenerateCommoner';
 import { GiBlacksmith, GiSpikedDragonHead, SiConvertio } from 'react-icons/all';

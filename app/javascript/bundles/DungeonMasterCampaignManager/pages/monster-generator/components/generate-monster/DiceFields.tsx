@@ -1,12 +1,12 @@
 import React from 'react';
-import FormField from '../../../components/forms/FormField';
-import FormSelect from '../../../components/forms/FormSelect';
+import FormField from '../../../../components/forms/FormField';
+import FormSelect from '../../../../components/forms/FormSelect';
 import {
   FieldValues,
   MonsterGeneratorFormFields,
-} from '../../../utilities/types';
+} from '../../../../utilities/types';
 import { FieldErrors, UseFormRegister } from 'react-hook-form';
-import { diceOptions } from '../../../utilities/character-utilities';
+import { diceOptions } from '../../../../utilities/character-utilities';
 
 const styles = require('./dice-fields.module.scss');
 

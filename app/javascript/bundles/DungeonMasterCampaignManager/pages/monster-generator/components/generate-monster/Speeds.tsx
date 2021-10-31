@@ -1,13 +1,13 @@
 import React from 'react';
-import FormSelect from '../../../components/forms/FormSelect';
-import FormField from '../../../components/forms/FormField';
+import FormSelect from '../../../../components/forms/FormSelect';
+import FormField from '../../../../components/forms/FormField';
 import { GiTrashCan } from 'react-icons/gi';
-import { speeds } from './GenerateMonster';
 import { FieldErrors, UseFormRegister } from 'react-hook-form';
 import {
   FieldValues,
   MonsterGeneratorFormFields,
-} from '../../../utilities/types';
+} from '../../../../utilities/types';
+import { speeds } from '../../../../utilities/character-utilities';
 
 const Speeds = (props: {
   errors: FieldErrors;
@@ -33,11 +33,7 @@ const Speeds = (props: {
             name={`${name}.value` as keyof MonsterGeneratorFormFields}
           />
           <label>Remove</label>
-          <button
-            title={'Remove'}
-            // onClick={() => fields.remove(index)}
-            className="btn btn-link py-0"
-          >
+          <button title={'Remove'} className="btn btn-link py-0">
             <GiTrashCan size={32} />
           </button>
         </div>

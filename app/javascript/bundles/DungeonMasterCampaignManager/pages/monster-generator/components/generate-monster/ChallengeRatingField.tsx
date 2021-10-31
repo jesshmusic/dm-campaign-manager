@@ -1,12 +1,12 @@
 import React from 'react';
 import { GiMailedFist } from 'react-icons/all';
 import { UseFormRegister } from 'react-hook-form';
-import { FieldValues } from '../../../utilities/types';
-import { Colors } from '../../../utilities/enums';
-import Button from '../../../components/Button/Button';
+import { FieldValues } from '../../../../utilities/types';
+import { Colors } from '../../../../utilities/enums';
+import Button from '../../../../components/Button/Button';
 
-const styles = require('../../../components/forms/input.module.scss');
-const genStyles = require('./generator.module.scss');
+const styles = require('../../../../components/forms/input.module.scss');
+const genStyles = require('../generator.module.scss');
 
 type ChallengeRatingFieldProps = {
   onCalculateCr: () => void;

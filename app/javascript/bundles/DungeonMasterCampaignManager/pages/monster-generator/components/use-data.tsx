@@ -12,7 +12,7 @@ import {
 } from '../services';
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
-import { GenerateMonsterProps } from './GenerateMonster';
+import { GenerateMonsterProps } from './generate-monster/GenerateMonster';
 import { generateAttackDesc } from '../../../utilities/character-utilities';
 
 export const useData = (props: GenerateMonsterProps) => {

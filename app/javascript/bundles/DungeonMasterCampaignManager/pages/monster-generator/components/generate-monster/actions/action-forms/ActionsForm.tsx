@@ -5,63 +5,48 @@
 import React from 'react';
 import { GiAbacus, GiSwordsPower } from 'react-icons/gi';
 import {
+  ActionFormComponentProps,
   ActionTypes,
-  MonsterGeneratorFormFields,
-} from '../../../../utilities/types';
-import { useFieldArray, UseFormReturn } from 'react-hook-form';
-import Button from '../../../../components/Button/Button';
-import { Colors } from '../../../../utilities/enums';
+} from '../../../../../../utilities/types';
+import Button from '../../../../../../components/Button/Button';
+import { Colors } from '../../../../../../utilities/enums';
 
-import '../../../../components/forms/inputOverrides.scss';
+import '../../../../../../components/forms/inputOverrides.scss';
 import ActionForm from './ActionForm';
 import { abilityOptions } from './SpellcastingForm';
 import { GiMagicPalm } from 'react-icons/all';
 
 const styles = require('./action-form.module.scss');
 
-const ActionsForm = (props: {
-  fieldName: keyof MonsterGeneratorFormFields;
-  title: string;
-  singularTitle: string;
-  useForm: UseFormReturn<any, object>;
-}) => {
+const ActionsForm = (props: ActionFormComponentProps) => {
   const {
-    fieldName,
+    appendAction,
+    fields,
+    handleRemove,
     singularTitle,
-    title,
     useForm: {
       control,
       formState: { errors },
-      setValue,
-      register,
-      unregister,
-      trigger,
     },
   } = props;
   const [hasSpellCasting, setHasSpellCasting] = React.useState(false);
 
-  const isInitialRender = React.useRef(true);
-
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: fieldName,
-  });
-
-  const actionNumber = (): string => {
-    return fields.length > 0 ? ` ${fields.length}` : '';
+  const handleRemoveBasicAction = (index: number) => {
+    if (fields[index]['actionType'] === ActionTypes.spellCasting) {
+      setHasSpellCasting(false);
+    }
+    handleRemove(index);
   };
 
   const addAction = () => {
-    append({
-      name: `New Action${actionNumber()}`,
+    appendAction({
       desc: '',
       actionType: ActionTypes.ability,
     });
   };
 
   const addAttack = () => {
-    append({
-      name: `New Action${actionNumber()}`,
+    appendAction({
       actionType: ActionTypes.attack,
       numAttacks: 1,
       desc: '',
@@ -82,7 +67,7 @@ const ActionsForm = (props: {
 
   const addSpellCasting = () => {
     setHasSpellCasting(true);
-    append({
+    appendAction({
       name: `Spellcasting`,
       actionType: ActionTypes.spellCasting,
       desc: '',
@@ -101,37 +86,20 @@ const ActionsForm = (props: {
           eighth: 0,
           ninth: 0,
         },
+        spellOptions: [],
       },
     });
   };
 
-  React.useEffect(() => {
-    if (!fields.length && !isInitialRender.current) {
-      trigger(fieldName);
-    }
-
-    if (isInitialRender.current) {
-      isInitialRender.current = false;
-    }
-  }, [fields, register, setValue, unregister, trigger]);
-
-  const handleRemove = (index: number) => {
-    if (fields[index]['actionType'] === ActionTypes.spellCasting) {
-      setHasSpellCasting(false);
-    }
-    remove(index);
-  };
-
   return (
-    <div className={styles.wrapper}>
-      <h4>{title}</h4>
+    <>
       {fields.map((action, actionIndex) => (
         <ActionForm
           key={action.id}
           actionIndex={actionIndex}
           control={control}
           errors={errors}
-          remove={handleRemove}
+          remove={handleRemoveBasicAction}
         />
       ))}
       <Button
@@ -157,7 +125,7 @@ const ActionsForm = (props: {
           title={'Add Spellcasting'}
         />
       )}
-    </div>
+    </>
   );
 };
 

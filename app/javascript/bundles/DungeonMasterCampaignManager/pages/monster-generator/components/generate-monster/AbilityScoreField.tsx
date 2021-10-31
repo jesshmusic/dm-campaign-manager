@@ -7,12 +7,15 @@ import { GiDiceTwentyFacesTwenty } from 'react-icons/gi/';
 import { FieldErrors, UseFormRegister, UseFormSetValue } from 'react-hook-form';
 import { DiceRoll } from 'rpg-dice-roller';
 import useSound from 'use-sound';
-import { FieldValues, MonsterGeneratorFormFields } from '../../../utilities/types';
-import FormField from '../../../components/forms/FormField';
-import { Colors } from '../../../utilities/enums';
-import Button from '../../../components/Button/Button';
+import {
+  FieldValues,
+  MonsterGeneratorFormFields,
+} from '../../../../utilities/types';
+import FormField from '../../../../components/forms/FormField';
+import { Colors } from '../../../../utilities/enums';
+import Button from '../../../../components/Button/Button';
 
-const diceSound = require('../../../sounds/DiceRoll.mp3');
+const diceSound = require('../../../../sounds/DiceRoll.mp3');
 
 const styles = require('./ability-score-field.module.scss');
 
@@ -38,7 +41,7 @@ const AbilityScoreField = (props: AbilityScoreFieldProps) => {
     play();
     setValue(name, roll.total, {
       shouldDirty: true,
-      shouldTouch: true
+      shouldTouch: true,
     });
   };
 
@@ -68,15 +71,15 @@ const AbilityScoreField = (props: AbilityScoreFieldProps) => {
           errors={errors}
           label={label}
           name={name}
-          type='number'
+          type="number"
           register={register}
           hideLabel
         />
         <FormField
           className={styles.modField}
           errors={errors}
-          label='Hit Dice Value'
-          type='text'
+          label="Hit Dice Value"
+          type="text"
           register={register}
           name={`${name}Mod`}
           hideLabel

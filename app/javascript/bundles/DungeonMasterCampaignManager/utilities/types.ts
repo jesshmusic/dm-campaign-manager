@@ -3,6 +3,7 @@ import { Location, NavigateFn } from '@reach/router';
 import { ItemType } from '../pages/items/use-data';
 import { User } from '@auth0/auth0-react';
 import { FlashMessageType } from '../reducers/flashMessages';
+import { UseFormReturn } from 'react-hook-form';
 
 export interface AbilityScore {
   desc: string[];
@@ -10,10 +11,25 @@ export interface AbilityScore {
   name: string;
 }
 
+export interface ActionFormComponentProps {
+  appendAction: (action: Partial<MonsterActionField>) => void;
+  fields: any;
+  handleRemove: (index: number) => void;
+  singularTitle: string;
+  useForm: UseFormReturn<any, object>;
+}
+
 export enum ActionTypes {
   attack = 'attack',
   ability = 'ability',
   spellCasting = 'spellCasting',
+}
+
+export enum ActionVariations {
+  action,
+  legendaryAction,
+  reaction,
+  specialAbility,
 }
 
 export interface ApiReference {
@@ -268,7 +284,6 @@ export type MonsterActionField = {
       ninth: number;
     };
     spellOptions: SelectOption[];
-    spellIds: number[];
   };
 };
 

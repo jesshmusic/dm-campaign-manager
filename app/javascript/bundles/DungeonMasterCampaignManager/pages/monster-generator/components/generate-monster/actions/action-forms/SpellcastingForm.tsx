@@ -2,12 +2,12 @@ import React from 'react';
 import {
   ControlledInput,
   ControllerInput,
-} from '../../../../components/forms/ControllerInput';
+} from '../../../../../../components/forms/ControllerInput';
 import { Control, Controller, FieldErrors, FieldValues } from 'react-hook-form';
 import axios, { AxiosResponse } from 'axios';
-import { filterOptionsWithData } from '../../../../utilities/character-utilities';
-import FormSelect from '../../../../components/forms/FormSelect';
-import FormSelectAsync from '../../../../components/forms/FormSelectAsync';
+import { filterOptionsWithData } from '../../../../../../utilities/character-utilities';
+import FormSelect from '../../../../../../components/forms/FormSelect';
+import FormSelectAsync from '../../../../../../components/forms/FormSelectAsync';
 
 const styles = require('./action-form.module.scss');
 

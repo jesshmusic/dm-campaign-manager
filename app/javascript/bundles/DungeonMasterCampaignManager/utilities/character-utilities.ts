@@ -147,6 +147,23 @@ export const damageTypes: { label: string; value: DamageTypes }[] = [
   { label: 'Psychic', value: 'psychic' },
 ];
 
+export const senses: SelectOption[] = [
+  { label: 'Blindsight', value: 'blindsight' },
+  { label: 'Darkvision', value: 'darkvision' },
+  { label: 'Tremorsense', value: 'tremorsense' },
+  { label: 'Truesight', value: 'truesight' },
+  { label: 'Passive Perception', value: 'darkvision' },
+];
+
+export const speeds: SelectOption[] = [
+  { label: 'Burrow', value: 'burrow' },
+  { label: 'Climb', value: 'climb' },
+  { label: 'Fly', value: 'fly' },
+  { label: 'Hover', value: 'hover' },
+  { label: 'Swim', value: 'swim' },
+  { label: 'Walk', value: 'walk' },
+];
+
 export const getChallengeRatingOptions = () => {
   const crs = [
     { value: '0', label: '0' },

@@ -9,11 +9,11 @@ import {
 import {
   ControlledInput,
   ControlledSelect,
-} from '../../../../components/forms/ControllerInput';
+} from '../../../../../../components/forms/ControllerInput';
 import {
   damageTypes,
   diceOptions,
-} from '../../../../utilities/character-utilities';
+} from '../../../../../../utilities/character-utilities';
 
 const styles = require('./action-form.module.scss');
 
