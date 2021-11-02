@@ -20,6 +20,11 @@ export interface ActionFormComponentProps {
   useForm: UseFormReturn<any, object>;
 }
 
+export interface FieldArrayFormProps {
+  fieldName: string;
+  useForm: UseFormReturn<any, object>;
+}
+
 export enum ActionTypes {
   attack = 'attack',
   ability = 'ability',

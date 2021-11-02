@@ -6,11 +6,14 @@ import { GiDiceTwentyFacesTwenty } from 'react-icons/gi/';
 import { Colors } from '../../../../utilities/enums';
 import Button from '../../../../components/Button/Button';
 import { useData } from '../use-data';
-import BaseActionsFormSection from './actions/action-forms/BaseActionsFormSection';
+import BaseActionsFormSection from './sections/actions/action-forms/BaseActionsFormSection';
 import GenMonsterSection from './sections/GenMonsterSection';
 import MonsterStatsSection from './sections/MonsterStatsSection';
 import AbilitiesSection from './sections/AbilitiesSection';
 import ResistancesSection from './sections/ResistancesSection';
+import SensesForm from './sections/senses/SensesForm';
+import append from 'react-hook-form/dist/utils/append';
+import SpeedsForm from './sections/speeds/SpeedsForm';
 
 const styles = require('../generator.module.scss');
 
@@ -81,6 +84,14 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
 
           <GenMonsterSection heading="Ability Scores">
             <AbilitiesSection UseForm={UseForm} />
+          </GenMonsterSection>
+
+          <GenMonsterSection heading="Senses">
+            <SensesForm fieldName={'senses'} useForm={UseForm} />
+          </GenMonsterSection>
+
+          <GenMonsterSection heading="Speeds">
+            <SpeedsForm fieldName={'speeds'} useForm={UseForm} />
           </GenMonsterSection>
 
           <GenMonsterSection heading="Resistances & Vulnerabilities">

@@ -2,7 +2,7 @@ import React from 'react';
 import {
   ControlledInput,
   ControllerInput,
-} from '../../../../../../components/forms/ControllerInput';
+} from '../../../../../../../components/forms/ControllerInput';
 import { Control, Controller, FieldErrors, FieldValues } from 'react-hook-form';
 
 const styles = require('./action-form.module.scss');

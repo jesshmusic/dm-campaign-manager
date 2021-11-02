@@ -1,17 +1,13 @@
-/**
- * Created by jesshendricks on 9/13/19
- */
-
 import React from 'react';
 import { GiAbacus } from 'react-icons/gi';
 import {
   ActionFormComponentProps,
   ActionTypes,
-} from '../../../../../../utilities/types';
-import Button from '../../../../../../components/Button/Button';
-import { Colors } from '../../../../../../utilities/enums';
+} from '../../../../../../../utilities/types';
+import Button from '../../../../../../../components/Button/Button';
+import { Colors } from '../../../../../../../utilities/enums';
 
-import '../../../../../../components/forms/inputOverrides.scss';
+import '../../../../../../../components/forms/inputOverrides.scss';
 import ActionForm from './ActionForm';
 
 const BasicActionsForm = (props: ActionFormComponentProps) => {

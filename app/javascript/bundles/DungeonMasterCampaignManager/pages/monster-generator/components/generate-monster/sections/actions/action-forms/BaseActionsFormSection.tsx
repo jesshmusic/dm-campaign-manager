@@ -3,12 +3,12 @@ import {
   ActionVariations,
   MonsterActionField,
   MonsterGeneratorFormFields,
-} from '../../../../../../utilities/types';
+} from '../../../../../../../utilities/types';
 import { useFieldArray, UseFormReturn } from 'react-hook-form';
 import ActionsForm from './ActionsForm';
 import BasicActionsForm from './BasicActionsForm';
 
-const styles = require('../../../generator.module.scss');
+const styles = require('../../../../generator.module.scss');
 
 const BaseActionsFormSection = (props: {
   actionVariation: ActionVariations;

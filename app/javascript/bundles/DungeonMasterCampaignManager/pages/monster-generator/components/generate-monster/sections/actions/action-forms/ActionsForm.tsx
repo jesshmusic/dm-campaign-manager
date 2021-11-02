@@ -7,16 +7,14 @@ import { GiAbacus, GiSwordsPower } from 'react-icons/gi';
 import {
   ActionFormComponentProps,
   ActionTypes,
-} from '../../../../../../utilities/types';
-import Button from '../../../../../../components/Button/Button';
-import { Colors } from '../../../../../../utilities/enums';
+} from '../../../../../../../utilities/types';
+import Button from '../../../../../../../components/Button/Button';
+import { Colors } from '../../../../../../../utilities/enums';
 
-import '../../../../../../components/forms/inputOverrides.scss';
+import '../../../../../../../components/forms/inputOverrides.scss';
 import ActionForm from './ActionForm';
 import { abilityOptions } from './SpellcastingForm';
 import { GiMagicPalm } from 'react-icons/all';
-
-const styles = require('./action-form.module.scss');
 
 const ActionsForm = (props: ActionFormComponentProps) => {
   const {
