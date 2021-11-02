@@ -203,7 +203,7 @@ export const generateAttackDesc = (
   actionFields: MonsterActionField,
   attackBonus: number,
   profBonus: number,
-  reachDistance?: number
+  damageBonus: number
 ): string => {
   const toWords = new ToWords();
   let desc = '';
@@ -219,7 +219,9 @@ export const generateAttackDesc = (
       .toLowerCase()} target${actionFields.damage.numTargets > 1 ? 's' : ''}`;
 
     if (!actionFields.damage.isRanged) {
-      const reach = reachDistance ? `${reachDistance} ft.` : '5 ft.';
+      const reach = actionFields.damage.reach
+        ? `${actionFields.damage.reach} ft.`
+        : '5 ft.';
       desc += `Melee Weapon Attack: ${hitString}, reach ${reach}, ${targetsString}.`;
     } else {
       const range = `range (${actionFields.damage.rangeNormal} / ${actionFields.damage.rangeLong}), ${targetsString}.`;
@@ -229,9 +231,9 @@ export const generateAttackDesc = (
     const damageString = `Hit: ${averageDamage(
       actionFields.damage.numDice,
       actionFields.damage.diceValue,
-      attackBonus
+      damageBonus
     )} (${actionFields.damage.numDice}d${actionFields.damage.diceValue}${
-      attackBonus > 0 ? plusNumberString(attackBonus, true) : ''
+      damageBonus !== 0 ? plusNumberString(damageBonus, true) : ''
     }) ${actionFields.damage.damageType} damage.`;
 
     desc += ` ${damageString}`;

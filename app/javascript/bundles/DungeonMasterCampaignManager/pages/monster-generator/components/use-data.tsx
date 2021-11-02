@@ -84,7 +84,7 @@ export const useData = (props: GenerateMonsterProps) => {
   const onSubmit = (data) => {
     // console.log(getMonsterObject(data));
     const monster = getMonsterObject(data);
-    const monsterData = snakecaseKeys(monster, { exclude: ['_destroy'] });
+    const monsterData = snakecaseKeys(monster);
     props.setMonster(monster);
   };
 
@@ -128,10 +128,17 @@ export const useData = (props: GenerateMonsterProps) => {
     attackBonus: number,
     profBonus: number
   ) => {
+    const damageBonus = fields.damageBonus as number;
     fields.actions.forEach((action, index) => {
       UseForm.setValue(
         `actions.${index}.desc`,
-        generateAttackDesc(fields.name, action, attackBonus, profBonus)
+        generateAttackDesc(
+          fields.name,
+          action,
+          attackBonus,
+          profBonus,
+          damageBonus
+        )
       );
     });
   };
@@ -154,6 +161,10 @@ export const useData = (props: GenerateMonsterProps) => {
         setActionDesc(fields, attackBonus, profBonus);
         handleCalculateCR();
         break;
+      case 'damageBonus':
+        setActionDesc(fields, attackBonus, profBonus);
+        handleCalculateCR();
+        break;
       case 'strength':
         const strMod = abilityScoreModifier(fields.strength);
         UseForm.setValue('damageBonus', strMod, {
@@ -161,8 +172,6 @@ export const useData = (props: GenerateMonsterProps) => {
           shouldTouch: true,
         });
         UseForm.setValue('strengthMod', strMod);
-        setActionDesc(fields, attackBonus, profBonus);
-        handleCalculateCR();
         break;
       case 'dexterity':
         UseForm.setValue(
@@ -313,7 +322,8 @@ export const useData = (props: GenerateMonsterProps) => {
               fields.name,
               fields.actions[actionIndex],
               attackBonus,
-              profBonus
+              profBonus,
+              fields.damageBonus as number
             )
           );
           handleCalculateCR();

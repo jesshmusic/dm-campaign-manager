@@ -15,6 +15,7 @@ export const getMonsterObject = (
   armorClass: values.armorClass,
   attackBonus: values.attackBonus,
   challengeRating: values.challengeRating,
+  challengeString: `${values.challengeRating} (${values.xp} XP)`,
   charisma: values.charisma,
   constitution: values.constitution,
   dexterity: values.dexterity,
@@ -109,7 +110,7 @@ export const calculateCR = async (
     '/v1/calculate_cr',
     {
       params: {
-        monster: getMonsterObject(allValues),
+        monster: snakecaseKeys(getMonsterObject(allValues)),
       },
     }
   );

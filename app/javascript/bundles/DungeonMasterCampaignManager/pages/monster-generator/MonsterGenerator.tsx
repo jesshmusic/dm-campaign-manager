@@ -8,6 +8,7 @@ import GenerateCommoner from './components/GenerateCommoner';
 import { GiBlacksmith, GiSpikedDragonHead, SiConvertio } from 'react-icons/all';
 import axios from 'axios';
 import { MonsterProps } from '../../utilities/types';
+import MonsterBlock from '../monsters/MonsterBlock';
 
 const styles = require('./monster-generator.module.scss');
 
@@ -46,7 +47,7 @@ const MonsterGenerator = () => {
           pasted into Fantasy Grounds.
         </p>
 
-        {monster ? <MonsterDisplay monster={monster} shortDisplay /> : null}
+        {monster ? <MonsterBlock monster={monster} /> : null}
 
         <div
           className="accordion accordion-flush"
