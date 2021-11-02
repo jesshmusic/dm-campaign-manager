@@ -83,9 +83,7 @@ class NpcGenerator
       # Other statistics
       @new_npc.armor_class = cr_info[:armor_class] + DndRules.ability_score_modifier(@new_npc.dexterity)
       @new_npc.alignment = DndRules.alignments_non_evil.sample
-      @new_npc.as_json(
-        include: %i[monster_actions monster_legendary_actions monster_special_abilities skills],
-        methods: %i[description_text hit_dice size_and_type saving_throws skills_string xp])
+      @new_npc
     end
 
     def calculate_cr(params)
@@ -135,9 +133,8 @@ class NpcGenerator
     def set_npc_hit_points
       con_modifier = DndRules.ability_score_modifier(@new_npc.constitution)
       hit_points_info = DndRules.num_hit_die_for_size(@new_npc.size, @new_npc.challenge_rating, con_modifier)
-      @new_npc.hit_dice_number = hit_points_info[:num_hit_die]
+      @new_npc.hit_dice = "d#{hit_points_info[:num_hit_die]}"
       @new_npc.hit_points = hit_points_info[:hit_points]
-      @new_npc.hit_dice_modifier = @new_npc.hit_dice_number * con_modifier
       DndRules.challenge_ratings[@new_npc.challenge_rating.to_sym]
     end
 

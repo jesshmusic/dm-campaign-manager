@@ -21,7 +21,7 @@ const MonsterGenerator = () => {
   ) => {
     axios
       .get(
-        `/v1/generate_commoner?random_monster_gender=${gender}&random_monster_race=${race}`
+        `/v1/generate_commoner.json?random_monster_gender=${gender}&random_monster_race=${race}`
       )
       .then((response) => {
         setMonster(response.data);

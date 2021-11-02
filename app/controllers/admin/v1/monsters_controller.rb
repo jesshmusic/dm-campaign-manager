@@ -109,7 +109,8 @@ module Admin::V1
     def generate_commoner
       random_npc_gender = params[:random_npc_gender] || %w[male female].sample
       random_npc_race = params[:random_npc_race] || 'human'
-      render json: { npc: NpcGenerator.generate_commoner(random_npc_gender, random_npc_race) }
+      @monster = NpcGenerator.generate_commoner(random_npc_gender, random_npc_race)
+      render :show, status: :ok
     end
 
     # PATCH/PUT /monsters/:slug
