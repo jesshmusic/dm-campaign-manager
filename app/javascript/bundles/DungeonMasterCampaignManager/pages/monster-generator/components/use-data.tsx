@@ -14,6 +14,7 @@ import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import { GenerateMonsterProps } from './generate-monster/GenerateMonster';
 import { generateAttackDesc } from '../../../utilities/character-utilities';
+import snakecaseKeys from 'snakecase-keys';
 
 export const useData = (props: GenerateMonsterProps) => {
   const [monsterForm, setMonsterForm] =
@@ -72,6 +73,7 @@ export const useData = (props: GenerateMonsterProps) => {
       senses: [],
       speeds: [],
       monsterProficiencies: [],
+      savingThrows: [],
     });
 
   const UseForm = useForm<MonsterGeneratorFormFields>({
@@ -80,8 +82,10 @@ export const useData = (props: GenerateMonsterProps) => {
   });
 
   const onSubmit = (data) => {
-    console.log(getMonsterObject(data));
-    // props.setMonster(getMonsterObject(data));
+    // console.log(getMonsterObject(data));
+    const monster = getMonsterObject(data);
+    const monsterData = snakecaseKeys(monster, { exclude: ['_destroy'] });
+    props.setMonster(monster);
   };
 
   const handleGenerateMonsterName = async () => {

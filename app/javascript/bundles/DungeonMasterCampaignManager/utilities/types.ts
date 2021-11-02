@@ -319,6 +319,7 @@ export type MonsterGeneratorFormFields = {
   monsterSubtype?: string;
   profBonus: number;
   saveDC: number;
+  savingThrows: string[];
   size: SelectOption;
   strength: number;
   strengthMod: number | string;
@@ -377,14 +378,15 @@ export interface MonsterProps {
   constitution: number;
   dexterity: number;
   hitDice: string;
-  hitPoints: string;
+  hitPoints: number;
   hitPointsString: string;
   intelligence: number;
   languages: string;
-  monsterSubtype: string;
+  monsterSubtype?: string;
   monsterType: string;
   name: string;
   profBonus: number;
+  saveDc: number;
   size: string;
   strength: number;
   wisdom: number;
@@ -396,9 +398,10 @@ export interface MonsterProps {
   legendaryActions?: MonsterAction[];
   reactions?: MonsterAction[];
   specialAbilities?: MonsterAction[];
-  senses: string[];
-  speeds: string[];
+  senses: MonsterInfoData[];
+  speeds: MonsterInfoData[];
   savingThrows: string[];
+  monsterProficiencies: Prof[];
   skills: string[];
 }
 
