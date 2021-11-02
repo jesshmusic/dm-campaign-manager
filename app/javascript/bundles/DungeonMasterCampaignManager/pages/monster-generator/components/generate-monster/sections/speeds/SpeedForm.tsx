@@ -9,7 +9,7 @@ import {
 } from '../../../../../../components/forms/ControllerInput';
 import { speeds } from '../../../../../../utilities/character-utilities';
 
-const styles = require('../actions/action-forms/action-form.module.scss');
+const styles = require('../field-array-form.module.scss');
 
 const SpeedForm = (props: {
   speedIndex: number;
@@ -21,31 +21,29 @@ const SpeedForm = (props: {
   const { speedIndex, control, errors, fieldName, remove } = props;
 
   return (
-    <div className={styles.actionContainer}>
-      <div className={styles.actionWrapper}>
-        <ControlledSelect
-          className={styles.diceSelect}
-          fieldName={`${fieldName}.${speedIndex}.nameOption`}
-          control={control}
-          label="Speed"
-          options={speeds}
-        />
-        <ControlledInput
-          fieldName={`${fieldName}.${speedIndex}.value`}
-          errors={errors}
-          className={styles.actionCol}
-          control={control}
-          label="Value"
-        />
-        <Button
-          type="button"
-          onClick={() => remove(speedIndex)}
-          color={Colors.danger}
-          icon={<GiTrashCan size={30} />}
-          hideTitle
-          title="Remove Action"
-        />
-      </div>
+    <div className={styles.formContainer}>
+      <ControlledSelect
+        className={styles.formElementSelect}
+        fieldName={`${fieldName}.${speedIndex}.nameOption`}
+        control={control}
+        label="Speed"
+        options={speeds}
+      />
+      <ControlledInput
+        fieldName={`${fieldName}.${speedIndex}.value`}
+        errors={errors}
+        className={styles.formElementInput}
+        control={control}
+        label="Value"
+      />
+      <Button
+        type="button"
+        onClick={() => remove(speedIndex)}
+        color={Colors.danger}
+        icon={<GiTrashCan size={30} />}
+        hideTitle
+        title="Remove Action"
+      />
     </div>
   );
 };

@@ -1,0 +1,17 @@
+@import '../../../../../stylesheets/variables';
+
+.formContainer {
+  background-color: transparent;
+  color: $body-color;
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.25rem 0;
+
+  .formElementSelect {
+    flex: 2;
+  }
+
+  .formElementInput {
+    flex: 1;
+  }
+}
