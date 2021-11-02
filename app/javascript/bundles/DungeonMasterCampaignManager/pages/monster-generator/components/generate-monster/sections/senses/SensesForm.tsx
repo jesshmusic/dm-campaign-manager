@@ -5,6 +5,7 @@ import Button from '../../../../../../components/Button/Button';
 import SenseForm from './SenseForm';
 import { FieldArrayFormProps } from '../../../../../../utilities/types';
 import { useFieldArray } from 'react-hook-form';
+import { senses } from '../../../../../../utilities/character-utilities';
 
 const SensesForm = (props: FieldArrayFormProps) => {
   const {
@@ -42,7 +43,8 @@ const SensesForm = (props: FieldArrayFormProps) => {
 
   const addSense = () => {
     append({
-      name: '',
+      nameOption: senses[0],
+      name: senses[0].label,
       value: '',
     });
   };

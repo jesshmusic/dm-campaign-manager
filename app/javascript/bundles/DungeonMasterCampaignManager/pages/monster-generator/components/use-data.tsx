@@ -322,6 +322,30 @@ export const useData = (props: GenerateMonsterProps) => {
         }
       }
     }
+    if (fieldName?.includes('senses.')) {
+      const fieldNameArray = fieldName?.split('.');
+      if (fieldNameArray.length >= 3) {
+        const senseIndex = parseInt(fieldNameArray[1]);
+        if (fieldName === `senses.${senseIndex}.nameOption`) {
+          UseForm.setValue(
+            `senses.${senseIndex}.name`,
+            fields.senses[senseIndex].nameOption!.label
+          );
+        }
+      }
+    }
+    if (fieldName?.includes('speeds.')) {
+      const fieldNameArray = fieldName?.split('.');
+      if (fieldNameArray.length >= 3) {
+        const speedIndex = parseInt(fieldNameArray[1]);
+        if (fieldName === `senses.${speedIndex}.nameOption`) {
+          UseForm.setValue(
+            `speeds.${speedIndex}.name`,
+            fields.speeds[speedIndex].nameOption!.label
+          );
+        }
+      }
+    }
   };
 
   return {

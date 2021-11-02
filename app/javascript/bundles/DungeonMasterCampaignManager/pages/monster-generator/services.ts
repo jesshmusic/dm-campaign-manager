@@ -61,8 +61,16 @@ export const getMonsterObject = (values: MonsterGeneratorFormFields) => {
         name: action.name,
         desc: action.desc,
       })) || [],
-    senses: values.senses || [],
-    speeds: values.speeds || [],
+    senses:
+      values.senses.map((sense) => ({
+        name: sense.name,
+        value: sense.value,
+      })) || [],
+    speeds:
+      values.speeds.map((speed) => ({
+        name: speed.name,
+        value: speed.value,
+      })) || [],
     monsterProficiencies: values.monsterProficiencies || [],
   };
   return snakecaseKeys(returnChar, { exclude: ['_destroy'] });

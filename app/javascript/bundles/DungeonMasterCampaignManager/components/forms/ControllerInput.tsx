@@ -115,13 +115,13 @@ export const ControlledSelect = (props: {
         {label}
       </label>
       <Controller
-        render={({ field: { onChange, ...rest } }) => (
+        render={({ field }) => (
           <Select
             className={'reactSelect'}
             classNamePrefix={'reactSelect'}
             options={options}
             isSearchable
-            {...rest}
+            {...field}
           />
         )}
         name={fieldName}

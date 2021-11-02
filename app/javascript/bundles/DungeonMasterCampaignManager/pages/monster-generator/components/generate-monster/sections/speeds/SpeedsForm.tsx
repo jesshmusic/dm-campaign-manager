@@ -5,6 +5,7 @@ import { useFieldArray } from 'react-hook-form';
 import SpeedForm from './SpeedForm';
 import Button from '../../../../../../components/Button/Button';
 import { Colors } from '../../../../../../utilities/enums';
+import { speeds } from '../../../../../../utilities/character-utilities';
 
 const SpeedsForm = (props: FieldArrayFormProps) => {
   const {
@@ -42,7 +43,8 @@ const SpeedsForm = (props: FieldArrayFormProps) => {
 
   const addSpeed = () => {
     append({
-      name: '',
+      nameOption: speeds[0],
+      name: speeds[0].label,
       value: '',
     });
   };

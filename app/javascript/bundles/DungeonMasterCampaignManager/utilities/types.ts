@@ -344,6 +344,7 @@ export type MonsterGeneratorFormFields = {
 
 export type MonsterInfoData = {
   name: string;
+  nameOption?: SelectOption;
   value: string | number | boolean;
 };
 
