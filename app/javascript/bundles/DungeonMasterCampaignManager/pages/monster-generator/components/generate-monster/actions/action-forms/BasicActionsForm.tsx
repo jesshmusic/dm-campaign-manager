@@ -49,7 +49,7 @@ const BasicActionsForm = (props: ActionFormComponentProps) => {
       <Button
         type="button"
         onClick={addAction}
-        color={Colors.success}
+        color={Colors.primary}
         icon={<GiAbacus size={30} />}
         title={`Add ${singularTitle}`}
       />

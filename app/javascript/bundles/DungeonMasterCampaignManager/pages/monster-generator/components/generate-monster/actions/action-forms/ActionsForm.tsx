@@ -107,14 +107,14 @@ const ActionsForm = (props: ActionFormComponentProps) => {
       <Button
         type="button"
         onClick={addAction}
-        color={Colors.success}
+        color={Colors.primary}
         icon={<GiAbacus size={30} />}
         title={`Add ${singularTitle}`}
       />
       <Button
         type="button"
         onClick={addAttack}
-        color={Colors.danger}
+        color={Colors.secondary}
         icon={<GiSwordsPower size={30} />}
         title={'Add Attack'}
       />

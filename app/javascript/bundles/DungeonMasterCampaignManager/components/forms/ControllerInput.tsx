@@ -19,8 +19,6 @@ export const ControllerInput = (props) => {
     ...rest
   } = props;
 
-  console.log(...rest);
-
   if (type === 'checkbox' || type === 'radio') {
     return (
       <div className={classNames(styles.wrapper, className)}>

@@ -16,18 +16,20 @@ const Button = (props: {
   icon?: React.ReactNode;
   style?: object;
   hideTitle?: boolean;
+  isFullWidth?: boolean;
 }) => {
   const {
-    id,
-    icon,
     className,
     color,
     dataBsDismiss,
-    style,
     disabled,
     hideTitle,
-    title,
+    icon,
+    id,
+    isFullWidth,
     onClick,
+    style,
+    title,
     type,
   } = props;
 
@@ -45,6 +47,7 @@ const Button = (props: {
         [styles.dark]: color === Colors.dark,
         [styles.transparent]: color === Colors.transparent,
         [styles.transparentLight]: color === Colors.transparentLight,
+        [styles.fullWidth]: isFullWidth,
       })}
       onClick={onClick}
       id={id}

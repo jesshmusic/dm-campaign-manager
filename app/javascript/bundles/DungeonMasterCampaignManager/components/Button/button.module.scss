@@ -18,7 +18,7 @@
   vertical-align: middle;
 
   &:hover {
-    background-color: lighten($primary, 20%);
+    background-color: darken($primary, 20%);
     text-decoration: none;
   }
 
@@ -30,12 +30,21 @@
     cursor: pointer;
   }
 
+  &.fullWidth {
+    align-items: center;
+    display: flex;
+    font-size: 1.25rem;
+    justify-content: center;
+    padding: 0.75rem;
+    width: 100%;
+  }
+
   &.primary {
     background-color: $primary;
     color: $white;
 
     &:hover {
-      background-color: lighten($primary, 20%);
+      background-color: darken($primary, 20%);
       text-decoration: none;
     }
   }
@@ -45,7 +54,7 @@
     color: $white;
 
     &:hover {
-      background-color: lighten($secondary, 20%);
+      background-color: darken($secondary, 20%);
       text-decoration: none;
     }
   }
@@ -55,7 +64,7 @@
     color: $white;
 
     &:hover {
-      background-color: lighten($success, 20%);
+      background-color: darken($success, 20%);
       text-decoration: none;
     }
   }
@@ -75,7 +84,7 @@
     color: $gray-900;
 
     &:hover {
-      background-color: lighten($info, 20%);
+      background-color: darken($info, 20%);
       text-decoration: none;
     }
   }
@@ -85,7 +94,7 @@
     color: $black;
 
     &:hover {
-      background-color: lighten($warning, 20%);
+      background-color: darken($warning, 20%);
       text-decoration: none;
     }
   }
@@ -95,7 +104,7 @@
     color: $white;
 
     &:hover {
-      background-color: lighten($danger, 20%);
+      background-color: darken($danger, 20%);
       text-decoration: none;
     }
   }
@@ -105,7 +114,7 @@
     color: $dark;
 
     &:hover {
-      background-color: lighten($light, 20%);
+      background-color: darken($light, 20%);
       text-decoration: none;
     }
   }

@@ -123,16 +123,15 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
             />
           </GenMonsterSection>
 
-          <div>
-            <div className="btn-group" aria-label="Character actions">
-              <Button
-                color={Colors.success}
-                title="Generate Monster"
-                type="submit"
-                icon={<GiDiceTwentyFacesTwenty size={30} />}
-              />
-            </div>
-          </div>
+          <GenMonsterSection heading="Submit">
+            <Button
+              color={Colors.success}
+              title="Generate Monster"
+              type="submit"
+              icon={<GiDiceTwentyFacesTwenty size={40} />}
+              isFullWidth
+            />
+          </GenMonsterSection>
         </form>
       </Frame>
     </>
