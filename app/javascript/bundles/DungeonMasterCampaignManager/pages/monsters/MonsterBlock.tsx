@@ -72,42 +72,46 @@ const MonsterBlock = (props: { monster: MonsterProps }) => {
 
   return (
     <div className={styles.monsterPage}>
-      <div className="monster-frame__group">
+      <div className='monster-frame__group'>
         <h1>{monster.name}</h1>
         <h2>
           {monster.size} {monster.monsterType}, {monster.alignment}
         </h2>
         <hr />
-        <MonsterStat name="ArmorItems Class" value={monster.armorClass} />
-        <MonsterStat name="Hit Points" value={monster.hitPointsString} />
-        <MonsterStat name="Speed" value={monster.speeds.join(', ')} />
+        <MonsterStat name='ArmorItems Class' value={monster.armorClass} />
+        <MonsterStat name='Hit Points' value={monster.hitPointsString} />
+        <MonsterStat name='Speed' value={monster.speeds.join(', ')} />
         <hr />
         <AbilityScores monster={monster} />
         <hr />
         <MonsterStat
-          name="Condition Immunities"
+          name='Condition Immunities'
           value={
             monster.conditionImmunities.length > 0
               ? monster.conditionImmunities.join(', ')
               : ' None'
           }
         />
+        {monster.savingThrows && (
+          <MonsterStat
+            name='Saving Throws'
+            value={
+              monster.savingThrows.length > 0
+                ? monster.savingThrows.join(', ')
+                : ' None'
+            }
+          />
+        )}
+        {monster.skills && (
+          <MonsterStat
+            name='Skills'
+            value={
+              monster.skills.length > 0 ? monster.skills.join(', ') : ' None'
+            }
+          />
+        )}
         <MonsterStat
-          name="Saving Throws"
-          value={
-            monster.savingThrows.length > 0
-              ? monster.savingThrows.join(', ')
-              : ' None'
-          }
-        />
-        <MonsterStat
-          name="Skills"
-          value={
-            monster.skills.length > 0 ? monster.skills.join(', ') : ' None'
-          }
-        />
-        <MonsterStat
-          name="Damage Resistances"
+          name='Damage Resistances'
           value={
             monster.damageResistances.length > 0
               ? monster.damageResistances.join(', ')
@@ -115,7 +119,7 @@ const MonsterBlock = (props: { monster: MonsterProps }) => {
           }
         />
         <MonsterStat
-          name="Damage Immunities"
+          name='Damage Immunities'
           value={
             monster.damageImmunities.length > 0
               ? monster.damageImmunities.join(', ')
@@ -123,7 +127,7 @@ const MonsterBlock = (props: { monster: MonsterProps }) => {
           }
         />
         <MonsterStat
-          name="Damage Vulnerabilities"
+          name='Damage Vulnerabilities'
           value={
             monster.damageVulnerabilities.length > 0
               ? monster.damageVulnerabilities.join(', ')
@@ -131,27 +135,27 @@ const MonsterBlock = (props: { monster: MonsterProps }) => {
           }
         />
         <MonsterStat
-          name="Senses"
+          name='Senses'
           value={
             monster.senses.length > 0 ? monster.senses.join(', ') : ' None'
           }
         />
-        <MonsterStat name="Languages" value={monster.languages} />
-        <MonsterStat name="Challenge" value={monster.challengeString || ''} />
+        <MonsterStat name='Languages' value={monster.languages} />
+        <MonsterStat name='Challenge' value={monster.challengeString || ''} />
         <hr />
       </div>
       {monster.specialAbilities &&
-        monster.specialAbilities.length > 0 &&
-        monster.specialAbilities.map((special, index) => (
-          <div className="monster-frame__action" key={index}>
-            <em>{special.name}. </em> {special.desc}
-          </div>
-        ))}
+      monster.specialAbilities.length > 0 &&
+      monster.specialAbilities.map((special, index) => (
+        <div className='monster-frame__action' key={index}>
+          <em>{special.name}. </em> {special.desc}
+        </div>
+      ))}
       {monster.actions && monster.actions.length > 0 && (
         <>
           <h3>Actions</h3>
           {monster.actions.map((action, index) => (
-            <div className="monster-frame__action" key={index}>
+            <div className='monster-frame__action' key={index}>
               <em>{action.name}. </em> {action.desc}
             </div>
           ))}
@@ -161,7 +165,7 @@ const MonsterBlock = (props: { monster: MonsterProps }) => {
         <>
           <h3>Legendary Actions</h3>
           {monster.legendaryActions.map((action, index) => (
-            <div className="monster-frame__action" key={index}>
+            <div className='monster-frame__action' key={index}>
               <em>{action.name}. </em> {action.desc}
             </div>
           ))}
@@ -171,7 +175,7 @@ const MonsterBlock = (props: { monster: MonsterProps }) => {
         <>
           <h3>Reactions</h3>
           {monster.reactions.map((action, index) => (
-            <div className="monster-frame__action" key={index}>
+            <div className='monster-frame__action' key={index}>
               <em>{action.name}. </em> {action.desc}
             </div>
           ))}

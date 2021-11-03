@@ -319,7 +319,6 @@ export type MonsterGeneratorFormFields = {
   monsterSubtype?: string;
   profBonus: number;
   saveDC: number;
-  savingThrows: string[];
   size: SelectOption;
   strength: number;
   strengthMod: number | string;
@@ -338,9 +337,16 @@ export type MonsterGeneratorFormFields = {
   legendaryActions: MonsterActionField[];
   reactions: MonsterActionField[];
   specialAbilities: MonsterActionField[];
+  savingThrows: {
+    nameOption: SelectOption,
+    value: number | string,
+  }[]
   senses: MonsterInfoData[];
+  skills: {
+    nameOption: SelectOption,
+    value: number | string,
+  }[]
   speeds: MonsterInfoData[];
-  monsterProficiencies: Prof[];
 };
 
 export type MonsterInfoData = {
@@ -397,16 +403,21 @@ export interface MonsterProps {
   actions?: MonsterAction[];
   legendaryActions?: MonsterAction[];
   reactions?: MonsterAction[];
+  savingThrows?: string[];
+  skills?: string[];
   specialAbilities?: MonsterAction[];
   senses: MonsterInfoData[];
   speeds: MonsterInfoData[];
-  savingThrows: string[];
-  monsterProficiencies: Prof[];
-  skills: string[];
+  monsterProficiencies: MonsterProf[];
 }
 
 export interface Monsters {
   monsters: [MonsterSummary];
+}
+
+export type MonsterProf = {
+  profId: number,
+  value: number,
 }
 
 export type MonsterStub = {
@@ -503,11 +514,6 @@ export type RaceTrait = {
 
 export type RandomNameResult = {
   name: string;
-};
-
-type Resistance = {
-  name: string;
-  _destroy?: boolean;
 };
 
 export type SelectOption = {

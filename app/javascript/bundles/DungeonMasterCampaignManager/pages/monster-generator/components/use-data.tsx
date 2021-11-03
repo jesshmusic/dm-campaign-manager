@@ -1,15 +1,6 @@
 import React from 'react';
-import {
-  MonsterGeneratorFormFields,
-  RandomNameResult,
-} from '../../../utilities/types';
-import {
-  abilityScoreModifier,
-  calculateCR,
-  getMonsterObject,
-  hitDieForSize,
-  hitPoints,
-} from '../services';
+import { MonsterGeneratorFormFields, RandomNameResult } from '../../../utilities/types';
+import { abilityScoreModifier, calculateCR, getMonsterObject, hitDieForSize, hitPoints } from '../services';
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import { GenerateMonsterProps } from './generate-monster/GenerateMonster';
@@ -23,7 +14,7 @@ export const useData = (props: GenerateMonsterProps) => {
       alignment: 'Neutral',
       alignmentOption: {
         value: 'Neutral',
-        label: 'Neutral',
+        label: 'Neutral'
       },
       armorClass: 10,
       attackBonus: 2,
@@ -37,13 +28,13 @@ export const useData = (props: GenerateMonsterProps) => {
       monsterType: 'humanoid',
       monsterTypeOption: {
         value: 'humanoid',
-        label: 'Humanoid',
+        label: 'Humanoid'
       },
       profBonus: 2,
       saveDC: 12,
       size: {
         label: 'Medium',
-        value: 'medium',
+        value: 'medium'
       },
       xp: 10,
       strength: 10,
@@ -71,19 +62,19 @@ export const useData = (props: GenerateMonsterProps) => {
       reactions: [],
       specialAbilities: [],
       senses: [],
+      skills: [],
       speeds: [],
-      monsterProficiencies: [],
-      savingThrows: [],
+      savingThrows: []
     });
 
   const UseForm = useForm<MonsterGeneratorFormFields>({
     defaultValues: monsterForm,
-    mode: 'onChange',
+    mode: 'onChange'
   });
 
   const onSubmit = (data) => {
-    // console.log(getMonsterObject(data));
     const monster = getMonsterObject(data);
+    console.log(monster);
     const monsterData = snakecaseKeys(monster);
     props.setMonster(monster);
   };
@@ -151,7 +142,7 @@ export const useData = (props: GenerateMonsterProps) => {
       case 'alignmentOption':
         UseForm.setValue('alignment', fields.alignmentOption.label, {
           shouldDirty: true,
-          shouldTouch: true,
+          shouldTouch: true
         });
         break;
       case 'armorClass':
@@ -169,7 +160,7 @@ export const useData = (props: GenerateMonsterProps) => {
         const strMod = abilityScoreModifier(fields.strength);
         UseForm.setValue('damageBonus', strMod, {
           shouldDirty: true,
-          shouldTouch: true,
+          shouldTouch: true
         });
         UseForm.setValue('strengthMod', strMod);
         break;
@@ -213,14 +204,14 @@ export const useData = (props: GenerateMonsterProps) => {
       case 'monsterTypeOption':
         UseForm.setValue('monsterType', fields.monsterTypeOption.label, {
           shouldDirty: true,
-          shouldTouch: true,
+          shouldTouch: true
         });
         break;
       case 'size':
         const hitDice = hitDieForSize(fields.size.value);
         UseForm.setValue('hitDiceValue', hitDice, {
           shouldDirty: true,
-          shouldTouch: true,
+          shouldTouch: true
         });
         UseForm.setValue(
           'hitPoints',
@@ -368,6 +359,6 @@ export const useData = (props: GenerateMonsterProps) => {
     handleGenerateMonsterName,
     onSubmit,
     updateForm,
-    UseForm,
+    UseForm
   };
 };

@@ -10,6 +10,7 @@ import { Control, Controller } from 'react-hook-form';
 import classNames from 'classnames';
 import './inputOverrides.scss';
 
+// @TODO: Handle required errors
 export type SelectProps = {
   className?: string;
   defaultOptions?: boolean;
@@ -23,6 +24,7 @@ export type SelectProps = {
   name: string;
   options?: SelectOption[];
   placeholder?: string;
+  required?: boolean;
   control?: Control<any>;
   value?: any;
 };
@@ -30,17 +32,18 @@ export type SelectProps = {
 const styles = require('./input.module.scss');
 
 const FormSelect = ({
-  name,
-  label,
-  className = '',
-  defaultValue,
-  isClearable = false,
-  menuPlacement = 'auto',
-  options,
-  control,
-  isCreatable = false,
-  isMulti = false,
-}: SelectProps) => {
+                      name,
+                      label,
+                      className = '',
+                      defaultValue,
+                      isClearable = false,
+                      menuPlacement = 'auto',
+                      options,
+                      control,
+                      required = false,
+                      isCreatable = false,
+                      isMulti = false
+                    }: SelectProps) => {
   return (
     <div className={classNames(className, styles.wrapper)}>
       <label htmlFor={name} className={styles.label}>
@@ -49,6 +52,7 @@ const FormSelect = ({
       <Controller
         control={control}
         name={name}
+        rules={required ? { required: 'Please select an option' } : undefined}
         render={({ field }) =>
           isCreatable ? (
             <CreatableSelect

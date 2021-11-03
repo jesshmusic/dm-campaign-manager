@@ -103,13 +103,6 @@ RSpec.describe Monster, type: :model do
       expect(monster.xp).to eq(100)
     end
 
-    it 'should return the correct initiative modifier' do
-      monster = Monster.find_by(slug: 'orc')
-      expect(monster).not_to be(nil)
-      expect(monster.initiative).not_to be(nil)
-      expect(monster.initiative).to eq(1)
-    end
-
     it 'should return the slug for to_param' do
       monster = Monster.find_by(slug: 'orc')
       expect(monster).not_to be(nil)

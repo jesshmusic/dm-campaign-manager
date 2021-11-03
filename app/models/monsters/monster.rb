@@ -74,10 +74,6 @@ class Monster < ApplicationRecord
   accepts_nested_attributes_for :speeds, allow_destroy: true
   accepts_nested_attributes_for :monster_proficiencies, allow_destroy: true
 
-  def initiative
-    DndRules.ability_score_modifier(dexterity)
-  end
-
   def condition_immunities_array
     condition_immunities.map { |cond| cond.name.downcase }
   end

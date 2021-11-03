@@ -7,7 +7,7 @@
   position: relative;
   width: 100%;
 
-  @include respond-to(md) {
+  @include respond-to(lg) {
     padding: 1rem 2rem 6rem 22rem;
   }
 

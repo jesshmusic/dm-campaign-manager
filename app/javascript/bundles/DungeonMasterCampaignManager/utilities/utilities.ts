@@ -20,7 +20,7 @@ export default class Util {
       'tableBody',
       'tableRow',
       'tableCell',
-      'html',
+      'html'
     ];
   }
 
@@ -45,7 +45,7 @@ export default class Util {
       'sixteen',
       'seventeen',
       'eighteen',
-      'nineteen',
+      'nineteen'
     ];
   }
 
@@ -61,7 +61,7 @@ export default class Util {
 
   static camelize(str) {
     return str
-      .replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
+      .replace(/(?:^\w|[A-Z]|\b\w)/g, function(word, index) {
         return index === 0 ? word.toLowerCase() : word.toUpperCase();
       })
       .replace(/\s+/g, '');
@@ -69,7 +69,7 @@ export default class Util {
 
   static isMobileWidth(): boolean {
     const { innerWidth: width } = window;
-    return width < 720;
+    return width < 960;
   }
 
   static numberWithCommas(num) {
@@ -81,48 +81,48 @@ export default class Util {
       {
         path: '/app/items',
         itemType: ItemType.all,
-        pageTitle: 'All Equipment and Items',
+        pageTitle: 'All Equipment and Items'
       },
       {
         path: '/app/items/armor/',
         itemType: ItemType.armor,
-        pageTitle: 'Armor',
+        pageTitle: 'Armor'
       },
       {
         path: '/app/items/gear/',
         itemType: ItemType.gear,
-        pageTitle: 'Adventuring Gear',
+        pageTitle: 'Adventuring Gear'
       },
       {
         path: '/app/items/magic-items/',
         itemType: ItemType.magic,
-        pageTitle: 'Magic Items',
+        pageTitle: 'Magic Items'
       },
       {
         path: '/app/items/magic-armor/',
         itemType: ItemType.magicArmor,
-        pageTitle: 'Magic Armor',
+        pageTitle: 'Magic Armor'
       },
       {
         path: '/app/items/magic-weapons/',
         itemType: ItemType.magicWeapon,
-        pageTitle: 'Magic Weapons',
+        pageTitle: 'Magic Weapons'
       },
       {
         path: '/app/items/tools/',
         itemType: ItemType.tool,
-        pageTitle: 'Tools',
+        pageTitle: 'Tools'
       },
       {
         path: '/app/items/vehicles/',
         itemType: ItemType.vehicle,
-        pageTitle: 'Vehicles and Mounts',
+        pageTitle: 'Vehicles and Mounts'
       },
       {
         path: '/app/items/weapons/',
         itemType: ItemType.weapon,
-        pageTitle: 'Weapons',
-      },
+        pageTitle: 'Weapons'
+      }
     ];
   }
 }
