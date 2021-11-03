@@ -16,7 +16,7 @@ const MonsterGenerator = () => {
   const [monster, setMonster] = React.useState<MonsterProps | undefined>();
 
   const handleGenerateCommoner = (
-    gender: string = 'Male',
+    gender: string = 'Female',
     race: string = 'Human'
   ) => {
     axios

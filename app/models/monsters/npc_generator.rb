@@ -79,10 +79,11 @@ class NpcGenerator
       set_ability_scores(ability_score_order, 8)
       @new_npc.name = NameGen.random_name(random_npc_gender, random_npc_race)
       @new_npc.monster_subtype = random_npc_race
-      cr_info = set_npc_hit_points
+
       # Other statistics
-      @new_npc.armor_class = cr_info[:armor_class] + DndRules.ability_score_modifier(@new_npc.dexterity)
+      @new_npc.armor_class = @new_npc.armor_class + DndRules.ability_score_modifier(@new_npc.dexterity)
       @new_npc.alignment = DndRules.alignments_non_evil.sample
+      @new_npc.hit_points += DndRules.ability_score_modifier(@new_npc.constitution)
       @new_npc
     end
 
@@ -132,7 +133,8 @@ class NpcGenerator
 
     def set_npc_hit_points
       con_modifier = DndRules.ability_score_modifier(@new_npc.constitution)
-      hit_points_info = DndRules.num_hit_die_for_size(@new_npc.size, @new_npc.challenge_rating, con_modifier)
+      hit_points_info = DndRules.calculate_hp_and_hd(@new_npc.size, @new_npc.challenge_rating, con_modifier)
+      npc_atts = @new_npc.attributes
       @new_npc.hit_dice = "d#{hit_points_info[:num_hit_die]}"
       @new_npc.hit_points = hit_points_info[:hit_points]
       DndRules.challenge_ratings[@new_npc.challenge_rating.to_sym]
@@ -347,8 +349,8 @@ class NpcGenerator
         if @new_npc.hit_points >= cr_object[:hit_points_min] && @new_npc.hit_points < cr_object[:hit_points_max]
           @new_npc.challenge_rating = key
           con_modifier = DndRules.ability_score_modifier(@new_npc.constitution)
-          hit_points_info = DndRules.num_hit_die_for_size(@new_npc.size, @new_npc.challenge_rating, con_modifier, @new_npc.hit_points)
-          @new_npc.hit_dice_number = hit_points_info[:num_hit_die]
+          hit_points_info = DndRules.calculate_hp_and_hd(@new_npc.size, @new_npc.challenge_rating, con_modifier, @new_npc.hit_points)
+          @new_npc.hit_dice = hit_points_info[:num_hit_die]
           @new_npc.hit_points = hit_points_info[:hit_points]
           @new_npc.hit_dice_modifier = @new_npc.hit_dice_number * con_modifier
         end
