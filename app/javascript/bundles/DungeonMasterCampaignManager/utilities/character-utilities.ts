@@ -147,6 +147,25 @@ export const damageTypes: { label: string; value: DamageTypes }[] = [
   { label: 'Psychic', value: 'psychic' },
 ];
 
+export const languageOptions: SelectOption[] = [
+  { label: 'Common', value: 'Common' },
+  { label: 'Dwarvish', value: 'Dwarvish' },
+  { label: 'Elvish', value: 'Elvish' },
+  { label: 'Giant', value: 'Giant' },
+  { label: 'Gnomish', value: 'Gnomish' },
+  { label: 'Goblin', value: 'Goblin' },
+  { label: 'Halfling', value: 'Halfling' },
+  { label: 'Orc', value: 'Orc' },
+  { label: 'Abyssal', value: 'Abyssal' },
+  { label: 'Celestial', value: 'Celestial' },
+  { label: 'Draconic', value: 'Draconic' },
+  { label: 'Deep Speech', value: 'Deep Speech' },
+  { label: 'Infernal', value: 'Infernal' },
+  { label: 'Primordial', value: 'Primordial' },
+  { label: 'Sylvan', value: 'Sylvan' },
+  { label: 'Undercommon', value: 'Undercommon' },
+];
+
 export const senses: SelectOption[] = [
   { label: 'Blindsight', value: 'blindsight' },
   { label: 'Darkvision', value: 'darkvision' },

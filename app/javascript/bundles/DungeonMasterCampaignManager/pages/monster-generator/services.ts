@@ -23,7 +23,7 @@ export const getMonsterObject = (
   hitPoints: values.hitPoints,
   hitPointsString: `${values.hitPoints} (${values.hitDiceNumber}${values.hitDiceValue})`,
   intelligence: values.intelligence,
-  languages: values.languages.join(', '),
+  languages: values.languages.map((lang) => lang.label).join(', '),
   monsterSubtype: values.monsterSubtype,
   monsterType: values.monsterType,
   name: values.name,

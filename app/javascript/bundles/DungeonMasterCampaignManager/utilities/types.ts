@@ -313,7 +313,7 @@ export type MonsterGeneratorFormFields = {
   hitPoints: number;
   intelligence: number;
   intelligenceMod: number | string;
-  languages: string[];
+  languages: SelectOption[];
   monsterType: string;
   monsterTypeOption: SelectOption;
   monsterSubtype?: string;

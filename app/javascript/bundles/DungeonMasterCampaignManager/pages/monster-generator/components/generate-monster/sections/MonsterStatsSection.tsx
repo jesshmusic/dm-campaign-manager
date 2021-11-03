@@ -4,6 +4,7 @@ import FormField from '../../../../../components/forms/FormField';
 import FormSelect from '../../../../../components/forms/FormSelect';
 import {
   alignmentOptions,
+  languageOptions,
   monsterSizeOptions,
 } from '../../../../../utilities/character-utilities';
 import ChallengeRatingField from '../ChallengeRatingField';
@@ -19,7 +20,7 @@ const MonsterStatsSection = (props: {
   const { UseForm, handleCalculateCR } = props;
   return (
     <>
-      <div className={styles.fourCol}>
+      <div className={styles.fiveCol}>
         <MonsterTypeSelect control={UseForm.control} />
         <FormField
           label="Subtype"
@@ -40,6 +41,13 @@ const MonsterStatsSection = (props: {
           name="size"
           control={UseForm.control}
           options={monsterSizeOptions}
+        />
+        <FormSelect
+          label="Languages"
+          name="languages"
+          control={UseForm.control}
+          options={languageOptions}
+          isMulti
         />
       </div>
       <div className={styles.fourCol}>

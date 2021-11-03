@@ -2,7 +2,7 @@
 
 module Admin::V1
   class DashboardController < SecuredController
-    skip_before_action :authorize_request, only: %i[index random_fantasy_name random_tavern_name, random_monster_name]
+    skip_before_action :authorize_request, only: %i[index random_fantasy_name random_tavern_name random_monster_name]
 
     # GET /index
     def index
