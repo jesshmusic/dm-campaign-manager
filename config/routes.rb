@@ -33,6 +33,12 @@ Rails.application.routes.draw do
       post '/calculate_cr', to: 'monsters#calculate_cr',
            as: 'calculate_cr',
            constraints: { format: 'json' }
+      get '/prof-skills', to: 'proficiencies#skills',
+          as: 'proficiency_skills',
+          constraints: { format: 'json' }
+      get '/saving-throws', to: 'proficiencies#saving_throws',
+          as: 'proficiency_saving_throws',
+          constraints: { format: 'json' }
       scope except: [:new, :edit] do
         resources :conditions, only: [:index, :show], param: :slug, constraints: { format: 'json' }
         resources :proficiencies, only: [:index, :show], param: :slug, constraints: { format: 'json' }
