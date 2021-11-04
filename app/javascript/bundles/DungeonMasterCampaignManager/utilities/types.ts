@@ -396,6 +396,7 @@ export interface MonsterProps {
   size: string;
   strength: number;
   wisdom: number;
+  xp: number;
   conditionImmunities: string[];
   damageImmunities: string[];
   damageResistances: string[];

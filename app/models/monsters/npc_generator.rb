@@ -3,40 +3,8 @@
 class NpcGenerator
   class << self
 
-    def generate_npc(npc_attributes, user)
-      @new_npc = Monster.new(alignment: npc_attributes[:alignment],
-                             armor_class: npc_attributes[:armor_class],
-                             challenge_rating: npc_attributes[:challenge_rating],
-                             charisma: npc_attributes[:charisma],
-                             constitution: npc_attributes[:constitution],
-                             dexterity: npc_attributes[:dexterity],
-                             hit_dice: npc_attributes[:hit_dice],
-                             hit_points: npc_attributes[:hit_points],
-                             intelligence: npc_attributes[:intelligence],
-                             languages: npc_attributes[:languages],
-                             monster_subtype: npc_attributes[:monster_subtype] || '',
-                             monster_type: npc_attributes[:monster_type],
-                             name: npc_attributes[:name],
-                             size: npc_attributes[:size] || 'medium',
-                             strength: npc_attributes[:strength],
-                             wisdom: npc_attributes[:wisdom])
-
-      # Spellcasting
-      # parse_spells_action npc_attributes
-      #
-      # # Hit dice and hit points
-      # cr_info = set_npc_hit_points
-      #
-      # # Other statistics
-      # @new_npc.armor_class = cr_info[:armor_class]
-      #
-      # # Add Actions
-      # create_actions(npc_attributes[:api], npc_attributes[:number_of_attacks].to_i, npc_attributes[:challenge_rating].to_sym)
-      @new_npc.user = user
-      # Return
-      @new_npc.as_json(
-        include: %i[damage_immunities damage_resistances damage_vulnerabilities actions legendary_actions reactions special_abilities senses speeds monster_proficiencies conditions],
-        methods: %i[xp])
+    def generate_npc(monster_params, user)
+      Monster.new(monster_params)
     end
 
     def convert_2e_npc(npc_attributes)

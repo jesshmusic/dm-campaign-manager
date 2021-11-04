@@ -1,5 +1,5 @@
 import React from 'react';
-import { ActionVariations, MonsterProps } from '../../../../utilities/types';
+import { ActionVariations } from '../../../../utilities/types';
 import Frame from '../../../../components/Frame/Frame';
 import NameFormField from '../NameFormField';
 import { GiDiceTwentyFacesTwenty } from 'react-icons/gi/';
@@ -19,7 +19,7 @@ import SkillsForm from './sections/skills/SkillsForm';
 const styles = require('../generator.module.scss');
 
 export type GenerateMonsterProps = {
-  setMonster: (monster: MonsterProps) => void;
+  onGenerateMonster: (monsterParams: any) => void;
 };
 
 const GenerateMonster = (props: GenerateMonsterProps) => {

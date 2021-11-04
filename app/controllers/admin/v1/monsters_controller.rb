@@ -3,7 +3,7 @@
 module Admin::V1
   class MonstersController < SecuredController
     before_action :set_monster, only: %i[show edit update destroy]
-    skip_before_action :authorize_request, only: %i[index show monster_refs monster_categories generate_npc convert_2e_npc generate_commoner calculate_cr]
+    skip_before_action :authorize_request, only: %i[index show monster_refs monster_categories generate_monster convert_2e_npc generate_commoner calculate_cr]
 
     # GET /v1/monsters
     # GET /v1/monsters.json
@@ -94,8 +94,9 @@ module Admin::V1
       end
     end
 
-    def generate_npc
-      render json: { npc: NpcGenerator.generate_npc(params, @current_user) }
+    def generate_monster
+      @monster = NpcGenerator.generate_npc(monster_params, @current_user)
+      render :show, status: :ok
     end
 
     def calculate_cr
@@ -157,7 +158,7 @@ module Admin::V1
         :languages, :monster_subtype, :monster_type,
         :name, :prof_bonus, :save_dc, :size,
         :strength, :wisdom, :xp, :damage_immunities,
-        :damage_vulnerabilities, :damage_resistances_,
+        :damage_vulnerabilities, :damage_resistances,
         :condition_immunities,
         monster_proficiencies_attributes: %i[id prof_id value _destroy],
         senses_attributes: %i[
@@ -166,10 +167,10 @@ module Admin::V1
         speeds_attributes: %i[
           name value _destroy
         ],
-        actions_attributes: %i[
+        monster_actions_attributes: %i[
           desc name _destroy
         ],
-        legendary_action_attributes: %i[
+        legendary_actions_attributes: %i[
           desc name _destroy
         ],
         special_abilities_attributes: %i[

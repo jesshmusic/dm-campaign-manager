@@ -84,8 +84,39 @@ export const getMonsterObject = (
       name: speed.name,
       value: parseInt(speed.value as string, 10)
     })) || [],
-  monsterProficiencies: parseMonsterProficiencies(values)
+  monsterProficiencies: parseMonsterProficiencies(values),
+  xp: values.xp
 });
+
+export const createMonsterParams = (monster: MonsterProps) => {
+  const {
+    challengeString,
+    hitPointsString,
+    conditionImmunities,
+    damageImmunities,
+    damageResistances,
+    damageVulnerabilities,
+    actions,
+    legendaryActions,
+    reactions,
+    specialAbilities,
+    senses,
+    speeds,
+    monsterProficiencies,
+    ...rest
+  } = monster;
+  const monsterParams = {
+    monsterProficienciesAttributes: monsterProficiencies,
+    sensesAttributes: senses,
+    speedsAttributes: speeds,
+    monsterActionsAttributes: actions,
+    legendaryActionsAttributes: legendaryActions,
+    specialAbilitiesAttributes: specialAbilities,
+    reactionsAttributes: reactions,
+    ...rest
+  };
+  return snakecaseKeys(monsterParams);
+};
 
 export const get2eMonsterObject = (values) => {
   const returnChar = {
