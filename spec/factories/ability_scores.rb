@@ -10,6 +10,10 @@
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #
+# Indexes
+#
+#  index_ability_scores_on_slug  (slug) UNIQUE
+#
 FactoryBot.define do
   factory :ability_score do
     name { "MyString" }

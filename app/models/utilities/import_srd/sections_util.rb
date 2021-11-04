@@ -10,7 +10,7 @@ class SectionsUtil
       response = Net::HTTP.get(sections_uri)
       result = JSON.parse response, symbolize_names: true
       result[:results].each do |section|
-        Section.find_or_create_by(slug: section[:slug], name: section[:name], description: section[:desc])
+        Section.find_or_create_by(name: section[:name], description: section[:desc])
       end
     end
   end

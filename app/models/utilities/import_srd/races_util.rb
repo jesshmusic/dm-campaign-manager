@@ -18,7 +18,6 @@ class RacesUtil
         race_response = Net::HTTP.get(race_uri)
         race_result = JSON.parse race_response, symbolize_names: true
         current_race = Race.find_or_initialize_by(name: race[:name])
-        current_race.slug = race_result[:index]
 
         current_race.age = race_result[:age]
         current_race.alignment = race_result[:alignment]

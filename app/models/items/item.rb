@@ -50,10 +50,11 @@
 #
 
 class Item < ApplicationRecord
-  validates :name, :slug, presence: true
+  extend FriendlyId
+  friendly_id :name, use: :slugged
 
-  before_validation do
-    self.slug = generate_slug if will_save_change_to_name? && self.slug.nil?
+  def normalize_friendly_id(string)
+    super(string.gsub('\'', ''))
   end
 
   belongs_to :user, optional: true
@@ -85,31 +86,4 @@ class Item < ApplicationRecord
                       prefix: true
                     }
                   }
-
-  def to_param
-    slug
-  end
-
-  private
-
-  def generate_slug
-    self.slug = if user && !user.admin?
-                  slug_from_string "#{name.parameterize}-#{user.username}"
-                else
-                  slug_from_string name.parameterize
-                end
-  end
-
-  def slug_from_string(slug_string)
-    class_num = 0
-    new_slug = slug_string
-    loop do
-      new_slug = slug_string if class_num == 0
-      new_slug = "#{slug_string}__#{class_num}" if class_num > 0
-      break unless Item.exists?(slug: new_slug)
-
-      class_num += 1
-    end
-    new_slug
-  end
 end

@@ -10,6 +10,10 @@
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
 #
+# Indexes
+#
+#  index_skills_on_slug  (slug) UNIQUE
+#
 FactoryBot.define do
   factory :skill do
     slug { "" }

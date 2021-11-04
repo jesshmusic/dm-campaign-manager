@@ -14,10 +14,17 @@
 # Indexes
 #
 #  index_profs_on_name  (name) UNIQUE
+#  index_profs_on_slug  (slug) UNIQUE
 #
 
 class Prof < ApplicationRecord
   validates :name, presence: true
+  extend FriendlyId
+  friendly_id :name, use: :slugged
+
+  def normalize_friendly_id(string)
+    super(string.gsub('\'', ''))
+  end
 
   include PgSearch::Model
 
@@ -28,8 +35,4 @@ class Prof < ApplicationRecord
                     description: 'B'
                   },
                   using: { tsearch: { prefix: true } }
-
-  def to_param
-    slug
-  end
 end

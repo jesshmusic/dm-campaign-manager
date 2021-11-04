@@ -105,7 +105,6 @@ class MagicItemsUtil
           magic_figure.magic_item_type = magic_item.magic_item_type
           magic_figure.requires_attunement = magic_item.requires_attunement
           magic_figure.rarity = figurine[:rarity]
-          magic_figure.slug = magic_figure.name.parameterize
         end
       end
       giant_fly.destroy!
@@ -160,7 +159,7 @@ class MagicItemsUtil
         armor_names = MagicArmorItem.basic_armors
         armor_names.each do |armor_name|
           new_armor_name = "#{armor_name} #{bonus[:bonus]}"
-          new_magic_item = MagicItem.find_or_create_by!(name: new_armor_name, slug: "#{new_armor_name.parameterize}-temp") do |new_armor|
+          new_magic_item = MagicItem.find_or_create_by!(name: new_armor_name) do |new_armor|
             new_armor.desc = ["You have a #{bonus[:bonus]} to AC while wearing this armor."]
             new_armor.requires_attunement = ''
             new_armor.rarity = bonus[:rarity]
@@ -247,7 +246,6 @@ class MagicItemsUtil
           new_magic_item.type = original_item.type
           new_magic_item.requires_attunement = original_item.requires_attunement
           new_magic_item.rarity = original_item.rarity
-          new_magic_item.slug = new_magic_item[:name].parameterize
         end
       end
     end

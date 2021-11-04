@@ -31,9 +31,6 @@ class Admin::V1::ProficienciesController < SecuredController
                      else
                        Prof.where(prof_type: 'Skills')
                      end
-    @proficiencies.each do |prof|
-      puts prof.slug
-    end
     respond_to do |format|
       format.html { @pagy, @proficiencies = pagy(@proficiencies) }
       format.json
@@ -41,6 +38,6 @@ class Admin::V1::ProficienciesController < SecuredController
   end
 
   def show
-    @proficiency = Prof.find_by_slug(params[:slug])
+    @proficiency = Prof.friendly.find(params[:id])
   end
 end

@@ -24,7 +24,7 @@ class ItemsUtil
         item_uri = URI("#{dnd_api_url}#{equipment_item[:url]}")
         item_response = Net::HTTP.get(item_uri)
         item_result = JSON.parse item_response, symbolize_names: true
-        db_item = Item.find_or_create_by!(name: equipment_item[:name], slug: item_result[:index])
+        db_item = Item.find_or_create_by!(name: equipment_item[:name])
         set_item_info(db_item, item_result)
         set_equipment_category(db_item, item_result)
         set_armor_info(db_item, item_result)

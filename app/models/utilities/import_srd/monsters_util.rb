@@ -23,8 +23,7 @@ class MonstersUtil
             alignment: monster[:alignment] || 'unaligned',
             challenge_rating: DndRules.cr_num_to_string(monster[:challenge_rating]),
             monster_type: monster[:type],
-            name: monster[:name],
-            slug: monster[:index]
+            name: monster[:name]
           )
 
           # Required Fields

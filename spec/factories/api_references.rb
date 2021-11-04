@@ -13,6 +13,7 @@
 # Indexes
 #
 #  index_api_references_on_equipment_id  (equipment_id)
+#  index_api_references_on_slug          (slug) UNIQUE
 #
 FactoryBot.define do
   factory :api_reference do

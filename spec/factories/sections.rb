@@ -9,6 +9,10 @@
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #
+# Indexes
+#
+#  index_sections_on_slug  (slug) UNIQUE
+#
 FactoryBot.define do
   factory :section do
     name { "MyString" }

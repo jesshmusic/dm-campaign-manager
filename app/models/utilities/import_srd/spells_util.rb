@@ -48,9 +48,7 @@ class SpellsUtil
             dnd_class = DndClass.find_by(name: dnd_class_name[:name])
             new_spell.dnd_classes << dnd_class if dnd_class
           end
-
-          spell_slug = spell[:name].parameterize.truncate(80, omission: '')
-          new_spell.slug = Spell.exists?(slug: spell_slug) ? "#{spell_slug}_#{new_spell.id}" : spell_slug
+          new_spell.save!
           puts "\tSpell #{new_spell.name} imported"
         end
         count += 1

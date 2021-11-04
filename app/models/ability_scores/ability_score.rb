@@ -10,8 +10,19 @@
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #
+# Indexes
+#
+#  index_ability_scores_on_slug  (slug) UNIQUE
+#
 class AbilityScore < ApplicationRecord
   include PgSearch::Model
+
+  extend FriendlyId
+  friendly_id :name, use: :slugged
+
+  def normalize_friendly_id(string)
+    super(string.gsub('\'', ''))
+  end
 
   # PgSearch
   pg_search_scope :search_for,
@@ -20,8 +31,4 @@ class AbilityScore < ApplicationRecord
                     desc: 'B'
                   },
                   using: { tsearch: { prefix: true } }
-
-  def to_param
-    slug
-  end
 end

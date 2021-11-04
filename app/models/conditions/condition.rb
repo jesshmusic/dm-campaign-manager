@@ -14,6 +14,13 @@
 #  index_conditions_on_slug  (slug) UNIQUE
 #
 class Condition < ApplicationRecord
+  extend FriendlyId
+  friendly_id :name, use: :slugged
+
+  def normalize_friendly_id(string)
+    super(string.gsub('\'', ''))
+  end
+
   has_many :condition_immunities
 
   include PgSearch::Model
@@ -25,8 +32,4 @@ class Condition < ApplicationRecord
                     description: 'B'
                   },
                   using: { tsearch: { prefix: true } }
-
-  def to_param
-    slug
-  end
 end

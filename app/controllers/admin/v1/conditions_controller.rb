@@ -15,7 +15,7 @@ module Admin::V1
     end
 
     def show
-      @condition = Condition.find_by_slug(params[:slug])
+      @condition = Condition.friendly.find(params[:id])
     end
   end
 end

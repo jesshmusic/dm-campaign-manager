@@ -13,6 +13,7 @@
 # Indexes
 #
 #  index_api_references_on_equipment_id  (equipment_id)
+#  index_api_references_on_slug          (slug) UNIQUE
 #
 class ApiReference < ApplicationRecord
   belongs_to :equipment, optional: true

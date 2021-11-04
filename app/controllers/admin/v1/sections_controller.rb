@@ -56,12 +56,12 @@ module Admin::V1
 
     # Use callbacks to share common setup or constraints between api.
     def set_section
-      @section = Section.find_by(slug: params[:slug])
+      @section = Section.friendly.find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.
     def section_params
-      params.require(:section).permit(:name, :description, :slug)
+      params.require(:section).permit(:name, :description)
     end
   end
 end

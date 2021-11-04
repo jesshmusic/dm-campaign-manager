@@ -12,6 +12,7 @@
 # Indexes
 #
 #  index_profs_on_name  (name) UNIQUE
+#  index_profs_on_slug  (slug) UNIQUE
 #
 
 FactoryBot.define do

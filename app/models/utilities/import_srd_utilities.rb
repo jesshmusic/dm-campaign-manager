@@ -67,6 +67,7 @@ class ImportSrdUtilities
       puts "All #{count} ability scores deleted"
       Condition.destroy_all
       Equipment.destroy_all
+      Skill.destroy_all
     end
 
     def import_proficiencies
@@ -92,7 +93,6 @@ class ImportSrdUtilities
         skill_response = Net::HTTP.get(skill_uri)
         skill_result = JSON.parse skill_response, symbolize_names: true
         new_skill = Skill.create!(
-          slug: skill_result[:index],
           name: skill_result[:name],
           desc: skill_result[:desc].join("\n"),
           ability_score: skill_result[:ability_score][:name]
@@ -107,7 +107,7 @@ class ImportSrdUtilities
       prof_uri = URI("#{dnd_api_url}#{prof_url}")
       prof_response = Net::HTTP.get(prof_uri)
       prof_result = JSON.parse prof_response, symbolize_names: true
-      new_prof = Prof.find_or_initialize_by(name: prof_result[:name], slug: prof_result[:index])
+      new_prof = Prof.find_or_create_by(name: prof_result[:name])
       new_prof.prof_type = prof_result[:type]
       new_prof.save!
       new_prof
@@ -127,7 +127,6 @@ class ImportSrdUtilities
         ability_result = JSON.parse ability_response, symbolize_names: true
 
         ability_score = AbilityScore.find_or_create_by(name: ability_result[:name],
-                                                       slug: ability_result[:index],
                                                        full_name: ability_result[:full_name])
         ability_score.desc = ability_result[:desc]
         ability_score.save!
@@ -145,10 +144,8 @@ class ImportSrdUtilities
         condition_uri = URI("#{dnd_api_url}#{condition[:url]}")
         condition_response = Net::HTTP.get(condition_uri)
         condition_result = JSON.parse condition_response, symbolize_names: true
-        new_cond = Condition.find_or_initialize_by(slug: condition[:index])
+        new_cond = Condition.find_or_initialize_by(name: condition[:name])
         new_cond.description = condition_result[:desc]
-        new_cond.name = condition_result[:name]
-        new_cond.slug = condition_result[:index]
         new_cond.save!
         count += 1
         puts "\tCondition #{new_cond.name} imported."

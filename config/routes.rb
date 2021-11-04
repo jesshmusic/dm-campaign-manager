@@ -40,27 +40,27 @@ Rails.application.routes.draw do
           as: 'proficiency_saving_throws',
           constraints: { format: 'json' }
       scope except: [:new, :edit] do
-        resources :conditions, only: [:index, :show], param: :slug, constraints: { format: 'json' }
-        resources :proficiencies, only: [:index, :show], param: :slug, constraints: { format: 'json' }
-        resources :skills, only: [:index, :show], param: :slug, constraints: { format: 'json' }
-        resources :dnd_classes, param: :slug
-        resources :items, param: :slug
+        resources :conditions, only: [:index, :show], constraints: { format: 'json' }
+        resources :proficiencies, only: [:index, :show], constraints: { format: 'json' }
+        resources :skills, only: [:index, :show], constraints: { format: 'json' }
+        resources :dnd_classes
+        resources :items
         # noinspection RailsParamDefResolve
-        resources :armor_items, param: :slug, controller: 'items', type: 'ArmorItem'
+        resources :armor_items, controller: 'items', type: 'ArmorItem'
         # noinspection RailsParamDefResolve
-        resources :gear_items, param: :slug, controller: 'items', type: 'GearItem'
+        resources :gear_items, controller: 'items', type: 'GearItem'
         # noinspection RailsParamDefResolve
-        resources :magic_items, param: :slug, controller: 'items', type: 'MagicItem'
+        resources :magic_items, controller: 'items', type: 'MagicItem'
         # noinspection RailsParamDefResolve
-        resources :tool_items, param: :slug, controller: 'items', type: 'ToolItem'
+        resources :tool_items, controller: 'items', type: 'ToolItem'
         # noinspection RailsParamDefResolve
-        resources :vehicle_items, param: :slug, controller: 'items', type: 'VehicleItem'
+        resources :vehicle_items, controller: 'items', type: 'VehicleItem'
         # noinspection RailsParamDefResolve
-        resources :weapon_items, param: :slug, controller: 'items', type: 'WeaponItem'
-        resources :monsters, param: :slug
-        resources :races, param: :slug
-        resources :spells, param: :slug
-        resources :sections, param: :slug
+        resources :weapon_items, controller: 'items', type: 'WeaponItem'
+        resources :monsters
+        resources :races
+        resources :spells
+        resources :sections
       end
     end
   end

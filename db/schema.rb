@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_27_010412) do
+ActiveRecord::Schema.define(version: 2021_11_04_195351) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -40,6 +40,7 @@ ActiveRecord::Schema.define(version: 2021_10_27_010412) do
     t.string "slug"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["slug"], name: "index_ability_scores_on_slug", unique: true
   end
 
   create_table "actions", force: :cascade do |t|
@@ -60,6 +61,7 @@ ActiveRecord::Schema.define(version: 2021_10_27_010412) do
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "equipment_id"
     t.index ["equipment_id"], name: "index_api_references_on_equipment_id"
+    t.index ["slug"], name: "index_api_references_on_slug", unique: true
   end
 
   create_table "armor_classes", force: :cascade do |t|
@@ -200,6 +202,17 @@ ActiveRecord::Schema.define(version: 2021_10_27_010412) do
     t.bigint "dnd_class_id"
     t.index ["dnd_class_id"], name: "index_equipment_on_dnd_class_id"
     t.index ["starting_equipment_option_id"], name: "index_equipment_on_starting_equipment_option_id"
+  end
+
+  create_table "friendly_id_slugs", force: :cascade do |t|
+    t.string "slug", null: false
+    t.integer "sluggable_id", null: false
+    t.string "sluggable_type", limit: 50
+    t.string "scope"
+    t.datetime "created_at"
+    t.index ["slug", "sluggable_type", "scope"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type_and_scope", unique: true
+    t.index ["slug", "sluggable_type"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type"
+    t.index ["sluggable_type", "sluggable_id"], name: "index_friendly_id_slugs_on_sluggable_type_and_sluggable_id"
   end
 
   create_table "item_ranges", force: :cascade do |t|
@@ -384,6 +397,7 @@ ActiveRecord::Schema.define(version: 2021_10_27_010412) do
     t.datetime "updated_at", null: false
     t.string "slug", null: false
     t.index ["name"], name: "index_profs_on_name", unique: true
+    t.index ["slug"], name: "index_profs_on_slug", unique: true
   end
 
   create_table "profs_races", id: false, force: :cascade do |t|
@@ -430,6 +444,7 @@ ActiveRecord::Schema.define(version: 2021_10_27_010412) do
     t.string "slug"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["slug"], name: "index_sections_on_slug", unique: true
   end
 
   create_table "senses", force: :cascade do |t|
@@ -448,6 +463,7 @@ ActiveRecord::Schema.define(version: 2021_10_27_010412) do
     t.string "ability_score"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["slug"], name: "index_skills_on_slug", unique: true
   end
 
   create_table "speeds", force: :cascade do |t|

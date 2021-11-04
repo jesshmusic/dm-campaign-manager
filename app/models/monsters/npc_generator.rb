@@ -5,7 +5,7 @@ class NpcGenerator
 
     def generate_npc(monster_params, user)
       @new_npc = Monster.new(monster_params)
-      @new_npc.generate_slug
+      @new_npc.slug = @new_npc.name.parameterize
       monster_atts = @new_npc.attributes
       @new_npc
     end

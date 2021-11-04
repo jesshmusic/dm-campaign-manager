@@ -14,6 +14,6 @@ class Admin::V1::SkillsController < SecuredController
   end
 
   def show
-    @skill = Skill.find_by_slug(params[:slug])
+    @skill = Skill.friendly.find(params[:id])
   end
 end

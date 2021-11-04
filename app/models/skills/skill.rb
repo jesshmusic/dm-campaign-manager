@@ -10,9 +10,19 @@
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
 #
+# Indexes
+#
+#  index_skills_on_slug  (slug) UNIQUE
+#
 class Skill < ApplicationRecord
-  include PgSearch::Model
+  extend FriendlyId
+  friendly_id :name, use: :slugged
 
+  def normalize_friendly_id(string)
+    super(string.gsub('\'', ''))
+  end
+
+  include PgSearch::Model
   # PgSearch
   pg_search_scope :search_for,
                   against: {
@@ -20,8 +30,4 @@ class Skill < ApplicationRecord
                     desc: 'B'
                   },
                   using: { tsearch: { prefix: true } }
-
-  def to_param
-    slug
-  end
 end

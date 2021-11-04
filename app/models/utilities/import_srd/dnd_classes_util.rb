@@ -20,8 +20,7 @@ class DndClassesUtil
         class_result = JSON.parse class_response, symbolize_names: true
 
         #Create or update the class
-        dnd_class = DndClass.find_or_create_by(slug: class_result[:index],
-                                               name: class_result[:name],
+        dnd_class = DndClass.find_or_create_by(name: class_result[:name],
                                                api_url: "/v1/dnd_classes/#{class_result[:index]}",
                                                hit_die: class_result[:hit_die])
         # Saving Throws
@@ -62,7 +61,7 @@ class DndClassesUtil
     def import_saving_throws(dnd_class, class_result)
       if class_result[:saving_throws]
         class_result[:saving_throws].each do |saving_throw|
-          ability_score = AbilityScore.find_by(slug: saving_throw[:index])
+          ability_score = AbilityScore.friendly.find(saving_throw[:index])
           dnd_class.ability_scores << ability_score
         end
       end
@@ -74,7 +73,7 @@ class DndClassesUtil
         new_prof_choice.num_choices = prof_choice_block[:choose]
         new_prof_choice.prof_choice_type = prof_choice_block[:type]
         prof_choice_block[:from].each do |prof|
-          new_prof = Prof.find_by(slug: prof[:index])
+          new_prof = Prof.friendly.find(prof[:index])
           new_prof_choice.profs << new_prof
         end
         dnd_class.prof_choices << new_prof_choice
@@ -83,7 +82,7 @@ class DndClassesUtil
 
     def import_profs(dnd_class, class_result)
       class_result[:proficiencies].each do |prof|
-        new_prof = Prof.find_by(slug: prof[:index])
+        new_prof = Prof.friendly.find(prof[:index])
         dnd_class.profs << new_prof
       end
     end
@@ -151,7 +150,7 @@ class DndClassesUtil
         spellcasting[:info].each do |info|
           dnd_class.spell_casting.spell_casting_infos << SpellCastingInfo.create(name: info[:name], desc: info[:desc])
         end
-        dnd_class.spell_casting.ability_score = AbilityScore.find_by(slug: spellcasting[:spellcasting_ability][:index])
+        dnd_class.spell_casting.ability_score = AbilityScore.friendly.find(spellcasting[:spellcasting_ability][:index])
       end
     end
 

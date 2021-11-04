@@ -9,6 +9,10 @@
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #
+# Indexes
+#
+#  index_sections_on_slug  (slug) UNIQUE
+#
 require 'rails_helper'
 
 RSpec.describe Section, type: :model do

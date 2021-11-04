@@ -128,7 +128,7 @@ module Admin::V1
 
     # Use callbacks to share common setup or constraints between api.
     def set_item
-      @item = Item.find_by(slug: params[:slug])
+      @item = Item.friendly.find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
