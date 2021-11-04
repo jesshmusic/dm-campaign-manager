@@ -4,7 +4,10 @@ class NpcGenerator
   class << self
 
     def generate_npc(monster_params, user)
-      Monster.new(monster_params)
+      @new_npc = Monster.new(monster_params)
+      @new_npc.generate_slug
+      monster_atts = @new_npc.attributes
+      @new_npc
     end
 
     def convert_2e_npc(npc_attributes)

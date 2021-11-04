@@ -104,7 +104,8 @@ module Admin::V1
     end
 
     def convert_2e_npc
-      render json: { npc: NpcGenerator.convert_2e_npc(params) }
+      @monster = NpcGenerator.convert_2e_npc(params)
+      render :show, status: :ok
     end
 
     def generate_commoner
@@ -157,9 +158,11 @@ module Admin::V1
         :dexterity, :hit_dice, :hit_points, :intelligence,
         :languages, :monster_subtype, :monster_type,
         :name, :prof_bonus, :save_dc, :size,
-        :strength, :wisdom, :xp, :damage_immunities,
-        :damage_vulnerabilities, :damage_resistances,
-        :condition_immunities,
+        :strength, :wisdom, :xp,
+        damage_immunities: [],
+        damage_vulnerabilities: [],
+        damage_resistances: [],
+        condition_immunities: [],
         monster_proficiencies_attributes: %i[id prof_id value _destroy],
         senses_attributes: %i[
           name value _destroy

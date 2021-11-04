@@ -182,8 +182,6 @@ class Monster < ApplicationRecord
     slug
   end
 
-  private
-
   def generate_slug
     self.slug = if user && !user.admin?
                   slug_from_string "#{name.parameterize}-#{user.username}"
