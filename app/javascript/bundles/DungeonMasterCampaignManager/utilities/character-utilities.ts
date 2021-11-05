@@ -1,4 +1,9 @@
-import { ActionTypes, DamageTypes, MonsterActionField, SelectOption } from './types';
+import {
+  ActionTypes,
+  DamageTypes,
+  MonsterActionField,
+  SelectOption,
+} from './types';
 import { ToWords } from 'to-words';
 import Util from './utilities';
 
@@ -15,13 +20,13 @@ export const filterOptionsWithData = (results) =>
   results.map((nextItem) => ({
     value: nextItem.id,
     label: nextItem.name,
-    data: nextItem.data
+    data: nextItem.data,
   }));
 
 export const filterSnakeCaseOptionsWithData = (results): SelectOption[] =>
   results.results.map((nextItem) => ({
     value: toSnakeCase(nextItem.name),
-    label: nextItem.name
+    label: nextItem.name,
   }));
 
 export const alignmentOptions: SelectOption[] = [
@@ -33,7 +38,7 @@ export const alignmentOptions: SelectOption[] = [
   { value: 'Chaotic Neutral', label: 'Chaotic Neutral' },
   { value: 'Lawful Evil', label: 'Lawful Evil' },
   { value: 'Neutral Evil', label: 'Neutral Evil' },
-  { value: 'Chaotic Evil', label: 'Chaotic Evil' }
+  { value: 'Chaotic Evil', label: 'Chaotic Evil' },
 ];
 
 export const monsterVariantOptions: {
@@ -42,7 +47,7 @@ export const monsterVariantOptions: {
 }[] = [
   { value: 'fighter', label: 'Fighter' },
   { value: 'caster_wizard', label: 'Caster - Wizard' },
-  { value: 'caster_cleric', label: 'Caster - Cleric' }
+  { value: 'caster_cleric', label: 'Caster - Cleric' },
 ];
 
 export const monsterSizeOptions: SelectOption[] = [
@@ -51,70 +56,70 @@ export const monsterSizeOptions: SelectOption[] = [
   { value: 'medium', label: 'Medium' },
   { value: 'large', label: 'Large' },
   { value: 'huge', label: 'Huge' },
-  { value: 'gargantuan', label: 'Gargantuan' }
+  { value: 'gargantuan', label: 'Gargantuan' },
 ];
 
 export const monsterTypeOptions: SelectOption[] = [
   {
     value: 'aberration',
-    label: 'Aberration'
+    label: 'Aberration',
   },
   {
     value: 'beast',
-    label: 'Beast'
+    label: 'Beast',
   },
   {
     value: 'celestial',
-    label: 'Celestial'
+    label: 'Celestial',
   },
   {
     value: 'construct',
-    label: 'Construct'
+    label: 'Construct',
   },
   {
     value: 'dragon',
-    label: 'Dragon'
+    label: 'Dragon',
   },
   {
     value: 'elemental',
-    label: 'Elemental'
+    label: 'Elemental',
   },
   {
     value: 'fey',
-    label: 'Fey'
+    label: 'Fey',
   },
   {
     value: 'fiend',
-    label: 'Fiend'
+    label: 'Fiend',
   },
   {
     value: 'giant',
-    label: 'Giant'
+    label: 'Giant',
   },
   {
     value: 'humanoid',
-    label: 'Humanoid'
+    label: 'Humanoid',
   },
   {
     value: 'monstrosity',
-    label: 'Monstrosity'
+    label: 'Monstrosity',
   },
   {
     value: 'ooze',
-    label: 'Ooze'
+    label: 'Ooze',
   },
   {
     value: 'plant',
-    label: 'Plant'
+    label: 'Plant',
   },
   {
     value: 'swarm of Tiny beasts',
-    label: 'Swarm of Tiny beasts'
+    label: 'Swarm of Tiny beasts',
   },
   {
     value: 'undead',
-    label: 'Undead'
-  }
+    label: 'Undead',
+  },
 ];
 
 export const diceOptions: SelectOption[] = [
@@ -123,7 +128,7 @@ export const diceOptions: SelectOption[] = [
   { label: 'd8', value: 8 },
   { label: 'd10', value: 10 },
   { label: 'd12', value: 12 },
-  { label: 'd20', value: 20 }
+  { label: 'd20', value: 20 },
 ];
 
 export const damageTypes: { label: string; value: DamageTypes }[] = [
@@ -139,7 +144,7 @@ export const damageTypes: { label: string; value: DamageTypes }[] = [
   { label: 'Lightning', value: 'lightning' },
   { label: 'Thunder', value: 'thunder' },
   { label: 'Force', value: 'force' },
-  { label: 'Psychic', value: 'psychic' }
+  { label: 'Psychic', value: 'psychic' },
 ];
 
 export const languageOptions: SelectOption[] = [
@@ -158,7 +163,7 @@ export const languageOptions: SelectOption[] = [
   { label: 'Infernal', value: 'Infernal' },
   { label: 'Primordial', value: 'Primordial' },
   { label: 'Sylvan', value: 'Sylvan' },
-  { label: 'Undercommon', value: 'Undercommon' }
+  { label: 'Undercommon', value: 'Undercommon' },
 ];
 
 export const senses: SelectOption[] = [
@@ -166,7 +171,7 @@ export const senses: SelectOption[] = [
   { label: 'Darkvision', value: 'darkvision' },
   { label: 'Tremorsense', value: 'tremorsense' },
   { label: 'Truesight', value: 'truesight' },
-  { label: 'Passive Perception', value: 'darkvision' }
+  { label: 'Passive Perception', value: 'darkvision' },
 ];
 
 export const speeds: SelectOption[] = [
@@ -175,7 +180,7 @@ export const speeds: SelectOption[] = [
   { label: 'Fly', value: 'fly' },
   { label: 'Hover', value: 'hover' },
   { label: 'Swim', value: 'swim' },
-  { label: 'Walk', value: 'walk' }
+  { label: 'Walk', value: 'walk' },
 ];
 
 export const getChallengeRatingOptions = () => {
@@ -183,7 +188,7 @@ export const getChallengeRatingOptions = () => {
     { value: '0', label: '0' },
     { value: '1/8', label: '1/8' },
     { value: '1/4', label: '1/4' },
-    { value: '1/2', label: '1/2' }
+    { value: '1/2', label: '1/2' },
   ];
   for (let i = 1; i < 31; i++) {
     crs.push({ value: `${i}`, label: `${i}` });
@@ -212,131 +217,4 @@ export const averageDice = (
   const diceAverage = diceValue / 2 + 0.5;
   const baseDamage = diceAverage * numDice;
   return Math.floor(baseDamage + bonus);
-};
-
-export const generateAttackDesc = (
-  monsterName: string,
-  actionFields: MonsterActionField,
-  attackBonus: number,
-  profBonus: number,
-  damageBonus: number
-): string => {
-  const toWords = new ToWords();
-  let desc = '';
-
-  const actionType = actionFields.actionType;
-  if (actionType === ActionTypes.ability) {
-    return actionFields.desc;
-  } else if (actionType === ActionTypes.attack && actionFields.damage) {
-    const hitString = `${plusNumberString(attackBonus + profBonus)} to hit`;
-
-    const targetsString = `${toWords
-      .convert(actionFields.damage.numTargets)
-      .toLowerCase()} target${actionFields.damage.numTargets > 1 ? 's' : ''}`;
-
-    if (!actionFields.damage.isRanged) {
-      const reach = actionFields.damage.reach
-        ? `${actionFields.damage.reach} ft.`
-        : '5 ft.';
-      desc += `Melee Weapon Attack: ${hitString}, reach ${reach}, ${targetsString}.`;
-    } else {
-      const range = `range (${actionFields.damage.rangeNormal} / ${actionFields.damage.rangeLong}), ${targetsString}.`;
-      desc += `Ranged Weapon Attack: ${hitString}, ${range}`;
-    }
-
-    const damageString = `Hit: ${averageDice(
-      actionFields.damage.numDice,
-      actionFields.damage.diceValue,
-      damageBonus
-    )} (${actionFields.damage.numDice}d${actionFields.damage.diceValue}${
-      damageBonus !== 0 ? plusNumberString(damageBonus, true) : ''
-    }) ${actionFields.damage.damageType} damage.`;
-
-    desc += ` ${damageString}`;
-  } else if (
-    actionType === ActionTypes.spellCasting &&
-    actionFields.spellCasting
-  ) {
-    desc += `The ${monsterName} is a ${Util.getNumberWithOrdinal(
-      actionFields.spellCasting.level
-    )} level spellcaster. Its spellcasting ability is ${
-      actionFields.spellCasting.ability
-    }. The ${monsterName} has the following spells prepared.\n`;
-    if (
-      actionFields.spellCasting.spellOptions &&
-      actionFields.spellCasting.spellOptions.length > 0
-    ) {
-      const cantripSpells = actionFields.spellCasting.spellOptions
-        .filter((spell) => spell.data!.level === 0)
-        .map((spell) => spell.label)
-        .join(', ');
-      const level1Spells = actionFields.spellCasting.spellOptions
-        .filter((spell) => spell.data!.level === 1)
-        .map((spell) => spell.label)
-        .join(', ');
-      const level2Spells = actionFields.spellCasting.spellOptions
-        .filter((spell) => spell.data!.level === 2)
-        .map((spell) => spell.label)
-        .join(', ');
-      const level3Spells = actionFields.spellCasting.spellOptions
-        .filter((spell) => spell.data!.level === 3)
-        .map((spell) => spell.label)
-        .join(', ');
-      const level4Spells = actionFields.spellCasting.spellOptions
-        .filter((spell) => spell.data!.level === 4)
-        .map((spell) => spell.label)
-        .join(', ');
-      const level5Spells = actionFields.spellCasting.spellOptions
-        .filter((spell) => spell.data!.level === 5)
-        .map((spell) => spell.label)
-        .join(', ');
-      const level6Spells = actionFields.spellCasting.spellOptions
-        .filter((spell) => spell.data!.level === 6)
-        .map((spell) => spell.label)
-        .join(', ');
-      const level7Spells = actionFields.spellCasting.spellOptions
-        .filter((spell) => spell.data!.level === 7)
-        .map((spell) => spell.label)
-        .join(', ');
-      const level8Spells = actionFields.spellCasting.spellOptions
-        .filter((spell) => spell.data!.level === 8)
-        .map((spell) => spell.label)
-        .join(', ');
-      const level9Spells = actionFields.spellCasting.spellOptions
-        .filter((spell) => spell.data!.level === 9)
-        .map((spell) => spell.label)
-        .join(', ');
-      if (cantripSpells && cantripSpells !== '') {
-        desc += `\nCantrips (at will): ${cantripSpells}`;
-      }
-      if (level1Spells && level1Spells !== '') {
-        desc += `\n1st level (${actionFields.spellCasting.slots.first} slots): ${level1Spells}`;
-      }
-      if (level2Spells && level2Spells !== '') {
-        desc += `\n2nd level (${actionFields.spellCasting.slots.second} slots): ${level2Spells}`;
-      }
-      if (level3Spells && level3Spells !== '') {
-        desc += `\n3rd level (${actionFields.spellCasting.slots.third} slots): ${level3Spells}`;
-      }
-      if (level4Spells && level4Spells !== '') {
-        desc += `\n4th level (${actionFields.spellCasting.slots.fourth} slots): ${level4Spells}`;
-      }
-      if (level5Spells && level5Spells !== '') {
-        desc += `\n5th level (${actionFields.spellCasting.slots.fifth} slots): ${level5Spells}`;
-      }
-      if (level6Spells && level6Spells !== '') {
-        desc += `\n6th level (${actionFields.spellCasting.slots.sixth} slots): ${level6Spells}`;
-      }
-      if (level7Spells && level7Spells !== '') {
-        desc += `\n7th level (${actionFields.spellCasting.slots.seventh} slots): ${level7Spells}`;
-      }
-      if (level8Spells && level8Spells !== '') {
-        desc += `\n8th level (${actionFields.spellCasting.slots.eighth} slots): ${level8Spells}`;
-      }
-      if (level9Spells && level9Spells !== '') {
-        desc += `\n8th level (${actionFields.spellCasting.slots.ninth} slots): ${level9Spells}`;
-      }
-    }
-  }
-  return desc;
 };

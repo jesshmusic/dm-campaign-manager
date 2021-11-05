@@ -33,6 +33,9 @@ Rails.application.routes.draw do
       post '/calculate_cr', to: 'monsters#calculate_cr',
            as: 'calculate_cr',
            constraints: { format: 'json' }
+      post '/generate_action_desc', to: 'monsters#generate_action_desc',
+           as: 'generate_action_desc',
+           constraints: { format: 'json' }
       get '/prof-skills', to: 'proficiencies#skills',
           as: 'proficiency_skills',
           constraints: { format: 'json' }

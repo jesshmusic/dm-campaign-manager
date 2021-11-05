@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 class NpcGenerator
   class << self
 
@@ -66,7 +65,135 @@ class NpcGenerator
       { name: challenge_rating, data: cr_data }
     end
 
+    def generate_action_desc(action_params)
+      params = action_params[:params]
+      case params[:action][:action_type]
+      when 'attack'
+        generate_attack_desc(params[:action], params[:attack_bonus], params[:prof_bonus], params[:damage_bonus])
+      when 'spellCasting'
+        generate_spellcasting_desc(params[:monster_name], params[:action])
+      else
+        params[:action][:desc]
+      end
+    end
+
     private
+
+    def generate_attack_desc(monster_action, attack_bonus, prof_bonus, damange_bonus)
+      if monster_action[:damage].nil?
+        return monster_action[:desc]
+      end
+      damage = monster_action[:damage]
+      hit_string = "#{plus_number_string(attack_bonus + prof_bonus)} to hit"
+      target_string = "#{damage[:num_targets].to_i.humanize.downcase} target#{damage[:num_targets].to_i > 1 ? 's' : ''}"
+      desc = if damage[:is_ranged]
+               range_string = "range (#{damage[:range_normal]} / #{damage[:range_long]}), #{target_string}"
+               "Ranged Weapon Attack: #{hit_string}, #{range_string}"
+             else
+               reach_string = damage[:reach] ? "#{damage[:reach]} ft." : '5 ft.'
+               "Melee Weapon Attack: #{hit_string}, reach #{reach_string}, #{target_string}"
+             end
+      damage_string = "Hit: #{average_dice(damage[:num_dice], damage[:dice_value], damange_bonus)} (#{damage[:num_dice]}d#{damage[:dice_value]}#{damange_bonus != 0 ? plus_number_string(damange_bonus, true) : ''}) #{damage[:damage_type]} damage."
+      "#{desc} #{damage_string}"
+    end
+
+    def generate_spellcasting_desc(monster_name, action)
+      if action[:spell_casting].nil?
+        return action[:desc]
+      end
+      spellcasting = action[:spell_casting]
+      desc = "The #{monster_name} is a #{spellcasting[:level].to_i.ordinalize} level spellcaster. Its spellcasting ability is #{spellcasting[:ability]}. The #{monster_name} has the following spells prepared."
+      unless spellcasting[:spell_options].empty?
+        cantrip_spells = spellcasting[:spell_options]
+                           .select { |spell| spell[:data][:level].to_i == 0 }
+                           .map { |spell| spell[:label] }
+                           .join(', ')
+        level1_spells = spellcasting[:spell_options]
+                          .select { |spell| spell[:data][:level].to_i == 1 }
+                          .map { |spell| spell[:label] }
+                          .join(', ')
+        level2_spells = spellcasting[:spell_options]
+                          .select { |spell| spell[:data][:level].to_i == 2 }
+                          .map { |spell| spell[:label] }
+                          .join(', ')
+        level3_spells = spellcasting[:spell_options]
+                          .select { |spell| spell[:data][:level].to_i == 3 }
+                          .map { |spell| spell[:label] }
+                          .join(', ')
+        level4_spells = spellcasting[:spell_options]
+                          .select { |spell| spell[:data][:level].to_i == 4 }
+                          .map { |spell| spell[:label] }
+                          .join(', ')
+        level5_spells = spellcasting[:spell_options]
+                          .select { |spell| spell[:data][:level].to_i == 5 }
+                          .map { |spell| spell[:label] }
+                          .join(', ')
+        level6_spells = spellcasting[:spell_options]
+                          .select { |spell| spell[:data][:level].to_i == 6 }
+                          .map { |spell| spell[:label] }
+                          .join(', ')
+        level7_spells = spellcasting[:spell_options]
+                          .select { |spell| spell[:data][:level].to_i == 7 }
+                          .map { |spell| spell[:label] }
+                          .join(', ')
+        level8_spells = spellcasting[:spell_options]
+                          .select { |spell| spell[:data][:level].to_i == 8 }
+                          .map { |spell| spell[:label] }
+                          .join(', ')
+        level9_spells = spellcasting[:spell_options]
+                          .select { |spell| spell[:data][:level].to_i == 9 }
+                          .map { |spell| spell[:label] }
+                          .join(', ')
+        unless cantrip_spells.empty?
+          desc += "\nCantrips (at will): #{cantrip_spells}";
+        end
+        unless level1_spells.empty?
+          desc += "\n1st level (#{spellcasting[:slots][:first]} slots): #{level1_spells}";
+        end
+        unless level2_spells.empty?
+          desc += "\n2nd level (#{spellcasting[:slots][:second]} slots): #{level2_spells}";
+        end
+        unless level3_spells.empty?
+          desc += "\n3rd level (#{spellcasting[:slots][:third]} slots): #{level3_spells}";
+        end
+        unless level4_spells.empty?
+          desc += "\n4th level (#{spellcasting[:slots][:fourth]} slots): #{level4_spells}";
+        end
+        unless level5_spells.empty?
+          desc += "\n5th level (#{spellcasting[:slots][:fifth]} slots): #{level5_spells}";
+        end
+        unless level6_spells.empty?
+          desc += "\n6th level (#{spellcasting[:slots][:sixth]} slots): #{level6_spells}";
+        end
+        unless level7_spells.empty?
+          desc += "\n7th level (#{spellcasting[:slots][:seventh]} slots): #{level7_spells}";
+        end
+        unless level8_spells.empty?
+          desc += "\n8th level (#{spellcasting[:slots][:eighth]} slots): #{level8_spells}";
+        end
+        unless level9_spells.empty?
+          desc += "\n8th level (#{spellcasting[:slots][:ninth]} slots): #{level9_spells}";
+        end
+      end
+      desc
+    end
+
+    def average_dice(num_dice, dice_value, modifier)
+      dice_average = dice_value / 2 + 0.5
+      base_damage = dice_average * num_dice.to_f
+      (base_damage + modifier).floor
+    end
+
+    def plus_number_string(number, space = false)
+      sign = '+'
+      if number === 0
+        sign = ''
+      elsif number < 0
+        sign = '-'
+      end
+
+      "#{sign}#{space ? ' ' : ''}#{number.abs}"
+    end
 
     def spellcasting_for_class(npc_attributes)
       spellcasting_classes = npc_attributes[:dnd_classes].select { |dnd_class|

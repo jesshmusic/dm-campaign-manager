@@ -3,7 +3,7 @@
 module Admin::V1
   class MonstersController < SecuredController
     before_action :set_monster, only: %i[show edit update destroy]
-    skip_before_action :authorize_request, only: %i[index show monster_refs monster_categories generate_monster convert_2e_npc generate_commoner calculate_cr]
+    skip_before_action :authorize_request, only: %i[index show monster_refs monster_categories generate_monster convert_2e_npc generate_commoner calculate_cr generate_action_desc]
 
     # GET /v1/monsters
     # GET /v1/monsters.json
@@ -97,6 +97,10 @@ module Admin::V1
     def generate_monster
       @monster = NpcGenerator.generate_npc(monster_params, @current_user)
       render :show, status: :ok
+    end
+
+    def generate_action_desc
+      render json: { desc: NpcGenerator.generate_action_desc(params) }
     end
 
     def calculate_cr

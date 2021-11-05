@@ -29,7 +29,7 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
     handleGenerateMonsterName,
     onSubmit,
     updateForm,
-    UseForm
+    UseForm,
   } = useData(props);
   const [testState, setTestState] = React.useState();
 
@@ -53,15 +53,15 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
           right: '0',
           backgroundColor: '#fff',
           width: '150px',
-          zIndex: 200
+          zIndex: 200,
         }}
       >
-        {/*{JSON.stringify(testState, null, 2)}*/}
+        {JSON.stringify(testState, null, 2)}
       </pre>
       <Frame
-        title='Random Monster Generator'
-        subtitle='Select options to create a new Monster'
-        className='random-monster-generator'
+        title="Random Monster Generator"
+        subtitle="Select options to create a new Monster"
+        className="random-monster-generator"
       >
         <form
           onSubmit={UseForm.handleSubmit(onSubmit)}
@@ -76,78 +76,78 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
             errors={UseForm.formState.errors}
           />
 
-          <GenMonsterSection heading='Stats'>
+          <GenMonsterSection heading="Stats">
             <MonsterStatsSection
               UseForm={UseForm}
               handleCalculateCR={handleCalculateCR}
             />
           </GenMonsterSection>
 
-          <GenMonsterSection heading='Ability Scores'>
+          <GenMonsterSection heading="Ability Scores">
             <AbilitiesSection UseForm={UseForm} />
           </GenMonsterSection>
 
-          <GenMonsterSection heading='Saving Throws'>
+          <GenMonsterSection heading="Saving Throws">
             <SavingThrowsForm fieldName={'savingThrows'} useForm={UseForm} />
           </GenMonsterSection>
 
-          <GenMonsterSection heading='Saving Throws'>
+          <GenMonsterSection heading="Saving Throws">
             <SkillsForm fieldName={'skills'} useForm={UseForm} />
           </GenMonsterSection>
 
-          <GenMonsterSection heading='Senses'>
+          <GenMonsterSection heading="Senses">
             <SensesForm fieldName={'senses'} useForm={UseForm} />
           </GenMonsterSection>
 
-          <GenMonsterSection heading='Speeds'>
+          <GenMonsterSection heading="Speeds">
             <SpeedsForm fieldName={'speeds'} useForm={UseForm} />
           </GenMonsterSection>
 
-          <GenMonsterSection heading='Resistances & Vulnerabilities'>
+          <GenMonsterSection heading="Resistances & Vulnerabilities">
             <ResistancesSection UseForm={UseForm} />
           </GenMonsterSection>
 
-          <GenMonsterSection heading='Actions'>
+          <GenMonsterSection heading="Actions">
             <BaseActionsFormSection
               actionVariation={ActionVariations.action}
-              fieldName='actions'
-              singularTitle='Action'
+              fieldName="actions"
+              singularTitle="Action"
               useForm={UseForm}
             />
           </GenMonsterSection>
 
-          <GenMonsterSection heading='Special Abilities'>
+          <GenMonsterSection heading="Special Abilities">
             <BaseActionsFormSection
               actionVariation={ActionVariations.specialAbility}
-              fieldName='specialAbilities'
-              singularTitle='Special Ability'
+              fieldName="specialAbilities"
+              singularTitle="Special Ability"
               useForm={UseForm}
             />
           </GenMonsterSection>
 
-          <GenMonsterSection heading='Reactions'>
+          <GenMonsterSection heading="Reactions">
             <BaseActionsFormSection
               actionVariation={ActionVariations.reaction}
-              fieldName='reactions'
-              singularTitle='Reaction'
+              fieldName="reactions"
+              singularTitle="Reaction"
               useForm={UseForm}
             />
           </GenMonsterSection>
 
-          <GenMonsterSection heading='Legendary Actions'>
+          <GenMonsterSection heading="Legendary Actions">
             <BaseActionsFormSection
               actionVariation={ActionVariations.legendaryAction}
-              fieldName='legendaryActions'
-              singularTitle='Legendary Action'
+              fieldName="legendaryActions"
+              singularTitle="Legendary Action"
               useForm={UseForm}
             />
           </GenMonsterSection>
 
-          <GenMonsterSection heading='Submit'>
+          <GenMonsterSection heading="Submit">
             <Button
               color={Colors.success}
-              title='Generate Monster'
-              type='submit'
+              title="Generate Monster"
+              type="submit"
               icon={<GiDiceTwentyFacesTwenty size={40} />}
               isFullWidth
             />
