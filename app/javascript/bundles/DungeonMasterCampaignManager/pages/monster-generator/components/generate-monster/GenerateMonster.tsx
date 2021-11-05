@@ -56,7 +56,7 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
           zIndex: 200
         }}
       >
-        {JSON.stringify(testState, null, 2)}
+        {/*{JSON.stringify(testState, null, 2)}*/}
       </pre>
       <Frame
         title='Random Monster Generator'

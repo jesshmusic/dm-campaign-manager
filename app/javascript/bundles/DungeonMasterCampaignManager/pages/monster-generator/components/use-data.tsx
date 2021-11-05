@@ -299,6 +299,7 @@ export const useData = (props: GenerateMonsterProps) => {
       const fieldNameArray = fieldName?.split('.');
       if (fieldNameArray.length >= 3) {
         const actionIndex = parseInt(fieldNameArray[1]);
+        const action = fields.actions[actionIndex];
         if (
           fieldName !== `actions.${actionIndex}.desc` &&
           fieldName !== `actions.${actionIndex}.name` &&
@@ -310,13 +311,18 @@ export const useData = (props: GenerateMonsterProps) => {
             `actions.${actionIndex}.desc`,
             generateAttackDesc(
               fields.name,
-              fields.actions[actionIndex],
+              action,
               attackBonus,
               profBonus,
               fields.damageBonus as number
             )
           );
           handleCalculateCR();
+        }
+        if (fieldName === `actions.${actionIndex}.damage.diceValueOption` && action.damage) {
+          UseForm.setValue(
+            `actions.${actionIndex}.damage.diceValue`, action.damage.diceValueOption.value as number
+          );
         }
         if (fieldName === `actions.${actionIndex}.spellCasting.abilityOption`) {
           UseForm.setValue(
@@ -342,7 +348,7 @@ export const useData = (props: GenerateMonsterProps) => {
       const fieldNameArray = fieldName?.split('.');
       if (fieldNameArray.length >= 3) {
         const speedIndex = parseInt(fieldNameArray[1]);
-        if (fieldName === `senses.${speedIndex}.nameOption`) {
+        if (fieldName === `speeds.${speedIndex}.nameOption`) {
           UseForm.setValue(
             `speeds.${speedIndex}.name`,
             fields.speeds[speedIndex].nameOption!.label
