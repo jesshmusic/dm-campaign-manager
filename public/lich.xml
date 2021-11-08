@@ -1,0 +1,93 @@
+<?xml version="1.0"?>
+<root>
+  <npc>
+    <abilities>
+      <charisma>
+        <bonus type="number">3</bonus>
+        <score type="number">16</score>
+      </charisma>
+      <constitution>
+        <bonus type="number">3</bonus>
+        <score type="number">16</score>
+      </constitution>
+      <dexterity>
+        <bonus type="number">3</bonus>
+        <score type="number">16</score>
+      </dexterity>
+      <intelligence>
+        <bonus type="number">5</bonus>
+        <score type="number">20</score>
+      </intelligence>
+      <strength>
+        <bonus type="number">0</bonus>
+        <score type="number">11</score>
+      </strength>
+      <wisdom>
+        <bonus type="number">2</bonus>
+        <score type="number">14</score>
+      </wisdom>
+    </abilities>
+    <ac type="number">17</ac>
+    <actext type="string"></actext>
+    <actions>
+      <id-00001>
+        <desc type="string">"Melee Spell Attack: +12 to hit, reach 5 ft., one creature. Hit: 10 (3d6) cold damage. The target must succeed on a DC 18 Constitution saving throw or be paralyzed for 1 minute. The target can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success."</desc>
+        <name type="string">Paralyzing Touch</name>
+      </id-00001>
+    </actions>
+    <alignment type="string">any evil alignment</alignment>
+    <conditionimmunities type="string">Charmed, Exhaustion, Frightened, Paralyzed, Poisoned</conditionimmunities>
+    <cr type="string">21</cr>
+    <damageimmunities type="string">poison, bludgeoning, piercing, and slashing from nonmagical weapons</damageimmunities>
+    <damageresistances type="string">cold, lightning, necrotic</damageresistances>
+    <hd type="string">(18d8 + 54)</hd>
+    <hp type="number">135</hp>
+    <languages type="string">Common plus up to five other languages</languages>
+    <legendaryactions>
+      <id-00001>
+        <desc type="string">"The lich casts a cantrip."</desc>
+        <name type="string">Cantrip</name>
+      </id-00001>
+      <id-00002>
+        <desc type="string">"The lich uses its Paralyzing Touch."</desc>
+        <name type="string">Paralyzing Touch (Costs 2 Actions)</name>
+      </id-00002>
+      <id-00003>
+        <desc type="string">"The lich fixes its gaze on one creature it can see within 10 feet of it. The target must succeed on a DC 18 Wisdom saving throw against this magic or become frightened for 1 minute. The frightened target can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success. If a target's saving throw is successful or the effect ends for it, the target is immune to the lich's gaze for the next 24 hours."</desc>
+        <name type="string">Frightening Gaze (Costs 2 Actions)</name>
+      </id-00003>
+      <id-00004>
+        <desc type="string">"Each living creature within 20 feet of the lich must make a DC 18 Constitution saving throw against this magic, taking 21 (6d6) necrotic damage on a failed save, or half as much damage on a successful one."</desc>
+        <name type="string">Disrupt Life (Costs 3 Actions)</name>
+      </id-00004>
+    </legendaryactions>
+    <locked type="number">1</locked>
+    <name type="string">Lich</name>
+    <reactions/>
+    <savingthrows type="string">Con +10, Int +12, Wis +9</savingthrows>
+    <senses type="string">Truesight 120 ft., passive Perception 19</senses>
+    <size type="string">Medium</size>
+    <skills type="string">Arcana +18, History +12, Insight +9, Perception +9</skills>
+    <speed type="string">30 ft.</speed>
+    <traits>
+      <id-00001>
+        <desc type="string">"If the lich fails a saving throw, it can choose to succeed instead."</desc>
+        <name type="string">Legendary Resistance</name>
+      </id-00001>
+      <id-00002>
+        <desc type="string">"If it has a phylactery, a destroyed lich gains a new body in 1d10 days, regaining all its hit points and becoming active again. The new body appears within 5 feet of the phylactery."</desc>
+        <name type="string">Rejuvenation</name>
+      </id-00002>
+      <id-00003>
+        <desc type="string">"The lich is an 18th-level spellcaster. Its spellcasting ability is Intelligence (spell save DC 20, +12 to hit with spell attacks). The lich has the following wizard spells prepared:\n\n- Cantrips (at will): mage hand, prestidigitation, ray of frost\n- 1st level (4 slots): detect magic, magic missile, shield, thunderwave\n- 2nd level (3 slots): acid arrow, detect thoughts, invisibility, mirror image\n- 3rd level (3 slots): animate dead, counterspell, dispel magic, fireball\n- 4th level (3 slots): blight, dimension door\n- 5th level (3 slots): cloudkill, scrying\n- 6th level (1 slot): disintegrate, globe of invulnerability\n- 7th level (1 slot): finger of death, plane shift\n- 8th level (1 slot): dominate monster, power word stun\n- 9th level (1 slot): power word kill"</desc>
+        <name type="string">Spellcasting</name>
+      </id-00003>
+      <id-00004>
+        <desc type="string">"The lich has advantage on saving throws against any effect that turns undead."</desc>
+        <name type="string">Turn Resistance</name>
+      </id-00004>
+    </traits>
+    <type type="string">undead</type>
+    <xp type="number">33000</xp>
+  </npc>
+</root>

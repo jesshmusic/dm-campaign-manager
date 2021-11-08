@@ -1,6 +1,8 @@
 import React from 'react';
 import { MonsterProps } from '../../utilities/types';
 import { abilityScoreModifier } from '../monster-generator/services';
+import Button from '../../components/Button/Button';
+import { Colors } from '../../utilities/enums';
 
 const styles = require('./monsters.module.scss');
 
@@ -69,6 +71,24 @@ export const AbilityScores = (props: { monster: MonsterProps }) => {
 
 const MonsterBlock = (props: { monster: MonsterProps }) => {
   const { monster } = props;
+  const [fileDownloadUrl, setFileDownloadUrl] = React.useState('');
+  const fileLink = React.useRef<HTMLAnchorElement>(null);
+
+  const downloadXmlFile = () => {
+    if (props.monster.fguXml) {
+      const blob = new Blob([props.monster.fguXml]);
+      const fileUrl = URL.createObjectURL(blob);
+      setFileDownloadUrl(fileUrl);
+    }
+  };
+
+  React.useEffect(() => {
+    if (fileDownloadUrl && fileDownloadUrl !== '' && fileLink.current) {
+      fileLink.current.click();
+      URL.revokeObjectURL(fileDownloadUrl);
+      setFileDownloadUrl('');
+    }
+  }, [fileDownloadUrl]);
 
   return (
     <div className={styles.monsterPage}>
@@ -181,6 +201,23 @@ const MonsterBlock = (props: { monster: MonsterProps }) => {
           ))}
         </>
       )}
+      {monster.fguXml ? (
+        <div>
+          <a
+            style={{ display: 'none' }}
+            download={`${monster.name.replace(' ', '-')}.xml`}
+            href={fileDownloadUrl}
+            ref={fileLink}
+          >
+            download it
+          </a>
+          <Button
+            color={Colors.primary}
+            title={'Download Fantasy Grounds XML file'}
+            onClick={downloadXmlFile}
+          />
+        </div>
+      ) : null}
     </div>
   );
 };

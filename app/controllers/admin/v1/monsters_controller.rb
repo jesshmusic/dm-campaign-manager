@@ -96,7 +96,9 @@ module Admin::V1
 
     def generate_monster
       @monster = NpcGenerator.generate_npc(monster_params, @current_user)
-      render :show, status: :ok
+      respond_to do |format|
+        format.json
+      end
     end
 
     def generate_action_desc
@@ -116,7 +118,9 @@ module Admin::V1
       random_npc_gender = params[:random_monster_gender] || %w[male female].sample
       random_npc_race = params[:random_monster_race] || 'human'
       @monster = NpcGenerator.generate_commoner(random_npc_gender, random_npc_race)
-      render :show, status: :ok
+      respond_to do |format|
+        format.json
+      end
     end
 
     # PATCH/PUT /monsters/:slug

@@ -338,14 +338,14 @@ export type MonsterGeneratorFormFields = {
   reactions: MonsterActionField[];
   specialAbilities: MonsterActionField[];
   savingThrows: {
-    nameOption: SelectOption,
-    value: number | string,
-  }[]
+    nameOption: SelectOption;
+    value: number | string;
+  }[];
   senses: MonsterInfoData[];
   skills: {
-    nameOption: SelectOption,
-    value: number | string,
-  }[]
+    nameOption: SelectOption;
+    value: number | string;
+  }[];
   speeds: MonsterInfoData[];
 };
 
@@ -410,6 +410,7 @@ export interface MonsterProps {
   senses: MonsterInfoData[];
   speeds: MonsterInfoData[];
   monsterProficiencies: MonsterProf[];
+  fguXml?: string;
 }
 
 export interface Monsters {
@@ -417,9 +418,9 @@ export interface Monsters {
 }
 
 export type MonsterProf = {
-  profId: number,
-  value: number,
-}
+  profId: number;
+  value: number;
+};
 
 export type MonsterStub = {
   alignment: string;

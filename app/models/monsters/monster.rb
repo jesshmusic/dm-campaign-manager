@@ -147,16 +147,20 @@ class Monster < ApplicationRecord
     speed_return
   end
 
-  def hit_points_string
-    hp_str = "#{hit_points} (#{hit_dice})"
+  def hit_dice_string
     con_mod = DndRules.ability_score_modifier(constitution)
     num_hit_die = hit_dice.scan(/\d+/).first.to_i
     if con_mod > 0
-      hp_str = "#{hit_points} (#{hit_dice} + #{con_mod * num_hit_die})"
+      "(#{hit_dice} + #{con_mod * num_hit_die})"
     elsif con_mod < 0
-      hp_str = "#{hit_points} (#{hit_dice} - #{con_mod.abs * num_hit_die})"
+      "(#{hit_dice} - #{con_mod.abs * num_hit_die})"
+    else
+      "(#{hit_dice})"
     end
-    hp_str
+  end
+
+  def hit_points_string
+    "#{hit_points} (#{hit_dice_string})"
   end
 
   def challenge_string
@@ -178,4 +182,102 @@ class Monster < ApplicationRecord
                       prefix: true
                     }
                   }
+
+  def xml_element(name, type, value, xml)
+    xml.send(name) do
+      xml.parent.set_attribute('type', type)
+      xml.text value
+    end
+  end
+
+  def export
+    monster_export = Nokogiri::XML::Builder.new do |xml|
+      xml.root do
+        xml.npc do
+          xml.abilities do
+            xml.charisma do
+              self.xml_element('bonus', 'number', DndRules.ability_score_modifier(self.charisma), xml)
+              self.xml_element('score', 'number', self.charisma, xml)
+            end
+            xml.constitution do
+              self.xml_element('bonus', 'number', DndRules.ability_score_modifier(self.constitution), xml)
+              self.xml_element('score', 'number', self.constitution, xml)
+            end
+            xml.dexterity do
+              self.xml_element('bonus', 'number', DndRules.ability_score_modifier(self.dexterity), xml)
+              self.xml_element('score', 'number', self.dexterity, xml)
+            end
+            xml.intelligence do
+              self.xml_element('bonus', 'number', DndRules.ability_score_modifier(self.intelligence), xml)
+              self.xml_element('score', 'number', self.intelligence, xml)
+            end
+            xml.strength do
+              self.xml_element('bonus', 'number', DndRules.ability_score_modifier(self.strength), xml)
+              self.xml_element('score', 'number', self.strength, xml)
+            end
+            xml.wisdom do
+              self.xml_element('bonus', 'number', DndRules.ability_score_modifier(self.wisdom), xml)
+              self.xml_element('score', 'number', self.wisdom, xml)
+            end
+          end
+          self.xml_element('ac', 'number', self.armor_class, xml)
+          self.xml_element('actext', 'string', '', xml)
+          xml.actions do
+            self.monster_actions.each_with_index do |action, index|
+              action_id = sprintf '%05d', index + 1
+              xml.send "id-#{action_id}" do
+                self.xml_element('desc', 'string', action.desc.dump, xml)
+                self.xml_element('name', 'string', action.name, xml)
+              end
+            end
+          end
+          self.xml_element('alignment', 'string', self.alignment, xml)
+          self.xml_element('conditionimmunities', 'string', self.condition_immunities.join(', '), xml)
+          self.xml_element('cr', 'string', self.challenge_rating, xml)
+          self.xml_element('damageimmunities', 'string', self.damage_immunities.join(', '), xml)
+          self.xml_element('damageresistances', 'string', self.damage_resistances.join(', '), xml)
+          self.xml_element('hd', 'string', self.hit_dice_string, xml)
+          self.xml_element('hp', 'number', self.hit_points, xml)
+          self.xml_element('languages', 'string', self.languages, xml)
+          xml.legendaryactions do
+            self.legendary_actions.each_with_index do |action, index|
+              action_id = sprintf '%05d', index + 1
+              xml.send "id-#{action_id}" do
+                self.xml_element('desc', 'string', action.desc.dump, xml)
+                self.xml_element('name', 'string', action.name, xml)
+              end
+            end
+          end
+          self.xml_element('locked', 'number', 1, xml)
+          self.xml_element('name', 'string', self.name, xml)
+          xml.reactions do
+            self.reactions.each_with_index do |action, index|
+              action_id = sprintf '%05d', index + 1
+              xml.send "id-#{action_id}" do
+                self.xml_element('desc', 'string', action.desc.dump, xml)
+                self.xml_element('name', 'string', action.name, xml)
+              end
+            end
+          end
+          self.xml_element('savingthrows', 'string', self.saving_throws.join(', '), xml)
+          self.xml_element('senses', 'string', self.senses_array.join(', '), xml)
+          self.xml_element('size', 'string', self.size, xml)
+          self.xml_element('skills', 'string', self.skills.join(', '), xml)
+          self.xml_element('speed', 'string', self.speeds_array.join(', '), xml)
+          xml.traits do
+            self.special_abilities.each_with_index do |action, index|
+              action_id = sprintf '%05d', index + 1
+              xml.send "id-#{action_id}" do
+                self.xml_element('desc', 'string', action.desc.dump, xml)
+                self.xml_element('name', 'string', action.name, xml)
+              end
+            end
+          end
+          self.xml_element('type', 'string', self.monster_type, xml)
+          self.xml_element('xp', 'number', self.xp, xml)
+        end
+      end
+    end
+    monster_export.to_xml
+  end
 end

@@ -90,5 +90,10 @@
         <option name="TAB_SIZE" value="2" />
       </indentOptions>
     </codeStyleSettings>
+    <codeStyleSettings language="XML">
+      <indentOptions>
+        <option name="TAB_SIZE" value="2" />
+      </indentOptions>
+    </codeStyleSettings>
   </code_scheme>
 </component>
