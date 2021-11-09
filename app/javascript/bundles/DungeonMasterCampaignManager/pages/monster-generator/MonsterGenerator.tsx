@@ -8,16 +8,19 @@ import { GiBlacksmith, GiSpikedDragonHead, SiConvertio } from 'react-icons/all';
 import MonsterBlock from '../monsters/MonsterBlock';
 import rest from '../../api/api';
 import { connect } from 'react-redux';
+import { UserProps } from '../../utilities/types';
 
 const styles = require('./monster-generator.module.scss');
 
 const MonsterGenerator = (props: {
   monster: any;
-  generateCommoner: (gender?: string, race?: string) => void;
-  generateMonster: (monster: any) => void;
+  generateCommoner: (gender?: string, race?: string, token?: string) => void;
+  generateMonster: (monster: any, token?: string) => void;
   convert2eNPC: () => void;
+  token?: string;
 }) => {
-  const { monster, generateCommoner, generateMonster, convert2eNPC } = props;
+  const { token, monster, generateCommoner, generateMonster, convert2eNPC } =
+    props;
   const show2eConverter = false;
 
   return (
@@ -59,7 +62,10 @@ const MonsterGenerator = (props: {
               data-bs-parent="#monsterGeneratorAccordion"
             >
               <div className="accordion-body">
-                <GenerateCommoner onFormSubmit={generateCommoner} />
+                <GenerateCommoner
+                  onFormSubmit={generateCommoner}
+                  token={token}
+                />
               </div>
             </div>
           </div>
@@ -82,7 +88,10 @@ const MonsterGenerator = (props: {
               data-bs-parent="#monsterGeneratorAccordion"
             >
               <div className="accordion-body">
-                <GenerateMonster onGenerateMonster={generateMonster} />
+                <GenerateMonster
+                  onGenerateMonster={generateMonster}
+                  token={token}
+                />
               </div>
             </div>
           </div>
@@ -106,7 +115,7 @@ const MonsterGenerator = (props: {
                 data-bs-parent="#monsterGeneratorAccordion"
               >
                 <div className="accordion-body">
-                  <Convert2eMonster />
+                  <Convert2eMonster token={token} />
                 </div>
               </div>
             </div>
@@ -120,20 +129,33 @@ const MonsterGenerator = (props: {
 function mapStateToProps(state) {
   return {
     monster: state.monsters.currentMonster,
+    currentUser: state.users.currentUser,
+    token: state.users.token,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    generateCommoner: (gender: string = 'Female', race: string = 'Human') => {
-      dispatch(rest.actions.generateCommoner({ gender, race }));
+    generateCommoner: (
+      gender: string = 'Female',
+      race: string = 'Human',
+      token?: string
+    ) => {
+      dispatch(
+        rest.actions.generateCommoner(
+          { gender, race },
+          {
+            body: JSON.stringify({ token }),
+          }
+        )
+      );
     },
-    generateMonster: (monster: any) => {
+    generateMonster: (monster: any, token?: string) => {
       dispatch(
         rest.actions.generateMonster(
           {},
           {
-            body: JSON.stringify({ monster }),
+            body: JSON.stringify({ monster, token }),
           }
         )
       );

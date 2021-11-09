@@ -82,6 +82,13 @@ export default reduxApi({
   },
   generateCommoner: {
     url: '/v1/generate_commoner.json?random_monster_gender=:gender&random_monster_race=:race',
+    options() {
+      const headers = getHeaders();
+      return {
+        method: 'post',
+        headers,
+      };
+    },
   },
   getCondition: {
     url: '/v1/conditions/:slug',
@@ -174,4 +181,21 @@ export default reduxApi({
       },
     ],
   },
-}).use('fetch', dmFetch(fetch));
+})
+  .use('options', (url, params, getState) => {
+    const state = getState();
+    const token = state.users && state.users.token ? state.users.token : null;
+    const railsHeaders = getHeaders();
+    const headers = {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      ...railsHeaders,
+    };
+    if (token) {
+      return {
+        headers: { ...headers, Authorization: `Bearer ${token}` },
+      };
+    }
+    return { headers };
+  })
+  .use('fetch', dmFetch(fetch));

@@ -1,11 +1,11 @@
 import React from 'react';
-import { ActionVariations } from '../../../../utilities/types';
+import { ActionVariations, UserProps } from '../../../../utilities/types';
 import Frame from '../../../../components/Frame/Frame';
 import NameFormField from '../NameFormField';
 import { GiDiceTwentyFacesTwenty } from 'react-icons/gi/';
 import { Colors } from '../../../../utilities/enums';
 import Button from '../../../../components/Button/Button';
-import { useData } from '../use-data';
+import { useData } from '../../use-data';
 import BaseActionsFormSection from './sections/actions/action-forms/BaseActionsFormSection';
 import GenMonsterSection from './sections/GenMonsterSection';
 import MonsterStatsSection from './sections/MonsterStatsSection';
@@ -19,7 +19,8 @@ import SkillsForm from './sections/skills/SkillsForm';
 const styles = require('../generator.module.scss');
 
 export type GenerateMonsterProps = {
-  onGenerateMonster: (monsterParams: any) => void;
+  onGenerateMonster: (monsterParams: any, token?: string) => void;
+  token?: string;
 };
 
 const GenerateMonster = (props: GenerateMonsterProps) => {

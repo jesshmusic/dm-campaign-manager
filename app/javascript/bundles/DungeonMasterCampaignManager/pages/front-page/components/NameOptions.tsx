@@ -3,7 +3,7 @@ import Select, { Options } from 'react-select';
 import { filterSnakeCaseOptionsWithData } from '../../../utilities/character-utilities';
 import AsyncSelect from 'react-select/async';
 import axios from 'axios';
-import { RaceResults } from '../../../utilities/types';
+import { RaceResults, UserProps } from '../../../utilities/types';
 import Button from '../../../components/Button/Button';
 import { Colors } from '../../../utilities/enums';
 import { GiBattleGear } from 'react-icons/all';
@@ -31,11 +31,12 @@ const getRaces = (
 };
 
 interface NameOptionsProps {
-  onFormSubmit: (gender: string, race: string) => void;
+  onFormSubmit: (gender: string, race: string, userId?: string) => void;
   title: string;
+  token?: string;
 }
 
-const NameOptions = ({ onFormSubmit, title }: NameOptionsProps) => {
+const NameOptions = ({ onFormSubmit, title, token }: NameOptionsProps) => {
   const [gender, setGender] = useState({
     value: 'female',
     label: 'Female',
@@ -47,7 +48,7 @@ const NameOptions = ({ onFormSubmit, title }: NameOptionsProps) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    onFormSubmit(gender?.value || '', race?.value || '');
+    onFormSubmit(gender?.value || '', race?.value || '', token);
   };
 
   return (

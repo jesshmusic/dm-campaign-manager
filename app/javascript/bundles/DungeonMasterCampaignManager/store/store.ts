@@ -1,61 +1,64 @@
 import { configureStore } from '@reduxjs/toolkit';
 import rootReducer from '../reducers';
-import { ApiReference, AppProps } from '../utilities/types';
+import { AppProps } from '../utilities/types';
 
-export const store = (props: AppProps) => {
-  return configureStore({
-    reducer: rootReducer,
-    preloadedState: {
-      flashMessages: [],
-      conditions: {
-        conditions: [],
-        count: props.conditions.count,
-        currentCondition: null,
-        loading: false,
-      },
-      dndClasses: {
-        dndClasses: [],
-        count: props.dndClasses.count,
-        currentDndClass: null,
-        loading: false,
-      },
-      items: {
-        items: [],
-        count: props.items.count,
-        currentItem: null,
-        loading: false,
-      },
-      monsters: {
-        monsters: [],
-        monsterTypes: [],
-        count: props.monsters.count,
-        currentMonster: null,
-        loading: false,
-      },
-      races: {
-        races: [],
-        count: props.races.count,
-        currentRace: null,
-        loading: false,
-      },
-      sections: {
-        sections: [],
-        count: 0,
-        currentSection: null,
-        loading: false,
-      },
-      spells: {
-        spells: [],
-        count: props.spells.count,
-        currentSpell: null,
-        loading: false,
-      },
-      users: {
-        users: [],
-        count: props.users.count,
-        // @ts-ignore
-        currentUser: props.users.user,
-      },
+// export const store = (props: AppProps) => {
+const store = configureStore({
+  reducer: rootReducer,
+  preloadedState: {
+    flashMessages: [],
+    conditions: {
+      conditions: [],
+      count: 0,
+      currentCondition: null,
+      loading: false,
     },
-  });
-};
+    dndClasses: {
+      dndClasses: [],
+      count: 0,
+      currentDndClass: null,
+      loading: false,
+    },
+    items: {
+      items: [],
+      count: 0,
+      currentItem: null,
+      loading: false,
+    },
+    monsters: {
+      monsters: [],
+      monsterTypes: [],
+      count: 0,
+      currentMonster: null,
+      loading: false,
+    },
+    races: {
+      races: [],
+      count: 0,
+      currentRace: null,
+      loading: false,
+    },
+    sections: {
+      sections: [],
+      count: 0,
+      currentSection: null,
+      loading: false,
+    },
+    spells: {
+      spells: [],
+      count: 0,
+      currentSpell: null,
+      loading: false,
+    },
+    users: {
+      users: [],
+      count: 0,
+      // @ts-ignore
+      currentUser: null,
+    },
+  },
+});
+// };
+export type RootState = ReturnType<typeof store.getState>;
+
+export default store;

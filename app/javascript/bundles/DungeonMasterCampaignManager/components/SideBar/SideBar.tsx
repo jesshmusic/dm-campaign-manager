@@ -89,6 +89,7 @@ const SideBar = (props: {
     if (isAuthenticated && user) {
       getAccessTokenSilently()
         .then((token) => {
+          console.log(user);
           setUser(user, token);
         })
         .catch((err) => {

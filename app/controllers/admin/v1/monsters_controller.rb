@@ -2,6 +2,7 @@
 
 module Admin::V1
   class MonstersController < SecuredController
+    before_action :set_current_user, only: %i[show generate_monster convert_2e_npc generate_commoner]
     before_action :set_monster, only: %i[show edit update destroy]
     skip_before_action :authorize_request, only: %i[index show monster_refs monster_categories generate_monster convert_2e_npc generate_commoner calculate_cr generate_action_desc]
 
@@ -14,9 +15,9 @@ module Admin::V1
                   else
                     Monster.all.order(monster_type: :asc, name: :asc)
                   end
-      @monsters = if !current_user
+      @monsters = if !@current_user
                     @monsters.where(user_id: nil)
-                  elsif current_user.admin? && !params[:refs].present?
+                  elsif @current_user.admin? && !params[:refs].present?
                     @monsters
                   else
                     @monsters.where(user_id: nil).or(@monsters.where(user_id: current_user.id))
@@ -117,7 +118,7 @@ module Admin::V1
     def generate_commoner
       random_npc_gender = params[:random_monster_gender] || %w[male female].sample
       random_npc_race = params[:random_monster_race] || 'human'
-      @monster = NpcGenerator.generate_commoner(random_npc_gender, random_npc_race)
+      @monster = NpcGenerator.generate_commoner(random_npc_gender, random_npc_race, @current_user)
       respond_to do |format|
         format.json
       end
@@ -152,6 +153,10 @@ module Admin::V1
     end
 
     private
+
+    def set_current_user
+      @current_user ||= User.find(session[:user_id])
+    end
 
     # Use callbacks to share common setup or constraints between api.
     def set_monster

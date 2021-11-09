@@ -3,7 +3,7 @@ import {
   MonsterActionField,
   MonsterGeneratorFormFields,
   RandomNameResult,
-} from '../../../utilities/types';
+} from '../../utilities/types';
 import {
   abilityScoreModifier,
   calculateCR,
@@ -11,10 +11,10 @@ import {
   getMonsterObject,
   hitDieForSize,
   hitPoints,
-} from '../services';
+} from './services';
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
-import { GenerateMonsterProps } from './generate-monster/GenerateMonster';
+import { GenerateMonsterProps } from './components/generate-monster/GenerateMonster';
 import snakecaseKeys from 'snakecase-keys';
 
 export const useData = (props: GenerateMonsterProps) => {
@@ -84,9 +84,8 @@ export const useData = (props: GenerateMonsterProps) => {
 
   const onSubmit = (data) => {
     const monster = getMonsterObject(data);
-    console.log(monster);
     const monsterData = createMonsterParams(monster);
-    props.onGenerateMonster(monsterData);
+    props.onGenerateMonster(monsterData, props.token);
   };
 
   const handleGenerateMonsterName = async () => {

@@ -35,6 +35,7 @@ class UsersController < SecuredController
       @user.role = :admin if user_params[:roles].include? 'Admin'
     end
     @user.save!
+    session['user'] = @user.attributes
   end
 
   # GET /v1/users/{id}

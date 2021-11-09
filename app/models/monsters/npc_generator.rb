@@ -5,7 +5,8 @@ class NpcGenerator
     def generate_npc(monster_params, user)
       @new_npc = Monster.new(monster_params)
       @new_npc.slug = @new_npc.name.parameterize
-      monster_atts = @new_npc.attributes
+      @new_npc.user = user unless user.nil?
+      @new_npc.save! unless user.nil?
       @new_npc
     end
 
@@ -41,9 +42,9 @@ class NpcGenerator
         methods: %i[description_text hit_dice size_and_type saving_throws skills_string xp])
     end
 
-    def generate_commoner(random_npc_gender, random_npc_race)
+    def generate_commoner(random_npc_gender, random_npc_race, user)
       commoner = Monster.where(name: 'Commoner').first
-      @new_npc = Monster.new commoner.attributes
+      @new_npc = Monster.new commoner.attributes.except(:id, :slug)
       @new_npc.challenge_rating = %w[0 0 0 0 0 1/8 1/8 1/8 1/4 1/4 1/2].sample
       ability_score_order = %w[Strength Dexterity Constitution Intelligence Wisdom Charisma].shuffle
       set_ability_scores(ability_score_order, 8)
@@ -54,6 +55,8 @@ class NpcGenerator
       @new_npc.armor_class = @new_npc.armor_class + DndRules.ability_score_modifier(@new_npc.dexterity)
       @new_npc.alignment = DndRules.alignments_non_evil.sample
       @new_npc.hit_points += DndRules.ability_score_modifier(@new_npc.constitution)
+      @new_npc.user = user unless user.nil?
+      @new_npc.save! unless user.nil?
       @new_npc
     end
 

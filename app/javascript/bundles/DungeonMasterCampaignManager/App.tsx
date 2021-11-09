@@ -13,7 +13,7 @@ import DndClass from './pages/dnd-classes/DndClass';
 import DndClasses from './pages/dnd-classes/DndClasses';
 import MonsterGenerator from './pages/monster-generator/MonsterGenerator';
 import { FlashMessage } from './utilities/types';
-import { store } from './store/store';
+import store from './store/store';
 import Monster from './pages/monsters/Monster';
 import Races from './pages/races/Races';
 import Race from './pages/races/Race';
@@ -78,15 +78,15 @@ const App = (props) => {
   };
 
   return (
-    <Auth0Provider
-      domain="dev-yfmjdt5a.us.auth0.com"
-      clientId="8NlYHEqMlhW6W4kVyNQLtyRguyiGSzrd"
-      redirectUri={window.location.origin}
-      audience="dmScreenAPI"
-      scope="read:user"
-      useRefreshTokens
-    >
-      <Provider store={store(props)}>
+    <Provider store={store}>
+      <Auth0Provider
+        domain="dev-yfmjdt5a.us.auth0.com"
+        clientId="8NlYHEqMlhW6W4kVyNQLtyRguyiGSzrd"
+        redirectUri={window.location.origin}
+        audience="dmScreenAPI"
+        scope="read:user"
+        useRefreshTokens
+      >
         <div className={styles.appContainer} ref={parentNode}>
           <SideBar isCollapsed={isMobile} />
           <HeroBanner />
@@ -148,8 +148,8 @@ const App = (props) => {
           </Location>
           <Footer user={combinedProps.user} />
         </div>
-      </Provider>
-    </Auth0Provider>
+      </Auth0Provider>
+    </Provider>
   );
 };
 

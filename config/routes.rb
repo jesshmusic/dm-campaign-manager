@@ -24,7 +24,7 @@ Rails.application.routes.draw do
       post '/convert_2e_npc', to: 'monsters#convert_2e_npc',
            as: 'convert_2e_npc',
            constraints: { format: 'json' }
-      get '/generate_commoner', to: 'monsters#generate_commoner',
+      post '/generate_commoner', to: 'monsters#generate_commoner',
           as: 'generate_commoner',
           constraints: { format: 'json' }
       get '/monster-categories', to: 'monsters#monster_categories',

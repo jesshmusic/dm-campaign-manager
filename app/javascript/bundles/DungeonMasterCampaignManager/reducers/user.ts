@@ -16,6 +16,7 @@ const users = createReducer(
     users: [],
     count: 0,
     currentUser: undefined,
+    token: undefined,
   },
   (builder) =>
     builder
@@ -24,6 +25,7 @@ const users = createReducer(
           users: state.users,
           count: state.count,
           currentUser: action.data,
+          token: action.request.params.token,
         };
       })
       .addCase(logoutSucceeded, (state) => {
@@ -31,6 +33,7 @@ const users = createReducer(
           count: state.count,
           users: state.users,
           currentUser: undefined,
+          token: undefined,
         };
       })
       .addCase(setUserSuccess, (state, action: AnyAction) => {
@@ -38,6 +41,7 @@ const users = createReducer(
           users: state.users,
           count: state.count,
           currentUser: action.data,
+          token: action.request.params.token,
         };
       })
       .addCase(setUserFail, (state) => {
@@ -45,6 +49,7 @@ const users = createReducer(
           count: state.count,
           users: state.users,
           currentUser: undefined,
+          token: undefined,
         };
       })
       .addCase(getUsersSuccess, (state, action: AnyAction) => {
@@ -52,6 +57,7 @@ const users = createReducer(
           count: action.data.data.length,
           users: action.data.data,
           currentUser: state.currentUser,
+          token: state.token,
         };
       })
       .addCase(getUsersFail, (state) => {
@@ -59,6 +65,7 @@ const users = createReducer(
           count: state.count,
           users: state.users,
           currentUser: state.currentUser,
+          token: state.token,
         };
       })
       .addCase(getUserSuccess, (state, action: AnyAction) => {
@@ -66,6 +73,7 @@ const users = createReducer(
           count: state.count,
           users: state.users,
           currentUser: action.data,
+          token: state.token,
         };
       })
       .addCase(getUserFail, (state) => {
@@ -73,6 +81,7 @@ const users = createReducer(
           count: state.count,
           users: state.users,
           currentUser: state.currentUser,
+          token: state.token,
         };
       })
 );

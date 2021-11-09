@@ -8,17 +8,18 @@ import { connect } from 'react-redux';
 import DataTable from '../../components/DataTable/DataTable';
 import { Row } from 'react-table';
 import { GiClosedDoors, GiOpenGate } from 'react-icons/all';
+import monsters from '../../reducers/monsters';
 
 const Monsters = (props: {
-  getMonsterCategories: (searchTerm?: string) => void;
+  getMonsters: (searchTerm?: string) => void;
   monsters: MonsterSummary[];
   monsterTypes: MonsterType[];
   loading: boolean;
 }) => {
-  const { getMonsterCategories, loading, monsterTypes } = props;
+  const { getMonsters, loading, monsters } = props;
 
   React.useEffect(() => {
-    getMonsterCategories();
+    getMonsters();
   }, []);
 
   const goToPage = (row: Row<any>) => {
@@ -26,75 +27,48 @@ const Monsters = (props: {
   };
 
   const getNumResults = (): number => {
-    let count = 0;
-    monsterTypes.forEach((monsterType) => {
-      count += monsterType.monsters.length;
-    });
-    return count;
+    return monsters.length;
   };
 
   const columns = React.useMemo(
     () => [
       {
-        id: 'expander',
-        Header: ({ getToggleAllRowsExpandedProps, isAllRowsExpanded }) => (
-          <span {...getToggleAllRowsExpandedProps()}>
-            {isAllRowsExpanded ? <GiOpenGate /> : <GiClosedDoors />}
-          </span>
-        ),
-        Cell: ({ row }) =>
-          row.canExpand ? (
-            <span
-              {...row.getToggleRowExpandedProps({
-                style: {
-                  paddingLeft: `${row.depth * 2}rem`,
-                },
-              })}
-            >
-              {row.isExpanded ? <GiOpenGate /> : <GiClosedDoors />}
-            </span>
-          ) : null,
+        Header: 'Monster',
+        accessor: 'name',
       },
       {
-        Header: 'Monster Types',
-        columns: [
-          {
-            Header: 'Monster',
-            accessor: 'name',
-          },
-          {
-            Header: 'Challenge',
-            accessor: 'challenge',
-          },
-          {
-            Header: 'Alignment',
-            accessor: 'alignment',
-          },
-          {
-            Header: 'Hit Points',
-            accessor: 'hitPoints',
-          },
-        ],
+        Header: 'Type',
+        accessor: 'monsterType',
+      },
+      {
+        Header: 'Challenge',
+        accessor: 'challenge',
+      },
+      {
+        Header: 'Alignment',
+        accessor: 'alignment',
+      },
+      {
+        Header: 'Hit Points',
+        accessor: 'hitPoints',
       },
     ],
     []
   );
 
   const data = React.useMemo(() => {
-    return monsterTypes.map((monsterCat) => ({
-      name: monsterCat.name,
-      subRows: monsterCat.monsters.map((monster) => ({
-        name: monster.name,
-        alignment: monster.alignment,
-        challenge: monster.challenge,
-        hitPoints: monster.hitPoints,
-        slug: monster.slug,
-      })),
+    return monsters.map((monster) => ({
+      name: monster.name,
+      monsterType: monster.monsterType,
+      alignment: monster.alignment,
+      challenge: monster.challengeRating,
+      hitPoints: monster.hitPoints,
+      slug: monster.slug,
     }));
-  }, [monsterTypes]);
+  }, [monsters]);
 
   const onSearch = (searchTerm: string) => {
-    props.getMonsterCategories(searchTerm);
+    props.getMonsters(searchTerm);
   };
 
   return (
@@ -130,8 +104,13 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    getMonsterCategories: (searchTerm: string) => {
-      dispatch(rest.actions.getMonsterCategories({ search: searchTerm }));
+    getMonsterCategories: (searchTerm: string, userId?: string) => {
+      dispatch(
+        rest.actions.getMonsterCategories({ search: searchTerm, userId })
+      );
+    },
+    getMonsters: (searchTerm: string) => {
+      dispatch(rest.actions.getMonsters({ search: searchTerm }));
     },
   };
 }
