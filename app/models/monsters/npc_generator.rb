@@ -48,7 +48,7 @@ class NpcGenerator
       ability_score_order = %w[Strength Dexterity Constitution Intelligence Wisdom Charisma].shuffle
       set_ability_scores(ability_score_order, 8)
       @new_npc.name = NameGen.random_name(random_npc_gender, random_npc_race)
-      @new_npc.monster_subtype = random_npc_race
+      @new_npc.monster_subtype = random_npc_race ? random_npc_race : 'human'
 
       # Other statistics
       @new_npc.armor_class = @new_npc.armor_class + DndRules.ability_score_modifier(@new_npc.dexterity)
