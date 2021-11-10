@@ -73,30 +73,10 @@ const SideBar = (props: {
   getSections: () => void;
   isCollapsed: boolean;
   sections: { name: string; slug: string }[];
-  setUser: (user: User, token: string) => void;
 }) => {
-  const { currentUser, isCollapsed, getSections, sections, setUser } = props;
+  const { currentUser, isCollapsed, getSections, sections } = props;
 
-  const {
-    user,
-    isAuthenticated,
-    loginWithRedirect,
-    logout,
-    getAccessTokenSilently,
-  } = useAuth0();
-
-  React.useEffect(() => {
-    if (isAuthenticated && user) {
-      getAccessTokenSilently()
-        .then((token) => {
-          console.log(user);
-          setUser(user, token);
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-    }
-  }, [user]);
+  const { user, isAuthenticated, loginWithRedirect, logout } = useAuth0();
 
   React.useEffect(() => {
     getSections();
@@ -204,30 +184,6 @@ const mapDispatchToProps = (dispatch) => {
   return {
     getSections: () => {
       dispatch(rest.actions.getSections());
-    },
-    setUser: (user: User, token: string) => {
-      let {
-        sub,
-        nickname,
-        given_name,
-        family_name,
-        locale,
-        picture,
-        updated_at,
-        email_verified,
-        ...userFields
-      } = user;
-      userFields.auth_id = sub;
-      userFields.username = nickname;
-      dispatch(
-        rest.actions.setUser(
-          {},
-          {
-            body: JSON.stringify({ user: userFields }),
-            token,
-          }
-        )
-      );
     },
   };
 };

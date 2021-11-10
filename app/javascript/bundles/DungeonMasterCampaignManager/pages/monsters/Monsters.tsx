@@ -9,6 +9,7 @@ import DataTable from '../../components/DataTable/DataTable';
 import { Row } from 'react-table';
 import { GiClosedDoors, GiOpenGate } from 'react-icons/all';
 import monsters from '../../reducers/monsters';
+import { useAuth0 } from '@auth0/auth0-react';
 
 const Monsters = (props: {
   getMonsters: (searchTerm?: string) => void;
@@ -17,10 +18,15 @@ const Monsters = (props: {
   loading: boolean;
 }) => {
   const { getMonsters, loading, monsters } = props;
+  const { isLoading, error } = useAuth0();
 
   React.useEffect(() => {
-    getMonsters();
-  }, []);
+    console.log(isLoading);
+    console.log(error);
+    if (!isLoading) {
+      getMonsters();
+    }
+  }, [isLoading]);
 
   const goToPage = (row: Row<any>) => {
     navigate(`/app/monsters/${row.original.slug}`);

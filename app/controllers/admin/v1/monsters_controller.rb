@@ -2,7 +2,7 @@
 
 module Admin::V1
   class MonstersController < SecuredController
-    before_action :set_current_user, only: %i[show generate_monster convert_2e_npc generate_commoner]
+    before_action :set_current_user
     before_action :set_monster, only: %i[show edit update destroy]
     skip_before_action :authorize_request, only: %i[index show monster_refs monster_categories generate_monster convert_2e_npc generate_commoner calculate_cr generate_action_desc]
 
@@ -10,6 +10,9 @@ module Admin::V1
     # GET /v1/monsters.json
     def index
       authorize Monster
+      puts '------CURRENT USER-------'
+      puts @current_user
+      puts '-------------------------'
       @monsters = if params[:search].present?
                     Monster.search_for(params[:search]).order(monster_type: :asc, name: :asc)
                   else
@@ -20,7 +23,7 @@ module Admin::V1
                   elsif @current_user.admin? && !params[:refs].present?
                     @monsters
                   else
-                    @monsters.where(user_id: nil).or(@monsters.where(user_id: current_user.id))
+                    @monsters.where(user_id: nil).or(@monsters.where(user_id: @current_user.id))
                   end
       @monsters = @monsters.where(challenge_rating: params[:challenge_rating]) if params[:challenge_rating].present?
 
@@ -82,7 +85,7 @@ module Admin::V1
     def create
       @monster = Monster.new(monster_params)
       authorize @monster
-      @monster.user = current_user if current_user.dungeon_master?
+      @monster.user = @current_user if @current_user.dungeon_master?
 
       respond_to do |format|
         if @monster.save
@@ -155,7 +158,8 @@ module Admin::V1
     private
 
     def set_current_user
-      @current_user ||= User.find(session[:user_id])
+      curr_user_atts = session[:user]
+      @current_user = curr_user_atts ? User.find_by_auth_id(curr_user_atts['auth_id']) : nil
     end
 
     # Use callbacks to share common setup or constraints between api.

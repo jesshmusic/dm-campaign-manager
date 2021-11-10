@@ -8,6 +8,10 @@ class AuthorizationService
     verify_token
   end
 
+  def get_current_user
+    current_user_from_token
+  end
+
   private
 
   def http_token
@@ -21,4 +25,8 @@ class AuthorizationService
     JsonWebToken.verify(http_token)
   end
 
+  def current_user_from_token
+    return unless http_token
+    JsonWebToken.current_user_from_token(http_token)
+  end
 end

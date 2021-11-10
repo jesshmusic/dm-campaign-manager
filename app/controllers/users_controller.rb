@@ -23,7 +23,6 @@ class UsersController < SecuredController
 
   # POST /users/set_user/
   def set_auth_user
-    puts user_params
     authorize User
     @user = User.find_or_create_by(auth_id: user_params[:auth_id])
     @user.name = user_params[:name]
@@ -35,7 +34,8 @@ class UsersController < SecuredController
       @user.role = :admin if user_params[:roles].include? 'Admin'
     end
     @user.save!
-    session['user'] = @user.attributes
+    session[:user] = @user.attributes
+    puts session[:user]
   end
 
   # GET /v1/users/{id}

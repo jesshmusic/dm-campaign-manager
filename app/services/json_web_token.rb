@@ -16,6 +16,20 @@ class JsonWebToken
     end
   end
 
+  def self.current_user_from_token(token)
+    JWT.decode(token,
+               nil,
+               false,
+               algorithms: 'RS256',
+               iss: 'https://dev-yfmjdt5a.us.auth0.com/',
+               verify_iss: true,
+               aud: 'dmScreenAPI',
+               verify_aud: true) do |header|
+      jwks_hash[header['kid']]
+      header['sub']
+    end
+  end
+
   def self.jwks_hash
     jwks_raw = Net::HTTP.get URI('https://dev-yfmjdt5a.us.auth0.com/.well-known/jwks.json')
     jwks_keys = Array(JSON.parse(jwks_raw)['keys'])
