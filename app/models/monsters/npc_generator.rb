@@ -44,7 +44,9 @@ class NpcGenerator
 
     def generate_commoner(random_npc_gender, random_npc_race, user)
       commoner = Monster.where(name: 'Commoner').first
-      @new_npc = Monster.new commoner.attributes.except(:id, :slug)
+      commoner_atts = commoner.attributes
+      @new_npc = Monster.new commoner_atts
+      @new_npc.id = nil
       @new_npc.challenge_rating = %w[0 0 0 0 0 1/8 1/8 1/8 1/4 1/4 1/2].sample
       ability_score_order = %w[Strength Dexterity Constitution Intelligence Wisdom Charisma].shuffle
       set_ability_scores(ability_score_order, 8)

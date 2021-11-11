@@ -9,12 +9,12 @@ import { ItemInfoBlock, ItemPageProps } from '../../utilities/types';
 import remarkGfm from 'remark-gfm';
 import ReactMarkdown from 'react-markdown';
 import { singleItemUseData } from './use-data';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 const styles = require('./item.module.scss');
 
 const Item = (props: ItemPageProps) => {
-  const { item, itemSlug, getItem, loading } = props;
+  const { item, getItem, loading } = props;
   const { getItemParentInfo } = singleItemUseData(props);
   const [itemInfo, setItemInfo] = React.useState<ItemInfoBlock>({
     parentTitle: 'Loading...',
@@ -22,9 +22,10 @@ const Item = (props: ItemPageProps) => {
     subtitle: '',
     infoBlock: [],
   });
+  const { itemSlug } = useParams<'itemSlug'>();
 
   React.useEffect(() => {
-    getItem(itemSlug);
+    getItem(itemSlug!);
   }, [itemSlug]);
 
   React.useEffect(() => {
@@ -100,7 +101,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     getItem: (itemSlug: string) => {
-      dispatch(rest.actions.getItem({ slug: itemSlug }));
+      dispatch(rest.actions.getItem({ id: itemSlug }));
     },
   };
 }

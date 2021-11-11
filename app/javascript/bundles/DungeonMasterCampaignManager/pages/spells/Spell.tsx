@@ -6,19 +6,20 @@ import DndSpinner from '../../components/DndSpinners/DndSpinner';
 import InfoBlock from '../../components/InfoBlock/InfoBlock';
 import rest from '../../api/api';
 import { connect } from 'react-redux';
+import { useParams } from 'react-router-dom';
 
 const styles = require('./spells.module.scss');
 
 const Spell = (props: {
   spell: SpellProps;
-  spellSlug: string;
   getSpell: (spellSlug: string) => void;
 }) => {
-  const { spell, getSpell, spellSlug } = props;
+  const { spell, getSpell } = props;
+  const { spellSlug } = useParams<'spellSlug'>();
 
   React.useEffect(() => {
-    getSpell(spellSlug);
-  }, []);
+    getSpell(spellSlug!);
+  }, [spellSlug]);
 
   const spellTitle = spell ? spell.name : 'Spell Loading...';
 

@@ -23,6 +23,7 @@ module Admin::V1
                     @monsters.where(user_id: nil).or(@monsters.where(user_id: @current_user.id))
                   end
       @monsters = @monsters.where(challenge_rating: params[:challenge_rating]) if params[:challenge_rating].present?
+      @monsters = @monsters.where(user_id: params[:user_id]) if params[:user_id]
 
       respond_to do |format|
         format.html { @pagy, @monsters = pagy(@monsters) }
@@ -161,6 +162,7 @@ module Admin::V1
 
     # Use callbacks to share common setup or constraints between api.
     def set_monster
+      puts params
       @monster = Monster.friendly.find(params[:id])
     end
 

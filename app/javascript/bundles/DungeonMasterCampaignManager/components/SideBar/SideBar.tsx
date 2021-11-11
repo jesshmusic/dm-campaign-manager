@@ -149,7 +149,7 @@ const SideBar = (props: {
             {isAuthenticated && user ? (
               <>
                 <SidebarLink
-                  to="/app/admin"
+                  to="/app/user-dashboard"
                   title="Dashboard"
                   icon={<GiDungeonGate />}
                 />

@@ -90,25 +90,25 @@ export default reduxApi({
     },
   },
   getCondition: {
-    url: '/v1/conditions/:slug',
+    url: '/v1/conditions/:id',
   },
   getConditions: {
     url: '/v1/conditions.json',
   },
   getDndClass: {
-    url: '/v1/dnd_classes/:slug.json',
+    url: '/v1/dnd_classes/:id.json',
   },
   getDndClasses: {
     url: '/v1/dnd_classes.json',
   },
   getItem: {
-    url: '/v1/items/:slug.json',
+    url: '/v1/items/:id.json',
   },
   getItems: {
     url: '/v1/items.json',
   },
   getMonster: {
-    url: '/v1/monsters/:slug.json',
+    url: '/v1/monsters/:id.json',
   },
   getMonsters: {
     url: '/v1/monsters.json',
@@ -117,25 +117,25 @@ export default reduxApi({
     url: '/v1/monster-categories.json',
   },
   getRace: {
-    url: '/v1/races/:slug.json',
+    url: '/v1/races/:id.json',
   },
   getRaces: {
     url: '/v1/races.json',
   },
   getSection: {
-    url: '/v1/sections/:slug.json',
+    url: '/v1/sections/:id.json',
   },
   getSections: {
     url: '/v1/sections.json',
   },
   getSpell: {
-    url: '/v1/spells/:slug.json',
+    url: '/v1/spells/:id.json',
   },
   getSpells: {
     url: '/v1/spells.json',
   },
   getUser: {
-    url: '/users/:slug.json',
+    url: '/users/:id.json',
   },
   getUsers: {
     url: '/users.json',

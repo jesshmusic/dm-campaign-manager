@@ -11,21 +11,22 @@ import ProficienciesSection from './components/ProficienciesSection';
 import EquipmentSection from './components/EquipmentSection';
 import ClassLevelsTable from './components/ClassLevelsTable';
 import FeaturesDesc from './components/FeaturesDesc';
+import { useParams } from 'react-router-dom';
 
 const styles = require('./dnd-class.module.scss');
 
 type DndClassPageProps = {
   dndClass?: DndClass;
-  dndClassSlug: string;
   getDndClass: (dndClassSlug: string) => void;
 };
 
 const DndClass = (props: DndClassPageProps) => {
-  const { dndClass, dndClassSlug, getDndClass } = props;
+  const { dndClass, getDndClass } = props;
+  const { dndClassSlug } = useParams<'dndClassSlug'>();
 
   React.useEffect(() => {
-    getDndClass(dndClassSlug);
-  }, []);
+    getDndClass(dndClassSlug!);
+  }, [dndClassSlug]);
 
   const dndClassTitle = dndClass ? dndClass.name : 'Class Loading...';
 
@@ -68,7 +69,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     getDndClass: (dndClassSlug: string) => {
-      dispatch(rest.actions.getDndClass({ slug: dndClassSlug }));
+      dispatch(rest.actions.getDndClass({ id: dndClassSlug }));
     },
   };
 }

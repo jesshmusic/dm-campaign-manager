@@ -6,6 +6,7 @@ import rest from '../../api/api';
 import { connect } from 'react-redux';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { useParams } from 'react-router-dom';
 
 const styles = require('./section.module.scss');
 
@@ -15,13 +16,13 @@ const Section = (props: {
     description: string;
   };
   loading: boolean;
-  sectionSlug: string;
   getSection: (sectionSlug: string) => void;
 }) => {
-  const { section, loading, sectionSlug, getSection } = props;
+  const { section, loading, getSection } = props;
+  const { sectionSlug } = useParams<'sectionSlug'>();
 
   React.useEffect(() => {
-    getSection(sectionSlug);
+    getSection(sectionSlug!);
   }, [sectionSlug]);
 
   const sectionTitle = section ? section.name : 'Loading...';
@@ -62,7 +63,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     getSection: (sectionSlug: string) => {
-      dispatch(rest.actions.getSection({ slug: sectionSlug }));
+      dispatch(rest.actions.getSection({ id: sectionSlug }));
     },
   };
 }

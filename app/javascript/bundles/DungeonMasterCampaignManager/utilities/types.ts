@@ -232,7 +232,6 @@ export interface ItemProps {
 
 export type ItemPageProps = {
   item?: ItemProps;
-  itemSlug: string;
   getItem: (itemSlug: string) => void;
   loading: boolean;
 };
@@ -460,7 +459,7 @@ export interface PageProps {
   path: string;
   spellsCount: number;
   uri: string;
-  user?: User;
+  user?: UserProps;
   usersCount: number;
 }
 

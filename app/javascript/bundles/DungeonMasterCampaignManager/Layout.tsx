@@ -1,7 +1,7 @@
 import React from 'react';
 import { TransitionGroup, Transition } from 'react-transition-group';
 import { connect } from 'react-redux';
-import { BrowserRouter, Location, Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { useAuth0, User } from '@auth0/auth0-react';
 import { gsap } from 'gsap';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
@@ -25,6 +25,8 @@ import Conditions from './pages/conditions/Conditions';
 import HeroBanner from './components/HeroBanner/HeroBanner';
 import Footer from './components/Footer/Footer';
 import rest from './api/api';
+import UserDashboard from './pages/user-dashboard/UserDashboard';
+import ProtectedRoute from './components/ProtectedRoute';
 
 const styles = require('./app.module.scss');
 gsap.registerPlugin(ScrollToPlugin);
@@ -161,6 +163,10 @@ const Layout = (props) => {
             <Route
               path="/app/monster-generator/"
               element={<MonsterGenerator {...combinedProps} />}
+            />
+            <Route
+              path="/app/user-dashboard"
+              element={<ProtectedRoute as={UserDashboard} {...combinedProps} />}
             />
             <Route path="*" element={<HomePage {...combinedProps} />} />
           </Routes>

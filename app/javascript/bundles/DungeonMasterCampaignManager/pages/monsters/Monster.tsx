@@ -5,19 +5,20 @@ import rest from '../../api/api';
 import { connect } from 'react-redux';
 import DndSpinner from '../../components/DndSpinners/DndSpinner';
 import MonsterBlock from './MonsterBlock';
+import { useParams } from 'react-router-dom';
 
 type MonsterPageProps = {
   monster?: MonsterProps;
-  monsterSlug: string;
   getMonster: (monsterSlug: string) => void;
 };
 
 const Monster = (props: MonsterPageProps) => {
-  const { monster, monsterSlug, getMonster } = props;
+  const { monster, getMonster } = props;
+  const { monsterSlug } = useParams<'monsterSlug'>();
 
   React.useEffect(() => {
-    getMonster(monsterSlug);
-  }, []);
+    getMonster(monsterSlug!);
+  }, [monsterSlug]);
 
   const monsterTitle = monster ? monster.name : 'Monster Loading...';
 
@@ -40,7 +41,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     getMonster: (monsterSlug: string) => {
-      dispatch(rest.actions.getMonster({ slug: monsterSlug }));
+      dispatch(rest.actions.getMonster({ id: monsterSlug }));
     },
   };
 }

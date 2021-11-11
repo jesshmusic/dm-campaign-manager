@@ -15,7 +15,7 @@ const App = (props) => {
         <Auth0Provider
           domain="dev-yfmjdt5a.us.auth0.com"
           clientId="8NlYHEqMlhW6W4kVyNQLtyRguyiGSzrd"
-          redirectUri={window.location.origin}
+          redirectUri={`${window.location.origin}/app/user-dashboard`}
           audience="dmScreenAPI"
           scope="read:user"
           useRefreshTokens

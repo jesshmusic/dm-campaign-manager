@@ -5,20 +5,21 @@ import PageTitle from '../../components/PageTitle/PageTitle';
 import DndSpinner from '../../components/DndSpinners/DndSpinner';
 import rest from '../../api/api';
 import { connect } from 'react-redux';
+import { useParams } from 'react-router-dom';
 
 const styles = require('./conditions.module.scss');
 
 const Condition = (props: {
   condition: ConditionProps;
   loading?: boolean;
-  conditionSlug: string;
   getCondition: (conditionSlug: string) => void;
 }) => {
-  const { condition, getCondition, conditionSlug } = props;
+  const { condition, getCondition } = props;
+  const { conditionSlug } = useParams<'conditionSlug'>();
 
   React.useEffect(() => {
-    getCondition(conditionSlug);
-  }, []);
+    getCondition(conditionSlug!);
+  }, [conditionSlug]);
 
   const conditionTitle = condition ? condition.name : 'Condition Loading...';
 
@@ -53,7 +54,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     getCondition: (conditionSlug: string) => {
-      dispatch(rest.actions.getCondition({ slug: conditionSlug }));
+      dispatch(rest.actions.getCondition({ id: conditionSlug }));
     },
   };
 }

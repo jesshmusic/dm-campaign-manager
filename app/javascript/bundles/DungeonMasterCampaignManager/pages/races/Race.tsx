@@ -5,19 +5,20 @@ import { RaceProps } from '../../utilities/types';
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
 import DndSpinner from '../../components/DndSpinners/DndSpinner';
+import { useParams } from 'react-router-dom';
 
 const styles = require('./races.module.scss');
 
 const Race = (props: {
   race?: RaceProps;
-  raceSlug: string;
   getRace: (raceSlug: string) => void;
 }) => {
-  const { race, raceSlug, getRace } = props;
+  const { race, getRace } = props;
+  const { raceSlug } = useParams<'raceSlug'>();
 
   React.useEffect(() => {
-    getRace(raceSlug);
-  }, []);
+    getRace(raceSlug!);
+  }, [raceSlug]);
 
   const raceTitle = race ? race.name : 'Race Loading...';
 
@@ -101,7 +102,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     getRace: (raceSlug: string) => {
-      dispatch(rest.actions.getRace({ slug: raceSlug }));
+      dispatch(rest.actions.getRace({ id: raceSlug }));
     },
   };
 }
