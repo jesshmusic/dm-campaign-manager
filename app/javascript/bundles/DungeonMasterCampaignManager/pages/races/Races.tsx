@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from '@reach/router';
+import { useNavigate } from 'react-router-dom';
 import { Row } from 'react-table';
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
@@ -50,7 +50,6 @@ const Races = (props: {
     <PageContainer
       pageTitle="Races"
       description="All races for characters. Dungeon Master's Toolbox is a free resource for DMs to manage their campaigns, adventures, and Monsters."
-      breadcrumbs={[{ isActive: true, title: 'Races' }]}
     >
       <PageTitle title={'Races'} />
       <DataTable

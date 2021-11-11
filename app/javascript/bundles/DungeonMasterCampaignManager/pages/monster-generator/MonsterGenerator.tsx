@@ -29,7 +29,6 @@ const MonsterGenerator = (props: {
       description={
         'Several generators to build quick Monsters. Fields can be copied and pasted into Fantasy Grounds.'
       }
-      breadcrumbs={[{ isActive: true, title: 'Monster Generator' }]}
     >
       <PageTitle title={'Monster Generators and Converters'} />
       <div className={styles.monsterGenWrapper}>

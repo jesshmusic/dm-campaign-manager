@@ -11,7 +11,7 @@ import PageTitle from '../../components/PageTitle/PageTitle';
 import { ConditionProps } from '../../utilities/types';
 import DataTable from '../../components/DataTable/DataTable';
 import { Row } from 'react-table';
-import { useNavigate } from '@reach/router';
+import { useNavigate } from 'react-router-dom';
 
 const Conditions = (props: {
   getConditions: (searchTerm?: string) => void;
@@ -58,7 +58,6 @@ const Conditions = (props: {
       description={
         "All D&D conditions. Dungeon Master's Toolbox is a free resource for DMs to manage their campaigns, adventures, and Monsters."
       }
-      breadcrumbs={[{ isActive: true, title: 'Conditions' }]}
     >
       <PageTitle title={'Conditions'} />
       <DataTable

@@ -3,7 +3,7 @@ import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
 import { MonsterSummary, MonsterType } from '../../utilities/types';
 import rest from '../../api/api';
-import { useNavigate } from '@reach/router';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 import DataTable from '../../components/DataTable/DataTable';
 import { Row } from 'react-table';
@@ -92,7 +92,6 @@ const Monsters = (props: {
       description={
         "All monsters with descriptions and stats. Dungeon Master's Toolbox is a free resource for DMs to manage their campaigns, adventures, and Monsters."
       }
-      breadcrumbs={[{ isActive: true, title: 'Monsters' }]}
     >
       <PageTitle title={'Monsters'} />
       <DataTable

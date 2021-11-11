@@ -30,7 +30,6 @@ const Section = (props: {
     <PageContainer
       pageTitle={sectionTitle}
       description={`${sectionTitle}. Dungeon Master's Toolbox is a free resource for DMs to manage their dndClasses, adventures, and Monsters.`}
-      breadcrumbs={[{ isActive: true, title: sectionTitle }]}
     >
       <PageTitle title={sectionTitle} />
       {!loading && section ? (

@@ -1,6 +1,5 @@
 import ReactOnRails from 'react-on-rails';
 import reduxApi from 'redux-api';
-import { navigate } from '@reach/router';
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 
 export function getHeaders() {
@@ -150,36 +149,6 @@ export default reduxApi({
         headers,
       };
     },
-  },
-  userLogin: {
-    url: '/users/sign_in',
-    options() {
-      const headers = getHeaders();
-      return {
-        method: 'post',
-        headers,
-      };
-    },
-    postfetch: [
-      () => {
-        navigate('/');
-      },
-    ],
-  },
-  userLogout: {
-    url: '/users/sign_out',
-    options() {
-      const headers = getHeaders();
-      return {
-        method: 'delete',
-        headers,
-      };
-    },
-    postfetch: [
-      () => {
-        navigate('/');
-      },
-    ],
   },
 })
   .use('options', (url, params, getState) => {

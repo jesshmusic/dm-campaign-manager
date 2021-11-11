@@ -28,10 +28,6 @@ const Spell = (props: {
     <PageContainer
       pageTitle={spellTitle}
       description={`Spell: ${spellTitle}. Dungeon Master's Toolbox is a free resource for DMs to manage their dndClasses, adventures, and Monsters.`}
-      breadcrumbs={[
-        { url: '/app/spells', isActive: false, title: 'Spells' },
-        { isActive: true, title: spellTitle },
-      ]}
     >
       {spell ? (
         <div className={styles.spell}>

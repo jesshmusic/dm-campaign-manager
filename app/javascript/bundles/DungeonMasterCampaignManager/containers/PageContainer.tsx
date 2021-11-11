@@ -1,7 +1,6 @@
 import React from 'react';
 
 // Bootstrap
-import Footer from '../components/Footer/Footer';
 import FlashMessages from '../components/Alerts/FlashMessages';
 import '../stylesheets/_fonts.scss';
 import '../stylesheets/application.scss';
@@ -10,20 +9,28 @@ import { connect } from 'react-redux';
 import Breadcrumbs, {
   BreadCrumbProps,
 } from '../components/Breadcrumbs/Breadcrumbs';
-import { User } from '@auth0/auth0-react';
+import SideBar from '../components/SideBar/SideBar';
+import Util from '../utilities/utilities';
 
 const styles = require('./page-container.module.scss');
 
 type PageContainerProps = {
-  breadcrumbs: BreadCrumbProps[];
   children?: React.ReactNode;
   description: string;
   pageTitle: string;
-  user?: User;
 };
 
 const PageContainer = (props: PageContainerProps) => {
-  const { breadcrumbs, children, description, pageTitle, user } = props;
+  const { children, description, pageTitle } = props;
+  const [isMobile, setIsMobile] = React.useState(Util.isMobileWidth());
+
+  React.useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(Util.isMobileWidth());
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   return (
     <div>
@@ -32,6 +39,8 @@ const PageContainer = (props: PageContainerProps) => {
         <title>{pageTitle} | Dungeon Master&apos;s Screen</title>
         <meta name="description" content={description} />
       </Helmet>
+      <SideBar isCollapsed={isMobile} />
+      <Breadcrumbs />
       <div className={styles.pageWrapper}>
         <div className={styles.pageContent}>
           <div className={styles.page}>{children}</div>

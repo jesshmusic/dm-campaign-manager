@@ -8,7 +8,7 @@ import PageTitle from '../../../components/PageTitle/PageTitle';
 import { Column, Row } from 'react-table';
 import DataTable from '../../../components/DataTable/DataTable';
 import { ItemType } from '../use-data';
-import { useNavigate } from '@reach/router';
+import { useNavigate } from 'react-router-dom';
 
 type ItemsListProps = {
   columns: Array<Column<any>>;
@@ -44,7 +44,6 @@ const ItemsList = ({
     <PageContainer
       pageTitle={pageTitle}
       description={`${pageTitle} records with descriptions and stats. Dungeon Master's Toolbox is a free resource for DMs to manage their campaigns, adventures, and Monsters.`}
-      breadcrumbs={breadCrumbs}
     >
       <PageTitle title={pageTitle} />
       <DataTable

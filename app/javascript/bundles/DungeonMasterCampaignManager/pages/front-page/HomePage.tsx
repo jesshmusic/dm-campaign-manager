@@ -2,7 +2,7 @@ import React from 'react';
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
 import NameField from './components/NameField';
-import { Link } from '@reach/router';
+import { Link } from 'react-router-dom';
 import TavernNameField from './components/TavernNameField';
 import { PageProps } from '../../utilities/types';
 import { GiBarbute } from 'react-icons/all';
@@ -21,7 +21,6 @@ const HomePage = (props: PageProps) => {
       description={
         "Dungeon Master's Screen is a free resource for DMs for reference that includes tools for smooth games."
       }
-      breadcrumbs={[]}
     >
       <div className={styles.wrapper}>
         <PageTitle title={'The Dungeon Master Screen'} isDraconis />

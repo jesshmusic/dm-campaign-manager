@@ -1,7 +1,7 @@
 import React from 'react';
 import BreadcrumbLink from './BreadcrumbLink';
-import { navigate, WindowLocation } from '@reach/router';
 import { GiCastle, GiPointing, GiTwoHandedSword } from 'react-icons/all';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const styles = require('./breadcrumbs.module.scss');
 
@@ -22,8 +22,9 @@ const pathToTitle = (pathName: string): string => {
   return newName.replace('-', ' ');
 };
 
-const Breadcrumbs = (props: { location: WindowLocation }) => {
-  const { location } = props;
+const Breadcrumbs = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [paths, setPaths] = React.useState<{ url: string; title: string }[]>(
     []
   );

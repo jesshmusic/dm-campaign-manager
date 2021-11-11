@@ -1,4 +1,4 @@
-import { Link, Match } from '@reach/router';
+import { Link, useMatch, useResolvedPath } from 'react-router-dom';
 import React from 'react';
 import { GiDragonHead } from 'react-icons/all';
 import { MenuItem } from 'react-pro-sidebar';
@@ -11,26 +11,24 @@ export const SidebarLink = (props: {
   to: string;
 }) => {
   const { title, icon, to } = props;
+  let resolved = useResolvedPath(to);
+  let match = useMatch({ path: resolved.pathname, end: true });
   return (
-    <Match path={to}>
-      {({ match }) => (
-        <MenuItem icon={icon} active={!!match}>
-          {title}
-          <Link to={to} />
-        </MenuItem>
-      )}
-    </Match>
+    <MenuItem icon={icon} active={!!match}>
+      {title}
+      <Link to={to} />
+    </MenuItem>
   );
 };
 
 export const NavLink = (props) => {
   const { showActiveIcon, children, icon, ...inputProps } = props;
+  let resolved = useResolvedPath(props.to);
+  let match = useMatch({ path: resolved.pathname, end: true });
   return (
     <Link
       {...inputProps}
-      getProps={({ isCurrent }) => ({
-        className: isCurrent ? styles.navLinkActive : styles.navLink,
-      })}
+      className={!!match ? styles.navLinkActive : styles.navLink}
     >
       <span>
         <span className={styles.icon}>{icon}</span>

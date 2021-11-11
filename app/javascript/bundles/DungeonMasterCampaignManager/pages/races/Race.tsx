@@ -41,10 +41,6 @@ const Race = (props: {
 
   return (
     <PageContainer
-      breadcrumbs={[
-        { url: '/app/races', isActive: false, title: 'Races' },
-        { isActive: true, title: raceTitle },
-      ]}
       description={`Monster: ${raceTitle}. Dungeon Master's Toolbox is a free resource for DMs to manage their dndClasses, adventures, and Monsters.`}
       pageTitle={raceTitle}
     >

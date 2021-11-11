@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import { Link } from '@reach/router';
+import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 
 const styles = require('./page-title.module.scss');
@@ -16,15 +16,25 @@ type PageTitleProps = {
   buttonVariant?: string;
   subtitle?: string;
   title: string;
-}
+};
 
 const PageTitle = (props: PageTitleProps) => {
-  const { isDraconis, hasButton, buttonLink, buttonTitle, buttonVariant, subtitle, title } = props;
+  const {
+    isDraconis,
+    hasButton,
+    buttonLink,
+    buttonTitle,
+    buttonVariant,
+    subtitle,
+    title,
+  } = props;
   return (
     <div className={styles.pageTitle}>
-      <h1 className={classNames({
-        [styles.draconis]: isDraconis
-      })}>
+      <h1
+        className={classNames({
+          [styles.draconis]: isDraconis,
+        })}
+      >
         {title}
         {hasButton && buttonLink ? (
           <Link to={buttonLink} className={`btn btn-${buttonVariant}`}>
@@ -32,9 +42,7 @@ const PageTitle = (props: PageTitleProps) => {
           </Link>
         ) : null}
       </h1>
-      {subtitle ? (
-        <p className={styles.subtitle}>{subtitle}</p>
-      ) : null}
+      {subtitle ? <p className={styles.subtitle}>{subtitle}</p> : null}
     </div>
   );
 };

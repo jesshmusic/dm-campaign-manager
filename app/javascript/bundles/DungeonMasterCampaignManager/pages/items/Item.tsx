@@ -9,7 +9,7 @@ import { ItemInfoBlock, ItemPageProps } from '../../utilities/types';
 import remarkGfm from 'remark-gfm';
 import ReactMarkdown from 'react-markdown';
 import { singleItemUseData } from './use-data';
-import { Link } from '@reach/router';
+import { Link } from 'react-router-dom';
 
 const styles = require('./item.module.scss');
 
@@ -38,15 +38,6 @@ const Item = (props: ItemPageProps) => {
     <PageContainer
       pageTitle={itemTitle}
       description={`Item: ${itemTitle}. Dungeon Master's Toolbox is a free resource for DMs to manage their dndClasses, adventures, and Monsters.`}
-      breadcrumbs={[
-        { url: '/app/items', isActive: false, title: 'Items & Equipment' },
-        {
-          url: itemInfo ? itemInfo.parentUrl : '',
-          isActive: false,
-          title: itemInfo ? itemInfo.parentTitle : '',
-        },
-        { isActive: true, title: itemTitle },
-      ]}
     >
       <PageTitle title={itemTitle} />
       {item && itemInfo ? (

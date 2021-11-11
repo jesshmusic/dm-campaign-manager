@@ -5,7 +5,7 @@ import rest from '../../api/api';
 // Container
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
-import { useNavigate } from '@reach/router';
+import { useNavigate } from 'react-router-dom';
 import { DndClassSummary } from '../../utilities/types';
 import DataTable from '../../components/DataTable/DataTable';
 import { Row } from 'react-table';
@@ -61,7 +61,6 @@ const DndClasses = (props: {
       description={
         "All D&D classes. Dungeon Master's Toolbox is a free resource for DMs to manage their classes, adventures, and Monsters."
       }
-      breadcrumbs={[{ isActive: true, title: 'Character Classes' }]}
     >
       <PageTitle title={'Character Classes'} />
       <DataTable

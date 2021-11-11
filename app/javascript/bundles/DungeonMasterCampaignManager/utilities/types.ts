@@ -1,5 +1,5 @@
 import React from 'react';
-import { Location, NavigateFn } from '@reach/router';
+// import { Location, NavigateFn } from '@reach/router';
 import { ItemType } from '../pages/items/use-data';
 import { User } from '@auth0/auth0-react';
 import { FlashMessageType } from '../reducers/flashMessages';
@@ -456,8 +456,6 @@ export interface PageProps {
   children?: React.ReactNode;
   flashMessages: FlashMessage[];
   itemsCount: number;
-  location: Location;
-  navigate: NavigateFn;
   monstersCount: number;
   path: string;
   spellsCount: number;

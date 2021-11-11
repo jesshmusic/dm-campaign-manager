@@ -23,10 +23,6 @@ const Monster = (props: MonsterPageProps) => {
 
   return (
     <PageContainer
-      breadcrumbs={[
-        { url: '/app/monsters', isActive: false, title: 'Monsters' },
-        { isActive: true, title: monsterTitle },
-      ]}
       description={`Monster: ${monsterTitle}. Dungeon Master's Toolbox is a free resource for DMs to manage their dndClasses, adventures, and Monsters.`}
       pageTitle={monsterTitle}
     >

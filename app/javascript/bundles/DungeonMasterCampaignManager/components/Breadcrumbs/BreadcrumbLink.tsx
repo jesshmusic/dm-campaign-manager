@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import { Link } from '@reach/router';
+import { Link } from 'react-router-dom';
 import { GiTwoHandedSword } from 'react-icons/all';
 
 const styles = require('./breadcrumbs.module.scss');

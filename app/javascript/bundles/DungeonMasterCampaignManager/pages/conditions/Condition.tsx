@@ -26,10 +26,6 @@ const Condition = (props: {
     <PageContainer
       pageTitle={conditionTitle}
       description={`Condition: ${conditionTitle}. Dungeon Master's Toolbox is a free resource for DMs to manage their dndClasses, adventures, and Monsters.`}
-      breadcrumbs={[
-        { url: '/app/conditions', isActive: false, title: 'Conditions' },
-        { isActive: true, title: conditionTitle },
-      ]}
     >
       {condition ? (
         <div className={styles.condition}>
