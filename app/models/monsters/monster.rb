@@ -160,7 +160,7 @@ class Monster < ApplicationRecord
   end
 
   def hit_points_string
-    "#{hit_points} (#{hit_dice_string})"
+    "#{hit_points} #{hit_dice_string}"
   end
 
   def challenge_string
@@ -175,7 +175,10 @@ class Monster < ApplicationRecord
                     name: 'A',
                     monster_type: 'B',
                     challenge_rating: 'C',
-                    alignment: 'D'
+                    alignment: 'D',
+                  },
+                  associated_against: {
+                    user: [:name, :id]
                   },
                   using: {
                     tsearch: {

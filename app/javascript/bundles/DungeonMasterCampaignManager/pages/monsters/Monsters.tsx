@@ -7,8 +7,7 @@ import { navigate } from '@reach/router';
 import { connect } from 'react-redux';
 import DataTable from '../../components/DataTable/DataTable';
 import { Row } from 'react-table';
-import { GiClosedDoors, GiOpenGate } from 'react-icons/all';
-import monsters from '../../reducers/monsters';
+import { GiBeerStein } from 'react-icons/all';
 import { useAuth0 } from '@auth0/auth0-react';
 
 const Monsters = (props: {
@@ -58,6 +57,10 @@ const Monsters = (props: {
         Header: 'Hit Points',
         accessor: 'hitPoints',
       },
+      {
+        Header: 'Homebrew',
+        accessor: 'hasUser',
+      },
     ],
     []
   );
@@ -70,6 +73,13 @@ const Monsters = (props: {
       challenge: monster.challengeRating,
       hitPoints: monster.hitPoints,
       slug: monster.slug,
+      hasUser: monster.userId ? (
+        <div style={{ textAlign: 'center' }}>
+          <GiBeerStein />
+        </div>
+      ) : (
+        ''
+      ),
     }));
   }, [monsters]);
 

@@ -411,6 +411,7 @@ export interface MonsterProps {
   speeds: MonsterInfoData[];
   monsterProficiencies: MonsterProf[];
   fguXml?: string;
+  user?: UserProps;
 }
 
 export interface Monsters {
@@ -441,6 +442,7 @@ export interface MonsterSummary {
   profBonus: number;
   saveDc: number;
   slug: string;
+  userId?: number;
   xpString: string;
 }
 
