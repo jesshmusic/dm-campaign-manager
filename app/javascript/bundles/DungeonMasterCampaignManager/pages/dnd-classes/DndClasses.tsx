@@ -5,7 +5,7 @@ import rest from '../../api/api';
 // Container
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
-import { navigate } from '@reach/router';
+import { useNavigate } from '@reach/router';
 import { DndClassSummary } from '../../utilities/types';
 import DataTable from '../../components/DataTable/DataTable';
 import { Row } from 'react-table';
@@ -16,6 +16,8 @@ const DndClasses = (props: {
   loading: boolean;
 }) => {
   const { getDndClasses, dndClasses, loading } = props;
+  const navigate = useNavigate();
+
   React.useEffect(() => {
     getDndClasses();
   }, []);

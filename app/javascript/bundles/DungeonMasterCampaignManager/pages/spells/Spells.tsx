@@ -11,7 +11,7 @@ import PageTitle from '../../components/PageTitle/PageTitle';
 import { SpellProps } from '../../utilities/types';
 import DataTable from '../../components/DataTable/DataTable';
 import { Row } from 'react-table';
-import { navigate } from '@reach/router';
+import { useNavigate } from '@reach/router';
 
 const Spells = (props: {
   getSpells: (searchTerm?: string) => void;
@@ -19,6 +19,7 @@ const Spells = (props: {
   loading: boolean;
 }) => {
   const { getSpells, loading, spells } = props;
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     getSpells();

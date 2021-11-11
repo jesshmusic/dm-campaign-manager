@@ -1,5 +1,5 @@
 import React from 'react';
-import { navigate } from '@reach/router';
+import { useNavigate } from '@reach/router';
 import { Row } from 'react-table';
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
@@ -14,6 +14,7 @@ const Races = (props: {
   loading: boolean;
 }) => {
   const { getRaces, loading, races } = props;
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     getRaces();

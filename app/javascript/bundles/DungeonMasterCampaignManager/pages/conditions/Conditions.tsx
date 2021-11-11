@@ -11,7 +11,7 @@ import PageTitle from '../../components/PageTitle/PageTitle';
 import { ConditionProps } from '../../utilities/types';
 import DataTable from '../../components/DataTable/DataTable';
 import { Row } from 'react-table';
-import { navigate } from '@reach/router';
+import { useNavigate } from '@reach/router';
 
 const Conditions = (props: {
   getConditions: (searchTerm?: string) => void;
@@ -19,6 +19,7 @@ const Conditions = (props: {
   loading: boolean;
 }) => {
   const { getConditions, loading, conditions } = props;
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     getConditions();

@@ -8,7 +8,7 @@ import PageTitle from '../../../components/PageTitle/PageTitle';
 import { Column, Row } from 'react-table';
 import DataTable from '../../../components/DataTable/DataTable';
 import { ItemType } from '../use-data';
-import { navigate } from '@reach/router';
+import { useNavigate } from '@reach/router';
 
 type ItemsListProps = {
   columns: Array<Column<any>>;
@@ -34,6 +34,7 @@ const ItemsList = ({
           { isActive: true, title: pageTitle },
         ]
       : [{ isActive: true, title: pageTitle }];
+  const navigate = useNavigate();
 
   const goToPage = (row: Row<any>) => {
     navigate(`/app/items/${row.original.slug}`);

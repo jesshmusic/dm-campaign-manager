@@ -3,7 +3,7 @@ import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
 import { MonsterSummary, MonsterType } from '../../utilities/types';
 import rest from '../../api/api';
-import { navigate } from '@reach/router';
+import { useNavigate } from '@reach/router';
 import { connect } from 'react-redux';
 import DataTable from '../../components/DataTable/DataTable';
 import { Row } from 'react-table';
@@ -17,11 +17,10 @@ const Monsters = (props: {
   loading: boolean;
 }) => {
   const { getMonsters, loading, monsters } = props;
-  const { isLoading, error } = useAuth0();
+  const { isLoading } = useAuth0();
+  const navigate = useNavigate();
 
   React.useEffect(() => {
-    console.log(isLoading);
-    console.log(error);
     if (!isLoading) {
       getMonsters();
     }
