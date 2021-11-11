@@ -10,9 +10,6 @@ module Admin::V1
     # GET /v1/monsters.json
     def index
       authorize Monster
-      puts '------CURRENT USER-------'
-      puts @current_user
-      puts '-------------------------'
       @monsters = if params[:search].present?
                     Monster.search_for(params[:search]).order(monster_type: :asc, name: :asc)
                   else

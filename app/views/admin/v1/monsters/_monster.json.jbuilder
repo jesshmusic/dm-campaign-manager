@@ -63,4 +63,10 @@ json.special_abilities monster.special_abilities do |action|
   json.extract! action, :name, :desc
 end
 
+if monster.user
+  json.user do
+    json.extract! monster.user, :id, :name, :email, :role
+  end
+end
+
 json.url v1_monster_url(monster, format: :json)
