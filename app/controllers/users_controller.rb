@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 
 class UsersController < SecuredController
-  before_action :set_user, only: %i[show edit update change_role destroy]
+  before_action :set_user
   before_action :set_users, only: %i[index]
   after_action :verify_authorized
 
   # GET /v1/users
   def index
-    authorize User
+    puts @current_user
+    authorize @current_user
     @users = if params[:search].present?
                User.search_for(params[:search])
              else
@@ -40,7 +41,7 @@ class UsersController < SecuredController
 
   # GET /v1/users/{id}
   def show
-    authorize @user
+    authorize @current_user
   end
 
   def create
@@ -48,46 +49,46 @@ class UsersController < SecuredController
   end
 
   def edit
-    authorize @user
+    authorize @current_user
   end
 
   # PATCH/PUT /users/1
   def update
-    authorize @user
+    authorize @current_user
     respond_to do |format|
-      if @user.update(user_params)
+      if @current_user.update(user_params)
         format.html { redirect_to user_path, notice: 'UserProps was successfully updated.' }
         format.json
       else
         format.html { render :edit }
-        format.json { render json: @user.errors, status: :unprocessable_entity }
+        format.json { render json: @current_user.errors, status: :unprocessable_entity }
       end
     end
   end
 
   # PATCH/PUT /v1/users/1/change_role
   def change_role
-    authorize @user
-    if @user.role == 'dungeon_master'
-      @user.role = :player
-    elsif @user.role == 'player'
-      @user.role = :dungeon_master
+    authorize @current_user
+    if @current_user.role == 'dungeon_master'
+      @current_user.role = :player
+    elsif @current_user.role == 'player'
+      @current_user.role = :dungeon_master
     end
     respond_to do |format|
-      if @user.save
+      if @current_user.save
         format.html { redirect_to user_path, notice: 'UserProps role was successfully changed.' }
         format.json
       else
         format.html { render :index }
-        format.json { render json: @user.errors, status: :unprocessable_entity }
+        format.json { render json: @current_user.errors, status: :unprocessable_entity }
       end
     end
   end
 
   # DELETE /users/1
   def destroy
-    authorize @user
-    @user.soft_delete
+    authorize @current_user
+    @current_user.soft_delete
     respond_to do |format|
       format.html { redirect_to user_path, notice: 'UserProps was successfully deleted.' }
       format.json { head :no_content }
@@ -97,7 +98,8 @@ class UsersController < SecuredController
   private
 
   def set_user
-    @user = User.find(params[:id])
+    curr_user_atts = session[:user]
+    @current_user = curr_user_atts ? User.find_by_auth_id(curr_user_atts['auth_id']) : nil
   end
 
   def set_users

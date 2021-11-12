@@ -153,7 +153,6 @@ export default reduxApi({
 })
   .use('options', (url, params, getState) => {
     const state = getState();
-    console.log(state);
     const token = state.users && state.users.token ? state.users.token : null;
     const railsHeaders = getHeaders();
     const headers = {
@@ -163,7 +162,6 @@ export default reduxApi({
     };
     if (token) {
       const newHeaders = { ...headers, Authorization: `Bearer ${token}` };
-      console.log(newHeaders);
       return {
         headers: newHeaders,
       };

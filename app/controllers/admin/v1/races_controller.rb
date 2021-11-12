@@ -2,6 +2,7 @@
 
 module Admin::V1
   class RacesController < SecuredController
+    before_action :set_user
     before_action :set_race, only: [:show, :update, :destroy]
     skip_before_action :authorize_request, only: %i[index show]
 
@@ -23,12 +24,12 @@ module Admin::V1
                  else
                    Race.all
                  end
-        @races = if !current_user
+        @races = if !@current_user
                    @races.where(user_id: nil).order(name: :asc)
-                 elsif current_user.admin?
+                 elsif @current_user.admin?
                    @races.order(name: :asc)
                  else
-                   @races.where(user_id: nil).or(@races.where(user_id: current_user.id)).order(name: :asc)
+                   @races.where(user_id: nil).or(@races.where(user_id: @current_user.id)).order(name: :asc)
                  end
         respond_to do |format|
           format.html { @races }
@@ -52,7 +53,7 @@ module Admin::V1
     def create
       @race = Race.new(race_params)
       authorize @race
-      @race.user = current_user if current_user.dungeon_master?
+      @race.user = @current_user if @current_user.dungeon_master?
 
       respond_to do |format|
         if @current_user.dungeon_master? && @current_user.races << @race
@@ -95,6 +96,11 @@ module Admin::V1
     end
 
     private
+
+    def set_user
+      curr_user_atts = session[:user]
+      @current_user = curr_user_atts ? User.find_by_auth_id(curr_user_atts['auth_id']) : nil
+    end
 
     # Use callbacks to share common setup or constraints between api.
     def set_race

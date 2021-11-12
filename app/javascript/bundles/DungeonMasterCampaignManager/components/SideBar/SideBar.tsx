@@ -144,7 +144,11 @@ const SideBar = (props: {
               icon={<GiEvilMinion />}
             />
             {currentUser && currentUser.role === 'admin' ? (
-              <SidebarLink to="/app/admin" title="Admin" icon={<GiKing />} />
+              <SidebarLink
+                to="/app/admin-dashboard"
+                title="Admin"
+                icon={<GiKing />}
+              />
             ) : null}
             {isAuthenticated && user ? (
               <>

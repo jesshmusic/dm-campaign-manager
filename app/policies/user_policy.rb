@@ -2,6 +2,7 @@
 
 class UserPolicy < ApplicationPolicy
   def index?
+    puts user
     user.admin?
   end
 

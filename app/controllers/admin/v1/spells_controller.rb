@@ -2,6 +2,7 @@
 
 module Admin::V1
   class SpellsController < SecuredController
+    before_action :set_user
     before_action :set_spell, only: %i[show edit update destroy]
     skip_before_action :authorize_request, only: %i[index show]
 
@@ -139,6 +140,11 @@ module Admin::V1
     end
 
     private
+
+    def set_user
+      curr_user_atts = session[:user]
+      @current_user = curr_user_atts ? User.find_by_auth_id(curr_user_atts['auth_id']) : nil
+    end
 
     # Use callbacks to share common setup or constraints between api.
     def set_spell

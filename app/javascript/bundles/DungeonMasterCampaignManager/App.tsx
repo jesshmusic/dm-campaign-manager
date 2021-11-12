@@ -4,7 +4,7 @@ import { Auth0Provider } from '@auth0/auth0-react';
 import { gsap } from 'gsap';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import store from './store/store';
-import Layout from './Layout';
+import Layout from './containers/Layout';
 import { BrowserRouter } from 'react-router-dom';
 gsap.registerPlugin(ScrollToPlugin);
 

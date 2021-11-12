@@ -2,6 +2,7 @@
 
 module Admin::V1
   class DndClassesController < SecuredController
+    before_action :set_user
     before_action :set_dnd_class, only: %i[show edit update destroy]
     skip_before_action :authorize_request, only: %i[index show]
 
@@ -14,12 +15,12 @@ module Admin::V1
                        DndClass.all
                      end
 
-      @dnd_classes = if !current_user
+      @dnd_classes = if !@current_user
                        @dnd_classes.where(user_id: nil)
-                     elsif current_user.admin?
+                     elsif @current_user.admin?
                        @dnd_classes
                      else
-                       @dnd_classes.where(user_id: nil).or(@dnd_classes.where(user_id: current_user.id))
+                       @dnd_classes.where(user_id: nil).or(@dnd_classes.where(user_id: @current_user.id))
                      end
       respond_to do |format|
         format.html { @pagy, @dnd_classes = pagy(@dnd_classes) }
@@ -37,7 +38,7 @@ module Admin::V1
     def create
       @dnd_class = DndClass.new(dnd_class_params)
       authorize @dnd_class
-      @dnd_class.user = current_user if current_user.dungeon_master?
+      @dnd_class.user = @current_user if @current_user.dungeon_master?
       @dnd_class.multi_classing = MultiClassing.create()
       respond_to do |format|
         if @current_user.dungeon_master? && @current_user.dnd_classes << @dnd_class
@@ -80,6 +81,11 @@ module Admin::V1
     end
 
     private
+
+    def set_user
+      curr_user_atts = session[:user]
+      @current_user = curr_user_atts ? User.find_by_auth_id(curr_user_atts['auth_id']) : nil
+    end
 
     # Use callbacks to share common setup or constraints between api.
     def set_dnd_class

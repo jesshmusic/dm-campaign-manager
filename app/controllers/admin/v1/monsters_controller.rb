@@ -2,7 +2,7 @@
 
 module Admin::V1
   class MonstersController < SecuredController
-    before_action :set_current_user
+    before_action :set_user
     before_action :set_monster, only: %i[show edit update destroy]
     skip_before_action :authorize_request, only: %i[index show monster_refs monster_categories generate_monster convert_2e_npc generate_commoner calculate_cr generate_action_desc]
 
@@ -155,7 +155,7 @@ module Admin::V1
 
     private
 
-    def set_current_user
+    def set_user
       curr_user_atts = session[:user]
       @current_user = curr_user_atts ? User.find_by_auth_id(curr_user_atts['auth_id']) : nil
     end

@@ -2,6 +2,7 @@
 
 module Admin::V1
   class ItemsController < SecuredController
+    before_action :set_user
     before_action :set_item, only: %i[show edit update destroy]
     skip_before_action :authorize_request, only: %i[index show]
 
@@ -31,12 +32,12 @@ module Admin::V1
           @items = @items.where('\'Two-Handed\' = ANY (weapon_properties)')
                          .or(@items.where.not(weapon_2h_damage_type: [nil, '']))
         end
-        @items = if !current_user
+        @items = if !@current_user
                    @items.where(user_id: nil)
-                 elsif current_user.admin?
+                 elsif @current_user.admin?
                    @items
                  else
-                   @items.where(user_id: nil).or(@items.where(user_id: current_user.id))
+                   @items.where(user_id: nil).or(@items.where(user_id: @current_user.id))
                  end
         respond_to do |format|
           format.html { @pagy, @items = pagy(@items) }
@@ -70,7 +71,7 @@ module Admin::V1
                 Item.new(item_params('Item'))
               end
       authorize @item
-      @item.user = current_user if current_user.dungeon_master?
+      @item.user = @current_user if @current_user.dungeon_master?
 
       respond_to do |format|
         if @item.save
@@ -125,6 +126,11 @@ module Admin::V1
     end
 
     private
+
+    def set_user
+      curr_user_atts = session[:user]
+      @current_user = curr_user_atts ? User.find_by_auth_id(curr_user_atts['auth_id']) : nil
+    end
 
     # Use callbacks to share common setup or constraints between api.
     def set_item

@@ -11,7 +11,8 @@ class ApplicationController < ActionController::Base
   # @return [User]
   def current_user
     return if session[:user].nil?
-    @current_user ||= User.find_by_auth_id(session[:user][:auth_id])
+    session_user = session[:user]
+    @current_user ||= User.find_by_auth_id(session_user['auth_id'])
   end
 
   private
