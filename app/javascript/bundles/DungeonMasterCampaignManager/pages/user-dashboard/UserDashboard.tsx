@@ -14,8 +14,9 @@ import MonstersTable from '../monsters/MonstersTable';
 const styles = require('./user-dashboard.module.scss');
 
 const UserDashboard = (props: PageProps) => {
-  const { user } = props;
-  const { isAuthenticated } = useAuth0();
+  const { currentUser } = props;
+  const { isAuthenticated, user } = useAuth0();
+  console.log(user);
   const pageTitle =
     isAuthenticated && user ? `Welcome, ${user.name}` : 'Welcome';
 
@@ -32,8 +33,30 @@ const UserDashboard = (props: PageProps) => {
           isDraconis
         />
         <div className={styles.section}>
+          <h2>Info</h2>
+          <div className={styles.userInfo}>
+            <div className={styles.userPic}>
+              <img src={user!.picture} />
+            </div>
+            <div className={styles.userData}>
+              <p>
+                <strong>Name</strong>
+                {user!.name}
+              </p>
+              <p>
+                <strong>Username</strong>
+                {user!.nickname}
+              </p>
+              <p>
+                <strong>Email</strong>
+                {user!.email}
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className={styles.section}>
           <h2>User Created NPCs</h2>
-          <MonstersTable user={user} />
+          <MonstersTable user={currentUser} />
         </div>
         <div className={styles.section}>
           <Link to="/app/monster-generator" className={styles.buttonBar}>
@@ -53,7 +76,7 @@ const UserDashboard = (props: PageProps) => {
 
 function mapStateToProps(state) {
   return {
-    user: state.users.currentUser,
+    currentUser: state.users.currentUser,
   };
 }
 

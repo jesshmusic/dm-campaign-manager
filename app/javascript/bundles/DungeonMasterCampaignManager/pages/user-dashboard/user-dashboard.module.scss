@@ -9,6 +9,31 @@
   width: 100%;
 }
 
+.userInfo {
+  align-items: center;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.userPic {
+  margin-right: 1rem;
+}
+
+.userData {
+  color: $primary-dark;
+  font-family: $font-family-sans-serif;
+  font-size: $font-size-lg;
+
+  strong {
+    color: $blood-red;
+    margin-right: 1rem;
+  }
+
+  p {
+    margin: 0.25rem 0;
+  }
+}
+
 .buttonBar {
   @include font-size($font-size-lg);
   background-color: $primary;

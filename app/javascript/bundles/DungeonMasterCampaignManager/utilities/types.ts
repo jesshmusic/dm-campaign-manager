@@ -459,7 +459,7 @@ export interface PageProps {
   path: string;
   spellsCount: number;
   uri: string;
-  user?: UserProps;
+  currentUser?: UserProps;
   usersCount: number;
 }
 
