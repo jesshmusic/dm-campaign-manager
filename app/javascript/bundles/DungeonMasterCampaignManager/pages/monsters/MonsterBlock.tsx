@@ -3,6 +3,7 @@ import { MonsterProps } from '../../utilities/types';
 import { abilityScoreModifier } from '../monster-generator/services';
 import Button from '../../components/Button/Button';
 import { Colors } from '../../utilities/enums';
+import { GiBeerStein } from 'react-icons/all';
 
 const styles = require('./monsters.module.scss');
 
@@ -93,7 +94,14 @@ const MonsterBlock = (props: { monster: MonsterProps }) => {
   return (
     <div className={styles.monsterPage}>
       <div className="monster-frame__group">
-        <h1>{monster.name}</h1>
+        <h1>
+          {monster.name}
+          {monster.user ? (
+            <span>
+              <GiBeerStein size={14} /> <small>{monster.user.username}</small>
+            </span>
+          ) : null}
+        </h1>
         <h2>
           {monster.size} {monster.monsterType}, {monster.alignment}
         </h2>

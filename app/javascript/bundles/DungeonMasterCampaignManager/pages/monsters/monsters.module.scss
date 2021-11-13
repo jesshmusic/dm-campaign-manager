@@ -2,7 +2,7 @@
 
 .monsterPage {
   @include resp-container;
-  
+
   background: $card-bg;
   border-collapse: separate;
   border-image: $orange-border;
@@ -20,7 +20,30 @@
   }
 
   h1 {
+    align-items: center;
+    display: flex;
     font-size: 1.625rem;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+
+    span {
+      background-color: rgba($primary, 0.9);
+      border-radius: 1rem;
+      display: flex;
+      padding: 0.5rem 1rem;
+    }
+
+    small {
+      color: $white;
+      font-family: $font-family-sans-serif;
+      font-size: 0.75rem;
+    }
+
+    svg {
+      fill: $white;
+      margin-right: 0.5rem;
+      stroke: lighten($primary, 20%);
+    }
   }
 
   h2 {

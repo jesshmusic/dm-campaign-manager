@@ -65,7 +65,7 @@ end
 
 if monster.user
   json.user do
-    json.extract! monster.user, :id, :name, :email, :role
+    json.extract! monster.user, :id, :name, :email, :role, :username
   end
 end
 
