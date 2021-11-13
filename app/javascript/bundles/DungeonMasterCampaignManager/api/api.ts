@@ -134,8 +134,9 @@ export default reduxApi({
   getSpells: {
     url: '/v1/spells.json',
   },
-  getUser: {
+  user: {
     url: '/users/:id.json',
+    crud: true,
   },
   getUsers: {
     url: '/users.json',

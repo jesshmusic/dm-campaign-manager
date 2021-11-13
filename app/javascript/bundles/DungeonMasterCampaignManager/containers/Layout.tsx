@@ -79,24 +79,18 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     setUser: (user: User, token: string) => {
-      let {
-        sub,
-        nickname,
-        given_name,
-        family_name,
-        locale,
-        picture,
-        updated_at,
-        email_verified,
-        ...userFields
-      } = user;
-      userFields.auth_id = sub;
-      userFields.username = nickname;
+      const currentUser = {
+        auth_id: user.sub,
+        email: user.email,
+        name: user.name,
+        roles: user['https://dm-campaign-manager.appRoles'],
+        username: user.nickname,
+      };
       dispatch(
         rest.actions.setUser(
           {},
           {
-            body: JSON.stringify({ user: userFields }),
+            body: JSON.stringify({ user: currentUser }),
             token,
           }
         )

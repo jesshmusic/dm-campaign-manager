@@ -25,6 +25,7 @@ class UsersController < SecuredController
   # POST /users/set_user/
   def set_auth_user
     authorize User
+    auth_user_params = user_params
     @user = User.find_or_create_by(auth_id: user_params[:auth_id])
     @user.name = user_params[:name]
     @user.email = user_params[:email]
@@ -108,6 +109,8 @@ class UsersController < SecuredController
   end
 
   def user_params
-    params.require(:user).permit(:name, :email, :username, :deleted_at, :role, :roles, :auth_id)
+    params.require(:user).permit(
+      :name, :email, :username, :deleted_at, :role, :auth_id, roles: []
+    )
   end
 end
