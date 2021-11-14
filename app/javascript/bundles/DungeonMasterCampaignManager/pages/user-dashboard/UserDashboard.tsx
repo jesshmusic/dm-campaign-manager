@@ -7,7 +7,6 @@ import { GiBarbute } from 'react-icons/all';
 import { useAuth0 } from '@auth0/auth0-react';
 import NameField from '../front-page/components/NameField';
 import TavernNameField from '../front-page/components/TavernNameField';
-import rest from '../../api/api';
 import { connect } from 'react-redux';
 import MonstersTable from '../monsters/MonstersTable';
 
@@ -16,7 +15,6 @@ const styles = require('./user-dashboard.module.scss');
 const UserDashboard = (props: PageProps) => {
   const { currentUser } = props;
   const { isAuthenticated, user } = useAuth0();
-  console.log(user);
   const pageTitle =
     isAuthenticated && user ? `Welcome, ${user.name}` : 'Welcome';
 

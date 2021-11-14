@@ -460,6 +460,7 @@ export interface PageProps {
   spellsCount: number;
   uri: string;
   currentUser?: UserProps;
+  user?: UserProps;
   usersCount: number;
 }
 
