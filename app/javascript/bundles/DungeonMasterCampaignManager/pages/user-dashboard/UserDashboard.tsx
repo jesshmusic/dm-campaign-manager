@@ -54,7 +54,7 @@ const UserDashboard = (props: PageProps) => {
         </div>
         <div className={styles.section}>
           <h2>User Created NPCs</h2>
-          <MonstersTable user={currentUser} />
+          {currentUser && <MonstersTable user={currentUser} />}
         </div>
         <div className={styles.section}>
           <Link to="/app/monster-generator" className={styles.buttonBar}>
