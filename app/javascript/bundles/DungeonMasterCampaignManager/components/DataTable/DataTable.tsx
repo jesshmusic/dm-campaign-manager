@@ -17,7 +17,7 @@ import {
 } from 'react-icons/all';
 import classNames from 'classnames';
 import DndSpinner from '../DndSpinners/DndSpinner';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import Button from '../Button/Button';
 import { Colors } from '../../utilities/enums';
 import Select from 'react-select';
@@ -102,14 +102,14 @@ const DataTable = ({
     <div className={`table-frame ${styles.tableWrapper}`}>
       {onSearch && (
         <form onSubmit={handleSubmit(handleSearch)}>
-          <div className="input-group mb-3">
+          <div className={styles.inputGroup}>
             <input
               {...register('searchTerm')}
               type="text"
-              className="form-control"
               placeholder="Search..."
             />
             <Button
+              className={styles.searchButton}
               color={Colors.secondary}
               title="Search"
               type="submit"
