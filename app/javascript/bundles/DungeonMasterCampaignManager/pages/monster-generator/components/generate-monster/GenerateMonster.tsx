@@ -5,7 +5,7 @@ import NameFormField from '../NameFormField';
 import { GiDiceTwentyFacesTwenty } from 'react-icons/gi/';
 import { Colors } from '../../../../utilities/enums';
 import Button from '../../../../components/Button/Button';
-import { useData } from '../../use-data';
+import { useData } from './use-data';
 import BaseActionsFormSection from './sections/actions/action-forms/BaseActionsFormSection';
 import GenMonsterSection from './sections/GenMonsterSection';
 import MonsterStatsSection from './sections/MonsterStatsSection';
@@ -60,7 +60,7 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
         {/*{JSON.stringify(testState, null, 2)}*/}
       </pre>
       <Frame
-        title="Random Monster Generator"
+        title="Monster Creator"
         subtitle="Select options to create a new Monster"
         className="random-monster-generator"
       >

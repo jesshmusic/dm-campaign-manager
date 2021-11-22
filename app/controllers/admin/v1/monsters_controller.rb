@@ -4,7 +4,7 @@ module Admin::V1
   class MonstersController < SecuredController
     before_action :set_user
     before_action :set_monster, only: %i[show edit update destroy]
-    skip_before_action :authorize_request, only: %i[index show monster_refs monster_categories generate_monster convert_2e_npc generate_commoner calculate_cr generate_action_desc]
+    skip_before_action :authorize_request, only: %i[index show monster_refs monster_categories generate_monster convert_2e_npc generate_commoner calculate_cr info_for_cr generate_action_desc]
 
     # GET /v1/monsters
     # GET /v1/monsters.json
@@ -105,6 +105,11 @@ module Admin::V1
 
     def generate_action_desc
       render json: { desc: NpcGenerator.generate_action_desc(params) }
+    end
+
+    def info_for_cr
+      cr_info = DndRules.challenge_ratings[params[:challenge_rating].to_sym].as_json
+      render json: { challenge: cr_info }
     end
 
     def calculate_cr

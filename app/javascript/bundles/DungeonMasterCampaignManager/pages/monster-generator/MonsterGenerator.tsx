@@ -8,7 +8,8 @@ import { GiBlacksmith, GiSpikedDragonHead, SiConvertio } from 'react-icons/all';
 import MonsterBlock from '../monsters/MonsterBlock';
 import rest from '../../api/api';
 import { connect } from 'react-redux';
-import { UserProps } from '../../utilities/types';
+import QuickGenerateMonster from './components/quick-generate-monster/QuickGenerateMonster';
+import { GiDiceTwentyFacesTwenty } from 'react-icons/gi/';
 
 const styles = require('./monster-generator.module.scss');
 
@@ -69,6 +70,49 @@ const MonsterGenerator = (props: {
             </div>
           </div>
           <div className="accordion-item">
+            <h3 className="accordion-header" id="quickMonsterGeneratorHeading">
+              <button
+                className="accordion-button collapsed"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#quickMonsterGenerator"
+              >
+                <span style={{ display: 'inline-block', position: 'relative' }}>
+                  <GiDiceTwentyFacesTwenty
+                    textAnchor="middle"
+                    alignmentBaseline="middle"
+                    size={40}
+                    color="#dd9529"
+                  />
+                  <GiSpikedDragonHead
+                    textAnchor="middle"
+                    alignmentBaseline="middle"
+                    style={{
+                      fontSize: '30px',
+                      position: 'absolute',
+                      left: '5px',
+                      bottom: '5px',
+                    }}
+                  />
+                </span>
+                Generate Monster
+              </button>
+            </h3>
+            <div
+              id="quickMonsterGenerator"
+              className="accordion-collapse collapse"
+              aria-labelledby="quickMonsterGeneratorHeading"
+              data-bs-parent="#monsterGeneratorAccordion"
+            >
+              <div className="accordion-body">
+                <QuickGenerateMonster
+                  onGenerateMonster={generateMonster}
+                  token={token}
+                />
+              </div>
+            </div>
+          </div>
+          <div className="accordion-item">
             <h3 className="accordion-header" id="monsterGeneratorHeading">
               <button
                 className="accordion-button collapsed"
@@ -77,7 +121,7 @@ const MonsterGenerator = (props: {
                 data-bs-target="#monsterGenerator"
               >
                 <GiSpikedDragonHead className={'me-2'} size={30} />
-                Generate Monster
+                Create Monster
               </button>
             </h3>
             <div

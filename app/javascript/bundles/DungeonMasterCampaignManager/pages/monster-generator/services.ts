@@ -1,5 +1,12 @@
 import snakecaseKeys from 'snakecase-keys';
-import { ActionTypes, MonsterCRCalcResult, MonsterGeneratorFormFields, MonsterProf, MonsterProps } from '../../utilities/types';
+import {
+  ActionTypes,
+  MonsterCRCalcResult,
+  MonsterCRInfoResult,
+  MonsterGeneratorFormFields,
+  MonsterProf,
+  MonsterProps,
+} from '../../utilities/types';
 import axios from 'axios';
 
 const parseMonsterProficiencies = (values: MonsterGeneratorFormFields) => {
@@ -8,7 +15,7 @@ const parseMonsterProficiencies = (values: MonsterGeneratorFormFields) => {
     values.savingThrows.forEach((save) => {
       monsterProfs.push(<MonsterProf>{
         profId: save.nameOption.value,
-        value: parseInt(save.value as string, 10)
+        value: parseInt(save.value as string, 10),
       });
     });
   }
@@ -16,7 +23,7 @@ const parseMonsterProficiencies = (values: MonsterGeneratorFormFields) => {
     values.skills.forEach((skill) => {
       monsterProfs.push(<MonsterProf>{
         profId: skill.nameOption.value,
-        value: parseInt(skill.value as string, 10)
+        value: parseInt(skill.value as string, 10),
       });
     });
   }
@@ -62,36 +69,36 @@ export const getMonsterObject = (
         spellCasting:
           action.actionType === ActionTypes.spellCasting
             ? action.spellCasting
-            : null
-      }
+            : null,
+      },
     })) || [],
   legendaryActions:
     values.legendaryActions.map((action) => ({
       name: action.name,
-      desc: action.desc
+      desc: action.desc,
     })) || [],
   reactions:
     values.reactions.map((action) => ({
       name: action.name,
-      desc: action.desc
+      desc: action.desc,
     })) || [],
   specialAbilities:
     values.specialAbilities.map((action) => ({
       name: action.name,
-      desc: action.desc
+      desc: action.desc,
     })) || [],
   senses:
     values.senses.map((sense) => ({
       name: sense.name,
-      value: sense.value
+      value: sense.value,
     })) || [],
   speeds:
     values.speeds.map((speed) => ({
       name: speed.name,
-      value: parseInt(speed.value as string, 10)
+      value: parseInt(speed.value as string, 10),
     })) || [],
   monsterProficiencies: parseMonsterProficiencies(values),
-  xp: values.xp
+  xp: values.xp,
 });
 
 export const createMonsterParams = (monster: MonsterProps) => {
@@ -117,7 +124,7 @@ export const createMonsterParams = (monster: MonsterProps) => {
     legendaryActionsAttributes: legendaryActions,
     specialAbilitiesAttributes: specialAbilities,
     reactionsAttributes: reactions,
-    ...rest
+    ...rest,
   };
   return snakecaseKeys(monsterParams);
 };
@@ -140,7 +147,7 @@ export const get2eMonsterObject = (values) => {
     alignment: values.alignment,
     numberOfAttacks: values.numberOfAttacks,
     speed: values.speed,
-    actions: values.actions
+    actions: values.actions,
   };
   return snakecaseKeys(returnChar, { exclude: ['_destroy'] });
 };
@@ -152,8 +159,19 @@ export const calculateCR = async (
     '/v1/calculate_cr',
     {
       params: {
-        monster: snakecaseKeys(getMonsterObject(allValues))
-      }
+        monster: snakecaseKeys(getMonsterObject(allValues)),
+      },
+    }
+  );
+};
+
+export const getCRInfo = async (
+  challengeRating: string
+): Promise<MonsterCRInfoResult> => {
+  return await axios.post<{ challenge_rating: string }, MonsterCRInfoResult>(
+    '/v1/info_for_cr',
+    {
+      challenge_rating: challengeRating,
     }
   );
 };
@@ -188,7 +206,7 @@ const diceNumberFromString = {
   d8: 8,
   d10: 10,
   d12: 12,
-  d20: 20
+  d20: 20,
 };
 
 export const hitPoints = (
@@ -200,4 +218,18 @@ export const hitPoints = (
   let hitPoints = diceAverage + abilityScoreModifier(constitution);
   hitPoints = hitPoints * hitDiceNumber;
   return Math.floor(hitPoints);
+};
+
+export const hitDiceForHitPoints = (
+  hitPoints: number,
+  constitution: number,
+  hitDiceValue: string
+): number => {
+  const hdValueInt = diceNumberFromString[hitDiceValue];
+  const conMod = abilityScoreModifier(constitution);
+  let hitDiceCount = 1;
+  while (hitDiceCount * hdValueInt + conMod < hitPoints) {
+    hitDiceCount += 1;
+  }
+  return hitDiceCount;
 };

@@ -33,6 +33,9 @@ Rails.application.routes.draw do
       post '/calculate_cr', to: 'monsters#calculate_cr',
            as: 'calculate_cr',
            constraints: { format: 'json' }
+      post '/info_for_cr', to: 'monsters#info_for_cr',
+           as: 'info_for_cr',
+           constraints: { format: 'json' }
       post '/generate_action_desc', to: 'monsters#generate_action_desc',
            as: 'generate_action_desc',
            constraints: { format: 'json' }

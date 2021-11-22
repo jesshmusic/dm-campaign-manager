@@ -348,6 +348,24 @@ export type MonsterGeneratorFormFields = {
   speeds: MonsterInfoData[];
 };
 
+export type MonsterQuickGeneratorFormFields = {
+  name: string;
+  alignment: string;
+  alignmentOption: SelectOption;
+  armorClass: number;
+  challengeRatingOption: SelectOption;
+  constitution: number;
+  hitDice: string;
+  hitDiceNumber: number;
+  hitDiceValue: string;
+  hitPoints: number;
+  monsterType: string;
+  monsterTypeOption: SelectOption;
+  monsterSubtype?: string;
+  size: SelectOption;
+  xp: number;
+};
+
 export type MonsterInfoData = {
   name: string;
   nameOption?: SelectOption;
@@ -369,6 +387,22 @@ export type MonsterCRCalcResult = {
         damage_max: number;
         save_dc: number;
       };
+    };
+  };
+};
+
+export type MonsterCRInfoResult = {
+  data: {
+    challenge: {
+      xp: number;
+      prof_bonus: number;
+      armor_class: number;
+      hit_points_min: number;
+      hit_points_max: number;
+      attack_bonus: number;
+      damage_min: number;
+      damage_max: number;
+      save_dc: number;
     };
   };
 };
