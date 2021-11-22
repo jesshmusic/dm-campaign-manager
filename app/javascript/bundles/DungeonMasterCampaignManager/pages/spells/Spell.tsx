@@ -36,13 +36,13 @@ const Spell = (props: {
           <div className={styles.description}>
             {spell.spellLevel} {spell.school.toLowerCase()}
           </div>
-          <InfoBlock title="Casting Time" desc={spell.castingTime} />
-          <InfoBlock title="Range" desc={spell.range} />
+          <InfoBlock title='Casting Time' desc={spell.castingTime} />
+          <InfoBlock title='Range' desc={spell.range} />
           <InfoBlock
-            title="Components"
+            title='Components'
             desc={`${spell.components.join(', ')}${spellMats}`}
           />
-          <InfoBlock title="Duration" desc={spell.duration} />
+          <InfoBlock title='Duration' desc={spell.duration} />
           <p>{spell.description}</p>
           <p>{spell.higherLevel}</p>
         </div>
@@ -55,15 +55,15 @@ const Spell = (props: {
 
 function mapStateToProps(state) {
   return {
-    spell: state.spells.currentSpell,
+    spell: state.spells.currentSpell
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     getSpell: (spellSlug: string) => {
-      dispatch(rest.actions.getSpell({ slug: spellSlug }));
-    },
+      dispatch(rest.actions.getSpell({ id: spellSlug }));
+    }
   };
 }
 
