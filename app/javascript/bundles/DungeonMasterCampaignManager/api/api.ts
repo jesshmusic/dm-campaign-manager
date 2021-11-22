@@ -69,6 +69,16 @@ export default reduxApi({
       };
     },
   },
+  generateQuickMonster: {
+    url: '/v1/quick_monster',
+    options() {
+      const headers = getHeaders();
+      return {
+        method: 'post',
+        headers,
+      };
+    },
+  },
   convert2eNonPlayerCharacter: {
     url: '/v1/convert_2e_monster.json',
     options() {

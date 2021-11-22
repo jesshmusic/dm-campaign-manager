@@ -17,11 +17,17 @@ const MonsterGenerator = (props: {
   monster: any;
   generateCommoner: (gender?: string, race?: string, token?: string) => void;
   generateMonster: (monster: any, token?: string) => void;
+  generateQuickMonster: (monster: any, token?: string) => void;
   convert2eNPC: () => void;
   token?: string;
 }) => {
-  const { token, monster, generateCommoner, generateMonster, convert2eNPC } =
-    props;
+  const {
+    token,
+    monster,
+    generateCommoner,
+    generateMonster,
+    generateQuickMonster,
+  } = props;
   const show2eConverter = false;
 
   return (
@@ -106,7 +112,7 @@ const MonsterGenerator = (props: {
             >
               <div className="accordion-body">
                 <QuickGenerateMonster
-                  onGenerateMonster={generateMonster}
+                  onGenerateMonster={generateQuickMonster}
                   token={token}
                 />
               </div>
@@ -196,6 +202,16 @@ function mapDispatchToProps(dispatch) {
     generateMonster: (monster: any, token?: string) => {
       dispatch(
         rest.actions.generateMonster(
+          {},
+          {
+            body: JSON.stringify({ monster, token }),
+          }
+        )
+      );
+    },
+    generateQuickMonster: (monster: any, token?: string) => {
+      dispatch(
+        rest.actions.generateQuickMonster(
           {},
           {
             body: JSON.stringify({ monster, token }),

@@ -6,6 +6,7 @@ import {
 } from '../../../../utilities/types';
 import { useForm } from 'react-hook-form';
 import {
+  createQuickMonsterParams,
   getCRInfo,
   hitDiceForHitPoints,
   hitDieForSize,
@@ -70,9 +71,8 @@ export const useData = (props: GenerateMonsterProps) => {
   };
 
   const onSubmit = (data) => {
-    // const monster = getMonsterObject(data);
-    // const monsterData = createMonsterParams(monster);
-    // props.onGenerateMonster(monsterData, props.token);
+    const monsterData = createQuickMonsterParams(data);
+    props.onGenerateMonster(monsterData, props.token);
   };
 
   const challengeRatingOptions = getChallengeRatingOptions();
@@ -85,16 +85,28 @@ export const useData = (props: GenerateMonsterProps) => {
         Math.floor(
           Math.random() * (crInfo.hit_points_max - crInfo.hit_points_min)
         ) + crInfo.hit_points_min;
-      const hitDiceCount = hitDiceForHitPoints(
+      const hitDiceInfo = hitDiceForHitPoints(
         hitPoints,
         fields.constitution,
         fields.hitDiceValue
       );
+      UseForm.setValue('armorClass', crInfo.armor_class, {
+        shouldDirty: true,
+        shouldTouch: true,
+      });
       UseForm.setValue('hitPoints', hitPoints, {
         shouldDirty: true,
         shouldTouch: true,
       });
-      UseForm.setValue('hitDiceNumber', hitDiceCount, {
+      UseForm.setValue('hitDiceNumber', hitDiceInfo.hitDiceCount, {
+        shouldDirty: true,
+        shouldTouch: true,
+      });
+      UseForm.setValue('hitDice', hitDiceInfo.hitDiceString, {
+        shouldDirty: true,
+        shouldTouch: true,
+      });
+      UseForm.setValue('xp', crInfo.xp, {
         shouldDirty: true,
         shouldTouch: true,
       });

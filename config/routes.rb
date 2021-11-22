@@ -21,6 +21,9 @@ Rails.application.routes.draw do
       post '/generate_monster', to: 'monsters#generate_monster',
            as: 'generate_monster',
            constraints: { format: 'json' }
+      post '/quick_monster', to: 'monsters#quick_monster',
+           as: 'quick_monster',
+           constraints: { format: 'json' }
       post '/convert_2e_npc', to: 'monsters#convert_2e_npc',
            as: 'convert_2e_npc',
            constraints: { format: 'json' }

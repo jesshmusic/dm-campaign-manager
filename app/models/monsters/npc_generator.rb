@@ -2,6 +2,14 @@
 class NpcGenerator
   class << self
 
+    def quick_monster(monster_params, user)
+      @new_npc = Monster.new(monster_params)
+      @new_npc.slug = @new_npc.name.parameterize
+      # @new_npc.user = user unless user.nil?
+      # @new_npc.save! unless user.nil?
+      @new_npc
+    end
+
     def generate_npc(monster_params, user)
       @new_npc = Monster.new(monster_params)
       @new_npc.slug = @new_npc.name.parameterize
@@ -299,17 +307,17 @@ class NpcGenerator
         @new_npc.challenge_rating == '1/8' ||
         @new_npc.challenge_rating == '1/4' ||
         @new_npc.challenge_rating == '1/2'
-                             "1st-level"
+                             '1st-level'
                            elsif @new_npc.challenge_rating == '2'
-                             "2nd-level"
+                             '2nd-level'
                            elsif @new_npc.challenge_rating == '3'
-                             "3rd-level"
+                             '3rd-level'
                            elsif @new_npc.challenge_rating == '21'
-                             "21st-level"
+                             '21st-level'
                            elsif @new_npc.challenge_rating == '22'
-                             "22nd-level"
+                             '22nd-level'
                            elsif @new_npc.challenge_rating == '23'
-                             "23rd-level"
+                             '23rd-level'
                            else
                              "#{@new_npc.challenge_rating}th-level"
                            end
@@ -377,7 +385,7 @@ class NpcGenerator
         end
         actions.each do |action|
           puts action.inspect
-          action_description = ""
+          action_description = ''
           if action[:data][:properties] && action[:data][:properties].include?('Ammunition')
             npc_dam_bonus = DndRules.ability_score_modifier(@new_npc.dexterity)
             action_damage_bonus, base_damage = action_damage(action, npc_dam_bonus)
@@ -424,7 +432,7 @@ class NpcGenerator
       action_damage_bonus = if npc_dam_bonus > 0
                               "+ #{npc_dam_bonus}"
                             elsif npc_dam_bonus == 0
-                              ""
+                              ''
                             else
                               "- #{npc_dam_bonus.abs}"
                             end

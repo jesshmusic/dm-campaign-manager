@@ -5,6 +5,14 @@ const generateMonsterSuccess = createAction(
   '@@redux-api@generateMonster_success'
 );
 const generateMonsterFail = createAction('@@redux-api@generateMonster_fail');
+
+const generateQuickMonsterSuccess = createAction(
+  '@@redux-api@generateQuickMonster_success'
+);
+const generateQuickMonsterFail = createAction(
+  '@@redux-api@generateQuickMonster_fail'
+);
+
 const convert2eNonPlayerCharacterSuccess = createAction(
   '@@redux-api@convert2eNonPlayerCharacter_success'
 );
@@ -49,6 +57,24 @@ const monsters = createReducer(
         };
       })
       .addCase(generateMonsterFail, (state, action: AnyAction) => {
+        return {
+          monsters: state.monsters,
+          monsterTypes: state.monsterTypes,
+          count: state.count,
+          currentMonster: null,
+          loading: false,
+        };
+      })
+      .addCase(generateQuickMonsterSuccess, (state, action: AnyAction) => {
+        return {
+          monsters: state.monsters,
+          monsterTypes: state.monsterTypes,
+          count: state.count,
+          currentMonster: action.data,
+          loading: false,
+        };
+      })
+      .addCase(generateQuickMonsterFail, (state, action: AnyAction) => {
         return {
           monsters: state.monsters,
           monsterTypes: state.monsterTypes,

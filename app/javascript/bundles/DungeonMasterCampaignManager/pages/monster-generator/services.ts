@@ -6,8 +6,10 @@ import {
   MonsterGeneratorFormFields,
   MonsterProf,
   MonsterProps,
+  MonsterQuickGeneratorFormFields,
 } from '../../utilities/types';
 import axios from 'axios';
+import { plusNumberString } from '../../utilities/character-utilities';
 
 const parseMonsterProficiencies = (values: MonsterGeneratorFormFields) => {
   let monsterProfs: MonsterProf[] = [];
@@ -129,6 +131,24 @@ export const createMonsterParams = (monster: MonsterProps) => {
   return snakecaseKeys(monsterParams);
 };
 
+export const createQuickMonsterParams = (
+  values: MonsterQuickGeneratorFormFields
+) => {
+  const monsterParams = {
+    name: values.name,
+    alignment: values.alignmentOption.label,
+    armorClass: values.armorClass,
+    challengeRating: values.challengeRatingOption.label,
+    constitution: values.constitution,
+    hitDice: values.hitDice,
+    hitPoints: values.hitPoints,
+    monsterType: values.monsterTypeOption.label,
+    size: values.size.label,
+    xp: values.xp,
+  };
+  return snakecaseKeys(monsterParams);
+};
+
 export const get2eMonsterObject = (values) => {
   const returnChar = {
     name: values.name,
@@ -224,12 +244,13 @@ export const hitDiceForHitPoints = (
   hitPoints: number,
   constitution: number,
   hitDiceValue: string
-): number => {
+): { hitDiceCount: number; hitDiceString: string } => {
   const hdValueInt = diceNumberFromString[hitDiceValue];
   const conMod = abilityScoreModifier(constitution);
   let hitDiceCount = 1;
   while (hitDiceCount * hdValueInt + conMod < hitPoints) {
     hitDiceCount += 1;
   }
-  return hitDiceCount;
+  const hitDiceString = `${hitDiceCount}${hitDiceValue}`;
+  return { hitDiceCount, hitDiceString };
 };
