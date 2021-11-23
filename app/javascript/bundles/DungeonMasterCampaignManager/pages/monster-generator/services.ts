@@ -11,30 +11,63 @@ import {
 import axios from 'axios';
 import { plusNumberString } from '../../utilities/character-utilities';
 
+const abilityAbbr = {
+  STR: 'strength',
+  DEX: 'dexterity',
+  CON: 'constitution',
+  INT: 'intelligence',
+  WIS: 'wisdom',
+  CHA: 'charisma',
+};
+
+const abilityForSkill = {
+  athletics: 'strength',
+  acrobatics: 'dexterity',
+  'sleight of hand': 'dexterity',
+  stealth: 'dexterity',
+  arcana: 'intelligence',
+  history: 'intelligence',
+  investigation: 'intelligence',
+  nature: 'intelligence',
+  religion: 'intelligence',
+  'animal handling': 'wisdom',
+  insight: 'wisdom',
+  medicine: 'wisdom',
+  perception: 'wisdom',
+  survival: 'wisdom',
+  deception: 'charisma',
+  intimidation: 'charisma',
+  performance: 'charisma',
+  persuasion: 'charisma',
+};
+
 const parseMonsterProficiencies = (values: MonsterGeneratorFormFields) => {
   let monsterProfs: MonsterProf[] = [];
-  if (values.savingThrows.length && values.savingThrows.length > 0) {
-    values.savingThrows.forEach((save) => {
+  if (values.savingThrowOptions.length && values.savingThrowOptions.length > 0) {
+    values.savingThrowOptions.forEach((save) => {
+      const saveAbility = abilityAbbr[save.label];
+      const saveBonus = values.profBonus + abilityScoreModifier(values[saveAbility]);
       monsterProfs.push(<MonsterProf>{
-        profId: save.nameOption.value,
-        value: parseInt(save.value as string, 10),
+        profId: save.value,
+        value: saveBonus,
       });
     });
   }
-  if (values.skills.length && values.skills.length > 0) {
-    values.skills.forEach((skill) => {
+  if (values.skillOptions.length && values.skillOptions.length > 0) {
+    values.skillOptions.forEach((skill) => {
+      const skillName = skill.label.toLowerCase();
+      const skillAbility = abilityForSkill[skillName];
+      const skillBonus = values.profBonus + abilityScoreModifier(values[skillAbility]);
       monsterProfs.push(<MonsterProf>{
-        profId: skill.nameOption.value,
-        value: parseInt(skill.value as string, 10),
+        profId: skill.value,
+        value: skillBonus,
       });
     });
   }
   return monsterProfs;
 };
 
-export const getMonsterObject = (
-  values: MonsterGeneratorFormFields
-): MonsterProps => ({
+export const getMonsterObject = (values: MonsterGeneratorFormFields): MonsterProps => ({
   alignment: values.alignment,
   armorClass: values.armorClass,
   attackBonus: values.attackBonus,
@@ -68,10 +101,7 @@ export const getMonsterObject = (
         numAttacks: action.numAttacks,
         actionType: action.actionType,
         damage: action.actionType === ActionTypes.attack ? action.damage : null,
-        spellCasting:
-          action.actionType === ActionTypes.spellCasting
-            ? action.spellCasting
-            : null,
+        spellCasting: action.actionType === ActionTypes.spellCasting ? action.spellCasting : null,
       },
     })) || [],
   legendaryActions:
@@ -121,8 +151,7 @@ export const createMonsterParams = (monster: MonsterProps) => {
     sensesAttributes: senses,
     speedsAttributes: speeds,
     monsterActionsAttributes:
-      actions?.map((action) => ({ name: action.name, desc: action.desc })) ||
-      [],
+      actions?.map((action) => ({ name: action.name, desc: action.desc })) || [],
     legendaryActionsAttributes: legendaryActions,
     specialAbilitiesAttributes: specialAbilities,
     reactionsAttributes: reactions,
@@ -131,9 +160,7 @@ export const createMonsterParams = (monster: MonsterProps) => {
   return snakecaseKeys(monsterParams);
 };
 
-export const createQuickMonsterParams = (
-  values: MonsterQuickGeneratorFormFields
-) => {
+export const createQuickMonsterParams = (values: MonsterQuickGeneratorFormFields) => {
   const monsterParams = {
     name: values.name,
     alignment: values.alignmentOption.label,
@@ -175,25 +202,17 @@ export const get2eMonsterObject = (values) => {
 export const calculateCR = async (
   allValues: MonsterGeneratorFormFields
 ): Promise<MonsterCRCalcResult> => {
-  return await axios.post<{ params: { monster: any } }, MonsterCRCalcResult>(
-    '/v1/calculate_cr',
-    {
-      params: {
-        monster: snakecaseKeys(getMonsterObject(allValues)),
-      },
-    }
-  );
+  return await axios.post<{ params: { monster: any } }, MonsterCRCalcResult>('/v1/calculate_cr', {
+    params: {
+      monster: snakecaseKeys(getMonsterObject(allValues)),
+    },
+  });
 };
 
-export const getCRInfo = async (
-  challengeRating: string
-): Promise<MonsterCRInfoResult> => {
-  return await axios.post<{ challenge_rating: string }, MonsterCRInfoResult>(
-    '/v1/info_for_cr',
-    {
-      challenge_rating: challengeRating,
-    }
-  );
+export const getCRInfo = async (challengeRating: string): Promise<MonsterCRInfoResult> => {
+  return await axios.post<{ challenge_rating: string }, MonsterCRInfoResult>('/v1/info_for_cr', {
+    challenge_rating: challengeRating,
+  });
 };
 
 export const abilityScoreModifier = (abilityScore: number) => {
@@ -229,11 +248,7 @@ const diceNumberFromString = {
   d20: 20,
 };
 
-export const hitPoints = (
-  constitution: number,
-  hitDiceNumber: number,
-  hitDiceValue: string
-) => {
+export const hitPoints = (constitution: number, hitDiceNumber: number, hitDiceValue: string) => {
   const diceAverage = diceNumberFromString[hitDiceValue] / 2 + 0.5;
   let hitPoints = diceAverage + abilityScoreModifier(constitution);
   hitPoints = hitPoints * hitDiceNumber;

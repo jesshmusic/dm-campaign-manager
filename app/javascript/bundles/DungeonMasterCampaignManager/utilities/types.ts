@@ -336,15 +336,9 @@ export type MonsterGeneratorFormFields = {
   legendaryActions: MonsterActionField[];
   reactions: MonsterActionField[];
   specialAbilities: MonsterActionField[];
-  savingThrows: {
-    nameOption: SelectOption;
-    value: number | string;
-  }[];
+  savingThrowOptions: SelectOption[];
   senses: MonsterInfoData[];
-  skills: {
-    nameOption: SelectOption;
-    value: number | string;
-  }[];
+  skillOptions: SelectOption[];
   speeds: MonsterInfoData[];
 };
 

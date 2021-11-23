@@ -12,6 +12,7 @@ class NpcGenerator
       @new_npc.save_dc = cr_info[:save_dc]
       set_ability_scores(ability_score_order, 0, 'Constitution')
       generate_actions((cr_info[:damage_max] - cr_info[:damage_min]) / 2 + cr_info[:damage_min])
+      @new_npc.slug = @new_npc.name.parameterize if user.nil?
       # @new_npc.user = user unless user.nil?
       # @new_npc.save! unless user.nil?
       @new_npc
@@ -19,7 +20,7 @@ class NpcGenerator
 
     def generate_npc(monster_params, user)
       @new_npc = Monster.new(monster_params)
-      @new_npc.slug = @new_npc.name.parameterize
+      @new_npc.slug = @new_npc.name.parameterize if user.nil?
       @new_npc.user = user unless user.nil?
       @new_npc.save! unless user.nil?
       @new_npc
@@ -73,6 +74,7 @@ class NpcGenerator
       @new_npc.armor_class = @new_npc.armor_class + DndRules.ability_score_modifier(@new_npc.dexterity)
       @new_npc.alignment = DndRules.alignments_non_evil.sample
       @new_npc.hit_points += DndRules.ability_score_modifier(@new_npc.constitution)
+      @new_npc.slug = @new_npc.name.parameterize if user.nil?
       @new_npc.user = user unless user.nil?
       @new_npc.save! unless user.nil?
       @new_npc

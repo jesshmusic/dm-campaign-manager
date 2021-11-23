@@ -142,8 +142,8 @@ module Admin::V1
     private
 
     def set_user
-      curr_user_atts = session[:user]
-      @current_user = curr_user_atts ? User.find_by_auth_id(curr_user_atts['auth_id']) : nil
+      curr_user = AuthorizationService.new(request.headers).get_current_user
+      @user = curr_user
     end
 
     # Use callbacks to share common setup or constraints between api.

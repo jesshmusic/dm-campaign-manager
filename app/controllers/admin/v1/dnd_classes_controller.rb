@@ -15,12 +15,12 @@ module Admin::V1
                        DndClass.all
                      end
 
-      @dnd_classes = if !@current_user
+      @dnd_classes = if !@user
                        @dnd_classes.where(user_id: nil)
-                     elsif @current_user.admin?
+                     elsif @user.admin?
                        @dnd_classes
                      else
-                       @dnd_classes.where(user_id: nil).or(@dnd_classes.where(user_id: @current_user.id))
+                       @dnd_classes.where(user_id: nil).or(@dnd_classes.where(user_id: @user.id))
                      end
       respond_to do |format|
         format.html { @pagy, @dnd_classes = pagy(@dnd_classes) }
@@ -38,10 +38,10 @@ module Admin::V1
     def create
       @dnd_class = DndClass.new(dnd_class_params)
       authorize @dnd_class
-      @dnd_class.user = @current_user if @current_user.dungeon_master?
+      @dnd_class.user = @user if @user.dungeon_master?
       @dnd_class.multi_classing = MultiClassing.create()
       respond_to do |format|
-        if @current_user.dungeon_master? && @current_user.dnd_classes << @dnd_class
+        if @user.dungeon_master? && @user.dnd_classes << @dnd_class
           format.html { redirect_to v1_dnd_class_url(slug: @dnd_class.slug), notice: 'Dnd class was successfully created.' }
           format.json { render :show, status: :created }
         elsif @dnd_class.save
@@ -83,8 +83,8 @@ module Admin::V1
     private
 
     def set_user
-      curr_user_atts = session[:user]
-      @current_user = curr_user_atts ? User.find_by_auth_id(curr_user_atts['auth_id']) : nil
+      curr_user = AuthorizationService.new(request.headers).get_current_user
+      @user = curr_user
     end
 
     # Use callbacks to share common setup or constraints between api.

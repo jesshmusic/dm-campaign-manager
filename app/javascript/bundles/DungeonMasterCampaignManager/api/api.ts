@@ -43,8 +43,7 @@ const dmFetch = (fetch) => {
     }
     return fetch(url, opts).then((response) => {
       const status = response.status === 1223 ? 204 : response.status;
-      const statusText =
-        response.status === 1223 ? 'No Content' : response.statusText;
+      const statusText = response.status === 1223 ? 'No Content' : response.statusText;
 
       return toJSON(response).then((data) => {
         if (status >= 200 && status < 400) {
@@ -151,8 +150,8 @@ export default reduxApi({
   getUsers: {
     url: '/users.json',
   },
-  setUser: {
-    url: '/users/set_user.json',
+  login: {
+    url: '/users/login.json',
     options() {
       const headers = getHeaders();
       return {
@@ -161,10 +160,21 @@ export default reduxApi({
       };
     },
   },
+  logout: {
+    url: '/users/logout.json',
+    options() {
+      const headers = getHeaders();
+      return {
+        method: 'delete',
+        headers,
+      };
+    },
+  },
 })
   .use('options', (url, params, getState) => {
     const state = getState();
     const token = state.users && state.users.token ? state.users.token : null;
+    console.log(state.users);
     const railsHeaders = getHeaders();
     const headers = {
       Accept: 'application/json',

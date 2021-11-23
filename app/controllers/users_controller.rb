@@ -38,11 +38,19 @@ class UsersController < SecuredController
     puts session[:user]
   end
 
+  def logout_user
+    authorize @current_user unless @current_user.nil?
+    cookies.delete('_dungeon_master_screen_online_session')
+    session.delete(:user)
+    @current_user = nil
+    respond_to do |format|
+      format.all { head :no_content }
+    end
+  end
+
   # GET /v1/users/{id}
   def show
-    unless @current_user.nil?
-    authorize @current_user
-    end
+    authorize @current_user unless @current_user.nil?
   end
 
   # PATCH/PUT /users/1
@@ -83,22 +91,22 @@ class UsersController < SecuredController
   end
 
   # DELETE /users/1
-  def destroy
-    unless @current_user.nil?
-      authorize @current_user
-      @current_user.soft_delete
-      respond_to do |format|
-        format.html { redirect_to user_path, notice: 'UserProps was successfully deleted.' }
-        format.json { head :no_content }
-      end
-    end
-  end
+  # def destroy
+  #   unless @current_user.nil?
+  #     authorize @current_user
+  #     @current_user.soft_delete
+  #     respond_to do |format|
+  #       format.html { redirect_to user_path, notice: 'UserProps was successfully deleted.' }
+  #       format.json { head :no_content }
+  #     end
+  #   end
+  # end
 
   private
 
   def set_user
-    curr_user_atts = session[:user]
-    @current_user = curr_user_atts ? User.find_by_auth_id(curr_user_atts['auth_id']) : nil
+    curr_user = AuthorizationService.new(request.headers).get_current_user
+    @user = curr_user
   end
 
   def set_users

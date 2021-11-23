@@ -1,5 +1,5 @@
 import React from 'react';
-import { ActionVariations, UserProps } from '../../../../utilities/types';
+import { ActionVariations } from '../../../../utilities/types';
 import Frame from '../../../../components/Frame/Frame';
 import NameFormField from '../NameFormField';
 import { GiDiceTwentyFacesTwenty } from 'react-icons/gi/';
@@ -13,8 +13,7 @@ import AbilitiesSection from './sections/AbilitiesSection';
 import ResistancesSection from './sections/ResistancesSection';
 import SensesForm from './sections/senses/SensesForm';
 import SpeedsForm from './sections/speeds/SpeedsForm';
-import SavingThrowsForm from './sections/saving-throws/SavingThrowsForm';
-import SkillsForm from './sections/skills/SkillsForm';
+import SavesSkillsSection from './sections/SavesSkillsSection';
 
 const styles = require('../generator.module.scss');
 
@@ -57,7 +56,7 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
           zIndex: 200,
         }}
       >
-        {/*{JSON.stringify(testState, null, 2)}*/}
+        {JSON.stringify(testState, null, 2)}
       </pre>
       <Frame
         title="Monster Creator"
@@ -88,12 +87,8 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
             <AbilitiesSection UseForm={UseForm} />
           </GenMonsterSection>
 
-          <GenMonsterSection heading="Saving Throws">
-            <SavingThrowsForm fieldName={'savingThrows'} useForm={UseForm} />
-          </GenMonsterSection>
-
-          <GenMonsterSection heading="Saving Throws">
-            <SkillsForm fieldName={'skills'} useForm={UseForm} />
+          <GenMonsterSection heading="Saving Throws & Skills">
+            <SavesSkillsSection UseForm={UseForm} />
           </GenMonsterSection>
 
           <GenMonsterSection heading="Senses">

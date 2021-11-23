@@ -27,6 +27,7 @@ class AuthorizationService
 
   def current_user_from_token
     return unless http_token
-    JsonWebToken.current_user_from_token(http_token)
+    curr_user = JsonWebToken.current_user_from_token(http_token)
+    User.find_by_auth_id(curr_user[0]['sub']) unless curr_user.nil? || curr_user[0]['sub'].nil?
   end
 end

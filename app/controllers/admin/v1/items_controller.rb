@@ -32,12 +32,12 @@ module Admin::V1
           @items = @items.where('\'Two-Handed\' = ANY (weapon_properties)')
                          .or(@items.where.not(weapon_2h_damage_type: [nil, '']))
         end
-        @items = if !@current_user
+        @items = if !@user
                    @items.where(user_id: nil)
-                 elsif @current_user.admin?
+                 elsif @user.admin?
                    @items
                  else
-                   @items.where(user_id: nil).or(@items.where(user_id: @current_user.id))
+                   @items.where(user_id: nil).or(@items.where(user_id: @user.id))
                  end
         respond_to do |format|
           format.html { @pagy, @items = pagy(@items) }
@@ -71,7 +71,7 @@ module Admin::V1
                 Item.new(item_params('Item'))
               end
       authorize @item
-      @item.user = @current_user if @current_user.dungeon_master?
+      @item.user = @user if @user.dungeon_master?
 
       respond_to do |format|
         if @item.save
@@ -128,8 +128,8 @@ module Admin::V1
     private
 
     def set_user
-      curr_user_atts = session[:user]
-      @current_user = curr_user_atts ? User.find_by_auth_id(curr_user_atts['auth_id']) : nil
+      curr_user = AuthorizationService.new(request.headers).get_current_user
+      @user = curr_user
     end
 
     # Use callbacks to share common setup or constraints between api.

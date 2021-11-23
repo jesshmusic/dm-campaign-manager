@@ -72,9 +72,9 @@ export const useData = (props: GenerateMonsterProps) => {
       reactions: [],
       specialAbilities: [],
       senses: [],
-      skills: [],
+      skillOptions: [],
       speeds: [],
-      savingThrows: [],
+      savingThrowOptions: [],
     });
 
   const UseForm = useForm<MonsterGeneratorFormFields>({

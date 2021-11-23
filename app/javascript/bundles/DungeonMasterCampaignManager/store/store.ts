@@ -53,8 +53,8 @@ const store = configureStore({
     users: {
       users: [],
       count: 0,
-      // @ts-ignore
-      currentUser: null,
+      currentUser: undefined,
+      token: undefined,
     },
   },
 });

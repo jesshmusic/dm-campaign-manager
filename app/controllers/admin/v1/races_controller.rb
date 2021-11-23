@@ -24,12 +24,12 @@ module Admin::V1
                  else
                    Race.all
                  end
-        @races = if !@current_user
+        @races = if !@user
                    @races.where(user_id: nil).order(name: :asc)
-                 elsif @current_user.admin?
+                 elsif @user.admin?
                    @races.order(name: :asc)
                  else
-                   @races.where(user_id: nil).or(@races.where(user_id: @current_user.id)).order(name: :asc)
+                   @races.where(user_id: nil).or(@races.where(user_id: @user.id)).order(name: :asc)
                  end
         respond_to do |format|
           format.html { @races }
@@ -53,10 +53,10 @@ module Admin::V1
     def create
       @race = Race.new(race_params)
       authorize @race
-      @race.user = @current_user if @current_user.dungeon_master?
+      @race.user = @user if @user.dungeon_master?
 
       respond_to do |format|
-        if @current_user.dungeon_master? && @current_user.races << @race
+        if @user.dungeon_master? && @user.races << @race
           format.html { redirect_to v1_race_url(slug: @race.slug), notice: 'Race was successfully created.' }
           format.json { render :show, status: :created }
         elsif @race.save
@@ -98,8 +98,8 @@ module Admin::V1
     private
 
     def set_user
-      curr_user_atts = session[:user]
-      @current_user = curr_user_atts ? User.find_by_auth_id(curr_user_atts['auth_id']) : nil
+      curr_user = AuthorizationService.new(request.headers).get_current_user
+      @user = curr_user
     end
 
     # Use callbacks to share common setup or constraints between api.

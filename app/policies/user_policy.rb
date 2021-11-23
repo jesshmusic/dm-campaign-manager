@@ -10,6 +10,10 @@ class UserPolicy < ApplicationPolicy
     true
   end
 
+  def logout_user?
+    true
+  end
+
   def show?
     user.admin? || (user == record)
   end

@@ -72,11 +72,26 @@ const SideBar = (props: {
   currentUser?: UserProps;
   getSections: () => void;
   isCollapsed: boolean;
+  logOutUser: (token: string) => void;
   sections: { name: string; slug: string }[];
 }) => {
-  const { currentUser, isCollapsed, getSections, sections } = props;
+  const { currentUser, getSections, isCollapsed, logOutUser, sections } = props;
 
-  const { user, isAuthenticated, loginWithRedirect, logout } = useAuth0();
+  const { user, getAccessTokenSilently, isAuthenticated, loginWithRedirect, logout } = useAuth0();
+
+  const handleLogout = () => {
+    getAccessTokenSilently()
+      .then((token) => {
+        logOutUser(token);
+        document.cookie =
+          '_dungeon_master_screen_online_session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+        console.log(document.cookie);
+        logout({ returnTo: window.location.origin });
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
 
   React.useEffect(() => {
     getSections();
@@ -88,27 +103,11 @@ const SideBar = (props: {
         <SidebarContent>
           <Menu iconShape="square">
             <SidebarLink to="/" title="App" icon={<AiOutlineHome />} />
-            <SidebarLink
-              to="/app/classes"
-              title="Classes"
-              icon={<GiPerson />}
-            />
+            <SidebarLink to="/app/classes" title="Classes" icon={<GiPerson />} />
             <SidebarLink to="/app/races" title="Races" icon={<GiDwarfFace />} />
-            <SidebarLink
-              to="/app/monsters"
-              title="Monsters"
-              icon={<GiMonsterGrasp />}
-            />
-            <SidebarLink
-              to="/app/spells"
-              title="Spells"
-              icon={<GiMagicPalm />}
-            />
-            <SidebarLink
-              to="/app/conditions"
-              title="Conditions"
-              icon={<GiAchillesHeel />}
-            />
+            <SidebarLink to="/app/monsters" title="Monsters" icon={<GiMonsterGrasp />} />
+            <SidebarLink to="/app/spells" title="Spells" icon={<GiMagicPalm />} />
+            <SidebarLink to="/app/conditions" title="Conditions" icon={<GiAchillesHeel />} />
             <SubMenu title="Rules" icon={<GiRuleBook />}>
               {sections.map((section, index) => (
                 <SidebarLink
@@ -144,25 +143,13 @@ const SideBar = (props: {
               icon={<GiEvilMinion />}
             />
             {currentUser && currentUser.role === 'admin' ? (
-              <SidebarLink
-                to="/app/admin-dashboard"
-                title="Admin"
-                icon={<GiKing />}
-              />
+              <SidebarLink to="/app/admin-dashboard" title="Admin" icon={<GiKing />} />
             ) : null}
             {isAuthenticated && user ? (
               <>
-                <SidebarLink
-                  to="/app/user-dashboard"
-                  title="Dashboard"
-                  icon={<GiDungeonGate />}
-                />
+                <SidebarLink to="/app/user-dashboard" title="Dashboard" icon={<GiDungeonGate />} />
                 <MenuItem icon={<BiLogOut />}>
-                  <button
-                    onClick={() => logout({ returnTo: window.location.origin })}
-                  >
-                    Log Out
-                  </button>
+                  <button onClick={() => handleLogout()}>Log Out</button>
                 </MenuItem>
               </>
             ) : (
@@ -186,6 +173,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    logOutUser: (token: string) => {
+      dispatch(rest.actions.logout({}, { token }));
+    },
     getSections: () => {
       dispatch(rest.actions.getSections());
     },

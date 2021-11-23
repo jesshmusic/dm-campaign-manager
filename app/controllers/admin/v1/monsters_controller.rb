@@ -15,12 +15,12 @@ module Admin::V1
                   else
                     Monster.all.order(monster_type: :asc, name: :asc)
                   end
-      @monsters = if !@current_user
+      @monsters = if !@user
                     @monsters.where(user_id: nil)
-                  elsif @current_user.admin? && !params[:refs].present?
+                  elsif @user.admin? && !params[:refs].present?
                     @monsters
                   else
-                    @monsters.where(user_id: nil).or(@monsters.where(user_id: @current_user.id))
+                    @monsters.where(user_id: nil).or(@monsters.where(user_id: @user.id))
                   end
       @monsters = @monsters.where(challenge_rating: params[:challenge_rating]) if params[:challenge_rating].present?
       @monsters = @monsters.where(user_id: params[:user_id]) if params[:user_id]
@@ -83,7 +83,7 @@ module Admin::V1
     def create
       @monster = Monster.new(monster_params)
       authorize @monster
-      @monster.user = @current_user if @current_user.dungeon_master?
+      @monster.user = @user if @user.dungeon_master?
 
       respond_to do |format|
         if @monster.save
@@ -97,14 +97,14 @@ module Admin::V1
     end
 
     def generate_monster
-      @monster = NpcGenerator.generate_npc(monster_params, @current_user)
+      @monster = NpcGenerator.generate_npc(monster_params, @user)
       respond_to do |format|
         format.json
       end
     end
 
     def quick_monster
-      @monster = NpcGenerator.quick_monster(monster_params, @current_user)
+      @monster = NpcGenerator.quick_monster(monster_params, @user)
       respond_to do |format|
         format.json
       end
@@ -131,7 +131,7 @@ module Admin::V1
     def generate_commoner
       random_npc_gender = params[:random_monster_gender] || %w[male female].sample
       random_npc_race = params[:random_monster_race] || 'human'
-      @monster = NpcGenerator.generate_commoner(random_npc_gender, random_npc_race, @current_user)
+      @monster = NpcGenerator.generate_commoner(random_npc_gender, random_npc_race, @user)
       respond_to do |format|
         format.json
       end
@@ -168,8 +168,8 @@ module Admin::V1
     private
 
     def set_user
-      curr_user_atts = session[:user]
-      @current_user = curr_user_atts ? User.find_by_auth_id(curr_user_atts['auth_id']) : nil
+      curr_user = AuthorizationService.new(request.headers).get_current_user
+      @user = curr_user
     end
 
     # Use callbacks to share common setup or constraints between api.

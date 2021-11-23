@@ -23,7 +23,7 @@ const Layout = (props) => {
     if (isAuthenticated && user) {
       getAccessTokenSilently()
         .then((token) => {
-          props.setUser(user, token);
+          props.logInUser(user, token);
         })
         .catch((err) => {
           console.error(err);
@@ -58,7 +58,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setUser: (user: User, token: string) => {
+    logInUser: (user: User, token: string) => {
       const currentUser = {
         auth_id: user.sub,
         email: user.email,
@@ -67,7 +67,7 @@ const mapDispatchToProps = (dispatch) => {
         username: user.nickname,
       };
       dispatch(
-        rest.actions.setUser(
+        rest.actions.login(
           {},
           {
             body: JSON.stringify({ user: currentUser }),
