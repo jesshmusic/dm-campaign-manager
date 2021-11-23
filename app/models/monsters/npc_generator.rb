@@ -403,11 +403,11 @@ class NpcGenerator
       attack[:damage_type] = weapon.damage.damage_type
       attack[:damage_dice] = weapon.damage.damage_dice
       attack[:range_normal] = weapon.properties.include?('Reach') ? 10 : 5
-      attack_desc = parse_melee_action_description(attack)
+      attack_desc = parse_melee_action_desc(attack)
       if weapon.properties&.include?('Thrown')
         attack[:thrown_range_normal] = weapon.item_throw_range.nil? ? 120 : weapon.item_throw_range.normal
         attack[:thrown_range_long] = weapon.item_throw_range.nil? ? 120 : weapon.item_throw_range.long
-        attack_desc += parse_thrown_action_description(attack)
+        attack_desc += parse_thrown_action_desc(attack)
       end
       @new_npc.monster_actions << MonsterAction.create(name: attack[:name], desc: attack_desc)
     end
@@ -421,7 +421,7 @@ class NpcGenerator
       attack[:damage_dice] = weapon.damage.damage_dice
       attack[:range_normal] = weapon.item_range.nil? ? 120 : weapon.item_range.normal
       attack[:range_long] = weapon.item_range.nil? ? 120 : weapon.item_range.long
-      @new_npc.monster_actions << MonsterAction.create(name: attack[:name], desc: parse_melee_action_description(attack))
+      @new_npc.monster_actions << MonsterAction.create(name: attack[:name], desc: parse_ranged_action_desc(attack))
     end
 
     def create_bite_attack(damage_per_round, num_attacks)
@@ -432,34 +432,22 @@ class NpcGenerator
       attack_name = ['Claw', 'Claw', 'Claw', 'Claw', 'Claw', 'Stomp', 'Tentacle', 'Throw Boulder'].sample
     end
 
-    def parse_melee_action_description(action)
+    def parse_melee_action_desc(action)
       npc_dam_bonus = DndRules.ability_score_modifier(@new_npc.dexterity)
       action_damage_bonus, base_damage = action_damage(action, npc_dam_bonus)
-      action_description = "Melee Weapon Attack: +#{@new_npc.attack_bonus} to hit,"
-      action_description += " reach #{action[:range_normal]} ft., one target. "
-      action_description += "Hit: #{base_damage} (#{action[:damage_dice]} #{action_damage_bonus})"
-      action_description += " #{action[:damage_type].downcase} damage."
-      action_description
+      "Melee Weapon Attack: +#{@new_npc.attack_bonus} to hit, reach #{action[:range_normal]} ft., one target. Hit: #{base_damage} (#{action[:damage_dice]} #{action_damage_bonus}) #{action[:damage_type].downcase} damage."
     end
 
-    def parse_ranged_action_description(action)
+    def parse_ranged_action_desc(action)
       npc_dam_bonus = DndRules.ability_score_modifier(@new_npc.dexterity)
       action_damage_bonus, base_damage = action_damage(action, npc_dam_bonus)
-      action_description = "Ranged Weapon Attack: +#{@new_npc.attack_bonus} to hit,"
-      action_description += " range #{action[:range_normal]}/#{action[:range_long]} ft., one target. "
-      action_description += "Hit: #{base_damage} (#{action[:damage_dice]} #{action_damage_bonus})"
-      action_description += " #{action[:damage_type].downcase} damage."
-      action_description
+      "Ranged Weapon Attack: +#{@new_npc.attack_bonus} to hit, range #{action[:range_normal]}/#{action[:range_long]} ft., one target. Hit: #{base_damage} (#{action[:damage_dice]} #{action_damage_bonus}) #{action[:damage_type].downcase} damage."
     end
 
-    def parse_thrown_action_description(action)
+    def parse_thrown_action_desc(action)
       npc_dam_bonus = DndRules.ability_score_modifier(@new_npc.dexterity)
       action_damage_bonus, base_damage = action_damage(action, npc_dam_bonus)
-      action_description = " Or Ranged Weapon Attack: +#{@new_npc.attack_bonus} to hit,"
-      action_description += " range #{action[:thrown_range_normal]}/#{action[:thrown_range_long]} ft., one target. "
-      action_description += "Hit: #{base_damage} (#{action[:damage_dice]} #{action_damage_bonus})"
-      action_description += " #{action[:damage_type].downcase} damage."
-      action_description
+      " Or Ranged Weapon Attack: +#{@new_npc.attack_bonus} to hit, range #{action[:thrown_range_normal]}/#{action[:thrown_range_long]} ft., one target. Hit: #{base_damage} (#{action[:damage_dice]} #{action_damage_bonus}) #{action[:damage_type].downcase} damage."
     end
 
     def create_actions(actions, number_of_attacks, challenge_rating)
