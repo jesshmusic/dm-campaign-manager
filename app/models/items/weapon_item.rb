@@ -71,6 +71,14 @@ class WeaponItem < Item
     ['Shortsword', 'Mace', 'Pike', 'Crossbow, light', 'Halberd', 'Dart', 'Battleaxe', 'Glaive', 'Sling', 'Whip', 'Sickle', 'Crossbow, hand', 'Greataxe', 'Spear', 'Greatsword', 'Net', 'Javelin', 'Flail', 'Blowgun', 'Maul', 'Quarterstaff', 'Greatclub', 'Handaxe', 'War pick', 'Scimitar', 'Club', 'Longsword', 'Rapier', 'Trident', 'Dagger', 'Lance', 'Morningstar', 'Light hammer', 'Warhammer', 'Longbow', 'Shortbow', 'Crossbow, heavy']
   end
 
+  def self.melee_weapons
+    ['Shortsword', 'Mace', 'Pike', 'Halberd', 'Battleaxe', 'Glaive', 'Whip', 'Sickle', 'Greataxe', 'Spear', 'Greatsword', 'Javelin', 'Flail', 'Maul', 'Quarterstaff', 'Greatclub', 'Handaxe', 'War pick', 'Scimitar', 'Club', 'Longsword', 'Rapier', 'Trident', 'Dagger', 'Lance', 'Morningstar', 'Light hammer', 'Warhammer']
+  end
+
+  def self.ranged_weapons
+    ['Crossbow, light', 'Dart', 'Sling', 'Crossbow, hand', 'Net', 'Blowgun', 'Longbow', 'Shortbow', 'Crossbow, heavy']
+  end
+
   def self.all_swords
     %w[Shortsword Greatsword Scimitar Longsword Rapier]
   end

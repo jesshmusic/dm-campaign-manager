@@ -5,6 +5,13 @@ class NpcGenerator
     def quick_monster(monster_params, user)
       @new_npc = Monster.new(monster_params)
       @new_npc.slug = @new_npc.name.parameterize
+      ability_score_order = %w[Strength Dexterity Constitution Intelligence Wisdom Charisma].shuffle
+      cr_info = DndRules.challenge_ratings[monster_params[:challenge_rating].to_sym]
+      @new_npc.attack_bonus = cr_info[:attack_bonus]
+      @new_npc.prof_bonus = cr_info[:prof_bonus]
+      @new_npc.save_dc = cr_info[:save_dc]
+      set_ability_scores(ability_score_order, 0, 'Constitution')
+      generate_actions((cr_info[:damage_max] - cr_info[:damage_min]) / 2 + cr_info[:damage_min])
       # @new_npc.user = user unless user.nil?
       # @new_npc.save! unless user.nil?
       @new_npc
@@ -329,18 +336,16 @@ class NpcGenerator
 
     # Statistics
 
-    def set_ability_scores(score_priority = [], min_score = 10)
+    def set_ability_scores(score_priority = [], min_score = 10, skip = nil)
       ability_scores = Array.new(6)
       ability_scores.each_with_index do |_, index|
         rolls = [DndRules.roll_dice(1, 6),
                  DndRules.roll_dice(1, 6),
-                 DndRules.roll_dice(1, 6),
                  DndRules.roll_dice(1, 6)]
-        rolls.delete_at(rolls.index(rolls.min))
         ability_scores[index] = rolls.sum
       end
       score_priority.each_with_index do |ability, index|
-        set_primary_ability(ability, ability_scores, index, min_score)
+        set_primary_ability(ability, ability_scores, index, min_score) unless  skip == ability
       end
     end
 
@@ -350,28 +355,112 @@ class NpcGenerator
       case ability
       when 'Strength'
         @new_npc.strength = highest_score
-        @new_npc.strength += @npc_race.strength_modifier unless @npc_race.nil?
       when 'Dexterity'
         @new_npc.dexterity = highest_score
-        @new_npc.dexterity += @npc_race.dexterity_modifier unless @npc_race.nil?
       when 'Constitution'
         @new_npc.constitution = highest_score
-        @new_npc.constitution += @npc_race.constitution_modifier unless @npc_race.nil?
       when 'Intelligence'
         @new_npc.intelligence = highest_score
-        @new_npc.intelligence += @npc_race.intelligence_modifier unless @npc_race.nil?
       when 'Wisdom'
         @new_npc.wisdom = highest_score
-        @new_npc.wisdom += @npc_race.wisdom_modifier unless @npc_race.nil?
       when 'Charisma'
         @new_npc.charisma = highest_score
-        @new_npc.charisma += @npc_race.charisma_modifier unless @npc_race.nil?
       else
         puts "Ability #{ability} not found!"
       end
     end
 
     # Actions
+
+    def generate_actions(damage_per_round = 10)
+      num_attacks = (damage_per_round / 15).ceil
+      attacks = []
+      if @new_npc.monster_type.downcase == 'humanoid'
+        attacks << create_melee_attack(num_attacks)
+        attacks << create_ranged_attack
+      else
+        attacks << create_bite_attack(damage_per_round, num_attacks)
+        num_attacks.times do
+          attacks << create_claw_attack(damage_per_round, num_attacks)
+        end
+      end
+    end
+
+    def create_melee_attack(num_attacks)
+      attack = {}
+      attack[:name] = WeaponItem.melee_weapons.sample
+
+      if num_attacks > 1
+        weapon_name = attack[:name]
+        multi_attack = MonsterAction.new(
+          name: 'Multiattack',
+          desc: "The #{@new_npc.name} makes #{num_attacks} #{weapon_name.downcase} attacks."
+        )
+        @new_npc.monster_actions << multi_attack
+      end
+      weapon = WeaponItem.find_by(name: attack[:name])
+      attack[:attack_bonus] = @new_npc.attack_bonus
+      attack[:damage_type] = weapon.damage.damage_type
+      attack[:damage_dice] = weapon.damage.damage_dice
+      attack[:range_normal] = weapon.properties.include?('Reach') ? 10 : 5
+      attack_desc = parse_melee_action_description(attack)
+      if weapon.properties&.include?('Thrown')
+        attack[:thrown_range_normal] = weapon.item_throw_range.nil? ? 120 : weapon.item_throw_range.normal
+        attack[:thrown_range_long] = weapon.item_throw_range.nil? ? 120 : weapon.item_throw_range.long
+        attack_desc += parse_thrown_action_description(attack)
+      end
+      @new_npc.monster_actions << MonsterAction.create(name: attack[:name], desc: attack_desc)
+    end
+
+    def create_ranged_attack
+      attack = {}
+      attack[:name] = WeaponItem.ranged_weapons.sample
+      weapon = WeaponItem.find_by(name: attack[:name])
+      attack[:attack_bonus] = @new_npc.attack_bonus
+      attack[:damage_type] = weapon.damage.damage_type
+      attack[:damage_dice] = weapon.damage.damage_dice
+      attack[:range_normal] = weapon.item_range.nil? ? 120 : weapon.item_range.normal
+      attack[:range_long] = weapon.item_range.nil? ? 120 : weapon.item_range.long
+      @new_npc.monster_actions << MonsterAction.create(name: attack[:name], desc: parse_melee_action_description(attack))
+    end
+
+    def create_bite_attack(damage_per_round, num_attacks)
+      attack_name = 'Bite'
+    end
+
+    def create_claw_attack(damage_per_round, num_attacks)
+      attack_name = ['Claw', 'Claw', 'Claw', 'Claw', 'Claw', 'Stomp', 'Tentacle', 'Throw Boulder'].sample
+    end
+
+    def parse_melee_action_description(action)
+      npc_dam_bonus = DndRules.ability_score_modifier(@new_npc.dexterity)
+      action_damage_bonus, base_damage = action_damage(action, npc_dam_bonus)
+      action_description = "Melee Weapon Attack: +#{@new_npc.attack_bonus} to hit,"
+      action_description += " reach #{action[:range_normal]} ft., one target. "
+      action_description += "Hit: #{base_damage} (#{action[:damage_dice]} #{action_damage_bonus})"
+      action_description += " #{action[:damage_type].downcase} damage."
+      action_description
+    end
+
+    def parse_ranged_action_description(action)
+      npc_dam_bonus = DndRules.ability_score_modifier(@new_npc.dexterity)
+      action_damage_bonus, base_damage = action_damage(action, npc_dam_bonus)
+      action_description = "Ranged Weapon Attack: +#{@new_npc.attack_bonus} to hit,"
+      action_description += " range #{action[:range_normal]}/#{action[:range_long]} ft., one target. "
+      action_description += "Hit: #{base_damage} (#{action[:damage_dice]} #{action_damage_bonus})"
+      action_description += " #{action[:damage_type].downcase} damage."
+      action_description
+    end
+
+    def parse_thrown_action_description(action)
+      npc_dam_bonus = DndRules.ability_score_modifier(@new_npc.dexterity)
+      action_damage_bonus, base_damage = action_damage(action, npc_dam_bonus)
+      action_description = " Or Ranged Weapon Attack: +#{@new_npc.attack_bonus} to hit,"
+      action_description += " range #{action[:thrown_range_normal]}/#{action[:thrown_range_long]} ft., one target. "
+      action_description += "Hit: #{base_damage} (#{action[:damage_dice]} #{action_damage_bonus})"
+      action_description += " #{action[:damage_type].downcase} damage."
+      action_description
+    end
 
     def create_actions(actions, number_of_attacks, challenge_rating)
       if actions.length > 0
@@ -436,8 +525,9 @@ class NpcGenerator
                             else
                               "- #{npc_dam_bonus.abs}"
                             end
-      damage_dice_count = action[:data][:damage_dice_count].to_i
-      damage_dice_value = action[:data][:damage_dice_value].to_i
+      parsed_dice = DndRules.parse_dice_string(action[:damage_dice])
+      damage_dice_count = parsed_dice[:hit_dice_number]
+      damage_dice_value = parsed_dice[:hit_dice_value]
       base_damage = ((damage_dice_count * damage_dice_value + npc_dam_bonus) * 0.55).ceil
       [action_damage_bonus, base_damage]
     end
