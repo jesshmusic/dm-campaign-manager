@@ -56,11 +56,7 @@ const QuickGenerateMonster = (props: GenerateMonsterProps) => {
         subtitle="Select options to create a new Monster"
         className="random-monster-generator"
       >
-        <form
-          onSubmit={UseForm.handleSubmit(onSubmit)}
-          className={styles.genForm}
-          noValidate
-        >
+        <form onSubmit={UseForm.handleSubmit(onSubmit)} className={styles.genForm} noValidate>
           <NameFormField
             handleGenerateName={handleGenerateName}
             handleGenerateMonsterName={handleGenerateMonsterName}

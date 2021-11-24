@@ -1,15 +1,13 @@
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
-import { MonsterGeneratorFormFields } from '../../../../../utilities/types';
-import FormSelectAsync from '../../../../../components/forms/FormSelectAsync';
-import { filterOptionsWithData } from '../../../../../utilities/character-utilities';
+import { MonsterGeneratorFormFields } from '../../../utilities/types';
+import FormSelectAsync from '../../../components/forms/FormSelectAsync';
+import { filterOptionsWithData } from '../../../utilities/character-utilities';
 import axios, { AxiosResponse } from 'axios';
 
-const styles = require('../../generator.module.scss');
+const styles = require('./generator.module.scss');
 
-const SavesSkillsSection = (props: {
-  UseForm: UseFormReturn<MonsterGeneratorFormFields>;
-}) => {
+const SavesSkillsSection = (props: { UseForm: UseFormReturn<MonsterGeneratorFormFields> }) => {
   const { UseForm } = props;
 
   const getSavingThrows = (inputValue: string, callback: any) => {

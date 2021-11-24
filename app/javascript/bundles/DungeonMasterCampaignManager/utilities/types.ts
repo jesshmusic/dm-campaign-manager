@@ -349,6 +349,7 @@ export type MonsterQuickGeneratorFormFields = {
   armorClass: number;
   challengeRatingOption: SelectOption;
   constitution: number;
+  isCaster: boolean;
   hitDice: string;
   hitDiceNumber: number;
   hitDiceValue: string;
@@ -356,6 +357,7 @@ export type MonsterQuickGeneratorFormFields = {
   monsterType: string;
   monsterTypeOption: SelectOption;
   monsterSubtype?: string;
+  numberOfAttacks: number;
   size: SelectOption;
   xp: number;
 };

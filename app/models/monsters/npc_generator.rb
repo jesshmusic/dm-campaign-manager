@@ -3,7 +3,8 @@ class NpcGenerator
   class << self
 
     def quick_monster(monster_params, user)
-      @new_npc = Monster.new(monster_params)
+      puts monster_params
+      @new_npc = Monster.new(monster_params.except(:number_of_attacks, :is_caster))
       @new_npc.slug = @new_npc.name.parameterize
       ability_score_order = %w[Strength Dexterity Constitution Intelligence Wisdom Charisma].shuffle
       cr_info = DndRules.challenge_ratings[monster_params[:challenge_rating].to_sym]
@@ -11,10 +12,30 @@ class NpcGenerator
       @new_npc.prof_bonus = cr_info[:prof_bonus]
       @new_npc.save_dc = cr_info[:save_dc]
       set_ability_scores(ability_score_order, 0, 'Constitution')
-      generate_actions((cr_info[:damage_max] - cr_info[:damage_min]) / 2 + cr_info[:damage_min])
+      generate_actions(
+        (cr_info[:damage_max] - cr_info[:damage_min]) / 2 + cr_info[:damage_min],
+        monster_params[:is_caster],
+        monster_params[:number_of_attacks]
+      )
       @new_npc.slug = @new_npc.name.parameterize if user.nil?
-      # @new_npc.user = user unless user.nil?
-      # @new_npc.save! unless user.nil?
+
+      monster_atts = @new_npc.attributes
+      monster_atts[:actions] = @new_npc.monster_actions.map {|action| action.attributes}
+      cr_params = {
+        params: {
+          monster: monster_atts,
+        }
+      }
+      calculated_cr = calculate_cr(cr_params.deep_symbolize_keys)
+      if calculated_cr[:name] != @new_npc.challenge_rating
+        cr_data = calculated_cr[:data].symbolize_keys
+        @new_npc.challenge_rating = calculated_cr[:name]
+        @new_npc.prof_bonus = cr_data[:prof_bonus]
+        @new_npc.xp = cr_data[:xp]
+        @new_npc.save_dc = cr_data[:save_dc]
+      end
+      @new_npc.user = user unless user.nil?
+      @new_npc.save! unless user.nil?
       @new_npc
     end
 
@@ -374,18 +395,16 @@ class NpcGenerator
 
     # Actions
 
-    def generate_actions(damage_per_round = 10)
-      num_attacks = (damage_per_round / 15).ceil
+    def generate_actions(damage_per_round = 10, is_caster, number_of_attacks)
       attacks = []
       if @new_npc.monster_type.downcase == 'humanoid'
-        attacks << create_melee_attack(num_attacks)
+        attacks << create_melee_attack(number_of_attacks)
         attacks << create_ranged_attack
       else
-        attacks << create_bite_attack(damage_per_round, num_attacks)
-        num_attacks.times do
-          attacks << create_claw_attack(damage_per_round, num_attacks)
-        end
+        attacks << create_bite_attack(damage_per_round, number_of_attacks)
+        attacks << create_claw_attack(damage_per_round, number_of_attacks)
       end
+      attacks << create_spellcasting if is_caster
     end
 
     def create_melee_attack(num_attacks)
@@ -432,6 +451,10 @@ class NpcGenerator
 
     def create_claw_attack(damage_per_round, num_attacks)
       attack_name = ['Claw', 'Claw', 'Claw', 'Claw', 'Claw', 'Stomp', 'Tentacle', 'Throw Boulder'].sample
+    end
+
+    def create_spellcasting
+
     end
 
     def parse_melee_action_desc(action)

@@ -13,7 +13,7 @@ import AbilitiesSection from './sections/AbilitiesSection';
 import ResistancesSection from './sections/ResistancesSection';
 import SensesForm from './sections/senses/SensesForm';
 import SpeedsForm from './sections/speeds/SpeedsForm';
-import SavesSkillsSection from './sections/SavesSkillsSection';
+import SavesSkillsSection from '../SavesSkillsSection';
 
 const styles = require('../generator.module.scss');
 
@@ -63,11 +63,7 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
         subtitle="Select options to create a new Monster"
         className="random-monster-generator"
       >
-        <form
-          onSubmit={UseForm.handleSubmit(onSubmit)}
-          className={styles.genForm}
-          noValidate
-        >
+        <form onSubmit={UseForm.handleSubmit(onSubmit)} className={styles.genForm} noValidate>
           <NameFormField
             handleGenerateName={handleGenerateName}
             handleGenerateMonsterName={handleGenerateMonsterName}
@@ -77,10 +73,7 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
           />
 
           <GenMonsterSection heading="Stats">
-            <MonsterStatsSection
-              UseForm={UseForm}
-              handleCalculateCR={handleCalculateCR}
-            />
+            <MonsterStatsSection UseForm={UseForm} handleCalculateCR={handleCalculateCR} />
           </GenMonsterSection>
 
           <GenMonsterSection heading="Ability Scores">

@@ -76,7 +76,7 @@ class WeaponItem < Item
   end
 
   def self.ranged_weapons
-    ['Crossbow, light', 'Dart', 'Sling', 'Crossbow, hand', 'Net', 'Blowgun', 'Longbow', 'Shortbow', 'Crossbow, heavy']
+    ['Crossbow, light', 'Dart', 'Sling', 'Crossbow, hand', 'Blowgun', 'Longbow', 'Shortbow', 'Crossbow, heavy']
   end
 
   def self.all_swords

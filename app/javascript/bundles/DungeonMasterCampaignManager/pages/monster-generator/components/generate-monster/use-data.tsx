@@ -18,64 +18,63 @@ import { GenerateMonsterProps } from './GenerateMonster';
 import snakecaseKeys from 'snakecase-keys';
 
 export const useData = (props: GenerateMonsterProps) => {
-  const [monsterForm, setMonsterForm] =
-    React.useState<MonsterGeneratorFormFields>({
-      name: 'New Monster',
-      alignment: 'Neutral',
-      alignmentOption: {
-        value: 'Neutral',
-        label: 'Neutral',
-      },
-      armorClass: 10,
-      attackBonus: 2,
-      damageBonus: 0,
-      challengeRating: '0',
-      hitDice: '1d6',
-      hitDiceNumber: 1,
-      hitDiceValue: 'd8',
-      hitPoints: 4,
-      languages: [],
-      monsterType: 'humanoid',
-      monsterTypeOption: {
-        value: 'humanoid',
-        label: 'Humanoid',
-      },
-      profBonus: 2,
-      saveDC: 12,
-      size: {
-        label: 'Medium',
-        value: 'medium',
-      },
-      xp: 10,
-      strength: 10,
-      dexterity: 10,
-      constitution: 10,
-      intelligence: 10,
-      wisdom: 10,
-      charisma: 10,
-      strengthMod: 0,
-      dexterityMod: 0,
-      constitutionMod: 0,
-      intelligenceMod: 0,
-      wisdomMod: 0,
-      charismaMod: 0,
-      conditionImmunities: [],
-      damageImmunities: [],
-      damageResistances: [],
-      damageVulnerabilities: [],
-      conditionImmunitiesOptions: [],
-      damageImmunitiesOptions: [],
-      damageResistancesOptions: [],
-      damageVulnerabilitiesOptions: [],
-      actions: [],
-      legendaryActions: [],
-      reactions: [],
-      specialAbilities: [],
-      senses: [],
-      skillOptions: [],
-      speeds: [],
-      savingThrowOptions: [],
-    });
+  const [monsterForm, setMonsterForm] = React.useState<MonsterGeneratorFormFields>({
+    name: 'New Monster',
+    alignment: 'Neutral',
+    alignmentOption: {
+      value: 'Neutral',
+      label: 'Neutral',
+    },
+    armorClass: 10,
+    attackBonus: 2,
+    damageBonus: 0,
+    challengeRating: '0',
+    hitDice: '1d6',
+    hitDiceNumber: 1,
+    hitDiceValue: 'd8',
+    hitPoints: 4,
+    languages: [],
+    monsterType: 'humanoid',
+    monsterTypeOption: {
+      value: 'humanoid',
+      label: 'Humanoid',
+    },
+    profBonus: 2,
+    saveDC: 12,
+    size: {
+      label: 'Medium',
+      value: 'medium',
+    },
+    xp: 10,
+    strength: 10,
+    dexterity: 10,
+    constitution: 10,
+    intelligence: 10,
+    wisdom: 10,
+    charisma: 10,
+    strengthMod: 0,
+    dexterityMod: 0,
+    constitutionMod: 0,
+    intelligenceMod: 0,
+    wisdomMod: 0,
+    charismaMod: 0,
+    conditionImmunities: [],
+    damageImmunities: [],
+    damageResistances: [],
+    damageVulnerabilities: [],
+    conditionImmunitiesOptions: [],
+    damageImmunitiesOptions: [],
+    damageResistancesOptions: [],
+    damageVulnerabilitiesOptions: [],
+    actions: [],
+    legendaryActions: [],
+    reactions: [],
+    savingThrowOptions: [],
+    senses: [],
+    skillOptions: [],
+    specialAbilities: [],
+    speeds: [],
+  });
 
   const UseForm = useForm<MonsterGeneratorFormFields>({
     defaultValues: monsterForm,
@@ -205,35 +204,22 @@ export const useData = (props: GenerateMonsterProps) => {
         UseForm.setValue('strengthMod', strMod);
         break;
       case 'dexterity':
-        UseForm.setValue(
-          'dexterityMod',
-          abilityScoreModifier(fields.dexterity)
-        );
+        UseForm.setValue('dexterityMod', abilityScoreModifier(fields.dexterity));
         setActionDesc(fields, attackBonus, profBonus);
         handleCalculateCR();
         break;
       case 'constitution':
-        UseForm.setValue(
-          'constitutionMod',
-          abilityScoreModifier(fields.constitution)
-        );
+        UseForm.setValue('constitutionMod', abilityScoreModifier(fields.constitution));
         UseForm.setValue(
           'hitPoints',
-          hitPoints(
-            fields.constitution,
-            fields.hitDiceNumber,
-            fields.hitDiceValue
-          ),
+          hitPoints(fields.constitution, fields.hitDiceNumber, fields.hitDiceValue),
           { shouldDirty: true }
         );
         setActionDesc(fields, attackBonus, profBonus);
         handleCalculateCR();
         break;
       case 'intelligence':
-        UseForm.setValue(
-          'intelligenceMod',
-          abilityScoreModifier(fields.intelligence)
-        );
+        UseForm.setValue('intelligenceMod', abilityScoreModifier(fields.intelligence));
         break;
       case 'wisdom':
         UseForm.setValue('wisdomMod', abilityScoreModifier(fields.wisdom));
@@ -255,11 +241,7 @@ export const useData = (props: GenerateMonsterProps) => {
         });
         UseForm.setValue(
           'hitPoints',
-          hitPoints(
-            fields.constitution,
-            fields.hitDiceNumber,
-            fields.hitDiceValue
-          ),
+          hitPoints(fields.constitution, fields.hitDiceNumber, fields.hitDiceValue),
           { shouldDirty: true, shouldTouch: true }
         );
         setActionDesc(fields, attackBonus, profBonus);
@@ -268,34 +250,20 @@ export const useData = (props: GenerateMonsterProps) => {
       case 'hitDiceNumber':
         UseForm.setValue(
           'hitPoints',
-          hitPoints(
-            fields.constitution,
-            fields.hitDiceNumber,
-            fields.hitDiceValue
-          ),
+          hitPoints(fields.constitution, fields.hitDiceNumber, fields.hitDiceValue),
           { shouldDirty: true, shouldTouch: true }
         );
-        UseForm.setValue(
-          'hitDice',
-          `${fields.hitDiceNumber}${fields.hitDiceValue}`
-        );
+        UseForm.setValue('hitDice', `${fields.hitDiceNumber}${fields.hitDiceValue}`);
         setActionDesc(fields, attackBonus, profBonus);
         handleCalculateCR();
         break;
       case 'hitDiceValue':
         UseForm.setValue(
           'hitPoints',
-          hitPoints(
-            fields.constitution,
-            fields.hitDiceNumber,
-            fields.hitDiceValue
-          ),
+          hitPoints(fields.constitution, fields.hitDiceNumber, fields.hitDiceValue),
           { shouldDirty: true, shouldTouch: true }
         );
-        UseForm.setValue(
-          'hitDice',
-          `${fields.hitDiceNumber}${fields.hitDiceValue}`
-        );
+        UseForm.setValue('hitDice', `${fields.hitDiceNumber}${fields.hitDiceValue}`);
         setActionDesc(fields, attackBonus, profBonus);
         handleCalculateCR();
         break;
@@ -306,9 +274,7 @@ export const useData = (props: GenerateMonsterProps) => {
       case 'conditionImmunitiesOptions':
         UseForm.setValue(
           'conditionImmunities',
-          fields.conditionImmunitiesOptions.map(
-            (resistance) => resistance.label
-          )
+          fields.conditionImmunitiesOptions.map((resistance) => resistance.label)
         );
         handleCalculateCR();
         break;
@@ -329,9 +295,7 @@ export const useData = (props: GenerateMonsterProps) => {
       case 'damageVulnerabilitiesOptions':
         UseForm.setValue(
           'damageVulnerabilities',
-          fields.damageVulnerabilitiesOptions.map(
-            (resistance) => resistance.label
-          )
+          fields.damageVulnerabilitiesOptions.map((resistance) => resistance.label)
         );
         handleCalculateCR();
         break;
@@ -358,10 +322,7 @@ export const useData = (props: GenerateMonsterProps) => {
           UseForm.setValue(`actions.${actionIndex}.desc`, newDesc);
           handleCalculateCR();
         }
-        if (
-          fieldName === `actions.${actionIndex}.damage.diceValueOption` &&
-          action.damage
-        ) {
+        if (fieldName === `actions.${actionIndex}.damage.diceValueOption` && action.damage) {
           UseForm.setValue(
             `actions.${actionIndex}.damage.diceValue`,
             action.damage.diceValueOption.value as number

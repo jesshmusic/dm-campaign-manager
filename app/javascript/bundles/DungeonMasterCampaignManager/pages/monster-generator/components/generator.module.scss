@@ -46,3 +46,10 @@
 .sixCol {
   grid-template-columns: repeat(6, 1fr);
 }
+
+.largeInputs {
+  .reactSelect__control {
+    font-size: $font-size-lg;
+    min-height: 5rem;
+  }
+}

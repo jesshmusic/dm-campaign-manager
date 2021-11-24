@@ -1,15 +1,9 @@
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
-import {
-  MonsterQuickGeneratorFormFields,
-  SelectOption,
-} from '../../../../utilities/types';
+import { MonsterQuickGeneratorFormFields, SelectOption } from '../../../../utilities/types';
 import MonsterTypeSelect from '../generate-monster/MonsterTypeSelect';
 import FormField from '../../../../components/forms/FormField';
-import {
-  alignmentOptions,
-  monsterSizeOptions,
-} from '../../../../utilities/character-utilities';
+import { alignmentOptions, monsterSizeOptions } from '../../../../utilities/character-utilities';
 import FormSelect from '../../../../components/forms/FormSelect';
 
 const styles = require('../generator.module.scss');
@@ -21,22 +15,9 @@ const QuickMonsterStatsSection = (props: {
   const { UseForm } = props;
   return (
     <>
-      <div className={styles.fiveCol}>
-        <MonsterTypeSelect control={UseForm.control} />
+      <div className={`${styles.twoCol} ${styles.largeInputs}`}>
         <FormSelect
-          label="Alignment"
-          name="alignmentOption"
-          control={UseForm.control}
-          options={alignmentOptions}
-        />
-        <FormSelect
-          label="Size"
-          name="size"
-          control={UseForm.control}
-          options={monsterSizeOptions}
-        />
-        <FormSelect
-          label="Challenge Rating"
+          label="Target Challenge Rating"
           name="challengeRatingOption"
           control={UseForm.control}
           options={props.challengeRatingOptions}
@@ -48,6 +29,36 @@ const QuickMonsterStatsSection = (props: {
           register={UseForm.register}
           name="xp"
           readOnly
+        />
+      </div>
+      <div className={styles.fiveCol}>
+        <MonsterTypeSelect control={UseForm.control} />
+        <FormSelect
+          label="Alignment"
+          name="alignmentOption"
+          control={UseForm.control}
+          options={alignmentOptions}
+        />
+        <FormField
+          label="Number of Attacks"
+          type="number"
+          errors={UseForm.formState.errors}
+          min={1}
+          register={UseForm.register}
+          name="numberOfAttacks"
+        />
+        <FormSelect
+          label="Size"
+          name="size"
+          control={UseForm.control}
+          options={monsterSizeOptions}
+        />
+        <FormField
+          label="Spellcaster"
+          type="checkbox"
+          errors={UseForm.formState.errors}
+          register={UseForm.register}
+          name="isCaster"
         />
       </div>
       <div className={styles.fiveCol}>

@@ -1,9 +1,6 @@
 import React from 'react';
 import { GenerateMonsterProps } from '../generate-monster/GenerateMonster';
-import {
-  MonsterQuickGeneratorFormFields,
-  RandomNameResult,
-} from '../../../../utilities/types';
+import { MonsterQuickGeneratorFormFields, RandomNameResult } from '../../../../utilities/types';
 import { useForm } from 'react-hook-form';
 import {
   createQuickMonsterParams,
@@ -16,32 +13,33 @@ import { getChallengeRatingOptions } from '../../../../utilities/character-utili
 import axios from 'axios';
 
 export const useData = (props: GenerateMonsterProps) => {
-  const [monsterForm, setMonsterForm] =
-    React.useState<MonsterQuickGeneratorFormFields>({
-      name: 'New Monster',
-      alignment: 'Neutral',
-      alignmentOption: {
-        value: 'Neutral',
-        label: 'Neutral',
-      },
-      armorClass: 10,
-      challengeRatingOption: { value: '0', label: '0' },
-      constitution: 10,
-      hitDice: '1d6',
-      hitDiceNumber: 1,
-      hitDiceValue: 'd8',
-      hitPoints: 4,
-      monsterType: 'humanoid',
-      monsterTypeOption: {
-        value: 'humanoid',
-        label: 'Humanoid',
-      },
-      size: {
-        label: 'Medium',
-        value: 'medium',
-      },
-      xp: 10,
-    });
+  const [monsterForm, setMonsterForm] = React.useState<MonsterQuickGeneratorFormFields>({
+    name: 'New Monster',
+    alignment: 'Neutral',
+    alignmentOption: {
+      value: 'Neutral',
+      label: 'Neutral',
+    },
+    armorClass: 10,
+    challengeRatingOption: { value: '0', label: '0' },
+    constitution: 10,
+    hitDice: '1d6',
+    hitDiceNumber: 1,
+    hitDiceValue: 'd8',
+    hitPoints: 4,
+    isCaster: false,
+    monsterType: 'humanoid',
+    monsterTypeOption: {
+      value: 'humanoid',
+      label: 'Humanoid',
+    },
+    numberOfAttacks: 1,
+    size: {
+      label: 'Medium',
+      value: 'medium',
+    },
+    xp: 10,
+  });
 
   const UseForm = useForm<MonsterQuickGeneratorFormFields>({
     defaultValues: monsterForm,
@@ -82,14 +80,9 @@ export const useData = (props: GenerateMonsterProps) => {
       console.log(result.data.challenge);
       const crInfo = result.data.challenge;
       const hitPoints =
-        Math.floor(
-          Math.random() * (crInfo.hit_points_max - crInfo.hit_points_min)
-        ) + crInfo.hit_points_min;
-      const hitDiceInfo = hitDiceForHitPoints(
-        hitPoints,
-        fields.constitution,
-        fields.hitDiceValue
-      );
+        Math.floor(Math.random() * (crInfo.hit_points_max - crInfo.hit_points_min)) +
+        crInfo.hit_points_min;
+      const hitDiceInfo = hitDiceForHitPoints(hitPoints, fields.constitution, fields.hitDiceValue);
       UseForm.setValue('armorClass', crInfo.armor_class, {
         shouldDirty: true,
         shouldTouch: true,
