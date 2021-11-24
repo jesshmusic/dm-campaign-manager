@@ -60,6 +60,24 @@ class DndRules
       end
     end
 
+    def calculate_hp_and_hd (size, challenge_rating, constitution_bonus = 0, hit_points = nil)
+      size = size.downcase
+      hp_min = challenge_ratings[challenge_rating.to_sym][:hit_points_min]
+      hp_max = challenge_ratings[challenge_rating.to_sym][:hit_points_max]
+
+      if hit_points.nil?
+        hp = rand(hp_min..hp_max)
+      else
+        hp = hit_points
+      end
+      { hit_points: hp, num_hit_die: hp / (hit_point_average_for_size[size.to_sym] + constitution_bonus) }
+    end
+
+    def caster_level_for_cr(cr_float)
+      challenge = cr_float.to_i
+      [[((challenge - 1) * 19) / 20, 20].min + rand(-2..2), 1].max
+    end
+
     def challenge_rating_for_xp(xp)
       case xp.to_i
       when 0..449
@@ -561,6 +579,19 @@ class DndRules
       end
     end
 
+    def cr_string_to_num(challenge_rating)
+      case challenge_rating
+      when '1/8'
+        0.125
+      when '1/4'
+        0.25
+      when '1/2'
+        0.5
+      else
+        challenge_rating.to_f
+      end
+    end
+
     def cr_num_to_string(challenge_rating)
       case challenge_rating
       when 0.125
@@ -622,17 +653,29 @@ class DndRules
       end
     end
 
-    def calculate_hp_and_hd (size, challenge_rating, constitution_bonus = 0, hit_points = nil)
-      size = size.downcase
-      hp_min = challenge_ratings[challenge_rating.to_sym][:hit_points_min]
-      hp_max = challenge_ratings[challenge_rating.to_sym][:hit_points_max]
-
-      if hit_points.nil?
-        hp = rand(hp_min..hp_max)
-      else
-        hp = hit_points
-      end
-      { hit_points: hp, num_hit_die: hp / (hit_point_average_for_size[size.to_sym] + constitution_bonus) }
+    def npc_spell_slots(caster_level)
+      {
+        1 => [2, 0, 0, 0, 0, 0, 0, 0, 0],
+        2 => [3, 0, 0, 0, 0, 0, 0, 0, 0],
+        3 => [4, 2, 0, 0, 0, 0, 0, 0, 0],
+        4 => [4, 3, 0, 0, 0, 0, 0, 0, 0],
+        5 => [4, 3, 2, 0, 0, 0, 0, 0, 0],
+        6 => [4, 3, 3, 0, 0, 0, 0, 0, 0],
+        7 => [4, 3, 3, 1, 0, 0, 0, 0, 0],
+        8 => [4, 3, 3, 2, 0, 0, 0, 0, 0],
+        9 => [4, 3, 3, 3, 1, 0, 0, 0, 0],
+        10 => [4, 3, 3, 3, 2, 0, 0, 0, 0],
+        11 => [4, 3, 3, 3, 2, 1, 0, 0, 0],
+        12 => [4, 3, 3, 3, 2, 1, 0, 0, 0],
+        13 => [4, 3, 3, 3, 2, 1, 1, 0, 0],
+        14 => [4, 3, 3, 3, 2, 1, 1, 0, 0],
+        15 => [4, 3, 3, 3, 2, 1, 1, 0, 0],
+        16 => [4, 3, 3, 3, 2, 1, 1, 1, 0],
+        17 => [4, 3, 3, 3, 2, 1, 1, 1, 1],
+        18 => [4, 3, 3, 3, 3, 1, 1, 1, 1],
+        19 => [4, 3, 3, 3, 3, 2, 1, 1, 1],
+        20 => [4, 3, 3, 3, 3, 2, 2, 1, 1]
+      }[caster_level]
     end
 
     def offensive_cr(monster, attack_bonus)

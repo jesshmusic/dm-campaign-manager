@@ -7,6 +7,7 @@ class NpcGenerator
       @new_npc = Monster.new(monster_params.except(:number_of_attacks, :is_caster))
       @new_npc.slug = @new_npc.name.parameterize
       ability_score_order = %w[Strength Dexterity Constitution Intelligence Wisdom Charisma].shuffle
+      spellcasting_ability = %w[Intelligence Wisdom Charisma].sample
       cr_info = DndRules.challenge_ratings[monster_params[:challenge_rating].to_sym]
       @new_npc.attack_bonus = cr_info[:attack_bonus]
       @new_npc.prof_bonus = cr_info[:prof_bonus]
@@ -15,7 +16,10 @@ class NpcGenerator
       generate_actions(
         (cr_info[:damage_max] - cr_info[:damage_min]) / 2 + cr_info[:damage_min],
         monster_params[:is_caster],
-        monster_params[:number_of_attacks]
+        monster_params[:number_of_attacks],
+        DndRules.cr_string_to_num(monster_params[:challenge_rating]),
+        cr_info[:save_dc],
+        spellcasting_ability
       )
       @new_npc.slug = @new_npc.name.parameterize if user.nil?
 
@@ -395,7 +399,7 @@ class NpcGenerator
 
     # Actions
 
-    def generate_actions(damage_per_round = 10, is_caster, number_of_attacks)
+    def generate_actions(damage_per_round = 10, is_caster, number_of_attacks, challenge_rating, save_dc, primary_ability)
       attacks = []
       if @new_npc.monster_type.downcase == 'humanoid'
         attacks << create_melee_attack(number_of_attacks)
@@ -404,7 +408,7 @@ class NpcGenerator
         attacks << create_bite_attack(damage_per_round, number_of_attacks)
         attacks << create_claw_attack(damage_per_round, number_of_attacks)
       end
-      attacks << create_spellcasting if is_caster
+      attacks << create_spellcasting(challenge_rating, save_dc, primary_ability) if is_caster
     end
 
     def create_melee_attack(num_attacks)
@@ -446,15 +450,22 @@ class NpcGenerator
     end
 
     def create_bite_attack(damage_per_round, num_attacks)
-      attack_name = 'Bite'
+      attack = {}
+      attack[:name] = 'Bite'
     end
 
     def create_claw_attack(damage_per_round, num_attacks)
-      attack_name = ['Claw', 'Claw', 'Claw', 'Claw', 'Claw', 'Stomp', 'Tentacle', 'Throw Boulder'].sample
+      attack = {}
+      attack[:name] = ['Claw', 'Claw', 'Claw', 'Claw', 'Claw', 'Stomp', 'Tentacle', 'Throw Boulder'].sample
     end
 
-    def create_spellcasting
-
+    def create_spellcasting(challenge_rating, save_dc, primary_ability)
+      action = {}
+      action[:name] = 'Spellcasting'
+      action[:caster_level] = DndRules.caster_level_for_cr(challenge_rating)
+      action[:save_dc] = save_dc
+      action[:primary_ability] = primary_ability
+      @new_npc.special_abilities << SpecialAbility.create(name: action[:name], desc: parse_spell_action_desc(action))
     end
 
     def parse_melee_action_desc(action)
@@ -467,6 +478,11 @@ class NpcGenerator
       npc_dam_bonus = DndRules.ability_score_modifier(@new_npc.dexterity)
       action_damage_bonus, base_damage = action_damage(action, npc_dam_bonus)
       "Ranged Weapon Attack: +#{@new_npc.attack_bonus} to hit, range #{action[:range_normal]}/#{action[:range_long]} ft., one target. Hit: #{base_damage} (#{action[:damage_dice]} #{action_damage_bonus}) #{action[:damage_type].downcase} damage."
+    end
+
+    def parse_spell_action_desc(action)
+      spell_str = "The #{@new_npc.name.downcase} is a #{action[:caster_level].ordinalize} level spellcaster. Its spellcasting ability is #{action[:primary_ability]}. The #{@new_npc.name.downcase} has the following spells prepared. "
+      spell_slots = DndRules.npc_spell_slots(action[:caster_level])
     end
 
     def parse_thrown_action_desc(action)
