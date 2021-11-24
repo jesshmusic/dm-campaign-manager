@@ -146,14 +146,27 @@ export const createMonsterParams = (monster: MonsterProps) => {
     monsterProficiencies,
     ...rest
   } = monster;
+  const specialAbilitiesAttributes = specialAbilities || [];
+  const monsterActionsAttributes =
+    actions
+      ?.map((action) => {
+        if (action.name !== 'Spellcasting') {
+          return { name: action.name, desc: action.desc };
+        }
+        specialAbilitiesAttributes.push({ name: 'Spellcasting', desc: action.desc });
+        return null;
+      })
+      .filter((action) => action !== null) || [];
+
+  console.log(specialAbilitiesAttributes);
+  console.log(monsterActionsAttributes);
   const monsterParams = {
     monsterProficienciesAttributes: monsterProficiencies,
     sensesAttributes: senses,
     speedsAttributes: speeds,
-    monsterActionsAttributes:
-      actions?.map((action) => ({ name: action.name, desc: action.desc })) || [],
+    monsterActionsAttributes,
     legendaryActionsAttributes: legendaryActions,
-    specialAbilitiesAttributes: specialAbilities,
+    specialAbilitiesAttributes,
     reactionsAttributes: reactions,
     ...rest,
   };
