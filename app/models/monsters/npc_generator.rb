@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class NpcGenerator
   class << self
 
@@ -481,8 +482,47 @@ class NpcGenerator
     end
 
     def parse_spell_action_desc(action)
-      spell_str = "The #{@new_npc.name.downcase} is a #{action[:caster_level].ordinalize} level spellcaster. Its spellcasting ability is #{action[:primary_ability]}. The #{@new_npc.name.downcase} has the following spells prepared. "
       spell_slots = DndRules.npc_spell_slots(action[:caster_level])
+      spell_str = "The #{@new_npc.name.downcase} is a #{action[:caster_level].ordinalize} level spellcaster. Its spellcasting ability is #{action[:primary_ability]}. The #{@new_npc.name.downcase} has the following spells prepared.  \n"
+      weighted_cantrips = { '0': 50, '1': 25, '2': 25, '3': 25, '4': 15, '5': 10, '6': 5 }
+      num_cantrips_list = WeightedList[weighted_cantrips]
+      num_cantrips = num_cantrips_list.sample.to_s.to_i
+      cantrips = []
+      num_cantrips.times do
+        cantrips << Spell.where(level: 0).pluck(:name).sample
+      end
+      spells = [{ name: 'Cantrips', slots: -1, spells: cantrips },
+                { name: '1st Level', slots: spell_slots[0], spells: [] },
+                { name: '2nd Level', slots: spell_slots[1], spells: [] },
+                { name: '3rd Level', slots: spell_slots[2], spells: [] },
+                { name: '4th Level', slots: spell_slots[3], spells: [] },
+                { name: '5th Level', slots: spell_slots[4], spells: [] },
+                { name: '6th Level', slots: spell_slots[5], spells: [] },
+                { name: '7th Level', slots: spell_slots[6], spells: [] },
+                { name: '8th Level', slots: spell_slots[7], spells: [] },
+                { name: '9th Level', slots: spell_slots[8], spells: [] },
+      ]
+      spell_slots.each_with_index do |slots, index|
+        if slots > 0 && slots < 2
+          (slots + rand(0..1)).times do
+            spells[index + 1][:spells] << Spell.where(level: index + 1).pluck(:name).sample
+          end
+        elsif slots > 1
+          (slots + rand(-1..1)).times do
+            spells[index + 1][:spells] << Spell.where(level: index + 1).pluck(:name).sample
+          end
+        end
+      end
+      spells.each do |spell_list|
+        if spell_list[:spells].count > 0
+          if spell_list[:name] == 'Cantrips'
+            spell_str += "Cantrips (at will): #{spell_list[:spells].join(', ')}  \n"
+          else
+            spell_str += "#{spell_list[:name]} (#{spell_list[:slots]} slots): #{spell_list[:spells].join(', ')}  \n"
+          end
+        end
+      end
+      spell_str
     end
 
     def parse_thrown_action_desc(action)

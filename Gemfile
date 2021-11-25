@@ -35,6 +35,7 @@ gem 'jwt'
 gem 'pagy'
 gem 'react_on_rails'
 gem 'simple_form'
+gem 'weighted_list'
 
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'
