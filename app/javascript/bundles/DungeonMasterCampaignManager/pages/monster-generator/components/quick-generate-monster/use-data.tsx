@@ -77,7 +77,6 @@ export const useData = (props: GenerateMonsterProps) => {
 
   const setFieldsForChallenge = (fields: MonsterQuickGeneratorFormFields) => {
     getCRInfo(fields.challengeRatingOption.label).then((result) => {
-      console.log(result.data.challenge);
       const crInfo = result.data.challenge;
       const hitPoints =
         Math.floor(Math.random() * (crInfo.hit_points_max - crInfo.hit_points_min)) +

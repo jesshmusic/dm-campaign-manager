@@ -174,7 +174,6 @@ export default reduxApi({
   .use('options', (url, params, getState) => {
     const state = getState();
     const token = state.users && state.users.token ? state.users.token : null;
-    console.log(state.users);
     const railsHeaders = getHeaders();
     const headers = {
       Accept: 'application/json',
