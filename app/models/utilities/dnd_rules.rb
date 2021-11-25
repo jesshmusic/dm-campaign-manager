@@ -75,7 +75,7 @@ class DndRules
 
     def caster_level_for_cr(cr_float)
       challenge = cr_float.to_i
-      [[((challenge - 1) * 19) / 20, 20].min + rand(-2..2), 1].max
+      [((challenge - 1) * 19) / 20, 20].min
     end
 
     def challenge_rating_for_xp(xp)
@@ -723,17 +723,14 @@ class DndRules
       cr_for_spells = 0
       ability_cr = 1
       num_attacks = 1
-      multi_attack = nil
+      num_attack_types = 0
       monster[:actions].each do |action_obj|
         if action_obj[:name].downcase == 'multiattack'
-          num_attacks = action_obj[:desc].scan(/\d+/).first.to_i
-          multi_attack = action_obj[:desc][/#{num_attacks} (.*?) attacks./m, 1]
+          num_attacks_array = action_obj[:desc].scan(/\d+/).map(&:to_i)
+          num_attacks = num_attacks_array.sum
         elsif action_obj[:desc].include? 'to hit'
-          if action_obj[:name].downcase == multi_attack
-            damages << parse_action_desc(action_obj, num_attacks)
-          else
-            damages << parse_action_desc(action_obj, 1)
-          end
+          num_attack_types += 1
+          damages << parse_action_desc(action_obj)
         else
           ability_cr += 1
         end
@@ -746,7 +743,7 @@ class DndRules
         end
       end
 
-      damage_per_round = damages.inject(0, :+)
+      damage_per_round = damages.sum.to_f * num_attacks / num_attack_types
       damage_cr = cr_for_damage(damage_per_round)
       attack_bonus_cr = cr_for_attack_bonus(monster[:attack_bonus])
       spell_save_cr = is_caster ? cr_for_save_dc(monster[:save_dc].to_i) : 0
@@ -759,7 +756,7 @@ class DndRules
       end
     end
 
-    def parse_action_desc(action, num_attacks)
+    def parse_action_desc(action)
       # desc = "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 3 (1d6 - 1) piercing damage. Or Ranged Weapon Attack: +5 to hit, range 30/120 ft., one target. Hit: 3 (1d6 - 1) piercing damage."
       # name = "Javelin"
       #
@@ -767,7 +764,11 @@ class DndRules
       # name = "Multiattack"
 
       damage_str = action[:desc][/Hit: (.*?) \(/m, 1]
-      damage_str.to_i * num_attacks unless damage_str.empty?
+      if damage_str.nil? || damage_str.empty?
+        5
+      else
+        damage_str.to_i
+      end
     end
 
     def calculate_spell_cr(spellcasting_desc)

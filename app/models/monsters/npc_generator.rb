@@ -22,6 +22,7 @@ class NpcGenerator
         cr_info[:save_dc],
         spellcasting_ability
       )
+      # generate_actions(monster_params[:is_caster], spellcasting_ability)
       @new_npc.slug = @new_npc.name.parameterize if user.nil?
 
       monster_atts = @new_npc.attributes
@@ -42,16 +43,14 @@ class NpcGenerator
         @new_npc.xp = cr_data[:xp]
         @new_npc.save_dc = cr_data[:save_dc]
       end
-      @new_npc.user = user unless user.nil?
-      @new_npc.save! unless user.nil?
+      maybe_save_npc(user)
       @new_npc
     end
 
     def generate_npc(monster_params, user)
       @new_npc = Monster.new(monster_params)
       @new_npc.slug = @new_npc.name.parameterize if user.nil?
-      @new_npc.user = user unless user.nil?
-      @new_npc.save! unless user.nil?
+      maybe_save_npc(user)
       @new_npc
     end
 
@@ -104,8 +103,7 @@ class NpcGenerator
       @new_npc.alignment = DndRules.alignments_non_evil.sample
       @new_npc.hit_points += DndRules.ability_score_modifier(@new_npc.constitution)
       @new_npc.slug = @new_npc.name.parameterize if user.nil?
-      @new_npc.user = user unless user.nil?
-      @new_npc.save! unless user.nil?
+      maybe_save_npc(user)
       @new_npc
     end
 
@@ -130,6 +128,13 @@ class NpcGenerator
     end
 
     private
+
+    def maybe_save_npc(user)
+      if user && (user.dungeon_master? || user.admin?)
+        @new_npc.user = user unless user.nil?
+        @new_npc.save! unless user.nil?
+      end
+    end
 
     def generate_attack_desc(monster_action, attack_bonus, prof_bonus, damange_bonus)
       if monster_action[:damage].nil?
@@ -405,62 +410,109 @@ class NpcGenerator
 
     def generate_actions(damage_per_round = 10, is_caster, number_of_attacks, challenge_rating, save_dc, primary_ability)
       attacks = []
+      ranged_chance = is_caster ? 0.15 : 0.35
       if @new_npc.monster_type.downcase == 'humanoid'
-        attacks << create_melee_attack(number_of_attacks)
-        attacks << create_ranged_attack
+        attacks << create_melee_attack(number_of_attacks, is_caster)
+        if rand > ranged_chance
+          attacks << create_ranged_attack
+        end
       else
-        attacks << create_bite_attack(damage_per_round, number_of_attacks)
-        attacks << create_claw_attack(damage_per_round, number_of_attacks)
+        attacks << create_creature_attacks(damage_per_round, number_of_attacks)
       end
       attacks << create_spellcasting(challenge_rating, save_dc, primary_ability) if is_caster
     end
 
-    def create_melee_attack(num_attacks)
-      attack = {}
-      attack[:name] = WeaponItem.melee_weapons.sample
-
+    def create_multiattack(num_attacks, attack_names)
       if num_attacks > 1
-        weapon_name = attack[:name]
-        multi_attack = MonsterAction.new(
-          name: 'Multiattack',
-          desc: "The #{@new_npc.name} makes #{num_attacks} #{weapon_name.downcase} attacks."
-        )
-        @new_npc.monster_actions << multi_attack
+        if num_attacks == attack_names.count
+          multi_desc = "The #{@new_npc.name} makes #{num_attacks} attacks: "
+          attack_strings = attack_names.map do |action|
+            "one with its #{action.downcase}"
+          end
+          multi_desc += attack_strings.to_sentence
+          @new_npc.monster_actions << MonsterAction.new(name: 'Multiattack', desc: multi_desc)
+        elsif attack_names.count == 1
+          attack_name = attack_names[0]
+          multi_desc = "The #{@new_npc.name} makes #{num_attacks} #{attack_name.downcase} attacks."
+          multi_attack = MonsterAction.new(
+            name: 'Multiattack',
+            desc: multi_desc
+          )
+          @new_npc.monster_actions << multi_attack
+        else
+          multi_desc = "The #{@new_npc.name} makes "
+          remaining_attacks = num_attacks
+          attack_counts = []
+          attack_names.each do |next_attack|
+            break unless remaining_attacks > 0
+            current_attack_count = rand(1..remaining_attacks)
+            attack_counts << {name: next_attack, count: current_attack_count}
+            remaining_attacks -= current_attack_count
+          end
+          attack_strings = attack_counts.map do |attack_count|
+            "#{attack_count[:count]} attack#{attack_count[:count] > 1 ? 's' : ''} with its #{attack_count[:name].downcase}"
+          end
+          multi_desc += attack_strings.to_sentence
+          @new_npc.monster_actions << MonsterAction.new(name: 'Multiattack', desc: multi_desc)
+        end
       end
-      weapon = WeaponItem.find_by(name: attack[:name])
-      attack[:attack_bonus] = @new_npc.attack_bonus
-      attack[:damage_type] = weapon.damage.damage_type
-      attack[:damage_dice] = weapon.damage.damage_dice
-      attack[:range_normal] = weapon.properties.include?('Reach') ? 10 : 5
-      attack_desc = parse_melee_action_desc(attack)
-      if weapon.properties&.include?('Thrown')
-        attack[:thrown_range_normal] = weapon.item_throw_range.nil? ? 120 : weapon.item_throw_range.normal
-        attack[:thrown_range_long] = weapon.item_throw_range.nil? ? 120 : weapon.item_throw_range.long
-        attack_desc += parse_thrown_action_desc(attack)
+    end
+
+    def create_melee_attack(num_attacks, is_caster)
+      attacks = is_caster ? [WeaponItem.caster_weapons.sample] : WeaponItem.fighter_weapons.sample([rand(1..num_attacks), 2].min).uniq
+      multiattack_options = []
+      attacks.each do |attack_name|
+        weapon = WeaponItem.find_by(name: attack_name)
+        unless (weapon.properties.include? 'Heavy') || (weapon.properties.include? 'Two-Handed')
+          multiattack_options << attack_name
+        end
       end
-      @new_npc.monster_actions << MonsterAction.create(name: attack[:name], desc: attack_desc)
+      if multiattack_options.count > 0
+        create_multiattack(num_attacks, multiattack_options)
+      else
+        create_multiattack(num_attacks, [attacks[0]])
+      end
+      attacks.each do |attack_name|
+        attack = {name: attack_name}
+        weapon = WeaponItem.find_by(name: attack_name)
+        attack[:attack_bonus] = @new_npc.attack_bonus
+        attack[:damage_type] = weapon.damage.damage_type
+        attack[:damage_dice] = weapon.damage.damage_dice
+        attack[:range_normal] = weapon.properties.include?('Reach') ? 10 : 5
+        attack_desc = parse_melee_action_desc(attack)
+        if weapon.properties&.include?('Thrown')
+          attack[:thrown_range_normal] = weapon.item_throw_range.nil? ? 120 : weapon.item_throw_range.normal
+          attack[:thrown_range_long] = weapon.item_throw_range.nil? ? 120 : weapon.item_throw_range.long
+          attack_desc += parse_thrown_action_desc(attack)
+        end
+        @new_npc.monster_actions << MonsterAction.new(name: attack[:name], desc: attack_desc)
+      end
     end
 
     def create_ranged_attack
       attack = {}
-      attack[:name] = WeaponItem.ranged_weapons.sample
+      attack[:name] = WeaponItem.ranged_weighted.sample
       weapon = WeaponItem.find_by(name: attack[:name])
       attack[:attack_bonus] = @new_npc.attack_bonus
       attack[:damage_type] = weapon.damage.damage_type
       attack[:damage_dice] = weapon.damage.damage_dice
       attack[:range_normal] = weapon.item_range.nil? ? 120 : weapon.item_range.normal
       attack[:range_long] = weapon.item_range.nil? ? 120 : weapon.item_range.long
-      @new_npc.monster_actions << MonsterAction.create(name: attack[:name], desc: parse_ranged_action_desc(attack))
+      @new_npc.monster_actions << MonsterAction.new(name: attack[:name], desc: parse_ranged_action_desc(attack))
     end
 
-    def create_bite_attack(damage_per_round, num_attacks)
-      attack = {}
-      attack[:name] = 'Bite'
-    end
-
-    def create_claw_attack(damage_per_round, num_attacks)
-      attack = {}
-      attack[:name] = ['Claw', 'Claw', 'Claw', 'Claw', 'Claw', 'Stomp', 'Tentacle', 'Throw Boulder'].sample
+    def create_creature_attacks(damage_per_round, num_attacks)
+      attack_types = {'Bite': 143, 'Slam': 14, 'Claw': 82, 'Tail': 32}
+      cr_int = DndRules.cr_string_to_num(@new_npc.challenge_rating)
+      min_cr = DndRules.cr_num_to_string([(cr_int - 3).to_i, 0].max)
+      max_cr = DndRules.cr_num_to_string((cr_int + 3).to_i)
+      attack_type_list = WeightedList[attack_types]
+      attacks = attack_type_list.sample(rand(1..num_attacks)).uniq
+      create_multiattack(num_attacks, attacks)
+      attacks.each do |next_attack|
+        action = MonsterAction.joins(:monster).where(name: next_attack.to_s, monster: { challenge_rating: min_cr..max_cr }).sample.attributes
+        @new_npc.monster_actions << MonsterAction.new(name: action['name'], desc: action['desc'])
+      end
     end
 
     def create_spellcasting(challenge_rating, save_dc, primary_ability)
@@ -506,11 +558,11 @@ class NpcGenerator
                 { name: '9th Level', slots: spell_slots[8], spells: [] },
       ]
       spell_slots.each_with_index do |slots, index|
-        if slots > 0 && slots < 2
+        if slots > 0 && slots <= 2
           (slots + rand(0..1)).times do
             spells[index + 1][:spells] << Spell.where(level: index + 1).pluck(:name).sample
           end
-        elsif slots > 1
+        elsif slots > 2
           (slots + rand(-1..1)).times do
             spells[index + 1][:spells] << Spell.where(level: index + 1).pluck(:name).sample
           end

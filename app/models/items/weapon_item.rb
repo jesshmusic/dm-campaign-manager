@@ -79,6 +79,25 @@ class WeaponItem < Item
     ['Crossbow, light', 'Dart', 'Sling', 'Crossbow, hand', 'Blowgun', 'Longbow', 'Shortbow', 'Crossbow, heavy']
   end
 
+  def self.fighter_weapons
+    WeightedList['Shortsword': 20, 'Mace': 15, 'Pike': 3, 'Halberd': 3, 'Battleaxe': 20, 'Glaive': 3, 'Whip': 1,
+                 'Sickle': 5, 'Greataxe': 20, 'Spear': 20, 'Greatsword': 30, 'Javelin': 15, 'Flail': 15, 'Maul': 15,
+                 'Quarterstaff': 3, 'Greatclub': 15, 'Handaxe': 10, 'War pick': 5, 'Scimitar': 15, 'Club': 8,
+                 'Longsword': 30, 'Rapier': 15, 'Trident': 13, 'Dagger': 15, 'Lance': 1, 'Morningstar': 15,
+                 'Light hammer': 10, 'Warhammer': 20]
+  end
+
+  def self.caster_weapons
+    WeightedList['Shortsword': 5, 'Mace': 10, 'Sickle': 5, 'Spear': 5, 'Quarterstaff': 35, 'Scimitar': 5,
+                 'Longsword': 8, 'Rapier': 12, 'Dagger': 25, 'Morningstar': 2,
+                 'Light hammer': 5]
+  end
+
+  def self.ranged_weighted
+    WeightedList['Crossbow, light': 15, 'Dart': 3, 'Sling': 2, 'Crossbow, hand': 5, 'Blowgun': 2, 'Longbow': 25,
+                 'Shortbow': 35, 'Crossbow, heavy': 10]
+  end
+
   def self.all_swords
     %w[Shortsword Greatsword Scimitar Longsword Rapier]
   end
