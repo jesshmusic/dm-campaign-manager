@@ -26,12 +26,15 @@ class NpcGenerator
 
       monster_atts = @new_npc.attributes
       monster_atts[:actions] = @new_npc.monster_actions.map {|action| action.attributes}
+      monster_atts[:special_abilities] = @new_npc.special_abilities.map {|action| action.attributes}
+      monster_atts[:reactions] = @new_npc.reactions.map {|action| action.attributes}
+      monster_atts[:legendary_actions] = @new_npc.legendary_actions.map {|action| action.attributes}
       cr_params = {
         params: {
           monster: monster_atts,
         }
       }
-      calculated_cr = calculate_cr(cr_params.deep_symbolize_keys)
+      calculated_cr = calculate_cr(cr_params.deep_symbolize_keys, true, monster_params[:is_caster])
       if calculated_cr[:name] != @new_npc.challenge_rating
         cr_data = calculated_cr[:data].symbolize_keys
         @new_npc.challenge_rating = calculated_cr[:name]
@@ -106,10 +109,10 @@ class NpcGenerator
       @new_npc
     end
 
-    def calculate_cr(params)
+    def calculate_cr(params, use_simple_actions = false, is_caster = false)
       monster = params[:params][:monster]
       attack_bonus = monster[:attack_bonus]
-      challenge_rating = DndRules.cr_for_npc(monster, attack_bonus)
+      challenge_rating = DndRules.cr_for_npc(monster, attack_bonus, use_simple_actions, is_caster)
       cr_data = DndRules.challenge_ratings[challenge_rating.to_sym].as_json
       { name: challenge_rating, data: cr_data }
     end

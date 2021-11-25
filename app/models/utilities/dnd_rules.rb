@@ -530,10 +530,10 @@ class DndRules
       (damage.to_f / 10)
     end
 
-    def cr_for_npc(monster, attack_bonus, use_simple_actions = false)
+    def cr_for_npc(monster, attack_bonus, use_simple_actions = false, is_caster = false)
 
       def_cr = defensive_cr(monster)
-      off_cr = use_simple_actions ? offensive_cr(monster, attack_bonus) : simple_offensive_cr(monster)
+      off_cr = use_simple_actions ? simple_offensive_cr(monster, is_caster) : offensive_cr(monster, attack_bonus)
       # puts "#{npc.name} challenge rating calculation - proficiency CR: #{prof_cr} defense CR: #{def_cr} offense CR: #{off_cr}"
       cr_total = [def_cr, off_cr].inject(0, &:+)
       cr = (cr_total.to_f / 2.0)
@@ -718,39 +718,29 @@ class DndRules
       end
     end
 
-    def simple_offensive_cr(monster)
+    def simple_offensive_cr(monster, is_caster)
       damages = []
       cr_for_spells = 0
       ability_cr = 1
       num_attacks = 1
       multi_attack = nil
-      is_caster = false
       monster[:actions].each do |action_obj|
         if action_obj[:name].downcase == 'multiattack'
           num_attacks = action_obj[:desc].scan(/\d+/).first.to_i
           multi_attack = action_obj[:desc][/#{num_attacks} (.*?) attacks./m, 1]
-          # damage_obj = action[:damage]
-          # num_dice = damage_obj[:num_dice].to_i
-          # damage_die = damage_obj[:dice_value].to_i
-          # damage = (((damage_die / 2) + 1) * num_dice) + attack_bonus
-          # damages << damage * action[:num_attacks].to_i
-        elsif action_obj[:name].downcase == 'spellcasting'
-          is_caster = true
-          # puts action[:spell_casting][:slots]
-          # cr_for_spells = (action[:spell_casting][:level].to_i / 2).to_i
-          # cr_for_spells += 1 unless action[:spell_casting][:slots][:third].to_i == 0
-          # cr_for_spells += 1 unless action[:spell_casting][:slots][:fourth].to_i == 0
-          # cr_for_spells += 2 unless action[:spell_casting][:slots][:fifth].to_i == 0
-          # cr_for_spells += 2 unless action[:spell_casting][:slots][:sixth].to_i == 0
-          # cr_for_spells += 3 unless action[:spell_casting][:slots][:seventh].to_i == 0
-          # cr_for_spells += 3 unless action[:spell_casting][:slots][:eighth].to_i == 0
-          # cr_for_spells += 5 unless action[:spell_casting][:slots][:ninth].to_i == 0
         elsif action_obj[:desc].include? 'to hit'
           if action_obj[:name].downcase == multi_attack
             damages << parse_action_desc(action_obj, num_attacks)
           else
             damages << parse_action_desc(action_obj, 1)
           end
+        else
+          ability_cr += 1
+        end
+      end
+      monster[:special_abilities].each do |ability|
+        if ability[:name].downcase == 'spellcasting'
+          cr_for_spells = calculate_spell_cr(ability[:desc])
         else
           ability_cr += 1
         end
@@ -780,8 +770,16 @@ class DndRules
       damage_str.to_i * num_attacks unless damage_str.empty?
     end
 
-    def parse_spellcasting(action)
-
+    def calculate_spell_cr(spellcasting_desc)
+      spellcasting_level = spellcasting_desc[/is a (.*?)(st|nd|rd|th) level spellcaster/m, 1].to_i
+      spell_slots = DndRules.npc_spell_slots(spellcasting_level)
+      spell_cr = 2
+      spell_slots.each_with_index do |slot, index|
+        if slot > 0
+          spell_cr = (index + 1) * 2
+        end
+      end
+      spell_cr
     end
 
     def parse_dice_string(dice_string)
