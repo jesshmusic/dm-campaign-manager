@@ -167,8 +167,46 @@ class Monster < ApplicationRecord
     "#{challenge_rating} (#{xp.to_s(:delimited)} XP)"
   end
 
-  def damage_per_round
+  def is_caster
+    is_caster_result = false
+    special_abilities.each do |ability|
+      is_caster_result = true if ability.name.downcase == 'spellcasting'
+    end
+    is_caster_result
+  end
 
+  def monster_atts
+    monster_atts = attributes
+    monster_atts[:actions] = monster_actions.map {|action| action.attributes}
+    monster_atts[:special_abilities] = special_abilities.map {|action| action.attributes}
+    monster_atts[:reactions] = reactions.map {|action| action.attributes}
+    monster_atts[:legendary_actions] = legendary_actions.map {|action| action.attributes}
+    monster_atts
+  end
+
+  def damage_per_round
+    damages = []
+    num_attacks = 1
+    num_attack_types = 0
+    monster_actions.each do |action|
+      if action.name.downcase == 'multiattack'
+        num_attacks_array = action.desc.scan(/\d+/).map(&:to_i)
+        num_attacks = num_attacks_array.sum
+      elsif action.desc.include? 'to hit'
+        num_attack_types += 1
+        damage_str = action.desc[/Hit: (.*?) /m, 1]
+        damages << damage_str.to_i
+      end
+    end
+    damages.sum.to_f * num_attacks / num_attack_types
+  end
+
+  def offensive_cr
+    CrCalc.simple_offensive_cr(monster_atts.deep_symbolize_keys, is_caster)
+  end
+
+  def defensive_cr
+    CrCalc.defensive_cr(monster_atts.deep_symbolize_keys)
   end
 
   include PgSearch::Model

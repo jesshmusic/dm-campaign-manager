@@ -21,13 +21,7 @@ const MonsterGenerator = (props: {
   convert2eNPC: () => void;
   token?: string;
 }) => {
-  const {
-    token,
-    monster,
-    generateCommoner,
-    generateMonster,
-    generateQuickMonster,
-  } = props;
+  const { token, monster, generateCommoner, generateMonster, generateQuickMonster } = props;
   const show2eConverter = false;
 
   return (
@@ -40,16 +34,13 @@ const MonsterGenerator = (props: {
       <PageTitle title={'Monster Generators and Converters'} />
       <div className={styles.monsterGenWrapper}>
         <p>
-          Several generators to build quick Monsters. Fields can be copied and
-          pasted into Fantasy Grounds.
+          Several generators to build quick Monsters. Fields can be copied and pasted into Fantasy
+          Grounds.
         </p>
 
-        {monster ? <MonsterBlock monster={monster} /> : null}
+        {monster ? <MonsterBlock monster={monster} showCRStats /> : null}
 
-        <div
-          className="accordion accordion-flush"
-          id="monsterGeneratorAccordion"
-        >
+        <div className="accordion accordion-flush" id="monsterGeneratorAccordion">
           <div className="accordion-item">
             <h3 className="accordion-header" id="commonerGeneratorHeading">
               <button
@@ -68,10 +59,7 @@ const MonsterGenerator = (props: {
               data-bs-parent="#monsterGeneratorAccordion"
             >
               <div className="accordion-body">
-                <GenerateCommoner
-                  onFormSubmit={generateCommoner}
-                  token={token}
-                />
+                <GenerateCommoner onFormSubmit={generateCommoner} token={token} />
               </div>
             </div>
           </div>
@@ -111,10 +99,7 @@ const MonsterGenerator = (props: {
               data-bs-parent="#monsterGeneratorAccordion"
             >
               <div className="accordion-body">
-                <QuickGenerateMonster
-                  onGenerateMonster={generateQuickMonster}
-                  token={token}
-                />
+                <QuickGenerateMonster onGenerateMonster={generateQuickMonster} token={token} />
               </div>
             </div>
           </div>
@@ -137,10 +122,7 @@ const MonsterGenerator = (props: {
               data-bs-parent="#monsterGeneratorAccordion"
             >
               <div className="accordion-body">
-                <GenerateMonster
-                  onGenerateMonster={generateMonster}
-                  token={token}
-                />
+                <GenerateMonster onGenerateMonster={generateMonster} token={token} />
               </div>
             </div>
           </div>
@@ -185,11 +167,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    generateCommoner: (
-      gender: string = 'Female',
-      race: string = 'Human',
-      token?: string
-    ) => {
+    generateCommoner: (gender: string = 'Female', race: string = 'Human', token?: string) => {
       dispatch(
         rest.actions.generateCommoner(
           { gender, race },

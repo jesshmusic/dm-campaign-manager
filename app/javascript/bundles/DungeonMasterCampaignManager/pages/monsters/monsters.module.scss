@@ -118,3 +118,13 @@
 .monsterFrameAction {
   display: inline;
 }
+
+.crStats {
+  background: $card-bg;
+  border-collapse: separate;
+  border-image: $orange-border;
+  border-style: solid;
+  border-width: 5px;
+  box-shadow: 2px 2px 5px rgba($gray-900, 0.5);
+  padding: 0.5rem;
+}

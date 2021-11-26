@@ -69,11 +69,12 @@ export const AbilityScores = (props: { monster: MonsterProps }) => {
   );
 };
 
-const MonsterBlock = (props: { monster: MonsterProps }) => {
-  const { monster } = props;
+const MonsterBlock = (props: { monster: MonsterProps; showCRStats?: boolean }) => {
+  const { monster, showCRStats } = props;
   const [fileDownloadUrl, setFileDownloadUrl] = React.useState('');
   const fileLink = React.useRef<HTMLAnchorElement>(null);
 
+  console.log(monster);
   const downloadXmlFile = () => {
     if (props.monster.fguXml) {
       const blob = new Blob([props.monster.fguXml]);
@@ -213,6 +214,14 @@ const MonsterBlock = (props: { monster: MonsterProps }) => {
           />
         </div>
       ) : null}
+      {showCRStats && (
+        <div className={styles.crStats}>
+          <h3>Challenge Rating Info</h3>
+          <MonsterStat name="Damage Per Round:" value={monster.damagePerRound!} />
+          <MonsterStat name="Offensive CR:" value={monster.offensiveCr!} />
+          <MonsterStat name="Defensive CR:" value={monster.defensiveCr!} />
+        </div>
+      )}
     </div>
   );
 };

@@ -7,13 +7,16 @@ class NpcGenerator
       puts monster_params
       @new_npc = Monster.new(monster_params.except(:number_of_attacks, :is_caster))
       @new_npc.slug = @new_npc.name.parameterize
-      ability_score_order = %w[Strength Dexterity Constitution Intelligence Wisdom Charisma].shuffle
       spellcasting_ability = %w[Intelligence Wisdom Charisma].sample
+      ability_score_order = %w[Strength Dexterity Constitution Intelligence Wisdom Charisma].shuffle
+      if monster_params[:is_caster]
+        ability_score_order = ability_score_order.insert(0, spellcasting_ability).uniq
+      end
       cr_info = CrCalc.challenge_ratings[monster_params[:challenge_rating].to_sym]
       @new_npc.attack_bonus = cr_info[:attack_bonus]
       @new_npc.prof_bonus = cr_info[:prof_bonus]
-      @new_npc.save_dc = cr_info[:save_dc]
-      set_ability_scores(ability_score_order, 0, 'Constitution')
+      @new_npc.save_dc = calculate_save_dc(spellcasting_ability, cr_info[:save_dc])
+      set_ability_scores(ability_score_order, 'Constitution')
       generate_actions(
         (cr_info[:damage_max] - cr_info[:damage_min]) / 2 + cr_info[:damage_min],
         monster_params[:is_caster],
@@ -25,23 +28,16 @@ class NpcGenerator
       # generate_actions(monster_params[:is_caster], spellcasting_ability)
       @new_npc.slug = @new_npc.name.parameterize if user.nil?
 
-      monster_atts = @new_npc.attributes
-      monster_atts[:actions] = @new_npc.monster_actions.map {|action| action.attributes}
-      monster_atts[:special_abilities] = @new_npc.special_abilities.map {|action| action.attributes}
-      monster_atts[:reactions] = @new_npc.reactions.map {|action| action.attributes}
-      monster_atts[:legendary_actions] = @new_npc.legendary_actions.map {|action| action.attributes}
       cr_params = {
         params: {
-          monster: monster_atts,
+          monster: @new_npc.monster_atts,
         }
       }
-      calculated_cr = calculate_cr(cr_params.deep_symbolize_keys, true, monster_params[:is_caster])
+      calculated_cr = CrCalc.calculate_cr(cr_params.deep_symbolize_keys, true, monster_params[:is_caster])
       if calculated_cr[:name] != @new_npc.challenge_rating
         cr_data = calculated_cr[:data].symbolize_keys
         @new_npc.challenge_rating = calculated_cr[:name]
-        @new_npc.prof_bonus = cr_data[:prof_bonus]
         @new_npc.xp = cr_data[:xp]
-        @new_npc.save_dc = cr_data[:save_dc]
       end
       maybe_save_npc(user)
       @new_npc
@@ -94,7 +90,7 @@ class NpcGenerator
       @new_npc.slug = nil
       @new_npc.challenge_rating = %w[0 0 0 0 0 1/8 1/8 1/8 1/4 1/4 1/2].sample
       ability_score_order = %w[Strength Dexterity Constitution Intelligence Wisdom Charisma].shuffle
-      set_ability_scores(ability_score_order, 8)
+      set_ability_scores(ability_score_order)
       @new_npc.name = NameGen.random_name(random_npc_gender, random_npc_race)
       @new_npc.monster_subtype = random_npc_race ? random_npc_race : 'human'
 
@@ -107,20 +103,12 @@ class NpcGenerator
       @new_npc
     end
 
-    def calculate_cr(params, use_simple_actions = false, is_caster = false)
-      monster = params[:params][:monster]
-      attack_bonus = monster[:attack_bonus]
-      challenge_rating = CrCalc.cr_for_npc(monster, attack_bonus, use_simple_actions, is_caster)
-      cr_data = CrCalc.challenge_ratings[challenge_rating.to_sym].as_json
-      { name: challenge_rating, data: cr_data }
-    end
-
     def generate_action_desc(action_params)
       params = action_params[:params]
       case params[:action][:action_type]
       when 'attack'
         generate_attack_desc(params[:action], params[:attack_bonus], params[:prof_bonus], params[:damage_bonus])
-      when 'spellCasting'
+      when 'spellcasting'
         generate_spellcasting_desc(params[:monster_name], params[:action])
       else
         params[:action][:desc]
@@ -128,6 +116,16 @@ class NpcGenerator
     end
 
     private
+
+    def min_score_for_cr(challenge_rating)
+      c_rating = CrCalc.cr_string_to_num(challenge_rating)
+      result = if c_rating < 10
+                 12
+               else
+                 [c_rating * (1 + ((c_rating - 10 + 4) / 100)), 30].min
+               end
+      result.round
+    end
 
     def maybe_save_npc(user)
       if user && (user.dungeon_master? || user.admin?)
@@ -297,6 +295,18 @@ class NpcGenerator
 
     # Spellcasting
 
+    def calculate_save_dc(spellcasting_ability, save_dc)
+      ability_mod = case spellcasting_ability
+                    when 'Intelligence'
+                      DndRules.ability_score_modifier(@new_npc.intelligence)
+                    when 'Wisdom'
+                      DndRules.ability_score_modifier(@new_npc.wisdom)
+                    else
+                      DndRules.ability_score_modifier(@new_npc.charisma)
+                    end
+      save_dc + ability_mod
+    end
+
     def parse_spells_action(atts)
       puts atts[:npc_variant] == 'caster_wizard' || atts[:npc_variant] == 'caster_cleric'
       if atts[:npc_variant] == 'caster_wizard' || atts[:npc_variant] == 'caster_cleric'
@@ -371,36 +381,60 @@ class NpcGenerator
     end
 
     # Statistics
-
-    def set_ability_scores(score_priority = [], min_score = 10, skip = nil)
-      ability_scores = Array.new(6)
-      ability_scores.each_with_index do |_, index|
-        rolls = [DndRules.roll_dice(1, 6),
-                 DndRules.roll_dice(1, 6),
-                 DndRules.roll_dice(1, 6)]
-        ability_scores[index] = rolls.sum
-      end
-      score_priority.each_with_index do |ability, index|
-        set_primary_ability(ability, ability_scores, index, min_score) unless  skip == ability
+    def rolls_for_cr
+      dice_rolls =
+        [
+          DndRules.roll_dice(1, 6),
+          DndRules.roll_dice(1, 6),
+          DndRules.roll_dice(1, 6),
+        ]
+      c_rating = CrCalc.cr_string_to_num(@new_npc.challenge_rating)
+      case c_rating
+      when 0..8
+        dice_rolls
+      when 9..16
+        dice_rolls << DndRules.roll_dice(1, 6)
+      else
+        dice_rolls << DndRules.roll_dice(1, 6)
+        dice_rolls << DndRules.roll_dice(1, 6)
       end
     end
 
-    def set_primary_ability(ability, ability_scores, index, min_score)
-      min_score_calc = index.zero? ? min_score.to_i : 0
-      highest_score = [ability_scores.delete_at(ability_scores.index(ability_scores.max)), min_score_calc].max
+    def ability_mod_for_cr
+      c_rating = CrCalc.cr_string_to_num(@new_npc.challenge_rating)
+      (c_rating / 5).round
+    end
+
+    def set_ability_scores(score_priority = [], skip = nil)
+      ability_scores = Array.new(6)
+      ability_scores.each_with_index do |_, index|
+        rolls = rolls_for_cr
+        while rolls.count > 3
+          rolls.delete_at(rolls.index(rolls.min))
+        end
+        ability_scores[index] = rolls.sum
+      end
+      score_priority.each_with_index do |ability, index|
+        set_primary_ability(ability, ability_scores, index) unless  skip == ability
+      end
+    end
+
+    def set_primary_ability(ability, ability_scores, index)
+      highest_score = ability_scores.delete_at(ability_scores.index(ability_scores.max))
+      modifier = ability_mod_for_cr - (index / 2).round
       case ability
       when 'Strength'
-        @new_npc.strength = highest_score
+        @new_npc.strength = highest_score + modifier
       when 'Dexterity'
-        @new_npc.dexterity = highest_score
+        @new_npc.dexterity = highest_score + modifier
       when 'Constitution'
-        @new_npc.constitution = highest_score
+        @new_npc.constitution = highest_score + modifier
       when 'Intelligence'
-        @new_npc.intelligence = highest_score
+        @new_npc.intelligence = highest_score + modifier
       when 'Wisdom'
-        @new_npc.wisdom = highest_score
+        @new_npc.wisdom = highest_score + modifier
       when 'Charisma'
-        @new_npc.charisma = highest_score
+        @new_npc.charisma = highest_score + modifier
       else
         puts "Ability #{ability} not found!"
       end

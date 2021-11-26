@@ -120,7 +120,7 @@ module Admin::V1
     end
 
     def calculate_cr
-      render json: { challenge: NpcGenerator.calculate_cr(params) }
+      render json: { challenge: CrCalc.calculate_cr(params) }
     end
 
     def convert_2e_npc

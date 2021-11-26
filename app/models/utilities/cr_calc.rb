@@ -1,5 +1,13 @@
 class CrCalc
   class << self
+    def calculate_cr(params, use_simple_actions = false, is_caster = false)
+      monster = params[:params][:monster]
+      attack_bonus = monster[:attack_bonus]
+      challenge_rating = cr_for_npc(monster, attack_bonus, use_simple_actions, is_caster)
+      cr_data = challenge_ratings[challenge_rating.to_sym].as_json
+      { name: challenge_rating, data: cr_data }
+    end
+
     def challenge_ratings
       {
         '0': {
@@ -455,15 +463,11 @@ class CrCalc
       when 17
         11.0
       when 18
-        13.0
+        14.0
       when 19
-        17.0
+        19.0
       when 20
-        21.0
-      when 21
-        24.0
-      when 22
-        27.0
+        26.0
       else
         30.0
       end
@@ -650,8 +654,8 @@ class CrCalc
       attack_bonus_cr = cr_for_attack_bonus(monster[:attack_bonus])
       spell_save_cr = is_caster ? cr_for_save_dc(monster[:save_dc].to_i) : 0
       if is_caster
-        offensive_cr_total = [damage_cr, spell_save_cr, cr_for_spells, ability_cr].inject(0, &:+)
-        (offensive_cr_total.to_f / 4.0)
+        offensive_cr_total = [spell_save_cr, cr_for_spells, ability_cr].inject(0, &:+)
+        (offensive_cr_total.to_f / 3.0)
       else
         offensive_cr_total = [damage_cr, attack_bonus_cr, ability_cr].inject(0, &:+)
         (offensive_cr_total.to_f / 3.0)

@@ -69,4 +69,8 @@ if monster.user
   end
 end
 
+json.damage_per_round monster.damage_per_round
+json.offensive_cr monster.offensive_cr.round
+json.defensive_cr monster.defensive_cr.round
+
 json.url v1_monster_url(monster, format: :json)
