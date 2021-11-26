@@ -46,38 +46,6 @@ class NpcGenerator
       @new_npc
     end
 
-    def convert_2e_npc(npc_attributes)
-      @new_npc = Monster.new(name: npc_attributes[:name],
-                             size: 'Medium',
-                             alignment: npc_attributes[:alignment],
-                             monster_type: 'humanoid',
-                             strength: npc_attributes[:strength],
-                             dexterity: npc_attributes[:dexterity],
-                             constitution: npc_attributes[:constitution],
-                             intelligence: npc_attributes[:intelligence],
-                             wisdom: npc_attributes[:wisdom],
-                             charisma: npc_attributes[:charisma])
-
-      @new_npc.monster_subtype = npc_attributes[:race]
-
-      convert_2e_stats(npc_attributes)
-
-      # Race
-      set_npc_race(npc_attributes[:monster_subtype])
-
-      # Spellcasting
-      spell_attack, spell_save_dc, spellcasting_ability, spellcasting_level = spellcasting_for_class(npc_attributes)
-      create_spells_trait(npc_attributes, spell_attack, spell_save_dc, spellcasting_ability, spellcasting_level)
-
-      # Add Actions
-      create_actions(npc_attributes[:actions], npc_attributes[:number_of_attacks].to_i, @new_npc.challenge_rating.to_sym)
-
-      # Return
-      @new_npc.as_json(
-        include: %i[monster_actions monster_legendary_actions monster_special_abilities skills],
-        methods: %i[description_text hit_dice size_and_type saving_throws skills_string xp])
-    end
-
     def generate_commoner(random_npc_gender, random_npc_race, user)
       commoner = Monster.where(name: 'Commoner').first
       commoner_atts = commoner.attributes
@@ -336,79 +304,6 @@ class NpcGenerator
       save_dc + ability_mod
     end
 
-    def parse_spells_action(atts)
-      puts atts[:npc_variant] == 'caster_wizard' || atts[:npc_variant] == 'caster_cleric'
-      if atts[:npc_variant] == 'caster_wizard' || atts[:npc_variant] == 'caster_cleric'
-        spell_attack, spell_save_dc, spellcaster_ability, spellcasting_level = get_spellcasting_stats(atts)
-        create_spells_trait(atts, spell_attack, spell_save_dc, spellcaster_ability, spellcasting_level)
-      end
-    end
-
-    def create_spells_trait(atts, spell_attack, spell_save_dc, spellcaster_ability, spellcasting_level)
-      spellcasting_ability = MonsterSpecialAbility.new(
-        name: 'Spellcasting'
-      )
-      spell_desc = ["The #{@new_npc.name} is a #{spellcasting_level} spellcaster. Its spellcasting ability is #{spellcaster_ability} (spell save DC #{spell_save_dc}, +#{spell_attack} to hit with spell attacks). #{@new_npc.name} has the following spells prepared.\n\n"]
-      if atts[:spells_cantrips]
-        spell_desc << "Cantrips (at will): #{atts[:spells_cantrips].join(', ')}\n"
-      end
-      if atts[:spells_level1]
-        spell_desc << "1st level (#{atts[:spells_level1].length} slots): #{atts[:spells_level1].join(', ')}\n"
-      end
-      if atts[:spells_level2]
-        spell_desc << "2nd level (#{atts[:spells_level2].length} slots): #{atts[:spells_level2].join(', ')}\n"
-      end
-      if atts[:spells_level3]
-        spell_desc << "3rd level (#{atts[:spells_level3].length} slots): #{atts[:spells_level3].join(', ')}\n"
-      end
-      if atts[:spells_level4]
-        spell_desc << "4th level (#{atts[:spells_level4].length} slots): #{atts[:spells_level4].join(', ')}\n"
-      end
-      if atts[:spells_level5]
-        spell_desc << "5th level (#{atts[:spells_level5].length} slots): #{atts[:spells_level5].join(', ')}\n"
-      end
-      if atts[:spells_level6]
-        spell_desc << "6th level (#{atts[:spells_level6].length} slots): #{atts[:spells_level6].join(', ')}\n"
-      end
-      if atts[:spells_level7]
-        spell_desc << "7th level (#{atts[:spells_level7].length} slots): #{atts[:spells_level7].join(', ')}\n"
-      end
-      if atts[:spells_level8]
-        spell_desc << "8th level (#{atts[:spells_level8].length} slots): #{atts[:spells_level8].join(', ')}\n"
-      end
-      if atts[:spells_level9]
-        spell_desc << "9th level (#{atts[:spells_level9].length} slots): #{atts[:spells_level9].join(', ')}"
-      end
-      spellcasting_ability.description = spell_desc.join
-      @new_npc.monster_special_abilities << spellcasting_ability
-    end
-
-    def get_spellcasting_stats(atts)
-      spellcasting_level = if @new_npc.challenge_rating == '1' ||
-        @new_npc.challenge_rating == '0' ||
-        @new_npc.challenge_rating == '1/8' ||
-        @new_npc.challenge_rating == '1/4' ||
-        @new_npc.challenge_rating == '1/2'
-                             '1st-level'
-                           elsif @new_npc.challenge_rating == '2'
-                             '2nd-level'
-                           elsif @new_npc.challenge_rating == '3'
-                             '3rd-level'
-                           elsif @new_npc.challenge_rating == '21'
-                             '21st-level'
-                           elsif @new_npc.challenge_rating == '22'
-                             '22nd-level'
-                           elsif @new_npc.challenge_rating == '23'
-                             '23rd-level'
-                           else
-                             "#{@new_npc.challenge_rating}th-level"
-                           end
-      spell_save_dc = CrCalc.challenge_ratings[@new_npc.challenge_rating.to_sym][:save_dc]
-      spell_attack = CrCalc.challenge_ratings[@new_npc.challenge_rating.to_sym][:attack_bonus]
-      spellcaster_ability = atts[:npc_variant] == 'caster_wizard' ? 'Intelligence' : 'Wisdom'
-      [spell_attack, spell_save_dc, spellcaster_ability, spellcasting_level]
-    end
-
     # Statistics
     def rolls_for_cr
       dice_rolls =
@@ -643,7 +538,7 @@ class NpcGenerator
           if spell_list[:name] == 'Cantrips'
             spell_str += "Cantrips (at will): #{spell_list[:spells].join(', ')}  \n"
           else
-            spell_str += "#{spell_list[:name]} (#{spell_list[:slots]} slots): #{spell_list[:spells].join(', ')}  \n"
+            spell_str += "#{spell_list[:name]} (#{spell_list[:slots]} #{'slot'.pluralize(spell_list[:slots])}): #{spell_list[:spells].join(', ')}  \n"
           end
         end
       end
@@ -725,80 +620,6 @@ class NpcGenerator
       base_damage = ((damage_dice_count * damage_dice_value + npc_dam_bonus) * 0.55).ceil
       [action_damage_bonus, base_damage]
     end
-
-    # 2e conversions
-
-    def convert_2e_stats(stats)
-      convert_2e_armor_class(stats[:armor_class].to_i)
-      convert_2e_calculate_cr(stats[:hit_points].to_i)
-      convert_2e_speed(stats[:speed].to_i)
-    end
-
-    def convert_2e_armor_class(armor_class)
-      @new_npc.armor_class = 19 - armor_class
-    end
-
-    def convert_2e_calculate_cr(hit_points)
-      crs = CrCalc.challenge_ratings
-      @new_npc.hit_points = hit_points * 2
-      crs.each do |key, cr_object|
-        if @new_npc.hit_points >= cr_object[:hit_points_min] && @new_npc.hit_points < cr_object[:hit_points_max]
-          @new_npc.challenge_rating = key
-          con_modifier = DndRules.ability_score_modifier(@new_npc.constitution)
-          hit_points_info = DndRules.calculate_hp_and_hd(@new_npc.size, @new_npc.challenge_rating, con_modifier, @new_npc.hit_points)
-          @new_npc.hit_dice = hit_points_info[:num_hit_die]
-          @new_npc.hit_points = hit_points_info[:hit_points]
-          @new_npc.hit_dice_modifier = @new_npc.hit_dice_number * con_modifier
-        end
-      end
-    end
-
-    # @todo check this out with monsters, but for now this is just for humanoids
-    def convert_2e_speed(speed)
-      speed_5e = ((speed.to_f / 4) * 10).ceil
-      @new_npc.speed = "#{speed_5e} ft."
-    end
-
-    #
-    # # Spells
-    #
-    # def add_spells
-    #   spell_slots = []
-    #   @new_npc.character_classes.each do |character_class|
-    #     slots = SpellSlots.spell_slots(character_class)
-    #     next if slots.nil?
-    #     spell_slots << {
-    #       dnd_class: character_class.dnd_class.name,
-    #       slots: slots
-    #     }
-    #   end
-    #   spell_slots.each do |class_slots|
-    #     add_spells_for_level(0, class_slots[:dnd_class], class_slots[:slots][:cantrips])
-    #     if class_slots[:dnd_class] != 'Warlock'
-    #       add_spells_for_level(1, class_slots[:dnd_class], class_slots[:slots][:level_1])
-    #       add_spells_for_level(2, class_slots[:dnd_class], class_slots[:slots][:level_2])
-    #       add_spells_for_level(3, class_slots[:dnd_class], class_slots[:slots][:level_3])
-    #       add_spells_for_level(4, class_slots[:dnd_class], class_slots[:slots][:level_4])
-    #       add_spells_for_level(5, class_slots[:dnd_class], class_slots[:slots][:level_5])
-    #       add_spells_for_level(6, class_slots[:dnd_class], class_slots[:slots][:level_6])
-    #       add_spells_for_level(7, class_slots[:dnd_class], class_slots[:slots][:level_7])
-    #       add_spells_for_level(8, class_slots[:dnd_class], class_slots[:slots][:level_8])
-    #       add_spells_for_level(9, class_slots[:dnd_class], class_slots[:slots][:level_9])
-    #     else
-    #       spells_known = []
-    #       (1..class_slots[:slots][:total_known]).each do
-    #         spell_level = rand(1..class_slots[:slots][:slot_level])
-    #         spell = SpellSlots.random_spell(class_slots[:dnd_class], spell_level, spells_known)
-    #         next if spell.nil?
-    #
-    #         spells_known << spell
-    #         @new_npc.character_spells << CharacterSpell.new(is_prepared: false,
-    #                                                         spell_class: class_slots[:dnd_class],
-    #                                                         spell: spell)
-    #       end
-    #     end
-    #   end
-    # end
 
   end
 end
