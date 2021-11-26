@@ -68,7 +68,7 @@ FactoryBot.define do
     size { %w(small medium large gigantic) }
     strength { Faker::Number.between(from: 8, to: 22) }
     wisdom { Faker::Number.between(from: 8, to: 22) }
-    xp { DndRules.xp_for_cr(challenge) }
+    xp { CrCalc.xp_for_cr(challenge) }
 
     #Associations
 

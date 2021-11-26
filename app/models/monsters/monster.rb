@@ -167,6 +167,10 @@ class Monster < ApplicationRecord
     "#{challenge_rating} (#{xp.to_s(:delimited)} XP)"
   end
 
+  def damage_per_round
+
+  end
+
   include PgSearch::Model
 
   # PgSearch

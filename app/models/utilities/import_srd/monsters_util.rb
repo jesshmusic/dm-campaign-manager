@@ -21,7 +21,7 @@ class MonstersUtil
           monster = JSON.parse monster_response, symbolize_names: true
           new_monster = Monster.find_or_create_by!(
             alignment: monster[:alignment] || 'unaligned',
-            challenge_rating: DndRules.cr_num_to_string(monster[:challenge_rating]),
+            challenge_rating: CrCalc.cr_num_to_string(monster[:challenge_rating]),
             monster_type: monster[:type],
             name: monster[:name]
           )
@@ -63,9 +63,9 @@ class MonstersUtil
     private
 
     def import_required_fields(new_monster, monster)
-      new_monster.prof_bonus = DndRules.proficiency_for_cr(monster[:challenge_rating])
+      new_monster.prof_bonus = CrCalc.proficiency_for_cr(monster[:challenge_rating])
       new_monster.attack_bonus = new_monster.prof_bonus + DndRules.ability_score_modifier(monster[:strength])
-      new_monster.save_dc = DndRules.challenge_ratings[new_monster.challenge_rating.to_sym][:save_dc]
+      new_monster.save_dc = CrCalc.challenge_ratings[new_monster.challenge_rating.to_sym][:save_dc]
       new_monster.save!
     end
 

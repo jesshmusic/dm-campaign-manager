@@ -9,7 +9,7 @@ class NpcGenerator
       @new_npc.slug = @new_npc.name.parameterize
       ability_score_order = %w[Strength Dexterity Constitution Intelligence Wisdom Charisma].shuffle
       spellcasting_ability = %w[Intelligence Wisdom Charisma].sample
-      cr_info = DndRules.challenge_ratings[monster_params[:challenge_rating].to_sym]
+      cr_info = CrCalc.challenge_ratings[monster_params[:challenge_rating].to_sym]
       @new_npc.attack_bonus = cr_info[:attack_bonus]
       @new_npc.prof_bonus = cr_info[:prof_bonus]
       @new_npc.save_dc = cr_info[:save_dc]
@@ -18,7 +18,7 @@ class NpcGenerator
         (cr_info[:damage_max] - cr_info[:damage_min]) / 2 + cr_info[:damage_min],
         monster_params[:is_caster],
         monster_params[:number_of_attacks],
-        DndRules.cr_string_to_num(monster_params[:challenge_rating]),
+        CrCalc.cr_string_to_num(monster_params[:challenge_rating]),
         cr_info[:save_dc],
         spellcasting_ability
       )
@@ -110,8 +110,8 @@ class NpcGenerator
     def calculate_cr(params, use_simple_actions = false, is_caster = false)
       monster = params[:params][:monster]
       attack_bonus = monster[:attack_bonus]
-      challenge_rating = DndRules.cr_for_npc(monster, attack_bonus, use_simple_actions, is_caster)
-      cr_data = DndRules.challenge_ratings[challenge_rating.to_sym].as_json
+      challenge_rating = CrCalc.cr_for_npc(monster, attack_bonus, use_simple_actions, is_caster)
+      cr_data = CrCalc.challenge_ratings[challenge_rating.to_sym].as_json
       { name: challenge_rating, data: cr_data }
     end
 
@@ -265,7 +265,7 @@ class NpcGenerator
       spell_class = DndClass.find(spellcasting_class[:dnd_class][:value])
       prof_bonus = DndRules.proficiency_bonus_for_level(spellcasting_class[:level].to_i)
       spell_attack = DndRules.spell_attack_bonus(prof_bonus, spell_class, @new_npc)
-      spell_save_dc = DndRules.challenge_ratings[spellcasting_class[:level].to_sym][:save_dc]
+      spell_save_dc = CrCalc.challenge_ratings[spellcasting_class[:level].to_sym][:save_dc]
       spellcasting_ability = if spellcasting_class[:dnd_class][:label] == 'Wizard'
                                'Intelligence'
                              elsif spellcasting_class[:dnd_class][:label] == 'Cleric' ||
@@ -292,7 +292,7 @@ class NpcGenerator
       npc_atts = @new_npc.attributes
       @new_npc.hit_dice = "d#{hit_points_info[:num_hit_die]}"
       @new_npc.hit_points = hit_points_info[:hit_points]
-      DndRules.challenge_ratings[@new_npc.challenge_rating.to_sym]
+      CrCalc.challenge_ratings[@new_npc.challenge_rating.to_sym]
     end
 
     # Spellcasting
@@ -364,8 +364,8 @@ class NpcGenerator
                            else
                              "#{@new_npc.challenge_rating}th-level"
                            end
-      spell_save_dc = DndRules.challenge_ratings[@new_npc.challenge_rating.to_sym][:save_dc]
-      spell_attack = DndRules.challenge_ratings[@new_npc.challenge_rating.to_sym][:attack_bonus]
+      spell_save_dc = CrCalc.challenge_ratings[@new_npc.challenge_rating.to_sym][:save_dc]
+      spell_attack = CrCalc.challenge_ratings[@new_npc.challenge_rating.to_sym][:attack_bonus]
       spellcaster_ability = atts[:npc_variant] == 'caster_wizard' ? 'Intelligence' : 'Wisdom'
       [spell_attack, spell_save_dc, spellcaster_ability, spellcasting_level]
     end
@@ -503,9 +503,9 @@ class NpcGenerator
 
     def create_creature_attacks(damage_per_round, num_attacks)
       attack_types = {'Bite': 143, 'Slam': 14, 'Claw': 82, 'Tail': 32}
-      cr_int = DndRules.cr_string_to_num(@new_npc.challenge_rating)
-      min_cr = DndRules.cr_num_to_string([(cr_int - 3).to_i, 0].max)
-      max_cr = DndRules.cr_num_to_string((cr_int + 3).to_i)
+      cr_int = CrCalc.cr_string_to_num(@new_npc.challenge_rating)
+      min_cr = CrCalc.cr_num_to_string([(cr_int - 3).to_i, 0].max)
+      max_cr = CrCalc.cr_num_to_string((cr_int + 3).to_i)
       attack_type_list = WeightedList[attack_types]
       attacks = attack_type_list.sample(rand(1..num_attacks)).uniq
       create_multiattack(num_attacks, attacks)
@@ -518,7 +518,7 @@ class NpcGenerator
     def create_spellcasting(challenge_rating, save_dc, primary_ability)
       action = {}
       action[:name] = 'Spellcasting'
-      action[:caster_level] = DndRules.caster_level_for_cr(challenge_rating)
+      action[:caster_level] = CrCalc.caster_level_for_cr(challenge_rating)
       action[:save_dc] = save_dc
       action[:primary_ability] = primary_ability
       @new_npc.special_abilities << SpecialAbility.create(name: action[:name], desc: parse_spell_action_desc(action))
@@ -602,7 +602,7 @@ class NpcGenerator
           if action[:data][:properties] && action[:data][:properties].include?('Ammunition')
             npc_dam_bonus = DndRules.ability_score_modifier(@new_npc.dexterity)
             action_damage_bonus, base_damage = action_damage(action, npc_dam_bonus)
-            action_description += "Ranged Weapon Attack: +#{DndRules.challenge_ratings[challenge_rating][:attack_bonus]} to hit,"
+            action_description += "Ranged Weapon Attack: +#{CrCalc.challenge_ratings[challenge_rating][:attack_bonus]} to hit,"
             action_description += " range #{action[:data][:range_normal]}/#{action[:data][:range_long]} ft., one target. "
             action_description += "Hit: #{base_damage} (#{action[:data][:damage_dice_count]}d#{action[:data][:damage_dice_value]} #{action_damage_bonus})"
             action_description += " #{action[:data][:damage_type].downcase} damage."
@@ -610,7 +610,7 @@ class NpcGenerator
             npc_dam_bonus = DndRules.ability_score_modifier(@new_npc.strength)
             action_damage_bonus, base_damage = action_damage(action, npc_dam_bonus)
             base_2h_damage = ((action[:data][:damage_dice2_h_count] * action[:data][:damage_dice2_h_value] + npc_dam_bonus) * 0.55).ceil
-            action_description += "Melee Weapon Attack: +#{DndRules.challenge_ratings[challenge_rating][:attack_bonus]} to hit,"
+            action_description += "Melee Weapon Attack: +#{CrCalc.challenge_ratings[challenge_rating][:attack_bonus]} to hit,"
             action_description += " reach #{action[:data][:range_normal]} ft., one target. "
             action_description += "Hit: #{base_damage} (#{action[:data][:damage_dice_count]}d#{action[:data][:damage_dice_value]} #{action_damage_bonus})"
             action_description += " #{action[:data][:damage_type].downcase} damage, "
@@ -619,7 +619,7 @@ class NpcGenerator
           else
             npc_dam_bonus = DndRules.ability_score_modifier(@new_npc.strength)
             action_damage_bonus, base_damage = action_damage(action, npc_dam_bonus)
-            action_description += "Melee Weapon Attack: +#{DndRules.challenge_ratings[challenge_rating][:attack_bonus]} to hit,"
+            action_description += "Melee Weapon Attack: +#{CrCalc.challenge_ratings[challenge_rating][:attack_bonus]} to hit,"
             action_description += " reach #{action[:data][:range_normal]} ft., one target. "
             action_description += "Hit: #{base_damage} (#{action[:data][:damage_dice_count]}d#{action[:data][:damage_dice_value]} #{action_damage_bonus})"
             action_description += " #{action[:data][:damage_type].downcase} damage."
@@ -627,7 +627,7 @@ class NpcGenerator
           if action[:data][:properties] && action[:data][:properties].include?('Thrown')
             npc_dam_bonus = DndRules.ability_score_modifier(@new_npc.dexterity)
             action_damage_bonus, base_damage = action_damage(action, npc_dam_bonus)
-            action_description += " Or Ranged Weapon Attack: +#{DndRules.challenge_ratings[challenge_rating][:attack_bonus]} to hit,"
+            action_description += " Or Ranged Weapon Attack: +#{CrCalc.challenge_ratings[challenge_rating][:attack_bonus]} to hit,"
             action_description += " range #{action[:data][:thrown_range_normal]}/#{action[:data][:thrown_range_long]} ft., one target. "
             action_description += "Hit: #{base_damage} (#{action[:data][:damage_dice_count]}d#{action[:data][:damage_dice_value]} #{action_damage_bonus})"
             action_description += " #{action[:data][:damage_type].downcase} damage."
@@ -669,7 +669,7 @@ class NpcGenerator
     end
 
     def convert_2e_calculate_cr(hit_points)
-      crs = DndRules.challenge_ratings
+      crs = CrCalc.challenge_ratings
       @new_npc.hit_points = hit_points * 2
       crs.each do |key, cr_object|
         if @new_npc.hit_points >= cr_object[:hit_points_min] && @new_npc.hit_points < cr_object[:hit_points_max]

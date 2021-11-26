@@ -72,4 +72,16 @@ RSpec.describe DndRules do
       expect(DndRules.parse_dice_string('2d100-3')).to eq(expected)
     end
   end
+
+  context 'CR Calculator' do
+    it 'should handle basic positive modifier dice strings with no spaces' do
+      expected = {
+        hit_dice_number: 1,
+        hit_dice_value: 8,
+        hit_dice_modifier: 2
+      }
+
+      expect(DndRules.parse_dice_string('1d8+2')).to eq(expected)
+    end
+  end
 end

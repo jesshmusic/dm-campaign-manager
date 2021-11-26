@@ -439,6 +439,9 @@ export interface MonsterProps {
   senses: MonsterInfoData[];
   speeds: MonsterInfoData[];
   monsterProficiencies: MonsterProf[];
+  damagePerRound?: number;
+  offensiveCR?: number;
+  defensiveCR?: number;
   fguXml?: string;
   user?: UserProps;
 }
