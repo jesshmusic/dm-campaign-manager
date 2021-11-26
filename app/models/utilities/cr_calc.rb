@@ -1,9 +1,9 @@
 class CrCalc
   class << self
-    def calculate_cr(params, use_simple_actions = false, is_caster = false)
+    def calculate_cr(params, use_simple_actions = false, archetype = 'fighter')
       monster = params[:params][:monster]
       attack_bonus = monster[:attack_bonus]
-      challenge_rating = cr_for_npc(monster, attack_bonus, use_simple_actions, is_caster)
+      challenge_rating = cr_for_npc(monster, attack_bonus, use_simple_actions, monster[:archetype])
       cr_data = challenge_ratings[challenge_rating.to_sym].as_json
       { name: challenge_rating, data: cr_data }
     end
@@ -428,10 +428,10 @@ class CrCalc
       cr_result
     end
 
-    def cr_for_npc(monster, attack_bonus, use_simple_actions = false, is_caster = false)
+    def cr_for_npc(monster, attack_bonus, use_simple_actions = false, archetype = 'fighter')
 
       def_cr = defensive_cr(monster)
-      off_cr = use_simple_actions ? simple_offensive_cr(monster, is_caster) : offensive_cr(monster, attack_bonus)
+      off_cr = use_simple_actions ? simple_offensive_cr(monster, archetype) : offensive_cr(monster, attack_bonus)
       # puts "#{npc.name} challenge rating calculation - proficiency CR: #{prof_cr} defense CR: #{def_cr} offense CR: #{off_cr}"
       cr_total = [def_cr, off_cr].inject(0, &:+)
       cr = (cr_total.to_f / 2.0)
@@ -624,7 +624,7 @@ class CrCalc
       end
     end
 
-    def simple_offensive_cr(monster, is_caster)
+    def simple_offensive_cr(monster, archetype)
       damages = []
       cr_for_spells = 0
       ability_cr = 1
@@ -652,8 +652,8 @@ class CrCalc
       damage_per_round = damages.sum.to_f * num_attacks / num_attack_types
       damage_cr = cr_for_damage(damage_per_round)
       attack_bonus_cr = cr_for_attack_bonus(monster[:attack_bonus])
-      spell_save_cr = is_caster ? cr_for_save_dc(monster[:save_dc].to_i) : 0
-      if is_caster
+      spell_save_cr = archetype == 'spellcaster' ? cr_for_save_dc(monster[:save_dc].to_i) : 0
+      if archetype == 'spellcaster'
         offensive_cr_total = [spell_save_cr, cr_for_spells, ability_cr].inject(0, &:+)
         (offensive_cr_total.to_f / 3.0)
       else

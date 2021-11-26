@@ -347,9 +347,9 @@ export type MonsterQuickGeneratorFormFields = {
   alignment: string;
   alignmentOption: SelectOption;
   armorClass: number;
+  archetypeOption: SelectOption;
   challengeRatingOption: SelectOption;
   constitution: number;
-  isCaster: boolean;
   hitDice: string;
   hitDiceNumber: number;
   hitDiceValue: string;

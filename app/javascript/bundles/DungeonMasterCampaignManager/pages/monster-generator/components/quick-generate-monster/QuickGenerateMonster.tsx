@@ -17,6 +17,7 @@ export type GenerateMonsterProps = {
 
 const QuickGenerateMonster = (props: GenerateMonsterProps) => {
   const {
+    archetypeOptions,
     challengeRatingOptions,
     handleGenerateName,
     handleGenerateMonsterName,
@@ -67,6 +68,7 @@ const QuickGenerateMonster = (props: GenerateMonsterProps) => {
 
           <GenMonsterSection heading="Stats">
             <QuickMonsterStatsSection
+              archetypeOptions={archetypeOptions}
               UseForm={UseForm}
               challengeRatingOptions={challengeRatingOptions}
             />

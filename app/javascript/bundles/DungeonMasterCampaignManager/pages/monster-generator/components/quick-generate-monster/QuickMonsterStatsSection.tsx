@@ -9,10 +9,11 @@ import FormSelect from '../../../../components/forms/FormSelect';
 const styles = require('../generator.module.scss');
 
 const QuickMonsterStatsSection = (props: {
-  UseForm: UseFormReturn<MonsterQuickGeneratorFormFields>;
+  archetypeOptions: SelectOption[];
   challengeRatingOptions: SelectOption[];
+  UseForm: UseFormReturn<MonsterQuickGeneratorFormFields>;
 }) => {
-  const { UseForm } = props;
+  const { archetypeOptions, challengeRatingOptions, UseForm } = props;
   return (
     <>
       <div className={`${styles.twoCol} ${styles.largeInputs}`}>
@@ -20,7 +21,7 @@ const QuickMonsterStatsSection = (props: {
           label="Target Challenge Rating"
           name="challengeRatingOption"
           control={UseForm.control}
-          options={props.challengeRatingOptions}
+          options={challengeRatingOptions}
         />
         <FormField
           label="XP"
@@ -52,6 +53,12 @@ const QuickMonsterStatsSection = (props: {
           name="size"
           control={UseForm.control}
           options={monsterSizeOptions}
+        />
+        <FormSelect
+          label="Archetype"
+          name="archetypeOption"
+          control={UseForm.control}
+          options={archetypeOptions}
         />
         <FormField
           label="Spellcaster"

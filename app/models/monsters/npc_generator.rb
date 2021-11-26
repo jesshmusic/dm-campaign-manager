@@ -5,13 +5,10 @@ class NpcGenerator
 
     def quick_monster(monster_params, user)
       puts monster_params
-      @new_npc = Monster.new(monster_params.except(:number_of_attacks, :is_caster))
+      @new_npc = Monster.new(monster_params.except(:number_of_attacks, :archetype))
       @new_npc.slug = @new_npc.name.parameterize
-      spellcasting_ability = %w[Intelligence Wisdom Charisma].sample
-      ability_score_order = %w[Strength Dexterity Constitution Intelligence Wisdom Charisma].shuffle
-      if monster_params[:is_caster]
-        ability_score_order = ability_score_order.insert(0, spellcasting_ability).uniq
-      end
+      ability_score_order = get_ability_score_order(monster_params[:archetype])
+      spellcasting_ability = ability_score_order[0]
       cr_info = CrCalc.challenge_ratings[monster_params[:challenge_rating].to_sym]
       @new_npc.attack_bonus = cr_info[:attack_bonus]
       @new_npc.prof_bonus = cr_info[:prof_bonus]
@@ -19,13 +16,12 @@ class NpcGenerator
       set_ability_scores(ability_score_order, 'Constitution')
       generate_actions(
         (cr_info[:damage_max] - cr_info[:damage_min]) / 2 + cr_info[:damage_min],
-        monster_params[:is_caster],
+        monster_params[:archetype],
         monster_params[:number_of_attacks],
         CrCalc.cr_string_to_num(monster_params[:challenge_rating]),
         cr_info[:save_dc],
         spellcasting_ability
       )
-      # generate_actions(monster_params[:is_caster], spellcasting_ability)
       @new_npc.slug = @new_npc.name.parameterize if user.nil?
 
       cr_params = {
@@ -33,7 +29,7 @@ class NpcGenerator
           monster: @new_npc.monster_atts,
         }
       }
-      calculated_cr = CrCalc.calculate_cr(cr_params.deep_symbolize_keys, true, monster_params[:is_caster])
+      calculated_cr = CrCalc.calculate_cr(cr_params.deep_symbolize_keys, true, monster_params[:archetype])
       if calculated_cr[:name] != @new_npc.challenge_rating
         cr_data = calculated_cr[:data].symbolize_keys
         @new_npc.challenge_rating = calculated_cr[:name]
@@ -116,6 +112,39 @@ class NpcGenerator
     end
 
     private
+
+    def get_ability_score_order(archetype = 'fighter')
+      weighted_abilities = case archetype
+                           when 'spellcaster'
+                             WeightedList[{
+                                            Strength: 5,
+                                            Dexterity: 20,
+                                            Constitution: 10,
+                                            Wisdom: 50,
+                                            Intelligence: 50,
+                                            Charisma: 50
+                                          }]
+                           when 'rogue'
+                             WeightedList[{
+                                            Strength: 20,
+                                            Dexterity: 100,
+                                            Constitution: 30,
+                                            Wisdom: 25,
+                                            Intelligence: 5,
+                                            Charisma: 25
+                                          }]
+                           else
+                             WeightedList[{
+                                            Strength: 50,
+                                            Dexterity: 30,
+                                            Constitution: 35,
+                                            Wisdom: 10,
+                                            Intelligence: 5,
+                                            Charisma: 5
+                                          }]
+                           end
+      weighted_abilities.sample(6)
+    end
 
     def min_score_for_cr(challenge_rating)
       c_rating = CrCalc.cr_string_to_num(challenge_rating)
@@ -415,7 +444,7 @@ class NpcGenerator
         ability_scores[index] = rolls.sum
       end
       score_priority.each_with_index do |ability, index|
-        set_primary_ability(ability, ability_scores, index) unless  skip == ability
+        set_primary_ability(ability.to_s, ability_scores, index) unless  skip == ability
       end
     end
 
@@ -442,18 +471,25 @@ class NpcGenerator
 
     # Actions
 
-    def generate_actions(damage_per_round = 10, is_caster, number_of_attacks, challenge_rating, save_dc, primary_ability)
+    def generate_actions(damage_per_round = 10, archetype, number_of_attacks, challenge_rating, save_dc, primary_ability)
       attacks = []
-      ranged_chance = is_caster ? 0.15 : 0.35
+      ranged_chance = case archetype
+                      when 'beast'
+                        0.0
+                      when 'spellcaster'
+                        0.15
+                      else
+                        0.6
+                      end
       if @new_npc.monster_type.downcase == 'humanoid'
-        attacks << create_melee_attack(number_of_attacks, is_caster)
+        attacks << create_melee_attack(number_of_attacks, archetype)
         if rand > ranged_chance
           attacks << create_ranged_attack
         end
       else
         attacks << create_creature_attacks(damage_per_round, number_of_attacks)
       end
-      attacks << create_spellcasting(challenge_rating, save_dc, primary_ability) if is_caster
+      attacks << create_spellcasting(challenge_rating, save_dc, primary_ability) if archetype == 'spellcaster'
     end
 
     def create_multiattack(num_attacks, attack_names)
@@ -492,8 +528,8 @@ class NpcGenerator
       end
     end
 
-    def create_melee_attack(num_attacks, is_caster)
-      attacks = is_caster ? [WeaponItem.caster_weapons.sample] : WeaponItem.fighter_weapons.sample([rand(1..num_attacks), 2].min).uniq
+    def create_melee_attack(num_attacks, archetype)
+      attacks = archetype == 'spellcaster' ? [WeaponItem.caster_weapons.sample] : WeaponItem.fighter_weapons.sample([rand(1..num_attacks), 2].min).uniq
       multiattack_options = []
       attacks.each do |attack_name|
         weapon = WeaponItem.find_by(name: attack_name)

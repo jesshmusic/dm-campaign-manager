@@ -220,6 +220,8 @@ const MonsterBlock = (props: { monster: MonsterProps; showCRStats?: boolean }) =
           <MonsterStat name="Damage Per Round:" value={monster.damagePerRound!} />
           <MonsterStat name="Offensive CR:" value={monster.offensiveCr!} />
           <MonsterStat name="Defensive CR:" value={monster.defensiveCr!} />
+          <MonsterStat name="Proficiency Bonus:" value={monster.profBonus} />
+          <MonsterStat name="Save DC:" value={monster.saveDc} />
         </div>
       )}
     </div>

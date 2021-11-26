@@ -187,7 +187,7 @@ module Admin::V1
         :languages, :monster_subtype, :monster_type,
         :name, :prof_bonus, :save_dc, :size,
         :strength, :wisdom, :xp,
-        :number_of_attacks, :is_caster,
+        :number_of_attacks, :archetype,
         damage_immunities: [],
         damage_vulnerabilities: [],
         damage_resistances: [],

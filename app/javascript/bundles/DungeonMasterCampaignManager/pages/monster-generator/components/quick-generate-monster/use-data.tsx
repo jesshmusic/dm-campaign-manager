@@ -20,6 +20,10 @@ export const useData = (props: GenerateMonsterProps) => {
       value: 'Neutral',
       label: 'Neutral',
     },
+    archetypeOption: {
+      value: 'beast',
+      label: 'Beast',
+    },
     armorClass: 10,
     challengeRatingOption: { value: '0', label: '0' },
     constitution: 10,
@@ -27,7 +31,6 @@ export const useData = (props: GenerateMonsterProps) => {
     hitDiceNumber: 1,
     hitDiceValue: 'd8',
     hitPoints: 4,
-    isCaster: false,
     monsterType: 'humanoid',
     monsterTypeOption: {
       value: 'humanoid',
@@ -77,6 +80,13 @@ export const useData = (props: GenerateMonsterProps) => {
   };
 
   const challengeRatingOptions = getChallengeRatingOptions();
+
+  const archetypeOptions = [
+    { label: 'Beast', value: 'beast' },
+    { label: 'Fighter', value: 'fighter' },
+    { label: 'Rogue', value: 'rogue' },
+    { label: 'Spellcaster', value: 'spellcaster' },
+  ];
 
   const setFieldsForChallenge = (fields: MonsterQuickGeneratorFormFields) => {
     getCRInfo(fields.challengeRatingOption.label).then((result) => {
@@ -141,6 +151,7 @@ export const useData = (props: GenerateMonsterProps) => {
   };
 
   return {
+    archetypeOptions,
     challengeRatingOptions,
     handleGenerateName,
     handleGenerateMonsterName,

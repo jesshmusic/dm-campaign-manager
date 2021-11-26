@@ -202,7 +202,7 @@ class Monster < ApplicationRecord
   end
 
   def offensive_cr
-    CrCalc.simple_offensive_cr(monster_atts.deep_symbolize_keys, is_caster)
+    CrCalc.simple_offensive_cr(monster_atts.deep_symbolize_keys, is_caster ? 'spellcaster': 'fighter')
   end
 
   def defensive_cr
