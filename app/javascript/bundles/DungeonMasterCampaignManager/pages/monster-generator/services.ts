@@ -181,7 +181,7 @@ export const createQuickMonsterParams = (values: MonsterQuickGeneratorFormFields
     armorClass: values.armorClass,
     challengeRating: values.challengeRatingOption.label,
     constitution: values.constitution,
-    hitDice: values.hitDice,
+    hitDice: `${values.hitDiceNumber}${values.hitDiceValue}`,
     hitPoints: values.hitPoints,
     monsterType: values.monsterTypeOption.label,
     numberOfAttacks: values.numberOfAttacks > 0 ? values.numberOfAttacks : 1,

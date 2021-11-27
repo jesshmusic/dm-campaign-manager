@@ -506,7 +506,7 @@ class NpcGenerator
       unless special_string.nil?
         puts action_obj[:damage_dice]
       end
-      "Melee Weapon Attack: +#{@new_npc.attack_bonus} #{reach_string} #{base_damage} (#{action_obj[:damage_dice]} #{action_damage_bonus}#{damage_type} #{special_string}"
+      "Melee Weapon Attack: +#{@new_npc.attack_bonus} #{reach_string}#{base_damage} (#{action_obj[:damage_dice]} #{action_damage_bonus}#{damage_type} #{special_string}"
     end
 
     def parse_melee_action_desc(action)
