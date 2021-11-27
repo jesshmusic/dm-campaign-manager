@@ -22,6 +22,7 @@ class NpcGenerator
         cr_info[:save_dc],
         spellcasting_ability
       )
+      generate_special_abilities
       generate_resistances
 
       @new_npc.slug = @new_npc.name.parameterize if user.nil?
@@ -551,9 +552,29 @@ class NpcGenerator
       spell_str
     end
 
+    def generate_special_abilities
+      cr_int = CrCalc.cr_string_to_num(@new_npc.challenge_rating)
+      monster_attacks = Hash[SpecialAbility.joins(:monster).where(monster: {monster_type: @new_npc.monster_type}).map do |action|
+        monster_cr = [CrCalc.cr_string_to_num(action.monster.challenge_rating), 0.125].max
+        weight = (1 / ([monster_cr - cr_int, 0.125].max).abs) * 100
+        action_desc = action.desc.gsub(action.monster.name.downcase, @new_npc.name.downcase)
+        attack_info = {name: action.name, desc: action_desc, monster: action.monster.name}
+        [attack_info, weight]
+      end].uniq do |action|
+        action.first[:name]
+      end
+      special_chance = cr_int / 30
+      num_abilities = rand(1..(cr_int / 8).ceil)
+      abilities = WeightedList[monster_attacks].sample(num_abilities)
+      if rand < special_chance
+        abilities.each do |ability|
+          @new_npc.special_abilities << SpecialAbility.new(name: ability[:name], desc: ability[:desc])
+        end
+      end
+    end
+
     # Resistances
     def generate_resistances
-      # current_cr = CrCalc.cr_string_to_num(@new_npc.challenge_rating)
       weighted_resistances = WeightedList[Monster.all.group(:damage_resistances).count(:damage_resistances)]
       weighted_immunities = WeightedList[Monster.all.group(:damage_immunities).count(:damage_immunities)]
       weighted_vulnerabilities = WeightedList[Monster.all.group(:damage_vulnerabilities).count(:damage_vulnerabilities)]
