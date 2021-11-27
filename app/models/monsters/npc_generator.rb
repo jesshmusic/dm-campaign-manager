@@ -6,7 +6,7 @@ class NpcGenerator
     def quick_monster(monster_params, user)
       @new_npc = Monster.new(monster_params.except(:number_of_attacks, :archetype))
       @new_npc.slug = @new_npc.name.parameterize
-      # calculate_hd
+      calculate_hd
       ability_score_order = get_ability_score_order(monster_params[:archetype])
       spellcasting_ability = ability_score_order[0]
       cr_info = CrCalc.challenge_ratings[monster_params[:challenge_rating].to_sym]
@@ -554,10 +554,16 @@ class NpcGenerator
 
     def generate_special_abilities
       cr_int = CrCalc.cr_string_to_num(@new_npc.challenge_rating)
-      monster_attacks = Hash[SpecialAbility.joins(:monster).where(monster: {monster_type: @new_npc.monster_type}).map do |action|
+      monster_attacks = Hash[SpecialAbility.joins(:monster).where(monster: {monster_type: @new_npc.monster_type}).where.not(name: ['Spellcasting']).map do |action|
         monster_cr = [CrCalc.cr_string_to_num(action.monster.challenge_rating), 0.125].max
         weight = (1 / ([monster_cr - cr_int, 0.125].max).abs) * 100
         action_desc = action.desc.gsub(action.monster.name.downcase, @new_npc.name.downcase)
+        save_dcs = /(?:DC )([1-9]\d*)(?:\s)/m.match(action_desc)
+        unless save_dcs.nil?
+          save_dcs.captures.each do |save_str|
+            action_desc = action_desc.gsub(save_str, @new_npc.save_dc.to_s)
+          end
+        end
         attack_info = {name: action.name, desc: action_desc, monster: action.monster.name}
         [attack_info, weight]
       end].uniq do |action|
