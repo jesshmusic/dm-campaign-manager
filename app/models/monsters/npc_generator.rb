@@ -25,10 +25,17 @@ class NpcGenerator
       @new_npc.slug = @new_npc.name.parameterize if user.nil?
 
       calculated_cr = CrCalc.calculate_challenge(@new_npc)
-      if calculated_cr[:name] != @new_npc.challenge_rating
-        cr_data = calculated_cr[:data].symbolize_keys
-        @new_npc.challenge_rating = calculated_cr[:name]
-        @new_npc.xp = cr_data[:xp]
+      if calculated_cr[:name] != @new_npc.challenge_rating=
+        expected_cr = CrCalc.cr_string_to_num(@new_npc.challenge_rating)
+        current_cr = calculated_cr[:raw_cr]
+        inc_count = 0
+        while expected_cr > current_cr
+          increment_hd(expected_cr - current_cr)
+          new_calc_cr = CrCalc.calculate_challenge(@new_npc)
+          current_cr = new_calc_cr[:raw_cr]
+          inc_count += 1
+        end
+        @new_npc.challenge_rating = CrCalc.cr_num_to_string(current_cr)
       end
       maybe_save_npc(user)
       @new_npc
@@ -348,6 +355,21 @@ class NpcGenerator
       con_mod = DndRules.ability_score_modifier(@new_npc.constitution)
       hit_dice = @new_npc.hit_dice.scan(/\d+/)
       average_hp = hit_dice.last.to_f / 2 + 0.5
+      current_hd = (@new_npc.hit_points / (average_hp + con_mod)).round
+      @new_npc.hit_dice = "#{current_hd}d#{hit_dice.last}"
+    end
+
+    def increment_hd(diff)
+      con_mod = DndRules.ability_score_modifier(@new_npc.constitution)
+      hit_dice = @new_npc.hit_dice.scan(/\d+/)
+      average_hp = hit_dice.last.to_f / 2 + 0.5
+      if diff > 1 && @new_npc.constitution < 25
+        @new_npc.constitution += 1
+        @new_npc.hit_points += average_hp
+        con_mod = DndRules.ability_score_modifier(@new_npc.constitution)
+      else
+        @new_npc.hit_points += average_hp
+      end
       current_hd = (@new_npc.hit_points / (average_hp + con_mod)).round
       @new_npc.hit_dice = "#{current_hd}d#{hit_dice.last}"
     end

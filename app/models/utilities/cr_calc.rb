@@ -4,10 +4,10 @@ class CrCalc
     def calculate_challenge(monster)
       def_cr = get_defensive_cr(monster)
       off_cr = get_offensive_cr(monster)
-
-      final_cr = cr_num_to_string((def_cr + off_cr) / 2)
+      raw_cr = (def_cr + off_cr) / 2
+      final_cr = cr_num_to_string(raw_cr)
       cr_data = challenge_ratings[final_cr.to_sym].as_json
-      { name: final_cr, data: cr_data }
+      { name: final_cr, raw_cr: raw_cr, data: cr_data }
     end
 
     # @param [Monster] monster
