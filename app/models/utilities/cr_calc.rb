@@ -631,12 +631,15 @@ class CrCalc
       num_attacks = 1
       num_attack_types = 0
       monster[:actions].each do |action_obj|
+        damage_dice = action_obj[:desc][/([1-9]\d*)?d([1-9]\d*)/m]
+        npc_dam_bonus = DndRules.ability_score_modifier(monster[:strength])
+        _, base_damage = NpcGenerator.action_damage(damage_dice, npc_dam_bonus, action_obj[:desc])
         if action_obj[:name].downcase == 'multiattack'
           num_attacks_array = action_obj[:desc].scan(/\d+/).map(&:to_i)
           num_attacks = num_attacks_array.sum
         elsif action_obj[:desc].include? 'to hit'
           num_attack_types += 1
-          damages << parse_action_desc(action_obj)
+          damages << base_damage
         else
           ability_cr += 1
         end

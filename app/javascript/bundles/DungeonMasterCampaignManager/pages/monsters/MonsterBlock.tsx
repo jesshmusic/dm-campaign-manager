@@ -74,7 +74,6 @@ const MonsterBlock = (props: { monster: MonsterProps; showCRStats?: boolean }) =
   const [fileDownloadUrl, setFileDownloadUrl] = React.useState('');
   const fileLink = React.useRef<HTMLAnchorElement>(null);
 
-  console.log(monster);
   const downloadXmlFile = () => {
     if (props.monster.fguXml) {
       const blob = new Blob([props.monster.fguXml]);

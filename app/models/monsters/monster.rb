@@ -189,13 +189,15 @@ class Monster < ApplicationRecord
     num_attacks = 1
     num_attack_types = 0
     monster_actions.each do |action|
+      damage_dice = action.desc[/([1-9]\d*)?d([1-9]\d*)/m]
+      npc_dam_bonus = DndRules.ability_score_modifier(strength)
+      _, base_damage = NpcGenerator.action_damage(damage_dice, npc_dam_bonus, action.desc)
       if action.name.downcase == 'multiattack'
         num_attacks_array = action.desc.scan(/\d+/).map(&:to_i)
         num_attacks = num_attacks_array.sum
-      elsif action.desc.include? 'to hit'
+      elsif base_damage > 0
         num_attack_types += 1
-        damage_str = action.desc[/Hit: (.*?) /m, 1]
-        damages << damage_str.to_i
+        damages << base_damage
       end
     end
     damages.sum.to_f * num_attacks / num_attack_types
@@ -217,10 +219,11 @@ class Monster < ApplicationRecord
                     name: 'A',
                     monster_type: 'B',
                     challenge_rating: 'C',
-                    alignment: 'D',
+                    alignment: 'D'
                   },
                   associated_against: {
-                    user: [:name, :id]
+                    user: [:name, :id],
+                    monster_actions: [:name]
                   },
                   using: {
                     tsearch: {

@@ -75,7 +75,6 @@ export const useData = (props: GenerateMonsterProps) => {
     const monsterData = createQuickMonsterParams(data);
     monsterData.monster_type = monsterData.monster_type.toLowerCase();
     monsterData.size = monsterData.size.toLowerCase();
-    console.log(monsterData);
     props.onGenerateMonster(monsterData, props.token);
   };
 
