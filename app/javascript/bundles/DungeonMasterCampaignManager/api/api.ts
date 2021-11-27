@@ -78,16 +78,6 @@ export default reduxApi({
       };
     },
   },
-  convert2eNonPlayerCharacter: {
-    url: '/v1/convert_2e_monster.json',
-    options() {
-      const headers = getHeaders();
-      return {
-        method: 'post',
-        headers,
-      };
-    },
-  },
   generateCommoner: {
     url: '/v1/generate_commoner.json?random_monster_gender=:gender&random_monster_race=:race',
     options() {

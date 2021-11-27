@@ -1,27 +1,12 @@
 import { createAction, createReducer } from '@reduxjs/toolkit';
 import { AnyAction } from 'redux';
 
-const generateMonsterSuccess = createAction(
-  '@@redux-api@generateMonster_success'
-);
+const generateMonsterSuccess = createAction('@@redux-api@generateMonster_success');
 const generateMonsterFail = createAction('@@redux-api@generateMonster_fail');
 
-const generateQuickMonsterSuccess = createAction(
-  '@@redux-api@generateQuickMonster_success'
-);
-const generateQuickMonsterFail = createAction(
-  '@@redux-api@generateQuickMonster_fail'
-);
-
-const convert2eNonPlayerCharacterSuccess = createAction(
-  '@@redux-api@convert2eNonPlayerCharacter_success'
-);
-const convert2eNonPlayerCharacterFail = createAction(
-  '@@redux-api@convert2eNonPlayerCharacter_fail'
-);
-const generateCommonerSuccess = createAction(
-  '@@redux-api@generateCommoner_success'
-);
+const generateQuickMonsterSuccess = createAction('@@redux-api@generateQuickMonster_success');
+const generateQuickMonsterFail = createAction('@@redux-api@generateQuickMonster_fail');
+const generateCommonerSuccess = createAction('@@redux-api@generateCommoner_success');
 const generateCommonerFail = createAction('@@redux-api@generateCommoner_fail');
 const getMonsters = createAction('@@redux-api@getMonsters');
 const getMonstersSuccess = createAction('@@redux-api@getMonsters_success');
@@ -30,12 +15,8 @@ const getMonster = createAction('@@redux-api@getMonster');
 const getMonsterSuccess = createAction('@@redux-api@getMonster_success');
 const getMonsterFail = createAction('@@redux-api@getMonster_fail');
 const getMonsterCategories = createAction('@@redux-api@getMonsterCategories');
-const getMonsterCategoriesSuccess = createAction(
-  '@@redux-api@getMonsterCategories_success'
-);
-const getMonsterCategoriesFail = createAction(
-  '@@redux-api@getMonsterCategories_fail'
-);
+const getMonsterCategoriesSuccess = createAction('@@redux-api@getMonsterCategories_success');
+const getMonsterCategoriesFail = createAction('@@redux-api@getMonsterCategories_fail');
 
 const monsters = createReducer(
   {
@@ -75,27 +56,6 @@ const monsters = createReducer(
         };
       })
       .addCase(generateQuickMonsterFail, (state, action: AnyAction) => {
-        return {
-          monsters: state.monsters,
-          monsterTypes: state.monsterTypes,
-          count: state.count,
-          currentMonster: null,
-          loading: false,
-        };
-      })
-      .addCase(
-        convert2eNonPlayerCharacterSuccess,
-        (state, action: AnyAction) => {
-          return {
-            monsters: state.monsters,
-            monsterTypes: state.monsterTypes,
-            count: state.count,
-            currentMonster: action.data,
-            loading: false,
-          };
-        }
-      )
-      .addCase(convert2eNonPlayerCharacterFail, (state, action: AnyAction) => {
         return {
           monsters: state.monsters,
           monsterTypes: state.monsterTypes,

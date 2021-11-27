@@ -469,14 +469,19 @@ class NpcGenerator
     def create_creature_attacks(damage_per_round, num_attacks)
       attack_types = {'Bite': 143, 'Slam': 14, 'Claw': 82, 'Tail': 32}
       cr_int = CrCalc.cr_string_to_num(@new_npc.challenge_rating)
-      min_cr = CrCalc.cr_num_to_string([(cr_int - 3).to_i, 0].max)
-      max_cr = CrCalc.cr_num_to_string((cr_int + 3).to_i)
       attack_type_list = WeightedList[attack_types]
       attacks = attack_type_list.sample(rand(1..num_attacks)).uniq
       create_multiattack(num_attacks, attacks)
       attacks.each do |next_attack|
-        action = MonsterAction.joins(:monster).where(name: next_attack.to_s, monster: { challenge_rating: min_cr..max_cr }).sample.attributes
-        @new_npc.monster_actions << MonsterAction.new(name: action['name'], desc: action['desc'])
+        monster_attacks = Hash[MonsterAction.where(name: next_attack.to_s).map do |next_monster_attack|
+          monster_cr = [CrCalc.cr_string_to_num(next_monster_attack.monster.challenge_rating), 0.125].max
+          weight = (1 / ([monster_cr - cr_int, 0.125].max).abs) * 100
+          [next_monster_attack.monster.name, weight]
+        end]
+        attack_monster_list = WeightedList[monster_attacks]
+        attack_monster_name = attack_monster_list.sample
+        action = Monster.find_by(name: attack_monster_name).monster_actions.find_by(name: next_attack.to_s)
+        @new_npc.monster_actions << MonsterAction.new(name: action.name, desc: adapt_action_desc(action))
       end
     end
 
@@ -487,6 +492,21 @@ class NpcGenerator
       action[:save_dc] = save_dc
       action[:primary_ability] = primary_ability
       @new_npc.special_abilities << SpecialAbility.create(name: action[:name], desc: parse_spell_action_desc(action))
+    end
+
+    def adapt_action_desc(action)
+      action_obj = {
+        damage_dice: action.desc[/(\d)d(\d)/m]
+      }
+      npc_dam_bonus = DndRules.ability_score_modifier(@new_npc.strength)
+      action_damage_bonus, base_damage = action_damage(action_obj, npc_dam_bonus)
+      reach_string = action.desc[/to hit, (.*) Hit: /m]
+      special_string = action.desc[/(?<=damage. )(.*)/m]
+      damage_type = action.desc[/\) (.*) damage(,|\.)/m]
+      unless special_string.nil?
+        puts action_obj[:damage_dice]
+      end
+      "Melee Weapon Attack: +#{@new_npc.attack_bonus} #{reach_string} #{base_damage} (#{action_obj[:damage_dice]} #{action_damage_bonus}#{damage_type} #{special_string}"
     end
 
     def parse_melee_action_desc(action)

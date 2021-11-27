@@ -18,7 +18,6 @@ const MonsterGenerator = (props: {
   generateCommoner: (gender?: string, race?: string, token?: string) => void;
   generateMonster: (monster: any, token?: string) => void;
   generateQuickMonster: (monster: any, token?: string) => void;
-  convert2eNPC: () => void;
   token?: string;
 }) => {
   const { token, monster, generateCommoner, generateMonster, generateQuickMonster } = props;
@@ -196,9 +195,6 @@ function mapDispatchToProps(dispatch) {
           }
         )
       );
-    },
-    convert2eNPC: () => {
-      dispatch(rest.actions.generateCommoner());
     },
   };
 }
