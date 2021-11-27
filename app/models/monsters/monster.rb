@@ -75,22 +75,6 @@ class Monster < ApplicationRecord
   accepts_nested_attributes_for :speeds, allow_destroy: true
   accepts_nested_attributes_for :monster_proficiencies, allow_destroy: true
 
-  def condition_immunities_array
-    condition_immunities.map { |cond| cond.name.downcase }
-  end
-
-  def immunities
-    damage_immunities.map { |damage| damage.name }
-  end
-
-  def resistances
-    damage_resistances.map { |damage| damage.name }
-  end
-
-  def vulnerabilities
-    damage_vulnerabilities.map { |damage| damage.name }
-  end
-
   def saving_throws
     saves = []
     monster_proficiencies.each do |monster_prof|

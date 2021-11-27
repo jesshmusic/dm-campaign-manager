@@ -22,27 +22,10 @@ class NpcGenerator
         cr_info[:save_dc],
         spellcasting_ability
       )
-      @new_npc.slug = @new_npc.name.parameterize if user.nil?
+      generate_resistances
 
-      calculated_cr = CrCalc.calculate_challenge(@new_npc)
-      if calculated_cr[:name] != @new_npc.challenge_rating=
-        expected_cr = CrCalc.cr_string_to_num(@new_npc.challenge_rating)
-        current_cr = calculated_cr[:raw_cr]
-        if expected_cr > current_cr
-          while expected_cr > current_cr
-            adjust_hd(true)
-            new_calc_cr = CrCalc.calculate_challenge(@new_npc)
-            current_cr = new_calc_cr[:raw_cr]
-          end
-        elsif expected_cr < current_cr
-          while expected_cr < current_cr
-            adjust_hd(false)
-            new_calc_cr = CrCalc.calculate_challenge(@new_npc)
-            current_cr = new_calc_cr[:raw_cr]
-          end
-        end
-        @new_npc.challenge_rating = CrCalc.cr_num_to_string(current_cr)
-      end
+      @new_npc.slug = @new_npc.name.parameterize if user.nil?
+      adjust_challenge_rating
       maybe_save_npc(user)
       @new_npc
     end
@@ -116,6 +99,28 @@ class NpcGenerator
     end
 
     private
+
+    def adjust_challenge_rating
+      calculated_cr = CrCalc.calculate_challenge(@new_npc)
+      if calculated_cr[:name] != @new_npc.challenge_rating =
+        expected_cr = CrCalc.cr_string_to_num(@new_npc.challenge_rating)
+        current_cr = calculated_cr[:raw_cr]
+        if expected_cr > current_cr
+          while expected_cr > current_cr
+            adjust_hd(true)
+            new_calc_cr = CrCalc.calculate_challenge(@new_npc)
+            current_cr = new_calc_cr[:raw_cr]
+          end
+        elsif expected_cr < current_cr
+          while expected_cr < current_cr
+            adjust_hd(false)
+            new_calc_cr = CrCalc.calculate_challenge(@new_npc)
+            current_cr = new_calc_cr[:raw_cr]
+          end
+        end
+        @new_npc.challenge_rating = CrCalc.cr_num_to_string(current_cr)
+      end
+    end
 
     def get_ability_score_order(archetype = 'fighter')
       weighted_abilities = case archetype
@@ -548,7 +553,15 @@ class NpcGenerator
 
     # Resistances
     def generate_resistances
-
+      # current_cr = CrCalc.cr_string_to_num(@new_npc.challenge_rating)
+      weighted_resistances = WeightedList[Monster.all.group(:damage_resistances).count(:damage_resistances)]
+      weighted_immunities = WeightedList[Monster.all.group(:damage_immunities).count(:damage_immunities)]
+      weighted_vulnerabilities = WeightedList[Monster.all.group(:damage_vulnerabilities).count(:damage_vulnerabilities)]
+      weighted_conditions = WeightedList[Monster.all.group(:condition_immunities).count(:condition_immunities)]
+      @new_npc.damage_resistances = weighted_resistances.sample
+      @new_npc.damage_immunities = weighted_immunities.sample
+      @new_npc.damage_vulnerabilities = weighted_vulnerabilities.sample
+      @new_npc.condition_immunities = weighted_conditions.sample
     end
   end
 end
