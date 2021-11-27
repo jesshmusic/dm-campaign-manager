@@ -275,10 +275,8 @@ export const hitDiceForHitPoints = (
 ): { hitDiceCount: number; hitDiceString: string } => {
   const hdValueInt = diceNumberFromString[hitDiceValue];
   const conMod = abilityScoreModifier(constitution);
-  let hitDiceCount = 1;
-  while (hitDiceCount * hdValueInt + conMod < hitPoints) {
-    hitDiceCount += 1;
-  }
+  const averageHitPoints = hdValueInt / 2 + 0.5;
+  const hitDiceCount = Math.round(hitPoints / (averageHitPoints + conMod));
   const hitDiceString = `${hitDiceCount}${hitDiceValue}`;
   return { hitDiceCount, hitDiceString };
 };

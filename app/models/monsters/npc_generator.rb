@@ -6,7 +6,7 @@ class NpcGenerator
     def quick_monster(monster_params, user)
       @new_npc = Monster.new(monster_params.except(:number_of_attacks, :archetype))
       @new_npc.slug = @new_npc.name.parameterize
-      calculate_hd
+      # calculate_hd
       ability_score_order = get_ability_score_order(monster_params[:archetype])
       spellcasting_ability = ability_score_order[0]
       cr_info = CrCalc.challenge_ratings[monster_params[:challenge_rating].to_sym]
@@ -28,12 +28,18 @@ class NpcGenerator
       if calculated_cr[:name] != @new_npc.challenge_rating=
         expected_cr = CrCalc.cr_string_to_num(@new_npc.challenge_rating)
         current_cr = calculated_cr[:raw_cr]
-        inc_count = 0
-        while expected_cr > current_cr
-          increment_hd(expected_cr - current_cr)
-          new_calc_cr = CrCalc.calculate_challenge(@new_npc)
-          current_cr = new_calc_cr[:raw_cr]
-          inc_count += 1
+        if expected_cr > current_cr
+          while expected_cr > current_cr
+            adjust_hd(true)
+            new_calc_cr = CrCalc.calculate_challenge(@new_npc)
+            current_cr = new_calc_cr[:raw_cr]
+          end
+        elsif expected_cr < current_cr
+          while expected_cr < current_cr
+            adjust_hd(false)
+            new_calc_cr = CrCalc.calculate_challenge(@new_npc)
+            current_cr = new_calc_cr[:raw_cr]
+          end
         end
         @new_npc.challenge_rating = CrCalc.cr_num_to_string(current_cr)
       end
@@ -359,16 +365,14 @@ class NpcGenerator
       @new_npc.hit_dice = "#{current_hd}d#{hit_dice.last}"
     end
 
-    def increment_hd(diff)
+    def adjust_hd(is_incrementing)
       con_mod = DndRules.ability_score_modifier(@new_npc.constitution)
       hit_dice = @new_npc.hit_dice.scan(/\d+/)
       average_hp = hit_dice.last.to_f / 2 + 0.5
-      if diff > 1 && @new_npc.constitution < 25
-        @new_npc.constitution += 1
-        @new_npc.hit_points += average_hp
-        con_mod = DndRules.ability_score_modifier(@new_npc.constitution)
+      if is_incrementing
+        @new_npc.hit_points += average_hp.floor
       else
-        @new_npc.hit_points += average_hp
+        @new_npc.hit_points -= average_hp.ceil
       end
       current_hd = (@new_npc.hit_points / (average_hp + con_mod)).round
       @new_npc.hit_dice = "#{current_hd}d#{hit_dice.last}"
@@ -477,10 +481,10 @@ class NpcGenerator
       reach_string = /(?:to hit, )(.*)(?: Hit: )/.match(action_desc).captures if /(?:to hit, )(.*)(?: Hit: )/.match(action_desc)
       damage_type = /\) (.*) damage(,|\.)/.match(action_desc).captures if /\) (.*) damage(,|\.)/.match(action_desc)
       special_string = if /(?:damage(?:,|\.) )(.*)/.match(action_desc)
-        special = /(?:damage(?:,|\.) )(.*)/.match(action_desc).captures
-        special_string = special.first unless special.nil?
-        special_string.gsub(monster_name, @new_npc.name.downcase) unless special_string.nil?
-      end
+                         special = /(?:damage(?:,|\.) )(.*)/.match(action_desc).captures
+                         special_string = special.first unless special.nil?
+                         special_string.gsub(monster_name, @new_npc.name.downcase) unless special_string.nil?
+                       end
       npc_dam_bonus = DndRules.ability_score_modifier(@new_npc.strength)
       action_damage_bonus, base_damage = action_damage(damage_dice, npc_dam_bonus, action_desc)
       result = if reach_string && damage_type
@@ -540,6 +544,11 @@ class NpcGenerator
         end
       end
       spell_str
+    end
+
+    # Resistances
+    def generate_resistances
+
     end
   end
 end
