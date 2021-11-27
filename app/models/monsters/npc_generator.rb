@@ -475,7 +475,11 @@ class NpcGenerator
       attacks.each do |next_attack|
         monster_attacks = Hash[MonsterAction.where(name: next_attack.to_s).map do |next_monster_attack|
           monster_cr = [CrCalc.cr_string_to_num(next_monster_attack.monster.challenge_rating), 0.125].max
-          weight = (1 / ([monster_cr - cr_int, 0.125].max).abs) * 100
+          weight = if cr_int - monster_cr > 5
+                     0
+                   else
+                     (1 / ([monster_cr - cr_int, 0.125].max).abs) * 100
+                   end
           [next_monster_attack.monster.name, weight]
         end]
         attack_monster_list = WeightedList[monster_attacks]
@@ -496,7 +500,7 @@ class NpcGenerator
 
     def adapt_action_desc(action)
       action_obj = {
-        damage_dice: action.desc[/(\d)d(\d)/m]
+        damage_dice: action.desc[/(\d*)d(\d*)/m]
       }
       npc_dam_bonus = DndRules.ability_score_modifier(@new_npc.strength)
       action_damage_bonus, base_damage = action_damage(action_obj, npc_dam_bonus)
