@@ -7,6 +7,7 @@ class NpcGenerator
       puts monster_params
       @new_npc = Monster.new(monster_params.except(:number_of_attacks, :archetype))
       @new_npc.slug = @new_npc.name.parameterize
+      calculate_hd
       ability_score_order = get_ability_score_order(monster_params[:archetype])
       spellcasting_ability = ability_score_order[0]
       cr_info = CrCalc.challenge_ratings[monster_params[:challenge_rating].to_sym]
@@ -41,6 +42,7 @@ class NpcGenerator
 
     def generate_npc(monster_params, user)
       @new_npc = Monster.new(monster_params)
+      calculate_hd
       @new_npc.slug = @new_npc.name.parameterize if user.nil?
       maybe_save_npc(user)
       @new_npc
@@ -274,49 +276,6 @@ class NpcGenerator
       "#{sign}#{space ? ' ' : ''}#{number.abs}"
     end
 
-    def spellcasting_for_class(npc_attributes)
-      spellcasting_classes = npc_attributes[:dnd_classes].select { |dnd_class|
-        dnd_class_name = dnd_class[:dnd_class][:label]
-        dnd_class_name == 'Bard' || dnd_class_name == 'Cleric' || dnd_class_name == 'Druid' ||
-          dnd_class_name == 'Sorcerer' || dnd_class_name == 'Wizard' || dnd_class_name == 'Paladin' ||
-          dnd_class_name == 'Ranger' || dnd_class_name == 'Warlock'
-      }
-      spellcasting_class = spellcasting_classes.max_by do |dnd_class|
-        dnd_class[:level].to_i
-      end
-      spell_class = DndClass.find(spellcasting_class[:dnd_class][:value])
-      prof_bonus = DndRules.proficiency_bonus_for_level(spellcasting_class[:level].to_i)
-      spell_attack = DndRules.spell_attack_bonus(prof_bonus, spell_class, @new_npc)
-      spell_save_dc = CrCalc.challenge_ratings[spellcasting_class[:level].to_sym][:save_dc]
-      spellcasting_ability = if spellcasting_class[:dnd_class][:label] == 'Wizard'
-                               'Intelligence'
-                             elsif spellcasting_class[:dnd_class][:label] == 'Cleric' ||
-                               spellcasting_class[:dnd_class][:label] == 'Druid' ||
-                               spellcasting_class[:dnd_class][:label] == 'Ranger'
-                               'Wisdom'
-                             else
-                               'Charisma'
-                             end
-      spellcasting_level = "#{spellcasting_class[:level].to_i.ordinalize}-level"
-      [spell_attack, spell_save_dc, spellcasting_ability, spellcasting_level]
-    end
-
-    def set_npc_race(race_string)
-      unless race_string.blank?
-        race_name = DndRules.race_values[race_string.to_sym]
-        @npc_race = Race.where(name: race_name).first
-      end
-    end
-
-    def set_npc_hit_points
-      con_modifier = DndRules.ability_score_modifier(@new_npc.constitution)
-      hit_points_info = DndRules.calculate_hp_and_hd(@new_npc.size, @new_npc.challenge_rating, con_modifier)
-      npc_atts = @new_npc.attributes
-      @new_npc.hit_dice = "d#{hit_points_info[:num_hit_die]}"
-      @new_npc.hit_points = hit_points_info[:hit_points]
-      CrCalc.challenge_ratings[@new_npc.challenge_rating.to_sym]
-    end
-
     # Spellcasting
 
     def calculate_save_dc(spellcasting_ability, save_dc)
@@ -366,7 +325,7 @@ class NpcGenerator
         ability_scores[index] = rolls.sum
       end
       score_priority.each_with_index do |ability, index|
-        set_primary_ability(ability.to_s, ability_scores, index) unless  skip == ability
+        set_primary_ability(ability.to_s, ability_scores, index) unless  skip.to_s == ability.to_s
       end
     end
 
@@ -389,6 +348,14 @@ class NpcGenerator
       else
         puts "Ability #{ability} not found!"
       end
+    end
+
+    def calculate_hd
+      con_mod = DndRules.ability_score_modifier(@new_npc.constitution)
+      hit_dice = @new_npc.hit_dice.scan(/\d+/)
+      average_hp = hit_dice.last.to_f / 2 + 0.5
+      current_hd = (@new_npc.hit_points / (average_hp + con_mod)).round
+      @new_npc.hit_dice = "#{current_hd}d#{hit_dice.last}"
     end
 
     # Actions
@@ -558,6 +525,5 @@ class NpcGenerator
       end
       spell_str
     end
-
   end
 end
