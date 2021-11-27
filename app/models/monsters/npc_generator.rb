@@ -444,7 +444,7 @@ class NpcGenerator
       end
     end
 
-    def create_actions(damage_per_round, num_attacks)
+    def create_actions(damage_per_round, num_attacks, number_of_tries = 0)
       cr_int = CrCalc.cr_string_to_num(@new_npc.challenge_rating)
       max_num_actions = [num_attacks, 3].min
       monster_attacks = Hash[MonsterAction.joins(:monster).where(monster: {monster_type: @new_npc.monster_type}).where.not(name: ['Multiattack']).map do |attack|
@@ -462,12 +462,21 @@ class NpcGenerator
       actions = WeightedList[monster_attacks]
 
       attacks = actions.sample(rand(1..max_num_actions))
+      damages = []
       attack_names = attacks.map do |attack|
+        damages << attack[:damage]
         attack[:name]
       end
-      create_multiattack(num_attacks, attack_names)
-      attacks.each do |attack|
-        @new_npc.monster_actions << MonsterAction.new(name: attack[:name], desc: adapt_action_desc(attack[:desc], attack[:monster].downcase))
+      current_dpr = damages.sum * num_attacks / attacks.count
+      dpr_diff = damage_per_round - current_dpr
+      dpr_diff_target = (damage_per_round * 0.5)
+      if dpr_diff > dpr_diff_target && number_of_tries < 3
+        create_actions(damage_per_round, num_attacks, number_of_tries + 1)
+      else
+        create_multiattack(num_attacks, attack_names)
+        attacks.each do |attack|
+          @new_npc.monster_actions << MonsterAction.new(name: attack[:name], desc: adapt_action_desc(attack[:desc], attack[:monster].downcase))
+        end
       end
     end
 

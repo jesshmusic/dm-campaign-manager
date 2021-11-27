@@ -417,13 +417,13 @@ class CrCalc
       (attack_bonus - 2) * 2
     end
 
-    def cr_for_damage(damage)
+    def cr_for_damage(damage, num_attacks = 1)
       damage = damage.to_i
       cr_result = 0
       challenge_ratings.each do |c_rating, info|
         min = info[:damage_min]
         max = info[:damage_max]
-        cr_result = cr_string_to_num(c_rating.to_s) if (min..max).include? damage
+        cr_result = cr_string_to_num(c_rating.to_s) + num_attacks if (min..max).include? damage
       end
       cr_result
     end
@@ -637,7 +637,7 @@ class CrCalc
         if action_obj[:name].downcase == 'multiattack'
           num_attacks_array = action_obj[:desc].scan(/\d+/).map(&:to_i)
           num_attacks = num_attacks_array.sum
-        elsif action_obj[:desc].include? 'to hit'
+        elsif base_damage > 0
           num_attack_types += 1
           damages << base_damage
         else
@@ -653,7 +653,7 @@ class CrCalc
       end
 
       damage_per_round = damages.sum.to_f * num_attacks / num_attack_types
-      damage_cr = cr_for_damage(damage_per_round)
+      damage_cr = damage_per_round ? cr_for_damage(damage_per_round, num_attacks) : 0
       attack_bonus_cr = cr_for_attack_bonus(monster[:attack_bonus])
       spell_save_cr = archetype == 'spellcaster' ? cr_for_save_dc(monster[:save_dc].to_i) : 0
       if archetype == 'spellcaster'
