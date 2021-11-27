@@ -200,15 +200,17 @@ class Monster < ApplicationRecord
         damages << base_damage
       end
     end
+    num_attack_types = 1 if num_attack_types == 0
+    damages = [1] if damages.empty?
     damages.sum.to_f * num_attacks / num_attack_types
   end
 
   def offensive_cr
-    CrCalc.simple_offensive_cr(monster_atts.deep_symbolize_keys, is_caster ? 'spellcaster': 'fighter')
+    CrCalc.get_offensive_cr(self)
   end
 
   def defensive_cr
-    CrCalc.defensive_cr(monster_atts.deep_symbolize_keys)
+    CrCalc.get_defensive_cr(self)
   end
 
   include PgSearch::Model

@@ -4,7 +4,6 @@ class NpcGenerator
   class << self
 
     def quick_monster(monster_params, user)
-      puts monster_params
       @new_npc = Monster.new(monster_params.except(:number_of_attacks, :archetype))
       @new_npc.slug = @new_npc.name.parameterize
       calculate_hd
@@ -25,12 +24,7 @@ class NpcGenerator
       )
       @new_npc.slug = @new_npc.name.parameterize if user.nil?
 
-      cr_params = {
-        params: {
-          monster: @new_npc.monster_atts,
-        }
-      }
-      calculated_cr = CrCalc.calculate_cr(cr_params.deep_symbolize_keys, true, monster_params[:archetype])
+      calculated_cr = CrCalc.calculate_challenge(@new_npc)
       if calculated_cr[:name] != @new_npc.challenge_rating
         cr_data = calculated_cr[:data].symbolize_keys
         @new_npc.challenge_rating = calculated_cr[:name]

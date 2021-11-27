@@ -1,11 +1,70 @@
 class CrCalc
   class << self
-    def calculate_cr(params, use_simple_actions = false, archetype = 'fighter')
-      monster = params[:params][:monster]
-      attack_bonus = monster[:attack_bonus]
-      challenge_rating = cr_for_npc(monster, attack_bonus, use_simple_actions, monster[:archetype])
-      cr_data = challenge_ratings[challenge_rating.to_sym].as_json
-      { name: challenge_rating, data: cr_data }
+    # @param [Monster] monster
+    def calculate_challenge(monster)
+      def_cr = get_defensive_cr(monster)
+      off_cr = get_offensive_cr(monster)
+
+      final_cr = cr_num_to_string((def_cr + off_cr) / 2)
+      cr_data = challenge_ratings[final_cr.to_sym].as_json
+      { name: final_cr, data: cr_data }
+    end
+
+    # @param [Monster] monster
+    # @return [Float | Integer]
+    def get_defensive_cr(monster)
+      expected_cr = cr_string_to_num(monster.challenge_rating)
+      hit_points = monster.hit_points
+      hit_points *= 0.5 if monster.vulnerabilities.count > 0
+      if monster.resistances && monster.resistances.count > 0
+        hit_points *= 2 if (0..4).include? expected_cr
+        hit_points *= 1.5 if (5..10).include? expected_cr
+        hit_points *= 1.25 if (11..16).include? expected_cr
+      end
+      if monster.immunities && monster.immunities.count > 0
+        hit_points *= 2 if (0..10).include? expected_cr
+        hit_points *= 1.5 if (11..16).include? expected_cr
+        hit_points *= 1.25 if expected_cr >= 17
+      end
+
+      hit_points = hit_points.floor > 850 ? 850 : hit_points.floor
+
+      def_cr = -1.0
+
+      challenge_ratings.each_with_index do |c_rating, index|
+        cr_info = c_rating[1]
+        if (cr_info[:hit_points_min]..cr_info[:hit_points_max]).include? hit_points
+          def_diff = cr_info[:armor_class] - monster.armor_class
+          def_cr = calculate_cr_diff(def_diff, index)
+        end
+      end
+      def_cr = 0 if def_cr < 0
+      def_cr
+    end
+
+    def get_offensive_cr(monster)
+      off_cr = -1
+      damage_per_round = monster.damage_per_round.floor > 320 ? 320 : monster.damage_per_round.floor
+      challenge_ratings.each_with_index do |c_rating, index|
+        cr_info = c_rating[1]
+        if (cr_info[:damage_min]..cr_info[:damage_max]).include? damage_per_round
+          adjuster = cr_info[:attack_bonus]
+          adjuster = cr_info[:save_dc] if monster.is_caster
+          attack_diff = adjuster - monster.attack_bonus
+          off_cr = calculate_cr_diff(attack_diff, index)
+        end
+      end
+      off_cr = 0 if off_cr < 0
+      off_cr
+    end
+
+    def calculate_cr_diff(diff_num, cr_index)
+      diff_num = (diff_num / 2).floor if diff_num > 0
+      diff_num = (diff_num / 2).ceil if diff_num < 0
+      diff_num = cr_index - diff_num
+      diff_num = 0 if diff_num < 0
+      diff_num = 30 if diff_num > 30
+      diff_num
     end
 
     def challenge_ratings
@@ -387,90 +446,9 @@ class CrCalc
       }
     end
 
-    def armor_class_cr(armor_class)
-      case armor_class
-      when 0..12
-        0.0
-      when 13
-        0.125
-      when 14
-        4.0
-      when 15
-        5.0
-      when 16
-        8.0
-      when 17
-        10.0
-      when 18
-        13.0
-      else
-        17.0
-      end
-    end
-
     def caster_level_for_cr(cr_float)
       challenge = cr_float.to_i
       [((challenge - 1) * 25) / 20, 20].min
-    end
-
-    def cr_for_attack_bonus(attack_bonus)
-      (attack_bonus - 2) * 2
-    end
-
-    def cr_for_damage(damage, num_attacks = 1)
-      damage = damage.to_i
-      cr_result = 0
-      challenge_ratings.each do |c_rating, info|
-        min = info[:damage_min]
-        max = info[:damage_max]
-        cr_result = cr_string_to_num(c_rating.to_s) + num_attacks if (min..max).include? damage
-      end
-      cr_result
-    end
-
-    def cr_for_npc(monster, attack_bonus, use_simple_actions = false, archetype = 'fighter')
-
-      def_cr = defensive_cr(monster)
-      off_cr = use_simple_actions ? simple_offensive_cr(monster, archetype) : offensive_cr(monster, attack_bonus)
-      # puts "#{npc.name} challenge rating calculation - proficiency CR: #{prof_cr} defense CR: #{def_cr} offense CR: #{off_cr}"
-      cr_total = [def_cr, off_cr].inject(0, &:+)
-      cr = (cr_total.to_f / 2.0)
-      # puts "#{npc.name} CR value: #{cr}"
-      case cr
-      when 0...0.25
-        '1/8'
-      when 0.25...0.5
-        '1/4'
-      when 0.5...1.1
-        '1/2'
-      else
-        cr.round.to_s
-      end
-    end
-
-    def cr_for_save_dc(save_dc)
-      case save_dc
-      when 0..10
-        0
-      when 11..13
-        0.125
-      when 14
-        4.0
-      when 15
-        5.0
-      when 16
-        8.0
-      when 17
-        11.0
-      when 18
-        14.0
-      when 19
-        19.0
-      when 20
-        26.0
-      else
-        30.0
-      end
     end
 
     def cr_string_to_num(challenge_rating)
@@ -496,53 +474,6 @@ class CrCalc
         '1/2'
       else
         "#{challenge_rating}"
-      end
-    end
-
-    def defensive_cr(monster)
-      def_cr_total = [hit_points_cr(monster[:hit_points]), armor_class_cr(monster[:armor_class].to_i)].inject(0, &:+)
-      def_cr = (def_cr_total.to_f / 2.0)
-      def_cr += monster[:conditions].count * 0.25 unless monster[:conditions].nil?
-      def_cr += monster[:damage_immunities].count * 0.25 unless monster[:damage_immunities].nil?
-      def_cr += monster[:damage_resistances].count * 0.125 unless monster[:damage_resistances].nil?
-      def_cr -= monster[:damage_vulnerabilities].count * 0.25 unless monster[:damage_vulnerabilities].nil?
-      def_cr
-    end
-
-    def calculate_spell_cr(spellcasting_desc)
-      spellcasting_level = spellcasting_desc[/is a (.*?)(st|nd|rd|th) level spellcaster/m, 1].to_i
-      spell_slots = DndRules.npc_spell_slots(spellcasting_level)
-      spell_cr = 2
-      spell_slots.each_with_index do |slot, index|
-        if slot > 0
-          spell_cr = (index + 1) * 2
-        end
-      end
-      spell_cr
-    end
-
-    def proficiency_cr(prof_bonus)
-      case prof_bonus
-      when 0
-        0.0
-      when 1
-        0.125
-      when 2
-        0.25
-      when 3
-        5.0
-      when 4
-        9.0
-      when 5
-        13.0
-      when 6
-        17.0
-      when 7
-        21.0
-      when 8
-        25.0
-      else
-        30.0
       end
     end
 
@@ -582,118 +513,6 @@ class CrCalc
         '23' => 50_000, '24' => 62_000, '25' => 75_000, '26' => 90_000, '27' => 105_000, '28' => 120_000,
         '29' => 135_000, '30' => 155_000
       }[challenge_rating.to_s]
-    end
-
-    def offensive_cr(monster, attack_bonus)
-      damages = []
-      cr_for_spells = 0
-      ability_cr = 1
-      monster[:actions].each do |action_obj|
-        action = action_obj[:data]
-        if action[:damage]
-          damage_obj = action[:damage]
-          num_dice = damage_obj[:num_dice].to_i
-          damage_die = damage_obj[:dice_value].to_i
-          damage = (((damage_die / 2) + 1) * num_dice) + attack_bonus
-          damages << damage * action[:num_attacks].to_i
-        elsif action[:spell_casting]
-          puts action[:spell_casting][:slots]
-          cr_for_spells = (action[:spell_casting][:level].to_i / 2).to_i
-          cr_for_spells += 1 unless action[:spell_casting][:slots][:third].to_i == 0
-          cr_for_spells += 1 unless action[:spell_casting][:slots][:fourth].to_i == 0
-          cr_for_spells += 2 unless action[:spell_casting][:slots][:fifth].to_i == 0
-          cr_for_spells += 2 unless action[:spell_casting][:slots][:sixth].to_i == 0
-          cr_for_spells += 3 unless action[:spell_casting][:slots][:seventh].to_i == 0
-          cr_for_spells += 3 unless action[:spell_casting][:slots][:eighth].to_i == 0
-          cr_for_spells += 5 unless action[:spell_casting][:slots][:ninth].to_i == 0
-        else
-          ability_cr += 1
-        end
-      end
-
-      damage_per_round = damages.inject(0, :+)
-      damage_cr = cr_for_damage(damage_per_round)
-      attack_bonus_cr = cr_for_attack_bonus(attack_bonus)
-      spell_save_cr = cr_for_save_dc(monster[:save_dc].to_i)
-      if cr_for_spells > 0
-        offensive_cr_total = [damage_cr, attack_bonus_cr, spell_save_cr, cr_for_spells, ability_cr].inject(0, &:+)
-        (offensive_cr_total.to_f / 5.0)
-      else
-        offensive_cr_total = [damage_cr, attack_bonus_cr, spell_save_cr, ability_cr].inject(0, &:+)
-        (offensive_cr_total.to_f / 4.0)
-      end
-    end
-
-    def simple_offensive_cr(monster, archetype)
-      damages = []
-      cr_for_spells = 0
-      ability_cr = 1
-      num_attacks = 1
-      num_attack_types = 0
-      monster[:actions].each do |action_obj|
-        damage_dice = action_obj[:desc][/([1-9]\d*)?d([1-9]\d*)/m]
-        npc_dam_bonus = DndRules.ability_score_modifier(monster[:strength])
-        _, base_damage = NpcGenerator.action_damage(damage_dice, npc_dam_bonus, action_obj[:desc])
-        if action_obj[:name].downcase == 'multiattack'
-          num_attacks_array = action_obj[:desc].scan(/\d+/).map(&:to_i)
-          num_attacks = num_attacks_array.sum
-        elsif base_damage > 0
-          num_attack_types += 1
-          damages << base_damage
-        else
-          ability_cr += 1
-        end
-      end
-      monster[:special_abilities].each do |ability|
-        if ability[:name].downcase == 'spellcasting'
-          cr_for_spells = calculate_spell_cr(ability[:desc])
-        else
-          ability_cr += 1
-        end
-      end
-
-      damage_per_round = damages.sum.to_f * num_attacks / num_attack_types
-      damage_cr = damage_per_round ? cr_for_damage(damage_per_round, num_attacks) : 0
-      attack_bonus_cr = cr_for_attack_bonus(monster[:attack_bonus])
-      spell_save_cr = archetype == 'spellcaster' ? cr_for_save_dc(monster[:save_dc].to_i) : 0
-      if archetype == 'spellcaster'
-        offensive_cr_total = [spell_save_cr, cr_for_spells, ability_cr].inject(0, &:+)
-        (offensive_cr_total.to_f / 3.0)
-      else
-        offensive_cr_total = [damage_cr, attack_bonus_cr, ability_cr].inject(0, &:+)
-        (offensive_cr_total.to_f / 3.0)
-      end
-    end
-
-    def hit_points_cr(hit_points)
-      case hit_points
-      when 0..6
-        0.0
-      when 7..35
-        0.125
-      when 36..49
-        0.25
-      when 50..70
-        0.5
-      else
-        base_hp = hit_points - 70
-        base_hp.to_f / 14
-      end
-    end
-
-    def parse_action_desc(action)
-      # desc = "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 3 (1d6 - 1) piercing damage. Or Ranged Weapon Attack: +5 to hit, range 30/120 ft., one target. Hit: 3 (1d6 - 1) piercing damage."
-      # name = "Javelin"
-      #
-      # desc = "The New Monster makes 3 morningstar attacks."
-      # name = "Multiattack"
-
-      damage_str = action[:desc][/Hit: (.*?) /m, 1]
-      if damage_str.nil? || damage_str.empty?
-        5
-      else
-        damage_str.to_i
-      end
     end
   end
 end

@@ -158,8 +158,6 @@ export const createMonsterParams = (monster: MonsterProps) => {
       })
       .filter((action) => action !== null) || [];
 
-  console.log(specialAbilitiesAttributes);
-  console.log(monsterActionsAttributes);
   const monsterParams = {
     monsterProficienciesAttributes: monsterProficiencies,
     sensesAttributes: senses,
@@ -217,10 +215,10 @@ export const get2eMonsterObject = (values) => {
 export const calculateCR = async (
   allValues: MonsterGeneratorFormFields
 ): Promise<MonsterCRCalcResult> => {
-  return await axios.post<{ params: { monster: any } }, MonsterCRCalcResult>('/v1/calculate_cr', {
-    params: {
-      monster: snakecaseKeys(getMonsterObject(allValues)),
-    },
+  const monster = getMonsterObject(allValues);
+  const monsterData = createMonsterParams(monster);
+  return await axios.post<{ monster: any }, MonsterCRCalcResult>('/v1/calculate_cr', {
+    monster: monsterData,
   });
 };
 

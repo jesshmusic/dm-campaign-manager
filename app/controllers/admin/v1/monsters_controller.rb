@@ -120,7 +120,8 @@ module Admin::V1
     end
 
     def calculate_cr
-      render json: { challenge: CrCalc.calculate_cr(params) }
+      @monster = Monster.new(monster_params)
+      render json: { challenge: CrCalc.calculate_challenge(@monster) }
     end
 
     def generate_commoner
