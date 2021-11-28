@@ -87,6 +87,11 @@ class WeaponItem < Item
                  'Light hammer': 10, 'Warhammer': 20]
   end
 
+  def self.rogue_weapons
+    WeightedList['Shortsword': 75, 'Whip': 1, 'Quarterstaff': 3, 'Handaxe': 10, 'Scimitar': 15, 'Club': 8,
+                 'Longsword': 30, 'Rapier': 15, 'Dagger': 100]
+  end
+
   def self.caster_weapons
     WeightedList['Shortsword': 5, 'Mace': 10, 'Sickle': 5, 'Spear': 5, 'Quarterstaff': 35, 'Scimitar': 5,
                  'Longsword': 8, 'Rapier': 12, 'Dagger': 25, 'Morningstar': 2,

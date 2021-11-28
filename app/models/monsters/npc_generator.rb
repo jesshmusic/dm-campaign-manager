@@ -1,13 +1,67 @@
 # frozen_string_literal: true
 
+ALL_ACTIONS = ['Tentacle', 'Tail', 'Enslave', 'Club', 'Bite', 'Claw', 'Frightful Presence', 'Acid Breath',
+               'Lightning Breath', 'Breath Weapons', 'Poison Breath', 'Fire Breath', 'Lair Actions', 'Cold Breath',
+               'Slam', 'Whirlwind', 'Change Shape', 'Roar', 'Acid Spray (Recharge 6)', 'Fist', 'Rock', 'Dagger',
+               'Shortsword', 'Light Crossbow', 'Rake', 'Beak', 'Warhammer', 'Longsword', 'Whip', 'Teleport',
+               'Variant: Summon Demon', 'Scimitar', 'Hurl Flame', 'Beard', 'Glaive', 'Constrict', 'Swallow',
+               'Greataxe', 'Claws', 'Pseudopod', 'Tusk', 'Sting', 'Morningstar', 'Javelin', 'Deadly Leap', 'Pike',
+               'Hooves', 'Longbow', 'Chain', 'Animate Chains', 'Horns', 'Pincer', 'Tentacles', 'Haste', 'Moan',
+               'Phantasms', 'War Pick', 'Crush', 'Darkness Aura', 'Poisoned Dart', 'Mace', 'Healing Touch',
+               'Create Whirlwind', 'Read Thoughts', 'Steam Breath', 'Fetid Cloud', 'Hand Crossbow', 'Quarterstaff',
+               'Fey Charm', 'Enlarge', 'Invisibility', 'Blinding Breath (Recharge 6)', 'Talons', 'Gore', 'Stomp', 'Ram',
+               'Web', 'Battleaxe', 'Touch', 'Greatsword', 'Engulf', 'Withering Touch', 'Etherealness', 'Horrifying Visage',
+               'Possession (Recharge 6)', 'Ink Cloud', 'Bites', 'Blinding Spittle', 'Spear', 'Shield Bash',
+               'Heavy Crossbow', 'Shortbow', 'Petrifying Breath', 'Illusory Appearance', 'Invisible Passage',
+               'Spiked Bone Club', 'Spit Poison', 'Luring Song', 'Greatclub', 'Fork', 'Wall of Ice',
+               'Tail Spike', 'Sword', 'Leadership', 'Sling', 'Fling', 'Lightning Storm', 'Intoxicating Touch',
+               'Paralyzing Touch', 'Heavy Club', 'Spiked Shield', 'Fire Breath (Recharge 6)', 'Snake Hair', 'Harpoon',
+               'Rotting Fist', 'Dreadful Glare', 'Death Glare', 'Horror Nimbus', 'Nightmare Haunting', 'Ethereal Stride',
+               'Rapier', 'Tentacle Slam', 'Tail Stinger', 'Scare', 'Tendril', 'Reel', 'Smother', 'Antennae',
+               'Strength Drain', 'Shriek', 'Slaying Longbow', 'Flying Sword', 'Life Drain', 'Heart Sight',
+               'Steam Breath (Recharge 6)', 'Blood Drain', 'Slow', 'Lightning Strike', 'Charm', 'Draining Kiss',
+               'Beaks', 'Animate Trees', 'Horn', 'Rotting Touch', 'Spores (Recharge 6)', 'Stunning Screech', 'Whelm',
+               'Tusks', 'Maul', 'Shock', 'Create Specter', 'Stinger']
+
+
+ROGUE_ATTACKS = ['Club', 'Fist', 'Dagger', 'Fist', 'Shortsword', 'Light Crossbow', 'Whip', 'Scimitar', 'Longbow', 'Haste', 'Poisoned Dart',
+                 'Hand Crossbow', 'Quarterstaff', 'Shortbow', 'Sling', 'Rapier']
+
+FIGHTER_ATTACKS = ['Club', 'Slam', 'Fist', 'Rock', 'Dagger', 'Shortsword', 'Light Crossbow', 'Warhammer',
+                   'Longsword', 'Scimitar', 'Glaive', 'Greataxe', 'Morningstar',
+                   'Javelin', 'Pike', 'Longbow', 'Haste', 'War Pick', 'Mace', 'Quarterstaff', 'Battleaxe', 'Greatsword', 'Spear',
+                   'Shield Bash', 'Heavy Crossbow', 'Shortbow', 'Greatclub', 'Leadership', 'Fling', 'Heavy Club', 'Rapier', 'Slaying Longbow', 'Flying Sword',
+                   'Slow']
+
+BEAST_ATTACKS = ['Tentacle', 'Tail', 'Enslave', 'Bite', 'Claw', 'Frightful Presence', 'Acid Breath',
+                 'Lightning Breath', 'Breath Weapons', 'Poison Breath', 'Fire Breath', 'Lair Actions',
+                 'Cold Breath', 'Slam', 'Whirlwind', 'Change Shape', 'Roar', 'Acid Spray (Recharge 6)',
+                 'Fist', 'Rock', 'Rake', 'Beak', 'Hurl Flame', 'Constrict', 'Swallow', 'Pseudopod', 'Tusk', 'Sting',
+                 'Deadly Leap', 'Hooves', 'Horns', 'Pincer', 'Tentacles', 'Haste', 'Moan', 'Phantasms', 'Crush',
+                 'Create Whirlwind', 'Steam Breath', 'Fetid Cloud', 'Fey Charm', 'Enlarge', 'Invisibility', 'Blinding Breath (Recharge 6)',
+                 'Talons', 'Gore', 'Stomp', 'Ram', 'Web', 'Touch', 'Engulf', 'Withering Touch', 'Etherealness',
+                 'Horrifying Visage', 'Possession (Recharge 6)', 'Ink Cloud', 'Bites', 'Blinding Spittle', 'Petrifying Breath',
+                 'Illusory Appearance', 'Invisible Passage', 'Spit Poison', 'Luring Song', 'Frost Breath (Recharge 6)',
+                 'Tail Spike', 'Fling', 'Lightning Storm', 'Intoxicating Touch', 'Paralyzing Touch', 'Fire Breath (Recharge 6)', 'Snake Hair', 'Rotting Fist',
+                 'Dreadful Glare', 'Death Glare', 'Horror Nimbus', 'Ethereal Stride', 'Tentacle Slam', 'Tail Stinger', 'Scare', 'Tendril',
+                 'Smother', 'Antennae', 'Strength Drain', 'Shriek', 'Life Drain', 'Heart Sight', 'Steam Breath (Recharge 6)',
+                 'Blood Drain', 'Slow', 'Lightning Strike', 'Beaks', 'Horn', 'Rotting Touch', 'Spores (Recharge 6)', 'Stunning Screech',
+                 'Whelm', 'Tusks', 'Maul', 'Shock', 'Stinger']
+
+SPELLCASTER_ATTACKS = ['Enslave', 'Change Shape', 'Dagger', 'Teleport', 'Hurl Flame', 'Haste', 'Darkness Aura',
+                       'Mace', 'Healing Touch', 'Create Whirlwind', 'Read Thoughts', 'Enlarge', 'Invisibility',
+                       'Etherealness', 'Illusory Appearance', 'Invisible Passage', 'Wall of Ice', 'Lightning Storm', 'Ethereal Stride',
+                       'Life Drain', 'Heart Sight', 'Slow', 'Lightning Strike', 'Charm', 'Draining Kiss', 'Animate Trees']
+
 class NpcGenerator
   class << self
 
     def quick_monster(monster_params, user)
       @new_npc = Monster.new(monster_params.except(:number_of_attacks, :archetype))
+      @archetype = monster_params[:archetype]
       @new_npc.slug = @new_npc.name.parameterize
       calculate_hd
-      ability_score_order = get_ability_score_order(monster_params[:archetype])
+      ability_score_order = get_ability_score_order
       spellcasting_ability = ability_score_order[0]
       cr_info = CrCalc.challenge_ratings[monster_params[:challenge_rating].to_sym]
       @new_npc.attack_bonus = cr_info[:attack_bonus]
@@ -16,7 +70,6 @@ class NpcGenerator
       set_ability_scores(ability_score_order, 'Constitution')
       generate_actions(
         (cr_info[:damage_max] - cr_info[:damage_min]) / 2 + cr_info[:damage_min],
-        monster_params[:archetype],
         monster_params[:number_of_attacks],
         CrCalc.cr_string_to_num(monster_params[:challenge_rating]),
         cr_info[:save_dc],
@@ -123,8 +176,8 @@ class NpcGenerator
       end
     end
 
-    def get_ability_score_order(archetype = 'fighter')
-      weighted_abilities = case archetype
+    def get_ability_score_order
+      weighted_abilities = case @archetype
                            when 'spellcaster'
                              WeightedList[{
                                             Strength: 5,
@@ -386,10 +439,10 @@ class NpcGenerator
 
     # Actions
 
-    def generate_actions(damage_per_round = 10, archetype, number_of_attacks, challenge_rating, save_dc, primary_ability)
+    def generate_actions(damage_per_round = 10, number_of_attacks, challenge_rating, save_dc, primary_ability)
       attacks = []
       attacks << create_actions(damage_per_round, number_of_attacks)
-      attacks << create_spellcasting(challenge_rating, save_dc, primary_ability) if archetype == 'spellcaster'
+      attacks << create_spellcasting(challenge_rating, save_dc, primary_ability) if @archetype == 'spellcaster'
     end
 
     def create_multiattack(num_attacks, attack_names)
@@ -440,21 +493,42 @@ class NpcGenerator
     def create_actions(damage_per_round, num_attacks, number_of_tries = 0)
       cr_int = CrCalc.cr_string_to_num(@new_npc.challenge_rating)
       max_num_actions = [num_attacks, 3].min
-      monster_attacks = Hash[MonsterAction.joins(:monster).where(monster: {monster_type: @new_npc.monster_type}).where.not(name: ['Multiattack']).map do |attack|
-        attack_count = MonsterAction.where(name: attack.name).count
-        monster_cr = [CrCalc.cr_string_to_num(attack.monster.challenge_rating), 0.125].max
-        weight = (1 / ([monster_cr - cr_int, 0.125].max).abs) * attack_count
-        npc_dam_bonus = DndRules.ability_score_modifier(@new_npc.strength)
-        damage_dice = attack.desc[/([1-9]\d*)?d([1-9]\d*)/m]
-        _, base_damage = action_damage(damage_dice, npc_dam_bonus, attack.desc)
-        attack_info = {name: attack.name, desc: attack.desc, monster: attack.monster.name, damage: base_damage + npc_dam_bonus}
-        [attack_info, weight]
-      end].uniq do |action|
+      monster_attacks = Hash[
+        MonsterAction.where.not(name: ['Multiattack']).map do |attack|
+          attack_count = MonsterAction.where(name: attack.name).count
+          monster_cr = [CrCalc.cr_string_to_num(attack.monster.challenge_rating), 0.125].max
+          cr_diff = [(monster_cr - cr_int).abs, 1].max
+          weight = (1 / cr_diff) * attack_count
+          attack_options = case @archetype
+                           when 'beast'
+                             BEAST_ATTACKS
+                           when 'rogue'
+                             ROGUE_ATTACKS
+                           when 'spellcaster'
+                             SPELLCASTER_ATTACKS
+                           when 'fighter'
+                             FIGHTER_ATTACKS
+                           else
+                             ALL_ACTIONS
+                           end
+          if attack_options.include?(attack.name)
+            weight *= 2
+          else
+            weight = 0
+          end
+          npc_dam_bonus = DndRules.ability_score_modifier(@new_npc.strength)
+          damage_dice = attack.desc[/([1-9]\d*)?d([1-9]\d*)/m]
+          _, base_damage = action_damage(damage_dice, npc_dam_bonus, attack.desc)
+          attack_info = {name: attack.name, desc: attack.desc, monster: attack.monster.name, damage: base_damage + npc_dam_bonus}
+          [attack_info, weight]
+        end
+      ].uniq do |action|
         action.first[:name]
       end
       actions = WeightedList[monster_attacks]
 
-      attacks = actions.sample(rand(1..max_num_actions))
+      num_actions = rand(1..max_num_actions)
+      attacks = actions.sample(num_actions)
       damages = []
       attack_names = attacks.map do |attack|
         damages << attack[:damage]

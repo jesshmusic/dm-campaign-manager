@@ -81,6 +81,7 @@ export const useData = (props: GenerateMonsterProps) => {
   const challengeRatingOptions = getChallengeRatingOptions();
 
   const archetypeOptions = [
+    { label: 'Any', value: 'any' },
     { label: 'Beast', value: 'beast' },
     { label: 'Fighter', value: 'fighter' },
     { label: 'Rogue', value: 'rogue' },
