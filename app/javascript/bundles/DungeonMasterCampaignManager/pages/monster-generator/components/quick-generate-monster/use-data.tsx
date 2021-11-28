@@ -43,6 +43,7 @@ export const useData = (props: GenerateMonsterProps) => {
     },
     xp: 10,
   });
+  const [monsterType, setMonsterType] = React.useState('humanoid');
 
   const UseForm = useForm<MonsterQuickGeneratorFormFields>({
     defaultValues: monsterForm,
@@ -134,10 +135,11 @@ export const useData = (props: GenerateMonsterProps) => {
         setFieldsForChallenge(fields);
         break;
       case 'monsterTypeOption':
-        UseForm.setValue('monsterType', fields.monsterTypeOption.label, {
+        UseForm.setValue('monsterType', fields.monsterTypeOption.value as string, {
           shouldDirty: true,
           shouldTouch: true,
         });
+        setMonsterType(fields.monsterTypeOption.value as string);
         break;
       case 'size':
         const hitDice = hitDieForSize(fields.size.value);
@@ -155,6 +157,7 @@ export const useData = (props: GenerateMonsterProps) => {
     challengeRatingOptions,
     handleGenerateName,
     handleGenerateMonsterName,
+    monsterType,
     onSubmit,
     updateForm,
     UseForm,

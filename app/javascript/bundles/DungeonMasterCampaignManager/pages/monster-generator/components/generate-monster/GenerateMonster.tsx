@@ -14,15 +14,18 @@ import ResistancesSection from './sections/ResistancesSection';
 import SensesForm from './sections/senses/SensesForm';
 import SpeedsForm from './sections/speeds/SpeedsForm';
 import SavesSkillsSection from '../SavesSkillsSection';
+import { GiLinkedRings } from 'react-icons/all';
 
 const styles = require('../generator.module.scss');
 
 export type GenerateMonsterProps = {
+  isLoading?: boolean;
   onGenerateMonster: (monsterParams: any, token?: string) => void;
   token?: string;
 };
 
 const GenerateMonster = (props: GenerateMonsterProps) => {
+  const { isLoading } = props;
   const {
     handleCalculateCR,
     handleGenerateName,
@@ -135,9 +138,16 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
           <GenMonsterSection heading="Submit">
             <Button
               color={Colors.success}
-              title="Generate Monster"
+              disabled={isLoading}
+              title={isLoading ? 'Generating...' : 'Generate Monster'}
               type="submit"
-              icon={<GiDiceTwentyFacesTwenty size={40} />}
+              icon={
+                isLoading ? (
+                  <GiLinkedRings size={40} className="spinner" />
+                ) : (
+                  <GiDiceTwentyFacesTwenty size={40} />
+                )
+              }
               isFullWidth
             />
           </GenMonsterSection>

@@ -7,20 +7,24 @@ import Button from '../../../../components/Button/Button';
 import { useData } from './use-data';
 import GenMonsterSection from '../generate-monster/sections/GenMonsterSection';
 import QuickMonsterStatsSection from './QuickMonsterStatsSection';
+import { GiLinkedRings } from 'react-icons/all';
 
 const styles = require('../generator.module.scss');
 
 export type GenerateMonsterProps = {
+  isLoading?: boolean;
   onGenerateMonster: (monsterParams: any, token?: string) => void;
   token?: string;
 };
 
 const QuickGenerateMonster = (props: GenerateMonsterProps) => {
+  const { isLoading } = props;
   const {
     archetypeOptions,
     challengeRatingOptions,
     handleGenerateName,
     handleGenerateMonsterName,
+    monsterType,
     onSubmit,
     updateForm,
     UseForm,
@@ -62,7 +66,7 @@ const QuickGenerateMonster = (props: GenerateMonsterProps) => {
             handleGenerateName={handleGenerateName}
             handleGenerateMonsterName={handleGenerateMonsterName}
             register={UseForm.register}
-            monsterType={UseForm.getValues('monsterType')}
+            monsterType={monsterType}
             errors={UseForm.formState.errors}
           />
 
@@ -77,9 +81,16 @@ const QuickGenerateMonster = (props: GenerateMonsterProps) => {
           <GenMonsterSection heading="Submit">
             <Button
               color={Colors.success}
-              title="Generate Monster"
+              disabled={isLoading}
+              title={isLoading ? 'Generating...' : 'Generate Monster'}
               type="submit"
-              icon={<GiDiceTwentyFacesTwenty size={40} />}
+              icon={
+                isLoading ? (
+                  <GiLinkedRings size={40} className="spinner" />
+                ) : (
+                  <GiDiceTwentyFacesTwenty size={40} />
+                )
+              }
               isFullWidth
             />
           </GenMonsterSection>

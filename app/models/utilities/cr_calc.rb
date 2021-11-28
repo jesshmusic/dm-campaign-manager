@@ -4,7 +4,7 @@ class CrCalc
     def calculate_challenge(monster)
       def_cr = get_defensive_cr(monster)
       off_cr = get_offensive_cr(monster)
-      raw_cr = (def_cr + off_cr) / 2
+      raw_cr = [((def_cr + off_cr) / 2).ceil, 30].min
       final_cr = cr_num_to_string(raw_cr)
       cr_data = challenge_ratings[final_cr.to_sym].as_json
       { name: final_cr, raw_cr: raw_cr, data: cr_data }
@@ -52,6 +52,20 @@ class CrCalc
           adjuster = cr_info[:save_dc] if monster.is_caster
           attack_diff = adjuster - monster.attack_bonus
           off_cr = calculate_cr_diff(attack_diff, index)
+        end
+      end
+      monster.special_abilities.each do |special_ability|
+        if special_ability.name == 'Spellcasting'
+          action_desc = special_ability.desc
+          scanned_casting = action_desc.scan(/([1-9]\d*)(?:th)/m)
+          if scanned_casting && scanned_casting.count > 1
+            max_spell_level = scanned_casting.last.first.to_i
+            off_cr += max_spell_level * 2
+          else
+            off_cr += 3
+          end
+        else
+          off_cr += 1
         end
       end
       off_cr = 0 if off_cr < 0
@@ -447,8 +461,7 @@ class CrCalc
     end
 
     def caster_level_for_cr(cr_float)
-      challenge = cr_float.to_i
-      [((challenge - 1) * 25) / 20, 20].min
+      [[cr_float.to_i, 1].max, 30].min
     end
 
     def cr_string_to_num(challenge_rating)

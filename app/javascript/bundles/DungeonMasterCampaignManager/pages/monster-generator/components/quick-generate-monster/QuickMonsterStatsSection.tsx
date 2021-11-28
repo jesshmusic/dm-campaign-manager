@@ -60,13 +60,6 @@ const QuickMonsterStatsSection = (props: {
           control={UseForm.control}
           options={archetypeOptions}
         />
-        <FormField
-          label="Spellcaster"
-          type="checkbox"
-          errors={UseForm.formState.errors}
-          register={UseForm.register}
-          name="isCaster"
-        />
       </div>
       <div className={styles.fiveCol}>
         <FormField

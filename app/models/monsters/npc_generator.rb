@@ -55,9 +55,21 @@ SPELLCASTER_ATTACKS = ['Enslave', 'Change Shape', 'Dagger', 'Teleport', 'Hurl Fl
 
 class NpcGenerator
   class << self
+    def fetch_records
+      @start = Time.now
+      @weighted_resistances = WeightedList[Monster.all.group(:damage_resistances).count(:damage_resistances)]
+      @weighted_immunities = WeightedList[Monster.all.group(:damage_immunities).count(:damage_immunities)]
+      @weighted_vulnerabilities = WeightedList[Monster.all.group(:damage_vulnerabilities).count(:damage_vulnerabilities)]
+      @weighted_conditions = WeightedList[Monster.all.group(:condition_immunities).count(:condition_immunities)]
+      @monster_actions = MonsterAction.where.not(name: ['Multiattack'])
+      @special_abilities = SpecialAbility.joins(:monster).where(monster: {monster_type: @new_npc.monster_type}).where.not(name: ['Spellcasting'])
+      finish =  (Time.now - @start)
+      puts finish
+    end
 
     def quick_monster(monster_params, user)
       @new_npc = Monster.new(monster_params.except(:number_of_attacks, :archetype))
+      fetch_records
       @archetype = monster_params[:archetype]
       @new_npc.slug = @new_npc.name.parameterize
       calculate_hd
@@ -81,6 +93,8 @@ class NpcGenerator
       @new_npc.slug = @new_npc.name.parameterize if user.nil?
       adjust_challenge_rating
       maybe_save_npc(user)
+      finish =  (Time.now - @start)
+      puts finish
       @new_npc
     end
 
@@ -159,17 +173,20 @@ class NpcGenerator
       if calculated_cr[:name] != @new_npc.challenge_rating =
         expected_cr = CrCalc.cr_string_to_num(@new_npc.challenge_rating)
         current_cr = calculated_cr[:raw_cr]
+        num_tries = 0
         if expected_cr > current_cr
-          while expected_cr > current_cr
+          while expected_cr > current_cr && num_tries < 5
             adjust_hd(true)
             new_calc_cr = CrCalc.calculate_challenge(@new_npc)
             current_cr = new_calc_cr[:raw_cr]
+            num_tries += 1
           end
         elsif expected_cr < current_cr
-          while expected_cr < current_cr
+          while expected_cr < current_cr && num_tries < 5
             adjust_hd(false)
             new_calc_cr = CrCalc.calculate_challenge(@new_npc)
             current_cr = new_calc_cr[:raw_cr]
+            num_tries += 1
           end
         end
         @new_npc.challenge_rating = CrCalc.cr_num_to_string(current_cr)
@@ -494,8 +511,8 @@ class NpcGenerator
       cr_int = CrCalc.cr_string_to_num(@new_npc.challenge_rating)
       max_num_actions = [num_attacks, 3].min
       monster_attacks = Hash[
-        MonsterAction.where.not(name: ['Multiattack']).map do |attack|
-          attack_count = MonsterAction.where(name: attack.name).count
+        @monster_actions.map do |attack|
+          attack_count = @monster_actions.where(name: attack.name).count
           monster_cr = [CrCalc.cr_string_to_num(attack.monster.challenge_rating), 0.125].max
           cr_diff = [(monster_cr - cr_int).abs, 1].max
           weight = (1 / cr_diff) * attack_count
@@ -511,14 +528,17 @@ class NpcGenerator
                            else
                              ALL_ACTIONS
                            end
-          if attack_options.include?(attack.name)
+          npc_dam_bonus = DndRules.ability_score_modifier(@new_npc.strength)
+          damage_dice = attack.desc[/([1-9]\d*)?d([1-9]\d*)/m]
+          is_weapon = attack.desc[/Attack:\s.*to hit/]
+          _, base_damage = action_damage(damage_dice, npc_dam_bonus, attack.desc)
+          if attack_options.include?(attack.name) && is_weapon
+            weight *= 4
+          elsif attack_options.include?(attack.name)
             weight *= 2
           else
             weight = 0
           end
-          npc_dam_bonus = DndRules.ability_score_modifier(@new_npc.strength)
-          damage_dice = attack.desc[/([1-9]\d*)?d([1-9]\d*)/m]
-          _, base_damage = action_damage(damage_dice, npc_dam_bonus, attack.desc)
           attack_info = {name: attack.name, desc: attack.desc, monster: attack.monster.name, damage: base_damage + npc_dam_bonus}
           [attack_info, weight]
         end
@@ -617,9 +637,9 @@ class NpcGenerator
       spells.each do |spell_list|
         if spell_list[:spells].count > 0
           if spell_list[:name] == 'Cantrips'
-            spell_str += "Cantrips (at will): #{spell_list[:spells].join(', ')}  \n"
+            spell_str += "Cantrips (at will): #{spell_list[:spells].join(', ')}\n"
           else
-            spell_str += "#{spell_list[:name]} (#{spell_list[:slots]} #{'slot'.pluralize(spell_list[:slots])}): #{spell_list[:spells].join(', ')}  \n"
+            spell_str += "#{spell_list[:name]} (#{spell_list[:slots]} #{'slot'.pluralize(spell_list[:slots])}): #{spell_list[:spells].join(', ')}\n"
           end
         end
       end
@@ -628,7 +648,7 @@ class NpcGenerator
 
     def generate_special_abilities
       cr_int = CrCalc.cr_string_to_num(@new_npc.challenge_rating)
-      monster_attacks = Hash[SpecialAbility.joins(:monster).where(monster: {monster_type: @new_npc.monster_type}).where.not(name: ['Spellcasting']).map do |action|
+      monster_attacks = Hash[@special_abilities.map do |action|
         monster_cr = [CrCalc.cr_string_to_num(action.monster.challenge_rating), 0.125].max
         weight = (1 / ([monster_cr - cr_int, 0.125].max).abs) * 100
         action_desc = action.desc.gsub(action.monster.name.downcase, @new_npc.name.downcase)
@@ -655,14 +675,10 @@ class NpcGenerator
 
     # Resistances
     def generate_resistances
-      weighted_resistances = WeightedList[Monster.all.group(:damage_resistances).count(:damage_resistances)]
-      weighted_immunities = WeightedList[Monster.all.group(:damage_immunities).count(:damage_immunities)]
-      weighted_vulnerabilities = WeightedList[Monster.all.group(:damage_vulnerabilities).count(:damage_vulnerabilities)]
-      weighted_conditions = WeightedList[Monster.all.group(:condition_immunities).count(:condition_immunities)]
-      @new_npc.damage_resistances = weighted_resistances.sample
-      @new_npc.damage_immunities = weighted_immunities.sample
-      @new_npc.damage_vulnerabilities = weighted_vulnerabilities.sample
-      @new_npc.condition_immunities = weighted_conditions.sample
+      @new_npc.damage_resistances = @weighted_resistances.sample
+      @new_npc.damage_immunities = @weighted_immunities.sample
+      @new_npc.damage_vulnerabilities = @weighted_vulnerabilities.sample
+      @new_npc.condition_immunities = @weighted_conditions.sample
     end
   end
 end

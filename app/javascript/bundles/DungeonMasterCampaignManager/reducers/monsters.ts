@@ -4,6 +4,7 @@ import { AnyAction } from 'redux';
 const generateMonsterSuccess = createAction('@@redux-api@generateMonster_success');
 const generateMonsterFail = createAction('@@redux-api@generateMonster_fail');
 
+const generateQuickMonster = createAction('@@redux-api@generateQuickMonster');
 const generateQuickMonsterSuccess = createAction('@@redux-api@generateQuickMonster_success');
 const generateQuickMonsterFail = createAction('@@redux-api@generateQuickMonster_fail');
 const generateCommonerSuccess = createAction('@@redux-api@generateCommoner_success');
@@ -44,6 +45,15 @@ const monsters = createReducer(
           count: state.count,
           currentMonster: null,
           loading: false,
+        };
+      })
+      .addCase(generateQuickMonster, (state, action: AnyAction) => {
+        return {
+          monsters: state.monsters,
+          monsterTypes: state.monsterTypes,
+          count: state.count,
+          currentMonster: null,
+          loading: true,
         };
       })
       .addCase(generateQuickMonsterSuccess, (state, action: AnyAction) => {

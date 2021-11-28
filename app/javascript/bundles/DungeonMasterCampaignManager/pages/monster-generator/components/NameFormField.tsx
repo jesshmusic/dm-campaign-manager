@@ -16,13 +16,7 @@ type NameFormFieldProps = {
 };
 
 const NameFormField = (props: NameFormFieldProps) => {
-  const {
-    handleGenerateName,
-    handleGenerateMonsterName,
-    register,
-    errors,
-    monsterType,
-  } = props;
+  const { handleGenerateName, handleGenerateMonsterName, register, errors, monsterType } = props;
   const characterRace = 'human';
 
   return (
@@ -46,7 +40,7 @@ const NameFormField = (props: NameFormFieldProps) => {
           title="Random Monster Name"
           onClick={handleGenerateMonsterName}
         />
-        {monsterType === 'humanoid' && (
+        {monsterType.toLowerCase() === 'humanoid' && (
           <>
             <Button
               color={Colors.primary}

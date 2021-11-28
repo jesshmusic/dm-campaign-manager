@@ -18,9 +18,11 @@ const MonsterGenerator = (props: {
   generateCommoner: (gender?: string, race?: string, token?: string) => void;
   generateMonster: (monster: any, token?: string) => void;
   generateQuickMonster: (monster: any, token?: string) => void;
+  isLoading?: boolean;
   token?: string;
 }) => {
-  const { token, monster, generateCommoner, generateMonster, generateQuickMonster } = props;
+  const { token, isLoading, monster, generateCommoner, generateMonster, generateQuickMonster } =
+    props;
   const show2eConverter = false;
 
   return (
@@ -98,7 +100,11 @@ const MonsterGenerator = (props: {
               data-bs-parent="#monsterGeneratorAccordion"
             >
               <div className="accordion-body">
-                <QuickGenerateMonster onGenerateMonster={generateQuickMonster} token={token} />
+                <QuickGenerateMonster
+                  onGenerateMonster={generateQuickMonster}
+                  token={token}
+                  isLoading={isLoading}
+                />
               </div>
             </div>
           </div>
@@ -121,7 +127,11 @@ const MonsterGenerator = (props: {
               data-bs-parent="#monsterGeneratorAccordion"
             >
               <div className="accordion-body">
-                <GenerateMonster onGenerateMonster={generateMonster} token={token} />
+                <GenerateMonster
+                  onGenerateMonster={generateMonster}
+                  token={token}
+                  isLoading={isLoading}
+                />
               </div>
             </div>
           </div>
@@ -160,6 +170,7 @@ function mapStateToProps(state) {
   return {
     monster: state.monsters.currentMonster,
     currentUser: state.users.currentUser,
+    isLoading: state.monsters.loading,
     token: state.users.token,
   };
 }
