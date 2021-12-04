@@ -66,6 +66,7 @@ class NpcGenerator
       @sense_chance = Monster.all.count.to_f / Sense.all.count.to_f
       @weighted_speeds = WeightedList[Speed.joins(:monster).where(monster: {monster_type: @new_npc.monster_type}).group(:name, :value).count(:name)]
       @monster_actions = MonsterAction.where.not(name: ['Multiattack'])
+      @monster_type_actions = @monster_actions.joins(:monster).where(monster: {monster_type: @new_npc.monster_type})
       @special_abilities = SpecialAbility.joins(:monster).where(monster: {monster_type: @new_npc.monster_type}).where.not(name: ['Spellcasting'])
       @legendary_actions = LegendaryAction.joins(:monster).where(monster: {monster_type: @new_npc.monster_type})
       finish =  (Time.now - @start)
@@ -469,7 +470,11 @@ class NpcGenerator
 
     def generate_actions(damage_per_round = 10, number_of_attacks, challenge_rating, save_dc, primary_ability)
       attacks = []
-      attacks << create_actions(damage_per_round, number_of_attacks)
+      if @archetype == 'any'
+        attacks << create_monster_type_actions(number_of_attacks)
+      else
+        attacks << create_actions(damage_per_round, number_of_attacks)
+      end
       attacks << create_spellcasting(challenge_rating, save_dc, primary_ability) if @archetype == 'spellcaster'
     end
 
@@ -670,6 +675,18 @@ class NpcGenerator
       end
       attack_info = {name: action.name, desc: action_desc, monster: action.monster.name}
       [attack_info, weight]
+    end
+
+    def create_monster_type_actions(number_of_attacks)
+      monster_attacks = Hash[@monster_type_actions.map do |action|
+        parse_action_with_weight(action)
+      end].uniq do |action|
+        action.first[:name]
+      end
+      abilities = WeightedList[monster_attacks].sample(number_of_attacks)
+      abilities.each do |ability|
+        @new_npc.monster_actions << MonsterAction.new(name: ability[:name], desc: ability[:desc])
+      end
     end
 
     def generate_special_abilities

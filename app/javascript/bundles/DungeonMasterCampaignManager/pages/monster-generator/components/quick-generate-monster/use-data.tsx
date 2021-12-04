@@ -21,8 +21,8 @@ export const useData = (props: GenerateMonsterProps) => {
       label: 'Neutral',
     },
     archetypeOption: {
-      value: 'beast',
-      label: 'Beast',
+      value: 'any',
+      label: 'Any',
     },
     armorClass: 10,
     challengeRatingOption: { value: '0', label: '0' },
