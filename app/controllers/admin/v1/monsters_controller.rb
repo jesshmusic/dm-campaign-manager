@@ -115,7 +115,8 @@ module Admin::V1
     end
 
     def info_for_cr
-      cr_info = CrCalc.challenge_ratings[params[:challenge_rating].to_sym].as_json
+      cr_sym = params[:challenge_rating].to_sym
+      cr_info = CrCalc.challenge_ratings[cr_sym].as_json
       render json: { challenge: cr_info }
     end
 

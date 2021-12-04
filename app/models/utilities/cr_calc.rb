@@ -16,15 +16,9 @@ class CrCalc
       expected_cr = cr_string_to_num(monster.challenge_rating)
       hit_points = monster.hit_points
       hit_points *= 0.5 if monster.damage_vulnerabilities.count > 0
-      if monster.damage_resistances && monster.damage_resistances.count > 0
-        hit_points *= 2 if (0..4).include? expected_cr
-        hit_points *= 1.5 if (5..10).include? expected_cr
-        hit_points *= 1.25 if (11..16).include? expected_cr
-      end
-      if monster.damage_immunities && monster.damage_immunities.count > 0
-        hit_points *= 2 if (0..10).include? expected_cr
-        hit_points *= 1.5 if (11..16).include? expected_cr
-        hit_points *= 1.25 if expected_cr >= 17
+      if (monster.damage_resistances && monster.damage_resistances.count > 0) || (monster.damage_immunities && monster.damage_immunities.count > 0)
+        hit_points *= 1.25 if (0..4).include? expected_cr
+        hit_points *= 1.1 if (5..8).include? expected_cr
       end
 
       hit_points = hit_points.floor > 850 ? 850 : hit_points.floor
