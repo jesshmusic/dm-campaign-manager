@@ -57,6 +57,10 @@ class NpcGenerator
   class << self
     def fetch_records
       @start = Time.now
+      selected_monster_type = @new_npc.monster_type
+      monster_types = Monster.all.group(:monster_type).count(:monster_type)
+      monster_types[selected_monster_type] = 300
+      weighted_monster_types = WeightedList[monster_types].sample(3)
       @weighted_resistances = WeightedList[Monster.where(monster_type: @new_npc.monster_type).group(:damage_resistances).count(:damage_resistances)]
       @weighted_immunities = WeightedList[Monster.where(monster_type: @new_npc.monster_type).group(:damage_immunities).count(:damage_immunities)]
       @weighted_vulnerabilities = WeightedList[Monster.where(monster_type: @new_npc.monster_type).group(:damage_vulnerabilities).count(:damage_vulnerabilities)]
@@ -64,11 +68,11 @@ class NpcGenerator
       @weighted_languages = WeightedList[Monster.where(monster_type: @new_npc.monster_type).group(:languages).count(:languages)]
       @weighted_senses = WeightedList[Sense.joins(:monster).where(monster: {monster_type: @new_npc.monster_type}).group(:name, :value).count(:name)]
       @sense_chance = Monster.all.count.to_f / Sense.all.count.to_f
-      @weighted_speeds = WeightedList[Speed.joins(:monster).where(monster: {monster_type: @new_npc.monster_type}).group(:name, :value).count(:name)]
+      @weighted_speeds = WeightedList[Speed.joins(:monster).where(monster: {monster_type: weighted_monster_types}).group(:name, :value).count(:name)]
       @monster_actions = MonsterAction.where.not(name: ['Multiattack'])
-      @monster_type_actions = @monster_actions.joins(:monster).where(monster: {monster_type: @new_npc.monster_type})
-      @special_abilities = SpecialAbility.joins(:monster).where(monster: {monster_type: @new_npc.monster_type}).where.not(name: ['Spellcasting'])
-      @legendary_actions = LegendaryAction.joins(:monster).where(monster: {monster_type: @new_npc.monster_type})
+      @monster_type_actions = @monster_actions.joins(:monster).where(monster: {monster_type: weighted_monster_types})
+      @special_abilities = SpecialAbility.joins(:monster).where(monster: {monster_type: weighted_monster_types}).where.not(name: ['Spellcasting'])
+      @legendary_actions = LegendaryAction.joins(:monster).where(monster: {monster_type: weighted_monster_types})
       finish =  (Time.now - @start)
       puts finish
     end
@@ -666,7 +670,8 @@ class NpcGenerator
       cr_int = CrCalc.cr_string_to_num(@new_npc.challenge_rating)
       monster_cr = [CrCalc.cr_string_to_num(action.monster.challenge_rating), 0.125].max
       weight = (1 / ([monster_cr - cr_int, 0.125].max).abs) * 100
-      action_desc = action.desc.gsub(action.monster.name.downcase, @new_npc.name.downcase)
+      weight *= 5 if action.monster.monster_type == @new_npc.monster_type
+      action_desc = replace_monster_name(action.desc, action.monster.name)
       save_dcs = /(?:DC )([1-9]\d*)(?:\s)/m.match(action_desc)
       unless save_dcs.nil?
         save_dcs.captures.each do |save_str|
@@ -769,6 +774,16 @@ class NpcGenerator
       @new_npc.languages = @weighted_languages.sample
       generate_legendary_actions
       generate_senses
+    end
+
+    def replace_monster_name(action_desc, monster_name)
+      action_monster_name = monster_name.downcase
+      action_name_parts = monster_name.downcase.split(' ')
+      action_desc = action_desc.gsub(action_monster_name, @new_npc.name.downcase)
+      action_name_parts.each do |name_part|
+        action_desc = action_desc.gsub(name_part, @new_npc.name.downcase)
+      end
+      action_desc
     end
   end
 end
