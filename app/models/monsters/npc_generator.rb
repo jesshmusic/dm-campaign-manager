@@ -755,12 +755,29 @@ class NpcGenerator
 
     def generate_senses
       cr_int = CrCalc.cr_string_to_num(@new_npc.challenge_rating)
-      senses_chance = (cr_int / 30) * 2
+      senses_chance = (cr_int / 30) * 5
       num_senses = rand(1..(cr_int / 8).ceil)
       senses = @weighted_senses.sample(num_senses)
       if rand < senses_chance
+        sense_names = []
         senses.each do |sense|
-          @new_npc.senses << Sense.new(name: sense[0], value: sense[1])
+          unless sense_names.include? sense[0]
+            @new_npc.senses << Sense.new(name: sense[0], value: sense[1])
+            sense_names << sense[0]
+          end
+        end
+      end
+    end
+
+    def generate_speeds
+      cr_int = CrCalc.cr_string_to_num(@new_npc.challenge_rating)
+      num_senses = rand(1..(cr_int / 8).ceil)
+      speeds = @weighted_speeds.sample(num_senses)
+      speed_names = []
+      speeds.each do |speed|
+        unless speed_names.include? speed[0]
+          @new_npc.speeds << Speed.new(name: speed[0], value: speed[1])
+          speed_names << speed[0]
         end
       end
     end
@@ -774,6 +791,7 @@ class NpcGenerator
       @new_npc.languages = @weighted_languages.sample
       generate_legendary_actions
       generate_senses
+      generate_speeds
     end
 
     def replace_monster_name(action_desc, monster_name)

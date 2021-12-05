@@ -128,7 +128,7 @@ class Monster < ApplicationRecord
         speed_return << "#{speed.name} #{speed.value} ft."
       end
     end
-    speed_return
+    speed_return.sort
   end
 
   def hit_dice_string
