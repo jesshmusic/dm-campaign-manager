@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+MAX_RETRIES = 5
 
 ALL_ACTIONS = ['Tentacle', 'Tail', 'Enslave', 'Club', 'Bite', 'Claw', 'Frightful Presence', 'Acid Breath',
                'Lightning Breath', 'Breath Weapons', 'Poison Breath', 'Fire Breath', 'Lair Actions', 'Cold Breath',
@@ -22,7 +23,6 @@ ALL_ACTIONS = ['Tentacle', 'Tail', 'Enslave', 'Club', 'Bite', 'Claw', 'Frightful
                'Steam Breath (Recharge 6)', 'Blood Drain', 'Slow', 'Lightning Strike', 'Charm', 'Draining Kiss',
                'Beaks', 'Animate Trees', 'Horn', 'Rotting Touch', 'Spores (Recharge 6)', 'Stunning Screech', 'Whelm',
                'Tusks', 'Maul', 'Shock', 'Create Specter', 'Stinger']
-
 
 ROGUE_ATTACKS = ['Club', 'Fist', 'Dagger', 'Fist', 'Shortsword', 'Light Crossbow', 'Whip', 'Scimitar', 'Longbow', 'Haste', 'Poisoned Dart',
                  'Hand Crossbow', 'Quarterstaff', 'Shortbow', 'Sling', 'Rapier']
@@ -471,7 +471,7 @@ class NpcGenerator
     def generate_actions(damage_per_round = 10, number_of_attacks, challenge_rating, save_dc, primary_ability)
       attacks = []
       if @archetype == 'any'
-        attacks << create_monster_type_actions(number_of_attacks)
+        attacks << create_monster_type_actions(damage_per_round, number_of_attacks)
       else
         attacks << create_actions(damage_per_round, number_of_attacks)
       end
@@ -487,7 +487,7 @@ class NpcGenerator
         end
       end
       if num_attacks > 1
-        if num_attacks == attack_names.count
+        if num_attacks == attack_names.count && damage_attacks.count > 1
           multi_desc = "The #{@new_npc.name} makes #{num_attacks} attacks: "
           attack_strings = damage_attacks.map do |action|
             "one with its #{action.downcase}"
@@ -573,7 +573,7 @@ class NpcGenerator
       current_dpr = damages.sum * num_attacks / attacks.count
       dpr_diff = damage_per_round - current_dpr
       dpr_diff_target = (damage_per_round * 0.5)
-      if dpr_diff > dpr_diff_target && number_of_tries < 3
+      if dpr_diff > dpr_diff_target && number_of_tries < MAX_RETRIES
         create_actions(damage_per_round, num_attacks, number_of_tries + 1)
       else
         create_multiattack(num_attacks, attack_names)
@@ -677,15 +677,40 @@ class NpcGenerator
       [attack_info, weight]
     end
 
-    def create_monster_type_actions(number_of_attacks)
+    def create_monster_type_actions(damage_per_round, number_of_attacks, number_of_tries = 0)
+      dam_bonus = [DndRules.ability_score_modifier(@new_npc.strength), DndRules.ability_score_modifier(@new_npc.dexterity)].max
+      max_num_actions = [number_of_attacks, 3].min
       monster_attacks = Hash[@monster_type_actions.map do |action|
         parse_action_with_weight(action)
       end].uniq do |action|
         action.first[:name]
       end
-      abilities = WeightedList[monster_attacks].sample(number_of_attacks)
-      abilities.each do |ability|
-        @new_npc.monster_actions << MonsterAction.new(name: ability[:name], desc: ability[:desc])
+      num_actions = rand(1..max_num_actions)
+      abilities = WeightedList[monster_attacks].sample(num_actions)
+      damages = []
+      abilities.each do |action|
+        damage_info = /Hit: ([1-9]\d*)/.match(action[:desc])
+        damage_strings = damage_info.captures unless damage_info.nil?
+        unless damage_strings.nil?
+          action_damages = damage_strings.map do |dam|
+            dam.to_i + dam_bonus
+          end
+          damages << action_damages.sum
+        end
+      end
+      attack_names = abilities.map do |action|
+        action[:name]
+      end
+      current_dpr = damages.empty? ? 0 : damages.sum
+      dpr_diff = damage_per_round - current_dpr
+      dpr_diff_target = (damage_per_round * 0.5)
+      if dpr_diff > dpr_diff_target && number_of_tries < MAX_RETRIES
+        create_monster_type_actions(damage_per_round, number_of_attacks, number_of_tries + 1)
+      else
+        create_multiattack(number_of_attacks, attack_names)
+        abilities.each do |attack|
+          @new_npc.monster_actions << MonsterAction.new(name: attack[:name], desc: adapt_action_desc(attack[:desc], attack[:monster].downcase))
+        end
       end
     end
 
