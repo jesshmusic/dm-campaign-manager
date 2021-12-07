@@ -1,43 +1,87 @@
 import React from 'react';
 import { Responsive, WidthProvider } from 'react-grid-layout';
-const ResponsiveGridLayout = WidthProvider(Responsive);
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
-import { Link } from 'react-router-dom';
 import { PageProps } from '../../utilities/types';
-import { GiBarbute } from 'react-icons/all';
 import { useAuth0 } from '@auth0/auth0-react';
 import NameField from '../front-page/components/NameField';
 import TavernNameField from '../front-page/components/TavernNameField';
 import { connect } from 'react-redux';
-import Frame from '../../components/Frame/Frame';
+import NPCGenButton from './components/NPCGenButton';
+import Widget from './components/Widget';
+import DashboardBar from './components/DashboardBar';
+
+const ResponsiveGridLayout = WidthProvider(Responsive);
 
 const styles = require('./user-dashboard.module.scss');
 
-const Widget = (props: { children: React.ReactNode; title: string; subtitle: string }) => {
-  return (
-    <Frame style={{ width: '100%', height: '100%' }} title={props.title} subtitle={props.subtitle}>
-      <div>{props.children}</div>
-    </Frame>
-  );
+const getFromLS = (key) => {
+  let ls = {};
+  if (global.localStorage) {
+    try {
+      ls = JSON.parse(global.localStorage.getItem('rgl-8') as string) || {};
+    } catch (e) {}
+  }
+  return ls[key];
+};
+const saveToLS = (key, value) => {
+  if (global.localStorage) {
+    global.localStorage.setItem(
+      'rgl-8',
+      JSON.stringify({
+        [key]: value,
+      })
+    );
+  }
 };
 
-const defaultLayout = [
-  { i: 'a', x: 0, y: 0, w: 1, h: 1 },
-  { i: 'b', x: 1, y: 0, w: 1, h: 1 },
-  { i: 'c', x: 2, y: 0, w: 1, h: 1 },
-  { i: 'd', x: 3, y: 0, w: 1, h: 1 },
-];
+const dashboardItems = ['a', 'b', 'c'];
+
+const initialLayouts = {
+  lg: [
+    { i: 'a', x: 0, y: 0, w: 1, h: 1 },
+    { i: 'b', x: 1, y: 0, w: 1, h: 1 },
+    { i: 'c', x: 2, y: 0, w: 1, h: 1 },
+    { i: 'd', x: 3, y: 0, w: 1, h: 1 },
+  ],
+};
+
+const dashboardComponents = {
+  a: {
+    component: NameField,
+    title: 'Random Character Name',
+    subtitle: 'Generate a random fantasy name based on gender and race',
+  },
+  b: {
+    component: TavernNameField,
+    title: 'Random Tavern Name',
+    subtitle: 'Generate a random tavern nam',
+  },
+  c: {
+    component: NPCGenButton,
+    title: 'NPC Generator',
+    subtitle: 'Quickly create custom NPCs of any challenge rating',
+  },
+};
 
 const UserDashboard = (props: PageProps) => {
-  const layouts = {
-    lg: defaultLayout,
-    md: defaultLayout,
-    sm: defaultLayout,
+  const [items, setItems] = React.useState(dashboardItems);
+  const [layouts, setLayouts] = React.useState(getFromLS('layouts') || initialLayouts);
+  const onLayoutChange = (currentLayouts, allLayouts) => {
+    setLayouts(allLayouts);
   };
-  const { currentUser } = props;
+  const onLayoutSave = () => {
+    saveToLS('layouts', layouts);
+  };
+  const onRemoveItem = (itemId) => {
+    setItems(items.filter((i) => i !== itemId));
+  };
+  const onAddItem = (itemId) => {
+    setItems([...items, itemId]);
+  };
+
   const { isAuthenticated, user } = useAuth0();
   const pageTitle = isAuthenticated && user ? `Welcome, ${user.name}` : 'Welcome';
 
@@ -73,7 +117,13 @@ const UserDashboard = (props: PageProps) => {
           </div>
         </div>
         <div className={styles.section}>
-          <h2>Dashboard</h2>
+          <DashboardBar
+            onLayoutSave={onLayoutSave}
+            items={items}
+            onRemoveItem={onRemoveItem}
+            onAddItem={onAddItem}
+            originalItems={dashboardItems}
+          />
           <ResponsiveGridLayout
             autoSize={true}
             className="layout"
@@ -81,30 +131,20 @@ const UserDashboard = (props: PageProps) => {
             breakpoints={{ lg: 1500, md: 1200, sm: 900, xs: 480, xxs: 0 }}
             cols={{ lg: 4, md: 3, sm: 2, xs: 1, xxs: 1 }}
             rowHeight={300}
+            onLayoutChange={onLayoutChange}
           >
-            <div key="a">
-              <Widget
-                title="NPC Generator"
-                subtitle="Quickly create custom NPCs of any challenge rating"
-              >
-                <Link to="/app/monster-generator" className={styles.buttonBar}>
-                  <GiBarbute size={24} /> NPC Generators
-                </Link>
-              </Widget>
-            </div>
-            <div key="b">
-              <Widget
-                title="Random Character Name"
-                subtitle="Generate a random fantasy name based on gender and race"
-              >
-                <NameField hideFrame />
-              </Widget>
-            </div>
-            <div key="c">
-              <Widget title="Random Tavern Name" subtitle="Generate a random tavern name">
-                <TavernNameField hideFrame />
-              </Widget>
-            </div>
+            {items.map((key) => (
+              <div key={key} className="widget" data-grid={{ w: 2, h: 1, x: 0, y: Infinity }}>
+                <Widget
+                  id={key}
+                  onRemoveItem={onRemoveItem}
+                  component={dashboardComponents[key].component}
+                  hideFrame={true}
+                  title={dashboardComponents[key].title}
+                  subtitle={dashboardComponents[key].subtitle}
+                />
+              </div>
+            ))}
           </ResponsiveGridLayout>
         </div>
       </div>

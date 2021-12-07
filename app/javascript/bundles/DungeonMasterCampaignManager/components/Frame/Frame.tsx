@@ -9,12 +9,15 @@ const Frame = (props: {
   subtitle?: string;
   children: React.ReactNode;
   style?: object;
+  actionButton?: React.ReactNode;
 }) => {
-  const { title, subtitle, className, children, style } = props;
+  const { title, subtitle, className, children, style, actionButton } = props;
   return (
     <div className={classNames(styles.frame, className)} style={style}>
       <div className={styles.body}>
-        <div className={styles.title}>{title}</div>
+        <div className={styles.title}>
+          {title} {actionButton}
+        </div>
         {subtitle && <div className={styles.subtitle}>{subtitle}</div>}
         {children}
       </div>
