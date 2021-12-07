@@ -15,8 +15,7 @@ const styles = require('./user-dashboard.module.scss');
 const UserDashboard = (props: PageProps) => {
   const { currentUser } = props;
   const { isAuthenticated, user } = useAuth0();
-  const pageTitle =
-    isAuthenticated && user ? `Welcome, ${user.name}` : 'Welcome';
+  const pageTitle = isAuthenticated && user ? `Welcome, ${user.name}` : 'Welcome';
 
   return (
     <PageContainer
@@ -26,10 +25,7 @@ const UserDashboard = (props: PageProps) => {
       }
     >
       <div className={styles.wrapper}>
-        <PageTitle
-          title={`The Dungeon Master Screen - ${pageTitle}`}
-          isDraconis
-        />
+        <PageTitle title={`The Dungeon Master Screen - ${pageTitle}`} isDraconis />
         <div className={styles.section}>
           <h2>Info</h2>
           <div className={styles.userInfo}>
