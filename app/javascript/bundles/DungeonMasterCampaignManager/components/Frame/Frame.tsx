@@ -8,10 +8,11 @@ const Frame = (props: {
   title: string;
   subtitle?: string;
   children: React.ReactNode;
+  style?: object;
 }) => {
-  const { title, subtitle, className, children } = props;
+  const { title, subtitle, className, children, style } = props;
   return (
-    <div className={classNames(styles.frame, className)}>
+    <div className={classNames(styles.frame, className)} style={style}>
       <div className={styles.body}>
         <div className={styles.title}>{title}</div>
         {subtitle && <div className={styles.subtitle}>{subtitle}</div>}

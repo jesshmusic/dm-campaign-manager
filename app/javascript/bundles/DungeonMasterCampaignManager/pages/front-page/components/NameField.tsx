@@ -9,7 +9,7 @@ import axios from 'axios';
 import Frame from '../../../components/Frame/Frame';
 import { RandomNameResult } from '../../../utilities/types';
 
-const NameField = () => {
+const NameField = (props: { hideFrame?: boolean }) => {
   const [nameValue, setNameValue] = useState('');
 
   const handleGenerateName = async (gender, race) => {
@@ -24,7 +24,17 @@ const NameField = () => {
     }
   };
 
-  return (
+  return props.hideFrame ? (
+    <form>
+      <CopyField
+        placeHolder={'Random Name...'}
+        fieldId={'randomFantasyName'}
+        label={'Random Name'}
+        text={nameValue}
+      />
+      <NameOptions onFormSubmit={handleGenerateName} title={'Name'} />
+    </form>
+  ) : (
     <Frame
       title="Random Character Name"
       subtitle="Generate a random fantasy name based on gender and race"

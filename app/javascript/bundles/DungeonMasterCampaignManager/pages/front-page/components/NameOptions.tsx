@@ -17,17 +17,12 @@ const genderOptions: Options<any> = [
   { value: '', label: 'Other' },
 ];
 
-const getRaces = (
-  inputValue: string,
-  callback: (options: Options<any>) => void
-) => {
-  axios
-    .get<RaceResults>(`/v1/races.json?search=${inputValue}`)
-    .then((response) => {
-      if (response.status === 200 && response?.data.results) {
-        callback(filterSnakeCaseOptionsWithData(response.data));
-      }
-    });
+const getRaces = (inputValue: string, callback: (options: Options<any>) => void) => {
+  axios.get<RaceResults>(`/v1/races.json?search=${inputValue}`).then((response) => {
+    if (response.status === 200 && response?.data.results) {
+      callback(filterSnakeCaseOptionsWithData(response.data));
+    }
+  });
 };
 
 interface NameOptionsProps {
@@ -53,19 +48,17 @@ const NameOptions = ({ onFormSubmit, title, token }: NameOptionsProps) => {
 
   return (
     <div className={styles.nameOptions}>
-      <div>
+      <div className={styles.submitButton}>
         <label htmlFor={'nameGeneratorGender'}>Submit</label>
         <Button
           id={'nameGeneratorSubmit'}
           color={Colors.primary}
           icon={<GiBattleGear />}
           onClick={handleSubmit}
-          title={`Get ${gender ? gender.label : ''} ${
-            race ? race.label : ''
-          } ${title}`}
+          title={`Get ${title}`}
         />
       </div>
-      <div>
+      <div className={styles.genderSelect}>
         <label htmlFor={'nameGeneratorGender'}>Gender</label>
         <Select
           className={'reactSelect'}
@@ -77,7 +70,7 @@ const NameOptions = ({ onFormSubmit, title, token }: NameOptionsProps) => {
           }}
         />
       </div>
-      <div>
+      <div className={styles.raceSelect}>
         <label htmlFor={'nameGeneratorRace'}>Race</label>
         <AsyncSelect
           className={'reactSelect'}

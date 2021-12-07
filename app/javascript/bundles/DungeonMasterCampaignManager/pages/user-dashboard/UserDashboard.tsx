@@ -1,4 +1,8 @@
 import React from 'react';
+import { Responsive, WidthProvider } from 'react-grid-layout';
+const ResponsiveGridLayout = WidthProvider(Responsive);
+import 'react-grid-layout/css/styles.css';
+import 'react-resizable/css/styles.css';
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
 import { Link } from 'react-router-dom';
@@ -8,11 +12,31 @@ import { useAuth0 } from '@auth0/auth0-react';
 import NameField from '../front-page/components/NameField';
 import TavernNameField from '../front-page/components/TavernNameField';
 import { connect } from 'react-redux';
-import MonstersTable from '../monsters/MonstersTable';
+import Frame from '../../components/Frame/Frame';
 
 const styles = require('./user-dashboard.module.scss');
 
+const Widget = (props: { children: React.ReactNode; title: string; subtitle: string }) => {
+  return (
+    <Frame style={{ width: '100%', height: '100%' }} title={props.title} subtitle={props.subtitle}>
+      <div>{props.children}</div>
+    </Frame>
+  );
+};
+
+const defaultLayout = [
+  { i: 'a', x: 0, y: 0, w: 1, h: 1 },
+  { i: 'b', x: 1, y: 0, w: 1, h: 1 },
+  { i: 'c', x: 2, y: 0, w: 1, h: 1 },
+  { i: 'd', x: 3, y: 0, w: 1, h: 1 },
+];
+
 const UserDashboard = (props: PageProps) => {
+  const layouts = {
+    lg: defaultLayout,
+    md: defaultLayout,
+    sm: defaultLayout,
+  };
   const { currentUser } = props;
   const { isAuthenticated, user } = useAuth0();
   const pageTitle = isAuthenticated && user ? `Welcome, ${user.name}` : 'Welcome';
@@ -49,19 +73,39 @@ const UserDashboard = (props: PageProps) => {
           </div>
         </div>
         <div className={styles.section}>
-          <h2>User Created NPCs</h2>
-          {currentUser && <MonstersTable user={currentUser} />}
-        </div>
-        <div className={styles.section}>
-          <Link to="/app/monster-generator" className={styles.buttonBar}>
-            <GiBarbute size={24} /> NPC Generators
-          </Link>
-        </div>
-        <div className={styles.section}>
-          <NameField />
-        </div>
-        <div className={styles.section}>
-          <TavernNameField />
+          <h2>Dashboard</h2>
+          <ResponsiveGridLayout
+            autoSize={true}
+            className="layout"
+            layouts={layouts}
+            breakpoints={{ lg: 1500, md: 1200, sm: 900, xs: 480, xxs: 0 }}
+            cols={{ lg: 4, md: 3, sm: 2, xs: 1, xxs: 1 }}
+            rowHeight={300}
+          >
+            <div key="a">
+              <Widget
+                title="NPC Generator"
+                subtitle="Quickly create custom NPCs of any challenge rating"
+              >
+                <Link to="/app/monster-generator" className={styles.buttonBar}>
+                  <GiBarbute size={24} /> NPC Generators
+                </Link>
+              </Widget>
+            </div>
+            <div key="b">
+              <Widget
+                title="Random Character Name"
+                subtitle="Generate a random fantasy name based on gender and race"
+              >
+                <NameField hideFrame />
+              </Widget>
+            </div>
+            <div key="c">
+              <Widget title="Random Tavern Name" subtitle="Generate a random tavern name">
+                <TavernNameField hideFrame />
+              </Widget>
+            </div>
+          </ResponsiveGridLayout>
         </div>
       </div>
     </PageContainer>

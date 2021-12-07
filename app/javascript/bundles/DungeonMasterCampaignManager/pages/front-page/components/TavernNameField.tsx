@@ -11,7 +11,7 @@ import { Colors } from '../../../utilities/enums';
 import Button from '../../../components/Button/Button';
 import { GiBeerStein } from 'react-icons/all';
 
-const TavernNameField = () => {
+const TavernNameField = (props: { hideFrame?: boolean }) => {
   const [nameValue, setNameValue] = useState('');
 
   const handleGenerateTavernName = async () => {
@@ -25,7 +25,25 @@ const TavernNameField = () => {
     }
   };
 
-  return (
+  return props.hideFrame ? (
+    <form>
+      <CopyField
+        placeHolder={'Random Tavern Name...'}
+        fieldId={'randomTavernName'}
+        label={'Random TavernName'}
+        text={nameValue}
+      />
+      <div id={'tavernNameGeneratorSubmit'}>
+        <Button
+          id={'tavernNameGeneratorSubmit'}
+          color={Colors.primary}
+          icon={<GiBeerStein />}
+          onClick={handleGenerateTavernName}
+          title="Get Tavern Name"
+        />
+      </div>
+    </form>
+  ) : (
     <Frame title="Random Tavern Name" subtitle="Generate a random tavern name">
       <form>
         <CopyField
