@@ -22,7 +22,7 @@ const UserDashboard = (props: PageProps) => {
     <PageContainer
       pageTitle={pageTitle}
       description={
-        "Dungeon Master's Screen is a free resource for DMs for reference that includes tools for smooth games."
+        "Dungeon Master's Screen is an online DM Screen with tools and widgets that make your life easier."
       }
     >
       <div className={styles.wrapper}>
