@@ -6,11 +6,11 @@ import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
 import { PageProps } from '../../utilities/types';
 import { useAuth0 } from '@auth0/auth0-react';
-import NameField from '../front-page/components/NameField';
-import TavernNameField from '../front-page/components/TavernNameField';
+import NameField from '../../components/Widgets/NameField';
+import TavernNameField from '../../components/Widgets/TavernNameField';
 import { connect } from 'react-redux';
-import NPCGenButton from './components/NPCGenButton';
-import Widget from './components/Widget';
+import NPCGenButton from '../../components/Widgets/NPCGenButton';
+import Widget from '../../components/Widgets/Widget';
 import DashboardBar from './components/DashboardBar';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);

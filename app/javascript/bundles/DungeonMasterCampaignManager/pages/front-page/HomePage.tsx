@@ -1,9 +1,9 @@
 import React from 'react';
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
-import NameField from './components/NameField';
+import NameField from '../../components/Widgets/NameField';
 import { Link } from 'react-router-dom';
-import TavernNameField from './components/TavernNameField';
+import TavernNameField from '../../components/Widgets/TavernNameField';
 import { PageProps } from '../../utilities/types';
 import { GiBarbute } from 'react-icons/all';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -15,9 +15,7 @@ const HomePage = (props: PageProps) => {
 
   return (
     <PageContainer
-      pageTitle={
-        isAuthenticated && user ? `Welcome, ${user.given_name}` : 'Welcome'
-      }
+      pageTitle={isAuthenticated && user ? `Welcome, ${user.given_name}` : 'Welcome'}
       description={
         "Dungeon Master's Screen is a free resource for DMs for reference that includes tools for smooth games."
       }

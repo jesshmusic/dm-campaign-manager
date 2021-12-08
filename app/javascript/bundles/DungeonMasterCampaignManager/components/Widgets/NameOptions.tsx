@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import Select, { Options } from 'react-select';
-import { filterSnakeCaseOptionsWithData } from '../../../utilities/character-utilities';
+import { filterSnakeCaseOptionsWithData } from '../../utilities/character-utilities';
 import AsyncSelect from 'react-select/async';
 import axios from 'axios';
-import { RaceResults, UserProps } from '../../../utilities/types';
-import Button from '../../../components/Button/Button';
-import { Colors } from '../../../utilities/enums';
+import { RaceResults, UserProps } from '../../utilities/types';
+import Button from '../Button/Button';
+import { Colors } from '../../utilities/enums';
 import { GiBattleGear } from 'react-icons/all';
 
-import '../../../components/forms/inputOverrides.scss';
-const styles = require('./name-options.module.scss');
+import '../forms/inputOverrides.scss';
+const styles = require('./widgets.module.scss');
 
 const genderOptions: Options<any> = [
   { value: 'female', label: 'Female' },

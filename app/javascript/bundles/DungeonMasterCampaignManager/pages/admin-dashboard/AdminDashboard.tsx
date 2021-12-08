@@ -5,8 +5,8 @@ import { Link } from 'react-router-dom';
 import { ConditionProps, PageProps, UserProps } from '../../utilities/types';
 import { GiBarbute } from 'react-icons/all';
 import { useAuth0 } from '@auth0/auth0-react';
-import NameField from '../front-page/components/NameField';
-import TavernNameField from '../front-page/components/TavernNameField';
+import NameField from '../../components/Widgets/NameField';
+import TavernNameField from '../../components/Widgets/TavernNameField';
 import rest from '../../api/api';
 import { connect } from 'react-redux';
 import MonstersTable from '../monsters/MonstersTable';
@@ -105,10 +105,7 @@ function mapDispatchToProps(dispatch) {
         dispatch(rest.actions.getUsers());
       }
     },
-    updateUserRole: (
-      user: UserProps,
-      newRole: 'admin' | 'dungeon-master' | 'user'
-    ) => {
+    updateUserRole: (user: UserProps, newRole: 'admin' | 'dungeon-master' | 'user') => {
       const { role, dndClasses, items, spells, ...userProps } = user;
       dispatch(
         rest.actions.users.put(

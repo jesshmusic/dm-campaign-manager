@@ -3,12 +3,12 @@
  */
 
 import React, { useState } from 'react';
-import CopyField from '../../../components/CopyField/CopyField';
-import Frame from '../../../components/Frame/Frame';
+import CopyField from '../CopyField/CopyField';
+import Frame from '../Frame/Frame';
 import axios from 'axios';
-import { RandomNameResult } from '../../../utilities/types';
-import { Colors } from '../../../utilities/enums';
-import Button from '../../../components/Button/Button';
+import { RandomNameResult } from '../../utilities/types';
+import { Colors } from '../../utilities/enums';
+import Button from '../Button/Button';
 import { GiBeerStein } from 'react-icons/all';
 
 const TavernNameField = (props: { hideFrame?: boolean }) => {

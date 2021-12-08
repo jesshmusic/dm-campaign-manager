@@ -1,7 +1,7 @@
 import React from 'react';
-import Frame from '../../../components/Frame/Frame';
-import Button from '../../../components/Button/Button';
-import { Colors } from '../../../utilities/enums';
+import Frame from '../Frame/Frame';
+import Button from '../Button/Button';
+import { Colors } from '../../utilities/enums';
 import { GrClose } from 'react-icons/all';
 
 type WidgetProps = {

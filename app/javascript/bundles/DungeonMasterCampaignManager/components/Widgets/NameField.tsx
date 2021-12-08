@@ -3,11 +3,11 @@
  */
 
 import React, { useState } from 'react';
-import CopyField from '../../../components/CopyField/CopyField';
+import CopyField from '../CopyField/CopyField';
 import NameOptions from './NameOptions';
 import axios from 'axios';
-import Frame from '../../../components/Frame/Frame';
-import { RandomNameResult } from '../../../utilities/types';
+import Frame from '../Frame/Frame';
+import { RandomNameResult } from '../../utilities/types';
 
 const NameField = (props: { hideFrame?: boolean }) => {
   const [nameValue, setNameValue] = useState('');
