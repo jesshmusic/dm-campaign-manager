@@ -1,10 +1,5 @@
 import React from 'react';
-
-const widgetNames = {
-  a: 'Random Name Generator',
-  b: 'Random Tavern Name Generator',
-  c: 'NPC Generator Link',
-};
+import { dashboardComponents } from '../UserDashboard';
 
 export default function AddList({ items, onRemoveItem, onAddItem, originalItems }) {
   const handleChange = (e) => {
@@ -29,7 +24,7 @@ export default function AddList({ items, onRemoveItem, onAddItem, originalItems 
               checked={items.includes(item)}
             />
             <label className="form-check-label" htmlFor={item}>
-              {widgetNames[item]}
+              {dashboardComponents[item].title}
             </label>
           </div>
         ))}

@@ -13,7 +13,7 @@ type WidgetProps = {
   hideFrame: boolean;
 };
 
-const Widget = ({ id, onRemoveItem, component: Item, title, subtitle, hideFrame }) => {
+const Widget = ({ id, onRemoveItem, component: Item, title, subtitle, hideFrame }: WidgetProps) => {
   return (
     <Frame
       style={{ width: '100%', height: '100%' }}

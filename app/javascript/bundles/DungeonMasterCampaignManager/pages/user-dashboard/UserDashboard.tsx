@@ -37,32 +37,41 @@ const saveToLS = (key, value) => {
   }
 };
 
-const dashboardItems = ['a', 'b', 'c'];
+const dashboardItems = ['randomName', 'randomTavern', 'npcGen'];
 
 const initialLayouts = {
   lg: [
-    { i: 'a', x: 0, y: 0, w: 1, h: 1 },
-    { i: 'b', x: 1, y: 0, w: 1, h: 1 },
-    { i: 'c', x: 2, y: 0, w: 1, h: 1 },
-    { i: 'd', x: 3, y: 0, w: 1, h: 1 },
+    { i: 'randomName', x: 0, y: 0, w: 1, h: 1, minW: 3, minH: 3 },
+    { i: 'randomTavern', x: 1, y: 0, w: 1, h: 1, minW: 3, minH: 3 },
+    { i: 'npcGen', x: 2, y: 0, w: 1, h: 1, minW: 3, minH: 3 },
   ],
 };
 
-const dashboardComponents = {
-  a: {
+export const dashboardComponents: {
+  [key: string]: {
+    component: React.ReactNode;
+    title: string;
+    subtitle: string;
+    grid: object;
+  };
+} = {
+  randomName: {
     component: NameField,
     title: 'Random Character Name',
     subtitle: 'Generate a random fantasy name based on gender and race',
+    grid: { w: 4, h: 3, x: 0, y: Infinity, minW: 4, minH: 3 },
   },
-  b: {
+  randomTavern: {
     component: TavernNameField,
     title: 'Random Tavern Name',
-    subtitle: 'Generate a random tavern nam',
+    subtitle: 'Generate a random tavern name',
+    grid: { w: 3, h: 3, x: 4, y: Infinity, minW: 3, minH: 3 },
   },
-  c: {
+  npcGen: {
     component: NPCGenButton,
     title: 'NPC Generator',
     subtitle: 'Quickly create custom NPCs of any challenge rating',
+    grid: { w: 2, h: 2, x: 0, y: Infinity, minW: 2, minH: 2 },
   },
 };
 
@@ -129,12 +138,12 @@ const UserDashboard = (props: PageProps) => {
             className="layout"
             layouts={layouts}
             breakpoints={{ lg: 1500, md: 1200, sm: 900, xs: 480, xxs: 0 }}
-            cols={{ lg: 4, md: 3, sm: 2, xs: 1, xxs: 1 }}
-            rowHeight={300}
+            cols={{ lg: 12, md: 9, sm: 6, xs: 3, xxs: 3 }}
+            rowHeight={100}
             onLayoutChange={onLayoutChange}
           >
             {items.map((key) => (
-              <div key={key} className="widget" data-grid={{ w: 2, h: 1, x: 0, y: Infinity }}>
+              <div key={key} className="widget" data-grid={dashboardComponents[key].grid}>
                 <Widget
                   id={key}
                   onRemoveItem={onRemoveItem}
