@@ -49,18 +49,18 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
 
   return (
     <>
-      <pre
-        style={{
-          position: 'absolute',
-          top: '0',
-          right: '0',
-          backgroundColor: '#fff',
-          width: '150px',
-          zIndex: 200,
-        }}
-      >
-        {JSON.stringify(testState, null, 2)}
-      </pre>
+      {/*<pre*/}
+      {/*  style={{*/}
+      {/*    position: 'absolute',*/}
+      {/*    top: '0',*/}
+      {/*    right: '0',*/}
+      {/*    backgroundColor: '#fff',*/}
+      {/*    width: '150px',*/}
+      {/*    zIndex: 200,*/}
+      {/*  }}*/}
+      {/*>*/}
+      {/*  {JSON.stringify(testState, null, 2)}*/}
+      {/*</pre>*/}
       <Frame
         title="Monster Creator"
         subtitle="Select options to create a new Monster"

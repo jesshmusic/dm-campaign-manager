@@ -143,7 +143,7 @@ class NpcGenerator
       case params[:action][:action_type]
       when 'attack'
         generate_attack_desc(params[:action], params[:attack_bonus], params[:prof_bonus], params[:damage_bonus])
-      when 'spellcasting'
+      when 'spellCasting'
         generate_spellcasting_desc(params[:monster_name], params[:action])
       else
         params[:action][:desc]

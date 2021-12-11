@@ -13,10 +13,10 @@ const styles = require('./action-form.module.scss');
 
 export const abilityOptions = [
   { label: 'Charisma', value: 'charisma' },
-  { label: 'Constitution', value: 'constitution' },
-  { label: 'Dexterity', value: 'dexterity' },
+  // { label: 'Constitution', value: 'constitution' },
+  // { label: 'Dexterity', value: 'dexterity' },
   { label: 'Intelligence', value: 'intelligence' },
-  { label: 'Strength', value: 'strength' },
+  // { label: 'Strength', value: 'strength' },
   { label: 'Wisdom', value: 'wisdom' },
 ];
 
@@ -71,7 +71,7 @@ const SpellcastingForm = (props: {
           label={'Spellcasting Ability'}
           name={`${fieldName}.spellCasting.abilityOption`}
           control={control}
-          defaultValue={abilityOptions[3]}
+          defaultValue={abilityOptions[0]}
           options={abilityOptions}
         />
       </div>

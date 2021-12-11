@@ -32,18 +32,18 @@ export type SelectProps = {
 const styles = require('./input.module.scss');
 
 const FormSelect = ({
-                      name,
-                      label,
-                      className = '',
-                      defaultValue,
-                      isClearable = false,
-                      menuPlacement = 'auto',
-                      options,
-                      control,
-                      required = false,
-                      isCreatable = false,
-                      isMulti = false
-                    }: SelectProps) => {
+  name,
+  label,
+  className = '',
+  defaultValue,
+  isClearable = false,
+  menuPlacement = 'auto',
+  options,
+  control,
+  required = false,
+  isCreatable = false,
+  isMulti = false,
+}: SelectProps) => {
   return (
     <div className={classNames(className, styles.wrapper)}>
       <label htmlFor={name} className={styles.label}>
