@@ -1,12 +1,9 @@
 import React from 'react';
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
-import NameField from '../../components/Widgets/NameField';
-import { Link } from 'react-router-dom';
-import TavernNameField from '../../components/Widgets/TavernNameField';
 import { PageProps } from '../../utilities/types';
-import { GiBarbute } from 'react-icons/all';
 import { useAuth0 } from '@auth0/auth0-react';
+import Dashboard from '../user-dashboard/Dashboard';
 
 const styles = require('./home-page.module.scss');
 
@@ -22,17 +19,7 @@ const HomePage = (props: PageProps) => {
     >
       <div className={styles.wrapper}>
         <PageTitle title={'The Dungeon Master Screen'} isDraconis />
-        <div className={styles.section}>
-          <Link to="/app/monster-generator" className={styles.buttonBar}>
-            <GiBarbute size={24} /> NPC Generators
-          </Link>
-        </div>
-        <div className={styles.section}>
-          <NameField />
-        </div>
-        <div className={styles.section}>
-          <TavernNameField />
-        </div>
+        <Dashboard />
       </div>
     </PageContainer>
   );

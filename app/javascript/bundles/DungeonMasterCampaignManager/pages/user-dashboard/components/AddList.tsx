@@ -1,5 +1,5 @@
 import React from 'react';
-import { dashboardComponents } from '../UserDashboard';
+import { dashboardComponents } from '../Dashboard';
 
 export default function AddList({ items, onRemoveItem, onAddItem, originalItems }) {
   const handleChange = (e) => {
