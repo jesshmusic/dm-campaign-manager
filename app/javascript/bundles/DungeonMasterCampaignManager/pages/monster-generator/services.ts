@@ -174,6 +174,7 @@ export const createMonsterParams = (monster: MonsterProps) => {
 export const createQuickMonsterParams = (values: MonsterQuickGeneratorFormFields) => {
   const monsterParams = {
     name: values.name,
+    actionOptions: values.actionOptions.map((actionOption) => actionOption.value),
     alignment: values.alignmentOption.label,
     archetype: values.archetypeOption.value,
     armorClass: values.armorClass,

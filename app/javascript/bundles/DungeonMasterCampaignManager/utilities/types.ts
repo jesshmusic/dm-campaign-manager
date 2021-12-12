@@ -344,6 +344,7 @@ export type MonsterGeneratorFormFields = {
 
 export type MonsterQuickGeneratorFormFields = {
   name: string;
+  actionOptions: SelectOption[];
   alignment: string;
   alignmentOption: SelectOption;
   armorClass: number;
@@ -359,6 +360,7 @@ export type MonsterQuickGeneratorFormFields = {
   monsterSubtype?: string;
   numberOfAttacks: number;
   size: SelectOption;
+  spells: number[];
   xp: number;
 };
 

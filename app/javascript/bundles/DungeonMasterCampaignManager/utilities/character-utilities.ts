@@ -3,9 +3,7 @@ import { DamageTypes, SelectOption } from './types';
 export const toSnakeCase = (str: string) =>
   str &&
   str
-    .match(
-      /[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g
-    )!
+    .match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g)!
     .map((x) => x.toLowerCase())
     .join('_');
 
@@ -15,6 +13,13 @@ export const filterOptionsWithData = (results) =>
     label: nextItem.name,
     data: nextItem.data,
   }));
+
+export const filterActionOptions = (results) => {
+  return results.map((nextItem) => ({
+    value: nextItem.id,
+    label: `${nextItem.name} - ${nextItem.info}`,
+  }));
+};
 
 export const filterSnakeCaseOptionsWithData = (results): SelectOption[] =>
   results.results.map((nextItem) => ({
@@ -189,8 +194,7 @@ export const getChallengeRatingOptions = () => {
   return crs;
 };
 
-export const getSpellLevelArray = (spells) =>
-  spells.map((spell) => spell.value);
+export const getSpellLevelArray = (spells) => spells.map((spell) => spell.value);
 
 export const plusNumberString = (value: number, space?: boolean): string => {
   let sign = '+';
@@ -202,11 +206,7 @@ export const plusNumberString = (value: number, space?: boolean): string => {
   return `${sign}${space ? ' ' : ''}${Math.abs(value)}`;
 };
 
-export const averageDice = (
-  numDice: number,
-  diceValue: number,
-  bonus: number
-): number => {
+export const averageDice = (numDice: number, diceValue: number, bonus: number): number => {
   const diceAverage = diceValue / 2 + 0.5;
   const baseDamage = diceAverage * numDice;
   return Math.floor(baseDamage + bonus);

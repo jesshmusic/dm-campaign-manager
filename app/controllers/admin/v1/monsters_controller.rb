@@ -4,7 +4,7 @@ module Admin::V1
   class MonstersController < SecuredController
     before_action :set_user
     before_action :set_monster, only: %i[show edit update destroy]
-    skip_before_action :authorize_request, only: %i[index show monster_refs monster_categories quick_monster generate_monster generate_commoner calculate_cr info_for_cr generate_action_desc]
+    skip_before_action :authorize_request, only: %i[index show monster_refs monster_categories actions_by_name quick_monster generate_monster generate_commoner calculate_cr info_for_cr generate_action_desc]
 
     # GET /v1/monsters
     # GET /v1/monsters.json
@@ -96,8 +96,10 @@ module Admin::V1
       end
     end
 
-    def generate_monster
-      @monster = NpcGenerator.generate_npc(monster_params, @user)
+    def generate_commoner
+      random_npc_gender = params[:random_monster_gender] || %w[male female].sample
+      random_npc_race = params[:random_monster_race] || 'human'
+      @monster = NpcGenerator.generate_commoner(random_npc_gender, random_npc_race, @user)
       respond_to do |format|
         format.json
       end
@@ -108,6 +110,32 @@ module Admin::V1
       respond_to do |format|
         format.json
       end
+    end
+
+    def generate_monster
+      @monster = NpcGenerator.generate_npc(monster_params, @user)
+      respond_to do |format|
+        format.json
+      end
+    end
+
+    def actions_by_name
+      action_name = params[:action_name]
+      actions = Action.where('lower(name) like ?', "%#{action_name.downcase}%").map do |monster_action|
+        damage_dice = monster_action.desc[/([1-9]\d*)?d([1-9]\d*)/m]
+        info_text = "(#{monster_action.type.titlecase}): #{monster_action.desc.truncate(75)}"
+        if monster_action.name == 'Multiattack'
+          info_text = "(#{monster_action.type.titlecase}): #{monster_action.desc.truncate(75)}"
+        elsif damage_dice && damage_dice != ''
+          info_text = "(#{monster_action.type.titlecase}): #{damage_dice}"
+        end
+        {
+          id: monster_action.id,
+          name: monster_action.name,
+          info: info_text
+        }
+      end
+      render json: { actions: actions }
     end
 
     def generate_action_desc
@@ -123,15 +151,6 @@ module Admin::V1
     def calculate_cr
       @monster = Monster.new(monster_params)
       render json: { challenge: CrCalc.calculate_challenge(@monster) }
-    end
-
-    def generate_commoner
-      random_npc_gender = params[:random_monster_gender] || %w[male female].sample
-      random_npc_race = params[:random_monster_race] || 'human'
-      @monster = NpcGenerator.generate_commoner(random_npc_gender, random_npc_race, @user)
-      respond_to do |format|
-        format.json
-      end
     end
 
     # PATCH/PUT /monsters/:slug
@@ -189,6 +208,7 @@ module Admin::V1
         damage_vulnerabilities: [],
         damage_resistances: [],
         condition_immunities: [],
+        action_options: [],
         monster_proficiencies_attributes: %i[id prof_id value _destroy],
         senses_attributes: %i[
           name value _destroy

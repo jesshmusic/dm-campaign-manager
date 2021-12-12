@@ -9,12 +9,16 @@ import {
   hitDieForSize,
   hitPoints,
 } from '../../services';
-import { getChallengeRatingOptions } from '../../../../utilities/character-utilities';
-import axios from 'axios';
+import {
+  filterActionOptions,
+  getChallengeRatingOptions,
+} from '../../../../utilities/character-utilities';
+import axios, { AxiosResponse } from 'axios';
 
 export const useData = (props: GenerateMonsterProps) => {
   const [monsterForm, setMonsterForm] = React.useState<MonsterQuickGeneratorFormFields>({
     name: 'New Monster',
+    actionOptions: [],
     alignment: 'Neutral',
     alignmentOption: {
       value: 'Neutral',
@@ -41,6 +45,7 @@ export const useData = (props: GenerateMonsterProps) => {
       label: 'Medium',
       value: 'medium',
     },
+    spells: [],
     xp: 10,
   });
   const [monsterType, setMonsterType] = React.useState('humanoid');
@@ -49,6 +54,18 @@ export const useData = (props: GenerateMonsterProps) => {
     defaultValues: monsterForm,
     mode: 'onChange',
   });
+
+  const getMonsterActions = (inputValue: string, callback: any) => {
+    if (inputValue.length > 2) {
+      axios
+        .get(`/v1/actions-by-name.json?action_name=${inputValue}`)
+        .then((response: AxiosResponse<any>) => {
+          const options = filterActionOptions(response.data.actions);
+          callback(options);
+        })
+        .catch((error) => {});
+    }
+  };
 
   const handleGenerateMonsterName = async () => {
     const apiURL = '/v1/random_monster_name';
@@ -155,6 +172,7 @@ export const useData = (props: GenerateMonsterProps) => {
   return {
     archetypeOptions,
     challengeRatingOptions,
+    getMonsterActions,
     handleGenerateName,
     handleGenerateMonsterName,
     monsterType,

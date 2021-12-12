@@ -31,6 +31,9 @@ Rails.application.routes.draw do
       get '/monster-categories', to: 'monsters#monster_categories',
           as: 'monster_categories',
           constraints: { format: 'json' }
+      get '/actions-by-name', to: 'monsters#actions_by_name',
+          as: 'actions_by_name',
+          constraints: { format: 'json' }
       post '/calculate_cr', to: 'monsters#calculate_cr',
            as: 'calculate_cr',
            constraints: { format: 'json' }

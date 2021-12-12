@@ -69,16 +69,13 @@ class NpcGenerator
       @weighted_senses = WeightedList[Sense.joins(:monster).where(monster: {monster_type: @new_npc.monster_type}).group(:name, :value).count(:name)]
       @sense_chance = Monster.all.count.to_f / Sense.all.count.to_f
       @weighted_speeds = WeightedList[Speed.joins(:monster).where(monster: {monster_type: weighted_monster_types}).group(:name, :value).count(:name)]
-      @monster_actions = MonsterAction.where.not(name: ['Multiattack'])
-      @monster_type_actions = @monster_actions.joins(:monster).where(monster: {monster_type: weighted_monster_types})
-      @special_abilities = SpecialAbility.joins(:monster).where(monster: {monster_type: weighted_monster_types}).where.not(name: ['Spellcasting'])
-      @legendary_actions = LegendaryAction.joins(:monster).where(monster: {monster_type: weighted_monster_types})
       finish =  (Time.now - @start)
       puts finish
     end
 
     def quick_monster(monster_params, user)
-      @new_npc = Monster.new(monster_params.except(:number_of_attacks, :archetype))
+      @new_npc = Monster.new(monster_params.except(:number_of_attacks, :archetype, :action_options))
+      @action_options = monster_params[:action_options]
       fetch_records
       @archetype = monster_params[:archetype]
       @new_npc.slug = @new_npc.name.parameterize
@@ -98,7 +95,7 @@ class NpcGenerator
         cr_info[:save_dc],
         spellcasting_ability
       )
-      generate_special_abilities
+
       generate_stats
 
       @new_npc.slug = @new_npc.name.parameterize if user.nil?
@@ -474,11 +471,7 @@ class NpcGenerator
 
     def generate_actions(damage_per_round = 10, number_of_attacks, challenge_rating, save_dc, primary_ability)
       attacks = []
-      if @archetype == 'any'
-        attacks << create_monster_type_actions(damage_per_round, number_of_attacks)
-      else
-        attacks << create_actions(damage_per_round, number_of_attacks)
-      end
+      attacks << create_actions(damage_per_round, number_of_attacks)
       attacks << create_spellcasting(challenge_rating, save_dc, primary_ability) if @archetype == 'spellcaster'
     end
 
@@ -528,63 +521,80 @@ class NpcGenerator
     end
 
     def create_actions(damage_per_round, num_attacks, number_of_tries = 0)
-      cr_int = CrCalc.cr_string_to_num(@new_npc.challenge_rating)
-      max_num_actions = [num_attacks, 3].min
-      monster_attacks = Hash[
-        @monster_actions.map do |attack|
-          attack_count = @monster_actions.where(name: attack.name).count
-          monster_cr = [CrCalc.cr_string_to_num(attack.monster.challenge_rating), 0.125].max
-          cr_diff = [(monster_cr - cr_int).abs, 1].max
-          weight = (1 / cr_diff) * attack_count
-          attack_options = case @archetype
-                           when 'beast'
-                             BEAST_ATTACKS
-                           when 'rogue'
-                             ROGUE_ATTACKS
-                           when 'spellcaster'
-                             SPELLCASTER_ATTACKS
-                           when 'fighter'
-                             FIGHTER_ATTACKS
-                           else
-                             @monster_actions.joins(:monster).where(monster: {monster_type: @new_npc.monster_type}).pluck(:name).uniq
-                           end
-          npc_dam_bonus = DndRules.ability_score_modifier(@new_npc.strength)
-          damage_dice = attack.desc[/([1-9]\d*)?d([1-9]\d*)/m]
-          is_weapon = attack.desc[/Attack:\s.*to hit/]
-          _, base_damage = action_damage(damage_dice, npc_dam_bonus, attack.desc)
-          if attack_options.include?(attack.name) && is_weapon
-            weight *= 4
-          elsif attack_options.include?(attack.name)
-            weight *= 2
-          else
-            weight = 0
-          end
-          attack_info = {name: attack.name, desc: attack.desc, monster: attack.monster.name, damage: base_damage + npc_dam_bonus}
-          [attack_info, weight]
-        end
-      ].uniq do |action|
-        action.first[:name]
-      end
-      actions = WeightedList[monster_attacks]
+      # cr_int = CrCalc.cr_string_to_num(@new_npc.challenge_rating)
+      # max_num_actions = [num_attacks, 3].min
+      # monster_attacks = Hash[
+      #   @monster_actions.map do |attack|
+      #     attack_count = @monster_actions.where(name: attack.name).count
+      #     monster_cr = [CrCalc.cr_string_to_num(attack.monster.challenge_rating), 0.125].max
+      #     cr_diff = [(monster_cr - cr_int).abs, 1].max
+      #     weight = (1 / cr_diff) * attack_count
+      #     attack_options = case @archetype
+      #                      when 'beast'
+      #                        BEAST_ATTACKS
+      #                      when 'rogue'
+      #                        ROGUE_ATTACKS
+      #                      when 'spellcaster'
+      #                        SPELLCASTER_ATTACKS
+      #                      when 'fighter'
+      #                        FIGHTER_ATTACKS
+      #                      else
+      #                        @monster_actions.joins(:monster).where(monster: {monster_type: @new_npc.monster_type}).pluck(:name).uniq
+      #                      end
+      #     npc_dam_bonus = DndRules.ability_score_modifier(@new_npc.strength)
+      #     damage_dice = attack.desc[/([1-9]\d*)?d([1-9]\d*)/m]
+      #     is_weapon = attack.desc[/Attack:\s.*to hit/]
+      #     _, base_damage = action_damage(damage_dice, npc_dam_bonus, attack.desc)
+      #     if attack_options.include?(attack.name) && is_weapon
+      #       weight *= 4
+      #     elsif attack_options.include?(attack.name)
+      #       weight *= 2
+      #     else
+      #       weight = 0
+      #     end
+      #     attack_info = {name: attack.name, desc: attack.desc, monster: attack.monster.name, damage: base_damage + npc_dam_bonus}
+      #     [attack_info, weight]
+      #   end
+      # ].uniq do |action|
+      #   action.first[:name]
+      # end
+      # actions = WeightedList[monster_attacks]
+      #
+      # num_actions = rand(1..max_num_actions)
+      # attacks = actions.sample(num_actions)
+      # damages = []
+      # attack_names = attacks.map do |attack|
+      #   damages << attack[:damage]
+      #   attack[:name]
+      # end
+      # current_dpr = damages.sum * num_attacks / attacks.count
+      # dpr_diff = damage_per_round - current_dpr
+      # dpr_diff_target = (damage_per_round * 0.5)
+      # if dpr_diff > dpr_diff_target && number_of_tries < MAX_RETRIES
+      #   create_actions(damage_per_round, num_attacks, number_of_tries + 1)
+      # else
 
-      num_actions = rand(1..max_num_actions)
-      attacks = actions.sample(num_actions)
-      damages = []
-      attack_names = attacks.map do |attack|
-        damages << attack[:damage]
-        attack[:name]
+      attack_names = []
+
+      attacks = @action_options.map do |action_id|
+        action = Action.find(action_id)
+        attack_names << action.name if action.type == 'MonsterAction'
+        action
       end
-      current_dpr = damages.sum * num_attacks / attacks.count
-      dpr_diff = damage_per_round - current_dpr
-      dpr_diff_target = (damage_per_round * 0.5)
-      if dpr_diff > dpr_diff_target && number_of_tries < MAX_RETRIES
-        create_actions(damage_per_round, num_attacks, number_of_tries + 1)
-      else
-        create_multiattack(num_attacks, attack_names)
+        create_multiattack(num_attacks, attack_names) if attack_names.count > 0
         attacks.each do |attack|
-          @new_npc.monster_actions << MonsterAction.new(name: attack[:name], desc: adapt_action_desc(attack[:desc], attack[:monster].downcase))
+          case attack.type
+          when 'LegendaryAction'
+            @new_npc.legendary_actions << LegendaryAction.new(name: attack.name, desc: adapt_action_desc(attack.desc, attack.monster.name.downcase))
+          when 'Reaction'
+            @new_npc.reactions << Reaction.new(name: attack.name, desc: adapt_action_desc(attack.desc, attack.monster.name.downcase))
+          when 'SpecialAbility'
+            @new_npc.special_abilities << SpecialAbility.new(name: attack.name, desc: adapt_action_desc(attack.desc, attack.monster.name.downcase))
+          else
+            @new_npc.monster_actions << MonsterAction.new(name: attack.name, desc: adapt_action_desc(attack.desc, attack.monster.name.downcase))
+          end
         end
-      end
+      # end
     end
 
     def create_spellcasting(challenge_rating, save_dc, primary_ability)
@@ -682,77 +692,6 @@ class NpcGenerator
       [attack_info, weight]
     end
 
-    def create_monster_type_actions(damage_per_round, number_of_attacks, number_of_tries = 0)
-      dam_bonus = [DndRules.ability_score_modifier(@new_npc.strength), DndRules.ability_score_modifier(@new_npc.dexterity)].max
-      max_num_actions = [number_of_attacks, 3].min
-      monster_attacks = Hash[@monster_type_actions.map do |action|
-        parse_action_with_weight(action)
-      end].uniq do |action|
-        action.first[:name]
-      end
-      num_actions = rand(1..max_num_actions)
-      abilities = WeightedList[monster_attacks].sample(num_actions)
-      damages = []
-      abilities.each do |action|
-        damage_info = /Hit: ([1-9]\d*)/.match(action[:desc])
-        damage_strings = damage_info.captures unless damage_info.nil?
-        unless damage_strings.nil?
-          action_damages = damage_strings.map do |dam|
-            dam.to_i + dam_bonus
-          end
-          damages << action_damages.sum
-        end
-      end
-      attack_names = abilities.map do |action|
-        action[:name]
-      end
-      current_dpr = damages.empty? ? 0 : damages.sum
-      dpr_diff = damage_per_round - current_dpr
-      dpr_diff_target = (damage_per_round * 0.5)
-      if dpr_diff > dpr_diff_target && number_of_tries < MAX_RETRIES
-        create_monster_type_actions(damage_per_round, number_of_attacks, number_of_tries + 1)
-      else
-        create_multiattack(number_of_attacks, attack_names)
-        abilities.each do |attack|
-          @new_npc.monster_actions << MonsterAction.new(name: attack[:name], desc: adapt_action_desc(attack[:desc], attack[:monster].downcase))
-        end
-      end
-    end
-
-    def generate_special_abilities
-      cr_int = CrCalc.cr_string_to_num(@new_npc.challenge_rating)
-      monster_attacks = Hash[@special_abilities.map do |action|
-        parse_action_with_weight(action)
-      end].uniq do |action|
-        action.first[:name]
-      end
-      special_chance = cr_int / 30
-      num_abilities = rand(1..(cr_int / 8).ceil)
-      abilities = WeightedList[monster_attacks].sample(num_abilities)
-      if rand < special_chance
-        abilities.each do |ability|
-          @new_npc.special_abilities << SpecialAbility.new(name: ability[:name], desc: ability[:desc])
-        end
-      end
-    end
-
-    def generate_legendary_actions
-      cr_int = CrCalc.cr_string_to_num(@new_npc.challenge_rating)
-      monster_attacks = Hash[@legendary_actions.map do |action|
-        parse_action_with_weight(action)
-      end].uniq do |action|
-        action.first[:name]
-      end
-      special_chance = cr_int / 30
-      num_abilities = rand(1..(cr_int / 8).ceil)
-      abilities = WeightedList[monster_attacks].sample(num_abilities)
-      if rand < special_chance
-        abilities.each do |ability|
-          @new_npc.legendary_actions << LegendaryAction.new(name: ability[:name], desc: ability[:desc])
-        end
-      end
-    end
-
     def generate_senses
       cr_int = CrCalc.cr_string_to_num(@new_npc.challenge_rating)
       senses_chance = (cr_int / 30) * 5
@@ -789,7 +728,6 @@ class NpcGenerator
       @new_npc.damage_vulnerabilities = @weighted_vulnerabilities.sample
       @new_npc.condition_immunities = @weighted_conditions.sample
       @new_npc.languages = @weighted_languages.sample
-      generate_legendary_actions
       generate_senses
       generate_speeds
     end

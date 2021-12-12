@@ -8,6 +8,7 @@ import { useData } from './use-data';
 import GenMonsterSection from '../generate-monster/sections/GenMonsterSection';
 import QuickMonsterStatsSection from './QuickMonsterStatsSection';
 import { GiLinkedRings } from 'react-icons/all';
+import FormSelectAsync from '../../../../components/forms/FormSelectAsync';
 
 const styles = require('../generator.module.scss');
 
@@ -22,6 +23,7 @@ const QuickGenerateMonster = (props: GenerateMonsterProps) => {
   const {
     archetypeOptions,
     challengeRatingOptions,
+    getMonsterActions,
     handleGenerateName,
     handleGenerateMonsterName,
     monsterType,
@@ -78,6 +80,17 @@ const QuickGenerateMonster = (props: GenerateMonsterProps) => {
               archetypeOptions={archetypeOptions}
               UseForm={UseForm}
               challengeRatingOptions={challengeRatingOptions}
+            />
+          </GenMonsterSection>
+
+          <GenMonsterSection heading="Actions">
+            <FormSelectAsync
+              label="Search for and select actions"
+              name="actionOptions"
+              control={UseForm.control}
+              getOptions={getMonsterActions}
+              isMulti
+              isClearable
             />
           </GenMonsterSection>
 
