@@ -24,6 +24,7 @@ const QuickGenerateMonster = (props: GenerateMonsterProps) => {
     archetypeOptions,
     challengeRatingOptions,
     getMonsterActions,
+    getSpells,
     handleGenerateName,
     handleGenerateMonsterName,
     monsterType,
@@ -89,6 +90,17 @@ const QuickGenerateMonster = (props: GenerateMonsterProps) => {
               name="actionOptions"
               control={UseForm.control}
               getOptions={getMonsterActions}
+              isMulti
+              isClearable
+            />
+          </GenMonsterSection>
+
+          <GenMonsterSection heading="Spells">
+            <FormSelectAsync
+              label={'Spells (search by name, level, or school)'}
+              name={`spellOptions`}
+              getOptions={getSpells}
+              control={UseForm.control}
               isMulti
               isClearable
             />

@@ -74,8 +74,9 @@ class NpcGenerator
     end
 
     def quick_monster(monster_params, user)
-      @new_npc = Monster.new(monster_params.except(:number_of_attacks, :archetype, :action_options))
+      @new_npc = Monster.new(monster_params.except(:number_of_attacks, :archetype, :action_options, :spell_ids))
       @action_options = monster_params[:action_options]
+      @spell_ids = monster_params[:spell_ids]
       fetch_records
       @archetype = monster_params[:archetype]
       @new_npc.slug = @new_npc.name.parameterize
@@ -183,14 +184,14 @@ class NpcGenerator
         current_cr = calculated_cr[:raw_cr]
         num_tries = 0
         if expected_cr > current_cr
-          while expected_cr > current_cr && num_tries < 5
+          while expected_cr > current_cr && num_tries < 20
             adjust_hd(true)
             new_calc_cr = CrCalc.calculate_challenge(@new_npc)
             current_cr = new_calc_cr[:raw_cr]
             num_tries += 1
           end
         elsif expected_cr < current_cr
-          while expected_cr < current_cr && num_tries < 5
+          while expected_cr < current_cr && num_tries < 20
             adjust_hd(false)
             new_calc_cr = CrCalc.calculate_challenge(@new_npc)
             current_cr = new_calc_cr[:raw_cr]
@@ -207,17 +208,16 @@ class NpcGenerator
     end
 
     def get_ability_score_order
-      weighted_abilities = case @archetype
-                           when 'spellcaster'
+      weighted_abilities = if @archetype == 'spellcaster' || @spell_ids.count > 0
                              WeightedList[{
                                             Strength: 5,
                                             Dexterity: 20,
                                             Constitution: 10,
-                                            Wisdom: 50,
-                                            Intelligence: 50,
-                                            Charisma: 50
+                                            Wisdom: 500,
+                                            Intelligence: 750,
+                                            Charisma: 350
                                           }]
-                           when 'rogue'
+                             elsif @archetype == 'rogue'
                              WeightedList[{
                                             Strength: 20,
                                             Dexterity: 100,
@@ -472,7 +472,7 @@ class NpcGenerator
     def generate_actions(damage_per_round = 10, number_of_attacks, challenge_rating, save_dc, primary_ability)
       attacks = []
       attacks << create_actions(damage_per_round, number_of_attacks)
-      attacks << create_spellcasting(challenge_rating, save_dc, primary_ability) if @archetype == 'spellcaster'
+      attacks << create_spellcasting(challenge_rating, save_dc, primary_ability) if @spell_ids.count > 0
     end
 
     def create_multiattack(num_attacks, attack_names)
@@ -506,7 +506,9 @@ class NpcGenerator
           remaining_attacks = num_attacks
           attack_counts = []
           damage_attacks.each do |next_attack|
-            break unless remaining_attacks > 0
+            if remaining_attacks == 0
+              break
+            end
             current_attack_count = rand(1..remaining_attacks)
             attack_counts << {name: next_attack, count: current_attack_count}
             remaining_attacks -= current_attack_count
@@ -521,59 +523,6 @@ class NpcGenerator
     end
 
     def create_actions(damage_per_round, num_attacks, number_of_tries = 0)
-      # cr_int = CrCalc.cr_string_to_num(@new_npc.challenge_rating)
-      # max_num_actions = [num_attacks, 3].min
-      # monster_attacks = Hash[
-      #   @monster_actions.map do |attack|
-      #     attack_count = @monster_actions.where(name: attack.name).count
-      #     monster_cr = [CrCalc.cr_string_to_num(attack.monster.challenge_rating), 0.125].max
-      #     cr_diff = [(monster_cr - cr_int).abs, 1].max
-      #     weight = (1 / cr_diff) * attack_count
-      #     attack_options = case @archetype
-      #                      when 'beast'
-      #                        BEAST_ATTACKS
-      #                      when 'rogue'
-      #                        ROGUE_ATTACKS
-      #                      when 'spellcaster'
-      #                        SPELLCASTER_ATTACKS
-      #                      when 'fighter'
-      #                        FIGHTER_ATTACKS
-      #                      else
-      #                        @monster_actions.joins(:monster).where(monster: {monster_type: @new_npc.monster_type}).pluck(:name).uniq
-      #                      end
-      #     npc_dam_bonus = DndRules.ability_score_modifier(@new_npc.strength)
-      #     damage_dice = attack.desc[/([1-9]\d*)?d([1-9]\d*)/m]
-      #     is_weapon = attack.desc[/Attack:\s.*to hit/]
-      #     _, base_damage = action_damage(damage_dice, npc_dam_bonus, attack.desc)
-      #     if attack_options.include?(attack.name) && is_weapon
-      #       weight *= 4
-      #     elsif attack_options.include?(attack.name)
-      #       weight *= 2
-      #     else
-      #       weight = 0
-      #     end
-      #     attack_info = {name: attack.name, desc: attack.desc, monster: attack.monster.name, damage: base_damage + npc_dam_bonus}
-      #     [attack_info, weight]
-      #   end
-      # ].uniq do |action|
-      #   action.first[:name]
-      # end
-      # actions = WeightedList[monster_attacks]
-      #
-      # num_actions = rand(1..max_num_actions)
-      # attacks = actions.sample(num_actions)
-      # damages = []
-      # attack_names = attacks.map do |attack|
-      #   damages << attack[:damage]
-      #   attack[:name]
-      # end
-      # current_dpr = damages.sum * num_attacks / attacks.count
-      # dpr_diff = damage_per_round - current_dpr
-      # dpr_diff_target = (damage_per_round * 0.5)
-      # if dpr_diff > dpr_diff_target && number_of_tries < MAX_RETRIES
-      #   create_actions(damage_per_round, num_attacks, number_of_tries + 1)
-      # else
-
       attack_names = []
 
       attacks = @action_options.map do |action_id|
@@ -635,14 +584,9 @@ class NpcGenerator
     def parse_spell_action_desc(action)
       spell_slots = DndRules.npc_spell_slots(action[:caster_level])
       spell_str = "The #{@new_npc.name.downcase} is a #{action[:caster_level].ordinalize} level spellcaster. Its spellcasting ability is #{action[:primary_ability]}. The #{@new_npc.name.downcase} has the following spells prepared.  \n"
-      weighted_cantrips = { '0': 50, '1': 25, '2': 25, '3': 25, '4': 15, '5': 10, '6': 5 }
-      num_cantrips_list = WeightedList[weighted_cantrips]
-      num_cantrips = num_cantrips_list.sample.to_s.to_i
-      cantrips = []
-      num_cantrips.times do
-        cantrips << Spell.where(level: 0).pluck(:name).sample
-      end
-      spells = [{ name: 'Cantrips', slots: -1, spells: cantrips },
+
+      spell_list = {}
+      spells = [{ name: 'Cantrips', slots: -1, spells: [] },
                 { name: '1st Level', slots: spell_slots[0], spells: [] },
                 { name: '2nd Level', slots: spell_slots[1], spells: [] },
                 { name: '3rd Level', slots: spell_slots[2], spells: [] },
@@ -653,23 +597,16 @@ class NpcGenerator
                 { name: '8th Level', slots: spell_slots[7], spells: [] },
                 { name: '9th Level', slots: spell_slots[8], spells: [] },
       ]
-      spell_slots.each_with_index do |slots, index|
-        if slots > 0 && slots <= 2
-          (slots + rand(0..1)).times do
-            spells[index + 1][:spells] << Spell.where(level: index + 1).pluck(:name).sample
-          end
-        elsif slots > 2
-          (slots + rand(-1..1)).times do
-            spells[index + 1][:spells] << Spell.where(level: index + 1).pluck(:name).sample
-          end
-        end
+      @spell_ids.each do |spell_id|
+        spell = Spell.find(spell_id)
+        spells[spell.level][:spells] << spell.name
       end
       spells.each do |spell_list|
         if spell_list[:spells].count > 0
           if spell_list[:name] == 'Cantrips'
-            spell_str += "Cantrips (at will): #{spell_list[:spells].join(', ')}\n"
+            spell_str += "Cantrips (at will): #{spell_list[:spells].join(', ')}  \n"
           else
-            spell_str += "#{spell_list[:name]} (#{spell_list[:slots]} #{'slot'.pluralize(spell_list[:slots])}): #{spell_list[:spells].join(', ')}\n"
+            spell_str += "#{spell_list[:name]} (#{spell_list[:slots]} #{'slot'.pluralize(spell_list[:slots])}): #{spell_list[:spells].join(', ')}  \n"
           end
         end
       end

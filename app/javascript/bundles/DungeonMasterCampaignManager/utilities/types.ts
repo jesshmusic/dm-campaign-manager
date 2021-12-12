@@ -360,7 +360,7 @@ export type MonsterQuickGeneratorFormFields = {
   monsterSubtype?: string;
   numberOfAttacks: number;
   size: SelectOption;
-  spells: number[];
+  spellOptions: SelectOption[];
   xp: number;
 };
 

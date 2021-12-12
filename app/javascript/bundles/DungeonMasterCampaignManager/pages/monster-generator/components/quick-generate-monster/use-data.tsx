@@ -11,6 +11,7 @@ import {
 } from '../../services';
 import {
   filterActionOptions,
+  filterOptionsWithData,
   getChallengeRatingOptions,
 } from '../../../../utilities/character-utilities';
 import axios, { AxiosResponse } from 'axios';
@@ -45,7 +46,7 @@ export const useData = (props: GenerateMonsterProps) => {
       label: 'Medium',
       value: 'medium',
     },
-    spells: [],
+    spellOptions: [],
     xp: 10,
   });
   const [monsterType, setMonsterType] = React.useState('humanoid');
@@ -65,6 +66,16 @@ export const useData = (props: GenerateMonsterProps) => {
         })
         .catch((error) => {});
     }
+  };
+
+  const getSpells = (inputValue: string, callback: any) => {
+    axios
+      .get(`/v1/spells.json?list=true&search=${inputValue}}`)
+      .then((response: AxiosResponse<any>) => {
+        const options = filterOptionsWithData(response.data.results);
+        callback(options);
+      })
+      .catch((error) => {});
   };
 
   const handleGenerateMonsterName = async () => {
@@ -100,9 +111,7 @@ export const useData = (props: GenerateMonsterProps) => {
 
   const archetypeOptions = [
     { label: 'Any', value: 'any' },
-    { label: 'Beast', value: 'beast' },
-    { label: 'Fighter', value: 'fighter' },
-    { label: 'Rogue', value: 'rogue' },
+    { label: 'Roguish', value: 'rogue' },
     { label: 'Spellcaster', value: 'spellcaster' },
   ];
 
@@ -173,6 +182,7 @@ export const useData = (props: GenerateMonsterProps) => {
     archetypeOptions,
     challengeRatingOptions,
     getMonsterActions,
+    getSpells,
     handleGenerateName,
     handleGenerateMonsterName,
     monsterType,

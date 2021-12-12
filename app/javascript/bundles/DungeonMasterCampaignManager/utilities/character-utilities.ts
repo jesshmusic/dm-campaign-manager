@@ -39,15 +39,6 @@ export const alignmentOptions: SelectOption[] = [
   { value: 'Chaotic Evil', label: 'Chaotic Evil' },
 ];
 
-export const monsterVariantOptions: {
-  label: string;
-  value: string | number;
-}[] = [
-  { value: 'fighter', label: 'Fighter' },
-  { value: 'caster_wizard', label: 'Caster - Wizard' },
-  { value: 'caster_cleric', label: 'Caster - Cleric' },
-];
-
 export const monsterSizeOptions: SelectOption[] = [
   { value: 'tiny', label: 'Tiny' },
   { value: 'small', label: 'Small' },

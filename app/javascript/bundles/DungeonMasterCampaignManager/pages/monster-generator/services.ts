@@ -9,7 +9,6 @@ import {
   MonsterQuickGeneratorFormFields,
 } from '../../utilities/types';
 import axios from 'axios';
-import { plusNumberString } from '../../utilities/character-utilities';
 
 const abilityAbbr = {
   STR: 'strength',
@@ -185,6 +184,7 @@ export const createQuickMonsterParams = (values: MonsterQuickGeneratorFormFields
     monsterType: values.monsterTypeOption.label,
     numberOfAttacks: values.numberOfAttacks > 0 ? values.numberOfAttacks : 1,
     size: values.size.label,
+    spellIds: values.spellOptions.map((spellOption) => spellOption.value),
     xp: values.xp,
   };
   return snakecaseKeys(monsterParams);
