@@ -1,5 +1,9 @@
 @import '../../stylesheets/variables';
 
+.widget {
+  overflow: auto;
+}
+
 .nameOptions {
   display: grid;
   grid-gap: $spacer;

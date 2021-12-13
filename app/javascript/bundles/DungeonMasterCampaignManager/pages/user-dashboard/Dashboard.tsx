@@ -2,12 +2,10 @@ import React from 'react';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
-import NameField from '../../components/Widgets/NameField';
-import TavernNameField from '../../components/Widgets/TavernNameField';
 import { connect } from 'react-redux';
-import NPCGenButton from '../../components/Widgets/NPCGenButton';
 import Widget from '../../components/Widgets/Widget';
 import DashboardBar from './components/DashboardBar';
+import { dashboardComponents, dashboardItems, initialLayouts } from '../../components/Widgets';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -31,44 +29,6 @@ const saveToLS = (key, value) => {
       })
     );
   }
-};
-
-const dashboardItems = ['randomName', 'randomTavern', 'npcGen'];
-
-const initialLayouts = {
-  lg: [
-    { i: 'randomName', x: 0, y: 0, w: 1, h: 1, minW: 3, minH: 3 },
-    { i: 'randomTavern', x: 1, y: 0, w: 1, h: 1, minW: 3, minH: 3 },
-    { i: 'npcGen', x: 2, y: 0, w: 3, h: 1, minW: 3, minH: 3 },
-  ],
-};
-
-export const dashboardComponents: {
-  [key: string]: {
-    component: React.ReactNode;
-    title: string;
-    subtitle: string;
-    grid: object;
-  };
-} = {
-  randomName: {
-    component: NameField,
-    title: 'Random Character Name',
-    subtitle: 'Generate a random fantasy name based on gender and race',
-    grid: { w: 4, h: 3, x: 0, y: Infinity, minW: 4, minH: 3 },
-  },
-  randomTavern: {
-    component: TavernNameField,
-    title: 'Random Tavern Name',
-    subtitle: 'Generate a random tavern name',
-    grid: { w: 3, h: 3, x: 4, y: Infinity, minW: 3, minH: 3 },
-  },
-  npcGen: {
-    component: NPCGenButton,
-    title: 'NPC Generator',
-    subtitle: 'Quickly create custom NPCs of any challenge rating',
-    grid: { w: 2, h: 2, x: 0, y: Infinity, minW: 2, minH: 2 },
-  },
 };
 
 const Dashboard = () => {
@@ -112,6 +72,7 @@ const Dashboard = () => {
         {items.map((key) => (
           <div key={key} className="widget" data-grid={dashboardComponents[key].grid}>
             <Widget
+              icon={dashboardComponents[key].icon}
               id={key}
               onRemoveItem={onRemoveItem}
               component={dashboardComponents[key].component}

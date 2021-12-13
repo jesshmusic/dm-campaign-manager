@@ -1,6 +1,6 @@
 import React from 'react';
-import { dashboardComponents } from '../Dashboard';
 import CloseButton from '../../../components/Button/CloseButton';
+import { dashboardComponents } from '../../../components/Widgets';
 const styles = require('../user-dashboard.module.scss');
 
 type AddListProps = {
