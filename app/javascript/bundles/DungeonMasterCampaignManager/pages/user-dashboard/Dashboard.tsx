@@ -74,21 +74,25 @@ export const dashboardComponents: {
 const Dashboard = () => {
   const [items, setItems] = React.useState(dashboardItems);
   const [layouts, setLayouts] = React.useState(getFromLS('layouts') || initialLayouts);
+
   const onLayoutChange = (currentLayouts, allLayouts) => {
     setLayouts(allLayouts);
   };
+
   const onLayoutSave = () => {
     saveToLS('layouts', layouts);
   };
+
   const onRemoveItem = (itemId) => {
     setItems(items.filter((i) => i !== itemId));
   };
+
   const onAddItem = (itemId) => {
     setItems([...items, itemId]);
   };
 
   return (
-    <div className={styles.section}>
+    <div className={styles.section} id="dashboardContainer">
       <DashboardBar
         onLayoutSave={onLayoutSave}
         items={items}

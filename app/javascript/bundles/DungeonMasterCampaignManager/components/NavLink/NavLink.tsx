@@ -2,14 +2,25 @@ import { Link, useMatch, useResolvedPath } from 'react-router-dom';
 import React from 'react';
 import { GiDragonHead } from 'react-icons/all';
 import { MenuItem } from 'react-pro-sidebar';
+import Button from '../Button/Button';
+import { Colors } from '../../utilities/enums';
 
 const styles = require('./navlink.module.scss');
 
-export const SidebarLink = (props: {
+export const SidebarButton = (props: {
   title: string;
   icon?: React.ReactNode;
-  to: string;
+  onClick: () => void;
 }) => {
+  const { title, icon, onClick } = props;
+  return (
+    <MenuItem icon={icon} active={false} onClick={onClick}>
+      {title}
+    </MenuItem>
+  );
+};
+
+export const SidebarLink = (props: { title: string; icon?: React.ReactNode; to: string }) => {
   const { title, icon, to } = props;
   let resolved = useResolvedPath(to);
   let match = useMatch({ path: resolved.pathname, end: true });
@@ -26,10 +37,7 @@ export const NavLink = (props) => {
   let resolved = useResolvedPath(props.to);
   let match = useMatch({ path: resolved.pathname, end: true });
   return (
-    <Link
-      {...inputProps}
-      className={!!match ? styles.navLinkActive : styles.navLink}
-    >
+    <Link {...inputProps} className={!!match ? styles.navLinkActive : styles.navLink}>
       <span>
         <span className={styles.icon}>{icon}</span>
         <span className={styles.title}>{children}</span>

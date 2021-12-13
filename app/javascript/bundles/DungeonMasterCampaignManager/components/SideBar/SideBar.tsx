@@ -3,8 +3,10 @@ import rest from '../../api/api';
 import { connect } from 'react-redux';
 import {
   AiOutlineHome,
+  BiHide,
   BiLogIn,
   BiLogOut,
+  BiShow,
   GiAchillesHeel,
   GiCapeArmor,
   GiChestArmor,
@@ -33,7 +35,7 @@ import {
   SubMenu,
 } from 'react-pro-sidebar';
 import './sidebar-vars.scss';
-import { SidebarLink } from '../NavLink/NavLink';
+import { SidebarButton, SidebarLink } from '../NavLink/NavLink';
 import { useAuth0, User } from '@auth0/auth0-react';
 import { UserProps } from '../../utilities/types';
 
@@ -72,10 +74,13 @@ const SideBar = (props: {
   currentUser?: UserProps;
   getSections: () => void;
   isCollapsed: boolean;
+  isMobile: boolean;
   logOutUser: (token: string) => void;
   sections: { name: string; slug: string }[];
+  setIsCollapsed: (boolean) => void;
 }) => {
-  const { currentUser, getSections, isCollapsed, logOutUser, sections } = props;
+  const { currentUser, getSections, isCollapsed, isMobile, logOutUser, sections, setIsCollapsed } =
+    props;
 
   const { user, getAccessTokenSilently, isAuthenticated, loginWithRedirect, logout } = useAuth0();
 
@@ -85,7 +90,6 @@ const SideBar = (props: {
         logOutUser(token);
         document.cookie =
           '_dungeon_master_screen_online_session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-        console.log(document.cookie);
         logout({ returnTo: window.location.origin });
       })
       .catch((err) => {
@@ -102,6 +106,16 @@ const SideBar = (props: {
       <ProSidebar collapsed={isCollapsed} image={sidebarBG}>
         <SidebarContent>
           <Menu iconShape="square">
+            {!isMobile && (
+              <SidebarButton
+                onClick={() => {
+                  console.log(isCollapsed);
+                  setIsCollapsed(!isCollapsed);
+                }}
+                title={isCollapsed ? 'Show Menu' : 'Collapse Menu'}
+                icon={isCollapsed ? <BiShow /> : <BiHide />}
+              />
+            )}
             <SidebarLink to="/" title="App" icon={<AiOutlineHome />} />
             <SidebarLink to="/app/classes" title="Classes" icon={<GiPerson />} />
             <SidebarLink to="/app/races" title="Races" icon={<GiDwarfFace />} />

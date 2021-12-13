@@ -6,13 +6,12 @@ import '../stylesheets/_fonts.scss';
 import '../stylesheets/application.scss';
 import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
-import Breadcrumbs, {
-  BreadCrumbProps,
-} from '../components/Breadcrumbs/Breadcrumbs';
+import Breadcrumbs, { BreadCrumbProps } from '../components/Breadcrumbs/Breadcrumbs';
 import SideBar from '../components/SideBar/SideBar';
 import Util from '../utilities/utilities';
 import { gsap } from 'gsap';
 import { Transition, TransitionGroup } from 'react-transition-group';
+import classNames from 'classnames';
 
 const styles = require('./page-container.module.scss');
 
@@ -23,6 +22,7 @@ type PageContainerProps = {
 };
 
 const PageContainer = (props: PageContainerProps) => {
+  const [isCollapsed, setIsCollapsed] = React.useState(true);
   const { children, description, pageTitle } = props;
   const [isMobile, setIsMobile] = React.useState(Util.isMobileWidth());
 
@@ -57,13 +57,17 @@ const PageContainer = (props: PageContainerProps) => {
   };
 
   return (
-    <div>
+    <div id="dmsContainer">
       <FlashMessages />
       <Helmet>
         <title>{pageTitle} | Dungeon Master&apos;s Screen</title>
         <meta name="description" content={description} />
       </Helmet>
-      <SideBar isCollapsed={isMobile} />
+      <SideBar
+        isCollapsed={isCollapsed || isMobile}
+        setIsCollapsed={setIsCollapsed}
+        isMobile={isMobile}
+      />
       <Breadcrumbs />
       <TransitionGroup component={null}>
         <Transition
@@ -74,7 +78,13 @@ const PageContainer = (props: PageContainerProps) => {
         >
           <div className={styles.pageWrapper}>
             <div className={styles.pageContent}>
-              <div className={styles.page}>{children}</div>
+              <div
+                className={classNames(styles.page, {
+                  [styles.collapsed]: isCollapsed,
+                })}
+              >
+                {children}
+              </div>
             </div>
           </div>
         </Transition>

@@ -6,6 +6,7 @@
 
 .section {
   padding: $spacer * 1 0;
+  position: relative;
   width: 100%;
 }
 
@@ -34,23 +35,73 @@
   }
 }
 
-.buttonBar {
-  @include font-size($font-size-lg);
-  background-color: $primary;
-  border-radius: $border-radius-lg;
-  box-shadow: $box-shadow;
-  color: $white;
-  display: block;
-  font-family: $font-family-mr-eaves;
-  padding: $spacer;
-  text-align: center;
-  transition: $transition-base;
-  width: 100%;
+.dashboardHeader {
+  border-bottom: 2px solid $yellow;
+  border-top: 2px solid $yellow;
+  margin-bottom: 1rem;
+  padding: 0;
 
-  &:hover {
-    background-color: lighten($primary, 20%);
-    box-shadow: $box-shadow-sm;
-    color: $white;
-    text-decoration: none;
+  h2 {
+    border-bottom: 0;
+    margin: 0;
+    padding: 0.5rem 0 0;
+  }
+
+  .buttons {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+
+    .saveButton,
+    .listButton {
+      padding: 0;
+
+      path {
+        fill: $primary;
+      }
+    }
+  }
+}
+
+.addListContent {
+  .heading {
+    align-items: center;
+    border-bottom: 1px solid $primary;
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 1rem;
+
+    h3 {
+      margin: 0;
+    }
+  }
+
+  .content {
+    padding: 1rem;
+  }
+}
+
+.dashboardModal {
+  background: lighten($yellow, 25%);
+  border-radius: 4px;
+  outline: none;
+  overflow: auto;
+  padding: 0;
+  position: absolute;
+}
+
+.dashboardModalOverlay {
+  align-items: center;
+  background-color: rgba($primary, 0.75);
+  display: flex;
+  inset: 0 0 0 4.75rem;
+  justify-content: center;
+  position: fixed;
+  z-index: 100;
+}
+
+.collapsed {
+  &.dashboardModalOverlay {
+    inset: 0 0 0 4.75rem;
   }
 }

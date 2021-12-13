@@ -37,19 +37,4 @@
   justify-content: space-between;
   margin-bottom: 0.5rem;
   width: 100%;
-
-  button {
-    background-color: lighten($primary, 30%) !important;
-    border-radius: 100%;
-    margin: 0;
-    transition: background-color ease-in-out 350ms;
-
-    path {
-      stroke: $white;
-    }
-
-    &:hover {
-      background-color: lighten($primary, 50%) !important;
-    }
-  }
 }

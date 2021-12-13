@@ -154,6 +154,19 @@
   }
 }
 
+.closeButton {
+  margin: 0;
+  transition: background-color ease-in-out 350ms;
+
+  path {
+    fill: $primary;
+
+    &:hover {
+      fill: lighten($primary, 20%) !important;
+    }
+  }
+}
+
 .iconOnly {
   svg {
     margin-left: 0;

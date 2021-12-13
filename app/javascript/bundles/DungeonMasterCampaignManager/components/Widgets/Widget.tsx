@@ -1,8 +1,6 @@
 import React from 'react';
 import Frame from '../Frame/Frame';
-import Button from '../Button/Button';
-import { Colors } from '../../utilities/enums';
-import { GrClose } from 'react-icons/all';
+import CloseButton from '../Button/CloseButton';
 
 type WidgetProps = {
   id: string;
@@ -19,15 +17,7 @@ const Widget = ({ id, onRemoveItem, component: Item, title, subtitle, hideFrame 
       style={{ width: '100%', height: '100%' }}
       title={title}
       subtitle={subtitle}
-      actionButton={
-        <Button
-          color={Colors.primary}
-          icon={<GrClose />}
-          hideTitle
-          title="X"
-          onClick={() => onRemoveItem(id)}
-        />
-      }
+      actionButton={<CloseButton onClick={() => onRemoveItem(id)} />}
     >
       <Item hideFrame={hideFrame} />
     </Frame>
