@@ -57,16 +57,21 @@ class NpcGenerator
   class << self
     def fetch_records
       @start = Time.now
-      selected_monster_type = @new_npc.monster_type
+      current_monster_type = if @new_npc.monster_type.include? 'humanoid'
+                               'humanoid'
+                             else
+                               @new_npc.monster_type
+                             end
+      selected_monster_type = current_monster_type
       monster_types = Monster.all.group(:monster_type).count(:monster_type)
       monster_types[selected_monster_type] = 300
       weighted_monster_types = WeightedList[monster_types].sample(3)
-      @weighted_resistances = WeightedList[Monster.where(monster_type: @new_npc.monster_type).group(:damage_resistances).count(:damage_resistances)]
-      @weighted_immunities = WeightedList[Monster.where(monster_type: @new_npc.monster_type).group(:damage_immunities).count(:damage_immunities)]
-      @weighted_vulnerabilities = WeightedList[Monster.where(monster_type: @new_npc.monster_type).group(:damage_vulnerabilities).count(:damage_vulnerabilities)]
-      @weighted_conditions = WeightedList[Monster.where(monster_type: @new_npc.monster_type).group(:condition_immunities).count(:condition_immunities)]
-      @weighted_languages = WeightedList[Monster.where(monster_type: @new_npc.monster_type).group(:languages).count(:languages)]
-      @weighted_senses = WeightedList[Sense.joins(:monster).where(monster: {monster_type: @new_npc.monster_type}).group(:name, :value).count(:name)]
+      @weighted_resistances = WeightedList[Monster.where(monster_type: current_monster_type).group(:damage_resistances).count(:damage_resistances)]
+      @weighted_immunities = WeightedList[Monster.where(monster_type: current_monster_type).group(:damage_immunities).count(:damage_immunities)]
+      @weighted_vulnerabilities = WeightedList[Monster.where(monster_type: current_monster_type).group(:damage_vulnerabilities).count(:damage_vulnerabilities)]
+      @weighted_conditions = WeightedList[Monster.where(monster_type: current_monster_type).group(:condition_immunities).count(:condition_immunities)]
+      @weighted_languages = WeightedList[Monster.where(monster_type: current_monster_type).group(:languages).count(:languages)]
+      @weighted_senses = WeightedList[Sense.joins(:monster).where(monster: {monster_type: current_monster_type}).group(:name, :value).count(:name)]
       @sense_chance = Monster.all.count.to_f / Sense.all.count.to_f
       @weighted_speeds = WeightedList[Speed.joins(:monster).where(monster: {monster_type: weighted_monster_types}).group(:name, :value).count(:name)]
       finish =  (Time.now - @start)
@@ -614,10 +619,11 @@ class NpcGenerator
     end
 
     def parse_action_with_weight(action)
+      current_monster_type = @new_npc.monster_type.include? 'humanoid' ? 'humanoid' : @new_npc.monster_type
       cr_int = CrCalc.cr_string_to_num(@new_npc.challenge_rating)
       monster_cr = [CrCalc.cr_string_to_num(action.monster.challenge_rating), 0.125].max
       weight = (1 / ([monster_cr - cr_int, 0.125].max).abs) * 100
-      weight *= 5 if action.monster.monster_type == @new_npc.monster_type
+      weight *= 5 if action.monster.monster_type == current_monster_type
       action_desc = replace_monster_name(action.desc, action.monster.name)
       save_dcs = /(?:DC )([1-9]\d*)(?:\s)/m.match(action_desc)
       unless save_dcs.nil?

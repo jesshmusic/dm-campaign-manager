@@ -300,7 +300,7 @@ export type MonsterGeneratorFormFields = {
   attackBonus: number;
   damageBonus: number;
   challengeRating: string;
-  characterRace?: { value: string; name: string };
+  characterRace?: { value: string; label: string };
   charisma: number;
   charismaMod: number | string;
   constitution: number;
@@ -351,7 +351,7 @@ export type MonsterQuickGeneratorFormFields = {
   armorClass: number;
   archetypeOption: SelectOption;
   challengeRatingOption: SelectOption;
-  characterRace?: { value: string; name: string };
+  characterRace?: { value: string; label: string };
   constitution: number;
   hitDice: string;
   hitDiceNumber: number;

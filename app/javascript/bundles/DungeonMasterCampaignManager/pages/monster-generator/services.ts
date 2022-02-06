@@ -81,7 +81,9 @@ export const getMonsterObject = (values: MonsterGeneratorFormFields): MonsterPro
   intelligence: values.intelligence,
   languages: values.languages.map((lang) => lang.label).join(', '),
   monsterSubtype: values.monsterSubtype?.toLowerCase(),
-  monsterType: values.monsterType.toLowerCase(),
+  monsterType: values.characterRace
+    ? `${values.monsterType.toLowerCase()} (${values.characterRace.label.toLowerCase()})`
+    : values.monsterType.toLowerCase(),
   name: values.name,
   profBonus: values.profBonus,
   saveDc: values.saveDC,
@@ -181,7 +183,9 @@ export const createQuickMonsterParams = (values: MonsterQuickGeneratorFormFields
     constitution: values.constitution,
     hitDice: `${values.hitDiceNumber}${values.hitDiceValue}`,
     hitPoints: values.hitPoints,
-    monsterType: values.monsterTypeOption.label,
+    monsterType: values.characterRace
+      ? `${values.monsterTypeOption.label.toLowerCase()} (${values.characterRace.label.toLowerCase()})`
+      : values.monsterTypeOption.label.toLowerCase(),
     numberOfAttacks: values.numberOfAttacks > 0 ? values.numberOfAttacks : 1,
     size: values.size.label,
     spellIds: values.spellOptions.map((spellOption) => spellOption.value),
