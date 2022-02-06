@@ -20,6 +20,7 @@ const getFromLS = (key) => {
   }
   return ls[key];
 };
+
 const saveToLS = (key, value) => {
   if (global.localStorage) {
     global.localStorage.setItem(
@@ -32,8 +33,12 @@ const saveToLS = (key, value) => {
 };
 
 const Dashboard = () => {
-  const [items, setItems] = React.useState(dashboardItems);
-  const [layouts, setLayouts] = React.useState(getFromLS('layouts') || initialLayouts);
+  const [items, setItems] = React.useState(['randomName', 'randomTavern', 'npcGen']);
+  const [layouts, setLayouts] = React.useState(initialLayouts);
+
+  React.useEffect(() => {
+    setLayouts(getFromLS('layouts') || initialLayouts);
+  }, []);
 
   const onLayoutChange = (currentLayouts, allLayouts) => {
     setLayouts(allLayouts);
@@ -65,7 +70,7 @@ const Dashboard = () => {
         className="layout"
         layouts={layouts}
         breakpoints={{ lg: 1500, md: 1200, sm: 900, xs: 480, xxs: 0 }}
-        cols={{ lg: 12, md: 9, sm: 6, xs: 3, xxs: 3 }}
+        cols={{ lg: 12, md: 9, sm: 6, xs: 3, xxs: 1 }}
         rowHeight={100}
         onLayoutChange={onLayoutChange}
       >

@@ -26,14 +26,14 @@ export const dashboardComponents: {
     icon: <GiBeerStein />,
     title: 'Random Tavern Name',
     subtitle: 'Generate a random tavern name',
-    grid: { w: 3, h: 3, x: 4, y: Infinity, minW: 3, minH: 3 },
+    grid: { w: 4, h: 3, x: 4, y: Infinity, minW: 3, minH: 3 },
   },
   npcGen: {
     component: NPCGenButton,
     icon: <GiOrcHead />,
     title: 'NPC Generator',
     subtitle: 'Quickly create custom NPCs of any challenge rating',
-    grid: { w: 2, h: 2, x: 0, y: Infinity, minW: 2, minH: 2 },
+    grid: { w: 4, h: 3, x: 0, y: Infinity, minW: 2, minH: 2 },
   },
   notesWidget: {
     component: NotesWidget,
@@ -48,8 +48,8 @@ export const dashboardItems = ['randomName', 'randomTavern', 'npcGen', 'notesWid
 
 export const initialLayouts = {
   lg: [
-    { i: 'randomName', x: 0, y: 0, w: 1, h: 1, minW: 3, minH: 3 },
-    { i: 'randomTavern', x: 1, y: 0, w: 1, h: 1, minW: 3, minH: 3 },
-    { i: 'npcGen', x: 2, y: 0, w: 3, h: 1, minW: 3, minH: 3 },
+    { i: 'randomName', x: 0, y: 0, w: 4, h: 3, minW: 4, minH: 3 },
+    { i: 'randomTavern', x: 4, y: 0, w: 4, h: 3, minW: 3, minH: 3 },
+    { i: 'npcGen', x: 8, y: 0, w: 4, h: 3, minW: 3, minH: 3 },
   ],
 };
