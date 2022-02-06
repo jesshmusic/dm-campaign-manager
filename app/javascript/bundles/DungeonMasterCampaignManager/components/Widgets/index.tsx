@@ -33,7 +33,7 @@ export const dashboardComponents: {
     icon: <GiOrcHead />,
     title: 'NPC Generator',
     subtitle: 'Quickly create custom NPCs of any challenge rating',
-    grid: { w: 4, h: 3, x: 0, y: Infinity, minW: 2, minH: 2 },
+    grid: { w: 4, h: 2, x: 0, y: Infinity, minW: 3, minH: 2 },
   },
   notesWidget: {
     component: NotesWidget,
@@ -50,6 +50,6 @@ export const initialLayouts = {
   lg: [
     { i: 'randomName', x: 0, y: 0, w: 4, h: 3, minW: 4, minH: 3 },
     { i: 'randomTavern', x: 4, y: 0, w: 4, h: 3, minW: 3, minH: 3 },
-    { i: 'npcGen', x: 8, y: 0, w: 4, h: 3, minW: 3, minH: 3 },
+    { i: 'npcGen', x: 8, y: 0, w: 4, h: 2, minW: 3, minH: 2 },
   ],
 };

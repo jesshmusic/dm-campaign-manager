@@ -10,22 +10,5 @@
 }
 
 .buttonBar {
-  @include font-size($font-size-lg);
-  background-color: $primary;
-  border-radius: $border-radius-lg;
-  box-shadow: $box-shadow;
-  color: $white;
-  display: block;
-  font-family: $font-family-mr-eaves;
-  padding: $spacer;
-  text-align: center;
-  transition: $transition-base;
-  width: 100%;
-
-  &:hover {
-    background-color: lighten($primary, 20%);
-    box-shadow: $box-shadow-sm;
-    color: $white;
-    text-decoration: none;
-  }
+  @include button-bar;
 }

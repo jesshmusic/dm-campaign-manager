@@ -65,6 +65,7 @@ const NameOptions = ({ onFormSubmit, title, token }: NameOptionsProps) => {
           classNamePrefix={'reactSelect'}
           options={genderOptions}
           id={'nameGeneratorGender'}
+          menuPlacement={'top'}
           onChange={(option) => {
             setGender(option);
           }}
@@ -79,6 +80,7 @@ const NameOptions = ({ onFormSubmit, title, token }: NameOptionsProps) => {
           cacheOptions
           defaultOptions
           id={'nameGeneratorRace'}
+          menuPlacement={'top'}
           onChange={(option) => {
             setRace(option);
           }}
