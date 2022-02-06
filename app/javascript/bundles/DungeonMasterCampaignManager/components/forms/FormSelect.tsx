@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import Select, { MenuPlacement } from 'react-select';
+import Select, { MenuPlacement, Options } from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 import { SelectOption } from '../../utilities/types';
 import { Control, Controller } from 'react-hook-form';
@@ -22,7 +22,7 @@ export type SelectProps = {
   label: string;
   menuPlacement?: MenuPlacement | undefined;
   name: string;
-  options?: SelectOption[];
+  options?: SelectOption[] | Options<any>;
   placeholder?: string;
   required?: boolean;
   control?: Control<any>;

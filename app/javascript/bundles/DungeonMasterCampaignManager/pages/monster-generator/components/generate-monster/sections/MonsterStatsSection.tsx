@@ -10,6 +10,7 @@ import {
 import ChallengeRatingField from '../ChallengeRatingField';
 import { UseFormReturn } from 'react-hook-form';
 import { MonsterGeneratorFormFields } from '../../../../../utilities/types';
+import { raceOptions } from '../../../../../components/Widgets/NameOptions';
 
 const styles = require('../../generator.module.scss');
 
@@ -20,7 +21,7 @@ const MonsterStatsSection = (props: {
   const { UseForm, handleCalculateCR } = props;
   return (
     <>
-      <div className={styles.fiveCol}>
+      <div className={styles.sixCol}>
         <MonsterTypeSelect control={UseForm.control} />
         <FormField
           label="Subtype"
@@ -48,6 +49,12 @@ const MonsterStatsSection = (props: {
           control={UseForm.control}
           options={languageOptions}
           isMulti
+        />
+        <FormSelect
+          label="Race (optional)"
+          name="characterRace"
+          control={UseForm.control}
+          options={raceOptions}
         />
       </div>
       <div className={styles.fourCol}>
@@ -101,10 +108,7 @@ const MonsterStatsSection = (props: {
           name="hitPoints"
           readOnly
         />
-        <ChallengeRatingField
-          onCalculateCr={handleCalculateCR}
-          register={UseForm.register}
-        />
+        <ChallengeRatingField onCalculateCr={handleCalculateCR} register={UseForm.register} />
         <FormField
           label="XP"
           type="text"

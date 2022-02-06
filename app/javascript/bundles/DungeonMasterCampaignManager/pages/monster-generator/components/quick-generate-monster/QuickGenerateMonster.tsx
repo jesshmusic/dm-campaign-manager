@@ -69,6 +69,7 @@ const QuickGenerateMonster = (props: GenerateMonsterProps) => {
       >
         <form onSubmit={UseForm.handleSubmit(onSubmit)} className={styles.genForm} noValidate>
           <NameFormField
+            characterRace={UseForm.getValues('characterRace')?.value}
             handleGenerateName={handleGenerateName}
             handleGenerateMonsterName={handleGenerateMonsterName}
             register={UseForm.register}

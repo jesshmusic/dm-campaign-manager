@@ -8,6 +8,7 @@ import { GiFire } from 'react-icons/all';
 const styles = require('../../../components/forms/input.module.scss');
 
 type NameFormFieldProps = {
+  characterRace?: string;
   handleGenerateName: (gender: string, race: string) => void;
   handleGenerateMonsterName: () => void;
   errors: FieldErrors;
@@ -16,8 +17,14 @@ type NameFormFieldProps = {
 };
 
 const NameFormField = (props: NameFormFieldProps) => {
-  const { handleGenerateName, handleGenerateMonsterName, register, errors, monsterType } = props;
-  const characterRace = 'human';
+  const {
+    characterRace,
+    handleGenerateName,
+    handleGenerateMonsterName,
+    register,
+    errors,
+    monsterType,
+  } = props;
 
   return (
     <div className={styles.wrapper}>
@@ -45,17 +52,17 @@ const NameFormField = (props: NameFormFieldProps) => {
             <Button
               color={Colors.primary}
               title="Random NPC Name"
-              onClick={() => handleGenerateName('female', characterRace)}
+              onClick={() => handleGenerateName('female', characterRace || 'any')}
             />
             <Button
               color={Colors.secondary}
               title="Random Male NPC Name"
-              onClick={() => handleGenerateName('male', characterRace)}
+              onClick={() => handleGenerateName('male', characterRace || 'any')}
             />
             <Button
               color={Colors.success}
               title="Random Female NPC Name"
-              onClick={() => handleGenerateName('female', characterRace)}
+              onClick={() => handleGenerateName('female', characterRace || 'any')}
             />
           </>
         )}

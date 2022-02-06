@@ -17,13 +17,24 @@ const genderOptions: Options<any> = [
   { value: '', label: 'Other' },
 ];
 
-const getRaces = (inputValue: string, callback: (options: Options<any>) => void) => {
-  axios.get<RaceResults>(`/v1/races.json?search=${inputValue}`).then((response) => {
-    if (response.status === 200 && response?.data.results) {
-      callback(filterSnakeCaseOptionsWithData(response.data));
-    }
-  });
-};
+export const raceOptions: Options<any> = [
+  { value: '', label: 'Any' },
+  { value: 'aasimar', label: 'Aasimar' },
+  { value: 'bugbear', label: 'Bugbear' },
+  { value: 'dragon', label: 'Dragon' },
+  { value: 'dragonborn', label: 'Dragonborn' },
+  { value: 'dwarf', label: 'Dwarf' },
+  { value: 'elf', label: 'Elf' },
+  { value: 'half_elf', label: 'Half-elf' },
+  { value: 'halfling', label: 'Halfling' },
+  { value: 'half_orc', label: 'Half-orc' },
+  { value: 'human', label: 'Human' },
+  { value: 'gnome', label: 'Gnome' },
+  { value: 'goblin', label: 'Goblin' },
+  { value: 'ogre', label: 'Ogre' },
+  { value: 'orc', label: 'Orc' },
+  { value: 'tiefling', label: 'Tiefling' },
+];
 
 interface NameOptionsProps {
   onFormSubmit: (gender: string, race: string, userId?: string) => void;
@@ -73,12 +84,10 @@ const NameOptions = ({ onFormSubmit, title, token }: NameOptionsProps) => {
       </div>
       <div className={styles.raceSelect}>
         <label htmlFor={'nameGeneratorRace'}>Race</label>
-        <AsyncSelect
+        <Select
           className={'reactSelect'}
           classNamePrefix={'reactSelect'}
-          loadOptions={getRaces}
-          cacheOptions
-          defaultOptions
+          options={raceOptions}
           id={'nameGeneratorRace'}
           menuPlacement={'top'}
           onChange={(option) => {

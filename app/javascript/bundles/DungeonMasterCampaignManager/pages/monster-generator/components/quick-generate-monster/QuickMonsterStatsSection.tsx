@@ -5,6 +5,7 @@ import MonsterTypeSelect from '../generate-monster/MonsterTypeSelect';
 import FormField from '../../../../components/forms/FormField';
 import { alignmentOptions, monsterSizeOptions } from '../../../../utilities/character-utilities';
 import FormSelect from '../../../../components/forms/FormSelect';
+import { raceOptions } from '../../../../components/Widgets/NameOptions';
 
 const styles = require('../generator.module.scss');
 
@@ -32,7 +33,7 @@ const QuickMonsterStatsSection = (props: {
           readOnly
         />
       </div>
-      <div className={styles.fiveCol}>
+      <div className={styles.sixCol}>
         <MonsterTypeSelect control={UseForm.control} />
         <FormSelect
           label="Alignment"
@@ -59,6 +60,12 @@ const QuickMonsterStatsSection = (props: {
           name="archetypeOption"
           control={UseForm.control}
           options={archetypeOptions}
+        />
+        <FormSelect
+          label="Race (optional)"
+          name="characterRace"
+          control={UseForm.control}
+          options={raceOptions}
         />
       </div>
       <div className={styles.fiveCol}>

@@ -212,6 +212,10 @@ class NameGen
 
     def random_name(gender = nil, race = 'human')
       case race
+      when 'aasimar' then Aasimar.get_name(gender).capitalize
+      when 'bugbear' then Bugbear.get_name.capitalize
+      when 'dragonborn' then Dragonborn.get_name(gender)
+      when 'dwarf' then Dwarf.get_name(gender)
       when 'human' then get_human_name(gender)
       when 'goblin' then get_goblin_name(gender)
       when 'orc' then get_orc_name(gender)
@@ -219,8 +223,7 @@ class NameGen
       when 'ogre' then get_ogre_name(gender)
       when 'tiefling' then get_demon_name
       when 'gnome' then get_gnome_name(gender)
-      when /dragon/ then get_dragon_name
-      when /dwarf/ then get_dwarf_name(gender)
+      when 'dragon' then get_dragon_name
       when /elf/ then get_elf_name(gender)
       when /halfling/ then get_halfling_name(gender)
       else
