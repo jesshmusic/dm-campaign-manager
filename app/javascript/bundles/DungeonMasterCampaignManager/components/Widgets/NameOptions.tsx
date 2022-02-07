@@ -1,9 +1,5 @@
 import React, { useState } from 'react';
 import Select, { Options } from 'react-select';
-import { filterSnakeCaseOptionsWithData } from '../../utilities/character-utilities';
-import AsyncSelect from 'react-select/async';
-import axios from 'axios';
-import { RaceResults, UserProps } from '../../utilities/types';
 import Button from '../Button/Button';
 import { Colors } from '../../utilities/enums';
 import { GiBattleGear } from 'react-icons/all';
@@ -25,12 +21,12 @@ export const raceOptions: Options<any> = [
   { value: 'dragonborn', label: 'Dragonborn' },
   { value: 'dwarf', label: 'Dwarf' },
   { value: 'elf', label: 'Elf' },
-  { value: 'half_elf', label: 'Half-elf' },
-  { value: 'halfling', label: 'Halfling' },
-  { value: 'half_orc', label: 'Half-orc' },
-  { value: 'human', label: 'Human' },
   { value: 'gnome', label: 'Gnome' },
   { value: 'goblin', label: 'Goblin' },
+  { value: 'half_elf', label: 'Half-elf' },
+  { value: 'half_orc', label: 'Half-orc' },
+  { value: 'halfling', label: 'Halfling' },
+  { value: 'human', label: 'Human' },
   { value: 'ogre', label: 'Ogre' },
   { value: 'orc', label: 'Orc' },
   { value: 'tiefling', label: 'Tiefling' },

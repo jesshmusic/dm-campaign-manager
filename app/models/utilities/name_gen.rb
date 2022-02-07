@@ -135,18 +135,6 @@ class NameGen
       end
     end
 
-    def get_goblin_name(gender = nil)
-      "#{@names[:vileAndCrude][:small].sample.capitalize}#{rand(8) < 3 ? @names[:vileAndCrude][:small].sample : ''}#{!gender.nil? && gender == 'female' ? @names[:homely][:femaleSuffixes].sample : ''}"
-    end
-
-    def get_gnome_name(gender = nil)
-      if rand < 0.5
-        "#{@names[:faerykind][:prefixes].sample.capitalize}#{rand < 0.1 ? @names[:faerykind][:prefixes].sample : ''}#{!gender.nil? && gender == 'female' ? @names[:faerykind][:femaleSuffixes].sample : @names[:faerykind][:maleSuffixes].sample}"
-      else
-        "#{@names[:alternativeFaerykind][:prefixes].sample.capitalize}#{rand < 0.1 ? @names[:alternativeFaerykind][:prefixes].sample : ''}#{!gender.nil? && gender == 'female' ? @names[:alternativeFaerykind][:femaleSuffixes].sample : @names[:alternativeFaerykind][:maleSuffixes].sample}"
-      end
-    end
-
     def get_orc_name(gender = nil)
       "#{@names[:vileAndCrude][:medium].sample.capitalize}#{rand(8) < 5 ?@names[:vileAndCrude][:medium].sample : ''}#{!gender.nil? && gender == 'female' ? @names[:homely][:femaleSuffixes].sample : ''}"
     end
@@ -174,31 +162,6 @@ class NameGen
       "#{name} #{generate_surname(@surname_types.sample)}"
     end
 
-    def get_dwarf_name(gender = nil)
-      syllables = @names[:doughty][:syllables]
-      male_suffixes = @names[:doughty][:maleSuffixes]
-      female_suffixes = @names[:doughty][:femaleSuffixes]
-      name_prefix = ''
-      (1..@num_syllables.sample).each { |i|
-        name_prefix += i == 1 ? syllables.sample.capitalize : syllables.sample
-      }
-      generate_name(name_prefix, female_suffixes, gender, male_suffixes)
-    end
-
-    def get_elf_name(gender = nil)
-      name_prefix = @names[:fairAndNoble][:elf_prefixes].sample.capitalize
-      name_prefix += '\'' if rand(10) < 3
-      syllables = @names[:fairAndNoble][:middle]
-      male_suffixes = @names[:fairAndNoble][:maleSuffixes]
-      female_suffixes = @names[:fairAndNoble][:femaleSuffixes]
-      total_syllables = @num_syllables.sample
-      (1..total_syllables).each { |i|
-        name_prefix += syllables.sample
-        name_prefix += '\'' if rand(10) < 3 && i < total_syllables
-      }
-      generate_name(name_prefix, female_suffixes, gender, male_suffixes, :elvish)
-    end
-
     def get_halfling_name(gender = nil)
       syllables = @names[:homely][:syllables]
       male_suffixes = @names[:homely][:maleSuffixes]
@@ -214,18 +177,19 @@ class NameGen
       case race
       when 'aasimar' then Aasimar.get_name(gender).capitalize
       when 'bugbear' then Bugbear.get_name.capitalize
+      when 'dragon' then get_dragon_name
       when 'dragonborn' then Dragonborn.get_name(gender)
       when 'dwarf' then Dwarf.get_name(gender)
-      when 'human' then get_human_name(gender)
-      when 'goblin' then get_goblin_name(gender)
-      when 'orc' then get_orc_name(gender)
+      when 'elf' then Elf.get_name(gender)
+      when 'gnome' then Gnome.get_name(gender)
+      when 'goblin' then Goblin.get_name(gender)
+      when 'half_elf' then HalfElf.get_name(gender)
       when 'half_orc' then get_half_orc_name(gender)
+      when 'halfling' then get_halfling_name(gender)
+      when 'human' then get_human_name(gender)
       when 'ogre' then get_ogre_name(gender)
+      when 'orc' then get_orc_name(gender)
       when 'tiefling' then get_demon_name
-      when 'gnome' then get_gnome_name(gender)
-      when 'dragon' then get_dragon_name
-      when /elf/ then get_elf_name(gender)
-      when /halfling/ then get_halfling_name(gender)
       else
         get_human_name(gender)
       end
