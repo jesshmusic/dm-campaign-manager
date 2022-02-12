@@ -179,6 +179,7 @@ class NameGen
       when 'bugbear' then Bugbear.get_name.capitalize
       when 'dragon' then get_dragon_name
       when 'dragonborn' then Dragonborn.get_name(gender)
+      when 'drow_elf' then DrowElf.get_name(gender)
       when 'dwarf' then Dwarf.get_name(gender)
       when 'elf' then Elf.get_name(gender)
       when 'gnome' then Gnome.get_name(gender)

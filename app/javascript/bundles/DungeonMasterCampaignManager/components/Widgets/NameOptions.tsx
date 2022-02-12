@@ -19,6 +19,7 @@ export const raceOptions: Options<any> = [
   { value: 'bugbear', label: 'Bugbear' },
   { value: 'dragon', label: 'Dragon' },
   { value: 'dragonborn', label: 'Dragonborn' },
+  { value: 'drow_elf', label: 'Drow Elf' },
   { value: 'dwarf', label: 'Dwarf' },
   { value: 'elf', label: 'Elf' },
   { value: 'gnome', label: 'Gnome' },
