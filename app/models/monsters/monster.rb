@@ -260,7 +260,7 @@ class Monster < ApplicationRecord
             self.monster_actions.each_with_index do |action, index|
               action_id = sprintf '%05d', index + 1
               xml.send "id-#{action_id}" do
-                self.xml_element('desc', 'string', action.desc.dump, xml)
+                self.xml_element('desc', 'string', action.desc, xml)
                 self.xml_element('name', 'string', action.name, xml)
               end
             end
@@ -277,7 +277,7 @@ class Monster < ApplicationRecord
             self.legendary_actions.each_with_index do |action, index|
               action_id = sprintf '%05d', index + 1
               xml.send "id-#{action_id}" do
-                self.xml_element('desc', 'string', action.desc.dump, xml)
+                self.xml_element('desc', 'string', action.desc, xml)
                 self.xml_element('name', 'string', action.name, xml)
               end
             end
@@ -288,7 +288,7 @@ class Monster < ApplicationRecord
             self.reactions.each_with_index do |action, index|
               action_id = sprintf '%05d', index + 1
               xml.send "id-#{action_id}" do
-                self.xml_element('desc', 'string', action.desc.dump, xml)
+                self.xml_element('desc', 'string', action.desc, xml)
                 self.xml_element('name', 'string', action.name, xml)
               end
             end
@@ -302,7 +302,7 @@ class Monster < ApplicationRecord
             self.special_abilities.each_with_index do |action, index|
               action_id = sprintf '%05d', index + 1
               xml.send "id-#{action_id}" do
-                self.xml_element('desc', 'string', action.desc.dump, xml)
+                self.xml_element('desc', 'string', action.desc, xml)
                 self.xml_element('name', 'string', action.name, xml)
               end
             end

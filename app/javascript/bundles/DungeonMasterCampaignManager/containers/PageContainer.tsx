@@ -22,7 +22,7 @@ type PageContainerProps = {
 };
 
 const PageContainer = (props: PageContainerProps) => {
-  const [isCollapsed, setIsCollapsed] = React.useState(true);
+  const [isCollapsed, setIsCollapsed] = React.useState(false);
   const { children, description, pageTitle } = props;
   const [isMobile, setIsMobile] = React.useState(Util.isMobileWidth());
 
