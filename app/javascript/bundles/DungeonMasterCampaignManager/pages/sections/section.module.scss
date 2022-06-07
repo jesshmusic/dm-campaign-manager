@@ -7,8 +7,6 @@
 .section {
   column-gap: 5rem;
   columns: 400px 2;
-  //margin: 0 auto;
-  //max-width: 1400px;
 
   table {
     @extend .table;
@@ -17,6 +15,14 @@
     @extend .table-responsive;
 
     table-layout: fixed;
+
+    thead {
+      tr {
+        th {
+          font-weight: bold;
+        }
+      }
+    }
 
     tbody {
       tr {

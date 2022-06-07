@@ -32,7 +32,9 @@ const DashboardBar = ({ onLayoutSave, items, onRemoveItem, onAddItem, originalIt
           originalItems={originalItems}
         />
       </ReactModal>
-      <h2>Dashboard</h2>
+      <h2>
+        Dashboard <small>(Best viewed on wide screens)</small>
+      </h2>
       <div className={styles.buttons}>
         <Button
           className={styles.listButton}

@@ -45,6 +45,12 @@
     border-bottom: 0;
     margin: 0;
     padding: 0.5rem 0 0;
+
+    small {
+      font-family: $font-family-serif;
+      font-size: $font-size-sm;
+      font-style: italic;
+    }
   }
 
   .buttons {

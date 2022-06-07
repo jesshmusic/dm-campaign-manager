@@ -1,4 +1,8 @@
+@import '~bootstrap/scss/functions';
 @import '../../stylesheets/variables';
+@import '~bootstrap/scss/variables';
+@import '~bootstrap/scss/mixins';
+@import '~bootstrap/scss/tables';
 
 .nameOptions {
   display: grid;
@@ -14,4 +18,34 @@
 
 .buttonBar {
   @include button-bar;
+}
+
+.content {
+  padding-top: $spacer;
+}
+
+.twoColumn {
+  display: grid;
+  grid-gap: $spacer;
+  grid-template-columns: 1fr 1fr;
+  padding-top: $spacer * 2;
+  width: 100%;
+}
+
+table {
+  @extend .table;
+  @extend .table-borderless;
+  @extend .table-striped;
+  @extend .table-responsive;
+
+  table-layout: fixed;
+
+  tbody {
+    tr {
+      td {
+        font-family: $font-family-sans-serif;
+        word-wrap: break-word;
+      }
+    }
+  }
 }
