@@ -217,12 +217,12 @@ class DndRules
       player_races.sample
     end
 
-    def roll_dice(num_dice, dice_value)
+    def roll_dice(num_dice, dice_value, modifier = 0)
       result = 0
       (1..num_dice).each do
         result += rand(1..dice_value)
       end
-      result
+      result + modifier
     end
 
     def senses
@@ -256,6 +256,29 @@ class DndRules
         'Skill: Medicine',
         'Skill: Religion'
       ]
+    end
+
+    def skill_abilities
+      {
+        'Skill: Animal Handling' => 'wisdom',
+        'Skill: Survival' => 'wisdom',
+        'Skill: Acrobatics' => 'dexterity',
+        'Skill: Athletics' => 'strength',
+        'Skill: Perception' => 'wisdom',
+        'Skill: Performance' => 'charisma',
+        'Skill: Sleight of Hand' => 'dexterity',
+        'Skill: Stealth' => 'dexterity',
+        'Skill: Persuasion' => 'charisma',
+        'Skill: Deception' => 'charisma',
+        'Skill: Intimidation' => 'charisma',
+        'Skill: Nature' => 'intelligence',
+        'Skill: Arcana' => 'intelligence',
+        'Skill: History' => 'intelligence',
+        'Skill: Insight' => 'wisdom',
+        'Skill: Investigation' => 'intelligence',
+        'Skill: Medicine' => 'wisdom',
+        'Skill: Religion' => 'intelligence'
+      }
     end
 
     def skill_from_profs(profs, exclude_list)

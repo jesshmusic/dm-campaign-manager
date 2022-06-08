@@ -352,17 +352,25 @@ export type MonsterQuickGeneratorFormFields = {
   archetypeOption: SelectOption;
   challengeRatingOption: SelectOption;
   characterRace?: { value: string; label: string };
+  charisma?: number;
   constitution: number;
+  dexterity?: number;
   hitDice: string;
   hitDiceNumber: number;
   hitDiceValue: string;
   hitPoints: number;
+  intelligence?: number;
   monsterType: string;
   monsterTypeOption: SelectOption;
   monsterSubtype?: string;
   numberOfAttacks: number;
+  profBonus: number;
+  savingThrowOptions: SelectOption[];
   size: SelectOption;
+  skillOptions: SelectOption[];
   spellOptions: SelectOption[];
+  strength?: number;
+  wisdom?: number;
   xp: number;
 };
 

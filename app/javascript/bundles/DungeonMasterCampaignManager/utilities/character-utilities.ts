@@ -15,10 +15,12 @@ export const filterOptionsWithData = (results) =>
   }));
 
 export const filterActionOptions = (results) => {
-  return results.map((nextItem) => ({
-    value: nextItem.id,
-    label: `${nextItem.name} - ${nextItem.info}`,
-  }));
+  return results.map((nextItem) => {
+    return {
+      value: nextItem.id,
+      label: `${nextItem.name} (${nextItem.monster_name}) - ${nextItem.info}: ${nextItem.description}`,
+    };
+  });
 };
 
 export const filterSnakeCaseOptionsWithData = (results): SelectOption[] =>
@@ -186,16 +188,6 @@ export const getChallengeRatingOptions = () => {
 };
 
 export const getSpellLevelArray = (spells) => spells.map((spell) => spell.value);
-
-export const plusNumberString = (value: number, space?: boolean): string => {
-  let sign = '+';
-  if (value === 0) {
-    sign = '';
-  } else if (value < 0) {
-    sign = '-';
-  }
-  return `${sign}${space ? ' ' : ''}${Math.abs(value)}`;
-};
 
 export const averageDice = (numDice: number, diceValue: number, bonus: number): number => {
   const diceAverage = diceValue / 2 + 0.5;

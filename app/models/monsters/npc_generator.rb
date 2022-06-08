@@ -1,58 +1,6 @@
 # frozen_string_literal: true
 MAX_RETRIES = 5
 
-ALL_ACTIONS = ['Tentacle', 'Tail', 'Enslave', 'Club', 'Bite', 'Claw', 'Frightful Presence', 'Acid Breath',
-               'Lightning Breath', 'Breath Weapons', 'Poison Breath', 'Fire Breath', 'Lair Actions', 'Cold Breath',
-               'Slam', 'Whirlwind', 'Change Shape', 'Roar', 'Acid Spray (Recharge 6)', 'Fist', 'Rock', 'Dagger',
-               'Shortsword', 'Light Crossbow', 'Rake', 'Beak', 'Warhammer', 'Longsword', 'Whip', 'Teleport',
-               'Variant: Summon Demon', 'Scimitar', 'Hurl Flame', 'Beard', 'Glaive', 'Constrict', 'Swallow',
-               'Greataxe', 'Claws', 'Pseudopod', 'Tusk', 'Sting', 'Morningstar', 'Javelin', 'Deadly Leap', 'Pike',
-               'Hooves', 'Longbow', 'Chain', 'Animate Chains', 'Horns', 'Pincer', 'Tentacles', 'Haste', 'Moan',
-               'Phantasms', 'War Pick', 'Crush', 'Darkness Aura', 'Poisoned Dart', 'Mace', 'Healing Touch',
-               'Create Whirlwind', 'Read Thoughts', 'Steam Breath', 'Fetid Cloud', 'Hand Crossbow', 'Quarterstaff',
-               'Fey Charm', 'Enlarge', 'Invisibility', 'Blinding Breath (Recharge 6)', 'Talons', 'Gore', 'Stomp', 'Ram',
-               'Web', 'Battleaxe', 'Touch', 'Greatsword', 'Engulf', 'Withering Touch', 'Etherealness', 'Horrifying Visage',
-               'Possession (Recharge 6)', 'Ink Cloud', 'Bites', 'Blinding Spittle', 'Spear', 'Shield Bash',
-               'Heavy Crossbow', 'Shortbow', 'Petrifying Breath', 'Illusory Appearance', 'Invisible Passage',
-               'Spiked Bone Club', 'Spit Poison', 'Luring Song', 'Greatclub', 'Fork', 'Wall of Ice',
-               'Tail Spike', 'Sword', 'Leadership', 'Sling', 'Fling', 'Lightning Storm', 'Intoxicating Touch',
-               'Paralyzing Touch', 'Heavy Club', 'Spiked Shield', 'Fire Breath (Recharge 6)', 'Snake Hair', 'Harpoon',
-               'Rotting Fist', 'Dreadful Glare', 'Death Glare', 'Horror Nimbus', 'Nightmare Haunting', 'Ethereal Stride',
-               'Rapier', 'Tentacle Slam', 'Tail Stinger', 'Scare', 'Tendril', 'Reel', 'Smother', 'Antennae',
-               'Strength Drain', 'Shriek', 'Slaying Longbow', 'Flying Sword', 'Life Drain', 'Heart Sight',
-               'Steam Breath (Recharge 6)', 'Blood Drain', 'Slow', 'Lightning Strike', 'Charm', 'Draining Kiss',
-               'Beaks', 'Animate Trees', 'Horn', 'Rotting Touch', 'Spores (Recharge 6)', 'Stunning Screech', 'Whelm',
-               'Tusks', 'Maul', 'Shock', 'Create Specter', 'Stinger']
-
-ROGUE_ATTACKS = ['Club', 'Fist', 'Dagger', 'Fist', 'Shortsword', 'Light Crossbow', 'Whip', 'Scimitar', 'Longbow', 'Haste', 'Poisoned Dart',
-                 'Hand Crossbow', 'Quarterstaff', 'Shortbow', 'Sling', 'Rapier']
-
-FIGHTER_ATTACKS = ['Club', 'Slam', 'Fist', 'Rock', 'Dagger', 'Shortsword', 'Light Crossbow', 'Warhammer',
-                   'Longsword', 'Scimitar', 'Glaive', 'Greataxe', 'Morningstar',
-                   'Javelin', 'Pike', 'Longbow', 'Haste', 'War Pick', 'Mace', 'Quarterstaff', 'Battleaxe', 'Greatsword', 'Spear',
-                   'Shield Bash', 'Heavy Crossbow', 'Shortbow', 'Greatclub', 'Leadership', 'Fling', 'Heavy Club', 'Rapier', 'Slaying Longbow', 'Flying Sword',
-                   'Slow']
-
-BEAST_ATTACKS = ['Tentacle', 'Tail', 'Enslave', 'Bite', 'Claw', 'Frightful Presence', 'Acid Breath',
-                 'Lightning Breath', 'Breath Weapons', 'Poison Breath', 'Fire Breath', 'Lair Actions',
-                 'Cold Breath', 'Slam', 'Whirlwind', 'Change Shape', 'Roar', 'Acid Spray (Recharge 6)',
-                 'Fist', 'Rock', 'Rake', 'Beak', 'Hurl Flame', 'Constrict', 'Swallow', 'Pseudopod', 'Tusk', 'Sting',
-                 'Deadly Leap', 'Hooves', 'Horns', 'Pincer', 'Tentacles', 'Haste', 'Moan', 'Phantasms', 'Crush',
-                 'Create Whirlwind', 'Steam Breath', 'Fetid Cloud', 'Fey Charm', 'Enlarge', 'Invisibility', 'Blinding Breath (Recharge 6)',
-                 'Talons', 'Gore', 'Stomp', 'Ram', 'Web', 'Touch', 'Engulf', 'Withering Touch', 'Etherealness',
-                 'Horrifying Visage', 'Possession (Recharge 6)', 'Ink Cloud', 'Bites', 'Blinding Spittle', 'Petrifying Breath',
-                 'Illusory Appearance', 'Invisible Passage', 'Spit Poison', 'Luring Song', 'Frost Breath (Recharge 6)',
-                 'Tail Spike', 'Fling', 'Lightning Storm', 'Intoxicating Touch', 'Paralyzing Touch', 'Fire Breath (Recharge 6)', 'Snake Hair', 'Rotting Fist',
-                 'Dreadful Glare', 'Death Glare', 'Horror Nimbus', 'Ethereal Stride', 'Tentacle Slam', 'Tail Stinger', 'Scare', 'Tendril',
-                 'Smother', 'Antennae', 'Strength Drain', 'Shriek', 'Life Drain', 'Heart Sight', 'Steam Breath (Recharge 6)',
-                 'Blood Drain', 'Slow', 'Lightning Strike', 'Beaks', 'Horn', 'Rotting Touch', 'Spores (Recharge 6)', 'Stunning Screech',
-                 'Whelm', 'Tusks', 'Maul', 'Shock', 'Stinger']
-
-SPELLCASTER_ATTACKS = ['Enslave', 'Change Shape', 'Dagger', 'Teleport', 'Hurl Flame', 'Haste', 'Darkness Aura',
-                       'Mace', 'Healing Touch', 'Create Whirlwind', 'Read Thoughts', 'Enlarge', 'Invisibility',
-                       'Etherealness', 'Illusory Appearance', 'Invisible Passage', 'Wall of Ice', 'Lightning Storm', 'Ethereal Stride',
-                       'Life Drain', 'Heart Sight', 'Slow', 'Lightning Strike', 'Charm', 'Draining Kiss', 'Animate Trees']
-
 class NpcGenerator
   class << self
     def fetch_records
@@ -92,7 +40,7 @@ class NpcGenerator
       @new_npc.attack_bonus = cr_info[:attack_bonus]
       @new_npc.prof_bonus = cr_info[:prof_bonus]
       @new_npc.save_dc = calculate_save_dc(spellcasting_ability, cr_info[:save_dc])
-      set_ability_scores(ability_score_order, 'Constitution')
+      set_ability_scores(ability_score_order, monster_params)
 
       generate_actions(
         (cr_info[:damage_max] - cr_info[:damage_min]) / 2 + cr_info[:damage_min],
@@ -103,6 +51,7 @@ class NpcGenerator
       )
 
       generate_stats
+      adjust_proficiency_bonuses
 
       @new_npc.slug = @new_npc.name.parameterize if user.nil?
       adjust_challenge_rating
@@ -393,21 +342,22 @@ class NpcGenerator
 
     # Statistics
     def rolls_for_cr
+      cr_int = CrCalc.cr_string_to_num(@new_npc.challenge_rating)
+      modifier_for_cr = (cr_int / 10).round - 1
       dice_rolls =
         [
-          DndRules.roll_dice(1, 6),
-          DndRules.roll_dice(1, 6),
-          DndRules.roll_dice(1, 6),
+          DndRules.roll_dice(1, 6, modifier_for_cr),
+          DndRules.roll_dice(1, 6, modifier_for_cr),
+          DndRules.roll_dice(1, 6, modifier_for_cr),
         ]
-      cr_int = CrCalc.cr_string_to_num(@new_npc.challenge_rating)
       case cr_int
       when 0..8
         dice_rolls
       when 9..16
-        dice_rolls << DndRules.roll_dice(1, 6)
+        dice_rolls << DndRules.roll_dice(1, 6, modifier_for_cr)
       else
-        dice_rolls << DndRules.roll_dice(1, 6)
-        dice_rolls << DndRules.roll_dice(1, 6)
+        dice_rolls << DndRules.roll_dice(1, 6, modifier_for_cr)
+        dice_rolls << DndRules.roll_dice(1, 6, modifier_for_cr)
       end
     end
 
@@ -416,7 +366,7 @@ class NpcGenerator
       (cr_int / 5).round
     end
 
-    def set_ability_scores(score_priority = [], skip = nil)
+    def set_ability_scores(score_priority = [], monster_params)
       ability_scores = Array.new(6)
       ability_scores.each_with_index do |_, index|
         rolls = rolls_for_cr
@@ -426,7 +376,26 @@ class NpcGenerator
         ability_scores[index] = rolls.sum
       end
       score_priority.each_with_index do |ability, index|
-        set_primary_ability(ability.to_s, ability_scores, index) unless  skip.to_s == ability.to_s
+        if monster_params[ability.to_s.downcase]
+          case ability.to_s
+          when 'Strength'
+            @new_npc.strength = monster_params[ability.to_s.downcase]
+          when 'Dexterity'
+            @new_npc.dexterity = monster_params[ability.to_s.downcase]
+          when 'Constitution'
+            @new_npc.constitution = monster_params[ability.to_s.downcase]
+          when 'Intelligence'
+            @new_npc.intelligence = monster_params[ability.to_s.downcase]
+          when 'Wisdom'
+            @new_npc.wisdom = monster_params[ability.to_s.downcase]
+          when 'Charisma'
+            @new_npc.charisma = monster_params[ability.to_s.downcase]
+          else
+            puts "Ability #{ability} not found!"
+          end
+        else
+          set_primary_ability(ability.to_s, ability_scores, index)
+        end
       end
     end
 
@@ -472,6 +441,46 @@ class NpcGenerator
       @new_npc.hit_dice = "#{current_hd}d#{hit_dice.last}"
     end
 
+    def adjust_proficiency_bonuses
+      @new_npc.monster_proficiencies.each do |monster_prof|
+        prof = monster_prof.prof
+        if prof.prof_type == 'Saving Throws'
+          prof_ability = prof.name.split(':')[1].strip
+          case prof_ability
+          when 'CHA'
+            monster_prof.value = @new_npc.prof_bonus + DndRules.ability_score_modifier(@new_npc.charisma)
+          when 'CON'
+            monster_prof.value = @new_npc.prof_bonus + DndRules.ability_score_modifier(@new_npc.constitution)
+          when 'DEX'
+            monster_prof.value = @new_npc.prof_bonus + DndRules.ability_score_modifier(@new_npc.dexterity)
+          when 'INT'
+            monster_prof.value = @new_npc.prof_bonus + DndRules.ability_score_modifier(@new_npc.intelligence)
+          when 'STR'
+            monster_prof.value = @new_npc.prof_bonus + DndRules.ability_score_modifier(@new_npc.strength)
+          else
+            monster_prof.value = @new_npc.prof_bonus + DndRules.ability_score_modifier(@new_npc.wisdom)
+          end
+        elsif prof.prof_type == 'Skills'
+          skill_ability = DndRules.skill_abilities[prof.name]
+          case skill_ability
+          when 'charisma'
+            monster_prof.value = @new_npc.prof_bonus + DndRules.ability_score_modifier(@new_npc.charisma)
+          when 'constitution'
+            monster_prof.value = @new_npc.prof_bonus + DndRules.ability_score_modifier(@new_npc.constitution)
+          when 'dexterity'
+            monster_prof.value = @new_npc.prof_bonus + DndRules.ability_score_modifier(@new_npc.dexterity)
+          when 'intelligence'
+            monster_prof.value = @new_npc.prof_bonus + DndRules.ability_score_modifier(@new_npc.intelligence)
+          when 'strength'
+            monster_prof.value = @new_npc.prof_bonus + DndRules.ability_score_modifier(@new_npc.strength)
+          else
+            monster_prof.value = @new_npc.prof_bonus + DndRules.ability_score_modifier(@new_npc.wisdom)
+          end
+        end
+        puts prof
+      end
+    end
+
     # Actions
 
     def generate_actions(damage_per_round = 10, number_of_attacks, challenge_rating, save_dc, primary_ability)
@@ -484,45 +493,21 @@ class NpcGenerator
       damage_attacks = []
       attack_names.each do |attack_name|
         action = MonsterAction.find_by(name: attack_name)
-        if action.desc.include? 'to hit'
+        if action.desc.include? 'Melee' and action.desc.include? 'to hit'
           damage_attacks << action.name
         end
       end
       if num_attacks > 1
-        if num_attacks == attack_names.count && damage_attacks.count > 1
-          multi_desc = "The #{@new_npc.name} makes #{num_attacks} attacks: "
-          attack_strings = damage_attacks.map do |action|
-            "one with its #{action.downcase}"
-          end
-          multi_desc += attack_strings.to_sentence
-          @new_npc.monster_actions << MonsterAction.new(name: 'Multiattack', desc: multi_desc)
-        elsif damage_attacks.count == 1
-          attack_name = damage_attacks[0]
-          multi_desc = "The #{@new_npc.name} makes #{num_attacks} #{attack_name.downcase} attacks."
+        if  damage_attacks.count == 0
+          return
+        else
+          next_attack = damage_attacks.sample
+          multi_desc = "The #{@new_npc.name} makes #{num_attacks} #{next_attack.downcase} attacks."
           multi_attack = MonsterAction.new(
             name: 'Multiattack',
             desc: multi_desc
           )
           @new_npc.monster_actions << multi_attack
-        elsif  damage_attacks.count == 0
-          return
-        else
-          multi_desc = "The #{@new_npc.name} makes "
-          remaining_attacks = num_attacks
-          attack_counts = []
-          damage_attacks.each do |next_attack|
-            if remaining_attacks == 0
-              break
-            end
-            current_attack_count = rand(1..remaining_attacks)
-            attack_counts << {name: next_attack, count: current_attack_count}
-            remaining_attacks -= current_attack_count
-          end
-          attack_strings = attack_counts.map do |attack_count|
-            "#{attack_count[:count]} attack#{attack_count[:count] > 1 ? 's' : ''} with its #{attack_count[:name].downcase}"
-          end
-          multi_desc += attack_strings.to_sentence
-          @new_npc.monster_actions << MonsterAction.new(name: 'Multiattack', desc: multi_desc)
         end
       end
     end

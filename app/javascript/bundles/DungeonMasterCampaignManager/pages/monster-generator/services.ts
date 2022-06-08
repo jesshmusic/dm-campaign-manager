@@ -40,12 +40,15 @@ const abilityForSkill = {
   persuasion: 'charisma',
 };
 
-const parseMonsterProficiencies = (values: MonsterGeneratorFormFields) => {
+const parseMonsterProficiencies = (
+  values: MonsterGeneratorFormFields | MonsterQuickGeneratorFormFields
+) => {
   let monsterProfs: MonsterProf[] = [];
   if (values.savingThrowOptions.length && values.savingThrowOptions.length > 0) {
     values.savingThrowOptions.forEach((save) => {
       const saveAbility = abilityAbbr[save.label];
-      const saveBonus = values.profBonus + abilityScoreModifier(values[saveAbility]);
+      const modifier = values[saveAbility] ? abilityScoreModifier(values[saveAbility]) : 0;
+      const saveBonus = values.profBonus + modifier;
       monsterProfs.push(<MonsterProf>{
         profId: save.value,
         value: saveBonus,
@@ -56,7 +59,8 @@ const parseMonsterProficiencies = (values: MonsterGeneratorFormFields) => {
     values.skillOptions.forEach((skill) => {
       const skillName = skill.label.toLowerCase();
       const skillAbility = abilityForSkill[skillName];
-      const skillBonus = values.profBonus + abilityScoreModifier(values[skillAbility]);
+      const modifier = values[skillAbility] ? abilityScoreModifier(values[skillAbility]) : 0;
+      const skillBonus = values.profBonus + modifier;
       monsterProfs.push(<MonsterProf>{
         profId: skill.value,
         value: skillBonus,
@@ -173,7 +177,7 @@ export const createMonsterParams = (monster: MonsterProps) => {
 };
 
 export const createQuickMonsterParams = (values: MonsterQuickGeneratorFormFields) => {
-  const monsterParams = {
+  let monsterParams = {
     name: values.name,
     actionOptions: values.actionOptions.map((actionOption) => actionOption.value),
     alignment: values.alignmentOption.label,
@@ -191,7 +195,37 @@ export const createQuickMonsterParams = (values: MonsterQuickGeneratorFormFields
     spellIds: values.spellOptions.map((spellOption) => spellOption.value),
     xp: values.xp,
   };
-  return snakecaseKeys(monsterParams);
+
+  if (values.charisma) {
+    // @ts-ignore
+    monsterParams.charisma = values.charisma;
+  }
+
+  if (values.dexterity) {
+    // @ts-ignore
+    monsterParams.dexterity = values.dexterity;
+  }
+
+  if (values.intelligence) {
+    // @ts-ignore
+    monsterParams.intelligence = values.intelligence;
+  }
+
+  if (values.strength) {
+    // @ts-ignore
+    monsterParams.strength = values.strength;
+  }
+
+  if (values.wisdom) {
+    // @ts-ignore
+    monsterParams.wisdom = values.wisdom;
+  }
+  const parsedMonsterParams = {
+    monsterProficienciesAttributes: parseMonsterProficiencies(values),
+    ...monsterParams,
+  };
+  console.log(parsedMonsterParams);
+  return snakecaseKeys(parsedMonsterParams);
 };
 
 export const get2eMonsterObject = (values) => {

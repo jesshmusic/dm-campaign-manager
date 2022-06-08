@@ -9,6 +9,7 @@ import GenMonsterSection from '../generate-monster/sections/GenMonsterSection';
 import QuickMonsterStatsSection from './QuickMonsterStatsSection';
 import { GiLinkedRings } from 'react-icons/all';
 import FormSelectAsync from '../../../../components/forms/FormSelectAsync';
+import SavesSkillsSection from '../SavesSkillsSection';
 
 const styles = require('../generator.module.scss');
 
@@ -87,13 +88,17 @@ const QuickGenerateMonster = (props: GenerateMonsterProps) => {
 
           <GenMonsterSection heading="Actions">
             <FormSelectAsync
-              label="Search for and select actions"
+              label="Search for and select actions, attacks, and special abilities from existing monsters"
               name="actionOptions"
               control={UseForm.control}
               getOptions={getMonsterActions}
               isMulti
               isClearable
             />
+          </GenMonsterSection>
+
+          <GenMonsterSection heading="Saving Throws & Skills">
+            <SavesSkillsSection UseForm={UseForm} />
           </GenMonsterSection>
 
           <GenMonsterSection heading="Spells">

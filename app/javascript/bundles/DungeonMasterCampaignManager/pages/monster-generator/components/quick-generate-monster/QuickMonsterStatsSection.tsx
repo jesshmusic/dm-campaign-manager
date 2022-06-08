@@ -17,7 +17,7 @@ const QuickMonsterStatsSection = (props: {
   const { archetypeOptions, challengeRatingOptions, UseForm } = props;
   return (
     <>
-      <div className={`${styles.twoCol} ${styles.largeInputs}`}>
+      <div className={`${styles.threeCol} ${styles.largeInputs}`}>
         <FormSelect
           label="Target Challenge Rating"
           name="challengeRatingOption"
@@ -25,15 +25,21 @@ const QuickMonsterStatsSection = (props: {
           options={challengeRatingOptions}
         />
         <FormField
-          label="XP"
-          type="text"
+          label="Armor Class"
           errors={UseForm.formState.errors}
+          type="number"
           register={UseForm.register}
-          name="xp"
-          readOnly
+          required
+          name="armorClass"
+        />
+        <FormSelect
+          label="Archetype"
+          name="archetypeOption"
+          control={UseForm.control}
+          options={archetypeOptions}
         />
       </div>
-      <div className={styles.sixCol}>
+      <div className={styles.fiveCol}>
         <MonsterTypeSelect control={UseForm.control} />
         <FormSelect
           label="Alignment"
@@ -56,34 +62,58 @@ const QuickMonsterStatsSection = (props: {
           options={monsterSizeOptions}
         />
         <FormSelect
-          label="Archetype"
-          name="archetypeOption"
-          control={UseForm.control}
-          options={archetypeOptions}
-        />
-        <FormSelect
           label="Race (optional)"
           name="characterRace"
           control={UseForm.control}
           options={raceOptions}
         />
       </div>
-      <div className={styles.fiveCol}>
+      <div className={styles.sixCol}>
         <FormField
-          label="Armor Class"
-          errors={UseForm.formState.errors}
+          label="STR (optional)"
           type="number"
+          errors={UseForm.formState.errors}
+          register={UseForm.register}
+          name="strength"
+        />
+        <FormField
+          label="DEX (optional)"
+          type="number"
+          errors={UseForm.formState.errors}
+          register={UseForm.register}
+          name="dexterity"
+        />
+        <FormField
+          label="CON (optional)"
+          type="number"
+          errors={UseForm.formState.errors}
           register={UseForm.register}
           required
-          name="armorClass"
+          name="constitution"
         />
         <FormField
-          label="CON"
+          label="INT (optional)"
           type="number"
           errors={UseForm.formState.errors}
           register={UseForm.register}
-          name="constitution"
+          name="intelligence"
         />
+        <FormField
+          label="WIS (optional)"
+          type="number"
+          errors={UseForm.formState.errors}
+          register={UseForm.register}
+          name="wisdom"
+        />
+        <FormField
+          label="CHA (optional)"
+          type="number"
+          errors={UseForm.formState.errors}
+          register={UseForm.register}
+          name="charisma"
+        />
+      </div>
+      <div className={styles.fourCol}>
         <FormField
           label="Hit Dice Count"
           errors={UseForm.formState.errors}
@@ -107,6 +137,14 @@ const QuickMonsterStatsSection = (props: {
           errors={UseForm.formState.errors}
           register={UseForm.register}
           name="hitPoints"
+          readOnly
+        />
+        <FormField
+          label="XP"
+          type="text"
+          errors={UseForm.formState.errors}
+          register={UseForm.register}
+          name="xp"
           readOnly
         />
       </div>

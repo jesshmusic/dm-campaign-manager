@@ -22,6 +22,7 @@
 }
 
 .twoCol,
+.threeCol,
 .fourCol,
 .fiveCol,
 .sixCol {
@@ -33,6 +34,10 @@
 
 .twoCol {
   grid-template-columns: repeat(2, 1fr);
+}
+
+.threeCol {
+  grid-template-columns: repeat(3, 1fr);
 }
 
 .fourCol {
@@ -48,8 +53,8 @@
 }
 
 .largeInputs {
-  .reactSelect__control {
+  :global(.reactSelect__control),
+  input {
     font-size: $font-size-lg;
-    min-height: 5rem;
   }
 }

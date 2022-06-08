@@ -42,10 +42,13 @@ export const useData = (props: GenerateMonsterProps) => {
       label: 'Humanoid',
     },
     numberOfAttacks: 1,
+    profBonus: 1,
+    savingThrowOptions: [],
     size: {
       label: 'Medium',
       value: 'medium',
     },
+    skillOptions: [],
     spellOptions: [],
     xp: 10,
   });
@@ -111,8 +114,10 @@ export const useData = (props: GenerateMonsterProps) => {
 
   const archetypeOptions = [
     { label: 'Any', value: 'any' },
+    { label: 'Cleric', value: 'cleric' },
     { label: 'Roguish', value: 'rogue' },
     { label: 'Spellcaster', value: 'spellcaster' },
+    { label: 'Warrior', value: 'warrior' },
   ];
 
   const setFieldsForChallenge = (fields: MonsterQuickGeneratorFormFields) => {
@@ -139,6 +144,10 @@ export const useData = (props: GenerateMonsterProps) => {
         shouldTouch: true,
       });
       UseForm.setValue('xp', crInfo.xp, {
+        shouldDirty: true,
+        shouldTouch: true,
+      });
+      UseForm.setValue('profBonus', crInfo.prof_bonus, {
         shouldDirty: true,
         shouldTouch: true,
       });

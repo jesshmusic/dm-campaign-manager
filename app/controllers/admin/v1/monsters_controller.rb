@@ -132,7 +132,9 @@ module Admin::V1
         {
           id: monster_action.id,
           name: monster_action.name,
-          info: info_text
+          info: info_text,
+          monster_name: monster_action.monster.name,
+          description: monster_action.desc
         }
       end
       render json: { actions: actions }
