@@ -8,7 +8,7 @@
 #  type       :string
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
-#  monster_id :bigint           not null
+#  monster_id :bigint
 #
 # Indexes
 #

@@ -8,7 +8,7 @@
 #  type       :string
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
-#  monster_id :bigint           not null
+#  monster_id :bigint
 #
 # Indexes
 #
@@ -19,5 +19,5 @@
 #  fk_rails_...  (monster_id => monsters.id)
 #
 class Action < ApplicationRecord
-  belongs_to :monster
+  belongs_to :monster, optional: true
 end

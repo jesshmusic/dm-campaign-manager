@@ -251,9 +251,10 @@ export type ItemsPageProps = {
   pageTitle: string;
 } & PageProps;
 
-type MonsterAction = {
+export type MonsterAction = {
   desc: string;
   name: string;
+  actionType?: string;
 };
 
 export type MonsterActionField = {

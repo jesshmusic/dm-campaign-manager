@@ -49,6 +49,20 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
 
   return (
     <>
+      {process.env.NODE_ENV === 'development' ? (
+        <pre
+          style={{
+            position: 'absolute',
+            top: '0',
+            right: '0',
+            backgroundColor: '#fff',
+            width: '150px',
+            zIndex: 200,
+          }}
+        >
+          {JSON.stringify(testState, null, 2)}
+        </pre>
+      ) : null}
       <Frame
         title="Monster Creator"
         subtitle="Select options to create a new Monster"

@@ -7,13 +7,13 @@ class UsersController < SecuredController
 
   # GET /v1/users
   def index
-    authorize @current_user
+    authorize User
     @users = if params[:search].present?
                User.search_for(params[:search])
              else
                User.all
              end
-    @users = @users.where(role: :dungeon_master) unless @current_user.admin?
+    @users = @users.where(role: :dungeon_master) unless @user.admin?
 
     respond_to do |format|
       format.html { @pagy, @users = pagy(@users) }
@@ -39,10 +39,10 @@ class UsersController < SecuredController
   end
 
   def logout_user
-    authorize @current_user unless @current_user.nil?
+    authorize @user unless @user.nil?
     cookies.delete('_dungeon_master_screen_online_session')
     session.delete(:user)
-    @current_user = nil
+    @user = nil
     respond_to do |format|
       format.all { head :no_content }
     end
@@ -50,20 +50,20 @@ class UsersController < SecuredController
 
   # GET /v1/users/{id}
   def show
-    authorize @current_user unless @current_user.nil?
+    authorize @user unless @user.nil?
   end
 
   # PATCH/PUT /users/1
   def update
-    unless @current_user.nil?
-    authorize @current_user
+    unless @user.nil?
+    authorize @user
     respond_to do |format|
-      if @current_user.update(user_params)
+      if @user.update(user_params)
         format.html { redirect_to user_path, notice: 'UserProps was successfully updated.' }
         format.json
       else
         format.html { render :edit }
-        format.json { render json: @current_user.errors, status: :unprocessable_entity }
+        format.json { render json: @user.errors, status: :unprocessable_entity }
       end
     end
     end
@@ -71,20 +71,20 @@ class UsersController < SecuredController
 
   # PATCH/PUT /v1/users/1/change_role
   def change_role
-    unless @current_user.nil?
-      authorize @current_user
-      if @current_user.role == 'dungeon_master'
-        @current_user.role = :player
-      elsif @current_user.role == 'player'
-        @current_user.role = :dungeon_master
+    unless @user.nil?
+      authorize @user
+      if @user.role == 'dungeon_master'
+        @user.role = :player
+      elsif @user.role == 'player'
+        @user.role = :dungeon_master
       end
       respond_to do |format|
-        if @current_user.save
+        if @user.save
           format.html { redirect_to user_path, notice: 'UserProps role was successfully changed.' }
           format.json
         else
           format.html { render :index }
-          format.json { render json: @current_user.errors, status: :unprocessable_entity }
+          format.json { render json: @user.errors, status: :unprocessable_entity }
         end
       end
     end
@@ -92,9 +92,9 @@ class UsersController < SecuredController
 
   # DELETE /users/1
   # def destroy
-  #   unless @current_user.nil?
-  #     authorize @current_user
-  #     @current_user.soft_delete
+  #   unless @user.nil?
+  #     authorize @user
+  #     @user.soft_delete
   #     respond_to do |format|
   #       format.html { redirect_to user_path, notice: 'UserProps was successfully deleted.' }
   #       format.json { head :no_content }

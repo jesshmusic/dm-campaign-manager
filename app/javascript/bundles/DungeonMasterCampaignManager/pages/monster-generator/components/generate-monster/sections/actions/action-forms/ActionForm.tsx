@@ -14,25 +14,26 @@ import { BsChevronDown, BsChevronUp } from 'react-icons/all';
 const styles = require('./action-form.module.scss');
 
 const ActionForm = (props: {
-  actionIndex: number;
+  actionIndex?: number;
   control: Control;
   errors: FieldErrors;
   fieldName: string;
-  remove: (index?: number | number[] | undefined) => void;
+  remove?: (index?: number | number[] | undefined) => void;
 }) => {
   const { actionIndex, control, errors, fieldName, remove } = props;
   const [isShowingContent, setIsShowingContent] = React.useState(true);
   const isFirstRender = React.useRef(true);
+  const fieldNamePrefix = actionIndex ? `${fieldName}.${actionIndex}.` : `${fieldName}.`;
 
   const actionType = useWatch({
     control,
-    name: `${fieldName}.${actionIndex}.actionType`,
+    name: `${fieldNamePrefix}actionType`,
     defaultValue: ActionTypes.attack,
   });
 
   const slots = useWatch({
     control,
-    name: `${fieldName}.${actionIndex}.spellCasting.slots`,
+    name: `${fieldNamePrefix}spellCasting.slots`,
   });
 
   const collapseActionContent = () => {
@@ -69,50 +70,46 @@ const ActionForm = (props: {
           color={Colors.transparentLight}
           title="Collapse"
           hideTitle
-          icon={
-            isShowingContent ? (
-              <BsChevronDown size={24} />
-            ) : (
-              <BsChevronUp size={24} />
-            )
-          }
+          icon={isShowingContent ? <BsChevronDown size={24} /> : <BsChevronUp size={24} />}
           onClick={collapseActionContent}
         />
         <ControlledInput
-          fieldName={`${fieldName}.${actionIndex}.name`}
+          fieldName={`${fieldNamePrefix}name`}
           errors={errors}
           className={styles.actionCol}
           control={control}
           label="Name"
         />
-        <Button
-          type="button"
-          onClick={() => remove(actionIndex)}
-          color={Colors.danger}
-          icon={<GiTrashCan size={30} />}
-          hideTitle
-          title="Remove Action"
-        />
+        {remove ? (
+          <Button
+            type="button"
+            onClick={() => remove(actionIndex)}
+            color={Colors.danger}
+            icon={<GiTrashCan size={30} />}
+            hideTitle
+            title="Remove Action"
+          />
+        ) : null}
       </div>
       <div id={`actionContent${actionIndex}`} className={styles.actionContent}>
         <AbilityForm
           control={control}
           errors={errors}
-          fieldName={`${fieldName}.${actionIndex}`}
+          fieldName={actionIndex ? `${fieldName}.${actionIndex}` : fieldName}
           readOnly={actionType !== ActionTypes.ability}
         />
         {actionType === ActionTypes.attack && (
           <AttackForm
             control={control}
             errors={errors}
-            fieldName={`${fieldName}.${actionIndex}`}
+            fieldName={actionIndex ? `${fieldName}.${actionIndex}` : fieldName}
           />
         )}
         {actionType === ActionTypes.spellCasting && (
           <SpellcastingForm
             control={control}
             errors={errors}
-            fieldName={`${fieldName}.${actionIndex}`}
+            fieldName={actionIndex ? `${fieldName}.${actionIndex}` : fieldName}
           />
         )}
       </div>

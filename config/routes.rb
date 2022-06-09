@@ -10,6 +10,12 @@ Rails.application.routes.draw do
   scope module: 'admin' do
     namespace :v1 do
       get 'dashboard', to: 'dashboard#index'
+      get '/custom_actions', to: 'dashboard#custom_actions',
+          constraints: { format: 'json' }
+      post '/create_action', to: 'dashboard#create_action',
+           constraints: { format: 'json' }
+      put '/update_action', to: 'dashboard#update_action',
+           constraints: { format: 'json' }
       get '/random_fantasy_name', to: 'dashboard#random_fantasy_name',
           as: 'random_fantasy_name',
           constraints: { format: 'json' }

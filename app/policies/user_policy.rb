@@ -14,6 +14,14 @@ class UserPolicy < ApplicationPolicy
     true
   end
 
+  def create_action?
+    user.admin?
+  end
+
+  def update_action?
+    user.admin?
+  end
+
   def show?
     user.admin? || (user == record)
   end

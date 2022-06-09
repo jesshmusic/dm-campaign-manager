@@ -20,6 +20,20 @@ namespace :update_records do
     end
   end
 
+  task create_action_monster: :environment do
+    Monster.create!(name: 'Custom Action NPC',
+                    hit_points: 10,
+                    alignment: 'Chaotic Neutral',
+                    monster_type: 'beast',
+                    challenge_rating: '1',
+                    hit_dice: '2d8',
+                    xp: 100,
+                    attack_bonus: 5,
+                    user_id: 1,
+                    size: 'medium'
+    )
+  end
+
   task armor_class_bonuses: :environment do
     ArmorItem.where(rarity: nil).each do |standard_armor|
       ArmorItem.create!(

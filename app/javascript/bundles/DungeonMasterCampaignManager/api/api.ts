@@ -88,6 +88,29 @@ export default reduxApi({
       };
     },
   },
+  getCustomActions: {
+    url: '/v1/custom_actions',
+  },
+  createAction: {
+    url: '/v1/create_action',
+    options() {
+      const headers = getHeaders();
+      return {
+        method: 'post',
+        headers,
+      };
+    },
+  },
+  updateAction: {
+    url: '/v1/update_action',
+    options() {
+      const headers = getHeaders();
+      return {
+        method: 'put',
+        headers,
+      };
+    },
+  },
   getCondition: {
     url: '/v1/conditions/:id',
   },

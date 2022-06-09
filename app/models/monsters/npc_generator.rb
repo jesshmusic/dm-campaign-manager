@@ -236,7 +236,7 @@ class NpcGenerator
       end
     end
 
-    def generate_attack_desc(monster_action, attack_bonus, prof_bonus, damange_bonus)
+    def generate_attack_desc(monster_action, attack_bonus, prof_bonus, damage_bonus)
       if monster_action[:damage].nil?
         return monster_action[:desc]
       end
@@ -250,7 +250,7 @@ class NpcGenerator
                reach_string = damage[:reach] ? "#{damage[:reach]} ft." : '5 ft.'
                "Melee Weapon Attack: #{hit_string}, reach #{reach_string}, #{target_string}"
              end
-      damage_string = "Hit: #{average_dice(damage[:num_dice], damage[:dice_value], damange_bonus)} (#{damage[:num_dice]}d#{damage[:dice_value]}#{damange_bonus != 0 ? plus_number_string(damange_bonus, true) : ''}) #{damage[:damage_type]} damage."
+      damage_string = "Hit: #{average_dice(damage[:num_dice], damage[:dice_value], damage_bonus)} (#{damage[:num_dice]}d#{damage[:dice_value]}#{damage_bonus != 0 ? plus_number_string(damage_bonus, true) : ''}) #{damage[:damage_type]} damage."
       "#{desc} #{damage_string}"
     end
 
