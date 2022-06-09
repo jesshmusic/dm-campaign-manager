@@ -37,13 +37,12 @@ class NpcGenerator
       ability_score_order = get_ability_score_order
       spellcasting_ability = ability_score_order[0]
       cr_info = CrCalc.challenge_ratings[monster_params[:challenge_rating].to_sym]
-      @new_npc.attack_bonus = cr_info[:attack_bonus]
       @new_npc.prof_bonus = cr_info[:prof_bonus]
       @new_npc.save_dc = calculate_save_dc(spellcasting_ability, cr_info[:save_dc])
       set_ability_scores(ability_score_order, monster_params)
+      @new_npc.attack_bonus = calculate_attack_bonus
 
       generate_actions(
-        (cr_info[:damage_max] - cr_info[:damage_min]) / 2 + cr_info[:damage_min],
         monster_params[:number_of_attacks],
         CrCalc.cr_string_to_num(monster_params[:challenge_rating]),
         cr_info[:save_dc],
@@ -171,7 +170,7 @@ class NpcGenerator
                                             Intelligence: 750,
                                             Charisma: 350
                                           }]
-                             elsif @archetype == 'rogue'
+                           elsif @archetype == 'rogue'
                              WeightedList[{
                                             Strength: 20,
                                             Dexterity: 100,
@@ -179,6 +178,24 @@ class NpcGenerator
                                             Wisdom: 25,
                                             Intelligence: 5,
                                             Charisma: 25
+                                          }]
+                           elsif @archetype == 'cleric'
+                             WeightedList[{
+                                            Strength: 100,
+                                            Dexterity: 50,
+                                            Constitution: 50,
+                                            Wisdom: 200,
+                                            Intelligence: 50,
+                                            Charisma: 150
+                                          }]
+                           elsif @archetype == 'warrior'
+                             WeightedList[{
+                                            Strength: 200,
+                                            Dexterity: 75,
+                                            Constitution: 150,
+                                            Wisdom: 10,
+                                            Intelligence: 10,
+                                            Charisma: 10
                                           }]
                            else
                              WeightedList[{
@@ -201,6 +218,15 @@ class NpcGenerator
                  [c_rating * (1 + ((c_rating - 10 + 4) / 100)), 30].min
                end
       result.round
+    end
+
+    def calculate_attack_bonus
+      case @archetype
+      when 'Rogue'
+        return DndRules.ability_score_modifier(@new_npc.dexterity) + @new_npc.prof_bonus
+      else
+        return DndRules.ability_score_modifier(@new_npc.strength) + @new_npc.prof_bonus
+      end
     end
 
     def maybe_save_npc(user)
@@ -483,9 +509,9 @@ class NpcGenerator
 
     # Actions
 
-    def generate_actions(damage_per_round = 10, number_of_attacks, challenge_rating, save_dc, primary_ability)
+    def generate_actions(number_of_attacks, challenge_rating, save_dc, primary_ability)
       attacks = []
-      attacks << create_actions(damage_per_round, number_of_attacks)
+      attacks << create_actions(number_of_attacks)
       attacks << create_spellcasting(challenge_rating, save_dc, primary_ability) if @spell_ids.count > 0
     end
 
@@ -512,7 +538,7 @@ class NpcGenerator
       end
     end
 
-    def create_actions(damage_per_round, num_attacks, number_of_tries = 0)
+    def create_actions(num_attacks)
       attack_names = []
 
       attacks = @action_options.map do |action_id|
