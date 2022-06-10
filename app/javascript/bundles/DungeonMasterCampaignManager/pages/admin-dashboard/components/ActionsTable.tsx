@@ -3,14 +3,18 @@ import { MonsterAction, UserProps } from '../../../utilities/types';
 import rest from '../../../api/api';
 import { connect } from 'react-redux';
 import DataTable from '../../../components/DataTable/DataTable';
+import Button from '../../../components/Button/Button';
+import { Colors } from '../../../utilities/enums';
+import { GiTrashCan } from 'react-icons/gi';
 
 const ActionsTable = (props: {
   getCustomActions: (searchTerm?: string) => void;
+  deleteCustomAction: (id: number) => void;
   actions: MonsterAction[];
   loading: boolean;
   user?: UserProps;
 }) => {
-  const { getCustomActions, actions, user } = props;
+  const { getCustomActions, deleteCustomAction, actions, user } = props;
 
   React.useEffect(() => {
     getCustomActions();
@@ -25,6 +29,20 @@ const ActionsTable = (props: {
       {
         Header: 'Description',
         accessor: 'desc',
+      },
+      {
+        Header: 'Delete',
+        accessor: 'id',
+        Cell: ({ value }) => (
+          <Button
+            type="button"
+            onClick={() => deleteCustomAction(value)}
+            color={Colors.danger}
+            icon={<GiTrashCan size={30} />}
+            title="Delete"
+            hideTitle
+          />
+        ),
       },
     ],
     []
@@ -71,6 +89,9 @@ function mapDispatchToProps(dispatch) {
       } else {
         dispatch(rest.actions.getCustomActions());
       }
+    },
+    deleteCustomAction: (id: number) => {
+      dispatch(rest.actions.deleteCustomAction({ id }));
     },
   };
 }

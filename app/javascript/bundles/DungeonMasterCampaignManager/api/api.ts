@@ -89,10 +89,10 @@ export default reduxApi({
     },
   },
   getCustomActions: {
-    url: '/v1/custom_actions',
+    url: '/v1/actions',
   },
   createCustomAction: {
-    url: '/v1/create_action',
+    url: '/v1/actions',
     options() {
       const headers = getHeaders();
       return {
@@ -101,12 +101,22 @@ export default reduxApi({
       };
     },
   },
-  updateAction: {
-    url: '/v1/update_action',
+  updateCustomAction: {
+    url: '/v1/actions/:id.json',
     options() {
       const headers = getHeaders();
       return {
         method: 'put',
+        headers,
+      };
+    },
+  },
+  deleteCustomAction: {
+    url: '/v1/actions/:id.json',
+    options() {
+      const headers = getHeaders();
+      return {
+        method: 'delete',
         headers,
       };
     },

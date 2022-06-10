@@ -15,7 +15,7 @@ export const useAdminState = (props: {
       action: {
         actionType: ActionTypes.attack,
         numAttacks: 1,
-        desc: '',
+        desc: 'Melee Weapon Attack: +9 to hit, reach 5 ft., one target Hit: 7 (1d8+ 3) slashing damage.',
         damage: {
           damageTypeOption: { label: 'Slashing', value: 'slashing' },
           damageType: 'slashing',
@@ -28,6 +28,7 @@ export const useAdminState = (props: {
           rangeLong: 300,
           reach: 5,
         },
+        name: 'New Action',
       },
       actionType: ActionTypes.attack,
     },
@@ -36,11 +37,16 @@ export const useAdminState = (props: {
   const updateActionForm = async (fieldName: string | undefined, value: unknown) => {
     // @ts-ignore
     const fields = value as { action: MonsterActionField; actionType: ActionTypes };
-    console.log(fields);
     if (fieldName === 'action.damage.damageTypeOption') {
       UseForm.setValue(
         'action.damage.damageType',
         fields.action.damage?.damageTypeOption.value || 'slashing'
+      );
+    }
+    if (fieldName === 'action.damage.diceValueOption') {
+      UseForm.setValue(
+        'action.damage.diceValue',
+        (fields.action.damage?.diceValueOption.value as number) || 6
       );
     }
     if (fieldName !== `action.desc` && fieldName !== `action.name` && fieldName !== `actionType`) {

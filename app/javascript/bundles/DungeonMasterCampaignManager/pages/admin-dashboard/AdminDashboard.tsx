@@ -83,7 +83,13 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     createCustomAction: (action: MonsterAction, token?: string) => {
-      dispatch(rest.actions.createCustomAction({}, { body: JSON.stringify({ action, token }) }));
+      const actionBody = {
+        body: JSON.stringify({
+          custom_action: action,
+          token,
+        }),
+      };
+      dispatch(rest.actions.createCustomAction({}, actionBody));
     },
     updateUserRole: (user: UserProps, newRole: 'admin' | 'dungeon-master' | 'user') => {
       const { role, dndClasses, items, spells, ...userProps } = user;

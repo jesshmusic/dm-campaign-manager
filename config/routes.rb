@@ -10,12 +10,6 @@ Rails.application.routes.draw do
   scope module: 'admin' do
     namespace :v1 do
       get 'dashboard', to: 'dashboard#index'
-      get '/custom_actions', to: 'dashboard#custom_actions',
-          constraints: { format: 'json' }
-      post '/create_action', to: 'dashboard#create_action',
-           constraints: { format: 'json' }
-      put '/update_action', to: 'dashboard#update_action',
-           constraints: { format: 'json' }
       get '/random_fantasy_name', to: 'dashboard#random_fantasy_name',
           as: 'random_fantasy_name',
           constraints: { format: 'json' }
@@ -56,6 +50,7 @@ Rails.application.routes.draw do
           as: 'proficiency_saving_throws',
           constraints: { format: 'json' }
       scope except: [:new, :edit] do
+        resources :actions, only: [:index, :create, :update, :destroy], constraints: { format: 'json' }
         resources :conditions, only: [:index, :show], constraints: { format: 'json' }
         resources :proficiencies, only: [:index, :show], constraints: { format: 'json' }
         resources :skills, only: [:index, :show], constraints: { format: 'json' }

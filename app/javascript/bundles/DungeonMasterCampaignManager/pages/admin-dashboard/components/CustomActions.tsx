@@ -16,6 +16,7 @@ const CustomActions = (props: {
   return (
     <>
       <ActionsTable />
+      <h3>Create New Action</h3>
       <form
         onSubmit={props.useForm.handleSubmit(props.onSubmitActionForm)}
         className={styles.genForm}

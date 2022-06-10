@@ -13,8 +13,6 @@ Ruby enVironment Manager 1.29.10 (latest) (c) 2009-2017 Michal Papis, Piotr Kucz
                         user_logout_user DELETE /users/logout(.:format)                                                                           users#logout_user
                                          GET    /app(/*all)(.:format)                                                                             home#index
                             v1_dashboard GET    /v1/dashboard(.:format)                                                                           admin/v1/dashboard#index
-                        v1_create_action POST   /v1/create_action(.:format)                                                                       admin/v1/dashboard#create_action {:format=>"json"}
-                        v1_update_action PUT    /v1/update_action(.:format)                                                                       admin/v1/dashboard#update_action {:format=>"json"}
                   v1_random_fantasy_name GET    /v1/random_fantasy_name(.:format)                                                                 admin/v1/dashboard#random_fantasy_name {:format=>"json"}
                    v1_random_tavern_name GET    /v1/random_tavern_name(.:format)                                                                  admin/v1/dashboard#random_tavern_name {:format=>"json"}
                   v1_random_monster_name GET    /v1/random_monster_name(.:format)                                                                 admin/v1/dashboard#random_monster_name {:format=>"json"}
@@ -28,6 +26,11 @@ Ruby enVironment Manager 1.29.10 (latest) (c) 2009-2017 Michal Papis, Piotr Kucz
                  v1_generate_action_desc POST   /v1/generate_action_desc(.:format)                                                                admin/v1/monsters#generate_action_desc {:format=>"json"}
                    v1_proficiency_skills GET    /v1/prof-skills(.:format)                                                                         admin/v1/proficiencies#skills {:format=>"json"}
             v1_proficiency_saving_throws GET    /v1/saving-throws(.:format)                                                                       admin/v1/proficiencies#saving_throws {:format=>"json"}
+                              v1_actions GET    /v1/actions(.:format)                                                                             admin/v1/actions#index {:format=>"json"}
+                                         POST   /v1/actions(.:format)                                                                             admin/v1/actions#create {:format=>"json"}
+                               v1_action PATCH  /v1/actions/:id(.:format)                                                                         admin/v1/actions#update {:format=>"json"}
+                                         PUT    /v1/actions/:id(.:format)                                                                         admin/v1/actions#update {:format=>"json"}
+                                         DELETE /v1/actions/:id(.:format)                                                                         admin/v1/actions#destroy {:format=>"json"}
                            v1_conditions GET    /v1/conditions(.:format)                                                                          admin/v1/conditions#index {:format=>"json"}
                             v1_condition GET    /v1/conditions/:id(.:format)                                                                      admin/v1/conditions#show {:format=>"json"}
                         v1_proficiencies GET    /v1/proficiencies(.:format)                                                                       admin/v1/proficiencies#index {:format=>"json"}
