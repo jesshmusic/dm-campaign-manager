@@ -91,7 +91,7 @@ export default reduxApi({
   getCustomActions: {
     url: '/v1/custom_actions',
   },
-  createAction: {
+  createCustomAction: {
     url: '/v1/create_action',
     options() {
       const headers = getHeaders();

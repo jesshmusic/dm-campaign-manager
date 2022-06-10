@@ -8,9 +8,11 @@ import races from './races';
 import sections from './sections';
 import spells from './spells';
 import users from './user';
+import customActions from './customActions';
 
 export default combineReducers({
   conditions,
+  customActions,
   dndClasses,
   flashMessages,
   items,

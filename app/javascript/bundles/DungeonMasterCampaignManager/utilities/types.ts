@@ -252,6 +252,7 @@ export type ItemsPageProps = {
 } & PageProps;
 
 export type MonsterAction = {
+  id?: number;
   desc: string;
   name: string;
   actionType?: string;

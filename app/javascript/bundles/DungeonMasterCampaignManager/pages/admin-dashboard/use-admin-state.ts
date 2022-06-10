@@ -1,20 +1,13 @@
 import { ActionTypes, MonsterActionField, UserProps } from '../../utilities/types';
-import React from 'react';
 import { useForm } from 'react-hook-form';
 import { generateAttackDesc } from '../monster-generator/components/generate-monster/use-data';
 
 export const useAdminState = (props: {
-  createAction: (action: any, token?: string) => void;
-  getUsers: (searchTerm?: string) => void;
+  createCustomAction: (action: any, token?: string) => void;
   user: UserProps;
-  users: UserProps[];
   token?: string;
 }) => {
-  const { createAction, getUsers, token, user, users } = props;
-
-  React.useEffect(() => {
-    getUsers();
-  }, [user]);
+  const { createCustomAction, token, user } = props;
 
   const UseForm = useForm<{ action: MonsterActionField; actionType: ActionTypes }>({
     mode: 'onChange',
@@ -39,36 +32,6 @@ export const useAdminState = (props: {
       actionType: ActionTypes.attack,
     },
   });
-
-  const columns = React.useMemo(
-    () => [
-      {
-        Header: 'User',
-        accessor: 'name',
-      },
-      {
-        Header: 'Role',
-        accessor: 'role',
-      },
-      {
-        Header: 'NPCs',
-        accessor: 'monsters',
-      },
-    ],
-    []
-  );
-
-  const data = React.useMemo(() => {
-    return users.map((user: UserProps) => {
-      return {
-        id: user.id,
-        name: user.name,
-        username: user.username,
-        role: user.role,
-        monsters: user.monsters.length,
-      };
-    });
-  }, [users]);
 
   const updateActionForm = async (fieldName: string | undefined, value: unknown) => {
     // @ts-ignore
@@ -101,21 +64,16 @@ export const useAdminState = (props: {
     }
   };
 
-  const onSearch = (searchTerm: string) => {
-    getUsers(searchTerm);
-  };
-
   const onSubmitActionForm = (data: { action: MonsterActionField; actionType: ActionTypes }) => {
-    createAction(
+    createCustomAction(
       { name: data.action.name, desc: data.action.desc, action_type: data.actionType },
       token
     );
   };
 
+  // @TODO: Add a table with actions and a delete option
+
   return {
-    columns,
-    data,
-    onSearch,
     onSubmitActionForm,
     updateActionForm,
     user,

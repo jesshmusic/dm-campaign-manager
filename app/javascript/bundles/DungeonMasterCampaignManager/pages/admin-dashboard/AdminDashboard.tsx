@@ -1,28 +1,23 @@
 import React from 'react';
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
-import { ActionTypes, MonsterAction, UserProps } from '../../utilities/types';
+import { MonsterAction, UserProps } from '../../utilities/types';
 import rest from '../../api/api';
 import { connect } from 'react-redux';
 import MonstersTable from '../monsters/MonstersTable';
-import DataTable from '../../components/DataTable/DataTable';
-import ActionForm from '../monster-generator/components/generate-monster/sections/actions/action-forms/ActionForm';
-import { Colors } from '../../utilities/enums';
-import Button from '../../components/Button/Button';
-import { GiSave } from 'react-icons/all';
 import { useAdminState } from './use-admin-state';
+import UsersTable from './components/UsersTable';
+import CustomActions from './components/CustomActions';
 
 const styles = require('./admin-dashboard.module.scss');
 
 const AdminDashboard = (props: {
-  createAction: (action: any) => void;
-  getUsers: (searchTerm?: string) => void;
+  createCustomAction: (action: any) => void;
   user: UserProps;
   users: UserProps[];
   token?: string;
 }) => {
-  const { columns, data, onSearch, onSubmitActionForm, updateActionForm, user, UseForm } =
-    useAdminState(props);
+  const { onSubmitActionForm, updateActionForm, user, UseForm } = useAdminState(props);
 
   const [testState, setTestState] = React.useState();
 
@@ -62,13 +57,7 @@ const AdminDashboard = (props: {
         <PageTitle title="DM Screen Admin" />
         <div className={styles.section}>
           <h2>Users</h2>
-          <DataTable
-            columns={columns}
-            data={data}
-            loading={false}
-            onSearch={onSearch}
-            results={data.length}
-          />
+          <UsersTable />
         </div>
         <div className={styles.section}>
           <h2>User Created NPCs</h2>
@@ -76,18 +65,7 @@ const AdminDashboard = (props: {
         </div>
         <div className={styles.section}>
           <h2>Custom Actions</h2>
-          <form
-            onSubmit={UseForm.handleSubmit(onSubmitActionForm)}
-            className={styles.genForm}
-            noValidate
-          >
-            <ActionForm
-              control={UseForm.control}
-              errors={UseForm.formState.errors}
-              fieldName={'action'}
-            />
-            <Button type="submit" color={Colors.success} icon={<GiSave size={30} />} title="Save" />
-          </form>
+          <CustomActions useForm={UseForm} onSubmitActionForm={onSubmitActionForm} />
         </div>
       </div>
     </PageContainer>
@@ -104,15 +82,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    createAction: (action: MonsterAction, token?: string) => {
-      dispatch(rest.actions.createAction({}, { body: JSON.stringify({ action, token }) }));
-    },
-    getUsers: (searchTerm?: string) => {
-      if (searchTerm) {
-        dispatch(rest.actions.getUsers({ search: searchTerm }));
-      } else {
-        dispatch(rest.actions.getUsers());
-      }
+    createCustomAction: (action: MonsterAction, token?: string) => {
+      dispatch(rest.actions.createCustomAction({}, { body: JSON.stringify({ action, token }) }));
     },
     updateUserRole: (user: UserProps, newRole: 'admin' | 'dungeon-master' | 'user') => {
       const { role, dndClasses, items, spells, ...userProps } = user;

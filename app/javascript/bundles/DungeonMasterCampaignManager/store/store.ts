@@ -13,6 +13,10 @@ const store = configureStore({
       currentCondition: null,
       loading: false,
     },
+    customActions: {
+      actions: [],
+      count: 0,
+    },
     dndClasses: {
       dndClasses: [],
       count: 0,
