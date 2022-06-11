@@ -33,6 +33,7 @@ const ActionsTable = (props: {
       {
         Header: 'Delete',
         accessor: 'id',
+        size: 25,
         Cell: ({ value }) => (
           <Button
             type="button"
@@ -69,6 +70,7 @@ const ActionsTable = (props: {
       loading={false}
       onSearch={onSearch}
       results={data.length}
+      noHover
     />
   );
 };

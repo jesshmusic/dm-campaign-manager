@@ -12,7 +12,58 @@ class ItemsUtil
       import_initial_items
     end
 
+    def generate_actions_from_weapons
+      WeaponItem.all.each do |weapon|
+        create_weapon_action(weapon)
+      end
+      MagicWeaponItem.all.each do |weapon|
+        create_weapon_action(weapon)
+      end
+    end
+
     private
+    def create_weapon_action(weapon)
+      wpn_damage = weapon.damage ? weapon.damage : nil
+      if wpn_damage
+        wpn_action = parse_action_hash(weapon)
+        desc = NpcGenerator.generate_action_desc(wpn_action)
+        unless MonsterAction.find_by(name: weapon.name)
+          MonsterAction.create!(name: weapon.name, desc: desc)
+          puts "Created Monster Action: \"#{weapon.name}\""
+        end
+      end
+    end
+
+    def parse_action_hash(weapon)
+      parsed_dice = DndRules.parse_dice_string(weapon.damage.damage_dice)
+      parsed_2h_dice = weapon.two_handed_damage ? DndRules.parse_dice_string(weapon.two_handed_damage.damage_dice) : nil
+      {
+        params: {
+          action: {
+            action_type: 'attack',
+            name: weapon.name,
+            damage: {
+              damage_type: weapon.damage.damage_type,
+              num_dice: parsed_dice[:hit_dice_number],
+              dice_value: parsed_dice[:hit_dice_value],
+              is_ranged: weapon.weapon_range == 'Ranged',
+              num_targets: 1,
+              reach: weapon.item_range.normal,
+              range_normal: weapon.item_range.normal,
+              range_long: weapon.item_range.long
+            },
+            two_handed_damage: {
+              damage_type: weapon.two_handed_damage ? weapon.two_handed_damage.damage_type : nil,
+              num_dice: parsed_2h_dice ? parsed_2h_dice[:hit_dice_number] : nil,
+              dice_value: parsed_2h_dice ? parsed_2h_dice[:hit_dice_value]: nil
+            }
+          },
+          attack_bonus: 6,
+          prof_bonus: 3,
+          damage_bonus: 6
+        }
+      }
+    end
 
     def import_initial_items
       uri = URI("#{dnd_api_url}/api/equipment")

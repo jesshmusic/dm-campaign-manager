@@ -61,6 +61,7 @@ const UsersTable = (props: {
       loading={false}
       onSearch={onSearch}
       results={data.length}
+      noHover
     />
   );
 };

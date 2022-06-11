@@ -61,4 +61,8 @@ namespace :srd do
     Section.destroy_all
     SectionsUtil.import
   end
+
+  task generate_actions: :environment do
+    ItemsUtil.generate_actions_from_weapons
+  end
 end

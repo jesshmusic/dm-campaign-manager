@@ -133,7 +133,7 @@ module Admin::V1
           id: monster_action.id,
           name: monster_action.name,
           info: info_text,
-          monster_name: monster_action.monster.name,
+          monster_name: monster_action.monster ? monster_action.monster.name : '',
           description: monster_action.desc
         }
       end
