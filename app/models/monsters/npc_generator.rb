@@ -556,13 +556,13 @@ class NpcGenerator
         attacks.each do |attack|
           case attack.type
           when 'LegendaryAction'
-            @new_npc.legendary_actions << LegendaryAction.new(name: attack.name, desc: adapt_action_desc(attack.desc, attack.monster.name.downcase))
+            @new_npc.legendary_actions << LegendaryAction.new(name: attack.name, desc: adapt_action_desc(attack.desc, attack.monster ? attack.monster.name.downcase : 'NewMonster'))
           when 'Reaction'
-            @new_npc.reactions << Reaction.new(name: attack.name, desc: adapt_action_desc(attack.desc, attack.monster.name.downcase))
+            @new_npc.reactions << Reaction.new(name: attack.name, desc: adapt_action_desc(attack.desc, attack.monster ? attack.monster.name.downcase : 'NewMonster'))
           when 'SpecialAbility'
-            @new_npc.special_abilities << SpecialAbility.new(name: attack.name, desc: adapt_action_desc(attack.desc, attack.monster.name.downcase))
+            @new_npc.special_abilities << SpecialAbility.new(name: attack.name, desc: adapt_action_desc(attack.desc, attack.monster ? attack.monster.name.downcase : 'NewMonster'))
           else
-            @new_npc.monster_actions << MonsterAction.new(name: attack.name, desc: adapt_action_desc(attack.desc, attack.monster.name.downcase))
+            @new_npc.monster_actions << MonsterAction.new(name: attack.name, desc: adapt_action_desc(attack.desc, attack.monster ? attack.monster.name.downcase : 'NewMonster'))
           end
         end
       # end

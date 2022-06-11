@@ -20,4 +20,18 @@
 #
 class Action < ApplicationRecord
   belongs_to :monster, optional: true
+
+  include PgSearch::Model
+
+  # PgSearch
+  pg_search_scope :search_for,
+                  against: {
+                    name: 'A',
+                    desc: 'B'
+                  },
+                  using: {
+                    tsearch: {
+                      prefix: true
+                    }
+                  }
 end

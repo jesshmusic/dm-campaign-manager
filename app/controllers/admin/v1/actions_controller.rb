@@ -9,7 +9,11 @@ module Admin::V1
     # GET /v1/actions.json
     def index
       authorize Action
-      @actions = Action.where(monster_id: nil)
+      @actions = if params[:search].present?
+                   Action.search_for(params[:search]).where(monster_id: nil).order(name: :asc)
+                 else
+                   Action.where(monster_id: nil)
+                 end
       render json: { actions: @actions }
     end
 
