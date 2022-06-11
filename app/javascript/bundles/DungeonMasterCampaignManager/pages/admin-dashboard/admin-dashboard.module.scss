@@ -12,3 +12,11 @@
 .buttonBar {
   @include button-bar;
 }
+
+.actionTypeContainer {
+  background-color: $primary;
+  border-radius: $border-radius-sm;
+  color: $white;
+  margin-bottom: $spacer * 0.5;
+  padding: $spacer * 0.5;
+}

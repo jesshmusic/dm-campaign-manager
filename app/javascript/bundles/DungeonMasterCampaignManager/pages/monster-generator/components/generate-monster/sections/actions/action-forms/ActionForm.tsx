@@ -9,7 +9,6 @@ import AbilityForm from './AbilityForm';
 import AttackForm from './AttackForm';
 import { ActionTypes } from '../../../../../../../utilities/types';
 import SpellcastingForm from './SpellcastingForm';
-import { BsChevronDown, BsChevronUp } from 'react-icons/all';
 
 const styles = require('./action-form.module.scss');
 
@@ -21,7 +20,6 @@ const ActionForm = (props: {
   remove?: (index?: number | number[] | undefined) => void;
 }) => {
   const { actionIndex, control, errors, fieldName, remove } = props;
-  const [isShowingContent, setIsShowingContent] = React.useState(true);
   const isFirstRender = React.useRef(true);
   const fieldNamePrefix = actionIndex ? `${fieldName}.${actionIndex}.` : `${fieldName}.`;
 
@@ -36,43 +34,9 @@ const ActionForm = (props: {
     name: `${fieldNamePrefix}spellCasting.slots`,
   });
 
-  const collapseActionContent = () => {
-    setIsShowingContent(!isShowingContent);
-  };
-
-  React.useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      gsap.set(`#actionContent${actionIndex}`, {
-        height: 'auto',
-      });
-    } else {
-      if (!isShowingContent) {
-        gsap.to(`#actionContent${actionIndex}`, {
-          height: 0,
-          duration: 0.75,
-          ease: 'back.inOut',
-        });
-      } else {
-        gsap.to(`#actionContent${actionIndex}`, {
-          height: 'auto',
-          duration: 0.75,
-          ease: 'back.inOut',
-        });
-      }
-    }
-  }, [isShowingContent]);
-
   return (
     <div className={styles.actionContainer}>
       <div className={styles.actionWrapper}>
-        <Button
-          color={Colors.transparentLight}
-          title="Collapse"
-          hideTitle
-          icon={isShowingContent ? <BsChevronDown size={24} /> : <BsChevronUp size={24} />}
-          onClick={collapseActionContent}
-        />
         <ControlledInput
           fieldName={`${fieldNamePrefix}name`}
           errors={errors}

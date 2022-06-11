@@ -244,7 +244,7 @@ class NpcGenerator
       damage_2h = monster_action[:two_handed_damage]
       hit_string = "#{plus_number_string(attack_bonus + prof_bonus)} to hit"
       target_string = "#{damage[:num_targets].to_i.humanize.downcase} target#{damage[:num_targets].to_i > 1 ? 's' : ''}"
-      desc = if damage[:is_ranged]
+      desc = if damage && damage[:is_ranged]
                range_string = "range (#{damage[:range_normal]} / #{damage[:range_long]}), #{target_string}"
                "Ranged Weapon Attack: #{hit_string}, #{range_string}"
              else
@@ -252,7 +252,7 @@ class NpcGenerator
                "Melee Weapon Attack: #{hit_string}, reach #{reach_string}, #{target_string}"
              end
       damage_string = "Hit: #{average_dice(damage[:num_dice], damage[:dice_value], damage_bonus)} (#{damage[:num_dice]}d#{damage[:dice_value]}#{damage_bonus != 0 ? plus_number_string(damage_bonus, true) : ''}) #{damage[:damage_type]} damage"
-      if damage_2h[:damage_type]
+      if damage_2h && damage_2h[:damage_type]
         damage_string = "#{damage_string}. or #{average_dice(damage_2h[:num_dice], damage_2h[:dice_value], damage_bonus)} (#{damage_2h[:num_dice]}d#{damage_2h[:dice_value]}#{damage_bonus != 0 ? plus_number_string(damage_bonus, true) : ''}) #{damage_2h[:damage_type]} damage if used with two hands."
       else
         damage_string = "#{damage_string}."

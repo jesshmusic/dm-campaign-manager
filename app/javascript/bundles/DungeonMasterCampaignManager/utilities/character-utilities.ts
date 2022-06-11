@@ -1,4 +1,4 @@
-import { DamageTypes, SelectOption } from './types';
+import { ActionTypes, DamageTypes, SelectOption } from './types';
 
 export const toSnakeCase = (str: string) =>
   str &&
@@ -39,6 +39,12 @@ export const alignmentOptions: SelectOption[] = [
   { value: 'Lawful Evil', label: 'Lawful Evil' },
   { value: 'Neutral Evil', label: 'Neutral Evil' },
   { value: 'Chaotic Evil', label: 'Chaotic Evil' },
+];
+
+export const actionTypeOptions: SelectOption[] = [
+  { value: ActionTypes.attack, label: 'Attack' },
+  { value: ActionTypes.ability, label: 'Special Ability' },
+  { value: ActionTypes.spellCasting, label: 'Spellcasting' },
 ];
 
 export const monsterSizeOptions: SelectOption[] = [
