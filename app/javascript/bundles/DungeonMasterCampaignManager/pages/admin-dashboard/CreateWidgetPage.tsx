@@ -2,7 +2,7 @@ import React from 'react';
 import PageContainer from '../../containers/PageContainer';
 import ReactQuill from 'react-quill';
 import { ControlledInput } from '../../components/forms/ControllerInput';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller } from 'react-hook-form';
 import Button from '../../components/Button/Button';
 import { Colors } from '../../utilities/enums';
 import * as Icons from 'react-icons/gi';
@@ -10,6 +10,7 @@ import rest from '../../api/api';
 import { connect } from 'react-redux';
 import FormIconSelect from '../../components/forms/FormIconSelect';
 import { WidgetProps } from '../../components/Widgets/Widget';
+import { useCreateWidgetState } from './use-create-widget-state';
 
 export const allGiIcons = Object.entries(Icons).map((iconArray) => ({
   value: iconArray[0],
@@ -21,30 +22,7 @@ const CreateWidgetPage = (props: {
   createWidget: (widget: WidgetProps, token?: string) => void;
   token?: string;
 }) => {
-  const { createWidget, token } = props;
-  const [testState, setTestState] = React.useState();
-
-  const UseForm = useForm<WidgetProps>({
-    mode: 'onChange',
-    defaultValues: {
-      title: 'New Widget',
-      subtitle: '',
-      icon: 'GiSwordInStone',
-      content: '',
-    },
-  });
-
-  React.useEffect(() => {
-    const subscription = UseForm.watch((value) => {
-      // @ts-ignore
-      setTestState(value);
-    });
-    return () => subscription.unsubscribe();
-  }, [UseForm.watch]);
-
-  const onSubmit = (data) => {
-    createWidget(data, token);
-  };
+  const { onSubmit, testState, UseForm } = useCreateWidgetState(props);
 
   return (
     <PageContainer
