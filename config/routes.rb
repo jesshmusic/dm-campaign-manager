@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-
   root to: 'home#index'
 
   resources :users, except: %i[create new destroy], param: :slug
@@ -26,8 +25,8 @@ Rails.application.routes.draw do
            as: 'quick_monster',
            constraints: { format: 'json' }
       post '/generate_commoner', to: 'monsters#generate_commoner',
-          as: 'generate_commoner',
-          constraints: { format: 'json' }
+           as: 'generate_commoner',
+           constraints: { format: 'json' }
       get '/monster-categories', to: 'monsters#monster_categories',
           as: 'monster_categories',
           constraints: { format: 'json' }
@@ -72,6 +71,7 @@ Rails.application.routes.draw do
         resources :races
         resources :spells
         resources :sections
+        resources :widgets, only: [:index, :create, :update, :destroy], constraints: { format: 'json' }
       end
     end
   end
