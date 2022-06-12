@@ -2,7 +2,7 @@
 #
 # Table name: class_specifics
 #
-#  id                 :bigint           not null, primary key
+#  widgetId                 :bigint           not null, primary key
 #  index              :string
 #  name               :string
 #  value              :string
@@ -16,7 +16,7 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (dnd_class_level_id => dnd_class_levels.id)
+#  fk_rails_...  (dnd_class_level_id => dnd_class_levels.widgetId)
 #
 FactoryBot.define do
   factory :class_specific do

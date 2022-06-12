@@ -2,7 +2,7 @@
 #
 # Table name: monster_immunities
 #
-#  id         :bigint           not null, primary key
+#  widgetId         :bigint           not null, primary key
 #  name       :string
 #  type       :string
 #  created_at :datetime         not null
@@ -15,7 +15,7 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (monster_id => monsters.id)
+#  fk_rails_...  (monster_id => monsters.widgetId)
 #
 FactoryBot.define do
   factory :damage_immunity do

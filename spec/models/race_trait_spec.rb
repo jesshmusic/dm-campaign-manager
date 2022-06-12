@@ -2,7 +2,7 @@
 #
 # Table name: race_traits
 #
-#  id         :bigint           not null, primary key
+#  widgetId         :bigint           not null, primary key
 #  desc       :string           default([]), is an Array
 #  name       :string
 #  created_at :datetime         not null
@@ -15,7 +15,7 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (race_id => races.id)
+#  fk_rails_...  (race_id => races.widgetId)
 #
 require 'rails_helper'
 

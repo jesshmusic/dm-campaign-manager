@@ -2,7 +2,7 @@
 #
 # Table name: item_throw_ranges
 #
-#  id         :bigint           not null, primary key
+#  widgetId         :bigint           not null, primary key
 #  long       :integer
 #  normal     :integer
 #  created_at :datetime         not null
@@ -15,7 +15,7 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (item_id => items.id)
+#  fk_rails_...  (item_id => items.widgetId)
 #
 FactoryBot.define do
   factory :item_throw_range do

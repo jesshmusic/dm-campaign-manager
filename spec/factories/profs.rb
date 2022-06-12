@@ -2,7 +2,7 @@
 #
 # Table name: profs
 #
-#  id         :bigint           not null, primary key
+#  widgetId         :bigint           not null, primary key
 #  name       :string
 #  prof_type  :string
 #  slug       :string           not null

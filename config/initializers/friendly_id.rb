@@ -18,7 +18,7 @@ FriendlyId.defaults do |config|
 
   config.reserved_words = %w(new edit index session login logout users admin
     stylesheets assets javascripts images)
-    
+
   # This adds an option to treat reserved words as conflicts rather than exceptions.
   # When there is no good candidate, a UUID will be appended, matching the existing
   # conflict behavior.
@@ -28,7 +28,7 @@ FriendlyId.defaults do |config|
   #  ## Friendly Finders
   #
   # Uncomment this to use friendly finders in all models. By default, if
-  # you wish to find a record by its friendly id, you must do:
+  # you wish to find a record by its friendly widgetId, you must do:
   #
   #    MyModel.friendly.find('foo')
   #

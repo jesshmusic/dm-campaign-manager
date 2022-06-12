@@ -1,27 +1,39 @@
 import React from 'react';
 import Frame from '../Frame/Frame';
 import CloseButton from '../Button/CloseButton';
+
 const styles = require('./widgets.module.scss');
 
-type WidgetProps = {
+export type WidgetProps = {
+  id?: number;
+  title: string;
+  subtitle: string;
+  icon: string;
+  content?: string;
+};
+
+export type WidgetElementProps = {
   icon?: React.ReactNode;
-  id: string;
+  widgetId: string;
+  content?: string;
   onRemoveItem: (id: string) => void;
   component: any;
   title: string;
   subtitle: string;
   hideFrame: boolean;
+  dataGrid?: object;
 };
 
 const Widget = ({
   icon,
-  id,
+  widgetId,
   onRemoveItem,
   component: Item,
+  content,
   title,
   subtitle,
   hideFrame,
-}: WidgetProps) => {
+}: WidgetElementProps) => {
   return (
     <Frame
       className={styles.widget}
@@ -29,9 +41,9 @@ const Widget = ({
       style={{ width: '100%', height: '100%' }}
       title={title}
       subtitle={subtitle}
-      actionButton={<CloseButton onClick={() => onRemoveItem(id)} />}
+      actionButton={<CloseButton onClick={() => onRemoveItem(widgetId)} />}
     >
-      <Item hideFrame={hideFrame} />
+      <Item hideFrame={hideFrame} content={content} />
     </Frame>
   );
 };

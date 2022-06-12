@@ -21,7 +21,7 @@ module Admin::V1
 
       respond_to do |format|
         if @widget.save
-          format.json { render :show, status: :created, location: @widget }
+          format.json { render :show, status: :created }
         else
           format.json { render json: @widget.errors, status: :unprocessable_entity }
         end

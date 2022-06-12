@@ -2,7 +2,7 @@
 #
 # Table name: ability_bonus_options
 #
-#  id         :bigint           not null, primary key
+#  widgetId         :bigint           not null, primary key
 #  ability    :string
 #  bonus      :integer
 #  created_at :datetime         not null
@@ -15,7 +15,7 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (race_id => races.id)
+#  fk_rails_...  (race_id => races.widgetId)
 #
 FactoryBot.define do
   factory :ability_bonus_option do

@@ -1,13 +1,13 @@
 import React from 'react';
 import CloseButton from '../../../components/Button/CloseButton';
-import { dashboardComponents } from '../../../components/Widgets';
+
 const styles = require('../user-dashboard.module.scss');
 
 type AddListProps = {
+  widgets: { title: string; key: string }[];
   items: string[];
   onAddItem: (string) => void;
   onRemoveItem: (string) => void;
-  originalItems: string[];
   onCloseModal: () => void;
 };
 
@@ -15,7 +15,7 @@ export default function AddList({
   items,
   onRemoveItem,
   onAddItem,
-  originalItems,
+  widgets,
   onCloseModal,
 }: AddListProps) {
   const handleChange = (e) => {
@@ -33,17 +33,17 @@ export default function AddList({
         <CloseButton onClick={onCloseModal} />
       </div>
       <div className={styles.content}>
-        {originalItems.map((item) => (
-          <div className={'form-check'} key={item}>
+        {widgets.map((widget) => (
+          <div className={'form-check'} key={widget.key}>
             <input
               className="form-check-input"
               type={'checkbox'}
-              name={item}
+              name={widget.key}
               onChange={handleChange}
-              checked={items.includes(item)}
+              checked={items.includes(widget.key)}
             />
-            <label className="form-check-label" htmlFor={item}>
-              {dashboardComponents[item].title}
+            <label className="form-check-label" htmlFor={widget.key}>
+              {widget.title}
             </label>
           </div>
         ))}

@@ -2,7 +2,7 @@
 #
 # Table name: multi_classings
 #
-#  id           :bigint           not null, primary key
+#  widgetId           :bigint           not null, primary key
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
 #  dnd_class_id :bigint           not null
@@ -13,7 +13,7 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (dnd_class_id => dnd_classes.id)
+#  fk_rails_...  (dnd_class_id => dnd_classes.widgetId)
 #
 class MultiClassing < ApplicationRecord
   belongs_to :dnd_class

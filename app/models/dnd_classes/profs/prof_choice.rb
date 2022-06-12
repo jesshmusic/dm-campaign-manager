@@ -4,7 +4,7 @@
 #
 # Table name: prof_choices
 #
-#  id                :bigint           not null, primary key
+#  widgetId                :bigint           not null, primary key
 #  name              :string
 #  num_choices       :integer
 #  prof_choice_type  :string

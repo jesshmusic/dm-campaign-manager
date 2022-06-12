@@ -1,7 +1,6 @@
 import { createAction, createReducer } from '@reduxjs/toolkit';
 import { AnyAction } from 'redux';
 import { FlashMessage } from '../utilities/types';
-import FlashMessages from '../components/Alerts/FlashMessages';
 // import rest from '../api/api';
 
 // Flash Messages
@@ -21,14 +20,16 @@ export const addMessage = (
   });
 };
 
-export const dismissFlashMessage = createAction<number>(
-  'DISMISS_FLASH_MESSAGE'
-);
+export const dismissFlashMessage = createAction<number>('DISMISS_FLASH_MESSAGE');
 
 const loginSucceeded = createAction('@@redux-api@setUser_success');
 const logoutSucceeded = createAction('@@redux-api@userLogout_success');
 const loginFailed = createAction('@@redux-api@setUser_fail');
 const logoutFailed = createAction('@@redux-api@userLogout_fail');
+const createCustomActionSuccess = createAction('@@redux-api@createCustomAction_success');
+const createCustomActionFail = createAction('@@redux-api@createCustomAction_fail');
+const createWidgetSuccess = createAction('@@redux-api@createWidget_success');
+const createWidgetFail = createAction('@@redux-api@createWidget_fail');
 
 export enum FlashMessageType {
   alert = 'alert',
@@ -76,9 +77,7 @@ const flashMessages = createReducer([] as FlashMessage[], (builder) =>
       ];
     })
     .addCase(dismissFlashMessage, (state, action: AnyAction) => {
-      const removeIndex = state
-        .map((flash: FlashMessage) => flash.id)
-        .indexOf(action.payload);
+      const removeIndex = state.map((flash: FlashMessage) => flash.id).indexOf(action.payload);
       const newState = [...state];
       newState.splice(removeIndex, 1);
       return newState;
@@ -103,6 +102,18 @@ const flashMessages = createReducer([] as FlashMessage[], (builder) =>
         } as FlashMessage,
         ...state,
       ];
+    })
+    .addCase(createCustomActionFail, (state, action: AnyAction) => {
+      return flashErrorMessage(state, action);
+    })
+    .addCase(createCustomActionSuccess, (state, action: AnyAction) => {
+      return flashSuccessMessage(state, 'Action Created Successfully', `Saved`);
+    })
+    .addCase(createWidgetFail, (state, action: AnyAction) => {
+      return flashErrorMessage(state, action);
+    })
+    .addCase(createWidgetSuccess, (state, action: AnyAction) => {
+      return flashSuccessMessage(state, 'Widget Created Successfully', `Saved`);
     })
 );
 

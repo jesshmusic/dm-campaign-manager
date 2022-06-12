@@ -2,7 +2,7 @@
 #
 # Table name: two_handed_damages
 #
-#  id          :bigint           not null, primary key
+#  widgetId          :bigint           not null, primary key
 #  damage_dice :string
 #  damage_type :string
 #  created_at  :datetime         not null
@@ -15,7 +15,7 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (item_id => items.id)
+#  fk_rails_...  (item_id => items.widgetId)
 #
 class TwoHandedDamage < ApplicationRecord
   belongs_to :item

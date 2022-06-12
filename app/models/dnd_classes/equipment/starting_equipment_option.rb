@@ -2,7 +2,7 @@
 #
 # Table name: starting_equipment_options
 #
-#  id                  :bigint           not null, primary key
+#  widgetId                  :bigint           not null, primary key
 #  choose              :integer
 #  equipment_category  :string
 #  equipment_type      :string
@@ -18,8 +18,8 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (dnd_class_id => dnd_classes.id)
-#  fk_rails_...  (equipment_option_id => starting_equipment_options.id)
+#  fk_rails_...  (dnd_class_id => dnd_classes.widgetId)
+#  fk_rails_...  (equipment_option_id => starting_equipment_options.widgetId)
 #
 class StartingEquipmentOption < ApplicationRecord
   has_many :equipments, dependent: :destroy

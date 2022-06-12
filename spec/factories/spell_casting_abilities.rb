@@ -2,7 +2,7 @@
 #
 # Table name: spell_casting_abilities
 #
-#  id               :bigint           not null, primary key
+#  widgetId               :bigint           not null, primary key
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
 #  ability_score_id :bigint           not null
@@ -15,8 +15,8 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (ability_score_id => ability_scores.id)
-#  fk_rails_...  (spell_casting_id => spell_castings.id)
+#  fk_rails_...  (ability_score_id => ability_scores.widgetId)
+#  fk_rails_...  (spell_casting_id => spell_castings.widgetId)
 #
 FactoryBot.define do
   factory :spell_casting_ability do

@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   root to: 'home#index'
 
   resources :users, except: %i[create new destroy], param: :slug
-  patch '/users/:id/change_role', to: 'users#change_role', as: 'user_change_role'
+  patch '/users/:widgetId/change_role', to: 'users#change_role', as: 'user_change_role'
   post '/users/login', to: 'users#set_auth_user', as: 'user_set_user'
   delete '/users/logout', to: 'users#logout_user', as: 'user_logout_user'
   get 'app(/*all)', to: 'home#index'

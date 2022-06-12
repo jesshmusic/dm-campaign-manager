@@ -2,7 +2,7 @@
 #
 # Table name: class_features
 #
-#  id                 :bigint           not null, primary key
+#  widgetId                 :bigint           not null, primary key
 #  desc               :string           default([]), is an Array
 #  level              :integer
 #  name               :string
@@ -17,7 +17,7 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (dnd_class_level_id => dnd_class_levels.id)
+#  fk_rails_...  (dnd_class_level_id => dnd_class_levels.widgetId)
 #
 FactoryBot.define do
   factory :class_feature do

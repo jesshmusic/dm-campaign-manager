@@ -2,7 +2,7 @@
 #
 # Table name: martial_arts
 #
-#  id                :bigint           not null, primary key
+#  widgetId                :bigint           not null, primary key
 #  dice_count        :integer
 #  dice_value        :integer
 #  created_at        :datetime         not null
@@ -15,7 +15,7 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (class_specific_id => class_specifics.id)
+#  fk_rails_...  (class_specific_id => class_specifics.widgetId)
 #
 FactoryBot.define do
   factory :sneak_attack do

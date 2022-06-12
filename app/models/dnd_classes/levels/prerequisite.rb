@@ -2,7 +2,7 @@
 #
 # Table name: prerequisites
 #
-#  id               :bigint           not null, primary key
+#  widgetId               :bigint           not null, primary key
 #  level            :integer
 #  name             :string
 #  created_at       :datetime         not null
@@ -15,7 +15,7 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (class_feature_id => class_features.id)
+#  fk_rails_...  (class_feature_id => class_features.widgetId)
 #
 class Prerequisite < ApplicationRecord
   belongs_to :class_feature

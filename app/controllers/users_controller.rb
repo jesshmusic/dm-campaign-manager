@@ -48,7 +48,7 @@ class UsersController < SecuredController
     end
   end
 
-  # GET /v1/users/{id}
+  # GET /v1/users/{widgetId}
   def show
     authorize @user unless @user.nil?
   end

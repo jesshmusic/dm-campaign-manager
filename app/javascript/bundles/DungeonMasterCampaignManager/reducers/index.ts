@@ -9,6 +9,7 @@ import sections from './sections';
 import spells from './spells';
 import users from './user';
 import customActions from './customActions';
+import widgets from './widgets';
 
 export default combineReducers({
   conditions,
@@ -21,4 +22,5 @@ export default combineReducers({
   sections,
   spells,
   users,
+  widgets,
 });

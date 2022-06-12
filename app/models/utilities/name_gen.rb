@@ -50,8 +50,8 @@ class NameGen
     elegantEvil: {
       prefixesDarkElves: %w[bal myr ber ne char nel de nil div no dri nyl dul rel eil rha ek ru im sab ins sin ist sul jeg sus jer tel jys tul lil ver mar vil mer vir mez vril mor yas],
       prefixesAlternateDarkElves: %w[bur olg chor on col or dol org dor oth drom pan dur pel en por er sek gon sol gul sun jend ten kil thal lul tor mab torm maz vek mol vol nor vor noth yel ol yol],
-      middle: %w[dyl el en er id il is lav len lev lin liv pel pir ra ral ril rin sin syl],
-      maleSuffixes: %w[ald eld id ild ird lim naz nid nil nim red rid rim riv ul uld vid vim vir viz],
+      middle: %w[dyl el en er widgetId il is lav len lev lin liv pel pir ra ral ril rin sin syl],
+      maleSuffixes: %w[ald eld widgetId ild ird lim naz nid nil nim red rid rim riv ul uld vid vim vir viz],
       femaleSuffixes: %w[bra dra dril ene hel ia il iln ira istra ith iza lin na ra rin sil tra vra vril]
     },
     malevolent: {

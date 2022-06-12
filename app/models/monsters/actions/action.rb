@@ -2,7 +2,7 @@
 #
 # Table name: actions
 #
-#  id         :bigint           not null, primary key
+#  widgetId         :bigint           not null, primary key
 #  desc       :string
 #  name       :string
 #  type       :string
@@ -16,7 +16,7 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (monster_id => monsters.id)
+#  fk_rails_...  (monster_id => monsters.widgetId)
 #
 class Action < ApplicationRecord
   belongs_to :monster, optional: true

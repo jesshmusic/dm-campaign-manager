@@ -2,7 +2,7 @@
 #
 # Table name: widgets
 #
-#  id         :bigint           not null, primary key
+#  widgetId         :bigint           not null, primary key
 #  content    :text
 #  icon       :text
 #  subtitle   :text

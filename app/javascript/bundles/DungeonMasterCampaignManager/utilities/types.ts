@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 // import { Location, NavigateFn } from '@reach/router';
 import { ItemType } from '../pages/items/use-data';
 import { User } from '@auth0/auth0-react';
 import { FlashMessageType } from '../reducers/flashMessages';
 import { UseFormReturn } from 'react-hook-form';
+import { IconType } from 'react-icons';
 
 export interface AbilityScore {
   desc: string[];
@@ -568,6 +569,13 @@ export type RandomNameResult = {
 export type SelectOption = {
   label: string;
   value: string | number;
+  data?: { [key: string]: any };
+};
+
+export type SelectIconOption = {
+  label: string;
+  value: string | number;
+  icon: ReactElement<IconType>;
   data?: { [key: string]: any };
 };
 

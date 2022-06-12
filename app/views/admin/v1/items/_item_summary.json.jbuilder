@@ -3,7 +3,7 @@
 json.key_format! camelize: :lower
 
 json.extract! item,
-              # :id,
+              # :widgetId,
               :type,
               :weight,
               :name,

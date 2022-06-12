@@ -2,7 +2,7 @@
 #
 # Table name: conditions
 #
-#  id          :bigint           not null, primary key
+#  widgetId          :bigint           not null, primary key
 #  description :string           default([]), is an Array
 #  name        :string
 #  slug        :string           not null

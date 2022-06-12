@@ -2,7 +2,7 @@
 #
 # Table name: dnd_classes
 #
-#  id            :bigint           not null, primary key
+#  widgetId            :bigint           not null, primary key
 #  api_url       :string
 #  hit_die       :integer
 #  name          :string
@@ -20,7 +20,7 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (user_id => users.id)
+#  fk_rails_...  (user_id => users.widgetId)
 #
 
 require 'rails_helper'

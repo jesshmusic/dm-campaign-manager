@@ -2,7 +2,7 @@
 #
 # Table name: skills
 #
-#  id            :bigint           not null, primary key
+#  widgetId            :bigint           not null, primary key
 #  ability_score :string
 #  desc          :string
 #  name          :string

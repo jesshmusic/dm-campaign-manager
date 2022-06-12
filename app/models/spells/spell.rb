@@ -4,7 +4,7 @@
 #
 # Table name: spells
 #
-#  id            :bigint           not null, primary key
+#  widgetId            :bigint           not null, primary key
 #  api_url       :string
 #  casting_time  :string
 #  components    :text             default([]), is an Array
@@ -32,7 +32,7 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (user_id => users.id)
+#  fk_rails_...  (user_id => users.widgetId)
 #
 
 class Spell < ApplicationRecord

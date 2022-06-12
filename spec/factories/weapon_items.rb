@@ -2,7 +2,7 @@
 #
 # Table name: items
 #
-#  id                   :bigint           not null, primary key
+#  widgetId                   :bigint           not null, primary key
 #  api_url              :string
 #  armor_category       :string
 #  armor_class_bonus    :integer
@@ -44,11 +44,11 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (user_id => users.id)
+#  fk_rails_...  (user_id => users.widgetId)
 #
 
 FactoryBot.define do
   factory :weapon_item do
-    
+
   end
 end

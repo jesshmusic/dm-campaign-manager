@@ -2,7 +2,7 @@
 #
 # Table name: class_specific_spell_slots
 #
-#  id                 :bigint           not null, primary key
+#  widgetId                 :bigint           not null, primary key
 #  sorcery_point_cost :integer
 #  spell_slot_level   :integer
 #  created_at         :datetime         not null
@@ -15,7 +15,7 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (class_specific_id => class_specifics.id)
+#  fk_rails_...  (class_specific_id => class_specifics.widgetId)
 #
 class ClassSpecificSpellSlot < ApplicationRecord
   belongs_to :class_specific

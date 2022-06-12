@@ -2,7 +2,7 @@
 #
 # Table name: class_level_choices
 #
-#  id               :bigint           not null, primary key
+#  widgetId               :bigint           not null, primary key
 #  choices          :string           default([]), is an Array
 #  name             :string
 #  num_choices      :integer
@@ -16,7 +16,7 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (class_feature_id => class_features.id)
+#  fk_rails_...  (class_feature_id => class_features.widgetId)
 #
 FactoryBot.define do
   factory :class_level_choice do

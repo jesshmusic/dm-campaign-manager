@@ -7,7 +7,7 @@ import ReactModal from 'react-modal';
 
 const styles = require('../user-dashboard.module.scss');
 
-const DashboardBar = ({ onLayoutSave, items, onRemoveItem, onAddItem, originalItems }) => {
+const DashboardBar = ({ onLayoutSave, items, onRemoveItem, onAddItem, widgets }) => {
   const [showWidgetList, setShowWidgetList] = React.useState(false);
 
   ReactModal.setAppElement(document.getElementById('dmsContainer'));
@@ -29,7 +29,7 @@ const DashboardBar = ({ onLayoutSave, items, onRemoveItem, onAddItem, originalIt
           onRemoveItem={onRemoveItem}
           onAddItem={onAddItem}
           onCloseModal={() => setShowWidgetList(false)}
-          originalItems={originalItems}
+          widgets={widgets}
         />
       </ReactModal>
       <h2>

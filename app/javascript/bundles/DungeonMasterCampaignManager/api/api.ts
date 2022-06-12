@@ -121,6 +121,39 @@ export default reduxApi({
       };
     },
   },
+  getWidgets: {
+    url: '/v1/widgets',
+  },
+  createWidget: {
+    url: '/v1/widgets',
+    options() {
+      const headers = getHeaders();
+      return {
+        method: 'post',
+        headers,
+      };
+    },
+  },
+  updateWidget: {
+    url: '/v1/widgets/:id.json',
+    options() {
+      const headers = getHeaders();
+      return {
+        method: 'put',
+        headers,
+      };
+    },
+  },
+  deleteWidget: {
+    url: '/v1/widgets/:id.json',
+    options() {
+      const headers = getHeaders();
+      return {
+        method: 'delete',
+        headers,
+      };
+    },
+  },
   getCondition: {
     url: '/v1/conditions/:id',
   },

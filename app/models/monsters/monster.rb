@@ -4,7 +4,7 @@
 #
 # Table name: monsters
 #
-#  id                     :bigint           not null, primary key
+#  widgetId                     :bigint           not null, primary key
 #  alignment              :string
 #  api_url                :string
 #  armor_class            :integer          default(10)
@@ -42,7 +42,7 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (user_id => users.id)
+#  fk_rails_...  (user_id => users.widgetId)
 #
 
 class Monster < ApplicationRecord
@@ -259,7 +259,7 @@ class Monster < ApplicationRecord
           xml.actions do
             self.monster_actions.each_with_index do |action, index|
               action_id = sprintf '%05d', index + 1
-              xml.send "id-#{action_id}" do
+              xml.send "widgetId-#{action_id}" do
                 self.xml_element('desc', 'string', action.desc, xml)
                 self.xml_element('name', 'string', action.name, xml)
               end
@@ -276,7 +276,7 @@ class Monster < ApplicationRecord
           xml.legendaryactions do
             self.legendary_actions.each_with_index do |action, index|
               action_id = sprintf '%05d', index + 1
-              xml.send "id-#{action_id}" do
+              xml.send "widgetId-#{action_id}" do
                 self.xml_element('desc', 'string', action.desc, xml)
                 self.xml_element('name', 'string', action.name, xml)
               end
@@ -287,7 +287,7 @@ class Monster < ApplicationRecord
           xml.reactions do
             self.reactions.each_with_index do |action, index|
               action_id = sprintf '%05d', index + 1
-              xml.send "id-#{action_id}" do
+              xml.send "widgetId-#{action_id}" do
                 self.xml_element('desc', 'string', action.desc, xml)
                 self.xml_element('name', 'string', action.name, xml)
               end
@@ -301,7 +301,7 @@ class Monster < ApplicationRecord
           xml.traits do
             self.special_abilities.each_with_index do |action, index|
               action_id = sprintf '%05d', index + 1
-              xml.send "id-#{action_id}" do
+              xml.send "widgetId-#{action_id}" do
                 self.xml_element('desc', 'string', action.desc, xml)
                 self.xml_element('name', 'string', action.name, xml)
               end

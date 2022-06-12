@@ -2,7 +2,7 @@
 #
 # Table name: equipment
 #
-#  id                           :bigint           not null, primary key
+#  widgetId                           :bigint           not null, primary key
 #  name                         :string
 #  quantity                     :integer
 #  created_at                   :datetime         not null

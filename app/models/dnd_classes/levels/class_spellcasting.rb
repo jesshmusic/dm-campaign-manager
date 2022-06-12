@@ -2,7 +2,7 @@
 #
 # Table name: class_spellcastings
 #
-#  id                  :bigint           not null, primary key
+#  widgetId                  :bigint           not null, primary key
 #  cantrips_known      :integer
 #  spell_slots_level_1 :integer
 #  spell_slots_level_2 :integer
@@ -24,7 +24,7 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (dnd_class_level_id => dnd_class_levels.id)
+#  fk_rails_...  (dnd_class_level_id => dnd_class_levels.widgetId)
 #
 class ClassSpellcasting < ApplicationRecord
   belongs_to :dnd_class_level

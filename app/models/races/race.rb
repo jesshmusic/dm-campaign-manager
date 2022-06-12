@@ -4,7 +4,7 @@
 #
 # Table name: races
 #
-#  id                           :bigint           not null, primary key
+#  widgetId                           :bigint           not null, primary key
 #  ability_bonus_option_choices :string           default([]), is an Array
 #  ability_bonus_options        :integer
 #  age                          :text
@@ -31,7 +31,7 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (user_id => users.id)
+#  fk_rails_...  (user_id => users.widgetId)
 #
 
 class Race < ApplicationRecord

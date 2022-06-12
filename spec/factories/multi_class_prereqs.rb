@@ -2,7 +2,7 @@
 #
 # Table name: multi_class_prereqs
 #
-#  id                              :bigint           not null, primary key
+#  widgetId                              :bigint           not null, primary key
 #  ability_score                   :string
 #  minimum_score                   :integer
 #  created_at                      :datetime         not null

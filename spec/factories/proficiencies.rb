@@ -2,7 +2,7 @@
 #
 # Table name: proficiencies
 #
-#  id         :bigint           not null, primary key
+#  widgetId         :bigint           not null, primary key
 #  api_url    :string
 #  name       :string
 #  type       :string

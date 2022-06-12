@@ -2,6 +2,15 @@
 
 .wrapper {
   @include resp-container;
+  display: grid;
+  grid-gap: $spacer * 3;
+  grid-template-columns: 1fr;
+  @include respond-to(lg) {
+    grid-template-columns: 1fr 1fr;
+  }
+  @include respond-to(xl) {
+    grid-template-columns: 1fr 20rem;
+  }
 }
 
 .section {
@@ -11,6 +20,13 @@
 
 .buttonBar {
   @include button-bar;
+  margin: $spacer * 0.5 0;
+}
+
+.buttonBarGreen {
+  @include button-bar;
+  background-color: $green;
+  margin: $spacer * 0.5 0;
 }
 
 .actionTypeContainer {

@@ -2,7 +2,7 @@
 #
 # Table name: armor_classes
 #
-#  id            :bigint           not null, primary key
+#  widgetId            :bigint           not null, primary key
 #  ac_base       :integer
 #  has_dex_bonus :boolean
 #  max_dex_bonus :integer
@@ -16,7 +16,7 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (item_id => items.id)
+#  fk_rails_...  (item_id => items.widgetId)
 #
 FactoryBot.define do
   factory :armor_class do

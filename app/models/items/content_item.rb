@@ -2,7 +2,7 @@
 #
 # Table name: content_items
 #
-#  id         :bigint           not null, primary key
+#  widgetId         :bigint           not null, primary key
 #  index      :string           not null
 #  name       :string           not null
 #  quantity   :integer          default(1)
@@ -16,7 +16,7 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (item_id => items.id)
+#  fk_rails_...  (item_id => items.widgetId)
 #
 class ContentItem < ApplicationRecord
   belongs_to :item
