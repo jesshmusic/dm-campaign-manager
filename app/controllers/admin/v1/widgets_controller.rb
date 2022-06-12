@@ -45,7 +45,8 @@ module Admin::V1
       authorize @widget
       @widget.destroy
       respond_to do |format|
-        format.json { head :no_content }
+        widgets = Widget.all
+        format.json { render json: { widgets: widgets, count: Widget.all.count }, status: :created }
       end
     end
 

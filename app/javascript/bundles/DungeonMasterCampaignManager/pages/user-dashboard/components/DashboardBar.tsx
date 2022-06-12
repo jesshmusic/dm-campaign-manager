@@ -2,12 +2,12 @@ import React from 'react';
 import AddList from './AddList';
 import Button from '../../../components/Button/Button';
 import { Colors } from '../../../utilities/enums';
-import { GiChecklist, GiSave } from 'react-icons/all';
+import { GiChecklist } from 'react-icons/all';
 import ReactModal from 'react-modal';
 
 const styles = require('../user-dashboard.module.scss');
 
-const DashboardBar = ({ onLayoutSave, items, onRemoveItem, onAddItem, widgets }) => {
+const DashboardBar = ({ items, onRemoveItem, onAddItem, widgets }) => {
   const [showWidgetList, setShowWidgetList] = React.useState(false);
 
   ReactModal.setAppElement(document.getElementById('dmsContainer'));
@@ -42,13 +42,6 @@ const DashboardBar = ({ onLayoutSave, items, onRemoveItem, onAddItem, widgets })
           title={'Select Widgets'}
           icon={<GiChecklist size={30} />}
           onClick={() => setShowWidgetList(true)}
-        />
-        <Button
-          className={styles.saveButton}
-          color={Colors.transparent}
-          title={'Save Layout'}
-          icon={<GiSave size={30} />}
-          onClick={onLayoutSave}
         />
       </div>
     </div>

@@ -5,9 +5,10 @@ import { UserProps } from '../../utilities/types';
 import { connect } from 'react-redux';
 import MonstersTable from '../monsters/MonstersTable';
 import UsersTable from './components/UsersTable';
-import CustomActions from './components/CustomActions';
 import { GiBarbute } from 'react-icons/all';
 import { Link } from 'react-router-dom';
+import ActionsTable from './components/ActionsTable';
+import WidgetsTable from './components/WidgetsTable';
 
 const styles = require('./admin-dashboard.module.scss');
 
@@ -33,8 +34,12 @@ const AdminDashboard = (props: { user: UserProps }) => {
             {user ? <MonstersTable user={user} /> : null}
           </div>
           <div className={styles.section}>
+            <h2>Custom Widgets</h2>
+            <WidgetsTable />
+          </div>
+          <div className={styles.section}>
             <h2>Custom Actions</h2>
-            <CustomActions />
+            <ActionsTable />
           </div>
         </div>
         <div className={styles.rightColumn}>

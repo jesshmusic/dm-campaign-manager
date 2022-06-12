@@ -25,32 +25,35 @@ const getFromLS = (key) => {
   return ls[key];
 };
 
-const saveToLS = (key, value) => {
+const saveToLS = (layouts, widgets) => {
   if (global.localStorage) {
     global.localStorage.setItem(
       'rgl-8',
       JSON.stringify({
-        [key]: value,
+        layouts,
+        widgets,
       })
     );
   }
 };
 
 const Dashboard = ({ customWidgets, getWidgets }) => {
-  const [widgetKeys, setWidgetKeys] = React.useState(['randomName', 'randomTavern', 'npcGen']);
+  const [widgetKeys, setWidgetKeys] = React.useState(getFromLS('widgets') || dashboardItems);
   const [widgets, setWidgets] = React.useState<WidgetElementProps[]>([]);
-  const [layouts, setLayouts] = React.useState(initialLayouts);
+  const [layouts, setLayouts] = React.useState(getFromLS('layouts') || initialLayouts);
   const [allWidgets, setAllWidgets] = React.useState(dashboardItems);
 
   React.useEffect(() => {
-    setLayouts(getFromLS('layouts') || initialLayouts);
-    setWidgetKeys(getFromLS('widgets'));
     getWidgets();
   }, []);
 
   React.useEffect(() => {
-    saveToLS('widgets', widgetKeys);
+    saveToLS(layouts, widgetKeys);
   }, [widgetKeys]);
+
+  React.useEffect(() => {
+    saveToLS(layouts, widgetKeys);
+  }, [layouts]);
 
   React.useEffect(() => {
     const customWidgetKeys = customWidgets.map((widget) => ({
@@ -101,10 +104,6 @@ const Dashboard = ({ customWidgets, getWidgets }) => {
     setLayouts(allLayouts);
   };
 
-  const onLayoutSave = () => {
-    saveToLS('layouts', layouts);
-  };
-
   const onRemoveItem = (widgetId) => {
     setWidgetKeys(widgetKeys.filter((i) => i !== widgetId));
   };
@@ -121,7 +120,6 @@ const Dashboard = ({ customWidgets, getWidgets }) => {
   return (
     <div className={styles.section} id="dashboardContainer">
       <DashboardBar
-        onLayoutSave={onLayoutSave}
         items={widgetKeys}
         onRemoveItem={onRemoveItem}
         onAddItem={onAddItem}
