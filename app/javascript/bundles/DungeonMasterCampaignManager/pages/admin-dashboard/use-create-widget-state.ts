@@ -1,7 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { WidgetProps } from '../../components/Widgets/Widget';
+import { CreateWidgetForm, WidgetProps } from '../../components/Widgets/Widget';
+import { GiSwordInStone } from 'react-icons/all';
 
 export const useCreateWidgetState = (props: {
   createWidget: (widget: WidgetProps, token?: string) => void;
@@ -11,15 +12,28 @@ export const useCreateWidgetState = (props: {
   const [testState, setTestState] = React.useState();
   const navigate = useNavigate();
 
-  const UseForm = useForm<WidgetProps>({
+  const UseForm = useForm<CreateWidgetForm>({
     mode: 'onChange',
     defaultValues: {
       title: 'New Widget',
       subtitle: '',
-      icon: 'GiSwordInStone',
+      icon: 'Sword In Stone',
+      iconOption: {
+        value: 'GiSwordInStone',
+        label: 'Sword In Stone',
+        icon: React.createElement(GiSwordInStone),
+      },
       content: '',
     },
   });
+
+  const updateWidgetForm = async (fieldName: string | undefined, value: unknown) => {
+    // @ts-ignore
+    const fields = value as CreateWidgetForm;
+    if (fieldName === 'iconOption') {
+      UseForm.setValue('icon', fields.iconOption.label);
+    }
+  };
 
   React.useEffect(() => {
     const subscription = UseForm.watch((value) => {
@@ -36,7 +50,9 @@ export const useCreateWidgetState = (props: {
 
   return {
     onSubmit,
+    setTestState,
     testState,
+    updateWidgetForm,
     UseForm,
   };
 };

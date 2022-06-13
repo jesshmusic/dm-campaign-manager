@@ -7,6 +7,7 @@ import Button from '../../../components/Button/Button';
 import { Colors } from '../../../utilities/enums';
 import { GiTrashCan } from 'react-icons/gi';
 import { WidgetProps } from '../../../components/Widgets/Widget';
+import { getIconFromName } from '../../../utilities/icons';
 
 const WidgetsTable = (props: {
   getWidgets: (searchTerm?: string) => void;
@@ -23,6 +24,11 @@ const WidgetsTable = (props: {
 
   const columns = React.useMemo(
     () => [
+      {
+        Header: 'Icon',
+        accessor: 'icon',
+        Cell: ({ value }) => getIconFromName(value),
+      },
       {
         Header: 'Widget',
         accessor: 'title',
@@ -56,6 +62,7 @@ const WidgetsTable = (props: {
         id: widget.id,
         title: widget.title,
         subtitle: widget.subtitle,
+        icon: widget.icon,
       };
     });
   }, [widgets]);

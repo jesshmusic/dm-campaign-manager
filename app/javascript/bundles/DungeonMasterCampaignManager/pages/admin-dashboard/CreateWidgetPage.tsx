@@ -11,18 +11,25 @@ import { connect } from 'react-redux';
 import FormIconSelect from '../../components/forms/FormIconSelect';
 import { WidgetProps } from '../../components/Widgets/Widget';
 import { useCreateWidgetState } from './use-create-widget-state';
-
-export const allGiIcons = Object.entries(Icons).map((iconArray) => ({
-  value: iconArray[0],
-  label: ` ${iconArray[0]}`,
-  icon: React.createElement(iconArray[1]),
-}));
+import { allGiIcons } from '../../utilities/icons';
 
 const CreateWidgetPage = (props: {
   createWidget: (widget: WidgetProps, token?: string) => void;
   token?: string;
 }) => {
-  const { onSubmit, testState, UseForm } = useCreateWidgetState(props);
+  const { onSubmit, setTestState, testState, updateWidgetForm, UseForm } =
+    useCreateWidgetState(props);
+
+  React.useEffect(() => {
+    const subscription = UseForm.watch((value, { name }) => {
+      if (name) {
+        updateWidgetForm(name, value);
+      }
+      // @ts-ignore
+      setTestState(value);
+    });
+    return () => subscription.unsubscribe();
+  }, [UseForm.watch]);
 
   return (
     <PageContainer

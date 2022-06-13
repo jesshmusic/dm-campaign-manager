@@ -1,6 +1,7 @@
 import React from 'react';
 import Frame from '../Frame/Frame';
 import CloseButton from '../Button/CloseButton';
+import { SelectIconOption } from '../../utilities/types';
 
 const styles = require('./widgets.module.scss');
 
@@ -11,6 +12,10 @@ export type WidgetProps = {
   icon: string;
   content?: string;
 };
+
+export type CreateWidgetForm = {
+  iconOption: SelectIconOption;
+} & WidgetProps;
 
 export type WidgetElementProps = {
   icon?: React.ReactNode;

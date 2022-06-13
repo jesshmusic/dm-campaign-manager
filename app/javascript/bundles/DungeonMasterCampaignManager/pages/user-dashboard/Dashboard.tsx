@@ -7,9 +7,8 @@ import rest from '../../api/api';
 import Widget, { WidgetElementProps } from '../../components/Widgets/Widget';
 import DashboardBar from './components/DashboardBar';
 import { dashboardComponents, dashboardItems, initialLayouts } from '../../components/Widgets';
-import { GiBeerStein } from 'react-icons/all';
-import { allGiIcons } from '../admin-dashboard/CreateWidgetPage';
 import CustomWidget from '../../components/Widgets/CustomWidget';
+import { getIconFromName } from '../../utilities/icons';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -110,11 +109,6 @@ const Dashboard = ({ customWidgets, getWidgets }) => {
 
   const onAddItem = (widgetId) => {
     setWidgetKeys([...widgetKeys, widgetId]);
-  };
-
-  const getIconFromName = (name: string) => {
-    const icon = allGiIcons.find((icon) => icon.value === name);
-    return icon?.icon || <GiBeerStein />;
   };
 
   return (
