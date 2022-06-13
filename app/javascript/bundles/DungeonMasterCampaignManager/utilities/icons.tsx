@@ -19,3 +19,10 @@ export const getIconFromName = (name: string) => {
   const icon = allGiIcons.find((icon) => icon.value === name);
   return icon?.icon || <GiBeerStein />;
 };
+
+export const parseIconName = (iconName: string) => {
+  return iconName
+    .replace('Gi', '')
+    .replace(/([A-Z])/g, ' $1')
+    .trim();
+};

@@ -1,17 +1,12 @@
 import React from 'react';
 import PageContainer from '../../containers/PageContainer';
-import ReactQuill from 'react-quill';
-import { ControlledInput } from '../../components/forms/ControllerInput';
-import { Controller } from 'react-hook-form';
-import Button from '../../components/Button/Button';
-import { Colors } from '../../utilities/enums';
-import * as Icons from 'react-icons/gi';
 import rest from '../../api/api';
 import { connect } from 'react-redux';
-import FormIconSelect from '../../components/forms/FormIconSelect';
 import { WidgetProps } from '../../components/Widgets/Widget';
 import { useCreateWidgetState } from './use-create-widget-state';
-import { allGiIcons } from '../../utilities/icons';
+import WidgetForm from './components/WidgetForm';
+
+const styles = require('./create-widget-page.module.scss');
 
 const CreateWidgetPage = (props: {
   createWidget: (widget: WidgetProps, token?: string) => void;
@@ -53,41 +48,7 @@ const CreateWidgetPage = (props: {
           {JSON.stringify(testState, null, 2)}
         </pre>
       ) : null}
-      <form onSubmit={UseForm.handleSubmit(onSubmit)} noValidate>
-        <ControlledInput
-          fieldName={`title`}
-          errors={UseForm.formState.errors}
-          control={UseForm.control}
-          label="Title"
-        />
-        <ControlledInput
-          fieldName={`subtitle`}
-          errors={UseForm.formState.errors}
-          control={UseForm.control}
-          label="Subtitle (Optional)"
-        />
-        <FormIconSelect
-          label={'Icon'}
-          control={UseForm.control}
-          options={allGiIcons}
-          name={'iconOption'}
-        />
-        <label htmlFor={'content'}>Content</label>
-        <Controller
-          control={UseForm.control}
-          name={'content'}
-          render={({ field }) => (
-            <ReactQuill theme="snow" style={{ minHeight: '300px' }} {...field} />
-          )}
-        />
-        <Button
-          color={Colors.success}
-          title={'Save'}
-          type="submit"
-          icon={<Icons.GiSave />}
-          isFullWidth
-        />
-      </form>
+      <WidgetForm useForm={UseForm} onSubmit={onSubmit} />
     </PageContainer>
   );
 };

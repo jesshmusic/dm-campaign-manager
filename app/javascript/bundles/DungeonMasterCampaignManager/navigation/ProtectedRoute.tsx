@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
-import DndSpinner from './DndSpinners/DndSpinner';
+import DndSpinner from '../components/DndSpinners/DndSpinner';
 
 const ProtectedRoute = ({ as: Component, requireAdmin: boolean, ...props }) => {
   const { requireAdmin, ...rest } = props;
@@ -17,11 +17,7 @@ const ProtectedRoute = ({ as: Component, requireAdmin: boolean, ...props }) => {
       <Navigate to="/" state={{ from: location }} />
     );
   }
-  return isAuthenticated ? (
-    <Component {...rest} />
-  ) : (
-    <Navigate to="/" state={{ from: location }} />
-  );
+  return isAuthenticated ? <Component {...rest} /> : <Navigate to="/" state={{ from: location }} />;
 };
 
 export default ProtectedRoute;

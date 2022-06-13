@@ -8,7 +8,7 @@ Ruby enVironment Manager 1.29.10 (latest) (c) 2009-2017 Michal Papis, Piotr Kucz
                                     user GET    /users/:slug(.:format)                                                                            users#show
                                          PATCH  /users/:slug(.:format)                                                                            users#update
                                          PUT    /users/:slug(.:format)                                                                            users#update
-                        user_change_role PATCH  /users/:id/change_role(.:format)                                                                  users#change_role
+                        user_change_role PATCH  /users/:widgetId/change_role(.:format)                                                            users#change_role
                            user_set_user POST   /users/login(.:format)                                                                            users#set_auth_user
                         user_logout_user DELETE /users/logout(.:format)                                                                           users#logout_user
                                          GET    /app(/*all)(.:format)                                                                             home#index
@@ -109,6 +109,12 @@ Ruby enVironment Manager 1.29.10 (latest) (c) 2009-2017 Michal Papis, Piotr Kucz
                                          PATCH  /v1/sections/:id(.:format)                                                                        admin/v1/sections#update
                                          PUT    /v1/sections/:id(.:format)                                                                        admin/v1/sections#update
                                          DELETE /v1/sections/:id(.:format)                                                                        admin/v1/sections#destroy
+                              v1_widgets GET    /v1/widgets(.:format)                                                                             admin/v1/widgets#index {:format=>"json"}
+                                         POST   /v1/widgets(.:format)                                                                             admin/v1/widgets#create {:format=>"json"}
+                               v1_widget GET    /v1/widgets/:id(.:format)                                                                         admin/v1/widgets#show {:format=>"json"}
+                                         PATCH  /v1/widgets/:id(.:format)                                                                         admin/v1/widgets#update {:format=>"json"}
+                                         PUT    /v1/widgets/:id(.:format)                                                                         admin/v1/widgets#update {:format=>"json"}
+                                         DELETE /v1/widgets/:id(.:format)                                                                         admin/v1/widgets#destroy {:format=>"json"}
            rails_postmark_inbound_emails POST   /rails/action_mailbox/postmark/inbound_emails(.:format)                                           action_mailbox/ingresses/postmark/inbound_emails#create
               rails_relay_inbound_emails POST   /rails/action_mailbox/relay/inbound_emails(.:format)                                              action_mailbox/ingresses/relay/inbound_emails#create
            rails_sendgrid_inbound_emails POST   /rails/action_mailbox/sendgrid/inbound_emails(.:format)                                           action_mailbox/ingresses/sendgrid/inbound_emails#create

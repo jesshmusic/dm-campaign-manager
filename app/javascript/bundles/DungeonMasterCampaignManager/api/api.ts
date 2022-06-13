@@ -124,6 +124,9 @@ export default reduxApi({
   getWidgets: {
     url: '/v1/widgets',
   },
+  getWidget: {
+    url: '/v1/widgets/:id.json',
+  },
   createWidget: {
     url: '/v1/widgets',
     options() {

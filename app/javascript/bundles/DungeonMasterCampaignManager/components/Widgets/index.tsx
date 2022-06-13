@@ -2,16 +2,7 @@ import React from 'react';
 import NameField from './NameField';
 import TavernNameField from './TavernNameField';
 import NPCGenButton from './NPCGenButton';
-import NotesWidget from './NotesWidget';
-import {
-  GiAcrobatic,
-  GiBeerStein,
-  GiBowman,
-  GiOrcHead,
-  GiQuill,
-  GiRock,
-  GiSwordman,
-} from 'react-icons/all';
+import { GiAcrobatic, GiBeerStein, GiBowman, GiOrcHead, GiRock, GiSwordman } from 'react-icons/all';
 import ActionsInCombat from './ActionsInCombat';
 import TurnActions from './TurnActions';
 import Cover from './Cover';
@@ -60,13 +51,13 @@ export const dashboardComponents: {
     subtitle: 'Quickly create custom NPCs of any challenge rating',
     grid: { w: 4, h: 2, x: 0, y: Infinity, minW: 3, minH: 2 },
   },
-  notesWidget: {
-    component: NotesWidget,
-    icon: <GiQuill />,
-    title: 'Notes',
-    subtitle: 'Jot down notes during your session',
-    grid: { w: 4, h: 3, x: 0, y: Infinity, minW: 2, minH: 2 },
-  },
+  // notesWidget: {
+  //   component: NotesWidget,
+  //   icon: <GiQuill />,
+  //   title: 'Notes',
+  //   subtitle: 'Jot down notes during your session',
+  //   grid: { w: 4, h: 3, x: 0, y: Infinity, minW: 2, minH: 2 },
+  // },
   turnActions: {
     component: TurnActions,
     icon: <GiAcrobatic />,
@@ -80,7 +71,7 @@ export const dashboardItems = [
   'actionsInCombat',
   'coverTable',
   'npcGen',
-  'notesWidget',
+  // 'notesWidget',
   'randomName',
   'randomTavern',
   'turnActions',

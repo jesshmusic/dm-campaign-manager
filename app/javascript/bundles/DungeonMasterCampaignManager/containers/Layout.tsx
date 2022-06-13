@@ -1,5 +1,4 @@
 import React from 'react';
-import { TransitionGroup, Transition } from 'react-transition-group';
 import { connect } from 'react-redux';
 import { useAuth0, User } from '@auth0/auth0-react';
 import { gsap } from 'gsap';
@@ -8,7 +7,7 @@ import { FlashMessage } from '../utilities/types';
 import HeroBanner from '../components/HeroBanner/HeroBanner';
 import Footer from '../components/Footer/Footer';
 import rest from '../api/api';
-import DMRoutes from '../components/DMRoutes';
+import DMRoutes from '../navigation/DMRoutes';
 
 const styles = require('./layout.module.scss');
 gsap.registerPlugin(ScrollToPlugin);

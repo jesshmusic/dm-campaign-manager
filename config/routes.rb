@@ -71,7 +71,7 @@ Rails.application.routes.draw do
         resources :races
         resources :spells
         resources :sections
-        resources :widgets, only: [:index, :create, :update, :destroy], constraints: { format: 'json' }
+        resources :widgets, only: [:index, :show, :create, :update, :destroy], constraints: { format: 'json' }
       end
     end
   end

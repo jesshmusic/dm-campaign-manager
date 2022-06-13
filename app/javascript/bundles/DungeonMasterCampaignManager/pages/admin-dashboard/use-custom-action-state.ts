@@ -2,7 +2,6 @@ import { ActionTypes, FlashMessage, MonsterActionField, UserProps } from '../../
 import { useForm } from 'react-hook-form';
 import { generateAttackDesc } from '../monster-generator/components/generate-monster/use-data';
 import { abilityOptions } from '../monster-generator/components/generate-monster/sections/actions/action-forms/SpellcastingForm';
-import { addFlashMessage, FlashMessageType } from '../../reducers/flashMessages';
 import { useNavigate } from 'react-router-dom';
 
 type CustomActionField = {
@@ -151,12 +150,6 @@ export const useCustomActionState = (props: {
       { name: data.action.name, desc: data.action.desc, action_type: data.actionType },
       token
     );
-    addFlashMessage({
-      id: Math.random() * 100,
-      heading: `Action Created Successfully`,
-      text: `New Custom Action: ${data.action.name}`,
-      messageType: FlashMessageType.success,
-    });
     navigate('/app/admin-dashboard');
   };
 

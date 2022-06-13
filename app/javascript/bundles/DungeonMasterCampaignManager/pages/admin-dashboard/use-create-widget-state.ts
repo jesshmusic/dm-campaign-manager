@@ -2,7 +2,6 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { CreateWidgetForm, WidgetProps } from '../../components/Widgets/Widget';
-import { GiSwordInStone } from 'react-icons/all';
 
 export const useCreateWidgetState = (props: {
   createWidget: (widget: WidgetProps, token?: string) => void;
@@ -21,7 +20,6 @@ export const useCreateWidgetState = (props: {
       iconOption: {
         value: 'GiSwordInStone',
         label: 'Sword In Stone',
-        icon: React.createElement(GiSwordInStone),
       },
       content: '',
     },
@@ -31,7 +29,7 @@ export const useCreateWidgetState = (props: {
     // @ts-ignore
     const fields = value as CreateWidgetForm;
     if (fieldName === 'iconOption') {
-      UseForm.setValue('icon', fields.iconOption.label);
+      UseForm.setValue('icon', fields.iconOption.value as string);
     }
   };
 

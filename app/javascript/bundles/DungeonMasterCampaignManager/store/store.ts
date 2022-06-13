@@ -1,6 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
 import rootReducer from '../reducers';
-import { AppProps } from '../utilities/types';
 
 // export const store = (props: AppProps) => {
 const store = configureStore({
@@ -59,6 +58,11 @@ const store = configureStore({
       count: 0,
       currentUser: undefined,
       token: undefined,
+    },
+    widgets: {
+      widget: null,
+      widgets: [],
+      count: 0,
     },
   },
 });

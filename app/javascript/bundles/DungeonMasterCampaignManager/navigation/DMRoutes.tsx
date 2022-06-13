@@ -21,6 +21,7 @@ import React from 'react';
 import DndClass from '../pages/dnd-classes/DndClass';
 import CreateWidgetPage from '../pages/admin-dashboard/CreateWidgetPage';
 import CreateCustomActionPage from '../pages/admin-dashboard/CreateCustomActionPage';
+import EditWidgetPage from '../pages/admin-dashboard/EditWidgetPage';
 
 const DMRoutes = (props) => {
   return (
@@ -53,6 +54,10 @@ const DMRoutes = (props) => {
       <Route
         path="/app/admin-dashboard/create-custom-action"
         element={<ProtectedRoute as={CreateCustomActionPage} requireAdmin={true} {...props} />}
+      />
+      <Route
+        path="/app/admin-dashboard/edit-widget/:widgetId"
+        element={<ProtectedRoute as={EditWidgetPage} requireAdmin={true} {...props} />}
       />
       <Route
         path="/app/admin-dashboard/create-widget"

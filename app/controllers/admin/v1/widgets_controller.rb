@@ -11,6 +11,9 @@ module Admin::V1
 
     # GET /widgets/1 or /widgets/1.json
     def show
+      respond_to do |format|
+        format.json { render json: { widget: @widget }, status: :created }
+      end
     end
 
     # POST /widgets or /widgets.json
@@ -21,7 +24,8 @@ module Admin::V1
 
       respond_to do |format|
         if @widget.save
-          format.json { render :show, status: :created }
+          all_widgets = Widget.all
+          format.json { render json: { widget: @widget, widgets: all_widgets, count: all_widgets.count }, status: :created }
         else
           format.json { render json: @widget.errors, status: :unprocessable_entity }
         end
@@ -33,7 +37,8 @@ module Admin::V1
       authorize @widget
       respond_to do |format|
         if @widget.update(widget_params)
-          format.json { render :show, status: :ok, location: @widget }
+          all_widgets = Widget.all
+          format.json { render json: { widget: @widget, widgets: all_widgets, count: all_widgets.count }, status: :ok }
         else
           format.json { render json: @widget.errors, status: :unprocessable_entity }
         end

@@ -5,9 +5,12 @@ import { connect } from 'react-redux';
 import DataTable from '../../../components/DataTable/DataTable';
 import Button from '../../../components/Button/Button';
 import { Colors } from '../../../utilities/enums';
-import { GiTrashCan } from 'react-icons/gi';
+import { GiPencil, GiTrashCan } from 'react-icons/gi';
 import { WidgetProps } from '../../../components/Widgets/Widget';
 import { getIconFromName } from '../../../utilities/icons';
+import { NavLink } from '../../../components/NavLink/NavLink';
+
+const styles = require('../admin-dashboard.module.scss');
 
 const WidgetsTable = (props: {
   getWidgets: (searchTerm?: string) => void;
@@ -42,14 +45,23 @@ const WidgetsTable = (props: {
         accessor: 'id',
         size: 25,
         Cell: ({ value }) => (
-          <Button
-            type="button"
-            onClick={() => deleteWidget(value)}
-            color={Colors.danger}
-            icon={<GiTrashCan size={30} />}
-            title="Delete"
-            hideTitle
-          />
+          <>
+            <NavLink
+              to={`/app/admin-dashboard/edit-widget/${value}`}
+              className={styles.editButton}
+              icon={<GiPencil size={30} />}
+              title={'Edit'}
+              isButton
+            />
+            <Button
+              type="button"
+              onClick={() => deleteWidget(value)}
+              color={Colors.danger}
+              icon={<GiTrashCan size={30} />}
+              title="Delete"
+              hideTitle
+            />
+          </>
         ),
       },
     ],
