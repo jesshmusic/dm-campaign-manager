@@ -4,7 +4,7 @@ import CloseButton from '../../../components/Button/CloseButton';
 const styles = require('../user-dashboard.module.scss');
 
 type AddListProps = {
-  widgets: { title: string; key: string }[];
+  widgets: { title: string; key: string; icon: React.ElementType }[];
   items: string[];
   onAddItem: (string) => void;
   onRemoveItem: (string) => void;
@@ -43,6 +43,7 @@ export default function AddList({
               checked={items.includes(widget.key)}
             />
             <label className="form-check-label" htmlFor={widget.key}>
+              {widget.icon}&nbsp;
               {widget.title}
             </label>
           </div>
