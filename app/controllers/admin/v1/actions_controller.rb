@@ -14,7 +14,7 @@ module Admin::V1
                  else
                    Action.where(monster_id: nil)
                  end
-      render json: { actions: @actions }
+      render json: { actions: @actions, count: @actions.count }
     end
 
     # POST /actions

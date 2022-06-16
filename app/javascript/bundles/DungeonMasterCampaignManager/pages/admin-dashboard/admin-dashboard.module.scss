@@ -2,15 +2,6 @@
 
 .wrapper {
   @include resp-container;
-  display: grid;
-  grid-gap: $spacer * 3;
-  grid-template-columns: 1fr;
-  @include respond-to(lg) {
-    grid-template-columns: 1fr 1fr;
-  }
-  @include respond-to(xl) {
-    grid-template-columns: 1fr 20rem;
-  }
 }
 
 .section {
@@ -35,4 +26,18 @@
   color: $white;
   margin-bottom: $spacer * 0.5;
   padding: $spacer * 0.5;
+}
+
+.infoContainer {
+  display: grid;
+  grid-gap: $spacer;
+  grid-template-columns: 1fr 1fr;
+
+  p {
+    color: $primary-dark;
+    display: grid;
+    font-size: $font-size-lg * 0.85;
+    grid-template-columns: 2fr 1fr;
+    max-width: 25rem;
+  }
 }

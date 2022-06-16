@@ -45,7 +45,7 @@ const customActions = createReducer(
       .addCase(getCustomActionsSuccess, (state, action: AnyAction) => {
         return {
           actions: action.data.actions,
-          count: action.data.actions.count,
+          count: action.data.count,
         };
       })
       .addCase(getCustomActionsFail, (state) => {
@@ -63,7 +63,7 @@ const customActions = createReducer(
       .addCase(deleteCustomActionSuccess, (state, action: AnyAction) => {
         return {
           actions: action.data.actions,
-          count: action.data.actions.count,
+          count: action.data.count,
         };
       })
       .addCase(deleteCustomActionFail, (state) => {

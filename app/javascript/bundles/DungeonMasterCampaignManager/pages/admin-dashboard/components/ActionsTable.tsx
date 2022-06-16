@@ -69,6 +69,7 @@ const ActionsTable = (props: {
       data={data}
       loading={false}
       onSearch={onSearch}
+      perPage={6}
       results={data.length}
       noHover
     />
