@@ -1,4 +1,4 @@
-class Dragonborn
+class DragonbornNameGen
   class << self
     NAME_1 = %w[Ali Ar Ba Bal Bel Bha Bren Caer Calu Dur Do Dra Era Faer Fro Gre Ghe Gora He Hi Ior Jin Jar Kil Kriv Lor Lumi Mar Mor Med Nar Nes Na Oti Orla Pri Pa Qel Ravo Ras Rho Sa Sha Sul Taz To Trou Udo Uro Vor Vyu Vrak Wor Wu Wra Wul Xar Yor Zor Zra]
     NAME_2 = %w[barum bor broth ciar crath daar dhall dorim farn fras gar ghull grax hadur hazar jhan jurn kax kris kul lasar lin mash morn naar prax qiroth qrin qull rakas rash rinn roth sashi seth skan trin turim varax vroth vull warum wunax xan xiros yax ythas zavur zire ziros]

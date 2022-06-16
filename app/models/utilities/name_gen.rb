@@ -136,11 +136,11 @@ class NameGen
     end
 
     def get_orc_name(gender = nil)
-      "#{@names[:vileAndCrude][:medium].sample.capitalize}#{rand(8) < 5 ?@names[:vileAndCrude][:medium].sample : ''}#{!gender.nil? && gender == 'female' ? @names[:homely][:femaleSuffixes].sample : ''}"
+      "#{@names[:vileAndCrude][:medium].sample.capitalize}#{rand(8) < 5 ? @names[:vileAndCrude][:medium].sample : ''}#{!gender.nil? && gender == 'female' ? @names[:homely][:femaleSuffixes].sample : ''}"
     end
 
     def get_half_orc_name(gender = nil)
-      name = "#{@names[:vileAndCrude][:medium].sample.capitalize}#{rand(8) < 5 ?@names[:vileAndCrude][:medium].sample : ''}"
+      name = "#{@names[:vileAndCrude][:medium].sample.capitalize}#{rand(8) < 5 ? @names[:vileAndCrude][:medium].sample : ''}"
       if !gender.nil? && gender == 'female'
         name = "#{name}#{@names[:homely][:femaleSuffixes].sample}"
       end
@@ -153,12 +153,12 @@ class NameGen
 
     def get_human_name(gender = nil)
       name = if gender.nil?
-                (MALE_FIRST_NAMES + FEMALE_FIRST_NAMES).sample
-              elsif gender == 'male'
-                MALE_FIRST_NAMES.sample
-              else
-                FEMALE_FIRST_NAMES.sample
-              end
+               (MALE_FIRST_NAMES + FEMALE_FIRST_NAMES).sample
+             elsif gender == 'male'
+               MALE_FIRST_NAMES.sample
+             else
+               FEMALE_FIRST_NAMES.sample
+             end
       "#{name} #{generate_surname(@surname_types.sample)}"
     end
 
@@ -175,19 +175,19 @@ class NameGen
 
     def random_name(gender = nil, race = 'human')
       case race
-      when 'aasimar' then Aasimar.get_name(gender).capitalize
-      when 'bugbear' then Bugbear.get_name.capitalize
+      when 'aasimar' then AasimarNameGen.get_name(gender).capitalize
+      when 'bugbear' then BugbearNameGen.get_name.capitalize
       when 'dragon' then get_dragon_name
-      when 'dragonborn' then Dragonborn.get_name(gender)
-      when 'drow_elf' then DrowElf.get_name(gender)
-      when 'dwarf' then Dwarf.get_name(gender)
-      when 'elf' then Elf.get_name(gender)
-      when 'gnome' then Gnome.get_name(gender)
-      when 'goblin' then Goblin.get_name(gender)
-      when 'half_elf' then HalfElf.get_name(gender)
-      when 'half_orc' then get_half_orc_name(gender)
-      when 'halfling' then get_halfling_name(gender)
-      when 'human' then get_human_name(gender)
+      when 'dragonborn' then DragonbornNameGen.get_name(gender)
+      when 'drow_elf' then DrowElfNameGen.get_name(gender)
+      when 'dwarf' then DwarfNameGen.get_name(gender)
+      when 'elf' then ElfNameGen.get_name(gender)
+      when 'gnome' then GnomeNameGen.get_name(gender)
+      when 'goblin' then GoblinNameGen.get_name(gender)
+      when 'half_elf' then HalfElfNameGen.get_name(gender)
+      when 'half_orc' then HalfOrcNameGen.get_name(gender)
+      when 'halfling' then HalflingNameGen.get_name(gender)
+      when 'human' then HumanNameGen.get_name(gender)
       when 'ogre' then get_ogre_name(gender)
       when 'orc' then get_orc_name(gender)
       when 'tiefling' then get_demon_name

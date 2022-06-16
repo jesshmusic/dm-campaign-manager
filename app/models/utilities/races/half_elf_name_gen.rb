@@ -1,4 +1,4 @@
-class HalfElf
+class HalfElfNameGen
   class << self
     NAME_1 = %w[Al Aro Bar Bel Cor Cra Dav Dor Eir El Fal Fril Gaer Gra Hal Hor Ian Ilo Jam Kev Kri Leo Lor Mar Mei Nil Nor Ori Os Pan Pet Quo Raf Ri Sar Syl Tra Tyr Uan Ul Van Vic Wal Wil Xan Xav Yen Yor Zan Zyl]
     NAME_2 = %w[avor ben borin coril craes deyr dithas elor enas faelor faerd finas fyr gotin gretor homin horn kas koris lamir lanann lumin minar morn nan neak neiros orin ovar parin phanis qarim qinor reak ril ros sariph staer torin tumil valor voril warith word xian xiron yeras ynor zaphir zaren]

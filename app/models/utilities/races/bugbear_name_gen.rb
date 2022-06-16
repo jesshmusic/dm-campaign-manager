@@ -1,4 +1,4 @@
-class Bugbear
+class BugbearNameGen
   class << self
     NAME_1 = %w[b br chr d g gh hr kh n r st t th v z zh]
     NAME_2 = %w[a e i o u]

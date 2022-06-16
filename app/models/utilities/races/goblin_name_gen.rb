@@ -1,4 +1,4 @@
-class Goblin
+class GoblinNameGen
   class << self
     NAME_1 = ['', '', 'c', 'cr', 'd', 'g', 'h', 'j', 'kr', 'm', 'n', 'p', 'r', 's', 'st', 't', 'v', 'vr', 'z', 'zr']
     NAME_2 = %w[a e i o u a u]

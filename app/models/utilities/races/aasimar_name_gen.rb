@@ -1,4 +1,4 @@
-class Aasimar
+class AasimarNameGen
   class << self
     NAME_1 = ['', '', '', '', 'b', 'br', 'c', 'cr', 'h', 'l', 'm', 'n', 'p', 'r', 't', 'v', 'w', 'z']
     NAME_2 = %w[a e i o u y a e i o u y a e i o u y au ai ea ei]
