@@ -36,7 +36,7 @@ import {
 } from 'react-pro-sidebar';
 import './sidebar-vars.scss';
 import { SidebarButton, SidebarLink } from '../NavLink/NavLink';
-import { useAuth0, User } from '@auth0/auth0-react';
+import { useAuth0 } from '@auth0/auth0-react';
 import { UserProps } from '../../utilities/types';
 
 const sidebarBG = require('./SidebarBackground.jpg');
@@ -116,7 +116,7 @@ const SideBar = (props: {
                 icon={isCollapsed ? <BiShow /> : <BiHide />}
               />
             )}
-            <SidebarLink to="/" title="App" icon={<AiOutlineHome />} />
+            <SidebarLink to="/" title="Dashboard" icon={<AiOutlineHome />} />
             <SidebarLink to="/app/classes" title="Classes" icon={<GiPerson />} />
             <SidebarLink to="/app/races" title="Races" icon={<GiDwarfFace />} />
             <SidebarLink to="/app/monsters" title="Monsters" icon={<GiMonsterGrasp />} />
@@ -161,7 +161,11 @@ const SideBar = (props: {
             ) : null}
             {isAuthenticated && user ? (
               <>
-                <SidebarLink to="/app/user-dashboard" title="Dashboard" icon={<GiDungeonGate />} />
+                <SidebarLink
+                  to="/app/user-dashboard"
+                  title="User Dashboard"
+                  icon={<GiDungeonGate />}
+                />
                 <MenuItem icon={<BiLogOut />}>
                   <button onClick={() => handleLogout()}>Log Out</button>
                 </MenuItem>
