@@ -1,45 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Dungeon Master's Campaign Manager</title>
-    <meta charset="utf-8"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-8XJTH70JSQ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
 
-    <title>The Dungeon Master's Screen</title>
+    function gtag() {
+      dataLayer.push(arguments);
+    }
 
-    <meta name="description" content="All of the D&D 5e SRD info in one easy to navigate site. Generate NPCs quickly with their challenge rating calculated.">
-    <meta name="keywords" content="dnd5e, dungeons and dragons, dungeon master, dnd srd, dnd 5e spells, dnd 5e armor, dnd 5e races, dnd 5e classes, dnd 5e wiki, dnd 5e homebrew">
+    gtag('js', new Date());
 
-    <!-- Twitter -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="The Dungeon Master's Screen">
-    <meta name="twitter:description" content="All of the D&D 5e SRD info in one easy to navigate site. Generate NPCs quickly with their challenge rating calculated.">
-    <meta name="twitter:site" content="@">
-    <meta name="twitter:creator" content="@">
-    <meta name="twitter:image" content="https://dm-campaign-manager.herokuapp.com/images/DMLogo.png">
+    gtag('config', 'G-8XJTH70JSQ');
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Dungeon Master's Campaign Manager</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <!-- Open Graph general (Facebook, Pinterest)-->
-    <meta property="og:title" content="The Dungeon Master's Screen">
-    <meta property="og:description" content="All of the D&D 5e SRD info in one easy to navigate site. Generate NPCs quickly with their challenge rating calculated.">
-    <meta property="og:url" content="https://dm-campaign-manager.herokuapp.com">
-    <meta property="og:site_name" content="dm-campaign-manager.herokuapp.com">
-    <meta property="og:type" content="website">
-    <meta property="og:image" content="https://dm-campaign-manager.herokuapp.com/images/DMLogo.png">
+  <title>The Dungeon Master's Screen</title>
 
-    <!-- Emoji SVG favicon -->
-    <link rel="icon" href="https://dm-campaign-manager.herokuapp.com/images/DMLogo.svg">
+  <meta name="description" content="All of the D&D 5e SRD info in one easy to navigate site. Generate NPCs quickly with their challenge rating calculated.">
+  <meta name="keywords" content="dnd5e, dungeons and dragons, dungeon master, dnd srd, dnd 5e spells, dnd 5e armor, dnd 5e races, dnd 5e classes, dnd 5e wiki, dnd 5e homebrew">
 
-    <!-- CSS -->
-    <%= csrf_meta_tags %>
-    <%= csp_meta_tag %>
-    <%= stylesheet_pack_tag 'dmcm-bundle', media: 'all' %>
-    <script src="https://cdn.ckeditor.com/ckeditor5/12.4.0/classic/ckeditor.js"></script>
-  </head>
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="The Dungeon Master's Screen">
+  <meta name="twitter:description" content="All of the D&D 5e SRD info in one easy to navigate site. Generate NPCs quickly with their challenge rating calculated.">
+  <meta name="twitter:site" content="@">
+  <meta name="twitter:creator" content="@">
+  <meta name="twitter:image" content="https://dm-campaign-manager.herokuapp.com/images/DMLogo.png">
 
-  <body>
-    <%= javascript_pack_tag 'dmcm-bundle' %>
-    <%= yield %>
-  </body>
+  <!-- Open Graph general (Facebook, Pinterest)-->
+  <meta property="og:title" content="The Dungeon Master's Screen">
+  <meta property="og:description" content="All of the D&D 5e SRD info in one easy to navigate site. Generate NPCs quickly with their challenge rating calculated.">
+  <meta property="og:url" content="https://dm-campaign-manager.herokuapp.com">
+  <meta property="og:site_name" content="dm-campaign-manager.herokuapp.com">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://dm-campaign-manager.herokuapp.com/images/DMLogo.png">
+
+  <!-- Emoji SVG favicon -->
+  <link rel="icon" href="https://dm-campaign-manager.herokuapp.com/images/DMLogo.svg">
+
+  <!-- CSS -->
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+  <%= stylesheet_pack_tag 'dmcm-bundle', media: 'all' %>
+  <script src="https://cdn.ckeditor.com/ckeditor5/12.4.0/classic/ckeditor.js"></script>
+</head>
+
+<body>
+  <%= javascript_pack_tag 'dmcm-bundle' %>
+  <%= yield %>
+</body>
 </html>
