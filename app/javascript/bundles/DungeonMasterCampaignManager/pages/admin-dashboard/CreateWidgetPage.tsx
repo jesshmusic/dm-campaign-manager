@@ -30,7 +30,7 @@ const CreateWidgetPage = (props: {
     <PageContainer
       pageTitle={'Create Widget'}
       description={
-        "Dungeon Master's Screen is a free resource for DMs for reference that includes tools for smooth games."
+        'Dungeon Master GURU is a free resource for DMs for reference that includes tools for smooth games.'
       }
     >
       <h1>Create Widget</h1>

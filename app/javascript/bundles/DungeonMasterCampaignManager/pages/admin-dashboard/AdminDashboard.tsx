@@ -28,7 +28,7 @@ const AdminDashboard = (props: {
     <PageContainer
       pageTitle={'DM Screen Admin'}
       description={
-        "Dungeon Master's Screen is a free resource for DMs for reference that includes tools for smooth games."
+        'Dungeon Master GURU is a free resource for DMs for reference that includes tools for smooth games.'
       }
     >
       <PageTitle title="DM Screen Admin" />

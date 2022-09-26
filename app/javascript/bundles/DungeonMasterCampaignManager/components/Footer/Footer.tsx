@@ -2,6 +2,7 @@ import React from 'react';
 import { NavLink } from '../NavLink/NavLink';
 import DndLogo from '../HeroBanner/DMLogo';
 import { User } from '@auth0/auth0-react';
+
 const footerBg = require('./FooterBackground.jpg');
 
 const styles = require('./footer.module.scss');
@@ -12,7 +13,7 @@ const Footer = (props: { user?: User }) => {
       <img src={footerBg} className={styles.backgroundImage} />
       <div className={styles.content}>
         <div className={styles.left}>
-          <h3 className={styles.siteTitle}>The Dungeon Master Screen</h3>
+          <h3 className={styles.siteTitle}>Dungeon Master GURU</h3>
           <DndLogo className={styles.logo} />
         </div>
         <div className={styles.right}>

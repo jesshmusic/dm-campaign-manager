@@ -18,10 +18,10 @@ const UserDashboard = (props: PageProps) => {
     <PageContainer
       pageTitle={pageTitle}
       description={
-        "Dungeon Master's Screen is an online DM Screen with tools and widgets that make your life easier."
+        'Dungeon Master GURU is an online DM Screen with tools and widgets that make your life easier.'
       }
     >
-      <PageTitle title={`The Dungeon Master Screen - ${pageTitle}`} isDraconis />
+      <PageTitle title={`Dungeon Master GURU - ${pageTitle}`} isDraconis />
       <div className={styles.section}>
         <h2>Info</h2>
         <div className={styles.userInfo}>

@@ -14,11 +14,11 @@ const HomePage = (props: PageProps) => {
     <PageContainer
       pageTitle={isAuthenticated && user ? `Welcome, ${user.given_name}` : 'Welcome'}
       description={
-        "Dungeon Master's Screen is a free resource for DMs for reference that includes tools for smooth games."
+        'Dungeon Master GURU is a free resource for DMs for reference that includes tools for smooth games.'
       }
     >
       <div className={styles.wrapper}>
-        <PageTitle title={'The Dungeon Master Screen'} isDraconis />
+        <PageTitle title={'Dungeon Master GURU'} isDraconis />
         <Dashboard />
       </div>
     </PageContainer>

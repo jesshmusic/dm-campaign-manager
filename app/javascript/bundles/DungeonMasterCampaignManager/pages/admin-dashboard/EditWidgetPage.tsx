@@ -91,7 +91,7 @@ const EditWidgetPage = (props: {
     <PageContainer
       pageTitle={'Edit Widget'}
       description={
-        "Dungeon Master's Screen is a free resource for DMs for reference that includes tools for smooth games."
+        'Dungeon Master GURU is a free resource for DMs for reference that includes tools for smooth games.'
       }
     >
       <h1>Edit Widget</h1>

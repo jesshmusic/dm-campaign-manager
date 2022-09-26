@@ -7,7 +7,7 @@ const HeroBanner = () => {
   return (
     <div className={styles.heroBanner}>
       <DndLogo className={styles.logo} />
-      <div className={styles.title}>The Dungeon Master Screen</div>
+      <div className={styles.title}>Dungeon Master GURU</div>
     </div>
   );
 };
