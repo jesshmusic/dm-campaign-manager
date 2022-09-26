@@ -2,7 +2,7 @@
 #
 # Table name: dnd_class_levels
 #
-#  widgetId                    :bigint           not null, primary key
+#  id                    :bigint           not null, primary key
 #  ability_score_bonuses :integer
 #  level                 :integer
 #  prof_bonus            :integer
@@ -16,7 +16,7 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (dnd_class_id => dnd_classes.widgetId)
+#  fk_rails_...  (dnd_class_id => dnd_classes.id)
 #
 FactoryBot.define do
   factory :dnd_class_level do

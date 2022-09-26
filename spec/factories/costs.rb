@@ -2,7 +2,7 @@
 #
 # Table name: costs
 #
-#  widgetId         :bigint           not null, primary key
+#  id         :bigint           not null, primary key
 #  quantity   :integer
 #  unit       :string
 #  created_at :datetime         not null
@@ -15,7 +15,7 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (item_id => items.widgetId)
+#  fk_rails_...  (item_id => items.id)
 #
 FactoryBot.define do
   factory :cost do

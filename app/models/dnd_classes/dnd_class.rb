@@ -4,7 +4,7 @@
 #
 # Table name: dnd_classes
 #
-#  widgetId            :bigint           not null, primary key
+#  id            :bigint           not null, primary key
 #  api_url       :string
 #  hit_die       :integer
 #  name          :string
@@ -22,7 +22,7 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (user_id => users.widgetId)
+#  fk_rails_...  (user_id => users.id)
 #
 
 class DndClass < ApplicationRecord

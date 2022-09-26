@@ -2,7 +2,7 @@
 #
 # Table name: sections
 #
-#  widgetId          :bigint           not null, primary key
+#  id          :bigint           not null, primary key
 #  description :string
 #  name        :string
 #  slug        :string

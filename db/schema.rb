@@ -13,7 +13,6 @@
 ActiveRecord::Schema.define(version: 2022_06_12_144433) do
 
   # These are extensions that must be enabled in order to support this database
-  enable_extension "pg_stat_statements"
   enable_extension "plpgsql"
 
   create_table "ability_bonus_options", force: :cascade do |t|
@@ -96,15 +95,6 @@ ActiveRecord::Schema.define(version: 2022_06_12_144433) do
     t.index ["class_feature_id"], name: "index_class_level_choices_on_class_feature_id"
   end
 
-  create_table "class_specific_dices", force: :cascade do |t|
-    t.integer "dice_count"
-    t.integer "dice_value"
-    t.bigint "class_specific_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["class_specific_id"], name: "index_class_specific_dices_on_class_specific_id"
-  end
-
   create_table "class_specific_spell_slots", force: :cascade do |t|
     t.integer "sorcery_point_cost"
     t.integer "spell_slot_level"
@@ -149,16 +139,6 @@ ActiveRecord::Schema.define(version: 2022_06_12_144433) do
     t.datetime "updated_at", precision: 6, null: false
     t.string "slug", null: false
     t.index ["slug"], name: "index_conditions_on_slug", unique: true
-  end
-
-  create_table "container_items", force: :cascade do |t|
-    t.bigint "item_id"
-    t.bigint "contained_item_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["contained_item_id"], name: "index_container_items_on_contained_item_id"
-    t.index ["item_id", "contained_item_id"], name: "index_container_items_on_item_id_and_contained_item_id", unique: true
-    t.index ["item_id"], name: "index_container_items_on_item_id"
   end
 
   create_table "content_items", force: :cascade do |t|
@@ -289,15 +269,6 @@ ActiveRecord::Schema.define(version: 2022_06_12_144433) do
     t.index ["user_id"], name: "index_items_on_user_id"
     t.index ["vehicle_category"], name: "index_items_on_vehicle_category"
     t.index ["weapon_category"], name: "index_items_on_weapon_category"
-  end
-
-  create_table "martial_arts", force: :cascade do |t|
-    t.integer "dice_count"
-    t.integer "dice_value"
-    t.bigint "class_specific_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["class_specific_id"], name: "index_martial_arts_on_class_specific_id"
   end
 
   create_table "monster_proficiencies", force: :cascade do |t|
@@ -493,15 +464,6 @@ ActiveRecord::Schema.define(version: 2022_06_12_144433) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["slug"], name: "index_skills_on_slug", unique: true
-  end
-
-  create_table "sneak_attacks", force: :cascade do |t|
-    t.integer "dice_count"
-    t.integer "dice_value"
-    t.bigint "class_specific_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["class_specific_id"], name: "index_sneak_attacks_on_class_specific_id"
   end
 
   create_table "speeds", force: :cascade do |t|

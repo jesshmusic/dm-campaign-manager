@@ -2,7 +2,7 @@
 #
 # Table name: senses
 #
-#  widgetId         :bigint           not null, primary key
+#  id         :bigint           not null, primary key
 #  name       :string
 #  value      :string
 #  created_at :datetime         not null
@@ -15,7 +15,7 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (monster_id => monsters.widgetId)
+#  fk_rails_...  (monster_id => monsters.id)
 #
 class Sense < ApplicationRecord
   belongs_to :monster

@@ -4,7 +4,7 @@
 #
 # Table name: monsters
 #
-#  widgetId                     :bigint           not null, primary key
+#  id                     :bigint           not null, primary key
 #  alignment              :string
 #  api_url                :string
 #  armor_class            :integer          default(10)
@@ -42,7 +42,7 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (user_id => users.widgetId)
+#  fk_rails_...  (user_id => users.id)
 #
 
 class Monster < ApplicationRecord

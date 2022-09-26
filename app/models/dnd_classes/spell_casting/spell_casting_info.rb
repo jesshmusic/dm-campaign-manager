@@ -2,7 +2,7 @@
 #
 # Table name: spell_casting_infos
 #
-#  widgetId               :bigint           not null, primary key
+#  id               :bigint           not null, primary key
 #  desc             :string           default([]), is an Array
 #  name             :string
 #  created_at       :datetime         not null
@@ -15,7 +15,7 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (spell_casting_id => spell_castings.widgetId)
+#  fk_rails_...  (spell_casting_id => spell_castings.id)
 #
 class SpellCastingInfo < ApplicationRecord
   belongs_to :spell_casting

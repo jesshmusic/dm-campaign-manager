@@ -6,12 +6,13 @@ import '../stylesheets/_fonts.scss';
 import '../stylesheets/application.scss';
 import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
-import Breadcrumbs, { BreadCrumbProps } from '../components/Breadcrumbs/Breadcrumbs';
+import Breadcrumbs from '../components/Breadcrumbs/Breadcrumbs';
 import SideBar from '../components/SideBar/SideBar';
 import Util from '../utilities/utilities';
 import { gsap } from 'gsap';
 import { Transition, TransitionGroup } from 'react-transition-group';
 import classNames from 'classnames';
+import BannerAd from '../components/BannerAd/BannerAd';
 
 const styles = require('./page-container.module.scss');
 
@@ -83,6 +84,7 @@ const PageContainer = (props: PageContainerProps) => {
                   [styles.collapsed]: isCollapsed,
                 })}
               >
+                <BannerAd />
                 {children}
               </div>
             </div>

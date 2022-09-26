@@ -2,7 +2,7 @@
 #
 # Table name: prof_choice_profs
 #
-#  widgetId             :bigint           not null, primary key
+#  id             :bigint           not null, primary key
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
 #  prof_choice_id :bigint

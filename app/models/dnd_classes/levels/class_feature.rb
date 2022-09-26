@@ -2,7 +2,7 @@
 #
 # Table name: class_features
 #
-#  widgetId                 :bigint           not null, primary key
+#  id                 :bigint           not null, primary key
 #  desc               :string           default([]), is an Array
 #  level              :integer
 #  name               :string
@@ -17,7 +17,7 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (dnd_class_level_id => dnd_class_levels.widgetId)
+#  fk_rails_...  (dnd_class_level_id => dnd_class_levels.id)
 #
 class ClassFeature < ApplicationRecord
   belongs_to :dnd_class_level

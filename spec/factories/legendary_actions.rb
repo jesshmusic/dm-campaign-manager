@@ -2,7 +2,7 @@
 #
 # Table name: actions
 #
-#  widgetId         :bigint           not null, primary key
+#  id         :bigint           not null, primary key
 #  desc       :string
 #  name       :string
 #  type       :string
@@ -16,7 +16,7 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (monster_id => monsters.widgetId)
+#  fk_rails_...  (monster_id => monsters.id)
 #
 FactoryBot.define do
   factory :legendary_action do

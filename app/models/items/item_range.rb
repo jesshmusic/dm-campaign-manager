@@ -2,7 +2,7 @@
 #
 # Table name: item_ranges
 #
-#  widgetId         :bigint           not null, primary key
+#  id         :bigint           not null, primary key
 #  long       :integer
 #  normal     :integer
 #  created_at :datetime         not null
@@ -15,7 +15,7 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (item_id => items.widgetId)
+#  fk_rails_...  (item_id => items.id)
 #
 class ItemRange < ApplicationRecord
   belongs_to :item

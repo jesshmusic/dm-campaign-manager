@@ -2,7 +2,7 @@
 #
 # Table name: ability_scores
 #
-#  widgetId         :bigint           not null, primary key
+#  id         :bigint           not null, primary key
 #  desc       :string           default([]), is an Array
 #  full_name  :string
 #  name       :string

@@ -2,7 +2,7 @@
 #
 # Table name: ability_bonus_options
 #
-#  widgetId         :bigint           not null, primary key
+#  id         :bigint           not null, primary key
 #  ability    :string
 #  bonus      :integer
 #  created_at :datetime         not null
@@ -15,7 +15,7 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (race_id => races.widgetId)
+#  fk_rails_...  (race_id => races.id)
 #
 class AbilityBonusOption < ApplicationRecord
   belongs_to :race

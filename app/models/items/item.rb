@@ -4,7 +4,7 @@
 #
 # Table name: items
 #
-#  widgetId                   :bigint           not null, primary key
+#  id                   :bigint           not null, primary key
 #  api_url              :string
 #  armor_category       :string
 #  armor_class_bonus    :integer
@@ -46,7 +46,7 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (user_id => users.widgetId)
+#  fk_rails_...  (user_id => users.id)
 #
 
 class Item < ApplicationRecord

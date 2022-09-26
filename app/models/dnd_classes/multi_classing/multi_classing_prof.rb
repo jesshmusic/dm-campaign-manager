@@ -2,7 +2,7 @@
 #
 # Table name: multi_classing_profs
 #
-#  widgetId                :bigint           not null, primary key
+#  id                :bigint           not null, primary key
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
 #  multi_classing_id :bigint           not null
@@ -15,8 +15,8 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (multi_classing_id => multi_classings.widgetId)
-#  fk_rails_...  (prof_id => profs.widgetId)
+#  fk_rails_...  (multi_classing_id => multi_classings.id)
+#  fk_rails_...  (prof_id => profs.id)
 #
 class MultiClassingProf < ApplicationRecord
   belongs_to :prof

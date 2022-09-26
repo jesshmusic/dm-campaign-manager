@@ -2,7 +2,7 @@
 #
 # Table name: api_references
 #
-#  widgetId           :bigint           not null, primary key
+#  id           :bigint           not null, primary key
 #  api_url      :string
 #  name         :string
 #  slug         :string

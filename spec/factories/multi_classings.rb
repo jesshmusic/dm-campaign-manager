@@ -2,7 +2,7 @@
 #
 # Table name: multi_classings
 #
-#  widgetId           :bigint           not null, primary key
+#  id           :bigint           not null, primary key
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
 #  dnd_class_id :bigint           not null
@@ -13,7 +13,7 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (dnd_class_id => dnd_classes.widgetId)
+#  fk_rails_...  (dnd_class_id => dnd_classes.id)
 #
 FactoryBot.define do
   factory :multi_classing do

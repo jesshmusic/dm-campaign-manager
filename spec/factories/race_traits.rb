@@ -2,7 +2,7 @@
 #
 # Table name: race_traits
 #
-#  widgetId         :bigint           not null, primary key
+#  id         :bigint           not null, primary key
 #  desc       :string           default([]), is an Array
 #  name       :string
 #  created_at :datetime         not null
@@ -15,7 +15,7 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (race_id => races.widgetId)
+#  fk_rails_...  (race_id => races.id)
 #
 FactoryBot.define do
   factory :race_trait do

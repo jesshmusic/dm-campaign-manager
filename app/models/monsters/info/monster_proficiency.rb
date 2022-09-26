@@ -4,7 +4,7 @@
 #
 # Table name: monster_proficiencies
 #
-#  widgetId         :bigint           not null, primary key
+#  id         :bigint           not null, primary key
 #  value      :integer
 #  created_at :datetime         not null
 #  updated_at :datetime         not null

@@ -2,7 +2,7 @@
 #
 # Table name: multi_classing_prereq_options
 #
-#  widgetId                :bigint           not null, primary key
+#  id                :bigint           not null, primary key
 #  choose            :integer
 #  prereq_type       :string
 #  created_at        :datetime         not null
@@ -15,7 +15,7 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (multi_classing_id => multi_classings.widgetId)
+#  fk_rails_...  (multi_classing_id => multi_classings.id)
 #
 class MultiClassingPrereqOption < ApplicationRecord
   belongs_to :multi_classing
