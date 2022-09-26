@@ -13,6 +13,9 @@ import { gsap } from 'gsap';
 import { Transition, TransitionGroup } from 'react-transition-group';
 import classNames from 'classnames';
 import BannerAd from '../components/BannerAd/BannerAd';
+import ReactGA from 'react-ga4';
+
+ReactGA.initialize('G-8XJTH70JSQ');
 
 const styles = require('./page-container.module.scss');
 
@@ -33,6 +36,14 @@ const PageContainer = (props: PageContainerProps) => {
     };
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  React.useEffect(() => {
+    const componentDidMount = () => {
+      console.log(window.location.pathname);
+      ReactGA.send({ hitType: 'pageview', page: window.location.pathname });
+    };
+    componentDidMount();
   }, []);
 
   const onEnterHandler = (node) => {
