@@ -2,6 +2,7 @@ import React from 'react';
 import BreadcrumbLink from './BreadcrumbLink';
 import { GiCastle, GiPointing, GiTwoHandedSword } from 'react-icons/all';
 import { useLocation, useNavigate } from 'react-router-dom';
+import classNames from 'classnames';
 
 const styles = require('./breadcrumbs.module.scss');
 
@@ -15,24 +16,18 @@ const pathToTitle = (pathName: string): string => {
   const capitalize = (str: string) =>
     str.length ? str[0].toUpperCase() + str.slice(1).toLowerCase() : '';
   const escape = (str) => str.replace(/./g, (c) => `\\${c}`);
-  const newName = pathName.replace(
-    new RegExp(`[^${escape(' _-/')}]+`, 'g'),
-    capitalize
-  );
+  const newName = pathName.replace(new RegExp(`[^${escape(' _-/')}]+`, 'g'), capitalize);
   return newName.replace('-', ' ');
 };
 
-const Breadcrumbs = () => {
+const Breadcrumbs = (props: { isCollapsed: boolean }) => {
+  const { isCollapsed } = props;
   const location = useLocation();
   const navigate = useNavigate();
-  const [paths, setPaths] = React.useState<{ url: string; title: string }[]>(
-    []
-  );
+  const [paths, setPaths] = React.useState<{ url: string; title: string }[]>([]);
 
   React.useEffect(() => {
-    const pathNames = location.pathname
-      .split('/')
-      .filter((item) => item !== '' && item !== 'app');
+    const pathNames = location.pathname.split('/').filter((item) => item !== '' && item !== 'app');
 
     setPaths(
       pathNames.map((pathName, index) => {
@@ -49,7 +44,11 @@ const Breadcrumbs = () => {
 
   return (
     <nav aria-label="breadcrumb">
-      <ol className={styles.breadcrumb}>
+      <ol
+        className={classNames(styles.breadcrumb, {
+          [styles.collapsed]: isCollapsed,
+        })}
+      >
         {paths.length > 0 ? (
           <button className={styles.backButton} onClick={() => navigate(-1)}>
             <GiPointing size={25} />

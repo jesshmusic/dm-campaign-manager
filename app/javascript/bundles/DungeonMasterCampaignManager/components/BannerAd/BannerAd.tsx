@@ -14,7 +14,14 @@ const BannerAd = () => (
         height="0"
         width="0"
       />
-      <img src="https://affiliates.fantasygrounds.com/img/banners/316034_2156040637.jpg" />
+      <img
+        className={`${styles.bannerImage} ${styles.bannerImageLarge}`}
+        src="https://affiliates.fantasygrounds.com/img/banners/316034_2156040637.jpg"
+      />
+      <img
+        className={`${styles.bannerImage} ${styles.bannerImageSmall}`}
+        src="https://affiliates.fantasygrounds.com/img/banners/316034_2966475059.jpg"
+      />
     </a>
   </div>
 );

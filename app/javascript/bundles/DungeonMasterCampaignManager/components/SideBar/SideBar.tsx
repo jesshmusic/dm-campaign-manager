@@ -109,7 +109,6 @@ const SideBar = (props: {
             {!isMobile && (
               <SidebarButton
                 onClick={() => {
-                  console.log(isCollapsed);
                   setIsCollapsed(!isCollapsed);
                 }}
                 title={isCollapsed ? 'Show Menu' : 'Collapse Menu'}

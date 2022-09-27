@@ -80,7 +80,7 @@ const PageContainer = (props: PageContainerProps) => {
         setIsCollapsed={setIsCollapsed}
         isMobile={isMobile}
       />
-      <Breadcrumbs />
+      <Breadcrumbs isCollapsed={isCollapsed} />
       <TransitionGroup component={null}>
         <Transition
           timeout={500}
