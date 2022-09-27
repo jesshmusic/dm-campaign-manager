@@ -149,7 +149,7 @@ export const initialLayouts = {
   md: [
     {
       w: 4,
-      h: 3,
+      h: 4,
       x: 0,
       y: 0,
       i: 'randomName',
@@ -217,7 +217,7 @@ export const initialLayouts = {
   xs: [
     {
       w: 3,
-      h: 3,
+      h: 5,
       x: 0,
       y: 0,
       i: 'randomName',
@@ -239,7 +239,7 @@ export const initialLayouts = {
     },
     {
       w: 3,
-      h: 2,
+      h: 3,
       x: 0,
       y: 6,
       i: 'npcGen',
@@ -250,7 +250,7 @@ export const initialLayouts = {
     },
     {
       w: 3,
-      h: 3,
+      h: 4,
       x: 0,
       y: 8,
       i: 'coverTable',
@@ -261,7 +261,7 @@ export const initialLayouts = {
     },
     {
       w: 3,
-      h: 4,
+      h: 5,
       x: 0,
       y: 11,
       i: 'actionsInCombat',
@@ -272,7 +272,7 @@ export const initialLayouts = {
     },
     {
       w: 3,
-      h: 2,
+      h: 3,
       x: 0,
       y: 15,
       i: 'turnActions',

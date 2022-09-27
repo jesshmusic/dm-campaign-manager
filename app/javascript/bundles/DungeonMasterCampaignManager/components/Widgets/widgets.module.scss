@@ -7,8 +7,12 @@
 .nameOptions {
   display: grid;
   grid-gap: $spacer;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr;
   width: 100%;
+
+  @include respond-to(md) {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
 
   button {
     margin: 0;
