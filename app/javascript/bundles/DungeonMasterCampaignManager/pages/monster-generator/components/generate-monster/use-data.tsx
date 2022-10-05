@@ -16,9 +16,6 @@ import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import { GenerateMonsterProps } from './GenerateMonster';
 import snakecaseKeys from 'snakecase-keys';
-import ReactGA from 'react-ga4';
-
-ReactGA.initialize('G-8XJTH70JSQ');
 
 type DescParams = {
   params: {
@@ -119,11 +116,6 @@ export const useData = (props: GenerateMonsterProps) => {
   const onSubmit = (data) => {
     const monster = getMonsterObject(data);
     const monsterData = createMonsterParams(monster);
-    ReactGA.event({
-      category: 'NPC Generator',
-      action: 'Generated NPC',
-      label: monster.monsterType,
-    });
     props.onGenerateMonster(monsterData, props.token);
   };
 

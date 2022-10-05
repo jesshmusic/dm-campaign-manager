@@ -10,6 +10,9 @@ import rest from '../../api/api';
 import { connect } from 'react-redux';
 import QuickGenerateMonster from './components/quick-generate-monster/QuickGenerateMonster';
 import { GiDiceTwentyFacesTwenty } from 'react-icons/gi/';
+import ReactGA from 'react-ga4';
+
+ReactGA.initialize('G-8XJTH70JSQ');
 
 const styles = require('./monster-generator.module.scss');
 
@@ -178,6 +181,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     generateCommoner: (gender: string = 'Female', race: string = 'Human', token?: string) => {
+      ReactGA.event('NPC Generator');
       dispatch(
         rest.actions.generateCommoner(
           { gender, race },
@@ -188,6 +192,7 @@ function mapDispatchToProps(dispatch) {
       );
     },
     generateMonster: (monster: any, token?: string) => {
+      ReactGA.event('NPC Generator');
       dispatch(
         rest.actions.generateMonster(
           {},
@@ -198,6 +203,7 @@ function mapDispatchToProps(dispatch) {
       );
     },
     generateQuickMonster: (monster: any, token?: string) => {
+      ReactGA.event('NPC Generator');
       dispatch(
         rest.actions.generateQuickMonster(
           {},
