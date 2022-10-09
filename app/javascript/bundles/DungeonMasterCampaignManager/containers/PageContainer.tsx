@@ -14,6 +14,7 @@ import { Transition, TransitionGroup } from 'react-transition-group';
 import classNames from 'classnames';
 import BannerAd from '../components/BannerAd/BannerAd';
 import ReactGA from 'react-ga4';
+import YouTubeAd from '../components/BannerAd/YouTubeAd';
 
 ReactGA.initialize('G-8XJTH70JSQ');
 
@@ -97,6 +98,7 @@ const PageContainer = (props: PageContainerProps) => {
               >
                 <BannerAd />
                 {children}
+                <YouTubeAd />
               </div>
             </div>
           </div>
