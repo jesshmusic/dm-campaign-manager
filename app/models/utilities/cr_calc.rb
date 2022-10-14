@@ -1,8 +1,8 @@
 class CrCalc
   class << self
     # @param [Monster] monster
-    def calculate_challenge(monster)
-      def_cr = get_defensive_cr(monster)
+    def calculate_challenge(monster, target_cr = monster.challenge_rating)
+      def_cr = get_defensive_cr(monster, target_cr)
       off_cr = get_offensive_cr(monster)
       raw_cr = [((def_cr + off_cr) / 2).ceil, 30].min
       final_cr = cr_num_to_string(raw_cr)
@@ -12,57 +12,57 @@ class CrCalc
 
     # @param [Monster] monster
     # @return [Float | Integer]
-    def get_defensive_cr(monster)
-      expected_cr = cr_string_to_num(monster.challenge_rating)
+    def get_defensive_cr(monster, target_cr)
+      armor_class = monster.armor_class
       hit_points = monster.hit_points
-      hit_points *= 0.5 if monster.damage_vulnerabilities.count > 0
-      if (monster.damage_resistances && monster.damage_resistances.count > 0) || (monster.damage_immunities && monster.damage_immunities.count > 0)
-        hit_points *= 1.25 if (0..4).include? expected_cr
-        hit_points *= 1.1 if (5..8).include? expected_cr
+
+      if monster.num_saving_throws > 2 && monster.num_saving_throws < 5
+        armor_class += 2
       end
-
-      hit_points = hit_points.floor > 850 ? 850 : hit_points.floor
-
-      def_cr = -1.0
-
-      challenge_ratings.each_with_index do |c_rating, index|
-        cr_info = c_rating[1]
-        if (cr_info[:hit_points_min]..cr_info[:hit_points_max]).include? hit_points
-          def_diff = cr_info[:armor_class] - monster.armor_class
-          def_cr = calculate_cr_diff(def_diff, index)
+      if monster.num_saving_throws > 4
+        armor_class += 4
+      end
+      monster.speeds.each do |speed|
+        if speed.name.downcase == 'fly'
+          armor_class += 2
         end
       end
-      def_cr = 0 if def_cr < 0
-      def_cr
+
+      resistance_multiplier = calculate_resistances(monster, target_cr)
+      immunity_multiplier = calculate_immunities(monster, target_cr)
+      num_vulnerabilities = calculate_vulnerabilities(monster)
+
+      resist_immune_multiplier = if immunity_multiplier > resistance_multiplier
+                                   immunity_multiplier
+                                 else
+                                   resistance_multiplier
+                                 end
+      hit_points *= resist_immune_multiplier
+      if num_vulnerabilities > 2
+        hit_points /= 2
+      end
+
+      hit_points_cr, assumed_ac = ac_for_hit_points(hit_points)
+      defensive_cr = calculate_cr_modifier(armor_class, assumed_ac, hit_points_cr)
+      defensive_cr = 0.0 if defensive_cr < 0
+      defensive_cr
     end
 
     def get_offensive_cr(monster)
-      off_cr = -1
       damage_per_round = monster.damage_per_round.floor > 320 ? 320 : monster.damage_per_round.floor
-      challenge_ratings.each_with_index do |c_rating, index|
-        cr_info = c_rating[1]
-        if (cr_info[:damage_min]..cr_info[:damage_max]).include? damage_per_round
-          adjuster = cr_info[:attack_bonus]
-          adjuster = cr_info[:save_dc] if monster.is_caster
-          attack_diff = adjuster - monster.attack_bonus
-          off_cr = calculate_cr_diff(attack_diff, index)
-        end
-      end
-      monster.special_abilities.each do |special_ability|
-        if special_ability.name == 'Spellcasting'
-          action_desc = special_ability.desc
-          scanned_casting = action_desc.scan(/([1-9]\d*)(?:th)/m)
-          if scanned_casting && scanned_casting.count > 1
-            max_spell_level = scanned_casting.last.first.to_i
-            off_cr += max_spell_level * 2
-          else
-            off_cr += 3
-          end
-        else
-          off_cr += 1
-        end
-      end
-      off_cr = 0 if off_cr < 0
+      attack_bonus = monster.attack_bonus
+      save_dc = monster.save_dc
+      damage_cr, assumed_attack_bonus, assumed_dc = cr_for_damage(damage_per_round)
+      off_cr = if monster.is_caster
+                 calculate_cr_modifier(save_dc, assumed_dc, damage_cr)
+               elsif !monster.is_caster
+                 calculate_cr_modifier(attack_bonus, assumed_attack_bonus, damage_cr)
+               else
+                 damage_cr
+               end
+
+      off_cr += calculate_spellcasting_modifier(monster)
+      off_cr = 0.0 if off_cr < 0
       off_cr
     end
 
@@ -520,6 +520,137 @@ class CrCalc
         '23' => 50_000, '24' => 62_000, '25' => 75_000, '26' => 90_000, '27' => 105_000, '28' => 120_000,
         '29' => 135_000, '30' => 155_000
       }[challenge_rating.to_s]
+    end
+
+    private
+
+    def calculate_cr_modifier(value, assumed, incoming_cr)
+      if assumed > value
+        diff = assumed - value
+        n_steps = (diff / 2).ceil
+        n_steps.times do
+          if incoming_cr < 0.25
+            incoming_cr -= 0.125
+          elsif incoming_cr >= 0.25 && incoming_cr < 0.5
+            incoming_cr -= 0.25
+          elsif incoming_cr >= 0.5 && incoming_cr < 1
+            incoming_cr -= 0.5
+          else
+            incoming_cr -= 1
+          end
+        end
+      elsif assumed < value
+        diff = value - assumed
+        n_steps = (diff / 2).ceil
+        n_steps.times do
+          if incoming_cr < 0.25
+            incoming_cr += 0.125
+          elsif incoming_cr >= 0.25 && incoming_cr < 0.5
+            incoming_cr += 0.25
+          elsif incoming_cr >= 0.5 && incoming_cr < 1
+            incoming_cr += 0.5
+          else
+            incoming_cr += 1
+          end
+        end
+      end
+      incoming_cr
+    end
+
+    def calculate_spellcasting_modifier(monster)
+      modifier = 0
+      monster.special_abilities.each do |special_ability|
+        if special_ability.name == 'Spellcasting'
+          action_desc = special_ability.desc
+          scanned_casting = action_desc.scan(/(([1-9]\d*)(?:th)|([1-9]\d*)(?:rd)|([1-9]\d*)(?:st)|([1-9]\d*)(?:nd)) Level \([1-9]/m)
+          if scanned_casting && scanned_casting.count > 1
+            max_spell_level = scanned_casting.last.first.to_i
+            modifier += (max_spell_level / 2).ceil
+          else
+            modifier += 1
+          end
+        end
+      end
+      modifier
+    end
+
+    def calculate_resist_dam_type(dam_type)
+      if dam_type.downcase == 'bludgeoning' || dam_type.downcase == 'piercing' || dam_type.downcase == 'slashing'
+        result = 3
+      elsif dam_type.downcase == 'radiant' || dam_type.downcase == 'fire'
+        result = 2
+      elsif dam_type.downcase == 'nonmagical'
+        result = 6
+      else
+        result = 1
+      end
+      result
+    end
+
+    def calculate_multiplier(num_effects, target_cr)
+      multiplier = 1
+      if num_effects > 5
+        if target_cr >= 1 && target_cr < 11
+          multiplier = 2
+        elsif target_cr >= 11 && target_cr < 17
+          multiplier = 1.5
+        elsif target_cr >= 17
+          multiplier = 1.25
+        end
+      end
+      multiplier
+    end
+
+    def calculate_resistances(monster, target_cr)
+      num_resistances = 0
+      monster.damage_resistances.each do |resist|
+        num_resistances += calculate_resist_dam_type(resist)
+      end
+      calculate_multiplier(num_resistances, target_cr)
+    end
+
+    def calculate_immunities(monster, target_cr)
+      num_immunities = 0
+      monster.damage_immunities.each do |immunity|
+        num_immunities += calculate_resist_dam_type(immunity)
+      end
+      calculate_multiplier(num_immunities, target_cr)
+    end
+
+    def calculate_vulnerabilities(monster)
+      num_vulnerabilities = 0
+      monster.damage_vulnerabilities.each do |vulnerability|
+        num_vulnerabilities += calculate_resist_dam_type(vulnerability)
+      end
+      num_vulnerabilities
+    end
+
+    def cr_for_damage(damage_per_round)
+      damage_cr = 0.0
+      assumed_attack_bonus = 0
+      assumed_dc = 10
+      challenge_ratings.each do |key, cr_info|
+        if damage_per_round >= cr_info[:damage_min] && damage_per_round <= cr_info[:damage_max]
+          damage_cr = cr_string_to_num(key.to_s)
+          assumed_attack_bonus = cr_info[:attack_bonus]
+          assumed_dc = cr_info[:save_dc]
+          break
+        end
+      end
+      [damage_cr, assumed_attack_bonus, assumed_dc]
+    end
+
+    def ac_for_hit_points(hit_points)
+      hit_point_cr = 0.0
+      assumed_ac = 0
+      challenge_ratings.each do |key, cr_info|
+        if hit_points >= cr_info[:hit_points_min] && hit_points <= cr_info[:hit_points_max]
+          hit_point_cr = cr_string_to_num(key.to_s)
+          assumed_ac = cr_info[:armor_class]
+          break
+        end
+      end
+      [hit_point_cr, assumed_ac]
     end
   end
 end

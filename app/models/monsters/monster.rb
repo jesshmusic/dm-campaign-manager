@@ -90,6 +90,16 @@ class Monster < ApplicationRecord
     saves
   end
 
+  def num_saving_throws
+    saves = 0
+    monster_proficiencies.each do |monster_prof|
+      if monster_prof.prof.prof_type == 'Saving Throws'
+        saves += 1
+      end
+    end
+    saves
+  end
+
   def skills
     skills = []
     monster_proficiencies.each do |monster_prof|
@@ -103,6 +113,21 @@ class Monster < ApplicationRecord
       end
     end
     skills
+  end
+
+  def has_perception
+    has_perception = false
+    monster_proficiencies.each do |monster_prof|
+      if monster_prof.prof.prof_type == 'Skills'
+        st_name = monster_prof.prof.name
+        st_name.slice!('Skill: ')
+        if st_name.downcase == 'perception'
+          has_perception = true
+          break
+        end
+      end
+    end
+    has_perception
   end
 
   def senses_array
@@ -120,6 +145,7 @@ class Monster < ApplicationRecord
   def speeds_array
     speed_return = []
     speeds.each do |speed|
+      puts speed.to_json
       if speed.name.downcase == 'walk'
         speed_return << "#{speed.value} ft."
       elsif speed.name.downcase == 'hover'
@@ -128,6 +154,7 @@ class Monster < ApplicationRecord
         speed_return << "#{speed.name} #{speed.value} ft."
       end
     end
+    puts speed_return
     speed_return.sort
   end
 
@@ -161,10 +188,10 @@ class Monster < ApplicationRecord
 
   def monster_atts
     monster_atts = attributes
-    monster_atts[:actions] = monster_actions.map {|action| action.attributes}
-    monster_atts[:special_abilities] = special_abilities.map {|action| action.attributes}
-    monster_atts[:reactions] = reactions.map {|action| action.attributes}
-    monster_atts[:legendary_actions] = legendary_actions.map {|action| action.attributes}
+    monster_atts[:actions] = monster_actions.map { |action| action.attributes }
+    monster_atts[:special_abilities] = special_abilities.map { |action| action.attributes }
+    monster_atts[:reactions] = reactions.map { |action| action.attributes }
+    monster_atts[:legendary_actions] = legendary_actions.map { |action| action.attributes }
     monster_atts
   end
 
@@ -194,7 +221,7 @@ class Monster < ApplicationRecord
   end
 
   def defensive_cr
-    CrCalc.get_defensive_cr(self)
+    CrCalc.get_defensive_cr(self, self.challenge_rating)
   end
 
   include PgSearch::Model

@@ -19,10 +19,10 @@ class NpcGenerator
       @weighted_vulnerabilities = WeightedList[Monster.where(monster_type: current_monster_type).group(:damage_vulnerabilities).count(:damage_vulnerabilities)]
       @weighted_conditions = WeightedList[Monster.where(monster_type: current_monster_type).group(:condition_immunities).count(:condition_immunities)]
       @weighted_languages = WeightedList[Monster.where(monster_type: current_monster_type).group(:languages).count(:languages)]
-      @weighted_senses = WeightedList[Sense.joins(:monster).where(monster: {monster_type: current_monster_type}).group(:name, :value).count(:name)]
+      @weighted_senses = WeightedList[Sense.joins(:monster).where(monster: { monster_type: current_monster_type }).group(:name, :value).count(:name)]
       @sense_chance = Monster.all.count.to_f / Sense.all.count.to_f
-      @weighted_speeds = WeightedList[Speed.joins(:monster).where(monster: {monster_type: weighted_monster_types}).group(:name, :value).count(:name)]
-      finish =  (Time.now - @start)
+      @weighted_speeds = WeightedList[Speed.joins(:monster).where(monster: { monster_type: weighted_monster_types }).group(:name, :value).count(:name)]
+      finish = (Time.now - @start)
       puts finish
     end
 
@@ -53,9 +53,9 @@ class NpcGenerator
       adjust_proficiency_bonuses
 
       @new_npc.slug = @new_npc.name.parameterize if user.nil?
-      adjust_challenge_rating
+      set_challenge_rating(monster_params[:challenge_rating])
       maybe_save_npc(user)
-      finish =  (Time.now - @start)
+      finish = (Time.now - @start)
       puts finish
       @new_npc
     end
@@ -130,34 +130,14 @@ class NpcGenerator
 
     private
 
-    def adjust_challenge_rating
-      calculated_cr = CrCalc.calculate_challenge(@new_npc)
-      if calculated_cr[:name] != @new_npc.challenge_rating =
-        expected_cr = CrCalc.cr_string_to_num(@new_npc.challenge_rating)
-        current_cr = calculated_cr[:raw_cr]
-        num_tries = 0
-        if expected_cr > current_cr
-          while expected_cr > current_cr && num_tries < 20
-            adjust_hd(true)
-            new_calc_cr = CrCalc.calculate_challenge(@new_npc)
-            current_cr = new_calc_cr[:raw_cr]
-            num_tries += 1
-          end
-        elsif expected_cr < current_cr
-          while expected_cr < current_cr && num_tries < 20
-            adjust_hd(false)
-            new_calc_cr = CrCalc.calculate_challenge(@new_npc)
-            current_cr = new_calc_cr[:raw_cr]
-            num_tries += 1
-          end
-        end
-        cr_string = CrCalc.cr_num_to_string(current_cr)
-        cr_info = CrCalc.challenge_ratings[cr_string.to_sym]
-        @new_npc.challenge_rating = cr_string
-        @new_npc.xp = cr_info[:xp]
-        @new_npc.prof_bonus = cr_info[:prof_bonus]
-        @new_npc.save_dc = cr_info[:save_dc]
-      end
+    def set_challenge_rating(target_cr = @new_npc.challenge_rating)
+      calculated_cr = CrCalc.calculate_challenge(@new_npc, target_cr)
+      cr_info = calculated_cr[:data]
+      @new_npc.challenge_rating = calculated_cr[:name]
+      puts cr_info
+      @new_npc.xp = cr_info['xp']
+      @new_npc.prof_bonus = cr_info['prof_bonus']
+      @new_npc.save_dc = cr_info['save_dc']
     end
 
     def get_ability_score_order
@@ -530,7 +510,7 @@ class NpcGenerator
         end
       end
       if num_attacks > 1
-        if  damage_attacks.count == 0
+        if damage_attacks.count == 0
           return
         else
           next_attack = damage_attacks.sample
@@ -552,19 +532,19 @@ class NpcGenerator
         attack_names << action.name if action.type == 'MonsterAction'
         action
       end
-        create_multiattack(num_attacks, attack_names) if attack_names.count > 0
-        attacks.each do |attack|
-          case attack.type
-          when 'LegendaryAction'
-            @new_npc.legendary_actions << LegendaryAction.new(name: attack.name, desc: adapt_action_desc(attack.desc, attack.monster ? attack.monster.name.downcase : 'NewMonster'))
-          when 'Reaction'
-            @new_npc.reactions << Reaction.new(name: attack.name, desc: adapt_action_desc(attack.desc, attack.monster ? attack.monster.name.downcase : 'NewMonster'))
-          when 'SpecialAbility'
-            @new_npc.special_abilities << SpecialAbility.new(name: attack.name, desc: adapt_action_desc(attack.desc, attack.monster ? attack.monster.name.downcase : 'NewMonster'))
-          else
-            @new_npc.monster_actions << MonsterAction.new(name: attack.name, desc: adapt_action_desc(attack.desc, attack.monster ? attack.monster.name.downcase : 'NewMonster'))
-          end
+      create_multiattack(num_attacks, attack_names) if attack_names.count > 0
+      attacks.each do |attack|
+        case attack.type
+        when 'LegendaryAction'
+          @new_npc.legendary_actions << LegendaryAction.new(name: attack.name, desc: adapt_action_desc(attack.desc, attack.monster ? attack.monster.name.downcase : 'NewMonster'))
+        when 'Reaction'
+          @new_npc.reactions << Reaction.new(name: attack.name, desc: adapt_action_desc(attack.desc, attack.monster ? attack.monster.name.downcase : 'NewMonster'))
+        when 'SpecialAbility'
+          @new_npc.special_abilities << SpecialAbility.new(name: attack.name, desc: adapt_action_desc(attack.desc, attack.monster ? attack.monster.name.downcase : 'NewMonster'))
+        else
+          @new_npc.monster_actions << MonsterAction.new(name: attack.name, desc: adapt_action_desc(attack.desc, attack.monster ? attack.monster.name.downcase : 'NewMonster'))
         end
+      end
       # end
     end
 
@@ -648,7 +628,7 @@ class NpcGenerator
           action_desc = action_desc.gsub(save_str, @new_npc.save_dc.to_s)
         end
       end
-      attack_info = {name: action.name, desc: action_desc, monster: action.monster.name}
+      attack_info = { name: action.name, desc: action_desc, monster: action.monster.name }
       [attack_info, weight]
     end
 
@@ -656,9 +636,10 @@ class NpcGenerator
       cr_int = CrCalc.cr_string_to_num(@new_npc.challenge_rating)
       senses_chance = (cr_int / 30) * 5
       num_senses = rand(1..(cr_int / 8).ceil)
+      num_senses = 1 unless num_senses
       senses = @weighted_senses.sample(num_senses)
       if rand < senses_chance
-        sense_names = []
+        sense_names = ['Passive Perception']
         senses.each do |sense|
           unless sense_names.include? sense[0]
             @new_npc.senses << Sense.new(name: sense[0], value: sense[1])
@@ -666,11 +647,21 @@ class NpcGenerator
           end
         end
       end
+      @new_npc.senses << calculate_passive_perception
+    end
+
+    def calculate_passive_perception
+      if @new_npc.has_perception
+        Sense.new(name: 'passive Perception', value: 10 + DndRules.ability_score_modifier(@new_npc.wisdom) + @new_npc.prof_bonus)
+      else
+        Sense.new(name: 'passive Perception', value: 10 + DndRules.ability_score_modifier(@new_npc.wisdom))
+      end
     end
 
     def generate_speeds
       cr_int = CrCalc.cr_string_to_num(@new_npc.challenge_rating)
       num_senses = rand(1..(cr_int / 8).ceil)
+      num_senses = 1 unless num_senses
       speeds = @weighted_speeds.sample(num_senses)
       speed_names = []
       speeds.each do |speed|
