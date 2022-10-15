@@ -2,8 +2,13 @@ class CrCalc
   class << self
     # @param [Monster] monster
     def calculate_challenge(monster, target_cr = monster.challenge_rating)
-      def_cr = get_defensive_cr(monster, target_cr)
-      off_cr = get_offensive_cr(monster)
+      damage_per_round = monster.damage_per_round.floor > 320 ? 320 : monster.damage_per_round.floor
+      attack_bonus = monster.attack_bonus
+      armor_class = monster.armor_class
+      hit_points = monster.hit_points
+      damage_per_round, attack_bonus, armor_class, hit_points = trait_modifier(monster, target_cr, damage_per_round, attack_bonus, armor_class, hit_points)
+      def_cr = get_defensive_cr(monster, target_cr, armor_class, hit_points)
+      off_cr = get_offensive_cr(monster, damage_per_round, attack_bonus)
       raw_cr = [((def_cr + off_cr) / 2).ceil, 30].min
       final_cr = cr_num_to_string(raw_cr)
       cr_data = challenge_ratings[final_cr.to_sym].as_json
@@ -12,10 +17,7 @@ class CrCalc
 
     # @param [Monster] monster
     # @return [Float | Integer]
-    def get_defensive_cr(monster, target_cr)
-      armor_class = monster.armor_class
-      hit_points = monster.hit_points
-
+    def get_defensive_cr(monster, target_cr, armor_class, hit_points)
       if monster.num_saving_throws > 2 && monster.num_saving_throws < 5
         armor_class += 2
       end
@@ -48,9 +50,7 @@ class CrCalc
       defensive_cr
     end
 
-    def get_offensive_cr(monster)
-      damage_per_round = monster.damage_per_round.floor > 320 ? 320 : monster.damage_per_round.floor
-      attack_bonus = monster.attack_bonus
+    def get_offensive_cr(monster, damage_per_round, attack_bonus)
       save_dc = monster.save_dc
       damage_cr, assumed_attack_bonus, assumed_dc = cr_for_damage(damage_per_round)
       off_cr = if monster.is_caster
@@ -60,8 +60,6 @@ class CrCalc
                else
                  damage_cr
                end
-
-      off_cr += calculate_spellcasting_modifier(monster)
       off_cr = 0.0 if off_cr < 0
       off_cr
     end
@@ -557,21 +555,73 @@ class CrCalc
       incoming_cr
     end
 
-    def calculate_spellcasting_modifier(monster)
-      modifier = 0
+    def trait_modifier(monster, target_cr, damage_per_round, attack_bonus, armor_class, hit_points)
+      challenge = cr_string_to_num(target_cr)
       monster.special_abilities.each do |special_ability|
-        if special_ability.name == 'Spellcasting'
+        if special_ability == 'Aggressive'
+          damage_per_round += 2
+        elsif special_ability == 'Ambusher'
+          attack_bonus += 2
+        elsif special_ability == 'Assassinate'
+          damage_per_round += 4 * challenge
+        elsif special_ability == 'Avoidance'
+          armor_class += 1
+        elsif special_ability == 'Blood Frenzy' || special_ability == 'Berserk'
+          attack_bonus += 4
+        elsif special_ability == 'Damage Transfer'
+          hit_points += hit_points
+          damage_per_round = damage_per_round * 1.5
+        elsif special_ability == 'Evasion'
+          armor_class += 1
+        elsif special_ability == 'Fiendish Blessing'
+          armor_class += DndRules.ability_score_modifier(monster.charisma)
+        elsif special_ability == 'Freedom of Movement' || special_ability == 'Stench'
+          armor_class += 1
+        elsif special_ability == 'Frightful Presence'
+          hit_points = hit_points * 1.25
+        elsif special_ability == 'Invisibility' || special_ability == 'Magic Resistance' || special_ability == 'Superior Invisibility'
+          armor_class += 2
+        elsif special_ability == 'Nimble Escape'
+          armor_class += 4
+          attack_bonus += 4
+        elsif special_ability == 'Pack Tactics'
+          attack_bonus += 1
+        elsif special_ability == 'Psychic Defense'
+          armor_class += DndRules.ability_score_modifier(monster.wisdom)
+        elsif special_ability == 'Rampage'
+          damage_per_round += 2
+        elsif special_ability == 'Relentless'
+          relentless_mod = 0
+          mod_cr = challenge.floor
+          if mod_cr == 1..4
+            relentless_mod = 7
+          elsif mod_cr == 5..9
+            relentless_mod = 14
+          elsif mod_cr == 10..15
+            relentless_mod = 21
+          elsif mod_cr >= 16
+            relentless_mod = 28
+          end
+          hit_points += relentless_mod
+        elsif special_ability == 'Shadow Stealth'
+          armor_class += 4
+        elsif special_ability.name == 'Spellcasting'
           action_desc = special_ability.desc
           scanned_casting = action_desc.scan(/(([1-9]\d*)(?:th)|([1-9]\d*)(?:rd)|([1-9]\d*)(?:st)|([1-9]\d*)(?:nd)) Level \([1-9]/m)
           if scanned_casting && scanned_casting.count > 1
             max_spell_level = scanned_casting.last.first.to_i
-            modifier += (max_spell_level / 2).ceil
+            damage_per_round += max_spell_level * 2
+            armor_class += 3
           else
-            modifier += 1
+            damage_per_round += 3
+            armor_class += 2
           end
+        else
+          hit_points += challenge / 2
+          damage_per_round += challenge / 2
         end
       end
-      modifier
+      [damage_per_round, attack_bonus, armor_class, hit_points]
     end
 
     def calculate_resist_dam_type(dam_type)
