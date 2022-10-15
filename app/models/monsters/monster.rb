@@ -78,6 +78,7 @@ class Monster < ApplicationRecord
   def saving_throws
     saves = []
     monster_proficiencies.each do |monster_prof|
+      conditional = ''
       if monster_prof.prof.prof_type == 'Saving Throws'
         conditional = '+' if monster_prof.value > 0
         conditional = '-' if monster_prof.value < 0
@@ -103,6 +104,7 @@ class Monster < ApplicationRecord
   def skills
     skills = []
     monster_proficiencies.each do |monster_prof|
+      conditional = ''
       if monster_prof.prof.prof_type == 'Skills'
         conditional = '+' if monster_prof.value > 0
         conditional = '-' if monster_prof.value < 0
@@ -145,7 +147,6 @@ class Monster < ApplicationRecord
   def speeds_array
     speed_return = []
     speeds.each do |speed|
-      puts speed.to_json
       if speed.name.downcase == 'walk'
         speed_return << "#{speed.value} ft."
       elsif speed.name.downcase == 'hover'
@@ -154,7 +155,6 @@ class Monster < ApplicationRecord
         speed_return << "#{speed.name} #{speed.value} ft."
       end
     end
-    puts speed_return
     speed_return.sort
   end
 
@@ -217,11 +217,11 @@ class Monster < ApplicationRecord
   end
 
   def offensive_cr
-    CrCalc.get_offensive_cr(self)
+    CrCalc.get_offensive_cr(self, self.damage_per_round, self.attack_bonus)
   end
 
   def defensive_cr
-    CrCalc.get_defensive_cr(self, self.challenge_rating)
+    CrCalc.get_defensive_cr(self, self.challenge_rating, self.armor_class, self.hit_points)
   end
 
   include PgSearch::Model
