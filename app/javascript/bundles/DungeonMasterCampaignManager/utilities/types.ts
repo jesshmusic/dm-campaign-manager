@@ -367,6 +367,7 @@ export type MonsterQuickGeneratorFormFields = {
   savingThrowOptions: SelectOption[];
   size: SelectOption;
   skillOptions: SelectOption[];
+  specialAbilityOptions: SelectOption[];
   spellOptions: SelectOption[];
   strength?: number;
   wisdom?: number;

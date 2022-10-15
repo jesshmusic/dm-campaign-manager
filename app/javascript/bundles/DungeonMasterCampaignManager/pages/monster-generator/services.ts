@@ -193,6 +193,7 @@ export const createQuickMonsterParams = (values: MonsterQuickGeneratorFormFields
       : values.monsterTypeOption.label.toLowerCase(),
     numberOfAttacks: values.numberOfAttacks > 0 ? values.numberOfAttacks : 1,
     size: values.size.label,
+    specialAbilityOptions: values.specialAbilityOptions.map((ability) => ability.value),
     spellIds: values.spellOptions.map((spellOption) => spellOption.value),
     xp: values.xp,
   };
@@ -225,7 +226,6 @@ export const createQuickMonsterParams = (values: MonsterQuickGeneratorFormFields
     monsterProficienciesAttributes: parseMonsterProficiencies(values),
     ...monsterParams,
   };
-  console.log(parsedMonsterParams);
   return snakecaseKeys(parsedMonsterParams);
 };
 

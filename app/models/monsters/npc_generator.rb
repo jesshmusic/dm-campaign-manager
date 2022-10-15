@@ -27,7 +27,7 @@ class NpcGenerator
     end
 
     def quick_monster(monster_params, user)
-      @new_npc = Monster.new(monster_params.except(:number_of_attacks, :archetype, :action_options, :spell_ids))
+      @new_npc = Monster.new(monster_params.except(:number_of_attacks, :archetype, :action_options, :spell_ids, :special_ability_options))
       @action_options = monster_params[:action_options]
       @spell_ids = monster_params[:spell_ids]
       fetch_records
@@ -50,6 +50,7 @@ class NpcGenerator
       )
 
       generate_stats
+      generate_special_abilities(@new_npc, monster_params[:special_ability_options])
       adjust_proficiency_bonuses
 
       @new_npc.slug = @new_npc.name.parameterize if user.nil?
@@ -238,6 +239,17 @@ class NpcGenerator
         damage_string = "#{damage_string}."
       end
       "#{desc} #{damage_string}"
+    end
+
+    def generate_special_abilities(monster, ability_names)
+      ability_names.each do |name|
+        abilities = SpecialAbility.where(name: name)
+        puts abilities.count
+        if abilities.count > 0
+          ability = abilities.first
+          monster.special_abilities << SpecialAbility.create(name: ability.name, desc: adapt_action_desc(ability.desc, ability.monster ? ability.monster.name.downcase : 'NewMonster'))
+        end
+      end
     end
 
     def generate_spellcasting_desc(monster_name, action)

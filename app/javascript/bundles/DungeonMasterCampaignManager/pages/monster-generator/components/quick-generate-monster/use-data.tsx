@@ -49,6 +49,7 @@ export const useData = (props: GenerateMonsterProps) => {
       value: 'medium',
     },
     skillOptions: [],
+    specialAbilityOptions: [],
     spellOptions: [],
     xp: 10,
   });
@@ -69,6 +70,19 @@ export const useData = (props: GenerateMonsterProps) => {
         })
         .catch((error) => {});
     }
+  };
+
+  const getSpecialAbilities = (inputValue: string, callback: any) => {
+    axios
+      .get(`/v1/special-abilities.json?search=${inputValue}`)
+      .then((response: AxiosResponse<any>) => {
+        const options = response.data.special_abilities.map((ability) => ({
+          label: ability,
+          value: ability,
+        }));
+        callback(options);
+      })
+      .catch((error) => {});
   };
 
   const getSpells = (inputValue: string, callback: any) => {
@@ -191,6 +205,7 @@ export const useData = (props: GenerateMonsterProps) => {
     archetypeOptions,
     challengeRatingOptions,
     getMonsterActions,
+    getSpecialAbilities,
     getSpells,
     handleGenerateName,
     handleGenerateMonsterName,

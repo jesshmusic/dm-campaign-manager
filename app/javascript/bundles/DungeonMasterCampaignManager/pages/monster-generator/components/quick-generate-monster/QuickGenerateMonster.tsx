@@ -25,6 +25,7 @@ const QuickGenerateMonster = (props: GenerateMonsterProps) => {
     archetypeOptions,
     challengeRatingOptions,
     getMonsterActions,
+    getSpecialAbilities,
     getSpells,
     handleGenerateName,
     handleGenerateMonsterName,
@@ -86,9 +87,20 @@ const QuickGenerateMonster = (props: GenerateMonsterProps) => {
             />
           </GenMonsterSection>
 
+          <GenMonsterSection heading="Traits">
+            <FormSelectAsync
+              label="Search for and select special abilities from existing monsters"
+              name="specialAbilityOptions"
+              control={UseForm.control}
+              getOptions={getSpecialAbilities}
+              isMulti
+              isClearable
+            />
+          </GenMonsterSection>
+
           <GenMonsterSection heading="Actions">
             <FormSelectAsync
-              label="Search for and select actions, attacks, and special abilities from existing monsters"
+              label="Search for and select actions from existing monsters"
               name="actionOptions"
               control={UseForm.control}
               getOptions={getMonsterActions}

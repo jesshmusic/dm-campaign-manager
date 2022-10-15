@@ -96,9 +96,7 @@ class NameGen
     '<name1> <name2>',
     '<name3><name4>',
     '<name5> <name7>',
-    'The <name3><name4>',
-    'The <name1> <name2>',
-    'The <name5> <name6> <name7>'
+    '<name5> <name6> <name7>'
   ]
   @monster_name1 = ['Acidic', 'Active', 'Aged', 'Agile', 'Agitated', 'Ancient', 'Angry', 'Anguished', 'Arctic', 'Arid', 'Aromatic', 'Awful', 'Barren', 'Bewitched', 'Big Bad', 'Bitter', 'Black', 'Bleak', 'Blind', 'Blissful', 'Blue', 'Bold', 'Broken', 'Bronze', 'Brown', 'Bruised', 'Calm', 'Canine', 'Cloudy', 'Cold', 'Colossal', 'Corrupt', 'Crazy', 'Creepy', 'Cruel', 'Dangerous', 'Dark', 'Dead', 'Deadly', 'Defiant', 'Delirious', 'Dirty', 'Disfigured', 'Disgusting', 'Dismal', 'Dreary', 'Electric', 'Empty', 'Enraged', 'Eternal', 'Evil', 'Faint', 'False', 'Feline', 'Fickle', 'Filthy', 'Forsaken', 'Giant', 'Gray', 'Greedy', 'Grim', 'Gross', 'Grotesque', 'Gruesome', 'Grumpy', 'Hairy', 'Half', 'Haunting', 'Hidden', 'Hollow', 'Horrible', 'Hungry', 'Icy', 'Infamous', 'Insane', 'Insidious', 'Jagged', 'Lanky', 'Lean', 'Living', 'Lone', 'Lonely', 'Mad', 'Meager', 'Mean', 'Monstrous', 'Muted', 'Nasty', 'Needy', 'Noxious', 'Outlandish', 'Parallel', 'Putrid', 'Quick', 'Quiet', 'Reckless', 'Rotten', 'Shady', 'Sick', 'Skeletal', 'Tall', 'Thin', 'Twin', 'Ugly', 'Undead', 'Vengeful', 'Volatile', 'White', 'Wild', 'Wretched']
   @monster_name2 = %w[Man Woman Child Mutant Abomination Glob Monster Behemoth Beast Freak Horror Fiend Abnormality Brute Miscreation Monstrosity Savage Deformity Deviation Anomaly Weirdo Abortion Malformation Blob Lump Bulge Tumor Creature Critter Vermin Being Thing Revenant Keeper Guardian Witch Troglodyte Charmer Vine Tree Plant Howler Statue Vision Dweller Lich Pest Gnoll Ooze Hag Hunter Entity Phenomenon Body Figure Presence Corpse Demon Wraith Herder Mongrel Hybrid Mutt Teeth Eyes Face Screamer Howler Shrieker Wailer Babbler Mumbler Creeper]

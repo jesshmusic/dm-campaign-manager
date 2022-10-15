@@ -33,6 +33,9 @@ Rails.application.routes.draw do
       get '/actions-by-name', to: 'monsters#actions_by_name',
           as: 'actions_by_name',
           constraints: { format: 'json' }
+      get '/special-abilities', to: 'monsters#special_abilities',
+          as: 'special_abilities',
+          constraints: { format: 'json' }
       post '/calculate_cr', to: 'monsters#calculate_cr',
            as: 'calculate_cr',
            constraints: { format: 'json' }

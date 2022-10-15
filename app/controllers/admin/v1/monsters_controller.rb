@@ -4,7 +4,7 @@ module Admin::V1
   class MonstersController < SecuredController
     before_action :set_user
     before_action :set_monster, only: %i[show edit update destroy]
-    skip_before_action :authorize_request, only: %i[index show monster_refs monster_categories actions_by_name quick_monster generate_monster generate_commoner calculate_cr info_for_cr generate_action_desc]
+    skip_before_action :authorize_request, only: %i[index show monster_refs monster_categories actions_by_name quick_monster generate_monster generate_commoner calculate_cr info_for_cr generate_action_desc special_abilities]
 
     # GET /v1/monsters
     # GET /v1/monsters.json
@@ -155,6 +155,15 @@ module Admin::V1
       render json: { challenge: CrCalc.calculate_challenge(@monster) }
     end
 
+    def special_abilities
+      @special_abilities = if params[:search].present?
+                             SpecialAbility.search_for(params[:search]).order(name: :asc).map(&:name).uniq
+                           else
+                             SpecialAbility.all.map(&:name).uniq
+                           end
+      render json: { special_abilities: @special_abilities }
+    end
+
     # PATCH/PUT /monsters/:slug
     # PATCH/PUT /monsters/:slug.json
     def update
@@ -210,6 +219,7 @@ module Admin::V1
         damage_vulnerabilities: [],
         damage_resistances: [],
         condition_immunities: [],
+        special_ability_options: [],
         action_options: [],
         spell_ids: [],
         monster_proficiencies_attributes: %i[id prof_id value _destroy],
