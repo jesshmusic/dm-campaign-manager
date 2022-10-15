@@ -1,6 +1,5 @@
 import React from 'react';
-import { FieldErrors, UseFormRegister } from 'react-hook-form';
-import { FieldValues } from '../../../utilities/types';
+import { FieldErrors, FieldValues, UseFormRegister } from 'react-hook-form';
 import { Colors } from '../../../utilities/enums';
 import Button from '../../../components/Button/Button';
 import { GiFire } from 'react-icons/all';

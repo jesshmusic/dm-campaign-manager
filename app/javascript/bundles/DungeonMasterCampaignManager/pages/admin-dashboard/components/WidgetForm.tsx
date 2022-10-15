@@ -7,8 +7,6 @@ import Button from '../../../components/Button/Button';
 import { Colors } from '../../../utilities/enums';
 import * as Icons from 'react-icons/gi';
 import React from 'react';
-import { WidgetProps } from '../../../components/Widgets/Widget';
-import { SelectIconOption } from '../../../utilities/types';
 
 const styles = require('../create-widget-page.module.scss');
 
@@ -37,10 +35,7 @@ const toolbar =
   'table tabledelete | tableprops tablerowprops tablecellprops | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol' +
   'removeformat | help';
 
-const WidgetForm = (props: {
-  useForm: UseFormReturn<{ iconOption: SelectIconOption } & WidgetProps, object>;
-  onSubmit: (data) => void;
-}) => {
+const WidgetForm = (props: { useForm: UseFormReturn; onSubmit: (data) => void }) => {
   return (
     <form onSubmit={props.useForm.handleSubmit(props.onSubmit)} noValidate className={styles.form}>
       <ControlledInput

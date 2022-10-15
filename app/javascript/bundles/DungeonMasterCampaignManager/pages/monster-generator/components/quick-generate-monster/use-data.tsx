@@ -1,7 +1,7 @@
 import React from 'react';
 import { GenerateMonsterProps } from '../generate-monster/GenerateMonster';
 import { MonsterQuickGeneratorFormFields, RandomNameResult } from '../../../../utilities/types';
-import { useForm } from 'react-hook-form';
+import { FieldValues, useForm } from 'react-hook-form';
 import {
   createQuickMonsterParams,
   getCRInfo,
@@ -17,7 +17,7 @@ import {
 import axios, { AxiosResponse } from 'axios';
 
 export const useData = (props: GenerateMonsterProps) => {
-  const [monsterForm, setMonsterForm] = React.useState<MonsterQuickGeneratorFormFields>({
+  const [monsterForm, setMonsterForm] = React.useState<FieldValues>({
     name: 'New Monster',
     actionOptions: [],
     alignment: 'Neutral',
@@ -54,7 +54,7 @@ export const useData = (props: GenerateMonsterProps) => {
   });
   const [monsterType, setMonsterType] = React.useState('humanoid');
 
-  const UseForm = useForm<MonsterQuickGeneratorFormFields>({
+  const UseForm = useForm({
     defaultValues: monsterForm,
     mode: 'onChange',
   });

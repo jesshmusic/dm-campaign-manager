@@ -1,13 +1,10 @@
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
-import { MonsterGeneratorFormFields } from '../../../../../utilities/types';
 import AbilityScoreField from '../AbilityScoreField';
 
 const styles = require('../../generator.module.scss');
 
-const AbilitiesSection = (props: {
-  UseForm: UseFormReturn<MonsterGeneratorFormFields>;
-}) => {
+const AbilitiesSection = (props: { UseForm: UseFormReturn }) => {
   const { UseForm } = props;
   return (
     <div className={styles.sixCol}>

@@ -1,19 +1,13 @@
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
-import { MonsterGeneratorFormFields } from '../../../../../utilities/types';
 import FormSelectAsync from '../../../../../components/forms/FormSelectAsync';
 import FormSelect from '../../../../../components/forms/FormSelect';
-import {
-  damageTypes,
-  filterOptionsWithData,
-} from '../../../../../utilities/character-utilities';
+import { damageTypes, filterOptionsWithData } from '../../../../../utilities/character-utilities';
 import axios, { AxiosResponse } from 'axios';
 
 const styles = require('../../generator.module.scss');
 
-const ResistancesSection = (props: {
-  UseForm: UseFormReturn<MonsterGeneratorFormFields>;
-}) => {
+const ResistancesSection = (props: { UseForm: UseFormReturn }) => {
   const { UseForm } = props;
 
   const getConditions = (inputValue: string, callback: any) => {

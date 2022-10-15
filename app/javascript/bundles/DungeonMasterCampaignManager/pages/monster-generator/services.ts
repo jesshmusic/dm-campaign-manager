@@ -9,6 +9,7 @@ import {
   MonsterQuickGeneratorFormFields,
 } from '../../utilities/types';
 import axios from 'axios';
+import { FieldValues } from 'react-hook-form';
 
 const abilityAbbr = {
   STR: 'strength',
@@ -251,10 +252,8 @@ export const get2eMonsterObject = (values) => {
   return snakecaseKeys(returnChar, { exclude: ['_destroy'] });
 };
 
-export const calculateCR = async (
-  allValues: MonsterGeneratorFormFields
-): Promise<MonsterCRCalcResult> => {
-  const monster = getMonsterObject(allValues);
+export const calculateCR = async (allValues: FieldValues): Promise<MonsterCRCalcResult> => {
+  const monster = getMonsterObject(allValues as MonsterGeneratorFormFields);
   const monsterData = createMonsterParams(monster);
   return await axios.post<{ monster: any }, MonsterCRCalcResult>('/v1/calculate_cr', {
     monster: monsterData,

@@ -4,18 +4,10 @@
 
 import React from 'react';
 import FormSelect from '../../../../components/forms/FormSelect';
-import { Control } from 'react-hook-form';
-import {
-  MonsterGeneratorFormFields,
-  MonsterQuickGeneratorFormFields,
-} from '../../../../utilities/types';
+import { Control, FieldValues } from 'react-hook-form';
 import { monsterTypeOptions } from '../../../../utilities/character-utilities';
 
-const MonsterTypeSelect = (props: {
-  control: Control<
-    MonsterGeneratorFormFields | MonsterQuickGeneratorFormFields
-  >;
-}) => (
+const MonsterTypeSelect = (props: { control: Control<FieldValues> }) => (
   <FormSelect
     label={'Type'}
     control={props.control}

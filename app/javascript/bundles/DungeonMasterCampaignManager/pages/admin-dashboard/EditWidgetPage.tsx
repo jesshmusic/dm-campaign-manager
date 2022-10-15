@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { CreateWidgetForm, WidgetProps } from '../../components/Widgets/Widget';
 import WidgetForm from './components/WidgetForm';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
+import { FieldValues, useForm } from 'react-hook-form';
 import DndSpinner from '../../components/DndSpinners/DndSpinner';
 import { parseIconName } from '../../utilities/icons';
 
@@ -22,7 +22,7 @@ const EditWidgetPage = (props: {
   const { widgetId } = useParams<'widgetId'>();
   const navigate = useNavigate();
 
-  const UseForm = useForm<CreateWidgetForm>({
+  const UseForm = useForm<FieldValues>({
     mode: 'onChange',
     defaultValues: {
       title: 'New Widget',

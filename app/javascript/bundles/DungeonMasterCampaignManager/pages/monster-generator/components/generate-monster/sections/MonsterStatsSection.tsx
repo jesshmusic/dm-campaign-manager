@@ -8,14 +8,13 @@ import {
   monsterSizeOptions,
 } from '../../../../../utilities/character-utilities';
 import ChallengeRatingField from '../ChallengeRatingField';
-import { UseFormReturn } from 'react-hook-form';
-import { MonsterGeneratorFormFields } from '../../../../../utilities/types';
+import { FieldValues, UseFormReturn } from 'react-hook-form';
 import { raceOptions } from '../../../../../components/Widgets/NameOptions';
 
 const styles = require('../../generator.module.scss');
 
 const MonsterStatsSection = (props: {
-  UseForm: UseFormReturn<MonsterGeneratorFormFields>;
+  UseForm: UseFormReturn<FieldValues>;
   handleCalculateCR: () => void;
 }) => {
   const { UseForm, handleCalculateCR } = props;

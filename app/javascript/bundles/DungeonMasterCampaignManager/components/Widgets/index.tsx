@@ -17,35 +17,35 @@ export const dashboardComponents: {
   };
 } = {
   actionsInCombat: {
-    component: ActionsInCombat,
+    component: <ActionsInCombat />,
     icon: <GiSwordman />,
     title: 'Actions In Combat',
     subtitle: 'One of the following constitutes an "action"',
     grid: { w: 4, h: 4, x: 0, y: Infinity, minW: 4, minH: 4 },
   },
   coverTable: {
-    component: Cover,
+    component: <Cover />,
     icon: <GiRock />,
     title: 'Cover',
     subtitle: '',
     grid: { w: 4, h: 3, x: 0, y: Infinity, minW: 4, minH: 3 },
   },
   randomName: {
-    component: NameField,
+    component: <NameField />,
     icon: <GiBowman />,
     title: 'Random Character Name',
     subtitle: 'Generate a random fantasy name based on gender and race',
     grid: { w: 4, h: 3, x: 0, y: Infinity, minW: 4, minH: 3 },
   },
   randomTavern: {
-    component: TavernNameField,
+    component: <TavernNameField />,
     icon: <GiBeerStein />,
     title: 'Random Tavern Name',
     subtitle: 'Generate a random tavern name',
     grid: { w: 4, h: 3, x: 4, y: Infinity, minW: 3, minH: 3 },
   },
   npcGen: {
-    component: NPCGenButton,
+    component: <NPCGenButton />,
     icon: <GiOrcHead />,
     title: 'NPC Generator',
     subtitle: 'Quickly create custom NPCs of any challenge rating',
@@ -59,7 +59,7 @@ export const dashboardComponents: {
   //   grid: { w: 4, h: 3, x: 0, y: Infinity, minW: 2, minH: 2 },
   // },
   turnActions: {
-    component: TurnActions,
+    component: <TurnActions />,
     icon: <GiAcrobatic />,
     title: 'Things You Can Do on Your Turn',
     subtitle: '',

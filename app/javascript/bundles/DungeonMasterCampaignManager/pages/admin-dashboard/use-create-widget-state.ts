@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
+import { FieldValues, useForm } from 'react-hook-form';
 import { CreateWidgetForm, WidgetProps } from '../../components/Widgets/Widget';
 
 export const useCreateWidgetState = (props: {
@@ -11,7 +11,7 @@ export const useCreateWidgetState = (props: {
   const [testState, setTestState] = React.useState();
   const navigate = useNavigate();
 
-  const UseForm = useForm<CreateWidgetForm>({
+  const UseForm = useForm<FieldValues>({
     mode: 'onChange',
     defaultValues: {
       title: 'New Widget',

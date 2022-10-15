@@ -1,5 +1,5 @@
 import { ActionTypes, FlashMessage, MonsterActionField, UserProps } from '../../utilities/types';
-import { useForm } from 'react-hook-form';
+import { FieldValues, useForm } from 'react-hook-form';
 import { generateAttackDesc } from '../monster-generator/components/generate-monster/use-data';
 import { abilityOptions } from '../monster-generator/components/generate-monster/sections/actions/action-forms/SpellcastingForm';
 import { useNavigate } from 'react-router-dom';
@@ -21,7 +21,7 @@ export const useCustomActionState = (props: {
 
   const navigate = useNavigate();
 
-  const UseForm = useForm<CustomActionField>({
+  const UseForm = useForm<FieldValues>({
     mode: 'onChange',
     defaultValues: {
       action: {

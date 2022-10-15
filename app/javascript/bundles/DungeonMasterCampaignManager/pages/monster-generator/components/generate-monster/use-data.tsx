@@ -13,7 +13,7 @@ import {
   hitPoints,
 } from '../../services';
 import axios from 'axios';
-import { useForm } from 'react-hook-form';
+import { FieldValues, useForm } from 'react-hook-form';
 import { GenerateMonsterProps } from './GenerateMonster';
 import snakecaseKeys from 'snakecase-keys';
 
@@ -50,7 +50,7 @@ export const generateAttackDesc = async (
 };
 
 export const useData = (props: GenerateMonsterProps) => {
-  const [monsterForm, setMonsterForm] = React.useState<MonsterGeneratorFormFields>({
+  const [monsterForm, setMonsterForm] = React.useState<FieldValues>({
     name: 'New Monster',
     alignment: 'Neutral',
     alignmentOption: {
@@ -108,7 +108,7 @@ export const useData = (props: GenerateMonsterProps) => {
     speeds: [],
   });
 
-  const UseForm = useForm<MonsterGeneratorFormFields>({
+  const UseForm = useForm<FieldValues>({
     defaultValues: monsterForm,
     mode: 'onChange',
   });
@@ -154,11 +154,7 @@ export const useData = (props: GenerateMonsterProps) => {
     }
   };
 
-  const setActionDesc = async (
-    fields: MonsterGeneratorFormFields,
-    attackBonus: number,
-    profBonus: number
-  ) => {
+  const setActionDesc = async (fields: FieldValues, attackBonus: number, profBonus: number) => {
     const damageBonus = fields.damageBonus as number;
     for (const action of fields.actions) {
       const index = fields.actions.indexOf(action);

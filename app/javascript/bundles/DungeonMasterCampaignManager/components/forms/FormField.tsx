@@ -3,8 +3,7 @@
  */
 
 import React from 'react';
-import { FieldErrors, UseFormRegister } from 'react-hook-form';
-import { FieldValues } from '../../utilities/types';
+import { FieldErrors, FieldValues, UseFormRegister } from 'react-hook-form';
 import classNames from 'classnames';
 import { GiFire } from 'react-icons/all';
 

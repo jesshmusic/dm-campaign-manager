@@ -43,8 +43,10 @@ export default function AddList({
               checked={items.includes(widget.key)}
             />
             <label className="form-check-label" htmlFor={widget.key}>
-              {widget.icon}&nbsp;
-              {widget.title}
+              <>
+                {widget.icon}&nbsp;
+                {widget.title}
+              </>
             </label>
           </div>
         ))}

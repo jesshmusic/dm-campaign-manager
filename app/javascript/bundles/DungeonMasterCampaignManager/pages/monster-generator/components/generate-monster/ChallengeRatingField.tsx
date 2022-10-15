@@ -1,7 +1,6 @@
 import React from 'react';
 import { GiMailedFist } from 'react-icons/all';
-import { UseFormRegister } from 'react-hook-form';
-import { FieldValues } from '../../../../utilities/types';
+import { FieldValues, UseFormRegister } from 'react-hook-form';
 import { Colors } from '../../../../utilities/enums';
 import Button from '../../../../components/Button/Button';
 

@@ -1,6 +1,6 @@
 import React from 'react';
-import { UseFormReturn } from 'react-hook-form';
-import { MonsterQuickGeneratorFormFields, SelectOption } from '../../../../utilities/types';
+import { FieldValues, UseFormReturn } from 'react-hook-form';
+import { SelectOption } from '../../../../utilities/types';
 import MonsterTypeSelect from '../generate-monster/MonsterTypeSelect';
 import FormField from '../../../../components/forms/FormField';
 import { alignmentOptions, monsterSizeOptions } from '../../../../utilities/character-utilities';
@@ -12,7 +12,7 @@ const styles = require('../generator.module.scss');
 const QuickMonsterStatsSection = (props: {
   archetypeOptions: SelectOption[];
   challengeRatingOptions: SelectOption[];
-  UseForm: UseFormReturn<MonsterQuickGeneratorFormFields>;
+  UseForm: UseFormReturn<FieldValues>;
 }) => {
   const { archetypeOptions, challengeRatingOptions, UseForm } = props;
   return (

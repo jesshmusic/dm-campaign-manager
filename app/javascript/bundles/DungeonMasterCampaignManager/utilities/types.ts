@@ -165,10 +165,6 @@ export interface DndClasses {
   currentDndClass: DndClass;
 }
 
-export type FieldValues = {
-  [key: string]: string | number;
-};
-
 export interface FlashMessage {
   id: number;
   heading: string;

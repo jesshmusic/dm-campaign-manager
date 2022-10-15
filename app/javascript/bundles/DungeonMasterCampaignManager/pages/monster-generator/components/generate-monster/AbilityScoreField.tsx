@@ -4,13 +4,10 @@
 
 import React from 'react';
 import { GiDiceTwentyFacesTwenty } from 'react-icons/gi/';
-import { FieldErrors, UseFormRegister, UseFormSetValue } from 'react-hook-form';
+import { FieldErrors, FieldValues, UseFormRegister, UseFormSetValue } from 'react-hook-form';
 import { DiceRoll } from 'rpg-dice-roller';
 import useSound from 'use-sound';
-import {
-  FieldValues,
-  MonsterGeneratorFormFields,
-} from '../../../../utilities/types';
+import { MonsterGeneratorFormFields } from '../../../../utilities/types';
 import FormField from '../../../../components/forms/FormField';
 import { Colors } from '../../../../utilities/enums';
 import Button from '../../../../components/Button/Button';
