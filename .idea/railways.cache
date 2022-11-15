@@ -21,6 +21,7 @@ Ruby enVironment Manager 1.29.10 (latest) (c) 2009-2017 Michal Papis, Piotr Kucz
                     v1_generate_commoner POST   /v1/generate_commoner(.:format)                                                                   admin/v1/monsters#generate_commoner {:format=>"json"}
                    v1_monster_categories GET    /v1/monster-categories(.:format)                                                                  admin/v1/monsters#monster_categories {:format=>"json"}
                       v1_actions_by_name GET    /v1/actions-by-name(.:format)                                                                     admin/v1/monsters#actions_by_name {:format=>"json"}
+                    v1_special_abilities GET    /v1/special-abilities(.:format)                                                                   admin/v1/monsters#special_abilities {:format=>"json"}
                          v1_calculate_cr POST   /v1/calculate_cr(.:format)                                                                        admin/v1/monsters#calculate_cr {:format=>"json"}
                           v1_info_for_cr POST   /v1/info_for_cr(.:format)                                                                         admin/v1/monsters#info_for_cr {:format=>"json"}
                  v1_generate_action_desc POST   /v1/generate_action_desc(.:format)                                                                admin/v1/monsters#generate_action_desc {:format=>"json"}
