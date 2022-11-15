@@ -1,6 +1,9 @@
 {
   "name": "dungeon-master-screen-online",
   "private": true,
+  "engines": {
+    "node": "16.11.x"
+  },
   "dependencies": {
     "@auth0/auth0-react": "^1.8.0",
     "@babel/preset-react": "^7.14.5",
