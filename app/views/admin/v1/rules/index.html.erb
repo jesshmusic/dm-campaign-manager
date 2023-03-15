@@ -1,0 +1,43 @@
+<% title "Rules" %>
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/app/assets/config">Home</a></li>
+    <li class="breadcrumb-item"><%= link_to 'Dashboard', v1_dashboard_path %></li>
+    <li class="breadcrumb-item active" aria-current="page">Rules</li>
+  </ol>
+</nav>
+
+<h1>Rules</h1>
+<%= render 'shared/search_form', url: rules_path %>
+
+<table>
+  <thead>
+    <tr>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Slug</th>
+              <th>String</th>
+
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @rules.each do |rule| %>
+      <tr>
+                  <td><%= rule.name %></td>
+                  <td><%= rule.description %></td>
+                  <td><%= rule.slug %></td>
+                  <td><%= rule.string %></td>
+
+        <td>
+          <%= link_to 'Show', rule, class: "btn btn-sm btn-primary" %>
+          <%= link_to 'Edit', edit_rule_path(rule), class: "btn btn-sm btn-success" if policy(rule).edit? %>
+          <%= link_to 'Destroy', rule, class: "btn btn-sm btn-danger", method: :delete, data: { confirm: 'Are you sure?' } if policy(rule).destroy? %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<%== pagy_bootstrap_nav(@pagy) if @pagy.pages > 1 %>
+<%= link_to 'New Rule', new_rule_path, class: "btn btn-lg btn-success" if policy(Rule).new? %>

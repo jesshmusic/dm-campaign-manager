@@ -19,6 +19,7 @@ class ImportSrdUtilities
       SpellsUtil.import
       MonstersUtil.import
       SectionsUtil.import
+      RulesUtil.import
     end
 
     def import_all_empty(exclude)
@@ -68,6 +69,7 @@ class ImportSrdUtilities
       Condition.destroy_all
       Equipment.destroy_all
       Skill.destroy_all
+      Rule.destroy_all
     end
 
     def import_proficiencies

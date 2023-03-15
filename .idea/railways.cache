@@ -98,6 +98,12 @@ Ruby enVironment Manager 1.29.10 (latest) (c) 2009-2017 Michal Papis, Piotr Kucz
                                          PATCH  /v1/races/:id(.:format)                                                                           admin/v1/races#update
                                          PUT    /v1/races/:id(.:format)                                                                           admin/v1/races#update
                                          DELETE /v1/races/:id(.:format)                                                                           admin/v1/races#destroy
+                                v1_rules GET    /v1/rules(.:format)                                                                               admin/v1/rules#index
+                                         POST   /v1/rules(.:format)                                                                               admin/v1/rules#create
+                                 v1_rule GET    /v1/rules/:id(.:format)                                                                           admin/v1/rules#show
+                                         PATCH  /v1/rules/:id(.:format)                                                                           admin/v1/rules#update
+                                         PUT    /v1/rules/:id(.:format)                                                                           admin/v1/rules#update
+                                         DELETE /v1/rules/:id(.:format)                                                                           admin/v1/rules#destroy
                                v1_spells GET    /v1/spells(.:format)                                                                              admin/v1/spells#index
                                          POST   /v1/spells(.:format)                                                                              admin/v1/spells#create
                                 v1_spell GET    /v1/spells/:id(.:format)                                                                          admin/v1/spells#show

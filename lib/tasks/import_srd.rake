@@ -57,6 +57,11 @@ namespace :srd do
     SpellsUtil.import
   end
 
+  task import_rules: :environment do
+    Rule.destroy_all
+    RulesUtil.import
+  end
+
   task import_sections: :environment do
     Section.destroy_all
     SectionsUtil.import

@@ -1,0 +1,18 @@
+<% title "Edit" + @rule.name %>
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/app/assets/config">Home</a></li>
+    <li class="breadcrumb-item"><%= link_to 'Dashboard', v1_dashboard_path %></li>
+    <li class="breadcrumb-item"><%= link_to 'Rules', rules_path %></li>
+    <li class="breadcrumb-item active" aria-current="page">Edit Rules</li>
+  </ol>
+</nav>
+<div class="container">
+  <h1>Edit - <small><em><%= @rule.name %></em></small></h1>
+  <%= render 'form', rule: @rule %>
+  <div class="admin__footer">
+    <%= link_to 'Show', @rule, class: "btn btn-success" %>
+    <%= link_to 'Back', rules_path, class: "btn btn-primary" %>
+    <%= link_to 'Dashboard', '/dashboard', class: "btn btn-info" %>
+  </div>
+</div>
