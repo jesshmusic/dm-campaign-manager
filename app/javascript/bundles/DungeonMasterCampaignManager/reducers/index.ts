@@ -5,7 +5,7 @@ import flashMessages from './flashMessages';
 import items from './items';
 import monsters from './monsters';
 import races from './races';
-import sections from './sections';
+import rules from './rules';
 import spells from './spells';
 import users from './user';
 import customActions from './customActions';
@@ -19,7 +19,7 @@ export default combineReducers({
   items,
   monsters,
   races,
-  sections,
+  rules,
   spells,
   users,
   widgets,

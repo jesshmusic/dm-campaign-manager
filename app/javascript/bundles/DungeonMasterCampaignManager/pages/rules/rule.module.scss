@@ -4,10 +4,7 @@
 @import '~bootstrap/scss/mixins';
 @import '~bootstrap/scss/tables';
 
-.section {
-  column-gap: 5rem;
-  columns: 400px 2;
-
+.rule {
   table {
     @extend .table;
     @extend .table-borderless;

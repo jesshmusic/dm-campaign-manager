@@ -7,7 +7,8 @@ import {
   BiLogIn,
   BiLogOut,
   BiShow,
-  GiAchillesHeel,
+  GiAchillesHeel, GiBookPile,
+  GiBookshelf, GiBookStorm, GiBurningBook,
   GiCapeArmor,
   GiChestArmor,
   GiDungeonGate,
@@ -20,11 +21,20 @@ import {
   GiMagicPotion,
   GiMonsterGrasp,
   GiPerson,
-  GiRuleBook,
+  GiRuleBook, GiSecretBook, GiSpellBook,
   GiSwapBag,
   GiSwordArray,
-  GiToolbox,
+  GiToolbox
 } from 'react-icons/all';
+
+const ruleBooks = [
+  <GiRuleBook />,
+  <GiBookPile />,
+  <GiBurningBook />,
+  <GiSecretBook />,
+  <GiSpellBook />,
+  <GiBookStorm />
+]
 
 import {
   Menu,
@@ -72,14 +82,14 @@ const itemTypes = [
 
 const SideBar = (props: {
   currentUser?: UserProps;
-  getSections: () => void;
+  getRules: () => void;
   isCollapsed: boolean;
   isMobile: boolean;
   logOutUser: (token: string) => void;
-  sections: { name: string; slug: string }[];
+  rules: { name: string; slug: string, rules?: {name: string, slug: string}[] }[];
   setIsCollapsed: (boolean) => void;
 }) => {
-  const { currentUser, getSections, isCollapsed, isMobile, logOutUser, sections, setIsCollapsed } =
+  const { currentUser, getRules, isCollapsed, isMobile, logOutUser, rules, setIsCollapsed } =
     props;
 
   const { user, getAccessTokenSilently, isAuthenticated, loginWithRedirect, logout } = useAuth0();
@@ -98,7 +108,7 @@ const SideBar = (props: {
   };
 
   React.useEffect(() => {
-    getSections();
+    getRules();
   }, []);
 
   return (
@@ -121,16 +131,25 @@ const SideBar = (props: {
             <SidebarLink to="/app/monsters" title="Monsters" icon={<GiMonsterGrasp />} />
             <SidebarLink to="/app/spells" title="Spells" icon={<GiMagicPalm />} />
             <SidebarLink to="/app/conditions" title="Conditions" icon={<GiAchillesHeel />} />
-            <SubMenu title="Rules" icon={<GiRuleBook />}>
-              {sections.map((section, index) => (
-                <SidebarLink
-                  key={`rules-${index}`}
-                  to={`/app/sections/${section.slug}`}
-                  title={section.name}
-                />
+            <SubMenu title="Rules" icon={<GiBookshelf />}>
+              {rules.map((rule, index) => (
+                <SubMenu title={rule.name} icon={index < 6 ? ruleBooks[index] : <GiRuleBook />}>
+                  <SidebarLink
+                    key={`rulesTop-${index}`}
+                    to={`/app/rules/${rule.slug}`}
+                    title={rule.name}
+                  />
+                  {rule.rules && rule.rules.map((subrule, subIndex) => (
+                    <SidebarLink
+                      key={`rulesInner-${subIndex}`}
+                      to={`/app/rules/${subrule.slug}`}
+                      title={subrule.name}
+                    />
+                  ))}
+                </SubMenu>
               ))}
             </SubMenu>
-            <SubMenu title="Items & Equipment" icon={<GiSwapBag />}>
+            <SubMenu title="Items & Equipment" icon={<GiSwapBag />} >
               {itemTypes.map((itemType, index) => (
                 <SidebarLink
                   key={`items-${index}`}
@@ -183,7 +202,7 @@ const SideBar = (props: {
 
 const mapStateToProps = (state) => {
   return {
-    sections: state.sections.sections,
+    rules: state.rules.rules,
     currentUser: state.users.currentUser,
   };
 };
@@ -193,8 +212,8 @@ const mapDispatchToProps = (dispatch) => {
     logOutUser: (token: string) => {
       dispatch(rest.actions.logout({}, { token }));
     },
-    getSections: () => {
-      dispatch(rest.actions.getSections());
+    getRules: () => {
+      dispatch(rest.actions.getRules());
     },
   };
 };

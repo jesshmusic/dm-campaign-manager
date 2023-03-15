@@ -41,10 +41,10 @@ const store = configureStore({
       currentRace: null,
       loading: false,
     },
-    sections: {
-      sections: [],
+    rules: {
+      rules: [],
       count: 0,
-      currentSection: null,
+      currentRule: null,
       loading: false,
     },
     spells: {

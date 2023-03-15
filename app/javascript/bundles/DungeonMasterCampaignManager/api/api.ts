@@ -190,11 +190,11 @@ export default reduxApi({
   getRaces: {
     url: '/v1/races.json',
   },
-  getSection: {
-    url: '/v1/sections/:id.json',
+  getRule: {
+    url: '/v1/rules/:id.json',
   },
-  getSections: {
-    url: '/v1/sections.json',
+  getRules: {
+    url: '/v1/rules.json',
   },
   getSpell: {
     url: '/v1/spells/:id.json',
