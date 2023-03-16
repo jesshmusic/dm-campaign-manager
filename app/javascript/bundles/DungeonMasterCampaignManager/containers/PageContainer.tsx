@@ -15,6 +15,7 @@ import classNames from 'classnames';
 import BannerAd from '../components/BannerAd/BannerAd';
 import ReactGA from 'react-ga4';
 import YouTubeAd from '../components/BannerAd/YouTubeAd';
+import SearchField from '../components/Search/SearchField';
 
 ReactGA.initialize('G-8XJTH70JSQ');
 
@@ -82,6 +83,7 @@ const PageContainer = (props: PageContainerProps) => {
         isMobile={isMobile}
       />
       <Breadcrumbs isCollapsed={isCollapsed} />
+      <SearchField />
       <TransitionGroup component={null}>
         <Transition
           timeout={500}

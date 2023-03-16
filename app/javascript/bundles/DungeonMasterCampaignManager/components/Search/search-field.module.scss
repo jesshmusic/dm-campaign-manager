@@ -1,0 +1,53 @@
+@import '../../stylesheets/variables';
+
+.searchBar {
+  align-items: center;
+  background-color: $background-med;
+  border-collapse: separate;
+  border-image: $orange-border;
+  border-style: solid;
+  border-width: 5px;
+  box-shadow: $box-shadow;
+  display: flex;
+  flex-wrap: wrap;
+  font-family: $font-family-mr-eaves;
+  list-style: none;
+  margin: 0 0 0 5rem;
+  padding: 0.35rem 1rem;
+
+  @include respond-to(md) {
+    margin: 0 0 0 15rem;
+    padding: 0.35rem 0;
+  }
+
+  &.collapsed :global {
+    margin: 0 0 0 5rem;
+    padding: 1rem;
+  }
+}
+
+.inputGroup {
+  align-items: stretch;
+  display: flex;
+  flex-wrap: wrap;
+  position: relative;
+  width: 100%;
+
+  input {
+    @include form-input;
+
+    border-radius: $border-radius-lg 0 0 $border-radius-sm;
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 0.5rem;
+    position: relative;
+    width: 1%;
+  }
+
+  .searchButton {
+    border: 0;
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+    margin: 0 0 0 -0.0625rem;
+  }
+}

@@ -1,6 +1,17 @@
 # frozen_string_literal: true
 
 namespace :update_records do
+  task rebuild_search: :environment do
+    PgSearch::Multisearch.rebuild(Condition)
+    PgSearch::Multisearch.rebuild(DndClass)
+    PgSearch::Multisearch.rebuild(Item)
+    PgSearch::Multisearch.rebuild(Monster)
+    PgSearch::Multisearch.rebuild(Race)
+    PgSearch::Multisearch.rebuild(Rule)
+    PgSearch::Multisearch.rebuild(Skill)
+    PgSearch::Multisearch.rebuild(Spell)
+  end
+
   task parse_weapon_bonuses: :environment do
     WeaponItem.all.each do |weapon|
       if weapon.name.include? "+1"

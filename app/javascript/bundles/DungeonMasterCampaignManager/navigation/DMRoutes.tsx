@@ -22,6 +22,7 @@ import DndClass from '../pages/dnd-classes/DndClass';
 import CreateWidgetPage from '../pages/admin-dashboard/CreateWidgetPage';
 import CreateCustomActionPage from '../pages/admin-dashboard/CreateCustomActionPage';
 import EditWidgetPage from '../pages/admin-dashboard/EditWidgetPage';
+import SearchResults from '../pages/search-results/SearchResults';
 
 const DMRoutes = (props) => {
   return (
@@ -47,6 +48,7 @@ const DMRoutes = (props) => {
       <Route path="/app/spells/:spellSlug" element={<Spell {...props} />} />
       <Route path="/app/rules/:ruleSlug" element={<Rule {...props} />} />
       <Route path="/app/monster-generator/" element={<MonsterGenerator {...props} />} />
+      <Route path="/app/search/:query" element={<SearchResults {...props} />} />
       <Route
         path="/app/admin-dashboard"
         element={<ProtectedRoute as={AdminDashboard} requireAdmin={true} {...props} />}

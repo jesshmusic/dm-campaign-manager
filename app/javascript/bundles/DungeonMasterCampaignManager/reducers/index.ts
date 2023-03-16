@@ -10,6 +10,7 @@ import spells from './spells';
 import users from './user';
 import customActions from './customActions';
 import widgets from './widgets';
+import search from './search';
 
 export default combineReducers({
   conditions,
@@ -20,6 +21,7 @@ export default combineReducers({
   monsters,
   races,
   rules,
+  search,
   spells,
   users,
   widgets,

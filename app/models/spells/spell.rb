@@ -51,8 +51,6 @@ class Spell < ApplicationRecord
 
   attr_accessor :current_user
 
-  include PgSearch::Model
-
   def get_spell_level_text
     if level <= 0
       'Cantrip'
@@ -94,13 +92,14 @@ class Spell < ApplicationRecord
     text_array.join
   end
 
+  include PgSearch::Model
   # PgSearch
+  multisearchable against: [:name, :description, :school]
   pg_search_scope :search_for,
                   against: {
                     name: 'A',
-                    school: 'B',
-                    casting_time: 'C',
-                    spell_level: 'D'
+                    description: 'B',
+                    school: 'C',
                   },
                   using: {
                     tsearch: {

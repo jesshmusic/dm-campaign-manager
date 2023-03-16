@@ -26,4 +26,16 @@ class Rule < ApplicationRecord
 
   belongs_to :parent, class_name: 'Rule', optional: true
   has_many :children, class_name: 'Rule', foreign_key: 'parent_id'
+
+  include PgSearch::Model
+  # PgSearch
+  multisearchable against: [:name, :category, :subcategory, :description]
+  pg_search_scope :search_for,
+                  against: {
+                    name: 'A',
+                    category: 'B',
+                    subcategory: 'C',
+                    description: 'D'
+                  },
+                  using: { tsearch: { prefix: true } }
 end

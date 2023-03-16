@@ -227,6 +227,7 @@ class Monster < ApplicationRecord
   include PgSearch::Model
 
   # PgSearch
+  multisearchable against: [:name, :monster_type, :challenge_rating, :alignment]
   pg_search_scope :search_for,
                   against: {
                     name: 'A',

@@ -24,6 +24,7 @@ class Skill < ApplicationRecord
 
   include PgSearch::Model
   # PgSearch
+  multisearchable against: [:name, :desc]
   pg_search_scope :search_for,
                   against: {
                     name: 'A',

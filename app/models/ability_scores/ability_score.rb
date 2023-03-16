@@ -28,7 +28,8 @@ class AbilityScore < ApplicationRecord
   pg_search_scope :search_for,
                   against: {
                     name: 'A',
-                    desc: 'B'
+                    full_name: 'B',
+                    desc: 'C'
                   },
                   using: { tsearch: { prefix: true } }
 end

@@ -13,6 +13,7 @@ Ruby enVironment Manager 1.29.10 (latest) (c) 2009-2017 Michal Papis, Piotr Kucz
                         user_logout_user DELETE /users/logout(.:format)                                                                           users#logout_user
                                          GET    /app(/*all)(.:format)                                                                             home#index
                             v1_dashboard GET    /v1/dashboard(.:format)                                                                           admin/v1/dashboard#index
+                               v1_search GET    /v1/search(.:format)                                                                              admin/v1/search#index {:format=>"json"}
                   v1_random_fantasy_name GET    /v1/random_fantasy_name(.:format)                                                                 admin/v1/dashboard#random_fantasy_name {:format=>"json"}
                    v1_random_tavern_name GET    /v1/random_tavern_name(.:format)                                                                  admin/v1/dashboard#random_tavern_name {:format=>"json"}
                   v1_random_monster_name GET    /v1/random_monster_name(.:format)                                                                 admin/v1/dashboard#random_monster_name {:format=>"json"}

@@ -9,6 +9,9 @@ Rails.application.routes.draw do
   scope module: 'admin' do
     namespace :v1 do
       get 'dashboard', to: 'dashboard#index'
+      get 'search',
+          to:'search#index',
+          constraints: { format: 'json' }
       get '/random_fantasy_name', to: 'dashboard#random_fantasy_name',
           as: 'random_fantasy_name',
           constraints: { format: 'json' }

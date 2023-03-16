@@ -51,6 +51,7 @@ class Race < ApplicationRecord
   include PgSearch::Model
 
   # PgSearch
+  multisearchable against: [:name]
   pg_search_scope :search_for,
                   against: { name: 'A' },
                   using: { tsearch: { prefix: true } }
