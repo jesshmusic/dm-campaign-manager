@@ -3,7 +3,7 @@
 module Admin::V1
   class DashboardController < SecuredController
     before_action :set_user
-    skip_before_action :authorize_request, only: %i[index random_fantasy_name random_tavern_name random_monster_name]
+    skip_before_action :authorize_request, only: %i[index random_fantasy_name random_tavern_name random_monster_name adventure_hook]
 
     # GET /index
     def index
@@ -27,6 +27,28 @@ module Admin::V1
 
     def random_monster_name
       render json: { name: NameGen.random_monster_name }
+    end
+
+    def adventure_hook
+      openai = OpenAI::Client.new(api_key: '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')
+
+      player_count = params[:player_count].to_i
+      average_level = params[:average_level].to_i
+
+      prompt = "Generate a random Dungeons and Dragons 5e adventure hook for #{player_count} players at level #{average_level}."
+
+      completions = openai.completions(
+        engine: 'text-davinci-002',
+        prompt: prompt,
+        max_tokens: 1024,
+        n: 1,
+        stop: '###'
+      )
+
+      completion_text = completions.choices[0].text.strip
+      adventure_hook = completion_text.gsub('###', '').strip
+
+      render json: { adventure_hook: adventure_hook }
     end
 
     private

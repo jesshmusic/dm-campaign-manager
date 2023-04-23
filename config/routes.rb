@@ -12,6 +12,9 @@ Rails.application.routes.draw do
       get 'search',
           to:'search#index',
           constraints: { format: 'json' }
+      get '/adventure_hook', to: 'dashboard#adventure_hook',
+          as: 'adventure_hook',
+          constraints: { format: 'json' }
       get '/random_fantasy_name', to: 'dashboard#random_fantasy_name',
           as: 'random_fantasy_name',
           constraints: { format: 'json' }
