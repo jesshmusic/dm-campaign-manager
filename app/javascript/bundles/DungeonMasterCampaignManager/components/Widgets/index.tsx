@@ -2,10 +2,19 @@ import React from 'react';
 import NameField from './NameField';
 import TavernNameField from './TavernNameField';
 import NPCGenButton from './NPCGenButton';
-import { GiAcrobatic, GiBeerStein, GiBowman, GiOrcHead, GiRock, GiSwordman } from 'react-icons/all';
+import {
+  GiAcrobatic,
+  GiBeerStein,
+  GiBowman,
+  GiLevelTwoAdvanced,
+  GiOrcHead,
+  GiRock,
+  GiSwordman
+} from 'react-icons/all';
 import ActionsInCombat from './ActionsInCombat';
 import TurnActions from './TurnActions';
 import Cover from './Cover';
+import AdventureHookWidget from './AdventureHookWidget';
 
 export const dashboardComponents: {
   [key: string]: {
@@ -44,6 +53,13 @@ export const dashboardComponents: {
     subtitle: 'Generate a random tavern name',
     grid: { w: 4, h: 3, x: 4, y: Infinity, minW: 3, minH: 3 },
   },
+  adventureHook: {
+    component: AdventureHookWidget,
+    icon: <GiLevelTwoAdvanced />,
+    title: 'Random Adventure Hook',
+    subtitle: 'Generate a random adventure hook',
+    grid: { w: 4, h: 4, x: 4, y: Infinity, minW: 3, minH: 4 },
+  },
   npcGen: {
     component: NPCGenButton,
     icon: <GiOrcHead />,
@@ -71,7 +87,7 @@ export const dashboardItems = [
   'actionsInCombat',
   'coverTable',
   'npcGen',
-  // 'notesWidget',
+  'adventureHook',
   'randomName',
   'randomTavern',
   'turnActions',
@@ -96,6 +112,17 @@ export const initialLayouts = {
       x: 4,
       y: 0,
       i: 'randomTavern',
+      minW: 3,
+      minH: 3,
+      moved: false,
+      static: false,
+    },
+    {
+      w: 4,
+      h: 3,
+      x: 4,
+      y: 0,
+      i: 'adventureHook',
       minW: 3,
       minH: 3,
       moved: false,
