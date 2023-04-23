@@ -4,6 +4,10 @@
 @import '~bootstrap/scss/mixins';
 @import '~bootstrap/scss/tables';
 
+.input {
+  @include form-input;
+}
+
 .nameOptions {
   display: grid;
   grid-gap: $spacer;
@@ -52,4 +56,11 @@ table {
       }
     }
   }
+}
+
+.input {
+  border-bottom-right-radius: 0;
+  border-top-right-radius: 0;
+  flex: 1;
+  position: relative;
 }
