@@ -28,6 +28,10 @@ class NameGen
       Try to avoid using the names of existing fictional characters or creatures."
     end
 
+    def get_aasimar_name(gender)
+      generate_name(generate_prompt('aasimar', gender, 'Aasimar are typically grandiose and similar to the names of the gods of Forgotten Realms.'))
+    end
+
     def get_dragon_name(gender)
       generate_name("Create a unique fantasy #{gender} dragon name that sounds majestic and ancient. The name should be
       at least two syllables long. The name should also end with a one- or two-syllable suffix that evokes power or
@@ -39,15 +43,32 @@ class NameGen
     end
 
     def get_goblin_name(gender)
-      generate_name(generate_prompt('goblin', gender, 'It can either have a single name, a first and last name, or a title similar to "the Slayer"'))
+      generate_name(generate_prompt('goblin', gender, 'Some example goblin names that this should be like are Gliokkolsia, Kilzea, Fughszea, Hokoiszea, Bhaftaaz, Pakipak, Srebnalk, Trizick, Grutaat'))
     end
 
     def get_orc_name(gender)
-      generate_name(generate_prompt('orc', gender, 'It can either have a single name, a first and last name, or a title similar to "the Slayer"'))
+      generate_name(generate_prompt('orc', gender, 'It can either have a single name, a first and last name.
+Orc names are extremely simple; typically 1 to 3 syllables.
+ Male names make use of Us, Zs, Ts, and Gs – hard consonants – to sound more fierce and respectable.
+ Female names are softer; As, Ms, Ss, and Es.
+Occasionally Orcs obtain epithets by performing fantastically in battle. These are more like titles, and stick to a more common language.
+The Filthy
+Skull Cleaver
+Eye Gouger
+Iron Tusk
+Skin Flayer
+Bone Crusher
+Flesh Ripper
+Doom Hammer
+Elf Butcher
+The Gory
+Spine Snapper
+Death Spear
+The Brutal'))
     end
 
     def get_half_orc_name(gender)
-      generate_name(generate_prompt('half-orc', gender, 'It should have a first and last name or a title. The random name can also be a mix or orcish or human type names.'))
+      generate_name(generate_prompt('half-orc', gender, 'It should have a first and last name or a title.'))
     end
 
     def get_ogre_name(gender)
@@ -55,15 +76,19 @@ class NameGen
     end
 
     def get_human_name(gender)
-      generate_name(generate_prompt('human', gender, 'It should have a first and last name or a title'))
+      generate_name(generate_prompt('human', gender, 'It should have a first and last name or a title.'))
+    end
+
+    def get_half_elf_name(gender)
+      generate_name(generate_prompt('half-elf', gender, 'It should have a first and last name or a title.'))
     end
 
     def get_halfling_name(gender)
-      generate_name(generate_prompt('halfling', gender, 'It should have a first and last name'))
+      generate_name(generate_prompt('halfling', gender, 'It should have a first and last name.'))
     end
 
     def get_dwarf_name(gender)
-      generate_name(generate_prompt('dwarf', gender, 'It should have a first and last name or title. Do not use the names "Gimli", "Gimli son of Gloin", "Durin Oakenshield", "Thorin Oakenshield"'))
+      generate_name(generate_prompt('dwarf', gender, 'It should have a first and last name or title. Do not use the names "Gimli", "Gimli son of Gloin", "Durin Oakenshield", "Thorin Oakenshield". Dwarfs tend to have simple Norse-influenced names, such as Flosi, Gormur, Kili and Thorin. They tend to start with consonants or paired consonants such as D,Dw, T, K, F, H, Gl and Thr. Common suffixes are -oin, -ili, -imli, -in.'))
     end
 
     def get_dragonborn_name(gender)
@@ -77,6 +102,8 @@ Some middle syllables for the last name might include: tin, den, mir, chedan, ka
 
     def random_name(gender = nil, race = 'human')
       case race
+      when 'aasimar'
+        get_aasimar_name(gender)
       when 'dragon'
         get_dragon_name(gender)
       when 'demon'
@@ -91,6 +118,8 @@ Some middle syllables for the last name might include: tin, den, mir, chedan, ka
         get_ogre_name(gender)
       when 'goblin'
         get_goblin_name(gender)
+      when 'half_elf'
+        get_half_elf_name(gender)
       when 'human'
         get_human_name(gender)
       when 'halfling'
