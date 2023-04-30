@@ -29,7 +29,9 @@ class NameGen
     end
 
     def get_dragon_name(gender)
-      generate_name(generate_prompt('dragon', gender, 'Do not use the names Tiamat or Smaug'))
+      generate_name("Create a unique fantasy #{gender} dragon name that sounds majestic and ancient. The name should be
+      at least two syllables long. The name should also end with a one- or two-syllable suffix that evokes power or
+      grandeur, such as -gon, -thor, -ax, -yxx, -ix, -axa, -yxxa, -ixa, or -mir.")
     end
 
     def get_demon_name(gender)
@@ -64,6 +66,15 @@ class NameGen
       generate_name(generate_prompt('dwarf', gender, 'It should have a first and last name or title. Do not use the names "Gimli", "Gimli son of Gloin", "Durin Oakenshield", "Thorin Oakenshield"'))
     end
 
+    def get_dragonborn_name(gender)
+      generate_name(generate_prompt('dragonborn', gender, 'Some prefixes for the first name might include: Ak, Bi, Daa, Fari, Hara, Havi, Jhe, Kav, Kori, Mis, Nal, Per, Rai, Sor, Sur, Tha, Uad, Arjh, Balas, Bhar, Don, Ghe, Hes, Kri, Medr, Meh, Nad, Pandj, Patr, Rho, Shama, Shedi, Tar.
+ Some suffixes for the first name might include: ra, sh, aar, ash, inn, arn, esh, iv, rax, oon, ed, jed, in, ar, og, ur, un, as, gon, or, on, el, am, ash, un, hun, in, un.
+ Some prefixes for the last name might include: Cleth, Daar, Del, Drach, Fenk, Kepeshk, Kerrh, Kambat, Linxak, Mya, Nemon, Norix, Ophin, Prexi, Shestend, Turnur, Verthis, Yarj.
+Some middle syllables for the last name might include: tin, den, mir, chedan, kab, esh, rhy, hyl, senda, stan, mon, xius, phin, jand, liath, ur, thurgi, jer.
+ Some suffixes for the last name might include: thiallor, drian, mirev, dion, kabradon, kmolik, hylon, tuul, sendalor, stan, monis, ius, stalajiir, andilin, eliath, roth, sathurgiesh, or jerit'))
+
+    end
+
     def random_name(gender = nil, race = 'human')
       case race
       when 'dragon'
@@ -84,6 +95,8 @@ class NameGen
         get_human_name(gender)
       when 'halfling'
         get_halfling_name(gender)
+      when 'dragonborn'
+        get_dragonborn_name(gender)
       else
         generate_name(generate_prompt(race, gender, 'It should include a first and last name or title'))
       end
