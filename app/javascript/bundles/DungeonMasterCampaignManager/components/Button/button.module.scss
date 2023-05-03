@@ -22,14 +22,6 @@
     text-decoration: none;
   }
 
-  &:disabled {
-    background-color: lighten($primary, 40%);
-  }
-
-  &:not(:disabled) {
-    cursor: pointer;
-  }
-
   &.fullWidth {
     align-items: center;
     display: flex;
@@ -151,6 +143,15 @@
 
   svg {
     margin-left: 0.5rem;
+  }
+
+  &:disabled {
+    background-color: rgba($primary, 0.7);
+    cursor: default;
+  }
+
+  &:not(:disabled) {
+    cursor: pointer;
   }
 }
 
