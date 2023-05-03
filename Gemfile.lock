@@ -142,7 +142,6 @@ GEM
     nokogiri (1.12.5)
       mini_portile2 (~> 2.6.1)
       racc (~> 1.4)
-    openai (0.3.0)
     pagy (4.11.0)
     pg (1.2.3)
     pg_search (2.3.5)
@@ -319,7 +318,6 @@ DEPENDENCIES
   jbuilder (~> 2.7)
   jwt
   listen (~> 3.3)
-  openai
   pagy
   pg (~> 1.1)
   pg_search
