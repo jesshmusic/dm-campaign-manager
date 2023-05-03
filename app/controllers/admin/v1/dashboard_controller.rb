@@ -37,18 +37,9 @@ module Admin::V1
 
       prompt = "Generate a random Dungeons and Dragons 5e adventure hook for #{player_count} players at level #{average_level}."
 
-      completions = openai.completions(
-        engine: 'text-davinci-002',
-        prompt: prompt,
-        max_tokens: 1024,
-        n: 1,
-        stop: '###'
-      )
+      completions = openai.completions(prompt)
 
-      completion_text = completions.choices[0].text.strip
-      adventure_hook = completion_text.gsub('###', '').strip
-
-      render json: { adventure_hook: adventure_hook }
+      render json: { adventure_hook: completions }
     end
 
     private

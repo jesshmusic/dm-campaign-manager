@@ -8,9 +8,10 @@ const styles = require('./widgets.module.scss');
 
 interface NameOptionsProps {
   onFormSubmit: (partySize: number, averageLevel: number) => void;
+  isLoading?: boolean;
 }
 
-const AdventureHookOptions = ({ onFormSubmit }: NameOptionsProps) => {
+const AdventureHookOptions = ({ onFormSubmit, isLoading }: NameOptionsProps) => {
   const [partySize, setPartySize] = useState(5);
   const [averageLevel, setAverageLevel] = useState(1);
 
@@ -29,6 +30,7 @@ const AdventureHookOptions = ({ onFormSubmit }: NameOptionsProps) => {
           icon={<GiLevelTwoAdvanced />}
           onClick={handleSubmit}
           title="Get Hook"
+          disabled={isLoading}
         />
       </div>
       <div className={styles.genderSelect}>
@@ -40,6 +42,7 @@ const AdventureHookOptions = ({ onFormSubmit }: NameOptionsProps) => {
           type="number"
           name="partySize"
           value={partySize}
+          disabled={isLoading}
           onChange={(e) => setPartySize(parseInt(e.target.value, 10))}
         />
       </div>
@@ -52,6 +55,7 @@ const AdventureHookOptions = ({ onFormSubmit }: NameOptionsProps) => {
           type="number"
           name="averageLevel"
           value={averageLevel}
+          disabled={isLoading}
           onChange={(e) => setAverageLevel(parseInt(e.target.value, 10))}
         />
       </div>

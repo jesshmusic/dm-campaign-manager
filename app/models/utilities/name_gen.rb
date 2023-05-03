@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'openai'
+require "openai/client"
 
 class NameGen
   attr_accessor :names
@@ -11,21 +11,11 @@ class NameGen
     # Generate fantasy names
     def generate_name(prompt)
       openai = OpenAI::Client.new(api_key: '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')
-      response = openai.completions(
-        engine: 'text-davinci-002',
-        prompt: prompt,
-        max_tokens: 25,
-        temperature: 1,
-        n: 1,
-        stop: '\n'
-      )
-      response['choices'][0]['text'].strip
+      openai.completions(prompt)
     end
 
     def generate_prompt(race, gender, custom = '')
-      "Create a single random name of a #{gender} #{race} from the Dungeons and Dragons setting.\n
-      #{custom}\n
-      Try to avoid using the names of existing fictional characters or creatures."
+      "Create a single random name of a #{gender} #{race} from the Dungeons and Dragons setting. #{custom} Try to avoid using the names of existing fictional characters or creatures."
     end
 
     def get_aasimar_name(gender)
@@ -33,9 +23,7 @@ class NameGen
     end
 
     def get_dragon_name(gender)
-      generate_name("Create a unique fantasy #{gender} dragon name that sounds majestic and ancient. The name should be
-      at least two syllables long. The name should also end with a one- or two-syllable suffix that evokes power or
-      grandeur, such as -gon, -thor, -ax, -yxx, -ix, -axa, -yxxa, -ixa, or -mir.")
+      generate_name("Create a unique fantasy #{gender} dragon name that sounds majestic and ancient. The name should be at least two syllables long. The name should also end with a one- or two-syllable suffix such as -gon, -thor, -ax, -yxx, -ix, -axa, -yxxa, -ixa, or -mir.")
     end
 
     def get_demon_name(gender)
@@ -47,24 +35,7 @@ class NameGen
     end
 
     def get_orc_name(gender)
-      generate_name(generate_prompt('orc', gender, 'It can either have a single name, a first and last name.
-Orc names are extremely simple; typically 1 to 3 syllables.
- Male names make use of Us, Zs, Ts, and Gs – hard consonants – to sound more fierce and respectable.
- Female names are softer; As, Ms, Ss, and Es.
-Occasionally Orcs obtain epithets by performing fantastically in battle. These are more like titles, and stick to a more common language.
-The Filthy
-Skull Cleaver
-Eye Gouger
-Iron Tusk
-Skin Flayer
-Bone Crusher
-Flesh Ripper
-Doom Hammer
-Elf Butcher
-The Gory
-Spine Snapper
-Death Spear
-The Brutal'))
+      generate_name(generate_prompt('orc', gender, 'It can either have a single name, a first and last name. Orc names are extremely simple; typically 1 to 3 syllables. Male names make use of Us, Zs, Ts, and Gs – hard consonants – to sound more fierce and respectable. Female names are softer; As, Ms, Ss, and Es.'))
     end
 
     def get_half_orc_name(gender)
@@ -92,11 +63,8 @@ The Brutal'))
     end
 
     def get_dragonborn_name(gender)
-      generate_name(generate_prompt('dragonborn', gender, 'Some prefixes for the first name might include: Ak, Bi, Daa, Fari, Hara, Havi, Jhe, Kav, Kori, Mis, Nal, Per, Rai, Sor, Sur, Tha, Uad, Arjh, Balas, Bhar, Don, Ghe, Hes, Kri, Medr, Meh, Nad, Pandj, Patr, Rho, Shama, Shedi, Tar.
- Some suffixes for the first name might include: ra, sh, aar, ash, inn, arn, esh, iv, rax, oon, ed, jed, in, ar, og, ur, un, as, gon, or, on, el, am, ash, un, hun, in, un.
- Some prefixes for the last name might include: Cleth, Daar, Del, Drach, Fenk, Kepeshk, Kerrh, Kambat, Linxak, Mya, Nemon, Norix, Ophin, Prexi, Shestend, Turnur, Verthis, Yarj.
-Some middle syllables for the last name might include: tin, den, mir, chedan, kab, esh, rhy, hyl, senda, stan, mon, xius, phin, jand, liath, ur, thurgi, jer.
- Some suffixes for the last name might include: thiallor, drian, mirev, dion, kabradon, kmolik, hylon, tuul, sendalor, stan, monis, ius, stalajiir, andilin, eliath, roth, sathurgiesh, or jerit'))
+      # generate_name(generate_prompt('dragonborn', gender, 'Some prefixes for the first name might include: Ak, Bi, Daa, Fari, Hara, Havi, Jhe, Kav, Kori, Mis, Nal, Per, Rai, Sor, Sur, Tha, Uad, Arjh, Balas, Bhar, Don, Ghe, Hes, Kri, Medr, Meh, Nad, Pandj, Patr, Rho, Shama, Shedi, Tar. Some suffixes for the first name might include: ra, sh, aar, ash, inn, arn, esh, iv, rax, oon, ed, jed, in, ar, og, ur, un, as, gon, or, on, el, am, ash, un, hun, in, un. Some prefixes for the last name might include: Cleth, Daar, Del, Drach, Fenk, Kepeshk, Kerrh, Kambat, Linxak, Mya, Nemon, Norix, Ophin, Prexi, Shestend, Turnur, Verthis, Yarj. Some middle syllables for the last name might include: tin, den, mir, chedan, kab, esh, rhy, hyl, senda, stan, mon, xius, phin, jand, liath, ur, thurgi, jer. Some suffixes for the last name might include: thiallor, drian, mirev, dion, kabradon, kmolik, hylon, tuul, sendalor, stan, monis, ius, stalajiir, andilin, eliath, roth, sathurgiesh, or jerit'))
+      generate_name(generate_prompt('dragonborn', gender, ''))
 
     end
 
