@@ -5,7 +5,11 @@ module Admin::V1
 
     # GET /rules or /rules.json
     def index
-      @rules = Rule.where(parent_id: nil)
+      @rules = if params[:search].present?
+                 Rule.search_for(params[:search])
+               else
+                 Rule.where(parent_id: nil)
+               end
     end
 
     # GET /rules/1 or /rules/1.json
