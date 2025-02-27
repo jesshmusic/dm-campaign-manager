@@ -47,5 +47,6 @@ latest.dump
 test.html
 
 .idea
+.env
 
 fg_npc.xml

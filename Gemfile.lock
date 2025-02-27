@@ -99,6 +99,7 @@ GEM
     debase-ruby_core_source (0.10.12)
     diff-lcs (1.4.4)
     docile (1.4.0)
+    dotenv (2.8.1)
     erubi (1.10.0)
     execjs (2.8.1)
     factory_bot (6.2.0)
@@ -310,6 +311,7 @@ DEPENDENCIES
   client_side_validations-simple_form
   cocoon
   debase
+  dotenv
   factory_bot_rails
   faker
   foreman

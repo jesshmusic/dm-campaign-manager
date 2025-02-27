@@ -10,7 +10,7 @@ class NameGen
 
     # Generate fantasy names
     def generate_name(prompt)
-      openai = OpenAI::Client.new(api_key: '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')
+      openai = OpenAI::Client.new(api_key: ENV['OPENAI_API_KEY'])
       openai.completions(prompt)
     end
 

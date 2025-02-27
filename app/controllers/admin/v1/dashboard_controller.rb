@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'dotenv/load'
+
 module Admin::V1
   class DashboardController < SecuredController
     before_action :set_user
@@ -30,7 +32,7 @@ module Admin::V1
     end
 
     def adventure_hook
-      openai = OpenAI::Client.new(api_key: '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')
+      openai = OpenAI::Client.new(api_key: ENV['OPENAI_API_KEY'])
 
       player_count = params[:player_count].to_i
       average_level = params[:average_level].to_i
