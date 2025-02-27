@@ -111,6 +111,7 @@ GEM
     faker (3.5.1)
       i18n (>= 1.8.11, < 2)
     ffi (1.17.1-x86_64-darwin)
+    ffi (1.17.1-x86_64-linux-gnu)
     foreman (0.88.1)
     friendly_id (5.5.1)
       activerecord (>= 4.0.0)
@@ -156,6 +157,8 @@ GEM
       net-protocol
     nio4r (2.7.4)
     nokogiri (1.18.3-x86_64-darwin)
+      racc (~> 1.4)
+    nokogiri (1.18.3-x86_64-linux-gnu)
       racc (~> 1.4)
     pagy (9.3.3)
     pg (1.5.9)
@@ -314,6 +317,7 @@ GEM
 
 PLATFORMS
   x86_64-darwin-22
+  x86_64-linux
 
 DEPENDENCIES
   active_link_to
