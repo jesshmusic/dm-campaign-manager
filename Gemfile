@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '2.7.4'
+ruby '3.2.2'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails', branch: 'main'
 gem 'rails', '~> 6.1.4', '>= 6.1.4.1'
@@ -34,7 +34,7 @@ gem 'friendly_id'
 gem 'humanize'
 gem 'jwt'
 gem 'pagy'
-gem 'react_on_rails'
+gem 'react_on_rails', "~> 12.3.0"
 gem 'simple_form'
 gem 'weighted_list'
 
@@ -54,7 +54,6 @@ group :development, :test do
   gem 'foreman'
   gem 'rspec-core'
   gem 'rspec-rails'
-  gem 'ruby-debug-ide'
   gem 'scss_lint', require: false
   gem 'simplecov', require: false, group: :spec
 
@@ -85,3 +84,5 @@ end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
+
+gem "concurrent-ruby", "= 1.3.4"
