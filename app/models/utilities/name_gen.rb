@@ -15,7 +15,7 @@ class NameGen
     end
 
     def generate_prompt(race, gender, custom = '')
-      "Create a single random name of a #{gender} #{race} from the Dungeons and Dragons setting. #{custom} Try to avoid using the names of existing fictional characters or creatures."
+      "Create a single random name of a #{gender} #{race} from the Dungeons and Dragons setting. #{custom} Try to avoid using the names of existing fictional characters or creatures. Only return the name."
     end
 
     def get_aasimar_name(gender)
@@ -69,6 +69,7 @@ class NameGen
     end
 
     def random_name(gender = nil, race = 'human')
+      puts generate_prompt(race, gender, 'It should include a first and last name or title')
       case race
       when 'aasimar'
         get_aasimar_name(gender)
@@ -100,7 +101,25 @@ class NameGen
     end
 
     def random_tavern_name
-      generate_name('Create a single random name of a tavern or inn in the Dungeons and Dragons setting. Try to avoid using the names of existing fictional places.')
+      generate_name(
+        <<~PROMPT.strip
+      Invent a unique, vivid, and imaginative name for a tavern or inn in a fantasy setting.
+
+      The name should sound like it belongs in a living, breathing world—possibly inspired by local folklore, magical phenomena, ancient creatures, strange weather, or unusual ingredients. Use evocative and poetic language, but keep it short (2–5 words max).
+
+      Examples of tone and style:
+      - The Prancing Pony
+      - The Green Dragon
+      - The Leaky Cauldron
+      - The Eolian
+      - The Silver Eel
+      - The Waystone Inn
+      - The Broken Tusk
+      - The Yawning Portal
+
+      Only return the name. No explanation, quotes, or punctuation.
+    PROMPT
+      )
     end
 
     def random_monster_name
