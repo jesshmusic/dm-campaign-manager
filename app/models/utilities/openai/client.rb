@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "json"
 require "net/http"
 require "time"
@@ -5,123 +7,124 @@ require "uri"
 
 module OpenAI
   class Client
-    class Error < RuntimeError
-    end
+    class Error < RuntimeError; end
 
-    LastResponse = Struct.new(:date, :organization, :processing_ms, :request_id, :status_code, :status_message, keyword_init: true)
-    Completion = Struct.new(:choices, :created, :id, :model, :object, keyword_init: true) do
+    LastResponse = Struct.new(
+      :date, :organization, :processing_ms, :request_id,
+      :status_code, :status_message, keyword_init: true
+    )
+
+    Completion   = Struct.new(:choices, :created, :id, :model, :object, keyword_init: true) do
       def created_at
         Time.at(created)
       end
     end
-    Logprobs = Struct.new(:tokens, :token_logprobs, :top_logprobs, :text_offset, keyword_init: true)
-    SearchResult = Struct.new(:document, :object, :score, :text, keyword_init: true)
-    Engine = Struct.new(:id, :object, :owner, :ready, keyword_init: true)
-    Choice = Struct.new(:finish_reason, :index, :logprobs, :text, keyword_init: true)
+    SearchResult = Struct.new(:document, :object, :score, :text,  keyword_init: true)
+    Engine       = Struct.new(:id, :object, :owner, :ready,       keyword_init: true)
 
+    # ─────────────────────────────────────────────────────────────
+    # Construction
+    # ─────────────────────────────────────────────────────────────
     attr_reader :last_response
-    attr_writer :api_key
-    attr_accessor :default_engine
+    attr_writer  :api_key
+    attr_accessor :default_model
 
-    def initialize(api_key:, default_engine: "davinci")
-      @api_key = api_key
-      @default_engine = default_engine
+    DEFAULT_MODEL = ENV.fetch("OPENAI_DEFAULT_MODEL", "gpt-4o").freeze
+
+    def initialize(api_key:, default_model: DEFAULT_MODEL)
+      @api_key       = api_key
+      @default_model = default_model
     end
 
-    def engine(id = default_engine)
-      engine = get("/v1/engines/#{id}")
-      Engine.new(**engine)
-    end
+    # ─────────────────────────────────────────────────────────────
+    # Chat completions
+    # ─────────────────────────────────────────────────────────────
+    def completions(prompt:, **opts)
+      defaults = {
+        temperature:       1.4,
+        top_p:             1.0,
+        presence_penalty:  1.3,
+        frequency_penalty: 0.6,
+        n:                 1,
+        model:             default_model
+      }
 
-    def engines
-      engines = get("/v1/engines")
-      engines[:data].map do |engine|
-        Engine.new(**engine)
-      end
-    end
+      p = defaults.merge(opts)
 
-    def completions(prompt)
       body = {
-        "model" => 'gpt-4.1-mini',
-        "messages" => [
-          {
-            "role" => "user",
-            "content" => prompt.to_s
-          }
-        ],
-      }.compact
+        model:             p[:model],
+        temperature:       p[:temperature],
+        top_p:             p[:top_p],
+        presence_penalty:  p[:presence_penalty],
+        frequency_penalty: p[:frequency_penalty],
+        n:                 p[:n],
+        messages: [
+          { role: "user", content: prompt.to_s }
+        ]
+      }
 
-      completion = post("/v1/chat/completions", body: body)
+      response = post("/v1/chat/completions", body: body)
+      choices  = response[:choices].map { |c| c.dig(:message, :content)&.strip }
 
-
-      choices = completion[:choices]&.map do |choice|
-        choice[:message][:content] unless choice[:message].nil?
-      end
-
-      choices[0]
+      p[:n] == 1 ? choices.first : choices
     end
 
-    def search(documents:, query:, engine: default_engine)
-      body = {
-        "documents" => documents,
-        "query"     => query,
-      }.compact
 
-      search_results = post("/v1/engines/#{engine}/search", body: body)
+    # ─────────────────────────────────────────────────────────────
+    # Legacy search (unchanged)
+    # ─────────────────────────────────────────────────────────────
+    def search(documents:, query:, model: default_model)
+      body = { documents: documents, query: query }
+      search_results = post("/v1/engines/#{model}/search", body: body)
       search_results[:data].map.with_index do |datum, index|
-        SearchResult.new(**datum).tap do |result|
-          result.text = documents[index]
-        end
+        SearchResult.new(**datum).tap { |r| r.text = documents[index] }
       end
     end
 
-    private def get(path)
-      uri = URI.parse("https://api.openai.com#{path}")
-      req = Net::HTTP::Get.new(uri)
-      headers.each do |name, value|
-        req[name] = value
-      end
-      response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
-        http.request(req)
-      end
-      handle_response(response)
+    # ─────────────────────────────────────────────────────────────
+    # HTTP helpers
+    # ─────────────────────────────────────────────────────────────
+    private
+
+    BASE_URI = URI("https://api.openai.com").freeze
+
+    def get(path)
+      handle_response http_request(:Get, path)
     end
 
-    private def post(path, body: nil)
-      uri = URI.parse("https://api.openai.com#{path}")
-      req = Net::HTTP::Post.new(uri)
-      req.body = body.to_json
-      headers.each do |name, value|
-        req[name] = value
-      end
-      response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
-        http.request(req)
-      end
-      handle_response(response)
+    def post(path, body:)
+      handle_response http_request(:Post, path, body: body.to_json)
     end
 
-    private def handle_response(response)
-      date = Time.httpdate(response["date"]) if response["date"]
-      organization = response["openai-organization"]
-      processing_ms = response["openai-processing-ms"]&.to_i
-      request_id = response["x-request-id"]
-      status_code = response.code&.to_i
-      status_message = response.message
-      @last_response = LastResponse.new(date: date, organization: organization, processing_ms: processing_ms, request_id: request_id, status_code: status_code, status_message: status_message)
+    def http_request(method, path, body: nil)
+      uri = BASE_URI + path
+      req = Net::HTTP.const_get(method).new(uri)
+      req.body = body if body
+      headers.each { |k, v| req[k] = v }
 
-      response_body = JSON.parse(response.body, symbolize_names: true)
-      case response
-      when Net::HTTPSuccess
-        response_body
-      else
-        raise Error, response_body[:error][:message].to_s
-      end
+      Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) { |http| http.request(req) }
     end
 
-    private def headers
-      @headers ||= {
+    def handle_response(response)
+      @last_response = LastResponse.new(
+        date:           response["date"] && Time.httpdate(response["date"]),
+        organization:   response["openai-organization"],
+        processing_ms:  response["openai-processing-ms"]&.to_i,
+        request_id:     response["x-request-id"],
+        status_code:    response.code.to_i,
+        status_message: response.message
+      )
+
+      body = JSON.parse(response.body, symbolize_names: true)
+      return body if response.is_a?(Net::HTTPSuccess)
+
+      raise Error, body.dig(:error, :message) || response.body
+    end
+
+    def headers
+      {
         "Authorization" => "Bearer #{@api_key}",
-        "Content-Type"  => "application/json",
+        "Content-Type"  => "application/json"
       }
     end
   end

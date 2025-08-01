@@ -18,11 +18,17 @@ module Admin::V1
     end
 
     def random_fantasy_name
-      random_monster_gender = params[:random_monster_gender] || %w[male female].sample
-      random_monster_race = params[:random_monster_race] || 'human'
-      new_name = NameGen.random_name(random_monster_gender, random_monster_race)
+      gender = params[:random_monster_gender]
+      gender = %w[male female].sample if gender.nil? || gender.strip.empty?
+
+      race   = params[:random_monster_race]
+      race   = "human" if race.nil? || race.strip.empty?
+
+      new_name = NameGen.random_name(gender: gender, race: race)
+
       render json: { name: new_name }
     end
+
 
     def random_tavern_name
       render json: { name: NameGen.random_tavern_name }

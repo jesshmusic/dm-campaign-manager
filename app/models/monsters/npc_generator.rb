@@ -78,7 +78,7 @@ class NpcGenerator
       @new_npc.challenge_rating = %w[0 0 0 0 0 1/8 1/8 1/8 1/4 1/4 1/2].sample
       ability_score_order = %w[Strength Dexterity Constitution Intelligence Wisdom Charisma].shuffle
       set_ability_scores(ability_score_order)
-      @new_npc.name = NameGen.random_name(random_npc_gender, random_npc_race)
+      @new_npc.name = NameGen.random_name(gender: random_npc_gender, race: random_npc_race)
       @new_npc.monster_subtype = random_npc_race ? random_npc_race : 'human'
 
       # Other statistics
