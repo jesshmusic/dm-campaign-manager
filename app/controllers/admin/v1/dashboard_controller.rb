@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-
+require "utilities/openai/client"
 require 'dotenv/load'
 
 module Admin::V1
@@ -41,15 +41,33 @@ module Admin::V1
     def adventure_hook
       openai = OpenAI::Client.new(api_key: ENV['OPENAI_API_KEY'])
 
-      player_count = params[:player_count].to_i
-      average_level = params[:average_level].to_i
+      player_count   = params[:player_count].to_i
+      average_level  = params[:average_level].to_i
 
-      prompt = "Generate a random Dungeons and Dragons 5e adventure hook for #{player_count} players at level #{average_level}."
+      prompt = <<~PROMPT.strip
+    Create a compelling adventure hook for a Dungeons & Dragons 2024 campaign.
 
-      completions = openai.completions(prompt)
+    - The party consists of #{player_count} players, average level #{average_level}.
+    - Use themes appropriate for D&D 2024: ancient ruins, magical phenomena, political intrigue, etc.
+    - Limit the response to 1 to 3 short paragraphs.
+    - Make it useful for a Dungeon Master to launch an adventure arc.
+    - Do not include gibberish or filler. End the response cleanly.
+    - Output only the adventure hook. No titles or bullet points.
+  PROMPT
 
-      render json: { adventure_hook: completions }
+      hook = openai.completions(
+        prompt: prompt,
+        model: "gpt-4o",
+        temperature: 1.0,
+        top_p: 0.95,
+        presence_penalty: 0.5,
+        frequency_penalty: 0.3,
+        max_tokens: 300
+      )
+
+      render json: { adventure_hook: hook }
     end
+
 
     private
 

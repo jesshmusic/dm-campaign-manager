@@ -98,7 +98,6 @@ const PageContainer = (props: PageContainerProps) => {
                   [styles.collapsed]: isCollapsed,
                 })}
               >
-                <BannerAd />
                 {children}
                 <YouTubeAd />
               </div>

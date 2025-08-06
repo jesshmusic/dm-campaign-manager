@@ -28,7 +28,6 @@ module OpenAI
     attr_reader :last_response
     attr_writer  :api_key
     attr_accessor :default_model
-
     DEFAULT_MODEL = ENV.fetch("OPENAI_DEFAULT_MODEL", "gpt-4o").freeze
 
     def initialize(api_key:, default_model: DEFAULT_MODEL)
@@ -102,7 +101,15 @@ module OpenAI
       req.body = body if body
       headers.each { |k, v| req[k] = v }
 
-      Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) { |http| http.request(req) }
+      Net::HTTP.start(
+        uri.hostname, uri.port,
+        use_ssl: true,
+        open_timeout: 10,
+        read_timeout: 30
+      ) do |http|
+        http.request(req)
+      end
+
     end
 
     def handle_response(response)
