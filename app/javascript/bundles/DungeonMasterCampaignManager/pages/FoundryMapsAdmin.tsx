@@ -931,7 +931,7 @@ const FoundryMapsAdmin: React.FC = () => {
                 placeholder="New tag name..."
                 value={newTagName}
                 onChange={(e) => setNewTagName(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleCreateTag()}
+                onKeyDown={(e) => e.key === 'Enter' && handleCreateTag()}
                 className={styles.tagInput}
               />
               <Button
@@ -966,7 +966,7 @@ const FoundryMapsAdmin: React.FC = () => {
                           type="text"
                           value={editingTagName}
                           onChange={(e) => setEditingTagName(e.target.value)}
-                          onKeyPress={(e) => e.key === 'Enter' && handleUpdateTag(tag.id)}
+                          onKeyDown={(e) => e.key === 'Enter' && handleUpdateTag(tag.id)}
                           className={styles.tagEditInput}
                           autoFocus
                         />
