@@ -218,19 +218,22 @@ module Admin
             secret_access_key: ENV['AWS_SECRET_ACCESS_KEY']
           )
 
+          # Upload without ACL (modern S3 buckets have ACLs disabled, use bucket policy instead)
           s3_client.put_object(
             bucket: ENV['AWS_S3_BUCKET'],
             key: s3_key,
             body: thumbnail_file.tempfile,
-            content_type: thumbnail_file.content_type,
-            acl: 'public-read'
+            content_type: thumbnail_file.content_type
           )
 
-          # Generate public URL
+          # Generate public URL (for backward compatibility)
           thumbnail_url = "https://#{ENV['AWS_S3_BUCKET']}.s3.amazonaws.com/#{s3_key}"
 
-          # Update map with thumbnail URL
-          map.update!(thumbnail_url: thumbnail_url)
+          # Update map with thumbnail S3 key and URL
+          map.update!(
+            thumbnail_s3_key: s3_key,
+            thumbnail_url: thumbnail_url
+          )
 
           render json: map.as_json_for_api, status: :ok
         rescue => e
@@ -327,6 +330,7 @@ module Admin
           :name,
           :description,
           :thumbnail_url,
+          :thumbnail_s3_key,
           :access_level,
           :grid_size,
           :grid_units,

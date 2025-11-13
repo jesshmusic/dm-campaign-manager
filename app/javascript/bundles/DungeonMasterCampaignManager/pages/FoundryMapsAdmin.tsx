@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useDispatch } from 'react-redux';
 import PageContainer from '../containers/PageContainer';
 import PageTitle from '../components/PageTitle/PageTitle';
 import Button from '../components/Button/Button';
@@ -10,6 +11,8 @@ import 'react-quill/dist/quill.snow.css';
 import { GiSave } from 'react-icons/gi';
 import { GiLinkedRings } from 'react-icons/all';
 import ImageResize from 'quill-image-resize-module-react';
+import { addFlashMessage, FlashMessageType } from '../reducers/flashMessages';
+import FlashMessages from '../components/Alerts/FlashMessages';
 
 Quill.register('modules/imageResize', ImageResize);
 
@@ -52,6 +55,7 @@ interface MapTag {
 }
 
 const FoundryMapsAdmin: React.FC = () => {
+  const dispatch = useDispatch();
   const [maps, setMaps] = useState<FoundryMap[]>([]);
   const [tags, setTags] = useState<MapTag[]>([]);
   const [loading, setLoading] = useState(true);
@@ -105,11 +109,21 @@ const FoundryMapsAdmin: React.FC = () => {
             quill.setSelection(range.index + 1);
           }
         } else {
-          alert('Image upload failed');
+          dispatch(addFlashMessage({
+            id: Date.now(),
+            heading: 'Upload Failed',
+            text: 'Failed to upload image to description',
+            messageType: FlashMessageType.danger
+          }));
         }
       } catch (error) {
         console.error('Error uploading image:', error);
-        alert('Image upload failed');
+        dispatch(addFlashMessage({
+          id: Date.now(),
+          heading: 'Upload Failed',
+          text: 'Failed to upload image to description',
+          messageType: FlashMessageType.danger
+        }));
       }
     };
   };
@@ -267,7 +281,12 @@ const FoundryMapsAdmin: React.FC = () => {
 
           if (!thumbnailResponse.ok) {
             const thumbnailError = await thumbnailResponse.json();
-            alert(`Map saved but thumbnail upload failed: ${thumbnailError.error || 'Unknown error'}`);
+            dispatch(addFlashMessage({
+              id: Date.now(),
+              heading: 'Thumbnail Upload Failed',
+              text: thumbnailError.error || 'Failed to upload thumbnail',
+              messageType: FlashMessageType.warning
+            }));
           }
         }
 
@@ -283,7 +302,12 @@ const FoundryMapsAdmin: React.FC = () => {
 
           if (!uploadResponse.ok) {
             const uploadError = await uploadResponse.json();
-            alert(`Map saved but package upload failed: ${uploadError.error || 'Unknown error'}`);
+            dispatch(addFlashMessage({
+              id: Date.now(),
+              heading: 'Package Upload Failed',
+              text: uploadError.error || 'Failed to upload package',
+              messageType: FlashMessageType.warning
+            }));
           }
         }
 
@@ -297,11 +321,21 @@ const FoundryMapsAdmin: React.FC = () => {
         handleCancelEdit();
       } else {
         const error = await response.json();
-        alert(`Error: ${error.errors?.join(', ') || `Failed to ${editingMap ? 'update' : 'create'} map`}`);
+        dispatch(addFlashMessage({
+          id: Date.now(),
+          heading: 'Save Failed',
+          text: error.errors?.join(', ') || `Failed to ${editingMap ? 'update' : 'create'} map`,
+          messageType: FlashMessageType.danger
+        }));
       }
     } catch (error) {
       console.error('Error saving map:', error);
-      alert('Network error. Check console for details.');
+      dispatch(addFlashMessage({
+        id: Date.now(),
+        heading: 'Network Error',
+        text: 'Unable to save map. Check console for details.',
+        messageType: FlashMessageType.danger
+      }));
     } finally {
       setUploadingFiles(false);
     }
@@ -370,13 +404,29 @@ const FoundryMapsAdmin: React.FC = () => {
       if (response.ok) {
         setNewTagName('');
         await fetchTags();
+        dispatch(addFlashMessage({
+          id: Date.now(),
+          heading: 'Tag Created',
+          text: 'Tag successfully created',
+          messageType: FlashMessageType.success
+        }));
       } else {
         const error = await response.json();
-        alert(`Error: ${error.error || 'Failed to create tag'}`);
+        dispatch(addFlashMessage({
+          id: Date.now(),
+          heading: 'Create Failed',
+          text: error.error || 'Failed to create tag',
+          messageType: FlashMessageType.danger
+        }));
       }
     } catch (error) {
       console.error('Error creating tag:', error);
-      alert('Network error. Check console for details.');
+      dispatch(addFlashMessage({
+        id: Date.now(),
+        heading: 'Network Error',
+        text: 'Unable to create tag. Check console for details.',
+        messageType: FlashMessageType.danger
+      }));
     }
   };
 
@@ -400,13 +450,29 @@ const FoundryMapsAdmin: React.FC = () => {
         setEditingTagName('');
         await fetchTags();
         await fetchMaps(); // Refresh maps to show updated tag names
+        dispatch(addFlashMessage({
+          id: Date.now(),
+          heading: 'Tag Updated',
+          text: 'Tag successfully updated',
+          messageType: FlashMessageType.success
+        }));
       } else {
         const error = await response.json();
-        alert(`Error: ${error.error || 'Failed to update tag'}`);
+        dispatch(addFlashMessage({
+          id: Date.now(),
+          heading: 'Update Failed',
+          text: error.error || 'Failed to update tag',
+          messageType: FlashMessageType.danger
+        }));
       }
     } catch (error) {
       console.error('Error updating tag:', error);
-      alert('Network error. Check console for details.');
+      dispatch(addFlashMessage({
+        id: Date.now(),
+        heading: 'Network Error',
+        text: 'Unable to update tag. Check console for details.',
+        messageType: FlashMessageType.danger
+      }));
     }
   };
 
@@ -459,12 +525,28 @@ const FoundryMapsAdmin: React.FC = () => {
         if (updatedMap) {
           setEditingMap(updatedMap);
         }
+        dispatch(addFlashMessage({
+          id: Date.now(),
+          heading: 'File Deleted',
+          text: 'File successfully deleted',
+          messageType: FlashMessageType.success
+        }));
       } else {
-        alert('Failed to delete file');
+        dispatch(addFlashMessage({
+          id: Date.now(),
+          heading: 'Delete Failed',
+          text: 'Failed to delete file',
+          messageType: FlashMessageType.danger
+        }));
       }
     } catch (error) {
       console.error('Error deleting file:', error);
-      alert('Network error. Check console for details.');
+      dispatch(addFlashMessage({
+        id: Date.now(),
+        heading: 'Network Error',
+        text: 'Unable to delete file. Check console for details.',
+        messageType: FlashMessageType.danger
+      }));
     }
   };
 
@@ -480,6 +562,7 @@ const FoundryMapsAdmin: React.FC = () => {
         pageTitle={'Foundry Maps Admin'}
         description={'Manage FoundryVTT maps for the Dorman Lakely Cartography module'}
       >
+        <FlashMessages />
         <PageTitle title="Foundry Maps Admin" />
         <div className={styles.contentWrapper}>Loading...</div>
       </PageContainer>
@@ -491,6 +574,7 @@ const FoundryMapsAdmin: React.FC = () => {
       pageTitle={'Foundry Maps Admin'}
       description={'Manage FoundryVTT maps for the Dorman Lakely Cartography module'}
     >
+      <FlashMessages />
       <PageTitle title="Foundry Maps Admin" />
       <div className={styles.contentWrapper}>
 
@@ -690,8 +774,11 @@ const FoundryMapsAdmin: React.FC = () => {
 
               <div className={styles.fileUploadWrapper}>
                 <label htmlFor="files" className={styles.label}>
-                  Upload Scene Package (Optional)
+                  Upload Scene Package
                 </label>
+                <p className={styles.fieldSubtitle}>
+                  Export your Foundry VTT scene using the right-click context menu and upload the ZIP file here.
+                </p>
                 <input
                   type="file"
                   id="files"
@@ -699,6 +786,7 @@ const FoundryMapsAdmin: React.FC = () => {
                   onChange={(e) => setSelectedFiles(e.target.files)}
                   className={styles.fileInput}
                   disabled={uploadingFiles}
+                  required={!editingMap}
                 />
                 {selectedFiles && selectedFiles.length > 0 && (
                   <div className={styles.fileCount}>
@@ -765,6 +853,15 @@ const FoundryMapsAdmin: React.FC = () => {
                 <button onClick={() => setViewingMap(null)} className={styles.modalClose}>×</button>
               </div>
               <div className={styles.modalBody}>
+                {viewingMap.thumbnail && (
+                  <div className={styles.viewSection}>
+                    <label className={styles.viewLabel}>Thumbnail:</label>
+                    <div className={styles.existingThumbnail}>
+                      <img src={viewingMap.thumbnail} alt={viewingMap.name} style={{ maxWidth: '100%', height: 'auto' }} />
+                    </div>
+                  </div>
+                )}
+
                 <div className={styles.viewSection}>
                   <label className={styles.viewLabel}>Description:</label>
                   <div

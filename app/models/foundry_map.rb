@@ -2,20 +2,21 @@
 #
 # Table name: foundry_maps
 #
-#  id             :bigint           not null, primary key
-#  access_level   :string           default("premium"), not null
-#  description    :text
-#  download_count :integer          default(0)
-#  grid_size      :integer
-#  grid_units     :string
-#  height         :integer
-#  keywords       :json
-#  name           :string           not null
-#  published      :boolean          default(FALSE)
-#  thumbnail_url  :string
-#  width          :integer
-#  created_at     :datetime         not null
-#  updated_at     :datetime         not null
+#  id               :bigint           not null, primary key
+#  access_level     :string           default("premium"), not null
+#  description      :text
+#  download_count   :integer          default(0)
+#  grid_size        :integer
+#  grid_units       :string
+#  height           :integer
+#  keywords         :json
+#  name             :string           not null
+#  published        :boolean          default(FALSE)
+#  thumbnail_s3_key :string
+#  thumbnail_url    :string
+#  width            :integer
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
 #
 # Indexes
 #
@@ -52,12 +53,30 @@ class FoundryMap < ApplicationRecord
     increment!(:download_count)
   end
 
+  def generate_thumbnail_signed_url(expires_in: 3600)
+    return nil unless thumbnail_s3_key.present?
+
+    s3_client = Aws::S3::Client.new(
+      region: ENV['AWS_REGION'] || 'us-east-1',
+      access_key_id: ENV['AWS_ACCESS_KEY_ID'],
+      secret_access_key: ENV['AWS_SECRET_ACCESS_KEY']
+    )
+
+    signer = Aws::S3::Presigner.new(client: s3_client)
+    signer.presigned_url(
+      :get_object,
+      bucket: ENV['AWS_S3_BUCKET'],
+      key: thumbnail_s3_key,
+      expires_in: expires_in
+    )
+  end
+
   def as_json_for_api
     {
       id: id.to_s,
       name: name,
       description: description,
-      thumbnail: thumbnail_url,
+      thumbnail: thumbnail_s3_key.present? ? generate_thumbnail_signed_url : thumbnail_url,
       tags: foundry_map_tags.pluck(:name),
       keywords: keywords || [],
       access: access_level.capitalize,

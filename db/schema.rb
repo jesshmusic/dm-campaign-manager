@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_11_12_181136) do
+ActiveRecord::Schema.define(version: 2025_11_13_164849) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -251,6 +251,7 @@ ActiveRecord::Schema.define(version: 2025_11_12_181136) do
     t.json "keywords", default: []
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "thumbnail_s3_key"
     t.index ["access_level"], name: "index_foundry_maps_on_access_level"
     t.index ["created_at"], name: "index_foundry_maps_on_created_at"
     t.index ["published"], name: "index_foundry_maps_on_published"

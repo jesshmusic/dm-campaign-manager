@@ -10,7 +10,11 @@
       "Bash(yarn build)",
       "Bash(bin/rails webpacker:compile:*)",
       "Bash(git checkout:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(rails generate:*)",
+      "Bash(rails db:migrate:*)"
     ],
     "deny": [],
     "ask": []
