@@ -38,6 +38,16 @@ module Admin
           # Determine tier
           tier_cents = patreon_data.dig('included', 0, 'attributes', 'currently_entitled_amount_cents') || 0
 
+          # Extract tier name from the included tiers
+          tier_name = 'Free'
+          if patreon_data['included']
+            tier_object = patreon_data['included'].find { |item| item['type'] == 'tier' }
+            tier_name = tier_object.dig('attributes', 'title') if tier_object
+          end
+
+          # Map legacy tier names to current tiers
+          tier_name = 'Wizard' if tier_name == 'Adventurer'
+
           # Create or update PatreonUser
           user = PatreonUser.find_or_initialize_by(user_id: state)
           user.update_from_patreon!(
@@ -46,13 +56,14 @@ module Admin
             name: patreon_data.dig('data', 'attributes', 'full_name'),
             has_free: true,
             has_premium: tier_cents >= 500, # $5+ tier
+            tier_name: tier_name,
             expires_at: 30.days.from_now,
             access_token: token_response['access_token'],
             refresh_token: token_response['refresh_token']
           )
 
           # Return success page
-          render html: <<~HTML
+          render html: <<~HTML.html_safe
             <!DOCTYPE html>
             <html>
             <head>
@@ -83,12 +94,19 @@ module Admin
             <body>
               <div class="container">
                 <h1>✓ Authentication Successful!</h1>
-                <p>Access Level: <span class="tier">#{user.has_premium ? 'Premium' : 'Free'}</span></p>
+                <p>Access Level: <span class="tier">#{user.tier_name || 'Free'}</span></p>
                 <p>You can close this window and return to FoundryVTT.</p>
               </div>
               <script>
                 // Auto-close after 3 seconds
-                setTimeout(() => window.close(), 3000);
+                setTimeout(() => {
+                  window.close();
+                  // If window.close() doesn't work, try closing the popup
+                  if (!window.closed) {
+                    window.open('', '_self', '');
+                    window.close();
+                  }
+                }, 3000);
               </script>
             </body>
             </html>
@@ -122,8 +140,9 @@ module Admin
       def fetch_patreon_membership(access_token)
         uri = URI('https://www.patreon.com/api/oauth2/v2/identity')
         uri.query = URI.encode_www_form(
-          'include' => 'memberships',
+          'include' => 'memberships,memberships.currently_entitled_tiers',
           'fields[member]' => 'patron_status,currently_entitled_amount_cents',
+          'fields[tier]' => 'title',
           'fields[user]' => 'email,full_name'
         )
 

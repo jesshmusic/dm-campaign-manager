@@ -6,11 +6,13 @@ import MonstersTable from '../monsters/MonstersTable';
 import UsersTable from './components/UsersTable';
 import { GiBarbute, GiBlacksmith } from 'react-icons/all';
 import { FaMap } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import ActionsTable from './components/ActionsTable';
 import WidgetsTable from './components/WidgetsTable';
 import { connect } from 'react-redux';
 import Frame from '../../components/Frame/Frame';
+import Button from '../../components/Button/Button';
+import { Colors } from '../../utilities/enums';
 
 const packageJson = require('../../../../../../package.json');
 
@@ -24,6 +26,7 @@ const AdminDashboard = (props: {
   userCount: number;
 }) => {
   const { actionCount, npcCount, user, userCount, widgetCount } = props;
+  const navigate = useNavigate();
 
   return (
     <PageContainer
@@ -69,109 +72,56 @@ const AdminDashboard = (props: {
         </div>
         <div className={styles.section}>
           <h2>Content</h2>
-          <div className="accordion accordion-flush" id="adminAccordion">
-            <div className="accordion-item">
-              <h3 className="accordion-header" id="foundryMapsAdminHeading">
-                <button
-                  className="accordion-button collapsed"
-                  type="button"
-                  data-bs-toggle="collapse"
-                  data-bs-target="#foundryMapsAdmin"
-                >
-                  <FaMap className={'me-2'} size={30} /> Foundry Maps
-                </button>
-              </h3>
-              <div
-                id="foundryMapsAdmin"
-                className="accordion-collapse collapse"
-                aria-labelledby="foundryMapsAdminHeading"
-                data-bs-parent="#adminAccordion"
-              >
-                <div className="accordion-body">
-                  <Link to="/app/admin-dashboard/foundry-maps" className={styles.buttonBar}>
-                    <FaMap size={24} /> Manage Foundry Maps
-                  </Link>
-                </div>
-              </div>
-            </div>
-            <div className="accordion-item">
-              <h3 className="accordion-header" id="userNpcsAdminHeading">
-                <button
-                  className="accordion-button collapsed"
-                  type="button"
-                  data-bs-toggle="collapse"
-                  data-bs-target="#userNpcsAdmin"
-                >
-                  <GiBlacksmith className={'me-2'} size={30} /> User Created NPCs
-                </button>
-              </h3>
-              <div
-                id="userNpcsAdmin"
-                className="accordion-collapse collapse"
-                aria-labelledby="userNpcsAdminHeading"
-                data-bs-parent="#adminAccordion"
-              >
-                <div className="accordion-body">
-                  <Link to="/app/monster-generator" className={styles.buttonBar}>
-                    <GiBarbute size={24} /> NPC Generators
-                  </Link>
-                  {user ? <MonstersTable user={user} /> : null}
-                </div>
-              </div>
-            </div>
-            <div className="accordion-item">
-              <h3 className="accordion-header" id="widgetsAdminHeading">
-                <button
-                  className="accordion-button collapsed"
-                  type="button"
-                  data-bs-toggle="collapse"
-                  data-bs-target="#widgetsAdmin"
-                >
-                  <GiBlacksmith className={'me-2'} size={30} /> Widgets
-                </button>
-              </h3>
-              <div
-                id="widgetsAdmin"
-                className="accordion-collapse collapse"
-                aria-labelledby="widgetsAdminHeading"
-                data-bs-parent="#adminAccordion"
-              >
-                <div className="accordion-body">
-                  <Link to="/app/admin-dashboard/create-widget" className={styles.buttonBar}>
-                    <GiBarbute size={24} /> Create Widget
-                  </Link>
-                  <WidgetsTable />
-                </div>
-              </div>
-            </div>
-            <div className="accordion-item">
-              <h3 className="accordion-header" id="actionsAdminHeading">
-                <button
-                  className="accordion-button collapsed"
-                  type="button"
-                  data-bs-toggle="collapse"
-                  data-bs-target="#actionsAdmin"
-                >
-                  <GiBlacksmith className={'me-2'} size={30} /> Custom Actions
-                </button>
-              </h3>
-              <div
-                id="actionsAdmin"
-                className="accordion-collapse collapse"
-                aria-labelledby="actionsAdminHeading"
-                data-bs-parent="#adminAccordion"
-              >
-                <div className="accordion-body">
-                  <Link
-                    to="/app/admin-dashboard/create-custom-action"
-                    className={styles.buttonBarGreen}
-                  >
-                    <GiBarbute size={24} /> Create Custom Action
-                  </Link>
-                  <ActionsTable />
-                </div>
-              </div>
-            </div>
+
+          <div className={styles.section}>
+            <h3>
+              <FaMap className={'me-2'} /> Foundry Maps
+            </h3>
+            <Button
+              onClick={() => navigate('/app/admin-dashboard/foundry-maps')}
+              color={Colors.primary}
+              title="Manage Foundry Maps"
+              icon={<FaMap />}
+            />
+          </div>
+
+          <div className={styles.section}>
+            <h3>
+              <GiBlacksmith className={'me-2'} /> User Created NPCs
+            </h3>
+            <Button
+              onClick={() => navigate('/app/monster-generator')}
+              color={Colors.primary}
+              title="NPC Generators"
+              icon={<GiBarbute />}
+            />
+            {user ? <MonstersTable user={user} /> : null}
+          </div>
+
+          <div className={styles.section}>
+            <h3>
+              <GiBlacksmith className={'me-2'} /> Widgets
+            </h3>
+            <Button
+              onClick={() => navigate('/app/admin-dashboard/create-widget')}
+              color={Colors.primary}
+              title="Create Widget"
+              icon={<GiBarbute />}
+            />
+            <WidgetsTable />
+          </div>
+
+          <div className={styles.section}>
+            <h3>
+              <GiBlacksmith className={'me-2'} /> Custom Actions
+            </h3>
+            <Button
+              onClick={() => navigate('/app/admin-dashboard/create-custom-action')}
+              color={Colors.primary}
+              title="Create Custom Action"
+              icon={<GiBarbute />}
+            />
+            <ActionsTable />
           </div>
         </div>
       </div>

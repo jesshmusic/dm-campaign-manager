@@ -12,6 +12,7 @@
 #  keywords         :json
 #  name             :string           not null
 #  published        :boolean          default(FALSE)
+#  required_tier    :string           default("free")
 #  thumbnail_s3_key :string
 #  thumbnail_url    :string
 #  width            :integer
@@ -76,10 +77,11 @@ class FoundryMap < ApplicationRecord
       id: id.to_s,
       name: name,
       description: description,
-      thumbnail: thumbnail_s3_key.present? ? generate_thumbnail_signed_url : thumbnail_url,
+      thumbnail: thumbnail_url, # Public URL - no expiry
       tags: foundry_map_tags.pluck(:name),
       keywords: keywords || [],
       access: access_level.capitalize,
+      requiredTier: required_tier || 'free',
       published: published,
       gridSize: grid_size,
       gridUnits: grid_units,

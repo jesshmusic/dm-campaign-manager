@@ -208,9 +208,10 @@ module Admin
         end
 
         begin
-          # Upload thumbnail to S3
+          # Upload thumbnail to S3 public path
           thumbnail_file = params[:thumbnail]
-          s3_key = "maps/#{map.id}/thumbnail-#{SecureRandom.uuid}#{File.extname(thumbnail_file.original_filename)}"
+          # Use thumbnails/ prefix to match bucket policy
+          s3_key = "thumbnails/maps/#{map.id}/#{SecureRandom.uuid}#{File.extname(thumbnail_file.original_filename)}"
 
           s3_client = Aws::S3::Client.new(
             region: ENV['AWS_REGION'] || 'us-east-1',
@@ -218,7 +219,7 @@ module Admin
             secret_access_key: ENV['AWS_SECRET_ACCESS_KEY']
           )
 
-          # Upload without ACL (modern S3 buckets have ACLs disabled, use bucket policy instead)
+          # Upload to public thumbnails path
           s3_client.put_object(
             bucket: ENV['AWS_S3_BUCKET'],
             key: s3_key,
@@ -226,8 +227,8 @@ module Admin
             content_type: thumbnail_file.content_type
           )
 
-          # Generate public URL (for backward compatibility)
-          thumbnail_url = "https://#{ENV['AWS_S3_BUCKET']}.s3.amazonaws.com/#{s3_key}"
+          # Generate public URL (no expiry!)
+          thumbnail_url = "https://#{ENV['AWS_S3_BUCKET']}.s3.#{ENV['AWS_REGION']}.amazonaws.com/#{s3_key}"
 
           # Update map with thumbnail S3 key and URL
           map.update!(
@@ -332,6 +333,7 @@ module Admin
           :thumbnail_url,
           :thumbnail_s3_key,
           :access_level,
+          :required_tier,
           :grid_size,
           :grid_units,
           :width,

@@ -271,6 +271,34 @@
   color: $gray-600;
 }
 
+.thumbnailCell {
+  width: 60px;
+  max-width: 60px;
+  padding: $spacer * 0.5 !important;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.tableThumbnail {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: $border-radius-sm;
+  display: block;
+}
+
+.thumbnailPlaceholder {
+  width: 50px;
+  height: 50px;
+  background-color: $background-med;
+  border-radius: $border-radius-sm;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $gray-600;
+  font-size: $h3-font-size;
+}
+
 .actionButtons {
   display: flex;
   gap: $spacer * 0.5;

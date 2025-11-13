@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_11_13_164849) do
+ActiveRecord::Schema.define(version: 2025_11_13_200732) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -252,6 +252,7 @@ ActiveRecord::Schema.define(version: 2025_11_13_164849) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "thumbnail_s3_key"
+    t.string "required_tier", default: "free"
     t.index ["access_level"], name: "index_foundry_maps_on_access_level"
     t.index ["created_at"], name: "index_foundry_maps_on_created_at"
     t.index ["published"], name: "index_foundry_maps_on_published"
@@ -417,6 +418,7 @@ ActiveRecord::Schema.define(version: 2025_11_13_164849) do
     t.datetime "last_authenticated_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "tier_name"
     t.index ["expires_at"], name: "index_patreon_users_on_expires_at"
     t.index ["patreon_id"], name: "index_patreon_users_on_patreon_id"
     t.index ["user_id"], name: "index_patreon_users_on_user_id", unique: true

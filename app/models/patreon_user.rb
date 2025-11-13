@@ -11,6 +11,7 @@
 #  last_authenticated_at :datetime
 #  name                  :string
 #  refresh_token         :string
+#  tier_name             :string
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
 #  patreon_id            :string
@@ -36,11 +37,16 @@ class PatreonUser < ApplicationRecord
   end
 
   def as_json_for_api
+    # Map legacy tier names to current tiers
+    mapped_tier = tier_name || 'Free'
+    mapped_tier = 'Wizard' if mapped_tier == 'Adventurer'
+
     {
       userId: user_id,
       has_free: has_free,
       has_premium: has_premium,
-      expires_in: expires_at&.to_i
+      tier_name: mapped_tier,
+      expires_in: expires_at ? (expires_at.to_f * 1000).to_i : nil # Convert to milliseconds for JavaScript
     }
   end
 
@@ -51,6 +57,7 @@ class PatreonUser < ApplicationRecord
       name: patreon_data[:name],
       has_free: patreon_data[:has_free],
       has_premium: patreon_data[:has_premium],
+      tier_name: patreon_data[:tier_name],
       expires_at: patreon_data[:expires_at],
       access_token: patreon_data[:access_token],
       refresh_token: patreon_data[:refresh_token],

@@ -35,6 +35,7 @@ interface FoundryMap {
   description?: string;
   thumbnail?: string;
   access: string;
+  requiredTier?: string;
   published: boolean;
   tags: string[];
   createdAt: string;
@@ -62,6 +63,7 @@ const FoundryMapsAdmin: React.FC = () => {
   const [editingTagId, setEditingTagId] = useState<string | null>(null);
   const [editingTagName, setEditingTagName] = useState<string>('');
   const [newTagName, setNewTagName] = useState<string>('');
+  const [isEditingInModal, setIsEditingInModal] = useState(false);
   const quillRef = useRef<any>(null);
 
   const { control, handleSubmit, reset, formState: { errors } } = useForm({
@@ -69,6 +71,7 @@ const FoundryMapsAdmin: React.FC = () => {
       name: '',
       description: '',
       access_level: 'free',
+      required_tier: 'free',
       published: false,
       tags: ''
     }
@@ -201,6 +204,7 @@ const FoundryMapsAdmin: React.FC = () => {
         name: detailedMap.name,
         description: detailedMap.description || '',
         access_level: detailedMap.access === 'Premium' ? 'premium' : 'free',
+        required_tier: detailedMap.requiredTier || 'free',
         published: detailedMap.published,
         tags: detailedMap.tags.join(', ')
       });
@@ -210,6 +214,7 @@ const FoundryMapsAdmin: React.FC = () => {
         name: map.name,
         description: map.description || '',
         access_level: map.access === 'Premium' ? 'premium' : 'free',
+        required_tier: map.requiredTier || 'free',
         published: map.published,
         tags: map.tags.join(', ')
       });
@@ -220,6 +225,29 @@ const FoundryMapsAdmin: React.FC = () => {
   const handleView = async (map: FoundryMap) => {
     const detailedMap = await fetchMapDetails(map.id);
     setViewingMap(detailedMap || map);
+    setIsEditingInModal(false);
+  };
+
+  const handleEditInModal = async (map: FoundryMap) => {
+    const detailedMap = await fetchMapDetails(map.id);
+    const mapToEdit = detailedMap || map;
+    setEditingMap(mapToEdit);
+    reset({
+      name: mapToEdit.name,
+      description: mapToEdit.description || '',
+      access_level: mapToEdit.access === 'Premium' ? 'premium' : 'free',
+      required_tier: mapToEdit.requiredTier || 'free',
+      published: mapToEdit.published,
+      tags: mapToEdit.tags.join(', ')
+    });
+    setIsEditingInModal(true);
+  };
+
+  const handleCancelEditInModal = () => {
+    setIsEditingInModal(false);
+    setEditingMap(null);
+    setSelectedFiles(null);
+    setSelectedThumbnail(null);
   };
 
   const handleCancelEdit = () => {
@@ -254,6 +282,7 @@ const FoundryMapsAdmin: React.FC = () => {
             name: data.name,
             description: data.description,
             access_level: data.access_level,
+            required_tier: data.required_tier,
             published: data.published
           },
           tags: data.tags.split(',').map(t => t.trim()).filter(Boolean)
@@ -587,6 +616,7 @@ const FoundryMapsAdmin: React.FC = () => {
             <table className={styles.table}>
               <thead>
               <tr>
+                <th></th>
                 <th>Name</th>
                 <th>Tags</th>
                 <th>Access</th>
@@ -598,13 +628,22 @@ const FoundryMapsAdmin: React.FC = () => {
               <tbody>
               {maps.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className={styles.emptyState}>
+                  <td colSpan={7} className={styles.emptyState}>
                     No maps yet. Create one to get started!
                   </td>
                 </tr>
               ) : (
                 maps.map((map) => (
                   <tr key={map.id}>
+                    <td className={styles.thumbnailCell}>
+                      {map.thumbnail ? (
+                        <img src={map.thumbnail} alt={map.name} className={styles.tableThumbnail} />
+                      ) : (
+                        <div className={styles.thumbnailPlaceholder}>
+                          <MdVisibility />
+                        </div>
+                      )}
+                    </td>
                     <td>
                       <div className={styles.mapName}>{map.name}</div>
                       {map.description && (
@@ -717,6 +756,18 @@ const FoundryMapsAdmin: React.FC = () => {
                 options={[
                   { value: 'premium', label: 'Premium' },
                   { value: 'free', label: 'Free' }
+                ]}
+                disabled={uploadingFiles}
+              />
+
+              <ControlledSelect
+                fieldName="required_tier"
+                control={control as any}
+                label="Required Tier"
+                options={[
+                  { value: 'free', label: 'Free' },
+                  { value: 'Apprentice', label: 'Apprentice' },
+                  { value: 'Wizard', label: 'Wizard' }
                 ]}
                 disabled={uploadingFiles}
               />
@@ -849,10 +900,7 @@ const FoundryMapsAdmin: React.FC = () => {
                 <h2>{viewingMap.name}</h2>
                 <div className={styles.modalActions}>
                   <button
-                    onClick={() => {
-                      setViewingMap(null);
-                      handleEdit(viewingMap);
-                    }}
+                    onClick={() => handleEditInModal(viewingMap)}
                     className={styles.modalIconButton}
                     title="Edit Map"
                   >
@@ -874,6 +922,125 @@ const FoundryMapsAdmin: React.FC = () => {
                 </div>
               </div>
               <div className={styles.modalBody}>
+                {isEditingInModal ? (
+                  <div className={styles.form}>
+                    <form onSubmit={handleSubmit(async (data) => {
+                      await onSubmit(data);
+                      setIsEditingInModal(false);
+                    })}>
+                      <ControlledInput
+                        fieldName="name"
+                        errors={errors}
+                        control={control as any}
+                        label="Map Name"
+                        required
+                        disabled={uploadingFiles}
+                      />
+
+                      <div className={styles.editorWrapper}>
+                        <label htmlFor="description" className={styles.label}>Description</label>
+                        <Controller
+                          control={control}
+                          name="description"
+                          render={({ field: { onChange, value } }) => (
+                            <ReactQuill
+                              ref={quillRef}
+                              theme="snow"
+                              value={value}
+                              onChange={onChange}
+                              modules={modules}
+                              className={styles.quillEditor}
+                              readOnly={uploadingFiles}
+                            />
+                          )}
+                        />
+                      </div>
+
+                      <ControlledTagInput
+                        fieldName="tags"
+                        control={control as any}
+                        label="Tags"
+                        placeholder="Add tags (press Enter or comma)"
+                      />
+
+                      <ControlledSelect
+                        fieldName="access_level"
+                        control={control as any}
+                        label="Access Level"
+                        options={[
+                          { value: 'premium', label: 'Premium' },
+                          { value: 'free', label: 'Free' }
+                        ]}
+                        disabled={uploadingFiles}
+                      />
+
+                      <div className={styles.checkboxWrapper}>
+                        <Controller
+                          control={control}
+                          name="published"
+                          render={({ field: { onChange, value } }) => (
+                            <label className={styles.checkboxLabel}>
+                              <input
+                                type="checkbox"
+                                checked={value}
+                                onChange={(e) => onChange(e.target.checked)}
+                                className={styles.checkbox}
+                                disabled={uploadingFiles}
+                              />
+                              <span>Published</span>
+                            </label>
+                          )}
+                        />
+                      </div>
+
+                      <div className={styles.fileUploadWrapper}>
+                        <label htmlFor="thumbnail" className={styles.label}>
+                          Thumbnail Image
+                        </label>
+                        <input
+                          type="file"
+                          id="thumbnail"
+                          accept="image/jpeg,image/jpg,image/png,image/webp"
+                          onChange={(e) => setSelectedThumbnail(e.target.files?.[0] || null)}
+                          className={styles.fileInput}
+                          disabled={uploadingFiles}
+                        />
+                        {selectedThumbnail && (
+                          <div className={styles.fileCount}>
+                            {selectedThumbnail.name} selected ({(selectedThumbnail.size / 1024).toFixed(2)} KB)
+                          </div>
+                        )}
+                        {editingMap && editingMap.thumbnail && !selectedThumbnail && (
+                          <div className={styles.existingThumbnail}>
+                            <img
+                              src={editingMap.thumbnail}
+                              alt="Current thumbnail"
+                              style={{ maxWidth: '200px', marginTop: '10px' }}
+                            />
+                            <p style={{ fontSize: '12px', color: '#666' }}>Current thumbnail</p>
+                          </div>
+                        )}
+                      </div>
+
+                      <div className={styles.formButtons}>
+                        <Button
+                          type="submit"
+                          color={Colors.primary}
+                          title={uploadingFiles ? 'Saving...' : 'Save Map'}
+                          icon={<GiSave />}
+                          disabled={uploadingFiles}
+                        />
+                        <Button
+                          type="button"
+                          color={Colors.secondary}
+                          title="Cancel"
+                          onClick={handleCancelEditInModal}
+                          disabled={uploadingFiles}
+                        />
+                      </div>
+                    </form>
+                  </div>
+                ) : (
                 <div className={styles.modalBodyLayout}>
                   {(viewingMap.thumbnail || viewingMap.files?.some(f => f.file_type === 'background')) && (
                     <div className={styles.thumbnailColumn}>
@@ -965,6 +1132,7 @@ const FoundryMapsAdmin: React.FC = () => {
                     )}
                   </div>
                 </div>
+                )}
               </div>
             </div>
           </div>
