@@ -361,6 +361,41 @@
   }
 }
 
+.modalActions {
+  display: flex;
+  align-items: center;
+  gap: $spacer;
+}
+
+.modalIconButton {
+  background: none;
+  border: none;
+  font-size: $h3-font-size;
+  color: $cobalt;
+  cursor: pointer;
+  line-height: 1;
+  padding: $spacer * 0.5;
+  border-radius: $border-radius-sm;
+  transition: $transition-base;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background-color: lighten($cobalt, 45%);
+    color: darken($cobalt, 10%);
+  }
+
+  &.deleteIcon {
+    color: $blood-red;
+
+    &:hover {
+      background-color: lighten($blood-red, 45%);
+      color: darken($blood-red, 10%);
+    }
+  }
+}
+
 .modalClose {
   background: none;
   border: none;

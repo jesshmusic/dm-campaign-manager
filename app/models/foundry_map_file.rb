@@ -55,6 +55,7 @@ class FoundryMapFile < ApplicationRecord
       file_type: file_type,
       file_size: file_size || 0,
       s3_key: s3_key,
+      signed_url: generate_signed_url(expires_in: 3600),
       path: file_path,  # Keep for backward compatibility with Foundry module
       size: file_size || 0,  # Keep for backward compatibility
       type: file_type  # Keep for backward compatibility

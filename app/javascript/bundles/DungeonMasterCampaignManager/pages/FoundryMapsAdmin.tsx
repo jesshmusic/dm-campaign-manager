@@ -10,6 +10,7 @@ import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { GiSave } from 'react-icons/gi';
 import { GiLinkedRings } from 'react-icons/all';
+import { MdEdit, MdDelete } from 'react-icons/md';
 import ImageResize from 'quill-image-resize-module-react';
 import { addFlashMessage, FlashMessageType } from '../reducers/flashMessages';
 import FlashMessages from '../components/Alerts/FlashMessages';
@@ -25,6 +26,7 @@ interface FoundryMapFile {
   file_type: string;
   file_size: number;
   s3_key: string;
+  signed_url?: string;
 }
 
 interface FoundryMap {
@@ -842,16 +844,62 @@ const FoundryMapsAdmin: React.FC = () => {
             <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
               <div className={styles.modalHeader}>
                 <h2>{viewingMap.name}</h2>
-                <button onClick={() => setViewingMap(null)} className={styles.modalClose}>×</button>
+                <div className={styles.modalActions}>
+                  <button
+                    onClick={() => {
+                      setViewingMap(null);
+                      handleEdit(viewingMap);
+                    }}
+                    className={styles.modalIconButton}
+                    title="Edit Map"
+                  >
+                    <MdEdit />
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (confirm(`Are you sure you want to delete "${viewingMap.name}"?`)) {
+                        handleDelete(viewingMap.id);
+                        setViewingMap(null);
+                      }
+                    }}
+                    className={`${styles.modalIconButton} ${styles.deleteIcon}`}
+                    title="Delete Map"
+                  >
+                    <MdDelete />
+                  </button>
+                  <button onClick={() => setViewingMap(null)} className={styles.modalClose}>×</button>
+                </div>
               </div>
               <div className={styles.modalBody}>
                 <div className={styles.modalBodyLayout}>
-                  {viewingMap.thumbnail && (
+                  {(viewingMap.thumbnail || viewingMap.files?.some(f => f.file_type === 'background')) && (
                     <div className={styles.thumbnailColumn}>
-                      <label className={styles.viewLabel}>Thumbnail:</label>
-                      <div className={styles.thumbnailWrapper}>
-                        <img src={viewingMap.thumbnail} alt={viewingMap.name} />
-                      </div>
+                      {viewingMap.thumbnail && (
+                        <>
+                          <label className={styles.viewLabel}>Thumbnail:</label>
+                          <div className={styles.thumbnailWrapper}>
+                            <img src={viewingMap.thumbnail} alt={viewingMap.name} />
+                          </div>
+                        </>
+                      )}
+
+                      {(() => {
+                        const backgroundFile = viewingMap.files?.find(f => f.file_type === 'background');
+                        return backgroundFile?.signed_url && (
+                          <div style={{ marginTop: viewingMap.thumbnail ? '1rem' : 0 }}>
+                            <label className={styles.viewLabel}>Map Preview:</label>
+                            <div className={styles.thumbnailWrapper}>
+                              <img
+                                src={backgroundFile.signed_url}
+                                alt={`${viewingMap.name} preview`}
+                                onError={(e) => {
+                                  e.currentTarget.style.display = 'none';
+                                }}
+                              />
+                            </div>
+                          </div>
+                        );
+                      })()}
                     </div>
                   )}
 
@@ -919,7 +967,6 @@ const FoundryMapsAdmin: React.FC = () => {
           </div>
         )}
 
-        {/* Tags Management Section */}
         <div className={styles.section}>
           <div className={styles.header}>
             <h2>Manage Tags</h2>
