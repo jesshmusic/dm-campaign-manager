@@ -5,6 +5,7 @@ import { UserProps } from '../../utilities/types';
 import MonstersTable from '../monsters/MonstersTable';
 import UsersTable from './components/UsersTable';
 import { GiBarbute, GiBlacksmith } from 'react-icons/all';
+import { FaMap } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import ActionsTable from './components/ActionsTable';
 import WidgetsTable from './components/WidgetsTable';
@@ -69,6 +70,30 @@ const AdminDashboard = (props: {
         <div className={styles.section}>
           <h2>Content</h2>
           <div className="accordion accordion-flush" id="adminAccordion">
+            <div className="accordion-item">
+              <h3 className="accordion-header" id="foundryMapsAdminHeading">
+                <button
+                  className="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#foundryMapsAdmin"
+                >
+                  <FaMap className={'me-2'} size={30} /> Foundry Maps
+                </button>
+              </h3>
+              <div
+                id="foundryMapsAdmin"
+                className="accordion-collapse collapse"
+                aria-labelledby="foundryMapsAdminHeading"
+                data-bs-parent="#adminAccordion"
+              >
+                <div className="accordion-body">
+                  <Link to="/app/admin-dashboard/foundry-maps" className={styles.buttonBar}>
+                    <FaMap size={24} /> Manage Foundry Maps
+                  </Link>
+                </div>
+              </div>
+            </div>
             <div className="accordion-item">
               <h3 className="accordion-header" id="userNpcsAdminHeading">
                 <button

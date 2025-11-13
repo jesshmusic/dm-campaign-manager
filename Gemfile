@@ -38,6 +38,20 @@ gem 'react_on_rails', "~> 12.3.0"
 gem 'simple_form'
 gem 'weighted_list'
 
+# AWS S3 for map file storage
+gem 'aws-sdk-s3', '~> 1'
+
+# ZIP file handling for scene packages
+gem 'rubyzip', '~> 2.3'
+
+# CORS for Foundry module API access
+gem 'rack-cors'
+
+# Patreon OAuth integration
+gem 'omniauth'
+gem 'omniauth-oauth2'
+gem 'omniauth-rails_csrf_protection'
+
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_03_16_152042) do
+ActiveRecord::Schema.define(version: 2025_11_12_181136) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -204,6 +204,58 @@ ActiveRecord::Schema.define(version: 2023_03_16_152042) do
     t.index ["starting_equipment_option_id"], name: "index_equipment_on_starting_equipment_option_id"
   end
 
+  create_table "foundry_map_files", force: :cascade do |t|
+    t.bigint "foundry_map_id", null: false
+    t.string "file_path", null: false
+    t.string "file_type", null: false
+    t.bigint "file_size"
+    t.string "s3_key", null: false
+    t.string "content_type"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["file_type"], name: "index_foundry_map_files_on_file_type"
+    t.index ["foundry_map_id"], name: "index_foundry_map_files_on_foundry_map_id"
+    t.index ["s3_key"], name: "index_foundry_map_files_on_s3_key", unique: true
+  end
+
+  create_table "foundry_map_taggings", force: :cascade do |t|
+    t.bigint "foundry_map_id", null: false
+    t.bigint "foundry_map_tag_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["foundry_map_id", "foundry_map_tag_id"], name: "index_map_taggings_on_map_and_tag", unique: true
+    t.index ["foundry_map_id"], name: "index_foundry_map_taggings_on_foundry_map_id"
+    t.index ["foundry_map_tag_id"], name: "index_foundry_map_taggings_on_foundry_map_tag_id"
+  end
+
+  create_table "foundry_map_tags", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "slug", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["name"], name: "index_foundry_map_tags_on_name"
+    t.index ["slug"], name: "index_foundry_map_tags_on_slug", unique: true
+  end
+
+  create_table "foundry_maps", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "description"
+    t.string "thumbnail_url"
+    t.string "access_level", default: "premium", null: false
+    t.integer "grid_size"
+    t.string "grid_units"
+    t.integer "width"
+    t.integer "height"
+    t.boolean "published", default: false
+    t.integer "download_count", default: 0
+    t.json "keywords", default: []
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["access_level"], name: "index_foundry_maps_on_access_level"
+    t.index ["created_at"], name: "index_foundry_maps_on_created_at"
+    t.index ["published"], name: "index_foundry_maps_on_published"
+  end
+
   create_table "friendly_id_slugs", force: :cascade do |t|
     t.string "slug", null: false
     t.integer "sluggable_id", null: false
@@ -349,6 +401,24 @@ ActiveRecord::Schema.define(version: 2023_03_16_152042) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["dnd_class_id"], name: "index_multi_classings_on_dnd_class_id"
+  end
+
+  create_table "patreon_users", force: :cascade do |t|
+    t.string "user_id", null: false
+    t.string "patreon_id"
+    t.string "email"
+    t.string "name"
+    t.boolean "has_free", default: true
+    t.boolean "has_premium", default: false
+    t.datetime "expires_at"
+    t.string "access_token"
+    t.string "refresh_token"
+    t.datetime "last_authenticated_at"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["expires_at"], name: "index_patreon_users_on_expires_at"
+    t.index ["patreon_id"], name: "index_patreon_users_on_patreon_id"
+    t.index ["user_id"], name: "index_patreon_users_on_user_id", unique: true
   end
 
   create_table "pg_search_documents", force: :cascade do |t|
@@ -631,6 +701,9 @@ ActiveRecord::Schema.define(version: 2023_03_16_152042) do
   add_foreign_key "damages", "items"
   add_foreign_key "dnd_class_levels", "dnd_classes"
   add_foreign_key "dnd_classes", "users"
+  add_foreign_key "foundry_map_files", "foundry_maps"
+  add_foreign_key "foundry_map_taggings", "foundry_map_tags"
+  add_foreign_key "foundry_map_taggings", "foundry_maps"
   add_foreign_key "item_ranges", "items"
   add_foreign_key "item_throw_ranges", "items"
   add_foreign_key "items", "users"

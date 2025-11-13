@@ -24,6 +24,7 @@ import CreateCustomActionPage from '../pages/admin-dashboard/CreateCustomActionP
 import EditWidgetPage from '../pages/admin-dashboard/EditWidgetPage';
 import SearchResults from '../pages/search-results/SearchResults';
 import PrivacyPolicy from '../pages/privacy-policy/PrivacyPolicy';
+import FoundryMapsAdmin from '../pages/FoundryMapsAdmin';
 
 const DMRoutes = (props) => {
   return (
@@ -66,6 +67,10 @@ const DMRoutes = (props) => {
       <Route
         path="/app/admin-dashboard/create-widget"
         element={<ProtectedRoute as={CreateWidgetPage} requireAdmin={true} {...props} />}
+      />
+      <Route
+        path="/app/admin-dashboard/foundry-maps"
+        element={<ProtectedRoute as={FoundryMapsAdmin} requireAdmin={true} {...props} />}
       />
       <Route
         path="/app/user-dashboard"

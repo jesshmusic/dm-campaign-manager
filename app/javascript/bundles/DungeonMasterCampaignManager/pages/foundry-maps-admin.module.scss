@@ -1,0 +1,670 @@
+@import '../stylesheets/variables';
+
+.contentWrapper {
+  padding: $spacer * 2;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacer * 1.5;
+
+  h2 {
+    font-family: $font-family-sans-serif;
+    font-size: $h2-font-size;
+    color: $primary-dark;
+    margin: 0;
+  }
+}
+
+.formContainer {
+  background-color: $card-bg;
+  padding: $spacer * 1.5;
+  border-radius: $border-radius;
+  margin-bottom: $spacer * 1.5;
+  box-shadow: $box-shadow-sm;
+
+  h2 {
+    font-family: $font-family-sans-serif;
+    font-size: $h3-font-size;
+    color: $primary-dark;
+    margin-bottom: $spacer;
+  }
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: $spacer * 1.5;
+
+  label {
+    font-family: $font-family-sans-serif;
+    font-size: $font-size-lg;
+  }
+}
+
+.editorWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: $spacer * 0.5;
+}
+
+.label {
+  font-family: $font-family-sans-serif;
+  font-size: $font-size-lg;
+  color: $primary-dark;
+  font-weight: 600;
+}
+
+.checkboxWrapper {
+  display: flex;
+  align-items: center;
+  padding: $spacer 0;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: $spacer * 0.5;
+  cursor: pointer;
+  font-family: $font-family-sans-serif;
+  font-size: $font-size-base;
+  color: $gray-800;
+
+  span {
+    user-select: none;
+  }
+}
+
+.checkbox {
+  width: 1.25rem;
+  height: 1.25rem;
+  cursor: pointer;
+}
+
+.fileUploadWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: $spacer * 0.5;
+}
+
+.fileInput {
+  width: 100%;
+  padding: $spacer * 0.5;
+  background-color: $input-bg;
+  border: $border-width solid $input-border-color;
+  border-radius: $border-radius;
+  font-family: $font-family-serif;
+  font-size: $font-size-base;
+  color: $input-color;
+
+  &:focus {
+    outline: none;
+    border-color: $input-focus-border-color;
+    background-color: $input-focus-bg;
+  }
+}
+
+.fileCount {
+  font-family: $font-family-sans-serif;
+  font-size: $font-size-sm;
+  color: $gray-600;
+  margin-top: $spacer * 0.5;
+}
+
+.quillEditor {
+  background-color: $input-bg;
+  border-radius: $border-radius;
+  min-height: 300px;
+
+  :global(.ql-container) {
+    min-height: 250px;
+    font-family: $font-family-serif;
+    font-size: $font-size-base;
+    border-bottom-left-radius: $border-radius;
+    border-bottom-right-radius: $border-radius;
+  }
+
+  :global(.ql-toolbar) {
+    background-color: $background-med;
+    border-top-left-radius: $border-radius;
+    border-top-right-radius: $border-radius;
+  }
+
+  :global(.ql-editor) {
+    min-height: 250px;
+    color: $input-color;
+  }
+}
+
+.tableContainer {
+  background-color: $card-bg;
+  border-radius: $border-radius;
+  box-shadow: $box-shadow-sm;
+  overflow: hidden;
+}
+
+.table {
+  width: 100%;
+
+  thead {
+    background-color: $ash;
+
+    tr th {
+      padding: $spacer * 0.75 $spacer * 1.5;
+      text-align: left;
+      font-family: $font-family-sans-serif;
+      font-size: $font-size-sm;
+      color: $white;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+  }
+
+  tbody {
+    tr {
+      border-bottom: $border-width solid lighten($ash, 50%);
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      td {
+        padding: $spacer $spacer * 1.5;
+        font-family: $font-family-serif;
+        font-size: $font-size-base;
+        color: $gray-800;
+      }
+    }
+  }
+}
+
+.emptyState {
+  padding: $spacer * 1.5;
+  text-align: center;
+  color: $gray-600;
+  font-family: $font-family-sans-serif;
+}
+
+.mapName {
+  font-weight: 600;
+  color: $primary-dark;
+  margin-bottom: $spacer * 0.25;
+}
+
+.mapDescription {
+  font-size: $font-size-sm;
+  color: $gray-600;
+}
+
+.tagContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacer * 0.25;
+}
+
+.tag {
+  background-color: lighten($cobalt, 35%);
+  color: $cobalt;
+  font-family: $font-family-sans-serif;
+  font-size: $font-size-sm * 0.875;
+  padding: $spacer * 0.25 $spacer * 0.5;
+  border-radius: $border-radius-sm;
+}
+
+.accessBadge {
+  font-family: $font-family-sans-serif;
+  font-size: $font-size-sm * 0.875;
+  padding: $spacer * 0.25 $spacer * 0.5;
+  border-radius: $border-radius-sm;
+  text-transform: capitalize;
+
+  &.premium {
+    background-color: lighten($yellow, 20%);
+    color: darken($yellow, 30%);
+  }
+
+  &.free {
+    background-color: lighten($green, 45%);
+    color: $green;
+  }
+}
+
+.statusButton {
+  font-family: $font-family-sans-serif;
+  font-size: $font-size-sm * 0.875;
+  padding: $spacer * 0.25 $spacer * 0.5;
+  border-radius: $border-radius-sm;
+  border: none;
+  cursor: pointer;
+  transition: $transition-base;
+
+  &.published {
+    background-color: lighten($green, 45%);
+    color: $green;
+
+    &:hover {
+      background-color: lighten($green, 40%);
+    }
+  }
+
+  &.draft {
+    background-color: $gray-200;
+    color: $gray-700;
+
+    &:hover {
+      background-color: $gray-300;
+    }
+  }
+}
+
+.dateText {
+  font-size: $font-size-sm;
+  color: $gray-600;
+}
+
+.actionButtons {
+  display: flex;
+  gap: $spacer;
+}
+
+.viewButton {
+  color: $pine-green;
+  background: none;
+  border: none;
+  font-family: $font-family-sans-serif;
+  font-size: $font-size-sm;
+  cursor: pointer;
+  transition: $transition-base;
+
+  &:hover {
+    color: darken($pine-green, 10%);
+    text-decoration: underline;
+  }
+}
+
+.editButton {
+  color: $cobalt;
+  background: none;
+  border: none;
+  font-family: $font-family-sans-serif;
+  font-size: $font-size-sm;
+  cursor: pointer;
+  transition: $transition-base;
+
+  &:hover {
+    color: darken($cobalt, 10%);
+    text-decoration: underline;
+  }
+}
+
+.deleteButton {
+  color: $blood-red;
+  background: none;
+  border: none;
+  font-family: $font-family-sans-serif;
+  font-size: $font-size-sm;
+  cursor: pointer;
+  transition: $transition-base;
+
+  &:hover {
+    color: darken($blood-red, 10%);
+    text-decoration: underline;
+  }
+}
+
+// View Modal Styles
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba($black, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: $spacer * 2;
+}
+
+.modalContent {
+  background-color: $card-bg;
+  border-radius: $border-radius;
+  box-shadow: $box-shadow;
+  max-width: 800px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: $spacer * 1.5;
+  border-bottom: $border-width solid lighten($ash, 50%);
+
+  h2 {
+    font-family: $font-family-sans-serif;
+    font-size: $h2-font-size;
+    color: $primary-dark;
+    margin: 0;
+  }
+}
+
+.modalClose {
+  background: none;
+  border: none;
+  font-size: $h1-font-size;
+  color: $gray-600;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  transition: $transition-base;
+
+  &:hover {
+    color: $gray-800;
+  }
+}
+
+.modalBody {
+  padding: $spacer * 1.5;
+}
+
+.viewSection {
+  margin-bottom: $spacer * 1.5;
+}
+
+.viewRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: $spacer;
+}
+
+.viewLabel {
+  font-family: $font-family-sans-serif;
+  font-size: $font-size-base;
+  font-weight: 600;
+  color: $primary-dark;
+  display: block;
+  margin-bottom: $spacer * 0.5;
+}
+
+.viewContent {
+  font-family: $font-family-serif;
+  font-size: $font-size-base;
+  color: $gray-800;
+  line-height: 1.6;
+
+  img {
+    max-width: 100%;
+    height: auto;
+    margin: $spacer 0;
+    border-radius: $border-radius-sm;
+  }
+
+  p {
+    margin-bottom: $spacer;
+  }
+}
+
+.viewText {
+  font-family: $font-family-serif;
+  font-size: $font-size-base;
+  color: $gray-800;
+}
+
+.statusBadge {
+  font-family: $font-family-sans-serif;
+  font-size: $font-size-sm * 0.875;
+  padding: $spacer * 0.25 $spacer * 0.5;
+  border-radius: $border-radius-sm;
+  display: inline-block;
+
+  &.published {
+    background-color: lighten($green, 45%);
+    color: $green;
+  }
+
+  &.draft {
+    background-color: $gray-200;
+    color: $gray-700;
+  }
+}
+
+// Files Section
+.existingFilesSection {
+  margin-top: $spacer;
+  padding: $spacer;
+  background-color: lighten($background-med, 3%);
+  border-radius: $border-radius;
+  border: $border-width solid lighten($ash, 50%);
+}
+
+.filesList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacer * 0.5;
+}
+
+.fileItem {
+  display: flex;
+  align-items: center;
+  gap: $spacer * 0.5;
+  padding: $spacer * 0.5;
+  background-color: $white;
+  border-radius: $border-radius-sm;
+  font-family: $font-family-sans-serif;
+  font-size: $font-size-sm;
+  position: relative;
+}
+
+.fileDeleteButton {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: $blood-red;
+  font-size: $h3-font-size;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 $spacer * 0.25;
+  opacity: 0.6;
+  transition: $transition-base;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  &:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+}
+
+.fileType {
+  color: $cobalt;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: $font-size-sm * 0.75;
+}
+
+.fileName {
+  flex: 1;
+  color: $gray-800;
+}
+
+.fileSize {
+  color: $gray-600;
+  font-size: $font-size-sm * 0.875;
+}
+
+.spinnerContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacer;
+  padding: $spacer * 1.5;
+  font-family: $font-family-sans-serif;
+  color: $primary-dark;
+  font-size: $font-size-lg;
+}
+
+.formButtons {
+  display: flex;
+  gap: $spacer;
+  margin-top: $spacer;
+
+  button {
+    flex: 1;
+  }
+}
+
+// Instructions Box
+.instructionsBox {
+  background-color: lighten($background-med, 5%);
+  border: $border-width solid lighten($ash, 50%);
+  border-radius: $border-radius;
+  padding: $spacer * 1.5;
+  margin: $spacer 0;
+  font-family: $font-family-sans-serif;
+
+  h4 {
+    font-size: $font-size-lg;
+    color: $primary-dark;
+    margin-top: 0;
+    margin-bottom: $spacer;
+  }
+
+  ol {
+    margin: 0;
+    padding-left: $spacer * 1.5;
+    color: $gray-800;
+    line-height: 1.6;
+
+    li {
+      margin-bottom: $spacer * 0.75;
+    }
+  }
+
+  p {
+    margin: $spacer 0 0 0;
+    color: $gray-700;
+    font-size: $font-size-base;
+  }
+
+  code {
+    background-color: $gray-200;
+    padding: $spacer * 0.125 $spacer * 0.375;
+    border-radius: $border-radius-sm;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: $font-size-sm;
+    color: $cobalt;
+  }
+}
+
+.codeBlock {
+  background-color: $gray-900;
+  color: $gray-100;
+  padding: $spacer;
+  border-radius: $border-radius-sm;
+  overflow-x: auto;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: $font-size-sm * 0.875;
+  line-height: 1.4;
+  margin: $spacer * 0.5 0;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+// Tags Management Styles
+.section {
+  margin-bottom: $spacer * 3;
+}
+
+.tagsTable {
+  background-color: $card-bg;
+  border-radius: $border-radius;
+  box-shadow: $box-shadow-sm;
+  padding: $spacer * 1.5;
+}
+
+.tagInputRow {
+  display: flex;
+  gap: $spacer;
+  margin-bottom: $spacer * 1.5;
+  align-items: center;
+}
+
+.tagInput,
+.tagEditInput {
+  flex: 1;
+  padding: $spacer * 0.5;
+  background-color: $input-bg;
+  border: $border-width solid $input-border-color;
+  border-radius: $border-radius;
+  font-family: $font-family-serif;
+  font-size: $font-size-base;
+  color: $input-color;
+
+  &:focus {
+    outline: none;
+    border-color: $input-focus-border-color;
+    background-color: $input-focus-bg;
+  }
+}
+
+.tagEditInput {
+  margin: 0;
+  padding: $spacer * 0.25 $spacer * 0.5;
+}
+
+.slugText {
+  color: $gray-600;
+  font-size: $font-size-sm;
+  font-family: 'Courier New', Courier, monospace !important;
+}
+
+.centerText {
+  text-align: center;
+}
+
+.saveButton {
+  color: $green;
+  background: none;
+  border: none;
+  font-family: $font-family-sans-serif;
+  font-size: $font-size-sm;
+  cursor: pointer;
+  transition: $transition-base;
+
+  &:hover {
+    color: darken($green, 10%);
+    text-decoration: underline;
+  }
+}
+
+.cancelButton {
+  color: $gray-600;
+  background: none;
+  border: none;
+  font-family: $font-family-sans-serif;
+  font-size: $font-size-sm;
+  cursor: pointer;
+  transition: $transition-base;
+
+  &:hover {
+    color: $gray-800;
+    text-decoration: underline;
+  }
+}
+
+.existingThumbnail {
+  margin-top: $spacer;
+
+  img {
+    border-radius: $border-radius-sm;
+    border: $border-width solid lighten($ash, 50%);
+  }
+}

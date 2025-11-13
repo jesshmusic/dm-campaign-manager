@@ -36,6 +36,9 @@ class UsersController < SecuredController
     @user.save!
     session[:user] = @user.attributes
     puts session[:user]
+
+    # Set redirect path for view (will be rendered by jbuilder)
+    @redirect_path = @user.admin? ? '/app/admin-dashboard' : '/app/user-dashboard'
   end
 
   def logout_user

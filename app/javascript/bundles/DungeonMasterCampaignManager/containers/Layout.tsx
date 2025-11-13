@@ -19,7 +19,7 @@ const Layout = (props) => {
   const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
 
   React.useEffect(() => {
-    if (isAuthenticated && user) {
+    if (isAuthenticated && user && !props.currentUser) {
       getAccessTokenSilently()
         .then((token) => {
           props.logInUser(user, token);
@@ -28,7 +28,7 @@ const Layout = (props) => {
           console.error(err);
         });
     }
-  }, [user]);
+  }, [isAuthenticated, user, props.currentUser]);
 
   const addFlashMessage = (flashMessage: FlashMessage) => {
     setFlashMessages([...flashMessages, flashMessage]);
