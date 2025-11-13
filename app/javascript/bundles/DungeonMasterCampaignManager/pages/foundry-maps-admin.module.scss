@@ -380,6 +380,35 @@
   padding: $spacer * 1.5;
 }
 
+.modalBodyLayout {
+  display: flex;
+  gap: $spacer * 2;
+  align-items: flex-start;
+}
+
+.thumbnailColumn {
+  flex-shrink: 0;
+  max-width: 250px;
+  width: 100%;
+}
+
+.thumbnailWrapper {
+  border-radius: $border-radius-sm;
+  border: $border-width solid lighten($ash, 50%);
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+}
+
+.contentColumn {
+  flex: 1;
+  min-width: 0;
+}
+
 .viewSection {
   margin-bottom: $spacer * 1.5;
 }

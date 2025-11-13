@@ -39,14 +39,6 @@ interface FoundryMap {
   files?: FoundryMapFile[];
 }
 
-interface MapFormData {
-  name: string;
-  description: string;
-  access_level: string;
-  published: boolean;
-  tags: string;
-}
-
 interface MapTag {
   id: string;
   name: string;
@@ -853,22 +845,24 @@ const FoundryMapsAdmin: React.FC = () => {
                 <button onClick={() => setViewingMap(null)} className={styles.modalClose}>×</button>
               </div>
               <div className={styles.modalBody}>
-                {viewingMap.thumbnail && (
-                  <div className={styles.viewSection}>
-                    <label className={styles.viewLabel}>Thumbnail:</label>
-                    <div className={styles.existingThumbnail}>
-                      <img src={viewingMap.thumbnail} alt={viewingMap.name} style={{ maxWidth: '100%', height: 'auto' }} />
+                <div className={styles.modalBodyLayout}>
+                  {viewingMap.thumbnail && (
+                    <div className={styles.thumbnailColumn}>
+                      <label className={styles.viewLabel}>Thumbnail:</label>
+                      <div className={styles.thumbnailWrapper}>
+                        <img src={viewingMap.thumbnail} alt={viewingMap.name} />
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
-                <div className={styles.viewSection}>
-                  <label className={styles.viewLabel}>Description:</label>
-                  <div
-                    className={styles.viewContent}
-                    dangerouslySetInnerHTML={{ __html: viewingMap.description || 'No description provided.' }}
-                  />
-                </div>
+                  <div className={styles.contentColumn}>
+                    <div className={styles.viewSection}>
+                      <label className={styles.viewLabel}>Description:</label>
+                      <div
+                        className={styles.viewContent}
+                        dangerouslySetInnerHTML={{ __html: viewingMap.description || 'No description provided.' }}
+                      />
+                    </div>
 
                 <div className={styles.viewSection}>
                   <label className={styles.viewLabel}>Tags:</label>
@@ -904,20 +898,22 @@ const FoundryMapsAdmin: React.FC = () => {
                   </div>
                 </div>
 
-                {viewingMap.files && viewingMap.files.length > 0 && (
-                  <div className={styles.viewSection}>
-                    <label className={styles.viewLabel}>Uploaded Files ({viewingMap.files.length}):</label>
-                    <div className={styles.filesList}>
-                      {viewingMap.files.map((file) => (
-                        <div key={file.id} className={styles.fileItem}>
-                          <span className={styles.fileType}>[{file.file_type}]</span>
-                          <span className={styles.fileName}>{file.file_name}</span>
-                          <span className={styles.fileSize}>({(file.file_size / 1024).toFixed(2)} KB)</span>
+                    {viewingMap.files && viewingMap.files.length > 0 && (
+                      <div className={styles.viewSection}>
+                        <label className={styles.viewLabel}>Uploaded Files ({viewingMap.files.length}):</label>
+                        <div className={styles.filesList}>
+                          {viewingMap.files.map((file) => (
+                            <div key={file.id} className={styles.fileItem}>
+                              <span className={styles.fileType}>[{file.file_type}]</span>
+                              <span className={styles.fileName}>{file.file_name}</span>
+                              <span className={styles.fileSize}>({(file.file_size / 1024).toFixed(2)} KB)</span>
+                            </div>
+                          ))}
                         </div>
-                      ))}
-                    </div>
+                      </div>
+                    )}
                   </div>
-                )}
+                </div>
               </div>
             </div>
           </div>
