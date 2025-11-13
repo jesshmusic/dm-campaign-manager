@@ -57,6 +57,28 @@ Rails.application.routes.draw do
       get '/saving-throws', to: 'proficiencies#saving_throws',
           as: 'proficiency_saving_throws',
           constraints: { format: 'json' }
+      # Foundry Map API endpoints
+      get '/maps/tags', to: 'foundry_maps#tags', constraints: { format: 'json' }
+      get '/maps/list', to: 'foundry_maps#list', constraints: { format: 'json' }
+      get '/maps/files/:id', to: 'foundry_maps#files', constraints: { format: 'json' }
+      post '/maps/file/:id', to: 'foundry_maps#file', constraints: { format: 'json' }
+      post '/maps/:id/upload_files', to: 'foundry_maps#upload_files'
+      post '/maps/:id/upload_package', to: 'foundry_maps#upload_package'
+      post '/maps/:id/upload_thumbnail', to: 'foundry_maps#upload_thumbnail'
+      post '/maps/upload_image', to: 'foundry_maps#upload_image'
+      delete '/maps/:id/files/:file_id', to: 'foundry_maps#delete_file'
+      resources :foundry_maps, path: 'maps', except: [:new, :edit], constraints: { format: 'json' }
+
+      # Foundry Map Tags CRUD
+      resources :foundry_map_tags, path: 'map-tags', only: [:index, :create, :update, :destroy], constraints: { format: 'json' }
+
+      # Patreon OAuth endpoints
+      get '/users/:user_id/ready', to: 'patreon_auth#check_status', constraints: { format: 'json' }
+      get '/patreon/callback', to: 'patreon_auth#callback'
+
+      # Admin UI for managing maps
+      get '/maps-admin', to: 'foundry_maps_admin#index'
+
       scope except: [:new, :edit] do
         resources :actions, only: [:index, :create, :update, :destroy], constraints: { format: 'json' }
         resources :conditions, only: [:index, :show], constraints: { format: 'json' }

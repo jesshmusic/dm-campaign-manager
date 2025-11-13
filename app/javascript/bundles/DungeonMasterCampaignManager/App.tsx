@@ -9,6 +9,15 @@ import { BrowserRouter } from 'react-router-dom';
 gsap.registerPlugin(ScrollToPlugin);
 
 const App = (props) => {
+  const onRedirectCallback = (appState) => {
+    // Return to the page the user was on before auth redirect
+    window.history.replaceState(
+      {},
+      document.title,
+      appState?.returnTo || window.location.pathname
+    );
+  };
+
   return (
     <BrowserRouter>
       <Provider store={store}>
@@ -18,7 +27,9 @@ const App = (props) => {
           redirectUri={`${window.location.origin}/app/user-dashboard`}
           audience="dmScreenAPI"
           scope="read:user"
-          useRefreshTokens
+          useRefreshTokens={true}
+          cacheLocation="localstorage"
+          onRedirectCallback={onRedirectCallback}
         >
           <Layout {...props} />
         </Auth0Provider>
