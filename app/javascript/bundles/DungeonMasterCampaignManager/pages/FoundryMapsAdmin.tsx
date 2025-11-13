@@ -10,7 +10,7 @@ import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { GiSave } from 'react-icons/gi';
 import { GiLinkedRings } from 'react-icons/all';
-import { MdEdit, MdDelete } from 'react-icons/md';
+import { MdEdit, MdDelete, MdVisibility, MdSave, MdCancel } from 'react-icons/md';
 import ImageResize from 'quill-image-resize-module-react';
 import { addFlashMessage, FlashMessageType } from '../reducers/flashMessages';
 import FlashMessages from '../components/Alerts/FlashMessages';
@@ -642,21 +642,24 @@ const FoundryMapsAdmin: React.FC = () => {
                       <div className={styles.actionButtons}>
                         <button
                           onClick={() => handleView(map)}
-                          className={styles.viewButton}
+                          className={styles.iconButton}
+                          title="View map details"
                         >
-                          View
+                          <MdVisibility />
                         </button>
                         <button
                           onClick={() => handleEdit(map)}
-                          className={styles.editButton}
+                          className={`${styles.iconButton} ${styles.editIcon}`}
+                          title="Edit map"
                         >
-                          Edit
+                          <MdEdit />
                         </button>
                         <button
                           onClick={() => handleDelete(map.id)}
-                          className={styles.deleteButton}
+                          className={`${styles.iconButton} ${styles.deleteIcon}`}
+                          title="Delete map"
                         >
-                          Delete
+                          <MdDelete />
                         </button>
                       </div>
                     </td>
@@ -1029,30 +1032,34 @@ const FoundryMapsAdmin: React.FC = () => {
                           <>
                             <button
                               onClick={() => handleUpdateTag(tag.id)}
-                              className={styles.saveButton}
+                              className={`${styles.iconButton} ${styles.saveIcon}`}
+                              title="Save tag"
                             >
-                              Save
+                              <MdSave />
                             </button>
                             <button
                               onClick={cancelEditingTag}
-                              className={styles.cancelButton}
+                              className={`${styles.iconButton} ${styles.cancelIcon}`}
+                              title="Cancel editing"
                             >
-                              Cancel
+                              <MdCancel />
                             </button>
                           </>
                         ) : (
                           <>
                             <button
                               onClick={() => startEditingTag(tag)}
-                              className={styles.editButton}
+                              className={`${styles.iconButton} ${styles.editIcon}`}
+                              title="Edit tag"
                             >
-                              Edit
+                              <MdEdit />
                             </button>
                             <button
                               onClick={() => handleDeleteTag(tag.id, tag.name)}
-                              className={styles.deleteButton}
+                              className={`${styles.iconButton} ${styles.deleteIcon}`}
+                              title="Delete tag"
                             >
-                              Delete
+                              <MdDelete />
                             </button>
                           </>
                         )}

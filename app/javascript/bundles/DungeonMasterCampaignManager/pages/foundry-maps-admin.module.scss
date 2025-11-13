@@ -273,51 +273,63 @@
 
 .actionButtons {
   display: flex;
-  gap: $spacer;
+  gap: $spacer * 0.5;
+  align-items: center;
 }
 
-.viewButton {
+.iconButton {
+  background: none;
+  border: none;
+  font-size: $font-size-lg;
   color: $pine-green;
-  background: none;
-  border: none;
-  font-family: $font-family-sans-serif;
-  font-size: $font-size-sm;
   cursor: pointer;
+  line-height: 1;
+  padding: $spacer * 0.25;
+  border-radius: $border-radius-sm;
   transition: $transition-base;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   &:hover {
+    background-color: lighten($pine-green, 50%);
     color: darken($pine-green, 10%);
-    text-decoration: underline;
   }
-}
 
-.editButton {
-  color: $cobalt;
-  background: none;
-  border: none;
-  font-family: $font-family-sans-serif;
-  font-size: $font-size-sm;
-  cursor: pointer;
-  transition: $transition-base;
+  &.editIcon {
+    color: $cobalt;
 
-  &:hover {
-    color: darken($cobalt, 10%);
-    text-decoration: underline;
+    &:hover {
+      background-color: lighten($cobalt, 45%);
+      color: darken($cobalt, 10%);
+    }
   }
-}
 
-.deleteButton {
-  color: $blood-red;
-  background: none;
-  border: none;
-  font-family: $font-family-sans-serif;
-  font-size: $font-size-sm;
-  cursor: pointer;
-  transition: $transition-base;
+  &.deleteIcon {
+    color: $blood-red;
 
-  &:hover {
-    color: darken($blood-red, 10%);
-    text-decoration: underline;
+    &:hover {
+      background-color: lighten($blood-red, 45%);
+      color: darken($blood-red, 10%);
+    }
+  }
+
+  &.saveIcon {
+    color: $green;
+
+    &:hover {
+      background-color: lighten($green, 45%);
+      color: darken($green, 10%);
+    }
+  }
+
+  &.cancelIcon {
+    color: $gray-600;
+
+    &:hover {
+      background-color: $gray-200;
+      color: $gray-800;
+    }
   }
 }
 
