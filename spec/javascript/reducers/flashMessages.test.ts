@@ -128,7 +128,7 @@ describe('flashMessages reducer', () => {
     });
 
     it('should handle dismissing the last message', () => {
-      let state = initialState;
+      let state = [...initialState];
       state = flashMessages(state, dismissFlashMessage(1));
       state = flashMessages(state, dismissFlashMessage(2));
       state = flashMessages(state, dismissFlashMessage(3));

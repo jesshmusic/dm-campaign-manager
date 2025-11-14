@@ -24,6 +24,8 @@ RSpec.describe PatreonUser, type: :model do
   let(:patreon_user) { create(:patreon_user) }
 
   describe 'validations' do
+    subject { build(:patreon_user) }
+
     it { should validate_presence_of(:user_id) }
     it { should validate_uniqueness_of(:user_id) }
   end
@@ -175,7 +177,7 @@ RSpec.describe PatreonUser, type: :model do
     end
 
     it 'updates last_authenticated_at to current time' do
-      freeze_time do
+      travel_to Time.current do
         user.update_from_patreon!(patreon_data)
         expect(user.last_authenticated_at).to be_within(1.second).of(Time.current)
       end

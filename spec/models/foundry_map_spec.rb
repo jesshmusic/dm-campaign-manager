@@ -42,8 +42,14 @@ RSpec.describe FoundryMap, type: :model do
     let!(:unpublished_map) { create(:foundry_map, :unpublished) }
     let!(:free_map) { create(:foundry_map, access_level: 'free') }
     let!(:premium_map) { create(:foundry_map, :premium) }
-    let!(:old_map) { create(:foundry_map, created_at: 2.days.ago) }
-    let!(:new_map) { create(:foundry_map, created_at: 1.hour.ago) }
+
+    let(:new_map) do
+      travel_to(1.hour.ago) { create(:foundry_map) }
+    end
+
+    let(:old_map) do
+      travel_to(2.days.ago) { create(:foundry_map) }
+    end
 
     describe '.published' do
       it 'returns only published maps' do
@@ -68,8 +74,17 @@ RSpec.describe FoundryMap, type: :model do
 
     describe '.recent' do
       it 'returns maps ordered by created_at descending' do
-        expect(FoundryMap.recent.first).to eq(new_map)
-        expect(FoundryMap.recent.last).to eq(old_map)
+        # Force evaluation of let variables
+        old_map
+        new_map
+
+        recent_maps = FoundryMap.recent.to_a
+        old_map_index = recent_maps.index { |m| m.id == old_map.id }
+        new_map_index = recent_maps.index { |m| m.id == new_map.id }
+
+        expect(old_map_index).not_to be_nil
+        expect(new_map_index).not_to be_nil
+        expect(new_map_index).to be < old_map_index
       end
     end
   end

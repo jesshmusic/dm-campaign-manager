@@ -30,6 +30,7 @@ jobs:
       RAILS_ENV: test
       DATABASE_URL: postgresql://postgres:postgres@localhost:5432/dungeon_master_guru_test
       RACK_ENV: test
+      NODE_OPTIONS: --openssl-legacy-provider
 
     steps:
       - name: Checkout code

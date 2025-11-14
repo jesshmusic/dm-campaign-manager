@@ -266,7 +266,7 @@ RSpec.describe 'Admin::V1::FoundryMapsController', type: :request do
     end
 
     it 'updates tags' do
-      patch "/v1/maps/#{map.id}", params: { tags: ['Forest', 'River'] }
+      patch "/v1/maps/#{map.id}", params: { foundry_map: { name: map.name }, tags: ['Forest', 'River'] }
 
       expect(response).to have_http_status(:success)
       expect(map.reload.foundry_map_tags.pluck(:name)).to contain_exactly('Forest', 'River')
@@ -329,7 +329,7 @@ RSpec.describe 'Admin::V1::FoundryMapsController', type: :request do
   end
 
   describe 'DELETE /v1/maps/:id/files/:file_id' do
-    let(:map) { create(:foundry_map, :with_files) }
+    let!(:map) { create(:foundry_map, :with_files) }
     let(:file) { map.foundry_map_files.first }
 
     it 'deletes the file' do

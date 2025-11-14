@@ -23,7 +23,7 @@ module.exports = {
     '^bundles/(.*)$': '<rootDir>/app/javascript/bundles/$1',
     '^@/(.*)$': '<rootDir>/app/javascript/$1'
   },
-  setupFilesAfterEnv': ['<rootDir>/spec/javascript/setupTests.ts'],
+  setupFilesAfterEnv: ['<rootDir>/spec/javascript/setupTests.ts'],
   collectCoverageFrom: [
     'app/javascript/**/*.{ts,tsx}',
     '!app/javascript/**/*.d.ts',

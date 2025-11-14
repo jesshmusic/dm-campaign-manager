@@ -160,7 +160,7 @@ RSpec.describe 'Admin::V1::PatreonAuthController', type: :request do
       end
 
       it 'sets expiry date 30 days in the future' do
-        freeze_time do
+        travel_to Time.current do
           get '/v1/patreon/callback', params: { code: code, state: user_id }
 
           user = PatreonUser.find_by(user_id: user_id)

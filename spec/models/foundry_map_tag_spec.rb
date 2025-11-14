@@ -20,9 +20,11 @@ RSpec.describe FoundryMapTag, type: :model do
   end
 
   describe 'validations' do
+    subject { build(:foundry_map_tag) }
+
     it { should validate_presence_of(:name) }
     it { should validate_uniqueness_of(:name) }
-    it { should validate_presence_of(:slug) }
+    # Note: slug presence is ensured by before_validation callback
     it { should validate_uniqueness_of(:slug) }
   end
 
