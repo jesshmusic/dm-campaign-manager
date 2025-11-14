@@ -42,7 +42,7 @@ RSpec.describe FoundryMapTag, type: :model do
         end
 
         it 'handles names with special characters' do
-          tag = build(:foundry_map_tag, name: 'Dragon's Lair!!!', slug: nil)
+          tag = build(:foundry_map_tag, name: "Dragon's Lair!!!", slug: nil)
           tag.valid?
           expect(tag.slug).to eq('dragon-s-lair')
         end

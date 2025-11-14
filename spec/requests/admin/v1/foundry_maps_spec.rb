@@ -58,7 +58,7 @@ RSpec.describe 'Admin::V1::FoundryMapsController', type: :request do
     let(:map) { create(:foundry_map, :with_files) }
 
     context 'for free maps' do
-      let(:free_map) { create(:foundry_map, access_level: 'free', :with_files) }
+      let(:free_map) { create(:foundry_map, :with_files, access_level: 'free') }
 
       it 'returns files without authentication' do
         get "/v1/maps/files/#{free_map.id}"
@@ -117,7 +117,7 @@ RSpec.describe 'Admin::V1::FoundryMapsController', type: :request do
     let(:file) { map.foundry_map_files.first }
 
     context 'for free maps' do
-      let(:free_map) { create(:foundry_map, access_level: 'free', :with_files) }
+      let(:free_map) { create(:foundry_map, :with_files, access_level: 'free') }
       let(:free_file) { free_map.foundry_map_files.first }
 
       it 'returns signed URL without authentication' do
