@@ -5,10 +5,12 @@ RSpec.describe 'DndClasses', type: :request do
   let!(:dungeon_master) { create :dungeon_master_user }
   let!(:other_user) { create :other_user }
 
-  ability_score_ids = [
-    AbilityScore.find_by_full_name('Wisdom').id,
-    AbilityScore.find_by_full_name('Intelligence').id,
-  ]
+  let(:ability_score_ids) {
+    [
+      AbilityScore.find_by_full_name('Wisdom')&.id,
+      AbilityScore.find_by_full_name('Intelligence')&.id,
+    ].compact
+  }
 
   let(:valid_attributes) {
     {
