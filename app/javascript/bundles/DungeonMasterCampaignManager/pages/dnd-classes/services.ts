@@ -98,8 +98,7 @@ export const buildData = (levels: DndClassLevel[]) => {
     const data = {
       level: level.level,
       profBonus: level.profBonus,
-      featureString:
-        level.features.map((feature) => feature.name).join(', ') || '-',
+      featureString: level.features.map((feature) => feature.name).join(', ') || '-',
       spellcasting: {
         ...level.spellcasting,
       },
@@ -109,9 +108,7 @@ export const buildData = (levels: DndClassLevel[]) => {
         return;
       } else {
         const value =
-          classSpecific.value === '0' || classSpecific.value === 'f'
-            ? '-'
-            : classSpecific.value;
+          classSpecific.value === '0' || classSpecific.value === 'f' ? '-' : classSpecific.value;
         data[Util.camelize(classSpecific.name)] = value === 't' ? '√' : value;
       }
     });

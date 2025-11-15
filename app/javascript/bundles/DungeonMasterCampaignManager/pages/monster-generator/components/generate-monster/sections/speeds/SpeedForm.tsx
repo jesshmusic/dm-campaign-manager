@@ -3,7 +3,10 @@ import { Control, FieldErrors } from 'react-hook-form';
 import { GiTrashCan } from 'react-icons/gi';
 import { Colors } from '../../../../../../utilities/enums';
 import Button from '../../../../../../components/Button/Button';
-import { ControlledInput, ControlledSelect } from '../../../../../../components/forms/ControllerInput';
+import {
+  ControlledInput,
+  ControlledSelect,
+} from '../../../../../../components/forms/ControllerInput';
 import { speeds } from '../../../../../../utilities/character-utilities';
 
 const styles = require('../field-array-form.module.scss');
@@ -23,7 +26,7 @@ const SpeedForm = (props: {
         className={styles.formElementSelect}
         fieldName={`${fieldName}.${speedIndex}.nameOption`}
         control={control}
-        label='Speed'
+        label="Speed"
         options={speeds}
       />
       <ControlledInput
@@ -31,16 +34,16 @@ const SpeedForm = (props: {
         errors={errors}
         className={styles.formElementInput}
         control={control}
-        label='Value'
-        type='number'
+        label="Value"
+        type="number"
       />
       <Button
-        type='button'
+        type="button"
         onClick={() => remove(speedIndex)}
         color={Colors.danger}
         icon={<GiTrashCan size={30} />}
         hideTitle
-        title='Remove Action'
+        title="Remove Action"
       />
     </div>
   );

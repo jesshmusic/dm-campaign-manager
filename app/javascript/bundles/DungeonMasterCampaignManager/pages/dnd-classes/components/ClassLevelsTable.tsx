@@ -9,10 +9,7 @@ const ClassLevelsTable = (props: { dndClass: DndClass }) => {
   const { dndClass } = props;
 
   const columns = React.useMemo(() => buildLevelColumns(dndClass.levels), []);
-  const data = React.useMemo(
-    () => buildData(dndClass.levels),
-    [dndClass.levels]
-  );
+  const data = React.useMemo(() => buildData(dndClass.levels), [dndClass.levels]);
 
   return (
     <div className={styles.tableContainer}>

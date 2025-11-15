@@ -230,8 +230,8 @@ export default reduxApi({
     },
   },
   search: {
-    url: '/v1/search.json?search=:searchString'
-  }
+    url: '/v1/search.json?search=:searchString',
+  },
 })
   .use('options', (url, params, getState) => {
     const state = getState();

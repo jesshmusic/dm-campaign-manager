@@ -10,8 +10,7 @@ const styles = require('./breadcrumbs.module.scss');
 
 const BreadcrumbLink = (props: { to: string; title: string }) => (
   <li className={styles.breadcrumbItem}>
-    {props.to !== '/' && <GiTwoHandedSword />}{' '}
-    <Link to={props.to}>{props.title}</Link>
+    {props.to !== '/' && <GiTwoHandedSword />} <Link to={props.to}>{props.title}</Link>
   </li>
 );
 

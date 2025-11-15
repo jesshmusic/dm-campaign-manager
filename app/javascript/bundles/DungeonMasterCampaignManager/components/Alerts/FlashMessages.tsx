@@ -13,10 +13,7 @@ type FlashMessagesProps = {
   messages: FlashMessage[];
 };
 
-const FlashMessages = ({
-  onDismissFlashMessage,
-  messages,
-}: FlashMessagesProps) => {
+const FlashMessages = ({ onDismissFlashMessage, messages }: FlashMessagesProps) => {
   return (
     <div>
       {messages.map((message, index) => (

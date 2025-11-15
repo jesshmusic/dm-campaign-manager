@@ -8,8 +8,12 @@ const styles = require('./search-field.module.scss');
 
 const SearchField = () => {
   const navigate = useNavigate();
-  const { register, handleSubmit, formState: { errors } } = useForm();
-  const onSubmit = data => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+  const onSubmit = (data) => {
     console.log(data);
     navigate(`/app/search/${data.search}`);
   };
@@ -28,7 +32,6 @@ const SearchField = () => {
       </div>
     </form>
   );
-}
+};
 
 export default SearchField;
-

@@ -7,8 +7,11 @@ import {
   BiLogIn,
   BiLogOut,
   BiShow,
-  GiAchillesHeel, GiBookPile,
-  GiBookshelf, GiBookStorm, GiBurningBook,
+  GiAchillesHeel,
+  GiBookPile,
+  GiBookshelf,
+  GiBookStorm,
+  GiBurningBook,
   GiCapeArmor,
   GiChestArmor,
   GiDungeonGate,
@@ -21,10 +24,12 @@ import {
   GiMagicPotion,
   GiMonsterGrasp,
   GiPerson,
-  GiRuleBook, GiSecretBook, GiSpellBook,
+  GiRuleBook,
+  GiSecretBook,
+  GiSpellBook,
   GiSwapBag,
   GiSwordArray,
-  GiToolbox
+  GiToolbox,
 } from 'react-icons/all';
 
 const ruleBooks = [
@@ -33,8 +38,8 @@ const ruleBooks = [
   <GiBurningBook />,
   <GiSecretBook />,
   <GiSpellBook />,
-  <GiBookStorm />
-]
+  <GiBookStorm />,
+];
 
 import {
   Menu,
@@ -86,11 +91,10 @@ const SideBar = (props: {
   isCollapsed: boolean;
   isMobile: boolean;
   logOutUser: (token: string) => void;
-  rules: { name: string; slug: string, rules?: {name: string, slug: string}[] }[];
+  rules: { name: string; slug: string; rules?: { name: string; slug: string }[] }[];
   setIsCollapsed: (boolean) => void;
 }) => {
-  const { currentUser, getRules, isCollapsed, isMobile, logOutUser, rules, setIsCollapsed } =
-    props;
+  const { currentUser, getRules, isCollapsed, isMobile, logOutUser, rules, setIsCollapsed } = props;
 
   const { user, getAccessTokenSilently, isAuthenticated, loginWithRedirect, logout } = useAuth0();
 
@@ -139,17 +143,18 @@ const SideBar = (props: {
                     to={`/app/rules/${rule.slug}`}
                     title={rule.name}
                   />
-                  {rule.rules && rule.rules.map((subrule, subIndex) => (
-                    <SidebarLink
-                      key={`rulesInner-${subIndex}`}
-                      to={`/app/rules/${subrule.slug}`}
-                      title={subrule.name}
-                    />
-                  ))}
+                  {rule.rules &&
+                    rule.rules.map((subrule, subIndex) => (
+                      <SidebarLink
+                        key={`rulesInner-${subIndex}`}
+                        to={`/app/rules/${subrule.slug}`}
+                        title={subrule.name}
+                      />
+                    ))}
                 </SubMenu>
               ))}
             </SubMenu>
-            <SubMenu title="Items & Equipment" icon={<GiSwapBag />} >
+            <SubMenu title="Items & Equipment" icon={<GiSwapBag />}>
               {itemTypes.map((itemType, index) => (
                 <SidebarLink
                   key={`items-${index}`}

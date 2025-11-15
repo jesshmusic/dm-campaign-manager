@@ -13,9 +13,7 @@ const FeaturesDesc = (props: { dndClass: DndClass }) => {
         const featureNameSplit = feature.name.split(regex);
         if (featureNameSplit.length > 0) {
           const featureName = featureNameSplit[0];
-          if (
-            features.filter((feat) => feat.name === featureName).length === 0
-          ) {
+          if (features.filter((feat) => feat.name === featureName).length === 0) {
             features.push({ name: featureName, desc: feature.desc });
           }
         }

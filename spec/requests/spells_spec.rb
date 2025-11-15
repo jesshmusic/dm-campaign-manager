@@ -26,34 +26,34 @@ RSpec.describe 'Spells', type: :request do
         expect(response).to have_http_status(200)
       end
 
-      it 'returns 3 spells' do
+      it 'returns 6 spells' do
         get '/v1/spells.json'
         result_spells = JSON.parse(response.body)
-        expect(result_spells['count']).to eq(322)
+        expect(result_spells['count']).to eq(6)
       end
     end
 
     context 'for Admins' do
       before(:each) do
-        # sign_in admin
+        stub_authentication(admin)
       end
 
-      it 'returns 5 spells' do
+      it 'returns 8 spells' do
         get '/v1/spells.json'
         result_spells = JSON.parse(response.body)
-        expect(result_spells['count']).to eq(324)
+        expect(result_spells['count']).to eq(8)
       end
     end
 
     context 'for Dungeon Masters' do
       before(:each) do
-        # sign_in dungeon_master
+        stub_authentication(dungeon_master)
       end
 
-      it 'returns 4 spells that are only default or owned by this DM' do
+      it 'returns 7 spells that are only default or owned by this DM' do
         get '/v1/spells.json'
         result_spells = JSON.parse(response.body)
-        expect(result_spells['count']).to eq(323)
+        expect(result_spells['count']).to eq(7)
         expect(result_spells['results'].find { |spell|
           spell['name'] == 'DM Spell'
         }).not_to be_nil
@@ -81,7 +81,7 @@ RSpec.describe 'Spells', type: :request do
 
     context 'for Admins' do
       before(:each) do
-        # sign_in admin
+        stub_authentication(admin)
       end
 
       it 'returns a default spell' do
@@ -100,7 +100,7 @@ RSpec.describe 'Spells', type: :request do
 
     context 'for Dungeon Masters' do
       before(:each) do
-        # sign_in dungeon_master
+        stub_authentication(dungeon_master)
       end
 
       it 'returns a default spell' do
@@ -114,7 +114,7 @@ RSpec.describe 'Spells', type: :request do
         get "/v1/spells/#{spell_custom1.slug}.json"
         result_spell = JSON.parse(response.body)
         expect(result_spell['name']).to eq('DM Spell')
-        expect(result_spell['slug']).to eq('dm-spell-jesshdm1')
+        expect(result_spell['slug']).to eq(spell_custom1.slug)
       end
 
       it 'returns error for DM trying to get custom spell by another user' do
@@ -128,17 +128,19 @@ RSpec.describe 'Spells', type: :request do
   describe 'POST Create Spell' do
     context 'for Logged Out Users' do
       it 'returns an error for non-user creating spell' do
+        stub_no_auth
         expect {
           post '/v1/spells.json', params: { spell: valid_attributes }
         }.to change(Spell, :count).by(0)
         result_spell = JSON.parse(response.body)
-        expect(result_spell['error']).to eq('You need to sign in or sign up before continuing.')
+        expect(result_spell['errors']).to eq(['Not Authenticated'])
+        expect(response).to have_http_status(:unauthorized)
       end
     end
 
     context 'for Admins' do
       before(:each) do
-        # sign_in admin
+        stub_authentication(admin)
       end
 
       it 'creates a new Spell' do
@@ -153,7 +155,7 @@ RSpec.describe 'Spells', type: :request do
 
     context 'for Dungeon Masters' do
       before(:each) do
-        # sign_in dungeon_master
+        stub_authentication(dungeon_master)
       end
 
       it 'creates a new Spell with a user' do
@@ -170,26 +172,28 @@ RSpec.describe 'Spells', type: :request do
   describe 'PUT Update Spell' do
     context 'for Logged Out Users' do
       it 'returns an error for non-user editing' do
+        stub_no_auth
         put "/v1/spells/#{spell1.slug}.json", params: {
           spell: {
             name: 'Test Spell Edited'
           }
         }
         result_spell = JSON.parse(response.body)
-        expect(result_spell['error']).to eq('You need to sign in or sign up before continuing.')
+        expect(result_spell['errors']).to eq(['Not Authenticated'])
+        expect(response).to have_http_status(:unauthorized)
       end
     end
 
     context 'for Admins' do
       before(:each) do
-        # sign_in admin
+        stub_authentication(admin)
       end
 
     end
 
     context 'for Dungeon Masters' do
       before(:each) do
-        # sign_in dungeon_master
+        stub_authentication(dungeon_master)
       end
 
       it 'updates the requested spell belonging to DM' do
@@ -228,15 +232,17 @@ RSpec.describe 'Spells', type: :request do
   describe 'DELETE Delete Spell' do
     context 'for Logged Out Users' do
       it 'returns an error for non-user delete' do
+        stub_no_auth
         delete "/v1/spells/#{spell1.slug}.json"
         result_spell = JSON.parse(response.body)
-        expect(result_spell['error']).to eq('You need to sign in or sign up before continuing.')
+        expect(result_spell['errors']).to eq(['Not Authenticated'])
+        expect(response).to have_http_status(:unauthorized)
       end
     end
 
     context 'for Admins' do
       before(:each) do
-        # sign_in admin
+        stub_authentication(admin)
       end
 
       it 'deletes the requested spell belonging to DM' do
@@ -252,7 +258,7 @@ RSpec.describe 'Spells', type: :request do
 
     context 'for Dungeon Masters' do
       before(:each) do
-        # sign_in dungeon_master
+        stub_authentication(dungeon_master)
       end
 
       it 'deletes the requested spell belonging to DM' do
@@ -281,14 +287,14 @@ RSpec.describe 'Spells', type: :request do
 
     context 'for Admins' do
       before(:each) do
-        # sign_in admin
+        stub_authentication(admin)
       end
 
     end
 
     context 'for Dungeon Masters' do
       before(:each) do
-        # sign_in dungeon_master
+        stub_authentication(dungeon_master)
       end
 
     end

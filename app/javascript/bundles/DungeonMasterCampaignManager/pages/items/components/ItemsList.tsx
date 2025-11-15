@@ -19,14 +19,7 @@ type ItemsListProps = {
   pageTitle: string;
 };
 
-const ItemsList = ({
-  columns,
-  data,
-  loading,
-  onSearch,
-  pageTitle,
-  itemType,
-}: ItemsListProps) => {
+const ItemsList = ({ columns, data, loading, onSearch, pageTitle, itemType }: ItemsListProps) => {
   const breadCrumbs =
     itemType !== ItemType.all
       ? [

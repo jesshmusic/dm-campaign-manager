@@ -8,10 +8,7 @@ const styles = require('../dnd-class.module.scss');
 const ProficienciesSection = (props: { dndClass: DndClass }) => {
   const { dndClass } = props;
 
-  const getProfs = (
-    profs: { name: string; profType: string }[],
-    profType: string
-  ): string => {
+  const getProfs = (profs: { name: string; profType: string }[], profType: string): string => {
     const filteredProfs = profs.filter((prof) => prof.profType === profType);
     if (filteredProfs.length === 0) {
       return 'None';
@@ -34,28 +31,14 @@ const ProficienciesSection = (props: { dndClass: DndClass }) => {
   return (
     <div className={styles.sectionGroup}>
       <h3 className={styles.subsectionHeading}>Proficiencies</h3>
+      <InfoBlock title="Armor" desc={getProfs(dndClass.proficiencies, 'Armor')} />
+      <InfoBlock title="Weapons" desc={getProfs(dndClass.proficiencies, 'Weapons')} />
+      <InfoBlock title="Tools" desc={getProfs(dndClass.proficiencies, 'Other')} />
       <InfoBlock
-        title='Armor'
-        desc={getProfs(dndClass.proficiencies, 'Armor')}
+        title="Saving Throws"
+        desc={dndClass.abilityScores.map((ability) => ability.fullName).join(', ')}
       />
-      <InfoBlock
-        title='Weapons'
-        desc={getProfs(dndClass.proficiencies, 'Weapons')}
-      />
-      <InfoBlock
-        title='Tools'
-        desc={getProfs(dndClass.proficiencies, 'Other')}
-      />
-      <InfoBlock
-        title='Saving Throws'
-        desc={dndClass.abilityScores
-          .map((ability) => ability.fullName)
-          .join(', ')}
-      />
-      <InfoBlock
-        title='Skills'
-        desc={getSkillChoices(dndClass.proficiencyChoices)}
-      />
+      <InfoBlock title="Skills" desc={getSkillChoices(dndClass.proficiencyChoices)} />
     </div>
   );
 };

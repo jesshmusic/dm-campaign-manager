@@ -8,11 +8,7 @@ import { connect } from 'react-redux';
 import DataTable from '../../components/DataTable/DataTable';
 import { RaceSummary } from '../../utilities/types';
 
-const Races = (props: {
-  getRaces: () => void;
-  races: RaceSummary[];
-  loading: boolean;
-}) => {
+const Races = (props: { getRaces: () => void; races: RaceSummary[]; loading: boolean }) => {
   const { getRaces, loading, races } = props;
   const navigate = useNavigate();
 
@@ -35,9 +31,7 @@ const Races = (props: {
   const data = React.useMemo(() => {
     return races.map((race) => {
       const traits =
-        race.traits.length > 0
-          ? race.traits.map((trait) => trait.name).join(', ')
-          : '-';
+        race.traits.length > 0 ? race.traits.map((trait) => trait.name).join(', ') : '-';
       return {
         name: race.name,
         traits: traits,

@@ -18,7 +18,7 @@ const Rule = (props: {
     rules: {
       name: string;
       slug: string;
-    }[]
+    }[];
   };
   loading: boolean;
   getRule: (ruleSlug: string) => void;
@@ -51,13 +51,12 @@ const Rule = (props: {
             }}
             remarkPlugins={[remarkGfm]}
           />
-          {rule.rules && (
-            rule.rules.map(rule => (
+          {rule.rules &&
+            rule.rules.map((rule) => (
               <Link to={`/app/rules/${rule.slug}`} className={styles.buttonBar}>
                 <h2>{rule.name}</h2>
               </Link>
-            ))
-          )}
+            ))}
         </>
       ) : (
         <DndSpinner />

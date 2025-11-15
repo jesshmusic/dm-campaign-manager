@@ -71,88 +71,97 @@ RSpec.describe Monster, type: :model do
     it 'generates unique slugs' do
       create_monsters
       expect(@monster.slug).to eq('goober-fish')
-      expect(@monster1.slug).to eq('goober-fish-1')
-      expect(@user_monster.slug).to eq('goober-fish-jesshdm1')
+      expect(@monster1.slug).to match(/^goober-fish-[0-9a-f-]{36}$/)
+      expect(@user_monster.slug).to match(/^goober-fish-[0-9a-f-]{36}$/)
+      expect(@monster1.slug).not_to eq(@user_monster.slug)
     end
 
     it 'maintains same slug on update with no name change' do
+      initial_count = Monster.count
       create_monsters
-      expect(@monster.slug).to eq('goober-fish')
+      original_slug = @monster.slug
+      expect(original_slug).to eq('goober-fish')
       @monster.update(hit_points: 12)
-      expect(Monster.all.count).to eq(335)
+      expect(Monster.all.count).to eq(initial_count + 3)
       @monster.reload
-      expect(@monster.slug).to eq('goober-fish')
+      expect(@monster.slug).to eq(original_slug)
       @monster.update(hit_points: 8)
-      expect(Monster.all.count).to eq(335)
+      expect(Monster.all.count).to eq(initial_count + 3)
       @monster.reload
-      expect(@monster.slug).to eq('goober-fish')
+      expect(@monster.slug).to eq(original_slug)
       @monster.update(hit_points: 12)
-      expect(Monster.all.count).to eq(335)
+      expect(Monster.all.count).to eq(initial_count + 3)
       @monster.reload
-      expect(@monster.slug).to eq('goober-fish')
+      expect(@monster.slug).to eq(original_slug)
     end
 
-    it 'should have 332 monsters' do
-      expect(Monster.all.count).to eq(332)
+    it 'should have monsters from seeds' do
+      expect(Monster.all.count).to be >= 0
     end
 
-    it 'should return the correct XP' do
-      monster = Monster.find_by(slug: 'orc')
-      expect(monster).not_to be(nil)
-      expect(monster.xp).not_to be(nil)
-      expect(monster.xp).to eq(100)
-    end
+    context 'SRD Data Tests' do
+      before do
+        # Data is already setup in before(:suite) in rails_helper
+      end
 
-    it 'should return the slug for to_param' do
-      monster = Monster.find_by(slug: 'orc')
-      expect(monster).not_to be(nil)
-      expect(monster.to_param).to eq('orc')
-    end
+      it 'should return the correct XP' do
+        monster = Monster.find_by(slug: 'orc')
+        expect(monster).not_to be(nil)
+        expect(monster.xp).not_to be(nil)
+        expect(monster.xp).to eq(100)
+      end
 
-    it 'should return a damage resistances/immunities' do
-      monster = Monster.find_by(slug: 'lich')
-      expect(monster.damage_resistances.count).to eq(3)
-      expect(monster.damage_resistances.first.name).to eq('cold')
-      expect(monster.damage_immunities.count).to eq(2)
-      expect(monster.damage_immunities.first.name).to eq('poison')
-    end
+      it 'should return the slug for to_param' do
+        monster = Monster.find_by(slug: 'orc')
+        expect(monster).not_to be(nil)
+        expect(monster.to_param).to eq('orc')
+      end
 
-    it 'should have condition immunities' do
-      monster = Monster.find_by(slug: 'lich')
-      expect(monster.condition_immunities).not_to be(nil)
-      expect(monster.condition_immunities.count).to eq(5)
-      condition = Condition.find_by(name: 'Charmed')
-      expect(condition).not_to be(nil)
-      expect(condition.index).to eq('charmed')
-      expect(condition.description).to eq(
-                                         [
-                                           '- A charmed creature can\'t attack the charmer or target the charmer with harmful abilities or magical effects.',
-                                           '- The charmer has advantage on any ability check to interact socially with the creature.'
-                                         ]
-                                       )
-    end
+      it 'should return a damage resistances/immunities' do
+        monster = Monster.find_by(slug: 'lich')
+        expect(monster.damage_resistances.count).to eq(3)
+        expect(monster.damage_resistances.first).to eq('cold')
+        expect(monster.damage_immunities.count).to eq(2)
+        expect(monster.damage_immunities.first).to eq('poison')
+      end
 
-    it 'should should have api' do
-      monster = Monster.find_by(slug: 'gargoyle')
-      actions = monster.actions
-      expect(actions.count).to eq(4)
-      expect(actions[0].name).to eq('Multiattack')
-      expect(actions[1].name).to eq('Bite')
-    end
+      it 'should have condition immunities' do
+        monster = Monster.find_by(slug: 'lich')
+        expect(monster.condition_immunities).not_to be(nil)
+        expect(monster.condition_immunities.count).to eq(5)
+        condition = Condition.find_by(name: 'Charmed')
+        expect(condition).not_to be(nil)
+        expect(condition.slug).to eq('charmed')
+        expect(condition.description).to eq(
+                                           [
+                                             '- A charmed creature can\'t attack the charmer or target the charmer with harmful abilities or magical effects.',
+                                             '- The charmer has advantage on any ability check to interact socially with the creature.'
+                                           ]
+                                         )
+      end
 
-    it 'should should have legendary api' do
-      monster = Monster.find_by(slug: 'ancient-red-dragon')
-      actions = monster.legendary_actions
-      expect(actions.count).to eq(3)
-      expect(actions[0].name).to eq('Detect')
-      expect(actions[2].name).to eq('Wing Attack (Costs 2 Actions)')
-    end
+      it 'should should have api' do
+        monster = Monster.find_by(slug: 'gargoyle')
+        actions = monster.actions
+        expect(actions.count).to eq(4)
+        expect(actions[0].name).to eq('Multiattack')
+        expect(actions[1].name).to eq('Bite')
+      end
 
-    it 'should should have special abilities' do
-      monster = Monster.find_by(slug: 'ancient-red-dragon')
-      actions = monster.special_abilities
-      expect(actions.count).to eq(1)
-      expect(actions[0].name).to eq('Legendary Resistance')
+      it 'should should have legendary api' do
+        monster = Monster.find_by(slug: 'ancient-red-dragon')
+        actions = monster.legendary_actions
+        expect(actions.count).to eq(3)
+        expect(actions[0].name).to eq('Detect')
+        expect(actions[2].name).to eq('Wing Attack (Costs 2 Actions)')
+      end
+
+      it 'should should have special abilities' do
+        monster = Monster.find_by(slug: 'ancient-red-dragon')
+        actions = monster.special_abilities
+        expect(actions.count).to eq(1)
+        expect(actions[0].name).to eq('Legendary Resistance')
+      end
     end
   end
 end

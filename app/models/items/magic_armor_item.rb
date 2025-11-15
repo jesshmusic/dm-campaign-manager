@@ -97,7 +97,7 @@ class MagicArmorItem < ArmorItem
     def new_magic_armor(magic_item, armor_name)
       armor_item = ArmorItem.find_by(name: armor_name)
       new_item = MagicArmorItem.find_or_create_by(name: magic_item[:name])
-      unless armor_item.nil?
+      unless armor_item.nil? || armor_item.armor_class.nil?
         new_item.armor_category = armor_item.armor_category
         new_item.armor_class = ArmorClass.create(
           ac_base: armor_item.armor_class.ac_base,

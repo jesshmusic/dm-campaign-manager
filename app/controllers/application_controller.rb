@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::Base
-  include Pundit
+  include Pundit::Authorization
   include Pagy::Backend
   protect_from_forgery
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized

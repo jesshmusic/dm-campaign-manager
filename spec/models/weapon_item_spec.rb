@@ -54,31 +54,34 @@ RSpec.describe WeaponItem, type: :model do
     let!(:dungeon_master) { create :dungeon_master_user }
 
     it 'generates unique slugs' do
-      @item = WeaponItem.create!(name: 'Torch', weight: 10)
-      @item1 = WeaponItem.create!(name: 'Torch', weight: 10)
-      @user_item = WeaponItem.create!(name: 'Torch', weight: 10, user: dungeon_master)
-      expect(@item.slug).to eq('torch__1')
-      expect(@item1.slug).to eq('torch__2')
-      expect(@user_item.slug).to eq('torch-jesshdm1')
+      @item = WeaponItem.create!(name: 'Test Unique Item', weight: 10)
+      @item1 = WeaponItem.create!(name: 'Test Unique Item', weight: 10)
+      @user_item = WeaponItem.create!(name: 'Test Unique Item', weight: 10, user: dungeon_master)
+      expect(@item.slug).to eq('test-unique-item')
+      expect(@item1.slug).to match(/^test-unique-item-[0-9a-f-]{36}$/)
+      expect(@user_item.slug).to match(/^test-unique-item-[0-9a-f-]{36}$/)
+      expect(@item1.slug).not_to eq(@user_item.slug)
     end
 
     it 'maintains same slug on update with no name change' do
-      @item = WeaponItem.create!(name: 'Torch', weight: 10)
-      @item1 = WeaponItem.create!(name: 'Torch', weight: 10)
-      @user_item = WeaponItem.create!(name: 'Torch', weight: 10, user: dungeon_master)
-      expect(@item.slug).to eq('torch__1')
+      initial_count = WeaponItem.count
+      @item = WeaponItem.create!(name: 'Test Unique Item', weight: 10)
+      @item1 = WeaponItem.create!(name: 'Test Unique Item', weight: 10)
+      @user_item = WeaponItem.create!(name: 'Test Unique Item', weight: 10, user: dungeon_master)
+      original_slug = @item.slug
+      expect(original_slug).to eq('test-unique-item')
       @item.update(weight: 12)
-      expect(WeaponItem.all.count).to eq(40)
+      expect(WeaponItem.all.count).to eq(initial_count + 3)
       @item.reload
-      expect(@item.slug).to eq('torch__1')
+      expect(@item.slug).to eq(original_slug)
       @item.update(weight: 8)
-      expect(WeaponItem.all.count).to eq(40)
+      expect(WeaponItem.all.count).to eq(initial_count + 3)
       @item.reload
-      expect(@item.slug).to eq('torch__1')
+      expect(@item.slug).to eq(original_slug)
       @item.update(weight: 12)
-      expect(WeaponItem.all.count).to eq(40)
+      expect(WeaponItem.all.count).to eq(initial_count + 3)
       @item.reload
-      expect(@item.slug).to eq('torch__1')
+      expect(@item.slug).to eq(original_slug)
     end
   end
 end

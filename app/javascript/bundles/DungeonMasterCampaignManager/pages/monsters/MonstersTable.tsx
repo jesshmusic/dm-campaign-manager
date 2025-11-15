@@ -110,9 +110,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     getMonsters: (searchTerm: string, userId?: number) => {
-      dispatch(
-        rest.actions.getMonsters({ search: searchTerm, user_id: userId })
-      );
+      dispatch(rest.actions.getMonsters({ search: searchTerm, user_id: userId }));
     },
   };
 }

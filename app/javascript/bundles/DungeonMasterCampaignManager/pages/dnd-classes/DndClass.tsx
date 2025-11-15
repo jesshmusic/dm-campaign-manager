@@ -41,10 +41,7 @@ const DndClass = (props: DndClassPageProps) => {
           <div className={styles.infoSection}>
             <div className={styles.sectionGroup}>
               <h2 className={styles.sectionHeading}>Class Features</h2>
-              <p>
-                As a {dndClass.name.toLowerCase()}, you gain the following class
-                features.
-              </p>
+              <p>As a {dndClass.name.toLowerCase()}, you gain the following class features.</p>
             </div>
             <HitPointsSection dndClass={dndClass} />
             <ProficienciesSection dndClass={dndClass} />

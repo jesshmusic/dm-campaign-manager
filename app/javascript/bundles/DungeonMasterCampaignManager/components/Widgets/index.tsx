@@ -9,7 +9,7 @@ import {
   GiLevelTwoAdvanced,
   GiOrcHead,
   GiRock,
-  GiSwordman
+  GiSwordman,
 } from 'react-icons/all';
 import ActionsInCombat from './ActionsInCombat';
 import TurnActions from './TurnActions';

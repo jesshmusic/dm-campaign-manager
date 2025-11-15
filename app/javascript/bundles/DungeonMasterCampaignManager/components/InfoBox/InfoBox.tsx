@@ -5,11 +5,7 @@
 import React from 'react';
 import Frame from '../Frame/Frame';
 
-const InfoBox = (props: {
-  monstersCount: number;
-  itemsCount: number;
-  spellsCount: number;
-}) => {
+const InfoBox = (props: { monstersCount: number; itemsCount: number; spellsCount: number }) => {
   return (
     <div className="g-col-sm-4">
       <Frame title="Dungeon Master's Toolbox">

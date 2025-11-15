@@ -19,15 +19,7 @@ type PageTitleProps = {
 };
 
 const PageTitle = (props: PageTitleProps) => {
-  const {
-    isDraconis,
-    hasButton,
-    buttonLink,
-    buttonTitle,
-    buttonVariant,
-    subtitle,
-    title,
-  } = props;
+  const { isDraconis, hasButton, buttonLink, buttonTitle, buttonVariant, subtitle, title } = props;
   return (
     <div className={styles.pageTitle}>
       <h1

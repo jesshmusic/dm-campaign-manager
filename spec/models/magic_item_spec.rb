@@ -72,31 +72,34 @@ RSpec.describe MagicItem, type: :model do
 
   context 'with the same name' do
     it 'generates unique slugs' do
-      @item = MagicItem.create!(name: 'Torch', weight: 10, rarity: 'uncommon')
-      @item1 = MagicItem.create!(name: 'Torch', weight: 10, rarity: 'uncommon')
-      @user_item = MagicItem.create!(name: 'Torch', weight: 10, user: dungeon_master, rarity: 'uncommon')
-      expect(@item.slug).to eq('torch__1')
-      expect(@item1.slug).to eq('torch__2')
-      expect(@user_item.slug).to eq('torch-jesshdm1')
+      @item = MagicItem.create!(name: 'Test Unique Item', weight: 10, rarity: 'uncommon')
+      @item1 = MagicItem.create!(name: 'Test Unique Item', weight: 10, rarity: 'uncommon')
+      @user_item = MagicItem.create!(name: 'Test Unique Item', weight: 10, user: dungeon_master, rarity: 'uncommon')
+      expect(@item.slug).to eq('test-unique-item')
+      expect(@item1.slug).to match(/^test-unique-item-[0-9a-f-]{36}$/)
+      expect(@user_item.slug).to match(/^test-unique-item-[0-9a-f-]{36}$/)
+      expect(@item1.slug).not_to eq(@user_item.slug)
     end
 
     it 'maintains same slug on update with no name change' do
-      @item = MagicItem.create!(name: 'Torch', weight: 10, rarity: 'uncommon')
-      @item1 = MagicItem.create!(name: 'Torch', weight: 10, rarity: 'uncommon')
-      @user_item = MagicItem.create!(name: 'Torch', weight: 10, user: dungeon_master, rarity: 'uncommon')
-      expect(@item.slug).to eq('torch__1')
+      initial_count = MagicItem.count
+      @item = MagicItem.create!(name: 'Test Unique Item', weight: 10, rarity: 'uncommon')
+      @item1 = MagicItem.create!(name: 'Test Unique Item', weight: 10, rarity: 'uncommon')
+      @user_item = MagicItem.create!(name: 'Test Unique Item', weight: 10, user: dungeon_master, rarity: 'uncommon')
+      original_slug = @item.slug
+      expect(original_slug).to eq('test-unique-item')
       @item.update(weight: 12)
-      expect(MagicItem.all.count).to eq(247)
+      expect(MagicItem.all.count).to eq(initial_count + 3)
       @item.reload
-      expect(@item.slug).to eq('torch__1')
+      expect(@item.slug).to eq(original_slug)
       @item.update(weight: 8)
-      expect(MagicItem.all.count).to eq(247)
+      expect(MagicItem.all.count).to eq(initial_count + 3)
       @item.reload
-      expect(@item.slug).to eq('torch__1')
+      expect(@item.slug).to eq(original_slug)
       @item.update(weight: 12)
-      expect(MagicItem.all.count).to eq(247)
+      expect(MagicItem.all.count).to eq(initial_count + 3)
       @item.reload
-      expect(@item.slug).to eq('torch__1')
+      expect(@item.slug).to eq(original_slug)
     end
 
     it 'should create a magic item from an imported JSON' do
@@ -110,9 +113,9 @@ RSpec.describe MagicItem, type: :model do
         'document__slug': 'wotc-srd',
         'document__title': 'Systems Reference Document'
       }
-      expect(MagicItem.all.count).to eq(244)
+      initial_count = MagicItem.count
       MagicItem.create_magic_item_from_old_magic_items(magic_item)
-      expect(MagicItem.all.count).to eq(244)
+      expect(MagicItem.all.count).to eq(initial_count + 1)
       magic_items = MagicItem.where('name like ?', '%Amulet of Health%')
       expect(magic_items).not_to be(nil)
       expect(magic_items.count).to eq(1)
@@ -134,14 +137,19 @@ RSpec.describe MagicItem, type: :model do
         'document__slug': 'wotc-srd',
         'document__title': 'Systems Reference Document'
       }
-      expect(MagicItem.all.count).to eq(244)
+      # Create it first
       MagicItem.create_magic_item_from_old_magic_items(magic_item)
-      expect(MagicItem.all.count).to eq(244)
-      expect(MagicItem.first.rarity).to eq('rare')
+      initial_count = MagicItem.count
+      # Import again - should not create duplicate
+      MagicItem.create_magic_item_from_old_magic_items(magic_item)
+      expect(MagicItem.all.count).to eq(initial_count)
+      created_item = MagicItem.find_by(slug: 'amulet-of-health')
+      expect(created_item.rarity).to eq('rare')
       magic_item[:rarity] = 'very rare'
       MagicItem.create_magic_item_from_old_magic_items(magic_item)
-      expect(MagicItem.all.count).to eq(244)
-      expect(MagicItem.first.rarity).to eq('very rare')
+      expect(MagicItem.all.count).to eq(initial_count)
+      created_item.reload
+      expect(created_item.rarity).to eq('very rare')
     end
   end
 end

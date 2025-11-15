@@ -9,10 +9,7 @@ import { useParams } from 'react-router-dom';
 
 const styles = require('./races.module.scss');
 
-const Race = (props: {
-  race?: RaceProps;
-  getRace: (raceSlug: string) => void;
-}) => {
+const Race = (props: { race?: RaceProps; getRace: (raceSlug: string) => void }) => {
   const { race, getRace } = props;
   const { raceSlug } = useParams<'raceSlug'>();
 
@@ -30,9 +27,7 @@ const Race = (props: {
       const result =
         race.abilityBonusOptions
           .map((ability) => {
-            return `your ${ability.ability.toLowerCase()} increases by ${
-              ability.bonus
-            }`;
+            return `your ${ability.ability.toLowerCase()} increases by ${ability.bonus}`;
           })
           .join(', and ') + '.';
       return result.charAt(0).toUpperCase() + result.slice(1);
@@ -65,8 +60,7 @@ const Race = (props: {
               {race.age}
             </div>
             <div>
-              <span className={styles.traitName}>Languages. </span>{' '}
-              {race.languageDescription}
+              <span className={styles.traitName}>Languages. </span> {race.languageDescription}
               <p>Starting languages: {race.languages.join(', ')}</p>
               {race.languageChoices.length > 0 ? (
                 <p>Choose from: {race.languageChoices.join(', ')}</p>
