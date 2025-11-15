@@ -31,6 +31,7 @@ jobs:
       DATABASE_URL: postgresql://postgres:postgres@localhost:5432/dungeon_master_guru_test
       RACK_ENV: test
       NODE_OPTIONS: --openssl-legacy-provider
+      AWS_S3_BUCKET: test-bucket
 
     steps:
       - name: Checkout code
@@ -62,6 +63,10 @@ jobs:
       - name: Setup database
         run: |
           bundle exec rails db:create db:schema:load --trace
+
+      - name: Seed test database
+        run: |
+          bundle exec rails db:seed RAILS_ENV=test
 
       - name: Run RSpec tests
         run: |
