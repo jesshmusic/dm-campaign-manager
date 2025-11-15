@@ -15,8 +15,7 @@
 #
 FactoryBot.define do
   factory :section do
-    name { "MyString" }
-    description { "MyString" }
-    slug { "MyString" }
+    sequence(:name) { |n| "Section #{n}" }
+    description { "A section description" }
   end
 end
