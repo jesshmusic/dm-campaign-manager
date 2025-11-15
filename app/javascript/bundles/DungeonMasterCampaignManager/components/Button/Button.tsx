@@ -57,12 +57,7 @@ const Button = (props: {
       type={type || 'button'}
     >
       {hideTitle ? '' : title}
-      {icon && (
-        <span className={classNames('', { [styles.iconOnly]: hideTitle })}>
-          {' '}
-          {icon}
-        </span>
-      )}
+      {icon && <span className={classNames('', { [styles.iconOnly]: hideTitle })}> {icon}</span>}
     </button>
   );
 };

@@ -18,9 +18,9 @@
 #
 FactoryBot.define do
   factory :rule do
-    name { "MyString" }
-    description { "MyString" }
-    slug { "MyString" }
-    string { "MyString" }
+    sequence(:name) { |n| "Rule #{n}" }
+    description { "A rule description" }
+    category { "General" }
+    subcategory { "Basic" }
   end
 end

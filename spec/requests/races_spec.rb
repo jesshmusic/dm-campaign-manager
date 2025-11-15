@@ -26,34 +26,34 @@ RSpec.describe 'Races', type: :request do
         expect(response).to have_http_status(200)
       end
 
-      it 'returns 3 races' do
+      it 'returns 6 races' do
         get '/v1/races.json'
         result_races = JSON.parse(response.body)
-        expect(result_races['count']).to eq(12)
+        expect(result_races['count']).to eq(6)
       end
     end
 
     context 'for Admins' do
       before(:each) do
-        # sign_in admin
+        stub_authentication(admin)
       end
 
-      it 'returns 5 races' do
+      it 'returns 8 races' do
         get '/v1/races.json'
         result_races = JSON.parse(response.body)
-        expect(result_races['count']).to eq(14)
+        expect(result_races['count']).to eq(8)
       end
     end
 
     context 'for Dungeon Masters' do
       before(:each) do
-        # sign_in dungeon_master
+        stub_authentication(dungeon_master)
       end
 
-      it 'returns 4 races that are only default or owned by this DM' do
+      it 'returns 7 races that are only default or owned by this DM' do
         get '/v1/races.json'
         result_races = JSON.parse(response.body)
-        expect(result_races['count']).to eq(13)
+        expect(result_races['count']).to eq(7)
         expect(result_races['results'].find { |race|
           race['name'] == 'DM Race'
         }).not_to be_nil
@@ -81,7 +81,7 @@ RSpec.describe 'Races', type: :request do
 
     context 'for Admins' do
       before(:each) do
-        # sign_in admin
+        stub_authentication(admin)
       end
 
       it 'returns a default race' do
@@ -100,7 +100,7 @@ RSpec.describe 'Races', type: :request do
 
     context 'for Dungeon Masters' do
       before(:each) do
-        # sign_in dungeon_master
+        stub_authentication(dungeon_master)
       end
 
       it 'returns a default race' do
@@ -114,7 +114,7 @@ RSpec.describe 'Races', type: :request do
         get "/v1/races/#{race_custom1.slug}.json"
         result_race = JSON.parse(response.body)
         expect(result_race['name']).to eq('DM Race')
-        expect(result_race['slug']).to eq('dm-race-jesshdm1')
+        expect(result_race['slug']).to eq(race_custom1.slug)
       end
 
       it 'returns error for DM trying to get custom race by another user' do
@@ -128,17 +128,19 @@ RSpec.describe 'Races', type: :request do
   describe 'POST Create Race' do
     context 'for Logged Out Users' do
       it 'returns an error for non-user creating race' do
+        stub_no_auth
         expect {
           post '/v1/races.json', params: { race: valid_attributes }
         }.to change(Race, :count).by(0)
         result_race = JSON.parse(response.body)
-        expect(result_race['error']).to eq('You need to sign in or sign up before continuing.')
+        expect(result_race['errors']).to eq(['Not Authenticated'])
+        expect(response).to have_http_status(:unauthorized)
       end
     end
 
     context 'for Admins' do
       before(:each) do
-        # sign_in admin
+        stub_authentication(admin)
       end
 
       it 'creates a new Race' do
@@ -153,7 +155,7 @@ RSpec.describe 'Races', type: :request do
 
     context 'for Dungeon Masters' do
       before(:each) do
-        # sign_in dungeon_master
+        stub_authentication(dungeon_master)
       end
 
       it 'creates a new Race with a user' do
@@ -170,26 +172,28 @@ RSpec.describe 'Races', type: :request do
   describe 'PUT Update Race' do
     context 'for Logged Out Users' do
       it 'returns an error for non-user editing' do
+        stub_no_auth
         put "/v1/races/#{race1.slug}.json", params: {
           race: {
             name: 'Test Race Edited'
           }
         }
         result_race = JSON.parse(response.body)
-        expect(result_race['error']).to eq('You need to sign in or sign up before continuing.')
+        expect(result_race['errors']).to eq(['Not Authenticated'])
+        expect(response).to have_http_status(:unauthorized)
       end
     end
 
     context 'for Admins' do
       before(:each) do
-        # sign_in admin
+        stub_authentication(admin)
       end
 
     end
 
     context 'for Dungeon Masters' do
       before(:each) do
-        # sign_in dungeon_master
+        stub_authentication(dungeon_master)
       end
 
       it 'updates the requested race belonging to DM' do
@@ -228,15 +232,17 @@ RSpec.describe 'Races', type: :request do
   describe 'DELETE Delete Race' do
     context 'for Logged Out Users' do
       it 'returns an error for non-user delete' do
+        stub_no_auth
         delete "/v1/races/#{race1.slug}.json"
         result_race = JSON.parse(response.body)
-        expect(result_race['error']).to eq('You need to sign in or sign up before continuing.')
+        expect(result_race['errors']).to eq(['Not Authenticated'])
+        expect(response).to have_http_status(:unauthorized)
       end
     end
 
     context 'for Admins' do
       before(:each) do
-        # sign_in admin
+        stub_authentication(admin)
       end
 
       it 'deletes the requested race belonging to DM' do
@@ -252,7 +258,7 @@ RSpec.describe 'Races', type: :request do
 
     context 'for Dungeon Masters' do
       before(:each) do
-        # sign_in dungeon_master
+        stub_authentication(dungeon_master)
       end
 
       it 'deletes the requested race belonging to DM' do
@@ -281,14 +287,14 @@ RSpec.describe 'Races', type: :request do
 
     context 'for Admins' do
       before(:each) do
-        # sign_in admin
+        stub_authentication(admin)
       end
 
     end
 
     context 'for Dungeon Masters' do
       before(:each) do
-        # sign_in dungeon_master
+        stub_authentication(dungeon_master)
       end
 
     end

@@ -8,16 +8,7 @@ import Select from 'react-select';
 const styles = require('./input.module.scss');
 
 export const ControllerInput = (props) => {
-  const {
-    type,
-    label,
-    errors,
-    className,
-    name,
-    placeholder,
-    isTextArea,
-    ...rest
-  } = props;
+  const { type, label, errors, className, name, placeholder, isTextArea, ...rest } = props;
 
   if (type === 'checkbox' || type === 'radio') {
     return (
@@ -31,18 +22,9 @@ export const ControllerInput = (props) => {
     <div className={classNames(styles.wrapper, className)}>
       <label className={styles.label}>{label}</label>
       {isTextArea ? (
-        <textarea
-          className={styles.input}
-          placeholder={placeholder}
-          {...rest}
-        />
+        <textarea className={styles.input} placeholder={placeholder} {...rest} />
       ) : (
-        <input
-          className={styles.input}
-          type={type || 'text'}
-          placeholder={placeholder}
-          {...rest}
-        />
+        <input className={styles.input} type={type || 'text'} placeholder={placeholder} {...rest} />
       )}
 
       {errors[name] && (
@@ -121,7 +103,7 @@ export const ControlledSelect = (props: {
       <Controller
         render={({ field: { onChange, value, ...rest } }) => {
           // Convert string value to option object for react-select
-          const selectedOption = options.find(option => option.value === value) || null;
+          const selectedOption = options.find((option) => option.value === value) || null;
 
           return (
             <Select
@@ -196,11 +178,7 @@ export const TagInput = (props: {
           {tags.map((tag, index) => (
             <span key={index} className={styles.tagPill}>
               {tag}
-              <button
-                type="button"
-                onClick={() => removeTag(index)}
-                className={styles.tagRemove}
-              >
+              <button type="button" onClick={() => removeTag(index)} className={styles.tagRemove}>
                 ×
               </button>
             </span>
@@ -234,9 +212,13 @@ export const ControlledTagInput = (props: {
       name={fieldName}
       render={({ field: { onChange, value } }) => {
         // Convert comma-separated string to array if needed
-        const tagsArray = typeof value === 'string'
-          ? value.split(',').map(t => t.trim()).filter(Boolean)
-          : value || [];
+        const tagsArray =
+          typeof value === 'string'
+            ? value
+                .split(',')
+                .map((t) => t.trim())
+                .filter(Boolean)
+            : value || [];
 
         return (
           <TagInput

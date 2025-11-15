@@ -15,7 +15,10 @@
       "Bash(git push:*)",
       "Bash(rails generate:*)",
       "Bash(rails db:migrate:*)",
-      "Bash(pkill:*)"
+      "Bash(pkill:*)",
+      "Bash(gh pr list:*)",
+      "Bash(yarn add:*)",
+      "Bash(\"/Users/jesshendricks/Code/dungeon-master-guru/spec/fixtures/test_image.jpg\")"
     ],
     "deny": [],
     "ask": []

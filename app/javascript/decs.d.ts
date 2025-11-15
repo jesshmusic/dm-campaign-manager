@@ -1,1 +1,1 @@
-declare module "redux-api";
+declare module 'redux-api';

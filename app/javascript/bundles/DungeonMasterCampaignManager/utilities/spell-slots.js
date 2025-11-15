@@ -378,61 +378,61 @@ const getSpellSlotsForClass = (dndClassName) => {
 };
 
 export const spellSlots = {
-  'Barbarian': {
+  Barbarian: {
     castingAbility: false,
   },
-  'Bard': {
+  Bard: {
     castingAbility: 'Charisma',
     spellLevels: 9,
     cantrips: true,
     slots: getSpellSlotsForClass('Bard'),
   },
-  'Cleric': {
+  Cleric: {
     castingAbility: 'Wisdom',
     spellLevels: 9,
     cantrips: true,
     slots: getSpellSlotsForClass('Cleric'),
   },
-  'Druid': {
+  Druid: {
     castingAbility: 'Wisdom',
     spellLevels: 9,
     cantrips: true,
     slots: getSpellSlotsForClass('Druid'),
   },
-  'Fighter': {
+  Fighter: {
     castingAbility: false,
   },
-  'Monk': {
+  Monk: {
     castingAbility: false,
   },
-  'Paladin': {
+  Paladin: {
     castingAbility: 'Charisma',
     spellLevels: 5,
     cantrips: false,
     slots: getSpellSlotsForClass('Paladin'),
   },
-  'Ranger': {
+  Ranger: {
     castingAbility: 'Wisdom',
     spellLevels: 5,
     cantrips: false,
     slots: getSpellSlotsForClass('Ranger'),
   },
-  'Rogue': {
+  Rogue: {
     castingAbility: false,
   },
-  'Sorcerer': {
+  Sorcerer: {
     castingAbility: 'Charisma',
     spellLevels: 9,
     cantrips: true,
     slots: getSpellSlotsForClass('Sorcerer'),
   },
-  'Warlock': {
+  Warlock: {
     castingAbility: 'Charisma',
     spellLevels: 5,
     cantrips: false,
     slots: getSpellSlotsForClass('Warlock'),
   },
-  'Wizard': {
+  Wizard: {
     castingAbility: 'Intelligence',
     spellLevels: 9,
     cantrips: true,

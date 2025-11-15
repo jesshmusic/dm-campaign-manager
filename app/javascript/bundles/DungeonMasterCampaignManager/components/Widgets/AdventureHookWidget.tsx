@@ -7,11 +7,11 @@ import CopyField from '../CopyField/CopyField';
 import Frame from '../Frame/Frame';
 import axios from 'axios';
 import AdventureHookOptions from './AdventureHookOptions';
-import DndSpinner from "../DndSpinners/DndSpinner";
+import DndSpinner from '../DndSpinners/DndSpinner';
 
 type RandomAdventureHook = {
-  adventure_hook: string
-}
+  adventure_hook: string;
+};
 
 const AdventureHookWidget = (props: { hideFrame?: boolean }) => {
   const [adventureHook, setAdventureHook] = useState('');
@@ -34,7 +34,7 @@ const AdventureHookWidget = (props: { hideFrame?: boolean }) => {
     return (
       <form>
         {isLoading ? (
-          <DndSpinner showTableFrame={false} text={'Generating Adventure Hook...'}/>
+          <DndSpinner showTableFrame={false} text={'Generating Adventure Hook...'} />
         ) : (
           <CopyField
             placeHolder={'Random Adventure Hook...'}
@@ -45,17 +45,19 @@ const AdventureHookWidget = (props: { hideFrame?: boolean }) => {
           />
         )}
         <div id={'adventureHookGeneratorSubmit'}>
-          <AdventureHookOptions onFormSubmit={handleGenerateHook} isLoading={isLoading}/>
+          <AdventureHookOptions onFormSubmit={handleGenerateHook} isLoading={isLoading} />
         </div>
       </form>
     );
-  }
+  };
 
-  return props.hideFrame ? renderContents() : (
+  return props.hideFrame ? (
+    renderContents()
+  ) : (
     <Frame title="Random Adventure Hook" subtitle="Generate a random adventure hook">
       {renderContents()}
     </Frame>
   );
-}
+};
 
 export default AdventureHookWidget;

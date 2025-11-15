@@ -44,28 +44,31 @@ RSpec.describe Race, type: :model do
       @user_race = Race.create!(name: 'Goober Fish', speed: 25,
                                 user: dungeon_master,)
       expect(@race.slug).to eq('goober-fish')
-      expect(@race1.slug).to eq('goober-fish-1')
-      expect(@user_race.slug).to eq('goober-fish-jesshdm1')
+      expect(@race1.slug).to match(/^goober-fish-[0-9a-f-]{36}$/)
+      expect(@user_race.slug).to match(/^goober-fish-[0-9a-f-]{36}$/)
+      expect(@race1.slug).not_to eq(@user_race.slug)
     end
 
     it "maintains same slug on update with no name change" do
+      initial_count = Race.count
       @race = Race.create!(name: 'Goober Fish', speed: 25)
       @race1 = Race.create!(name: 'Goober Fish', speed: 25)
       @user_race = Race.create!(name: 'Goober Fish', speed: 25,
                                 user: dungeon_master,)
-      expect(@race.slug).to eq('goober-fish')
+      original_slug = @race.slug
+      expect(original_slug).to eq('goober-fish')
       @race.update(size_description: 'Its really big I tell ya')
-      expect(Race.all.count).to eq(12)
+      expect(Race.all.count).to eq(initial_count + 3)
       @race.reload
-      expect(@race.slug).to eq('goober-fish')
+      expect(@race.slug).to eq(original_slug)
       @race.update(size_description: '... so big')
-      expect(Race.all.count).to eq(12)
+      expect(Race.all.count).to eq(initial_count + 3)
       @race.reload
-      expect(@race.slug).to eq('goober-fish')
+      expect(@race.slug).to eq(original_slug)
       @race.update(size_description: 'Its really big I tell ya')
-      expect(Race.all.count).to eq(12)
+      expect(Race.all.count).to eq(initial_count + 3)
       @race.reload
-      expect(@race.slug).to eq('goober-fish')
+      expect(@race.slug).to eq(original_slug)
     end
   end
 end

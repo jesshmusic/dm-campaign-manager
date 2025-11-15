@@ -56,7 +56,7 @@ module Admin::V1
     # POST /items.json
     def create
       @item = if params[:armor_item]
-                ArmorItem.new(item_params('ArmorItem'))
+                create_armor_item
               elsif params[:gear_item]
                 GearItem.new(item_params('GearItem'))
               elsif params[:gear_item]
@@ -135,6 +135,30 @@ module Admin::V1
     # Use callbacks to share common setup or constraints between api.
     def set_item
       @item = Item.friendly.find(params[:id])
+    end
+
+    # Build ArmorItem with armor_class association from flat parameters
+    def create_armor_item
+      armor_params = item_params('ArmorItem')
+
+      # Extract armor_class parameters
+      ac_base = armor_params.delete(:armor_class)
+      has_dex_bonus = armor_params.delete(:armor_dex_bonus)
+      max_dex_bonus = armor_params.delete(:armor_max_bonus)
+
+      # Create the ArmorItem
+      item = ArmorItem.new(armor_params)
+
+      # Build the armor_class association if armor_class parameter was provided
+      if ac_base.present?
+        item.build_armor_class(
+          ac_base: ac_base,
+          has_dex_bonus: has_dex_bonus,
+          max_dex_bonus: max_dex_bonus
+        )
+      end
+
+      item
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

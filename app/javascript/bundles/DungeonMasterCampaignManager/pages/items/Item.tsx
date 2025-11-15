@@ -59,8 +59,7 @@ const Item = (props: ItemPageProps) => {
                 {item.contents.map((contentItem, index) => (
                   <li key={`${contentItem.index}-${index}`}>
                     <Link to={`/app/items/${contentItem.index}`}>
-                      <strong>{contentItem.name}</strong> - quantity:{' '}
-                      {contentItem.quantity}
+                      <strong>{contentItem.name}</strong> - quantity: {contentItem.quantity}
                     </Link>
                   </li>
                 ))}

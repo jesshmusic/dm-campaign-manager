@@ -101,6 +101,6 @@ RSpec.configure do |config|
   Kernel.srand config.seed
 =end
   config.before(:suite) do
-    Rails.application.load_seed # loading seeds
+    # Rails.application.load_seed # loading seeds - disabled to remove SRD dependencies
   end
 end

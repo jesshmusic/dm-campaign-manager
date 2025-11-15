@@ -15,13 +15,7 @@ const ReadOnlyField = (props: {
       <label className={styles.label} htmlFor={name}>
         {label}
       </label>
-      <input
-        className={styles.input}
-        autoComplete={''}
-        type={'text'}
-        readOnly
-        value={value}
-      />
+      <input className={styles.input} autoComplete={''} type={'text'} readOnly value={value} />
     </div>
   );
 };

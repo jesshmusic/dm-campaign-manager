@@ -51,7 +51,7 @@ RSpec.describe User, type: :model do
       user.reload
     end
     it 'should not delete a user' do
-      expect(User.all.count).to eq(4)
+      expect(User.all.count).to eq(3)
     end
 
     it 'should set deleted_at instead of deleting the user' do

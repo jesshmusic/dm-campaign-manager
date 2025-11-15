@@ -3,14 +3,15 @@ require 'rails_helper'
 RSpec.describe 'Conditions', type: :request do
   describe 'GET /index' do
     it 'returns http success' do
-      get '/admin/v1/conditions/index'
+      get '/v1/conditions', headers: { 'Accept' => 'application/json' }
       expect(response).to have_http_status(:success)
     end
   end
 
   describe 'GET /show' do
     it 'returns http success' do
-      get '/admin/v1/conditions/show'
+      condition = Condition.create!(name: 'Test Condition', slug: 'test-condition')
+      get "/v1/conditions/#{condition.id}", headers: { 'Accept' => 'application/json' }
       expect(response).to have_http_status(:success)
     end
   end

@@ -16,16 +16,18 @@
 #
 FactoryBot.define do
   factory :ability_score do
-    name { "MyString" }
-    full_name { "MyString" }
-    desc { "MyString" }
-    slug { "MyString" }
+    sequence(:name) { |n| "AbilityScore#{n}" }
+    sequence(:full_name) { |n| "Ability Score #{n}" }
+    desc { "A long winded description" }
+    sequence(:slug) { |n| "ability-score-#{n}" }
 
     factory :str_ability_score do
       name { "STR" }
       full_name { "Strength" }
       desc { "A long winded description" }
       slug { "str" }
+
+      initialize_with { AbilityScore.find_or_initialize_by(slug: slug) }
     end
 
     factory :dex_ability_score do
@@ -33,6 +35,8 @@ FactoryBot.define do
       full_name { "Dexterity" }
       desc { "A long winded description" }
       slug { "dex" }
+
+      initialize_with { AbilityScore.find_or_initialize_by(slug: slug) }
     end
 
     factory :con_ability_score do
@@ -40,6 +44,8 @@ FactoryBot.define do
       full_name { "Constitution" }
       desc { "A long winded description" }
       slug { "con" }
+
+      initialize_with { AbilityScore.find_or_initialize_by(slug: slug) }
     end
 
     factory :int_ability_score do
@@ -47,6 +53,8 @@ FactoryBot.define do
       full_name { "Intelligence" }
       desc { "A long winded description" }
       slug { "int" }
+
+      initialize_with { AbilityScore.find_or_initialize_by(slug: slug) }
     end
 
     factory :wis_ability_score do
@@ -54,6 +62,8 @@ FactoryBot.define do
       full_name { "Wisdom" }
       desc { "A long winded description" }
       slug { "wis" }
+
+      initialize_with { AbilityScore.find_or_initialize_by(slug: slug) }
     end
 
     factory :cha_ability_score do
@@ -61,6 +71,8 @@ FactoryBot.define do
       full_name { "Charisma" }
       desc { "A long winded description" }
       slug { "cha" }
+
+      initialize_with { AbilityScore.find_or_initialize_by(slug: slug) }
     end
   end
 end
