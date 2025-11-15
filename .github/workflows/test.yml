@@ -67,6 +67,7 @@ jobs:
       - name: Seed test database
         run: |
           bundle exec rails db:seed RAILS_ENV=test
+          bundle exec rails srd:import_all RAILS_ENV=test
 
       - name: Run RSpec tests
         run: |
