@@ -1,0 +1,42 @@
+// Mock all react-icons to prevent import issues
+const React = require('react');
+
+const MockIcon = (props) => React.createElement('span', { 'data-testid': 'mock-icon', ...props }, 'Icon');
+
+// Export commonly used icons
+module.exports = {
+  GiFire: MockIcon,
+  GiAbstract029: MockIcon,
+  GiBroadsword: MockIcon,
+  GiInfo: MockIcon,
+  GiSkullCrossedBones: MockIcon,
+  GrClose: MockIcon,
+  AiOutlineHome: MockIcon,
+  BiHide: MockIcon,
+  BiLogIn: MockIcon,
+  BiLogOut: MockIcon,
+  BiShow: MockIcon,
+  GiAchillesHeel: MockIcon,
+  GiBookPile: MockIcon,
+  GiBookshelf: MockIcon,
+  GiBookStorm: MockIcon,
+  GiBurningBook: MockIcon,
+  GiCapeArmor: MockIcon,
+  GiChestArmor: MockIcon,
+  GiDungeonGate: MockIcon,
+  GiDwarfFace: MockIcon,
+  GiEvilMinion: MockIcon,
+  GiHorseHead: MockIcon,
+  GiKing: MockIcon,
+  GiMagicAxe: MockIcon,
+  GiMagicPalm: MockIcon,
+  GiMagicPotion: MockIcon,
+  GiMonsterGrasp: MockIcon,
+  GiPerson: MockIcon,
+  GiRuleBook: MockIcon,
+  GiSecretBook: MockIcon,
+  GiSpellBook: MockIcon,
+  GiSwapBag: MockIcon,
+  GiSwordArray: MockIcon,
+  GiToolbox: MockIcon,
+};

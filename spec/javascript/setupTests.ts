@@ -5,6 +5,15 @@
 
 import '@testing-library/jest-dom';
 
+// Mock fetch globally for API tests
+global.fetch = jest.fn(() =>
+  Promise.resolve({
+    json: () => Promise.resolve({}),
+    ok: true,
+    status: 200,
+  } as Response)
+) as jest.Mock;
+
 // Mock window.matchMedia (used by some UI components)
 Object.defineProperty(window, 'matchMedia', {
   writable: true,

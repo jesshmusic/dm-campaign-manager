@@ -20,6 +20,8 @@ module.exports = {
   moduleNameMapper: {
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
     '\\.(gif|ttf|eot|svg|png|jpg|jpeg)$': '<rootDir>/spec/javascript/__mocks__/fileMock.js',
+    '^react-icons/all$': '<rootDir>/spec/javascript/__mocks__/reactIconsMock.js',
+    '^react-icons/(.*)$': '<rootDir>/spec/javascript/__mocks__/reactIconsMock.js',
     '^bundles/(.*)$': '<rootDir>/app/javascript/bundles/$1',
     '^@/(.*)$': '<rootDir>/app/javascript/$1'
   },
@@ -35,9 +37,12 @@ module.exports = {
   coverageReporters: ['text', 'lcov', 'html'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
   testPathIgnorePatterns: ['/node_modules/', '/public/', '/vendor/'],
-  globals: {
-    'ts-jest': {
-      isolatedModules: true
+  coverageThreshold: {
+    global: {
+      branches: 80,
+      functions: 80,
+      lines: 80,
+      statements: 80
     }
   },
   verbose: true
