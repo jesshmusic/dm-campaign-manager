@@ -16,9 +16,7 @@ const Items = (props: ItemsPageProps) => {
     props.getItems(props.itemType, searchTerm);
   };
 
-  return (
-    <ItemsList columns={columns} data={data} onSearch={onSearch} {...props} />
-  );
+  return <ItemsList columns={columns} data={data} onSearch={onSearch} {...props} />;
 };
 
 function mapStateToProps(state) {

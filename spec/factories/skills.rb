@@ -16,9 +16,8 @@
 #
 FactoryBot.define do
   factory :skill do
-    slug { "" }
-    name { "" }
-    desc { "" }
-    ability_score { "MyString" }
+    sequence(:name) { |n| "Skill #{n}" }
+    desc { "A skill description" }
+    ability_score { "Dexterity" }
   end
 end

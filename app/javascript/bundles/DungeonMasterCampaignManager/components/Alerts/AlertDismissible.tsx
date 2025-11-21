@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  GiAbstract029,
-  GiBroadsword,
-  GiInfo,
-  GiSkullCrossedBones,
-} from 'react-icons/gi';
+import { GiAbstract029, GiBroadsword, GiInfo, GiSkullCrossedBones } from 'react-icons/gi';
 import classNames from 'classnames';
 import { FlashMessageType } from '../../reducers/flashMessages';
 import { GrClose } from 'react-icons/all';
@@ -24,14 +19,8 @@ type AlertDismissibleProps = {
 };
 
 const AlertDismissible = (props: AlertDismissibleProps) => {
-  const {
-    dismissFlashMessage,
-    messageId,
-    messageText,
-    messageHeading,
-    messageVariant,
-    offset,
-  } = props;
+  const { dismissFlashMessage, messageId, messageText, messageHeading, messageVariant, offset } =
+    props;
 
   const alertRef = React.useRef(null);
 
@@ -76,23 +65,15 @@ const AlertDismissible = (props: AlertDismissibleProps) => {
   };
 
   return (
-    <div
-      className={styles.alertWrapper}
-      ref={alertRef}
-      style={{ top: `${offset * 6 + 1}rem` }}
-    >
+    <div className={styles.alertWrapper} ref={alertRef} style={{ top: `${offset * 6 + 1}rem` }}>
       <div
         id={`liveToast${messageId}`}
         className={classNames(styles.alertContainer, {
-          [styles.alertContainerAlert]:
-            messageVariant === FlashMessageType.alert,
-          [styles.alertContainerSuccess]:
-            messageVariant === FlashMessageType.success,
+          [styles.alertContainerAlert]: messageVariant === FlashMessageType.alert,
+          [styles.alertContainerSuccess]: messageVariant === FlashMessageType.success,
           [styles.alertContainerInfo]: messageVariant === FlashMessageType.info,
-          [styles.alertContainerWarning]:
-            messageVariant === FlashMessageType.warning,
-          [styles.alertContainerDanger]:
-            messageVariant === FlashMessageType.danger,
+          [styles.alertContainerWarning]: messageVariant === FlashMessageType.warning,
+          [styles.alertContainerDanger]: messageVariant === FlashMessageType.danger,
         })}
         role="alert"
       >

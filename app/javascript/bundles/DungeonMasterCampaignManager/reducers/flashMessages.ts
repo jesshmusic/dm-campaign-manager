@@ -81,6 +81,9 @@ const flashMessages = createReducer([] as FlashMessage[], (builder) =>
     })
     .addCase(dismissFlashMessage, (state, action: AnyAction) => {
       const removeIndex = state.map((flash: FlashMessage) => flash.id).indexOf(action.payload);
+      if (removeIndex === -1) {
+        return state;
+      }
       const newState = [...state];
       newState.splice(removeIndex, 1);
       return newState;

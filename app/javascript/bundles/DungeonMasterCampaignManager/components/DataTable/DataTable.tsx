@@ -103,11 +103,7 @@ const DataTable = ({
       {onSearch && (
         <form onSubmit={handleSubmit(handleSearch)}>
           <div className={styles.inputGroup}>
-            <input
-              {...register('searchTerm')}
-              type="text"
-              placeholder="Search..."
-            />
+            <input {...register('searchTerm')} type="text" placeholder="Search..." />
             <Button
               className={styles.searchButton}
               color={Colors.secondary}
@@ -145,10 +141,7 @@ const DataTable = ({
                 <tr {...row.getRowProps()} onClick={() => handleGoToPage(row)}>
                   {row.cells.map((cell, index) => {
                     return (
-                      <td
-                        {...cell.getCellProps()}
-                        className={index === 0 ? 'name-row' : ''}
-                      >
+                      <td {...cell.getCellProps()} className={index === 0 ? 'name-row' : ''}>
                         {cell.render('Cell')}
                       </td>
                     );
@@ -194,9 +187,10 @@ const DataTable = ({
           </div>
           <div className={styles.pageForm}>
             <Select<SelectOption>
-              options={[perPage, perPage * 2, perPage * 3, perPage * 4].map(
-                (pageSize) => ({ label: `Show ${pageSize}`, value: pageSize })
-              )}
+              options={[perPage, perPage * 2, perPage * 3, perPage * 4].map((pageSize) => ({
+                label: `Show ${pageSize}`,
+                value: pageSize,
+              }))}
               defaultValue={{ label: `Show ${perPage}`, value: perPage }}
               onChange={(option) => {
                 dataTable.setPageSize(Number(option ? option.value : perPage));

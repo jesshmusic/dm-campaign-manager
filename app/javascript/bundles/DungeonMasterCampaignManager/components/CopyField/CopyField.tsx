@@ -12,13 +12,7 @@ type CopyFieldProps = {
   isTextArea?: boolean;
 };
 
-const CopyField = ({
-  text,
-  label,
-  fieldId,
-  placeHolder,
-  isTextArea,
-}: CopyFieldProps) => {
+const CopyField = ({ text, label, fieldId, placeHolder, isTextArea }: CopyFieldProps) => {
   const copyTextFieldRef = useRef<HTMLInputElement | null>(null);
   const copyTextAreaRef = useRef<HTMLTextAreaElement | null>(null);
   const [currentValue] = useState('');

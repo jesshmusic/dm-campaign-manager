@@ -13,6 +13,7 @@
     "target": "es5",
     "jsx": "react",
     "allowSyntheticDefaultImports": true,
+    "isolatedModules": true,
     "noImplicitAny": false,
     "noImplicitThis": true,
     "noImplicitReturns": true,

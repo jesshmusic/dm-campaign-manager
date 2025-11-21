@@ -1,7 +1,28 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 require 'spec_helper'
 require 'simplecov'
-SimpleCov.start
+SimpleCov.start do
+  # Only track specific directories
+  add_filter do |source_file|
+    # Keep app/models (except import_srd utilities)
+    if source_file.filename.include?('app/models')
+      source_file.filename.include?('utilities/import_srd')
+    # Keep app/controllers/admin/v1
+    elsif source_file.filename.include?('app/controllers/admin/v1')
+      false
+    # Filter out everything else
+    else
+      true
+    end
+  end
+
+  add_group 'Admin::V1 Controllers', 'app/controllers/admin/v1'
+  add_group 'Models', 'app/models'
+
+  # Coverage thresholds - removed to see actual coverage
+  # minimum_coverage 80
+  # minimum_coverage_by_file 50
+end
 ENV['RAILS_ENV'] ||= 'test'
 require File.expand_path('../../config/environment', __FILE__)
 # Prevent database truncation if the environment is production
@@ -22,7 +43,7 @@ require 'rspec/rails'
 # directory. Alternatively, in the individual `*_spec.rb` files, manually
 # require only the support files necessary.
 #
-# Dir[Rails.root.join('spec', 'support', '**', '*.rb')].each { |f| require f }
+Dir[Rails.root.join('spec', 'support', '**', '*.rb')].each { |f| require f }
 
 # Checks for pending migrations and applies them before tests are run.
 # If you are not using ActiveRecord, you can remove these lines.
@@ -47,6 +68,7 @@ RSpec.configure do |config|
   end
 
   config.extend ControllerMacros, type: :controller
+  config.include AuthHelpers, type: :request
 
   # config.include RequestSpecHelper, type: :request
 
@@ -77,4 +99,18 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
+
+  # Configure FactoryBot
+  config.include FactoryBot::Syntax::Methods
+
+  # Include ActiveSupport test helpers for time travel
+  config.include ActiveSupport::Testing::TimeHelpers
+end
+
+# Configure shoulda-matchers
+Shoulda::Matchers.configure do |config|
+  config.integrate do |with|
+    with.test_framework :rspec
+    with.library :rails
+  end
 end

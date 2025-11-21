@@ -159,6 +159,7 @@ class Monster < ApplicationRecord
   end
 
   def hit_dice_string
+    return '' if hit_dice.nil?
     con_mod = DndRules.ability_score_modifier(constitution)
     num_hit_die = hit_dice.scan(/\d+/).first.to_i
     if con_mod > 0
@@ -200,6 +201,7 @@ class Monster < ApplicationRecord
     num_attacks = 1
     num_attack_types = 0
     monster_actions.each do |action|
+      next if action.desc.nil?
       damage_dice = action.desc[/([1-9]\d*)?d([1-9]\d*)/m]
       npc_dam_bonus = DndRules.ability_score_modifier(strength)
       _, base_damage = NpcGenerator.action_damage(damage_dice, npc_dam_bonus, action.desc)

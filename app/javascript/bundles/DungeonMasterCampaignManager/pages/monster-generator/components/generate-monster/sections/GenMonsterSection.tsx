@@ -1,9 +1,6 @@
 import React from 'react';
 
-const GenMonsterSection = (props: {
-  children: React.ReactNode;
-  heading: string;
-}) => {
+const GenMonsterSection = (props: { children: React.ReactNode; heading: string }) => {
   const { children, heading } = props;
   return (
     <div>
