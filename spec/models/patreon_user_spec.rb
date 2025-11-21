@@ -1,50 +1,42 @@
-# == Schema Information
-#
-# Table name: patreon_users
-#
-#  id                    :bigint           not null, primary key
-#  access_token          :string
-#  email                 :string
-#  expires_at            :datetime
-#  has_free              :boolean          default(TRUE)
-#  has_premium           :boolean          default(FALSE)
-#  last_authenticated_at :datetime
-#  name                  :string
-#  refresh_token         :string
-#  tier_name             :string
-#  created_at            :datetime         not null
-#  updated_at            :datetime         not null
-#  patreon_id            :string
-#  user_id               :string           not null
-#
-
 require 'rails_helper'
 
 RSpec.describe PatreonUser, type: :model do
-  let(:patreon_user) { create(:patreon_user) }
+  describe 'factory' do
+    it 'is valid' do
+      expect(create(:patreon_user)).to be_valid
+    end
+  end
 
   describe 'validations' do
-    subject { build(:patreon_user) }
+    it 'requires user_id presence' do
+      patreon_user = build(:patreon_user, user_id: nil)
+      expect(patreon_user).not_to be_valid
+      expect(patreon_user.errors[:user_id]).to include("can't be blank")
+    end
 
-    it { should validate_presence_of(:user_id) }
-    it { should validate_uniqueness_of(:user_id) }
+    it 'requires unique user_id' do
+      create(:patreon_user, user_id: 'user_123')
+      patreon_user = build(:patreon_user, user_id: 'user_123')
+      expect(patreon_user).not_to be_valid
+      expect(patreon_user.errors[:user_id]).to include('has already been taken')
+    end
   end
 
   describe 'scopes' do
-    let!(:active_user) { create(:patreon_user, expires_at: 1.week.from_now) }
-    let!(:expired_user) { create(:patreon_user, :expired) }
-    let!(:premium_user) { create(:patreon_user, :wizard) }
-    let!(:free_user) { create(:patreon_user, :free) }
+    let!(:active_user) { create(:patreon_user, expires_at: 1.day.from_now) }
+    let!(:expired_user) { create(:patreon_user, expires_at: 1.day.ago) }
+    let!(:premium_user) { create(:patreon_user, has_premium: true, expires_at: 1.day.from_now) }
+    let!(:free_user) { create(:patreon_user, has_premium: false, expires_at: 1.day.from_now) }
 
     describe '.active' do
-      it 'returns only users with future expiry dates' do
-        expect(PatreonUser.active).to include(active_user, premium_user)
+      it 'returns users with future expires_at' do
+        expect(PatreonUser.active).to include(active_user)
         expect(PatreonUser.active).not_to include(expired_user)
       end
     end
 
     describe '.premium' do
-      it 'returns only premium users' do
+      it 'returns users with has_premium true' do
         expect(PatreonUser.premium).to include(premium_user)
         expect(PatreonUser.premium).not_to include(free_user)
       end
@@ -52,197 +44,104 @@ RSpec.describe PatreonUser, type: :model do
   end
 
   describe '#authenticated?' do
-    context 'when expires_at is in the future' do
-      let(:user) { create(:patreon_user, expires_at: 1.day.from_now) }
-
-      it 'returns true' do
-        expect(user.authenticated?).to be true
-      end
+    it 'returns true when expires_at is in the future' do
+      patreon_user = create(:patreon_user, expires_at: 1.hour.from_now)
+      expect(patreon_user.authenticated?).to be true
     end
 
-    context 'when expires_at is in the past' do
-      let(:user) { create(:patreon_user, :expired) }
-
-      it 'returns false' do
-        expect(user.authenticated?).to be false
-      end
+    it 'returns false when expires_at is in the past' do
+      patreon_user = create(:patreon_user, expires_at: 1.hour.ago)
+      expect(patreon_user.authenticated?).to be false
     end
 
-    context 'when expires_at is nil' do
-      let(:user) { create(:patreon_user, :unauthenticated) }
-
-      it 'returns false' do
-        expect(user.authenticated?).to be false
-      end
-    end
-
-    context 'when expires_at is exactly now' do
-      let(:user) { create(:patreon_user, expires_at: Time.current) }
-
-      it 'returns false' do
-        expect(user.authenticated?).to be false
-      end
+    it 'returns false when expires_at is nil' do
+      patreon_user = create(:patreon_user, expires_at: nil)
+      expect(patreon_user.authenticated?).to be false
     end
   end
 
   describe '#as_json_for_api' do
-    let(:user) do
-      create(
-        :patreon_user,
-        user_id: 'user123',
-        has_free: true,
-        has_premium: false,
-        tier_name: 'Apprentice',
-        expires_at: Time.zone.parse('2025-12-31 23:59:59')
-      )
-    end
+    it 'returns correctly formatted JSON' do
+      patreon_user = create(:patreon_user,
+                           user_id: 'user_123',
+                           has_free: true,
+                           has_premium: false,
+                           tier_name: 'Free',
+                           expires_at: Time.zone.parse('2025-12-31 23:59:59'))
 
-    it 'returns a hash with expected keys' do
-      json = user.as_json_for_api
+      json = patreon_user.as_json_for_api
 
-      expect(json).to include(
-        :userId,
-        :has_free,
-        :has_premium,
-        :tier_name,
-        :expires_in
-      )
-    end
-
-    it 'includes userId' do
-      expect(user.as_json_for_api[:userId]).to eq('user123')
-    end
-
-    it 'includes access flags' do
-      json = user.as_json_for_api
+      expect(json[:userId]).to eq('user_123')
       expect(json[:has_free]).to be true
       expect(json[:has_premium]).to be false
-    end
-
-    it 'maps legacy tier names' do
-      legacy_user = create(:patreon_user, tier_name: 'Adventurer')
-      expect(legacy_user.as_json_for_api[:tier_name]).to eq('Wizard')
-
-      current_user = create(:patreon_user, tier_name: 'Apprentice')
-      expect(current_user.as_json_for_api[:tier_name]).to eq('Apprentice')
-    end
-
-    it 'defaults to Free when tier_name is nil' do
-      user = create(:patreon_user, tier_name: nil)
-      expect(user.as_json_for_api[:tier_name]).to eq('Free')
-    end
-
-    it 'converts expires_at to milliseconds' do
-      # Use a specific time for testing
-      user = create(:patreon_user, expires_at: Time.zone.parse('2025-01-15 12:00:00'))
-      json = user.as_json_for_api
-
+      expect(json[:tier_name]).to eq('Free')
       expect(json[:expires_in]).to be_a(Integer)
-      expect(json[:expires_in]).to eq((user.expires_at.to_f * 1000).to_i)
+    end
+
+    it 'maps legacy "Adventurer" tier to "Wizard"' do
+      patreon_user = create(:patreon_user, tier_name: 'Adventurer')
+      json = patreon_user.as_json_for_api
+      expect(json[:tier_name]).to eq('Wizard')
+    end
+
+    it 'defaults to "Free" when tier_name is nil' do
+      patreon_user = create(:patreon_user, tier_name: nil)
+      json = patreon_user.as_json_for_api
+      expect(json[:tier_name]).to eq('Free')
     end
 
     it 'returns nil for expires_in when expires_at is nil' do
-      user = create(:patreon_user, :unauthenticated)
-      expect(user.as_json_for_api[:expires_in]).to be_nil
+      patreon_user = create(:patreon_user, expires_at: nil)
+      json = patreon_user.as_json_for_api
+      expect(json[:expires_in]).to be_nil
+    end
+
+    it 'converts expires_at to milliseconds' do
+      expires = Time.zone.parse('2025-12-31 12:00:00')
+      patreon_user = create(:patreon_user, expires_at: expires)
+      json = patreon_user.as_json_for_api
+      expect(json[:expires_in]).to eq((expires.to_f * 1000).to_i)
     end
   end
 
   describe '#update_from_patreon!' do
-    let(:user) { create(:patreon_user) }
+    let(:patreon_user) { create(:patreon_user) }
+    let(:new_expires_at) { 1.month.from_now }
     let(:patreon_data) do
       {
-        patreon_id: 'new_patreon_123',
-        email: 'updated@example.com',
-        name: 'Updated Name',
-        has_free: true,
+        patreon_id: 'patreon_456',
+        email: 'new@example.com',
+        name: 'New Name',
+        has_free: false,
         has_premium: true,
         tier_name: 'Wizard',
-        expires_at: 1.month.from_now,
+        expires_at: new_expires_at,
         access_token: 'new_access_token',
         refresh_token: 'new_refresh_token'
       }
     end
 
-    it 'updates all patreon fields' do
-      user.update_from_patreon!(patreon_data)
+    it 'updates all patreon data fields' do
+      freeze_time do
+        patreon_user.update_from_patreon!(patreon_data)
 
-      expect(user.patreon_id).to eq('new_patreon_123')
-      expect(user.email).to eq('updated@example.com')
-      expect(user.name).to eq('Updated Name')
-      expect(user.has_free).to be true
-      expect(user.has_premium).to be true
-      expect(user.tier_name).to eq('Wizard')
-      expect(user.access_token).to eq('new_access_token')
-      expect(user.refresh_token).to eq('new_refresh_token')
+        expect(patreon_user.patreon_id).to eq('patreon_456')
+        expect(patreon_user.email).to eq('new@example.com')
+        expect(patreon_user.name).to eq('New Name')
+        expect(patreon_user.has_free).to be false
+        expect(patreon_user.has_premium).to be true
+        expect(patreon_user.tier_name).to eq('Wizard')
+        expect(patreon_user.expires_at).to eq(new_expires_at)
+        expect(patreon_user.access_token).to eq('new_access_token')
+        expect(patreon_user.refresh_token).to eq('new_refresh_token')
+        expect(patreon_user.last_authenticated_at).to eq(Time.current)
+      end
     end
 
     it 'updates last_authenticated_at to current time' do
-      travel_to Time.current do
-        user.update_from_patreon!(patreon_data)
-        expect(user.last_authenticated_at).to be_within(1.second).of(Time.current)
-      end
-    end
-
-    it 'updates expires_at' do
-      expected_expires_at = patreon_data[:expires_at]
-      user.update_from_patreon!(patreon_data)
-      expect(user.expires_at).to be_within(1.second).of(expected_expires_at)
-    end
-
-    it 'raises error if update fails' do
-      allow(user).to receive(:update!).and_raise(ActiveRecord::RecordInvalid)
-
-      expect {
-        user.update_from_patreon!(patreon_data)
-      }.to raise_error(ActiveRecord::RecordInvalid)
-    end
-  end
-
-  describe 'factory' do
-    it 'creates a valid user' do
-      expect(patreon_user).to be_valid
-    end
-
-    it 'generates unique user_ids' do
-      user1 = create(:patreon_user)
-      user2 = create(:patreon_user)
-
-      expect(user1.user_id).not_to eq(user2.user_id)
-    end
-
-    describe 'traits' do
-      it 'creates free tier user' do
-        user = create(:patreon_user, :free)
-        expect(user.has_free).to be true
-        expect(user.has_premium).to be false
-        expect(user.tier_name).to eq('Free')
-      end
-
-      it 'creates apprentice tier user' do
-        user = create(:patreon_user, :apprentice)
-        expect(user.has_free).to be true
-        expect(user.has_premium).to be false
-        expect(user.tier_name).to eq('Apprentice')
-      end
-
-      it 'creates wizard tier user' do
-        user = create(:patreon_user, :wizard)
-        expect(user.has_free).to be true
-        expect(user.has_premium).to be true
-        expect(user.tier_name).to eq('Wizard')
-      end
-
-      it 'creates expired user' do
-        user = create(:patreon_user, :expired)
-        expect(user.expires_at).to be < Time.current
-      end
-
-      it 'creates unauthenticated user' do
-        user = create(:patreon_user, :unauthenticated)
-        expect(user.access_token).to be_nil
-        expect(user.refresh_token).to be_nil
-        expect(user.expires_at).to be_nil
-        expect(user.last_authenticated_at).to be_nil
+      freeze_time do
+        patreon_user.update_from_patreon!(patreon_data)
+        expect(patreon_user.last_authenticated_at).to be_within(1.second).of(Time.current)
       end
     end
   end

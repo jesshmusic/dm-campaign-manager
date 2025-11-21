@@ -58,7 +58,7 @@ export const dashboardComponents: {
     icon: <GiLevelTwoAdvanced />,
     title: 'Random Adventure Hook',
     subtitle: 'Generate a random adventure hook',
-    grid: { w: 4, h: 4, x: 4, y: Infinity, minW: 3, minH: 4 },
+    grid: { w: 4, h: 5, x: 4, y: Infinity, minW: 3, minH: 5 },
   },
   npcGen: {
     component: NPCGenButton,

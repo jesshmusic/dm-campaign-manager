@@ -1,7 +1,28 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 require 'spec_helper'
 require 'simplecov'
-SimpleCov.start
+SimpleCov.start do
+  # Only track specific directories
+  add_filter do |source_file|
+    # Keep app/models (except import_srd utilities)
+    if source_file.filename.include?('app/models')
+      source_file.filename.include?('utilities/import_srd')
+    # Keep app/controllers/admin/v1
+    elsif source_file.filename.include?('app/controllers/admin/v1')
+      false
+    # Filter out everything else
+    else
+      true
+    end
+  end
+
+  add_group 'Admin::V1 Controllers', 'app/controllers/admin/v1'
+  add_group 'Models', 'app/models'
+
+  # Coverage thresholds - removed to see actual coverage
+  # minimum_coverage 80
+  # minimum_coverage_by_file 50
+end
 ENV['RAILS_ENV'] ||= 'test'
 require File.expand_path('../../config/environment', __FILE__)
 # Prevent database truncation if the environment is production

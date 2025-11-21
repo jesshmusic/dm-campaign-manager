@@ -280,23 +280,149 @@ RSpec.describe 'Spells', type: :request do
     end
   end
 
-  describe 'Get TEMPLATE' do
-    context 'for Logged Out Users' do
+  describe 'GET Index with list parameter' do
+    let!(:low_level_spell) { create(:spell, name: 'Cantrip Spell', level: 0) }
+    let!(:mid_level_spell) { create(:spell, name: 'Fireball', level: 3) }
+    let!(:high_level_spell) { create(:spell, name: 'Power Word Kill', level: 9) }
 
-    end
+    context 'with list and max params' do
+      it 'returns spells up to max level' do
+        get '/v1/spells.json', params: { list: true, max: 3 }
+        result = JSON.parse(response.body)
 
-    context 'for Admins' do
-      before(:each) do
-        stub_authentication(admin)
+        expect(response).to have_http_status(200)
+        expect(result['count']).to be > 0
+        expect(result['results']).to be_an(Array)
+        result['results'].each do |spell|
+          expect(spell['data']['level']).to be <= 3
+        end
       end
-
     end
 
+    context 'with list, search, and max params' do
+      it 'returns filtered and level-limited spells' do
+        get '/v1/spells.json', params: { list: true, search: 'Fire', max: 5 }
+        result = JSON.parse(response.body)
+
+        expect(response).to have_http_status(200)
+        expect(result['count']).to be >= 0
+        expect(result['results']).to be_an(Array)
+      end
+    end
+
+    context 'with list and search params only' do
+      it 'returns searched spells' do
+        get '/v1/spells.json', params: { list: true, search: 'Cantrip' }
+        result = JSON.parse(response.body)
+
+        expect(response).to have_http_status(200)
+        expect(result['results']).to be_an(Array)
+      end
+    end
+
+    context 'with list param only' do
+      it 'returns all spells' do
+        get '/v1/spells.json', params: { list: true }
+        result = JSON.parse(response.body)
+
+        expect(response).to have_http_status(200)
+        expect(result['count']).to be > 0
+        expect(result['results']).to be_an(Array)
+        expect(result['results'].first).to have_key('name')
+        expect(result['results'].first).to have_key('id')
+        expect(result['results'].first).to have_key('data')
+      end
+    end
+  end
+
+  describe 'GET Index with filtering' do
+    let!(:wizard_class) { create(:dnd_class, name: 'Wizard') }
+    let!(:cleric_class) { create(:dnd_class, name: 'Cleric') }
+    let!(:wizard_spell) { create(:spell, name: 'Magic Missile', level: 1) }
+    let!(:cleric_spell) { create(:spell, name: 'Cure Wounds', level: 1) }
+
+    before do
+      wizard_spell.dnd_classes << wizard_class
+      cleric_spell.dnd_classes << cleric_class
+    end
+
+    context 'with dnd_class and search params' do
+      it 'returns spells for specific class and search term' do
+        get '/v1/spells.json', params: { dnd_class: 'Wizard', search: 'Magic' }
+        result = JSON.parse(response.body)
+
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context 'with dnd_class param only' do
+      it 'returns spells for specific class' do
+        get '/v1/spells.json', params: { dnd_class: 'Wizard' }
+        result = JSON.parse(response.body)
+
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context 'with search param only' do
+      it 'returns searched spells' do
+        get '/v1/spells.json', params: { search: 'Cure' }
+        result = JSON.parse(response.body)
+
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context 'with level param' do
+      it 'filters spells by level' do
+        get '/v1/spells.json', params: { level: 1 }
+        result = JSON.parse(response.body)
+
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context 'with level and search params' do
+      it 'filters spells by level and search' do
+        get '/v1/spells.json', params: { level: 1, search: 'Magic' }
+        result = JSON.parse(response.body)
+
+        expect(response).to have_http_status(200)
+      end
+    end
+  end
+
+  describe 'POST Create Spell with validation errors' do
     context 'for Dungeon Masters' do
       before(:each) do
         stub_authentication(dungeon_master)
       end
 
+      it 'returns error when spell creation fails' do
+        expect {
+          post '/v1/spells.json', params: { spell: { name: nil } }
+        }.to change(Spell, :count).by(0)
+
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+    end
+  end
+
+  describe 'PUT Update Spell with validation errors' do
+    context 'for Dungeon Masters' do
+      before(:each) do
+        stub_authentication(dungeon_master)
+      end
+
+      it 'returns error when spell update fails validation' do
+        put "/v1/spells/#{spell_custom1.slug}.json", params: {
+          spell: {
+            name: nil
+          }
+        }
+
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
     end
   end
 end

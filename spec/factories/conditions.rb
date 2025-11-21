@@ -15,7 +15,7 @@
 #
 FactoryBot.define do
   factory :condition do
-    index { "MyString" }
-    name { "MyString" }
+    sequence(:name) { |n| "Condition #{n}" }
+    description { ["A status condition affecting creatures"] }
   end
 end

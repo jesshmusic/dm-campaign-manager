@@ -9,6 +9,12 @@ import { useAuth0 } from '@auth0/auth0-react';
 jest.mock('@auth0/auth0-react');
 const mockUseAuth0 = useAuth0 as jest.MockedFunction<typeof useAuth0>;
 
+// Mock React Router Navigate to prevent infinite loops in tests
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  Navigate: ({ to }: { to: string }) => <div data-testid="navigate" data-to={to}>Redirecting to {to}</div>,
+}));
+
 // Mock DndSpinner component
 jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/components/DndSpinners/DndSpinner', () => {
   return function DndSpinner() {
@@ -44,14 +50,22 @@ describe('ProtectedRoute', () => {
   });
 
   describe('unauthenticated user', () => {
-    it.skip('should redirect to home when user is not authenticated', () => {
-      // Skip this test to avoid memory issues with Navigate in test environment
-      // The redirect logic is tested in integration tests
+    it('should redirect to home when user is not authenticated', () => {
       mockUseAuth0.mockReturnValue({
         isAuthenticated: false,
         isLoading: false,
         user: null,
       } as any);
+
+      render(
+        <MemoryRouter>
+          <ProtectedRoute as={TestComponent} />
+        </MemoryRouter>
+      );
+
+      expect(screen.getByTestId('navigate')).toBeInTheDocument();
+      expect(screen.getByTestId('navigate')).toHaveAttribute('data-to', '/');
+      expect(screen.queryByTestId('protected-content')).not.toBeInTheDocument();
     });
   });
 
@@ -109,31 +123,58 @@ describe('ProtectedRoute', () => {
       expect(screen.getByTestId('protected-content')).toBeInTheDocument();
     });
 
-    it.skip('should redirect non-admin user from admin route', () => {
-      // Skip redirect tests to avoid memory issues
+    it('should redirect non-admin user from admin route', () => {
       mockUseAuth0.mockReturnValue({
         isAuthenticated: true,
         isLoading: false,
         user: { name: 'Regular User', role: 'user' },
       } as any);
+
+      render(
+        <MemoryRouter>
+          <ProtectedRoute as={TestComponent} requireAdmin={true} />
+        </MemoryRouter>
+      );
+
+      expect(screen.getByTestId('navigate')).toBeInTheDocument();
+      expect(screen.getByTestId('navigate')).toHaveAttribute('data-to', '/');
+      expect(screen.queryByTestId('protected-content')).not.toBeInTheDocument();
     });
 
-    it.skip('should redirect user without role from admin route', () => {
-      // Skip redirect tests to avoid memory issues
+    it('should redirect user without role from admin route', () => {
       mockUseAuth0.mockReturnValue({
         isAuthenticated: true,
         isLoading: false,
         user: { name: 'User Without Role' },
       } as any);
+
+      render(
+        <MemoryRouter>
+          <ProtectedRoute as={TestComponent} requireAdmin={true} />
+        </MemoryRouter>
+      );
+
+      expect(screen.getByTestId('navigate')).toBeInTheDocument();
+      expect(screen.getByTestId('navigate')).toHaveAttribute('data-to', '/');
+      expect(screen.queryByTestId('protected-content')).not.toBeInTheDocument();
     });
 
-    it.skip('should redirect unauthenticated user from admin route', () => {
-      // Skip redirect tests to avoid memory issues
+    it('should redirect unauthenticated user from admin route', () => {
       mockUseAuth0.mockReturnValue({
         isAuthenticated: false,
         isLoading: false,
         user: null,
       } as any);
+
+      render(
+        <MemoryRouter>
+          <ProtectedRoute as={TestComponent} requireAdmin={true} />
+        </MemoryRouter>
+      );
+
+      expect(screen.getByTestId('navigate')).toBeInTheDocument();
+      expect(screen.getByTestId('navigate')).toHaveAttribute('data-to', '/');
+      expect(screen.queryByTestId('protected-content')).not.toBeInTheDocument();
     });
   });
 

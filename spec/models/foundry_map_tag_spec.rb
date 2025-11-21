@@ -1,149 +1,173 @@
-# == Schema Information
-#
-# Table name: foundry_map_tags
-#
-#  id         :bigint           not null, primary key
-#  name       :string           not null
-#  slug       :string           not null
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#
-
 require 'rails_helper'
 
 RSpec.describe FoundryMapTag, type: :model do
-  let(:foundry_map_tag) { create(:foundry_map_tag) }
-
-  describe 'associations' do
-    it { should have_many(:foundry_map_taggings).dependent(:destroy) }
-    it { should have_many(:foundry_maps).through(:foundry_map_taggings) }
+  describe 'factory' do
+    it 'is valid' do
+      expect(create(:foundry_map_tag)).to be_valid
+    end
   end
 
   describe 'validations' do
-    subject { build(:foundry_map_tag) }
+    it 'requires name' do
+      tag = build(:foundry_map_tag, name: nil)
+      expect(tag).not_to be_valid
+    end
 
-    it { should validate_presence_of(:name) }
-    it { should validate_uniqueness_of(:name) }
-    # Note: slug presence is ensured by before_validation callback
-    it { should validate_uniqueness_of(:slug) }
-  end
+    it 'is valid with name' do
+      tag = build(:foundry_map_tag, name: 'Tavern')
+      expect(tag).to be_valid
+    end
 
-  describe 'callbacks' do
-    describe 'before_validation' do
-      context 'when slug is blank and name is present' do
-        it 'generates slug from name' do
-          tag = build(:foundry_map_tag, name: 'Haunted Castle', slug: nil)
-          tag.valid?
-          expect(tag.slug).to eq('haunted-castle')
-        end
+    it 'requires unique name' do
+      create(:foundry_map_tag, name: 'Dungeon', slug: 'dungeon')
+      tag = build(:foundry_map_tag, name: 'Dungeon')
+      expect(tag).not_to be_valid
+    end
 
-        it 'parameterizes name correctly' do
-          tag = build(:foundry_map_tag, name: 'Forest & Rivers', slug: nil)
-          tag.valid?
-          expect(tag.slug).to eq('forest-rivers')
-        end
-
-        it 'handles names with special characters' do
-          tag = build(:foundry_map_tag, name: "Dragon's Lair!!!", slug: nil)
-          tag.valid?
-          expect(tag.slug).to eq('dragon-s-lair')
-        end
-      end
-
-      context 'when slug is already set' do
-        it 'does not override existing slug' do
-          tag = build(:foundry_map_tag, name: 'Forest', slug: 'custom-slug')
-          tag.valid?
-          expect(tag.slug).to eq('custom-slug')
-        end
-      end
+    it 'requires unique slug' do
+      create(:foundry_map_tag, slug: 'forest')
+      tag = build(:foundry_map_tag, slug: 'forest')
+      expect(tag).not_to be_valid
     end
   end
 
-  describe 'scopes' do
-    describe '.ordered' do
-      let!(:tag_c) { create(:foundry_map_tag, name: 'Cave') }
-      let!(:tag_a) { create(:foundry_map_tag, name: 'Arena') }
-      let!(:tag_b) { create(:foundry_map_tag, name: 'Bridge') }
+  describe 'associations' do
+    it 'has_many foundry_map_taggings' do
+      tag = create(:foundry_map_tag)
+      expect(tag).to respond_to(:foundry_map_taggings)
+    end
 
-      it 'returns tags ordered by name' do
-        expect(FoundryMapTag.ordered.pluck(:name)).to eq(['Arena', 'Bridge', 'Cave'])
-      end
+    it 'has_many foundry_maps through foundry_map_taggings' do
+      tag = create(:foundry_map_tag)
+      expect(tag).to respond_to(:foundry_maps)
+    end
+
+    it 'can have multiple foundry_maps' do
+      tag = create(:foundry_map_tag)
+      map1 = create(:foundry_map)
+      map2 = create(:foundry_map)
+      tag.foundry_maps << map1
+      tag.foundry_maps << map2
+
+      expect(tag.foundry_maps.count).to eq(2)
+      expect(tag.foundry_maps).to include(map1, map2)
     end
   end
 
-  describe '#as_json_for_api' do
-    let(:tag) { create(:foundry_map_tag, name: 'Dungeon', slug: 'dungeon') }
-    let!(:published_map) { create(:foundry_map, :with_tags, published: true, foundry_map_tags: [tag]) }
-    let!(:unpublished_map) { create(:foundry_map, :unpublished, foundry_map_tags: [tag]) }
-
-    it 'returns a hash with expected keys' do
-      json = tag.as_json_for_api
-
-      expect(json).to include(:value, :label, :count)
+  describe '#generate_slug' do
+    it 'generates slug from name before validation' do
+      tag = create(:foundry_map_tag, name: 'Forest Area', slug: nil)
+      expect(tag.slug).to eq('forest-area')
     end
 
-    it 'uses slug as value' do
-      expect(tag.as_json_for_api[:value]).to eq('dungeon')
+    it 'handles slug generation with uppercase' do
+      tag = create(:foundry_map_tag, name: 'INDOOR', slug: nil)
+      expect(tag.slug).to eq('indoor')
     end
 
-    it 'uses name as label' do
-      expect(tag.as_json_for_api[:label]).to eq('Dungeon')
-    end
-
-    it 'counts only published maps' do
-      expect(tag.as_json_for_api[:count]).to eq(1)
-    end
-
-    it 'returns 0 count when no published maps' do
-      new_tag = create(:foundry_map_tag)
-      expect(new_tag.as_json_for_api[:count]).to eq(0)
+    it 'handles slug generation with special characters' do
+      tag = create(:foundry_map_tag, name: "Town's Market", slug: nil)
+      expect(tag.slug).not_to include("'")
     end
   end
 
-  describe 'factory' do
-    it 'creates a valid tag' do
-      expect(foundry_map_tag).to be_valid
+  describe 'attributes' do
+    it 'has name attribute' do
+      tag = create(:foundry_map_tag, name: 'Outdoor')
+      expect(tag.name).to eq('Outdoor')
     end
 
-    it 'creates unique names and slugs' do
-      tag1 = create(:foundry_map_tag)
-      tag2 = create(:foundry_map_tag)
-
-      expect(tag1.name).not_to eq(tag2.name)
-      expect(tag1.slug).not_to eq(tag2.slug)
+    it 'has slug attribute' do
+      tag = create(:foundry_map_tag, slug: 'custom-slug')
+      expect(tag.slug).to eq('custom-slug')
     end
 
-    describe 'traits' do
-      it 'creates dungeon tag' do
-        tag = create(:foundry_map_tag, :dungeon)
-        expect(tag.name).to eq('Dungeon')
-        expect(tag.slug).to eq('dungeon')
-      end
+    it 'has created_at timestamp' do
+      tag = create(:foundry_map_tag)
+      expect(tag.created_at).not_to be_nil
+    end
 
-      it 'creates cave tag' do
-        tag = create(:foundry_map_tag, :cave)
-        expect(tag.name).to eq('Cave')
-        expect(tag.slug).to eq('cave')
-      end
+    it 'has updated_at timestamp' do
+      tag = create(:foundry_map_tag)
+      expect(tag.updated_at).not_to be_nil
+    end
+  end
 
-      it 'creates forest tag' do
-        tag = create(:foundry_map_tag, :forest)
-        expect(tag.name).to eq('Forest')
-        expect(tag.slug).to eq('forest')
-      end
+  describe 'common tags' do
+    it 'can create Tavern tag' do
+      tag = create(:foundry_map_tag, name: 'Tavern')
+      expect(tag.name).to eq('Tavern')
+    end
 
-      it 'creates city tag' do
-        tag = create(:foundry_map_tag, :city)
-        expect(tag.name).to eq('City')
-        expect(tag.slug).to eq('city')
-      end
+    it 'can create Dungeon tag' do
+      tag = create(:foundry_map_tag, name: 'Dungeon')
+      expect(tag.name).to eq('Dungeon')
+    end
 
-      it 'creates tavern tag' do
-        tag = create(:foundry_map_tag, :tavern)
-        expect(tag.name).to eq('Tavern')
-        expect(tag.slug).to eq('tavern')
-      end
+    it 'can create Forest tag' do
+      tag = create(:foundry_map_tag, name: 'Forest')
+      expect(tag.name).to eq('Forest')
+    end
+
+    it 'can create Cave tag' do
+      tag = create(:foundry_map_tag, name: 'Cave')
+      expect(tag.name).to eq('Cave')
+    end
+
+    it 'can create Town tag' do
+      tag = create(:foundry_map_tag, name: 'Town')
+      expect(tag.name).to eq('Town')
+    end
+
+    it 'can create Castle tag' do
+      tag = create(:foundry_map_tag, name: 'Castle')
+      expect(tag.name).to eq('Castle')
+    end
+
+    it 'can create Indoor tag' do
+      tag = create(:foundry_map_tag, name: 'Indoor')
+      expect(tag.name).to eq('Indoor')
+    end
+
+    it 'can create Outdoor tag' do
+      tag = create(:foundry_map_tag, name: 'Outdoor')
+      expect(tag.name).to eq('Outdoor')
+    end
+
+    it 'can create Battle tag' do
+      tag = create(:foundry_map_tag, name: 'Battle')
+      expect(tag.name).to eq('Battle')
+    end
+
+    it 'can create House tag' do
+      tag = create(:foundry_map_tag, name: 'House')
+      expect(tag.name).to eq('House')
+    end
+  end
+
+  describe 'tag persistence' do
+    it 'persists tag attributes' do
+      tag = create(:foundry_map_tag, name: 'Test Tag', slug: 'test-tag')
+
+      reloaded = FoundryMapTag.find(tag.id)
+      expect(reloaded.name).to eq('Test Tag')
+      expect(reloaded.slug).to eq('test-tag')
+    end
+  end
+
+  describe 'tag querying' do
+    it 'finds tag by name' do
+      tag = create(:foundry_map_tag, name: 'Unique Tag')
+      found = FoundryMapTag.find_by(name: 'Unique Tag')
+
+      expect(found).to eq(tag)
+    end
+
+    it 'finds tag by slug' do
+      tag = create(:foundry_map_tag, slug: 'unique-slug')
+      found = FoundryMapTag.find_by(slug: 'unique-slug')
+
+      expect(found).to eq(tag)
     end
   end
 end

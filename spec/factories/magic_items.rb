@@ -47,41 +47,14 @@
 #  fk_rails_...  (user_id => users.id)
 #
 
-require 'rails_helper'
-
-RSpec.describe ToolItem, type: :model do
-  context "with the same name" do
-    let!(:dungeon_master) { create :dungeon_master_user }
-
-    it "generates unique slugs" do
-      @item = ToolItem.create!(name: 'Test Unique Item', weight: 10)
-      @item1 = ToolItem.create!(name: 'Test Unique Item', weight: 10)
-      @user_item = ToolItem.create!(name: 'Test Unique Item', weight: 10, user: dungeon_master)
-      expect(@item.slug).to eq('test-unique-item')
-      expect(@item1.slug).to match(/^test-unique-item-[0-9a-f-]{36}$/)
-      expect(@user_item.slug).to match(/^test-unique-item-[0-9a-f-]{36}$/)
-      expect(@item1.slug).not_to eq(@user_item.slug)
-    end
-
-    it "maintains same slug on update with no name change" do
-      initial_count = ToolItem.count
-      @item = ToolItem.create!(name: 'Test Unique Item', weight: 10)
-      @item1 = ToolItem.create!(name: 'Test Unique Item', weight: 10)
-      @user_item = ToolItem.create!(name: 'Test Unique Item', weight: 10, user: dungeon_master)
-      original_slug = @item.slug
-      expect(original_slug).to eq('test-unique-item')
-      @item.update(weight: 12)
-      expect(ToolItem.all.count).to eq(initial_count + 3)
-      @item.reload
-      expect(@item.slug).to eq(original_slug)
-      @item.update(weight: 8)
-      expect(ToolItem.all.count).to eq(initial_count + 3)
-      @item.reload
-      expect(@item.slug).to eq(original_slug)
-      @item.update(weight: 12)
-      expect(ToolItem.all.count).to eq(initial_count + 3)
-      @item.reload
-      expect(@item.slug).to eq(original_slug)
-    end
+FactoryBot.define do
+  factory :magic_item do
+    type { 'MagicItem' }
+    name { Faker::Games::Zelda.item }
+    slug { name.parameterize }
+    desc { [Faker::Lorem.sentence] }
+    rarity { %w[common uncommon rare very\ rare legendary].sample }
+    requires_attunement { %w[yes no requires\ attunement\ by\ a\ spellcaster].sample }
+    magic_item_type { %w[ring wand staff potion scroll weapon armor wondrous\ item].sample }
   end
 end
