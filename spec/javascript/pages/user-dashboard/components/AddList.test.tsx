@@ -8,7 +8,7 @@ jest.mock('../../../../../app/javascript/bundles/DungeonMasterCampaignManager/co
   };
 });
 
-const TestIcon = () => <span>Icon</span>;
+const TestIcon = <span>Icon</span>;
 
 describe('AddList', () => {
   const mockWidgets = [
