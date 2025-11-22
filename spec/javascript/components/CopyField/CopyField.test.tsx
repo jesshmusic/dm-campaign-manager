@@ -104,4 +104,42 @@ describe('CopyField', () => {
     const textarea = screen.getByDisplayValue('Test');
     expect(textarea).toHaveClass('textArea');
   });
+
+  it('calls document.execCommand when textarea is clicked', () => {
+    render(<CopyField text="Textarea text" label="Label" fieldId="test" placeHolder="" isTextArea={true} />);
+    const textarea = screen.getByDisplayValue('Textarea text');
+
+    fireEvent.click(textarea);
+
+    expect(document.execCommand).toHaveBeenCalledWith('copy');
+  });
+
+  it('shows success message after copying from textarea', async () => {
+    render(<CopyField text="Textarea text" label="Label" fieldId="test" placeHolder="" isTextArea={true} />);
+    const textarea = screen.getByDisplayValue('Textarea text');
+
+    fireEvent.click(textarea);
+
+    await waitFor(() => {
+      expect(screen.getByText(/copied/i)).toBeInTheDocument();
+    });
+  });
+
+  it('handles undefined text prop', () => {
+    render(<CopyField label="Label" fieldId="test" placeHolder="Enter" />);
+    const input = screen.getByPlaceholderText('Enter') as HTMLInputElement;
+    expect(input.value).toBe('');
+  });
+
+  it('textarea has correct rows attribute', () => {
+    render(<CopyField text="Test" label="Label" fieldId="test" placeHolder="" isTextArea={true} />);
+    const textarea = screen.getByDisplayValue('Test') as HTMLTextAreaElement;
+    expect(textarea).toHaveAttribute('rows', '5');
+  });
+
+  it('textarea has correct styles', () => {
+    render(<CopyField text="Test" label="Label" fieldId="test" placeHolder="" isTextArea={true} />);
+    const textarea = screen.getByDisplayValue('Test') as HTMLTextAreaElement;
+    expect(textarea).toHaveStyle({ whiteSpace: 'pre-wrap', height: 'auto' });
+  });
 });
