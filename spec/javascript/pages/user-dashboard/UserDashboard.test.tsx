@@ -117,4 +117,62 @@ describe('UserDashboard', () => {
 
     expect(screen.getByTestId('dashboard')).toBeInTheDocument();
   });
+
+  it('handles missing user properties gracefully', () => {
+    const { useAuth0 } = require('@auth0/auth0-react');
+    useAuth0.mockReturnValue({
+      isAuthenticated: true,
+      user: {
+        name: 'John Doe',
+      },
+    });
+
+    render(
+      <Provider store={mockStore}>
+        <UserDashboard />
+      </Provider>
+    );
+
+    expect(screen.getByText('John Doe')).toBeInTheDocument();
+  });
+
+  it('displays user picture when provided', () => {
+    const { useAuth0 } = require('@auth0/auth0-react');
+    useAuth0.mockReturnValue({
+      isAuthenticated: true,
+      user: {
+        name: 'John Doe',
+        nickname: 'johndoe',
+        email: 'john@example.com',
+        picture: 'https://example.com/pic.jpg',
+      },
+    });
+
+    const { container } = render(
+      <Provider store={mockStore}>
+        <UserDashboard />
+      </Provider>
+    );
+
+    const img = container.querySelector('img[src="https://example.com/pic.jpg"]');
+    expect(img).toBeInTheDocument();
+  });
+
+  it('renders page container', () => {
+    const { useAuth0 } = require('@auth0/auth0-react');
+    useAuth0.mockReturnValue({
+      isAuthenticated: true,
+      user: {
+        name: 'John Doe',
+      },
+    });
+
+    render(
+      <Provider store={mockStore}>
+        <UserDashboard />
+      </Provider>
+    );
+
+    expect(screen.getByTestId('page-container')).toBeInTheDocument();
+  });
 });

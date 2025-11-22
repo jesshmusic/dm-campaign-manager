@@ -82,4 +82,73 @@ describe('DashboardBar', () => {
 
     expect(screen.getByTestId('modal')).toBeInTheDocument();
   });
+
+  it('closes modal when modal is clicked', () => {
+    render(
+      <DashboardBar
+        items={[]}
+        onRemoveItem={jest.fn()}
+        onAddItem={jest.fn()}
+        widgets={[]}
+      />
+    );
+
+    const button = screen.getByText('Select Widgets');
+    fireEvent.click(button);
+    expect(screen.getByTestId('modal')).toBeInTheDocument();
+
+    const modal = screen.getByTestId('modal');
+    fireEvent.click(modal);
+
+    expect(screen.queryByTestId('modal')).not.toBeInTheDocument();
+  });
+
+  it('displays AddList in modal', () => {
+    render(
+      <DashboardBar
+        items={[]}
+        onRemoveItem={jest.fn()}
+        onAddItem={jest.fn()}
+        widgets={[]}
+      />
+    );
+
+    const button = screen.getByText('Select Widgets');
+    fireEvent.click(button);
+
+    expect(screen.getByTestId('add-list')).toBeInTheDocument();
+  });
+
+  it('passes correct props to AddList', () => {
+    const mockOnAddItem = jest.fn();
+    const mockOnRemoveItem = jest.fn();
+    const mockWidgets = [{ title: 'Test Widget', key: 'test', icon: () => null }];
+
+    render(
+      <DashboardBar
+        items={['item1']}
+        onRemoveItem={mockOnRemoveItem}
+        onAddItem={mockOnAddItem}
+        widgets={mockWidgets}
+      />
+    );
+
+    const button = screen.getByText('Select Widgets');
+    fireEvent.click(button);
+
+    expect(screen.getByTestId('add-list')).toBeInTheDocument();
+  });
+
+  it('modal is not visible initially', () => {
+    render(
+      <DashboardBar
+        items={[]}
+        onRemoveItem={jest.fn()}
+        onAddItem={jest.fn()}
+        widgets={[]}
+      />
+    );
+
+    expect(screen.queryByTestId('modal')).not.toBeInTheDocument();
+  });
 });

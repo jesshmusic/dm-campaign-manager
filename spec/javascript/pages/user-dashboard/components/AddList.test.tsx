@@ -107,4 +107,82 @@ describe('AddList', () => {
     fireEvent.click(screen.getByTestId('close-button'));
     expect(onCloseModal).toHaveBeenCalled();
   });
+
+  it('shows checked state for selected items', () => {
+    render(
+      <AddList
+        items={['notes', 'actions']}
+        onAddItem={jest.fn()}
+        onRemoveItem={jest.fn()}
+        onCloseModal={jest.fn()}
+        widgets={mockWidgets}
+      />
+    );
+
+    const checkboxes = screen.getAllByRole('checkbox') as HTMLInputElement[];
+    expect(checkboxes[0].checked).toBe(true);
+    expect(checkboxes[1].checked).toBe(true);
+  });
+
+  it('shows unchecked state for unselected items', () => {
+    render(
+      <AddList
+        items={[]}
+        onAddItem={jest.fn()}
+        onRemoveItem={jest.fn()}
+        onCloseModal={jest.fn()}
+        widgets={mockWidgets}
+      />
+    );
+
+    const checkboxes = screen.getAllByRole('checkbox') as HTMLInputElement[];
+    expect(checkboxes[0].checked).toBe(false);
+    expect(checkboxes[1].checked).toBe(false);
+  });
+
+  it('renders widget icons', () => {
+    render(
+      <AddList
+        items={[]}
+        onAddItem={jest.fn()}
+        onRemoveItem={jest.fn()}
+        onCloseModal={jest.fn()}
+        widgets={mockWidgets}
+      />
+    );
+
+    const icons = screen.getAllByText('Icon');
+    expect(icons.length).toBe(mockWidgets.length);
+  });
+
+  it('handles empty widget list', () => {
+    render(
+      <AddList
+        items={[]}
+        onAddItem={jest.fn()}
+        onRemoveItem={jest.fn()}
+        onCloseModal={jest.fn()}
+        widgets={[]}
+      />
+    );
+
+    expect(screen.getByText('Select Widgets')).toBeInTheDocument();
+    expect(screen.queryByRole('checkbox')).not.toBeInTheDocument();
+  });
+
+  it('handles partial selection', () => {
+    render(
+      <AddList
+        items={['notes']}
+        onAddItem={jest.fn()}
+        onRemoveItem={jest.fn()}
+        onCloseModal={jest.fn()}
+        widgets={mockWidgets}
+      />
+    );
+
+    const checkboxes = screen.getAllByRole('checkbox') as HTMLInputElement[];
+    expect(checkboxes[0].checked).toBe(true);
+    expect(checkboxes[1].checked).toBe(false);
+  });
 });

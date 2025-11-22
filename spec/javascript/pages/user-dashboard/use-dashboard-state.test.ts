@@ -1,4 +1,5 @@
-import { renderHook, act } from '@testing-library/react';
+import React from 'react';
+import { render, act } from '@testing-library/react';
 import { useDashboardState } from '../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/user-dashboard/use-dashboard-state';
 
 // Mock dashboard components
@@ -34,31 +35,29 @@ jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/compo
 
 describe('useDashboardState', () => {
   let mockGetWidgets: jest.Mock;
+  let hookResult: any;
+
+  // Helper component to test the hook
+  const TestComponent = ({ customWidgets = [], getWidgets }: any) => {
+    hookResult = useDashboardState({ customWidgets, getWidgets });
+    return null;
+  };
 
   beforeEach(() => {
     mockGetWidgets = jest.fn();
     localStorage.clear();
     jest.clearAllMocks();
+    hookResult = null;
   });
 
   it('initializes with default widget keys', () => {
-    const { result } = renderHook(() =>
-      useDashboardState({
-        customWidgets: [],
-        getWidgets: mockGetWidgets,
-      })
-    );
+    render(<TestComponent customWidgets={[]} getWidgets={mockGetWidgets} />);
 
-    expect(result.current.widgetKeys).toEqual(['widget1', 'widget2']);
+    expect(hookResult.widgetKeys).toEqual(['widget1', 'widget2']);
   });
 
   it('calls getWidgets on mount', () => {
-    renderHook(() =>
-      useDashboardState({
-        customWidgets: [],
-        getWidgets: mockGetWidgets,
-      })
-    );
+    render(<TestComponent customWidgets={[]} getWidgets={mockGetWidgets} />);
 
     expect(mockGetWidgets).toHaveBeenCalledTimes(1);
   });
@@ -72,14 +71,9 @@ describe('useDashboardState', () => {
       })
     );
 
-    const { result } = renderHook(() =>
-      useDashboardState({
-        customWidgets: [],
-        getWidgets: mockGetWidgets,
-      })
-    );
+    render(<TestComponent customWidgets={[]} getWidgets={mockGetWidgets} />);
 
-    expect(result.current.widgetKeys).toEqual(['widget1']);
+    expect(hookResult.widgetKeys).toEqual(['widget1']);
   });
 
   it('loads layouts from localStorage if available', () => {
@@ -92,74 +86,49 @@ describe('useDashboardState', () => {
       })
     );
 
-    const { result } = renderHook(() =>
-      useDashboardState({
-        customWidgets: [],
-        getWidgets: mockGetWidgets,
-      })
-    );
+    render(<TestComponent customWidgets={[]} getWidgets={mockGetWidgets} />);
 
-    expect(result.current.layouts).toEqual(testLayouts);
+    expect(hookResult.layouts).toEqual(testLayouts);
   });
 
   it('adds a widget when onAddItem is called', () => {
-    const { result } = renderHook(() =>
-      useDashboardState({
-        customWidgets: [],
-        getWidgets: mockGetWidgets,
-      })
-    );
+    render(<TestComponent customWidgets={[]} getWidgets={mockGetWidgets} />);
 
     act(() => {
-      result.current.onAddItem('newWidget');
+      hookResult.onAddItem('newWidget');
     });
 
-    expect(result.current.widgetKeys).toContain('newWidget');
+    expect(hookResult.widgetKeys).toContain('newWidget');
   });
 
   it('removes a widget when onRemoveItem is called', () => {
-    const { result } = renderHook(() =>
-      useDashboardState({
-        customWidgets: [],
-        getWidgets: mockGetWidgets,
-      })
-    );
+    render(<TestComponent customWidgets={[]} getWidgets={mockGetWidgets} />);
 
     act(() => {
-      result.current.onRemoveItem('widget1');
+      hookResult.onRemoveItem('widget1');
     });
 
-    expect(result.current.widgetKeys).not.toContain('widget1');
-    expect(result.current.widgetKeys).toContain('widget2');
+    expect(hookResult.widgetKeys).not.toContain('widget1');
+    expect(hookResult.widgetKeys).toContain('widget2');
   });
 
   it('updates layouts when onLayoutChange is called', () => {
-    const { result } = renderHook(() =>
-      useDashboardState({
-        customWidgets: [],
-        getWidgets: mockGetWidgets,
-      })
-    );
+    render(<TestComponent customWidgets={[]} getWidgets={mockGetWidgets} />);
 
     const newLayouts = { lg: [{ i: 'widget1', x: 1, y: 1 }], md: [], sm: [] };
 
     act(() => {
-      result.current.onLayoutChange(null, newLayouts);
+      hookResult.onLayoutChange(null, newLayouts);
     });
 
-    expect(result.current.layouts).toEqual(newLayouts);
+    expect(hookResult.layouts).toEqual(newLayouts);
   });
 
   it('saves to localStorage when widget keys change', () => {
-    const { result } = renderHook(() =>
-      useDashboardState({
-        customWidgets: [],
-        getWidgets: mockGetWidgets,
-      })
-    );
+    render(<TestComponent customWidgets={[]} getWidgets={mockGetWidgets} />);
 
     act(() => {
-      result.current.onAddItem('newWidget');
+      hookResult.onAddItem('newWidget');
     });
 
     const savedData = JSON.parse(localStorage.getItem('rgl-8') || '{}');
@@ -167,17 +136,12 @@ describe('useDashboardState', () => {
   });
 
   it('saves to localStorage when layouts change', () => {
-    const { result } = renderHook(() =>
-      useDashboardState({
-        customWidgets: [],
-        getWidgets: mockGetWidgets,
-      })
-    );
+    render(<TestComponent customWidgets={[]} getWidgets={mockGetWidgets} />);
 
     const newLayouts = { lg: [{ i: 'widget1', x: 2, y: 2 }], md: [], sm: [] };
 
     act(() => {
-      result.current.onLayoutChange(null, newLayouts);
+      hookResult.onLayoutChange(null, newLayouts);
     });
 
     const savedData = JSON.parse(localStorage.getItem('rgl-8') || '{}');
@@ -189,14 +153,9 @@ describe('useDashboardState', () => {
       { id: 1, icon: 'custom-icon', title: 'Custom Widget', subtitle: 'Custom Subtitle', content: '<p>Custom</p>' },
     ];
 
-    const { result } = renderHook(() =>
-      useDashboardState({
-        customWidgets,
-        getWidgets: mockGetWidgets,
-      })
-    );
+    render(<TestComponent customWidgets={customWidgets} getWidgets={mockGetWidgets} />);
 
-    const customWidget = result.current.allWidgets.find((w: any) => w.key === 'customWidget1');
+    const customWidget = hookResult.allWidgets.find((w: any) => w.key === 'customWidget1');
     expect(customWidget).toBeDefined();
     expect(customWidget.title).toBe('Custom Widget');
   });
@@ -206,18 +165,13 @@ describe('useDashboardState', () => {
       { id: 1, icon: 'custom-icon', title: 'Custom Widget', subtitle: 'Custom Subtitle', content: '<p>Custom</p>' },
     ];
 
-    const { result } = renderHook(() =>
-      useDashboardState({
-        customWidgets,
-        getWidgets: mockGetWidgets,
-      })
-    );
+    render(<TestComponent customWidgets={customWidgets} getWidgets={mockGetWidgets} />);
 
     act(() => {
-      result.current.onAddItem('customWidget1');
+      hookResult.onAddItem('customWidget1');
     });
 
-    const customWidget = result.current.widgets.find((w: any) => w.widgetId === 'customWidget1');
+    const customWidget = hookResult.widgets.find((w: any) => w.widgetId === 'customWidget1');
     expect(customWidget).toBeDefined();
     expect(customWidget.title).toBe('Custom Widget');
     expect(customWidget.content).toBe('<p>Custom</p>');
@@ -226,40 +180,25 @@ describe('useDashboardState', () => {
   it('handles invalid localStorage data gracefully', () => {
     localStorage.setItem('rgl-8', 'invalid json');
 
-    const { result } = renderHook(() =>
-      useDashboardState({
-        customWidgets: [],
-        getWidgets: mockGetWidgets,
-      })
-    );
+    render(<TestComponent customWidgets={[]} getWidgets={mockGetWidgets} />);
 
-    expect(result.current.widgetKeys).toEqual(['widget1', 'widget2']);
+    expect(hookResult.widgetKeys).toEqual(['widget1', 'widget2']);
   });
 
   it('filters widgets based on widgetKeys', () => {
-    const { result } = renderHook(() =>
-      useDashboardState({
-        customWidgets: [],
-        getWidgets: mockGetWidgets,
-      })
-    );
+    render(<TestComponent customWidgets={[]} getWidgets={mockGetWidgets} />);
 
     act(() => {
-      result.current.onRemoveItem('widget2');
+      hookResult.onRemoveItem('widget2');
     });
 
-    expect(result.current.widgets.length).toBe(1);
-    expect(result.current.widgets[0].widgetId).toBe('widget1');
+    expect(hookResult.widgets.length).toBe(1);
+    expect(hookResult.widgets[0].widgetId).toBe('widget1');
   });
 
   it('assigns onRemoveItem to each widget', () => {
-    const { result } = renderHook(() =>
-      useDashboardState({
-        customWidgets: [],
-        getWidgets: mockGetWidgets,
-      })
-    );
+    render(<TestComponent customWidgets={[]} getWidgets={mockGetWidgets} />);
 
-    expect(result.current.widgets[0].onRemoveItem).toBe(result.current.onRemoveItem);
+    expect(hookResult.widgets[0].onRemoveItem).toBe(hookResult.onRemoveItem);
   });
 });
