@@ -1,7 +1,7 @@
 import React from 'react';
 import DndLogo from './DMLogo';
 
-const styles = require('./hero-banner.module.scss');
+import styles from './hero-banner.module.scss';
 
 const HeroBanner = () => {
   return (

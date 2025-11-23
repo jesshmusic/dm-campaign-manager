@@ -15,21 +15,21 @@ export type SelectProps = {
   className?: string;
   defaultOptions?: boolean;
   defaultValue?: SelectOption;
-  getOptions?: (inputValue: string, callback: any) => void;
+  getOptions?: (inputValue: string, callback: unknown) => void;
   isClearable?: boolean;
   isCreatable?: boolean;
   isMulti?: boolean;
   label: string;
   menuPlacement?: MenuPlacement | undefined;
   name: string;
-  options?: SelectOption[] | Options<any>;
+  options?: SelectOption[] | Options<unknown>;
   placeholder?: string;
   required?: boolean;
-  control?: Control<any>;
-  value?: any;
+  control?: Control<unknown>;
+  value?: unknown;
 };
 
-const styles = require('./input.module.scss');
+import styles from './input.module.scss';
 
 const FormSelect = ({
   name,

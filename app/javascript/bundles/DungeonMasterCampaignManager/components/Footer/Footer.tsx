@@ -3,11 +3,11 @@ import { NavLink } from '../NavLink/NavLink';
 import DndLogo from '../HeroBanner/DMLogo';
 import { User } from '@auth0/auth0-react';
 
-const footerBg = require('./FooterBackground.jpg');
+import footerBg from './FooterBackground.jpg';
 
-const styles = require('./footer.module.scss');
+import styles from './footer.module.scss';
 
-const Footer = (props: { user?: User }) => {
+const Footer = (_props: { user?: User }) => {
   return (
     <div className={styles.wrapper}>
       <img src={footerBg} className={styles.backgroundImage} />

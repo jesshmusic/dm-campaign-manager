@@ -1,5 +1,5 @@
 import React from 'react';
-import { MonsterSummary, MonsterType, UserProps } from '../../utilities/types';
+import { MonsterSummary, UserProps } from '../../utilities/types';
 import rest from '../../api/api';
 import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -26,7 +26,7 @@ const MonstersTable = (props: {
     }
   }, [isLoading]);
 
-  const goToPage = (row: Row<any>) => {
+  const goToPage = (row: Row<unknown>) => {
     navigate(`/app/monsters/${row.original.slug}`);
   };
 

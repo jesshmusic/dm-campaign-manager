@@ -25,7 +25,7 @@ const Spells = (props: {
     getSpells();
   }, []);
 
-  const goToPage = (row: Row<any>) => {
+  const goToPage = (row: Row<unknown>) => {
     navigate(`/app/spells/${row.original.slug}`);
   };
 

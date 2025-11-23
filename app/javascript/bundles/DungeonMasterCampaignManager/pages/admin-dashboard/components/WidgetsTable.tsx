@@ -10,7 +10,7 @@ import { WidgetProps } from '../../../components/Widgets/Widget';
 import { getIconFromName } from '../../../utilities/icons';
 import { NavLink } from '../../../components/NavLink/NavLink';
 
-const styles = require('../admin-dashboard.module.scss');
+import styles from '../admin-dashboard.module.scss';
 
 const WidgetsTable = (props: {
   getWidgets: (searchTerm?: string) => void;

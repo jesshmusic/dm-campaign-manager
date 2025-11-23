@@ -8,9 +8,9 @@ import Dashboard from './Dashboard';
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
 
-const styles = require('./user-dashboard.module.scss');
+import styles from './user-dashboard.module.scss';
 
-const UserDashboard = (props: PageProps) => {
+const UserDashboard = (_props: PageProps) => {
   const { isAuthenticated, user } = useAuth0();
   const pageTitle = isAuthenticated && user ? `Welcome, ${user.name}` : 'Welcome';
 
@@ -55,7 +55,7 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(_dispatch) {
   return {};
 }
 

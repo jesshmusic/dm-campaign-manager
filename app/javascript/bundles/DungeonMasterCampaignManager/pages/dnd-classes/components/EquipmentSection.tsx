@@ -2,7 +2,7 @@ import { DndClass, StartingEquipmentOption } from '../../../utilities/types';
 import Util from '../../../utilities/utilities';
 import React from 'react';
 
-const styles = require('../dnd-class.module.scss');
+import styles from '../dnd-class.module.scss';
 
 const EquipmentSection = (props: { dndClass: DndClass }) => {
   const { dndClass } = props;

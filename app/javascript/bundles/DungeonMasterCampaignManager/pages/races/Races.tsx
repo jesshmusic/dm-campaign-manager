@@ -16,7 +16,7 @@ const Races = (props: { getRaces: () => void; races: RaceSummary[]; loading: boo
     getRaces();
   }, []);
 
-  const goToPage = (row: Row<any>) => {
+  const goToPage = (row: Row<unknown>) => {
     navigate(`/app/races/${row.original.slug}`);
   };
 

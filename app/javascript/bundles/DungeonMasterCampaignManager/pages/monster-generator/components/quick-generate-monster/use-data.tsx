@@ -7,7 +7,6 @@ import {
   getCRInfo,
   hitDiceForHitPoints,
   hitDieForSize,
-  hitPoints,
 } from '../../services';
 import {
   filterActionOptions,
@@ -17,7 +16,7 @@ import {
 import axios, { AxiosResponse } from 'axios';
 
 export const useData = (props: GenerateMonsterProps) => {
-  const [monsterForm, setMonsterForm] = React.useState<FieldValues>({
+  const [monsterForm, _setMonsterForm] = React.useState<FieldValues>({
     name: 'New Monster',
     actionOptions: [],
     alignment: 'Neutral',
@@ -60,39 +59,39 @@ export const useData = (props: GenerateMonsterProps) => {
     mode: 'onChange',
   });
 
-  const getMonsterActions = (inputValue: string, callback: any) => {
+  const getMonsterActions = (inputValue: string, callback: unknown) => {
     if (inputValue.length > 2) {
       axios
         .get(`/v1/actions-by-name.json?action_name=${inputValue}`)
-        .then((response: AxiosResponse<any>) => {
+        .then((response: AxiosResponse<unknown>) => {
           const options = filterActionOptions(response.data.actions);
           callback(options);
         })
-        .catch((error) => {});
+        .catch((_error) => {});
     }
   };
 
-  const getSpecialAbilities = (inputValue: string, callback: any) => {
+  const getSpecialAbilities = (inputValue: string, callback: unknown) => {
     axios
       .get(`/v1/special-abilities.json?search=${inputValue}`)
-      .then((response: AxiosResponse<any>) => {
+      .then((response: AxiosResponse<unknown>) => {
         const options = response.data.special_abilities.map((ability) => ({
           label: ability,
           value: ability,
         }));
         callback(options);
       })
-      .catch((error) => {});
+      .catch((_error) => {});
   };
 
-  const getSpells = (inputValue: string, callback: any) => {
+  const getSpells = (inputValue: string, callback: unknown) => {
     axios
       .get(`/v1/spells.json?list=true&search=${inputValue}}`)
-      .then((response: AxiosResponse<any>) => {
+      .then((response: AxiosResponse<unknown>) => {
         const options = filterOptionsWithData(response.data.results);
         callback(options);
       })
-      .catch((error) => {});
+      .catch((_error) => {});
   };
 
   const handleGenerateMonsterName = async () => {
@@ -190,7 +189,7 @@ export const useData = (props: GenerateMonsterProps) => {
         });
         setMonsterType(fields.monsterTypeOption.value as string);
         break;
-      case 'size':
+      case 'size': {
         const hitDice = hitDieForSize(fields.size.value);
         UseForm.setValue('hitDiceValue', hitDice, {
           shouldDirty: true,
@@ -198,6 +197,7 @@ export const useData = (props: GenerateMonsterProps) => {
         });
         setFieldsForChallenge(fields);
         break;
+      }
     }
   };
 

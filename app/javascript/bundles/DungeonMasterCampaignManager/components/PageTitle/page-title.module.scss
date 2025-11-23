@@ -1,5 +1,4 @@
-@import '../../stylesheets/variables';
-
+@import "../../stylesheets/variables";
 
 .pageTitle {
   padding: $spacer 0;
@@ -17,7 +16,7 @@
 
 .draconis {
   color: $primary;
-  font-family: 'Draconis Bold', serif;
+  font-family: "Draconis Bold", serif;
   font-size: $display4-size;
 }
 
@@ -26,5 +25,3 @@
   font-size: $h5-font-size;
   margin: 0;
 }
-
-

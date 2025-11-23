@@ -8,7 +8,7 @@ import { Colors } from '../../../utilities/enums';
 import * as Icons from 'react-icons/gi';
 import React from 'react';
 
-const styles = require('../create-widget-page.module.scss');
+import styles from '../create-widget-page.module.scss';
 
 const plugins = [
   'advlist',
@@ -61,7 +61,7 @@ const WidgetForm = (props: { useForm: UseFormReturn; onSubmit: (data) => void })
       <Controller
         control={props.useForm.control}
         name={'content'}
-        render={({ field: { onChange, ...rest } }) => {
+        render={({ field: { onChange: _onChange, ...rest } }) => {
           const handleChange = (data) => {
             onChange(data);
           };

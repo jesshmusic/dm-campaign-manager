@@ -1,11 +1,8 @@
 import React from 'react';
-import {
-  ControlledInput,
-  ControllerInput,
-} from '../../../../../../../components/forms/ControllerInput';
-import { Control, Controller, FieldErrors, FieldValues } from 'react-hook-form';
+import { ControlledInput } from '../../../../../../../components/forms/ControllerInput';
+import { Control, FieldErrors, FieldValues } from 'react-hook-form';
 
-const styles = require('./action-form.module.scss');
+import styles from './action-form.module.scss';
 
 const AbilityForm = (props: {
   fieldName: string;

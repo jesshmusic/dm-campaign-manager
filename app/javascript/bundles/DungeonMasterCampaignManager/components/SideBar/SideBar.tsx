@@ -33,12 +33,12 @@ import {
 } from 'react-icons/all';
 
 const ruleBooks = [
-  <GiRuleBook />,
-  <GiBookPile />,
-  <GiBurningBook />,
-  <GiSecretBook />,
-  <GiSpellBook />,
-  <GiBookStorm />,
+  <GiRuleBook key="rule-book" />,
+  <GiBookPile key="book-pile" />,
+  <GiBurningBook key="burning-book" />,
+  <GiSecretBook key="secret-book" />,
+  <GiSpellBook key="spell-book" />,
+  <GiBookStorm key="book-storm" />,
 ];
 
 import {
@@ -54,9 +54,9 @@ import { SidebarButton, SidebarLink } from '../NavLink/NavLink';
 import { useAuth0 } from '@auth0/auth0-react';
 import { UserProps } from '../../utilities/types';
 
-const sidebarBG = require('./SidebarBackground.jpg');
+import sidebarBG from './SidebarBackground.jpg';
 
-const styles = require('./sidebar.module.scss');
+import styles from './sidebar.module.scss';
 
 const itemTypes = [
   { name: 'Armor', link: '/app/items/armor', icon: <GiCapeArmor /> },
@@ -137,7 +137,11 @@ const SideBar = (props: {
             <SidebarLink to="/app/conditions" title="Conditions" icon={<GiAchillesHeel />} />
             <SubMenu title="Rules" icon={<GiBookshelf />}>
               {rules.map((rule, index) => (
-                <SubMenu title={rule.name} icon={index < 6 ? ruleBooks[index] : <GiRuleBook />}>
+                <SubMenu
+                  key={`rule-${rule.slug}-${index}`}
+                  title={rule.name}
+                  icon={index < 6 ? ruleBooks[index] : <GiRuleBook />}
+                >
                   <SidebarLink
                     key={`rulesTop-${index}`}
                     to={`/app/rules/${rule.slug}`}

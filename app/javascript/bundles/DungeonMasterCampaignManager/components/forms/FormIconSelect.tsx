@@ -10,7 +10,7 @@ import './inputOverrides.scss';
 import { SelectProps } from './FormSelect';
 import { FixedSizeList as List } from 'react-window';
 
-const styles = require('./input.module.scss');
+import styles from './input.module.scss';
 
 const OPTION_HEIGHT = 40;
 const ROWS = 6;

@@ -3,7 +3,7 @@ import Util from '../../../utilities/utilities';
 import React from 'react';
 import InfoBlock from '../../../components/InfoBlock/InfoBlock';
 
-const styles = require('../dnd-class.module.scss');
+import styles from '../dnd-class.module.scss';
 
 const ProficienciesSection = (props: { dndClass: DndClass }) => {
   const { dndClass } = props;

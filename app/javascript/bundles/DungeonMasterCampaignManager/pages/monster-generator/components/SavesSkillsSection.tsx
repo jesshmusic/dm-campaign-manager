@@ -4,29 +4,29 @@ import FormSelectAsync from '../../../components/forms/FormSelectAsync';
 import { filterOptionsWithData } from '../../../utilities/character-utilities';
 import axios, { AxiosResponse } from 'axios';
 
-const styles = require('./generator.module.scss');
+import styles from './generator.module.scss';
 
 const SavesSkillsSection = (props: { UseForm: UseFormReturn }) => {
   const { UseForm } = props;
 
-  const getSavingThrows = (inputValue: string, callback: any) => {
+  const getSavingThrows = (inputValue: string, callback: unknown) => {
     axios
       .get(`/v1/saving-throws.json?search=${inputValue}`)
-      .then((response: AxiosResponse<any>) => {
+      .then((response: AxiosResponse<unknown>) => {
         const options = filterOptionsWithData(response.data.results);
         callback(options);
       })
-      .catch((error) => {});
+      .catch((_error) => {});
   };
 
-  const getSkills = (inputValue: string, callback: any) => {
+  const getSkills = (inputValue: string, callback: unknown) => {
     axios
       .get(`/v1/prof-skills.json?search=${inputValue}`)
-      .then((response: AxiosResponse<any>) => {
+      .then((response: AxiosResponse<unknown>) => {
         const options = filterOptionsWithData(response.data.results);
         callback(options);
       })
-      .catch((error) => {});
+      .catch((_error) => {});
   };
 
   return (

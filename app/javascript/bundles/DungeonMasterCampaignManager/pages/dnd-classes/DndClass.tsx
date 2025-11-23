@@ -13,7 +13,7 @@ import ClassLevelsTable from './components/ClassLevelsTable';
 import FeaturesDesc from './components/FeaturesDesc';
 import { useParams } from 'react-router-dom';
 
-const styles = require('./dnd-class.module.scss');
+import styles from './dnd-class.module.scss';
 
 type DndClassPageProps = {
   dndClass?: DndClass;

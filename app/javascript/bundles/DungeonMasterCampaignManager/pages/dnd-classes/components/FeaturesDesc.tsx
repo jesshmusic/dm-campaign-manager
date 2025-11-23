@@ -1,7 +1,7 @@
 import React from 'react';
 import { DndClass } from '../../../utilities/types';
 
-const styles = require('../dnd-class.module.scss');
+import styles from '../dnd-class.module.scss';
 
 const FeaturesDesc = (props: { dndClass: DndClass }) => {
   const { dndClass } = props;

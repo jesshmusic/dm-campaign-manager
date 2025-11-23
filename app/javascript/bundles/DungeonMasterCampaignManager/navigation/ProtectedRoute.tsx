@@ -5,7 +5,7 @@ import DndSpinner from '../components/DndSpinners/DndSpinner';
 
 const ProtectedRoute = ({ as: Component, requireAdmin, ...rest }) => {
   const { isAuthenticated, isLoading, user } = useAuth0();
-  let location = useLocation();
+  const location = useLocation();
   if (isLoading) {
     return <DndSpinner />;
   }

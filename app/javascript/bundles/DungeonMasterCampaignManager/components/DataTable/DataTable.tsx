@@ -17,24 +17,24 @@ import {
 } from 'react-icons/all';
 import classNames from 'classnames';
 import DndSpinner from '../DndSpinners/DndSpinner';
-import { useForm, useWatch } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import Button from '../Button/Button';
 import { Colors } from '../../utilities/enums';
 import Select from 'react-select';
 import { SelectOption } from '../../utilities/types';
 
-const styles = require('./data-table.module.scss');
+import styles from './data-table.module.scss';
 
 export interface DataTableProps {
-  columns: Array<Column<any>>;
-  data: Array<any>;
-  goToPage?: (row: Row<any>) => void;
+  columns: Array<Column<unknown>>;
+  data: Array<unknown>;
+  goToPage?: (row: Row<unknown>) => void;
   onSearch?: (searchTerm: string) => void;
   loading: boolean;
   noHover?: boolean;
   paginateExpandedRows?: boolean;
   perPage?: number;
-  renderRowSubComponent?: (row: any) => JSX.Element;
+  renderRowSubComponent?: (row: unknown) => JSX.Element;
   results: number;
 }
 
@@ -71,7 +71,7 @@ const DataTable = ({
     return <DndSpinner showTableFrame />;
   }
 
-  const handleGoToPage = (row: Row<any> & { canExpand?: boolean }) => {
+  const handleGoToPage = (row: Row<unknown> & { canExpand?: boolean }) => {
     if (!row.canExpand) {
       if (goToPage) {
         goToPage(row);
@@ -118,14 +118,14 @@ const DataTable = ({
       <table
         {...dataTable.getTableProps()}
         className={classNames('dnd-table', {
-          'dnd-table__hover': !Boolean(renderRowSubComponent) && !noHover,
+          'dnd-table__hover': !renderRowSubComponent && !noHover,
         })}
       >
         <thead>
           {dataTable.headerGroups.map((headerGroup) => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
+            <tr key={headerGroup.id} {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map((column) => (
-                <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                <th key={column.id} {...column.getHeaderProps(column.getSortByToggleProps())}>
                   {column.render('Header')} {sortIcon(column)}
                 </th>
               ))}
@@ -133,15 +133,19 @@ const DataTable = ({
           ))}
         </thead>
         <tbody {...dataTable.getTableBodyProps()}>
-          {dataTable.page.map((row: Row<any>) => {
+          {dataTable.page.map((row: Row<unknown>) => {
             dataTable.prepareRow(row);
-            const { role, ...rowProps } = row.getRowProps();
+            const { role: _role, ...rowProps } = row.getRowProps();
             return (
-              <React.Fragment {...rowProps}>
+              <React.Fragment key={row.id} {...rowProps}>
                 <tr {...row.getRowProps()} onClick={() => handleGoToPage(row)}>
                   {row.cells.map((cell, index) => {
                     return (
-                      <td {...cell.getCellProps()} className={index === 0 ? 'name-row' : ''}>
+                      <td
+                        key={cell.column.id}
+                        {...cell.getCellProps()}
+                        className={index === 0 ? 'name-row' : ''}
+                      >
                         {cell.render('Cell')}
                       </td>
                     );

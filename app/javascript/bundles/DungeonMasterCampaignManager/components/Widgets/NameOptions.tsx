@@ -5,15 +5,15 @@ import { Colors } from '../../utilities/enums';
 import { GiBattleGear } from 'react-icons/all';
 
 import '../forms/inputOverrides.scss';
-const styles = require('./widgets.module.scss');
+import styles from './widgets.module.scss';
 
-const genderOptions: Options<any> = [
+const genderOptions: Options<unknown> = [
   { value: 'female', label: 'Female' },
   { value: 'male', label: 'Male' },
   { value: '', label: 'Other' },
 ];
 
-export const raceOptions: Options<any> = [
+export const raceOptions: Options<unknown> = [
   { value: '', label: 'Any' },
   { value: 'aasimar', label: 'Aasimar' },
   { value: 'bugbear', label: 'Bugbear' },

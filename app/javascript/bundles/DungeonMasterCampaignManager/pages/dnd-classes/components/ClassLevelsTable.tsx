@@ -3,7 +3,7 @@ import { DndClass } from '../../../utilities/types';
 import { buildData, buildLevelColumns } from '../services';
 import DataTable from '../../../components/DataTable/DataTable';
 
-const styles = require('../dnd-class.module.scss');
+import styles from '../dnd-class.module.scss';
 
 const ClassLevelsTable = (props: { dndClass: DndClass }) => {
   const { dndClass } = props;

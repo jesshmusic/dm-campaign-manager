@@ -1,4 +1,4 @@
-@import '../../stylesheets/variables';
+@import "../../stylesheets/variables";
 
 .heroBanner {
   align-items: center;
@@ -11,10 +11,10 @@
   position: relative;
 
   &::before {
-    background: url('/images/hero-banner.jpg') no-repeat center;
+    background: url("/images/hero-banner.jpg") no-repeat center;
     background-size: cover;
     bottom: 0;
-    content: '';
+    content: "";
     left: 0;
     opacity: 0.5;
     position: absolute;

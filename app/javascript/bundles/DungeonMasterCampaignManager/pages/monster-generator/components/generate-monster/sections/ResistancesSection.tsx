@@ -5,19 +5,19 @@ import FormSelect from '../../../../../components/forms/FormSelect';
 import { damageTypes, filterOptionsWithData } from '../../../../../utilities/character-utilities';
 import axios, { AxiosResponse } from 'axios';
 
-const styles = require('../../generator.module.scss');
+import styles from '../../generator.module.scss';
 
 const ResistancesSection = (props: { UseForm: UseFormReturn }) => {
   const { UseForm } = props;
 
-  const getConditions = (inputValue: string, callback: any) => {
+  const getConditions = (inputValue: string, callback: unknown) => {
     axios
       .get(`/v1/conditions.json?search=${inputValue}`)
-      .then((response: AxiosResponse<any>) => {
+      .then((response: AxiosResponse<unknown>) => {
         const options = filterOptionsWithData(response.data.results);
         callback(options);
       })
-      .catch((error) => {});
+      .catch((_error) => {});
   };
 
   return (

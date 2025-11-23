@@ -1,7 +1,7 @@
 import React from 'react';
 import CloseButton from '../../../components/Button/CloseButton';
 
-const styles = require('../user-dashboard.module.scss');
+import styles from '../user-dashboard.module.scss';
 
 type AddListProps = {
   widgets: { title: string; key: string; icon: React.ElementType }[];

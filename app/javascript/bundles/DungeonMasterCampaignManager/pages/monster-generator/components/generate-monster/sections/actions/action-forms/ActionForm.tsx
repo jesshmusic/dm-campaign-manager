@@ -1,5 +1,4 @@
 import React from 'react';
-import { gsap } from 'gsap/gsap-core';
 import { Control, FieldErrors, useWatch } from 'react-hook-form';
 import { ControlledInput } from '../../../../../../../components/forms/ControllerInput';
 import Button from '../../../../../../../components/Button/Button';
@@ -10,7 +9,7 @@ import AttackForm from './AttackForm';
 import { ActionTypes } from '../../../../../../../utilities/types';
 import SpellcastingForm from './SpellcastingForm';
 
-const styles = require('./action-form.module.scss');
+import styles from './action-form.module.scss';
 
 const ActionForm = (props: {
   actionIndex?: number;
@@ -20,18 +19,12 @@ const ActionForm = (props: {
   remove?: (index?: number | number[] | undefined) => void;
 }) => {
   const { actionIndex, control, errors, fieldName, remove } = props;
-  const isFirstRender = React.useRef(true);
   const fieldNamePrefix = actionIndex ? `${fieldName}.${actionIndex}.` : `${fieldName}.`;
 
   const actionType = useWatch({
     control,
     name: `${fieldNamePrefix}actionType`,
     defaultValue: ActionTypes.attack,
-  });
-
-  const slots = useWatch({
-    control,
-    name: `${fieldNamePrefix}spellCasting.slots`,
   });
 
   return (

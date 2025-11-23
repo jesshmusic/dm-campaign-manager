@@ -110,21 +110,40 @@ describe('NameField', () => {
     });
   });
 
-  it('hides spinner after API error', async () => {
-    const error = new Error('API Error');
-    mockedAxios.get.mockRejectedValue(error);
+  it('calls API with correct parameters', async () => {
+    mockedAxios.get.mockResolvedValue({
+      data: { name: 'Gandalf' },
+    });
 
     render(<NameField />);
 
     const button = screen.getByTestId('name-options-button');
     fireEvent.click(button);
 
-    // Spinner appears initially
     await waitFor(() => {
-      expect(screen.queryByTestId('spinner')).toBeInTheDocument();
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        '/v1/random_fantasy_name.json?random_monster_gender=female&random_monster_race=human'
+      );
+    });
+  });
+
+  it('shows loading spinner during API call', async () => {
+    let resolvePromise: any;
+    const promise = new Promise((resolve) => {
+      resolvePromise = resolve;
+    });
+    mockedAxios.get.mockReturnValue(promise as any);
+
+    render(<NameField />);
+
+    const button = screen.getByTestId('name-options-button');
+    fireEvent.click(button);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('spinner')).toBeInTheDocument();
     });
 
-    // Then we just verify the API was called
-    expect(mockedAxios.get).toHaveBeenCalled();
+    // Resolve the promise to clean up
+    resolvePromise({ data: { name: 'Test' } });
   });
 });

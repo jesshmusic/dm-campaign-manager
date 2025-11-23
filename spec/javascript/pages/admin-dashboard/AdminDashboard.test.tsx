@@ -5,13 +5,10 @@ import { configureStore } from '@reduxjs/toolkit';
 import { MemoryRouter } from 'react-router-dom';
 import AdminDashboard from '../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/admin-dashboard/AdminDashboard';
 
-jest.mock('react-icons/all', () => ({
-  GiBarbute: function MockIcon(props: any) { return <span>Barbute</span>; },
-  GiBlacksmith: function MockIcon(props: any) { return <span>Blacksmith</span>; },
-}));
-
-jest.mock('react-icons/fa', () => ({
-  FaMap: function MockIcon(props: any) { return <span>Map</span>; },
+const mockNavigate = jest.fn();
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
 }));
 
 jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/containers/PageContainer', () => {

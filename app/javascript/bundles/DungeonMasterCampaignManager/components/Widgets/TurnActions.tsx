@@ -1,6 +1,6 @@
 import React from 'react';
 
-const styles = require('./widgets.module.scss');
+import styles from './widgets.module.scss';
 
 const TurnActions = () => {
   return (

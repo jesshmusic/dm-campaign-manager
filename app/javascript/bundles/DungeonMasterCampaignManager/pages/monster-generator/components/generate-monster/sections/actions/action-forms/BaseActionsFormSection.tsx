@@ -8,13 +8,13 @@ import { useFieldArray, UseFormReturn } from 'react-hook-form';
 import ActionsForm from './ActionsForm';
 import BasicActionsForm from './BasicActionsForm';
 
-const styles = require('../../../../generator.module.scss');
+import styles from '../../../../generator.module.scss';
 
 const BaseActionsFormSection = (props: {
   actionVariation: ActionVariations;
   fieldName: keyof MonsterGeneratorFormFields;
   singularTitle: string;
-  useForm: UseFormReturn<any, object>;
+  useForm: UseFormReturn<unknown, object>;
 }) => {
   const {
     actionVariation,

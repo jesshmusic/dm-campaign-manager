@@ -1,8 +1,7 @@
 import ReactOnRails from 'react-on-rails';
 import 'channels';
 import 'bootstrap';
-
-require('@nathanvda/cocoon');
+import '@nathanvda/cocoon';
 
 import App from '../bundles/DungeonMasterCampaignManager/App';
 import FoundryMapsAdmin from '../bundles/DungeonMasterCampaignManager/pages/FoundryMapsAdmin';

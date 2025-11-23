@@ -11,11 +11,11 @@ import { GiLinkedRings } from 'react-icons/all';
 import FormSelectAsync from '../../../../components/forms/FormSelectAsync';
 import SavesSkillsSection from '../SavesSkillsSection';
 
-const styles = require('../generator.module.scss');
+import styles from '../generator.module.scss';
 
 export type GenerateMonsterProps = {
   isLoading?: boolean;
-  onGenerateMonster: (monsterParams: any, token?: string) => void;
+  onGenerateMonster: (monsterParams: unknown, token?: string) => void;
   token?: string;
 };
 
@@ -41,7 +41,7 @@ const QuickGenerateMonster = (props: GenerateMonsterProps) => {
       if (name) {
         updateForm(name, value);
       }
-      // @ts-ignore
+      // @ts-expect-error - Type mismatch between form value and test state
       setTestState(value);
     });
     return () => subscription.unsubscribe();

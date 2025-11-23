@@ -7,16 +7,18 @@ import MonsterGenerator from '../../../../app/javascript/bundles/DungeonMasterCa
 jest.mock('react-ga4', () => ({
   initialize: jest.fn(),
   send: jest.fn(),
+  event: jest.fn(),
 }));
 
-jest.mock('react-icons/all', () => ({
-  GiBlacksmith: function MockIcon(props: any) { return <span>Blacksmith</span>; },
-  GiSpikedDragonHead: function MockIcon(props: any) { return <span>Dragon</span>; },
-  SiConvertio: function MockIcon(props: any) { return <span>Convert</span>; },
-}));
-
-jest.mock('react-icons/gi/', () => ({
-  GiDiceTwentyFacesTwenty: function MockIcon(props: any) { return <span>Dice</span>; },
+jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/api/api', () => ({
+  __esModule: true,
+  default: {
+    actions: {
+      generateCommoner: jest.fn(),
+      generateMonster: jest.fn(),
+      generateQuickMonster: jest.fn(),
+    },
+  },
 }));
 
 jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/containers/PageContainer', () => {
@@ -49,11 +51,12 @@ jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages
   };
 });
 
-jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/monsters/MonsterBlock', () => {
-  return function MockMonsterBlock({ monster }: any) {
+jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/monsters/MonsterBlock', () => ({
+  __esModule: true,
+  default: function MockMonsterBlock({ monster }: any) {
     return <div data-testid="monster-block">{monster?.name}</div>;
-  };
-});
+  },
+}));
 
 jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/monster-generator/components/quick-generate-monster/QuickGenerateMonster', () => {
   return function MockQuickGenerateMonster() {
@@ -105,8 +108,22 @@ describe('MonsterGenerator', () => {
   });
 
   it('displays generated monster when provided', () => {
+    const storeWithMonster = configureStore({
+      reducer: {
+        monsters: () => ({
+          generatedMonster: null,
+          currentMonster: { name: 'Goblin', size: 'Small' },
+          loading: false,
+        }),
+        users: () => ({
+          currentUser: null,
+          token: null,
+        }),
+      },
+    });
+
     render(
-      <Provider store={mockStore}>
+      <Provider store={storeWithMonster}>
         <MonsterGenerator
           monster={{ name: 'Goblin', size: 'Small' }}
           generateCommoner={jest.fn()}

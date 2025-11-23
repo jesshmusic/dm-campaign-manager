@@ -1,11 +1,8 @@
 import React from 'react';
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
-import { PageProps } from '../../utilities/types';
-import { useAuth0 } from '@auth0/auth0-react';
-import Dashboard from '../user-dashboard/Dashboard';
 
-const styles = require('./privacy-policy.module.scss');
+import styles from './privacy-policy.module.scss';
 
 const PrivacyPolicy = () => {
   return (
@@ -76,7 +73,7 @@ const PrivacyPolicy = () => {
             <p>
               Cookies are files with a small amount of data that are commonly used as anonymous
               unique identifiers. These are sent to your browser from the websites that you visit
-              and are stored on your device's internal memory.
+              and are stored on your device&apos;s internal memory.
             </p>
             <p>
               This Service does not use these “cookies” explicitly. However, the app may use

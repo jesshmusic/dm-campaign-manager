@@ -8,7 +8,7 @@ import rest from '../../api/api';
 import { connect } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-const styles = require('./spells.module.scss');
+import styles from './spells.module.scss';
 
 const Spell = (props: { spell: SpellProps; getSpell: (spellSlug: string) => void }) => {
   const { spell, getSpell } = props;

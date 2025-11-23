@@ -1,5 +1,4 @@
 import React from 'react';
-import PageTitle from '../../components/PageTitle/PageTitle';
 import DndSpinner from '../../components/DndSpinners/DndSpinner';
 import PageContainer from '../../containers/PageContainer';
 import rest from '../../api/api';
@@ -7,9 +6,8 @@ import { connect } from 'react-redux';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Link, useParams } from 'react-router-dom';
-import { GiBarbute } from 'react-icons/all';
 
-const styles = require('./rule.module.scss');
+import styles from './rule.module.scss';
 
 const Rule = (props: {
   rule: {
@@ -41,19 +39,20 @@ const Rule = (props: {
         <>
           <ReactMarkdown
             className={styles.rule}
-            children={rule.description}
             components={{
-              table: ({ node, ...props }) => (
+              table: ({ node: _node, ...props }) => (
                 <div className={styles.tableFrame}>
                   <table {...props} />
                 </div>
               ),
             }}
             remarkPlugins={[remarkGfm]}
-          />
+          >
+            {rule.description}
+          </ReactMarkdown>
           {rule.rules &&
             rule.rules.map((rule) => (
-              <Link to={`/app/rules/${rule.slug}`} className={styles.buttonBar}>
+              <Link key={rule.slug} to={`/app/rules/${rule.slug}`} className={styles.buttonBar}>
                 <h2>{rule.name}</h2>
               </Link>
             ))}

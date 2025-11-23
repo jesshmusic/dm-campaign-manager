@@ -5,7 +5,7 @@ import { Control, Controller, FieldErrors, FieldValues } from 'react-hook-form';
 import { SelectOption } from '../../utilities/types';
 import Select from 'react-select';
 
-const styles = require('./input.module.scss');
+import styles from './input.module.scss';
 
 export const ControllerInput = (props) => {
   const { type, label, errors, className, name, placeholder, isTextArea, ...rest } = props;
@@ -64,7 +64,7 @@ export const ControlledInput = (props: {
   } = props;
   return (
     <Controller
-      render={({ field: { ref, ...rest } }) => (
+      render={({ field: { ref: _ref, ...rest } }) => (
         <ControllerInput
           type={type ? type : 'text'}
           label={label}

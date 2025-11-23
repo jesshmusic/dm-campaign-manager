@@ -36,17 +36,6 @@ describe('BannerAd', () => {
     expect(images.length).toBeGreaterThan(0);
   });
 
-  it('logs to console on click', () => {
-    const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
-    const { container } = render(<BannerAd />);
-    const link = container.querySelector('a')!;
-
-    fireEvent.click(link);
-
-    expect(consoleSpy).toHaveBeenCalledWith('Banner Ad Clicked');
-    consoleSpy.mockRestore();
-  });
-
   it('tracks GA event on click', () => {
     const ReactGA = require('react-ga4');
     const { container } = render(<BannerAd />);

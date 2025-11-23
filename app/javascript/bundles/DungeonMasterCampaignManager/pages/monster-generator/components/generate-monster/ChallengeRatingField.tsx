@@ -4,8 +4,8 @@ import { FieldValues, UseFormRegister } from 'react-hook-form';
 import { Colors } from '../../../../utilities/enums';
 import Button from '../../../../components/Button/Button';
 
-const styles = require('../../../../components/forms/input.module.scss');
-const genStyles = require('../generator.module.scss');
+import styles from '../../../../components/forms/input.module.scss';
+import genStyles from '../generator.module.scss';
 
 type ChallengeRatingFieldProps = {
   onCalculateCr: () => void;

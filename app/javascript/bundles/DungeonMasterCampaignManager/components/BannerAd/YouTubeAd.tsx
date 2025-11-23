@@ -1,16 +1,15 @@
 import React from 'react';
 import ReactGA from 'react-ga4';
 
-const youTubeAd = require('./YouTubeAd.jpg');
-const youTubeAdSmall = require('./YouTubeAdSmall.jpg');
+import youTubeAd from './YouTubeAd.jpg';
+import youTubeAdSmall from './YouTubeAdSmall.jpg';
 
 ReactGA.initialize('G-8XJTH70JSQ');
 
-const styles = require('./bannerad.module.scss');
+import styles from './bannerad.module.scss';
 
 const YouTubeAd = () => {
   const handleClick = () => {
-    console.log('YouTube Ad Clicked');
     ReactGA.event('YouTube Ad Clicked');
   };
   return (
@@ -20,6 +19,7 @@ const YouTubeAd = () => {
         target="_blank"
         style={{ textDecoration: 'none' }}
         onClick={handleClick}
+        rel="noreferrer"
       >
         <img className={`${styles.bannerImage} ${styles.bannerImageLarge}`} src={youTubeAd} />
         <img className={`${styles.bannerImage} ${styles.bannerImageSmall}`} src={youTubeAdSmall} />

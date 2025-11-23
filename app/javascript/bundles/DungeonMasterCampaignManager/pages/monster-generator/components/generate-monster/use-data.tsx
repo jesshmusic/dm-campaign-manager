@@ -50,7 +50,7 @@ export const generateAttackDesc = async (
 };
 
 export const useData = (props: GenerateMonsterProps) => {
-  const [monsterForm, setMonsterForm] = React.useState<FieldValues>({
+  const [monsterForm, _setMonsterForm] = React.useState<FieldValues>({
     name: 'New Monster',
     alignment: 'Neutral',
     alignmentOption: {
@@ -191,7 +191,7 @@ export const useData = (props: GenerateMonsterProps) => {
         setActionDesc(fields, attackBonus, profBonus);
         handleCalculateCR();
         break;
-      case 'strength':
+      case 'strength': {
         const strMod = abilityScoreModifier(fields.strength);
         UseForm.setValue('damageBonus', strMod, {
           shouldDirty: true,
@@ -199,6 +199,7 @@ export const useData = (props: GenerateMonsterProps) => {
         });
         UseForm.setValue('strengthMod', strMod);
         break;
+      }
       case 'dexterity':
         UseForm.setValue('dexterityMod', abilityScoreModifier(fields.dexterity));
         setActionDesc(fields, attackBonus, profBonus);
@@ -229,7 +230,7 @@ export const useData = (props: GenerateMonsterProps) => {
           shouldTouch: true,
         });
         break;
-      case 'size':
+      case 'size': {
         const hitDice = hitDieForSize(fields.size.value);
         UseForm.setValue('hitDiceValue', hitDice, {
           shouldDirty: true,
@@ -243,6 +244,7 @@ export const useData = (props: GenerateMonsterProps) => {
         setActionDesc(fields, attackBonus, profBonus);
         handleCalculateCR();
         break;
+      }
       case 'hitDiceNumber':
         UseForm.setValue(
           'hitPoints',

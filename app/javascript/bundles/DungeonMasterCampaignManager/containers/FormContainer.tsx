@@ -1,13 +1,13 @@
 import React from 'react';
 
-const styles = require('./formcontainer.module.scss');
+import styles from './formcontainer.module.scss';
 
 const FormContainer = (props: {
   columns?: number;
   children: React.ReactNode;
   className?: string;
 }) => {
-  const { columns, children, className } = props;
+  const { columns, children } = props;
   return (
     <div
       className={styles.formContainer}

@@ -93,8 +93,10 @@ describe('TavernNameField', () => {
     });
   });
 
-  it('calls API when generate button is clicked', async () => {
-    mockedAxios.get.mockRejectedValue(new Error('API Error'));
+  it('displays generated name', async () => {
+    mockedAxios.get.mockResolvedValue({
+      data: { name: 'The Golden Dragon' },
+    });
 
     render(<TavernNameField />);
 
@@ -103,6 +105,10 @@ describe('TavernNameField', () => {
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith('/v1/random_tavern_name.json');
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('copy-field-value')).toHaveTextContent('The Golden Dragon');
     });
   });
 });

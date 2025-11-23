@@ -2,7 +2,7 @@ import React from 'react';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 
-const styles = require('./frame.module.scss');
+import styles from './frame.module.scss';
 
 const Frame = (props: {
   className?: string;

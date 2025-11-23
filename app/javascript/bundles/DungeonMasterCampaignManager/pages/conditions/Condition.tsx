@@ -7,7 +7,7 @@ import rest from '../../api/api';
 import { connect } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-const styles = require('./conditions.module.scss');
+import styles from './conditions.module.scss';
 
 const Condition = (props: {
   condition: ConditionProps;

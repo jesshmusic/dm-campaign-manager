@@ -9,15 +9,13 @@ import { FieldValues, useForm } from 'react-hook-form';
 import DndSpinner from '../../components/DndSpinners/DndSpinner';
 import { parseIconName } from '../../utilities/icons';
 
-const styles = require('./create-widget-page.module.scss');
-
 const EditWidgetPage = (props: {
   getWidget: (widgetId: number) => void;
   updateWidget: (widget: WidgetProps, token?: string) => void;
   token?: string;
   widget: WidgetProps;
 }) => {
-  const [testState, setTestState] = React.useState();
+  const [testState, _setTestState] = React.useState();
   const { getWidget, updateWidget, widget, token } = props;
   const { widgetId } = useParams<'widgetId'>();
   const navigate = useNavigate();
@@ -37,7 +35,7 @@ const EditWidgetPage = (props: {
   });
 
   const updateWidgetForm = async (fieldName: string | undefined, value: unknown) => {
-    // @ts-ignore
+    // @ts-expect-error - Type assertion needed for form value
     const fields = value as CreateWidgetForm;
     if (fieldName === 'iconOption') {
       UseForm.setValue('icon', fields.iconOption.value as string);
@@ -46,7 +44,6 @@ const EditWidgetPage = (props: {
 
   React.useEffect(() => {
     if (widget) {
-      console.log(widget);
       UseForm.reset({
         id: widget.id,
         title: widget.title,
@@ -63,7 +60,7 @@ const EditWidgetPage = (props: {
 
   // React.useEffect(() => {
   //   const subscription = UseForm.watch((value) => {
-  //     // @ts-ignore
+  //     // @ts-expect-error
   //     setTestState(value);
   //   });
   //   return () => subscription.unsubscribe();

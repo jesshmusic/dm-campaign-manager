@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 
-const styles = require('./input.module.scss');
+import styles from './input.module.scss';
 
 const ReadOnlyField = (props: {
   className?: string;

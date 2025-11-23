@@ -6,8 +6,6 @@ import { WidgetProps } from '../../components/Widgets/Widget';
 import { useCreateWidgetState } from './use-create-widget-state';
 import WidgetForm from './components/WidgetForm';
 
-const styles = require('./create-widget-page.module.scss');
-
 const CreateWidgetPage = (props: {
   createWidget: (widget: WidgetProps, token?: string) => void;
   token?: string;
@@ -20,7 +18,7 @@ const CreateWidgetPage = (props: {
       if (name) {
         updateWidgetForm(name, value);
       }
-      // @ts-ignore
+      // @ts-expect-error - Type mismatch between form value and test state
       setTestState(value);
     });
     return () => subscription.unsubscribe();

@@ -11,8 +11,8 @@ import { ItemType } from '../use-data';
 import { useNavigate } from 'react-router-dom';
 
 type ItemsListProps = {
-  columns: Array<Column<any>>;
-  data: any[];
+  columns: Array<Column<unknown>>;
+  data: unknown[];
   itemType: string;
   loading: boolean;
   onSearch: (searchTerm: string) => void;
@@ -20,7 +20,7 @@ type ItemsListProps = {
 };
 
 const ItemsList = ({ columns, data, loading, onSearch, pageTitle, itemType }: ItemsListProps) => {
-  const breadCrumbs =
+  const _breadCrumbs =
     itemType !== ItemType.all
       ? [
           { url: '/app/items/', isActive: false, title: 'Items & Equipment' },
@@ -29,7 +29,7 @@ const ItemsList = ({ columns, data, loading, onSearch, pageTitle, itemType }: It
       : [{ isActive: true, title: pageTitle }];
   const navigate = useNavigate();
 
-  const goToPage = (row: Row<any>) => {
+  const goToPage = (row: Row<unknown>) => {
     navigate(`/app/items/${row.original.slug}`);
   };
 

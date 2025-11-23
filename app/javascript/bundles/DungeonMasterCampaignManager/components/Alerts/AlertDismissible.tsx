@@ -7,7 +7,7 @@ import Button from '../Button/Button';
 import { Colors } from '../../utilities/enums';
 import { gsap } from 'gsap';
 
-const styles = require('./alert.module.scss');
+import styles from './alert.module.scss';
 
 type AlertDismissibleProps = {
   dismissFlashMessage: (messageId: number) => void;

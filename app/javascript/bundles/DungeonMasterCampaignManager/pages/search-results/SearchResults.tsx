@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import remarkGfm from 'remark-gfm';
 import ReactMarkdown from 'react-markdown';
 import PageContainer from '../../containers/PageContainer';
@@ -30,19 +30,18 @@ const SearchResults = (props: {
       <PageTitle title={`Search for "${query}"`} />
       {results &&
         results.map((result) => (
-          <Frame title={result.name} linkTo={result.url}>
+          <Frame key={result.url} title={result.name} linkTo={result.url}>
             <ReactMarkdown
-              children={
-                result.description.length > 255
-                  ? result.description.substring(0, 255) + '...'
-                  : result.description
-              }
               remarkPlugins={[remarkGfm]}
               components={{
                 h1: () => <></>,
                 h2: () => <></>,
               }}
-            />
+            >
+              {result.description.length > 255
+                ? result.description.substring(0, 255) + '...'
+                : result.description}
+            </ReactMarkdown>
           </Frame>
         ))}
     </PageContainer>

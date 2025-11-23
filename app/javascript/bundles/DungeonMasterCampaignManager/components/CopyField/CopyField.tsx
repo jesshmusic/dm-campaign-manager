@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-const styles = require('./copy-field.module.scss');
+import styles from './copy-field.module.scss';
 
 type CopyFieldProps = {
   text?: string;

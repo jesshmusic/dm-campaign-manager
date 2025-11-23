@@ -25,7 +25,7 @@ const Conditions = (props: {
     getConditions();
   }, []);
 
-  const goToPage = (row: Row<any>) => {
+  const goToPage = (row: Row<unknown>) => {
     navigate(`/app/conditions/${row.original.slug}`);
   };
 

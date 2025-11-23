@@ -39,4 +39,11 @@ module.exports = {
   GiSwapBag: MockIcon,
   GiSwordArray: MockIcon,
   GiToolbox: MockIcon,
+  GiBarbute: MockIcon,
+  GiBlacksmith: MockIcon,
+  GiSpikedDragonHead: MockIcon,
+  SiConvertio: MockIcon,
+  GiDiceTwentyFacesTwenty: MockIcon,
+  GiBeerStein: MockIcon,
+  FaMap: MockIcon,
 };

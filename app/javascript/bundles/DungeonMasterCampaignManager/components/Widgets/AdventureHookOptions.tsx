@@ -4,7 +4,7 @@ import { Colors } from '../../utilities/enums';
 import { GiLevelTwoAdvanced } from 'react-icons/all';
 
 import '../forms/inputOverrides.scss';
-const styles = require('./widgets.module.scss');
+import styles from './widgets.module.scss';
 
 interface NameOptionsProps {
   onFormSubmit: (partySize: number, averageLevel: number) => void;

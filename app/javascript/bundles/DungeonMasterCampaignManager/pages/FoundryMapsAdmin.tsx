@@ -21,7 +21,7 @@ import FlashMessages from '../components/Alerts/FlashMessages';
 
 Quill.register('modules/imageResize', ImageResize);
 
-const styles = require('./foundry-maps-admin.module.scss');
+import styles from './foundry-maps-admin.module.scss';
 
 interface FoundryMapFile {
   id: string;
@@ -68,7 +68,7 @@ const FoundryMapsAdmin: React.FC = () => {
   const [editingTagName, setEditingTagName] = useState<string>('');
   const [newTagName, setNewTagName] = useState<string>('');
   const [isEditingInModal, setIsEditingInModal] = useState(false);
-  const quillRef = useRef<any>(null);
+  const quillRef = useRef<unknown>(null);
 
   const {
     control,
@@ -278,7 +278,7 @@ const FoundryMapsAdmin: React.FC = () => {
     });
   };
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: unknown) => {
     setUploadingFiles(true);
     try {
       const url = editingMap ? `/v1/maps/${editingMap.id}` : '/v1/maps';
@@ -777,7 +777,7 @@ const FoundryMapsAdmin: React.FC = () => {
               <ControlledInput
                 fieldName="name"
                 errors={errors}
-                control={control as any}
+                control={control as unknown}
                 label="Map Name"
                 required
                 disabled={uploadingFiles}
@@ -806,14 +806,14 @@ const FoundryMapsAdmin: React.FC = () => {
 
               <ControlledTagInput
                 fieldName="tags"
-                control={control as any}
+                control={control as unknown}
                 label="Tags"
                 placeholder="Add tags (press Enter or comma)"
               />
 
               <ControlledSelect
                 fieldName="access_level"
-                control={control as any}
+                control={control as unknown}
                 label="Access Level"
                 options={[
                   { value: 'premium', label: 'Premium' },
@@ -824,7 +824,7 @@ const FoundryMapsAdmin: React.FC = () => {
 
               <ControlledSelect
                 fieldName="required_tier"
-                control={control as any}
+                control={control as unknown}
                 label="Required Tier"
                 options={[
                   { value: 'free', label: 'Free' },
@@ -1002,7 +1002,7 @@ const FoundryMapsAdmin: React.FC = () => {
                       <ControlledInput
                         fieldName="name"
                         errors={errors}
-                        control={control as any}
+                        control={control as unknown}
                         label="Map Name"
                         required
                         disabled={uploadingFiles}
@@ -1031,14 +1031,14 @@ const FoundryMapsAdmin: React.FC = () => {
 
                       <ControlledTagInput
                         fieldName="tags"
-                        control={control as any}
+                        control={control as unknown}
                         label="Tags"
                         placeholder="Add tags (press Enter or comma)"
                       />
 
                       <ControlledSelect
                         fieldName="access_level"
-                        control={control as any}
+                        control={control as unknown}
                         label="Access Level"
                         options={[
                           { value: 'premium', label: 'Premium' },

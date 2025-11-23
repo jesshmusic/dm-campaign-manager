@@ -1,6 +1,6 @@
 import React from 'react';
 
-const styles = require('./widgets.module.scss');
+import styles from './widgets.module.scss';
 
 const Cover = () => {
   return (
@@ -25,7 +25,7 @@ const Cover = () => {
             <tr>
               <td>Total cover</td>
               <td>
-                Can't be targeted <em>directly</em> by an attack or spell
+                Can&apos;t be targeted <em>directly</em> by an attack or spell
               </td>
             </tr>
           </tbody>

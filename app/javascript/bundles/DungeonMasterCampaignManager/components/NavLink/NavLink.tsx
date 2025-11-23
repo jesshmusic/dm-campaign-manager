@@ -3,8 +3,8 @@ import React from 'react';
 import { GiDragonHead } from 'react-icons/all';
 import { MenuItem } from 'react-pro-sidebar';
 
-const styles = require('./navlink.module.scss');
-const buttonStyles = require('../Button/button.module.scss');
+import styles from './navlink.module.scss';
+import buttonStyles from '../Button/button.module.scss';
 
 export const SidebarButton = (props: {
   title: string;
@@ -21,8 +21,8 @@ export const SidebarButton = (props: {
 
 export const SidebarLink = (props: { title: string; icon?: React.ReactNode; to: string }) => {
   const { title, icon, to } = props;
-  let resolved = useResolvedPath(to);
-  let match = useMatch({ path: resolved.pathname, end: true });
+  const resolved = useResolvedPath(to);
+  const match = useMatch({ path: resolved.pathname, end: true });
   return (
     <MenuItem icon={icon} active={!!match}>
       {title}
@@ -33,8 +33,8 @@ export const SidebarLink = (props: { title: string; icon?: React.ReactNode; to: 
 
 export const NavLink = (props) => {
   const { showActiveIcon, children, icon, isButton, ...inputProps } = props;
-  let resolved = useResolvedPath(props.to);
-  let match = useMatch({ path: resolved.pathname, end: true });
+  const resolved = useResolvedPath(props.to);
+  const match = useMatch({ path: resolved.pathname, end: true });
   if (isButton) {
     return (
       <Link {...inputProps} className={`${buttonStyles.button} ${buttonStyles.info}`}>
@@ -46,7 +46,7 @@ export const NavLink = (props) => {
     );
   }
   return (
-    <Link {...inputProps} className={!!match ? styles.navLinkActive : styles.navLink}>
+    <Link {...inputProps} className={match ? styles.navLinkActive : styles.navLink}>
       <span>
         <span className={styles.icon}>{icon}</span>
         <span className={styles.title}>{children}</span>

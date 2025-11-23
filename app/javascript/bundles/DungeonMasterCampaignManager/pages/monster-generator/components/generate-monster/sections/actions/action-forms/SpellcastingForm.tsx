@@ -9,7 +9,7 @@ import { filterOptionsWithData } from '../../../../../../../utilities/character-
 import FormSelect from '../../../../../../../components/forms/FormSelect';
 import FormSelectAsync from '../../../../../../../components/forms/FormSelectAsync';
 
-const styles = require('./action-form.module.scss');
+import styles from './action-form.module.scss';
 
 export const abilityOptions = [
   { label: 'Charisma', value: 'charisma' },
@@ -39,14 +39,14 @@ const SpellcastingForm = (props: {
 }) => {
   const { fieldName, errors, control } = props;
 
-  const getSpells = (inputValue: string, callback: any) => {
+  const getSpells = (inputValue: string, callback: unknown) => {
     axios
       .get(`/v1/spells.json?list=true&search=${inputValue}}`)
-      .then((response: AxiosResponse<any>) => {
+      .then((response: AxiosResponse<unknown>) => {
         const options = filterOptionsWithData(response.data.results);
         callback(options);
       })
-      .catch((error) => {});
+      .catch((_error) => {});
   };
 
   return (
@@ -54,7 +54,7 @@ const SpellcastingForm = (props: {
       <h5>Spellcasting</h5>
       <div className={styles.subformWrapper}>
         <Controller
-          render={({ field: { ref, ...rest } }) => (
+          render={({ field: { ref: _ref, ...rest } }) => (
             <ControllerInput
               type="number"
               label="Spellcasting Level"

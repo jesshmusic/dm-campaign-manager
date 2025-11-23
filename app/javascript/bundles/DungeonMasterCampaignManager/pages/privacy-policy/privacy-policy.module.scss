@@ -1,4 +1,4 @@
-@import '../../stylesheets/variables';
+@import "../../stylesheets/variables";
 
 .wrapper {
   @include resp-container;
@@ -12,5 +12,3 @@
 .buttonBar {
   @include button-bar;
 }
-
-

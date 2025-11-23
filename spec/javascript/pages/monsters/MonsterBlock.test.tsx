@@ -21,7 +21,7 @@ jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/compo
 const mockMonster = {
   name: 'Goblin',
   size: 'Small',
-  type: 'humanoid',
+  monsterType: 'humanoid',
   alignment: 'Neutral Evil',
   armorClass: 15,
   hitPoints: 7,
@@ -63,7 +63,8 @@ describe('MonsterBlock', () => {
 
   it('displays monster size and type', () => {
     render(<MonsterBlock monster={mockMonster as any} />);
-    expect(screen.getByText(/Small humanoid/)).toBeInTheDocument();
+    expect(screen.getByText(/Small/)).toBeInTheDocument();
+    expect(screen.getByText(/humanoid/)).toBeInTheDocument();
   });
 
   it('displays armor class', () => {
@@ -102,8 +103,14 @@ describe('AbilityScores', () => {
 
   it('displays ability score values', () => {
     render(<AbilityScores monster={mockMonster as any} />);
-    expect(screen.getByText(/8/)).toBeInTheDocument();
-    expect(screen.getByText(/14/)).toBeInTheDocument();
-    expect(screen.getByText(/10/)).toBeInTheDocument();
+    // Check for STR value 8
+    const strSection = screen.getByText('STR').parentElement;
+    expect(strSection?.textContent).toContain('8');
+    // Check for DEX value 14
+    const dexSection = screen.getByText('DEX').parentElement;
+    expect(dexSection?.textContent).toContain('14');
+    // Check for CON value 10
+    const conSection = screen.getByText('CON').parentElement;
+    expect(conSection?.textContent).toContain('10');
   });
 });

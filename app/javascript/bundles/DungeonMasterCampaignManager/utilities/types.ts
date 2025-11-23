@@ -18,12 +18,12 @@ export interface ActionFormComponentProps {
   fields: any;
   handleRemove: (index: number) => void;
   singularTitle: string;
-  useForm: UseFormReturn<any, object>;
+  useForm: UseFormReturn<unknown, object>;
 }
 
 export interface FieldArrayFormProps {
   fieldName: string;
-  useForm: UseFormReturn<any, object>;
+  useForm: UseFormReturn<unknown, object>;
 }
 
 export enum ActionTypes {

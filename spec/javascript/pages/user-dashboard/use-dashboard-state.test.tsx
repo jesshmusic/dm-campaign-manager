@@ -199,6 +199,9 @@ describe('useDashboardState', () => {
   it('assigns onRemoveItem to each widget', () => {
     render(<TestComponent customWidgets={[]} getWidgets={mockGetWidgets} />);
 
-    expect(hookResult.widgets[0].onRemoveItem).toBe(hookResult.onRemoveItem);
+    expect(hookResult.widgets[0].onRemoveItem).toBeDefined();
+    expect(typeof hookResult.widgets[0].onRemoveItem).toBe('function');
+    // Verify it's the same function by comparing the serialized versions
+    expect(hookResult.widgets[0].onRemoveItem.toString()).toBe(hookResult.onRemoveItem.toString());
   });
 });

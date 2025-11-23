@@ -9,7 +9,7 @@ import Footer from '../components/Footer/Footer';
 import rest from '../api/api';
 import DMRoutes from '../navigation/DMRoutes';
 
-const styles = require('./layout.module.scss');
+import styles from './layout.module.scss';
 gsap.registerPlugin(ScrollToPlugin);
 
 const Layout = (props) => {

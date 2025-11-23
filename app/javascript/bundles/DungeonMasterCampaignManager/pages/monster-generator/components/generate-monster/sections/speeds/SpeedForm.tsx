@@ -9,7 +9,7 @@ import {
 } from '../../../../../../components/forms/ControllerInput';
 import { speeds } from '../../../../../../utilities/character-utilities';
 
-const styles = require('../field-array-form.module.scss');
+import styles from '../field-array-form.module.scss';
 
 const SpeedForm = (props: {
   speedIndex: number;

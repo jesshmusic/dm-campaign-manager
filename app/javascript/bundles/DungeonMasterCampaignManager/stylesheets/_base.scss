@@ -11,13 +11,12 @@ h6 {
 }
 
 h1 {
-
   color: $dark-red;
   font-family: $font-family-mr-eaves;
   font-size: $h1-font-size;
 
   &.home {
-    font-family: 'Draconis Bold', serif;
+    font-family: "Draconis Bold", serif;
     font-size: $display4-size;
   }
 }
@@ -44,7 +43,6 @@ h3 {
 }
 
 .navbar {
-
   .nav-link {
     @extend .sans-serif;
     @include font-size(1.1rem);

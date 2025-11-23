@@ -22,7 +22,7 @@ const DndClasses = (props: {
     getDndClasses();
   }, []);
 
-  const goToPage = (row: Row<any>) => {
+  const goToPage = (row: Row<unknown>) => {
     navigate(`/app/classes/${row.original.slug}`);
   };
 

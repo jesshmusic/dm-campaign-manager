@@ -7,7 +7,7 @@ import PageTitle from '../../components/PageTitle/PageTitle';
 import DndSpinner from '../../components/DndSpinners/DndSpinner';
 import { useParams } from 'react-router-dom';
 
-const styles = require('./races.module.scss');
+import styles from './races.module.scss';
 
 const Race = (props: { race?: RaceProps; getRace: (raceSlug: string) => void }) => {
   const { race, getRace } = props;

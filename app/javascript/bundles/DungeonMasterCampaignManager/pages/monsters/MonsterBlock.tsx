@@ -6,7 +6,7 @@ import Button from '../../components/Button/Button';
 import { Colors } from '../../utilities/enums';
 import { GiBeerStein } from 'react-icons/all';
 
-const styles = require('./monsters.module.scss');
+import styles from './monsters.module.scss';
 
 const MonsterStat = (props: { name: string; value: string | number }) => {
   return (
@@ -163,7 +163,7 @@ const MonsterBlock = (props: { monster: MonsterProps; showCRStats?: boolean }) =
         monster.specialAbilities.length > 0 &&
         monster.specialAbilities.map((action, index) => (
           <div className={styles.monsterFrameAction} key={index}>
-            <ReactMarkdown children={`_**${action.name}**_. ${action.desc}`} />
+            <ReactMarkdown>{`_**${action.name}**_. ${action.desc}`}</ReactMarkdown>
           </div>
         ))}
       {monster.actions && monster.actions.length > 0 && (
@@ -171,7 +171,7 @@ const MonsterBlock = (props: { monster: MonsterProps; showCRStats?: boolean }) =
           <h3>Actions</h3>
           {monster.actions.map((action, index) => (
             <div className={styles.monsterFrameAction} key={index}>
-              <ReactMarkdown children={`_**${action.name}**_. ${action.desc}`} />
+              <ReactMarkdown>{`_**${action.name}**_. ${action.desc}`}</ReactMarkdown>
             </div>
           ))}
         </>
@@ -181,7 +181,7 @@ const MonsterBlock = (props: { monster: MonsterProps; showCRStats?: boolean }) =
           <h3>Legendary Actions</h3>
           {monster.legendaryActions.map((action, index) => (
             <div className={styles.monsterFrameAction} key={index}>
-              <ReactMarkdown children={`_**${action.name}**_. ${action.desc}`} />
+              <ReactMarkdown>{`_**${action.name}**_. ${action.desc}`}</ReactMarkdown>
             </div>
           ))}
         </>
@@ -191,7 +191,7 @@ const MonsterBlock = (props: { monster: MonsterProps; showCRStats?: boolean }) =
           <h3>Reactions</h3>
           {monster.reactions.map((action, index) => (
             <div className={styles.monsterFrameAction} key={index}>
-              <ReactMarkdown children={`_**${action.name}**_. ${action.desc}`} />
+              <ReactMarkdown>{`_**${action.name}**_. ${action.desc}`}</ReactMarkdown>
             </div>
           ))}
         </>

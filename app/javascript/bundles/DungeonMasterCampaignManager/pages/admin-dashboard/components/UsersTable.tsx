@@ -16,10 +16,6 @@ const UsersTable = (props: {
     getUsers();
   }, [user]);
 
-  const getNumResults = (): number => {
-    return users.length;
-  };
-
   const columns = React.useMemo(
     () => [
       {

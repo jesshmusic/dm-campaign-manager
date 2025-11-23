@@ -2,7 +2,7 @@ import { DndClass } from '../../../utilities/types';
 import React from 'react';
 import InfoBlock from '../../../components/InfoBlock/InfoBlock';
 
-const styles = require('../dnd-class.module.scss');
+import styles from '../dnd-class.module.scss';
 
 const HitPointsSection = (props: { dndClass: DndClass }) => (
   <div className={styles.sectionGroup}>

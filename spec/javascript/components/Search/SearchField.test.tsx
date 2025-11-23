@@ -57,23 +57,6 @@ describe('SearchField', () => {
     });
   });
 
-  it('logs data on submit', async () => {
-    const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
-    renderWithRouter(<SearchField />);
-
-    const input = screen.getByPlaceholderText('Search...');
-    const button = screen.getByRole('button', { name: /search/i });
-
-    fireEvent.change(input, { target: { value: 'test' } });
-    fireEvent.click(button);
-
-    await waitFor(() => {
-      expect(consoleSpy).toHaveBeenCalled();
-    });
-
-    consoleSpy.mockRestore();
-  });
-
   it('has search icon', () => {
     const { container } = renderWithRouter(<SearchField />);
     const svg = container.querySelector('svg');

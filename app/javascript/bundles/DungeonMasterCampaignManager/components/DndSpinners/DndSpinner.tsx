@@ -6,7 +6,7 @@ import React from 'react';
 import { GiLinkedRings } from 'react-icons/all';
 import TableFrame from '../../containers/TableFrame';
 
-const styles = require('./spinner.module.scss');
+import styles from './spinner.module.scss';
 
 const DndSpinner = (props: { showTableFrame?: boolean; text?: string }) => {
   return props.showTableFrame ? (
