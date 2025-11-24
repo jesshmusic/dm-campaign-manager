@@ -4,7 +4,7 @@ require "openai/client"
 require "set"
 
 class NameGen
-  OPENAI = OpenAI::Client.new(api_key: ENV.fetch("OPENAI_API_KEY"))
+  OPENAI = OpenAI::Client.new(api_key: ENV.fetch("OPENAI_API_KEY", "test-api-key"))
 
   # --------------------------- Variety controls ---------------------------
   VARIANCE = {
