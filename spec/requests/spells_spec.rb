@@ -9,6 +9,10 @@ RSpec.describe 'Spells', type: :request do
     attributes_for(:spell, user: dungeon_master, name: 'New Spell')
   }
 
+  # Load SRD spells from seed data
+  let(:spell) { Spell.find_by(slug: 'aid') }
+  let(:spell1) { Spell.find_by(slug: 'alarm') }
+
   let!(:spell_custom1) { create :spell,
                                 user: dungeon_master,
                                 name: 'DM Spell' }

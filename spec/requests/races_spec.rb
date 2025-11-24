@@ -9,6 +9,10 @@ RSpec.describe 'Races', type: :request do
     attributes_for(:race, user: dungeon_master, name: 'New Race')
   }
 
+  # Load SRD races from seed data
+  let(:race) { Race.find_by(slug: 'dwarf') }
+  let(:race1) { Race.find_by(slug: 'elf') }
+
   let!(:race_custom1) { create :race,
                                user: dungeon_master,
                                name: 'DM Race' }

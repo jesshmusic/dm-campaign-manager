@@ -13,6 +13,10 @@ RSpec.describe 'Monsters', type: :request do
     attributes_for(:monster, user: dungeon_master, fish_lips: 'NOPE')
   }
 
+  # Load SRD monsters from seed data
+  let(:monster) { Monster.find_by(slug: 'orc') }
+  let(:monster1) { Monster.find_by(slug: 'aboleth') }
+
   let!(:monster_custom1) { create :monster, user: dungeon_master, name: 'DM Monster' }
   let!(:monster_custom2) { create :monster, user: other_user, name: 'Other UserProps Monster' }
 
