@@ -27,10 +27,10 @@ RSpec.describe 'Monsters', type: :request do
         expect(response).to have_http_status(200)
       end
 
-      it 'should return 8 monsters' do
+      it 'should return 9 monsters' do
         get '/v1/monsters.json'
         result_monsters = JSON.parse response.body, symbolize_names: true
-        expect(result_monsters[:count]).to eq(8)
+        expect(result_monsters[:count]).to eq(9)
       end
 
       it 'should return results based on search query' do
@@ -46,10 +46,10 @@ RSpec.describe 'Monsters', type: :request do
         stub_authentication(admin)
       end
 
-      it 'should return 10 monsters' do
+      it 'should return 11 monsters' do
         get '/v1/monsters.json'
         result_monsters = JSON.parse response.body, symbolize_names: true
-        expect(result_monsters[:count]).to eq(10)
+        expect(result_monsters[:count]).to eq(11)
       end
     end
 
@@ -58,10 +58,10 @@ RSpec.describe 'Monsters', type: :request do
         stub_authentication(dungeon_master)
       end
 
-      it 'should return 9 monsters that are only default or owned by this DM' do
+      it 'should return 10 monsters that are only default or owned by this DM' do
         get '/v1/monsters.json'
         result_monsters = JSON.parse response.body, symbolize_names: true
-        expect(result_monsters[:count]).to eq(9)
+        expect(result_monsters[:count]).to eq(10)
         expect(result_monsters[:results].find { |monster|
           monster[:name] == 'DM Monster'
         }).not_to be_nil
