@@ -17,7 +17,7 @@ DndClass.create!([
   { name: 'Wizard', slug: 'wizard', hit_die: 6, user_id: nil },
 ])
 
-# 7 SRD Monsters
+# 8 SRD Monsters
 Monster.create!([
   { name: 'Aboleth', slug: 'aboleth', armor_class: 17, hit_points: 135, hit_dice: '18d10', challenge_rating: '10', xp: 5900, strength: 21, dexterity: 9, constitution: 15, intelligence: 18, wisdom: 15, charisma: 18, size: 'Large', monster_type: 'aberration', alignment: 'lawful evil', user_id: nil },
   { name: 'Acolyte', slug: 'acolyte', armor_class: 10, hit_points: 9, hit_dice: '2d8', challenge_rating: '1/4', xp: 50, strength: 10, dexterity: 10, constitution: 10, intelligence: 10, wisdom: 14, charisma: 11, size: 'Medium', monster_type: 'humanoid', alignment: 'any alignment', user_id: nil },
@@ -26,6 +26,7 @@ Monster.create!([
   { name: 'Adult Brass Dragon', slug: 'adult-brass-dragon', armor_class: 18, hit_points: 172, hit_dice: '15d12', challenge_rating: '13', xp: 10000, strength: 23, dexterity: 10, constitution: 21, intelligence: 14, wisdom: 13, charisma: 17, size: 'Huge', monster_type: 'dragon', alignment: 'chaotic good', user_id: nil },
   { name: 'Adult Bronze Dragon', slug: 'adult-bronze-dragon', armor_class: 19, hit_points: 212, hit_dice: '17d12', challenge_rating: '15', xp: 13000, strength: 25, dexterity: 10, constitution: 23, intelligence: 16, wisdom: 15, charisma: 19, size: 'Huge', monster_type: 'dragon', alignment: 'lawful good', user_id: nil },
   { name: 'Adult Copper Dragon', slug: 'adult-copper-dragon', armor_class: 18, hit_points: 184, hit_dice: '16d12', challenge_rating: '14', xp: 11500, strength: 23, dexterity: 12, constitution: 21, intelligence: 18, wisdom: 15, charisma: 17, size: 'Huge', monster_type: 'dragon', alignment: 'chaotic good', user_id: nil },
+  { name: 'Orc', slug: 'orc', armor_class: 13, hit_points: 15, hit_dice: '2d8+6', challenge_rating: '1/2', xp: 100, strength: 16, dexterity: 12, constitution: 16, intelligence: 7, wisdom: 11, charisma: 10, size: 'Medium', monster_type: 'humanoid', alignment: 'chaotic evil', user_id: nil },
 ])
 
 # 6 SRD Races

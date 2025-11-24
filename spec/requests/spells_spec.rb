@@ -9,9 +9,6 @@ RSpec.describe 'Spells', type: :request do
     attributes_for(:spell, user: dungeon_master, name: 'New Spell')
   }
 
-  let!(:spell) { create :spell }
-  let!(:spell1) { create :spell }
-  let!(:spell2) { create :spell }
   let!(:spell_custom1) { create :spell,
                                 user: dungeon_master,
                                 name: 'DM Spell' }
@@ -68,7 +65,7 @@ RSpec.describe 'Spells', type: :request do
   describe 'GET Return single Spell' do
     context 'for Logged Out Users' do
       it 'returns a success response' do
-        get "/v1/spells/#{spell1.slug}.json"
+        get "/v1/spells/acid-arrow.json"
         expect(response).to have_http_status(200)
       end
 

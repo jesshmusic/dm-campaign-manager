@@ -6,12 +6,26 @@ RSpec.describe JsonWebToken do
   let(:kid) { 'test-key-id' }
   let(:public_key) { OpenSSL::PKey::RSA.new(2048).public_key }
 
+  let(:test_certificate) do
+    rsa_key = OpenSSL::PKey::RSA.new(2048)
+    cert = OpenSSL::X509::Certificate.new
+    cert.version = 2
+    cert.serial = 1
+    cert.subject = OpenSSL::X509::Name.parse('/CN=Test')
+    cert.issuer = cert.subject
+    cert.public_key = rsa_key.public_key
+    cert.not_before = Time.now
+    cert.not_after = Time.now + 3600
+    cert.sign(rsa_key, OpenSSL::Digest.new('SHA256'))
+    cert
+  end
+
   let(:jwks_response) do
     {
       'keys' => [
         {
           'kid' => kid,
-          'x5c' => [Base64.strict_encode64(OpenSSL::X509::Certificate.new.to_der)]
+          'x5c' => [Base64.strict_encode64(test_certificate.to_der)]
         }
       ]
     }.to_json

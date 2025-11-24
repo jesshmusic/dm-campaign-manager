@@ -9,9 +9,6 @@ RSpec.describe 'Races', type: :request do
     attributes_for(:race, user: dungeon_master, name: 'New Race')
   }
 
-  let!(:race) { create :race }
-  let!(:race1) { create :race }
-  let!(:race2) { create :race }
   let!(:race_custom1) { create :race,
                                user: dungeon_master,
                                name: 'DM Race' }
@@ -68,7 +65,7 @@ RSpec.describe 'Races', type: :request do
   describe 'GET Return single Race' do
     context 'for Logged Out Users' do
       it 'returns a success response' do
-        get "/v1/races/#{race1.slug}.json"
+        get "/v1/races/dwarf.json"
         expect(response).to have_http_status(200)
       end
 

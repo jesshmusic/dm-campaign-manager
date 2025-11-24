@@ -32,6 +32,9 @@ jobs:
       RACK_ENV: test
       NODE_OPTIONS: --openssl-legacy-provider
       AWS_S3_BUCKET: test-bucket
+      AWS_ACCESS_KEY_ID: test-access-key
+      AWS_SECRET_ACCESS_KEY: test-secret-key
+      AWS_REGION: us-east-1
 
     steps:
       - name: Checkout code

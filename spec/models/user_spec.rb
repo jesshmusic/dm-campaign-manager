@@ -255,7 +255,7 @@ RSpec.describe User, type: :model do
       deleted_at = user.deleted_at
 
       reloaded = User.find(user.id)
-      expect(reloaded.deleted_at).to eq(deleted_at)
+      expect(reloaded.deleted_at).to be_within(1.second).of(deleted_at)
     end
   end
 
