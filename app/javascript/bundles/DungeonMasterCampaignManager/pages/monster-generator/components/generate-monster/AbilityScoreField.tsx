@@ -24,7 +24,7 @@ type AbilityScoreFieldProps = {
   label: string;
   readOnly?: boolean;
   hideRoll?: boolean;
-  setValue: UseFormSetValue<unknown>;
+  setValue: UseFormSetValue<FieldValues>;
   register: UseFormRegister<FieldValues>;
   value?: unknown;
 };

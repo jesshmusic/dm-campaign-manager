@@ -14,7 +14,8 @@ const ClassLevelsTable = (props: { dndClass: DndClass }) => {
   return (
     <div className={styles.tableContainer}>
       <DataTable
-        columns={columns}
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        columns={columns as any}
         data={data}
         loading={dndClass.levels.length === 0}
         perPage={20}

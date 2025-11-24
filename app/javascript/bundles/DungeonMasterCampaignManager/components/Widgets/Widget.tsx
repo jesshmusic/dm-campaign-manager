@@ -22,7 +22,7 @@ export type WidgetElementProps = {
   widgetId: string;
   content?: string;
   onRemoveItem: (id: string) => void;
-  component: unknown;
+  component: React.ComponentType<Record<string, unknown>>;
   title: string;
   subtitle: string;
   hideFrame: boolean;

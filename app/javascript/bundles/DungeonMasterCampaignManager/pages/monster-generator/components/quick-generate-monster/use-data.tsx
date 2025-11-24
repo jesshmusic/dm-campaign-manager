@@ -13,7 +13,7 @@ import {
   filterOptionsWithData,
   getChallengeRatingOptions,
 } from '../../../../utilities/character-utilities';
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 
 export const useData = (props: GenerateMonsterProps) => {
   const [monsterForm, _setMonsterForm] = React.useState<FieldValues>({
@@ -59,11 +59,11 @@ export const useData = (props: GenerateMonsterProps) => {
     mode: 'onChange',
   });
 
-  const getMonsterActions = (inputValue: string, callback: unknown) => {
+  const getMonsterActions = (inputValue: string, callback: (options: unknown[]) => void) => {
     if (inputValue.length > 2) {
       axios
-        .get(`/v1/actions-by-name.json?action_name=${inputValue}`)
-        .then((response: AxiosResponse<unknown>) => {
+        .get<{ actions: unknown[] }>(`/v1/actions-by-name.json?action_name=${inputValue}`)
+        .then((response) => {
           const options = filterActionOptions(response.data.actions);
           callback(options);
         })
@@ -71,10 +71,10 @@ export const useData = (props: GenerateMonsterProps) => {
     }
   };
 
-  const getSpecialAbilities = (inputValue: string, callback: unknown) => {
+  const getSpecialAbilities = (inputValue: string, callback: (options: unknown[]) => void) => {
     axios
-      .get(`/v1/special-abilities.json?search=${inputValue}`)
-      .then((response: AxiosResponse<unknown>) => {
+      .get<{ special_abilities: string[] }>(`/v1/special-abilities.json?search=${inputValue}`)
+      .then((response) => {
         const options = response.data.special_abilities.map((ability) => ({
           label: ability,
           value: ability,
@@ -84,10 +84,10 @@ export const useData = (props: GenerateMonsterProps) => {
       .catch((_error) => {});
   };
 
-  const getSpells = (inputValue: string, callback: unknown) => {
+  const getSpells = (inputValue: string, callback: (options: unknown[]) => void) => {
     axios
-      .get(`/v1/spells.json?list=true&search=${inputValue}}`)
-      .then((response: AxiosResponse<unknown>) => {
+      .get<{ results: unknown[] }>(`/v1/spells.json?list=true&search=${inputValue}}`)
+      .then((response) => {
         const options = filterOptionsWithData(response.data.results);
         callback(options);
       })

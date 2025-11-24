@@ -11,16 +11,17 @@ import { connect } from 'react-redux';
 import QuickGenerateMonster from './components/quick-generate-monster/QuickGenerateMonster';
 import { GiDiceTwentyFacesTwenty } from 'react-icons/gi/';
 import ReactGA from 'react-ga4';
+import { MonsterProps } from '../../utilities/types';
 
 ReactGA.initialize('G-8XJTH70JSQ');
 
 import styles from './monster-generator.module.scss';
 
 const MonsterGenerator = (props: {
-  monster: unknown;
+  monster?: MonsterProps;
   generateCommoner: (gender?: string, race?: string, token?: string) => void;
-  generateMonster: (monster: unknown, token?: string) => void;
-  generateQuickMonster: (monster: unknown, token?: string) => void;
+  generateMonster: (monster: Record<string, unknown>, token?: string) => void;
+  generateQuickMonster: (monster: Record<string, unknown>, token?: string) => void;
   isLoading?: boolean;
   token?: string;
 }) => {

@@ -1,6 +1,7 @@
 import { describe, it, expect, jest, beforeEach } from '@jest/globals';
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
@@ -111,9 +112,6 @@ describe('SideBar Component', () => {
               isCollapsed={false}
               isMobile={false}
               setIsCollapsed={mockSetIsCollapsed}
-              getRules={jest.fn()}
-              logOutUser={jest.fn()}
-              rules={[]}
             />
           </MemoryRouter>
         </Provider>
@@ -139,9 +137,6 @@ describe('SideBar Component', () => {
               isCollapsed={false}
               isMobile={false}
               setIsCollapsed={mockSetIsCollapsed}
-              getRules={jest.fn()}
-              logOutUser={jest.fn()}
-              rules={[]}
             />
           </MemoryRouter>
         </Provider>
@@ -196,16 +191,18 @@ describe('SideBar Component', () => {
         },
       ];
 
+      const storeWithRules = mockStore({
+        rules: { rules },
+        users: { currentUser: null },
+      });
+
       render(
-        <Provider store={store}>
+        <Provider store={storeWithRules}>
           <MemoryRouter>
             <SideBar
               isCollapsed={false}
               isMobile={false}
               setIsCollapsed={mockSetIsCollapsed}
-              getRules={jest.fn()}
-              logOutUser={jest.fn()}
-              rules={rules}
             />
           </MemoryRouter>
         </Provider>
@@ -231,9 +228,6 @@ describe('SideBar Component', () => {
               isCollapsed={false}
               isMobile={false}
               setIsCollapsed={mockSetIsCollapsed}
-              getRules={jest.fn()}
-              logOutUser={jest.fn()}
-              rules={[]}
             />
           </MemoryRouter>
         </Provider>
@@ -288,9 +282,6 @@ describe('SideBar Component', () => {
               isCollapsed={false}
               isMobile={false}
               setIsCollapsed={mockSetIsCollapsed}
-              getRules={jest.fn()}
-              logOutUser={jest.fn()}
-              rules={[]}
             />
           </MemoryRouter>
         </Provider>
@@ -320,9 +311,6 @@ describe('SideBar Component', () => {
               isCollapsed={false}
               isMobile={false}
               setIsCollapsed={mockSetIsCollapsed}
-              getRules={jest.fn()}
-              logOutUser={jest.fn()}
-              rules={[]}
             />
           </MemoryRouter>
         </Provider>
@@ -347,9 +335,6 @@ describe('SideBar Component', () => {
               isCollapsed={false}
               isMobile={false}
               setIsCollapsed={mockSetIsCollapsed}
-              getRules={jest.fn()}
-              logOutUser={jest.fn()}
-              rules={[]}
             />
           </MemoryRouter>
         </Provider>
@@ -382,9 +367,6 @@ describe('SideBar Component', () => {
               isCollapsed={false}
               isMobile={false}
               setIsCollapsed={mockSetIsCollapsed}
-              getRules={jest.fn()}
-              logOutUser={jest.fn()}
-              rules={[]}
             />
           </MemoryRouter>
         </Provider>
@@ -416,9 +398,6 @@ describe('SideBar Component', () => {
               isCollapsed={false}
               isMobile={false}
               setIsCollapsed={mockSetIsCollapsed}
-              getRules={jest.fn()}
-              logOutUser={jest.fn()}
-              rules={[]}
             />
           </MemoryRouter>
         </Provider>
@@ -443,9 +422,6 @@ describe('SideBar Component', () => {
               isCollapsed={false}
               isMobile={false}
               setIsCollapsed={mockSetIsCollapsed}
-              getRules={jest.fn()}
-              logOutUser={jest.fn()}
-              rules={[]}
             />
           </MemoryRouter>
         </Provider>
@@ -472,9 +448,6 @@ describe('SideBar Component', () => {
               isCollapsed={false}
               isMobile={false}
               setIsCollapsed={mockSetIsCollapsed}
-              getRules={jest.fn()}
-              logOutUser={jest.fn()}
-              rules={[]}
             />
           </MemoryRouter>
         </Provider>
@@ -583,10 +556,6 @@ describe('SideBar Component', () => {
               isCollapsed={false}
               isMobile={false}
               setIsCollapsed={mockSetIsCollapsed}
-              getRules={jest.fn()}
-              logOutUser={jest.fn()}
-              rules={[]}
-              currentUser={{ role: 'admin', name: 'Admin User' } as any}
             />
           </MemoryRouter>
         </Provider>

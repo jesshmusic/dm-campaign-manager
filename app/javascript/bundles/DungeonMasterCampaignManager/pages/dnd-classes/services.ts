@@ -1,10 +1,8 @@
 import { DndClassLevel } from '../../utilities/types';
 import Util from '../../utilities/utilities';
 
-export const buildLevelColumns = (
-  levels: DndClassLevel[]
-): { Header: string; accessor: string }[] => {
-  let columns = [
+export const buildLevelColumns = (levels: DndClassLevel[]) => {
+  let columns: Array<{ Header: string; accessor: string }> = [
     { Header: 'Level', accessor: 'level' },
     { Header: 'Proficiency Bonus', accessor: 'profBonus' },
     { Header: 'Features', accessor: 'featureString' },

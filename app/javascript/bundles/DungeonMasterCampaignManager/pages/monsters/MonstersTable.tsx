@@ -26,7 +26,7 @@ const MonstersTable = (props: {
     }
   }, [isLoading]);
 
-  const goToPage = (row: Row<unknown>) => {
+  const goToPage = (row: Row<Record<string, unknown>>) => {
     navigate(`/app/monsters/${row.original.slug}`);
   };
 

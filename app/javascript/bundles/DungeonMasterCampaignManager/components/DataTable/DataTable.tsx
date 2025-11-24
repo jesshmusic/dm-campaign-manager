@@ -25,10 +25,10 @@ import { SelectOption } from '../../utilities/types';
 
 import styles from './data-table.module.scss';
 
-export interface DataTableProps {
-  columns: Array<Column<unknown>>;
-  data: Array<unknown>;
-  goToPage?: (row: Row<unknown>) => void;
+export interface DataTableProps<T extends object = Record<string, unknown>> {
+  columns: Array<Column<T>>;
+  data: Array<T>;
+  goToPage?: (row: Row<T>) => void;
   onSearch?: (searchTerm: string) => void;
   loading: boolean;
   noHover?: boolean;
@@ -38,7 +38,7 @@ export interface DataTableProps {
   results: number;
 }
 
-const DataTable = ({
+const DataTable = <T extends object = Record<string, unknown>>({
   columns,
   data,
   goToPage,
@@ -49,11 +49,14 @@ const DataTable = ({
   perPage = 12,
   results,
   renderRowSubComponent,
-}: DataTableProps) => {
+}: DataTableProps<T>) => {
+  // React Table has type variance issues with generics, so we cast to any here
   const dataTable = useTable(
     {
-      columns,
-      data,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      columns: columns as any,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      data: data as any,
       initialState: {
         pageIndex: 0,
         pageSize: perPage,
@@ -71,7 +74,7 @@ const DataTable = ({
     return <DndSpinner showTableFrame />;
   }
 
-  const handleGoToPage = (row: Row<unknown> & { canExpand?: boolean }) => {
+  const handleGoToPage = (row: Row<T> & { canExpand?: boolean }) => {
     if (!row.canExpand) {
       if (goToPage) {
         goToPage(row);
@@ -122,28 +125,38 @@ const DataTable = ({
         })}
       >
         <thead>
-          {dataTable.headerGroups.map((headerGroup) => (
-            <tr key={headerGroup.id} {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => (
-                <th key={column.id} {...column.getHeaderProps(column.getSortByToggleProps())}>
-                  {column.render('Header')} {sortIcon(column)}
-                </th>
-              ))}
-            </tr>
-          ))}
+          {dataTable.headerGroups.map((headerGroup) => {
+            const { key: _headerKey, ...headerGroupProps } = headerGroup.getHeaderGroupProps();
+            return (
+              <tr key={headerGroup.id} {...headerGroupProps}>
+                {headerGroup.headers.map((column) => {
+                  const { key: _columnKey, ...columnProps } = column.getHeaderProps(
+                    column.getSortByToggleProps()
+                  );
+                  return (
+                    <th key={column.id} {...columnProps}>
+                      {column.render('Header')} {sortIcon(column)}
+                    </th>
+                  );
+                })}
+              </tr>
+            );
+          })}
         </thead>
         <tbody {...dataTable.getTableBodyProps()}>
-          {dataTable.page.map((row: Row<unknown>) => {
+          {dataTable.page.map((row) => {
             dataTable.prepareRow(row);
-            const { role: _role, ...rowProps } = row.getRowProps();
+            const { role: _role, key: _rowKey, ...rowProps } = row.getRowProps();
+            const typedRow = row as unknown as Row<T>;
             return (
-              <React.Fragment key={row.id} {...rowProps}>
-                <tr {...row.getRowProps()} onClick={() => handleGoToPage(row)}>
+              <React.Fragment key={row.id}>
+                <tr {...row.getRowProps()} onClick={() => handleGoToPage(typedRow)}>
                   {row.cells.map((cell, index) => {
+                    const { key: _cellKey, ...cellProps } = cell.getCellProps();
                     return (
                       <td
                         key={cell.column.id}
-                        {...cell.getCellProps()}
+                        {...cellProps}
                         className={index === 0 ? 'name-row' : ''}
                       >
                         {cell.render('Cell')}

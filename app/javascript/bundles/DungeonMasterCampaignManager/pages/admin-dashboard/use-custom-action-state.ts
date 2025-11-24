@@ -51,7 +51,6 @@ export const useCustomActionState = (props: {
   });
 
   const updateActionForm = async (fieldName: string | undefined, value: unknown) => {
-    // @ts-expect-error
     const fields = value as CustomActionField;
     if (fieldName === 'action.damage.damageTypeOption') {
       UseForm.setValue(

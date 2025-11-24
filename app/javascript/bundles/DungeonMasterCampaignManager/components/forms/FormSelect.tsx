@@ -6,7 +6,7 @@ import React from 'react';
 import Select, { MenuPlacement, Options } from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 import { SelectOption } from '../../utilities/types';
-import { Control, Controller } from 'react-hook-form';
+import { Control, Controller, FieldValues } from 'react-hook-form';
 import classNames from 'classnames';
 import './inputOverrides.scss';
 
@@ -25,7 +25,7 @@ export type SelectProps = {
   options?: SelectOption[] | Options<unknown>;
   placeholder?: string;
   required?: boolean;
-  control?: Control<unknown>;
+  control?: Control<FieldValues>;
   value?: unknown;
 };
 

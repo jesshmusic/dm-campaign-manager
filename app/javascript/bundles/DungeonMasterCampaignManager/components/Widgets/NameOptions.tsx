@@ -75,7 +75,9 @@ const NameOptions = ({ onFormSubmit, title, token }: NameOptionsProps) => {
           id={'nameGeneratorGender'}
           menuPlacement={'top'}
           onChange={(option) => {
-            setGender(option);
+            if (option) {
+              setGender(option as { value: string; label: string });
+            }
           }}
         />
       </div>
@@ -88,7 +90,9 @@ const NameOptions = ({ onFormSubmit, title, token }: NameOptionsProps) => {
           id={'nameGeneratorRace'}
           menuPlacement={'top'}
           onChange={(option) => {
-            setRace(option);
+            if (option) {
+              setRace(option as { value: string; label: string });
+            }
           }}
         />
       </div>

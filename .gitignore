@@ -50,3 +50,9 @@ test.html
 .env
 
 fg_npc.xml
+/CLAUDE_CODE_CONTEXT.md
+/bin/copy_remaining_srd_data.sql
+/bin/restore_test_db.sh
+/bin/seed_test_db.sh
+/bin/seed_test_db_fixed.sh
+/lib/tasks/test_seed.rake

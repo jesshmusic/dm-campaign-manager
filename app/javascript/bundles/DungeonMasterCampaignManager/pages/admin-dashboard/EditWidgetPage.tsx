@@ -35,7 +35,6 @@ const EditWidgetPage = (props: {
   });
 
   const updateWidgetForm = async (fieldName: string | undefined, value: unknown) => {
-    // @ts-expect-error - Type assertion needed for form value
     const fields = value as CreateWidgetForm;
     if (fieldName === 'iconOption') {
       UseForm.setValue('icon', fields.iconOption.value as string);

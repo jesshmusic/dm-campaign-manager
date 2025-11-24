@@ -61,7 +61,7 @@ const WidgetForm = (props: { useForm: UseFormReturn; onSubmit: (data) => void })
       <Controller
         control={props.useForm.control}
         name={'content'}
-        render={({ field: { onChange: _onChange, ...rest } }) => {
+        render={({ field: { onChange, ...rest } }) => {
           const handleChange = (data) => {
             onChange(data);
           };

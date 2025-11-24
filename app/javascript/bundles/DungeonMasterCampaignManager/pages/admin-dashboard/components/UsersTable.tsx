@@ -20,15 +20,15 @@ const UsersTable = (props: {
     () => [
       {
         Header: 'User',
-        accessor: 'name',
+        accessor: 'name' as const,
       },
       {
         Header: 'Role',
-        accessor: 'role',
+        accessor: 'role' as const,
       },
       {
         Header: 'NPCs',
-        accessor: 'monsters',
+        accessor: 'monsters' as const,
       },
     ],
     []

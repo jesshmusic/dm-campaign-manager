@@ -1,28 +1,28 @@
 import React from 'react';
-import { UseFormReturn } from 'react-hook-form';
+import { FieldValues, UseFormReturn } from 'react-hook-form';
 import FormSelectAsync from '../../../components/forms/FormSelectAsync';
 import { filterOptionsWithData } from '../../../utilities/character-utilities';
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 
 import styles from './generator.module.scss';
 
-const SavesSkillsSection = (props: { UseForm: UseFormReturn }) => {
+const SavesSkillsSection = (props: { UseForm: UseFormReturn<FieldValues> }) => {
   const { UseForm } = props;
 
-  const getSavingThrows = (inputValue: string, callback: unknown) => {
+  const getSavingThrows = (inputValue: string, callback: (options: unknown[]) => void) => {
     axios
-      .get(`/v1/saving-throws.json?search=${inputValue}`)
-      .then((response: AxiosResponse<unknown>) => {
+      .get<{ results: unknown[] }>(`/v1/saving-throws.json?search=${inputValue}`)
+      .then((response) => {
         const options = filterOptionsWithData(response.data.results);
         callback(options);
       })
       .catch((_error) => {});
   };
 
-  const getSkills = (inputValue: string, callback: unknown) => {
+  const getSkills = (inputValue: string, callback: (options: unknown[]) => void) => {
     axios
-      .get(`/v1/prof-skills.json?search=${inputValue}`)
-      .then((response: AxiosResponse<unknown>) => {
+      .get<{ results: unknown[] }>(`/v1/prof-skills.json?search=${inputValue}`)
+      .then((response) => {
         const options = filterOptionsWithData(response.data.results);
         callback(options);
       })

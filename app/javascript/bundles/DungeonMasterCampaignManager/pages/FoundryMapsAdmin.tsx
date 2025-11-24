@@ -4,7 +4,7 @@ import PageContainer from '../containers/PageContainer';
 import PageTitle from '../components/PageTitle/PageTitle';
 import Button from '../components/Button/Button';
 import { Colors } from '../utilities/enums';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, FieldValues } from 'react-hook-form';
 import {
   ControlledInput,
   ControlledSelect,
@@ -68,14 +68,14 @@ const FoundryMapsAdmin: React.FC = () => {
   const [editingTagName, setEditingTagName] = useState<string>('');
   const [newTagName, setNewTagName] = useState<string>('');
   const [isEditingInModal, setIsEditingInModal] = useState(false);
-  const quillRef = useRef<unknown>(null);
+  const quillRef = useRef<ReactQuill>(null);
 
   const {
     control,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm({
+  } = useForm<FieldValues>({
     defaultValues: {
       name: '',
       description: '',
@@ -111,8 +111,10 @@ const FoundryMapsAdmin: React.FC = () => {
           const quill = quillRef.current?.getEditor();
           if (quill) {
             const range = quill.getSelection(true);
-            quill.insertEmbed(range.index, 'image', data.url);
-            quill.setSelection(range.index + 1);
+            if (range) {
+              quill.insertEmbed(range.index, 'image', data.url);
+              quill.setSelection({ index: range.index + 1, length: 0 });
+            }
           }
         } else {
           dispatch(
@@ -278,7 +280,7 @@ const FoundryMapsAdmin: React.FC = () => {
     });
   };
 
-  const onSubmit = async (data: unknown) => {
+  const onSubmit = async (data: FieldValues) => {
     setUploadingFiles(true);
     try {
       const url = editingMap ? `/v1/maps/${editingMap.id}` : '/v1/maps';
@@ -777,7 +779,7 @@ const FoundryMapsAdmin: React.FC = () => {
               <ControlledInput
                 fieldName="name"
                 errors={errors}
-                control={control as unknown}
+                control={control}
                 label="Map Name"
                 required
                 disabled={uploadingFiles}
@@ -806,14 +808,14 @@ const FoundryMapsAdmin: React.FC = () => {
 
               <ControlledTagInput
                 fieldName="tags"
-                control={control as unknown}
+                control={control}
                 label="Tags"
                 placeholder="Add tags (press Enter or comma)"
               />
 
               <ControlledSelect
                 fieldName="access_level"
-                control={control as unknown}
+                control={control}
                 label="Access Level"
                 options={[
                   { value: 'premium', label: 'Premium' },
@@ -824,7 +826,7 @@ const FoundryMapsAdmin: React.FC = () => {
 
               <ControlledSelect
                 fieldName="required_tier"
-                control={control as unknown}
+                control={control}
                 label="Required Tier"
                 options={[
                   { value: 'free', label: 'Free' },
@@ -1002,7 +1004,7 @@ const FoundryMapsAdmin: React.FC = () => {
                       <ControlledInput
                         fieldName="name"
                         errors={errors}
-                        control={control as unknown}
+                        control={control}
                         label="Map Name"
                         required
                         disabled={uploadingFiles}
@@ -1031,14 +1033,14 @@ const FoundryMapsAdmin: React.FC = () => {
 
                       <ControlledTagInput
                         fieldName="tags"
-                        control={control as unknown}
+                        control={control}
                         label="Tags"
                         placeholder="Add tags (press Enter or comma)"
                       />
 
                       <ControlledSelect
                         fieldName="access_level"
-                        control={control as unknown}
+                        control={control}
                         label="Access Level"
                         options={[
                           { value: 'premium', label: 'Premium' },
