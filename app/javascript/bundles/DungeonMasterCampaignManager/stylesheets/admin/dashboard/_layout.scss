@@ -74,13 +74,13 @@ body {
  * Content
  */
 
-[role="main"] {
+[role='main'] {
   padding-left: 15% !important;
   padding-top: 133px;
 }
 
 @media (min-width: 768px) {
-  [role="main"] {
+  [role='main'] {
     padding-top: 64px;
   }
 }

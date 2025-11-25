@@ -1,4 +1,4 @@
-@import "../stylesheets/variables";
+@import '../stylesheets/variables';
 
 .contentWrapper {
   padding: $spacer * 2;
@@ -669,7 +669,7 @@
     background-color: $gray-200;
     border-radius: $border-radius-sm;
     color: $cobalt;
-    font-family: "Courier New", Courier, monospace;
+    font-family: 'Courier New', Courier, monospace;
     font-size: $font-size-sm;
     padding: $spacer * 0.125 $spacer * 0.375;
   }
@@ -679,7 +679,7 @@
   background-color: $gray-900;
   border-radius: $border-radius-sm;
   color: $gray-100;
-  font-family: "Courier New", Courier, monospace;
+  font-family: 'Courier New', Courier, monospace;
   font-size: $font-size-sm * 0.875;
   line-height: 1.4;
   margin: $spacer * 0.5 0;
@@ -733,7 +733,7 @@
 
 .slugText {
   color: $gray-600;
-  font-family: "Courier New", Courier, monospace !important;
+  font-family: 'Courier New', Courier, monospace !important;
   font-size: $font-size-sm;
 }
 

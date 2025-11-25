@@ -75,16 +75,16 @@
 
 .admin-container {
   background-color: #eee5ce;
-  background-image: url("/images/dndBG.jpg");
+  background-image: url('/images/dndBG.jpg');
   margin: 0 auto;
   padding-bottom: 6.25rem !important;
   position: relative;
 
   &::after {
-    background-image: url("/images/dndBottomDeco.png");
+    background-image: url('/images/dndBottomDeco.png');
     background-size: cover;
     bottom: 0;
-    content: "";
+    content: '';
     height: 6.25rem;
     left: 0;
     position: absolute;
