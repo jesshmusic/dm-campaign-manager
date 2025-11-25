@@ -26,7 +26,7 @@ const customWidgets = createReducer(
   },
   (builder) =>
     builder
-      .addCase(createWidget, (state, action: AnyAction) => {
+      .addCase(createWidget, (_state, _action: AnyAction) => {
         return {
           widget: null,
           widgets: [],
@@ -47,7 +47,7 @@ const customWidgets = createReducer(
           count: state.count,
         };
       })
-      .addCase(updateWidget, (state, action: AnyAction) => {
+      .addCase(updateWidget, (_state, _action: AnyAction) => {
         return {
           widget: null,
           widgets: [],
@@ -68,7 +68,7 @@ const customWidgets = createReducer(
           count: state.count,
         };
       })
-      .addCase(getWidgets, (state, action: AnyAction) => {
+      .addCase(getWidgets, (state, _action: AnyAction) => {
         return {
           widget: null,
           widgets: state.widgets,
@@ -89,7 +89,7 @@ const customWidgets = createReducer(
           count: state.count,
         };
       })
-      .addCase(getWidget, (state, action: AnyAction) => {
+      .addCase(getWidget, (state, _action: AnyAction) => {
         return {
           widget: null,
           widgets: state.widgets,
@@ -110,7 +110,7 @@ const customWidgets = createReducer(
           count: state.count,
         };
       })
-      .addCase(deleteWidget, (state, action: AnyAction) => {
+      .addCase(deleteWidget, (state, _action: AnyAction) => {
         return {
           widget: null,
           widgets: state.widgets,

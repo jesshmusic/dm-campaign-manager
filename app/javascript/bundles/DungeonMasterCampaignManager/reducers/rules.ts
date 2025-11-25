@@ -17,7 +17,7 @@ const rules = createReducer(
   },
   (builder) =>
     builder
-      .addCase(getRules, (state, action: AnyAction) => {
+      .addCase(getRules, (state, _action: AnyAction) => {
         return {
           rules: [],
           currentRule: state.currentRule,
@@ -41,7 +41,7 @@ const rules = createReducer(
           loading: false,
         };
       })
-      .addCase(getRule, (state, action: AnyAction) => {
+      .addCase(getRule, (state, _action: AnyAction) => {
         return {
           rules: state.rules,
           currentRule: null,

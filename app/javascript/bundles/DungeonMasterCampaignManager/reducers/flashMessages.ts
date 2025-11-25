@@ -98,7 +98,7 @@ const flashMessages = createReducer([] as FlashMessage[], (builder) =>
     .addCase(loginFailed, (state, action: AnyAction) => {
       return flashErrorMessage(state, action);
     })
-    .addCase(logoutSucceeded, (state, action: AnyAction) => {
+    .addCase(logoutSucceeded, (state, _action: AnyAction) => {
       return [
         {
           id: Date.now(),
@@ -112,25 +112,25 @@ const flashMessages = createReducer([] as FlashMessage[], (builder) =>
     .addCase(createCustomActionFail, (state, action: AnyAction) => {
       return flashErrorMessage(state, action);
     })
-    .addCase(createCustomActionSuccess, (state, action: AnyAction) => {
+    .addCase(createCustomActionSuccess, (state, _action: AnyAction) => {
       return flashSuccessMessage(state, 'Action Created Successfully', `Saved`);
     })
     .addCase(updateCustomActionFail, (state, action: AnyAction) => {
       return flashErrorMessage(state, action);
     })
-    .addCase(updateCustomActionSuccess, (state, action: AnyAction) => {
+    .addCase(updateCustomActionSuccess, (state, _action: AnyAction) => {
       return flashSuccessMessage(state, 'Action Updated Successfully', `Saved`);
     })
     .addCase(createWidgetFail, (state, action: AnyAction) => {
       return flashErrorMessage(state, action);
     })
-    .addCase(createWidgetSuccess, (state, action: AnyAction) => {
+    .addCase(createWidgetSuccess, (state, _action: AnyAction) => {
       return flashSuccessMessage(state, 'Widget Created Successfully', `Saved`);
     })
     .addCase(updateWidgetFail, (state, action: AnyAction) => {
       return flashErrorMessage(state, action);
     })
-    .addCase(updateWidgetSuccess, (state, action: AnyAction) => {
+    .addCase(updateWidgetSuccess, (state, _action: AnyAction) => {
       return flashSuccessMessage(state, 'Widget Updated Successfully', `Saved`);
     })
 );

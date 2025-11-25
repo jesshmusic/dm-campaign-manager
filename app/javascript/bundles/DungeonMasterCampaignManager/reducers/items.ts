@@ -32,7 +32,7 @@ const items = createReducer(
           loading: false,
         };
       })
-      .addCase(getItemsFail, (state, action: AnyAction) => {
+      .addCase(getItemsFail, (state, _action: AnyAction) => {
         return {
           items: state.items,
           count: state.count,
@@ -48,7 +48,7 @@ const items = createReducer(
           loading: false,
         };
       })
-      .addCase(getItemFail, (state, action: AnyAction) => {
+      .addCase(getItemFail, (state, _action: AnyAction) => {
         return {
           items: state.items,
           count: state.count,

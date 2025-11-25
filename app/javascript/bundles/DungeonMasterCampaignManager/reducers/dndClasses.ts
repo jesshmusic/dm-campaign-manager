@@ -17,7 +17,7 @@ const dndClasses = createReducer(
   },
   (builder) =>
     builder
-      .addCase(getDndClasses, (state, action: AnyAction) => {
+      .addCase(getDndClasses, (state, _action: AnyAction) => {
         return {
           dndClasses: [],
           currentDndClass: state.currentDndClass,
@@ -41,7 +41,7 @@ const dndClasses = createReducer(
           loading: false,
         };
       })
-      .addCase(getDndClass, (state, action: AnyAction) => {
+      .addCase(getDndClass, (state, _action: AnyAction) => {
         return {
           dndClasses: state.dndClasses,
           currentDndClass: null,

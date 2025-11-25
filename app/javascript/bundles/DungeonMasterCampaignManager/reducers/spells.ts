@@ -17,7 +17,7 @@ const spells = createReducer(
   },
   (builder) =>
     builder
-      .addCase(getSpells, (state, action: AnyAction) => {
+      .addCase(getSpells, (state, _action: AnyAction) => {
         return {
           spells: [],
           currentSpell: state.currentSpell,
@@ -41,7 +41,7 @@ const spells = createReducer(
           loading: false,
         };
       })
-      .addCase(getSpell, (state, action: AnyAction) => {
+      .addCase(getSpell, (state, _action: AnyAction) => {
         return {
           spells: state.spells,
           currentSpell: null,
