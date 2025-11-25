@@ -10,7 +10,7 @@ import {
   GiOrcHead,
   GiRock,
   GiSwordman,
-} from 'react-icons/all';
+} from 'react-icons/gi';
 import ActionsInCombat from './ActionsInCombat';
 import TurnActions from './TurnActions';
 import Cover from './Cover';

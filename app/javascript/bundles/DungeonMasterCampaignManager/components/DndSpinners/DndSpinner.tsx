@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import { GiLinkedRings } from 'react-icons/all';
+import { GiLinkedRings } from 'react-icons/gi';
 import TableFrame from '../../containers/TableFrame';
 
 import styles from './spinner.module.scss';

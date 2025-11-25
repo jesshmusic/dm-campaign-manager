@@ -1,5 +1,5 @@
 import { Colors } from '../../utilities/enums';
-import { GiCrossMark } from 'react-icons/all';
+import { GiCrossMark } from 'react-icons/gi';
 import Button from './Button';
 import React from 'react';
 import styles from './button.module.scss';

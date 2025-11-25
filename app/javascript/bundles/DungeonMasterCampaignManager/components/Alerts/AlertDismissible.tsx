@@ -2,7 +2,7 @@ import React from 'react';
 import { GiAbstract029, GiBroadsword, GiInfo, GiSkullCrossedBones } from 'react-icons/gi';
 import classNames from 'classnames';
 import { FlashMessageType } from '../../reducers/flashMessages';
-import { GrClose } from 'react-icons/all';
+import { GrClose } from 'react-icons/gr';
 import Button from '../Button/Button';
 import { Colors } from '../../utilities/enums';
 import { gsap } from 'gsap';

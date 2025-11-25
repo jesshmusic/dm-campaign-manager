@@ -2,7 +2,7 @@ import React from 'react';
 import AddList from './AddList';
 import Button from '../../../components/Button/Button';
 import { Colors } from '../../../utilities/enums';
-import { GiChecklist } from 'react-icons/all';
+import { GiChecklist } from 'react-icons/gi';
 import ReactModal from 'react-modal';
 
 import styles from '../user-dashboard.module.scss';

@@ -1,24 +1,29 @@
-const { environment } = require('@rails/webpacker');
+const { generateWebpackConfig, merge } = require('shakapacker');
 const webpack = require('webpack');
-environment.plugins.prepend(
-  'Provide',
-  new webpack.ProvidePlugin({
-    $: 'jquery/src/jquery',
-    jQuery: 'jquery/src/jquery',
-  })
-);
-const nodeModulesLoader = environment.loaders.get('nodeModules');
-if (!Array.isArray(nodeModulesLoader.exclude)) {
-  nodeModulesLoader.exclude =
-    nodeModulesLoader.exclude == null ? [] : [nodeModulesLoader.exclude];
-}
 
-nodeModulesLoader.exclude.push(/react-table/);
+const webpackConfig = generateWebpackConfig();
 
-environment.loaders.append('typescript', {
-  test: /.(ts|tsx)$/,
-  loader: 'ts-loader',
-});
-environment.loaders.delete('nodeModules');
+const customConfig = {
+  plugins: [
+    new webpack.ProvidePlugin({
+      $: 'jquery/src/jquery',
+      jQuery: 'jquery/src/jquery',
+    }),
+  ],
+  module: {
+    rules: [
+      {
+        test: /\.(ts|tsx)$/,
+        loader: 'ts-loader',
+        options: {
+          transpileOnly: true,
+        },
+      },
+    ],
+  },
+  resolve: {
+    extensions: ['.ts', '.tsx', '.js', '.jsx'],
+  },
+};
 
-module.exports = environment;
+module.exports = merge(webpackConfig, customConfig);

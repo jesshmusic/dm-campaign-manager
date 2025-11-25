@@ -1,6 +1,6 @@
 import React from 'react';
 import BreadcrumbLink from './BreadcrumbLink';
-import { GiCastle, GiPointing, GiTwoHandedSword } from 'react-icons/all';
+import { GiCastle, GiPointing, GiTwoHandedSword } from 'react-icons/gi';
 import { useLocation, useNavigate } from 'react-router-dom';
 import classNames from 'classnames';
 

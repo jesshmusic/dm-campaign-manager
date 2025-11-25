@@ -9,7 +9,7 @@ import axios from 'axios';
 import { RandomNameResult } from '../../utilities/types';
 import { Colors } from '../../utilities/enums';
 import Button from '../Button/Button';
-import { GiBeerStein } from 'react-icons/all';
+import { GiBeerStein } from 'react-icons/gi';
 
 const TavernNameField = (props: { hideFrame?: boolean }) => {
   const [nameValue, setNameValue] = useState('');

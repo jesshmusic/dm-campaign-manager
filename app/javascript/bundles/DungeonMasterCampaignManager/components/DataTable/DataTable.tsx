@@ -9,12 +9,8 @@ import {
   useSortBy,
   useTable,
 } from 'react-table';
-import {
-  GiArchiveResearch,
-  TiArrowSortedDown,
-  TiArrowSortedUp,
-  TiArrowUnsorted,
-} from 'react-icons/all';
+import { GiArchiveResearch } from 'react-icons/gi';
+import { TiArrowSortedDown, TiArrowSortedUp, TiArrowUnsorted } from 'react-icons/ti';
 import classNames from 'classnames';
 import DndSpinner from '../DndSpinners/DndSpinner';
 import { useForm } from 'react-hook-form';

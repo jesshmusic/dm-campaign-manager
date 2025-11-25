@@ -14,7 +14,7 @@ import ResistancesSection from './sections/ResistancesSection';
 import SensesForm from './sections/senses/SensesForm';
 import SpeedsForm from './sections/speeds/SpeedsForm';
 import SavesSkillsSection from '../SavesSkillsSection';
-import { GiLinkedRings } from 'react-icons/all';
+import { GiLinkedRings } from 'react-icons/gi';
 
 import styles from '../generator.module.scss';
 

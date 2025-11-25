@@ -1,6 +1,6 @@
 import { Link, useMatch, useResolvedPath } from 'react-router-dom';
 import React from 'react';
-import { GiDragonHead } from 'react-icons/all';
+import { GiDragonHead } from 'react-icons/gi';
 import { MenuItem } from 'react-pro-sidebar';
 
 import styles from './navlink.module.scss';

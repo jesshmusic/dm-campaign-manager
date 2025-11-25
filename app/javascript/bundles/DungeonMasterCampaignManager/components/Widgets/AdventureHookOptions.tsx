@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Button from '../Button/Button';
 import { Colors } from '../../utilities/enums';
-import { GiLevelTwoAdvanced } from 'react-icons/all';
+import { GiLevelTwoAdvanced } from 'react-icons/gi';
 
 import '../forms/inputOverrides.scss';
 import styles from './widgets.module.scss';

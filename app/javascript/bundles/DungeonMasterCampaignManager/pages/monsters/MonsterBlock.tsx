@@ -4,7 +4,7 @@ import { MonsterProps } from '../../utilities/types';
 import { abilityScoreModifier } from '../monster-generator/services';
 import Button from '../../components/Button/Button';
 import { Colors } from '../../utilities/enums';
-import { GiBeerStein } from 'react-icons/all';
+import { GiBeerStein } from 'react-icons/gi';
 
 import styles from './monsters.module.scss';
 

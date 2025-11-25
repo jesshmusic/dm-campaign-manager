@@ -1,6 +1,6 @@
 import React from 'react';
 import * as Icons from 'react-icons/gi';
-import { GiBeerStein } from 'react-icons/all';
+import { GiBeerStein } from 'react-icons/gi';
 
 export const allGiIcons = Object.entries(Icons).map((iconArray) => {
   const iconName = iconArray[0]

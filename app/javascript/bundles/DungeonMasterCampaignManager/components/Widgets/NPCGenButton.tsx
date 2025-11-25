@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { GiBarbute } from 'react-icons/all';
+import { GiBarbute } from 'react-icons/gi';
 import React from 'react';
 
 import styles from './widgets.module.scss';

@@ -13,7 +13,7 @@ import {
 import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { GiSave } from 'react-icons/gi';
-import { GiLinkedRings } from 'react-icons/all';
+import { GiLinkedRings } from 'react-icons/gi';
 import { MdEdit, MdDelete, MdVisibility, MdSave, MdCancel } from 'react-icons/md';
 import ImageResize from 'quill-image-resize-module-react';
 import { addFlashMessage, FlashMessageType } from '../reducers/flashMessages';

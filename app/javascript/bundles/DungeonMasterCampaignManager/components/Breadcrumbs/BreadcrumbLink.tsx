@@ -4,7 +4,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { GiTwoHandedSword } from 'react-icons/all';
+import { GiTwoHandedSword } from 'react-icons/gi';
 
 import styles from './breadcrumbs.module.scss';
 

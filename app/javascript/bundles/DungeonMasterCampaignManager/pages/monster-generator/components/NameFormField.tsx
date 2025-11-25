@@ -2,7 +2,7 @@ import React from 'react';
 import { FieldErrors, FieldValues, UseFormRegister } from 'react-hook-form';
 import { Colors } from '../../../utilities/enums';
 import Button from '../../../components/Button/Button';
-import { GiFire } from 'react-icons/all';
+import { GiFire } from 'react-icons/gi';
 
 import styles from '../../../components/forms/input.module.scss';
 

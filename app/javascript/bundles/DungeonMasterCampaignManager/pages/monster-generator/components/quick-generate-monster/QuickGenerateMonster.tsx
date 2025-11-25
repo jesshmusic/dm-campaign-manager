@@ -7,7 +7,7 @@ import Button from '../../../../components/Button/Button';
 import { useData } from './use-data';
 import GenMonsterSection from '../generate-monster/sections/GenMonsterSection';
 import QuickMonsterStatsSection from './QuickMonsterStatsSection';
-import { GiLinkedRings } from 'react-icons/all';
+import { GiLinkedRings } from 'react-icons/gi';
 import FormSelectAsync from '../../../../components/forms/FormSelectAsync';
 import SavesSkillsSection from '../SavesSkillsSection';
 

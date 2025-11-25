@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Select, { Options } from 'react-select';
 import Button from '../Button/Button';
 import { Colors } from '../../utilities/enums';
-import { GiBattleGear } from 'react-icons/all';
+import { GiBattleGear } from 'react-icons/gi';
 
 import '../forms/inputOverrides.scss';
 import styles from './widgets.module.scss';

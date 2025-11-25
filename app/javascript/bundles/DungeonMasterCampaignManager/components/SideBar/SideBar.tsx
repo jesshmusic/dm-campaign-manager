@@ -1,12 +1,9 @@
 import React from 'react';
 import rest from '../../api/api';
 import { connect } from 'react-redux';
+import { AiOutlineHome } from 'react-icons/ai';
+import { BiHide, BiLogIn, BiLogOut, BiShow } from 'react-icons/bi';
 import {
-  AiOutlineHome,
-  BiHide,
-  BiLogIn,
-  BiLogOut,
-  BiShow,
   GiAchillesHeel,
   GiBookPile,
   GiBookshelf,
@@ -30,7 +27,7 @@ import {
   GiSwapBag,
   GiSwordArray,
   GiToolbox,
-} from 'react-icons/all';
+} from 'react-icons/gi';
 import PatreonIcon from '../icons/PatreonIcon';
 
 const PATREON_URL =

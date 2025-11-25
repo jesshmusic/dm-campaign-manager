@@ -4,6 +4,11 @@
  */
 
 import '@testing-library/jest-dom';
+import { TextEncoder, TextDecoder } from 'util';
+
+// Polyfill TextEncoder/TextDecoder for jsdom
+global.TextEncoder = TextEncoder;
+global.TextDecoder = TextDecoder as any;
 
 // Mock fetch globally for API tests
 global.fetch = jest.fn(() =>
@@ -40,6 +45,17 @@ global.IntersectionObserver = class IntersectionObserver {
   unobserve() {}
 } as any;
 
+// Mock HTMLFormElement.requestSubmit (not implemented in jsdom)
+HTMLFormElement.prototype.requestSubmit = function (submitter?: HTMLElement) {
+  if (submitter) {
+    const event = new Event('submit', { bubbles: true, cancelable: true });
+    Object.defineProperty(event, 'submitter', { value: submitter });
+    this.dispatchEvent(event);
+  } else {
+    this.submit();
+  }
+};
+
 // Suppress console errors in tests (optional - can be removed if you want to see errors)
 const originalError = console.error;
 beforeAll(() => {
@@ -47,7 +63,8 @@ beforeAll(() => {
     if (
       typeof args[0] === 'string' &&
       (args[0].includes('Warning: ReactDOM.render') ||
-        args[0].includes('Not implemented: HTMLFormElement.prototype.submit'))
+        args[0].includes('Not implemented: HTMLFormElement.prototype.submit') ||
+        args[0].includes('Not implemented: HTMLFormElement.prototype.requestSubmit'))
     ) {
       return;
     }

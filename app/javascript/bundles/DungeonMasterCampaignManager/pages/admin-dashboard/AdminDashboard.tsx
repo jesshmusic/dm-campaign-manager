@@ -4,7 +4,7 @@ import PageTitle from '../../components/PageTitle/PageTitle';
 import { UserProps } from '../../utilities/types';
 import MonstersTable from '../monsters/MonstersTable';
 import UsersTable from './components/UsersTable';
-import { GiBarbute, GiBlacksmith } from 'react-icons/all';
+import { GiBarbute, GiBlacksmith } from 'react-icons/gi';
 import { FaMap } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import ActionsTable from './components/ActionsTable';

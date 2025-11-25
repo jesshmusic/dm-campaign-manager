@@ -1,5 +1,5 @@
 import React from 'react';
-import { GiMailedFist } from 'react-icons/all';
+import { GiMailedFist } from 'react-icons/gi';
 import { FieldValues, UseFormRegister } from 'react-hook-form';
 import { Colors } from '../../../../utilities/enums';
 import Button from '../../../../components/Button/Button';

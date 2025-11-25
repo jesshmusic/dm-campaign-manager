@@ -5,7 +5,7 @@
 import React from 'react';
 import { FieldErrors, FieldValues, UseFormRegister } from 'react-hook-form';
 import classNames from 'classnames';
-import { GiFire } from 'react-icons/all';
+import { GiFire } from 'react-icons/gi';
 
 import styles from './input.module.scss';
 

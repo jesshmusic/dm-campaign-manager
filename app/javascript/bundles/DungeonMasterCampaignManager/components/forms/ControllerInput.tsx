@@ -1,6 +1,6 @@
 import React, { useState, KeyboardEvent } from 'react';
 import classNames from 'classnames';
-import { GiFire } from 'react-icons/all';
+import { GiFire } from 'react-icons/gi';
 import { Control, Controller, FieldErrors, FieldValues } from 'react-hook-form';
 import { SelectOption } from '../../utilities/types';
 import Select from 'react-select';

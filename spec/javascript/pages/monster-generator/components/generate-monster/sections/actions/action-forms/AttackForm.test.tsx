@@ -1,7 +1,13 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import AttackForm from '../../../../../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/monster-generator/components/generate-monster/sections/actions/action-forms/AttackForm';
-import * as ReactHookForm from 'react-hook-form';
+
+const mockUseWatch = jest.fn().mockReturnValue(false);
+
+jest.mock('react-hook-form', () => ({
+  ...jest.requireActual('react-hook-form'),
+  useWatch: () => mockUseWatch(),
+}));
 
 jest.mock('../../../../../../../../../app/javascript/bundles/DungeonMasterCampaignManager/components/forms/ControllerInput', () => ({
   ControlledInput: ({ label, fieldName }: any) => (
@@ -15,7 +21,7 @@ jest.mock('../../../../../../../../../app/javascript/bundles/DungeonMasterCampai
 describe('AttackForm', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.spyOn(ReactHookForm, 'useWatch').mockReturnValue(false);
+    mockUseWatch.mockReturnValue(false);
   });
 
   const defaultProps = {
@@ -65,20 +71,20 @@ describe('AttackForm', () => {
   });
 
   it('renders Reach field when not ranged', () => {
-    jest.spyOn(ReactHookForm, 'useWatch').mockReturnValue(false);
+    mockUseWatch.mockReturnValue(false);
     render(<AttackForm {...defaultProps} />);
     expect(screen.getByTestId('controlled-input-actions.0.damage.reach')).toBeInTheDocument();
     expect(screen.getByText('Reach')).toBeInTheDocument();
   });
 
   it('does not render Reach field when ranged', () => {
-    jest.spyOn(ReactHookForm, 'useWatch').mockReturnValue(true);
+    mockUseWatch.mockReturnValue(true);
     render(<AttackForm {...defaultProps} />);
     expect(screen.queryByTestId('controlled-input-actions.0.damage.reach')).not.toBeInTheDocument();
   });
 
   it('renders range fields when ranged', () => {
-    jest.spyOn(ReactHookForm, 'useWatch').mockReturnValue(true);
+    mockUseWatch.mockReturnValue(true);
     render(<AttackForm {...defaultProps} />);
     expect(screen.getByTestId('controlled-input-actions.0.damage.rangeNormal')).toBeInTheDocument();
     expect(screen.getByText('Normal Range')).toBeInTheDocument();
@@ -87,7 +93,7 @@ describe('AttackForm', () => {
   });
 
   it('does not render range fields when not ranged', () => {
-    jest.spyOn(ReactHookForm, 'useWatch').mockReturnValue(false);
+    mockUseWatch.mockReturnValue(false);
     render(<AttackForm {...defaultProps} />);
     expect(screen.queryByTestId('controlled-input-actions.0.damage.rangeNormal')).not.toBeInTheDocument();
     expect(screen.queryByTestId('controlled-input-actions.0.damage.rangeLong')).not.toBeInTheDocument();
