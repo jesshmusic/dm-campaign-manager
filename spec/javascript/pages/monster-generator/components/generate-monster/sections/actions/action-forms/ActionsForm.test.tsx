@@ -111,7 +111,7 @@ describe('ActionsForm', () => {
       spellCasting: {
         level: 1,
         ability: 'Intelligence',
-        abilityOption: undefined, // abilityOptions[3] is out of bounds
+        abilityOption: undefined, // Default ability option is undefined until user selects one
         slots: {
           first: 0,
           second: 0,

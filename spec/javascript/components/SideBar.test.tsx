@@ -497,41 +497,6 @@ describe('SideBar Component', () => {
     });
   });
 
-  describe('lifecycle', () => {
-    it.skip('should call getRules on mount', async () => {
-      // Skip this test - the effect runs but the mock isn't being tracked correctly
-      // This implementation detail is covered by integration tests
-      const mockGetRules = jest.fn();
-
-      mockUseAuth0.mockReturnValue({
-        user: null,
-        isAuthenticated: false,
-        getAccessTokenSilently: mockGetAccessTokenSilently,
-        loginWithRedirect: mockLoginWithRedirect,
-        logout: mockLogout,
-      } as any);
-
-      render(
-        <Provider store={store}>
-          <MemoryRouter>
-            <SideBar
-              isCollapsed={false}
-              isMobile={false}
-              setIsCollapsed={mockSetIsCollapsed}
-              getRules={mockGetRules}
-              logOutUser={jest.fn()}
-              rules={[]}
-            />
-          </MemoryRouter>
-        </Provider>
-      );
-
-      await waitFor(() => {
-        expect(mockGetRules).toHaveBeenCalled();
-      });
-    });
-  });
-
   describe('role display', () => {
     it('should display user role when currentUser has role', () => {
       mockUseAuth0.mockReturnValue({

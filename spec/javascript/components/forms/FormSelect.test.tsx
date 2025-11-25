@@ -386,19 +386,6 @@ describe('FormSelect Component', () => {
       expect(screen.getByTestId('react-select')).toBeInTheDocument();
     });
 
-    it.skip('should handle missing control prop gracefully', () => {
-      // Skip this test as FormSelect requires a control prop from react-hook-form
-      // This is not a realistic use case for this component
-      render(
-        <FormSelect
-          name="noControlSelect"
-          label="No Control"
-          options={defaultOptions}
-        />
-      );
-
-      expect(screen.getByText('No Control')).toBeInTheDocument();
-    });
   });
 
   describe('combined props', () => {
