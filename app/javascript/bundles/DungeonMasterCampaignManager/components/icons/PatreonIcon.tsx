@@ -7,7 +7,11 @@ interface PatreonIconProps {
 }
 
 // New Patreon logo (2023 rebrand)
-const PatreonIcon: React.FC<PatreonIconProps> = ({ size = '1em', color = 'currentColor', className }) => (
+const PatreonIcon: React.FC<PatreonIconProps> = ({
+  size = '1em',
+  color = 'currentColor',
+  className,
+}) => (
   <svg
     stroke={color}
     fill={color}
