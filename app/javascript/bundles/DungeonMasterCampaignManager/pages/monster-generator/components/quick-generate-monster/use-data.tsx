@@ -15,47 +15,48 @@ import {
 } from '../../../../utilities/character-utilities';
 import axios from 'axios';
 
+const defaultMonsterFormValues: FieldValues = {
+  name: 'New Monster',
+  actionOptions: [],
+  alignment: 'Neutral',
+  alignmentOption: {
+    value: 'Neutral',
+    label: 'Neutral',
+  },
+  archetypeOption: {
+    value: 'any',
+    label: 'Any',
+  },
+  armorClass: 10,
+  challengeRatingOption: { value: '0', label: '0' },
+  constitution: 10,
+  hitDice: '1d6',
+  hitDiceNumber: 1,
+  hitDiceValue: 'd8',
+  hitPoints: 4,
+  monsterType: 'humanoid',
+  monsterTypeOption: {
+    value: 'humanoid',
+    label: 'Humanoid',
+  },
+  numberOfAttacks: 1,
+  profBonus: 1,
+  savingThrowOptions: [],
+  size: {
+    label: 'Medium',
+    value: 'medium',
+  },
+  skillOptions: [],
+  specialAbilityOptions: [],
+  spellOptions: [],
+  xp: 10,
+};
+
 export const useData = (props: GenerateMonsterProps) => {
-  const [monsterForm, _setMonsterForm] = React.useState<FieldValues>({
-    name: 'New Monster',
-    actionOptions: [],
-    alignment: 'Neutral',
-    alignmentOption: {
-      value: 'Neutral',
-      label: 'Neutral',
-    },
-    archetypeOption: {
-      value: 'any',
-      label: 'Any',
-    },
-    armorClass: 10,
-    challengeRatingOption: { value: '0', label: '0' },
-    constitution: 10,
-    hitDice: '1d6',
-    hitDiceNumber: 1,
-    hitDiceValue: 'd8',
-    hitPoints: 4,
-    monsterType: 'humanoid',
-    monsterTypeOption: {
-      value: 'humanoid',
-      label: 'Humanoid',
-    },
-    numberOfAttacks: 1,
-    profBonus: 1,
-    savingThrowOptions: [],
-    size: {
-      label: 'Medium',
-      value: 'medium',
-    },
-    skillOptions: [],
-    specialAbilityOptions: [],
-    spellOptions: [],
-    xp: 10,
-  });
   const [monsterType, setMonsterType] = React.useState('humanoid');
 
   const UseForm = useForm({
-    defaultValues: monsterForm,
+    defaultValues: defaultMonsterFormValues,
     mode: 'onChange',
   });
 

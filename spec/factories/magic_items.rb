@@ -50,8 +50,8 @@
 FactoryBot.define do
   factory :magic_item do
     type { 'MagicItem' }
-    name { Faker::Games::Zelda.item }
-    slug { name.parameterize }
+    sequence(:name) { |n| "#{Faker::Games::Zelda.item} #{n}" }
+    sequence(:slug) { |n| "magic-item-#{n}" }
     desc { [Faker::Lorem.sentence] }
     rarity { %w[common uncommon rare very\ rare legendary].sample }
     requires_attunement { %w[yes no requires\ attunement\ by\ a\ spellcaster].sample }
