@@ -13,10 +13,12 @@ RSpec.describe 'Monsters', type: :request do
     attributes_for(:monster, user: dungeon_master, fish_lips: 'NOPE')
   }
 
-  # Load SRD monsters from seed data
-  let(:monster) { Monster.find_by(slug: 'orc') }
-  let(:monster1) { Monster.find_by(slug: 'aboleth') }
+  # Create default SRD monsters (user_id: nil) using factories
+  let!(:default_monster1) { create :monster, name: 'Orc', user: nil }
+  let!(:default_monster2) { create :monster, name: 'Aboleth', user: nil }
+  let!(:default_monster3) { create :monster, name: 'Goblin', user: nil }
 
+  # Custom monsters owned by users
   let!(:monster_custom1) { create :monster, user: dungeon_master, name: 'DM Monster' }
   let!(:monster_custom2) { create :monster, user: other_user, name: 'Other UserProps Monster' }
 
@@ -27,10 +29,11 @@ RSpec.describe 'Monsters', type: :request do
         expect(response).to have_http_status(200)
       end
 
-      it 'should return 9 monsters' do
+      it 'should return only default monsters (no user-owned monsters)' do
         get '/v1/monsters.json'
         result_monsters = JSON.parse response.body, symbolize_names: true
-        expect(result_monsters[:count]).to eq(9)
+        # Should only see default monsters (user_id: nil), not custom ones
+        expect(result_monsters[:count]).to eq(3)
       end
 
       it 'should return results based on search query' do
@@ -46,10 +49,11 @@ RSpec.describe 'Monsters', type: :request do
         stub_authentication(admin)
       end
 
-      it 'should return 11 monsters' do
+      it 'should return all monsters (default + all custom)' do
         get '/v1/monsters.json'
         result_monsters = JSON.parse response.body, symbolize_names: true
-        expect(result_monsters[:count]).to eq(11)
+        # Admins see everything: 3 default + 2 custom = 5
+        expect(result_monsters[:count]).to eq(5)
       end
     end
 
@@ -58,10 +62,11 @@ RSpec.describe 'Monsters', type: :request do
         stub_authentication(dungeon_master)
       end
 
-      it 'should return 10 monsters that are only default or owned by this DM' do
+      it 'should return monsters that are only default or owned by this DM' do
         get '/v1/monsters.json'
         result_monsters = JSON.parse response.body, symbolize_names: true
-        expect(result_monsters[:count]).to eq(10)
+        # DM sees: 3 default + 1 own custom = 4
+        expect(result_monsters[:count]).to eq(4)
         expect(result_monsters[:results].find { |monster|
           monster[:name] == 'DM Monster'
         }).not_to be_nil
@@ -83,8 +88,8 @@ RSpec.describe 'Monsters', type: :request do
       it 'should return categories' do
         get '/v1/monster-categories'
         results = JSON.parse response.body, symbolize_names: true
-        expect(results[:count]).to be >= 4
-        expect(results[:results].count).to be >= 4
+        expect(results[:count]).to be >= 1
+        expect(results[:results].count).to be >= 1
       end
     end
   end
@@ -92,7 +97,7 @@ RSpec.describe 'Monsters', type: :request do
   describe 'GET /v1/monster/:slug' do
     context 'for Logged Out Users' do
       it 'should return a success response' do
-        get "/v1/monsters/#{monster1.slug}.json"
+        get "/v1/monsters/#{default_monster2.slug}.json"
         expect(response).to have_http_status(200)
       end
 
@@ -109,10 +114,10 @@ RSpec.describe 'Monsters', type: :request do
       end
 
       it 'should return a default monster' do
-        get "/v1/monsters/#{monster.slug}.json"
+        get "/v1/monsters/#{default_monster1.slug}.json"
         result_monster = JSON.parse response.body, symbolize_names: true
-        expect(result_monster[:name]).to eq(monster.name)
-        expect(result_monster[:slug]).to eq(monster.slug)
+        expect(result_monster[:name]).to eq(default_monster1.name)
+        expect(result_monster[:slug]).to eq(default_monster1.slug)
       end
 
       it 'should return custom monster for a DM' do
@@ -128,10 +133,10 @@ RSpec.describe 'Monsters', type: :request do
       end
 
       it 'should return a default monster' do
-        get "/v1/monsters/#{monster.slug}.json"
+        get "/v1/monsters/#{default_monster1.slug}.json"
         result_monster = JSON.parse response.body, symbolize_names: true
-        expect(result_monster[:name]).to eq(monster.name)
-        expect(result_monster[:slug]).to eq(monster.slug)
+        expect(result_monster[:name]).to eq(default_monster1.name)
+        expect(result_monster[:slug]).to eq(default_monster1.slug)
       end
 
       it 'should return a custom DM monster' do
@@ -197,7 +202,7 @@ RSpec.describe 'Monsters', type: :request do
     context 'for Logged Out Users' do
       it 'should return an error for non-user editing' do
         stub_no_auth
-        put "/v1/monsters/#{monster1.slug}.json", params: {
+        put "/v1/monsters/#{default_monster2.slug}.json", params: {
           monster: {
             name: 'Test Monster Edited',
             armor_class: 19
@@ -235,7 +240,7 @@ RSpec.describe 'Monsters', type: :request do
       end
 
       it 'should return an error for non-admin editing default monster' do
-        put "/v1/monsters/#{monster1.slug}.json", params: {
+        put "/v1/monsters/#{default_monster2.slug}.json", params: {
           monster: {
             name: 'Test Monster Edited',
             armor_class: 19
@@ -262,7 +267,7 @@ RSpec.describe 'Monsters', type: :request do
     context 'for Logged Out Users' do
       it 'should return an error for non-user delete' do
         stub_no_auth
-        delete "/v1/monsters/#{monster1.slug}.json"
+        delete "/v1/monsters/#{default_monster2.slug}.json"
         result_monster = JSON.parse response.body, symbolize_names: true
         expect(result_monster[:errors]).to eq(['Not Authenticated'])
         expect(response).to have_http_status(:unauthorized)
@@ -280,7 +285,7 @@ RSpec.describe 'Monsters', type: :request do
       end
 
       it 'should delete the requested default monster' do
-        delete "/v1/monsters/#{monster1.slug}.json"
+        delete "/v1/monsters/#{default_monster2.slug}.json"
         expect(response).to have_http_status(204)
       end
     end
@@ -296,7 +301,7 @@ RSpec.describe 'Monsters', type: :request do
       end
 
       it 'should return an error for non-admin deleting default monster' do
-        delete "/v1/monsters/#{monster1.slug}.json"
+        delete "/v1/monsters/#{default_monster2.slug}.json"
         result_monster = JSON.parse response.body, symbolize_names: true
         expect(result_monster[:errors]).to eq('UserProps action not allowed.')
       end

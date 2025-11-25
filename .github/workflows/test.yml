@@ -67,10 +67,6 @@ jobs:
         run: |
           bundle exec rails db:create db:schema:load --trace
 
-      - name: Seed test database
-        run: |
-          bundle exec rails db:seed RAILS_ENV=test
-
       - name: Run RSpec tests
         run: |
           bundle exec rspec --format progress --format RspecJunitFormatter --out tmp/rspec_results.xml

@@ -9,10 +9,12 @@ RSpec.describe 'Races', type: :request do
     attributes_for(:race, user: dungeon_master, name: 'New Race')
   }
 
-  # Load SRD races from seed data
-  let(:race) { Race.find_by(slug: 'dwarf') }
-  let(:race1) { Race.find_by(slug: 'elf') }
+  # Create default SRD races (user_id: nil) using factories
+  let!(:default_race1) { create :race, name: 'Dwarf', user: nil }
+  let!(:default_race2) { create :race, name: 'Elf', user: nil }
+  let!(:default_race3) { create :race, name: 'Human', user: nil }
 
+  # Custom races owned by users
   let!(:race_custom1) { create :race,
                                user: dungeon_master,
                                name: 'DM Race' }
@@ -27,10 +29,11 @@ RSpec.describe 'Races', type: :request do
         expect(response).to have_http_status(200)
       end
 
-      it 'returns 6 races' do
+      it 'returns only default races' do
         get '/v1/races.json'
         result_races = JSON.parse(response.body)
-        expect(result_races['count']).to eq(6)
+        # Should only see default races (user_id: nil), not custom ones
+        expect(result_races['count']).to eq(3)
       end
     end
 
@@ -39,10 +42,11 @@ RSpec.describe 'Races', type: :request do
         stub_authentication(admin)
       end
 
-      it 'returns 8 races' do
+      it 'returns all races (default + all custom)' do
         get '/v1/races.json'
         result_races = JSON.parse(response.body)
-        expect(result_races['count']).to eq(8)
+        # Admins see everything: 3 default + 2 custom = 5
+        expect(result_races['count']).to eq(5)
       end
     end
 
@@ -51,10 +55,11 @@ RSpec.describe 'Races', type: :request do
         stub_authentication(dungeon_master)
       end
 
-      it 'returns 7 races that are only default or owned by this DM' do
+      it 'returns races that are only default or owned by this DM' do
         get '/v1/races.json'
         result_races = JSON.parse(response.body)
-        expect(result_races['count']).to eq(7)
+        # DM sees: 3 default + 1 own custom = 4
+        expect(result_races['count']).to eq(4)
         expect(result_races['results'].find { |race|
           race['name'] == 'DM Race'
         }).not_to be_nil
@@ -69,7 +74,7 @@ RSpec.describe 'Races', type: :request do
   describe 'GET Return single Race' do
     context 'for Logged Out Users' do
       it 'returns a success response' do
-        get "/v1/races/dwarf.json"
+        get "/v1/races/#{default_race1.slug}.json"
         expect(response).to have_http_status(200)
       end
 
@@ -86,10 +91,10 @@ RSpec.describe 'Races', type: :request do
       end
 
       it 'returns a default race' do
-        get "/v1/races/#{race.slug}.json"
+        get "/v1/races/#{default_race1.slug}.json"
         result_race = JSON.parse(response.body)
-        expect(result_race['name']).to eq(race.name)
-        expect(result_race['slug']).to eq(race.slug)
+        expect(result_race['name']).to eq(default_race1.name)
+        expect(result_race['slug']).to eq(default_race1.slug)
       end
 
       it 'returns custom race for a DM' do
@@ -105,10 +110,10 @@ RSpec.describe 'Races', type: :request do
       end
 
       it 'returns a default race' do
-        get "/v1/races/#{race.slug}.json"
+        get "/v1/races/#{default_race1.slug}.json"
         result_race = JSON.parse(response.body)
-        expect(result_race['name']).to eq(race.name)
-        expect(result_race['slug']).to eq(race.slug)
+        expect(result_race['name']).to eq(default_race1.name)
+        expect(result_race['slug']).to eq(default_race1.slug)
       end
 
       it 'returns a custom DM race' do
@@ -174,7 +179,7 @@ RSpec.describe 'Races', type: :request do
     context 'for Logged Out Users' do
       it 'returns an error for non-user editing' do
         stub_no_auth
-        put "/v1/races/#{race1.slug}.json", params: {
+        put "/v1/races/#{default_race2.slug}.json", params: {
           race: {
             name: 'Test Race Edited'
           }
@@ -209,7 +214,7 @@ RSpec.describe 'Races', type: :request do
       end
 
       it 'returns an error for non-admin editing default race' do
-        put "/v1/races/#{race1.slug}.json", params: {
+        put "/v1/races/#{default_race2.slug}.json", params: {
           race: {
             name: 'Test Race Edited'
           }
@@ -234,7 +239,7 @@ RSpec.describe 'Races', type: :request do
     context 'for Logged Out Users' do
       it 'returns an error for non-user delete' do
         stub_no_auth
-        delete "/v1/races/#{race1.slug}.json"
+        delete "/v1/races/#{default_race2.slug}.json"
         result_race = JSON.parse(response.body)
         expect(result_race['errors']).to eq(['Not Authenticated'])
         expect(response).to have_http_status(:unauthorized)
@@ -252,7 +257,7 @@ RSpec.describe 'Races', type: :request do
       end
 
       it 'deletes the requested default race' do
-        delete "/v1/races/#{race1.slug}.json"
+        delete "/v1/races/#{default_race2.slug}.json"
         expect(response).to have_http_status(204)
       end
     end
@@ -268,7 +273,7 @@ RSpec.describe 'Races', type: :request do
       end
 
       it 'returns an error for non-admin deleting default race' do
-        delete "/v1/races/#{race1.slug}.json"
+        delete "/v1/races/#{default_race2.slug}.json"
         result_race = JSON.parse(response.body)
         expect(result_race['errors']).to eq('UserProps action not allowed.')
       end
@@ -278,26 +283,6 @@ RSpec.describe 'Races', type: :request do
         result_race = JSON.parse(response.body)
         expect(result_race['errors']).to eq('UserProps action not allowed.')
       end
-    end
-  end
-
-  describe 'Get TEMPLATE' do
-    context 'for Logged Out Users' do
-
-    end
-
-    context 'for Admins' do
-      before(:each) do
-        stub_authentication(admin)
-      end
-
-    end
-
-    context 'for Dungeon Masters' do
-      before(:each) do
-        stub_authentication(dungeon_master)
-      end
-
     end
   end
 end

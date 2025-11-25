@@ -34,11 +34,6 @@ create_user('Jess Hendricks', 'jesshmusic', 'jesshmusic72@gmail.com', :admin, 'g
 create_user('Jess DM', 'jesshdm', 'jesshmusic72+dm@gmail.com', :dungeon_master, 'auth0|616dd90606721e00690fd06b')
 # create_user('Jess User', 'jesshuser', 'jesshmusic72+user@gmail.com', :dungeon_master)
 
-# Load comprehensive SRD data for test environment
-if Rails.env.test?
-  load Rails.root.join('db', 'seeds', 'test_srd_full.rb')
-end
-
 # ImportSrdUtilities.import_all_empty(nil)
 # ImportSrdUtilities.clean_database
 # ImportSrdUtilities.import_all

@@ -36,10 +36,11 @@ RSpec.describe 'Items', type: :request do
         expect(response).to have_http_status(200)
       end
 
-      it 'returns items' do
+      it 'returns only default items' do
         get '/v1/items.json'
         result_items = JSON.parse(response.body)
-        expect(result_items['count']).to be >= 17
+        # Should only see default items (user_id: nil), not custom ones
+        expect(result_items['count']).to eq(5)
       end
 
       it 'returns 1 armor item' do
@@ -62,10 +63,11 @@ RSpec.describe 'Items', type: :request do
         stub_authentication(admin)
       end
 
-      it 'returns items' do
+      it 'returns all items (default + all custom)' do
         get '/v1/items.json'
         result_items = JSON.parse(response.body)
-        expect(result_items['count']).to be >= 19
+        # Admins see everything: 5 default + 2 custom = 7
+        expect(result_items['count']).to eq(7)
       end
     end
 
@@ -77,7 +79,8 @@ RSpec.describe 'Items', type: :request do
       it 'returns items that are only default or owned by this DM' do
         get '/v1/items.json'
         result_items = JSON.parse(response.body)
-        expect(result_items['count']).to be >= 18
+        # DM sees: 5 default + 1 own custom = 6
+        expect(result_items['count']).to eq(6)
         expect(result_items['results'].find { |item|
           item['name'] == 'DM Item'
         }).not_to be_nil

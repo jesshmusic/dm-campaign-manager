@@ -74,10 +74,14 @@ RSpec.describe NpcGenerator, type: :model do
     end
 
     context 'when creating a spellcaster archetype' do
+      let!(:spell1) { create(:spell, name: 'Magic Missile', level: 1) }
+      let!(:spell2) { create(:spell, name: 'Shield', level: 1) }
+      let!(:spell3) { create(:spell, name: 'Fireball', level: 3) }
+
       let(:spell_params) do
         monster_params.merge(
           archetype: 'spellcaster',
-          spell_ids: [1, 2, 3]
+          spell_ids: [spell1.id, spell2.id, spell3.id]
         )
       end
 
