@@ -263,7 +263,7 @@ export const useData = (props: ItemsPageProps) => {
   };
 };
 
-export const singleItemUseData = (props: ItemPageProps) => {
+export const singleItemUseData = (_props: ItemPageProps) => {
   const getCostString = (cost?: { quantity: number; unit: string }) => {
     return cost ? `${Util.numberWithCommas(cost.quantity)} ${cost.unit}` : 'N/A';
   };

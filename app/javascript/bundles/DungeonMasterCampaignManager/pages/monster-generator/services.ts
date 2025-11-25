@@ -44,7 +44,7 @@ const abilityForSkill = {
 const parseMonsterProficiencies = (
   values: MonsterGeneratorFormFields | MonsterQuickGeneratorFormFields
 ) => {
-  let monsterProfs: MonsterProf[] = [];
+  const monsterProfs: MonsterProf[] = [];
   if (values.savingThrowOptions.length && values.savingThrowOptions.length > 0) {
     values.savingThrowOptions.forEach((save) => {
       const saveAbility = abilityAbbr[save.label];
@@ -141,8 +141,8 @@ export const getMonsterObject = (values: MonsterGeneratorFormFields): MonsterPro
 
 export const createMonsterParams = (monster: MonsterProps) => {
   const {
-    challengeString,
-    hitPointsString,
+    challengeString: _challengeString,
+    hitPointsString: _hitPointsString,
     actions,
     legendaryActions,
     reactions,
@@ -178,7 +178,7 @@ export const createMonsterParams = (monster: MonsterProps) => {
 };
 
 export const createQuickMonsterParams = (values: MonsterQuickGeneratorFormFields) => {
-  let monsterParams = {
+  const monsterParams = {
     name: values.name,
     actionOptions: values.actionOptions.map((actionOption) => actionOption.value),
     alignment: values.alignmentOption.label,
