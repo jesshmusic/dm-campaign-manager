@@ -16,6 +16,7 @@
 #
 class Skill < ApplicationRecord
   extend FriendlyId
+
   friendly_id :name, use: :slugged
 
   def normalize_friendly_id(string)
@@ -23,8 +24,9 @@ class Skill < ApplicationRecord
   end
 
   include PgSearch::Model
+
   # PgSearch
-  multisearchable against: [:name, :desc]
+  multisearchable against: %i[name desc]
   pg_search_scope :search_for,
                   against: {
                     name: 'A',

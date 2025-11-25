@@ -1,5 +1,4 @@
 class AuthorizationService
-
   def initialize(headers = {})
     @headers = headers
   end
@@ -15,19 +14,20 @@ class AuthorizationService
   private
 
   def http_token
-    if @headers['Authorization'].present?
-      @headers['Authorization'].split(' ').last
-    end
+    return if @headers['Authorization'].blank?
+
+    @headers['Authorization'].split.last
   end
 
   def verify_token
-    puts http_token
+    Rails.logger.debug http_token
     JsonWebToken.verify(http_token)
   end
 
   def current_user_from_token
     return unless http_token
+
     curr_user = JsonWebToken.current_user_from_token(http_token)
-    User.find_by_auth_id(curr_user[0]['sub']) unless curr_user.nil? || curr_user[0]['sub'].nil?
+    User.find_by(auth_id: curr_user[0]['sub']) unless curr_user.nil? || curr_user[0]['sub'].nil?
   end
 end

@@ -1,4 +1,4 @@
-@import "~bootstrap/scss/vendor/rfs";
+@import '~bootstrap/scss/vendor/rfs';
 
 // Brand Colors
 $background-color: #d8ddba;
@@ -78,9 +78,9 @@ $light: $gray-100;
 $dark: $gray-800;
 
 // Background Images
-$orange-border: url("/images/dndFrameOrange.png") 10;
-$background-frame: url("/images/dndFrame.png");
-$page-background: url("/images/dndBG.jpg");
+$orange-border: url('/images/dndFrameOrange.png') 10;
+$background-frame: url('/images/dndFrame.png');
+$page-background: url('/images/dndBG.jpg');
 
 // Spacing
 $spacer: 1rem;
@@ -174,12 +174,12 @@ $transition-fade: opacity 0.15s linear;
 $transition-collapse: height 0.35s ease;
 
 // Fonts
-$font-family-sans-serif: "Scaly Sans", BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
+$font-family-sans-serif: 'Scaly Sans', BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
   Arial, sans-serif;
-$font-family-serif: "Bookinsanity", serif;
-$font-family-mr-eaves: "Mr Eaves", serif;
-$font-family-draconis: "Draconis Bold", serif;
-$font-family-monospace: Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+$font-family-serif: 'Bookinsanity', serif;
+$font-family-mr-eaves: 'Mr Eaves', serif;
+$font-family-draconis: 'Draconis Bold', serif;
+$font-family-monospace: Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
 $font-family-base: $font-family-serif;
 $font-size-base: 1rem;
 $font-size-lg: 1.25rem;
@@ -385,4 +385,4 @@ $pagination-disabled-border-color: #ddd;
 
 $accordion-icon-color: $white;
 
-@import "mixins";
+@import 'mixins';

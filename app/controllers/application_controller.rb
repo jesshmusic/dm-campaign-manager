@@ -3,6 +3,7 @@
 class ApplicationController < ActionController::Base
   include Pundit::Authorization
   include Pagy::Backend
+
   protect_from_forgery
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
   # rescue_from ActiveRecord::RecordNotFound, with: :not_found
@@ -11,8 +12,13 @@ class ApplicationController < ActionController::Base
   # @return [User]
   def current_user
     return if session[:user].nil?
+
     session_user = session[:user]
-    @current_user ||= User.find_by_auth_id(session_user['auth_id'])
+    if defined?(@current_user)
+      @current_user
+    else
+      @current_user = User.find_by(auth_id: session_user['auth_id'])
+    end
   end
 
   private
@@ -20,34 +26,34 @@ class ApplicationController < ActionController::Base
   def user_not_authorized
     respond_to do |format|
       format.html { redirect_to root_path, status: :forbidden, notice: 'UserProps action not allowed.' }
-      format.json {
+      format.json do
         render json: {
           errors: 'UserProps action not allowed.'
         }, status: :forbidden
-      }
+      end
     end
   end
 
   def not_found
     respond_to do |format|
       format.html { redirect_to root_path, status: :forbidden, notice: 'Page not found.' }
-      format.json {
+      format.json do
         render json: {
           errors: 'Page not found.'
         }, status: :not_found
-      }
+      end
     end
   end
 
   def template_error(error)
-    puts error
+    Rails.logger.debug error
     respond_to do |format|
       format.html { redirect_to root_path, status: :forbidden, notice: 'Template error, please try again later.' }
-      format.json {
+      format.json do
         render json: {
           errors: error.message
         }, status: :internal_server_error
-      }
+      end
     end
   end
 end

@@ -18,6 +18,7 @@ class AbilityScore < ApplicationRecord
   include PgSearch::Model
 
   extend FriendlyId
+
   friendly_id :name, use: :slugged
 
   def normalize_friendly_id(string)

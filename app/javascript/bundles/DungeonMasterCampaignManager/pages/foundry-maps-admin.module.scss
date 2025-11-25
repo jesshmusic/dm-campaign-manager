@@ -1,34 +1,34 @@
-@import "../stylesheets/variables";
+@import '../stylesheets/variables';
 
 .contentWrapper {
   padding: $spacer * 2;
 }
 
 .header {
+  align-items: center;
   display: flex;
   justify-content: space-between;
-  align-items: center;
   margin-bottom: $spacer * 1.5;
 
   h2 {
+    color: $primary-dark;
     font-family: $font-family-sans-serif;
     font-size: $h2-font-size;
-    color: $primary-dark;
     margin: 0;
   }
 }
 
 .formContainer {
   background-color: $card-bg;
-  padding: $spacer * 1.5;
   border-radius: $border-radius;
-  margin-bottom: $spacer * 1.5;
   box-shadow: $box-shadow-sm;
+  margin-bottom: $spacer * 1.5;
+  padding: $spacer * 1.5;
 
   h2 {
+    color: $primary-dark;
     font-family: $font-family-sans-serif;
     font-size: $h3-font-size;
-    color: $primary-dark;
     margin-bottom: $spacer;
   }
 }
@@ -51,33 +51,33 @@
 }
 
 .label {
+  color: $primary-dark;
   font-family: $font-family-sans-serif;
   font-size: $font-size-lg;
-  color: $primary-dark;
   font-weight: 600;
 }
 
 .fieldSubtitle {
+  color: $gray-600;
   font-family: $font-family-sans-serif;
   font-size: $font-size-sm;
-  color: $gray-600;
   margin: $spacer * 0.5 0;
 }
 
 .checkboxWrapper {
-  display: flex;
   align-items: center;
+  display: flex;
   padding: $spacer 0;
 }
 
 .checkboxLabel {
-  display: flex;
   align-items: center;
-  gap: $spacer * 0.5;
+  color: $gray-800;
   cursor: pointer;
+  display: flex;
   font-family: $font-family-sans-serif;
   font-size: $font-size-base;
-  color: $gray-800;
+  gap: $spacer * 0.5;
 
   span {
     user-select: none;
@@ -85,9 +85,9 @@
 }
 
 .checkbox {
-  width: 1.25rem;
-  height: 1.25rem;
   cursor: pointer;
+  height: 1.25rem;
+  width: 1.25rem;
 }
 
 .fileUploadWrapper {
@@ -97,26 +97,26 @@
 }
 
 .fileInput {
-  width: 100%;
-  padding: $spacer * 0.5;
   background-color: $input-bg;
   border: $border-width solid $input-border-color;
   border-radius: $border-radius;
+  color: $input-color;
   font-family: $font-family-serif;
   font-size: $font-size-base;
-  color: $input-color;
+  padding: $spacer * 0.5;
+  width: 100%;
 
   &:focus {
-    outline: none;
-    border-color: $input-focus-border-color;
     background-color: $input-focus-bg;
+    border-color: $input-focus-border-color;
+    outline: none;
   }
 }
 
 .fileCount {
+  color: $gray-600;
   font-family: $font-family-sans-serif;
   font-size: $font-size-sm;
-  color: $gray-600;
   margin-top: $spacer * 0.5;
 }
 
@@ -126,11 +126,11 @@
   min-height: 300px;
 
   :global(.ql-container) {
-    min-height: 250px;
-    font-family: $font-family-serif;
-    font-size: $font-size-base;
     border-bottom-left-radius: $border-radius;
     border-bottom-right-radius: $border-radius;
+    font-family: $font-family-serif;
+    font-size: $font-size-base;
+    min-height: 250px;
   }
 
   :global(.ql-toolbar) {
@@ -140,8 +140,8 @@
   }
 
   :global(.ql-editor) {
-    min-height: 250px;
     color: $input-color;
+    min-height: 250px;
   }
 }
 
@@ -159,13 +159,13 @@
     background-color: $ash;
 
     tr th {
-      padding: $spacer * 0.75 $spacer * 1.5;
-      text-align: left;
+      color: $white;
       font-family: $font-family-sans-serif;
       font-size: $font-size-sm;
-      color: $white;
-      text-transform: uppercase;
       font-weight: 600;
+      padding: $spacer * 0.75 $spacer * 1.5;
+      text-align: left;
+      text-transform: uppercase;
     }
   }
 
@@ -178,31 +178,31 @@
       }
 
       td {
-        padding: $spacer $spacer * 1.5;
+        color: $gray-800;
         font-family: $font-family-serif;
         font-size: $font-size-base;
-        color: $gray-800;
+        padding: $spacer $spacer * 1.5;
       }
     }
   }
 }
 
 .emptyState {
-  padding: $spacer * 1.5;
-  text-align: center;
   color: $gray-600;
   font-family: $font-family-sans-serif;
+  padding: $spacer * 1.5;
+  text-align: center;
 }
 
 .mapName {
-  font-weight: 600;
   color: $primary-dark;
+  font-weight: 600;
   margin-bottom: $spacer * 0.25;
 }
 
 .mapDescription {
-  font-size: $font-size-sm;
   color: $gray-600;
+  font-size: $font-size-sm;
 }
 
 .tagContainer {
@@ -213,18 +213,18 @@
 
 .tag {
   background-color: lighten($cobalt, 35%);
+  border-radius: $border-radius-sm;
   color: $cobalt;
   font-family: $font-family-sans-serif;
   font-size: $font-size-sm * 0.875;
   padding: $spacer * 0.25 $spacer * 0.5;
-  border-radius: $border-radius-sm;
 }
 
 .accessBadge {
+  border-radius: $border-radius-sm;
   font-family: $font-family-sans-serif;
   font-size: $font-size-sm * 0.875;
   padding: $spacer * 0.25 $spacer * 0.5;
-  border-radius: $border-radius-sm;
   text-transform: capitalize;
 
   &.premium {
@@ -239,12 +239,12 @@
 }
 
 .statusButton {
+  border: none;
+  border-radius: $border-radius-sm;
+  cursor: pointer;
   font-family: $font-family-sans-serif;
   font-size: $font-size-sm * 0.875;
   padding: $spacer * 0.25 $spacer * 0.5;
-  border-radius: $border-radius-sm;
-  border: none;
-  cursor: pointer;
   transition: $transition-base;
 
   &.published {
@@ -267,57 +267,57 @@
 }
 
 .dateText {
-  font-size: $font-size-sm;
   color: $gray-600;
+  font-size: $font-size-sm;
 }
 
 .thumbnailCell {
-  width: 60px;
   max-width: 60px;
   padding: $spacer * 0.5 !important;
   vertical-align: middle;
   white-space: nowrap;
+  width: 60px;
 }
 
 .tableThumbnail {
-  width: 50px;
-  height: 50px;
-  object-fit: cover;
   border-radius: $border-radius-sm;
   display: block;
+  height: 50px;
+  object-fit: cover;
+  width: 50px;
 }
 
 .thumbnailPlaceholder {
-  width: 50px;
-  height: 50px;
+  align-items: center;
   background-color: $background-med;
   border-radius: $border-radius-sm;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   color: $gray-600;
+  display: flex;
   font-size: $h3-font-size;
+  height: 50px;
+  justify-content: center;
+  width: 50px;
 }
 
 .actionButtons {
+  align-items: center;
   display: flex;
   gap: $spacer * 0.5;
-  align-items: center;
 }
 
 .iconButton {
+  align-items: center;
   background: none;
   border: none;
-  font-size: $font-size-lg;
+  border-radius: $border-radius-sm;
   color: $pine-green;
   cursor: pointer;
+  display: flex;
+  font-size: $font-size-lg;
+  justify-content: center;
   line-height: 1;
   padding: $spacer * 0.25;
-  border-radius: $border-radius-sm;
   transition: $transition-base;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 
   &:hover {
     background-color: lighten($pine-green, 50%);
@@ -363,63 +363,63 @@
 
 // View Modal Styles
 .modalOverlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba($black, 0.7);
-  display: flex;
   align-items: center;
+  background-color: rgba($black, 0.7);
+  bottom: 0;
+  display: flex;
   justify-content: center;
-  z-index: 1000;
+  left: 0;
   padding: $spacer * 2;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 1000;
 }
 
 .modalContent {
   background-color: $card-bg;
   border-radius: $border-radius;
   box-shadow: $box-shadow;
-  max-width: 800px;
-  width: 100%;
   max-height: 90vh;
+  max-width: 800px;
   overflow-y: auto;
+  width: 100%;
 }
 
 .modalHeader {
+  align-items: center;
+  border-bottom: $border-width solid lighten($ash, 50%);
   display: flex;
   justify-content: space-between;
-  align-items: center;
   padding: $spacer * 1.5;
-  border-bottom: $border-width solid lighten($ash, 50%);
 
   h2 {
+    color: $primary-dark;
     font-family: $font-family-sans-serif;
     font-size: $h2-font-size;
-    color: $primary-dark;
     margin: 0;
   }
 }
 
 .modalActions {
-  display: flex;
   align-items: center;
+  display: flex;
   gap: $spacer;
 }
 
 .modalIconButton {
+  align-items: center;
   background: none;
   border: none;
-  font-size: $h3-font-size;
+  border-radius: $border-radius-sm;
   color: $cobalt;
   cursor: pointer;
+  display: flex;
+  font-size: $h3-font-size;
+  justify-content: center;
   line-height: 1;
   padding: $spacer * 0.5;
-  border-radius: $border-radius-sm;
   transition: $transition-base;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 
   &:hover {
     background-color: lighten($cobalt, 45%);
@@ -439,9 +439,9 @@
 .modalClose {
   background: none;
   border: none;
-  font-size: $h1-font-size;
   color: $gray-600;
   cursor: pointer;
+  font-size: $h1-font-size;
   line-height: 1;
   padding: 0;
   transition: $transition-base;
@@ -456,9 +456,9 @@
 }
 
 .modalBodyLayout {
+  align-items: flex-start;
   display: flex;
   gap: $spacer * 2;
-  align-items: flex-start;
 }
 
 .thumbnailColumn {
@@ -468,14 +468,14 @@
 }
 
 .thumbnailWrapper {
-  border-radius: $border-radius-sm;
   border: $border-width solid lighten($ash, 50%);
+  border-radius: $border-radius-sm;
   overflow: hidden;
 
   img {
-    width: 100%;
-    height: auto;
     display: block;
+    height: auto;
+    width: 100%;
   }
 }
 
@@ -490,30 +490,30 @@
 
 .viewRow {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
   gap: $spacer;
+  grid-template-columns: repeat(3, 1fr);
 }
 
 .viewLabel {
+  color: $primary-dark;
+  display: block;
   font-family: $font-family-sans-serif;
   font-size: $font-size-base;
   font-weight: 600;
-  color: $primary-dark;
-  display: block;
   margin-bottom: $spacer * 0.5;
 }
 
 .viewContent {
+  color: $gray-800;
   font-family: $font-family-serif;
   font-size: $font-size-base;
-  color: $gray-800;
   line-height: 1.6;
 
   img {
-    max-width: 100%;
+    border-radius: $border-radius-sm;
     height: auto;
     margin: $spacer 0;
-    border-radius: $border-radius-sm;
+    max-width: 100%;
   }
 
   p {
@@ -522,17 +522,17 @@
 }
 
 .viewText {
+  color: $gray-800;
   font-family: $font-family-serif;
   font-size: $font-size-base;
-  color: $gray-800;
 }
 
 .statusBadge {
+  border-radius: $border-radius-sm;
+  display: inline-block;
   font-family: $font-family-sans-serif;
   font-size: $font-size-sm * 0.875;
   padding: $spacer * 0.25 $spacer * 0.5;
-  border-radius: $border-radius-sm;
-  display: inline-block;
 
   &.published {
     background-color: lighten($green, 45%);
@@ -547,11 +547,11 @@
 
 // Files Section
 .existingFilesSection {
+  background-color: lighten($background-med, 3%);
+  border: $border-width solid lighten($ash, 50%);
+  border-radius: $border-radius;
   margin-top: $spacer;
   padding: $spacer;
-  background-color: lighten($background-med, 3%);
-  border-radius: $border-radius;
-  border: $border-width solid lighten($ash, 50%);
 }
 
 .filesList {
@@ -561,27 +561,27 @@
 }
 
 .fileItem {
-  display: flex;
   align-items: center;
-  gap: $spacer * 0.5;
-  padding: $spacer * 0.5;
   background-color: $white;
   border-radius: $border-radius-sm;
+  display: flex;
   font-family: $font-family-sans-serif;
   font-size: $font-size-sm;
+  gap: $spacer * 0.5;
+  padding: $spacer * 0.5;
   position: relative;
 }
 
 .fileDeleteButton {
-  margin-left: auto;
   background: none;
   border: none;
   color: $blood-red;
+  cursor: pointer;
   font-size: $h3-font-size;
   line-height: 1;
-  cursor: pointer;
-  padding: 0 $spacer * 0.25;
+  margin-left: auto;
   opacity: 0.6;
+  padding: 0 $spacer * 0.25;
   transition: $transition-base;
 
   &:hover {
@@ -589,21 +589,21 @@
   }
 
   &:disabled {
-    opacity: 0.3;
     cursor: not-allowed;
+    opacity: 0.3;
   }
 }
 
 .fileType {
   color: $cobalt;
+  font-size: $font-size-sm * 0.75;
   font-weight: 600;
   text-transform: uppercase;
-  font-size: $font-size-sm * 0.75;
 }
 
 .fileName {
-  flex: 1;
   color: $gray-800;
+  flex: 1;
 }
 
 .fileSize {
@@ -612,14 +612,14 @@
 }
 
 .spinnerContainer {
-  display: flex;
   align-items: center;
-  justify-content: center;
-  gap: $spacer;
-  padding: $spacer * 1.5;
-  font-family: $font-family-sans-serif;
   color: $primary-dark;
+  display: flex;
+  font-family: $font-family-sans-serif;
   font-size: $font-size-lg;
+  gap: $spacer;
+  justify-content: center;
+  padding: $spacer * 1.5;
 }
 
 .formButtons {
@@ -637,22 +637,22 @@
   background-color: lighten($background-med, 5%);
   border: $border-width solid lighten($ash, 50%);
   border-radius: $border-radius;
-  padding: $spacer * 1.5;
-  margin: $spacer 0;
   font-family: $font-family-sans-serif;
+  margin: $spacer 0;
+  padding: $spacer * 1.5;
 
   h4 {
-    font-size: $font-size-lg;
     color: $primary-dark;
-    margin-top: 0;
+    font-size: $font-size-lg;
     margin-bottom: $spacer;
+    margin-top: 0;
   }
 
   ol {
-    margin: 0;
-    padding-left: $spacer * 1.5;
     color: $gray-800;
     line-height: 1.6;
+    margin: 0;
+    padding-left: $spacer * 1.5;
 
     li {
       margin-bottom: $spacer * 0.75;
@@ -660,33 +660,33 @@
   }
 
   p {
-    margin: $spacer 0 0 0;
     color: $gray-700;
     font-size: $font-size-base;
+    margin: $spacer 0 0 0;
   }
 
   code {
     background-color: $gray-200;
-    padding: $spacer * 0.125 $spacer * 0.375;
     border-radius: $border-radius-sm;
-    font-family: "Courier New", Courier, monospace;
-    font-size: $font-size-sm;
     color: $cobalt;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: $font-size-sm;
+    padding: $spacer * 0.125 $spacer * 0.375;
   }
 }
 
 .codeBlock {
   background-color: $gray-900;
-  color: $gray-100;
-  padding: $spacer;
   border-radius: $border-radius-sm;
-  overflow-x: auto;
-  font-family: "Courier New", Courier, monospace;
+  color: $gray-100;
+  font-family: 'Courier New', Courier, monospace;
   font-size: $font-size-sm * 0.875;
   line-height: 1.4;
   margin: $spacer * 0.5 0;
   max-height: 300px;
+  overflow-x: auto;
   overflow-y: auto;
+  padding: $spacer;
 }
 
 // Tags Management Styles
@@ -702,27 +702,27 @@
 }
 
 .tagInputRow {
+  align-items: center;
   display: flex;
   gap: $spacer;
   margin-bottom: $spacer * 1.5;
-  align-items: center;
 }
 
 .tagInput,
 .tagEditInput {
-  flex: 1;
-  padding: $spacer * 0.5;
   background-color: $input-bg;
   border: $border-width solid $input-border-color;
   border-radius: $border-radius;
+  color: $input-color;
+  flex: 1;
   font-family: $font-family-serif;
   font-size: $font-size-base;
-  color: $input-color;
+  padding: $spacer * 0.5;
 
   &:focus {
-    outline: none;
-    border-color: $input-focus-border-color;
     background-color: $input-focus-bg;
+    border-color: $input-focus-border-color;
+    outline: none;
   }
 }
 
@@ -733,8 +733,8 @@
 
 .slugText {
   color: $gray-600;
+  font-family: 'Courier New', Courier, monospace !important;
   font-size: $font-size-sm;
-  font-family: "Courier New", Courier, monospace !important;
 }
 
 .centerText {
@@ -742,12 +742,12 @@
 }
 
 .saveButton {
-  color: $green;
   background: none;
   border: none;
+  color: $green;
+  cursor: pointer;
   font-family: $font-family-sans-serif;
   font-size: $font-size-sm;
-  cursor: pointer;
   transition: $transition-base;
 
   &:hover {
@@ -757,12 +757,12 @@
 }
 
 .cancelButton {
-  color: $gray-600;
   background: none;
   border: none;
+  color: $gray-600;
+  cursor: pointer;
   font-family: $font-family-sans-serif;
   font-size: $font-size-sm;
-  cursor: pointer;
   transition: $transition-base;
 
   &:hover {
@@ -775,7 +775,7 @@
   margin-top: $spacer;
 
   img {
-    border-radius: $border-radius-sm;
     border: $border-width solid lighten($ash, 50%);
+    border-radius: $border-radius-sm;
   }
 }

@@ -108,7 +108,7 @@ RSpec.describe AuthorizationService, type: :service do
       end
 
       it 'finds user by auth_id' do
-        expect(User).to receive(:find_by_auth_id).with(user.auth_id).and_return(user)
+        expect(User).to receive(:find_by).with(auth_id: user.auth_id).and_return(user)
         service.get_current_user
       end
     end

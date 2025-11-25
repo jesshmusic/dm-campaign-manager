@@ -32,8 +32,8 @@ end
 
 # Check arguments
 if ARGV.length < 2
-  log_error "Usage: ruby prepare-scene.rb <scene.json> <map-slug>"
-  log_info "Example: ruby prepare-scene.rb dungeon.json dungeon-depths"
+  log_error 'Usage: ruby prepare-scene.rb <scene.json> <map-slug>'
+  log_info 'Example: ruby prepare-scene.rb dungeon.json dungeon-depths'
   exit 1
 end
 
@@ -48,8 +48,8 @@ end
 
 # Validate map slug
 unless map_slug.match?(/^[a-z0-9-]+$/)
-  log_error "Invalid map slug. Use only lowercase letters, numbers, and hyphens."
-  log_info "Example: dungeon-depths, forest-clearing, castle-throne-room"
+  log_error 'Invalid map slug. Use only lowercase letters, numbers, and hyphens.'
+  log_info 'Example: dungeon-depths, forest-clearing, castle-throne-room'
   exit 1
 end
 
@@ -77,7 +77,7 @@ def update_paths(obj, base_path, changes, warnings, path = [])
   when Hash
     obj.each do |key, value|
       # Check for path keys
-      if ['src', 'path', 'sound', 'img', 'icon', 'texture'].include?(key)
+      if %w[src path sound img icon texture].include?(key)
         if value.is_a?(String) && !value.start_with?('modules/dorman-lakely-cartography')
           old_value = value
 
@@ -85,29 +85,28 @@ def update_paths(obj, base_path, changes, warnings, path = [])
           filename = File.basename(value)
 
           # Determine subdirectory based on context
-          subdir = case
-          when path.include?('tiles')
-            'tiles'
-          when path.include?('tokens')
-            'tokens'
-          when path.include?('sounds')
-            'audio'
-          when key == 'sound'
-            'audio'
-          when value.include?('token')
-            'tokens'
-          when value.include?('tile')
-            'tiles'
-          else
-            ''
-          end
+          subdir = if path.include?('tiles')
+                     'tiles'
+                   elsif path.include?('tokens')
+                     'tokens'
+                   elsif path.include?('sounds')
+                     'audio'
+                   elsif key == 'sound'
+                     'audio'
+                   elsif value.include?('token')
+                     'tokens'
+                   elsif value.include?('tile')
+                     'tiles'
+                   else
+                     ''
+                   end
 
           # Build new path
           new_path = if subdir.empty?
-            "#{base_path}/#{filename}"
-          else
-            "#{base_path}/#{subdir}/#{filename}"
-          end
+                       "#{base_path}/#{filename}"
+                     else
+                       "#{base_path}/#{subdir}/#{filename}"
+                     end
 
           obj[key] = new_path
           changes << { from: old_value, to: new_path }
@@ -124,12 +123,12 @@ def update_paths(obj, base_path, changes, warnings, path = [])
 end
 
 # Update all paths
-log_info "Updating asset paths..."
+log_info 'Updating asset paths...'
 update_paths(scene_data, base_path, changes, warnings)
 
 # Report changes
 if changes.empty?
-  log_warning "No paths needed updating. Scene may already be prepared."
+  log_warning 'No paths needed updating. Scene may already be prepared.'
 else
   log_success "Updated #{changes.length} asset paths"
 
@@ -140,9 +139,7 @@ else
     puts "    → #{GREEN}#{change[:to]}#{RESET}"
   end
 
-  if changes.length > 5
-    log_info "  ... and #{changes.length - 5} more"
-  end
+  log_info "  ... and #{changes.length - 5} more" if changes.length > 5
 end
 
 # Create backup
@@ -158,38 +155,39 @@ log_success "Wrote prepared scene: #{output_file}"
 # Generate file list
 log_info "\nExpected file structure:"
 puts "  #{base_path}/"
-puts "  ├── scene.json (this file)"
-puts "  ├── background.webp"
+puts '  ├── scene.json (this file)'
+puts '  ├── background.webp'
 
 # Extract unique subdirectories
 subdirs = changes.map { |c| File.dirname(c[:to]).split('/').last }.uniq.compact
 subdirs.each do |subdir|
   next if subdir == map_slug
+
   puts "  ├── #{subdir}/"
   subdir_files = changes.select { |c| c[:to].include?("/#{subdir}/") }
   subdir_files.first(3).each do |change|
     puts "  │   └── #{File.basename(change[:to])}"
   end
-  puts "  │   └── ..." if subdir_files.length > 3
+  puts '  │   └── ...' if subdir_files.length > 3
 end
 
-puts "  └── thumbnail.jpg"
+puts '  └── thumbnail.jpg'
 
 # Generate migration checklist
 puts "\n#{BLUE}━━━ Next Steps ━━━#{RESET}"
 puts "1. Review the prepared scene: #{output_file}"
-puts "2. Organize your files in this structure:"
+puts '2. Organize your files in this structure:'
 puts "   #{map_slug}/"
 puts "   ├── #{File.basename(output_file)} → rename to scene.json"
-puts "   ├── background.webp"
-puts "   ├── tiles/ (if applicable)"
-puts "   ├── tokens/ (if applicable)"
-puts "   ├── audio/ (if applicable)"
-puts "   └── thumbnail.jpg"
-puts ""
-puts "3. Upload via admin UI: http://localhost:3000/v1/maps-admin"
-puts "   OR"
+puts '   ├── background.webp'
+puts '   ├── tiles/ (if applicable)'
+puts '   ├── tokens/ (if applicable)'
+puts '   ├── audio/ (if applicable)'
+puts '   └── thumbnail.jpg'
+puts ''
+puts '3. Upload via admin UI: http://localhost:3000/v1/maps-admin'
+puts '   OR'
 puts "   Use the upload script: ./scripts/upload-map.sh #{map_slug}/"
-puts ""
+puts ''
 
-log_success "Scene preparation complete!"
+log_success 'Scene preparation complete!'

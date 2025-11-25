@@ -103,23 +103,24 @@ class MagicWeaponItem < WeaponItem
               new_magic_weapon(magic_item, weapon_name)
             end
           end
-        elsif !WeaponItem.basic_magic_weapons.include?(magic_item[:name])
+        elsif WeaponItem.basic_magic_weapons.exclude?(magic_item[:name])
           WeaponItem.all_weapons.each do |weapon_name|
             new_magic_weapon(magic_item, weapon_name)
           end
         end
       else
-        puts "WEAPON unidentified: #{magic_item[:name]} - TYPE #{magic_item[:type]} - ID: #{magic_item.id}"
+        Rails.logger.debug { "WEAPON unidentified: #{magic_item[:name]} - TYPE #{magic_item[:type]} - ID: #{magic_item.id}" }
       end
     end
 
     def new_magic_weapon(magic_item, weapon_name)
       weapon_item = WeaponItem.find_by(name: weapon_name)
-      info = if magic_item[:name] == 'Weapon +1'
+      info = case magic_item[:name]
+             when 'Weapon +1'
                { name: "#{weapon_name} +1", rarity: 'uncommon' }
-             elsif magic_item[:name] == 'Weapon +2'
+             when 'Weapon +2'
                { name: "#{weapon_name} +2", rarity: 'rare' }
-             elsif magic_item[:name] == 'Weapon +3'
+             when 'Weapon +3'
                { name: "#{weapon_name} +3", rarity: 'very rare' }
              else
                { name: "#{magic_item[:name]}, #{weapon_name}", rarity: magic_item[:rarity] }
@@ -127,28 +128,36 @@ class MagicWeaponItem < WeaponItem
       new_item = MagicWeaponItem.find_or_create_by(name: info[:name])
       new_item.desc = magic_item[:desc] ? [magic_item[:desc]] : weapon_item.desc
       new_item.category_range = weapon_item.category_range
-      new_item.damage = Damage.create(
-        damage_dice: weapon_item.damage.damage_dice,
-        damage_type: weapon_item.damage.damage_type
-      ) unless weapon_item.damage.nil?
+      unless weapon_item.damage.nil?
+        new_item.damage = Damage.create(
+          damage_dice: weapon_item.damage.damage_dice,
+          damage_type: weapon_item.damage.damage_type
+        )
+      end
       new_item.magic_item_type = magic_item[:type]
       new_item.properties = weapon_item.properties
-      new_item.item_range = ItemRange.create(
-        long: weapon_item.item_range.long,
-        normal: weapon_item.item_range.normal
-      ) unless weapon_item.item_range.nil?
+      unless weapon_item.item_range.nil?
+        new_item.item_range = ItemRange.create(
+          long: weapon_item.item_range.long,
+          normal: weapon_item.item_range.normal
+        )
+      end
       new_item.rarity = info[:rarity]
       new_item.requires_attunement = magic_item[:requires_attunement]
       new_item.slug = new_item.name.parameterize
       new_item.special = weapon_item.special
-      new_item.item_throw_range = ItemThrowRange.create(
-        long: weapon_item.item_throw_range.long,
-        normal: weapon_item.item_throw_range.normal
-      ) unless weapon_item.item_throw_range.nil?
-      new_item.two_handed_damage = TwoHandedDamage.create(
-        damage_dice: weapon_item.two_handed_damage.damage_dice,
-        damage_type: weapon_item.two_handed_damage.damage_type
-      ) unless weapon_item.two_handed_damage.nil?
+      unless weapon_item.item_throw_range.nil?
+        new_item.item_throw_range = ItemThrowRange.create(
+          long: weapon_item.item_throw_range.long,
+          normal: weapon_item.item_throw_range.normal
+        )
+      end
+      unless weapon_item.two_handed_damage.nil?
+        new_item.two_handed_damage = TwoHandedDamage.create(
+          damage_dice: weapon_item.two_handed_damage.damage_dice,
+          damage_type: weapon_item.two_handed_damage.damage_type
+        )
+      end
       new_item.weapon_category = weapon_item.weapon_category
       new_item.weapon_range = weapon_item.weapon_range
       new_item.weight = weapon_item.weight

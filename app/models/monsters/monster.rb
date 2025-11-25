@@ -47,6 +47,7 @@
 
 class Monster < ApplicationRecord
   extend FriendlyId
+
   friendly_id :name, use: :slugged
 
   def normalize_friendly_id(string)
@@ -79,14 +80,14 @@ class Monster < ApplicationRecord
     saves = []
     monster_proficiencies.each do |monster_prof|
       conditional = ''
-      if monster_prof.prof.prof_type == 'Saving Throws'
-        conditional = '+' if monster_prof.value > 0
-        conditional = '-' if monster_prof.value < 0
-        conditional = '' if monster_prof.value == 0
-        st_name = monster_prof.prof.name
-        st_name.slice!('Saving Throw: ')
-        saves << "#{st_name.titleize} #{conditional}#{monster_prof.value}"
-      end
+      next unless monster_prof.prof.prof_type == 'Saving Throws'
+
+      conditional = '+' if monster_prof.value.positive?
+      conditional = '-' if monster_prof.value.negative?
+      conditional = '' if monster_prof.value.zero?
+      st_name = monster_prof.prof.name
+      st_name.slice!('Saving Throw: ')
+      saves << "#{st_name.titleize} #{conditional}#{monster_prof.value}"
     end
     saves
   end
@@ -94,9 +95,7 @@ class Monster < ApplicationRecord
   def num_saving_throws
     saves = 0
     monster_proficiencies.each do |monster_prof|
-      if monster_prof.prof.prof_type == 'Saving Throws'
-        saves += 1
-      end
+      saves += 1 if monster_prof.prof.prof_type == 'Saving Throws'
     end
     saves
   end
@@ -105,14 +104,14 @@ class Monster < ApplicationRecord
     skills = []
     monster_proficiencies.each do |monster_prof|
       conditional = ''
-      if monster_prof.prof.prof_type == 'Skills'
-        conditional = '+' if monster_prof.value > 0
-        conditional = '-' if monster_prof.value < 0
-        conditional = '' if monster_prof.value == 0
-        st_name = monster_prof.prof.name
-        st_name.slice!('Skill: ')
-        skills << "#{st_name.titleize} #{conditional}#{monster_prof.value}"
-      end
+      next unless monster_prof.prof.prof_type == 'Skills'
+
+      conditional = '+' if monster_prof.value.positive?
+      conditional = '-' if monster_prof.value.negative?
+      conditional = '' if monster_prof.value.zero?
+      st_name = monster_prof.prof.name
+      st_name.slice!('Skill: ')
+      skills << "#{st_name.titleize} #{conditional}#{monster_prof.value}"
     end
     skills
   end
@@ -120,39 +119,36 @@ class Monster < ApplicationRecord
   def has_perception
     has_perception = false
     monster_proficiencies.each do |monster_prof|
-      if monster_prof.prof.prof_type == 'Skills'
-        st_name = monster_prof.prof.name
-        st_name.slice!('Skill: ')
-        if st_name.downcase == 'perception'
-          has_perception = true
-          break
-        end
+      next unless monster_prof.prof.prof_type == 'Skills'
+
+      st_name = monster_prof.prof.name
+      st_name.slice!('Skill: ')
+      if st_name.downcase == 'perception'
+        has_perception = true
+        break
       end
     end
     has_perception
   end
 
   def senses_array
-    sense_return = []
-    senses.each do |sense|
+    senses.map do |sense|
       if sense.name.downcase == 'passive perception'
-        sense_return << "passive Perception #{sense.value}"
+        "passive Perception #{sense.value}"
       else
-        sense_return << "#{sense.name} #{sense.value}"
+        "#{sense.name} #{sense.value}"
       end
     end
-    sense_return
   end
 
   def speeds_array
-    speed_return = []
-    speeds.each do |speed|
+    speed_return = speeds.map do |speed|
       if speed.name.downcase == 'walk'
-        speed_return << "#{speed.value} ft."
+        "#{speed.value} ft."
       elsif speed.name.downcase == 'hover'
-        speed_return << 'Hover'
+        'Hover'
       else
-        speed_return << "#{speed.name} #{speed.value} ft."
+        "#{speed.name} #{speed.value} ft."
       end
     end
     speed_return.sort
@@ -160,11 +156,12 @@ class Monster < ApplicationRecord
 
   def hit_dice_string
     return '' if hit_dice.nil?
+
     con_mod = DndRules.ability_score_modifier(constitution)
     num_hit_die = hit_dice.scan(/\d+/).first.to_i
-    if con_mod > 0
+    if con_mod.positive?
       "(#{hit_dice} + #{con_mod * num_hit_die})"
-    elsif con_mod < 0
+    elsif con_mod.negative?
       "(#{hit_dice} - #{con_mod.abs * num_hit_die})"
     else
       "(#{hit_dice})"
@@ -189,10 +186,10 @@ class Monster < ApplicationRecord
 
   def monster_atts
     monster_atts = attributes
-    monster_atts[:actions] = monster_actions.map { |action| action.attributes }
-    monster_atts[:special_abilities] = special_abilities.map { |action| action.attributes }
-    monster_atts[:reactions] = reactions.map { |action| action.attributes }
-    monster_atts[:legendary_actions] = legendary_actions.map { |action| action.attributes }
+    monster_atts[:actions] = monster_actions.map(&:attributes)
+    monster_atts[:special_abilities] = special_abilities.map(&:attributes)
+    monster_atts[:reactions] = reactions.map(&:attributes)
+    monster_atts[:legendary_actions] = legendary_actions.map(&:attributes)
     monster_atts
   end
 
@@ -202,34 +199,35 @@ class Monster < ApplicationRecord
     num_attack_types = 0
     monster_actions.each do |action|
       next if action.desc.nil?
+
       damage_dice = action.desc[/([1-9]\d*)?d([1-9]\d*)/m]
       npc_dam_bonus = DndRules.ability_score_modifier(strength)
       _, base_damage = NpcGenerator.action_damage(damage_dice, npc_dam_bonus, action.desc)
       if action.name.downcase == 'multiattack'
         num_attacks_array = action.desc.scan(/\d+/).map(&:to_i)
         num_attacks = num_attacks_array.sum
-      elsif base_damage > 0
+      elsif base_damage.positive?
         num_attack_types += 1
         damages << base_damage
       end
     end
-    num_attack_types = 1 if num_attack_types == 0
+    num_attack_types = 1 if num_attack_types.zero?
     damages = [1] if damages.empty?
     damages.sum.to_f * num_attacks / num_attack_types
   end
 
   def offensive_cr
-    CrCalc.get_offensive_cr(self, self.damage_per_round, self.attack_bonus)
+    CrCalc.get_offensive_cr(self, damage_per_round, attack_bonus)
   end
 
   def defensive_cr
-    CrCalc.get_defensive_cr(self, self.challenge_rating, self.armor_class, self.hit_points)
+    CrCalc.get_defensive_cr(self, challenge_rating, armor_class, hit_points)
   end
 
   include PgSearch::Model
 
   # PgSearch
-  multisearchable against: [:name, :monster_type, :challenge_rating, :alignment]
+  multisearchable against: %i[name monster_type challenge_rating alignment]
   pg_search_scope :search_for,
                   against: {
                     name: 'A',
@@ -238,7 +236,7 @@ class Monster < ApplicationRecord
                     alignment: 'D'
                   },
                   associated_against: {
-                    user: [:name, :id],
+                    user: %i[name id],
                     monster_actions: [:name]
                   },
                   using: {
@@ -260,85 +258,85 @@ class Monster < ApplicationRecord
         xml.npc do
           xml.abilities do
             xml.charisma do
-              self.xml_element('bonus', 'number', DndRules.ability_score_modifier(self.charisma), xml)
-              self.xml_element('score', 'number', self.charisma, xml)
+              xml_element('bonus', 'number', DndRules.ability_score_modifier(charisma), xml)
+              xml_element('score', 'number', charisma, xml)
             end
             xml.constitution do
-              self.xml_element('bonus', 'number', DndRules.ability_score_modifier(self.constitution), xml)
-              self.xml_element('score', 'number', self.constitution, xml)
+              xml_element('bonus', 'number', DndRules.ability_score_modifier(constitution), xml)
+              xml_element('score', 'number', constitution, xml)
             end
             xml.dexterity do
-              self.xml_element('bonus', 'number', DndRules.ability_score_modifier(self.dexterity), xml)
-              self.xml_element('score', 'number', self.dexterity, xml)
+              xml_element('bonus', 'number', DndRules.ability_score_modifier(dexterity), xml)
+              xml_element('score', 'number', dexterity, xml)
             end
             xml.intelligence do
-              self.xml_element('bonus', 'number', DndRules.ability_score_modifier(self.intelligence), xml)
-              self.xml_element('score', 'number', self.intelligence, xml)
+              xml_element('bonus', 'number', DndRules.ability_score_modifier(intelligence), xml)
+              xml_element('score', 'number', intelligence, xml)
             end
             xml.strength do
-              self.xml_element('bonus', 'number', DndRules.ability_score_modifier(self.strength), xml)
-              self.xml_element('score', 'number', self.strength, xml)
+              xml_element('bonus', 'number', DndRules.ability_score_modifier(strength), xml)
+              xml_element('score', 'number', strength, xml)
             end
             xml.wisdom do
-              self.xml_element('bonus', 'number', DndRules.ability_score_modifier(self.wisdom), xml)
-              self.xml_element('score', 'number', self.wisdom, xml)
+              xml_element('bonus', 'number', DndRules.ability_score_modifier(wisdom), xml)
+              xml_element('score', 'number', wisdom, xml)
             end
           end
-          self.xml_element('ac', 'number', self.armor_class, xml)
-          self.xml_element('actext', 'string', '', xml)
+          xml_element('ac', 'number', armor_class, xml)
+          xml_element('actext', 'string', '', xml)
           xml.actions do
-            self.monster_actions.each_with_index do |action, index|
-              action_id = sprintf '%05d', index + 1
+            monster_actions.each_with_index do |action, index|
+              action_id = format '%05d', index + 1
               xml.send "widgetId-#{action_id}" do
-                self.xml_element('desc', 'string', action.desc, xml)
-                self.xml_element('name', 'string', action.name, xml)
+                xml_element('desc', 'string', action.desc, xml)
+                xml_element('name', 'string', action.name, xml)
               end
             end
           end
-          self.xml_element('alignment', 'string', self.alignment, xml)
-          self.xml_element('conditionimmunities', 'string', self.condition_immunities.join(', '), xml)
-          self.xml_element('cr', 'string', self.challenge_rating, xml)
-          self.xml_element('damageimmunities', 'string', self.damage_immunities.join(', '), xml)
-          self.xml_element('damageresistances', 'string', self.damage_resistances.join(', '), xml)
-          self.xml_element('hd', 'string', self.hit_dice_string, xml)
-          self.xml_element('hp', 'number', self.hit_points, xml)
-          self.xml_element('languages', 'string', self.languages, xml)
+          xml_element('alignment', 'string', alignment, xml)
+          xml_element('conditionimmunities', 'string', condition_immunities.join(', '), xml)
+          xml_element('cr', 'string', challenge_rating, xml)
+          xml_element('damageimmunities', 'string', damage_immunities.join(', '), xml)
+          xml_element('damageresistances', 'string', damage_resistances.join(', '), xml)
+          xml_element('hd', 'string', hit_dice_string, xml)
+          xml_element('hp', 'number', hit_points, xml)
+          xml_element('languages', 'string', languages, xml)
           xml.legendaryactions do
-            self.legendary_actions.each_with_index do |action, index|
-              action_id = sprintf '%05d', index + 1
+            legendary_actions.each_with_index do |action, index|
+              action_id = format '%05d', index + 1
               xml.send "widgetId-#{action_id}" do
-                self.xml_element('desc', 'string', action.desc, xml)
-                self.xml_element('name', 'string', action.name, xml)
+                xml_element('desc', 'string', action.desc, xml)
+                xml_element('name', 'string', action.name, xml)
               end
             end
           end
-          self.xml_element('locked', 'number', 1, xml)
-          self.xml_element('name', 'string', self.name, xml)
+          xml_element('locked', 'number', 1, xml)
+          xml_element('name', 'string', name, xml)
           xml.reactions do
-            self.reactions.each_with_index do |action, index|
-              action_id = sprintf '%05d', index + 1
+            reactions.each_with_index do |action, index|
+              action_id = format '%05d', index + 1
               xml.send "widgetId-#{action_id}" do
-                self.xml_element('desc', 'string', action.desc, xml)
-                self.xml_element('name', 'string', action.name, xml)
+                xml_element('desc', 'string', action.desc, xml)
+                xml_element('name', 'string', action.name, xml)
               end
             end
           end
-          self.xml_element('savingthrows', 'string', self.saving_throws.join(', '), xml)
-          self.xml_element('senses', 'string', self.senses_array.join(', '), xml)
-          self.xml_element('size', 'string', self.size, xml)
-          self.xml_element('skills', 'string', self.skills.join(', '), xml)
-          self.xml_element('speed', 'string', self.speeds_array.join(', '), xml)
+          xml_element('savingthrows', 'string', saving_throws.join(', '), xml)
+          xml_element('senses', 'string', senses_array.join(', '), xml)
+          xml_element('size', 'string', size, xml)
+          xml_element('skills', 'string', skills.join(', '), xml)
+          xml_element('speed', 'string', speeds_array.join(', '), xml)
           xml.traits do
-            self.special_abilities.each_with_index do |action, index|
-              action_id = sprintf '%05d', index + 1
+            special_abilities.each_with_index do |action, index|
+              action_id = format '%05d', index + 1
               xml.send "widgetId-#{action_id}" do
-                self.xml_element('desc', 'string', action.desc, xml)
-                self.xml_element('name', 'string', action.name, xml)
+                xml_element('desc', 'string', action.desc, xml)
+                xml_element('name', 'string', action.name, xml)
               end
             end
           end
-          self.xml_element('type', 'string', self.monster_type, xml)
-          self.xml_element('xp', 'number', self.xp, xml)
+          xml_element('type', 'string', monster_type, xml)
+          xml_element('xp', 'number', xp, xml)
         end
       end
     end

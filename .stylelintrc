@@ -5,6 +5,7 @@
     "selector-max-compound-selectors": 10,
     "scss/at-extend-no-missing-placeholder": null,
     "selector-class-pattern": null,
-    "selector-no-qualifying-type": null
+    "selector-no-qualifying-type": null,
+    "declaration-property-value-disallowed-list": null
   }
 }

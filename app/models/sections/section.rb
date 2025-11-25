@@ -15,6 +15,7 @@
 #
 class Section < ApplicationRecord
   extend FriendlyId
+
   friendly_id :name, use: :slugged
 
   def normalize_friendly_id(string)

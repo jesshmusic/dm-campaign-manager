@@ -2,7 +2,7 @@
 
 class MagicItemsUtility
   class << self
-    def cost_for_rarity rarity
+    def cost_for_rarity(rarity)
       case rarity
       when 'common'
         100
@@ -11,9 +11,9 @@ class MagicItemsUtility
       when 'rare'
         5000
       when 'very rare'
-        50000
+        50_000
       when 'legendary'
-        75000
+        75_000
       else
         500
       end

@@ -24,9 +24,7 @@ module Admin
         code = params[:code]
         state = params[:state] # This is the user_id from Foundry
 
-        unless code && state
-          return render html: '<h1>Error: Missing authorization code or state</h1>', status: :bad_request
-        end
+        return render html: '<h1>Error: Missing authorization code or state</h1>', status: :bad_request unless code && state
 
         begin
           # Exchange code for access token
@@ -111,7 +109,7 @@ module Admin
             </body>
             </html>
           HTML
-        rescue => e
+        rescue StandardError => e
           Rails.logger.error("Patreon OAuth Error: #{e.message}")
           Rails.logger.error(e.backtrace.join("\n"))
           render html: "<h1>Authentication Failed</h1><p>#{e.message}</p>", status: :internal_server_error
@@ -123,16 +121,13 @@ module Admin
       def exchange_code_for_token(code)
         uri = URI('https://www.patreon.com/api/oauth2/token')
         response = Net::HTTP.post_form(uri,
-          'code' => code,
-          'grant_type' => 'authorization_code',
-          'client_id' => ENV['PATREON_CLIENT_ID'],
-          'client_secret' => ENV['PATREON_CLIENT_SECRET'],
-          'redirect_uri' => ENV['PATREON_REDIRECT_URI']
-        )
+                                       'code' => code,
+                                       'grant_type' => 'authorization_code',
+                                       'client_id' => ENV.fetch('PATREON_CLIENT_ID', nil),
+                                       'client_secret' => ENV.fetch('PATREON_CLIENT_SECRET', nil),
+                                       'redirect_uri' => ENV.fetch('PATREON_REDIRECT_URI', nil))
 
-        unless response.is_a?(Net::HTTPSuccess)
-          raise "Failed to exchange code: #{response.body}"
-        end
+        raise "Failed to exchange code: #{response.body}" unless response.is_a?(Net::HTTPSuccess)
 
         JSON.parse(response.body)
       end
@@ -153,9 +148,7 @@ module Admin
           http.request(request)
         end
 
-        unless response.is_a?(Net::HTTPSuccess)
-          raise "Failed to fetch membership: #{response.body}"
-        end
+        raise "Failed to fetch membership: #{response.body}" unless response.is_a?(Net::HTTPSuccess)
 
         JSON.parse(response.body)
       end

@@ -56,7 +56,8 @@ class MagicArmorItem < ArmorItem
 
   class << self
     def basic_armors
-      ['Chain Shirt', 'Plate', 'Breastplate', 'Leather', 'Scale Mail', 'Ring Mail', 'Chain Mail', 'Studded Leather', 'Hide', 'Padded', 'Splint', 'Shield', 'Half Plate']
+      ['Chain Shirt', 'Plate', 'Breastplate', 'Leather', 'Scale Mail', 'Ring Mail', 'Chain Mail', 'Studded Leather', 'Hide', 'Padded', 'Splint',
+       'Shield', 'Half Plate']
     end
 
     def create_magic_armor_from_old_magic_items(magic_item)
@@ -77,7 +78,7 @@ class MagicArmorItem < ArmorItem
         new_magic_armor(magic_item, 'Plate')
       elsif magic_item[:type].include? 'medium or heavy'
         medium_heavy_armors = MagicArmorItem.basic_armors - ['Studded Leather', 'Leather', 'Padded']
-        magic_item_name = "#{magic_item[:name]}"
+        magic_item_name = magic_item[:name].to_s
         medium_heavy_armors.each do |armor_name|
           magic_item[:name] = "#{magic_item_name}, #{armor_name}"
           new_magic_armor(magic_item, armor_name)
@@ -90,7 +91,7 @@ class MagicArmorItem < ArmorItem
         magic_item[:name] = "#{magic_item[:name]}, Padded"
         new_magic_armor(magic_item, 'Padded')
       else
-        puts "ARMOR unidentified: #{magic_item[:name]} - TYPE #{magic_item[:type]}"
+        Rails.logger.debug { "ARMOR unidentified: #{magic_item[:name]} - TYPE #{magic_item[:type]}" }
       end
     end
 

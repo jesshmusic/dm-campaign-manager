@@ -37,13 +37,12 @@
 #
 
 class User < ApplicationRecord
-
   validates :email, presence: true
   validates :email, uniqueness: true
   validates :auth_id, presence: true
   validates :auth_id, uniqueness: true
 
-  enum role: %I[dungeon_master admin user]
+  enum role: { dungeon_master: 0, admin: 1, user: 2 }
   after_initialize :set_default_role, if: :new_record?
 
   # UserProps Associations
@@ -71,11 +70,12 @@ class User < ApplicationRecord
   def inactive_message
     return :active if active_for_authentication?
 
-    !deleted_at ? super : :deleted_account
+    deleted_at ? :deleted_account : super
   end
 
   # PgSearch
   include PgSearch::Model
+
   pg_search_scope :search_for,
                   against: {
                     name: 'A',

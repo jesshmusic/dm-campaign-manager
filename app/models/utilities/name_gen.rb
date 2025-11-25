@@ -1,15 +1,14 @@
 # frozen_string_literal: true
 
-require "openai/client"
-require "set"
+require 'openai/client'
 
 class NameGen
-  OPENAI = OpenAI::Client.new(api_key: ENV.fetch("OPENAI_API_KEY", "test-api-key"))
+  OPENAI = OpenAI::Client.new(api_key: ENV.fetch('OPENAI_API_KEY', 'test-api-key'))
 
   # --------------------------- Variety controls ---------------------------
   VARIANCE = {
-    temperature:       (1.4..1.8),
-    presence_penalty:  (1.3..1.6),
+    temperature: (1.4..1.8),
+    presence_penalty: (1.3..1.6),
     frequency_penalty: (0.7..1.0)
   }.freeze
   COMPLETIONS_PER_CALL = 5
@@ -18,17 +17,17 @@ class NameGen
   NAME_CACHE = Hash.new { |h, k| h[k] = Set.new }
 
   # --------------------------- Settings pool ------------------------------
-  SETTINGS = %w[Forgotten\ Realms Greyhawk Eberron Dragonlance Dark\ Sun].freeze
+  SETTINGS = ['Forgotten Realms', 'Greyhawk', 'Eberron', 'Dragonlance', 'Dark Sun'].freeze
 
   # --------------------------- Public API ---------------------------------
-  def self.random_name(gender: nil, race: "human", setting: nil, extra: "", **opts)
+  def self.random_name(gender: nil, race: 'human', setting: nil, extra: '', **)
     gender  ||= %w[male female].sample
     setting ||= SETTINGS.sample
 
     prompt      = build_prompt(gender: gender, race: race, setting: setting, extra: extra)
     cache_key   = "#{race}_#{gender}"
 
-    generate_unique_name(prompt, cache_key: cache_key, **opts)
+    generate_unique_name(prompt, cache_key: cache_key, **)
   end
 
   def self.random_tavern_name
@@ -40,7 +39,7 @@ class NameGen
 
   def self.random_monster_name
     generate_name(
-      "Create ONE original Dungeons & Dragons monster name not found in any official bestiary. Return ONLY the name."
+      'Create ONE original Dungeons & Dragons monster name not found in any official bestiary. Return ONLY the name.'
     )
   end
 
@@ -64,7 +63,7 @@ class NameGen
     OPENAI.completions(prompt: prompt, **random_opts.merge(params))
   end
 
-  def self.build_prompt(gender:, race:, setting:, extra: "")
+  def self.build_prompt(gender:, race:, setting:, extra: '')
     <<~PROMPT.strip
       Create exactly ONE #{gender} #{race} name for a Dungeons & Dragons character
       in the #{setting} setting. #{extra}

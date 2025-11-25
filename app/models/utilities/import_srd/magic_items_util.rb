@@ -1,12 +1,8 @@
 class MagicItemsUtil
   class << self
-    def dnd_api_url
-      ImportSrdUtilities.dnd_api_url
-    end
+    delegate :dnd_api_url, to: :ImportSrdUtilities
 
-    def dnd_open5e_url
-      ImportSrdUtilities.dnd_open5e_url
-    end
+    delegate :dnd_open5e_url, to: :ImportSrdUtilities
 
     def import
       import_magic_items
@@ -27,13 +23,13 @@ class MagicItemsUtil
           else
             MagicItem.create_magic_item_from_old_magic_items(magic_item)
           end
-          puts "\t Magic Item #{magic_item[:name]} imported."
+          Rails.logger.debug { "\t Magic Item #{magic_item[:name]} imported." }
           count += 1
         end
       end
       create_armors
       fix_combined_magic_items
-      puts "#{count} Magic Items imported."
+      Rails.logger.debug { "#{count} Magic Items imported." }
     end
 
     def fix_combined_magic_items

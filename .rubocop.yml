@@ -1,37 +1,74 @@
+inherit_from: .rubocop_todo.yml
+
+plugins:
+  - rubocop-rails
+  - rubocop-rspec
+
 AllCops:
+  NewCops: enable
+  TargetRubyVersion: 3.2
+  SuggestExtensions: false
   Exclude:
     - 'db/**/*'
     - 'lib/**/*'
     - 'config/**/*'
     - 'spec/**/*'
+    - 'bin/**/*'
+    - 'vendor/**/*'
+    - 'node_modules/**/*'
+    - 'scripts/**/*'
 
+# Layout
+Layout/LineLength:
+  Max: 150
+
+# Metrics - reasonable limits
 Metrics/ClassLength:
   CountComments: false
-  Max: 235
+  Max: 200
 
-Documentation:
-  Enabled: false
-
-EmptyLines:
-  Enabled: false
-
-Encoding:
-  Enabled: false
-
-LineLength:
-  Max: 150
-  Exclude:
-    - 'config/routes.rb'
-
-MethodLength:
+Metrics/MethodLength:
   Max: 30
 
 Metrics/AbcSize:
   Max: 30
 
 Metrics/CyclomaticComplexity:
-  Max: 14
+  Max: 10
 
 Metrics/PerceivedComplexity:
-  # http://www.rubydoc.info/gems/rubocop/RuboCop/Cop/Metrics/PerceivedComplexity
-  Max: 8
+  Max: 10
+
+Metrics/BlockLength:
+  Max: 25
+  Exclude:
+    - 'config/routes.rb'
+    - 'app/views/**/*'
+    - 'app/models/utilities/**/*'
+    - 'app/models/monsters/monster.rb'
+    - 'app/models/monsters/npc_generator.rb'
+
+# Style
+Style/Documentation:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/StringLiterals:
+  EnforcedStyle: single_quotes
+
+Style/StringLiteralsInInterpolation:
+  EnforcedStyle: single_quotes
+
+# Naming - allow numbered variable names (spell_slots_level_1, etc.)
+Naming/VariableNumber:
+  Enabled: false
+
+# Rails
+Rails/I18nLocaleTexts:
+  Enabled: false
+
+# RSpec (disabled since specs are excluded)
+RSpec:
+  Enabled: false

@@ -23,14 +23,14 @@ class ImportSrdUtilities
     end
 
     def import_all_empty(exclude)
-      has_dependencies = AbilityScore.count > 0 && Prof.count > 0 && Condition.count > 0
+      has_dependencies = AbilityScore.any? && Prof.any? && Condition.any?
       import_dependencies unless has_dependencies
-      ItemsUtil.import unless Item.count > 0 || exclude == :items
+      ItemsUtil.import unless Item.any? || exclude == :items
       # import_classes
-      DndClassesUtil.import unless DndClass.count > 0 || exclude == :classes
-      RacesUtil.import unless Race.count > 0 || exclude == :races
-      SpellsUtil.import unless Spell.count > 0 || exclude == :spells
-      MonstersUtil.import unless Monster.count > 0 || exclude == :monsters
+      DndClassesUtil.import unless DndClass.any? || exclude == :classes
+      RacesUtil.import unless Race.any? || exclude == :races
+      SpellsUtil.import unless Spell.any? || exclude == :spells
+      MonstersUtil.import unless Monster.any? || exclude == :monsters
     end
 
     def import_dependencies
@@ -43,29 +43,29 @@ class ImportSrdUtilities
     def clean_database
       count = Race.count
       Race.destroy_all
-      puts "All #{count} races deleted"
+      Rails.logger.debug { "All #{count} races deleted" }
       count = Monster.count
       Monster.destroy_all
-      puts "All #{count} monsters deleted"
+      Rails.logger.debug { "All #{count} monsters deleted" }
       count = Item.count
       Item.destroy_all
-      puts "All #{count} items deleted"
+      Rails.logger.debug { "All #{count} items deleted" }
       count = MagicItem.count
       MagicItem.destroy_all
-      puts "All #{count} magic items deleted"
+      Rails.logger.debug { "All #{count} magic items deleted" }
       count = Spell.count
       Spell.destroy_all
-      puts "All #{count} spells deleted"
+      Rails.logger.debug { "All #{count} spells deleted" }
       count = DndClass.count
       DndClass.destroy_all
-      puts "All #{count} classes deleted"
+      Rails.logger.debug { "All #{count} classes deleted" }
       count = Prof.count
       Prof.destroy_all
-      puts "All #{count} proficiencies deleted"
+      Rails.logger.debug { "All #{count} proficiencies deleted" }
       AbilityScoreDndClass.destroy_all
       count = AbilityScore.count
       AbilityScore.destroy_all
-      puts "All #{count} ability scores deleted"
+      Rails.logger.debug { "All #{count} ability scores deleted" }
       Condition.destroy_all
       Equipment.destroy_all
       Skill.destroy_all
@@ -80,9 +80,9 @@ class ImportSrdUtilities
       result[:results].each do |prof|
         import_prof(prof[:url])
         count += 1
-        puts "\tProficiency #{prof[:name]} imported."
+        Rails.logger.debug { "\tProficiency #{prof[:name]} imported." }
       end
-      puts "#{count} Proficiencies imported or updated."
+      Rails.logger.debug { "#{count} Proficiencies imported or updated." }
     end
 
     def import_skills
@@ -100,9 +100,9 @@ class ImportSrdUtilities
           ability_score: skill_result[:ability_score][:name]
         )
         count += 1
-        puts "\tSkill #{new_skill.name} imported."
+        Rails.logger.debug { "\tSkill #{new_skill.name} imported." }
       end
-      puts "#{count} Proficiencies imported or updated."
+      Rails.logger.debug { "#{count} Proficiencies imported or updated." }
     end
 
     def import_prof(prof_url)
@@ -134,7 +134,7 @@ class ImportSrdUtilities
         ability_score.save!
         count += 1
       end
-      puts "#{count} Abilities imported."
+      Rails.logger.debug { "#{count} Abilities imported." }
     end
 
     def import_conditions
@@ -150,9 +150,9 @@ class ImportSrdUtilities
         new_cond.description = condition_result[:desc]
         new_cond.save!
         count += 1
-        puts "\tCondition #{new_cond.name} imported."
+        Rails.logger.debug { "\tCondition #{new_cond.name} imported." }
       end
-      puts "#{count} Conditions imported or updated."
+      Rails.logger.debug { "#{count} Conditions imported or updated." }
     end
   end
 end

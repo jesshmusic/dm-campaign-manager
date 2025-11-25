@@ -51,6 +51,7 @@
 
 class Item < ApplicationRecord
   extend FriendlyId
+
   friendly_id :name, use: :slugged
 
   def normalize_friendly_id(string)
@@ -74,7 +75,7 @@ class Item < ApplicationRecord
   include PgSearch::Model
 
   # PgSearch
-  multisearchable against: [:name, :type, :desc, :properties]
+  multisearchable against: %i[name type desc properties]
   pg_search_scope :search_for,
                   against: {
                     name: 'A',

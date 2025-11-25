@@ -16,7 +16,6 @@
 #  index_widgets_on_user_id  (user_id)
 #
 class Widget < ApplicationRecord
-
   include PgSearch::Model
 
   # PgSearch

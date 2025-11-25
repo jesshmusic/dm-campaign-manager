@@ -1,7 +1,7 @@
 module Admin
   module V1
     class FoundryMapsController < ApplicationController
-      skip_before_action :verify_authenticity_token, only: [:file, :upload_files, :upload_image, :upload_package, :upload_thumbnail]
+      skip_before_action :verify_authenticity_token, only: %i[file upload_files upload_image upload_package upload_thumbnail]
 
       # GET /v1/maps/tags
       def tags
@@ -23,14 +23,10 @@ module Admin
         # Check access level for premium maps only
         if map.premium?
           # Premium maps require authentication
-          unless user_id.present?
-            return render json: { error: 'Authentication required for Premium maps' }, status: :unauthorized
-          end
+          return render json: { error: 'Authentication required for Premium maps' }, status: :unauthorized if user_id.blank?
 
           user = PatreonUser.find_by(user_id: user_id)
-          unless user&.authenticated? && user.has_premium
-            return render json: { error: 'Premium access required' }, status: :forbidden
-          end
+          return render json: { error: 'Premium access required' }, status: :forbidden unless user&.authenticated? && user.has_premium
         end
 
         # Free maps don't require authentication
@@ -52,22 +48,16 @@ module Admin
         # Check access level for premium maps only
         if map.premium?
           # Premium maps require authentication
-          unless user_id.present?
-            return render json: { error: 'Authentication required for Premium maps' }, status: :unauthorized
-          end
+          return render json: { error: 'Authentication required for Premium maps' }, status: :unauthorized if user_id.blank?
 
           user = PatreonUser.find_by(user_id: user_id)
-          unless user&.authenticated? && user.has_premium
-            return render json: { error: 'Premium access required' }, status: :forbidden
-          end
+          return render json: { error: 'Premium access required' }, status: :forbidden unless user&.authenticated? && user.has_premium
         end
 
         # Free maps don't require authentication
         # Find file
         map_file = map.foundry_map_files.find_by(file_path: file_path)
-        unless map_file
-          return render json: { error: 'File not found' }, status: :not_found
-        end
+        return render json: { error: 'File not found' }, status: :not_found unless map_file
 
         # Generate signed URL
         signed_url = map_file.generate_signed_url(expires_in: 3600)
@@ -134,42 +124,38 @@ module Admin
       def upload_files
         map = FoundryMap.find(params[:id])
 
-        unless params[:files].present?
-          return render json: { errors: ['No files provided'] }, status: :unprocessable_entity
-        end
+        return render json: { errors: ['No files provided'] }, status: :unprocessable_entity if params[:files].blank?
 
         uploaded_files = []
         errors = []
 
         params[:files].each do |file|
-          begin
-            # Upload to S3
-            s3_key = "maps/#{map.id}/#{SecureRandom.uuid}_#{file.original_filename}"
-            s3_client = Aws::S3::Client.new(
-              region: ENV['AWS_REGION'] || 'us-east-1',
-              access_key_id: ENV['AWS_ACCESS_KEY_ID'],
-              secret_access_key: ENV['AWS_SECRET_ACCESS_KEY']
-            )
+          # Upload to S3
+          s3_key = "maps/#{map.id}/#{SecureRandom.uuid}_#{file.original_filename}"
+          s3_client = Aws::S3::Client.new(
+            region: ENV['AWS_REGION'] || 'us-east-1',
+            access_key_id: ENV.fetch('AWS_ACCESS_KEY_ID', nil),
+            secret_access_key: ENV.fetch('AWS_SECRET_ACCESS_KEY', nil)
+          )
 
-            s3_client.put_object(
-              bucket: ENV['AWS_S3_BUCKET'],
-              key: s3_key,
-              body: file.read,
-              content_type: file.content_type
-            )
+          s3_client.put_object(
+            bucket: ENV.fetch('AWS_S3_BUCKET', nil),
+            key: s3_key,
+            body: file.read,
+            content_type: file.content_type
+          )
 
-            # Create file record
-            map_file = map.foundry_map_files.create!(
-              file_path: file.original_filename,
-              file_type: determine_file_type(file.original_filename),
-              file_size: file.size,
-              s3_key: s3_key
-            )
+          # Create file record
+          map_file = map.foundry_map_files.create!(
+            file_path: file.original_filename,
+            file_type: determine_file_type(file.original_filename),
+            file_size: file.size,
+            s3_key: s3_key
+          )
 
-            uploaded_files << map_file.as_json_for_api
-          rescue => e
-            errors << "Failed to upload #{file.original_filename}: #{e.message}"
-          end
+          uploaded_files << map_file.as_json_for_api
+        rescue StandardError => e
+          errors << "Failed to upload #{file.original_filename}: #{e.message}"
         end
 
         if errors.any?
@@ -183,16 +169,14 @@ module Admin
       def upload_package
         map = FoundryMap.find(params[:id])
 
-        unless params[:package].present?
-          return render json: { error: 'No package file provided' }, status: :unprocessable_entity
-        end
+        return render json: { error: 'No package file provided' }, status: :unprocessable_entity if params[:package].blank?
 
         begin
           process_scene_package(map, params[:package])
           render json: map.as_json_for_api.merge(
             files: map.foundry_map_files.map(&:as_json_for_api)
           ), status: :ok
-        rescue => e
+        rescue StandardError => e
           Rails.logger.error "Package upload failed: #{e.message}"
           Rails.logger.error e.backtrace.join("\n")
           render json: { error: "Failed to process package: #{e.message}" }, status: :unprocessable_entity
@@ -203,9 +187,7 @@ module Admin
       def upload_thumbnail
         map = FoundryMap.find(params[:id])
 
-        unless params[:thumbnail].present?
-          return render json: { error: 'No thumbnail file provided' }, status: :unprocessable_entity
-        end
+        return render json: { error: 'No thumbnail file provided' }, status: :unprocessable_entity if params[:thumbnail].blank?
 
         begin
           # Upload thumbnail to S3 public path
@@ -215,20 +197,20 @@ module Admin
 
           s3_client = Aws::S3::Client.new(
             region: ENV['AWS_REGION'] || 'us-east-1',
-            access_key_id: ENV['AWS_ACCESS_KEY_ID'],
-            secret_access_key: ENV['AWS_SECRET_ACCESS_KEY']
+            access_key_id: ENV.fetch('AWS_ACCESS_KEY_ID', nil),
+            secret_access_key: ENV.fetch('AWS_SECRET_ACCESS_KEY', nil)
           )
 
           # Upload to public thumbnails path
           s3_client.put_object(
-            bucket: ENV['AWS_S3_BUCKET'],
+            bucket: ENV.fetch('AWS_S3_BUCKET', nil),
             key: s3_key,
             body: thumbnail_file.tempfile,
             content_type: thumbnail_file.content_type
           )
 
           # Generate public URL (no expiry!)
-          thumbnail_url = "https://#{ENV['AWS_S3_BUCKET']}.s3.#{ENV['AWS_REGION']}.amazonaws.com/#{s3_key}"
+          thumbnail_url = "https://#{ENV.fetch('AWS_S3_BUCKET', nil)}.s3.#{ENV.fetch('AWS_REGION', nil)}.amazonaws.com/#{s3_key}"
 
           # Update map with thumbnail S3 key and URL
           map.update!(
@@ -237,7 +219,7 @@ module Admin
           )
 
           render json: map.as_json_for_api, status: :ok
-        rescue => e
+        rescue StandardError => e
           Rails.logger.error "Thumbnail upload failed: #{e.message}"
           Rails.logger.error e.backtrace.join("\n")
           render json: { error: "Failed to upload thumbnail: #{e.message}" }, status: :unprocessable_entity
@@ -246,9 +228,7 @@ module Admin
 
       # POST /v1/maps/upload_image
       def upload_image
-        unless params[:file].present?
-          return render json: { error: 'No file provided' }, status: :unprocessable_entity
-        end
+        return render json: { error: 'No file provided' }, status: :unprocessable_entity if params[:file].blank?
 
         file = params[:file]
 
@@ -257,13 +237,13 @@ module Admin
           s3_key = "images/#{SecureRandom.uuid}_#{file.original_filename}"
           s3_client = Aws::S3::Client.new(
             region: ENV['AWS_REGION'] || 'us-east-1',
-            access_key_id: ENV['AWS_ACCESS_KEY_ID'],
-            secret_access_key: ENV['AWS_SECRET_ACCESS_KEY']
+            access_key_id: ENV.fetch('AWS_ACCESS_KEY_ID', nil),
+            secret_access_key: ENV.fetch('AWS_SECRET_ACCESS_KEY', nil)
           )
 
           # Upload without ACL (ACLs disabled on modern S3 buckets)
           s3_client.put_object(
-            bucket: ENV['AWS_S3_BUCKET'],
+            bucket: ENV.fetch('AWS_S3_BUCKET', nil),
             key: s3_key,
             body: file.read,
             content_type: file.content_type
@@ -275,10 +255,10 @@ module Admin
           # 2. Select the bucket 'dorman-lakely-maps'
           # 3. Permissions → Block Public Access → Edit → Uncheck "Block all public access" for images
           # 4. Add a bucket policy to allow public read for images/* path
-          url = "https://#{ENV['AWS_S3_BUCKET']}.s3.#{ENV['AWS_REGION']}.amazonaws.com/#{s3_key}"
+          url = "https://#{ENV.fetch('AWS_S3_BUCKET', nil)}.s3.#{ENV.fetch('AWS_REGION', nil)}.amazonaws.com/#{s3_key}"
 
           render json: { url: url }, status: :created
-        rescue => e
+        rescue StandardError => e
           Rails.logger.error "Image upload failed: #{e.message}"
           Rails.logger.error e.backtrace.join("\n")
           render json: { error: "Failed to upload image: #{e.message}" }, status: :unprocessable_entity
@@ -304,22 +284,21 @@ module Admin
         basename = File.basename(filename, extension).downcase
 
         # Determine type by filename patterns and extensions
-        case
-        when filename.include?('scene') && extension == '.json'
+        if filename.include?('scene') && extension == '.json'
           'scene'
-        when filename.include?('thumbnail') || filename.include?('preview')
+        elsif filename.include?('thumbnail') || filename.include?('preview')
           'thumbnail'
-        when basename.include?('background') || basename.include?('map')
+        elsif basename.include?('background') || basename.include?('map')
           'background'
-        when basename.include?('tile')
+        elsif basename.include?('tile')
           'tile'
-        when basename.include?('token')
+        elsif basename.include?('token')
           'token'
-        when extension.in?(['.mp3', '.ogg', '.wav', '.m4a', '.flac', '.webm', '.mp4'])
+        elsif extension.in?(['.mp3', '.ogg', '.wav', '.m4a', '.flac', '.webm', '.mp4'])
           'audio'
-        when extension.in?(['.jpg', '.jpeg', '.png', '.webp', '.gif', '.svg'])
+        elsif extension.in?(['.jpg', '.jpeg', '.png', '.webp', '.gif', '.svg'])
           'background' # Default images to background
-        when extension == '.json'
+        elsif extension == '.json'
           'scene'
         else
           'other'
@@ -344,7 +323,7 @@ module Admin
       end
 
       def update_tags(map, tag_names)
-        tag_names = tag_names.is_a?(String) ? tag_names.split(',').map(&:strip) : tag_names
+        tag_names = tag_names.split(',').map(&:strip) if tag_names.is_a?(String)
         tags = tag_names.map do |tag_name|
           FoundryMapTag.find_or_create_by(name: tag_name)
         end
@@ -370,9 +349,7 @@ module Admin
 
           # Find scene.json
           scene_json_path = temp_dir.join('scene.json')
-          unless scene_json_path.exist?
-            raise "Package must contain scene.json at root level"
-          end
+          raise 'Package must contain scene.json at root level' unless scene_json_path.exist?
 
           # Parse scene data
           scene_data = JSON.parse(File.read(scene_json_path))
@@ -403,7 +380,7 @@ module Admin
           Rails.logger.info "Successfully processed package for map #{map.id}: #{map.name}"
         ensure
           # Cleanup temp directory
-          FileUtils.rm_rf(temp_dir) if temp_dir && temp_dir.exist?
+          FileUtils.rm_rf(temp_dir) if temp_dir&.exist?
         end
       end
 
@@ -415,28 +392,27 @@ module Admin
           case obj
           when Hash
             obj.each do |key, value|
-              if ['src', 'path', 'sound', 'img', 'icon'].include?(key) && value.is_a?(String)
+              if %w[src path sound img icon].include?(key) && value.is_a?(String)
                 # Extract filename from original path
                 filename = File.basename(value)
 
                 # Determine subfolder based on context or path
-                folder = case
-                when value.include?('/tiles/')
-                  'tiles'
-                when value.include?('/tokens/')
-                  'tokens'
-                when value.match?(/\.(mp3|ogg|wav|webm)$/i)
-                  'audio'
-                else
-                  ''
-                end
+                folder = if value.include?('/tiles/')
+                           'tiles'
+                         elsif value.include?('/tokens/')
+                           'tokens'
+                         elsif value.match?(/\.(mp3|ogg|wav|webm)$/i)
+                           'audio'
+                         else
+                           ''
+                         end
 
                 # Build new path
                 obj[key] = if folder.empty?
-                  "#{base_path}/#{filename}"
-                else
-                  "#{base_path}/#{folder}/#{filename}"
-                end
+                             "#{base_path}/#{filename}"
+                           else
+                             "#{base_path}/#{folder}/#{filename}"
+                           end
               elsif value.is_a?(Hash) || value.is_a?(Array)
                 update_paths_recursive(value, base_path)
               end
@@ -457,14 +433,14 @@ module Admin
         # Get S3 client
         s3_client = Aws::S3::Client.new(
           region: ENV['AWS_REGION'] || 'us-east-1',
-          access_key_id: ENV['AWS_ACCESS_KEY_ID'],
-          secret_access_key: ENV['AWS_SECRET_ACCESS_KEY']
+          access_key_id: ENV.fetch('AWS_ACCESS_KEY_ID', nil),
+          secret_access_key: ENV.fetch('AWS_SECRET_ACCESS_KEY', nil)
         )
 
         # Upload to S3
         File.open(file_path, 'rb') do |file|
           s3_client.put_object(
-            bucket: ENV['AWS_S3_BUCKET'],
+            bucket: ENV.fetch('AWS_S3_BUCKET', nil),
             key: s3_key,
             body: file,
             content_type: Marcel::MimeType.for(file_path)
@@ -473,10 +449,10 @@ module Admin
 
         # Build Foundry path
         foundry_path = if relative_path == 'scene.json'
-          "modules/dorman-lakely-cartography/assets/scenes/#{map_slug}/scene.json"
-        else
-          "modules/dorman-lakely-cartography/assets/scenes/#{map_slug}/#{relative_path}"
-        end
+                         "modules/dorman-lakely-cartography/assets/scenes/#{map_slug}/scene.json"
+                       else
+                         "modules/dorman-lakely-cartography/assets/scenes/#{map_slug}/#{relative_path}"
+                       end
 
         # Create database record
         map.foundry_map_files.create!(

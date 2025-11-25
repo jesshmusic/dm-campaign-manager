@@ -39,38 +39,38 @@ class DndRules
       ]
     end
 
-    def calculate_hp_and_hd (size, challenge_rating, constitution_bonus = 0, hit_points = nil)
+    def calculate_hp_and_hd(size, challenge_rating, constitution_bonus = 0, hit_points = nil)
       size = size.downcase
       hp_min = challenge_ratings[challenge_rating.to_sym][:hit_points_min]
       hp_max = challenge_ratings[challenge_rating.to_sym][:hit_points_max]
 
-      if hit_points.nil?
-        hp = rand(hp_min..hp_max)
-      else
-        hp = hit_points
-      end
+      hp = if hit_points.nil?
+             rand(hp_min..hp_max)
+           else
+             hit_points
+           end
       { hit_points: hp, num_hit_die: hp / (hit_point_average_for_size[size.to_sym] + constitution_bonus) }
     end
 
     def hit_die_for_size
       {
-        'tiny': 4,
-        'small': 6,
-        'medium': 8,
-        'large': 10,
-        'huge': 12,
-        'gargantuan': 20
+        tiny: 4,
+        small: 6,
+        medium: 8,
+        large: 10,
+        huge: 12,
+        gargantuan: 20
       }
     end
 
     def hit_point_average_for_size
       {
-        'tiny': 2.5,
-        'small': 3.5,
-        'medium': 4.5,
-        'large': 5.5,
-        'huge': 6.5,
-        'gargantuan': 10.5
+        tiny: 2.5,
+        small: 3.5,
+        medium: 4.5,
+        large: 5.5,
+        huge: 6.5,
+        gargantuan: 10.5
       }
     end
 
@@ -191,21 +191,21 @@ class DndRules
 
     def race_values
       {
-        'dragonborn': 'Dragonborn',
-        'dwarf': 'Dwarf',
-        'dwarf_hill': 'Dwarf (hill)',
-        'dwarf_mountain': 'Dwarf (mountain)',
-        'elf': 'Elf',
-        'elf_high': 'Elf (high)',
-        'elf_wood': 'Elf (wood)',
-        'gnome': 'Gnome',
-        'half_elf': 'Half-elf',
-        'half_orc': 'Half-orc',
-        'halfling': 'Halfling',
-        'halfling_lightfoot': 'Halfling (lightfoot)',
-        'halfling_stout': 'Halfling (stout)',
-        'human': 'Human',
-        'tiefling': 'Tiefling'
+        dragonborn: 'Dragonborn',
+        dwarf: 'Dwarf',
+        dwarf_hill: 'Dwarf (hill)',
+        dwarf_mountain: 'Dwarf (mountain)',
+        elf: 'Elf',
+        elf_high: 'Elf (high)',
+        elf_wood: 'Elf (wood)',
+        gnome: 'Gnome',
+        half_elf: 'Half-elf',
+        half_orc: 'Half-orc',
+        halfling: 'Halfling',
+        halfling_lightfoot: 'Halfling (lightfoot)',
+        halfling_stout: 'Halfling (stout)',
+        human: 'Human',
+        tiefling: 'Tiefling'
       }
     end
 
@@ -227,11 +227,11 @@ class DndRules
 
     def senses
       {
-        'blindsight': 'Blind Sight',
-        'darkvision': 'Dark Vision',
-        'passive_perception': 'Passive Perception',
-        'tremorsense': 'Tremor Sense',
-        'truesight': 'Blind Sight'
+        blindsight: 'Blind Sight',
+        darkvision: 'Dark Vision',
+        passive_perception: 'Passive Perception',
+        tremorsense: 'Tremor Sense',
+        truesight: 'Blind Sight'
       }
     end
 
@@ -312,7 +312,7 @@ class DndRules
         ability: skill,
         new_exclude: prof
       }
-      puts "Skill: #{skill_result}"
+      Rails.logger.debug { "Skill: #{skill_result}" }
       skill_result
     end
 
