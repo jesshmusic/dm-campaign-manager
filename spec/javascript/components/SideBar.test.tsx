@@ -23,6 +23,9 @@ jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/api/api'
 jest.mock('@auth0/auth0-react');
 const mockUseAuth0 = useAuth0 as jest.MockedFunction<typeof useAuth0>;
 
+// Note: react-icons are mocked globally via moduleNameMapper in jest.config.js
+// See spec/javascript/__mocks__/reactIconsMock.js
+
 // Mock react-pro-sidebar components
 jest.mock('react-pro-sidebar', () => ({
   ProSidebar: ({ children, collapsed, image }: any) => (

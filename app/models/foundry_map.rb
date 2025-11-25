@@ -58,15 +58,15 @@ class FoundryMap < ApplicationRecord
     return nil if thumbnail_s3_key.blank?
 
     s3_client = Aws::S3::Client.new(
-      region: ENV['AWS_REGION'] || 'us-east-1',
-      access_key_id: ENV.fetch('AWS_ACCESS_KEY_ID', nil),
-      secret_access_key: ENV.fetch('AWS_SECRET_ACCESS_KEY', nil)
+      region: ENV.fetch('AWS_REGION', 'us-east-1'),
+      access_key_id: ENV.fetch('AWS_ACCESS_KEY_ID'),
+      secret_access_key: ENV.fetch('AWS_SECRET_ACCESS_KEY')
     )
 
     signer = Aws::S3::Presigner.new(client: s3_client)
     signer.presigned_url(
       :get_object,
-      bucket: ENV.fetch('AWS_S3_BUCKET', nil),
+      bucket: ENV.fetch('AWS_S3_BUCKET'),
       key: thumbnail_s3_key,
       expires_in: expires_in
     )

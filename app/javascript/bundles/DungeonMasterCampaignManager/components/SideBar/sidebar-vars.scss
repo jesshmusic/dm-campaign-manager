@@ -27,10 +27,12 @@
 .pro-item-content {
   font-family: $font-family-mr-eaves;
 
+  a,
   button {
     background: 0;
     border: 0;
     color: lighten($primary, 30%);
+    text-decoration: none;
     transition: color ease-in-out 0.25s;
 
     &:hover {

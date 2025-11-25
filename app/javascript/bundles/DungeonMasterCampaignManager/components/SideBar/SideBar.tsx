@@ -31,6 +31,10 @@ import {
   GiSwordArray,
   GiToolbox,
 } from 'react-icons/all';
+import PatreonIcon from '../icons/PatreonIcon';
+
+const PATREON_URL =
+  'https://patreon.com/DormanLakely?utm_medium=unknown&utm_source=join_link&utm_campaign=creatorshare_creator&utm_content=copyLink';
 
 const ruleBooks = [
   <GiRuleBook key="rule-book" />,
@@ -186,6 +190,11 @@ const SideBar = (props: {
             {currentUser && currentUser.role === 'admin' ? (
               <SidebarLink to="/app/admin-dashboard" title="Admin" icon={<GiKing />} />
             ) : null}
+            <MenuItem icon={<PatreonIcon />}>
+              <a href={PATREON_URL} target="_blank" rel="noopener noreferrer">
+                Support on Patreon
+              </a>
+            </MenuItem>
             {isAuthenticated && user ? (
               <>
                 <SidebarLink

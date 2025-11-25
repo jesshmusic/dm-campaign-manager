@@ -137,6 +137,25 @@ describe('Footer Component', () => {
       expect(spellsLink).toHaveAttribute('href', '/app/spells');
     });
 
+    it('should render Patreon banner link', () => {
+      render(
+        <MemoryRouter>
+          <Footer />
+        </MemoryRouter>
+      );
+
+      const patreonText = screen.getByText('Become a Patron');
+      expect(patreonText).toBeInTheDocument();
+
+      const patreonLink = patreonText.closest('a');
+      expect(patreonLink).toHaveAttribute('href', expect.stringContaining('patreon.com'));
+      expect(patreonLink).toHaveAttribute('target', '_blank');
+      expect(patreonLink).toHaveAttribute('rel', 'noopener noreferrer');
+
+      const patreonImage = screen.getByAltText('Become a Patron');
+      expect(patreonImage).toBeInTheDocument();
+    });
+
     it('should render all navigation links', () => {
       const { container } = render(
         <MemoryRouter>
@@ -145,7 +164,8 @@ describe('Footer Component', () => {
       );
 
       const links = container.querySelectorAll('a');
-      expect(links.length).toBeGreaterThanOrEqual(6);
+      // 6 nav links + 1 Patreon banner link = 7 total
+      expect(links.length).toBeGreaterThanOrEqual(7);
     });
   });
 
@@ -186,6 +206,18 @@ describe('Footer Component', () => {
 
       expect(screen.getByText('Dungeon Master GURU')).toBeInTheDocument();
       expect(screen.getByTestId('dnd-logo')).toBeInTheDocument();
+    });
+
+    it('should have center section with Patreon banner', () => {
+      render(
+        <MemoryRouter>
+          <Footer />
+        </MemoryRouter>
+      );
+
+      const patreonImage = screen.getByAltText('Become a Patron');
+      expect(patreonImage).toBeInTheDocument();
+      expect(screen.getByText('Become a Patron')).toBeInTheDocument();
     });
 
     it('should have right section with navigation', () => {

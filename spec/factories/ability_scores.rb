@@ -21,6 +21,10 @@ FactoryBot.define do
     desc { "A long winded description" }
     sequence(:slug) { |n| "ability-score-#{n}" }
 
+    # The specific ability score factories below use find_or_initialize_by intentionally.
+    # Ability scores are reference data with fixed slugs (str, dex, con, etc.) that may
+    # be seeded in the test database. This pattern prevents duplicate key errors while
+    # ensuring tests can reliably access these canonical records.
     factory :str_ability_score do
       name { "STR" }
       full_name { "Strength" }
