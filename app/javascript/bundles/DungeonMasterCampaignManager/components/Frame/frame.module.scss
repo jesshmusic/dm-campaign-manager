@@ -1,4 +1,4 @@
-@import '../../stylesheets/variables';
+@import "../../stylesheets/variables";
 
 .frame {
   background-clip: border-box;
@@ -9,7 +9,7 @@
   box-shadow: $box-shadow;
   display: flex;
   flex-direction: column;
-  font-family: 'Scaly Sans', sans-serif;
+  font-family: "Scaly Sans", sans-serif;
   margin-bottom: $spacer;
   min-width: 0;
   padding-top: 1rem;

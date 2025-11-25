@@ -1,4 +1,4 @@
-@import '../stylesheets/variables';
+@import "../stylesheets/variables";
 
 .page {
   margin: 0 0 0 5rem;
@@ -13,10 +13,10 @@
   }
 
   &::after {
-    background-image: url('/images/dndBottomDeco.png');
+    background-image: url("/images/dndBottomDeco.png");
     background-size: cover;
     bottom: 0;
-    content: '';
+    content: "";
     height: 100px;
     left: 0;
     position: absolute;
