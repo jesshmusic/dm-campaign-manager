@@ -1,9 +1,6 @@
 class RulesUtil
   class << self
-
-    def dnd_api_url
-      ImportSrdUtilities.dnd_api_url
-    end
+    delegate :dnd_api_url, to: :ImportSrdUtilities
 
     def import
       rules_uri = URI("#{dnd_api_url}/api/rules")
@@ -17,7 +14,8 @@ class RulesUtil
         rule = Rule.find_or_create_by(
           name: subcategories_result[:name],
           description: subcategories_result[:desc],
-          category: category[:name])
+          category: category[:name]
+        )
         sub_count = 0
         subcategories_result[:subsections].each do |subcategory|
           rules_uri = URI("#{dnd_api_url}#{subcategory[:url]}")
@@ -27,17 +25,17 @@ class RulesUtil
             name: rules_result[:name],
             description: rules_result[:desc],
             category: category[:name],
-            subcategory: subcategory[:name])
+            subcategory: subcategory[:name]
+          )
           sub_rule.parent = rule
           sub_rule.save!
           sub_count += 1
         end
         rule.save!
-        puts "\tRule #{rule.name} imported, #{sub_count} subsections imported."
+        Rails.logger.debug { "\tRule #{rule.name} imported, #{sub_count} subsections imported." }
         count += 1
       end
-      puts "#{count} Rules imported."
+      Rails.logger.debug { "#{count} Rules imported." }
     end
   end
 end
-

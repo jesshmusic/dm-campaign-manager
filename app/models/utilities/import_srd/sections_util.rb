@@ -1,9 +1,6 @@
 class SectionsUtil
   class << self
-
-    def dnd_open5e_url
-      ImportSrdUtilities.dnd_open5e_url
-    end
+    delegate :dnd_open5e_url, to: :ImportSrdUtilities
 
     def import
       sections_uri = URI("#{dnd_open5e_url}sections.json")

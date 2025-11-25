@@ -13,7 +13,7 @@ const search = createReducer(
   },
   (builder) =>
     builder
-      .addCase(getSearchResults, (state, action: AnyAction) => {
+      .addCase(getSearchResults, (_state, _action: AnyAction) => {
         return {
           results: [],
           count: 0,

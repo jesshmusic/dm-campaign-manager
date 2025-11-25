@@ -1,10 +1,8 @@
 import { DndClassLevel } from '../../utilities/types';
 import Util from '../../utilities/utilities';
 
-export const buildLevelColumns = (
-  levels: DndClassLevel[]
-): { Header: string; accessor: string }[] => {
-  let columns = [
+export const buildLevelColumns = (levels: DndClassLevel[]) => {
+  const columns: Array<{ Header: string; accessor: string }> = [
     { Header: 'Level', accessor: 'level' },
     { Header: 'Proficiency Bonus', accessor: 'profBonus' },
     { Header: 'Features', accessor: 'featureString' },
@@ -98,8 +96,7 @@ export const buildData = (levels: DndClassLevel[]) => {
     const data = {
       level: level.level,
       profBonus: level.profBonus,
-      featureString:
-        level.features.map((feature) => feature.name).join(', ') || '-',
+      featureString: level.features.map((feature) => feature.name).join(', ') || '-',
       spellcasting: {
         ...level.spellcasting,
       },
@@ -109,9 +106,7 @@ export const buildData = (levels: DndClassLevel[]) => {
         return;
       } else {
         const value =
-          classSpecific.value === '0' || classSpecific.value === 'f'
-            ? '-'
-            : classSpecific.value;
+          classSpecific.value === '0' || classSpecific.value === 'f' ? '-' : classSpecific.value;
         data[Util.camelize(classSpecific.name)] = value === 't' ? '√' : value;
       }
     });

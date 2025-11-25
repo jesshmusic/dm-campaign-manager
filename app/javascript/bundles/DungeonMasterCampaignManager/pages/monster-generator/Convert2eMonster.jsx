@@ -6,10 +6,10 @@ import React from 'react';
 import Frame from '../../components/Frame/Frame';
 import { useForm } from 'react-hook-form';
 
-const Convert2eMonster = (props) => {
-  const { register, handleSubmit } = useForm();
+const Convert2eMonster = (_props) => {
+  const { register: _register, handleSubmit: _handleSubmit } = useForm();
 
-  const [state, setState] = React.useState({
+  const [state, _setState] = React.useState({
     monster: {
       name: '',
       alignment: 'Neutral',
@@ -83,7 +83,7 @@ const Convert2eMonster = (props) => {
   //   }
   //   return errors;
   // };
-  const { monster, validated } = state;
+  const { monster: _monster, validated: _validated } = state;
   return (
     <Frame
       title="D&D 2nd Edition Monster Convertor"

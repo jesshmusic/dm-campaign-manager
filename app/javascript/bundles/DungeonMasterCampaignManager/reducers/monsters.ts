@@ -38,7 +38,7 @@ const monsters = createReducer(
           loading: false,
         };
       })
-      .addCase(generateMonsterFail, (state, action: AnyAction) => {
+      .addCase(generateMonsterFail, (state, _action: AnyAction) => {
         return {
           monsters: state.monsters,
           monsterTypes: state.monsterTypes,
@@ -47,7 +47,7 @@ const monsters = createReducer(
           loading: false,
         };
       })
-      .addCase(generateQuickMonster, (state, action: AnyAction) => {
+      .addCase(generateQuickMonster, (state, _action: AnyAction) => {
         return {
           monsters: state.monsters,
           monsterTypes: state.monsterTypes,
@@ -65,7 +65,7 @@ const monsters = createReducer(
           loading: false,
         };
       })
-      .addCase(generateQuickMonsterFail, (state, action: AnyAction) => {
+      .addCase(generateQuickMonsterFail, (state, _action: AnyAction) => {
         return {
           monsters: state.monsters,
           monsterTypes: state.monsterTypes,
@@ -83,7 +83,7 @@ const monsters = createReducer(
           loading: false,
         };
       })
-      .addCase(generateCommonerFail, (state, action: AnyAction) => {
+      .addCase(generateCommonerFail, (state, _action: AnyAction) => {
         return {
           monsters: state.monsters,
           monsterTypes: state.monsterTypes,
@@ -92,7 +92,7 @@ const monsters = createReducer(
           loading: false,
         };
       })
-      .addCase(getMonsters, (state, action: AnyAction) => {
+      .addCase(getMonsters, (state, _action: AnyAction) => {
         return {
           monsters: [],
           monsterTypes: state.monsterTypes,
@@ -110,7 +110,7 @@ const monsters = createReducer(
           loading: false,
         };
       })
-      .addCase(getMonstersFail, (state, action: AnyAction) => {
+      .addCase(getMonstersFail, (state, _action: AnyAction) => {
         return {
           monsters: state.monsters,
           monsterTypes: state.monsterTypes,
@@ -119,7 +119,7 @@ const monsters = createReducer(
           loading: false,
         };
       })
-      .addCase(getMonster, (state, action: AnyAction) => {
+      .addCase(getMonster, (state, _action: AnyAction) => {
         return {
           monsters: state.monsters,
           monsterTypes: state.monsterTypes,
@@ -137,7 +137,7 @@ const monsters = createReducer(
           loading: false,
         };
       })
-      .addCase(getMonsterFail, (state, action: AnyAction) => {
+      .addCase(getMonsterFail, (state, _action: AnyAction) => {
         return {
           monsters: state.monsters,
           monsterTypes: state.monsterTypes,
@@ -146,7 +146,7 @@ const monsters = createReducer(
           loading: false,
         };
       })
-      .addCase(getMonsterCategories, (state, action: AnyAction) => {
+      .addCase(getMonsterCategories, (state, _action: AnyAction) => {
         return {
           monsters: state.monsters,
           monsterTypes: [],
@@ -164,7 +164,7 @@ const monsters = createReducer(
           loading: false,
         };
       })
-      .addCase(getMonsterCategoriesFail, (state, action: AnyAction) => {
+      .addCase(getMonsterCategoriesFail, (state, _action: AnyAction) => {
         return {
           monsters: state.monsters,
           monsterTypes: state.monsterTypes,

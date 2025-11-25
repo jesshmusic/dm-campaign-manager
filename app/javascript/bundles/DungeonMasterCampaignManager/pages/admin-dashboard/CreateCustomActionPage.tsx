@@ -11,10 +11,10 @@ import { useCustomActionState } from './use-custom-action-state';
 import rest from '../../api/api';
 import { connect } from 'react-redux';
 
-const styles = require('./admin-dashboard.module.scss');
+import styles from './admin-dashboard.module.scss';
 
 const CreateCustomActionPage = (props: {
-  createCustomAction: (action: any) => void;
+  createCustomAction: (action: unknown) => void;
   flashMessages: FlashMessage[];
   addFlashMessage: (flashMessage: FlashMessage) => void;
   user: UserProps;
@@ -30,7 +30,7 @@ const CreateCustomActionPage = (props: {
       if (name) {
         updateActionForm(name, value);
       }
-      // @ts-ignore
+      // @ts-expect-error - Type mismatch between form value and test state
       setTestState(value);
     });
     return () => subscription.unsubscribe();

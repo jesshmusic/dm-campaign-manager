@@ -3,7 +3,7 @@ import React, { ReactElement } from 'react';
 import { ItemType } from '../pages/items/use-data';
 import { User } from '@auth0/auth0-react';
 import { FlashMessageType } from '../reducers/flashMessages';
-import { UseFormReturn } from 'react-hook-form';
+import { FieldValues, UseFormReturn } from 'react-hook-form';
 import { IconType } from 'react-icons';
 
 export interface AbilityScore {
@@ -18,12 +18,12 @@ export interface ActionFormComponentProps {
   fields: any;
   handleRemove: (index: number) => void;
   singularTitle: string;
-  useForm: UseFormReturn<any, object>;
+  useForm: UseFormReturn<FieldValues>;
 }
 
 export interface FieldArrayFormProps {
   fieldName: string;
-  useForm: UseFormReturn<any, object>;
+  useForm: UseFormReturn<FieldValues>;
 }
 
 export enum ActionTypes {

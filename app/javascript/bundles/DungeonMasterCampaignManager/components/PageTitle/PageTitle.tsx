@@ -6,7 +6,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 
-const styles = require('./page-title.module.scss');
+import styles from './page-title.module.scss';
 
 type PageTitleProps = {
   isDraconis?: boolean;
@@ -19,15 +19,7 @@ type PageTitleProps = {
 };
 
 const PageTitle = (props: PageTitleProps) => {
-  const {
-    isDraconis,
-    hasButton,
-    buttonLink,
-    buttonTitle,
-    buttonVariant,
-    subtitle,
-    title,
-  } = props;
+  const { isDraconis, hasButton, buttonLink, buttonTitle, buttonVariant, subtitle, title } = props;
   return (
     <div className={styles.pageTitle}>
       <h1

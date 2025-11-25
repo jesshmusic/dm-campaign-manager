@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class DashboardPolicy < Struct.new(:user, :dashboard)
+DashboardPolicy = Struct.new(:user, :dashboard) do
   def initialize(user, record)
     raise Pundit::NotAuthorizedError, 'must be logged in' unless user
 

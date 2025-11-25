@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   MonsterActionField,
   MonsterGeneratorFormFields,
@@ -49,67 +48,67 @@ export const generateAttackDesc = async (
   return result.data.desc;
 };
 
-export const useData = (props: GenerateMonsterProps) => {
-  const [monsterForm, setMonsterForm] = React.useState<FieldValues>({
-    name: 'New Monster',
-    alignment: 'Neutral',
-    alignmentOption: {
-      value: 'Neutral',
-      label: 'Neutral',
-    },
-    armorClass: 10,
-    attackBonus: 2,
-    damageBonus: 0,
-    challengeRating: '0',
-    hitDice: '1d6',
-    hitDiceNumber: 1,
-    hitDiceValue: 'd8',
-    hitPoints: 4,
-    languages: [],
-    monsterType: 'humanoid',
-    monsterTypeOption: {
-      value: 'humanoid',
-      label: 'Humanoid',
-    },
-    profBonus: 2,
-    saveDC: 12,
-    size: {
-      label: 'Medium',
-      value: 'medium',
-    },
-    xp: 10,
-    strength: 10,
-    dexterity: 10,
-    constitution: 10,
-    intelligence: 10,
-    wisdom: 10,
-    charisma: 10,
-    strengthMod: 0,
-    dexterityMod: 0,
-    constitutionMod: 0,
-    intelligenceMod: 0,
-    wisdomMod: 0,
-    charismaMod: 0,
-    conditionImmunities: [],
-    damageImmunities: [],
-    damageResistances: [],
-    damageVulnerabilities: [],
-    conditionImmunitiesOptions: [],
-    damageImmunitiesOptions: [],
-    damageResistancesOptions: [],
-    damageVulnerabilitiesOptions: [],
-    actions: [],
-    legendaryActions: [],
-    reactions: [],
-    savingThrowOptions: [],
-    senses: [],
-    skillOptions: [],
-    specialAbilities: [],
-    speeds: [],
-  });
+const defaultMonsterFormValues: FieldValues = {
+  name: 'New Monster',
+  alignment: 'Neutral',
+  alignmentOption: {
+    value: 'Neutral',
+    label: 'Neutral',
+  },
+  armorClass: 10,
+  attackBonus: 2,
+  damageBonus: 0,
+  challengeRating: '0',
+  hitDice: '1d6',
+  hitDiceNumber: 1,
+  hitDiceValue: 'd8',
+  hitPoints: 4,
+  languages: [],
+  monsterType: 'humanoid',
+  monsterTypeOption: {
+    value: 'humanoid',
+    label: 'Humanoid',
+  },
+  profBonus: 2,
+  saveDC: 12,
+  size: {
+    label: 'Medium',
+    value: 'medium',
+  },
+  xp: 10,
+  strength: 10,
+  dexterity: 10,
+  constitution: 10,
+  intelligence: 10,
+  wisdom: 10,
+  charisma: 10,
+  strengthMod: 0,
+  dexterityMod: 0,
+  constitutionMod: 0,
+  intelligenceMod: 0,
+  wisdomMod: 0,
+  charismaMod: 0,
+  conditionImmunities: [],
+  damageImmunities: [],
+  damageResistances: [],
+  damageVulnerabilities: [],
+  conditionImmunitiesOptions: [],
+  damageImmunitiesOptions: [],
+  damageResistancesOptions: [],
+  damageVulnerabilitiesOptions: [],
+  actions: [],
+  legendaryActions: [],
+  reactions: [],
+  savingThrowOptions: [],
+  senses: [],
+  skillOptions: [],
+  specialAbilities: [],
+  speeds: [],
+};
 
+export const useData = (props: GenerateMonsterProps) => {
   const UseForm = useForm<FieldValues>({
-    defaultValues: monsterForm,
+    defaultValues: defaultMonsterFormValues,
     mode: 'onChange',
   });
 
@@ -191,7 +190,7 @@ export const useData = (props: GenerateMonsterProps) => {
         setActionDesc(fields, attackBonus, profBonus);
         handleCalculateCR();
         break;
-      case 'strength':
+      case 'strength': {
         const strMod = abilityScoreModifier(fields.strength);
         UseForm.setValue('damageBonus', strMod, {
           shouldDirty: true,
@@ -199,6 +198,7 @@ export const useData = (props: GenerateMonsterProps) => {
         });
         UseForm.setValue('strengthMod', strMod);
         break;
+      }
       case 'dexterity':
         UseForm.setValue('dexterityMod', abilityScoreModifier(fields.dexterity));
         setActionDesc(fields, attackBonus, profBonus);
@@ -229,7 +229,7 @@ export const useData = (props: GenerateMonsterProps) => {
           shouldTouch: true,
         });
         break;
-      case 'size':
+      case 'size': {
         const hitDice = hitDieForSize(fields.size.value);
         UseForm.setValue('hitDiceValue', hitDice, {
           shouldDirty: true,
@@ -243,6 +243,7 @@ export const useData = (props: GenerateMonsterProps) => {
         setActionDesc(fields, attackBonus, profBonus);
         handleCalculateCR();
         break;
+      }
       case 'hitDiceNumber':
         UseForm.setValue(
           'hitPoints',

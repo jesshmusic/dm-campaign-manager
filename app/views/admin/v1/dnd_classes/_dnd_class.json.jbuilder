@@ -53,17 +53,19 @@ unless dnd_class.spell_casting.nil?
   end
 end
 
-json.multi_classing do
-  json.prerequisites dnd_class.multi_classing.multi_class_prereqs do |prereq|
-    json.extract! prereq, :ability_score, :minimum_score
-  end
-  json.proficiencies dnd_class.multi_classing.profs do |prof|
-    json.extract! prof, :name, :prof_type
-  end
-  json.proficiency_choices dnd_class.multi_classing.prof_choices do |prof_choice|
-    json.extract! prof_choice, :name, :num_choices, :prof_choice_type
-    json.proficiencies prof_choice.profs do |prof|
+unless dnd_class.multi_classing.nil?
+  json.multi_classing do
+    json.prerequisites dnd_class.multi_classing.multi_class_prereqs do |prereq|
+      json.extract! prereq, :ability_score, :minimum_score
+    end
+    json.proficiencies dnd_class.multi_classing.profs do |prof|
       json.extract! prof, :name, :prof_type
+    end
+    json.proficiency_choices dnd_class.multi_classing.prof_choices do |prof_choice|
+      json.extract! prof_choice, :name, :num_choices, :prof_choice_type
+      json.proficiencies prof_choice.profs do |prof|
+        json.extract! prof, :name, :prof_type
+      end
     end
   end
 end

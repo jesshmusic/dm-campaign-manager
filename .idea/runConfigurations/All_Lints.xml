@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="All Lints" type="CompoundRunConfigurationType">
+    <toRun name="RuboCop" type="ShConfigurationType" />
+    <toRun name="ESLint" type="js.build_tools.npm" />
+    <toRun name="Prettier Check" type="js.build_tools.npm" />
+    <toRun name="Stylelint" type="js.build_tools.npm" />
+    <method v="2" />
+  </configuration>
+</component>

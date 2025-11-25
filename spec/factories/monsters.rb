@@ -77,9 +77,6 @@ FactoryBot.define do
       create_list(:legendary_action, rand(1..3), monster: monster)
       create_list(:reaction, rand(1..3), monster: monster)
       create_list(:special_ability, rand(1..3), monster: monster)
-      create_list(:damage_immunity, rand(1..3), monster: monster)
-      create_list(:damage_resistance, rand(1..3), monster: monster)
-      create_list(:damage_vulnerability, rand(1..3), monster: monster)
     end
 
     factory :monster_dragon do

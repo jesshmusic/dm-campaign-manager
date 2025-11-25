@@ -18,7 +18,6 @@ const TavernNameField = (props: { hideFrame?: boolean }) => {
     const apiURL = '/v1/random_tavern_name.json';
     try {
       const response = await axios.get<RandomNameResult>(apiURL);
-      console.log(response);
       setNameValue(response.data.name);
     } catch (error) {
       setNameValue(error);

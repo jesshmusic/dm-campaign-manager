@@ -12,7 +12,7 @@ export function getHeaders() {
 const processData = (data) => {
   try {
     return JSON.parse(data);
-  } catch (err) {
+  } catch (_err) {
     return data;
   }
 };
@@ -230,8 +230,8 @@ export default reduxApi({
     },
   },
   search: {
-    url: '/v1/search.json?search=:searchString'
-  }
+    url: '/v1/search.json?search=:searchString',
+  },
 })
   .use('options', (url, params, getState) => {
     const state = getState();

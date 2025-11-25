@@ -1,7 +1,7 @@
 module Admin
   module V1
     class FoundryMapTagsController < ApplicationController
-      before_action :set_tag, only: [:update, :destroy]
+      before_action :set_tag, only: %i[update destroy]
 
       # GET /v1/map-tags
       def index

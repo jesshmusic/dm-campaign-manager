@@ -7,7 +7,8 @@ class ArrayInput < SimpleForm::Inputs::StringInput
       @builder.text_field(nil, input_html_options.merge(value: array_el, name: "#{object_name}[#{attribute_name}][]", class: 'form-control'))
     end
 
-    existing_values.push @builder.text_field(nil, input_html_options.merge(value: nil, name: "#{object_name}[#{attribute_name}][]", class: 'form-control'))
+    existing_values.push @builder.text_field(nil,
+                                             input_html_options.merge(value: nil, name: "#{object_name}[#{attribute_name}][]", class: 'form-control'))
     existing_values.join.html_safe
   end
 

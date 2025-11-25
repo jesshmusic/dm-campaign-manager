@@ -13,6 +13,8 @@
     "target": "es5",
     "jsx": "react",
     "allowSyntheticDefaultImports": true,
+    "isolatedModules": true,
+    "resolveJsonModule": true,
     "noImplicitAny": false,
     "noImplicitThis": true,
     "noImplicitReturns": true,
@@ -24,7 +26,10 @@
     ]
   },
   "include": [
-    "app/javascript"
+    "app/javascript/**/*"
+  ],
+  "files": [
+    "app/javascript/decs.d.ts"
   ],
   "exclude": [
     "**/*.spec.ts",

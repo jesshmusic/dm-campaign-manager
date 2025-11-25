@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class HomePolicy < Struct.new(:user, :home)
+HomePolicy = Struct.new(:user, :home) do
   def index?
     true
   end

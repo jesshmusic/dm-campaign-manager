@@ -6,7 +6,7 @@ import React from 'react';
 import Select, { MenuPlacement, Options } from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 import { SelectOption } from '../../utilities/types';
-import { Control, Controller } from 'react-hook-form';
+import { Control, Controller, FieldValues } from 'react-hook-form';
 import classNames from 'classnames';
 import './inputOverrides.scss';
 
@@ -15,21 +15,21 @@ export type SelectProps = {
   className?: string;
   defaultOptions?: boolean;
   defaultValue?: SelectOption;
-  getOptions?: (inputValue: string, callback: any) => void;
+  getOptions?: (inputValue: string, callback: unknown) => void;
   isClearable?: boolean;
   isCreatable?: boolean;
   isMulti?: boolean;
   label: string;
   menuPlacement?: MenuPlacement | undefined;
   name: string;
-  options?: SelectOption[] | Options<any>;
+  options?: SelectOption[] | Options<unknown>;
   placeholder?: string;
   required?: boolean;
-  control?: Control<any>;
-  value?: any;
+  control?: Control<FieldValues>;
+  value?: unknown;
 };
 
-const styles = require('./input.module.scss');
+import styles from './input.module.scss';
 
 const FormSelect = ({
   name,

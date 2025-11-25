@@ -1,12 +1,8 @@
 class SpellsUtil
   class << self
-    def dnd_api_url
-      ImportSrdUtilities.dnd_api_url
-    end
+    delegate :dnd_api_url, to: :ImportSrdUtilities
 
-    def dnd_open5e_url
-      ImportSrdUtilities.dnd_open5e_url
-    end
+    delegate :dnd_open5e_url, to: :ImportSrdUtilities
 
     def import
       uri = URI("#{dnd_api_url}/api/spells")
@@ -49,11 +45,11 @@ class SpellsUtil
             new_spell.dnd_classes << dnd_class if dnd_class
           end
           new_spell.save!
-          puts "\tSpell #{new_spell.name} imported"
+          Rails.logger.debug { "\tSpell #{new_spell.name} imported" }
         end
         count += 1
       end
-      puts "#{count} spells imported."
+      Rails.logger.debug { "#{count} spells imported." }
     end
   end
 end

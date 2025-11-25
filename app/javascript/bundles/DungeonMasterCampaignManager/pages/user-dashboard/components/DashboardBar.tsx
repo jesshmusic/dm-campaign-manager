@@ -5,7 +5,7 @@ import { Colors } from '../../../utilities/enums';
 import { GiChecklist } from 'react-icons/all';
 import ReactModal from 'react-modal';
 
-const styles = require('../user-dashboard.module.scss');
+import styles from '../user-dashboard.module.scss';
 
 const DashboardBar = ({ items, onRemoveItem, onAddItem, widgets }) => {
   const [showWidgetList, setShowWidgetList] = React.useState(false);

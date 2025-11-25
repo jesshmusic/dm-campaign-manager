@@ -11,16 +11,17 @@ import { connect } from 'react-redux';
 import QuickGenerateMonster from './components/quick-generate-monster/QuickGenerateMonster';
 import { GiDiceTwentyFacesTwenty } from 'react-icons/gi/';
 import ReactGA from 'react-ga4';
+import { MonsterProps } from '../../utilities/types';
 
 ReactGA.initialize('G-8XJTH70JSQ');
 
-const styles = require('./monster-generator.module.scss');
+import styles from './monster-generator.module.scss';
 
 const MonsterGenerator = (props: {
-  monster: any;
+  monster?: MonsterProps;
   generateCommoner: (gender?: string, race?: string, token?: string) => void;
-  generateMonster: (monster: any, token?: string) => void;
-  generateQuickMonster: (monster: any, token?: string) => void;
+  generateMonster: (monster: Record<string, unknown>, token?: string) => void;
+  generateQuickMonster: (monster: Record<string, unknown>, token?: string) => void;
   isLoading?: boolean;
   token?: string;
 }) => {
@@ -191,7 +192,7 @@ function mapDispatchToProps(dispatch) {
         )
       );
     },
-    generateMonster: (monster: any, token?: string) => {
+    generateMonster: (monster: unknown, token?: string) => {
       ReactGA.event('NPC Generator');
       dispatch(
         rest.actions.generateMonster(
@@ -202,7 +203,7 @@ function mapDispatchToProps(dispatch) {
         )
       );
     },
-    generateQuickMonster: (monster: any, token?: string) => {
+    generateQuickMonster: (monster: unknown, token?: string) => {
       ReactGA.event('NPC Generator');
       dispatch(
         rest.actions.generateQuickMonster(

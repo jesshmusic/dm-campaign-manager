@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 
-const styles = require('./dmlogo.module.scss');
+import styles from './dmlogo.module.scss';
 
 const DndLogo = (props: { className: string }) => {
   return (

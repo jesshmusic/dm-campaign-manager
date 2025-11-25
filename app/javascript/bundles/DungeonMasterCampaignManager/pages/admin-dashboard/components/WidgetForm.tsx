@@ -8,7 +8,7 @@ import { Colors } from '../../../utilities/enums';
 import * as Icons from 'react-icons/gi';
 import React from 'react';
 
-const styles = require('../create-widget-page.module.scss');
+import styles from '../create-widget-page.module.scss';
 
 const plugins = [
   'advlist',

@@ -7,7 +7,7 @@ import { FieldErrors, FieldValues, UseFormRegister } from 'react-hook-form';
 import classNames from 'classnames';
 import { GiFire } from 'react-icons/all';
 
-const styles = require('./input.module.scss');
+import styles from './input.module.scss';
 
 type FieldProps = {
   className?: string;

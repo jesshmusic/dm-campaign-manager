@@ -7,7 +7,7 @@ import { alignmentOptions, monsterSizeOptions } from '../../../../utilities/char
 import FormSelect from '../../../../components/forms/FormSelect';
 import { raceOptions } from '../../../../components/Widgets/NameOptions';
 
-const styles = require('../generator.module.scss');
+import styles from '../generator.module.scss';
 
 const QuickMonsterStatsSection = (props: {
   archetypeOptions: SelectOption[];

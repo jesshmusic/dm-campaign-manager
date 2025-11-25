@@ -4,17 +4,17 @@ import {
   MonsterActionField,
   MonsterGeneratorFormFields,
 } from '../../../../../../../utilities/types';
-import { useFieldArray, UseFormReturn } from 'react-hook-form';
+import { FieldValues, useFieldArray, UseFormReturn } from 'react-hook-form';
 import ActionsForm from './ActionsForm';
 import BasicActionsForm from './BasicActionsForm';
 
-const styles = require('../../../../generator.module.scss');
+import styles from '../../../../generator.module.scss';
 
 const BaseActionsFormSection = (props: {
   actionVariation: ActionVariations;
   fieldName: keyof MonsterGeneratorFormFields;
   singularTitle: string;
-  useForm: UseFormReturn<any, object>;
+  useForm: UseFormReturn<FieldValues>;
 }) => {
   const {
     actionVariation,

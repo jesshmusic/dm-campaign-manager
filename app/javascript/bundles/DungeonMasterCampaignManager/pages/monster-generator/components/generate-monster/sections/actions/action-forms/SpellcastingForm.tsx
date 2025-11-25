@@ -4,12 +4,12 @@ import {
   ControllerInput,
 } from '../../../../../../../components/forms/ControllerInput';
 import { Control, Controller, FieldErrors, FieldValues } from 'react-hook-form';
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 import { filterOptionsWithData } from '../../../../../../../utilities/character-utilities';
 import FormSelect from '../../../../../../../components/forms/FormSelect';
 import FormSelectAsync from '../../../../../../../components/forms/FormSelectAsync';
 
-const styles = require('./action-form.module.scss');
+import styles from './action-form.module.scss';
 
 export const abilityOptions = [
   { label: 'Charisma', value: 'charisma' },
@@ -39,14 +39,14 @@ const SpellcastingForm = (props: {
 }) => {
   const { fieldName, errors, control } = props;
 
-  const getSpells = (inputValue: string, callback: any) => {
+  const getSpells = (inputValue: string, callback: (options: unknown[]) => void) => {
     axios
-      .get(`/v1/spells.json?list=true&search=${inputValue}}`)
-      .then((response: AxiosResponse<any>) => {
+      .get<{ results: unknown[] }>(`/v1/spells.json?list=true&search=${inputValue}}`)
+      .then((response) => {
         const options = filterOptionsWithData(response.data.results);
         callback(options);
       })
-      .catch((error) => {});
+      .catch((_error) => {});
   };
 
   return (
@@ -54,7 +54,7 @@ const SpellcastingForm = (props: {
       <h5>Spellcasting</h5>
       <div className={styles.subformWrapper}>
         <Controller
-          render={({ field: { ref, ...rest } }) => (
+          render={({ field: { ref: _ref, ...rest } }) => (
             <ControllerInput
               type="number"
               label="Spellcasting Level"

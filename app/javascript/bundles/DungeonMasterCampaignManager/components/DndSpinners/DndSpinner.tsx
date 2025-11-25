@@ -6,18 +6,18 @@ import React from 'react';
 import { GiLinkedRings } from 'react-icons/all';
 import TableFrame from '../../containers/TableFrame';
 
-const styles = require('./spinner.module.scss');
+import styles from './spinner.module.scss';
 
-const DndSpinner = (props: { showTableFrame?: boolean, text?: string }) => {
+const DndSpinner = (props: { showTableFrame?: boolean; text?: string }) => {
   return props.showTableFrame ? (
     <TableFrame showSpinner={true}>
       <GiLinkedRings size={100} className="spinner" />
-      {props.text && <h3 style={{marginLeft: '10px'}}>{props.text}</h3>}
+      {props.text && <h3 style={{ marginLeft: '10px' }}>{props.text}</h3>}
     </TableFrame>
   ) : (
     <div className={styles.noFrame}>
       <GiLinkedRings size={100} className="spinner" />
-      {props.text && <h3 style={{marginLeft: '10px'}}>{props.text}</h3>}
+      {props.text && <h3 style={{ marginLeft: '10px' }}>{props.text}</h3>}
     </div>
   );
 };

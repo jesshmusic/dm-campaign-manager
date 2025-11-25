@@ -24,8 +24,8 @@
 class StartingEquipmentOption < ApplicationRecord
   has_many :equipments, dependent: :destroy
   has_many :equipment_options, class_name: 'StartingEquipmentOption',
-           foreign_key: 'equipment_option_id',
-           dependent: :destroy
+                               foreign_key: 'equipment_option_id',
+                               dependent: :destroy
   belongs_to :dnd_class, optional: true
   belongs_to :starting_equipment_option, optional: true
 

@@ -21,8 +21,6 @@ class SpellSlots
         warlock(character_level)
       when 'Wizard'
         wizard(character_level)
-      else
-        nil
       end
     end
 
@@ -64,49 +62,49 @@ class SpellSlots
     def bard(level)
       file = File.read('app/assets/data/spell_slots_bard.json')
       spell_slots = JSON.parse file
-      spell_slots["level_#{level}"].each_with_object({}) { |(k, v), memo| memo[k.to_sym] = v; }
+      spell_slots["level_#{level}"].transform_keys(&:to_sym)
     end
 
     def cleric(level)
       file = File.read('app/assets/data/spell_slots_cleric.json')
       spell_slots = JSON.parse file
-      spell_slots["level_#{level}"].each_with_object({}) { |(k, v), memo| memo[k.to_sym] = v; }
+      spell_slots["level_#{level}"].transform_keys(&:to_sym)
     end
 
     def druid(level)
       file = File.read('app/assets/data/spell_slots_druid.json')
       spell_slots = JSON.parse file
-      spell_slots["level_#{level}"].each_with_object({}) { |(k, v), memo| memo[k.to_sym] = v; }
+      spell_slots["level_#{level}"].transform_keys(&:to_sym)
     end
 
     def paladin(level)
       file = File.read('app/assets/data/spell_slots_paladin.json')
       spell_slots = JSON.parse file
-      spell_slots["level_#{level}"].each_with_object({}) { |(k, v), memo| memo[k.to_sym] = v; }
+      spell_slots["level_#{level}"].transform_keys(&:to_sym)
     end
 
     def ranger(level)
       file = File.read('app/assets/data/spell_slots_ranger.json')
       spell_slots = JSON.parse file
-      spell_slots["level_#{level}"].each_with_object({}) { |(k, v), memo| memo[k.to_sym] = v; }
+      spell_slots["level_#{level}"].transform_keys(&:to_sym)
     end
 
     def sorcerer(level)
       file = File.read('app/assets/data/spell_slots_sorcerer.json')
       spell_slots = JSON.parse file
-      spell_slots["level_#{level}"].each_with_object({}) { |(k, v), memo| memo[k.to_sym] = v; }
+      spell_slots["level_#{level}"].transform_keys(&:to_sym)
     end
 
     def warlock(level)
       file = File.read('app/assets/data/spell_slots_warlock.json')
       spell_slots = JSON.parse file
-      spell_slots["level_#{level}"].each_with_object({}) { |(k, v), memo| memo[k.to_sym] = v; }
+      spell_slots["level_#{level}"].transform_keys(&:to_sym)
     end
 
     def wizard(level)
       file = File.read('app/assets/data/spell_slots_wizard.json')
       spell_slots = JSON.parse file
-      spell_slots["level_#{level}"].each_with_object({}) { |(k, v), memo| memo[k.to_sym] = v; }
+      spell_slots["level_#{level}"].transform_keys(&:to_sym)
     end
   end
 end

@@ -18,6 +18,7 @@
 #
 class Rule < ApplicationRecord
   extend FriendlyId
+
   friendly_id :name, use: :slugged
 
   def normalize_friendly_id(string)
@@ -28,8 +29,9 @@ class Rule < ApplicationRecord
   has_many :children, class_name: 'Rule', foreign_key: 'parent_id'
 
   include PgSearch::Model
+
   # PgSearch
-  multisearchable against: [:name, :category, :subcategory, :description]
+  multisearchable against: %i[name category subcategory description]
   pg_search_scope :search_for,
                   against: {
                     name: 'A',

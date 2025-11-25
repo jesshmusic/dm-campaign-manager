@@ -16,23 +16,19 @@ const UsersTable = (props: {
     getUsers();
   }, [user]);
 
-  const getNumResults = (): number => {
-    return users.length;
-  };
-
   const columns = React.useMemo(
     () => [
       {
         Header: 'User',
-        accessor: 'name',
+        accessor: 'name' as const,
       },
       {
         Header: 'Role',
-        accessor: 'role',
+        accessor: 'role' as const,
       },
       {
         Header: 'NPCs',
-        accessor: 'monsters',
+        accessor: 'monsters' as const,
       },
     ],
     []

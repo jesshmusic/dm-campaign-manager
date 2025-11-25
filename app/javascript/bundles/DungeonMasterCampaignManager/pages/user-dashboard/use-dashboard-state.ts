@@ -9,7 +9,9 @@ const getFromLS = (key) => {
   if (global.localStorage) {
     try {
       ls = JSON.parse(global.localStorage.getItem('rgl-8') as string) || {};
-    } catch (e) {}
+    } catch (_e) {
+      // Ignore JSON parse errors, use empty object
+    }
   }
   return ls[key];
 };

@@ -2,7 +2,7 @@ import React from 'react';
 import classNames from 'classnames';
 import { Colors } from '../../utilities/enums';
 
-const styles = require('./button.module.scss');
+import styles from './button.module.scss';
 
 const Button = (props: {
   id?: string;
@@ -11,7 +11,7 @@ const Button = (props: {
   className?: string;
   color: Colors;
   title: string;
-  onClick?: (event: any) => void;
+  onClick?: (event: unknown) => void;
   type?: 'button' | 'submit' | 'reset' | undefined;
   icon?: React.ReactNode;
   style?: object;
@@ -57,12 +57,7 @@ const Button = (props: {
       type={type || 'button'}
     >
       {hideTitle ? '' : title}
-      {icon && (
-        <span className={classNames('', { [styles.iconOnly]: hideTitle })}>
-          {' '}
-          {icon}
-        </span>
-      )}
+      {icon && <span className={classNames('', { [styles.iconOnly]: hideTitle })}> {icon}</span>}
     </button>
   );
 };

@@ -15,6 +15,7 @@
 #
 class Condition < ApplicationRecord
   extend FriendlyId
+
   friendly_id :name, use: :slugged
 
   def normalize_friendly_id(string)
@@ -26,7 +27,7 @@ class Condition < ApplicationRecord
   include PgSearch::Model
 
   # PgSearch
-  multisearchable against: [:name, :description]
+  multisearchable against: %i[name description]
   pg_search_scope :search_for,
                   against: {
                     name: 'A',

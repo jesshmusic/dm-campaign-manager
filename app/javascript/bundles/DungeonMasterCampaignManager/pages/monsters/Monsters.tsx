@@ -3,7 +3,7 @@ import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
 import MonstersTable from './MonstersTable';
 
-const Monsters = (props: {}) => {
+const Monsters = (_props: object) => {
   return (
     <PageContainer
       pageTitle="Monsters"

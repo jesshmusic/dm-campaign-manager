@@ -3,7 +3,7 @@ import Frame from '../Frame/Frame';
 import CloseButton from '../Button/CloseButton';
 import { SelectIconOption } from '../../utilities/types';
 
-const styles = require('./widgets.module.scss');
+import styles from './widgets.module.scss';
 
 export type WidgetProps = {
   id?: number;
@@ -22,7 +22,7 @@ export type WidgetElementProps = {
   widgetId: string;
   content?: string;
   onRemoveItem: (id: string) => void;
-  component: any;
+  component: React.ComponentType<Record<string, unknown>>;
   title: string;
   subtitle: string;
   hideFrame: boolean;

@@ -34,7 +34,7 @@ gem 'friendly_id'
 gem 'humanize'
 gem 'jwt'
 gem 'pagy'
-gem 'react_on_rails', "~> 12.3.0"
+gem 'react_on_rails', '~> 12.3.0'
 gem 'simple_form'
 gem 'weighted_list'
 
@@ -67,9 +67,15 @@ group :development, :test do
   gem 'faker'
   gem 'foreman'
   gem 'rspec-core'
+  gem 'rspec_junit_formatter'
   gem 'rspec-rails'
   gem 'scss_lint', require: false
   gem 'simplecov', require: false, group: :spec
+
+  # Ruby linting
+  gem 'rubocop', require: false
+  gem 'rubocop-rails', require: false
+  gem 'rubocop-rspec', require: false
 
   ################################################################################
   # Color console output
@@ -92,6 +98,7 @@ group :test do
   gem 'capybara', '>= 3.26'
   gem 'rails-controller-testing'
   gem 'selenium-webdriver'
+  gem 'shoulda-matchers', '~> 5.0'
   # Easy installation and use of web drivers to run system tests with browsers
   gem 'webdrivers'
 end
@@ -99,4 +106,4 @@ end
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 
-gem "concurrent-ruby", "= 1.3.4"
+gem 'concurrent-ruby', '= 1.3.4'

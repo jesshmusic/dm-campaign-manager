@@ -1,23 +1,23 @@
 import React from 'react';
-import { UseFormReturn } from 'react-hook-form';
+import { FieldValues, UseFormReturn } from 'react-hook-form';
 import FormSelectAsync from '../../../../../components/forms/FormSelectAsync';
 import FormSelect from '../../../../../components/forms/FormSelect';
 import { damageTypes, filterOptionsWithData } from '../../../../../utilities/character-utilities';
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 
-const styles = require('../../generator.module.scss');
+import styles from '../../generator.module.scss';
 
-const ResistancesSection = (props: { UseForm: UseFormReturn }) => {
+const ResistancesSection = (props: { UseForm: UseFormReturn<FieldValues> }) => {
   const { UseForm } = props;
 
-  const getConditions = (inputValue: string, callback: any) => {
+  const getConditions = (inputValue: string, callback: (options: unknown[]) => void) => {
     axios
-      .get(`/v1/conditions.json?search=${inputValue}`)
-      .then((response: AxiosResponse<any>) => {
+      .get<{ results: unknown[] }>(`/v1/conditions.json?search=${inputValue}`)
+      .then((response) => {
         const options = filterOptionsWithData(response.data.results);
         callback(options);
       })
-      .catch((error) => {});
+      .catch((_error) => {});
   };
 
   return (

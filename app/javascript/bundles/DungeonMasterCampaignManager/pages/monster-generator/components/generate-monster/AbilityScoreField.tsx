@@ -12,9 +12,9 @@ import FormField from '../../../../components/forms/FormField';
 import { Colors } from '../../../../utilities/enums';
 import Button from '../../../../components/Button/Button';
 
-const diceSound = require('../../../../sounds/DiceRoll.mp3');
+import diceSound from '../../../../sounds/DiceRoll.mp3';
 
-const styles = require('./ability-score-field.module.scss');
+import styles from './ability-score-field.module.scss';
 
 type AbilityScoreFieldProps = {
   name: keyof MonsterGeneratorFormFields;
@@ -24,9 +24,9 @@ type AbilityScoreFieldProps = {
   label: string;
   readOnly?: boolean;
   hideRoll?: boolean;
-  setValue: UseFormSetValue<any>;
+  setValue: UseFormSetValue<FieldValues>;
   register: UseFormRegister<FieldValues>;
-  value?: any;
+  value?: unknown;
 };
 
 const AbilityScoreField = (props: AbilityScoreFieldProps) => {

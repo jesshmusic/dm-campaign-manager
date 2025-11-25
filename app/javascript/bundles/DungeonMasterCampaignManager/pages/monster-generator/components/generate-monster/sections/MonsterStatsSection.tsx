@@ -11,7 +11,7 @@ import ChallengeRatingField from '../ChallengeRatingField';
 import { FieldValues, UseFormReturn } from 'react-hook-form';
 import { raceOptions } from '../../../../../components/Widgets/NameOptions';
 
-const styles = require('../../generator.module.scss');
+import styles from '../../generator.module.scss';
 
 const MonsterStatsSection = (props: {
   UseForm: UseFormReturn<FieldValues>;

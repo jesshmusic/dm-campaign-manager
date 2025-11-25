@@ -1,10 +1,10 @@
 import React from 'react';
-import { UseFormReturn } from 'react-hook-form';
+import { FieldValues, UseFormReturn } from 'react-hook-form';
 import AbilityScoreField from '../AbilityScoreField';
 
-const styles = require('../../generator.module.scss');
+import styles from '../../generator.module.scss';
 
-const AbilitiesSection = (props: { UseForm: UseFormReturn }) => {
+const AbilitiesSection = (props: { UseForm: UseFormReturn<FieldValues> }) => {
   const { UseForm } = props;
   return (
     <div className={styles.sixCol}>

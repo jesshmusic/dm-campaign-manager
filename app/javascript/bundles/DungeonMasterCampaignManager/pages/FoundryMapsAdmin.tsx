@@ -4,8 +4,12 @@ import PageContainer from '../containers/PageContainer';
 import PageTitle from '../components/PageTitle/PageTitle';
 import Button from '../components/Button/Button';
 import { Colors } from '../utilities/enums';
-import { useForm, Controller } from 'react-hook-form';
-import { ControlledInput, ControlledSelect, ControlledTagInput } from '../components/forms/ControllerInput';
+import { useForm, Controller, FieldValues } from 'react-hook-form';
+import {
+  ControlledInput,
+  ControlledSelect,
+  ControlledTagInput,
+} from '../components/forms/ControllerInput';
 import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { GiSave } from 'react-icons/gi';
@@ -17,7 +21,7 @@ import FlashMessages from '../components/Alerts/FlashMessages';
 
 Quill.register('modules/imageResize', ImageResize);
 
-const styles = require('./foundry-maps-admin.module.scss');
+import styles from './foundry-maps-admin.module.scss';
 
 interface FoundryMapFile {
   id: string;
@@ -64,17 +68,22 @@ const FoundryMapsAdmin: React.FC = () => {
   const [editingTagName, setEditingTagName] = useState<string>('');
   const [newTagName, setNewTagName] = useState<string>('');
   const [isEditingInModal, setIsEditingInModal] = useState(false);
-  const quillRef = useRef<any>(null);
+  const quillRef = useRef<ReactQuill>(null);
 
-  const { control, handleSubmit, reset, formState: { errors } } = useForm({
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<FieldValues>({
     defaultValues: {
       name: '',
       description: '',
       access_level: 'free',
       required_tier: 'free',
       published: false,
-      tags: ''
-    }
+      tags: '',
+    },
   });
 
   // Handle image upload for React Quill
@@ -94,7 +103,7 @@ const FoundryMapsAdmin: React.FC = () => {
       try {
         const response = await fetch('/v1/maps/upload_image', {
           method: 'POST',
-          body: formData
+          body: formData,
         });
 
         if (response.ok) {
@@ -102,25 +111,31 @@ const FoundryMapsAdmin: React.FC = () => {
           const quill = quillRef.current?.getEditor();
           if (quill) {
             const range = quill.getSelection(true);
-            quill.insertEmbed(range.index, 'image', data.url);
-            quill.setSelection(range.index + 1);
+            if (range) {
+              quill.insertEmbed(range.index, 'image', data.url);
+              quill.setSelection({ index: range.index + 1, length: 0 });
+            }
           }
         } else {
-          dispatch(addFlashMessage({
-            id: Date.now(),
-            heading: 'Upload Failed',
-            text: 'Failed to upload image to description',
-            messageType: FlashMessageType.danger
-          }));
+          dispatch(
+            addFlashMessage({
+              id: Date.now(),
+              heading: 'Upload Failed',
+              text: 'Failed to upload image to description',
+              messageType: FlashMessageType.danger,
+            })
+          );
         }
       } catch (error) {
         console.error('Error uploading image:', error);
-        dispatch(addFlashMessage({
-          id: Date.now(),
-          heading: 'Upload Failed',
-          text: 'Failed to upload image to description',
-          messageType: FlashMessageType.danger
-        }));
+        dispatch(
+          addFlashMessage({
+            id: Date.now(),
+            heading: 'Upload Failed',
+            text: 'Failed to upload image to description',
+            messageType: FlashMessageType.danger,
+          })
+        );
       }
     };
   };
@@ -128,21 +143,21 @@ const FoundryMapsAdmin: React.FC = () => {
   const modules = {
     toolbar: {
       container: [
-        [{ 'header': [1, 2, 3, false] }],
+        [{ header: [1, 2, 3, false] }],
         ['bold', 'italic', 'underline', 'strike'],
-        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-        [{ 'align': [] }],
+        [{ list: 'ordered' }, { list: 'bullet' }],
+        [{ align: [] }],
         ['link', 'image'],
-        ['clean']
+        ['clean'],
       ],
       handlers: {
-        image: imageHandler
-      }
+        image: imageHandler,
+      },
     },
     imageResize: {
       parchment: Quill.import('parchment'),
-      modules: ['Resize', 'DisplaySize']
-    }
+      modules: ['Resize', 'DisplaySize'],
+    },
   };
 
   useEffect(() => {
@@ -154,8 +169,8 @@ const FoundryMapsAdmin: React.FC = () => {
     try {
       const response = await fetch('/v1/maps', {
         headers: {
-          'Accept': 'application/json'
-        }
+          Accept: 'application/json',
+        },
       });
       const data = await response.json();
       setMaps(data);
@@ -170,8 +185,8 @@ const FoundryMapsAdmin: React.FC = () => {
     try {
       const response = await fetch('/v1/map-tags', {
         headers: {
-          'Accept': 'application/json'
-        }
+          Accept: 'application/json',
+        },
       });
       const data = await response.json();
       setTags(data);
@@ -184,8 +199,8 @@ const FoundryMapsAdmin: React.FC = () => {
     try {
       const response = await fetch(`/v1/maps/${mapId}`, {
         headers: {
-          'Accept': 'application/json'
-        }
+          Accept: 'application/json',
+        },
       });
       if (response.ok) {
         return await response.json();
@@ -206,7 +221,7 @@ const FoundryMapsAdmin: React.FC = () => {
         access_level: detailedMap.access === 'Premium' ? 'premium' : 'free',
         required_tier: detailedMap.requiredTier || 'free',
         published: detailedMap.published,
-        tags: detailedMap.tags.join(', ')
+        tags: detailedMap.tags.join(', '),
       });
     } else {
       setEditingMap(map);
@@ -216,7 +231,7 @@ const FoundryMapsAdmin: React.FC = () => {
         access_level: map.access === 'Premium' ? 'premium' : 'free',
         required_tier: map.requiredTier || 'free',
         published: map.published,
-        tags: map.tags.join(', ')
+        tags: map.tags.join(', '),
       });
     }
     setShowForm(true);
@@ -238,7 +253,7 @@ const FoundryMapsAdmin: React.FC = () => {
       access_level: mapToEdit.access === 'Premium' ? 'premium' : 'free',
       required_tier: mapToEdit.requiredTier || 'free',
       published: mapToEdit.published,
-      tags: mapToEdit.tags.join(', ')
+      tags: mapToEdit.tags.join(', '),
     });
     setIsEditingInModal(true);
   };
@@ -261,11 +276,11 @@ const FoundryMapsAdmin: React.FC = () => {
       description: '',
       access_level: 'free',
       published: false,
-      tags: ''
+      tags: '',
     });
   };
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: FieldValues) => {
     setUploadingFiles(true);
     try {
       const url = editingMap ? `/v1/maps/${editingMap.id}` : '/v1/maps';
@@ -275,7 +290,7 @@ const FoundryMapsAdmin: React.FC = () => {
         method,
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json'
+          Accept: 'application/json',
         },
         body: JSON.stringify({
           foundry_map: {
@@ -283,10 +298,13 @@ const FoundryMapsAdmin: React.FC = () => {
             description: data.description,
             access_level: data.access_level,
             required_tier: data.required_tier,
-            published: data.published
+            published: data.published,
           },
-          tags: data.tags.split(',').map(t => t.trim()).filter(Boolean)
-        })
+          tags: data.tags
+            .split(',')
+            .map((t) => t.trim())
+            .filter(Boolean),
+        }),
       });
 
       if (response.ok) {
@@ -299,17 +317,19 @@ const FoundryMapsAdmin: React.FC = () => {
 
           const thumbnailResponse = await fetch(`/v1/maps/${savedMap.id}/upload_thumbnail`, {
             method: 'POST',
-            body: thumbnailFormData
+            body: thumbnailFormData,
           });
 
           if (!thumbnailResponse.ok) {
             const thumbnailError = await thumbnailResponse.json();
-            dispatch(addFlashMessage({
-              id: Date.now(),
-              heading: 'Thumbnail Upload Failed',
-              text: thumbnailError.error || 'Failed to upload thumbnail',
-              messageType: FlashMessageType.warning
-            }));
+            dispatch(
+              addFlashMessage({
+                id: Date.now(),
+                heading: 'Thumbnail Upload Failed',
+                text: thumbnailError.error || 'Failed to upload thumbnail',
+                messageType: FlashMessageType.warning,
+              })
+            );
           }
         }
 
@@ -320,17 +340,19 @@ const FoundryMapsAdmin: React.FC = () => {
 
           const uploadResponse = await fetch(`/v1/maps/${savedMap.id}/upload_package`, {
             method: 'POST',
-            body: uploadFormData
+            body: uploadFormData,
           });
 
           if (!uploadResponse.ok) {
             const uploadError = await uploadResponse.json();
-            dispatch(addFlashMessage({
-              id: Date.now(),
-              heading: 'Package Upload Failed',
-              text: uploadError.error || 'Failed to upload package',
-              messageType: FlashMessageType.warning
-            }));
+            dispatch(
+              addFlashMessage({
+                id: Date.now(),
+                heading: 'Package Upload Failed',
+                text: uploadError.error || 'Failed to upload package',
+                messageType: FlashMessageType.warning,
+              })
+            );
           }
         }
 
@@ -344,21 +366,25 @@ const FoundryMapsAdmin: React.FC = () => {
         handleCancelEdit();
       } else {
         const error = await response.json();
-        dispatch(addFlashMessage({
-          id: Date.now(),
-          heading: 'Save Failed',
-          text: error.errors?.join(', ') || `Failed to ${editingMap ? 'update' : 'create'} map`,
-          messageType: FlashMessageType.danger
-        }));
+        dispatch(
+          addFlashMessage({
+            id: Date.now(),
+            heading: 'Save Failed',
+            text: error.errors?.join(', ') || `Failed to ${editingMap ? 'update' : 'create'} map`,
+            messageType: FlashMessageType.danger,
+          })
+        );
       }
     } catch (error) {
       console.error('Error saving map:', error);
-      dispatch(addFlashMessage({
-        id: Date.now(),
-        heading: 'Network Error',
-        text: 'Unable to save map. Check console for details.',
-        messageType: FlashMessageType.danger
-      }));
+      dispatch(
+        addFlashMessage({
+          id: Date.now(),
+          heading: 'Network Error',
+          text: 'Unable to save map. Check console for details.',
+          messageType: FlashMessageType.danger,
+        })
+      );
     } finally {
       setUploadingFiles(false);
     }
@@ -371,8 +397,8 @@ const FoundryMapsAdmin: React.FC = () => {
       const response = await fetch(`/v1/maps/${id}`, {
         method: 'DELETE',
         headers: {
-          'Accept': 'application/json'
-        }
+          Accept: 'application/json',
+        },
       });
 
       if (response.ok) {
@@ -394,11 +420,11 @@ const FoundryMapsAdmin: React.FC = () => {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json'
+          Accept: 'application/json',
         },
         body: JSON.stringify({
-          foundry_map: { published: !currentPublished }
-        })
+          foundry_map: { published: !currentPublished },
+        }),
       });
 
       if (response.ok) {
@@ -417,39 +443,45 @@ const FoundryMapsAdmin: React.FC = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json'
+          Accept: 'application/json',
         },
         body: JSON.stringify({
-          foundry_map_tag: { name: newTagName.trim() }
-        })
+          foundry_map_tag: { name: newTagName.trim() },
+        }),
       });
 
       if (response.ok) {
         setNewTagName('');
         await fetchTags();
-        dispatch(addFlashMessage({
-          id: Date.now(),
-          heading: 'Tag Created',
-          text: 'Tag successfully created',
-          messageType: FlashMessageType.success
-        }));
+        dispatch(
+          addFlashMessage({
+            id: Date.now(),
+            heading: 'Tag Created',
+            text: 'Tag successfully created',
+            messageType: FlashMessageType.success,
+          })
+        );
       } else {
         const error = await response.json();
-        dispatch(addFlashMessage({
-          id: Date.now(),
-          heading: 'Create Failed',
-          text: error.error || 'Failed to create tag',
-          messageType: FlashMessageType.danger
-        }));
+        dispatch(
+          addFlashMessage({
+            id: Date.now(),
+            heading: 'Create Failed',
+            text: error.error || 'Failed to create tag',
+            messageType: FlashMessageType.danger,
+          })
+        );
       }
     } catch (error) {
       console.error('Error creating tag:', error);
-      dispatch(addFlashMessage({
-        id: Date.now(),
-        heading: 'Network Error',
-        text: 'Unable to create tag. Check console for details.',
-        messageType: FlashMessageType.danger
-      }));
+      dispatch(
+        addFlashMessage({
+          id: Date.now(),
+          heading: 'Network Error',
+          text: 'Unable to create tag. Check console for details.',
+          messageType: FlashMessageType.danger,
+        })
+      );
     }
   };
 
@@ -461,11 +493,11 @@ const FoundryMapsAdmin: React.FC = () => {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json'
+          Accept: 'application/json',
         },
         body: JSON.stringify({
-          foundry_map_tag: { name: editingTagName.trim() }
-        })
+          foundry_map_tag: { name: editingTagName.trim() },
+        }),
       });
 
       if (response.ok) {
@@ -473,41 +505,52 @@ const FoundryMapsAdmin: React.FC = () => {
         setEditingTagName('');
         await fetchTags();
         await fetchMaps(); // Refresh maps to show updated tag names
-        dispatch(addFlashMessage({
-          id: Date.now(),
-          heading: 'Tag Updated',
-          text: 'Tag successfully updated',
-          messageType: FlashMessageType.success
-        }));
+        dispatch(
+          addFlashMessage({
+            id: Date.now(),
+            heading: 'Tag Updated',
+            text: 'Tag successfully updated',
+            messageType: FlashMessageType.success,
+          })
+        );
       } else {
         const error = await response.json();
-        dispatch(addFlashMessage({
-          id: Date.now(),
-          heading: 'Update Failed',
-          text: error.error || 'Failed to update tag',
-          messageType: FlashMessageType.danger
-        }));
+        dispatch(
+          addFlashMessage({
+            id: Date.now(),
+            heading: 'Update Failed',
+            text: error.error || 'Failed to update tag',
+            messageType: FlashMessageType.danger,
+          })
+        );
       }
     } catch (error) {
       console.error('Error updating tag:', error);
-      dispatch(addFlashMessage({
-        id: Date.now(),
-        heading: 'Network Error',
-        text: 'Unable to update tag. Check console for details.',
-        messageType: FlashMessageType.danger
-      }));
+      dispatch(
+        addFlashMessage({
+          id: Date.now(),
+          heading: 'Network Error',
+          text: 'Unable to update tag. Check console for details.',
+          messageType: FlashMessageType.danger,
+        })
+      );
     }
   };
 
   const handleDeleteTag = async (id: string, tagName: string) => {
-    if (!confirm(`Are you sure you want to delete the tag "${tagName}"? This will remove it from all maps.`)) return;
+    if (
+      !confirm(
+        `Are you sure you want to delete the tag "${tagName}"? This will remove it from all maps.`
+      )
+    )
+      return;
 
     try {
       const response = await fetch(`/v1/map-tags/${id}`, {
         method: 'DELETE',
         headers: {
-          'Accept': 'application/json'
-        }
+          Accept: 'application/json',
+        },
       });
 
       if (response.ok) {
@@ -530,7 +573,11 @@ const FoundryMapsAdmin: React.FC = () => {
   };
 
   const handleDeleteFile = async (mapId: string, fileId: string, fileName: string) => {
-    if (!confirm(`Are you sure you want to delete "${fileName}"?\n\nWarning: This may break the scene.json if this file is referenced. Make sure to re-export the scene after deleting files.`)) {
+    if (
+      !confirm(
+        `Are you sure you want to delete "${fileName}"?\n\nWarning: This may break the scene.json if this file is referenced. Make sure to re-export the scene after deleting files.`
+      )
+    ) {
       return;
     }
 
@@ -538,8 +585,8 @@ const FoundryMapsAdmin: React.FC = () => {
       const response = await fetch(`/v1/maps/${mapId}/files/${fileId}`, {
         method: 'DELETE',
         headers: {
-          'Accept': 'application/json'
-        }
+          Accept: 'application/json',
+        },
       });
 
       if (response.ok) {
@@ -548,28 +595,34 @@ const FoundryMapsAdmin: React.FC = () => {
         if (updatedMap) {
           setEditingMap(updatedMap);
         }
-        dispatch(addFlashMessage({
-          id: Date.now(),
-          heading: 'File Deleted',
-          text: 'File successfully deleted',
-          messageType: FlashMessageType.success
-        }));
+        dispatch(
+          addFlashMessage({
+            id: Date.now(),
+            heading: 'File Deleted',
+            text: 'File successfully deleted',
+            messageType: FlashMessageType.success,
+          })
+        );
       } else {
-        dispatch(addFlashMessage({
-          id: Date.now(),
-          heading: 'Delete Failed',
-          text: 'Failed to delete file',
-          messageType: FlashMessageType.danger
-        }));
+        dispatch(
+          addFlashMessage({
+            id: Date.now(),
+            heading: 'Delete Failed',
+            text: 'Failed to delete file',
+            messageType: FlashMessageType.danger,
+          })
+        );
       }
     } catch (error) {
       console.error('Error deleting file:', error);
-      dispatch(addFlashMessage({
-        id: Date.now(),
-        heading: 'Network Error',
-        text: 'Unable to delete file. Check console for details.',
-        messageType: FlashMessageType.danger
-      }));
+      dispatch(
+        addFlashMessage({
+          id: Date.now(),
+          heading: 'Network Error',
+          text: 'Unable to delete file. Check console for details.',
+          messageType: FlashMessageType.danger,
+        })
+      );
     }
   };
 
@@ -600,13 +653,12 @@ const FoundryMapsAdmin: React.FC = () => {
       <FlashMessages />
       <PageTitle title="Foundry Maps Admin" />
       <div className={styles.contentWrapper}>
-
         {/* Maps Management Section */}
         <div className={styles.section}>
           <div className={styles.header}>
             <h2>Manage Maps</h2>
             <Button
-              onClick={() => showForm ? handleCancelEdit() : setShowForm(true)}
+              onClick={() => (showForm ? handleCancelEdit() : setShowForm(true))}
               color={showForm ? Colors.secondary : Colors.primary}
               title={showForm ? 'Cancel' : '+ New Map'}
             />
@@ -615,96 +667,106 @@ const FoundryMapsAdmin: React.FC = () => {
           <div className={styles.tableContainer}>
             <table className={styles.table}>
               <thead>
-              <tr>
-                <th></th>
-                <th>Name</th>
-                <th>Tags</th>
-                <th>Access</th>
-                <th>Status</th>
-                <th>Created</th>
-                <th>Actions</th>
-              </tr>
+                <tr>
+                  <th></th>
+                  <th>Name</th>
+                  <th>Tags</th>
+                  <th>Access</th>
+                  <th>Status</th>
+                  <th>Created</th>
+                  <th>Actions</th>
+                </tr>
               </thead>
               <tbody>
-              {maps.length === 0 ? (
-                <tr>
-                  <td colSpan={7} className={styles.emptyState}>
-                    No maps yet. Create one to get started!
-                  </td>
-                </tr>
-              ) : (
-                maps.map((map) => (
-                  <tr key={map.id}>
-                    <td className={styles.thumbnailCell}>
-                      {map.thumbnail ? (
-                        <img src={map.thumbnail} alt={map.name} className={styles.tableThumbnail} />
-                      ) : (
-                        <div className={styles.thumbnailPlaceholder}>
-                          <MdVisibility />
-                        </div>
-                      )}
-                    </td>
-                    <td>
-                      <div className={styles.mapName}>{map.name}</div>
-                      {map.description && (
-                        <div className={styles.mapDescription}>
-                          {stripHtml(map.description).substring(0, 100)}...
-                        </div>
-                      )}
-                    </td>
-                    <td>
-                      <div className={styles.tagContainer}>
-                        {map.tags.map((tag) => (
-                          <span key={tag} className={styles.tag}>
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                    </td>
-                    <td>
-                      <span className={`${styles.accessBadge} ${map.access === 'Premium' ? styles.premium : styles.free}`}>
-                        {map.access}
-                      </span>
-                    </td>
-                    <td>
-                      <button
-                        onClick={() => togglePublished(map.id, map.published)}
-                        className={`${styles.statusButton} ${map.published ? styles.published : styles.draft}`}
-                      >
-                        {map.published ? 'Published' : 'Draft'}
-                      </button>
-                    </td>
-                    <td className={styles.dateText}>
-                      {new Date(map.createdAt).toLocaleDateString()}
-                    </td>
-                    <td>
-                      <div className={styles.actionButtons}>
-                        <button
-                          onClick={() => handleView(map)}
-                          className={styles.iconButton}
-                          title="View map details"
-                        >
-                          <MdVisibility />
-                        </button>
-                        <button
-                          onClick={() => handleEdit(map)}
-                          className={`${styles.iconButton} ${styles.editIcon}`}
-                          title="Edit map"
-                        >
-                          <MdEdit />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(map.id)}
-                          className={`${styles.iconButton} ${styles.deleteIcon}`}
-                          title="Delete map"
-                        >
-                          <MdDelete />
-                        </button>
-                      </div>
+                {maps.length === 0 ? (
+                  <tr>
+                    <td colSpan={7} className={styles.emptyState}>
+                      No maps yet. Create one to get started!
                     </td>
                   </tr>
-                ))
-              )}
+                ) : (
+                  maps.map((map) => (
+                    <tr key={map.id}>
+                      <td className={styles.thumbnailCell}>
+                        {map.thumbnail ? (
+                          <img
+                            src={map.thumbnail}
+                            alt={map.name}
+                            className={styles.tableThumbnail}
+                          />
+                        ) : (
+                          <div className={styles.thumbnailPlaceholder}>
+                            <MdVisibility />
+                          </div>
+                        )}
+                      </td>
+                      <td>
+                        <div className={styles.mapName}>{map.name}</div>
+                        {map.description && (
+                          <div className={styles.mapDescription}>
+                            {stripHtml(map.description).substring(0, 100)}...
+                          </div>
+                        )}
+                      </td>
+                      <td>
+                        <div className={styles.tagContainer}>
+                          {map.tags.map((tag) => (
+                            <span key={tag} className={styles.tag}>
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      </td>
+                      <td>
+                        <span
+                          className={`${styles.accessBadge} ${
+                            map.access === 'Premium' ? styles.premium : styles.free
+                          }`}
+                        >
+                          {map.access}
+                        </span>
+                      </td>
+                      <td>
+                        <button
+                          onClick={() => togglePublished(map.id, map.published)}
+                          className={`${styles.statusButton} ${
+                            map.published ? styles.published : styles.draft
+                          }`}
+                        >
+                          {map.published ? 'Published' : 'Draft'}
+                        </button>
+                      </td>
+                      <td className={styles.dateText}>
+                        {new Date(map.createdAt).toLocaleDateString()}
+                      </td>
+                      <td>
+                        <div className={styles.actionButtons}>
+                          <button
+                            onClick={() => handleView(map)}
+                            className={styles.iconButton}
+                            title="View map details"
+                          >
+                            <MdVisibility />
+                          </button>
+                          <button
+                            onClick={() => handleEdit(map)}
+                            className={`${styles.iconButton} ${styles.editIcon}`}
+                            title="Edit map"
+                          >
+                            <MdEdit />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(map.id)}
+                            className={`${styles.iconButton} ${styles.deleteIcon}`}
+                            title="Delete map"
+                          >
+                            <MdDelete />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
@@ -717,14 +779,16 @@ const FoundryMapsAdmin: React.FC = () => {
               <ControlledInput
                 fieldName="name"
                 errors={errors}
-                control={control as any}
+                control={control}
                 label="Map Name"
                 required
                 disabled={uploadingFiles}
               />
 
               <div className={styles.editorWrapper}>
-                <label htmlFor="description" className={styles.label}>Description</label>
+                <label htmlFor="description" className={styles.label}>
+                  Description
+                </label>
                 <Controller
                   control={control}
                   name="description"
@@ -744,30 +808,30 @@ const FoundryMapsAdmin: React.FC = () => {
 
               <ControlledTagInput
                 fieldName="tags"
-                control={control as any}
+                control={control}
                 label="Tags"
                 placeholder="Add tags (press Enter or comma)"
               />
 
               <ControlledSelect
                 fieldName="access_level"
-                control={control as any}
+                control={control}
                 label="Access Level"
                 options={[
                   { value: 'premium', label: 'Premium' },
-                  { value: 'free', label: 'Free' }
+                  { value: 'free', label: 'Free' },
                 ]}
                 disabled={uploadingFiles}
               />
 
               <ControlledSelect
                 fieldName="required_tier"
-                control={control as any}
+                control={control}
                 label="Required Tier"
                 options={[
                   { value: 'free', label: 'Free' },
                   { value: 'Apprentice', label: 'Apprentice' },
-                  { value: 'Wizard', label: 'Wizard' }
+                  { value: 'Wizard', label: 'Wizard' },
                 ]}
                 disabled={uploadingFiles}
               />
@@ -805,7 +869,8 @@ const FoundryMapsAdmin: React.FC = () => {
                 />
                 {selectedThumbnail && (
                   <div className={styles.fileCount}>
-                    {selectedThumbnail.name} selected ({(selectedThumbnail.size / 1024).toFixed(2)} KB)
+                    {selectedThumbnail.name} selected ({(selectedThumbnail.size / 1024).toFixed(2)}{' '}
+                    KB)
                   </div>
                 )}
                 {editingMap && editingMap.thumbnail && !selectedThumbnail && (
@@ -825,7 +890,8 @@ const FoundryMapsAdmin: React.FC = () => {
                   Upload Scene Package
                 </label>
                 <p className={styles.fieldSubtitle}>
-                  Export your Foundry VTT scene using the right-click context menu and upload the ZIP file here.
+                  Export your Foundry VTT scene using the right-click context menu and upload the
+                  ZIP file here.
                 </p>
                 <input
                   type="file"
@@ -838,7 +904,8 @@ const FoundryMapsAdmin: React.FC = () => {
                 />
                 {selectedFiles && selectedFiles.length > 0 && (
                   <div className={styles.fileCount}>
-                    {selectedFiles[0].name} selected ({(selectedFiles[0].size / 1024 / 1024).toFixed(2)} MB)
+                    {selectedFiles[0].name} selected (
+                    {(selectedFiles[0].size / 1024 / 1024).toFixed(2)} MB)
                   </div>
                 )}
               </div>
@@ -851,7 +918,9 @@ const FoundryMapsAdmin: React.FC = () => {
                       <div key={file.id} className={styles.fileItem}>
                         <span className={styles.fileType}>[{file.file_type}]</span>
                         <span className={styles.fileName}>{file.file_name}</span>
-                        <span className={styles.fileSize}>({(file.file_size / 1024).toFixed(2)} KB)</span>
+                        <span className={styles.fileSize}>
+                          ({(file.file_size / 1024).toFixed(2)} KB)
+                        </span>
                         <button
                           type="button"
                           onClick={() => handleDeleteFile(editingMap.id, file.id, file.file_name)}
@@ -918,27 +987,33 @@ const FoundryMapsAdmin: React.FC = () => {
                   >
                     <MdDelete />
                   </button>
-                  <button onClick={() => setViewingMap(null)} className={styles.modalClose}>×</button>
+                  <button onClick={() => setViewingMap(null)} className={styles.modalClose}>
+                    ×
+                  </button>
                 </div>
               </div>
               <div className={styles.modalBody}>
                 {isEditingInModal ? (
                   <div className={styles.form}>
-                    <form onSubmit={handleSubmit(async (data) => {
-                      await onSubmit(data);
-                      setIsEditingInModal(false);
-                    })}>
+                    <form
+                      onSubmit={handleSubmit(async (data) => {
+                        await onSubmit(data);
+                        setIsEditingInModal(false);
+                      })}
+                    >
                       <ControlledInput
                         fieldName="name"
                         errors={errors}
-                        control={control as any}
+                        control={control}
                         label="Map Name"
                         required
                         disabled={uploadingFiles}
                       />
 
                       <div className={styles.editorWrapper}>
-                        <label htmlFor="description" className={styles.label}>Description</label>
+                        <label htmlFor="description" className={styles.label}>
+                          Description
+                        </label>
                         <Controller
                           control={control}
                           name="description"
@@ -958,18 +1033,18 @@ const FoundryMapsAdmin: React.FC = () => {
 
                       <ControlledTagInput
                         fieldName="tags"
-                        control={control as any}
+                        control={control}
                         label="Tags"
                         placeholder="Add tags (press Enter or comma)"
                       />
 
                       <ControlledSelect
                         fieldName="access_level"
-                        control={control as any}
+                        control={control}
                         label="Access Level"
                         options={[
                           { value: 'premium', label: 'Premium' },
-                          { value: 'free', label: 'Free' }
+                          { value: 'free', label: 'Free' },
                         ]}
                         disabled={uploadingFiles}
                       />
@@ -1007,7 +1082,8 @@ const FoundryMapsAdmin: React.FC = () => {
                         />
                         {selectedThumbnail && (
                           <div className={styles.fileCount}>
-                            {selectedThumbnail.name} selected ({(selectedThumbnail.size / 1024).toFixed(2)} KB)
+                            {selectedThumbnail.name} selected (
+                            {(selectedThumbnail.size / 1024).toFixed(2)} KB)
                           </div>
                         )}
                         {editingMap && editingMap.thumbnail && !selectedThumbnail && (
@@ -1041,97 +1117,116 @@ const FoundryMapsAdmin: React.FC = () => {
                     </form>
                   </div>
                 ) : (
-                <div className={styles.modalBodyLayout}>
-                  {(viewingMap.thumbnail || viewingMap.files?.some(f => f.file_type === 'background')) && (
-                    <div className={styles.thumbnailColumn}>
-                      {viewingMap.thumbnail && (
-                        <>
-                          <label className={styles.viewLabel}>Thumbnail:</label>
-                          <div className={styles.thumbnailWrapper}>
-                            <img src={viewingMap.thumbnail} alt={viewingMap.name} />
-                          </div>
-                        </>
-                      )}
-
-                      {(() => {
-                        const backgroundFile = viewingMap.files?.find(f => f.file_type === 'background');
-                        return backgroundFile?.signed_url && (
-                          <div style={{ marginTop: viewingMap.thumbnail ? '1rem' : 0 }}>
-                            <label className={styles.viewLabel}>Map Preview:</label>
+                  <div className={styles.modalBodyLayout}>
+                    {(viewingMap.thumbnail ||
+                      viewingMap.files?.some((f) => f.file_type === 'background')) && (
+                      <div className={styles.thumbnailColumn}>
+                        {viewingMap.thumbnail && (
+                          <>
+                            <label className={styles.viewLabel}>Thumbnail:</label>
                             <div className={styles.thumbnailWrapper}>
-                              <img
-                                src={backgroundFile.signed_url}
-                                alt={`${viewingMap.name} preview`}
-                                onError={(e) => {
-                                  e.currentTarget.style.display = 'none';
-                                }}
-                              />
+                              <img src={viewingMap.thumbnail} alt={viewingMap.name} />
                             </div>
-                          </div>
-                        );
-                      })()}
-                    </div>
-                  )}
+                          </>
+                        )}
 
-                  <div className={styles.contentColumn}>
-                    <div className={styles.viewSection}>
-                      <label className={styles.viewLabel}>Description:</label>
-                      <div
-                        className={styles.viewContent}
-                        dangerouslySetInnerHTML={{ __html: viewingMap.description || 'No description provided.' }}
-                      />
-                    </div>
+                        {(() => {
+                          const backgroundFile = viewingMap.files?.find(
+                            (f) => f.file_type === 'background'
+                          );
+                          return (
+                            backgroundFile?.signed_url && (
+                              <div style={{ marginTop: viewingMap.thumbnail ? '1rem' : 0 }}>
+                                <label className={styles.viewLabel}>Map Preview:</label>
+                                <div className={styles.thumbnailWrapper}>
+                                  <img
+                                    src={backgroundFile.signed_url}
+                                    alt={`${viewingMap.name} preview`}
+                                    onError={(e) => {
+                                      e.currentTarget.style.display = 'none';
+                                    }}
+                                  />
+                                </div>
+                              </div>
+                            )
+                          );
+                        })()}
+                      </div>
+                    )}
 
-                <div className={styles.viewSection}>
-                  <label className={styles.viewLabel}>Tags:</label>
-                  <div className={styles.tagContainer}>
-                    {viewingMap.tags.map((tag) => (
-                      <span key={tag} className={styles.tag}>
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                <div className={styles.viewRow}>
-                  <div className={styles.viewSection}>
-                    <label className={styles.viewLabel}>Access Level:</label>
-                    <span className={`${styles.accessBadge} ${viewingMap.access === 'Premium' ? styles.premium : styles.free}`}>
-                      {viewingMap.access}
-                    </span>
-                  </div>
-
-                  <div className={styles.viewSection}>
-                    <label className={styles.viewLabel}>Status:</label>
-                    <span className={`${styles.statusBadge} ${viewingMap.published ? styles.published : styles.draft}`}>
-                      {viewingMap.published ? 'Published' : 'Draft'}
-                    </span>
-                  </div>
-
-                  <div className={styles.viewSection}>
-                    <label className={styles.viewLabel}>Created:</label>
-                    <span className={styles.viewText}>
-                      {new Date(viewingMap.createdAt).toLocaleDateString()}
-                    </span>
-                  </div>
-                </div>
-
-                    {viewingMap.files && viewingMap.files.length > 0 && (
+                    <div className={styles.contentColumn}>
                       <div className={styles.viewSection}>
-                        <label className={styles.viewLabel}>Uploaded Files ({viewingMap.files.length}):</label>
-                        <div className={styles.filesList}>
-                          {viewingMap.files.map((file) => (
-                            <div key={file.id} className={styles.fileItem}>
-                              <span className={styles.fileType}>[{file.file_type}]</span>
-                              <span className={styles.fileName}>{file.file_name}</span>
-                              <span className={styles.fileSize}>({(file.file_size / 1024).toFixed(2)} KB)</span>
-                            </div>
+                        <label className={styles.viewLabel}>Description:</label>
+                        <div
+                          className={styles.viewContent}
+                          dangerouslySetInnerHTML={{
+                            __html: viewingMap.description || 'No description provided.',
+                          }}
+                        />
+                      </div>
+
+                      <div className={styles.viewSection}>
+                        <label className={styles.viewLabel}>Tags:</label>
+                        <div className={styles.tagContainer}>
+                          {viewingMap.tags.map((tag) => (
+                            <span key={tag} className={styles.tag}>
+                              {tag}
+                            </span>
                           ))}
                         </div>
                       </div>
-                    )}
+
+                      <div className={styles.viewRow}>
+                        <div className={styles.viewSection}>
+                          <label className={styles.viewLabel}>Access Level:</label>
+                          <span
+                            className={`${styles.accessBadge} ${
+                              viewingMap.access === 'Premium' ? styles.premium : styles.free
+                            }`}
+                          >
+                            {viewingMap.access}
+                          </span>
+                        </div>
+
+                        <div className={styles.viewSection}>
+                          <label className={styles.viewLabel}>Status:</label>
+                          <span
+                            className={`${styles.statusBadge} ${
+                              viewingMap.published ? styles.published : styles.draft
+                            }`}
+                          >
+                            {viewingMap.published ? 'Published' : 'Draft'}
+                          </span>
+                        </div>
+
+                        <div className={styles.viewSection}>
+                          <label className={styles.viewLabel}>Created:</label>
+                          <span className={styles.viewText}>
+                            {new Date(viewingMap.createdAt).toLocaleDateString()}
+                          </span>
+                        </div>
+                      </div>
+
+                      {viewingMap.files && viewingMap.files.length > 0 && (
+                        <div className={styles.viewSection}>
+                          <label className={styles.viewLabel}>
+                            Uploaded Files ({viewingMap.files.length}):
+                          </label>
+                          <div className={styles.filesList}>
+                            {viewingMap.files.map((file) => (
+                              <div key={file.id} className={styles.fileItem}>
+                                <span className={styles.fileType}>[{file.file_type}]</span>
+                                <span className={styles.fileName}>{file.file_name}</span>
+                                <span className={styles.fileSize}>
+                                  ({(file.file_size / 1024).toFixed(2)} KB)
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
                 )}
               </div>
             </div>
@@ -1161,81 +1256,81 @@ const FoundryMapsAdmin: React.FC = () => {
             </div>
             <table className={styles.table}>
               <thead>
-              <tr>
-                <th>Tag Name</th>
-                <th>Slug</th>
-                <th>Maps Using</th>
-                <th>Actions</th>
-              </tr>
+                <tr>
+                  <th>Tag Name</th>
+                  <th>Slug</th>
+                  <th>Maps Using</th>
+                  <th>Actions</th>
+                </tr>
               </thead>
               <tbody>
-              {tags.length === 0 ? (
-                <tr>
-                  <td colSpan={4} className={styles.emptyState}>
-                    No tags yet. Create one to get started!
-                  </td>
-                </tr>
-              ) : (
-                tags.map((tag) => (
-                  <tr key={tag.id}>
-                    <td>
-                      {editingTagId === tag.id ? (
-                        <input
-                          type="text"
-                          value={editingTagName}
-                          onChange={(e) => setEditingTagName(e.target.value)}
-                          onKeyDown={(e) => e.key === 'Enter' && handleUpdateTag(tag.id)}
-                          className={styles.tagEditInput}
-                          autoFocus
-                        />
-                      ) : (
-                        tag.name
-                      )}
-                    </td>
-                    <td className={styles.slugText}>{tag.slug}</td>
-                    <td className={styles.centerText}>{tag.mapCount}</td>
-                    <td>
-                      <div className={styles.actionButtons}>
-                        {editingTagId === tag.id ? (
-                          <>
-                            <button
-                              onClick={() => handleUpdateTag(tag.id)}
-                              className={`${styles.iconButton} ${styles.saveIcon}`}
-                              title="Save tag"
-                            >
-                              <MdSave />
-                            </button>
-                            <button
-                              onClick={cancelEditingTag}
-                              className={`${styles.iconButton} ${styles.cancelIcon}`}
-                              title="Cancel editing"
-                            >
-                              <MdCancel />
-                            </button>
-                          </>
-                        ) : (
-                          <>
-                            <button
-                              onClick={() => startEditingTag(tag)}
-                              className={`${styles.iconButton} ${styles.editIcon}`}
-                              title="Edit tag"
-                            >
-                              <MdEdit />
-                            </button>
-                            <button
-                              onClick={() => handleDeleteTag(tag.id, tag.name)}
-                              className={`${styles.iconButton} ${styles.deleteIcon}`}
-                              title="Delete tag"
-                            >
-                              <MdDelete />
-                            </button>
-                          </>
-                        )}
-                      </div>
+                {tags.length === 0 ? (
+                  <tr>
+                    <td colSpan={4} className={styles.emptyState}>
+                      No tags yet. Create one to get started!
                     </td>
                   </tr>
-                ))
-              )}
+                ) : (
+                  tags.map((tag) => (
+                    <tr key={tag.id}>
+                      <td>
+                        {editingTagId === tag.id ? (
+                          <input
+                            type="text"
+                            value={editingTagName}
+                            onChange={(e) => setEditingTagName(e.target.value)}
+                            onKeyDown={(e) => e.key === 'Enter' && handleUpdateTag(tag.id)}
+                            className={styles.tagEditInput}
+                            autoFocus
+                          />
+                        ) : (
+                          tag.name
+                        )}
+                      </td>
+                      <td className={styles.slugText}>{tag.slug}</td>
+                      <td className={styles.centerText}>{tag.mapCount}</td>
+                      <td>
+                        <div className={styles.actionButtons}>
+                          {editingTagId === tag.id ? (
+                            <>
+                              <button
+                                onClick={() => handleUpdateTag(tag.id)}
+                                className={`${styles.iconButton} ${styles.saveIcon}`}
+                                title="Save tag"
+                              >
+                                <MdSave />
+                              </button>
+                              <button
+                                onClick={cancelEditingTag}
+                                className={`${styles.iconButton} ${styles.cancelIcon}`}
+                                title="Cancel editing"
+                              >
+                                <MdCancel />
+                              </button>
+                            </>
+                          ) : (
+                            <>
+                              <button
+                                onClick={() => startEditingTag(tag)}
+                                className={`${styles.iconButton} ${styles.editIcon}`}
+                                title="Edit tag"
+                              >
+                                <MdEdit />
+                              </button>
+                              <button
+                                onClick={() => handleDeleteTag(tag.id, tag.name)}
+                                className={`${styles.iconButton} ${styles.deleteIcon}`}
+                                title="Delete tag"
+                              >
+                                <MdDelete />
+                              </button>
+                            </>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>

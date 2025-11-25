@@ -2,7 +2,7 @@
 
 class UserPolicy < ApplicationPolicy
   def index?
-    puts user
+    Rails.logger.debug user
     user.admin?
   end
 

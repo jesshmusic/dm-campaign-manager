@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-const styles = require('./copy-field.module.scss');
+import styles from './copy-field.module.scss';
 
 type CopyFieldProps = {
   text?: string;
@@ -12,13 +12,7 @@ type CopyFieldProps = {
   isTextArea?: boolean;
 };
 
-const CopyField = ({
-  text,
-  label,
-  fieldId,
-  placeHolder,
-  isTextArea,
-}: CopyFieldProps) => {
+const CopyField = ({ text, label, fieldId, placeHolder, isTextArea }: CopyFieldProps) => {
   const copyTextFieldRef = useRef<HTMLInputElement | null>(null);
   const copyTextAreaRef = useRef<HTMLTextAreaElement | null>(null);
   const [currentValue] = useState('');

@@ -243,8 +243,7 @@ export const useData = (props: ItemsPageProps) => {
         name: item.name,
         properties: item.properties,
         rarity: item.rarity || '-',
-        requiresAttunement:
-          item.requiresAttunement !== '' ? item.requiresAttunement : '-',
+        requiresAttunement: item.requiresAttunement !== '' ? item.requiresAttunement : '-',
         slug: item.slug,
         speed: item.speed,
         stealth: item.stealth,
@@ -264,11 +263,9 @@ export const useData = (props: ItemsPageProps) => {
   };
 };
 
-export const singleItemUseData = (props: ItemPageProps) => {
+export const singleItemUseData = (_props: ItemPageProps) => {
   const getCostString = (cost?: { quantity: number; unit: string }) => {
-    return cost
-      ? `${Util.numberWithCommas(cost.quantity)} ${cost.unit}`
-      : 'N/A';
+    return cost ? `${Util.numberWithCommas(cost.quantity)} ${cost.unit}` : 'N/A';
   };
   const getItemParentInfo = (item: ItemProps): ItemInfoBlock => {
     switch (item.category) {
@@ -276,9 +273,7 @@ export const singleItemUseData = (props: ItemPageProps) => {
         return {
           parentTitle: 'Armor',
           parentUrl: '/app/items/armor',
-          subtitle: `${item.armorType} ${
-            item.armorType !== 'Shield' ? ' armor' : ''
-          }`,
+          subtitle: `${item.armorType} ${item.armorType !== 'Shield' ? ' armor' : ''}`,
           infoBlock: [
             { title: 'Armor Class', desc: item.armorClass || '' },
             {
@@ -345,9 +340,9 @@ export const singleItemUseData = (props: ItemPageProps) => {
         return {
           parentTitle: 'Magic Armor',
           parentUrl: '/app/items/magic-armor',
-          subtitle: `${item.armorType} ${
-            item.armorType !== 'Shield' ? ' armor' : ''
-          }, ${item.rarity} ${
+          subtitle: `${item.armorType} ${item.armorType !== 'Shield' ? ' armor' : ''}, ${
+            item.rarity
+          } ${
             item.requiresAttunement &&
             item.requiresAttunement !== '' &&
             `(${item.requiresAttunement})`

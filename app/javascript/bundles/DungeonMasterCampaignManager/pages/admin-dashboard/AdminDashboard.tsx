@@ -14,9 +14,9 @@ import Frame from '../../components/Frame/Frame';
 import Button from '../../components/Button/Button';
 import { Colors } from '../../utilities/enums';
 
-const packageJson = require('../../../../../../package.json');
+import packageJson from '../../../../../../package.json';
 
-const styles = require('./admin-dashboard.module.scss');
+import styles from './admin-dashboard.module.scss';
 
 const AdminDashboard = (props: {
   actionCount: number;
@@ -25,7 +25,7 @@ const AdminDashboard = (props: {
   user: UserProps;
   userCount: number;
 }) => {
-  const { actionCount, npcCount, user, userCount, widgetCount } = props;
+  const { actionCount, npcCount, user, userCount } = props;
   const navigate = useNavigate();
 
   return (
@@ -139,7 +139,7 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(_dispatch) {
   return {};
 }
 

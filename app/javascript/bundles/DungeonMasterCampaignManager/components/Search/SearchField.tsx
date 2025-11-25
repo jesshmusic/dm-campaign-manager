@@ -4,13 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import { Colors } from '../../utilities/enums';
 import { GiArchiveResearch } from 'react-icons/all';
 import Button from '../Button/Button';
-const styles = require('./search-field.module.scss');
+import styles from './search-field.module.scss';
 
 const SearchField = () => {
   const navigate = useNavigate();
-  const { register, handleSubmit, formState: { errors } } = useForm();
-  const onSubmit = data => {
-    console.log(data);
+  const { register, handleSubmit } = useForm();
+  const onSubmit = (data) => {
     navigate(`/app/search/${data.search}`);
   };
 
@@ -28,7 +27,6 @@ const SearchField = () => {
       </div>
     </form>
   );
-}
+};
 
 export default SearchField;
-

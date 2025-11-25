@@ -30,9 +30,42 @@ $gray-700: darken($ash, 30%);
 $gray-800: darken($ash, 40%);
 $gray-900: darken($ash, 50%);
 $black: #000;
-$grays: (100: $gray-100, 200: $gray-200, 300: $gray-300, 400: $gray-400, 500: $gray-500, 600: $gray-600, 700: $gray-700, 800: $gray-800, 900: $gray-900);
-$theme-colors: (primary: $primary, secondary: $brown, success: $green, info: $orange, warning: $yellow, danger: $blood-red, light: $gray-100, dark: $gray-800);
-$colors: (blue: $blue, indigo: $light-purple, purple: $iris, pink: $light-purple, red: $blood-red, orange: $orange, yellow: $yellow, green: $green, teal: $pine-green, cyan: $green, white: $white, gray: $gray-600, gray-dark: $gray-800);
+$grays: (
+  100: $gray-100,
+  200: $gray-200,
+  300: $gray-300,
+  400: $gray-400,
+  500: $gray-500,
+  600: $gray-600,
+  700: $gray-700,
+  800: $gray-800,
+  900: $gray-900,
+);
+$theme-colors: (
+  primary: $primary,
+  secondary: $brown,
+  success: $green,
+  info: $orange,
+  warning: $yellow,
+  danger: $blood-red,
+  light: $gray-100,
+  dark: $gray-800,
+);
+$colors: (
+  blue: $blue,
+  indigo: $light-purple,
+  purple: $iris,
+  pink: $light-purple,
+  red: $blood-red,
+  orange: $orange,
+  yellow: $yellow,
+  green: $green,
+  teal: $pine-green,
+  cyan: $green,
+  white: $white,
+  gray: $gray-600,
+  gray-dark: $gray-800,
+);
 $theme-color-interval: 8%;
 
 $primary-dark: $dark-red;
@@ -51,9 +84,28 @@ $page-background: url('/images/dndBG.jpg');
 
 // Spacing
 $spacer: 1rem;
-$spacers: (0: 0, 1: ($spacer * 0.25), 2: ($spacer * 0.5), 3: $spacer, 4: ($spacer * 1.5), 5: ($spacer * 3));
-$sizes: (25: 25%, 50: 50%, 75: 75%, 100: 100%);
-
+$spacers: (
+  0: 0,
+  1: (
+    $spacer * 0.25,
+  ),
+  2: (
+    $spacer * 0.5,
+  ),
+  3: $spacer,
+  4: (
+    $spacer * 1.5,
+  ),
+  5: (
+    $spacer * 3,
+  ),
+);
+$sizes: (
+  25: 25%,
+  50: 50%,
+  75: 75%,
+  100: 100%,
+);
 
 // Options
 $enable-rounded: true;
@@ -79,11 +131,9 @@ $sidebar-collapsed-width: 5rem;
 $box-shadow: 5px 7px 7px rgba($gray-900, 0.5);
 $box-shadow-sm: 3px 5px 5px rgba($gray-900, 0.5);
 
-
 // Body
 $body-bg: $primary;
 $body-color: $gray-900;
-
 
 // Links
 $link-color: $primary;
@@ -91,10 +141,20 @@ $link-decoration: none;
 $link-hover-color: darken($link-color, 15%);
 $link-hover-decoration: underline;
 
-
 // Grid
-$grid-breakpoints: (xs: 0, sm: 576px, md: 768px, lg: 992px, xl: 1200px);
-$container-max-widths: (sm: 540px, md: 720px, lg: 960px, xl: 1140px);
+$grid-breakpoints: (
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px,
+);
+$container-max-widths: (
+  sm: 540px,
+  md: 720px,
+  lg: 960px,
+  xl: 1140px,
+);
 $grid-columns: 12;
 $grid-gutter-width: 0.5rem;
 $grid-gutter-height: 0.5rem;
@@ -114,7 +174,8 @@ $transition-fade: opacity 0.15s linear;
 $transition-collapse: height 0.35s ease;
 
 // Fonts
-$font-family-sans-serif: 'Scaly Sans', BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+$font-family-sans-serif: 'Scaly Sans', BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
+  Arial, sans-serif;
 $font-family-serif: 'Bookinsanity', serif;
 $font-family-mr-eaves: 'Mr Eaves', serif;
 $font-family-draconis: 'Draconis Bold', serif;
@@ -162,7 +223,6 @@ $nested-kbd-font-weight: $font-weight-bold;
 $list-inline-padding: 0.3125rem;
 $mark-bg: #fcf8e3;
 
-
 // Buttons
 $input-btn-padding-y: 0.5rem;
 $input-btn-padding-x: 0.75rem;
@@ -183,7 +243,6 @@ $btn-border-radius: $border-radius;
 $btn-border-radius-lg: $border-radius-lg;
 $btn-border-radius-sm: $border-radius-sm;
 $btn-transition: all 0.15s ease-in-out;
-
 
 // Forms
 $input-bg: lighten($orange, 35%);
@@ -253,7 +312,8 @@ $custom-select-border-width: $input-btn-border-width;
 $custom-select-border-color: $input-border-color;
 $custom-select-border-radius: $border-radius;
 $custom-select-focus-border-color: lighten($primary, 25%);
-$custom-select-focus-box-shadow: inset 0 0.0625rem 0.125rem rgba($black, 0.075), 0 0 0.3125rem rgba($custom-select-focus-border-color, 0.5);
+$custom-select-focus-box-shadow: inset 0 0.0625rem 0.125rem rgba($black, 0.075),
+  0 0 0.3125rem rgba($custom-select-focus-border-color, 0.5);
 $custom-select-font-size-sm: 75%;
 $custom-select-height-sm: $input-height-sm;
 $custom-file-height: 2.5rem;
@@ -273,7 +333,6 @@ $custom-file-button-bg: $gray-200;
 $form-feedback-valid-color: $green;
 $form-feedback-invalid-color: $blood-red;
 
-
 // Navs
 $nav-link-padding-y: 1rem;
 $nav-link-padding-x: 1rem;
@@ -289,7 +348,6 @@ $nav-pills-border-radius: $border-radius;
 $nav-pills-link-active-color: $component-active-color;
 $nav-pills-link-active-bg: $component-active-bg;
 
-
 // Tables
 $table-cell-padding: 0.75rem;
 $table-cell-padding-sm: 0.3rem;
@@ -302,7 +360,6 @@ $table-border-width: 0;
 $table-border-color: transparent;
 $table-head-bg: $ash;
 $table-head-color: $white;
-
 
 // Pagination
 $pagination-padding-y: 0.5rem;

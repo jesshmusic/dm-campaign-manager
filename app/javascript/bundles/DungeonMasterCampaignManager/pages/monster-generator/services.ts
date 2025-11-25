@@ -44,7 +44,7 @@ const abilityForSkill = {
 const parseMonsterProficiencies = (
   values: MonsterGeneratorFormFields | MonsterQuickGeneratorFormFields
 ) => {
-  let monsterProfs: MonsterProf[] = [];
+  const monsterProfs: MonsterProf[] = [];
   if (values.savingThrowOptions.length && values.savingThrowOptions.length > 0) {
     values.savingThrowOptions.forEach((save) => {
       const saveAbility = abilityAbbr[save.label];
@@ -141,8 +141,8 @@ export const getMonsterObject = (values: MonsterGeneratorFormFields): MonsterPro
 
 export const createMonsterParams = (monster: MonsterProps) => {
   const {
-    challengeString,
-    hitPointsString,
+    challengeString: _challengeString,
+    hitPointsString: _hitPointsString,
     actions,
     legendaryActions,
     reactions,
@@ -178,7 +178,7 @@ export const createMonsterParams = (monster: MonsterProps) => {
 };
 
 export const createQuickMonsterParams = (values: MonsterQuickGeneratorFormFields) => {
-  let monsterParams = {
+  const monsterParams = {
     name: values.name,
     actionOptions: values.actionOptions.map((actionOption) => actionOption.value),
     alignment: values.alignmentOption.label,
@@ -199,27 +199,27 @@ export const createQuickMonsterParams = (values: MonsterQuickGeneratorFormFields
   };
 
   if (values.charisma) {
-    // @ts-ignore
+    // @ts-expect-error
     monsterParams.charisma = values.charisma;
   }
 
   if (values.dexterity) {
-    // @ts-ignore
+    // @ts-expect-error
     monsterParams.dexterity = values.dexterity;
   }
 
   if (values.intelligence) {
-    // @ts-ignore
+    // @ts-expect-error
     monsterParams.intelligence = values.intelligence;
   }
 
   if (values.strength) {
-    // @ts-ignore
+    // @ts-expect-error
     monsterParams.strength = values.strength;
   }
 
   if (values.wisdom) {
-    // @ts-ignore
+    // @ts-expect-error
     monsterParams.wisdom = values.wisdom;
   }
   const parsedMonsterParams = {
@@ -255,7 +255,7 @@ export const get2eMonsterObject = (values) => {
 export const calculateCR = async (allValues: FieldValues): Promise<MonsterCRCalcResult> => {
   const monster = getMonsterObject(allValues as MonsterGeneratorFormFields);
   const monsterData = createMonsterParams(monster);
-  return await axios.post<{ monster: any }, MonsterCRCalcResult>('/v1/calculate_cr', {
+  return await axios.post<{ monster: unknown }, MonsterCRCalcResult>('/v1/calculate_cr', {
     monster: monsterData,
   });
 };

@@ -4,10 +4,7 @@
 
 import React from 'react';
 import { GiAbacus, GiSwordsPower } from 'react-icons/gi';
-import {
-  ActionFormComponentProps,
-  ActionTypes,
-} from '../../../../../../../utilities/types';
+import { ActionFormComponentProps, ActionTypes } from '../../../../../../../utilities/types';
 import Button from '../../../../../../../components/Button/Button';
 import { Colors } from '../../../../../../../utilities/enums';
 

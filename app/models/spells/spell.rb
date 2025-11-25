@@ -38,6 +38,7 @@
 class Spell < ApplicationRecord
   validates :name, :level, :casting_time, :duration, :range, :school, presence: true
   extend FriendlyId
+
   friendly_id :name, use: :slugged
 
   def normalize_friendly_id(string)
@@ -93,13 +94,14 @@ class Spell < ApplicationRecord
   end
 
   include PgSearch::Model
+
   # PgSearch
-  multisearchable against: [:name, :description, :school]
+  multisearchable against: %i[name description school]
   pg_search_scope :search_for,
                   against: {
                     name: 'A',
                     description: 'B',
-                    school: 'C',
+                    school: 'C'
                   },
                   using: {
                     tsearch: {

@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require "json"
-require "net/http"
-require "time"
-require "uri"
+require 'json'
+require 'net/http'
+require 'time'
+require 'uri'
 
 module OpenAI
   class Client
@@ -14,9 +14,9 @@ module OpenAI
       :status_code, :status_message, keyword_init: true
     )
 
-    Completion   = Struct.new(:choices, :created, :id, :model, :object, keyword_init: true) do
+    Completion = Struct.new(:choices, :created, :id, :model, :object, keyword_init: true) do
       def created_at
-        Time.at(created)
+        Time.zone.at(created)
       end
     end
     SearchResult = Struct.new(:document, :object, :score, :text,  keyword_init: true)
@@ -26,9 +26,10 @@ module OpenAI
     # Construction
     # ─────────────────────────────────────────────────────────────
     attr_reader :last_response
-    attr_writer  :api_key
+    attr_writer :api_key
     attr_accessor :default_model
-    DEFAULT_MODEL = ENV.fetch("OPENAI_DEFAULT_MODEL", "gpt-4o").freeze
+
+    DEFAULT_MODEL = ENV.fetch('OPENAI_DEFAULT_MODEL', 'gpt-4o').freeze
 
     def initialize(api_key:, default_model: DEFAULT_MODEL)
       @api_key       = api_key
@@ -40,34 +41,33 @@ module OpenAI
     # ─────────────────────────────────────────────────────────────
     def completions(prompt:, **opts)
       defaults = {
-        temperature:       1.4,
-        top_p:             1.0,
-        presence_penalty:  1.3,
+        temperature: 1.4,
+        top_p: 1.0,
+        presence_penalty: 1.3,
         frequency_penalty: 0.6,
-        n:                 1,
-        model:             default_model
+        n: 1,
+        model: default_model
       }
 
       p = defaults.merge(opts)
 
       body = {
-        model:             p[:model],
-        temperature:       p[:temperature],
-        top_p:             p[:top_p],
-        presence_penalty:  p[:presence_penalty],
+        model: p[:model],
+        temperature: p[:temperature],
+        top_p: p[:top_p],
+        presence_penalty: p[:presence_penalty],
         frequency_penalty: p[:frequency_penalty],
-        n:                 p[:n],
+        n: p[:n],
         messages: [
-          { role: "user", content: prompt.to_s }
+          { role: 'user', content: prompt.to_s }
         ]
       }
 
-      response = post("/v1/chat/completions", body: body)
+      response = post('/v1/chat/completions', body: body)
       choices  = response[:choices].map { |c| c.dig(:message, :content)&.strip }
 
       p[:n] == 1 ? choices.first : choices
     end
-
 
     # ─────────────────────────────────────────────────────────────
     # Legacy search (unchanged)
@@ -85,7 +85,7 @@ module OpenAI
     # ─────────────────────────────────────────────────────────────
     private
 
-    BASE_URI = URI("https://api.openai.com").freeze
+    BASE_URI = URI('https://api.openai.com').freeze
 
     def get(path)
       handle_response http_request(:Get, path)
@@ -109,16 +109,15 @@ module OpenAI
       ) do |http|
         http.request(req)
       end
-
     end
 
     def handle_response(response)
       @last_response = LastResponse.new(
-        date:           response["date"] && Time.httpdate(response["date"]),
-        organization:   response["openai-organization"],
-        processing_ms:  response["openai-processing-ms"]&.to_i,
-        request_id:     response["x-request-id"],
-        status_code:    response.code.to_i,
+        date: response['date'] && Time.httpdate(response['date']),
+        organization: response['openai-organization'],
+        processing_ms: response['openai-processing-ms']&.to_i,
+        request_id: response['x-request-id'],
+        status_code: response.code.to_i,
         status_message: response.message
       )
 
@@ -130,8 +129,8 @@ module OpenAI
 
     def headers
       {
-        "Authorization" => "Bearer #{@api_key}",
-        "Content-Type"  => "application/json"
+        'Authorization' => "Bearer #{@api_key}",
+        'Content-Type' => 'application/json'
       }
     end
   end

@@ -26,7 +26,6 @@ export const useCreateWidgetState = (props: {
   });
 
   const updateWidgetForm = async (fieldName: string | undefined, value: unknown) => {
-    // @ts-ignore
     const fields = value as CreateWidgetForm;
     if (fieldName === 'iconOption') {
       UseForm.setValue('icon', fields.iconOption.value as string);
@@ -35,8 +34,7 @@ export const useCreateWidgetState = (props: {
 
   React.useEffect(() => {
     const subscription = UseForm.watch((value) => {
-      // @ts-ignore
-      setTestState(value);
+      setTestState(value as any);
     });
     return () => subscription.unsubscribe();
   }, [UseForm.watch]);

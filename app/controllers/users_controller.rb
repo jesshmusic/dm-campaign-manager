@@ -28,14 +28,14 @@ class UsersController < SecuredController
     @user.name = user_params[:name]
     @user.email = user_params[:email]
     @user.username = user_params[:username]
-    if user_params[:roles] && user_params[:roles].count > 0
+    if user_params[:roles]&.any?
       @user.role = :user if user_params[:roles].include? 'User'
       @user.role = :dungeon_master if user_params[:roles].include? 'Dungeon Master'
       @user.role = :admin if user_params[:roles].include? 'Admin'
     end
     @user.save!
     session[:user] = @user.attributes
-    puts session[:user]
+    Rails.logger.debug session[:user]
 
     # Set redirect path for view (will be rendered by jbuilder)
     @redirect_path = @user.admin? ? '/app/admin-dashboard' : '/app/user-dashboard'
@@ -58,7 +58,8 @@ class UsersController < SecuredController
 
   # PATCH/PUT /users/1
   def update
-    unless @user.nil?
+    return if @user.nil?
+
     authorize @user
     respond_to do |format|
       if @user.update(user_params)
@@ -69,26 +70,25 @@ class UsersController < SecuredController
         format.json { render json: @user.errors, status: :unprocessable_entity }
       end
     end
-    end
   end
 
   # PATCH/PUT /v1/users/1/change_role
   def change_role
-    unless @user.nil?
-      authorize @user
-      if @user.role == 'dungeon_master'
-        @user.role = :player
-      elsif @user.role == 'player'
-        @user.role = :dungeon_master
-      end
-      respond_to do |format|
-        if @user.save
-          format.html { redirect_to user_path, notice: 'UserProps role was successfully changed.' }
-          format.json
-        else
-          format.html { render :index }
-          format.json { render json: @user.errors, status: :unprocessable_entity }
-        end
+    return if @user.nil?
+
+    authorize @user
+    if @user.role == 'dungeon_master'
+      @user.role = :player
+    elsif @user.role == 'player'
+      @user.role = :dungeon_master
+    end
+    respond_to do |format|
+      if @user.save
+        format.html { redirect_to user_path, notice: 'UserProps role was successfully changed.' }
+        format.json
+      else
+        format.html { render :index }
+        format.json { render json: @user.errors, status: :unprocessable_entity }
       end
     end
   end

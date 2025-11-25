@@ -4,7 +4,7 @@ import { Colors } from '../../../utilities/enums';
 import Button from '../../../components/Button/Button';
 import { GiFire } from 'react-icons/all';
 
-const styles = require('../../../components/forms/input.module.scss');
+import styles from '../../../components/forms/input.module.scss';
 
 type NameFormFieldProps = {
   characterRace?: string;

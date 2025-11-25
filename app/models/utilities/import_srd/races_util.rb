@@ -1,12 +1,8 @@
 class RacesUtil
   class << self
-    def dnd_api_url
-      ImportSrdUtilities.dnd_api_url
-    end
+    delegate :dnd_api_url, to: :ImportSrdUtilities
 
-    def dnd_open5e_url
-      ImportSrdUtilities.dnd_open5e_url
-    end
+    delegate :dnd_open5e_url, to: :ImportSrdUtilities
 
     def import
       uri = URI("#{dnd_api_url}/api/races")
@@ -34,14 +30,14 @@ class RacesUtil
         current_race.size = race_result[:size]
         current_race.size_description = race_result[:size_description]
         current_race.speed = race_result[:speed]
-        current_race.subraces = race_result[:subraces] ? race_result[:subraces] : []
+        current_race.subraces = race_result[:subraces] || []
         current_race.save!
         import_abilities(current_race, race_result)
         import_traits(current_race, race_result)
-        puts "\tRace #{current_race.name} imported"
+        Rails.logger.debug { "\tRace #{current_race.name} imported" }
         count += 1
       end
-      puts "#{count} Races imported or updated."
+      Rails.logger.debug { "#{count} Races imported or updated." }
     end
 
     private
@@ -66,24 +62,24 @@ class RacesUtil
     end
 
     def import_abilities(race, race_result)
-      if race_result[:ability_bonuses]
-        race_result[:ability_bonuses].each do |ability|
-          race.ability_bonus_options.create(ability: ability_score_name(ability[:ability_score][:name]), bonus: ability[:bonus])
-        end
-        race.save!
+      return unless race_result[:ability_bonuses]
+
+      race_result[:ability_bonuses].each do |ability|
+        race.ability_bonus_options.create(ability: ability_score_name(ability[:ability_score][:name]), bonus: ability[:bonus])
       end
+      race.save!
     end
 
     def import_traits(race, race_result)
-      if race_result[:traits]
-        race_result[:traits].each do |trait|
-          trait_uri = URI("#{dnd_api_url}#{trait[:url]}")
-          trait_response = Net::HTTP.get(trait_uri)
-          trait_result = JSON.parse trait_response, symbolize_names: true
-          race.race_traits.create(name: trait_result[:name], desc: trait_result[:desc])
-        end
-        race.save!
+      return unless race_result[:traits]
+
+      race_result[:traits].each do |trait|
+        trait_uri = URI("#{dnd_api_url}#{trait[:url]}")
+        trait_response = Net::HTTP.get(trait_uri)
+        trait_result = JSON.parse trait_response, symbolize_names: true
+        race.race_traits.create(name: trait_result[:name], desc: trait_result[:desc])
       end
+      race.save!
     end
   end
 end

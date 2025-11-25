@@ -17,7 +17,7 @@ const races = createReducer(
   },
   (builder) =>
     builder
-      .addCase(getRaces, (state, action: AnyAction) => {
+      .addCase(getRaces, (state, _action: AnyAction) => {
         return {
           races: [],
           currentRace: state.currentRace,
@@ -41,7 +41,7 @@ const races = createReducer(
           loading: false,
         };
       })
-      .addCase(getRace, (state, action: AnyAction) => {
+      .addCase(getRace, (state, _action: AnyAction) => {
         return {
           races: state.races,
           currentRace: null,

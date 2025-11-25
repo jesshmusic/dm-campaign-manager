@@ -8,12 +8,9 @@ import rest from '../../api/api';
 import { connect } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-const styles = require('./spells.module.scss');
+import styles from './spells.module.scss';
 
-const Spell = (props: {
-  spell: SpellProps;
-  getSpell: (spellSlug: string) => void;
-}) => {
+const Spell = (props: { spell: SpellProps; getSpell: (spellSlug: string) => void }) => {
   const { spell, getSpell } = props;
   const { spellSlug } = useParams<'spellSlug'>();
 
@@ -36,13 +33,10 @@ const Spell = (props: {
           <div className={styles.description}>
             {spell.spellLevel} {spell.school.toLowerCase()}
           </div>
-          <InfoBlock title='Casting Time' desc={spell.castingTime} />
-          <InfoBlock title='Range' desc={spell.range} />
-          <InfoBlock
-            title='Components'
-            desc={`${spell.components.join(', ')}${spellMats}`}
-          />
-          <InfoBlock title='Duration' desc={spell.duration} />
+          <InfoBlock title="Casting Time" desc={spell.castingTime} />
+          <InfoBlock title="Range" desc={spell.range} />
+          <InfoBlock title="Components" desc={`${spell.components.join(', ')}${spellMats}`} />
+          <InfoBlock title="Duration" desc={spell.duration} />
           <p>{spell.description}</p>
           <p>{spell.higherLevel}</p>
         </div>
@@ -55,7 +49,7 @@ const Spell = (props: {
 
 function mapStateToProps(state) {
   return {
-    spell: state.spells.currentSpell
+    spell: state.spells.currentSpell,
   };
 }
 
@@ -63,7 +57,7 @@ function mapDispatchToProps(dispatch) {
   return {
     getSpell: (spellSlug: string) => {
       dispatch(rest.actions.getSpell({ id: spellSlug }));
-    }
+    },
   };
 }
 

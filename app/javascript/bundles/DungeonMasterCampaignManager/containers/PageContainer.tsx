@@ -12,14 +12,13 @@ import Util from '../utilities/utilities';
 import { gsap } from 'gsap';
 import { Transition, TransitionGroup } from 'react-transition-group';
 import classNames from 'classnames';
-import BannerAd from '../components/BannerAd/BannerAd';
 import ReactGA from 'react-ga4';
 import YouTubeAd from '../components/BannerAd/YouTubeAd';
 import SearchField from '../components/Search/SearchField';
 
 ReactGA.initialize('G-8XJTH70JSQ');
 
-const styles = require('./page-container.module.scss');
+import styles from './page-container.module.scss';
 
 type PageContainerProps = {
   children?: React.ReactNode;
@@ -42,7 +41,6 @@ const PageContainer = (props: PageContainerProps) => {
 
   React.useEffect(() => {
     const componentDidMount = () => {
-      console.log(window.location.pathname);
       ReactGA.send({ hitType: 'pageview', page: window.location.pathname });
     };
     componentDidMount();

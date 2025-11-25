@@ -7,8 +7,11 @@ import {
   BiLogIn,
   BiLogOut,
   BiShow,
-  GiAchillesHeel, GiBookPile,
-  GiBookshelf, GiBookStorm, GiBurningBook,
+  GiAchillesHeel,
+  GiBookPile,
+  GiBookshelf,
+  GiBookStorm,
+  GiBurningBook,
   GiCapeArmor,
   GiChestArmor,
   GiDungeonGate,
@@ -21,20 +24,26 @@ import {
   GiMagicPotion,
   GiMonsterGrasp,
   GiPerson,
-  GiRuleBook, GiSecretBook, GiSpellBook,
+  GiRuleBook,
+  GiSecretBook,
+  GiSpellBook,
   GiSwapBag,
   GiSwordArray,
-  GiToolbox
+  GiToolbox,
 } from 'react-icons/all';
+import PatreonIcon from '../icons/PatreonIcon';
+
+const PATREON_URL =
+  'https://patreon.com/DormanLakely?utm_medium=unknown&utm_source=join_link&utm_campaign=creatorshare_creator&utm_content=copyLink';
 
 const ruleBooks = [
-  <GiRuleBook />,
-  <GiBookPile />,
-  <GiBurningBook />,
-  <GiSecretBook />,
-  <GiSpellBook />,
-  <GiBookStorm />
-]
+  <GiRuleBook key="rule-book" />,
+  <GiBookPile key="book-pile" />,
+  <GiBurningBook key="burning-book" />,
+  <GiSecretBook key="secret-book" />,
+  <GiSpellBook key="spell-book" />,
+  <GiBookStorm key="book-storm" />,
+];
 
 import {
   Menu,
@@ -49,9 +58,9 @@ import { SidebarButton, SidebarLink } from '../NavLink/NavLink';
 import { useAuth0 } from '@auth0/auth0-react';
 import { UserProps } from '../../utilities/types';
 
-const sidebarBG = require('./SidebarBackground.jpg');
+import sidebarBG from './SidebarBackground.jpg';
 
-const styles = require('./sidebar.module.scss');
+import styles from './sidebar.module.scss';
 
 const itemTypes = [
   { name: 'Armor', link: '/app/items/armor', icon: <GiCapeArmor /> },
@@ -86,11 +95,10 @@ const SideBar = (props: {
   isCollapsed: boolean;
   isMobile: boolean;
   logOutUser: (token: string) => void;
-  rules: { name: string; slug: string, rules?: {name: string, slug: string}[] }[];
+  rules: { name: string; slug: string; rules?: { name: string; slug: string }[] }[];
   setIsCollapsed: (boolean) => void;
 }) => {
-  const { currentUser, getRules, isCollapsed, isMobile, logOutUser, rules, setIsCollapsed } =
-    props;
+  const { currentUser, getRules, isCollapsed, isMobile, logOutUser, rules, setIsCollapsed } = props;
 
   const { user, getAccessTokenSilently, isAuthenticated, loginWithRedirect, logout } = useAuth0();
 
@@ -133,23 +141,28 @@ const SideBar = (props: {
             <SidebarLink to="/app/conditions" title="Conditions" icon={<GiAchillesHeel />} />
             <SubMenu title="Rules" icon={<GiBookshelf />}>
               {rules.map((rule, index) => (
-                <SubMenu title={rule.name} icon={index < 6 ? ruleBooks[index] : <GiRuleBook />}>
+                <SubMenu
+                  key={`rule-${rule.slug}-${index}`}
+                  title={rule.name}
+                  icon={index < 6 ? ruleBooks[index] : <GiRuleBook />}
+                >
                   <SidebarLink
                     key={`rulesTop-${index}`}
                     to={`/app/rules/${rule.slug}`}
                     title={rule.name}
                   />
-                  {rule.rules && rule.rules.map((subrule, subIndex) => (
-                    <SidebarLink
-                      key={`rulesInner-${subIndex}`}
-                      to={`/app/rules/${subrule.slug}`}
-                      title={subrule.name}
-                    />
-                  ))}
+                  {rule.rules &&
+                    rule.rules.map((subrule, subIndex) => (
+                      <SidebarLink
+                        key={`rulesInner-${subIndex}`}
+                        to={`/app/rules/${subrule.slug}`}
+                        title={subrule.name}
+                      />
+                    ))}
                 </SubMenu>
               ))}
             </SubMenu>
-            <SubMenu title="Items & Equipment" icon={<GiSwapBag />} >
+            <SubMenu title="Items & Equipment" icon={<GiSwapBag />}>
               {itemTypes.map((itemType, index) => (
                 <SidebarLink
                   key={`items-${index}`}
@@ -177,6 +190,11 @@ const SideBar = (props: {
             {currentUser && currentUser.role === 'admin' ? (
               <SidebarLink to="/app/admin-dashboard" title="Admin" icon={<GiKing />} />
             ) : null}
+            <MenuItem icon={<PatreonIcon />}>
+              <a href={PATREON_URL} target="_blank" rel="noopener noreferrer">
+                Support on Patreon
+              </a>
+            </MenuItem>
             {isAuthenticated && user ? (
               <>
                 <SidebarLink

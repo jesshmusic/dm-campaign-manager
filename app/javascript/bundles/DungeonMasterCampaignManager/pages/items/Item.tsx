@@ -11,10 +11,10 @@ import ReactMarkdown from 'react-markdown';
 import { singleItemUseData } from './use-data';
 import { Link, useParams } from 'react-router-dom';
 
-const styles = require('./item.module.scss');
+import styles from './item.module.scss';
 
 const Item = (props: ItemPageProps) => {
-  const { item, getItem, loading } = props;
+  const { item, getItem } = props;
   const { getItemParentInfo } = singleItemUseData(props);
   const [itemInfo, setItemInfo] = React.useState<ItemInfoBlock>({
     parentTitle: 'Loading...',
@@ -59,8 +59,7 @@ const Item = (props: ItemPageProps) => {
                 {item.contents.map((contentItem, index) => (
                   <li key={`${contentItem.index}-${index}`}>
                     <Link to={`/app/items/${contentItem.index}`}>
-                      <strong>{contentItem.name}</strong> - quantity:{' '}
-                      {contentItem.quantity}
+                      <strong>{contentItem.name}</strong> - quantity: {contentItem.quantity}
                     </Link>
                   </li>
                 ))}
@@ -72,16 +71,17 @@ const Item = (props: ItemPageProps) => {
               <ReactMarkdown
                 key={index}
                 className={styles.section}
-                children={itemDesc}
                 components={{
-                  table: ({ node, ...props }) => (
+                  table: ({ node: _node, ...props }) => (
                     <div className={styles.tableFrame}>
                       <table {...props} />
                     </div>
                   ),
                 }}
                 remarkPlugins={[remarkGfm]}
-              />
+              >
+                {itemDesc}
+              </ReactMarkdown>
             ))}
         </div>
       ) : (

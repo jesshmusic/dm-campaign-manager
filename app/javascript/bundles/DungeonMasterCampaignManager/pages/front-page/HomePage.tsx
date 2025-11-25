@@ -5,9 +5,9 @@ import { PageProps } from '../../utilities/types';
 import { useAuth0 } from '@auth0/auth0-react';
 import Dashboard from '../user-dashboard/Dashboard';
 
-const styles = require('./home-page.module.scss');
+import styles from './home-page.module.scss';
 
-const HomePage = (props: PageProps) => {
+const HomePage = (_props: PageProps) => {
   const { isAuthenticated, user } = useAuth0();
 
   return (

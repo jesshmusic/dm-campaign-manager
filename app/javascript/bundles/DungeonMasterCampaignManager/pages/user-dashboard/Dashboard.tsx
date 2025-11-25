@@ -10,7 +10,7 @@ import { useDashboardState } from './use-dashboard-state';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
-const styles = require('./user-dashboard.module.scss');
+import styles from './user-dashboard.module.scss';
 
 const Dashboard = ({ customWidgets, getWidgets }) => {
   const { allWidgets, layouts, onAddItem, onLayoutChange, onRemoveItem, widgetKeys, widgets } =

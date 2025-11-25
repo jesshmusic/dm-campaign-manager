@@ -1,37 +1,34 @@
 class ItemsUtil
   class << self
-    def dnd_api_url
-      ImportSrdUtilities.dnd_api_url
-    end
+    delegate :dnd_api_url, to: :ImportSrdUtilities
 
-    def dnd_open5e_url
-      ImportSrdUtilities.dnd_open5e_url
-    end
+    delegate :dnd_open5e_url, to: :ImportSrdUtilities
 
     def import
       import_initial_items
     end
 
     def generate_actions_from_weapons
-      WeaponItem.all.each do |weapon|
+      WeaponItem.find_each do |weapon|
         create_weapon_action(weapon)
       end
-      MagicWeaponItem.all.each do |weapon|
+      MagicWeaponItem.find_each do |weapon|
         create_weapon_action(weapon)
       end
     end
 
     private
+
     def create_weapon_action(weapon)
-      wpn_damage = weapon.damage ? weapon.damage : nil
-      if wpn_damage
-        wpn_action = parse_action_hash(weapon)
-        desc = NpcGenerator.generate_action_desc(wpn_action)
-        unless MonsterAction.find_by(name: weapon.name)
-          MonsterAction.create!(name: weapon.name, desc: desc)
-          puts "Created Monster Action: \"#{weapon.name}\""
-        end
-      end
+      wpn_damage = weapon.damage || nil
+      return unless wpn_damage
+
+      wpn_action = parse_action_hash(weapon)
+      desc = NpcGenerator.generate_action_desc(wpn_action)
+      return if MonsterAction.find_by(name: weapon.name)
+
+      MonsterAction.create!(name: weapon.name, desc: desc)
+      Rails.logger.debug { "Created Monster Action: \"#{weapon.name}\"" }
     end
 
     def parse_action_hash(weapon)
@@ -53,9 +50,9 @@ class ItemsUtil
               range_long: weapon.item_range.long
             },
             two_handed_damage: {
-              damage_type: weapon.two_handed_damage ? weapon.two_handed_damage.damage_type : nil,
+              damage_type: weapon.two_handed_damage&.damage_type,
               num_dice: parsed_2h_dice ? parsed_2h_dice[:hit_dice_number] : nil,
-              dice_value: parsed_2h_dice ? parsed_2h_dice[:hit_dice_value]: nil
+              dice_value: parsed_2h_dice ? parsed_2h_dice[:hit_dice_value] : nil
             }
           },
           attack_bonus: 6,
@@ -83,19 +80,21 @@ class ItemsUtil
         set_weapon_info(db_item, item_result)
         set_vehicle_info(db_item, item_result)
         db_item.save!
-        puts "\tItem #{db_item.name} (\"#{db_item.equipment_category}\") imported."
+        Rails.logger.debug { "\tItem #{db_item.name} (\"#{db_item.equipment_category}\") imported." }
         count += 1
       end
-      puts "#{count} Items imported."
+      Rails.logger.debug { "#{count} Items imported." }
     end
 
     def set_item_info(db_item, item_result)
       db_item.api_url = "/v1/items/#{item_result[:index]}"
       db_item.desc = item_result[:desc]
-      db_item.cost = Cost.create(
-        quantity: item_result[:cost][:quantity],
-        unit: item_result[:cost][:unit]
-      ) if item_result[:cost]
+      if item_result[:cost]
+        db_item.cost = Cost.create(
+          quantity: item_result[:cost][:quantity],
+          unit: item_result[:cost][:unit]
+        )
+      end
       db_item.equipment_category = item_result[:equipment_category][:name]
       db_item.gear_category = item_result[:gear_category][:name] unless item_result[:gear_category].nil?
       db_item.quantity = item_result[:quantity]
@@ -105,8 +104,10 @@ class ItemsUtil
     end
 
     def set_equipment_category(db_item, item_result)
-      if !item_result[:equipment_category].nil?
-        db_item.type = case item_result[:equipment_category][:name]
+      db_item.type = if item_result[:equipment_category].nil?
+                       'GearItem'
+                     else
+                       case item_result[:equipment_category][:name]
                        when 'Armor'
                          'ArmorItem'
                        when 'Weapon'
@@ -120,55 +121,61 @@ class ItemsUtil
                        else
                          'GearItem'
                        end
-      else
-        db_item.type = 'GearItem'
-      end
+                     end
     end
 
     def set_armor_info(db_item, item_result)
       db_item.armor_category = item_result[:armor_category]
-      db_item.armor_class = ArmorClass.create(
-        ac_base: item_result[:armor_class][:base],
-        has_dex_bonus: item_result[:armor_class][:dex_bonus],
-        max_dex_bonus: item_result[:armor_class][:max_bonus]
-      ) unless item_result[:armor_class].nil?
+      unless item_result[:armor_class].nil?
+        db_item.armor_class = ArmorClass.create(
+          ac_base: item_result[:armor_class][:base],
+          has_dex_bonus: item_result[:armor_class][:dex_bonus],
+          max_dex_bonus: item_result[:armor_class][:max_bonus]
+        )
+      end
       db_item.stealth_disadvantage = item_result[:stealth_disadvantage]
       db_item.str_minimum = item_result[:str_minimum]
     end
 
     def set_contents(db_item, item_result)
-      unless item_result[:contents].nil? || item_result[:contents].count == 0
-        item_result[:contents].each do |item|
-          db_item.content_items.create(index: item[:item][:index],
-                                       name: item[:item][:name],
-                                       quantity: item[:quantity])
-        end
+      return if item_result[:contents].nil? || item_result[:contents].none?
+
+      item_result[:contents].each do |item|
+        db_item.content_items.create(index: item[:item][:index],
+                                     name: item[:item][:name],
+                                     quantity: item[:quantity])
       end
     end
 
     def set_weapon_info(db_item, item_result)
       db_item.category_range = item_result[:category_range]
-      db_item.damage = Damage.create(
-        damage_dice: item_result[:damage][:damage_dice],
-        damage_type: item_result[:damage][:damage_type][:index]
-      ) unless item_result[:damage].nil?
-      db_item.two_handed_damage = TwoHandedDamage.create(
-        damage_dice: item_result[:two_handed_damage][:damage_dice],
-        damage_type: item_result[:two_handed_damage][:damage_type][:index]
-      ) unless item_result[:two_handed_damage].nil?
-      unless item_result[:properties].nil?
-        item_result[:properties].each do |prop|
-          db_item.properties |= [prop[:name]]
-        end
+      unless item_result[:damage].nil?
+        db_item.damage = Damage.create(
+          damage_dice: item_result[:damage][:damage_dice],
+          damage_type: item_result[:damage][:damage_type][:index]
+        )
       end
-      db_item.item_range = ItemRange.create(
-        long: item_result[:range][:long],
-        normal: item_result[:range][:normal]
-      ) unless item_result[:range].nil?
-      db_item.item_throw_range = ItemThrowRange.create(
-        long: item_result[:throw_range][:long],
-        normal: item_result[:throw_range][:normal]
-      ) unless item_result[:throw_range].nil?
+      unless item_result[:two_handed_damage].nil?
+        db_item.two_handed_damage = TwoHandedDamage.create(
+          damage_dice: item_result[:two_handed_damage][:damage_dice],
+          damage_type: item_result[:two_handed_damage][:damage_type][:index]
+        )
+      end
+      item_result[:properties]&.each do |prop|
+        db_item.properties |= [prop[:name]]
+      end
+      unless item_result[:range].nil?
+        db_item.item_range = ItemRange.create(
+          long: item_result[:range][:long],
+          normal: item_result[:range][:normal]
+        )
+      end
+      unless item_result[:throw_range].nil?
+        db_item.item_throw_range = ItemThrowRange.create(
+          long: item_result[:throw_range][:long],
+          normal: item_result[:throw_range][:normal]
+        )
+      end
       db_item.weapon_category = item_result[:weapon_category]
       db_item.weapon_range = item_result[:weapon_range]
     end

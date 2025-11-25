@@ -4,7 +4,7 @@ import { GiCastle, GiPointing, GiTwoHandedSword } from 'react-icons/all';
 import { useLocation, useNavigate } from 'react-router-dom';
 import classNames from 'classnames';
 
-const styles = require('./breadcrumbs.module.scss');
+import styles from './breadcrumbs.module.scss';
 
 export type BreadCrumbProps = {
   isActive?: boolean;

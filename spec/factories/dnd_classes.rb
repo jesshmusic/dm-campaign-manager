@@ -28,7 +28,6 @@ FactoryBot.define do
     hit_die { [6, 6, 8, 8, 8, 8, 10, 10, 10, 12].sample }
     name { 'Fighter' }
     spell_ability { DndRules.abilities.sample }
-    slug { 'fighter' }
     subclasses { [] }
     ability_scores {[
       association(:str_ability_score),

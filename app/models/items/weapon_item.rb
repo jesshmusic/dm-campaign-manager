@@ -53,14 +53,14 @@ class WeaponItem < Item
   def properties_str
     prop_arr = []
     properties.each do |property|
-      prop_str = "#{property}"
+      prop_str = property.to_s
       case property.downcase
       when 'thrown'
-        prop_str = prop_str + " (range #{item_throw_range.normal}/#{item_throw_range.long})" unless item_throw_range.nil?
+        prop_str += " (range #{item_throw_range.normal}/#{item_throw_range.long})" unless item_throw_range.nil?
       when 'ammunition'
-        prop_str = prop_str + " (range #{item_range.normal}/#{item_range.long})" unless item_range.nil?
+        prop_str += " (range #{item_range.normal}/#{item_range.long})" unless item_range.nil?
       when 'versatile'
-        prop_str = prop_str + " (#{two_handed_damage.damage_dice})" unless two_handed_damage.nil?
+        prop_str += " (#{two_handed_damage.damage_dice})" unless two_handed_damage.nil?
       end
       prop_arr << prop_str
     end
@@ -68,11 +68,13 @@ class WeaponItem < Item
   end
 
   def self.all_weapons
-    ['Shortsword', 'Mace', 'Pike', 'Crossbow, light', 'Halberd', 'Dart', 'Battleaxe', 'Glaive', 'Sling', 'Whip', 'Sickle', 'Crossbow, hand', 'Greataxe', 'Spear', 'Greatsword', 'Net', 'Javelin', 'Flail', 'Blowgun', 'Maul', 'Quarterstaff', 'Greatclub', 'Handaxe', 'War pick', 'Scimitar', 'Club', 'Longsword', 'Rapier', 'Trident', 'Dagger', 'Lance', 'Morningstar', 'Light hammer', 'Warhammer', 'Longbow', 'Shortbow', 'Crossbow, heavy']
+    ['Shortsword', 'Mace', 'Pike', 'Crossbow, light', 'Halberd', 'Dart', 'Battleaxe', 'Glaive', 'Sling', 'Whip', 'Sickle', 'Crossbow, hand',
+     'Greataxe', 'Spear', 'Greatsword', 'Net', 'Javelin', 'Flail', 'Blowgun', 'Maul', 'Quarterstaff', 'Greatclub', 'Handaxe', 'War pick', 'Scimitar', 'Club', 'Longsword', 'Rapier', 'Trident', 'Dagger', 'Lance', 'Morningstar', 'Light hammer', 'Warhammer', 'Longbow', 'Shortbow', 'Crossbow, heavy']
   end
 
   def self.melee_weapons
-    ['Shortsword', 'Mace', 'Pike', 'Halberd', 'Battleaxe', 'Glaive', 'Whip', 'Sickle', 'Greataxe', 'Spear', 'Greatsword', 'Javelin', 'Flail', 'Maul', 'Quarterstaff', 'Greatclub', 'Handaxe', 'War pick', 'Scimitar', 'Club', 'Longsword', 'Rapier', 'Trident', 'Dagger', 'Lance', 'Morningstar', 'Light hammer', 'Warhammer']
+    ['Shortsword', 'Mace', 'Pike', 'Halberd', 'Battleaxe', 'Glaive', 'Whip', 'Sickle', 'Greataxe', 'Spear', 'Greatsword', 'Javelin', 'Flail', 'Maul',
+     'Quarterstaff', 'Greatclub', 'Handaxe', 'War pick', 'Scimitar', 'Club', 'Longsword', 'Rapier', 'Trident', 'Dagger', 'Lance', 'Morningstar', 'Light hammer', 'Warhammer']
   end
 
   def self.ranged_weapons
@@ -80,27 +82,27 @@ class WeaponItem < Item
   end
 
   def self.fighter_weapons
-    WeightedList['Shortsword': 20, 'Mace': 15, 'Pike': 3, 'Halberd': 3, 'Battleaxe': 20, 'Glaive': 3, 'Whip': 1,
-                 'Sickle': 5, 'Greataxe': 20, 'Spear': 20, 'Greatsword': 30, 'Javelin': 15, 'Flail': 15, 'Maul': 15,
-                 'Quarterstaff': 3, 'Greatclub': 15, 'Handaxe': 10, 'War pick': 5, 'Scimitar': 15, 'Club': 8,
-                 'Longsword': 30, 'Rapier': 15, 'Trident': 13, 'Dagger': 15, 'Lance': 1, 'Morningstar': 15,
-                 'Light hammer': 10, 'Warhammer': 20]
+    WeightedList[Shortsword: 20, Mace: 15, Pike: 3, Halberd: 3, Battleaxe: 20, Glaive: 3, Whip: 1,
+                 Sickle: 5, Greataxe: 20, Spear: 20, Greatsword: 30, Javelin: 15, Flail: 15, Maul: 15,
+                 Quarterstaff: 3, Greatclub: 15, Handaxe: 10, 'War pick': 5, Scimitar: 15, Club: 8,
+                 Longsword: 30, Rapier: 15, Trident: 13, Dagger: 15, Lance: 1, Morningstar: 15,
+                 'Light hammer': 10, Warhammer: 20]
   end
 
   def self.rogue_weapons
-    WeightedList['Shortsword': 75, 'Whip': 1, 'Quarterstaff': 3, 'Handaxe': 10, 'Scimitar': 15, 'Club': 8,
-                 'Longsword': 30, 'Rapier': 15, 'Dagger': 100]
+    WeightedList[Shortsword: 75, Whip: 1, Quarterstaff: 3, Handaxe: 10, Scimitar: 15, Club: 8,
+                 Longsword: 30, Rapier: 15, Dagger: 100]
   end
 
   def self.caster_weapons
-    WeightedList['Shortsword': 5, 'Mace': 10, 'Sickle': 5, 'Spear': 5, 'Quarterstaff': 35, 'Scimitar': 5,
-                 'Longsword': 8, 'Rapier': 12, 'Dagger': 25, 'Morningstar': 2,
+    WeightedList[Shortsword: 5, Mace: 10, Sickle: 5, Spear: 5, Quarterstaff: 35, Scimitar: 5,
+                 Longsword: 8, Rapier: 12, Dagger: 25, Morningstar: 2,
                  'Light hammer': 5]
   end
 
   def self.ranged_weighted
-    WeightedList['Crossbow, light': 15, 'Dart': 3, 'Sling': 2, 'Crossbow, hand': 5, 'Blowgun': 2, 'Longbow': 25,
-                 'Shortbow': 35, 'Crossbow, heavy': 10]
+    WeightedList['Crossbow, light': 15, Dart: 3, Sling: 2, 'Crossbow, hand': 5, Blowgun: 2, Longbow: 25,
+                 Shortbow: 35, 'Crossbow, heavy': 10]
   end
 
   def self.all_swords

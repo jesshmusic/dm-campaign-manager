@@ -4,23 +4,23 @@ class HomeController < ApplicationController
   layout 'home'
 
   def index
-    @user = current_user ? current_user.as_json : nil
+    @user = current_user&.as_json
     @home_props = {
       conditions: {
         conditions: [],
-        count: Condition.count,
+        count: Condition.count
       },
       dndClasses: {
         dndClasses: [],
-        count: DndClass.count,
+        count: DndClass.count
       },
       items: {
         items: [],
-        count: Item.count,
+        count: Item.count
       },
       monsters: {
         monsters: [],
-        count: Monster.count,
+        count: Monster.count
       },
       races: {
         races: [],

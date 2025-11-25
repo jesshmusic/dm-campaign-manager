@@ -3,11 +3,10 @@ import ReactGA from 'react-ga4';
 
 ReactGA.initialize('G-8XJTH70JSQ');
 
-const styles = require('./bannerad.module.scss');
+import styles from './bannerad.module.scss';
 
 const BannerAd = () => {
   const handleClick = () => {
-    console.log('Banner Ad Clicked');
     ReactGA.event('Banner Ad Clicked');
   };
   return (
@@ -17,6 +16,7 @@ const BannerAd = () => {
         target="_blank"
         style={{ textDecoration: 'none' }}
         onClick={handleClick}
+        rel="noreferrer"
       >
         <img
           src="https://affiliates.fantasygrounds.com/banner_image/banner/id:7297_324247_15958"

@@ -1,1 +1,1 @@
-json.partial! "admin/v1/races/race", race: @race
+json.partial! 'admin/v1/races/race', race: @race

@@ -17,7 +17,7 @@ const conditions = createReducer(
   },
   (builder) =>
     builder
-      .addCase(getConditions, (state, action: AnyAction) => {
+      .addCase(getConditions, (state, _action: AnyAction) => {
         return {
           conditions: [],
           currentCondition: state.currentCondition,
@@ -41,7 +41,7 @@ const conditions = createReducer(
           loading: false,
         };
       })
-      .addCase(getCondition, (state, action: AnyAction) => {
+      .addCase(getCondition, (state, _action: AnyAction) => {
         return {
           conditions: state.conditions,
           currentCondition: null,

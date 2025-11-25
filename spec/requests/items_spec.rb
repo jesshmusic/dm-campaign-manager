@@ -10,7 +10,12 @@ RSpec.describe 'Items', type: :request do
   }
 
   let(:armor_item_attributes) {
-    attributes_for(:item, user: dungeon_master, name: 'New Half Plate')
+    armor_class_attrs = attributes_for(:armor_class)
+    attributes_for(:armor_item, user: dungeon_master, name: 'New Half Plate').merge(
+      armor_class: armor_class_attrs[:ac_base],
+      armor_dex_bonus: armor_class_attrs[:has_dex_bonus],
+      armor_max_bonus: armor_class_attrs[:max_dex_bonus]
+    )
   }
 
   let!(:item) { create :item }
@@ -31,10 +36,11 @@ RSpec.describe 'Items', type: :request do
         expect(response).to have_http_status(200)
       end
 
-      it 'returns 5 items' do
+      it 'returns only default items' do
         get '/v1/items.json'
         result_items = JSON.parse(response.body)
-        expect(result_items['count']).to eq(788)
+        # Should only see default items (user_id: nil), not custom ones
+        expect(result_items['count']).to eq(5)
       end
 
       it 'returns 1 armor item' do
@@ -54,25 +60,27 @@ RSpec.describe 'Items', type: :request do
 
     context 'for Admins' do
       before(:each) do
-        # sign_in admin
+        stub_authentication(admin)
       end
 
-      it 'returns 7 items' do
+      it 'returns all items (default + all custom)' do
         get '/v1/items.json'
         result_items = JSON.parse(response.body)
-        expect(result_items['count']).to eq(790)
+        # Admins see everything: 5 default + 2 custom = 7
+        expect(result_items['count']).to eq(7)
       end
     end
 
     context 'for Dungeon Masters' do
       before(:each) do
-        # sign_in dungeon_master
+        stub_authentication(dungeon_master)
       end
 
-      it 'returns 6 items that are only default or owned by this DM' do
+      it 'returns items that are only default or owned by this DM' do
         get '/v1/items.json'
         result_items = JSON.parse(response.body)
-        expect(result_items['count']).to eq(789)
+        # DM sees: 5 default + 1 own custom = 6
+        expect(result_items['count']).to eq(6)
         expect(result_items['results'].find { |item|
           item['name'] == 'DM Item'
         }).not_to be_nil
@@ -107,7 +115,7 @@ RSpec.describe 'Items', type: :request do
 
     context 'for Admins' do
       before(:each) do
-        # sign_in admin
+        stub_authentication(admin)
       end
 
       it 'returns Plate Armor' do
@@ -126,7 +134,7 @@ RSpec.describe 'Items', type: :request do
 
     context 'for Dungeon Masters' do
       before(:each) do
-        # sign_in dungeon_master
+        stub_authentication(dungeon_master)
       end
 
       it 'returns Plate Armor' do
@@ -153,17 +161,19 @@ RSpec.describe 'Items', type: :request do
   describe 'POST Create Item' do
     context 'for Logged Out Users' do
       it 'returns an error for non-user creating item' do
+        stub_no_auth
         expect {
           post '/v1/armor_items.json', params: { armor_item: armor_item_attributes }
         }.to change(Item, :count).by(0)
         result_item = JSON.parse(response.body)
-        expect(result_item['error']).to eq('You need to sign in or sign up before continuing.')
+        expect(result_item['errors']).to eq(['Not Authenticated'])
+        expect(response).to have_http_status(:unauthorized)
       end
     end
 
     context 'for Admins' do
       before(:each) do
-        # sign_in admin
+        stub_authentication(admin)
       end
 
       it 'creates a new GearItem' do
@@ -189,7 +199,7 @@ RSpec.describe 'Items', type: :request do
 
     context 'for Dungeon Masters' do
       before(:each) do
-        # sign_in dungeon_master
+        stub_authentication(dungeon_master)
       end
 
       it 'creates a new GearItem with a user' do
@@ -217,6 +227,7 @@ RSpec.describe 'Items', type: :request do
   describe 'PUT Update Item' do
     context 'for Logged Out Users' do
       it 'returns an error for non-user editing' do
+        stub_no_auth
         put "/v1/armor_items/#{armor_item.slug}.json", params: {
           armor_item: {
             name: 'Test Item Edited',
@@ -225,20 +236,21 @@ RSpec.describe 'Items', type: :request do
           }
         }
         result_item = JSON.parse(response.body)
-        expect(result_item['error']).to eq('You need to sign in or sign up before continuing.')
+        expect(result_item['errors']).to eq(['Not Authenticated'])
+        expect(response).to have_http_status(:unauthorized)
       end
     end
 
     context 'for Admins' do
       before(:each) do
-        # sign_in admin
+        stub_authentication(admin)
       end
 
     end
 
     context 'for Dungeon Masters' do
       before(:each) do
-        # sign_in dungeon_master
+        stub_authentication(dungeon_master)
       end
 
       it 'updates the requested item belonging to DM' do
@@ -280,15 +292,17 @@ RSpec.describe 'Items', type: :request do
   describe 'DELETE Delete Item' do
     context 'for Logged Out Users' do
       it 'returns an error for non-user delete' do
+        stub_no_auth
         delete "/v1/armor_items/#{armor_item.slug}.json"
         result_item = JSON.parse(response.body)
-        expect(result_item['error']).to eq('You need to sign in or sign up before continuing.')
+        expect(result_item['errors']).to eq(['Not Authenticated'])
+        expect(response).to have_http_status(:unauthorized)
       end
     end
 
     context 'for Admins' do
       before(:each) do
-        # sign_in admin
+        stub_authentication(admin)
       end
 
       it 'deletes the requested item belonging to DM' do
@@ -304,7 +318,7 @@ RSpec.describe 'Items', type: :request do
 
     context 'for Dungeon Masters' do
       before(:each) do
-        # sign_in dungeon_master
+        stub_authentication(dungeon_master)
       end
 
       it 'deletes the requested item belonging to DM' do

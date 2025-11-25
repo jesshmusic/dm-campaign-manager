@@ -1,4 +1,3 @@
-
 @mixin respond-to($breakpoint) {
   // If the key exists in the map
   @if map-has-key($container-max-widths, $breakpoint) {

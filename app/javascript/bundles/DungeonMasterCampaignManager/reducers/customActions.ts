@@ -18,7 +18,7 @@ const customActions = createReducer(
   },
   (builder) =>
     builder
-      .addCase(createCustomAction, (state, action: AnyAction) => {
+      .addCase(createCustomAction, (_state, _action: AnyAction) => {
         return {
           actions: [],
           count: 0,
@@ -36,7 +36,7 @@ const customActions = createReducer(
           count: state.actions.length,
         };
       })
-      .addCase(getCustomActions, (state, action: AnyAction) => {
+      .addCase(getCustomActions, (state, _action: AnyAction) => {
         return {
           actions: state.actions,
           count: state.actions.length,
@@ -54,7 +54,7 @@ const customActions = createReducer(
           count: state.actions.length,
         };
       })
-      .addCase(deleteCustomAction, (state, action: AnyAction) => {
+      .addCase(deleteCustomAction, (state, _action: AnyAction) => {
         return {
           actions: state.actions,
           count: state.actions.length,

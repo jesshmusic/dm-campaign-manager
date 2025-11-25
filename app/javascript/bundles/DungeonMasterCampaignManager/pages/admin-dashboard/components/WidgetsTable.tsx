@@ -10,7 +10,7 @@ import { WidgetProps } from '../../../components/Widgets/Widget';
 import { getIconFromName } from '../../../utilities/icons';
 import { NavLink } from '../../../components/NavLink/NavLink';
 
-const styles = require('../admin-dashboard.module.scss');
+import styles from '../admin-dashboard.module.scss';
 
 const WidgetsTable = (props: {
   getWidgets: (searchTerm?: string) => void;
@@ -29,20 +29,20 @@ const WidgetsTable = (props: {
     () => [
       {
         Header: 'Icon',
-        accessor: 'icon',
+        accessor: 'icon' as const,
         Cell: ({ value }) => getIconFromName(value),
       },
       {
         Header: 'Widget',
-        accessor: 'title',
+        accessor: 'title' as const,
       },
       {
         Header: 'Subtitle',
-        accessor: 'subtitle',
+        accessor: 'subtitle' as const,
       },
       {
         Header: 'Delete',
-        accessor: 'id',
+        accessor: 'id' as const,
         size: 25,
         Cell: ({ value }) => (
           <>

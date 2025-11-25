@@ -9,7 +9,7 @@ import {
 } from '../../../../../../components/forms/ControllerInput';
 import { senses } from '../../../../../../utilities/character-utilities';
 
-const styles = require('../field-array-form.module.scss');
+import styles from '../field-array-form.module.scss';
 
 const SenseForm = (props: {
   senseIndex: number;

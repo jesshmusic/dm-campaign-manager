@@ -8,7 +8,7 @@ import NameOptions from './NameOptions';
 import axios from 'axios';
 import Frame from '../Frame/Frame';
 import { RandomNameResult } from '../../utilities/types';
-import DndSpinner from "../DndSpinners/DndSpinner";
+import DndSpinner from '../DndSpinners/DndSpinner';
 
 const NameField = (props: { hideFrame?: boolean }) => {
   const [nameValue, setNameValue] = useState('');
@@ -32,14 +32,14 @@ const NameField = (props: { hideFrame?: boolean }) => {
   return props.hideFrame ? (
     <form>
       {isLoading ? (
-        <DndSpinner showTableFrame={false} text={'Generating Random Name...'}/>
+        <DndSpinner showTableFrame={false} text={'Generating Random Name...'} />
       ) : (
-      <CopyField
-        placeHolder={'Random Name...'}
-        fieldId={'randomFantasyName'}
-        label={'Random Name'}
-        text={nameValue}
-      />
+        <CopyField
+          placeHolder={'Random Name...'}
+          fieldId={'randomFantasyName'}
+          label={'Random Name'}
+          text={nameValue}
+        />
       )}
       <NameOptions onFormSubmit={handleGenerateName} title={'Name'} />
     </form>
@@ -50,14 +50,14 @@ const NameField = (props: { hideFrame?: boolean }) => {
     >
       <form>
         {isLoading ? (
-          <DndSpinner showTableFrame={false} text={'Generating Random Name...'}/>
+          <DndSpinner showTableFrame={false} text={'Generating Random Name...'} />
         ) : (
-        <CopyField
-          placeHolder={'Random Name...'}
-          fieldId={'randomFantasyName'}
-          label={'Random Name'}
-          text={nameValue}
-        />
+          <CopyField
+            placeHolder={'Random Name...'}
+            fieldId={'randomFantasyName'}
+            label={'Random Name'}
+            text={nameValue}
+          />
         )}
         <NameOptions onFormSubmit={handleGenerateName} title={'Name'} />
       </form>

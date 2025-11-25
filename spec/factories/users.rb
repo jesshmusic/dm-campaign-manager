@@ -36,25 +36,35 @@
 
 FactoryBot.define do
   factory :user do
-    name { 'Jess Hendricks' }
-    email { 'user@example.com' }
-    username { 'jesshmusic1' }
+    sequence(:name) { |n| "User #{n}" }
+    sequence(:email) { |n| "user#{n}@example.com" }
+    sequence(:username) { |n| "user#{n}" }
+    sequence(:auth_id) { |n| "auth0|#{SecureRandom.hex(12)}_#{n}" }
     confirmed_at { Date.today }
+    role { :user }
+
     factory :dungeon_master_user do
       role { :dungeon_master }
-      email { 'dm_user@example.com' }
-      username { 'jesshdm1' }
+      sequence(:name) { |n| "DM #{n}" }
+      sequence(:email) { |n| "dm#{n}@example.com" }
+      sequence(:username) { |n| "dm#{n}" }
+      sequence(:auth_id) { |n| "auth0|dm_#{SecureRandom.hex(12)}_#{n}" }
     end
+
     factory :admin_user do
       role { :admin }
-      email { 'admin_user@example.com' }
-      username { 'jesshadmin1' }
+      sequence(:name) { |n| "Admin #{n}" }
+      sequence(:email) { |n| "admin#{n}@example.com" }
+      sequence(:username) { |n| "admin#{n}" }
+      sequence(:auth_id) { |n| "auth0|admin_#{SecureRandom.hex(12)}_#{n}" }
     end
+
     factory :other_user do |user|
       role { :dungeon_master }
       user.name { Faker::Name.first_name }
       user.sequence(:email) { |n| "testuser#{n}@example.com" }
       user.sequence(:username) { |n| "testuser#{n}" }
+      user.sequence(:auth_id) { |n| "auth0|other_#{SecureRandom.hex(12)}_#{n}" }
     end
   end
 end

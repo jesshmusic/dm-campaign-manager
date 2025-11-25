@@ -1,0 +1,29 @@
+# Code Owners for dm-campaign-manager
+# These owners will be requested for review when someone opens a pull request
+
+# Global owners (fallback)
+* @jesshmusic
+
+# Backend (Rails)
+/app/controllers/ @jesshmusic
+/app/models/ @jesshmusic
+/app/services/ @jesshmusic
+/app/serializers/ @jesshmusic
+/db/ @jesshmusic
+/config/ @jesshmusic
+/spec/requests/ @jesshmusic
+/spec/models/ @jesshmusic
+
+# Frontend (React/TypeScript)
+/app/javascript/ @jesshmusic
+/spec/javascript/ @jesshmusic
+
+# Infrastructure & CI/CD
+/.github/ @jesshmusic
+/Dockerfile* @jesshmusic
+/docker-compose* @jesshmusic
+*.yml @jesshmusic
+
+# Documentation
+*.md @jesshmusic
+/docs/ @jesshmusic

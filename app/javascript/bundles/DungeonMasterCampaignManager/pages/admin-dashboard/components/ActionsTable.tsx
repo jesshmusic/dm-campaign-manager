@@ -24,15 +24,15 @@ const ActionsTable = (props: {
     () => [
       {
         Header: 'Action',
-        accessor: 'name',
+        accessor: 'name' as const,
       },
       {
         Header: 'Description',
-        accessor: 'desc',
+        accessor: 'desc' as const,
       },
       {
         Header: 'Delete',
-        accessor: 'id',
+        accessor: 'id' as const,
         size: 25,
         Cell: ({ value }) => (
           <Button

@@ -1,21 +1,12 @@
 import React from 'react';
-import {
-  Control,
-  FieldErrors,
-  FieldValues,
-  UseFormGetValues,
-  useWatch,
-} from 'react-hook-form';
+import { Control, FieldErrors, FieldValues, useWatch } from 'react-hook-form';
 import {
   ControlledInput,
   ControlledSelect,
 } from '../../../../../../../components/forms/ControllerInput';
-import {
-  damageTypes,
-  diceOptions,
-} from '../../../../../../../utilities/character-utilities';
+import { damageTypes, diceOptions } from '../../../../../../../utilities/character-utilities';
 
-const styles = require('./action-form.module.scss');
+import styles from './action-form.module.scss';
 
 const AttackForm = (props: {
   fieldName: string;
