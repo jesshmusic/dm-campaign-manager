@@ -2,7 +2,7 @@ import React from 'react';
 import { ActionVariations } from '../../../../utilities/types';
 import Frame from '../../../../components/Frame/Frame';
 import NameFormField from '../NameFormField';
-import { GiDiceTwentyFacesTwenty } from 'react-icons/gi/';
+import { GiDiceTwentyFacesTwenty } from 'react-icons/gi';
 import { Colors } from '../../../../utilities/enums';
 import Button from '../../../../components/Button/Button';
 import { useData } from './use-data';

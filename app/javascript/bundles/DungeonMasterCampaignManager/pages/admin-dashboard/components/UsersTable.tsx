@@ -31,7 +31,7 @@ const UsersTable = (props: {
         accessor: 'monsters' as const,
       },
     ],
-    []
+    [],
   );
 
   const data = React.useMemo(() => {

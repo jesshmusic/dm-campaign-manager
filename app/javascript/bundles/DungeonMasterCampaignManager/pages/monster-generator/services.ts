@@ -42,7 +42,7 @@ const abilityForSkill = {
 };
 
 const parseMonsterProficiencies = (
-  values: MonsterGeneratorFormFields | MonsterQuickGeneratorFormFields
+  values: MonsterGeneratorFormFields | MonsterQuickGeneratorFormFields,
 ) => {
   const monsterProfs: MonsterProf[] = [];
   if (values.savingThrowOptions.length && values.savingThrowOptions.length > 0) {
@@ -309,7 +309,7 @@ export const hitPoints = (constitution: number, hitDiceNumber: number, hitDiceVa
 export const hitDiceForHitPoints = (
   hitPoints: number,
   constitution: number,
-  hitDiceValue: string
+  hitDiceValue: string,
 ): { hitDiceCount: number; hitDiceString: string } => {
   const hdValueInt = diceNumberFromString[hitDiceValue];
   const conMod = abilityScoreModifier(constitution);

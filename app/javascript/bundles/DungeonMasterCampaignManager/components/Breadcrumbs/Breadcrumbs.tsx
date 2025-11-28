@@ -38,7 +38,7 @@ const Breadcrumbs = (props: { isCollapsed: boolean }) => {
           url: `/app/${pathNames.slice(0, index + 1).join('/')}`,
           title: pathToTitle(pathName),
         };
-      })
+      }),
     );
   }, [location]);
 
@@ -67,7 +67,7 @@ const Breadcrumbs = (props: { isCollapsed: boolean }) => {
             </li>
           ) : (
             <BreadcrumbLink to={path.url} title={path.title} key={index} />
-          )
+          ),
         )}
       </ol>
     </nav>

@@ -50,7 +50,9 @@
   overflow: hidden;
   position: relative;
   text-decoration: none;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 
   &:hover {
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);

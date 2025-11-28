@@ -64,7 +64,7 @@ const rules = createReducer(
           count: state.rules.length,
           loading: false,
         };
-      })
+      }),
 );
 
 export default rules;

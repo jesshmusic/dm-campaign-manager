@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import { GiDiceTwentyFacesTwenty } from 'react-icons/gi/';
+import { GiDiceTwentyFacesTwenty } from 'react-icons/gi';
 import { FieldErrors, FieldValues, UseFormRegister, UseFormSetValue } from 'react-hook-form';
 import { DiceRoll } from 'rpg-dice-roller';
 import useSound from 'use-sound';

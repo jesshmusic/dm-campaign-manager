@@ -71,7 +71,7 @@ const customActions = createReducer(
           actions: state.actions,
           count: state.actions.length,
         };
-      })
+      }),
 );
 
 export default customActions;

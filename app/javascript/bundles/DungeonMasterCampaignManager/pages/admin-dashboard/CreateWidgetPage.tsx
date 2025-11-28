@@ -73,8 +73,8 @@ function mapDispatchToProps(dispatch) {
               },
               token,
             }),
-          }
-        )
+          },
+        ),
       );
     },
   };

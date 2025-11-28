@@ -538,7 +538,7 @@ DEPENDENCIES
   weighted_list
 
 RUBY VERSION
-   ruby 3.3.10p183
+   ruby 3.3.7p123
 
 BUNDLED WITH
    2.4.10

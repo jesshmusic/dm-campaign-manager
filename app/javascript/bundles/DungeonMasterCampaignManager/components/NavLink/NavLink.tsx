@@ -13,7 +13,7 @@ export const SidebarButton = (props: {
 }) => {
   const { title, icon, onClick } = props;
   return (
-    <MenuItem icon={icon} active={false} onClick={onClick}>
+    <MenuItem icon={icon} onClick={onClick}>
       {title}
     </MenuItem>
   );
@@ -24,9 +24,8 @@ export const SidebarLink = (props: { title: string; icon?: React.ReactNode; to: 
   const resolved = useResolvedPath(to);
   const match = useMatch({ path: resolved.pathname, end: true });
   return (
-    <MenuItem icon={icon} active={!!match}>
+    <MenuItem icon={icon} active={!!match} component={<Link to={to} />}>
       {title}
-      <Link to={to} />
     </MenuItem>
   );
 };

@@ -52,7 +52,7 @@ const DndClasses = (props: {
         accessor: 'primaryAbilities',
       },
     ],
-    []
+    [],
   );
 
   return (

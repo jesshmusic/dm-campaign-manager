@@ -42,14 +42,7 @@ const ruleBooks = [
   <GiBookStorm key="book-storm" />,
 ];
 
-import {
-  Menu,
-  MenuItem,
-  ProSidebar,
-  SidebarContent,
-  SidebarFooter,
-  SubMenu,
-} from 'react-pro-sidebar';
+import { Sidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
 import './sidebar-vars.scss';
 import { SidebarButton, SidebarLink } from '../NavLink/NavLink';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -118,60 +111,66 @@ const SideBar = (props: {
 
   return (
     <>
-      <ProSidebar collapsed={isCollapsed} image={sidebarBG}>
-        <SidebarContent>
-          <Menu iconShape="square">
-            {!isMobile && (
-              <SidebarButton
-                onClick={() => {
-                  setIsCollapsed(!isCollapsed);
-                }}
-                title={isCollapsed ? 'Show Menu' : 'Collapse Menu'}
-                icon={isCollapsed ? <BiShow /> : <BiHide />}
-              />
-            )}
-            <SidebarLink to="/" title="Dashboard" icon={<AiOutlineHome />} />
-            <SidebarLink to="/app/classes" title="Classes" icon={<GiPerson />} />
-            <SidebarLink to="/app/races" title="Races" icon={<GiDwarfFace />} />
-            <SidebarLink to="/app/monsters" title="Monsters" icon={<GiMonsterGrasp />} />
-            <SidebarLink to="/app/spells" title="Spells" icon={<GiMagicPalm />} />
-            <SidebarLink to="/app/conditions" title="Conditions" icon={<GiAchillesHeel />} />
-            <SubMenu title="Rules" icon={<GiBookshelf />}>
-              {rules.map((rule, index) => (
-                <SubMenu
-                  key={`rule-${rule.slug}-${index}`}
-                  title={rule.name}
-                  icon={index < 6 ? ruleBooks[index] : <GiRuleBook />}
-                >
-                  <SidebarLink
-                    key={`rulesTop-${index}`}
-                    to={`/app/rules/${rule.slug}`}
-                    title={rule.name}
-                  />
-                  {rule.rules &&
-                    rule.rules.map((subrule, subIndex) => (
-                      <SidebarLink
-                        key={`rulesInner-${subIndex}`}
-                        to={`/app/rules/${subrule.slug}`}
-                        title={subrule.name}
-                      />
-                    ))}
-                </SubMenu>
-              ))}
-            </SubMenu>
-            <SubMenu title="Items & Equipment" icon={<GiSwapBag />}>
-              {itemTypes.map((itemType, index) => (
+      <Sidebar
+        collapsed={isCollapsed}
+        backgroundColor="rgba(0, 0, 0, 0.85)"
+        rootStyles={{
+          backgroundImage: `url(${sidebarBG})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      >
+        <Menu>
+          {!isMobile && (
+            <SidebarButton
+              onClick={() => {
+                setIsCollapsed(!isCollapsed);
+              }}
+              title={isCollapsed ? 'Show Menu' : 'Collapse Menu'}
+              icon={isCollapsed ? <BiShow /> : <BiHide />}
+            />
+          )}
+          <SidebarLink to="/" title="Dashboard" icon={<AiOutlineHome />} />
+          <SidebarLink to="/app/classes" title="Classes" icon={<GiPerson />} />
+          <SidebarLink to="/app/races" title="Races" icon={<GiDwarfFace />} />
+          <SidebarLink to="/app/monsters" title="Monsters" icon={<GiMonsterGrasp />} />
+          <SidebarLink to="/app/spells" title="Spells" icon={<GiMagicPalm />} />
+          <SidebarLink to="/app/conditions" title="Conditions" icon={<GiAchillesHeel />} />
+          <SubMenu label="Rules" icon={<GiBookshelf />}>
+            {rules.map((rule, index) => (
+              <SubMenu
+                key={`rule-${rule.slug}-${index}`}
+                label={rule.name}
+                icon={index < 6 ? ruleBooks[index] : <GiRuleBook />}
+              >
                 <SidebarLink
-                  key={`items-${index}`}
-                  to={itemType.link}
-                  title={itemType.name}
-                  icon={itemType.icon}
+                  key={`rulesTop-${index}`}
+                  to={`/app/rules/${rule.slug}`}
+                  title={rule.name}
                 />
-              ))}
-            </SubMenu>
-          </Menu>
-        </SidebarContent>
-        <SidebarFooter>
+                {rule.rules &&
+                  rule.rules.map((subrule, subIndex) => (
+                    <SidebarLink
+                      key={`rulesInner-${subIndex}`}
+                      to={`/app/rules/${subrule.slug}`}
+                      title={subrule.name}
+                    />
+                  ))}
+              </SubMenu>
+            ))}
+          </SubMenu>
+          <SubMenu label="Items & Equipment" icon={<GiSwapBag />}>
+            {itemTypes.map((itemType, index) => (
+              <SidebarLink
+                key={`items-${index}`}
+                to={itemType.link}
+                title={itemType.name}
+                icon={itemType.icon}
+              />
+            ))}
+          </SubMenu>
+        </Menu>
+        <div className={styles.sidebarFooter}>
           <div className={`${styles.divider} ${styles.userName}`}>
             {isAuthenticated && user ? `Welcome, ${user.given_name}` : 'User'}
             {currentUser && currentUser.role && (
@@ -209,8 +208,8 @@ const SideBar = (props: {
               </MenuItem>
             )}
           </Menu>
-        </SidebarFooter>
-      </ProSidebar>
+        </div>
+      </Sidebar>
     </>
   );
 };

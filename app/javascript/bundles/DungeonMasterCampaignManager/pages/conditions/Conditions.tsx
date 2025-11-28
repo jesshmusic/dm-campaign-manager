@@ -36,7 +36,7 @@ const Conditions = (props: {
         accessor: 'name',
       },
     ],
-    []
+    [],
   );
 
   const data = React.useMemo(() => {

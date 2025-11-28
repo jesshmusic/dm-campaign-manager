@@ -61,7 +61,7 @@ const DataTable = <T extends object = Record<string, unknown>>({
     },
     useSortBy,
     useExpanded,
-    usePagination
+    usePagination,
   );
 
   const { register, handleSubmit } = useForm();
@@ -127,7 +127,7 @@ const DataTable = <T extends object = Record<string, unknown>>({
               <tr key={headerGroup.id} {...headerGroupProps}>
                 {headerGroup.headers.map((column) => {
                   const { key: _columnKey, ...columnProps } = column.getHeaderProps(
-                    column.getSortByToggleProps()
+                    column.getSortByToggleProps(),
                   );
                   return (
                     <th key={column.id} {...columnProps}>

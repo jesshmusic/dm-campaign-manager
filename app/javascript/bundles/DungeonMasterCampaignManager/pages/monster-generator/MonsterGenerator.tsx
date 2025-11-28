@@ -4,13 +4,12 @@ import PageTitle from '../../components/PageTitle/PageTitle';
 import GenerateMonster from './components/generate-monster/GenerateMonster';
 import Convert2eMonster from './Convert2eMonster';
 import GenerateCommoner from './components/GenerateCommoner';
-import { GiBlacksmith, GiSpikedDragonHead } from 'react-icons/gi';
+import { GiBlacksmith, GiSpikedDragonHead, GiDiceTwentyFacesTwenty } from 'react-icons/gi';
 import { SiConvertio } from 'react-icons/si';
 import MonsterBlock from '../monsters/MonsterBlock';
 import rest from '../../api/api';
 import { connect } from 'react-redux';
 import QuickGenerateMonster from './components/quick-generate-monster/QuickGenerateMonster';
-import { GiDiceTwentyFacesTwenty } from 'react-icons/gi/';
 import ReactGA from 'react-ga4';
 import { MonsterProps } from '../../utilities/types';
 
@@ -189,8 +188,8 @@ function mapDispatchToProps(dispatch) {
           { gender, race },
           {
             body: JSON.stringify({ token }),
-          }
-        )
+          },
+        ),
       );
     },
     generateMonster: (monster: unknown, token?: string) => {
@@ -200,8 +199,8 @@ function mapDispatchToProps(dispatch) {
           {},
           {
             body: JSON.stringify({ monster, token }),
-          }
-        )
+          },
+        ),
       );
     },
     generateQuickMonster: (monster: unknown, token?: string) => {
@@ -211,8 +210,8 @@ function mapDispatchToProps(dispatch) {
           {},
           {
             body: JSON.stringify({ monster, token }),
-          }
-        )
+          },
+        ),
       );
     },
   };

@@ -61,7 +61,7 @@ const MonstersTable = (props: {
         accessor: 'hasUser',
       },
     ],
-    []
+    [],
   );
 
   const data = React.useMemo(() => {

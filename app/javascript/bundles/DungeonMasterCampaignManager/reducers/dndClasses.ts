@@ -64,7 +64,7 @@ const dndClasses = createReducer(
           count: state.dndClasses.length,
           loading: false,
         };
-      })
+      }),
 );
 
 export default dndClasses;

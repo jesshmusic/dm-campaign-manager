@@ -25,7 +25,7 @@ const Races = (props: { getRaces: () => void; races: RaceSummary[]; loading: boo
       { Header: 'Race', accessor: 'name' },
       { Header: 'Traits', accessor: 'traits' },
     ],
-    []
+    [],
   );
 
   const data = React.useMemo(() => {

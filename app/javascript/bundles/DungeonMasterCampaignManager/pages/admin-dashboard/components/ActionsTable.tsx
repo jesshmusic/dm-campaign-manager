@@ -46,7 +46,7 @@ const ActionsTable = (props: {
         ),
       },
     ],
-    []
+    [],
   );
 
   const data = React.useMemo(() => {

@@ -125,7 +125,7 @@ export const useData = (props: ItemsPageProps) => {
             const b = getRarityValue(rowB.values[columnId]);
             return a > b ? 1 : -1;
           },
-          []
+          [],
         ),
       },
     ],
@@ -157,7 +157,7 @@ export const useData = (props: ItemsPageProps) => {
             const b = getRarityValue(rowB.values[columnId]);
             return a > b ? 1 : -1;
           },
-          []
+          [],
         ),
       },
       {
@@ -216,7 +216,7 @@ export const useData = (props: ItemsPageProps) => {
             const b = getRarityValue(rowB.values[columnId]);
             return a > b ? 1 : -1;
           },
-          []
+          [],
         ),
       },
     ],

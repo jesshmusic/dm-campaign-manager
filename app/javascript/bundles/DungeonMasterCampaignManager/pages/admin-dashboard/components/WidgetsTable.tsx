@@ -65,7 +65,7 @@ const WidgetsTable = (props: {
         ),
       },
     ],
-    []
+    [],
   );
 
   const data = React.useMemo(() => {

@@ -1,6 +1,6 @@
 # You can run these commands in separate shells
 web: ./bin/rails server -p 3000
-webpack: NODE_OPTIONS=--openssl-legacy-provider ./bin/webpack-dev-server
+webpack: ./bin/webpack-dev-server
 
 # Next line runs a watch process with webpack to compile the changed files.
 # When making frequent changes to client side assets, you will prefer building webpack assets

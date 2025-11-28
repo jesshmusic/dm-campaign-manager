@@ -7,6 +7,7 @@ default: &default
   public_output_path: packs
   cache_path: tmp/shakapacker
   webpack_compile_output: true
+  shakapacker_precompile: false
 
   # Additional paths webpack should lookup modules
   # ['app/assets', 'engine/foo/app/assets']
@@ -57,23 +58,20 @@ development:
 
   # Reference: https://webpack.js.org/configuration/dev-server/
   dev_server:
-    https: false
+    server: http
     host: localhost
     port: 8080
-    public: localhost:8080
-    hmr: true
-    # Inline should be set to true if using HMR
-    inline: true
-    overlay: true
+    hot: true
     compress: true
-    disable_host_check: true
-    use_local_ip: false
-    quiet: false
-    pretty: false
+    historyApiFallback: true
     headers:
       'Access-Control-Allow-Origin': '*'
-    watch_options:
-      ignored: '**/node_modules/**'
+    client:
+      overlay: true
+    allowedHosts: all
+    static:
+      watch:
+        ignored: '**/node_modules/**'
 
 
 test:

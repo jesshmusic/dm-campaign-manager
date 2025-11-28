@@ -71,8 +71,8 @@ const mapDispatchToProps = (dispatch) => {
           {
             body: JSON.stringify({ user: currentUser }),
             token,
-          }
-        )
+          },
+        ),
       );
     },
   };

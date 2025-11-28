@@ -123,7 +123,7 @@ const FoundryMapsAdmin: React.FC = () => {
               heading: 'Upload Failed',
               text: 'Failed to upload image to description',
               messageType: FlashMessageType.danger,
-            })
+            }),
           );
         }
       } catch (error) {
@@ -134,7 +134,7 @@ const FoundryMapsAdmin: React.FC = () => {
             heading: 'Upload Failed',
             text: 'Failed to upload image to description',
             messageType: FlashMessageType.danger,
-          })
+          }),
         );
       }
     };
@@ -328,7 +328,7 @@ const FoundryMapsAdmin: React.FC = () => {
                 heading: 'Thumbnail Upload Failed',
                 text: thumbnailError.error || 'Failed to upload thumbnail',
                 messageType: FlashMessageType.warning,
-              })
+              }),
             );
           }
         }
@@ -351,7 +351,7 @@ const FoundryMapsAdmin: React.FC = () => {
                 heading: 'Package Upload Failed',
                 text: uploadError.error || 'Failed to upload package',
                 messageType: FlashMessageType.warning,
-              })
+              }),
             );
           }
         }
@@ -372,7 +372,7 @@ const FoundryMapsAdmin: React.FC = () => {
             heading: 'Save Failed',
             text: error.errors?.join(', ') || `Failed to ${editingMap ? 'update' : 'create'} map`,
             messageType: FlashMessageType.danger,
-          })
+          }),
         );
       }
     } catch (error) {
@@ -383,7 +383,7 @@ const FoundryMapsAdmin: React.FC = () => {
           heading: 'Network Error',
           text: 'Unable to save map. Check console for details.',
           messageType: FlashMessageType.danger,
-        })
+        }),
       );
     } finally {
       setUploadingFiles(false);
@@ -459,7 +459,7 @@ const FoundryMapsAdmin: React.FC = () => {
             heading: 'Tag Created',
             text: 'Tag successfully created',
             messageType: FlashMessageType.success,
-          })
+          }),
         );
       } else {
         const error = await response.json();
@@ -469,7 +469,7 @@ const FoundryMapsAdmin: React.FC = () => {
             heading: 'Create Failed',
             text: error.error || 'Failed to create tag',
             messageType: FlashMessageType.danger,
-          })
+          }),
         );
       }
     } catch (error) {
@@ -480,7 +480,7 @@ const FoundryMapsAdmin: React.FC = () => {
           heading: 'Network Error',
           text: 'Unable to create tag. Check console for details.',
           messageType: FlashMessageType.danger,
-        })
+        }),
       );
     }
   };
@@ -511,7 +511,7 @@ const FoundryMapsAdmin: React.FC = () => {
             heading: 'Tag Updated',
             text: 'Tag successfully updated',
             messageType: FlashMessageType.success,
-          })
+          }),
         );
       } else {
         const error = await response.json();
@@ -521,7 +521,7 @@ const FoundryMapsAdmin: React.FC = () => {
             heading: 'Update Failed',
             text: error.error || 'Failed to update tag',
             messageType: FlashMessageType.danger,
-          })
+          }),
         );
       }
     } catch (error) {
@@ -532,7 +532,7 @@ const FoundryMapsAdmin: React.FC = () => {
           heading: 'Network Error',
           text: 'Unable to update tag. Check console for details.',
           messageType: FlashMessageType.danger,
-        })
+        }),
       );
     }
   };
@@ -540,7 +540,7 @@ const FoundryMapsAdmin: React.FC = () => {
   const handleDeleteTag = async (id: string, tagName: string) => {
     if (
       !confirm(
-        `Are you sure you want to delete the tag "${tagName}"? This will remove it from all maps.`
+        `Are you sure you want to delete the tag "${tagName}"? This will remove it from all maps.`,
       )
     )
       return;
@@ -575,7 +575,7 @@ const FoundryMapsAdmin: React.FC = () => {
   const handleDeleteFile = async (mapId: string, fileId: string, fileName: string) => {
     if (
       !confirm(
-        `Are you sure you want to delete "${fileName}"?\n\nWarning: This may break the scene.json if this file is referenced. Make sure to re-export the scene after deleting files.`
+        `Are you sure you want to delete "${fileName}"?\n\nWarning: This may break the scene.json if this file is referenced. Make sure to re-export the scene after deleting files.`,
       )
     ) {
       return;
@@ -601,7 +601,7 @@ const FoundryMapsAdmin: React.FC = () => {
             heading: 'File Deleted',
             text: 'File successfully deleted',
             messageType: FlashMessageType.success,
-          })
+          }),
         );
       } else {
         dispatch(
@@ -610,7 +610,7 @@ const FoundryMapsAdmin: React.FC = () => {
             heading: 'Delete Failed',
             text: 'Failed to delete file',
             messageType: FlashMessageType.danger,
-          })
+          }),
         );
       }
     } catch (error) {
@@ -621,7 +621,7 @@ const FoundryMapsAdmin: React.FC = () => {
           heading: 'Network Error',
           text: 'Unable to delete file. Check console for details.',
           messageType: FlashMessageType.danger,
-        })
+        }),
       );
     }
   };
@@ -1132,7 +1132,7 @@ const FoundryMapsAdmin: React.FC = () => {
 
                         {(() => {
                           const backgroundFile = viewingMap.files?.find(
-                            (f) => f.file_type === 'background'
+                            (f) => f.file_type === 'background',
                           );
                           return (
                             backgroundFile?.signed_url && (

@@ -23,7 +23,7 @@ const saveToLS = (layouts, widgets) => {
       JSON.stringify({
         layouts,
         widgets,
-      })
+      }),
     );
   }
 };
