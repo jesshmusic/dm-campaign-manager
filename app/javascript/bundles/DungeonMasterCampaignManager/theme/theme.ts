@@ -165,12 +165,13 @@ export const theme = {
     width: '15rem',
     collapsedWidth: '5rem',
     bgColor: '#571a10',
-    borderColor: '#c9ad6a',
+    borderColor: 'rgb(201, 173, 106)', // #c9ad6a
     color: '#dc9182', // primary + 45% lightness (approximate)
     textColor: '#d47a6d', // primary + 30% lightness (approximate)
     iconSize: '2rem',
     iconBgColor: 'transparent',
-    submenuBgColor: 'rgba(71, 21, 13, 0.3)', // darkRed - 10% with 30% opacity
+    submenuBgColor: 'rgba(44, 13, 8, 0.3)',
+    submenuBorderColor: 'rgb(201, 173, 106)',
   },
 
   // Input specific

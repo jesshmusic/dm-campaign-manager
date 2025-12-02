@@ -137,7 +137,7 @@ export const MenuLink = styled.a`
  */
 export const menuItemStyles: MenuItemStyles = {
   root: {
-    fontSize: '1rem',
+    fontSize: '0.875rem',
     fontFamily: "'Mr Eaves', serif",
   },
   button: ({ level, active }) => ({

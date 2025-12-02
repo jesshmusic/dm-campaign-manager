@@ -5,9 +5,9 @@ import rest from '../../api/api';
 import { connect } from 'react-redux';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
-import { RuleContent, TableFrame, ButtonBar } from './Rule.styles';
+import { RuleContent, TableFrame } from './Rule.styles';
 
 const Rule = (props: {
   rule: {
@@ -53,9 +53,9 @@ const Rule = (props: {
           </RuleContent>
           {rule.rules &&
             rule.rules.map((rule) => (
-              <ButtonBar key={rule.slug} to={`/app/rules/${rule.slug}`}>
+              <Link key={rule.slug} to={`/app/rules/${rule.slug}`}>
                 <h2>{rule.name}</h2>
-              </ButtonBar>
+              </Link>
             ))}
         </>
       ) : (

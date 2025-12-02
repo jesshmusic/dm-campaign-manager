@@ -1,4 +1,5 @@
 import React, { useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 
 // Bootstrap
 import FlashMessages from '../components/Alerts/FlashMessages';
@@ -10,7 +11,6 @@ import Breadcrumbs from '../components/Breadcrumbs/Breadcrumbs';
 import SideBar from '../components/SideBar/SideBar';
 import Util from '../utilities/utilities';
 import { gsap } from 'gsap';
-import { Transition, TransitionGroup } from 'react-transition-group';
 import ReactGA from 'react-ga4';
 import YouTubeAd from '../components/BannerAd/YouTubeAd';
 import SearchField from '../components/Search/SearchField';
@@ -30,6 +30,7 @@ const PageContainer = (props: PageContainerProps) => {
   const { children, description, pageTitle } = props;
   const [isMobile, setIsMobile] = React.useState(Util.isMobileWidth());
   const nodeRef = useRef<HTMLDivElement>(null);
+  const location = useLocation();
 
   React.useEffect(() => {
     const handleResize = () => {
@@ -40,35 +41,20 @@ const PageContainer = (props: PageContainerProps) => {
   }, []);
 
   React.useEffect(() => {
-    const componentDidMount = () => {
-      ReactGA.send({ hitType: 'pageview', page: window.location.pathname });
-    };
-    componentDidMount();
-  }, []);
+    ReactGA.send({ hitType: 'pageview', page: location.pathname });
+  }, [location.pathname]);
 
-  const onEnterHandler = () => {
+  // Animate content on mount and when location changes
+  React.useEffect(() => {
     if (!nodeRef.current) return;
+    gsap.killTweensOf(nodeRef.current);
+    gsap.set(nodeRef.current, { autoAlpha: 1, x: 0 });
     gsap.from(nodeRef.current, {
-      duration: 0.4,
+      duration: 0.3,
       autoAlpha: 0,
-      x: -500,
+      x: -100,
     });
-    gsap.to(nodeRef.current, {
-      delay: 0.4,
-      duration: 0.4,
-      scrollTo: 0,
-    });
-  };
-
-  const onExitHandler = () => {
-    if (!nodeRef.current) return;
-    gsap.to(nodeRef.current, {
-      duration: 1,
-      autoAlpha: 0,
-      scrollTo: 0,
-      x: -500,
-    });
-  };
+  }, [location.pathname]);
 
   return (
     <div id="dmsContainer">
@@ -84,24 +70,14 @@ const PageContainer = (props: PageContainerProps) => {
       />
       <Breadcrumbs isCollapsed={isCollapsed} />
       <SearchField />
-      <TransitionGroup component={null}>
-        <Transition
-          timeout={500}
-          key={window.location.pathname}
-          nodeRef={nodeRef}
-          onEnter={onEnterHandler}
-          onExit={onExitHandler}
-        >
-          <PageWrapper ref={nodeRef}>
-            <PageContent>
-              <Page $isCollapsed={isCollapsed}>
-                {children}
-                <YouTubeAd />
-              </Page>
-            </PageContent>
-          </PageWrapper>
-        </Transition>
-      </TransitionGroup>
+      <PageWrapper ref={nodeRef}>
+        <PageContent>
+          <Page $isCollapsed={isCollapsed}>
+            {children}
+            <YouTubeAd />
+          </Page>
+        </PageContent>
+      </PageWrapper>
     </div>
   );
 };

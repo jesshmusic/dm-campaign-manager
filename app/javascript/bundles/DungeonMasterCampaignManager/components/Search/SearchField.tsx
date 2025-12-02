@@ -5,7 +5,7 @@ import { Colors } from '../../utilities/enums';
 import { GiArchiveResearch } from 'react-icons/gi';
 import Button from '../Button/Button';
 
-import { SearchBar, InputGroup, SearchButton } from './SearchField.styles';
+import { SearchBar, InputGroup } from './SearchField.styles';
 
 const SearchField = () => {
   const navigate = useNavigate();
@@ -18,14 +18,12 @@ const SearchField = () => {
     <SearchBar onSubmit={handleSubmit(onSubmit)}>
       <InputGroup>
         <input id="searchBarMain" {...register('search')} placeholder={'Search...'} />
-        <SearchButton>
-          <Button
-            color={Colors.secondary}
-            title="Search"
-            type="submit"
-            icon={<GiArchiveResearch />}
-          />
-        </SearchButton>
+        <Button
+          color={Colors.secondary}
+          title="Search"
+          type="submit"
+          icon={<GiArchiveResearch />}
+        />
       </InputGroup>
     </SearchBar>
   );

@@ -51,11 +51,12 @@ export const InputGroup = styled.div`
     position: relative;
     width: 1%;
   }
-`;
 
-export const SearchButton = styled.span`
-  border: 0;
-  border-bottom-left-radius: 0;
-  border-top-left-radius: 0;
-  margin: 0 0 0 -0.0625rem;
+  /* Style the search button to connect with input */
+  button {
+    border: 0;
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+    margin: 0 0 0 -0.0625rem;
+  }
 `;

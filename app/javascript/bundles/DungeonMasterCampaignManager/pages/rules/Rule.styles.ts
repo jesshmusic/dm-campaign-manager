@@ -4,8 +4,6 @@
  */
 
 import styled from 'styled-components';
-import { buttonBarStyles } from '../../theme/mixins';
-import { Link } from 'react-router-dom';
 
 export const RuleContent = styled.div`
   table {
@@ -50,6 +48,3 @@ export const TableFrame = styled.div`
   width: 100%;
 `;
 
-export const ButtonBar = styled(Link)`
-  ${buttonBarStyles}
-`;
