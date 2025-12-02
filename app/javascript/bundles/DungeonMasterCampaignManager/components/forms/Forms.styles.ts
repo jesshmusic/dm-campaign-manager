@@ -3,7 +3,7 @@
  * Migrated from input.module.scss
  */
 
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { formInputStyles, buttonGroupStyles } from '../../theme/mixins';
 
 export const FormInput = styled.input`
