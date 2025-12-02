@@ -166,12 +166,16 @@ const SideBar = (props: {
             icon={<GiBookshelf />}
             open={rulesOpen}
             onOpenChange={setRulesOpen}
+            style={{
+              borderBottom: '0.125rem solid #c9ad6a',
+            }}
           >
             {rules.map((rule, index) => (
               <SubMenu
                 key={`rule-${rule.slug}-${index}`}
                 label={rule.name}
                 icon={index < 6 ? ruleBooks[index] : <GiRuleBook />}
+                style={{ border: 0 }}
               >
                 <SidebarLink
                   key={`rulesTop-${index}`}
@@ -194,6 +198,11 @@ const SideBar = (props: {
             icon={<GiSwapBag />}
             open={itemsOpen}
             onOpenChange={setItemsOpen}
+            style={{
+              borderBottom: '0.125rem solid #c9ad6a',
+              borderTop: '0.125rem solid #c9ad6a',
+              marginTop: '-.125rem',
+            }}
           >
             {itemTypes.map((itemType, index) => (
               <SidebarLink

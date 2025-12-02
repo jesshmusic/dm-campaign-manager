@@ -29,38 +29,27 @@ const NameField = (props: { hideFrame?: boolean }) => {
     }
   };
 
-  return props.hideFrame ? (
-    <form>
-      {isLoading ? (
-        <DndSpinner showTableFrame={false} text={'Generating Random Name...'} />
-      ) : (
-        <CopyField
-          placeHolder={'Random Name...'}
-          fieldId={'randomFantasyName'}
-          label={'Random Name'}
-          text={nameValue}
-        />
-      )}
+  const renderContents = () => (
+    <form style={{ position: 'relative' }}>
+      {isLoading && <DndSpinner overlay text={'Generating Random Name...'} />}
+      <CopyField
+        placeHolder={'Random Name...'}
+        fieldId={'randomFantasyName'}
+        label={'Random Name'}
+        text={nameValue}
+      />
       <NameOptions onFormSubmit={handleGenerateName} title={'Name'} />
     </form>
+  );
+
+  return props.hideFrame ? (
+    renderContents()
   ) : (
     <Frame
       title="Random Character Name"
       subtitle="Generate a random fantasy name based on gender and race"
     >
-      <form>
-        {isLoading ? (
-          <DndSpinner showTableFrame={false} text={'Generating Random Name...'} />
-        ) : (
-          <CopyField
-            placeHolder={'Random Name...'}
-            fieldId={'randomFantasyName'}
-            label={'Random Name'}
-            text={nameValue}
-          />
-        )}
-        <NameOptions onFormSubmit={handleGenerateName} title={'Name'} />
-      </form>
+      {renderContents()}
     </Frame>
   );
 };

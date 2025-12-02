@@ -159,8 +159,6 @@ export const menuItemStyles: MenuItemStyles = {
   },
   subMenuContent: {
     backgroundColor: 'rgba(71, 21, 13, 0.3)',
-    borderTop: '0.125rem solid #c9ad6a',
-    borderBottom: '0.125rem solid #c9ad6a',
   },
   SubMenuExpandIcon: {
     color: '#d47a6d',

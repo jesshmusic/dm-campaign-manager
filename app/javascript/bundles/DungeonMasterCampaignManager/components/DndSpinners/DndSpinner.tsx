@@ -6,18 +6,38 @@ import React from 'react';
 import { GiLinkedRings } from 'react-icons/gi';
 import TableFrame from '../../containers/TableFrame';
 
-import { NoFrameWrapper } from './DndSpinner.styles';
+import { NoFrameWrapper, OverlayWrapper } from './DndSpinner.styles';
 
-const DndSpinner = (props: { showTableFrame?: boolean; text?: string }) => {
-  return props.showTableFrame ? (
-    <TableFrame showSpinner={true}>
+type DndSpinnerProps = {
+  showTableFrame?: boolean;
+  text?: string;
+  fillContainer?: boolean;
+  overlay?: boolean;
+};
+
+const DndSpinner = ({ showTableFrame, text, fillContainer, overlay }: DndSpinnerProps) => {
+  if (showTableFrame) {
+    return (
+      <TableFrame showSpinner={true}>
+        <GiLinkedRings size={100} className="spinner" />
+        {text && <h3 style={{ marginLeft: '10px' }}>{text}</h3>}
+      </TableFrame>
+    );
+  }
+
+  if (overlay) {
+    return (
+      <OverlayWrapper>
+        <GiLinkedRings size={100} className="spinner" />
+        {text && <h3 style={{ marginTop: '10px' }}>{text}</h3>}
+      </OverlayWrapper>
+    );
+  }
+
+  return (
+    <NoFrameWrapper $fillContainer={fillContainer}>
       <GiLinkedRings size={100} className="spinner" />
-      {props.text && <h3 style={{ marginLeft: '10px' }}>{props.text}</h3>}
-    </TableFrame>
-  ) : (
-    <NoFrameWrapper>
-      <GiLinkedRings size={100} className="spinner" />
-      {props.text && <h3 style={{ marginLeft: '10px' }}>{props.text}</h3>}
+      {text && <h3 style={{ marginLeft: '10px' }}>{text}</h3>}
     </NoFrameWrapper>
   );
 };

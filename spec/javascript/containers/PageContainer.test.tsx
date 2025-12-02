@@ -14,6 +14,8 @@ jest.mock('gsap', () => ({
   gsap: {
     from: jest.fn(),
     to: jest.fn(),
+    set: jest.fn(),
+    killTweensOf: jest.fn(),
   },
 }));
 

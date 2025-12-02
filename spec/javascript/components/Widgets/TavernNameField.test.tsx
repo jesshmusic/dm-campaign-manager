@@ -30,9 +30,9 @@ jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/compo
 });
 
 jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/components/Button/Button', () => {
-  return function MockButton({ title, onClick }: any) {
+  return function MockButton({ title, onClick, disabled }: any) {
     return (
-      <button data-testid="generate-button" onClick={onClick}>
+      <button data-testid="generate-button" onClick={onClick} disabled={disabled}>
         {title}
       </button>
     );
@@ -42,6 +42,12 @@ jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/compo
 jest.mock('react-icons/all', () => ({
   GiBeerStein: () => <span>Beer</span>,
 }));
+
+jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/components/DndSpinners/DndSpinner', () => {
+  return function MockDndSpinner({ text, overlay }: any) {
+    return overlay ? <div data-testid="spinner-overlay">{text}</div> : null;
+  };
+});
 
 describe('TavernNameField', () => {
   beforeEach(() => {

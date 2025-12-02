@@ -32,18 +32,15 @@ const AdventureHookWidget = (props: { hideFrame?: boolean }) => {
 
   const renderContents = () => {
     return (
-      <form>
-        {isLoading ? (
-          <DndSpinner showTableFrame={false} text={'Generating Adventure Hook...'} />
-        ) : (
-          <CopyField
-            placeHolder={'Random Adventure Hook...'}
-            fieldId={'randomAdventureHook'}
-            label={'Random Adventure Hook'}
-            text={adventureHook}
-            isTextArea
-          />
-        )}
+      <form style={{ position: 'relative' }}>
+        {isLoading && <DndSpinner overlay text={'Generating Adventure Hook...'} />}
+        <CopyField
+          placeHolder={'Random Adventure Hook...'}
+          fieldId={'randomAdventureHook'}
+          label={'Random Adventure Hook'}
+          text={adventureHook}
+          isTextArea
+        />
         <div id={'adventureHookGeneratorSubmit'}>
           <AdventureHookOptions onFormSubmit={handleGenerateHook} isLoading={isLoading} />
         </div>

@@ -1,1 +1,1 @@
-require 'openai/client'
+require_relative 'openai/client'

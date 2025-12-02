@@ -47,4 +47,3 @@ export const TableFrame = styled.div`
   margin-top: 25px;
   width: 100%;
 `;
-

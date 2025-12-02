@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'openai/client'
+require_relative 'openai/client'
 
 class NameGen
   OPENAI = OpenAI::Client.new(api_key: ENV.fetch('OPENAI_API_KEY', 'test-api-key'))
