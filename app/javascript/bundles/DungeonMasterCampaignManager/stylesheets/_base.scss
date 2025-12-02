@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 body {
   font-size: 0.875rem;
 }
@@ -80,7 +82,7 @@ h3 {
 }
 
 .dashboard-modal {
-  background: lighten($yellow, 25%);
+  background: color.adjust($yellow, $lightness: 25%);
   border-radius: 4px;
   max-height: 80vh;
   max-width: 500px;
