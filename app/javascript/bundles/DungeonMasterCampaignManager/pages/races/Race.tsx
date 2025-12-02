@@ -7,7 +7,7 @@ import PageTitle from '../../components/PageTitle/PageTitle';
 import DndSpinner from '../../components/DndSpinners/DndSpinner';
 import { useParams } from 'react-router-dom';
 
-import styles from './races.module.scss';
+import { RacePageWrapper, Subheading, TraitName } from './Races.styles';
 
 const Race = (props: { race?: RaceProps; getRace: (raceSlug: string) => void }) => {
   const { race, getRace } = props;
@@ -41,37 +41,37 @@ const Race = (props: { race?: RaceProps; getRace: (raceSlug: string) => void }) 
       pageTitle={raceTitle}
     >
       {race ? (
-        <div className={styles.racePage}>
+        <RacePageWrapper>
           <PageTitle title={raceTitle} />
           <div>
             <div>
-              <span className={styles.traitName}>Ability Score Increase. </span>
+              <TraitName>Ability Score Increase. </TraitName>
               {abilityMods()}
             </div>
             <div>
-              <span className={styles.traitName}>Speed. </span> {race.speed} ft.
+              <TraitName>Speed. </TraitName> {race.speed} ft.
             </div>
             <div>
-              <span className={styles.traitName}>Size. </span>
+              <TraitName>Size. </TraitName>
               {race.sizeDescription}
             </div>
             <div>
-              <span className={styles.traitName}>Age. </span>
+              <TraitName>Age. </TraitName>
               {race.age}
             </div>
             <div>
-              <span className={styles.traitName}>Languages. </span> {race.languageDescription}
+              <TraitName>Languages. </TraitName> {race.languageDescription}
               <p>Starting languages: {race.languages.join(', ')}</p>
               {race.languageChoices.length > 0 ? (
                 <p>Choose from: {race.languageChoices.join(', ')}</p>
               ) : null}
             </div>
             <div>
-              <h3 className={styles.subheading}>Traits</h3>
+              <Subheading>Traits</Subheading>
               {race.traits &&
                 race.traits.map((trait, index) => (
                   <div key={index}>
-                    <span className={styles.traitName}>{trait.name} </span>
+                    <TraitName>{trait.name} </TraitName>
                     {trait.desc.map((descPara, index) => (
                       <p key={index}>{descPara}</p>
                     ))}
@@ -79,7 +79,7 @@ const Race = (props: { race?: RaceProps; getRace: (raceSlug: string) => void }) 
                 ))}
             </div>
           </div>
-        </div>
+        </RacePageWrapper>
       ) : (
         <DndSpinner />
       )}

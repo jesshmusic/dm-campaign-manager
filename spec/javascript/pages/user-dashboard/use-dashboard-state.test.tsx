@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, act } from '@testing-library/react';
+import { render, act } from '../../test-utils';
 import { useDashboardState } from '../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/user-dashboard/use-dashboard-state';
 
 // Mock dashboard components

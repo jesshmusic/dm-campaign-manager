@@ -7,8 +7,9 @@ import Select, { MenuPlacement, Options } from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 import { SelectOption } from '../../utilities/types';
 import { Control, Controller, FieldValues } from 'react-hook-form';
-import classNames from 'classnames';
 import './inputOverrides.scss';
+
+import { FormWrapper, FormLabel } from './Forms.styles';
 
 // @TODO: Handle required errors
 export type SelectProps = {
@@ -29,8 +30,6 @@ export type SelectProps = {
   value?: unknown;
 };
 
-import styles from './input.module.scss';
-
 const FormSelect = ({
   name,
   label,
@@ -45,10 +44,8 @@ const FormSelect = ({
   isMulti = false,
 }: SelectProps) => {
   return (
-    <div className={classNames(className, styles.wrapper)}>
-      <label htmlFor={name} className={styles.label}>
-        {label}
-      </label>
+    <FormWrapper className={className}>
+      <FormLabel htmlFor={name}>{label}</FormLabel>
       <Controller
         control={control}
         name={name}
@@ -81,7 +78,7 @@ const FormSelect = ({
           )
         }
       />
-    </div>
+    </FormWrapper>
   );
 };
 

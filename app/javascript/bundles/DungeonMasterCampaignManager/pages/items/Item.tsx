@@ -11,7 +11,7 @@ import ReactMarkdown from 'react-markdown';
 import { singleItemUseData } from './use-data';
 import { Link, useParams } from 'react-router-dom';
 
-import styles from './item.module.scss';
+import { Section, Info, TableFrame } from './Item.styles';
 
 const Item = (props: ItemPageProps) => {
   const { item, getItem } = props;
@@ -42,8 +42,8 @@ const Item = (props: ItemPageProps) => {
     >
       <PageTitle title={itemTitle} />
       {item && itemInfo ? (
-        <div className={styles.section}>
-          <div className={styles.info}>
+        <Section>
+          <Info>
             <h2>{itemInfo.subtitle}</h2>
             {itemInfo.infoBlock &&
               itemInfo.infoBlock.map((info, index) => (
@@ -51,9 +51,9 @@ const Item = (props: ItemPageProps) => {
                   <span>{info.title}</span> {info.desc}
                 </p>
               ))}
-          </div>
+          </Info>
           {item.contents && (
-            <div className={styles.info}>
+            <Info>
               <h3>Contents</h3>
               <ul>
                 {item.contents.map((contentItem, index) => (
@@ -64,18 +64,17 @@ const Item = (props: ItemPageProps) => {
                   </li>
                 ))}
               </ul>
-            </div>
+            </Info>
           )}
           {item.desc &&
             item.desc.map((itemDesc, index) => (
               <ReactMarkdown
                 key={index}
-                className={styles.section}
                 components={{
                   table: ({ node: _node, ...props }) => (
-                    <div className={styles.tableFrame}>
+                    <TableFrame>
                       <table {...props} />
-                    </div>
+                    </TableFrame>
                   ),
                 }}
                 remarkPlugins={[remarkGfm]}
@@ -83,7 +82,7 @@ const Item = (props: ItemPageProps) => {
                 {itemDesc}
               </ReactMarkdown>
             ))}
-        </div>
+        </Section>
       ) : (
         <DndSpinner />
       )}

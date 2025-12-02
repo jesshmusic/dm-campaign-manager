@@ -15,7 +15,7 @@ import { MonsterProps } from '../../utilities/types';
 
 ReactGA.initialize('G-8XJTH70JSQ');
 
-import styles from './monster-generator.module.scss';
+import { MonsterGenWrapper } from './MonsterGenerator.styles';
 
 const MonsterGenerator = (props: {
   monster?: MonsterProps;
@@ -37,7 +37,7 @@ const MonsterGenerator = (props: {
       }
     >
       <PageTitle title={'Monster Generators and Converters'} />
-      <div className={styles.monsterGenWrapper}>
+      <MonsterGenWrapper>
         <p>
           Several generators to build quick Monsters. Fields can be copied and pasted into Fantasy
           Grounds.
@@ -165,7 +165,7 @@ const MonsterGenerator = (props: {
             </div>
           )}
         </div>
-      </div>
+      </MonsterGenWrapper>
     </PageContainer>
   );
 };

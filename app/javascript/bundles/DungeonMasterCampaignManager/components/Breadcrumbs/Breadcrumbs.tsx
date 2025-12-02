@@ -2,9 +2,8 @@ import React from 'react';
 import BreadcrumbLink from './BreadcrumbLink';
 import { GiCastle, GiPointing, GiTwoHandedSword } from 'react-icons/gi';
 import { useLocation, useNavigate } from 'react-router-dom';
-import classNames from 'classnames';
 
-import styles from './breadcrumbs.module.scss';
+import { BackButton, HomeIcon, BreadcrumbList, BreadcrumbItem } from './Breadcrumbs.styles';
 
 export type BreadCrumbProps = {
   isActive?: boolean;
@@ -44,32 +43,28 @@ const Breadcrumbs = (props: { isCollapsed: boolean }) => {
 
   return (
     <nav aria-label="breadcrumb">
-      <ol
-        className={classNames(styles.breadcrumb, {
-          [styles.collapsed]: isCollapsed,
-        })}
-      >
+      <BreadcrumbList $isCollapsed={isCollapsed}>
         {paths.length > 0 ? (
-          <button className={styles.backButton} onClick={() => navigate(-1)}>
+          <BackButton onClick={() => navigate(-1)}>
             <GiPointing size={25} />
-          </button>
+          </BackButton>
         ) : (
-          <li className={styles.homeIcon}>
+          <HomeIcon>
             <GiCastle size={25} />
-          </li>
+          </HomeIcon>
         )}
 
         <BreadcrumbLink to="/" title={'Home'} />
         {paths.map((path, index) =>
           index === paths.length - 1 || path.title === 'Sections' ? (
-            <li className={`${styles.breadcrumbItem} active`} key={index}>
+            <BreadcrumbItem $isActive key={index}>
               <GiTwoHandedSword /> {path.title}
-            </li>
+            </BreadcrumbItem>
           ) : (
             <BreadcrumbLink to={path.url} title={path.title} key={index} />
           ),
         )}
-      </ol>
+      </BreadcrumbList>
     </nav>
   );
 };

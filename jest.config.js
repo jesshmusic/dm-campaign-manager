@@ -23,7 +23,7 @@ module.exports = {
     '^react-icons/all$': '<rootDir>/spec/javascript/__mocks__/reactIconsMock.js',
     '^react-icons/(.*)$': '<rootDir>/spec/javascript/__mocks__/reactIconsMock.js',
     '^bundles/(.*)$': '<rootDir>/app/javascript/bundles/$1',
-    '^@/(.*)$': '<rootDir>/app/javascript/$1'
+    '^@/(.*)$': '<rootDir>/app/javascript/$1',
   },
   setupFilesAfterEnv: ['<rootDir>/spec/javascript/setupTests.ts'],
   collectCoverageFrom: [

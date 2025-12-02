@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent } from '../../test-utils';
 import { MemoryRouter } from 'react-router-dom';
 import Breadcrumbs from '../../../../app/javascript/bundles/DungeonMasterCampaignManager/components/Breadcrumbs/Breadcrumbs';
 
@@ -45,7 +45,7 @@ describe('Breadcrumbs', () => {
 
   it('applies collapsed class when isCollapsed is true', () => {
     const { container } = renderWithRouter(<Breadcrumbs isCollapsed={true} />, '/');
-    const breadcrumb = container.querySelector('.collapsed');
+    const breadcrumb = container.querySelector('nav'); // Breadcrumb nav
     expect(breadcrumb).toBeInTheDocument();
   });
 

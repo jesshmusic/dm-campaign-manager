@@ -1,3 +1,4 @@
+@use 'sass:color';
 @import '../../stylesheets/variables';
 
 .reactSelect {
@@ -19,15 +20,15 @@
   }
 
   &__indicator {
-    color: lighten($primary, 25%) !important;
+    color: color.adjust($primary, $lightness: 25%) !important;
   }
 
   &__indicator-separator {
-    background-color: lighten($primary, 25%) !important;
+    background-color: color.adjust($primary, $lightness: 25%) !important;
   }
 
   &__menu {
-    background-color: lighten($orange, 20%) !important;
+    background-color: color.adjust($orange, $lightness: 20%) !important;
     border-radius: 0 !important;
     margin-top: 0.125rem !important;
   }
@@ -43,7 +44,7 @@
 
   &__option {
     &--is-focused {
-      background-color: lighten($primary, 25%) !important;
+      background-color: color.adjust($primary, $lightness: 25%) !important;
       color: $white !important;
     }
 

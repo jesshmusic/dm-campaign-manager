@@ -7,7 +7,7 @@ import { alignmentOptions, monsterSizeOptions } from '../../../../utilities/char
 import FormSelect from '../../../../components/forms/FormSelect';
 import { raceOptions } from '../../../../components/Widgets/NameOptions';
 
-import styles from '../generator.module.scss';
+import { ThreeColLarge, FourCol, FiveCol, SixCol } from '../../MonsterGenerator.styles';
 
 const QuickMonsterStatsSection = (props: {
   archetypeOptions: SelectOption[];
@@ -17,7 +17,7 @@ const QuickMonsterStatsSection = (props: {
   const { archetypeOptions, challengeRatingOptions, UseForm } = props;
   return (
     <>
-      <div className={`${styles.threeCol} ${styles.largeInputs}`}>
+      <ThreeColLarge>
         <FormSelect
           label="Target Challenge Rating"
           name="challengeRatingOption"
@@ -38,8 +38,8 @@ const QuickMonsterStatsSection = (props: {
           control={UseForm.control}
           options={archetypeOptions}
         />
-      </div>
-      <div className={styles.fiveCol}>
+      </ThreeColLarge>
+      <FiveCol>
         <MonsterTypeSelect control={UseForm.control} />
         <FormSelect
           label="Alignment"
@@ -67,8 +67,8 @@ const QuickMonsterStatsSection = (props: {
           control={UseForm.control}
           options={raceOptions}
         />
-      </div>
-      <div className={styles.sixCol}>
+      </FiveCol>
+      <SixCol>
         <FormField
           label="STR (optional)"
           type="number"
@@ -112,8 +112,8 @@ const QuickMonsterStatsSection = (props: {
           register={UseForm.register}
           name="charisma"
         />
-      </div>
-      <div className={styles.fourCol}>
+      </SixCol>
+      <FourCol>
         <FormField
           label="Hit Dice Count"
           errors={UseForm.formState.errors}
@@ -147,7 +147,7 @@ const QuickMonsterStatsSection = (props: {
           name="xp"
           readOnly
         />
-      </div>
+      </FourCol>
     </>
   );
 };

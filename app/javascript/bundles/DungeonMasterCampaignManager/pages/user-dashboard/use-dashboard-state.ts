@@ -1,19 +1,30 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { dashboardComponents, dashboardItems, initialLayouts } from '../../components/Widgets';
 import { WidgetElementProps } from '../../components/Widgets/Widget';
 import { getIconFromName } from '../../utilities/icons';
 import CustomWidget from '../../components/Widgets/CustomWidget';
 
 const getFromLS = (key) => {
-  let ls = {};
   if (global.localStorage) {
     try {
-      ls = JSON.parse(global.localStorage.getItem('rgl-8') as string) || {};
+      const ls = JSON.parse(global.localStorage.getItem('rgl-8') as string);
+      if (ls && ls[key]) {
+        // For layouts, ensure it has at least one breakpoint with items
+        if (key === 'layouts') {
+          const layouts = ls[key];
+          const hasValidLayout = Object.values(layouts).some(
+            (breakpointLayout: unknown) =>
+              Array.isArray(breakpointLayout) && breakpointLayout.length > 0,
+          );
+          return hasValidLayout ? layouts : null;
+        }
+        return ls[key];
+      }
     } catch (_e) {
-      // Ignore JSON parse errors, use empty object
+      // Ignore JSON parse errors
     }
   }
-  return ls[key];
+  return null;
 };
 
 const saveToLS = (layouts, widgets) => {
@@ -93,17 +104,31 @@ export const useDashboardState = ({ customWidgets, getWidgets }) => {
     setWidgets(combinedWidgets);
   }, [customWidgets, widgetKeys]);
 
-  const onLayoutChange = (currentLayouts, allLayouts) => {
+  const onLayoutChange = useCallback((_currentLayout, allLayouts) => {
     setLayouts(allLayouts);
-  };
+  }, []);
 
-  const onRemoveItem = (widgetId) => {
-    setWidgetKeys(widgetKeys.filter((i) => i !== widgetId));
-  };
+  const onRemoveItem = useCallback((widgetId) => {
+    setWidgetKeys((prev) => prev.filter((i) => i !== widgetId));
+  }, []);
 
-  const onAddItem = (widgetId) => {
-    setWidgetKeys([...widgetKeys, widgetId]);
-  };
+  const onAddItem = useCallback((widgetId) => {
+    setWidgetKeys((prev) => [...prev, widgetId]);
+  }, []);
 
-  return { allWidgets, layouts, onAddItem, onLayoutChange, onRemoveItem, widgetKeys, widgets };
+  const onResetLayout = useCallback(() => {
+    setLayouts(initialLayouts);
+    setWidgetKeys(dashboardItems);
+  }, []);
+
+  return {
+    allWidgets,
+    layouts,
+    onAddItem,
+    onLayoutChange,
+    onRemoveItem,
+    onResetLayout,
+    widgetKeys,
+    widgets,
+  };
 };

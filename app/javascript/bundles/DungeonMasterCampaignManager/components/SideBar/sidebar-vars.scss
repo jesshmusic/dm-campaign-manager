@@ -1,33 +1,38 @@
+@use 'sass:color';
 @import '../../stylesheets/variables';
 
-// react-pro-sidebar v1.x uses styled-components and CSS variables
-// Custom overrides for the sidebar using CSS custom properties
-.ps-sidebar-root {
+@import '~react-pro-sidebar/dist/scss/styles';
+
+.pro-sidebar {
   border-right: 0.25rem solid $yellow;
   height: 100vh;
   position: fixed;
   top: 0;
 
-  // Hide scrollbar
-  .ps-sidebar-container {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
+  > .pro-sidebar-inner {
+    img.sidebar-bg {
+      object-position: left;
+      opacity: 1;
+    }
 
-    &::-webkit-scrollbar {
-      display: none;
+    > .pro-sidebar-layout {
+      -ms-overflow-style: none;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
     }
   }
 }
 
-// Menu item styling
-.ps-menu-button {
+.pro-item-content {
   font-family: $font-family-mr-eaves;
 
   a,
   button {
     background: 0;
     border: 0;
-    color: lighten($primary, 30%);
+    color: color.adjust($primary, $lightness: 30%);
     text-decoration: none;
     transition: color ease-in-out 0.25s;
 
@@ -37,21 +42,17 @@
   }
 }
 
-// MenuItem content
-.ps-menu-label {
-  font-family: $font-family-mr-eaves;
-  color: lighten($primary, 30%);
-  transition: color ease-in-out 0.25s;
-}
-
-.ps-menu-button:hover {
-  .ps-menu-label {
-    color: $white;
+.pro-sub-menu {
+  .pro-inner-item {
+    border-bottom: 0.125rem solid $yellow;
   }
 }
 
-// SubMenu styling
-.ps-submenu-content {
+.pro-inner-list-item {
   border-bottom: 0.125rem solid $yellow;
   border-top: 0.125rem solid $yellow;
+
+  .pro-inner-item {
+    border: 0;
+  }
 }

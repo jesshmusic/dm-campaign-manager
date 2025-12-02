@@ -3,8 +3,13 @@ import React from 'react';
 import { GiDragonHead } from 'react-icons/gi';
 import { MenuItem } from 'react-pro-sidebar';
 
-import styles from './navlink.module.scss';
-import buttonStyles from '../Button/button.module.scss';
+import {
+  NavLinkStyled,
+  NavLinkSmallStyled,
+  NavLinkButton,
+  Icon,
+  DragonHead,
+} from './NavLink.styles';
 
 export const SidebarButton = (props: {
   title: string;
@@ -31,48 +36,53 @@ export const SidebarLink = (props: { title: string; icon?: React.ReactNode; to: 
 };
 
 export const NavLink = (props) => {
-  const { showActiveIcon, children, icon, isButton, ...inputProps } = props;
-  const resolved = useResolvedPath(props.to);
+  const { showActiveIcon, children, icon, isButton, to, ...inputProps } = props;
+  const resolved = useResolvedPath(to);
   const match = useMatch({ path: resolved.pathname, end: true });
   if (isButton) {
     return (
-      <Link {...inputProps} className={`${buttonStyles.button} ${buttonStyles.info}`}>
+      <NavLinkButton to={to} {...inputProps}>
         <span>
-          <span className={styles.icon}>{icon}</span>
-          <span className={styles.title}>{children}</span>
+          <Icon>{icon}</Icon>
+          <span>{children}</span>
         </span>
-      </Link>
+      </NavLinkButton>
     );
   }
   return (
-    <Link {...inputProps} className={match ? styles.navLinkActive : styles.navLink}>
+    <NavLinkStyled to={to} $isActive={!!match} {...inputProps}>
       <span>
-        <span className={styles.icon}>{icon}</span>
-        <span className={styles.title}>{children}</span>
+        <Icon>{icon}</Icon>
+        <span>{children}</span>
       </span>
-      <span className={styles.activeIcon}>
-        {showActiveIcon && <GiDragonHead className={styles.dragonHead} />}
+      <span>
+        {showActiveIcon && (
+          <DragonHead $isActive={!!match}>
+            <GiDragonHead />
+          </DragonHead>
+        )}
       </span>
-    </Link>
+    </NavLinkStyled>
   );
 };
 
 export const NavLinkSmall = (props) => {
-  const { showActiveIcon, children, icon, ...inputProps } = props;
+  const { showActiveIcon, children, icon, to, ...inputProps } = props;
+  const resolved = useResolvedPath(to);
+  const match = useMatch({ path: resolved.pathname, end: true });
   return (
-    <Link
-      {...inputProps}
-      getProps={({ isCurrent }) => ({
-        className: isCurrent ? styles.navLinkSmallActive : styles.navLinkSmall,
-      })}
-    >
+    <NavLinkSmallStyled to={to} $isActive={!!match} {...inputProps}>
       <span>
-        <span className={styles.icon}>{icon}</span>
-        <span className={styles.title}>{children}</span>
+        <Icon>{icon}</Icon>
+        <span>{children}</span>
       </span>
-      <span className={styles.activeIcon}>
-        {showActiveIcon && <GiDragonHead className={styles.dragonHead} />}
+      <span>
+        {showActiveIcon && (
+          <DragonHead $isActive={!!match}>
+            <GiDragonHead />
+          </DragonHead>
+        )}
       </span>
-    </Link>
+    </NavLinkSmallStyled>
   );
 };

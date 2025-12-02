@@ -1,6 +1,6 @@
 import { describe, it, expect, jest } from '@jest/globals';
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen } from '../test-utils';
 import { MemoryRouter } from 'react-router-dom';
 import PageTitle from '../../../app/javascript/bundles/DungeonMasterCampaignManager/components/PageTitle/PageTitle';
 

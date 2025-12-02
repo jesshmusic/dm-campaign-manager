@@ -11,7 +11,7 @@ import ChallengeRatingField from '../ChallengeRatingField';
 import { FieldValues, UseFormReturn } from 'react-hook-form';
 import { raceOptions } from '../../../../../components/Widgets/NameOptions';
 
-import styles from '../../generator.module.scss';
+import { SixCol, FourCol, FiveCol } from '../../../MonsterGenerator.styles';
 
 const MonsterStatsSection = (props: {
   UseForm: UseFormReturn<FieldValues>;
@@ -20,7 +20,7 @@ const MonsterStatsSection = (props: {
   const { UseForm, handleCalculateCR } = props;
   return (
     <>
-      <div className={styles.sixCol}>
+      <SixCol>
         <MonsterTypeSelect control={UseForm.control} />
         <FormField
           label="Subtype"
@@ -55,8 +55,8 @@ const MonsterStatsSection = (props: {
           control={UseForm.control}
           options={raceOptions}
         />
-      </div>
-      <div className={styles.fourCol}>
+      </SixCol>
+      <FourCol>
         <FormField
           label="Armor Class"
           errors={UseForm.formState.errors}
@@ -89,8 +89,8 @@ const MonsterStatsSection = (props: {
           required
           name="saveDC"
         />
-      </div>
-      <div className={styles.fiveCol}>
+      </FourCol>
+      <FiveCol>
         <FormField
           label="Hit Dice Value"
           type="text"
@@ -124,7 +124,7 @@ const MonsterStatsSection = (props: {
           name="profBonus"
           readOnly
         />
-      </div>
+      </FiveCol>
     </>
   );
 };

@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent } from '../../../test-utils';
 import DashboardBar from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/user-dashboard/components/DashboardBar';
 
 jest.mock('react-icons/all', () => ({

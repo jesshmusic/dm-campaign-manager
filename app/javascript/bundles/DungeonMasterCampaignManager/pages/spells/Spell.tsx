@@ -8,7 +8,7 @@ import rest from '../../api/api';
 import { connect } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-import styles from './spells.module.scss';
+import { SpellWrapper, SpellDescription } from './Spell.styles';
 
 const Spell = (props: { spell: SpellProps; getSpell: (spellSlug: string) => void }) => {
   const { spell, getSpell } = props;
@@ -28,18 +28,18 @@ const Spell = (props: { spell: SpellProps; getSpell: (spellSlug: string) => void
       description={`Spell: ${spellTitle}. Dungeon Master's Toolbox is a free resource for DMs to manage their dndClasses, adventures, and Monsters.`}
     >
       {spell ? (
-        <div className={styles.spell}>
+        <SpellWrapper>
           <PageTitle title={spellTitle} />
-          <div className={styles.description}>
+          <SpellDescription>
             {spell.spellLevel} {spell.school.toLowerCase()}
-          </div>
+          </SpellDescription>
           <InfoBlock title="Casting Time" desc={spell.castingTime} />
           <InfoBlock title="Range" desc={spell.range} />
           <InfoBlock title="Components" desc={`${spell.components.join(', ')}${spellMats}`} />
           <InfoBlock title="Duration" desc={spell.duration} />
           <p>{spell.description}</p>
           <p>{spell.higherLevel}</p>
-        </div>
+        </SpellWrapper>
       ) : (
         <DndSpinner />
       )}

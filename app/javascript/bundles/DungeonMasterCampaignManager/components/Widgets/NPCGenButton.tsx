@@ -1,13 +1,12 @@
-import { Link } from 'react-router-dom';
 import { GiBarbute } from 'react-icons/gi';
 import React from 'react';
 
-import styles from './widgets.module.scss';
+import { ButtonBar } from './Widgets.styles';
 
 const NPCGenButton = () => (
-  <Link to="/app/monster-generator" className={styles.buttonBar}>
+  <ButtonBar to="/app/monster-generator">
     <GiBarbute size={24} /> NPC Generators
-  </Link>
+  </ButtonBar>
 );
 
 export default NPCGenButton;

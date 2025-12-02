@@ -8,7 +8,7 @@ import { FieldValues, useFieldArray, UseFormReturn } from 'react-hook-form';
 import ActionsForm from './ActionsForm';
 import BasicActionsForm from './BasicActionsForm';
 
-import styles from '../../../../generator.module.scss';
+import { ActionsSection } from '../../../../../MonsterGenerator.styles';
 
 const BaseActionsFormSection = (props: {
   actionVariation: ActionVariations;
@@ -58,7 +58,7 @@ const BaseActionsFormSection = (props: {
   switch (actionVariation) {
     case ActionVariations.action:
       return (
-        <div className={styles.actionsSection}>
+        <ActionsSection>
           <ActionsForm
             appendAction={addAction}
             fieldName={fieldName}
@@ -67,11 +67,11 @@ const BaseActionsFormSection = (props: {
             singularTitle={singularTitle}
             useForm={props.useForm}
           />
-        </div>
+        </ActionsSection>
       );
     default:
       return (
-        <div className={styles.actionsSection}>
+        <ActionsSection>
           <BasicActionsForm
             appendAction={addAction}
             fieldName={fieldName}
@@ -80,7 +80,7 @@ const BaseActionsFormSection = (props: {
             singularTitle={singularTitle}
             useForm={props.useForm}
           />
-        </div>
+        </ActionsSection>
       );
   }
 };

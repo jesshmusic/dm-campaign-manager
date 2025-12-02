@@ -4,8 +4,12 @@ import { FieldValues, UseFormRegister } from 'react-hook-form';
 import { Colors } from '../../../../utilities/enums';
 import Button from '../../../../components/Button/Button';
 
-import styles from '../../../../components/forms/input.module.scss';
-import genStyles from '../generator.module.scss';
+import {
+  ChallengeWrapper,
+  ChallengeLabel,
+  ChallengeInputGroup,
+  ChallengeInput,
+} from '../../MonsterGenerator.styles';
 
 type ChallengeRatingFieldProps = {
   onCalculateCr: () => void;
@@ -15,11 +19,10 @@ type ChallengeRatingFieldProps = {
 const ChallengeRatingField = (props: ChallengeRatingFieldProps) => {
   const { onCalculateCr, register } = props;
   return (
-    <div className={`${styles.wrapper} ${genStyles.challenge}`}>
-      <label className={styles.label}>Challenge</label>
-      <div className={styles.inputGroup}>
-        <input
-          className={styles.input}
+    <ChallengeWrapper>
+      <ChallengeLabel>Challenge</ChallengeLabel>
+      <ChallengeInputGroup>
+        <ChallengeInput
           autoComplete={''}
           type={'text'}
           placeholder={'Challenge'}
@@ -33,8 +36,8 @@ const ChallengeRatingField = (props: ChallengeRatingFieldProps) => {
           onClick={onCalculateCr}
           icon={<GiMailedFist size={22} />}
         />
-      </div>
-    </div>
+      </ChallengeInputGroup>
+    </ChallengeWrapper>
   );
 };
 

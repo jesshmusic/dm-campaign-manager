@@ -1,7 +1,6 @@
 import React from 'react';
-import classNames from 'classnames';
 
-import styles from './input.module.scss';
+import { FormWrapper, FormLabel, FormInput } from './Forms.styles';
 
 const ReadOnlyField = (props: {
   className?: string;
@@ -11,12 +10,10 @@ const ReadOnlyField = (props: {
 }) => {
   const { className, label, name, value } = props;
   return (
-    <div className={classNames(className, styles.wrapper)}>
-      <label className={styles.label} htmlFor={name}>
-        {label}
-      </label>
-      <input className={styles.input} autoComplete={''} type={'text'} readOnly value={value} />
-    </div>
+    <FormWrapper className={className}>
+      <FormLabel htmlFor={name}>{label}</FormLabel>
+      <FormInput autoComplete={''} type={'text'} readOnly value={value} />
+    </FormWrapper>
   );
 };
 

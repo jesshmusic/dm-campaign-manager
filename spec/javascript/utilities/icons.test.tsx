@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { render } from '../test-utils';
 import { allGiIcons, getIconFromName, parseIconName } from '../../../app/javascript/bundles/DungeonMasterCampaignManager/utilities/icons';
 
 describe('icons utilities', () => {

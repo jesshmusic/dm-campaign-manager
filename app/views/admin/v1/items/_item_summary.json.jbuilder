@@ -11,7 +11,7 @@ json.extract! item,
               :requires_attunement,
               :slug
 json.category item.category
-json.cost "#{item.cost.quantity.to_s(:delimited)} #{item.cost.unit}" unless item.cost.nil?
+json.cost "#{number_with_delimiter(item.cost.quantity)} #{item.cost.unit}" unless item.cost.nil?
 
 unless item.content_items.nil? || item.content_items.none?
   json.contents item.content_items do |content_item|
@@ -24,7 +24,7 @@ when 'ArmorItem', 'MagicArmorItem'
   json.armor_type item.armor_category
   unless item.armor_class.nil?
     dex_mod_string = ''
-    if item.armor_class.has_dex_bonus && (item.armor_class.max_dex_bonus || item.armor_class.max_dex_bonus.zero?)
+    if item.armor_class.has_dex_bonus && !item.armor_class.max_dex_bonus.nil?
       dex_mod_string = " + Dex modifier (max #{item.armor_class.max_dex_bonus})"
     elsif item.armor_class.has_dex_bonus
       dex_mod_string = ' + Dex modifier'

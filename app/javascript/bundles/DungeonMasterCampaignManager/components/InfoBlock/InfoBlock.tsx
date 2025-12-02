@@ -1,12 +1,12 @@
 import React from 'react';
 
-import styles from './info-block.module.scss';
+import { InfoBlockWrapper } from './InfoBlock.styles';
 
 const InfoBlock = (props: { title: string; desc: string }) => (
-  <div className={styles.infoBlock}>
+  <InfoBlockWrapper>
     <span>{props.title}: </span>
     {props.desc}
-  </div>
+  </InfoBlockWrapper>
 );
 
 export default InfoBlock;

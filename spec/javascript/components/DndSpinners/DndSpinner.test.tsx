@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen } from '../../test-utils';
 import DndSpinner from '../../../../app/javascript/bundles/DungeonMasterCampaignManager/components/DndSpinners/DndSpinner';
 
 jest.mock('react-icons/all', () => ({
@@ -35,15 +35,15 @@ describe('DndSpinner', () => {
   });
 
   it('renders without table frame when showTableFrame is false', () => {
-    const { container } = render(<DndSpinner showTableFrame={false} />);
+    render(<DndSpinner showTableFrame={false} />);
     expect(screen.queryByTestId('table-frame')).not.toBeInTheDocument();
-    expect(container.querySelector('.noFrame')).toBeInTheDocument();
+    expect(screen.getByTestId('linked-rings-icon')).toBeInTheDocument();
   });
 
   it('renders without table frame by default', () => {
-    const { container } = render(<DndSpinner />);
+    render(<DndSpinner />);
     expect(screen.queryByTestId('table-frame')).not.toBeInTheDocument();
-    expect(container.querySelector('.noFrame')).toBeInTheDocument();
+    expect(screen.getByTestId('linked-rings-icon')).toBeInTheDocument();
   });
 
   it('renders text when provided', () => {

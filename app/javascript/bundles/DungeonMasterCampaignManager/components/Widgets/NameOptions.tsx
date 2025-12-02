@@ -5,7 +5,7 @@ import { Colors } from '../../utilities/enums';
 import { GiBattleGear } from 'react-icons/gi';
 
 import '../forms/inputOverrides.scss';
-import styles from './widgets.module.scss';
+import { NameOptions as NameOptionsWrapper, Label } from './Widgets.styles';
 
 const genderOptions: Options<unknown> = [
   { value: 'female', label: 'Female' },
@@ -55,9 +55,9 @@ const NameOptions = ({ onFormSubmit, title, token }: NameOptionsProps) => {
   };
 
   return (
-    <div className={styles.nameOptions}>
-      <div className={styles.submitButton}>
-        <label htmlFor={'nameGeneratorGender'}>Submit</label>
+    <NameOptionsWrapper>
+      <div>
+        <Label htmlFor={'nameGeneratorGender'}>Submit</Label>
         <Button
           id={'nameGeneratorSubmit'}
           color={Colors.primary}
@@ -66,8 +66,8 @@ const NameOptions = ({ onFormSubmit, title, token }: NameOptionsProps) => {
           title={`Get ${title}`}
         />
       </div>
-      <div className={styles.genderSelect}>
-        <label htmlFor={'nameGeneratorGender'}>Gender</label>
+      <div>
+        <Label htmlFor={'nameGeneratorGender'}>Gender</Label>
         <Select
           className={'reactSelect'}
           classNamePrefix={'reactSelect'}
@@ -81,8 +81,8 @@ const NameOptions = ({ onFormSubmit, title, token }: NameOptionsProps) => {
           }}
         />
       </div>
-      <div className={styles.raceSelect}>
-        <label htmlFor={'nameGeneratorRace'}>Race</label>
+      <div>
+        <Label htmlFor={'nameGeneratorRace'}>Race</Label>
         <Select
           className={'reactSelect'}
           classNamePrefix={'reactSelect'}
@@ -96,7 +96,7 @@ const NameOptions = ({ onFormSubmit, title, token }: NameOptionsProps) => {
           }}
         />
       </div>
-    </div>
+    </NameOptionsWrapper>
   );
 };
 

@@ -11,7 +11,7 @@ import { useCustomActionState } from './use-custom-action-state';
 import rest from '../../api/api';
 import { connect } from 'react-redux';
 
-import styles from './admin-dashboard.module.scss';
+import { ActionTypeContainer } from './AdminDashboard.styles';
 
 const CreateCustomActionPage = (props: {
   createCustomAction: (action: unknown) => void;
@@ -58,19 +58,15 @@ const CreateCustomActionPage = (props: {
         </pre>
       ) : null}
       <h1>Create Custom Action</h1>
-      <form
-        onSubmit={UseForm.handleSubmit(onSubmitActionForm)}
-        className={styles.genForm}
-        noValidate
-      >
-        <div className={styles.actionTypeContainer}>
+      <form onSubmit={UseForm.handleSubmit(onSubmitActionForm)} noValidate>
+        <ActionTypeContainer>
           <FormSelect
             label={'Action Type'}
             control={UseForm.control}
             options={actionTypeOptions}
             name={'actionTypeOption'}
           />
-        </div>
+        </ActionTypeContainer>
         <ActionForm
           control={UseForm.control}
           errors={UseForm.formState.errors}

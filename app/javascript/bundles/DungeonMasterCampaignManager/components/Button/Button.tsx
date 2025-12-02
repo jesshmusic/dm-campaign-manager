@@ -1,8 +1,21 @@
 import React from 'react';
-import classNames from 'classnames';
 import { Colors } from '../../utilities/enums';
 
-import styles from './button.module.scss';
+import { StyledButton, ButtonColor } from './Button.styles';
+
+const colorMap: Record<Colors, ButtonColor> = {
+  [Colors.primary]: 'primary',
+  [Colors.secondary]: 'secondary',
+  [Colors.success]: 'success',
+  [Colors.primaryDark]: 'primaryDark',
+  [Colors.info]: 'info',
+  [Colors.warning]: 'warning',
+  [Colors.danger]: 'danger',
+  [Colors.light]: 'light',
+  [Colors.dark]: 'dark',
+  [Colors.transparent]: 'transparent',
+  [Colors.transparentLight]: 'transparentLight',
+};
 
 const Button = (props: {
   id?: string;
@@ -34,21 +47,11 @@ const Button = (props: {
   } = props;
 
   return (
-    <button
-      className={classNames(styles.button, className, {
-        [styles.primary]: color === Colors.primary,
-        [styles.secondary]: color === Colors.secondary,
-        [styles.success]: color === Colors.success,
-        [styles.primaryDark]: color === Colors.primaryDark,
-        [styles.info]: color === Colors.info,
-        [styles.warning]: color === Colors.warning,
-        [styles.danger]: color === Colors.danger,
-        [styles.light]: color === Colors.light,
-        [styles.dark]: color === Colors.dark,
-        [styles.transparent]: color === Colors.transparent,
-        [styles.transparentLight]: color === Colors.transparentLight,
-        [styles.fullWidth]: isFullWidth,
-      })}
+    <StyledButton
+      className={className}
+      $color={colorMap[color]}
+      $isFullWidth={isFullWidth}
+      $iconOnly={hideTitle}
       onClick={onClick}
       id={id}
       data-bs-dismiss={dataBsDismiss}
@@ -57,8 +60,8 @@ const Button = (props: {
       type={type || 'button'}
     >
       {hideTitle ? '' : title}
-      {icon && <span className={classNames('', { [styles.iconOnly]: hideTitle })}> {icon}</span>}
-    </button>
+      {icon && <span> {icon}</span>}
+    </StyledButton>
   );
 };
 

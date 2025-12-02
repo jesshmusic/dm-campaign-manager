@@ -1,38 +1,50 @@
 import React, { useState, KeyboardEvent } from 'react';
-import classNames from 'classnames';
 import { GiFire } from 'react-icons/gi';
 import { Control, Controller, FieldErrors, FieldValues } from 'react-hook-form';
 import { SelectOption } from '../../utilities/types';
 import Select from 'react-select';
 
-import styles from './input.module.scss';
+import {
+  FormWrapper,
+  FormInput,
+  FormTextArea,
+  FormLabel,
+  Checkbox,
+  CheckboxLabel,
+  ErrorMessage,
+  TagInputContainer,
+  TagsWrapper,
+  TagPill,
+  TagRemove,
+  TagInputField,
+} from './Forms.styles';
 
 export const ControllerInput = (props) => {
   const { type, label, errors, className, name, placeholder, isTextArea, ...rest } = props;
 
   if (type === 'checkbox' || type === 'radio') {
     return (
-      <div className={classNames(styles.wrapper, className)}>
-        <input className={styles.checkbox} type={type} {...rest} />
-        <label className={styles.checkboxLabel}>{label}</label>
-      </div>
+      <FormWrapper className={className}>
+        <Checkbox type={type} {...rest} />
+        <CheckboxLabel>{label}</CheckboxLabel>
+      </FormWrapper>
     );
   }
   return (
-    <div className={classNames(styles.wrapper, className)}>
-      <label className={styles.label}>{label}</label>
+    <FormWrapper className={className}>
+      <FormLabel>{label}</FormLabel>
       {isTextArea ? (
-        <textarea className={styles.input} placeholder={placeholder} {...rest} />
+        <FormTextArea placeholder={placeholder} {...rest} />
       ) : (
-        <input className={styles.input} type={type || 'text'} placeholder={placeholder} {...rest} />
+        <FormInput type={type || 'text'} placeholder={placeholder} {...rest} />
       )}
 
       {errors[name] && (
-        <p className={styles.error}>
+        <ErrorMessage>
           <GiFire /> This is required
-        </p>
+        </ErrorMessage>
       )}
-    </div>
+    </FormWrapper>
   );
 };
 
@@ -96,10 +108,8 @@ export const ControlledSelect = (props: {
   const { control, label, className, fieldName, options, disabled } = props;
 
   return (
-    <div className={className}>
-      <label htmlFor={fieldName} className={styles.label}>
-        {label}
-      </label>
+    <FormWrapper className={className}>
+      <FormLabel htmlFor={fieldName}>{label}</FormLabel>
       <Controller
         render={({ field: { onChange, value, ...rest } }) => {
           // Convert string value to option object for react-select
@@ -124,7 +134,7 @@ export const ControlledSelect = (props: {
         name={fieldName}
         control={control}
       />
-    </div>
+    </FormWrapper>
   );
 };
 
@@ -171,29 +181,28 @@ export const TagInput = (props: {
   };
 
   return (
-    <div className={classNames(styles.wrapper, className)}>
-      <label className={styles.label}>{label}</label>
-      <div className={styles.tagInputContainer}>
-        <div className={styles.tagsWrapper}>
+    <FormWrapper className={className}>
+      <FormLabel>{label}</FormLabel>
+      <TagInputContainer>
+        <TagsWrapper>
           {tags.map((tag, index) => (
-            <span key={index} className={styles.tagPill}>
+            <TagPill key={index}>
               {tag}
-              <button type="button" onClick={() => removeTag(index)} className={styles.tagRemove}>
+              <TagRemove type="button" onClick={() => removeTag(index)}>
                 ×
-              </button>
-            </span>
+              </TagRemove>
+            </TagPill>
           ))}
-        </div>
-        <input
+        </TagsWrapper>
+        <TagInputField
           type="text"
           value={inputValue}
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
           placeholder={placeholder || 'Add tags...'}
-          className={styles.tagInput}
         />
-      </div>
-    </div>
+      </TagInputContainer>
+    </FormWrapper>
   );
 };
 

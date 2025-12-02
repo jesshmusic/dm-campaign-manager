@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen } from '../../test-utils';
 import MonsterBlock, { AbilityScores } from '../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/monsters/MonsterBlock';
 
 jest.mock('react-markdown', () => {

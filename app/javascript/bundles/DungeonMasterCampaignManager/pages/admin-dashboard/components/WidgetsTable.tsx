@@ -10,7 +10,7 @@ import { WidgetProps } from '../../../components/Widgets/Widget';
 import { getIconFromName } from '../../../utilities/icons';
 import { NavLink } from '../../../components/NavLink/NavLink';
 
-import styles from '../admin-dashboard.module.scss';
+import { EditButton } from '../AdminDashboard.styles';
 
 const WidgetsTable = (props: {
   getWidgets: (searchTerm?: string) => void;
@@ -46,13 +46,14 @@ const WidgetsTable = (props: {
         size: 25,
         Cell: ({ value }) => (
           <>
-            <NavLink
-              to={`/app/admin-dashboard/edit-widget/${value}`}
-              className={styles.editButton}
-              icon={<GiPencil size={30} />}
-              title={'Edit'}
-              isButton
-            />
+            <EditButton>
+              <NavLink
+                to={`/app/admin-dashboard/edit-widget/${value}`}
+                icon={<GiPencil size={30} />}
+                title={'Edit'}
+                isButton
+              />
+            </EditButton>
             <Button
               type="button"
               onClick={() => deleteWidget(value)}

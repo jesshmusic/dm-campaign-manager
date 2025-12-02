@@ -2,7 +2,7 @@ import { DndClass, StartingEquipmentOption } from '../../../utilities/types';
 import Util from '../../../utilities/utilities';
 import React from 'react';
 
-import styles from '../dnd-class.module.scss';
+import { SectionGroup, SubsectionHeading } from '../DndClass.styles';
 
 const EquipmentSection = (props: { dndClass: DndClass }) => {
   const { dndClass } = props;
@@ -14,8 +14,8 @@ const EquipmentSection = (props: { dndClass: DndClass }) => {
   };
 
   return (
-    <div className={styles.sectionGroup}>
-      <h3 className={styles.subsectionHeading}>Equipment</h3>
+    <SectionGroup>
+      <SubsectionHeading>Equipment</SubsectionHeading>
       <p>
         You start with the following equipment, in addition to the equipment granted by your
         background:
@@ -28,7 +28,7 @@ const EquipmentSection = (props: { dndClass: DndClass }) => {
           <li>{dndClass.startingEquipment.map((equip) => equip.name).join(', ')}</li>
         )}
       </ul>
-    </div>
+    </SectionGroup>
   );
 };
 

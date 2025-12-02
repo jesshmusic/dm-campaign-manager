@@ -1,6 +1,6 @@
 import { describe, it, expect, jest } from '@jest/globals';
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen } from '../test-utils';
 import { MemoryRouter } from 'react-router-dom';
 import Footer from '../../../app/javascript/bundles/DungeonMasterCampaignManager/components/Footer/Footer';
 
@@ -72,8 +72,9 @@ describe('Footer Component', () => {
         </MemoryRouter>
       );
 
-      const homeLink = screen.getByText('Home');
-      expect(homeLink).toBeInTheDocument();
+      const homeText = screen.getByText('Home');
+      expect(homeText).toBeInTheDocument();
+      const homeLink = homeText.closest('a');
       expect(homeLink).toHaveAttribute('href', '/');
     });
 
@@ -84,8 +85,9 @@ describe('Footer Component', () => {
         </MemoryRouter>
       );
 
-      const classesLink = screen.getByText('Classes');
-      expect(classesLink).toBeInTheDocument();
+      const classesText = screen.getByText('Classes');
+      expect(classesText).toBeInTheDocument();
+      const classesLink = classesText.closest('a');
       expect(classesLink).toHaveAttribute('href', '/app/classes');
     });
 
@@ -96,8 +98,9 @@ describe('Footer Component', () => {
         </MemoryRouter>
       );
 
-      const racesLink = screen.getByText('Races');
-      expect(racesLink).toBeInTheDocument();
+      const racesText = screen.getByText('Races');
+      expect(racesText).toBeInTheDocument();
+      const racesLink = racesText.closest('a');
       expect(racesLink).toHaveAttribute('href', '/app/races');
     });
 
@@ -108,8 +111,9 @@ describe('Footer Component', () => {
         </MemoryRouter>
       );
 
-      const monstersLink = screen.getByText('Monsters');
-      expect(monstersLink).toBeInTheDocument();
+      const monstersText = screen.getByText('Monsters');
+      expect(monstersText).toBeInTheDocument();
+      const monstersLink = monstersText.closest('a');
       expect(monstersLink).toHaveAttribute('href', '/app/monsters');
     });
 
@@ -120,8 +124,9 @@ describe('Footer Component', () => {
         </MemoryRouter>
       );
 
-      const itemsLink = screen.getByText('Items and Equipment');
-      expect(itemsLink).toBeInTheDocument();
+      const itemsText = screen.getByText('Items and Equipment');
+      expect(itemsText).toBeInTheDocument();
+      const itemsLink = itemsText.closest('a');
       expect(itemsLink).toHaveAttribute('href', '/app/items');
     });
 
@@ -132,8 +137,9 @@ describe('Footer Component', () => {
         </MemoryRouter>
       );
 
-      const spellsLink = screen.getByText('Spells');
-      expect(spellsLink).toBeInTheDocument();
+      const spellsText = screen.getByText('Spells');
+      expect(spellsText).toBeInTheDocument();
+      const spellsLink = spellsText.closest('a');
       expect(spellsLink).toHaveAttribute('href', '/app/spells');
     });
 

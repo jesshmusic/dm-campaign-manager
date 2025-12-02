@@ -11,7 +11,7 @@ import { GiLinkedRings } from 'react-icons/gi';
 import FormSelectAsync from '../../../../components/forms/FormSelectAsync';
 import SavesSkillsSection from '../SavesSkillsSection';
 
-import styles from '../generator.module.scss';
+import { GenForm } from '../../MonsterGenerator.styles';
 
 export type GenerateMonsterProps = {
   isLoading?: boolean;
@@ -69,7 +69,7 @@ const QuickGenerateMonster = (props: GenerateMonsterProps) => {
         subtitle="Select options to create a new Monster"
         className="random-monster-generator"
       >
-        <form onSubmit={UseForm.handleSubmit(onSubmit)} className={styles.genForm} noValidate>
+        <GenForm onSubmit={UseForm.handleSubmit(onSubmit)} noValidate>
           <NameFormField
             characterRace={UseForm.getValues('characterRace')?.value}
             handleGenerateName={handleGenerateName}
@@ -140,7 +140,7 @@ const QuickGenerateMonster = (props: GenerateMonsterProps) => {
               isFullWidth
             />
           </GenMonsterSection>
-        </form>
+        </GenForm>
       </Frame>
     </>
   );

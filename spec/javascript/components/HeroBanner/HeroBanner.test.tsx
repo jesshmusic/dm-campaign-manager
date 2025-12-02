@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen } from '../../test-utils';
 import HeroBanner from '../../../../app/javascript/bundles/DungeonMasterCampaignManager/components/HeroBanner/HeroBanner';
 
 jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/components/HeroBanner/DMLogo', () => {
@@ -23,19 +23,20 @@ describe('HeroBanner', () => {
     expect(screen.getByTestId('dnd-logo')).toBeInTheDocument();
   });
 
-  it('has hero banner class', () => {
+  it('renders the hero banner container', () => {
     const { container } = render(<HeroBanner />);
-    expect(container.querySelector('[class*="heroBanner"]')).toBeInTheDocument();
+    // HeroBanner renders with styled-components, check the structure exists
+    expect(container.firstChild).toBeInTheDocument();
   });
 
-  it('has title class', () => {
-    const { container } = render(<HeroBanner />);
-    expect(container.querySelector('[class*="title"]')).toBeInTheDocument();
+  it('renders the title element', () => {
+    render(<HeroBanner />);
+    // Title is rendered as a styled div, not a heading element
+    expect(screen.getByText('Dungeon Master GURU')).toBeInTheDocument();
   });
 
-  it('passes logo class to DMLogo', () => {
-    const { container } = render(<HeroBanner />);
-    const logo = container.querySelector('[class*="logo"]');
-    expect(logo).toBeInTheDocument();
+  it('renders the logo with testid', () => {
+    render(<HeroBanner />);
+    expect(screen.getByTestId('dnd-logo')).toBeInTheDocument();
   });
 });

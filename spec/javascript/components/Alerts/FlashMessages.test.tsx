@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen } from '../../test-utils';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import FlashMessages from '../../../../app/javascript/bundles/DungeonMasterCampaignManager/components/Alerts/FlashMessages';

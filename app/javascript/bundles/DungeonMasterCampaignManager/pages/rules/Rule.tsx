@@ -5,9 +5,9 @@ import rest from '../../api/api';
 import { connect } from 'react-redux';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
-import styles from './rule.module.scss';
+import { RuleContent, TableFrame, ButtonBar } from './Rule.styles';
 
 const Rule = (props: {
   rule: {
@@ -37,24 +37,25 @@ const Rule = (props: {
     >
       {!loading && rule ? (
         <>
-          <ReactMarkdown
-            className={styles.rule}
-            components={{
-              table: ({ node: _node, ...props }) => (
-                <div className={styles.tableFrame}>
-                  <table {...props} />
-                </div>
-              ),
-            }}
-            remarkPlugins={[remarkGfm]}
-          >
-            {rule.description}
-          </ReactMarkdown>
+          <RuleContent>
+            <ReactMarkdown
+              components={{
+                table: ({ node: _node, ...props }) => (
+                  <TableFrame>
+                    <table {...props} />
+                  </TableFrame>
+                ),
+              }}
+              remarkPlugins={[remarkGfm]}
+            >
+              {rule.description}
+            </ReactMarkdown>
+          </RuleContent>
           {rule.rules &&
             rule.rules.map((rule) => (
-              <Link key={rule.slug} to={`/app/rules/${rule.slug}`} className={styles.buttonBar}>
+              <ButtonBar key={rule.slug} to={`/app/rules/${rule.slug}`}>
                 <h2>{rule.name}</h2>
-              </Link>
+              </ButtonBar>
             ))}
         </>
       ) : (

@@ -1,7 +1,7 @@
 import React from 'react';
 import { DndClass } from '../../../utilities/types';
 
-import styles from '../dnd-class.module.scss';
+import { InfoSection, SectionGroup, SectionHeading, FeatureHeading } from '../DndClass.styles';
 
 const FeaturesDesc = (props: { dndClass: DndClass }) => {
   const { dndClass } = props;
@@ -24,30 +24,30 @@ const FeaturesDesc = (props: { dndClass: DndClass }) => {
 
   return (
     <div>
-      <div className={styles.infoSection}>
+      <InfoSection>
         {filteredFeatures().map((feature, index) => (
-          <div className={styles.sectionGroup} key={`feat-${index}`}>
-            <h3 className={styles.featureHeading}>{feature.name}</h3>
+          <SectionGroup key={`feat-${index}`}>
+            <FeatureHeading>{feature.name}</FeatureHeading>
             {feature.desc.map((desc, index) => (
               <p key={`desc-${index}`}>{desc}</p>
             ))}
-          </div>
+          </SectionGroup>
         ))}
-      </div>
+      </InfoSection>
       {dndClass.spellCasting && (
         <div>
-          <h2 className={styles.sectionHeading}>Spell Casting</h2>
-          <div className={styles.infoSection}>
+          <SectionHeading>Spell Casting</SectionHeading>
+          <InfoSection>
             {dndClass.spellCasting.info &&
               dndClass.spellCasting.info.map((spellCast, index) => (
-                <div className={styles.sectionGroup} key={`spell-${index}`}>
-                  <h3 className={styles.featureHeading}>{spellCast.name}</h3>
+                <SectionGroup key={`spell-${index}`}>
+                  <FeatureHeading>{spellCast.name}</FeatureHeading>
                   {spellCast.desc.map((desc, index) => (
                     <p key={`spell-desc-${index}`}>{desc}</p>
                   ))}
-                </div>
+                </SectionGroup>
               ))}
-          </div>
+          </InfoSection>
         </div>
       )}
     </div>

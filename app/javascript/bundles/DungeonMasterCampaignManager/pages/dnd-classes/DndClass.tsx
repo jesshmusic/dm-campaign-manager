@@ -13,14 +13,14 @@ import ClassLevelsTable from './components/ClassLevelsTable';
 import FeaturesDesc from './components/FeaturesDesc';
 import { useParams } from 'react-router-dom';
 
-import styles from './dnd-class.module.scss';
+import { Page, InfoSection, SectionGroup, SectionHeading } from './DndClass.styles';
 
 type DndClassPageProps = {
   dndClass?: DndClass;
   getDndClass: (dndClassSlug: string) => void;
 };
 
-const DndClass = (props: DndClassPageProps) => {
+const DndClassPage = (props: DndClassPageProps) => {
   const { dndClass, getDndClass } = props;
   const { dndClassSlug } = useParams<'dndClassSlug'>();
 
@@ -37,19 +37,19 @@ const DndClass = (props: DndClassPageProps) => {
     >
       <PageTitle title={dndClassTitle} />
       {dndClass ? (
-        <div className={styles.page}>
-          <div className={styles.infoSection}>
-            <div className={styles.sectionGroup}>
-              <h2 className={styles.sectionHeading}>Class Features</h2>
+        <Page>
+          <InfoSection>
+            <SectionGroup>
+              <SectionHeading>Class Features</SectionHeading>
               <p>As a {dndClass.name.toLowerCase()}, you gain the following class features.</p>
-            </div>
+            </SectionGroup>
             <HitPointsSection dndClass={dndClass} />
             <ProficienciesSection dndClass={dndClass} />
             <EquipmentSection dndClass={dndClass} />
-          </div>
+          </InfoSection>
           <ClassLevelsTable dndClass={dndClass} />
           <FeaturesDesc dndClass={dndClass} />
-        </div>
+        </Page>
       ) : (
         <DndSpinner />
       )}
@@ -71,4 +71,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(DndClass);
+export default connect(mapStateToProps, mapDispatchToProps)(DndClassPage);

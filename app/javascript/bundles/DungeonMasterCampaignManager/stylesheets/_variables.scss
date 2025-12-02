@@ -1,3 +1,5 @@
+@use 'sass:color';
+@use 'sass:map';
 @import '~bootstrap/scss/vendor/rfs';
 
 // Brand Colors
@@ -20,15 +22,15 @@ $ash: #555752;
 $blood-red: #992e2e;
 $iris: #7b469b;
 $white: #fff;
-$gray-100: lighten($ash, 30%);
-$gray-200: lighten($ash, 20%);
-$gray-300: lighten($ash, 10%);
+$gray-100: color.adjust($ash, $lightness: 30%);
+$gray-200: color.adjust($ash, $lightness: 20%);
+$gray-300: color.adjust($ash, $lightness: 10%);
 $gray-400: $ash;
-$gray-500: darken($ash, 10%);
-$gray-600: darken($ash, 20%);
-$gray-700: darken($ash, 30%);
-$gray-800: darken($ash, 40%);
-$gray-900: darken($ash, 50%);
+$gray-500: color.adjust($ash, $lightness: -10%);
+$gray-600: color.adjust($ash, $lightness: -20%);
+$gray-700: color.adjust($ash, $lightness: -30%);
+$gray-800: color.adjust($ash, $lightness: -40%);
+$gray-900: color.adjust($ash, $lightness: -50%);
 $black: #000;
 $grays: (
   100: $gray-100,
@@ -119,13 +121,12 @@ $enable-print-styles: true;
 
 // Sidebar
 $sidebar-bg-color: $dark-red;
-$sidebar-color: lighten($primary, 45%);
+$sidebar-color: color.adjust($primary, $lightness: 45%);
 $icon-bg-color: transparent;
 $icon-size: 2rem;
-$submenu-bg-color: rgba(darken($dark-red, 10%), 0.3);
+$submenu-bg-color: rgba(color.adjust($dark-red, $lightness: -10%), 0.3);
 $sidebar-width: 15rem;
 $sidebar-collapsed-width: 5rem;
-//$highlight-color
 
 // Shadow
 $box-shadow: 5px 7px 7px rgba($gray-900, 0.5);
@@ -138,7 +139,7 @@ $body-color: $gray-900;
 // Links
 $link-color: $primary;
 $link-decoration: none;
-$link-hover-color: darken($link-color, 15%);
+$link-hover-color: color.adjust($link-color, $lightness: -15%);
 $link-hover-decoration: underline;
 
 // Grid
@@ -247,8 +248,8 @@ $btn-border-radius-sm: $border-radius-sm;
 $btn-transition: all 0.15s ease-in-out;
 
 // Forms
-$input-bg: lighten($orange, 35%);
-$input-disabled-bg: lighten($orange, 30%);
+$input-bg: color.adjust($orange, $lightness: 35%);
+$input-disabled-bg: color.adjust($orange, $lightness: 30%);
 $input-color: $gray-800;
 $input-border-color: $ash;
 $input-btn-border-width: $border-width;
@@ -257,10 +258,10 @@ $input-border-radius: $border-radius;
 $input-border-radius-lg: $border-radius-lg;
 $input-border-radius-sm: $border-radius-sm;
 $input-focus-bg: rgba($input-bg, 0);
-$input-focus-border-color: lighten($primary, 25%);
+$input-focus-border-color: color.adjust($primary, $lightness: 25%);
 $input-focus-box-shadow: $input-box-shadow, $btn-focus-box-shadow;
 $input-focus-color: $input-color;
-$input-placeholder-color: lighten($black, 60%);
+$input-placeholder-color: color.adjust($black, $lightness: 60%);
 $input-height-border: $input-btn-border-width * 2;
 $input-height-inner: ($font-size-base * $input-btn-line-height) + ($input-btn-padding-y * 2);
 $input-height: calc(#{$input-height-inner} + #{$input-height-border});
@@ -296,7 +297,7 @@ $custom-control-indicator-focus-box-shadow:
   0 0 0 0.0625rem $body-bg,
   0 0 0 0.1875rem $primary;
 $custom-control-indicator-active-color: $white;
-$custom-control-indicator-active-bg: lighten($primary, 35%);
+$custom-control-indicator-active-bg: color.adjust($primary, $lightness: 35%);
 $custom-control-indicator-active-box-shadow: none;
 $custom-checkbox-indicator-border-radius: $border-radius;
 $custom-checkbox-indicator-indeterminate-bg: $primary;
@@ -317,7 +318,7 @@ $custom-select-indicator-color: #333;
 $custom-select-border-width: $input-btn-border-width;
 $custom-select-border-color: $input-border-color;
 $custom-select-border-radius: $border-radius;
-$custom-select-focus-border-color: lighten($primary, 25%);
+$custom-select-focus-border-color: color.adjust($primary, $lightness: 25%);
 $custom-select-focus-box-shadow:
   inset 0 0.0625rem 0.125rem rgba($black, 0.075),
   0 0 0.3125rem rgba($custom-select-focus-border-color, 0.5);
@@ -394,4 +395,120 @@ $pagination-disabled-border-color: #ddd;
 
 $accordion-icon-color: $white;
 
-@import 'mixins';
+// Mixins
+@mixin respond-to($breakpoint) {
+  @if map.has-key($container-max-widths, $breakpoint) {
+    @media (min-width: map.get($container-max-widths, $breakpoint)) {
+      @content;
+    }
+  } @else {
+    @warn 'Unfortunately, no value could be retrieved from `#{$breakpoint}`. '
+      + 'Available breakpoints are: #{map.keys($container-max-widths)}.';
+  }
+}
+
+@mixin resp-container {
+  margin: 0 auto;
+}
+
+@mixin form-input {
+  appearance: none;
+  background-clip: padding-box;
+  background-color: $input-bg;
+  border: 1px solid rgba($primary, 0);
+  border-bottom: 0.0625rem solid rgba($body-color, 0);
+  border-radius: 0;
+  color: $body-color;
+  display: block;
+  font-family: $font-family-sans-serif;
+  font-size: 1rem;
+  font-weight: normal;
+  line-height: 1.25;
+  outline: none;
+  padding: 0.5rem 0.25rem;
+  transition: $transition-base;
+  width: 100%;
+
+  &:hover {
+    border-color: $primary;
+  }
+
+  &:focus {
+    background-color: $input-focus-bg;
+    border-color: rgba($primary, 0);
+    border-bottom-color: rgba($primary, 1);
+    color: $body-color;
+  }
+
+  &[readonly] {
+    background-color: color.adjust($primary, $lightness: 40%);
+    border: 1px solid color.adjust($primary, $lightness: 40%);
+  }
+
+  &::placeholder {
+    color: $primary;
+    font-family: $font-family-sans-serif;
+  }
+}
+
+@mixin button-group {
+  display: inline-flex;
+  padding: 0.5rem 0;
+  position: relative;
+  vertical-align: middle;
+  width: 100%;
+
+  > button {
+    flex: 1;
+    margin: 0;
+    position: relative;
+  }
+
+  > button:not(:last-child),
+  > .buttonGroup:not(:last-child) > button {
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+  }
+
+  > button:nth-child(n + 3),
+  > button:not(:first-child),
+  > .buttonGroup:not(:first-child) > button {
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+  }
+}
+
+@mixin padding($top, $right, $bottom, $left) {
+  padding-bottom: $bottom;
+  padding-left: $left;
+  padding-right: $right;
+  padding-top: $top;
+}
+
+@mixin margin($top, $right, $bottom, $left) {
+  margin-bottom: $bottom;
+  margin-left: $left;
+  margin-right: $right;
+  margin-top: $top;
+}
+
+@mixin button-bar() {
+  @include font-size($font-size-lg);
+  background-color: $primary;
+  border-radius: $border-radius-lg;
+  box-shadow: $box-shadow;
+  color: $white;
+  display: block;
+  font-family: $font-family-mr-eaves;
+  padding: $spacer;
+  text-align: center;
+  transition: $transition-base;
+  width: 100%;
+
+  &:hover {
+    background-color: color.adjust($primary, $lightness: 20%);
+    box-shadow: $box-shadow-sm;
+    color: $white;
+    text-decoration: none;
+  }
+}

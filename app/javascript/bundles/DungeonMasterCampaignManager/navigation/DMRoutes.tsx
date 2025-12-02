@@ -40,7 +40,14 @@ const DMRoutes = (props) => {
         <Route
           path={itemPage.path}
           key={itemPage.itemType}
-          element={<Items {...props} itemType={itemPage.itemType} pageTitle={itemPage.pageTitle} />}
+          element={
+            <Items
+              {...props}
+              key={itemPage.itemType}
+              itemType={itemPage.itemType}
+              pageTitle={itemPage.pageTitle}
+            />
+          }
         />
       ))}
       <Route path="/app/items/:itemSlug" element={<Item {...props} />} />

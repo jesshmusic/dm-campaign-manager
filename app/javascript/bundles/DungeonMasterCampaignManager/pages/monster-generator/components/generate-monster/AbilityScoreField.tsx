@@ -14,7 +14,14 @@ import Button from '../../../../components/Button/Button';
 
 import diceSound from '../../../../sounds/DiceRoll.mp3';
 
-import styles from './ability-score-field.module.scss';
+import {
+  AbilityWrapper,
+  Label,
+  AbilityButtonGroup,
+  AbilityGroup,
+  AbilInput,
+  ModField,
+} from '../../MonsterGenerator.styles';
 
 type AbilityScoreFieldProps = {
   name: keyof MonsterGeneratorFormFields;
@@ -43,11 +50,11 @@ const AbilityScoreField = (props: AbilityScoreFieldProps) => {
   };
 
   return (
-    <div className={styles.abilityWrapper}>
+    <AbilityWrapper>
       {hideRoll ? (
-        <label className={styles.label}>{label}</label>
+        <Label>{label}</Label>
       ) : (
-        <div className={styles.buttonGroup}>
+        <AbilityButtonGroup>
           <Button
             color={Colors.warning}
             onClick={() => handleRollAbility()}
@@ -60,30 +67,32 @@ const AbilityScoreField = (props: AbilityScoreFieldProps) => {
             title={'4d6'}
             icon={<GiDiceTwentyFacesTwenty />}
           />
-        </div>
+        </AbilityButtonGroup>
       )}
-      <div className={styles.abilityGroup}>
-        <FormField
-          className={styles.abilInput}
-          errors={errors}
-          label={label}
-          name={name}
-          type="number"
-          register={register}
-          hideLabel
-        />
-        <FormField
-          className={styles.modField}
-          errors={errors}
-          label="Hit Dice Value"
-          type="text"
-          register={register}
-          name={`${name}Mod`}
-          hideLabel
-          readOnly
-        />
-      </div>
-    </div>
+      <AbilityGroup>
+        <AbilInput>
+          <FormField
+            errors={errors}
+            label={label}
+            name={name}
+            type="number"
+            register={register}
+            hideLabel
+          />
+        </AbilInput>
+        <ModField>
+          <FormField
+            errors={errors}
+            label="Hit Dice Value"
+            type="text"
+            register={register}
+            name={`${name}Mod`}
+            hideLabel
+            readOnly
+          />
+        </ModField>
+      </AbilityGroup>
+    </AbilityWrapper>
   );
 };
 

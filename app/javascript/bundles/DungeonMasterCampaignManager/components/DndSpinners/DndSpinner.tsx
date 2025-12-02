@@ -6,7 +6,7 @@ import React from 'react';
 import { GiLinkedRings } from 'react-icons/gi';
 import TableFrame from '../../containers/TableFrame';
 
-import styles from './spinner.module.scss';
+import { NoFrameWrapper } from './DndSpinner.styles';
 
 const DndSpinner = (props: { showTableFrame?: boolean; text?: string }) => {
   return props.showTableFrame ? (
@@ -15,10 +15,10 @@ const DndSpinner = (props: { showTableFrame?: boolean; text?: string }) => {
       {props.text && <h3 style={{ marginLeft: '10px' }}>{props.text}</h3>}
     </TableFrame>
   ) : (
-    <div className={styles.noFrame}>
+    <NoFrameWrapper>
       <GiLinkedRings size={100} className="spinner" />
       {props.text && <h3 style={{ marginLeft: '10px' }}>{props.text}</h3>}
-    </div>
+    </NoFrameWrapper>
   );
 };
 

@@ -1,11 +1,11 @@
 import React from 'react';
 
-import styles from './widgets.module.scss';
+import { Content, TableFrame } from './Widgets.styles';
 
 const Cover = () => {
   return (
-    <div className={styles.content}>
-      <div className={styles.tableFrame}>
+    <Content>
+      <TableFrame>
         <table>
           <thead>
             <tr>
@@ -30,8 +30,8 @@ const Cover = () => {
             </tr>
           </tbody>
         </table>
-      </div>
-    </div>
+      </TableFrame>
+    </Content>
   );
 };
 

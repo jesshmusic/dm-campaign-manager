@@ -4,7 +4,13 @@ import { Colors } from '../../../utilities/enums';
 import Button from '../../../components/Button/Button';
 import { GiFire } from 'react-icons/gi';
 
-import styles from '../../../components/forms/input.module.scss';
+import {
+  NameFieldWrapper,
+  NameFieldLabel,
+  NameFieldInput,
+  NameFieldError,
+  MonsterTypeButtons,
+} from '../MonsterGenerator.styles';
 
 type NameFormFieldProps = {
   characterRace?: string;
@@ -26,21 +32,20 @@ const NameFormField = (props: NameFormFieldProps) => {
   } = props;
 
   return (
-    <div className={styles.wrapper}>
-      <label className={styles.label}>Name</label>
-      <input
-        className={styles.input}
+    <NameFieldWrapper>
+      <NameFieldLabel>Name</NameFieldLabel>
+      <NameFieldInput
         {...register('name', { required: true })}
         autoComplete={''}
         type={'text'}
         placeholder={'Monster name'}
       />
       {errors.name && (
-        <p className={styles.error}>
+        <NameFieldError>
           <GiFire /> This is required
-        </p>
+        </NameFieldError>
       )}
-      <div className={styles.monsterTypeButtons}>
+      <MonsterTypeButtons>
         <Button
           color={Colors.warning}
           title="Random Monster Name"
@@ -65,8 +70,8 @@ const NameFormField = (props: NameFormFieldProps) => {
             />
           </>
         )}
-      </div>
-    </div>
+      </MonsterTypeButtons>
+    </NameFieldWrapper>
   );
 };
 

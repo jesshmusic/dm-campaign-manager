@@ -9,7 +9,12 @@ import { filterOptionsWithData } from '../../../../../../../utilities/character-
 import FormSelect from '../../../../../../../components/forms/FormSelect';
 import FormSelectAsync from '../../../../../../../components/forms/FormSelectAsync';
 
-import styles from './action-form.module.scss';
+import {
+  SpellsForm,
+  SubformWrapper,
+  ActionCol,
+  SpellSlots,
+} from '../../../../../MonsterGenerator.styles';
 
 export const abilityOptions = [
   { label: 'Charisma', value: 'charisma' },
@@ -50,32 +55,29 @@ const SpellcastingForm = (props: {
   };
 
   return (
-    <div className={styles.spellsForm}>
+    <SpellsForm>
       <h5>Spellcasting</h5>
-      <div className={styles.subformWrapper}>
-        <Controller
-          render={({ field: { ref: _ref, ...rest } }) => (
-            <ControllerInput
-              type="number"
-              label="Spellcasting Level"
-              className={styles.actionCol}
-              errors={errors}
-              {...rest}
-            />
-          )}
-          name={`${fieldName}.spellCasting.level`}
-          control={control}
-        />
-        <FormSelect
-          className={styles.actionCol}
-          label={'Spellcasting Ability'}
-          name={`${fieldName}.spellCasting.abilityOption`}
-          control={control}
-          defaultValue={abilityOptions[0]}
-          options={abilityOptions}
-        />
-      </div>
-      <div className={styles.spellSlots}>
+      <SubformWrapper>
+        <ActionCol>
+          <Controller
+            render={({ field: { ref: _ref, ...rest } }) => (
+              <ControllerInput type="number" label="Spellcasting Level" errors={errors} {...rest} />
+            )}
+            name={`${fieldName}.spellCasting.level`}
+            control={control}
+          />
+        </ActionCol>
+        <ActionCol>
+          <FormSelect
+            label={'Spellcasting Ability'}
+            name={`${fieldName}.spellCasting.abilityOption`}
+            control={control}
+            defaultValue={abilityOptions[0]}
+            options={abilityOptions}
+          />
+        </ActionCol>
+      </SubformWrapper>
+      <SpellSlots>
         {slotNames.map((slotName, index) => (
           <ControlledInput
             key={`${fieldName}.spellCasting.slots.${slotName}${index}`}
@@ -86,20 +88,21 @@ const SpellcastingForm = (props: {
             label={(index + 1).toString()}
           />
         ))}
-      </div>
-      <div className={styles.subformWrapper}>
-        <FormSelectAsync
-          className={styles.actionCol}
-          label={'Spells (search by name, level, or school)'}
-          name={`${fieldName}.spellCasting.spellOptions`}
-          getOptions={getSpells}
-          control={control}
-          menuPlacement="top"
-          isMulti
-          isClearable
-        />
-      </div>
-    </div>
+      </SpellSlots>
+      <SubformWrapper>
+        <ActionCol>
+          <FormSelectAsync
+            label={'Spells (search by name, level, or school)'}
+            name={`${fieldName}.spellCasting.spellOptions`}
+            getOptions={getSpells}
+            control={control}
+            menuPlacement="top"
+            isMulti
+            isClearable
+          />
+        </ActionCol>
+      </SubformWrapper>
+    </SpellsForm>
   );
 };
 

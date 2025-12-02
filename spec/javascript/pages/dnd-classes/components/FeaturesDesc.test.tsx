@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen } from '../../../test-utils';
 import FeaturesDesc from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/dnd-classes/components/FeaturesDesc';
 
 describe('FeaturesDesc', () => {

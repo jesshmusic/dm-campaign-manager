@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen } from '../../test-utils';
 import Cover from '../../../../app/javascript/bundles/DungeonMasterCampaignManager/components/Widgets/Cover';
 
 describe('Cover', () => {

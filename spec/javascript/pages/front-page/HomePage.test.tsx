@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen } from '../../test-utils';
 import HomePage from '../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/front-page/HomePage';
 
 jest.mock('@auth0/auth0-react', () => ({

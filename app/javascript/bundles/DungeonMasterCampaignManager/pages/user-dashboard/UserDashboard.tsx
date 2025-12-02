@@ -8,7 +8,7 @@ import Dashboard from './Dashboard';
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
 
-import styles from './user-dashboard.module.scss';
+import { Section, UserInfo, UserPic, UserData } from './UserDashboard.styles';
 
 const UserDashboard = (_props: PageProps) => {
   const { isAuthenticated, user } = useAuth0();
@@ -22,13 +22,13 @@ const UserDashboard = (_props: PageProps) => {
       }
     >
       <PageTitle title={`Dungeon Master GURU - ${pageTitle}`} isDraconis />
-      <div className={styles.section}>
+      <Section>
         <h2>Info</h2>
-        <div className={styles.userInfo}>
-          <div className={styles.userPic}>
+        <UserInfo>
+          <UserPic>
             <img src={user!.picture} />
-          </div>
-          <div className={styles.userData}>
+          </UserPic>
+          <UserData>
             <p>
               <strong>Name</strong>
               {user!.name}
@@ -41,9 +41,9 @@ const UserDashboard = (_props: PageProps) => {
               <strong>Email</strong>
               {user!.email}
             </p>
-          </div>
-        </div>
-      </div>
+          </UserData>
+        </UserInfo>
+      </Section>
       <Dashboard />
     </PageContainer>
   );

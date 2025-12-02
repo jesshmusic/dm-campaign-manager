@@ -9,7 +9,11 @@ import {
 } from '../../../../../../components/forms/ControllerInput';
 import { senses } from '../../../../../../utilities/character-utilities';
 
-import styles from '../field-array-form.module.scss';
+import {
+  FormContainer,
+  FormElementSelect,
+  FormElementInput,
+} from '../../../../MonsterGenerator.styles';
 
 const SenseForm = (props: {
   senseIndex: number;
@@ -21,21 +25,23 @@ const SenseForm = (props: {
   const { senseIndex, control, errors, fieldName, remove } = props;
 
   return (
-    <div className={styles.formContainer}>
-      <ControlledSelect
-        className={styles.formElementSelect}
-        fieldName={`${fieldName}.${senseIndex}.nameOption`}
-        control={control}
-        label="Sense"
-        options={senses}
-      />
-      <ControlledInput
-        fieldName={`${fieldName}.${senseIndex}.value`}
-        errors={errors}
-        className={styles.formElementInput}
-        control={control}
-        label="Value"
-      />
+    <FormContainer>
+      <FormElementSelect>
+        <ControlledSelect
+          fieldName={`${fieldName}.${senseIndex}.nameOption`}
+          control={control}
+          label="Sense"
+          options={senses}
+        />
+      </FormElementSelect>
+      <FormElementInput>
+        <ControlledInput
+          fieldName={`${fieldName}.${senseIndex}.value`}
+          errors={errors}
+          control={control}
+          label="Value"
+        />
+      </FormElementInput>
       <Button
         type="button"
         onClick={() => remove(senseIndex)}
@@ -44,7 +50,7 @@ const SenseForm = (props: {
         hideTitle
         title="Remove Action"
       />
-    </div>
+    </FormContainer>
   );
 };
 

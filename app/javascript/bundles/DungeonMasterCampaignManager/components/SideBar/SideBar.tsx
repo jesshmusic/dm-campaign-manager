@@ -43,14 +43,20 @@ const ruleBooks = [
 ];
 
 import { Sidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
-import './sidebar-vars.scss';
-import { SidebarButton, SidebarLink } from '../NavLink/NavLink';
+import { SidebarLink, SidebarButton } from '../NavLink/NavLink';
 import { useAuth0 } from '@auth0/auth0-react';
 import { UserProps } from '../../utilities/types';
+import { useLocation } from 'react-router-dom';
 
 import sidebarBG from './SidebarBackground.jpg';
 
-import styles from './sidebar.module.scss';
+import {
+  SidebarWrapper,
+  StyledFooter,
+  UserWelcome,
+  RoleLabel,
+  menuItemStyles,
+} from './SideBar.styles';
 
 const itemTypes = [
   { name: 'Armor', link: '/app/items/armor', icon: <GiCapeArmor /> },
@@ -86,11 +92,26 @@ const SideBar = (props: {
   isMobile: boolean;
   logOutUser: (token: string) => void;
   rules: { name: string; slug: string; rules?: { name: string; slug: string }[] }[];
-  setIsCollapsed: (boolean) => void;
+  setIsCollapsed: (collapsed: boolean) => void;
 }) => {
   const { currentUser, getRules, isCollapsed, isMobile, logOutUser, rules, setIsCollapsed } = props;
 
   const { user, getAccessTokenSilently, isAuthenticated, loginWithRedirect, logout } = useAuth0();
+  const location = useLocation();
+
+  // Determine if submenus should be open based on current path
+  const isItemsPath = location.pathname.startsWith('/app/items');
+  const isRulesPath = location.pathname.startsWith('/app/rules');
+
+  // Controlled state for submenus - initialized based on current path
+  const [itemsOpen, setItemsOpen] = React.useState(isItemsPath);
+  const [rulesOpen, setRulesOpen] = React.useState(isRulesPath);
+
+  // Update submenu state when path changes
+  React.useEffect(() => {
+    if (isItemsPath) setItemsOpen(true);
+    if (isRulesPath) setRulesOpen(true);
+  }, [location.pathname]);
 
   const handleLogout = () => {
     getAccessTokenSilently()
@@ -98,7 +119,7 @@ const SideBar = (props: {
         logOutUser(token);
         document.cookie =
           '_dungeon_master_screen_online_session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-        logout({ returnTo: window.location.origin });
+        logout({ logoutParams: { returnTo: window.location.origin } });
       })
       .catch((err) => {
         console.error(err);
@@ -110,17 +131,21 @@ const SideBar = (props: {
   }, []);
 
   return (
-    <>
+    <SidebarWrapper>
       <Sidebar
         collapsed={isCollapsed}
-        backgroundColor="rgba(0, 0, 0, 0.85)"
+        image={sidebarBG}
+        backgroundColor="rgba(87, 26, 16, 0.3)"
+        width="15rem"
+        collapsedWidth="5rem"
         rootStyles={{
-          backgroundImage: `url(${sidebarBG})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
+          borderRight: '0.25rem solid #c9ad6a',
+          height: '100vh',
+          position: 'fixed',
+          top: 0,
         }}
       >
-        <Menu>
+        <Menu menuItemStyles={menuItemStyles}>
           {!isMobile && (
             <SidebarButton
               onClick={() => {
@@ -136,7 +161,12 @@ const SideBar = (props: {
           <SidebarLink to="/app/monsters" title="Monsters" icon={<GiMonsterGrasp />} />
           <SidebarLink to="/app/spells" title="Spells" icon={<GiMagicPalm />} />
           <SidebarLink to="/app/conditions" title="Conditions" icon={<GiAchillesHeel />} />
-          <SubMenu label="Rules" icon={<GiBookshelf />}>
+          <SubMenu
+            label="Rules"
+            icon={<GiBookshelf />}
+            open={rulesOpen}
+            onOpenChange={setRulesOpen}
+          >
             {rules.map((rule, index) => (
               <SubMenu
                 key={`rule-${rule.slug}-${index}`}
@@ -159,7 +189,12 @@ const SideBar = (props: {
               </SubMenu>
             ))}
           </SubMenu>
-          <SubMenu label="Items & Equipment" icon={<GiSwapBag />}>
+          <SubMenu
+            label="Items & Equipment"
+            icon={<GiSwapBag />}
+            open={itemsOpen}
+            onOpenChange={setItemsOpen}
+          >
             {itemTypes.map((itemType, index) => (
               <SidebarLink
                 key={`items-${index}`}
@@ -170,14 +205,13 @@ const SideBar = (props: {
             ))}
           </SubMenu>
         </Menu>
-        <div className={styles.sidebarFooter}>
-          <div className={`${styles.divider} ${styles.userName}`}>
+
+        <StyledFooter>
+          <UserWelcome>
             {isAuthenticated && user ? `Welcome, ${user.given_name}` : 'User'}
-            {currentUser && currentUser.role && (
-              <span className={styles.roleLabel}>{currentUser.role}</span>
-            )}
-          </div>
-          <Menu>
+            {currentUser && currentUser.role && <RoleLabel>{currentUser.role}</RoleLabel>}
+          </UserWelcome>
+          <Menu menuItemStyles={menuItemStyles}>
             <SidebarLink
               to="/app/monster-generator"
               title="Monster Generator"
@@ -186,10 +220,11 @@ const SideBar = (props: {
             {currentUser && currentUser.role === 'admin' ? (
               <SidebarLink to="/app/admin-dashboard" title="Admin" icon={<GiKing />} />
             ) : null}
-            <MenuItem icon={<PatreonIcon />}>
-              <a href={PATREON_URL} target="_blank" rel="noopener noreferrer">
-                Support on Patreon
-              </a>
+            <MenuItem
+              icon={<PatreonIcon />}
+              component={<a href={PATREON_URL} target="_blank" rel="noopener noreferrer" />}
+            >
+              Support on Patreon
             </MenuItem>
             {isAuthenticated && user ? (
               <>
@@ -198,19 +233,19 @@ const SideBar = (props: {
                   title="User Dashboard"
                   icon={<GiDungeonGate />}
                 />
-                <MenuItem icon={<BiLogOut />}>
-                  <button onClick={() => handleLogout()}>Log Out</button>
+                <MenuItem icon={<BiLogOut />} onClick={handleLogout}>
+                  Log Out
                 </MenuItem>
               </>
             ) : (
-              <MenuItem icon={<BiLogIn />}>
-                <button onClick={() => loginWithRedirect()}>Log In</button>
+              <MenuItem icon={<BiLogIn />} onClick={() => loginWithRedirect()}>
+                Log In
               </MenuItem>
             )}
           </Menu>
-        </div>
+        </StyledFooter>
       </Sidebar>
-    </>
+    </SidebarWrapper>
   );
 };
 

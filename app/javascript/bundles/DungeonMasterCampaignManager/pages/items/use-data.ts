@@ -229,7 +229,7 @@ export const useData = (props: ItemsPageProps) => {
 
   React.useEffect(() => {
     getItems(itemType);
-  }, []);
+  }, [itemType]);
 
   const data = React.useMemo(() => {
     return items.map((item: ItemSummary) => {
@@ -254,7 +254,7 @@ export const useData = (props: ItemsPageProps) => {
     });
   }, [items]);
 
-  const columns = React.useMemo(() => columnValues[itemType], []);
+  const columns = React.useMemo(() => columnValues[itemType], [itemType]);
 
   return {
     columns,

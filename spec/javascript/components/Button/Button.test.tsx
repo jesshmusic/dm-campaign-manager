@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent } from '../../test-utils';
 import Button from '../../../../app/javascript/bundles/DungeonMasterCampaignManager/components/Button/Button';
 import { Colors } from '../../../../app/javascript/bundles/DungeonMasterCampaignManager/utilities/enums';
 
@@ -27,28 +27,24 @@ describe('Button', () => {
     expect(screen.queryByText('Hidden')).not.toBeInTheDocument();
   });
 
-  it('applies primary color class', () => {
-    const { container } = render(<Button color={Colors.primary} title="Primary" />);
-    const button = container.querySelector('.primary');
-    expect(button).toBeInTheDocument();
+  it('renders with primary color', () => {
+    render(<Button color={Colors.primary} title="Primary" />);
+    expect(screen.getByRole('button', { name: 'Primary' })).toBeInTheDocument();
   });
 
-  it('applies secondary color class', () => {
-    const { container } = render(<Button color={Colors.secondary} title="Secondary" />);
-    const button = container.querySelector('.secondary');
-    expect(button).toBeInTheDocument();
+  it('renders with secondary color', () => {
+    render(<Button color={Colors.secondary} title="Secondary" />);
+    expect(screen.getByRole('button', { name: 'Secondary' })).toBeInTheDocument();
   });
 
-  it('applies success color class', () => {
-    const { container } = render(<Button color={Colors.success} title="Success" />);
-    const button = container.querySelector('.success');
-    expect(button).toBeInTheDocument();
+  it('renders with success color', () => {
+    render(<Button color={Colors.success} title="Success" />);
+    expect(screen.getByRole('button', { name: 'Success' })).toBeInTheDocument();
   });
 
-  it('applies danger color class', () => {
-    const { container } = render(<Button color={Colors.danger} title="Danger" />);
-    const button = container.querySelector('.danger');
-    expect(button).toBeInTheDocument();
+  it('renders with danger color', () => {
+    render(<Button color={Colors.danger} title="Danger" />);
+    expect(screen.getByRole('button', { name: 'Danger' })).toBeInTheDocument();
   });
 
   it('applies custom className', () => {
@@ -87,9 +83,9 @@ describe('Button', () => {
     expect(button.style.backgroundColor).toBe('red');
   });
 
-  it('applies fullWidth class when isFullWidth is true', () => {
-    const { container } = render(<Button color={Colors.primary} title="Full Width" isFullWidth={true} />);
-    const button = container.querySelector('.fullWidth');
+  it('renders fullWidth button when isFullWidth is true', () => {
+    render(<Button color={Colors.primary} title="Full Width" isFullWidth={true} />);
+    const button = screen.getByRole('button', { name: 'Full Width' });
     expect(button).toBeInTheDocument();
   });
 

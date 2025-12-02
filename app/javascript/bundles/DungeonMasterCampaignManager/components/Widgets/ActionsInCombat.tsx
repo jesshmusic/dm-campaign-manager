@@ -1,10 +1,10 @@
 import React from 'react';
 
-import styles from './widgets.module.scss';
+import { TwoColumn } from './Widgets.styles';
 
 const ActionsInCombat = () => {
   return (
-    <div className={styles.twoColumn}>
+    <TwoColumn>
       <div>
         <h4>Attack</h4>
         <h4>Cast a Spell</h4>
@@ -21,7 +21,7 @@ const ActionsInCombat = () => {
         <h4>Use an Object</h4>
         <h4>Use a Special Ability</h4>
       </div>
-    </div>
+    </TwoColumn>
   );
 };
 

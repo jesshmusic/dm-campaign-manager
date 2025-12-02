@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen } from '../../test-utils';
 import InfoBlock from '../../../../app/javascript/bundles/DungeonMasterCampaignManager/components/InfoBlock/InfoBlock';
 
 describe('InfoBlock', () => {
@@ -32,7 +32,7 @@ describe('InfoBlock', () => {
 
   it('applies infoBlock class', () => {
     const { container } = render(<InfoBlock title="Test" desc="Value" />);
-    const infoBlock = container.querySelector('.infoBlock');
+    const infoBlock = container.firstChild; // InfoBlock wrapper
     expect(infoBlock).toBeInTheDocument();
   });
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '../../../../test-utils';
 import { useData } from '../../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/monster-generator/components/quick-generate-monster/use-data';
 import axios from 'axios';
 import * as services from '../../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/monster-generator/services';

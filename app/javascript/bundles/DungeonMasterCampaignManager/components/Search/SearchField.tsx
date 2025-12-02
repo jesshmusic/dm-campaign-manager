@@ -4,7 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { Colors } from '../../utilities/enums';
 import { GiArchiveResearch } from 'react-icons/gi';
 import Button from '../Button/Button';
-import styles from './search-field.module.scss';
+
+import { SearchBar, InputGroup, SearchButton } from './SearchField.styles';
 
 const SearchField = () => {
   const navigate = useNavigate();
@@ -14,18 +15,19 @@ const SearchField = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className={styles.searchBar}>
-      <div className={styles.inputGroup}>
+    <SearchBar onSubmit={handleSubmit(onSubmit)}>
+      <InputGroup>
         <input id="searchBarMain" {...register('search')} placeholder={'Search...'} />
-        <Button
-          className={styles.searchButton}
-          color={Colors.secondary}
-          title="Search"
-          type="submit"
-          icon={<GiArchiveResearch />}
-        />
-      </div>
-    </form>
+        <SearchButton>
+          <Button
+            color={Colors.secondary}
+            title="Search"
+            type="submit"
+            icon={<GiArchiveResearch />}
+          />
+        </SearchButton>
+      </InputGroup>
+    </SearchBar>
   );
 };
 

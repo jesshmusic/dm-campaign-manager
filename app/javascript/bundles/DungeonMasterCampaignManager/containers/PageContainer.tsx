@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 
 // Bootstrap
 import FlashMessages from '../components/Alerts/FlashMessages';
@@ -11,14 +11,13 @@ import SideBar from '../components/SideBar/SideBar';
 import Util from '../utilities/utilities';
 import { gsap } from 'gsap';
 import { Transition, TransitionGroup } from 'react-transition-group';
-import classNames from 'classnames';
 import ReactGA from 'react-ga4';
 import YouTubeAd from '../components/BannerAd/YouTubeAd';
 import SearchField from '../components/Search/SearchField';
 
-ReactGA.initialize('G-8XJTH70JSQ');
+import { PageWrapper, PageContent, Page } from './Containers.styles';
 
-import styles from './page-container.module.scss';
+ReactGA.initialize('G-8XJTH70JSQ');
 
 type PageContainerProps = {
   children?: React.ReactNode;
@@ -30,6 +29,7 @@ const PageContainer = (props: PageContainerProps) => {
   const [isCollapsed, setIsCollapsed] = React.useState(false);
   const { children, description, pageTitle } = props;
   const [isMobile, setIsMobile] = React.useState(Util.isMobileWidth());
+  const nodeRef = useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
     const handleResize = () => {
@@ -46,21 +46,23 @@ const PageContainer = (props: PageContainerProps) => {
     componentDidMount();
   }, []);
 
-  const onEnterHandler = (node) => {
-    gsap.from(node, {
+  const onEnterHandler = () => {
+    if (!nodeRef.current) return;
+    gsap.from(nodeRef.current, {
       duration: 0.4,
       autoAlpha: 0,
       x: -500,
     });
-    gsap.to(node, {
+    gsap.to(nodeRef.current, {
       delay: 0.4,
       duration: 0.4,
       scrollTo: 0,
     });
   };
 
-  const onExitHandler = (node) => {
-    gsap.to(node, {
+  const onExitHandler = () => {
+    if (!nodeRef.current) return;
+    gsap.to(nodeRef.current, {
       duration: 1,
       autoAlpha: 0,
       scrollTo: 0,
@@ -86,21 +88,18 @@ const PageContainer = (props: PageContainerProps) => {
         <Transition
           timeout={500}
           key={window.location.pathname}
+          nodeRef={nodeRef}
           onEnter={onEnterHandler}
           onExit={onExitHandler}
         >
-          <div className={styles.pageWrapper}>
-            <div className={styles.pageContent}>
-              <div
-                className={classNames(styles.page, {
-                  [styles.collapsed]: isCollapsed,
-                })}
-              >
+          <PageWrapper ref={nodeRef}>
+            <PageContent>
+              <Page $isCollapsed={isCollapsed}>
                 {children}
                 <YouTubeAd />
-              </div>
-            </div>
-          </div>
+              </Page>
+            </PageContent>
+          </PageWrapper>
         </Transition>
       </TransitionGroup>
     </div>

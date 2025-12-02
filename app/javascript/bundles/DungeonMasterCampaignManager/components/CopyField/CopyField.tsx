@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-import styles from './copy-field.module.scss';
+import { CopyFieldWrapper, Label, Input, TextArea, HelpText } from './CopyField.styles';
 
 type CopyFieldProps = {
   text?: string;
@@ -39,11 +39,10 @@ const CopyField = ({ text, label, fieldId, placeHolder, isTextArea }: CopyFieldP
   };
 
   return (
-    <div className={styles.copyField} id={fieldId}>
-      <label className={styles.label}>{label}</label>
+    <CopyFieldWrapper id={fieldId}>
+      <Label>{label}</Label>
       {isTextArea ? (
-        <textarea
-          className={styles.textArea}
+        <TextArea
           placeholder={placeHolder}
           value={text ? text : ''}
           readOnly
@@ -53,8 +52,7 @@ const CopyField = ({ text, label, fieldId, placeHolder, isTextArea }: CopyFieldP
           onClick={handleCopyToClipboard}
         />
       ) : (
-        <input
-          className={styles.input}
+        <Input
           type="text"
           placeholder={placeHolder}
           value={text ? text : ''}
@@ -63,10 +61,8 @@ const CopyField = ({ text, label, fieldId, placeHolder, isTextArea }: CopyFieldP
           onClick={handleCopyToClipboard}
         />
       )}
-      <small className={styles.helpText}>
-        {copySuccess ? 'Copied.' : 'Click to copy to clipboard.'}
-      </small>
-    </div>
+      <HelpText>{copySuccess ? 'Copied.' : 'Click to copy to clipboard.'}</HelpText>
+    </CopyFieldWrapper>
   );
 };
 

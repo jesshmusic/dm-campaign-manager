@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen } from '../../../../../../../test-utils';
 import BaseActionsFormSection from '../../../../../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/monster-generator/components/generate-monster/sections/actions/action-forms/BaseActionsFormSection';
 import { ActionVariations } from '../../../../../../../../../app/javascript/bundles/DungeonMasterCampaignManager/utilities/types';
 

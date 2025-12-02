@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen } from '../../../../test-utils';
 import DiceFields from '../../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/monster-generator/components/generate-monster/DiceFields';
 
 jest.mock('../../../../../../app/javascript/bundles/DungeonMasterCampaignManager/components/forms/FormField', () => {
