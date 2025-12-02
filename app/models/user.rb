@@ -42,7 +42,7 @@ class User < ApplicationRecord
   validates :auth_id, presence: true
   validates :auth_id, uniqueness: true
 
-  enum role: { dungeon_master: 0, admin: 1, user: 2 }
+  enum :role, { dungeon_master: 0, admin: 1, user: 2 }
   after_initialize :set_default_role, if: :new_record?
 
   # UserProps Associations
