@@ -36,6 +36,18 @@
 - Use TypeScript for all new frontend code
 - Follow existing patterns in the codebase
 
+## Pull Request Workflow
+
+After every commit and push to a PR:
+
+1. **Wait for CI to complete** - All checks must pass (Jest, RSpec, Lint)
+2. **Wait for Copilot review** - GitHub Copilot will automatically review the PR
+3. **Address any failures** - Fix broken tests immediately
+4. **Resolve Copilot comments** - Address any issues Copilot identifies and resolve those conversations
+5. **Only merge when green** - All checks passing and no unresolved review comments
+
+Never merge a PR with failing tests or unresolved Copilot review comments.
+
 ## Zeitwerk Naming Conventions
 
 The `Utilities::Openai::Client` class uses `Openai` (not `OpenAI`) because Zeitwerk requires module names to match directory names. The directory is `app/models/utilities/openai/`, so the module must be `Openai`. Changing to `OpenAI` would require renaming the directory to `open_ai/` which would be a breaking change across the codebase.

@@ -4,7 +4,36 @@ import { WidgetElementProps } from '../../components/Widgets/Widget';
 import { getIconFromName } from '../../utilities/icons';
 import CustomWidget from '../../components/Widgets/CustomWidget';
 
-const getFromLS = (key) => {
+type LayoutItem = { i?: string; w?: number; h?: number; x?: number; y?: number };
+type Layouts = Record<string, LayoutItem[]>;
+
+/** Column counts for each react-grid-layout breakpoint */
+const BREAKPOINT_COLUMNS: Record<string, number> = { lg: 12, md: 9, sm: 6, xs: 3, xxs: 1 };
+
+/**
+ * Checks if layouts contain corrupted items (w:1, h:1) in non-xxs breakpoints.
+ * This can happen during initial render before the container is properly sized.
+ * The xxs breakpoint legitimately has w:1 items, so it's excluded from the check.
+ */
+const hasCorruptedLayout = (layouts: Layouts, breakpoints = ['lg', 'md', 'sm', 'xs']): boolean => {
+  return breakpoints.some((breakpoint) => {
+    const breakpointLayout = layouts?.[breakpoint];
+    return (
+      Array.isArray(breakpointLayout) &&
+      breakpointLayout.length > 0 &&
+      breakpointLayout.some((item) => item.w === 1 && item.h === 1)
+    );
+  });
+};
+
+/**
+ * Checks if a single layout item is corrupted (w:1, h:1).
+ */
+const isCorruptedItem = (item: LayoutItem): boolean => {
+  return item.w === 1 && item.h === 1;
+};
+
+const getFromLS = (key: string) => {
   if (global.localStorage) {
     try {
       const ls = JSON.parse(global.localStorage.getItem('rgl-8') as string);
@@ -18,19 +47,28 @@ const getFromLS = (key) => {
               Array.isArray(breakpointLayout) && breakpointLayout.length > 0,
           );
           if (!hasValidLayout) return null;
-          // Fix custom widget sizes - ensure minimum 3x3
+
+          // Check for corrupted layouts (w:1, h:1 in any non-xxs breakpoint)
+          if (hasCorruptedLayout(layouts)) return null;
+
+          // Fix all widget sizes - ensure minimum dimensions
           Object.keys(layouts).forEach((breakpoint) => {
+            const maxCols = BREAKPOINT_COLUMNS[breakpoint] || 12;
             layouts[breakpoint] = layouts[breakpoint].map((item) => {
-              if (item.i && item.i.startsWith('customWidget')) {
-                return {
-                  ...item,
-                  w: Math.max(item.w || 3, 3),
-                  h: Math.max(item.h || 3, 3),
-                  minW: 3,
-                  minH: 3,
-                };
-              }
-              return item;
+              const isCustomWidget = item.i && item.i.startsWith('customWidget');
+              const widgetConfig = dashboardComponents[item.i];
+              // Get minimum dimensions from widget config or use defaults
+              // Cap minW to the breakpoint's column count
+              const baseMinW = isCustomWidget ? 3 : widgetConfig?.grid?.minW || 3;
+              const minW = Math.min(baseMinW, maxCols);
+              const minH = isCustomWidget ? 3 : widgetConfig?.grid?.minH || 2;
+              return {
+                ...item,
+                w: Math.max(Math.min(item.w || minW, maxCols), minW),
+                h: Math.max(item.h || minH, minH),
+                minW,
+                minH,
+              };
             });
           });
           return layouts;
@@ -44,8 +82,12 @@ const getFromLS = (key) => {
   return null;
 };
 
-const saveToLS = (layouts, widgets) => {
+const saveToLS = (layouts: Layouts, widgets: string[]) => {
   if (global.localStorage) {
+    // Don't save if any non-xxs breakpoint has items with w:1, h:1
+    if (hasCorruptedLayout(layouts)) {
+      return; // Skip saving corrupted layouts
+    }
     global.localStorage.setItem(
       'rgl-8',
       JSON.stringify({
@@ -121,25 +163,60 @@ export const useDashboardState = ({ customWidgets, getWidgets }) => {
     setWidgets(combinedWidgets);
   }, [customWidgets, widgetKeys]);
 
-  const onLayoutChange = useCallback((_currentLayout, allLayouts) => {
-    // Enforce minimum 3x3 for custom widgets
-    const fixedLayouts = { ...allLayouts };
-    Object.keys(fixedLayouts).forEach((breakpoint) => {
-      fixedLayouts[breakpoint] = fixedLayouts[breakpoint].map((item) => {
-        if (item.i && item.i.startsWith('customWidget')) {
-          return {
-            ...item,
-            w: Math.max(item.w || 3, 3),
-            h: Math.max(item.h || 3, 3),
-            minW: 3,
-            minH: 3,
-          };
-        }
-        return item;
+  const onLayoutChange = useCallback(
+    (_currentLayout, allLayouts) => {
+      setLayouts((prevLayouts) => {
+        // Merge new layouts with previous, preserving user customizations
+        const mergedLayouts = { ...prevLayouts };
+
+        Object.keys(allLayouts).forEach((breakpoint) => {
+          const newBreakpointLayout = allLayouts[breakpoint];
+          const prevBreakpointLayout = prevLayouts[breakpoint] || [];
+          const maxCols = BREAKPOINT_COLUMNS[breakpoint] || 12;
+
+          // Enforce minimum sizes for all widgets
+          mergedLayouts[breakpoint] = newBreakpointLayout.map((item) => {
+            const isCustomWidget = item.i && item.i.startsWith('customWidget');
+            const widgetConfig = dashboardComponents[item.i];
+            // Get minimum dimensions from widget config or use defaults
+            // Cap minW to the breakpoint's column count
+            const baseMinW = isCustomWidget ? 3 : widgetConfig?.grid?.minW || 3;
+            const minW = Math.min(baseMinW, maxCols);
+            const minH = isCustomWidget ? 3 : widgetConfig?.grid?.minH || 2;
+
+            // Find existing item to preserve user customizations
+            const existingItem = prevBreakpointLayout.find((prev) => prev.i === item.i);
+
+            // If item exists and new layout has w:1,h:1 (corrupted), keep existing
+            // but only if the existing item is not also corrupted
+            if (
+              existingItem &&
+              isCorruptedItem(item) &&
+              !isCorruptedItem(existingItem) &&
+              breakpoint !== 'xxs'
+            ) {
+              return {
+                ...existingItem,
+                minW,
+                minH,
+              };
+            }
+
+            return {
+              ...item,
+              w: Math.max(Math.min(item.w || minW, maxCols), minW),
+              h: Math.max(item.h || minH, minH),
+              minW,
+              minH,
+            };
+          });
+        });
+
+        return mergedLayouts;
       });
-    });
-    setLayouts(fixedLayouts);
-  }, []);
+    },
+    [setLayouts],
+  );
 
   const onRemoveItem = useCallback((widgetId) => {
     setWidgetKeys((prev) => prev.filter((i) => i !== widgetId));

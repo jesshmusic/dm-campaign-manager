@@ -214,6 +214,7 @@ const DataTable = <T extends object = Record<string, unknown>>({
               onChange={(option) => {
                 dataTable.setPageSize(Number(option ? option.value : perPage));
               }}
+              getOptionValue={(option) => String(option.value)}
             />
           </PageForm>
         </Pagination>

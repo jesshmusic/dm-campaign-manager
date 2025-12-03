@@ -23,9 +23,13 @@ const App = (props) => {
           <Auth0Provider
             domain="dev-yfmjdt5a.us.auth0.com"
             clientId="8NlYHEqMlhW6W4kVyNQLtyRguyiGSzrd"
-            redirectUri={`${window.location.origin}/app/user-dashboard`}
-            audience="dmScreenAPI"
-            scope="read:user"
+            // Auth0 v2 requires authorizationParams object (v1 props are ignored)
+            // Scope includes 'openid profile email' for OIDC user info claims
+            authorizationParams={{
+              redirect_uri: `${window.location.origin}/app/user-dashboard`,
+              audience: 'dmScreenAPI',
+              scope: 'openid profile email read:user',
+            }}
             useRefreshTokens={true}
             cacheLocation="localstorage"
             onRedirectCallback={onRedirectCallback}
