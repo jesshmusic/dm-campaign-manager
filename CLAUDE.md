@@ -10,6 +10,16 @@
 4. Never commit code with failing tests
 5. Both Jest (frontend) and RSpec (backend) tests must pass
 
+## Pre-Push Checklist
+
+**Always check ALL of these before pushing:**
+
+1. `yarn lint` - ESLint
+2. `yarn format:check` - Prettier
+3. `bundle exec rubocop` - Rubocop
+4. `NO_COVERAGE=true yarn test` - Jest tests
+5. `NO_COVERAGE=true bundle exec rspec` - RSpec tests
+
 ## Commands
 
 - **Jest tests**: `NO_COVERAGE=true yarn test`
