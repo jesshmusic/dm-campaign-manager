@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen } from '../../test-utils';
 import { useForm } from 'react-hook-form';
 import FormSelectAsync from '../../../../app/javascript/bundles/DungeonMasterCampaignManager/components/forms/FormSelectAsync';
 

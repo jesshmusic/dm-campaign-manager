@@ -4,15 +4,23 @@ import { MonsterProps } from '../../utilities/types';
 import { abilityScoreModifier } from '../monster-generator/services';
 import Button from '../../components/Button/Button';
 import { Colors } from '../../utilities/enums';
-import { GiBeerStein } from 'react-icons/all';
+import { GiBeerStein } from 'react-icons/gi';
 
-import styles from './monsters.module.scss';
+import {
+  MonsterPage,
+  FrameStat,
+  AbilityScoresBlock,
+  AbilityScoresCol,
+  AbilityScoresName,
+  MonsterFrameAction,
+  CRStats,
+} from './MonsterBlock.styles';
 
 const MonsterStat = (props: { name: string; value: string | number }) => {
   return (
-    <div className={styles.frameStat}>
+    <FrameStat>
       <span>{props.name}</span> {props.value}
-    </div>
+    </FrameStat>
   );
 };
 
@@ -28,44 +36,44 @@ export const AbilityScores = (props: { monster: MonsterProps }) => {
   };
 
   return (
-    <div className={styles.abilityScoresBlock}>
-      <div className={styles.abilityScoresCol}>
-        <div className={styles.abilityScoresName}>STR</div>
+    <AbilityScoresBlock>
+      <AbilityScoresCol>
+        <AbilityScoresName>STR</AbilityScoresName>
         <div>
           {props.monster.strength} {abilityModString(props.monster.strength)}
         </div>
-      </div>
-      <div className={styles.abilityScoresCol}>
-        <div className={styles.abilityScoresName}>DEX</div>
+      </AbilityScoresCol>
+      <AbilityScoresCol>
+        <AbilityScoresName>DEX</AbilityScoresName>
         <div>
           {props.monster.dexterity} {abilityModString(props.monster.dexterity)}
         </div>
-      </div>
-      <div className={styles.abilityScoresCol}>
-        <div className={styles.abilityScoresName}>CON</div>
+      </AbilityScoresCol>
+      <AbilityScoresCol>
+        <AbilityScoresName>CON</AbilityScoresName>
         <div>
           {props.monster.constitution} {abilityModString(props.monster.constitution)}
         </div>
-      </div>
-      <div className={styles.abilityScoresCol}>
-        <div className={styles.abilityScoresName}>INT</div>
+      </AbilityScoresCol>
+      <AbilityScoresCol>
+        <AbilityScoresName>INT</AbilityScoresName>
         <div>
           {props.monster.intelligence} {abilityModString(props.monster.intelligence)}
         </div>
-      </div>
-      <div className={styles.abilityScoresCol}>
-        <div className={styles.abilityScoresName}>WIS</div>
+      </AbilityScoresCol>
+      <AbilityScoresCol>
+        <AbilityScoresName>WIS</AbilityScoresName>
         <div>
           {props.monster.wisdom} {abilityModString(props.monster.wisdom)}
         </div>
-      </div>
-      <div className={styles.abilityScoresCol}>
-        <div className={styles.abilityScoresName}>CHA</div>
+      </AbilityScoresCol>
+      <AbilityScoresCol>
+        <AbilityScoresName>CHA</AbilityScoresName>
         <div>
           {props.monster.charisma} {abilityModString(props.monster.charisma)}
         </div>
-      </div>
-    </div>
+      </AbilityScoresCol>
+    </AbilityScoresBlock>
   );
 };
 
@@ -91,7 +99,7 @@ const MonsterBlock = (props: { monster: MonsterProps; showCRStats?: boolean }) =
   }, [fileDownloadUrl]);
 
   return (
-    <div className={styles.monsterPage}>
+    <MonsterPage>
       <div className="monster-frame__group">
         <h1>
           {monster.name}
@@ -162,17 +170,17 @@ const MonsterBlock = (props: { monster: MonsterProps; showCRStats?: boolean }) =
       {monster.specialAbilities &&
         monster.specialAbilities.length > 0 &&
         monster.specialAbilities.map((action, index) => (
-          <div className={styles.monsterFrameAction} key={index}>
+          <MonsterFrameAction key={index}>
             <ReactMarkdown>{`_**${action.name}**_. ${action.desc}`}</ReactMarkdown>
-          </div>
+          </MonsterFrameAction>
         ))}
       {monster.actions && monster.actions.length > 0 && (
         <>
           <h3>Actions</h3>
           {monster.actions.map((action, index) => (
-            <div className={styles.monsterFrameAction} key={index}>
+            <MonsterFrameAction key={index}>
               <ReactMarkdown>{`_**${action.name}**_. ${action.desc}`}</ReactMarkdown>
-            </div>
+            </MonsterFrameAction>
           ))}
         </>
       )}
@@ -180,9 +188,9 @@ const MonsterBlock = (props: { monster: MonsterProps; showCRStats?: boolean }) =
         <>
           <h3>Legendary Actions</h3>
           {monster.legendaryActions.map((action, index) => (
-            <div className={styles.monsterFrameAction} key={index}>
+            <MonsterFrameAction key={index}>
               <ReactMarkdown>{`_**${action.name}**_. ${action.desc}`}</ReactMarkdown>
-            </div>
+            </MonsterFrameAction>
           ))}
         </>
       )}
@@ -190,9 +198,9 @@ const MonsterBlock = (props: { monster: MonsterProps; showCRStats?: boolean }) =
         <>
           <h3>Reactions</h3>
           {monster.reactions.map((action, index) => (
-            <div className={styles.monsterFrameAction} key={index}>
+            <MonsterFrameAction key={index}>
               <ReactMarkdown>{`_**${action.name}**_. ${action.desc}`}</ReactMarkdown>
-            </div>
+            </MonsterFrameAction>
           ))}
         </>
       )}
@@ -214,16 +222,16 @@ const MonsterBlock = (props: { monster: MonsterProps; showCRStats?: boolean }) =
         </div>
       ) : null}
       {showCRStats && (
-        <div className={styles.crStats}>
+        <CRStats>
           <h3>Challenge Rating Info</h3>
           <MonsterStat name="Damage Per Round:" value={monster.damagePerRound!} />
           <MonsterStat name="Offensive CR:" value={monster.offensiveCr!} />
           <MonsterStat name="Defensive CR:" value={monster.defensiveCr!} />
           <MonsterStat name="Proficiency Bonus:" value={monster.profBonus} />
           <MonsterStat name="Save DC:" value={monster.saveDc} />
-        </div>
+        </CRStats>
       )}
-    </div>
+    </MonsterPage>
   );
 };
 

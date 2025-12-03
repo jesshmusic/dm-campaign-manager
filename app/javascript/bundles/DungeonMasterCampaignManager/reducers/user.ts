@@ -64,7 +64,7 @@ const users = createReducer(
           currentUser: state.currentUser,
           token: state.token,
         };
-      })
+      }),
 );
 
 export default users;

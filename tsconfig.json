@@ -4,21 +4,24 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "lib": [
-      "es6",
-      "dom"
+      "ES2020",
+      "DOM",
+      "DOM.Iterable"
     ],
-    "module": "es6",
+    "module": "ES2020",
     "moduleResolution": "node",
     "sourceMap": true,
-    "target": "es5",
-    "jsx": "react",
+    "target": "ES2020",
+    "jsx": "react-jsx",
     "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
     "isolatedModules": true,
     "resolveJsonModule": true,
     "noImplicitAny": false,
     "noImplicitThis": true,
     "noImplicitReturns": true,
     "strictNullChecks": true,
+    "skipLibCheck": true,
     "plugins": [
       {
         "name": "typescript-plugin-css-modules"

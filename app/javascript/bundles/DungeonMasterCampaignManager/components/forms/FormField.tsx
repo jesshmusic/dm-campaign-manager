@@ -4,10 +4,9 @@
 
 import React from 'react';
 import { FieldErrors, FieldValues, UseFormRegister } from 'react-hook-form';
-import classNames from 'classnames';
-import { GiFire } from 'react-icons/all';
+import { GiFire } from 'react-icons/gi';
 
-import styles from './input.module.scss';
+import { FormWrapper, FormLabel, FormInput, ErrorMessage } from './Forms.styles';
 
 type FieldProps = {
   className?: string;
@@ -69,22 +68,17 @@ const FormField = (props: FieldProps) => {
           </div>
         )}
         {errors[name] && (
-          <p className={styles.error}>
+          <ErrorMessage>
             <GiFire /> This is required
-          </p>
+          </ErrorMessage>
         )}
       </div>
     );
   }
   return (
-    <div className={classNames(className, styles.wrapper)}>
-      {hideLabel ? null : (
-        <label className={styles.label} htmlFor={name}>
-          {label}
-        </label>
-      )}
-      <input
-        className={styles.input}
+    <FormWrapper className={className}>
+      {hideLabel ? null : <FormLabel htmlFor={name}>{label}</FormLabel>}
+      <FormInput
         aria-describedby={`${name}-help-text`}
         min={min}
         readOnly={readOnly}
@@ -97,11 +91,11 @@ const FormField = (props: FieldProps) => {
         </div>
       )}
       {errors[name] && (
-        <p className={styles.error}>
+        <ErrorMessage>
           <GiFire /> This is required
-        </p>
+        </ErrorMessage>
       )}
-    </div>
+    </FormWrapper>
   );
 };
 

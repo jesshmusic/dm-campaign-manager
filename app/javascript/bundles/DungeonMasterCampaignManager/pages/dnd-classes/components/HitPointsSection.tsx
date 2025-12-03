@@ -2,11 +2,11 @@ import { DndClass } from '../../../utilities/types';
 import React from 'react';
 import InfoBlock from '../../../components/InfoBlock/InfoBlock';
 
-import styles from '../dnd-class.module.scss';
+import { SectionGroup, SubsectionHeading } from '../DndClass.styles';
 
 const HitPointsSection = (props: { dndClass: DndClass }) => (
-  <div className={styles.sectionGroup}>
-    <h3 className={styles.subsectionHeading}>Hit Points</h3>
+  <SectionGroup>
+    <SubsectionHeading>Hit Points</SubsectionHeading>
     <InfoBlock
       title="Hit Dice"
       desc={`1d${props.dndClass.hitDie} per ${props.dndClass.name.toLowerCase()} level`}
@@ -21,7 +21,7 @@ const HitPointsSection = (props: { dndClass: DndClass }) => (
         props.dndClass.hitDie / 2 + 1
       }) + your Constitution modifier per ${props.dndClass.name.toLowerCase()} level after 1st`}
     />
-  </div>
+  </SectionGroup>
 );
 
 export default HitPointsSection;

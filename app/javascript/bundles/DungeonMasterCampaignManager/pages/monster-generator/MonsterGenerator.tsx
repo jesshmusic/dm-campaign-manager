@@ -4,18 +4,18 @@ import PageTitle from '../../components/PageTitle/PageTitle';
 import GenerateMonster from './components/generate-monster/GenerateMonster';
 import Convert2eMonster from './Convert2eMonster';
 import GenerateCommoner from './components/GenerateCommoner';
-import { GiBlacksmith, GiSpikedDragonHead, SiConvertio } from 'react-icons/all';
+import { GiBlacksmith, GiSpikedDragonHead, GiDiceTwentyFacesTwenty } from 'react-icons/gi';
+import { SiConvertio } from 'react-icons/si';
 import MonsterBlock from '../monsters/MonsterBlock';
 import rest from '../../api/api';
 import { connect } from 'react-redux';
 import QuickGenerateMonster from './components/quick-generate-monster/QuickGenerateMonster';
-import { GiDiceTwentyFacesTwenty } from 'react-icons/gi/';
 import ReactGA from 'react-ga4';
 import { MonsterProps } from '../../utilities/types';
 
 ReactGA.initialize('G-8XJTH70JSQ');
 
-import styles from './monster-generator.module.scss';
+import { MonsterGenWrapper } from './MonsterGenerator.styles';
 
 const MonsterGenerator = (props: {
   monster?: MonsterProps;
@@ -37,7 +37,7 @@ const MonsterGenerator = (props: {
       }
     >
       <PageTitle title={'Monster Generators and Converters'} />
-      <div className={styles.monsterGenWrapper}>
+      <MonsterGenWrapper>
         <p>
           Several generators to build quick Monsters. Fields can be copied and pasted into Fantasy
           Grounds.
@@ -165,7 +165,7 @@ const MonsterGenerator = (props: {
             </div>
           )}
         </div>
-      </div>
+      </MonsterGenWrapper>
     </PageContainer>
   );
 };
@@ -188,8 +188,8 @@ function mapDispatchToProps(dispatch) {
           { gender, race },
           {
             body: JSON.stringify({ token }),
-          }
-        )
+          },
+        ),
       );
     },
     generateMonster: (monster: unknown, token?: string) => {
@@ -199,8 +199,8 @@ function mapDispatchToProps(dispatch) {
           {},
           {
             body: JSON.stringify({ monster, token }),
-          }
-        )
+          },
+        ),
       );
     },
     generateQuickMonster: (monster: unknown, token?: string) => {
@@ -210,8 +210,8 @@ function mapDispatchToProps(dispatch) {
           {},
           {
             body: JSON.stringify({ monster, token }),
-          }
-        )
+          },
+        ),
       );
     },
   };

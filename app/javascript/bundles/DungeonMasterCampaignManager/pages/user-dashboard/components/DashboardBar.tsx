@@ -2,24 +2,25 @@ import React from 'react';
 import AddList from './AddList';
 import Button from '../../../components/Button/Button';
 import { Colors } from '../../../utilities/enums';
-import { GiChecklist } from 'react-icons/all';
+import { GiChecklist } from 'react-icons/gi';
+import { MdRefresh } from 'react-icons/md';
 import ReactModal from 'react-modal';
 
-import styles from '../user-dashboard.module.scss';
+import { DashboardHeader, Buttons } from '../UserDashboard.styles';
 
-const DashboardBar = ({ items, onRemoveItem, onAddItem, widgets }) => {
+const DashboardBar = ({ items, onRemoveItem, onAddItem, onResetLayout, widgets }) => {
   const [showWidgetList, setShowWidgetList] = React.useState(false);
 
   ReactModal.setAppElement(document.getElementById('dmsContainer'));
 
   return (
-    <div className={styles.dashboardHeader}>
+    <DashboardHeader>
       <ReactModal
-        className={styles.dashboardModal}
+        className="dashboard-modal"
         isOpen={showWidgetList}
         contentLabel="Minimal Modal Example"
         onRequestClose={() => setShowWidgetList(false)}
-        overlayClassName={styles.dashboardModalOverlay}
+        overlayClassName="dashboard-modal-overlay"
         shouldCloseOnOverlayClick={true}
         shouldCloseOnEsc={true}
         parentSelector={() => document.getElementById('dashboardContainer')}
@@ -35,16 +36,21 @@ const DashboardBar = ({ items, onRemoveItem, onAddItem, widgets }) => {
       <h2>
         Dashboard <small>(Best viewed on wide screens)</small>
       </h2>
-      <div className={styles.buttons}>
+      <Buttons>
         <Button
-          className={styles.listButton}
           color={Colors.transparent}
           title={'Select Widgets'}
           icon={<GiChecklist size={30} />}
           onClick={() => setShowWidgetList(true)}
         />
-      </div>
-    </div>
+        <Button
+          color={Colors.transparent}
+          title={'Reset Layout'}
+          icon={<MdRefresh size={30} />}
+          onClick={onResetLayout}
+        />
+      </Buttons>
+    </DashboardHeader>
   );
 };
 

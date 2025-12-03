@@ -1,7 +1,13 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent } from '../../../../../../../test-utils';
 import ActionForm from '../../../../../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/monster-generator/components/generate-monster/sections/actions/action-forms/ActionForm';
-import * as ReactHookForm from 'react-hook-form';
+
+let mockUseWatchValue = 'attack';
+
+jest.mock('react-hook-form', () => ({
+  ...jest.requireActual('react-hook-form'),
+  useWatch: () => mockUseWatchValue,
+}));
 
 jest.mock('gsap/gsap-core', () => ({
   gsap: {
@@ -44,7 +50,7 @@ describe('ActionForm', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.spyOn(ReactHookForm, 'useWatch').mockReturnValue('attack');
+    mockUseWatchValue = 'attack';
   });
 
   const defaultProps = {
@@ -88,31 +94,31 @@ describe('ActionForm', () => {
   });
 
   it('renders AttackForm when actionType is attack', () => {
-    jest.spyOn(ReactHookForm, 'useWatch').mockReturnValue('attack');
+    mockUseWatchValue = 'attack';
     render(<ActionForm {...defaultProps} />);
     expect(screen.getByTestId('attack-form')).toBeInTheDocument();
   });
 
   it('does not render AttackForm when actionType is not attack', () => {
-    jest.spyOn(ReactHookForm, 'useWatch').mockReturnValue('ability');
+    mockUseWatchValue = 'ability';
     render(<ActionForm {...defaultProps} />);
     expect(screen.queryByTestId('attack-form')).not.toBeInTheDocument();
   });
 
   it('renders SpellcastingForm when actionType is spellCasting', () => {
-    jest.spyOn(ReactHookForm, 'useWatch').mockReturnValue('spellCasting');
+    mockUseWatchValue = 'spellCasting';
     render(<ActionForm {...defaultProps} />);
     expect(screen.getByTestId('spellcasting-form')).toBeInTheDocument();
   });
 
   it('does not render SpellcastingForm when actionType is not spellCasting', () => {
-    jest.spyOn(ReactHookForm, 'useWatch').mockReturnValue('attack');
+    mockUseWatchValue = 'attack';
     render(<ActionForm {...defaultProps} />);
     expect(screen.queryByTestId('spellcasting-form')).not.toBeInTheDocument();
   });
 
   it('sets AbilityForm to readonly when actionType is not ability', () => {
-    jest.spyOn(ReactHookForm, 'useWatch').mockReturnValue('attack');
+    mockUseWatchValue = 'attack';
     render(<ActionForm {...defaultProps} />);
     expect(screen.getByText(/readonly/)).toBeInTheDocument();
   });

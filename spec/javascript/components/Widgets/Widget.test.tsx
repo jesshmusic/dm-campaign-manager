@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent } from '../../test-utils';
 import { MemoryRouter } from 'react-router-dom';
 import Widget from '../../../../app/javascript/bundles/DungeonMasterCampaignManager/components/Widgets/Widget';
 

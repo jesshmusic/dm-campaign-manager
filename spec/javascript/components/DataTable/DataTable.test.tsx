@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen } from '../../test-utils';
 import DataTable from '../../../../app/javascript/bundles/DungeonMasterCampaignManager/components/DataTable/DataTable';
 
 jest.mock('react-icons/all', () => ({

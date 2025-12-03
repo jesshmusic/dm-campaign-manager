@@ -4,7 +4,7 @@ import PageTitle from '../../components/PageTitle/PageTitle';
 import { UserProps } from '../../utilities/types';
 import MonstersTable from '../monsters/MonstersTable';
 import UsersTable from './components/UsersTable';
-import { GiBarbute, GiBlacksmith } from 'react-icons/all';
+import { GiBarbute, GiBlacksmith } from 'react-icons/gi';
 import { FaMap } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import ActionsTable from './components/ActionsTable';
@@ -16,7 +16,7 @@ import { Colors } from '../../utilities/enums';
 
 import packageJson from '../../../../../../package.json';
 
-import styles from './admin-dashboard.module.scss';
+import { Wrapper, Section, InfoContainer } from './AdminDashboard.styles';
 
 const AdminDashboard = (props: {
   actionCount: number;
@@ -36,15 +36,11 @@ const AdminDashboard = (props: {
       }
     >
       <PageTitle title="DM Screen Admin" />
-      <div className={styles.wrapper}>
-        <div className={styles.section}>
+      <Wrapper>
+        <Section>
           <h2>Site Statistics</h2>
-          <div className={`${styles.section} ${styles.infoContainer}`}>
-            <Frame
-              className={styles.infoFrame}
-              style={{ width: '100%', height: '100%' }}
-              title={'Info'}
-            >
+          <InfoContainer>
+            <Frame style={{ width: '100%', height: '100%' }} title={'Info'}>
               <p>
                 <strong>Users:</strong> {userCount}
               </p>
@@ -55,25 +51,21 @@ const AdminDashboard = (props: {
                 <strong>Custom NPCs:</strong> {npcCount}
               </p>
             </Frame>
-            <Frame
-              className={styles.infoFrame}
-              style={{ width: '100%', height: '100%' }}
-              title={'Site'}
-            >
+            <Frame style={{ width: '100%', height: '100%' }} title={'Site'}>
               <p>
                 <strong>Version:</strong> {packageJson.version}
               </p>
             </Frame>
-          </div>
-          <div className={styles.section}>
+          </InfoContainer>
+          <Section>
             <h3>Users</h3>
             <UsersTable />
-          </div>
-        </div>
-        <div className={styles.section}>
+          </Section>
+        </Section>
+        <Section>
           <h2>Content</h2>
 
-          <div className={styles.section}>
+          <Section>
             <h3>
               <FaMap className={'me-2'} /> Foundry Maps
             </h3>
@@ -83,9 +75,9 @@ const AdminDashboard = (props: {
               title="Manage Foundry Maps"
               icon={<FaMap />}
             />
-          </div>
+          </Section>
 
-          <div className={styles.section}>
+          <Section>
             <h3>
               <GiBlacksmith className={'me-2'} /> User Created NPCs
             </h3>
@@ -96,9 +88,9 @@ const AdminDashboard = (props: {
               icon={<GiBarbute />}
             />
             {user ? <MonstersTable user={user} /> : null}
-          </div>
+          </Section>
 
-          <div className={styles.section}>
+          <Section>
             <h3>
               <GiBlacksmith className={'me-2'} /> Widgets
             </h3>
@@ -109,9 +101,9 @@ const AdminDashboard = (props: {
               icon={<GiBarbute />}
             />
             <WidgetsTable />
-          </div>
+          </Section>
 
-          <div className={styles.section}>
+          <Section>
             <h3>
               <GiBlacksmith className={'me-2'} /> Custom Actions
             </h3>
@@ -122,9 +114,9 @@ const AdminDashboard = (props: {
               icon={<GiBarbute />}
             />
             <ActionsTable />
-          </div>
-        </div>
-      </div>
+          </Section>
+        </Section>
+      </Wrapper>
     </PageContainer>
   );
 };

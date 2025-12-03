@@ -64,7 +64,7 @@ const races = createReducer(
           count: state.races.length,
           loading: false,
         };
-      })
+      }),
 );
 
 export default races;

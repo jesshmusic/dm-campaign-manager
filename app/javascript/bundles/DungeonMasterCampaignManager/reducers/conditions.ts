@@ -64,7 +64,7 @@ const conditions = createReducer(
           count: state.conditions.length,
           loading: false,
         };
-      })
+      }),
 );
 
 export default conditions;

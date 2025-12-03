@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen } from '../../test-utils';
 import { MemoryRouter } from 'react-router-dom';
 import InfoBox from '../../../../app/javascript/bundles/DungeonMasterCampaignManager/components/InfoBox/InfoBox';
 
@@ -40,10 +40,9 @@ describe('InfoBox', () => {
   });
 
   it('renders inside Frame component', () => {
-    const { container } = renderWithRouter(
-      <InfoBox monstersCount={1} itemsCount={2} spellsCount={3} />
-    );
-    expect(container.querySelector('[class*="frame"]')).toBeInTheDocument();
+    renderWithRouter(<InfoBox monstersCount={1} itemsCount={2} spellsCount={3} />);
+    // Frame component renders the title as a heading
+    expect(screen.getByText("Dungeon Master's Toolbox")).toBeInTheDocument();
   });
 
   it('renders list group structure', () => {

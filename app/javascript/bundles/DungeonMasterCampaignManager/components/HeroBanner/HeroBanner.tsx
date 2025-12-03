@@ -1,14 +1,16 @@
 import React from 'react';
 import DndLogo from './DMLogo';
 
-import styles from './hero-banner.module.scss';
+import { HeroBannerWrapper, Logo, Title } from './HeroBanner.styles';
 
 const HeroBanner = () => {
   return (
-    <div className={styles.heroBanner}>
-      <DndLogo className={styles.logo} />
-      <div className={styles.title}>Dungeon Master GURU</div>
-    </div>
+    <HeroBannerWrapper>
+      <Logo>
+        <DndLogo />
+      </Logo>
+      <Title>Dungeon Master GURU</Title>
+    </HeroBannerWrapper>
   );
 };
 

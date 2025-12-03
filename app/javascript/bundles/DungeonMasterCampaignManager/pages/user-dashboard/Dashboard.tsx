@@ -10,18 +10,27 @@ import { useDashboardState } from './use-dashboard-state';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
-import styles from './user-dashboard.module.scss';
+import { Section } from './UserDashboard.styles';
 
 const Dashboard = ({ customWidgets, getWidgets }) => {
-  const { allWidgets, layouts, onAddItem, onLayoutChange, onRemoveItem, widgetKeys, widgets } =
-    useDashboardState({ customWidgets, getWidgets });
+  const {
+    allWidgets,
+    layouts,
+    onAddItem,
+    onLayoutChange,
+    onRemoveItem,
+    onResetLayout,
+    widgetKeys,
+    widgets,
+  } = useDashboardState({ customWidgets, getWidgets });
 
   return (
-    <div className={styles.section} id="dashboardContainer">
+    <Section id="dashboardContainer">
       <DashboardBar
         items={widgetKeys}
         onRemoveItem={onRemoveItem}
         onAddItem={onAddItem}
+        onResetLayout={onResetLayout}
         widgets={allWidgets}
       />
       <ResponsiveGridLayout
@@ -31,10 +40,11 @@ const Dashboard = ({ customWidgets, getWidgets }) => {
         breakpoints={{ lg: 1500, md: 1200, sm: 900, xs: 480, xxs: 0 }}
         cols={{ lg: 12, md: 9, sm: 6, xs: 3, xxs: 1 }}
         rowHeight={100}
+        draggableCancel="button, input, textarea, select, a, .no-drag"
         onLayoutChange={onLayoutChange}
       >
         {widgets.map((widget) => (
-          <div key={widget.widgetId} className="widget" data-grid={widget.dataGrid}>
+          <div key={widget.widgetId} className="widget">
             <Widget
               icon={widget.icon}
               widgetId={widget.widgetId}
@@ -48,7 +58,7 @@ const Dashboard = ({ customWidgets, getWidgets }) => {
           </div>
         ))}
       </ResponsiveGridLayout>
-    </div>
+    </Section>
   );
 };
 

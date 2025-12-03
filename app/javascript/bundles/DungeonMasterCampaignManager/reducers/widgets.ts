@@ -130,7 +130,7 @@ const customWidgets = createReducer(
           widgets: state.widgets,
           count: state.count,
         };
-      })
+      }),
 );
 
 export default customWidgets;

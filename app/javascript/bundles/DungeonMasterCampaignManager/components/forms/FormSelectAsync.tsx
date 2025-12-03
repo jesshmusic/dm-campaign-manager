@@ -6,9 +6,8 @@ import React from 'react';
 import AsyncSelect from 'react-select/async';
 import { SelectProps } from './FormSelect';
 import { Controller } from 'react-hook-form';
-import classNames from 'classnames';
 
-import styles from './input.module.scss';
+import { FormWrapper, FormLabel } from './Forms.styles';
 
 // @TODO: Handle required errors
 const FormSelectAsync = ({
@@ -24,10 +23,8 @@ const FormSelectAsync = ({
   menuPlacement = 'auto',
 }: SelectProps) => {
   return (
-    <div className={classNames(className, styles.wrapper)}>
-      <label htmlFor={name} className={styles.label}>
-        {label}
-      </label>
+    <FormWrapper className={className}>
+      <FormLabel htmlFor={name}>{label}</FormLabel>
       <Controller
         control={control}
         name={name}
@@ -47,7 +44,7 @@ const FormSelectAsync = ({
           />
         )}
       />
-    </div>
+    </FormWrapper>
   );
 };
 

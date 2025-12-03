@@ -172,7 +172,7 @@ const monsters = createReducer(
           currentMonster: state.currentMonster,
           loading: false,
         };
-      })
+      }),
 );
 
 export default monsters;

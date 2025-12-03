@@ -3,7 +3,7 @@ import { DndClass } from '../../../utilities/types';
 import { buildData, buildLevelColumns } from '../services';
 import DataTable from '../../../components/DataTable/DataTable';
 
-import styles from '../dnd-class.module.scss';
+import { TableContainer } from '../DndClass.styles';
 
 const ClassLevelsTable = (props: { dndClass: DndClass }) => {
   const { dndClass } = props;
@@ -12,7 +12,7 @@ const ClassLevelsTable = (props: { dndClass: DndClass }) => {
   const data = React.useMemo(() => buildData(dndClass.levels), [dndClass.levels]);
 
   return (
-    <div className={styles.tableContainer}>
+    <TableContainer>
       <DataTable
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         columns={columns as any}
@@ -22,7 +22,7 @@ const ClassLevelsTable = (props: { dndClass: DndClass }) => {
         noHover
         results={data.length}
       />
-    </div>
+    </TableContainer>
   );
 };
 

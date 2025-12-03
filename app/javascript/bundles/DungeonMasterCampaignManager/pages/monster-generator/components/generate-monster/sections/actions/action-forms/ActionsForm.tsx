@@ -11,7 +11,7 @@ import { Colors } from '../../../../../../../utilities/enums';
 import '../../../../../../../components/forms/inputOverrides.scss';
 import ActionForm from './ActionForm';
 import { abilityOptions } from './SpellcastingForm';
-import { GiMagicPalm } from 'react-icons/all';
+import { GiMagicPalm } from 'react-icons/gi';
 
 const ActionsForm = (props: ActionFormComponentProps) => {
   const {

@@ -4,6 +4,7 @@
     "max-nesting-depth": 8,
     "selector-max-compound-selectors": 10,
     "scss/at-extend-no-missing-placeholder": null,
+    "scss/dollar-variable-colon-space-after": null,
     "selector-class-pattern": null,
     "selector-no-qualifying-type": null,
     "declaration-property-value-disallowed-list": null

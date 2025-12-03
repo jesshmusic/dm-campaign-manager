@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '../../test-utils';
 import AdventureHookWidget from '../../../../app/javascript/bundles/DungeonMasterCampaignManager/components/Widgets/AdventureHookWidget';
 import axios from 'axios';
 

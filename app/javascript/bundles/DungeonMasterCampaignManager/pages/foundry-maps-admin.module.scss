@@ -1,3 +1,4 @@
+@use 'sass:color';
 @import '../stylesheets/variables';
 
 .contentWrapper {
@@ -171,7 +172,7 @@
 
   tbody {
     tr {
-      border-bottom: $border-width solid lighten($ash, 50%);
+      border-bottom: $border-width solid color.adjust($ash, $lightness: 50%);
 
       &:last-child {
         border-bottom: none;
@@ -212,7 +213,7 @@
 }
 
 .tag {
-  background-color: lighten($cobalt, 35%);
+  background-color: color.adjust($cobalt, $lightness: 35%);
   border-radius: $border-radius-sm;
   color: $cobalt;
   font-family: $font-family-sans-serif;
@@ -228,12 +229,12 @@
   text-transform: capitalize;
 
   &.premium {
-    background-color: lighten($yellow, 20%);
-    color: darken($yellow, 30%);
+    background-color: color.adjust($yellow, $lightness: 20%);
+    color: color.adjust($yellow, $lightness: -30%);
   }
 
   &.free {
-    background-color: lighten($green, 45%);
+    background-color: color.adjust($green, $lightness: 45%);
     color: $green;
   }
 }
@@ -248,11 +249,11 @@
   transition: $transition-base;
 
   &.published {
-    background-color: lighten($green, 45%);
+    background-color: color.adjust($green, $lightness: 45%);
     color: $green;
 
     &:hover {
-      background-color: lighten($green, 40%);
+      background-color: color.adjust($green, $lightness: 40%);
     }
   }
 
@@ -320,16 +321,16 @@
   transition: $transition-base;
 
   &:hover {
-    background-color: lighten($pine-green, 50%);
-    color: darken($pine-green, 10%);
+    background-color: color.adjust($pine-green, $lightness: 50%);
+    color: color.adjust($pine-green, $lightness: -10%);
   }
 
   &.editIcon {
     color: $cobalt;
 
     &:hover {
-      background-color: lighten($cobalt, 45%);
-      color: darken($cobalt, 10%);
+      background-color: color.adjust($cobalt, $lightness: 45%);
+      color: color.adjust($cobalt, $lightness: -10%);
     }
   }
 
@@ -337,8 +338,8 @@
     color: $blood-red;
 
     &:hover {
-      background-color: lighten($blood-red, 45%);
-      color: darken($blood-red, 10%);
+      background-color: color.adjust($blood-red, $lightness: 45%);
+      color: color.adjust($blood-red, $lightness: -10%);
     }
   }
 
@@ -346,8 +347,8 @@
     color: $green;
 
     &:hover {
-      background-color: lighten($green, 45%);
-      color: darken($green, 10%);
+      background-color: color.adjust($green, $lightness: 45%);
+      color: color.adjust($green, $lightness: -10%);
     }
   }
 
@@ -388,7 +389,7 @@
 
 .modalHeader {
   align-items: center;
-  border-bottom: $border-width solid lighten($ash, 50%);
+  border-bottom: $border-width solid color.adjust($ash, $lightness: 50%);
   display: flex;
   justify-content: space-between;
   padding: $spacer * 1.5;
@@ -422,16 +423,16 @@
   transition: $transition-base;
 
   &:hover {
-    background-color: lighten($cobalt, 45%);
-    color: darken($cobalt, 10%);
+    background-color: color.adjust($cobalt, $lightness: 45%);
+    color: color.adjust($cobalt, $lightness: -10%);
   }
 
   &.deleteIcon {
     color: $blood-red;
 
     &:hover {
-      background-color: lighten($blood-red, 45%);
-      color: darken($blood-red, 10%);
+      background-color: color.adjust($blood-red, $lightness: 45%);
+      color: color.adjust($blood-red, $lightness: -10%);
     }
   }
 }
@@ -468,7 +469,7 @@
 }
 
 .thumbnailWrapper {
-  border: $border-width solid lighten($ash, 50%);
+  border: $border-width solid color.adjust($ash, $lightness: 50%);
   border-radius: $border-radius-sm;
   overflow: hidden;
 
@@ -535,7 +536,7 @@
   padding: $spacer * 0.25 $spacer * 0.5;
 
   &.published {
-    background-color: lighten($green, 45%);
+    background-color: color.adjust($green, $lightness: 45%);
     color: $green;
   }
 
@@ -547,8 +548,8 @@
 
 // Files Section
 .existingFilesSection {
-  background-color: lighten($background-med, 3%);
-  border: $border-width solid lighten($ash, 50%);
+  background-color: color.adjust($background-med, $lightness: 3%);
+  border: $border-width solid color.adjust($ash, $lightness: 50%);
   border-radius: $border-radius;
   margin-top: $spacer;
   padding: $spacer;
@@ -634,8 +635,8 @@
 
 // Instructions Box
 .instructionsBox {
-  background-color: lighten($background-med, 5%);
-  border: $border-width solid lighten($ash, 50%);
+  background-color: color.adjust($background-med, $lightness: 5%);
+  border: $border-width solid color.adjust($ash, $lightness: 50%);
   border-radius: $border-radius;
   font-family: $font-family-sans-serif;
   margin: $spacer 0;
@@ -751,7 +752,7 @@
   transition: $transition-base;
 
   &:hover {
-    color: darken($green, 10%);
+    color: color.adjust($green, $lightness: -10%);
     text-decoration: underline;
   }
 }
@@ -775,7 +776,7 @@
   margin-top: $spacer;
 
   img {
-    border: $border-width solid lighten($ash, 50%);
+    border: $border-width solid color.adjust($ash, $lightness: 50%);
     border-radius: $border-radius-sm;
   }
 }

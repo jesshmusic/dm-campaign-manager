@@ -4,14 +4,14 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { GiTwoHandedSword } from 'react-icons/all';
+import { GiTwoHandedSword } from 'react-icons/gi';
 
-import styles from './breadcrumbs.module.scss';
+import { BreadcrumbItem } from './Breadcrumbs.styles';
 
 const BreadcrumbLink = (props: { to: string; title: string }) => (
-  <li className={styles.breadcrumbItem}>
+  <BreadcrumbItem>
     {props.to !== '/' && <GiTwoHandedSword />} <Link to={props.to}>{props.title}</Link>
-  </li>
+  </BreadcrumbItem>
 );
 
 export default BreadcrumbLink;

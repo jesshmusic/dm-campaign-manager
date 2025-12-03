@@ -31,7 +31,7 @@ export const generateAttackDesc = async (
   actionFields: MonsterActionField,
   attackBonus: number,
   profBonus: number,
-  damageBonus: number
+  damageBonus: number,
 ): Promise<string> => {
   const result = await axios.post<DescParams, { data: { desc: string } }>(
     '/v1/generate_action_desc',
@@ -43,7 +43,7 @@ export const generateAttackDesc = async (
         profBonus,
         damageBonus,
       }),
-    }
+    },
   );
   return result.data.desc;
 };
@@ -162,7 +162,7 @@ export const useData = (props: GenerateMonsterProps) => {
         action,
         attackBonus,
         profBonus,
-        damageBonus
+        damageBonus,
       );
       UseForm.setValue(`actions.${index}.desc`, newDesc);
     }
@@ -209,7 +209,7 @@ export const useData = (props: GenerateMonsterProps) => {
         UseForm.setValue(
           'hitPoints',
           hitPoints(fields.constitution, fields.hitDiceNumber, fields.hitDiceValue),
-          { shouldDirty: true }
+          { shouldDirty: true },
         );
         setActionDesc(fields, attackBonus, profBonus);
         handleCalculateCR();
@@ -238,7 +238,7 @@ export const useData = (props: GenerateMonsterProps) => {
         UseForm.setValue(
           'hitPoints',
           hitPoints(fields.constitution, fields.hitDiceNumber, fields.hitDiceValue),
-          { shouldDirty: true, shouldTouch: true }
+          { shouldDirty: true, shouldTouch: true },
         );
         setActionDesc(fields, attackBonus, profBonus);
         handleCalculateCR();
@@ -248,7 +248,7 @@ export const useData = (props: GenerateMonsterProps) => {
         UseForm.setValue(
           'hitPoints',
           hitPoints(fields.constitution, fields.hitDiceNumber, fields.hitDiceValue),
-          { shouldDirty: true, shouldTouch: true }
+          { shouldDirty: true, shouldTouch: true },
         );
         UseForm.setValue('hitDice', `${fields.hitDiceNumber}${fields.hitDiceValue}`);
         setActionDesc(fields, attackBonus, profBonus);
@@ -258,7 +258,7 @@ export const useData = (props: GenerateMonsterProps) => {
         UseForm.setValue(
           'hitPoints',
           hitPoints(fields.constitution, fields.hitDiceNumber, fields.hitDiceValue),
-          { shouldDirty: true, shouldTouch: true }
+          { shouldDirty: true, shouldTouch: true },
         );
         UseForm.setValue('hitDice', `${fields.hitDiceNumber}${fields.hitDiceValue}`);
         setActionDesc(fields, attackBonus, profBonus);
@@ -271,28 +271,28 @@ export const useData = (props: GenerateMonsterProps) => {
       case 'conditionImmunitiesOptions':
         UseForm.setValue(
           'conditionImmunities',
-          fields.conditionImmunitiesOptions.map((resistance) => resistance.label)
+          fields.conditionImmunitiesOptions.map((resistance) => resistance.label),
         );
         handleCalculateCR();
         break;
       case 'damageResistancesOptions':
         UseForm.setValue(
           'damageResistances',
-          fields.damageResistancesOptions.map((resistance) => resistance.label)
+          fields.damageResistancesOptions.map((resistance) => resistance.label),
         );
         handleCalculateCR();
         break;
       case 'damageImmunitiesOptions':
         UseForm.setValue(
           'damageImmunities',
-          fields.damageImmunitiesOptions.map((resistance) => resistance.label)
+          fields.damageImmunitiesOptions.map((resistance) => resistance.label),
         );
         handleCalculateCR();
         break;
       case 'damageVulnerabilitiesOptions':
         UseForm.setValue(
           'damageVulnerabilities',
-          fields.damageVulnerabilitiesOptions.map((resistance) => resistance.label)
+          fields.damageVulnerabilitiesOptions.map((resistance) => resistance.label),
         );
         handleCalculateCR();
         break;
@@ -314,7 +314,7 @@ export const useData = (props: GenerateMonsterProps) => {
             action,
             attackBonus,
             profBonus,
-            fields.damageBonus as number
+            fields.damageBonus as number,
           );
           UseForm.setValue(`actions.${actionIndex}.desc`, newDesc);
           handleCalculateCR();
@@ -322,13 +322,13 @@ export const useData = (props: GenerateMonsterProps) => {
         if (fieldName === `actions.${actionIndex}.damage.diceValueOption` && action.damage) {
           UseForm.setValue(
             `actions.${actionIndex}.damage.diceValue`,
-            action.damage.diceValueOption.value as number
+            action.damage.diceValueOption.value as number,
           );
         }
         if (fieldName === `actions.${actionIndex}.spellCasting.abilityOption`) {
           UseForm.setValue(
             `actions.${actionIndex}.spellCasting.ability`,
-            fields.actions[actionIndex].spellCasting!.abilityOption.label
+            fields.actions[actionIndex].spellCasting!.abilityOption.label,
           );
         }
       }
@@ -340,7 +340,7 @@ export const useData = (props: GenerateMonsterProps) => {
         if (fieldName === `senses.${senseIndex}.nameOption`) {
           UseForm.setValue(
             `senses.${senseIndex}.name`,
-            fields.senses[senseIndex].nameOption!.label
+            fields.senses[senseIndex].nameOption!.label,
           );
         }
       }
@@ -352,7 +352,7 @@ export const useData = (props: GenerateMonsterProps) => {
         if (fieldName === `speeds.${speedIndex}.nameOption`) {
           UseForm.setValue(
             `speeds.${speedIndex}.name`,
-            fields.speeds[speedIndex].nameOption!.label
+            fields.speeds[speedIndex].nameOption!.label,
           );
         }
       }

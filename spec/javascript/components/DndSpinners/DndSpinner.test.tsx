@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen } from '../../test-utils';
 import DndSpinner from '../../../../app/javascript/bundles/DungeonMasterCampaignManager/components/DndSpinners/DndSpinner';
 
 jest.mock('react-icons/all', () => ({
@@ -35,15 +35,15 @@ describe('DndSpinner', () => {
   });
 
   it('renders without table frame when showTableFrame is false', () => {
-    const { container } = render(<DndSpinner showTableFrame={false} />);
+    render(<DndSpinner showTableFrame={false} />);
     expect(screen.queryByTestId('table-frame')).not.toBeInTheDocument();
-    expect(container.querySelector('.noFrame')).toBeInTheDocument();
+    expect(screen.getByTestId('linked-rings-icon')).toBeInTheDocument();
   });
 
   it('renders without table frame by default', () => {
-    const { container } = render(<DndSpinner />);
+    render(<DndSpinner />);
     expect(screen.queryByTestId('table-frame')).not.toBeInTheDocument();
-    expect(container.querySelector('.noFrame')).toBeInTheDocument();
+    expect(screen.getByTestId('linked-rings-icon')).toBeInTheDocument();
   });
 
   it('renders text when provided', () => {
@@ -79,5 +79,25 @@ describe('DndSpinner', () => {
     render(<DndSpinner text="Test" />);
     const heading = screen.getByText('Test');
     expect(heading).toHaveStyle({ marginLeft: '10px' });
+  });
+
+  it('renders overlay wrapper when overlay is true', () => {
+    const { container } = render(<DndSpinner overlay text="Loading..." />);
+    // The overlay wrapper should have absolute positioning
+    const wrapper = container.firstChild as HTMLElement;
+    expect(wrapper).toHaveStyle({ position: 'absolute' });
+  });
+
+  it('renders text with marginTop in overlay mode', () => {
+    render(<DndSpinner overlay text="Overlay text" />);
+    const heading = screen.getByText('Overlay text');
+    expect(heading).toHaveStyle({ marginTop: '10px' });
+  });
+
+  it('renders overlay without table frame when only overlay is set', () => {
+    const { container } = render(<DndSpinner overlay />);
+    expect(screen.queryByTestId('table-frame')).not.toBeInTheDocument();
+    const wrapper = container.firstChild as HTMLElement;
+    expect(wrapper).toHaveStyle({ position: 'absolute' });
   });
 });

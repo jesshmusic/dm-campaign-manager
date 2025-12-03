@@ -1,7 +1,25 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent } from '../../../../../../test-utils';
 import SpeedsForm from '../../../../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/monster-generator/components/generate-monster/sections/speeds/SpeedsForm';
-import * as ReactHookForm from 'react-hook-form';
+
+const mockAppend = jest.fn();
+const mockRemove = jest.fn();
+const mockFields: any[] = [];
+
+jest.mock('react-hook-form', () => ({
+  ...jest.requireActual('react-hook-form'),
+  useFieldArray: () => ({
+    fields: mockFields,
+    append: mockAppend,
+    remove: mockRemove,
+    prepend: jest.fn(),
+    insert: jest.fn(),
+    swap: jest.fn(),
+    move: jest.fn(),
+    update: jest.fn(),
+    replace: jest.fn(),
+  }),
+}));
 
 jest.mock('../../../../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/monster-generator/components/generate-monster/sections/speeds/SpeedForm', () => {
   return function MockSpeedForm({ speedIndex, remove }: any) {
@@ -20,23 +38,11 @@ jest.mock('../../../../../../../../app/javascript/bundles/DungeonMasterCampaignM
 });
 
 describe('SpeedsForm', () => {
-  const mockAppend = jest.fn();
-  const mockRemove = jest.fn();
   const mockTrigger = jest.fn();
 
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.spyOn(ReactHookForm, 'useFieldArray').mockReturnValue({
-      fields: [],
-      append: mockAppend,
-      remove: mockRemove,
-      prepend: jest.fn(),
-      insert: jest.fn(),
-      swap: jest.fn(),
-      move: jest.fn(),
-      update: jest.fn(),
-      replace: jest.fn(),
-    });
+    mockFields.length = 0;
   });
 
   const defaultProps = {
@@ -72,20 +78,10 @@ describe('SpeedsForm', () => {
   });
 
   it('renders SpeedForm for each field', () => {
-    jest.spyOn(ReactHookForm, 'useFieldArray').mockReturnValue({
-      fields: [
-        { id: '1', nameOption: {}, name: 'walk', value: '30' },
-        { id: '2', nameOption: {}, name: 'fly', value: '60' },
-      ] as any,
-      append: mockAppend,
-      remove: mockRemove,
-      prepend: jest.fn(),
-      insert: jest.fn(),
-      swap: jest.fn(),
-      move: jest.fn(),
-      update: jest.fn(),
-      replace: jest.fn(),
-    });
+    mockFields.push(
+      { id: '1', nameOption: {}, name: 'walk', value: '30' },
+      { id: '2', nameOption: {}, name: 'fly', value: '60' }
+    );
 
     render(<SpeedsForm {...defaultProps} />);
     expect(screen.getByTestId('speed-form-0')).toBeInTheDocument();
@@ -93,17 +89,7 @@ describe('SpeedsForm', () => {
   });
 
   it('calls remove when SpeedForm remove is clicked', () => {
-    jest.spyOn(ReactHookForm, 'useFieldArray').mockReturnValue({
-      fields: [{ id: '1', nameOption: {}, name: 'walk', value: '30' }] as any,
-      append: mockAppend,
-      remove: mockRemove,
-      prepend: jest.fn(),
-      insert: jest.fn(),
-      swap: jest.fn(),
-      move: jest.fn(),
-      update: jest.fn(),
-      replace: jest.fn(),
-    });
+    mockFields.push({ id: '1', nameOption: {}, name: 'walk', value: '30' });
 
     render(<SpeedsForm {...defaultProps} />);
     const removeButton = screen.getByText('Remove 0');

@@ -2,7 +2,7 @@ import React from 'react';
 import { ControlledInput } from '../../../../../../../components/forms/ControllerInput';
 import { Control, FieldErrors, FieldValues } from 'react-hook-form';
 
-import styles from './action-form.module.scss';
+import { SubformWrapper, ActionCol } from '../../../../../MonsterGenerator.styles';
 
 const AbilityForm = (props: {
   fieldName: string;
@@ -12,17 +12,18 @@ const AbilityForm = (props: {
 }) => {
   const { fieldName, errors, control, readOnly } = props;
   return (
-    <div className={styles.subformWrapper}>
-      <ControlledInput
-        className={styles.actionCol}
-        fieldName={`${fieldName}.desc`}
-        errors={errors}
-        control={control}
-        readOnly={readOnly}
-        isTextArea={true}
-        label="Description"
-      />
-    </div>
+    <SubformWrapper>
+      <ActionCol>
+        <ControlledInput
+          fieldName={`${fieldName}.desc`}
+          errors={errors}
+          control={control}
+          readOnly={readOnly}
+          isTextArea={true}
+          label="Description"
+        />
+      </ActionCol>
+    </SubformWrapper>
   );
 };
 

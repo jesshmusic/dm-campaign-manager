@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen } from '../test-utils';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import { MemoryRouter } from 'react-router-dom';
@@ -14,6 +14,8 @@ jest.mock('gsap', () => ({
   gsap: {
     from: jest.fn(),
     to: jest.fn(),
+    set: jest.fn(),
+    killTweensOf: jest.fn(),
   },
 }));
 

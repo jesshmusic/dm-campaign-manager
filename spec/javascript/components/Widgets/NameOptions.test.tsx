@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent } from '../../test-utils';
 import NameOptions from '../../../../app/javascript/bundles/DungeonMasterCampaignManager/components/Widgets/NameOptions';
 
 jest.mock('react-select', () => {

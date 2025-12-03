@@ -33,7 +33,7 @@ const search = createReducer(
           count: state.results.length,
           loading: false,
         };
-      })
+      }),
 );
 
 export default search;

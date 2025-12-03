@@ -1,6 +1,6 @@
 import { describe, it, expect, jest, beforeEach } from '@jest/globals';
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '../test-utils';
 import '@testing-library/jest-dom';
 import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router-dom';
@@ -26,20 +26,24 @@ const mockUseAuth0 = useAuth0 as jest.MockedFunction<typeof useAuth0>;
 // Note: react-icons are mocked globally via moduleNameMapper in jest.config.js
 // See spec/javascript/__mocks__/reactIconsMock.js
 
-// Mock react-pro-sidebar components
+// Mock react-pro-sidebar components (v1.x API)
 jest.mock('react-pro-sidebar', () => ({
-  ProSidebar: ({ children, collapsed, image }: any) => (
+  Sidebar: ({ children, collapsed, image }: any) => (
     <div data-testid="pro-sidebar" data-collapsed={collapsed} data-image={image}>
       {children}
     </div>
   ),
-  SidebarContent: ({ children }: any) => <div data-testid="sidebar-content">{children}</div>,
-  SidebarFooter: ({ children }: any) => <div data-testid="sidebar-footer">{children}</div>,
-  Menu: ({ children, iconShape }: any) => <div data-testid="menu" data-icon-shape={iconShape}>{children}</div>,
-  MenuItem: ({ children, icon }: any) => <div data-testid="menu-item">{icon}{children}</div>,
-  SubMenu: ({ children, title, icon }: any) => (
-    <div data-testid="submenu" data-title={title}>
-      {icon}{title}{children}
+  Menu: ({ children, menuItemStyles }: any) => <div data-testid="menu">{children}</div>,
+  MenuItem: ({ children, icon, onClick, component }: any) => {
+    if (component) {
+      // Handle external links (component prop contains the anchor)
+      return <div data-testid="menu-item">{icon}{children}</div>;
+    }
+    return <button data-testid="menu-item" onClick={onClick}>{icon}{children}</button>;
+  },
+  SubMenu: ({ children, label, icon, open, onOpenChange }: any) => (
+    <div data-testid="submenu" data-title={label} data-open={open}>
+      {icon}{label}{children}
     </div>
   ),
 }));

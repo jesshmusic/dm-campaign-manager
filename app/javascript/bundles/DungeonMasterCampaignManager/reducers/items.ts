@@ -55,7 +55,7 @@ const items = createReducer(
           currentItem: null,
           loading: false,
         };
-      })
+      }),
 );
 
 export default items;

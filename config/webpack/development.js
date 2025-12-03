@@ -1,22 +1,27 @@
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
+const { devServer, merge } = require('shakapacker');
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
-const environment = require('./environment');
+const webpackConfig = require('./environment');
+
 const isWebpackDevServer = process.env.WEBPACK_DEV_SERVER;
 
-const config = environment.toWebpackConfig();
-config.output.filename = 'js/[name]-[hash].js';
+let developmentConfig = {
+  output: {
+    filename: 'js/[name]-[contenthash].js',
+  },
+};
 
-//plugins
 if (isWebpackDevServer) {
-  environment.plugins.append(
-    'ReactRefreshWebpackPlugin',
-    new ReactRefreshWebpackPlugin({
-      overlay: {
-        sockPort: 8080
-      }
-    })
-  );
+  developmentConfig = merge(developmentConfig, {
+    plugins: [
+      new ReactRefreshWebpackPlugin({
+        overlay: {
+          sockPort: devServer.port,
+        },
+      }),
+    ],
+  });
 }
 
-module.exports = environment.toWebpackConfig();
+module.exports = merge(webpackConfig, developmentConfig);

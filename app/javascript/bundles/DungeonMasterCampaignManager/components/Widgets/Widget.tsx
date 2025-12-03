@@ -3,7 +3,7 @@ import Frame from '../Frame/Frame';
 import CloseButton from '../Button/CloseButton';
 import { SelectIconOption } from '../../utilities/types';
 
-import styles from './widgets.module.scss';
+import { WidgetWrapper } from './Widgets.styles';
 
 export type WidgetProps = {
   id?: number;
@@ -40,16 +40,17 @@ const Widget = ({
   hideFrame,
 }: WidgetElementProps) => {
   return (
-    <Frame
-      className={styles.widget}
-      icon={icon}
-      style={{ width: '100%', height: '100%' }}
-      title={title}
-      subtitle={subtitle}
-      actionButton={<CloseButton onClick={() => onRemoveItem(widgetId)} />}
-    >
-      <Item hideFrame={hideFrame} content={content} />
-    </Frame>
+    <WidgetWrapper>
+      <Frame
+        icon={icon}
+        style={{ width: '100%', height: '100%' }}
+        title={title}
+        subtitle={subtitle}
+        actionButton={<CloseButton onClick={() => onRemoveItem(widgetId)} />}
+      >
+        <Item hideFrame={hideFrame} content={content} />
+      </Frame>
+    </WidgetWrapper>
   );
 };
 

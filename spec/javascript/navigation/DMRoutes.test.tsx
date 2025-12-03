@@ -1,6 +1,6 @@
 import { describe, it, expect, jest, beforeEach } from '@jest/globals';
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen } from '../test-utils';
 import { MemoryRouter } from 'react-router-dom';
 import DMRoutes from '../../../app/javascript/bundles/DungeonMasterCampaignManager/navigation/DMRoutes';
 

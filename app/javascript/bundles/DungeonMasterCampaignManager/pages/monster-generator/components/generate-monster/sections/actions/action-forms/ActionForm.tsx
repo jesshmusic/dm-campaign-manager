@@ -9,7 +9,12 @@ import AttackForm from './AttackForm';
 import { ActionTypes } from '../../../../../../../utilities/types';
 import SpellcastingForm from './SpellcastingForm';
 
-import styles from './action-form.module.scss';
+import {
+  ActionContainer,
+  ActionWrapper,
+  ActionCol,
+  ActionContent,
+} from '../../../../../MonsterGenerator.styles';
 
 const ActionForm = (props: {
   actionIndex?: number;
@@ -28,15 +33,16 @@ const ActionForm = (props: {
   });
 
   return (
-    <div className={styles.actionContainer}>
-      <div className={styles.actionWrapper}>
-        <ControlledInput
-          fieldName={`${fieldNamePrefix}name`}
-          errors={errors}
-          className={styles.actionCol}
-          control={control}
-          label="Name"
-        />
+    <ActionContainer>
+      <ActionWrapper>
+        <ActionCol>
+          <ControlledInput
+            fieldName={`${fieldNamePrefix}name`}
+            errors={errors}
+            control={control}
+            label="Name"
+          />
+        </ActionCol>
         {remove ? (
           <Button
             type="button"
@@ -47,8 +53,8 @@ const ActionForm = (props: {
             title="Remove Action"
           />
         ) : null}
-      </div>
-      <div id={`actionContent${actionIndex}`} className={styles.actionContent}>
+      </ActionWrapper>
+      <ActionContent id={`actionContent${actionIndex}`}>
         <AbilityForm
           control={control}
           errors={errors}
@@ -69,8 +75,8 @@ const ActionForm = (props: {
             fieldName={actionIndex ? `${fieldName}.${actionIndex}` : fieldName}
           />
         )}
-      </div>
-    </div>
+      </ActionContent>
+    </ActionContainer>
   );
 };
 

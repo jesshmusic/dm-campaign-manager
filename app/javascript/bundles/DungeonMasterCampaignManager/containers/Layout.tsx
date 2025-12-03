@@ -9,7 +9,8 @@ import Footer from '../components/Footer/Footer';
 import rest from '../api/api';
 import DMRoutes from '../navigation/DMRoutes';
 
-import styles from './layout.module.scss';
+import { AppContainer } from './Containers.styles';
+
 gsap.registerPlugin(ScrollToPlugin);
 
 const Layout = (props) => {
@@ -41,11 +42,11 @@ const Layout = (props) => {
   };
 
   return (
-    <div className={styles.appContainer} ref={parentNode}>
+    <AppContainer ref={parentNode}>
       <HeroBanner />
       <DMRoutes {...combinedProps} />
       <Footer user={combinedProps.user} />
-    </div>
+    </AppContainer>
   );
 };
 
@@ -71,8 +72,8 @@ const mapDispatchToProps = (dispatch) => {
           {
             body: JSON.stringify({ user: currentUser }),
             token,
-          }
-        )
+          },
+        ),
       );
     },
   };

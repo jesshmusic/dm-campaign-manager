@@ -5,32 +5,30 @@ import { MonsterGeneratorFormFields } from '../../../../utilities/types';
 import { FieldErrors, FieldValues, UseFormRegister } from 'react-hook-form';
 import { diceOptions } from '../../../../utilities/character-utilities';
 
-import styles from './dice-fields.module.scss';
+import { DiceContainer, DieCount } from '../../MonsterGenerator.styles';
 
 const DiceFields = (props: {
   countName: keyof MonsterGeneratorFormFields;
   dieName: keyof MonsterGeneratorFormFields;
-  className: string;
+  className?: string;
   errors: FieldErrors;
   register: UseFormRegister<FieldValues>;
 }) => {
   return (
-    <div className={`${props.className} ${styles.container}`}>
-      <FormField
-        label={'Count'}
-        className={styles.dieCount}
-        errors={props.errors}
-        register={props.register}
-        type={'number'}
-        name={props.countName}
-      />
-      <FormSelect
-        label={'Dice'}
-        name={props.dieName}
-        className={styles.dieCount}
-        options={diceOptions}
-      />
-    </div>
+    <DiceContainer className={props.className}>
+      <DieCount>
+        <FormField
+          label={'Count'}
+          errors={props.errors}
+          register={props.register}
+          type={'number'}
+          name={props.countName}
+        />
+      </DieCount>
+      <DieCount>
+        <FormSelect label={'Dice'} name={props.dieName} options={diceOptions} />
+      </DieCount>
+    </DiceContainer>
   );
 };
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent } from '../../test-utils';
 import AdventureHookOptions from '../../../../app/javascript/bundles/DungeonMasterCampaignManager/components/Widgets/AdventureHookOptions';
 
 jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/components/Button/Button', () => {

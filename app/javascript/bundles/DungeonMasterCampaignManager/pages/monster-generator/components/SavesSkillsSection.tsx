@@ -4,7 +4,7 @@ import FormSelectAsync from '../../../components/forms/FormSelectAsync';
 import { filterOptionsWithData } from '../../../utilities/character-utilities';
 import axios from 'axios';
 
-import styles from './generator.module.scss';
+import { TwoCol } from '../MonsterGenerator.styles';
 
 const SavesSkillsSection = (props: { UseForm: UseFormReturn<FieldValues> }) => {
   const { UseForm } = props;
@@ -30,7 +30,7 @@ const SavesSkillsSection = (props: { UseForm: UseFormReturn<FieldValues> }) => {
   };
 
   return (
-    <div className={styles.twoCol}>
+    <TwoCol>
       <FormSelectAsync
         label="Saving Throws"
         name="savingThrowOptions"
@@ -45,7 +45,7 @@ const SavesSkillsSection = (props: { UseForm: UseFormReturn<FieldValues> }) => {
         getOptions={getSkills}
         isMulti
       />
-    </div>
+    </TwoCol>
   );
 };
 

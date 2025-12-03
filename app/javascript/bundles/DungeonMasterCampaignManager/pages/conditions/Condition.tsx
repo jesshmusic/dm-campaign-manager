@@ -7,7 +7,7 @@ import rest from '../../api/api';
 import { connect } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-import styles from './conditions.module.scss';
+import { ConditionWrapper, Description } from './Conditions.styles';
 
 const Condition = (props: {
   condition: ConditionProps;
@@ -29,14 +29,14 @@ const Condition = (props: {
       description={`Condition: ${conditionTitle}. Dungeon Master's Toolbox is a free resource for DMs to manage their dndClasses, adventures, and Monsters.`}
     >
       {condition ? (
-        <div className={styles.condition}>
+        <ConditionWrapper>
           <PageTitle title={conditionTitle} />
-          <ul className={styles.description}>
+          <Description>
             {condition.description.map((desc, index) => (
               <li key={index}>{desc}</li>
             ))}
-          </ul>
-        </div>
+          </Description>
+        </ConditionWrapper>
       ) : (
         <DndSpinner />
       )}

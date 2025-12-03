@@ -34,7 +34,7 @@
           <td><%= item.type.chomp('Item') %></td>
           <td><%= item.category.titleize %></td>
           <td>
-            <%= "#{item.cost.quantity.to_s(:delimited)} #{item.cost.unit.upcase}" unless item.cost.nil? %>
+            <%= "#{number_with_delimiter(item.cost.quantity)} #{item.cost.unit.upcase}" unless item.cost.nil? %>
           </td>
           <td><%= item.weight || '-' %></td>
           <td>

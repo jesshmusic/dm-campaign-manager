@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent } from '../../../test-utils';
 import AddList from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/user-dashboard/components/AddList';
 
 jest.mock('../../../../../app/javascript/bundles/DungeonMasterCampaignManager/components/Button/CloseButton', () => {

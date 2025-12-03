@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent } from '../../test-utils';
 import { useForm } from 'react-hook-form';
 import { ControllerInput, ControlledInput, TagInput } from '../../../../app/javascript/bundles/DungeonMasterCampaignManager/components/forms/ControllerInput';
 

@@ -10,7 +10,7 @@ export const addMessage = (
   id: number,
   messageType: FlashMessageType,
   heading: string,
-  text: string
+  text: string,
 ) => {
   addFlashMessage({
     id,
@@ -55,7 +55,7 @@ const flashErrorMessage = (state, action) => [
 const flashSuccessMessage = (
   state: FlashMessage[],
   message: string,
-  heading: string
+  heading: string,
 ): FlashMessage[] => [
   {
     id: Date.now(),
@@ -92,7 +92,7 @@ const flashMessages = createReducer([] as FlashMessage[], (builder) =>
       return flashSuccessMessage(
         state,
         'User signed in successfully',
-        `Welcome, ${action.data.name}`
+        `Welcome, ${action.data.name}`,
       );
     })
     .addCase(loginFailed, (state, action: AnyAction) => {
@@ -132,7 +132,7 @@ const flashMessages = createReducer([] as FlashMessage[], (builder) =>
     })
     .addCase(updateWidgetSuccess, (state, _action: AnyAction) => {
       return flashSuccessMessage(state, 'Widget Updated Successfully', `Saved`);
-    })
+    }),
 );
 
 export default flashMessages;

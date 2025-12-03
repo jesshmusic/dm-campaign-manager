@@ -48,7 +48,7 @@ const Spells = (props: {
         accessor: 'classesString',
       },
     ],
-    []
+    [],
   );
 
   const data = React.useMemo(() => {

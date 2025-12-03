@@ -1,13 +1,12 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { render } from '../../test-utils';
 import NotesWidget from '../../../../app/javascript/bundles/DungeonMasterCampaignManager/components/Widgets/NotesWidget';
 
-const mockQuill = {
-  import: jest.fn(() => ({})),
-  register: jest.fn(),
-};
-
 jest.mock('react-quill', () => {
+  const mockQuill = {
+    import: jest.fn(() => ({})),
+    register: jest.fn(),
+  };
   const QuillComponent = function MockReactQuill({ value, onChange }: any) {
     return (
       <div data-testid="quill-editor">

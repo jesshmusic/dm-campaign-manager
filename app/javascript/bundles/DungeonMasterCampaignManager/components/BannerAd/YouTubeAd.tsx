@@ -6,14 +6,14 @@ import youTubeAdSmall from './YouTubeAdSmall.jpg';
 
 ReactGA.initialize('G-8XJTH70JSQ');
 
-import styles from './bannerad.module.scss';
+import { BannerAdContainer, BannerImageLarge, BannerImageSmall } from './BannerAd.styles';
 
 const YouTubeAd = () => {
   const handleClick = () => {
     ReactGA.event('YouTube Ad Clicked');
   };
   return (
-    <div className={styles.bannerAdContainer}>
+    <BannerAdContainer>
       <a
         href="https://www.youtube.com/channel/UCC8ZTZ5nMEuVelHXMJpPeCA"
         target="_blank"
@@ -21,10 +21,10 @@ const YouTubeAd = () => {
         onClick={handleClick}
         rel="noreferrer"
       >
-        <img className={`${styles.bannerImage} ${styles.bannerImageLarge}`} src={youTubeAd} />
-        <img className={`${styles.bannerImage} ${styles.bannerImageSmall}`} src={youTubeAdSmall} />
+        <BannerImageLarge src={youTubeAd} />
+        <BannerImageSmall src={youTubeAdSmall} />
       </a>
-    </div>
+    </BannerAdContainer>
   );
 };
 

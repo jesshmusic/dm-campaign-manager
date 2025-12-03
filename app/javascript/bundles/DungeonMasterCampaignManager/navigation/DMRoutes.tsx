@@ -30,17 +30,24 @@ const DMRoutes = (props) => {
   return (
     <Routes>
       <Route path="/" element={<HomePage {...props} />} />
-      <Route path="/app/classes/:dndClassSlug" {...props} element={<DndClass {...props} />} />
-      <Route path="/app/classes" {...props} element={<DndClasses {...props} />} />
-      <Route path="/app/races" {...props} element={<Races {...props} />} />
-      <Route path="/app/races/:raceSlug" {...props} element={<Race {...props} />} />
-      <Route path="/app/conditions" {...props} element={<Conditions {...props} />} />
-      <Route path="/app/conditions/:conditionSlug" {...props} element={<Condition {...props} />} />
+      <Route path="/app/classes/:dndClassSlug" element={<DndClass {...props} />} />
+      <Route path="/app/classes" element={<DndClasses {...props} />} />
+      <Route path="/app/races" element={<Races {...props} />} />
+      <Route path="/app/races/:raceSlug" element={<Race {...props} />} />
+      <Route path="/app/conditions" element={<Conditions {...props} />} />
+      <Route path="/app/conditions/:conditionSlug" element={<Condition {...props} />} />
       {Util.itemPages.map((itemPage) => (
         <Route
           path={itemPage.path}
           key={itemPage.itemType}
-          element={<Items {...props} itemType={itemPage.itemType} pageTitle={itemPage.pageTitle} />}
+          element={
+            <Items
+              {...props}
+              key={itemPage.itemType}
+              itemType={itemPage.itemType}
+              pageTitle={itemPage.pageTitle}
+            />
+          }
         />
       ))}
       <Route path="/app/items/:itemSlug" element={<Item {...props} />} />

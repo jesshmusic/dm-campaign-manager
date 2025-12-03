@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen } from '../../test-utils';
 import { MemoryRouter } from 'react-router-dom';
 import NPCGenButton from '../../../../app/javascript/bundles/DungeonMasterCampaignManager/components/Widgets/NPCGenButton';
 

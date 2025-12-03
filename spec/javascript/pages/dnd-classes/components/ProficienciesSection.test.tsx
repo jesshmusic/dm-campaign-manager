@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen } from '../../../test-utils';
 import ProficienciesSection from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/dnd-classes/components/ProficienciesSection';
 
 jest.mock('../../../../../app/javascript/bundles/DungeonMasterCampaignManager/components/InfoBlock/InfoBlock', () => {

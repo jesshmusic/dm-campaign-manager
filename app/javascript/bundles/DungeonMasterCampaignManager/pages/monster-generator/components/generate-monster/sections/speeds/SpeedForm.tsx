@@ -9,7 +9,11 @@ import {
 } from '../../../../../../components/forms/ControllerInput';
 import { speeds } from '../../../../../../utilities/character-utilities';
 
-import styles from '../field-array-form.module.scss';
+import {
+  FormContainer,
+  FormElementSelect,
+  FormElementInput,
+} from '../../../../MonsterGenerator.styles';
 
 const SpeedForm = (props: {
   speedIndex: number;
@@ -21,22 +25,24 @@ const SpeedForm = (props: {
   const { speedIndex, control, errors, fieldName, remove } = props;
 
   return (
-    <div className={styles.formContainer}>
-      <ControlledSelect
-        className={styles.formElementSelect}
-        fieldName={`${fieldName}.${speedIndex}.nameOption`}
-        control={control}
-        label="Speed"
-        options={speeds}
-      />
-      <ControlledInput
-        fieldName={`${fieldName}.${speedIndex}.value`}
-        errors={errors}
-        className={styles.formElementInput}
-        control={control}
-        label="Value"
-        type="number"
-      />
+    <FormContainer>
+      <FormElementSelect>
+        <ControlledSelect
+          fieldName={`${fieldName}.${speedIndex}.nameOption`}
+          control={control}
+          label="Speed"
+          options={speeds}
+        />
+      </FormElementSelect>
+      <FormElementInput>
+        <ControlledInput
+          fieldName={`${fieldName}.${speedIndex}.value`}
+          errors={errors}
+          control={control}
+          label="Value"
+          type="number"
+        />
+      </FormElementInput>
       <Button
         type="button"
         onClick={() => remove(speedIndex)}
@@ -45,7 +51,7 @@ const SpeedForm = (props: {
         hideTitle
         title="Remove Action"
       />
-    </div>
+    </FormContainer>
   );
 };
 

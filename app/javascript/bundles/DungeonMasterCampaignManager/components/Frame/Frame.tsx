@@ -1,8 +1,7 @@
 import React from 'react';
-import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 
-import styles from './frame.module.scss';
+import { FrameWrapper, FrameBody, FrameTitle, FrameSubtitle } from './Frame.styles';
 
 const Frame = (props: {
   className?: string;
@@ -16,24 +15,24 @@ const Frame = (props: {
 }) => {
   const { title, subtitle, className, children, style, actionButton, icon, linkTo } = props;
   return (
-    <div className={classNames(styles.frame, className)} style={style}>
-      <div className={styles.body}>
+    <FrameWrapper className={className} style={style}>
+      <FrameBody>
         {linkTo ? (
           <Link to={linkTo}>
             <h3>{title}</h3>
           </Link>
         ) : (
-          <div className={styles.title}>
+          <FrameTitle>
             <span>
               {icon}&nbsp;{title}
             </span>
             &nbsp;{actionButton}
-          </div>
+          </FrameTitle>
         )}
-        {subtitle && <div className={styles.subtitle}>{subtitle}</div>}
+        {subtitle && <FrameSubtitle>{subtitle}</FrameSubtitle>}
         {children}
-      </div>
-    </div>
+      </FrameBody>
+    </FrameWrapper>
   );
 };
 

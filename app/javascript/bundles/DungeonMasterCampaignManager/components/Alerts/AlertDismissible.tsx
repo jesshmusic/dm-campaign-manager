@@ -1,13 +1,20 @@
 import React from 'react';
 import { GiAbstract029, GiBroadsword, GiInfo, GiSkullCrossedBones } from 'react-icons/gi';
-import classNames from 'classnames';
 import { FlashMessageType } from '../../reducers/flashMessages';
-import { GrClose } from 'react-icons/all';
+import { GrClose } from 'react-icons/gr';
 import Button from '../Button/Button';
 import { Colors } from '../../utilities/enums';
 import { gsap } from 'gsap';
 
-import styles from './alert.module.scss';
+import {
+  AlertWrapper,
+  AlertContainer,
+  AlertHeader,
+  AlertIcon,
+  AlertHeading,
+  AlertMessage,
+  AlertVariant,
+} from './Alerts.styles';
 
 type AlertDismissibleProps = {
   dismissFlashMessage: (messageId: number) => void;
@@ -65,33 +72,26 @@ const AlertDismissible = (props: AlertDismissibleProps) => {
   };
 
   return (
-    <div className={styles.alertWrapper} ref={alertRef} style={{ top: `${offset * 6 + 1}rem` }}>
-      <div
+    <AlertWrapper ref={alertRef} style={{ top: `${offset * 6 + 1}rem` }}>
+      <AlertContainer
         id={`liveToast${messageId}`}
-        className={classNames(styles.alertContainer, {
-          [styles.alertContainerAlert]: messageVariant === FlashMessageType.alert,
-          [styles.alertContainerSuccess]: messageVariant === FlashMessageType.success,
-          [styles.alertContainerInfo]: messageVariant === FlashMessageType.info,
-          [styles.alertContainerWarning]: messageVariant === FlashMessageType.warning,
-          [styles.alertContainerDanger]: messageVariant === FlashMessageType.danger,
-        })}
+        $variant={messageVariant as AlertVariant}
         role="alert"
       >
-        <div className={styles.alertHeader}>
-          <div className={styles.icon}>{icon[messageVariant]}</div>
-          <div className={styles.heading}>{messageHeading}</div>
+        <AlertHeader>
+          <AlertIcon>{icon[messageVariant]}</AlertIcon>
+          <AlertHeading>{messageHeading}</AlertHeading>
           <Button
-            className={styles.button}
             color={Colors.light}
             title="Close"
             onClick={handleDismiss}
             hideTitle
             icon={<GrClose />}
           />
-        </div>
-        <div className={styles.alertMessage}>{messageText}</div>
-      </div>
-    </div>
+        </AlertHeader>
+        <AlertMessage>{messageText}</AlertMessage>
+      </AlertContainer>
+    </AlertWrapper>
   );
 };
 

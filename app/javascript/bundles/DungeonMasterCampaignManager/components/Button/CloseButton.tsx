@@ -1,21 +1,23 @@
 import { Colors } from '../../utilities/enums';
-import { GiCrossMark } from 'react-icons/all';
+import { GiCrossMark } from 'react-icons/gi';
 import Button from './Button';
 import React from 'react';
-import styles from './button.module.scss';
+
+import { CloseButtonWrapper } from './Button.styles';
 
 const CloseButton = (props: { onClick: () => void }) => {
   const { onClick } = props;
 
   return (
-    <Button
-      className={styles.closeButton}
-      color={Colors.transparent}
-      icon={<GiCrossMark />}
-      hideTitle
-      title="X"
-      onClick={onClick}
-    />
+    <CloseButtonWrapper>
+      <Button
+        color={Colors.transparent}
+        icon={<GiCrossMark />}
+        hideTitle
+        title="X"
+        onClick={onClick}
+      />
+    </CloseButtonWrapper>
   );
 };
 

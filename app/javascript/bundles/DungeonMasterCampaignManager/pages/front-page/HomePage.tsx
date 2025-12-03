@@ -5,7 +5,7 @@ import { PageProps } from '../../utilities/types';
 import { useAuth0 } from '@auth0/auth0-react';
 import Dashboard from '../user-dashboard/Dashboard';
 
-import styles from './home-page.module.scss';
+import { Wrapper } from './HomePage.styles';
 
 const HomePage = (_props: PageProps) => {
   const { isAuthenticated, user } = useAuth0();
@@ -17,10 +17,10 @@ const HomePage = (_props: PageProps) => {
         'Dungeon Master GURU is a free resource for DMs for reference that includes tools for smooth games.'
       }
     >
-      <div className={styles.wrapper}>
+      <Wrapper>
         <PageTitle title={'Dungeon Master GURU'} isDraconis />
         <Dashboard />
-      </div>
+      </Wrapper>
     </PageContainer>
   );
 };

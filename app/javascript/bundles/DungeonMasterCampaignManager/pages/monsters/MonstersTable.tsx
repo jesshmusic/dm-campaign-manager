@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 import DataTable from '../../components/DataTable/DataTable';
 import { Row } from 'react-table';
-import { GiBeerStein } from 'react-icons/all';
+import { GiBeerStein } from 'react-icons/gi';
 import { useAuth0 } from '@auth0/auth0-react';
 
 const MonstersTable = (props: {
@@ -61,7 +61,7 @@ const MonstersTable = (props: {
         accessor: 'hasUser',
       },
     ],
-    []
+    [],
   );
 
   const data = React.useMemo(() => {

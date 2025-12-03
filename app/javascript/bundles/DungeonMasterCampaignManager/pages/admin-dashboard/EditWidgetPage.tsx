@@ -136,8 +136,8 @@ function mapDispatchToProps(dispatch) {
               },
               token,
             }),
-          }
-        )
+          },
+        ),
       );
     },
   };

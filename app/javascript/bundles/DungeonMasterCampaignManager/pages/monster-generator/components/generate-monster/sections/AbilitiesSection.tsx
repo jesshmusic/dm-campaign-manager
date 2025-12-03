@@ -2,12 +2,12 @@ import React from 'react';
 import { FieldValues, UseFormReturn } from 'react-hook-form';
 import AbilityScoreField from '../AbilityScoreField';
 
-import styles from '../../generator.module.scss';
+import { SixCol } from '../../../MonsterGenerator.styles';
 
 const AbilitiesSection = (props: { UseForm: UseFormReturn<FieldValues> }) => {
   const { UseForm } = props;
   return (
-    <div className={styles.sixCol}>
+    <SixCol>
       <AbilityScoreField
         label={'STR'}
         errors={UseForm.formState.errors}
@@ -50,7 +50,7 @@ const AbilitiesSection = (props: { UseForm: UseFormReturn<FieldValues> }) => {
         name={'charisma'}
         setValue={UseForm.setValue}
       />
-    </div>
+    </SixCol>
   );
 };
 

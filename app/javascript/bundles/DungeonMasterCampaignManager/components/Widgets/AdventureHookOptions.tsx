@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import Button from '../Button/Button';
 import { Colors } from '../../utilities/enums';
-import { GiLevelTwoAdvanced } from 'react-icons/all';
+import { GiLevelTwoAdvanced } from 'react-icons/gi';
 
 import '../forms/inputOverrides.scss';
-import styles from './widgets.module.scss';
+import { NameOptions, Input, Label } from './Widgets.styles';
 
 interface NameOptionsProps {
   onFormSubmit: (partySize: number, averageLevel: number) => void;
@@ -21,9 +21,9 @@ const AdventureHookOptions = ({ onFormSubmit, isLoading }: NameOptionsProps) => 
   };
 
   return (
-    <div className={styles.nameOptions}>
-      <div className={styles.submitButton}>
-        <label htmlFor={'nameGeneratorGender'}>Submit</label>
+    <NameOptions>
+      <div>
+        <Label htmlFor={'nameGeneratorGender'}>Submit</Label>
         <Button
           id={'adventureHookGeneratorSubmit'}
           color={Colors.primary}
@@ -33,12 +33,9 @@ const AdventureHookOptions = ({ onFormSubmit, isLoading }: NameOptionsProps) => 
           disabled={isLoading}
         />
       </div>
-      <div className={styles.genderSelect}>
-        <label className={styles.label} htmlFor="partySize">
-          Number of Players
-        </label>
-        <input
-          className={styles.input}
+      <div>
+        <Label htmlFor="partySize">Number of Players</Label>
+        <Input
           type="number"
           name="partySize"
           value={partySize}
@@ -46,12 +43,9 @@ const AdventureHookOptions = ({ onFormSubmit, isLoading }: NameOptionsProps) => 
           onChange={(e) => setPartySize(parseInt(e.target.value, 10))}
         />
       </div>
-      <div className={styles.raceSelect}>
-        <label className={styles.label} htmlFor="partySize">
-          Average Player Level
-        </label>
-        <input
-          className={styles.input}
+      <div>
+        <Label htmlFor="partySize">Average Player Level</Label>
+        <Input
           type="number"
           name="averageLevel"
           value={averageLevel}
@@ -59,7 +53,7 @@ const AdventureHookOptions = ({ onFormSubmit, isLoading }: NameOptionsProps) => 
           onChange={(e) => setAverageLevel(parseInt(e.target.value, 10))}
         />
       </div>
-    </div>
+    </NameOptions>
   );
 };
 

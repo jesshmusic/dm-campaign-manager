@@ -2,7 +2,7 @@ import React from 'react';
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
 
-import styles from './privacy-policy.module.scss';
+import { Wrapper } from './PrivacyPolicy.styles';
 
 const PrivacyPolicy = () => {
   return (
@@ -12,7 +12,7 @@ const PrivacyPolicy = () => {
         'Dungeon Master GURU is a free resource for DMs for reference that includes tools for smooth games.'
       }
     >
-      <div className={styles.wrapper}>
+      <Wrapper>
         <PageTitle title={'Dungeon Master GURU Privacy Policy'} isDraconis />
         <article>
           <div className="portableText css-1orgqsm">
@@ -146,7 +146,7 @@ const PrivacyPolicy = () => {
             </p>
           </div>
         </article>
-      </div>
+      </Wrapper>
     </PageContainer>
   );
 };

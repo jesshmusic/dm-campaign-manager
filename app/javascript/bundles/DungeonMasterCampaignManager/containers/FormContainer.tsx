@@ -1,6 +1,6 @@
 import React from 'react';
 
-import styles from './formcontainer.module.scss';
+import { FormContainerWrapper } from './Containers.styles';
 
 const FormContainer = (props: {
   columns?: number;
@@ -8,14 +8,7 @@ const FormContainer = (props: {
   className?: string;
 }) => {
   const { columns, children } = props;
-  return (
-    <div
-      className={styles.formContainer}
-      style={{ '--bs-columns': columns ? columns : 8 } as React.CSSProperties}
-    >
-      {children}
-    </div>
-  );
+  return <FormContainerWrapper $columns={columns}>{children}</FormContainerWrapper>;
 };
 
 export default FormContainer;

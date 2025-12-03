@@ -5,7 +5,7 @@ import FormSelect from '../../../../../components/forms/FormSelect';
 import { damageTypes, filterOptionsWithData } from '../../../../../utilities/character-utilities';
 import axios from 'axios';
 
-import styles from '../../generator.module.scss';
+import { FourCol } from '../../../MonsterGenerator.styles';
 
 const ResistancesSection = (props: { UseForm: UseFormReturn<FieldValues> }) => {
   const { UseForm } = props;
@@ -21,7 +21,7 @@ const ResistancesSection = (props: { UseForm: UseFormReturn<FieldValues> }) => {
   };
 
   return (
-    <div className={styles.fourCol}>
+    <FourCol>
       <FormSelectAsync
         label="Condition Immunities"
         name="conditionImmunitiesOptions"
@@ -53,7 +53,7 @@ const ResistancesSection = (props: { UseForm: UseFormReturn<FieldValues> }) => {
         isMulti
         options={damageTypes}
       />
-    </div>
+    </FourCol>
   );
 };
 

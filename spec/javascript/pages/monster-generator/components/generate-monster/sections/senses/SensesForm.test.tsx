@@ -1,7 +1,25 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent } from '../../../../../../test-utils';
 import SensesForm from '../../../../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/monster-generator/components/generate-monster/sections/senses/SensesForm';
-import * as ReactHookForm from 'react-hook-form';
+
+const mockAppend = jest.fn();
+const mockRemove = jest.fn();
+const mockFields: any[] = [];
+
+jest.mock('react-hook-form', () => ({
+  ...jest.requireActual('react-hook-form'),
+  useFieldArray: () => ({
+    fields: mockFields,
+    append: mockAppend,
+    remove: mockRemove,
+    prepend: jest.fn(),
+    insert: jest.fn(),
+    swap: jest.fn(),
+    move: jest.fn(),
+    update: jest.fn(),
+    replace: jest.fn(),
+  }),
+}));
 
 jest.mock('../../../../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/monster-generator/components/generate-monster/sections/senses/SenseForm', () => {
   return function MockSenseForm({ senseIndex, remove }: any) {
@@ -20,23 +38,11 @@ jest.mock('../../../../../../../../app/javascript/bundles/DungeonMasterCampaignM
 });
 
 describe('SensesForm', () => {
-  const mockAppend = jest.fn();
-  const mockRemove = jest.fn();
   const mockTrigger = jest.fn();
 
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.spyOn(ReactHookForm, 'useFieldArray').mockReturnValue({
-      fields: [],
-      append: mockAppend,
-      remove: mockRemove,
-      prepend: jest.fn(),
-      insert: jest.fn(),
-      swap: jest.fn(),
-      move: jest.fn(),
-      update: jest.fn(),
-      replace: jest.fn(),
-    });
+    mockFields.length = 0;
   });
 
   const defaultProps = {
@@ -72,20 +78,10 @@ describe('SensesForm', () => {
   });
 
   it('renders SenseForm for each field', () => {
-    jest.spyOn(ReactHookForm, 'useFieldArray').mockReturnValue({
-      fields: [
-        { id: '1', nameOption: {}, name: 'darkvision', value: '60' },
-        { id: '2', nameOption: {}, name: 'blindsight', value: '30' },
-      ] as any,
-      append: mockAppend,
-      remove: mockRemove,
-      prepend: jest.fn(),
-      insert: jest.fn(),
-      swap: jest.fn(),
-      move: jest.fn(),
-      update: jest.fn(),
-      replace: jest.fn(),
-    });
+    mockFields.push(
+      { id: '1', nameOption: {}, name: 'darkvision', value: '60' },
+      { id: '2', nameOption: {}, name: 'blindsight', value: '30' }
+    );
 
     render(<SensesForm {...defaultProps} />);
     expect(screen.getByTestId('sense-form-0')).toBeInTheDocument();
@@ -93,17 +89,7 @@ describe('SensesForm', () => {
   });
 
   it('calls remove when SenseForm remove is clicked', () => {
-    jest.spyOn(ReactHookForm, 'useFieldArray').mockReturnValue({
-      fields: [{ id: '1', nameOption: {}, name: 'darkvision', value: '60' }] as any,
-      append: mockAppend,
-      remove: mockRemove,
-      prepend: jest.fn(),
-      insert: jest.fn(),
-      swap: jest.fn(),
-      move: jest.fn(),
-      update: jest.fn(),
-      replace: jest.fn(),
-    });
+    mockFields.push({ id: '1', nameOption: {}, name: 'darkvision', value: '60' });
 
     render(<SensesForm {...defaultProps} />);
     const removeButton = screen.getByText('Remove 0');

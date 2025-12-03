@@ -1,3 +1,4 @@
+@use 'sass:color';
 @import '../../stylesheets/variables';
 
 @import '~react-pro-sidebar/dist/scss/styles';
@@ -31,7 +32,7 @@
   button {
     background: 0;
     border: 0;
-    color: lighten($primary, 30%);
+    color: color.adjust($primary, $lightness: 30%);
     text-decoration: none;
     transition: color ease-in-out 0.25s;
 

@@ -1,6 +1,6 @@
 import { describe, it, expect, jest, beforeEach, afterEach } from '@jest/globals';
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '../test-utils';
 import AlertDismissible from '../../../app/javascript/bundles/DungeonMasterCampaignManager/components/Alerts/AlertDismissible';
 import { FlashMessageType } from '../../../app/javascript/bundles/DungeonMasterCampaignManager/reducers/flashMessages';
 

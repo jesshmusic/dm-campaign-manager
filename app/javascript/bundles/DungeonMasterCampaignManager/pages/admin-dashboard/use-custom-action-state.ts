@@ -55,13 +55,13 @@ export const useCustomActionState = (props: {
     if (fieldName === 'action.damage.damageTypeOption') {
       UseForm.setValue(
         'action.damage.damageType',
-        fields.action.damage?.damageTypeOption.value || 'slashing'
+        fields.action.damage?.damageTypeOption.value || 'slashing',
       );
     }
     if (fieldName === 'action.damage.diceValueOption') {
       UseForm.setValue(
         'action.damage.diceValue',
-        (fields.action.damage?.diceValueOption.value as number) || 6
+        (fields.action.damage?.diceValueOption.value as number) || 6,
       );
     }
     if (fieldName !== `action.desc` && fieldName !== `action.name`) {
@@ -71,13 +71,13 @@ export const useCustomActionState = (props: {
     if (fieldName === `damage.diceValueOption` && fields.action.damage) {
       UseForm.setValue(
         `action.damage.diceValue`,
-        fields.action.damage.diceValueOption.value as number
+        fields.action.damage.diceValueOption.value as number,
       );
     }
     if (fieldName === `spellCasting.abilityOption`) {
       UseForm.setValue(
         `action.spellCasting.ability`,
-        fields.action.spellCasting!.abilityOption.label
+        fields.action.spellCasting!.abilityOption.label,
       );
     }
     if (fieldName === 'actionTypeOption') {
@@ -147,7 +147,7 @@ export const useCustomActionState = (props: {
   const onSubmitActionForm = (data: { action: MonsterActionField; actionType: ActionTypes }) => {
     createCustomAction(
       { name: data.action.name, desc: data.action.desc, action_type: data.actionType },
-      token
+      token,
     );
     navigate('/app/admin-dashboard');
   };

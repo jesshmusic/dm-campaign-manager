@@ -4,9 +4,8 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import classNames from 'classnames';
 
-import styles from './page-title.module.scss';
+import { PageTitleWrapper, Title, Subtitle } from './PageTitle.styles';
 
 type PageTitleProps = {
   isDraconis?: boolean;
@@ -21,21 +20,17 @@ type PageTitleProps = {
 const PageTitle = (props: PageTitleProps) => {
   const { isDraconis, hasButton, buttonLink, buttonTitle, buttonVariant, subtitle, title } = props;
   return (
-    <div className={styles.pageTitle}>
-      <h1
-        className={classNames({
-          [styles.draconis]: isDraconis,
-        })}
-      >
+    <PageTitleWrapper>
+      <Title $isDraconis={isDraconis}>
         {title}
         {hasButton && buttonLink ? (
           <Link to={buttonLink} className={`btn btn-${buttonVariant}`}>
             {buttonTitle}
           </Link>
         ) : null}
-      </h1>
-      {subtitle ? <p className={styles.subtitle}>{subtitle}</p> : null}
-    </div>
+      </Title>
+      {subtitle ? <Subtitle>{subtitle}</Subtitle> : null}
+    </PageTitleWrapper>
   );
 };
 

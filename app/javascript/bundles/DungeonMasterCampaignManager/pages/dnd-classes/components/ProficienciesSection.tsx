@@ -3,7 +3,7 @@ import Util from '../../../utilities/utilities';
 import React from 'react';
 import InfoBlock from '../../../components/InfoBlock/InfoBlock';
 
-import styles from '../dnd-class.module.scss';
+import { SectionGroup, SubsectionHeading } from '../DndClass.styles';
 
 const ProficienciesSection = (props: { dndClass: DndClass }) => {
   const { dndClass } = props;
@@ -29,8 +29,8 @@ const ProficienciesSection = (props: { dndClass: DndClass }) => {
   };
 
   return (
-    <div className={styles.sectionGroup}>
-      <h3 className={styles.subsectionHeading}>Proficiencies</h3>
+    <SectionGroup>
+      <SubsectionHeading>Proficiencies</SubsectionHeading>
       <InfoBlock title="Armor" desc={getProfs(dndClass.proficiencies, 'Armor')} />
       <InfoBlock title="Weapons" desc={getProfs(dndClass.proficiencies, 'Weapons')} />
       <InfoBlock title="Tools" desc={getProfs(dndClass.proficiencies, 'Other')} />
@@ -39,7 +39,7 @@ const ProficienciesSection = (props: { dndClass: DndClass }) => {
         desc={dndClass.abilityScores.map((ability) => ability.fullName).join(', ')}
       />
       <InfoBlock title="Skills" desc={getSkillChoices(dndClass.proficiencyChoices)} />
-    </div>
+    </SectionGroup>
   );
 };
 

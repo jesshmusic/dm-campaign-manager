@@ -9,21 +9,23 @@ import {
   useSortBy,
   useTable,
 } from 'react-table';
-import {
-  GiArchiveResearch,
-  TiArrowSortedDown,
-  TiArrowSortedUp,
-  TiArrowUnsorted,
-} from 'react-icons/all';
+import { GiArchiveResearch } from 'react-icons/gi';
+import { TiArrowSortedDown, TiArrowSortedUp, TiArrowUnsorted } from 'react-icons/ti';
 import classNames from 'classnames';
 import DndSpinner from '../DndSpinners/DndSpinner';
 import { useForm } from 'react-hook-form';
-import Button from '../Button/Button';
 import { Colors } from '../../utilities/enums';
 import Select from 'react-select';
 import { SelectOption } from '../../utilities/types';
 
-import styles from './data-table.module.scss';
+import {
+  TableWrapper,
+  Pagination,
+  PageNumber,
+  PageForm,
+  InputGroup,
+  SearchButton,
+} from './DataTable.styles';
 
 export interface DataTableProps<T extends object = Record<string, unknown>> {
   columns: Array<Column<T>>;
@@ -65,7 +67,7 @@ const DataTable = <T extends object = Record<string, unknown>>({
     },
     useSortBy,
     useExpanded,
-    usePagination
+    usePagination,
   );
 
   const { register, handleSubmit } = useForm();
@@ -102,19 +104,18 @@ const DataTable = <T extends object = Record<string, unknown>>({
   };
 
   return (
-    <div className={`table-frame ${styles.tableWrapper}`}>
+    <TableWrapper className="table-frame">
       {onSearch && (
         <form onSubmit={handleSubmit(handleSearch)}>
-          <div className={styles.inputGroup}>
+          <InputGroup>
             <input {...register('searchTerm')} type="text" placeholder="Search..." />
-            <Button
-              className={styles.searchButton}
+            <SearchButton
               color={Colors.secondary}
               title="Search"
               type="submit"
               icon={<GiArchiveResearch />}
             />
-          </div>
+          </InputGroup>
           <p className="text-muted">{results} results.</p>
         </form>
       )}
@@ -131,7 +132,7 @@ const DataTable = <T extends object = Record<string, unknown>>({
               <tr key={headerGroup.id} {...headerGroupProps}>
                 {headerGroup.headers.map((column) => {
                   const { key: _columnKey, ...columnProps } = column.getHeaderProps(
-                    column.getSortByToggleProps()
+                    column.getSortByToggleProps(),
                   );
                   return (
                     <th key={column.id} {...columnProps}>
@@ -144,13 +145,14 @@ const DataTable = <T extends object = Record<string, unknown>>({
           })}
         </thead>
         <tbody {...dataTable.getTableBodyProps()}>
-          {dataTable.page.map((row) => {
+          {dataTable.page.map((row, rowIndex) => {
             dataTable.prepareRow(row);
             const { role: _role, key: _rowKey, ...rowProps } = row.getRowProps();
             const typedRow = row as unknown as Row<T>;
+            const rowKey = row.id || `row-${rowIndex}`;
             return (
-              <React.Fragment key={row.id}>
-                <tr {...row.getRowProps()} onClick={() => handleGoToPage(typedRow)}>
+              <React.Fragment key={rowKey}>
+                <tr key={`tr-${rowKey}`} {...rowProps} onClick={() => handleGoToPage(typedRow)}>
                   {row.cells.map((cell, index) => {
                     const { key: _cellKey, ...cellProps } = cell.getCellProps();
                     return (
@@ -177,7 +179,7 @@ const DataTable = <T extends object = Record<string, unknown>>({
         </tbody>
       </table>
       {dataTable.pageCount > 1 && (
-        <nav aria-label="Table Pagination" className={styles.pagination}>
+        <Pagination aria-label="Table Pagination">
           <ReactPaginate
             previousLabel={'previous'}
             nextLabel={'next'}
@@ -197,12 +199,12 @@ const DataTable = <T extends object = Record<string, unknown>>({
             containerClassName={'pagination'}
             activeClassName={'active'}
           />
-          <div className={styles.pageNumber}>
+          <PageNumber>
             page <span>{dataTable.state.pageIndex + 1}</span>
             &nbsp;of&nbsp;
             <span>{dataTable.pageOptions.length}</span>
-          </div>
-          <div className={styles.pageForm}>
+          </PageNumber>
+          <PageForm>
             <Select<SelectOption>
               options={[perPage, perPage * 2, perPage * 3, perPage * 4].map((pageSize) => ({
                 label: `Show ${pageSize}`,
@@ -213,10 +215,10 @@ const DataTable = <T extends object = Record<string, unknown>>({
                 dataTable.setPageSize(Number(option ? option.value : perPage));
               }}
             />
-          </div>
-        </nav>
+          </PageForm>
+        </Pagination>
       )}
-    </div>
+    </TableWrapper>
   );
 };
 

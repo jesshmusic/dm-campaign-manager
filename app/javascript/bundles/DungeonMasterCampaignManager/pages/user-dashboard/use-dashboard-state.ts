@@ -1,19 +1,47 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { dashboardComponents, dashboardItems, initialLayouts } from '../../components/Widgets';
 import { WidgetElementProps } from '../../components/Widgets/Widget';
 import { getIconFromName } from '../../utilities/icons';
 import CustomWidget from '../../components/Widgets/CustomWidget';
 
 const getFromLS = (key) => {
-  let ls = {};
   if (global.localStorage) {
     try {
-      ls = JSON.parse(global.localStorage.getItem('rgl-8') as string) || {};
+      const ls = JSON.parse(global.localStorage.getItem('rgl-8') as string);
+      if (ls && ls[key]) {
+        // For layouts, ensure it has at least one breakpoint with items
+        // and fix any custom widgets with invalid sizes
+        if (key === 'layouts') {
+          const layouts = ls[key];
+          const hasValidLayout = Object.values(layouts).some(
+            (breakpointLayout: unknown) =>
+              Array.isArray(breakpointLayout) && breakpointLayout.length > 0,
+          );
+          if (!hasValidLayout) return null;
+          // Fix custom widget sizes - ensure minimum 3x3
+          Object.keys(layouts).forEach((breakpoint) => {
+            layouts[breakpoint] = layouts[breakpoint].map((item) => {
+              if (item.i && item.i.startsWith('customWidget')) {
+                return {
+                  ...item,
+                  w: Math.max(item.w || 3, 3),
+                  h: Math.max(item.h || 3, 3),
+                  minW: 3,
+                  minH: 3,
+                };
+              }
+              return item;
+            });
+          });
+          return layouts;
+        }
+        return ls[key];
+      }
     } catch (_e) {
-      // Ignore JSON parse errors, use empty object
+      // Ignore JSON parse errors
     }
   }
-  return ls[key];
+  return null;
 };
 
 const saveToLS = (layouts, widgets) => {
@@ -23,7 +51,7 @@ const saveToLS = (layouts, widgets) => {
       JSON.stringify({
         layouts,
         widgets,
-      })
+      }),
     );
   }
 };
@@ -84,7 +112,7 @@ export const useDashboardState = ({ customWidgets, getWidgets }) => {
         title: widget.title,
         subtitle: widget.subtitle,
         content: widget.content,
-        dataGrid: { w: 4, h: 3, x: index * 4, y: Infinity, minW: 4, minH: 3 },
+        dataGrid: { w: 4, h: 3, x: index * 4, y: Infinity, minW: 3, minH: 3 },
       };
     });
     const combinedWidgets = [...builtInWidgets, ...cstmWidgets].filter((widget) => {
@@ -93,17 +121,75 @@ export const useDashboardState = ({ customWidgets, getWidgets }) => {
     setWidgets(combinedWidgets);
   }, [customWidgets, widgetKeys]);
 
-  const onLayoutChange = (currentLayouts, allLayouts) => {
-    setLayouts(allLayouts);
-  };
+  const onLayoutChange = useCallback((_currentLayout, allLayouts) => {
+    // Enforce minimum 3x3 for custom widgets
+    const fixedLayouts = { ...allLayouts };
+    Object.keys(fixedLayouts).forEach((breakpoint) => {
+      fixedLayouts[breakpoint] = fixedLayouts[breakpoint].map((item) => {
+        if (item.i && item.i.startsWith('customWidget')) {
+          return {
+            ...item,
+            w: Math.max(item.w || 3, 3),
+            h: Math.max(item.h || 3, 3),
+            minW: 3,
+            minH: 3,
+          };
+        }
+        return item;
+      });
+    });
+    setLayouts(fixedLayouts);
+  }, []);
 
-  const onRemoveItem = (widgetId) => {
-    setWidgetKeys(widgetKeys.filter((i) => i !== widgetId));
-  };
+  const onRemoveItem = useCallback((widgetId) => {
+    setWidgetKeys((prev) => prev.filter((i) => i !== widgetId));
+  }, []);
 
-  const onAddItem = (widgetId) => {
-    setWidgetKeys([...widgetKeys, widgetId]);
-  };
+  const onAddItem = useCallback(
+    (widgetId) => {
+      setWidgetKeys((prev) => [...prev, widgetId]);
+      // Add layout entry for the new widget
+      const isCustomWidget = widgetId.startsWith('customWidget');
+      const widgetConfig = dashboardComponents[widgetId];
+      // Custom widgets get minimum 3x3, built-in widgets use their defined grid
+      const gridConfig = isCustomWidget
+        ? { w: 4, h: 3, minW: 3, minH: 3 }
+        : widgetConfig?.grid || { w: 4, h: 3, minW: 3, minH: 3 };
+      const newLayoutItem = {
+        i: widgetId,
+        x: 0,
+        y: Infinity,
+        w: gridConfig.w || 4,
+        h: gridConfig.h || 3,
+        minW: isCustomWidget ? 3 : gridConfig.minW || 3,
+        minH: isCustomWidget ? 3 : gridConfig.minH || 3,
+      };
+      setLayouts((prev) => {
+        const updated = { ...prev };
+        Object.keys(updated).forEach((breakpoint) => {
+          if (!updated[breakpoint].find((item) => item.i === widgetId)) {
+            updated[breakpoint] = [...updated[breakpoint], { ...newLayoutItem }];
+          }
+        });
+        return updated;
+      });
+    },
+    [setWidgetKeys, setLayouts],
+  );
 
-  return { allWidgets, layouts, onAddItem, onLayoutChange, onRemoveItem, widgetKeys, widgets };
+  const onResetLayout = useCallback(() => {
+    setLayouts(initialLayouts);
+    setWidgetKeys(dashboardItems);
+  }, []);
+
+  return {
+    allWidgets,
+    layouts,
+    onAddItem,
+    onLayoutChange,
+    onRemoveItem,
+    onResetLayout,
+    widgetKeys,
+    widgets,
+  };
 };

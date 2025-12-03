@@ -1,7 +1,7 @@
 import React from 'react';
 import CloseButton from '../../../components/Button/CloseButton';
 
-import styles from '../user-dashboard.module.scss';
+import { AddListContent, AddListHeading, AddListContentInner } from '../UserDashboard.styles';
 
 type AddListProps = {
   widgets: { title: string; key: string; icon: React.ElementType }[];
@@ -27,12 +27,12 @@ export default function AddList({
   };
 
   return (
-    <div className={styles.addListContent}>
-      <div className={styles.heading}>
+    <AddListContent>
+      <AddListHeading>
         <h3>Select Widgets</h3>
         <CloseButton onClick={onCloseModal} />
-      </div>
-      <div className={styles.content}>
+      </AddListHeading>
+      <AddListContentInner>
         {widgets.map((widget) => (
           <div className={'form-check'} key={widget.key}>
             <input
@@ -50,7 +50,7 @@ export default function AddList({
             </label>
           </div>
         ))}
-      </div>
-    </div>
+      </AddListContentInner>
+    </AddListContent>
   );
 }

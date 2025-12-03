@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent } from '../../test-utils';
 import CloseButton from '../../../../app/javascript/bundles/DungeonMasterCampaignManager/components/Button/CloseButton';
 
 jest.mock('react-icons/all', () => ({
@@ -31,12 +31,12 @@ describe('CloseButton', () => {
     expect(svg).toBeInTheDocument();
   });
 
-  it('has transparent color class', () => {
+  it('renders as a button element', () => {
     const mockOnClick = jest.fn();
     const { container } = render(<CloseButton onClick={mockOnClick} />);
 
     const button = container.querySelector('button');
-    expect(button).toHaveClass('closeButton');
+    expect(button).toBeInTheDocument();
   });
 
   it('can be clicked multiple times', () => {

@@ -1,6 +1,6 @@
 import { describe, it, expect, jest, beforeEach } from '@jest/globals';
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent } from '../test-utils';
 import Button from '../../../app/javascript/bundles/DungeonMasterCampaignManager/components/Button/Button';
 import { Colors } from '../../../app/javascript/bundles/DungeonMasterCampaignManager/utilities/enums';
 

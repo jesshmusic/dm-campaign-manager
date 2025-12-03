@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 .table-frame {
   background-color: $white;
   border-collapse: separate;
@@ -60,7 +62,7 @@
         }
 
         .name-row {
-          color: lighten($pine-green, 25%);
+          color: color.adjust($pine-green, $lightness: 25%);
         }
       }
     }

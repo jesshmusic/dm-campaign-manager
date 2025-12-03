@@ -173,7 +173,7 @@ class Monster < ApplicationRecord
   end
 
   def challenge_string
-    "#{challenge_rating} (#{xp.to_s(:delimited)} XP)"
+    "#{challenge_rating} (#{ActiveSupport::NumberHelper.number_to_delimited(xp)} XP)"
   end
 
   def is_caster

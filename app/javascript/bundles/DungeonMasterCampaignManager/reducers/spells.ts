@@ -64,7 +64,7 @@ const spells = createReducer(
           count: state.spells.length,
           loading: false,
         };
-      })
+      }),
 );
 
 export default spells;

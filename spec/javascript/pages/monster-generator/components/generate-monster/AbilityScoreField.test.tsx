@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent } from '../../../../test-utils';
 import AbilityScoreField from '../../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/monster-generator/components/generate-monster/AbilityScoreField';
 
 jest.mock('../../../../../../app/javascript/bundles/DungeonMasterCampaignManager/sounds/DiceRoll.mp3', () => 'dice-sound.mp3');

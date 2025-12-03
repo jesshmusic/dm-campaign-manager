@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen } from '../../test-utils';
 import PrivacyPolicy from '../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/privacy-policy/PrivacyPolicy';
 
 jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/containers/PageContainer', () => {

@@ -3,14 +3,14 @@ import ReactGA from 'react-ga4';
 
 ReactGA.initialize('G-8XJTH70JSQ');
 
-import styles from './bannerad.module.scss';
+import { BannerAdContainer, BannerImageLarge, BannerImageSmall } from './BannerAd.styles';
 
 const BannerAd = () => {
   const handleClick = () => {
     ReactGA.event('Banner Ad Clicked');
   };
   return (
-    <div className={styles.bannerAdContainer}>
+    <BannerAdContainer>
       <a
         href="https://affiliates.fantasygrounds.com/324247/15958/banner_7297"
         target="_blank"
@@ -23,16 +23,10 @@ const BannerAd = () => {
           height="0"
           width="0"
         />
-        <img
-          className={`${styles.bannerImage} ${styles.bannerImageLarge}`}
-          src="https://affiliates.fantasygrounds.com/img/banners/316034_2156040637.jpg"
-        />
-        <img
-          className={`${styles.bannerImage} ${styles.bannerImageSmall}`}
-          src="https://affiliates.fantasygrounds.com/img/banners/316034_2966475059.jpg"
-        />
+        <BannerImageLarge src="https://affiliates.fantasygrounds.com/img/banners/316034_2156040637.jpg" />
+        <BannerImageSmall src="https://affiliates.fantasygrounds.com/img/banners/316034_2966475059.jpg" />
       </a>
-    </div>
+    </BannerAdContainer>
   );
 };
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'utilities/openai/client'
+require Rails.root.join('app/models/utilities/openai/client')
 require 'dotenv/load'
 
 module Admin
