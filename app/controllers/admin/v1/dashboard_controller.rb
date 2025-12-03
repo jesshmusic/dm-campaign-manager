@@ -39,7 +39,7 @@ module Admin
       end
 
       def adventure_hook
-        openai = ::Utilities::Openai::Client.new(api_key: ENV.fetch('OPENAI_API_KEY', nil))
+        openai = OpenAIClient.new(api_key: ENV.fetch('OPENAI_API_KEY', nil))
 
         player_count   = params[:player_count].to_i
         average_level  = params[:average_level].to_i
