@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-# Ensure Utilities::Openai::Client is loaded for stubbing
-require_relative '../../../../app/models/utilities/openai/client'
+# Ensure OpenAIClient is loaded for stubbing
+require_relative '../../../../app/models/utilities/openai_client'
 
 RSpec.describe 'Admin::V1::Dashboard', type: :request do
   describe 'GET /v1/dashboard' do
@@ -146,12 +146,12 @@ RSpec.describe 'Admin::V1::Dashboard', type: :request do
 
   describe 'GET /v1/adventure_hook' do
     let(:user) { create(:user) }
-    let(:mock_openai_client) { instance_double(Utilities::Openai::Client, completions: adventure_hook_text) }
+    let(:mock_openai_client) { instance_double(OpenAIClient, completions: adventure_hook_text) }
     let(:adventure_hook_text) { 'A mysterious stranger arrives with a map to hidden treasure...' }
 
     before do
       stub_authentication(user)
-      allow(Utilities::Openai::Client).to receive(:new).and_return(mock_openai_client)
+      allow(OpenAIClient).to receive(:new).and_return(mock_openai_client)
     end
 
     it 'returns successful response' do

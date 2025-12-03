@@ -10,6 +10,16 @@
 4. Never commit code with failing tests
 5. Both Jest (frontend) and RSpec (backend) tests must pass
 
+## Pre-Push Checklist
+
+**Always check ALL of these before pushing:**
+
+1. `yarn lint` - ESLint
+2. `yarn format:check` - Prettier
+3. `bundle exec rubocop` - Rubocop
+4. `NO_COVERAGE=true yarn test` - Jest tests
+5. `NO_COVERAGE=true bundle exec rspec` - RSpec tests
+
 ## Commands
 
 - **Jest tests**: `NO_COVERAGE=true yarn test`
@@ -50,4 +60,4 @@ Never merge a PR with failing tests or unresolved Copilot review comments.
 
 ## Zeitwerk Naming Conventions
 
-The `Utilities::Openai::Client` class uses `Openai` (not `OpenAI`) because Zeitwerk requires module names to match directory names. The directory is `app/models/utilities/openai/`, so the module must be `Openai`. Changing to `OpenAI` would require renaming the directory to `open_ai/` which would be a breaking change across the codebase.
+The `OpenAIClient` class is in `app/models/utilities/openai_client.rb`. Zeitwerk maps `openai` to `OpenAI` via a custom inflector in `config/initializers/zeitwerk.rb`. The `utilities/` folder is added as an autoload root in `config/application.rb`, so classes there don't have a `Utilities::` namespace prefix.

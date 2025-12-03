@@ -2,7 +2,7 @@
 
 class NameGen
   def self.openai_client
-    @openai_client ||= Utilities::Openai::Client.new(api_key: ENV.fetch('OPENAI_API_KEY', 'test-api-key'))
+    @openai_client ||= OpenAIClient.new(api_key: ENV.fetch('OPENAI_API_KEY', 'test-api-key'))
   end
 
   # --------------------------- Variety controls ---------------------------
