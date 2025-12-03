@@ -13,6 +13,15 @@ jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/componen
   };
 });
 
+// Mock Navigate to prevent infinite loops in redirect tests
+jest.mock('react-router-dom', () => {
+  const actual = jest.requireActual('react-router-dom');
+  return {
+    ...actual,
+    Navigate: ({ to }: { to: string }) => <div data-testid="navigate-redirect" data-to={to}>Redirected to {to}</div>,
+  };
+});
+
 const MockComponent = () => <div>Protected Content</div>;
 
 describe('ProtectedRoute', () => {
@@ -103,6 +112,9 @@ describe('ProtectedRoute', () => {
 
       // Should not show protected content (user is redirected)
       expect(screen.queryByText('Protected Content')).not.toBeInTheDocument();
+      // Should show redirect component
+      expect(screen.getByTestId('navigate-redirect')).toBeInTheDocument();
+      expect(screen.getByTestId('navigate-redirect')).toHaveAttribute('data-to', '/');
     });
 
     it('redirects when user has empty roles array', () => {
@@ -123,6 +135,7 @@ describe('ProtectedRoute', () => {
       );
 
       expect(screen.queryByText('Protected Content')).not.toBeInTheDocument();
+      expect(screen.getByTestId('navigate-redirect')).toBeInTheDocument();
     });
   });
 });
