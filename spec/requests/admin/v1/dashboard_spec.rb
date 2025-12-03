@@ -142,17 +142,13 @@ RSpec.describe 'Admin::V1::Dashboard', type: :request do
   end
 
   describe 'GET /v1/adventure_hook' do
-    # Ensure autoloading happens before we stub
-    before(:all) { Utilities::Openai::Client }
-
     let(:user) { create(:user) }
-    let(:mock_openai_client) { instance_double(Utilities::Openai::Client) }
+    let(:mock_openai_client) { instance_double(Utilities::Openai::Client, completions: adventure_hook_text) }
     let(:adventure_hook_text) { 'A mysterious stranger arrives with a map to hidden treasure...' }
 
     before do
       stub_authentication(user)
       allow(Utilities::Openai::Client).to receive(:new).and_return(mock_openai_client)
-      allow(mock_openai_client).to receive(:completions).and_return(adventure_hook_text)
     end
 
     it 'returns successful response' do
