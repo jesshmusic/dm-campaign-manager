@@ -7,6 +7,9 @@ import CustomWidget from '../../components/Widgets/CustomWidget';
 type LayoutItem = { i?: string; w?: number; h?: number; x?: number; y?: number };
 type Layouts = Record<string, LayoutItem[]>;
 
+/** Column counts for each react-grid-layout breakpoint */
+const BREAKPOINT_COLUMNS: Record<string, number> = { lg: 12, md: 9, sm: 6, xs: 3, xxs: 1 };
+
 /**
  * Checks if layouts contain corrupted items (w:1, h:1) in non-xxs breakpoints.
  * This can happen during initial render before the container is properly sized.
@@ -48,12 +51,9 @@ const getFromLS = (key: string) => {
           // Check for corrupted layouts (w:1, h:1 in any non-xxs breakpoint)
           if (hasCorruptedLayout(layouts)) return null;
 
-          // Column counts for each breakpoint
-          const colCounts = { lg: 12, md: 9, sm: 6, xs: 3, xxs: 1 };
-
           // Fix all widget sizes - ensure minimum dimensions
           Object.keys(layouts).forEach((breakpoint) => {
-            const maxCols = colCounts[breakpoint] || 12;
+            const maxCols = BREAKPOINT_COLUMNS[breakpoint] || 12;
             layouts[breakpoint] = layouts[breakpoint].map((item) => {
               const isCustomWidget = item.i && item.i.startsWith('customWidget');
               const widgetConfig = dashboardComponents[item.i];
@@ -165,9 +165,6 @@ export const useDashboardState = ({ customWidgets, getWidgets }) => {
 
   const onLayoutChange = useCallback(
     (_currentLayout, allLayouts) => {
-      // Column counts for each breakpoint
-      const colCounts = { lg: 12, md: 9, sm: 6, xs: 3, xxs: 1 };
-
       setLayouts((prevLayouts) => {
         // Merge new layouts with previous, preserving user customizations
         const mergedLayouts = { ...prevLayouts };
@@ -175,7 +172,7 @@ export const useDashboardState = ({ customWidgets, getWidgets }) => {
         Object.keys(allLayouts).forEach((breakpoint) => {
           const newBreakpointLayout = allLayouts[breakpoint];
           const prevBreakpointLayout = prevLayouts[breakpoint] || [];
-          const maxCols = colCounts[breakpoint] || 12;
+          const maxCols = BREAKPOINT_COLUMNS[breakpoint] || 12;
 
           // Enforce minimum sizes for all widgets
           mergedLayouts[breakpoint] = newBreakpointLayout.map((item) => {

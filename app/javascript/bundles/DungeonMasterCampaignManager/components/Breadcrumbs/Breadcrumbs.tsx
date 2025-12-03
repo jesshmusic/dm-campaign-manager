@@ -14,10 +14,20 @@ export type BreadCrumbProps = {
 const pathToTitle = (pathName: string): string => {
   const capitalize = (str: string) =>
     str.length ? str[0].toUpperCase() + str.slice(1).toLowerCase() : '';
-  const escape = (str) => str.replace(/./g, (c) => `\\${c}`);
+  const escape = (str: string) => str.replace(/./g, (c) => `\\${c}`);
   const newName = pathName.replace(new RegExp(`[^${escape(' _-/')}]+`, 'g'), capitalize);
   return newName.replace('-', ' ');
 };
+
+/** Items that should not be clickable (parent categories without their own page) */
+const NON_CLICKABLE_TITLES = ['Sections', 'Rules'];
+
+/** Checks if a breadcrumb item should be rendered as non-clickable */
+const isNonClickable = (title: string, index: number, totalPaths: number): boolean =>
+  index === totalPaths - 1 || NON_CLICKABLE_TITLES.includes(title);
+
+/** Checks if a breadcrumb item is the active (current) page */
+const isActivePage = (index: number, totalPaths: number): boolean => index === totalPaths - 1;
 
 const Breadcrumbs = (props: { isCollapsed: boolean }) => {
   const { isCollapsed } = props;
@@ -56,8 +66,8 @@ const Breadcrumbs = (props: { isCollapsed: boolean }) => {
 
         <BreadcrumbLink to="/" title={'Home'} />
         {paths.map((path, index) =>
-          index === paths.length - 1 || path.title === 'Sections' || path.title === 'Rules' ? (
-            <BreadcrumbItem $isActive={index === paths.length - 1} key={index}>
+          isNonClickable(path.title, index, paths.length) ? (
+            <BreadcrumbItem $isActive={isActivePage(index, paths.length)} key={index}>
               <GiTwoHandedSword /> {path.title}
             </BreadcrumbItem>
           ) : (
