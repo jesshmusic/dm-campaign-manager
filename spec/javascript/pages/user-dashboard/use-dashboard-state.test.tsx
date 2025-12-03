@@ -77,7 +77,7 @@ describe('useDashboardState', () => {
   });
 
   it('loads layouts from localStorage if available', () => {
-    const testLayouts = { lg: [{ i: 'widget1', x: 0, y: 0 }], md: [], sm: [] };
+    const testLayouts = { lg: [{ i: 'widget1', x: 0, y: 0, w: 4, h: 3, minW: 4, minH: 3 }], md: [], sm: [] };
     localStorage.setItem(
       'rgl-8',
       JSON.stringify({
@@ -88,7 +88,9 @@ describe('useDashboardState', () => {
 
     render(<TestComponent customWidgets={[]} getWidgets={mockGetWidgets} />);
 
-    expect(hookResult.layouts).toEqual(testLayouts);
+    expect(hookResult.layouts.lg[0].i).toEqual('widget1');
+    expect(hookResult.layouts.lg[0].x).toEqual(0);
+    expect(hookResult.layouts.lg[0].y).toEqual(0);
   });
 
   it('adds a widget when onAddItem is called', () => {
@@ -115,13 +117,18 @@ describe('useDashboardState', () => {
   it('updates layouts when onLayoutChange is called', () => {
     render(<TestComponent customWidgets={[]} getWidgets={mockGetWidgets} />);
 
-    const newLayouts = { lg: [{ i: 'widget1', x: 1, y: 1 }], md: [], sm: [] };
+    const newLayouts = { lg: [{ i: 'widget1', x: 1, y: 1, w: 4, h: 3 }], md: [], sm: [], xs: [], xxs: [] };
 
     act(() => {
       hookResult.onLayoutChange(null, newLayouts);
     });
 
-    expect(hookResult.layouts).toEqual(newLayouts);
+    // onLayoutChange enforces minimum dimensions, so check key properties
+    expect(hookResult.layouts.lg[0].i).toEqual('widget1');
+    expect(hookResult.layouts.lg[0].x).toEqual(1);
+    expect(hookResult.layouts.lg[0].y).toEqual(1);
+    expect(hookResult.layouts.lg[0].w).toBeGreaterThanOrEqual(4);
+    expect(hookResult.layouts.lg[0].h).toBeGreaterThanOrEqual(3);
   });
 
   it('saves to localStorage when widget keys change', () => {
@@ -138,14 +145,17 @@ describe('useDashboardState', () => {
   it('saves to localStorage when layouts change', () => {
     render(<TestComponent customWidgets={[]} getWidgets={mockGetWidgets} />);
 
-    const newLayouts = { lg: [{ i: 'widget1', x: 2, y: 2 }], md: [], sm: [] };
+    const newLayouts = { lg: [{ i: 'widget1', x: 2, y: 2, w: 4, h: 3 }], md: [], sm: [], xs: [], xxs: [] };
 
     act(() => {
       hookResult.onLayoutChange(null, newLayouts);
     });
 
     const savedData = JSON.parse(localStorage.getItem('rgl-8') || '{}');
-    expect(savedData.layouts).toEqual(newLayouts);
+    // Check that layouts were saved (they may have enforced minimums applied)
+    expect(savedData.layouts.lg[0].i).toEqual('widget1');
+    expect(savedData.layouts.lg[0].x).toEqual(2);
+    expect(savedData.layouts.lg[0].y).toEqual(2);
   });
 
   it('includes custom widgets in allWidgets', () => {

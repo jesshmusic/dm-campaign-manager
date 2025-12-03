@@ -56,8 +56,8 @@ const Breadcrumbs = (props: { isCollapsed: boolean }) => {
 
         <BreadcrumbLink to="/" title={'Home'} />
         {paths.map((path, index) =>
-          index === paths.length - 1 || path.title === 'Sections' ? (
-            <BreadcrumbItem $isActive key={index}>
+          index === paths.length - 1 || path.title === 'Sections' || path.title === 'Rules' ? (
+            <BreadcrumbItem $isActive={index === paths.length - 1} key={index}>
               <GiTwoHandedSword /> {path.title}
             </BreadcrumbItem>
           ) : (
