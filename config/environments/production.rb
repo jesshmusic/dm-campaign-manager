@@ -46,8 +46,13 @@ Rails.application.configure do
   # config.action_cable.allowed_request_origins = [ 'http://example.com', /http:\/\/example.*/ ]
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
-  # This also correctly handles X-Forwarded-Proto headers from Heroku's load balancer.
-  config.force_ssl = true
+  # NOTE: Do not use force_ssl with Cloudflare Flexible SSL - it causes redirect loops
+  # because Cloudflare sends HTTP to Heroku, and force_ssl redirects back to HTTPS.
+  # config.force_ssl = true
+
+  # Assume all requests are HTTPS (Cloudflare handles SSL termination).
+  # This makes Rails generate https:// URLs and treat requests as secure without redirecting.
+  config.assume_ssl = true
 
   # Include generic and useful information about system operation, but avoid logging too much
   # information to avoid inadvertent exposure of personally identifiable information (PII).
