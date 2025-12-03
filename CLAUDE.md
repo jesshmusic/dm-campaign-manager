@@ -35,3 +35,7 @@
 - Use functional React components with hooks
 - Use TypeScript for all new frontend code
 - Follow existing patterns in the codebase
+
+## Zeitwerk Naming Conventions
+
+The `Utilities::Openai::Client` class uses `Openai` (not `OpenAI`) because Zeitwerk requires module names to match directory names. The directory is `app/models/utilities/openai/`, so the module must be `Openai`. Changing to `OpenAI` would require renaming the directory to `open_ai/` which would be a breaking change across the codebase.

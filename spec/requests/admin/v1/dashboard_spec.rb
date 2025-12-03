@@ -1,5 +1,8 @@
 require 'rails_helper'
 
+# Ensure Utilities::Openai::Client is loaded for stubbing
+require_relative '../../../../app/models/utilities/openai/client'
+
 RSpec.describe 'Admin::V1::Dashboard', type: :request do
   describe 'GET /v1/dashboard' do
     context 'when user is an admin' do
