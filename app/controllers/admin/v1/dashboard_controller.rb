@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require Rails.root.join('app/models/utilities/openai/client')
 require 'dotenv/load'
 
 module Admin
@@ -40,7 +39,7 @@ module Admin
       end
 
       def adventure_hook
-        openai = OpenAI::Client.new(api_key: ENV.fetch('OPENAI_API_KEY', nil))
+        openai = Utilities::Openai::Client.new(api_key: ENV.fetch('OPENAI_API_KEY', nil))
 
         player_count   = params[:player_count].to_i
         average_level  = params[:average_level].to_i

@@ -1,1 +1,6 @@
-require_relative 'openai/client'
+# frozen_string_literal: true
+
+module Utilities
+  module Openai
+  end
+end

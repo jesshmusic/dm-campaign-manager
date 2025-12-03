@@ -5,8 +5,9 @@ require 'net/http'
 require 'time'
 require 'uri'
 
-module OpenAI
-  class Client
+module Utilities
+  module Openai
+    class Client
     class Error < RuntimeError; end
 
     LastResponse = Struct.new(
@@ -132,6 +133,7 @@ module OpenAI
         'Authorization' => "Bearer #{@api_key}",
         'Content-Type' => 'application/json'
       }
+    end
     end
   end
 end

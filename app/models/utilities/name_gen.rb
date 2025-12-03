@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require_relative 'openai/client'
-
 class NameGen
-  OPENAI = OpenAI::Client.new(api_key: ENV.fetch('OPENAI_API_KEY', 'test-api-key'))
+  def self.openai_client
+    @openai_client ||= Utilities::Openai::Client.new(api_key: ENV.fetch('OPENAI_API_KEY', 'test-api-key'))
+  end
 
   # --------------------------- Variety controls ---------------------------
   VARIANCE = {
@@ -60,7 +60,7 @@ class NameGen
 
   def self.generate_name(prompt, **params)
     random_opts = VARIANCE.transform_values { |r| rand(r).round(2) }
-    OPENAI.completions(prompt: prompt, **random_opts.merge(params))
+    openai_client.completions(prompt: prompt, **random_opts.merge(params))
   end
 
   def self.build_prompt(gender:, race:, setting:, extra: '')
