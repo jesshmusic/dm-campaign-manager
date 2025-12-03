@@ -91,6 +91,9 @@ describe('useDashboardState', () => {
     expect(hookResult.layouts.lg[0].i).toEqual('widget1');
     expect(hookResult.layouts.lg[0].x).toEqual(0);
     expect(hookResult.layouts.lg[0].y).toEqual(0);
+    // Verify minimum dimensions are enforced when loading from localStorage
+    expect(hookResult.layouts.lg[0].w).toBeGreaterThanOrEqual(4);
+    expect(hookResult.layouts.lg[0].h).toBeGreaterThanOrEqual(3);
   });
 
   it('adds a widget when onAddItem is called', () => {
@@ -213,5 +216,90 @@ describe('useDashboardState', () => {
     expect(typeof hookResult.widgets[0].onRemoveItem).toBe('function');
     // Verify it's the same function by comparing the serialized versions
     expect(hookResult.widgets[0].onRemoveItem.toString()).toBe(hookResult.onRemoveItem.toString());
+  });
+
+  describe('corrupted layout detection', () => {
+    it('rejects corrupted layouts from localStorage (w:1, h:1 in non-xxs breakpoints)', () => {
+      const corruptedLayouts = {
+        lg: [{ i: 'widget1', x: 0, y: 0, w: 1, h: 1 }],
+        md: [],
+        sm: [],
+      };
+      localStorage.setItem(
+        'rgl-8',
+        JSON.stringify({
+          widgets: ['widget1'],
+          layouts: corruptedLayouts,
+        })
+      );
+
+      render(<TestComponent customWidgets={[]} getWidgets={mockGetWidgets} />);
+
+      // Should fall back to defaults instead of using corrupted layouts
+      expect(hookResult.layouts).toEqual({ lg: [], md: [], sm: [] });
+    });
+
+    it('does not save corrupted layouts to localStorage', () => {
+      render(<TestComponent customWidgets={[]} getWidgets={mockGetWidgets} />);
+
+      // Try to set corrupted layout
+      const corruptedLayouts = {
+        lg: [{ i: 'widget1', x: 0, y: 0, w: 1, h: 1 }],
+        md: [],
+        sm: [],
+        xs: [],
+        xxs: [],
+      };
+
+      act(() => {
+        hookResult.onLayoutChange(null, corruptedLayouts);
+      });
+
+      // localStorage should not contain the corrupted layout
+      const savedData = JSON.parse(localStorage.getItem('rgl-8') || '{}');
+      // Either layouts is not saved, or the lg breakpoint doesn't have w:1,h:1
+      if (savedData.layouts?.lg?.[0]) {
+        expect(savedData.layouts.lg[0].w).not.toBe(1);
+      }
+    });
+
+    it('preserves existing valid layout when receiving corrupted layout in onLayoutChange', () => {
+      // Start with valid layouts
+      const validLayouts = {
+        lg: [{ i: 'widget1', x: 2, y: 2, w: 4, h: 3 }],
+        md: [],
+        sm: [],
+        xs: [],
+        xxs: [],
+      };
+      localStorage.setItem(
+        'rgl-8',
+        JSON.stringify({
+          widgets: ['widget1'],
+          layouts: validLayouts,
+        })
+      );
+
+      render(<TestComponent customWidgets={[]} getWidgets={mockGetWidgets} />);
+
+      // Send corrupted layout
+      const corruptedLayouts = {
+        lg: [{ i: 'widget1', x: 0, y: 0, w: 1, h: 1 }],
+        md: [],
+        sm: [],
+        xs: [],
+        xxs: [],
+      };
+
+      act(() => {
+        hookResult.onLayoutChange(null, corruptedLayouts);
+      });
+
+      // Should preserve the existing valid position
+      expect(hookResult.layouts.lg[0].x).toEqual(2);
+      expect(hookResult.layouts.lg[0].y).toEqual(2);
+      expect(hookResult.layouts.lg[0].w).toBeGreaterThanOrEqual(4);
+      expect(hookResult.layouts.lg[0].h).toBeGreaterThanOrEqual(3);
+    });
   });
 });

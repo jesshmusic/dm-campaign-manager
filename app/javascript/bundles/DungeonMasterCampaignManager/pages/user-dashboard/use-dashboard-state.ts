@@ -4,7 +4,33 @@ import { WidgetElementProps } from '../../components/Widgets/Widget';
 import { getIconFromName } from '../../utilities/icons';
 import CustomWidget from '../../components/Widgets/CustomWidget';
 
-const getFromLS = (key) => {
+type LayoutItem = { i?: string; w?: number; h?: number; x?: number; y?: number };
+type Layouts = Record<string, LayoutItem[]>;
+
+/**
+ * Checks if layouts contain corrupted items (w:1, h:1) in non-xxs breakpoints.
+ * This can happen during initial render before the container is properly sized.
+ * The xxs breakpoint legitimately has w:1 items, so it's excluded from the check.
+ */
+const hasCorruptedLayout = (layouts: Layouts, breakpoints = ['lg', 'md', 'sm', 'xs']): boolean => {
+  return breakpoints.some((breakpoint) => {
+    const breakpointLayout = layouts?.[breakpoint];
+    return (
+      Array.isArray(breakpointLayout) &&
+      breakpointLayout.length > 0 &&
+      breakpointLayout.some((item) => item.w === 1 && item.h === 1)
+    );
+  });
+};
+
+/**
+ * Checks if a single layout item is corrupted (w:1, h:1).
+ */
+const isCorruptedItem = (item: LayoutItem): boolean => {
+  return item.w === 1 && item.h === 1;
+};
+
+const getFromLS = (key: string) => {
   if (global.localStorage) {
     try {
       const ls = JSON.parse(global.localStorage.getItem('rgl-8') as string);
@@ -20,17 +46,7 @@ const getFromLS = (key) => {
           if (!hasValidLayout) return null;
 
           // Check for corrupted layouts (w:1, h:1 in any non-xxs breakpoint)
-          const hasCorruptedLayout = ['lg', 'md', 'sm', 'xs'].some((breakpoint) => {
-            const breakpointLayout = layouts?.[breakpoint];
-            return (
-              Array.isArray(breakpointLayout) &&
-              breakpointLayout.length > 0 &&
-              breakpointLayout.some(
-                (item: { w?: number; h?: number }) => item.w === 1 && item.h === 1,
-              )
-            );
-          });
-          if (hasCorruptedLayout) return null;
+          if (hasCorruptedLayout(layouts)) return null;
 
           // Column counts for each breakpoint
           const colCounts = { lg: 12, md: 9, sm: 6, xs: 3, xxs: 1 };
@@ -66,20 +82,10 @@ const getFromLS = (key) => {
   return null;
 };
 
-const saveToLS = (layouts, widgets) => {
+const saveToLS = (layouts: Layouts, widgets: string[]) => {
   if (global.localStorage) {
     // Don't save if any non-xxs breakpoint has items with w:1, h:1
-    // This happens during initial render before container is properly sized
-    // (xxs breakpoint legitimately has w:1 items, but heights should be > 1)
-    const hasCorruptedLayout = ['lg', 'md', 'sm', 'xs'].some((breakpoint) => {
-      const breakpointLayout = layouts?.[breakpoint];
-      return (
-        Array.isArray(breakpointLayout) &&
-        breakpointLayout.length > 0 &&
-        breakpointLayout.some((item: { w?: number; h?: number }) => item.w === 1 && item.h === 1)
-      );
-    });
-    if (hasCorruptedLayout) {
+    if (hasCorruptedLayout(layouts)) {
       return; // Skip saving corrupted layouts
     }
     global.localStorage.setItem(
@@ -185,7 +191,13 @@ export const useDashboardState = ({ customWidgets, getWidgets }) => {
             const existingItem = prevBreakpointLayout.find((prev) => prev.i === item.i);
 
             // If item exists and new layout has w:1,h:1 (corrupted), keep existing
-            if (existingItem && item.w === 1 && item.h === 1 && breakpoint !== 'xxs') {
+            // but only if the existing item is not also corrupted
+            if (
+              existingItem &&
+              isCorruptedItem(item) &&
+              !isCorruptedItem(existingItem) &&
+              breakpoint !== 'xxs'
+            ) {
               return {
                 ...existingItem,
                 minW,

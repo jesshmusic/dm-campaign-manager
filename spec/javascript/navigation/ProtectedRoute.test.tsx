@@ -45,4 +45,84 @@ describe('ProtectedRoute', () => {
 
     expect(screen.getByText('Protected Content')).toBeInTheDocument();
   });
+
+  describe('admin role checking', () => {
+    it('grants access when user has Admin role in Auth0 custom claim', () => {
+      const { useAuth0 } = require('@auth0/auth0-react');
+      useAuth0.mockReturnValue({
+        isAuthenticated: true,
+        isLoading: false,
+        user: {
+          name: 'Test Admin',
+          'https://dm-campaign-manager.appRoles': ['Admin'],
+        },
+      });
+
+      render(
+        <MemoryRouter>
+          <ProtectedRoute as={MockComponent} requireAdmin={true} />
+        </MemoryRouter>
+      );
+
+      expect(screen.getByText('Protected Content')).toBeInTheDocument();
+    });
+
+    it('grants access when currentUser has admin role in Redux', () => {
+      const { useAuth0 } = require('@auth0/auth0-react');
+      useAuth0.mockReturnValue({
+        isAuthenticated: true,
+        isLoading: false,
+        user: { name: 'Test Admin' },
+      });
+
+      render(
+        <MemoryRouter>
+          <ProtectedRoute as={MockComponent} requireAdmin={true} currentUser={{ role: 'admin' }} />
+        </MemoryRouter>
+      );
+
+      expect(screen.getByText('Protected Content')).toBeInTheDocument();
+    });
+
+    it('redirects when user lacks Admin role', () => {
+      const { useAuth0 } = require('@auth0/auth0-react');
+      useAuth0.mockReturnValue({
+        isAuthenticated: true,
+        isLoading: false,
+        user: {
+          name: 'Regular User',
+          'https://dm-campaign-manager.appRoles': ['User'],
+        },
+      });
+
+      render(
+        <MemoryRouter initialEntries={['/admin']}>
+          <ProtectedRoute as={MockComponent} requireAdmin={true} />
+        </MemoryRouter>
+      );
+
+      // Should not show protected content (user is redirected)
+      expect(screen.queryByText('Protected Content')).not.toBeInTheDocument();
+    });
+
+    it('redirects when user has empty roles array', () => {
+      const { useAuth0 } = require('@auth0/auth0-react');
+      useAuth0.mockReturnValue({
+        isAuthenticated: true,
+        isLoading: false,
+        user: {
+          name: 'No Roles User',
+          'https://dm-campaign-manager.appRoles': [],
+        },
+      });
+
+      render(
+        <MemoryRouter initialEntries={['/admin']}>
+          <ProtectedRoute as={MockComponent} requireAdmin={true} />
+        </MemoryRouter>
+      );
+
+      expect(screen.queryByText('Protected Content')).not.toBeInTheDocument();
+    });
+  });
 });
