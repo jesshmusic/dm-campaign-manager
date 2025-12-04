@@ -35,7 +35,9 @@ module Admin
       end
 
       def random_monster_name
-        render json: { name: NameGen.random_monster_name }
+        monster_type = params[:monster_type]
+        size = params[:size]
+        render json: { name: NameGen.random_monster_name(monster_type: monster_type, size: size) }
       end
 
       def adventure_hook

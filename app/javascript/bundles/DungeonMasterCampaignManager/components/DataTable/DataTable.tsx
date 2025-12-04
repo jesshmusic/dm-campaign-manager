@@ -2,12 +2,19 @@ import React from 'react';
 import ReactPaginate from 'react-paginate';
 import {
   Column,
-  HeaderGroup,
   Row,
   useExpanded,
   usePagination,
   useSortBy,
   useTable,
+  TableInstance,
+  UsePaginationInstanceProps,
+  UsePaginationState,
+  UseSortByInstanceProps,
+  UseExpandedInstanceProps,
+  TableState,
+  ColumnInstance,
+  UseSortByColumnProps,
 } from 'react-table';
 import { GiArchiveResearch } from 'react-icons/gi';
 import { TiArrowSortedDown, TiArrowSortedUp, TiArrowUnsorted } from 'react-icons/ti';
@@ -27,6 +34,23 @@ import {
   SearchButton,
 } from './DataTable.styles';
 
+type TableInstanceWithPlugins<T extends object> = TableInstance<T> &
+  UsePaginationInstanceProps<T> &
+  UseSortByInstanceProps<T> &
+  UseExpandedInstanceProps<T> & {
+    state: TableState<T> & UsePaginationState<T>;
+  };
+
+type ColumnWithSorting<T extends object> = ColumnInstance<T> & UseSortByColumnProps<T>;
+
+interface SearchFormData {
+  searchTerm: string;
+}
+
+interface PageClickData {
+  selected: number;
+}
+
 export interface DataTableProps<T extends object = Record<string, unknown>> {
   columns: Array<Column<T>>;
   data: Array<T>;
@@ -36,7 +60,7 @@ export interface DataTableProps<T extends object = Record<string, unknown>> {
   noHover?: boolean;
   paginateExpandedRows?: boolean;
   perPage?: number;
-  renderRowSubComponent?: (row: unknown) => JSX.Element;
+  renderRowSubComponent?: (row: unknown) => React.ReactElement;
   results: number;
 }
 
@@ -52,25 +76,24 @@ const DataTable = <T extends object = Record<string, unknown>>({
   results,
   renderRowSubComponent,
 }: DataTableProps<T>) => {
-  // React Table has type variance issues with generics, so we cast to any here
+  const tableOptions = {
+    columns: columns as Column<object>[],
+    data: data as object[],
+    initialState: {
+      pageIndex: 0,
+      pageSize: perPage,
+    } as Partial<TableState<object> & UsePaginationState<object>>,
+    paginateExpandedRows,
+  };
+
   const dataTable = useTable(
-    {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      columns: columns as any,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      data: data as any,
-      initialState: {
-        pageIndex: 0,
-        pageSize: perPage,
-      },
-      paginateExpandedRows,
-    },
+    tableOptions,
     useSortBy,
     useExpanded,
     usePagination,
-  );
+  ) as TableInstanceWithPlugins<object>;
 
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit } = useForm<SearchFormData>();
 
   if (loading) {
     return <DndSpinner showTableFrame />;
@@ -84,17 +107,17 @@ const DataTable = <T extends object = Record<string, unknown>>({
     }
   };
 
-  const handlePageClick = (data) => {
+  const handlePageClick = (data: PageClickData) => {
     dataTable.gotoPage(data.selected);
   };
 
-  const handleSearch = (data) => {
+  const handleSearch = (data: SearchFormData) => {
     if (onSearch) {
       onSearch(data.searchTerm);
     }
   };
 
-  const sortIcon = (column: HeaderGroup) => {
+  const sortIcon = (column: ColumnWithSorting<object>) => {
     if (column.isSorted && column.isSortedDesc) {
       return <TiArrowSortedDown color="#555752" />;
     } else if (column.isSorted) {
@@ -131,12 +154,13 @@ const DataTable = <T extends object = Record<string, unknown>>({
             return (
               <tr key={headerGroup.id} {...headerGroupProps}>
                 {headerGroup.headers.map((column) => {
-                  const { key: _columnKey, ...columnProps } = column.getHeaderProps(
-                    column.getSortByToggleProps(),
+                  const columnWithSorting = column as unknown as ColumnWithSorting<object>;
+                  const { key: _columnKey, ...columnProps } = columnWithSorting.getHeaderProps(
+                    columnWithSorting.getSortByToggleProps(),
                   );
                   return (
                     <th key={column.id} {...columnProps}>
-                      {column.render('Header')} {sortIcon(column)}
+                      {column.render('Header') as React.ReactNode} {sortIcon(columnWithSorting)}
                     </th>
                   );
                 })}
@@ -145,7 +169,7 @@ const DataTable = <T extends object = Record<string, unknown>>({
           })}
         </thead>
         <tbody {...dataTable.getTableBodyProps()}>
-          {dataTable.page.map((row, rowIndex) => {
+          {dataTable.page.map((row: Row<object>, rowIndex: number) => {
             dataTable.prepareRow(row);
             const { role: _role, key: _rowKey, ...rowProps } = row.getRowProps();
             const typedRow = row as unknown as Row<T>;
@@ -153,7 +177,7 @@ const DataTable = <T extends object = Record<string, unknown>>({
             return (
               <React.Fragment key={rowKey}>
                 <tr key={`tr-${rowKey}`} {...rowProps} onClick={() => handleGoToPage(typedRow)}>
-                  {row.cells.map((cell, index) => {
+                  {row.cells.map((cell, index: number) => {
                     const { key: _cellKey, ...cellProps } = cell.getCellProps();
                     return (
                       <td
@@ -161,12 +185,12 @@ const DataTable = <T extends object = Record<string, unknown>>({
                         {...cellProps}
                         className={index === 0 ? 'name-row' : ''}
                       >
-                        {cell.render('Cell')}
+                        {cell.render('Cell') as React.ReactNode}
                       </td>
                     );
                   })}
                 </tr>
-                {row.isExpanded &&
+                {(row as Row<object> & { isExpanded?: boolean }).isExpanded &&
                   renderRowSubComponent &&
                   renderRowSubComponent({
                     row,

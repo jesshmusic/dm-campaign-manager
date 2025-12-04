@@ -11,7 +11,14 @@ import { GiLinkedRings } from 'react-icons/gi';
 import FormSelectAsync from '../../../../components/forms/FormSelectAsync';
 import SavesSkillsSection from '../SavesSkillsSection';
 
-import { GenForm } from '../../MonsterGenerator.styles';
+import {
+  GenForm,
+  StepNavigation,
+  StepNavigationButtons,
+  StepIndicator,
+  StepProgressBar,
+  StepProgressFill,
+} from '../../MonsterGenerator.styles';
 
 export type GenerateMonsterProps = {
   isLoading?: boolean;
@@ -19,9 +26,12 @@ export type GenerateMonsterProps = {
   token?: string;
 };
 
+const TOTAL_STEPS = 6;
+
 const QuickGenerateMonster = (props: GenerateMonsterProps) => {
   const { isLoading } = props;
   const {
+    activeNameButton,
     archetypeOptions,
     challengeRatingOptions,
     getMonsterActions,
@@ -35,6 +45,27 @@ const QuickGenerateMonster = (props: GenerateMonsterProps) => {
     UseForm,
   } = useData(props);
   const [testState, setTestState] = React.useState();
+  const [currentStep, setCurrentStep] = React.useState(1);
+
+  const handleNext = () => {
+    if (currentStep < TOTAL_STEPS) {
+      setCurrentStep(currentStep + 1);
+    }
+  };
+
+  const handlePrevious = () => {
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
+
+  const handleSkip = () => {
+    if (currentStep < TOTAL_STEPS) {
+      setCurrentStep(currentStep + 1);
+    }
+  };
+
+  const progressPercent = (currentStep / TOTAL_STEPS) * 100;
 
   React.useEffect(() => {
     const subscription = UseForm.watch((value, { name }) => {
@@ -65,31 +96,26 @@ const QuickGenerateMonster = (props: GenerateMonsterProps) => {
       ) : null}
 
       <Frame
-        title="Random Monster Generator"
-        subtitle="Select options to create a new Monster"
+        subtitle="Set the basics and let the generator do the rest. Perfect for creating NPCs and enemies on the fly."
         className="random-monster-generator"
       >
-        <GenForm onSubmit={UseForm.handleSubmit(onSubmit)} noValidate>
-          <NameFormField
-            characterRace={UseForm.getValues('characterRace')?.value}
-            handleGenerateName={handleGenerateName}
-            handleGenerateMonsterName={handleGenerateMonsterName}
-            register={UseForm.register}
-            monsterType={monsterType}
-            errors={UseForm.formState.errors}
-          />
+        <StepProgressBar>
+          <StepProgressFill $progress={progressPercent} />
+        </StepProgressBar>
 
-          <GenMonsterSection heading="Stats">
+        <GenForm onSubmit={UseForm.handleSubmit(onSubmit)} noValidate>
+          <GenMonsterSection heading="Stats" step={1} currentStep={currentStep} isMultiStep>
             <QuickMonsterStatsSection
               archetypeOptions={archetypeOptions}
-              UseForm={UseForm}
               challengeRatingOptions={challengeRatingOptions}
+              monsterType={monsterType}
+              UseForm={UseForm}
             />
           </GenMonsterSection>
 
-          <GenMonsterSection heading="Traits">
+          <GenMonsterSection heading="Traits" step={2} currentStep={currentStep} isMultiStep>
             <FormSelectAsync
-              label="Search for and select special abilities from existing monsters"
+              label="Search for and select special abilities from existing creatures"
               name="specialAbilityOptions"
               control={UseForm.control}
               getOptions={getSpecialAbilities}
@@ -98,9 +124,9 @@ const QuickGenerateMonster = (props: GenerateMonsterProps) => {
             />
           </GenMonsterSection>
 
-          <GenMonsterSection heading="Actions">
+          <GenMonsterSection heading="Actions" step={3} currentStep={currentStep} isMultiStep>
             <FormSelectAsync
-              label="Search for and select actions from existing monsters"
+              label="Search for and select actions from existing creatures"
               name="actionOptions"
               control={UseForm.control}
               getOptions={getMonsterActions}
@@ -109,11 +135,16 @@ const QuickGenerateMonster = (props: GenerateMonsterProps) => {
             />
           </GenMonsterSection>
 
-          <GenMonsterSection heading="Saving Throws & Skills">
+          <GenMonsterSection
+            heading="Saving Throws & Skills"
+            step={4}
+            currentStep={currentStep}
+            isMultiStep
+          >
             <SavesSkillsSection UseForm={UseForm} />
           </GenMonsterSection>
 
-          <GenMonsterSection heading="Spells">
+          <GenMonsterSection heading="Spells" step={5} currentStep={currentStep} isMultiStep>
             <FormSelectAsync
               label={'Spells (search by name, level, or school)'}
               name={`spellOptions`}
@@ -124,22 +155,55 @@ const QuickGenerateMonster = (props: GenerateMonsterProps) => {
             />
           </GenMonsterSection>
 
-          <GenMonsterSection heading="Submit">
-            <Button
-              color={Colors.success}
-              disabled={isLoading}
-              title={isLoading ? 'Generating...' : 'Generate Monster'}
-              type="submit"
-              icon={
-                isLoading ? (
-                  <GiLinkedRings size={40} className="spinner" />
-                ) : (
-                  <GiDiceTwentyFacesTwenty size={40} />
-                )
-              }
-              isFullWidth
+          <GenMonsterSection heading="Name" step={6} currentStep={currentStep} isMultiStep>
+            <NameFormField
+              activeNameButton={activeNameButton}
+              characterRace={UseForm.getValues('characterRace')?.value}
+              handleGenerateName={handleGenerateName}
+              handleGenerateMonsterName={handleGenerateMonsterName}
+              isGeneratingName={activeNameButton !== null}
+              register={UseForm.register}
+              monsterType={monsterType}
+              errors={UseForm.formState.errors}
             />
           </GenMonsterSection>
+
+          <StepNavigation>
+            <StepIndicator>
+              Step {currentStep} of {TOTAL_STEPS}
+            </StepIndicator>
+            <StepNavigationButtons>
+              {currentStep > 1 && (
+                <Button
+                  color={Colors.secondary}
+                  title="Previous"
+                  onClick={handlePrevious}
+                  type="button"
+                />
+              )}
+              {currentStep < TOTAL_STEPS && (
+                <>
+                  <Button color={Colors.light} title="Skip" onClick={handleSkip} type="button" />
+                  <Button color={Colors.primary} title="Next" onClick={handleNext} type="button" />
+                </>
+              )}
+              {currentStep === TOTAL_STEPS && (
+                <Button
+                  color={Colors.success}
+                  disabled={isLoading}
+                  title={isLoading ? 'Generating...' : 'Generate NPC'}
+                  type="submit"
+                  icon={
+                    isLoading ? (
+                      <GiLinkedRings size={40} className="spinner" />
+                    ) : (
+                      <GiDiceTwentyFacesTwenty size={40} />
+                    )
+                  }
+                />
+              )}
+            </StepNavigationButtons>
+          </StepNavigation>
         </GenForm>
       </Frame>
     </>

@@ -39,7 +39,7 @@ describe('generate-monster useData', () => {
   it('initializes with default form values', () => {
     render(<TestComponent {...defaultProps} />);
 
-    expect(screen.getByTestId('name')).toHaveTextContent('New Monster');
+    expect(screen.getByTestId('name')).toHaveTextContent('New NPC');
     expect(screen.getByTestId('alignment')).toHaveTextContent('Neutral');
     expect(screen.getByTestId('armor-class')).toHaveTextContent('10');
     expect(screen.getByTestId('hit-points')).toHaveTextContent('4');
@@ -54,7 +54,7 @@ describe('generate-monster useData', () => {
     button.click();
 
     await waitFor(() => {
-      expect(mockedAxios.get).toHaveBeenCalledWith('/v1/random_monster_name');
+      expect(mockedAxios.get).toHaveBeenCalledWith('/v1/random_monster_name?monster_type=humanoid&size=medium');
     });
   });
 

@@ -6,6 +6,7 @@ import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import { FlashMessage } from '../utilities/types';
 import HeroBanner from '../components/HeroBanner/HeroBanner';
 import Footer from '../components/Footer/Footer';
+import YouTubeAd from '../components/BannerAd/YouTubeAd';
 import rest from '../api/api';
 import DMRoutes from '../navigation/DMRoutes';
 
@@ -45,6 +46,7 @@ const Layout = (props) => {
     <AppContainer ref={parentNode}>
       <HeroBanner />
       <DMRoutes {...combinedProps} />
+      <YouTubeAd />
       <Footer user={combinedProps.user} />
     </AppContainer>
   );

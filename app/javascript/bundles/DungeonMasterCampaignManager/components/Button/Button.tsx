@@ -30,6 +30,7 @@ const Button = (props: {
   style?: object;
   hideTitle?: boolean;
   isFullWidth?: boolean;
+  isLoading?: boolean;
 }) => {
   const {
     className,
@@ -40,6 +41,7 @@ const Button = (props: {
     icon,
     id,
     isFullWidth,
+    isLoading,
     onClick,
     style,
     title,
@@ -52,10 +54,11 @@ const Button = (props: {
       $color={colorMap[color]}
       $isFullWidth={isFullWidth}
       $iconOnly={hideTitle}
+      $isLoading={isLoading}
       onClick={onClick}
       id={id}
       data-bs-dismiss={dataBsDismiss}
-      disabled={disabled}
+      disabled={disabled || isLoading}
       style={style}
       type={type || 'button'}
     >

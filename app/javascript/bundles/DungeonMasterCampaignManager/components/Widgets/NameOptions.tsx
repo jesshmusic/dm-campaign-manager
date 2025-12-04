@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Select, { Options } from 'react-select';
 import Button from '../Button/Button';
 import { Colors } from '../../utilities/enums';
-import { GiBattleGear } from 'react-icons/gi';
+import { GiBattleGear, GiLinkedRings } from 'react-icons/gi';
 
 import '../forms/inputOverrides.scss';
 import { NameOptions as NameOptionsWrapper, Label } from './Widgets.styles';
@@ -34,12 +34,13 @@ export const raceOptions: Options<unknown> = [
 ];
 
 interface NameOptionsProps {
+  isLoading?: boolean;
   onFormSubmit: (gender: string, race: string, userId?: string) => void;
   title: string;
   token?: string;
 }
 
-const NameOptions = ({ onFormSubmit, title, token }: NameOptionsProps) => {
+const NameOptions = ({ isLoading, onFormSubmit, title, token }: NameOptionsProps) => {
   const [gender, setGender] = useState({
     value: 'female',
     label: 'Female',
@@ -61,9 +62,10 @@ const NameOptions = ({ onFormSubmit, title, token }: NameOptionsProps) => {
         <Button
           id={'nameGeneratorSubmit'}
           color={Colors.primary}
-          icon={<GiBattleGear />}
+          disabled={isLoading}
+          icon={isLoading ? <GiLinkedRings className="spinner" /> : <GiBattleGear />}
           onClick={handleSubmit}
-          title={`Get ${title}`}
+          title={isLoading ? 'Generating...' : `Get ${title}`}
         />
       </div>
       <div>

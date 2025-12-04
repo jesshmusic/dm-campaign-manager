@@ -101,19 +101,9 @@ describe('QuickGenerateMonster', () => {
     render(<QuickGenerateMonster onGenerateMonster={jest.fn()} />);
   });
 
-  it('displays frame with correct title', () => {
-    render(<QuickGenerateMonster onGenerateMonster={jest.fn()} />);
-    expect(screen.getByText('Random Monster Generator')).toBeInTheDocument();
-  });
-
   it('displays frame with correct subtitle', () => {
     render(<QuickGenerateMonster onGenerateMonster={jest.fn()} />);
-    expect(screen.getByText('Select options to create a new Monster')).toBeInTheDocument();
-  });
-
-  it('renders NameFormField', () => {
-    render(<QuickGenerateMonster onGenerateMonster={jest.fn()} />);
-    expect(screen.getByTestId('name-form-field')).toBeInTheDocument();
+    expect(screen.getByText('Set the basics and let the generator do the rest. Perfect for creating NPCs and enemies on the fly.')).toBeInTheDocument();
   });
 
   it('renders Stats section', () => {
@@ -125,13 +115,13 @@ describe('QuickGenerateMonster', () => {
   it('renders Traits section', () => {
     render(<QuickGenerateMonster onGenerateMonster={jest.fn()} />);
     expect(screen.getByTestId('section-Traits')).toBeInTheDocument();
-    expect(screen.getByText('Search for and select special abilities from existing monsters')).toBeInTheDocument();
+    expect(screen.getByText('Search for and select special abilities from existing creatures')).toBeInTheDocument();
   });
 
   it('renders Actions section', () => {
     render(<QuickGenerateMonster onGenerateMonster={jest.fn()} />);
     expect(screen.getByTestId('section-Actions')).toBeInTheDocument();
-    expect(screen.getByText('Search for and select actions from existing monsters')).toBeInTheDocument();
+    expect(screen.getByText('Search for and select actions from existing creatures')).toBeInTheDocument();
   });
 
   it('renders Saving Throws & Skills section', () => {
@@ -146,10 +136,10 @@ describe('QuickGenerateMonster', () => {
     expect(screen.getByText('Spells (search by name, level, or school)')).toBeInTheDocument();
   });
 
-  it('renders Submit section with button', () => {
+  it('renders Name section', () => {
     render(<QuickGenerateMonster onGenerateMonster={jest.fn()} />);
-    expect(screen.getByTestId('section-Submit')).toBeInTheDocument();
-    expect(screen.getByText('Generate Monster')).toBeInTheDocument();
+    expect(screen.getByTestId('section-Name')).toBeInTheDocument();
+    expect(screen.getByTestId('name-form-field')).toBeInTheDocument();
   });
 
   it('calls useData hook with props', () => {
@@ -164,34 +154,15 @@ describe('QuickGenerateMonster', () => {
     });
   });
 
-  it('displays "Generating..." when isLoading is true', () => {
-    render(<QuickGenerateMonster onGenerateMonster={jest.fn()} isLoading={true} />);
-    expect(screen.getByText('Generating...')).toBeInTheDocument();
-  });
-
-  it('displays "Generate Monster" when isLoading is false', () => {
-    render(<QuickGenerateMonster onGenerateMonster={jest.fn()} isLoading={false} />);
-    expect(screen.getByText('Generate Monster')).toBeInTheDocument();
-  });
-
-  it('disables submit button when isLoading is true', () => {
-    render(<QuickGenerateMonster onGenerateMonster={jest.fn()} isLoading={true} />);
-    const button = screen.getByText('Generating...');
-    expect(button).toBeDisabled();
-  });
-
-  it('enables submit button when isLoading is false', () => {
-    render(<QuickGenerateMonster onGenerateMonster={jest.fn()} isLoading={false} />);
-    const button = screen.getByText('Generate Monster');
-    expect(button).not.toBeDisabled();
-  });
-
-  it('submits form when Generate Monster button clicked', () => {
+  it('renders Next and Skip buttons on step 1', () => {
     render(<QuickGenerateMonster onGenerateMonster={jest.fn()} />);
-    const button = screen.getByText('Generate Monster');
-    fireEvent.click(button);
+    expect(screen.getByText('Next')).toBeInTheDocument();
+    expect(screen.getByText('Skip')).toBeInTheDocument();
+  });
 
-    expect(mockUseData.onSubmit).toHaveBeenCalled();
+  it('shows step indicator', () => {
+    render(<QuickGenerateMonster onGenerateMonster={jest.fn()} />);
+    expect(screen.getByText(/Step 1 of 6/)).toBeInTheDocument();
   });
 
   it('calls handleGenerateMonsterName when Generate Monster Name clicked', () => {

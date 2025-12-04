@@ -98,6 +98,7 @@ export const StyledButton = styled.button<{
   $color?: ButtonColor;
   $isFullWidth?: boolean;
   $iconOnly?: boolean;
+  $isLoading?: boolean;
 }>`
   align-items: center;
   align-self: center;
@@ -133,8 +134,8 @@ export const StyledButton = styled.button<{
   }
 
   &:disabled {
-    background-color: rgba(151, 44, 29, 0.7);
     cursor: default;
+    opacity: ${({ $isLoading }) => ($isLoading ? 0.6 : 0.5)};
   }
 
   &:not(:disabled) {

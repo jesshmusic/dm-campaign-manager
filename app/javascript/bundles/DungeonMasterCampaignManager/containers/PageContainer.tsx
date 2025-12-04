@@ -12,7 +12,6 @@ import SideBar from '../components/SideBar/SideBar';
 import Util from '../utilities/utilities';
 import { gsap } from 'gsap';
 import ReactGA from 'react-ga4';
-import YouTubeAd from '../components/BannerAd/YouTubeAd';
 import SearchField from '../components/Search/SearchField';
 
 import { PageWrapper, PageContent, Page } from './Containers.styles';
@@ -72,10 +71,7 @@ const PageContainer = (props: PageContainerProps) => {
       <SearchField />
       <PageWrapper ref={nodeRef}>
         <PageContent>
-          <Page $isCollapsed={isCollapsed}>
-            {children}
-            <YouTubeAd />
-          </Page>
+          <Page $isCollapsed={isCollapsed}>{children}</Page>
         </PageContent>
       </PageWrapper>
     </div>

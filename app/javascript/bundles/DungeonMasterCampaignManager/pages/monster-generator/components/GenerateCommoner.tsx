@@ -2,10 +2,21 @@ import React from 'react';
 import NameOptions from '../../../components/Widgets/NameOptions';
 import Frame from '../../../components/Frame/Frame';
 
-const GenerateCommoner = (props: { onFormSubmit: () => void; token?: string }) => {
+type GenerateCommonerProps = {
+  isLoading?: boolean;
+  onFormSubmit: () => void;
+  token?: string;
+};
+
+const GenerateCommoner = ({ isLoading, onFormSubmit, token }: GenerateCommonerProps) => {
   return (
-    <Frame title="Generate Commoner" subtitle="Quickly generate a random commoner">
-      <NameOptions onFormSubmit={props.onFormSubmit} title={'Commoner'} token={props.token} />
+    <Frame subtitle="Instantly create a basic NPC with randomized stats. Great for shopkeepers, villagers, and background characters.">
+      <NameOptions
+        isLoading={isLoading}
+        onFormSubmit={onFormSubmit}
+        title={'Commoner'}
+        token={token}
+      />
     </Frame>
   );
 };

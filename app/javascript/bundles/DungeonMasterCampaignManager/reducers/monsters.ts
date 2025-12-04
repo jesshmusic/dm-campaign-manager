@@ -1,12 +1,16 @@
 import { createAction, createReducer } from '@reduxjs/toolkit';
 import { AnyAction } from 'redux';
 
+export const clearCurrentMonster = createAction('monsters/clearCurrentMonster');
+
+const generateMonster = createAction('@@redux-api@generateMonster');
 const generateMonsterSuccess = createAction('@@redux-api@generateMonster_success');
 const generateMonsterFail = createAction('@@redux-api@generateMonster_fail');
 
 const generateQuickMonster = createAction('@@redux-api@generateQuickMonster');
 const generateQuickMonsterSuccess = createAction('@@redux-api@generateQuickMonster_success');
 const generateQuickMonsterFail = createAction('@@redux-api@generateQuickMonster_fail');
+const generateCommoner = createAction('@@redux-api@generateCommoner');
 const generateCommonerSuccess = createAction('@@redux-api@generateCommoner_success');
 const generateCommonerFail = createAction('@@redux-api@generateCommoner_fail');
 const getMonsters = createAction('@@redux-api@getMonsters');
@@ -29,6 +33,19 @@ const monsters = createReducer(
   },
   (builder) =>
     builder
+      .addCase(clearCurrentMonster, (state) => {
+        return {
+          ...state,
+          currentMonster: null,
+        };
+      })
+      .addCase(generateMonster, (state) => {
+        return {
+          ...state,
+          currentMonster: null,
+          loading: true,
+        };
+      })
       .addCase(generateMonsterSuccess, (state, action: AnyAction) => {
         return {
           monsters: state.monsters,
@@ -72,6 +89,13 @@ const monsters = createReducer(
           count: state.count,
           currentMonster: null,
           loading: false,
+        };
+      })
+      .addCase(generateCommoner, (state) => {
+        return {
+          ...state,
+          currentMonster: null,
+          loading: true,
         };
       })
       .addCase(generateCommonerSuccess, (state, action: AnyAction) => {

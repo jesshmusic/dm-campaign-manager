@@ -24,7 +24,7 @@ export const PageContent = styled.div`
 
 export const Page = styled.div<{ $isCollapsed?: boolean }>`
   margin: 0 0 0 5rem;
-  min-height: calc(100vh - 18.75rem);
+  min-height: calc(100vh - 35rem);
   padding: 1rem;
   position: relative;
   z-index: 200;

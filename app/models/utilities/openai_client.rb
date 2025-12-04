@@ -30,7 +30,7 @@ class OpenAIClient
   attr_writer :api_key
   attr_accessor :default_model
 
-  DEFAULT_MODEL = ENV.fetch('OPENAI_DEFAULT_MODEL', 'gpt-4o').freeze
+  DEFAULT_MODEL = ENV.fetch('OPENAI_DEFAULT_MODEL', 'gpt-4o-mini').freeze
   BASE_URI = URI('https://api.openai.com').freeze
 
   def initialize(api_key:, default_model: DEFAULT_MODEL)
@@ -43,11 +43,12 @@ class OpenAIClient
   # ─────────────────────────────────────────────────────────────
   def completions(prompt:, **opts)
     defaults = {
-      temperature: 1.4,
+      temperature: 0.9,
       top_p: 1.0,
-      presence_penalty: 1.3,
-      frequency_penalty: 0.6,
+      presence_penalty: 0.6,
+      frequency_penalty: 0.3,
       n: 1,
+      max_tokens: 100,
       model: default_model
     }
 
@@ -60,6 +61,7 @@ class OpenAIClient
       presence_penalty: p[:presence_penalty],
       frequency_penalty: p[:frequency_penalty],
       n: p[:n],
+      max_tokens: p[:max_tokens],
       messages: [
         { role: 'user', content: prompt.to_s }
       ]
@@ -105,7 +107,7 @@ class OpenAIClient
       uri.hostname, uri.port,
       use_ssl: true,
       open_timeout: 10,
-      read_timeout: 30
+      read_timeout: 60
     ) do |http|
       http.request(req)
     end

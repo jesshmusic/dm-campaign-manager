@@ -12,9 +12,11 @@ import { ThreeColLarge, FourCol, FiveCol, SixCol } from '../../MonsterGenerator.
 const QuickMonsterStatsSection = (props: {
   archetypeOptions: SelectOption[];
   challengeRatingOptions: SelectOption[];
+  monsterType: string;
   UseForm: UseFormReturn<FieldValues>;
 }) => {
-  const { archetypeOptions, challengeRatingOptions, UseForm } = props;
+  const { archetypeOptions, challengeRatingOptions, monsterType, UseForm } = props;
+  const isHumanoid = monsterType.toLowerCase() === 'humanoid';
   return (
     <>
       <ThreeColLarge>
@@ -32,42 +34,67 @@ const QuickMonsterStatsSection = (props: {
           required
           name="armorClass"
         />
-        <FormSelect
-          label="Archetype"
-          name="archetypeOption"
-          control={UseForm.control}
-          options={archetypeOptions}
-        />
-      </ThreeColLarge>
-      <FiveCol>
         <MonsterTypeSelect control={UseForm.control} />
-        <FormSelect
-          label="Alignment"
-          name="alignmentOption"
-          control={UseForm.control}
-          options={alignmentOptions}
-        />
-        <FormField
-          label="Number of Attacks"
-          type="number"
-          errors={UseForm.formState.errors}
-          min={1}
-          register={UseForm.register}
-          name="numberOfAttacks"
-        />
-        <FormSelect
-          label="Size"
-          name="size"
-          control={UseForm.control}
-          options={monsterSizeOptions}
-        />
-        <FormSelect
-          label="Race (optional)"
-          name="characterRace"
-          control={UseForm.control}
-          options={raceOptions}
-        />
-      </FiveCol>
+      </ThreeColLarge>
+      {isHumanoid ? (
+        <FiveCol>
+          <FormSelect
+            label="Alignment"
+            name="alignmentOption"
+            control={UseForm.control}
+            options={alignmentOptions}
+          />
+          <FormField
+            label="Number of Attacks"
+            type="number"
+            errors={UseForm.formState.errors}
+            min={1}
+            register={UseForm.register}
+            name="numberOfAttacks"
+          />
+          <FormSelect
+            label="Size"
+            name="size"
+            control={UseForm.control}
+            options={monsterSizeOptions}
+          />
+          <FormSelect
+            label="Archetype"
+            name="archetypeOption"
+            control={UseForm.control}
+            options={archetypeOptions}
+          />
+          <FormSelect
+            label="Race (optional)"
+            name="characterRace"
+            control={UseForm.control}
+            options={raceOptions}
+          />
+        </FiveCol>
+      ) : (
+        <ThreeColLarge>
+          <FormSelect
+            label="Alignment"
+            name="alignmentOption"
+            control={UseForm.control}
+            options={alignmentOptions}
+          />
+          <FormField
+            label="Number of Attacks"
+            type="number"
+            errors={UseForm.formState.errors}
+            min={1}
+            register={UseForm.register}
+            name="numberOfAttacks"
+          />
+          <FormSelect
+            label="Size"
+            name="size"
+            control={UseForm.control}
+            options={monsterSizeOptions}
+          />
+        </ThreeColLarge>
+      )}
       <SixCol>
         <FormField
           label="STR (optional)"

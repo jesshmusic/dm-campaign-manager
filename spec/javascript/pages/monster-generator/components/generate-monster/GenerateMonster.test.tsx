@@ -40,9 +40,11 @@ jest.mock('../../../../../../app/javascript/bundles/DungeonMasterCampaignManager
 });
 
 jest.mock('../../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/monster-generator/components/generate-monster/sections/GenMonsterSection', () => {
-  return function MockGenMonsterSection({ heading, children }: any) {
+  return function MockGenMonsterSection({ heading, children, step, currentStep, isMultiStep }: any) {
+    // In multi-step mode, only show content for the current step
+    const isVisible = !isMultiStep || currentStep === step;
     return (
-      <div data-testid={`section-${heading.toLowerCase().replace(/ /g, '-')}`}>
+      <div data-testid={`section-${heading.toLowerCase().replace(/ /g, '-')}`} style={{ display: isVisible ? 'block' : 'none' }}>
         <h3>{heading}</h3>
         {children}
       </div>
@@ -129,14 +131,14 @@ describe('GenerateMonster', () => {
     render(<GenerateMonster {...defaultProps} />);
   });
 
-  it('renders Frame with correct title and subtitle', () => {
+  it('renders Frame with correct subtitle', () => {
     render(<GenerateMonster {...defaultProps} />);
-    expect(screen.getByText('Monster Creator')).toBeInTheDocument();
-    expect(screen.getByText('Select options to create a new Monster')).toBeInTheDocument();
+    expect(screen.getByText('Full control over every detail. Build custom NPCs and creatures with automatic Challenge Rating calculation.')).toBeInTheDocument();
   });
 
-  it('renders NameFormField', () => {
+  it('renders Name section with NameFormField', () => {
     render(<GenerateMonster {...defaultProps} />);
+    expect(screen.getByTestId('section-name')).toBeInTheDocument();
     expect(screen.getByTestId('name-form-field')).toBeInTheDocument();
   });
 
@@ -200,26 +202,15 @@ describe('GenerateMonster', () => {
     expect(screen.getByTestId('actions-legendary-action')).toBeInTheDocument();
   });
 
-  it('renders submit button with Generate Monster text when not loading', () => {
+  it('renders Next and Skip buttons on step 1', () => {
     render(<GenerateMonster {...defaultProps} />);
-    expect(screen.getByText('Generate Monster')).toBeInTheDocument();
+    expect(screen.getByText('Next')).toBeInTheDocument();
+    expect(screen.getByText('Skip')).toBeInTheDocument();
   });
 
-  it('renders submit button with Generating... text when loading', () => {
-    render(<GenerateMonster {...defaultProps} isLoading={true} />);
-    expect(screen.getByText('Generating...')).toBeInTheDocument();
-  });
-
-  it('disables submit button when loading', () => {
-    render(<GenerateMonster {...defaultProps} isLoading={true} />);
-    const button = screen.getByText('Generating...');
-    expect(button).toBeDisabled();
-  });
-
-  it('does not disable submit button when not loading', () => {
-    render(<GenerateMonster {...defaultProps} isLoading={false} />);
-    const button = screen.getByText('Generate Monster');
-    expect(button).not.toBeDisabled();
+  it('shows step indicator', () => {
+    render(<GenerateMonster {...defaultProps} />);
+    expect(screen.getByText(/Step 1 of 11/)).toBeInTheDocument();
   });
 
   it('calls onSubmit when form submitted', () => {

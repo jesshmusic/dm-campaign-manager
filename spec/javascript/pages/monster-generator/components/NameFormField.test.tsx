@@ -44,7 +44,7 @@ describe('NameFormField', () => {
 
   it('renders name input field', () => {
     render(<NameFormField {...defaultProps} />);
-    const input = screen.getByPlaceholderText('Monster name');
+    const input = screen.getByPlaceholderText('NPC name');
     expect(input).toBeInTheDocument();
     expect(input).toHaveAttribute('type', 'text');
   });
@@ -68,14 +68,14 @@ describe('NameFormField', () => {
     expect(screen.queryByText('This is required')).not.toBeInTheDocument();
   });
 
-  it('displays Random Monster Name button', () => {
+  it('displays Random Creature Name button', () => {
     render(<NameFormField {...defaultProps} />);
-    expect(screen.getByText('Random Monster Name')).toBeInTheDocument();
+    expect(screen.getByText('Random Creature Name')).toBeInTheDocument();
   });
 
-  it('calls handleGenerateMonsterName when Random Monster Name clicked', () => {
+  it('calls handleGenerateMonsterName when Random Creature Name clicked', () => {
     render(<NameFormField {...defaultProps} />);
-    const button = screen.getByText('Random Monster Name');
+    const button = screen.getByText('Random Creature Name');
     fireEvent.click(button);
     expect(defaultProps.handleGenerateMonsterName).toHaveBeenCalled();
   });
@@ -121,7 +121,7 @@ describe('NameFormField', () => {
     const button = screen.getByText('Random NPC Name');
     fireEvent.click(button);
 
-    expect(defaultProps.handleGenerateName).toHaveBeenCalledWith('female', 'elf');
+    expect(defaultProps.handleGenerateName).toHaveBeenCalledWith('npc', 'elf');
   });
 
   it('calls handleGenerateName with correct params for Random Male NPC Name', () => {
@@ -163,7 +163,7 @@ describe('NameFormField', () => {
     const button = screen.getByText('Random NPC Name');
     fireEvent.click(button);
 
-    expect(defaultProps.handleGenerateName).toHaveBeenCalledWith('female', 'any');
+    expect(defaultProps.handleGenerateName).toHaveBeenCalledWith('npc', 'any');
   });
 
   it('uses "any" for characterRace in male name when not provided', () => {
