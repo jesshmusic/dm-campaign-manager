@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   MonsterActionField,
   MonsterGeneratorFormFields,
@@ -15,6 +16,7 @@ import axios from 'axios';
 import { FieldValues, useForm } from 'react-hook-form';
 import { GenerateMonsterProps } from './GenerateMonster';
 import snakecaseKeys from 'snakecase-keys';
+import { NameButtonType } from '../NameFormField';
 
 type DescParams = {
   params: {
@@ -49,7 +51,7 @@ export const generateAttackDesc = async (
 };
 
 const defaultMonsterFormValues: FieldValues = {
-  name: 'New Monster',
+  name: 'New NPC',
   alignment: 'Neutral',
   alignmentOption: {
     value: 'Neutral',
@@ -107,6 +109,8 @@ const defaultMonsterFormValues: FieldValues = {
 };
 
 export const useData = (props: GenerateMonsterProps) => {
+  const [activeNameButton, setActiveNameButton] = React.useState<NameButtonType>(null);
+
   const UseForm = useForm<FieldValues>({
     defaultValues: defaultMonsterFormValues,
     mode: 'onChange',
@@ -119,16 +123,23 @@ export const useData = (props: GenerateMonsterProps) => {
   };
 
   const handleGenerateMonsterName = async () => {
-    const apiURL = '/v1/random_monster_name';
+    setActiveNameButton('monster');
+    const currentMonsterType = UseForm.getValues('monsterTypeOption')?.value || 'humanoid';
+    const currentSize = UseForm.getValues('size')?.value || 'medium';
+    const apiURL = `/v1/random_monster_name?monster_type=${currentMonsterType}&size=${currentSize}`;
     try {
       const response = await axios.get<RandomNameResult>(apiURL);
       UseForm.setValue('name', response.data.name);
     } catch (error) {
       console.error(error);
+    } finally {
+      setActiveNameButton(null);
     }
   };
 
-  const handleGenerateName = async (gender, race) => {
+  const handleGenerateName = async (buttonType: string, race: string) => {
+    setActiveNameButton(buttonType as NameButtonType);
+    const gender = buttonType === 'male' ? 'male' : 'female';
     const apiURL = `/v1/random_fantasy_name?random_monster_gender=${gender}&random_monster_race=${
       race ? race : 'human'
     }`;
@@ -137,6 +148,8 @@ export const useData = (props: GenerateMonsterProps) => {
       UseForm.setValue('name', response.data.name);
     } catch (error) {
       console.error(error);
+    } finally {
+      setActiveNameButton(null);
     }
   };
 
@@ -360,6 +373,7 @@ export const useData = (props: GenerateMonsterProps) => {
   };
 
   return {
+    activeNameButton,
     handleCalculateCR,
     handleGenerateName,
     handleGenerateMonsterName,

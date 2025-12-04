@@ -134,6 +134,7 @@ export const theme = {
     radius: '0.25rem',
     radiusLg: '0.3rem',
     radiusSm: '0.2rem',
+    orangeBorder: 'linear-gradient(to right, #c9ad6a, #dd9529, #c9ad6a) 1 / 1 / 0 stretch',
   },
 
   borderRadius: {

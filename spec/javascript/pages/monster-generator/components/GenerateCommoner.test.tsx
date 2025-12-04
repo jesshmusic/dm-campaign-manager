@@ -31,15 +31,14 @@ describe('GenerateCommoner', () => {
     render(<GenerateCommoner onFormSubmit={jest.fn()} />);
   });
 
-  it('displays frame with correct title', () => {
+  it('displays frame', () => {
     render(<GenerateCommoner onFormSubmit={jest.fn()} />);
     expect(screen.getByTestId('frame')).toBeInTheDocument();
-    expect(screen.getByText('Generate Commoner')).toBeInTheDocument();
   });
 
   it('displays frame with correct subtitle', () => {
     render(<GenerateCommoner onFormSubmit={jest.fn()} />);
-    expect(screen.getByText('Quickly generate a random commoner')).toBeInTheDocument();
+    expect(screen.getByText('Instantly create a basic NPC with randomized stats. Great for shopkeepers, villagers, and background characters.')).toBeInTheDocument();
   });
 
   it('renders NameOptions component', () => {

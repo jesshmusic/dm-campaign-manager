@@ -14,9 +14,10 @@ import {
   getChallengeRatingOptions,
 } from '../../../../utilities/character-utilities';
 import axios from 'axios';
+import { NameButtonType } from '../NameFormField';
 
 const defaultMonsterFormValues: FieldValues = {
-  name: 'New Monster',
+  name: 'New NPC',
   actionOptions: [],
   alignment: 'Neutral',
   alignmentOption: {
@@ -54,6 +55,7 @@ const defaultMonsterFormValues: FieldValues = {
 
 export const useData = (props: GenerateMonsterProps) => {
   const [monsterType, setMonsterType] = React.useState('humanoid');
+  const [activeNameButton, setActiveNameButton] = React.useState<NameButtonType>(null);
 
   const UseForm = useForm({
     defaultValues: defaultMonsterFormValues,
@@ -96,16 +98,23 @@ export const useData = (props: GenerateMonsterProps) => {
   };
 
   const handleGenerateMonsterName = async () => {
-    const apiURL = '/v1/random_monster_name';
+    setActiveNameButton('monster');
+    const currentMonsterType = UseForm.getValues('monsterTypeOption')?.value || 'humanoid';
+    const currentSize = UseForm.getValues('size')?.value || 'medium';
+    const apiURL = `/v1/random_monster_name?monster_type=${currentMonsterType}&size=${currentSize}`;
     try {
       const response = await axios.get<RandomNameResult>(apiURL);
       UseForm.setValue('name', response.data.name);
     } catch (error) {
       console.error(error);
+    } finally {
+      setActiveNameButton(null);
     }
   };
 
-  const handleGenerateName = async (gender, race) => {
+  const handleGenerateName = async (buttonType: string, race: string) => {
+    setActiveNameButton(buttonType as NameButtonType);
+    const gender = buttonType === 'male' ? 'male' : 'female';
     const apiURL = `/v1/random_fantasy_name?random_monster_gender=${gender}&random_monster_race=${
       race ? race : 'human'
     }`;
@@ -114,6 +123,8 @@ export const useData = (props: GenerateMonsterProps) => {
       UseForm.setValue('name', response.data.name);
     } catch (error) {
       console.error(error);
+    } finally {
+      setActiveNameButton(null);
     }
   };
 
@@ -189,6 +200,17 @@ export const useData = (props: GenerateMonsterProps) => {
           shouldTouch: true,
         });
         setMonsterType(fields.monsterTypeOption.value as string);
+        // Set archetype to "any" for non-humanoid types
+        if ((fields.monsterTypeOption.value as string).toLowerCase() !== 'humanoid') {
+          UseForm.setValue(
+            'archetypeOption',
+            { value: 'any', label: 'Any' },
+            {
+              shouldDirty: true,
+              shouldTouch: true,
+            },
+          );
+        }
         break;
       case 'size': {
         const hitDice = hitDieForSize(fields.size.value);
@@ -203,6 +225,7 @@ export const useData = (props: GenerateMonsterProps) => {
   };
 
   return {
+    activeNameButton,
     archetypeOptions,
     challengeRatingOptions,
     getMonsterActions,

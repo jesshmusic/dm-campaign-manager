@@ -44,6 +44,7 @@ describe('QuickMonsterStatsSection', () => {
       { label: '1', value: '1' },
       { label: '5', value: '5' },
     ],
+    monsterType: 'humanoid',
     UseForm: mockUseForm as any,
   };
 
@@ -63,10 +64,17 @@ describe('QuickMonsterStatsSection', () => {
     expect(screen.getByTestId('form-field-armorClass')).toBeInTheDocument();
   });
 
-  it('renders Archetype select', () => {
+  it('renders Archetype select for humanoid type', () => {
     render(<QuickMonsterStatsSection {...defaultProps} />);
     expect(screen.getByText('Archetype')).toBeInTheDocument();
     expect(screen.getByTestId('form-select-archetypeOption')).toBeInTheDocument();
+  });
+
+  it('does not render Archetype select for non-humanoid type', () => {
+    const nonHumanoidProps = { ...defaultProps, monsterType: 'beast' };
+    render(<QuickMonsterStatsSection {...nonHumanoidProps} />);
+    expect(screen.queryByText('Archetype')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('form-select-archetypeOption')).not.toBeInTheDocument();
   });
 
   it('renders Monster Type select', () => {
@@ -92,10 +100,17 @@ describe('QuickMonsterStatsSection', () => {
     expect(screen.getByTestId('form-select-size')).toBeInTheDocument();
   });
 
-  it('renders Race select', () => {
+  it('renders Race select for humanoid type', () => {
     render(<QuickMonsterStatsSection {...defaultProps} />);
     expect(screen.getByText('Race (optional)')).toBeInTheDocument();
     expect(screen.getByTestId('form-select-characterRace')).toBeInTheDocument();
+  });
+
+  it('does not render Race select for non-humanoid type', () => {
+    const nonHumanoidProps = { ...defaultProps, monsterType: 'beast' };
+    render(<QuickMonsterStatsSection {...nonHumanoidProps} />);
+    expect(screen.queryByText('Race (optional)')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('form-select-characterRace')).not.toBeInTheDocument();
   });
 
   it('renders all ability score fields', () => {

@@ -46,6 +46,17 @@
 - Use TypeScript for all new frontend code
 - Follow existing patterns in the codebase
 
+## PR Creation Steps
+
+Before creating a PR, follow these steps in order:
+
+1. **Run Prettier** - `yarn format` to fix all changed files
+2. **Run ESLint** - `yarn lint --fix` to fix linting issues
+3. **Run Rubocop** - `bundle exec rubocop -a` to fix Ruby style issues
+4. **Run all tests** - Both `NO_COVERAGE=true yarn test` and `NO_COVERAGE=true bundle exec rspec` must pass
+5. **Commit and push** - Only if ALL checks pass and issues are fixed
+6. **Open PR** - Create the pull request, then follow the Pull Request Workflow below
+
 ## Pull Request Workflow
 
 After every commit and push to a PR:

@@ -2,14 +2,13 @@ import styled from 'styled-components';
 import { respondToContainer, hexToRgba, adjustLightness } from '../../theme/mixins';
 
 export const MonsterPage = styled.div`
-  ${respondToContainer.md}
+  ${respondToContainer.md``}
 
   background: ${({ theme }) => theme.colors.cardBg};
-  border-collapse: separate;
   border-image: ${({ theme }) => theme.borders.orangeBorder};
   border-style: solid;
-  border-width: 8px;
-  box-shadow: 5px 7px 15px ${({ theme }) => hexToRgba(theme.colors.gray900, 0.5)};
+  border-width: 5px 0;
+  box-shadow: 0 0 8px ${({ theme }) => hexToRgba(theme.colors.gray900, 0.2)};
   column-gap: 3rem;
   columns: 400px 2;
   padding: 1rem;
@@ -105,10 +104,10 @@ export const MonsterFrameAction = styled.div`
 
 export const CRStats = styled.div`
   background: ${({ theme }) => theme.colors.cardBg};
-  border-collapse: separate;
   border-image: ${({ theme }) => theme.borders.orangeBorder};
   border-style: solid;
-  border-width: 5px;
-  box-shadow: 2px 2px 5px ${({ theme }) => hexToRgba(theme.colors.gray900, 0.5)};
+  border-width: 3px 0;
+  box-shadow: 0 0 6px ${({ theme }) => hexToRgba(theme.colors.gray900, 0.15)};
+  margin-top: 1rem;
   padding: 0.5rem;
 `;

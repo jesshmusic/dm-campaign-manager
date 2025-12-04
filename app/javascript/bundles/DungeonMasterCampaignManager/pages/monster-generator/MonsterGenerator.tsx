@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
 import GenerateMonster from './components/generate-monster/GenerateMonster';
@@ -12,159 +12,128 @@ import { connect } from 'react-redux';
 import QuickGenerateMonster from './components/quick-generate-monster/QuickGenerateMonster';
 import ReactGA from 'react-ga4';
 import { MonsterProps } from '../../utilities/types';
+import { clearCurrentMonster } from '../../reducers/monsters';
 
 ReactGA.initialize('G-8XJTH70JSQ');
 
-import { MonsterGenWrapper } from './MonsterGenerator.styles';
+import { GiCrossMark } from 'react-icons/gi';
+import {
+  MonsterGenWrapper,
+  MonsterDisplayWrapper,
+  MonsterCloseButton,
+  TabsRoot,
+  TabsList,
+  TabsTrigger,
+  TabsContent,
+} from './MonsterGenerator.styles';
 
 const MonsterGenerator = (props: {
   monster?: MonsterProps;
+  clearMonster: () => void;
   generateCommoner: (gender?: string, race?: string, token?: string) => void;
   generateMonster: (monster: Record<string, unknown>, token?: string) => void;
   generateQuickMonster: (monster: Record<string, unknown>, token?: string) => void;
   isLoading?: boolean;
   token?: string;
 }) => {
-  const { token, isLoading, monster, generateCommoner, generateMonster, generateQuickMonster } =
-    props;
+  const {
+    token,
+    isLoading,
+    monster,
+    clearMonster,
+    generateCommoner,
+    generateMonster,
+    generateQuickMonster,
+  } = props;
   const show2eConverter = false;
+
+  useEffect(() => {
+    return () => {
+      clearMonster();
+    };
+  }, [clearMonster]);
 
   return (
     <PageContainer
-      pageTitle={'Monster Generators and Converters'}
+      pageTitle={'NPC & Creature Generators'}
       description={
-        'Several generators to build quick Monsters. Fields can be copied and pasted into Fantasy Grounds.'
+        'Create NPCs, monsters, and creatures for your D&D campaigns. Generate stat blocks that can be copied into Fantasy Grounds or other VTTs.'
       }
     >
-      <PageTitle title={'Monster Generators and Converters'} />
+      <PageTitle title={'NPC & Creature Generators'} />
       <MonsterGenWrapper>
         <p>
-          Several generators to build quick Monsters. Fields can be copied and pasted into Fantasy
-          Grounds.
+          Create NPCs, monsters, and creatures for your D&D campaigns. Generate stat blocks
+          compatible with Fantasy Grounds and other virtual tabletops.
         </p>
 
-        {monster ? <MonsterBlock monster={monster} showCRStats /> : null}
+        {monster ? (
+          <MonsterDisplayWrapper>
+            <MonsterCloseButton
+              onClick={clearMonster}
+              aria-label="Close monster display"
+              title="Close"
+            >
+              <GiCrossMark size={20} />
+            </MonsterCloseButton>
+            <MonsterBlock monster={monster} showCRStats />
+          </MonsterDisplayWrapper>
+        ) : null}
 
-        <div className="accordion accordion-flush" id="monsterGeneratorAccordion">
-          <div className="accordion-item">
-            <h3 className="accordion-header" id="commonerGeneratorHeading">
-              <button
-                className="accordion-button collapsed"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#commonerGenerator"
+        <TabsRoot defaultValue="commoner">
+          <TabsList>
+            <TabsTrigger value="commoner">
+              <GiBlacksmith size={20} /> Commoner
+            </TabsTrigger>
+            <TabsTrigger value="quick-monster">
+              <span
+                style={{ display: 'inline-block', position: 'relative', width: 30, height: 30 }}
               >
-                <GiBlacksmith className={'me-2'} size={30} /> Commoner
-              </button>
-            </h3>
-            <div
-              id="commonerGenerator"
-              className="accordion-collapse collapse"
-              aria-labelledby="commonerGeneratorHeading"
-              data-bs-parent="#monsterGeneratorAccordion"
-            >
-              <div className="accordion-body">
-                <GenerateCommoner onFormSubmit={generateCommoner} token={token} />
-              </div>
-            </div>
-          </div>
-          <div className="accordion-item">
-            <h3 className="accordion-header" id="quickMonsterGeneratorHeading">
-              <button
-                className="accordion-button collapsed"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#quickMonsterGenerator"
-              >
-                <span style={{ display: 'inline-block', position: 'relative' }}>
-                  <GiDiceTwentyFacesTwenty
-                    textAnchor="middle"
-                    alignmentBaseline="middle"
-                    size={40}
-                    color="#dd9529"
-                  />
-                  <GiSpikedDragonHead
-                    textAnchor="middle"
-                    alignmentBaseline="middle"
-                    style={{
-                      fontSize: '30px',
-                      position: 'absolute',
-                      left: '5px',
-                      bottom: '5px',
-                    }}
-                  />
-                </span>
-                Generate Monster
-              </button>
-            </h3>
-            <div
-              id="quickMonsterGenerator"
-              className="accordion-collapse collapse"
-              aria-labelledby="quickMonsterGeneratorHeading"
-              data-bs-parent="#monsterGeneratorAccordion"
-            >
-              <div className="accordion-body">
-                <QuickGenerateMonster
-                  onGenerateMonster={generateQuickMonster}
-                  token={token}
-                  isLoading={isLoading}
+                <GiDiceTwentyFacesTwenty
+                  size={30}
+                  color="#dd9529"
+                  style={{ position: 'absolute', left: 0, top: 0 }}
                 />
-              </div>
-            </div>
-          </div>
-          <div className="accordion-item">
-            <h3 className="accordion-header" id="monsterGeneratorHeading">
-              <button
-                className="accordion-button collapsed"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#monsterGenerator"
-              >
-                <GiSpikedDragonHead className={'me-2'} size={30} />
-                Create Monster
-              </button>
-            </h3>
-            <div
-              id="monsterGenerator"
-              className="accordion-collapse collapse"
-              aria-labelledby="monsterGeneratorHeading"
-              data-bs-parent="#monsterGeneratorAccordion"
-            >
-              <div className="accordion-body">
-                <GenerateMonster
-                  onGenerateMonster={generateMonster}
-                  token={token}
-                  isLoading={isLoading}
-                />
-              </div>
-            </div>
-          </div>
+                <GiSpikedDragonHead size={20} style={{ position: 'absolute', left: 5, top: 5 }} />
+              </span>
+              Quick NPC
+            </TabsTrigger>
+            <TabsTrigger value="create-monster">
+              <GiSpikedDragonHead size={20} /> Create NPC
+            </TabsTrigger>
+            {show2eConverter && (
+              <TabsTrigger value="convert-2e">
+                <SiConvertio size={20} /> Convert 2nd Edition
+              </TabsTrigger>
+            )}
+          </TabsList>
+
+          <TabsContent value="commoner">
+            <GenerateCommoner isLoading={isLoading} onFormSubmit={generateCommoner} token={token} />
+          </TabsContent>
+
+          <TabsContent value="quick-monster">
+            <QuickGenerateMonster
+              onGenerateMonster={generateQuickMonster}
+              token={token}
+              isLoading={isLoading}
+            />
+          </TabsContent>
+
+          <TabsContent value="create-monster">
+            <GenerateMonster
+              onGenerateMonster={generateMonster}
+              token={token}
+              isLoading={isLoading}
+            />
+          </TabsContent>
+
           {show2eConverter && (
-            <div className="accordion-item">
-              <h3 className="accordion-header" id="dnd2eGeneratorHeading">
-                <button
-                  className="accordion-button collapsed"
-                  type="button"
-                  data-bs-toggle="collapse"
-                  data-bs-target="#dnd2eGenerator"
-                >
-                  <SiConvertio className={'me-2'} size={30} />
-                  Convert 2nd Edition
-                </button>
-              </h3>
-              <div
-                id="dnd2eGenerator"
-                className="accordion-collapse collapse"
-                aria-labelledby="dnd2eGeneratorHeading"
-                data-bs-parent="#monsterGeneratorAccordion"
-              >
-                <div className="accordion-body">
-                  <Convert2eMonster token={token} />
-                </div>
-              </div>
-            </div>
+            <TabsContent value="convert-2e">
+              <Convert2eMonster token={token} />
+            </TabsContent>
           )}
-        </div>
+        </TabsRoot>
       </MonsterGenWrapper>
     </PageContainer>
   );
@@ -181,6 +150,9 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
+    clearMonster: () => {
+      dispatch(clearCurrentMonster());
+    },
     generateCommoner: (gender: string = 'Female', race: string = 'Human', token?: string) => {
       ReactGA.event('NPC Generator');
       dispatch(
