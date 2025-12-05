@@ -1,10 +1,7 @@
 import React from 'react';
 import { Control, FieldErrors, FieldValues, useWatch } from 'react-hook-form';
-import {
-  ControlledInput,
-  ControlledSelect,
-} from '../../../../../../../components/forms/ControllerInput';
-import { damageTypes, diceOptions } from '../../../../../../../utilities/character-utilities';
+import { ControlledInput, ControlledSelect } from '../forms/ControllerInput';
+import { damageTypes, diceOptions } from '../../utilities/character-utilities';
 
 import {
   AttackWrapper,
@@ -12,7 +9,7 @@ import {
   ActionCol,
   DiceSelectField,
   Checkbox,
-} from '../../../../../MonsterGenerator.styles';
+} from '../../pages/monster-generator/MonsterGenerator.styles';
 
 const AttackForm = (props: {
   fieldName: string;

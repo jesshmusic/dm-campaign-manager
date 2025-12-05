@@ -5,13 +5,13 @@ import { GiDiceTwentyFacesTwenty } from 'react-icons/gi';
 import { Colors } from '../../../../utilities/enums';
 import Button from '../../../../components/Button/Button';
 import { useData } from './use-data';
-import GenMonsterSection from '../generate-monster/sections/GenMonsterSection';
+import GenMonsterSection from '../GenMonsterSection';
 import QuickMonsterStatsSection from './QuickMonsterStatsSection';
 import { GiLinkedRings } from 'react-icons/gi';
 import SavesSkillsSection from '../SavesSkillsSection';
 import CreatureDescriptionSection from './CreatureDescriptionSection';
 import InstructionsPanel, {
-  QuickNPCInstructions,
+  CreateNPCInstructions,
 } from '../../../../components/InstructionsPanel/InstructionsPanel';
 
 import {
@@ -81,10 +81,11 @@ const QuickGenerateMonster = (props: GenerateMonsterProps) => {
   return (
     <>
       <Frame
+        title="Create NPC"
         subtitle="Set the basics and let the generator do the rest. Perfect for creating NPCs and enemies on the fly."
         subtitleAction={
           <InstructionsPanel>
-            <QuickNPCInstructions />
+            <CreateNPCInstructions />
           </InstructionsPanel>
         }
         className="random-monster-generator"
@@ -162,7 +163,7 @@ const QuickGenerateMonster = (props: GenerateMonsterProps) => {
                 <Button
                   color={Colors.success}
                   disabled={isLoading}
-                  title={isLoading ? 'Generating...' : 'Generate NPC'}
+                  title={isLoading ? 'Creating...' : 'Create NPC'}
                   type="submit"
                   icon={
                     isLoading ? (

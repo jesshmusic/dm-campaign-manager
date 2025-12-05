@@ -474,6 +474,7 @@ export interface MonsterProps {
   offensiveCr?: number;
   defensiveCr?: number;
   fguXml?: string;
+  foundryVttJson?: string;
   user?: UserProps;
 }
 

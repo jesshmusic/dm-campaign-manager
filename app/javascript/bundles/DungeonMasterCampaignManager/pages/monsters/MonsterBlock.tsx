@@ -80,13 +80,23 @@ export const AbilityScores = (props: { monster: MonsterProps }) => {
 const MonsterBlock = (props: { monster: MonsterProps; showCRStats?: boolean }) => {
   const { monster, showCRStats } = props;
   const [fileDownloadUrl, setFileDownloadUrl] = React.useState('');
+  const [foundryDownloadUrl, setFoundryDownloadUrl] = React.useState('');
   const fileLink = React.useRef<HTMLAnchorElement>(null);
+  const foundryFileLink = React.useRef<HTMLAnchorElement>(null);
 
   const downloadXmlFile = () => {
     if (props.monster.fguXml) {
       const blob = new Blob([props.monster.fguXml]);
       const fileUrl = URL.createObjectURL(blob);
       setFileDownloadUrl(fileUrl);
+    }
+  };
+
+  const downloadFoundryFile = () => {
+    if (props.monster.foundryVttJson) {
+      const blob = new Blob([props.monster.foundryVttJson], { type: 'application/json' });
+      const fileUrl = URL.createObjectURL(blob);
+      setFoundryDownloadUrl(fileUrl);
     }
   };
 
@@ -97,6 +107,14 @@ const MonsterBlock = (props: { monster: MonsterProps; showCRStats?: boolean }) =
       setFileDownloadUrl('');
     }
   }, [fileDownloadUrl]);
+
+  React.useEffect(() => {
+    if (foundryDownloadUrl && foundryDownloadUrl !== '' && foundryFileLink.current) {
+      foundryFileLink.current.click();
+      URL.revokeObjectURL(foundryDownloadUrl);
+      setFoundryDownloadUrl('');
+    }
+  }, [foundryDownloadUrl]);
 
   return (
     <MonsterPage>
@@ -204,23 +222,44 @@ const MonsterBlock = (props: { monster: MonsterProps; showCRStats?: boolean }) =
           ))}
         </>
       )}
-      {monster.fguXml ? (
-        <div>
-          <a
-            style={{ display: 'none' }}
-            download={`${monster.name.replace(' ', '-')}.xml`}
-            href={fileDownloadUrl}
-            ref={fileLink}
-          >
-            download it
-          </a>
-          <Button
-            color={Colors.primary}
-            title={'Download Fantasy Grounds XML file'}
-            onClick={downloadXmlFile}
-          />
+      {(monster.fguXml || monster.foundryVttJson) && (
+        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '16px' }}>
+          {monster.fguXml && (
+            <>
+              <a
+                style={{ display: 'none' }}
+                download={`${monster.name.replace(' ', '-')}.xml`}
+                href={fileDownloadUrl}
+                ref={fileLink}
+              >
+                download it
+              </a>
+              <Button
+                color={Colors.primary}
+                title={'Fantasy Grounds XML'}
+                onClick={downloadXmlFile}
+              />
+            </>
+          )}
+          {monster.foundryVttJson && (
+            <>
+              <a
+                style={{ display: 'none' }}
+                download={`${monster.name.replace(' ', '-')}-foundry-v13.json`}
+                href={foundryDownloadUrl}
+                ref={foundryFileLink}
+              >
+                download foundry
+              </a>
+              <Button
+                color={Colors.info}
+                title={'Foundry VTT v13 JSON'}
+                onClick={downloadFoundryFile}
+              />
+            </>
+          )}
         </div>
-      ) : null}
+      )}
       {showCRStats && (
         <CRStats>
           <h3>Challenge Rating Info</h3>

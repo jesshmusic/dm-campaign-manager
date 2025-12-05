@@ -3,10 +3,6 @@ import { AnyAction } from 'redux';
 
 export const clearCurrentMonster = createAction('monsters/clearCurrentMonster');
 
-const generateMonster = createAction('@@redux-api@generateMonster');
-const generateMonsterSuccess = createAction('@@redux-api@generateMonster_success');
-const generateMonsterFail = createAction('@@redux-api@generateMonster_fail');
-
 const generateQuickMonster = createAction('@@redux-api@generateQuickMonster');
 const generateQuickMonsterSuccess = createAction('@@redux-api@generateQuickMonster_success');
 const generateQuickMonsterFail = createAction('@@redux-api@generateQuickMonster_fail');
@@ -37,31 +33,6 @@ const monsters = createReducer(
         return {
           ...state,
           currentMonster: null,
-        };
-      })
-      .addCase(generateMonster, (state) => {
-        return {
-          ...state,
-          currentMonster: null,
-          loading: true,
-        };
-      })
-      .addCase(generateMonsterSuccess, (state, action: AnyAction) => {
-        return {
-          monsters: state.monsters,
-          monsterTypes: state.monsterTypes,
-          count: state.count,
-          currentMonster: action.data,
-          loading: false,
-        };
-      })
-      .addCase(generateMonsterFail, (state, _action: AnyAction) => {
-        return {
-          monsters: state.monsters,
-          monsterTypes: state.monsterTypes,
-          count: state.count,
-          currentMonster: null,
-          loading: false,
         };
       })
       .addCase(generateQuickMonster, (state, _action: AnyAction) => {

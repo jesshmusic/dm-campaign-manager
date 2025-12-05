@@ -1,8 +1,8 @@
 import React from 'react';
-import { ControlledInput } from '../../../../../../../components/forms/ControllerInput';
+import { ControlledInput } from '../forms/ControllerInput';
 import { Control, FieldErrors, FieldValues } from 'react-hook-form';
 
-import { SubformWrapper, ActionCol } from '../../../../../MonsterGenerator.styles';
+import { SubformWrapper, ActionCol } from '../../pages/monster-generator/MonsterGenerator.styles';
 
 const AbilityForm = (props: {
   fieldName: string;

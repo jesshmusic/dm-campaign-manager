@@ -342,4 +342,139 @@ class Monster < ApplicationRecord
     end
     monster_export.to_xml
   end
+
+  # Foundry VTT v13 dnd5e export
+  def export_foundry_vtt
+    {
+      name: name,
+      type: 'npc',
+      system: {
+        abilities: foundry_abilities,
+        attributes: foundry_attributes,
+        details: foundry_details,
+        traits: foundry_traits,
+        resources: foundry_resources
+      },
+      items: foundry_items
+    }.to_json
+  end
+
+  private
+
+  def foundry_abilities
+    {
+      str: { value: strength },
+      dex: { value: dexterity },
+      con: { value: constitution },
+      int: { value: intelligence },
+      wis: { value: wisdom },
+      cha: { value: charisma }
+    }
+  end
+
+  def foundry_attributes
+    {
+      ac: { flat: armor_class, calc: 'flat' },
+      hp: { value: hit_points, max: hit_points, formula: hit_dice },
+      movement: foundry_movement,
+      senses: foundry_senses
+    }
+  end
+
+  def foundry_movement
+    result = { walk: 30, units: 'ft' }
+    speeds.each do |speed|
+      next if speed.name.blank?
+
+      key = speed.name.downcase.to_sym
+      result[key] = speed.value.to_i if %i[walk fly swim climb burrow hover].include?(key)
+    end
+    result
+  end
+
+  def foundry_senses
+    result = { units: 'ft' }
+    senses.each do |sense|
+      next if sense.name.blank?
+
+      key = sense.name.downcase.gsub(' ', '').to_sym
+      result[key] = sense.value.to_i if %i[darkvision blindsight tremorsense truesight].include?(key)
+    end
+    result
+  end
+
+  def foundry_details
+    {
+      cr: CrCalc.cr_string_to_num(challenge_rating),
+      xp: { value: xp },
+      alignment: alignment,
+      type: { value: monster_type&.downcase, subtype: monster_subtype || '' }
+    }
+  end
+
+  def foundry_traits
+    {
+      size: foundry_size_abbr,
+      languages: { value: languages&.split(',')&.map(&:strip) || [] },
+      ci: { value: condition_immunities || [] },
+      dr: { value: damage_resistances || [] },
+      dv: { value: damage_vulnerabilities || [] },
+      di: { value: damage_immunities || [] }
+    }
+  end
+
+  def foundry_size_abbr
+    size_map = {
+      'tiny' => 'tiny',
+      'small' => 'sm',
+      'medium' => 'med',
+      'large' => 'lg',
+      'huge' => 'huge',
+      'gargantuan' => 'grg'
+    }
+    size_map[size&.downcase] || 'med'
+  end
+
+  def foundry_resources
+    {
+      legact: {
+        value: legendary_actions.count.positive? ? 3 : 0,
+        max: legendary_actions.count.positive? ? 3 : 0
+      },
+      legres: { value: 0, max: 0 },
+      lair: { value: false }
+    }
+  end
+
+  def foundry_items
+    items = []
+    monster_actions.each { |a| items << foundry_action_item(a, 'action') }
+    special_abilities.each { |a| items << foundry_feat_item(a) }
+    reactions.each { |a| items << foundry_action_item(a, 'reaction') }
+    legendary_actions.each { |a| items << foundry_action_item(a, 'legendary') }
+    items
+  end
+
+  def foundry_action_item(action, activation_type)
+    {
+      name: action.name,
+      type: 'feat',
+      system: {
+        description: { value: "<p>#{ERB::Util.html_escape(action.desc)}</p>" },
+        activation: { type: activation_type, cost: 1 },
+        type: { value: 'monster' }
+      }
+    }
+  end
+
+  def foundry_feat_item(ability)
+    {
+      name: ability.name,
+      type: 'feat',
+      system: {
+        description: { value: "<p>#{ERB::Util.html_escape(ability.desc)}</p>" },
+        type: { value: 'monster' }
+      }
+    }
+  end
 end

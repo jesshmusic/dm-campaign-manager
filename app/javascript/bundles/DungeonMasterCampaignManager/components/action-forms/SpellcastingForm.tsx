@@ -1,27 +1,21 @@
 import React from 'react';
-import {
-  ControlledInput,
-  ControllerInput,
-} from '../../../../../../../components/forms/ControllerInput';
+import { ControlledInput, ControllerInput } from '../forms/ControllerInput';
 import { Control, Controller, FieldErrors, FieldValues } from 'react-hook-form';
 import axios from 'axios';
-import { filterOptionsWithData } from '../../../../../../../utilities/character-utilities';
-import FormSelect from '../../../../../../../components/forms/FormSelect';
-import FormSelectAsync from '../../../../../../../components/forms/FormSelectAsync';
+import { filterOptionsWithData } from '../../utilities/character-utilities';
+import FormSelect from '../forms/FormSelect';
+import FormSelectAsync from '../forms/FormSelectAsync';
 
 import {
   SpellsForm,
   SubformWrapper,
   ActionCol,
   SpellSlots,
-} from '../../../../../MonsterGenerator.styles';
+} from '../../pages/monster-generator/MonsterGenerator.styles';
 
 export const abilityOptions = [
   { label: 'Charisma', value: 'charisma' },
-  // { label: 'Constitution', value: 'constitution' },
-  // { label: 'Dexterity', value: 'dexterity' },
   { label: 'Intelligence', value: 'intelligence' },
-  // { label: 'Strength', value: 'strength' },
   { label: 'Wisdom', value: 'wisdom' },
 ];
 

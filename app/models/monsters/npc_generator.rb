@@ -3,6 +3,19 @@
 MAX_RETRIES = 5
 
 class NpcGenerator
+  COMMONER_ROLES = {
+    'blacksmith' => { Strength: 100, Constitution: 80, Dexterity: 40, Intelligence: 30, Wisdom: 40, Charisma: 30 },
+    'noble' => { Charisma: 100, Intelligence: 60, Wisdom: 40, Strength: 20, Dexterity: 30, Constitution: 30 },
+    'merchant' => { Charisma: 80, Intelligence: 60, Wisdom: 50, Strength: 30, Dexterity: 40, Constitution: 40 },
+    'guard' => { Strength: 80, Constitution: 70, Dexterity: 50, Wisdom: 40, Intelligence: 30, Charisma: 30 },
+    'farmer' => { Strength: 70, Constitution: 80, Wisdom: 40, Dexterity: 40, Intelligence: 30, Charisma: 30 },
+    'scholar' => { Intelligence: 100, Wisdom: 70, Charisma: 30, Strength: 20, Dexterity: 30, Constitution: 30 },
+    'healer' => { Wisdom: 100, Intelligence: 60, Charisma: 50, Strength: 20, Dexterity: 40, Constitution: 40 },
+    'entertainer' => { Charisma: 100, Dexterity: 60, Intelligence: 40, Strength: 30, Wisdom: 40, Constitution: 40 },
+    'sailor' => { Strength: 70, Dexterity: 60, Constitution: 70, Wisdom: 50, Intelligence: 30, Charisma: 30 },
+    'servant' => { Dexterity: 60, Wisdom: 50, Charisma: 40, Strength: 40, Constitution: 40, Intelligence: 40 }
+  }.freeze
+
   class << self
     def fetch_records
       @start = Time.zone.now
@@ -73,24 +86,23 @@ class NpcGenerator
       @new_npc
     end
 
-    def generate_npc(monster_params, user)
-      @new_npc = Monster.new(monster_params)
-      calculate_hd
-      @new_npc.slug = @new_npc.name.parameterize if user.nil?
-      maybe_save_npc(user)
-      @new_npc
-    end
-
-    def generate_commoner(random_npc_gender, random_npc_race, user)
+    def generate_commoner(random_npc_gender, random_npc_race, user, role = nil)
       commoner = Monster.where(name: 'Commoner').first
       commoner_atts = commoner.attributes
       @new_npc = Monster.new commoner_atts
       @new_npc.id = nil
       @new_npc.slug = nil
       @new_npc.challenge_rating = %w[0 0 0 0 0 1/8 1/8 1/8 1/4 1/4 1/2].sample
-      ability_score_order = %w[Strength Dexterity Constitution Intelligence Wisdom Charisma].shuffle
+
+      # Use role-based ability weighting if role provided
+      ability_score_order = if role.present? && COMMONER_ROLES[role.downcase]
+                              weighted_abilities = WeightedList[COMMONER_ROLES[role.downcase]]
+                              weighted_abilities.sample(6).map(&:to_s)
+                            else
+                              %w[Strength Dexterity Constitution Intelligence Wisdom Charisma].shuffle
+                            end
       set_ability_scores(ability_score_order)
-      @new_npc.name = NameGen.random_name(gender: random_npc_gender, race: random_npc_race)
+      @new_npc.name = NameGen.random_name(gender: random_npc_gender, race: random_npc_race, role: role)
       @new_npc.monster_subtype = random_npc_race || 'human'
 
       # Other statistics

@@ -3,9 +3,9 @@
  */
 
 import React from 'react';
-import FormSelect from '../../../../components/forms/FormSelect';
+import FormSelect from '../../../components/forms/FormSelect';
 import { Control, FieldValues } from 'react-hook-form';
-import { monsterTypeOptions } from '../../../../utilities/character-utilities';
+import { monsterTypeOptions } from '../../../utilities/character-utilities';
 
 const MonsterTypeSelect = (props: { control: Control<FieldValues> }) => (
   <FormSelect

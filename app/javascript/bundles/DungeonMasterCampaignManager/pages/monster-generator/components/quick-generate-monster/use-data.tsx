@@ -1,5 +1,5 @@
 import React from 'react';
-import { GenerateMonsterProps } from '../generate-monster/GenerateMonster';
+import { GenerateMonsterProps } from './QuickGenerateMonster';
 import { MonsterQuickGeneratorFormFields, RandomNameResult } from '../../../../utilities/types';
 import { FieldValues, useForm } from 'react-hook-form';
 import {

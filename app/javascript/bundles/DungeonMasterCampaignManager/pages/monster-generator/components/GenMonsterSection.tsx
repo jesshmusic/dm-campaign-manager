@@ -1,5 +1,5 @@
 import React from 'react';
-import { StepContainer } from '../../../MonsterGenerator.styles';
+import { StepContainer } from '../MonsterGenerator.styles';
 
 type GenMonsterSectionProps = {
   children: React.ReactNode;

@@ -8,7 +8,7 @@ module Admin
       before_action :set_user
       before_action :set_monster, only: %i[show edit update destroy]
       skip_before_action :authorize_request,
-                         only: %i[index show monster_refs monster_categories actions_by_name quick_monster generate_monster generate_commoner calculate_cr info_for_cr
+                         only: %i[index show monster_refs monster_categories actions_by_name quick_monster generate_commoner calculate_cr info_for_cr
                                   generate_action_desc special_abilities generate_npc_actions]
 
       # GET /v1/monsters
@@ -108,7 +108,8 @@ module Admin
       def generate_commoner
         random_npc_gender = params[:random_monster_gender] || %w[male female].sample
         random_npc_race = params[:random_monster_race] || 'human'
-        @monster = NpcGenerator.generate_commoner(random_npc_gender, random_npc_race, @user)
+        role = params[:role].presence
+        @monster = NpcGenerator.generate_commoner(random_npc_gender, random_npc_race, @user, role)
         respond_to do |format|
           format.json
         end
@@ -116,13 +117,6 @@ module Admin
 
       def quick_monster
         @monster = NpcGenerator.quick_monster(monster_params, @user)
-        respond_to do |format|
-          format.json
-        end
-      end
-
-      def generate_monster
-        @monster = NpcGenerator.generate_npc(monster_params, @user)
         respond_to do |format|
           format.json
         end

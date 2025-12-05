@@ -24,9 +24,6 @@ Rails.application.routes.draw do
       get '/random_monster_name', to: 'dashboard#random_monster_name',
           as: 'random_monster_name',
           constraints: { format: 'json' }
-      post '/generate_monster', to: 'monsters#generate_monster',
-           as: 'generate_monster',
-           constraints: { format: 'json' }
       post '/quick_monster', to: 'monsters#quick_monster',
            as: 'quick_monster',
            constraints: { format: 'json' }

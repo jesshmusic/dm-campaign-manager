@@ -99,7 +99,7 @@ export const CommonerInstructions = () => (
   </>
 );
 
-export const QuickNPCInstructions = () => (
+export const CreateNPCInstructions = () => (
   <>
     <Section>
       <h4>Quick Start</h4>
@@ -136,56 +136,6 @@ export const QuickNPCInstructions = () => (
         The "Generate Actions" button uses AI to create thematic attacks, special abilities, and
         spells based on your creature's description and type. This feature requires an internet
         connection and may take a few seconds.
-      </p>
-    </Section>
-  </>
-);
-
-export const CreateNPCInstructions = () => (
-  <>
-    <Section>
-      <h4>Quick Start</h4>
-      <p>
-        Build completely custom NPCs and creatures with full control over every stat, ability, and
-        action. The Challenge Rating is calculated automatically as you build.
-      </p>
-    </Section>
-    <Section>
-      <h4>Workflow</h4>
-      <ul>
-        <li>
-          <strong>Step 1 - Stats:</strong> Set AC, hit dice, and base combat stats. CR is calculated
-          as you make changes.
-        </li>
-        <li>
-          <strong>Step 2 - Abilities & Defenses:</strong> Set ability scores, saving throws, skills,
-          and damage resistances/immunities.
-        </li>
-        <li>
-          <strong>Step 3 - Senses & Movement:</strong> Add special senses and movement speeds.
-        </li>
-        <li>
-          <strong>Step 4 - Actions:</strong> Create attacks, multiattack, and other actions.
-        </li>
-        <li>
-          <strong>Step 5 - Special Abilities:</strong> Add traits, reactions, and legendary actions.
-        </li>
-        <li>
-          <strong>Step 6 - Name:</strong> Enter a name or generate one randomly.
-        </li>
-      </ul>
-    </Section>
-    <Section>
-      <h4>
-        <AIBadge>AI</AIBadge> Challenge Rating Calculation
-      </h4>
-      <p>
-        The CR calculator uses AI to analyze your creature's full stat block including special
-        abilities, resistances, and legendary actions. The AI considers how abilities interact and
-        may suggest adjustments beyond what raw numbers indicate.
-      </p>
-      <p>
-        <em>Note: CR calculations are rate-limited to prevent API overload.</em>
       </p>
     </Section>
   </>

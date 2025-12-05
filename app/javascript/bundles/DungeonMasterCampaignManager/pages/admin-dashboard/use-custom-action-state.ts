@@ -1,7 +1,7 @@
 import { ActionTypes, FlashMessage, MonsterActionField, UserProps } from '../../utilities/types';
 import { FieldValues, useForm } from 'react-hook-form';
-import { generateAttackDesc } from '../monster-generator/components/generate-monster/use-data';
-import { abilityOptions } from '../monster-generator/components/generate-monster/sections/actions/action-forms/SpellcastingForm';
+import { generateAttackDesc } from '../../components/action-forms/utils';
+import { abilityOptions } from '../../components/action-forms/SpellcastingForm';
 import { useNavigate } from 'react-router-dom';
 
 type CustomActionField = {

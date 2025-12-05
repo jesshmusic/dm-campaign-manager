@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Select, { Options } from 'react-select';
+import CreatableSelect from 'react-select/creatable';
 import Button from '../Button/Button';
 import { Colors } from '../../utilities/enums';
 import { GiBattleGear, GiLinkedRings } from 'react-icons/gi';
@@ -33,9 +34,23 @@ export const raceOptions: Options<unknown> = [
   { value: 'tiefling', label: 'Tiefling' },
 ];
 
+const roleOptions: Options<{ value: string; label: string }> = [
+  { value: '', label: 'Any' },
+  { value: 'blacksmith', label: 'Blacksmith' },
+  { value: 'noble', label: 'Noble' },
+  { value: 'merchant', label: 'Merchant' },
+  { value: 'guard', label: 'Guard' },
+  { value: 'farmer', label: 'Farmer' },
+  { value: 'scholar', label: 'Scholar' },
+  { value: 'healer', label: 'Healer' },
+  { value: 'entertainer', label: 'Entertainer' },
+  { value: 'sailor', label: 'Sailor' },
+  { value: 'servant', label: 'Servant' },
+];
+
 interface NameOptionsProps {
   isLoading?: boolean;
-  onFormSubmit: (gender: string, race: string, userId?: string) => void;
+  onFormSubmit: (gender: string, race: string, role?: string, userId?: string) => void;
   title: string;
   token?: string;
 }
@@ -49,10 +64,11 @@ const NameOptions = ({ isLoading, onFormSubmit, title, token }: NameOptionsProps
     value: 'human',
     label: 'Human',
   });
+  const [role, setRole] = useState<{ value: string; label: string } | null>(null);
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    onFormSubmit(gender?.value || '', race?.value || '', token);
+    onFormSubmit(gender?.value || '', race?.value || '', role?.value || '', token);
   };
 
   return (
@@ -96,6 +112,27 @@ const NameOptions = ({ isLoading, onFormSubmit, title, token }: NameOptionsProps
               setRace(option as { value: string; label: string });
             }
           }}
+        />
+      </div>
+      <div>
+        <Label htmlFor={'nameGeneratorRole'}>Role (optional)</Label>
+        <CreatableSelect
+          className={'reactSelect'}
+          classNamePrefix={'reactSelect'}
+          options={roleOptions}
+          id={'nameGeneratorRole'}
+          menuPlacement={'top'}
+          isClearable
+          placeholder="Select or type a role..."
+          formatCreateLabel={(inputValue) => `Create "${inputValue}"`}
+          onChange={(option) => {
+            setRole(option as { value: string; label: string } | null);
+          }}
+          onCreateOption={(inputValue) => {
+            const newOption = { value: inputValue.toLowerCase(), label: inputValue };
+            setRole(newOption);
+          }}
+          value={role}
         />
       </div>
     </NameOptionsWrapper>

@@ -1,12 +1,12 @@
 import React from 'react';
 import { Control, FieldErrors, useWatch } from 'react-hook-form';
-import { ControlledInput } from '../../../../../../../components/forms/ControllerInput';
-import Button from '../../../../../../../components/Button/Button';
-import { Colors } from '../../../../../../../utilities/enums';
+import { ControlledInput } from '../forms/ControllerInput';
+import Button from '../Button/Button';
+import { Colors } from '../../utilities/enums';
 import { GiTrashCan } from 'react-icons/gi';
 import AbilityForm from './AbilityForm';
 import AttackForm from './AttackForm';
-import { ActionTypes } from '../../../../../../../utilities/types';
+import { ActionTypes } from '../../utilities/types';
 import SpellcastingForm from './SpellcastingForm';
 
 import {
@@ -14,7 +14,7 @@ import {
   ActionWrapper,
   ActionCol,
   ActionContent,
-} from '../../../../../MonsterGenerator.styles';
+} from '../../pages/monster-generator/MonsterGenerator.styles';
 
 const ActionForm = (props: {
   actionIndex?: number;

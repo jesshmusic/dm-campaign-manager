@@ -1,10 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
-import GenerateMonster from './components/generate-monster/GenerateMonster';
 import Convert2eMonster from './Convert2eMonster';
 import GenerateCommoner from './components/GenerateCommoner';
-import { GiBlacksmith, GiSpikedDragonHead, GiDiceTwentyFacesTwenty } from 'react-icons/gi';
+import { GiBlacksmith, GiSpikedDragonHead, GiCrossMark } from 'react-icons/gi';
 import { SiConvertio } from 'react-icons/si';
 import MonsterBlock from '../monsters/MonsterBlock';
 import rest from '../../api/api';
@@ -15,8 +14,6 @@ import { MonsterProps } from '../../utilities/types';
 import { clearCurrentMonster } from '../../reducers/monsters';
 
 ReactGA.initialize('G-8XJTH70JSQ');
-
-import { GiCrossMark } from 'react-icons/gi';
 import {
   MonsterGenWrapper,
   MonsterDisplayWrapper,
@@ -27,25 +24,33 @@ import {
   TabsContent,
 } from './MonsterGenerator.styles';
 
+const VALID_TABS = ['commoner', 'create'];
+
+const getInitialTab = (): string => {
+  const searchParams = new URLSearchParams(window.location.search);
+  const tabParam = searchParams.get('tab');
+  return tabParam && VALID_TABS.includes(tabParam) ? tabParam : 'commoner';
+};
+
 const MonsterGenerator = (props: {
   monster?: MonsterProps;
   clearMonster: () => void;
-  generateCommoner: (gender?: string, race?: string, token?: string) => void;
-  generateMonster: (monster: Record<string, unknown>, token?: string) => void;
+  generateCommoner: (gender?: string, race?: string, role?: string, token?: string) => void;
   generateQuickMonster: (monster: Record<string, unknown>, token?: string) => void;
   isLoading?: boolean;
   token?: string;
 }) => {
-  const {
-    token,
-    isLoading,
-    monster,
-    clearMonster,
-    generateCommoner,
-    generateMonster,
-    generateQuickMonster,
-  } = props;
+  const { token, isLoading, monster, clearMonster, generateCommoner, generateQuickMonster } =
+    props;
   const show2eConverter = false;
+  const [activeTab, setActiveTab] = useState(getInitialTab);
+
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+    const url = new URL(window.location.href);
+    url.searchParams.set('tab', value);
+    window.history.replaceState({}, '', url.toString());
+  };
 
   useEffect(() => {
     return () => {
@@ -80,25 +85,12 @@ const MonsterGenerator = (props: {
           </MonsterDisplayWrapper>
         ) : null}
 
-        <TabsRoot defaultValue="commoner">
+        <TabsRoot value={activeTab} onValueChange={handleTabChange}>
           <TabsList>
             <TabsTrigger value="commoner">
               <GiBlacksmith size={20} /> Commoner
             </TabsTrigger>
-            <TabsTrigger value="quick-monster">
-              <span
-                style={{ display: 'inline-block', position: 'relative', width: 30, height: 30 }}
-              >
-                <GiDiceTwentyFacesTwenty
-                  size={30}
-                  color="#dd9529"
-                  style={{ position: 'absolute', left: 0, top: 0 }}
-                />
-                <GiSpikedDragonHead size={20} style={{ position: 'absolute', left: 5, top: 5 }} />
-              </span>
-              Quick NPC
-            </TabsTrigger>
-            <TabsTrigger value="create-monster">
+            <TabsTrigger value="create">
               <GiSpikedDragonHead size={20} /> Create NPC
             </TabsTrigger>
             {show2eConverter && (
@@ -112,17 +104,9 @@ const MonsterGenerator = (props: {
             <GenerateCommoner isLoading={isLoading} onFormSubmit={generateCommoner} token={token} />
           </TabsContent>
 
-          <TabsContent value="quick-monster">
+          <TabsContent value="create">
             <QuickGenerateMonster
               onGenerateMonster={generateQuickMonster}
-              token={token}
-              isLoading={isLoading}
-            />
-          </TabsContent>
-
-          <TabsContent value="create-monster">
-            <GenerateMonster
-              onGenerateMonster={generateMonster}
               token={token}
               isLoading={isLoading}
             />
@@ -153,24 +137,18 @@ function mapDispatchToProps(dispatch) {
     clearMonster: () => {
       dispatch(clearCurrentMonster());
     },
-    generateCommoner: (gender: string = 'Female', race: string = 'Human', token?: string) => {
+    generateCommoner: (
+      gender: string = 'Female',
+      race: string = 'Human',
+      role: string = '',
+      token?: string,
+    ) => {
       ReactGA.event('NPC Generator');
       dispatch(
         rest.actions.generateCommoner(
-          { gender, race },
+          { gender, race, role },
           {
             body: JSON.stringify({ token }),
-          },
-        ),
-      );
-    },
-    generateMonster: (monster: unknown, token?: string) => {
-      ReactGA.event('NPC Generator');
-      dispatch(
-        rest.actions.generateMonster(
-          {},
-          {
-            body: JSON.stringify({ monster, token }),
           },
         ),
       );
