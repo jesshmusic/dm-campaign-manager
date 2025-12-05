@@ -7,7 +7,7 @@ module Admin
       before_action :set_monster, only: %i[show edit update destroy]
       skip_before_action :authorize_request,
                          only: %i[index show monster_refs monster_categories actions_by_name quick_monster generate_monster generate_commoner calculate_cr info_for_cr
-                                  generate_action_desc special_abilities]
+                                  generate_action_desc special_abilities generate_npc_actions]
 
       # GET /v1/monsters
       # GET /v1/monsters.json
@@ -171,6 +171,15 @@ module Admin
         render json: { special_abilities: @special_abilities }
       end
 
+      # POST /v1/generate_npc_actions
+      # Generate actions, special abilities, and spells using AI
+      def generate_npc_actions
+        result = NpcActionGenerator.generate(npc_action_params)
+        render json: result
+      rescue ArgumentError => e
+        render json: { error: e.message }, status: :unprocessable_entity
+      end
+
       # PATCH/PUT /monsters/:slug
       # PATCH/PUT /monsters/:slug.json
       def update
@@ -210,6 +219,12 @@ module Admin
       def set_monster
         Rails.logger.debug params
         @monster = Monster.friendly.find(params[:id])
+      end
+
+      def npc_action_params
+        params.permit(:description, :challenge_rating, :monster_type, :size,
+                      :armor_class, :hit_points, :archetype, :token,
+                      saving_throws: [], skills: [])
       end
 
       # Never trust parameters from the scary internet, only allow the white list through.

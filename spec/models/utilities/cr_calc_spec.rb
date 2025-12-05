@@ -312,6 +312,174 @@ RSpec.describe CrCalc, type: :model do
   # with actions, damages, and special abilities. These are integration tests
   # better suited for the Monster model specs.
 
+  describe '.trait_modifier' do
+    # Testing the Relentless special ability HP modifier at different CR ranges
+    # This was a bug fix: Ruby's == doesn't work with ranges, must use case/when
+
+    let(:base_damage) { 10 }
+    let(:base_attack) { 5 }
+    let(:base_ac) { 13 }
+    let(:base_hp) { 50 }
+
+    def create_monster_with_relentless(cr_string)
+      monster = create(:monster, challenge_rating: cr_string)
+      allow(monster).to receive(:special_abilities).and_return(['Relentless'])
+      monster
+    end
+
+    it 'adds 0 HP for CR 0 (below range 1-4)' do
+      monster = create_monster_with_relentless('0')
+      result = CrCalc.send(:trait_modifier, monster, '0', base_damage, base_attack, base_ac, base_hp)
+      # result is [damage_per_round, attack_bonus, armor_class, hit_points]
+      expect(result[3]).to eq(base_hp) # No modifier for CR 0
+    end
+
+    it 'adds 7 HP for CR 1-4 (Relentless modifier)' do
+      [1, 2, 3, 4].each do |cr|
+        monster = create_monster_with_relentless(cr.to_s)
+        result = CrCalc.send(:trait_modifier, monster, cr.to_s, base_damage, base_attack, base_ac, base_hp)
+        expect(result[3]).to eq(base_hp + 7), "Expected +7 HP for CR #{cr}"
+      end
+    end
+
+    it 'adds 14 HP for CR 5-9 (Relentless modifier)' do
+      [5, 6, 7, 8, 9].each do |cr|
+        monster = create_monster_with_relentless(cr.to_s)
+        result = CrCalc.send(:trait_modifier, monster, cr.to_s, base_damage, base_attack, base_ac, base_hp)
+        expect(result[3]).to eq(base_hp + 14), "Expected +14 HP for CR #{cr}"
+      end
+    end
+
+    it 'adds 21 HP for CR 10-15 (Relentless modifier)' do
+      [10, 11, 12, 13, 14, 15].each do |cr|
+        monster = create_monster_with_relentless(cr.to_s)
+        result = CrCalc.send(:trait_modifier, monster, cr.to_s, base_damage, base_attack, base_ac, base_hp)
+        expect(result[3]).to eq(base_hp + 21), "Expected +21 HP for CR #{cr}"
+      end
+    end
+
+    it 'adds 28 HP for CR 16+ (Relentless modifier)' do
+      [16, 20, 25, 30].each do |cr|
+        monster = create_monster_with_relentless(cr.to_s)
+        result = CrCalc.send(:trait_modifier, monster, cr.to_s, base_damage, base_attack, base_ac, base_hp)
+        expect(result[3]).to eq(base_hp + 28), "Expected +28 HP for CR #{cr}"
+      end
+    end
+
+    it 'handles fractional CRs correctly (should get 0 HP modifier)' do
+      ['1/8', '1/4', '1/2'].each do |cr|
+        monster = create_monster_with_relentless(cr)
+        result = CrCalc.send(:trait_modifier, monster, cr, base_damage, base_attack, base_ac, base_hp)
+        expect(result[3]).to eq(base_hp), "Expected no modifier for CR #{cr}"
+      end
+    end
+  end
+
+  describe 'resistance and immunity calculations (2024 rules)' do
+    let(:monster) do
+      create(:monster,
+             challenge_rating: '5',
+             hit_points: 100,
+             armor_class: 15)
+    end
+
+    describe '.calculate_resistance_multiplier (private)' do
+      it 'returns 1.0 for no resistances' do
+        allow(monster).to receive(:damage_resistances).and_return([])
+        result = CrCalc.send(:calculate_resistance_multiplier, monster, 5)
+        expect(result).to eq(1.0)
+      end
+
+      it 'returns 1.0 for non-physical resistances only (fire, cold, etc.)' do
+        allow(monster).to receive(:damage_resistances).and_return(%w[fire cold lightning])
+        result = CrCalc.send(:calculate_resistance_multiplier, monster, 5)
+        expect(result).to eq(1.0)
+      end
+
+      it 'returns higher multiplier for physical resistances (bludgeoning, piercing, slashing)' do
+        allow(monster).to receive(:damage_resistances).and_return(%w[bludgeoning piercing])
+        result = CrCalc.send(:calculate_resistance_multiplier, monster, 5)
+        expect(result).to be > 1.0
+      end
+
+      it 'returns 1.5 for 1-2 physical resistances at low CR' do
+        allow(monster).to receive(:damage_resistances).and_return(['bludgeoning'])
+        result = CrCalc.send(:calculate_resistance_multiplier, monster, 5)
+        expect(result).to eq(1.5)
+      end
+
+      it 'returns 2.0 for 3+ physical resistances at low CR' do
+        allow(monster).to receive(:damage_resistances).and_return(%w[bludgeoning piercing slashing])
+        result = CrCalc.send(:calculate_resistance_multiplier, monster, 5)
+        expect(result).to eq(2.0)
+      end
+
+      it 'returns lower multiplier at higher CR (11-16)' do
+        allow(monster).to receive(:damage_resistances).and_return(['bludgeoning'])
+        result = CrCalc.send(:calculate_resistance_multiplier, monster, 12)
+        expect(result).to eq(1.25)
+      end
+
+      it 'returns lowest multiplier at highest CR (17+)' do
+        allow(monster).to receive(:damage_resistances).and_return(['bludgeoning'])
+        result = CrCalc.send(:calculate_resistance_multiplier, monster, 20)
+        expect(result).to eq(1.1)
+      end
+    end
+
+    describe '.calculate_immunity_multiplier (private)' do
+      it 'returns 1.0 for fewer than 3 immunities' do
+        allow(monster).to receive(:damage_immunities).and_return(%w[fire cold])
+        result = CrCalc.send(:calculate_immunity_multiplier, monster, 5)
+        expect(result).to eq(1.0)
+      end
+
+      it 'returns multiplier for 3+ immunities' do
+        allow(monster).to receive(:damage_immunities).and_return(%w[fire cold lightning])
+        result = CrCalc.send(:calculate_immunity_multiplier, monster, 5)
+        expect(result).to be > 1.0
+      end
+
+      it 'returns 1.15 for 3+ immunities at CR 15 or below' do
+        allow(monster).to receive(:damage_immunities).and_return(%w[fire cold lightning])
+        result = CrCalc.send(:calculate_immunity_multiplier, monster, 10)
+        expect(result).to eq(1.15)
+      end
+
+      it 'returns 1.25 for 3+ immunities at CR above 15' do
+        allow(monster).to receive(:damage_immunities).and_return(%w[fire cold lightning])
+        result = CrCalc.send(:calculate_immunity_multiplier, monster, 20)
+        expect(result).to eq(1.25)
+      end
+    end
+
+    describe '.calculate_vulnerabilities (private)' do
+      it 'returns 0 for no vulnerabilities' do
+        allow(monster).to receive(:damage_vulnerabilities).and_return([])
+        result = CrCalc.send(:calculate_vulnerabilities, monster)
+        expect(result).to eq(0)
+      end
+
+      it 'counts physical vulnerabilities as 2 each' do
+        allow(monster).to receive(:damage_vulnerabilities).and_return(['bludgeoning'])
+        result = CrCalc.send(:calculate_vulnerabilities, monster)
+        expect(result).to eq(2)
+      end
+
+      it 'counts non-physical vulnerabilities as 1 each' do
+        allow(monster).to receive(:damage_vulnerabilities).and_return(['fire'])
+        result = CrCalc.send(:calculate_vulnerabilities, monster)
+        expect(result).to eq(1)
+      end
+
+      it 'sums physical and non-physical vulnerabilities correctly' do
+        allow(monster).to receive(:damage_vulnerabilities).and_return(%w[bludgeoning fire])
+        result = CrCalc.send(:calculate_vulnerabilities, monster)
+        expect(result).to eq(3) # 2 for bludgeoning + 1 for fire
+      end
+    end
+  end
+
   describe '.get_defensive_cr' do
     let(:monster) do
       create(:monster,

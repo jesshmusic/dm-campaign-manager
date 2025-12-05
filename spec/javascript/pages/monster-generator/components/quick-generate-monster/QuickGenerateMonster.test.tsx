@@ -53,15 +53,15 @@ jest.mock('../../../../../../app/javascript/bundles/DungeonMasterCampaignManager
   };
 });
 
-jest.mock('../../../../../../app/javascript/bundles/DungeonMasterCampaignManager/components/forms/FormSelectAsync', () => {
-  return function MockFormSelectAsync({ label }: any) {
-    return <div data-testid="form-select-async">{label}</div>;
-  };
-});
-
 jest.mock('../../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/monster-generator/components/SavesSkillsSection', () => {
   return function MockSavesSkillsSection() {
     return <div data-testid="saves-skills-section">Saves Skills</div>;
+  };
+});
+
+jest.mock('../../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/monster-generator/components/quick-generate-monster/CreatureDescriptionSection', () => {
+  return function MockCreatureDescriptionSection() {
+    return <div data-testid="creature-description-section">Creature Description</div>;
   };
 });
 
@@ -81,11 +81,11 @@ describe('QuickGenerateMonster', () => {
   const mockUseData = {
     archetypeOptions: [{ label: 'Warrior', value: 'warrior' }],
     challengeRatingOptions: [{ label: '1', value: '1' }],
-    getMonsterActions: jest.fn(),
-    getSpecialAbilities: jest.fn(),
-    getSpells: jest.fn(),
+    generatedActions: null,
+    handleGenerateActions: jest.fn(),
     handleGenerateName: jest.fn(),
     handleGenerateMonsterName: jest.fn(),
+    isGeneratingActions: false,
     monsterType: 'humanoid',
     onSubmit: jest.fn(),
     updateForm: jest.fn(),
@@ -106,37 +106,25 @@ describe('QuickGenerateMonster', () => {
     expect(screen.getByText('Set the basics and let the generator do the rest. Perfect for creating NPCs and enemies on the fly.')).toBeInTheDocument();
   });
 
-  it('renders Stats section', () => {
+  it('renders Stats section (Step 1)', () => {
     render(<QuickGenerateMonster onGenerateMonster={jest.fn()} />);
     expect(screen.getByTestId('section-Stats')).toBeInTheDocument();
     expect(screen.getByTestId('quick-monster-stats-section')).toBeInTheDocument();
   });
 
-  it('renders Traits section', () => {
-    render(<QuickGenerateMonster onGenerateMonster={jest.fn()} />);
-    expect(screen.getByTestId('section-Traits')).toBeInTheDocument();
-    expect(screen.getByText('Search for and select special abilities from existing creatures')).toBeInTheDocument();
-  });
-
-  it('renders Actions section', () => {
-    render(<QuickGenerateMonster onGenerateMonster={jest.fn()} />);
-    expect(screen.getByTestId('section-Actions')).toBeInTheDocument();
-    expect(screen.getByText('Search for and select actions from existing creatures')).toBeInTheDocument();
-  });
-
-  it('renders Saving Throws & Skills section', () => {
+  it('renders Saving Throws & Skills section (Step 2)', () => {
     render(<QuickGenerateMonster onGenerateMonster={jest.fn()} />);
     expect(screen.getByTestId('section-Saving Throws & Skills')).toBeInTheDocument();
     expect(screen.getByTestId('saves-skills-section')).toBeInTheDocument();
   });
 
-  it('renders Spells section', () => {
+  it('renders Creature Description section (Step 3)', () => {
     render(<QuickGenerateMonster onGenerateMonster={jest.fn()} />);
-    expect(screen.getByTestId('section-Spells')).toBeInTheDocument();
-    expect(screen.getByText('Spells (search by name, level, or school)')).toBeInTheDocument();
+    expect(screen.getByTestId('section-Creature Description')).toBeInTheDocument();
+    expect(screen.getByTestId('creature-description-section')).toBeInTheDocument();
   });
 
-  it('renders Name section', () => {
+  it('renders Name section (Step 4)', () => {
     render(<QuickGenerateMonster onGenerateMonster={jest.fn()} />);
     expect(screen.getByTestId('section-Name')).toBeInTheDocument();
     expect(screen.getByTestId('name-form-field')).toBeInTheDocument();
@@ -162,7 +150,7 @@ describe('QuickGenerateMonster', () => {
 
   it('shows step indicator', () => {
     render(<QuickGenerateMonster onGenerateMonster={jest.fn()} />);
-    expect(screen.getByText(/Step 1 of 6/)).toBeInTheDocument();
+    expect(screen.getByText(/Step 1 of 4/)).toBeInTheDocument();
   });
 
   it('calls handleGenerateMonsterName when Generate Monster Name clicked', () => {

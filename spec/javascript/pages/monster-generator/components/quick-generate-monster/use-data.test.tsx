@@ -17,32 +17,11 @@ const TestComponent = (props: any) => {
       <div data-testid="monster-type">{hookData.monsterType}</div>
       <div data-testid="archetype-options">{JSON.stringify(hookData.archetypeOptions)}</div>
       <div data-testid="cr-options">{JSON.stringify(hookData.challengeRatingOptions)}</div>
+      <div data-testid="is-generating">{hookData.isGeneratingActions.toString()}</div>
+      <div data-testid="generated-actions">{JSON.stringify(hookData.generatedActions)}</div>
       <button onClick={() => hookData.handleGenerateMonsterName()}>Generate Monster Name</button>
       <button onClick={() => hookData.handleGenerateName('male', 'elf')}>Generate Fantasy Name</button>
-      <button
-        onClick={() => {
-          const mockCallback = jest.fn();
-          hookData.getMonsterActions('bite', mockCallback);
-        }}
-      >
-        Get Actions
-      </button>
-      <button
-        onClick={() => {
-          const mockCallback = jest.fn();
-          hookData.getSpecialAbilities('magic', mockCallback);
-        }}
-      >
-        Get Abilities
-      </button>
-      <button
-        onClick={() => {
-          const mockCallback = jest.fn();
-          hookData.getSpells('fire', mockCallback);
-        }}
-      >
-        Get Spells
-      </button>
+      <button onClick={() => hookData.handleGenerateActions()}>Generate Actions</button>
     </div>
   );
 };
@@ -116,63 +95,43 @@ describe('quick-generate-monster useData', () => {
     });
   });
 
-  it('handles get actions', async () => {
-    const mockActions = {
-      data: {
-        actions: [
-          { name: 'Bite', desc: 'Melee attack' },
-          { name: 'Claw', desc: 'Melee attack' },
-        ],
-      },
-    };
-    mockedAxios.get.mockResolvedValueOnce(mockActions);
-
+  it('initializes isGeneratingActions as false', () => {
     render(<TestComponent {...defaultProps} />);
 
-    const button = screen.getByText('Get Actions');
-    button.click();
-
-    await waitFor(() => {
-      expect(mockedAxios.get).toHaveBeenCalledWith('/v1/actions-by-name.json?action_name=bite');
-    });
+    expect(screen.getByTestId('is-generating')).toHaveTextContent('false');
   });
 
-  it('handles get special abilities', async () => {
-    const mockAbilities = {
-      data: {
-        special_abilities: ['Magic Resistance', 'Pack Tactics'],
-      },
-    };
-    mockedAxios.get.mockResolvedValueOnce(mockAbilities);
-
+  it('initializes generatedActions as null', () => {
     render(<TestComponent {...defaultProps} />);
 
-    const button = screen.getByText('Get Abilities');
-    button.click();
-
-    await waitFor(() => {
-      expect(mockedAxios.get).toHaveBeenCalledWith('/v1/special-abilities.json?search=magic');
-    });
+    expect(screen.getByTestId('generated-actions')).toHaveTextContent('null');
   });
 
-  it('handles get spells', async () => {
-    const mockSpells = {
+  it('handles generate actions API call', async () => {
+    const mockResponse = {
       data: {
-        results: [
-          { name: 'Fireball', level: 3 },
-          { name: 'Magic Missile', level: 1 },
-        ],
+        actions: [{ name: 'Bite', desc: 'Melee attack' }],
+        special_abilities: [{ name: 'Pack Tactics', desc: 'Advantage when ally nearby' }],
+        spells: ['Fire Bolt'],
       },
     };
-    mockedAxios.get.mockResolvedValueOnce(mockSpells);
+    mockedAxios.post.mockResolvedValueOnce(mockResponse);
 
     render(<TestComponent {...defaultProps} />);
 
-    const button = screen.getByText('Get Spells');
+    const button = screen.getByText('Generate Actions');
     button.click();
 
     await waitFor(() => {
-      expect(mockedAxios.get).toHaveBeenCalledWith('/v1/spells.json?list=true&search=fire}');
+      expect(mockedAxios.post).toHaveBeenCalledWith(
+        '/v1/generate_npc_actions',
+        expect.objectContaining({
+          description: '',
+          challenge_rating: '0',
+          monster_type: 'humanoid',
+          size: 'medium',
+        })
+      );
     });
   });
 });

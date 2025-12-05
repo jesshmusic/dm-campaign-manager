@@ -31,7 +31,7 @@ export type GenerateMonsterProps = {
   token?: string;
 };
 
-const TOTAL_STEPS = 11;
+const TOTAL_STEPS = 6;
 
 const GenerateMonster = (props: GenerateMonsterProps) => {
   const { isLoading } = props;
@@ -95,6 +95,7 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
         </pre>
       ) : null}
       <Frame
+        title="Create NPC"
         subtitle="Full control over every detail. Build custom NPCs and creatures with automatic Challenge Rating calculation."
         className="random-monster-generator"
       >
@@ -103,46 +104,36 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
         </StepProgressBar>
 
         <GenForm onSubmit={UseForm.handleSubmit(onSubmit)} noValidate>
+          {/* Step 1: Stats */}
           <GenMonsterSection heading="Stats" step={1} currentStep={currentStep} isMultiStep>
             <MonsterStatsSection UseForm={UseForm} handleCalculateCR={handleCalculateCR} />
           </GenMonsterSection>
 
+          {/* Step 2: Abilities, Saves/Skills, Resistances (combined) */}
           <GenMonsterSection
-            heading="Ability Scores"
+            heading="Abilities & Defenses"
             step={2}
             currentStep={currentStep}
             isMultiStep
           >
             <AbilitiesSection UseForm={UseForm} />
+            <SavesSkillsSection UseForm={UseForm} />
+            <ResistancesSection UseForm={UseForm} />
           </GenMonsterSection>
 
+          {/* Step 3: Senses & Speeds (combined) */}
           <GenMonsterSection
-            heading="Saving Throws & Skills"
+            heading="Senses & Movement"
             step={3}
             currentStep={currentStep}
             isMultiStep
           >
-            <SavesSkillsSection UseForm={UseForm} />
-          </GenMonsterSection>
-
-          <GenMonsterSection heading="Senses" step={4} currentStep={currentStep} isMultiStep>
             <SensesForm fieldName={'senses'} useForm={UseForm} />
-          </GenMonsterSection>
-
-          <GenMonsterSection heading="Speeds" step={5} currentStep={currentStep} isMultiStep>
             <SpeedsForm fieldName={'speeds'} useForm={UseForm} />
           </GenMonsterSection>
 
-          <GenMonsterSection
-            heading="Resistances & Vulnerabilities"
-            step={6}
-            currentStep={currentStep}
-            isMultiStep
-          >
-            <ResistancesSection UseForm={UseForm} />
-          </GenMonsterSection>
-
-          <GenMonsterSection heading="Actions" step={7} currentStep={currentStep} isMultiStep>
+          {/* Step 4: Actions */}
+          <GenMonsterSection heading="Actions" step={4} currentStep={currentStep} isMultiStep>
             <BaseActionsFormSection
               actionVariation={ActionVariations.action}
               fieldName="actions"
@@ -151,9 +142,10 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
             />
           </GenMonsterSection>
 
+          {/* Step 5: Special Abilities, Reactions, Legendary (combined) */}
           <GenMonsterSection
-            heading="Special Abilities"
-            step={8}
+            heading="Special Abilities & Reactions"
+            step={5}
             currentStep={currentStep}
             isMultiStep
           >
@@ -163,23 +155,12 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
               singularTitle="Special Ability"
               useForm={UseForm}
             />
-          </GenMonsterSection>
-
-          <GenMonsterSection heading="Reactions" step={9} currentStep={currentStep} isMultiStep>
             <BaseActionsFormSection
               actionVariation={ActionVariations.reaction}
               fieldName="reactions"
               singularTitle="Reaction"
               useForm={UseForm}
             />
-          </GenMonsterSection>
-
-          <GenMonsterSection
-            heading="Legendary Actions"
-            step={10}
-            currentStep={currentStep}
-            isMultiStep
-          >
             <BaseActionsFormSection
               actionVariation={ActionVariations.legendaryAction}
               fieldName="legendaryActions"
@@ -188,7 +169,8 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
             />
           </GenMonsterSection>
 
-          <GenMonsterSection heading="Name" step={11} currentStep={currentStep} isMultiStep>
+          {/* Step 6: Name */}
+          <GenMonsterSection heading="Name" step={6} currentStep={currentStep} isMultiStep>
             <NameFormField
               activeNameButton={activeNameButton}
               characterRace={UseForm.getValues('characterRace')?.value}

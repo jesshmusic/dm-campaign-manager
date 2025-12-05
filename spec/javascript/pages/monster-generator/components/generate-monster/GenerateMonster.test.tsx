@@ -5,9 +5,6 @@ import * as useDataHook from '../../../../../../app/javascript/bundles/DungeonMa
 
 jest.mock('react-icons/gi', () => ({
   GiDiceTwentyFacesTwenty: () => <div>DiceIcon</div>,
-}));
-
-jest.mock('react-icons/all', () => ({
   GiLinkedRings: () => <div>SpinnerIcon</div>,
 }));
 
@@ -44,7 +41,7 @@ jest.mock('../../../../../../app/javascript/bundles/DungeonMasterCampaignManager
     // In multi-step mode, only show content for the current step
     const isVisible = !isMultiStep || currentStep === step;
     return (
-      <div data-testid={`section-${heading.toLowerCase().replace(/ /g, '-')}`} style={{ display: isVisible ? 'block' : 'none' }}>
+      <div data-testid={`section-${heading.toLowerCase().replace(/[ &]/g, '-')}`} style={{ display: isVisible ? 'block' : 'none' }}>
         <h3>{heading}</h3>
         {children}
       </div>
@@ -131,75 +128,57 @@ describe('GenerateMonster', () => {
     render(<GenerateMonster {...defaultProps} />);
   });
 
-  it('renders Frame with correct subtitle', () => {
+  it('renders Frame with correct title and subtitle', () => {
     render(<GenerateMonster {...defaultProps} />);
+    expect(screen.getByText('Create NPC')).toBeInTheDocument();
     expect(screen.getByText('Full control over every detail. Build custom NPCs and creatures with automatic Challenge Rating calculation.')).toBeInTheDocument();
   });
 
-  it('renders Name section with NameFormField', () => {
-    render(<GenerateMonster {...defaultProps} />);
-    expect(screen.getByTestId('section-name')).toBeInTheDocument();
-    expect(screen.getByTestId('name-form-field')).toBeInTheDocument();
-  });
-
+  // Step 1: Stats
   it('renders Stats section', () => {
     render(<GenerateMonster {...defaultProps} />);
     expect(screen.getByTestId('section-stats')).toBeInTheDocument();
     expect(screen.getByTestId('monster-stats-section')).toBeInTheDocument();
   });
 
-  it('renders Ability Scores section', () => {
+  // Step 2: Abilities & Defenses (combined)
+  it('renders Abilities & Defenses section with abilities, saves/skills, and resistances', () => {
     render(<GenerateMonster {...defaultProps} />);
-    expect(screen.getByTestId('section-ability-scores')).toBeInTheDocument();
+    expect(screen.getByTestId('section-abilities---defenses')).toBeInTheDocument();
     expect(screen.getByTestId('abilities-section')).toBeInTheDocument();
-  });
-
-  it('renders Saving Throws & Skills section', () => {
-    render(<GenerateMonster {...defaultProps} />);
-    expect(screen.getByTestId('section-saving-throws-&-skills')).toBeInTheDocument();
     expect(screen.getByTestId('saves-skills-section')).toBeInTheDocument();
-  });
-
-  it('renders Senses section', () => {
-    render(<GenerateMonster {...defaultProps} />);
-    expect(screen.getByTestId('section-senses')).toBeInTheDocument();
-    expect(screen.getByTestId('senses-form')).toBeInTheDocument();
-  });
-
-  it('renders Speeds section', () => {
-    render(<GenerateMonster {...defaultProps} />);
-    expect(screen.getByTestId('section-speeds')).toBeInTheDocument();
-    expect(screen.getByTestId('speeds-form')).toBeInTheDocument();
-  });
-
-  it('renders Resistances & Vulnerabilities section', () => {
-    render(<GenerateMonster {...defaultProps} />);
-    expect(screen.getByTestId('section-resistances-&-vulnerabilities')).toBeInTheDocument();
     expect(screen.getByTestId('resistances-section')).toBeInTheDocument();
   });
 
+  // Step 3: Senses & Movement (combined)
+  it('renders Senses & Movement section with senses and speeds', () => {
+    render(<GenerateMonster {...defaultProps} />);
+    expect(screen.getByTestId('section-senses---movement')).toBeInTheDocument();
+    expect(screen.getByTestId('senses-form')).toBeInTheDocument();
+    expect(screen.getByTestId('speeds-form')).toBeInTheDocument();
+  });
+
+  // Step 4: Actions
   it('renders Actions section', () => {
     render(<GenerateMonster {...defaultProps} />);
     expect(screen.getByTestId('section-actions')).toBeInTheDocument();
     expect(screen.getByTestId('actions-action')).toBeInTheDocument();
   });
 
-  it('renders Special Abilities section', () => {
+  // Step 5: Special Abilities & Reactions (combined)
+  it('renders Special Abilities & Reactions section with special abilities, reactions, and legendary actions', () => {
     render(<GenerateMonster {...defaultProps} />);
-    expect(screen.getByTestId('section-special-abilities')).toBeInTheDocument();
+    expect(screen.getByTestId('section-special-abilities---reactions')).toBeInTheDocument();
     expect(screen.getByTestId('actions-special-ability')).toBeInTheDocument();
-  });
-
-  it('renders Reactions section', () => {
-    render(<GenerateMonster {...defaultProps} />);
-    expect(screen.getByTestId('section-reactions')).toBeInTheDocument();
     expect(screen.getByTestId('actions-reaction')).toBeInTheDocument();
+    expect(screen.getByTestId('actions-legendary-action')).toBeInTheDocument();
   });
 
-  it('renders Legendary Actions section', () => {
+  // Step 6: Name
+  it('renders Name section with NameFormField', () => {
     render(<GenerateMonster {...defaultProps} />);
-    expect(screen.getByTestId('section-legendary-actions')).toBeInTheDocument();
-    expect(screen.getByTestId('actions-legendary-action')).toBeInTheDocument();
+    expect(screen.getByTestId('section-name')).toBeInTheDocument();
+    expect(screen.getByTestId('name-form-field')).toBeInTheDocument();
   });
 
   it('renders Next and Skip buttons on step 1', () => {
@@ -208,9 +187,9 @@ describe('GenerateMonster', () => {
     expect(screen.getByText('Skip')).toBeInTheDocument();
   });
 
-  it('shows step indicator', () => {
+  it('shows step indicator for 6 steps', () => {
     render(<GenerateMonster {...defaultProps} />);
-    expect(screen.getByText(/Step 1 of 11/)).toBeInTheDocument();
+    expect(screen.getByText(/Step 1 of 6/)).toBeInTheDocument();
   });
 
   it('calls onSubmit when form submitted', () => {
@@ -231,6 +210,67 @@ describe('GenerateMonster', () => {
       isLoading: false,
       onGenerateMonster: mockOnGenerateMonster,
       token: 'test-token',
+    });
+  });
+
+  describe('step navigation', () => {
+    it('navigates to next step when Next is clicked', () => {
+      render(<GenerateMonster {...defaultProps} />);
+
+      expect(screen.getByText(/Step 1 of 6/)).toBeInTheDocument();
+      fireEvent.click(screen.getByText('Next'));
+      expect(screen.getByText(/Step 2 of 6/)).toBeInTheDocument();
+    });
+
+    it('navigates to next step when Skip is clicked', () => {
+      render(<GenerateMonster {...defaultProps} />);
+
+      expect(screen.getByText(/Step 1 of 6/)).toBeInTheDocument();
+      fireEvent.click(screen.getByText('Skip'));
+      expect(screen.getByText(/Step 2 of 6/)).toBeInTheDocument();
+    });
+
+    it('shows Previous button after step 1', () => {
+      render(<GenerateMonster {...defaultProps} />);
+
+      expect(screen.queryByText('Previous')).not.toBeInTheDocument();
+      fireEvent.click(screen.getByText('Next'));
+      expect(screen.getByText('Previous')).toBeInTheDocument();
+    });
+
+    it('navigates back when Previous is clicked', () => {
+      render(<GenerateMonster {...defaultProps} />);
+
+      fireEvent.click(screen.getByText('Next'));
+      expect(screen.getByText(/Step 2 of 6/)).toBeInTheDocument();
+      fireEvent.click(screen.getByText('Previous'));
+      expect(screen.getByText(/Step 1 of 6/)).toBeInTheDocument();
+    });
+
+    it('shows Create NPC button on last step', () => {
+      render(<GenerateMonster {...defaultProps} />);
+
+      // Navigate to the last step (step 6)
+      for (let i = 0; i < 5; i++) {
+        fireEvent.click(screen.getByText('Next'));
+      }
+
+      expect(screen.getByText(/Step 6 of 6/)).toBeInTheDocument();
+      // The "Create NPC" text appears in both title and button, so check for the submit button specifically
+      expect(screen.getByRole('button', { name: 'Create NPC' })).toBeInTheDocument();
+      expect(screen.queryByText('Next')).not.toBeInTheDocument();
+      expect(screen.queryByText('Skip')).not.toBeInTheDocument();
+    });
+
+    it('shows Creating... when loading on last step', () => {
+      render(<GenerateMonster {...defaultProps} isLoading={true} />);
+
+      // Navigate to the last step
+      for (let i = 0; i < 5; i++) {
+        fireEvent.click(screen.getByText('Next'));
+      }
+
+      expect(screen.getByText('Creating...')).toBeInTheDocument();
     });
   });
 });

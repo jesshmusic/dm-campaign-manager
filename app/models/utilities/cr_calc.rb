@@ -40,17 +40,13 @@ class CrCalc
     end
 
     def get_offensive_cr(monster, damage_per_round, attack_bonus)
-      save_dc = monster.save_dc
       damage_cr, assumed_attack_bonus, assumed_dc = cr_for_damage(damage_per_round)
       off_cr = if monster.is_caster
-                 calculate_cr_modifier(save_dc, assumed_dc, damage_cr)
-               elsif !monster.is_caster
-                 calculate_cr_modifier(attack_bonus, assumed_attack_bonus, damage_cr)
+                 calculate_cr_modifier(monster.save_dc, assumed_dc, damage_cr)
                else
-                 damage_cr
+                 calculate_cr_modifier(attack_bonus, assumed_attack_bonus, damage_cr)
                end
-      off_cr = 0.0 if off_cr.negative?
-      off_cr
+      [off_cr, 0.0].max
     end
 
     def calculate_cr_diff(diff_num, cr_index)
@@ -472,73 +468,40 @@ class CrCalc
     end
 
     def proficiency_for_cr(challenge_rating)
-      return 2 if ['1/8', '1/4', '1/2', '0'].include?(challenge_rating)
-
-      challenge = challenge_rating.to_i
-      case challenge
-      when 1..4
-        2
-      when 5..8
-        3
-      when 9..12
-        4
-      when 13..16
-        5
-      when 17..20
-        6
-      when 21..24
-        7
-      when 25..28
-        8
-      else
-        9
-      end
+      challenge_ratings[challenge_rating.to_s.to_sym]&.dig(:prof_bonus) || 2
     end
 
     def xp_for_cr(challenge_rating)
-      {
-        '0' => 10, '1/8' => 25, '1/4' => 50, '1/2' => 100, '1' => 200, '2' => 450, '3' => 700,
-        '4' => 1100, '5' => 1800, '6' => 2300, '7' => 2900, '8' => 3900, '9' => 5000, '10' => 5900,
-        '11' => 7200, '12' => 8400, '13' => 10_000, '14' => 11_500, '15' => 13_000, '16' => 15_000,
-        '17' => 18_000, '18' => 20_000, '19' => 22_000, '20' => 25_000, '21' => 33_000, '22' => 41_000,
-        '23' => 50_000, '24' => 62_000, '25' => 75_000, '26' => 90_000, '27' => 105_000, '28' => 120_000,
-        '29' => 135_000, '30' => 155_000
-      }[challenge_rating.to_s]
+      challenge_ratings[challenge_rating.to_s.to_sym]&.dig(:xp)
     end
 
     private
 
+    # Adjusts CR based on difference between actual and expected values
+    # Per DMG: For every 2 points difference, CR changes by 1 step
     def calculate_cr_modifier(value, assumed, incoming_cr)
-      if assumed > value
-        diff = assumed - value
-        n_steps = (diff / 2).ceil
-        n_steps.times do
-          incoming_cr -= if incoming_cr < 0.25
-                           0.125
-                         elsif incoming_cr >= 0.25 && incoming_cr < 0.5
-                           0.25
-                         elsif incoming_cr >= 0.5 && incoming_cr < 1
-                           0.5
-                         else
-                           1
-                         end
-        end
-      elsif assumed < value
-        diff = value - assumed
-        n_steps = (diff / 2).ceil
-        n_steps.times do
-          incoming_cr += if incoming_cr < 0.25
-                           0.125
-                         elsif incoming_cr >= 0.25 && incoming_cr < 0.5
-                           0.25
-                         elsif incoming_cr >= 0.5 && incoming_cr < 1
-                           0.5
-                         else
-                           1
-                         end
-        end
+      diff = value - assumed
+      return incoming_cr if diff.zero?
+
+      n_steps = (diff.abs / 2).ceil
+      direction = diff.positive? ? 1 : -1
+
+      n_steps.times do
+        step_size = cr_step_size(incoming_cr)
+        incoming_cr += step_size * direction
       end
+
       incoming_cr
+    end
+
+    # Returns the appropriate step size for fractional CRs
+    def cr_step_size(cr)
+      case cr
+      when 0...0.25 then 0.125
+      when 0.25...0.5 then 0.25
+      when 0.5...1 then 0.5
+      else 1
+      end
     end
 
     def trait_modifier(monster, target_cr, damage_per_round, attack_bonus, armor_class, hit_points)
@@ -577,17 +540,13 @@ class CrCalc
         elsif special_ability == 'Rampage'
           damage_per_round += 2
         elsif special_ability == 'Relentless'
-          relentless_mod = 0
           mod_cr = challenge.floor
-          if mod_cr == 1..4
-            relentless_mod = 7
-          elsif mod_cr == 5..9
-            relentless_mod = 14
-          elsif mod_cr == 10..15
-            relentless_mod = 21
-          elsif mod_cr >= 16
-            relentless_mod = 28
-          end
+          relentless_mod = case mod_cr
+                           when 1..4 then 7
+                           when 5..9 then 14
+                           when 10..15 then 21
+                           else mod_cr >= 16 ? 28 : 0
+                           end
           hit_points += relentless_mod
         elsif special_ability == 'Shadow Stealth'
           armor_class += 4
@@ -610,55 +569,59 @@ class CrCalc
       [damage_per_round, attack_bonus, armor_class, hit_points]
     end
 
-    def calculate_resist_dam_type(dam_type)
-      case dam_type.downcase
-      when 'bludgeoning', 'piercing', 'slashing'
-        3
-      when 'radiant', 'fire'
-        2
-      when 'nonmagical'
-        6
+    # Check if damage type is physical (bludgeoning, piercing, slashing, or nonmagical)
+    def physical_damage_type?(dam_type)
+      %w[bludgeoning piercing slashing nonmagical].include?(dam_type.to_s.downcase)
+    end
+
+    # 2024 rules: Only physical damage resistances affect HP multiplier
+    # Multipliers based on number of physical resistance types and CR
+    def calculate_resistance_multiplier(monster, target_cr)
+      physical_resistances = monster.damage_resistances.count { |r| physical_damage_type?(r) }
+      return 1.0 if physical_resistances.zero?
+
+      # Based on 2024 analysis: physical resistances provide significant HP multiplier
+      multiplier_by_cr(target_cr, physical_resistances <= 2)
+    end
+
+    # Returns HP multiplier based on CR tier
+    # few_effects: true for 1-2 resistances, false for 3+
+    def multiplier_by_cr(target_cr, few_effects)
+      if target_cr < 11
+        few_effects ? 1.5 : 2.0
+      elsif target_cr < 17
+        few_effects ? 1.25 : 1.5
       else
-        1
+        few_effects ? 1.1 : 1.25
       end
     end
 
-    def calculate_multiplier(num_effects, target_cr)
-      multiplier = 1
-      if num_effects > 5
-        if target_cr >= 1 && target_cr < 11
-          multiplier = 2
-        elsif target_cr >= 11 && target_cr < 17
-          multiplier = 1.5
-        elsif target_cr >= 17
-          multiplier = 1.25
-        end
-      end
-      multiplier
+    # 2024 rules: Only 3+ immunities significantly affect HP
+    # Single immunities have minimal impact
+    def calculate_immunity_multiplier(monster, target_cr)
+      num_immunities = monster.damage_immunities.count
+
+      return 1.0 if num_immunities < 3
+
+      # 3+ immunities warrant HP reduction in CR calculation
+      target_cr <= 15 ? 1.15 : 1.25
     end
 
+    # Legacy method for backward compatibility - now delegates to new methods
     def calculate_resistances(monster, target_cr)
-      num_resistances = 0
-      monster.damage_resistances.each do |resist|
-        num_resistances += calculate_resist_dam_type(resist)
-      end
-      calculate_multiplier(num_resistances, target_cr)
+      calculate_resistance_multiplier(monster, target_cr)
     end
 
+    # Legacy method for backward compatibility - now delegates to new methods
     def calculate_immunities(monster, target_cr)
-      num_immunities = 0
-      monster.damage_immunities.each do |immunity|
-        num_immunities += calculate_resist_dam_type(immunity)
-      end
-      calculate_multiplier(num_immunities, target_cr)
+      calculate_immunity_multiplier(monster, target_cr)
     end
 
+    # Count vulnerabilities - physical vulnerabilities are more significant
     def calculate_vulnerabilities(monster)
-      num_vulnerabilities = 0
-      monster.damage_vulnerabilities.each do |vulnerability|
-        num_vulnerabilities += calculate_resist_dam_type(vulnerability)
-      end
-      num_vulnerabilities
+      physical = monster.damage_vulnerabilities.count { |v| physical_damage_type?(v) }
+      non_physical = monster.damage_vulnerabilities.count { |v| !physical_damage_type?(v) }
+      (physical * 2) + non_physical
     end
 
     def cr_for_damage(damage_per_round)

@@ -51,6 +51,9 @@ Rails.application.routes.draw do
       post '/generate_action_desc', to: 'monsters#generate_action_desc',
            as: 'generate_action_desc',
            constraints: { format: 'json' }
+      post '/generate_npc_actions', to: 'monsters#generate_npc_actions',
+           as: 'generate_npc_actions',
+           constraints: { format: 'json' }
       get '/prof-skills', to: 'proficiencies#skills',
           as: 'proficiency_skills',
           constraints: { format: 'json' }

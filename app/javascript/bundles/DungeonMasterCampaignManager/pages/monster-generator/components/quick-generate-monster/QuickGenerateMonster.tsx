@@ -8,8 +8,8 @@ import { useData } from './use-data';
 import GenMonsterSection from '../generate-monster/sections/GenMonsterSection';
 import QuickMonsterStatsSection from './QuickMonsterStatsSection';
 import { GiLinkedRings } from 'react-icons/gi';
-import FormSelectAsync from '../../../../components/forms/FormSelectAsync';
 import SavesSkillsSection from '../SavesSkillsSection';
+import CreatureDescriptionSection from './CreatureDescriptionSection';
 
 import {
   GenForm,
@@ -26,7 +26,7 @@ export type GenerateMonsterProps = {
   token?: string;
 };
 
-const TOTAL_STEPS = 6;
+const TOTAL_STEPS = 4;
 
 const QuickGenerateMonster = (props: GenerateMonsterProps) => {
   const { isLoading } = props;
@@ -34,11 +34,11 @@ const QuickGenerateMonster = (props: GenerateMonsterProps) => {
     activeNameButton,
     archetypeOptions,
     challengeRatingOptions,
-    getMonsterActions,
-    getSpecialAbilities,
-    getSpells,
+    generatedActions,
+    handleGenerateActions,
     handleGenerateName,
     handleGenerateMonsterName,
+    isGeneratingActions,
     monsterType,
     onSubmit,
     updateForm,
@@ -113,49 +113,30 @@ const QuickGenerateMonster = (props: GenerateMonsterProps) => {
             />
           </GenMonsterSection>
 
-          <GenMonsterSection heading="Traits" step={2} currentStep={currentStep} isMultiStep>
-            <FormSelectAsync
-              label="Search for and select special abilities from existing creatures"
-              name="specialAbilityOptions"
-              control={UseForm.control}
-              getOptions={getSpecialAbilities}
-              isMulti
-              isClearable
-            />
-          </GenMonsterSection>
-
-          <GenMonsterSection heading="Actions" step={3} currentStep={currentStep} isMultiStep>
-            <FormSelectAsync
-              label="Search for and select actions from existing creatures"
-              name="actionOptions"
-              control={UseForm.control}
-              getOptions={getMonsterActions}
-              isMulti
-              isClearable
-            />
-          </GenMonsterSection>
-
           <GenMonsterSection
             heading="Saving Throws & Skills"
-            step={4}
+            step={2}
             currentStep={currentStep}
             isMultiStep
           >
             <SavesSkillsSection UseForm={UseForm} />
           </GenMonsterSection>
 
-          <GenMonsterSection heading="Spells" step={5} currentStep={currentStep} isMultiStep>
-            <FormSelectAsync
-              label={'Spells (search by name, level, or school)'}
-              name={`spellOptions`}
-              getOptions={getSpells}
-              control={UseForm.control}
-              isMulti
-              isClearable
+          <GenMonsterSection
+            heading="Creature Description"
+            step={3}
+            currentStep={currentStep}
+            isMultiStep
+          >
+            <CreatureDescriptionSection
+              UseForm={UseForm}
+              generatedActions={generatedActions}
+              isGenerating={isGeneratingActions}
+              onGenerateActions={handleGenerateActions}
             />
           </GenMonsterSection>
 
-          <GenMonsterSection heading="Name" step={6} currentStep={currentStep} isMultiStep>
+          <GenMonsterSection heading="Name" step={4} currentStep={currentStep} isMultiStep>
             <NameFormField
               activeNameButton={activeNameButton}
               characterRace={UseForm.getValues('characterRace')?.value}

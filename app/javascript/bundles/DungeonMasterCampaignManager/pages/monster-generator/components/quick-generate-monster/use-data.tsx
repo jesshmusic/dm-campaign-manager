@@ -8,17 +8,25 @@ import {
   hitDiceForHitPoints,
   hitDieForSize,
 } from '../../services';
-import {
-  filterActionOptions,
-  filterOptionsWithData,
-  getChallengeRatingOptions,
-} from '../../../../utilities/character-utilities';
+import { getChallengeRatingOptions } from '../../../../utilities/character-utilities';
 import axios from 'axios';
 import { NameButtonType } from '../NameFormField';
 
+interface GeneratedAction {
+  name: string;
+  desc: string;
+  attack_bonus?: number;
+  damage?: string;
+}
+
+interface GeneratedData {
+  actions: GeneratedAction[];
+  special_abilities: GeneratedAction[];
+  spells?: string[];
+}
+
 const defaultMonsterFormValues: FieldValues = {
   name: 'New NPC',
-  actionOptions: [],
   alignment: 'Neutral',
   alignmentOption: {
     value: 'Neutral',
@@ -31,6 +39,8 @@ const defaultMonsterFormValues: FieldValues = {
   armorClass: 10,
   challengeRatingOption: { value: '0', label: '0' },
   constitution: 10,
+  creatureDescription: '',
+  generatedActions: null,
   hitDice: '1d6',
   hitDiceNumber: 1,
   hitDiceValue: 'd8',
@@ -48,53 +58,43 @@ const defaultMonsterFormValues: FieldValues = {
     value: 'medium',
   },
   skillOptions: [],
-  specialAbilityOptions: [],
-  spellOptions: [],
   xp: 10,
 };
 
 export const useData = (props: GenerateMonsterProps) => {
   const [monsterType, setMonsterType] = React.useState('humanoid');
   const [activeNameButton, setActiveNameButton] = React.useState<NameButtonType>(null);
+  const [isGeneratingActions, setIsGeneratingActions] = React.useState(false);
+  const [generatedActions, setGeneratedActions] = React.useState<GeneratedData | null>(null);
 
   const UseForm = useForm({
     defaultValues: defaultMonsterFormValues,
     mode: 'onChange',
   });
 
-  const getMonsterActions = (inputValue: string, callback: (options: unknown[]) => void) => {
-    if (inputValue.length > 2) {
-      axios
-        .get<{ actions: unknown[] }>(`/v1/actions-by-name.json?action_name=${inputValue}`)
-        .then((response) => {
-          const options = filterActionOptions(response.data.actions);
-          callback(options);
-        })
-        .catch((_error) => {});
+  const handleGenerateActions = async () => {
+    setIsGeneratingActions(true);
+    try {
+      const formValues = UseForm.getValues();
+      const response = await axios.post<GeneratedData>('/v1/generate_npc_actions', {
+        description: formValues.creatureDescription,
+        challenge_rating: formValues.challengeRatingOption?.label || '0',
+        monster_type: formValues.monsterType || 'humanoid',
+        size: formValues.size?.value || 'medium',
+        armor_class: formValues.armorClass || 10,
+        hit_points: formValues.hitPoints || 4,
+        archetype: formValues.archetypeOption?.value || 'any',
+        saving_throws: formValues.savingThrowOptions?.map((o: { value: string }) => o.value) || [],
+        skills: formValues.skillOptions?.map((o: { value: string }) => o.value) || [],
+        token: props.token,
+      });
+      setGeneratedActions(response.data);
+      UseForm.setValue('generatedActions', response.data, { shouldDirty: true });
+    } catch (error) {
+      console.error('Error generating actions:', error);
+    } finally {
+      setIsGeneratingActions(false);
     }
-  };
-
-  const getSpecialAbilities = (inputValue: string, callback: (options: unknown[]) => void) => {
-    axios
-      .get<{ special_abilities: string[] }>(`/v1/special-abilities.json?search=${inputValue}`)
-      .then((response) => {
-        const options = response.data.special_abilities.map((ability) => ({
-          label: ability,
-          value: ability,
-        }));
-        callback(options);
-      })
-      .catch((_error) => {});
-  };
-
-  const getSpells = (inputValue: string, callback: (options: unknown[]) => void) => {
-    axios
-      .get<{ results: unknown[] }>(`/v1/spells.json?list=true&search=${inputValue}}`)
-      .then((response) => {
-        const options = filterOptionsWithData(response.data.results);
-        callback(options);
-      })
-      .catch((_error) => {});
   };
 
   const handleGenerateMonsterName = async () => {
@@ -228,11 +228,11 @@ export const useData = (props: GenerateMonsterProps) => {
     activeNameButton,
     archetypeOptions,
     challengeRatingOptions,
-    getMonsterActions,
-    getSpecialAbilities,
-    getSpells,
+    generatedActions,
+    handleGenerateActions,
     handleGenerateName,
     handleGenerateMonsterName,
+    isGeneratingActions,
     monsterType,
     onSubmit,
     updateForm,
