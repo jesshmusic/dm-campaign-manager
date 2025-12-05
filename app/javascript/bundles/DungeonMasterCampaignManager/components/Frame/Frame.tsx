@@ -1,19 +1,36 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import { FrameWrapper, FrameBody, FrameTitle, FrameSubtitle } from './Frame.styles';
+import {
+  FrameWrapper,
+  FrameBody,
+  FrameTitle,
+  FrameSubtitle,
+  FrameSubtitleWrapper,
+} from './Frame.styles';
 
 const Frame = (props: {
   className?: string;
   icon?: React.ReactNode;
   title?: string;
   subtitle?: string;
+  subtitleAction?: React.ReactNode;
   children: React.ReactNode;
   style?: object;
   actionButton?: React.ReactNode;
   linkTo?: string;
 }) => {
-  const { title, subtitle, className, children, style, actionButton, icon, linkTo } = props;
+  const {
+    title,
+    subtitle,
+    subtitleAction,
+    className,
+    children,
+    style,
+    actionButton,
+    icon,
+    linkTo,
+  } = props;
   return (
     <FrameWrapper className={className} style={style}>
       <FrameBody>
@@ -35,7 +52,12 @@ const Frame = (props: {
             {actionButton && <>&nbsp;{actionButton}</>}
           </FrameTitle>
         )}
-        {subtitle && <FrameSubtitle>{subtitle}</FrameSubtitle>}
+        {(subtitle || subtitleAction) && (
+          <FrameSubtitleWrapper>
+            {subtitle && <FrameSubtitle>{subtitle}</FrameSubtitle>}
+            {subtitleAction}
+          </FrameSubtitleWrapper>
+        )}
         {children}
       </FrameBody>
     </FrameWrapper>

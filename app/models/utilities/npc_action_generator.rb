@@ -51,8 +51,24 @@ class NpcActionGenerator
       saves = Array(params[:saving_throws]).join(', ')
       skills = Array(params[:skills]).join(', ')
       description = sanitize_description(params[:description])
+      number_of_attacks = (params[:number_of_attacks] || 1).to_i
+      monster_name = params[:monster_name].presence || 'the creature'
 
       is_caster = %w[cleric spellcaster].include?(archetype.to_s.downcase)
+      needs_multiattack = number_of_attacks > 1
+
+      multiattack_instruction = if needs_multiattack
+                                  <<~MULTI
+                                    - IMPORTANT: This creature can make #{number_of_attacks} attacks per turn using Multiattack.
+                                    - You MUST include a "Multiattack" action as the FIRST action in the list.
+                                    - The Multiattack description format: "#{monster_name.capitalize} makes #{number_of_attacks} attacks: [specify which attacks, e.g., 'two with its claws and one with its bite']."
+                                    - Then include 2-3 individual attack actions (like Bite, Claw, Tail, etc.) that Multiattack references.
+                                    - Each individual attack action represents ONE attack, not multiple. Do NOT say "makes two claw attacks" in an action - just describe ONE attack.
+                                    - Standard D&D format for an attack: "Melee Weapon Attack: +X to hit, reach X ft., one target. Hit: X (XdX + X) damage type damage."
+                                  MULTI
+                                else
+                                  '- Include 2-4 actions (attacks, special actions)'
+                                end
 
       system_prompt = <<~PROMPT
         You are a D&D 5e creature stat block generator. Generate appropriate actions and abilities for the creature described below. Return ONLY valid JSON with no additional text or markdown.
@@ -63,6 +79,7 @@ class NpcActionGenerator
         - Armor Class: #{ac}
         - Hit Points: #{hp}
         - Archetype: #{archetype}
+        - Number of Attacks: #{number_of_attacks}
         #{saves.present? ? "- Saving Throw Proficiencies: #{saves}" : ''}
         #{skills.present? ? "- Skill Proficiencies: #{skills}" : ''}
 
@@ -70,7 +87,7 @@ class NpcActionGenerator
 
         Requirements:
         - Actions should be appropriate for CR #{cr} (attack bonus around +#{proficiency_for_cr(cr) + 2}, damage appropriate for CR)
-        - Include 2-4 actions (attacks, special actions)
+        #{multiattack_instruction}
         - Include 1-3 special abilities if thematically appropriate
         #{is_caster ? "- Include 4-8 spells appropriate for a CR #{cr} #{archetype}" : '- Do NOT include spells unless the description specifically mentions magic'}
         - Keep descriptions concise but evocative

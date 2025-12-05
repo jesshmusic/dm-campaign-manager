@@ -26,11 +26,18 @@ export const FrameBody = styled.div`
   padding: 0.75rem 1.25rem;
 `;
 
-export const FrameSubtitle = styled.div`
-  font-family: inherit;
-  font-size: 1rem;
+export const FrameSubtitleWrapper = styled.div`
+  align-items: center;
+  display: flex;
+  gap: 0.75rem;
   margin-bottom: 1rem;
   margin-top: -0.25rem;
+`;
+
+export const FrameSubtitle = styled.div`
+  flex: 1;
+  font-family: inherit;
+  font-size: 1rem;
 `;
 
 export const FrameTitle = styled.div`

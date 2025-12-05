@@ -10,6 +10,9 @@ import QuickMonsterStatsSection from './QuickMonsterStatsSection';
 import { GiLinkedRings } from 'react-icons/gi';
 import SavesSkillsSection from '../SavesSkillsSection';
 import CreatureDescriptionSection from './CreatureDescriptionSection';
+import InstructionsPanel, {
+  QuickNPCInstructions,
+} from '../../../../components/InstructionsPanel/InstructionsPanel';
 
 import {
   GenForm,
@@ -44,7 +47,6 @@ const QuickGenerateMonster = (props: GenerateMonsterProps) => {
     updateForm,
     UseForm,
   } = useData(props);
-  const [testState, setTestState] = React.useState();
   const [currentStep, setCurrentStep] = React.useState(1);
 
   const handleNext = () => {
@@ -72,31 +74,19 @@ const QuickGenerateMonster = (props: GenerateMonsterProps) => {
       if (name) {
         updateForm(name, value);
       }
-      // @ts-expect-error - Type mismatch between form value and test state
-      setTestState(value);
     });
     return () => subscription.unsubscribe();
   }, [UseForm.watch]);
 
   return (
     <>
-      {process.env.NODE_ENV === 'development' ? (
-        <pre
-          style={{
-            position: 'absolute',
-            top: '0',
-            right: '0',
-            backgroundColor: '#fff',
-            width: '150px',
-            zIndex: 200,
-          }}
-        >
-          {JSON.stringify(testState, null, 2)}
-        </pre>
-      ) : null}
-
       <Frame
         subtitle="Set the basics and let the generator do the rest. Perfect for creating NPCs and enemies on the fly."
+        subtitleAction={
+          <InstructionsPanel>
+            <QuickNPCInstructions />
+          </InstructionsPanel>
+        }
         className="random-monster-generator"
       >
         <StepProgressBar>

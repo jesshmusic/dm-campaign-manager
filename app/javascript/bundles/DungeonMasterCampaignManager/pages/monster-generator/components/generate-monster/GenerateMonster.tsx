@@ -15,6 +15,9 @@ import SensesForm from './sections/senses/SensesForm';
 import SpeedsForm from './sections/speeds/SpeedsForm';
 import SavesSkillsSection from '../SavesSkillsSection';
 import { GiLinkedRings } from 'react-icons/gi';
+import InstructionsPanel, {
+  CreateNPCInstructions,
+} from '../../../../components/InstructionsPanel/InstructionsPanel';
 
 import {
   GenForm,
@@ -37,14 +40,15 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
   const { isLoading } = props;
   const {
     activeNameButton,
+    crReasoning,
     handleCalculateCR,
     handleGenerateName,
     handleGenerateMonsterName,
+    isCalculatingCR,
     onSubmit,
     updateForm,
     UseForm,
   } = useData(props);
-  const [testState, setTestState] = React.useState();
   const [currentStep, setCurrentStep] = React.useState(1);
 
   const handleNext = () => {
@@ -72,31 +76,20 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
       if (name) {
         updateForm(name, value);
       }
-      // @ts-expect-error - Type mismatch between form value and test state
-      setTestState(value);
     });
     return () => subscription.unsubscribe();
   }, [UseForm.watch]);
 
   return (
     <>
-      {process.env.NODE_ENV === 'development' ? (
-        <pre
-          style={{
-            position: 'absolute',
-            top: '0',
-            right: '0',
-            backgroundColor: '#fff',
-            width: '150px',
-            zIndex: 200,
-          }}
-        >
-          {JSON.stringify(testState, null, 2)}
-        </pre>
-      ) : null}
       <Frame
         title="Create NPC"
         subtitle="Full control over every detail. Build custom NPCs and creatures with automatic Challenge Rating calculation."
+        subtitleAction={
+          <InstructionsPanel>
+            <CreateNPCInstructions />
+          </InstructionsPanel>
+        }
         className="random-monster-generator"
       >
         <StepProgressBar>
@@ -106,7 +99,12 @@ const GenerateMonster = (props: GenerateMonsterProps) => {
         <GenForm onSubmit={UseForm.handleSubmit(onSubmit)} noValidate>
           {/* Step 1: Stats */}
           <GenMonsterSection heading="Stats" step={1} currentStep={currentStep} isMultiStep>
-            <MonsterStatsSection UseForm={UseForm} handleCalculateCR={handleCalculateCR} />
+            <MonsterStatsSection
+              UseForm={UseForm}
+              handleCalculateCR={handleCalculateCR}
+              isCalculatingCR={isCalculatingCR}
+              crReasoning={crReasoning}
+            />
           </GenMonsterSection>
 
           {/* Step 2: Abilities, Saves/Skills, Resistances (combined) */}

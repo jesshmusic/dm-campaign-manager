@@ -1,4 +1,5 @@
 import React from 'react';
+import debounce from 'lodash/debounce';
 import {
   MonsterActionField,
   MonsterGeneratorFormFields,
@@ -17,6 +18,8 @@ import { FieldValues, useForm } from 'react-hook-form';
 import { GenerateMonsterProps } from './GenerateMonster';
 import snakecaseKeys from 'snakecase-keys';
 import { NameButtonType } from '../NameFormField';
+
+const CR_CALC_COOLDOWN_MS = 5000;
 
 type DescParams = {
   params: {
@@ -110,6 +113,8 @@ const defaultMonsterFormValues: FieldValues = {
 
 export const useData = (props: GenerateMonsterProps) => {
   const [activeNameButton, setActiveNameButton] = React.useState<NameButtonType>(null);
+  const [isCalculatingCR, setIsCalculatingCR] = React.useState(false);
+  const [crReasoning, setCrReasoning] = React.useState<string | null>(null);
 
   const UseForm = useForm<FieldValues>({
     defaultValues: defaultMonsterFormValues,
@@ -153,7 +158,10 @@ export const useData = (props: GenerateMonsterProps) => {
     }
   };
 
-  const handleCalculateCR = async () => {
+  const performCRCalculation = async () => {
+    setIsCalculatingCR(true);
+    setCrReasoning(null);
+
     try {
       const values = UseForm.getValues();
       const response = await calculateCR(values);
@@ -161,10 +169,29 @@ export const useData = (props: GenerateMonsterProps) => {
       UseForm.setValue('profBonus', challenge.data.prof_bonus);
       UseForm.setValue('xp', challenge.data.xp);
       UseForm.setValue('challengeRating', challenge.name);
+
+      // Set reasoning if AI provided it
+      if (challenge.reasoning) {
+        setCrReasoning(challenge.reasoning);
+      }
     } catch (error) {
       console.error(error);
+    } finally {
+      setIsCalculatingCR(false);
     }
   };
+
+  // Debounced CR calculation - waits 500ms after last call before executing
+  // and won't fire more than once per 5 seconds (leading: false, trailing: true)
+  const handleCalculateCR = React.useMemo(
+    () =>
+      debounce(performCRCalculation, 500, {
+        leading: false,
+        trailing: true,
+        maxWait: CR_CALC_COOLDOWN_MS,
+      }),
+    [],
+  );
 
   const setActionDesc = async (fields: FieldValues, attackBonus: number, profBonus: number) => {
     const damageBonus = fields.damageBonus as number;
@@ -374,9 +401,11 @@ export const useData = (props: GenerateMonsterProps) => {
 
   return {
     activeNameButton,
+    crReasoning,
     handleCalculateCR,
     handleGenerateName,
     handleGenerateMonsterName,
+    isCalculatingCR,
     onSubmit,
     updateForm,
     UseForm,

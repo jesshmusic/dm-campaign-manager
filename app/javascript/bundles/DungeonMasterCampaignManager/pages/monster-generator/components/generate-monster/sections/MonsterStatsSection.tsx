@@ -16,8 +16,10 @@ import { SixCol, FourCol, FiveCol } from '../../../MonsterGenerator.styles';
 const MonsterStatsSection = (props: {
   UseForm: UseFormReturn<FieldValues>;
   handleCalculateCR: () => void;
+  isCalculatingCR?: boolean;
+  crReasoning?: string | null;
 }) => {
-  const { UseForm, handleCalculateCR } = props;
+  const { UseForm, handleCalculateCR, isCalculatingCR, crReasoning } = props;
   return (
     <>
       <SixCol>
@@ -107,7 +109,12 @@ const MonsterStatsSection = (props: {
           name="hitPoints"
           readOnly
         />
-        <ChallengeRatingField onCalculateCr={handleCalculateCR} register={UseForm.register} />
+        <ChallengeRatingField
+          onCalculateCr={handleCalculateCR}
+          register={UseForm.register}
+          isCalculating={isCalculatingCR}
+          reasoning={crReasoning}
+        />
         <FormField
           label="XP"
           type="text"

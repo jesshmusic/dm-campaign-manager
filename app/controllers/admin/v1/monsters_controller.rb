@@ -3,6 +3,8 @@
 module Admin
   module V1
     class MonstersController < SecuredController
+      CR_AI_RATE_LIMIT_SECONDS = 5
+
       before_action :set_user
       before_action :set_monster, only: %i[show edit update destroy]
       skip_before_action :authorize_request,
@@ -159,7 +161,22 @@ module Admin
 
       def calculate_cr
         @monster = Monster.new(monster_params)
-        render json: { challenge: CrCalc.calculate_challenge(@monster) }
+        use_ai = params[:use_ai] != 'false' # Default to true unless explicitly disabled
+
+        # Rate limit AI-enhanced CR calculations
+        if use_ai && cr_ai_rate_limited?
+          # Return base CR without AI if rate limited
+          result = CrCalc.calculate_base_cr(@monster)
+          result[:rate_limited] = true
+          result[:retry_after] = cr_ai_retry_after
+          render json: { challenge: result }
+          return
+        end
+
+        # Track last AI call time
+        session[:last_cr_ai_call] = Time.current.to_i if use_ai
+
+        render json: { challenge: CrCalc.calculate_challenge(@monster, use_ai: use_ai) }
       end
 
       def special_abilities
@@ -224,6 +241,7 @@ module Admin
       def npc_action_params
         params.permit(:description, :challenge_rating, :monster_type, :size,
                       :armor_class, :hit_points, :archetype, :token,
+                      :number_of_attacks, :monster_name,
                       saving_throws: [], skills: [])
       end
 
@@ -232,6 +250,7 @@ module Admin
         params.require(:monster).permit(
           :alignment, :api_url, :armor_class, :attack_bonus,
           :challenge_rating, :charisma, :constitution,
+          :creature_description,
           :dexterity, :hit_dice, :hit_points, :intelligence,
           :languages, :monster_subtype, :monster_type,
           :name, :prof_bonus, :save_dc, :size,
@@ -264,6 +283,22 @@ module Admin
             desc name _destroy
           ]
         )
+      end
+
+      # Rate limiting helpers for AI CR calculations
+      def cr_ai_rate_limited?
+        last_call = session[:last_cr_ai_call]
+        return false unless last_call
+
+        Time.current.to_i - last_call < CR_AI_RATE_LIMIT_SECONDS
+      end
+
+      def cr_ai_retry_after
+        last_call = session[:last_cr_ai_call]
+        return 0 unless last_call
+
+        remaining = CR_AI_RATE_LIMIT_SECONDS - (Time.current.to_i - last_call)
+        [remaining, 0].max
       end
     end
   end

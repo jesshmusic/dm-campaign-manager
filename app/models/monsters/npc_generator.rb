@@ -29,9 +29,16 @@ class NpcGenerator
     end
 
     def quick_monster(monster_params, user)
-      @new_npc = Monster.new(monster_params.except(:number_of_attacks, :archetype, :action_options, :spell_ids, :special_ability_options))
-      @action_options = monster_params[:action_options]
-      @spell_ids = monster_params[:spell_ids]
+      # Check if AI-generated actions were provided
+      has_ai_actions = monster_params[:monster_actions_attributes].present? ||
+                       monster_params[:special_abilities_attributes].present?
+
+      # Exclude control fields but keep nested attributes for actions/abilities
+      # creature_description is only used for AI prompts, not stored on Monster
+      excluded_fields = %i[number_of_attacks archetype action_options spell_ids special_ability_options creature_description]
+      @new_npc = Monster.new(monster_params.except(*excluded_fields))
+      @action_options = monster_params[:action_options] || []
+      @spell_ids = monster_params[:spell_ids] || []
       fetch_records
       @archetype = monster_params[:archetype]
       @new_npc.slug = @new_npc.name.parameterize
@@ -44,15 +51,18 @@ class NpcGenerator
       set_ability_scores(ability_score_order, monster_params)
       @new_npc.attack_bonus = calculate_attack_bonus
 
-      generate_actions(
-        monster_params[:number_of_attacks],
-        CrCalc.cr_string_to_num(monster_params[:challenge_rating]),
-        cr_info[:save_dc],
-        spellcasting_ability
-      )
+      # Only generate actions from action_options if no AI-generated actions provided
+      unless has_ai_actions
+        generate_actions(
+          monster_params[:number_of_attacks],
+          CrCalc.cr_string_to_num(monster_params[:challenge_rating]),
+          cr_info[:save_dc],
+          spellcasting_ability
+        )
+        generate_special_abilities(@new_npc, monster_params[:special_ability_options] || [])
+      end
 
       generate_stats
-      generate_special_abilities(@new_npc, monster_params[:special_ability_options])
       adjust_proficiency_bonuses
 
       @new_npc.slug = @new_npc.name.parameterize if user.nil?
@@ -94,13 +104,18 @@ class NpcGenerator
 
     def generate_action_desc(action_params)
       params = action_params[:params]
-      case params[:action][:action_type]
+      action = params[:action]
+
+      # Handle case where action is nil (incomplete form data)
+      return '' if action.nil?
+
+      case action[:action_type]
       when 'attack'
-        generate_attack_desc(params[:action], params[:attack_bonus], params[:prof_bonus], params[:damage_bonus])
+        generate_attack_desc(action, params[:attack_bonus], params[:prof_bonus], params[:damage_bonus])
       when 'spellCasting'
-        generate_spellcasting_desc(params[:monster_name], params[:action])
+        generate_spellcasting_desc(params[:monster_name], action)
       else
-        params[:action][:desc]
+        action[:desc] || ''
       end
     end
 
@@ -133,8 +148,9 @@ class NpcGenerator
 
     private
 
-    def set_challenge_rating(target_cr = @new_npc.challenge_rating)
-      calculated_cr = CrCalc.calculate_challenge(@new_npc, target_cr)
+    def set_challenge_rating(_target_cr = @new_npc.challenge_rating)
+      # Quick NPC uses selected CR, not AI calculation
+      calculated_cr = CrCalc.calculate_challenge(@new_npc, use_ai: false)
       cr_info = calculated_cr[:data]
       @new_npc.challenge_rating = calculated_cr[:name]
       Rails.logger.debug cr_info

@@ -308,69 +308,92 @@ RSpec.describe CrCalc, type: :model do
     end
   end
 
-  # Note: calculate_challenge and get_offensive_cr require complex monster setup
-  # with actions, damages, and special abilities. These are integration tests
-  # better suited for the Monster model specs.
-
-  describe '.trait_modifier' do
-    # Testing the Relentless special ability HP modifier at different CR ranges
-    # This was a bug fix: Ruby's == doesn't work with ranges, must use case/when
-
-    let(:base_damage) { 10 }
-    let(:base_attack) { 5 }
-    let(:base_ac) { 13 }
-    let(:base_hp) { 50 }
-
-    def create_monster_with_relentless(cr_string)
-      monster = create(:monster, challenge_rating: cr_string)
-      allow(monster).to receive(:special_abilities).and_return(['Relentless'])
-      monster
+  describe '.calculate_base_cr' do
+    let(:monster) do
+      create(:monster,
+             challenge_rating: '5',
+             hit_points: 130,
+             armor_class: 15,
+             attack_bonus: 6)
     end
 
-    it 'adds 0 HP for CR 0 (below range 1-4)' do
-      monster = create_monster_with_relentless('0')
-      result = CrCalc.send(:trait_modifier, monster, '0', base_damage, base_attack, base_ac, base_hp)
-      # result is [damage_per_round, attack_bonus, armor_class, hit_points]
-      expect(result[3]).to eq(base_hp) # No modifier for CR 0
+    it 'returns a hash with CR information' do
+      result = CrCalc.calculate_base_cr(monster)
+      expect(result).to be_a(Hash)
+      expect(result).to have_key(:name)
+      expect(result).to have_key(:raw_cr)
+      expect(result).to have_key(:data)
     end
 
-    it 'adds 7 HP for CR 1-4 (Relentless modifier)' do
-      [1, 2, 3, 4].each do |cr|
-        monster = create_monster_with_relentless(cr.to_s)
-        result = CrCalc.send(:trait_modifier, monster, cr.to_s, base_damage, base_attack, base_ac, base_hp)
-        expect(result[3]).to eq(base_hp + 7), "Expected +7 HP for CR #{cr}"
+    it 'includes defensive and offensive CR' do
+      result = CrCalc.calculate_base_cr(monster)
+      expect(result).to have_key(:defensive_cr)
+      expect(result).to have_key(:offensive_cr)
+    end
+
+    it 'includes effective stats' do
+      result = CrCalc.calculate_base_cr(monster)
+      expect(result).to have_key(:effective_hp)
+      expect(result).to have_key(:effective_ac)
+      expect(result).to have_key(:damage_per_round)
+    end
+
+    it 'does not include AI reasoning (local calculation only)' do
+      result = CrCalc.calculate_base_cr(monster)
+      expect(result).not_to have_key(:reasoning)
+      expect(result).not_to have_key(:adjustment)
+    end
+  end
+
+  describe '.calculate_challenge' do
+    let(:monster) do
+      create(:monster,
+             challenge_rating: '5',
+             hit_points: 130,
+             armor_class: 15,
+             attack_bonus: 6)
+    end
+
+    context 'with use_ai: false' do
+      it 'returns base CR without AI processing' do
+        result = CrCalc.calculate_challenge(monster, use_ai: false)
+        expect(result).to be_a(Hash)
+        expect(result).to have_key(:name)
+        expect(result).not_to have_key(:reasoning)
+      end
+
+      it 'does not call OpenAI' do
+        expect_any_instance_of(OpenAIClient).not_to receive(:completions)
+        CrCalc.calculate_challenge(monster, use_ai: false)
       end
     end
 
-    it 'adds 14 HP for CR 5-9 (Relentless modifier)' do
-      [5, 6, 7, 8, 9].each do |cr|
-        monster = create_monster_with_relentless(cr.to_s)
-        result = CrCalc.send(:trait_modifier, monster, cr.to_s, base_damage, base_attack, base_ac, base_hp)
-        expect(result[3]).to eq(base_hp + 14), "Expected +14 HP for CR #{cr}"
+    context 'with use_ai: true but no API key' do
+      before do
+        allow(ENV).to receive(:fetch).with('OPENAI_API_KEY', nil).and_return(nil)
+      end
+
+      it 'falls back to base CR calculation' do
+        result = CrCalc.calculate_challenge(monster, use_ai: true)
+        expect(result).to be_a(Hash)
+        expect(result).to have_key(:name)
       end
     end
 
-    it 'adds 21 HP for CR 10-15 (Relentless modifier)' do
-      [10, 11, 12, 13, 14, 15].each do |cr|
-        monster = create_monster_with_relentless(cr.to_s)
-        result = CrCalc.send(:trait_modifier, monster, cr.to_s, base_damage, base_attack, base_ac, base_hp)
-        expect(result[3]).to eq(base_hp + 21), "Expected +21 HP for CR #{cr}"
+    context 'with use_ai: true and monster with no special abilities' do
+      before do
+        allow(monster).to receive(:special_abilities).and_return([])
+        allow(monster).to receive(:legendary_actions).and_return([])
+        allow(monster).to receive(:reactions).and_return([])
+        allow(monster).to receive(:damage_resistances).and_return([])
+        allow(monster).to receive(:damage_immunities).and_return([])
+        allow(monster).to receive(:condition_immunities).and_return([])
       end
-    end
 
-    it 'adds 28 HP for CR 16+ (Relentless modifier)' do
-      [16, 20, 25, 30].each do |cr|
-        monster = create_monster_with_relentless(cr.to_s)
-        result = CrCalc.send(:trait_modifier, monster, cr.to_s, base_damage, base_attack, base_ac, base_hp)
-        expect(result[3]).to eq(base_hp + 28), "Expected +28 HP for CR #{cr}"
-      end
-    end
-
-    it 'handles fractional CRs correctly (should get 0 HP modifier)' do
-      ['1/8', '1/4', '1/2'].each do |cr|
-        monster = create_monster_with_relentless(cr)
-        result = CrCalc.send(:trait_modifier, monster, cr, base_damage, base_attack, base_ac, base_hp)
-        expect(result[3]).to eq(base_hp), "Expected no modifier for CR #{cr}"
+      it 'skips AI and returns base CR (no traits to analyze)' do
+        expect_any_instance_of(OpenAIClient).not_to receive(:completions)
+        result = CrCalc.calculate_challenge(monster, use_ai: true)
+        expect(result).to be_a(Hash)
       end
     end
   end

@@ -27,6 +27,7 @@ interface GeneratedData {
 
 const defaultMonsterFormValues: FieldValues = {
   name: 'New NPC',
+  actionOptions: [],
   alignment: 'Neutral',
   alignmentOption: {
     value: 'Neutral',
@@ -58,6 +59,8 @@ const defaultMonsterFormValues: FieldValues = {
     value: 'medium',
   },
   skillOptions: [],
+  specialAbilityOptions: [],
+  spellOptions: [],
   xp: 10,
 };
 
@@ -84,6 +87,8 @@ export const useData = (props: GenerateMonsterProps) => {
         armor_class: formValues.armorClass || 10,
         hit_points: formValues.hitPoints || 4,
         archetype: formValues.archetypeOption?.value || 'any',
+        number_of_attacks: formValues.numberOfAttacks || 1,
+        monster_name: formValues.name || 'the creature',
         saving_throws: formValues.savingThrowOptions?.map((o: { value: string }) => o.value) || [],
         skills: formValues.skillOptions?.map((o: { value: string }) => o.value) || [],
         token: props.token,

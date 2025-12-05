@@ -45,23 +45,26 @@ const parseMonsterProficiencies = (
   values: MonsterGeneratorFormFields | MonsterQuickGeneratorFormFields,
 ) => {
   const monsterProfs: MonsterProf[] = [];
-  if (values.savingThrowOptions.length && values.savingThrowOptions.length > 0) {
-    values.savingThrowOptions.forEach((save) => {
+  const savingThrows = values.savingThrowOptions || [];
+  const skills = values.skillOptions || [];
+
+  if (savingThrows.length > 0) {
+    savingThrows.forEach((save) => {
       const saveAbility = abilityAbbr[save.label];
       const modifier = values[saveAbility] ? abilityScoreModifier(values[saveAbility]) : 0;
-      const saveBonus = values.profBonus + modifier;
+      const saveBonus = (values.profBonus || 2) + modifier;
       monsterProfs.push(<MonsterProf>{
         profId: save.value,
         value: saveBonus,
       });
     });
   }
-  if (values.skillOptions.length && values.skillOptions.length > 0) {
-    values.skillOptions.forEach((skill) => {
+  if (skills.length > 0) {
+    skills.forEach((skill) => {
       const skillName = skill.label.toLowerCase();
       const skillAbility = abilityForSkill[skillName];
       const modifier = values[skillAbility] ? abilityScoreModifier(values[skillAbility]) : 0;
-      const skillBonus = values.profBonus + modifier;
+      const skillBonus = (values.profBonus || 2) + modifier;
       monsterProfs.push(<MonsterProf>{
         profId: skill.value,
         value: skillBonus,
@@ -178,14 +181,26 @@ export const createMonsterParams = (monster: MonsterProps) => {
 };
 
 export const createQuickMonsterParams = (values: MonsterQuickGeneratorFormFields) => {
+  // Parse AI-generated actions if present
+  const generatedActions = values.generatedActions;
+  const monsterActionsAttributes = generatedActions?.actions?.map((action) => ({
+    name: action.name,
+    desc: action.desc,
+  })) || [];
+  const specialAbilitiesAttributes = generatedActions?.special_abilities?.map((ability) => ({
+    name: ability.name,
+    desc: ability.desc,
+  })) || [];
+
   const monsterParams = {
     name: values.name,
-    actionOptions: values.actionOptions.map((actionOption) => actionOption.value),
+    actionOptions: (values.actionOptions || []).map((actionOption) => actionOption.value),
     alignment: values.alignmentOption.label,
     archetype: values.archetypeOption.value,
     armorClass: values.armorClass,
     challengeRating: values.challengeRatingOption.label,
     constitution: values.constitution,
+    creatureDescription: values.creatureDescription || '',
     hitDice: `${values.hitDiceNumber}${values.hitDiceValue}`,
     hitPoints: values.hitPoints,
     monsterType: values.characterRace
@@ -193,8 +208,8 @@ export const createQuickMonsterParams = (values: MonsterQuickGeneratorFormFields
       : values.monsterTypeOption.label.toLowerCase(),
     numberOfAttacks: values.numberOfAttacks > 0 ? values.numberOfAttacks : 1,
     size: values.size.label,
-    specialAbilityOptions: values.specialAbilityOptions.map((ability) => ability.value),
-    spellIds: values.spellOptions.map((spellOption) => spellOption.value),
+    specialAbilityOptions: (values.specialAbilityOptions || []).map((ability) => ability.value),
+    spellIds: (values.spellOptions || []).map((spellOption) => spellOption.value),
     xp: values.xp,
   };
 
@@ -224,6 +239,8 @@ export const createQuickMonsterParams = (values: MonsterQuickGeneratorFormFields
   }
   const parsedMonsterParams = {
     monsterProficienciesAttributes: parseMonsterProficiencies(values),
+    monsterActionsAttributes,
+    specialAbilitiesAttributes,
     ...monsterParams,
   };
   return snakecaseKeys(parsedMonsterParams);
