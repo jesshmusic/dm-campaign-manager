@@ -46,15 +46,34 @@ global.IntersectionObserver = class IntersectionObserver {
 } as any;
 
 // Mock HTMLFormElement.requestSubmit (not implemented in jsdom)
-HTMLFormElement.prototype.requestSubmit = function (submitter?: HTMLElement) {
-  if (submitter) {
+// This needs to be defined early before any tests run
+if (typeof HTMLFormElement.prototype.requestSubmit !== 'function') {
+  HTMLFormElement.prototype.requestSubmit = function (submitter?: HTMLElement) {
     const event = new Event('submit', { bubbles: true, cancelable: true });
-    Object.defineProperty(event, 'submitter', { value: submitter });
-    this.dispatchEvent(event);
-  } else {
-    this.submit();
-  }
-};
+    if (submitter) {
+      Object.defineProperty(event, 'submitter', { value: submitter });
+    }
+    if (this.dispatchEvent(event)) {
+      this.submit();
+    }
+  };
+}
+
+// Also define on the global for jsdom environments
+Object.defineProperty(HTMLFormElement.prototype, 'requestSubmit', {
+  configurable: true,
+  enumerable: true,
+  writable: true,
+  value: function (submitter?: HTMLElement) {
+    const event = new Event('submit', { bubbles: true, cancelable: true });
+    if (submitter) {
+      Object.defineProperty(event, 'submitter', { value: submitter });
+    }
+    if (this.dispatchEvent(event)) {
+      this.submit();
+    }
+  },
+});
 
 // Suppress console errors in tests (optional - can be removed if you want to see errors)
 const originalError = console.error;
