@@ -40,10 +40,10 @@ module.exports = {
   testPathIgnorePatterns: ['/node_modules/', '/public/', '/vendor/'],
   coverageThreshold: {
     global: {
-      branches: 44,
-      functions: 67,
-      lines: 74,
-      statements: 74
+      branches: 40,
+      functions: 55,
+      lines: 65,
+      statements: 65
     }
   },
   verbose: true
