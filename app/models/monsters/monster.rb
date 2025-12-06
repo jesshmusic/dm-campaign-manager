@@ -77,6 +77,9 @@ class Monster < ApplicationRecord
   accepts_nested_attributes_for :speeds, allow_destroy: true
   accepts_nested_attributes_for :monster_proficiencies, allow_destroy: true
 
+  # Sanitize description to prevent XSS attacks
+  before_save :sanitize_description
+
   def saving_throws
     saves = []
     monster_proficiencies.each do |monster_prof|
@@ -609,5 +612,18 @@ class Monster < ApplicationRecord
         properties: ['trait']
       }
     }
+  end
+
+  # Sanitize description to prevent XSS attacks when displayed
+  # Strips HTML tags and dangerous content from user-provided descriptions
+  def sanitize_description
+    return if description.blank?
+
+    # Strip HTML tags and entities to prevent XSS
+    sanitized = ActionController::Base.helpers.strip_tags(description)
+    # Remove any remaining script-like content
+    sanitized = sanitized.gsub(/javascript:/i, '')
+    sanitized = sanitized.gsub(/on\w+\s*=/i, '')
+    self.description = sanitized.strip
   end
 end

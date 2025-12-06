@@ -148,12 +148,24 @@ class NpcConceptGenerator
     def sanitize_description(description)
       return '' if description.blank?
 
-      description.to_s
-                 .gsub(/```[\s\S]*?```/, '')
-                 .gsub(/^(system|assistant|user):/i, '')
-                 .gsub(/ignore (all |previous )?instructions/i, '')
-                 .strip
-                 .truncate(MAX_DESCRIPTION_LENGTH)
+      # Sanitize input to prevent prompt injection attacks
+      # This is defense-in-depth since the prompt uses structured output
+      sanitized = description.to_s
+      # Remove code blocks
+      sanitized = sanitized.gsub(/```[\s\S]*?```/, '')
+      # Remove role prefixes that could confuse the model
+      sanitized = sanitized.gsub(/^(system|assistant|user|human|ai):/i, '')
+      # Remove common prompt injection patterns
+      sanitized = sanitized.gsub(/ignore (all |previous |above |prior )?instructions?/i, '')
+      sanitized = sanitized.gsub(/disregard (all |previous |above |prior )?instructions?/i, '')
+      sanitized = sanitized.gsub(/forget (all |previous |above |prior )?instructions?/i, '')
+      sanitized = sanitized.gsub(/new instructions?:/i, '')
+      sanitized = sanitized.gsub(/override:/i, '')
+      sanitized = sanitized.gsub(/jailbreak/i, '')
+      sanitized = sanitized.gsub(/DAN/i, '') if sanitized =~ /\bDAN\b/
+      # Remove any attempts to inject JSON structure
+      sanitized = sanitized.gsub(/\{[\s\S]*"(system|role|content)"[\s\S]*\}/i, '')
+      sanitized.strip.truncate(MAX_DESCRIPTION_LENGTH)
     end
 
     def parse_response(response, params)

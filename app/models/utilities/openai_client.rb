@@ -40,6 +40,15 @@ class OpenAIClient
 
   # ─────────────────────────────────────────────────────────────
   # Chat completions
+  #
+  # @param prompt [String] The user prompt to send to the model
+  # @param opts [Hash] Optional parameters:
+  #   - :json_mode [Boolean] When true, forces the model to output valid JSON.
+  #     Use when you need to parse the response as JSON (e.g., NPC generation).
+  #   - :return_usage [Boolean] When true, returns a hash with :content and :usage
+  #     keys instead of just the content string. Use for tracking token costs.
+  #   - :temperature, :top_p, :max_tokens, etc. - Standard OpenAI parameters
+  # @return [String, Array<String>, Hash] Completion content, or hash with usage if requested
   # ─────────────────────────────────────────────────────────────
   def completions(prompt:, **opts)
     defaults = {
