@@ -16,6 +16,7 @@
 #  damage_immunities      :string           default([]), is an Array
 #  damage_resistances     :string           default([]), is an Array
 #  damage_vulnerabilities :string           default([]), is an Array
+#  description            :text
 #  dexterity              :integer          default(10), not null
 #  hit_dice               :string
 #  hit_points             :integer          default(8), not null
@@ -76,6 +77,9 @@ class Monster < ApplicationRecord
   accepts_nested_attributes_for :speeds, allow_destroy: true
   accepts_nested_attributes_for :monster_proficiencies, allow_destroy: true
 
+  # Sanitize description to prevent XSS attacks
+  before_save :sanitize_description
+
   def saving_throws
     saves = []
     monster_proficiencies.each do |monster_prof|
@@ -123,7 +127,7 @@ class Monster < ApplicationRecord
 
       st_name = monster_prof.prof.name
       st_name.slice!('Skill: ')
-      if st_name.downcase == 'perception'
+      if st_name&.downcase == 'perception'
         has_perception = true
         break
       end
@@ -133,7 +137,7 @@ class Monster < ApplicationRecord
 
   def senses_array
     senses.map do |sense|
-      if sense.name.downcase == 'passive perception'
+      if sense.name&.downcase == 'passive perception'
         "passive Perception #{sense.value}"
       else
         "#{sense.name} #{sense.value}"
@@ -143,9 +147,9 @@ class Monster < ApplicationRecord
 
   def speeds_array
     speed_return = speeds.map do |speed|
-      if speed.name.downcase == 'walk'
+      if speed.name&.downcase == 'walk'
         "#{speed.value} ft."
-      elsif speed.name.downcase == 'hover'
+      elsif speed.name&.downcase == 'hover'
         'Hover'
       else
         "#{speed.name} #{speed.value} ft."
@@ -179,7 +183,7 @@ class Monster < ApplicationRecord
   def is_caster
     is_caster_result = false
     special_abilities.each do |ability|
-      is_caster_result = true if ability.name.downcase == 'spellcasting'
+      is_caster_result = true if ability.name&.downcase == 'spellcasting'
     end
     is_caster_result
   end
@@ -203,7 +207,7 @@ class Monster < ApplicationRecord
       damage_dice = action.desc[/([1-9]\d*)?d([1-9]\d*)/m]
       npc_dam_bonus = DndRules.ability_score_modifier(strength)
       _, base_damage = NpcGenerator.action_damage(damage_dice, npc_dam_bonus, action.desc)
-      if action.name.downcase == 'multiattack'
+      if action.name&.downcase == 'multiattack'
         num_attacks_array = action.desc.scan(/\d+/).map(&:to_i)
         num_attacks = num_attacks_array.sum
       elsif base_damage.positive?
@@ -217,11 +221,12 @@ class Monster < ApplicationRecord
   end
 
   def offensive_cr
-    CrCalc.get_offensive_cr(self, damage_per_round, attack_bonus)
+    CrCalc.get_offensive_cr(self, damage_per_round, attack_bonus || 0)
   end
 
   def defensive_cr
-    CrCalc.get_defensive_cr(self, challenge_rating, armor_class, hit_points)
+    cr_numeric = CrCalc.cr_string_to_num(challenge_rating)
+    CrCalc.get_defensive_cr(self, cr_numeric, armor_class, hit_points)
   end
 
   include PgSearch::Model
@@ -341,5 +346,284 @@ class Monster < ApplicationRecord
       end
     end
     monster_export.to_xml
+  end
+
+  # Foundry VTT v13 dnd5e export
+  def export_foundry_vtt
+    {
+      name: name,
+      type: 'npc',
+      system: {
+        abilities: foundry_abilities,
+        attributes: foundry_attributes,
+        details: foundry_details,
+        traits: foundry_traits,
+        resources: foundry_resources
+      },
+      items: foundry_items
+    }.to_json
+  end
+
+  private
+
+  def foundry_abilities
+    {
+      str: { value: strength },
+      dex: { value: dexterity },
+      con: { value: constitution },
+      int: { value: intelligence },
+      wis: { value: wisdom },
+      cha: { value: charisma }
+    }
+  end
+
+  def foundry_attributes
+    {
+      ac: { flat: armor_class, calc: 'flat' },
+      hp: { value: hit_points, max: hit_points, formula: hit_dice },
+      movement: foundry_movement,
+      senses: foundry_senses
+    }
+  end
+
+  def foundry_movement
+    result = { walk: 30, units: 'ft' }
+    speeds.each do |speed|
+      next if speed.name.blank?
+
+      key = speed.name.downcase.to_sym
+      result[key] = speed.value.to_i if %i[walk fly swim climb burrow hover].include?(key)
+    end
+    result
+  end
+
+  def foundry_senses
+    result = { units: 'ft' }
+    senses.each do |sense|
+      next if sense.name.blank?
+
+      key = sense.name.downcase.gsub(' ', '').to_sym
+      result[key] = sense.value.to_i if %i[darkvision blindsight tremorsense truesight].include?(key)
+    end
+    result
+  end
+
+  def foundry_details
+    {
+      cr: CrCalc.cr_string_to_num(challenge_rating),
+      xp: { value: xp },
+      alignment: alignment,
+      type: { value: monster_type&.downcase, subtype: monster_subtype || '' },
+      biography: { value: description.present? ? "<p>#{ERB::Util.html_escape(description)}</p>" : '' }
+    }
+  end
+
+  def foundry_traits
+    {
+      size: foundry_size_abbr,
+      languages: { value: languages&.split(',')&.map(&:strip) || [] },
+      ci: { value: condition_immunities || [] },
+      dr: { value: damage_resistances || [] },
+      dv: { value: damage_vulnerabilities || [] },
+      di: { value: damage_immunities || [] }
+    }
+  end
+
+  def foundry_size_abbr
+    size_map = {
+      'tiny' => 'tiny',
+      'small' => 'sm',
+      'medium' => 'med',
+      'large' => 'lg',
+      'huge' => 'huge',
+      'gargantuan' => 'grg'
+    }
+    size_map[size&.downcase] || 'med'
+  end
+
+  def foundry_resources
+    {
+      legact: {
+        value: legendary_actions.any? ? 3 : 0,
+        max: legendary_actions.any? ? 3 : 0
+      },
+      legres: { value: 0, max: 0 },
+      lair: { value: false }
+    }
+  end
+
+  def foundry_items
+    items = monster_actions.map { |action| foundry_action_item(action, 'action') }
+    special_abilities.each { |a| items << foundry_feat_item(a) }
+    reactions.each { |a| items << foundry_action_item(a, 'reaction') }
+    legendary_actions.each { |a| items << foundry_action_item(a, 'legendary') }
+    items
+  end
+
+  def foundry_action_item(action, activation_type)
+    # Check if this is an attack action
+    attack_data = parse_attack_description(action.desc)
+
+    if attack_data
+      foundry_weapon_item(action, activation_type, attack_data)
+    else
+      foundry_utility_item(action, activation_type)
+    end
+  end
+
+  def parse_attack_description(desc)
+    return nil if desc.blank?
+
+    # Match patterns like "Melee Weapon Attack: +5 to hit" or "Ranged Weapon Attack: +7 to hit"
+    attack_match = desc.match(/(Melee|Ranged)\s+Weapon\s+Attack:\s*\+?(\d+)\s+to\s+hit/i)
+    return nil unless attack_match
+
+    # Match damage like "Hit: 10 (2d6 + 3) slashing damage" or "Hit: 7 (1d8 + 3) piercing damage"
+    damage_match = desc.match(/Hit:\s*\d+\s*\((\d+)d(\d+)\s*([+-]\s*\d+)?\)\s*(\w+)\s*damage/i)
+
+    # Match reach/range like "reach 5 ft." or "range 30/120 ft."
+    reach_match = desc.match(/reach\s+(\d+)\s*ft/i)
+    range_match = desc.match(%r{range\s+(\d+)(?:/(\d+))?\s*ft}i)
+
+    {
+      attack_type: attack_match[1].downcase,
+      attack_bonus: attack_match[2].to_i,
+      damage_dice: damage_match ? damage_match[1].to_i : 1,
+      damage_die: damage_match ? damage_match[2].to_i : 4,
+      damage_bonus: damage_match && damage_match[3] ? damage_match[3].gsub(/\s/, '').to_i : 0,
+      damage_type: damage_match ? damage_match[4].downcase : 'bludgeoning',
+      reach: reach_match ? reach_match[1].to_i : nil,
+      range: range_match ? range_match[1].to_i : nil,
+      range_long: range_match ? range_match[2]&.to_i : nil
+    }
+  end
+
+  def foundry_weapon_item(action, activation_type, attack_data)
+    activity_id = SecureRandom.alphanumeric(16)
+
+    {
+      name: action.name,
+      type: 'weapon',
+      system: {
+        type: { value: 'natural', baseItem: '' },
+        description: { value: "<p>#{ERB::Util.html_escape(action.desc)}</p>" },
+        identified: true,
+        equipped: true,
+        quantity: 1,
+        damage: {
+          base: {
+            number: attack_data[:damage_dice],
+            denomination: attack_data[:damage_die],
+            bonus: attack_data[:damage_bonus].to_s,
+            types: [attack_data[:damage_type]]
+          }
+        },
+        range: foundry_weapon_range(attack_data),
+        activities: {
+          activity_id => foundry_attack_activity(action, activation_type, attack_data, activity_id)
+        }
+      }
+    }
+  end
+
+  def foundry_weapon_range(attack_data)
+    if attack_data[:attack_type] == 'melee'
+      { reach: attack_data[:reach] || 5, units: 'ft' }
+    else
+      { value: attack_data[:range], long: attack_data[:range_long], units: 'ft' }
+    end
+  end
+
+  def foundry_attack_activity(_action, activation_type, attack_data, activity_id)
+    {
+      _id: activity_id,
+      type: 'attack',
+      name: '',
+      sort: 0,
+      activation: { type: activation_type, value: 1, override: false },
+      consumption: { scaling: { allowed: false }, spellSlot: true, targets: [] },
+      duration: { units: 'inst', concentration: false, override: false },
+      effects: [],
+      range: { override: false, units: attack_data[:attack_type] == 'melee' ? 'reach' : 'ft' },
+      target: {
+        template: { contiguous: false, units: 'ft', type: '' },
+        affects: { choice: false, type: '' },
+        override: false,
+        prompt: true
+      },
+      uses: { spent: 0, recovery: [], max: '' },
+      attack: {
+        ability: '',
+        bonus: attack_data[:attack_bonus].to_s,
+        critical: { threshold: nil },
+        flat: true,
+        type: { value: attack_data[:attack_type] == 'melee' ? 'mwak' : 'rwak', classification: '' }
+      },
+      damage: {
+        critical: { bonus: '' },
+        includeBase: true,
+        parts: []
+      }
+    }
+  end
+
+  def foundry_utility_item(action, activation_type)
+    activity_id = SecureRandom.alphanumeric(16)
+
+    {
+      name: action.name,
+      type: 'feat',
+      system: {
+        type: { value: 'monster', subtype: '' },
+        description: { value: "<p>#{ERB::Util.html_escape(action.desc)}</p>" },
+        properties: activation_type == 'action' ? [] : ['trait'],
+        activities: {
+          activity_id => {
+            _id: activity_id,
+            type: 'utility',
+            name: 'Use',
+            sort: 0,
+            activation: { type: activation_type, value: 1, override: false },
+            consumption: { scaling: { allowed: false }, spellSlot: true, targets: [] },
+            duration: { units: 'inst', concentration: false, override: false },
+            effects: [],
+            range: { override: false, units: 'self' },
+            target: {
+              template: { contiguous: false, units: 'ft' },
+              affects: { choice: false },
+              override: false,
+              prompt: true
+            },
+            uses: { spent: 0, recovery: [] },
+            roll: { prompt: false, visible: false }
+          }
+        }
+      }
+    }
+  end
+
+  def foundry_feat_item(ability)
+    {
+      name: ability.name,
+      type: 'feat',
+      system: {
+        type: { value: 'monster', subtype: '' },
+        description: { value: "<p>#{ERB::Util.html_escape(ability.desc)}</p>" },
+        properties: ['trait']
+      }
+    }
+  end
+
+  # Sanitize description to prevent XSS attacks when displayed
+  # Strips HTML tags and dangerous content from user-provided descriptions
+  def sanitize_description
+    return if description.blank?
+
+    # Strip HTML tags and entities to prevent XSS
+    sanitized = ActionController::Base.helpers.strip_tags(description)
+    # Remove any remaining script-like content
+    sanitized = sanitized.gsub(/javascript:/i, '')
+    sanitized = sanitized.gsub(/on\w+\s*=/i, '')
+    self.description = sanitized.strip
   end
 end

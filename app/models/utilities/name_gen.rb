@@ -20,12 +20,12 @@ class NameGen
   SETTINGS = ['Forgotten Realms', 'Greyhawk', 'Eberron', 'Dragonlance', 'Dark Sun'].freeze
 
   # --------------------------- Public API ---------------------------------
-  def self.random_name(gender: nil, race: 'human', setting: nil, extra: '', **)
+  def self.random_name(gender: nil, race: 'human', setting: nil, role: nil, extra: '', **)
     gender  ||= %w[male female].sample
     setting ||= SETTINGS.sample
 
-    prompt      = build_prompt(gender: gender, race: race, setting: setting, extra: extra)
-    cache_key   = "#{race}_#{gender}"
+    prompt      = build_prompt(gender: gender, race: race, setting: setting, role: role, extra: extra)
+    cache_key   = "#{race}_#{gender}_#{role}"
 
     generate_unique_name(prompt, cache_key: cache_key, **)
   end
@@ -69,9 +69,10 @@ class NameGen
     openai_client.completions(prompt: prompt, max_tokens: 50, **random_opts.merge(params))
   end
 
-  def self.build_prompt(gender:, race:, setting:, extra: '')
+  def self.build_prompt(gender:, race:, setting:, role: nil, extra: '')
+    role_description = role.present? ? " who works as a #{role}" : ''
     <<~PROMPT.strip
-      Create exactly ONE #{gender} #{race} name for a Dungeons & Dragons character
+      Create exactly ONE #{gender} #{race} name for a Dungeons & Dragons character#{role_description}
       in the #{setting} setting. #{extra}
       Avoid existing canonical names or obvious real-world references.
       Make each new name distinct from your recent answers.

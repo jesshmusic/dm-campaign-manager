@@ -230,58 +230,6 @@ RSpec.describe NpcGenerator, type: :model do
     end
   end
 
-  describe '.generate_npc' do
-    let(:simple_params) do
-      {
-        name: 'Simple NPC',
-        monster_type: 'humanoid',
-        challenge_rating: '1',
-        hit_points: 20,
-        hit_dice: '4d8',
-        armor_class: 15,
-        size: 'Medium'
-      }
-    end
-
-    it 'creates a basic NPC with provided parameters' do
-      result = NpcGenerator.generate_npc(simple_params, nil)
-
-      expect(result).to be_a(Monster)
-      expect(result.name).to eq('Simple NPC')
-      expect(result.hit_points).to eq(20)
-      expect(result.armor_class).to eq(15)
-    end
-
-    it 'generates slug from name' do
-      result = NpcGenerator.generate_npc(simple_params, nil)
-
-      expect(result.slug).to eq('simple-npc')
-    end
-
-    it 'calculates hit dice' do
-      result = NpcGenerator.generate_npc(simple_params, nil)
-
-      expect(result.hit_dice).to be_present
-    end
-
-    context 'with user' do
-      it 'saves the NPC' do
-        result = NpcGenerator.generate_npc(simple_params, user)
-
-        expect(result.persisted?).to be true
-        expect(result.user).to eq(user)
-      end
-    end
-
-    context 'without user' do
-      it 'does not save the NPC' do
-        result = NpcGenerator.generate_npc(simple_params, nil)
-
-        expect(result.persisted?).to be false
-      end
-    end
-  end
-
   describe '.generate_commoner' do
     let!(:commoner_template) { create(:monster, name: 'Commoner', monster_type: 'humanoid', challenge_rating: '0') }
 

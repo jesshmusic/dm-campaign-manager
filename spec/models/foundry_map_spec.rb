@@ -1,3 +1,30 @@
+# == Schema Information
+#
+# Table name: foundry_maps
+#
+#  id               :bigint           not null, primary key
+#  access_level     :string           default("premium"), not null
+#  description      :text
+#  download_count   :integer          default(0)
+#  grid_size        :integer
+#  grid_units       :string
+#  height           :integer
+#  keywords         :json
+#  name             :string           not null
+#  published        :boolean          default(FALSE)
+#  required_tier    :string           default("free")
+#  thumbnail_s3_key :string
+#  thumbnail_url    :string
+#  width            :integer
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#
+# Indexes
+#
+#  index_foundry_maps_on_access_level  (access_level)
+#  index_foundry_maps_on_created_at    (created_at)
+#  index_foundry_maps_on_published     (published)
+#
 require 'rails_helper'
 
 RSpec.describe FoundryMap, type: :model do

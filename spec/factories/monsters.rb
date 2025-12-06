@@ -14,6 +14,7 @@
 #  damage_immunities      :string           default([]), is an Array
 #  damage_resistances     :string           default([]), is an Array
 #  damage_vulnerabilities :string           default([]), is an Array
+#  description            :text
 #  dexterity              :integer          default(10), not null
 #  hit_dice               :string
 #  hit_points             :integer          default(8), not null

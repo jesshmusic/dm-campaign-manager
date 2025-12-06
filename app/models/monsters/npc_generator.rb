@@ -3,6 +3,19 @@
 MAX_RETRIES = 5
 
 class NpcGenerator
+  COMMONER_ROLES = {
+    'blacksmith' => { Strength: 100, Constitution: 80, Dexterity: 40, Intelligence: 30, Wisdom: 40, Charisma: 30 },
+    'noble' => { Charisma: 100, Intelligence: 60, Wisdom: 40, Strength: 20, Dexterity: 30, Constitution: 30 },
+    'merchant' => { Charisma: 80, Intelligence: 60, Wisdom: 50, Strength: 30, Dexterity: 40, Constitution: 40 },
+    'guard' => { Strength: 80, Constitution: 70, Dexterity: 50, Wisdom: 40, Intelligence: 30, Charisma: 30 },
+    'farmer' => { Strength: 70, Constitution: 80, Wisdom: 40, Dexterity: 40, Intelligence: 30, Charisma: 30 },
+    'scholar' => { Intelligence: 100, Wisdom: 70, Charisma: 30, Strength: 20, Dexterity: 30, Constitution: 30 },
+    'healer' => { Wisdom: 100, Intelligence: 60, Charisma: 50, Strength: 20, Dexterity: 40, Constitution: 40 },
+    'entertainer' => { Charisma: 100, Dexterity: 60, Intelligence: 40, Strength: 30, Wisdom: 40, Constitution: 40 },
+    'sailor' => { Strength: 70, Dexterity: 60, Constitution: 70, Wisdom: 50, Intelligence: 30, Charisma: 30 },
+    'servant' => { Dexterity: 60, Wisdom: 50, Charisma: 40, Strength: 40, Constitution: 40, Intelligence: 40 }
+  }.freeze
+
   class << self
     def fetch_records
       @start = Time.zone.now
@@ -29,9 +42,16 @@ class NpcGenerator
     end
 
     def quick_monster(monster_params, user)
-      @new_npc = Monster.new(monster_params.except(:number_of_attacks, :archetype, :action_options, :spell_ids, :special_ability_options))
-      @action_options = monster_params[:action_options]
-      @spell_ids = monster_params[:spell_ids]
+      # Check if AI-generated actions were provided
+      has_ai_actions = monster_params[:monster_actions_attributes].present? ||
+                       monster_params[:special_abilities_attributes].present?
+
+      # Exclude control fields but keep nested attributes for actions/abilities
+      # creature_description is only used for AI prompts, not stored on Monster
+      excluded_fields = %i[number_of_attacks archetype action_options spell_ids special_ability_options creature_description]
+      @new_npc = Monster.new(monster_params.except(*excluded_fields))
+      @action_options = monster_params[:action_options] || []
+      @spell_ids = monster_params[:spell_ids] || []
       fetch_records
       @archetype = monster_params[:archetype]
       @new_npc.slug = @new_npc.name.parameterize
@@ -44,15 +64,18 @@ class NpcGenerator
       set_ability_scores(ability_score_order, monster_params)
       @new_npc.attack_bonus = calculate_attack_bonus
 
-      generate_actions(
-        monster_params[:number_of_attacks],
-        CrCalc.cr_string_to_num(monster_params[:challenge_rating]),
-        cr_info[:save_dc],
-        spellcasting_ability
-      )
+      # Only generate actions from action_options if no AI-generated actions provided
+      unless has_ai_actions
+        generate_actions(
+          monster_params[:number_of_attacks],
+          CrCalc.cr_string_to_num(monster_params[:challenge_rating]),
+          cr_info[:save_dc],
+          spellcasting_ability
+        )
+        generate_special_abilities(@new_npc, monster_params[:special_ability_options] || [])
+      end
 
       generate_stats
-      generate_special_abilities(@new_npc, monster_params[:special_ability_options])
       adjust_proficiency_bonuses
 
       @new_npc.slug = @new_npc.name.parameterize if user.nil?
@@ -63,30 +86,30 @@ class NpcGenerator
       @new_npc
     end
 
-    def generate_npc(monster_params, user)
-      @new_npc = Monster.new(monster_params)
-      calculate_hd
-      @new_npc.slug = @new_npc.name.parameterize if user.nil?
-      maybe_save_npc(user)
-      @new_npc
-    end
-
-    def generate_commoner(random_npc_gender, random_npc_race, user)
+    def generate_commoner(random_npc_gender, random_npc_race, user, role = nil, description = nil)
       commoner = Monster.where(name: 'Commoner').first
       commoner_atts = commoner.attributes
       @new_npc = Monster.new commoner_atts
       @new_npc.id = nil
       @new_npc.slug = nil
       @new_npc.challenge_rating = %w[0 0 0 0 0 1/8 1/8 1/8 1/4 1/4 1/2].sample
-      ability_score_order = %w[Strength Dexterity Constitution Intelligence Wisdom Charisma].shuffle
+
+      # Use role-based ability weighting if role provided
+      ability_score_order = if role.present? && COMMONER_ROLES[role.downcase]
+                              weighted_abilities = WeightedList[COMMONER_ROLES[role.downcase]]
+                              weighted_abilities.sample(6).map(&:to_s)
+                            else
+                              %w[Strength Dexterity Constitution Intelligence Wisdom Charisma].shuffle
+                            end
       set_ability_scores(ability_score_order)
-      @new_npc.name = NameGen.random_name(gender: random_npc_gender, race: random_npc_race)
+      @new_npc.name = NameGen.random_name(gender: random_npc_gender, race: random_npc_race, role: role)
       @new_npc.monster_subtype = random_npc_race || 'human'
 
       # Other statistics
       @new_npc.armor_class = @new_npc.armor_class + DndRules.ability_score_modifier(@new_npc.dexterity)
       @new_npc.alignment = DndRules.alignments_non_evil.sample
       @new_npc.hit_points += DndRules.ability_score_modifier(@new_npc.constitution)
+      @new_npc.description = description if description.present?
       @new_npc.slug = @new_npc.name.parameterize if user.nil?
       maybe_save_npc(user)
       @new_npc
@@ -94,13 +117,18 @@ class NpcGenerator
 
     def generate_action_desc(action_params)
       params = action_params[:params]
-      case params[:action][:action_type]
+      action = params[:action]
+
+      # Handle case where action is nil (incomplete form data)
+      return '' if action.nil?
+
+      case action[:action_type]
       when 'attack'
-        generate_attack_desc(params[:action], params[:attack_bonus], params[:prof_bonus], params[:damage_bonus])
+        generate_attack_desc(action, params[:attack_bonus], params[:prof_bonus], params[:damage_bonus])
       when 'spellCasting'
-        generate_spellcasting_desc(params[:monster_name], params[:action])
+        generate_spellcasting_desc(params[:monster_name], action)
       else
-        params[:action][:desc]
+        action[:desc] || ''
       end
     end
 
@@ -133,8 +161,9 @@ class NpcGenerator
 
     private
 
-    def set_challenge_rating(target_cr = @new_npc.challenge_rating)
-      calculated_cr = CrCalc.calculate_challenge(@new_npc, target_cr)
+    def set_challenge_rating(_target_cr = @new_npc.challenge_rating)
+      # Quick NPC uses selected CR, not AI calculation
+      calculated_cr = CrCalc.calculate_challenge(@new_npc, use_ai: false)
       cr_info = calculated_cr[:data]
       @new_npc.challenge_rating = calculated_cr[:name]
       Rails.logger.debug cr_info

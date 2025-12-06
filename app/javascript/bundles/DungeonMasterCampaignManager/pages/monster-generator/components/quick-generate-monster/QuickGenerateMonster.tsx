@@ -5,11 +5,14 @@ import { GiDiceTwentyFacesTwenty } from 'react-icons/gi';
 import { Colors } from '../../../../utilities/enums';
 import Button from '../../../../components/Button/Button';
 import { useData } from './use-data';
-import GenMonsterSection from '../generate-monster/sections/GenMonsterSection';
+import GenMonsterSection from '../GenMonsterSection';
 import QuickMonsterStatsSection from './QuickMonsterStatsSection';
 import { GiLinkedRings } from 'react-icons/gi';
-import FormSelectAsync from '../../../../components/forms/FormSelectAsync';
 import SavesSkillsSection from '../SavesSkillsSection';
+import CreatureDescriptionSection from './CreatureDescriptionSection';
+import InstructionsPanel, {
+  CreateNPCInstructions,
+} from '../../../../components/InstructionsPanel/InstructionsPanel';
 
 import {
   GenForm,
@@ -26,7 +29,7 @@ export type GenerateMonsterProps = {
   token?: string;
 };
 
-const TOTAL_STEPS = 6;
+const TOTAL_STEPS = 4;
 
 const QuickGenerateMonster = (props: GenerateMonsterProps) => {
   const { isLoading } = props;
@@ -34,17 +37,16 @@ const QuickGenerateMonster = (props: GenerateMonsterProps) => {
     activeNameButton,
     archetypeOptions,
     challengeRatingOptions,
-    getMonsterActions,
-    getSpecialAbilities,
-    getSpells,
+    generatedActions,
+    handleGenerateActions,
     handleGenerateName,
     handleGenerateMonsterName,
+    isGeneratingActions,
     monsterType,
     onSubmit,
     updateForm,
     UseForm,
   } = useData(props);
-  const [testState, setTestState] = React.useState();
   const [currentStep, setCurrentStep] = React.useState(1);
 
   const handleNext = () => {
@@ -72,31 +74,20 @@ const QuickGenerateMonster = (props: GenerateMonsterProps) => {
       if (name) {
         updateForm(name, value);
       }
-      // @ts-expect-error - Type mismatch between form value and test state
-      setTestState(value);
     });
     return () => subscription.unsubscribe();
   }, [UseForm.watch]);
 
   return (
     <>
-      {process.env.NODE_ENV === 'development' ? (
-        <pre
-          style={{
-            position: 'absolute',
-            top: '0',
-            right: '0',
-            backgroundColor: '#fff',
-            width: '150px',
-            zIndex: 200,
-          }}
-        >
-          {JSON.stringify(testState, null, 2)}
-        </pre>
-      ) : null}
-
       <Frame
+        title="Create NPC"
         subtitle="Set the basics and let the generator do the rest. Perfect for creating NPCs and enemies on the fly."
+        subtitleAction={
+          <InstructionsPanel>
+            <CreateNPCInstructions />
+          </InstructionsPanel>
+        }
         className="random-monster-generator"
       >
         <StepProgressBar>
@@ -113,49 +104,30 @@ const QuickGenerateMonster = (props: GenerateMonsterProps) => {
             />
           </GenMonsterSection>
 
-          <GenMonsterSection heading="Traits" step={2} currentStep={currentStep} isMultiStep>
-            <FormSelectAsync
-              label="Search for and select special abilities from existing creatures"
-              name="specialAbilityOptions"
-              control={UseForm.control}
-              getOptions={getSpecialAbilities}
-              isMulti
-              isClearable
-            />
-          </GenMonsterSection>
-
-          <GenMonsterSection heading="Actions" step={3} currentStep={currentStep} isMultiStep>
-            <FormSelectAsync
-              label="Search for and select actions from existing creatures"
-              name="actionOptions"
-              control={UseForm.control}
-              getOptions={getMonsterActions}
-              isMulti
-              isClearable
-            />
-          </GenMonsterSection>
-
           <GenMonsterSection
             heading="Saving Throws & Skills"
-            step={4}
+            step={2}
             currentStep={currentStep}
             isMultiStep
           >
             <SavesSkillsSection UseForm={UseForm} />
           </GenMonsterSection>
 
-          <GenMonsterSection heading="Spells" step={5} currentStep={currentStep} isMultiStep>
-            <FormSelectAsync
-              label={'Spells (search by name, level, or school)'}
-              name={`spellOptions`}
-              getOptions={getSpells}
-              control={UseForm.control}
-              isMulti
-              isClearable
+          <GenMonsterSection
+            heading="Creature Description"
+            step={3}
+            currentStep={currentStep}
+            isMultiStep
+          >
+            <CreatureDescriptionSection
+              UseForm={UseForm}
+              generatedActions={generatedActions}
+              isGenerating={isGeneratingActions}
+              onGenerateActions={handleGenerateActions}
             />
           </GenMonsterSection>
 
-          <GenMonsterSection heading="Name" step={6} currentStep={currentStep} isMultiStep>
+          <GenMonsterSection heading="Name" step={4} currentStep={currentStep} isMultiStep>
             <NameFormField
               activeNameButton={activeNameButton}
               characterRace={UseForm.getValues('characterRace')?.value}
@@ -191,7 +163,7 @@ const QuickGenerateMonster = (props: GenerateMonsterProps) => {
                 <Button
                   color={Colors.success}
                   disabled={isLoading}
-                  title={isLoading ? 'Generating...' : 'Generate NPC'}
+                  title={isLoading ? 'Creating...' : 'Create NPC'}
                   type="submit"
                   icon={
                     isLoading ? (

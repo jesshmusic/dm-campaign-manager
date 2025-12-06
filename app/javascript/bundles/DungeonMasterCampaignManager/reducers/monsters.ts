@@ -1,11 +1,9 @@
-import { createAction, createReducer } from '@reduxjs/toolkit';
+import { createAction, createReducer, PayloadAction } from '@reduxjs/toolkit';
 import { AnyAction } from 'redux';
+import { MonsterProps } from '../utilities/types';
 
 export const clearCurrentMonster = createAction('monsters/clearCurrentMonster');
-
-const generateMonster = createAction('@@redux-api@generateMonster');
-const generateMonsterSuccess = createAction('@@redux-api@generateMonster_success');
-const generateMonsterFail = createAction('@@redux-api@generateMonster_fail');
+export const setCurrentMonster = createAction<MonsterProps>('monsters/setCurrentMonster');
 
 const generateQuickMonster = createAction('@@redux-api@generateQuickMonster');
 const generateQuickMonsterSuccess = createAction('@@redux-api@generateQuickMonster_success');
@@ -39,28 +37,10 @@ const monsters = createReducer(
           currentMonster: null,
         };
       })
-      .addCase(generateMonster, (state) => {
+      .addCase(setCurrentMonster, (state, action: PayloadAction<MonsterProps>) => {
         return {
           ...state,
-          currentMonster: null,
-          loading: true,
-        };
-      })
-      .addCase(generateMonsterSuccess, (state, action: AnyAction) => {
-        return {
-          monsters: state.monsters,
-          monsterTypes: state.monsterTypes,
-          count: state.count,
-          currentMonster: action.data,
-          loading: false,
-        };
-      })
-      .addCase(generateMonsterFail, (state, _action: AnyAction) => {
-        return {
-          monsters: state.monsters,
-          monsterTypes: state.monsterTypes,
-          count: state.count,
-          currentMonster: null,
+          currentMonster: action.payload,
           loading: false,
         };
       })

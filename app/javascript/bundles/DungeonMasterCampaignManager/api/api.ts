@@ -58,16 +58,6 @@ const dmFetch = (fetch) => {
 };
 
 export default reduxApi({
-  generateMonster: {
-    url: '/v1/generate_monster',
-    options() {
-      const headers = getHeaders();
-      return {
-        method: 'post',
-        headers,
-      };
-    },
-  },
   generateQuickMonster: {
     url: '/v1/quick_monster',
     options() {
@@ -79,7 +69,7 @@ export default reduxApi({
     },
   },
   generateCommoner: {
-    url: '/v1/generate_commoner.json?random_monster_gender=:gender&random_monster_race=:race',
+    url: '/v1/generate_commoner.json?random_monster_gender=:gender&random_monster_race=:race&role=:role&description=:description',
     options() {
       const headers = getHeaders();
       return {

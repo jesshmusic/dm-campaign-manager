@@ -176,7 +176,7 @@ const DataTable = <T extends object = Record<string, unknown>>({
             const rowKey = row.id || `row-${rowIndex}`;
             return (
               <React.Fragment key={rowKey}>
-                <tr key={`tr-${rowKey}`} {...rowProps} onClick={() => handleGoToPage(typedRow)}>
+                <tr {...rowProps} onClick={() => handleGoToPage(typedRow)}>
                   {row.cells.map((cell, index: number) => {
                     const { key: _cellKey, ...cellProps } = cell.getCellProps();
                     return (

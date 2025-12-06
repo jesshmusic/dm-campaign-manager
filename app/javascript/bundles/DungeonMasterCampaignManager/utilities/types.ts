@@ -342,6 +342,19 @@ export type MonsterGeneratorFormFields = {
   speeds: MonsterInfoData[];
 };
 
+export type GeneratedAction = {
+  name: string;
+  desc: string;
+  attack_bonus?: number;
+  damage?: string;
+};
+
+export type GeneratedActionsData = {
+  actions: GeneratedAction[];
+  special_abilities: GeneratedAction[];
+  spells?: string[];
+};
+
 export type MonsterQuickGeneratorFormFields = {
   name: string;
   actionOptions: SelectOption[];
@@ -353,7 +366,9 @@ export type MonsterQuickGeneratorFormFields = {
   characterRace?: { value: string; label: string };
   charisma?: number;
   constitution: number;
+  creatureDescription?: string;
   dexterity?: number;
+  generatedActions?: GeneratedActionsData;
   hitDice: string;
   hitDiceNumber: number;
   hitDiceValue: string;
@@ -395,6 +410,10 @@ export type MonsterCRCalcResult = {
         damage_max: number;
         save_dc: number;
       };
+      reasoning?: string; // AI explanation for CR adjustments
+      adjustment?: number; // CR adjustment made by AI (-3 to +3)
+      rate_limited?: boolean; // True if request was rate limited
+      retry_after?: number; // Seconds until next AI call is allowed
     };
   };
 };
@@ -423,6 +442,7 @@ export interface MonsterProps {
   challengeString?: string;
   charisma: number;
   constitution: number;
+  description?: string;
   dexterity: number;
   hitDice: string;
   hitPoints: number;
@@ -455,6 +475,7 @@ export interface MonsterProps {
   offensiveCr?: number;
   defensiveCr?: number;
   fguXml?: string;
+  foundryVttJson?: string;
   user?: UserProps;
 }
 

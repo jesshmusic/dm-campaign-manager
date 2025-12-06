@@ -1,22 +1,20 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
-import GenerateMonster from './components/generate-monster/GenerateMonster';
 import Convert2eMonster from './Convert2eMonster';
 import GenerateCommoner from './components/GenerateCommoner';
-import { GiBlacksmith, GiSpikedDragonHead, GiDiceTwentyFacesTwenty } from 'react-icons/gi';
+import { GiBlacksmith, GiSpikedDragonHead, GiCrossMark, GiMagicSwirl } from 'react-icons/gi';
 import { SiConvertio } from 'react-icons/si';
 import MonsterBlock from '../monsters/MonsterBlock';
 import rest from '../../api/api';
 import { connect } from 'react-redux';
 import QuickGenerateMonster from './components/quick-generate-monster/QuickGenerateMonster';
+import AIGenerateMonster from './components/ai-generate-monster/AIGenerateMonster';
 import ReactGA from 'react-ga4';
-import { MonsterProps } from '../../utilities/types';
-import { clearCurrentMonster } from '../../reducers/monsters';
+import { MonsterProps, UserProps } from '../../utilities/types';
+import { clearCurrentMonster, setCurrentMonster } from '../../reducers/monsters';
 
 ReactGA.initialize('G-8XJTH70JSQ');
-
-import { GiCrossMark } from 'react-icons/gi';
 import {
   MonsterGenWrapper,
   MonsterDisplayWrapper,
@@ -27,11 +25,26 @@ import {
   TabsContent,
 } from './MonsterGenerator.styles';
 
+const VALID_TABS = ['commoner', 'create', 'quick'];
+
+const getInitialTab = (): string => {
+  const searchParams = new URLSearchParams(window.location.search);
+  const tabParam = searchParams.get('tab');
+  return tabParam && VALID_TABS.includes(tabParam) ? tabParam : 'commoner';
+};
+
 const MonsterGenerator = (props: {
   monster?: MonsterProps;
+  currentUser?: UserProps;
   clearMonster: () => void;
-  generateCommoner: (gender?: string, race?: string, token?: string) => void;
-  generateMonster: (monster: Record<string, unknown>, token?: string) => void;
+  setMonster: (monster: MonsterProps) => void;
+  generateCommoner: (
+    gender?: string,
+    race?: string,
+    role?: string,
+    description?: string,
+    token?: string,
+  ) => void;
   generateQuickMonster: (monster: Record<string, unknown>, token?: string) => void;
   isLoading?: boolean;
   token?: string;
@@ -40,12 +53,22 @@ const MonsterGenerator = (props: {
     token,
     isLoading,
     monster,
+    currentUser,
     clearMonster,
+    setMonster,
     generateCommoner,
-    generateMonster,
     generateQuickMonster,
   } = props;
+  const isAdmin = currentUser?.role === 'admin';
   const show2eConverter = false;
+  const [activeTab, setActiveTab] = useState(getInitialTab);
+
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+    const url = new URL(window.location.href);
+    url.searchParams.set('tab', value);
+    window.history.replaceState({}, '', url.toString());
+  };
 
   useEffect(() => {
     return () => {
@@ -80,26 +103,16 @@ const MonsterGenerator = (props: {
           </MonsterDisplayWrapper>
         ) : null}
 
-        <TabsRoot defaultValue="commoner">
+        <TabsRoot value={activeTab} onValueChange={handleTabChange}>
           <TabsList>
             <TabsTrigger value="commoner">
               <GiBlacksmith size={20} /> Commoner
             </TabsTrigger>
-            <TabsTrigger value="quick-monster">
-              <span
-                style={{ display: 'inline-block', position: 'relative', width: 30, height: 30 }}
-              >
-                <GiDiceTwentyFacesTwenty
-                  size={30}
-                  color="#dd9529"
-                  style={{ position: 'absolute', left: 0, top: 0 }}
-                />
-                <GiSpikedDragonHead size={20} style={{ position: 'absolute', left: 5, top: 5 }} />
-              </span>
-              Quick NPC
-            </TabsTrigger>
-            <TabsTrigger value="create-monster">
+            <TabsTrigger value="create">
               <GiSpikedDragonHead size={20} /> Create NPC
+            </TabsTrigger>
+            <TabsTrigger value="quick">
+              <GiMagicSwirl size={20} /> Quick NPC
             </TabsTrigger>
             {show2eConverter && (
               <TabsTrigger value="convert-2e">
@@ -112,7 +125,7 @@ const MonsterGenerator = (props: {
             <GenerateCommoner isLoading={isLoading} onFormSubmit={generateCommoner} token={token} />
           </TabsContent>
 
-          <TabsContent value="quick-monster">
+          <TabsContent value="create">
             <QuickGenerateMonster
               onGenerateMonster={generateQuickMonster}
               token={token}
@@ -120,11 +133,12 @@ const MonsterGenerator = (props: {
             />
           </TabsContent>
 
-          <TabsContent value="create-monster">
-            <GenerateMonster
-              onGenerateMonster={generateMonster}
+          <TabsContent value="quick">
+            <AIGenerateMonster
+              onMonsterCreated={(monster) => setMonster(monster as MonsterProps)}
               token={token}
               isLoading={isLoading}
+              isAdmin={isAdmin}
             />
           </TabsContent>
 
@@ -153,24 +167,22 @@ function mapDispatchToProps(dispatch) {
     clearMonster: () => {
       dispatch(clearCurrentMonster());
     },
-    generateCommoner: (gender: string = 'Female', race: string = 'Human', token?: string) => {
+    setMonster: (monster: MonsterProps) => {
+      dispatch(setCurrentMonster(monster));
+    },
+    generateCommoner: (
+      gender: string = 'Female',
+      race: string = 'Human',
+      role: string = '',
+      description: string = '',
+      token?: string,
+    ) => {
       ReactGA.event('NPC Generator');
       dispatch(
         rest.actions.generateCommoner(
-          { gender, race },
+          { gender, race, role, description: encodeURIComponent(description) },
           {
             body: JSON.stringify({ token }),
-          },
-        ),
-      );
-    },
-    generateMonster: (monster: unknown, token?: string) => {
-      ReactGA.event('NPC Generator');
-      dispatch(
-        rest.actions.generateMonster(
-          {},
-          {
-            body: JSON.stringify({ monster, token }),
           },
         ),
       );

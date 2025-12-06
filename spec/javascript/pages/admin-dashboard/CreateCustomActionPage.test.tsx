@@ -23,7 +23,7 @@ jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/compo
   };
 });
 
-jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/monster-generator/components/generate-monster/sections/actions/action-forms/ActionForm', () => {
+jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/components/action-forms/ActionForm', () => {
   return function MockActionForm() {
     return <div data-testid="action-form">Action Form</div>;
   };

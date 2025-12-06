@@ -4,6 +4,7 @@ json.key_format! camelize: :lower
 
 json.extract! monster, :id,
               :name,
+              :description,
               :slug,
               :monster_type,
               :monster_subtype,
@@ -73,4 +74,7 @@ json.damage_per_round monster.damage_per_round
 json.offensive_cr monster.offensive_cr.round
 json.defensive_cr monster.defensive_cr.round
 
-json.url v1_monster_url(monster, format: :json)
+json.fgu_xml monster.export
+json.foundry_vtt_json monster.export_foundry_vtt
+
+json.url v1_monster_url(monster, format: :json) if monster.persisted?

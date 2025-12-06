@@ -1,7 +1,7 @@
 import React from 'react';
 import { FieldValues, UseFormReturn } from 'react-hook-form';
 import { SelectOption } from '../../../../utilities/types';
-import MonsterTypeSelect from '../generate-monster/MonsterTypeSelect';
+import MonsterTypeSelect from '../MonsterTypeSelect';
 import FormField from '../../../../components/forms/FormField';
 import { alignmentOptions, monsterSizeOptions } from '../../../../utilities/character-utilities';
 import FormSelect from '../../../../components/forms/FormSelect';

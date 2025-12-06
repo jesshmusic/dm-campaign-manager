@@ -26,39 +26,6 @@ describe('monsters reducer', () => {
     expect(monstersReducer(undefined, { type: '@@INIT' })).toEqual(initialState);
   });
 
-  describe('generateMonster actions', () => {
-    it('handles generateMonster_success', () => {
-      const action = {
-        type: '@@redux-api@generateMonster_success',
-        data: mockMonster,
-      };
-
-      const state = monstersReducer(initialState, action);
-
-      expect(state.currentMonster).toEqual(mockMonster);
-      expect(state.loading).toBe(false);
-      expect(state.monsters).toEqual([]);
-      expect(state.monsterTypes).toEqual([]);
-      expect(state.count).toBe(0);
-    });
-
-    it('handles generateMonster_fail', () => {
-      const stateWithMonster = {
-        ...initialState,
-        currentMonster: mockMonster,
-      };
-
-      const action = {
-        type: '@@redux-api@generateMonster_fail',
-      };
-
-      const state = monstersReducer(stateWithMonster, action);
-
-      expect(state.currentMonster).toBeNull();
-      expect(state.loading).toBe(false);
-    });
-  });
-
   describe('generateQuickMonster actions', () => {
     it('handles generateQuickMonster (loading)', () => {
       const action = {
@@ -334,11 +301,11 @@ describe('monsters reducer', () => {
         monsterTypes: [{ id: 1, name: 'Dragons' }],
         count: 5,
         currentMonster: null,
-        loading: false,
+        loading: true,
       };
 
       const action = {
-        type: '@@redux-api@generateMonster_success',
+        type: '@@redux-api@generateQuickMonster_success',
         data: mockMonster,
       };
 

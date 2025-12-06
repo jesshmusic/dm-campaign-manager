@@ -24,14 +24,14 @@ Rails.application.routes.draw do
       get '/random_monster_name', to: 'dashboard#random_monster_name',
           as: 'random_monster_name',
           constraints: { format: 'json' }
-      post '/generate_monster', to: 'monsters#generate_monster',
-           as: 'generate_monster',
-           constraints: { format: 'json' }
       post '/quick_monster', to: 'monsters#quick_monster',
            as: 'quick_monster',
            constraints: { format: 'json' }
       post '/generate_commoner', to: 'monsters#generate_commoner',
            as: 'generate_commoner',
+           constraints: { format: 'json' }
+      post '/generate_commoner_description', to: 'monsters#generate_commoner_description',
+           as: 'generate_commoner_description',
            constraints: { format: 'json' }
       get '/monster-categories', to: 'monsters#monster_categories',
           as: 'monster_categories',
@@ -50,6 +50,15 @@ Rails.application.routes.draw do
            constraints: { format: 'json' }
       post '/generate_action_desc', to: 'monsters#generate_action_desc',
            as: 'generate_action_desc',
+           constraints: { format: 'json' }
+      post '/generate_npc_actions', to: 'monsters#generate_npc_actions',
+           as: 'generate_npc_actions',
+           constraints: { format: 'json' }
+      post '/generate_npc_concept', to: 'monsters#generate_npc_concept',
+           as: 'generate_npc_concept',
+           constraints: { format: 'json' }
+      post '/create_from_concept', to: 'monsters#create_from_concept',
+           as: 'create_from_concept',
            constraints: { format: 'json' }
       get '/prof-skills', to: 'proficiencies#skills',
           as: 'proficiency_skills',

@@ -46,4 +46,6 @@ module.exports = {
   GiDiceTwentyFacesTwenty: MockIcon,
   GiBeerStein: MockIcon,
   FaMap: MockIcon,
+  GiCrossMark: MockIcon,
+  GiMagicSwirl: MockIcon,
 };

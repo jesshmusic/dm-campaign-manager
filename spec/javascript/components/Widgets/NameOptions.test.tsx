@@ -22,6 +22,31 @@ jest.mock('react-select', () => {
   };
 });
 
+jest.mock('react-select/creatable', () => {
+  return function MockCreatableSelect({ options, onChange, id }: any) {
+    return (
+      <select
+        data-testid={id}
+        onChange={(e) => {
+          const option = options.find((opt: any) => opt.value === e.target.value);
+          onChange(option);
+        }}
+      >
+        <option value="">Select...</option>
+        {options.map((opt: any) => (
+          <option key={opt.value} value={opt.value}>
+            {opt.label}
+          </option>
+        ))}
+      </select>
+    );
+  };
+});
+
+jest.mock('axios', () => ({
+  post: jest.fn().mockResolvedValue({ data: { description: 'A generated description' } }),
+}));
+
 jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/components/Button/Button', () => {
   return function MockButton({ title, onClick }: any) {
     return (
@@ -32,8 +57,10 @@ jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/compo
   };
 });
 
-jest.mock('react-icons/all', () => ({
+jest.mock('react-icons/gi', () => ({
   GiBattleGear: () => <span>Gear</span>,
+  GiLinkedRings: () => <span>Rings</span>,
+  GiMagicSwirl: () => <span>Swirl</span>,
 }));
 
 describe('NameOptions', () => {
@@ -68,7 +95,8 @@ describe('NameOptions', () => {
     const submitButton = screen.getByTestId('submit-button');
     fireEvent.click(submitButton);
 
-    expect(mockOnFormSubmit).toHaveBeenCalledWith('female', 'human', undefined);
+    // Updated to include role, description, and token parameters
+    expect(mockOnFormSubmit).toHaveBeenCalledWith('female', 'human', '', '', undefined);
   });
 
   it('calls onFormSubmit with token when provided', () => {
@@ -77,7 +105,7 @@ describe('NameOptions', () => {
     const submitButton = screen.getByTestId('submit-button');
     fireEvent.click(submitButton);
 
-    expect(mockOnFormSubmit).toHaveBeenCalledWith('female', 'human', 'test-token');
+    expect(mockOnFormSubmit).toHaveBeenCalledWith('female', 'human', '', '', 'test-token');
   });
 
   it('updates gender selection', () => {
@@ -89,7 +117,7 @@ describe('NameOptions', () => {
     const submitButton = screen.getByTestId('submit-button');
     fireEvent.click(submitButton);
 
-    expect(mockOnFormSubmit).toHaveBeenCalledWith('male', 'human', undefined);
+    expect(mockOnFormSubmit).toHaveBeenCalledWith('male', 'human', '', '', undefined);
   });
 
   it('updates race selection', () => {
@@ -101,6 +129,22 @@ describe('NameOptions', () => {
     const submitButton = screen.getByTestId('submit-button');
     fireEvent.click(submitButton);
 
-    expect(mockOnFormSubmit).toHaveBeenCalledWith('female', 'elf', undefined);
+    expect(mockOnFormSubmit).toHaveBeenCalledWith('female', 'elf', '', '', undefined);
+  });
+
+  it('displays name input for description generation', () => {
+    render(<NameOptions onFormSubmit={mockOnFormSubmit} title="Name" />);
+    expect(screen.getByPlaceholderText(/Enter a name to enable AI description generation/i)).toBeInTheDocument();
+  });
+
+  it('displays description textarea', () => {
+    render(<NameOptions onFormSubmit={mockOnFormSubmit} title="Name" />);
+    expect(screen.getByPlaceholderText(/Describe the NPC/i)).toBeInTheDocument();
+  });
+
+  it('disables generate button when name is empty', () => {
+    render(<NameOptions onFormSubmit={mockOnFormSubmit} title="Name" />);
+    const generateButton = screen.getByText('Generate');
+    expect(generateButton.closest('button')).toBeDisabled();
   });
 });

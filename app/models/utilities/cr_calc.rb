@@ -1,19 +1,68 @@
 class CrCalc
+  MAX_OUTPUT_TOKENS = 300
+
   class << self
+    # Main entry point - calculates CR with optional AI enhancement
     # @param [Monster] monster
-    def calculate_challenge(monster, target_cr = monster.challenge_rating)
+    # @param [Boolean] use_ai - whether to use AI for trait analysis (default: true)
+    def calculate_challenge(monster, use_ai: true)
+      base_result = calculate_base_cr(monster)
+
+      if use_ai && should_use_ai?(monster)
+        ai_result = calculate_with_ai(monster, base_result)
+        return ai_result if ai_result
+      end
+
+      base_result
+    end
+
+    # Phase 1: Local calculation of hard numbers only (no AI, no trait_modifier)
+    # @param [Monster] monster
+    def calculate_base_cr(monster)
       damage_per_round = [monster.damage_per_round.floor, 320].min
       attack_bonus = monster.attack_bonus
       armor_class = monster.armor_class
       hit_points = monster.hit_points
-      damage_per_round, attack_bonus, armor_class, hit_points = trait_modifier(monster, target_cr, damage_per_round, attack_bonus, armor_class,
-                                                                               hit_points)
-      def_cr = get_defensive_cr(monster, target_cr, armor_class, hit_points)
+
+      def_cr = get_defensive_cr(monster, monster.challenge_rating, armor_class, hit_points)
       off_cr = get_offensive_cr(monster, damage_per_round, attack_bonus)
       raw_cr = [((def_cr + off_cr) / 2).ceil, 30].min
       final_cr = cr_num_to_string(raw_cr)
       cr_data = challenge_ratings[final_cr.to_sym].as_json
-      { name: final_cr, raw_cr: raw_cr, data: cr_data }
+
+      {
+        name: final_cr,
+        raw_cr: raw_cr,
+        data: cr_data,
+        defensive_cr: def_cr,
+        offensive_cr: off_cr,
+        effective_hp: hit_points,
+        effective_ac: armor_class,
+        damage_per_round: damage_per_round
+      }
+    end
+
+    # Phase 2: AI-enhanced CR calculation
+    # Sends stats + abilities to OpenAI for trait analysis and CR adjustment
+    # @param [Monster] monster
+    # @param [Hash] base_result - result from calculate_base_cr
+    def calculate_with_ai(monster, base_result)
+      client = OpenAIClient.new(api_key: ENV.fetch('OPENAI_API_KEY', nil))
+      prompt = build_ai_prompt(monster, base_result)
+
+      response = client.completions(
+        prompt: prompt,
+        max_tokens: MAX_OUTPUT_TOKENS,
+        temperature: 0.3 # Lower temperature for more consistent CR calculations
+      )
+
+      parse_ai_response(response, base_result)
+    rescue OpenAIClient::Error => e
+      Rails.logger.error "CrCalc AI error: #{e.message}"
+      nil
+    rescue JSON::ParserError => e
+      Rails.logger.error "CrCalc JSON parse error: #{e.message}"
+      nil
     end
 
     # @param [Monster] monster
@@ -22,7 +71,7 @@ class CrCalc
       armor_class += 2 if monster.num_saving_throws > 2 && monster.num_saving_throws < 5
       armor_class += 4 if monster.num_saving_throws > 4
       monster.speeds.each do |speed|
-        armor_class += 2 if speed.name.downcase == 'fly'
+        armor_class += 2 if speed.name&.downcase == 'fly'
       end
 
       resistance_multiplier = calculate_resistances(monster, target_cr)
@@ -40,17 +89,13 @@ class CrCalc
     end
 
     def get_offensive_cr(monster, damage_per_round, attack_bonus)
-      save_dc = monster.save_dc
       damage_cr, assumed_attack_bonus, assumed_dc = cr_for_damage(damage_per_round)
       off_cr = if monster.is_caster
-                 calculate_cr_modifier(save_dc, assumed_dc, damage_cr)
-               elsif !monster.is_caster
-                 calculate_cr_modifier(attack_bonus, assumed_attack_bonus, damage_cr)
+                 calculate_cr_modifier(monster.save_dc, assumed_dc, damage_cr)
                else
-                 damage_cr
+                 calculate_cr_modifier(attack_bonus, assumed_attack_bonus, damage_cr)
                end
-      off_cr = 0.0 if off_cr.negative?
-      off_cr
+      [off_cr, 0.0].max
     end
 
     def calculate_cr_diff(diff_num, cr_index)
@@ -472,193 +517,203 @@ class CrCalc
     end
 
     def proficiency_for_cr(challenge_rating)
-      return 2 if ['1/8', '1/4', '1/2', '0'].include?(challenge_rating)
-
-      challenge = challenge_rating.to_i
-      case challenge
-      when 1..4
-        2
-      when 5..8
-        3
-      when 9..12
-        4
-      when 13..16
-        5
-      when 17..20
-        6
-      when 21..24
-        7
-      when 25..28
-        8
-      else
-        9
-      end
+      challenge_ratings[challenge_rating.to_s.to_sym]&.dig(:prof_bonus) || 2
     end
 
     def xp_for_cr(challenge_rating)
-      {
-        '0' => 10, '1/8' => 25, '1/4' => 50, '1/2' => 100, '1' => 200, '2' => 450, '3' => 700,
-        '4' => 1100, '5' => 1800, '6' => 2300, '7' => 2900, '8' => 3900, '9' => 5000, '10' => 5900,
-        '11' => 7200, '12' => 8400, '13' => 10_000, '14' => 11_500, '15' => 13_000, '16' => 15_000,
-        '17' => 18_000, '18' => 20_000, '19' => 22_000, '20' => 25_000, '21' => 33_000, '22' => 41_000,
-        '23' => 50_000, '24' => 62_000, '25' => 75_000, '26' => 90_000, '27' => 105_000, '28' => 120_000,
-        '29' => 135_000, '30' => 155_000
-      }[challenge_rating.to_s]
+      challenge_ratings[challenge_rating.to_s.to_sym]&.dig(:xp)
     end
 
     private
 
+    # Determine if AI should be used for this monster
+    # Only use AI if there are traits/abilities that could affect CR
+    def should_use_ai?(monster)
+      return false if ENV.fetch('OPENAI_API_KEY', nil).blank?
+
+      # Use AI if monster has any special abilities, legendary actions, or reactions
+      monster.special_abilities.any? ||
+        monster.legendary_actions.any? ||
+        monster.reactions.any? ||
+        monster.damage_resistances.any? ||
+        monster.damage_immunities.any? ||
+        monster.condition_immunities.any?
+    end
+
+    # Build the AI prompt for CR calculation
+    def build_ai_prompt(monster, base_result)
+      special_abilities_text = format_abilities(monster.special_abilities)
+      actions_text = format_abilities(monster.monster_actions)
+      reactions_text = format_abilities(monster.reactions)
+      legendary_actions_text = format_abilities(monster.legendary_actions)
+
+      saves = monster.monster_proficiencies.select { |p| p.prof&.prof_type == 'saving-throw' }.map { |p| p.prof&.name }.compact.join(', ')
+      skills = monster.monster_proficiencies.select { |p| p.prof&.prof_type == 'skill' }.map { |p| p.prof&.name }.compact.join(', ')
+
+      <<~PROMPT
+        You are a D&D 5e Challenge Rating calculator. Analyze this monster's abilities and suggest a CR adjustment.
+
+        BASE STATS (already calculated):
+        - Effective HP: #{base_result[:effective_hp]}
+        - Effective AC: #{base_result[:effective_ac]}
+        - Damage/Round: #{base_result[:damage_per_round]}
+        - Attack Bonus: #{monster.attack_bonus}
+        - Save DC: #{monster.save_dc}
+        - Defensive CR: #{base_result[:defensive_cr]}
+        - Offensive CR: #{base_result[:offensive_cr]}
+        - Base CR (average): #{base_result[:name]}
+
+        #{saves.present? ? "SAVING THROW PROFICIENCIES: #{saves}" : ''}
+        #{skills.present? ? "SKILL PROFICIENCIES: #{skills}" : ''}
+
+        #{special_abilities_text.present? ? "SPECIAL ABILITIES:\n#{special_abilities_text}" : ''}
+        #{actions_text.present? ? "ACTIONS:\n#{actions_text}" : ''}
+        #{reactions_text.present? ? "REACTIONS:\n#{reactions_text}" : ''}
+        #{legendary_actions_text.present? ? "LEGENDARY ACTIONS:\n#{legendary_actions_text}" : ''}
+
+        #{monster.damage_resistances.any? ? "DAMAGE RESISTANCES: #{monster.damage_resistances.join(', ')}" : ''}
+        #{monster.damage_immunities.any? ? "DAMAGE IMMUNITIES: #{monster.damage_immunities.join(', ')}" : ''}
+        #{monster.condition_immunities.any? ? "CONDITION IMMUNITIES: #{monster.condition_immunities.join(', ')}" : ''}
+        #{monster.damage_vulnerabilities.any? ? "DAMAGE VULNERABILITIES: #{monster.damage_vulnerabilities.join(', ')}" : ''}
+
+        Based on these abilities, should the CR be adjusted from #{base_result[:name]}?
+        Consider: Magic Resistance, Legendary Resistances, Pack Tactics, Spellcasting, area effects, crowd control, etc.
+
+        Return ONLY this JSON (no other text):
+        {
+          "adjustment": <integer from -3 to +3>,
+          "final_cr": "<string like '5' or '1/2'>",
+          "reasoning": "<brief 1-2 sentence explanation of key factors>"
+        }
+      PROMPT
+    end
+
+    # Format abilities for the prompt
+    def format_abilities(abilities)
+      return '' if abilities.blank?
+
+      abilities.map do |ability|
+        name = ability.respond_to?(:name) ? ability.name : ability.to_s
+        desc = ability.respond_to?(:desc) ? ability.desc : ''
+        desc.present? ? "- #{name}: #{desc.truncate(150)}" : "- #{name}"
+      end.join("\n")
+    end
+
+    # Parse the AI response and apply adjustment to base CR
+    def parse_ai_response(response, base_result)
+      return nil if response.blank?
+
+      # Try to extract JSON from the response
+      json_match = response.match(/\{[\s\S]*\}/m)
+      return nil unless json_match
+
+      parsed = JSON.parse(json_match[0], symbolize_names: true)
+
+      adjustment = parsed[:adjustment].to_i.clamp(-3, 3)
+      reasoning = parsed[:reasoning].to_s.truncate(500)
+
+      # Apply the adjustment to get the final CR
+      adjusted_raw_cr = [base_result[:raw_cr] + adjustment, 0].max
+      adjusted_raw_cr = [adjusted_raw_cr, 30].min
+
+      # Convert to string and get CR data
+      final_cr = cr_num_to_string(adjusted_raw_cr)
+      cr_data = challenge_ratings[final_cr.to_sym]&.as_json || base_result[:data]
+
+      {
+        name: final_cr,
+        raw_cr: adjusted_raw_cr,
+        data: cr_data,
+        defensive_cr: base_result[:defensive_cr],
+        offensive_cr: base_result[:offensive_cr],
+        effective_hp: base_result[:effective_hp],
+        effective_ac: base_result[:effective_ac],
+        damage_per_round: base_result[:damage_per_round],
+        adjustment: adjustment,
+        reasoning: reasoning
+      }
+    end
+
+    # Adjusts CR based on difference between actual and expected values
+    # Per DMG: For every 2 points difference, CR changes by 1 step
     def calculate_cr_modifier(value, assumed, incoming_cr)
-      if assumed > value
-        diff = assumed - value
-        n_steps = (diff / 2).ceil
-        n_steps.times do
-          incoming_cr -= if incoming_cr < 0.25
-                           0.125
-                         elsif incoming_cr >= 0.25 && incoming_cr < 0.5
-                           0.25
-                         elsif incoming_cr >= 0.5 && incoming_cr < 1
-                           0.5
-                         else
-                           1
-                         end
-        end
-      elsif assumed < value
-        diff = value - assumed
-        n_steps = (diff / 2).ceil
-        n_steps.times do
-          incoming_cr += if incoming_cr < 0.25
-                           0.125
-                         elsif incoming_cr >= 0.25 && incoming_cr < 0.5
-                           0.25
-                         elsif incoming_cr >= 0.5 && incoming_cr < 1
-                           0.5
-                         else
-                           1
-                         end
-        end
+      diff = value - assumed
+      return incoming_cr if diff.zero?
+
+      n_steps = (diff.abs / 2).ceil
+      direction = diff.positive? ? 1 : -1
+
+      n_steps.times do
+        step_size = cr_step_size(incoming_cr)
+        incoming_cr += step_size * direction
       end
+
       incoming_cr
     end
 
-    def trait_modifier(monster, target_cr, damage_per_round, attack_bonus, armor_class, hit_points)
-      challenge = cr_string_to_num(target_cr)
-      monster.special_abilities.each do |special_ability|
-        if special_ability == 'Aggressive'
-          damage_per_round += 2
-        elsif special_ability == 'Ambusher'
-          attack_bonus += 2
-        elsif special_ability == 'Assassinate'
-          damage_per_round += 4 * challenge
-        elsif special_ability == 'Avoidance'
-          armor_class += 1
-        elsif ['Blood Frenzy', 'Berserk'].include?(special_ability)
-          attack_bonus += 4
-        elsif special_ability == 'Damage Transfer'
-          hit_points += hit_points
-          damage_per_round *= 1.5
-        elsif special_ability == 'Evasion'
-          armor_class += 1
-        elsif special_ability == 'Fiendish Blessing'
-          armor_class += DndRules.ability_score_modifier(monster.charisma)
-        elsif ['Freedom of Movement', 'Stench'].include?(special_ability)
-          armor_class += 1
-        elsif special_ability == 'Frightful Presence'
-          hit_points *= 1.25
-        elsif ['Invisibility', 'Magic Resistance', 'Superior Invisibility'].include?(special_ability)
-          armor_class += 2
-        elsif special_ability == 'Nimble Escape'
-          armor_class += 4
-          attack_bonus += 4
-        elsif special_ability == 'Pack Tactics'
-          attack_bonus += 1
-        elsif special_ability == 'Psychic Defense'
-          armor_class += DndRules.ability_score_modifier(monster.wisdom)
-        elsif special_ability == 'Rampage'
-          damage_per_round += 2
-        elsif special_ability == 'Relentless'
-          relentless_mod = 0
-          mod_cr = challenge.floor
-          if mod_cr == 1..4
-            relentless_mod = 7
-          elsif mod_cr == 5..9
-            relentless_mod = 14
-          elsif mod_cr == 10..15
-            relentless_mod = 21
-          elsif mod_cr >= 16
-            relentless_mod = 28
-          end
-          hit_points += relentless_mod
-        elsif special_ability == 'Shadow Stealth'
-          armor_class += 4
-        elsif special_ability.name == 'Spellcasting'
-          action_desc = special_ability.desc
-          scanned_casting = action_desc.scan(/(([1-9]\d*)(?:th)|([1-9]\d*)(?:rd)|([1-9]\d*)(?:st)|([1-9]\d*)(?:nd)) Level \([1-9]/m)
-          if scanned_casting&.many?
-            max_spell_level = scanned_casting.last.first.to_i
-            damage_per_round += max_spell_level * 2
-            armor_class += 3
-          else
-            damage_per_round += 3
-            armor_class += 2
-          end
-        else
-          hit_points += challenge / 2
-          damage_per_round += challenge / 2
-        end
+    # Returns the appropriate step size for fractional CRs
+    def cr_step_size(cr)
+      case cr
+      when 0...0.25 then 0.125
+      when 0.25...0.5 then 0.25
+      when 0.5...1 then 0.5
+      else 1
       end
-      [damage_per_round, attack_bonus, armor_class, hit_points]
     end
 
-    def calculate_resist_dam_type(dam_type)
-      case dam_type.downcase
-      when 'bludgeoning', 'piercing', 'slashing'
-        3
-      when 'radiant', 'fire'
-        2
-      when 'nonmagical'
-        6
+    # Check if damage type is physical (bludgeoning, piercing, slashing, or nonmagical)
+    def physical_damage_type?(dam_type)
+      %w[bludgeoning piercing slashing nonmagical].include?(dam_type.to_s.downcase)
+    end
+
+    # 2024 rules: Only physical damage resistances affect HP multiplier
+    # Multipliers based on number of physical resistance types and CR
+    def calculate_resistance_multiplier(monster, target_cr)
+      physical_resistances = monster.damage_resistances.count { |r| physical_damage_type?(r) }
+      return 1.0 if physical_resistances.zero?
+
+      # Based on 2024 analysis: physical resistances provide significant HP multiplier
+      multiplier_by_cr(target_cr, physical_resistances <= 2)
+    end
+
+    # Returns HP multiplier based on CR tier
+    # few_effects: true for 1-2 resistances, false for 3+
+    def multiplier_by_cr(target_cr, few_effects)
+      if target_cr < 11
+        few_effects ? 1.5 : 2.0
+      elsif target_cr < 17
+        few_effects ? 1.25 : 1.5
       else
-        1
+        few_effects ? 1.1 : 1.25
       end
     end
 
-    def calculate_multiplier(num_effects, target_cr)
-      multiplier = 1
-      if num_effects > 5
-        if target_cr >= 1 && target_cr < 11
-          multiplier = 2
-        elsif target_cr >= 11 && target_cr < 17
-          multiplier = 1.5
-        elsif target_cr >= 17
-          multiplier = 1.25
-        end
-      end
-      multiplier
+    # 2024 rules: Only 3+ immunities significantly affect HP
+    # Single immunities have minimal impact
+    def calculate_immunity_multiplier(monster, target_cr)
+      num_immunities = monster.damage_immunities.count
+
+      return 1.0 if num_immunities < 3
+
+      # 3+ immunities warrant HP reduction in CR calculation
+      target_cr <= 15 ? 1.15 : 1.25
     end
 
+    # Legacy method for backward compatibility - now delegates to new methods
     def calculate_resistances(monster, target_cr)
-      num_resistances = 0
-      monster.damage_resistances.each do |resist|
-        num_resistances += calculate_resist_dam_type(resist)
-      end
-      calculate_multiplier(num_resistances, target_cr)
+      calculate_resistance_multiplier(monster, target_cr)
     end
 
+    # Legacy method for backward compatibility - now delegates to new methods
     def calculate_immunities(monster, target_cr)
-      num_immunities = 0
-      monster.damage_immunities.each do |immunity|
-        num_immunities += calculate_resist_dam_type(immunity)
-      end
-      calculate_multiplier(num_immunities, target_cr)
+      calculate_immunity_multiplier(monster, target_cr)
     end
 
+    # Count vulnerabilities - physical vulnerabilities are more significant
     def calculate_vulnerabilities(monster)
-      num_vulnerabilities = 0
-      monster.damage_vulnerabilities.each do |vulnerability|
-        num_vulnerabilities += calculate_resist_dam_type(vulnerability)
-      end
-      num_vulnerabilities
+      physical = monster.damage_vulnerabilities.count { |v| physical_damage_type?(v) }
+      non_physical = monster.damage_vulnerabilities.count { |v| !physical_damage_type?(v) }
+      (physical * 2) + non_physical
     end
 
     def cr_for_damage(damage_per_round)

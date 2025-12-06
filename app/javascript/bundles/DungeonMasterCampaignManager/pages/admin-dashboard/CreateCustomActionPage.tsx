@@ -3,7 +3,7 @@ import PageContainer from '../../containers/PageContainer';
 import { FlashMessage, MonsterAction, UserProps } from '../../utilities/types';
 import FormSelect from '../../components/forms/FormSelect';
 import { actionTypeOptions } from '../../utilities/character-utilities';
-import ActionForm from '../monster-generator/components/generate-monster/sections/actions/action-forms/ActionForm';
+import ActionForm from '../../components/action-forms/ActionForm';
 import Button from '../../components/Button/Button';
 import { Colors } from '../../utilities/enums';
 import { GiSave } from 'react-icons/gi';
