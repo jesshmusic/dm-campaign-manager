@@ -56,3 +56,4 @@ fg_npc.xml
 /bin/seed_test_db.sh
 /bin/seed_test_db_fixed.sh
 /lib/tasks/test_seed.rake
+/SampleFoundrySchema.json

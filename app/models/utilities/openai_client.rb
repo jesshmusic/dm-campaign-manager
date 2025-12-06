@@ -67,10 +67,22 @@ class OpenAIClient
       ]
     }
 
+    # Add JSON response format if requested (forces valid JSON output)
+    body[:response_format] = { type: 'json_object' } if p[:json_mode]
+
     response = post('/v1/chat/completions', body: body)
     choices  = response[:choices].map { |c| c.dig(:message, :content)&.strip }
+    content = p[:n] == 1 ? choices.first : choices
 
-    p[:n] == 1 ? choices.first : choices
+    # Return full response if requested
+    if p[:return_usage]
+      {
+        content: content,
+        usage: response[:usage]
+      }
+    else
+      content
+    end
   end
 
   # ─────────────────────────────────────────────────────────────

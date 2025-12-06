@@ -91,7 +91,7 @@ export const CommonerInstructions = () => (
       <h4>How It Works</h4>
       <ul>
         <li>Select a gender and race for your commoner</li>
-        <li>Click "Generate" to create an NPC with the Commoner stat block</li>
+        <li>Click &quot;Generate&quot; to create an NPC with the Commoner stat block</li>
         <li>A random name matching the race and gender will be generated</li>
         <li>Copy the stat block to your VTT or campaign notes</li>
       </ul>
@@ -133,9 +133,63 @@ export const CreateNPCInstructions = () => (
         <AIBadge>AI</AIBadge> AI Features
       </h4>
       <p>
-        The "Generate Actions" button uses AI to create thematic attacks, special abilities, and
-        spells based on your creature's description and type. This feature requires an internet
-        connection and may take a few seconds.
+        The &quot;Generate Actions&quot; button uses AI to create thematic attacks, special
+        abilities, and spells based on your creature&apos;s description and type. This feature
+        requires an internet connection and may take a few seconds.
+      </p>
+    </Section>
+  </>
+);
+
+export const QuickNPCInstructions = () => (
+  <>
+    <Section>
+      <h4>Quick Start</h4>
+      <p>
+        Create a complete creature from just a description. Simply describe what you want and the AI
+        will generate a full stat block including abilities, actions, and combat stats.
+      </p>
+    </Section>
+    <Section>
+      <h4>How It Works</h4>
+      <ul>
+        <li>
+          <strong>Set Parameters:</strong> Choose a target Challenge Rating, creature type, and
+          alignment to guide the generation.
+        </li>
+        <li>
+          <strong>Describe Your Creature:</strong> Write a description including personality,
+          appearance, combat style, and any special abilities you want.
+        </li>
+        <li>
+          <strong>Generate:</strong> Click &quot;Generate Creature&quot; and the AI will create a
+          complete stat block.
+        </li>
+        <li>
+          <strong>Review & Edit:</strong> Review the generated concept, make any edits, then approve
+          to create the final creature.
+        </li>
+      </ul>
+    </Section>
+    <Section>
+      <h4>Tips for Better Results</h4>
+      <ul>
+        <li>Be specific about combat abilities (e.g., &quot;attacks with poisoned claws&quot;)</li>
+        <li>
+          Mention special features (e.g., &quot;can turn invisible&quot;, &quot;breathes fire&quot;)
+        </li>
+        <li>Include personality traits for more flavorful ability descriptions</li>
+        <li>The more detail you provide, the more tailored the result will be</li>
+      </ul>
+    </Section>
+    <Section>
+      <h4>
+        <AIBadge>AI</AIBadge> Fully AI-Powered
+      </h4>
+      <p>
+        This generator uses AI to create the entire stat block from your description. Generation
+        takes a few seconds and requires an internet connection. You can regenerate if you
+        don&apos;t like the results.
       </p>
     </Section>
   </>

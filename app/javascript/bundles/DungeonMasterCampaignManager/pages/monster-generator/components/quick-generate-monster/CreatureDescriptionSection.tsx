@@ -179,7 +179,7 @@ const CreatureDescriptionSection: React.FC<CreatureDescriptionSectionProps> = ({
     type: 'actions' | 'special_abilities',
     index: number,
     field: 'name' | 'desc',
-    value: string
+    value: string,
   ) => {
     if (!generatedActions) return;
 

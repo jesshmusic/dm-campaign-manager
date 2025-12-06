@@ -123,7 +123,9 @@ export const InfoButton = styled.button`
   font-size: ${({ theme }) => theme.fontSizes.sm};
   gap: 0.375rem;
   padding: 0.375rem 0.625rem;
-  transition: background-color 0.2s ease, transform 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
   white-space: nowrap;
 
   &:hover {

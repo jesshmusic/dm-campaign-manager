@@ -9,7 +9,7 @@ module Admin
       before_action :set_monster, only: %i[show edit update destroy]
       skip_before_action :authorize_request,
                          only: %i[index show monster_refs monster_categories actions_by_name quick_monster generate_commoner calculate_cr info_for_cr
-                                  generate_action_desc special_abilities generate_npc_actions]
+                                  generate_action_desc special_abilities generate_npc_actions generate_npc_concept create_from_concept]
 
       # GET /v1/monsters
       # GET /v1/monsters.json
@@ -191,6 +191,45 @@ module Admin
         render json: { error: e.message }, status: :unprocessable_entity
       end
 
+      # POST /v1/generate_npc_concept
+      # Generate a complete NPC concept using AI from minimal input
+      def generate_npc_concept
+        result = NpcConceptGenerator.generate(npc_concept_params)
+        if result[:error]
+          render json: { error: result[:error] }, status: :unprocessable_entity
+        else
+          token_usage = result.delete(:token_usage)
+          render json: { concept: result, token_usage: token_usage }
+        end
+      rescue ArgumentError => e
+        render json: { error: e.message }, status: :unprocessable_entity
+      end
+
+      # POST /v1/create_from_concept
+      # Create a monster from an approved AI-generated concept
+      def create_from_concept
+        @monster = Monster.new(monster_from_concept_params)
+        @monster.user = @user if @user&.dungeon_master? || @user&.admin?
+
+        # Validate required fields
+        if @monster.name.blank?
+          render json: { error: 'Name is required' }, status: :unprocessable_entity
+          return
+        end
+
+        # Build nested associations from concept data
+        build_monster_from_concept(@monster, params)
+
+        if @user && @monster.save
+          render :show, status: :created
+        elsif @user.nil?
+          # Return unsaved monster for non-logged-in users
+          render :show, status: :ok
+        else
+          render json: { error: @monster.errors.full_messages.join(', ') }, status: :unprocessable_entity
+        end
+      end
+
       # PATCH/PUT /monsters/:slug
       # PATCH/PUT /monsters/:slug.json
       def update
@@ -237,6 +276,118 @@ module Admin
                       :armor_class, :hit_points, :archetype, :token,
                       :number_of_attacks, :monster_name,
                       saving_throws: [], skills: [])
+      end
+
+      def npc_concept_params
+        params.permit(:description, :challenge_rating, :monster_type, :alignment)
+      end
+
+      def monster_from_concept_params
+        # armor_description, saving_throws, skills are intentionally excluded
+        # - armor_description: not a Monster attribute (display only)
+        # - saving_throws/skills: handled separately via build_proficiencies_from_concept
+        params.require(:concept).permit(
+          :name, :size, :monster_type, :alignment,
+          :armor_class, :hit_points, :hit_dice,
+          :challenge_rating, :xp, :prof_bonus,
+          :strength, :dexterity, :constitution, :intelligence, :wisdom, :charisma,
+          :languages,
+          damage_resistances: [], damage_immunities: [],
+          damage_vulnerabilities: [], condition_immunities: []
+        )
+      end
+
+      def build_monster_from_concept(monster, params)
+        concept = params[:concept]
+        return unless concept
+
+        # Build speeds
+        build_nested_from_params(concept[:speeds]) do |speed|
+          monster.speeds.build(name: speed['name'] || speed[:name], value: speed['value'] || speed[:value])
+        end
+
+        # Build senses
+        build_nested_from_params(concept[:senses]) do |sense|
+          monster.senses.build(name: sense['name'] || sense[:name], value: sense['value'] || sense[:value])
+        end
+
+        # Build actions
+        build_nested_from_params(concept[:actions]) do |action|
+          monster.monster_actions.build(name: action['name'] || action[:name], desc: action['desc'] || action[:desc])
+        end
+
+        # Build special abilities
+        build_nested_from_params(concept[:special_abilities]) do |ability|
+          monster.special_abilities.build(name: ability['name'] || ability[:name], desc: ability['desc'] || ability[:desc])
+        end
+
+        # Build reactions
+        build_nested_from_params(concept[:reactions]) do |reaction|
+          monster.reactions.build(name: reaction['name'] || reaction[:name], desc: reaction['desc'] || reaction[:desc])
+        end
+
+        # Build legendary actions
+        build_nested_from_params(concept[:legendary_actions]) do |action|
+          monster.legendary_actions.build(name: action['name'] || action[:name], desc: action['desc'] || action[:desc])
+        end
+
+        # Build proficiencies for saving throws and skills
+        build_proficiencies_from_concept(monster, concept)
+      end
+
+      def build_nested_from_params(params_array)
+        return if params_array.blank?
+
+        # Convert to array if needed and iterate
+        items = if params_array.is_a?(ActionController::Parameters)
+                  params_array.to_h.values
+                elsif params_array.is_a?(Hash)
+                  params_array.values
+                else
+                  Array(params_array)
+                end
+
+        items.each do |item|
+          next unless item.is_a?(Hash) || item.is_a?(ActionController::Parameters)
+
+          yield item
+        end
+      end
+
+      def build_proficiencies_from_concept(monster, concept)
+        # Map saving throws to proficiencies
+        saving_throws = concept[:saving_throws] || concept['saving_throws']
+        extract_array_values(saving_throws).each do |save_name|
+          prof = Prof.find_by('lower(name) = ?', "saving throw: #{save_name.to_s.downcase}")
+          next unless prof
+
+          ability_mod = begin
+            monster.send(save_name.to_s.downcase.to_sym)
+          rescue StandardError
+            10
+          end
+          value = DndRules.ability_score_modifier(ability_mod) + monster.prof_bonus.to_i
+          monster.monster_proficiencies.build(prof_id: prof.id, value: value)
+        end
+
+        # Map skills to proficiencies
+        skills = concept[:skills] || concept['skills']
+        extract_array_values(skills).each do |skill_name|
+          prof = Prof.find_by('lower(name) = ?', "skill: #{skill_name.to_s.downcase}")
+          next unless prof
+
+          monster.monster_proficiencies.build(prof_id: prof.id, value: monster.prof_bonus.to_i)
+        end
+      end
+
+      def extract_array_values(params_value)
+        return [] unless params_value
+
+        if params_value.respond_to?(:values)
+          params_value.values
+        else
+          Array(params_value)
+        end
       end
 
       # Never trust parameters from the scary internet, only allow the white list through.

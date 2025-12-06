@@ -25,6 +25,9 @@
       "Bash(rbenv local:*)",
       "Bash(yarn run prettier:*)",
       "Bash(bundle exec rspec:*)",
+      "Bash(NO_COVERAGE=true bundle exec rspec:*)",
+      "Bash(NO_COVERAGE=true OPENAI_API_KEY=\"\" bundle exec rspec:*)",
+      "Bash(cd /Users/jesshendricks/Code/dungeon-master-guru && NO_COVERAGE=true OPENAI_API_KEY=\"\" bundle exec rspec:*)",
       "Bash(NODE_OPTIONS=--openssl-legacy-provider bundle exec rspec:*)",
       "Bash(yarn test:ci:*)",
       "Bash(yarn install:*)",
@@ -53,7 +56,11 @@
       "Bash(npm run)",
       "Bash(git reset:*)",
       "Bash(gh pr checks:*)",
-      "Bash(gh run view:*)"
+      "Bash(gh run view:*)",
+      "Bash(yarn lint:*)",
+      "Bash(bundle exec rubocop:*)",
+      "Bash(yarn format:check:*)",
+      "Bash(yarn format:*)"
     ],
     "deny": [],
     "ask": []

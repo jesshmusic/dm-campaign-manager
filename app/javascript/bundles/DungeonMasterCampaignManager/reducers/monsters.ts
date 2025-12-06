@@ -1,7 +1,9 @@
-import { createAction, createReducer } from '@reduxjs/toolkit';
+import { createAction, createReducer, PayloadAction } from '@reduxjs/toolkit';
 import { AnyAction } from 'redux';
+import { MonsterProps } from '../utilities/types';
 
 export const clearCurrentMonster = createAction('monsters/clearCurrentMonster');
+export const setCurrentMonster = createAction<MonsterProps>('monsters/setCurrentMonster');
 
 const generateQuickMonster = createAction('@@redux-api@generateQuickMonster');
 const generateQuickMonsterSuccess = createAction('@@redux-api@generateQuickMonster_success');
@@ -33,6 +35,13 @@ const monsters = createReducer(
         return {
           ...state,
           currentMonster: null,
+        };
+      })
+      .addCase(setCurrentMonster, (state, action: PayloadAction<MonsterProps>) => {
+        return {
+          ...state,
+          currentMonster: action.payload,
+          loading: false,
         };
       })
       .addCase(generateQuickMonster, (state, _action: AnyAction) => {
