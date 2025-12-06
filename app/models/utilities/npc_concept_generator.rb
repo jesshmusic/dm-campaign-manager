@@ -79,18 +79,20 @@ class NpcConceptGenerator
 
         Generate a complete creature with:
         1. A creative, evocative name fitting the description
-        2. Appropriate size for the creature type and CR
-        3. Ability scores that make sense for the concept (total around #{ability_score_total_for_cr(cr)})
-        4. 1-2 movement types with appropriate speeds
-        5. Thematic senses (darkvision, etc. if appropriate)
-        6. 2-4 actions including attacks (with Multiattack if CR >= 2)
-        7. 1-3 special abilities that fit the theme
-        8. Reactions if thematically appropriate
-        9. Legendary actions ONLY if CR >= 10
+        2. A 2-3 sentence description of the creature's appearance, demeanor, and distinguishing features
+        3. Appropriate size for the creature type and CR
+        4. Ability scores that make sense for the concept (total around #{ability_score_total_for_cr(cr)})
+        5. 1-2 movement types with appropriate speeds
+        6. Thematic senses (darkvision, etc. if appropriate)
+        7. 2-4 actions including attacks (with Multiattack if CR >= 2)
+        8. 1-3 special abilities that fit the theme
+        9. Reactions if thematically appropriate
+        10. Legendary actions ONLY if CR >= 10
 
         Return this exact JSON structure:
         {
           "name": "Creature Name",
+          "description": "A 2-3 sentence description of the creature's appearance, demeanor, and distinguishing features.",
           "size": "medium",
           "monster_type": "#{monster_type}",
           "alignment": "#{alignment}",
@@ -216,6 +218,7 @@ class NpcConceptGenerator
 
       {
         name: parsed[:name].to_s.presence || 'Unnamed Creature',
+        description: parsed[:description].to_s.truncate(1000),
         size: normalize_size(parsed[:size]),
         monster_type: parsed[:monster_type].to_s.presence || params[:monster_type] || 'humanoid',
         alignment: parsed[:alignment].to_s.presence || params[:alignment] || 'neutral',

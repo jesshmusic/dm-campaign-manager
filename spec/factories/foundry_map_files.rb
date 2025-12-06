@@ -1,3 +1,27 @@
+# == Schema Information
+#
+# Table name: foundry_map_files
+#
+#  id             :bigint           not null, primary key
+#  content_type   :string
+#  file_path      :string           not null
+#  file_size      :bigint
+#  file_type      :string           not null
+#  s3_key         :string           not null
+#  created_at     :datetime         not null
+#  updated_at     :datetime         not null
+#  foundry_map_id :bigint           not null
+#
+# Indexes
+#
+#  index_foundry_map_files_on_file_type       (file_type)
+#  index_foundry_map_files_on_foundry_map_id  (foundry_map_id)
+#  index_foundry_map_files_on_s3_key          (s3_key) UNIQUE
+#
+# Foreign Keys
+#
+#  fk_rails_...  (foundry_map_id => foundry_maps.id)
+#
 FactoryBot.define do
   factory :foundry_map_file do
     association :foundry_map

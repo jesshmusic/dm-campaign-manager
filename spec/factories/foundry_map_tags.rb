@@ -1,3 +1,18 @@
+# == Schema Information
+#
+# Table name: foundry_map_tags
+#
+#  id         :bigint           not null, primary key
+#  name       :string           not null
+#  slug       :string           not null
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+# Indexes
+#
+#  index_foundry_map_tags_on_name  (name)
+#  index_foundry_map_tags_on_slug  (slug) UNIQUE
+#
 FactoryBot.define do
   factory :foundry_map_tag do
     sequence(:name) { |n| "Tag #{n}" }

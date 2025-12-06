@@ -14,6 +14,7 @@ import {
   AbilityScoresName,
   MonsterFrameAction,
   CRStats,
+  MonsterDescription,
 } from './MonsterBlock.styles';
 
 const MonsterStat = (props: { name: string; value: string | number }) => {
@@ -130,6 +131,7 @@ const MonsterBlock = (props: { monster: MonsterProps; showCRStats?: boolean }) =
         <h2>
           {monster.size} {monster.monsterType}, {monster.alignment}
         </h2>
+        {monster.description && <MonsterDescription>{monster.description}</MonsterDescription>}
         <hr />
         <MonsterStat name="Armor Class" value={monster.armorClass} />
         <MonsterStat name="Hit Points" value={monster.hitPointsString} />

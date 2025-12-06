@@ -111,3 +111,12 @@ export const CRStats = styled.div`
   margin-top: 1rem;
   padding: 0.5rem;
 `;
+
+export const MonsterDescription = styled.p`
+  color: ${({ theme }) => theme.colors.gray700};
+  font-family: ${({ theme }) => theme.fonts.sansSerif};
+  font-size: 0.95rem;
+  font-style: italic;
+  line-height: 1.5;
+  margin: 0.5rem 0 1rem;
+`;

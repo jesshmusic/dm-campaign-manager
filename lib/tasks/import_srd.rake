@@ -12,7 +12,6 @@
 # - `rails srd:import_items`
 
 namespace :srd do
-
   task import_all: :environment do
     ImportSrdUtilities.import_all
   end

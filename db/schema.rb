@@ -10,25 +10,27 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_11_13_200732) do
+ActiveRecord::Schema[7.1].define(version: 2025_12_06_194853) do
+  create_schema "heroku_ext"
 
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pg_stat_statements"
   enable_extension "plpgsql"
 
   create_table "ability_bonus_options", force: :cascade do |t|
     t.string "ability"
     t.integer "bonus"
     t.bigint "race_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["race_id"], name: "index_ability_bonus_options_on_race_id"
   end
 
   create_table "ability_score_dnd_classes", force: :cascade do |t|
     t.bigint "dnd_class_id", null: false
     t.bigint "ability_score_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["ability_score_id"], name: "index_ability_score_dnd_classes_on_ability_score_id"
     t.index ["dnd_class_id"], name: "index_ability_score_dnd_classes_on_dnd_class_id"
   end
@@ -38,8 +40,8 @@ ActiveRecord::Schema.define(version: 2025_11_13_200732) do
     t.string "full_name"
     t.string "name"
     t.string "slug"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["slug"], name: "index_ability_scores_on_slug", unique: true
   end
 
@@ -47,8 +49,8 @@ ActiveRecord::Schema.define(version: 2025_11_13_200732) do
     t.string "desc"
     t.string "name"
     t.bigint "monster_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.string "type"
     t.index ["monster_id"], name: "index_actions_on_monster_id"
   end
@@ -57,8 +59,8 @@ ActiveRecord::Schema.define(version: 2025_11_13_200732) do
     t.string "name"
     t.string "slug"
     t.string "api_url"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.bigint "equipment_id"
     t.index ["equipment_id"], name: "index_api_references_on_equipment_id"
     t.index ["slug"], name: "index_api_references_on_slug", unique: true
@@ -69,8 +71,8 @@ ActiveRecord::Schema.define(version: 2025_11_13_200732) do
     t.boolean "has_dex_bonus"
     t.integer "max_dex_bonus"
     t.bigint "item_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["item_id"], name: "index_armor_classes_on_item_id"
   end
 
@@ -79,8 +81,8 @@ ActiveRecord::Schema.define(version: 2025_11_13_200732) do
     t.string "name"
     t.string "reference"
     t.bigint "dnd_class_level_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.string "desc", default: [], array: true
     t.index ["dnd_class_level_id"], name: "index_class_features_on_dnd_class_level_id"
   end
@@ -89,18 +91,27 @@ ActiveRecord::Schema.define(version: 2025_11_13_200732) do
     t.bigint "class_feature_id", null: false
     t.integer "num_choices"
     t.string "name"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.string "choices", default: [], array: true
     t.index ["class_feature_id"], name: "index_class_level_choices_on_class_feature_id"
+  end
+
+  create_table "class_specific_dices", force: :cascade do |t|
+    t.integer "dice_count"
+    t.integer "dice_value"
+    t.bigint "class_specific_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["class_specific_id"], name: "index_class_specific_dices_on_class_specific_id"
   end
 
   create_table "class_specific_spell_slots", force: :cascade do |t|
     t.integer "sorcery_point_cost"
     t.integer "spell_slot_level"
     t.bigint "class_specific_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["class_specific_id"], name: "index_class_specific_spell_slots_on_class_specific_id"
   end
 
@@ -109,8 +120,8 @@ ActiveRecord::Schema.define(version: 2025_11_13_200732) do
     t.string "name"
     t.string "index"
     t.string "value"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["dnd_class_level_id"], name: "index_class_specifics_on_dnd_class_level_id"
   end
 
@@ -127,24 +138,34 @@ ActiveRecord::Schema.define(version: 2025_11_13_200732) do
     t.integer "spell_slots_level_8"
     t.integer "spell_slots_level_9"
     t.bigint "dnd_class_level_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["dnd_class_level_id"], name: "index_class_spellcastings_on_dnd_class_level_id"
   end
 
   create_table "conditions", force: :cascade do |t|
     t.string "name"
     t.string "description", default: [], array: true
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.string "slug", null: false
     t.index ["slug"], name: "index_conditions_on_slug", unique: true
   end
 
+  create_table "container_items", force: :cascade do |t|
+    t.bigint "item_id"
+    t.bigint "contained_item_id"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.index ["contained_item_id"], name: "index_container_items_on_contained_item_id"
+    t.index ["item_id", "contained_item_id"], name: "index_container_items_on_item_id_and_contained_item_id", unique: true
+    t.index ["item_id"], name: "index_container_items_on_item_id"
+  end
+
   create_table "content_items", force: :cascade do |t|
     t.bigint "item_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.string "name", null: false
     t.string "index", null: false
     t.integer "quantity", default: 1
@@ -155,8 +176,8 @@ ActiveRecord::Schema.define(version: 2025_11_13_200732) do
     t.integer "quantity"
     t.string "unit"
     t.bigint "item_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["item_id"], name: "index_costs_on_item_id"
   end
 
@@ -164,8 +185,8 @@ ActiveRecord::Schema.define(version: 2025_11_13_200732) do
     t.string "damage_type"
     t.string "damage_dice"
     t.bigint "item_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["item_id"], name: "index_damages_on_item_id"
   end
 
@@ -174,8 +195,8 @@ ActiveRecord::Schema.define(version: 2025_11_13_200732) do
     t.bigint "dnd_class_id", null: false
     t.integer "level"
     t.integer "prof_bonus"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["dnd_class_id"], name: "index_dnd_class_levels_on_dnd_class_id"
   end
 
@@ -183,8 +204,8 @@ ActiveRecord::Schema.define(version: 2025_11_13_200732) do
     t.string "name"
     t.integer "hit_die"
     t.string "api_url"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id"
     t.string "slug"
     t.string "spell_ability"
@@ -196,8 +217,8 @@ ActiveRecord::Schema.define(version: 2025_11_13_200732) do
   create_table "equipment", force: :cascade do |t|
     t.integer "quantity"
     t.string "name"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.bigint "starting_equipment_option_id"
     t.bigint "dnd_class_id"
     t.index ["dnd_class_id"], name: "index_equipment_on_dnd_class_id"
@@ -211,8 +232,8 @@ ActiveRecord::Schema.define(version: 2025_11_13_200732) do
     t.bigint "file_size"
     t.string "s3_key", null: false
     t.string "content_type"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["file_type"], name: "index_foundry_map_files_on_file_type"
     t.index ["foundry_map_id"], name: "index_foundry_map_files_on_foundry_map_id"
     t.index ["s3_key"], name: "index_foundry_map_files_on_s3_key", unique: true
@@ -221,8 +242,8 @@ ActiveRecord::Schema.define(version: 2025_11_13_200732) do
   create_table "foundry_map_taggings", force: :cascade do |t|
     t.bigint "foundry_map_id", null: false
     t.bigint "foundry_map_tag_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["foundry_map_id", "foundry_map_tag_id"], name: "index_map_taggings_on_map_and_tag", unique: true
     t.index ["foundry_map_id"], name: "index_foundry_map_taggings_on_foundry_map_id"
     t.index ["foundry_map_tag_id"], name: "index_foundry_map_taggings_on_foundry_map_tag_id"
@@ -231,8 +252,8 @@ ActiveRecord::Schema.define(version: 2025_11_13_200732) do
   create_table "foundry_map_tags", force: :cascade do |t|
     t.string "name", null: false
     t.string "slug", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["name"], name: "index_foundry_map_tags_on_name"
     t.index ["slug"], name: "index_foundry_map_tags_on_slug", unique: true
   end
@@ -249,8 +270,8 @@ ActiveRecord::Schema.define(version: 2025_11_13_200732) do
     t.boolean "published", default: false
     t.integer "download_count", default: 0
     t.json "keywords", default: []
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.string "thumbnail_s3_key"
     t.string "required_tier", default: "free"
     t.index ["access_level"], name: "index_foundry_maps_on_access_level"
@@ -263,7 +284,7 @@ ActiveRecord::Schema.define(version: 2025_11_13_200732) do
     t.integer "sluggable_id", null: false
     t.string "sluggable_type", limit: 50
     t.string "scope"
-    t.datetime "created_at"
+    t.datetime "created_at", precision: nil
     t.index ["slug", "sluggable_type", "scope"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type_and_scope", unique: true
     t.index ["slug", "sluggable_type"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type"
     t.index ["sluggable_type", "sluggable_id"], name: "index_friendly_id_slugs_on_sluggable_type_and_sluggable_id"
@@ -273,8 +294,8 @@ ActiveRecord::Schema.define(version: 2025_11_13_200732) do
     t.integer "long"
     t.integer "normal"
     t.bigint "item_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["item_id"], name: "index_item_ranges_on_item_id"
   end
 
@@ -282,8 +303,8 @@ ActiveRecord::Schema.define(version: 2025_11_13_200732) do
     t.integer "long"
     t.integer "normal"
     t.bigint "item_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["item_id"], name: "index_item_throw_ranges_on_item_id"
   end
 
@@ -295,8 +316,8 @@ ActiveRecord::Schema.define(version: 2025_11_13_200732) do
     t.string "category_range"
     t.integer "weight"
     t.string "api_url"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id"
     t.string "slug"
     t.string "rarity"
@@ -325,12 +346,21 @@ ActiveRecord::Schema.define(version: 2025_11_13_200732) do
     t.index ["weapon_category"], name: "index_items_on_weapon_category"
   end
 
+  create_table "martial_arts", force: :cascade do |t|
+    t.integer "dice_count"
+    t.integer "dice_value"
+    t.bigint "class_specific_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["class_specific_id"], name: "index_martial_arts_on_class_specific_id"
+  end
+
   create_table "monster_proficiencies", force: :cascade do |t|
     t.bigint "monster_id"
     t.bigint "prof_id"
     t.integer "value"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["monster_id"], name: "index_monster_proficiencies_on_monster_id"
     t.index ["prof_id"], name: "index_monster_proficiencies_on_prof_id"
   end
@@ -344,8 +374,8 @@ ActiveRecord::Schema.define(version: 2025_11_13_200732) do
     t.string "languages"
     t.string "challenge_rating"
     t.string "api_url"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id"
     t.string "slug"
     t.integer "armor_class", default: 10
@@ -365,6 +395,7 @@ ActiveRecord::Schema.define(version: 2025_11_13_200732) do
     t.string "damage_immunities", default: [], array: true
     t.string "damage_resistances", default: [], array: true
     t.string "damage_vulnerabilities", default: [], array: true
+    t.text "description"
     t.index ["slug"], name: "index_monsters_on_slug", unique: true
     t.index ["user_id"], name: "index_monsters_on_user_id"
   end
@@ -374,8 +405,8 @@ ActiveRecord::Schema.define(version: 2025_11_13_200732) do
     t.integer "minimum_score"
     t.bigint "multi_classing_id"
     t.bigint "multi_classing_prereq_option_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["multi_classing_id"], name: "index_multi_class_prereqs_on_multi_classing_id"
     t.index ["multi_classing_prereq_option_id"], name: "index_multi_class_prereqs_on_multi_classing_prereq_option_id"
   end
@@ -384,24 +415,24 @@ ActiveRecord::Schema.define(version: 2025_11_13_200732) do
     t.bigint "multi_classing_id", null: false
     t.integer "choose"
     t.string "prereq_type"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["multi_classing_id"], name: "index_multi_classing_prereq_options_on_multi_classing_id"
   end
 
   create_table "multi_classing_profs", force: :cascade do |t|
     t.bigint "prof_id", null: false
     t.bigint "multi_classing_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["multi_classing_id"], name: "index_multi_classing_profs_on_multi_classing_id"
     t.index ["prof_id"], name: "index_multi_classing_profs_on_prof_id"
   end
 
   create_table "multi_classings", force: :cascade do |t|
     t.bigint "dnd_class_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["dnd_class_id"], name: "index_multi_classings_on_dnd_class_id"
   end
 
@@ -412,12 +443,12 @@ ActiveRecord::Schema.define(version: 2025_11_13_200732) do
     t.string "name"
     t.boolean "has_free", default: true
     t.boolean "has_premium", default: false
-    t.datetime "expires_at"
+    t.datetime "expires_at", precision: nil
     t.string "access_token"
     t.string "refresh_token"
-    t.datetime "last_authenticated_at"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "last_authenticated_at", precision: nil
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.string "tier_name"
     t.index ["expires_at"], name: "index_patreon_users_on_expires_at"
     t.index ["patreon_id"], name: "index_patreon_users_on_patreon_id"
@@ -428,8 +459,8 @@ ActiveRecord::Schema.define(version: 2025_11_13_200732) do
     t.text "content"
     t.string "searchable_type"
     t.string "searchable_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["searchable_type", "searchable_id"], name: "index_pg_search_documents_on_searchable"
   end
 
@@ -437,16 +468,16 @@ ActiveRecord::Schema.define(version: 2025_11_13_200732) do
     t.string "name"
     t.integer "level"
     t.bigint "class_feature_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["class_feature_id"], name: "index_prerequisites_on_class_feature_id"
   end
 
   create_table "prof_choice_profs", force: :cascade do |t|
     t.bigint "prof_id"
     t.bigint "prof_choice_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["prof_choice_id"], name: "index_prof_choice_profs_on_prof_choice_id"
     t.index ["prof_id"], name: "index_prof_choice_profs_on_prof_id"
   end
@@ -454,8 +485,8 @@ ActiveRecord::Schema.define(version: 2025_11_13_200732) do
   create_table "prof_choices", force: :cascade do |t|
     t.integer "num_choices"
     t.string "prof_choice_type"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "name"
     t.bigint "dnd_class_id"
     t.bigint "multi_classing_id"
@@ -466,8 +497,8 @@ ActiveRecord::Schema.define(version: 2025_11_13_200732) do
   create_table "prof_classes", force: :cascade do |t|
     t.bigint "prof_id"
     t.bigint "dnd_class_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["dnd_class_id"], name: "index_prof_classes_on_dnd_class_id"
     t.index ["prof_id"], name: "index_prof_classes_on_prof_id"
   end
@@ -475,8 +506,8 @@ ActiveRecord::Schema.define(version: 2025_11_13_200732) do
   create_table "profs", force: :cascade do |t|
     t.string "name"
     t.string "prof_type"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "slug", null: false
     t.index ["name"], name: "index_profs_on_name", unique: true
     t.index ["slug"], name: "index_profs_on_slug", unique: true
@@ -492,16 +523,16 @@ ActiveRecord::Schema.define(version: 2025_11_13_200732) do
     t.string "name"
     t.string "desc", default: [], array: true
     t.bigint "race_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["race_id"], name: "index_race_traits_on_race_id"
   end
 
   create_table "races", force: :cascade do |t|
     t.string "name", default: "New Race...", null: false
     t.string "slug", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id"
     t.text "alignment"
     t.text "age"
@@ -526,8 +557,8 @@ ActiveRecord::Schema.define(version: 2025_11_13_200732) do
     t.string "category"
     t.string "subcategory"
     t.string "slug"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.bigint "parent_id"
     t.index ["parent_id"], name: "index_rules_on_parent_id"
   end
@@ -536,16 +567,16 @@ ActiveRecord::Schema.define(version: 2025_11_13_200732) do
     t.string "name"
     t.string "description"
     t.string "slug"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["slug"], name: "index_sections_on_slug", unique: true
   end
 
   create_table "senses", force: :cascade do |t|
     t.string "name"
     t.bigint "monster_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.string "value"
     t.index ["monster_id"], name: "index_senses_on_monster_id"
   end
@@ -555,25 +586,34 @@ ActiveRecord::Schema.define(version: 2025_11_13_200732) do
     t.string "name"
     t.string "desc"
     t.string "ability_score"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["slug"], name: "index_skills_on_slug", unique: true
+  end
+
+  create_table "sneak_attacks", force: :cascade do |t|
+    t.integer "dice_count"
+    t.integer "dice_value"
+    t.bigint "class_specific_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["class_specific_id"], name: "index_sneak_attacks_on_class_specific_id"
   end
 
   create_table "speeds", force: :cascade do |t|
     t.integer "value"
     t.string "name"
     t.bigint "monster_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["monster_id"], name: "index_speeds_on_monster_id"
   end
 
   create_table "spell_casting_abilities", force: :cascade do |t|
     t.bigint "spell_casting_id", null: false
     t.bigint "ability_score_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["ability_score_id"], name: "index_spell_casting_abilities_on_ability_score_id"
     t.index ["spell_casting_id"], name: "index_spell_casting_abilities_on_spell_casting_id"
   end
@@ -581,8 +621,8 @@ ActiveRecord::Schema.define(version: 2025_11_13_200732) do
   create_table "spell_casting_infos", force: :cascade do |t|
     t.string "name"
     t.bigint "spell_casting_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.string "desc", default: [], array: true
     t.index ["spell_casting_id"], name: "index_spell_casting_infos_on_spell_casting_id"
   end
@@ -590,16 +630,16 @@ ActiveRecord::Schema.define(version: 2025_11_13_200732) do
   create_table "spell_castings", force: :cascade do |t|
     t.integer "level"
     t.bigint "dnd_class_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["dnd_class_id"], name: "index_spell_castings_on_dnd_class_id"
   end
 
   create_table "spell_classes", force: :cascade do |t|
     t.bigint "spell_id"
     t.bigint "dnd_class_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["dnd_class_id"], name: "index_spell_classes_on_dnd_class_id"
     t.index ["spell_id"], name: "index_spell_classes_on_spell_id"
   end
@@ -617,8 +657,8 @@ ActiveRecord::Schema.define(version: 2025_11_13_200732) do
     t.boolean "concentration"
     t.string "casting_time"
     t.integer "level"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "school"
     t.string "api_url"
     t.string "spell_level"
@@ -631,8 +671,8 @@ ActiveRecord::Schema.define(version: 2025_11_13_200732) do
   create_table "starting_equipment_options", force: :cascade do |t|
     t.integer "choose"
     t.string "equipment_type"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.bigint "dnd_class_id"
     t.bigint "equipment_option_id"
     t.string "equipment_category"
@@ -644,8 +684,8 @@ ActiveRecord::Schema.define(version: 2025_11_13_200732) do
     t.string "damage_type"
     t.string "damage_dice"
     t.bigint "item_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["item_id"], name: "index_two_handed_damages_on_item_id"
   end
 
@@ -653,23 +693,23 @@ ActiveRecord::Schema.define(version: 2025_11_13_200732) do
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
-    t.datetime "reset_password_sent_at"
-    t.datetime "remember_created_at"
+    t.datetime "reset_password_sent_at", precision: nil
+    t.datetime "remember_created_at", precision: nil
     t.integer "sign_in_count", default: 0, null: false
-    t.datetime "current_sign_in_at"
-    t.datetime "last_sign_in_at"
+    t.datetime "current_sign_in_at", precision: nil
+    t.datetime "last_sign_in_at", precision: nil
     t.inet "current_sign_in_ip"
     t.inet "last_sign_in_ip"
     t.string "confirmation_token"
-    t.datetime "confirmed_at"
-    t.datetime "confirmation_sent_at"
+    t.datetime "confirmed_at", precision: nil
+    t.datetime "confirmation_sent_at", precision: nil
     t.string "unconfirmed_email"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.integer "role"
     t.string "name"
     t.string "username"
-    t.datetime "deleted_at"
+    t.datetime "deleted_at", precision: nil
     t.string "location"
     t.text "info"
     t.string "auth_id", default: "", null: false
@@ -683,8 +723,8 @@ ActiveRecord::Schema.define(version: 2025_11_13_200732) do
     t.text "subtitle"
     t.text "content"
     t.text "icon"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.index ["user_id"], name: "index_widgets_on_user_id"
   end

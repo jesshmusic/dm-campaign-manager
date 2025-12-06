@@ -9,7 +9,8 @@ module Admin
       before_action :set_monster, only: %i[show edit update destroy]
       skip_before_action :authorize_request,
                          only: %i[index show monster_refs monster_categories actions_by_name quick_monster generate_commoner calculate_cr info_for_cr
-                                  generate_action_desc special_abilities generate_npc_actions generate_npc_concept create_from_concept]
+                                  generate_action_desc special_abilities generate_npc_actions generate_npc_concept create_from_concept
+                                  generate_commoner_description]
 
       # GET /v1/monsters
       # GET /v1/monsters.json
@@ -109,10 +110,24 @@ module Admin
         random_npc_gender = params[:random_monster_gender] || %w[male female].sample
         random_npc_race = params[:random_monster_race] || 'human'
         role = params[:role].presence
-        @monster = NpcGenerator.generate_commoner(random_npc_gender, random_npc_race, @user, role)
+        description = params[:description].presence
+        @monster = NpcGenerator.generate_commoner(random_npc_gender, random_npc_race, @user, role, description)
         respond_to do |format|
           format.json
         end
+      end
+
+      # POST /v1/generate_commoner_description
+      # Generate a description for a commoner NPC using AI
+      def generate_commoner_description
+        result = CommonerDescriptionGenerator.generate(commoner_description_params)
+        if result[:error]
+          render json: { error: result[:error] }, status: :unprocessable_entity
+        else
+          render json: { description: result[:description] }
+        end
+      rescue ArgumentError => e
+        render json: { error: e.message }, status: :unprocessable_entity
       end
 
       def quick_monster
@@ -282,12 +297,16 @@ module Admin
         params.permit(:description, :challenge_rating, :monster_type, :alignment)
       end
 
+      def commoner_description_params
+        params.permit(:name, :race, :gender, :role)
+      end
+
       def monster_from_concept_params
         # armor_description, saving_throws, skills are intentionally excluded
         # - armor_description: not a Monster attribute (display only)
         # - saving_throws/skills: handled separately via build_proficiencies_from_concept
         params.require(:concept).permit(
-          :name, :size, :monster_type, :alignment,
+          :name, :size, :monster_type, :alignment, :description,
           :armor_class, :hit_points, :hit_dice,
           :challenge_rating, :xp, :prof_bonus,
           :strength, :dexterity, :constitution, :intelligence, :wisdom, :charisma,
@@ -395,7 +414,7 @@ module Admin
         params.require(:monster).permit(
           :alignment, :api_url, :armor_class, :attack_bonus,
           :challenge_rating, :charisma, :constitution,
-          :creature_description,
+          :creature_description, :description,
           :dexterity, :hit_dice, :hit_points, :intelligence,
           :languages, :monster_subtype, :monster_type,
           :name, :prof_bonus, :save_dc, :size,

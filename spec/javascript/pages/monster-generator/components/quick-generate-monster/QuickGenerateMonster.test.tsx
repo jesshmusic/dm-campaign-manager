@@ -36,7 +36,7 @@ jest.mock('../../../../../../app/javascript/bundles/DungeonMasterCampaignManager
   };
 });
 
-jest.mock('../../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/monster-generator/components/generate-monster/sections/GenMonsterSection', () => {
+jest.mock('../../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/monster-generator/components/GenMonsterSection', () => {
   return function MockGenMonsterSection({ heading, children }: any) {
     return (
       <div data-testid={`section-${heading}`}>

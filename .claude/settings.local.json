@@ -60,7 +60,11 @@
       "Bash(yarn lint:*)",
       "Bash(bundle exec rubocop:*)",
       "Bash(yarn format:check:*)",
-      "Bash(yarn format:*)"
+      "Bash(yarn format:*)",
+      "Bash(git stash:*)",
+      "Bash(DISABLE_SPRING=1 rails db:migrate:*)",
+      "Bash(DISABLE_SPRING=1 bundle exec rails:*)",
+      "Bash(curl:*)"
     ],
     "deny": [],
     "ask": []

@@ -20,6 +20,8 @@ import { GenForm, TwoCol, ThreeCol } from '../../MonsterGenerator.styles';
 
 const MOCK_CONCEPT: NpcConcept = {
   name: 'Shadow Stalker',
+  description:
+    'A gaunt, spectral figure wreathed in wisps of darkness, its hollow eyes burning with an eerie violet light. It moves with unnatural grace, leaving trails of frost in its wake.',
   size: 'Medium',
   monster_type: 'undead',
   alignment: 'chaotic evil',
@@ -149,6 +151,7 @@ type FormFields = {
 
 export type NpcConcept = {
   name: string;
+  description?: string;
   size: string;
   monster_type: string;
   alignment: string;

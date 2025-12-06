@@ -41,6 +41,7 @@ const defaultMonsterFormValues: FieldValues = {
   challengeRatingOption: { value: '0', label: '0' },
   constitution: 10,
   creatureDescription: '',
+  description: '',
   generatedActions: null,
   hitDice: '1d6',
   hitDiceNumber: 1,

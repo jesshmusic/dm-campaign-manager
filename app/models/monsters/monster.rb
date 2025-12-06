@@ -16,6 +16,7 @@
 #  damage_immunities      :string           default([]), is an Array
 #  damage_resistances     :string           default([]), is an Array
 #  damage_vulnerabilities :string           default([]), is an Array
+#  description            :text
 #  dexterity              :integer          default(10), not null
 #  hit_dice               :string
 #  hit_points             :integer          default(8), not null
@@ -409,7 +410,8 @@ class Monster < ApplicationRecord
       cr: CrCalc.cr_string_to_num(challenge_rating),
       xp: { value: xp },
       alignment: alignment,
-      type: { value: monster_type&.downcase, subtype: monster_subtype || '' }
+      type: { value: monster_type&.downcase, subtype: monster_subtype || '' },
+      biography: { value: description.present? ? "<p>#{ERB::Util.html_escape(description)}</p>" : '' }
     }
   end
 

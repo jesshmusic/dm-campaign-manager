@@ -1,3 +1,28 @@
+# == Schema Information
+#
+# Table name: patreon_users
+#
+#  id                    :bigint           not null, primary key
+#  access_token          :string
+#  email                 :string
+#  expires_at            :datetime
+#  has_free              :boolean          default(TRUE)
+#  has_premium           :boolean          default(FALSE)
+#  last_authenticated_at :datetime
+#  name                  :string
+#  refresh_token         :string
+#  tier_name             :string
+#  created_at            :datetime         not null
+#  updated_at            :datetime         not null
+#  patreon_id            :string
+#  user_id               :string           not null
+#
+# Indexes
+#
+#  index_patreon_users_on_expires_at  (expires_at)
+#  index_patreon_users_on_patreon_id  (patreon_id)
+#  index_patreon_users_on_user_id     (user_id) UNIQUE
+#
 FactoryBot.define do
   factory :patreon_user do
     sequence(:user_id) { |n| "user_#{SecureRandom.hex(8)}_#{n}" }

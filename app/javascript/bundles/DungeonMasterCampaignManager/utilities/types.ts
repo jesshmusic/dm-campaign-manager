@@ -442,6 +442,7 @@ export interface MonsterProps {
   challengeString?: string;
   charisma: number;
   constitution: number;
+  description?: string;
   dexterity: number;
   hitDice: string;
   hitPoints: number;

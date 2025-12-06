@@ -348,6 +348,14 @@ const ConceptApprovalModal = ({
                   onChange={(e) => updateField('alignment', e.target.value)}
                 />
               </Field>
+              <FullWidthField>
+                <Label>Description</Label>
+                <TextArea
+                  value={editedConcept.description || ''}
+                  onChange={(e) => updateField('description', e.target.value)}
+                  placeholder="A brief description of the creature's appearance and demeanor..."
+                />
+              </FullWidthField>
             </Grid>
           </Section>
 

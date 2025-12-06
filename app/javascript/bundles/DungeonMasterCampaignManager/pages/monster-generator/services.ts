@@ -203,6 +203,7 @@ export const createQuickMonsterParams = (values: MonsterQuickGeneratorFormFields
     challengeRating: values.challengeRatingOption.label,
     constitution: values.constitution,
     creatureDescription: values.creatureDescription || '',
+    description: values.description || '',
     hitDice: `${values.hitDiceNumber}${values.hitDiceValue}`,
     hitPoints: values.hitPoints,
     monsterType: values.characterRace

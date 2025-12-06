@@ -163,16 +163,21 @@ const CreatureDescriptionSection: React.FC<CreatureDescriptionSectionProps> = ({
   isGenerating,
   onGenerateActions,
 }) => {
-  const description = UseForm.watch('creatureDescription') || '';
-  const charCount = description.length;
+  const creatureDescription = UseForm.watch('creatureDescription') || '';
+  const monsterDescription = UseForm.watch('description') || '';
+  const charCount = creatureDescription.length;
   const isNearLimit = charCount > MAX_DESCRIPTION_LENGTH * 0.8;
   const isOverLimit = charCount > MAX_DESCRIPTION_LENGTH;
 
-  const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleCreatureDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
     if (value.length <= MAX_DESCRIPTION_LENGTH) {
       UseForm.setValue('creatureDescription', value, { shouldDirty: true });
     }
+  };
+
+  const handleMonsterDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    UseForm.setValue('description', e.target.value, { shouldDirty: true });
   };
 
   const updateGeneratedAction = (
@@ -192,14 +197,26 @@ const CreatureDescriptionSection: React.FC<CreatureDescriptionSectionProps> = ({
   return (
     <DescriptionWrapper>
       <TextAreaWrapper>
+        <TextAreaLabel htmlFor="description">
+          Monster Description (saved to stat block)
+        </TextAreaLabel>
+        <DescriptionTextArea
+          id="description"
+          placeholder="A brief description of the creature's appearance, demeanor, and distinguishing features. This will be saved with the monster."
+          value={monsterDescription}
+          onChange={handleMonsterDescriptionChange}
+        />
+      </TextAreaWrapper>
+
+      <TextAreaWrapper>
         <TextAreaLabel htmlFor="creatureDescription">
-          Describe the creature you want to create
+          AI Prompt - Describe the creature for action generation
         </TextAreaLabel>
         <DescriptionTextArea
           id="creatureDescription"
           placeholder="Example: A cunning goblin shaman who leads a small tribe, specializing in fire magic and ambush tactics. Known for crafting explosive traps and commanding giant spiders."
-          value={description}
-          onChange={handleDescriptionChange}
+          value={creatureDescription}
+          onChange={handleCreatureDescriptionChange}
           maxLength={MAX_DESCRIPTION_LENGTH}
         />
         <CharacterCount $isNearLimit={isNearLimit} $isOverLimit={isOverLimit}>
@@ -208,7 +225,7 @@ const CreatureDescriptionSection: React.FC<CreatureDescriptionSectionProps> = ({
       </TextAreaWrapper>
 
       <HelpText>
-        Based on your description and the stats from previous steps, AI will generate appropriate
+        Based on the AI prompt and the stats from previous steps, AI will generate appropriate
         actions, special abilities, and spells for your creature.
       </HelpText>
 
@@ -218,7 +235,7 @@ const CreatureDescriptionSection: React.FC<CreatureDescriptionSectionProps> = ({
           title={isGenerating ? 'Generating...' : 'Generate Actions'}
           onClick={onGenerateActions}
           type="button"
-          disabled={isGenerating || description.length < 10}
+          disabled={isGenerating || creatureDescription.length < 10}
           icon={
             isGenerating ? (
               <GiLinkedRings size={24} className="spinner" />
@@ -227,7 +244,7 @@ const CreatureDescriptionSection: React.FC<CreatureDescriptionSectionProps> = ({
             )
           }
         />
-        {description.length < 10 && (
+        {creatureDescription.length < 10 && (
           <HelpText>Enter at least 10 characters to generate actions</HelpText>
         )}
       </GenerateButtonWrapper>

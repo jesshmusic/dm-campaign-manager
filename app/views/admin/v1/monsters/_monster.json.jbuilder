@@ -4,6 +4,7 @@ json.key_format! camelize: :lower
 
 json.extract! monster, :id,
               :name,
+              :description,
               :slug,
               :monster_type,
               :monster_subtype,

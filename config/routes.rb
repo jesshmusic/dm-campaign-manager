@@ -30,6 +30,9 @@ Rails.application.routes.draw do
       post '/generate_commoner', to: 'monsters#generate_commoner',
            as: 'generate_commoner',
            constraints: { format: 'json' }
+      post '/generate_commoner_description', to: 'monsters#generate_commoner_description',
+           as: 'generate_commoner_description',
+           constraints: { format: 'json' }
       get '/monster-categories', to: 'monsters#monster_categories',
           as: 'monster_categories',
           constraints: { format: 'json' }

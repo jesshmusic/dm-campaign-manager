@@ -69,7 +69,7 @@ export default reduxApi({
     },
   },
   generateCommoner: {
-    url: '/v1/generate_commoner.json?random_monster_gender=:gender&random_monster_race=:race&role=:role',
+    url: '/v1/generate_commoner.json?random_monster_gender=:gender&random_monster_race=:race&role=:role&description=:description',
     options() {
       const headers = getHeaders();
       return {

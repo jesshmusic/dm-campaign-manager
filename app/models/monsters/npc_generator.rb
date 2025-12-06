@@ -86,7 +86,7 @@ class NpcGenerator
       @new_npc
     end
 
-    def generate_commoner(random_npc_gender, random_npc_race, user, role = nil)
+    def generate_commoner(random_npc_gender, random_npc_race, user, role = nil, description = nil)
       commoner = Monster.where(name: 'Commoner').first
       commoner_atts = commoner.attributes
       @new_npc = Monster.new commoner_atts
@@ -109,6 +109,7 @@ class NpcGenerator
       @new_npc.armor_class = @new_npc.armor_class + DndRules.ability_score_modifier(@new_npc.dexterity)
       @new_npc.alignment = DndRules.alignments_non_evil.sample
       @new_npc.hit_points += DndRules.ability_score_modifier(@new_npc.constitution)
+      @new_npc.description = description if description.present?
       @new_npc.slug = @new_npc.name.parameterize if user.nil?
       maybe_save_npc(user)
       @new_npc

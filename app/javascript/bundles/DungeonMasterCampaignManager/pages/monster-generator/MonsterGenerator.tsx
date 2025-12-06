@@ -38,7 +38,13 @@ const MonsterGenerator = (props: {
   currentUser?: UserProps;
   clearMonster: () => void;
   setMonster: (monster: MonsterProps) => void;
-  generateCommoner: (gender?: string, race?: string, role?: string, token?: string) => void;
+  generateCommoner: (
+    gender?: string,
+    race?: string,
+    role?: string,
+    description?: string,
+    token?: string,
+  ) => void;
   generateQuickMonster: (monster: Record<string, unknown>, token?: string) => void;
   isLoading?: boolean;
   token?: string;
@@ -168,12 +174,13 @@ function mapDispatchToProps(dispatch) {
       gender: string = 'Female',
       race: string = 'Human',
       role: string = '',
+      description: string = '',
       token?: string,
     ) => {
       ReactGA.event('NPC Generator');
       dispatch(
         rest.actions.generateCommoner(
-          { gender, race, role },
+          { gender, race, role, description: encodeURIComponent(description) },
           {
             body: JSON.stringify({ token }),
           },
