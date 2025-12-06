@@ -157,7 +157,6 @@ RSpec.describe 'NPC Concept Endpoints', type: :request do
       it 'assigns user to monster' do
         post v1_create_from_concept_path(format: :json), params: concept_params
 
-        json = JSON.parse(response.body)
         monster = Monster.find_by(name: 'Shadow Lurker')
         expect(monster.user).to eq(dm_user)
       end
