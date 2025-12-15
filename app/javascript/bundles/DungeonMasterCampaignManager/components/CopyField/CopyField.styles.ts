@@ -8,7 +8,7 @@ import { formInputStyles } from '../../theme/mixins';
 
 export const CopyFieldWrapper = styled.div`
   padding: calc(${({ theme }) => theme.spacing.spacer} * 0.5) 0
-    ${({ theme }) => theme.spacing.spacer};
+    calc(${({ theme }) => theme.spacing.spacer} * 0.5);
 `;
 
 export const Label = styled.label`

@@ -52,7 +52,7 @@ describe('AdventureHookOptions', () => {
     const submitButton = screen.getByTestId('submit-button');
     fireEvent.click(submitButton);
 
-    expect(mockOnFormSubmit).toHaveBeenCalledWith(5, 1);
+    expect(mockOnFormSubmit).toHaveBeenCalledWith(5, 1, 'forgotten_realms');
   });
 
   it('updates party size when input changes', () => {
@@ -64,7 +64,7 @@ describe('AdventureHookOptions', () => {
     const submitButton = screen.getByTestId('submit-button');
     fireEvent.click(submitButton);
 
-    expect(mockOnFormSubmit).toHaveBeenCalledWith(8, 1);
+    expect(mockOnFormSubmit).toHaveBeenCalledWith(8, 1, 'forgotten_realms');
   });
 
   it('updates average level when input changes', () => {
@@ -76,7 +76,7 @@ describe('AdventureHookOptions', () => {
     const submitButton = screen.getByTestId('submit-button');
     fireEvent.click(submitButton);
 
-    expect(mockOnFormSubmit).toHaveBeenCalledWith(5, 5);
+    expect(mockOnFormSubmit).toHaveBeenCalledWith(5, 5, 'forgotten_realms');
   });
 
   it('disables inputs when isLoading is true', () => {

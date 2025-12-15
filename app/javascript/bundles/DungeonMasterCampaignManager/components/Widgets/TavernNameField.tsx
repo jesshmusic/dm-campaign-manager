@@ -3,6 +3,7 @@
  */
 
 import React, { useState } from 'react';
+import Select from 'react-select';
 import CopyField from '../CopyField/CopyField';
 import Frame from '../Frame/Frame';
 import axios from 'axios';
@@ -11,13 +12,19 @@ import { Colors } from '../../utilities/enums';
 import Button from '../Button/Button';
 import { GiBeerStein } from 'react-icons/gi';
 import DndSpinner from '../DndSpinners/DndSpinner';
+import { settingOptions } from './NameOptions';
+import { TwoColumn, Label } from './Widgets.styles';
+
+import '../forms/inputOverrides.scss';
 
 const TavernNameField = (props: { hideFrame?: boolean }) => {
   const [nameValue, setNameValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [setting, setSetting] = useState({ value: 'forgotten_realms', label: 'Forgotten Realms' });
 
-  const handleGenerateTavernName = async () => {
-    const apiURL = '/v1/random_tavern_name.json';
+  const handleGenerateTavernName = async (event: React.FormEvent) => {
+    event.preventDefault();
+    const apiURL = `/v1/random_tavern_name.json?setting=${setting.value}`;
     try {
       setIsLoading(true);
       const response = await axios.get<RandomNameResult>(apiURL);
@@ -35,19 +42,38 @@ const TavernNameField = (props: { hideFrame?: boolean }) => {
       <CopyField
         placeHolder={'Random Tavern Name...'}
         fieldId={'randomTavernName'}
-        label={'Random TavernName'}
+        label={'Random Tavern Name'}
         text={nameValue}
       />
-      <div id={'tavernNameGeneratorSubmit'}>
-        <Button
-          id={'tavernNameGeneratorSubmit'}
-          color={Colors.primary}
-          icon={<GiBeerStein />}
-          onClick={handleGenerateTavernName}
-          title="Get Tavern Name"
-          disabled={isLoading}
-        />
-      </div>
+      <TwoColumn>
+        <div>
+          <Label htmlFor="tavernSetting">Setting/Flavor</Label>
+          <Select
+            className={'reactSelect'}
+            classNamePrefix={'reactSelect'}
+            options={settingOptions}
+            id={'tavernSetting'}
+            value={setting}
+            isDisabled={isLoading}
+            onChange={(option) => {
+              if (option) {
+                setSetting(option as { value: string; label: string });
+              }
+            }}
+          />
+        </div>
+        <div>
+          <Label htmlFor="tavernSetting">Generate</Label>
+          <Button
+            id={'tavernNameGeneratorSubmit'}
+            color={Colors.primary}
+            icon={<GiBeerStein />}
+            onClick={handleGenerateTavernName}
+            title="Get Tavern Name"
+            disabled={isLoading}
+          />
+        </div>
+      </TwoColumn>
     </form>
   );
 

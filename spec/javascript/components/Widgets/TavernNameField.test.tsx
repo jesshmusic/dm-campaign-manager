@@ -61,7 +61,7 @@ describe('TavernNameField', () => {
   it('renders with frame by default', () => {
     render(<TavernNameField />);
     expect(screen.getByTestId('frame')).toBeInTheDocument();
-    expect(screen.getByText('Random Tavern Name')).toBeInTheDocument();
+    expect(screen.getAllByText('Random Tavern Name').length).toBeGreaterThan(0);
   });
 
   it('renders without frame when hideFrame is true', () => {
@@ -91,7 +91,9 @@ describe('TavernNameField', () => {
     fireEvent.click(button);
 
     await waitFor(() => {
-      expect(mockedAxios.get).toHaveBeenCalledWith('/v1/random_tavern_name.json');
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        '/v1/random_tavern_name.json?setting=forgotten_realms',
+      );
     });
 
     await waitFor(() => {
@@ -110,7 +112,9 @@ describe('TavernNameField', () => {
     fireEvent.click(button);
 
     await waitFor(() => {
-      expect(mockedAxios.get).toHaveBeenCalledWith('/v1/random_tavern_name.json');
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        '/v1/random_tavern_name.json?setting=forgotten_realms',
+      );
     });
 
     await waitFor(() => {

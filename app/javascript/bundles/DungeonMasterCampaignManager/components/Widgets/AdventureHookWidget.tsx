@@ -17,8 +17,8 @@ const AdventureHookWidget = (props: { hideFrame?: boolean }) => {
   const [adventureHook, setAdventureHook] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleGenerateHook = async (partySize: number, averageLevel: number) => {
-    const apiURL = `/v1/adventure_hook.json?player_count=${partySize}&average_level=${averageLevel}`;
+  const handleGenerateHook = async (partySize: number, averageLevel: number, setting: string) => {
+    const apiURL = `/v1/adventure_hook.json?player_count=${partySize}&average_level=${averageLevel}&setting=${setting}`;
     try {
       setIsLoading(true);
       const response = await axios.get<RandomAdventureHook>(apiURL);

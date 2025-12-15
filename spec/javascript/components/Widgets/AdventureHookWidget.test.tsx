@@ -38,7 +38,7 @@ jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/compo
 jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/components/Widgets/AdventureHookOptions', () => {
   return function MockAdventureHookOptions({ onFormSubmit }: any) {
     return (
-      <button data-testid="generate-button" onClick={() => onFormSubmit(4, 5)}>
+      <button data-testid="generate-button" onClick={() => onFormSubmit(4, 5, 'forgotten_realms')}>
         Generate
       </button>
     );

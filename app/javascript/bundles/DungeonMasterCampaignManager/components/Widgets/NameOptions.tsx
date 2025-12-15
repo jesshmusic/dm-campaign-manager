@@ -71,6 +71,24 @@ const HelpText = styled.span`
   font-size: ${({ theme }) => theme.fontSizes.sm};
 `;
 
+const FullWidthSubmit = styled.div`
+  grid-column: 1 / -1;
+`;
+
+export const settingOptions: Options<{ value: string; label: string }> = [
+  { value: 'forgotten_realms', label: 'Forgotten Realms' },
+  { value: 'eberron', label: 'Eberron' },
+  { value: 'greyhawk', label: 'Greyhawk' },
+  { value: 'dragonlance', label: 'Dragonlance' },
+  { value: 'dark_sun', label: 'Dark Sun' },
+  { value: 'ravenloft', label: 'Ravenloft' },
+  { value: 'spelljammer', label: 'Spelljammer' },
+  { value: 'planescape', label: 'Planescape' },
+  { value: 'viking', label: 'Viking/Norse' },
+  { value: 'oriental', label: 'Oriental Adventures' },
+  { value: 'arabian', label: 'Arabian Nights' },
+];
+
 const genderOptions: Options<unknown> = [
   { value: 'female', label: 'Female' },
   { value: 'male', label: 'Male' },
@@ -120,11 +138,20 @@ interface NameOptionsProps {
     description?: string,
     token?: string,
   ) => void;
+  showDescription?: boolean;
+  submitButtonFullWidth?: boolean;
   title: string;
   token?: string;
 }
 
-const NameOptions = ({ isLoading, onFormSubmit, title, token }: NameOptionsProps) => {
+const NameOptions = ({
+  isLoading,
+  onFormSubmit,
+  showDescription = true,
+  submitButtonFullWidth = false,
+  title,
+  token,
+}: NameOptionsProps) => {
   const [gender, setGender] = useState({
     value: 'female',
     label: 'Female',
@@ -173,19 +200,25 @@ const NameOptions = ({ isLoading, onFormSubmit, title, token }: NameOptionsProps
     }
   };
 
+  const submitButton = (
+    <Button
+      id={'nameGeneratorSubmit'}
+      color={Colors.primary}
+      disabled={isLoading}
+      icon={isLoading ? <GiLinkedRings className="spinner" /> : <GiBattleGear />}
+      onClick={handleSubmit}
+      title={isLoading ? 'Generating...' : `Get ${title}`}
+    />
+  );
+
   return (
     <NameOptionsWrapper>
-      <div>
-        <Label htmlFor={'nameGeneratorSubmit'}>Submit</Label>
-        <Button
-          id={'nameGeneratorSubmit'}
-          color={Colors.primary}
-          disabled={isLoading}
-          icon={isLoading ? <GiLinkedRings className="spinner" /> : <GiBattleGear />}
-          onClick={handleSubmit}
-          title={isLoading ? 'Generating...' : `Get ${title}`}
-        />
-      </div>
+      {!submitButtonFullWidth && (
+        <div>
+          <Label htmlFor={'nameGeneratorSubmit'}>Submit</Label>
+          {submitButton}
+        </div>
+      )}
       <div>
         <Label htmlFor={'nameGeneratorGender'}>Gender</Label>
         <Select
@@ -225,7 +258,7 @@ const NameOptions = ({ isLoading, onFormSubmit, title, token }: NameOptionsProps
           id={'nameGeneratorRole'}
           menuPlacement={'top'}
           isClearable
-          placeholder="Select or type a role..."
+          placeholder="Select..."
           formatCreateLabel={(inputValue) => `Create "${inputValue}"`}
           onChange={(option) => {
             setRole(option as { value: string; label: string } | null);
@@ -237,47 +270,50 @@ const NameOptions = ({ isLoading, onFormSubmit, title, token }: NameOptionsProps
           value={role}
         />
       </div>
-      <DescriptionSection>
-        <div>
-          <Label htmlFor={'nameGeneratorName'}>Name (for description generation)</Label>
+      {submitButtonFullWidth && <FullWidthSubmit>{submitButton}</FullWidthSubmit>}
+      {showDescription && (
+        <DescriptionSection>
+          <div>
+            <Label htmlFor={'nameGeneratorName'}>Name (for description generation)</Label>
+            <DescriptionTextArea
+              id={'nameGeneratorName'}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Enter a name to enable AI description generation..."
+              style={{ minHeight: '40px' }}
+            />
+          </div>
+          <DescriptionHeader>
+            <Label htmlFor={'nameGeneratorDescription'}>Description (optional)</Label>
+            <GenerateButton
+              type="button"
+              onClick={handleGenerateDescription}
+              disabled={isGeneratingDescription || !name.trim()}
+            >
+              {isGeneratingDescription ? (
+                <>
+                  <GiLinkedRings className="spinner" size={14} />
+                  Generating...
+                </>
+              ) : (
+                <>
+                  <GiMagicSwirl size={14} />
+                  Generate
+                </>
+              )}
+            </GenerateButton>
+          </DescriptionHeader>
           <DescriptionTextArea
-            id={'nameGeneratorName'}
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Enter a name to enable AI description generation..."
-            style={{ minHeight: '40px' }}
+            id={'nameGeneratorDescription'}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Describe the NPC's appearance, demeanor, and distinguishing characteristics..."
           />
-        </div>
-        <DescriptionHeader>
-          <Label htmlFor={'nameGeneratorDescription'}>Description (optional)</Label>
-          <GenerateButton
-            type="button"
-            onClick={handleGenerateDescription}
-            disabled={isGeneratingDescription || !name.trim()}
-          >
-            {isGeneratingDescription ? (
-              <>
-                <GiLinkedRings className="spinner" size={14} />
-                Generating...
-              </>
-            ) : (
-              <>
-                <GiMagicSwirl size={14} />
-                Generate
-              </>
-            )}
-          </GenerateButton>
-        </DescriptionHeader>
-        <DescriptionTextArea
-          id={'nameGeneratorDescription'}
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          placeholder="Describe the NPC's appearance, demeanor, and distinguishing characteristics..."
-        />
-        {!name.trim() && (
-          <HelpText>Enter a name above to enable AI description generation</HelpText>
-        )}
-      </DescriptionSection>
+          {!name.trim() && (
+            <HelpText>Enter a name above to enable AI description generation</HelpText>
+          )}
+        </DescriptionSection>
+      )}
     </NameOptionsWrapper>
   );
 };
