@@ -43,8 +43,12 @@ export const TwoColumn = styled.div`
   display: grid;
   grid-gap: ${({ theme }) => theme.spacing.spacer};
   grid-template-columns: 1fr 1fr;
-  padding-top: calc(${({ theme }) => theme.spacing.spacer} * 2);
   width: 100%;
+
+  button {
+    margin: 0;
+    width: 100%;
+  }
 `;
 
 export const TableFrame = styled.div`

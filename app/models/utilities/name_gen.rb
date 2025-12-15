@@ -30,10 +30,11 @@ class NameGen
     generate_unique_name(prompt, cache_key: cache_key, **)
   end
 
-  def self.random_tavern_name
+  def self.random_tavern_name(setting: 'Forgotten Realms')
     generate_name(<<~PROMPT.strip)
-      Invent a unique, evocative tavern or inn name (2–5 words) for any D&D world
-      such as Forgotten Realms, Greyhawk, or Eberron. Return ONLY the name.
+      Invent a unique, evocative tavern or inn name (2–5 words) appropriate for a
+      #{setting} D&D setting. The name should fit the flavor and culture of #{setting}.
+      Return ONLY the name.
     PROMPT
   end
 

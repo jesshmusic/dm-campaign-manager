@@ -25,13 +25,25 @@ module Admin
         race   = params[:random_monster_race]
         race   = 'human' if race.nil? || race.strip.empty?
 
-        new_name = NameGen.random_name(gender: gender, race: race)
+        role   = params[:random_monster_role]
+        role   = nil if role.present? && role.strip.empty?
 
-        render json: { name: new_name }
+        # DEBUG: Log the prompt being sent to OpenAI
+        setting = NameGen::SETTINGS.sample
+        prompt = NameGen.build_prompt(gender: gender, race: race, setting: setting, role: role)
+        Rails.logger.info "=== NAME GENERATOR PROMPT ===\n#{prompt}\n=== END PROMPT ==="
+
+        new_name = NameGen.random_name(gender: gender, race: race, role: role)
+
+        render json: { name: new_name, debug_prompt: prompt }
       end
 
       def random_tavern_name
-        render json: { name: NameGen.random_tavern_name }
+        setting = params[:setting]
+        setting = 'Forgotten Realms' if setting.nil? || setting.strip.empty?
+        setting = setting.tr('_', ' ').titleize
+
+        render json: { name: NameGen.random_tavern_name(setting: setting) }
       end
 
       def random_monster_name
@@ -45,12 +57,15 @@ module Admin
 
         player_count   = params[:player_count].to_i
         average_level  = params[:average_level].to_i
+        setting        = params[:setting]
+        setting        = 'Forgotten Realms' if setting.nil? || setting.strip.empty?
+        setting        = setting.tr('_', ' ').titleize
 
         prompt = <<~PROMPT.strip
-          Create a compelling adventure hook for a Dungeons & Dragons 2024 campaign.
+          Create a compelling adventure hook for a Dungeons & Dragons campaign set in #{setting}.
 
           - The party consists of #{player_count} players, average level #{average_level}.
-          - Use themes appropriate for D&D 2024: ancient ruins, magical phenomena, political intrigue, etc.
+          - Use themes and flavor appropriate for the #{setting} setting.
           - Limit the response to 1 to 3 short paragraphs.
           - Make it useful for a Dungeon Master to launch an adventure arc.
           - Do not include gibberish or filler. End the response cleanly.

@@ -14,10 +14,13 @@ const NameField = (props: { hideFrame?: boolean }) => {
   const [nameValue, setNameValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleGenerateName = async (gender, race) => {
-    const apiURL = `/v1/random_fantasy_name.json?random_monster_gender=${gender}&random_monster_race=${
+  const handleGenerateName = async (gender: string, race: string, role?: string) => {
+    let apiURL = `/v1/random_fantasy_name.json?random_monster_gender=${gender}&random_monster_race=${
       race ? race : 'human'
     }`;
+    if (role) {
+      apiURL += `&random_monster_role=${role}`;
+    }
     try {
       setIsLoading(true);
       const response = await axios.get<RandomNameResult>(apiURL);
@@ -38,7 +41,12 @@ const NameField = (props: { hideFrame?: boolean }) => {
         label={'Random Name'}
         text={nameValue}
       />
-      <NameOptions onFormSubmit={handleGenerateName} title={'Name'} />
+      <NameOptions
+        onFormSubmit={handleGenerateName}
+        showDescription={false}
+        submitButtonFullWidth
+        title={'Name'}
+      />
     </form>
   );
 

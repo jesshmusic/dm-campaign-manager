@@ -7,10 +7,32 @@ import rest from '../../api/api';
 import Widget from '../../components/Widgets/Widget';
 import DashboardBar from './components/DashboardBar';
 import { useDashboardState } from './use-dashboard-state';
+import { createGlobalStyle } from 'styled-components';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
 import { Section } from './UserDashboard.styles';
+
+const ResizeHandleStyles = createGlobalStyle`
+  .react-resizable-handle {
+    background-image: none !important;
+  }
+
+  .react-grid-item > .react-resizable-handle::after {
+    width: 8px !important;
+    height: 8px !important;
+    right: 6px !important;
+    bottom: 10px !important;
+    border-right: 3px solid ${({ theme }) => theme.colors.gray500} !important;
+    border-bottom: 3px solid ${({ theme }) => theme.colors.gray500} !important;
+    transition: all 0.2s ease;
+  }
+
+  .react-grid-item > .react-resizable-handle:hover::after {
+    border-right-color: ${({ theme }) => theme.colors.primary} !important;
+    border-bottom-color: ${({ theme }) => theme.colors.primary} !important;
+  }
+`;
 
 const Dashboard = ({ customWidgets, getWidgets }) => {
   const {
@@ -26,6 +48,7 @@ const Dashboard = ({ customWidgets, getWidgets }) => {
 
   return (
     <Section id="dashboardContainer">
+      <ResizeHandleStyles />
       <DashboardBar
         items={widgetKeys}
         onRemoveItem={onRemoveItem}
@@ -39,7 +62,7 @@ const Dashboard = ({ customWidgets, getWidgets }) => {
         layouts={layouts}
         breakpoints={{ lg: 1500, md: 1200, sm: 900, xs: 480, xxs: 0 }}
         cols={{ lg: 12, md: 9, sm: 6, xs: 3, xxs: 1 }}
-        rowHeight={100}
+        rowHeight={80}
         draggableCancel="button, input, textarea, select, a, .no-drag"
         onLayoutChange={onLayoutChange}
       >
