@@ -170,6 +170,7 @@ const SideBar = (props: {
               borderBottom: '0.125rem solid #c9ad6a',
             }}
           >
+            <SidebarLink to="/app/rules" title="All Rules" icon={<GiBookshelf />} />
             {rules.map((rule, index) => (
               <SubMenu
                 key={`rule-${rule.slug}-${index}`}
@@ -204,6 +205,7 @@ const SideBar = (props: {
               marginTop: '-.125rem',
             }}
           >
+            <SidebarLink to="/app/items" title="All Equipment" icon={<GiSwapBag />} />
             {itemTypes.map((itemType, index) => (
               <SidebarLink
                 key={`items-${index}`}

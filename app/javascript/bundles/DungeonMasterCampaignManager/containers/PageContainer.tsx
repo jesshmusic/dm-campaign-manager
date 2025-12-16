@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 
 // Bootstrap
@@ -13,6 +13,7 @@ import Util from '../utilities/utilities';
 import { gsap } from 'gsap';
 import ReactGA from 'react-ga4';
 import SearchField from '../components/Search/SearchField';
+import { SidebarProvider } from '../contexts/SidebarContext';
 
 import { PageWrapper, PageContent, Page } from './Containers.styles';
 
@@ -55,26 +56,33 @@ const PageContainer = (props: PageContainerProps) => {
     });
   }, [location.pathname]);
 
+  const sidebarContextValue = useMemo(
+    () => ({ isCollapsed: isCollapsed || isMobile }),
+    [isCollapsed, isMobile],
+  );
+
   return (
-    <div id="dmsContainer">
-      <FlashMessages />
-      <Helmet>
-        <title>{pageTitle} | Dungeon Master&apos;s Screen</title>
-        <meta name="description" content={description} />
-      </Helmet>
-      <SideBar
-        isCollapsed={isCollapsed || isMobile}
-        setIsCollapsed={setIsCollapsed}
-        isMobile={isMobile}
-      />
-      <Breadcrumbs isCollapsed={isCollapsed} />
-      <SearchField />
-      <PageWrapper ref={nodeRef}>
-        <PageContent>
-          <Page $isCollapsed={isCollapsed}>{children}</Page>
-        </PageContent>
-      </PageWrapper>
-    </div>
+    <SidebarProvider value={sidebarContextValue}>
+      <div id="dmsContainer">
+        <FlashMessages />
+        <Helmet>
+          <title>{pageTitle} | Dungeon Master&apos;s Screen</title>
+          <meta name="description" content={description} />
+        </Helmet>
+        <SideBar
+          isCollapsed={isCollapsed || isMobile}
+          setIsCollapsed={setIsCollapsed}
+          isMobile={isMobile}
+        />
+        <Breadcrumbs isCollapsed={isCollapsed} />
+        <SearchField />
+        <PageWrapper ref={nodeRef}>
+          <PageContent>
+            <Page $isCollapsed={isCollapsed}>{children}</Page>
+          </PageContent>
+        </PageWrapper>
+      </div>
+    </SidebarProvider>
   );
 };
 
