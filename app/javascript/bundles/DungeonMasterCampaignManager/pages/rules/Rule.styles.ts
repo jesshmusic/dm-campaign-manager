@@ -6,11 +6,17 @@
 import styled from 'styled-components';
 
 export const RuleContent = styled.div`
+  margin: 0 auto;
+  max-width: 900px;
+  padding: calc(${({ theme }) => theme.spacing.spacer} * 2) 0
+    calc(${({ theme }) => theme.spacing.spacer} * 4);
+  width: 100%;
+
   table {
-    table-layout: fixed;
-    width: 100%;
     border-collapse: collapse;
     margin-bottom: 1rem;
+    table-layout: fixed;
+    width: 100%;
 
     thead {
       background-color: ${({ theme }) => theme.table.headBg};
@@ -34,6 +40,10 @@ export const RuleContent = styled.div`
       }
     }
   }
+`;
+
+export const RulesList = styled.div`
+  padding-top: ${({ theme }) => theme.spacing.spacer};
 `;
 
 export const TableFrame = styled.div`

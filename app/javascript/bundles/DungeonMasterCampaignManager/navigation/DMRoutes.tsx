@@ -13,6 +13,7 @@ import Monster from '../pages/monsters/Monster';
 import Spells from '../pages/spells/Spells';
 import Spell from '../pages/spells/Spell';
 import Rule from '../pages/rules/Rule';
+import RulesIndex from '../pages/rules/RulesIndex';
 import MonsterGenerator from '../pages/monster-generator/MonsterGenerator';
 import ProtectedRoute from './ProtectedRoute';
 import AdminDashboard from '../pages/admin-dashboard/AdminDashboard';
@@ -55,6 +56,7 @@ const DMRoutes = (props) => {
       <Route path="/app/monsters/:monsterSlug" element={<Monster {...props} />} />
       <Route path="/app/spells/" element={<Spells {...props} />} />
       <Route path="/app/spells/:spellSlug" element={<Spell {...props} />} />
+      <Route path="/app/rules" element={<RulesIndex {...props} />} />
       <Route path="/app/rules/:ruleSlug" element={<Rule {...props} />} />
       <Route path="/app/monster-generator/" element={<MonsterGenerator {...props} />} />
       <Route path="/app/search/:query" element={<SearchResults {...props} />} />

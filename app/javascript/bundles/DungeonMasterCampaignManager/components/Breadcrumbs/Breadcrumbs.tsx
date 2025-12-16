@@ -20,7 +20,7 @@ const pathToTitle = (pathName: string): string => {
 };
 
 /** Items that should not be clickable (parent categories without their own page) */
-const NON_CLICKABLE_TITLES = ['Sections', 'Rules'];
+const NON_CLICKABLE_TITLES = ['Sections'];
 
 /** Checks if a breadcrumb item should be rendered as non-clickable */
 const isNonClickable = (title: string, index: number, totalPaths: number): boolean =>

@@ -4,12 +4,23 @@
  */
 
 import styled, { css } from 'styled-components';
-import { respondTo } from '../../theme/mixins';
+import { respondTo, respondToContainer } from '../../theme/mixins';
 
-export const BannerAdContainer = styled.div`
+export const BannerAdContainer = styled.div<{ $isCollapsed?: boolean }>`
   display: flex;
   justify-content: center;
   padding: 0 0 1rem;
+  padding-left: 5rem;
+
+  ${respondToContainer.md`
+    padding-left: 15rem;
+  `}
+
+  ${({ $isCollapsed }) =>
+    $isCollapsed &&
+    `
+    padding-left: 5rem;
+  `}
 `;
 
 const bannerImageBase = css`
