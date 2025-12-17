@@ -105,7 +105,8 @@
       "Bash(python scrape_rules_v2.py:*)",
       "Bash(python debug_page.py:*)",
       "Bash(ruby scripts/update_spells_higher_level.rb:*)",
-      "Bash(rails:*)"
+      "Bash(rails:*)",
+      "Bash(mkdir:*)"
     ],
     "deny": [],
     "ask": []
