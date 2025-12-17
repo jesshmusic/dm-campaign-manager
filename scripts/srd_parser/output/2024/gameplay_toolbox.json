@@ -1,0 +1,360 @@
+{
+  "edition": "2024",
+  "source": "SRD 5.2.1",
+  "travelTerrain": [
+    {
+      "terrain": "Arctic",
+      "maximumPace": "Fast",
+      "paceNote": "Appropriate equipment (such as skis) is necessary to keep up a Fast pace in Arctic terrain.",
+      "encounterDistance": "6d6 × 10 feet",
+      "foragingDC": 20,
+      "navigationDC": 10,
+      "searchDC": 10
+    },
+    {
+      "terrain": "Coastal",
+      "maximumPace": "Normal",
+      "encounterDistance": "2d10 × 10 feet",
+      "foragingDC": 10,
+      "navigationDC": 5,
+      "searchDC": 15
+    },
+    {
+      "terrain": "Desert",
+      "maximumPace": "Normal",
+      "encounterDistance": "6d6 × 10 feet",
+      "foragingDC": 20,
+      "navigationDC": 10,
+      "searchDC": 10
+    },
+    {
+      "terrain": "Forest",
+      "maximumPace": "Normal",
+      "encounterDistance": "2d8 × 10 feet",
+      "foragingDC": 10,
+      "navigationDC": 15,
+      "searchDC": 15
+    },
+    {
+      "terrain": "Grassland",
+      "maximumPace": "Fast",
+      "encounterDistance": "6d6 × 10 feet",
+      "foragingDC": 15,
+      "navigationDC": 5,
+      "searchDC": 15
+    },
+    {
+      "terrain": "Hill",
+      "maximumPace": "Normal",
+      "encounterDistance": "2d10 × 10 feet",
+      "foragingDC": 15,
+      "navigationDC": 10,
+      "searchDC": 15
+    },
+    {
+      "terrain": "Mountain",
+      "maximumPace": "Slow",
+      "encounterDistance": "4d10 × 10 feet",
+      "foragingDC": 20,
+      "navigationDC": 15,
+      "searchDC": 20
+    },
+    {
+      "terrain": "Swamp",
+      "maximumPace": "Slow",
+      "encounterDistance": "2d8 × 10 feet",
+      "foragingDC": 10,
+      "navigationDC": 15,
+      "searchDC": 20
+    },
+    {
+      "terrain": "Underdark",
+      "maximumPace": "Normal",
+      "encounterDistance": "2d6 × 10 feet",
+      "foragingDC": 20,
+      "navigationDC": 10,
+      "searchDC": 20
+    },
+    {
+      "terrain": "Urban",
+      "maximumPace": "Normal",
+      "encounterDistance": "2d6 × 10 feet",
+      "foragingDC": 20,
+      "navigationDC": 15,
+      "searchDC": 15
+    },
+    {
+      "terrain": "Waterborne",
+      "maximumPace": "Special",
+      "paceNote": "Characters' rate of travel while waterborne depends on the vehicle carrying them.",
+      "encounterDistance": "6d6 × 10 feet",
+      "foragingDC": 15,
+      "navigationDC": 10,
+      "searchDC": 15
+    }
+  ],
+  "travelPace": {
+    "description": "A group of characters can travel overland at a Normal, Fast, or Slow pace.",
+    "goodRoads": "The presence of a good road increases the group's maximum pace by one step (from Slow to Normal or from Normal to Fast).",
+    "slowerTravelers": "The group must move at a Slow pace if any group member's Speed is reduced to half or less of normal.",
+    "extendedTravel": "Characters can push themselves to travel for more than 8 hours per day, at the risk of tiring. At the end of each additional hour of travel beyond 8 hours, each character must succeed on a Constitution saving throw or gain 1 Exhaustion level. The DC is 10 plus 1 for each hour past 8 hours.",
+    "specialMovement": {
+      "milesPerHour": "Speed ÷ 10",
+      "milesPerDayNormal": "Miles per hour × number of hours traveled (typically 8)",
+      "fastPace": "Miles per day × 1⅓ (round down)",
+      "slowPace": "Miles per day × 2/3 (round down)"
+    }
+  },
+  "environmentalEffects": [
+    {
+      "name": "Deep Water",
+      "description": "Swimming through deep water (more than 100 feet deep) presents additional challenges because of the water's pressure and cold temperature. After each hour of swimming in deep water, a creature that lacks a Swim Speed must succeed on a DC 10 Constitution saving throw or gain 1 Exhaustion level."
+    },
+    {
+      "name": "Extreme Cold",
+      "description": "When the temperature is 0 degrees Fahrenheit or lower, a creature exposed to the extreme cold must succeed on a DC 10 Constitution saving throw at the end of each hour or gain 1 Exhaustion level. Creatures that have Resistance or Immunity to Cold damage automatically succeed on the save."
+    },
+    {
+      "name": "Extreme Heat",
+      "description": "When the temperature is 100 degrees Fahrenheit or higher, a creature exposed to the extreme heat and without access to drinkable water must succeed on a Constitution saving throw at the end of each hour or gain 1 Exhaustion level. The DC is 5 for the first hour and increases by 1 for each additional hour. Creatures wearing Medium or Heavy armor have Disadvantage on the save. Creatures that have Resistance or Immunity to Fire damage automatically succeed on the save."
+    },
+    {
+      "name": "Frigid Water",
+      "description": "A creature can be immersed in frigid water for a number of minutes equal to its Constitution score before suffering any ill effects. Each additional minute spent in frigid water requires the creature to succeed on a DC 10 Constitution saving throw or gain 1 Exhaustion level. Creatures with Resistance or Immunity to Cold damage automatically succeed on the save, as do creatures that are naturally adapted to living in ice-cold water."
+    },
+    {
+      "name": "Heavy Precipitation",
+      "description": "Everything within an area of heavy rain or heavy snowfall is Lightly Obscured, and creatures in the area have Disadvantage on all Wisdom (Perception) checks. Heavy rain also extinguishes open flames."
+    },
+    {
+      "name": "High Altitude",
+      "description": "Traveling at altitudes of 10,000 feet or higher above sea level is taxing for most creatures because of the reduced amount of oxygen in the air. Each hour such a creature spends traveling at high altitude counts as 2 hours for the purpose of determining how long that creature can travel. Creatures can become acclimated to a high altitude by spending 30 days or more at this elevation. Creatures can't become acclimated to elevations above 20,000 feet unless they are native to such environments."
+    },
+    {
+      "name": "Slippery Ice",
+      "description": "Slippery ice is Difficult Terrain. A creature that moves onto slippery ice for the first time on a turn or starts its turn there must succeed on a DC 10 Dexterity saving throw or have the Prone condition."
+    },
+    {
+      "name": "Strong Wind",
+      "description": "Strong wind imposes Disadvantage on ranged attack rolls with weapons. It also extinguishes open flames and disperses fog. A flying creature in a strong wind must land at the end of its turn or fall. A strong wind in a desert can create a sandstorm that imposes Disadvantage on Wisdom (Perception) checks."
+    },
+    {
+      "name": "Thin Ice",
+      "description": "Thin ice has a weight tolerance of 3d10 × 10 pounds per 10-foot-square area. Whenever the total weight on an area of thin ice exceeds its tolerance, the ice in that area breaks. All creatures on broken ice fall through. Below the ice is frigid water."
+    }
+  ],
+  "curses": {
+    "description": "A curse is a magical burden that lasts for a specified time or until it is ended by some means. Curses can be removed by the Remove Curse and Greater Restoration spells or other magic that explicitly ends curses.",
+    "types": [
+      {
+        "name": "Bestow Curse",
+        "description": "The simplest curses are created by the Bestow Curse spell. A curse that lasts for 1 minute equates to a level 3 spell, while one that lasts until dispelled equates to a level 9 spell."
+      },
+      {
+        "name": "Cursed Creatures",
+        "description": "Some monsters are associated with curses, whether as part of their origins or due to their ability to spread curses—werewolves being a prime example."
+      },
+      {
+        "name": "Cursed Magic Items",
+        "description": "Cursed magic items are created deliberately or originate as the result of supernatural events."
+      },
+      {
+        "name": "Narrative Curses",
+        "description": "A curse might manifest during an adventure when a creature's violation of a taboo warrants supernatural punishment, such as breaking a vow, defiling a tomb, or murdering an innocent."
+      },
+      {
+        "name": "Demonic Possession",
+        "description": "Demonic Possession arises from the chaos and evil of the Abyss and commonly besets creatures that interact with demonic objects or linger in desecrated locations. A creature that becomes the target of Demonic Possession must succeed on a DC 15 Charisma saving throw or be possessed by a bodiless demonic entity. Whenever the possessed creature rolls a 1 on a D20 Test, the demonic entity takes control of the creature and determines the creature's behavior thereafter. At the end of each of the possessed creature's later turns, the creature makes a DC 15 Charisma saving throw, regaining control of itself on a success.",
+        "saveDC": 15,
+        "savingThrow": "Charisma"
+      }
+    ]
+  },
+  "magicalContagions": [
+    {
+      "name": "Cackle Fever",
+      "description": "Cheaply made potions and elixirs are sometimes tainted by Cackle Fever, which affects Humanoids only (gnomes are strangely immune). A creature suffers the following effects 1d4 days after infection.",
+      "incubation": "1d4 days",
+      "affectedTypes": ["Humanoid"],
+      "immuneTypes": ["Gnome"],
+      "effects": [
+        {"name": "Fever", "description": "The creature gains 1 Exhaustion level, which lasts until the contagion ends on the creature."},
+        {"name": "Uncontrollable Laughter", "description": "While the creature has the Exhaustion condition, the creature makes a DC 13 Constitution saving throw each time it takes damage other than Psychic damage. On a failed save, the creature takes 5 (1d10) Psychic damage and has the Incapacitated condition as it laughs uncontrollably. At the end of each of its turns, the creature repeats the save, ending the effect on itself on a success. After 1 minute, it succeeds automatically."}
+      ],
+      "fightingContagion": "At the end of each Long Rest, an infected creature makes a DC 13 Constitution saving throw. After the creature succeeds on three of these saves, the contagion ends on it, and the creature is immune to Cackle Fever for 1 year.",
+      "spreadingContagion": "Any Humanoid (other than a gnome) that starts its turn within a 10-foot Emanation originating from a creature infected with Cackle Fever must succeed on a DC 10 Constitution saving throw or also become infected with the contagion.",
+      "saveDC": 13
+    },
+    {
+      "name": "Sewer Plague",
+      "description": "Fouled potions and alchemical waste can give rise to Sewer Plague, which incubates in sewers and refuse heaps and is sometimes transmitted by creatures that dwell in such areas, including otyughs and rats.",
+      "incubation": "1d4 days",
+      "effects": [
+        {"name": "Fatigue", "description": "The creature gains 1 Exhaustion level."},
+        {"name": "Weakness", "description": "While the creature has any Exhaustion levels, it regains only half the normal number of Hit Points from spending Hit Point Dice."},
+        {"name": "Restlessness", "description": "While the creature has any Exhaustion levels, finishing a Long Rest neither restores lost Hit Points nor reduces the creature's Exhaustion level."}
+      ],
+      "fightingContagion": "Daily at dawn, an infected creature makes a DC 11 Constitution saving throw. On a failed save, the creature gains 1 Exhaustion level as its fatigue worsens. On a successful save, the creature's Exhaustion level decreases by 1. If the creature's Exhaustion level is reduced to 0, the contagion ends on the creature.",
+      "saveDC": 11
+    },
+    {
+      "name": "Sight Rot",
+      "description": "Any Beast or Humanoid that drinks water tainted by Sight Rot must succeed on a DC 15 Constitution saving throw or have the Blinded condition until the contagion ends.",
+      "affectedTypes": ["Beast", "Humanoid"],
+      "effects": [
+        {"name": "Blindness", "description": "The creature has the Blinded condition until the contagion ends."}
+      ],
+      "fightingContagion": "Magic such as a Heal or Lesser Restoration spell ends the contagion immediately. A character who is proficient with an Herbalism Kit can use it to create one dose of nonmagical ointment, which takes 1 hour. When applied to the eyes of a creature suffering from Sight Rot, the ointment suppresses the contagion on that creature for 24 hours. If the contagion is suppressed in this way for a total of 72 hours (requiring three doses and applications of the ointment), the contagion ends on the creature.",
+      "spreadingContagion": "Any Humanoid that makes skin contact with a creature infected with Sight Rot must succeed on a DC 15 Constitution saving throw or also become infected with the contagion.",
+      "saveDC": 15
+    }
+  ],
+  "poisons": [
+    {
+      "name": "Assassin's Blood",
+      "cost": "150 GP",
+      "type": "Ingested",
+      "description": "A creature subjected to Assassin's Blood makes a DC 10 Constitution saving throw. On a failed save, the creature takes 6 (1d12) Poison damage and has the Poisoned condition for 24 hours. On a successful save, the creature takes half as much damage only.",
+      "saveDC": 10,
+      "damage": "6 (1d12)",
+      "duration": "24 hours"
+    },
+    {
+      "name": "Burnt Othur Fumes",
+      "cost": "500 GP",
+      "type": "Inhaled",
+      "description": "A creature subjected to Burnt Othur Fumes must succeed on a DC 13 Constitution saving throw or take 10 (3d6) Poison damage, and it must repeat the save at the start of each of its turns. On each successive failed save, the creature takes 3 (1d6) Poison damage. After three successful saves, the poison ends.",
+      "saveDC": 13,
+      "damage": "10 (3d6) initial, 3 (1d6) ongoing"
+    },
+    {
+      "name": "Crawler Mucus",
+      "cost": "200 GP",
+      "type": "Contact",
+      "description": "A creature subjected to Crawler Mucus must succeed on a DC 13 Constitution saving throw or have the Poisoned condition for 1 minute. The creature also has the Paralyzed condition while Poisoned in this way. The creature repeats the save at the end of each of its turns, ending the effect on itself on a success.",
+      "saveDC": 13,
+      "duration": "1 minute",
+      "conditions": ["Poisoned", "Paralyzed"]
+    },
+    {
+      "name": "Essence of Ether",
+      "cost": "300 GP",
+      "type": "Inhaled",
+      "description": "A creature subjected to Essence of Ether must succeed on a DC 15 Constitution saving throw or have the Poisoned condition for 8 hours. The creature also has the Unconscious condition while Poisoned in this way. The creature wakes up if it takes damage or if another creature takes an action to shake it awake.",
+      "saveDC": 15,
+      "duration": "8 hours",
+      "conditions": ["Poisoned", "Unconscious"]
+    },
+    {
+      "name": "Malice",
+      "cost": "250 GP",
+      "type": "Inhaled",
+      "description": "A creature subjected to Malice must succeed on a DC 15 Constitution saving throw or have the Poisoned condition for 1 hour. The creature also has the Blinded condition while Poisoned in this way.",
+      "saveDC": 15,
+      "duration": "1 hour",
+      "conditions": ["Poisoned", "Blinded"]
+    },
+    {
+      "name": "Midnight Tears",
+      "cost": "1,500 GP",
+      "type": "Ingested",
+      "description": "A creature that ingests Midnight Tears suffers no effect until the stroke of midnight. Any effect that ends the Poisoned condition neutralizes this poison. If the poison hasn't been neutralized before midnight, the creature makes a DC 17 Constitution saving throw, taking 31 (9d6) Poison damage on a failed save or half as much damage on a successful one.",
+      "saveDC": 17,
+      "damage": "31 (9d6)"
+    },
+    {
+      "name": "Oil of Taggit",
+      "cost": "400 GP",
+      "type": "Contact",
+      "description": "A creature subjected to Oil of Taggit must succeed on a DC 13 Constitution saving throw or have the Poisoned condition for 24 hours. The creature also has the Unconscious condition while Poisoned in this way. It wakes up if it takes damage.",
+      "saveDC": 13,
+      "duration": "24 hours",
+      "conditions": ["Poisoned", "Unconscious"]
+    },
+    {
+      "name": "Pale Tincture",
+      "cost": "250 GP",
+      "type": "Ingested",
+      "description": "A creature subjected to Pale Tincture must succeed on a DC 16 Constitution saving throw or take 3 (1d6) Poison damage and have the Poisoned condition. The Poisoned creature repeats the save every 24 hours, taking 3 (1d6) Poison damage on a failed save. The damage the poison deals can't be healed by any means while the creature remains Poisoned. After seven successful saves against the poison, the creature is no longer Poisoned.",
+      "saveDC": 16,
+      "damage": "3 (1d6) per day"
+    },
+    {
+      "name": "Purple Worm Poison",
+      "cost": "2,000 GP",
+      "type": "Injury",
+      "description": "A creature subjected to Purple Worm Poison makes a DC 21 Constitution saving throw, taking 35 (10d6) Poison damage on a failed save or half as much damage on a successful one.",
+      "saveDC": 21,
+      "damage": "35 (10d6)"
+    },
+    {
+      "name": "Serpent Venom",
+      "cost": "200 GP",
+      "type": "Injury",
+      "description": "A creature subjected to Serpent Venom must succeed on a DC 11 Constitution saving throw, taking 10 (3d6) Poison damage on a failed save or half as much damage on a successful one.",
+      "saveDC": 11,
+      "damage": "10 (3d6)"
+    },
+    {
+      "name": "Spider's Sting",
+      "cost": "200 GP",
+      "type": "Injury",
+      "description": "A creature subjected to Spider's Sting must succeed on a DC 13 Constitution saving throw or have the Poisoned condition for 1 hour. If the creature fails the save by 5 or more, the creature also has the Unconscious condition while Poisoned in this way. The creature wakes up if it takes damage or if another creature takes an action to shake it awake.",
+      "saveDC": 13,
+      "duration": "1 hour",
+      "conditions": ["Poisoned", "Unconscious (on fail by 5+)"]
+    },
+    {
+      "name": "Torpor",
+      "cost": "600 GP",
+      "type": "Ingested",
+      "description": "A creature subjected to Torpor poison must succeed on a DC 15 Constitution saving throw or have the Poisoned condition for 4d6 hours. The creature's Speed is halved while the creature is Poisoned in this way.",
+      "saveDC": 15,
+      "duration": "4d6 hours",
+      "effect": "Speed halved"
+    },
+    {
+      "name": "Truth Serum",
+      "cost": "150 GP",
+      "type": "Ingested",
+      "description": "A creature subjected to Truth Serum must succeed on a DC 11 Constitution saving throw or have the Poisoned condition for 1 hour. The Poisoned creature can't knowingly communicate a lie.",
+      "saveDC": 11,
+      "duration": "1 hour",
+      "effect": "Can't lie"
+    },
+    {
+      "name": "Wyvern Poison",
+      "cost": "1,200 GP",
+      "type": "Injury",
+      "description": "A creature subjected to Wyvern Poison makes a DC 14 Constitution saving throw, taking 24 (7d6) Poison damage on a failed save or half as much damage on a successful one.",
+      "saveDC": 14,
+      "damage": "24 (7d6)"
+    }
+  ],
+  "fearAndMentalStress": {
+    "description": "Adventurers tend to be less susceptible to fear and mental stress than common folk. Certain creatures and game effects can terrify or fray the mind of even the most stalwart adventurer.",
+    "sampleFearDCs": [
+      {"example": "When the characters open a sarcophagus, a harmless yet terrifying apparition appears.", "dc": 10},
+      {"example": "A character triggers a magical trap that creates an illusory manifestation of that character's worst fears, visible only to that character.", "dc": 15},
+      {"example": "A portal to the Abyss opens, revealing a nightmarish realm of torment and slaughter.", "dc": 20}
+    ],
+    "additionalFearEffects": [
+      "The Frightened creature must take the Dash action on each of its turns and uses its movement to get farther away from the source of its fear.",
+      "Attack rolls against the Frightened creature have Advantage.",
+      "The Frightened creature can do only one of the following on each of its turns: move, take an action, or take a Bonus Action."
+    ],
+    "mentalStressEffects": {
+      "description": "When a character is subjected to an effect that causes intense mental stress, Psychic damage is the best way to emulate that effect.",
+      "sampleEffects": [
+        {"example": "A character ingests a hallucinogenic substance that distorts the character's perception of reality.", "dc": 10, "damage": "1d6"},
+        {"example": "A character touches a fiendish idol that tears at the character's mind, threatening to shatter it.", "dc": 15, "damage": "3d6"},
+        {"example": "A magical trap flings a character into the Far Realm until the end of that character's next turn.", "dc": 20, "damage": "9d6"}
+      ]
+    },
+    "prolongedEffects": [
+      {"type": "Short-Term Effects", "description": "The character has the Frightened, Incapacitated, or Stunned condition for 1d10 minutes. This condition might be accompanied by alarming behavior or hallucinations. These effects can be suppressed with the Calm Emotions spell or removed by the Lesser Restoration spell."},
+      {"type": "Long-Term Effects", "description": "The character has Disadvantage on some or all ability checks for 1d10 × 10 hours, stemming from an unwillingness or inability to exert a particular set of abilities. These effects can be suppressed with the Calm Emotions spell or removed by the Lesser Restoration spell."},
+      {"type": "Indefinite Effects", "description": "An indefinite effect is a long-term effect that lasts until removed by a Greater Restoration spell. It can be suppressed by a Calm Emotions spell."}
+    ]
+  }
+}

@@ -1,0 +1,366 @@
+{
+  "edition": "2024",
+  "source": "SRD 5.2.1",
+  "abbreviations": [
+    {"abbr": "AC", "meaning": "Armor Class"},
+    {"abbr": "C", "meaning": "Concentration"},
+    {"abbr": "CE", "meaning": "Chaotic Evil"},
+    {"abbr": "CG", "meaning": "Chaotic Good"},
+    {"abbr": "Cha.", "meaning": "Charisma"},
+    {"abbr": "CN", "meaning": "Chaotic Neutral"},
+    {"abbr": "Con.", "meaning": "Constitution"},
+    {"abbr": "CP", "meaning": "Copper Piece(s)"},
+    {"abbr": "CR", "meaning": "Challenge Rating"},
+    {"abbr": "DC", "meaning": "Difficulty Class"},
+    {"abbr": "Dex.", "meaning": "Dexterity"},
+    {"abbr": "EP", "meaning": "Electrum Piece(s)"},
+    {"abbr": "GM", "meaning": "Game Master"},
+    {"abbr": "GP", "meaning": "Gold Piece(s)"},
+    {"abbr": "HP", "meaning": "Hit Point(s)"},
+    {"abbr": "Int.", "meaning": "Intelligence"},
+    {"abbr": "LE", "meaning": "Lawful Evil"},
+    {"abbr": "LG", "meaning": "Lawful Good"},
+    {"abbr": "LN", "meaning": "Lawful Neutral"},
+    {"abbr": "M", "meaning": "Material component"},
+    {"abbr": "N", "meaning": "Neutral"},
+    {"abbr": "NE", "meaning": "Neutral Evil"},
+    {"abbr": "NG", "meaning": "Neutral Good"},
+    {"abbr": "NPC", "meaning": "Nonplayer character"},
+    {"abbr": "PB", "meaning": "Proficiency Bonus"},
+    {"abbr": "PP", "meaning": "Platinum Piece(s)"},
+    {"abbr": "R", "meaning": "Ritual"},
+    {"abbr": "S", "meaning": "Somatic component"},
+    {"abbr": "SP", "meaning": "Silver Piece(s)"},
+    {"abbr": "Str.", "meaning": "Strength"},
+    {"abbr": "V", "meaning": "Verbal component"},
+    {"abbr": "Wis.", "meaning": "Wisdom"},
+    {"abbr": "XP", "meaning": "Experience Point(s)"}
+  ],
+  "conditions": [
+    {
+      "name": "Blinded",
+      "description": "While you have the Blinded condition, you experience the following effects.",
+      "effects": [
+        {"name": "Can't See", "description": "You can't see and automatically fail any ability check that requires sight."},
+        {"name": "Attacks Affected", "description": "Attack rolls against you have Advantage, and your attack rolls have Disadvantage."}
+      ]
+    },
+    {
+      "name": "Charmed",
+      "description": "While you have the Charmed condition, you experience the following effects.",
+      "effects": [
+        {"name": "Can't Harm the Charmer", "description": "You can't attack the charmer or target the charmer with damaging abilities or magical effects."},
+        {"name": "Social Advantage", "description": "The charmer has Advantage on any ability check to interact with you socially."}
+      ]
+    },
+    {
+      "name": "Deafened",
+      "description": "While you have the Deafened condition, you experience the following effect.",
+      "effects": [
+        {"name": "Can't Hear", "description": "You can't hear and automatically fail any ability check that requires hearing."}
+      ]
+    },
+    {
+      "name": "Exhaustion",
+      "description": "While you have the Exhaustion condition, you experience the following effects.",
+      "effects": [
+        {"name": "Exhaustion Levels", "description": "This condition is cumulative. Each time you receive it, you gain 1 Exhaustion level. You die if your Exhaustion level is 6."},
+        {"name": "D20 Tests Affected", "description": "When you make a D20 Test, the roll is reduced by 2 times your Exhaustion level."},
+        {"name": "Speed Reduced", "description": "Your Speed is reduced by a number of feet equal to 5 times your Exhaustion level."},
+        {"name": "Removing Exhaustion Levels", "description": "Finishing a Long Rest removes 1 of your Exhaustion levels. When your Exhaustion level reaches 0, the condition ends."}
+      ]
+    },
+    {
+      "name": "Frightened",
+      "description": "While you have the Frightened condition, you experience the following effects.",
+      "effects": [
+        {"name": "Ability Checks and Attacks Affected", "description": "You have Disadvantage on ability checks and attack rolls while the source of fear is within line of sight."},
+        {"name": "Can't Approach", "description": "You can't willingly move closer to the source of fear."}
+      ]
+    },
+    {
+      "name": "Grappled",
+      "description": "While you have the Grappled condition, you experience the following effects.",
+      "effects": [
+        {"name": "Speed 0", "description": "Your Speed is 0 and can't increase."},
+        {"name": "Attacks Affected", "description": "You have Disadvantage on attack rolls against any target other than the grappler."},
+        {"name": "Movable", "description": "The grappler can drag or carry you when it moves, but every foot of movement costs it 1 extra foot unless you are Tiny or two or more sizes smaller than it."}
+      ]
+    },
+    {
+      "name": "Incapacitated",
+      "description": "While you have the Incapacitated condition, you experience the following effects.",
+      "effects": [
+        {"name": "Inactive", "description": "You can't take any action, Bonus Action, or Reaction."},
+        {"name": "No Concentration", "description": "Your Concentration is broken."},
+        {"name": "Speechless", "description": "You can't speak."},
+        {"name": "Surprised", "description": "If you're Incapacitated when you roll Initiative, you have Disadvantage on the roll."}
+      ]
+    },
+    {
+      "name": "Invisible",
+      "description": "While you have the Invisible condition, you experience the following effects.",
+      "effects": [
+        {"name": "Surprise", "description": "If you're Invisible when you roll Initiative, you have Advantage on the roll."},
+        {"name": "Concealed", "description": "You aren't affected by any effect that requires its target to be seen unless the effect's creator can somehow see you. Any equipment you are wearing or carrying is also concealed."},
+        {"name": "Attacks Affected", "description": "Attack rolls against you have Disadvantage, and your attack rolls have Advantage. If a creature can somehow see you, you don't gain this benefit against that creature."}
+      ]
+    },
+    {
+      "name": "Paralyzed",
+      "description": "While you have the Paralyzed condition, you experience the following effects.",
+      "effects": [
+        {"name": "Incapacitated", "description": "You have the Incapacitated condition."},
+        {"name": "Speed 0", "description": "Your Speed is 0 and can't increase."},
+        {"name": "Saving Throws Affected", "description": "You automatically fail Strength and Dexterity saving throws."},
+        {"name": "Attacks Affected", "description": "Attack rolls against you have Advantage."},
+        {"name": "Automatic Critical Hits", "description": "Any attack roll that hits you is a Critical Hit if the attacker is within 5 feet of you."}
+      ]
+    },
+    {
+      "name": "Petrified",
+      "description": "While you have the Petrified condition, you experience the following effects.",
+      "effects": [
+        {"name": "Turned to Inanimate Substance", "description": "You are transformed, along with any nonmagical objects you are wearing and carrying, into a solid inanimate substance (usually stone). Your weight increases by a factor of ten, and you cease aging."},
+        {"name": "Incapacitated", "description": "You have the Incapacitated condition."},
+        {"name": "Speed 0", "description": "Your Speed is 0 and can't increase."},
+        {"name": "Attacks Affected", "description": "Attack rolls against you have Advantage."},
+        {"name": "Saving Throws Affected", "description": "You automatically fail Strength and Dexterity saving throws."},
+        {"name": "Resist Damage", "description": "You have Resistance to all damage."},
+        {"name": "Poison Immunity", "description": "You have Immunity to the Poisoned condition."}
+      ]
+    },
+    {
+      "name": "Poisoned",
+      "description": "While you have the Poisoned condition, you experience the following effect.",
+      "effects": [
+        {"name": "Ability Checks and Attacks Affected", "description": "You have Disadvantage on attack rolls and ability checks."}
+      ]
+    },
+    {
+      "name": "Prone",
+      "description": "While you have the Prone condition, you experience the following effects.",
+      "effects": [
+        {"name": "Restricted Movement", "description": "Your only movement options are to crawl or to spend an amount of movement equal to half your Speed (round down) to right yourself and thereby end the condition. If your Speed is 0, you can't right yourself."},
+        {"name": "Attacks Affected", "description": "You have Disadvantage on attack rolls. An attack roll against you has Advantage if the attacker is within 5 feet of you. Otherwise, that attack roll has Disadvantage."}
+      ]
+    },
+    {
+      "name": "Restrained",
+      "description": "While you have the Restrained condition, you experience the following effects.",
+      "effects": [
+        {"name": "Speed 0", "description": "Your Speed is 0 and can't increase."},
+        {"name": "Attacks Affected", "description": "Attack rolls against you have Advantage, and your attack rolls have Disadvantage."},
+        {"name": "Saving Throws Affected", "description": "You have Disadvantage on Dexterity saving throws."}
+      ]
+    },
+    {
+      "name": "Stunned",
+      "description": "While you have the Stunned condition, you experience the following effects.",
+      "effects": [
+        {"name": "Incapacitated", "description": "You have the Incapacitated condition."},
+        {"name": "Saving Throws Affected", "description": "You automatically fail Strength and Dexterity saving throws."},
+        {"name": "Attacks Affected", "description": "Attack rolls against you have Advantage."}
+      ]
+    },
+    {
+      "name": "Unconscious",
+      "description": "While you have the Unconscious condition, you experience the following effects.",
+      "effects": [
+        {"name": "Inert", "description": "You have the Incapacitated and Prone conditions, and you drop whatever you're holding. When this condition ends, you remain Prone."},
+        {"name": "Speed 0", "description": "Your Speed is 0 and can't increase."},
+        {"name": "Attacks Affected", "description": "Attack rolls against you have Advantage."},
+        {"name": "Saving Throws Affected", "description": "You automatically fail Strength and Dexterity saving throws."},
+        {"name": "Automatic Critical Hits", "description": "Any attack roll that hits you is a Critical Hit if the attacker is within 5 feet of you."},
+        {"name": "Unaware", "description": "You're unaware of your surroundings."}
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "name": "Attack",
+      "description": "When you take the Attack action, you can make one attack roll with a weapon or an Unarmed Strike.",
+      "details": [
+        {"name": "Equipping and Unequipping Weapons", "description": "You can either equip or unequip one weapon when you make an attack as part of this action. You do so either before or after the attack."},
+        {"name": "Moving between Attacks", "description": "If you move on your turn and have a feature that gives you more than one attack as part of the Attack action, you can use some or all of that movement to move between those attacks."}
+      ]
+    },
+    {
+      "name": "Dash",
+      "description": "When you take the Dash action, you gain extra movement for the current turn. The increase equals your Speed after applying any modifiers."
+    },
+    {
+      "name": "Disengage",
+      "description": "If you take the Disengage action, your movement doesn't provoke Opportunity Attacks for the rest of the current turn."
+    },
+    {
+      "name": "Dodge",
+      "description": "If you take the Dodge action, you gain the following benefits: until the start of your next turn, any attack roll made against you has Disadvantage if you can see the attacker, and you make Dexterity saving throws with Advantage. You lose these benefits if you have the Incapacitated condition or if your Speed is 0."
+    },
+    {
+      "name": "Help",
+      "description": "When you take the Help action, you do one of the following.",
+      "details": [
+        {"name": "Assist an Ability Check", "description": "Choose one of your skill or tool proficiencies and one ally who is near enough for you to assist. That ally has Advantage on the next ability check they make with the chosen skill or tool. This benefit expires if the ally doesn't use it before the start of your next turn."},
+        {"name": "Assist an Attack Roll", "description": "You momentarily distract an enemy within 5 feet of you, giving Advantage to the next attack roll by one of your allies against that enemy. This benefit expires at the start of your next turn."}
+      ]
+    },
+    {
+      "name": "Hide",
+      "description": "With the Hide action, you try to hide yourself. To do so, you must succeed on a DC 15 Dexterity (Stealth) check while you're Heavily Obscured or behind Three-Quarters Cover or Total Cover, and you must be out of any enemy's line of sight. On a successful check, you have the Invisible condition while hidden."
+    },
+    {
+      "name": "Influence",
+      "description": "With the Influence action, you urge a monster to do something. The GM determines whether the monster feels willing, unwilling, or hesitant due to your interaction.",
+      "details": [
+        {"name": "Willing", "description": "If your urging aligns with the monster's desires, no ability check is necessary; the monster fulfills your request."},
+        {"name": "Unwilling", "description": "If your urging is repugnant to the monster or counter to its alignment, no ability check is necessary; it doesn't comply."},
+        {"name": "Hesitant", "description": "If you urge the monster to do something that it is hesitant to do, you must make an ability check affected by the monster's attitude."}
+      ]
+    },
+    {
+      "name": "Magic",
+      "description": "When you take the Magic action, you cast a spell that has a casting time of an action or use a feature or magic item that requires a Magic action to be activated."
+    },
+    {
+      "name": "Ready",
+      "description": "You take the Ready action to wait for a particular circumstance before you act. To do so, you take this action on your turn, which lets you act by taking a Reaction before the start of your next turn."
+    },
+    {
+      "name": "Search",
+      "description": "When you take the Search action, you make a Wisdom check to discern something that isn't obvious.",
+      "skills": [
+        {"skill": "Insight", "use": "Creature's state of mind"},
+        {"skill": "Medicine", "use": "Creature's ailment or cause of death"},
+        {"skill": "Perception", "use": "Concealed creature or object"},
+        {"skill": "Survival", "use": "Tracks or food"}
+      ]
+    },
+    {
+      "name": "Study",
+      "description": "When you take the Study action, you make an Intelligence check to study your memory, a book, a clue, or another source of knowledge.",
+      "skills": [
+        {"skill": "Arcana", "use": "Spells, magic items, eldritch symbols, magical traditions, planes of existence, and certain creatures (Aberrations, Constructs, Elementals, Fey, and Monstrosities)"},
+        {"skill": "History", "use": "Historic events and people, ancient civilizations, wars, and certain creatures (Giants and Humanoids)"},
+        {"skill": "Investigation", "use": "Traps, ciphers, riddles, and gadgetry"},
+        {"skill": "Nature", "use": "Terrain, flora, weather, and certain creatures (Beasts, Dragons, Oozes, and Plants)"},
+        {"skill": "Religion", "use": "Deities, religious hierarchies and rites, holy symbols, cults, and certain creatures (Celestials, Fiends, and Undead)"}
+      ]
+    },
+    {
+      "name": "Utilize",
+      "description": "When an object requires an action for its use, you take the Utilize action."
+    }
+  ],
+  "areasOfEffect": [
+    {
+      "name": "Cone",
+      "description": "A Cone is an area of effect that extends in straight lines from a point of origin in a direction its creator chooses. A Cone's width at any point along its length is equal to that point's distance from the point of origin. The effect that creates a Cone specifies its maximum length. A Cone's point of origin isn't included in the area of effect unless its creator decides otherwise."
+    },
+    {
+      "name": "Cube",
+      "description": "A Cube is an area of effect that extends in straight lines from a point of origin located anywhere on a face of the Cube. The effect that creates a Cube specifies its size, which is the length of each side. A Cube's point of origin isn't included in the area of effect unless its creator decides otherwise."
+    },
+    {
+      "name": "Cylinder",
+      "description": "A Cylinder is an area of effect that extends in straight lines from a point of origin located at the center of the circular top or bottom of the Cylinder. The effect that creates a Cylinder specifies the radius of the Cylinder's base and the Cylinder's height. A Cylinder's point of origin is included in the area of effect."
+    },
+    {
+      "name": "Emanation",
+      "description": "An Emanation is an area of effect that extends in straight lines from a creature or an object in all directions. The effect that creates an Emanation specifies the distance it extends. An Emanation moves with the creature or object that is its origin unless it is an instantaneous or a stationary effect. An Emanation's origin isn't included in the area of effect unless its creator decides otherwise."
+    },
+    {
+      "name": "Line",
+      "description": "A Line is an area of effect that extends from a point of origin in a straight path along its length and covers an area defined by its width. The effect that creates a Line specifies its length and width. A Line's point of origin isn't included in the area of effect unless its creator decides otherwise."
+    },
+    {
+      "name": "Sphere",
+      "description": "A Sphere is an area of effect that extends in straight lines from a point of origin outward in all directions. The effect that creates a Sphere specifies the distance it extends as the radius of the Sphere. A Sphere's point of origin is included in the Sphere's area of effect."
+    }
+  ],
+  "hazards": [
+    {
+      "name": "Burning",
+      "description": "A burning creature or object takes 1d4 Fire damage at the start of each of its turns. As an action, you can extinguish fire on yourself by giving yourself the Prone condition and rolling on the ground. The fire also goes out if it is doused, submerged, or suffocated."
+    },
+    {
+      "name": "Dehydration",
+      "description": "A creature requires an amount of water per day based on its size. A creature that drinks less than half the required water for a day gains 1 Exhaustion level at the day's end. Exhaustion caused by dehydration can't be removed until the creature drinks the full amount of water required for a day.",
+      "waterNeeds": [
+        {"size": "Tiny", "water": "1/4 gallon"},
+        {"size": "Small", "water": "1 gallon"},
+        {"size": "Medium", "water": "1 gallon"},
+        {"size": "Large", "water": "4 gallons"},
+        {"size": "Huge", "water": "16 gallons"},
+        {"size": "Gargantuan", "water": "64 gallons"}
+      ]
+    },
+    {
+      "name": "Falling",
+      "description": "A creature that falls takes 1d6 Bludgeoning damage at the end of the fall for every 10 feet it fell, to a maximum of 20d6. When the creature lands, it has the Prone condition unless it avoids taking any damage from the fall. A creature that falls into water or another liquid can use its Reaction to make a DC 15 Strength (Athletics) or Dexterity (Acrobatics) check to hit the surface head or feet first. On a successful check, any damage resulting from the fall is halved."
+    },
+    {
+      "name": "Malnutrition",
+      "description": "A creature needs an amount of food per day based on its size. A creature that eats but consumes less than half the required food for a day must succeed on a DC 10 Constitution saving throw or gain 1 Exhaustion level at the day's end. A creature that eats nothing for 5 days automatically gains 1 Exhaustion level at the end of the fifth day as well as an additional level at the end of each subsequent day without food.",
+      "foodNeeds": [
+        {"size": "Tiny", "food": "1/4 pound"},
+        {"size": "Small", "food": "1 pound"},
+        {"size": "Medium", "food": "1 pound"},
+        {"size": "Large", "food": "4 pounds"},
+        {"size": "Huge", "food": "16 pounds"},
+        {"size": "Gargantuan", "food": "64 pounds"}
+      ]
+    },
+    {
+      "name": "Suffocation",
+      "description": "A creature can hold its breath for a number of minutes equal to 1 plus its Constitution modifier (minimum of 30 seconds) before suffocation begins. When a creature runs out of breath or is choking, it gains 1 Exhaustion level at the end of each of its turns. When a creature can breathe again, it removes all levels of Exhaustion it gained from suffocating."
+    }
+  ],
+  "damageTypes": [
+    {"type": "Acid", "examples": "Corrosive liquids, digestive enzymes"},
+    {"type": "Bludgeoning", "examples": "Blunt objects, constriction, falling"},
+    {"type": "Cold", "examples": "Freezing water, icy blasts"},
+    {"type": "Fire", "examples": "Flames, unbearable heat"},
+    {"type": "Force", "examples": "Pure magical energy"},
+    {"type": "Lightning", "examples": "Electricity"},
+    {"type": "Necrotic", "examples": "Life-draining energy"},
+    {"type": "Piercing", "examples": "Fangs, puncturing objects"},
+    {"type": "Poison", "examples": "Toxic gas, venom"},
+    {"type": "Psychic", "examples": "Mind-rending energy"},
+    {"type": "Radiant", "examples": "Holy energy, searing radiation"},
+    {"type": "Slashing", "examples": "Claws, cutting objects"},
+    {"type": "Thunder", "examples": "Concussive sound"}
+  ],
+  "creatureTypes": [
+    "Aberration", "Beast", "Celestial", "Construct", "Dragon",
+    "Elemental", "Fey", "Fiend", "Giant", "Humanoid",
+    "Monstrosity", "Ooze", "Plant", "Undead"
+  ],
+  "cover": [
+    {"type": "Half Cover", "bonus": "+2 bonus to AC and Dexterity saving throws"},
+    {"type": "Three-Quarters Cover", "bonus": "+5 bonus to AC and Dexterity saving throws"},
+    {"type": "Total Cover", "bonus": "Can't be targeted directly"}
+  ],
+  "carryingCapacity": [
+    {"size": "Tiny", "carry": "Str. × 7.5 lb.", "dragLiftPush": "Str. × 15 lb."},
+    {"size": "Small/Medium", "carry": "Str. × 15 lb.", "dragLiftPush": "Str. × 30 lb."},
+    {"size": "Large", "carry": "Str. × 30 lb.", "dragLiftPush": "Str. × 60 lb."},
+    {"size": "Huge", "carry": "Str. × 60 lb.", "dragLiftPush": "Str. × 120 lb."},
+    {"size": "Gargantuan", "carry": "Str. × 120 lb.", "dragLiftPush": "Str. × 240 lb."}
+  ],
+  "objectArmorClass": [
+    {"ac": 11, "substance": "Cloth, paper, rope"},
+    {"ac": 13, "substance": "Crystal, glass, ice"},
+    {"ac": 15, "substance": "Wood"},
+    {"ac": 17, "substance": "Stone"},
+    {"ac": 19, "substance": "Iron, steel"},
+    {"ac": 21, "substance": "Mithral"},
+    {"ac": 23, "substance": "Adamantine"}
+  ],
+  "objectHitPoints": [
+    {"size": "Tiny (bottle, lock)", "fragile": "2 (1d4)", "resilient": "5 (2d4)"},
+    {"size": "Small (chest, lute)", "fragile": "3 (1d6)", "resilient": "10 (3d6)"},
+    {"size": "Medium (barrel, chandelier)", "fragile": "4 (1d8)", "resilient": "18 (4d8)"},
+    {"size": "Large (cart, dining table)", "fragile": "5 (1d10)", "resilient": "27 (5d10)"}
+  ]
+}
