@@ -1,0 +1,54 @@
+[
+  {
+    "name": "Acolyte",
+    "slug": "acolyte",
+    "edition": "2024",
+    "ability_scores": ["Intelligence", "Wisdom", "Charisma"],
+    "feat_name": "Magic Initiate (Cleric)",
+    "skill_proficiencies": ["Insight", "Religion"],
+    "tool_proficiency": "Calligrapher's Supplies",
+    "equipment_option_a": "Calligrapher's Supplies, Book (prayers), Holy Symbol, Parchment (10 sheets), Robe, 8 GP",
+    "equipment_option_b": "50 GP",
+    "description": "You devoted yourself to service in a temple, either nestled in a town or secluded in a sacred grove. There you performed hallowed rites in honor of a god or pantheon. You served under a priest and studied religion. Thanks to your priest's instruction and your own devotion, you also learned how to channel a modicum of divine power in service to your place of worship and the people who prayed there.",
+    "homebrew": false
+  },
+  {
+    "name": "Criminal",
+    "slug": "criminal",
+    "edition": "2024",
+    "ability_scores": ["Dexterity", "Constitution", "Intelligence"],
+    "feat_name": "Alert",
+    "skill_proficiencies": ["Sleight of Hand", "Stealth"],
+    "tool_proficiency": "Thieves' Tools",
+    "equipment_option_a": "2 Daggers, Thieves' Tools, Crowbar, 2 Pouches, Traveler's Clothes, 16 GP",
+    "equipment_option_b": "50 GP",
+    "description": "You eked out a living in dark alleyways, cutting purses or burgling shops. Perhaps you were part of a small gang of like-minded criminals who looked out for each other. Or maybe you were a lone wolf, fending for yourself against the local thieves' guild and tougher criminals.",
+    "homebrew": false
+  },
+  {
+    "name": "Sage",
+    "slug": "sage",
+    "edition": "2024",
+    "ability_scores": ["Constitution", "Intelligence", "Wisdom"],
+    "feat_name": "Magic Initiate (Wizard)",
+    "skill_proficiencies": ["Arcana", "History"],
+    "tool_proficiency": "Calligrapher's Supplies",
+    "equipment_option_a": "Quarterstaff, Calligrapher's Supplies, Book (history), Parchment (8 sheets), Robe, 8 GP",
+    "equipment_option_b": "50 GP",
+    "description": "You spent your formative years traveling between manors and monasteries, performing various odd jobs and services in exchange for access to their libraries. You whiled away many a long evening studying dusty tomes and ancient knowledge in candlelit chambers. Eventually, you gained the magic of a wizard and set out into the world.",
+    "homebrew": false
+  },
+  {
+    "name": "Soldier",
+    "slug": "soldier",
+    "edition": "2024",
+    "ability_scores": ["Strength", "Dexterity", "Constitution"],
+    "feat_name": "Savage Attacker",
+    "skill_proficiencies": ["Athletics", "Intimidation"],
+    "tool_proficiency": "Gaming Set (one of your choice)",
+    "equipment_option_a": "Spear, Shortbow, 20 Arrows, Gaming Set (same as above), Healer's Kit, Quiver, Traveler's Clothes, 14 GP",
+    "equipment_option_b": "50 GP",
+    "description": "You began training for war as soon as you reached adulthood and carried a weapon as part of a military group. You were part of a standing army or a mercenary company, or perhaps a member of a local militia who rose to adventure during a time of troubles.",
+    "homebrew": false
+  }
+]

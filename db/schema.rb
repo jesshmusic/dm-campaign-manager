@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_12_16_214556) do
+ActiveRecord::Schema[7.1].define(version: 2025_12_17_165810) do
   create_schema "heroku_ext"
 
   # These are extensions that must be enabled in order to support this database
@@ -76,6 +76,27 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_16_214556) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["item_id"], name: "index_armor_classes_on_item_id"
+  end
+
+  create_table "backgrounds", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "slug", null: false
+    t.string "edition", default: "2024", null: false
+    t.string "ability_scores", default: [], array: true
+    t.string "feat_name"
+    t.string "skill_proficiencies", default: [], array: true
+    t.string "tool_proficiency"
+    t.text "equipment_option_a"
+    t.text "equipment_option_b"
+    t.text "description"
+    t.boolean "homebrew", default: false, null: false
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["edition"], name: "index_backgrounds_on_edition"
+    t.index ["homebrew"], name: "index_backgrounds_on_homebrew"
+    t.index ["slug", "edition"], name: "index_backgrounds_on_slug_and_edition", unique: true
+    t.index ["user_id"], name: "index_backgrounds_on_user_id"
   end
 
   create_table "class_features", force: :cascade do |t|
@@ -219,6 +240,25 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_16_214556) do
     t.bigint "dnd_class_id"
     t.index ["dnd_class_id"], name: "index_equipment_on_dnd_class_id"
     t.index ["starting_equipment_option_id"], name: "index_equipment_on_starting_equipment_option_id"
+  end
+
+  create_table "feats", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "slug", null: false
+    t.string "edition", default: "2024", null: false
+    t.string "category", null: false
+    t.string "prerequisite"
+    t.text "description", null: false
+    t.boolean "repeatable", default: false, null: false
+    t.boolean "homebrew", default: false, null: false
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["category"], name: "index_feats_on_category"
+    t.index ["edition"], name: "index_feats_on_edition"
+    t.index ["homebrew"], name: "index_feats_on_homebrew"
+    t.index ["slug", "edition"], name: "index_feats_on_slug_and_edition", unique: true
+    t.index ["user_id"], name: "index_feats_on_user_id"
   end
 
   create_table "foundry_map_files", force: :cascade do |t|
@@ -749,6 +789,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_16_214556) do
   add_foreign_key "ability_score_dnd_classes", "dnd_classes"
   add_foreign_key "actions", "monsters"
   add_foreign_key "armor_classes", "items"
+  add_foreign_key "backgrounds", "users"
   add_foreign_key "class_features", "dnd_class_levels"
   add_foreign_key "class_level_choices", "class_features"
   add_foreign_key "class_specific_spell_slots", "class_specifics"
@@ -759,6 +800,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_16_214556) do
   add_foreign_key "damages", "items"
   add_foreign_key "dnd_class_levels", "dnd_classes"
   add_foreign_key "dnd_classes", "users"
+  add_foreign_key "feats", "users"
   add_foreign_key "foundry_map_files", "foundry_maps"
   add_foreign_key "foundry_map_taggings", "foundry_map_tags"
   add_foreign_key "foundry_map_taggings", "foundry_maps"

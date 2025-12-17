@@ -190,6 +190,18 @@ export default reduxApi({
   getRaces: {
     url: '/v1/races.json',
   },
+  getBackground: {
+    url: '/v1/backgrounds/:id.json',
+  },
+  getBackgrounds: {
+    url: '/v1/backgrounds.json',
+  },
+  getFeat: {
+    url: '/v1/feats/:id.json',
+  },
+  getFeats: {
+    url: '/v1/feats.json',
+  },
   getRule: {
     url: '/v1/rules/:id.json',
   },

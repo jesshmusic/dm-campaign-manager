@@ -143,6 +143,36 @@ jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/Fo
   };
 });
 
+jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/rules/RulesIndex', () => {
+  return function RulesIndex() {
+    return <div data-testid="rules-index-page">Rules Index Page</div>;
+  };
+});
+
+jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/backgrounds/BackgroundsIndex', () => {
+  return function BackgroundsIndex() {
+    return <div data-testid="backgrounds-index-page">Backgrounds Index Page</div>;
+  };
+});
+
+jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/backgrounds/BackgroundDetail', () => {
+  return function BackgroundDetail() {
+    return <div data-testid="background-detail-page">Background Detail Page</div>;
+  };
+});
+
+jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/feats/FeatsIndex', () => {
+  return function FeatsIndex() {
+    return <div data-testid="feats-index-page">Feats Index Page</div>;
+  };
+});
+
+jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/feats/FeatDetail', () => {
+  return function FeatDetail() {
+    return <div data-testid="feat-detail-page">Feat Detail Page</div>;
+  };
+});
+
 describe('DMRoutes', () => {
   describe('public routes', () => {
     it('should render home page on root path', () => {

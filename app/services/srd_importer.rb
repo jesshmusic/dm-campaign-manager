@@ -10,7 +10,9 @@
 class SrdImporter
   CONTENT_TYPES = %w[
     ability_scores
+    backgrounds
     dnd_classes
+    feats
     items
     monsters
     profs
@@ -97,7 +99,9 @@ class SrdImporter
   def model_for_type(type)
     case type
     when 'ability_scores' then AbilityScore
+    when 'backgrounds' then Background
     when 'dnd_classes' then DndClass
+    when 'feats' then Feat
     when 'items' then Item
     when 'monsters' then Monster
     when 'profs' then Prof

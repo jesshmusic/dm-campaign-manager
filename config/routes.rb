@@ -109,6 +109,8 @@ Rails.application.routes.draw do
         resources :monsters
         resources :races
         resources :rules
+        resources :backgrounds
+        resources :feats
         resources :spells
         resources :sections
         resources :widgets, only: [:index, :show, :create, :update, :destroy], constraints: { format: 'json' }

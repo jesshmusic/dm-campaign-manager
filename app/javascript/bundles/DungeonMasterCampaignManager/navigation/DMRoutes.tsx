@@ -13,6 +13,10 @@ import Spell from '../pages/spells/Spell';
 // Rule component is now rendered by RulesCategory
 import RulesIndex from '../pages/rules/RulesIndex';
 import RulesCategory from '../pages/rules/RulesCategory';
+import BackgroundsIndex from '../pages/backgrounds/BackgroundsIndex';
+import BackgroundDetail from '../pages/backgrounds/BackgroundDetail';
+import FeatsIndex from '../pages/feats/FeatsIndex';
+import FeatDetail from '../pages/feats/FeatDetail';
 import MonsterGenerator from '../pages/monster-generator/MonsterGenerator';
 import ProtectedRoute from './ProtectedRoute';
 import AdminDashboard from '../pages/admin-dashboard/AdminDashboard';
@@ -55,6 +59,10 @@ const DMRoutes = (props) => {
       <Route path="/app/spells/:spellSlug" element={<Spell {...props} />} />
       <Route path="/app/rules" element={<RulesIndex {...props} />} />
       <Route path="/app/rules/:ruleSlug" element={<RulesCategory {...props} />} />
+      <Route path="/app/backgrounds" element={<BackgroundsIndex {...props} />} />
+      <Route path="/app/backgrounds/:backgroundSlug" element={<BackgroundDetail {...props} />} />
+      <Route path="/app/feats" element={<FeatsIndex {...props} />} />
+      <Route path="/app/feats/:featSlug" element={<FeatDetail {...props} />} />
       <Route path="/app/monster-generator/" element={<MonsterGenerator {...props} />} />
       <Route path="/app/search/:query" element={<SearchResults {...props} />} />
       <Route path="/app/privacy-policy" element={<PrivacyPolicy {...props} />} />

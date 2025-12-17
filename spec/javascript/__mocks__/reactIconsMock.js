@@ -48,4 +48,8 @@ module.exports = {
   FaMap: MockIcon,
   GiCrossMark: MockIcon,
   GiMagicSwirl: MockIcon,
+  GiUpgrade: MockIcon,
+  GiSwordsPower: MockIcon,
+  GiBowArrow: MockIcon,
+  GiSparkSpirit: MockIcon,
 };

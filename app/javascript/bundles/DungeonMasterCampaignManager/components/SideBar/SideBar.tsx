@@ -26,6 +26,7 @@ import {
   GiSwapBag,
   GiSwordArray,
   GiToolbox,
+  GiUpgrade,
 } from 'react-icons/gi';
 import PatreonIcon from '../icons/PatreonIcon';
 import EditionToggle from '../EditionToggle';
@@ -212,6 +213,12 @@ const SideBar = (props: {
           <SidebarLink to="/" title="Dashboard" icon={<AiOutlineHome />} />
           <SidebarLink to="/app/classes" title="Classes" icon={<GiPerson />} />
           <SidebarLink to="/app/races" title={racesLabel} icon={<GiDwarfFace />} />
+          {isEdition2024 && (
+            <>
+              <SidebarLink to="/app/backgrounds" title="Backgrounds" icon={<GiSecretBook />} />
+              <SidebarLink to="/app/feats" title="Feats" icon={<GiUpgrade />} />
+            </>
+          )}
           <SidebarLink to="/app/monsters" title="Monsters" icon={<GiMonsterGrasp />} />
           <SidebarLink to="/app/spells" title="Spells" icon={<GiMagicPalm />} />
           <SubMenu
