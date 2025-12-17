@@ -52,4 +52,7 @@ module.exports = {
   GiSwordsPower: MockIcon,
   GiBowArrow: MockIcon,
   GiSparkSpirit: MockIcon,
+  GiCompass: MockIcon,
+  GiCrossedSwords: MockIcon,
+  GiSnowflake1: MockIcon,
 };

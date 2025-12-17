@@ -35,7 +35,7 @@ const Frame = (props: {
     <FrameWrapper className={className} style={style}>
       <FrameBody>
         {(title || icon || actionButton || linkTo) && (
-          <FrameTitle>
+          <FrameTitle className="widget-drag-handle">
             {linkTo ? (
               <Link to={linkTo}>
                 {icon}

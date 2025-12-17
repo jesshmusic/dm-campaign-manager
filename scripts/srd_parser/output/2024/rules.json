@@ -264,5 +264,180 @@
     "edition": "2024",
     "category": "Magic",
     "description": "A typical spell requires the caster to pick one or more targets to be affected by the spell's magic. A spell's description tells you whether the spell targets creatures, objects, or a point of origin for an area of effect.\n\n## Targeting Requirements\n\nTo target something with a spell, you must have a clear path to it. If you place an area of effect at a point you can't see and an obstruction is between you and that point, the point of origin comes into being on the near side of that obstruction.\n\n### Line of Sight\n\nUnless a spell has a visible effect or the spell says otherwise, a creature doesn't know it is being targeted by a spell.\n\n### Targeting Yourself\n\nIf a spell targets a creature of your choice, you can choose yourself, unless the creature must be hostile or specifically a creature other than you.\n\n### Invalid Targets\n\nIf a target is invalid (like targeting a creature immune to the spell's effect or a target behind total cover), the spell slot is expended but the spell has no effect on that target.\n\n## Areas of Effect\n\nSpells such as *burning hands* and *cone of cold* cover an area, allowing them to affect multiple creatures at once. A spell's description specifies its area of effect, which typically has one of six shapes:\n\n### Cone\n\nA cone extends in a direction you choose from its point of origin. A cone's width at a given point along its length is equal to that point's distance from the point of origin. A cone's area of effect specifies its maximum length.\n\n### Cube\n\nYou select a cube's point of origin, which lies anywhere on a face of the cubic effect. The cube's size is expressed as the length of each side.\n\n### Cylinder\n\nA cylinder's point of origin is the center of a circle of a particular radius. The circle must either be on the ground or at the height of the spell effect. The energy in a cylinder expands in straight lines from the point of origin to the perimeter of the circle, forming the base of the cylinder.\n\n### Emanation\n\nAn emanation extends in straight lines from a creature or object in all directions. Its size is determined by the radius from the creature or object at its center.\n\n### Line\n\nA line extends from its point of origin in a straight path up to its length and covers an area defined by its width.\n\n### Sphere\n\nYou select a sphere's point of origin, and the sphere extends outward from that point. The sphere's size is expressed as a radius in feet that extends from the point."
+  },
+  {
+    "name": "Damage Types",
+    "slug": "damage-types",
+    "edition": "2024",
+    "category": "Rules Glossary",
+    "description": "Attacks, spells, and other harmful effects deal different types of damage. Damage types have no rules of their own, but other rules, such as Resistance, rely on the types.\n\n| Type | Examples |\n|------|----------|\n| Acid | Corrosive liquids, digestive enzymes |\n| Bludgeoning | Blunt objects, constriction, falling |\n| Cold | Freezing water, icy blasts |\n| Fire | Flames, unbearable heat |\n| Force | Pure magical energy |\n| Lightning | Electricity |\n| Necrotic | Life-draining energy |\n| Piercing | Fangs, puncturing objects |\n| Poison | Toxic gas, venom |\n| Psychic | Mind-rending energy |\n| Radiant | Holy energy, searing radiation |\n| Slashing | Claws, cutting objects |\n| Thunder | Concussive sound |"
+  },
+  {
+    "name": "Creature Types",
+    "slug": "creature-types",
+    "edition": "2024",
+    "category": "Rules Glossary",
+    "description": "Every creature in D&D belongs to a creature type. The creature types are: Aberration, Beast, Celestial, Construct, Dragon, Elemental, Fey, Fiend, Giant, Humanoid, Monstrosity, Ooze, Plant, and Undead.\n\nA creature's type doesn't determine abilities, but some spells, magic items, class features, and other effects have special interactions with creatures of certain types."
+  },
+  {
+    "name": "Burning",
+    "slug": "hazard-burning",
+    "edition": "2024",
+    "category": "Hazards",
+    "description": "A burning creature or object takes 1d4 Fire damage at the start of each of its turns. As an action, you can extinguish fire on yourself by giving yourself the Prone condition and rolling on the ground. The fire also goes out if it is doused, submerged, or suffocated."
+  },
+  {
+    "name": "Dehydration",
+    "slug": "hazard-dehydration",
+    "edition": "2024",
+    "category": "Hazards",
+    "description": "A creature requires an amount of water per day based on its size. A creature that drinks less than half the required water for a day gains 1 Exhaustion level at the day's end. Exhaustion caused by dehydration can't be removed until the creature drinks the full amount of water required for a day.\n\n| Size | Water per Day |\n|------|---------------|\n| Tiny | 1/4 gallon |\n| Small | 1 gallon |\n| Medium | 1 gallon |\n| Large | 4 gallons |\n| Huge | 16 gallons |\n| Gargantuan | 64 gallons |"
+  },
+  {
+    "name": "Falling",
+    "slug": "hazard-falling",
+    "edition": "2024",
+    "category": "Hazards",
+    "description": "A creature that falls takes 1d6 Bludgeoning damage at the end of the fall for every 10 feet it fell, to a maximum of 20d6. When the creature lands, it has the Prone condition unless it avoids taking any damage from the fall.\n\nA creature that falls into water or another liquid can use its Reaction to make a DC 15 Strength (Athletics) or Dexterity (Acrobatics) check to hit the surface head or feet first. On a successful check, any damage resulting from the fall is halved."
+  },
+  {
+    "name": "Malnutrition",
+    "slug": "hazard-malnutrition",
+    "edition": "2024",
+    "category": "Hazards",
+    "description": "A creature needs an amount of food per day based on its size. A creature that eats but consumes less than half the required food for a day must succeed on a DC 10 Constitution saving throw or gain 1 Exhaustion level at the day's end. A creature that eats nothing for 5 days automatically gains 1 Exhaustion level at the end of the fifth day as well as an additional level at the end of each subsequent day without food.\n\n| Size | Food per Day |\n|------|---------------|\n| Tiny | 1/4 pound |\n| Small | 1 pound |\n| Medium | 1 pound |\n| Large | 4 pounds |\n| Huge | 16 pounds |\n| Gargantuan | 64 pounds |"
+  },
+  {
+    "name": "Suffocation",
+    "slug": "hazard-suffocation",
+    "edition": "2024",
+    "category": "Hazards",
+    "description": "A creature can hold its breath for a number of minutes equal to 1 plus its Constitution modifier (minimum of 30 seconds) before suffocation begins. When a creature runs out of breath or is choking, it gains 1 Exhaustion level at the end of each of its turns. When a creature can breathe again, it removes all levels of Exhaustion it gained from suffocating."
+  },
+  {
+    "name": "Deep Water",
+    "slug": "environmental-deep-water",
+    "edition": "2024",
+    "category": "Environmental Effects",
+    "description": "Swimming through deep water (more than 100 feet deep) presents additional challenges because of the water's pressure and cold temperature. After each hour of swimming in deep water, a creature that lacks a Swim Speed must succeed on a DC 10 Constitution saving throw or gain 1 Exhaustion level."
+  },
+  {
+    "name": "Extreme Cold",
+    "slug": "environmental-extreme-cold",
+    "edition": "2024",
+    "category": "Environmental Effects",
+    "description": "When the temperature is 0 degrees Fahrenheit or lower, a creature exposed to the extreme cold must succeed on a DC 10 Constitution saving throw at the end of each hour or gain 1 Exhaustion level. Creatures that have Resistance or Immunity to Cold damage automatically succeed on the save."
+  },
+  {
+    "name": "Extreme Heat",
+    "slug": "environmental-extreme-heat",
+    "edition": "2024",
+    "category": "Environmental Effects",
+    "description": "When the temperature is 100 degrees Fahrenheit or higher, a creature exposed to the extreme heat and without access to drinkable water must succeed on a Constitution saving throw at the end of each hour or gain 1 Exhaustion level. The DC is 5 for the first hour and increases by 1 for each additional hour. Creatures wearing Medium or Heavy armor have Disadvantage on the save. Creatures that have Resistance or Immunity to Fire damage automatically succeed on the save."
+  },
+  {
+    "name": "Frigid Water",
+    "slug": "environmental-frigid-water",
+    "edition": "2024",
+    "category": "Environmental Effects",
+    "description": "A creature can be immersed in frigid water for a number of minutes equal to its Constitution score before suffering any ill effects. Each additional minute spent in frigid water requires the creature to succeed on a DC 10 Constitution saving throw or gain 1 Exhaustion level. Creatures with Resistance or Immunity to Cold damage automatically succeed on the save, as do creatures that are naturally adapted to living in ice-cold water."
+  },
+  {
+    "name": "Heavy Precipitation",
+    "slug": "environmental-heavy-precipitation",
+    "edition": "2024",
+    "category": "Environmental Effects",
+    "description": "Everything within an area of heavy rain or heavy snowfall is Lightly Obscured, and creatures in the area have Disadvantage on all Wisdom (Perception) checks. Heavy rain also extinguishes open flames."
+  },
+  {
+    "name": "High Altitude",
+    "slug": "environmental-high-altitude",
+    "edition": "2024",
+    "category": "Environmental Effects",
+    "description": "Traveling at altitudes of 10,000 feet or higher above sea level is taxing for most creatures because of the reduced amount of oxygen in the air. Each hour such a creature spends traveling at high altitude counts as 2 hours for the purpose of determining how long that creature can travel. Creatures can become acclimated to a high altitude by spending 30 days or more at this elevation. Creatures can't become acclimated to elevations above 20,000 feet unless they are native to such environments."
+  },
+  {
+    "name": "Slippery Ice",
+    "slug": "environmental-slippery-ice",
+    "edition": "2024",
+    "category": "Environmental Effects",
+    "description": "Slippery ice is Difficult Terrain. A creature that moves onto slippery ice for the first time on a turn or starts its turn there must succeed on a DC 10 Dexterity saving throw or have the Prone condition."
+  },
+  {
+    "name": "Strong Wind",
+    "slug": "environmental-strong-wind",
+    "edition": "2024",
+    "category": "Environmental Effects",
+    "description": "Strong wind imposes Disadvantage on ranged attack rolls with weapons. It also extinguishes open flames and disperses fog. A flying creature in a strong wind must land at the end of its turn or fall. A strong wind in a desert can create a sandstorm that imposes Disadvantage on Wisdom (Perception) checks."
+  },
+  {
+    "name": "Thin Ice",
+    "slug": "environmental-thin-ice",
+    "edition": "2024",
+    "category": "Environmental Effects",
+    "description": "Thin ice has a weight tolerance of 3d10 x 10 pounds per 10-foot-square area. Whenever the total weight on an area of thin ice exceeds its tolerance, the ice in that area breaks. All creatures on broken ice fall through. Below the ice is frigid water."
+  },
+  {
+    "name": "Travel Terrain",
+    "slug": "travel-terrain",
+    "edition": "2024",
+    "category": "Exploration",
+    "description": "Different terrain types affect travel pace, encounter distance, and skill check DCs.\n\n| Terrain | Max Pace | Encounter Distance | Foraging DC | Navigation DC | Search DC |\n|---------|----------|-------------------|-------------|---------------|----------|\n| Arctic | Fast* | 6d6 x 10 ft | DC 20 | DC 10 | DC 10 |\n| Coastal | Normal | 2d10 x 10 ft | DC 10 | DC 5 | DC 15 |\n| Desert | Normal | 6d6 x 10 ft | DC 20 | DC 10 | DC 10 |\n| Forest | Normal | 2d8 x 10 ft | DC 10 | DC 15 | DC 15 |\n| Grassland | Fast | 6d6 x 10 ft | DC 15 | DC 5 | DC 15 |\n| Hill | Normal | 2d10 x 10 ft | DC 15 | DC 10 | DC 15 |\n| Mountain | Slow | 4d10 x 10 ft | DC 20 | DC 15 | DC 20 |\n| Swamp | Slow | 2d8 x 10 ft | DC 10 | DC 15 | DC 20 |\n| Underdark | Normal | 2d6 x 10 ft | DC 20 | DC 10 | DC 20 |\n| Urban | Normal | 2d6 x 10 ft | DC 20 | DC 15 | DC 15 |\n| Waterborne | Special | 6d6 x 10 ft | DC 15 | DC 10 | DC 15 |\n\n*Arctic terrain requires appropriate equipment (such as skis) to maintain Fast pace.\n\n**Extended Travel:** Characters can push themselves to travel for more than 8 hours per day. At the end of each additional hour of travel beyond 8 hours, each character must succeed on a Constitution saving throw or gain 1 Exhaustion level. The DC is 10 plus 1 for each hour past 8 hours."
+  },
+  {
+    "name": "Carrying Capacity",
+    "slug": "carrying-capacity",
+    "edition": "2024",
+    "category": "Equipment",
+    "description": "Your carrying capacity is how much weight you can carry. Your size determines your base carrying capacity and your capacity for pushing, dragging, or lifting weight.\n\n| Size | Carry | Push/Drag/Lift |\n|------|-------|----------------|\n| Tiny | Str x 7.5 lb | Str x 15 lb |\n| Small/Medium | Str x 15 lb | Str x 30 lb |\n| Large | Str x 30 lb | Str x 60 lb |\n| Huge | Str x 60 lb | Str x 120 lb |\n| Gargantuan | Str x 120 lb | Str x 240 lb |\n\n**Encumbrance (Optional Rule).** If you carry weight in excess of 5 times your Strength score, you are encumbered, which means your Speed drops by 10 feet. If you carry weight in excess of 10 times your Strength score, up to your maximum carrying capacity, you are heavily encumbered, which means your Speed drops by 20 feet and you have Disadvantage on ability checks, attack rolls, and saving throws that use Strength, Dexterity, or Constitution."
+  },
+  {
+    "name": "Objects",
+    "slug": "objects",
+    "edition": "2024",
+    "category": "Equipment",
+    "description": "When characters need to saw through ropes, shatter a window, or smash a vampire's coffin, the only hard and fast rule is this: given enough time and the right tools, characters can destroy any destructible object.\n\n## Object Armor Class\n\n| AC | Substance |\n|----|----------|\n| 11 | Cloth, paper, rope |\n| 13 | Crystal, glass, ice |\n| 15 | Wood |\n| 17 | Stone |\n| 19 | Iron, steel |\n| 21 | Mithral |\n| 23 | Adamantine |\n\n## Object Hit Points\n\n| Size | Fragile | Resilient |\n|------|---------|----------|\n| Tiny (bottle, lock) | 2 (1d4) | 5 (2d4) |\n| Small (chest, lute) | 3 (1d6) | 10 (3d6) |\n| Medium (barrel, chandelier) | 4 (1d8) | 18 (4d8) |\n| Large (cart, dining table) | 5 (1d10) | 27 (5d10) |\n\n**Huge and Gargantuan Objects.** Normal weapons are of little use against many Huge and Gargantuan objects, such as a colossal statue, towering column of stone, or massive boulder. That said, one torch can burn a Huge tapestry, and an earthquake spell can reduce a colossus to rubble. You can track a Huge or Gargantuan object's Hit Points if you like, or you can simply decide how long the object can withstand whatever weapon or force is acting against it."
+  },
+  {
+    "name": "Curses",
+    "slug": "curses",
+    "edition": "2024",
+    "category": "Hazards",
+    "description": "A curse is a magical burden that lasts for a specified time or until it is ended by some means. Curses can be removed by the Remove Curse and Greater Restoration spells or other magic that explicitly ends curses.\n\n## Types of Curses\n\n**Bestow Curse.** The simplest curses are created by the Bestow Curse spell. A curse that lasts for 1 minute equates to a level 3 spell, while one that lasts until dispelled equates to a level 9 spell.\n\n**Cursed Creatures.** Some monsters are associated with curses, whether as part of their origins or due to their ability to spread curses—werewolves being a prime example.\n\n**Cursed Magic Items.** Cursed magic items are created deliberately or originate as the result of supernatural events.\n\n**Narrative Curses.** A curse might manifest during an adventure when a creature's violation of a taboo warrants supernatural punishment, such as breaking a vow, defiling a tomb, or murdering an innocent.\n\n## Demonic Possession\n\nDemonic Possession arises from the chaos and evil of the Abyss and commonly besets creatures that interact with demonic objects or linger in desecrated locations. A creature that becomes the target of Demonic Possession must succeed on a DC 15 Charisma saving throw or be possessed by a bodiless demonic entity. Whenever the possessed creature rolls a 1 on a D20 Test, the demonic entity takes control of the creature and determines the creature's behavior thereafter. At the end of each of the possessed creature's later turns, the creature makes a DC 15 Charisma saving throw, regaining control of itself on a success."
+  },
+  {
+    "name": "Cackle Fever",
+    "slug": "contagion-cackle-fever",
+    "edition": "2024",
+    "category": "Magical Contagions",
+    "description": "Cheaply made potions and elixirs are sometimes tainted by Cackle Fever, which affects Humanoids only (gnomes are strangely immune). A creature suffers the following effects 1d4 days after infection.\n\n**Fever.** The creature gains 1 Exhaustion level, which lasts until the contagion ends on the creature.\n\n**Uncontrollable Laughter.** While the creature has the Exhaustion condition, the creature makes a DC 13 Constitution saving throw each time it takes damage other than Psychic damage. On a failed save, the creature takes 5 (1d10) Psychic damage and has the Incapacitated condition as it laughs uncontrollably. At the end of each of its turns, the creature repeats the save, ending the effect on itself on a success. After 1 minute, it succeeds automatically.\n\n**Fighting the Contagion.** At the end of each Long Rest, an infected creature makes a DC 13 Constitution saving throw. After the creature succeeds on three of these saves, the contagion ends on it, and the creature is immune to Cackle Fever for 1 year.\n\n**Spreading the Contagion.** Any Humanoid (other than a gnome) that starts its turn within a 10-foot Emanation originating from a creature infected with Cackle Fever must succeed on a DC 10 Constitution saving throw or also become infected with the contagion."
+  },
+  {
+    "name": "Sewer Plague",
+    "slug": "contagion-sewer-plague",
+    "edition": "2024",
+    "category": "Magical Contagions",
+    "description": "Fouled potions and alchemical waste can give rise to Sewer Plague, which incubates in sewers and refuse heaps and is sometimes transmitted by creatures that dwell in such areas, including otyughs and rats. A creature suffers the following effects 1d4 days after infection.\n\n**Fatigue.** The creature gains 1 Exhaustion level.\n\n**Weakness.** While the creature has any Exhaustion levels, it regains only half the normal number of Hit Points from spending Hit Point Dice.\n\n**Restlessness.** While the creature has any Exhaustion levels, finishing a Long Rest neither restores lost Hit Points nor reduces the creature's Exhaustion level.\n\n**Fighting the Contagion.** Daily at dawn, an infected creature makes a DC 11 Constitution saving throw. On a failed save, the creature gains 1 Exhaustion level as its fatigue worsens. On a successful save, the creature's Exhaustion level decreases by 1. If the creature's Exhaustion level is reduced to 0, the contagion ends on the creature."
+  },
+  {
+    "name": "Sight Rot",
+    "slug": "contagion-sight-rot",
+    "edition": "2024",
+    "category": "Magical Contagions",
+    "description": "Any Beast or Humanoid that drinks water tainted by Sight Rot must succeed on a DC 15 Constitution saving throw or have the Blinded condition until the contagion ends.\n\n**Fighting the Contagion.** Magic such as a Heal or Lesser Restoration spell ends the contagion immediately. A character who is proficient with an Herbalism Kit can use it to create one dose of nonmagical ointment, which takes 1 hour. When applied to the eyes of a creature suffering from Sight Rot, the ointment suppresses the contagion on that creature for 24 hours. If the contagion is suppressed in this way for a total of 72 hours (requiring three doses and applications of the ointment), the contagion ends on the creature.\n\n**Spreading the Contagion.** Any Humanoid that makes skin contact with a creature infected with Sight Rot must succeed on a DC 15 Constitution saving throw or also become infected with the contagion."
+  },
+  {
+    "name": "Poisons",
+    "slug": "poisons",
+    "edition": "2024",
+    "category": "Equipment",
+    "description": "Poisons come in the following types:\n\n- **Contact.** Contact poison can be smeared on an object and remains potent until it is touched or washed off. A creature that touches Contact poison with exposed skin suffers its effects.\n- **Ingested.** A creature must swallow an entire dose of Ingested poison to suffer its effects. The dose can be delivered in food or a liquid.\n- **Inhaled.** Inhaled poisons are powders or gases. A container of such poison can be thrown up to 20 feet, shattering on impact. The poison forms a 5-foot-radius Sphere that lasts for 1 minute in still air (a moderate wind disperses it in 4 rounds; a strong wind disperses it in 1 round). A creature that enters or starts its turn in the area is exposed to the poison and must make a saving throw against it.\n- **Injury.** Injury poison can be applied to weapons, ammunition, trap components, and other objects that deal piercing or slashing damage. The poison remains potent for 1 minute or until delivered through a wound. A creature that takes piercing or slashing damage from an object coated with the poison is exposed to its effects.\n\n## Poison List\n\n| Poison | Type | Cost | DC |\n|--------|------|------|----|\n| Assassin's Blood | Ingested | 150 GP | 10 |\n| Burnt Othur Fumes | Inhaled | 500 GP | 13 |\n| Crawler Mucus | Contact | 200 GP | 13 |\n| Essence of Ether | Inhaled | 300 GP | 15 |\n| Malice | Inhaled | 250 GP | 15 |\n| Midnight Tears | Ingested | 1,500 GP | 17 |\n| Oil of Taggit | Contact | 400 GP | 13 |\n| Pale Tincture | Ingested | 250 GP | 16 |\n| Purple Worm Poison | Injury | 2,000 GP | 21 |\n| Serpent Venom | Injury | 200 GP | 11 |\n| Spider's Sting | Injury | 200 GP | 13 |\n| Torpor | Ingested | 600 GP | 15 |\n| Truth Serum | Ingested | 150 GP | 11 |\n| Wyvern Poison | Injury | 1,200 GP | 14 |"
+  },
+  {
+    "name": "Fear and Mental Stress",
+    "slug": "fear-and-mental-stress",
+    "edition": "2024",
+    "category": "Hazards",
+    "description": "Adventurers tend to be less susceptible to fear and mental stress than common folk. Certain creatures and game effects can terrify or fray the mind of even the most stalwart adventurer.\n\n## Sample Fear DCs\n\n| Example | DC |\n|---------|----|\n| When the characters open a sarcophagus, a harmless yet terrifying apparition appears | 10 |\n| A character triggers a magical trap that creates an illusory manifestation of that character's worst fears | 15 |\n| A portal to the Abyss opens, revealing a nightmarish realm of torment and slaughter | 20 |\n\n## Additional Fear Effects\n\nBeyond the standard Frightened condition, a GM might impose additional effects:\n- The Frightened creature must take the Dash action on each of its turns and uses its movement to get farther away from the source of its fear.\n- Attack rolls against the Frightened creature have Advantage.\n- The Frightened creature can do only one of the following on each of its turns: move, take an action, or take a Bonus Action.\n\n## Mental Stress\n\nWhen a character is subjected to an effect that causes intense mental stress, Psychic damage is the best way to emulate that effect.\n\n## Prolonged Effects\n\n**Short-Term Effects.** The character has the Frightened, Incapacitated, or Stunned condition for 1d10 minutes. These effects can be suppressed with the Calm Emotions spell or removed by the Lesser Restoration spell.\n\n**Long-Term Effects.** The character has Disadvantage on some or all ability checks for 1d10 x 10 hours. These effects can be suppressed with the Calm Emotions spell or removed by the Lesser Restoration spell.\n\n**Indefinite Effects.** An indefinite effect is a long-term effect that lasts until removed by a Greater Restoration spell. It can be suppressed by a Calm Emotions spell."
   }
 ]

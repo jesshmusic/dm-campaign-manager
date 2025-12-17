@@ -49,4 +49,12 @@ export const FrameTitle = styled.div`
   justify-content: space-between;
   margin-bottom: 0.5rem;
   width: 100%;
+
+  &.widget-drag-handle {
+    cursor: grab;
+
+    &:active {
+      cursor: grabbing;
+    }
+  }
 `;

@@ -10,11 +10,17 @@ import {
   GiOrcHead,
   GiRock,
   GiSwordman,
+  GiCompass,
+  GiCrossedSwords,
+  GiSnowflake1,
 } from 'react-icons/gi';
 import ActionsInCombat from './ActionsInCombat';
 import TurnActions from './TurnActions';
 import Cover from './Cover';
 import AdventureHookWidget from './AdventureHookWidget';
+import TravelCalculatorWidget from './TravelCalculatorWidget';
+import EncounterDistanceWidget from './EncounterDistanceWidget';
+import EnvironmentalEffectsWidget from './EnvironmentalEffectsWidget';
 
 export const dashboardComponents: {
   [key: string]: {
@@ -81,6 +87,27 @@ export const dashboardComponents: {
     subtitle: '',
     grid: { w: 4, h: 3, x: 0, y: Infinity, minW: 4, minH: 3 },
   },
+  travelCalculator: {
+    component: TravelCalculatorWidget,
+    icon: <GiCompass />,
+    title: 'Travel Calculator',
+    subtitle: 'Quick reference for terrain travel',
+    grid: { w: 4, h: 6, x: 0, y: Infinity, minW: 4, minH: 5 },
+  },
+  encounterDistance: {
+    component: EncounterDistanceWidget,
+    icon: <GiCrossedSwords />,
+    title: 'Encounter Distance',
+    subtitle: 'Roll starting distance for encounters',
+    grid: { w: 4, h: 4, x: 0, y: Infinity, minW: 3, minH: 4 },
+  },
+  environmentalEffects: {
+    component: EnvironmentalEffectsWidget,
+    icon: <GiSnowflake1 />,
+    title: 'Environmental Effects',
+    subtitle: 'Hazards and conditions reference',
+    grid: { w: 4, h: 5, x: 0, y: Infinity, minW: 4, minH: 5 },
+  },
 };
 
 export const dashboardItems = [
@@ -91,6 +118,9 @@ export const dashboardItems = [
   'randomName',
   'randomTavern',
   'turnActions',
+  'travelCalculator',
+  'encounterDistance',
+  'environmentalEffects',
 ];
 
 export const initialLayouts = {
