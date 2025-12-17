@@ -1,5 +1,4 @@
 import { combineReducers } from 'redux';
-import conditions from './conditions';
 import dndClasses from './dndClasses';
 import flashMessages from './flashMessages';
 import items from './items';
@@ -13,7 +12,6 @@ import widgets from './widgets';
 import search from './search';
 
 export default combineReducers({
-  conditions,
   customActions,
   dndClasses,
   flashMessages,

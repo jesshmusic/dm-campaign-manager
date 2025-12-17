@@ -1,0 +1,134 @@
+[
+  {
+    "name": "Wizard",
+    "slug": "wizard",
+    "edition": "2014",
+    "hit_die": 6,
+    "spell_ability": null,
+    "subclasses": [
+      "Evocation"
+    ],
+    "primary_abilities": "Intelligence"
+  },
+  {
+    "name": "Barbarian",
+    "slug": "barbarian",
+    "edition": "2014",
+    "hit_die": 12,
+    "spell_ability": null,
+    "subclasses": [
+      "Berserker"
+    ],
+    "primary_abilities": "Strength"
+  },
+  {
+    "name": "Bard",
+    "slug": "bard",
+    "edition": "2014",
+    "hit_die": 8,
+    "spell_ability": null,
+    "subclasses": [
+      "Lore"
+    ],
+    "primary_abilities": "Charisma"
+  },
+  {
+    "name": "Cleric",
+    "slug": "cleric",
+    "edition": "2014",
+    "hit_die": 8,
+    "spell_ability": null,
+    "subclasses": [
+      "Life"
+    ],
+    "primary_abilities": "Wisdom"
+  },
+  {
+    "name": "Druid",
+    "slug": "druid",
+    "edition": "2014",
+    "hit_die": 8,
+    "spell_ability": null,
+    "subclasses": [
+      "Land"
+    ],
+    "primary_abilities": "Wisdom"
+  },
+  {
+    "name": "Fighter",
+    "slug": "fighter",
+    "edition": "2014",
+    "hit_die": 10,
+    "spell_ability": null,
+    "subclasses": [
+      "Champion"
+    ],
+    "primary_abilities": "Strength or Dexterity"
+  },
+  {
+    "name": "Monk",
+    "slug": "monk",
+    "edition": "2014",
+    "hit_die": 8,
+    "spell_ability": null,
+    "subclasses": [
+      "Open Hand"
+    ],
+    "primary_abilities": "Dexterity & Wisdom"
+  },
+  {
+    "name": "Paladin",
+    "slug": "paladin",
+    "edition": "2014",
+    "hit_die": 10,
+    "spell_ability": null,
+    "subclasses": [
+      "Devotion"
+    ],
+    "primary_abilities": "Strength & Charisma"
+  },
+  {
+    "name": "Ranger",
+    "slug": "ranger",
+    "edition": "2014",
+    "hit_die": 10,
+    "spell_ability": null,
+    "subclasses": [
+      "Hunter"
+    ],
+    "primary_abilities": "Dexterity & Wisdom"
+  },
+  {
+    "name": "Rogue",
+    "slug": "rogue",
+    "edition": "2014",
+    "hit_die": 8,
+    "spell_ability": null,
+    "subclasses": [
+      "Thief"
+    ],
+    "primary_abilities": "Dexterity"
+  },
+  {
+    "name": "Sorcerer",
+    "slug": "sorcerer",
+    "edition": "2014",
+    "hit_die": 6,
+    "spell_ability": null,
+    "subclasses": [
+      "Draconic"
+    ],
+    "primary_abilities": "Charisma"
+  },
+  {
+    "name": "Warlock",
+    "slug": "warlock",
+    "edition": "2014",
+    "hit_die": 8,
+    "spell_ability": null,
+    "subclasses": [
+      "Fiend"
+    ],
+    "primary_abilities": "Charisma"
+  }
+]

@@ -4,6 +4,7 @@
 #
 #  id         :bigint           not null, primary key
 #  desc       :string           default([]), is an Array
+#  edition    :string           default("2014"), not null
 #  full_name  :string
 #  name       :string
 #  slug       :string
@@ -12,7 +13,8 @@
 #
 # Indexes
 #
-#  index_ability_scores_on_slug  (slug) UNIQUE
+#  index_ability_scores_on_edition  (edition)
+#  index_ability_scores_on_slug     (slug) UNIQUE
 #
 FactoryBot.define do
   factory :ability_score do

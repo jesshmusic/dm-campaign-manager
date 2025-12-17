@@ -21,7 +21,6 @@ RSpec.describe 'Home', type: :request do
       it 'assigns @home_props with model counts' do
         get root_path
 
-        expect(assigns(:home_props)).to have_key(:conditions)
         expect(assigns(:home_props)).to have_key(:dndClasses)
         expect(assigns(:home_props)).to have_key(:items)
         expect(assigns(:home_props)).to have_key(:monsters)
@@ -29,7 +28,6 @@ RSpec.describe 'Home', type: :request do
         expect(assigns(:home_props)).to have_key(:spells)
         expect(assigns(:home_props)).to have_key(:users)
 
-        expect(assigns(:home_props)[:conditions][:count]).to be >= 0
         expect(assigns(:home_props)[:dndClasses][:count]).to be >= 0
         expect(assigns(:home_props)[:items][:count]).to be >= 0
         expect(assigns(:home_props)[:monsters][:count]).to be >= 0

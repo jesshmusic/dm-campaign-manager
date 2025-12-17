@@ -1,0 +1,1245 @@
+[
+  {
+    "name": "Club",
+    "slug": "club",
+    "item_type": "weapons",
+    "desc": "",
+    "cost": "1 SP",
+    "weight": "2 lb.",
+    "damage": "1d4 Bludgeoning"
+  },
+  {
+    "name": "Dagger",
+    "slug": "dagger",
+    "item_type": "weapons",
+    "desc": "",
+    "cost": "2 GP",
+    "weight": "1 lb.",
+    "damage": "1d4 Piercing"
+  },
+  {
+    "name": "Greatclub",
+    "slug": "greatclub",
+    "item_type": "weapons",
+    "desc": "",
+    "cost": "2 SP",
+    "weight": "10 lb.",
+    "damage": "1d8 Bludgeoning"
+  },
+  {
+    "name": "Handaxe",
+    "slug": "handaxe",
+    "item_type": "weapons",
+    "desc": "",
+    "cost": "5 GP",
+    "weight": "2 lb.",
+    "damage": "1d6 Slashing"
+  },
+  {
+    "name": "Javelin",
+    "slug": "javelin",
+    "item_type": "weapons",
+    "desc": "",
+    "cost": "5 SP",
+    "weight": "2 lb.",
+    "damage": "1d6 Piercing"
+  },
+  {
+    "name": "Light Hammer",
+    "slug": "light-hammer",
+    "item_type": "weapons",
+    "desc": "",
+    "cost": "2 GP",
+    "weight": "2 lb.",
+    "damage": "1d4 Bludgeoning"
+  },
+  {
+    "name": "Mace",
+    "slug": "mace",
+    "item_type": "weapons",
+    "desc": "",
+    "cost": "5 GP",
+    "weight": "4 lb.",
+    "damage": "1d6 Bludgeoning"
+  },
+  {
+    "name": "Quarterstaff",
+    "slug": "quarterstaff",
+    "item_type": "weapons",
+    "desc": "",
+    "cost": "2 SP",
+    "weight": "4 lb.",
+    "damage": "1d6 Bludgeoning"
+  },
+  {
+    "name": "Sickle",
+    "slug": "sickle",
+    "item_type": "weapons",
+    "desc": "",
+    "cost": "1 GP",
+    "weight": "2 lb.",
+    "damage": "1d4 Slashing"
+  },
+  {
+    "name": "Spear",
+    "slug": "spear",
+    "item_type": "weapons",
+    "desc": "",
+    "cost": "1 GP",
+    "weight": "3 lb.",
+    "damage": "1d6 Piercing"
+  },
+  {
+    "name": "Dart",
+    "slug": "dart",
+    "item_type": "weapons",
+    "desc": "",
+    "cost": "5 CP",
+    "weight": "1/4 lb.",
+    "damage": "1d4 Piercing"
+  },
+  {
+    "name": "Light Crossbow",
+    "slug": "light-crossbow",
+    "item_type": "weapons",
+    "desc": "",
+    "cost": "25 GP",
+    "weight": "5 lb.",
+    "damage": "1d8 Piercing"
+  },
+  {
+    "name": "Shortbow",
+    "slug": "shortbow",
+    "item_type": "weapons",
+    "desc": "",
+    "cost": "25 GP",
+    "weight": "2 lb.",
+    "damage": "1d6 Piercing"
+  },
+  {
+    "name": "Sling",
+    "slug": "sling",
+    "item_type": "weapons",
+    "desc": "",
+    "cost": "1 SP",
+    "weight": "â",
+    "damage": "1d4 Bludgeoning"
+  },
+  {
+    "name": "Battleaxe",
+    "slug": "battleaxe",
+    "item_type": "weapons",
+    "desc": "",
+    "cost": "10 GP",
+    "weight": "4 lb.",
+    "damage": "1d8 Slashing"
+  },
+  {
+    "name": "Flail",
+    "slug": "flail",
+    "item_type": "weapons",
+    "desc": "",
+    "cost": "10 GP",
+    "weight": "2 lb.",
+    "damage": "1d8 Bludgeoning"
+  },
+  {
+    "name": "Glaive",
+    "slug": "glaive",
+    "item_type": "weapons",
+    "desc": "",
+    "cost": "20 GP",
+    "weight": "6 lb.",
+    "damage": "1d10 Slashing"
+  },
+  {
+    "name": "Greataxe",
+    "slug": "greataxe",
+    "item_type": "weapons",
+    "desc": "",
+    "cost": "30 GP",
+    "weight": "7 lb.",
+    "damage": "1d12 Slashing"
+  },
+  {
+    "name": "Greatsword",
+    "slug": "greatsword",
+    "item_type": "weapons",
+    "desc": "",
+    "cost": "50 GP",
+    "weight": "6 lb.",
+    "damage": "2d6 Slashing"
+  },
+  {
+    "name": "Halberd",
+    "slug": "halberd",
+    "item_type": "weapons",
+    "desc": "",
+    "cost": "20 GP",
+    "weight": "6 lb.",
+    "damage": "1d10 Slashing"
+  },
+  {
+    "name": "Lance",
+    "slug": "lance",
+    "item_type": "weapons",
+    "desc": "",
+    "cost": "10 GP",
+    "weight": "6 lb.",
+    "damage": "1d10 Piercing"
+  },
+  {
+    "name": "Longsword",
+    "slug": "longsword",
+    "item_type": "weapons",
+    "desc": "",
+    "cost": "15 GP",
+    "weight": "3 lb.",
+    "damage": "1d8 Slashing"
+  },
+  {
+    "name": "Maul",
+    "slug": "maul",
+    "item_type": "weapons",
+    "desc": "",
+    "cost": "10 GP",
+    "weight": "10 lb.",
+    "damage": "2d6 Bludgeoning"
+  },
+  {
+    "name": "Morningstar",
+    "slug": "morningstar",
+    "item_type": "weapons",
+    "desc": "",
+    "cost": "15 GP",
+    "weight": "4 lb.",
+    "damage": "1d8 Piercing"
+  },
+  {
+    "name": "Pike",
+    "slug": "pike",
+    "item_type": "weapons",
+    "desc": "",
+    "cost": "5 GP",
+    "weight": "18 lb.",
+    "damage": "1d10 Piercing"
+  },
+  {
+    "name": "Rapier",
+    "slug": "rapier",
+    "item_type": "weapons",
+    "desc": "",
+    "cost": "25 GP",
+    "weight": "2 lb.",
+    "damage": "1d8 Piercing"
+  },
+  {
+    "name": "Scimitar",
+    "slug": "scimitar",
+    "item_type": "weapons",
+    "desc": "",
+    "cost": "25 GP",
+    "weight": "3 lb.",
+    "damage": "1d6 Slashing"
+  },
+  {
+    "name": "Shortsword",
+    "slug": "shortsword",
+    "item_type": "weapons",
+    "desc": "",
+    "cost": "10 GP",
+    "weight": "2 lb.",
+    "damage": "1d6 Piercing"
+  },
+  {
+    "name": "Trident",
+    "slug": "trident",
+    "item_type": "weapons",
+    "desc": "",
+    "cost": "5 GP",
+    "weight": "4 lb.",
+    "damage": "1d8 Piercing"
+  },
+  {
+    "name": "Warhammer",
+    "slug": "warhammer",
+    "item_type": "weapons",
+    "desc": "",
+    "cost": "15 GP",
+    "weight": "5 lb.",
+    "damage": "1d8 Bludgeoning"
+  },
+  {
+    "name": "War Pick",
+    "slug": "war-pick",
+    "item_type": "weapons",
+    "desc": "",
+    "cost": "5 GP",
+    "weight": "2 lb.",
+    "damage": "1d8 Piercing"
+  },
+  {
+    "name": "Whip",
+    "slug": "whip",
+    "item_type": "weapons",
+    "desc": "",
+    "cost": "2 GP",
+    "weight": "3 lb.",
+    "damage": "1d4 Slashing"
+  },
+  {
+    "name": "Blowgun",
+    "slug": "blowgun",
+    "item_type": "weapons",
+    "desc": "",
+    "cost": "10 GP",
+    "weight": "1 lb.",
+    "damage": "1 Piercing"
+  },
+  {
+    "name": "Hand Crossbow",
+    "slug": "hand-crossbow",
+    "item_type": "weapons",
+    "desc": "",
+    "cost": "75 GP",
+    "weight": "3 lb.",
+    "damage": "1d6 Piercing"
+  },
+  {
+    "name": "Heavy Crossbow",
+    "slug": "heavy-crossbow",
+    "item_type": "weapons",
+    "desc": "",
+    "cost": "50 GP",
+    "weight": "18 lb.",
+    "damage": "1d10 Piercing"
+  },
+  {
+    "name": "Longbow",
+    "slug": "longbow",
+    "item_type": "weapons",
+    "desc": "",
+    "cost": "50 GP",
+    "weight": "2 lb.",
+    "damage": "1d8 Piercing"
+  },
+  {
+    "name": "Musket",
+    "slug": "musket",
+    "item_type": "weapons",
+    "desc": "",
+    "cost": "500 GP",
+    "weight": "10 lb.",
+    "damage": "1d12 Piercing"
+  },
+  {
+    "name": "Pistol",
+    "slug": "pistol",
+    "item_type": "weapons",
+    "desc": "",
+    "cost": "250 GP",
+    "weight": "3 lb.",
+    "damage": "1d10 Piercing"
+  },
+  {
+    "name": "Padded Armor",
+    "slug": "padded-armor",
+    "item_type": "armor",
+    "desc": "",
+    "cost": "5 GP",
+    "weight": "8 lb.",
+    "armor_class": "11 + Dex modifier"
+  },
+  {
+    "name": "Leather Armor",
+    "slug": "leather-armor",
+    "item_type": "armor",
+    "desc": "",
+    "cost": "10 GP",
+    "weight": "10 lb.",
+    "armor_class": "11 + Dex modifier"
+  },
+  {
+    "name": "Studded Leather Armor",
+    "slug": "studded-leather-armor",
+    "item_type": "armor",
+    "desc": "",
+    "cost": "45 GP",
+    "weight": "13 lb.",
+    "armor_class": "12 + Dex modifier"
+  },
+  {
+    "name": "Hide Armor",
+    "slug": "hide-armor",
+    "item_type": "armor",
+    "desc": "",
+    "cost": "10 GP",
+    "weight": "12 lb.",
+    "armor_class": "12 + Dex modifier (max 2)"
+  },
+  {
+    "name": "Chain Shirt",
+    "slug": "chain-shirt",
+    "item_type": "armor",
+    "desc": "",
+    "cost": "50 GP",
+    "weight": "20 lb.",
+    "armor_class": "13 + Dex modifier (max 2)"
+  },
+  {
+    "name": "Scale Mail",
+    "slug": "scale-mail",
+    "item_type": "armor",
+    "desc": "",
+    "cost": "50 GP",
+    "weight": "45 lb.",
+    "armor_class": "14 + Dex modifier (max 2)"
+  },
+  {
+    "name": "Breastplate",
+    "slug": "breastplate",
+    "item_type": "armor",
+    "desc": "",
+    "cost": "400 GP",
+    "weight": "20 lb.",
+    "armor_class": "14 + Dex modifier (max 2)"
+  },
+  {
+    "name": "Half Plate Armor",
+    "slug": "half-plate-armor",
+    "item_type": "armor",
+    "desc": "",
+    "cost": "750 GP",
+    "weight": "40 lb.",
+    "armor_class": "15 + Dex modifier (max 2)"
+  },
+  {
+    "name": "Ring Mail",
+    "slug": "ring-mail",
+    "item_type": "armor",
+    "desc": "",
+    "cost": "30 GP",
+    "weight": "40 lb.",
+    "armor_class": "14"
+  },
+  {
+    "name": "Chain Mail",
+    "slug": "chain-mail",
+    "item_type": "armor",
+    "desc": "",
+    "cost": "75 GP",
+    "weight": "55 lb.",
+    "armor_class": "16"
+  },
+  {
+    "name": "Splint Armor",
+    "slug": "splint-armor",
+    "item_type": "armor",
+    "desc": "",
+    "cost": "200 GP",
+    "weight": "60 lb.",
+    "armor_class": "17"
+  },
+  {
+    "name": "Plate Armor",
+    "slug": "plate-armor",
+    "item_type": "armor",
+    "desc": "",
+    "cost": "1,500 GP",
+    "weight": "65 lb.",
+    "armor_class": "18"
+  },
+  {
+    "name": "Shield",
+    "slug": "shield",
+    "item_type": "armor",
+    "desc": "",
+    "cost": "10 GP",
+    "weight": "6 lb.",
+    "armor_class": "+2"
+  },
+  {
+    "name": "Acid",
+    "slug": "acid",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "25 GP",
+    "weight": "1 lb."
+  },
+  {
+    "name": "Alchemistâs Fire",
+    "slug": "alchemistas-fire",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "50 GP",
+    "weight": "1 lb."
+  },
+  {
+    "name": "Ammunition",
+    "slug": "ammunition",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "Varies",
+    "weight": "Varies"
+  },
+  {
+    "name": "Antitoxin",
+    "slug": "antitoxin",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "50 GP",
+    "weight": "â"
+  },
+  {
+    "name": "Arcane Focus",
+    "slug": "arcane-focus",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "Varies",
+    "weight": "Varies"
+  },
+  {
+    "name": "Backpack",
+    "slug": "backpack",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "2 GP",
+    "weight": "5 lb."
+  },
+  {
+    "name": "Ball Bearings",
+    "slug": "ball-bearings",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "1 GP",
+    "weight": "2 lb."
+  },
+  {
+    "name": "Barrel",
+    "slug": "barrel",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "2 GP",
+    "weight": "70 lb."
+  },
+  {
+    "name": "Basket",
+    "slug": "basket",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "4 SP",
+    "weight": "2 lb."
+  },
+  {
+    "name": "Bedroll",
+    "slug": "bedroll",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "1 GP",
+    "weight": "7 lb."
+  },
+  {
+    "name": "Bell",
+    "slug": "bell",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "1 GP",
+    "weight": "â"
+  },
+  {
+    "name": "Blanket",
+    "slug": "blanket",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "5 SP",
+    "weight": "3 lb."
+  },
+  {
+    "name": "Block and Tackle",
+    "slug": "block-and-tackle",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "1 GP",
+    "weight": "5 lb."
+  },
+  {
+    "name": "Book",
+    "slug": "book",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "25 GP",
+    "weight": "5 lb."
+  },
+  {
+    "name": "Bottle, Glass",
+    "slug": "bottle-glass",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "2 GP",
+    "weight": "2 lb."
+  },
+  {
+    "name": "Bucket",
+    "slug": "bucket",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "5 CP",
+    "weight": "2 lb."
+  },
+  {
+    "name": "Burglar's Pack",
+    "slug": "burglar-s-pack",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "16 GP",
+    "weight": "42 lb."
+  },
+  {
+    "name": "Caltrops",
+    "slug": "caltrops",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "1 GP",
+    "weight": "2 lb."
+  },
+  {
+    "name": "Candle",
+    "slug": "candle",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "1 CP",
+    "weight": "â"
+  },
+  {
+    "name": "Case, Crossbow Bolt",
+    "slug": "case-crossbow-bolt",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "1 GP",
+    "weight": "1 lb."
+  },
+  {
+    "name": "Case, Map or Scroll",
+    "slug": "case-map-or-scroll",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "1 GP",
+    "weight": "1 lb."
+  },
+  {
+    "name": "Chain",
+    "slug": "chain",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "5 GP",
+    "weight": "10 lb."
+  },
+  {
+    "name": "Chest",
+    "slug": "chest",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "5 GP",
+    "weight": "25 lb."
+  },
+  {
+    "name": "Climber's Kit",
+    "slug": "climber-s-kit",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "25 GP",
+    "weight": "12 lb."
+  },
+  {
+    "name": "Clothes, Fine",
+    "slug": "clothes-fine",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "15 GP",
+    "weight": "6 lb."
+  },
+  {
+    "name": "Clothes, Traveler's",
+    "slug": "clothes-traveler-s",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "2 GP",
+    "weight": "4 lb."
+  },
+  {
+    "name": "Component Pouch",
+    "slug": "component-pouch",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "25 GP",
+    "weight": "2 lb."
+  },
+  {
+    "name": "Costume",
+    "slug": "costume",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "5 GP",
+    "weight": "4 lb."
+  },
+  {
+    "name": "Crowbar",
+    "slug": "crowbar",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "2 GP",
+    "weight": "5 lb."
+  },
+  {
+    "name": "Diplomat's Pack",
+    "slug": "diplomat-s-pack",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "39 GP",
+    "weight": "39 lb."
+  },
+  {
+    "name": "Druidic Focus",
+    "slug": "druidic-focus",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "Varies",
+    "weight": "Varies"
+  },
+  {
+    "name": "Dungeoneer's Pack",
+    "slug": "dungeoneer-s-pack",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "12 GP",
+    "weight": "55 lb."
+  },
+  {
+    "name": "Entertainer's Pack",
+    "slug": "entertainer-s-pack",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "40 GP",
+    "weight": "58 1/2 lb."
+  },
+  {
+    "name": "Explorer's Pack",
+    "slug": "explorer-s-pack",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "10 GP",
+    "weight": "55 lb."
+  },
+  {
+    "name": "Flask",
+    "slug": "flask",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "2 CP",
+    "weight": "1 lb."
+  },
+  {
+    "name": "Grappling Hook",
+    "slug": "grappling-hook",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "2 GP",
+    "weight": "4 lb."
+  },
+  {
+    "name": "Healerâs Kit",
+    "slug": "healeras-kit",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "5 GP",
+    "weight": "3 lb."
+  },
+  {
+    "name": "Holy Symbol",
+    "slug": "holy-symbol",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "Varies",
+    "weight": "Varies"
+  },
+  {
+    "name": "Holy Water",
+    "slug": "holy-water",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "25 GP",
+    "weight": "1 lb."
+  },
+  {
+    "name": "Hunting Trap",
+    "slug": "hunting-trap",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "5 GP",
+    "weight": "25 lb."
+  },
+  {
+    "name": "Ink",
+    "slug": "ink",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "10 GP",
+    "weight": "â"
+  },
+  {
+    "name": "Ink Pen",
+    "slug": "ink-pen",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "2 CP",
+    "weight": "â"
+  },
+  {
+    "name": "Jug",
+    "slug": "jug",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "2 CP",
+    "weight": "4 lb."
+  },
+  {
+    "name": "Ladder",
+    "slug": "ladder",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "1 SP",
+    "weight": "25 lb."
+  },
+  {
+    "name": "Lamp",
+    "slug": "lamp",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "5 SP",
+    "weight": "1 lb."
+  },
+  {
+    "name": "Lantern, Bullseye",
+    "slug": "lantern-bullseye",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "10 GP",
+    "weight": "2 lb."
+  },
+  {
+    "name": "Lantern, Hooded",
+    "slug": "lantern-hooded",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "5 GP",
+    "weight": "2 lb."
+  },
+  {
+    "name": "Lock",
+    "slug": "lock",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "10 GP",
+    "weight": "1 lb."
+  },
+  {
+    "name": "Magnifying Glass",
+    "slug": "magnifying-glass",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "100 GP",
+    "weight": "â"
+  },
+  {
+    "name": "Manacles",
+    "slug": "manacles",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "2 GP",
+    "weight": "6 lb."
+  },
+  {
+    "name": "Map",
+    "slug": "map",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "1 GP",
+    "weight": "â"
+  },
+  {
+    "name": "Mirror",
+    "slug": "mirror",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "5 GP",
+    "weight": "1/2 lb."
+  },
+  {
+    "name": "Net",
+    "slug": "net",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "1 GP",
+    "weight": "3 lb."
+  },
+  {
+    "name": "Oil",
+    "slug": "oil",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "1 SP",
+    "weight": "1 lb."
+  },
+  {
+    "name": "Paper",
+    "slug": "paper",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "2 SP",
+    "weight": "â"
+  },
+  {
+    "name": "Parchment",
+    "slug": "parchment",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "1 SP",
+    "weight": "â"
+  },
+  {
+    "name": "Perfume",
+    "slug": "perfume",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "5 GP",
+    "weight": "â"
+  },
+  {
+    "name": "Poison, Basic",
+    "slug": "poison-basic",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "100 GP",
+    "weight": "â"
+  },
+  {
+    "name": "Pole",
+    "slug": "pole",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "5 CP",
+    "weight": "7 lb."
+  },
+  {
+    "name": "Pot, Iron",
+    "slug": "pot-iron",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "2 GP",
+    "weight": "10 lb."
+  },
+  {
+    "name": "Potion of Healing",
+    "slug": "potion-of-healing",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "50 GP",
+    "weight": "1/2 lb."
+  },
+  {
+    "name": "Pouch",
+    "slug": "pouch",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "5 SP",
+    "weight": "1 lb."
+  },
+  {
+    "name": "Priest's Pack",
+    "slug": "priest-s-pack",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "33 GP",
+    "weight": "29 lb."
+  },
+  {
+    "name": "Quiver",
+    "slug": "quiver",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "1 GP",
+    "weight": "1 lb."
+  },
+  {
+    "name": "Ram, Portable",
+    "slug": "ram-portable",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "4 GP",
+    "weight": "35 lb."
+  },
+  {
+    "name": "Rations",
+    "slug": "rations",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "5 SP",
+    "weight": "2 lb."
+  },
+  {
+    "name": "Robe",
+    "slug": "robe",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "1 GP",
+    "weight": "4 lb."
+  },
+  {
+    "name": "Rope",
+    "slug": "rope",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "1 GP",
+    "weight": "5 lb."
+  },
+  {
+    "name": "Sack",
+    "slug": "sack",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "1 CP",
+    "weight": "1/2 lb."
+  },
+  {
+    "name": "Scholar's Pack",
+    "slug": "scholar-s-pack",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "40 GP",
+    "weight": "22 lb."
+  },
+  {
+    "name": "Shovel",
+    "slug": "shovel",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "2 GP",
+    "weight": "5 lb."
+  },
+  {
+    "name": "Signal Whistle",
+    "slug": "signal-whistle",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "5 CP",
+    "weight": "â"
+  },
+  {
+    "name": "Spell Scroll (Cantrip)",
+    "slug": "spell-scroll-cantrip",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "30 GP",
+    "weight": "â"
+  },
+  {
+    "name": "Spell Scroll (Level 1)",
+    "slug": "spell-scroll-level-1",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "50 GP",
+    "weight": "â"
+  },
+  {
+    "name": "Spikes, Iron",
+    "slug": "spikes-iron",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "1 GP",
+    "weight": "5 lb."
+  },
+  {
+    "name": "Spyglass",
+    "slug": "spyglass",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "1,000 GP",
+    "weight": "1 lb."
+  },
+  {
+    "name": "String",
+    "slug": "string",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "1 SP",
+    "weight": "â"
+  },
+  {
+    "name": "Tent",
+    "slug": "tent",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "2 GP",
+    "weight": "20 lb."
+  },
+  {
+    "name": "Tinderbox",
+    "slug": "tinderbox",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "5 SP",
+    "weight": "1 lb."
+  },
+  {
+    "name": "Torch",
+    "slug": "torch",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "1 CP",
+    "weight": "1 lb."
+  },
+  {
+    "name": "Vial",
+    "slug": "vial",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "1 GP",
+    "weight": "â"
+  },
+  {
+    "name": "Waterskin",
+    "slug": "waterskin",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "2 SP",
+    "weight": "5 lb. (full)"
+  },
+  {
+    "name": "Arrows",
+    "slug": "arrows",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "1 GP",
+    "weight": "1 lb."
+  },
+  {
+    "name": "Bolts",
+    "slug": "bolts",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "1 GP",
+    "weight": "1 1/2 lb."
+  },
+  {
+    "name": "Bullets, Firearm",
+    "slug": "bullets-firearm",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "3 GP",
+    "weight": "2 lb."
+  },
+  {
+    "name": "Bullets, Sling",
+    "slug": "bullets-sling",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "4 CP",
+    "weight": "1 1/2 lb."
+  },
+  {
+    "name": "Needles",
+    "slug": "needles",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "1 GP",
+    "weight": "1 lb."
+  },
+  {
+    "name": "Crystal",
+    "slug": "crystal",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "10 GP",
+    "weight": "1 lb."
+  },
+  {
+    "name": "Orb",
+    "slug": "orb",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "20 GP",
+    "weight": "3 lb."
+  },
+  {
+    "name": "Rod",
+    "slug": "rod",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "10 GP",
+    "weight": "2 lb."
+  },
+  {
+    "name": "Staff (also a Quarterstaff)",
+    "slug": "staff-also-a-quarterstaff",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "5 GP",
+    "weight": "4 lb."
+  },
+  {
+    "name": "Wand",
+    "slug": "wand",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "10 GP",
+    "weight": "1 lb."
+  },
+  {
+    "name": "Sprig of mistletoe",
+    "slug": "sprig-of-mistletoe",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "1 GP",
+    "weight": "â"
+  },
+  {
+    "name": "Wooden staff (also a Quarterstaff)",
+    "slug": "wooden-staff-also-a-quarterstaff",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "5 GP",
+    "weight": "4 lb."
+  },
+  {
+    "name": "Yew wand",
+    "slug": "yew-wand",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "10 GP",
+    "weight": "1 lb."
+  },
+  {
+    "name": "Amulet (worn or held)",
+    "slug": "amulet-worn-or-held",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "5 GP",
+    "weight": "1 lb."
+  },
+  {
+    "name": "Emblem (borne on fabric or a Shield)",
+    "slug": "emblem-borne-on-fabric-or-a-shield",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "5 GP",
+    "weight": "â"
+  },
+  {
+    "name": "Reliquary (held)",
+    "slug": "reliquary-held",
+    "item_type": "adventuring-gear",
+    "desc": "",
+    "cost": "5 GP",
+    "weight": "2 lb."
+  }
+]

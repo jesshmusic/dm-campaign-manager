@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { AiOutlineHome } from 'react-icons/ai';
 import { BiHide, BiLogIn, BiLogOut, BiShow } from 'react-icons/bi';
 import {
-  GiAchillesHeel,
   GiBookPile,
   GiBookshelf,
   GiBookStorm,
@@ -29,6 +28,7 @@ import {
   GiToolbox,
 } from 'react-icons/gi';
 import PatreonIcon from '../icons/PatreonIcon';
+import EditionToggle from '../EditionToggle';
 
 const PATREON_URL =
   'https://patreon.com/DormanLakely?utm_medium=unknown&utm_source=join_link&utm_campaign=creatorshare_creator&utm_content=copyLink';
@@ -47,6 +47,7 @@ import { SidebarLink, SidebarButton } from '../NavLink/NavLink';
 import { useAuth0 } from '@auth0/auth0-react';
 import { UserProps } from '../../utilities/types';
 import { useLocation } from 'react-router-dom';
+import { useEdition } from '../../contexts/EditionContext';
 
 import sidebarBG from './SidebarBackground.jpg';
 
@@ -57,6 +58,49 @@ import {
   RoleLabel,
   menuItemStyles,
 } from './SideBar.styles';
+
+type RuleType = {
+  name: string;
+  slug: string;
+  category?: string;
+  rules?: { name: string; slug: string }[];
+};
+
+// Helper to create a URL-friendly slug from a category name
+const categoryToSlug = (category: string): string => {
+  return category.toLowerCase().replace(/\s+/g, '-');
+};
+
+// Build categories dynamically from rules' category field
+const buildCategoriesWithRules = (rules: RuleType[]) => {
+  // Group rules by their category
+  const categoryMap = new Map<string, RuleType[]>();
+
+  rules.forEach((rule) => {
+    const category = rule.category || 'Other';
+    if (!categoryMap.has(category)) {
+      categoryMap.set(category, []);
+    }
+    categoryMap.get(category)!.push(rule);
+  });
+
+  // Convert map to array of category objects
+  const categories: { name: string; slug: string; rules: RuleType[] }[] = [];
+  categoryMap.forEach((categoryRules, categoryName) => {
+    categories.push({
+      name: categoryName,
+      slug: categoryToSlug(categoryName),
+      rules: categoryRules.sort((a, b) => a.name.localeCompare(b.name)),
+    });
+  });
+
+  // Sort categories alphabetically, but put "Conditions" last
+  return categories.sort((a, b) => {
+    if (a.name === 'Conditions') return 1;
+    if (b.name === 'Conditions') return -1;
+    return a.name.localeCompare(b.name);
+  });
+};
 
 const itemTypes = [
   { name: 'Armor', link: '/app/items/armor', icon: <GiCapeArmor /> },
@@ -91,13 +135,22 @@ const SideBar = (props: {
   isCollapsed: boolean;
   isMobile: boolean;
   logOutUser: (token: string) => void;
-  rules: { name: string; slug: string; rules?: { name: string; slug: string }[] }[];
+  rules: {
+    name: string;
+    slug: string;
+    category?: string;
+    rules?: { name: string; slug: string }[];
+  }[];
   setIsCollapsed: (collapsed: boolean) => void;
 }) => {
   const { currentUser, getRules, isCollapsed, isMobile, logOutUser, rules, setIsCollapsed } = props;
 
   const { user, getAccessTokenSilently, isAuthenticated, loginWithRedirect, logout } = useAuth0();
   const location = useLocation();
+  const { isEdition2024 } = useEdition();
+
+  // In 2024 edition, "Races" are called "Species"
+  const racesLabel = isEdition2024 ? 'Species' : 'Races';
 
   // Determine if submenus should be open based on current path
   const isItemsPath = location.pathname.startsWith('/app/items');
@@ -155,12 +208,12 @@ const SideBar = (props: {
               icon={isCollapsed ? <BiShow /> : <BiHide />}
             />
           )}
+          <EditionToggle isCollapsed={isCollapsed} />
           <SidebarLink to="/" title="Dashboard" icon={<AiOutlineHome />} />
           <SidebarLink to="/app/classes" title="Classes" icon={<GiPerson />} />
-          <SidebarLink to="/app/races" title="Races" icon={<GiDwarfFace />} />
+          <SidebarLink to="/app/races" title={racesLabel} icon={<GiDwarfFace />} />
           <SidebarLink to="/app/monsters" title="Monsters" icon={<GiMonsterGrasp />} />
           <SidebarLink to="/app/spells" title="Spells" icon={<GiMagicPalm />} />
-          <SidebarLink to="/app/conditions" title="Conditions" icon={<GiAchillesHeel />} />
           <SubMenu
             label="Rules"
             icon={<GiBookshelf />}
@@ -171,26 +224,26 @@ const SideBar = (props: {
             }}
           >
             <SidebarLink to="/app/rules" title="All Rules" icon={<GiBookshelf />} />
-            {rules.map((rule, index) => (
+            {buildCategoriesWithRules(rules).map((category, index) => (
               <SubMenu
-                key={`rule-${rule.slug}-${index}`}
-                label={rule.name}
+                key={`rule-category-${category.slug}-${index}`}
+                label={category.name}
                 icon={index < 6 ? ruleBooks[index] : <GiRuleBook />}
                 style={{ border: 0 }}
               >
                 <SidebarLink
-                  key={`rulesTop-${index}`}
-                  to={`/app/rules/${rule.slug}`}
-                  title={rule.name}
+                  key={`category-overview-${category.slug}`}
+                  to={`/app/rules/${category.slug}`}
+                  title={`All ${category.name}`}
+                  icon={<GiBookshelf />}
                 />
-                {rule.rules &&
-                  rule.rules.map((subrule, subIndex) => (
-                    <SidebarLink
-                      key={`rulesInner-${subIndex}`}
-                      to={`/app/rules/${subrule.slug}`}
-                      title={subrule.name}
-                    />
-                  ))}
+                {category.rules.map((rule, subIndex) => (
+                  <SidebarLink
+                    key={`rulesInner-${rule.slug}-${subIndex}`}
+                    to={`/app/rules/${rule.slug}`}
+                    title={rule.name}
+                  />
+                ))}
               </SubMenu>
             ))}
           </SubMenu>

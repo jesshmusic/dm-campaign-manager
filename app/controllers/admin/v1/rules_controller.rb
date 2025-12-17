@@ -7,9 +7,9 @@ module Admin
       # GET /rules or /rules.json
       def index
         @rules = if params[:search].present?
-                   Rule.search_for(params[:search])
+                   Rule.for_edition(current_edition).search_for(params[:search])
                  else
-                   Rule.where(parent_id: nil)
+                   Rule.for_edition(current_edition).where(parent_id: nil)
                  end
       end
 

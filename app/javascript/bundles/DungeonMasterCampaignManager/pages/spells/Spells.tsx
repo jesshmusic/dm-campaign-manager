@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
 import { SpellProps } from '../../utilities/types';
+import { useEdition } from '../../contexts/EditionContext';
 import DataTable from '../../components/DataTable/DataTable';
 import { Row } from 'react-table';
 import { useNavigate } from 'react-router-dom';
@@ -20,6 +21,7 @@ const Spells = (props: {
 }) => {
   const { getSpells, loading, spells } = props;
   const navigate = useNavigate();
+  const { isEdition2014 } = useEdition();
 
   React.useEffect(() => {
     getSpells();
@@ -74,7 +76,7 @@ const Spells = (props: {
         "All D&D spells. Dungeon Master's Toolbox is a free resource for DMs to manage their campaigns, adventures, and Monsters."
       }
     >
-      <PageTitle title={'Spells'} />
+      <PageTitle title={'Spells'} isLegacy={isEdition2014} />
       <DataTable
         columns={columns}
         data={data}

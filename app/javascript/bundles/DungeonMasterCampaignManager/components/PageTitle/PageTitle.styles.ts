@@ -32,3 +32,16 @@ export const Subtitle = styled.p`
   font-size: ${({ theme }) => theme.fontSizes.h5};
   margin: 0;
 `;
+
+export const LegacyBadge = styled.span`
+  background-color: ${({ theme }) => theme.colors.warning || '#f0ad4e'};
+  border-radius: 4px;
+  color: #fff;
+  font-family: ${({ theme }) => theme.fonts.body};
+  font-size: 14px;
+  font-weight: 600;
+  margin-left: 12px;
+  padding: 4px 8px;
+  text-transform: uppercase;
+  vertical-align: middle;
+`;

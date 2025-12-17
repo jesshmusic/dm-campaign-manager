@@ -5,9 +5,9 @@ module Admin
 
       def index
         @skills = if params[:search].present?
-                    Skill.search_for(params[:search])
+                    Skill.for_edition(current_edition).search_for(params[:search])
                   else
-                    Skill.all
+                    Skill.for_edition(current_edition)
                   end
         respond_to do |format|
           format.html { @pagy, @skills = pagy(@skills) }

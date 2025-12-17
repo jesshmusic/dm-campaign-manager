@@ -12,7 +12,7 @@ module Admin
       def index
         authorize Race
         if params[:list].present?
-          @races = Race.order(name: :asc).map do |race|
+          @races = Race.for_edition(current_edition).order(name: :asc).map do |race|
             {
               name: race.name,
               slug: race.slug
@@ -21,9 +21,9 @@ module Admin
           render json: { count: @races.count, results: @races }
         else
           @races = if params[:search].present?
-                     Race.search_for(params[:search])
+                     Race.for_edition(current_edition).search_for(params[:search])
                    else
-                     Race.all
+                     Race.for_edition(current_edition)
                    end
           @races = if !@user
                      @races.where(user_id: nil).order(name: :asc)

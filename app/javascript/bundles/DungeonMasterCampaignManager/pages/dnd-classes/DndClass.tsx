@@ -4,6 +4,7 @@ import PageContainer from '../../containers/PageContainer';
 import rest from '../../api/api';
 import PageTitle from '../../components/PageTitle/PageTitle';
 import DndSpinner from '../../components/DndSpinners/DndSpinner';
+import { useEdition } from '../../contexts/EditionContext';
 import { DndClass } from '../../utilities/types';
 import { connect } from 'react-redux';
 import HitPointsSection from './components/HitPointsSection';
@@ -23,6 +24,7 @@ type DndClassPageProps = {
 const DndClassPage = (props: DndClassPageProps) => {
   const { dndClass, getDndClass } = props;
   const { dndClassSlug } = useParams<'dndClassSlug'>();
+  const { isEdition2014 } = useEdition();
 
   React.useEffect(() => {
     getDndClass(dndClassSlug!);
@@ -35,7 +37,7 @@ const DndClassPage = (props: DndClassPageProps) => {
       pageTitle={dndClassTitle}
       description={`DndClass: ${dndClassTitle}. Dungeon Master's Toolbox is a free resource for DMs to manage their dndClasses, adventures, and Monsters.`}
     >
-      <PageTitle title={dndClassTitle} />
+      <PageTitle title={dndClassTitle} isLegacy={isEdition2014} />
       {dndClass ? (
         <Page>
           <InfoSection>

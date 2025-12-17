@@ -5,6 +5,7 @@
 #  id          :bigint           not null, primary key
 #  category    :string
 #  description :string
+#  edition     :string           default("2014"), not null
 #  name        :string
 #  slug        :string
 #  subcategory :string
@@ -14,9 +15,12 @@
 #
 # Indexes
 #
-#  index_rules_on_parent_id  (parent_id)
+#  index_rules_on_edition           (edition)
+#  index_rules_on_parent_id         (parent_id)
+#  index_rules_on_slug_and_edition  (slug,edition) UNIQUE
 #
 class Rule < ApplicationRecord
+  include Editionable
   extend FriendlyId
 
   friendly_id :name, use: :slugged

@@ -6,7 +6,7 @@ module Admin
 
       # GET /sections or /sections.json
       def index
-        @sections = Section.all
+        @sections = Section.for_edition(current_edition)
       end
 
       # GET /sections/1 or /sections/1.json

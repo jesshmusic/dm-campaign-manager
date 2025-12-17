@@ -6,18 +6,23 @@ import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
 import DndSpinner from '../../components/DndSpinners/DndSpinner';
 import { useParams } from 'react-router-dom';
+import { useEdition } from '../../contexts/EditionContext';
 
 import { RacePageWrapper, Subheading, TraitName } from './Races.styles';
 
 const Race = (props: { race?: RaceProps; getRace: (raceSlug: string) => void }) => {
   const { race, getRace } = props;
   const { raceSlug } = useParams<'raceSlug'>();
+  const { isEdition2014, isEdition2024 } = useEdition();
+
+  // In 2024 edition, "Race" is called "Species"
+  const typeLabel = isEdition2024 ? 'Species' : 'Race';
 
   React.useEffect(() => {
     getRace(raceSlug!);
   }, [raceSlug]);
 
-  const raceTitle = race ? race.name : 'Race Loading...';
+  const raceTitle = race ? race.name : `${typeLabel} Loading...`;
 
   const abilityMods = () => {
     if (race) {
@@ -37,12 +42,12 @@ const Race = (props: { race?: RaceProps; getRace: (raceSlug: string) => void }) 
 
   return (
     <PageContainer
-      description={`Monster: ${raceTitle}. Dungeon Master's Toolbox is a free resource for DMs to manage their dndClasses, adventures, and Monsters.`}
+      description={`${typeLabel}: ${raceTitle}. Dungeon Master's Toolbox is a free resource for DMs to manage their dndClasses, adventures, and Monsters.`}
       pageTitle={raceTitle}
     >
       {race ? (
         <RacePageWrapper>
-          <PageTitle title={raceTitle} />
+          <PageTitle title={raceTitle} isLegacy={isEdition2014} />
           <div>
             <div>
               <TraitName>Ability Score Increase. </TraitName>

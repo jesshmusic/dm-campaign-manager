@@ -9,6 +9,7 @@
 #  concentration :boolean
 #  description   :text
 #  duration      :string
+#  edition       :string           default("2014"), not null
 #  higher_level  :text
 #  level         :integer
 #  material      :string
@@ -25,8 +26,9 @@
 #
 # Indexes
 #
-#  index_spells_on_slug     (slug) UNIQUE
-#  index_spells_on_user_id  (user_id)
+#  index_spells_on_edition           (edition)
+#  index_spells_on_slug_and_edition  (slug,edition) UNIQUE
+#  index_spells_on_user_id           (user_id)
 #
 # Foreign Keys
 #

@@ -6,6 +6,7 @@ import rest from '../../api/api';
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
 import { useNavigate } from 'react-router-dom';
+import { useEdition } from '../../contexts/EditionContext';
 import { DndClassSummary } from '../../utilities/types';
 import DataTable from '../../components/DataTable/DataTable';
 import { Row } from 'react-table';
@@ -17,6 +18,7 @@ const DndClasses = (props: {
 }) => {
   const { getDndClasses, dndClasses, loading } = props;
   const navigate = useNavigate();
+  const { isEdition2014 } = useEdition();
 
   React.useEffect(() => {
     getDndClasses();
@@ -62,7 +64,7 @@ const DndClasses = (props: {
         "All D&D classes. Dungeon Master's Toolbox is a free resource for DMs to manage their classes, adventures, and Monsters."
       }
     >
-      <PageTitle title={'Character Classes'} />
+      <PageTitle title={'Character Classes'} isLegacy={isEdition2014} />
       <DataTable
         columns={columns}
         data={data}

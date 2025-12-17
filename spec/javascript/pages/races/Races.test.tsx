@@ -59,13 +59,14 @@ describe('Races', () => {
     );
   });
 
-  it('displays page title', () => {
+  it('displays page title (Species in 2024 edition)', () => {
+    // Default edition is 2024, which uses "Species" instead of "Races"
     render(
       <Provider store={mockStore}>
         <Races />
       </Provider>
     );
-    expect(screen.getByTestId('page-title')).toHaveTextContent('Races');
+    expect(screen.getByTestId('page-title')).toHaveTextContent('Species');
   });
 
   it('renders data table', () => {

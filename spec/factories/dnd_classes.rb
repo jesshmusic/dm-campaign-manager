@@ -2,21 +2,24 @@
 #
 # Table name: dnd_classes
 #
-#  id            :bigint           not null, primary key
-#  api_url       :string
-#  hit_die       :integer
-#  name          :string
-#  slug          :string
-#  spell_ability :string
-#  subclasses    :string           default([]), is an Array
-#  created_at    :datetime         not null
-#  updated_at    :datetime         not null
-#  user_id       :bigint
+#  id                :bigint           not null, primary key
+#  api_url           :string
+#  edition           :string           default("2014"), not null
+#  hit_die           :integer
+#  name              :string
+#  primary_abilities :string
+#  slug              :string
+#  spell_ability     :string
+#  subclasses        :string           default([]), is an Array
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#  user_id           :bigint
 #
 # Indexes
 #
-#  index_dnd_classes_on_slug     (slug) UNIQUE
-#  index_dnd_classes_on_user_id  (user_id)
+#  index_dnd_classes_on_edition           (edition)
+#  index_dnd_classes_on_slug_and_edition  (slug,edition) UNIQUE
+#  index_dnd_classes_on_user_id           (user_id)
 #
 # Foreign Keys
 #

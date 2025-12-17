@@ -16,6 +16,7 @@
 #  last_sign_in_ip        :inet
 #  location               :string
 #  name                   :string
+#  preferred_edition      :string           default("2024")
 #  remember_created_at    :datetime
 #  reset_password_sent_at :datetime
 #  reset_password_token   :string

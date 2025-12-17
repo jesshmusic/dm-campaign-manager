@@ -6,6 +6,7 @@ describe('rules reducer', () => {
     count: 0,
     currentRule: null,
     loading: false,
+    currentRuleLoading: false,
   };
 
   const mockRule = {
@@ -32,13 +33,14 @@ describe('rules reducer', () => {
           count: 3,
           currentRule: mockRule,
           loading: false,
+          currentRuleLoading: false,
         },
         { type: '@@redux-api@getRules' }
       );
 
       expect(state.loading).toBe(true);
-      expect(state.rules).toEqual([]);
-      expect(state.count).toBe(0);
+      expect(state.rules).toEqual(mockRuleList); // Preserved to prevent flash/remount
+      expect(state.count).toBe(3); // Preserved
       expect(state.currentRule).toEqual(mockRule); // Preserved
     });
 
@@ -81,18 +83,20 @@ describe('rules reducer', () => {
           count: 3,
           currentRule: mockRule,
           loading: false,
+          currentRuleLoading: false,
         },
         { type: '@@redux-api@getRule' }
       );
 
-      expect(state.loading).toBe(true);
+      expect(state.currentRuleLoading).toBe(true);
+      expect(state.loading).toBe(false); // loading should NOT change for getRule
       expect(state.currentRule).toBeNull();
       expect(state.rules).toEqual(mockRuleList);
     });
 
     it('handles getRule_success', () => {
       const state = rulesReducer(
-        { ...initialState, rules: mockRuleList, count: 3, loading: true },
+        { ...initialState, rules: mockRuleList, count: 3, currentRuleLoading: true },
         {
           type: '@@redux-api@getRule_success',
           data: mockRule,
@@ -100,6 +104,7 @@ describe('rules reducer', () => {
       );
 
       expect(state.currentRule).toEqual(mockRule);
+      expect(state.currentRuleLoading).toBe(false);
       expect(state.loading).toBe(false);
       expect(state.rules).toEqual(mockRuleList);
     });
@@ -110,12 +115,14 @@ describe('rules reducer', () => {
           rules: mockRuleList,
           count: 3,
           currentRule: mockRule,
-          loading: true,
+          loading: false,
+          currentRuleLoading: true,
         },
         { type: '@@redux-api@getRule_fail' }
       );
 
       expect(state.currentRule).toBeNull();
+      expect(state.currentRuleLoading).toBe(false);
       expect(state.loading).toBe(false);
       expect(state.rules).toEqual(mockRuleList);
     });

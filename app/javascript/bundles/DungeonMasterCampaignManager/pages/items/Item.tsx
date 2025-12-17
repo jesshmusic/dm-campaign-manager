@@ -10,6 +10,7 @@ import remarkGfm from 'remark-gfm';
 import ReactMarkdown from 'react-markdown';
 import { singleItemUseData } from './use-data';
 import { Link, useParams } from 'react-router-dom';
+import { useEdition } from '../../contexts/EditionContext';
 
 import { Section, Info, TableFrame } from './Item.styles';
 
@@ -23,6 +24,7 @@ const Item = (props: ItemPageProps) => {
     infoBlock: [],
   });
   const { itemSlug } = useParams<'itemSlug'>();
+  const { isEdition2014 } = useEdition();
 
   React.useEffect(() => {
     getItem(itemSlug!);
@@ -40,7 +42,7 @@ const Item = (props: ItemPageProps) => {
       pageTitle={itemTitle}
       description={`Item: ${itemTitle}. Dungeon Master's Toolbox is a free resource for DMs to manage their dndClasses, adventures, and Monsters.`}
     >
-      <PageTitle title={itemTitle} />
+      <PageTitle title={itemTitle} isLegacy={isEdition2014} />
       {item && itemInfo ? (
         <Section>
           <Info>

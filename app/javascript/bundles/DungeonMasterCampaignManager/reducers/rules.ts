@@ -14,15 +14,17 @@ const rules = createReducer(
     count: 0,
     currentRule: null,
     loading: false,
+    currentRuleLoading: false,
   },
   (builder) =>
     builder
       .addCase(getRules, (state, _action: AnyAction) => {
         return {
-          rules: [],
+          rules: state.rules, // Preserve existing rules to prevent flash/remount
           currentRule: state.currentRule,
-          count: 0,
+          count: state.count,
           loading: true,
+          currentRuleLoading: state.currentRuleLoading,
         };
       })
       .addCase(getRulesSuccess, (state, action: AnyAction) => {
@@ -31,6 +33,7 @@ const rules = createReducer(
           currentRule: state.currentRule,
           count: action.data.count,
           loading: false,
+          currentRuleLoading: state.currentRuleLoading,
         };
       })
       .addCase(getRulesFail, (state) => {
@@ -39,6 +42,7 @@ const rules = createReducer(
           currentRule: state.currentRule,
           count: state.rules.length,
           loading: false,
+          currentRuleLoading: state.currentRuleLoading,
         };
       })
       .addCase(getRule, (state, _action: AnyAction) => {
@@ -46,7 +50,8 @@ const rules = createReducer(
           rules: state.rules,
           currentRule: null,
           count: state.rules.length,
-          loading: true,
+          loading: state.loading,
+          currentRuleLoading: true,
         };
       })
       .addCase(getRuleSuccess, (state, action: AnyAction) => {
@@ -54,7 +59,8 @@ const rules = createReducer(
           rules: state.rules,
           currentRule: action.data,
           count: state.rules.length,
-          loading: false,
+          loading: state.loading,
+          currentRuleLoading: false,
         };
       })
       .addCase(getRuleFail, (state) => {
@@ -62,7 +68,8 @@ const rules = createReducer(
           rules: state.rules,
           currentRule: null,
           count: state.rules.length,
-          loading: false,
+          loading: state.loading,
+          currentRuleLoading: false,
         };
       }),
 );

@@ -3,8 +3,6 @@ import HomePage from '../pages/front-page/HomePage';
 import DndClasses from '../pages/dnd-classes/DndClasses';
 import Races from '../pages/races/Races';
 import Race from '../pages/races/Race';
-import Conditions from '../pages/conditions/Conditions';
-import Condition from '../pages/conditions/Condition';
 import Util from '../utilities/utilities';
 import Items from '../pages/items/Items';
 import Item from '../pages/items/Item';
@@ -12,8 +10,9 @@ import Monsters from '../pages/monsters/Monsters';
 import Monster from '../pages/monsters/Monster';
 import Spells from '../pages/spells/Spells';
 import Spell from '../pages/spells/Spell';
-import Rule from '../pages/rules/Rule';
+// Rule component is now rendered by RulesCategory
 import RulesIndex from '../pages/rules/RulesIndex';
+import RulesCategory from '../pages/rules/RulesCategory';
 import MonsterGenerator from '../pages/monster-generator/MonsterGenerator';
 import ProtectedRoute from './ProtectedRoute';
 import AdminDashboard from '../pages/admin-dashboard/AdminDashboard';
@@ -35,8 +34,6 @@ const DMRoutes = (props) => {
       <Route path="/app/classes" element={<DndClasses {...props} />} />
       <Route path="/app/races" element={<Races {...props} />} />
       <Route path="/app/races/:raceSlug" element={<Race {...props} />} />
-      <Route path="/app/conditions" element={<Conditions {...props} />} />
-      <Route path="/app/conditions/:conditionSlug" element={<Condition {...props} />} />
       {Util.itemPages.map((itemPage) => (
         <Route
           path={itemPage.path}
@@ -57,7 +54,7 @@ const DMRoutes = (props) => {
       <Route path="/app/spells/" element={<Spells {...props} />} />
       <Route path="/app/spells/:spellSlug" element={<Spell {...props} />} />
       <Route path="/app/rules" element={<RulesIndex {...props} />} />
-      <Route path="/app/rules/:ruleSlug" element={<Rule {...props} />} />
+      <Route path="/app/rules/:ruleSlug" element={<RulesCategory {...props} />} />
       <Route path="/app/monster-generator/" element={<MonsterGenerator {...props} />} />
       <Route path="/app/search/:query" element={<SearchResults {...props} />} />
       <Route path="/app/privacy-policy" element={<PrivacyPolicy {...props} />} />

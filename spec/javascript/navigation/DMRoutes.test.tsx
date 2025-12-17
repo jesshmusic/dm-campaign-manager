@@ -35,18 +35,6 @@ jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/ra
   };
 });
 
-jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/conditions/Conditions', () => {
-  return function Conditions() {
-    return <div data-testid="conditions-page">Conditions Page</div>;
-  };
-});
-
-jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/conditions/Condition', () => {
-  return function Condition() {
-    return <div data-testid="condition-page">Condition Detail Page</div>;
-  };
-});
-
 jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/items/Items', () => {
   return function Items() {
     return <div data-testid="items-page">Items Page</div>;
@@ -86,6 +74,12 @@ jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/sp
 jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/rules/Rule', () => {
   return function Rule() {
     return <div data-testid="rule-page">Rule Page</div>;
+  };
+});
+
+jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/rules/RulesCategory', () => {
+  return function RulesCategory() {
+    return <div data-testid="rule-page">Rules Category Page</div>;
   };
 });
 
@@ -199,26 +193,6 @@ describe('DMRoutes', () => {
       );
 
       expect(screen.getByTestId('race-page')).toBeInTheDocument();
-    });
-
-    it('should render conditions list page', () => {
-      render(
-        <MemoryRouter initialEntries={['/app/conditions']}>
-          <DMRoutes />
-        </MemoryRouter>
-      );
-
-      expect(screen.getByTestId('conditions-page')).toBeInTheDocument();
-    });
-
-    it('should render specific condition page', () => {
-      render(
-        <MemoryRouter initialEntries={['/app/conditions/blinded']}>
-          <DMRoutes />
-        </MemoryRouter>
-      );
-
-      expect(screen.getByTestId('condition-page')).toBeInTheDocument();
     });
 
     it('should render specific item page', () => {

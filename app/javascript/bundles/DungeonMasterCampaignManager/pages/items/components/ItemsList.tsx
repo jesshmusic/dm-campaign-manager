@@ -9,6 +9,7 @@ import { Column, Row } from 'react-table';
 import DataTable from '../../../components/DataTable/DataTable';
 import { ItemType } from '../use-data';
 import { useNavigate } from 'react-router-dom';
+import { useEdition } from '../../../contexts/EditionContext';
 
 type ItemsListProps = {
   columns: Array<Column<Record<string, unknown>>>;
@@ -28,6 +29,7 @@ const ItemsList = ({ columns, data, loading, onSearch, pageTitle, itemType }: It
         ]
       : [{ isActive: true, title: pageTitle }];
   const navigate = useNavigate();
+  const { isEdition2014 } = useEdition();
 
   const goToPage = (row: Row<Record<string, unknown>>) => {
     navigate(`/app/items/${row.original.slug}`);
@@ -38,7 +40,7 @@ const ItemsList = ({ columns, data, loading, onSearch, pageTitle, itemType }: It
       pageTitle={pageTitle}
       description={`${pageTitle} records with descriptions and stats. Dungeon Master's Toolbox is a free resource for DMs to manage their campaigns, adventures, and Monsters.`}
     >
-      <PageTitle title={pageTitle} />
+      <PageTitle title={pageTitle} isLegacy={isEdition2014} />
       <DataTable
         columns={columns}
         data={data}

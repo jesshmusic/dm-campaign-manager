@@ -21,6 +21,17 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  # Get the current D&D edition from request
+  # Priority: query param > header > user preference > default (2024)
+  # @return [String] '2014' or '2024'
+  def current_edition
+    edition = params[:edition] || request.headers['X-DND-Edition']
+    return Editionable.normalize_edition(edition) if edition.present?
+
+    current_user&.preferred_edition || Editionable::DEFAULT_EDITION
+  end
+  helper_method :current_edition
+
   private
 
   def user_not_authorized

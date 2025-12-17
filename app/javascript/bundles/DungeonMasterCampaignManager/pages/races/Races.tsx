@@ -7,10 +7,15 @@ import rest from '../../api/api';
 import { connect } from 'react-redux';
 import DataTable from '../../components/DataTable/DataTable';
 import { RaceSummary } from '../../utilities/types';
+import { useEdition } from '../../contexts/EditionContext';
 
 const Races = (props: { getRaces: () => void; races: RaceSummary[]; loading: boolean }) => {
   const { getRaces, loading, races } = props;
   const navigate = useNavigate();
+  const { isEdition2014, isEdition2024 } = useEdition();
+
+  // In 2024 edition, "Races" are called "Species"
+  const pageTitle = isEdition2024 ? 'Species' : 'Races';
 
   React.useEffect(() => {
     getRaces();
@@ -22,10 +27,10 @@ const Races = (props: { getRaces: () => void; races: RaceSummary[]; loading: boo
 
   const columns = React.useMemo(
     () => [
-      { Header: 'Race', accessor: 'name' },
+      { Header: isEdition2024 ? 'Species' : 'Race', accessor: 'name' },
       { Header: 'Traits', accessor: 'traits' },
     ],
-    [],
+    [isEdition2024],
   );
 
   const data = React.useMemo(() => {
@@ -42,10 +47,10 @@ const Races = (props: { getRaces: () => void; races: RaceSummary[]; loading: boo
 
   return (
     <PageContainer
-      pageTitle="Races"
-      description="All races for characters. Dungeon Master's Toolbox is a free resource for DMs to manage their campaigns, adventures, and Monsters."
+      pageTitle={pageTitle}
+      description={`All ${pageTitle.toLowerCase()} for characters. Dungeon Master's Toolbox is a free resource for DMs to manage their campaigns, adventures, and Monsters.`}
     >
-      <PageTitle title={'Races'} />
+      <PageTitle title={pageTitle} isLegacy={isEdition2014} />
       <DataTable
         columns={columns}
         data={data}

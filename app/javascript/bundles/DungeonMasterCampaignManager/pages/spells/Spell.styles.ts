@@ -7,6 +7,8 @@ export const SpellWrapper = styled.div`
   font-size: ${({ theme }) => theme.fontSizes.base};
   padding: 0 1rem;
   width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
 `;
 
 export const SpellDescription = styled.div`
