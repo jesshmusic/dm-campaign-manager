@@ -11,7 +11,7 @@ export const RulesGrid = styled.div`
   grid-template-columns: 1fr;
   max-width: 100%;
   overflow: hidden;
-  padding-top: calc(${({ theme }) => theme.spacing.spacer} * 2);
+  padding: ${({ theme }) => theme.spacing.spacer};
 
   ${respondTo.sm`
     grid-template-columns: repeat(2, 1fr);

@@ -46,7 +46,7 @@ def main():
         "category": "Playing the Game",
         "description": "The rules for playing Dungeons & Dragons.",
         "parent_slug": None,
-        "sort_order": 0,
+        "sort_order": 1,
         "game_icon": "GiOpenBook"
     }
     rules.append(playing_the_game_parent)

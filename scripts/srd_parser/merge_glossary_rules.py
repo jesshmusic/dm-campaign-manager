@@ -46,7 +46,7 @@ def main():
         "category": "Rules Glossary",
         "description": glossary_data["content"],
         "parent_slug": None,
-        "sort_order": 0,
+        "sort_order": 3,
         "game_icon": "GiBookmarklet"
     }
     rules.append(rules_glossary_parent)
