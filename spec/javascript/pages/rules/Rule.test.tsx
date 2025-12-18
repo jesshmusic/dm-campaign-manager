@@ -14,6 +14,10 @@ jest.mock('react-icons/all', () => ({
   GiBarbute: () => <svg data-testid="barbute-icon" />,
 }));
 
+jest.mock('react-icons/gi', () => ({
+  GiDragonBreath: () => <svg data-testid="dragon-breath-icon" />,
+}));
+
 jest.mock('react-markdown', () => {
   return function MockReactMarkdown({ children }: any) {
     return <div>{children}</div>;
@@ -116,5 +120,117 @@ describe('Rule', () => {
 
     expect(screen.getByText('Initiative')).toBeInTheDocument();
     expect(screen.getByText('Attacks')).toBeInTheDocument();
+  });
+
+  it('displays navigation buttons when previous and next rules are available', () => {
+    const mockStore = configureStore({
+      reducer: {
+        rules: () => ({
+          currentRule: {
+            name: 'Combat',
+            description: 'Combat rules',
+            rules: [],
+            previous_rule: { name: 'Character Creation', slug: 'character-creation' },
+            next_rule: { name: 'Spellcasting', slug: 'spellcasting' },
+          },
+          loading: false,
+        }),
+      },
+    });
+
+    render(
+      <Provider store={mockStore}>
+        <MemoryRouter>
+          <Rule />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    expect(screen.getByText('Previous')).toBeInTheDocument();
+    expect(screen.getByText('Character Creation')).toBeInTheDocument();
+    expect(screen.getByText('Next')).toBeInTheDocument();
+    expect(screen.getByText('Spellcasting')).toBeInTheDocument();
+  });
+
+  it('displays only next button when no previous rule', () => {
+    const mockStore = configureStore({
+      reducer: {
+        rules: () => ({
+          currentRule: {
+            name: 'Introduction',
+            description: 'First rule',
+            rules: [],
+            next_rule: { name: 'Combat', slug: 'combat' },
+          },
+          loading: false,
+        }),
+      },
+    });
+
+    render(
+      <Provider store={mockStore}>
+        <MemoryRouter>
+          <Rule />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    expect(screen.queryByText('Previous')).not.toBeInTheDocument();
+    expect(screen.getByText('Next')).toBeInTheDocument();
+    expect(screen.getByText('Combat')).toBeInTheDocument();
+  });
+
+  it('displays only previous button when no next rule', () => {
+    const mockStore = configureStore({
+      reducer: {
+        rules: () => ({
+          currentRule: {
+            name: 'Appendix',
+            description: 'Last rule',
+            rules: [],
+            previous_rule: { name: 'Combat', slug: 'combat' },
+          },
+          loading: false,
+        }),
+      },
+    });
+
+    render(
+      <Provider store={mockStore}>
+        <MemoryRouter>
+          <Rule />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    expect(screen.getByText('Previous')).toBeInTheDocument();
+    expect(screen.getByText('Combat')).toBeInTheDocument();
+    expect(screen.queryByText('Next')).not.toBeInTheDocument();
+  });
+
+  it('does not display navigation when no previous or next rules', () => {
+    const mockStore = configureStore({
+      reducer: {
+        rules: () => ({
+          currentRule: {
+            name: 'Only Rule',
+            description: 'The only rule',
+            rules: [],
+          },
+          loading: false,
+        }),
+      },
+    });
+
+    render(
+      <Provider store={mockStore}>
+        <MemoryRouter>
+          <Rule />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    expect(screen.queryByText('Previous')).not.toBeInTheDocument();
+    expect(screen.queryByText('Next')).not.toBeInTheDocument();
   });
 });

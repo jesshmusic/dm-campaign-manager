@@ -10,10 +10,24 @@ import rehypeSlug from 'rehype-slug';
 import { Link, useParams } from 'react-router-dom';
 import { useEdition } from '../../contexts/EditionContext';
 import { useBreadcrumbs } from '../../contexts/BreadcrumbContext';
+import { GiDragonBreath } from 'react-icons/gi';
 
-import { RuleContent, RulesList, TableFrame } from './Rule.styles';
+import {
+  RuleContent,
+  RulesList,
+  TableFrame,
+  RuleNavigation,
+  NavButton,
+  NavButtonText,
+  NavSpacer,
+} from './Rule.styles';
 
 type Ancestor = {
+  name: string;
+  slug: string;
+};
+
+type RuleNav = {
   name: string;
   slug: string;
 };
@@ -24,6 +38,8 @@ const Rule = (props: {
     slug: string;
     description: string;
     ancestors?: Ancestor[];
+    previous_rule?: RuleNav;
+    next_rule?: RuleNav;
     rules: {
       name: string;
       slug: string;
@@ -93,12 +109,44 @@ const Rule = (props: {
           </ReactMarkdown>
           <RulesList>
             {rule.rules &&
-              rule.rules.map((rule) => (
-                <Link key={rule.slug} to={`/app/rules/${rule.slug}`}>
-                  <h2 style={{ border: 0 }}>{rule.name}</h2>
+              rule.rules.map((childRule) => (
+                <Link key={childRule.slug} to={`/app/rules/${childRule.slug}`}>
+                  <h2 style={{ border: 0 }}>{childRule.name}</h2>
                 </Link>
               ))}
           </RulesList>
+
+          {(rule.previous_rule || rule.next_rule) && (
+            <RuleNavigation>
+              {rule.previous_rule ? (
+                <NavButton as={Link} to={`/app/rules/${rule.previous_rule.slug}`}>
+                  <GiDragonBreath style={{ transform: 'rotate(135deg)' }} />
+                  <NavButtonText>
+                    <small>Previous</small>
+                    <span>{rule.previous_rule.name}</span>
+                  </NavButtonText>
+                </NavButton>
+              ) : (
+                <NavSpacer />
+              )}
+
+              {rule.next_rule ? (
+                <NavButton
+                  as={Link}
+                  to={`/app/rules/${rule.next_rule.slug}`}
+                  style={{ textAlign: 'right' }}
+                >
+                  <NavButtonText style={{ alignItems: 'flex-end' }}>
+                    <small>Next</small>
+                    <span>{rule.next_rule.name}</span>
+                  </NavButtonText>
+                  <GiDragonBreath style={{ transform: 'rotate(-45deg)' }} />
+                </NavButton>
+              ) : (
+                <NavSpacer />
+              )}
+            </RuleNavigation>
+          )}
         </RuleContent>
       ) : (
         <DndSpinner />

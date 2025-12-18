@@ -164,3 +164,56 @@ export const TableFrame = styled.div`
   margin-top: 25px;
   width: 100%;
 `;
+
+// Navigation components for prev/next buttons
+export const RuleNavigation = styled.nav`
+  border-top: 2px solid ${({ theme }) => theme.colors.gold};
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  margin-top: 2rem;
+  padding-top: 1rem;
+`;
+
+export const NavButton = styled.a`
+  align-items: center;
+  background: ${({ theme }) => theme.colors.cardBg};
+  border: 1px solid ${({ theme }) => theme.colors.gray300};
+  border-radius: 4px;
+  color: ${({ theme }) => theme.colors.gray700};
+  cursor: pointer;
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  text-decoration: none;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: ${({ theme }) => theme.colors.gray100};
+    border-color: ${({ theme }) => theme.colors.gold};
+    color: ${({ theme }) => theme.colors.textRed};
+  }
+
+  svg {
+    font-size: 1.25rem;
+  }
+`;
+
+export const NavButtonText = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  small {
+    color: ${({ theme }) => theme.colors.gray500};
+    font-size: 0.75rem;
+  }
+
+  span {
+    font-family: ${({ theme }) => theme.fonts.mrEaves};
+    font-size: 1rem;
+  }
+`;
+
+export const NavSpacer = styled.div`
+  flex: 1;
+`;

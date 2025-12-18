@@ -9,6 +9,19 @@ while current.present?
 end
 json.ancestors ancestors
 
+# Navigation for prev/next buttons
+if rule.previous_rule
+  json.previous_rule do
+    json.extract! rule.previous_rule, :name, :slug
+  end
+end
+
+if rule.next_rule
+  json.next_rule do
+    json.extract! rule.next_rule, :name, :slug
+  end
+end
+
 json.count rule.children.count
 json.rules rule.children.order(Arel.sql('COALESCE(sort_order, 999)'), :name) do |child_rule|
   json.extract! child_rule, :id, :name, :slug, :description, :subcategory, :sort_order, :game_icon
