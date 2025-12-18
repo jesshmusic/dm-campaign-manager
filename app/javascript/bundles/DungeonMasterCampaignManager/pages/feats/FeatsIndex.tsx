@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import rest from '../../api/api';
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
@@ -8,6 +8,7 @@ import DndSpinner from '../../components/DndSpinners/DndSpinner';
 import { useEdition } from '../../contexts/EditionContext';
 import { GiUpgrade, GiSwordsPower, GiBowArrow, GiSparkSpirit } from 'react-icons/gi';
 import { Feat } from '../../reducers/feats';
+import { getContentUrl, isValidEdition } from '../../utilities/editionUrls';
 
 import {
   FeatsContainer,
@@ -58,7 +59,12 @@ const groupFeatsByCategory = (feats: Feat[]) => {
 };
 
 const FeatsIndex = ({ feats, loading, getFeats }: FeatsIndexProps) => {
-  const { isEdition2014 } = useEdition();
+  const { edition: editionParam, param } = useParams<{ edition?: string; param?: string }>();
+  const { edition: contextEdition, isEdition2014 } = useEdition();
+
+  // Use edition from URL if valid (either :edition or :param route), otherwise from context
+  const urlEdition = editionParam || param;
+  const edition = isValidEdition(urlEdition) ? urlEdition : contextEdition;
 
   React.useEffect(() => {
     getFeats();
@@ -101,7 +107,7 @@ const FeatsIndex = ({ feats, loading, getFeats }: FeatsIndexProps) => {
                 <CategoryTitle>{category} Feats</CategoryTitle>
                 <FeatsGrid>
                   {categoryFeats.map((feat) => (
-                    <Link key={feat.slug} to={`/app/feats/${feat.slug}`}>
+                    <Link key={feat.slug} to={getContentUrl('feats', feat.slug, edition)}>
                       <FeatCard>
                         <FeatCardHeader>
                           <FeatCardIcon>{categoryIcons[category] || <GiUpgrade />}</FeatCardIcon>

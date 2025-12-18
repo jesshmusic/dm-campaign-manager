@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import rest from '../../api/api';
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
@@ -8,6 +8,7 @@ import DndSpinner from '../../components/DndSpinners/DndSpinner';
 import { useEdition } from '../../contexts/EditionContext';
 import { GiPerson } from 'react-icons/gi';
 import { Background } from '../../reducers/backgrounds';
+import { getContentUrl, isValidEdition } from '../../utilities/editionUrls';
 
 import {
   BackgroundsGrid,
@@ -25,7 +26,12 @@ type BackgroundsIndexProps = {
 };
 
 const BackgroundsIndex = ({ backgrounds, loading, getBackgrounds }: BackgroundsIndexProps) => {
-  const { isEdition2014 } = useEdition();
+  const { edition: editionParam, param } = useParams<{ edition?: string; param?: string }>();
+  const { edition: contextEdition, isEdition2014 } = useEdition();
+
+  // Use edition from URL if valid (either :edition or :param route), otherwise from context
+  const urlEdition = editionParam || param;
+  const edition = isValidEdition(urlEdition) ? urlEdition : contextEdition;
 
   React.useEffect(() => {
     getBackgrounds();
@@ -58,7 +64,7 @@ const BackgroundsIndex = ({ backgrounds, loading, getBackgrounds }: BackgroundsI
       ) : (
         <BackgroundsGrid>
           {backgrounds.map((background) => (
-            <Link key={background.slug} to={`/app/backgrounds/${background.slug}`}>
+            <Link key={background.slug} to={getContentUrl('backgrounds', background.slug, edition)}>
               <BackgroundCard>
                 <BackgroundCardHeader>
                   <BackgroundCardIcon>

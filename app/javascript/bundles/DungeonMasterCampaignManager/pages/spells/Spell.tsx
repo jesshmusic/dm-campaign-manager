@@ -8,16 +8,21 @@ import rest from '../../api/api';
 import { connect } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { useEdition } from '../../contexts/EditionContext';
+import { parseEditionParams } from '../../utilities/editionUrls';
 
 import { SpellWrapper, SpellDescription } from './Spell.styles';
 
 const Spell = (props: { spell: SpellProps; getSpell: (spellSlug: string) => void }) => {
   const { spell, getSpell } = props;
-  const { spellSlug } = useParams<'spellSlug'>();
+  const params = useParams<{ edition?: string; spellSlug?: string; param?: string }>();
+  // Handle both /app/spells/:edition/:slug and /app/spells/:param routes
+  const { slug: spellSlug } = parseEditionParams(params.edition, params.spellSlug || params.param);
   const { isEdition2014 } = useEdition();
 
   React.useEffect(() => {
-    getSpell(spellSlug!);
+    if (spellSlug) {
+      getSpell(spellSlug);
+    }
   }, [spellSlug]);
 
   const spellTitle = spell ? spell.name : 'Spell Loading...';

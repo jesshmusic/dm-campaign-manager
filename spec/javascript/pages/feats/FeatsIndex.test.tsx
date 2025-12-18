@@ -86,11 +86,11 @@ describe('FeatsIndex', () => {
   const renderComponent = (store: any, edition: '2014' | '2024' = '2024') => {
     return render(
       <Provider store={store}>
-        <EditionProvider initialEdition={edition}>
-          <MemoryRouter>
+        <MemoryRouter>
+          <EditionProvider initialEdition={edition}>
             <FeatsIndex />
-          </MemoryRouter>
-        </EditionProvider>
+          </EditionProvider>
+        </MemoryRouter>
       </Provider>
     );
   };
@@ -145,11 +145,11 @@ describe('FeatsIndex', () => {
     expect(screen.getByText('Repeatable')).toBeInTheDocument();
   });
 
-  it('links to feat detail pages', () => {
+  it('links to feat detail pages with edition', () => {
     const store = createMockStore({ feats: mockFeats, loading: false });
     renderComponent(store);
 
     const alertLink = screen.getByText('Alert').closest('a');
-    expect(alertLink).toHaveAttribute('href', '/app/feats/alert');
+    expect(alertLink).toHaveAttribute('href', '/app/feats/2024/alert');
   });
 });

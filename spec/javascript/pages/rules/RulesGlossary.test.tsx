@@ -4,9 +4,11 @@ import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import { MemoryRouter } from 'react-router-dom';
 import RulesGlossary from '../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/rules/RulesGlossary';
+import { EditionProvider } from '../../../../app/javascript/bundles/DungeonMasterCampaignManager/contexts/EditionContext';
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
+  useParams: jest.fn().mockReturnValue({}),
 }));
 
 jest.mock('react-icons/all', () => ({
@@ -94,6 +96,18 @@ const mockGlossaryRule = {
   ],
 };
 
+const renderWithProviders = (store: ReturnType<typeof configureStore>) => {
+  return render(
+    <Provider store={store}>
+      <MemoryRouter>
+        <EditionProvider initialEdition="2024">
+          <RulesGlossary />
+        </EditionProvider>
+      </MemoryRouter>
+    </Provider>
+  );
+};
+
 describe('RulesGlossary', () => {
   it('shows spinner when loading', () => {
     const mockStore = configureStore({
@@ -105,13 +119,7 @@ describe('RulesGlossary', () => {
       },
     });
 
-    render(
-      <Provider store={mockStore}>
-        <MemoryRouter>
-          <RulesGlossary />
-        </MemoryRouter>
-      </Provider>
-    );
+    renderWithProviders(mockStore);
 
     expect(screen.getByTestId('spinner')).toBeInTheDocument();
   });
@@ -126,13 +134,7 @@ describe('RulesGlossary', () => {
       },
     });
 
-    render(
-      <Provider store={mockStore}>
-        <MemoryRouter>
-          <RulesGlossary />
-        </MemoryRouter>
-      </Provider>
-    );
+    renderWithProviders(mockStore);
 
     // Check for source info
     expect(screen.getByText(/System Reference Document 5.2.1/)).toBeInTheDocument();
@@ -149,13 +151,7 @@ describe('RulesGlossary', () => {
       },
     });
 
-    render(
-      <Provider store={mockStore}>
-        <MemoryRouter>
-          <RulesGlossary />
-        </MemoryRouter>
-      </Provider>
-    );
+    renderWithProviders(mockStore);
 
     expect(screen.getByText('Quick Navigation')).toBeInTheDocument();
     // Categories shown in TOC with counts
@@ -173,13 +169,7 @@ describe('RulesGlossary', () => {
       },
     });
 
-    render(
-      <Provider store={mockStore}>
-        <MemoryRouter>
-          <RulesGlossary />
-        </MemoryRouter>
-      </Provider>
-    );
+    renderWithProviders(mockStore);
 
     // Category section titles
     expect(screen.getByText('Actions')).toBeInTheDocument();
@@ -202,20 +192,14 @@ describe('RulesGlossary', () => {
       },
     });
 
-    render(
-      <Provider store={mockStore}>
-        <MemoryRouter>
-          <RulesGlossary />
-        </MemoryRouter>
-      </Provider>
-    );
+    renderWithProviders(mockStore);
 
-    // Check that terms are links
+    // Check that terms are links with edition in URL
     const attackLink = screen.getByRole('link', { name: /Attack/i });
-    expect(attackLink).toHaveAttribute('href', '/app/rules/attack');
+    expect(attackLink).toHaveAttribute('href', '/app/rules/2024/attack');
 
     const blindedLink = screen.getByRole('link', { name: /Blinded/i });
-    expect(blindedLink).toHaveAttribute('href', '/app/rules/blinded');
+    expect(blindedLink).toHaveAttribute('href', '/app/rules/2024/blinded');
   });
 
   it('scrolls to category when TOC item is clicked', () => {
@@ -232,13 +216,7 @@ describe('RulesGlossary', () => {
     const scrollIntoViewMock = jest.fn();
     Element.prototype.scrollIntoView = scrollIntoViewMock;
 
-    render(
-      <Provider store={mockStore}>
-        <MemoryRouter>
-          <RulesGlossary />
-        </MemoryRouter>
-      </Provider>
-    );
+    renderWithProviders(mockStore);
 
     // Click on a TOC item
     const conditionsButton = screen.getByText('Conditions (2)');

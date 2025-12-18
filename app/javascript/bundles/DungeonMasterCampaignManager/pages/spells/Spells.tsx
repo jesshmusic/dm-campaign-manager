@@ -12,7 +12,8 @@ import { SpellProps } from '../../utilities/types';
 import { useEdition } from '../../contexts/EditionContext';
 import DataTable from '../../components/DataTable/DataTable';
 import { Row } from 'react-table';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { getContentUrl, isValidEdition } from '../../utilities/editionUrls';
 
 const Spells = (props: {
   getSpells: (searchTerm?: string) => void;
@@ -21,14 +22,19 @@ const Spells = (props: {
 }) => {
   const { getSpells, loading, spells } = props;
   const navigate = useNavigate();
-  const { isEdition2014 } = useEdition();
+  const { edition: editionParam, param } = useParams<{ edition?: string; param?: string }>();
+  const { edition: contextEdition, isEdition2014 } = useEdition();
+
+  // Use edition from URL if valid (either :edition or :param route), otherwise from context
+  const urlEdition = editionParam || param;
+  const edition = isValidEdition(urlEdition) ? urlEdition : contextEdition;
 
   React.useEffect(() => {
     getSpells();
   }, []);
 
   const goToPage = (row: Row<Record<string, unknown>>) => {
-    navigate(`/app/spells/${row.original.slug}`);
+    navigate(getContentUrl('spells', row.original.slug as string, edition));
   };
 
   const columns = React.useMemo(

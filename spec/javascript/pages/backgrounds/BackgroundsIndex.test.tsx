@@ -72,11 +72,11 @@ describe('BackgroundsIndex', () => {
   const renderComponent = (store: any, edition: '2014' | '2024' = '2024') => {
     return render(
       <Provider store={store}>
-        <EditionProvider initialEdition={edition}>
-          <MemoryRouter>
+        <MemoryRouter>
+          <EditionProvider initialEdition={edition}>
             <BackgroundsIndex />
-          </MemoryRouter>
-        </EditionProvider>
+          </EditionProvider>
+        </MemoryRouter>
       </Provider>
     );
   };
@@ -123,6 +123,6 @@ describe('BackgroundsIndex', () => {
     renderComponent(store);
 
     const acolyteLink = screen.getByText('Acolyte').closest('a');
-    expect(acolyteLink).toHaveAttribute('href', '/app/backgrounds/acolyte');
+    expect(acolyteLink).toHaveAttribute('href', '/app/backgrounds/2024/acolyte');
   });
 });

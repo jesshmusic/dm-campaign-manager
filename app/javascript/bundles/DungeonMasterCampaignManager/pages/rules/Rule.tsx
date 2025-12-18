@@ -11,6 +11,7 @@ import { Link, useParams } from 'react-router-dom';
 import { useEdition } from '../../contexts/EditionContext';
 import { useBreadcrumbs } from '../../contexts/BreadcrumbContext';
 import { GiDragonBreath } from 'react-icons/gi';
+import { getContentUrl, parseEditionParams, getContentIndexUrl } from '../../utilities/editionUrls';
 
 import {
   RuleContent,
@@ -49,7 +50,8 @@ const Rule = (props: {
   getRule: (ruleSlug: string) => void;
 }) => {
   const { rule, loading, getRule } = props;
-  const { ruleSlug } = useParams<'ruleSlug'>();
+  const params = useParams<{ edition?: string; ruleSlug?: string }>();
+  const { edition, slug: ruleSlug } = parseEditionParams(params.edition, params.ruleSlug);
   const { isEdition2014 } = useEdition();
   const { setCustomPaths } = useBreadcrumbs();
 
@@ -68,12 +70,12 @@ const Rule = (props: {
   React.useEffect(() => {
     if (rule && rule.ancestors && rule.ancestors.length > 0) {
       const paths = [
-        { title: 'Rules', url: '/app/rules' },
+        { title: 'Rules', url: getContentIndexUrl('rules', edition) },
         ...rule.ancestors.map((ancestor) => ({
           title: ancestor.name,
-          url: `/app/rules/${ancestor.slug}`,
+          url: getContentUrl('rules', ancestor.slug, edition),
         })),
-        { title: rule.name, url: `/app/rules/${rule.slug}` },
+        { title: rule.name, url: getContentUrl('rules', rule.slug, edition) },
       ];
       setCustomPaths(paths);
     } else {
@@ -82,7 +84,7 @@ const Rule = (props: {
 
     // Clear custom paths when unmounting
     return () => setCustomPaths(undefined);
-  }, [rule, setCustomPaths]);
+  }, [rule, edition, setCustomPaths]);
 
   const ruleTitle = rule ? rule.name : 'Loading...';
 
@@ -110,7 +112,7 @@ const Rule = (props: {
           <RulesList>
             {rule.rules &&
               rule.rules.map((childRule) => (
-                <Link key={childRule.slug} to={`/app/rules/${childRule.slug}`}>
+                <Link key={childRule.slug} to={getContentUrl('rules', childRule.slug, edition)}>
                   <h2 style={{ border: 0 }}>{childRule.name}</h2>
                 </Link>
               ))}
@@ -119,7 +121,7 @@ const Rule = (props: {
           {(rule.previous_rule || rule.next_rule) && (
             <RuleNavigation>
               {rule.previous_rule ? (
-                <NavButton as={Link} to={`/app/rules/${rule.previous_rule.slug}`}>
+                <NavButton as={Link} to={getContentUrl('rules', rule.previous_rule.slug, edition)}>
                   <GiDragonBreath style={{ transform: 'rotate(135deg)' }} />
                   <NavButtonText>
                     <small>Previous</small>
@@ -133,7 +135,7 @@ const Rule = (props: {
               {rule.next_rule ? (
                 <NavButton
                   as={Link}
-                  to={`/app/rules/${rule.next_rule.slug}`}
+                  to={getContentUrl('rules', rule.next_rule.slug, edition)}
                   style={{ textAlign: 'right' }}
                 >
                   <NavButtonText style={{ alignItems: 'flex-end' }}>

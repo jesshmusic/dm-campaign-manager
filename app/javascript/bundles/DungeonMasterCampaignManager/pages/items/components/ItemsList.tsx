@@ -8,8 +8,9 @@ import PageTitle from '../../../components/PageTitle/PageTitle';
 import { Column, Row } from 'react-table';
 import DataTable from '../../../components/DataTable/DataTable';
 import { ItemType } from '../use-data';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useEdition } from '../../../contexts/EditionContext';
+import { getContentUrl, isValidEdition } from '../../../utilities/editionUrls';
 
 type ItemsListProps = {
   columns: Array<Column<Record<string, unknown>>>;
@@ -21,6 +22,12 @@ type ItemsListProps = {
 };
 
 const ItemsList = ({ columns, data, loading, onSearch, pageTitle, itemType }: ItemsListProps) => {
+  const { edition: editionParam } = useParams<{ edition?: string }>();
+  const { edition: contextEdition, isEdition2014 } = useEdition();
+
+  // Use edition from URL if valid, otherwise from context
+  const edition = isValidEdition(editionParam) ? editionParam : contextEdition;
+
   const _breadCrumbs =
     itemType !== ItemType.all
       ? [
@@ -29,10 +36,9 @@ const ItemsList = ({ columns, data, loading, onSearch, pageTitle, itemType }: It
         ]
       : [{ isActive: true, title: pageTitle }];
   const navigate = useNavigate();
-  const { isEdition2014 } = useEdition();
 
   const goToPage = (row: Row<Record<string, unknown>>) => {
-    navigate(`/app/items/${row.original.slug}`);
+    navigate(getContentUrl('items', row.original.slug as string, edition));
   };
 
   return (

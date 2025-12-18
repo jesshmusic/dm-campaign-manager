@@ -36,11 +36,11 @@ const createMockStore = (rulesState: any) => {
 const renderWithProviders = (store: any, edition: '2014' | '2024' = '2024') => {
   return render(
     <Provider store={store}>
-      <EditionProvider initialEdition={edition}>
-        <MemoryRouter>
+      <MemoryRouter>
+        <EditionProvider initialEdition={edition}>
           <RulesIndex />
-        </MemoryRouter>
-      </EditionProvider>
+        </EditionProvider>
+      </MemoryRouter>
     </Provider>
   );
 };
@@ -199,7 +199,7 @@ describe('RulesIndex', () => {
   });
 
   describe('rule links', () => {
-    it('links to rule page using slug', () => {
+    it('links to rule page using slug with edition', () => {
       const store = createMockStore({
         rules: [
           { name: 'Playing the Game', slug: 'playing-the-game', count: 10, rules: [] },
@@ -210,7 +210,7 @@ describe('RulesIndex', () => {
       renderWithProviders(store);
 
       const link = screen.getByRole('link', { name: /Playing the Game/i });
-      expect(link).toHaveAttribute('href', '/app/rules/playing-the-game');
+      expect(link).toHaveAttribute('href', '/app/rules/2024/playing-the-game');
     });
   });
 

@@ -6,6 +6,7 @@ import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
 import DndSpinner from '../../components/DndSpinners/DndSpinner';
 import { useEdition } from '../../contexts/EditionContext';
+import { parseEditionParams, getContentIndexUrl } from '../../utilities/editionUrls';
 import Rule from './Rule';
 
 type Ancestor = {
@@ -29,8 +30,33 @@ type RulesCategoryProps = {
 };
 
 const RulesCategory = ({ rules, loading, getRules }: RulesCategoryProps) => {
-  const { ruleSlug } = useParams<{ ruleSlug: string }>();
-  const { isEdition2014 } = useEdition();
+  const params = useParams<{ edition?: string; ruleSlug?: string; param?: string }>();
+  const { edition: contextEdition, isEdition2014 } = useEdition();
+
+  // Handle different route patterns:
+  // - /app/rules/:edition/:ruleSlug - params.edition and params.ruleSlug are set
+  // - /app/rules/:param (via resolver) - params.param is set (could be slug since resolver already checked edition)
+  // - /app/rules/:ruleSlug (old route) - params.ruleSlug is set but not edition
+  let edition: string;
+  let ruleSlug: string | undefined;
+
+  if (params.edition && params.ruleSlug) {
+    // Two-param route: /app/rules/:edition/:ruleSlug
+    const parsed = parseEditionParams(params.edition, params.ruleSlug);
+    edition = parsed.edition;
+    ruleSlug = parsed.slug;
+  } else if (params.param) {
+    // Single-param via resolver: /app/rules/:param (param is a slug, not edition)
+    edition = contextEdition;
+    ruleSlug = params.param;
+  } else if (params.ruleSlug) {
+    // Old single-param route: /app/rules/:ruleSlug
+    edition = contextEdition;
+    ruleSlug = params.ruleSlug;
+  } else {
+    edition = contextEdition;
+    ruleSlug = undefined;
+  }
 
   React.useEffect(() => {
     getRules();
@@ -56,7 +82,7 @@ const RulesCategory = ({ rules, loading, getRules }: RulesCategoryProps) => {
     <PageContainer pageTitle="Rules" description="Rule not found">
       <PageTitle title="Rule Not Found" isLegacy={isEdition2014} />
       <p>The requested rule could not be found.</p>
-      <Link to="/app/rules">Back to Rules</Link>
+      <Link to={getContentIndexUrl('rules', edition)}>Back to Rules</Link>
     </PageContainer>
   );
 };

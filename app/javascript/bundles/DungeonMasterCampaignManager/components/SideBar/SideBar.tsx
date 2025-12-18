@@ -26,6 +26,7 @@ import {
 import PatreonIcon from '../icons/PatreonIcon';
 import EditionToggle from '../EditionToggle';
 import { getIconFromName } from '../../utilities/icons';
+import { getContentUrl, getContentIndexUrl } from '../../utilities/editionUrls';
 
 const PATREON_URL =
   'https://patreon.com/DormanLakely?utm_medium=unknown&utm_source=join_link&utm_campaign=creatorshare_creator&utm_content=copyLink';
@@ -126,7 +127,7 @@ const SideBar = (props: {
 
   const { user, getAccessTokenSilently, isAuthenticated, loginWithRedirect, logout } = useAuth0();
   const location = useLocation();
-  const { isEdition2024 } = useEdition();
+  const { edition, isEdition2024 } = useEdition();
 
   // In 2024 edition, "Races" are called "Species"
   const racesLabel = isEdition2024 ? 'Species' : 'Races';
@@ -189,16 +190,40 @@ const SideBar = (props: {
           )}
           <EditionToggle isCollapsed={isCollapsed} />
           <SidebarLink to="/" title="Dashboard" icon={<AiOutlineHome />} />
-          <SidebarLink to="/app/classes" title="Classes" icon={<GiPerson />} />
-          <SidebarLink to="/app/races" title={racesLabel} icon={<GiDwarfFace />} />
+          <SidebarLink
+            to={getContentIndexUrl('classes', edition)}
+            title="Classes"
+            icon={<GiPerson />}
+          />
+          <SidebarLink
+            to={getContentIndexUrl('races', edition)}
+            title={racesLabel}
+            icon={<GiDwarfFace />}
+          />
           {isEdition2024 && (
             <>
-              <SidebarLink to="/app/backgrounds" title="Backgrounds" icon={<GiSecretBook />} />
-              <SidebarLink to="/app/feats" title="Feats" icon={<GiUpgrade />} />
+              <SidebarLink
+                to={getContentIndexUrl('backgrounds', edition)}
+                title="Backgrounds"
+                icon={<GiSecretBook />}
+              />
+              <SidebarLink
+                to={getContentIndexUrl('feats', edition)}
+                title="Feats"
+                icon={<GiUpgrade />}
+              />
             </>
           )}
-          <SidebarLink to="/app/monsters" title="Monsters" icon={<GiMonsterGrasp />} />
-          <SidebarLink to="/app/spells" title="Spells" icon={<GiMagicPalm />} />
+          <SidebarLink
+            to={getContentIndexUrl('monsters', edition)}
+            title="Monsters"
+            icon={<GiMonsterGrasp />}
+          />
+          <SidebarLink
+            to={getContentIndexUrl('spells', edition)}
+            title="Spells"
+            icon={<GiMagicPalm />}
+          />
           <SubMenu
             label="Rules"
             icon={<GiBookshelf />}
@@ -208,7 +233,11 @@ const SideBar = (props: {
               borderBottom: '0.125rem solid #c9ad6a',
             }}
           >
-            <SidebarLink to="/app/rules" title="All Rules" icon={<GiBookshelf />} />
+            <SidebarLink
+              to={getContentIndexUrl('rules', edition)}
+              title="All Rules"
+              icon={<GiBookshelf />}
+            />
             {sortByOrder(rules).map((rule, index) => {
               // If rule has children, show as submenu
               if (rule.rules && rule.rules.length > 0) {
@@ -221,7 +250,7 @@ const SideBar = (props: {
                   >
                     <SidebarLink
                       key={`rule-overview-${rule.slug}`}
-                      to={`/app/rules/${rule.slug}`}
+                      to={getContentUrl('rules', rule.slug, edition)}
                       title={rule.name}
                       icon={<GiBookshelf />}
                     />
@@ -237,14 +266,14 @@ const SideBar = (props: {
                           >
                             <SidebarLink
                               key={`child-overview-${childRule.slug}`}
-                              to={`/app/rules/${childRule.slug}`}
+                              to={getContentUrl('rules', childRule.slug, edition)}
                               title={childRule.name}
                               icon={getRuleIcon(childRule)}
                             />
                             {childRule.rules.map((grandchild, gcIndex) => (
                               <SidebarLink
                                 key={`rule-grandchild-${grandchild.slug}-${gcIndex}`}
-                                to={`/app/rules/${grandchild.slug}`}
+                                to={getContentUrl('rules', grandchild.slug, edition)}
                                 title={grandchild.name}
                                 icon={getRuleIcon(grandchild)}
                               />
@@ -256,7 +285,7 @@ const SideBar = (props: {
                       return (
                         <SidebarLink
                           key={`rule-child-${childRule.slug}-${subIndex}`}
-                          to={`/app/rules/${childRule.slug}`}
+                          to={getContentUrl('rules', childRule.slug, edition)}
                           title={childRule.name}
                           icon={getRuleIcon(childRule)}
                         />
@@ -269,7 +298,7 @@ const SideBar = (props: {
               return (
                 <SidebarLink
                   key={`rule-${rule.slug}-${index}`}
-                  to={`/app/rules/${rule.slug}`}
+                  to={getContentUrl('rules', rule.slug, edition)}
                   title={rule.name}
                   icon={getRuleIcon(rule)}
                 />
@@ -287,11 +316,15 @@ const SideBar = (props: {
               marginTop: '-.125rem',
             }}
           >
-            <SidebarLink to="/app/items" title="All Equipment" icon={<GiSwapBag />} />
+            <SidebarLink
+              to={getContentIndexUrl('items', edition)}
+              title="All Equipment"
+              icon={<GiSwapBag />}
+            />
             {itemTypes.map((itemType, index) => (
               <SidebarLink
                 key={`items-${index}`}
-                to={itemType.link}
+                to={getContentUrl('items', itemType.link.replace('/app/items/', ''), edition)}
                 title={itemType.name}
                 icon={itemType.icon}
               />

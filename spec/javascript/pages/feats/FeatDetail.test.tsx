@@ -72,11 +72,11 @@ describe('FeatDetail', () => {
   const renderComponent = (store: any, edition: '2014' | '2024' = '2024') => {
     return render(
       <Provider store={store}>
-        <EditionProvider initialEdition={edition}>
-          <MemoryRouter>
+        <MemoryRouter>
+          <EditionProvider initialEdition={edition}>
             <FeatDetail />
-          </MemoryRouter>
-        </EditionProvider>
+          </EditionProvider>
+        </MemoryRouter>
       </Provider>
     );
   };

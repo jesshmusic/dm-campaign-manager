@@ -18,9 +18,9 @@ const EditionToggle: React.FC<EditionToggleProps> = ({ isCollapsed = false }) =>
 
   const handleEditionChange = (newEdition: DndEdition) => {
     if (newEdition !== edition) {
+      // setEdition will update the URL if we're on an edition-aware page,
+      // and update localStorage for future visits
       setEdition(newEdition);
-      // Reload the page to fetch data for the new edition
-      window.location.reload();
     }
   };
 

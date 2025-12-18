@@ -1,12 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import rest from '../../api/api';
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
 import DndSpinner from '../../components/DndSpinners/DndSpinner';
 import { useEdition } from '../../contexts/EditionContext';
 import { getIconFromName } from '../../utilities/icons';
+import { getContentUrl, isValidEdition } from '../../utilities/editionUrls';
 
 import { RulesGrid, RuleCard, RuleCardIcon, RuleCardContent, RuleCardCount } from './Rules.styles';
 
@@ -50,7 +51,12 @@ const getRuleIcon = (rule: RuleSummary) => {
 };
 
 const RulesIndex = ({ rules, loading, getRules }: RulesIndexProps) => {
-  const { isEdition2014 } = useEdition();
+  const { edition: editionParam, param } = useParams<{ edition?: string; param?: string }>();
+  const { edition: contextEdition, isEdition2014 } = useEdition();
+
+  // Use edition from URL if valid (either :edition or :param route), otherwise from context
+  const urlEdition = editionParam || param;
+  const edition = isValidEdition(urlEdition) ? urlEdition : contextEdition;
 
   React.useEffect(() => {
     getRules();
@@ -70,7 +76,7 @@ const RulesIndex = ({ rules, loading, getRules }: RulesIndexProps) => {
       ) : (
         <RulesGrid>
           {sortedRules.map((rule) => (
-            <Link key={rule.slug} to={`/app/rules/${rule.slug}`}>
+            <Link key={rule.slug} to={getContentUrl('rules', rule.slug, edition)}>
               <RuleCard>
                 <RuleCardIcon>{getRuleIcon(rule)}</RuleCardIcon>
                 <RuleCardContent>

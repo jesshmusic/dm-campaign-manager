@@ -7,19 +7,24 @@ import PageTitle from '../../components/PageTitle/PageTitle';
 import DndSpinner from '../../components/DndSpinners/DndSpinner';
 import { useParams } from 'react-router-dom';
 import { useEdition } from '../../contexts/EditionContext';
+import { parseEditionParams } from '../../utilities/editionUrls';
 
 import { RacePageWrapper, Subheading, TraitName } from './Races.styles';
 
 const Race = (props: { race?: RaceProps; getRace: (raceSlug: string) => void }) => {
   const { race, getRace } = props;
-  const { raceSlug } = useParams<'raceSlug'>();
+  const params = useParams<{ edition?: string; raceSlug?: string; param?: string }>();
+  // Handle both /app/races/:edition/:slug and /app/races/:param routes
+  const { slug: raceSlug } = parseEditionParams(params.edition, params.raceSlug || params.param);
   const { isEdition2014, isEdition2024 } = useEdition();
 
   // In 2024 edition, "Race" is called "Species"
   const typeLabel = isEdition2024 ? 'Species' : 'Race';
 
   React.useEffect(() => {
-    getRace(raceSlug!);
+    if (raceSlug) {
+      getRace(raceSlug);
+    }
   }, [raceSlug]);
 
   const raceTitle = race ? race.name : `${typeLabel} Loading...`;

@@ -59,11 +59,11 @@ describe('BackgroundDetail', () => {
   const renderComponent = (store: any, edition: '2014' | '2024' = '2024') => {
     return render(
       <Provider store={store}>
-        <EditionProvider initialEdition={edition}>
-          <MemoryRouter>
+        <MemoryRouter>
+          <EditionProvider initialEdition={edition}>
             <BackgroundDetail />
-          </MemoryRouter>
-        </EditionProvider>
+          </EditionProvider>
+        </MemoryRouter>
       </Provider>
     );
   };

@@ -6,6 +6,7 @@ import Spells from '../../../../app/javascript/bundles/DungeonMasterCampaignMana
 
 jest.mock('react-router-dom', () => ({
   useNavigate: jest.fn(),
+  useParams: jest.fn().mockReturnValue({}),
 }));
 
 jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/containers/PageContainer', () => {

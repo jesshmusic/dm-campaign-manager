@@ -7,6 +7,7 @@ import PageTitle from '../../components/PageTitle/PageTitle';
 import DndSpinner from '../../components/DndSpinners/DndSpinner';
 import { useEdition } from '../../contexts/EditionContext';
 import { Background } from '../../reducers/backgrounds';
+import { parseEditionParams } from '../../utilities/editionUrls';
 
 import {
   BackgroundDetailPage,
@@ -24,7 +25,12 @@ type BackgroundDetailProps = {
 };
 
 const BackgroundDetail = ({ currentBackground, loading, getBackground }: BackgroundDetailProps) => {
-  const { backgroundSlug } = useParams<{ backgroundSlug: string }>();
+  const params = useParams<{ edition?: string; backgroundSlug?: string; param?: string }>();
+  // Handle both /app/backgrounds/:edition/:slug and /app/backgrounds/:param routes
+  const { slug: backgroundSlug } = parseEditionParams(
+    params.edition,
+    params.backgroundSlug || params.param,
+  );
   const { isEdition2014 } = useEdition();
 
   React.useEffect(() => {

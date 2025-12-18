@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeSlug from 'rehype-slug';
@@ -9,6 +9,7 @@ import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
 import DndSpinner from '../../components/DndSpinners/DndSpinner';
 import { useEdition } from '../../contexts/EditionContext';
+import { getContentUrl, isValidEdition } from '../../utilities/editionUrls';
 import {
   RuleContent,
   TableFrame,
@@ -83,7 +84,14 @@ const sortCategories = (categories: GlossaryCategory[]): GlossaryCategory[] => {
 };
 
 const RulesGlossary = ({ rule, loading, getRule }: RulesGlossaryProps) => {
-  const { isEdition2014 } = useEdition();
+  const { edition: editionParam, param } = useParams<{ edition?: string; param?: string }>();
+  const { edition: contextEdition, isEdition2014 } = useEdition();
+
+  // Use edition from URL if valid (either :edition or :param route), otherwise from context
+  // Note: param would be 'rules-glossary' when accessed via /app/rules/rules-glossary
+  const urlEdition = editionParam || (param !== 'rules-glossary' ? param : undefined);
+  const edition = isValidEdition(urlEdition) ? urlEdition : contextEdition;
+
   const hasFetchedRef = React.useRef(false);
 
   React.useEffect(() => {
@@ -165,7 +173,7 @@ const RulesGlossary = ({ rule, loading, getRule }: RulesGlossaryProps) => {
               <GlossaryTermList>
                 {category.rules.map((term) => (
                   <GlossaryTermItem key={term.slug}>
-                    <Link to={`/app/rules/${term.slug}`}>
+                    <Link to={getContentUrl('rules', term.slug, edition)}>
                       <strong>{term.name}</strong>
                     </Link>
                     <ReactMarkdown

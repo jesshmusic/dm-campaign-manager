@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useParams } from 'react-router-dom';
 import HomePage from '../pages/front-page/HomePage';
 import DndClasses from '../pages/dnd-classes/DndClasses';
 import Races from '../pages/races/Races';
@@ -30,15 +30,64 @@ import EditWidgetPage from '../pages/admin-dashboard/EditWidgetPage';
 import SearchResults from '../pages/search-results/SearchResults';
 import PrivacyPolicy from '../pages/privacy-policy/PrivacyPolicy';
 import FoundryMapsAdmin from '../pages/FoundryMapsAdmin';
+import { isValidEdition } from '../utilities/editionUrls';
+
+// Resolver components that determine if single param is edition or slug
+const ClassesResolver = (props) => {
+  const { param } = useParams<{ param: string }>();
+  return isValidEdition(param) ? <DndClasses {...props} /> : <DndClass {...props} />;
+};
+
+const RacesResolver = (props) => {
+  const { param } = useParams<{ param: string }>();
+  return isValidEdition(param) ? <Races {...props} /> : <Race {...props} />;
+};
+
+const MonstersResolver = (props) => {
+  const { param } = useParams<{ param: string }>();
+  return isValidEdition(param) ? <Monsters {...props} /> : <Monster {...props} />;
+};
+
+const SpellsResolver = (props) => {
+  const { param } = useParams<{ param: string }>();
+  return isValidEdition(param) ? <Spells {...props} /> : <Spell {...props} />;
+};
+
+const RulesResolver = (props) => {
+  const { param } = useParams<{ param: string }>();
+  // Special case: rules-glossary goes to RulesGlossary even without edition
+  if (param === 'rules-glossary') {
+    return <RulesGlossary {...props} />;
+  }
+  return isValidEdition(param) ? <RulesIndex {...props} /> : <RulesCategory {...props} />;
+};
+
+const BackgroundsResolver = (props) => {
+  const { param } = useParams<{ param: string }>();
+  return isValidEdition(param) ? <BackgroundsIndex {...props} /> : <BackgroundDetail {...props} />;
+};
+
+const FeatsResolver = (props) => {
+  const { param } = useParams<{ param: string }>();
+  return isValidEdition(param) ? <FeatsIndex {...props} /> : <FeatDetail {...props} />;
+};
 
 const DMRoutes = (props) => {
   return (
     <Routes>
       <Route path="/" element={<HomePage {...props} />} />
-      <Route path="/app/classes/:dndClassSlug" element={<DndClass {...props} />} />
+
+      {/* Classes - edition-aware routes */}
+      <Route path="/app/classes/:edition/:dndClassSlug" element={<DndClass {...props} />} />
+      <Route path="/app/classes/:param" element={<ClassesResolver {...props} />} />
       <Route path="/app/classes" element={<DndClasses {...props} />} />
+
+      {/* Races - edition-aware routes */}
+      <Route path="/app/races/:edition/:raceSlug" element={<Race {...props} />} />
+      <Route path="/app/races/:param" element={<RacesResolver {...props} />} />
       <Route path="/app/races" element={<Races {...props} />} />
-      <Route path="/app/races/:raceSlug" element={<Race {...props} />} />
+
+      {/* Items - category pages (no edition needed) */}
       {Util.itemPages.map((itemPage) => (
         <Route
           path={itemPage.path}
@@ -53,18 +102,40 @@ const DMRoutes = (props) => {
           }
         />
       ))}
+      {/* Items - edition-aware detail routes */}
+      <Route path="/app/items/:edition/:itemSlug" element={<Item {...props} />} />
       <Route path="/app/items/:itemSlug" element={<Item {...props} />} />
-      <Route path="/app/monsters/" element={<Monsters {...props} />} />
-      <Route path="/app/monsters/:monsterSlug" element={<Monster {...props} />} />
-      <Route path="/app/spells/" element={<Spells {...props} />} />
-      <Route path="/app/spells/:spellSlug" element={<Spell {...props} />} />
+
+      {/* Monsters - edition-aware routes */}
+      <Route path="/app/monsters/:edition/:monsterSlug" element={<Monster {...props} />} />
+      <Route path="/app/monsters/:param" element={<MonstersResolver {...props} />} />
+      <Route path="/app/monsters" element={<Monsters {...props} />} />
+
+      {/* Spells - edition-aware routes */}
+      <Route path="/app/spells/:edition/:spellSlug" element={<Spell {...props} />} />
+      <Route path="/app/spells/:param" element={<SpellsResolver {...props} />} />
+      <Route path="/app/spells" element={<Spells {...props} />} />
+
+      {/* Rules - edition-aware routes */}
+      <Route path="/app/rules/:edition/rules-glossary" element={<RulesGlossary {...props} />} />
+      <Route path="/app/rules/:edition/:ruleSlug" element={<RulesCategory {...props} />} />
+      <Route path="/app/rules/:param" element={<RulesResolver {...props} />} />
       <Route path="/app/rules" element={<RulesIndex {...props} />} />
-      <Route path="/app/rules/rules-glossary" element={<RulesGlossary {...props} />} />
-      <Route path="/app/rules/:ruleSlug" element={<RulesCategory {...props} />} />
+
+      {/* Backgrounds - edition-aware routes */}
+      <Route
+        path="/app/backgrounds/:edition/:backgroundSlug"
+        element={<BackgroundDetail {...props} />}
+      />
+      <Route path="/app/backgrounds/:param" element={<BackgroundsResolver {...props} />} />
       <Route path="/app/backgrounds" element={<BackgroundsIndex {...props} />} />
-      <Route path="/app/backgrounds/:backgroundSlug" element={<BackgroundDetail {...props} />} />
+
+      {/* Feats - edition-aware routes */}
+      <Route path="/app/feats/:edition/:featSlug" element={<FeatDetail {...props} />} />
+      <Route path="/app/feats/:param" element={<FeatsResolver {...props} />} />
       <Route path="/app/feats" element={<FeatsIndex {...props} />} />
-      <Route path="/app/feats/:featSlug" element={<FeatDetail {...props} />} />
+
+      {/* Other routes (no edition needed) */}
       <Route path="/app/monster-generator/" element={<MonsterGenerator {...props} />} />
       <Route path="/app/search/:query" element={<SearchResults {...props} />} />
       <Route path="/app/privacy-policy" element={<PrivacyPolicy {...props} />} />

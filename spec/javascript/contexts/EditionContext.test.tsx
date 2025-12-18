@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, screen, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
+import { MemoryRouter } from 'react-router-dom';
 import {
   EditionProvider,
   useEdition,
@@ -20,6 +21,13 @@ const TestConsumer = () => {
   );
 };
 
+// Helper to wrap components in MemoryRouter
+const renderWithRouter = (ui: React.ReactElement, initialEntries = ['/']) => {
+  return render(
+    <MemoryRouter initialEntries={initialEntries}>{ui}</MemoryRouter>
+  );
+};
+
 describe('EditionContext', () => {
   beforeEach(() => {
     localStorage.clear();
@@ -27,7 +35,7 @@ describe('EditionContext', () => {
 
   describe('EditionProvider', () => {
     it('provides default edition of 2024', () => {
-      render(
+      renderWithRouter(
         <EditionProvider>
           <TestConsumer />
         </EditionProvider>
@@ -39,7 +47,7 @@ describe('EditionContext', () => {
     });
 
     it('uses initialEdition prop when provided', () => {
-      render(
+      renderWithRouter(
         <EditionProvider initialEdition="2014">
           <TestConsumer />
         </EditionProvider>
@@ -53,7 +61,7 @@ describe('EditionContext', () => {
     it('reads from localStorage when no initialEdition is provided', () => {
       localStorage.setItem('dnd-edition', '2014');
 
-      render(
+      renderWithRouter(
         <EditionProvider>
           <TestConsumer />
         </EditionProvider>
@@ -65,7 +73,7 @@ describe('EditionContext', () => {
     it('prioritizes initialEdition over localStorage', () => {
       localStorage.setItem('dnd-edition', '2014');
 
-      render(
+      renderWithRouter(
         <EditionProvider initialEdition="2024">
           <TestConsumer />
         </EditionProvider>
@@ -77,7 +85,7 @@ describe('EditionContext', () => {
     it('ignores invalid localStorage values', () => {
       localStorage.setItem('dnd-edition', 'invalid');
 
-      render(
+      renderWithRouter(
         <EditionProvider>
           <TestConsumer />
         </EditionProvider>
@@ -87,7 +95,7 @@ describe('EditionContext', () => {
     });
 
     it('updates edition when setEdition is called', () => {
-      render(
+      renderWithRouter(
         <EditionProvider>
           <TestConsumer />
         </EditionProvider>
@@ -105,7 +113,7 @@ describe('EditionContext', () => {
     });
 
     it('persists edition to localStorage when changed', () => {
-      render(
+      renderWithRouter(
         <EditionProvider>
           <TestConsumer />
         </EditionProvider>
@@ -119,7 +127,7 @@ describe('EditionContext', () => {
     });
 
     it('syncs initial edition to localStorage on mount', () => {
-      render(
+      renderWithRouter(
         <EditionProvider initialEdition="2014">
           <TestConsumer />
         </EditionProvider>
@@ -129,7 +137,7 @@ describe('EditionContext', () => {
     });
 
     it('renders children correctly', () => {
-      render(
+      renderWithRouter(
         <EditionProvider>
           <div data-testid="child">Child Content</div>
         </EditionProvider>
@@ -141,7 +149,7 @@ describe('EditionContext', () => {
 
   describe('useEdition hook', () => {
     it('returns the correct context values', () => {
-      render(
+      renderWithRouter(
         <EditionProvider initialEdition="2024">
           <TestConsumer />
         </EditionProvider>
@@ -153,7 +161,7 @@ describe('EditionContext', () => {
     });
 
     it('toggles between editions correctly', () => {
-      render(
+      renderWithRouter(
         <EditionProvider>
           <TestConsumer />
         </EditionProvider>

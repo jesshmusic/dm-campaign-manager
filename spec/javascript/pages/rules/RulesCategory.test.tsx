@@ -65,11 +65,11 @@ const createMockStore = (rulesState: any) => {
 const renderWithProviders = (store: any, edition: '2014' | '2024' = '2024') => {
   return render(
     <Provider store={store}>
-      <EditionProvider initialEdition={edition}>
-        <MemoryRouter>
+      <MemoryRouter>
+        <EditionProvider initialEdition={edition}>
           <RulesCategory />
-        </MemoryRouter>
-      </EditionProvider>
+        </EditionProvider>
+      </MemoryRouter>
     </Provider>
   );
 };

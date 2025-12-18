@@ -8,6 +8,7 @@ import DndSpinner from '../../components/DndSpinners/DndSpinner';
 import { useEdition } from '../../contexts/EditionContext';
 import ReactMarkdown from 'react-markdown';
 import { Feat } from '../../reducers/feats';
+import { parseEditionParams } from '../../utilities/editionUrls';
 
 import {
   FeatDetailPage,
@@ -25,7 +26,9 @@ type FeatDetailProps = {
 };
 
 const FeatDetail = ({ currentFeat, loading, getFeat }: FeatDetailProps) => {
-  const { featSlug } = useParams<{ featSlug: string }>();
+  const params = useParams<{ edition?: string; featSlug?: string; param?: string }>();
+  // Handle both /app/feats/:edition/:slug and /app/feats/:param routes
+  const { slug: featSlug } = parseEditionParams(params.edition, params.featSlug || params.param);
   const { isEdition2014 } = useEdition();
 
   React.useEffect(() => {

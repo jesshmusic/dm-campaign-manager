@@ -11,6 +11,7 @@ import ReactMarkdown from 'react-markdown';
 import { singleItemUseData } from './use-data';
 import { Link, useParams } from 'react-router-dom';
 import { useEdition } from '../../contexts/EditionContext';
+import { parseEditionParams, getContentUrl, isValidEdition } from '../../utilities/editionUrls';
 
 import { Section, Info, TableFrame } from './Item.styles';
 
@@ -23,11 +24,17 @@ const Item = (props: ItemPageProps) => {
     subtitle: '',
     infoBlock: [],
   });
-  const { itemSlug } = useParams<'itemSlug'>();
-  const { isEdition2014 } = useEdition();
+  const params = useParams<{ edition?: string; itemSlug?: string }>();
+  const { edition, slug: itemSlug } = parseEditionParams(params.edition, params.itemSlug);
+  const { edition: contextEdition, isEdition2014 } = useEdition();
+
+  // Use edition from parsed params if valid, otherwise from context
+  const effectiveEdition = isValidEdition(edition) ? edition : contextEdition;
 
   React.useEffect(() => {
-    getItem(itemSlug!);
+    if (itemSlug) {
+      getItem(itemSlug);
+    }
   }, [itemSlug]);
 
   React.useEffect(() => {
@@ -60,7 +67,7 @@ const Item = (props: ItemPageProps) => {
               <ul>
                 {item.contents.map((contentItem, index) => (
                   <li key={`${contentItem.index}-${index}`}>
-                    <Link to={`/app/items/${contentItem.index}`}>
+                    <Link to={getContentUrl('items', contentItem.index, effectiveEdition)}>
                       <strong>{contentItem.name}</strong> - quantity: {contentItem.quantity}
                     </Link>
                   </li>
