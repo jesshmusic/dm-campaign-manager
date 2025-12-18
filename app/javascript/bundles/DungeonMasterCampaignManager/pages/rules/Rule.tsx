@@ -6,16 +6,24 @@ import rest from '../../api/api';
 import { connect } from 'react-redux';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import rehypeSlug from 'rehype-slug';
 import { Link, useParams } from 'react-router-dom';
 import { useEdition } from '../../contexts/EditionContext';
+import { useBreadcrumbs } from '../../contexts/BreadcrumbContext';
 
 import { RuleContent, RulesList, TableFrame } from './Rule.styles';
+
+type Ancestor = {
+  name: string;
+  slug: string;
+};
 
 const Rule = (props: {
   rule: {
     name: string;
     slug: string;
     description: string;
+    ancestors?: Ancestor[];
     rules: {
       name: string;
       slug: string;
@@ -27,6 +35,7 @@ const Rule = (props: {
   const { rule, loading, getRule } = props;
   const { ruleSlug } = useParams<'ruleSlug'>();
   const { isEdition2014 } = useEdition();
+  const { setCustomPaths } = useBreadcrumbs();
 
   // Track which slug we've fetched to prevent duplicate fetches
   const fetchedSlugRef = React.useRef<string | null>(null);
@@ -38,6 +47,26 @@ const Rule = (props: {
       getRule(ruleSlug);
     }
   }, [ruleSlug, getRule]);
+
+  // Update breadcrumbs when rule data loads
+  React.useEffect(() => {
+    if (rule && rule.ancestors && rule.ancestors.length > 0) {
+      const paths = [
+        { title: 'Rules', url: '/app/rules' },
+        ...rule.ancestors.map((ancestor) => ({
+          title: ancestor.name,
+          url: `/app/rules/${ancestor.slug}`,
+        })),
+        { title: rule.name, url: `/app/rules/${rule.slug}` },
+      ];
+      setCustomPaths(paths);
+    } else {
+      setCustomPaths(undefined);
+    }
+
+    // Clear custom paths when unmounting
+    return () => setCustomPaths(undefined);
+  }, [rule, setCustomPaths]);
 
   const ruleTitle = rule ? rule.name : 'Loading...';
 
@@ -58,6 +87,7 @@ const Rule = (props: {
               ),
             }}
             remarkPlugins={[remarkGfm]}
+            rehypePlugins={[rehypeSlug]}
           >
             {rule.description}
           </ReactMarkdown>

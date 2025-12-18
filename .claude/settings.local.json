@@ -106,7 +106,11 @@
       "Bash(python debug_page.py:*)",
       "Bash(ruby scripts/update_spells_higher_level.rb:*)",
       "Bash(rails:*)",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(RAILS_ENV=development bundle exec rails runner:*)",
+      "Bash(RAILS_ENV=development bundle exec rails:*)",
+      "Bash(node -e:*)",
+      "Bash(npx tsc:*)"
     ],
     "deny": [],
     "ask": []

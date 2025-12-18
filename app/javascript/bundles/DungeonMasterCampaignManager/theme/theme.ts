@@ -8,6 +8,7 @@ export const theme = {
   colors: {
     // Primary brand colors
     primary: '#972c1d',
+    primaryDark: '#571a10', // darker variant of primary
     secondary: '#7f513e', // $brown
     darkRed: '#571a10',
     textRed: '#58180d',
@@ -15,6 +16,7 @@ export const theme = {
     // Accent colors
     orange: '#dd9529',
     yellow: '#c9ad6a',
+    gold: '#c9ad6a', // alias for yellow, used for borders
     green: '#7a853b',
     pineGreen: '#507f62',
     blue: '#51a5c5',
@@ -30,6 +32,7 @@ export const theme = {
     backgroundColor: '#d8ddba',
     backgroundMed: '#f3e8d4',
     cardBg: '#fdf1dc',
+    lightBg: '#f5f0e6', // light background for blockquotes/code
 
     // Black & White
     white: '#ffffff',

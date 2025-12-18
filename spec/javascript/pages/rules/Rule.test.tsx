@@ -21,6 +21,7 @@ jest.mock('react-markdown', () => {
 });
 
 jest.mock('remark-gfm', () => jest.fn());
+jest.mock('rehype-slug', () => jest.fn());
 
 jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/containers/PageContainer', () => {
   return function MockPageContainer({ children }: any) {
@@ -33,6 +34,13 @@ jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/compo
     return <div data-testid="spinner">Loading...</div>;
   };
 });
+
+jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/contexts/BreadcrumbContext', () => ({
+  useBreadcrumbs: () => ({
+    customPaths: undefined,
+    setCustomPaths: jest.fn(),
+  }),
+}));
 
 describe('Rule', () => {
   it('shows spinner when loading', () => {

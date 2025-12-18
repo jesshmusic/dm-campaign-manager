@@ -149,6 +149,12 @@ jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/ru
   };
 });
 
+jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/rules/RulesGlossary', () => {
+  return function RulesGlossary() {
+    return <div data-testid="rules-glossary-page">Rules Glossary Page</div>;
+  };
+});
+
 jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/backgrounds/BackgroundsIndex', () => {
   return function BackgroundsIndex() {
     return <div data-testid="backgrounds-index-page">Backgrounds Index Page</div>;
@@ -283,6 +289,16 @@ describe('DMRoutes', () => {
       );
 
       expect(screen.getByTestId('rule-page')).toBeInTheDocument();
+    });
+
+    it('should render rules glossary page', () => {
+      render(
+        <MemoryRouter initialEntries={['/app/rules/rules-glossary']}>
+          <DMRoutes />
+        </MemoryRouter>
+      );
+
+      expect(screen.getByTestId('rules-glossary-page')).toBeInTheDocument();
     });
 
     it('should render monster generator page', () => {

@@ -33,27 +33,22 @@ describe('EnvironmentalEffectsWidget', () => {
     expect(screen.queryByTestId('frame')).not.toBeInTheDocument();
   });
 
-  it('displays effect selector', () => {
-    render(<EnvironmentalEffectsWidget />);
-    expect(screen.getByTestId('effect-select')).toBeInTheDocument();
-  });
-
-  it('shows all environmental effects in dropdown', () => {
+  it('displays quick reference items for all effects', () => {
     render(<EnvironmentalEffectsWidget />);
     const effects = [
-      'Deep Water',
-      'Extreme Cold',
-      'Extreme Heat',
-      'Frigid Water',
-      'Heavy Precipitation',
-      'High Altitude',
-      'Slippery Ice',
-      'Strong Wind',
-      'Thin Ice',
+      'deep-water',
+      'extreme-cold',
+      'extreme-heat',
+      'frigid-water',
+      'heavy-precipitation',
+      'high-altitude',
+      'slippery-ice',
+      'strong-wind',
+      'thin-ice',
     ];
 
     effects.forEach((effect) => {
-      expect(screen.getByRole('option', { name: effect })).toBeInTheDocument();
+      expect(screen.getByTestId(`quick-ref-${effect}`)).toBeInTheDocument();
     });
   });
 
@@ -65,22 +60,21 @@ describe('EnvironmentalEffectsWidget', () => {
     expect(screen.getByText(/Swimming through deep water/)).toBeInTheDocument();
   });
 
-  it('updates effect card when selection changes', () => {
+  it('updates effect card when quick reference item is clicked', () => {
     render(<EnvironmentalEffectsWidget />);
-    const select = screen.getByTestId('effect-select');
+    const extremeColdButton = screen.getByTestId('quick-ref-extreme-cold');
 
-    fireEvent.change(select, { target: { value: 'Extreme Cold' } });
+    fireEvent.click(extremeColdButton);
 
-    // Use getAllByText since it appears in multiple places
-    expect(screen.getAllByText('Extreme Cold').length).toBeGreaterThan(0);
+    // Verify the card shows Extreme Cold content
     expect(screen.getByText(/0 degrees Fahrenheit/)).toBeInTheDocument();
   });
 
-  it('displays quick reference list', () => {
+  it('displays quick reference list with all effects', () => {
     render(<EnvironmentalEffectsWidget />);
-    expect(screen.getByText('Quick Reference')).toBeInTheDocument();
     expect(screen.getByTestId('quick-ref-deep-water')).toBeInTheDocument();
     expect(screen.getByTestId('quick-ref-extreme-cold')).toBeInTheDocument();
+    expect(screen.getByTestId('quick-ref-thin-ice')).toBeInTheDocument();
   });
 
   it('changes effect when quick reference item is clicked', () => {

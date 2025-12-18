@@ -21,6 +21,7 @@ jest.mock('react-markdown', () => {
 });
 
 jest.mock('remark-gfm', () => jest.fn());
+jest.mock('rehype-slug', () => jest.fn());
 
 jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/containers/PageContainer', () => {
   return function MockPageContainer({ children, pageTitle }: any) {
@@ -40,11 +41,17 @@ jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/compo
   };
 });
 
+// Mock Rule as a connected component that reads from Redux state
 jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/rules/Rule', () => {
-  return function MockRule({ rule, loading }: any) {
+  const { connect } = require('react-redux');
+  const MockRule = ({ rule, loading }: any) => {
     if (loading) return <div data-testid="rule-loading">Loading rule...</div>;
     return <div data-testid="rule-component">{rule?.name || 'No rule'}</div>;
   };
+  return connect((state: any) => ({
+    rule: state.rules.currentRule,
+    loading: state.rules.currentRuleLoading,
+  }))(MockRule);
 });
 
 const createMockStore = (rulesState: any) => {
@@ -55,10 +62,10 @@ const createMockStore = (rulesState: any) => {
   });
 };
 
-const renderWithProviders = (store: any) => {
+const renderWithProviders = (store: any, edition: '2014' | '2024' = '2024') => {
   return render(
     <Provider store={store}>
-      <EditionProvider>
+      <EditionProvider initialEdition={edition}>
         <MemoryRouter>
           <RulesCategory />
         </MemoryRouter>
@@ -74,7 +81,7 @@ describe('RulesCategory', () => {
 
   describe('loading state', () => {
     it('shows spinner when loading with no rules', () => {
-      mockUseParams.mockReturnValue({ ruleSlug: 'combat' });
+      mockUseParams.mockReturnValue({ ruleSlug: 'playing-the-game' });
       const store = createMockStore({
         rules: [],
         loading: true,
@@ -88,7 +95,7 @@ describe('RulesCategory', () => {
     });
 
     it('shows spinner on initial load with ruleSlug but no rules', () => {
-      mockUseParams.mockReturnValue({ ruleSlug: 'some-category' });
+      mockUseParams.mockReturnValue({ ruleSlug: 'some-rule' });
       const store = createMockStore({
         rules: [],
         loading: false,
@@ -102,89 +109,29 @@ describe('RulesCategory', () => {
     });
   });
 
-  describe('category view', () => {
-    it('displays category name as title', () => {
-      mockUseParams.mockReturnValue({ ruleSlug: 'combat' });
+  describe('rule view', () => {
+    it('renders Rule component when slug is provided', () => {
+      mockUseParams.mockReturnValue({ ruleSlug: 'playing-the-game' });
       const store = createMockStore({
         rules: [
-          { name: 'Initiative', slug: 'initiative', category: 'Combat' },
-          { name: 'Attack Rolls', slug: 'attack-rolls', category: 'Combat' },
+          { name: 'Playing the Game', slug: 'playing-the-game', rules: [] },
         ],
         loading: false,
-        currentRule: null,
-        currentRuleLoading: false,
-      });
-
-      renderWithProviders(store);
-
-      expect(screen.getByTestId('page-title')).toHaveTextContent('Combat');
-    });
-
-    it('displays rules in the category as cards', () => {
-      mockUseParams.mockReturnValue({ ruleSlug: 'combat' });
-      const store = createMockStore({
-        rules: [
-          { name: 'Initiative', slug: 'initiative', category: 'Combat' },
-          { name: 'Attack Rolls', slug: 'attack-rolls', category: 'Combat' },
-          { name: 'Spellcasting', slug: 'spellcasting', category: 'Magic' },
-        ],
-        loading: false,
-        currentRule: null,
-        currentRuleLoading: false,
-      });
-
-      renderWithProviders(store);
-
-      expect(screen.getByText('Initiative')).toBeInTheDocument();
-      expect(screen.getByText('Attack Rolls')).toBeInTheDocument();
-      // Should not show rules from other categories
-      expect(screen.queryByText('Spellcasting')).not.toBeInTheDocument();
-    });
-
-    it('sorts rules alphabetically within a category', () => {
-      mockUseParams.mockReturnValue({ ruleSlug: 'combat' });
-      const store = createMockStore({
-        rules: [
-          { name: 'Zzz Rule', slug: 'zzz-rule', category: 'Combat' },
-          { name: 'Aaa Rule', slug: 'aaa-rule', category: 'Combat' },
-          { name: 'Mmm Rule', slug: 'mmm-rule', category: 'Combat' },
-        ],
-        loading: false,
-        currentRule: null,
-        currentRuleLoading: false,
-      });
-
-      renderWithProviders(store);
-
-      const ruleLinks = screen.getAllByRole('heading', { level: 3 });
-      expect(ruleLinks[0]).toHaveTextContent('Aaa Rule');
-      expect(ruleLinks[1]).toHaveTextContent('Mmm Rule');
-      expect(ruleLinks[2]).toHaveTextContent('Zzz Rule');
-    });
-  });
-
-  describe('individual rule view', () => {
-    it('renders Rule component when slug matches a rule', () => {
-      mockUseParams.mockReturnValue({ ruleSlug: 'initiative' });
-      const store = createMockStore({
-        rules: [
-          { name: 'Initiative', slug: 'initiative', category: 'Combat' },
-        ],
-        loading: false,
-        currentRule: { name: 'Initiative', description: 'Initiative rules' },
+        currentRule: { name: 'Playing the Game', description: 'Game rules', rules: [] },
         currentRuleLoading: false,
       });
 
       renderWithProviders(store);
 
       expect(screen.getByTestId('rule-component')).toBeInTheDocument();
+      expect(screen.getByTestId('rule-component')).toHaveTextContent('Playing the Game');
     });
 
-    it('shows loading state for individual rule', () => {
-      mockUseParams.mockReturnValue({ ruleSlug: 'initiative' });
+    it('shows loading state for rule', () => {
+      mockUseParams.mockReturnValue({ ruleSlug: 'playing-the-game' });
       const store = createMockStore({
         rules: [
-          { name: 'Initiative', slug: 'initiative', category: 'Combat' },
+          { name: 'Playing the Game', slug: 'playing-the-game', rules: [] },
         ],
         loading: false,
         currentRule: null,
@@ -198,11 +145,11 @@ describe('RulesCategory', () => {
   });
 
   describe('not found state', () => {
-    it('shows not found message when category does not exist', () => {
-      mockUseParams.mockReturnValue({ ruleSlug: 'nonexistent-category' });
+    it('shows not found message when no slug is provided', () => {
+      mockUseParams.mockReturnValue({ ruleSlug: undefined });
       const store = createMockStore({
         rules: [
-          { name: 'Initiative', slug: 'initiative', category: 'Combat' },
+          { name: 'Playing the Game', slug: 'playing-the-game', rules: [] },
         ],
         loading: false,
         currentRule: null,
@@ -211,96 +158,43 @@ describe('RulesCategory', () => {
 
       renderWithProviders(store);
 
-      expect(screen.getByText('Category Not Found')).toBeInTheDocument();
+      expect(screen.getByText('Rule Not Found')).toBeInTheDocument();
       expect(screen.getByText(/could not be found/)).toBeInTheDocument();
       expect(screen.getByText('Back to Rules')).toBeInTheDocument();
     });
   });
 
   describe('edition support', () => {
-    it('passes isLegacy to PageTitle for 2014 edition', () => {
-      mockUseParams.mockReturnValue({ ruleSlug: 'combat' });
+    it('passes isLegacy=true to PageTitle for 2014 edition when rule not found', () => {
+      mockUseParams.mockReturnValue({ ruleSlug: undefined });
       const store = createMockStore({
         rules: [
-          { name: 'Initiative', slug: 'initiative', category: 'Combat' },
+          { name: 'Playing the Game', slug: 'playing-the-game', rules: [] },
         ],
         loading: false,
         currentRule: null,
         currentRuleLoading: false,
       });
 
-      render(
-        <Provider store={store}>
-          <EditionProvider initialEdition="2014">
-            <MemoryRouter>
-              <RulesCategory />
-            </MemoryRouter>
-          </EditionProvider>
-        </Provider>
-      );
+      renderWithProviders(store, '2014');
 
       expect(screen.getByTestId('page-title')).toHaveAttribute('data-legacy', 'true');
     });
 
-    it('passes isLegacy=false to PageTitle for 2024 edition', () => {
-      mockUseParams.mockReturnValue({ ruleSlug: 'combat' });
+    it('passes isLegacy=false to PageTitle for 2024 edition when rule not found', () => {
+      mockUseParams.mockReturnValue({ ruleSlug: undefined });
       const store = createMockStore({
         rules: [
-          { name: 'Initiative', slug: 'initiative', category: 'Combat' },
+          { name: 'Playing the Game', slug: 'playing-the-game', rules: [] },
         ],
         loading: false,
         currentRule: null,
         currentRuleLoading: false,
       });
 
-      render(
-        <Provider store={store}>
-          <EditionProvider initialEdition="2024">
-            <MemoryRouter>
-              <RulesCategory />
-            </MemoryRouter>
-          </EditionProvider>
-        </Provider>
-      );
+      renderWithProviders(store, '2024');
 
       expect(screen.getByTestId('page-title')).toHaveAttribute('data-legacy', 'false');
-    });
-  });
-
-  describe('category slug matching', () => {
-    it('matches category with spaces converted to hyphens', () => {
-      mockUseParams.mockReturnValue({ ruleSlug: 'using-ability-scores' });
-      const store = createMockStore({
-        rules: [
-          { name: 'Strength', slug: 'strength', category: 'Using Ability Scores' },
-          { name: 'Dexterity', slug: 'dexterity', category: 'Using Ability Scores' },
-        ],
-        loading: false,
-        currentRule: null,
-        currentRuleLoading: false,
-      });
-
-      renderWithProviders(store);
-
-      expect(screen.getByTestId('page-title')).toHaveTextContent('Using Ability Scores');
-      expect(screen.getByText('Strength')).toBeInTheDocument();
-      expect(screen.getByText('Dexterity')).toBeInTheDocument();
-    });
-
-    it('handles uppercase categories converted to lowercase slugs', () => {
-      mockUseParams.mockReturnValue({ ruleSlug: 'combat' });
-      const store = createMockStore({
-        rules: [
-          { name: 'Initiative', slug: 'initiative', category: 'COMBAT' },
-        ],
-        loading: false,
-        currentRule: null,
-        currentRuleLoading: false,
-      });
-
-      renderWithProviders(store);
-
-      expect(screen.getByTestId('page-title')).toHaveTextContent('COMBAT');
     });
   });
 });

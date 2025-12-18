@@ -4,10 +4,7 @@ import { connect } from 'react-redux';
 import { AiOutlineHome } from 'react-icons/ai';
 import { BiHide, BiLogIn, BiLogOut, BiShow } from 'react-icons/bi';
 import {
-  GiBookPile,
   GiBookshelf,
-  GiBookStorm,
-  GiBurningBook,
   GiCapeArmor,
   GiChestArmor,
   GiDungeonGate,
@@ -20,9 +17,7 @@ import {
   GiMagicPotion,
   GiMonsterGrasp,
   GiPerson,
-  GiRuleBook,
   GiSecretBook,
-  GiSpellBook,
   GiSwapBag,
   GiSwordArray,
   GiToolbox,
@@ -30,18 +25,10 @@ import {
 } from 'react-icons/gi';
 import PatreonIcon from '../icons/PatreonIcon';
 import EditionToggle from '../EditionToggle';
+import { getIconFromName } from '../../utilities/icons';
 
 const PATREON_URL =
   'https://patreon.com/DormanLakely?utm_medium=unknown&utm_source=join_link&utm_campaign=creatorshare_creator&utm_content=copyLink';
-
-const ruleBooks = [
-  <GiRuleBook key="rule-book" />,
-  <GiBookPile key="book-pile" />,
-  <GiBurningBook key="burning-book" />,
-  <GiSecretBook key="secret-book" />,
-  <GiSpellBook key="spell-book" />,
-  <GiBookStorm key="book-storm" />,
-];
 
 import { Sidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
 import { SidebarLink, SidebarButton } from '../NavLink/NavLink';
@@ -60,47 +47,43 @@ import {
   menuItemStyles,
 } from './SideBar.styles';
 
+type ChildRuleType = {
+  name: string;
+  slug: string;
+  sort_order?: number;
+  game_icon?: string;
+  rules?: { name: string; slug: string; sort_order?: number; game_icon?: string }[];
+};
+
 type RuleType = {
   name: string;
   slug: string;
   category?: string;
-  rules?: { name: string; slug: string }[];
+  sort_order?: number;
+  game_icon?: string;
+  rules?: ChildRuleType[];
 };
 
-// Helper to create a URL-friendly slug from a category name
-const categoryToSlug = (category: string): string => {
-  return category.toLowerCase().replace(/\s+/g, '-');
-};
-
-// Build categories dynamically from rules' category field
-const buildCategoriesWithRules = (rules: RuleType[]) => {
-  // Group rules by their category
-  const categoryMap = new Map<string, RuleType[]>();
-
-  rules.forEach((rule) => {
-    const category = rule.category || 'Other';
-    if (!categoryMap.has(category)) {
-      categoryMap.set(category, []);
+// Sort rules by sort_order, then by name
+const sortByOrder = (rules: RuleType[]): RuleType[] => {
+  return [...rules].sort((a, b) => {
+    // Rules with sort_order come first, sorted by that value
+    if (a.sort_order !== undefined && b.sort_order !== undefined) {
+      return a.sort_order - b.sort_order;
     }
-    categoryMap.get(category)!.push(rule);
-  });
-
-  // Convert map to array of category objects
-  const categories: { name: string; slug: string; rules: RuleType[] }[] = [];
-  categoryMap.forEach((categoryRules, categoryName) => {
-    categories.push({
-      name: categoryName,
-      slug: categoryToSlug(categoryName),
-      rules: categoryRules.sort((a, b) => a.name.localeCompare(b.name)),
-    });
-  });
-
-  // Sort categories alphabetically, but put "Conditions" last
-  return categories.sort((a, b) => {
-    if (a.name === 'Conditions') return 1;
-    if (b.name === 'Conditions') return -1;
+    if (a.sort_order !== undefined) return -1;
+    if (b.sort_order !== undefined) return 1;
+    // Otherwise sort alphabetically
     return a.name.localeCompare(b.name);
   });
+};
+
+// Helper to get icon for a rule - returns undefined if no icon set
+const getRuleIcon = (rule: RuleType | ChildRuleType) => {
+  if (rule.game_icon) {
+    return getIconFromName(rule.game_icon);
+  }
+  return undefined;
 };
 
 const itemTypes = [
@@ -136,12 +119,7 @@ const SideBar = (props: {
   isCollapsed: boolean;
   isMobile: boolean;
   logOutUser: (token: string) => void;
-  rules: {
-    name: string;
-    slug: string;
-    category?: string;
-    rules?: { name: string; slug: string }[];
-  }[];
+  rules: RuleType[];
   setIsCollapsed: (collapsed: boolean) => void;
 }) => {
   const { currentUser, getRules, isCollapsed, isMobile, logOutUser, rules, setIsCollapsed } = props;
@@ -231,28 +209,72 @@ const SideBar = (props: {
             }}
           >
             <SidebarLink to="/app/rules" title="All Rules" icon={<GiBookshelf />} />
-            {buildCategoriesWithRules(rules).map((category, index) => (
-              <SubMenu
-                key={`rule-category-${category.slug}-${index}`}
-                label={category.name}
-                icon={index < 6 ? ruleBooks[index] : <GiRuleBook />}
-                style={{ border: 0 }}
-              >
+            {sortByOrder(rules).map((rule, index) => {
+              // If rule has children, show as submenu
+              if (rule.rules && rule.rules.length > 0) {
+                return (
+                  <SubMenu
+                    key={`rule-${rule.slug}-${index}`}
+                    label={rule.name}
+                    icon={getRuleIcon(rule)}
+                    style={{ border: 0 }}
+                  >
+                    <SidebarLink
+                      key={`rule-overview-${rule.slug}`}
+                      to={`/app/rules/${rule.slug}`}
+                      title={rule.name}
+                      icon={<GiBookshelf />}
+                    />
+                    {rule.rules.map((childRule, subIndex) => {
+                      // If child has grandchildren, show as nested submenu
+                      if (childRule.rules && childRule.rules.length > 0) {
+                        return (
+                          <SubMenu
+                            key={`rule-child-${childRule.slug}-${subIndex}`}
+                            label={childRule.name}
+                            icon={getRuleIcon(childRule)}
+                            style={{ border: 0 }}
+                          >
+                            <SidebarLink
+                              key={`child-overview-${childRule.slug}`}
+                              to={`/app/rules/${childRule.slug}`}
+                              title={childRule.name}
+                              icon={getRuleIcon(childRule)}
+                            />
+                            {childRule.rules.map((grandchild, gcIndex) => (
+                              <SidebarLink
+                                key={`rule-grandchild-${grandchild.slug}-${gcIndex}`}
+                                to={`/app/rules/${grandchild.slug}`}
+                                title={grandchild.name}
+                                icon={getRuleIcon(grandchild)}
+                              />
+                            ))}
+                          </SubMenu>
+                        );
+                      }
+                      // Child has no grandchildren, show as direct link
+                      return (
+                        <SidebarLink
+                          key={`rule-child-${childRule.slug}-${subIndex}`}
+                          to={`/app/rules/${childRule.slug}`}
+                          title={childRule.name}
+                          icon={getRuleIcon(childRule)}
+                        />
+                      );
+                    })}
+                  </SubMenu>
+                );
+              }
+              // If rule has no children, show as direct link
+              return (
                 <SidebarLink
-                  key={`category-overview-${category.slug}`}
-                  to={`/app/rules/${category.slug}`}
-                  title={`All ${category.name}`}
-                  icon={<GiBookshelf />}
+                  key={`rule-${rule.slug}-${index}`}
+                  to={`/app/rules/${rule.slug}`}
+                  title={rule.name}
+                  icon={getRuleIcon(rule)}
                 />
-                {category.rules.map((rule, subIndex) => (
-                  <SidebarLink
-                    key={`rulesInner-${rule.slug}-${subIndex}`}
-                    to={`/app/rules/${rule.slug}`}
-                    title={rule.name}
-                  />
-                ))}
-              </SubMenu>
-            ))}
+              );
+            })}
           </SubMenu>
           <SubMenu
             label="Items & Equipment"

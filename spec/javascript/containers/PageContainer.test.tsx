@@ -49,6 +49,13 @@ jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/componen
   };
 });
 
+jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/contexts/BreadcrumbContext', () => ({
+  useBreadcrumbs: () => ({
+    customPaths: undefined,
+    setCustomPaths: jest.fn(),
+  }),
+}));
+
 const mockStore = configureStore({
   reducer: {
     users: () => ({ currentUser: null }),

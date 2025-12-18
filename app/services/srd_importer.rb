@@ -56,14 +56,34 @@ class SrdImporter
     count = 0
 
     ActiveRecord::Base.transaction do
+      # First pass: create all records without parent associations
       data.each do |attrs|
         record = import_record(type, attrs)
         count += 1 if record&.persisted?
       end
+
+      # Second pass for rules: assign parent_id based on parent_slug
+      assign_rule_parents(data) if type == 'rules'
     end
 
-    Rails.logger.info "Imported #{count} #{type} records"
+    Rails.logger.info "Imported #{count} #{type} records for edition #{edition}"
     count
+  end
+
+  def assign_rule_parents(data)
+    data.each do |attrs|
+      parent_slug = attrs['parent_slug']
+      next if parent_slug.blank?
+
+      rule = Rule.find_by(slug: attrs['slug'], edition: edition)
+      parent = Rule.find_by(slug: parent_slug, edition: edition)
+
+      if rule && parent
+        rule.update!(parent_id: parent.id)
+      elsif rule && parent.nil?
+        Rails.logger.warn "Parent rule not found: #{parent_slug} for rule #{attrs['slug']}"
+      end
+    end
   end
 
   private
@@ -81,7 +101,8 @@ class SrdImporter
 
     # Handle nested associations
     nested_attrs = extract_nested_attrs(type, attrs)
-    base_attrs = attrs.except(*nested_attrs.keys)
+    # Exclude parent_slug - it's used for parent lookup, not a model attribute
+    base_attrs = attrs.except(*nested_attrs.keys, 'parent_slug')
 
     record.assign_attributes(base_attrs)
 

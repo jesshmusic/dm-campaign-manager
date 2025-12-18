@@ -6,7 +6,7 @@ import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
 import DndSpinner from '../../components/DndSpinners/DndSpinner';
 import { useEdition } from '../../contexts/EditionContext';
-import { GiRuleBook } from 'react-icons/gi';
+import { getIconFromName } from '../../utilities/icons';
 
 import { RulesGrid, RuleCard, RuleCardIcon, RuleCardContent, RuleCardCount } from './Rules.styles';
 
@@ -16,6 +16,8 @@ type RuleSummary = {
   category?: string;
   description?: string;
   count?: number;
+  sort_order?: number;
+  game_icon?: string;
   rules?: { name: string; slug: string }[];
 };
 
@@ -25,43 +27,26 @@ type RulesIndexProps = {
   getRules: () => void;
 };
 
-// Helper to create a URL-friendly slug from a category name
-const categoryToSlug = (category: string): string => {
-  return category.toLowerCase().replace(/\s+/g, '-');
-};
-
-// Build categories dynamically from rules' category field
-const buildCategoriesFromRules = (
-  rules: RuleSummary[],
-): { name: string; slug: string; ruleCount: number; rules: RuleSummary[] }[] => {
-  // Group rules by their category
-  const categoryMap = new Map<string, RuleSummary[]>();
-
-  rules.forEach((rule) => {
-    const category = rule.category || 'Other';
-    if (!categoryMap.has(category)) {
-      categoryMap.set(category, []);
+// Sort rules by sort_order, then by name (data is pre-sorted from API)
+const sortByOrder = (rules: RuleSummary[]): RuleSummary[] => {
+  return [...rules].sort((a, b) => {
+    // Rules with sort_order come first, sorted by that value
+    if (a.sort_order !== undefined && b.sort_order !== undefined) {
+      return a.sort_order - b.sort_order;
     }
-    categoryMap.get(category)!.push(rule);
-  });
-
-  // Convert map to array of category objects
-  const categories: { name: string; slug: string; ruleCount: number; rules: RuleSummary[] }[] = [];
-  categoryMap.forEach((categoryRules, categoryName) => {
-    categories.push({
-      name: categoryName,
-      slug: categoryToSlug(categoryName),
-      ruleCount: categoryRules.length,
-      rules: categoryRules.sort((a, b) => a.name.localeCompare(b.name)),
-    });
-  });
-
-  // Sort categories alphabetically, but put "Conditions" last
-  return categories.sort((a, b) => {
-    if (a.name === 'Conditions') return 1;
-    if (b.name === 'Conditions') return -1;
+    if (a.sort_order !== undefined) return -1;
+    if (b.sort_order !== undefined) return 1;
+    // Otherwise sort alphabetically
     return a.name.localeCompare(b.name);
   });
+};
+
+// Helper to get icon for a rule - returns undefined if no icon set
+const getRuleIcon = (rule: RuleSummary) => {
+  if (rule.game_icon) {
+    return getIconFromName(rule.game_icon);
+  }
+  return undefined;
 };
 
 const RulesIndex = ({ rules, loading, getRules }: RulesIndexProps) => {
@@ -71,8 +56,8 @@ const RulesIndex = ({ rules, loading, getRules }: RulesIndexProps) => {
     getRules();
   }, []);
 
-  // Build categories dynamically from rules
-  const categories = React.useMemo(() => buildCategoriesFromRules(rules), [rules]);
+  // Sort rules by sort_order (data may already be sorted from API)
+  const sortedRules = React.useMemo(() => sortByOrder(rules), [rules]);
 
   return (
     <PageContainer
@@ -84,31 +69,21 @@ const RulesIndex = ({ rules, loading, getRules }: RulesIndexProps) => {
         <DndSpinner />
       ) : (
         <RulesGrid>
-          {categories.map((category) => {
-            // If category has only one rule, link directly to that rule
-            const linkTo =
-              category.ruleCount === 1
-                ? `/app/rules/${category.rules[0].slug}`
-                : `/app/rules/${category.slug}`;
-
-            return (
-              <Link key={category.slug} to={linkTo}>
-                <RuleCard>
-                  <RuleCardIcon>
-                    <GiRuleBook />
-                  </RuleCardIcon>
-                  <RuleCardContent>
-                    <h3>{category.name}</h3>
-                    {category.ruleCount > 1 && (
-                      <RuleCardCount>
-                        {category.ruleCount} {category.ruleCount === 1 ? 'rule' : 'rules'}
-                      </RuleCardCount>
-                    )}
-                  </RuleCardContent>
-                </RuleCard>
-              </Link>
-            );
-          })}
+          {sortedRules.map((rule) => (
+            <Link key={rule.slug} to={`/app/rules/${rule.slug}`}>
+              <RuleCard>
+                <RuleCardIcon>{getRuleIcon(rule)}</RuleCardIcon>
+                <RuleCardContent>
+                  <h3>{rule.name}</h3>
+                  {rule.count && rule.count > 0 && (
+                    <RuleCardCount>
+                      {rule.count} {rule.count === 1 ? 'sub-rule' : 'sub-rules'}
+                    </RuleCardCount>
+                  )}
+                </RuleCardContent>
+              </RuleCard>
+            </Link>
+          ))}
         </RulesGrid>
       )}
     </PageContainer>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import Frame from '../Frame/Frame';
-import { TableFrame, Label } from './Widgets.styles';
+import { Label } from './Widgets.styles';
 
 const travelTerrain = [
   {
@@ -209,34 +209,6 @@ const TravelCalculatorWidget = (props: { hideFrame?: boolean }) => {
           </StatRow>
           {selectedTerrain.paceNote && <PaceNote>{selectedTerrain.paceNote}</PaceNote>}
         </InfoBox>
-
-        <TableFrame>
-          <table>
-            <thead>
-              <tr>
-                <th>Terrain</th>
-                <th>Pace</th>
-                <th>Forage</th>
-                <th>Nav</th>
-              </tr>
-            </thead>
-            <tbody>
-              {travelTerrain.map((t) => (
-                <tr
-                  key={t.terrain}
-                  style={{
-                    fontWeight: t.terrain === selectedTerrain.terrain ? 'bold' : 'normal',
-                  }}
-                >
-                  <td>{t.terrain}</td>
-                  <td>{t.maximumPace}</td>
-                  <td>DC {t.foragingDC}</td>
-                  <td>DC {t.navigationDC}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </TableFrame>
       </div>
     );
   };

@@ -82,13 +82,13 @@ describe('TravelCalculatorWidget', () => {
     expect(screen.getAllByText('Slow').length).toBeGreaterThan(0);
   });
 
-  it('displays terrain table', () => {
+  it('displays terrain stats', () => {
     render(<TravelCalculatorWidget />);
-    expect(screen.getByRole('table')).toBeInTheDocument();
-    expect(screen.getByText('Terrain')).toBeInTheDocument();
-    expect(screen.getByText('Pace')).toBeInTheDocument();
-    expect(screen.getByText('Forage')).toBeInTheDocument();
-    expect(screen.getByText('Nav')).toBeInTheDocument();
+    expect(screen.getByText('Max Pace')).toBeInTheDocument();
+    expect(screen.getByText('Encounter Dist.')).toBeInTheDocument();
+    expect(screen.getByText('Foraging DC')).toBeInTheDocument();
+    expect(screen.getByText('Navigation DC')).toBeInTheDocument();
+    expect(screen.getByText('Search DC')).toBeInTheDocument();
   });
 
   it('shows pace note for Arctic terrain', () => {

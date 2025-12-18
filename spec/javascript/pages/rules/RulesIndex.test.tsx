@@ -105,57 +105,67 @@ describe('RulesIndex', () => {
     });
   });
 
-  describe('category display', () => {
-    it('groups rules by category and displays category cards', () => {
+  describe('rules display', () => {
+    it('displays top-level rules as cards', () => {
       const store = createMockStore({
         rules: [
-          { name: 'Initiative', slug: 'initiative', category: 'Combat' },
-          { name: 'Attack Rolls', slug: 'attack-rolls', category: 'Combat' },
-          { name: 'Spellcasting Basics', slug: 'spellcasting-basics', category: 'Magic' },
+          { name: 'Playing the Game', slug: 'playing-the-game', count: 10, rules: [] },
+          { name: 'Character Creation', slug: 'character-creation', count: 5, rules: [] },
         ],
         loading: false,
       });
 
       renderWithProviders(store);
 
-      expect(screen.getByText('Combat')).toBeInTheDocument();
-      expect(screen.getByText('Magic')).toBeInTheDocument();
+      expect(screen.getByText('Playing the Game')).toBeInTheDocument();
+      expect(screen.getByText('Character Creation')).toBeInTheDocument();
     });
 
-    it('displays rule count for categories with multiple rules', () => {
+    it('displays sub-rule count when rule has children', () => {
       const store = createMockStore({
         rules: [
-          { name: 'Initiative', slug: 'initiative', category: 'Combat' },
-          { name: 'Attack Rolls', slug: 'attack-rolls', category: 'Combat' },
-          { name: 'Damage', slug: 'damage', category: 'Combat' },
+          { name: 'Playing the Game', slug: 'playing-the-game', count: 10, rules: [] },
         ],
         loading: false,
       });
 
       renderWithProviders(store);
 
-      expect(screen.getByText('3 rules')).toBeInTheDocument();
+      expect(screen.getByText('10 sub-rules')).toBeInTheDocument();
     });
 
-    it('does not display rule count for categories with single rule', () => {
+    it('displays singular "sub-rule" for count of 1', () => {
       const store = createMockStore({
         rules: [
-          { name: 'Spellcasting Basics', slug: 'spellcasting-basics', category: 'Magic' },
+          { name: 'Single Child', slug: 'single-child', count: 1, rules: [] },
         ],
         loading: false,
       });
 
       renderWithProviders(store);
 
-      expect(screen.queryByText('1 rule')).not.toBeInTheDocument();
+      expect(screen.getByText('1 sub-rule')).toBeInTheDocument();
     });
 
-    it('sorts categories alphabetically with Conditions last', () => {
+    it('does not display count when rule has no children', () => {
       const store = createMockStore({
         rules: [
-          { name: 'Blinded', slug: 'blinded', category: 'Conditions' },
-          { name: 'Initiative', slug: 'initiative', category: 'Combat' },
-          { name: 'Ability Checks', slug: 'ability-checks', category: 'Adventuring' },
+          { name: 'No Children', slug: 'no-children', count: 0, rules: [] },
+        ],
+        loading: false,
+      });
+
+      renderWithProviders(store);
+
+      expect(screen.queryByText(/sub-rule/)).not.toBeInTheDocument();
+    });
+
+    it('sorts rules by sort_order', () => {
+      const store = createMockStore({
+        rules: [
+          { name: 'Monsters', slug: 'monsters', count: 3, sort_order: 3, rules: [] },
+          { name: 'Playing the Game', slug: 'playing-the-game', count: 10, sort_order: 1, rules: [] },
+          { name: 'Equipment', slug: 'equipment', count: 5, sort_order: 2, rules: [] },
         ],
         loading: false,
       });
@@ -163,85 +173,44 @@ describe('RulesIndex', () => {
       renderWithProviders(store);
 
       const headings = screen.getAllByRole('heading', { level: 3 });
-      expect(headings[0]).toHaveTextContent('Adventuring');
-      expect(headings[1]).toHaveTextContent('Combat');
-      expect(headings[2]).toHaveTextContent('Conditions');
+      expect(headings[0]).toHaveTextContent('Playing the Game');
+      expect(headings[1]).toHaveTextContent('Equipment');
+      expect(headings[2]).toHaveTextContent('Monsters');
     });
 
-    it('uses "Other" category for rules without category', () => {
+    it('sorts rules without sort_order alphabetically after sorted rules', () => {
       const store = createMockStore({
         rules: [
-          { name: 'Miscellaneous Rule', slug: 'miscellaneous-rule' },
+          { name: 'Zebra Rules', slug: 'zebra-rules', count: 1, rules: [] },
+          { name: 'Playing the Game', slug: 'playing-the-game', count: 10, sort_order: 1, rules: [] },
+          { name: 'Apple Rules', slug: 'apple-rules', count: 2, rules: [] },
         ],
         loading: false,
       });
 
       renderWithProviders(store);
 
-      expect(screen.getByText('Other')).toBeInTheDocument();
-    });
-  });
-
-  describe('category links', () => {
-    it('links directly to rule when category has only one rule', () => {
-      const store = createMockStore({
-        rules: [
-          { name: 'Spellcasting Basics', slug: 'spellcasting-basics', category: 'Magic' },
-        ],
-        loading: false,
-      });
-
-      renderWithProviders(store);
-
-      const link = screen.getByRole('link', { name: /Magic/i });
-      expect(link).toHaveAttribute('href', '/app/rules/spellcasting-basics');
-    });
-
-    it('links to category page when category has multiple rules', () => {
-      const store = createMockStore({
-        rules: [
-          { name: 'Initiative', slug: 'initiative', category: 'Combat' },
-          { name: 'Attack Rolls', slug: 'attack-rolls', category: 'Combat' },
-        ],
-        loading: false,
-      });
-
-      renderWithProviders(store);
-
-      const link = screen.getByRole('link', { name: /Combat/i });
-      expect(link).toHaveAttribute('href', '/app/rules/combat');
+      const headings = screen.getAllByRole('heading', { level: 3 });
+      // Rules with sort_order come first, then alphabetical
+      expect(headings[0]).toHaveTextContent('Playing the Game');
+      expect(headings[1]).toHaveTextContent('Apple Rules');
+      expect(headings[2]).toHaveTextContent('Zebra Rules');
     });
   });
 
-  describe('category slug generation', () => {
-    it('converts category names with spaces to hyphenated slugs', () => {
+  describe('rule links', () => {
+    it('links to rule page using slug', () => {
       const store = createMockStore({
         rules: [
-          { name: 'Strength', slug: 'strength', category: 'Using Ability Scores' },
-          { name: 'Dexterity', slug: 'dexterity', category: 'Using Ability Scores' },
+          { name: 'Playing the Game', slug: 'playing-the-game', count: 10, rules: [] },
         ],
         loading: false,
       });
 
       renderWithProviders(store);
 
-      const link = screen.getByRole('link', { name: /Using Ability Scores/i });
-      expect(link).toHaveAttribute('href', '/app/rules/using-ability-scores');
-    });
-
-    it('converts uppercase category names to lowercase slugs', () => {
-      const store = createMockStore({
-        rules: [
-          { name: 'Rule 1', slug: 'rule-1', category: 'COMBAT' },
-          { name: 'Rule 2', slug: 'rule-2', category: 'COMBAT' },
-        ],
-        loading: false,
-      });
-
-      renderWithProviders(store);
-
-      const link = screen.getByRole('link', { name: /COMBAT/i });
-      expect(link).toHaveAttribute('href', '/app/rules/combat');
+      const link = screen.getByRole('link', { name: /Playing the Game/i });
+      expect(link).toHaveAttribute('href', '/app/rules/playing-the-game');
     });
   });
 
@@ -255,7 +224,7 @@ describe('RulesIndex', () => {
       renderWithProviders(store);
 
       expect(screen.getByTestId('page-title')).toHaveTextContent('Rules Reference');
-      // No category cards should be rendered
+      // No rule cards should be rendered
       expect(screen.queryByRole('link')).not.toBeInTheDocument();
     });
   });

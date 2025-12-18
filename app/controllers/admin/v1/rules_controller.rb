@@ -9,7 +9,9 @@ module Admin
         @rules = if params[:search].present?
                    Rule.for_edition(current_edition).search_for(params[:search])
                  else
-                   Rule.for_edition(current_edition).where(parent_id: nil)
+                   Rule.for_edition(current_edition)
+                       .where(parent_id: nil)
+                       .order(Arel.sql('COALESCE(sort_order, 999)'), :name)
                  end
       end
 
@@ -65,7 +67,7 @@ module Admin
 
       # Only allow a list of trusted parameters through.
       def rule_params
-        params.require(:rule).permit(:name, :description, :category, :subcategory, :slug)
+        params.require(:rule).permit(:name, :description, :category, :subcategory, :slug, :sort_order, :game_icon)
       end
     end
   end

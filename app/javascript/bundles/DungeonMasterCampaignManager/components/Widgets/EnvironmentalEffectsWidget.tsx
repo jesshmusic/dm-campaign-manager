@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import Frame from '../Frame/Frame';
-import { Label } from './Widgets.styles';
 
 type EnvironmentalEffect = {
   name: string;
@@ -56,16 +55,6 @@ const environmentalEffects: EnvironmentalEffect[] = [
   },
 ];
 
-const EffectSelect = styled.select`
-  width: 100%;
-  padding: 0.5rem;
-  margin-bottom: 1rem;
-  font-family: ${({ theme }) => theme.fonts.sansSerif};
-  border: 1px solid ${({ theme }) => theme.colors.gray300};
-  border-radius: 4px;
-  background-color: ${({ theme }) => theme.colors.white};
-`;
-
 const EffectCard = styled.div`
   background-color: ${({ theme }) => theme.colors.gray100};
   border-left: 4px solid ${({ theme }) => theme.colors.danger};
@@ -92,7 +81,7 @@ const EffectDescription = styled.p`
 const QuickRefList = styled.ul`
   list-style: none;
   padding: 0;
-  margin: 0;
+  margin: 0 0 1rem 0;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 0.25rem;
@@ -123,13 +112,6 @@ const QuickRefItem = styled.li<{ $isSelected: boolean }>`
 const EnvironmentalEffectsWidget = (props: { hideFrame?: boolean }) => {
   const [selectedEffect, setSelectedEffect] = useState(environmentalEffects[0]);
 
-  const handleEffectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const effect = environmentalEffects.find((ef) => ef.name === e.target.value);
-    if (effect) {
-      setSelectedEffect(effect);
-    }
-  };
-
   const handleQuickSelect = (effectName: string) => {
     const effect = environmentalEffects.find((ef) => ef.name === effectName);
     if (effect) {
@@ -140,26 +122,6 @@ const EnvironmentalEffectsWidget = (props: { hideFrame?: boolean }) => {
   const renderContents = () => {
     return (
       <div>
-        <Label htmlFor="effect-select">Select Effect</Label>
-        <EffectSelect
-          id="effect-select"
-          value={selectedEffect.name}
-          onChange={handleEffectChange}
-          data-testid="effect-select"
-        >
-          {environmentalEffects.map((ef) => (
-            <option key={ef.name} value={ef.name}>
-              {ef.name}
-            </option>
-          ))}
-        </EffectSelect>
-
-        <EffectCard data-testid="effect-card">
-          <EffectName>{selectedEffect.name}</EffectName>
-          <EffectDescription>{selectedEffect.description}</EffectDescription>
-        </EffectCard>
-
-        <Label>Quick Reference</Label>
         <QuickRefList>
           {environmentalEffects.map((ef) => (
             <QuickRefItem
@@ -172,6 +134,11 @@ const EnvironmentalEffectsWidget = (props: { hideFrame?: boolean }) => {
             </QuickRefItem>
           ))}
         </QuickRefList>
+
+        <EffectCard data-testid="effect-card">
+          <EffectName>{selectedEffect.name}</EffectName>
+          <EffectDescription>{selectedEffect.description}</EffectDescription>
+        </EffectCard>
       </div>
     );
   };

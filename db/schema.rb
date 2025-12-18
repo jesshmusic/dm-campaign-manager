@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_12_17_165810) do
+ActiveRecord::Schema[7.1].define(version: 2025_12_18_150107) do
   create_schema "heroku_ext"
 
   # These are extensions that must be enabled in order to support this database
@@ -606,6 +606,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_17_165810) do
     t.datetime "updated_at", null: false
     t.bigint "parent_id"
     t.string "edition", default: "2014", null: false
+    t.integer "sort_order"
+    t.string "game_icon"
     t.index ["edition"], name: "index_rules_on_edition"
     t.index ["parent_id"], name: "index_rules_on_parent_id"
     t.index ["slug", "edition"], name: "index_rules_on_slug_and_edition", unique: true

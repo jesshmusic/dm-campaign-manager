@@ -13,6 +13,7 @@ import Spell from '../pages/spells/Spell';
 // Rule component is now rendered by RulesCategory
 import RulesIndex from '../pages/rules/RulesIndex';
 import RulesCategory from '../pages/rules/RulesCategory';
+import RulesGlossary from '../pages/rules/RulesGlossary';
 import BackgroundsIndex from '../pages/backgrounds/BackgroundsIndex';
 import BackgroundDetail from '../pages/backgrounds/BackgroundDetail';
 import FeatsIndex from '../pages/feats/FeatsIndex';
@@ -58,6 +59,7 @@ const DMRoutes = (props) => {
       <Route path="/app/spells/" element={<Spells {...props} />} />
       <Route path="/app/spells/:spellSlug" element={<Spell {...props} />} />
       <Route path="/app/rules" element={<RulesIndex {...props} />} />
+      <Route path="/app/rules/rules-glossary" element={<RulesGlossary {...props} />} />
       <Route path="/app/rules/:ruleSlug" element={<RulesCategory {...props} />} />
       <Route path="/app/backgrounds" element={<BackgroundsIndex {...props} />} />
       <Route path="/app/backgrounds/:backgroundSlug" element={<BackgroundDetail {...props} />} />

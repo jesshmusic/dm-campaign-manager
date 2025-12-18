@@ -6,8 +6,10 @@
 #  category    :string
 #  description :string
 #  edition     :string           default("2014"), not null
+#  game_icon   :string
 #  name        :string
 #  slug        :string
+#  sort_order  :integer
 #  subcategory :string
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
