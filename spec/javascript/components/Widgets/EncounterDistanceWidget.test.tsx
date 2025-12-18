@@ -20,10 +20,10 @@ jest.mock(
 jest.mock(
   '../../../../app/javascript/bundles/DungeonMasterCampaignManager/components/Button/Button',
   () => {
-    return function MockButton({ children, onClick, ...props }: any) {
+    return function MockButton({ children, onClick, title, ...props }: any) {
       return (
         <button onClick={onClick} {...props}>
-          {children}
+          {title || children}
         </button>
       );
     };

@@ -38,10 +38,10 @@ export const theme = {
     white: '#ffffff',
     black: '#000000',
 
-    // Grays (calculated from $ash with lightness adjustments)
-    gray100: '#9a9c98', // ash + 30% lightness
-    gray200: '#858784', // ash + 20% lightness
-    gray300: '#707370', // ash + 10% lightness
+    // Grays (warm tones to match parchment theme)
+    gray100: '#f5f0e6', // warm off-white for backgrounds
+    gray200: '#e8e2d6', // warm light gray
+    gray300: '#d4cdc0', // warm medium gray
     gray400: '#555752', // ash
     gray500: '#454743', // ash - 10% lightness
     gray600: '#363834', // ash - 20% lightness
@@ -54,7 +54,7 @@ export const theme = {
     info: '#dd9529', // $orange
     warning: '#c9ad6a', // $yellow
     danger: '#992e2e', // $blood-red
-    light: '#9a9c98', // $gray-100
+    light: '#f5f0e6', // $gray-100
     dark: '#181916', // $gray-800
   },
 

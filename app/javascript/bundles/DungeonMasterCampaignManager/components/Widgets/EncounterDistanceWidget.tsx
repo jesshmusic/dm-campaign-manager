@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import Frame from '../Frame/Frame';
 import { Label } from './Widgets.styles';
 import Button from '../Button/Button';
+import { Colors } from '../../utilities/enums';
 
 type TerrainDistance = {
   terrain: string;
@@ -126,14 +127,18 @@ const EncounterDistanceWidget = (props: { hideFrame?: boolean }) => {
             <>
               <DistanceResult>— feet</DistanceResult>
               <DiceFormula>{selectedTerrain.diceFormula} feet</DiceFormula>
+              <DiceBreakdown>&nbsp;</DiceBreakdown>
             </>
           )}
         </ResultBox>
 
         <ButtonWrapper>
-          <Button onClick={rollDice} data-testid="roll-button">
-            Roll Encounter Distance
-          </Button>
+          <Button
+            onClick={rollDice}
+            color={Colors.primary}
+            title="Roll Encounter Distance"
+            data-testid="roll-button"
+          />
         </ButtonWrapper>
       </div>
     );

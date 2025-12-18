@@ -92,14 +92,14 @@ export const dashboardComponents: {
     icon: <GiCompass />,
     title: 'Travel Calculator',
     subtitle: 'Quick reference for terrain travel',
-    grid: { w: 4, h: 6, x: 0, y: Infinity, minW: 4, minH: 5 },
+    grid: { w: 4, h: 6, x: 0, y: Infinity, minW: 4, minH: 6 },
   },
   encounterDistance: {
     component: EncounterDistanceWidget,
     icon: <GiCrossedSwords />,
     title: 'Encounter Distance',
     subtitle: 'Roll starting distance for encounters',
-    grid: { w: 4, h: 4, x: 0, y: Infinity, minW: 3, minH: 4 },
+    grid: { w: 4, h: 5, x: 0, y: Infinity, minW: 4, minH: 5 },
   },
   environmentalEffects: {
     component: EnvironmentalEffectsWidget,

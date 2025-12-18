@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 
 import {
   FrameWrapper,
+  FrameHeader,
   FrameBody,
   FrameTitle,
   FrameSubtitle,
@@ -33,9 +34,9 @@ const Frame = (props: {
   } = props;
   return (
     <FrameWrapper className={className} style={style}>
-      <FrameBody>
-        {(title || icon || actionButton || linkTo) && (
-          <FrameTitle className="widget-drag-handle">
+      {(title || icon || actionButton || linkTo) && (
+        <FrameHeader className="widget-drag-handle">
+          <FrameTitle>
             {linkTo ? (
               <Link to={linkTo}>
                 {icon}
@@ -51,7 +52,9 @@ const Frame = (props: {
             )}
             {actionButton && <>&nbsp;{actionButton}</>}
           </FrameTitle>
-        )}
+        </FrameHeader>
+      )}
+      <FrameBody>
         {(subtitle || subtitleAction) && (
           <FrameSubtitleWrapper>
             {subtitle && <FrameSubtitle>{subtitle}</FrameSubtitle>}
