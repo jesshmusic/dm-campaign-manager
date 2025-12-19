@@ -6,12 +6,22 @@ import PageTitle from '../../components/PageTitle/PageTitle';
 import rest from '../../api/api';
 import { connect } from 'react-redux';
 import DataTable from '../../components/DataTable/DataTable';
-import { RaceSummary } from '../../utilities/types';
+import { RaceSummary, UserProps } from '../../utilities/types';
 import { useEdition } from '../../contexts/EditionContext';
 import { getContentUrl, isValidEdition } from '../../utilities/editionUrls';
+import { AdminNewButton } from '../../components/shared';
+import RaceFormModal from './RaceFormModal';
 
-const Races = (props: { getRaces: () => void; races: RaceSummary[]; loading: boolean }) => {
-  const { getRaces, loading, races } = props;
+type RacesProps = {
+  getRaces: () => void;
+  races: RaceSummary[];
+  loading: boolean;
+  currentUser?: UserProps;
+};
+
+const Races = (props: RacesProps) => {
+  const { getRaces, loading, races, currentUser } = props;
+  const [isCreateModalOpen, setIsCreateModalOpen] = React.useState(false);
   const navigate = useNavigate();
   const { edition: editionParam, param } = useParams<{ edition?: string; param?: string }>();
   const { edition: contextEdition, isEdition2014, isEdition2024 } = useEdition();
@@ -26,6 +36,10 @@ const Races = (props: { getRaces: () => void; races: RaceSummary[]; loading: boo
   React.useEffect(() => {
     getRaces();
   }, []);
+
+  const handleCreateSuccess = () => {
+    getRaces();
+  };
 
   const goToPage = (row: Row<Record<string, unknown>>) => {
     navigate(getContentUrl('races', row.original.slug as string, edition));
@@ -58,6 +72,11 @@ const Races = (props: { getRaces: () => void; races: RaceSummary[]; loading: boo
       pageTitle={pageTitle}
     >
       <PageTitle title={pageTitle} isLegacy={isEdition2014} />
+      <AdminNewButton
+        currentUser={currentUser}
+        onClick={() => setIsCreateModalOpen(true)}
+        label={`New ${isEdition2024 ? 'Species' : 'Race'}`}
+      />
       <DataTable
         columns={columns}
         data={data}
@@ -67,6 +86,12 @@ const Races = (props: { getRaces: () => void; races: RaceSummary[]; loading: boo
         results={data.length}
         loading={loading}
       />
+      <RaceFormModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        mode="create"
+        onSuccess={handleCreateSuccess}
+      />
     </PageContainer>
   );
 };
@@ -75,6 +100,7 @@ function mapStateToProps(state) {
   return {
     loading: state.races.loading,
     races: state.races.races,
+    currentUser: state.users.currentUser,
   };
 }
 

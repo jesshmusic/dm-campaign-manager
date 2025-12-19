@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_12_18_150107) do
+ActiveRecord::Schema[7.1].define(version: 2025_12_19_201735) do
   create_schema "heroku_ext"
 
   # These are extensions that must be enabled in order to support this database
@@ -374,6 +374,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_18_150107) do
     t.string "magic_item_type"
     t.string "speed"
     t.string "edition", default: "2014", null: false
+    t.string "mastery"
     t.index ["armor_category"], name: "index_items_on_armor_category"
     t.index ["category_range"], name: "index_items_on_category_range"
     t.index ["edition"], name: "index_items_on_edition"

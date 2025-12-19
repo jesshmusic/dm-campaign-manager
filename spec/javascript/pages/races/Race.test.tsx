@@ -6,6 +6,7 @@ import Race from '../../../../app/javascript/bundles/DungeonMasterCampaignManage
 
 jest.mock('react-router-dom', () => ({
   useParams: jest.fn(() => ({ raceSlug: 'elf' })),
+  useNavigate: jest.fn(),
 }));
 
 jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/containers/PageContainer', () => {
@@ -26,12 +27,25 @@ jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/compo
   };
 });
 
+jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/components/shared', () => ({
+  AdminActions: () => null,
+}));
+
+jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/races/RaceFormModal', () => {
+  return function MockRaceFormModal() {
+    return null;
+  };
+});
+
 describe('Race', () => {
   it('shows spinner when race is not loaded', () => {
     const mockStore = configureStore({
       reducer: {
         races: () => ({
           currentRace: null,
+        }),
+        users: () => ({
+          currentUser: null,
         }),
       },
     });
@@ -68,6 +82,9 @@ describe('Race', () => {
             ],
           },
         }),
+        users: () => ({
+          currentUser: null,
+        }),
       },
     });
 
@@ -97,6 +114,9 @@ describe('Race', () => {
             ],
             traits: [],
           },
+        }),
+        users: () => ({
+          currentUser: null,
         }),
       },
     });
@@ -133,6 +153,9 @@ describe('Race', () => {
               },
             ],
           },
+        }),
+        users: () => ({
+          currentUser: null,
         }),
       },
     });

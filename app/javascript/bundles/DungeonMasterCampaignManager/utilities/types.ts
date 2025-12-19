@@ -179,6 +179,7 @@ export interface ItemSummary {
   contents?: ItemSummary[];
   cost: string;
   damage?: string;
+  mastery?: string;
   name: string;
   properties?: string;
   rarity?: string;
@@ -208,6 +209,7 @@ export interface ItemProps {
   };
   damage?: string;
   desc?: string[];
+  mastery?: string;
   name: string;
   properties?: string;
   rarity?: string;

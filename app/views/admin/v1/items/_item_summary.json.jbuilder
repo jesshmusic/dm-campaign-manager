@@ -39,4 +39,5 @@ when 'WeaponItem', 'MagicWeaponItem'
   json.extract! item, :category_range
   json.damage "#{item.damage.damage_dice} #{item.damage.damage_type}" unless item.damage.nil?
   json.properties item.properties_str
+  json.mastery item.mastery if item.mastery.present?
 end

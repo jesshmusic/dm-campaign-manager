@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import rest from '../../api/api';
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
@@ -8,6 +8,9 @@ import DndSpinner from '../../components/DndSpinners/DndSpinner';
 import { useEdition } from '../../contexts/EditionContext';
 import { Background } from '../../reducers/backgrounds';
 import { parseEditionParams } from '../../utilities/editionUrls';
+import { UserProps } from '../../utilities/types';
+import { AdminActions } from '../../components/shared';
+import BackgroundFormModal from './BackgroundFormModal';
 
 import {
   BackgroundDetailPage,
@@ -21,23 +24,51 @@ import {
 type BackgroundDetailProps = {
   currentBackground: Background | null;
   loading: boolean;
+  currentUser?: UserProps;
+  token?: string;
   getBackground: (slug: string) => void;
+  deleteBackground: (id: number, token?: string) => void;
 };
 
-const BackgroundDetail = ({ currentBackground, loading, getBackground }: BackgroundDetailProps) => {
+const BackgroundDetail = ({
+  currentBackground,
+  loading,
+  currentUser,
+  token,
+  getBackground,
+  deleteBackground,
+}: BackgroundDetailProps) => {
   const params = useParams<{ edition?: string; backgroundSlug?: string; param?: string }>();
+  const navigate = useNavigate();
   // Handle both /app/backgrounds/:edition/:slug and /app/backgrounds/:param routes
   const { slug: backgroundSlug } = parseEditionParams(
     params.edition,
     params.backgroundSlug || params.param,
   );
   const { isEdition2014 } = useEdition();
+  const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
 
   React.useEffect(() => {
     if (backgroundSlug) {
       getBackground(backgroundSlug);
     }
   }, [backgroundSlug]);
+
+  const handleEditSuccess = () => {
+    if (backgroundSlug) {
+      getBackground(backgroundSlug);
+    }
+  };
+
+  const handleDelete = () => {
+    if (currentBackground?.id) {
+      deleteBackground(currentBackground.id, token);
+      // Navigate back to backgrounds list after delete
+      setTimeout(() => {
+        navigate('/app/backgrounds');
+      }, 500);
+    }
+  };
 
   if (isEdition2014) {
     return (
@@ -74,6 +105,11 @@ const BackgroundDetail = ({ currentBackground, loading, getBackground }: Backgro
       pageTitle={currentBackground.name}
     >
       <PageTitle title={currentBackground.name} />
+      <AdminActions
+        currentUser={currentUser}
+        onEdit={() => setIsEditModalOpen(true)}
+        onDelete={handleDelete}
+      />
 
       <BackgroundDetailPage>
         {currentBackground.description && (
@@ -124,6 +160,13 @@ const BackgroundDetail = ({ currentBackground, loading, getBackground }: Backgro
           </EquipmentOptions>
         </BackgroundSection>
       </BackgroundDetailPage>
+      <BackgroundFormModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        mode="edit"
+        initialData={currentBackground}
+        onSuccess={handleEditSuccess}
+      />
     </PageContainer>
   );
 };
@@ -132,6 +175,8 @@ function mapStateToProps(state) {
   return {
     currentBackground: state.backgrounds.currentBackground,
     loading: state.backgrounds.currentBackgroundLoading,
+    currentUser: state.users.currentUser,
+    token: state.users.token,
   };
 }
 
@@ -139,6 +184,16 @@ function mapDispatchToProps(dispatch) {
   return {
     getBackground: (slug: string) => {
       dispatch(rest.actions.getBackground({ id: slug }));
+    },
+    deleteBackground: (id: number, token?: string) => {
+      dispatch(
+        rest.actions.deleteBackground(
+          { id },
+          {
+            body: JSON.stringify({ token }),
+          },
+        ),
+      );
     },
   };
 }

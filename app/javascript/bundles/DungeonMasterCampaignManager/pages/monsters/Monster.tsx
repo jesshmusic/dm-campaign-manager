@@ -1,32 +1,49 @@
 import React from 'react';
-import { MonsterProps } from '../../utilities/types';
+import { MonsterProps, UserProps } from '../../utilities/types';
 import PageContainer from '../../containers/PageContainer';
 import rest from '../../api/api';
 import { connect } from 'react-redux';
 import DndSpinner from '../../components/DndSpinners/DndSpinner';
 import MonsterBlock from './MonsterBlock';
-import { useParams } from 'react-router-dom';
-import { parseEditionParams } from '../../utilities/editionUrls';
+import { useParams, useNavigate } from 'react-router-dom';
+import { parseEditionParams, getContentUrl } from '../../utilities/editionUrls';
+import { useEdition } from '../../contexts/EditionContext';
+import { AdminActions } from '../../components/shared';
+import MonsterFormModal from './MonsterFormModal';
 
 type MonsterPageProps = {
   monster?: MonsterProps;
   getMonster: (monsterSlug: string) => void;
+  currentUser?: UserProps;
 };
 
 const Monster = (props: MonsterPageProps) => {
-  const { monster, getMonster } = props;
+  const { monster, getMonster, currentUser } = props;
+  const navigate = useNavigate();
   const params = useParams<{ edition?: string; monsterSlug?: string; param?: string }>();
   // Handle both /app/monsters/:edition/:slug and /app/monsters/:param routes
   const { slug: monsterSlug } = parseEditionParams(
     params.edition,
     params.monsterSlug || params.param,
   );
+  const { edition } = useEdition();
+  const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
 
   React.useEffect(() => {
     if (monsterSlug) {
       getMonster(monsterSlug);
     }
   }, [monsterSlug]);
+
+  const handleEditSuccess = () => {
+    if (monsterSlug) {
+      getMonster(monsterSlug);
+    }
+  };
+
+  const handleDeleteSuccess = () => {
+    navigate(getContentUrl('monsters', '', edition));
+  };
 
   const monsterTitle = monster ? monster.name : 'Monster Loading...';
 
@@ -36,7 +53,22 @@ const Monster = (props: MonsterPageProps) => {
       maxWidth
       pageTitle={monsterTitle}
     >
-      {monster ? <MonsterBlock monster={monster} /> : <DndSpinner />}
+      {monster ? (
+        <>
+          <AdminActions currentUser={currentUser} onEdit={() => setIsEditModalOpen(true)} />
+          <MonsterBlock monster={monster} />
+          <MonsterFormModal
+            isOpen={isEditModalOpen}
+            onClose={() => setIsEditModalOpen(false)}
+            mode="edit"
+            initialData={monster}
+            onSuccess={handleEditSuccess}
+            onDeleteSuccess={handleDeleteSuccess}
+          />
+        </>
+      ) : (
+        <DndSpinner />
+      )}
     </PageContainer>
   );
 };
@@ -44,6 +76,7 @@ const Monster = (props: MonsterPageProps) => {
 function mapStateToProps(state) {
   return {
     monster: state.monsters.currentMonster,
+    currentUser: state.users.currentUser,
   };
 }
 

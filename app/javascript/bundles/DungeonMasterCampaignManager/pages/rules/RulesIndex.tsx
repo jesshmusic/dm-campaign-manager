@@ -8,6 +8,9 @@ import DndSpinner from '../../components/DndSpinners/DndSpinner';
 import { useEdition } from '../../contexts/EditionContext';
 import { getIconFromName } from '../../utilities/icons';
 import { getContentUrl, isValidEdition } from '../../utilities/editionUrls';
+import { UserProps } from '../../utilities/types';
+import { AdminNewButton } from '../../components/shared';
+import RuleFormModal from './RuleFormModal';
 
 import { RulesGrid, RuleCard, RuleCardIcon, RuleCardContent, RuleCardCount } from './Rules.styles';
 
@@ -26,6 +29,7 @@ type RulesIndexProps = {
   rules: RuleSummary[];
   loading: boolean;
   getRules: () => void;
+  currentUser?: UserProps;
 };
 
 // Sort rules by sort_order, then by name (data is pre-sorted from API)
@@ -50,9 +54,10 @@ const getRuleIcon = (rule: RuleSummary) => {
   return undefined;
 };
 
-const RulesIndex = ({ rules, loading, getRules }: RulesIndexProps) => {
+const RulesIndex = ({ rules, loading, getRules, currentUser }: RulesIndexProps) => {
   const { edition: editionParam, param } = useParams<{ edition?: string; param?: string }>();
   const { edition: contextEdition, isEdition2014 } = useEdition();
+  const [isCreateModalOpen, setIsCreateModalOpen] = React.useState(false);
 
   // Use edition from URL if valid (either :edition or :param route), otherwise from context
   const urlEdition = editionParam || param;
@@ -61,6 +66,10 @@ const RulesIndex = ({ rules, loading, getRules }: RulesIndexProps) => {
   React.useEffect(() => {
     getRules();
   }, []);
+
+  const handleCreateSuccess = () => {
+    getRules();
+  };
 
   // Sort rules by sort_order (data may already be sorted from API)
   const sortedRules = React.useMemo(() => sortByOrder(rules), [rules]);
@@ -72,6 +81,11 @@ const RulesIndex = ({ rules, loading, getRules }: RulesIndexProps) => {
       pageTitle="Rules"
     >
       <PageTitle title="Rules Reference" isLegacy={isEdition2014} />
+      <AdminNewButton
+        currentUser={currentUser}
+        onClick={() => setIsCreateModalOpen(true)}
+        label="New Rule"
+      />
       {loading ? (
         <DndSpinner />
       ) : (
@@ -93,6 +107,12 @@ const RulesIndex = ({ rules, loading, getRules }: RulesIndexProps) => {
           ))}
         </RulesGrid>
       )}
+      <RuleFormModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        mode="create"
+        onSuccess={handleCreateSuccess}
+      />
     </PageContainer>
   );
 };
@@ -101,6 +121,7 @@ function mapStateToProps(state) {
   return {
     rules: state.rules.rules,
     loading: state.rules.loading,
+    currentUser: state.users.currentUser,
   };
 }
 

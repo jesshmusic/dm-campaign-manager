@@ -1,5 +1,7 @@
 import React from 'react';
 import { render, screen } from '../../../test-utils';
+import { Provider } from 'react-redux';
+import { configureStore } from '@reduxjs/toolkit';
 import { MemoryRouter } from 'react-router-dom';
 import ItemsList from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/items/components/ItemsList';
 
@@ -25,33 +27,55 @@ jest.mock('../../../../../app/javascript/bundles/DungeonMasterCampaignManager/co
   };
 });
 
+jest.mock('../../../../../app/javascript/bundles/DungeonMasterCampaignManager/components/shared', () => ({
+  AdminNewButton: () => null,
+}));
+
+jest.mock('../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/items/ItemFormModal', () => {
+  return function MockItemFormModal() {
+    return null;
+  };
+});
+
+const mockStore = configureStore({
+  reducer: {
+    users: () => ({
+      currentUser: null,
+    }),
+  },
+});
+
 describe('ItemsList', () => {
   it('renders without crashing', () => {
     render(
-      <MemoryRouter>
-        <ItemsList
-          columns={[]}
-          data={[]}
-          loading={false}
-          itemType="all"
-          onSearch={jest.fn()}
-        />
-      </MemoryRouter>
+      <Provider store={mockStore}>
+        <MemoryRouter>
+          <ItemsList
+            columns={[]}
+            data={[]}
+            loading={false}
+            itemType="all"
+            onSearch={jest.fn()}
+          />
+        </MemoryRouter>
+      </Provider>
     );
   });
 
   it('renders page title', () => {
     render(
-      <MemoryRouter>
-        <ItemsList
-          columns={[]}
-          data={[]}
-          loading={false}
-          itemType="all"
-          pageTitle="All Items"
-          onSearch={jest.fn()}
-        />
-      </MemoryRouter>
+      <Provider store={mockStore}>
+        <MemoryRouter>
+          <ItemsList
+            columns={[]}
+            data={[]}
+            loading={false}
+            itemType="all"
+            pageTitle="All Items"
+            onSearch={jest.fn()}
+          />
+        </MemoryRouter>
+      </Provider>
     );
 
     expect(screen.getByTestId('page-title')).toHaveTextContent('All Items');
@@ -59,15 +83,17 @@ describe('ItemsList', () => {
 
   it('renders data table', () => {
     render(
-      <MemoryRouter>
-        <ItemsList
-          columns={[]}
-          data={[{ name: 'Sword' }, { name: 'Shield' }]}
-          loading={false}
-          itemType="all"
-          onSearch={jest.fn()}
-        />
-      </MemoryRouter>
+      <Provider store={mockStore}>
+        <MemoryRouter>
+          <ItemsList
+            columns={[]}
+            data={[{ name: 'Sword' }, { name: 'Shield' }]}
+            loading={false}
+            itemType="all"
+            onSearch={jest.fn()}
+          />
+        </MemoryRouter>
+      </Provider>
     );
 
     expect(screen.getByTestId('data-table')).toBeInTheDocument();

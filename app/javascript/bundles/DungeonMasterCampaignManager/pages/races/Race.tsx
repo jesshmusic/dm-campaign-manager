@@ -1,22 +1,32 @@
 import React from 'react';
 import rest from '../../api/api';
 import { connect } from 'react-redux';
-import { RaceProps } from '../../utilities/types';
+import { RaceProps, UserProps } from '../../utilities/types';
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
 import DndSpinner from '../../components/DndSpinners/DndSpinner';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useEdition } from '../../contexts/EditionContext';
-import { parseEditionParams } from '../../utilities/editionUrls';
+import { parseEditionParams, getContentUrl } from '../../utilities/editionUrls';
+import { AdminActions } from '../../components/shared';
+import RaceFormModal from './RaceFormModal';
 
 import { RacePageWrapper, Subheading, TraitName } from './Races.styles';
 
-const Race = (props: { race?: RaceProps; getRace: (raceSlug: string) => void }) => {
-  const { race, getRace } = props;
+type RacePageProps = {
+  race?: RaceProps;
+  getRace: (raceSlug: string) => void;
+  currentUser?: UserProps;
+};
+
+const Race = (props: RacePageProps) => {
+  const { race, getRace, currentUser } = props;
+  const navigate = useNavigate();
+  const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
   const params = useParams<{ edition?: string; raceSlug?: string; param?: string }>();
   // Handle both /app/races/:edition/:slug and /app/races/:param routes
   const { slug: raceSlug } = parseEditionParams(params.edition, params.raceSlug || params.param);
-  const { isEdition2014, isEdition2024 } = useEdition();
+  const { edition, isEdition2014, isEdition2024 } = useEdition();
 
   // In 2024 edition, "Race" is called "Species"
   const typeLabel = isEdition2024 ? 'Species' : 'Race';
@@ -26,6 +36,16 @@ const Race = (props: { race?: RaceProps; getRace: (raceSlug: string) => void }) 
       getRace(raceSlug);
     }
   }, [raceSlug]);
+
+  const handleEditSuccess = () => {
+    if (raceSlug) {
+      getRace(raceSlug);
+    }
+  };
+
+  const handleDeleteSuccess = () => {
+    navigate(getContentUrl('races', '', edition));
+  };
 
   const raceTitle = race ? race.name : `${typeLabel} Loading...`;
 
@@ -54,6 +74,7 @@ const Race = (props: { race?: RaceProps; getRace: (raceSlug: string) => void }) 
       {race ? (
         <RacePageWrapper>
           <PageTitle title={raceTitle} isLegacy={isEdition2014} />
+          <AdminActions currentUser={currentUser} onEdit={() => setIsEditModalOpen(true)} />
           <div>
             <div>
               <TraitName>Ability Score Increase. </TraitName>
@@ -90,6 +111,14 @@ const Race = (props: { race?: RaceProps; getRace: (raceSlug: string) => void }) 
                 ))}
             </div>
           </div>
+          <RaceFormModal
+            isOpen={isEditModalOpen}
+            onClose={() => setIsEditModalOpen(false)}
+            mode="edit"
+            initialData={race}
+            onSuccess={handleEditSuccess}
+            onDeleteSuccess={handleDeleteSuccess}
+          />
         </RacePageWrapper>
       ) : (
         <DndSpinner />
@@ -101,6 +130,7 @@ const Race = (props: { race?: RaceProps; getRace: (raceSlug: string) => void }) 
 function mapStateToProps(state) {
   return {
     race: state.races.currentRace,
+    currentUser: state.users.currentUser,
   };
 }
 

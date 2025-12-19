@@ -50,6 +50,16 @@ jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages
   })),
 }));
 
+jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/components/shared', () => ({
+  AdminActions: () => null,
+}));
+
+jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/items/ItemFormModal', () => {
+  return function MockItemFormModal() {
+    return null;
+  };
+});
+
 describe('Item', () => {
   it('shows spinner when item is not loaded', () => {
     const mockStore = configureStore({
@@ -57,6 +67,9 @@ describe('Item', () => {
         items: () => ({
           currentItem: null,
           loading: true,
+        }),
+        users: () => ({
+          currentUser: null,
         }),
       },
     });
@@ -82,6 +95,9 @@ describe('Item', () => {
           },
           loading: false,
         }),
+        users: () => ({
+          currentUser: null,
+        }),
       },
     });
 
@@ -105,6 +121,9 @@ describe('Item', () => {
             desc: ['A versatile weapon'],
           },
           loading: false,
+        }),
+        users: () => ({
+          currentUser: null,
         }),
       },
     });

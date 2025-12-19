@@ -57,13 +57,18 @@ const mockFeatWithPrerequisite = {
 };
 
 describe('FeatDetail', () => {
-  const createMockStore = (featsState = {}) => {
+  const createMockStore = (featsState = {}, usersState = {}) => {
     return configureStore({
       reducer: {
         feats: () => ({
           currentFeat: null,
           currentFeatLoading: false,
           ...featsState,
+        }),
+        users: () => ({
+          currentUser: null,
+          token: null,
+          ...usersState,
         }),
       },
     });

@@ -6,6 +6,7 @@ import DndClass from '../../../../app/javascript/bundles/DungeonMasterCampaignMa
 
 jest.mock('react-router-dom', () => ({
   useParams: jest.fn(() => ({ dndClassSlug: 'fighter' })),
+  useNavigate: jest.fn(),
 }));
 
 jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/containers/PageContainer', () => {
@@ -56,12 +57,25 @@ jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages
   };
 });
 
+jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/components/shared', () => ({
+  AdminActions: () => null,
+}));
+
+jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/dnd-classes/DndClassFormModal', () => {
+  return function MockDndClassFormModal() {
+    return null;
+  };
+});
+
 describe('DndClass', () => {
   it('shows spinner when class is not loaded', () => {
     const mockStore = configureStore({
       reducer: {
         dndClasses: () => ({
           currentDndClass: null,
+        }),
+        users: () => ({
+          currentUser: null,
         }),
       },
     });
@@ -87,6 +101,9 @@ describe('DndClass', () => {
             features: [],
           },
         }),
+        users: () => ({
+          currentUser: null,
+        }),
       },
     });
 
@@ -111,6 +128,9 @@ describe('DndClass', () => {
             features: [],
           },
         }),
+        users: () => ({
+          currentUser: null,
+        }),
       },
     });
 
@@ -134,6 +154,9 @@ describe('DndClass', () => {
             equipment: [],
             features: [],
           },
+        }),
+        users: () => ({
+          currentUser: null,
         }),
       },
     });

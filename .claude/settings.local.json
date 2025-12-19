@@ -113,6 +113,8 @@
       "Bash(npx tsc:*)",
       "Bash(DISABLE_SPRING=1 rails srd:import_type:*)",
       "Bash(DISABLE_SPRING=1 RAILS_ENV=development bundle exec rails runner:*)",
+      "Bash(heroku run:*)",
+      "Bash(gh pr create:*)",
       "Bash(heroku run:*)"
     ],
     "deny": [],
