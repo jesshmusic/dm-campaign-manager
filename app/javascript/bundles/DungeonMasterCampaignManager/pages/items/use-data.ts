@@ -133,7 +133,18 @@ export const useData = (props: ItemsPageProps) => {
     ],
     [ItemType.armor]: [...armorColumn],
     [ItemType.magicArmor]: [
-      ...armorColumn,
+      {
+        Header: 'Name',
+        accessor: 'name',
+      },
+      {
+        Header: 'Type',
+        accessor: 'armorType',
+      },
+      {
+        Header: 'Armor Class (AC)',
+        accessor: 'armorClass',
+      },
       {
         Header: 'Rarity',
         accessor: 'rarity',
@@ -145,6 +156,10 @@ export const useData = (props: ItemsPageProps) => {
           },
           [],
         ),
+      },
+      {
+        Header: 'Attunement?',
+        accessor: 'requiresAttunement',
       },
     ],
     [ItemType.gear]: [
@@ -224,7 +239,10 @@ export const useData = (props: ItemsPageProps) => {
       },
     ],
     [ItemType.magicWeapon]: [
-      ...weaponColumnsWithMastery,
+      {
+        Header: 'Name',
+        accessor: 'name',
+      },
       {
         Header: 'Rarity',
         accessor: 'rarity',
@@ -236,6 +254,10 @@ export const useData = (props: ItemsPageProps) => {
           },
           [],
         ),
+      },
+      {
+        Header: 'Attunement?',
+        accessor: 'requiresAttunement',
       },
     ],
     [ItemType.weapon]: [...weaponColumnsWithMastery],
@@ -256,11 +278,16 @@ export const useData = (props: ItemsPageProps) => {
         armorType: item.armorType,
         capacity: item.capacity,
         contents: item.contents,
-        cost: item.rarity && item.rarity !== '-' ? `~${item.cost}` : item.cost,
-        damage: item.damage,
+        cost:
+          item.rarity && item.rarity !== '-'
+            ? item.cost
+              ? `~${item.cost}`
+              : 'Varies'
+            : item.cost || '-',
+        damage: item.damage || '-',
         mastery: item.mastery || '-',
         name: item.name,
-        properties: item.properties,
+        properties: item.properties || '-',
         rarity: item.rarity || '-',
         requiresAttunement: item.requiresAttunement !== '' ? item.requiresAttunement : '-',
         slug: item.slug,
