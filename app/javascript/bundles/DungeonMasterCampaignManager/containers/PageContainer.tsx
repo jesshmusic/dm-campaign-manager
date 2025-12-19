@@ -15,7 +15,7 @@ import ReactGA from 'react-ga4';
 import SearchField from '../components/Search/SearchField';
 import {
   SidebarProvider,
-  SIDEBAR_MIN_WIDTH,
+  SIDEBAR_DEFAULT_WIDTH,
   SIDEBAR_COLLAPSED_WIDTH,
 } from '../contexts/SidebarContext';
 import { useBreadcrumbs } from '../contexts/BreadcrumbContext';
@@ -42,10 +42,10 @@ const getSavedSidebarState = (): { collapsed: boolean; width: number } => {
   if (typeof window !== 'undefined') {
     const collapsed = localStorage.getItem('sidebar-collapsed') === 'true';
     const savedWidth = localStorage.getItem('sidebar-width');
-    const width = savedWidth ? parseInt(savedWidth, 10) : SIDEBAR_MIN_WIDTH;
+    const width = savedWidth ? parseInt(savedWidth, 10) : SIDEBAR_DEFAULT_WIDTH;
     return { collapsed, width };
   }
-  return { collapsed: false, width: SIDEBAR_MIN_WIDTH };
+  return { collapsed: false, width: SIDEBAR_DEFAULT_WIDTH };
 };
 
 const PageContainer = (props: PageContainerProps) => {

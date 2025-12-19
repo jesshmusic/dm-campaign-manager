@@ -150,7 +150,11 @@ const SideBar = (props: {
 
   // Resize state
   const [isResizing, setIsResizing] = useState(false);
-  const resizeRef = useRef<{ startX: number; startWidth: number } | null>(null);
+  const resizeRef = useRef<{
+    startX: number;
+    startWidth: number;
+    isCurrentlyCollapsed: boolean;
+  } | null>(null);
 
   // Handle resize start
   const handleResizeStart = useCallback(
@@ -160,6 +164,7 @@ const SideBar = (props: {
       resizeRef.current = {
         startX: e.clientX,
         startWidth: isCollapsed ? SIDEBAR_COLLAPSED_WIDTH : sidebarWidth,
+        isCurrentlyCollapsed: isCollapsed,
       };
 
       const handleMouseMove = (moveEvent: MouseEvent) => {
@@ -169,19 +174,29 @@ const SideBar = (props: {
         const newWidth = resizeRef.current.startWidth + delta;
 
         // If collapsed and dragging right, expand to min width
-        if (isCollapsed && newWidth > SIDEBAR_COLLAPSED_WIDTH + 20) {
+        if (resizeRef.current.isCurrentlyCollapsed && newWidth > SIDEBAR_COLLAPSED_WIDTH + 20) {
           setIsCollapsed(false);
           setSidebarWidth(SIDEBAR_MIN_WIDTH);
-          resizeRef.current.startX = moveEvent.clientX;
-          resizeRef.current.startWidth = SIDEBAR_MIN_WIDTH;
+          // Reset reference point for continued dragging
+          resizeRef.current = {
+            startX: moveEvent.clientX,
+            startWidth: SIDEBAR_MIN_WIDTH,
+            isCurrentlyCollapsed: false,
+          };
           return;
         }
 
         // If not collapsed, handle resize with snap behavior
-        if (!isCollapsed) {
+        if (!resizeRef.current.isCurrentlyCollapsed) {
           // Snap to collapsed if dragged below threshold
           if (newWidth < SIDEBAR_MIN_WIDTH - 40) {
             setIsCollapsed(true);
+            // Reset reference point for continued dragging
+            resizeRef.current = {
+              startX: moveEvent.clientX,
+              startWidth: SIDEBAR_COLLAPSED_WIDTH,
+              isCurrentlyCollapsed: true,
+            };
             return;
           }
 
