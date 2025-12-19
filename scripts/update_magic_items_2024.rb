@@ -26,8 +26,13 @@ MAGIC_WEAPON_DATA = {
 }.freeze
 
 puts 'Updating 2024 Magic Armor Items...'
+# Pre-fetch all magic armor items to avoid N+1 queries
+magic_armor_items = Item.where(edition: '2024', type: 'MagicArmorItem')
+                        .where(name: MAGIC_ARMOR_DATA.keys)
+                        .index_by(&:name)
+
 MAGIC_ARMOR_DATA.each do |name, data|
-  item = Item.find_by(name: name, edition: '2024', type: 'MagicArmorItem')
+  item = magic_armor_items[name]
   if item
     item.update!(rarity: data[:rarity], requires_attunement: data[:attunement])
     puts "  Updated #{name}: rarity=#{data[:rarity]}, attunement=#{data[:attunement] || 'none'}"
@@ -37,8 +42,13 @@ MAGIC_ARMOR_DATA.each do |name, data|
 end
 
 puts "\nUpdating 2024 Magic Weapon Items..."
+# Pre-fetch all magic weapon items to avoid N+1 queries
+magic_weapon_items = Item.where(edition: '2024', type: 'MagicWeaponItem')
+                         .where(name: MAGIC_WEAPON_DATA.keys)
+                         .index_by(&:name)
+
 MAGIC_WEAPON_DATA.each do |name, data|
-  item = Item.find_by(name: name, edition: '2024', type: 'MagicWeaponItem')
+  item = magic_weapon_items[name]
   if item
     item.update!(rarity: data[:rarity], requires_attunement: data[:attunement])
     puts "  Updated #{name}: rarity=#{data[:rarity]}, attunement=#{data[:attunement] || 'none'}"

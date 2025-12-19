@@ -48,8 +48,13 @@ puts 'Updating 2024 Magic Items...'
 updated = 0
 not_found = 0
 
+# Pre-fetch all magic items to avoid N+1 queries
+magic_items = Item.where(edition: '2024', type: 'MagicItem')
+                  .where(name: MAGIC_ITEMS_DATA.keys)
+                  .index_by(&:name)
+
 MAGIC_ITEMS_DATA.each do |name, data|
-  item = Item.find_by(name: name, edition: '2024', type: 'MagicItem')
+  item = magic_items[name]
   if item
     item.update!(rarity: data[:rarity], requires_attunement: data[:attunement])
     puts "  Updated #{name}: rarity=#{data[:rarity]}, attunement=#{data[:attunement] || 'none'}"
