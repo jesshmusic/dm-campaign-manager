@@ -2,6 +2,7 @@ import React from 'react';
 import { NavLink } from '../NavLink/NavLink';
 import DndLogo from '../HeroBanner/DMLogo';
 import { User } from '@auth0/auth0-react';
+import { useSidebar } from '../../contexts/SidebarContext';
 
 import footerBg from './FooterBackground.jpg';
 import patreonBanner from './PatreonBanner.png';
@@ -26,8 +27,9 @@ const PATREON_URL =
   'https://patreon.com/DormanLakely?utm_medium=unknown&utm_source=join_link&utm_campaign=creatorshare_creator&utm_content=copyLink';
 
 const Footer = (_props: { user?: User }) => {
+  const { sidebarWidth } = useSidebar();
   return (
-    <FooterWrapper>
+    <FooterWrapper $sidebarWidth={sidebarWidth}>
       <BackgroundImage src={footerBg} alt="" />
       <Content>
         <Left>

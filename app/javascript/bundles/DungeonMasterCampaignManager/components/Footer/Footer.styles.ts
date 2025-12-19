@@ -6,12 +6,13 @@
 import styled from 'styled-components';
 import { adjustLightness, respondTo } from '../../theme/mixins';
 
-export const FooterWrapper = styled.div`
+export const FooterWrapper = styled.div<{ $sidebarWidth?: number }>`
   background-color: ${({ theme }) => theme.colors.darkRed};
   border-top: 0.25rem solid ${({ theme }) => theme.colors.orange};
   color: ${({ theme }) => theme.colors.white};
-  padding: 1rem 2rem 1rem 6rem;
+  padding: 1rem 2rem 1rem ${({ $sidebarWidth }) => ($sidebarWidth || 80) + 16}px;
   position: relative;
+  transition: padding-left 0.15s ease-out;
 `;
 
 export const BackgroundImage = styled.img`
@@ -32,7 +33,7 @@ export const Content = styled.div`
 
   ${respondTo.md`
     display: flex;
-    padding: 1rem 2rem 1rem 22rem;
+    padding: 1rem 2rem;
   `}
 `;
 
