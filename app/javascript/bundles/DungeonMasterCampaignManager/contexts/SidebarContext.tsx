@@ -16,11 +16,19 @@ export const SIDEBAR_MAX_WIDTH = SIDEBAR_MAX_WIDTH_REM * REM_TO_PX; // 480px
 type SidebarContextType = {
   isCollapsed: boolean;
   sidebarWidth: number;
+  isMobile: boolean;
+  setIsCollapsed: (collapsed: boolean) => void;
+  setSidebarWidth: (width: number) => void;
+  rawSidebarWidth: number;
 };
 
 const SidebarContext = createContext<SidebarContextType>({
   isCollapsed: false,
   sidebarWidth: SIDEBAR_DEFAULT_WIDTH,
+  isMobile: false,
+  setIsCollapsed: () => {},
+  setSidebarWidth: () => {},
+  rawSidebarWidth: SIDEBAR_DEFAULT_WIDTH,
 });
 
 export const SidebarProvider = SidebarContext.Provider;

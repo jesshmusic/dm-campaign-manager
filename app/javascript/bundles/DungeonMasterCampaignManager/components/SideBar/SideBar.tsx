@@ -31,6 +31,7 @@ import {
   SIDEBAR_MIN_WIDTH,
   SIDEBAR_COLLAPSED_WIDTH,
   SIDEBAR_MAX_WIDTH,
+  useSidebar,
 } from '../../contexts/SidebarContext';
 
 const PATREON_URL =
@@ -124,25 +125,14 @@ const itemTypes = [
 const SideBar = (props: {
   currentUser?: UserProps;
   getRules: () => void;
-  isCollapsed: boolean;
-  isMobile: boolean;
   logOutUser: (token: string) => void;
   rules: RuleType[];
-  setIsCollapsed: (collapsed: boolean) => void;
-  sidebarWidth: number;
-  setSidebarWidth: (width: number) => void;
 }) => {
-  const {
-    currentUser,
-    getRules,
-    isCollapsed,
-    isMobile,
-    logOutUser,
-    rules,
-    setIsCollapsed,
-    sidebarWidth,
-    setSidebarWidth,
-  } = props;
+  const { currentUser, getRules, logOutUser, rules } = props;
+
+  // Get sidebar state from context
+  const { isCollapsed, isMobile, setIsCollapsed, setSidebarWidth, rawSidebarWidth } = useSidebar();
+  const sidebarWidth = rawSidebarWidth;
 
   const { user, getAccessTokenSilently, isAuthenticated, loginWithRedirect, logout } = useAuth0();
   const location = useLocation();
