@@ -1,9 +1,15 @@
 import { createContext, useContext } from 'react';
 
-// Sidebar dimensions
-export const SIDEBAR_MIN_WIDTH = 320; // 20rem in pixels
-export const SIDEBAR_COLLAPSED_WIDTH = 80; // 5rem in pixels
-export const SIDEBAR_MAX_WIDTH = 400; // Maximum resize width
+// Sidebar dimensions in rem (converted to pixels for calculations)
+const REM_TO_PX = 16;
+export const SIDEBAR_MIN_WIDTH_REM = 20;
+export const SIDEBAR_COLLAPSED_WIDTH_REM = 5;
+export const SIDEBAR_MAX_WIDTH_REM = 30;
+
+// Pixel values for calculations (mouse events return pixels)
+export const SIDEBAR_MIN_WIDTH = SIDEBAR_MIN_WIDTH_REM * REM_TO_PX; // 320px
+export const SIDEBAR_COLLAPSED_WIDTH = SIDEBAR_COLLAPSED_WIDTH_REM * REM_TO_PX; // 80px
+export const SIDEBAR_MAX_WIDTH = SIDEBAR_MAX_WIDTH_REM * REM_TO_PX; // 480px
 
 type SidebarContextType = {
   isCollapsed: boolean;
