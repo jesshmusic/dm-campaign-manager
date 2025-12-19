@@ -12,7 +12,7 @@ module Admin
       def index
         authorize Item
         if params[:list].present?
-          @items = Item.order(name: :asc).map do |item|
+          @items = Item.for_edition(current_edition).order(name: :asc).map do |item|
             {
               name: item.name,
               slug: item.slug
@@ -21,9 +21,9 @@ module Admin
           render json: { count: @items.count, results: @items }
         else
           @items = if params[:search].present?
-                     Item.search_for(params[:search])
+                     Item.for_edition(current_edition).search_for(params[:search])
                    else
-                     Item.order(:name)
+                     Item.for_edition(current_edition).order(:name)
                    end
           @items = @items.where(type: params[:type]) if params[:type].present?
           @items = @items.where.not(sub_category: 'Shield') if params[:shield].present? && params[:shield] == 'false'

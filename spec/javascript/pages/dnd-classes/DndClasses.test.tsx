@@ -6,6 +6,7 @@ import DndClasses from '../../../../app/javascript/bundles/DungeonMasterCampaign
 
 jest.mock('react-router-dom', () => ({
   useNavigate: jest.fn(),
+  useParams: jest.fn().mockReturnValue({}),
 }));
 
 jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/containers/PageContainer', () => {

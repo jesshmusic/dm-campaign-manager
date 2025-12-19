@@ -1,0 +1,77 @@
+[
+  {
+    "name": "Blinded",
+    "slug": "blinded",
+    "desc": "You can't see and automatically fail any ability check that requires sight. Attack Rolls against you have Advantage, and your attack rolls have Disadvantage."
+  },
+  {
+    "name": "Charmed",
+    "slug": "charmed",
+    "desc": "You can't attack the charmer or target the charmer with damaging abilities or magical effects. The charmer has Advantage on any ability check to interact with you socially."
+  },
+  {
+    "name": "Deafened",
+    "slug": "deafened",
+    "desc": "You can't hear and automatically fail any ability check that requires hearing."
+  },
+  {
+    "name": "Exhaustion",
+    "slug": "exhaustion",
+    "desc": "This condition is cumulative. Each time you receive it, you gain 1 Exhaustion level. You die if your Exhaustion level is 6. When you make a D20 Test, the roll is reduced by 2 times your Exhaustion level. Your Speed is reduced by a number of feet equal to 5 times your Exhaustion level. Finishing a Long Rest removes 1 of your Exhaustion levels."
+  },
+  {
+    "name": "Frightened",
+    "slug": "frightened",
+    "desc": "You have Disadvantage on ability checks and attack rolls while the source of fear is within line of sight. You can't willingly move closer to the source of fear."
+  },
+  {
+    "name": "Grappled",
+    "slug": "grappled",
+    "desc": "Your Speed is 0 and can't increase. You have Disadvantage on attack rolls against any target other than the grappler. The grappler can drag or carry you when it moves, but every foot of movement costs it 1 extra foot unless you're Tiny or two or more sizes smaller than it."
+  },
+  {
+    "name": "Incapacitated",
+    "slug": "incapacitated",
+    "desc": "You can't take actions, bonus actions, or reactions."
+  },
+  {
+    "name": "Invisible",
+    "slug": "invisible",
+    "desc": "You can't be seen without the aid of magic or a special sense. You're heavily obscured for the purpose of hiding. Any attack roll against you has Disadvantage, and your attack rolls have Advantage."
+  },
+  {
+    "name": "Paralyzed",
+    "slug": "paralyzed",
+    "desc": "You have the Incapacitated condition. Your Speed is 0 and can't increase. You automatically fail Strength and Dexterity saving throws. Attack Rolls against you have Advantage. Any attack that hits you is a Critical Hit if the attacker is within 5 feet of you."
+  },
+  {
+    "name": "Petrified",
+    "slug": "petrified",
+    "desc": "You have the Incapacitated condition. You and any nonmagical items you're wearing or carrying are transformed into a solid, inanimate substance. Your weight is multiplied by ten. You stop aging. You're immune to Poison and Disease, though any you already have is only suspended. Attack Rolls against you have Advantage. You automatically fail Strength and Dexterity saving throws."
+  },
+  {
+    "name": "Poisoned",
+    "slug": "poisoned",
+    "desc": "You have Disadvantage on attack rolls and ability checks."
+  },
+  {
+    "name": "Prone",
+    "slug": "prone",
+    "desc": "Your only movement options are to crawl or to spend an amount of movement equal to half your Speed to stand up. You have Disadvantage on attack rolls. An attack roll against you has Advantage if the attacker is within 5 feet of you; otherwise it has Disadvantage."
+  },
+  {
+    "name": "Restrained",
+    "slug": "restrained",
+    "desc": "Your Speed is 0 and can't increase. Attack Rolls against you have Advantage, and your attack rolls have Disadvantage. You have Disadvantage on Dexterity saving throws."
+  },
+  {
+    "name": "Stunned",
+    "slug": "stunned",
+    "desc": "You have the Incapacitated condition. You automatically fail Strength and Dexterity saving throws. Attack Rolls against you have Advantage."
+  },
+  {
+    "name": "Unconscious",
+    "slug": "unconscious",
+    "desc": "You have the Incapacitated and Prone conditions. You drop whatever you're holding and fall Prone. You automatically fail Strength and Dexterity saving throws. Attack Rolls against you have Advantage. Any attack that hits you is a Critical Hit if the attacker is within 5 feet of you."
+  }
+]

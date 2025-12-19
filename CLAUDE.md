@@ -9,6 +9,8 @@
 3. If a change breaks existing tests, fix them immediately
 4. Never commit code with failing tests
 5. Both Jest (frontend) and RSpec (backend) tests must pass
+6. **Write tests for new components/features as you create them** - don't leave new code untested
+7. Maintain coverage thresholds - new code should not decrease overall test coverage
 
 ## Pre-Push Checklist
 

@@ -18,6 +18,7 @@
 #  damage_vulnerabilities :string           default([]), is an Array
 #  description            :text
 #  dexterity              :integer          default(10), not null
+#  edition                :string           default("2014"), not null
 #  hit_dice               :string
 #  hit_points             :integer          default(8), not null
 #  intelligence           :integer          default(10), not null
@@ -38,8 +39,9 @@
 #
 # Indexes
 #
-#  index_monsters_on_slug     (slug) UNIQUE
-#  index_monsters_on_user_id  (user_id)
+#  index_monsters_on_edition           (edition)
+#  index_monsters_on_slug_and_edition  (slug,edition) UNIQUE
+#  index_monsters_on_user_id           (user_id)
 #
 # Foreign Keys
 #
@@ -47,6 +49,7 @@
 #
 
 class Monster < ApplicationRecord
+  include Editionable
   extend FriendlyId
 
   friendly_id :name, use: :slugged

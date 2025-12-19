@@ -11,6 +11,7 @@
 #  capacity             :string
 #  category_range       :string
 #  desc                 :string           default([]), is an Array
+#  edition              :string           default("2014"), not null
 #  equipment_category   :string
 #  gear_category        :string
 #  magic_item_type      :string
@@ -38,7 +39,8 @@
 #
 #  index_items_on_armor_category    (armor_category)
 #  index_items_on_category_range    (category_range)
-#  index_items_on_slug              (slug) UNIQUE
+#  index_items_on_edition           (edition)
+#  index_items_on_slug_and_edition  (slug,edition) UNIQUE
 #  index_items_on_tool_category     (tool_category)
 #  index_items_on_user_id           (user_id)
 #  index_items_on_vehicle_category  (vehicle_category)
@@ -50,6 +52,7 @@
 #
 
 class Item < ApplicationRecord
+  include Editionable
   extend FriendlyId
 
   friendly_id :name, use: :slugged

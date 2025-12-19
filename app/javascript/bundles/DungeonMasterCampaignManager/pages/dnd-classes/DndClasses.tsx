@@ -5,10 +5,12 @@ import rest from '../../api/api';
 // Container
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useEdition } from '../../contexts/EditionContext';
 import { DndClassSummary } from '../../utilities/types';
 import DataTable from '../../components/DataTable/DataTable';
 import { Row } from 'react-table';
+import { getContentUrl, isValidEdition } from '../../utilities/editionUrls';
 
 const DndClasses = (props: {
   getDndClasses: () => void;
@@ -17,13 +19,19 @@ const DndClasses = (props: {
 }) => {
   const { getDndClasses, dndClasses, loading } = props;
   const navigate = useNavigate();
+  const { edition: editionParam, param } = useParams<{ edition?: string; param?: string }>();
+  const { edition: contextEdition, isEdition2014 } = useEdition();
+
+  // Use edition from URL if valid (either :edition or :param route), otherwise from context
+  const urlEdition = editionParam || param;
+  const edition = isValidEdition(urlEdition) ? urlEdition : contextEdition;
 
   React.useEffect(() => {
     getDndClasses();
   }, []);
 
   const goToPage = (row: Row<Record<string, unknown>>) => {
-    navigate(`/app/classes/${row.original.slug}`);
+    navigate(getContentUrl('classes', row.original.slug as string, edition));
   };
 
   const data = React.useMemo(() => {
@@ -62,7 +70,7 @@ const DndClasses = (props: {
         "All D&D classes. Dungeon Master's Toolbox is a free resource for DMs to manage their classes, adventures, and Monsters."
       }
     >
-      <PageTitle title={'Character Classes'} />
+      <PageTitle title={'Character Classes'} isLegacy={isEdition2014} />
       <DataTable
         columns={columns}
         data={data}

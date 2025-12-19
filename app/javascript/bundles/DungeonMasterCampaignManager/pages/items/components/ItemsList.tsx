@@ -8,7 +8,9 @@ import PageTitle from '../../../components/PageTitle/PageTitle';
 import { Column, Row } from 'react-table';
 import DataTable from '../../../components/DataTable/DataTable';
 import { ItemType } from '../use-data';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useEdition } from '../../../contexts/EditionContext';
+import { getContentUrl, isValidEdition } from '../../../utilities/editionUrls';
 
 type ItemsListProps = {
   columns: Array<Column<Record<string, unknown>>>;
@@ -20,6 +22,12 @@ type ItemsListProps = {
 };
 
 const ItemsList = ({ columns, data, loading, onSearch, pageTitle, itemType }: ItemsListProps) => {
+  const { edition: editionParam } = useParams<{ edition?: string }>();
+  const { edition: contextEdition, isEdition2014 } = useEdition();
+
+  // Use edition from URL if valid, otherwise from context
+  const edition = isValidEdition(editionParam) ? editionParam : contextEdition;
+
   const _breadCrumbs =
     itemType !== ItemType.all
       ? [
@@ -30,7 +38,7 @@ const ItemsList = ({ columns, data, loading, onSearch, pageTitle, itemType }: It
   const navigate = useNavigate();
 
   const goToPage = (row: Row<Record<string, unknown>>) => {
-    navigate(`/app/items/${row.original.slug}`);
+    navigate(getContentUrl('items', row.original.slug as string, edition));
   };
 
   return (
@@ -38,7 +46,7 @@ const ItemsList = ({ columns, data, loading, onSearch, pageTitle, itemType }: It
       pageTitle={pageTitle}
       description={`${pageTitle} records with descriptions and stats. Dungeon Master's Toolbox is a free resource for DMs to manage their campaigns, adventures, and Monsters.`}
     >
-      <PageTitle title={pageTitle} />
+      <PageTitle title={pageTitle} isLegacy={isEdition2014} />
       <DataTable
         columns={columns}
         data={data}

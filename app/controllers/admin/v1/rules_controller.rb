@@ -7,9 +7,11 @@ module Admin
       # GET /rules or /rules.json
       def index
         @rules = if params[:search].present?
-                   Rule.search_for(params[:search])
+                   Rule.for_edition(current_edition).search_for(params[:search])
                  else
-                   Rule.where(parent_id: nil)
+                   Rule.for_edition(current_edition)
+                       .where(parent_id: nil)
+                       .order(Arel.sql('COALESCE(sort_order, 999)'), :name)
                  end
       end
 
@@ -60,12 +62,12 @@ module Admin
 
       # Use callbacks to share common setup or constraints between actions.
       def set_rule
-        @rule = Rule.friendly.find(params[:id])
+        @rule = Rule.for_edition(current_edition).friendly.find(params[:id])
       end
 
       # Only allow a list of trusted parameters through.
       def rule_params
-        params.require(:rule).permit(:name, :description, :category, :subcategory, :slug)
+        params.require(:rule).permit(:name, :description, :category, :subcategory, :slug, :sort_order, :game_icon)
       end
     end
   end

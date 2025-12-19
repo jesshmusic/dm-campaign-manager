@@ -11,25 +11,16 @@ module Admin
         }
 
         if params[:search]
-          @results[:results] = Condition.search_for(params[:search])
-                                        .pluck(:name, :description, :slug)
-                                        .map do |name, description, slug|
-            {
-              name: name,
-              description: description,
-              url: "/app/conditions/#{slug}"
-            }
-          end
-          @results[:results] += DndClass.search_for(params[:search])
-                                        .pluck(:name, :slug)
-                                        .map do |name, slug|
+          @results[:results] = DndClass.for_edition(current_edition).search_for(params[:search])
+                                       .pluck(:name, :slug)
+                                       .map do |name, slug|
             {
               name: name,
               description: '',
               url: "/app/classes/#{slug}"
             }
           end
-          @results[:results] += Item.search_for(params[:search])
+          @results[:results] += Item.for_edition(current_edition).search_for(params[:search])
                                     .pluck(:name, :desc, :slug)
                                     .map do |name, desc, slug|
             {
@@ -38,7 +29,7 @@ module Admin
               url: "/app/items/#{slug}"
             }
           end
-          @results[:results] += Monster.search_for(params[:search])
+          @results[:results] += Monster.for_edition(current_edition).search_for(params[:search])
                                        .pluck(:name, :challenge_rating, :slug)
                                        .map do |name, challenge_rating, slug|
             {
@@ -47,7 +38,7 @@ module Admin
               url: "/app/monsters/#{slug}"
             }
           end
-          @results[:results] += Race.search_for(params[:search])
+          @results[:results] += Race.for_edition(current_edition).search_for(params[:search])
                                     .pluck(:name, :size_description, :slug)
                                     .map do |name, size_description, slug|
             {
@@ -56,7 +47,7 @@ module Admin
               url: "/app/races/#{slug}"
             }
           end
-          @results[:results] += Rule.search_for(params[:search])
+          @results[:results] += Rule.for_edition(current_edition).search_for(params[:search])
                                     .pluck(:name, :description, :slug)
                                     .map do |name, description, slug|
             {
@@ -65,7 +56,7 @@ module Admin
               url: "/app/rules/#{slug}"
             }
           end
-          @results[:results] += Skill.search_for(params[:search])
+          @results[:results] += Skill.for_edition(current_edition).search_for(params[:search])
                                      .pluck(:name, :desc, :slug)
                                      .map do |name, desc, slug|
             {
@@ -74,7 +65,7 @@ module Admin
               url: "/app/skills/#{slug}"
             }
           end
-          @results[:results] += Spell.search_for(params[:search])
+          @results[:results] += Spell.for_edition(current_edition).search_for(params[:search])
                                      .pluck(:name, :description, :slug)
                                      .map do |name, description, slug|
             {

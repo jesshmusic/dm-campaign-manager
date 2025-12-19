@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_12_06_194853) do
+ActiveRecord::Schema[7.1].define(version: 2025_12_18_150107) do
   create_schema "heroku_ext"
 
   # These are extensions that must be enabled in order to support this database
@@ -42,6 +42,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_06_194853) do
     t.string "slug"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "edition", default: "2014", null: false
+    t.index ["edition"], name: "index_ability_scores_on_edition"
     t.index ["slug"], name: "index_ability_scores_on_slug", unique: true
   end
 
@@ -74,6 +76,27 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_06_194853) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["item_id"], name: "index_armor_classes_on_item_id"
+  end
+
+  create_table "backgrounds", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "slug", null: false
+    t.string "edition", default: "2024", null: false
+    t.string "ability_scores", default: [], array: true
+    t.string "feat_name"
+    t.string "skill_proficiencies", default: [], array: true
+    t.string "tool_proficiency"
+    t.text "equipment_option_a"
+    t.text "equipment_option_b"
+    t.text "description"
+    t.boolean "homebrew", default: false, null: false
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["edition"], name: "index_backgrounds_on_edition"
+    t.index ["homebrew"], name: "index_backgrounds_on_homebrew"
+    t.index ["slug", "edition"], name: "index_backgrounds_on_slug_and_edition", unique: true
+    t.index ["user_id"], name: "index_backgrounds_on_user_id"
   end
 
   create_table "class_features", force: :cascade do |t|
@@ -143,15 +166,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_06_194853) do
     t.index ["dnd_class_level_id"], name: "index_class_spellcastings_on_dnd_class_level_id"
   end
 
-  create_table "conditions", force: :cascade do |t|
-    t.string "name"
-    t.string "description", default: [], array: true
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "slug", null: false
-    t.index ["slug"], name: "index_conditions_on_slug", unique: true
-  end
-
   create_table "container_items", force: :cascade do |t|
     t.bigint "item_id"
     t.bigint "contained_item_id"
@@ -210,7 +224,10 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_06_194853) do
     t.string "slug"
     t.string "spell_ability"
     t.string "subclasses", default: [], array: true
-    t.index ["slug"], name: "index_dnd_classes_on_slug", unique: true
+    t.string "edition", default: "2014", null: false
+    t.string "primary_abilities"
+    t.index ["edition"], name: "index_dnd_classes_on_edition"
+    t.index ["slug", "edition"], name: "index_dnd_classes_on_slug_and_edition", unique: true
     t.index ["user_id"], name: "index_dnd_classes_on_user_id"
   end
 
@@ -223,6 +240,25 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_06_194853) do
     t.bigint "dnd_class_id"
     t.index ["dnd_class_id"], name: "index_equipment_on_dnd_class_id"
     t.index ["starting_equipment_option_id"], name: "index_equipment_on_starting_equipment_option_id"
+  end
+
+  create_table "feats", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "slug", null: false
+    t.string "edition", default: "2024", null: false
+    t.string "category", null: false
+    t.string "prerequisite"
+    t.text "description", null: false
+    t.boolean "repeatable", default: false, null: false
+    t.boolean "homebrew", default: false, null: false
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["category"], name: "index_feats_on_category"
+    t.index ["edition"], name: "index_feats_on_edition"
+    t.index ["homebrew"], name: "index_feats_on_homebrew"
+    t.index ["slug", "edition"], name: "index_feats_on_slug_and_edition", unique: true
+    t.index ["user_id"], name: "index_feats_on_user_id"
   end
 
   create_table "foundry_map_files", force: :cascade do |t|
@@ -337,9 +373,11 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_06_194853) do
     t.string "weapon_category"
     t.string "magic_item_type"
     t.string "speed"
+    t.string "edition", default: "2014", null: false
     t.index ["armor_category"], name: "index_items_on_armor_category"
     t.index ["category_range"], name: "index_items_on_category_range"
-    t.index ["slug"], name: "index_items_on_slug", unique: true
+    t.index ["edition"], name: "index_items_on_edition"
+    t.index ["slug", "edition"], name: "index_items_on_slug_and_edition", unique: true
     t.index ["tool_category"], name: "index_items_on_tool_category"
     t.index ["user_id"], name: "index_items_on_user_id"
     t.index ["vehicle_category"], name: "index_items_on_vehicle_category"
@@ -396,7 +434,9 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_06_194853) do
     t.string "damage_resistances", default: [], array: true
     t.string "damage_vulnerabilities", default: [], array: true
     t.text "description"
-    t.index ["slug"], name: "index_monsters_on_slug", unique: true
+    t.string "edition", default: "2014", null: false
+    t.index ["edition"], name: "index_monsters_on_edition"
+    t.index ["slug", "edition"], name: "index_monsters_on_slug_and_edition", unique: true
     t.index ["user_id"], name: "index_monsters_on_user_id"
   end
 
@@ -509,8 +549,10 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_06_194853) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.string "slug", null: false
+    t.string "edition", default: "2014", null: false
+    t.index ["edition"], name: "index_profs_on_edition"
     t.index ["name"], name: "index_profs_on_name", unique: true
-    t.index ["slug"], name: "index_profs_on_slug", unique: true
+    t.index ["slug", "edition"], name: "index_profs_on_slug_and_edition", unique: true
   end
 
   create_table "profs_races", id: false, force: :cascade do |t|
@@ -546,7 +588,10 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_06_194853) do
     t.integer "ability_bonus_options"
     t.string "ability_bonus_option_choices", default: [], array: true
     t.string "subraces", default: [], array: true
+    t.string "edition", default: "2014", null: false
+    t.index ["edition"], name: "index_races_on_edition"
     t.index ["name"], name: "index_races_on_name"
+    t.index ["slug", "edition"], name: "index_races_on_slug_and_edition", unique: true
     t.index ["slug"], name: "index_races_on_slug"
     t.index ["user_id"], name: "index_races_on_user_id"
   end
@@ -560,7 +605,12 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_06_194853) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "parent_id"
+    t.string "edition", default: "2014", null: false
+    t.integer "sort_order"
+    t.string "game_icon"
+    t.index ["edition"], name: "index_rules_on_edition"
     t.index ["parent_id"], name: "index_rules_on_parent_id"
+    t.index ["slug", "edition"], name: "index_rules_on_slug_and_edition", unique: true
   end
 
   create_table "sections", force: :cascade do |t|
@@ -569,7 +619,9 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_06_194853) do
     t.string "slug"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["slug"], name: "index_sections_on_slug", unique: true
+    t.string "edition", default: "2014", null: false
+    t.index ["edition"], name: "index_sections_on_edition"
+    t.index ["slug", "edition"], name: "index_sections_on_slug_and_edition", unique: true
   end
 
   create_table "senses", force: :cascade do |t|
@@ -588,7 +640,9 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_06_194853) do
     t.string "ability_score"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["slug"], name: "index_skills_on_slug", unique: true
+    t.string "edition", default: "2014", null: false
+    t.index ["edition"], name: "index_skills_on_edition"
+    t.index ["slug", "edition"], name: "index_skills_on_slug_and_edition", unique: true
   end
 
   create_table "sneak_attacks", force: :cascade do |t|
@@ -664,7 +718,9 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_06_194853) do
     t.string "spell_level"
     t.bigint "user_id"
     t.string "slug"
-    t.index ["slug"], name: "index_spells_on_slug", unique: true
+    t.string "edition", default: "2014", null: false
+    t.index ["edition"], name: "index_spells_on_edition"
+    t.index ["slug", "edition"], name: "index_spells_on_slug_and_edition", unique: true
     t.index ["user_id"], name: "index_spells_on_user_id"
   end
 
@@ -713,6 +769,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_06_194853) do
     t.string "location"
     t.text "info"
     t.string "auth_id", default: "", null: false
+    t.string "preferred_edition", default: "2024"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["username"], name: "index_users_on_username", unique: true
@@ -734,6 +791,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_06_194853) do
   add_foreign_key "ability_score_dnd_classes", "dnd_classes"
   add_foreign_key "actions", "monsters"
   add_foreign_key "armor_classes", "items"
+  add_foreign_key "backgrounds", "users"
   add_foreign_key "class_features", "dnd_class_levels"
   add_foreign_key "class_level_choices", "class_features"
   add_foreign_key "class_specific_spell_slots", "class_specifics"
@@ -744,6 +802,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_06_194853) do
   add_foreign_key "damages", "items"
   add_foreign_key "dnd_class_levels", "dnd_classes"
   add_foreign_key "dnd_classes", "users"
+  add_foreign_key "feats", "users"
   add_foreign_key "foundry_map_files", "foundry_maps"
   add_foreign_key "foundry_map_taggings", "foundry_map_tags"
   add_foreign_key "foundry_map_taggings", "foundry_maps"

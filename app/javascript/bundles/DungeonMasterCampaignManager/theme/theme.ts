@@ -8,6 +8,7 @@ export const theme = {
   colors: {
     // Primary brand colors
     primary: '#972c1d',
+    primaryDark: '#571a10', // darker variant of primary
     secondary: '#7f513e', // $brown
     darkRed: '#571a10',
     textRed: '#58180d',
@@ -15,6 +16,7 @@ export const theme = {
     // Accent colors
     orange: '#dd9529',
     yellow: '#c9ad6a',
+    gold: '#c9ad6a', // alias for yellow, used for borders
     green: '#7a853b',
     pineGreen: '#507f62',
     blue: '#51a5c5',
@@ -30,15 +32,16 @@ export const theme = {
     backgroundColor: '#d8ddba',
     backgroundMed: '#f3e8d4',
     cardBg: '#fdf1dc',
+    lightBg: '#f5f0e6', // light background for blockquotes/code
 
     // Black & White
     white: '#ffffff',
     black: '#000000',
 
-    // Grays (calculated from $ash with lightness adjustments)
-    gray100: '#9a9c98', // ash + 30% lightness
-    gray200: '#858784', // ash + 20% lightness
-    gray300: '#707370', // ash + 10% lightness
+    // Grays (warm tones to match parchment theme)
+    gray100: '#f5f0e6', // warm off-white for backgrounds
+    gray200: '#e8e2d6', // warm light gray
+    gray300: '#d4cdc0', // warm medium gray
     gray400: '#555752', // ash
     gray500: '#454743', // ash - 10% lightness
     gray600: '#363834', // ash - 20% lightness
@@ -51,7 +54,7 @@ export const theme = {
     info: '#dd9529', // $orange
     warning: '#c9ad6a', // $yellow
     danger: '#992e2e', // $blood-red
-    light: '#9a9c98', // $gray-100
+    light: '#f5f0e6', // $gray-100
     dark: '#181916', // $gray-800
   },
 

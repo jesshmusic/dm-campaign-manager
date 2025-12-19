@@ -12,8 +12,9 @@ module Admin
       def index
         authorize Spell
         if params[:list].present?
+          base_scope = Spell.for_edition(current_edition)
           @spells = if params[:search].present? && params[:max].present?
-                      Spell.where(level: ..params[:max].to_i).search_for(params[:search]).order(name: :asc).map do |spell|
+                      base_scope.where(level: ..params[:max].to_i).search_for(params[:search]).order(name: :asc).map do |spell|
                         {
                           name: spell.name,
                           id: spell.id,
@@ -24,8 +25,8 @@ module Admin
                         }
                       end
                     elsif params[:max].present?
-                      Rails.logger.debug(Spell.where(level: ..params[:max].to_i).map(&:name))
-                      Spell.where(level: ..params[:max].to_i).order(name: :asc).map do |spell|
+                      Rails.logger.debug(base_scope.where(level: ..params[:max].to_i).map(&:name))
+                      base_scope.where(level: ..params[:max].to_i).order(name: :asc).map do |spell|
                         {
                           name: spell.name,
                           id: spell.id,
@@ -36,7 +37,7 @@ module Admin
                         }
                       end
                     elsif params[:search].present?
-                      Spell.search_for(params[:search]).order(name: :asc).map do |spell|
+                      base_scope.search_for(params[:search]).order(name: :asc).map do |spell|
                         {
                           name: spell.name,
                           id: spell.id,
@@ -47,7 +48,7 @@ module Admin
                         }
                       end
                     else
-                      Spell.order(name: :asc).map do |spell|
+                      base_scope.order(name: :asc).map do |spell|
                         {
                           name: spell.name,
                           id: spell.id,
@@ -61,13 +62,13 @@ module Admin
           render json: { count: @spells.count, results: @spells }
         else
           @spells = if params[:dnd_class].present? && params[:search].present?
-                      Spell.includes(:dnd_classes).where(dnd_classes: { name: params[:dnd_class] }).search_for(params[:search])
+                      Spell.for_edition(current_edition).includes(:dnd_classes).where(dnd_classes: { name: params[:dnd_class] }).search_for(params[:search])
                     elsif params[:dnd_class].present?
-                      Spell.includes(:dnd_classes).where(dnd_classes: { name: params[:dnd_class] })
+                      Spell.for_edition(current_edition).includes(:dnd_classes).where(dnd_classes: { name: params[:dnd_class] })
                     elsif params[:search].present?
-                      Spell.search_for(params[:search])
+                      Spell.for_edition(current_edition).search_for(params[:search])
                     else
-                      Spell.all
+                      Spell.for_edition(current_edition)
                     end
           @spells = @spells.where(level: params[:level]) if params[:level].present?
           @spells = if !current_user

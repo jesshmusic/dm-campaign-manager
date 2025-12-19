@@ -9,6 +9,7 @@
 #  ability_bonus_options        :integer
 #  age                          :text
 #  alignment                    :text
+#  edition                      :string           default("2014"), not null
 #  language_choices             :string           default([]), is an Array
 #  language_description         :text
 #  languages                    :string           default([]), is an Array
@@ -25,9 +26,11 @@
 #
 # Indexes
 #
-#  index_races_on_name     (name)
-#  index_races_on_slug     (slug)
-#  index_races_on_user_id  (user_id)
+#  index_races_on_edition           (edition)
+#  index_races_on_name              (name)
+#  index_races_on_slug              (slug)
+#  index_races_on_slug_and_edition  (slug,edition) UNIQUE
+#  index_races_on_user_id           (user_id)
 #
 # Foreign Keys
 #
@@ -35,6 +38,8 @@
 #
 
 class Race < ApplicationRecord
+  include Editionable
+
   validates :name, presence: true
   extend FriendlyId
 

@@ -8,7 +8,6 @@ describe('root reducer', () => {
   it('returns the initial state object with all reducers', () => {
     const initialState = rootReducer(undefined, { type: '@@INIT' });
 
-    expect(initialState).toHaveProperty('conditions');
     expect(initialState).toHaveProperty('customActions');
     expect(initialState).toHaveProperty('dndClasses');
     expect(initialState).toHaveProperty('flashMessages');
@@ -20,16 +19,6 @@ describe('root reducer', () => {
     expect(initialState).toHaveProperty('spells');
     expect(initialState).toHaveProperty('users');
     expect(initialState).toHaveProperty('widgets');
-  });
-
-  it('initializes conditions reducer', () => {
-    const state = rootReducer(undefined, { type: '@@INIT' });
-    expect(state.conditions).toEqual({
-      conditions: [],
-      count: 0,
-      currentCondition: null,
-      loading: false,
-    });
   });
 
   it('initializes monsters reducer', () => {

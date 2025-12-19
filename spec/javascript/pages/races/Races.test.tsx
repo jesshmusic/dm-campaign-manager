@@ -6,6 +6,7 @@ import Races from '../../../../app/javascript/bundles/DungeonMasterCampaignManag
 
 jest.mock('react-router-dom', () => ({
   useNavigate: jest.fn(),
+  useParams: jest.fn().mockReturnValue({}),
 }));
 
 jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/containers/PageContainer', () => {
@@ -59,13 +60,14 @@ describe('Races', () => {
     );
   });
 
-  it('displays page title', () => {
+  it('displays page title (Species in 2024 edition)', () => {
+    // Default edition is 2024, which uses "Species" instead of "Races"
     render(
       <Provider store={mockStore}>
         <Races />
       </Provider>
     );
-    expect(screen.getByTestId('page-title')).toHaveTextContent('Races');
+    expect(screen.getByTestId('page-title')).toHaveTextContent('Species');
   });
 
   it('renders data table', () => {

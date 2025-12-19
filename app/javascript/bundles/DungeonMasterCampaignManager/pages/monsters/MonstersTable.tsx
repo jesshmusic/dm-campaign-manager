@@ -1,12 +1,14 @@
 import React from 'react';
 import { MonsterSummary, UserProps } from '../../utilities/types';
 import rest from '../../api/api';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { connect } from 'react-redux';
 import DataTable from '../../components/DataTable/DataTable';
 import { Row } from 'react-table';
 import { GiBeerStein } from 'react-icons/gi';
 import { useAuth0 } from '@auth0/auth0-react';
+import { useEdition } from '../../contexts/EditionContext';
+import { getContentUrl, isValidEdition } from '../../utilities/editionUrls';
 
 const MonstersTable = (props: {
   getMonsters: (searchTerm?: string, userId?: number) => void;
@@ -17,6 +19,12 @@ const MonstersTable = (props: {
   const { getMonsters, loading, monsters, user } = props;
   const { isLoading } = useAuth0();
   const navigate = useNavigate();
+  const { edition: editionParam, param } = useParams<{ edition?: string; param?: string }>();
+  const { edition: contextEdition } = useEdition();
+
+  // Use edition from URL if valid (either :edition or :param route), otherwise from context
+  const urlEdition = editionParam || param;
+  const edition = isValidEdition(urlEdition) ? urlEdition : contextEdition;
 
   React.useEffect(() => {
     if (!isLoading && !user) {
@@ -27,7 +35,7 @@ const MonstersTable = (props: {
   }, [isLoading]);
 
   const goToPage = (row: Row<Record<string, unknown>>) => {
-    navigate(`/app/monsters/${row.original.slug}`);
+    navigate(getContentUrl('monsters', row.original.slug as string, edition));
   };
 
   const getNumResults = (): number => {

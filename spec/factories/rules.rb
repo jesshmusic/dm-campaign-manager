@@ -5,8 +5,11 @@
 #  id          :bigint           not null, primary key
 #  category    :string
 #  description :string
+#  edition     :string           default("2014"), not null
+#  game_icon   :string
 #  name        :string
 #  slug        :string
+#  sort_order  :integer
 #  subcategory :string
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
@@ -14,7 +17,9 @@
 #
 # Indexes
 #
-#  index_rules_on_parent_id  (parent_id)
+#  index_rules_on_edition           (edition)
+#  index_rules_on_parent_id         (parent_id)
+#  index_rules_on_slug_and_edition  (slug,edition) UNIQUE
 #
 FactoryBot.define do
   factory :rule do

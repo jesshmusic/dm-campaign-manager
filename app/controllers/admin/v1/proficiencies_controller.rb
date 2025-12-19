@@ -5,9 +5,9 @@ module Admin
 
       def index
         @proficiencies = if params[:search].present?
-                           Prof.search_for(params[:search])
+                           Prof.for_edition(current_edition).search_for(params[:search])
                          else
-                           Prof.all
+                           Prof.for_edition(current_edition)
                          end
         respond_to do |format|
           format.html { @pagy, @proficiencies = pagy(@proficiencies) }
@@ -17,9 +17,9 @@ module Admin
 
       def saving_throws
         @proficiencies = if params[:search].present?
-                           Prof.search_for(params[:search]).where(prof_type: 'Saving Throws')
+                           Prof.for_edition(current_edition).search_for(params[:search]).where(prof_type: 'Saving Throws')
                          else
-                           Prof.where(prof_type: 'Saving Throws')
+                           Prof.for_edition(current_edition).where(prof_type: 'Saving Throws')
                          end
         respond_to do |format|
           format.html { @pagy, @proficiencies = pagy(@proficiencies) }
@@ -29,9 +29,9 @@ module Admin
 
       def skills
         @proficiencies = if params[:search].present?
-                           Prof.search_for(params[:search]).where(prof_type: 'Skills')
+                           Prof.for_edition(current_edition).search_for(params[:search]).where(prof_type: 'Skills')
                          else
-                           Prof.where(prof_type: 'Skills')
+                           Prof.for_edition(current_edition).where(prof_type: 'Skills')
                          end
         respond_to do |format|
           format.html { @pagy, @proficiencies = pagy(@proficiencies) }

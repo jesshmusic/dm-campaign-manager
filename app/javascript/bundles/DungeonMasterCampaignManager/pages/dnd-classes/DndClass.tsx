@@ -4,6 +4,7 @@ import PageContainer from '../../containers/PageContainer';
 import rest from '../../api/api';
 import PageTitle from '../../components/PageTitle/PageTitle';
 import DndSpinner from '../../components/DndSpinners/DndSpinner';
+import { useEdition } from '../../contexts/EditionContext';
 import { DndClass } from '../../utilities/types';
 import { connect } from 'react-redux';
 import HitPointsSection from './components/HitPointsSection';
@@ -12,6 +13,7 @@ import EquipmentSection from './components/EquipmentSection';
 import ClassLevelsTable from './components/ClassLevelsTable';
 import FeaturesDesc from './components/FeaturesDesc';
 import { useParams } from 'react-router-dom';
+import { parseEditionParams } from '../../utilities/editionUrls';
 
 import { Page, InfoSection, SectionGroup, SectionHeading } from './DndClass.styles';
 
@@ -22,10 +24,18 @@ type DndClassPageProps = {
 
 const DndClassPage = (props: DndClassPageProps) => {
   const { dndClass, getDndClass } = props;
-  const { dndClassSlug } = useParams<'dndClassSlug'>();
+  const params = useParams<{ edition?: string; dndClassSlug?: string; param?: string }>();
+  // Handle both /app/classes/:edition/:slug and /app/classes/:param routes
+  const { slug: dndClassSlug } = parseEditionParams(
+    params.edition,
+    params.dndClassSlug || params.param,
+  );
+  const { isEdition2014 } = useEdition();
 
   React.useEffect(() => {
-    getDndClass(dndClassSlug!);
+    if (dndClassSlug) {
+      getDndClass(dndClassSlug);
+    }
   }, [dndClassSlug]);
 
   const dndClassTitle = dndClass ? dndClass.name : 'Class Loading...';
@@ -35,7 +45,7 @@ const DndClassPage = (props: DndClassPageProps) => {
       pageTitle={dndClassTitle}
       description={`DndClass: ${dndClassTitle}. Dungeon Master's Toolbox is a free resource for DMs to manage their dndClasses, adventures, and Monsters.`}
     >
-      <PageTitle title={dndClassTitle} />
+      <PageTitle title={dndClassTitle} isLegacy={isEdition2014} />
       {dndClass ? (
         <Page>
           <InfoSection>

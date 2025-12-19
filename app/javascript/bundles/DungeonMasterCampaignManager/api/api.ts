@@ -2,6 +2,19 @@ import ReactOnRails from 'react-on-rails';
 import reduxApi from 'redux-api';
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 
+const EDITION_STORAGE_KEY = 'dnd-edition';
+const DEFAULT_EDITION = '2024';
+
+/**
+ * Get the current D&D edition from localStorage
+ */
+export function getCurrentEdition(): string {
+  if (typeof window !== 'undefined') {
+    return localStorage.getItem(EDITION_STORAGE_KEY) || DEFAULT_EDITION;
+  }
+  return DEFAULT_EDITION;
+}
+
 export function getHeaders() {
   return ReactOnRails.authenticityHeaders({
     'Content-Type': 'application/json',
@@ -27,7 +40,10 @@ const toJSON = (resp) => {
 };
 
 export const fetchData = (opts: AxiosRequestConfig): Promise<AxiosResponse> => {
-  const headers = getHeaders();
+  const headers = {
+    ...getHeaders(),
+    'X-DND-Edition': getCurrentEdition(),
+  };
   return axios({
     method: opts.method,
     url: opts.url,
@@ -147,12 +163,6 @@ export default reduxApi({
       };
     },
   },
-  getCondition: {
-    url: '/v1/conditions/:id',
-  },
-  getConditions: {
-    url: '/v1/conditions.json',
-  },
   getDndClass: {
     url: '/v1/dnd_classes/:id.json',
   },
@@ -179,6 +189,18 @@ export default reduxApi({
   },
   getRaces: {
     url: '/v1/races.json',
+  },
+  getBackground: {
+    url: '/v1/backgrounds/:id.json',
+  },
+  getBackgrounds: {
+    url: '/v1/backgrounds.json',
+  },
+  getFeat: {
+    url: '/v1/feats/:id.json',
+  },
+  getFeats: {
+    url: '/v1/feats.json',
   },
   getRule: {
     url: '/v1/rules/:id.json',
@@ -226,10 +248,12 @@ export default reduxApi({
   .use('options', (url, params, getState) => {
     const state = getState();
     const token = state.users && state.users.token ? state.users.token : null;
+    const edition = getCurrentEdition();
     const railsHeaders = getHeaders();
     const headers = {
       Accept: 'application/json',
       'Content-Type': 'application/json',
+      'X-DND-Edition': edition,
       ...railsHeaders,
     };
     if (token) {

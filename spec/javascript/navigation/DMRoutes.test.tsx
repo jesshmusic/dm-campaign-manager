@@ -35,18 +35,6 @@ jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/ra
   };
 });
 
-jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/conditions/Conditions', () => {
-  return function Conditions() {
-    return <div data-testid="conditions-page">Conditions Page</div>;
-  };
-});
-
-jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/conditions/Condition', () => {
-  return function Condition() {
-    return <div data-testid="condition-page">Condition Detail Page</div>;
-  };
-});
-
 jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/items/Items', () => {
   return function Items() {
     return <div data-testid="items-page">Items Page</div>;
@@ -86,6 +74,12 @@ jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/sp
 jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/rules/Rule', () => {
   return function Rule() {
     return <div data-testid="rule-page">Rule Page</div>;
+  };
+});
+
+jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/rules/RulesCategory', () => {
+  return function RulesCategory() {
+    return <div data-testid="rule-page">Rules Category Page</div>;
   };
 });
 
@@ -149,6 +143,42 @@ jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/Fo
   };
 });
 
+jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/rules/RulesIndex', () => {
+  return function RulesIndex() {
+    return <div data-testid="rules-index-page">Rules Index Page</div>;
+  };
+});
+
+jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/rules/RulesGlossary', () => {
+  return function RulesGlossary() {
+    return <div data-testid="rules-glossary-page">Rules Glossary Page</div>;
+  };
+});
+
+jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/backgrounds/BackgroundsIndex', () => {
+  return function BackgroundsIndex() {
+    return <div data-testid="backgrounds-index-page">Backgrounds Index Page</div>;
+  };
+});
+
+jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/backgrounds/BackgroundDetail', () => {
+  return function BackgroundDetail() {
+    return <div data-testid="background-detail-page">Background Detail Page</div>;
+  };
+});
+
+jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/feats/FeatsIndex', () => {
+  return function FeatsIndex() {
+    return <div data-testid="feats-index-page">Feats Index Page</div>;
+  };
+});
+
+jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/feats/FeatDetail', () => {
+  return function FeatDetail() {
+    return <div data-testid="feat-detail-page">Feat Detail Page</div>;
+  };
+});
+
 describe('DMRoutes', () => {
   describe('public routes', () => {
     it('should render home page on root path', () => {
@@ -199,26 +229,6 @@ describe('DMRoutes', () => {
       );
 
       expect(screen.getByTestId('race-page')).toBeInTheDocument();
-    });
-
-    it('should render conditions list page', () => {
-      render(
-        <MemoryRouter initialEntries={['/app/conditions']}>
-          <DMRoutes />
-        </MemoryRouter>
-      );
-
-      expect(screen.getByTestId('conditions-page')).toBeInTheDocument();
-    });
-
-    it('should render specific condition page', () => {
-      render(
-        <MemoryRouter initialEntries={['/app/conditions/blinded']}>
-          <DMRoutes />
-        </MemoryRouter>
-      );
-
-      expect(screen.getByTestId('condition-page')).toBeInTheDocument();
     });
 
     it('should render specific item page', () => {
@@ -279,6 +289,16 @@ describe('DMRoutes', () => {
       );
 
       expect(screen.getByTestId('rule-page')).toBeInTheDocument();
+    });
+
+    it('should render rules glossary page', () => {
+      render(
+        <MemoryRouter initialEntries={['/app/rules/rules-glossary']}>
+          <DMRoutes />
+        </MemoryRouter>
+      );
+
+      expect(screen.getByTestId('rules-glossary-page')).toBeInTheDocument();
     });
 
     it('should render monster generator page', () => {

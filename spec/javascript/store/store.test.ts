@@ -12,7 +12,6 @@ describe('Redux store', () => {
     const state: RootState = store.getState();
 
     expect(state).toHaveProperty('flashMessages');
-    expect(state).toHaveProperty('conditions');
     expect(state).toHaveProperty('customActions');
     expect(state).toHaveProperty('dndClasses');
     expect(state).toHaveProperty('items');
@@ -27,16 +26,6 @@ describe('Redux store', () => {
   it('initializes flashMessages as empty array', () => {
     const state = store.getState();
     expect(state.flashMessages).toEqual([]);
-  });
-
-  it('initializes conditions with correct structure', () => {
-    const state = store.getState();
-    expect(state.conditions).toEqual({
-      conditions: [],
-      count: 0,
-      currentCondition: null,
-      loading: false,
-    });
   });
 
   it('initializes customActions with correct structure', () => {

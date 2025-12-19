@@ -14,10 +14,17 @@ import { gsap } from 'gsap';
 import ReactGA from 'react-ga4';
 import SearchField from '../components/Search/SearchField';
 import { SidebarProvider } from '../contexts/SidebarContext';
+import { useBreadcrumbs } from '../contexts/BreadcrumbContext';
 
 import { PageWrapper, PageContent, Page } from './Containers.styles';
 
 ReactGA.initialize('G-8XJTH70JSQ');
+
+// Wrapper component to connect Breadcrumbs to context
+const BreadcrumbsWithContext = ({ isCollapsed }: { isCollapsed: boolean }) => {
+  const { customPaths } = useBreadcrumbs();
+  return <Breadcrumbs isCollapsed={isCollapsed} customPaths={customPaths} />;
+};
 
 type PageContainerProps = {
   children?: React.ReactNode;
@@ -74,7 +81,7 @@ const PageContainer = (props: PageContainerProps) => {
           setIsCollapsed={setIsCollapsed}
           isMobile={isMobile}
         />
-        <Breadcrumbs isCollapsed={isCollapsed} />
+        <BreadcrumbsWithContext isCollapsed={isCollapsed} />
         <SearchField />
         <PageWrapper ref={nodeRef}>
           <PageContent>

@@ -17,9 +17,9 @@ module Admin
       def index
         authorize Monster
         @monsters = if params[:search].present?
-                      Monster.search_for(params[:search]).order(monster_type: :asc, name: :asc)
+                      Monster.for_edition(current_edition).search_for(params[:search]).order(monster_type: :asc, name: :asc)
                     else
-                      Monster.order(monster_type: :asc, name: :asc)
+                      Monster.for_edition(current_edition).order(monster_type: :asc, name: :asc)
                     end
         @monsters = if !@user
                       @monsters.where(user_id: nil)

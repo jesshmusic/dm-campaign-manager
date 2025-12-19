@@ -5,10 +5,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import { PageTitleWrapper, Title, Subtitle } from './PageTitle.styles';
+import { PageTitleWrapper, Title, Subtitle, LegacyBadge } from './PageTitle.styles';
 
 type PageTitleProps = {
   isDraconis?: boolean;
+  isLegacy?: boolean;
   hasButton?: boolean;
   buttonLink?: string;
   buttonTitle?: string;
@@ -18,11 +19,23 @@ type PageTitleProps = {
 };
 
 const PageTitle = (props: PageTitleProps) => {
-  const { isDraconis, hasButton, buttonLink, buttonTitle, buttonVariant, subtitle, title } = props;
+  const {
+    isDraconis,
+    isLegacy,
+    hasButton,
+    buttonLink,
+    buttonTitle,
+    buttonVariant,
+    subtitle,
+    title,
+  } = props;
   return (
     <PageTitleWrapper>
       <Title $isDraconis={isDraconis}>
-        {title}
+        <span>
+          {title}
+          {isLegacy && <LegacyBadge>Legacy</LegacyBadge>}
+        </span>
         {hasButton && buttonLink ? (
           <Link to={buttonLink} className={`btn btn-${buttonVariant}`}>
             {buttonTitle}

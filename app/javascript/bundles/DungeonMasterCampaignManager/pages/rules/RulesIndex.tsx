@@ -1,35 +1,24 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import rest from '../../api/api';
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
 import DndSpinner from '../../components/DndSpinners/DndSpinner';
-import {
-  GiRuleBook,
-  GiBookPile,
-  GiBurningBook,
-  GiSecretBook,
-  GiSpellBook,
-  GiBookStorm,
-} from 'react-icons/gi';
+import { useEdition } from '../../contexts/EditionContext';
+import { getIconFromName } from '../../utilities/icons';
+import { getContentUrl, isValidEdition } from '../../utilities/editionUrls';
 
 import { RulesGrid, RuleCard, RuleCardIcon, RuleCardContent, RuleCardCount } from './Rules.styles';
-
-const ruleIcons = [
-  <GiRuleBook key="rule-book" />,
-  <GiBookPile key="book-pile" />,
-  <GiBurningBook key="burning-book" />,
-  <GiSecretBook key="secret-book" />,
-  <GiSpellBook key="spell-book" />,
-  <GiBookStorm key="book-storm" />,
-];
 
 type RuleSummary = {
   name: string;
   slug: string;
+  category?: string;
   description?: string;
   count?: number;
+  sort_order?: number;
+  game_icon?: string;
   rules?: { name: string; slug: string }[];
 };
 
@@ -39,30 +28,62 @@ type RulesIndexProps = {
   getRules: () => void;
 };
 
+// Sort rules by sort_order, then by name (data is pre-sorted from API)
+const sortByOrder = (rules: RuleSummary[]): RuleSummary[] => {
+  return [...rules].sort((a, b) => {
+    // Rules with sort_order come first, sorted by that value
+    if (a.sort_order !== undefined && b.sort_order !== undefined) {
+      return a.sort_order - b.sort_order;
+    }
+    if (a.sort_order !== undefined) return -1;
+    if (b.sort_order !== undefined) return 1;
+    // Otherwise sort alphabetically
+    return a.name.localeCompare(b.name);
+  });
+};
+
+// Helper to get icon for a rule - returns undefined if no icon set
+const getRuleIcon = (rule: RuleSummary) => {
+  if (rule.game_icon) {
+    return getIconFromName(rule.game_icon);
+  }
+  return undefined;
+};
+
 const RulesIndex = ({ rules, loading, getRules }: RulesIndexProps) => {
+  const { edition: editionParam, param } = useParams<{ edition?: string; param?: string }>();
+  const { edition: contextEdition, isEdition2014 } = useEdition();
+
+  // Use edition from URL if valid (either :edition or :param route), otherwise from context
+  const urlEdition = editionParam || param;
+  const edition = isValidEdition(urlEdition) ? urlEdition : contextEdition;
+
   React.useEffect(() => {
     getRules();
   }, []);
+
+  // Sort rules by sort_order (data may already be sorted from API)
+  const sortedRules = React.useMemo(() => sortByOrder(rules), [rules]);
 
   return (
     <PageContainer
       pageTitle="Rules"
       description="D&D 5th Edition Rules Reference. Dungeon Master's Toolbox is a free resource for DMs to manage their campaigns, adventures, and monsters."
     >
-      <PageTitle title="Rules Reference" />
+      <PageTitle title="Rules Reference" isLegacy={isEdition2014} />
       {loading ? (
         <DndSpinner />
       ) : (
         <RulesGrid>
-          {rules.map((rule, index) => (
-            <Link key={rule.slug} to={`/app/rules/${rule.slug}`}>
+          {sortedRules.map((rule) => (
+            <Link key={rule.slug} to={getContentUrl('rules', rule.slug, edition)}>
               <RuleCard>
-                <RuleCardIcon>{index < 6 ? ruleIcons[index] : <GiRuleBook />}</RuleCardIcon>
+                <RuleCardIcon>{getRuleIcon(rule)}</RuleCardIcon>
                 <RuleCardContent>
                   <h3>{rule.name}</h3>
-                  {rule.count !== undefined && rule.count > 0 && (
+                  {rule.count && rule.count > 0 && (
                     <RuleCardCount>
-                      {rule.count} {rule.count === 1 ? 'section' : 'sections'}
+                      {rule.count} {rule.count === 1 ? 'sub-rule' : 'sub-rules'}
                     </RuleCardCount>
                   )}
                 </RuleCardContent>

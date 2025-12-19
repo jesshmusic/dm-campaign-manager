@@ -5,6 +5,7 @@
 # Table name: profs
 #
 #  id         :bigint           not null, primary key
+#  edition    :string           default("2014"), not null
 #  name       :string
 #  prof_type  :string
 #  slug       :string           not null
@@ -13,11 +14,14 @@
 #
 # Indexes
 #
-#  index_profs_on_name  (name) UNIQUE
-#  index_profs_on_slug  (slug) UNIQUE
+#  index_profs_on_edition           (edition)
+#  index_profs_on_name              (name) UNIQUE
+#  index_profs_on_slug_and_edition  (slug,edition) UNIQUE
 #
 
 class Prof < ApplicationRecord
+  include Editionable
+
   validates :name, presence: true
   extend FriendlyId
 

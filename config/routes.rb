@@ -90,7 +90,6 @@ Rails.application.routes.draw do
 
       scope except: [:new, :edit] do
         resources :actions, only: [:index, :create, :update, :destroy], constraints: { format: 'json' }
-        resources :conditions, only: [:index, :show], constraints: { format: 'json' }
         resources :proficiencies, only: [:index, :show], constraints: { format: 'json' }
         resources :skills, only: [:index, :show], constraints: { format: 'json' }
         resources :dnd_classes
@@ -110,6 +109,8 @@ Rails.application.routes.draw do
         resources :monsters
         resources :races
         resources :rules
+        resources :backgrounds
+        resources :feats
         resources :spells
         resources :sections
         resources :widgets, only: [:index, :show, :create, :update, :destroy], constraints: { format: 'json' }

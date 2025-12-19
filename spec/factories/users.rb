@@ -16,6 +16,7 @@
 #  last_sign_in_ip        :inet
 #  location               :string
 #  name                   :string
+#  preferred_edition      :string           default("2024")
 #  remember_created_at    :datetime
 #  reset_password_sent_at :datetime
 #  reset_password_token   :string
@@ -42,6 +43,8 @@ FactoryBot.define do
     sequence(:auth_id) { |n| "auth0|#{SecureRandom.hex(12)}_#{n}" }
     confirmed_at { Date.today }
     role { :user }
+    # Default to 2014 to match the default edition for SRD content in tests
+    preferred_edition { '2014' }
 
     factory :dungeon_master_user do
       role { :dungeon_master }

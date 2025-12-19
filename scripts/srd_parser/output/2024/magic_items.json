@@ -1,0 +1,866 @@
+[
+  {
+    "name": "Amulet of Health",
+    "slug": "amulet-of-health",
+    "edition": "2024",
+    "type": "MagicItem",
+    "equipment_category": "Magic Items",
+    "rarity": "Rare",
+    "requires_attunement": true,
+    "attunement_requirements": null,
+    "desc": [
+      "Your Constitution is 19 while you wear this amulet. It has no effect on you if your Constitution is 19 or Amulet of Proof against Detection higher without it. and Location"
+    ],
+    "weight": null,
+    "special": [],
+    "item_subtype": "Wondrous Item"
+  },
+  {
+    "name": "Animated Shield",
+    "slug": "animated-shield",
+    "edition": "2024",
+    "type": "MagicArmorItem",
+    "equipment_category": "Magic Items",
+    "rarity": "Very Rare",
+    "requires_attunement": true,
+    "attunement_requirements": null,
+    "desc": [
+      "While holding this Shield, you can take a Bonus Action to cause it to animate. The Shield leaps into the air and hovers in your space to protect you as if you were wielding it, leaving your hands free. The Shield remains animate for 1 minute, until you take a Bonus Action to end this effect, or until you die or have the Incapacitated condition, at which point the Shield falls to the ground or into your hand if you have one free."
+    ],
+    "weight": null,
+    "special": [],
+    "item_subtype": "Armor"
+  },
+  {
+    "name": "Apparatus of the Crab",
+    "slug": "apparatus-of-the-crab",
+    "edition": "2024",
+    "type": "MagicItem",
+    "equipment_category": "Magic Items",
+    "rarity": "Legendary",
+    "requires_attunement": false,
+    "attunement_requirements": null,
+    "desc": [
+      "This item first appears to be a sealed iron barrel weighing 500 pounds. The barrel has a hidden catch, which can be found with a successful DC 20 Intelligence (Investigation) check. Releasing the catch unlocks a hatch at one end of the barrel, al- lowing two Medium or smaller creatures to crawl inside. Ten levers are set in a row at the far end, each in a neutral position, able to move up or down. When Aceprptaariant luesv oefr sth aer Ce ruasbed, the apparatus trans- forms to resemble a giant lobster. The is a Large object with the following statistics: AC 20; HP 200; Speed 30 ft., Swim 30 ft. (or 0 ft. for both if the legs aren\u2019t ex- tended); Immunity to Poison and Psychic damage. To be used as a vehicle, the apparatus requires one pilot. While the apparatus\u2019s hatch is closed, the compartment is airtight and watertight. The com- partment holds enough air for 10 hours of breath- ing, divided by the number of breathing creatures inside. The apparatus floats on water. It can also go underwater to a depth of 900 feet. Below that, the vehicle takes 2d6 Bludgeoning damage each minute from pressure. A creature in the compartment can take a Utilize action to move as many as two of the apparatus\u2019s levers up or down. After each use, a lever goes back to its neutral position. Each lever, from left to right, functions as shown in the Apparatus of the Crab Apparatus of the Crab Levers Levers table. Lever Up 1 Legs extend, allowing the apparatus to walk and 2 Forward window shutter opens. 3 Side window shutters open (two per side). 4 Two claws extend from the front side of the apparatus. 5 Each extended claw makes the following melee a +8 to hit, reach 5 ft. Hit: 7 (2d6) Bludgeoning da 6 The apparatus walks or swims forward provided legs are extended. 7 The apparatus turns 90 degrees counterclockwis provided its legs are extended. 8 Eyelike fixtures emit Bright Light in a 30-foot rad and Dim Light for an additional 30 feet. 9 The apparatus sinks up to 20 feet if it\u2019s in liquid. 10 The rear hatch unseals and opens."
+    ],
+    "weight": null,
+    "special": [],
+    "item_subtype": "Wondrous Item"
+  },
+  {
+    "name": "Armor, +1, +2, or +3",
+    "slug": "armor-1-2-or-3",
+    "edition": "2024",
+    "type": "MagicArmorItem",
+    "equipment_category": "Magic Items",
+    "rarity": "Rare",
+    "requires_attunement": false,
+    "attunement_requirements": null,
+    "desc": [
+      "Rare (+2), or Legendary (+3) You have a bonus to Armor Class while wearing this"
+    ],
+    "weight": null,
+    "special": [],
+    "item_subtype": "Armor"
+  },
+  {
+    "name": "Armor of Vulnerability",
+    "slug": "armor-of-vulnerability",
+    "edition": "2024",
+    "type": "MagicArmorItem",
+    "equipment_category": "Magic Items",
+    "rarity": "Rare",
+    "requires_attunement": false,
+    "attunement_requirements": null,
+    "desc": [
+      "Attunement) While wearing this armor, you have Resistance to one of the following damage types: Bludgeoning, PiCerucrisneg., or Slashing. The GM chooses the type or determines it rIadnednotimfyly. This armor is cursed, a fact that is revealed only when the spellR iesm caovset oCnu rtshee armor or you attune to it. Attuning to the armor curses you until you are targeted by a spell or similar magic; removing the armor fails to end the curse. While cursed, you have Vulnerability to two of the three damage types associated with the ar- Arrow-Catching Shield mor (not the one to which it grants Resistance)."
+    ],
+    "weight": null,
+    "special": [],
+    "item_subtype": "Armor"
+  },
+  {
+    "name": "Bag of Devouring",
+    "slug": "bag-of-devouring",
+    "edition": "2024",
+    "type": "MagicItem",
+    "equipment_category": "Magic Items",
+    "rarity": "Very Rare",
+    "requires_attunement": false,
+    "attunement_requirements": null,
+    "desc": [
+      "Bag of Holding This bag resembles a but is a feeding orifice for a gigantic extradimensional creature. Turning the bag inside out closes the orifice. The extradimensional creature attached to the bag can sense whatever is placed inside the bag. Animal or vegetable matter placed wholly in the bag is devoured and lost forever. When part of a liv- ing creature is placed in the bag, as happens when someone reaches inside it, there is a 50 percent chance that the creature is pulled inside the bag. A creature inside the bag can take an action to try to escape, doing so with a successful DC 15 Strength (Athletics) check. Another creature can take an ac- tion to reach into the bag to pull a creature out, do- ing so with a successful DC 20 Strength (Athletics) check, provided the puller isn\u2019t pulled inside the bag first. Any creature that starts its turn inside the bag is devoured, its body destroyed. Inanimate objects can be stored in the bag, which can hold a cubic foot of such material. However, once each day, the bag swallows any objects inside it and spits them out into another plane of existence. The GM determines the time and plane. If the bag is pierced or torn, it is destroyed, and anything contained within it is transported to a Bag of Holding random location on the Astral Plane."
+    ],
+    "weight": null,
+    "special": [],
+    "item_subtype": "Wondrous Item"
+  },
+  {
+    "name": "Bag of Tricks",
+    "slug": "bag-of-tricks",
+    "edition": "2024",
+    "type": "MagicItem",
+    "equipment_category": "Magic Items",
+    "rarity": "Uncommon",
+    "requires_attunement": false,
+    "attunement_requirements": null,
+    "desc": [
+      "This bag made from gray, rust, or tan cloth appears empty. Reaching inside the bag, however, reveals the presence of a small, fuzzy object. You can take a Magic action to pull the fuzzy ob- ject from the bag and throw it up to 20 feet. When the object lands, it transforms into a creature you determine by rolling on the table that corresponds to the bag\u2019s color. See \u201cMonsters\u201d for the creature\u2019s stat block. The creature vanishes at the next dawn or when it is reduced to 0 Hit Points. The creature is Friendly to you and your allies, and it acts immediately after you on your Initiative count. You can take a Bonus Action to command how the creature moves and what action it takes on its next turn, such as attacking an enemy. In the ab- sence of such orders, the creature acts in a fashion appropriate to its nature. Once three fuzzy objects have been pulled from the bag, the bag can\u2019t be used again until the next dGarwayn .Bag of Tricks 1d8 Creature 1d8 Creature 1 Weasel 5 Panther 2 Giant Rat 6 Giant Badger 3 Badger 7 Dire Wolf 4 Boar 8 Giant Elk Rust Bag of Tricks 1d8 Creature 1d8 Creature 1 Rat 5 Giant Goat 2 Owl 6 Giant Boar 3 Mastiff 7 Lion 4 Goat 8 Brown Bear Tan Bag of Tricks 1d8 Creature 1d8 Creature 1 Jackal 5 Black Bear 2 Ape 6 Giant Weasel 3 Baboon 7 Giant Hyena 4 Axe Beak 8 Tiger"
+    ],
+    "weight": null,
+    "special": [],
+    "item_subtype": "Wondrous Item"
+  },
+  {
+    "name": "Bead of Force",
+    "slug": "bead-of-force",
+    "edition": "2024",
+    "type": "MagicItem",
+    "equipment_category": "Magic Items",
+    "rarity": "Rare",
+    "requires_attunement": false,
+    "attunement_requirements": null,
+    "desc": [
+      "TBehaisd ss mofa Fllo brclaeck sphere measures 3/4 of an inch in diameter and weighs an ounce. Typically, 1d4 + 4 are found together. You can take a Magic action to throw the bead up to 60 feet. The bead explodes in a 10-foot-radius Sphere on impact and is destroyed. Each creature"
+    ],
+    "weight": null,
+    "special": [],
+    "item_subtype": "Wondrous Item"
+  },
+  {
+    "name": "Berserker Axe",
+    "slug": "berserker-axe",
+    "edition": "2024",
+    "type": "MagicWeaponItem",
+    "equipment_category": "Magic Items",
+    "rarity": "Rare",
+    "requires_attunement": false,
+    "attunement_requirements": null,
+    "desc": [
+      "(Requires Attunement) You gain a +1 bonus to attack rolls and damage rolls made with this magic weapon. In addition, while you are attuned to this weapon, your Hit Point mCauxirmseu.m increases by 1 for each level you have attained. This weapon is cursed, and becoming at- tuned to it extends the curse to you. As long as you remain cursed, you are unwilling to part with the weapon, keeping it within reach at all times. You also have Disadvantage on attack rolls with weap- ons other than this one. Whenever another creature damages you while the weapon is in your possession, you must succeed on a DC 15 Wisdom saving throw or go berserk. This berserk state ends when you start your turn and there are no creatures within 60 feet of you that you can see or hear. While berserk, you regard the creature nearest to you that you can see or hear as your enemy. If there are multiple possible creatures, choose one at random. On each of your turns, you must move as close to the creature as possible and take the Attack action, targeting the creature. If you\u2019re unable to get close enough to the creature to attack it with the weapon, your turn ends after you\u2019ve used up all your available movement. If the creature dies or can no longer be seen or heard by you, the next nearest creature that you can see or hear becomes your Boots of Elvenkind new target."
+    ],
+    "weight": null,
+    "special": [],
+    "item_subtype": "Weapon"
+  },
+  {
+    "name": "Boots of Speed",
+    "slug": "boots-of-speed",
+    "edition": "2024",
+    "type": "MagicItem",
+    "equipment_category": "Magic Items",
+    "rarity": "Rare",
+    "requires_attunement": true,
+    "attunement_requirements": null,
+    "desc": [
+      "While you wear these boots, you can take a Bonus Action to click the boots\u2019 heels together. If you do, the boots double your Speed, and any creature that makes an Opportunity Attack against you has Dis- advantage on the attack roll. If you click your heels together again, you end the effect. When you\u2019ve used the boots\u2019 property for a total of 10 minutes, the magic ceases to function for you Boots of Striding and Springing until you finish a Long Rest."
+    ],
+    "weight": null,
+    "special": [],
+    "item_subtype": "Wondrous Item"
+  },
+  {
+    "name": "Bracers of Defense",
+    "slug": "bracers-of-defense",
+    "edition": "2024",
+    "type": "MagicItem",
+    "equipment_category": "Magic Items",
+    "rarity": "Rare",
+    "requires_attunement": true,
+    "attunement_requirements": null,
+    "desc": [
+      "While wearing these bracers, you gain a +2 bonus to"
+    ],
+    "weight": null,
+    "special": [],
+    "item_subtype": "Wondrous Item"
+  },
+  {
+    "name": "Cape of the Mountebank",
+    "slug": "cape-of-the-mountebank",
+    "edition": "2024",
+    "type": "MagicItem",
+    "equipment_category": "Magic Items",
+    "rarity": "Rare",
+    "requires_attunement": false,
+    "attunement_requirements": null,
+    "desc": [
+      "Dimension Door This cape smells faintly of brimstone. While wear- ing it, you can use it to cast as a Magic action. This property can\u2019t be used again until the next dawn. When you teleport with that spell, you leave be- hind a cloud of smoke. The space you left is Lightly Obscured by that smoke until the end of your Carpet of Flying next turn."
+    ],
+    "weight": null,
+    "special": [],
+    "item_subtype": "Wondrous Item"
+  },
+  {
+    "name": "Censer of Controlling Air Elementals",
+    "slug": "censer-of-controlling-air-elementals",
+    "edition": "2024",
+    "type": "MagicItem",
+    "equipment_category": "Magic Items",
+    "rarity": "Rare",
+    "requires_attunement": false,
+    "attunement_requirements": null,
+    "desc": [
+      "Air Elemental While gently swinging this censer, you can take a Magic action to summon an . The elemental appears in an unoccupied space as close to the censer as possible, understands your lan- guages, obeys your commands, and takes its turn immediately after you on your Initiative count. The elemental disappears after 1 hour, when it dies, or when you dismiss it as a Bonus Action. The censer can\u2019t be used this way again until the next dawn."
+    ],
+    "weight": null,
+    "special": [],
+    "item_subtype": "Wondrous Item"
+  },
+  {
+    "name": "Chime of Opening",
+    "slug": "chime-of-opening",
+    "edition": "2024",
+    "type": "MagicItem",
+    "equipment_category": "Magic Items",
+    "rarity": "Rare",
+    "requires_attunement": false,
+    "attunement_requirements": null,
+    "desc": [
+      "This hollow metal tube mKneoacskures about 1 foot long and weighs 1 pound. As a Magic action, you can strike the chime to cast . The spell\u2019s custom- ary knocking sound is replaced by the clear, ringing tone of the chime, which is audible out to 300 feet. The chime can be used 10 times. After the tenth Circlet of Blasting time, it cracks and becomes useless."
+    ],
+    "weight": null,
+    "special": [],
+    "item_subtype": "Wondrous Item"
+  },
+  {
+    "name": "Crystal Ball of True Seeing",
+    "slug": "crystal-ball-of-true-seeing",
+    "edition": "2024",
+    "type": "MagicItem",
+    "equipment_category": "Magic Items",
+    "rarity": "Legendary",
+    "requires_attunement": true,
+    "attunement_requirements": null,
+    "desc": [
+      "Scrying While touching this crystal orb, you can cast (save DC 17) with it. In addition, you have Truesight with a range of 120 feet centered on the spell\u2019s Cube of Force sensor."
+    ],
+    "weight": null,
+    "special": [],
+    "item_subtype": "Wondrous Item"
+  },
+  {
+    "name": "Cubic Gate",
+    "slug": "cubic-gate",
+    "edition": "2024",
+    "type": "MagicItem",
+    "equipment_category": "Magic Items",
+    "rarity": "Legendary",
+    "requires_attunement": false,
+    "attunement_requirements": null,
+    "desc": [
+      "This cube is 3 inches across and radiates palpable magical energy. The six sides of the cube are each keyed to a different plane of existence, one of which is the Material Plane. The other sides are linked to planes determined by the GM. The cube has 3 charges and regains 1d3 expended charges daily at dawn. As a Magic action, you can exGpaetned. 1 of the cube\u2019s charges to cast one of thGea ftoel- lowing spells using the cube. Pressing one side of the cube, you cast , opPelnainneg Sah pifotr.tal to the plane of existence keyed to that side.Plane Shift Pressing one side of the cube twice, you cast , transporting the targets to the Dagger of Venom plane of existence keyed to that side."
+    ],
+    "weight": null,
+    "special": [],
+    "item_subtype": "Wondrous Item"
+  },
+  {
+    "name": "Dancing Sword",
+    "slug": "dancing-sword",
+    "edition": "2024",
+    "type": "MagicWeaponItem",
+    "equipment_category": "Magic Items",
+    "rarity": null,
+    "requires_attunement": false,
+    "attunement_requirements": null,
+    "desc": [
+      "Shortsword), Very Rare (Requires Attunement) You can take a Bonus Action to toss this magic weapon into the air. When you do so, the weapon begins to hover, flies up to 30 feet, and attacks one creature of your choice within 5 feet of itself. The weapon uses your attack roll and adds your ability modifier to damage rolls. While the weapon hovers, you can take a Bonus Action to cause it to fly up to 30 feet to another spot within 30 feet of you. As part of the same Bonus Ac- tion, you can cause the weapon to attack one crea- ture within 5 feet of the weapon. After the hovering weapon attacks for the fourth time, it flies back to you and tries to return to your hand. If you have no hand free, the weapon falls to the ground in your space. If the weapon has no un- obstructed path to you, it moves as close to you as it can and then falls to the ground. It also ceases to hover if you grasp it or are more than 30 feet away Decanter of Endless Water from it."
+    ],
+    "weight": null,
+    "special": [],
+    "item_subtype": "Weapon"
+  },
+  {
+    "name": "Defender",
+    "slug": "defender",
+    "edition": "2024",
+    "type": "MagicWeaponItem",
+    "equipment_category": "Magic Items",
+    "rarity": "Legendary",
+    "requires_attunement": false,
+    "attunement_requirements": null,
+    "desc": [
+      "Attunement) You gain a +3 bonus to attack rolls and damage rolls made with this magic weapon. The first time you attack with the weapon on each of your turns, you can transfer some or all of the weapon\u2019s bonus to your Armor Class. For example, you could reduce the bonus to your attack rolls and damage rolls to +1 and gain a +2 bonus to Armor Class. The adjusted bonuses remain in effect until the start of your next turn, although you must hold Demon Armor the weapon to gain a bonus to AC from it."
+    ],
+    "weight": null,
+    "special": [],
+    "item_subtype": "Weapon"
+  },
+  {
+    "name": "Dragon Slayer",
+    "slug": "dragon-slayer",
+    "edition": "2024",
+    "type": "MagicWeaponItem",
+    "equipment_category": "Magic Items",
+    "rarity": "Rare",
+    "requires_attunement": false,
+    "attunement_requirements": null,
+    "desc": [
+      "You gain a +1 bonus to attack rolls and damage rolls made with this magic weapon. The weapon deals an extra 3d6 damage of the Dust of Disappearance weapon\u2019s type if the target is a Dragon."
+    ],
+    "weight": null,
+    "special": [],
+    "item_subtype": "Weapon"
+  },
+  {
+    "name": "Efreeti Bottle",
+    "slug": "efreeti-bottle",
+    "edition": "2024",
+    "type": "MagicItem",
+    "equipment_category": "Magic Items",
+    "rarity": "Very Rare",
+    "requires_attunement": false,
+    "attunement_requirements": null,
+    "desc": [
+      "When you take a Magic action to remove the stopper of this painted brass bottle, a cloud of thick smEforkeee ti flows out of it. At the end of your turn, the smoke dis- appears with a flash of harmless fire, and an appears in an unoccupied space within 30 feet of you. The first time the bottle is opened, the GM rolls on 1d10 Effect the following table to determine what happens. 1 The efreeti attacks you. After fighting for 5 rounds, the efreeti disappears, and the bottle loses its magic. 2\u20139 The efreeti understands your languages and obeys your commands for 1 hour, after which it returns to the bottle, and a new stopper contains it. The stopper can\u2019t be removed for 24 hours. The next two times the bottle is opened, the same effect occurs. If the bottle is opened a fourth time, the efreeti escapes and disappears, and the bottle loses its magic. 10 The efreeti understands your languages and can cast Wish once for you. It disappears when it grants the wish or after 1 hour, and the bottle loses its magic."
+    ],
+    "weight": null,
+    "special": [],
+    "item_subtype": "Wondrous Item"
+  },
+  {
+    "name": "Elemental Gem",
+    "slug": "elemental-gem",
+    "edition": "2024",
+    "type": "MagicItem",
+    "equipment_category": "Magic Items",
+    "rarity": "Uncommon",
+    "requires_attunement": false,
+    "attunement_requirements": null,
+    "desc": [
+      "This gem contains a mote of elemental energy. When you take a Utilize action to break the gem, an elemental is summoned (see \u201cMonsters\u201d for its stat block), and the gem ceases to be magical. The elemental appears in an unoccupied space as close to the broken gem as possible, understands your languages, obeys your commands, and takes its turn immediately after you on your Initiative count. The elemental disappears after 1 hour, when it dies, or when you dismiss it as a Bonus Action. The type of gem determines the elemental, as shown in the Gem Summoned Elemental following table. Blue sapphire Air Elemental Emerald Water Elemental Red corundum Fire Elemental Yellow diamond Earth Elemental"
+    ],
+    "weight": null,
+    "special": [],
+    "item_subtype": "Wondrous Item"
+  },
+  {
+    "name": "Elixir of Health",
+    "slug": "elixir-of-health",
+    "edition": "2024",
+    "type": "MagicItem",
+    "equipment_category": "Magic Items",
+    "rarity": "Rare",
+    "requires_attunement": false,
+    "attunement_requirements": null,
+    "desc": [
+      "When you drink this potion, you are cured of all magical contagions. In addition, the following con- ditions end on you: Blinded, Deafened, Paralyzed, and Poisoned. The clear, red liquid has tiny bubbles of light in it."
+    ],
+    "weight": null,
+    "special": [],
+    "item_subtype": "Potion"
+  },
+  {
+    "name": "Elven Chain",
+    "slug": "elven-chain",
+    "edition": "2024",
+    "type": "MagicArmorItem",
+    "equipment_category": "Magic Items",
+    "rarity": "Rare",
+    "requires_attunement": false,
+    "attunement_requirements": null,
+    "desc": [
+      "You gain a +1 bonus to Armor Class while you wear this armor. You are considered trained with this ar- mor even if you lack training with Medium or Heavy Energy Bow armor."
+    ],
+    "weight": null,
+    "special": [],
+    "item_subtype": "Armor"
+  },
+  {
+    "name": "Figurine of Wondrous Power",
+    "slug": "figurine-of-wondrous-power",
+    "edition": "2024",
+    "type": "MagicItem",
+    "equipment_category": "Magic Items",
+    "rarity": null,
+    "requires_attunement": false,
+    "attunement_requirements": null,
+    "desc": [
+      "Figurine of Wondrous Power A is a statuette small enough to fit in a pocket. If you take a Magic ac- tion to throw the figurine to a point on the ground within 60 feet of yourself, the figurine becomes a living creature specified in the figurine\u2019s descrip- tion below. If the space where the creature would appear is occupied by other creatures or objects, or"
+    ],
+    "weight": null,
+    "special": [],
+    "item_subtype": "Wondrous Item"
+  },
+  {
+    "name": "Flame Tongue",
+    "slug": "flame-tongue",
+    "edition": "2024",
+    "type": "MagicWeaponItem",
+    "equipment_category": "Magic Items",
+    "rarity": "Rare",
+    "requires_attunement": false,
+    "attunement_requirements": null,
+    "desc": [
+      "Attunement) While holding this magic weapon, you can take a Bonus Action and use a command word to cause flames to engulf the damage-dealing part of the weapon. These flames shed Bright Light in a 40- foot radius and Dim Light for an additional 40 feet. While the weapon is ablaze, it deals an extra 2d6 Fire damage on a hit. The flames last until you take a Bonus Action to issue the command again or until Folding Boat you drop, stow, or sheathe the weapon."
+    ],
+    "weight": null,
+    "special": [],
+    "item_subtype": "Weapon"
+  },
+  {
+    "name": "Gauntlets of Ogre Power",
+    "slug": "gauntlets-of-ogre-power",
+    "edition": "2024",
+    "type": "MagicItem",
+    "equipment_category": "Magic Items",
+    "rarity": "Uncommon",
+    "requires_attunement": true,
+    "attunement_requirements": null,
+    "desc": [
+      "Your Strength is 19 while you wear these gauntlets. They have no effect on you if your Strength is 19 or Gem of Brightness higher without them."
+    ],
+    "weight": null,
+    "special": [],
+    "item_subtype": "Wondrous Item"
+  },
+  {
+    "name": "Headband of Intellect",
+    "slug": "headband-of-intellect",
+    "edition": "2024",
+    "type": "MagicItem",
+    "equipment_category": "Magic Items",
+    "rarity": "Uncommon",
+    "requires_attunement": true,
+    "attunement_requirements": null,
+    "desc": [
+      "Your Intelligence is 19 while you wear this head- band. It has no effect on you if your Intelligence is Helm of Brilliance 19 or higher without it."
+    ],
+    "weight": null,
+    "special": [],
+    "item_subtype": "Wondrous Item"
+  },
+  {
+    "name": "Horseshoes of a Zephyr",
+    "slug": "horseshoes-of-a-zephyr",
+    "edition": "2024",
+    "type": "MagicItem",
+    "equipment_category": "Magic Items",
+    "rarity": "Very Rare",
+    "requires_attunement": false,
+    "attunement_requirements": null,
+    "desc": [
+      "These horseshoes come in a set of four. As a Magic action, you can touch one of the horseshoes to the hoof of a horse or similar creature, whereupon the horseshoe affixes itself to the hoof. Removing a horseshoe also takes a Magic action. While all four shoes are affixed to the hooves of a horse or similar creature, they allow the creature to move normally while floating 4 inches above a surface. This effect means the creature can cross or stand above nonsolid or unstable surfaces, such as water or lava. The creature leaves no tracks and ignores Difficult Terrain. In addition, the creature can travel for up to 12 hours a day without gaining Exhaustion levels from extended travel."
+    ],
+    "weight": null,
+    "special": [],
+    "item_subtype": "Wondrous Item"
+  },
+  {
+    "name": "Horseshoes of Speed",
+    "slug": "horseshoes-of-speed",
+    "edition": "2024",
+    "type": "MagicItem",
+    "equipment_category": "Magic Items",
+    "rarity": "Rare",
+    "requires_attunement": false,
+    "attunement_requirements": null,
+    "desc": [
+      "These horseshoes come in a set of four. As a Magic action, you can touch one of the horseshoes to the hoof of a horse or similar creature, whereupon the horseshoe affixes itself to the hoof. Removing a horseshoe also takes a Magic action. While all four horseshoes are attached to the Immovable Rod same creature, its Speed is increased by 30 feet."
+    ],
+    "weight": null,
+    "special": [],
+    "item_subtype": "Wondrous Item"
+  },
+  {
+    "name": "Ioun Stone",
+    "slug": "ioun-stone",
+    "edition": "2024",
+    "type": "MagicItem",
+    "equipment_category": "Magic Items",
+    "rarity": null,
+    "requires_attunement": true,
+    "attunement_requirements": null,
+    "desc": [
+      "Ioun Stones Roughly marble sized, Ioun S taornee nsamed after Ioun, a god of knowledge and prophecy revered on some worlds. Many types of exIisotu, ne ach tSytopnee a distinct combination of shape and color. When you take a Magic action to toss an into the air, the stone orbits your hIeoaudn a Stt ao nes distance of 1d3 feet, conferring its benefit to you while dIooiunng Sstoo. nYeou can have up to three orbiting your head at the same time. Each orbiting your head is considered to be an object you are wearing. The orbiting stone avoids contact with other creatures and objects, ad- justing its orbit to avoid collisions and thwarting all attempts bIyo outnh Setro cnreesatures to attack or snatch it. As a Utilize actioIno,u yno Sut ocnaen seize and stow any number of orbiting your head. If your Attunement to an ends while it\u2019s orbit- ing your head, the stone falls as though you had dropped it. TAbheso trypptei oonf s(tVoenrey d Reaterrem).ines its rarity and effects. While this pale lavender ellipsoid orbits your head, you can take a Reaction to cancel a spell of level 4 or lower cast by a crea- ture you can see. A canceled spell has no effect, and any resources used to cast it are wasted. Once the stAongeil ihtays ( cVaenrcye Rleadr 2e)0. levels of spells, it burns out, turns dull gray, and loses its magic. Your Dexterity increases by 2, Atow aa rmeanxeisms u(Rma orfe )2.0, while this deep-red sphere orbits your head. While this dark-blue rhomboid orFboitrst iytouudre h (eVaedr,y y Roua rhea)v.e Advantage on Initiative rolls and Wisdom (Perception) checks. Your Constitution in- crGeareseast ebry A 2b, stoo rap mtiaoxni m(Luemge onfd 2a0r,y w).hile this pink rhomboid orbits your head. While this mar- bled lavender and green ellipsoid orbits your head, you can take a Reaction to cancel a spell of level 8 or lower cast by a creature you can see. A canceled spell has no effect, and any resources used to cast it are wasted. Once the stone has canceled 20 lev- elsIn osfi sgphetl (lsV, eitr yb uRranrse o).ut, turns dull gray, and loses its magic. Your Wisdom increases by 2, Itnot ea lmleactx i(mVeurmy oRfa 2r0e,) .while this incandescent blue sphere orbits your head. Your Intelligence increases byL 2e,a tdoe ar smhaipx i(mVeurmy oRfa 2r0e,) w. hile this marbled scarlet and blue sphere orbits your head. Your Charisma increases by 2, to a maximum of 20, while this marbled pink and green sphere orbits your head."
+    ],
+    "weight": null,
+    "special": [],
+    "item_subtype": "Wondrous Item"
+  },
+  {
+    "name": "Iron Flask",
+    "slug": "iron-flask",
+    "edition": "2024",
+    "type": "MagicItem",
+    "equipment_category": "Magic Items",
+    "rarity": "Legendary",
+    "requires_attunement": false,
+    "attunement_requirements": null,
+    "desc": [
+      "While holding this brass-stoppered iron flask, you can take a Magic action to target a creature that you can see within 60 feet of yourself. If the flask is empty and the target is native to a plane of exis- tence other than the one you\u2019re on, the target must succeed on a DC 17 Wisdom saving throw or be trapped in the flask. If the target has been trapped by the flask before, it has Advantage on the save. Once trapped, a creature remains in the flask until released. The flask can hold only one creature at a time. A creature trapped in the flask doesn\u2019t age and doesn\u2019t need to breathe, eat, or drink. You can take a Magic action to remove the flask\u2019s stopper and release the creature in the flask. The creature then obeys your commands for 1 hour, understanding those commands even if it doesn\u2019t know the language in which the commands are given. If you issue no commands or give the crea- ture a command that is likely to result in its death or imprisonment, it defends itself but otherwise takes no actions. At the end of the duration, the creatIudreen aticftys in accordance with its normal disposi- tion and alignment. An spell reveals if the flask contains a cIrroena tFularesk, but the only way to determine the type of creature is to open the flask. A newly discovered might already contain a creature chosen Javelin of Lightning by the GM."
+    ],
+    "weight": null,
+    "special": [],
+    "item_subtype": "Wondrous Item"
+  },
+  {
+    "name": "Manual of Quickness of Action",
+    "slug": "manual-of-quickness-of-action",
+    "edition": "2024",
+    "type": "MagicItem",
+    "equipment_category": "Magic Items",
+    "rarity": "Very Rare",
+    "requires_attunement": false,
+    "attunement_requirements": null,
+    "desc": [
+      "This book contains coordination and balance ex- ercises, and its words are charged with magic. If you spend 48 hours over a period of 6 days or fewer studying the book\u2019s contents and practicing its guidelines, your Dexterity increases by 2, to a maximum of 30. The manual then loses its magic Marvelous Pigments but regains it in a century."
+    ],
+    "weight": null,
+    "special": [],
+    "item_subtype": "Wondrous Item"
+  },
+  {
+    "name": "Mirror of Life Trapping",
+    "slug": "mirror-of-life-trapping",
+    "edition": "2024",
+    "type": "MagicItem",
+    "equipment_category": "Magic Items",
+    "rarity": "Very Rare",
+    "requires_attunement": false,
+    "attunement_requirements": null,
+    "desc": [
+      "When this 4-foot-tall, 2-foot-wide mirror is viewed indirectly, its surface shows faint images of crea- tures. The mirror weighs 50 pounds, and it has AC 11, HP 10, Immunity to Poison and Psychic damage, and Vulnerability to Bludgeoning damage. It shat- ters and is destroyed when reduced to 0 Hit Points. If the mirror is hanging on a vertical surface and you are within 5 feet of it, you can take a Magic action and use a command word to activate it. It remains activated until you take a Magic action and repeat the command word to deactivate it. Any creature other than you that sees its reflec- tion in the activated mirror while within 30 feet of the mirror must succeed on a DC 15 Charisma saving throw or be trapped, along with anything it is wearing or carrying, in one of the mirror\u2019s twelve extradimensional cells. A creature that knows the mirror\u2019s nature makes the save with Advantage, and Constructs succeed on the save automatically. An extradimensional cell is an infinite expanse filled with thick fog that reduces visibility to 10 feet. Creatures trapped in the mirror\u2019s cells don\u2019t age, and they don\u2019t need to eat, drink, or sleep. A creature trapped within a cell can escape using magic that permits planar travel. Otherwise, the creature is confined to the cell until freed. If the mirror traps a creature but its twelve ex- tradimensional cells are already occupied, the mir- ror frees one trapped creature at random to accom- modate the new prisoner. A freed creature appears in an unoccupied space within sight of the mirror but facing away from it. If the mirror is shattered, all creatures it contains are freed and appear in un- occupied spaces near it. While within 5 feet of the mirror, you can take a Magic action to name one creature trapped in it or call out a particular cell by number. The creature named or contained in the named cell appears as an image on the mirror\u2019s surface. You and the creature can then communicate. In a similar way, you can take a Magic action and use a second command word to free one creature trapped in the mirror. The freed creature appears, along with its possessions, in the unoccupied space nearest to the mirrBoar ga nodf Hfaocldiningg awPoaryt afrbolem H iot.le Placing the mirror inside an extradimensional space created by a , , or similar item instantly destroys both items and opens a gate to the Astral Plane. The gate originates where the one item was placed inside the other. Any creature within 10 feet of the gate and not behind Total Cover is sucked through it to a random loca- tion on the Astral Plane. The gate then closes. The gate is one-way only and can\u2019t be reopened."
+    ],
+    "weight": null,
+    "special": [],
+    "item_subtype": "Wondrous Item"
+  },
+  {
+    "name": "Mithral Armor",
+    "slug": "mithral-armor",
+    "edition": "2024",
+    "type": "MagicArmorItem",
+    "equipment_category": "Magic Items",
+    "rarity": null,
+    "requires_attunement": false,
+    "attunement_requirements": null,
+    "desc": [
+      "Uncommon Mithral is a light, flexible metal. Armor made of this substance can be worn under normal clothes. If the armor normally imposes Disadvantage on Dexterity (Stealth) checks or has a Strength requirement, the Mysterious Deck mithral version of the armor doesn\u2019t."
+    ],
+    "weight": null,
+    "special": [],
+    "item_subtype": "Armor"
+  },
+  {
+    "name": "Necklace of Adaptation",
+    "slug": "necklace-of-adaptation",
+    "edition": "2024",
+    "type": "MagicItem",
+    "equipment_category": "Magic Items",
+    "rarity": "Uncommon",
+    "requires_attunement": true,
+    "attunement_requirements": null,
+    "desc": [
+      "While wearing this necklace, you can breathe nor- mally in any environment, and you have Advantage on saving throws made to avoid or end the Poisoned condition."
+    ],
+    "weight": null,
+    "special": [],
+    "item_subtype": "Wondrous Item"
+  },
+  {
+    "name": "Necklace of Fireballs",
+    "slug": "necklace-of-fireballs",
+    "edition": "2024",
+    "type": "MagicItem",
+    "equipment_category": "Magic Items",
+    "rarity": "Rare",
+    "requires_attunement": false,
+    "attunement_requirements": null,
+    "desc": [
+      "This necklace has 1d6 + 3 beads hanging from it. You can take a Magic action to detach a bead andFi re- tbharllow it up to 60 feet away. When it reaches the end of its trajectory, the bead detonates as a level 3 (save DC 15). You can hurl Fmiruelbtiapllle beads, or even the whole necklace, at one time. When you do so, increase the damage of the by 1d6 for each bead after Necklace of Prayer Beads the first (maximum 12d6)."
+    ],
+    "weight": null,
+    "special": [],
+    "item_subtype": "Wondrous Item"
+  },
+  {
+    "name": "Nine Lives Stealer",
+    "slug": "nine-lives-stealer",
+    "edition": "2024",
+    "type": "MagicWeaponItem",
+    "equipment_category": "Magic Items",
+    "rarity": "Very Rare",
+    "requires_attunement": false,
+    "attunement_requirements": null,
+    "desc": [
+      "Attunement) YoLui fgea Sinte aa +li2n gb.onus to attack rolls and damage rolls made with this magic weapon. The weapon has 1d8 + 1 charges. When you attack a creature that has fewer than 100 Hit Points with this weapon and roll a 20 on the d20 for the attack roll, the creature must succeed on a DC 15 Constitution saving throw or be slain instantly as the sword tears its life force from its body. Constructs and Undead succeed on the save automatically. The weapon loses 1 charge if the creature is slain. When the weapon has no charges remaining, it loses this property."
+    ],
+    "weight": null,
+    "special": [],
+    "item_subtype": "Weapon"
+  },
+  {
+    "name": "Oathbow",
+    "slug": "oathbow",
+    "edition": "2024",
+    "type": "MagicWeaponItem",
+    "equipment_category": "Magic Items",
+    "rarity": "Very Rare",
+    "requires_attunement": false,
+    "attunement_requirements": null,
+    "desc": [
+      "Attunement) When you nock an arrow on this bow, it whispers in Elvish, \u201cSwift defeat to my enemies.\u201d When you use this weapon to make a ranged attack, you can utter or sign the following command words: \u201cSwift death to you who have wronged me.\u201d The target of your attack becomes your sworn enemy until it dies or until dawn 7 days later. You can have only one such sworn enemy at a time. When your sworn enemy dies, you can choose a new one after the next dawn. When you make a ranged attack roll with this weapon against your sworn enemy, you have Ad- vantage on the roll. In addition, your target gains no benefit from Half Cover or Three-Quarters Cover, and you suffer no Disadvantage due to long range. If the attack hits, your sworn enemy takes an extra 3d6 Piercing damage. While your sworn enemy lives, you have Disad- Oil of Etherealness vantage on attack rolls with all other weapons."
+    ],
+    "weight": null,
+    "special": [],
+    "item_subtype": "Weapon"
+  },
+  {
+    "name": "Potion of Diminution",
+    "slug": "potion-of-diminution",
+    "edition": "2024",
+    "type": "MagicItem",
+    "equipment_category": "Magic Items",
+    "rarity": "Rare",
+    "requires_attunement": false,
+    "attunement_requirements": null,
+    "desc": [
+      "Enlarge/Reduce When you drink this potion, you gain the \u201creduce\u201d effect of the spell for 1d4 hours (no Concentration required). The red in the potion\u2019s liquid continuously con- tracts to a tiny bead and then expands to color the clear liquid around it. Shaking the bottle fails to in-"
+    ],
+    "weight": null,
+    "special": [],
+    "item_subtype": "Potion"
+  },
+  {
+    "name": "Potions of Healing",
+    "slug": "potions-of-healing",
+    "edition": "2024",
+    "type": "MagicItem",
+    "equipment_category": "Magic Items",
+    "rarity": null,
+    "requires_attunement": false,
+    "attunement_requirements": null,
+    "desc": [
+      "You regain Hit Points when you drink this potion. The number of Hit Points depends on the potion\u2019s rarity, as shown in the table below. Whatever its potency, the potion\u2019s red liquid glim-"
+    ],
+    "weight": null,
+    "special": [],
+    "item_subtype": "Potion"
+  },
+  {
+    "name": "Potion of Mind Reading",
+    "slug": "potion-of-mind-reading",
+    "edition": "2024",
+    "type": "MagicItem",
+    "equipment_category": "Magic Items",
+    "rarity": "Rare",
+    "requires_attunement": false,
+    "attunement_requirements": null,
+    "desc": [
+      "Detect Thoughts When you drink this potion, you gain the effect of the spell (save DC 13) for 10 min- utes (no Concentration required). This potion\u2019s dense, purple liquid has an ovoid"
+    ],
+    "weight": null,
+    "special": [],
+    "item_subtype": "Potion"
+  },
+  {
+    "name": "Potion, Uncommon",
+    "slug": "potion-uncommon",
+    "edition": "2024",
+    "type": "MagicItem",
+    "equipment_category": "Magic Items",
+    "rarity": null,
+    "requires_attunement": false,
+    "attunement_requirements": null,
+    "desc": [
+      "This concoction looks, smells, and tastes like a Identify or another beneficial potion. How- ever, it is actually poison masked by illusion magic. reveals its true nature. If you drink this potion, you take 4d6 Poison dam- age and must succeed on a DC 13 Constitution sav-"
+    ],
+    "weight": null,
+    "special": [],
+    "item_subtype": "Potion"
+  },
+  {
+    "name": "Ring, Legendary (Requires Attunement)",
+    "slug": "ring-legendary-requires-attunement",
+    "edition": "2024",
+    "type": "MagicItem",
+    "equipment_category": "Magic Items",
+    "rarity": null,
+    "requires_attunement": false,
+    "attunement_requirements": null,
+    "desc": [
+      "Each is linked to one of tRhineg f oouf rE Elelmemenetnatla Cl oPmlamneasn.d The GM chooses or ran- domly determines the linked plane. For example, a"
+    ],
+    "weight": null,
+    "special": [],
+    "item_subtype": "Ring"
+  },
+  {
+    "name": "Robe of the Archmagi",
+    "slug": "robe-of-the-archmagi",
+    "edition": "2024",
+    "type": "MagicItem",
+    "equipment_category": "Magic Items",
+    "rarity": "Legendary",
+    "requires_attunement": false,
+    "attunement_requirements": null,
+    "desc": [
+      "Sorcerer, Warlock, or Wizard) This elegant garment is made from exquisite cloth anAdr amdoorr.ned with runes. You gain these benefits while wearing the robe. Magic R Ief syiosuta anrceen.\u2019t wearing armor, your base"
+    ],
+    "weight": null,
+    "special": [],
+    "item_subtype": "Wondrous Item"
+  },
+  {
+    "name": "Shield, +1, +2, or +3",
+    "slug": "shield-1-2-or-3",
+    "edition": "2024",
+    "type": "MagicArmorItem",
+    "equipment_category": "Magic Items",
+    "rarity": "Uncommon",
+    "requires_attunement": false,
+    "attunement_requirements": null,
+    "desc": [
+      "Rare (+3) While holding this Shield, you have a bonus to Ar- mor Class determined by the Shield\u2019s rarity, in addi- Shield of Missile Attraction tion to the Shield\u2019s normal bonus to AC."
+    ],
+    "weight": null,
+    "special": [],
+    "item_subtype": "Armor"
+  },
+  {
+    "name": "Slippers of Spider Climbing",
+    "slug": "slippers-of-spider-climbing",
+    "edition": "2024",
+    "type": "MagicItem",
+    "equipment_category": "Magic Items",
+    "rarity": "Uncommon",
+    "requires_attunement": true,
+    "attunement_requirements": null,
+    "desc": [
+      "While you wear these light shoes, you can move up, down, and across vertical surfaces and along ceilings, while leaving your hands free. You have a Climb Speed equal to your Speed. However, the slip- pers don\u2019t allow you to move this way on a slippery Sovereign Glue surface, such as one covered by ice or oil."
+    ],
+    "weight": null,
+    "special": [],
+    "item_subtype": "Wondrous Item"
+  },
+  {
+    "name": "Staff of Charming",
+    "slug": "staff-of-charming",
+    "edition": "2024",
+    "type": "MagicItem",
+    "equipment_category": "Magic Items",
+    "rarity": "Rare",
+    "requires_attunement": false,
+    "attunement_requirements": null,
+    "desc": [
+      "Druid, Sorcerer, Warlock, or Wizard) This staff has 10 charges. While holding the staff, Cast Spell. you can use any of its properties: Charm Person Command Comprehend Language sYou can expend 1 of the staff\u2019s charges Retofl ecacst tE nchantment,. , or from it using your spell save DC. If you succeed on a saving throw against an Enchantment spell that targets only you, you can take a Reaction to expend 1 Recshiasrtg Een fcrohman tthme esntatf.f and turn the spell back on its caster as if you had cast the spell. If you fail a saving throw against an Enchantment spell that targets only you, you can turn your failed save into a success- ful one. You can\u2019t use this property of the staff Regaining Charges. again until the next dawn. The staff regains 1d8 + 2 ex- pended charges daily at dawn. If you expend the last charge, roll 1d20. On a 1, the staff crumbles to dust"
+    ],
+    "weight": null,
+    "special": [],
+    "item_subtype": "Staff"
+  },
+  {
+    "name": "Staff of Frost",
+    "slug": "staff-of-frost",
+    "edition": "2024",
+    "type": "MagicItem",
+    "equipment_category": "Magic Items",
+    "rarity": "Very Rare",
+    "requires_attunement": false,
+    "attunement_requirements": null,
+    "desc": [
+      "Sorcerer, Warlock, or Wizard) YoSup heallvse. Resistance to Cold damage while you hold this staff. The staff has 10 charges. While holding the staff, you can cast one of the spells on the following table from it, using your spell save DC. The table in- dicates how many charges you must expend to cast Charge Charge the spell. Spell Cost Spell Cost Cone of Cold 5 Ice Storm 4 Fog Cloud 1 Wall of Ice 4 Regaining Charges. The staff regains 1d6 + 4 ex- pended charges daily at dawn. If you expend the last charge, roll 1d20. On a 1, the staff turns to water"
+    ],
+    "weight": null,
+    "special": [],
+    "item_subtype": "Staff"
+  },
+  {
+    "name": "Staff of the Woodlands",
+    "slug": "staff-of-the-woodlands",
+    "edition": "2024",
+    "type": "MagicItem",
+    "equipment_category": "Magic Items",
+    "rarity": "Rare",
+    "requires_attunement": true,
+    "attunement_requirements": "Druid",
+    "desc": [
+      "This staff has 6 charges and can be wielded as a magic Quarterstaff that grants a +2 bonus to attack roSllpse allnsd. damage rolls made with it. While holding it, you have a +2 bonus to spell attack rolls. While holding the staff, you can cast one of the spells on the following table from it, using your spell save DC. The table indicates how many charges Spell Charge you must expend to cast the spell. Cost Animal Friendship 1 Awaken 5 Barkskin 2 Locate Animals or Plants 2 Pass without Trace 2 Speak with Animals 1 Speak with Plants 3 Wall of Thorns 6 Tree Form. You can take a Magic action to plant one end of the staff in earth in an unoccupied space and expend 1 charge to transform the staff into a healthy tree. The tree is 60 feet tall and has a 5-foot-diameter trunk, and its branches at the top spread out in a 20-foot radius. The treDee atpecpte Marasg ic ordinary but radiates a faint aura of Transmutation magic that can be discerned with the spell. While touching the tree and using a Magic action, you return the staff to its normal form. Any crReaetguarien iinn gt hCeh tarregee fsa.lls when the tree reverts to a staff. The staff regains 1d6 ex- pended charges daily at dawn. If you expend the last charge, roll 1d20. On a 1, the staff loses its proper-"
+    ],
+    "weight": null,
+    "special": [],
+    "item_subtype": "Staff"
+  },
+  {
+    "name": "Thunderous Greatclub",
+    "slug": "thunderous-greatclub",
+    "edition": "2024",
+    "type": "MagicWeaponItem",
+    "equipment_category": "Magic Items",
+    "rarity": "Very Rare",
+    "requires_attunement": true,
+    "attunement_requirements": null,
+    "desc": [
+      "While you are attuned to this magic weapon, your Strength is 20 unless your Strength is already equal to or greater than that score. The weapon deals an extra 1d8 Thunder damage to any creature it hits and an extra 3d8 Thunder damage to objects it hits that aren\u2019t being worn or carried. TClhaep w oef aTphounn hdaesr .the following additional properties. As a Magic action, you can strike the weapon against a hard surface to create a loud clap of thunder audible out to 300 feet. You also cre- ate a 30-foot Cone of thunderous energy. Each crea- ture in the Cone must succeed on a DC 15 Strength saving throw or have the Prone condition. Nonmag- icaEla orbthjeqcutsa ikne .the Cone that aren\u2019t being worn or carried take 3d8 Thunder damage. As a Magic action, you can strike the weapon against the ground to create an intense seismic disturbance in a 50-foot-radius circle cen- tered on the point of impact. Structures in contact with the ground in that area take 50 Bludgeoning damage, and each creature on the ground in that area must succeed on a DC 20 Dexterity saving throw or have the Prone condition. If that creature is also concentrating, it must succeed on a DC 20 Constitution saving throw, or its Concentration is broken. In addition, you can cause a 30-foot-deep, 10-foot-wide fissure to open up on the ground any- where in the area. Any creature on a spot where the fissure opens must make a DC 20 Dexterity saving throw, falling into the fissure on a failed save or moving with the fissure\u2019s edge on a successful one. Any structure on a spot where the fissure opens col- lapses into the fissure. Once you use this property, it Tome of Clear Thought can\u2019t be used again until the next dawn."
+    ],
+    "weight": null,
+    "special": [],
+    "item_subtype": "Weapon"
+  },
+  {
+    "name": "Wand of Binding",
+    "slug": "wand-of-binding",
+    "edition": "2024",
+    "type": "MagicItem",
+    "equipment_category": "Magic Items",
+    "rarity": "Rare",
+    "requires_attunement": true,
+    "attunement_requirements": null,
+    "desc": [
+      "Spells. This wand has 7 charges. While holding the wand, you can cast one of the spells (save DC 17) on the following table from it. The table indicates how many charges you Spell Charge must expend to cast the spell. Cost Hold Monster 5 Hold Person 2 Regaining Charges. The wand regains 1d6 + 1 expended charges daily at dawn. If you expend the wand\u2019s last charge, roll 1d20. On a 1, the wand"
+    ],
+    "weight": null,
+    "special": [],
+    "item_subtype": "Wand"
+  },
+  {
+    "name": "Wand of Polymorph",
+    "slug": "wand-of-polymorph",
+    "edition": "2024",
+    "type": "MagicItem",
+    "equipment_category": "Magic Items",
+    "rarity": "Very Rare",
+    "requires_attunement": false,
+    "attunement_requirements": null,
+    "desc": [
+      "Spellcaster) Polymorph This wand has 7 charges. While holding it, you can exRpeegnadi n1 icnhga Crghea trog ecsa.st (save DC 15) from it. The wand regains 1d6 + 1 expended charges daily at dawn. If you expend the wand\u2019s last charge, roll 1d20. On a 1, the wand"
+    ],
+    "weight": null,
+    "special": [],
+    "item_subtype": "Wand"
+  },
+  {
+    "name": "Weapon, +1, +2, or +3",
+    "slug": "weapon-1-2-or-3",
+    "edition": "2024",
+    "type": "MagicWeaponItem",
+    "equipment_category": "Magic Items",
+    "rarity": "Uncommon",
+    "requires_attunement": false,
+    "attunement_requirements": null,
+    "desc": [
+      "(+2), or Very Rare (+3) You have a bonus to attack rolls and damage rolls made with this magic weapon. The bonus is deter-"
+    ],
+    "weight": null,
+    "special": [],
+    "item_subtype": "Weapon"
+  },
+  {
+    "name": "Wind Fan",
+    "slug": "wind-fan",
+    "edition": "2024",
+    "type": "MagicItem",
+    "equipment_category": "Magic Items",
+    "rarity": "Uncommon",
+    "requires_attunement": false,
+    "attunement_requirements": null,
+    "desc": [
+      "Gust of Wind While holding this fan, you can cast (save DC 13) from it. Each subsequent time the fan is used before the next dawn, it has a cumulative 20 percent chance of not working; if the fan fails to Winged Boots work, it tears into useless, nonmagical tatters."
+    ],
+    "weight": null,
+    "special": [],
+    "item_subtype": "Wondrous Item"
+  }
+]

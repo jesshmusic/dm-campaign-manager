@@ -17,8 +17,19 @@ export const FrameWrapper = styled.div`
   font-family: ${({ theme }) => theme.fonts.sansSerif};
   margin-bottom: ${({ theme }) => theme.spacing.spacer};
   min-width: 0;
-  padding-top: 1rem;
   position: relative;
+`;
+
+export const FrameHeader = styled.div`
+  padding: 1rem 1.25rem 0;
+
+  &.widget-drag-handle {
+    cursor: grab;
+
+    &:active {
+      cursor: grabbing;
+    }
+  }
 `;
 
 export const FrameBody = styled.div`
@@ -47,6 +58,5 @@ export const FrameTitle = styled.div`
   font-family: ${({ theme }) => theme.fonts.mrEaves};
   font-size: ${({ theme }) => theme.fontSizes.lg};
   justify-content: space-between;
-  margin-bottom: 0.5rem;
   width: 100%;
 `;

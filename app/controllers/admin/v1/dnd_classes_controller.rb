@@ -11,9 +11,9 @@ module Admin
       # GET /v1/dnd_classes.json
       def index
         @dnd_classes = if params[:search].present?
-                         DndClass.search_for(params[:search])
+                         DndClass.for_edition(current_edition).search_for(params[:search])
                        else
-                         DndClass.all
+                         DndClass.for_edition(current_edition)
                        end
 
         @dnd_classes = if !@user

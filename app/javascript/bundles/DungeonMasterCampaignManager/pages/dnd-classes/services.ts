@@ -7,6 +7,12 @@ export const buildLevelColumns = (levels: DndClassLevel[]) => {
     { Header: 'Proficiency Bonus', accessor: 'profBonus' },
     { Header: 'Features', accessor: 'featureString' },
   ];
+
+  // Return base columns if no levels data exists
+  if (!levels || levels.length === 0 || !levels[0]?.classSpecifics) {
+    return columns;
+  }
+
   levels[0].classSpecifics.forEach((classSpecific) => {
     if (classSpecific.name === 'Creating Spell Slots') {
       return;
@@ -19,7 +25,9 @@ export const buildLevelColumns = (levels: DndClassLevel[]) => {
       columns.push(specCol);
     }
   });
-  if (levels[19].spellcasting) {
+
+  // Check if we have at least 20 levels and spellcasting data
+  if (levels.length >= 20 && levels[19]?.spellcasting) {
     const spells = levels[19].spellcasting;
     if (spells.cantripsKnown) {
       columns.push({
@@ -92,24 +100,32 @@ export const buildLevelColumns = (levels: DndClassLevel[]) => {
 };
 
 export const buildData = (levels: DndClassLevel[]) => {
+  if (!levels || levels.length === 0) {
+    return [];
+  }
+
   return levels.map((level: DndClassLevel) => {
     const data = {
       level: level.level,
       profBonus: level.profBonus,
-      featureString: level.features.map((feature) => feature.name).join(', ') || '-',
+      featureString: level.features?.map((feature) => feature.name).join(', ') || '-',
       spellcasting: {
         ...level.spellcasting,
       },
     };
-    level.classSpecifics.forEach((classSpecific) => {
-      if (typeof classSpecific.value === 'object') {
-        return;
-      } else {
-        const value =
-          classSpecific.value === '0' || classSpecific.value === 'f' ? '-' : classSpecific.value;
-        data[Util.camelize(classSpecific.name)] = value === 't' ? '√' : value;
-      }
-    });
+
+    if (level.classSpecifics) {
+      level.classSpecifics.forEach((classSpecific) => {
+        if (typeof classSpecific.value === 'object') {
+          return;
+        } else {
+          const value =
+            classSpecific.value === '0' || classSpecific.value === 'f' ? '-' : classSpecific.value;
+          data[Util.camelize(classSpecific.name)] = value === 't' ? '√' : value;
+        }
+      });
+    }
+
     return data;
   });
 };

@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import DndSpinner from '../../components/DndSpinners/DndSpinner';
 import MonsterBlock from './MonsterBlock';
 import { useParams } from 'react-router-dom';
+import { parseEditionParams } from '../../utilities/editionUrls';
 
 type MonsterPageProps = {
   monster?: MonsterProps;
@@ -14,10 +15,17 @@ type MonsterPageProps = {
 
 const Monster = (props: MonsterPageProps) => {
   const { monster, getMonster } = props;
-  const { monsterSlug } = useParams<'monsterSlug'>();
+  const params = useParams<{ edition?: string; monsterSlug?: string; param?: string }>();
+  // Handle both /app/monsters/:edition/:slug and /app/monsters/:param routes
+  const { slug: monsterSlug } = parseEditionParams(
+    params.edition,
+    params.monsterSlug || params.param,
+  );
 
   React.useEffect(() => {
-    getMonster(monsterSlug!);
+    if (monsterSlug) {
+      getMonster(monsterSlug);
+    }
   }, [monsterSlug]);
 
   const monsterTitle = monster ? monster.name : 'Monster Loading...';

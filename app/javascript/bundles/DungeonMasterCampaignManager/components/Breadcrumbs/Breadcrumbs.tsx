@@ -3,7 +3,17 @@ import BreadcrumbLink from './BreadcrumbLink';
 import { GiCastle, GiPointing, GiTwoHandedSword } from 'react-icons/gi';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { BackButton, HomeIcon, BreadcrumbList, BreadcrumbItem } from './Breadcrumbs.styles';
+import {
+  BackButton,
+  HomeIcon,
+  BreadcrumbList,
+  BreadcrumbItem as StyledBreadcrumbItem,
+} from './Breadcrumbs.styles';
+
+export type BreadcrumbPathItem = {
+  title: string;
+  url: string;
+};
 
 export type BreadCrumbProps = {
   isActive?: boolean;
@@ -29,13 +39,23 @@ const isNonClickable = (title: string, index: number, totalPaths: number): boole
 /** Checks if a breadcrumb item is the active (current) page */
 const isActivePage = (index: number, totalPaths: number): boolean => index === totalPaths - 1;
 
-const Breadcrumbs = (props: { isCollapsed: boolean }) => {
-  const { isCollapsed } = props;
+type BreadcrumbsProps = {
+  isCollapsed: boolean;
+  customPaths?: BreadcrumbPathItem[];
+};
+
+const Breadcrumbs = ({ isCollapsed, customPaths }: BreadcrumbsProps) => {
   const location = useLocation();
   const navigate = useNavigate();
   const [paths, setPaths] = React.useState<{ url: string; title: string }[]>([]);
 
   React.useEffect(() => {
+    // Use custom paths if provided, otherwise derive from URL
+    if (customPaths && customPaths.length > 0) {
+      setPaths(customPaths);
+      return;
+    }
+
     const pathNames = location.pathname.split('/').filter((item) => item !== '' && item !== 'app');
 
     setPaths(
@@ -49,7 +69,7 @@ const Breadcrumbs = (props: { isCollapsed: boolean }) => {
         };
       }),
     );
-  }, [location]);
+  }, [location, customPaths]);
 
   return (
     <nav aria-label="breadcrumb">
@@ -67,9 +87,9 @@ const Breadcrumbs = (props: { isCollapsed: boolean }) => {
         <BreadcrumbLink to="/" title={'Home'} />
         {paths.map((path, index) =>
           isNonClickable(path.title, index, paths.length) ? (
-            <BreadcrumbItem $isActive={isActivePage(index, paths.length)} key={index}>
+            <StyledBreadcrumbItem $isActive={isActivePage(index, paths.length)} key={index}>
               <GiTwoHandedSword /> {path.title}
-            </BreadcrumbItem>
+            </StyledBreadcrumbItem>
           ) : (
             <BreadcrumbLink to={path.url} title={path.title} key={index} />
           ),

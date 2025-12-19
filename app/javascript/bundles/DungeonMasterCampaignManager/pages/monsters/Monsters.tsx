@@ -2,8 +2,11 @@ import React from 'react';
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
 import MonstersTable from './MonstersTable';
+import { useEdition } from '../../contexts/EditionContext';
 
 const Monsters = (_props: object) => {
+  const { isEdition2014 } = useEdition();
+
   return (
     <PageContainer
       pageTitle="Monsters"
@@ -11,7 +14,7 @@ const Monsters = (_props: object) => {
         "All monsters with descriptions and stats. Dungeon Master's Toolbox is a free resource for DMs to manage their campaigns, adventures, and Monsters."
       }
     >
-      <PageTitle title={'Monsters'} />
+      <PageTitle title={'Monsters'} isLegacy={isEdition2014} />
       <MonstersTable />
     </PageContainer>
   );

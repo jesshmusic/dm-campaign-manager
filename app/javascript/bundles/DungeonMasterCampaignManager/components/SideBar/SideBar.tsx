@@ -4,11 +4,7 @@ import { connect } from 'react-redux';
 import { AiOutlineHome } from 'react-icons/ai';
 import { BiHide, BiLogIn, BiLogOut, BiShow } from 'react-icons/bi';
 import {
-  GiAchillesHeel,
-  GiBookPile,
   GiBookshelf,
-  GiBookStorm,
-  GiBurningBook,
   GiCapeArmor,
   GiChestArmor,
   GiDungeonGate,
@@ -21,32 +17,26 @@ import {
   GiMagicPotion,
   GiMonsterGrasp,
   GiPerson,
-  GiRuleBook,
   GiSecretBook,
-  GiSpellBook,
   GiSwapBag,
   GiSwordArray,
   GiToolbox,
+  GiUpgrade,
 } from 'react-icons/gi';
 import PatreonIcon from '../icons/PatreonIcon';
+import EditionToggle from '../EditionToggle';
+import { getIconFromName } from '../../utilities/icons';
+import { getContentUrl, getContentIndexUrl } from '../../utilities/editionUrls';
 
 const PATREON_URL =
   'https://patreon.com/DormanLakely?utm_medium=unknown&utm_source=join_link&utm_campaign=creatorshare_creator&utm_content=copyLink';
-
-const ruleBooks = [
-  <GiRuleBook key="rule-book" />,
-  <GiBookPile key="book-pile" />,
-  <GiBurningBook key="burning-book" />,
-  <GiSecretBook key="secret-book" />,
-  <GiSpellBook key="spell-book" />,
-  <GiBookStorm key="book-storm" />,
-];
 
 import { Sidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
 import { SidebarLink, SidebarButton } from '../NavLink/NavLink';
 import { useAuth0 } from '@auth0/auth0-react';
 import { UserProps } from '../../utilities/types';
 import { useLocation } from 'react-router-dom';
+import { useEdition } from '../../contexts/EditionContext';
 
 import sidebarBG from './SidebarBackground.jpg';
 
@@ -57,6 +47,45 @@ import {
   RoleLabel,
   menuItemStyles,
 } from './SideBar.styles';
+
+type ChildRuleType = {
+  name: string;
+  slug: string;
+  sort_order?: number;
+  game_icon?: string;
+  rules?: { name: string; slug: string; sort_order?: number; game_icon?: string }[];
+};
+
+type RuleType = {
+  name: string;
+  slug: string;
+  category?: string;
+  sort_order?: number;
+  game_icon?: string;
+  rules?: ChildRuleType[];
+};
+
+// Sort rules by sort_order, then by name
+const sortByOrder = (rules: RuleType[]): RuleType[] => {
+  return [...rules].sort((a, b) => {
+    // Rules with sort_order come first, sorted by that value
+    if (a.sort_order !== undefined && b.sort_order !== undefined) {
+      return a.sort_order - b.sort_order;
+    }
+    if (a.sort_order !== undefined) return -1;
+    if (b.sort_order !== undefined) return 1;
+    // Otherwise sort alphabetically
+    return a.name.localeCompare(b.name);
+  });
+};
+
+// Helper to get icon for a rule - returns undefined if no icon set
+const getRuleIcon = (rule: RuleType | ChildRuleType) => {
+  if (rule.game_icon) {
+    return getIconFromName(rule.game_icon);
+  }
+  return undefined;
+};
 
 const itemTypes = [
   { name: 'Armor', link: '/app/items/armor', icon: <GiCapeArmor /> },
@@ -91,13 +120,17 @@ const SideBar = (props: {
   isCollapsed: boolean;
   isMobile: boolean;
   logOutUser: (token: string) => void;
-  rules: { name: string; slug: string; rules?: { name: string; slug: string }[] }[];
+  rules: RuleType[];
   setIsCollapsed: (collapsed: boolean) => void;
 }) => {
   const { currentUser, getRules, isCollapsed, isMobile, logOutUser, rules, setIsCollapsed } = props;
 
   const { user, getAccessTokenSilently, isAuthenticated, loginWithRedirect, logout } = useAuth0();
   const location = useLocation();
+  const { edition, isEdition2024 } = useEdition();
+
+  // In 2024 edition, "Races" are called "Species"
+  const racesLabel = isEdition2024 ? 'Species' : 'Races';
 
   // Determine if submenus should be open based on current path
   const isItemsPath = location.pathname.startsWith('/app/items');
@@ -155,12 +188,42 @@ const SideBar = (props: {
               icon={isCollapsed ? <BiShow /> : <BiHide />}
             />
           )}
+          <EditionToggle isCollapsed={isCollapsed} />
           <SidebarLink to="/" title="Dashboard" icon={<AiOutlineHome />} />
-          <SidebarLink to="/app/classes" title="Classes" icon={<GiPerson />} />
-          <SidebarLink to="/app/races" title="Races" icon={<GiDwarfFace />} />
-          <SidebarLink to="/app/monsters" title="Monsters" icon={<GiMonsterGrasp />} />
-          <SidebarLink to="/app/spells" title="Spells" icon={<GiMagicPalm />} />
-          <SidebarLink to="/app/conditions" title="Conditions" icon={<GiAchillesHeel />} />
+          <SidebarLink
+            to={getContentIndexUrl('classes', edition)}
+            title="Classes"
+            icon={<GiPerson />}
+          />
+          <SidebarLink
+            to={getContentIndexUrl('races', edition)}
+            title={racesLabel}
+            icon={<GiDwarfFace />}
+          />
+          {isEdition2024 && (
+            <>
+              <SidebarLink
+                to={getContentIndexUrl('backgrounds', edition)}
+                title="Backgrounds"
+                icon={<GiSecretBook />}
+              />
+              <SidebarLink
+                to={getContentIndexUrl('feats', edition)}
+                title="Feats"
+                icon={<GiUpgrade />}
+              />
+            </>
+          )}
+          <SidebarLink
+            to={getContentIndexUrl('monsters', edition)}
+            title="Monsters"
+            icon={<GiMonsterGrasp />}
+          />
+          <SidebarLink
+            to={getContentIndexUrl('spells', edition)}
+            title="Spells"
+            icon={<GiMagicPalm />}
+          />
           <SubMenu
             label="Rules"
             icon={<GiBookshelf />}
@@ -170,29 +233,77 @@ const SideBar = (props: {
               borderBottom: '0.125rem solid #c9ad6a',
             }}
           >
-            <SidebarLink to="/app/rules" title="All Rules" icon={<GiBookshelf />} />
-            {rules.map((rule, index) => (
-              <SubMenu
-                key={`rule-${rule.slug}-${index}`}
-                label={rule.name}
-                icon={index < 6 ? ruleBooks[index] : <GiRuleBook />}
-                style={{ border: 0 }}
-              >
-                <SidebarLink
-                  key={`rulesTop-${index}`}
-                  to={`/app/rules/${rule.slug}`}
-                  title={rule.name}
-                />
-                {rule.rules &&
-                  rule.rules.map((subrule, subIndex) => (
+            <SidebarLink
+              to={getContentIndexUrl('rules', edition)}
+              title="All Rules"
+              icon={<GiBookshelf />}
+            />
+            {sortByOrder(rules).map((rule, index) => {
+              // If rule has children, show as submenu
+              if (rule.rules && rule.rules.length > 0) {
+                return (
+                  <SubMenu
+                    key={`rule-${rule.slug}-${index}`}
+                    label={rule.name}
+                    icon={getRuleIcon(rule)}
+                    style={{ border: 0 }}
+                  >
                     <SidebarLink
-                      key={`rulesInner-${subIndex}`}
-                      to={`/app/rules/${subrule.slug}`}
-                      title={subrule.name}
+                      key={`rule-overview-${rule.slug}`}
+                      to={getContentUrl('rules', rule.slug, edition)}
+                      title={rule.name}
+                      icon={<GiBookshelf />}
                     />
-                  ))}
-              </SubMenu>
-            ))}
+                    {rule.rules.map((childRule, subIndex) => {
+                      // If child has grandchildren, show as nested submenu
+                      if (childRule.rules && childRule.rules.length > 0) {
+                        return (
+                          <SubMenu
+                            key={`rule-child-${childRule.slug}-${subIndex}`}
+                            label={childRule.name}
+                            icon={getRuleIcon(childRule)}
+                            style={{ border: 0 }}
+                          >
+                            <SidebarLink
+                              key={`child-overview-${childRule.slug}`}
+                              to={getContentUrl('rules', childRule.slug, edition)}
+                              title={childRule.name}
+                              icon={getRuleIcon(childRule)}
+                            />
+                            {childRule.rules.map((grandchild, gcIndex) => (
+                              <SidebarLink
+                                key={`rule-grandchild-${grandchild.slug}-${gcIndex}`}
+                                to={getContentUrl('rules', grandchild.slug, edition)}
+                                title={grandchild.name}
+                                icon={getRuleIcon(grandchild)}
+                              />
+                            ))}
+                          </SubMenu>
+                        );
+                      }
+                      // Child has no grandchildren, show as direct link
+                      return (
+                        <SidebarLink
+                          key={`rule-child-${childRule.slug}-${subIndex}`}
+                          to={getContentUrl('rules', childRule.slug, edition)}
+                          title={childRule.name}
+                          icon={getRuleIcon(childRule)}
+                        />
+                      );
+                    })}
+                  </SubMenu>
+                );
+              }
+              // If rule has no children, show as direct link
+              return (
+                <SidebarLink
+                  key={`rule-${rule.slug}-${index}`}
+                  to={getContentUrl('rules', rule.slug, edition)}
+                  title={rule.name}
+                  icon={getRuleIcon(rule)}
+                />
+              );
+            })}
           </SubMenu>
           <SubMenu
             label="Items & Equipment"
@@ -205,11 +316,15 @@ const SideBar = (props: {
               marginTop: '-.125rem',
             }}
           >
-            <SidebarLink to="/app/items" title="All Equipment" icon={<GiSwapBag />} />
+            <SidebarLink
+              to={getContentIndexUrl('items', edition)}
+              title="All Equipment"
+              icon={<GiSwapBag />}
+            />
             {itemTypes.map((itemType, index) => (
               <SidebarLink
                 key={`items-${index}`}
-                to={itemType.link}
+                to={getContentUrl('items', itemType.link.replace('/app/items/', ''), edition)}
                 title={itemType.name}
                 icon={itemType.icon}
               />
