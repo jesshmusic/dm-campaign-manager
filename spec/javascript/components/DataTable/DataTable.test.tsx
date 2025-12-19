@@ -129,7 +129,7 @@ describe('DataTable', () => {
         results={3}
       />
     );
-    expect(screen.getByPlaceholderText('Search (2+ characters)...')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Search...')).toBeInTheDocument();
     expect(screen.getByText('Search')).toBeInTheDocument();
   });
 
@@ -142,7 +142,7 @@ describe('DataTable', () => {
         results={3}
       />
     );
-    expect(screen.queryByPlaceholderText('Search (2+ characters)...')).not.toBeInTheDocument();
+    expect(screen.queryByPlaceholderText('Search...')).not.toBeInTheDocument();
   });
 
   it('displays results count when onSearch is provided', () => {
