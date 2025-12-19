@@ -29,10 +29,14 @@ export const Page = styled.div<{ $isCollapsed?: boolean }>`
   position: relative;
   z-index: 200;
 
-  ${respondToContainer.md`
-    margin: 0 0 0 15rem;
-    padding: 1rem;
-  `}
+  ${({ $isCollapsed }) =>
+    !$isCollapsed &&
+    css`
+      ${respondToContainer.md`
+        margin: 0 0 0 20rem;
+        padding: 1rem;
+      `}
+    `}
 
   &::after {
     background-image: url('/images/dndBottomDeco.png');
@@ -45,13 +49,6 @@ export const Page = styled.div<{ $isCollapsed?: boolean }>`
     width: 100%;
     z-index: -1;
   }
-
-  ${({ $isCollapsed }) =>
-    $isCollapsed &&
-    css`
-      margin: 0 0 0 5rem;
-      padding: 1rem;
-    `}
 `;
 
 // FormContainer styles
@@ -82,4 +79,11 @@ export const TableFrameWrapper = styled.div<{ $showSpinner?: boolean }>`
       display: flex;
       justify-content: center;
     `}
+`;
+
+// Content wrapper for non-dashboard pages with responsive max-width
+export const ContentWrapper = styled.div`
+  margin: 0 auto;
+  max-width: 1200px;
+  width: 100%;
 `;

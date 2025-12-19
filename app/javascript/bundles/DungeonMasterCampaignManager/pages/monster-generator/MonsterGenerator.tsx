@@ -78,10 +78,9 @@ const MonsterGenerator = (props: {
 
   return (
     <PageContainer
-      pageTitle={'NPC & Creature Generators'}
-      description={
-        'Create NPCs, monsters, and creatures for your D&D campaigns. Generate stat blocks that can be copied into Fantasy Grounds or other VTTs.'
-      }
+      description="Create NPCs, monsters, and creatures for your D&D campaigns. Generate stat blocks that can be copied into Fantasy Grounds or other VTTs."
+      maxWidth
+      pageTitle="NPC & Creature Generators"
     >
       <PageTitle title={'NPC & Creature Generators'} />
       <MonsterGenWrapper>

@@ -16,7 +16,7 @@ import SearchField from '../components/Search/SearchField';
 import { SidebarProvider } from '../contexts/SidebarContext';
 import { useBreadcrumbs } from '../contexts/BreadcrumbContext';
 
-import { PageWrapper, PageContent, Page } from './Containers.styles';
+import { PageWrapper, PageContent, Page, ContentWrapper } from './Containers.styles';
 
 ReactGA.initialize('G-8XJTH70JSQ');
 
@@ -29,12 +29,27 @@ const BreadcrumbsWithContext = ({ isCollapsed }: { isCollapsed: boolean }) => {
 type PageContainerProps = {
   children?: React.ReactNode;
   description: string;
+  maxWidth?: boolean;
   pageTitle: string;
 };
 
+// Get saved collapsed state from localStorage
+const getSavedCollapsed = (): boolean => {
+  if (typeof window !== 'undefined') {
+    return localStorage.getItem('sidebar-collapsed') === 'true';
+  }
+  return false;
+};
+
 const PageContainer = (props: PageContainerProps) => {
-  const [isCollapsed, setIsCollapsed] = React.useState(false);
-  const { children, description, pageTitle } = props;
+  const [isCollapsed, setIsCollapsedState] = React.useState(getSavedCollapsed);
+  const { children, description, maxWidth = false, pageTitle } = props;
+
+  // Wrap setIsCollapsed to persist to localStorage
+  const setIsCollapsed = React.useCallback((collapsed: boolean) => {
+    setIsCollapsedState(collapsed);
+    localStorage.setItem('sidebar-collapsed', String(collapsed));
+  }, []);
   const [isMobile, setIsMobile] = React.useState(Util.isMobileWidth());
   const nodeRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
@@ -85,7 +100,9 @@ const PageContainer = (props: PageContainerProps) => {
         <SearchField />
         <PageWrapper ref={nodeRef}>
           <PageContent>
-            <Page $isCollapsed={isCollapsed}>{children}</Page>
+            <Page $isCollapsed={isCollapsed}>
+              {maxWidth ? <ContentWrapper>{children}</ContentWrapper> : children}
+            </Page>
           </PageContent>
         </PageWrapper>
       </div>

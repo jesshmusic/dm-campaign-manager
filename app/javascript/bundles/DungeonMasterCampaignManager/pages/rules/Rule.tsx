@@ -90,8 +90,9 @@ const Rule = (props: {
 
   return (
     <PageContainer
-      pageTitle={ruleTitle}
       description={`${ruleTitle}. Dungeon Master's Toolbox is a free resource for DMs to manage their dndClasses, adventures, and Monsters.`}
+      maxWidth
+      pageTitle={ruleTitle}
     >
       {!loading && rule ? (
         <RuleContent>

@@ -115,8 +115,9 @@ const RulesGlossary = ({ rule, loading, getRule }: RulesGlossaryProps) => {
 
   return (
     <PageContainer
-      pageTitle="Rules Glossary"
       description="D&D 5th Edition Rules Glossary - Quick reference for game terms, conditions, actions, and more."
+      maxWidth
+      pageTitle="Rules Glossary"
     >
       {loading || !rule ? (
         <DndSpinner />

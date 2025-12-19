@@ -38,10 +38,10 @@ const CreateCustomActionPage = (props: {
 
   return (
     <PageContainer
-      pageTitle={'Create Custom Action'}
       description={
         'Dungeon Master GURU is a free resource for DMs for reference that includes tools for smooth games.'
       }
+      pageTitle={'Create Custom Action'}
     >
       {process.env.NODE_ENV === 'development' ? (
         <pre

@@ -166,7 +166,7 @@ export const theme = {
 
   // Sidebar specific
   sidebar: {
-    width: '15rem',
+    width: '20rem',
     collapsedWidth: '5rem',
     bgColor: '#571a10',
     borderColor: 'rgb(201, 173, 106)', // #c9ad6a

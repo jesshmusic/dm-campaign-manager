@@ -3,7 +3,7 @@
  * Migrated from breadcrumbs.module.scss
  */
 
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { respondToContainer } from '../../theme/mixins';
 
 export const BackButton = styled.button`
@@ -43,17 +43,14 @@ export const BreadcrumbList = styled.ol<{ $isCollapsed?: boolean }>`
   margin: 0 0 0 5rem;
   padding: 0.35rem 1rem;
 
-  ${respondToContainer.md`
-    margin: 0 0 0 15rem;
-    padding: 0.35rem 0;
-  `}
-
   ${({ $isCollapsed }) =>
-    $isCollapsed &&
-    `
-    margin: 0 0 0 5rem;
-    padding: 1rem;
-  `}
+    !$isCollapsed &&
+    css`
+      ${respondToContainer.md`
+        margin: 0 0 0 20rem;
+        padding: 0.35rem 0;
+      `}
+    `}
 `;
 
 export const BreadcrumbItem = styled.li<{ $isActive?: boolean }>`

@@ -73,11 +73,14 @@ describe('EditionToggle', () => {
   });
 
   describe('collapsed view', () => {
-    it('renders abbreviated buttons when collapsed', () => {
+    it('renders full year buttons when collapsed', () => {
       renderWithProviders('2024', true);
 
-      expect(screen.getByText("'24")).toBeInTheDocument();
-      expect(screen.getByText("'14")).toBeInTheDocument();
+      // getAllByText since both expanded and collapsed use same text
+      const buttons2024 = screen.getAllByText('2024');
+      const buttons2014 = screen.getAllByText('2014');
+      expect(buttons2024.length).toBeGreaterThan(0);
+      expect(buttons2014.length).toBeGreaterThan(0);
     });
 
     it('does not show "Rules:" label when collapsed', () => {
@@ -96,7 +99,7 @@ describe('EditionToggle', () => {
     it('updates localStorage when clicking different edition in collapsed mode', () => {
       renderWithProviders('2024', true);
 
-      const button2014 = screen.getByText("'14");
+      const button2014 = screen.getByTitle('2014 Rules');
       fireEvent.click(button2014);
 
       expect(localStorage.getItem('dnd-edition')).toBe('2014');
@@ -106,7 +109,7 @@ describe('EditionToggle', () => {
       localStorage.setItem('dnd-edition', '2024');
       renderWithProviders('2024', true);
 
-      const button2024 = screen.getByText("'24");
+      const button2024 = screen.getByTitle('2024 Rules');
       fireEvent.click(button2024);
 
       expect(localStorage.getItem('dnd-edition')).toBe('2024');

@@ -44,6 +44,7 @@ import {
   SidebarWrapper,
   StyledFooter,
   UserWelcome,
+  WelcomeText,
   RoleLabel,
   menuItemStyles,
 } from './SideBar.styles';
@@ -169,7 +170,7 @@ const SideBar = (props: {
         collapsed={isCollapsed}
         image={sidebarBG}
         backgroundColor="rgba(87, 26, 16, 0.3)"
-        width="15rem"
+        width="20rem"
         collapsedWidth="5rem"
         rootStyles={{
           borderRight: '0.25rem solid #c9ad6a',
@@ -333,8 +334,10 @@ const SideBar = (props: {
         </Menu>
 
         <StyledFooter>
-          <UserWelcome>
-            {isAuthenticated && user ? `Welcome, ${user.given_name}` : 'User'}
+          <UserWelcome $isCollapsed={isCollapsed}>
+            <WelcomeText $isCollapsed={isCollapsed}>
+              {isAuthenticated && user ? `Welcome, ${user.given_name}` : 'User'}
+            </WelcomeText>
             {currentUser && currentUser.role && <RoleLabel>{currentUser.role}</RoleLabel>}
           </UserWelcome>
           <Menu menuItemStyles={menuItemStyles}>

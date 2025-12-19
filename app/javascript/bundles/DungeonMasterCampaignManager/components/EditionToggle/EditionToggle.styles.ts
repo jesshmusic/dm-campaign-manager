@@ -66,10 +66,10 @@ export const CollapsedButton = styled.button<ToggleButtonProps>`
   color: ${({ $isActive, theme }) => ($isActive ? theme.colors.white : '#efb3ab')};
   cursor: pointer;
   font-family: ${({ theme }) => theme.fonts.mrEaves};
-  font-size: 0.625rem;
+  font-size: 0.875rem;
   font-weight: ${({ $isActive }) => ($isActive ? 'bold' : 'normal')};
   margin: 0.125rem 0;
-  padding: 0.25rem 0.5rem;
+  padding: 0.35rem 0.5rem;
   transition: all 0.2s ease-in-out;
   width: 100%;
 

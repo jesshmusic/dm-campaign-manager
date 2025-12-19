@@ -32,14 +32,14 @@ const EditionToggle: React.FC<EditionToggleProps> = ({ isCollapsed = false }) =>
           onClick={() => handleEditionChange('2024')}
           title="2024 Rules"
         >
-          &apos;24
+          2024
         </CollapsedButton>
         <CollapsedButton
           $isActive={edition === '2014'}
           onClick={() => handleEditionChange('2014')}
           title="2014 Rules"
         >
-          &apos;14
+          2014
         </CollapsedButton>
       </CollapsedToggle>
     );

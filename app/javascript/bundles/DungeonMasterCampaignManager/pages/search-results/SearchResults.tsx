@@ -26,7 +26,11 @@ const SearchResults = (props: {
   }, [query]);
 
   return (
-    <PageContainer pageTitle={`Search for "${query}"`} description={`${resultsCount} results.`}>
+    <PageContainer
+      description={`${resultsCount} results.`}
+      maxWidth
+      pageTitle={`Search for "${query}"`}
+    >
       <PageTitle title={`Search for "${query}"`} />
       {results &&
         results.map((result) => (

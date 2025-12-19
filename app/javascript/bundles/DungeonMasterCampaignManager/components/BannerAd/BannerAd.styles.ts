@@ -12,15 +12,13 @@ export const BannerAdContainer = styled.div<{ $isCollapsed?: boolean }>`
   padding: 0 0 1rem;
   padding-left: 5rem;
 
-  ${respondToContainer.md`
-    padding-left: 15rem;
-  `}
-
   ${({ $isCollapsed }) =>
-    $isCollapsed &&
-    `
-    padding-left: 5rem;
-  `}
+    !$isCollapsed &&
+    css`
+      ${respondToContainer.md`
+        padding-left: 20rem;
+      `}
+    `}
 `;
 
 const bannerImageBase = css`

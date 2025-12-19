@@ -41,8 +41,9 @@ const BackgroundsIndex = ({ backgrounds, loading, getBackgrounds }: BackgroundsI
   if (isEdition2014) {
     return (
       <PageContainer
-        pageTitle="Backgrounds"
         description="D&D 5th Edition Character Backgrounds. Dungeon Master's Toolbox is a free resource for DMs."
+        maxWidth
+        pageTitle="Backgrounds"
       >
         <PageTitle title="Backgrounds" isLegacy />
         <p>
@@ -55,8 +56,9 @@ const BackgroundsIndex = ({ backgrounds, loading, getBackgrounds }: BackgroundsI
 
   return (
     <PageContainer
-      pageTitle="Backgrounds"
       description="D&D 5th Edition Character Backgrounds. Dungeon Master's Toolbox is a free resource for DMs."
+      maxWidth
+      pageTitle="Backgrounds"
     >
       <PageTitle title="Backgrounds" />
       {loading ? (

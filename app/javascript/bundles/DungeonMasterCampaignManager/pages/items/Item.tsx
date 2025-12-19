@@ -46,8 +46,9 @@ const Item = (props: ItemPageProps) => {
   const itemTitle = item ? item.name : 'Item Loading...';
   return (
     <PageContainer
-      pageTitle={itemTitle}
       description={`Item: ${itemTitle}. Dungeon Master's Toolbox is a free resource for DMs to manage their dndClasses, adventures, and Monsters.`}
+      maxWidth
+      pageTitle={itemTitle}
     >
       <PageTitle title={itemTitle} isLegacy={isEdition2014} />
       {item && itemInfo ? (

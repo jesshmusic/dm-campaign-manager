@@ -74,8 +74,9 @@ const FeatsIndex = ({ feats, loading, getFeats }: FeatsIndexProps) => {
   if (isEdition2014) {
     return (
       <PageContainer
-        pageTitle="Feats"
         description="D&D 5th Edition Feats. Dungeon Master's Toolbox is a free resource for DMs."
+        maxWidth
+        pageTitle="Feats"
       >
         <PageTitle title="Feats" isLegacy />
         <p>
@@ -90,8 +91,9 @@ const FeatsIndex = ({ feats, loading, getFeats }: FeatsIndexProps) => {
 
   return (
     <PageContainer
-      pageTitle="Feats"
       description="D&D 5th Edition Feats. Dungeon Master's Toolbox is a free resource for DMs."
+      maxWidth
+      pageTitle="Feats"
     >
       <PageTitle title="Feats" />
       {loading ? (

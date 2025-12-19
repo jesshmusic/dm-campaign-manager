@@ -43,8 +43,9 @@ const ItemsList = ({ columns, data, loading, onSearch, pageTitle, itemType }: It
 
   return (
     <PageContainer
-      pageTitle={pageTitle}
       description={`${pageTitle} records with descriptions and stats. Dungeon Master's Toolbox is a free resource for DMs to manage their campaigns, adventures, and Monsters.`}
+      maxWidth
+      pageTitle={pageTitle}
     >
       <PageTitle title={pageTitle} isLegacy={isEdition2014} />
       <DataTable
