@@ -7,6 +7,7 @@ import { MemoryRouter } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import SideBar from '../../../app/javascript/bundles/DungeonMasterCampaignManager/components/SideBar/SideBar';
 import { useAuth0 } from '@auth0/auth0-react';
+import * as SidebarContext from '../../../app/javascript/bundles/DungeonMasterCampaignManager/contexts/SidebarContext';
 
 // Mock the API to prevent async action errors
 jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/api/api', () => ({
@@ -22,6 +23,18 @@ jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/api/api'
 // Mock Auth0
 jest.mock('@auth0/auth0-react');
 const mockUseAuth0 = useAuth0 as jest.MockedFunction<typeof useAuth0>;
+
+// Mock sidebar context
+const mockSetIsCollapsed = jest.fn();
+const mockSetSidebarWidth = jest.fn();
+jest.spyOn(SidebarContext, 'useSidebar').mockReturnValue({
+  isCollapsed: false,
+  sidebarWidth: 320,
+  isMobile: false,
+  setIsCollapsed: mockSetIsCollapsed,
+  setSidebarWidth: mockSetSidebarWidth,
+  rawSidebarWidth: 320,
+});
 
 // Note: react-icons are mocked globally via moduleNameMapper in jest.config.js
 // See spec/javascript/__mocks__/reactIconsMock.js
@@ -69,15 +82,25 @@ describe('SideBar Component', () => {
   let mockGetAccessTokenSilently: jest.Mock;
   let mockLoginWithRedirect: jest.Mock;
   let mockLogout: jest.Mock;
-  let mockSetIsCollapsed: jest.Mock;
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockSetIsCollapsed.mockClear();
+    mockSetSidebarWidth.mockClear();
 
     mockGetAccessTokenSilently = jest.fn().mockResolvedValue('mock-token');
     mockLoginWithRedirect = jest.fn();
     mockLogout = jest.fn();
-    mockSetIsCollapsed = jest.fn();
+
+    // Reset mock sidebar context to default values
+    jest.spyOn(SidebarContext, 'useSidebar').mockReturnValue({
+      isCollapsed: false,
+      sidebarWidth: 320,
+      isMobile: false,
+      setIsCollapsed: mockSetIsCollapsed,
+      setSidebarWidth: mockSetSidebarWidth,
+      rawSidebarWidth: 320,
+    });
 
     store = mockStore({
       rules: {
@@ -115,11 +138,7 @@ describe('SideBar Component', () => {
       render(
         <Provider store={store}>
           <MemoryRouter>
-            <SideBar
-              isCollapsed={false}
-              isMobile={false}
-              setIsCollapsed={mockSetIsCollapsed}
-            />
+            <SideBar />
           </MemoryRouter>
         </Provider>
       );
@@ -140,11 +159,7 @@ describe('SideBar Component', () => {
       render(
         <Provider store={store}>
           <MemoryRouter>
-            <SideBar
-              isCollapsed={false}
-              isMobile={false}
-              setIsCollapsed={mockSetIsCollapsed}
-            />
+            <SideBar />
           </MemoryRouter>
         </Provider>
       );
@@ -161,17 +176,20 @@ describe('SideBar Component', () => {
         logout: mockLogout,
       } as any);
 
+      // Mock mobile context
+      jest.spyOn(SidebarContext, 'useSidebar').mockReturnValue({
+        isCollapsed: false,
+        sidebarWidth: 320,
+        isMobile: true,
+        setIsCollapsed: mockSetIsCollapsed,
+        setSidebarWidth: mockSetSidebarWidth,
+        rawSidebarWidth: 320,
+      });
+
       render(
         <Provider store={store}>
           <MemoryRouter>
-            <SideBar
-              isCollapsed={false}
-              isMobile={true}
-              setIsCollapsed={mockSetIsCollapsed}
-              getRules={jest.fn()}
-              logOutUser={jest.fn()}
-              rules={[]}
-            />
+            <SideBar />
           </MemoryRouter>
         </Provider>
       );
@@ -206,11 +224,7 @@ describe('SideBar Component', () => {
       render(
         <Provider store={storeWithRules}>
           <MemoryRouter>
-            <SideBar
-              isCollapsed={false}
-              isMobile={false}
-              setIsCollapsed={mockSetIsCollapsed}
-            />
+            <SideBar />
           </MemoryRouter>
         </Provider>
       );
@@ -231,11 +245,7 @@ describe('SideBar Component', () => {
       render(
         <Provider store={store}>
           <MemoryRouter>
-            <SideBar
-              isCollapsed={false}
-              isMobile={false}
-              setIsCollapsed={mockSetIsCollapsed}
-            />
+            <SideBar />
           </MemoryRouter>
         </Provider>
       );
@@ -254,17 +264,20 @@ describe('SideBar Component', () => {
         logout: mockLogout,
       } as any);
 
+      // Mock collapsed context
+      jest.spyOn(SidebarContext, 'useSidebar').mockReturnValue({
+        isCollapsed: true,
+        sidebarWidth: 80,
+        isMobile: false,
+        setIsCollapsed: mockSetIsCollapsed,
+        setSidebarWidth: mockSetSidebarWidth,
+        rawSidebarWidth: 320,
+      });
+
       render(
         <Provider store={store}>
           <MemoryRouter>
-            <SideBar
-              isCollapsed={true}
-              isMobile={false}
-              setIsCollapsed={mockSetIsCollapsed}
-              getRules={jest.fn()}
-              logOutUser={jest.fn()}
-              rules={[]}
-            />
+            <SideBar />
           </MemoryRouter>
         </Provider>
       );
@@ -285,11 +298,7 @@ describe('SideBar Component', () => {
       render(
         <Provider store={store}>
           <MemoryRouter>
-            <SideBar
-              isCollapsed={false}
-              isMobile={false}
-              setIsCollapsed={mockSetIsCollapsed}
-            />
+            <SideBar />
           </MemoryRouter>
         </Provider>
       );
@@ -314,11 +323,7 @@ describe('SideBar Component', () => {
       render(
         <Provider store={store}>
           <MemoryRouter>
-            <SideBar
-              isCollapsed={false}
-              isMobile={false}
-              setIsCollapsed={mockSetIsCollapsed}
-            />
+            <SideBar />
           </MemoryRouter>
         </Provider>
       );
@@ -338,11 +343,7 @@ describe('SideBar Component', () => {
       render(
         <Provider store={store}>
           <MemoryRouter>
-            <SideBar
-              isCollapsed={false}
-              isMobile={false}
-              setIsCollapsed={mockSetIsCollapsed}
-            />
+            <SideBar />
           </MemoryRouter>
         </Provider>
       );
@@ -370,11 +371,7 @@ describe('SideBar Component', () => {
       render(
         <Provider store={adminStore}>
           <MemoryRouter>
-            <SideBar
-              isCollapsed={false}
-              isMobile={false}
-              setIsCollapsed={mockSetIsCollapsed}
-            />
+            <SideBar />
           </MemoryRouter>
         </Provider>
       );
@@ -401,11 +398,7 @@ describe('SideBar Component', () => {
       render(
         <Provider store={userStore}>
           <MemoryRouter>
-            <SideBar
-              isCollapsed={false}
-              isMobile={false}
-              setIsCollapsed={mockSetIsCollapsed}
-            />
+            <SideBar />
           </MemoryRouter>
         </Provider>
       );
@@ -425,11 +418,7 @@ describe('SideBar Component', () => {
       render(
         <Provider store={store}>
           <MemoryRouter>
-            <SideBar
-              isCollapsed={false}
-              isMobile={false}
-              setIsCollapsed={mockSetIsCollapsed}
-            />
+            <SideBar />
           </MemoryRouter>
         </Provider>
       );
@@ -451,11 +440,7 @@ describe('SideBar Component', () => {
       render(
         <Provider store={store}>
           <MemoryRouter>
-            <SideBar
-              isCollapsed={false}
-              isMobile={false}
-              setIsCollapsed={mockSetIsCollapsed}
-            />
+            <SideBar />
           </MemoryRouter>
         </Provider>
       );
@@ -468,8 +453,6 @@ describe('SideBar Component', () => {
     });
 
     it('should call logout handler when logout button is clicked', async () => {
-      const mockLogOutUser = jest.fn();
-
       mockUseAuth0.mockReturnValue({
         user: { given_name: 'John', email: 'john@example.com' },
         isAuthenticated: true,
@@ -481,14 +464,7 @@ describe('SideBar Component', () => {
       render(
         <Provider store={store}>
           <MemoryRouter>
-            <SideBar
-              isCollapsed={false}
-              isMobile={false}
-              setIsCollapsed={mockSetIsCollapsed}
-              getRules={jest.fn()}
-              logOutUser={mockLogOutUser}
-              rules={[]}
-            />
+            <SideBar />
           </MemoryRouter>
         </Provider>
       );
@@ -524,11 +500,7 @@ describe('SideBar Component', () => {
       render(
         <Provider store={adminStore}>
           <MemoryRouter>
-            <SideBar
-              isCollapsed={false}
-              isMobile={false}
-              setIsCollapsed={mockSetIsCollapsed}
-            />
+            <SideBar />
           </MemoryRouter>
         </Provider>
       );

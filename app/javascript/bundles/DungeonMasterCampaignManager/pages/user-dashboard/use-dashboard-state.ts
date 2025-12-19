@@ -11,6 +11,68 @@ type Layouts = Record<string, LayoutItem[]>;
 const BREAKPOINT_COLUMNS: Record<string, number> = { lg: 12, md: 9, sm: 6, xs: 3, xxs: 1 };
 
 /**
+ * Finds the best position for a new widget in the grid layout.
+ * Tries to find a spot on existing rows before adding to a new row.
+ */
+const findBestPosition = (
+  breakpointLayout: LayoutItem[],
+  width: number,
+  height: number,
+  maxCols: number,
+): { x: number; y: number } => {
+  if (!breakpointLayout || breakpointLayout.length === 0) {
+    return { x: 0, y: 0 };
+  }
+
+  // Build a 2D occupancy map of the grid
+  const maxY = Math.max(...breakpointLayout.map((item) => (item.y || 0) + (item.h || 1)));
+  const gridHeight = maxY + Math.max(height, 10); // Extra space for new item
+
+  // Create occupancy grid
+  const occupied: boolean[][] = [];
+  for (let y = 0; y < gridHeight; y++) {
+    occupied[y] = new Array(maxCols).fill(false);
+  }
+
+  // Mark occupied cells
+  breakpointLayout.forEach((item) => {
+    const itemX = item.x || 0;
+    const itemY = item.y || 0;
+    const itemW = item.w || 1;
+    const itemH = item.h || 1;
+    for (let dy = 0; dy < itemH; dy++) {
+      for (let dx = 0; dx < itemW; dx++) {
+        const cy = itemY + dy;
+        const cx = itemX + dx;
+        if (cy < gridHeight && cx < maxCols) {
+          occupied[cy][cx] = true;
+        }
+      }
+    }
+  });
+
+  // Find first position where the widget fits
+  for (let y = 0; y < gridHeight; y++) {
+    for (let x = 0; x <= maxCols - width; x++) {
+      let fits = true;
+      for (let dy = 0; dy < height && fits; dy++) {
+        for (let dx = 0; dx < width && fits; dx++) {
+          if (y + dy >= gridHeight || occupied[y + dy][x + dx]) {
+            fits = false;
+          }
+        }
+      }
+      if (fits) {
+        return { x, y };
+      }
+    }
+  }
+
+  // If no spot found, add to bottom
+  return { x: 0, y: maxY };
+};
+
+/**
  * Checks if layouts contain corrupted items (w:1, h:1) in non-xxs breakpoints.
  * This can happen during initial render before the container is properly sized.
  * The xxs breakpoint legitimately has w:1 items, so it's excluded from the check.
@@ -232,20 +294,29 @@ export const useDashboardState = ({ customWidgets, getWidgets }) => {
       const gridConfig = isCustomWidget
         ? { w: 4, h: 3, minW: 3, minH: 3 }
         : widgetConfig?.grid || { w: 4, h: 3, minW: 3, minH: 3 };
-      const newLayoutItem = {
-        i: widgetId,
-        x: 0,
-        y: Infinity,
-        w: gridConfig.w || 4,
-        h: gridConfig.h || 3,
-        minW: isCustomWidget ? 3 : gridConfig.minW || 3,
-        minH: isCustomWidget ? 3 : gridConfig.minH || 3,
-      };
+
       setLayouts((prev) => {
         const updated = { ...prev };
         Object.keys(updated).forEach((breakpoint) => {
           if (!updated[breakpoint].find((item) => item.i === widgetId)) {
-            updated[breakpoint] = [...updated[breakpoint], { ...newLayoutItem }];
+            const maxCols = BREAKPOINT_COLUMNS[breakpoint] || 12;
+            // Scale width for smaller breakpoints
+            const scaledWidth = Math.min(gridConfig.w || 4, maxCols);
+            const height = gridConfig.h || 3;
+
+            // Find the best position for this widget
+            const position = findBestPosition(updated[breakpoint], scaledWidth, height, maxCols);
+
+            const newLayoutItem = {
+              i: widgetId,
+              x: position.x,
+              y: position.y,
+              w: scaledWidth,
+              h: height,
+              minW: Math.min(isCustomWidget ? 3 : gridConfig.minW || 3, maxCols),
+              minH: isCustomWidget ? 3 : gridConfig.minH || 3,
+            };
+            updated[breakpoint] = [...updated[breakpoint], newLayoutItem];
           }
         });
         return updated;

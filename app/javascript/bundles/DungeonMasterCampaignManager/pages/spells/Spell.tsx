@@ -31,8 +31,9 @@ const Spell = (props: { spell: SpellProps; getSpell: (spellSlug: string) => void
 
   return (
     <PageContainer
-      pageTitle={spellTitle}
       description={`Spell: ${spellTitle}. Dungeon Master's Toolbox is a free resource for DMs to manage their dndClasses, adventures, and Monsters.`}
+      maxWidth
+      pageTitle={spellTitle}
     >
       {spell ? (
         <SpellWrapper>

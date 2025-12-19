@@ -41,7 +41,11 @@ const BackgroundDetail = ({ currentBackground, loading, getBackground }: Backgro
 
   if (isEdition2014) {
     return (
-      <PageContainer pageTitle="Background" description="D&D 5th Edition Character Background.">
+      <PageContainer
+        description="D&D 5th Edition Character Background."
+        maxWidth
+        pageTitle="Background"
+      >
         <PageTitle title="Background" isLegacy />
         <p>
           Backgrounds are a 2024 edition feature. Switch to the 2024 edition to view this
@@ -53,7 +57,11 @@ const BackgroundDetail = ({ currentBackground, loading, getBackground }: Backgro
 
   if (loading || !currentBackground) {
     return (
-      <PageContainer pageTitle="Background" description="D&D 5th Edition Character Background.">
+      <PageContainer
+        description="D&D 5th Edition Character Background."
+        maxWidth
+        pageTitle="Background"
+      >
         <DndSpinner />
       </PageContainer>
     );
@@ -61,8 +69,9 @@ const BackgroundDetail = ({ currentBackground, loading, getBackground }: Backgro
 
   return (
     <PageContainer
-      pageTitle={currentBackground.name}
       description={`${currentBackground.name} - D&D 5th Edition Character Background`}
+      maxWidth
+      pageTitle={currentBackground.name}
     >
       <PageTitle title={currentBackground.name} />
 

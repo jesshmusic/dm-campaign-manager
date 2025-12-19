@@ -4,9 +4,9 @@
  */
 
 import styled from 'styled-components';
-import { formInputStyles, respondToContainer } from '../../theme/mixins';
+import { formInputStyles } from '../../theme/mixins';
 
-export const SearchBar = styled.form<{ $isCollapsed?: boolean }>`
+export const SearchBar = styled.form<{ $sidebarWidth?: number }>`
   align-items: center;
   background-color: ${({ theme }) => theme.colors.backgroundMed};
   border-collapse: separate;
@@ -18,20 +18,9 @@ export const SearchBar = styled.form<{ $isCollapsed?: boolean }>`
   flex-wrap: wrap;
   font-family: ${({ theme }) => theme.fonts.mrEaves};
   list-style: none;
-  margin: 0 0 0 5rem;
+  margin-left: ${({ $sidebarWidth }) => $sidebarWidth || 80}px;
   padding: 0.35rem 1rem;
-
-  ${respondToContainer.md`
-    margin: 0 0 0 15rem;
-    padding: 0.35rem 0;
-  `}
-
-  ${({ $isCollapsed }) =>
-    $isCollapsed &&
-    `
-    margin: 0 0 0 5rem;
-    padding: 1rem;
-  `}
+  transition: margin-left 0.15s ease-out;
 `;
 
 export const InputGroup = styled.div`

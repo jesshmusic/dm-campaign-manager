@@ -67,8 +67,9 @@ const RulesIndex = ({ rules, loading, getRules }: RulesIndexProps) => {
 
   return (
     <PageContainer
-      pageTitle="Rules"
       description="D&D 5th Edition Rules Reference. Dungeon Master's Toolbox is a free resource for DMs to manage their campaigns, adventures, and monsters."
+      maxWidth
+      pageTitle="Rules"
     >
       <PageTitle title="Rules Reference" isLegacy={isEdition2014} />
       {loading ? (

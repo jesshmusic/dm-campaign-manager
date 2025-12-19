@@ -53,8 +53,9 @@ const Races = (props: { getRaces: () => void; races: RaceSummary[]; loading: boo
 
   return (
     <PageContainer
-      pageTitle={pageTitle}
       description={`All ${pageTitle.toLowerCase()} for characters. Dungeon Master's Toolbox is a free resource for DMs to manage their campaigns, adventures, and Monsters.`}
+      maxWidth
+      pageTitle={pageTitle}
     >
       <PageTitle title={pageTitle} isLegacy={isEdition2014} />
       <DataTable

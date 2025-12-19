@@ -9,10 +9,9 @@ const Monsters = (_props: object) => {
 
   return (
     <PageContainer
+      description="All monsters with descriptions and stats. Dungeon Master's Toolbox is a free resource for DMs to manage their campaigns, adventures, and Monsters."
+      maxWidth
       pageTitle="Monsters"
-      description={
-        "All monsters with descriptions and stats. Dungeon Master's Toolbox is a free resource for DMs to manage their campaigns, adventures, and Monsters."
-      }
     >
       <PageTitle title={'Monsters'} isLegacy={isEdition2014} />
       <MonstersTable />

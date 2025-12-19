@@ -33,6 +33,7 @@ const Monster = (props: MonsterPageProps) => {
   return (
     <PageContainer
       description={`Monster: ${monsterTitle}. Dungeon Master's Toolbox is a free resource for DMs to manage their dndClasses, adventures, and Monsters.`}
+      maxWidth
       pageTitle={monsterTitle}
     >
       {monster ? <MonsterBlock monster={monster} /> : <DndSpinner />}

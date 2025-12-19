@@ -4,7 +4,6 @@
  */
 
 import styled, { css } from 'styled-components';
-import { respondToContainer } from '../theme/mixins';
 
 // Layout styles
 export const AppContainer = styled.div`
@@ -22,17 +21,13 @@ export const PageContent = styled.div`
   flex: 1;
 `;
 
-export const Page = styled.div<{ $isCollapsed?: boolean }>`
-  margin: 0 0 0 5rem;
+export const Page = styled.div<{ $sidebarWidth?: number }>`
+  margin-left: ${({ $sidebarWidth }) => $sidebarWidth || 80}px;
   min-height: calc(100vh - 35rem);
   padding: 1rem;
   position: relative;
+  transition: margin-left 0.15s ease-out;
   z-index: 200;
-
-  ${respondToContainer.md`
-    margin: 0 0 0 15rem;
-    padding: 1rem;
-  `}
 
   &::after {
     background-image: url('/images/dndBottomDeco.png');
@@ -45,13 +40,6 @@ export const Page = styled.div<{ $isCollapsed?: boolean }>`
     width: 100%;
     z-index: -1;
   }
-
-  ${({ $isCollapsed }) =>
-    $isCollapsed &&
-    css`
-      margin: 0 0 0 5rem;
-      padding: 1rem;
-    `}
 `;
 
 // FormContainer styles
@@ -82,4 +70,11 @@ export const TableFrameWrapper = styled.div<{ $showSpinner?: boolean }>`
       display: flex;
       justify-content: center;
     `}
+`;
+
+// Content wrapper for non-dashboard pages with responsive max-width
+export const ContentWrapper = styled.div`
+  margin: 0 auto;
+  max-width: 1200px;
+  width: 100%;
 `;

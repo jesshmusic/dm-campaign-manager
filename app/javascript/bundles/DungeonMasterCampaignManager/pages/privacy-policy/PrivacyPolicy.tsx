@@ -7,10 +7,9 @@ import { Wrapper } from './PrivacyPolicy.styles';
 const PrivacyPolicy = () => {
   return (
     <PageContainer
+      description="Dungeon Master GURU is a free resource for DMs for reference that includes tools for smooth games."
+      maxWidth
       pageTitle="Dungeon Master GURU Privacy Policy"
-      description={
-        'Dungeon Master GURU is a free resource for DMs for reference that includes tools for smooth games.'
-      }
     >
       <Wrapper>
         <PageTitle title={'Dungeon Master GURU Privacy Policy'} isDraconis />

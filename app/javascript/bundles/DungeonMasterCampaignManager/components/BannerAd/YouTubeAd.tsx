@@ -10,12 +10,12 @@ ReactGA.initialize('G-8XJTH70JSQ');
 import { BannerAdContainer, BannerImageLarge, BannerImageSmall } from './BannerAd.styles';
 
 const YouTubeAd = () => {
-  const { isCollapsed } = useSidebar();
+  const { sidebarWidth } = useSidebar();
   const handleClick = () => {
     ReactGA.event('YouTube Ad Clicked');
   };
   return (
-    <BannerAdContainer $isCollapsed={isCollapsed}>
+    <BannerAdContainer $sidebarWidth={sidebarWidth}>
       <a
         href="https://www.youtube.com/channel/UCC8ZTZ5nMEuVelHXMJpPeCA"
         target="_blank"

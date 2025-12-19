@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import ReactPaginate from 'react-paginate';
 import {
   Column,
@@ -20,10 +20,10 @@ import { GiArchiveResearch } from 'react-icons/gi';
 import { TiArrowSortedDown, TiArrowSortedUp, TiArrowUnsorted } from 'react-icons/ti';
 import classNames from 'classnames';
 import DndSpinner from '../DndSpinners/DndSpinner';
-import { useForm } from 'react-hook-form';
 import { Colors } from '../../utilities/enums';
 import Select from 'react-select';
 import { SelectOption } from '../../utilities/types';
+import debounce from 'lodash/debounce';
 
 import {
   TableWrapper,
@@ -43,9 +43,8 @@ type TableInstanceWithPlugins<T extends object> = TableInstance<T> &
 
 type ColumnWithSorting<T extends object> = ColumnInstance<T> & UseSortByColumnProps<T>;
 
-interface SearchFormData {
-  searchTerm: string;
-}
+const MIN_SEARCH_LENGTH = 2;
+const DEBOUNCE_DELAY = 300;
 
 interface PageClickData {
   selected: number;
@@ -93,7 +92,52 @@ const DataTable = <T extends object = Record<string, unknown>>({
     usePagination,
   ) as TableInstanceWithPlugins<object>;
 
-  const { register, handleSubmit } = useForm<SearchFormData>();
+  const [searchTerm, setSearchTerm] = useState('');
+
+  // Create a memoized debounced search function
+  const debouncedSearch = useMemo(
+    () =>
+      debounce((term: string) => {
+        if (onSearch && term.length >= MIN_SEARCH_LENGTH) {
+          onSearch(term);
+        }
+      }, DEBOUNCE_DELAY),
+    [onSearch],
+  );
+
+  // Cleanup debounce on unmount
+  React.useEffect(() => {
+    return () => {
+      debouncedSearch.cancel();
+    };
+  }, [debouncedSearch]);
+
+  const handleSearchChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
+      setSearchTerm(value);
+
+      if (value.length >= MIN_SEARCH_LENGTH) {
+        debouncedSearch(value);
+      } else if (value.length === 0 && onSearch) {
+        // Clear search when input is emptied
+        debouncedSearch.cancel();
+        onSearch('');
+      }
+    },
+    [debouncedSearch, onSearch],
+  );
+
+  const handleSearchSubmit = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
+      if (onSearch && searchTerm.length >= MIN_SEARCH_LENGTH) {
+        debouncedSearch.cancel();
+        onSearch(searchTerm);
+      }
+    },
+    [onSearch, searchTerm, debouncedSearch],
+  );
 
   if (loading) {
     return <DndSpinner showTableFrame />;
@@ -111,12 +155,6 @@ const DataTable = <T extends object = Record<string, unknown>>({
     dataTable.gotoPage(data.selected);
   };
 
-  const handleSearch = (data: SearchFormData) => {
-    if (onSearch) {
-      onSearch(data.searchTerm);
-    }
-  };
-
   const sortIcon = (column: ColumnWithSorting<object>) => {
     if (column.isSorted && column.isSortedDesc) {
       return <TiArrowSortedDown color="#555752" />;
@@ -129,9 +167,14 @@ const DataTable = <T extends object = Record<string, unknown>>({
   return (
     <TableWrapper className="table-frame">
       {onSearch && (
-        <form onSubmit={handleSubmit(handleSearch)}>
+        <form onSubmit={handleSearchSubmit}>
           <InputGroup>
-            <input {...register('searchTerm')} type="text" placeholder="Search..." />
+            <input
+              type="text"
+              placeholder="Search (2+ characters)..."
+              value={searchTerm}
+              onChange={handleSearchChange}
+            />
             <SearchButton
               color={Colors.secondary}
               title="Search"

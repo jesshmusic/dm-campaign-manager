@@ -77,10 +77,9 @@ const Spells = (props: {
 
   return (
     <PageContainer
-      pageTitle={'Spells'}
-      description={
-        "All D&D spells. Dungeon Master's Toolbox is a free resource for DMs to manage their campaigns, adventures, and Monsters."
-      }
+      description="All D&D spells. Dungeon Master's Toolbox is a free resource for DMs to manage their campaigns, adventures, and Monsters."
+      maxWidth
+      pageTitle="Spells"
     >
       <PageTitle title={'Spells'} isLegacy={isEdition2014} />
       <DataTable

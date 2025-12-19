@@ -65,7 +65,7 @@ const RulesCategory = ({ rules, loading, getRules }: RulesCategoryProps) => {
   // Show loading ONLY on initial load when we have no rules data yet
   if (rules.length === 0 && (loading || ruleSlug)) {
     return (
-      <PageContainer pageTitle="Rules" description="Loading rules...">
+      <PageContainer description="Loading rules..." maxWidth pageTitle="Rules">
         <DndSpinner />
       </PageContainer>
     );
@@ -79,7 +79,7 @@ const RulesCategory = ({ rules, loading, getRules }: RulesCategoryProps) => {
 
   // No slug - show not found
   return (
-    <PageContainer pageTitle="Rules" description="Rule not found">
+    <PageContainer description="Rule not found" maxWidth pageTitle="Rules">
       <PageTitle title="Rule Not Found" isLegacy={isEdition2014} />
       <p>The requested rule could not be found.</p>
       <Link to={getContentIndexUrl('rules', edition)}>Back to Rules</Link>

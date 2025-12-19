@@ -3,7 +3,7 @@
  * Migrated from sidebar.module.scss and sidebar-vars.scss
  */
 
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { MenuItemStyles } from 'react-pro-sidebar';
 
 /**
@@ -52,6 +52,16 @@ export const SidebarWrapper = styled.div`
     opacity: 1;
     z-index: -1;
   }
+
+  /* Fix collapsed sidebar popout menus to be fully opaque */
+  .ps-submenu-content {
+    opacity: 1 !important;
+  }
+
+  /* When sidebar is collapsed, submenu content appears as popup */
+  .ps-collapsed .ps-submenu-content {
+    background-color: rgba(87, 26, 16, 0.98) !important;
+  }
 `;
 
 /**
@@ -65,16 +75,23 @@ export const StyledFooter = styled.div`
 /**
  * User welcome section with name and role
  */
-export const UserWelcome = styled.div`
+export const UserWelcome = styled.div<{ $isCollapsed?: boolean }>`
   font-size: 1.15rem;
   border-bottom: 2px solid ${({ theme }) => theme.sidebar.borderColor};
   color: ${({ theme }) => theme.colors.white};
   font-family: ${({ theme }) => theme.fonts.mrEaves};
   margin-bottom: 0.33rem;
-  padding: 1rem;
+  padding: ${({ $isCollapsed }) => ($isCollapsed ? '0.5rem' : '1rem')};
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: ${({ $isCollapsed }) => ($isCollapsed ? 'center' : 'space-between')};
+`;
+
+/**
+ * Welcome text - hidden when collapsed
+ */
+export const WelcomeText = styled.span<{ $isCollapsed?: boolean }>`
+  display: ${({ $isCollapsed }) => ($isCollapsed ? 'none' : 'inline')};
 `;
 
 /**
@@ -174,3 +191,28 @@ export const sidebarRootStyles = {
   position: 'fixed' as const,
   top: 0,
 };
+
+/**
+ * Resize handle for the sidebar
+ */
+export const ResizeHandle = styled.div<{ $isResizing?: boolean }>`
+  position: absolute;
+  top: 0;
+  right: -4px;
+  width: 8px;
+  height: 100%;
+  cursor: ew-resize;
+  z-index: 1001;
+  background: transparent;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: rgba(201, 173, 106, 0.5);
+  }
+
+  ${({ $isResizing }) =>
+    $isResizing &&
+    css`
+      background-color: rgba(201, 173, 106, 0.7);
+    `}
+`;

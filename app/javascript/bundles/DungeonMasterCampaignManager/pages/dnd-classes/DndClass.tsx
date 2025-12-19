@@ -42,8 +42,9 @@ const DndClassPage = (props: DndClassPageProps) => {
 
   return (
     <PageContainer
-      pageTitle={dndClassTitle}
       description={`DndClass: ${dndClassTitle}. Dungeon Master's Toolbox is a free resource for DMs to manage their dndClasses, adventures, and Monsters.`}
+      maxWidth
+      pageTitle={dndClassTitle}
     >
       <PageTitle title={dndClassTitle} isLegacy={isEdition2014} />
       {dndClass ? (

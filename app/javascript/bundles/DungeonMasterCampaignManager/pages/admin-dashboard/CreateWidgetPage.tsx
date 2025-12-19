@@ -26,10 +26,10 @@ const CreateWidgetPage = (props: {
 
   return (
     <PageContainer
-      pageTitle={'Create Widget'}
       description={
         'Dungeon Master GURU is a free resource for DMs for reference that includes tools for smooth games.'
       }
+      pageTitle={'Create Widget'}
     >
       <h1>Create Widget</h1>
       {process.env.NODE_ENV === 'development' ? (

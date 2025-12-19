@@ -39,7 +39,7 @@ const FeatDetail = ({ currentFeat, loading, getFeat }: FeatDetailProps) => {
 
   if (isEdition2014) {
     return (
-      <PageContainer pageTitle="Feat" description="D&D 5th Edition Feat.">
+      <PageContainer description="D&D 5th Edition Feat." maxWidth pageTitle="Feat">
         <PageTitle title="Feat" isLegacy />
         <p>Feats are a 2024 edition feature. Switch to the 2024 edition to view this feat.</p>
       </PageContainer>
@@ -48,7 +48,7 @@ const FeatDetail = ({ currentFeat, loading, getFeat }: FeatDetailProps) => {
 
   if (loading || !currentFeat) {
     return (
-      <PageContainer pageTitle="Feat" description="D&D 5th Edition Feat.">
+      <PageContainer description="D&D 5th Edition Feat." maxWidth pageTitle="Feat">
         <DndSpinner />
       </PageContainer>
     );
@@ -56,8 +56,9 @@ const FeatDetail = ({ currentFeat, loading, getFeat }: FeatDetailProps) => {
 
   return (
     <PageContainer
-      pageTitle={currentFeat.name}
       description={`${currentFeat.name} - D&D 5th Edition ${currentFeat.category} Feat`}
+      maxWidth
+      pageTitle={currentFeat.name}
     >
       <PageTitle title={currentFeat.name} />
 

@@ -65,10 +65,9 @@ const DndClasses = (props: {
 
   return (
     <PageContainer
-      pageTitle={'DndClasses'}
-      description={
-        "All D&D classes. Dungeon Master's Toolbox is a free resource for DMs to manage their classes, adventures, and Monsters."
-      }
+      description="All D&D classes. Dungeon Master's Toolbox is a free resource for DMs to manage their classes, adventures, and Monsters."
+      maxWidth
+      pageTitle="DndClasses"
     >
       <PageTitle title={'Character Classes'} isLegacy={isEdition2014} />
       <DataTable

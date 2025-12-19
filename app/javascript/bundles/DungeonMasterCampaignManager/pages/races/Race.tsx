@@ -48,6 +48,7 @@ const Race = (props: { race?: RaceProps; getRace: (raceSlug: string) => void }) 
   return (
     <PageContainer
       description={`${typeLabel}: ${raceTitle}. Dungeon Master's Toolbox is a free resource for DMs to manage their dndClasses, adventures, and Monsters.`}
+      maxWidth
       pageTitle={raceTitle}
     >
       {race ? (
