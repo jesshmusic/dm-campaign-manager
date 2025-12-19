@@ -1,4 +1,4 @@
-import React, { useRef, useMemo } from 'react';
+import React, { useRef, useMemo, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 
 // Bootstrap
@@ -13,7 +13,11 @@ import Util from '../utilities/utilities';
 import { gsap } from 'gsap';
 import ReactGA from 'react-ga4';
 import SearchField from '../components/Search/SearchField';
-import { SidebarProvider } from '../contexts/SidebarContext';
+import {
+  SidebarProvider,
+  SIDEBAR_MIN_WIDTH,
+  SIDEBAR_COLLAPSED_WIDTH,
+} from '../contexts/SidebarContext';
 import { useBreadcrumbs } from '../contexts/BreadcrumbContext';
 
 import { PageWrapper, PageContent, Page, ContentWrapper } from './Containers.styles';
@@ -33,22 +37,33 @@ type PageContainerProps = {
   pageTitle: string;
 };
 
-// Get saved collapsed state from localStorage
-const getSavedCollapsed = (): boolean => {
+// Get saved sidebar state from localStorage
+const getSavedSidebarState = (): { collapsed: boolean; width: number } => {
   if (typeof window !== 'undefined') {
-    return localStorage.getItem('sidebar-collapsed') === 'true';
+    const collapsed = localStorage.getItem('sidebar-collapsed') === 'true';
+    const savedWidth = localStorage.getItem('sidebar-width');
+    const width = savedWidth ? parseInt(savedWidth, 10) : SIDEBAR_MIN_WIDTH;
+    return { collapsed, width };
   }
-  return false;
+  return { collapsed: false, width: SIDEBAR_MIN_WIDTH };
 };
 
 const PageContainer = (props: PageContainerProps) => {
-  const [isCollapsed, setIsCollapsedState] = React.useState(getSavedCollapsed);
+  const savedState = getSavedSidebarState();
+  const [isCollapsed, setIsCollapsedState] = React.useState(savedState.collapsed);
+  const [sidebarWidth, setSidebarWidthState] = React.useState(savedState.width);
   const { children, description, maxWidth = false, pageTitle } = props;
 
   // Wrap setIsCollapsed to persist to localStorage
-  const setIsCollapsed = React.useCallback((collapsed: boolean) => {
+  const setIsCollapsed = useCallback((collapsed: boolean) => {
     setIsCollapsedState(collapsed);
     localStorage.setItem('sidebar-collapsed', String(collapsed));
+  }, []);
+
+  // Wrap setSidebarWidth to persist to localStorage
+  const setSidebarWidth = useCallback((width: number) => {
+    setSidebarWidthState(width);
+    localStorage.setItem('sidebar-width', String(width));
   }, []);
   const [isMobile, setIsMobile] = React.useState(Util.isMobileWidth());
   const nodeRef = useRef<HTMLDivElement>(null);
@@ -78,9 +93,15 @@ const PageContainer = (props: PageContainerProps) => {
     });
   }, [location.pathname]);
 
+  const effectiveCollapsed = isCollapsed || isMobile;
+  const effectiveWidth = effectiveCollapsed ? SIDEBAR_COLLAPSED_WIDTH : sidebarWidth;
+
   const sidebarContextValue = useMemo(
-    () => ({ isCollapsed: isCollapsed || isMobile }),
-    [isCollapsed, isMobile],
+    () => ({
+      isCollapsed: effectiveCollapsed,
+      sidebarWidth: effectiveWidth,
+    }),
+    [effectiveCollapsed, effectiveWidth],
   );
 
   return (
@@ -92,15 +113,17 @@ const PageContainer = (props: PageContainerProps) => {
           <meta name="description" content={description} />
         </Helmet>
         <SideBar
-          isCollapsed={isCollapsed || isMobile}
+          isCollapsed={effectiveCollapsed}
           setIsCollapsed={setIsCollapsed}
           isMobile={isMobile}
+          sidebarWidth={sidebarWidth}
+          setSidebarWidth={setSidebarWidth}
         />
         <BreadcrumbsWithContext isCollapsed={isCollapsed} />
         <SearchField />
         <PageWrapper ref={nodeRef}>
           <PageContent>
-            <Page $isCollapsed={isCollapsed}>
+            <Page $sidebarWidth={effectiveWidth}>
               {maxWidth ? <ContentWrapper>{children}</ContentWrapper> : children}
             </Page>
           </PageContent>

@@ -3,7 +3,7 @@
  * Migrated from sidebar.module.scss and sidebar-vars.scss
  */
 
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { MenuItemStyles } from 'react-pro-sidebar';
 
 /**
@@ -191,3 +191,28 @@ export const sidebarRootStyles = {
   position: 'fixed' as const,
   top: 0,
 };
+
+/**
+ * Resize handle for the sidebar
+ */
+export const ResizeHandle = styled.div<{ $isResizing?: boolean }>`
+  position: absolute;
+  top: 0;
+  right: -4px;
+  width: 8px;
+  height: 100%;
+  cursor: ew-resize;
+  z-index: 1001;
+  background: transparent;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: rgba(201, 173, 106, 0.5);
+  }
+
+  ${({ $isResizing }) =>
+    $isResizing &&
+    css`
+      background-color: rgba(201, 173, 106, 0.7);
+    `}
+`;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import rest from '../../api/api';
 import { connect } from 'react-redux';
 import { AiOutlineHome } from 'react-icons/ai';
@@ -27,6 +27,11 @@ import PatreonIcon from '../icons/PatreonIcon';
 import EditionToggle from '../EditionToggle';
 import { getIconFromName } from '../../utilities/icons';
 import { getContentUrl, getContentIndexUrl } from '../../utilities/editionUrls';
+import {
+  SIDEBAR_MIN_WIDTH,
+  SIDEBAR_COLLAPSED_WIDTH,
+  SIDEBAR_MAX_WIDTH,
+} from '../../contexts/SidebarContext';
 
 const PATREON_URL =
   'https://patreon.com/DormanLakely?utm_medium=unknown&utm_source=join_link&utm_campaign=creatorshare_creator&utm_content=copyLink';
@@ -46,6 +51,7 @@ import {
   UserWelcome,
   WelcomeText,
   RoleLabel,
+  ResizeHandle,
   menuItemStyles,
 } from './SideBar.styles';
 
@@ -123,12 +129,84 @@ const SideBar = (props: {
   logOutUser: (token: string) => void;
   rules: RuleType[];
   setIsCollapsed: (collapsed: boolean) => void;
+  sidebarWidth: number;
+  setSidebarWidth: (width: number) => void;
 }) => {
-  const { currentUser, getRules, isCollapsed, isMobile, logOutUser, rules, setIsCollapsed } = props;
+  const {
+    currentUser,
+    getRules,
+    isCollapsed,
+    isMobile,
+    logOutUser,
+    rules,
+    setIsCollapsed,
+    sidebarWidth,
+    setSidebarWidth,
+  } = props;
 
   const { user, getAccessTokenSilently, isAuthenticated, loginWithRedirect, logout } = useAuth0();
   const location = useLocation();
   const { edition, isEdition2024 } = useEdition();
+
+  // Resize state
+  const [isResizing, setIsResizing] = useState(false);
+  const resizeRef = useRef<{ startX: number; startWidth: number } | null>(null);
+
+  // Handle resize start
+  const handleResizeStart = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault();
+      setIsResizing(true);
+      resizeRef.current = {
+        startX: e.clientX,
+        startWidth: isCollapsed ? SIDEBAR_COLLAPSED_WIDTH : sidebarWidth,
+      };
+
+      const handleMouseMove = (moveEvent: MouseEvent) => {
+        if (!resizeRef.current) return;
+
+        const delta = moveEvent.clientX - resizeRef.current.startX;
+        const newWidth = resizeRef.current.startWidth + delta;
+
+        // If collapsed and dragging right, expand to min width
+        if (isCollapsed && newWidth > SIDEBAR_COLLAPSED_WIDTH + 20) {
+          setIsCollapsed(false);
+          setSidebarWidth(SIDEBAR_MIN_WIDTH);
+          resizeRef.current.startX = moveEvent.clientX;
+          resizeRef.current.startWidth = SIDEBAR_MIN_WIDTH;
+          return;
+        }
+
+        // If not collapsed, handle resize with snap behavior
+        if (!isCollapsed) {
+          // Snap to collapsed if dragged below threshold
+          if (newWidth < SIDEBAR_MIN_WIDTH - 40) {
+            setIsCollapsed(true);
+            return;
+          }
+
+          // Clamp width between min and max
+          const clampedWidth = Math.max(SIDEBAR_MIN_WIDTH, Math.min(SIDEBAR_MAX_WIDTH, newWidth));
+          setSidebarWidth(clampedWidth);
+        }
+      };
+
+      const handleMouseUp = () => {
+        setIsResizing(false);
+        resizeRef.current = null;
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+        document.body.style.cursor = '';
+        document.body.style.userSelect = '';
+      };
+
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = 'ew-resize';
+      document.body.style.userSelect = 'none';
+    },
+    [isCollapsed, sidebarWidth, setIsCollapsed, setSidebarWidth],
+  );
 
   // In 2024 edition, "Races" are called "Species"
   const racesLabel = isEdition2024 ? 'Species' : 'Races';
@@ -164,21 +242,26 @@ const SideBar = (props: {
     getRules();
   }, []);
 
+  // Calculate display width
+  const displayWidth = isCollapsed ? `${SIDEBAR_COLLAPSED_WIDTH}px` : `${sidebarWidth}px`;
+
   return (
     <SidebarWrapper>
       <Sidebar
         collapsed={isCollapsed}
         image={sidebarBG}
         backgroundColor="rgba(87, 26, 16, 0.3)"
-        width="20rem"
-        collapsedWidth="5rem"
+        width={displayWidth}
+        collapsedWidth={`${SIDEBAR_COLLAPSED_WIDTH}px`}
         rootStyles={{
           borderRight: '0.25rem solid #c9ad6a',
           height: '100vh',
           position: 'fixed',
           top: 0,
+          transition: isResizing ? 'none' : 'width 0.15s ease-out',
         }}
       >
+        {!isMobile && <ResizeHandle $isResizing={isResizing} onMouseDown={handleResizeStart} />}
         <Menu menuItemStyles={menuItemStyles}>
           {!isMobile && (
             <SidebarButton

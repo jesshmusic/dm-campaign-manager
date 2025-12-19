@@ -2,6 +2,7 @@ import React from 'react';
 import BreadcrumbLink from './BreadcrumbLink';
 import { GiCastle, GiPointing, GiTwoHandedSword } from 'react-icons/gi';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useSidebar } from '../../contexts/SidebarContext';
 
 import {
   BackButton,
@@ -44,7 +45,8 @@ type BreadcrumbsProps = {
   customPaths?: BreadcrumbPathItem[];
 };
 
-const Breadcrumbs = ({ isCollapsed, customPaths }: BreadcrumbsProps) => {
+const Breadcrumbs = ({ customPaths }: BreadcrumbsProps) => {
+  const { sidebarWidth } = useSidebar();
   const location = useLocation();
   const navigate = useNavigate();
   const [paths, setPaths] = React.useState<{ url: string; title: string }[]>([]);
@@ -73,7 +75,7 @@ const Breadcrumbs = ({ isCollapsed, customPaths }: BreadcrumbsProps) => {
 
   return (
     <nav aria-label="breadcrumb">
-      <BreadcrumbList $isCollapsed={isCollapsed}>
+      <BreadcrumbList $sidebarWidth={sidebarWidth}>
         {paths.length > 0 ? (
           <BackButton onClick={() => navigate(-1)}>
             <GiPointing size={25} />

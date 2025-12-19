@@ -3,8 +3,7 @@
  * Migrated from breadcrumbs.module.scss
  */
 
-import styled, { css } from 'styled-components';
-import { respondToContainer } from '../../theme/mixins';
+import styled from 'styled-components';
 
 export const BackButton = styled.button`
   background-color: transparent;
@@ -28,7 +27,7 @@ export const HomeIcon = styled.li`
   padding-right: 1rem;
 `;
 
-export const BreadcrumbList = styled.ol<{ $isCollapsed?: boolean }>`
+export const BreadcrumbList = styled.ol<{ $sidebarWidth?: number }>`
   align-items: center;
   background-color: ${({ theme }) => theme.colors.backgroundMed};
   border-collapse: separate;
@@ -40,17 +39,9 @@ export const BreadcrumbList = styled.ol<{ $isCollapsed?: boolean }>`
   flex-wrap: wrap;
   font-family: ${({ theme }) => theme.fonts.mrEaves};
   list-style: none;
-  margin: 0 0 0 5rem;
+  margin-left: ${({ $sidebarWidth }) => $sidebarWidth || 80}px;
   padding: 0.35rem 1rem;
-
-  ${({ $isCollapsed }) =>
-    !$isCollapsed &&
-    css`
-      ${respondToContainer.md`
-        margin: 0 0 0 20rem;
-        padding: 0.35rem 0;
-      `}
-    `}
+  transition: margin-left 0.15s ease-out;
 `;
 
 export const BreadcrumbItem = styled.li<{ $isActive?: boolean }>`

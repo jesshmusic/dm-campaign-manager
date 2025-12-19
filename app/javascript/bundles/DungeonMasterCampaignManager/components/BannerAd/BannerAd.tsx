@@ -1,16 +1,18 @@
 import React from 'react';
 import ReactGA from 'react-ga4';
+import { useSidebar } from '../../contexts/SidebarContext';
 
 ReactGA.initialize('G-8XJTH70JSQ');
 
 import { BannerAdContainer, BannerImageLarge, BannerImageSmall } from './BannerAd.styles';
 
 const BannerAd = () => {
+  const { sidebarWidth } = useSidebar();
   const handleClick = () => {
     ReactGA.event('Banner Ad Clicked');
   };
   return (
-    <BannerAdContainer>
+    <BannerAdContainer $sidebarWidth={sidebarWidth}>
       <a
         href="https://affiliates.fantasygrounds.com/324247/15958/banner_7297"
         target="_blank"

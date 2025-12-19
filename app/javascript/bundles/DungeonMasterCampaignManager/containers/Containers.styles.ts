@@ -22,21 +22,13 @@ export const PageContent = styled.div`
   flex: 1;
 `;
 
-export const Page = styled.div<{ $isCollapsed?: boolean }>`
-  margin: 0 0 0 5rem;
+export const Page = styled.div<{ $sidebarWidth?: number }>`
+  margin-left: ${({ $sidebarWidth }) => $sidebarWidth || 80}px;
   min-height: calc(100vh - 35rem);
   padding: 1rem;
   position: relative;
+  transition: margin-left 0.15s ease-out;
   z-index: 200;
-
-  ${({ $isCollapsed }) =>
-    !$isCollapsed &&
-    css`
-      ${respondToContainer.md`
-        margin: 0 0 0 20rem;
-        padding: 1rem;
-      `}
-    `}
 
   &::after {
     background-image: url('/images/dndBottomDeco.png');
