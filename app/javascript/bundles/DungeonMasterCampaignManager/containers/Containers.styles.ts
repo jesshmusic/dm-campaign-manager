@@ -4,7 +4,6 @@
  */
 
 import styled, { css } from 'styled-components';
-import { respondToContainer } from '../theme/mixins';
 
 // Layout styles
 export const AppContainer = styled.div`

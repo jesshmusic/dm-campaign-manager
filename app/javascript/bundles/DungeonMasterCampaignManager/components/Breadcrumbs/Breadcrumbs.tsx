@@ -41,7 +41,6 @@ const isNonClickable = (title: string, index: number, totalPaths: number): boole
 const isActivePage = (index: number, totalPaths: number): boolean => index === totalPaths - 1;
 
 type BreadcrumbsProps = {
-  isCollapsed: boolean;
   customPaths?: BreadcrumbPathItem[];
 };
 

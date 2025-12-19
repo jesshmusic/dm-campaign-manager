@@ -22,8 +22,7 @@ ReactGA.initialize('G-8XJTH70JSQ');
 // Wrapper component to connect Breadcrumbs to context
 const BreadcrumbsWithContext = () => {
   const { customPaths } = useBreadcrumbs();
-  const { isCollapsed } = useSidebar();
-  return <Breadcrumbs isCollapsed={isCollapsed} customPaths={customPaths} />;
+  return <Breadcrumbs customPaths={customPaths} />;
 };
 
 type PageContainerProps = {
