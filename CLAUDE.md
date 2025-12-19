@@ -9,8 +9,20 @@
 3. If a change breaks existing tests, fix them immediately
 4. Never commit code with failing tests
 5. Both Jest (frontend) and RSpec (backend) tests must pass
-6. **Write tests for new components/features as you create them** - don't leave new code untested
+6. **ALWAYS write tests for new components/features AS YOU CREATE THEM** - never leave new code untested
 7. Maintain coverage thresholds - new code should not decrease overall test coverage
+
+### Critical: Write Tests As You Go
+
+**DO NOT create new components, forms, modals, or features without writing corresponding tests.**
+
+- When creating a new React component, write the test file immediately after (or before) the component
+- When adding new API endpoints, write request specs for them
+- When adding new models or services, write unit tests
+- Test files should be created in the same commit as the code they test
+- If you find yourself creating multiple files without tests, STOP and write the tests first
+
+This is non-negotiable. CI will fail if coverage drops below thresholds.
 
 ## Pre-Push Checklist
 
