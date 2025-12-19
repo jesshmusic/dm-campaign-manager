@@ -138,14 +138,6 @@ export const useData = (props: ItemsPageProps) => {
         accessor: 'name',
       },
       {
-        Header: 'Type',
-        accessor: 'armorType',
-      },
-      {
-        Header: 'Armor Class (AC)',
-        accessor: 'armorClass',
-      },
-      {
         Header: 'Rarity',
         accessor: 'rarity',
         sortType: React.useMemo(
