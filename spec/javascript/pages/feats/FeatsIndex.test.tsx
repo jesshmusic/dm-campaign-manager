@@ -71,13 +71,18 @@ const mockFeats = [
 ];
 
 describe('FeatsIndex', () => {
-  const createMockStore = (featsState = {}) => {
+  const createMockStore = (featsState = {}, usersState = {}) => {
     return configureStore({
       reducer: {
         feats: () => ({
           feats: [],
           loading: false,
           ...featsState,
+        }),
+        users: () => ({
+          currentUser: null,
+          token: null,
+          ...usersState,
         }),
       },
     });

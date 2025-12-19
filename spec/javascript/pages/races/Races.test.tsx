@@ -31,6 +31,16 @@ jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/compo
   };
 });
 
+jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/components/shared', () => ({
+  AdminNewButton: () => null,
+}));
+
+jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/races/RaceFormModal', () => {
+  return function MockRaceFormModal() {
+    return null;
+  };
+});
+
 const mockStore = configureStore({
   reducer: {
     races: () => ({
@@ -47,6 +57,9 @@ const mockStore = configureStore({
         },
       ],
       loading: false,
+    }),
+    users: () => ({
+      currentUser: null,
     }),
   },
 });

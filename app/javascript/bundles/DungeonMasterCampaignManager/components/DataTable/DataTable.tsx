@@ -171,7 +171,7 @@ const DataTable = <T extends object = Record<string, unknown>>({
           <InputGroup>
             <input
               type="text"
-              placeholder="Search (2+ characters)..."
+              placeholder="Search..."
               value={searchTerm}
               onChange={handleSearchChange}
             />

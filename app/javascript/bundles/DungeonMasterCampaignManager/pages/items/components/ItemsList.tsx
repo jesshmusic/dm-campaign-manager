@@ -11,6 +11,9 @@ import { ItemType } from '../use-data';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useEdition } from '../../../contexts/EditionContext';
 import { getContentUrl, isValidEdition } from '../../../utilities/editionUrls';
+import { UserProps } from '../../../utilities/types';
+import { AdminNewButton } from '../../../components/shared';
+import ItemFormModal from '../ItemFormModal';
 
 type ItemsListProps = {
   columns: Array<Column<Record<string, unknown>>>;
@@ -19,11 +22,23 @@ type ItemsListProps = {
   loading: boolean;
   onSearch: (searchTerm: string) => void;
   pageTitle: string;
+  currentUser?: UserProps;
+  onCreateSuccess?: () => void;
 };
 
-const ItemsList = ({ columns, data, loading, onSearch, pageTitle, itemType }: ItemsListProps) => {
+const ItemsList = ({
+  columns,
+  data,
+  loading,
+  onSearch,
+  pageTitle,
+  itemType,
+  currentUser,
+  onCreateSuccess,
+}: ItemsListProps) => {
   const { edition: editionParam } = useParams<{ edition?: string }>();
   const { edition: contextEdition, isEdition2014 } = useEdition();
+  const [isCreateModalOpen, setIsCreateModalOpen] = React.useState(false);
 
   // Use edition from URL if valid, otherwise from context
   const edition = isValidEdition(editionParam) ? editionParam : contextEdition;
@@ -31,7 +46,7 @@ const ItemsList = ({ columns, data, loading, onSearch, pageTitle, itemType }: It
   const _breadCrumbs =
     itemType !== ItemType.all
       ? [
-          { url: '/app/items/', isActive: false, title: 'Items & Equipment' },
+          { url: '/app/items', isActive: false, title: 'Items & Equipment' },
           { isActive: true, title: pageTitle },
         ]
       : [{ isActive: true, title: pageTitle }];
@@ -41,6 +56,10 @@ const ItemsList = ({ columns, data, loading, onSearch, pageTitle, itemType }: It
     navigate(getContentUrl('items', row.original.slug as string, edition));
   };
 
+  const handleCreateSuccess = () => {
+    onCreateSuccess?.();
+  };
+
   return (
     <PageContainer
       description={`${pageTitle} records with descriptions and stats. Dungeon Master's Toolbox is a free resource for DMs to manage their campaigns, adventures, and Monsters.`}
@@ -48,6 +67,11 @@ const ItemsList = ({ columns, data, loading, onSearch, pageTitle, itemType }: It
       pageTitle={pageTitle}
     >
       <PageTitle title={pageTitle} isLegacy={isEdition2014} />
+      <AdminNewButton
+        currentUser={currentUser}
+        onClick={() => setIsCreateModalOpen(true)}
+        label="New Item"
+      />
       <DataTable
         columns={columns}
         data={data}
@@ -56,6 +80,12 @@ const ItemsList = ({ columns, data, loading, onSearch, pageTitle, itemType }: It
         perPage={10}
         loading={loading}
         results={data.length}
+      />
+      <ItemFormModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        mode="create"
+        onSuccess={handleCreateSuccess}
       />
     </PageContainer>
   );

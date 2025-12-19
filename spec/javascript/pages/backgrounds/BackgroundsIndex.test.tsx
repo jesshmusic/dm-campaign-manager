@@ -57,13 +57,18 @@ const mockBackgrounds = [
 ];
 
 describe('BackgroundsIndex', () => {
-  const createMockStore = (backgroundsState = {}) => {
+  const createMockStore = (backgroundsState = {}, usersState = {}) => {
     return configureStore({
       reducer: {
         backgrounds: () => ({
           backgrounds: [],
           loading: false,
           ...backgroundsState,
+        }),
+        users: () => ({
+          currentUser: null,
+          token: null,
+          ...usersState,
         }),
       },
     });

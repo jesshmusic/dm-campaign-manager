@@ -196,11 +196,71 @@ export default reduxApi({
   getBackgrounds: {
     url: '/v1/backgrounds.json',
   },
+  createBackground: {
+    url: '/v1/backgrounds',
+    options() {
+      const headers = getHeaders();
+      return {
+        method: 'post',
+        headers,
+      };
+    },
+  },
+  updateBackground: {
+    url: '/v1/backgrounds/:id.json',
+    options() {
+      const headers = getHeaders();
+      return {
+        method: 'put',
+        headers,
+      };
+    },
+  },
+  deleteBackground: {
+    url: '/v1/backgrounds/:id.json',
+    options() {
+      const headers = getHeaders();
+      return {
+        method: 'delete',
+        headers,
+      };
+    },
+  },
   getFeat: {
     url: '/v1/feats/:id.json',
   },
   getFeats: {
     url: '/v1/feats.json',
+  },
+  createFeat: {
+    url: '/v1/feats',
+    options() {
+      const headers = getHeaders();
+      return {
+        method: 'post',
+        headers,
+      };
+    },
+  },
+  updateFeat: {
+    url: '/v1/feats/:id.json',
+    options() {
+      const headers = getHeaders();
+      return {
+        method: 'put',
+        headers,
+      };
+    },
+  },
+  deleteFeat: {
+    url: '/v1/feats/:id.json',
+    options() {
+      const headers = getHeaders();
+      return {
+        method: 'delete',
+        headers,
+      };
+    },
   },
   getRule: {
     url: '/v1/rules/:id.json',
@@ -213,6 +273,186 @@ export default reduxApi({
   },
   getSpells: {
     url: '/v1/spells.json',
+  },
+  createSpell: {
+    url: '/v1/spells',
+    options() {
+      const headers = getHeaders();
+      return {
+        method: 'post',
+        headers,
+      };
+    },
+  },
+  updateSpell: {
+    url: '/v1/spells/:id.json',
+    options() {
+      const headers = getHeaders();
+      return {
+        method: 'put',
+        headers,
+      };
+    },
+  },
+  deleteSpell: {
+    url: '/v1/spells/:id.json',
+    options() {
+      const headers = getHeaders();
+      return {
+        method: 'delete',
+        headers,
+      };
+    },
+  },
+  createItem: {
+    url: '/v1/items',
+    options() {
+      const headers = getHeaders();
+      return {
+        method: 'post',
+        headers,
+      };
+    },
+  },
+  updateItem: {
+    url: '/v1/items/:id.json',
+    options() {
+      const headers = getHeaders();
+      return {
+        method: 'put',
+        headers,
+      };
+    },
+  },
+  deleteItem: {
+    url: '/v1/items/:id.json',
+    options() {
+      const headers = getHeaders();
+      return {
+        method: 'delete',
+        headers,
+      };
+    },
+  },
+  createRace: {
+    url: '/v1/races',
+    options() {
+      const headers = getHeaders();
+      return {
+        method: 'post',
+        headers,
+      };
+    },
+  },
+  updateRace: {
+    url: '/v1/races/:id.json',
+    options() {
+      const headers = getHeaders();
+      return {
+        method: 'put',
+        headers,
+      };
+    },
+  },
+  deleteRace: {
+    url: '/v1/races/:id.json',
+    options() {
+      const headers = getHeaders();
+      return {
+        method: 'delete',
+        headers,
+      };
+    },
+  },
+  createRule: {
+    url: '/v1/rules',
+    options() {
+      const headers = getHeaders();
+      return {
+        method: 'post',
+        headers,
+      };
+    },
+  },
+  updateRule: {
+    url: '/v1/rules/:id.json',
+    options() {
+      const headers = getHeaders();
+      return {
+        method: 'put',
+        headers,
+      };
+    },
+  },
+  deleteRule: {
+    url: '/v1/rules/:id.json',
+    options() {
+      const headers = getHeaders();
+      return {
+        method: 'delete',
+        headers,
+      };
+    },
+  },
+  createMonster: {
+    url: '/v1/monsters',
+    options() {
+      const headers = getHeaders();
+      return {
+        method: 'post',
+        headers,
+      };
+    },
+  },
+  updateMonster: {
+    url: '/v1/monsters/:id.json',
+    options() {
+      const headers = getHeaders();
+      return {
+        method: 'put',
+        headers,
+      };
+    },
+  },
+  deleteMonster: {
+    url: '/v1/monsters/:id.json',
+    options() {
+      const headers = getHeaders();
+      return {
+        method: 'delete',
+        headers,
+      };
+    },
+  },
+  createDndClass: {
+    url: '/v1/dnd_classes',
+    options() {
+      const headers = getHeaders();
+      return {
+        method: 'post',
+        headers,
+      };
+    },
+  },
+  updateDndClass: {
+    url: '/v1/dnd_classes/:id.json',
+    options() {
+      const headers = getHeaders();
+      return {
+        method: 'put',
+        headers,
+      };
+    },
+  },
+  deleteDndClass: {
+    url: '/v1/dnd_classes/:id.json',
+    options() {
+      const headers = getHeaders();
+      return {
+        method: 'delete',
+        headers,
+      };
+    },
   },
   user: {
     url: '/users/:id.json',

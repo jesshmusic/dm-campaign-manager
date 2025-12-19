@@ -9,6 +9,9 @@ import { useEdition } from '../../contexts/EditionContext';
 import { GiUpgrade, GiSwordsPower, GiBowArrow, GiSparkSpirit } from 'react-icons/gi';
 import { Feat } from '../../reducers/feats';
 import { getContentUrl, isValidEdition } from '../../utilities/editionUrls';
+import { UserProps } from '../../utilities/types';
+import { AdminNewButton } from '../../components/shared';
+import FeatFormModal from './FeatFormModal';
 
 import {
   FeatsContainer,
@@ -27,6 +30,7 @@ import {
 type FeatsIndexProps = {
   feats: Feat[];
   loading: boolean;
+  currentUser?: UserProps;
   getFeats: () => void;
 };
 
@@ -58,9 +62,10 @@ const groupFeatsByCategory = (feats: Feat[]) => {
   return groups;
 };
 
-const FeatsIndex = ({ feats, loading, getFeats }: FeatsIndexProps) => {
+const FeatsIndex = ({ feats, loading, currentUser, getFeats }: FeatsIndexProps) => {
   const { edition: editionParam, param } = useParams<{ edition?: string; param?: string }>();
   const { edition: contextEdition, isEdition2014 } = useEdition();
+  const [isCreateModalOpen, setIsCreateModalOpen] = React.useState(false);
 
   // Use edition from URL if valid (either :edition or :param route), otherwise from context
   const urlEdition = editionParam || param;
@@ -69,6 +74,10 @@ const FeatsIndex = ({ feats, loading, getFeats }: FeatsIndexProps) => {
   React.useEffect(() => {
     getFeats();
   }, []);
+
+  const handleCreateSuccess = () => {
+    getFeats();
+  };
 
   // Feats are only available in 2024 edition
   if (isEdition2014) {
@@ -96,6 +105,11 @@ const FeatsIndex = ({ feats, loading, getFeats }: FeatsIndexProps) => {
       pageTitle="Feats"
     >
       <PageTitle title="Feats" />
+      <AdminNewButton
+        currentUser={currentUser}
+        onClick={() => setIsCreateModalOpen(true)}
+        label="New Feat"
+      />
       {loading ? (
         <DndSpinner />
       ) : (
@@ -131,6 +145,12 @@ const FeatsIndex = ({ feats, loading, getFeats }: FeatsIndexProps) => {
           })}
         </FeatsContainer>
       )}
+      <FeatFormModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        mode="create"
+        onSuccess={handleCreateSuccess}
+      />
     </PageContainer>
   );
 };
@@ -139,6 +159,7 @@ function mapStateToProps(state) {
   return {
     feats: state.feats.feats,
     loading: state.feats.loading,
+    currentUser: state.users.currentUser,
   };
 }
 

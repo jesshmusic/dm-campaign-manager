@@ -9,6 +9,9 @@ import { useEdition } from '../../contexts/EditionContext';
 import { GiPerson } from 'react-icons/gi';
 import { Background } from '../../reducers/backgrounds';
 import { getContentUrl, isValidEdition } from '../../utilities/editionUrls';
+import { UserProps } from '../../utilities/types';
+import { AdminNewButton } from '../../components/shared';
+import BackgroundFormModal from './BackgroundFormModal';
 
 import {
   BackgroundsGrid,
@@ -22,12 +25,19 @@ import {
 type BackgroundsIndexProps = {
   backgrounds: Background[];
   loading: boolean;
+  currentUser?: UserProps;
   getBackgrounds: () => void;
 };
 
-const BackgroundsIndex = ({ backgrounds, loading, getBackgrounds }: BackgroundsIndexProps) => {
+const BackgroundsIndex = ({
+  backgrounds,
+  loading,
+  currentUser,
+  getBackgrounds,
+}: BackgroundsIndexProps) => {
   const { edition: editionParam, param } = useParams<{ edition?: string; param?: string }>();
   const { edition: contextEdition, isEdition2014 } = useEdition();
+  const [isCreateModalOpen, setIsCreateModalOpen] = React.useState(false);
 
   // Use edition from URL if valid (either :edition or :param route), otherwise from context
   const urlEdition = editionParam || param;
@@ -36,6 +46,10 @@ const BackgroundsIndex = ({ backgrounds, loading, getBackgrounds }: BackgroundsI
   React.useEffect(() => {
     getBackgrounds();
   }, []);
+
+  const handleCreateSuccess = () => {
+    getBackgrounds();
+  };
 
   // Backgrounds are only available in 2024 edition
   if (isEdition2014) {
@@ -61,6 +75,11 @@ const BackgroundsIndex = ({ backgrounds, loading, getBackgrounds }: BackgroundsI
       pageTitle="Backgrounds"
     >
       <PageTitle title="Backgrounds" />
+      <AdminNewButton
+        currentUser={currentUser}
+        onClick={() => setIsCreateModalOpen(true)}
+        label="New Background"
+      />
       {loading ? (
         <DndSpinner />
       ) : (
@@ -85,6 +104,12 @@ const BackgroundsIndex = ({ backgrounds, loading, getBackgrounds }: BackgroundsI
           ))}
         </BackgroundsGrid>
       )}
+      <BackgroundFormModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        mode="create"
+        onSuccess={handleCreateSuccess}
+      />
     </PageContainer>
   );
 };
@@ -93,6 +118,7 @@ function mapStateToProps(state) {
   return {
     backgrounds: state.backgrounds.backgrounds,
     loading: state.backgrounds.loading,
+    currentUser: state.users.currentUser,
   };
 }
 

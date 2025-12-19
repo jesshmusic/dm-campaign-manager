@@ -7,6 +7,7 @@ import {
 } from '../../utilities/types';
 import React from 'react';
 import Util from '../../utilities/utilities';
+import { useEdition } from '../../contexts/EditionContext';
 
 export enum ItemType {
   all = 'All',
@@ -97,6 +98,23 @@ const weaponColumn = [
 
 export const useData = (props: ItemsPageProps) => {
   const { getItems, items, itemType } = props;
+  const { isEdition2014 } = useEdition();
+
+  // Weapon columns with mastery only for 2024 edition
+  const weaponColumnsWithMastery = React.useMemo(
+    () => [
+      ...weaponColumn,
+      ...(isEdition2014
+        ? []
+        : [
+            {
+              Header: 'Mastery',
+              accessor: 'mastery',
+            },
+          ]),
+    ],
+    [isEdition2014],
+  );
 
   const columnValues = {
     [ItemType.all]: [
@@ -206,7 +224,7 @@ export const useData = (props: ItemsPageProps) => {
       },
     ],
     [ItemType.magicWeapon]: [
-      ...weaponColumn,
+      ...weaponColumnsWithMastery,
       {
         Header: 'Rarity',
         accessor: 'rarity',
@@ -220,7 +238,7 @@ export const useData = (props: ItemsPageProps) => {
         ),
       },
     ],
-    [ItemType.weapon]: [...weaponColumn],
+    [ItemType.weapon]: [...weaponColumnsWithMastery],
   };
 
   const onSearch = (searchTerm: string) => {
@@ -240,6 +258,7 @@ export const useData = (props: ItemsPageProps) => {
         contents: item.contents,
         cost: item.rarity && item.rarity !== '-' ? `~${item.cost}` : item.cost,
         damage: item.damage,
+        mastery: item.mastery || '-',
         name: item.name,
         properties: item.properties,
         rarity: item.rarity || '-',
@@ -254,7 +273,7 @@ export const useData = (props: ItemsPageProps) => {
     });
   }, [items]);
 
-  const columns = React.useMemo(() => columnValues[itemType], [itemType]);
+  const columns = React.useMemo(() => columnValues[itemType], [itemType, isEdition2014]);
 
   return {
     columns,

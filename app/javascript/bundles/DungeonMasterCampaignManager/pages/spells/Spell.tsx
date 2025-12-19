@@ -1,29 +1,49 @@
 import React from 'react';
-import { SpellProps } from '../../utilities/types';
+import { SpellProps, UserProps } from '../../utilities/types';
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
 import DndSpinner from '../../components/DndSpinners/DndSpinner';
 import InfoBlock from '../../components/InfoBlock/InfoBlock';
 import rest from '../../api/api';
 import { connect } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useEdition } from '../../contexts/EditionContext';
-import { parseEditionParams } from '../../utilities/editionUrls';
+import { parseEditionParams, getContentUrl } from '../../utilities/editionUrls';
+import { AdminActions } from '../../components/shared';
+import SpellFormModal from './SpellFormModal';
 
 import { SpellWrapper, SpellDescription } from './Spell.styles';
 
-const Spell = (props: { spell: SpellProps; getSpell: (spellSlug: string) => void }) => {
-  const { spell, getSpell } = props;
+type SpellPageProps = {
+  spell: SpellProps;
+  getSpell: (spellSlug: string) => void;
+  currentUser?: UserProps;
+};
+
+const Spell = (props: SpellPageProps) => {
+  const { spell, getSpell, currentUser } = props;
   const params = useParams<{ edition?: string; spellSlug?: string; param?: string }>();
+  const navigate = useNavigate();
   // Handle both /app/spells/:edition/:slug and /app/spells/:param routes
   const { slug: spellSlug } = parseEditionParams(params.edition, params.spellSlug || params.param);
-  const { isEdition2014 } = useEdition();
+  const { edition, isEdition2014 } = useEdition();
+  const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
 
   React.useEffect(() => {
     if (spellSlug) {
       getSpell(spellSlug);
     }
   }, [spellSlug]);
+
+  const handleEditSuccess = () => {
+    if (spellSlug) {
+      getSpell(spellSlug);
+    }
+  };
+
+  const handleDeleteSuccess = () => {
+    navigate(getContentUrl('spells', '', edition));
+  };
 
   const spellTitle = spell ? spell.name : 'Spell Loading...';
 
@@ -38,6 +58,7 @@ const Spell = (props: { spell: SpellProps; getSpell: (spellSlug: string) => void
       {spell ? (
         <SpellWrapper>
           <PageTitle title={spellTitle} isLegacy={isEdition2014} />
+          <AdminActions currentUser={currentUser} onEdit={() => setIsEditModalOpen(true)} />
           <SpellDescription>
             {spell.spellLevel} {spell.school.toLowerCase()}
           </SpellDescription>
@@ -58,6 +79,14 @@ const Spell = (props: { spell: SpellProps; getSpell: (spellSlug: string) => void
               )}
             </p>
           )}
+          <SpellFormModal
+            isOpen={isEditModalOpen}
+            onClose={() => setIsEditModalOpen(false)}
+            mode="edit"
+            initialData={spell}
+            onSuccess={handleEditSuccess}
+            onDeleteSuccess={handleDeleteSuccess}
+          />
         </SpellWrapper>
       ) : (
         <DndSpinner />
@@ -69,6 +98,7 @@ const Spell = (props: { spell: SpellProps; getSpell: (spellSlug: string) => void
 function mapStateToProps(state) {
   return {
     spell: state.spells.currentSpell,
+    currentUser: state.users.currentUser,
   };
 }
 

@@ -6,6 +6,7 @@ import Monster from '../../../../app/javascript/bundles/DungeonMasterCampaignMan
 
 jest.mock('react-router-dom', () => ({
   useParams: jest.fn(() => ({ monsterSlug: 'goblin' })),
+  useNavigate: jest.fn(),
 }));
 
 jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/containers/PageContainer', () => {
@@ -26,12 +27,25 @@ jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages
   };
 });
 
+jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/components/shared', () => ({
+  AdminActions: () => null,
+}));
+
+jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/monsters/MonsterFormModal', () => {
+  return function MockMonsterFormModal() {
+    return null;
+  };
+});
+
 describe('Monster', () => {
   it('shows spinner when monster is not loaded', () => {
     const mockStore = configureStore({
       reducer: {
         monsters: () => ({
           currentMonster: null,
+        }),
+        users: () => ({
+          currentUser: null,
         }),
       },
     });
@@ -54,6 +68,9 @@ describe('Monster', () => {
             size: 'Small',
             type: 'humanoid',
           },
+        }),
+        users: () => ({
+          currentUser: null,
         }),
       },
     });

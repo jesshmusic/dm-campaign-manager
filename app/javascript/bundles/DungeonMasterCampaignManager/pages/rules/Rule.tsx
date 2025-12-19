@@ -7,11 +7,14 @@ import { connect } from 'react-redux';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeSlug from 'rehype-slug';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useEdition } from '../../contexts/EditionContext';
 import { useBreadcrumbs } from '../../contexts/BreadcrumbContext';
 import { GiDragonBreath } from 'react-icons/gi';
 import { getContentUrl, parseEditionParams, getContentIndexUrl } from '../../utilities/editionUrls';
+import { UserProps } from '../../utilities/types';
+import { AdminActions } from '../../components/shared';
+import RuleFormModal from './RuleFormModal';
 
 import {
   RuleContent,
@@ -33,7 +36,7 @@ type RuleNav = {
   slug: string;
 };
 
-const Rule = (props: {
+type RulePageProps = {
   rule: {
     name: string;
     slug: string;
@@ -48,12 +51,17 @@ const Rule = (props: {
   } | null;
   loading: boolean;
   getRule: (ruleSlug: string) => void;
-}) => {
-  const { rule, loading, getRule } = props;
+  currentUser?: UserProps;
+};
+
+const Rule = (props: RulePageProps) => {
+  const { rule, loading, getRule, currentUser } = props;
   const params = useParams<{ edition?: string; ruleSlug?: string }>();
+  const navigate = useNavigate();
   const { edition, slug: ruleSlug } = parseEditionParams(params.edition, params.ruleSlug);
   const { isEdition2014 } = useEdition();
   const { setCustomPaths } = useBreadcrumbs();
+  const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
 
   // Track which slug we've fetched to prevent duplicate fetches
   const fetchedSlugRef = React.useRef<string | null>(null);
@@ -65,6 +73,16 @@ const Rule = (props: {
       getRule(ruleSlug);
     }
   }, [ruleSlug, getRule]);
+
+  const handleEditSuccess = () => {
+    if (ruleSlug) {
+      getRule(ruleSlug);
+    }
+  };
+
+  const handleDeleteSuccess = () => {
+    navigate(getContentIndexUrl('rules', edition));
+  };
 
   // Update breadcrumbs when rule data loads
   React.useEffect(() => {
@@ -97,6 +115,7 @@ const Rule = (props: {
       {!loading && rule ? (
         <RuleContent>
           <PageTitle title={ruleTitle} isLegacy={isEdition2014} />
+          <AdminActions currentUser={currentUser} onEdit={() => setIsEditModalOpen(true)} />
           <ReactMarkdown
             components={{
               table: ({ node: _node, ...props }) => (
@@ -150,6 +169,14 @@ const Rule = (props: {
               )}
             </RuleNavigation>
           )}
+          <RuleFormModal
+            isOpen={isEditModalOpen}
+            onClose={() => setIsEditModalOpen(false)}
+            mode="edit"
+            initialData={rule}
+            onSuccess={handleEditSuccess}
+            onDeleteSuccess={handleDeleteSuccess}
+          />
         </RuleContent>
       ) : (
         <DndSpinner />
@@ -162,6 +189,7 @@ function mapStateToProps(state) {
   return {
     rule: state.rules.currentRule,
     loading: state.rules.currentRuleLoading,
+    currentUser: state.users.currentUser,
   };
 }
 

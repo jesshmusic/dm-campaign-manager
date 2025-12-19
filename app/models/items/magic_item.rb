@@ -15,6 +15,7 @@
 #  equipment_category   :string
 #  gear_category        :string
 #  magic_item_type      :string
+#  mastery              :string
 #  name                 :string
 #  properties           :string           default([]), is an Array
 #  quantity             :integer

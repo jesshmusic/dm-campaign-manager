@@ -6,17 +6,35 @@ import React from 'react';
 import rest from '../../api/api';
 import { connect } from 'react-redux';
 import ItemsList from './components/ItemsList';
-import { ItemsPageProps } from '../../utilities/types';
+import { ItemsPageProps, UserProps } from '../../utilities/types';
 import { ItemType, useData } from './use-data';
 
-const Items = (props: ItemsPageProps) => {
+type ItemsComponentProps = ItemsPageProps & {
+  currentUser?: UserProps;
+};
+
+const Items = (props: ItemsComponentProps) => {
   const { columns, data } = useData(props);
+  const { currentUser, getItems, itemType } = props;
 
   const onSearch = (searchTerm: string) => {
     props.getItems(props.itemType, searchTerm);
   };
 
-  return <ItemsList columns={columns} data={data} onSearch={onSearch} {...props} />;
+  const handleCreateSuccess = () => {
+    getItems(itemType);
+  };
+
+  return (
+    <ItemsList
+      columns={columns}
+      data={data}
+      onSearch={onSearch}
+      currentUser={currentUser}
+      onCreateSuccess={handleCreateSuccess}
+      {...props}
+    />
+  );
 };
 
 function mapStateToProps(state) {
@@ -24,6 +42,7 @@ function mapStateToProps(state) {
     items: state.items.items,
     loading: state.items.loading,
     user: state.users.user,
+    currentUser: state.users.currentUser,
     flashMessages: state.flashMessages,
   };
 }

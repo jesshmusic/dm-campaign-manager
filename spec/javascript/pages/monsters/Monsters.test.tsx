@@ -1,5 +1,7 @@
 import React from 'react';
 import { render, screen } from '../../test-utils';
+import { Provider } from 'react-redux';
+import { configureStore } from '@reduxjs/toolkit';
 import Monsters from '../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/monsters/Monsters';
 
 jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/containers/PageContainer', () => {
@@ -20,18 +22,48 @@ jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages
   };
 });
 
+jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/components/shared', () => ({
+  AdminNewButton: () => null,
+}));
+
+jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/monsters/MonsterFormModal', () => {
+  return function MockMonsterFormModal() {
+    return null;
+  };
+});
+
+const mockStore = configureStore({
+  reducer: {
+    users: () => ({
+      currentUser: null,
+    }),
+  },
+});
+
 describe('Monsters', () => {
   it('renders without crashing', () => {
-    render(<Monsters />);
+    render(
+      <Provider store={mockStore}>
+        <Monsters />
+      </Provider>
+    );
   });
 
   it('displays page title', () => {
-    render(<Monsters />);
+    render(
+      <Provider store={mockStore}>
+        <Monsters />
+      </Provider>
+    );
     expect(screen.getByTestId('page-title')).toHaveTextContent('Monsters');
   });
 
   it('renders monsters table', () => {
-    render(<Monsters />);
+    render(
+      <Provider store={mockStore}>
+        <Monsters />
+      </Provider>
+    );
     expect(screen.getByTestId('monsters-table')).toBeInTheDocument();
   });
 });

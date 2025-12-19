@@ -405,15 +405,11 @@ const SideBar = (props: {
               marginTop: '-.125rem',
             }}
           >
-            <SidebarLink
-              to={getContentIndexUrl('items', edition)}
-              title="All Equipment"
-              icon={<GiSwapBag />}
-            />
+            <SidebarLink to="/app/items" title="All Equipment" icon={<GiSwapBag />} />
             {itemTypes.map((itemType, index) => (
               <SidebarLink
                 key={`items-${index}`}
-                to={getContentUrl('items', itemType.link.replace('/app/items/', ''), edition)}
+                to={itemType.link}
                 title={itemType.name}
                 icon={itemType.icon}
               />

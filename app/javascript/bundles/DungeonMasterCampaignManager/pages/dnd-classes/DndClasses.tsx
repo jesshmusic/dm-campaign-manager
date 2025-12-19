@@ -7,17 +7,22 @@ import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useEdition } from '../../contexts/EditionContext';
-import { DndClassSummary } from '../../utilities/types';
+import { DndClassSummary, UserProps } from '../../utilities/types';
 import DataTable from '../../components/DataTable/DataTable';
 import { Row } from 'react-table';
 import { getContentUrl, isValidEdition } from '../../utilities/editionUrls';
+import { AdminNewButton } from '../../components/shared';
+import DndClassFormModal from './DndClassFormModal';
 
-const DndClasses = (props: {
+type DndClassesProps = {
   getDndClasses: () => void;
   dndClasses: DndClassSummary[];
   loading: boolean;
-}) => {
-  const { getDndClasses, dndClasses, loading } = props;
+  currentUser?: UserProps;
+};
+
+const DndClasses = ({ getDndClasses, dndClasses, loading, currentUser }: DndClassesProps) => {
+  const [isCreateModalOpen, setIsCreateModalOpen] = React.useState(false);
   const navigate = useNavigate();
   const { edition: editionParam, param } = useParams<{ edition?: string; param?: string }>();
   const { edition: contextEdition, isEdition2014 } = useEdition();
@@ -29,6 +34,10 @@ const DndClasses = (props: {
   React.useEffect(() => {
     getDndClasses();
   }, []);
+
+  const handleCreateSuccess = () => {
+    getDndClasses();
+  };
 
   const goToPage = (row: Row<Record<string, unknown>>) => {
     navigate(getContentUrl('classes', row.original.slug as string, edition));
@@ -70,12 +79,23 @@ const DndClasses = (props: {
       pageTitle="DndClasses"
     >
       <PageTitle title={'Character Classes'} isLegacy={isEdition2014} />
+      <AdminNewButton
+        currentUser={currentUser}
+        onClick={() => setIsCreateModalOpen(true)}
+        label="New Class"
+      />
       <DataTable
         columns={columns}
         data={data}
         goToPage={goToPage}
         results={data.length}
         loading={loading}
+      />
+      <DndClassFormModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        mode="create"
+        onSuccess={handleCreateSuccess}
       />
     </PageContainer>
   );
@@ -84,7 +104,7 @@ const DndClasses = (props: {
 function mapStateToProps(state) {
   return {
     dndClasses: state.dndClasses.dndClasses,
-    user: state.users.user,
+    currentUser: state.users.currentUser,
     flashMessages: state.flashMessages,
     loading: state.dndClasses.loading,
   };

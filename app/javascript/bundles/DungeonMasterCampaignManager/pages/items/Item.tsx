@@ -5,25 +5,33 @@ import rest from '../../api/api';
 import PageTitle from '../../components/PageTitle/PageTitle';
 import DndSpinner from '../../components/DndSpinners/DndSpinner';
 import { connect } from 'react-redux';
-import { ItemInfoBlock, ItemPageProps } from '../../utilities/types';
+import { ItemInfoBlock, ItemPageProps, UserProps } from '../../utilities/types';
 import remarkGfm from 'remark-gfm';
 import ReactMarkdown from 'react-markdown';
 import { singleItemUseData } from './use-data';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useEdition } from '../../contexts/EditionContext';
 import { parseEditionParams, getContentUrl, isValidEdition } from '../../utilities/editionUrls';
+import { AdminActions } from '../../components/shared';
+import ItemFormModal from './ItemFormModal';
 
 import { Section, Info, TableFrame } from './Item.styles';
 
-const Item = (props: ItemPageProps) => {
-  const { item, getItem } = props;
+type ItemDetailPageProps = ItemPageProps & {
+  currentUser?: UserProps;
+};
+
+const Item = (props: ItemDetailPageProps) => {
+  const { item, getItem, currentUser } = props;
   const { getItemParentInfo } = singleItemUseData(props);
+  const navigate = useNavigate();
   const [itemInfo, setItemInfo] = React.useState<ItemInfoBlock>({
     parentTitle: 'Loading...',
     parentUrl: '/app/items',
     subtitle: '',
     infoBlock: [],
   });
+  const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
   const params = useParams<{ edition?: string; itemSlug?: string }>();
   const { edition, slug: itemSlug } = parseEditionParams(params.edition, params.itemSlug);
   const { edition: contextEdition, isEdition2014 } = useEdition();
@@ -43,6 +51,16 @@ const Item = (props: ItemPageProps) => {
     }
   }, [item]);
 
+  const handleEditSuccess = () => {
+    if (itemSlug) {
+      getItem(itemSlug);
+    }
+  };
+
+  const handleDeleteSuccess = () => {
+    navigate(getContentUrl('items', '', effectiveEdition));
+  };
+
   const itemTitle = item ? item.name : 'Item Loading...';
   return (
     <PageContainer
@@ -53,6 +71,7 @@ const Item = (props: ItemPageProps) => {
       <PageTitle title={itemTitle} isLegacy={isEdition2014} />
       {item && itemInfo ? (
         <Section>
+          <AdminActions currentUser={currentUser} onEdit={() => setIsEditModalOpen(true)} />
           <Info>
             <h2>{itemInfo.subtitle}</h2>
             {itemInfo.infoBlock &&
@@ -92,6 +111,14 @@ const Item = (props: ItemPageProps) => {
                 {itemDesc}
               </ReactMarkdown>
             ))}
+          <ItemFormModal
+            isOpen={isEditModalOpen}
+            onClose={() => setIsEditModalOpen(false)}
+            mode="edit"
+            initialData={item}
+            onSuccess={handleEditSuccess}
+            onDeleteSuccess={handleDeleteSuccess}
+          />
         </Section>
       ) : (
         <DndSpinner />
@@ -104,6 +131,7 @@ function mapStateToProps(state) {
   return {
     item: state.items.currentItem,
     loading: state.items.loading,
+    currentUser: state.users.currentUser,
   };
 }
 

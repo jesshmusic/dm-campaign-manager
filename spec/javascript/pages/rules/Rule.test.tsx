@@ -46,6 +46,16 @@ jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/conte
   }),
 }));
 
+jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/components/shared', () => ({
+  AdminActions: () => null,
+}));
+
+jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/rules/RuleFormModal', () => {
+  return function MockRuleFormModal() {
+    return null;
+  };
+});
+
 describe('Rule', () => {
   it('shows spinner when loading', () => {
     const mockStore = configureStore({
@@ -53,6 +63,9 @@ describe('Rule', () => {
         rules: () => ({
           currentRule: null,
           loading: true,
+        }),
+        users: () => ({
+          currentUser: null,
         }),
       },
     });
@@ -78,6 +91,9 @@ describe('Rule', () => {
             rules: [],
           },
           loading: false,
+        }),
+        users: () => ({
+          currentUser: null,
         }),
       },
     });
@@ -107,6 +123,9 @@ describe('Rule', () => {
           },
           loading: false,
         }),
+        users: () => ({
+          currentUser: null,
+        }),
       },
     });
 
@@ -134,6 +153,9 @@ describe('Rule', () => {
             next_rule: { name: 'Spellcasting', slug: 'spellcasting' },
           },
           loading: false,
+        }),
+        users: () => ({
+          currentUser: null,
         }),
       },
     });
@@ -164,6 +186,9 @@ describe('Rule', () => {
           },
           loading: false,
         }),
+        users: () => ({
+          currentUser: null,
+        }),
       },
     });
 
@@ -192,6 +217,9 @@ describe('Rule', () => {
           },
           loading: false,
         }),
+        users: () => ({
+          currentUser: null,
+        }),
       },
     });
 
@@ -218,6 +246,9 @@ describe('Rule', () => {
             rules: [],
           },
           loading: false,
+        }),
+        users: () => ({
+          currentUser: null,
         }),
       },
     });

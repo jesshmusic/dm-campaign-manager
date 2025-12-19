@@ -25,10 +25,23 @@ jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/compo
   };
 });
 
+jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/components/shared', () => ({
+  AdminNewButton: () => null,
+}));
+
+jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/rules/RuleFormModal', () => {
+  return function MockRuleFormModal() {
+    return null;
+  };
+});
+
 const createMockStore = (rulesState: any) => {
   return configureStore({
     reducer: {
       rules: () => rulesState,
+      users: () => ({
+        currentUser: null,
+      }),
     },
   });
 };

@@ -72,9 +72,9 @@ describe('Util', () => {
         const pages = Util.itemPages;
         const paths = pages.map((p) => p.path);
         expect(paths).toContain('/app/items');
-        expect(paths).toContain('/app/items/armor/');
-        expect(paths).toContain('/app/items/weapons/');
-        expect(paths).toContain('/app/items/magic-items/');
+        expect(paths).toContain('/app/items/armor');
+        expect(paths).toContain('/app/items/weapons');
+        expect(paths).toContain('/app/items/magic-items');
       });
 
       it('each page has required properties', () => {

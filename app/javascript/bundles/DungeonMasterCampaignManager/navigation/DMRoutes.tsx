@@ -3,7 +3,6 @@ import HomePage from '../pages/front-page/HomePage';
 import DndClasses from '../pages/dnd-classes/DndClasses';
 import Races from '../pages/races/Races';
 import Race from '../pages/races/Race';
-import Util from '../utilities/utilities';
 import Items from '../pages/items/Items';
 import Item from '../pages/items/Item';
 import Monsters from '../pages/monsters/Monsters';
@@ -31,6 +30,7 @@ import SearchResults from '../pages/search-results/SearchResults';
 import PrivacyPolicy from '../pages/privacy-policy/PrivacyPolicy';
 import FoundryMapsAdmin from '../pages/FoundryMapsAdmin';
 import { isValidEdition } from '../utilities/editionUrls';
+import { ItemType } from '../pages/items/use-data';
 
 // Resolver components that determine if single param is edition or slug
 const ClassesResolver = (props) => {
@@ -72,6 +72,68 @@ const FeatsResolver = (props) => {
   return isValidEdition(param) ? <FeatsIndex {...props} /> : <FeatDetail {...props} />;
 };
 
+// Map of item category slugs to ItemType values
+const itemCategoryMap: Record<string, ItemType> = {
+  armor: ItemType.armor,
+  gear: ItemType.gear,
+  'magic-items': ItemType.magic,
+  'magic-armor': ItemType.magicArmor,
+  'magic-weapons': ItemType.magicWeapon,
+  tools: ItemType.tool,
+  vehicles: ItemType.vehicle,
+  weapons: ItemType.weapon,
+};
+
+const itemCategoryTitles: Record<string, string> = {
+  armor: 'Armor',
+  gear: 'Adventuring Gear',
+  'magic-items': 'Magic Items',
+  'magic-armor': 'Magic Armor',
+  'magic-weapons': 'Magic Weapons',
+  tools: 'Tools',
+  vehicles: 'Vehicles and Mounts',
+  weapons: 'Weapons',
+};
+
+// Resolver for /app/items/:edition/:slug - determines if slug is a category or item
+const ItemsEditionResolver = (props) => {
+  const { edition, itemSlug } = useParams<{ edition: string; itemSlug: string }>();
+
+  // If edition is valid and slug is a known category, render category page
+  if (isValidEdition(edition) && itemSlug && itemCategoryMap[itemSlug]) {
+    return (
+      <Items
+        {...props}
+        itemType={itemCategoryMap[itemSlug]}
+        pageTitle={itemCategoryTitles[itemSlug]}
+      />
+    );
+  }
+
+  // Otherwise, treat as individual item detail
+  return <Item {...props} />;
+};
+
+// Resolver for /app/items/:param - determines if param is edition, category, or item
+const ItemsResolver = (props) => {
+  const { param } = useParams<{ param: string }>();
+
+  // If param is a valid edition, show all items
+  if (isValidEdition(param)) {
+    return <Items {...props} itemType={ItemType.all} pageTitle="All Equipment and Items" />;
+  }
+
+  // If param is a known category, render category page
+  if (param && itemCategoryMap[param]) {
+    return (
+      <Items {...props} itemType={itemCategoryMap[param]} pageTitle={itemCategoryTitles[param]} />
+    );
+  }
+
+  // Otherwise, treat as individual item slug
+  return <Item {...props} />;
+};
+
 const DMRoutes = (props) => {
   return (
     <Routes>
@@ -87,24 +149,13 @@ const DMRoutes = (props) => {
       <Route path="/app/races/:param" element={<RacesResolver {...props} />} />
       <Route path="/app/races" element={<Races {...props} />} />
 
-      {/* Items - category pages (no edition needed) */}
-      {Util.itemPages.map((itemPage) => (
-        <Route
-          path={itemPage.path}
-          key={itemPage.itemType}
-          element={
-            <Items
-              {...props}
-              key={itemPage.itemType}
-              itemType={itemPage.itemType}
-              pageTitle={itemPage.pageTitle}
-            />
-          }
-        />
-      ))}
-      {/* Items - edition-aware detail routes */}
-      <Route path="/app/items/:edition/:itemSlug" element={<Item {...props} />} />
-      <Route path="/app/items/:itemSlug" element={<Item {...props} />} />
+      {/* Items - edition-aware routes with resolvers */}
+      <Route path="/app/items/:edition/:itemSlug" element={<ItemsEditionResolver {...props} />} />
+      <Route path="/app/items/:param" element={<ItemsResolver {...props} />} />
+      <Route
+        path="/app/items"
+        element={<Items {...props} itemType={ItemType.all} pageTitle="All Equipment and Items" />}
+      />
 
       {/* Monsters - edition-aware routes */}
       <Route path="/app/monsters/:edition/:monsterSlug" element={<Monster {...props} />} />

@@ -6,6 +6,7 @@ import Spell from '../../../../app/javascript/bundles/DungeonMasterCampaignManag
 
 jest.mock('react-router-dom', () => ({
   useParams: jest.fn(() => ({ spellSlug: 'fireball' })),
+  useNavigate: jest.fn(),
 }));
 
 jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/containers/PageContainer', () => {
@@ -36,12 +37,25 @@ jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/compo
   };
 });
 
+jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/components/shared', () => ({
+  AdminActions: () => null,
+}));
+
+jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/spells/SpellFormModal', () => {
+  return function MockSpellFormModal() {
+    return null;
+  };
+});
+
 describe('Spell', () => {
   it('shows spinner when spell is not loaded', () => {
     const mockStore = configureStore({
       reducer: {
         spells: () => ({
           currentSpell: null,
+        }),
+        users: () => ({
+          currentUser: null,
         }),
       },
     });
@@ -72,6 +86,9 @@ describe('Spell', () => {
             higherLevel: 'When you cast this spell using a spell slot...',
           },
         }),
+        users: () => ({
+          currentUser: null,
+        }),
       },
     });
 
@@ -100,6 +117,9 @@ describe('Spell', () => {
             description: 'A bright streak flashes from your pointing finger...',
             higherLevel: 'When you cast this spell using a spell slot...',
           },
+        }),
+        users: () => ({
+          currentUser: null,
         }),
       },
     });
@@ -131,6 +151,9 @@ describe('Spell', () => {
             description: 'A bright streak flashes from your pointing finger...',
             higherLevel: 'When you cast this spell using a spell slot...',
           },
+        }),
+        users: () => ({
+          currentUser: null,
         }),
       },
     });
