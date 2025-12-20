@@ -28,7 +28,6 @@ const AdminActions: React.FC<AdminActionsProps> = ({
   editLabel = 'Edit',
   deleteLabel = 'Delete',
 }) => {
-  // Only render for admin users
   if (!currentUser || currentUser.role !== 'admin') {
     return null;
   }
