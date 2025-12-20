@@ -33,7 +33,7 @@ export default function AddList({
         <CloseButton onClick={onCloseModal} />
       </AddListHeading>
       <AddListContentInner>
-        {widgets.map((widget: any) => (
+        {widgets.map((widget) => (
           <div className={'form-check'} key={widget.key}>
             <input
               className="form-check-input"

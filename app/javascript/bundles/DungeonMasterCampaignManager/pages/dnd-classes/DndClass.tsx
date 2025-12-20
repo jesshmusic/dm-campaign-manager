@@ -7,6 +7,7 @@ import DndSpinner from '../../components/DndSpinners/DndSpinner';
 import { useEdition } from '../../contexts/EditionContext';
 import { DndClass, UserProps } from '../../utilities/types';
 import { connect } from 'react-redux';
+import { RootState, AppDispatch } from '../../store/store';
 import HitPointsSection from './components/HitPointsSection';
 import ProficienciesSection from './components/ProficienciesSection';
 import EquipmentSection from './components/EquipmentSection';
@@ -33,7 +34,7 @@ const DndClassPage = (props: DndClassPageProps) => {
   // Handle both /app/classes/:edition/:slug and /app/classes/:param routes
   const { slug: dndClassSlug } = parseEditionParams(
     params.edition,
-    params.dndClassSlug || params.param,
+    params.dndClassSlug ?? params.param,
   );
   const { edition, isEdition2014 } = useEdition();
   const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
@@ -106,14 +107,14 @@ const DndClassPage = (props: DndClassPageProps) => {
   );
 };
 
-function mapStateToProps(state: any) {
+function mapStateToProps(state: RootState) {
   return {
     dndClass: state.dndClasses.currentDndClass,
     currentUser: state.users.currentUser,
   };
 }
 
-function mapDispatchToProps(dispatch: any) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {
     getDndClass: (dndClassSlug: string) => {
       dispatch(rest.actions.getDndClass({ id: dndClassSlug }));

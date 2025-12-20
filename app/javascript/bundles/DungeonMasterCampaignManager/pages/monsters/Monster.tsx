@@ -3,6 +3,7 @@ import { MonsterProps, UserProps } from '../../utilities/types';
 import PageContainer from '../../containers/PageContainer';
 import rest from '../../api/api';
 import { connect } from 'react-redux';
+import { RootState, AppDispatch } from '../../store/store';
 import DndSpinner from '../../components/DndSpinners/DndSpinner';
 import MonsterBlock from './MonsterBlock';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -88,14 +89,14 @@ const Monster = (props: MonsterPageProps) => {
   );
 };
 
-function mapStateToProps(state: any) {
+function mapStateToProps(state: RootState) {
   return {
     monster: state.monsters.currentMonster,
     currentUser: state.users.currentUser,
   };
 }
 
-function mapDispatchToProps(dispatch: any) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {
     getMonster: (monsterSlug: string) => {
       dispatch(rest.actions.getMonster({ id: monsterSlug }));

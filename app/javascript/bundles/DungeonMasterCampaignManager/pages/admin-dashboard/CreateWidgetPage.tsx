@@ -2,6 +2,7 @@ import React from 'react';
 import PageContainer from '../../containers/PageContainer';
 import rest from '../../api/api';
 import { connect } from 'react-redux';
+import { RootState, AppDispatch } from '../../store/store';
 import { WidgetProps } from '../../components/Widgets/Widget';
 import { useCreateWidgetState } from './use-create-widget-state';
 import WidgetForm from './components/WidgetForm';
@@ -51,13 +52,13 @@ const CreateWidgetPage = (props: {
   );
 };
 
-function mapStateToProps(state: any) {
+function mapStateToProps(state: RootState) {
   return {
     token: state.users.token,
   };
 }
 
-function mapDispatchToProps(dispatch: any) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {
     createWidget: (widget: WidgetProps, token?: string) => {
       dispatch(

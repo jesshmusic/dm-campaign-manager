@@ -210,7 +210,7 @@ function mapStateToProps(state: {
   };
 }
 
-function mapDispatchToProps(dispatch: any) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {
     getRule: (ruleSlug: string) => {
       dispatch(rest.actions.getRule({ id: ruleSlug }));

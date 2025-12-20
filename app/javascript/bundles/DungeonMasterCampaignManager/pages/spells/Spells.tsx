@@ -5,6 +5,7 @@
 import React from 'react';
 import rest from '../../api/api';
 import { connect } from 'react-redux';
+import { RootState, AppDispatch } from '../../store/store';
 
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
@@ -113,7 +114,7 @@ const Spells = (props: {
   );
 };
 
-function mapStateToProps(state: any) {
+function mapStateToProps(state: RootState) {
   return {
     spells: state.spells.spells,
     user: state.users.user,
@@ -123,7 +124,7 @@ function mapStateToProps(state: any) {
   };
 }
 
-function mapDispatchToProps(dispatch: any) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {
     getSpells: (searchTerm?: string) => {
       if (searchTerm) {

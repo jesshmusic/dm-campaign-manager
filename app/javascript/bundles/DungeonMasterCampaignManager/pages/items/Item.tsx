@@ -5,6 +5,7 @@ import rest from '../../api/api';
 import PageTitle from '../../components/PageTitle/PageTitle';
 import DndSpinner from '../../components/DndSpinners/DndSpinner';
 import { connect } from 'react-redux';
+import { RootState, AppDispatch } from '../../store/store';
 import { ItemInfoBlock, ItemPageProps, UserProps } from '../../utilities/types';
 import remarkGfm from 'remark-gfm';
 import ReactMarkdown from 'react-markdown';
@@ -138,7 +139,7 @@ const Item = (props: ItemDetailPageProps) => {
   );
 };
 
-function mapStateToProps(state: any) {
+function mapStateToProps(state: RootState) {
   return {
     item: state.items.currentItem,
     loading: state.items.loading,
@@ -146,7 +147,7 @@ function mapStateToProps(state: any) {
   };
 }
 
-function mapDispatchToProps(dispatch: any) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {
     getItem: (itemSlug: string) => {
       dispatch(rest.actions.getItem({ id: itemSlug }));

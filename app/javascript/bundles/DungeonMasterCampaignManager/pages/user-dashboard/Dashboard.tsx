@@ -11,6 +11,8 @@ import { createGlobalStyle } from 'styled-components';
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
 import { Section } from './UserDashboard.styles';
+import { RootState, AppDispatch } from '../../store/store';
+import { WidgetProps } from '../../utilities/types';
 
 const ResizeHandleStyles = createGlobalStyle`
   .react-resizable-handle {
@@ -34,7 +36,7 @@ const ResizeHandleStyles = createGlobalStyle`
 `;
 
 type DashboardProps = {
-  customWidgets: any[];
+  customWidgets: WidgetProps[];
   getWidgets: () => void;
 };
 
@@ -90,14 +92,14 @@ const Dashboard = ({ customWidgets, getWidgets }: DashboardProps) => {
   );
 };
 
-function mapStateToProps(state: any) {
+function mapStateToProps(state: RootState) {
   return {
     currentUser: state.users.currentUser,
     customWidgets: state.widgets.widgets,
   };
 }
 
-function mapDispatchToProps(dispatch: any) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {
     getWidgets: () => {
       dispatch(rest.actions.getWidgets());

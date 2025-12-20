@@ -3,6 +3,7 @@ import { MonsterSummary, UserProps } from '../../utilities/types';
 import rest from '../../api/api';
 import { useNavigate, useParams } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { RootState, AppDispatch } from '../../store/store';
 import DataTable from '../../components/DataTable/DataTable';
 import { Row } from 'react-table';
 import { GiBeerStein } from 'react-icons/gi';
@@ -108,14 +109,14 @@ const MonstersTable = (props: {
   );
 };
 
-function mapStateToProps(state: any) {
+function mapStateToProps(state: RootState) {
   return {
     monsters: state.monsters.monsters,
     loading: state.monsters.loading,
   };
 }
 
-function mapDispatchToProps(dispatch: any) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {
     getMonsters: (searchTerm?: string, userId?: number) => {
       dispatch(rest.actions.getMonsters({ search: searchTerm, user_id: userId }));

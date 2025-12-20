@@ -22,22 +22,22 @@ import TravelCalculatorWidget from './TravelCalculatorWidget';
 import EncounterDistanceWidget from './EncounterDistanceWidget';
 import EnvironmentalEffectsWidget from './EnvironmentalEffectsWidget';
 
-export const dashboardComponents: {
-  [key: string]: {
-    component: (props: any) => JSX.Element;
-    icon: React.ReactNode;
-    title: string;
-    subtitle: string;
-    grid: {
-      w?: number;
-      h?: number;
-      x?: number;
-      y?: number;
-      minW?: number;
-      minH?: number;
-    };
+type DashboardComponent = {
+  component: React.ComponentType<Record<string, unknown>>;
+  icon: React.ReactNode;
+  title: string;
+  subtitle: string;
+  grid: {
+    w?: number;
+    h?: number;
+    x?: number;
+    y?: number;
+    minW?: number;
+    minH?: number;
   };
-} = {
+};
+
+export const dashboardComponents: Record<string, DashboardComponent> = {
   actionsInCombat: {
     component: ActionsInCombat,
     icon: <GiSwordman />,

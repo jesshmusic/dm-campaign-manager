@@ -11,7 +11,7 @@ const SearchField = () => {
   const navigate = useNavigate();
   const { register, handleSubmit } = useForm();
   const { sidebarWidth } = useSidebar();
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: { search?: string }) => {
     navigate(`/app/search/${data.search}`);
   };
 

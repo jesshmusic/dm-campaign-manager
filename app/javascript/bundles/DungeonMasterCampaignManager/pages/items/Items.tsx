@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import ItemsList from './components/ItemsList';
 import { ItemsPageProps, UserProps } from '../../utilities/types';
 import { ItemType, useData } from './use-data';
+import { RootState, AppDispatch } from '../../store/store';
 
 type ItemsComponentProps = ItemsPageProps & {
   currentUser?: UserProps;
@@ -36,7 +37,7 @@ const Items = (props: ItemsComponentProps) => {
   );
 };
 
-function mapStateToProps(state: any) {
+function mapStateToProps(state: RootState) {
   return {
     items: state.items.items,
     loading: state.items.loading,
@@ -46,7 +47,7 @@ function mapStateToProps(state: any) {
   };
 }
 
-function mapDispatchToProps(dispatch: any) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {
     getItems: (itemType?: string, searchTerm?: string) => {
       if (itemType && itemType !== ItemType.all && !searchTerm) {

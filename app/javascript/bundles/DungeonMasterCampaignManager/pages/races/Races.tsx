@@ -5,6 +5,7 @@ import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
 import rest from '../../api/api';
 import { connect } from 'react-redux';
+import { RootState, AppDispatch } from '../../store/store';
 import DataTable from '../../components/DataTable/DataTable';
 import { RaceSummary, UserProps } from '../../utilities/types';
 import { useEdition } from '../../contexts/EditionContext';
@@ -96,7 +97,7 @@ const Races = (props: RacesProps) => {
   );
 };
 
-function mapStateToProps(state: any) {
+function mapStateToProps(state: RootState) {
   return {
     loading: state.races.loading,
     races: state.races.races,
@@ -104,7 +105,7 @@ function mapStateToProps(state: any) {
   };
 }
 
-function mapDispatchToProps(dispatch: any) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {
     getRaces: () => {
       dispatch(rest.actions.getRaces());

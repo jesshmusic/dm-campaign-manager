@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { RootState, AppDispatch } from '../../store/store';
 import { useParams, useNavigate } from 'react-router-dom';
 import rest from '../../api/api';
 import PageContainer from '../../containers/PageContainer';
@@ -171,7 +172,7 @@ const BackgroundDetail = ({
   );
 };
 
-function mapStateToProps(state: any) {
+function mapStateToProps(state: RootState) {
   return {
     currentBackground: state.backgrounds.currentBackground,
     loading: state.backgrounds.currentBackgroundLoading,
@@ -180,7 +181,7 @@ function mapStateToProps(state: any) {
   };
 }
 
-function mapDispatchToProps(dispatch: any) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {
     getBackground: (slug: string) => {
       dispatch(rest.actions.getBackground({ id: slug }));

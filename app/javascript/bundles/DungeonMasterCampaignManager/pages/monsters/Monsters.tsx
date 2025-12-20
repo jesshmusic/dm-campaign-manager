@@ -8,6 +8,7 @@ import { UserProps } from '../../utilities/types';
 import { AdminNewButton } from '../../components/shared';
 import MonsterFormModal from './MonsterFormModal';
 import rest from '../../api/api';
+import { RootState, AppDispatch } from '../../store/store';
 
 type MonstersProps = {
   currentUser?: UserProps;
@@ -45,13 +46,13 @@ const Monsters = ({ currentUser, getMonsters }: MonstersProps) => {
   );
 };
 
-function mapStateToProps(state: any) {
+function mapStateToProps(state: RootState) {
   return {
     currentUser: state.users.currentUser,
   };
 }
 
-function mapDispatchToProps(dispatch: any) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {
     getMonsters: () => {
       dispatch(rest.actions.getMonsters());

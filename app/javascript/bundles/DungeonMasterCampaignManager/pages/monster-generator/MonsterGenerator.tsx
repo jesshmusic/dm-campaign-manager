@@ -12,9 +12,10 @@ import AIGenerateMonster from './components/ai-generate-monster/AIGenerateMonste
 import ReactGA from 'react-ga4';
 import { MonsterProps, UserProps } from '../../utilities/types';
 import { clearCurrentMonster, setCurrentMonster } from '../../reducers/monsters';
+import { RootState, AppDispatch } from '../../store/store';
 
 // Declare module for Convert2eMonster (only used when show2eConverter is true)
-declare const Convert2eMonster: any;
+declare const Convert2eMonster: React.ComponentType<{ token?: string }>;
 
 ReactGA.initialize('G-8XJTH70JSQ');
 import {
@@ -154,7 +155,7 @@ const MonsterGenerator = (props: {
   );
 };
 
-function mapStateToProps(state: any) {
+function mapStateToProps(state: RootState) {
   return {
     monster: state.monsters.currentMonster,
     currentUser: state.users.currentUser,
@@ -163,7 +164,7 @@ function mapStateToProps(state: any) {
   };
 }
 
-function mapDispatchToProps(dispatch: any) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {
     clearMonster: () => {
       dispatch(clearCurrentMonster());

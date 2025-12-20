@@ -1,5 +1,6 @@
 import React, { useRef, useCallback } from 'react';
 import { connect } from 'react-redux';
+import { RootState, AppDispatch } from '../../store/store';
 import { RecordFormModal } from '../../components/shared/modals';
 import FeatForm, { FeatFormData } from './FeatForm';
 import { Feat } from '../../reducers/feats';
@@ -94,13 +95,13 @@ const FeatFormModal: React.FC<FeatFormModalProps> = ({
   );
 };
 
-function mapStateToProps(state: any) {
+function mapStateToProps(state: RootState) {
   return {
     token: state.users.token,
   };
 }
 
-function mapDispatchToProps(dispatch: any) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {
     createFeat: (data: FeatFormData, token?: string) => {
       dispatch(

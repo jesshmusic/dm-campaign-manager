@@ -1,5 +1,6 @@
 import React, { useRef, useCallback } from 'react';
 import { connect } from 'react-redux';
+import { RootState, AppDispatch } from '../../store/store';
 import { RecordFormModal } from '../../components/shared/modals';
 import SpellForm, { SpellFormData } from './SpellForm';
 import { SpellProps } from '../../utilities/types';
@@ -96,13 +97,13 @@ const SpellFormModal: React.FC<SpellFormModalProps> = ({
   );
 };
 
-function mapStateToProps(state: any) {
+function mapStateToProps(state: RootState) {
   return {
     token: state.users.token,
   };
 }
 
-function mapDispatchToProps(dispatch: any) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {
     createSpell: (data: SpellFormData, token?: string) => {
       dispatch(

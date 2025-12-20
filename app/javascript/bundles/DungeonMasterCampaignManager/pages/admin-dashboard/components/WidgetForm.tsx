@@ -21,7 +21,14 @@ const modules = {
   ],
 };
 
-const WidgetForm = (props: { useForm: UseFormReturn; onSubmit: (data: any) => void }) => {
+type WidgetFormData = {
+  title: string;
+  subtitle?: string;
+  iconOption?: { value: string; label: string };
+  content?: string;
+};
+
+const WidgetForm = (props: { useForm: UseFormReturn; onSubmit: (data: WidgetFormData) => void }) => {
   return (
     <WidgetFormWrapper onSubmit={props.useForm.handleSubmit(props.onSubmit)} noValidate>
       <ControlledInput

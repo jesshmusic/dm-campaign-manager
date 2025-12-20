@@ -1,5 +1,6 @@
 import React, { useRef, useCallback } from 'react';
 import { connect } from 'react-redux';
+import { RootState, AppDispatch } from '../../store/store';
 import { RecordFormModal } from '../../components/shared/modals';
 import MonsterForm, { MonsterFormData } from './MonsterForm';
 import { MonsterProps } from '../../utilities/types';
@@ -102,13 +103,13 @@ const MonsterFormModal: React.FC<MonsterFormModalProps> = ({
   );
 };
 
-function mapStateToProps(state: any) {
+function mapStateToProps(state: RootState) {
   return {
     token: state.users.token,
   };
 }
 
-function mapDispatchToProps(dispatch: any) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {
     createMonster: (data: MonsterFormData, token?: string) => {
       dispatch(

@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { RootState, AppDispatch } from '../../store/store';
 import rest from '../../api/api';
 
 // Container
@@ -103,7 +104,7 @@ const DndClasses = ({ getDndClasses, dndClasses, loading, currentUser }: DndClas
   );
 };
 
-function mapStateToProps(state: any) {
+function mapStateToProps(state: RootState) {
   return {
     dndClasses: state.dndClasses.dndClasses,
     currentUser: state.users.currentUser,
@@ -112,7 +113,7 @@ function mapStateToProps(state: any) {
   };
 }
 
-function mapDispatchToProps(dispatch: any) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {
     getDndClasses: () => {
       dispatch(rest.actions.getDndClasses());

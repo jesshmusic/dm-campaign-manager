@@ -16,6 +16,7 @@ import { Colors } from '../../utilities/enums';
 import packageJson from '../../../../../../package.json';
 
 import { Wrapper, Section, InfoContainer } from './AdminDashboard.styles';
+import { RootState, AppDispatch } from '../../store/store';
 
 const AdminDashboard = (props: {
   actionCount: number;
@@ -120,7 +121,7 @@ const AdminDashboard = (props: {
   );
 };
 
-function mapStateToProps(state: any) {
+function mapStateToProps(state: RootState) {
   return {
     actionCount: state.customActions.count,
     npcCount: state.monsters.count,
@@ -130,7 +131,7 @@ function mapStateToProps(state: any) {
   };
 }
 
-function mapDispatchToProps(_dispatch: any) {
+function mapDispatchToProps(_dispatch: AppDispatch) {
   return {};
 }
 

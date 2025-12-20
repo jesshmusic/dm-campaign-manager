@@ -8,6 +8,7 @@ import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
 
 import { Section, UserInfo, UserPic, UserData } from './UserDashboard.styles';
+import { RootState, AppDispatch } from '../../store/store';
 
 const UserDashboard = (_props: PageProps) => {
   const { isAuthenticated, user } = useAuth0();
@@ -48,13 +49,13 @@ const UserDashboard = (_props: PageProps) => {
   );
 };
 
-function mapStateToProps(state: any) {
+function mapStateToProps(state: RootState) {
   return {
     currentUser: state.users.currentUser,
   };
 }
 
-function mapDispatchToProps(_dispatch: any) {
+function mapDispatchToProps(_dispatch: AppDispatch) {
   return {};
 }
 

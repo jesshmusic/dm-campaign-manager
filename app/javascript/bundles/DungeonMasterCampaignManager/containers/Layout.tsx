@@ -17,6 +17,7 @@ import {
 } from '../contexts/SidebarContext';
 
 import { AppContainer } from './Containers.styles';
+import { RootState, AppDispatch } from '../store/store';
 
 gsap.registerPlugin(ScrollToPlugin);
 
@@ -32,9 +33,9 @@ const getSavedSidebarState = (): { collapsed: boolean; width: number } => {
 };
 
 interface LayoutProps {
-  currentUser?: any;
-  logInUser?: (user: any, token: string) => void;
-  [key: string]: any;
+  currentUser?: { auth_id: string; email: string; name: string; roles?: string[]; username: string };
+  logInUser?: (user: User, token: string) => void;
+  [key: string]: unknown;
 }
 
 const Layout = (props: LayoutProps) => {
@@ -116,13 +117,13 @@ const Layout = (props: LayoutProps) => {
   );
 };
 
-const mapStateToProps = (state: any) => {
+const mapStateToProps = (state: RootState) => {
   return {
     currentUser: state.users.currentUser,
   };
 };
 
-const mapDispatchToProps = (dispatch: any) => {
+const mapDispatchToProps = (dispatch: AppDispatch) => {
   return {
     logInUser: (user: User, token: string) => {
       const currentUser = {

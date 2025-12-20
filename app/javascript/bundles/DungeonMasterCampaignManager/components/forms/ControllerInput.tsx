@@ -27,7 +27,7 @@ interface ControllerInputProps {
   name: string;
   placeholder?: string;
   isTextArea?: boolean;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export const ControllerInput = (props: ControllerInputProps) => {

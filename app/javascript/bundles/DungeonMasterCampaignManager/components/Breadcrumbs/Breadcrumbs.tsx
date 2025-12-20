@@ -59,7 +59,7 @@ const Breadcrumbs = ({ customPaths }: BreadcrumbsProps) => {
 
     const pathNames = location.pathname
       .split('/')
-      .filter((item: any) => item !== '' && item !== 'app');
+      .filter((item: string) => item !== '' && item !== 'app');
 
     setPaths(
       pathNames.map((pathName, index) => {

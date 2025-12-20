@@ -2,6 +2,7 @@ import React from 'react';
 import PageContainer from '../../containers/PageContainer';
 import rest from '../../api/api';
 import { connect } from 'react-redux';
+import { RootState, AppDispatch } from '../../store/store';
 import { CreateWidgetForm, WidgetProps } from '../../components/Widgets/Widget';
 import WidgetForm from './components/WidgetForm';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -110,14 +111,14 @@ const EditWidgetPage = (props: {
   );
 };
 
-function mapStateToProps(state: any) {
+function mapStateToProps(state: RootState) {
   return {
     token: state.users.token,
     widget: state.widgets.widget,
   };
 }
 
-function mapDispatchToProps(dispatch: any) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {
     getWidget: (widgetId: number) => {
       dispatch(rest.actions.getWidget({ id: widgetId }));

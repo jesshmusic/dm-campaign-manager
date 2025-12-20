@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { RootState, AppDispatch } from '../../store/store';
 import { Link, useParams } from 'react-router-dom';
 import rest from '../../api/api';
 import PageContainer from '../../containers/PageContainer';
@@ -155,7 +156,7 @@ const FeatsIndex = ({ feats, loading, currentUser, getFeats }: FeatsIndexProps) 
   );
 };
 
-function mapStateToProps(state: any) {
+function mapStateToProps(state: RootState) {
   return {
     feats: state.feats.feats,
     loading: state.feats.loading,
@@ -163,7 +164,7 @@ function mapStateToProps(state: any) {
   };
 }
 
-function mapDispatchToProps(dispatch: any) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {
     getFeats: () => {
       dispatch(rest.actions.getFeats());

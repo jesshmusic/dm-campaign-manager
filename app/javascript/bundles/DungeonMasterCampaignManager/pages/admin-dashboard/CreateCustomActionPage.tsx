@@ -10,6 +10,7 @@ import { GiSave } from 'react-icons/gi';
 import { useCustomActionState } from './use-custom-action-state';
 import rest from '../../api/api';
 import { connect } from 'react-redux';
+import { RootState, AppDispatch } from '../../store/store';
 
 import { ActionTypeContainer } from './AdminDashboard.styles';
 
@@ -78,7 +79,7 @@ const CreateCustomActionPage = (props: {
   );
 };
 
-function mapStateToProps(state: any) {
+function mapStateToProps(state: RootState) {
   return {
     user: state.users.currentUser,
     users: state.users.users,
@@ -86,7 +87,7 @@ function mapStateToProps(state: any) {
   };
 }
 
-function mapDispatchToProps(dispatch: any) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {
     createCustomAction: (action: MonsterAction, token?: string) => {
       const actionBody = {

@@ -1,6 +1,7 @@
 import React from 'react';
 import rest from '../../api/api';
 import { connect } from 'react-redux';
+import { RootState, AppDispatch } from '../../store/store';
 import { RaceProps, UserProps } from '../../utilities/types';
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
@@ -138,14 +139,14 @@ const Race = (props: RacePageProps) => {
   );
 };
 
-function mapStateToProps(state: any) {
+function mapStateToProps(state: RootState) {
   return {
     race: state.races.currentRace,
     currentUser: state.users.currentUser,
   };
 }
 
-function mapDispatchToProps(dispatch: any) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {
     getRace: (raceSlug: string) => {
       dispatch(rest.actions.getRace({ id: raceSlug }));

@@ -6,6 +6,7 @@ import DndSpinner from '../../components/DndSpinners/DndSpinner';
 import InfoBlock from '../../components/InfoBlock/InfoBlock';
 import rest from '../../api/api';
 import { connect } from 'react-redux';
+import { RootState, AppDispatch } from '../../store/store';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useEdition } from '../../contexts/EditionContext';
 import { parseEditionParams, getContentUrl } from '../../utilities/editionUrls';
@@ -107,14 +108,14 @@ const Spell = (props: SpellPageProps) => {
   );
 };
 
-function mapStateToProps(state: any) {
+function mapStateToProps(state: RootState) {
   return {
     spell: state.spells.currentSpell,
     currentUser: state.users.currentUser,
   };
 }
 
-function mapDispatchToProps(dispatch: any) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {
     getSpell: (spellSlug: string) => {
       dispatch(rest.actions.getSpell({ id: spellSlug }));
