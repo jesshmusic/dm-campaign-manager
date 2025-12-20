@@ -1,4 +1,3 @@
-import React from 'react';
 import { NavLink } from '../NavLink/NavLink';
 import DndLogo from '../HeroBanner/DMLogo';
 import { User } from '@auth0/auth0-react';

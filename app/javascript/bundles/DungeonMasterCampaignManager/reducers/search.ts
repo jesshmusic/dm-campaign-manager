@@ -20,7 +20,7 @@ const search = createReducer(
           loading: true,
         };
       })
-      .addCase(getSearchResultsSuccess, (state, action: AnyAction) => {
+      .addCase(getSearchResultsSuccess, (_state, action: AnyAction) => {
         return {
           results: action.data.results,
           count: action.data.count,

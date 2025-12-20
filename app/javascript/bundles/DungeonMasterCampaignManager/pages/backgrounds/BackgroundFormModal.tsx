@@ -98,13 +98,13 @@ const BackgroundFormModal: React.FC<BackgroundFormModalProps> = ({
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: any) {
   return {
     token: state.users.token,
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: any) {
   return {
     createBackground: (data: BackgroundFormData, token?: string) => {
       dispatch(

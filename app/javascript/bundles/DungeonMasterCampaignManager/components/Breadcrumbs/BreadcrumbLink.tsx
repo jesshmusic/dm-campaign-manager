@@ -2,7 +2,6 @@
  * Created by jesshendricks on 2019-08-21
  */
 
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { GiTwoHandedSword } from 'react-icons/gi';
 

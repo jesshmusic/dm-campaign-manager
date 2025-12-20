@@ -1,4 +1,4 @@
-import { createAction, createReducer, PayloadAction } from '@reduxjs/toolkit';
+import { createAction, createReducer } from '@reduxjs/toolkit';
 import { AnyAction } from 'redux';
 import { MonsterProps } from '../utilities/types';
 
@@ -21,14 +21,24 @@ const getMonsterCategories = createAction('@@redux-api@getMonsterCategories');
 const getMonsterCategoriesSuccess = createAction('@@redux-api@getMonsterCategories_success');
 const getMonsterCategoriesFail = createAction('@@redux-api@getMonsterCategories_fail');
 
+type MonstersState = {
+  monsters: MonsterProps[];
+  monsterTypes: string[];
+  count: number;
+  currentMonster: MonsterProps | null;
+  loading: boolean;
+};
+
+const initialState: MonstersState = {
+  monsters: [],
+  monsterTypes: [],
+  count: 0,
+  currentMonster: null,
+  loading: false,
+};
+
 const monsters = createReducer(
-  {
-    monsters: [],
-    monsterTypes: [],
-    count: 0,
-    currentMonster: null,
-    loading: false,
-  },
+  initialState,
   (builder) =>
     builder
       .addCase(clearCurrentMonster, (state) => {
@@ -37,7 +47,7 @@ const monsters = createReducer(
           currentMonster: null,
         };
       })
-      .addCase(setCurrentMonster, (state, action: PayloadAction<MonsterProps>) => {
+      .addCase(setCurrentMonster, (state, action) => {
         return {
           ...state,
           currentMonster: action.payload,

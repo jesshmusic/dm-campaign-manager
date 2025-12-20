@@ -234,8 +234,7 @@ const DataTable = <T extends object = Record<string, unknown>>({
                   })}
                 </tr>
                 {(row as Row<object> & { isExpanded?: boolean }).isExpanded &&
-                  renderRowSubComponent &&
-                  renderRowSubComponent({
+                  renderRowSubComponent?.({
                     row,
                     rowProps,
                     visibleColumns: dataTable.visibleColumns,

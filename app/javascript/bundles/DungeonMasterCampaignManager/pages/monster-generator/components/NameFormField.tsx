@@ -1,4 +1,3 @@
-import React from 'react';
 import { FieldErrors, FieldValues, UseFormRegister } from 'react-hook-form';
 import { Colors } from '../../../utilities/enums';
 import Button from '../../../components/Button/Button';

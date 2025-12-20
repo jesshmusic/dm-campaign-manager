@@ -96,13 +96,13 @@ const SpellFormModal: React.FC<SpellFormModalProps> = ({
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: any) {
   return {
     token: state.users.token,
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: any) {
   return {
     createSpell: (data: SpellFormData, token?: string) => {
       dispatch(

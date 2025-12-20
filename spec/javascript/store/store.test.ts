@@ -83,6 +83,7 @@ describe('Redux store', () => {
       rules: [],
       count: 0,
       currentRule: null,
+      currentRuleLoading: false,
       loading: false,
     });
   });

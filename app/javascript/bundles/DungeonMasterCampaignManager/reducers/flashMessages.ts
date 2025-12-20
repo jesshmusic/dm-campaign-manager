@@ -42,7 +42,7 @@ export enum FlashMessageType {
   danger = 'danger',
 }
 
-const flashErrorMessage = (state, action) => [
+const flashErrorMessage = (state: FlashMessage[], action: AnyAction): FlashMessage[] => [
   {
     id: Date.now(),
     messageType: FlashMessageType.danger,

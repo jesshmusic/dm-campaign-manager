@@ -7,14 +7,14 @@ export const toSnakeCase = (str: string) =>
     .map((x) => x.toLowerCase())
     .join('_');
 
-export const filterOptionsWithData = (results) =>
+export const filterOptionsWithData = (results: any[]): SelectOption[] =>
   results.map((nextItem) => ({
     value: nextItem.id,
     label: nextItem.name,
     data: nextItem.data,
   }));
 
-export const filterActionOptions = (results) => {
+export const filterActionOptions = (results: any[]): SelectOption[] => {
   return results.map((nextItem) => {
     return {
       value: nextItem.id,
@@ -23,8 +23,8 @@ export const filterActionOptions = (results) => {
   });
 };
 
-export const filterSnakeCaseOptionsWithData = (results): SelectOption[] =>
-  results.results.map((nextItem) => ({
+export const filterSnakeCaseOptionsWithData = (results: { results: Array<{ name: string }> }): SelectOption[] =>
+  results.results.map((nextItem: { name: string }) => ({
     value: toSnakeCase(nextItem.name),
     label: nextItem.name,
   }));
@@ -193,7 +193,8 @@ export const getChallengeRatingOptions = () => {
   return crs;
 };
 
-export const getSpellLevelArray = (spells) => spells.map((spell) => spell.value);
+export const getSpellLevelArray = (spells: SelectOption[]): (string | number)[] =>
+  spells.map((spell) => spell.value);
 
 export const averageDice = (numDice: number, diceValue: number, bonus: number): number => {
   const diceAverage = diceValue / 2 + 0.5;

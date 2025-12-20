@@ -7,7 +7,6 @@ import PageContainer from '../../../containers/PageContainer';
 import PageTitle from '../../../components/PageTitle/PageTitle';
 import { Column, Row } from 'react-table';
 import DataTable from '../../../components/DataTable/DataTable';
-import { ItemType } from '../use-data';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useEdition } from '../../../contexts/EditionContext';
 import { getContentUrl, isValidEdition } from '../../../utilities/editionUrls';
@@ -32,7 +31,7 @@ const ItemsList = ({
   loading,
   onSearch,
   pageTitle,
-  itemType,
+  itemType: _itemType,
   currentUser,
   onCreateSuccess,
 }: ItemsListProps) => {
@@ -43,13 +42,6 @@ const ItemsList = ({
   // Use edition from URL if valid, otherwise from context
   const edition = isValidEdition(editionParam) ? editionParam : contextEdition;
 
-  const _breadCrumbs =
-    itemType !== ItemType.all
-      ? [
-          { url: '/app/items', isActive: false, title: 'Items & Equipment' },
-          { isActive: true, title: pageTitle },
-        ]
-      : [{ isActive: true, title: pageTitle }];
   const navigate = useNavigate();
 
   const goToPage = (row: Row<Record<string, unknown>>) => {

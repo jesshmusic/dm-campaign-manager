@@ -149,7 +149,6 @@ const DndClassForm: React.FC<DndClassFormProps> = ({
             control={typedControl}
             label="Primary Abilities"
             errors={errors}
-            placeholder="e.g., Strength, Dexterity"
           />
         </TwoColumnField>
 

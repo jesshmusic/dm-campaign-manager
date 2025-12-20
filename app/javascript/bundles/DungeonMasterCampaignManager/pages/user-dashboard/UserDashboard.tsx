@@ -1,4 +1,3 @@
-import React from 'react';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import { PageProps } from '../../utilities/types';
@@ -49,13 +48,13 @@ const UserDashboard = (_props: PageProps) => {
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: any) {
   return {
     currentUser: state.users.currentUser,
   };
 }
 
-function mapDispatchToProps(_dispatch) {
+function mapDispatchToProps(_dispatch: any) {
   return {};
 }
 

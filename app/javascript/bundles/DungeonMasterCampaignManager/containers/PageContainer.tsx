@@ -75,7 +75,7 @@ const PageContainer = (props: PageContainerProps) => {
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: any) {
   return {
     user: state.users.currentUser,
   };

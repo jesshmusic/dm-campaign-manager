@@ -1,4 +1,3 @@
-import React from 'react';
 import DndLogo from './DMLogo';
 
 import { HeroBannerWrapper, Logo, Title } from './HeroBanner.styles';

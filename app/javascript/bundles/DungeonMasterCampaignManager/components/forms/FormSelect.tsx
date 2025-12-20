@@ -2,7 +2,6 @@
  * Created by jesshendricks on 2019-08-25
  */
 
-import React from 'react';
 import Select, { MenuPlacement, Options } from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 import { SelectOption } from '../../utilities/types';

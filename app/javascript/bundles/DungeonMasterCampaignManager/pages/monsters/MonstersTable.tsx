@@ -34,7 +34,7 @@ const MonstersTable = (props: {
     }
   }, [isLoading]);
 
-  const goToPage = (row: Row<Record<string, unknown>>) => {
+  const goToPage = (row: Row<any>) => {
     navigate(getContentUrl('monsters', row.original.slug as string, edition));
   };
 
@@ -46,27 +46,27 @@ const MonstersTable = (props: {
     () => [
       {
         Header: 'Monster',
-        accessor: 'name',
+        accessor: 'name' as const,
       },
       {
         Header: 'Type',
-        accessor: 'monsterType',
+        accessor: 'monsterType' as const,
       },
       {
         Header: 'Challenge',
-        accessor: 'challenge',
+        accessor: 'challenge' as const,
       },
       {
         Header: 'Alignment',
-        accessor: 'alignment',
+        accessor: 'alignment' as const,
       },
       {
         Header: 'Hit Points',
-        accessor: 'hitPoints',
+        accessor: 'hitPoints' as const,
       },
       {
         Header: 'Homebrew',
-        accessor: 'hasUser',
+        accessor: 'hasUser' as const,
       },
     ],
     [],
@@ -108,16 +108,16 @@ const MonstersTable = (props: {
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: any) {
   return {
     monsters: state.monsters.monsters,
     loading: state.monsters.loading,
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: any) {
   return {
-    getMonsters: (searchTerm: string, userId?: number) => {
+    getMonsters: (searchTerm?: string, userId?: number) => {
       dispatch(rest.actions.getMonsters({ search: searchTerm, user_id: userId }));
     },
   };

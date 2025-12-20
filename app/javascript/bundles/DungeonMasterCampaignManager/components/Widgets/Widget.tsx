@@ -26,7 +26,14 @@ export type WidgetElementProps = {
   title: string;
   subtitle: string;
   hideFrame: boolean;
-  dataGrid?: object;
+  dataGrid?: {
+    minW?: number;
+    minH?: number;
+    w?: number;
+    h?: number;
+    x?: number;
+    y?: number;
+  };
 };
 
 const Widget = ({

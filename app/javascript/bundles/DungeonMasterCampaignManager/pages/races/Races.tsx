@@ -41,14 +41,14 @@ const Races = (props: RacesProps) => {
     getRaces();
   };
 
-  const goToPage = (row: Row<Record<string, unknown>>) => {
+  const goToPage = (row: Row<any>) => {
     navigate(getContentUrl('races', row.original.slug as string, edition));
   };
 
   const columns = React.useMemo(
     () => [
-      { Header: isEdition2024 ? 'Species' : 'Race', accessor: 'name' },
-      { Header: 'Traits', accessor: 'traits' },
+      { Header: isEdition2024 ? 'Species' : 'Race', accessor: 'name' as const },
+      { Header: 'Traits', accessor: 'traits' as const },
     ],
     [isEdition2024],
   );
@@ -96,7 +96,7 @@ const Races = (props: RacesProps) => {
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: any) {
   return {
     loading: state.races.loading,
     races: state.races.races,
@@ -104,7 +104,7 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: any) {
   return {
     getRaces: () => {
       dispatch(rest.actions.getRaces());

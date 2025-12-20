@@ -1,4 +1,3 @@
-import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { Colors } from '../../utilities/enums';
@@ -12,7 +11,7 @@ const SearchField = () => {
   const navigate = useNavigate();
   const { register, handleSubmit } = useForm();
   const { sidebarWidth } = useSidebar();
-  const onSubmit = (data) => {
+  const onSubmit = (data: any) => {
     navigate(`/app/search/${data.search}`);
   };
 

@@ -39,6 +39,7 @@ export const theme = {
     black: '#000000',
 
     // Grays (warm tones to match parchment theme)
+    gray50: '#faf8f5', // very light warm off-white
     gray100: '#f5f0e6', // warm off-white for backgrounds
     gray200: '#e8e2d6', // warm light gray
     gray300: '#d4cdc0', // warm medium gray
@@ -56,10 +57,21 @@ export const theme = {
     danger: '#992e2e', // $blood-red
     light: '#f5f0e6', // $gray-100
     dark: '#181916', // $gray-800
+
+    // Body text color
+    bodyColor: '#181916', // same as dark
+
+    // Text variants
+    textMuted: '#555752', // ash - muted text
+    textSecondary: '#7f513e', // secondary/brown for secondary text
+
+    // Border color
+    borderColor: '#d4cdc0', // gray300 - for borders
   },
 
   fonts: {
     serif: "'Bookinsanity', Georgia, serif",
+    bookInsanity: "'Bookinsanity', Georgia, serif", // alias for serif
     sansSerif:
       "'Scaly Sans', BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
     mrEaves: "'Mr Eaves', serif",
@@ -72,6 +84,7 @@ export const theme = {
   fontSizes: {
     xs: '0.75rem',
     sm: '0.875rem',
+    md: '0.9375rem', // between sm and base
     base: '1rem',
     lg: '1.25rem',
     xl: '1.5rem',
@@ -149,6 +162,7 @@ export const theme = {
   shadows: {
     sm: '3px 5px 5px rgba(9, 9, 7, 0.5)',
     md: '5px 7px 7px rgba(9, 9, 7, 0.5)',
+    lg: '7px 10px 12px rgba(9, 9, 7, 0.5)',
     btn: 'inset 0 0.0625rem 0 rgba(255, 255, 255, 0.15), 0 0.0625rem 0.0625rem rgba(0, 0, 0, 0.075)',
     btnFocus: '0 0 0 0.1875rem rgba(151, 44, 29, 0.25)',
     btnActive: 'inset 0 0.1875rem 0.3125rem rgba(0, 0, 0, 0.125)',

@@ -165,8 +165,8 @@ const NameOptions = ({
   const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
   const [name, setName] = useState('');
 
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
+  const handleSubmit = (event: unknown) => {
+    (event as React.FormEvent).preventDefault();
     onFormSubmit(
       gender?.value || '',
       race?.value || '',

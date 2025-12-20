@@ -96,13 +96,13 @@ const DndClassFormModal: React.FC<DndClassFormModalProps> = ({
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: any) {
   return {
     token: state.users.token,
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: any) {
   return {
     createDndClass: (data: DndClassFormData, token?: string) => {
       dispatch(

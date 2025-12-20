@@ -101,13 +101,13 @@ const RuleFormModal: React.FC<RuleFormModalProps> = ({
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: any) {
   return {
     token: state.users.token,
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: any) {
   return {
     createRule: (data: RuleFormData, token?: string) => {
       dispatch(

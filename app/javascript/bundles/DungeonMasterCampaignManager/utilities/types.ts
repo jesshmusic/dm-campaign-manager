@@ -147,6 +147,7 @@ export type DndClassSpellCasting = {
 };
 
 export interface DndClass {
+  id: number;
   name: string;
   hitDie: number;
   abilityScores: AbilityScore[];
@@ -194,6 +195,7 @@ export interface ItemSummary {
 }
 
 export interface ItemProps {
+  id: number;
   armorClass?: string;
   armorType?: string;
   capacity?: string;
@@ -369,6 +371,7 @@ export type MonsterQuickGeneratorFormFields = {
   charisma?: number;
   constitution: number;
   creatureDescription?: string;
+  description?: string;
   dexterity?: number;
   generatedActions?: GeneratedActionsData;
   hitDice: string;
@@ -437,6 +440,7 @@ export type MonsterCRInfoResult = {
 };
 
 export interface MonsterProps {
+  id?: number;
   alignment: string;
   armorClass: number;
   attackBonus: number;
@@ -561,6 +565,7 @@ export type AbilityBonusOption = {
 };
 
 export type RaceProps = {
+  id: number;
   abilityBonusOptions: AbilityBonusOption[];
   age?: string;
   alignment?: string;
@@ -600,6 +605,7 @@ export type SelectIconOption = {
 };
 
 export interface SpellProps {
+  id: number;
   name: string;
   description: string;
   higherLevel: string;

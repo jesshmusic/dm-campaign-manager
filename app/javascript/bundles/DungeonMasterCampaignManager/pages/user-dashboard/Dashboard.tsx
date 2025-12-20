@@ -1,10 +1,9 @@
-import React from 'react';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import { connect } from 'react-redux';
 import rest from '../../api/api';
-import Widget from '../../components/Widgets/Widget';
+import Widget, { WidgetElementProps } from '../../components/Widgets/Widget';
 import DashboardBar from './components/DashboardBar';
 import { useDashboardState } from './use-dashboard-state';
 import { createGlobalStyle } from 'styled-components';
@@ -34,7 +33,12 @@ const ResizeHandleStyles = createGlobalStyle`
   }
 `;
 
-const Dashboard = ({ customWidgets, getWidgets }) => {
+type DashboardProps = {
+  customWidgets: any[];
+  getWidgets: () => void;
+};
+
+const Dashboard = ({ customWidgets, getWidgets }: DashboardProps) => {
   const {
     allWidgets,
     layouts,
@@ -54,7 +58,7 @@ const Dashboard = ({ customWidgets, getWidgets }) => {
         onRemoveItem={onRemoveItem}
         onAddItem={onAddItem}
         onResetLayout={onResetLayout}
-        widgets={allWidgets}
+        widgets={allWidgets as any}
       />
       <ResponsiveGridLayout
         autoSize={true}
@@ -67,7 +71,7 @@ const Dashboard = ({ customWidgets, getWidgets }) => {
         draggableCancel="button, input, textarea, select, a, .no-drag"
         onLayoutChange={onLayoutChange}
       >
-        {widgets.map((widget) => (
+        {widgets.map((widget: WidgetElementProps) => (
           <div key={widget.widgetId} className="widget">
             <Widget
               icon={widget.icon}
@@ -86,14 +90,14 @@ const Dashboard = ({ customWidgets, getWidgets }) => {
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: any) {
   return {
     currentUser: state.users.currentUser,
     customWidgets: state.widgets.widgets,
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: any) {
   return {
     getWidgets: () => {
       dispatch(rest.actions.getWidgets());

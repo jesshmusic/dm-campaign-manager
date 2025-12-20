@@ -35,7 +35,7 @@ export const SidebarLink = (props: { title: string; icon?: React.ReactNode; to: 
   );
 };
 
-export const NavLink = (props) => {
+export const NavLink = (props: any) => {
   const { showActiveIcon, children, icon, isButton, to, ...inputProps } = props;
   const resolved = useResolvedPath(to);
   const match = useMatch({ path: resolved.pathname, end: true });
@@ -66,7 +66,7 @@ export const NavLink = (props) => {
   );
 };
 
-export const NavLinkSmall = (props) => {
+export const NavLinkSmall = (props: any) => {
   const { showActiveIcon, children, icon, to, ...inputProps } = props;
   const resolved = useResolvedPath(to);
   const match = useMatch({ path: resolved.pathname, end: true });

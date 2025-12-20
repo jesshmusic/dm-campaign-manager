@@ -102,13 +102,13 @@ const MonsterFormModal: React.FC<MonsterFormModalProps> = ({
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: any) {
   return {
     token: state.users.token,
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: any) {
   return {
     createMonster: (data: MonsterFormData, token?: string) => {
       dispatch(

@@ -189,7 +189,6 @@ const MonsterForm: React.FC<MonsterFormProps> = ({
           control={typedControl}
           label="Subtype"
           errors={errors}
-          placeholder="e.g., goblinoid"
         />
 
         <ControlledInput

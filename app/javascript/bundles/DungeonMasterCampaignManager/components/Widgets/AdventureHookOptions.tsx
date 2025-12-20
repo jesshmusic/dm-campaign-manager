@@ -23,8 +23,8 @@ const AdventureHookOptions = ({ onFormSubmit, isLoading }: AdventureHookOptionsP
   const [averageLevel, setAverageLevel] = useState(1);
   const [setting, setSetting] = useState({ value: 'forgotten_realms', label: 'Forgotten Realms' });
 
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
+  const handleSubmit = (event: unknown) => {
+    (event as React.FormEvent).preventDefault();
     onFormSubmit(partySize, averageLevel, setting.value);
   };
 

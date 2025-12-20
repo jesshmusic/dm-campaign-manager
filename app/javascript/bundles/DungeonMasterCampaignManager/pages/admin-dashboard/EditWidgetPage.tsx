@@ -58,7 +58,7 @@ const EditWidgetPage = (props: {
   }, [widget]);
 
   // React.useEffect(() => {
-  //   const subscription = UseForm.watch((value) => {
+  //   const subscription = UseForm.watch((value: any) => {
   //     // @ts-expect-error
   //     setTestState(value);
   //   });
@@ -78,7 +78,7 @@ const EditWidgetPage = (props: {
     getWidget(parseInt(widgetId as string));
   }, []);
 
-  const onSubmit = (data) => {
+  const onSubmit = (data: any) => {
     updateWidget(data, token);
     navigate('/app/admin-dashboard');
   };
@@ -110,14 +110,14 @@ const EditWidgetPage = (props: {
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: any) {
   return {
     token: state.users.token,
     widget: state.widgets.widget,
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: any) {
   return {
     getWidget: (widgetId: number) => {
       dispatch(rest.actions.getWidget({ id: widgetId }));

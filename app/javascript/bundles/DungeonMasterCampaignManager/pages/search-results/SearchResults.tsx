@@ -52,7 +52,7 @@ const SearchResults = (props: {
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: any) {
   return {
     resultsCount: state.search.count,
     results: state.search.results,
@@ -60,7 +60,7 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: any) {
   return {
     search: (searchString: string) => {
       dispatch(rest.actions.search({ searchString }));

@@ -14,7 +14,7 @@ import { connect } from 'react-redux';
 import { ActionTypeContainer } from './AdminDashboard.styles';
 
 const CreateCustomActionPage = (props: {
-  createCustomAction: (action: unknown) => void;
+  createCustomAction: (action: MonsterAction, token?: string) => void;
   flashMessages: FlashMessage[];
   addFlashMessage: (flashMessage: FlashMessage) => void;
   user: UserProps;
@@ -78,7 +78,7 @@ const CreateCustomActionPage = (props: {
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: any) {
   return {
     user: state.users.currentUser,
     users: state.users.users,
@@ -86,7 +86,7 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: any) {
   return {
     createCustomAction: (action: MonsterAction, token?: string) => {
       const actionBody = {

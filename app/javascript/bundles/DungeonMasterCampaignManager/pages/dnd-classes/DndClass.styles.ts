@@ -6,7 +6,7 @@ export const Page = styled.div`
 
 export const SectionHeading = styled.h2`
   color: ${({ theme }) => theme.colors.darkRed};
-  font-family: ${({ theme }) => theme.fonts.display};
+  font-family: ${({ theme }) => theme.fonts.mrEaves};
 `;
 
 export const SectionGroup = styled.div`
@@ -16,14 +16,14 @@ export const SectionGroup = styled.div`
 
 export const SubsectionHeading = styled.h3`
   color: ${({ theme }) => theme.colors.darkRed};
-  font-family: ${({ theme }) => theme.fonts.display};
+  font-family: ${({ theme }) => theme.fonts.mrEaves};
   font-size: ${({ theme }) => theme.fontSizes.lg};
 `;
 
 export const FeatureHeading = styled.h4`
   border-bottom: solid 0.125rem ${({ theme }) => theme.colors.yellow};
   color: ${({ theme }) => theme.colors.darkRed};
-  font-family: ${({ theme }) => theme.fonts.display};
+  font-family: ${({ theme }) => theme.fonts.mrEaves};
 `;
 
 export const InfoSection = styled.div`

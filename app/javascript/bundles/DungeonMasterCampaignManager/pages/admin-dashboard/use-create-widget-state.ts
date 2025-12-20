@@ -33,13 +33,13 @@ export const useCreateWidgetState = (props: {
   };
 
   React.useEffect(() => {
-    const subscription = UseForm.watch((value) => {
+    const subscription = UseForm.watch((value: any) => {
       setTestState(value as any);
     });
     return () => subscription.unsubscribe();
   }, [UseForm.watch]);
 
-  const onSubmit = (data) => {
+  const onSubmit = (data: any) => {
     createWidget(data, token);
     navigate('/app/admin-dashboard');
   };

@@ -62,7 +62,7 @@ const UsersTable = (props: {
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: any) {
   return {
     user: state.users.currentUser,
     users: state.users.users,
@@ -70,7 +70,7 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: any) {
   return {
     getUsers: (searchTerm?: string) => {
       if (searchTerm) {

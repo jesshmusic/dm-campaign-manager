@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { TwoColumn } from './Widgets.styles';
 
 const ActionsInCombat = () => {

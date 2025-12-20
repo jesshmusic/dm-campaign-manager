@@ -31,7 +31,13 @@ const getSavedSidebarState = (): { collapsed: boolean; width: number } => {
   return { collapsed: false, width: SIDEBAR_DEFAULT_WIDTH };
 };
 
-const Layout = (props) => {
+interface LayoutProps {
+  currentUser?: any;
+  logInUser?: (user: any, token: string) => void;
+  [key: string]: any;
+}
+
+const Layout = (props: LayoutProps) => {
   const [flashMessages, setFlashMessages] = React.useState<FlashMessage[]>([]);
   const parentNode = React.useRef(null);
 
@@ -80,7 +86,7 @@ const Layout = (props) => {
     if (isAuthenticated && user && !props.currentUser) {
       getAccessTokenSilently()
         .then((token) => {
-          props.logInUser(user, token);
+          props.logInUser?.(user, token);
         })
         .catch((err) => {
           console.error(err);
@@ -104,19 +110,19 @@ const Layout = (props) => {
         <HeroBanner />
         <DMRoutes {...combinedProps} />
         <YouTubeAd />
-        <Footer user={combinedProps.user} />
+        <Footer user={combinedProps.currentUser} />
       </AppContainer>
     </SidebarProvider>
   );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: any) => {
   return {
     currentUser: state.users.currentUser,
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch: any) => {
   return {
     logInUser: (user: User, token: string) => {
       const currentUser = {

@@ -171,7 +171,7 @@ const BackgroundDetail = ({
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: any) {
   return {
     currentBackground: state.backgrounds.currentBackground,
     loading: state.backgrounds.currentBackgroundLoading,
@@ -180,7 +180,7 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: any) {
   return {
     getBackground: (slug: string) => {
       dispatch(rest.actions.getBackground({ id: slug }));

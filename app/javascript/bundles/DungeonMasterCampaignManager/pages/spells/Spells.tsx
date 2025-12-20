@@ -41,7 +41,7 @@ const Spells = (props: {
     getSpells();
   };
 
-  const goToPage = (row: Row<Record<string, unknown>>) => {
+  const goToPage = (row: Row<any>) => {
     navigate(getContentUrl('spells', row.original.slug as string, edition));
   };
 
@@ -49,19 +49,19 @@ const Spells = (props: {
     () => [
       {
         Header: 'Spell',
-        accessor: 'name',
+        accessor: 'name' as const,
       },
       {
         Header: 'Level',
-        accessor: 'spellLevel',
+        accessor: 'spellLevel' as const,
       },
       {
         Header: 'Components',
-        accessor: 'componentsString',
+        accessor: 'componentsString' as const,
       },
       {
         Header: 'Classes',
-        accessor: 'classesString',
+        accessor: 'classesString' as const,
       },
     ],
     [],
@@ -113,7 +113,7 @@ const Spells = (props: {
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: any) {
   return {
     spells: state.spells.spells,
     user: state.users.user,
@@ -123,7 +123,7 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: any) {
   return {
     getSpells: (searchTerm?: string) => {
       if (searchTerm) {

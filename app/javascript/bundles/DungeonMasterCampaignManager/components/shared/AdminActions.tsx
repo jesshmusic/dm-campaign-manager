@@ -14,7 +14,7 @@ const ActionsWrapper = styled.div<{ $size?: 'small' | 'medium' }>`
 type AdminActionsProps = {
   currentUser?: UserProps;
   onEdit: () => void;
-  onDelete: () => void;
+  onDelete: () => void | Promise<void>;
   size?: 'small' | 'medium';
   editLabel?: string;
   deleteLabel?: string;

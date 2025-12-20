@@ -24,11 +24,18 @@ import EnvironmentalEffectsWidget from './EnvironmentalEffectsWidget';
 
 export const dashboardComponents: {
   [key: string]: {
-    component: (any) => JSX.Element;
+    component: (props: any) => JSX.Element;
     icon: React.ReactNode;
     title: string;
     subtitle: string;
-    grid: object;
+    grid: {
+      w?: number;
+      h?: number;
+      x?: number;
+      y?: number;
+      minW?: number;
+      minH?: number;
+    };
   };
 } = {
   actionsInCombat: {

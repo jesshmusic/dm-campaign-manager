@@ -99,7 +99,6 @@ const RuleForm: React.FC<RuleFormProps> = ({
           control={typedControl}
           label="Parent Rule Slug (optional)"
           errors={errors}
-          placeholder="e.g., playing-the-game"
         />
 
         <FormWrapper>

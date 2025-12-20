@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Content, TableFrame } from './Widgets.styles';
 
 const Cover = () => {

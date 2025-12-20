@@ -33,7 +33,7 @@ const customWidgets = createReducer(
           count: 0,
         };
       })
-      .addCase(createWidgetSuccess, (state, action: AnyAction) => {
+      .addCase(createWidgetSuccess, (_state, action: AnyAction) => {
         return {
           widget: action.data.widget,
           widgets: action.data.widgets,
@@ -54,7 +54,7 @@ const customWidgets = createReducer(
           count: 0,
         };
       })
-      .addCase(updateWidgetSuccess, (state, action: AnyAction) => {
+      .addCase(updateWidgetSuccess, (_state, action: AnyAction) => {
         return {
           widget: action.data.widget,
           widgets: action.data.widgets,
@@ -75,7 +75,7 @@ const customWidgets = createReducer(
           count: state.count,
         };
       })
-      .addCase(getWidgetsSuccess, (state, action: AnyAction) => {
+      .addCase(getWidgetsSuccess, (_state, action: AnyAction) => {
         return {
           widget: null,
           widgets: action.data.widgets,
@@ -117,7 +117,7 @@ const customWidgets = createReducer(
           count: state.count,
         };
       })
-      .addCase(deleteWidgetSuccess, (state, action: AnyAction) => {
+      .addCase(deleteWidgetSuccess, (_state, action: AnyAction) => {
         return {
           widget: null,
           widgets: action.data.widgets,

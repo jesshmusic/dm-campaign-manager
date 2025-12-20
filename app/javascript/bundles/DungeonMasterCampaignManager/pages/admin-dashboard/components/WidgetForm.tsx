@@ -7,7 +7,6 @@ import 'react-quill/dist/quill.snow.css';
 import Button from '../../../components/Button/Button';
 import { Colors } from '../../../utilities/enums';
 import * as Icons from 'react-icons/gi';
-import React from 'react';
 
 import { WidgetFormWrapper, SelectRow } from '../AdminDashboard.styles';
 
@@ -22,7 +21,7 @@ const modules = {
   ],
 };
 
-const WidgetForm = (props: { useForm: UseFormReturn; onSubmit: (data) => void }) => {
+const WidgetForm = (props: { useForm: UseFormReturn; onSubmit: (data: any) => void }) => {
   return (
     <WidgetFormWrapper onSubmit={props.useForm.handleSubmit(props.onSubmit)} noValidate>
       <ControlledInput

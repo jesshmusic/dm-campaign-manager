@@ -8,6 +8,7 @@ import {
 import React from 'react';
 import Util from '../../utilities/utilities';
 import { useEdition } from '../../contexts/EditionContext';
+import { Row } from 'react-table';
 
 export enum ItemType {
   all = 'All',
@@ -141,7 +142,7 @@ export const useData = (props: ItemsPageProps) => {
         Header: 'Rarity',
         accessor: 'rarity',
         sortType: React.useMemo(
-          () => (rowA, rowB, columnId) => {
+          () => (rowA: Row<any>, rowB: Row<any>, columnId: string) => {
             const a = getRarityValue(rowA.values[columnId]);
             const b = getRarityValue(rowB.values[columnId]);
             return a > b ? 1 : -1;
@@ -177,7 +178,7 @@ export const useData = (props: ItemsPageProps) => {
         Header: 'Rarity',
         accessor: 'rarity',
         sortType: React.useMemo(
-          () => (rowA, rowB, columnId) => {
+          () => (rowA: Row<any>, rowB: Row<any>, columnId: string) => {
             const a = getRarityValue(rowA.values[columnId]);
             const b = getRarityValue(rowB.values[columnId]);
             return a > b ? 1 : -1;
@@ -239,7 +240,7 @@ export const useData = (props: ItemsPageProps) => {
         Header: 'Rarity',
         accessor: 'rarity',
         sortType: React.useMemo(
-          () => (rowA, rowB, columnId) => {
+          () => (rowA: Row<any>, rowB: Row<any>, columnId: string) => {
             const a = getRarityValue(rowA.values[columnId]);
             const b = getRarityValue(rowB.values[columnId]);
             return a > b ? 1 : -1;

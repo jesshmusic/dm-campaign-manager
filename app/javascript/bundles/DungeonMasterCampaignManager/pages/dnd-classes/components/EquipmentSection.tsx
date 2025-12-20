@@ -1,6 +1,5 @@
 import { DndClass, StartingEquipmentOption } from '../../../utilities/types';
 import Util from '../../../utilities/utilities';
-import React from 'react';
 
 import { SectionGroup, SubsectionHeading } from '../DndClass.styles';
 

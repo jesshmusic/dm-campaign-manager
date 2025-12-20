@@ -96,13 +96,13 @@ const ItemFormModal: React.FC<ItemFormModalProps> = ({
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: any) {
   return {
     token: state.users.token,
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: any) {
   return {
     createItem: (data: ItemFormData, token?: string) => {
       dispatch(

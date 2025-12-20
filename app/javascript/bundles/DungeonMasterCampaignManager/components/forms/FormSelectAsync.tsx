@@ -2,7 +2,6 @@
  * Created by jesshendricks on 2019-08-25
  */
 
-import React from 'react';
 import AsyncSelect from 'react-select/async';
 import { SelectProps } from './FormSelect';
 import { Controller } from 'react-hook-form';

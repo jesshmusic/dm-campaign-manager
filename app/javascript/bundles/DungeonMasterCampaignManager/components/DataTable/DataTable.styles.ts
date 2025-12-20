@@ -9,11 +9,11 @@ export const TableWrapper = styled.div`
 `;
 
 export const Pagination = styled.nav`
-  ${respondTo.md} {
+  ${respondTo.md`
     align-items: baseline;
     display: flex;
     justify-content: space-between;
-  }
+  `}
 `;
 
 export const PageNumber = styled.div`

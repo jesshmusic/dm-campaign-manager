@@ -51,13 +51,13 @@ const CreateWidgetPage = (props: {
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: any) {
   return {
     token: state.users.token,
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: any) {
   return {
     createWidget: (widget: WidgetProps, token?: string) => {
       dispatch(

@@ -1,4 +1,3 @@
-import React from 'react';
 import { ControlledInput, ControllerInput } from '../forms/ControllerInput';
 import { Control, Controller, FieldErrors, FieldValues } from 'react-hook-form';
 import axios from 'axios';
@@ -38,12 +37,12 @@ const SpellcastingForm = (props: {
 }) => {
   const { fieldName, errors, control } = props;
 
-  const getSpells = (inputValue: string, callback: (options: unknown[]) => void) => {
+  const getSpells = (inputValue: string, callback: unknown) => {
     axios
       .get<{ results: unknown[] }>(`/v1/spells.json?list=true&search=${inputValue}}`)
       .then((response) => {
         const options = filterOptionsWithData(response.data.results);
-        callback(options);
+        (callback as (options: unknown[]) => void)(options);
       })
       .catch((_error) => {});
   };

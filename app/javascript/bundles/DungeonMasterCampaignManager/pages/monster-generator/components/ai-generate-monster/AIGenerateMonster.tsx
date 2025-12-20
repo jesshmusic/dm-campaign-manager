@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
-import { useForm } from 'react-hook-form';
+import { useForm, Control, FieldValues } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import Frame from '../../../../components/Frame/Frame';
 import Button from '../../../../components/Button/Button';
@@ -379,19 +379,19 @@ const AIGenerateMonster = ({
         <GenForm onSubmit={handleSubmit(onSubmit)} noValidate>
           <ThreeCol>
             <FormSelect
-              control={control}
+              control={control as unknown as Control<FieldValues>}
               label="Challenge Rating"
               name="challengeRating"
               options={challengeRatingOptions}
             />
             <FormSelect
-              control={control}
+              control={control as unknown as Control<FieldValues>}
               label="Creature Type"
               name="monsterType"
               options={monsterTypeOptions}
             />
             <FormSelect
-              control={control}
+              control={control as unknown as Control<FieldValues>}
               label="Alignment"
               name="alignment"
               options={alignmentOptions}

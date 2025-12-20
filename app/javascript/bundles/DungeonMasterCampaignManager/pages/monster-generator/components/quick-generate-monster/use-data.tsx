@@ -134,7 +134,7 @@ export const useData = (props: GenerateMonsterProps) => {
     }
   };
 
-  const onSubmit = (data) => {
+  const onSubmit = (data: any) => {
     const monsterData = createQuickMonsterParams(data);
     monsterData.monster_type = monsterData.monster_type.toLowerCase();
     monsterData.size = monsterData.size.toLowerCase();
@@ -219,7 +219,7 @@ export const useData = (props: GenerateMonsterProps) => {
         }
         break;
       case 'size': {
-        const hitDice = hitDieForSize(fields.size.value);
+        const hitDice = hitDieForSize(String(fields.size.value));
         UseForm.setValue('hitDiceValue', hitDice, {
           shouldDirty: true,
           shouldTouch: true,

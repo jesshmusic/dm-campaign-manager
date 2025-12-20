@@ -22,11 +22,12 @@ import { Page, InfoSection, SectionGroup, SectionHeading } from './DndClass.styl
 type DndClassPageProps = {
   dndClass?: DndClass;
   getDndClass: (dndClassSlug: string) => void;
+  deleteDndClass: (dndClassId: number) => Promise<void>;
   currentUser?: UserProps;
 };
 
 const DndClassPage = (props: DndClassPageProps) => {
-  const { dndClass, getDndClass, currentUser } = props;
+  const { dndClass, getDndClass, deleteDndClass, currentUser } = props;
   const navigate = useNavigate();
   const params = useParams<{ edition?: string; dndClassSlug?: string; param?: string }>();
   // Handle both /app/classes/:edition/:slug and /app/classes/:param routes
@@ -53,6 +54,13 @@ const DndClassPage = (props: DndClassPageProps) => {
     navigate(getContentUrl('classes', '', edition));
   };
 
+  const handleDelete = async () => {
+    if (dndClass && window.confirm(`Are you sure you want to delete ${dndClass.name}?`)) {
+      await deleteDndClass(dndClass.id);
+      handleDeleteSuccess();
+    }
+  };
+
   const dndClassTitle = dndClass ? dndClass.name : 'Class Loading...';
 
   return (
@@ -64,7 +72,11 @@ const DndClassPage = (props: DndClassPageProps) => {
       <PageTitle title={dndClassTitle} isLegacy={isEdition2014} />
       {dndClass ? (
         <>
-          <AdminActions currentUser={currentUser} onEdit={() => setIsEditModalOpen(true)} />
+          <AdminActions
+            currentUser={currentUser}
+            onEdit={() => setIsEditModalOpen(true)}
+            onDelete={handleDelete}
+          />
           <Page>
             <InfoSection>
               <SectionGroup>
@@ -94,17 +106,20 @@ const DndClassPage = (props: DndClassPageProps) => {
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: any) {
   return {
     dndClass: state.dndClasses.currentDndClass,
     currentUser: state.users.currentUser,
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: any) {
   return {
     getDndClass: (dndClassSlug: string) => {
       dispatch(rest.actions.getDndClass({ id: dndClassSlug }));
+    },
+    deleteDndClass: (dndClassId: number) => {
+      return dispatch(rest.actions.deleteDndClass({ id: dndClassId }));
     },
   };
 }

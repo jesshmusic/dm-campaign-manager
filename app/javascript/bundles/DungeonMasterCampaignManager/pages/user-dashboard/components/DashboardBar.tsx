@@ -8,7 +8,21 @@ import ReactModal from 'react-modal';
 
 import { DashboardHeader, Buttons } from '../UserDashboard.styles';
 
-const DashboardBar = ({ items, onRemoveItem, onAddItem, onResetLayout, widgets }) => {
+type DashboardBarProps = {
+  items: string[];
+  onRemoveItem: (key: string) => void;
+  onAddItem: (key: string) => void;
+  onResetLayout: () => void;
+  widgets: { title: string; key: string; icon: React.ElementType }[];
+};
+
+const DashboardBar = ({
+  items,
+  onRemoveItem,
+  onAddItem,
+  onResetLayout,
+  widgets,
+}: DashboardBarProps) => {
   const [showWidgetList, setShowWidgetList] = React.useState(false);
 
   ReactModal.setAppElement(document.getElementById('dmsContainer'));
@@ -23,7 +37,7 @@ const DashboardBar = ({ items, onRemoveItem, onAddItem, onResetLayout, widgets }
         overlayClassName="dashboard-modal-overlay"
         shouldCloseOnOverlayClick={true}
         shouldCloseOnEsc={true}
-        parentSelector={() => document.getElementById('dashboardContainer')}
+        parentSelector={() => document.getElementById('dashboardContainer') as HTMLElement}
       >
         <AddList
           items={items}

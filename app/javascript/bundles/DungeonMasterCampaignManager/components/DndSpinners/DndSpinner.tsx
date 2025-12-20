@@ -2,7 +2,6 @@
  * Created by jesshendricks on 9/15/19
  */
 
-import React from 'react';
 import { GiLinkedRings } from 'react-icons/gi';
 import TableFrame from '../../containers/TableFrame';
 

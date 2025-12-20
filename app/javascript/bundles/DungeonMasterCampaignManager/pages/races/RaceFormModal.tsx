@@ -96,13 +96,13 @@ const RaceFormModal: React.FC<RaceFormModalProps> = ({
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: any) {
   return {
     token: state.users.token,
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: any) {
   return {
     createRace: (data: RaceFormData, token?: string) => {
       dispatch(

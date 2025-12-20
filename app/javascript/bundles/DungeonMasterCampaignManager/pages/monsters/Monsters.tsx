@@ -45,13 +45,13 @@ const Monsters = ({ currentUser, getMonsters }: MonstersProps) => {
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: any) {
   return {
     currentUser: state.users.currentUser,
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: any) {
   return {
     getMonsters: () => {
       dispatch(rest.actions.getMonsters());

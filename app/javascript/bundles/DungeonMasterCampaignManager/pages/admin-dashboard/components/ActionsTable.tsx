@@ -34,7 +34,7 @@ const ActionsTable = (props: {
         Header: 'Delete',
         accessor: 'id' as const,
         size: 25,
-        Cell: ({ value }) => (
+        Cell: ({ value }: any) => (
           <Button
             type="button"
             onClick={() => deleteCustomAction(value)}
@@ -76,7 +76,7 @@ const ActionsTable = (props: {
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: any) {
   return {
     user: state.users.currentUser,
     actions: state.customActions.actions,
@@ -84,7 +84,7 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: any) {
   return {
     getCustomActions: (searchTerm?: string) => {
       if (searchTerm) {

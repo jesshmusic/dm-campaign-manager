@@ -1,4 +1,3 @@
-import React from 'react';
 import { DndClass } from '../../../utilities/types';
 
 import { InfoSection, SectionGroup, SectionHeading, FeatureHeading } from '../DndClass.styles';

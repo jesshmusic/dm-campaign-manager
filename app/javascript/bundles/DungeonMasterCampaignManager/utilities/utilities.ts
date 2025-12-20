@@ -53,15 +53,15 @@ export default class Util {
     return ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i'];
   }
 
-  static getNumberWithOrdinal(num) {
+  static getNumberWithOrdinal(num: number): string {
     const ordinal = ['th', 'st', 'nd', 'rd'];
     const value = num % 100;
     return num + (ordinal[(value - 20) % 10] || ordinal[value] || ordinal[0]);
   }
 
-  static camelize(str) {
+  static camelize(str: string): string {
     return str
-      .replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
+      .replace(/(?:^\w|[A-Z]|\b\w)/g, function (word: string, index: number) {
         return index === 0 ? word.toLowerCase() : word.toUpperCase();
       })
       .replace(/\s+/g, '');
@@ -72,7 +72,7 @@ export default class Util {
     return width < 960;
   }
 
-  static numberWithCommas(num) {
+  static numberWithCommas(num: number): string {
     return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   }
 

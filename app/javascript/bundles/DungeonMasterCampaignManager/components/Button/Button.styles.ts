@@ -19,8 +19,15 @@ export type ButtonColor =
   | 'transparent'
   | 'transparentLight';
 
-const getColorStyles = (color: ButtonColor, theme: any) => {
-  const colorMap = {
+type ColorMapEntry = {
+  bg: string;
+  text: string;
+  hoverBg: string;
+  hoverText?: string;
+};
+
+const getColorStyles = (color: ButtonColor, theme: { colors: Record<string, string> }) => {
+  const colorMap: Record<ButtonColor, ColorMapEntry> = {
     primary: {
       bg: theme.colors.primary,
       text: theme.colors.white,
@@ -80,7 +87,7 @@ const getColorStyles = (color: ButtonColor, theme: any) => {
     },
   };
 
-  const colors = colorMap[color] || colorMap.primary;
+  const colors = colorMap[color] ?? colorMap.primary;
 
   return css`
     background-color: ${colors.bg};

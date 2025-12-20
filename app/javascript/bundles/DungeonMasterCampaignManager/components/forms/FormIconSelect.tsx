@@ -2,19 +2,18 @@
  * Created by jesshendricks on 2019-08-25
  */
 
-import React from 'react';
-import Select, { components } from 'react-select';
+import Select, { components, MenuListProps as ReactSelectMenuListProps } from 'react-select';
 import { Controller } from 'react-hook-form';
 import './inputOverrides.scss';
 import { SelectProps } from './FormSelect';
-import { FixedSizeList as List } from 'react-window';
+import { FixedSizeList } from 'react-window';
 
 import { FormWrapper, FormLabel } from './Forms.styles';
 
 const OPTION_HEIGHT = 40;
 const ROWS = 6;
 
-const MenuList = ({ options, children, getValue }) => {
+const MenuList = ({ options, children, getValue }: ReactSelectMenuListProps) => {
   const [value] = getValue();
   const initialOffset =
     options.indexOf(value) !== -1
@@ -25,31 +24,35 @@ const MenuList = ({ options, children, getValue }) => {
         : 0
       : 0;
 
-  return Array.isArray(children) ? (
+  if (!Array.isArray(children)) {
+    return <div>{children}</div>;
+  }
+
+  const List = FixedSizeList as any;
+
+  return (
     <List
       height={children.length >= ROWS ? OPTION_HEIGHT * ROWS : children.length * OPTION_HEIGHT}
       itemCount={children.length}
       itemSize={OPTION_HEIGHT}
       initialScrollOffset={initialOffset}
     >
-      {({ style, index }) => {
+      {({ style, index }: any) => {
         return <div style={style}>{children[index]}</div>;
       }}
     </List>
-  ) : (
-    <div>{children}</div>
   );
 };
 
 const { Option, SingleValue } = components;
-const IconOption = (props) => (
+const IconOption = (props: any) => (
   <Option {...props}>
     {props.data.icon}
     {props.data.label}
   </Option>
 );
 
-const ValueOption = (props) => (
+const ValueOption = (props: any) => (
   <SingleValue {...props}>
     {props.data.icon}
     {props.data.label}

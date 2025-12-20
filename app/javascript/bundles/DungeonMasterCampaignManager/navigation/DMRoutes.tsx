@@ -21,7 +21,6 @@ import MonsterGenerator from '../pages/monster-generator/MonsterGenerator';
 import ProtectedRoute from './ProtectedRoute';
 import AdminDashboard from '../pages/admin-dashboard/AdminDashboard';
 import UserDashboard from '../pages/user-dashboard/UserDashboard';
-import React from 'react';
 import DndClass from '../pages/dnd-classes/DndClass';
 import CreateWidgetPage from '../pages/admin-dashboard/CreateWidgetPage';
 import CreateCustomActionPage from '../pages/admin-dashboard/CreateCustomActionPage';
@@ -33,27 +32,27 @@ import { isValidEdition } from '../utilities/editionUrls';
 import { ItemType } from '../pages/items/use-data';
 
 // Resolver components that determine if single param is edition or slug
-const ClassesResolver = (props) => {
+const ClassesResolver = (props: any) => {
   const { param } = useParams<{ param: string }>();
   return isValidEdition(param) ? <DndClasses {...props} /> : <DndClass {...props} />;
 };
 
-const RacesResolver = (props) => {
+const RacesResolver = (props: any) => {
   const { param } = useParams<{ param: string }>();
   return isValidEdition(param) ? <Races {...props} /> : <Race {...props} />;
 };
 
-const MonstersResolver = (props) => {
+const MonstersResolver = (props: any) => {
   const { param } = useParams<{ param: string }>();
   return isValidEdition(param) ? <Monsters {...props} /> : <Monster {...props} />;
 };
 
-const SpellsResolver = (props) => {
+const SpellsResolver = (props: any) => {
   const { param } = useParams<{ param: string }>();
   return isValidEdition(param) ? <Spells {...props} /> : <Spell {...props} />;
 };
 
-const RulesResolver = (props) => {
+const RulesResolver = (props: any) => {
   const { param } = useParams<{ param: string }>();
   // Special case: rules-glossary goes to RulesGlossary even without edition
   if (param === 'rules-glossary') {
@@ -62,12 +61,12 @@ const RulesResolver = (props) => {
   return isValidEdition(param) ? <RulesIndex {...props} /> : <RulesCategory {...props} />;
 };
 
-const BackgroundsResolver = (props) => {
+const BackgroundsResolver = (props: any) => {
   const { param } = useParams<{ param: string }>();
   return isValidEdition(param) ? <BackgroundsIndex {...props} /> : <BackgroundDetail {...props} />;
 };
 
-const FeatsResolver = (props) => {
+const FeatsResolver = (props: any) => {
   const { param } = useParams<{ param: string }>();
   return isValidEdition(param) ? <FeatsIndex {...props} /> : <FeatDetail {...props} />;
 };
@@ -96,7 +95,7 @@ const itemCategoryTitles: Record<string, string> = {
 };
 
 // Resolver for /app/items/:edition/:slug - determines if slug is a category or item
-const ItemsEditionResolver = (props) => {
+const ItemsEditionResolver = (props: any) => {
   const { edition, itemSlug } = useParams<{ edition: string; itemSlug: string }>();
 
   // If edition is valid and slug is a known category, render category page
@@ -115,7 +114,7 @@ const ItemsEditionResolver = (props) => {
 };
 
 // Resolver for /app/items/:param - determines if param is edition, category, or item
-const ItemsResolver = (props) => {
+const ItemsResolver = (props: any) => {
   const { param } = useParams<{ param: string }>();
 
   // If param is a valid edition, show all items
@@ -134,7 +133,7 @@ const ItemsResolver = (props) => {
   return <Item {...props} />;
 };
 
-const DMRoutes = (props) => {
+const DMRoutes = (props: any) => {
   return (
     <Routes>
       <Route path="/" element={<HomePage {...props} />} />

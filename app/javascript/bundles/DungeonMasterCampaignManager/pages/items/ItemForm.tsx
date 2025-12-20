@@ -255,14 +255,12 @@ const ItemForm: React.FC<ItemFormProps> = ({
               control={typedControl}
               label="Stealth"
               errors={errors}
-              placeholder="e.g., Disadvantage"
             />
             <ControlledInput
               fieldName="strength"
               control={typedControl}
               label="Strength Requirement"
               errors={errors}
-              placeholder="e.g., Str 13"
             />
           </>
         )}
@@ -280,7 +278,6 @@ const ItemForm: React.FC<ItemFormProps> = ({
               control={typedControl}
               label="Damage"
               errors={errors}
-              placeholder="e.g., 1d8 slashing"
             />
             <ControlledSelect
               fieldName="mastery"
@@ -294,7 +291,6 @@ const ItemForm: React.FC<ItemFormProps> = ({
                 control={typedControl}
                 label="Properties"
                 errors={errors}
-                placeholder="e.g., Light, Finesse, Thrown (range 20/60)"
               />
             </TwoColumnField>
           </>
@@ -313,7 +309,6 @@ const ItemForm: React.FC<ItemFormProps> = ({
               control={typedControl}
               label="Attunement"
               errors={errors}
-              placeholder="e.g., requires attunement by a spellcaster"
             />
             {selectedCategory === 'Magic Item' && (
               <ControlledInput
@@ -321,7 +316,6 @@ const ItemForm: React.FC<ItemFormProps> = ({
                 control={typedControl}
                 label="Magic Item Type"
                 errors={errors}
-                placeholder="e.g., Wondrous item, Ring, Wand"
               />
             )}
           </>
@@ -334,21 +328,18 @@ const ItemForm: React.FC<ItemFormProps> = ({
               control={typedControl}
               label="Vehicle Category"
               errors={errors}
-              placeholder="e.g., Mounts and Other Animals"
             />
             <ControlledInput
               fieldName="speed"
               control={typedControl}
               label="Speed"
               errors={errors}
-              placeholder="e.g., 60 ft."
             />
             <ControlledInput
               fieldName="capacity"
               control={typedControl}
               label="Capacity"
               errors={errors}
-              placeholder="e.g., 480 lb."
             />
           </>
         )}
@@ -359,7 +350,6 @@ const ItemForm: React.FC<ItemFormProps> = ({
             control={typedControl}
             label="Tool Category"
             errors={errors}
-            placeholder="e.g., Artisan's Tools"
           />
         )}
 
@@ -369,7 +359,6 @@ const ItemForm: React.FC<ItemFormProps> = ({
             control={typedControl}
             label="Gear Category"
             errors={errors}
-            placeholder="e.g., Equipment Packs"
           />
         )}
 

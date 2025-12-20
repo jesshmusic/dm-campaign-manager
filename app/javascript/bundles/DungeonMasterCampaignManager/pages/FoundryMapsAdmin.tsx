@@ -302,7 +302,7 @@ const FoundryMapsAdmin: React.FC = () => {
           },
           tags: data.tags
             .split(',')
-            .map((t) => t.trim())
+            .map((t: string) => t.trim())
             .filter(Boolean),
         }),
       });
@@ -873,7 +873,7 @@ const FoundryMapsAdmin: React.FC = () => {
                     KB)
                   </div>
                 )}
-                {editingMap && editingMap.thumbnail && !selectedThumbnail && (
+                {editingMap?.thumbnail && !selectedThumbnail && (
                   <div className={styles.existingThumbnail}>
                     <img
                       src={editingMap.thumbnail}
@@ -910,7 +910,7 @@ const FoundryMapsAdmin: React.FC = () => {
                 )}
               </div>
 
-              {editingMap && editingMap.files && editingMap.files.length > 0 && (
+              {editingMap?.files && editingMap.files.length > 0 && (
                 <div className={styles.existingFilesSection}>
                   <label className={styles.label}>Existing Files:</label>
                   <div className={styles.filesList}>
@@ -996,7 +996,7 @@ const FoundryMapsAdmin: React.FC = () => {
                 {isEditingInModal ? (
                   <div className={styles.form}>
                     <form
-                      onSubmit={handleSubmit(async (data) => {
+                      onSubmit={handleSubmit(async (data: any) => {
                         await onSubmit(data);
                         setIsEditingInModal(false);
                       })}
@@ -1086,7 +1086,7 @@ const FoundryMapsAdmin: React.FC = () => {
                             {(selectedThumbnail.size / 1024).toFixed(2)} KB)
                           </div>
                         )}
-                        {editingMap && editingMap.thumbnail && !selectedThumbnail && (
+                        {editingMap?.thumbnail && !selectedThumbnail && (
                           <div className={styles.existingThumbnail}>
                             <img
                               src={editingMap.thumbnail}

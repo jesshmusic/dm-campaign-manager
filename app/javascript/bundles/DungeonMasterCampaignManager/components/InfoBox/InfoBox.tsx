@@ -2,7 +2,6 @@
  * Created by jesshendricks on 9/3/19
  */
 
-import React from 'react';
 import Frame from '../Frame/Frame';
 
 const InfoBox = (props: { monstersCount: number; itemsCount: number; spellsCount: number }) => {

@@ -422,7 +422,7 @@ const SideBar = (props: {
             <WelcomeText $isCollapsed={isCollapsed}>
               {isAuthenticated && user ? `Welcome, ${user.given_name}` : 'User'}
             </WelcomeText>
-            {currentUser && currentUser.role && <RoleLabel>{currentUser.role}</RoleLabel>}
+            {currentUser?.role && <RoleLabel>{currentUser.role}</RoleLabel>}
           </UserWelcome>
           <Menu menuItemStyles={menuItemStyles}>
             <SidebarLink
@@ -462,14 +462,14 @@ const SideBar = (props: {
   );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: any) => {
   return {
     rules: state.rules.rules,
     currentUser: state.users.currentUser,
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch: any) => {
   return {
     logOutUser: (token: string) => {
       dispatch(rest.actions.logout({}, { token }));

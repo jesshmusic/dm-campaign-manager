@@ -45,6 +45,7 @@ const store = configureStore({
       rules: [],
       count: 0,
       currentRule: null,
+      currentRuleLoading: false,
       loading: false,
     },
     spells: {
@@ -68,5 +69,6 @@ const store = configureStore({
 });
 // };
 export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
 
 export default store;

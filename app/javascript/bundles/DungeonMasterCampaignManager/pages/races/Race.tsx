@@ -16,11 +16,12 @@ import { RacePageWrapper, Subheading, TraitName } from './Races.styles';
 type RacePageProps = {
   race?: RaceProps;
   getRace: (raceSlug: string) => void;
+  deleteRace: (raceId: number) => Promise<void>;
   currentUser?: UserProps;
 };
 
 const Race = (props: RacePageProps) => {
-  const { race, getRace, currentUser } = props;
+  const { race, getRace, deleteRace, currentUser } = props;
   const navigate = useNavigate();
   const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
   const params = useParams<{ edition?: string; raceSlug?: string; param?: string }>();
@@ -45,6 +46,13 @@ const Race = (props: RacePageProps) => {
 
   const handleDeleteSuccess = () => {
     navigate(getContentUrl('races', '', edition));
+  };
+
+  const handleDelete = async () => {
+    if (race && window.confirm(`Are you sure you want to delete ${race.name}?`)) {
+      await deleteRace(race.id);
+      handleDeleteSuccess();
+    }
   };
 
   const raceTitle = race ? race.name : `${typeLabel} Loading...`;
@@ -74,7 +82,11 @@ const Race = (props: RacePageProps) => {
       {race ? (
         <RacePageWrapper>
           <PageTitle title={raceTitle} isLegacy={isEdition2014} />
-          <AdminActions currentUser={currentUser} onEdit={() => setIsEditModalOpen(true)} />
+          <AdminActions
+            currentUser={currentUser}
+            onEdit={() => setIsEditModalOpen(true)}
+            onDelete={handleDelete}
+          />
           <div>
             <div>
               <TraitName>Ability Score Increase. </TraitName>
@@ -100,8 +112,7 @@ const Race = (props: RacePageProps) => {
             </div>
             <div>
               <Subheading>Traits</Subheading>
-              {race.traits &&
-                race.traits.map((trait, index) => (
+              {race.traits?.map((trait, index) => (
                   <div key={index}>
                     <TraitName>{trait.name} </TraitName>
                     {trait.desc.map((descPara, index) => (
@@ -127,17 +138,20 @@ const Race = (props: RacePageProps) => {
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: any) {
   return {
     race: state.races.currentRace,
     currentUser: state.users.currentUser,
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: any) {
   return {
     getRace: (raceSlug: string) => {
       dispatch(rest.actions.getRace({ id: raceSlug }));
+    },
+    deleteRace: (raceId: number) => {
+      return dispatch(rest.actions.deleteRace({ id: raceId }));
     },
   };
 }

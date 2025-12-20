@@ -94,13 +94,13 @@ const FeatFormModal: React.FC<FeatFormModalProps> = ({
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: any) {
   return {
     token: state.users.token,
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: any) {
   return {
     createFeat: (data: FeatFormData, token?: string) => {
       dispatch(

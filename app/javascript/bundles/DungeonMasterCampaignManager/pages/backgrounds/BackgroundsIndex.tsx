@@ -114,7 +114,7 @@ const BackgroundsIndex = ({
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: any) {
   return {
     backgrounds: state.backgrounds.backgrounds,
     loading: state.backgrounds.loading,
@@ -122,7 +122,7 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: any) {
   return {
     getBackgrounds: () => {
       dispatch(rest.actions.getBackgrounds());

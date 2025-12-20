@@ -22,15 +22,15 @@ export function getHeaders() {
   });
 }
 
-const processData = (data) => {
+const processData = (data: unknown): unknown => {
   try {
-    return JSON.parse(data);
+    return JSON.parse(data as string);
   } catch (_err) {
     return data;
   }
 };
 
-const toJSON = (resp) => {
+const toJSON = (resp: any): Promise<unknown> => {
   if (resp.text) {
     return resp.text().then(processData);
   } else if (resp instanceof Promise) {
@@ -52,16 +52,16 @@ export const fetchData = (opts: AxiosRequestConfig): Promise<AxiosResponse> => {
   });
 };
 
-const dmFetch = (fetch) => {
-  return (url, opts) => {
+const dmFetch = (fetch: any) => {
+  return (url: string, opts: any) => {
     if (opts.token) {
       opts.headers['Authorization'] = `Bearer ${opts.token}`;
     }
-    return fetch(url, opts).then((response) => {
+    return fetch(url, opts).then((response: any) => {
       const status = response.status === 1223 ? 204 : response.status;
       const statusText = response.status === 1223 ? 'No Content' : response.statusText;
 
-      return toJSON(response).then((data) => {
+      return toJSON(response).then((data: any) => {
         if (status >= 200 && status < 400) {
           return data;
         }
@@ -485,7 +485,7 @@ export default reduxApi({
     url: '/v1/search.json?search=:searchString',
   },
 })
-  .use('options', (url, params, getState) => {
+  .use('options', (_url: any, _params: any, getState: any) => {
     const state = getState();
     const token = state.users && state.users.token ? state.users.token : null;
     const edition = getCurrentEdition();

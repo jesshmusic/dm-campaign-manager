@@ -19,10 +19,11 @@ import { Section, Info, TableFrame } from './Item.styles';
 
 type ItemDetailPageProps = ItemPageProps & {
   currentUser?: UserProps;
+  deleteItem: (itemId: number) => Promise<void>;
 };
 
 const Item = (props: ItemDetailPageProps) => {
-  const { item, getItem, currentUser } = props;
+  const { item, getItem, deleteItem, currentUser } = props;
   const { getItemParentInfo } = singleItemUseData(props);
   const navigate = useNavigate();
   const [itemInfo, setItemInfo] = React.useState<ItemInfoBlock>({
@@ -61,6 +62,13 @@ const Item = (props: ItemDetailPageProps) => {
     navigate(getContentUrl('items', '', effectiveEdition));
   };
 
+  const handleDelete = async () => {
+    if (item && window.confirm(`Are you sure you want to delete ${item.name}?`)) {
+      await deleteItem(item.id);
+      handleDeleteSuccess();
+    }
+  };
+
   const itemTitle = item ? item.name : 'Item Loading...';
   return (
     <PageContainer
@@ -71,7 +79,11 @@ const Item = (props: ItemDetailPageProps) => {
       <PageTitle title={itemTitle} isLegacy={isEdition2014} />
       {item && itemInfo ? (
         <Section>
-          <AdminActions currentUser={currentUser} onEdit={() => setIsEditModalOpen(true)} />
+          <AdminActions
+            currentUser={currentUser}
+            onEdit={() => setIsEditModalOpen(true)}
+            onDelete={handleDelete}
+          />
           <Info>
             <h2>{itemInfo.subtitle}</h2>
             {itemInfo.infoBlock &&
@@ -95,8 +107,7 @@ const Item = (props: ItemDetailPageProps) => {
               </ul>
             </Info>
           )}
-          {item.desc &&
-            item.desc.map((itemDesc, index) => (
+          {item.desc?.map((itemDesc, index) => (
               <ReactMarkdown
                 key={index}
                 components={{
@@ -127,7 +138,7 @@ const Item = (props: ItemDetailPageProps) => {
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: any) {
   return {
     item: state.items.currentItem,
     loading: state.items.loading,
@@ -135,10 +146,13 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: any) {
   return {
     getItem: (itemSlug: string) => {
       dispatch(rest.actions.getItem({ id: itemSlug }));
+    },
+    deleteItem: (itemId: number) => {
+      return dispatch(rest.actions.deleteItem({ id: itemId }));
     },
   };
 }

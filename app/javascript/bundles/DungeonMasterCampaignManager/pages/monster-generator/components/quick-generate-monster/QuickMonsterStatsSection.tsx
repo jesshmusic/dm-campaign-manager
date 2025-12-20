@@ -1,4 +1,3 @@
-import React from 'react';
 import { FieldValues, UseFormReturn } from 'react-hook-form';
 import { SelectOption } from '../../../../utilities/types';
 import MonsterTypeSelect from '../MonsterTypeSelect';

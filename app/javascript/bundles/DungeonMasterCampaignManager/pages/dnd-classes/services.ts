@@ -121,7 +121,8 @@ export const buildData = (levels: DndClassLevel[]) => {
         } else {
           const value =
             classSpecific.value === '0' || classSpecific.value === 'f' ? '-' : classSpecific.value;
-          data[Util.camelize(classSpecific.name)] = value === 't' ? '√' : value;
+          (data as Record<string, unknown>)[Util.camelize(classSpecific.name)] =
+            value === 't' ? '√' : value;
         }
       });
     }

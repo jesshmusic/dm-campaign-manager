@@ -39,10 +39,6 @@ const DndClasses = ({ getDndClasses, dndClasses, loading, currentUser }: DndClas
     getDndClasses();
   };
 
-  const goToPage = (row: Row<Record<string, unknown>>) => {
-    navigate(getContentUrl('classes', row.original.slug as string, edition));
-  };
-
   const data = React.useMemo(() => {
     return dndClasses.map((dndClass: DndClassSummary) => {
       return {
@@ -54,19 +50,25 @@ const DndClasses = ({ getDndClasses, dndClasses, loading, currentUser }: DndClas
     });
   }, [dndClasses]);
 
+  const goToPage = (
+    row: Row<{ name: string; hitDie: string; primaryAbilities: string; slug: string }>,
+  ) => {
+    navigate(getContentUrl('classes', row.original.slug, edition));
+  };
+
   const columns = React.useMemo(
     () => [
       {
         Header: 'Class',
-        accessor: 'name',
+        accessor: 'name' as const,
       },
       {
         Header: 'Hit Die',
-        accessor: 'hitDie',
+        accessor: 'hitDie' as const,
       },
       {
         Header: 'Primary Abilities',
-        accessor: 'primaryAbilities',
+        accessor: 'primaryAbilities' as const,
       },
     ],
     [],
@@ -101,7 +103,7 @@ const DndClasses = ({ getDndClasses, dndClasses, loading, currentUser }: DndClas
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: any) {
   return {
     dndClasses: state.dndClasses.dndClasses,
     currentUser: state.users.currentUser,
@@ -110,7 +112,7 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: any) {
   return {
     getDndClasses: () => {
       dispatch(rest.actions.getDndClasses());

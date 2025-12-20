@@ -19,7 +19,18 @@ import {
   TagInputField,
 } from './Forms.styles';
 
-export const ControllerInput = (props) => {
+interface ControllerInputProps {
+  type?: string;
+  label: string;
+  errors: FieldErrors;
+  className?: string;
+  name: string;
+  placeholder?: string;
+  isTextArea?: boolean;
+  [key: string]: any;
+}
+
+export const ControllerInput = (props: ControllerInputProps) => {
   const { type, label, errors, className, name, placeholder, isTextArea, ...rest } = props;
 
   if (type === 'checkbox' || type === 'radio') {

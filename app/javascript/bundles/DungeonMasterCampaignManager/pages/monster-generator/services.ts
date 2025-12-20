@@ -11,7 +11,7 @@ import {
 import axios from 'axios';
 import { FieldValues } from 'react-hook-form';
 
-const abilityAbbr = {
+const abilityAbbr: Record<string, string> = {
   STR: 'strength',
   DEX: 'dexterity',
   CON: 'constitution',
@@ -20,7 +20,7 @@ const abilityAbbr = {
   CHA: 'charisma',
 };
 
-const abilityForSkill = {
+const abilityForSkill: Record<string, string> = {
   athletics: 'strength',
   acrobatics: 'dexterity',
   'sleight of hand': 'dexterity',
@@ -51,7 +51,8 @@ const parseMonsterProficiencies = (
   if (savingThrows.length > 0) {
     savingThrows.forEach((save) => {
       const saveAbility = abilityAbbr[save.label];
-      const modifier = values[saveAbility] ? abilityScoreModifier(values[saveAbility]) : 0;
+      const abilityValue = (values as any)[saveAbility];
+      const modifier = abilityValue ? abilityScoreModifier(abilityValue) : 0;
       const saveBonus = (values.profBonus || 2) + modifier;
       monsterProfs.push(<MonsterProf>{
         profId: save.value,
@@ -63,7 +64,8 @@ const parseMonsterProficiencies = (
     skills.forEach((skill) => {
       const skillName = skill.label.toLowerCase();
       const skillAbility = abilityForSkill[skillName];
-      const modifier = values[skillAbility] ? abilityScoreModifier(values[skillAbility]) : 0;
+      const abilityValue = (values as any)[skillAbility];
+      const modifier = abilityValue ? abilityScoreModifier(abilityValue) : 0;
       const skillBonus = (values.profBonus || 2) + modifier;
       monsterProfs.push(<MonsterProf>{
         profId: skill.value,
@@ -249,7 +251,7 @@ export const createQuickMonsterParams = (values: MonsterQuickGeneratorFormFields
   return snakecaseKeys(parsedMonsterParams);
 };
 
-export const get2eMonsterObject = (values) => {
+export const get2eMonsterObject = (values: any) => {
   const returnChar = {
     name: values.name,
     race: values.characterRace.value,
@@ -290,7 +292,7 @@ export const abilityScoreModifier = (abilityScore: number) => {
   return Math.floor((abilityScore - 10) / 2);
 };
 
-export const hitDieForSize = (size) => {
+export const hitDieForSize = (size: string) => {
   console.log(`hitDieForSize: ${size}`);
   switch (size) {
     case 'tiny':
@@ -310,7 +312,7 @@ export const hitDieForSize = (size) => {
   }
 };
 
-const diceNumberFromString = {
+const diceNumberFromString: Record<string, number> = {
   d4: 4,
   d6: 6,
   d8: 8,

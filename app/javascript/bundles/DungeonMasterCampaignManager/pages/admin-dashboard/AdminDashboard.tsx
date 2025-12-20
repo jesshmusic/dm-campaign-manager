@@ -1,4 +1,3 @@
-import React from 'react';
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
 import { UserProps } from '../../utilities/types';
@@ -121,7 +120,7 @@ const AdminDashboard = (props: {
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: any) {
   return {
     actionCount: state.customActions.count,
     npcCount: state.monsters.count,
@@ -131,7 +130,7 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(_dispatch) {
+function mapDispatchToProps(_dispatch: any) {
   return {};
 }
 
