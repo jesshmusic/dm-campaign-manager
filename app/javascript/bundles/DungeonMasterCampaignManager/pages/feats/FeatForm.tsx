@@ -90,11 +90,11 @@ const FeatForm: React.FC<FeatFormProps> = ({
     formState: { errors },
   } = useForm<FeatFormData>({
     defaultValues: {
-      name: initialData?.name || '',
-      category: initialData?.category || 'General',
-      prerequisite: initialData?.prerequisite || '',
-      description: initialData?.description || '',
-      repeatable: initialData?.repeatable || false,
+      name: initialData?.name ?? '',
+      category: initialData?.category ?? 'General',
+      prerequisite: initialData?.prerequisite ?? '',
+      description: initialData?.description ?? '',
+      repeatable: initialData?.repeatable ?? false,
     },
   });
 
@@ -106,7 +106,8 @@ const FeatForm: React.FC<FeatFormProps> = ({
       onSubmit={(e) => {
         void handleSubmit(onSubmit)(e);
       }}
-      id="feat-form">
+      id="feat-form"
+    >
       <FormGrid>
         <ControlledInput fieldName="name" control={typedControl} label="Name" errors={errors} />
 

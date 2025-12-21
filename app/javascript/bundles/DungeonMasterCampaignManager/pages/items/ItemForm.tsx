@@ -165,28 +165,28 @@ const ItemForm: React.FC<ItemFormProps> = ({
     formState: { errors },
   } = useForm<ItemFormData>({
     defaultValues: {
-      name: initialData?.name || '',
-      description: initialData?.desc?.join('\n\n') || '',
-      category: initialData?.category || 'Adventuring Gear',
-      cost_quantity: initialData?.cost?.quantity || 0,
-      cost_unit: initialData?.cost?.unit || 'gp',
-      weight: initialData?.weight || '',
-      armor_class: initialData?.armorClass || '',
-      armor_type: initialData?.armorType || '',
-      stealth: initialData?.stealth || '',
-      strength: initialData?.strength || '',
-      damage: initialData?.damage || '',
-      properties: initialData?.properties || '',
-      category_range: initialData?.categoryRange || '',
-      mastery: initialData?.mastery || '',
-      rarity: initialData?.rarity || '-',
-      requires_attunement: initialData?.requiresAttunement || '',
-      magic_item_type: initialData?.magicItemType || '',
-      tool_category: initialData?.toolCategory || '',
-      gear_category: initialData?.gearCategory || '',
-      vehicle_category: initialData?.vehicleCategory || '',
-      speed: initialData?.speed || '',
-      capacity: initialData?.capacity || '',
+      name: initialData?.name ?? '',
+      description: initialData?.desc?.join('\n\n') ?? '',
+      category: initialData?.category ?? 'Adventuring Gear',
+      cost_quantity: initialData?.cost?.quantity ?? 0,
+      cost_unit: initialData?.cost?.unit ?? 'gp',
+      weight: initialData?.weight ?? '',
+      armor_class: initialData?.armorClass ?? '',
+      armor_type: initialData?.armorType ?? '',
+      stealth: initialData?.stealth ?? '',
+      strength: initialData?.strength ?? '',
+      damage: initialData?.damage ?? '',
+      properties: initialData?.properties ?? '',
+      category_range: initialData?.categoryRange ?? '',
+      mastery: initialData?.mastery ?? '',
+      rarity: initialData?.rarity ?? '-',
+      requires_attunement: initialData?.requiresAttunement ?? '',
+      magic_item_type: initialData?.magicItemType ?? '',
+      tool_category: initialData?.toolCategory ?? '',
+      gear_category: initialData?.gearCategory ?? '',
+      vehicle_category: initialData?.vehicleCategory ?? '',
+      speed: initialData?.speed ?? '',
+      capacity: initialData?.capacity ?? '',
       homebrew: false,
     },
   });
@@ -210,7 +210,8 @@ const ItemForm: React.FC<ItemFormProps> = ({
       onSubmit={(e) => {
         void handleSubmit(onSubmit)(e);
       }}
-      id="item-form">
+      id="item-form"
+    >
       <FormGrid>
         <TwoColumnField>
           <ControlledInput fieldName="name" control={typedControl} label="Name" errors={errors} />

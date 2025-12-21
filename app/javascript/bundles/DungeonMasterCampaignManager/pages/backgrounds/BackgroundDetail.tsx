@@ -44,7 +44,7 @@ const BackgroundDetail = ({
   // Handle both /app/backgrounds/:edition/:slug and /app/backgrounds/:param routes
   const { slug: backgroundSlug } = parseEditionParams(
     params.edition,
-    params.backgroundSlug || params.param,
+    params.backgroundSlug ?? params.param,
   );
   const { isEdition2014 } = useEdition();
   const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);

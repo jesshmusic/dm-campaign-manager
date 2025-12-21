@@ -33,22 +33,21 @@ const SearchResults = (props: {
       pageTitle={`Search for "${query}"`}
     >
       <PageTitle title={`Search for "${query}"`} />
-      {results &&
-        results.map((result) => (
-          <Frame key={result.url} title={result.name} linkTo={result.url}>
-            <ReactMarkdown
-              remarkPlugins={[remarkGfm]}
-              components={{
-                h1: () => <></>,
-                h2: () => <></>,
-              }}
-            >
-              {result.description.length > 255
-                ? result.description.substring(0, 255) + '...'
-                : result.description}
-            </ReactMarkdown>
-          </Frame>
-        ))}
+      {results?.map((result) => (
+        <Frame key={result.url} title={result.name} linkTo={result.url}>
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
+            components={{
+              h1: () => <></>,
+              h2: () => <></>,
+            }}
+          >
+            {result.description.length > 255
+              ? result.description.substring(0, 255) + '...'
+              : result.description}
+          </ReactMarkdown>
+        </Frame>
+      ))}
     </PageContainer>
   );
 };

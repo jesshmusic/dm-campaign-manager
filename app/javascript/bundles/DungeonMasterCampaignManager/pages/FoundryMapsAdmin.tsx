@@ -217,9 +217,9 @@ const FoundryMapsAdmin: React.FC = () => {
       setEditingMap(detailedMap);
       reset({
         name: detailedMap.name,
-        description: detailedMap.description || '',
+        description: detailedMap.description ?? '',
         access_level: detailedMap.access === 'Premium' ? 'premium' : 'free',
-        required_tier: detailedMap.requiredTier || 'free',
+        required_tier: detailedMap.requiredTier ?? 'free',
         published: detailedMap.published,
         tags: detailedMap.tags.join(', '),
       });
@@ -227,9 +227,9 @@ const FoundryMapsAdmin: React.FC = () => {
       setEditingMap(map);
       reset({
         name: map.name,
-        description: map.description || '',
+        description: map.description ?? '',
         access_level: map.access === 'Premium' ? 'premium' : 'free',
-        required_tier: map.requiredTier || 'free',
+        required_tier: map.requiredTier ?? 'free',
         published: map.published,
         tags: map.tags.join(', '),
       });
@@ -243,7 +243,7 @@ const FoundryMapsAdmin: React.FC = () => {
 
   const viewMap = async (map: FoundryMap) => {
     const detailedMap = await fetchMapDetails(map.id);
-    setViewingMap(detailedMap || map);
+    setViewingMap(detailedMap ?? map);
     setIsEditingInModal(false);
   };
 
@@ -253,13 +253,13 @@ const FoundryMapsAdmin: React.FC = () => {
 
   const editInModal = async (map: FoundryMap) => {
     const detailedMap = await fetchMapDetails(map.id);
-    const mapToEdit = detailedMap || map;
+    const mapToEdit = detailedMap ?? map;
     setEditingMap(mapToEdit);
     reset({
       name: mapToEdit.name,
-      description: mapToEdit.description || '',
+      description: mapToEdit.description ?? '',
       access_level: mapToEdit.access === 'Premium' ? 'premium' : 'free',
-      required_tier: mapToEdit.requiredTier || 'free',
+      required_tier: mapToEdit.requiredTier ?? 'free',
       published: mapToEdit.published,
       tags: mapToEdit.tags.join(', '),
     });
@@ -373,7 +373,7 @@ const FoundryMapsAdmin: React.FC = () => {
 
         // Show the view modal with updated data (for both create and edit)
         const detailedMap = await fetchMapDetails(savedMap.id);
-        setViewingMap(detailedMap || savedMap);
+        setViewingMap(detailedMap ?? savedMap);
 
         handleCancelEdit();
       } else {
@@ -903,7 +903,7 @@ const FoundryMapsAdmin: React.FC = () => {
                   type="file"
                   id="thumbnail"
                   accept="image/jpeg,image/jpg,image/png,image/webp"
-                  onChange={(e) => setSelectedThumbnail(e.target.files?.[0] || null)}
+                  onChange={(e) => setSelectedThumbnail(e.target.files?.[0] ?? null)}
                   className={styles.fileInput}
                   disabled={uploadingFiles}
                 />
@@ -1118,7 +1118,7 @@ const FoundryMapsAdmin: React.FC = () => {
                           type="file"
                           id="thumbnail"
                           accept="image/jpeg,image/jpg,image/png,image/webp"
-                          onChange={(e) => setSelectedThumbnail(e.target.files?.[0] || null)}
+                          onChange={(e) => setSelectedThumbnail(e.target.files?.[0] ?? null)}
                           className={styles.fileInput}
                           disabled={uploadingFiles}
                         />
@@ -1160,7 +1160,7 @@ const FoundryMapsAdmin: React.FC = () => {
                   </div>
                 ) : (
                   <div className={styles.modalBodyLayout}>
-                    {(viewingMap.thumbnail ||
+                    {(viewingMap.thumbnail ??
                       viewingMap.files?.some((f) => f.file_type === 'background')) && (
                       <div className={styles.thumbnailColumn}>
                         {viewingMap.thumbnail && (
@@ -1202,7 +1202,7 @@ const FoundryMapsAdmin: React.FC = () => {
                         <div
                           className={styles.viewContent}
                           dangerouslySetInnerHTML={{
-                            __html: viewingMap.description || 'No description provided.',
+                            __html: viewingMap.description ?? 'No description provided.',
                           }}
                         />
                       </div>

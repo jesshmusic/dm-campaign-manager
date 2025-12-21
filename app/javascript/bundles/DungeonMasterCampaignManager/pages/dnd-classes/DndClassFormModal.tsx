@@ -76,7 +76,7 @@ const DndClassFormModal: React.FC<DndClassFormModalProps> = ({
     }
   };
 
-  const title = mode === 'create' ? 'New Class' : `Edit ${initialData?.name || 'Class'}`;
+  const title = mode === 'create' ? 'New Class' : `Edit ${initialData?.name ?? 'Class'}`;
 
   return (
     <RecordFormModal

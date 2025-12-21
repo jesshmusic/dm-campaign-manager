@@ -17,7 +17,7 @@ interface AppProps {
 const App = (props: AppProps) => {
   const onRedirectCallback = (appState?: { returnTo?: string }) => {
     // Return to the page the user was on before auth redirect
-    window.history.replaceState({}, document.title, appState?.returnTo || window.location.pathname);
+    window.history.replaceState({}, document.title, appState?.returnTo ?? window.location.pathname);
   };
 
   return (

@@ -37,15 +37,14 @@ const FeaturesDesc = (props: { dndClass: DndClass }) => {
         <div>
           <SectionHeading>Spell Casting</SectionHeading>
           <InfoSection>
-            {dndClass.spellCasting.info &&
-              dndClass.spellCasting.info.map((spellCast, index) => (
-                <SectionGroup key={`spell-${index}`}>
-                  <FeatureHeading>{spellCast.name}</FeatureHeading>
-                  {spellCast.desc.map((desc, index) => (
-                    <p key={`spell-desc-${index}`}>{desc}</p>
-                  ))}
-                </SectionGroup>
-              ))}
+            {dndClass.spellCasting.info?.map((spellCast, index) => (
+              <SectionGroup key={`spell-${index}`}>
+                <FeatureHeading>{spellCast.name}</FeatureHeading>
+                {spellCast.desc.map((desc, index) => (
+                  <p key={`spell-desc-${index}`}>{desc}</p>
+                ))}
+              </SectionGroup>
+            ))}
           </InfoSection>
         </div>
       )}

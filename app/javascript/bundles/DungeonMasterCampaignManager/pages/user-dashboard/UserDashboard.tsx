@@ -13,7 +13,6 @@ import { RootState, AppDispatch } from '../../store/store';
 const UserDashboard = (_props: PageProps) => {
   const { isAuthenticated, user } = useAuth0();
   const pageTitle = isAuthenticated && user ? `Welcome, ${user.name}` : 'Welcome';
-
   return (
     <PageContainer
       pageTitle={pageTitle}
@@ -22,28 +21,30 @@ const UserDashboard = (_props: PageProps) => {
       }
     >
       <PageTitle title={`Dungeon Master GURU - ${pageTitle}`} isDraconis />
-      <Section>
-        <h2>Info</h2>
-        <UserInfo>
-          <UserPic>
-            <img src={user!.picture} />
-          </UserPic>
-          <UserData>
-            <p>
-              <strong>Name</strong>
-              {user!.name}
-            </p>
-            <p>
-              <strong>Username</strong>
-              {user!.nickname}
-            </p>
-            <p>
-              <strong>Email</strong>
-              {user!.email}
-            </p>
-          </UserData>
-        </UserInfo>
-      </Section>
+      {user && (
+        <Section>
+          <h2>Info</h2>
+          <UserInfo>
+            <UserPic>
+              <img src={user.picture} alt="User Profile Picture" />
+            </UserPic>
+            <UserData>
+              <p>
+                <strong>Name</strong>
+                {user.name}
+              </p>
+              <p>
+                <strong>Username</strong>
+                {user.nickname}
+              </p>
+              <p>
+                <strong>Email</strong>
+                {user.email}
+              </p>
+            </UserData>
+          </UserInfo>
+        </Section>
+      )}
       <Dashboard />
     </PageContainer>
   );

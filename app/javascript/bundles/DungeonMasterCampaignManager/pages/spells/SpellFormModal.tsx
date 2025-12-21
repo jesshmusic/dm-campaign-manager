@@ -76,7 +76,7 @@ const SpellFormModal: React.FC<SpellFormModalProps> = ({
     }
   };
 
-  const title = mode === 'create' ? 'New Spell' : `Edit ${initialData?.name || 'Spell'}`;
+  const title = mode === 'create' ? 'New Spell' : `Edit ${initialData?.name ?? 'Spell'}`;
 
   return (
     <RecordFormModal

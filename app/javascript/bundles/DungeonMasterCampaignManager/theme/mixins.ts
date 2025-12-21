@@ -16,7 +16,7 @@ export const respondTo = {
     ...values: (string | number | RuleSet<DefaultTheme>)[]
   ) => css`
     @media (min-width: ${theme.breakpoints.sm}) {
-      ${String.raw(strings, ...values.map(v => String(v)))}
+      ${String.raw(strings, ...values.map((v) => String(v)))}
     }
   `,
   md: (
@@ -24,7 +24,7 @@ export const respondTo = {
     ...values: (string | number | RuleSet<DefaultTheme>)[]
   ) => css`
     @media (min-width: ${theme.breakpoints.md}) {
-      ${String.raw(strings, ...values.map(v => String(v)))}
+      ${String.raw(strings, ...values.map((v) => String(v)))}
     }
   `,
   lg: (
@@ -32,7 +32,7 @@ export const respondTo = {
     ...values: (string | number | RuleSet<DefaultTheme>)[]
   ) => css`
     @media (min-width: ${theme.breakpoints.lg}) {
-      ${String.raw(strings, ...values.map(v => String(v)))}
+      ${String.raw(strings, ...values.map((v) => String(v)))}
     }
   `,
   xl: (
@@ -40,7 +40,7 @@ export const respondTo = {
     ...values: (string | number | RuleSet<DefaultTheme>)[]
   ) => css`
     @media (min-width: ${theme.breakpoints.xl}) {
-      ${String.raw(strings, ...values.map(v => String(v)))}
+      ${String.raw(strings, ...values.map((v) => String(v)))}
     }
   `,
 };
@@ -55,7 +55,7 @@ export const respondToContainer = {
     ...values: (string | number | RuleSet<DefaultTheme>)[]
   ) => css`
     @media (min-width: ${theme.containerMaxWidths.sm}) {
-      ${String.raw(strings, ...values.map(v => String(v)))}
+      ${String.raw(strings, ...values.map((v) => String(v)))}
     }
   `,
   md: (
@@ -63,7 +63,7 @@ export const respondToContainer = {
     ...values: (string | number | RuleSet<DefaultTheme>)[]
   ) => css`
     @media (min-width: ${theme.containerMaxWidths.md}) {
-      ${String.raw(strings, ...values.map(v => String(v)))}
+      ${String.raw(strings, ...values.map((v) => String(v)))}
     }
   `,
   lg: (
@@ -71,7 +71,7 @@ export const respondToContainer = {
     ...values: (string | number | RuleSet<DefaultTheme>)[]
   ) => css`
     @media (min-width: ${theme.containerMaxWidths.lg}) {
-      ${String.raw(strings, ...values.map(v => String(v)))}
+      ${String.raw(strings, ...values.map((v) => String(v)))}
     }
   `,
   xl: (
@@ -79,7 +79,7 @@ export const respondToContainer = {
     ...values: (string | number | RuleSet<DefaultTheme>)[]
   ) => css`
     @media (min-width: ${theme.containerMaxWidths.xl}) {
-      ${String.raw(strings, ...values.map(v => String(v)))}
+      ${String.raw(strings, ...values.map((v) => String(v)))}
     }
   `,
 };

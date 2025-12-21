@@ -122,7 +122,8 @@
       "Bash(cut:*)",
       "Bash(yarn tsc:*)",
       "Bash(./bin/shakapacker:*)",
-      "Bash(wc:*)"
+      "Bash(wc:*)",
+      "mcp__ide__getDiagnostics"
     ],
     "deny": [],
     "ask": []

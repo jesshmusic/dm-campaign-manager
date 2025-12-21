@@ -74,7 +74,7 @@ const BackgroundFormModal: React.FC<BackgroundFormModalProps> = ({
     }
   };
 
-  const title = mode === 'create' ? 'New Background' : `Edit ${initialData?.name || 'Background'}`;
+  const title = mode === 'create' ? 'New Background' : `Edit ${initialData?.name ?? 'Background'}`;
 
   return (
     <RecordFormModal

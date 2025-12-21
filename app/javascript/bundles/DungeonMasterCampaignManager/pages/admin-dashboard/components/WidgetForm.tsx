@@ -29,7 +29,10 @@ type WidgetFormData = {
   content?: string;
 };
 
-const WidgetForm = (props: { useForm: UseFormReturn; onSubmit: (data: WidgetFormData) => void }) => {
+const WidgetForm = (props: {
+  useForm: UseFormReturn;
+  onSubmit: (data: WidgetFormData) => void;
+}) => {
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     void props.useForm.handleSubmit(props.onSubmit)(e);
   };

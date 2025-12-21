@@ -184,7 +184,7 @@ const MonsterBlock = (props: { monster: MonsterProps; showCRStats?: boolean }) =
           value={monster.senses.length > 0 ? monster.senses.join(', ') : ' None'}
         />
         <MonsterStat name="Languages" value={monster.languages} />
-        <MonsterStat name="Challenge" value={monster.challengeString || ''} />
+        <MonsterStat name="Challenge" value={monster.challengeString ?? ''} />
         <hr />
       </div>
       {monster.specialAbilities &&
@@ -224,7 +224,7 @@ const MonsterBlock = (props: { monster: MonsterProps; showCRStats?: boolean }) =
           ))}
         </>
       )}
-      {(monster.fguXml || monster.foundryVttJson) && (
+      {(monster.fguXml ?? monster.foundryVttJson) && (
         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '16px' }}>
           {monster.fguXml && (
             <>
@@ -265,9 +265,9 @@ const MonsterBlock = (props: { monster: MonsterProps; showCRStats?: boolean }) =
       {showCRStats && (
         <CRStats>
           <h3>Challenge Rating Info</h3>
-          <MonsterStat name="Damage Per Round:" value={monster.damagePerRound!} />
-          <MonsterStat name="Offensive CR:" value={monster.offensiveCr!} />
-          <MonsterStat name="Defensive CR:" value={monster.defensiveCr!} />
+          <MonsterStat name="Damage Per Round:" value={monster.damagePerRound ?? 0} />
+          <MonsterStat name="Offensive CR:" value={monster.offensiveCr ?? ''} />
+          <MonsterStat name="Defensive CR:" value={monster.defensiveCr ?? ''} />
           <MonsterStat name="Proficiency Bonus:" value={monster.profBonus} />
           <MonsterStat name="Save DC:" value={monster.saveDc} />
         </CRStats>

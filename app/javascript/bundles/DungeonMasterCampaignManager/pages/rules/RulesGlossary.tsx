@@ -89,7 +89,7 @@ const RulesGlossary = ({ rule, loading, getRule }: RulesGlossaryProps) => {
 
   // Use edition from URL if valid (either :edition or :param route), otherwise from context
   // Note: param would be 'rules-glossary' when accessed via /app/rules/rules-glossary
-  const urlEdition = editionParam || (param !== 'rules-glossary' ? param : undefined);
+  const urlEdition = editionParam ?? (param !== 'rules-glossary' ? param : undefined);
   const edition = isValidEdition(urlEdition) ? urlEdition : contextEdition;
 
   const hasFetchedRef = React.useRef(false);

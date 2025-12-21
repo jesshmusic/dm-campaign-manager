@@ -87,12 +87,11 @@ const Item = (props: ItemDetailPageProps) => {
           />
           <Info>
             <h2>{itemInfo.subtitle}</h2>
-            {itemInfo.infoBlock &&
-              itemInfo.infoBlock.map((info, index) => (
-                <p key={`${info.title} - ${index}`}>
-                  <span>{info.title}</span> {info.desc}
-                </p>
-              ))}
+            {itemInfo.infoBlock?.map((info, index) => (
+              <p key={`${info.title} - ${index}`}>
+                <span>{info.title}</span> {info.desc}
+              </p>
+            ))}
           </Info>
           {item.contents && (
             <Info>
@@ -109,20 +108,20 @@ const Item = (props: ItemDetailPageProps) => {
             </Info>
           )}
           {item.desc?.map((itemDesc, index) => (
-              <ReactMarkdown
-                key={index}
-                components={{
-                  table: ({ node: _node, ...props }) => (
-                    <TableFrame>
-                      <table {...props} />
-                    </TableFrame>
-                  ),
-                }}
-                remarkPlugins={[remarkGfm]}
-              >
-                {itemDesc}
-              </ReactMarkdown>
-            ))}
+            <ReactMarkdown
+              key={index}
+              components={{
+                table: ({ node: _node, ...props }) => (
+                  <TableFrame>
+                    <table {...props} />
+                  </TableFrame>
+                ),
+              }}
+              remarkPlugins={[remarkGfm]}
+            >
+              {itemDesc}
+            </ReactMarkdown>
+          ))}
           <ItemFormModal
             isOpen={isEditModalOpen}
             onClose={() => setIsEditModalOpen(false)}

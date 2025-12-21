@@ -27,7 +27,7 @@ const Race = (props: RacePageProps) => {
   const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
   const params = useParams<{ edition?: string; raceSlug?: string; param?: string }>();
   // Handle both /app/races/:edition/:slug and /app/races/:param routes
-  const { slug: raceSlug } = parseEditionParams(params.edition, params.raceSlug || params.param);
+  const { slug: raceSlug } = parseEditionParams(params.edition, params.raceSlug ?? params.param);
   const { edition, isEdition2014, isEdition2024 } = useEdition();
 
   // In 2024 edition, "Race" is called "Species"
@@ -114,13 +114,13 @@ const Race = (props: RacePageProps) => {
             <div>
               <Subheading>Traits</Subheading>
               {race.traits?.map((trait, index) => (
-                  <div key={index}>
-                    <TraitName>{trait.name} </TraitName>
-                    {trait.desc.map((descPara, index) => (
-                      <p key={index}>{descPara}</p>
-                    ))}
-                  </div>
-                ))}
+                <div key={index}>
+                  <TraitName>{trait.name} </TraitName>
+                  {trait.desc.map((descPara, index) => (
+                    <p key={index}>{descPara}</p>
+                  ))}
+                </div>
+              ))}
             </div>
           </div>
           <RaceFormModal

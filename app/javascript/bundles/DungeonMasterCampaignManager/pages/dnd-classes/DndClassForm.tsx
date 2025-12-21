@@ -104,11 +104,11 @@ const DndClassForm: React.FC<DndClassFormProps> = ({
     formState: { errors },
   } = useForm<DndClassFormData>({
     defaultValues: {
-      name: initialData?.name || '',
-      hit_die: initialData?.hitDie || 8,
-      primary_abilities: initialData?.abilityScores?.map((a) => a.name).join(', ') || '',
-      spell_ability: initialData?.spellCasting?.spellCastingAbility || '',
-      subclasses: initialData?.subclasses?.join(', ') || '',
+      name: initialData?.name ?? '',
+      hit_die: initialData?.hitDie ?? 8,
+      primary_abilities: initialData?.abilityScores?.map((a) => a.name).join(', ') ?? '',
+      spell_ability: initialData?.spellCasting?.spellCastingAbility ?? '',
+      subclasses: initialData?.subclasses?.join(', ') ?? '',
       description: '',
       homebrew: false,
     },
@@ -122,7 +122,8 @@ const DndClassForm: React.FC<DndClassFormProps> = ({
       onSubmit={(e) => {
         void handleSubmit(onSubmit)(e);
       }}
-      id="dnd-class-form">
+      id="dnd-class-form"
+    >
       <FormGrid>
         <TwoColumnField>
           <ControlledInput

@@ -74,7 +74,7 @@ const FeatFormModal: React.FC<FeatFormModalProps> = ({
     }
   };
 
-  const title = mode === 'create' ? 'New Feat' : `Edit ${initialData?.name || 'Feat'}`;
+  const title = mode === 'create' ? 'New Feat' : `Edit ${initialData?.name ?? 'Feat'}`;
 
   return (
     <RecordFormModal

@@ -76,7 +76,7 @@ const RaceFormModal: React.FC<RaceFormModalProps> = ({
     }
   };
 
-  const title = mode === 'create' ? 'New Race' : `Edit ${initialData?.name || 'Race'}`;
+  const title = mode === 'create' ? 'New Race' : `Edit ${initialData?.name ?? 'Race'}`;
 
   return (
     <RecordFormModal

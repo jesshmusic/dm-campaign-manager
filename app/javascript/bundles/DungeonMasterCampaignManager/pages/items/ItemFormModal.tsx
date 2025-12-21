@@ -76,7 +76,7 @@ const ItemFormModal: React.FC<ItemFormModalProps> = ({
     }
   };
 
-  const title = mode === 'create' ? 'New Item' : `Edit ${initialData?.name || 'Item'}`;
+  const title = mode === 'create' ? 'New Item' : `Edit ${initialData?.name ?? 'Item'}`;
 
   return (
     <RecordFormModal

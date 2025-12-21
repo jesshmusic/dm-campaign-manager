@@ -118,18 +118,18 @@ const RaceForm: React.FC<RaceFormProps> = ({
     formState: { errors },
   } = useForm<RaceFormData>({
     defaultValues: {
-      name: initialData?.name || '',
-      speed: initialData?.speed || 30,
-      size: initialData?.size || 'Medium',
-      size_description: initialData?.sizeDescription || '',
-      age: initialData?.age || '',
-      alignment: initialData?.alignment || '',
-      language_description: initialData?.languageDescription || '',
-      languages: initialData?.languages?.join(', ') || 'Common',
-      language_choices: initialData?.languageChoices?.join(', ') || '',
-      starting_languages: initialData?.startingLanguages || 2,
-      subraces: initialData?.subraces?.join(', ') || '',
-      traits: initialData?.traits?.map((t) => ({ name: t.name, desc: t.desc.join('\n\n') })) || [],
+      name: initialData?.name ?? '',
+      speed: initialData?.speed ?? 30,
+      size: initialData?.size ?? 'Medium',
+      size_description: initialData?.sizeDescription ?? '',
+      age: initialData?.age ?? '',
+      alignment: initialData?.alignment ?? '',
+      language_description: initialData?.languageDescription ?? '',
+      languages: initialData?.languages?.join(', ') ?? 'Common',
+      language_choices: initialData?.languageChoices?.join(', ') ?? '',
+      starting_languages: initialData?.startingLanguages ?? 2,
+      subraces: initialData?.subraces?.join(', ') ?? '',
+      traits: initialData?.traits?.map((t) => ({ name: t.name, desc: t.desc.join('\n\n') })) ?? [],
       homebrew: false,
     },
   });
@@ -147,7 +147,8 @@ const RaceForm: React.FC<RaceFormProps> = ({
       onSubmit={(e) => {
         void handleSubmit(onSubmit)(e);
       }}
-      id="race-form">
+      id="race-form"
+    >
       <FormGrid>
         <TwoColumnField>
           <ControlledInput fieldName="name" control={typedControl} label="Name" errors={errors} />

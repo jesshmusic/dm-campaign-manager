@@ -283,7 +283,7 @@ const AIGenerateMonster = ({
   });
 
   const descriptionValue = watch('description');
-  const descriptionLength = descriptionValue?.length || 0;
+  const descriptionLength = descriptionValue?.length ?? 0;
   const maxLength = 500;
 
   const onSubmit = async (data: FormFields) => {
@@ -308,7 +308,7 @@ const AIGenerateMonster = ({
 
       if (response.data.concept) {
         setConcept(response.data.concept);
-        setTokenUsage(response.data.token_usage || null);
+        setTokenUsage(response.data.token_usage ?? null);
         setShowModal(true);
       } else if (response.data.error) {
         showError(response.data.error);
@@ -478,7 +478,7 @@ const AIGenerateMonster = ({
           onClose={handleCloseModal}
           isLoading={isLoading}
           isAdmin={isAdmin}
-          tokenUsage={tokenUsage || undefined}
+          tokenUsage={tokenUsage ?? undefined}
         />
       )}
     </>

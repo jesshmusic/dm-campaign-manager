@@ -82,7 +82,7 @@ const MonsterFormModal: React.FC<MonsterFormModalProps> = ({
     }
   };
 
-  const title = mode === 'create' ? 'New Monster' : `Edit ${initialData?.name || 'Monster'}`;
+  const title = mode === 'create' ? 'New Monster' : `Edit ${initialData?.name ?? 'Monster'}`;
 
   return (
     <RecordFormModal

@@ -29,7 +29,7 @@ const DndClasses = ({ getDndClasses, dndClasses, loading, currentUser }: DndClas
   const { edition: contextEdition, isEdition2014 } = useEdition();
 
   // Use edition from URL if valid (either :edition or :param route), otherwise from context
-  const urlEdition = editionParam || param;
+  const urlEdition = editionParam ?? param;
   const edition = isValidEdition(urlEdition) ? urlEdition : contextEdition;
 
   React.useEffect(() => {

@@ -26,7 +26,7 @@ const Monster = (props: MonsterPageProps) => {
   // Handle both /app/monsters/:edition/:slug and /app/monsters/:param routes
   const { slug: monsterSlug } = parseEditionParams(
     params.edition,
-    params.monsterSlug || params.param,
+    params.monsterSlug ?? params.param,
   );
   const { edition } = useEdition();
   const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
@@ -48,10 +48,7 @@ const Monster = (props: MonsterPageProps) => {
   };
 
   const handleDelete = async () => {
-    if (
-      monster?.id &&
-      window.confirm(`Are you sure you want to delete ${monster.name}?`)
-    ) {
+    if (monster?.id && window.confirm(`Are you sure you want to delete ${monster.name}?`)) {
       await deleteMonster(monster.id);
       handleDeleteSuccess();
     }

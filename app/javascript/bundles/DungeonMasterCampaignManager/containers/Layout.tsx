@@ -33,7 +33,13 @@ const getSavedSidebarState = (): { collapsed: boolean; width: number } => {
 };
 
 interface LayoutProps {
-  currentUser?: { auth_id: string; email: string; name: string; roles?: string[]; username: string };
+  currentUser?: {
+    auth_id: string;
+    email: string;
+    name: string;
+    roles?: string[];
+    username: string;
+  };
   logInUser?: (user: User, token: string) => void;
   [key: string]: unknown;
 }

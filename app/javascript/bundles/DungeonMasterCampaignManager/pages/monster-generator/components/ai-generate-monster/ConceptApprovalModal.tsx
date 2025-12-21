@@ -22,8 +22,8 @@ const calculateCost = (tokenUsage?: {
   completion_tokens?: number;
 }): string => {
   if (!tokenUsage) return '$0.00';
-  const inputCost = ((tokenUsage.prompt_tokens || 0) / 1_000_000) * 0.15;
-  const outputCost = ((tokenUsage.completion_tokens || 0) / 1_000_000) * 0.6;
+  const inputCost = ((tokenUsage.prompt_tokens ?? 0) / 1_000_000) * 0.15;
+  const outputCost = ((tokenUsage.completion_tokens ?? 0) / 1_000_000) * 0.6;
   const totalCost = inputCost + outputCost;
   return `$${totalCost.toFixed(4)}`;
 };
@@ -114,7 +114,7 @@ const Section = styled.div`
 const Grid = styled.div<{ $cols?: number }>`
   display: grid;
   gap: 0.75rem;
-  grid-template-columns: repeat(${({ $cols }) => $cols || 3}, 1fr);
+  grid-template-columns: repeat(${({ $cols }) => $cols ?? 3}, 1fr);
 
   @media (max-width: 768px) {
     grid-template-columns: repeat(2, 1fr);
@@ -351,7 +351,7 @@ const ConceptApprovalModal = ({
               <FullWidthField>
                 <Label>Description</Label>
                 <TextArea
-                  value={editedConcept.description || ''}
+                  value={editedConcept.description ?? ''}
                   onChange={(e) => updateField('description', e.target.value)}
                   placeholder="A brief description of the creature's appearance and demeanor..."
                 />
@@ -632,8 +632,8 @@ const ConceptApprovalModal = ({
         <ModalFooter>
           {isAdmin && tokenUsage && (
             <TokenInfo>
-              Tokens: {tokenUsage.prompt_tokens || 0} in + {tokenUsage.completion_tokens || 0} out ={' '}
-              {tokenUsage.total_tokens || 0} | Cost: {calculateCost(tokenUsage)}
+              Tokens: {tokenUsage.prompt_tokens ?? 0} in + {tokenUsage.completion_tokens ?? 0} out ={' '}
+              {tokenUsage.total_tokens ?? 0} | Cost: {calculateCost(tokenUsage)}
             </TokenInfo>
           )}
           <Button

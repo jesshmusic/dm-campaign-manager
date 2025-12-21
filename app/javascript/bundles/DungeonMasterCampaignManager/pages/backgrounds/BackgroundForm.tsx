@@ -87,15 +87,15 @@ const BackgroundForm: React.FC<BackgroundFormProps> = ({
     formState: { errors },
   } = useForm<BackgroundFormData>({
     defaultValues: {
-      name: initialData?.name || '',
-      description: initialData?.description || '',
-      feat_name: initialData?.feat_name || '',
-      tool_proficiency: initialData?.tool_proficiency || '',
-      equipment_option_a: initialData?.equipment_option_a || '',
-      equipment_option_b: initialData?.equipment_option_b || '',
-      abilityScores: initialData?.abilityScores?.join(', ') || '',
-      skillProficiencies: initialData?.skillProficiencies?.join(', ') || '',
-      homebrew: initialData?.homebrew || false,
+      name: initialData?.name ?? '',
+      description: initialData?.description ?? '',
+      feat_name: initialData?.feat_name ?? '',
+      tool_proficiency: initialData?.tool_proficiency ?? '',
+      equipment_option_a: initialData?.equipment_option_a ?? '',
+      equipment_option_b: initialData?.equipment_option_b ?? '',
+      abilityScores: initialData?.abilityScores?.join(', ') ?? '',
+      skillProficiencies: initialData?.skillProficiencies?.join(', ') ?? '',
+      homebrew: initialData?.homebrew ?? false,
     },
   });
 

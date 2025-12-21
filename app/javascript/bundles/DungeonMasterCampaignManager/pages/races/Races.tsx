@@ -28,7 +28,7 @@ const Races = (props: RacesProps) => {
   const { edition: contextEdition, isEdition2014, isEdition2024 } = useEdition();
 
   // Use edition from URL if valid (either :edition or :param route), otherwise from context
-  const urlEdition = editionParam || param;
+  const urlEdition = editionParam ?? param;
   const edition = isValidEdition(urlEdition) ? urlEdition : contextEdition;
 
   // In 2024 edition, "Races" are called "Species"

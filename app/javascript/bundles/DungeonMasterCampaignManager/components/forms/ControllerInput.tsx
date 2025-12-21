@@ -47,7 +47,7 @@ export const ControllerInput = (props: ControllerInputProps) => {
       {isTextArea ? (
         <FormTextArea placeholder={placeholder} {...rest} />
       ) : (
-        <FormInput type={type || 'text'} placeholder={placeholder} {...rest} />
+        <FormInput type={type ?? 'text'} placeholder={placeholder} {...rest} />
       )}
 
       {errors[name] && (
@@ -124,7 +124,7 @@ export const ControlledSelect = (props: {
       <Controller
         render={({ field: { onChange, value, ...rest } }) => {
           // Convert string value to option object for react-select
-          const selectedOption = options.find((option) => option.value === value) || null;
+          const selectedOption = options.find((option) => option.value === value) ?? null;
 
           return (
             <Select
@@ -210,7 +210,7 @@ export const TagInput = (props: {
           value={inputValue}
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
-          placeholder={placeholder || 'Add tags...'}
+          placeholder={placeholder ?? 'Add tags...'}
         />
       </TagInputContainer>
     </FormWrapper>

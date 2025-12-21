@@ -69,7 +69,7 @@ const FeatsIndex = ({ feats, loading, currentUser, getFeats }: FeatsIndexProps) 
   const [isCreateModalOpen, setIsCreateModalOpen] = React.useState(false);
 
   // Use edition from URL if valid (either :edition or :param route), otherwise from context
-  const urlEdition = editionParam || param;
+  const urlEdition = editionParam ?? param;
   const edition = isValidEdition(urlEdition) ? urlEdition : contextEdition;
 
   React.useEffect(() => {
@@ -127,7 +127,7 @@ const FeatsIndex = ({ feats, loading, currentUser, getFeats }: FeatsIndexProps) 
                     <Link key={feat.slug} to={getContentUrl('feats', feat.slug, edition)}>
                       <FeatCard>
                         <FeatCardHeader>
-                          <FeatCardIcon>{categoryIcons[category] || <GiUpgrade />}</FeatCardIcon>
+                          <FeatCardIcon>{categoryIcons[category] ?? <GiUpgrade />}</FeatCardIcon>
                           <FeatCardTitle>{feat.name}</FeatCardTitle>
                           {feat.repeatable && <RepeatableBadge>Repeatable</RepeatableBadge>}
                         </FeatCardHeader>

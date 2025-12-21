@@ -23,7 +23,9 @@ export const filterActionOptions = (results: any[]): SelectOption[] => {
   });
 };
 
-export const filterSnakeCaseOptionsWithData = (results: { results: Array<{ name: string }> }): SelectOption[] =>
+export const filterSnakeCaseOptionsWithData = (results: {
+  results: Array<{ name: string }>;
+}): SelectOption[] =>
   results.results.map((nextItem: { name: string }) => ({
     value: toSnakeCase(nextItem.name),
     label: nextItem.name,

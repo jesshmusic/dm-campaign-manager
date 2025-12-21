@@ -19,7 +19,7 @@ const CopyField = ({ text, label, fieldId, placeHolder, isTextArea }: CopyFieldP
   const [copySuccess, setCopySuccess] = useState(false);
 
   useEffect(() => {
-    if (isTextArea && copyTextFieldRef && copyTextFieldRef.current) {
+    if (isTextArea && copyTextFieldRef?.current) {
       copyTextFieldRef.current.style.height = '0px';
       const scrollHeight = copyTextFieldRef.current.scrollHeight;
       copyTextFieldRef.current.style.height = `${scrollHeight}px`;
@@ -27,11 +27,11 @@ const CopyField = ({ text, label, fieldId, placeHolder, isTextArea }: CopyFieldP
   }, [currentValue]);
 
   const handleCopyToClipboard = () => {
-    if (copyTextFieldRef && copyTextFieldRef.current) {
+    if (copyTextFieldRef?.current) {
       copyTextFieldRef.current.select();
       document.execCommand('copy');
       setCopySuccess(true);
-    } else if (copyTextAreaRef && copyTextAreaRef.current) {
+    } else if (copyTextAreaRef?.current) {
       copyTextAreaRef.current.select();
       document.execCommand('copy');
       setCopySuccess(true);

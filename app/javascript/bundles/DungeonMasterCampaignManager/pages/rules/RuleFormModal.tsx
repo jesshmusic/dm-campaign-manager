@@ -81,7 +81,7 @@ const RuleFormModal: React.FC<RuleFormModalProps> = ({
     }
   };
 
-  const title = mode === 'create' ? 'New Rule' : `Edit ${initialData?.name || 'Rule'}`;
+  const title = mode === 'create' ? 'New Rule' : `Edit ${initialData?.name ?? 'Rule'}`;
 
   return (
     <RecordFormModal

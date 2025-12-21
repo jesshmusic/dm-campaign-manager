@@ -144,15 +144,14 @@ const Rule = (props: RulePageProps) => {
             {rule.description}
           </ReactMarkdown>
           <RulesList>
-            {rule.rules &&
-              rule.rules.map((childRule) => (
-                <Link key={childRule.slug} to={getContentUrl('rules', childRule.slug, edition)}>
-                  <h2 style={{ border: 0 }}>{childRule.name}</h2>
-                </Link>
-              ))}
+            {rule.rules?.map((childRule) => (
+              <Link key={childRule.slug} to={getContentUrl('rules', childRule.slug, edition)}>
+                <h2 style={{ border: 0 }}>{childRule.name}</h2>
+              </Link>
+            ))}
           </RulesList>
 
-          {(rule.previous_rule || rule.next_rule) && (
+          {(rule.previous_rule ?? rule.next_rule) && (
             <RuleNavigation>
               {rule.previous_rule ? (
                 <NavButton as={Link} to={getContentUrl('rules', rule.previous_rule.slug, edition)}>

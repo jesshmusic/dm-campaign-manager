@@ -60,7 +60,7 @@ export const EditionProvider: React.FC<EditionProviderProps> = ({ children, init
   });
 
   // Effective edition: URL edition takes priority, then stored preference
-  const edition: DndEdition = urlEdition || storedEdition;
+  const edition: DndEdition = urlEdition ?? storedEdition;
 
   const setEdition = useCallback(
     (newEdition: DndEdition) => {

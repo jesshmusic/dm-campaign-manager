@@ -43,7 +43,7 @@ const FeatDetail = ({
   const params = useParams<{ edition?: string; featSlug?: string; param?: string }>();
   const navigate = useNavigate();
   // Handle both /app/feats/:edition/:slug and /app/feats/:param routes
-  const { slug: featSlug } = parseEditionParams(params.edition, params.featSlug || params.param);
+  const { slug: featSlug } = parseEditionParams(params.edition, params.featSlug ?? params.param);
   const { isEdition2014 } = useEdition();
   const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
 

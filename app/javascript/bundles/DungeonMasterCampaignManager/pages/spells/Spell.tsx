@@ -27,7 +27,7 @@ const Spell = (props: SpellPageProps) => {
   const params = useParams<{ edition?: string; spellSlug?: string; param?: string }>();
   const navigate = useNavigate();
   // Handle both /app/spells/:edition/:slug and /app/spells/:param routes
-  const { slug: spellSlug } = parseEditionParams(params.edition, params.spellSlug || params.param);
+  const { slug: spellSlug } = parseEditionParams(params.edition, params.spellSlug ?? params.param);
   const { edition, isEdition2014 } = useEdition();
   const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
 
@@ -56,7 +56,7 @@ const Spell = (props: SpellPageProps) => {
 
   const spellTitle = spell ? spell.name : 'Spell Loading...';
 
-  const spellMats = spell && spell.material ? ` (${spell.material})` : '';
+  const spellMats = spell?.material ? ` (${spell.material})` : '';
 
   return (
     <PageContainer
