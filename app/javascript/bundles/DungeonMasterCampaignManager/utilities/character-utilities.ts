@@ -7,14 +7,24 @@ export const toSnakeCase = (str: string) =>
     .map((x) => x.toLowerCase())
     .join('_');
 
-export const filterOptionsWithData = (results: any[]): SelectOption[] =>
+export const filterOptionsWithData = (
+  results: Array<{ id: string | number; name: string; data?: unknown }>,
+): SelectOption[] =>
   results.map((nextItem) => ({
     value: nextItem.id,
     label: nextItem.name,
     data: nextItem.data,
   }));
 
-export const filterActionOptions = (results: any[]): SelectOption[] => {
+export const filterActionOptions = (
+  results: Array<{
+    id: string | number;
+    name: string;
+    monster_name: string;
+    info: string;
+    description: string;
+  }>,
+): SelectOption[] => {
   return results.map((nextItem) => {
     return {
       value: nextItem.id,

@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import React from 'react';
 // import { Location, NavigateFn } from '@reach/router';
 import { ItemType } from '../pages/items/use-data';
 import { User } from '@auth0/auth0-react';
@@ -15,7 +15,7 @@ export interface AbilityScore {
 export interface ActionFormComponentProps {
   appendAction: (action: Partial<MonsterActionField>) => void;
   fieldName: string;
-  fields: any;
+  fields: MonsterActionField[];
   handleRemove: (index: number) => void;
   singularTitle: string;
   useForm: UseFormReturn<FieldValues>;
@@ -49,19 +49,19 @@ export interface AppProps {
   conditions: {
     conditions: ApiReference[];
     count: number;
-    currentCondition?: any;
+    currentCondition?: ConditionProps;
     loading?: boolean;
   };
   dndClasses: {
     dndClasses: DndClassSummary[];
     count: number;
-    currentDndClass?: any;
+    currentDndClass?: DndClass;
     loading?: boolean;
   };
   items: {
     items: ApiReference[];
     count: number;
-    currentItem?: any;
+    currentItem?: ItemProps;
   };
   monsters: {
     monsters: MonsterSummary[];
@@ -71,12 +71,12 @@ export interface AppProps {
   races: {
     races: ApiReference[];
     count: number;
-    currentRace?: any;
+    currentRace?: RaceProps;
   };
   spells: {
     spells: ApiReference[];
     count: number;
-    currentSpell?: any;
+    currentSpell?: SpellProps;
   };
   users: {
     users: User[];
@@ -550,7 +550,7 @@ export interface ProfChoice {
 
 export type RaceSummary = {
   name: string;
-  traits: any[];
+  traits: RaceTrait[];
   slug: string;
 };
 
@@ -594,14 +594,14 @@ export type RandomNameResult = {
 export type SelectOption = {
   label: string;
   value: string | number;
-  data?: { [key: string]: any };
+  data?: Record<string, unknown>;
 };
 
 export type SelectIconOption = {
   label: string;
   value: string | number;
-  icon: ReactElement<IconType>;
-  data?: { [key: string]: any };
+  icon: React.ReactElement<IconType>;
+  data?: Record<string, unknown>;
 };
 
 export interface SpellProps {

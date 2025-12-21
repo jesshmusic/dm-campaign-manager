@@ -51,9 +51,9 @@ const parseMonsterProficiencies = (
   if (savingThrows.length > 0) {
     savingThrows.forEach((save) => {
       const saveAbility = abilityAbbr[save.label];
-      const abilityValue = (values as any)[saveAbility];
+      const abilityValue = (values as Record<string, number>)[saveAbility];
       const modifier = abilityValue ? abilityScoreModifier(abilityValue) : 0;
-      const saveBonus = (values.profBonus || 2) + modifier;
+      const saveBonus = (values.profBonus ?? 2) + modifier;
       monsterProfs.push(<MonsterProf>{
         profId: save.value,
         value: saveBonus,
@@ -64,9 +64,9 @@ const parseMonsterProficiencies = (
     skills.forEach((skill) => {
       const skillName = skill.label.toLowerCase();
       const skillAbility = abilityForSkill[skillName];
-      const abilityValue = (values as any)[skillAbility];
+      const abilityValue = (values as Record<string, number>)[skillAbility];
       const modifier = abilityValue ? abilityScoreModifier(abilityValue) : 0;
-      const skillBonus = (values.profBonus || 2) + modifier;
+      const skillBonus = (values.profBonus ?? 2) + modifier;
       monsterProfs.push(<MonsterProf>{
         profId: skill.value,
         value: skillBonus,
@@ -157,7 +157,7 @@ export const createMonsterParams = (monster: MonsterProps) => {
     monsterProficiencies,
     ...rest
   } = monster;
-  const specialAbilitiesAttributes = specialAbilities || [];
+  const specialAbilitiesAttributes = specialAbilities ?? [];
   const monsterActionsAttributes =
     actions
       ?.map((action) => {
@@ -167,7 +167,7 @@ export const createMonsterParams = (monster: MonsterProps) => {
         specialAbilitiesAttributes.push({ name: 'Spellcasting', desc: action.desc });
         return null;
       })
-      .filter((action) => action !== null) || [];
+      .filter((action) => action !== null) ?? [];
 
   const monsterParams = {
     monsterProficienciesAttributes: monsterProficiencies,
@@ -198,14 +198,14 @@ export const createQuickMonsterParams = (values: MonsterQuickGeneratorFormFields
 
   const monsterParams = {
     name: values.name,
-    actionOptions: (values.actionOptions || []).map((actionOption) => actionOption.value),
+    actionOptions: (values.actionOptions ?? []).map((actionOption) => actionOption.value),
     alignment: values.alignmentOption.label,
     archetype: values.archetypeOption.value,
     armorClass: values.armorClass,
     challengeRating: values.challengeRatingOption.label,
     constitution: values.constitution,
-    creatureDescription: values.creatureDescription || '',
-    description: values.description || '',
+    creatureDescription: values.creatureDescription ?? '',
+    description: values.description ?? '',
     hitDice: `${values.hitDiceNumber}${values.hitDiceValue}`,
     hitPoints: values.hitPoints,
     monsterType: values.characterRace
@@ -213,33 +213,33 @@ export const createQuickMonsterParams = (values: MonsterQuickGeneratorFormFields
       : values.monsterTypeOption.label.toLowerCase(),
     numberOfAttacks: values.numberOfAttacks > 0 ? values.numberOfAttacks : 1,
     size: values.size.label,
-    specialAbilityOptions: (values.specialAbilityOptions || []).map((ability) => ability.value),
-    spellIds: (values.spellOptions || []).map((spellOption) => spellOption.value),
+    specialAbilityOptions: (values.specialAbilityOptions ?? []).map((ability) => ability.value),
+    spellIds: (values.spellOptions ?? []).map((spellOption) => spellOption.value),
     xp: values.xp,
   };
 
   if (values.charisma) {
-    // @ts-expect-error
+    // @ts-expect-error - dynamically adding optional ability score to params
     monsterParams.charisma = values.charisma;
   }
 
   if (values.dexterity) {
-    // @ts-expect-error
+    // @ts-expect-error - dynamically adding optional ability score to params
     monsterParams.dexterity = values.dexterity;
   }
 
   if (values.intelligence) {
-    // @ts-expect-error
+    // @ts-expect-error - dynamically adding optional ability score to params
     monsterParams.intelligence = values.intelligence;
   }
 
   if (values.strength) {
-    // @ts-expect-error
+    // @ts-expect-error - dynamically adding optional ability score to params
     monsterParams.strength = values.strength;
   }
 
   if (values.wisdom) {
-    // @ts-expect-error
+    // @ts-expect-error - dynamically adding optional ability score to params
     monsterParams.wisdom = values.wisdom;
   }
   const parsedMonsterParams = {
@@ -251,10 +251,11 @@ export const createQuickMonsterParams = (values: MonsterQuickGeneratorFormFields
   return snakecaseKeys(parsedMonsterParams);
 };
 
-export const get2eMonsterObject = (values: any) => {
+export const get2eMonsterObject = (values: Record<string, unknown>) => {
+  const characterRace = values.characterRace as { value: string } | undefined;
   const returnChar = {
     name: values.name,
-    race: values.characterRace.value,
+    race: characterRace?.value,
     dndClasses: values.dndClasses,
     thaco: values.thaco,
     armorClass: values.armorClass,
@@ -293,7 +294,6 @@ export const abilityScoreModifier = (abilityScore: number) => {
 };
 
 export const hitDieForSize = (size: string) => {
-  console.log(`hitDieForSize: ${size}`);
   switch (size) {
     case 'tiny':
       return 'd4';

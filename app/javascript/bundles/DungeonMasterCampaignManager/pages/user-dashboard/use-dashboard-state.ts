@@ -26,7 +26,7 @@ const findBestPosition = (
 
   // Build a 2D occupancy map of the grid
   const maxY = Math.max(
-    ...breakpointLayout.map((item: LayoutItem) => (item.y || 0) + (item.h || 1)),
+    ...breakpointLayout.map((item: LayoutItem) => (item.y ?? 0) + (item.h ?? 1)),
   );
   const gridHeight = maxY + Math.max(height, 10); // Extra space for new item
 
@@ -38,10 +38,10 @@ const findBestPosition = (
 
   // Mark occupied cells
   breakpointLayout.forEach((item: LayoutItem) => {
-    const itemX = item.x || 0;
-    const itemY = item.y || 0;
-    const itemW = item.w || 1;
-    const itemH = item.h || 1;
+    const itemX = item.x ?? 0;
+    const itemY = item.y ?? 0;
+    const itemW = item.w ?? 1;
+    const itemH = item.h ?? 1;
     for (let dy = 0; dy < itemH; dy++) {
       for (let dx = 0; dx < itemW; dx++) {
         const cy = itemY + dy;
@@ -117,9 +117,9 @@ const getFromLS = (key: string) => {
 
           // Fix all widget sizes - ensure minimum dimensions
           Object.keys(layouts).forEach((breakpoint) => {
-            const maxCols = BREAKPOINT_COLUMNS[breakpoint] || 12;
+            const maxCols = BREAKPOINT_COLUMNS[breakpoint] ?? 12;
             layouts[breakpoint] = layouts[breakpoint].map((item: LayoutItem) => {
-              const isCustomWidget = item.i && item.i.startsWith('customWidget');
+              const isCustomWidget = item.i?.startsWith('customWidget');
               const widgetConfig = item.i ? dashboardComponents[item.i] : undefined;
               // Get minimum dimensions from widget config or use defaults
               // Cap minW to the breakpoint's column count
@@ -128,8 +128,8 @@ const getFromLS = (key: string) => {
               const minH = isCustomWidget ? 3 : (widgetConfig?.grid?.minH ?? 2);
               return {
                 ...item,
-                w: Math.max(Math.min(item.w || minW, maxCols), minW),
-                h: Math.max(item.h || minH, minH),
+                w: Math.max(Math.min(item.w ?? minW, maxCols), minW),
+                h: Math.max(item.h ?? minH, minH),
                 minW,
                 minH,
               };
@@ -164,7 +164,7 @@ const saveToLS = (layouts: Layouts, widgets: string[]) => {
 
 import { WidgetProps } from '../../utilities/types';
 
-type DashboardWidget = { title: string; key: string; icon: React.ReactNode };
+type _DashboardWidget = { title: string; key: string; icon: React.ReactNode };
 
 type UseDashboardStateProps = {
   customWidgets: WidgetProps[];
@@ -254,12 +254,12 @@ export const useDashboardState = ({ customWidgets, getWidgets }: UseDashboardSta
 
         Object.keys(allLayouts).forEach((breakpoint) => {
           const newBreakpointLayout = allLayouts[breakpoint];
-          const prevBreakpointLayout = prevLayouts[breakpoint] || [];
-          const maxCols = BREAKPOINT_COLUMNS[breakpoint] || 12;
+          const prevBreakpointLayout = prevLayouts[breakpoint] ?? [];
+          const maxCols = BREAKPOINT_COLUMNS[breakpoint] ?? 12;
 
           // Enforce minimum sizes for all widgets
           mergedLayouts[breakpoint] = newBreakpointLayout.map((item: LayoutItem) => {
-            const isCustomWidget = item.i && item.i.startsWith('customWidget');
+            const isCustomWidget = item.i?.startsWith('customWidget');
             const widgetConfig = item.i ? dashboardComponents[item.i] : undefined;
             // Get minimum dimensions from widget config or use defaults
             // Cap minW to the breakpoint's column count
@@ -287,8 +287,8 @@ export const useDashboardState = ({ customWidgets, getWidgets }: UseDashboardSta
 
             return {
               ...item,
-              w: Math.max(Math.min(item.w || minW, maxCols), minW),
-              h: Math.max(item.h || minH, minH),
+              w: Math.max(Math.min(item.w ?? minW, maxCols), minW),
+              h: Math.max(item.h ?? minH, minH),
               minW,
               minH,
             };
@@ -320,10 +320,10 @@ export const useDashboardState = ({ customWidgets, getWidgets }: UseDashboardSta
         const updated = { ...prev };
         Object.keys(updated).forEach((breakpoint) => {
           if (!updated[breakpoint].find((item: LayoutItem) => item.i === widgetId)) {
-            const maxCols = BREAKPOINT_COLUMNS[breakpoint] || 12;
+            const maxCols = BREAKPOINT_COLUMNS[breakpoint] ?? 12;
             // Scale width for smaller breakpoints
-            const scaledWidth = Math.min(gridConfig.w || 4, maxCols);
-            const height = gridConfig.h || 3;
+            const scaledWidth = Math.min(gridConfig.w ?? 4, maxCols);
+            const height = gridConfig.h ?? 3;
 
             // Find the best position for this widget
             const position = findBestPosition(updated[breakpoint], scaledWidth, height, maxCols);
@@ -334,8 +334,8 @@ export const useDashboardState = ({ customWidgets, getWidgets }: UseDashboardSta
               y: position.y,
               w: scaledWidth,
               h: height,
-              minW: Math.min(isCustomWidget ? 3 : gridConfig.minW || 3, maxCols),
-              minH: isCustomWidget ? 3 : gridConfig.minH || 3,
+              minW: Math.min(isCustomWidget ? 3 : (gridConfig.minW ?? 3), maxCols),
+              minH: isCustomWidget ? 3 : (gridConfig.minH ?? 3),
             };
             updated[breakpoint] = [...updated[breakpoint], newLayoutItem];
           }
