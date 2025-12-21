@@ -35,8 +35,8 @@ const MonstersTable = (props: {
     }
   }, [isLoading]);
 
-  const goToPage = (row: Row<any>) => {
-    navigate(getContentUrl('monsters', row.original.slug as string, edition));
+  const goToPage = (row: Row<MonsterSummary>) => {
+    navigate(getContentUrl('monsters', row.original.slug, edition));
   };
 
   const getNumResults = (): number => {

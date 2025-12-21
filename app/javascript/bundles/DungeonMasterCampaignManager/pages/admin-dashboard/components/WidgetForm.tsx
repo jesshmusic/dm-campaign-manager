@@ -1,3 +1,4 @@
+import React from 'react';
 import { ControlledInput } from '../../../components/forms/ControllerInput';
 import FormIconSelect from '../../../components/forms/FormIconSelect';
 import { allGiIcons } from '../../../utilities/icons';
@@ -29,8 +30,12 @@ type WidgetFormData = {
 };
 
 const WidgetForm = (props: { useForm: UseFormReturn; onSubmit: (data: WidgetFormData) => void }) => {
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    void props.useForm.handleSubmit(props.onSubmit)(e);
+  };
+
   return (
-    <WidgetFormWrapper onSubmit={props.useForm.handleSubmit(props.onSubmit)} noValidate>
+    <WidgetFormWrapper onSubmit={handleFormSubmit} noValidate>
       <ControlledInput
         fieldName={`title`}
         errors={props.useForm.formState.errors}

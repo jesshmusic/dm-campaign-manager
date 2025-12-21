@@ -355,13 +355,18 @@ const AIGenerateMonster = ({
   const handleRegenerate = () => {
     setShowModal(false);
     setConcept(null);
-    handleSubmit(onSubmit)();
+    void handleSubmit(onSubmit)();
   };
 
   const handleCloseModal = () => {
     setShowModal(false);
     setConcept(null);
     setTokenUsage(null);
+  };
+
+  // Sync wrapper for async handleApprove
+  const onApproveClick = (approvedConcept: NpcConcept) => {
+    void handleApprove(approvedConcept);
   };
 
   return (
@@ -376,7 +381,12 @@ const AIGenerateMonster = ({
         }
         className="ai-generate-monster"
       >
-        <GenForm onSubmit={handleSubmit(onSubmit)} noValidate>
+        <GenForm
+          onSubmit={(e) => {
+            void handleSubmit(onSubmit)(e);
+          }}
+          noValidate
+        >
           <ThreeCol>
             <FormSelect
               control={control as unknown as Control<FieldValues>}
@@ -463,7 +473,7 @@ const AIGenerateMonster = ({
       {showModal && concept && (
         <ConceptApprovalModal
           concept={concept}
-          onApprove={handleApprove}
+          onApprove={onApproveClick}
           onRegenerate={handleRegenerate}
           onClose={handleCloseModal}
           isLoading={isLoading}

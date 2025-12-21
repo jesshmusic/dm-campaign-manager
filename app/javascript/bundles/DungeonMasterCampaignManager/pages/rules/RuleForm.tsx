@@ -90,7 +90,11 @@ const RuleForm: React.FC<RuleFormProps> = ({
   const typedControl = control as unknown as Control<FieldValues, object>;
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} id="rule-form">
+    <form
+      onSubmit={(e) => {
+        void handleSubmit(onSubmit)(e);
+      }}
+      id="rule-form">
       <FormGrid>
         <ControlledInput fieldName="name" control={typedControl} label="Name" errors={errors} />
 

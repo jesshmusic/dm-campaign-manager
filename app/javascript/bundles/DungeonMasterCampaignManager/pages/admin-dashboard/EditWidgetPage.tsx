@@ -69,7 +69,7 @@ const EditWidgetPage = (props: {
   React.useEffect(() => {
     const subscription = UseForm.watch((value, { name }) => {
       if (name) {
-        updateWidgetForm(name, value);
+        void updateWidgetForm(name, value);
       }
     });
     return () => subscription.unsubscribe();
@@ -79,8 +79,8 @@ const EditWidgetPage = (props: {
     getWidget(parseInt(widgetId as string));
   }, []);
 
-  const onSubmit = (data: any) => {
-    updateWidget(data, token);
+  const onSubmit = (data: FieldValues) => {
+    updateWidget(data as WidgetProps, token);
     navigate('/app/admin-dashboard');
   };
 

@@ -42,8 +42,8 @@ const Spells = (props: {
     getSpells();
   };
 
-  const goToPage = (row: Row<any>) => {
-    navigate(getContentUrl('spells', row.original.slug as string, edition));
+  const goToPage = (row: Row<SpellProps>) => {
+    navigate(getContentUrl('spells', row.original.slug, edition));
   };
 
   const columns = React.useMemo(

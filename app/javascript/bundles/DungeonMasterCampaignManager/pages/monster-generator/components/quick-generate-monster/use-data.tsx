@@ -134,7 +134,7 @@ export const useData = (props: GenerateMonsterProps) => {
     }
   };
 
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: FieldValues) => {
     const monsterData = createQuickMonsterParams(data);
     monsterData.monster_type = monsterData.monster_type.toLowerCase();
     monsterData.size = monsterData.size.toLowerCase();
@@ -152,7 +152,7 @@ export const useData = (props: GenerateMonsterProps) => {
   ];
 
   const setFieldsForChallenge = (fields: MonsterQuickGeneratorFormFields) => {
-    getCRInfo(fields.challengeRatingOption.label).then((result) => {
+    void getCRInfo(fields.challengeRatingOption.label).then((result) => {
       const crInfo = result.data.challenge;
       const hitPoints =
         Math.floor(Math.random() * (crInfo.hit_points_max - crInfo.hit_points_min)) +
@@ -227,6 +227,9 @@ export const useData = (props: GenerateMonsterProps) => {
         setFieldsForChallenge(fields);
         break;
       }
+      case undefined:
+        // No field name specified, nothing to update
+        break;
     }
   };
 

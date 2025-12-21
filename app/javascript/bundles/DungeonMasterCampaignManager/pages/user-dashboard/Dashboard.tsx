@@ -1,3 +1,4 @@
+import React from 'react';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
@@ -60,7 +61,7 @@ const Dashboard = ({ customWidgets, getWidgets }: DashboardProps) => {
         onRemoveItem={onRemoveItem}
         onAddItem={onAddItem}
         onResetLayout={onResetLayout}
-        widgets={allWidgets as any}
+        widgets={allWidgets as { title: string; key: string; icon: React.ElementType }[]}
       />
       <ResponsiveGridLayout
         autoSize={true}

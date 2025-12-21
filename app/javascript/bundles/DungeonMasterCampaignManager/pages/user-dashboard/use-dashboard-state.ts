@@ -162,8 +162,12 @@ const saveToLS = (layouts: Layouts, widgets: string[]) => {
   }
 };
 
+import { WidgetProps } from '../../utilities/types';
+
+type DashboardWidget = { title: string; key: string; icon: React.ReactNode };
+
 type UseDashboardStateProps = {
-  customWidgets: any[];
+  customWidgets: WidgetProps[];
   getWidgets: () => void;
 };
 
@@ -194,15 +198,15 @@ export const useDashboardState = ({ customWidgets, getWidgets }: UseDashboardSta
   }, [layouts]);
 
   React.useEffect(() => {
-    const customWidgetKeys = customWidgets.map((widget: any) => ({
+    const customWidgetKeys = customWidgets.map((widget) => ({
       key: `customWidget${widget.id}`,
-      icon: getIconFromName(widget.icon),
+      icon: getIconFromName(widget.icon ?? ''),
       title: widget.title,
     }));
-    const builtInKeys = dashboardItems.map((widget: any) => ({
-      key: widget,
-      icon: dashboardComponents[widget].icon,
-      title: dashboardComponents[widget].title,
+    const builtInKeys = dashboardItems.map((widgetKey) => ({
+      key: widgetKey,
+      icon: dashboardComponents[widgetKey].icon,
+      title: dashboardComponents[widgetKey].title,
     }));
     setAllWidgets([...builtInKeys, ...customWidgetKeys]);
   }, [customWidgets]);
@@ -221,7 +225,7 @@ export const useDashboardState = ({ customWidgets, getWidgets }: UseDashboardSta
         dataGrid: builtInWidget.grid,
       };
     });
-    const cstmWidgets: WidgetElementProps[] = customWidgets.map((widget: any, index: number) => {
+    const cstmWidgets: WidgetElementProps[] = customWidgets.map((widget, index) => {
       return {
         widgetId: `customWidget${widget.id}`,
         icon: getIconFromName(widget.icon),

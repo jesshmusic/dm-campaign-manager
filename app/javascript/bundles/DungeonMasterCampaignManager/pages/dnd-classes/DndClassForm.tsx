@@ -118,7 +118,11 @@ const DndClassForm: React.FC<DndClassFormProps> = ({
   const typedControl = control as unknown as Control<FieldValues, object>;
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} id="dnd-class-form">
+    <form
+      onSubmit={(e) => {
+        void handleSubmit(onSubmit)(e);
+      }}
+      id="dnd-class-form">
       <FormGrid>
         <TwoColumnField>
           <ControlledInput

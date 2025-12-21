@@ -17,7 +17,7 @@ const CreateWidgetPage = (props: {
   React.useEffect(() => {
     const subscription = UseForm.watch((value, { name }) => {
       if (name) {
-        updateWidgetForm(name, value);
+        void updateWidgetForm(name, value);
       }
       // @ts-expect-error - Type mismatch between form value and test state
       setTestState(value);

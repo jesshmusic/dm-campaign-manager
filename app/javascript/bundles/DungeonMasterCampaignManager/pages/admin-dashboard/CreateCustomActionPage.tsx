@@ -29,7 +29,7 @@ const CreateCustomActionPage = (props: {
   React.useEffect(() => {
     const subscription = UseForm.watch((value, { name }) => {
       if (name) {
-        updateActionForm(name, value);
+        void updateActionForm(name, value);
       }
       // @ts-expect-error - Type mismatch between form value and test state
       setTestState(value);
@@ -59,7 +59,12 @@ const CreateCustomActionPage = (props: {
         </pre>
       ) : null}
       <h1>Create Custom Action</h1>
-      <form onSubmit={UseForm.handleSubmit(onSubmitActionForm)} noValidate>
+      <form
+        onSubmit={(e) => {
+          void UseForm.handleSubmit(onSubmitActionForm)(e);
+        }}
+        noValidate
+      >
         <ActionTypeContainer>
           <FormSelect
             label={'Action Type'}

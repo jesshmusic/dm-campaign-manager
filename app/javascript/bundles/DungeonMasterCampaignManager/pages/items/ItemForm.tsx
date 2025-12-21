@@ -206,7 +206,11 @@ const ItemForm: React.FC<ItemFormProps> = ({
   const isGear = selectedCategory === 'Adventuring Gear';
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} id="item-form">
+    <form
+      onSubmit={(e) => {
+        void handleSubmit(onSubmit)(e);
+      }}
+      id="item-form">
       <FormGrid>
         <TwoColumnField>
           <ControlledInput fieldName="name" control={typedControl} label="Name" errors={errors} />

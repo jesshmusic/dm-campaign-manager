@@ -42,8 +42,8 @@ const Races = (props: RacesProps) => {
     getRaces();
   };
 
-  const goToPage = (row: Row<any>) => {
-    navigate(getContentUrl('races', row.original.slug as string, edition));
+  const goToPage = (row: Row<RaceSummary>) => {
+    navigate(getContentUrl('races', row.original.slug, edition));
   };
 
   const columns = React.useMemo(
