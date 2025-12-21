@@ -34,6 +34,10 @@ const AdminActions: React.FC<AdminActionsProps> = ({
 
   const iconSize = size === 'small' ? 20 : 24;
 
+  const handleDelete = () => {
+    void onDelete();
+  };
+
   return (
     <ActionsWrapper $size={size}>
       <Button
@@ -46,7 +50,7 @@ const AdminActions: React.FC<AdminActionsProps> = ({
       <Button
         color={Colors.danger}
         title={deleteLabel}
-        onClick={onDelete}
+        onClick={handleDelete}
         icon={<GiTrashCan size={iconSize} />}
         hideTitle={size === 'small'}
       />

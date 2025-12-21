@@ -22,7 +22,7 @@ const TavernNameField = (props: { hideFrame?: boolean }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [setting, setSetting] = useState({ value: 'forgotten_realms', label: 'Forgotten Realms' });
 
-  const handleGenerateTavernName = async (event: unknown) => {
+  const generateTavernName = async (event: unknown) => {
     (event as React.FormEvent).preventDefault();
     const apiURL = `/v1/random_tavern_name.json?setting=${setting.value}`;
     try {
@@ -34,6 +34,10 @@ const TavernNameField = (props: { hideFrame?: boolean }) => {
       setNameValue(error instanceof Error ? error.message : 'An error occurred');
       setIsLoading(false);
     }
+  };
+
+  const handleGenerateTavernName = (event: unknown) => {
+    void generateTavernName(event);
   };
 
   const renderContents = () => (

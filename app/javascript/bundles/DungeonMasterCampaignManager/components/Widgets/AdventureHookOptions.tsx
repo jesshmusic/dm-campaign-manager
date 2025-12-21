@@ -14,7 +14,7 @@ const FullWidthSubmit = styled.div`
 `;
 
 interface AdventureHookOptionsProps {
-  onFormSubmit: (partySize: number, averageLevel: number, setting: string) => void;
+  onFormSubmit: (partySize: number, averageLevel: number, setting: string) => void | Promise<void>;
   isLoading?: boolean;
 }
 
@@ -25,7 +25,7 @@ const AdventureHookOptions = ({ onFormSubmit, isLoading }: AdventureHookOptionsP
 
   const handleSubmit = (event: unknown) => {
     (event as React.FormEvent).preventDefault();
-    onFormSubmit(partySize, averageLevel, setting.value);
+    void onFormSubmit(partySize, averageLevel, setting.value);
   };
 
   return (

@@ -1,3 +1,4 @@
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { Colors } from '../../utilities/enums';
@@ -15,8 +16,12 @@ const SearchField = () => {
     navigate(`/app/search/${data.search}`);
   };
 
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    void handleSubmit(onSubmit)(e);
+  };
+
   return (
-    <SearchBar $sidebarWidth={sidebarWidth} onSubmit={handleSubmit(onSubmit)}>
+    <SearchBar $sidebarWidth={sidebarWidth} onSubmit={handleFormSubmit}>
       <InputGroup>
         <input id="searchBarMain" {...register('search')} placeholder={'Search...'} />
         <Button

@@ -2,18 +2,30 @@
  * Created by jesshendricks on 2019-08-25
  */
 
-import Select, { components, MenuListProps as ReactSelectMenuListProps } from 'react-select';
+import React from 'react';
+import Select, {
+  components,
+  MenuListProps as ReactSelectMenuListProps,
+  OptionProps,
+  SingleValueProps,
+} from 'react-select';
 import { Controller } from 'react-hook-form';
 import './inputOverrides.scss';
 import { SelectProps } from './FormSelect';
-import { FixedSizeList } from 'react-window';
+import { FixedSizeList, ListChildComponentProps } from 'react-window';
 
 import { FormWrapper, FormLabel } from './Forms.styles';
+
+type IconOptionType = {
+  value: string;
+  label: string;
+  icon?: React.ReactNode;
+};
 
 const OPTION_HEIGHT = 40;
 const ROWS = 6;
 
-const MenuList = ({ options, children, getValue }: ReactSelectMenuListProps) => {
+const MenuList = ({ options, children, getValue }: ReactSelectMenuListProps<IconOptionType>) => {
   const [value] = getValue();
   const initialOffset =
     options.indexOf(value) !== -1
@@ -28,31 +40,30 @@ const MenuList = ({ options, children, getValue }: ReactSelectMenuListProps) => 
     return <div>{children}</div>;
   }
 
-  const List = FixedSizeList as any;
-
   return (
-    <List
+    <FixedSizeList
       height={children.length >= ROWS ? OPTION_HEIGHT * ROWS : children.length * OPTION_HEIGHT}
       itemCount={children.length}
       itemSize={OPTION_HEIGHT}
       initialScrollOffset={initialOffset}
+      width="100%"
     >
-      {({ style, index }: any) => {
+      {({ style, index }: ListChildComponentProps) => {
         return <div style={style}>{children[index]}</div>;
       }}
-    </List>
+    </FixedSizeList>
   );
 };
 
 const { Option, SingleValue } = components;
-const IconOption = (props: any) => (
+const IconOption = (props: OptionProps<IconOptionType>) => (
   <Option {...props}>
     {props.data.icon}
     {props.data.label}
   </Option>
 );
 
-const ValueOption = (props: any) => (
+const ValueOption = (props: SingleValueProps<IconOptionType>) => (
   <SingleValue {...props}>
     {props.data.icon}
     {props.data.label}

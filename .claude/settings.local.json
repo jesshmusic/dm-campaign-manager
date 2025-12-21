@@ -121,7 +121,8 @@
       "Bash(npx eslint:*)",
       "Bash(cut:*)",
       "Bash(yarn tsc:*)",
-      "Bash(./bin/shakapacker:*)"
+      "Bash(./bin/shakapacker:*)",
+      "Bash(wc:*)"
     ],
     "deny": [],
     "ask": []

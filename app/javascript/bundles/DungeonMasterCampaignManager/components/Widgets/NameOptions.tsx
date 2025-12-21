@@ -137,7 +137,7 @@ interface NameOptionsProps {
     role?: string,
     description?: string,
     token?: string,
-  ) => void;
+  ) => void | Promise<void>;
   showDescription?: boolean;
   submitButtonFullWidth?: boolean;
   title: string;
@@ -167,16 +167,16 @@ const NameOptions = ({
 
   const handleSubmit = (event: unknown) => {
     (event as React.FormEvent).preventDefault();
-    onFormSubmit(
-      gender?.value || '',
-      race?.value || '',
-      role?.value || '',
-      description || '',
+    void onFormSubmit(
+      gender?.value ?? '',
+      race?.value ?? '',
+      role?.value ?? '',
+      description ?? '',
       token,
     );
   };
 
-  const handleGenerateDescription = async () => {
+  const generateDescription = async () => {
     if (!name.trim()) {
       return;
     }
@@ -187,9 +187,9 @@ const NameOptions = ({
         '/v1/generate_commoner_description',
         {
           name: name.trim(),
-          race: race?.label || 'Human',
-          gender: gender?.label || 'Unknown',
-          role: role?.label || 'Commoner',
+          race: race?.label ?? 'Human',
+          gender: gender?.label ?? 'Unknown',
+          role: role?.label ?? 'Commoner',
         },
       );
       setDescription(response.data.description);
@@ -198,6 +198,10 @@ const NameOptions = ({
     } finally {
       setIsGeneratingDescription(false);
     }
+  };
+
+  const handleGenerateDescription = () => {
+    void generateDescription();
   };
 
   const submitButton = (

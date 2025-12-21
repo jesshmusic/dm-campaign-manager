@@ -161,8 +161,8 @@ const FoundryMapsAdmin: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchMaps();
-    fetchTags();
+    void fetchMaps();
+    void fetchTags();
   }, []);
 
   const fetchMaps = async () => {
@@ -428,7 +428,7 @@ const FoundryMapsAdmin: React.FC = () => {
       });
 
       if (response.ok) {
-        fetchMaps();
+        void fetchMaps();
       }
     } catch (error) {
       console.error('Error updating map:', error);
