@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { InfoBlockWrapper } from './InfoBlock.styles';
 
 const InfoBlock = (props: { title: string; desc: string }) => (

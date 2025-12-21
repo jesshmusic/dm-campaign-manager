@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { RootState, AppDispatch } from '../../store/store';
 import { useParams } from 'react-router-dom';
 import remarkGfm from 'remark-gfm';
 import ReactMarkdown from 'react-markdown';
@@ -32,27 +33,26 @@ const SearchResults = (props: {
       pageTitle={`Search for "${query}"`}
     >
       <PageTitle title={`Search for "${query}"`} />
-      {results &&
-        results.map((result) => (
-          <Frame key={result.url} title={result.name} linkTo={result.url}>
-            <ReactMarkdown
-              remarkPlugins={[remarkGfm]}
-              components={{
-                h1: () => <></>,
-                h2: () => <></>,
-              }}
-            >
-              {result.description.length > 255
-                ? result.description.substring(0, 255) + '...'
-                : result.description}
-            </ReactMarkdown>
-          </Frame>
-        ))}
+      {results?.map((result) => (
+        <Frame key={result.url} title={result.name} linkTo={result.url}>
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
+            components={{
+              h1: () => <></>,
+              h2: () => <></>,
+            }}
+          >
+            {result.description.length > 255
+              ? result.description.substring(0, 255) + '...'
+              : result.description}
+          </ReactMarkdown>
+        </Frame>
+      ))}
     </PageContainer>
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: RootState) {
   return {
     resultsCount: state.search.count,
     results: state.search.results,
@@ -60,7 +60,7 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {
     search: (searchString: string) => {
       dispatch(rest.actions.search({ searchString }));

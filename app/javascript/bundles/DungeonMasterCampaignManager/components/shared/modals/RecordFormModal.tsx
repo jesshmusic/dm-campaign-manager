@@ -134,7 +134,7 @@ const RecordFormModal: React.FC<RecordFormModalProps> = ({
         onClose={handleDeleteCancel}
         onConfirm={handleDeleteConfirm}
         entityName={entityName}
-        entityTitle={entityTitle || 'this item'}
+        entityTitle={entityTitle ?? 'this item'}
         isDeleting={isDeleting}
       />
     </>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { RootState, AppDispatch } from '../../store/store';
 import { Link, useParams } from 'react-router-dom';
 import rest from '../../api/api';
 import PageContainer from '../../containers/PageContainer';
@@ -40,7 +41,7 @@ const BackgroundsIndex = ({
   const [isCreateModalOpen, setIsCreateModalOpen] = React.useState(false);
 
   // Use edition from URL if valid (either :edition or :param route), otherwise from context
-  const urlEdition = editionParam || param;
+  const urlEdition = editionParam ?? param;
   const edition = isValidEdition(urlEdition) ? urlEdition : contextEdition;
 
   React.useEffect(() => {
@@ -114,7 +115,7 @@ const BackgroundsIndex = ({
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: RootState) {
   return {
     backgrounds: state.backgrounds.backgrounds,
     loading: state.backgrounds.loading,
@@ -122,7 +123,7 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {
     getBackgrounds: () => {
       dispatch(rest.actions.getBackgrounds());

@@ -58,9 +58,9 @@ const Button = (props: {
       onClick={onClick}
       id={id}
       data-bs-dismiss={dataBsDismiss}
-      disabled={disabled || isLoading}
+      disabled={(disabled ?? false) || (isLoading ?? false)}
       style={style}
-      type={type || 'button'}
+      type={type ?? 'button'}
     >
       {hideTitle ? '' : title}
       {icon && <span> {icon}</span>}

@@ -39,7 +39,7 @@ export const BreadcrumbList = styled.ol<{ $sidebarWidth?: number }>`
   flex-wrap: wrap;
   font-family: ${({ theme }) => theme.fonts.mrEaves};
   list-style: none;
-  margin-left: ${({ $sidebarWidth }) => $sidebarWidth || 80}px;
+  margin-left: ${({ $sidebarWidth }) => $sidebarWidth ?? 80}px;
   padding: 0.35rem 1rem;
   transition: margin-left 0.15s ease-out;
 `;

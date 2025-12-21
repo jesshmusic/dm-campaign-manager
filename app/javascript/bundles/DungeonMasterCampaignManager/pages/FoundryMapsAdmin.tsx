@@ -161,8 +161,8 @@ const FoundryMapsAdmin: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchMaps();
-    fetchTags();
+    void fetchMaps();
+    void fetchTags();
   }, []);
 
   const fetchMaps = async () => {
@@ -211,15 +211,15 @@ const FoundryMapsAdmin: React.FC = () => {
     return null;
   };
 
-  const handleEdit = async (map: FoundryMap) => {
+  const editMap = async (map: FoundryMap) => {
     const detailedMap = await fetchMapDetails(map.id);
     if (detailedMap) {
       setEditingMap(detailedMap);
       reset({
         name: detailedMap.name,
-        description: detailedMap.description || '',
+        description: detailedMap.description ?? '',
         access_level: detailedMap.access === 'Premium' ? 'premium' : 'free',
-        required_tier: detailedMap.requiredTier || 'free',
+        required_tier: detailedMap.requiredTier ?? 'free',
         published: detailedMap.published,
         tags: detailedMap.tags.join(', '),
       });
@@ -227,9 +227,9 @@ const FoundryMapsAdmin: React.FC = () => {
       setEditingMap(map);
       reset({
         name: map.name,
-        description: map.description || '',
+        description: map.description ?? '',
         access_level: map.access === 'Premium' ? 'premium' : 'free',
-        required_tier: map.requiredTier || 'free',
+        required_tier: map.requiredTier ?? 'free',
         published: map.published,
         tags: map.tags.join(', '),
       });
@@ -237,25 +237,37 @@ const FoundryMapsAdmin: React.FC = () => {
     setShowForm(true);
   };
 
-  const handleView = async (map: FoundryMap) => {
+  const handleEdit = (map: FoundryMap) => {
+    void editMap(map);
+  };
+
+  const viewMap = async (map: FoundryMap) => {
     const detailedMap = await fetchMapDetails(map.id);
-    setViewingMap(detailedMap || map);
+    setViewingMap(detailedMap ?? map);
     setIsEditingInModal(false);
   };
 
-  const handleEditInModal = async (map: FoundryMap) => {
+  const handleView = (map: FoundryMap) => {
+    void viewMap(map);
+  };
+
+  const editInModal = async (map: FoundryMap) => {
     const detailedMap = await fetchMapDetails(map.id);
-    const mapToEdit = detailedMap || map;
+    const mapToEdit = detailedMap ?? map;
     setEditingMap(mapToEdit);
     reset({
       name: mapToEdit.name,
-      description: mapToEdit.description || '',
+      description: mapToEdit.description ?? '',
       access_level: mapToEdit.access === 'Premium' ? 'premium' : 'free',
-      required_tier: mapToEdit.requiredTier || 'free',
+      required_tier: mapToEdit.requiredTier ?? 'free',
       published: mapToEdit.published,
       tags: mapToEdit.tags.join(', '),
     });
     setIsEditingInModal(true);
+  };
+
+  const handleEditInModal = (map: FoundryMap) => {
+    void editInModal(map);
   };
 
   const handleCancelEditInModal = () => {
@@ -302,7 +314,7 @@ const FoundryMapsAdmin: React.FC = () => {
           },
           tags: data.tags
             .split(',')
-            .map((t) => t.trim())
+            .map((t: string) => t.trim())
             .filter(Boolean),
         }),
       });
@@ -361,7 +373,7 @@ const FoundryMapsAdmin: React.FC = () => {
 
         // Show the view modal with updated data (for both create and edit)
         const detailedMap = await fetchMapDetails(savedMap.id);
-        setViewingMap(detailedMap || savedMap);
+        setViewingMap(detailedMap ?? savedMap);
 
         handleCancelEdit();
       } else {
@@ -390,7 +402,11 @@ const FoundryMapsAdmin: React.FC = () => {
     }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    void handleSubmit(onSubmit)(e);
+  };
+
+  const deleteMap = async (id: string) => {
     if (!confirm('Are you sure you want to delete this map?')) return;
 
     try {
@@ -414,7 +430,11 @@ const FoundryMapsAdmin: React.FC = () => {
     }
   };
 
-  const togglePublished = async (id: string, currentPublished: boolean) => {
+  const handleDelete = (id: string) => {
+    void deleteMap(id);
+  };
+
+  const toggleMapPublished = async (id: string, currentPublished: boolean) => {
     try {
       const response = await fetch(`/v1/maps/${id}`, {
         method: 'PATCH',
@@ -428,14 +448,18 @@ const FoundryMapsAdmin: React.FC = () => {
       });
 
       if (response.ok) {
-        fetchMaps();
+        void fetchMaps();
       }
     } catch (error) {
       console.error('Error updating map:', error);
     }
   };
 
-  const handleCreateTag = async () => {
+  const togglePublished = (id: string, currentPublished: boolean) => {
+    void toggleMapPublished(id, currentPublished);
+  };
+
+  const createTag = async () => {
     if (!newTagName.trim()) return;
 
     try {
@@ -485,7 +509,11 @@ const FoundryMapsAdmin: React.FC = () => {
     }
   };
 
-  const handleUpdateTag = async (id: string) => {
+  const handleCreateTag = () => {
+    void createTag();
+  };
+
+  const updateTag = async (id: string) => {
     if (!editingTagName.trim()) return;
 
     try {
@@ -537,7 +565,11 @@ const FoundryMapsAdmin: React.FC = () => {
     }
   };
 
-  const handleDeleteTag = async (id: string, tagName: string) => {
+  const handleUpdateTag = (id: string) => {
+    void updateTag(id);
+  };
+
+  const deleteTag = async (id: string, tagName: string) => {
     if (
       !confirm(
         `Are you sure you want to delete the tag "${tagName}"? This will remove it from all maps.`,
@@ -562,6 +594,10 @@ const FoundryMapsAdmin: React.FC = () => {
     }
   };
 
+  const handleDeleteTag = (id: string, tagName: string) => {
+    void deleteTag(id, tagName);
+  };
+
   const startEditingTag = (tag: MapTag) => {
     setEditingTagId(tag.id);
     setEditingTagName(tag.name);
@@ -572,7 +608,7 @@ const FoundryMapsAdmin: React.FC = () => {
     setEditingTagName('');
   };
 
-  const handleDeleteFile = async (mapId: string, fileId: string, fileName: string) => {
+  const deleteFile = async (mapId: string, fileId: string, fileName: string) => {
     if (
       !confirm(
         `Are you sure you want to delete "${fileName}"?\n\nWarning: This may break the scene.json if this file is referenced. Make sure to re-export the scene after deleting files.`,
@@ -624,6 +660,10 @@ const FoundryMapsAdmin: React.FC = () => {
         }),
       );
     }
+  };
+
+  const handleDeleteFile = (mapId: string, fileId: string, fileName: string) => {
+    void deleteFile(mapId, fileId, fileName);
   };
 
   const stripHtml = (html: string) => {
@@ -775,7 +815,7 @@ const FoundryMapsAdmin: React.FC = () => {
         {showForm && (
           <div className={styles.formContainer}>
             <h2>{editingMap ? 'Edit Map' : 'Create New Map'}</h2>
-            <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
+            <form onSubmit={handleFormSubmit} className={styles.form}>
               <ControlledInput
                 fieldName="name"
                 errors={errors}
@@ -863,7 +903,7 @@ const FoundryMapsAdmin: React.FC = () => {
                   type="file"
                   id="thumbnail"
                   accept="image/jpeg,image/jpg,image/png,image/webp"
-                  onChange={(e) => setSelectedThumbnail(e.target.files?.[0] || null)}
+                  onChange={(e) => setSelectedThumbnail(e.target.files?.[0] ?? null)}
                   className={styles.fileInput}
                   disabled={uploadingFiles}
                 />
@@ -873,7 +913,7 @@ const FoundryMapsAdmin: React.FC = () => {
                     KB)
                   </div>
                 )}
-                {editingMap && editingMap.thumbnail && !selectedThumbnail && (
+                {editingMap?.thumbnail && !selectedThumbnail && (
                   <div className={styles.existingThumbnail}>
                     <img
                       src={editingMap.thumbnail}
@@ -910,7 +950,7 @@ const FoundryMapsAdmin: React.FC = () => {
                 )}
               </div>
 
-              {editingMap && editingMap.files && editingMap.files.length > 0 && (
+              {editingMap?.files && editingMap.files.length > 0 && (
                 <div className={styles.existingFilesSection}>
                   <label className={styles.label}>Existing Files:</label>
                   <div className={styles.filesList}>
@@ -996,10 +1036,12 @@ const FoundryMapsAdmin: React.FC = () => {
                 {isEditingInModal ? (
                   <div className={styles.form}>
                     <form
-                      onSubmit={handleSubmit(async (data) => {
-                        await onSubmit(data);
-                        setIsEditingInModal(false);
-                      })}
+                      onSubmit={(e) => {
+                        void handleSubmit(async (data: FieldValues) => {
+                          await onSubmit(data);
+                          setIsEditingInModal(false);
+                        })(e);
+                      }}
                     >
                       <ControlledInput
                         fieldName="name"
@@ -1076,7 +1118,7 @@ const FoundryMapsAdmin: React.FC = () => {
                           type="file"
                           id="thumbnail"
                           accept="image/jpeg,image/jpg,image/png,image/webp"
-                          onChange={(e) => setSelectedThumbnail(e.target.files?.[0] || null)}
+                          onChange={(e) => setSelectedThumbnail(e.target.files?.[0] ?? null)}
                           className={styles.fileInput}
                           disabled={uploadingFiles}
                         />
@@ -1086,7 +1128,7 @@ const FoundryMapsAdmin: React.FC = () => {
                             {(selectedThumbnail.size / 1024).toFixed(2)} KB)
                           </div>
                         )}
-                        {editingMap && editingMap.thumbnail && !selectedThumbnail && (
+                        {editingMap?.thumbnail && !selectedThumbnail && (
                           <div className={styles.existingThumbnail}>
                             <img
                               src={editingMap.thumbnail}
@@ -1118,7 +1160,7 @@ const FoundryMapsAdmin: React.FC = () => {
                   </div>
                 ) : (
                   <div className={styles.modalBodyLayout}>
-                    {(viewingMap.thumbnail ||
+                    {(viewingMap.thumbnail ??
                       viewingMap.files?.some((f) => f.file_type === 'background')) && (
                       <div className={styles.thumbnailColumn}>
                         {viewingMap.thumbnail && (
@@ -1160,7 +1202,7 @@ const FoundryMapsAdmin: React.FC = () => {
                         <div
                           className={styles.viewContent}
                           dangerouslySetInnerHTML={{
-                            __html: viewingMap.description || 'No description provided.',
+                            __html: viewingMap.description ?? 'No description provided.',
                           }}
                         />
                       </div>

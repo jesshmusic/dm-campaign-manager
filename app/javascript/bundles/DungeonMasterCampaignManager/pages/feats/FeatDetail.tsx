@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { RootState, AppDispatch } from '../../store/store';
 import { useParams, useNavigate } from 'react-router-dom';
 import rest from '../../api/api';
 import PageContainer from '../../containers/PageContainer';
@@ -42,7 +43,7 @@ const FeatDetail = ({
   const params = useParams<{ edition?: string; featSlug?: string; param?: string }>();
   const navigate = useNavigate();
   // Handle both /app/feats/:edition/:slug and /app/feats/:param routes
-  const { slug: featSlug } = parseEditionParams(params.edition, params.featSlug || params.param);
+  const { slug: featSlug } = parseEditionParams(params.edition, params.featSlug ?? params.param);
   const { isEdition2014 } = useEdition();
   const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
 
@@ -132,7 +133,7 @@ const FeatDetail = ({
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: RootState) {
   return {
     currentFeat: state.feats.currentFeat,
     loading: state.feats.currentFeatLoading,
@@ -141,7 +142,7 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {
     getFeat: (slug: string) => {
       dispatch(rest.actions.getFeat({ id: slug }));

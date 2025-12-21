@@ -2,12 +2,12 @@
  * Created by jesshendricks on 2019-08-21
  */
 
-import React from 'react';
 import rest from '../../api/api';
 import { connect } from 'react-redux';
 import ItemsList from './components/ItemsList';
 import { ItemsPageProps, UserProps } from '../../utilities/types';
 import { ItemType, useData } from './use-data';
+import { RootState, AppDispatch } from '../../store/store';
 
 type ItemsComponentProps = ItemsPageProps & {
   currentUser?: UserProps;
@@ -37,7 +37,7 @@ const Items = (props: ItemsComponentProps) => {
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: RootState) {
   return {
     items: state.items.items,
     loading: state.items.loading,
@@ -47,12 +47,12 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {
-    getItems: (itemType: ItemType, searchTerm?: string) => {
-      if (itemType !== ItemType.all && !searchTerm) {
+    getItems: (itemType?: string, searchTerm?: string) => {
+      if (itemType && itemType !== ItemType.all && !searchTerm) {
         dispatch(rest.actions.getItems({ type: itemType }));
-      } else if (itemType !== ItemType.all && searchTerm) {
+      } else if (itemType && itemType !== ItemType.all && searchTerm) {
         dispatch(rest.actions.getItems({ type: itemType, search: searchTerm }));
       } else if (searchTerm) {
         dispatch(rest.actions.getItems({ search: searchTerm }));

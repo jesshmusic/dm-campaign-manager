@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
-import { useForm } from 'react-hook-form';
+import { useForm, Control, FieldValues } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import Frame from '../../../../components/Frame/Frame';
 import Button from '../../../../components/Button/Button';
@@ -283,7 +283,7 @@ const AIGenerateMonster = ({
   });
 
   const descriptionValue = watch('description');
-  const descriptionLength = descriptionValue?.length || 0;
+  const descriptionLength = descriptionValue?.length ?? 0;
   const maxLength = 500;
 
   const onSubmit = async (data: FormFields) => {
@@ -308,7 +308,7 @@ const AIGenerateMonster = ({
 
       if (response.data.concept) {
         setConcept(response.data.concept);
-        setTokenUsage(response.data.token_usage || null);
+        setTokenUsage(response.data.token_usage ?? null);
         setShowModal(true);
       } else if (response.data.error) {
         showError(response.data.error);
@@ -355,13 +355,18 @@ const AIGenerateMonster = ({
   const handleRegenerate = () => {
     setShowModal(false);
     setConcept(null);
-    handleSubmit(onSubmit)();
+    void handleSubmit(onSubmit)();
   };
 
   const handleCloseModal = () => {
     setShowModal(false);
     setConcept(null);
     setTokenUsage(null);
+  };
+
+  // Sync wrapper for async handleApprove
+  const onApproveClick = (approvedConcept: NpcConcept) => {
+    void handleApprove(approvedConcept);
   };
 
   return (
@@ -376,22 +381,27 @@ const AIGenerateMonster = ({
         }
         className="ai-generate-monster"
       >
-        <GenForm onSubmit={handleSubmit(onSubmit)} noValidate>
+        <GenForm
+          onSubmit={(e) => {
+            void handleSubmit(onSubmit)(e);
+          }}
+          noValidate
+        >
           <ThreeCol>
             <FormSelect
-              control={control}
+              control={control as unknown as Control<FieldValues>}
               label="Challenge Rating"
               name="challengeRating"
               options={challengeRatingOptions}
             />
             <FormSelect
-              control={control}
+              control={control as unknown as Control<FieldValues>}
               label="Creature Type"
               name="monsterType"
               options={monsterTypeOptions}
             />
             <FormSelect
-              control={control}
+              control={control as unknown as Control<FieldValues>}
               label="Alignment"
               name="alignment"
               options={alignmentOptions}
@@ -463,12 +473,12 @@ const AIGenerateMonster = ({
       {showModal && concept && (
         <ConceptApprovalModal
           concept={concept}
-          onApprove={handleApprove}
+          onApprove={onApproveClick}
           onRegenerate={handleRegenerate}
           onClose={handleCloseModal}
           isLoading={isLoading}
           isAdmin={isAdmin}
-          tokenUsage={tokenUsage || undefined}
+          tokenUsage={tokenUsage ?? undefined}
         />
       )}
     </>

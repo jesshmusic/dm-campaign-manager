@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { RootState, AppDispatch } from '../../store/store';
 import { Link, useParams } from 'react-router-dom';
 import rest from '../../api/api';
 import PageContainer from '../../containers/PageContainer';
@@ -60,7 +61,7 @@ const RulesIndex = ({ rules, loading, getRules, currentUser }: RulesIndexProps) 
   const [isCreateModalOpen, setIsCreateModalOpen] = React.useState(false);
 
   // Use edition from URL if valid (either :edition or :param route), otherwise from context
-  const urlEdition = editionParam || param;
+  const urlEdition = editionParam ?? param;
   const edition = isValidEdition(urlEdition) ? urlEdition : contextEdition;
 
   React.useEffect(() => {
@@ -117,7 +118,7 @@ const RulesIndex = ({ rules, loading, getRules, currentUser }: RulesIndexProps) 
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: RootState) {
   return {
     rules: state.rules.rules,
     loading: state.rules.loading,
@@ -125,7 +126,7 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {
     getRules: () => {
       dispatch(rest.actions.getRules());

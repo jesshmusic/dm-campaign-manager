@@ -1,5 +1,6 @@
 import React, { useRef, useCallback } from 'react';
 import { connect } from 'react-redux';
+import { RootState, AppDispatch } from '../../store/store';
 import { RecordFormModal } from '../../components/shared/modals';
 import BackgroundForm, { BackgroundFormData } from './BackgroundForm';
 import { Background } from '../../reducers/backgrounds';
@@ -73,7 +74,7 @@ const BackgroundFormModal: React.FC<BackgroundFormModalProps> = ({
     }
   };
 
-  const title = mode === 'create' ? 'New Background' : `Edit ${initialData?.name || 'Background'}`;
+  const title = mode === 'create' ? 'New Background' : `Edit ${initialData?.name ?? 'Background'}`;
 
   return (
     <RecordFormModal
@@ -98,13 +99,13 @@ const BackgroundFormModal: React.FC<BackgroundFormModalProps> = ({
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: RootState) {
   return {
     token: state.users.token,
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {
     createBackground: (data: BackgroundFormData, token?: string) => {
       dispatch(

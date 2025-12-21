@@ -1,4 +1,3 @@
-import React from 'react';
 import { Control, FieldErrors, useWatch } from 'react-hook-form';
 import { ControlledInput } from '../forms/ControllerInput';
 import Button from '../Button/Button';

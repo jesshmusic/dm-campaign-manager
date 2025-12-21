@@ -2,7 +2,7 @@
  * Created by jesshendricks on 9/13/19
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import CopyField from '../CopyField/CopyField';
 import Frame from '../Frame/Frame';
 import axios from 'axios';
@@ -25,7 +25,7 @@ const AdventureHookWidget = (props: { hideFrame?: boolean }) => {
       setIsLoading(false);
       setAdventureHook(response.data.adventure_hook);
     } catch (error) {
-      setAdventureHook(error);
+      setAdventureHook(error instanceof Error ? error.message : 'An error occurred');
       setIsLoading(false);
     }
   };

@@ -37,7 +37,7 @@ export const LegacyBadge = styled.span`
   background-color: ${({ theme }) => theme.colors.warning || '#f0ad4e'};
   border-radius: 4px;
   color: #fff;
-  font-family: ${({ theme }) => theme.fonts.body};
+  font-family: ${({ theme }) => theme.fonts.sansSerif};
   font-size: 14px;
   font-weight: 600;
   margin-left: 12px;

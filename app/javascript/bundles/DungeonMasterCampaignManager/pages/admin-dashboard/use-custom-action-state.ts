@@ -1,4 +1,10 @@
-import { ActionTypes, FlashMessage, MonsterActionField, UserProps } from '../../utilities/types';
+import {
+  ActionTypes,
+  FlashMessage,
+  MonsterAction,
+  MonsterActionField,
+  UserProps,
+} from '../../utilities/types';
 import { FieldValues, useForm } from 'react-hook-form';
 import { generateAttackDesc } from '../../components/action-forms/utils';
 import { abilityOptions } from '../../components/action-forms/SpellcastingForm';
@@ -13,7 +19,7 @@ type CustomActionField = {
 };
 
 export const useCustomActionState = (props: {
-  createCustomAction: (action: unknown, token?: string) => void;
+  createCustomAction: (action: MonsterAction, token?: string) => void;
   user: UserProps;
   token?: string;
 }) => {
@@ -55,13 +61,13 @@ export const useCustomActionState = (props: {
     if (fieldName === 'action.damage.damageTypeOption') {
       UseForm.setValue(
         'action.damage.damageType',
-        fields.action.damage?.damageTypeOption.value || 'slashing',
+        fields.action.damage?.damageTypeOption.value ?? 'slashing',
       );
     }
     if (fieldName === 'action.damage.diceValueOption') {
       UseForm.setValue(
         'action.damage.diceValue',
-        (fields.action.damage?.diceValueOption.value as number) || 6,
+        (fields.action.damage?.diceValueOption.value as number) ?? 6,
       );
     }
     if (fieldName !== `action.desc` && fieldName !== `action.name`) {
@@ -74,10 +80,10 @@ export const useCustomActionState = (props: {
         fields.action.damage.diceValueOption.value as number,
       );
     }
-    if (fieldName === `spellCasting.abilityOption`) {
+    if (fieldName === `spellCasting.abilityOption` && fields.action.spellCasting) {
       UseForm.setValue(
         `action.spellCasting.ability`,
-        fields.action.spellCasting!.abilityOption.label,
+        fields.action.spellCasting.abilityOption.label,
       );
     }
     if (fieldName === 'actionTypeOption') {
@@ -144,9 +150,10 @@ export const useCustomActionState = (props: {
     }
   };
 
-  const onSubmitActionForm = (data: { action: MonsterActionField; actionType: ActionTypes }) => {
+  const onSubmitActionForm = (data: FieldValues) => {
+    const formData = data as { action: MonsterActionField; actionType: ActionTypes };
     createCustomAction(
-      { name: data.action.name, desc: data.action.desc, action_type: data.actionType },
+      { name: formData.action.name, desc: formData.action.desc, actionType: formData.actionType },
       token,
     );
     navigate('/app/admin-dashboard');

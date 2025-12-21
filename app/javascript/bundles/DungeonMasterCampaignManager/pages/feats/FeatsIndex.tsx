@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { RootState, AppDispatch } from '../../store/store';
 import { Link, useParams } from 'react-router-dom';
 import rest from '../../api/api';
 import PageContainer from '../../containers/PageContainer';
@@ -68,7 +69,7 @@ const FeatsIndex = ({ feats, loading, currentUser, getFeats }: FeatsIndexProps) 
   const [isCreateModalOpen, setIsCreateModalOpen] = React.useState(false);
 
   // Use edition from URL if valid (either :edition or :param route), otherwise from context
-  const urlEdition = editionParam || param;
+  const urlEdition = editionParam ?? param;
   const edition = isValidEdition(urlEdition) ? urlEdition : contextEdition;
 
   React.useEffect(() => {
@@ -126,7 +127,7 @@ const FeatsIndex = ({ feats, loading, currentUser, getFeats }: FeatsIndexProps) 
                     <Link key={feat.slug} to={getContentUrl('feats', feat.slug, edition)}>
                       <FeatCard>
                         <FeatCardHeader>
-                          <FeatCardIcon>{categoryIcons[category] || <GiUpgrade />}</FeatCardIcon>
+                          <FeatCardIcon>{categoryIcons[category] ?? <GiUpgrade />}</FeatCardIcon>
                           <FeatCardTitle>{feat.name}</FeatCardTitle>
                           {feat.repeatable && <RepeatableBadge>Repeatable</RepeatableBadge>}
                         </FeatCardHeader>
@@ -155,7 +156,7 @@ const FeatsIndex = ({ feats, loading, currentUser, getFeats }: FeatsIndexProps) 
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: RootState) {
   return {
     feats: state.feats.feats,
     loading: state.feats.loading,
@@ -163,7 +164,7 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {
     getFeats: () => {
       dispatch(rest.actions.getFeats());

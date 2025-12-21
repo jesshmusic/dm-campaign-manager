@@ -34,13 +34,14 @@ export const useCreateWidgetState = (props: {
 
   React.useEffect(() => {
     const subscription = UseForm.watch((value) => {
-      setTestState(value as any);
+      // @ts-expect-error - Type mismatch between form value and test state
+      setTestState(value);
     });
     return () => subscription.unsubscribe();
   }, [UseForm.watch]);
 
-  const onSubmit = (data) => {
-    createWidget(data, token);
+  const onSubmit = (data: FieldValues) => {
+    createWidget(data as WidgetProps, token);
     navigate('/app/admin-dashboard');
   };
 

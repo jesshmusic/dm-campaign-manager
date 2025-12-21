@@ -104,11 +104,11 @@ const DndClassForm: React.FC<DndClassFormProps> = ({
     formState: { errors },
   } = useForm<DndClassFormData>({
     defaultValues: {
-      name: initialData?.name || '',
-      hit_die: initialData?.hitDie || 8,
-      primary_abilities: initialData?.abilityScores?.map((a) => a.name).join(', ') || '',
-      spell_ability: initialData?.spellCasting?.spellCastingAbility || '',
-      subclasses: initialData?.subclasses?.join(', ') || '',
+      name: initialData?.name ?? '',
+      hit_die: initialData?.hitDie ?? 8,
+      primary_abilities: initialData?.abilityScores?.map((a) => a.name).join(', ') ?? '',
+      spell_ability: initialData?.spellCasting?.spellCastingAbility ?? '',
+      subclasses: initialData?.subclasses?.join(', ') ?? '',
       description: '',
       homebrew: false,
     },
@@ -118,7 +118,12 @@ const DndClassForm: React.FC<DndClassFormProps> = ({
   const typedControl = control as unknown as Control<FieldValues, object>;
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} id="dnd-class-form">
+    <form
+      onSubmit={(e) => {
+        void handleSubmit(onSubmit)(e);
+      }}
+      id="dnd-class-form"
+    >
       <FormGrid>
         <TwoColumnField>
           <ControlledInput
@@ -149,7 +154,6 @@ const DndClassForm: React.FC<DndClassFormProps> = ({
             control={typedControl}
             label="Primary Abilities"
             errors={errors}
-            placeholder="e.g., Strength, Dexterity"
           />
         </TwoColumnField>
 

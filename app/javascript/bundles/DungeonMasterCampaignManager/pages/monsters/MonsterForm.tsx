@@ -133,29 +133,29 @@ const MonsterForm: React.FC<MonsterFormProps> = ({
     formState: { errors },
   } = useForm<MonsterFormData>({
     defaultValues: {
-      name: initialData?.name || '',
-      description: initialData?.description || '',
-      size: initialData?.size || 'Medium',
-      monster_type: initialData?.monsterType || 'Humanoid',
-      monster_subtype: initialData?.monsterSubtype || '',
-      alignment: initialData?.alignment || '',
-      armor_class: initialData?.armorClass || 10,
-      hit_points: initialData?.hitPoints || 1,
-      hit_dice: initialData?.hitDice || '1d8',
-      strength: initialData?.strength || 10,
-      dexterity: initialData?.dexterity || 10,
-      constitution: initialData?.constitution || 10,
-      intelligence: initialData?.intelligence || 10,
-      wisdom: initialData?.wisdom || 10,
-      charisma: initialData?.charisma || 10,
-      challenge_rating: initialData?.challengeRating || '0',
-      languages: initialData?.languages || '',
-      damage_immunities: initialData?.damageImmunities?.join(', ') || '',
-      damage_resistances: initialData?.damageResistances?.join(', ') || '',
-      damage_vulnerabilities: initialData?.damageVulnerabilities?.join(', ') || '',
-      condition_immunities: initialData?.conditionImmunities?.join(', ') || '',
-      saving_throws: initialData?.savingThrows?.join(', ') || '',
-      skills: initialData?.skills?.join(', ') || '',
+      name: initialData?.name ?? '',
+      description: initialData?.description ?? '',
+      size: initialData?.size ?? 'Medium',
+      monster_type: initialData?.monsterType ?? 'Humanoid',
+      monster_subtype: initialData?.monsterSubtype ?? '',
+      alignment: initialData?.alignment ?? '',
+      armor_class: initialData?.armorClass ?? 10,
+      hit_points: initialData?.hitPoints ?? 1,
+      hit_dice: initialData?.hitDice ?? '1d8',
+      strength: initialData?.strength ?? 10,
+      dexterity: initialData?.dexterity ?? 10,
+      constitution: initialData?.constitution ?? 10,
+      intelligence: initialData?.intelligence ?? 10,
+      wisdom: initialData?.wisdom ?? 10,
+      charisma: initialData?.charisma ?? 10,
+      challenge_rating: initialData?.challengeRating ?? '0',
+      languages: initialData?.languages ?? '',
+      damage_immunities: initialData?.damageImmunities?.join(', ') ?? '',
+      damage_resistances: initialData?.damageResistances?.join(', ') ?? '',
+      damage_vulnerabilities: initialData?.damageVulnerabilities?.join(', ') ?? '',
+      condition_immunities: initialData?.conditionImmunities?.join(', ') ?? '',
+      saving_throws: initialData?.savingThrows?.join(', ') ?? '',
+      skills: initialData?.skills?.join(', ') ?? '',
       homebrew: false,
     },
   });
@@ -164,7 +164,12 @@ const MonsterForm: React.FC<MonsterFormProps> = ({
   const typedControl = control as unknown as Control<FieldValues, object>;
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} id="monster-form">
+    <form
+      onSubmit={(e) => {
+        void handleSubmit(onSubmit)(e);
+      }}
+      id="monster-form"
+    >
       <FormGrid>
         <TwoColumnField>
           <ControlledInput fieldName="name" control={typedControl} label="Name" errors={errors} />
@@ -189,7 +194,6 @@ const MonsterForm: React.FC<MonsterFormProps> = ({
           control={typedControl}
           label="Subtype"
           errors={errors}
-          placeholder="e.g., goblinoid"
         />
 
         <ControlledInput

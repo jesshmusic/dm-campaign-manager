@@ -5,6 +5,7 @@ import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
 import rest from '../../api/api';
 import { connect } from 'react-redux';
+import { RootState, AppDispatch } from '../../store/store';
 import DataTable from '../../components/DataTable/DataTable';
 import { RaceSummary, UserProps } from '../../utilities/types';
 import { useEdition } from '../../contexts/EditionContext';
@@ -27,7 +28,7 @@ const Races = (props: RacesProps) => {
   const { edition: contextEdition, isEdition2014, isEdition2024 } = useEdition();
 
   // Use edition from URL if valid (either :edition or :param route), otherwise from context
-  const urlEdition = editionParam || param;
+  const urlEdition = editionParam ?? param;
   const edition = isValidEdition(urlEdition) ? urlEdition : contextEdition;
 
   // In 2024 edition, "Races" are called "Species"
@@ -41,14 +42,14 @@ const Races = (props: RacesProps) => {
     getRaces();
   };
 
-  const goToPage = (row: Row<Record<string, unknown>>) => {
-    navigate(getContentUrl('races', row.original.slug as string, edition));
+  const goToPage = (row: Row<RaceSummary>) => {
+    navigate(getContentUrl('races', row.original.slug, edition));
   };
 
   const columns = React.useMemo(
     () => [
-      { Header: isEdition2024 ? 'Species' : 'Race', accessor: 'name' },
-      { Header: 'Traits', accessor: 'traits' },
+      { Header: isEdition2024 ? 'Species' : 'Race', accessor: 'name' as const },
+      { Header: 'Traits', accessor: 'traits' as const },
     ],
     [isEdition2024],
   );
@@ -96,7 +97,7 @@ const Races = (props: RacesProps) => {
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: RootState) {
   return {
     loading: state.races.loading,
     races: state.races.races,
@@ -104,7 +105,7 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {
     getRaces: () => {
       dispatch(rest.actions.getRaces());

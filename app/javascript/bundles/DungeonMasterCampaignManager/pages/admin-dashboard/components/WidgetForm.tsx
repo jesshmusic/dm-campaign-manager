@@ -1,3 +1,4 @@
+import React from 'react';
 import { ControlledInput } from '../../../components/forms/ControllerInput';
 import FormIconSelect from '../../../components/forms/FormIconSelect';
 import { allGiIcons } from '../../../utilities/icons';
@@ -7,7 +8,6 @@ import 'react-quill/dist/quill.snow.css';
 import Button from '../../../components/Button/Button';
 import { Colors } from '../../../utilities/enums';
 import * as Icons from 'react-icons/gi';
-import React from 'react';
 
 import { WidgetFormWrapper, SelectRow } from '../AdminDashboard.styles';
 
@@ -22,9 +22,23 @@ const modules = {
   ],
 };
 
-const WidgetForm = (props: { useForm: UseFormReturn; onSubmit: (data) => void }) => {
+type WidgetFormData = {
+  title: string;
+  subtitle?: string;
+  iconOption?: { value: string; label: string };
+  content?: string;
+};
+
+const WidgetForm = (props: {
+  useForm: UseFormReturn;
+  onSubmit: (data: WidgetFormData) => void;
+}) => {
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    void props.useForm.handleSubmit(props.onSubmit)(e);
+  };
+
   return (
-    <WidgetFormWrapper onSubmit={props.useForm.handleSubmit(props.onSubmit)} noValidate>
+    <WidgetFormWrapper onSubmit={handleFormSubmit} noValidate>
       <ControlledInput
         fieldName={`title`}
         errors={props.useForm.formState.errors}

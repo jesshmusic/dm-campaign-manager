@@ -17,6 +17,7 @@ import {
 } from '../contexts/SidebarContext';
 
 import { AppContainer } from './Containers.styles';
+import { RootState, AppDispatch } from '../store/store';
 
 gsap.registerPlugin(ScrollToPlugin);
 
@@ -31,7 +32,19 @@ const getSavedSidebarState = (): { collapsed: boolean; width: number } => {
   return { collapsed: false, width: SIDEBAR_DEFAULT_WIDTH };
 };
 
-const Layout = (props) => {
+interface LayoutProps {
+  currentUser?: {
+    auth_id: string;
+    email: string;
+    name: string;
+    roles?: string[];
+    username: string;
+  };
+  logInUser?: (user: User, token: string) => void;
+  [key: string]: unknown;
+}
+
+const Layout = (props: LayoutProps) => {
   const [flashMessages, setFlashMessages] = React.useState<FlashMessage[]>([]);
   const parentNode = React.useRef(null);
 
@@ -80,7 +93,7 @@ const Layout = (props) => {
     if (isAuthenticated && user && !props.currentUser) {
       getAccessTokenSilently()
         .then((token) => {
-          props.logInUser(user, token);
+          props.logInUser?.(user, token);
         })
         .catch((err) => {
           console.error(err);
@@ -104,19 +117,19 @@ const Layout = (props) => {
         <HeroBanner />
         <DMRoutes {...combinedProps} />
         <YouTubeAd />
-        <Footer user={combinedProps.user} />
+        <Footer user={combinedProps.currentUser} />
       </AppContainer>
     </SidebarProvider>
   );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: RootState) => {
   return {
     currentUser: state.users.currentUser,
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch: AppDispatch) => {
   return {
     logInUser: (user: User, token: string) => {
       const currentUser = {

@@ -1,4 +1,3 @@
-import React from 'react';
 import NameOptions from '../../../components/Widgets/NameOptions';
 import Frame from '../../../components/Frame/Frame';
 import InstructionsPanel, {

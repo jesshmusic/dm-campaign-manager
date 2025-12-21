@@ -4,7 +4,7 @@ import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import { connect } from 'react-redux';
 import rest from '../../api/api';
-import Widget from '../../components/Widgets/Widget';
+import Widget, { WidgetElementProps } from '../../components/Widgets/Widget';
 import DashboardBar from './components/DashboardBar';
 import { useDashboardState } from './use-dashboard-state';
 import { createGlobalStyle } from 'styled-components';
@@ -12,6 +12,8 @@ import { createGlobalStyle } from 'styled-components';
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
 import { Section } from './UserDashboard.styles';
+import { RootState, AppDispatch } from '../../store/store';
+import { WidgetProps } from '../../utilities/types';
 
 const ResizeHandleStyles = createGlobalStyle`
   .react-resizable-handle {
@@ -34,7 +36,12 @@ const ResizeHandleStyles = createGlobalStyle`
   }
 `;
 
-const Dashboard = ({ customWidgets, getWidgets }) => {
+type DashboardProps = {
+  customWidgets: WidgetProps[];
+  getWidgets: () => void;
+};
+
+const Dashboard = ({ customWidgets, getWidgets }: DashboardProps) => {
   const {
     allWidgets,
     layouts,
@@ -54,7 +61,7 @@ const Dashboard = ({ customWidgets, getWidgets }) => {
         onRemoveItem={onRemoveItem}
         onAddItem={onAddItem}
         onResetLayout={onResetLayout}
-        widgets={allWidgets}
+        widgets={allWidgets as { title: string; key: string; icon: React.ElementType }[]}
       />
       <ResponsiveGridLayout
         autoSize={true}
@@ -67,7 +74,7 @@ const Dashboard = ({ customWidgets, getWidgets }) => {
         draggableCancel="button, input, textarea, select, a, .no-drag"
         onLayoutChange={onLayoutChange}
       >
-        {widgets.map((widget) => (
+        {widgets.map((widget: WidgetElementProps) => (
           <div key={widget.widgetId} className="widget">
             <Widget
               icon={widget.icon}
@@ -86,14 +93,14 @@ const Dashboard = ({ customWidgets, getWidgets }) => {
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: RootState) {
   return {
     currentUser: state.users.currentUser,
     customWidgets: state.widgets.widgets,
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {
     getWidgets: () => {
       dispatch(rest.actions.getWidgets());

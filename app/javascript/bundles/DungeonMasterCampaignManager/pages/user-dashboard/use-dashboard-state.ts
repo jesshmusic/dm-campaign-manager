@@ -25,7 +25,9 @@ const findBestPosition = (
   }
 
   // Build a 2D occupancy map of the grid
-  const maxY = Math.max(...breakpointLayout.map((item) => (item.y || 0) + (item.h || 1)));
+  const maxY = Math.max(
+    ...breakpointLayout.map((item: LayoutItem) => (item.y ?? 0) + (item.h ?? 1)),
+  );
   const gridHeight = maxY + Math.max(height, 10); // Extra space for new item
 
   // Create occupancy grid
@@ -35,11 +37,11 @@ const findBestPosition = (
   }
 
   // Mark occupied cells
-  breakpointLayout.forEach((item) => {
-    const itemX = item.x || 0;
-    const itemY = item.y || 0;
-    const itemW = item.w || 1;
-    const itemH = item.h || 1;
+  breakpointLayout.forEach((item: LayoutItem) => {
+    const itemX = item.x ?? 0;
+    const itemY = item.y ?? 0;
+    const itemW = item.w ?? 1;
+    const itemH = item.h ?? 1;
     for (let dy = 0; dy < itemH; dy++) {
       for (let dx = 0; dx < itemW; dx++) {
         const cy = itemY + dy;
@@ -83,7 +85,7 @@ const hasCorruptedLayout = (layouts: Layouts, breakpoints = ['lg', 'md', 'sm', '
     return (
       Array.isArray(breakpointLayout) &&
       breakpointLayout.length > 0 &&
-      breakpointLayout.some((item) => item.w === 1 && item.h === 1)
+      breakpointLayout.some((item: LayoutItem) => item.w === 1 && item.h === 1)
     );
   });
 };
@@ -99,7 +101,7 @@ const getFromLS = (key: string) => {
   if (global.localStorage) {
     try {
       const ls = JSON.parse(global.localStorage.getItem('rgl-8') as string);
-      if (ls && ls[key]) {
+      if (ls?.[key]) {
         // For layouts, ensure it has at least one breakpoint with items
         // and fix any custom widgets with invalid sizes
         if (key === 'layouts') {
@@ -115,19 +117,19 @@ const getFromLS = (key: string) => {
 
           // Fix all widget sizes - ensure minimum dimensions
           Object.keys(layouts).forEach((breakpoint) => {
-            const maxCols = BREAKPOINT_COLUMNS[breakpoint] || 12;
-            layouts[breakpoint] = layouts[breakpoint].map((item) => {
-              const isCustomWidget = item.i && item.i.startsWith('customWidget');
-              const widgetConfig = dashboardComponents[item.i];
+            const maxCols = BREAKPOINT_COLUMNS[breakpoint] ?? 12;
+            layouts[breakpoint] = layouts[breakpoint].map((item: LayoutItem) => {
+              const isCustomWidget = item.i?.startsWith('customWidget');
+              const widgetConfig = item.i ? dashboardComponents[item.i] : undefined;
               // Get minimum dimensions from widget config or use defaults
               // Cap minW to the breakpoint's column count
-              const baseMinW = isCustomWidget ? 3 : widgetConfig?.grid?.minW || 3;
+              const baseMinW = isCustomWidget ? 3 : (widgetConfig?.grid?.minW ?? 3);
               const minW = Math.min(baseMinW, maxCols);
-              const minH = isCustomWidget ? 3 : widgetConfig?.grid?.minH || 2;
+              const minH = isCustomWidget ? 3 : (widgetConfig?.grid?.minH ?? 2);
               return {
                 ...item,
-                w: Math.max(Math.min(item.w || minW, maxCols), minW),
-                h: Math.max(item.h || minH, minH),
+                w: Math.max(Math.min(item.w ?? minW, maxCols), minW),
+                h: Math.max(item.h ?? minH, minH),
                 minW,
                 minH,
               };
@@ -160,11 +162,28 @@ const saveToLS = (layouts: Layouts, widgets: string[]) => {
   }
 };
 
-export const useDashboardState = ({ customWidgets, getWidgets }) => {
+import { WidgetProps } from '../../utilities/types';
+
+type _DashboardWidget = { title: string; key: string; icon: React.ReactNode };
+
+type UseDashboardStateProps = {
+  customWidgets: WidgetProps[];
+  getWidgets: () => void;
+};
+
+export const useDashboardState = ({ customWidgets, getWidgets }: UseDashboardStateProps) => {
   const [widgetKeys, setWidgetKeys] = React.useState(getFromLS('widgets') || dashboardItems);
   const [widgets, setWidgets] = React.useState<WidgetElementProps[]>([]);
   const [layouts, setLayouts] = React.useState(getFromLS('layouts') || initialLayouts);
-  const [allWidgets, setAllWidgets] = React.useState(dashboardItems);
+  const [allWidgets, setAllWidgets] = React.useState<
+    { title: string; key: string; icon: React.ReactNode }[]
+  >(
+    dashboardItems.map((item) => ({
+      key: item,
+      icon: dashboardComponents[item].icon,
+      title: dashboardComponents[item].title,
+    })),
+  );
 
   React.useEffect(() => {
     getWidgets();
@@ -181,19 +200,19 @@ export const useDashboardState = ({ customWidgets, getWidgets }) => {
   React.useEffect(() => {
     const customWidgetKeys = customWidgets.map((widget) => ({
       key: `customWidget${widget.id}`,
-      icon: getIconFromName(widget.icon),
+      icon: getIconFromName(widget.icon ?? ''),
       title: widget.title,
     }));
-    const builtInKeys = dashboardItems.map((widget) => ({
-      key: widget,
-      icon: dashboardComponents[widget].icon,
-      title: dashboardComponents[widget].title,
+    const builtInKeys = dashboardItems.map((widgetKey) => ({
+      key: widgetKey,
+      icon: dashboardComponents[widgetKey].icon,
+      title: dashboardComponents[widgetKey].title,
     }));
     setAllWidgets([...builtInKeys, ...customWidgetKeys]);
   }, [customWidgets]);
 
   React.useEffect(() => {
-    const builtInWidgets = dashboardItems.map((key) => {
+    const builtInWidgets: WidgetElementProps[] = dashboardItems.map((key) => {
       const builtInWidget = dashboardComponents[key];
       return {
         widgetId: key,
@@ -206,11 +225,11 @@ export const useDashboardState = ({ customWidgets, getWidgets }) => {
         dataGrid: builtInWidget.grid,
       };
     });
-    const cstmWidgets = customWidgets.map((widget, index) => {
+    const cstmWidgets: WidgetElementProps[] = customWidgets.map((widget, index) => {
       return {
         widgetId: `customWidget${widget.id}`,
         icon: getIconFromName(widget.icon),
-        component: CustomWidget,
+        component: CustomWidget as React.ComponentType<Record<string, unknown>>,
         onRemoveItem: onRemoveItem,
         hideFrame: false,
         title: widget.title,
@@ -219,35 +238,37 @@ export const useDashboardState = ({ customWidgets, getWidgets }) => {
         dataGrid: { w: 4, h: 3, x: index * 4, y: Infinity, minW: 3, minH: 3 },
       };
     });
-    const combinedWidgets = [...builtInWidgets, ...cstmWidgets].filter((widget) => {
-      return widgetKeys.findIndex((value) => value === widget.widgetId) !== -1;
-    });
+    const combinedWidgets = [...builtInWidgets, ...cstmWidgets].filter(
+      (widget: WidgetElementProps) => {
+        return widgetKeys.findIndex((value: string) => value === widget.widgetId) !== -1;
+      },
+    );
     setWidgets(combinedWidgets);
   }, [customWidgets, widgetKeys]);
 
   const onLayoutChange = useCallback(
-    (_currentLayout, allLayouts) => {
-      setLayouts((prevLayouts) => {
+    (_currentLayout: LayoutItem[], allLayouts: Layouts) => {
+      setLayouts((prevLayouts: Layouts) => {
         // Merge new layouts with previous, preserving user customizations
         const mergedLayouts = { ...prevLayouts };
 
         Object.keys(allLayouts).forEach((breakpoint) => {
           const newBreakpointLayout = allLayouts[breakpoint];
-          const prevBreakpointLayout = prevLayouts[breakpoint] || [];
-          const maxCols = BREAKPOINT_COLUMNS[breakpoint] || 12;
+          const prevBreakpointLayout = prevLayouts[breakpoint] ?? [];
+          const maxCols = BREAKPOINT_COLUMNS[breakpoint] ?? 12;
 
           // Enforce minimum sizes for all widgets
-          mergedLayouts[breakpoint] = newBreakpointLayout.map((item) => {
-            const isCustomWidget = item.i && item.i.startsWith('customWidget');
-            const widgetConfig = dashboardComponents[item.i];
+          mergedLayouts[breakpoint] = newBreakpointLayout.map((item: LayoutItem) => {
+            const isCustomWidget = item.i?.startsWith('customWidget');
+            const widgetConfig = item.i ? dashboardComponents[item.i] : undefined;
             // Get minimum dimensions from widget config or use defaults
             // Cap minW to the breakpoint's column count
-            const baseMinW = isCustomWidget ? 3 : widgetConfig?.grid?.minW || 3;
+            const baseMinW = isCustomWidget ? 3 : (widgetConfig?.grid?.minW ?? 3);
             const minW = Math.min(baseMinW, maxCols);
-            const minH = isCustomWidget ? 3 : widgetConfig?.grid?.minH || 2;
+            const minH = isCustomWidget ? 3 : (widgetConfig?.grid?.minH ?? 2);
 
             // Find existing item to preserve user customizations
-            const existingItem = prevBreakpointLayout.find((prev) => prev.i === item.i);
+            const existingItem = prevBreakpointLayout.find((prev: LayoutItem) => prev.i === item.i);
 
             // If item exists and new layout has w:1,h:1 (corrupted), keep existing
             // but only if the existing item is not also corrupted
@@ -266,8 +287,8 @@ export const useDashboardState = ({ customWidgets, getWidgets }) => {
 
             return {
               ...item,
-              w: Math.max(Math.min(item.w || minW, maxCols), minW),
-              h: Math.max(item.h || minH, minH),
+              w: Math.max(Math.min(item.w ?? minW, maxCols), minW),
+              h: Math.max(item.h ?? minH, minH),
               minW,
               minH,
             };
@@ -280,29 +301,29 @@ export const useDashboardState = ({ customWidgets, getWidgets }) => {
     [setLayouts],
   );
 
-  const onRemoveItem = useCallback((widgetId) => {
-    setWidgetKeys((prev) => prev.filter((i) => i !== widgetId));
+  const onRemoveItem = useCallback((widgetId: string) => {
+    setWidgetKeys((prev: string[]) => prev.filter((i: string) => i !== widgetId));
   }, []);
 
   const onAddItem = useCallback(
-    (widgetId) => {
-      setWidgetKeys((prev) => [...prev, widgetId]);
+    (widgetId: string) => {
+      setWidgetKeys((prev: string[]) => [...prev, widgetId]);
       // Add layout entry for the new widget
       const isCustomWidget = widgetId.startsWith('customWidget');
       const widgetConfig = dashboardComponents[widgetId];
       // Custom widgets get minimum 3x3, built-in widgets use their defined grid
-      const gridConfig = isCustomWidget
+      const gridConfig: { w?: number; h?: number; minW?: number; minH?: number } = isCustomWidget
         ? { w: 4, h: 3, minW: 3, minH: 3 }
         : widgetConfig?.grid || { w: 4, h: 3, minW: 3, minH: 3 };
 
-      setLayouts((prev) => {
+      setLayouts((prev: Layouts) => {
         const updated = { ...prev };
         Object.keys(updated).forEach((breakpoint) => {
-          if (!updated[breakpoint].find((item) => item.i === widgetId)) {
-            const maxCols = BREAKPOINT_COLUMNS[breakpoint] || 12;
+          if (!updated[breakpoint].find((item: LayoutItem) => item.i === widgetId)) {
+            const maxCols = BREAKPOINT_COLUMNS[breakpoint] ?? 12;
             // Scale width for smaller breakpoints
-            const scaledWidth = Math.min(gridConfig.w || 4, maxCols);
-            const height = gridConfig.h || 3;
+            const scaledWidth = Math.min(gridConfig.w ?? 4, maxCols);
+            const height = gridConfig.h ?? 3;
 
             // Find the best position for this widget
             const position = findBestPosition(updated[breakpoint], scaledWidth, height, maxCols);
@@ -313,8 +334,8 @@ export const useDashboardState = ({ customWidgets, getWidgets }) => {
               y: position.y,
               w: scaledWidth,
               h: height,
-              minW: Math.min(isCustomWidget ? 3 : gridConfig.minW || 3, maxCols),
-              minH: isCustomWidget ? 3 : gridConfig.minH || 3,
+              minW: Math.min(isCustomWidget ? 3 : (gridConfig.minW ?? 3), maxCols),
+              minH: isCustomWidget ? 3 : (gridConfig.minH ?? 3),
             };
             updated[breakpoint] = [...updated[breakpoint], newLayoutItem];
           }

@@ -5,6 +5,7 @@ import rest from '../../api/api';
 import PageTitle from '../../components/PageTitle/PageTitle';
 import DndSpinner from '../../components/DndSpinners/DndSpinner';
 import { connect } from 'react-redux';
+import { RootState, AppDispatch } from '../../store/store';
 import { ItemInfoBlock, ItemPageProps, UserProps } from '../../utilities/types';
 import remarkGfm from 'remark-gfm';
 import ReactMarkdown from 'react-markdown';
@@ -19,10 +20,11 @@ import { Section, Info, TableFrame } from './Item.styles';
 
 type ItemDetailPageProps = ItemPageProps & {
   currentUser?: UserProps;
+  deleteItem: (itemId: number) => Promise<unknown>;
 };
 
 const Item = (props: ItemDetailPageProps) => {
-  const { item, getItem, currentUser } = props;
+  const { item, getItem, deleteItem, currentUser } = props;
   const { getItemParentInfo } = singleItemUseData(props);
   const navigate = useNavigate();
   const [itemInfo, setItemInfo] = React.useState<ItemInfoBlock>({
@@ -61,6 +63,13 @@ const Item = (props: ItemDetailPageProps) => {
     navigate(getContentUrl('items', '', effectiveEdition));
   };
 
+  const handleDelete = async () => {
+    if (item && window.confirm(`Are you sure you want to delete ${item.name}?`)) {
+      await deleteItem(item.id);
+      handleDeleteSuccess();
+    }
+  };
+
   const itemTitle = item ? item.name : 'Item Loading...';
   return (
     <PageContainer
@@ -71,15 +80,18 @@ const Item = (props: ItemDetailPageProps) => {
       <PageTitle title={itemTitle} isLegacy={isEdition2014} />
       {item && itemInfo ? (
         <Section>
-          <AdminActions currentUser={currentUser} onEdit={() => setIsEditModalOpen(true)} />
+          <AdminActions
+            currentUser={currentUser}
+            onEdit={() => setIsEditModalOpen(true)}
+            onDelete={handleDelete}
+          />
           <Info>
             <h2>{itemInfo.subtitle}</h2>
-            {itemInfo.infoBlock &&
-              itemInfo.infoBlock.map((info, index) => (
-                <p key={`${info.title} - ${index}`}>
-                  <span>{info.title}</span> {info.desc}
-                </p>
-              ))}
+            {itemInfo.infoBlock?.map((info, index) => (
+              <p key={`${info.title} - ${index}`}>
+                <span>{info.title}</span> {info.desc}
+              </p>
+            ))}
           </Info>
           {item.contents && (
             <Info>
@@ -95,22 +107,21 @@ const Item = (props: ItemDetailPageProps) => {
               </ul>
             </Info>
           )}
-          {item.desc &&
-            item.desc.map((itemDesc, index) => (
-              <ReactMarkdown
-                key={index}
-                components={{
-                  table: ({ node: _node, ...props }) => (
-                    <TableFrame>
-                      <table {...props} />
-                    </TableFrame>
-                  ),
-                }}
-                remarkPlugins={[remarkGfm]}
-              >
-                {itemDesc}
-              </ReactMarkdown>
-            ))}
+          {item.desc?.map((itemDesc, index) => (
+            <ReactMarkdown
+              key={index}
+              components={{
+                table: ({ node: _node, ...props }) => (
+                  <TableFrame>
+                    <table {...props} />
+                  </TableFrame>
+                ),
+              }}
+              remarkPlugins={[remarkGfm]}
+            >
+              {itemDesc}
+            </ReactMarkdown>
+          ))}
           <ItemFormModal
             isOpen={isEditModalOpen}
             onClose={() => setIsEditModalOpen(false)}
@@ -127,7 +138,7 @@ const Item = (props: ItemDetailPageProps) => {
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: RootState) {
   return {
     item: state.items.currentItem,
     loading: state.items.loading,
@@ -135,10 +146,13 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {
     getItem: (itemSlug: string) => {
       dispatch(rest.actions.getItem({ id: itemSlug }));
+    },
+    deleteItem: (itemId: number) => {
+      return dispatch(rest.actions.deleteItem({ id: itemId }));
     },
   };
 }

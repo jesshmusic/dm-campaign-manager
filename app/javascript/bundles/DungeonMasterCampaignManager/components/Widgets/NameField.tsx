@@ -2,7 +2,7 @@
  * Created by jesshendricks on 9/13/19
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import CopyField from '../CopyField/CopyField';
 import NameOptions from './NameOptions';
 import axios from 'axios';
@@ -27,7 +27,7 @@ const NameField = (props: { hideFrame?: boolean }) => {
       setIsLoading(false);
       setNameValue(response.data.name);
     } catch (error) {
-      setNameValue(error);
+      setNameValue(error instanceof Error ? error.message : 'An error occurred');
       setIsLoading(false);
     }
   };

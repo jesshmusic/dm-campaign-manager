@@ -12,12 +12,16 @@ const SearchField = () => {
   const navigate = useNavigate();
   const { register, handleSubmit } = useForm();
   const { sidebarWidth } = useSidebar();
-  const onSubmit = (data) => {
+  const onSubmit = (data: { search?: string }) => {
     navigate(`/app/search/${data.search}`);
   };
 
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    void handleSubmit(onSubmit)(e);
+  };
+
   return (
-    <SearchBar $sidebarWidth={sidebarWidth} onSubmit={handleSubmit(onSubmit)}>
+    <SearchBar $sidebarWidth={sidebarWidth} onSubmit={handleFormSubmit}>
       <InputGroup>
         <input id="searchBarMain" {...register('search')} placeholder={'Search...'} />
         <Button

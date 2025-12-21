@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { FormWrapper, FormLabel, FormInput } from './Forms.styles';
 
 const ReadOnlyField = (props: {

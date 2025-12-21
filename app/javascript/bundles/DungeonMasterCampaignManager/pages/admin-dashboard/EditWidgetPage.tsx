@@ -2,6 +2,7 @@ import React from 'react';
 import PageContainer from '../../containers/PageContainer';
 import rest from '../../api/api';
 import { connect } from 'react-redux';
+import { RootState, AppDispatch } from '../../store/store';
 import { CreateWidgetForm, WidgetProps } from '../../components/Widgets/Widget';
 import WidgetForm from './components/WidgetForm';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -58,7 +59,7 @@ const EditWidgetPage = (props: {
   }, [widget]);
 
   // React.useEffect(() => {
-  //   const subscription = UseForm.watch((value) => {
+  //   const subscription = UseForm.watch((value: any) => {
   //     // @ts-expect-error
   //     setTestState(value);
   //   });
@@ -68,7 +69,7 @@ const EditWidgetPage = (props: {
   React.useEffect(() => {
     const subscription = UseForm.watch((value, { name }) => {
       if (name) {
-        updateWidgetForm(name, value);
+        void updateWidgetForm(name, value);
       }
     });
     return () => subscription.unsubscribe();
@@ -78,8 +79,8 @@ const EditWidgetPage = (props: {
     getWidget(parseInt(widgetId as string));
   }, []);
 
-  const onSubmit = (data) => {
-    updateWidget(data, token);
+  const onSubmit = (data: FieldValues) => {
+    updateWidget(data as WidgetProps, token);
     navigate('/app/admin-dashboard');
   };
 
@@ -110,14 +111,14 @@ const EditWidgetPage = (props: {
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: RootState) {
   return {
     token: state.users.token,
     widget: state.widgets.widget,
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {
     getWidget: (widgetId: number) => {
       dispatch(rest.actions.getWidget({ id: widgetId }));

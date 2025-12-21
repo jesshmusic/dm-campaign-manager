@@ -1,4 +1,3 @@
-import React from 'react';
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
 import { UserProps } from '../../utilities/types';
@@ -17,6 +16,7 @@ import { Colors } from '../../utilities/enums';
 import packageJson from '../../../../../../package.json';
 
 import { Wrapper, Section, InfoContainer } from './AdminDashboard.styles';
+import { RootState, AppDispatch } from '../../store/store';
 
 const AdminDashboard = (props: {
   actionCount: number;
@@ -121,7 +121,7 @@ const AdminDashboard = (props: {
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: RootState) {
   return {
     actionCount: state.customActions.count,
     npcCount: state.monsters.count,
@@ -131,7 +131,7 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(_dispatch) {
+function mapDispatchToProps(_dispatch: AppDispatch) {
   return {};
 }
 

@@ -3,18 +3,29 @@
  */
 
 import React from 'react';
-import Select, { components } from 'react-select';
+import Select, {
+  components,
+  MenuListProps as ReactSelectMenuListProps,
+  OptionProps,
+  SingleValueProps,
+} from 'react-select';
 import { Controller } from 'react-hook-form';
 import './inputOverrides.scss';
 import { SelectProps } from './FormSelect';
-import { FixedSizeList as List } from 'react-window';
+import { FixedSizeList, ListChildComponentProps } from 'react-window';
 
 import { FormWrapper, FormLabel } from './Forms.styles';
+
+type IconOptionType = {
+  value: string;
+  label: string;
+  icon?: React.ReactNode;
+};
 
 const OPTION_HEIGHT = 40;
 const ROWS = 6;
 
-const MenuList = ({ options, children, getValue }) => {
+const MenuList = ({ options, children, getValue }: ReactSelectMenuListProps<IconOptionType>) => {
   const [value] = getValue();
   const initialOffset =
     options.indexOf(value) !== -1
@@ -25,31 +36,34 @@ const MenuList = ({ options, children, getValue }) => {
         : 0
       : 0;
 
-  return Array.isArray(children) ? (
-    <List
+  if (!Array.isArray(children)) {
+    return <div>{children}</div>;
+  }
+
+  return (
+    <FixedSizeList
       height={children.length >= ROWS ? OPTION_HEIGHT * ROWS : children.length * OPTION_HEIGHT}
       itemCount={children.length}
       itemSize={OPTION_HEIGHT}
       initialScrollOffset={initialOffset}
+      width="100%"
     >
-      {({ style, index }) => {
+      {({ style, index }: ListChildComponentProps) => {
         return <div style={style}>{children[index]}</div>;
       }}
-    </List>
-  ) : (
-    <div>{children}</div>
+    </FixedSizeList>
   );
 };
 
 const { Option, SingleValue } = components;
-const IconOption = (props) => (
+const IconOption = (props: OptionProps<IconOptionType>) => (
   <Option {...props}>
     {props.data.icon}
     {props.data.label}
   </Option>
 );
 
-const ValueOption = (props) => (
+const ValueOption = (props: SingleValueProps<IconOptionType>) => (
   <SingleValue {...props}>
     {props.data.icon}
     {props.data.label}

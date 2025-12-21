@@ -26,11 +26,7 @@ export const isValidEdition = (value: string | undefined): value is DndEdition =
 /**
  * Get URL for a specific content item with edition
  */
-export const getContentUrl = (
-  type: ContentType,
-  slug: string,
-  edition?: DndEdition | string,
-): string => {
+export const getContentUrl = (type: ContentType, slug: string, edition?: string): string => {
   const ed = isValidEdition(edition) ? edition : DEFAULT_EDITION;
   return `/app/${type}/${ed}/${slug}`;
 };
@@ -38,7 +34,7 @@ export const getContentUrl = (
 /**
  * Get URL for a content index page with edition
  */
-export const getContentIndexUrl = (type: ContentType, edition?: DndEdition | string): string => {
+export const getContentIndexUrl = (type: ContentType, edition?: string): string => {
   const ed = isValidEdition(edition) ? edition : DEFAULT_EDITION;
   return `/app/${type}/${ed}`;
 };

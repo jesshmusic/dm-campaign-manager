@@ -3,6 +3,7 @@ import { MonsterSummary, UserProps } from '../../utilities/types';
 import rest from '../../api/api';
 import { useNavigate, useParams } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { RootState, AppDispatch } from '../../store/store';
 import DataTable from '../../components/DataTable/DataTable';
 import { Row } from 'react-table';
 import { GiBeerStein } from 'react-icons/gi';
@@ -23,7 +24,7 @@ const MonstersTable = (props: {
   const { edition: contextEdition } = useEdition();
 
   // Use edition from URL if valid (either :edition or :param route), otherwise from context
-  const urlEdition = editionParam || param;
+  const urlEdition = editionParam ?? param;
   const edition = isValidEdition(urlEdition) ? urlEdition : contextEdition;
 
   React.useEffect(() => {
@@ -34,8 +35,8 @@ const MonstersTable = (props: {
     }
   }, [isLoading]);
 
-  const goToPage = (row: Row<Record<string, unknown>>) => {
-    navigate(getContentUrl('monsters', row.original.slug as string, edition));
+  const goToPage = (row: Row<MonsterSummary>) => {
+    navigate(getContentUrl('monsters', row.original.slug, edition));
   };
 
   const getNumResults = (): number => {
@@ -46,27 +47,27 @@ const MonstersTable = (props: {
     () => [
       {
         Header: 'Monster',
-        accessor: 'name',
+        accessor: 'name' as const,
       },
       {
         Header: 'Type',
-        accessor: 'monsterType',
+        accessor: 'monsterType' as const,
       },
       {
         Header: 'Challenge',
-        accessor: 'challenge',
+        accessor: 'challenge' as const,
       },
       {
         Header: 'Alignment',
-        accessor: 'alignment',
+        accessor: 'alignment' as const,
       },
       {
         Header: 'Hit Points',
-        accessor: 'hitPoints',
+        accessor: 'hitPoints' as const,
       },
       {
         Header: 'Homebrew',
-        accessor: 'hasUser',
+        accessor: 'hasUser' as const,
       },
     ],
     [],
@@ -108,16 +109,16 @@ const MonstersTable = (props: {
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: RootState) {
   return {
     monsters: state.monsters.monsters,
     loading: state.monsters.loading,
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {
-    getMonsters: (searchTerm: string, userId?: number) => {
+    getMonsters: (searchTerm?: string, userId?: number) => {
       dispatch(rest.actions.getMonsters({ search: searchTerm, user_id: userId }));
     },
   };

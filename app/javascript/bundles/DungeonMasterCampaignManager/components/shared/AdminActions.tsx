@@ -14,7 +14,7 @@ const ActionsWrapper = styled.div<{ $size?: 'small' | 'medium' }>`
 type AdminActionsProps = {
   currentUser?: UserProps;
   onEdit: () => void;
-  onDelete: () => void;
+  onDelete: () => void | Promise<void>;
   size?: 'small' | 'medium';
   editLabel?: string;
   deleteLabel?: string;
@@ -28,12 +28,15 @@ const AdminActions: React.FC<AdminActionsProps> = ({
   editLabel = 'Edit',
   deleteLabel = 'Delete',
 }) => {
-  // Only render for admin users
   if (!currentUser || currentUser.role !== 'admin') {
     return null;
   }
 
   const iconSize = size === 'small' ? 20 : 24;
+
+  const handleDelete = () => {
+    void onDelete();
+  };
 
   return (
     <ActionsWrapper $size={size}>
@@ -47,7 +50,7 @@ const AdminActions: React.FC<AdminActionsProps> = ({
       <Button
         color={Colors.danger}
         title={deleteLabel}
-        onClick={onDelete}
+        onClick={handleDelete}
         icon={<GiTrashCan size={iconSize} />}
         hideTitle={size === 'small'}
       />

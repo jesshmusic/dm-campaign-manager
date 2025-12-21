@@ -24,7 +24,7 @@ const customActions = createReducer(
           count: 0,
         };
       })
-      .addCase(createCustomActionSuccess, (state, action: AnyAction) => {
+      .addCase(createCustomActionSuccess, (_state, action: AnyAction) => {
         return {
           actions: action.data.actions,
           count: action.data.actions.count,
@@ -42,7 +42,7 @@ const customActions = createReducer(
           count: state.actions.length,
         };
       })
-      .addCase(getCustomActionsSuccess, (state, action: AnyAction) => {
+      .addCase(getCustomActionsSuccess, (_state, action: AnyAction) => {
         return {
           actions: action.data.actions,
           count: action.data.count,
@@ -60,7 +60,7 @@ const customActions = createReducer(
           count: state.actions.length,
         };
       })
-      .addCase(deleteCustomActionSuccess, (state, action: AnyAction) => {
+      .addCase(deleteCustomActionSuccess, (_state, action: AnyAction) => {
         return {
           actions: action.data.actions,
           count: action.data.count,

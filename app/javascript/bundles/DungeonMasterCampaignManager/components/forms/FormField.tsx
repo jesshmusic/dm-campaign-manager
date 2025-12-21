@@ -2,7 +2,6 @@
  * Created by jesshendricks on 2019-08-25
  */
 
-import React from 'react';
 import { FieldErrors, FieldValues, UseFormRegister } from 'react-hook-form';
 import { GiFire } from 'react-icons/gi';
 

@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { LogoSvg, SwordsPath, ShieldPath, DndPath } from './HeroBanner.styles';
 
 const DndLogo = (props: { className?: string }) => {

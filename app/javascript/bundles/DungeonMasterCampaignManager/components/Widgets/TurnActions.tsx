@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Content } from './Widgets.styles';
 
 const TurnActions = () => {

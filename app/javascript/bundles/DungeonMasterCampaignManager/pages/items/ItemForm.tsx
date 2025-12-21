@@ -165,28 +165,28 @@ const ItemForm: React.FC<ItemFormProps> = ({
     formState: { errors },
   } = useForm<ItemFormData>({
     defaultValues: {
-      name: initialData?.name || '',
-      description: initialData?.desc?.join('\n\n') || '',
-      category: initialData?.category || 'Adventuring Gear',
-      cost_quantity: initialData?.cost?.quantity || 0,
-      cost_unit: initialData?.cost?.unit || 'gp',
-      weight: initialData?.weight || '',
-      armor_class: initialData?.armorClass || '',
-      armor_type: initialData?.armorType || '',
-      stealth: initialData?.stealth || '',
-      strength: initialData?.strength || '',
-      damage: initialData?.damage || '',
-      properties: initialData?.properties || '',
-      category_range: initialData?.categoryRange || '',
-      mastery: initialData?.mastery || '',
-      rarity: initialData?.rarity || '-',
-      requires_attunement: initialData?.requiresAttunement || '',
-      magic_item_type: initialData?.magicItemType || '',
-      tool_category: initialData?.toolCategory || '',
-      gear_category: initialData?.gearCategory || '',
-      vehicle_category: initialData?.vehicleCategory || '',
-      speed: initialData?.speed || '',
-      capacity: initialData?.capacity || '',
+      name: initialData?.name ?? '',
+      description: initialData?.desc?.join('\n\n') ?? '',
+      category: initialData?.category ?? 'Adventuring Gear',
+      cost_quantity: initialData?.cost?.quantity ?? 0,
+      cost_unit: initialData?.cost?.unit ?? 'gp',
+      weight: initialData?.weight ?? '',
+      armor_class: initialData?.armorClass ?? '',
+      armor_type: initialData?.armorType ?? '',
+      stealth: initialData?.stealth ?? '',
+      strength: initialData?.strength ?? '',
+      damage: initialData?.damage ?? '',
+      properties: initialData?.properties ?? '',
+      category_range: initialData?.categoryRange ?? '',
+      mastery: initialData?.mastery ?? '',
+      rarity: initialData?.rarity ?? '-',
+      requires_attunement: initialData?.requiresAttunement ?? '',
+      magic_item_type: initialData?.magicItemType ?? '',
+      tool_category: initialData?.toolCategory ?? '',
+      gear_category: initialData?.gearCategory ?? '',
+      vehicle_category: initialData?.vehicleCategory ?? '',
+      speed: initialData?.speed ?? '',
+      capacity: initialData?.capacity ?? '',
       homebrew: false,
     },
   });
@@ -206,7 +206,12 @@ const ItemForm: React.FC<ItemFormProps> = ({
   const isGear = selectedCategory === 'Adventuring Gear';
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} id="item-form">
+    <form
+      onSubmit={(e) => {
+        void handleSubmit(onSubmit)(e);
+      }}
+      id="item-form"
+    >
       <FormGrid>
         <TwoColumnField>
           <ControlledInput fieldName="name" control={typedControl} label="Name" errors={errors} />
@@ -255,14 +260,12 @@ const ItemForm: React.FC<ItemFormProps> = ({
               control={typedControl}
               label="Stealth"
               errors={errors}
-              placeholder="e.g., Disadvantage"
             />
             <ControlledInput
               fieldName="strength"
               control={typedControl}
               label="Strength Requirement"
               errors={errors}
-              placeholder="e.g., Str 13"
             />
           </>
         )}
@@ -280,7 +283,6 @@ const ItemForm: React.FC<ItemFormProps> = ({
               control={typedControl}
               label="Damage"
               errors={errors}
-              placeholder="e.g., 1d8 slashing"
             />
             <ControlledSelect
               fieldName="mastery"
@@ -294,7 +296,6 @@ const ItemForm: React.FC<ItemFormProps> = ({
                 control={typedControl}
                 label="Properties"
                 errors={errors}
-                placeholder="e.g., Light, Finesse, Thrown (range 20/60)"
               />
             </TwoColumnField>
           </>
@@ -313,7 +314,6 @@ const ItemForm: React.FC<ItemFormProps> = ({
               control={typedControl}
               label="Attunement"
               errors={errors}
-              placeholder="e.g., requires attunement by a spellcaster"
             />
             {selectedCategory === 'Magic Item' && (
               <ControlledInput
@@ -321,7 +321,6 @@ const ItemForm: React.FC<ItemFormProps> = ({
                 control={typedControl}
                 label="Magic Item Type"
                 errors={errors}
-                placeholder="e.g., Wondrous item, Ring, Wand"
               />
             )}
           </>
@@ -334,21 +333,18 @@ const ItemForm: React.FC<ItemFormProps> = ({
               control={typedControl}
               label="Vehicle Category"
               errors={errors}
-              placeholder="e.g., Mounts and Other Animals"
             />
             <ControlledInput
               fieldName="speed"
               control={typedControl}
               label="Speed"
               errors={errors}
-              placeholder="e.g., 60 ft."
             />
             <ControlledInput
               fieldName="capacity"
               control={typedControl}
               label="Capacity"
               errors={errors}
-              placeholder="e.g., 480 lb."
             />
           </>
         )}
@@ -359,7 +355,6 @@ const ItemForm: React.FC<ItemFormProps> = ({
             control={typedControl}
             label="Tool Category"
             errors={errors}
-            placeholder="e.g., Artisan's Tools"
           />
         )}
 
@@ -369,7 +364,6 @@ const ItemForm: React.FC<ItemFormProps> = ({
             control={typedControl}
             label="Gear Category"
             errors={errors}
-            placeholder="e.g., Equipment Packs"
           />
         )}
 

@@ -5,6 +5,7 @@
 import React from 'react';
 import rest from '../../api/api';
 import { connect } from 'react-redux';
+import { RootState, AppDispatch } from '../../store/store';
 
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
@@ -30,7 +31,7 @@ const Spells = (props: {
   const [isCreateModalOpen, setIsCreateModalOpen] = React.useState(false);
 
   // Use edition from URL if valid (either :edition or :param route), otherwise from context
-  const urlEdition = editionParam || param;
+  const urlEdition = editionParam ?? param;
   const edition = isValidEdition(urlEdition) ? urlEdition : contextEdition;
 
   React.useEffect(() => {
@@ -41,27 +42,27 @@ const Spells = (props: {
     getSpells();
   };
 
-  const goToPage = (row: Row<Record<string, unknown>>) => {
-    navigate(getContentUrl('spells', row.original.slug as string, edition));
+  const goToPage = (row: Row<SpellProps>) => {
+    navigate(getContentUrl('spells', row.original.slug, edition));
   };
 
   const columns = React.useMemo(
     () => [
       {
         Header: 'Spell',
-        accessor: 'name',
+        accessor: 'name' as const,
       },
       {
         Header: 'Level',
-        accessor: 'spellLevel',
+        accessor: 'spellLevel' as const,
       },
       {
         Header: 'Components',
-        accessor: 'componentsString',
+        accessor: 'componentsString' as const,
       },
       {
         Header: 'Classes',
-        accessor: 'classesString',
+        accessor: 'classesString' as const,
       },
     ],
     [],
@@ -113,7 +114,7 @@ const Spells = (props: {
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: RootState) {
   return {
     spells: state.spells.spells,
     user: state.users.user,
@@ -123,7 +124,7 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {
     getSpells: (searchTerm?: string) => {
       if (searchTerm) {

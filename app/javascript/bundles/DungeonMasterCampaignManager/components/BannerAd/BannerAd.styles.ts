@@ -10,7 +10,7 @@ export const BannerAdContainer = styled.div<{ $sidebarWidth?: number }>`
   display: flex;
   justify-content: center;
   padding: 0 0 1rem;
-  padding-left: ${({ $sidebarWidth }) => $sidebarWidth || 80}px;
+  padding-left: ${({ $sidebarWidth }) => $sidebarWidth ?? 80}px;
   transition: padding-left 0.15s ease-out;
 `;
 

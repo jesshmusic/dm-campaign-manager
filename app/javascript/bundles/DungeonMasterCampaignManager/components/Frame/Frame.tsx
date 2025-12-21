@@ -34,14 +34,14 @@ const Frame = (props: {
   } = props;
   return (
     <FrameWrapper className={className} style={style}>
-      {(title || icon || actionButton || linkTo) && (
+      {(title ?? icon ?? actionButton ?? linkTo) && (
         <FrameHeader className="widget-drag-handle">
           <FrameTitle>
             {linkTo ? (
               <Link to={linkTo}>
                 {icon}
                 {icon && title && <>&nbsp;</>}
-                {title || linkTo}
+                {title ?? linkTo}
               </Link>
             ) : (
               <span>
@@ -55,7 +55,7 @@ const Frame = (props: {
         </FrameHeader>
       )}
       <FrameBody>
-        {(subtitle || subtitleAction) && (
+        {(subtitle ?? subtitleAction) && (
           <FrameSubtitleWrapper>
             {subtitle && <FrameSubtitle>{subtitle}</FrameSubtitle>}
             {subtitleAction}

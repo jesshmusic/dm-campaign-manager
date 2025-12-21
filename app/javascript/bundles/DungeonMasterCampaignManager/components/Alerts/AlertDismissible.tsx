@@ -53,7 +53,7 @@ const AlertDismissible = (props: AlertDismissibleProps) => {
     });
   }, [alertRef]);
 
-  const icon = {
+  const icon: Record<string, React.ReactElement> = {
     [FlashMessageType.alert]: <GiSkullCrossedBones size={24} />,
     [FlashMessageType.info]: <GiInfo size={24} />,
     [FlashMessageType.danger]: <GiSkullCrossedBones size={24} />,

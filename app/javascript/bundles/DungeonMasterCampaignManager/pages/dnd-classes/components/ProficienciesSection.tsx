@@ -1,6 +1,5 @@
 import { DndClass, ProfChoice } from '../../../utilities/types';
 import Util from '../../../utilities/utilities';
-import React from 'react';
 import InfoBlock from '../../../components/InfoBlock/InfoBlock';
 
 import { SectionGroup, SubsectionHeading } from '../DndClass.styles';

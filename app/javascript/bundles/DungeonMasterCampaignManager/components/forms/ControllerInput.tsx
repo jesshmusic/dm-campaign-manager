@@ -19,7 +19,18 @@ import {
   TagInputField,
 } from './Forms.styles';
 
-export const ControllerInput = (props) => {
+interface ControllerInputProps {
+  type?: string;
+  label: string;
+  errors: FieldErrors;
+  className?: string;
+  name: string;
+  placeholder?: string;
+  isTextArea?: boolean;
+  [key: string]: unknown;
+}
+
+export const ControllerInput = (props: ControllerInputProps) => {
   const { type, label, errors, className, name, placeholder, isTextArea, ...rest } = props;
 
   if (type === 'checkbox' || type === 'radio') {
@@ -36,7 +47,7 @@ export const ControllerInput = (props) => {
       {isTextArea ? (
         <FormTextArea placeholder={placeholder} {...rest} />
       ) : (
-        <FormInput type={type || 'text'} placeholder={placeholder} {...rest} />
+        <FormInput type={type ?? 'text'} placeholder={placeholder} {...rest} />
       )}
 
       {errors[name] && (
@@ -113,7 +124,7 @@ export const ControlledSelect = (props: {
       <Controller
         render={({ field: { onChange, value, ...rest } }) => {
           // Convert string value to option object for react-select
-          const selectedOption = options.find((option) => option.value === value) || null;
+          const selectedOption = options.find((option) => option.value === value) ?? null;
 
           return (
             <Select
@@ -199,7 +210,7 @@ export const TagInput = (props: {
           value={inputValue}
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
-          placeholder={placeholder || 'Add tags...'}
+          placeholder={placeholder ?? 'Add tags...'}
         />
       </TagInputContainer>
     </FormWrapper>

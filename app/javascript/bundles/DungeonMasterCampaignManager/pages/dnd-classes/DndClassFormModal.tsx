@@ -1,5 +1,6 @@
 import React, { useRef, useCallback } from 'react';
 import { connect } from 'react-redux';
+import { RootState, AppDispatch } from '../../store/store';
 import { RecordFormModal } from '../../components/shared/modals';
 import DndClassForm, { DndClassFormData } from './DndClassForm';
 import { DndClass } from '../../utilities/types';
@@ -75,7 +76,7 @@ const DndClassFormModal: React.FC<DndClassFormModalProps> = ({
     }
   };
 
-  const title = mode === 'create' ? 'New Class' : `Edit ${initialData?.name || 'Class'}`;
+  const title = mode === 'create' ? 'New Class' : `Edit ${initialData?.name ?? 'Class'}`;
 
   return (
     <RecordFormModal
@@ -96,13 +97,13 @@ const DndClassFormModal: React.FC<DndClassFormModalProps> = ({
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: RootState) {
   return {
     token: state.users.token,
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {
     createDndClass: (data: DndClassFormData, token?: string) => {
       dispatch(

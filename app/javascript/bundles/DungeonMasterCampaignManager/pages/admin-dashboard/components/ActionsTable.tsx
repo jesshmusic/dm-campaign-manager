@@ -6,6 +6,7 @@ import DataTable from '../../../components/DataTable/DataTable';
 import Button from '../../../components/Button/Button';
 import { Colors } from '../../../utilities/enums';
 import { GiTrashCan } from 'react-icons/gi';
+import { RootState, AppDispatch } from '../../../store/store';
 
 const ActionsTable = (props: {
   getCustomActions: (searchTerm?: string) => void;
@@ -34,7 +35,7 @@ const ActionsTable = (props: {
         Header: 'Delete',
         accessor: 'id' as const,
         size: 25,
-        Cell: ({ value }) => (
+        Cell: ({ value }: { value: number }) => (
           <Button
             type="button"
             onClick={() => deleteCustomAction(value)}
@@ -76,7 +77,7 @@ const ActionsTable = (props: {
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: RootState) {
   return {
     user: state.users.currentUser,
     actions: state.customActions.actions,
@@ -84,7 +85,7 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {
     getCustomActions: (searchTerm?: string) => {
       if (searchTerm) {

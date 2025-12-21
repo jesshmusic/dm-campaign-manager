@@ -6,8 +6,8 @@ import { AddListContent, AddListHeading, AddListContentInner } from '../UserDash
 type AddListProps = {
   widgets: { title: string; key: string; icon: React.ElementType }[];
   items: string[];
-  onAddItem: (string) => void;
-  onRemoveItem: (string) => void;
+  onAddItem: (key: string) => void;
+  onRemoveItem: (key: string) => void;
   onCloseModal: () => void;
 };
 
@@ -18,7 +18,7 @@ export default function AddList({
   widgets,
   onCloseModal,
 }: AddListProps) {
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked) {
       onAddItem(e.target.name);
     } else {

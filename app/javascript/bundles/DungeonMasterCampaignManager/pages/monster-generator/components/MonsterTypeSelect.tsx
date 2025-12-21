@@ -2,7 +2,6 @@
  * Created by jesshendricks on 9/13/19
  */
 
-import React from 'react';
 import FormSelect from '../../../components/forms/FormSelect';
 import { Control, FieldValues } from 'react-hook-form';
 import { monsterTypeOptions } from '../../../utilities/character-utilities';

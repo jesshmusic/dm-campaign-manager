@@ -1,4 +1,3 @@
-import React from 'react';
 import { FieldErrors, FieldValues, UseFormRegister } from 'react-hook-form';
 import { Colors } from '../../../utilities/enums';
 import Button from '../../../components/Button/Button';
@@ -70,7 +69,7 @@ const NameFormField = (props: NameFormFieldProps) => {
               isLoading={activeNameButton === 'npc'}
               icon={activeNameButton === 'npc' ? loadingIcon : undefined}
               title="Random NPC Name"
-              onClick={() => handleGenerateName('npc', characterRace || 'any')}
+              onClick={() => handleGenerateName('npc', characterRace ?? 'any')}
             />
             <Button
               color={Colors.secondary}
@@ -78,7 +77,7 @@ const NameFormField = (props: NameFormFieldProps) => {
               isLoading={activeNameButton === 'male'}
               icon={activeNameButton === 'male' ? loadingIcon : undefined}
               title="Random Male NPC Name"
-              onClick={() => handleGenerateName('male', characterRace || 'any')}
+              onClick={() => handleGenerateName('male', characterRace ?? 'any')}
             />
             <Button
               color={Colors.success}
@@ -86,7 +85,7 @@ const NameFormField = (props: NameFormFieldProps) => {
               isLoading={activeNameButton === 'female'}
               icon={activeNameButton === 'female' ? loadingIcon : undefined}
               title="Random Female NPC Name"
-              onClick={() => handleGenerateName('female', characterRace || 'any')}
+              onClick={() => handleGenerateName('female', characterRace ?? 'any')}
             />
           </>
         )}

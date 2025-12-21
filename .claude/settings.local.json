@@ -115,7 +115,17 @@
       "Bash(DISABLE_SPRING=1 RAILS_ENV=development bundle exec rails runner:*)",
       "Bash(heroku run:*)",
       "Bash(gh pr create:*)",
-      "Bash(heroku run:*)"
+      "Bash(heroku run:*)",
+      "Bash(heroku releases:*)",
+      "Bash(RAILS_ENV=development rails runner:*)",
+      "Bash(npx eslint:*)",
+      "Bash(cut:*)",
+      "Bash(yarn tsc:*)",
+      "Bash(./bin/shakapacker:*)",
+      "Bash(wc:*)",
+      "mcp__ide__getDiagnostics",
+      "Bash(gh run list:*)",
+      "Bash(yarn eslint:*)"
     ],
     "deny": [],
     "ask": []

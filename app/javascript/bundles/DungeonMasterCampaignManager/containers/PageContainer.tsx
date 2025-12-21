@@ -16,6 +16,7 @@ import { useSidebar } from '../contexts/SidebarContext';
 import { useBreadcrumbs } from '../contexts/BreadcrumbContext';
 
 import { PageWrapper, PageContent, Page, ContentWrapper } from './Containers.styles';
+import { RootState } from '../store/store';
 
 ReactGA.initialize('G-8XJTH70JSQ');
 
@@ -75,7 +76,7 @@ const PageContainer = (props: PageContainerProps) => {
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: RootState) {
   return {
     user: state.users.currentUser,
   };

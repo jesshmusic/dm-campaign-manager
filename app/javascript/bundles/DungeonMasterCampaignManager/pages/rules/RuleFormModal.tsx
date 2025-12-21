@@ -1,5 +1,6 @@
 import React, { useRef, useCallback } from 'react';
 import { connect } from 'react-redux';
+import { RootState, AppDispatch } from '../../store/store';
 import { RecordFormModal } from '../../components/shared/modals';
 import RuleForm, { RuleFormData } from './RuleForm';
 import rest from '../../api/api';
@@ -80,7 +81,7 @@ const RuleFormModal: React.FC<RuleFormModalProps> = ({
     }
   };
 
-  const title = mode === 'create' ? 'New Rule' : `Edit ${initialData?.name || 'Rule'}`;
+  const title = mode === 'create' ? 'New Rule' : `Edit ${initialData?.name ?? 'Rule'}`;
 
   return (
     <RecordFormModal
@@ -101,13 +102,13 @@ const RuleFormModal: React.FC<RuleFormModalProps> = ({
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: RootState) {
   return {
     token: state.users.token,
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {
     createRule: (data: RuleFormData, token?: string) => {
       dispatch(

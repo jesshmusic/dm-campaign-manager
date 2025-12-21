@@ -4,6 +4,7 @@ import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
 import rest from '../../api/api';
 import { connect } from 'react-redux';
+import { RootState, AppDispatch } from '../../store/store';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeSlug from 'rehype-slug';
@@ -38,6 +39,7 @@ type RuleNav = {
 
 type RulePageProps = {
   rule: {
+    id: number;
     name: string;
     slug: string;
     description: string;
@@ -51,11 +53,12 @@ type RulePageProps = {
   } | null;
   loading: boolean;
   getRule: (ruleSlug: string) => void;
+  deleteRule: (ruleId: number) => Promise<void>;
   currentUser?: UserProps;
 };
 
 const Rule = (props: RulePageProps) => {
-  const { rule, loading, getRule, currentUser } = props;
+  const { rule, loading, getRule, deleteRule, currentUser } = props;
   const params = useParams<{ edition?: string; ruleSlug?: string }>();
   const navigate = useNavigate();
   const { edition, slug: ruleSlug } = parseEditionParams(params.edition, params.ruleSlug);
@@ -84,9 +87,16 @@ const Rule = (props: RulePageProps) => {
     navigate(getContentIndexUrl('rules', edition));
   };
 
+  const handleDelete = async () => {
+    if (rule && window.confirm(`Are you sure you want to delete ${rule.name}?`)) {
+      await deleteRule(rule.id);
+      handleDeleteSuccess();
+    }
+  };
+
   // Update breadcrumbs when rule data loads
   React.useEffect(() => {
-    if (rule && rule.ancestors && rule.ancestors.length > 0) {
+    if (rule?.ancestors && rule.ancestors.length > 0) {
       const paths = [
         { title: 'Rules', url: getContentIndexUrl('rules', edition) },
         ...rule.ancestors.map((ancestor) => ({
@@ -115,7 +125,11 @@ const Rule = (props: RulePageProps) => {
       {!loading && rule ? (
         <RuleContent>
           <PageTitle title={ruleTitle} isLegacy={isEdition2014} />
-          <AdminActions currentUser={currentUser} onEdit={() => setIsEditModalOpen(true)} />
+          <AdminActions
+            currentUser={currentUser}
+            onEdit={() => setIsEditModalOpen(true)}
+            onDelete={handleDelete}
+          />
           <ReactMarkdown
             components={{
               table: ({ node: _node, ...props }) => (
@@ -130,15 +144,14 @@ const Rule = (props: RulePageProps) => {
             {rule.description}
           </ReactMarkdown>
           <RulesList>
-            {rule.rules &&
-              rule.rules.map((childRule) => (
-                <Link key={childRule.slug} to={getContentUrl('rules', childRule.slug, edition)}>
-                  <h2 style={{ border: 0 }}>{childRule.name}</h2>
-                </Link>
-              ))}
+            {rule.rules?.map((childRule) => (
+              <Link key={childRule.slug} to={getContentUrl('rules', childRule.slug, edition)}>
+                <h2 style={{ border: 0 }}>{childRule.name}</h2>
+              </Link>
+            ))}
           </RulesList>
 
-          {(rule.previous_rule || rule.next_rule) && (
+          {(rule.previous_rule ?? rule.next_rule) && (
             <RuleNavigation>
               {rule.previous_rule ? (
                 <NavButton as={Link} to={getContentUrl('rules', rule.previous_rule.slug, edition)}>
@@ -185,7 +198,7 @@ const Rule = (props: RulePageProps) => {
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: RootState) {
   return {
     rule: state.rules.currentRule,
     loading: state.rules.currentRuleLoading,
@@ -193,10 +206,13 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {
     getRule: (ruleSlug: string) => {
       dispatch(rest.actions.getRule({ id: ruleSlug }));
+    },
+    deleteRule: (ruleId: number) => {
+      return dispatch(rest.actions.deleteRule({ id: ruleId }));
     },
   };
 }

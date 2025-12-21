@@ -1,4 +1,4 @@
-import { createAction, createReducer, PayloadAction } from '@reduxjs/toolkit';
+import { createAction, createReducer } from '@reduxjs/toolkit';
 import { AnyAction } from 'redux';
 import { MonsterProps } from '../utilities/types';
 
@@ -21,162 +21,170 @@ const getMonsterCategories = createAction('@@redux-api@getMonsterCategories');
 const getMonsterCategoriesSuccess = createAction('@@redux-api@getMonsterCategories_success');
 const getMonsterCategoriesFail = createAction('@@redux-api@getMonsterCategories_fail');
 
-const monsters = createReducer(
-  {
-    monsters: [],
-    monsterTypes: [],
-    count: 0,
-    currentMonster: null,
-    loading: false,
-  },
-  (builder) =>
-    builder
-      .addCase(clearCurrentMonster, (state) => {
-        return {
-          ...state,
-          currentMonster: null,
-        };
-      })
-      .addCase(setCurrentMonster, (state, action: PayloadAction<MonsterProps>) => {
-        return {
-          ...state,
-          currentMonster: action.payload,
-          loading: false,
-        };
-      })
-      .addCase(generateQuickMonster, (state, _action: AnyAction) => {
-        return {
-          monsters: state.monsters,
-          monsterTypes: state.monsterTypes,
-          count: state.count,
-          currentMonster: null,
-          loading: true,
-        };
-      })
-      .addCase(generateQuickMonsterSuccess, (state, action: AnyAction) => {
-        return {
-          monsters: state.monsters,
-          monsterTypes: state.monsterTypes,
-          count: state.count,
-          currentMonster: action.data,
-          loading: false,
-        };
-      })
-      .addCase(generateQuickMonsterFail, (state, _action: AnyAction) => {
-        return {
-          monsters: state.monsters,
-          monsterTypes: state.monsterTypes,
-          count: state.count,
-          currentMonster: null,
-          loading: false,
-        };
-      })
-      .addCase(generateCommoner, (state) => {
-        return {
-          ...state,
-          currentMonster: null,
-          loading: true,
-        };
-      })
-      .addCase(generateCommonerSuccess, (state, action: AnyAction) => {
-        return {
-          monsters: state.monsters,
-          monsterTypes: state.monsterTypes,
-          count: state.count,
-          currentMonster: action.data,
-          loading: false,
-        };
-      })
-      .addCase(generateCommonerFail, (state, _action: AnyAction) => {
-        return {
-          monsters: state.monsters,
-          monsterTypes: state.monsterTypes,
-          count: state.count,
-          currentMonster: null,
-          loading: false,
-        };
-      })
-      .addCase(getMonsters, (state, _action: AnyAction) => {
-        return {
-          monsters: [],
-          monsterTypes: state.monsterTypes,
-          count: 0,
-          currentMonster: state.currentMonster,
-          loading: true,
-        };
-      })
-      .addCase(getMonstersSuccess, (state, action: AnyAction) => {
-        return {
-          monsters: action.data.results,
-          monsterTypes: state.monsterTypes,
-          count: action.data.count,
-          currentMonster: state.currentMonster,
-          loading: false,
-        };
-      })
-      .addCase(getMonstersFail, (state, _action: AnyAction) => {
-        return {
-          monsters: state.monsters,
-          monsterTypes: state.monsterTypes,
-          count: state.count,
-          currentMonster: state.currentMonster,
-          loading: false,
-        };
-      })
-      .addCase(getMonster, (state, _action: AnyAction) => {
-        return {
-          monsters: state.monsters,
-          monsterTypes: state.monsterTypes,
-          count: state.count,
-          currentMonster: null,
-          loading: true,
-        };
-      })
-      .addCase(getMonsterSuccess, (state, action: AnyAction) => {
-        return {
-          monsters: state.monsters,
-          monsterTypes: state.monsterTypes,
-          count: state.count,
-          currentMonster: action.data,
-          loading: false,
-        };
-      })
-      .addCase(getMonsterFail, (state, _action: AnyAction) => {
-        return {
-          monsters: state.monsters,
-          monsterTypes: state.monsterTypes,
-          count: state.count,
-          currentMonster: null,
-          loading: false,
-        };
-      })
-      .addCase(getMonsterCategories, (state, _action: AnyAction) => {
-        return {
-          monsters: state.monsters,
-          monsterTypes: [],
-          count: 0,
-          currentMonster: state.currentMonster,
-          loading: true,
-        };
-      })
-      .addCase(getMonsterCategoriesSuccess, (state, action: AnyAction) => {
-        return {
-          monsters: state.monsters,
-          monsterTypes: action.data.results,
-          count: action.data.count,
-          currentMonster: state.currentMonster,
-          loading: false,
-        };
-      })
-      .addCase(getMonsterCategoriesFail, (state, _action: AnyAction) => {
-        return {
-          monsters: state.monsters,
-          monsterTypes: state.monsterTypes,
-          count: state.count,
-          currentMonster: state.currentMonster,
-          loading: false,
-        };
-      }),
+type MonstersState = {
+  monsters: MonsterProps[];
+  monsterTypes: string[];
+  count: number;
+  currentMonster: MonsterProps | null;
+  loading: boolean;
+};
+
+const initialState: MonstersState = {
+  monsters: [],
+  monsterTypes: [],
+  count: 0,
+  currentMonster: null,
+  loading: false,
+};
+
+const monsters = createReducer(initialState, (builder) =>
+  builder
+    .addCase(clearCurrentMonster, (state) => {
+      return {
+        ...state,
+        currentMonster: null,
+      };
+    })
+    .addCase(setCurrentMonster, (state, action) => {
+      return {
+        ...state,
+        currentMonster: action.payload,
+        loading: false,
+      };
+    })
+    .addCase(generateQuickMonster, (state, _action: AnyAction) => {
+      return {
+        monsters: state.monsters,
+        monsterTypes: state.monsterTypes,
+        count: state.count,
+        currentMonster: null,
+        loading: true,
+      };
+    })
+    .addCase(generateQuickMonsterSuccess, (state, action: AnyAction) => {
+      return {
+        monsters: state.monsters,
+        monsterTypes: state.monsterTypes,
+        count: state.count,
+        currentMonster: action.data,
+        loading: false,
+      };
+    })
+    .addCase(generateQuickMonsterFail, (state, _action: AnyAction) => {
+      return {
+        monsters: state.monsters,
+        monsterTypes: state.monsterTypes,
+        count: state.count,
+        currentMonster: null,
+        loading: false,
+      };
+    })
+    .addCase(generateCommoner, (state) => {
+      return {
+        ...state,
+        currentMonster: null,
+        loading: true,
+      };
+    })
+    .addCase(generateCommonerSuccess, (state, action: AnyAction) => {
+      return {
+        monsters: state.monsters,
+        monsterTypes: state.monsterTypes,
+        count: state.count,
+        currentMonster: action.data,
+        loading: false,
+      };
+    })
+    .addCase(generateCommonerFail, (state, _action: AnyAction) => {
+      return {
+        monsters: state.monsters,
+        monsterTypes: state.monsterTypes,
+        count: state.count,
+        currentMonster: null,
+        loading: false,
+      };
+    })
+    .addCase(getMonsters, (state, _action: AnyAction) => {
+      return {
+        monsters: [],
+        monsterTypes: state.monsterTypes,
+        count: 0,
+        currentMonster: state.currentMonster,
+        loading: true,
+      };
+    })
+    .addCase(getMonstersSuccess, (state, action: AnyAction) => {
+      return {
+        monsters: action.data.results,
+        monsterTypes: state.monsterTypes,
+        count: action.data.count,
+        currentMonster: state.currentMonster,
+        loading: false,
+      };
+    })
+    .addCase(getMonstersFail, (state, _action: AnyAction) => {
+      return {
+        monsters: state.monsters,
+        monsterTypes: state.monsterTypes,
+        count: state.count,
+        currentMonster: state.currentMonster,
+        loading: false,
+      };
+    })
+    .addCase(getMonster, (state, _action: AnyAction) => {
+      return {
+        monsters: state.monsters,
+        monsterTypes: state.monsterTypes,
+        count: state.count,
+        currentMonster: null,
+        loading: true,
+      };
+    })
+    .addCase(getMonsterSuccess, (state, action: AnyAction) => {
+      return {
+        monsters: state.monsters,
+        monsterTypes: state.monsterTypes,
+        count: state.count,
+        currentMonster: action.data,
+        loading: false,
+      };
+    })
+    .addCase(getMonsterFail, (state, _action: AnyAction) => {
+      return {
+        monsters: state.monsters,
+        monsterTypes: state.monsterTypes,
+        count: state.count,
+        currentMonster: null,
+        loading: false,
+      };
+    })
+    .addCase(getMonsterCategories, (state, _action: AnyAction) => {
+      return {
+        monsters: state.monsters,
+        monsterTypes: [],
+        count: 0,
+        currentMonster: state.currentMonster,
+        loading: true,
+      };
+    })
+    .addCase(getMonsterCategoriesSuccess, (state, action: AnyAction) => {
+      return {
+        monsters: state.monsters,
+        monsterTypes: action.data.results,
+        count: action.data.count,
+        currentMonster: state.currentMonster,
+        loading: false,
+      };
+    })
+    .addCase(getMonsterCategoriesFail, (state, _action: AnyAction) => {
+      return {
+        monsters: state.monsters,
+        monsterTypes: state.monsterTypes,
+        count: state.count,
+        currentMonster: state.currentMonster,
+        loading: false,
+      };
+    }),
 );
 
 export default monsters;

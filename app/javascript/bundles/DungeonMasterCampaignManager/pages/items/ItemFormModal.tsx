@@ -1,5 +1,6 @@
 import React, { useRef, useCallback } from 'react';
 import { connect } from 'react-redux';
+import { RootState, AppDispatch } from '../../store/store';
 import { RecordFormModal } from '../../components/shared/modals';
 import ItemForm, { ItemFormData } from './ItemForm';
 import { ItemProps } from '../../utilities/types';
@@ -75,7 +76,7 @@ const ItemFormModal: React.FC<ItemFormModalProps> = ({
     }
   };
 
-  const title = mode === 'create' ? 'New Item' : `Edit ${initialData?.name || 'Item'}`;
+  const title = mode === 'create' ? 'New Item' : `Edit ${initialData?.name ?? 'Item'}`;
 
   return (
     <RecordFormModal
@@ -96,13 +97,13 @@ const ItemFormModal: React.FC<ItemFormModalProps> = ({
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: RootState) {
   return {
     token: state.users.token,
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {
     createItem: (data: ItemFormData, token?: string) => {
       dispatch(

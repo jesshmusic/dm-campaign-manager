@@ -1,6 +1,7 @@
 import React, { useCallback, useRef, useState } from 'react';
 import rest from '../../api/api';
 import { connect } from 'react-redux';
+import { RootState, AppDispatch } from '../../store/store';
 import { AiOutlineHome } from 'react-icons/ai';
 import { BiHide, BiLogIn, BiLogOut, BiShow } from 'react-icons/bi';
 import {
@@ -231,16 +232,20 @@ const SideBar = (props: {
   }, [location.pathname]);
 
   const handleLogout = () => {
-    getAccessTokenSilently()
+    void getAccessTokenSilently()
       .then((token) => {
         logOutUser(token);
         document.cookie =
           '_dungeon_master_screen_online_session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-        logout({ logoutParams: { returnTo: window.location.origin } });
+        void logout({ logoutParams: { returnTo: window.location.origin } });
       })
       .catch((err) => {
         console.error(err);
       });
+  };
+
+  const handleLogin = () => {
+    void loginWithRedirect();
   };
 
   React.useEffect(() => {
@@ -422,7 +427,7 @@ const SideBar = (props: {
             <WelcomeText $isCollapsed={isCollapsed}>
               {isAuthenticated && user ? `Welcome, ${user.given_name}` : 'User'}
             </WelcomeText>
-            {currentUser && currentUser.role && <RoleLabel>{currentUser.role}</RoleLabel>}
+            {currentUser?.role && <RoleLabel>{currentUser.role}</RoleLabel>}
           </UserWelcome>
           <Menu menuItemStyles={menuItemStyles}>
             <SidebarLink
@@ -451,7 +456,7 @@ const SideBar = (props: {
                 </MenuItem>
               </>
             ) : (
-              <MenuItem icon={<BiLogIn />} onClick={() => loginWithRedirect()}>
+              <MenuItem icon={<BiLogIn />} onClick={handleLogin}>
                 Log In
               </MenuItem>
             )}
@@ -462,14 +467,14 @@ const SideBar = (props: {
   );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: RootState) => {
   return {
     rules: state.rules.rules,
     currentUser: state.users.currentUser,
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch: AppDispatch) => {
   return {
     logOutUser: (token: string) => {
       dispatch(rest.actions.logout({}, { token }));

@@ -11,6 +11,7 @@ import { getIconFromName } from '../../../utilities/icons';
 import { NavLink } from '../../../components/NavLink/NavLink';
 
 import { EditButton } from '../AdminDashboard.styles';
+import { RootState, AppDispatch } from '../../../store/store';
 
 const WidgetsTable = (props: {
   getWidgets: (searchTerm?: string) => void;
@@ -30,7 +31,7 @@ const WidgetsTable = (props: {
       {
         Header: 'Icon',
         accessor: 'icon' as const,
-        Cell: ({ value }) => getIconFromName(value),
+        Cell: ({ value }: { value: string }) => getIconFromName(value),
       },
       {
         Header: 'Widget',
@@ -44,7 +45,7 @@ const WidgetsTable = (props: {
         Header: 'Delete',
         accessor: 'id' as const,
         size: 25,
-        Cell: ({ value }) => (
+        Cell: ({ value }: { value: number }) => (
           <>
             <EditButton>
               <NavLink
@@ -96,7 +97,7 @@ const WidgetsTable = (props: {
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: RootState) {
   return {
     user: state.users.currentUser,
     widgets: state.widgets.widgets,
@@ -104,7 +105,7 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {
     getWidgets: (searchTerm?: string) => {
       if (searchTerm) {

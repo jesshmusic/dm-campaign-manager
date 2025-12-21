@@ -17,7 +17,7 @@ export const allGiIcons = Object.entries(Icons).map((iconArray) => {
 
 export const getIconFromName = (name: string) => {
   const icon = allGiIcons.find((icon) => icon.value === name);
-  return icon?.icon || <GiBeerStein />;
+  return icon?.icon ?? <GiBeerStein />;
 };
 
 export const parseIconName = (iconName: string) => {

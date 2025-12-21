@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import React from 'react';
 // import { Location, NavigateFn } from '@reach/router';
 import { ItemType } from '../pages/items/use-data';
 import { User } from '@auth0/auth0-react';
@@ -15,7 +15,7 @@ export interface AbilityScore {
 export interface ActionFormComponentProps {
   appendAction: (action: Partial<MonsterActionField>) => void;
   fieldName: string;
-  fields: any;
+  fields: MonsterActionField[];
   handleRemove: (index: number) => void;
   singularTitle: string;
   useForm: UseFormReturn<FieldValues>;
@@ -49,19 +49,19 @@ export interface AppProps {
   conditions: {
     conditions: ApiReference[];
     count: number;
-    currentCondition?: any;
+    currentCondition?: ConditionProps;
     loading?: boolean;
   };
   dndClasses: {
     dndClasses: DndClassSummary[];
     count: number;
-    currentDndClass?: any;
+    currentDndClass?: DndClass;
     loading?: boolean;
   };
   items: {
     items: ApiReference[];
     count: number;
-    currentItem?: any;
+    currentItem?: ItemProps;
   };
   monsters: {
     monsters: MonsterSummary[];
@@ -71,12 +71,12 @@ export interface AppProps {
   races: {
     races: ApiReference[];
     count: number;
-    currentRace?: any;
+    currentRace?: RaceProps;
   };
   spells: {
     spells: ApiReference[];
     count: number;
-    currentSpell?: any;
+    currentSpell?: SpellProps;
   };
   users: {
     users: User[];
@@ -147,6 +147,7 @@ export type DndClassSpellCasting = {
 };
 
 export interface DndClass {
+  id: number;
   name: string;
   hitDie: number;
   abilityScores: AbilityScore[];
@@ -194,6 +195,7 @@ export interface ItemSummary {
 }
 
 export interface ItemProps {
+  id: number;
   armorClass?: string;
   armorType?: string;
   capacity?: string;
@@ -230,7 +232,7 @@ export interface ItemProps {
 }
 
 export type ItemPageProps = {
-  item?: ItemProps;
+  item?: ItemProps | null;
   getItem: (itemSlug: string) => void;
   loading: boolean;
 };
@@ -369,6 +371,7 @@ export type MonsterQuickGeneratorFormFields = {
   charisma?: number;
   constitution: number;
   creatureDescription?: string;
+  description?: string;
   dexterity?: number;
   generatedActions?: GeneratedActionsData;
   hitDice: string;
@@ -437,6 +440,7 @@ export type MonsterCRInfoResult = {
 };
 
 export interface MonsterProps {
+  id?: number;
   alignment: string;
   armorClass: number;
   attackBonus: number;
@@ -546,7 +550,7 @@ export interface ProfChoice {
 
 export type RaceSummary = {
   name: string;
-  traits: any[];
+  traits: RaceTrait[];
   slug: string;
 };
 
@@ -561,6 +565,7 @@ export type AbilityBonusOption = {
 };
 
 export type RaceProps = {
+  id: number;
   abilityBonusOptions: AbilityBonusOption[];
   age?: string;
   alignment?: string;
@@ -589,17 +594,18 @@ export type RandomNameResult = {
 export type SelectOption = {
   label: string;
   value: string | number;
-  data?: { [key: string]: any };
+  data?: Record<string, unknown>;
 };
 
 export type SelectIconOption = {
   label: string;
   value: string | number;
-  icon: ReactElement<IconType>;
-  data?: { [key: string]: any };
+  icon: React.ReactElement<IconType>;
+  data?: Record<string, unknown>;
 };
 
 export interface SpellProps {
+  id: number;
   name: string;
   description: string;
   higherLevel: string;

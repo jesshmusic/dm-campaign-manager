@@ -14,7 +14,7 @@ const FullWidthSubmit = styled.div`
 `;
 
 interface AdventureHookOptionsProps {
-  onFormSubmit: (partySize: number, averageLevel: number, setting: string) => void;
+  onFormSubmit: (partySize: number, averageLevel: number, setting: string) => void | Promise<void>;
   isLoading?: boolean;
 }
 
@@ -23,9 +23,9 @@ const AdventureHookOptions = ({ onFormSubmit, isLoading }: AdventureHookOptionsP
   const [averageLevel, setAverageLevel] = useState(1);
   const [setting, setSetting] = useState({ value: 'forgotten_realms', label: 'Forgotten Realms' });
 
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-    onFormSubmit(partySize, averageLevel, setting.value);
+  const handleSubmit = (event: unknown) => {
+    (event as React.FormEvent).preventDefault();
+    void onFormSubmit(partySize, averageLevel, setting.value);
   };
 
   return (

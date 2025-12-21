@@ -164,19 +164,19 @@ const SpellForm: React.FC<SpellFormProps> = ({
     formState: { errors },
   } = useForm<SpellFormData>({
     defaultValues: {
-      name: initialData?.name || '',
-      description: initialData?.description || '',
-      higher_level: initialData?.higherLevel || '',
-      range: initialData?.range || '',
-      components: initialData?.components?.join(', ') || '',
-      material: initialData?.material || '',
-      ritual: initialData?.ritual || false,
-      duration: initialData?.duration || '',
-      concentration: initialData?.concentration || false,
-      casting_time: initialData?.castingTime || '',
+      name: initialData?.name ?? '',
+      description: initialData?.description ?? '',
+      higher_level: initialData?.higherLevel ?? '',
+      range: initialData?.range ?? '',
+      components: initialData?.components?.join(', ') ?? '',
+      material: initialData?.material ?? '',
+      ritual: initialData?.ritual ?? false,
+      duration: initialData?.duration ?? '',
+      concentration: initialData?.concentration ?? false,
+      casting_time: initialData?.castingTime ?? '',
       level: initialData?.level ?? 0,
-      school: initialData?.school || 'Evocation',
-      spell_classes: initialData?.spellClasses || [],
+      school: initialData?.school ?? 'Evocation',
+      spell_classes: initialData?.spellClasses ?? [],
     },
   });
 
@@ -184,7 +184,12 @@ const SpellForm: React.FC<SpellFormProps> = ({
   const typedControl = control as unknown as Control<FieldValues, object>;
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} id="spell-form">
+    <form
+      onSubmit={(e) => {
+        void handleSubmit(onSubmit)(e);
+      }}
+      id="spell-form"
+    >
       <FormGrid>
         <TwoColumnField>
           <ControlledInput fieldName="name" control={typedControl} label="Name" errors={errors} />

@@ -79,8 +79,8 @@ const RuleForm: React.FC<RuleFormProps> = ({
     formState: { errors },
   } = useForm<RuleFormData>({
     defaultValues: {
-      name: initialData?.name || '',
-      description: initialData?.description || '',
+      name: initialData?.name ?? '',
+      description: initialData?.description ?? '',
       parent_slug: '',
       homebrew: false,
     },
@@ -90,7 +90,12 @@ const RuleForm: React.FC<RuleFormProps> = ({
   const typedControl = control as unknown as Control<FieldValues, object>;
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} id="rule-form">
+    <form
+      onSubmit={(e) => {
+        void handleSubmit(onSubmit)(e);
+      }}
+      id="rule-form"
+    >
       <FormGrid>
         <ControlledInput fieldName="name" control={typedControl} label="Name" errors={errors} />
 
@@ -99,7 +104,6 @@ const RuleForm: React.FC<RuleFormProps> = ({
           control={typedControl}
           label="Parent Rule Slug (optional)"
           errors={errors}
-          placeholder="e.g., playing-the-game"
         />
 
         <FormWrapper>

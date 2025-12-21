@@ -3,6 +3,7 @@ import { UserProps } from '../../../utilities/types';
 import rest from '../../../api/api';
 import { connect } from 'react-redux';
 import DataTable from '../../../components/DataTable/DataTable';
+import { RootState, AppDispatch } from '../../../store/store';
 
 const UsersTable = (props: {
   getUsers: (searchTerm?: string) => void;
@@ -62,7 +63,7 @@ const UsersTable = (props: {
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: RootState) {
   return {
     user: state.users.currentUser,
     users: state.users.users,
@@ -70,7 +71,7 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {
     getUsers: (searchTerm?: string) => {
       if (searchTerm) {

@@ -2,7 +2,6 @@
  * Created by jesshendricks on 9/5/19
  */
 
-import React from 'react';
 import { Link } from 'react-router-dom';
 
 import { PageTitleWrapper, Title, Subtitle, LegacyBadge } from './PageTitle.styles';

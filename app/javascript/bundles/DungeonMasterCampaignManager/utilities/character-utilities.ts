@@ -1,20 +1,29 @@
 import { ActionTypes, DamageTypes, SelectOption } from './types';
 
 export const toSnakeCase = (str: string) =>
-  str &&
   str
-    .match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g)!
-    .map((x) => x.toLowerCase())
-    .join('_');
+    ?.match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g)
+    ?.map((x) => x.toLowerCase())
+    .join('_') ?? '';
 
-export const filterOptionsWithData = (results) =>
+export const filterOptionsWithData = (
+  results: Array<{ id: string | number; name: string; data?: unknown }>,
+): SelectOption[] =>
   results.map((nextItem) => ({
     value: nextItem.id,
     label: nextItem.name,
     data: nextItem.data,
   }));
 
-export const filterActionOptions = (results) => {
+export const filterActionOptions = (
+  results: Array<{
+    id: string | number;
+    name: string;
+    monster_name: string;
+    info: string;
+    description: string;
+  }>,
+): SelectOption[] => {
   return results.map((nextItem) => {
     return {
       value: nextItem.id,
@@ -23,8 +32,10 @@ export const filterActionOptions = (results) => {
   });
 };
 
-export const filterSnakeCaseOptionsWithData = (results): SelectOption[] =>
-  results.results.map((nextItem) => ({
+export const filterSnakeCaseOptionsWithData = (results: {
+  results: Array<{ name: string }>;
+}): SelectOption[] =>
+  results.results.map((nextItem: { name: string }) => ({
     value: toSnakeCase(nextItem.name),
     label: nextItem.name,
   }));
@@ -193,7 +204,8 @@ export const getChallengeRatingOptions = () => {
   return crs;
 };
 
-export const getSpellLevelArray = (spells) => spells.map((spell) => spell.value);
+export const getSpellLevelArray = (spells: SelectOption[]): (string | number)[] =>
+  spells.map((spell) => spell.value);
 
 export const averageDice = (numDice: number, diceValue: number, bonus: number): number => {
   const diceAverage = diceValue / 2 + 0.5;

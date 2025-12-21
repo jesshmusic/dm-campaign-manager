@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { RootState, AppDispatch } from '../../store/store';
 import rest from '../../api/api';
 
 // Container
@@ -28,7 +29,7 @@ const DndClasses = ({ getDndClasses, dndClasses, loading, currentUser }: DndClas
   const { edition: contextEdition, isEdition2014 } = useEdition();
 
   // Use edition from URL if valid (either :edition or :param route), otherwise from context
-  const urlEdition = editionParam || param;
+  const urlEdition = editionParam ?? param;
   const edition = isValidEdition(urlEdition) ? urlEdition : contextEdition;
 
   React.useEffect(() => {
@@ -37,10 +38,6 @@ const DndClasses = ({ getDndClasses, dndClasses, loading, currentUser }: DndClas
 
   const handleCreateSuccess = () => {
     getDndClasses();
-  };
-
-  const goToPage = (row: Row<Record<string, unknown>>) => {
-    navigate(getContentUrl('classes', row.original.slug as string, edition));
   };
 
   const data = React.useMemo(() => {
@@ -54,19 +51,25 @@ const DndClasses = ({ getDndClasses, dndClasses, loading, currentUser }: DndClas
     });
   }, [dndClasses]);
 
+  const goToPage = (
+    row: Row<{ name: string; hitDie: string; primaryAbilities: string; slug: string }>,
+  ) => {
+    navigate(getContentUrl('classes', row.original.slug, edition));
+  };
+
   const columns = React.useMemo(
     () => [
       {
         Header: 'Class',
-        accessor: 'name',
+        accessor: 'name' as const,
       },
       {
         Header: 'Hit Die',
-        accessor: 'hitDie',
+        accessor: 'hitDie' as const,
       },
       {
         Header: 'Primary Abilities',
-        accessor: 'primaryAbilities',
+        accessor: 'primaryAbilities' as const,
       },
     ],
     [],
@@ -101,7 +104,7 @@ const DndClasses = ({ getDndClasses, dndClasses, loading, currentUser }: DndClas
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: RootState) {
   return {
     dndClasses: state.dndClasses.dndClasses,
     currentUser: state.users.currentUser,
@@ -110,7 +113,7 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {
     getDndClasses: () => {
       dispatch(rest.actions.getDndClasses());

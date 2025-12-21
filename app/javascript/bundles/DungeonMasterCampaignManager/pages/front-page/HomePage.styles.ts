@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { respondToContainer } from '../../theme/mixins';
 
 export const Wrapper = styled.div`
-  ${respondToContainer.md}
+  ${respondToContainer.md``}
 `;
 
 export const Section = styled.div`

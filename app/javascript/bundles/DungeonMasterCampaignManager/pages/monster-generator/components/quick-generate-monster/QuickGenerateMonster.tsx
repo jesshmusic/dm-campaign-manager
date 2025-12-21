@@ -67,12 +67,27 @@ const QuickGenerateMonster = (props: GenerateMonsterProps) => {
     }
   };
 
+  // Sync wrapper for async handleGenerateActions
+  const onGenerateActionsClick = () => {
+    void handleGenerateActions();
+  };
+
+  // Sync wrapper for async handleGenerateName
+  const onGenerateName = (buttonType: string, race: string) => {
+    void handleGenerateName(buttonType, race);
+  };
+
+  // Sync wrapper for async handleGenerateMonsterName
+  const onGenerateMonsterName = () => {
+    void handleGenerateMonsterName();
+  };
+
   const progressPercent = (currentStep / TOTAL_STEPS) * 100;
 
   React.useEffect(() => {
     const subscription = UseForm.watch((value, { name }) => {
       if (name) {
-        updateForm(name, value);
+        void updateForm(name, value);
       }
     });
     return () => subscription.unsubscribe();
@@ -94,7 +109,12 @@ const QuickGenerateMonster = (props: GenerateMonsterProps) => {
           <StepProgressFill $progress={progressPercent} />
         </StepProgressBar>
 
-        <GenForm onSubmit={UseForm.handleSubmit(onSubmit)} noValidate>
+        <GenForm
+          onSubmit={(e) => {
+            void UseForm.handleSubmit(onSubmit)(e);
+          }}
+          noValidate
+        >
           <GenMonsterSection heading="Stats" step={1} currentStep={currentStep} isMultiStep>
             <QuickMonsterStatsSection
               archetypeOptions={archetypeOptions}
@@ -123,7 +143,7 @@ const QuickGenerateMonster = (props: GenerateMonsterProps) => {
               UseForm={UseForm}
               generatedActions={generatedActions}
               isGenerating={isGeneratingActions}
-              onGenerateActions={handleGenerateActions}
+              onGenerateActions={onGenerateActionsClick}
             />
           </GenMonsterSection>
 
@@ -131,8 +151,8 @@ const QuickGenerateMonster = (props: GenerateMonsterProps) => {
             <NameFormField
               activeNameButton={activeNameButton}
               characterRace={UseForm.getValues('characterRace')?.value}
-              handleGenerateName={handleGenerateName}
-              handleGenerateMonsterName={handleGenerateMonsterName}
+              handleGenerateName={onGenerateName}
+              handleGenerateMonsterName={onGenerateMonsterName}
               isGeneratingName={activeNameButton !== null}
               register={UseForm.register}
               monsterType={monsterType}

@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { RootState, AppDispatch } from '../../store/store';
 import { useParams, useNavigate } from 'react-router-dom';
 import rest from '../../api/api';
 import PageContainer from '../../containers/PageContainer';
@@ -43,7 +44,7 @@ const BackgroundDetail = ({
   // Handle both /app/backgrounds/:edition/:slug and /app/backgrounds/:param routes
   const { slug: backgroundSlug } = parseEditionParams(
     params.edition,
-    params.backgroundSlug || params.param,
+    params.backgroundSlug ?? params.param,
   );
   const { isEdition2014 } = useEdition();
   const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
@@ -171,7 +172,7 @@ const BackgroundDetail = ({
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: RootState) {
   return {
     currentBackground: state.backgrounds.currentBackground,
     loading: state.backgrounds.currentBackgroundLoading,
@@ -180,7 +181,7 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {
     getBackground: (slug: string) => {
       dispatch(rest.actions.getBackground({ id: slug }));

@@ -8,6 +8,7 @@ import DndSpinner from '../../components/DndSpinners/DndSpinner';
 import { useEdition } from '../../contexts/EditionContext';
 import { parseEditionParams, getContentIndexUrl } from '../../utilities/editionUrls';
 import Rule from './Rule';
+import { RootState, AppDispatch } from '../../store/store';
 
 type Ancestor = {
   name: string;
@@ -87,14 +88,14 @@ const RulesCategory = ({ rules, loading, getRules }: RulesCategoryProps) => {
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: RootState) {
   return {
     rules: state.rules.rules,
     loading: state.rules.loading,
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {
     getRules: () => {
       dispatch(rest.actions.getRules());

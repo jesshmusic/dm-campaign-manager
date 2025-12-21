@@ -1,4 +1,3 @@
-import React from 'react';
 import { Control, FieldErrors, FieldValues, useWatch } from 'react-hook-form';
 import { ControlledInput, ControlledSelect } from '../forms/ControllerInput';
 import { damageTypes, diceOptions } from '../../utilities/character-utilities';

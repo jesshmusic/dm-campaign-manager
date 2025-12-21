@@ -1,5 +1,6 @@
 import React, { useRef, useCallback } from 'react';
 import { connect } from 'react-redux';
+import { RootState, AppDispatch } from '../../store/store';
 import { RecordFormModal } from '../../components/shared/modals';
 import RaceForm, { RaceFormData } from './RaceForm';
 import { RaceProps } from '../../utilities/types';
@@ -75,7 +76,7 @@ const RaceFormModal: React.FC<RaceFormModalProps> = ({
     }
   };
 
-  const title = mode === 'create' ? 'New Race' : `Edit ${initialData?.name || 'Race'}`;
+  const title = mode === 'create' ? 'New Race' : `Edit ${initialData?.name ?? 'Race'}`;
 
   return (
     <RecordFormModal
@@ -96,13 +97,13 @@ const RaceFormModal: React.FC<RaceFormModalProps> = ({
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: RootState) {
   return {
     token: state.users.token,
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {
     createRace: (data: RaceFormData, token?: string) => {
       dispatch(

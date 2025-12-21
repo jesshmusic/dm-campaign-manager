@@ -8,6 +8,7 @@ import {
 import React from 'react';
 import Util from '../../utilities/utilities';
 import { useEdition } from '../../contexts/EditionContext';
+import { Row } from 'react-table';
 
 export enum ItemType {
   all = 'All',
@@ -141,11 +142,16 @@ export const useData = (props: ItemsPageProps) => {
         Header: 'Rarity',
         accessor: 'rarity',
         sortType: React.useMemo(
-          () => (rowA, rowB, columnId) => {
-            const a = getRarityValue(rowA.values[columnId]);
-            const b = getRarityValue(rowB.values[columnId]);
-            return a > b ? 1 : -1;
-          },
+          () =>
+            (
+              rowA: Row<Record<string, unknown>>,
+              rowB: Row<Record<string, unknown>>,
+              columnId: string,
+            ) => {
+              const a = getRarityValue(rowA.values[columnId] as string);
+              const b = getRarityValue(rowB.values[columnId] as string);
+              return a > b ? 1 : -1;
+            },
           [],
         ),
       },
@@ -177,11 +183,16 @@ export const useData = (props: ItemsPageProps) => {
         Header: 'Rarity',
         accessor: 'rarity',
         sortType: React.useMemo(
-          () => (rowA, rowB, columnId) => {
-            const a = getRarityValue(rowA.values[columnId]);
-            const b = getRarityValue(rowB.values[columnId]);
-            return a > b ? 1 : -1;
-          },
+          () =>
+            (
+              rowA: Row<Record<string, unknown>>,
+              rowB: Row<Record<string, unknown>>,
+              columnId: string,
+            ) => {
+              const a = getRarityValue(rowA.values[columnId] as string);
+              const b = getRarityValue(rowB.values[columnId] as string);
+              return a > b ? 1 : -1;
+            },
           [],
         ),
       },
@@ -239,11 +250,16 @@ export const useData = (props: ItemsPageProps) => {
         Header: 'Rarity',
         accessor: 'rarity',
         sortType: React.useMemo(
-          () => (rowA, rowB, columnId) => {
-            const a = getRarityValue(rowA.values[columnId]);
-            const b = getRarityValue(rowB.values[columnId]);
-            return a > b ? 1 : -1;
-          },
+          () =>
+            (
+              rowA: Row<Record<string, unknown>>,
+              rowB: Row<Record<string, unknown>>,
+              columnId: string,
+            ) => {
+              const a = getRarityValue(rowA.values[columnId] as string);
+              const b = getRarityValue(rowB.values[columnId] as string);
+              return a > b ? 1 : -1;
+            },
           [],
         ),
       },
@@ -275,12 +291,12 @@ export const useData = (props: ItemsPageProps) => {
             ? item.cost
               ? `~${item.cost}`
               : 'Varies'
-            : item.cost || '-',
-        damage: item.damage || '-',
-        mastery: item.mastery || '-',
+            : (item.cost ?? '-'),
+        damage: item.damage ?? '-',
+        mastery: item.mastery ?? '-',
         name: item.name,
-        properties: item.properties || '-',
-        rarity: item.rarity || '-',
+        properties: item.properties ?? '-',
+        rarity: item.rarity ?? '-',
         requiresAttunement: item.requiresAttunement !== '' ? item.requiresAttunement : '-',
         slug: item.slug,
         speed: item.speed,
@@ -313,7 +329,7 @@ export const singleItemUseData = (_props: ItemPageProps) => {
           parentUrl: '/app/items/armor',
           subtitle: `${item.armorType} ${item.armorType !== 'Shield' ? ' armor' : ''}`,
           infoBlock: [
-            { title: 'Armor Class', desc: item.armorClass || '' },
+            { title: 'Armor Class', desc: item.armorClass ?? '' },
             {
               title: 'Cost',
               desc: getCostString(item.cost),
@@ -326,8 +342,8 @@ export const singleItemUseData = (_props: ItemPageProps) => {
           parentUrl: '/app/items/weapons',
           subtitle: `${item.categoryRange} Weapon`,
           infoBlock: [
-            { title: 'Damage', desc: item.damage || '' },
-            { title: 'Properties', desc: item.properties || '' },
+            { title: 'Damage', desc: item.damage ?? '' },
+            { title: 'Properties', desc: item.properties ?? '' },
             {
               title: 'Cost',
               desc: getCostString(item.cost),
@@ -338,7 +354,7 @@ export const singleItemUseData = (_props: ItemPageProps) => {
         return {
           parentTitle: 'Adventuring Gear',
           parentUrl: '/app/items/gear',
-          subtitle: item.gearCategory || '',
+          subtitle: item.gearCategory ?? '',
           infoBlock: [
             {
               title: 'Cost',
@@ -350,7 +366,7 @@ export const singleItemUseData = (_props: ItemPageProps) => {
         return {
           parentTitle: 'Mounts & Vehicles',
           parentUrl: '/app/items/vehicles',
-          subtitle: item.vehicleCategory || '',
+          subtitle: item.vehicleCategory ?? '',
           infoBlock: [
             {
               title: 'Cost',
@@ -386,7 +402,7 @@ export const singleItemUseData = (_props: ItemPageProps) => {
             `(${item.requiresAttunement})`
           }`,
           infoBlock: [
-            { title: 'Armor Class', desc: item.armorClass || '' },
+            { title: 'Armor Class', desc: item.armorClass ?? '' },
             {
               title: 'Cost',
               desc: getCostString(item.cost),
@@ -403,8 +419,8 @@ export const singleItemUseData = (_props: ItemPageProps) => {
             `(${item.requiresAttunement})`
           }`,
           infoBlock: [
-            { title: 'Damage', desc: item.damage || '' },
-            { title: 'Properties', desc: item.properties || '' },
+            { title: 'Damage', desc: item.damage ?? '' },
+            { title: 'Properties', desc: item.properties ?? '' },
             {
               title: 'Cost',
               desc: getCostString(item.cost),
@@ -415,7 +431,7 @@ export const singleItemUseData = (_props: ItemPageProps) => {
         return {
           parentTitle: 'Tools',
           parentUrl: '/app/items/tools',
-          subtitle: item.toolCategory || '',
+          subtitle: item.toolCategory ?? '',
           infoBlock: [
             {
               title: 'Cost',

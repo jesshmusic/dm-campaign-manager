@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
-import Convert2eMonster from './Convert2eMonster';
 import GenerateCommoner from './components/GenerateCommoner';
 import { GiBlacksmith, GiSpikedDragonHead, GiCrossMark, GiMagicSwirl } from 'react-icons/gi';
 import { SiConvertio } from 'react-icons/si';
@@ -13,6 +12,10 @@ import AIGenerateMonster from './components/ai-generate-monster/AIGenerateMonste
 import ReactGA from 'react-ga4';
 import { MonsterProps, UserProps } from '../../utilities/types';
 import { clearCurrentMonster, setCurrentMonster } from '../../reducers/monsters';
+import { RootState, AppDispatch } from '../../store/store';
+
+// Declare module for Convert2eMonster (only used when show2eConverter is true)
+declare const Convert2eMonster: React.ComponentType<{ token?: string }>;
 
 ReactGA.initialize('G-8XJTH70JSQ');
 import {
@@ -45,7 +48,7 @@ const MonsterGenerator = (props: {
     description?: string,
     token?: string,
   ) => void;
-  generateQuickMonster: (monster: Record<string, unknown>, token?: string) => void;
+  generateQuickMonster: (monster: unknown, token?: string) => void;
   isLoading?: boolean;
   token?: string;
 }) => {
@@ -152,7 +155,7 @@ const MonsterGenerator = (props: {
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: RootState) {
   return {
     monster: state.monsters.currentMonster,
     currentUser: state.users.currentUser,
@@ -161,7 +164,7 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {
     clearMonster: () => {
       dispatch(clearCurrentMonster());

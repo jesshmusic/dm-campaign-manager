@@ -1,8 +1,8 @@
-import React from 'react';
 import { FlashMessage } from '../../utilities/types';
 import AlertDismissible from './AlertDismissible';
 import { connect } from 'react-redux';
 import { dismissFlashMessage } from '../../reducers/flashMessages';
+import { RootState, AppDispatch } from '../../store/store';
 
 type FlashMessagesProps = {
   onDismissFlashMessage: (messageId: number) => void;
@@ -27,13 +27,13 @@ const FlashMessages = ({ onDismissFlashMessage, messages }: FlashMessagesProps) 
   );
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: RootState) {
   return {
     messages: state.flashMessages,
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {
     onDismissFlashMessage: (messageId: number) => {
       dispatch(dismissFlashMessage(messageId));

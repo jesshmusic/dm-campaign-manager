@@ -1,5 +1,4 @@
 import { GiBarbute } from 'react-icons/gi';
-import React from 'react';
 
 import { ButtonBar } from './Widgets.styles';
 
