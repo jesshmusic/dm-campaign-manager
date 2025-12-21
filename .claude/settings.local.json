@@ -123,7 +123,9 @@
       "Bash(yarn tsc:*)",
       "Bash(./bin/shakapacker:*)",
       "Bash(wc:*)",
-      "mcp__ide__getDiagnostics"
+      "mcp__ide__getDiagnostics",
+      "Bash(gh run list:*)",
+      "Bash(yarn eslint:*)"
     ],
     "deny": [],
     "ask": []

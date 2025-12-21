@@ -95,7 +95,7 @@ const getColorStyles = (color: ButtonColor, theme: { colors: Record<string, stri
 
     &:hover {
       background-color: ${colors.hoverBg};
-      color: ${colors.hoverText || colors.text};
+      color: ${colors.hoverText ?? colors.text};
       text-decoration: none;
     }
   `;

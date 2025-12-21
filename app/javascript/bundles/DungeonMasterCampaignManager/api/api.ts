@@ -10,7 +10,7 @@ const DEFAULT_EDITION = '2024';
  */
 export function getCurrentEdition(): string {
   if (typeof window !== 'undefined') {
-    return localStorage.getItem(EDITION_STORAGE_KEY) || DEFAULT_EDITION;
+    return localStorage.getItem(EDITION_STORAGE_KEY) ?? DEFAULT_EDITION;
   }
   return DEFAULT_EDITION;
 }
@@ -30,9 +30,14 @@ const processData = (data: unknown): unknown => {
   }
 };
 
-const toJSON = (resp: any): Promise<unknown> => {
-  if (resp.text) {
-    return resp.text().then(processData);
+const toJSON = (resp: unknown): Promise<unknown> => {
+  if (
+    resp &&
+    typeof resp === 'object' &&
+    'text' in resp &&
+    typeof (resp as Response).text === 'function'
+  ) {
+    return (resp as Response).text().then(processData);
   } else if (resp instanceof Promise) {
     return resp.then(processData);
   }
@@ -52,16 +57,19 @@ export const fetchData = (opts: AxiosRequestConfig): Promise<AxiosResponse> => {
   });
 };
 
-const dmFetch = (fetch: any) => {
-  return (url: string, opts: any) => {
+type FetchOptions = RequestInit & { token?: string; headers: Record<string, string> };
+type FetchFunction = (url: string, opts: FetchOptions) => Promise<Response>;
+
+const dmFetch = (fetch: FetchFunction) => {
+  return (url: string, opts: FetchOptions) => {
     if (opts.token) {
       opts.headers['Authorization'] = `Bearer ${opts.token}`;
     }
-    return fetch(url, opts).then((response: any) => {
+    return fetch(url, opts).then((response: Response) => {
       const status = response.status === 1223 ? 204 : response.status;
       const statusText = response.status === 1223 ? 'No Content' : response.statusText;
 
-      return toJSON(response).then((data: any) => {
+      return toJSON(response).then((data: Record<string, unknown>) => {
         if (status >= 200 && status < 400) {
           return data;
         }
@@ -485,23 +493,30 @@ export default reduxApi({
     url: '/v1/search.json?search=:searchString',
   },
 })
-  .use('options', (_url: any, _params: any, getState: any) => {
-    const state = getState();
-    const token = state.users && state.users.token ? state.users.token : null;
-    const edition = getCurrentEdition();
-    const railsHeaders = getHeaders();
-    const headers = {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      'X-DND-Edition': edition,
-      ...railsHeaders,
-    };
-    if (token) {
-      const newHeaders = { ...headers, Authorization: `Bearer ${token}` };
-      return {
-        headers: newHeaders,
+  .use(
+    'options',
+    (
+      _url: string,
+      _params: Record<string, unknown>,
+      getState: () => { users?: { token?: string } },
+    ) => {
+      const state = getState();
+      const token = state.users?.token ?? null;
+      const edition = getCurrentEdition();
+      const railsHeaders = getHeaders();
+      const headers = {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'X-DND-Edition': edition,
+        ...railsHeaders,
       };
-    }
-    return { headers };
-  })
+      if (token) {
+        const newHeaders = { ...headers, Authorization: `Bearer ${token}` };
+        return {
+          headers: newHeaders,
+        };
+      }
+      return { headers };
+    },
+  )
   .use('fetch', dmFetch(fetch));
