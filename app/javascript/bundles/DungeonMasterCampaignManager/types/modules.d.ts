@@ -1,10 +1,10 @@
 declare module 'react-window' {
-  import { ComponentType, ReactElement } from 'react';
+  import { ComponentType } from 'react';
 
   export interface ListChildComponentProps {
     index: number;
     style: React.CSSProperties;
-    data?: any;
+    data?: unknown;
   }
 
   export interface FixedSizeListProps {
@@ -27,14 +27,14 @@ declare module 'react-helmet' {
     title?: string;
     titleTemplate?: string;
     defaultTitle?: string;
-    base?: any;
-    meta?: Array<any>;
-    link?: Array<any>;
-    script?: Array<any>;
-    noscript?: Array<any>;
-    style?: Array<any>;
-    htmlAttributes?: any;
-    bodyAttributes?: any;
+    base?: Record<string, string>;
+    meta?: Array<Record<string, string>>;
+    link?: Array<Record<string, string>>;
+    script?: Array<Record<string, string>>;
+    noscript?: Array<Record<string, string>>;
+    style?: Array<Record<string, string>>;
+    htmlAttributes?: Record<string, string>;
+    bodyAttributes?: Record<string, string>;
   }
 
   export class Helmet extends Component<HelmetProps> {}
@@ -43,9 +43,10 @@ declare module 'react-helmet' {
 
 declare module 'quill-image-resize-module-react' {
   import Quill from 'quill';
-  export default class ImageResize {
-    constructor(quill: Quill, options?: Record<string, unknown>);
-  }
+  const ImageResize: {
+    new (quill: Quill, options?: Record<string, unknown>): unknown;
+  };
+  export default ImageResize;
 }
 
 declare module 'react-modal' {

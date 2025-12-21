@@ -22,7 +22,7 @@ export const PageContent = styled.div`
 `;
 
 export const Page = styled.div<{ $sidebarWidth?: number }>`
-  margin-left: ${({ $sidebarWidth }) => $sidebarWidth || 80}px;
+  margin-left: ${({ $sidebarWidth }) => $sidebarWidth ?? 80}px;
   min-height: calc(100vh - 35rem);
   padding: 1rem;
   position: relative;
@@ -48,7 +48,7 @@ export const FormContainerWrapper = styled.div<{ $columns?: number }>`
   border-radius: 0.25rem;
   box-shadow: 0.1rem 0.1rem 0.25rem rgba(0, 0, 0, 0.75);
   display: grid;
-  grid-template-columns: repeat(${({ $columns }) => $columns || 8}, 1fr);
+  grid-template-columns: repeat(${({ $columns }) => $columns ?? 8}, 1fr);
   margin-bottom: 1rem;
   padding: 0.5rem 0.5rem 1rem;
 `;

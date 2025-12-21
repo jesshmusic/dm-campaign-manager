@@ -189,12 +189,12 @@ export const createQuickMonsterParams = (values: MonsterQuickGeneratorFormFields
     generatedActions?.actions?.map((action) => ({
       name: action.name,
       desc: action.desc,
-    })) || [];
+    })) ?? [];
   const specialAbilitiesAttributes =
     generatedActions?.special_abilities?.map((ability) => ({
       name: ability.name,
       desc: ability.desc,
-    })) || [];
+    })) ?? [];
 
   const monsterParams = {
     name: values.name,

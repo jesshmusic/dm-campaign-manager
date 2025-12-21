@@ -28,7 +28,7 @@ export const ModalContent = styled.div<{ $maxWidth?: string }>`
   display: flex;
   flex-direction: column;
   max-height: 90vh;
-  max-width: ${({ $maxWidth }) => $maxWidth || '900px'};
+  max-width: ${({ $maxWidth }) => $maxWidth ?? '900px'};
   overflow: hidden;
   width: 95%;
 `;

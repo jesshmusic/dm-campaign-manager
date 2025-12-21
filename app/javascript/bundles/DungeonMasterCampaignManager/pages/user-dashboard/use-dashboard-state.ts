@@ -101,7 +101,7 @@ const getFromLS = (key: string) => {
   if (global.localStorage) {
     try {
       const ls = JSON.parse(global.localStorage.getItem('rgl-8') as string);
-      if (ls && ls[key]) {
+      if (ls?.[key]) {
         // For layouts, ensure it has at least one breakpoint with items
         // and fix any custom widgets with invalid sizes
         if (key === 'layouts') {
