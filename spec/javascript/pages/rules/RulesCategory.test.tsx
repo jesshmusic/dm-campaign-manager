@@ -197,4 +197,56 @@ describe('RulesCategory', () => {
       expect(screen.getByTestId('page-title')).toHaveAttribute('data-legacy', 'false');
     });
   });
+
+  describe('route pattern handling', () => {
+    it('handles two-param route with edition and ruleSlug', () => {
+      mockUseParams.mockReturnValue({ edition: '2024', ruleSlug: 'combat-rules' });
+      const store = createMockStore({
+        rules: [
+          { name: 'Combat Rules', slug: 'combat-rules', rules: [] },
+        ],
+        loading: false,
+        currentRule: { name: 'Combat Rules', description: 'Combat description', rules: [] },
+        currentRuleLoading: false,
+      });
+
+      renderWithProviders(store);
+
+      expect(screen.getByTestId('rule-component')).toBeInTheDocument();
+      expect(screen.getByTestId('rule-component')).toHaveTextContent('Combat Rules');
+    });
+
+    it('handles resolver param route', () => {
+      mockUseParams.mockReturnValue({ param: 'spellcasting' });
+      const store = createMockStore({
+        rules: [
+          { name: 'Spellcasting', slug: 'spellcasting', rules: [] },
+        ],
+        loading: false,
+        currentRule: { name: 'Spellcasting', description: 'Spell rules', rules: [] },
+        currentRuleLoading: false,
+      });
+
+      renderWithProviders(store);
+
+      expect(screen.getByTestId('rule-component')).toBeInTheDocument();
+      expect(screen.getByTestId('rule-component')).toHaveTextContent('Spellcasting');
+    });
+
+    it('handles two-param route with 2014 edition', () => {
+      mockUseParams.mockReturnValue({ edition: '2014', ruleSlug: 'conditions' });
+      const store = createMockStore({
+        rules: [
+          { name: 'Conditions', slug: 'conditions', rules: [] },
+        ],
+        loading: false,
+        currentRule: { name: 'Conditions', description: '2014 conditions', rules: [] },
+        currentRuleLoading: false,
+      });
+
+      renderWithProviders(store, '2014');
+
+      expect(screen.getByTestId('rule-component')).toBeInTheDocument();
+    });
+  });
 });
