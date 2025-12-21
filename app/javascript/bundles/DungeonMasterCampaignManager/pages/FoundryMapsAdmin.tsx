@@ -211,7 +211,7 @@ const FoundryMapsAdmin: React.FC = () => {
     return null;
   };
 
-  const handleEdit = async (map: FoundryMap) => {
+  const editMap = async (map: FoundryMap) => {
     const detailedMap = await fetchMapDetails(map.id);
     if (detailedMap) {
       setEditingMap(detailedMap);
@@ -237,13 +237,21 @@ const FoundryMapsAdmin: React.FC = () => {
     setShowForm(true);
   };
 
-  const handleView = async (map: FoundryMap) => {
+  const handleEdit = (map: FoundryMap) => {
+    void editMap(map);
+  };
+
+  const viewMap = async (map: FoundryMap) => {
     const detailedMap = await fetchMapDetails(map.id);
     setViewingMap(detailedMap || map);
     setIsEditingInModal(false);
   };
 
-  const handleEditInModal = async (map: FoundryMap) => {
+  const handleView = (map: FoundryMap) => {
+    void viewMap(map);
+  };
+
+  const editInModal = async (map: FoundryMap) => {
     const detailedMap = await fetchMapDetails(map.id);
     const mapToEdit = detailedMap || map;
     setEditingMap(mapToEdit);
@@ -256,6 +264,10 @@ const FoundryMapsAdmin: React.FC = () => {
       tags: mapToEdit.tags.join(', '),
     });
     setIsEditingInModal(true);
+  };
+
+  const handleEditInModal = (map: FoundryMap) => {
+    void editInModal(map);
   };
 
   const handleCancelEditInModal = () => {
@@ -390,7 +402,11 @@ const FoundryMapsAdmin: React.FC = () => {
     }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    void handleSubmit(onSubmit)(e);
+  };
+
+  const deleteMap = async (id: string) => {
     if (!confirm('Are you sure you want to delete this map?')) return;
 
     try {
@@ -414,7 +430,11 @@ const FoundryMapsAdmin: React.FC = () => {
     }
   };
 
-  const togglePublished = async (id: string, currentPublished: boolean) => {
+  const handleDelete = (id: string) => {
+    void deleteMap(id);
+  };
+
+  const toggleMapPublished = async (id: string, currentPublished: boolean) => {
     try {
       const response = await fetch(`/v1/maps/${id}`, {
         method: 'PATCH',
@@ -435,7 +455,11 @@ const FoundryMapsAdmin: React.FC = () => {
     }
   };
 
-  const handleCreateTag = async () => {
+  const togglePublished = (id: string, currentPublished: boolean) => {
+    void toggleMapPublished(id, currentPublished);
+  };
+
+  const createTag = async () => {
     if (!newTagName.trim()) return;
 
     try {
@@ -485,7 +509,11 @@ const FoundryMapsAdmin: React.FC = () => {
     }
   };
 
-  const handleUpdateTag = async (id: string) => {
+  const handleCreateTag = () => {
+    void createTag();
+  };
+
+  const updateTag = async (id: string) => {
     if (!editingTagName.trim()) return;
 
     try {
@@ -537,7 +565,11 @@ const FoundryMapsAdmin: React.FC = () => {
     }
   };
 
-  const handleDeleteTag = async (id: string, tagName: string) => {
+  const handleUpdateTag = (id: string) => {
+    void updateTag(id);
+  };
+
+  const deleteTag = async (id: string, tagName: string) => {
     if (
       !confirm(
         `Are you sure you want to delete the tag "${tagName}"? This will remove it from all maps.`,
@@ -562,6 +594,10 @@ const FoundryMapsAdmin: React.FC = () => {
     }
   };
 
+  const handleDeleteTag = (id: string, tagName: string) => {
+    void deleteTag(id, tagName);
+  };
+
   const startEditingTag = (tag: MapTag) => {
     setEditingTagId(tag.id);
     setEditingTagName(tag.name);
@@ -572,7 +608,7 @@ const FoundryMapsAdmin: React.FC = () => {
     setEditingTagName('');
   };
 
-  const handleDeleteFile = async (mapId: string, fileId: string, fileName: string) => {
+  const deleteFile = async (mapId: string, fileId: string, fileName: string) => {
     if (
       !confirm(
         `Are you sure you want to delete "${fileName}"?\n\nWarning: This may break the scene.json if this file is referenced. Make sure to re-export the scene after deleting files.`,
@@ -624,6 +660,10 @@ const FoundryMapsAdmin: React.FC = () => {
         }),
       );
     }
+  };
+
+  const handleDeleteFile = (mapId: string, fileId: string, fileName: string) => {
+    void deleteFile(mapId, fileId, fileName);
   };
 
   const stripHtml = (html: string) => {
@@ -775,7 +815,7 @@ const FoundryMapsAdmin: React.FC = () => {
         {showForm && (
           <div className={styles.formContainer}>
             <h2>{editingMap ? 'Edit Map' : 'Create New Map'}</h2>
-            <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
+            <form onSubmit={handleFormSubmit} className={styles.form}>
               <ControlledInput
                 fieldName="name"
                 errors={errors}
@@ -996,10 +1036,12 @@ const FoundryMapsAdmin: React.FC = () => {
                 {isEditingInModal ? (
                   <div className={styles.form}>
                     <form
-                      onSubmit={handleSubmit(async (data: any) => {
-                        await onSubmit(data);
-                        setIsEditingInModal(false);
-                      })}
+                      onSubmit={(e) => {
+                        void handleSubmit(async (data: FieldValues) => {
+                          await onSubmit(data);
+                          setIsEditingInModal(false);
+                        })(e);
+                      }}
                     >
                       <ControlledInput
                         fieldName="name"
