@@ -232,7 +232,7 @@ export interface ItemProps {
 }
 
 export type ItemPageProps = {
-  item?: ItemProps;
+  item?: ItemProps | null;
   getItem: (itemSlug: string) => void;
   loading: boolean;
 };

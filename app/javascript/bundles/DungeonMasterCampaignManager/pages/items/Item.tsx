@@ -20,7 +20,7 @@ import { Section, Info, TableFrame } from './Item.styles';
 
 type ItemDetailPageProps = ItemPageProps & {
   currentUser?: UserProps;
-  deleteItem: (itemId: number) => Promise<void>;
+  deleteItem: (itemId: number) => Promise<unknown>;
 };
 
 const Item = (props: ItemDetailPageProps) => {

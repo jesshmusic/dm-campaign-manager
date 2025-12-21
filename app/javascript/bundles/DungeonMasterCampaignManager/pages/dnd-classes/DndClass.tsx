@@ -23,7 +23,7 @@ import { Page, InfoSection, SectionGroup, SectionHeading } from './DndClass.styl
 type DndClassPageProps = {
   dndClass?: DndClass;
   getDndClass: (dndClassSlug: string) => void;
-  deleteDndClass: (dndClassId: number) => Promise<void>;
+  deleteDndClass: (dndClassId: number) => Promise<unknown>;
   currentUser?: UserProps;
 };
 
