@@ -150,7 +150,7 @@ const Rule = (props: RulePageProps) => {
               return (
                 <Link key={childRule.slug} to={getContentUrl('rules', childRule.slug, edition)}>
                   <RuleCard>
-                    {ruleIcon && <RuleCardIcon>{getRuleIcon(childRule)}</RuleCardIcon>}
+                    {ruleIcon && <RuleCardIcon>{ruleIcon}</RuleCardIcon>}
                     <RuleCardContent>
                       <h4>{childRule.name}</h4>
                     </RuleCardContent>
