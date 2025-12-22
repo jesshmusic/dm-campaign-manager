@@ -48,7 +48,7 @@ const sortByOrder = (rules: RuleSummary[]): RuleSummary[] => {
 };
 
 // Helper to get icon for a rule - returns undefined if no icon set
-const getRuleIcon = (rule: RuleSummary) => {
+export const getRuleIcon = (rule: RuleSummary) => {
   if (rule.game_icon) {
     return getIconFromName(rule.game_icon);
   }

@@ -19,13 +19,14 @@ import RuleFormModal from './RuleFormModal';
 
 import {
   RuleContent,
-  RulesList,
   TableFrame,
   RuleNavigation,
   NavButton,
   NavButtonText,
   NavSpacer,
 } from './Rule.styles';
+import { RuleCard, RuleCardContent, RuleCardIcon, RulesGrid } from './Rules.styles';
+import { getRuleIcon } from './RulesIndex';
 
 type Ancestor = {
   name: string;
@@ -143,13 +144,21 @@ const Rule = (props: RulePageProps) => {
           >
             {rule.description}
           </ReactMarkdown>
-          <RulesList>
-            {rule.rules?.map((childRule) => (
-              <Link key={childRule.slug} to={getContentUrl('rules', childRule.slug, edition)}>
-                {childRule.name}
-              </Link>
-            ))}
-          </RulesList>
+          <RulesGrid>
+            {rule.rules?.map((childRule) => {
+              const ruleIcon = getRuleIcon(childRule);
+              return (
+                <Link key={childRule.slug} to={getContentUrl('rules', childRule.slug, edition)}>
+                  <RuleCard>
+                    {ruleIcon && <RuleCardIcon>{getRuleIcon(childRule)}</RuleCardIcon>}
+                    <RuleCardContent>
+                      <h4>{childRule.name}</h4>
+                    </RuleCardContent>
+                  </RuleCard>
+                </Link>
+              );
+            })}
+          </RulesGrid>
 
           {(rule.previous_rule ?? rule.next_rule) && (
             <RuleNavigation>
