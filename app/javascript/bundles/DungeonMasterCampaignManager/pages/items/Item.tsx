@@ -12,7 +12,7 @@ import ReactMarkdown from 'react-markdown';
 import { singleItemUseData } from './use-data';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useEdition } from '../../contexts/EditionContext';
-import { parseEditionParams, getContentUrl, isValidEdition } from '../../utilities/editionUrls';
+import { getItemUrl, isValidEdition } from '../../utilities/editionUrls';
 import { AdminActions } from '../../components/shared';
 import ItemFormModal from './ItemFormModal';
 
@@ -34,12 +34,17 @@ const Item = (props: ItemDetailPageProps) => {
     infoBlock: [],
   });
   const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
-  const params = useParams<{ edition?: string; itemSlug?: string }>();
-  const { edition, slug: itemSlug } = parseEditionParams(params.edition, params.itemSlug);
+  // URL pattern: /app/:edition/items/:category/:itemSlug
+  const { edition, category, itemSlug } = useParams<{
+    edition?: string;
+    category?: string;
+    itemSlug?: string;
+  }>();
   const { edition: contextEdition, isEdition2014 } = useEdition();
 
-  // Use edition from parsed params if valid, otherwise from context
+  // Use edition from URL if valid, otherwise from context
   const effectiveEdition = isValidEdition(edition) ? edition : contextEdition;
+  const effectiveCategory = category ?? 'magic-items';
 
   React.useEffect(() => {
     if (itemSlug) {
@@ -60,7 +65,7 @@ const Item = (props: ItemDetailPageProps) => {
   };
 
   const handleDeleteSuccess = () => {
-    navigate(getContentUrl('items', '', effectiveEdition));
+    navigate(getItemUrl(effectiveCategory, undefined, effectiveEdition));
   };
 
   const handleDelete = async () => {
@@ -77,14 +82,14 @@ const Item = (props: ItemDetailPageProps) => {
       maxWidth
       pageTitle={itemTitle}
     >
+      <AdminActions
+        currentUser={currentUser}
+        onEdit={() => setIsEditModalOpen(true)}
+        onDelete={handleDelete}
+      />
       <PageTitle title={itemTitle} isLegacy={isEdition2014} />
       {item && itemInfo ? (
         <Section>
-          <AdminActions
-            currentUser={currentUser}
-            onEdit={() => setIsEditModalOpen(true)}
-            onDelete={handleDelete}
-          />
           <Info>
             <h2>{itemInfo.subtitle}</h2>
             {itemInfo.infoBlock?.map((info, index) => (
@@ -99,7 +104,7 @@ const Item = (props: ItemDetailPageProps) => {
               <ul>
                 {item.contents.map((contentItem, index) => (
                   <li key={`${contentItem.index}-${index}`}>
-                    <Link to={getContentUrl('items', contentItem.index, effectiveEdition)}>
+                    <Link to={getItemUrl(effectiveCategory, contentItem.index, effectiveEdition)}>
                       <strong>{contentItem.name}</strong> - quantity: {contentItem.quantity}
                     </Link>
                   </li>

@@ -1,4 +1,4 @@
-import { describe, it, expect, jest, beforeEach } from '@jest/globals';
+import { describe, it, expect, jest } from '@jest/globals';
 import React from 'react';
 import { render, screen } from '../test-utils';
 import { MemoryRouter } from 'react-router-dom';
@@ -180,7 +180,7 @@ jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/fe
 });
 
 describe('DMRoutes', () => {
-  describe('public routes', () => {
+  describe('public routes with edition', () => {
     it('should render home page on root path', () => {
       render(
         <MemoryRouter initialEntries={['/']}>
@@ -191,9 +191,9 @@ describe('DMRoutes', () => {
       expect(screen.getByTestId('home-page')).toBeInTheDocument();
     });
 
-    it('should render D&D classes list page', () => {
+    it('should render D&D classes list page with edition', () => {
       render(
-        <MemoryRouter initialEntries={['/app/classes']}>
+        <MemoryRouter initialEntries={['/app/2024/classes']}>
           <DMRoutes />
         </MemoryRouter>
       );
@@ -201,9 +201,9 @@ describe('DMRoutes', () => {
       expect(screen.getByTestId('dnd-classes-page')).toBeInTheDocument();
     });
 
-    it('should render specific D&D class page', () => {
+    it('should render specific D&D class page with edition', () => {
       render(
-        <MemoryRouter initialEntries={['/app/classes/fighter']}>
+        <MemoryRouter initialEntries={['/app/2024/classes/fighter']}>
           <DMRoutes />
         </MemoryRouter>
       );
@@ -211,9 +211,9 @@ describe('DMRoutes', () => {
       expect(screen.getByTestId('dnd-class-page')).toBeInTheDocument();
     });
 
-    it('should render races list page', () => {
+    it('should render races list page with edition', () => {
       render(
-        <MemoryRouter initialEntries={['/app/races']}>
+        <MemoryRouter initialEntries={['/app/2024/races']}>
           <DMRoutes />
         </MemoryRouter>
       );
@@ -221,9 +221,9 @@ describe('DMRoutes', () => {
       expect(screen.getByTestId('races-page')).toBeInTheDocument();
     });
 
-    it('should render specific race page', () => {
+    it('should render specific race page with edition', () => {
       render(
-        <MemoryRouter initialEntries={['/app/races/elf']}>
+        <MemoryRouter initialEntries={['/app/2024/races/elf']}>
           <DMRoutes />
         </MemoryRouter>
       );
@@ -231,9 +231,19 @@ describe('DMRoutes', () => {
       expect(screen.getByTestId('race-page')).toBeInTheDocument();
     });
 
-    it('should render specific item page', () => {
+    it('should render items page with category', () => {
       render(
-        <MemoryRouter initialEntries={['/app/items/longsword']}>
+        <MemoryRouter initialEntries={['/app/2024/items/weapons']}>
+          <DMRoutes />
+        </MemoryRouter>
+      );
+
+      expect(screen.getByTestId('items-page')).toBeInTheDocument();
+    });
+
+    it('should render specific item page with category', () => {
+      render(
+        <MemoryRouter initialEntries={['/app/2024/items/weapons/longsword']}>
           <DMRoutes />
         </MemoryRouter>
       );
@@ -241,9 +251,9 @@ describe('DMRoutes', () => {
       expect(screen.getByTestId('item-page')).toBeInTheDocument();
     });
 
-    it('should render monsters list page', () => {
+    it('should render monsters list page with edition', () => {
       render(
-        <MemoryRouter initialEntries={['/app/monsters/']}>
+        <MemoryRouter initialEntries={['/app/2024/monsters']}>
           <DMRoutes />
         </MemoryRouter>
       );
@@ -251,9 +261,9 @@ describe('DMRoutes', () => {
       expect(screen.getByTestId('monsters-page')).toBeInTheDocument();
     });
 
-    it('should render specific monster page', () => {
+    it('should render specific monster page with edition', () => {
       render(
-        <MemoryRouter initialEntries={['/app/monsters/goblin']}>
+        <MemoryRouter initialEntries={['/app/2024/monsters/goblin']}>
           <DMRoutes />
         </MemoryRouter>
       );
@@ -261,9 +271,9 @@ describe('DMRoutes', () => {
       expect(screen.getByTestId('monster-page')).toBeInTheDocument();
     });
 
-    it('should render spells list page', () => {
+    it('should render spells list page with edition', () => {
       render(
-        <MemoryRouter initialEntries={['/app/spells/']}>
+        <MemoryRouter initialEntries={['/app/2024/spells']}>
           <DMRoutes />
         </MemoryRouter>
       );
@@ -271,9 +281,9 @@ describe('DMRoutes', () => {
       expect(screen.getByTestId('spells-page')).toBeInTheDocument();
     });
 
-    it('should render specific spell page', () => {
+    it('should render specific spell page with edition', () => {
       render(
-        <MemoryRouter initialEntries={['/app/spells/fireball']}>
+        <MemoryRouter initialEntries={['/app/2024/spells/fireball']}>
           <DMRoutes />
         </MemoryRouter>
       );
@@ -281,9 +291,19 @@ describe('DMRoutes', () => {
       expect(screen.getByTestId('spell-page')).toBeInTheDocument();
     });
 
-    it('should render rule page', () => {
+    it('should render rules index page with edition', () => {
       render(
-        <MemoryRouter initialEntries={['/app/rules/combat']}>
+        <MemoryRouter initialEntries={['/app/2024/rules']}>
+          <DMRoutes />
+        </MemoryRouter>
+      );
+
+      expect(screen.getByTestId('rules-index-page')).toBeInTheDocument();
+    });
+
+    it('should render rule page with edition', () => {
+      render(
+        <MemoryRouter initialEntries={['/app/2024/rules/combat']}>
           <DMRoutes />
         </MemoryRouter>
       );
@@ -291,9 +311,9 @@ describe('DMRoutes', () => {
       expect(screen.getByTestId('rule-page')).toBeInTheDocument();
     });
 
-    it('should render rules glossary page', () => {
+    it('should render rules glossary page with edition', () => {
       render(
-        <MemoryRouter initialEntries={['/app/rules/rules-glossary']}>
+        <MemoryRouter initialEntries={['/app/2024/rules/rules-glossary']}>
           <DMRoutes />
         </MemoryRouter>
       );
@@ -329,6 +349,46 @@ describe('DMRoutes', () => {
       );
 
       expect(screen.getByTestId('privacy-policy-page')).toBeInTheDocument();
+    });
+
+    it('should render backgrounds index page with edition', () => {
+      render(
+        <MemoryRouter initialEntries={['/app/2024/backgrounds']}>
+          <DMRoutes />
+        </MemoryRouter>
+      );
+
+      expect(screen.getByTestId('backgrounds-index-page')).toBeInTheDocument();
+    });
+
+    it('should render background detail page with edition', () => {
+      render(
+        <MemoryRouter initialEntries={['/app/2024/backgrounds/soldier']}>
+          <DMRoutes />
+        </MemoryRouter>
+      );
+
+      expect(screen.getByTestId('background-detail-page')).toBeInTheDocument();
+    });
+
+    it('should render feats index page with edition', () => {
+      render(
+        <MemoryRouter initialEntries={['/app/2024/feats']}>
+          <DMRoutes />
+        </MemoryRouter>
+      );
+
+      expect(screen.getByTestId('feats-index-page')).toBeInTheDocument();
+    });
+
+    it('should render feat detail page with edition', () => {
+      render(
+        <MemoryRouter initialEntries={['/app/2024/feats/alert']}>
+          <DMRoutes />
+        </MemoryRouter>
+      );
+
+      expect(screen.getByTestId('feat-detail-page')).toBeInTheDocument();
     });
   });
 

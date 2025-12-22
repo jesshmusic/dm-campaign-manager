@@ -1,6 +1,7 @@
 /**
  * URL utilities for edition-aware routing
- * All content URLs include edition to support shareable links
+ * URL structure: /app/:edition/:type/:category?/:slug
+ * Edition comes right after /app for cleaner structure
  */
 
 export type DndEdition = '2014' | '2024';
@@ -25,45 +26,61 @@ export const isValidEdition = (value: string | undefined): value is DndEdition =
 
 /**
  * Get URL for a specific content item with edition
+ * Pattern: /app/:edition/:type/:slug
  */
 export const getContentUrl = (type: ContentType, slug: string, edition?: string): string => {
   const ed = isValidEdition(edition) ? edition : DEFAULT_EDITION;
-  return `/app/${type}/${ed}/${slug}`;
+  if (!slug) {
+    return `/app/${ed}/${type}`;
+  }
+  return `/app/${ed}/${type}/${slug}`;
+};
+
+/**
+ * Get URL for items with category
+ * Pattern: /app/:edition/items/:category/:slug?
+ */
+export const getItemUrl = (category: string, slug?: string, edition?: string): string => {
+  const ed = isValidEdition(edition) ? edition : DEFAULT_EDITION;
+  if (!slug) {
+    return `/app/${ed}/items/${category}`;
+  }
+  return `/app/${ed}/items/${category}/${slug}`;
 };
 
 /**
  * Get URL for a content index page with edition
+ * Pattern: /app/:edition/:type
  */
 export const getContentIndexUrl = (type: ContentType, edition?: string): string => {
   const ed = isValidEdition(edition) ? edition : DEFAULT_EDITION;
-  return `/app/${type}/${ed}`;
-};
-
-/**
- * Parse edition and slug from route params
- * Handles both /app/type/edition/slug and /app/type/slug patterns
- */
-export const parseEditionParams = (
-  param1?: string,
-  param2?: string,
-): { edition: DndEdition; slug?: string } => {
-  if (isValidEdition(param1)) {
-    return { edition: param1, slug: param2 };
-  }
-  // param1 is the slug, use default edition
-  return { edition: DEFAULT_EDITION, slug: param1 };
+  return `/app/${ed}/${type}`;
 };
 
 /**
  * Get edition from URL path
- * Extracts edition from paths like /app/rules/2024/combat
+ * Extracts edition from paths like /app/2024/rules/combat
+ * URL pattern: /app/{edition}/{type}/{slug}
  */
 export const getEditionFromPath = (pathname: string): DndEdition | null => {
   const parts = pathname.split('/');
-  // URL pattern: /app/{type}/{edition}/{slug}
-  // parts[0] = '', parts[1] = 'app', parts[2] = type, parts[3] = edition or slug
-  if (parts.length >= 4 && isValidEdition(parts[3])) {
-    return parts[3];
+  // parts[0] = '', parts[1] = 'app', parts[2] = edition
+  if (parts.length >= 3 && isValidEdition(parts[2])) {
+    return parts[2];
+  }
+  return null;
+};
+
+/**
+ * Replace edition in a URL path
+ * Used when switching editions while on an edition-aware page
+ */
+export const replaceEditionInPath = (pathname: string, newEdition: DndEdition): string | null => {
+  const parts = pathname.split('/');
+  // URL pattern: /app/{edition}/...
+  if (parts.length >= 3 && isValidEdition(parts[2])) {
+    parts[2] = newEdition;
+    return parts.join('/');
   }
   return null;
 };

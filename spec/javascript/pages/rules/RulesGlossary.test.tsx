@@ -196,10 +196,10 @@ describe('RulesGlossary', () => {
 
     // Check that terms are links with edition in URL
     const attackLink = screen.getByRole('link', { name: /Attack/i });
-    expect(attackLink).toHaveAttribute('href', '/app/rules/2024/attack');
+    expect(attackLink).toHaveAttribute('href', '/app/2024/rules/attack');
 
     const blindedLink = screen.getByRole('link', { name: /Blinded/i });
-    expect(blindedLink).toHaveAttribute('href', '/app/rules/2024/blinded');
+    expect(blindedLink).toHaveAttribute('href', '/app/2024/rules/blinded');
   });
 
   it('scrolls to category when TOC item is clicked', () => {

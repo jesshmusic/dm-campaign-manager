@@ -128,6 +128,6 @@ describe('BackgroundsIndex', () => {
     renderComponent(store);
 
     const acolyteLink = screen.getByText('Acolyte').closest('a');
-    expect(acolyteLink).toHaveAttribute('href', '/app/backgrounds/2024/acolyte');
+    expect(acolyteLink).toHaveAttribute('href', '/app/2024/backgrounds/acolyte');
   });
 });

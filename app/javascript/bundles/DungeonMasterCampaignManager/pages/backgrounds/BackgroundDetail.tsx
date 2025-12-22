@@ -8,7 +8,7 @@ import PageTitle from '../../components/PageTitle/PageTitle';
 import DndSpinner from '../../components/DndSpinners/DndSpinner';
 import { useEdition } from '../../contexts/EditionContext';
 import { Background } from '../../reducers/backgrounds';
-import { parseEditionParams } from '../../utilities/editionUrls';
+import { getContentIndexUrl } from '../../utilities/editionUrls';
 import { UserProps } from '../../utilities/types';
 import { AdminActions } from '../../components/shared';
 import BackgroundFormModal from './BackgroundFormModal';
@@ -39,14 +39,10 @@ const BackgroundDetail = ({
   getBackground,
   deleteBackground,
 }: BackgroundDetailProps) => {
-  const params = useParams<{ edition?: string; backgroundSlug?: string; param?: string }>();
+  // URL pattern: /app/:edition/backgrounds/:backgroundSlug
+  const { backgroundSlug } = useParams<{ backgroundSlug?: string }>();
   const navigate = useNavigate();
-  // Handle both /app/backgrounds/:edition/:slug and /app/backgrounds/:param routes
-  const { slug: backgroundSlug } = parseEditionParams(
-    params.edition,
-    params.backgroundSlug ?? params.param,
-  );
-  const { isEdition2014 } = useEdition();
+  const { edition, isEdition2014 } = useEdition();
   const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
 
   React.useEffect(() => {
@@ -66,7 +62,7 @@ const BackgroundDetail = ({
       deleteBackground(currentBackground.id, token);
       // Navigate back to backgrounds list after delete
       setTimeout(() => {
-        navigate('/app/backgrounds');
+        navigate(getContentIndexUrl('backgrounds', edition));
       }, 500);
     }
   };
