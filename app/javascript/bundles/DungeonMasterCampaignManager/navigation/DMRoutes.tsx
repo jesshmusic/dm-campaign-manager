@@ -1,4 +1,4 @@
-import { Route, Routes, useParams, Navigate } from 'react-router-dom';
+import { Route, Routes, useParams } from 'react-router-dom';
 import HomePage from '../pages/front-page/HomePage';
 import DndClasses from '../pages/dnd-classes/DndClasses';
 import Races from '../pages/races/Races';
@@ -27,7 +27,6 @@ import EditWidgetPage from '../pages/admin-dashboard/EditWidgetPage';
 import SearchResults from '../pages/search-results/SearchResults';
 import PrivacyPolicy from '../pages/privacy-policy/PrivacyPolicy';
 import FoundryMapsAdmin from '../pages/FoundryMapsAdmin';
-import { DEFAULT_EDITION, isValidEdition } from '../utilities/editionUrls';
 import { ItemType } from '../pages/items/use-data';
 
 type ResolverProps = Record<string, unknown>;
@@ -87,22 +86,6 @@ const ItemCategoryResolver = (props: ResolverProps) => {
   return <Item {...props} />;
 };
 
-// Generic legacy redirect for old URL patterns: /app/:type/:edition/:slug → /app/:edition/:type/:slug
-const LegacyContentRedirect = ({ contentType }: { contentType: string }) => {
-  const { param, slug } = useParams<{ param?: string; slug?: string }>();
-
-  // If param is an edition, redirect to new structure
-  if (isValidEdition(param)) {
-    if (slug) {
-      return <Navigate to={`/app/${param}/${contentType}/${slug}`} replace />;
-    }
-    return <Navigate to={`/app/${param}/${contentType}`} replace />;
-  }
-
-  // If param is not an edition, assume it's a slug and use default edition
-  return <Navigate to={`/app/${DEFAULT_EDITION}/${contentType}/${param}`} replace />;
-};
-
 const DMRoutes = (props: ResolverProps) => {
   return (
     <Routes>
@@ -152,81 +135,6 @@ const DMRoutes = (props: ResolverProps) => {
       {/* Feats */}
       <Route path="/app/:edition/feats/:featSlug" element={<FeatDetail {...props} />} />
       <Route path="/app/:edition/feats" element={<FeatsIndex {...props} />} />
-
-      {/* Legacy redirects for old URL structure: /app/:type/:edition/:slug → /app/:edition/:type/:slug */}
-      <Route
-        path="/app/classes/:param/:slug"
-        element={<LegacyContentRedirect contentType="classes" />}
-      />
-      <Route path="/app/classes/:param" element={<LegacyContentRedirect contentType="classes" />} />
-      <Route
-        path="/app/classes"
-        element={<Navigate to={`/app/${DEFAULT_EDITION}/classes`} replace />}
-      />
-
-      <Route path="/app/races/:param/:slug" element={<LegacyContentRedirect contentType="races" />} />
-      <Route path="/app/races/:param" element={<LegacyContentRedirect contentType="races" />} />
-      <Route
-        path="/app/races"
-        element={<Navigate to={`/app/${DEFAULT_EDITION}/races`} replace />}
-      />
-
-      <Route path="/app/items/:param/:slug" element={<LegacyContentRedirect contentType="items" />} />
-      <Route path="/app/items/:param" element={<LegacyContentRedirect contentType="items" />} />
-      <Route
-        path="/app/items"
-        element={<Navigate to={`/app/${DEFAULT_EDITION}/items`} replace />}
-      />
-
-      <Route
-        path="/app/monsters/:param/:slug"
-        element={<LegacyContentRedirect contentType="monsters" />}
-      />
-      <Route
-        path="/app/monsters/:param"
-        element={<LegacyContentRedirect contentType="monsters" />}
-      />
-      <Route
-        path="/app/monsters"
-        element={<Navigate to={`/app/${DEFAULT_EDITION}/monsters`} replace />}
-      />
-
-      <Route
-        path="/app/spells/:param/:slug"
-        element={<LegacyContentRedirect contentType="spells" />}
-      />
-      <Route path="/app/spells/:param" element={<LegacyContentRedirect contentType="spells" />} />
-      <Route
-        path="/app/spells"
-        element={<Navigate to={`/app/${DEFAULT_EDITION}/spells`} replace />}
-      />
-
-      <Route path="/app/rules/:param/:slug" element={<LegacyContentRedirect contentType="rules" />} />
-      <Route path="/app/rules/:param" element={<LegacyContentRedirect contentType="rules" />} />
-      <Route
-        path="/app/rules"
-        element={<Navigate to={`/app/${DEFAULT_EDITION}/rules`} replace />}
-      />
-
-      <Route
-        path="/app/backgrounds/:param/:slug"
-        element={<LegacyContentRedirect contentType="backgrounds" />}
-      />
-      <Route
-        path="/app/backgrounds/:param"
-        element={<LegacyContentRedirect contentType="backgrounds" />}
-      />
-      <Route
-        path="/app/backgrounds"
-        element={<Navigate to={`/app/${DEFAULT_EDITION}/backgrounds`} replace />}
-      />
-
-      <Route path="/app/feats/:param/:slug" element={<LegacyContentRedirect contentType="feats" />} />
-      <Route path="/app/feats/:param" element={<LegacyContentRedirect contentType="feats" />} />
-      <Route
-        path="/app/feats"
-        element={<Navigate to={`/app/${DEFAULT_EDITION}/feats`} replace />}
-      />
 
       {/* Non-edition routes */}
       <Route path="/app/monster-generator/" element={<MonsterGenerator {...props} />} />
