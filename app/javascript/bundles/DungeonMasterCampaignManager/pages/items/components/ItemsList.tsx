@@ -9,7 +9,7 @@ import { Column, Row } from 'react-table';
 import DataTable from '../../../components/DataTable/DataTable';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useEdition } from '../../../contexts/EditionContext';
-import { getContentUrl, isValidEdition } from '../../../utilities/editionUrls';
+import { getItemUrl, isValidEdition } from '../../../utilities/editionUrls';
 import { UserProps } from '../../../utilities/types';
 import { AdminNewButton } from '../../../components/shared';
 import ItemFormModal from '../ItemFormModal';
@@ -35,17 +35,19 @@ const ItemsList = ({
   currentUser,
   onCreateSuccess,
 }: ItemsListProps) => {
-  const { edition: editionParam } = useParams<{ edition?: string }>();
+  // URL pattern: /app/:edition/items/:category
+  const { edition: editionParam, category } = useParams<{ edition?: string; category?: string }>();
   const { edition: contextEdition, isEdition2014 } = useEdition();
   const [isCreateModalOpen, setIsCreateModalOpen] = React.useState(false);
 
   // Use edition from URL if valid, otherwise from context
   const edition = isValidEdition(editionParam) ? editionParam : contextEdition;
+  const effectiveCategory = category ?? 'magic-items';
 
   const navigate = useNavigate();
 
   const goToPage = (row: Row<Record<string, unknown>>) => {
-    navigate(getContentUrl('items', row.original.slug as string, edition));
+    navigate(getItemUrl(effectiveCategory, row.original.slug as string, edition));
   };
 
   const handleCreateSuccess = () => {

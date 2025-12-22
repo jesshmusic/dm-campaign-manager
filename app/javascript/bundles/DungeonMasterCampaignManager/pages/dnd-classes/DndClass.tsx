@@ -14,7 +14,7 @@ import EquipmentSection from './components/EquipmentSection';
 import ClassLevelsTable from './components/ClassLevelsTable';
 import FeaturesDesc from './components/FeaturesDesc';
 import { useParams, useNavigate } from 'react-router-dom';
-import { parseEditionParams, getContentUrl } from '../../utilities/editionUrls';
+import { getContentIndexUrl } from '../../utilities/editionUrls';
 import { AdminActions } from '../../components/shared';
 import DndClassFormModal from './DndClassFormModal';
 
@@ -30,12 +30,8 @@ type DndClassPageProps = {
 const DndClassPage = (props: DndClassPageProps) => {
   const { dndClass, getDndClass, deleteDndClass, currentUser } = props;
   const navigate = useNavigate();
-  const params = useParams<{ edition?: string; dndClassSlug?: string; param?: string }>();
-  // Handle both /app/classes/:edition/:slug and /app/classes/:param routes
-  const { slug: dndClassSlug } = parseEditionParams(
-    params.edition,
-    params.dndClassSlug ?? params.param,
-  );
+  // URL pattern: /app/:edition/classes/:classSlug
+  const { classSlug: dndClassSlug } = useParams<{ classSlug?: string }>();
   const { edition, isEdition2014 } = useEdition();
   const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
 
@@ -52,7 +48,7 @@ const DndClassPage = (props: DndClassPageProps) => {
   };
 
   const handleDeleteSuccess = () => {
-    navigate(getContentUrl('classes', '', edition));
+    navigate(getContentIndexUrl('classes', edition));
   };
 
   const handleDelete = async () => {

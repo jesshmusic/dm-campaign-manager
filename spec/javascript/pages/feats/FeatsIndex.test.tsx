@@ -155,6 +155,6 @@ describe('FeatsIndex', () => {
     renderComponent(store);
 
     const alertLink = screen.getByText('Alert').closest('a');
-    expect(alertLink).toHaveAttribute('href', '/app/feats/2024/alert');
+    expect(alertLink).toHaveAttribute('href', '/app/2024/feats/alert');
   });
 });

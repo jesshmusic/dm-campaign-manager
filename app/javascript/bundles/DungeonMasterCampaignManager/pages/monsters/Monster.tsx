@@ -7,7 +7,7 @@ import { RootState, AppDispatch } from '../../store/store';
 import DndSpinner from '../../components/DndSpinners/DndSpinner';
 import MonsterBlock from './MonsterBlock';
 import { useParams, useNavigate } from 'react-router-dom';
-import { parseEditionParams, getContentUrl } from '../../utilities/editionUrls';
+import { getContentIndexUrl } from '../../utilities/editionUrls';
 import { useEdition } from '../../contexts/EditionContext';
 import { AdminActions } from '../../components/shared';
 import MonsterFormModal from './MonsterFormModal';
@@ -22,12 +22,8 @@ type MonsterPageProps = {
 const Monster = (props: MonsterPageProps) => {
   const { monster, getMonster, deleteMonster, currentUser } = props;
   const navigate = useNavigate();
-  const params = useParams<{ edition?: string; monsterSlug?: string; param?: string }>();
-  // Handle both /app/monsters/:edition/:slug and /app/monsters/:param routes
-  const { slug: monsterSlug } = parseEditionParams(
-    params.edition,
-    params.monsterSlug ?? params.param,
-  );
+  // URL pattern: /app/:edition/monsters/:monsterSlug
+  const { monsterSlug } = useParams<{ monsterSlug?: string }>();
   const { edition } = useEdition();
   const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
 
@@ -44,7 +40,7 @@ const Monster = (props: MonsterPageProps) => {
   };
 
   const handleDeleteSuccess = () => {
-    navigate(getContentUrl('monsters', '', edition));
+    navigate(getContentIndexUrl('monsters', edition));
   };
 
   const handleDelete = async () => {

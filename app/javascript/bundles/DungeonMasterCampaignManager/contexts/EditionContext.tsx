@@ -7,7 +7,7 @@ import React, {
   ReactNode,
 } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { getEditionFromPath, isValidEdition, DndEdition } from '../utilities/editionUrls';
+import { getEditionFromPath, replaceEditionInPath, DndEdition } from '../utilities/editionUrls';
 
 export type { DndEdition } from '../utilities/editionUrls';
 
@@ -73,13 +73,8 @@ export const EditionProvider: React.FC<EditionProviderProps> = ({ children, init
 
       // If we're on an edition-aware URL, update the URL to reflect the new edition
       if (urlEdition && urlEdition !== newEdition) {
-        const currentPath = location.pathname;
-        // Replace the edition in the URL path
-        // URL pattern: /app/{type}/{edition}/{slug} or /app/{type}/{edition}
-        const parts = currentPath.split('/');
-        if (parts.length >= 4 && isValidEdition(parts[3])) {
-          parts[3] = newEdition;
-          const newPath = parts.join('/');
+        const newPath = replaceEditionInPath(location.pathname, newEdition);
+        if (newPath) {
           navigate(newPath, { replace: true });
         }
       }

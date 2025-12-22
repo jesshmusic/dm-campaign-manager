@@ -9,7 +9,7 @@ import DndSpinner from '../../components/DndSpinners/DndSpinner';
 import { useEdition } from '../../contexts/EditionContext';
 import ReactMarkdown from 'react-markdown';
 import { Feat } from '../../reducers/feats';
-import { parseEditionParams } from '../../utilities/editionUrls';
+import { getContentIndexUrl } from '../../utilities/editionUrls';
 import { UserProps } from '../../utilities/types';
 import { AdminActions } from '../../components/shared';
 import FeatFormModal from './FeatFormModal';
@@ -40,11 +40,10 @@ const FeatDetail = ({
   getFeat,
   deleteFeat,
 }: FeatDetailProps) => {
-  const params = useParams<{ edition?: string; featSlug?: string; param?: string }>();
+  // URL pattern: /app/:edition/feats/:featSlug
+  const { featSlug } = useParams<{ featSlug?: string }>();
   const navigate = useNavigate();
-  // Handle both /app/feats/:edition/:slug and /app/feats/:param routes
-  const { slug: featSlug } = parseEditionParams(params.edition, params.featSlug ?? params.param);
-  const { isEdition2014 } = useEdition();
+  const { edition, isEdition2014 } = useEdition();
   const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
 
   React.useEffect(() => {
@@ -64,7 +63,7 @@ const FeatDetail = ({
       deleteFeat(currentFeat.id, token);
       // Navigate back to feats list after delete
       setTimeout(() => {
-        navigate('/app/feats');
+        navigate(getContentIndexUrl('feats', edition));
       }, 500);
     }
   };

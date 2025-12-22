@@ -199,8 +199,10 @@ describe('RulesCategory', () => {
   });
 
   describe('route pattern handling', () => {
-    it('handles two-param route with edition and ruleSlug', () => {
-      mockUseParams.mockReturnValue({ edition: '2024', ruleSlug: 'combat-rules' });
+    // URL pattern is now /app/:edition/rules/:ruleSlug
+    // Edition comes from EditionContext, ruleSlug comes from useParams
+    it('handles ruleSlug param', () => {
+      mockUseParams.mockReturnValue({ ruleSlug: 'combat-rules' });
       const store = createMockStore({
         rules: [
           { name: 'Combat Rules', slug: 'combat-rules', rules: [] },
@@ -216,25 +218,8 @@ describe('RulesCategory', () => {
       expect(screen.getByTestId('rule-component')).toHaveTextContent('Combat Rules');
     });
 
-    it('handles resolver param route', () => {
-      mockUseParams.mockReturnValue({ param: 'spellcasting' });
-      const store = createMockStore({
-        rules: [
-          { name: 'Spellcasting', slug: 'spellcasting', rules: [] },
-        ],
-        loading: false,
-        currentRule: { name: 'Spellcasting', description: 'Spell rules', rules: [] },
-        currentRuleLoading: false,
-      });
-
-      renderWithProviders(store);
-
-      expect(screen.getByTestId('rule-component')).toBeInTheDocument();
-      expect(screen.getByTestId('rule-component')).toHaveTextContent('Spellcasting');
-    });
-
-    it('handles two-param route with 2014 edition', () => {
-      mockUseParams.mockReturnValue({ edition: '2014', ruleSlug: 'conditions' });
+    it('handles 2014 edition from context', () => {
+      mockUseParams.mockReturnValue({ ruleSlug: 'conditions' });
       const store = createMockStore({
         rules: [
           { name: 'Conditions', slug: 'conditions', rules: [] },

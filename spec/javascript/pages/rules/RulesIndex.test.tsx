@@ -223,7 +223,7 @@ describe('RulesIndex', () => {
       renderWithProviders(store);
 
       const link = screen.getByRole('link', { name: /Playing the Game/i });
-      expect(link).toHaveAttribute('href', '/app/rules/2024/playing-the-game');
+      expect(link).toHaveAttribute('href', '/app/2024/rules/playing-the-game');
     });
   });
 

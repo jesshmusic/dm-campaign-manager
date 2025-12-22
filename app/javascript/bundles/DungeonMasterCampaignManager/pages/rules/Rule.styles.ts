@@ -149,10 +149,6 @@ export const RuleContent = styled.div`
   }
 `;
 
-export const RulesList = styled.div`
-  padding-top: ${({ theme }) => theme.spacing.spacer};
-`;
-
 export const TableFrame = styled.div`
   background-color: ${({ theme }) => theme.colors.white};
   border-collapse: separate;

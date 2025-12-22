@@ -8,7 +8,7 @@ import PageTitle from '../../components/PageTitle/PageTitle';
 import DndSpinner from '../../components/DndSpinners/DndSpinner';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useEdition } from '../../contexts/EditionContext';
-import { parseEditionParams, getContentUrl } from '../../utilities/editionUrls';
+import { getContentIndexUrl } from '../../utilities/editionUrls';
 import { AdminActions } from '../../components/shared';
 import RaceFormModal from './RaceFormModal';
 
@@ -25,9 +25,8 @@ const Race = (props: RacePageProps) => {
   const { race, getRace, deleteRace, currentUser } = props;
   const navigate = useNavigate();
   const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
-  const params = useParams<{ edition?: string; raceSlug?: string; param?: string }>();
-  // Handle both /app/races/:edition/:slug and /app/races/:param routes
-  const { slug: raceSlug } = parseEditionParams(params.edition, params.raceSlug ?? params.param);
+  // URL pattern: /app/:edition/races/:raceSlug
+  const { raceSlug } = useParams<{ raceSlug?: string }>();
   const { edition, isEdition2014, isEdition2024 } = useEdition();
 
   // In 2024 edition, "Race" is called "Species"
@@ -46,7 +45,7 @@ const Race = (props: RacePageProps) => {
   };
 
   const handleDeleteSuccess = () => {
-    navigate(getContentUrl('races', '', edition));
+    navigate(getContentIndexUrl('races', edition));
   };
 
   const handleDelete = async () => {

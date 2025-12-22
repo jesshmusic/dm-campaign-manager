@@ -27,7 +27,7 @@ import {
 import PatreonIcon from '../icons/PatreonIcon';
 import EditionToggle from '../EditionToggle';
 import { getIconFromName } from '../../utilities/icons';
-import { getContentUrl, getContentIndexUrl } from '../../utilities/editionUrls';
+import { getContentUrl, getContentIndexUrl, getItemUrl } from '../../utilities/editionUrls';
 import {
   SIDEBAR_MIN_WIDTH,
   SIDEBAR_COLLAPSED_WIDTH,
@@ -96,31 +96,15 @@ const getRuleIcon = (rule: RuleType | ChildRuleType) => {
   return undefined;
 };
 
-const itemTypes = [
-  { name: 'Armor', link: '/app/items/armor', icon: <GiCapeArmor /> },
-  { name: 'Weapons', link: '/app/items/weapons', icon: <GiSwordArray /> },
-  { name: 'Adventuring Gear', link: '/app/items/gear', icon: <GiSwapBag /> },
-  {
-    name: 'Mounts & Vehicles',
-    link: '/app/items/vehicles',
-    icon: <GiHorseHead />,
-  },
-  { name: 'Tools', link: '/app/items/tools', icon: <GiToolbox /> },
-  {
-    name: 'Magic Items',
-    link: '/app/items/magic-items',
-    icon: <GiMagicPotion />,
-  },
-  {
-    name: 'Magic Armor',
-    link: '/app/items/magic-armor',
-    icon: <GiChestArmor />,
-  },
-  {
-    name: 'Magic Weapons',
-    link: '/app/items/magic-weapons',
-    icon: <GiMagicAxe />,
-  },
+const itemCategories = [
+  { name: 'Armor', category: 'armor', icon: <GiCapeArmor /> },
+  { name: 'Weapons', category: 'weapons', icon: <GiSwordArray /> },
+  { name: 'Adventuring Gear', category: 'gear', icon: <GiSwapBag /> },
+  { name: 'Mounts & Vehicles', category: 'vehicles', icon: <GiHorseHead /> },
+  { name: 'Tools', category: 'tools', icon: <GiToolbox /> },
+  { name: 'Magic Items', category: 'magic-items', icon: <GiMagicPotion /> },
+  { name: 'Magic Armor', category: 'magic-armor', icon: <GiChestArmor /> },
+  { name: 'Magic Weapons', category: 'magic-weapons', icon: <GiMagicAxe /> },
 ];
 
 const SideBar = (props: {
@@ -218,8 +202,9 @@ const SideBar = (props: {
   const racesLabel = isEdition2024 ? 'Species' : 'Races';
 
   // Determine if submenus should be open based on current path
-  const isItemsPath = location.pathname.startsWith('/app/items');
-  const isRulesPath = location.pathname.startsWith('/app/rules');
+  // New URL structure: /app/:edition/items or /app/:edition/rules
+  const isItemsPath = location.pathname.includes('/items');
+  const isRulesPath = location.pathname.includes('/rules');
 
   // Controlled state for submenus - initialized based on current path
   const [itemsOpen, setItemsOpen] = React.useState(isItemsPath);
@@ -410,13 +395,17 @@ const SideBar = (props: {
               marginTop: '-.125rem',
             }}
           >
-            <SidebarLink to="/app/items" title="All Equipment" icon={<GiSwapBag />} />
-            {itemTypes.map((itemType, index) => (
+            <SidebarLink
+              to={getContentIndexUrl('items', edition)}
+              title="All Equipment"
+              icon={<GiSwapBag />}
+            />
+            {itemCategories.map((item, index) => (
               <SidebarLink
                 key={`items-${index}`}
-                to={itemType.link}
-                title={itemType.name}
-                icon={itemType.icon}
+                to={getItemUrl(item.category, undefined, edition)}
+                title={item.name}
+                icon={item.icon}
               />
             ))}
           </SubMenu>

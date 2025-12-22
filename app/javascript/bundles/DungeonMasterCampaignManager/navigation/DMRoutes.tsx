@@ -9,7 +9,6 @@ import Monsters from '../pages/monsters/Monsters';
 import Monster from '../pages/monsters/Monster';
 import Spells from '../pages/spells/Spells';
 import Spell from '../pages/spells/Spell';
-// Rule component is now rendered by RulesCategory
 import RulesIndex from '../pages/rules/RulesIndex';
 import RulesCategory from '../pages/rules/RulesCategory';
 import RulesGlossary from '../pages/rules/RulesGlossary';
@@ -28,50 +27,9 @@ import EditWidgetPage from '../pages/admin-dashboard/EditWidgetPage';
 import SearchResults from '../pages/search-results/SearchResults';
 import PrivacyPolicy from '../pages/privacy-policy/PrivacyPolicy';
 import FoundryMapsAdmin from '../pages/FoundryMapsAdmin';
-import { isValidEdition } from '../utilities/editionUrls';
 import { ItemType } from '../pages/items/use-data';
 
 type ResolverProps = Record<string, unknown>;
-
-// Resolver components that determine if single param is edition or slug
-const ClassesResolver = (props: ResolverProps) => {
-  const { param } = useParams<{ param: string }>();
-  return isValidEdition(param) ? <DndClasses {...props} /> : <DndClass {...props} />;
-};
-
-const RacesResolver = (props: ResolverProps) => {
-  const { param } = useParams<{ param: string }>();
-  return isValidEdition(param) ? <Races {...props} /> : <Race {...props} />;
-};
-
-const MonstersResolver = (props: ResolverProps) => {
-  const { param } = useParams<{ param: string }>();
-  return isValidEdition(param) ? <Monsters {...props} /> : <Monster {...props} />;
-};
-
-const SpellsResolver = (props: ResolverProps) => {
-  const { param } = useParams<{ param: string }>();
-  return isValidEdition(param) ? <Spells {...props} /> : <Spell {...props} />;
-};
-
-const RulesResolver = (props: ResolverProps) => {
-  const { param } = useParams<{ param: string }>();
-  // Special case: rules-glossary goes to RulesGlossary even without edition
-  if (param === 'rules-glossary') {
-    return <RulesGlossary {...props} />;
-  }
-  return isValidEdition(param) ? <RulesIndex {...props} /> : <RulesCategory {...props} />;
-};
-
-const BackgroundsResolver = (props: ResolverProps) => {
-  const { param } = useParams<{ param: string }>();
-  return isValidEdition(param) ? <BackgroundsIndex {...props} /> : <BackgroundDetail {...props} />;
-};
-
-const FeatsResolver = (props: ResolverProps) => {
-  const { param } = useParams<{ param: string }>();
-  return isValidEdition(param) ? <FeatsIndex {...props} /> : <FeatDetail {...props} />;
-};
 
 // Map of item category slugs to ItemType values
 const itemCategoryMap: Record<string, ItemType> = {
@@ -96,42 +54,35 @@ const itemCategoryTitles: Record<string, string> = {
   weapons: 'Weapons',
 };
 
-// Resolver for /app/items/:edition/:slug - determines if slug is a category or item
-const ItemsEditionResolver = (props: ResolverProps) => {
-  const { edition, itemSlug } = useParams<{ edition: string; itemSlug: string }>();
+// Resolver for /app/:edition/items/:category/:slug - item detail
+const ItemDetailResolver = (props: ResolverProps) => {
+  const { category } = useParams<{ category: string }>();
 
-  // If edition is valid and slug is a known category, render category page
-  if (isValidEdition(edition) && itemSlug && itemCategoryMap[itemSlug]) {
+  // If category is known, render item detail
+  if (category && itemCategoryMap[category]) {
+    return <Item {...props} />;
+  }
+
+  // Unknown category, still try to render item
+  return <Item {...props} />;
+};
+
+// Resolver for /app/:edition/items/:category - could be category list or item detail
+const ItemCategoryResolver = (props: ResolverProps) => {
+  const { category } = useParams<{ category: string }>();
+
+  // If category is a known category, render category list
+  if (category && itemCategoryMap[category]) {
     return (
       <Items
         {...props}
-        itemType={itemCategoryMap[itemSlug]}
-        pageTitle={itemCategoryTitles[itemSlug]}
+        itemType={itemCategoryMap[category]}
+        pageTitle={itemCategoryTitles[category]}
       />
     );
   }
 
-  // Otherwise, treat as individual item detail
-  return <Item {...props} />;
-};
-
-// Resolver for /app/items/:param - determines if param is edition, category, or item
-const ItemsResolver = (props: ResolverProps) => {
-  const { param } = useParams<{ param: string }>();
-
-  // If param is a valid edition, show all items
-  if (isValidEdition(param)) {
-    return <Items {...props} itemType={ItemType.all} pageTitle="All Equipment and Items" />;
-  }
-
-  // If param is a known category, render category page
-  if (param && itemCategoryMap[param]) {
-    return (
-      <Items {...props} itemType={itemCategoryMap[param]} pageTitle={itemCategoryTitles[param]} />
-    );
-  }
-
-  // Otherwise, treat as individual item slug
+  // Otherwise treat as item slug (for backwards compatibility)
   return <Item {...props} />;
 };
 
@@ -140,54 +91,52 @@ const DMRoutes = (props: ResolverProps) => {
     <Routes>
       <Route path="/" element={<HomePage {...props} />} />
 
-      {/* Classes - edition-aware routes */}
-      <Route path="/app/classes/:edition/:dndClassSlug" element={<DndClass {...props} />} />
-      <Route path="/app/classes/:param" element={<ClassesResolver {...props} />} />
-      <Route path="/app/classes" element={<DndClasses {...props} />} />
+      {/* Edition-aware routes: /app/:edition/... */}
 
-      {/* Races - edition-aware routes */}
-      <Route path="/app/races/:edition/:raceSlug" element={<Race {...props} />} />
-      <Route path="/app/races/:param" element={<RacesResolver {...props} />} />
-      <Route path="/app/races" element={<Races {...props} />} />
+      {/* Classes */}
+      <Route path="/app/:edition/classes/:classSlug" element={<DndClass {...props} />} />
+      <Route path="/app/:edition/classes" element={<DndClasses {...props} />} />
 
-      {/* Items - edition-aware routes with resolvers */}
-      <Route path="/app/items/:edition/:itemSlug" element={<ItemsEditionResolver {...props} />} />
-      <Route path="/app/items/:param" element={<ItemsResolver {...props} />} />
+      {/* Races */}
+      <Route path="/app/:edition/races/:raceSlug" element={<Race {...props} />} />
+      <Route path="/app/:edition/races" element={<Races {...props} />} />
+
+      {/* Items with category support */}
       <Route
-        path="/app/items"
+        path="/app/:edition/items/:category/:itemSlug"
+        element={<ItemDetailResolver {...props} />}
+      />
+      <Route path="/app/:edition/items/:category" element={<ItemCategoryResolver {...props} />} />
+      <Route
+        path="/app/:edition/items"
         element={<Items {...props} itemType={ItemType.all} pageTitle="All Equipment and Items" />}
       />
 
-      {/* Monsters - edition-aware routes */}
-      <Route path="/app/monsters/:edition/:monsterSlug" element={<Monster {...props} />} />
-      <Route path="/app/monsters/:param" element={<MonstersResolver {...props} />} />
-      <Route path="/app/monsters" element={<Monsters {...props} />} />
+      {/* Monsters */}
+      <Route path="/app/:edition/monsters/:monsterSlug" element={<Monster {...props} />} />
+      <Route path="/app/:edition/monsters" element={<Monsters {...props} />} />
 
-      {/* Spells - edition-aware routes */}
-      <Route path="/app/spells/:edition/:spellSlug" element={<Spell {...props} />} />
-      <Route path="/app/spells/:param" element={<SpellsResolver {...props} />} />
-      <Route path="/app/spells" element={<Spells {...props} />} />
+      {/* Spells */}
+      <Route path="/app/:edition/spells/:spellSlug" element={<Spell {...props} />} />
+      <Route path="/app/:edition/spells" element={<Spells {...props} />} />
 
-      {/* Rules - edition-aware routes */}
-      <Route path="/app/rules/:edition/rules-glossary" element={<RulesGlossary {...props} />} />
-      <Route path="/app/rules/:edition/:ruleSlug" element={<RulesCategory {...props} />} />
-      <Route path="/app/rules/:param" element={<RulesResolver {...props} />} />
-      <Route path="/app/rules" element={<RulesIndex {...props} />} />
+      {/* Rules */}
+      <Route path="/app/:edition/rules/rules-glossary" element={<RulesGlossary {...props} />} />
+      <Route path="/app/:edition/rules/:ruleSlug" element={<RulesCategory {...props} />} />
+      <Route path="/app/:edition/rules" element={<RulesIndex {...props} />} />
 
-      {/* Backgrounds - edition-aware routes */}
+      {/* Backgrounds */}
       <Route
-        path="/app/backgrounds/:edition/:backgroundSlug"
+        path="/app/:edition/backgrounds/:backgroundSlug"
         element={<BackgroundDetail {...props} />}
       />
-      <Route path="/app/backgrounds/:param" element={<BackgroundsResolver {...props} />} />
-      <Route path="/app/backgrounds" element={<BackgroundsIndex {...props} />} />
+      <Route path="/app/:edition/backgrounds" element={<BackgroundsIndex {...props} />} />
 
-      {/* Feats - edition-aware routes */}
-      <Route path="/app/feats/:edition/:featSlug" element={<FeatDetail {...props} />} />
-      <Route path="/app/feats/:param" element={<FeatsResolver {...props} />} />
-      <Route path="/app/feats" element={<FeatsIndex {...props} />} />
+      {/* Feats */}
+      <Route path="/app/:edition/feats/:featSlug" element={<FeatDetail {...props} />} />
+      <Route path="/app/:edition/feats" element={<FeatsIndex {...props} />} />
 
-      {/* Other routes (no edition needed) */}
+      {/* Non-edition routes */}
       <Route path="/app/monster-generator/" element={<MonsterGenerator {...props} />} />
       <Route path="/app/search/:query" element={<SearchResults {...props} />} />
       <Route path="/app/privacy-policy" element={<PrivacyPolicy {...props} />} />

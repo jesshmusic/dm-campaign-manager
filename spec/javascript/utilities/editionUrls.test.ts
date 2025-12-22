@@ -2,8 +2,9 @@ import {
   isValidEdition,
   getContentUrl,
   getContentIndexUrl,
-  parseEditionParams,
+  getItemUrl,
   getEditionFromPath,
+  replaceEditionInPath,
   DEFAULT_EDITION,
 } from '../../../app/javascript/bundles/DungeonMasterCampaignManager/utilities/editionUrls';
 
@@ -32,92 +33,123 @@ describe('editionUrls', () => {
 
   describe('getContentUrl', () => {
     it('returns URL with valid edition', () => {
-      expect(getContentUrl('rules', 'combat', '2024')).toBe('/app/rules/2024/combat');
+      expect(getContentUrl('rules', 'combat', '2024')).toBe('/app/2024/rules/combat');
     });
 
     it('returns URL with 2014 edition', () => {
-      expect(getContentUrl('spells', 'fireball', '2014')).toBe('/app/spells/2014/fireball');
+      expect(getContentUrl('spells', 'fireball', '2014')).toBe('/app/2014/spells/fireball');
     });
 
     it('uses default edition when edition is undefined', () => {
-      expect(getContentUrl('monsters', 'dragon')).toBe(`/app/monsters/${DEFAULT_EDITION}/dragon`);
+      expect(getContentUrl('monsters', 'dragon')).toBe(`/app/${DEFAULT_EDITION}/monsters/dragon`);
     });
 
     it('uses default edition when edition is invalid', () => {
       expect(getContentUrl('classes', 'fighter', 'invalid')).toBe(
-        `/app/classes/${DEFAULT_EDITION}/fighter`
+        `/app/${DEFAULT_EDITION}/classes/fighter`
       );
+    });
+
+    it('returns index URL when slug is empty', () => {
+      expect(getContentUrl('rules', '', '2024')).toBe('/app/2024/rules');
     });
   });
 
   describe('getContentIndexUrl', () => {
     it('returns index URL with valid edition', () => {
-      expect(getContentIndexUrl('rules', '2024')).toBe('/app/rules/2024');
+      expect(getContentIndexUrl('rules', '2024')).toBe('/app/2024/rules');
     });
 
     it('returns index URL with 2014 edition', () => {
-      expect(getContentIndexUrl('spells', '2014')).toBe('/app/spells/2014');
+      expect(getContentIndexUrl('spells', '2014')).toBe('/app/2014/spells');
     });
 
     it('uses default edition when edition is undefined', () => {
-      expect(getContentIndexUrl('monsters')).toBe(`/app/monsters/${DEFAULT_EDITION}`);
+      expect(getContentIndexUrl('monsters')).toBe(`/app/${DEFAULT_EDITION}/monsters`);
     });
 
     it('uses default edition when edition is invalid', () => {
-      expect(getContentIndexUrl('races', 'invalid')).toBe(`/app/races/${DEFAULT_EDITION}`);
+      expect(getContentIndexUrl('races', 'invalid')).toBe(`/app/${DEFAULT_EDITION}/races`);
     });
   });
 
-  describe('parseEditionParams', () => {
-    it('parses valid edition and slug', () => {
-      const result = parseEditionParams('2024', 'combat');
-      expect(result).toEqual({ edition: '2024', slug: 'combat' });
+  describe('getItemUrl', () => {
+    it('returns item URL with category and slug', () => {
+      expect(getItemUrl('magic-items', 'dragon-slayer', '2024')).toBe(
+        '/app/2024/items/magic-items/dragon-slayer'
+      );
     });
 
-    it('parses 2014 edition', () => {
-      const result = parseEditionParams('2014', 'spellcasting');
-      expect(result).toEqual({ edition: '2014', slug: 'spellcasting' });
+    it('returns category URL when slug is undefined', () => {
+      expect(getItemUrl('armor', undefined, '2024')).toBe('/app/2024/items/armor');
     });
 
-    it('treats non-edition param1 as slug', () => {
-      const result = parseEditionParams('combat-rules');
-      expect(result).toEqual({ edition: DEFAULT_EDITION, slug: 'combat-rules' });
+    it('uses default edition when edition is undefined', () => {
+      expect(getItemUrl('weapons', 'longsword')).toBe(
+        `/app/${DEFAULT_EDITION}/items/weapons/longsword`
+      );
     });
 
-    it('handles undefined params', () => {
-      const result = parseEditionParams(undefined, undefined);
-      expect(result).toEqual({ edition: DEFAULT_EDITION, slug: undefined });
-    });
-
-    it('handles only param2 provided when param1 is edition', () => {
-      const result = parseEditionParams('2024', undefined);
-      expect(result).toEqual({ edition: '2024', slug: undefined });
+    it('handles different categories', () => {
+      expect(getItemUrl('magic-armor', 'plate-armor-plus-1', '2014')).toBe(
+        '/app/2014/items/magic-armor/plate-armor-plus-1'
+      );
     });
   });
 
   describe('getEditionFromPath', () => {
     it('extracts 2024 edition from path', () => {
-      expect(getEditionFromPath('/app/rules/2024/combat')).toBe('2024');
+      expect(getEditionFromPath('/app/2024/rules/combat')).toBe('2024');
     });
 
     it('extracts 2014 edition from path', () => {
-      expect(getEditionFromPath('/app/spells/2014/fireball')).toBe('2014');
+      expect(getEditionFromPath('/app/2014/spells/fireball')).toBe('2014');
     });
 
-    it('returns null for path with invalid edition', () => {
+    it('returns null for path without edition', () => {
       expect(getEditionFromPath('/app/rules/combat')).toBe(null);
     });
 
     it('returns null for short path', () => {
-      expect(getEditionFromPath('/app/rules')).toBe(null);
+      expect(getEditionFromPath('/app')).toBe(null);
     });
 
-    it('returns null for path with non-edition value in position 3', () => {
+    it('returns null for path with non-edition value in position 2', () => {
       expect(getEditionFromPath('/app/rules/2020/combat')).toBe(null);
     });
 
-    it('returns edition for path without slug', () => {
-      expect(getEditionFromPath('/app/monsters/2024/')).toBe('2024');
+    it('returns edition for index path', () => {
+      expect(getEditionFromPath('/app/2024/monsters')).toBe('2024');
+    });
+
+    it('returns edition for items with category', () => {
+      expect(getEditionFromPath('/app/2024/items/magic-items/dragon-slayer')).toBe('2024');
+    });
+  });
+
+  describe('replaceEditionInPath', () => {
+    it('replaces edition in path', () => {
+      expect(replaceEditionInPath('/app/2024/rules/combat', '2014')).toBe(
+        '/app/2014/rules/combat'
+      );
+    });
+
+    it('replaces edition in index path', () => {
+      expect(replaceEditionInPath('/app/2024/monsters', '2014')).toBe('/app/2014/monsters');
+    });
+
+    it('replaces edition in items path with category', () => {
+      expect(replaceEditionInPath('/app/2024/items/magic-items/dragon-slayer', '2014')).toBe(
+        '/app/2014/items/magic-items/dragon-slayer'
+      );
+    });
+
+    it('returns null for path without edition', () => {
+      expect(replaceEditionInPath('/app/rules/combat', '2024')).toBe(null);
+    });
+
+    it('returns null for short path', () => {
+      expect(replaceEditionInPath('/app', '2024')).toBe(null);
     });
   });
 });

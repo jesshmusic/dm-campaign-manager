@@ -1,8 +1,6 @@
 import styled from 'styled-components';
 
 export const Section = styled.div`
-  column-gap: 5rem;
-  columns: 400px 2;
   min-height: 30rem;
 
   table {
@@ -39,7 +37,6 @@ export const Info = styled.div`
     font-family: ${({ theme }) => theme.fonts.sansSerif};
     font-size: 0.9rem;
     font-style: italic;
-    margin-top: -1rem;
   }
 
   span {

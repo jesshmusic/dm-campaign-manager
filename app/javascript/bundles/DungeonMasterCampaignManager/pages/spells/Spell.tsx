@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 import { RootState, AppDispatch } from '../../store/store';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useEdition } from '../../contexts/EditionContext';
-import { parseEditionParams, getContentUrl } from '../../utilities/editionUrls';
+import { getContentIndexUrl } from '../../utilities/editionUrls';
 import { AdminActions } from '../../components/shared';
 import SpellFormModal from './SpellFormModal';
 
@@ -24,10 +24,9 @@ type SpellPageProps = {
 
 const Spell = (props: SpellPageProps) => {
   const { spell, getSpell, deleteSpell, currentUser } = props;
-  const params = useParams<{ edition?: string; spellSlug?: string; param?: string }>();
   const navigate = useNavigate();
-  // Handle both /app/spells/:edition/:slug and /app/spells/:param routes
-  const { slug: spellSlug } = parseEditionParams(params.edition, params.spellSlug ?? params.param);
+  // URL pattern: /app/:edition/spells/:spellSlug
+  const { spellSlug } = useParams<{ spellSlug?: string }>();
   const { edition, isEdition2014 } = useEdition();
   const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
 
@@ -44,7 +43,7 @@ const Spell = (props: SpellPageProps) => {
   };
 
   const handleDeleteSuccess = () => {
-    navigate(getContentUrl('spells', '', edition));
+    navigate(getContentIndexUrl('spells', edition));
   };
 
   const handleDelete = async () => {

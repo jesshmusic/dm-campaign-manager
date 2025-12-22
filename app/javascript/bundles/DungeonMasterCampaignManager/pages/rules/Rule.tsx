@@ -12,20 +12,21 @@ import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useEdition } from '../../contexts/EditionContext';
 import { useBreadcrumbs } from '../../contexts/BreadcrumbContext';
 import { GiDragonBreath } from 'react-icons/gi';
-import { getContentUrl, parseEditionParams, getContentIndexUrl } from '../../utilities/editionUrls';
+import { getContentUrl, getContentIndexUrl } from '../../utilities/editionUrls';
 import { UserProps } from '../../utilities/types';
 import { AdminActions } from '../../components/shared';
 import RuleFormModal from './RuleFormModal';
 
 import {
   RuleContent,
-  RulesList,
   TableFrame,
   RuleNavigation,
   NavButton,
   NavButtonText,
   NavSpacer,
 } from './Rule.styles';
+import { RuleCard, RuleCardContent, RuleCardIcon, RulesGrid } from './Rules.styles';
+import { getRuleIcon } from './RulesIndex';
 
 type Ancestor = {
   name: string;
@@ -59,10 +60,10 @@ type RulePageProps = {
 
 const Rule = (props: RulePageProps) => {
   const { rule, loading, getRule, deleteRule, currentUser } = props;
-  const params = useParams<{ edition?: string; ruleSlug?: string }>();
+  // URL pattern: /app/:edition/rules/:ruleSlug
+  const { ruleSlug } = useParams<{ ruleSlug?: string }>();
   const navigate = useNavigate();
-  const { edition, slug: ruleSlug } = parseEditionParams(params.edition, params.ruleSlug);
-  const { isEdition2014 } = useEdition();
+  const { edition, isEdition2014 } = useEdition();
   const { setCustomPaths } = useBreadcrumbs();
   const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
 
@@ -143,13 +144,21 @@ const Rule = (props: RulePageProps) => {
           >
             {rule.description}
           </ReactMarkdown>
-          <RulesList>
-            {rule.rules?.map((childRule) => (
-              <Link key={childRule.slug} to={getContentUrl('rules', childRule.slug, edition)}>
-                <h2 style={{ border: 0 }}>{childRule.name}</h2>
-              </Link>
-            ))}
-          </RulesList>
+          <RulesGrid>
+            {rule.rules?.map((childRule) => {
+              const ruleIcon = getRuleIcon(childRule);
+              return (
+                <Link key={childRule.slug} to={getContentUrl('rules', childRule.slug, edition)}>
+                  <RuleCard>
+                    {ruleIcon && <RuleCardIcon>{ruleIcon}</RuleCardIcon>}
+                    <RuleCardContent>
+                      <h4>{childRule.name}</h4>
+                    </RuleCardContent>
+                  </RuleCard>
+                </Link>
+              );
+            })}
+          </RulesGrid>
 
           {(rule.previous_rule ?? rule.next_rule) && (
             <RuleNavigation>
