@@ -17,7 +17,7 @@ export const RulesGrid = styled.div`
     grid-template-columns: repeat(2, minmax(0, 1fr));
   `}
 
-  ${respondTo.xl`
+  ${respondTo.lg`
     grid-template-columns: repeat(3, minmax(0, 1fr));
   `}
 
