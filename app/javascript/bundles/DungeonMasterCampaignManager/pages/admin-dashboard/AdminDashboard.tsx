@@ -8,6 +8,7 @@ import { FaMap } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import ActionsTable from './components/ActionsTable';
 import WidgetsTable from './components/WidgetsTable';
+import MapsTable from './components/MapsTable';
 import { connect } from 'react-redux';
 import Frame from '../../components/Frame/Frame';
 import Button from '../../components/Button/Button';
@@ -75,6 +76,7 @@ const AdminDashboard = (props: {
               title="Manage Foundry Maps"
               icon={<FaMap />}
             />
+            <MapsTable />
           </Section>
 
           <Section>
