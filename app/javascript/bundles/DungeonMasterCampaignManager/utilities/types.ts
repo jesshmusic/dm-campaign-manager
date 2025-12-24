@@ -641,6 +641,8 @@ export interface UserProps {
   username: string;
   role: 'admin' | 'dungeon-master' | 'user';
   auth_id: string;
+  createdAt?: string;
+  lastSignInAt?: string;
   dndClasses: object[];
   items: object[];
   monsters: object[];

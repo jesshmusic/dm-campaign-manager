@@ -33,6 +33,12 @@ class UsersController < SecuredController
       @user.role = :dungeon_master if user_params[:roles].include? 'Dungeon Master'
       @user.role = :admin if user_params[:roles].include? 'Admin'
     end
+
+    # Track sign-in
+    @user.last_sign_in_at = @user.current_sign_in_at
+    @user.current_sign_in_at = Time.current
+    @user.sign_in_count = (@user.sign_in_count || 0) + 1
+
     @user.save!
     session[:user] = @user.attributes
     Rails.logger.debug session[:user]
