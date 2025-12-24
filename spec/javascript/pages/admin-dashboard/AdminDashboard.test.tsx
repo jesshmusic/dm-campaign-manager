@@ -47,6 +47,12 @@ jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages
   };
 });
 
+jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/admin-dashboard/components/MapsTable', () => {
+  return function MockMapsTable() {
+    return <div data-testid="maps-table">Maps Table</div>;
+  };
+});
+
 jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/components/Frame/Frame', () => {
   return function MockFrame({ title, children }: any) {
     return (

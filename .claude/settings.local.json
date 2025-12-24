@@ -125,7 +125,12 @@
       "Bash(wc:*)",
       "mcp__ide__getDiagnostics",
       "Bash(gh run list:*)",
-      "Bash(yarn eslint:*)"
+      "Bash(yarn eslint:*)",
+      "Bash(git revert:*)",
+      "Bash(jq:*)",
+      "Bash(heroku apps:*)",
+      "Bash(npm run format:*)",
+      "Bash(npm run lint)"
     ],
     "deny": [],
     "ask": []

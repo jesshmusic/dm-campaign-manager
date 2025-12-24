@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import PageContainer from '../containers/PageContainer';
 import PageTitle from '../components/PageTitle/PageTitle';
@@ -86,8 +86,8 @@ const FoundryMapsAdmin: React.FC = () => {
     },
   });
 
-  // Handle image upload for React Quill
-  const imageHandler = async () => {
+  // Handle image upload for React Quill - memoized to prevent editor reinit
+  const imageHandler = useCallback(() => {
     const input = document.createElement('input');
     input.setAttribute('type', 'file');
     input.setAttribute('accept', 'image/*');
@@ -110,10 +110,17 @@ const FoundryMapsAdmin: React.FC = () => {
           const data = await response.json();
           const quill = quillRef.current?.getEditor();
           if (quill) {
+            // Focus the editor first to ensure it's active
+            quill.focus();
             const range = quill.getSelection(true);
             if (range) {
               quill.insertEmbed(range.index, 'image', data.url);
               quill.setSelection({ index: range.index + 1, length: 0 });
+            } else {
+              // If no selection, insert at the end
+              const length = quill.getLength();
+              quill.insertEmbed(length - 1, 'image', data.url);
+              quill.setSelection({ index: length, length: 0 });
             }
           }
         } else {
@@ -138,27 +145,31 @@ const FoundryMapsAdmin: React.FC = () => {
         );
       }
     };
-  };
+  }, [dispatch]);
 
-  const modules = {
-    toolbar: {
-      container: [
-        [{ header: [1, 2, 3, false] }],
-        ['bold', 'italic', 'underline', 'strike'],
-        [{ list: 'ordered' }, { list: 'bullet' }],
-        [{ align: [] }],
-        ['link', 'image'],
-        ['clean'],
-      ],
-      handlers: {
-        image: imageHandler,
+  // Memoize modules to prevent React Quill from reinitializing on every render
+  const modules = useMemo(
+    () => ({
+      toolbar: {
+        container: [
+          [{ header: [1, 2, 3, false] }],
+          ['bold', 'italic', 'underline', 'strike'],
+          [{ list: 'ordered' }, { list: 'bullet' }],
+          [{ align: [] }],
+          ['link', 'image'],
+          ['clean'],
+        ],
+        handlers: {
+          image: imageHandler,
+        },
       },
-    },
-    imageResize: {
-      parchment: Quill.import('parchment'),
-      modules: ['Resize', 'DisplaySize'],
-    },
-  };
+      imageResize: {
+        parchment: Quill.import('parchment'),
+        modules: ['Resize', 'DisplaySize'],
+      },
+    }),
+    [imageHandler],
+  );
 
   useEffect(() => {
     void fetchMaps();
@@ -840,7 +851,6 @@ const FoundryMapsAdmin: React.FC = () => {
                       onChange={onChange}
                       modules={modules}
                       className={styles.quillEditor}
-                      readOnly={uploadingFiles}
                     />
                   )}
                 />
@@ -1067,7 +1077,6 @@ const FoundryMapsAdmin: React.FC = () => {
                               onChange={onChange}
                               modules={modules}
                               className={styles.quillEditor}
-                              readOnly={uploadingFiles}
                             />
                           )}
                         />
