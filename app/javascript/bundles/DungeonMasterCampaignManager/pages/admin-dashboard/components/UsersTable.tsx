@@ -5,6 +5,16 @@ import { connect } from 'react-redux';
 import DataTable from '../../../components/DataTable/DataTable';
 import { RootState, AppDispatch } from '../../../store/store';
 
+const formatDate = (dateString?: string): string => {
+  if (!dateString) return '-';
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
+};
+
 const UsersTable = (props: {
   getUsers: (searchTerm?: string) => void;
   users: UserProps[];
@@ -31,6 +41,14 @@ const UsersTable = (props: {
         Header: 'NPCs',
         accessor: 'monsters' as const,
       },
+      {
+        Header: 'Created',
+        accessor: 'createdAt' as const,
+      },
+      {
+        Header: 'Last Login',
+        accessor: 'lastSignInAt' as const,
+      },
     ],
     [],
   );
@@ -43,6 +61,8 @@ const UsersTable = (props: {
         username: user.username,
         role: user.role,
         monsters: user.monsters.length,
+        createdAt: formatDate(user.createdAt),
+        lastSignInAt: formatDate(user.lastSignInAt),
       };
     });
   }, [users]);
