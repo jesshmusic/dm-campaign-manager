@@ -8,7 +8,8 @@ import { RootState, AppDispatch } from '../../../store/store';
 const formatDate = (dateString?: string): string => {
   if (!dateString) return '-';
   const date = new Date(dateString);
-  return date.toLocaleDateString('en-US', {
+  if (isNaN(date.getTime())) return '-';
+  return date.toLocaleDateString(undefined, {
     year: 'numeric',
     month: 'short',
     day: 'numeric',
