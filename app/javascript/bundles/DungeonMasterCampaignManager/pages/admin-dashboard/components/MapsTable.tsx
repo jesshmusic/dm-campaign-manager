@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import DataTable from '../../../components/DataTable/DataTable';
 import Button from '../../../components/Button/Button';
 import { Colors } from '../../../utilities/enums';
@@ -18,10 +18,11 @@ interface FoundryMap {
 }
 
 const MapsTable: React.FC = () => {
+  const [allMaps, setAllMaps] = useState<FoundryMap[]>([]);
   const [maps, setMaps] = useState<FoundryMap[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchMaps = async (searchTerm?: string) => {
+  const fetchMaps = useCallback(async () => {
     try {
       setLoading(true);
       const response = await fetch('/v1/maps', {
@@ -29,47 +30,63 @@ const MapsTable: React.FC = () => {
           Accept: 'application/json',
         },
       });
-      const data: FoundryMap[] = await response.json();
 
-      if (searchTerm) {
-        const filtered = data.filter(
-          (map) =>
-            map.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            map.tags.some((tag) => tag.toLowerCase().includes(searchTerm.toLowerCase())),
-        );
-        setMaps(filtered);
-      } else {
-        setMaps(data);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
+
+      const data: FoundryMap[] = await response.json();
+      setAllMaps(data);
+      setMaps(data);
     } catch (error) {
       console.error('Error fetching maps:', error);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const deleteMap = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this map?')) return;
-
-    try {
-      const response = await fetch(`/v1/maps/${id}`, {
-        method: 'DELETE',
-        headers: {
-          Accept: 'application/json',
-        },
-      });
-
-      if (response.ok) {
-        void fetchMaps();
+  const filterMaps = useCallback(
+    (searchTerm: string) => {
+      if (!searchTerm) {
+        setMaps(allMaps);
+        return;
       }
-    } catch (error) {
-      console.error('Error deleting map:', error);
-    }
-  };
+      const normalizedSearch = searchTerm.toLowerCase();
+      const filtered = allMaps.filter(
+        (map) =>
+          map.name.toLowerCase().includes(normalizedSearch) ||
+          map.tags.some((tag) => tag.toLowerCase().includes(normalizedSearch)),
+      );
+      setMaps(filtered);
+    },
+    [allMaps],
+  );
+
+  const deleteMap = useCallback(
+    async (id: string) => {
+      if (!confirm('Are you sure you want to delete this map?')) return;
+
+      try {
+        const response = await fetch(`/v1/maps/${id}`, {
+          method: 'DELETE',
+          headers: {
+            Accept: 'application/json',
+          },
+        });
+
+        if (response.ok) {
+          void fetchMaps();
+        }
+      } catch (error) {
+        console.error('Error deleting map:', error);
+      }
+    },
+    [fetchMaps],
+  );
 
   useEffect(() => {
     void fetchMaps();
-  }, []);
+  }, [fetchMaps]);
 
   const columns = useMemo(
     () => [
@@ -148,7 +165,7 @@ const MapsTable: React.FC = () => {
         ),
       },
     ],
-    [],
+    [deleteMap],
   );
 
   const data = useMemo(() => {
@@ -162,9 +179,12 @@ const MapsTable: React.FC = () => {
     }));
   }, [maps]);
 
-  const onSearch = (searchTerm: string) => {
-    void fetchMaps(searchTerm);
-  };
+  const onSearch = useCallback(
+    (searchTerm: string) => {
+      filterMaps(searchTerm);
+    },
+    [filterMaps],
+  );
 
   return (
     <DataTable

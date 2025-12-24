@@ -185,20 +185,20 @@ describe('MapsTable Component', () => {
   });
 
   describe('search functionality', () => {
-    it('should filter maps when searching', async () => {
+    it('should filter maps client-side when searching', async () => {
       renderMapsTable();
 
       await waitFor(() => {
         expect(screen.getByTestId('name-1')).toBeInTheDocument();
+        expect(screen.getByTestId('name-2')).toBeInTheDocument();
       });
 
       const searchInput = screen.getByTestId('search-input');
       fireEvent.change(searchInput, { target: { value: 'Test Map 1' } });
 
-      // Wait for filtered results
-      await waitFor(() => {
-        expect(mockFetch).toHaveBeenCalledTimes(2); // Initial + search
-      });
+      // Should still only have called fetch once (initial load)
+      // since filtering is now client-side
+      expect(mockFetch).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -211,8 +211,9 @@ describe('MapsTable Component', () => {
 
       renderMapsTable();
 
+      // Wait for loading to complete and results to render
       await waitFor(() => {
-        expect(mockFetch).toHaveBeenCalled();
+        expect(screen.getByTestId('results-count')).toBeInTheDocument();
       });
 
       expect(screen.queryByTestId('name-1')).not.toBeInTheDocument();
