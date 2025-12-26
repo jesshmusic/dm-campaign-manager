@@ -130,7 +130,13 @@
       "Bash(jq:*)",
       "Bash(heroku apps:*)",
       "Bash(npm run format:*)",
-      "Bash(npm run lint)"
+      "Bash(npm run lint)",
+      "Bash(node -p:*)",
+      "Bash(npm run release:patch:*)",
+      "Bash(lsof:*)",
+      "Bash(xargs kill:*)",
+      "Bash(kill:*)",
+      "Skill(create-pr)"
     ],
     "deny": [],
     "ask": []
