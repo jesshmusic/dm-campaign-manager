@@ -53,6 +53,60 @@ interface MapTag {
   mapCount: number;
 }
 
+// Compress image using canvas - reduces size for faster uploads
+const compressImage = (file: File, maxWidth = 800, quality = 0.8): Promise<File> => {
+  return new Promise((resolve, reject) => {
+    // If file is already small enough, don't compress
+    if (file.size < 200 * 1024) {
+      resolve(file);
+      return;
+    }
+
+    const img = new Image();
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+
+    img.onload = () => {
+      // Calculate new dimensions maintaining aspect ratio
+      let { width, height } = img;
+      if (width > maxWidth) {
+        height = (height * maxWidth) / width;
+        width = maxWidth;
+      }
+
+      canvas.width = width;
+      canvas.height = height;
+
+      if (!ctx) {
+        reject(new Error('Could not get canvas context'));
+        return;
+      }
+
+      ctx.drawImage(img, 0, 0, width, height);
+
+      canvas.toBlob(
+        (blob) => {
+          if (!blob) {
+            reject(new Error('Could not compress image'));
+            return;
+          }
+          // Create new file with same name but compressed content
+          const compressedFile = new File([blob], file.name, {
+            type: 'image/jpeg',
+            lastModified: Date.now(),
+          });
+          resolve(compressedFile);
+        },
+        'image/jpeg',
+        quality,
+      );
+    };
+
+    img.onerror = () => reject(new Error('Could not load image'));
+    img.src = URL.createObjectURL(file);
+  });
+};
+
 const FoundryMapsAdmin: React.FC = () => {
   const dispatch = useDispatch();
   const [maps, setMaps] = useState<FoundryMap[]>([]);
@@ -333,10 +387,12 @@ const FoundryMapsAdmin: React.FC = () => {
       if (response.ok) {
         const savedMap = await response.json();
 
-        // If a thumbnail was selected, upload it
+        // If a thumbnail was selected, compress and upload it
         if (selectedThumbnail) {
           const thumbnailFormData = new FormData();
-          thumbnailFormData.append('thumbnail', selectedThumbnail);
+          // Compress thumbnail to reduce upload time and avoid timeouts
+          const compressedThumbnail = await compressImage(selectedThumbnail);
+          thumbnailFormData.append('thumbnail', compressedThumbnail);
 
           const thumbnailResponse = await fetch(`/v1/maps/${savedMap.id}/upload_thumbnail`, {
             method: 'POST',
@@ -344,12 +400,21 @@ const FoundryMapsAdmin: React.FC = () => {
           });
 
           if (!thumbnailResponse.ok) {
-            const thumbnailError = await thumbnailResponse.json();
+            let errorMessage = 'Failed to upload thumbnail';
+            try {
+              const thumbnailError = await thumbnailResponse.json();
+              errorMessage = thumbnailError.error || errorMessage;
+            } catch {
+              // Response may not be JSON (e.g., Cloudflare timeout returns HTML)
+              if (thumbnailResponse.status === 524) {
+                errorMessage = 'Upload timed out. Try a smaller image.';
+              }
+            }
             dispatch(
               addFlashMessage({
                 id: Date.now(),
                 heading: 'Thumbnail Upload Failed',
-                text: thumbnailError.error || 'Failed to upload thumbnail',
+                text: errorMessage,
                 messageType: FlashMessageType.warning,
               }),
             );
@@ -367,12 +432,21 @@ const FoundryMapsAdmin: React.FC = () => {
           });
 
           if (!uploadResponse.ok) {
-            const uploadError = await uploadResponse.json();
+            let errorMessage = 'Failed to upload package';
+            try {
+              const uploadError = await uploadResponse.json();
+              errorMessage = uploadError.error || errorMessage;
+            } catch {
+              // Response may not be JSON (e.g., Cloudflare timeout returns HTML)
+              if (uploadResponse.status === 524) {
+                errorMessage = 'Upload timed out. Try a smaller package.';
+              }
+            }
             dispatch(
               addFlashMessage({
                 id: Date.now(),
                 heading: 'Package Upload Failed',
-                text: uploadError.error || 'Failed to upload package',
+                text: errorMessage,
                 messageType: FlashMessageType.warning,
               }),
             );
@@ -388,12 +462,21 @@ const FoundryMapsAdmin: React.FC = () => {
 
         handleCancelEdit();
       } else {
-        const error = await response.json();
+        let errorMessage = `Failed to ${editingMap ? 'update' : 'create'} map`;
+        try {
+          const error = await response.json();
+          errorMessage = error.errors?.join(', ') || errorMessage;
+        } catch {
+          // Response may not be JSON (e.g., Cloudflare timeout returns HTML)
+          if (response.status === 524) {
+            errorMessage = 'Request timed out. Please try again.';
+          }
+        }
         dispatch(
           addFlashMessage({
             id: Date.now(),
             heading: 'Save Failed',
-            text: error.errors?.join(', ') || `Failed to ${editingMap ? 'update' : 'create'} map`,
+            text: errorMessage,
             messageType: FlashMessageType.danger,
           }),
         );
