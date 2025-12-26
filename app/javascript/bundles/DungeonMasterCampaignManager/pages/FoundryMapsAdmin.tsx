@@ -53,9 +53,18 @@ interface MapTag {
   mapCount: number;
 }
 
+// Valid image MIME types for compression
+const VALID_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+
 // Compress image using canvas - reduces size for faster uploads
 const compressImage = (file: File, maxWidth = 800, quality = 0.8): Promise<File> => {
   return new Promise((resolve, reject) => {
+    // Validate file is an image
+    if (!VALID_IMAGE_TYPES.includes(file.type)) {
+      resolve(file); // Return original if not a supported image type
+      return;
+    }
+
     // If file is already small enough, don't compress
     if (file.size < 200 * 1024) {
       resolve(file);
@@ -66,7 +75,18 @@ const compressImage = (file: File, maxWidth = 800, quality = 0.8): Promise<File>
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
 
+    // Check canvas context early
+    if (!ctx) {
+      reject(new Error('Could not get canvas context'));
+      return;
+    }
+
+    const objectUrl = URL.createObjectURL(file);
+
     img.onload = () => {
+      // Revoke object URL to prevent memory leak
+      URL.revokeObjectURL(objectUrl);
+
       // Calculate new dimensions maintaining aspect ratio
       let { width, height } = img;
       if (width > maxWidth) {
@@ -76,12 +96,6 @@ const compressImage = (file: File, maxWidth = 800, quality = 0.8): Promise<File>
 
       canvas.width = width;
       canvas.height = height;
-
-      if (!ctx) {
-        reject(new Error('Could not get canvas context'));
-        return;
-      }
-
       ctx.drawImage(img, 0, 0, width, height);
 
       canvas.toBlob(
@@ -90,8 +104,12 @@ const compressImage = (file: File, maxWidth = 800, quality = 0.8): Promise<File>
             reject(new Error('Could not compress image'));
             return;
           }
-          // Create new file with same name but compressed content
-          const compressedFile = new File([blob], file.name, {
+          // Create new file with JPEG extension to match compressed content
+          const jpegFileName =
+            file.name.lastIndexOf('.') > 0
+              ? file.name.slice(0, file.name.lastIndexOf('.')) + '.jpg'
+              : file.name + '.jpg';
+          const compressedFile = new File([blob], jpegFileName, {
             type: 'image/jpeg',
             lastModified: Date.now(),
           });
@@ -102,8 +120,13 @@ const compressImage = (file: File, maxWidth = 800, quality = 0.8): Promise<File>
       );
     };
 
-    img.onerror = () => reject(new Error('Could not load image'));
-    img.src = URL.createObjectURL(file);
+    img.onerror = () => {
+      // Revoke object URL to prevent memory leak
+      URL.revokeObjectURL(objectUrl);
+      reject(new Error('Could not load image'));
+    };
+
+    img.src = objectUrl;
   });
 };
 
@@ -391,8 +414,13 @@ const FoundryMapsAdmin: React.FC = () => {
         if (selectedThumbnail) {
           const thumbnailFormData = new FormData();
           // Compress thumbnail to reduce upload time and avoid timeouts
-          const compressedThumbnail = await compressImage(selectedThumbnail);
-          thumbnailFormData.append('thumbnail', compressedThumbnail);
+          let thumbnailToUpload: File = selectedThumbnail;
+          try {
+            thumbnailToUpload = await compressImage(selectedThumbnail);
+          } catch (compressionError) {
+            console.warn('Image compression failed, using original:', compressionError);
+          }
+          thumbnailFormData.append('thumbnail', thumbnailToUpload);
 
           const thumbnailResponse = await fetch(`/v1/maps/${savedMap.id}/upload_thumbnail`, {
             method: 'POST',
