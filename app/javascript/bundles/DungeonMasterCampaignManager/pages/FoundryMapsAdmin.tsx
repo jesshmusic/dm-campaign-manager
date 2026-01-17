@@ -1142,10 +1142,7 @@ const FoundryMapsAdmin: React.FC = () => {
                           : 'Complete!'}
                   </div>
                   <div className={styles.progressBar}>
-                    <div
-                      className={styles.progressFill}
-                      style={{ width: `${uploadProgress}%` }}
-                    />
+                    <div className={styles.progressFill} style={{ width: `${uploadProgress}%` }} />
                   </div>
                   <div className={styles.progressPercent}>{uploadProgress}%</div>
                 </div>

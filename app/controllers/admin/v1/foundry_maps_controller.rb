@@ -314,8 +314,14 @@ module Admin
 
         return render json: { error: 'Filename required' }, status: :unprocessable_entity if filename.blank?
 
+        # Sanitize and validate filename
+        basename = File.basename(filename)
+        unless basename.present? && File.extname(basename).downcase == '.zip'
+          return render json: { error: 'Invalid filename; .zip extension required' }, status: :unprocessable_entity
+        end
+
         # Generate unique S3 key for the upload
-        upload_key = "uploads/packages/#{map.id}/#{SecureRandom.uuid}/#{File.basename(filename)}"
+        upload_key = "uploads/packages/#{map.id}/#{SecureRandom.uuid}/#{basename}"
 
         # Create S3 resource for presigned URL generation
         s3_resource = Aws::S3::Resource.new(
@@ -374,9 +380,6 @@ module Admin
           # Process using existing method
           process_scene_package(map, uploaded_file)
 
-          # Delete the temporary upload from S3
-          s3_client.delete_object(bucket: ENV.fetch('AWS_S3_BUCKET', nil), key: s3_key)
-
           render json: map.as_json_for_api.merge(
             files: map.foundry_map_files.map(&:as_json_for_api)
           ), status: :ok
@@ -387,6 +390,8 @@ module Admin
         ensure
           tempfile&.close
           tempfile&.unlink
+          # Always delete the temporary upload from S3, even on error
+          s3_client&.delete_object(bucket: ENV.fetch('AWS_S3_BUCKET', nil), key: s3_key) if s3_key.present?
         end
       end
 
@@ -757,9 +762,10 @@ module Admin
         end
 
         # Delete database records
+        deleted_count = map.foundry_map_files.count
         map.foundry_map_files.destroy_all
 
-        Rails.logger.info "Deleted #{map.foundry_map_files.count} files for map #{map.id}"
+        Rails.logger.info "Deleted #{deleted_count} files for map #{map.id}"
       rescue StandardError => e
         Rails.logger.error "Failed to delete S3 files for map #{map.id}: #{e.message}"
         # Don't raise - allow the operation to continue
