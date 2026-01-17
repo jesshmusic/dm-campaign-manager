@@ -130,6 +130,66 @@ const compressImage = (file: File, maxWidth = 800, quality = 0.8): Promise<File>
   });
 };
 
+// Chunked upload to avoid Cloudflare timeouts
+const CHUNK_SIZE = 2 * 1024 * 1024; // 2MB chunks
+
+const uploadFileInChunks = async (
+  file: File,
+  mapId: string,
+  onProgress?: (progress: number) => void,
+): Promise<{ success: boolean; error?: string }> => {
+  const uploadId = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
+  const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
+
+  // Upload each chunk
+  for (let chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
+    const start = chunkIndex * CHUNK_SIZE;
+    const end = Math.min(start + CHUNK_SIZE, file.size);
+    const chunk = file.slice(start, end);
+
+    const formData = new FormData();
+    formData.append('chunk', chunk);
+    formData.append('upload_id', uploadId);
+    formData.append('chunk_index', chunkIndex.toString());
+    formData.append('total_chunks', totalChunks.toString());
+
+    const response = await fetch(`/v1/maps/${mapId}/upload_chunk`, {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({ error: 'Upload failed' }));
+      return { success: false, error: error.error || 'Chunk upload failed' };
+    }
+
+    if (onProgress) {
+      onProgress(Math.round(((chunkIndex + 1) / totalChunks) * 90)); // 90% for upload
+    }
+  }
+
+  // Finalize the upload
+  const finalizeFormData = new FormData();
+  finalizeFormData.append('upload_id', uploadId);
+  finalizeFormData.append('filename', file.name);
+
+  const finalizeResponse = await fetch(`/v1/maps/${mapId}/finalize_upload`, {
+    method: 'POST',
+    body: finalizeFormData,
+  });
+
+  if (!finalizeResponse.ok) {
+    const error = await finalizeResponse.json().catch(() => ({ error: 'Finalize failed' }));
+    return { success: false, error: error.error || 'Failed to process package' };
+  }
+
+  if (onProgress) {
+    onProgress(100);
+  }
+
+  return { success: true };
+};
+
 const FoundryMapsAdmin: React.FC = () => {
   const dispatch = useDispatch();
   const [maps, setMaps] = useState<FoundryMap[]>([]);
@@ -449,32 +509,17 @@ const FoundryMapsAdmin: React.FC = () => {
           }
         }
 
-        // If a ZIP package was selected, upload it
+        // If a ZIP package was selected, upload it using chunked upload
         if (selectedFiles && selectedFiles.length > 0) {
-          const uploadFormData = new FormData();
-          uploadFormData.append('package', selectedFiles[0]);
+          const file = selectedFiles[0];
+          const result = await uploadFileInChunks(file, savedMap.id);
 
-          const uploadResponse = await fetch(`/v1/maps/${savedMap.id}/upload_package`, {
-            method: 'POST',
-            body: uploadFormData,
-          });
-
-          if (!uploadResponse.ok) {
-            let errorMessage = 'Failed to upload package';
-            try {
-              const uploadError = await uploadResponse.json();
-              errorMessage = uploadError.error || errorMessage;
-            } catch {
-              // Response may not be JSON (e.g., Cloudflare timeout returns HTML)
-              if (uploadResponse.status === 524) {
-                errorMessage = 'Upload timed out. Try a smaller package.';
-              }
-            }
+          if (!result.success) {
             dispatch(
               addFlashMessage({
                 id: Date.now(),
                 heading: 'Package Upload Failed',
-                text: errorMessage,
+                text: result.error ?? 'Failed to upload package',
                 messageType: FlashMessageType.warning,
               }),
             );

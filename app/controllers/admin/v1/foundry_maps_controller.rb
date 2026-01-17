@@ -1,7 +1,8 @@
 module Admin
   module V1
     class FoundryMapsController < ApplicationController
-      skip_before_action :verify_authenticity_token, only: %i[file upload_files upload_image upload_package upload_thumbnail]
+      skip_before_action :verify_authenticity_token,
+                         only: %i[file upload_files upload_image upload_package upload_chunk finalize_upload upload_thumbnail]
 
       # GET /v1/maps/tags
       def tags
@@ -180,6 +181,117 @@ module Admin
           Rails.logger.error "Package upload failed: #{e.message}"
           Rails.logger.error e.backtrace.join("\n")
           render json: { error: "Failed to process package: #{e.message}" }, status: :unprocessable_entity
+        end
+      end
+
+      # POST /v1/maps/:id/upload_chunk
+      # Receives a chunk of a file for chunked uploads
+      def upload_chunk
+        map = FoundryMap.find(params[:id])
+
+        return render json: { error: 'No chunk provided' }, status: :unprocessable_entity if params[:chunk].blank?
+        return render json: { error: 'Missing upload_id' }, status: :unprocessable_entity if params[:upload_id].blank?
+        return render json: { error: 'Missing chunk_index' }, status: :unprocessable_entity if params[:chunk_index].blank?
+        return render json: { error: 'Missing total_chunks' }, status: :unprocessable_entity if params[:total_chunks].blank?
+
+        upload_id = params[:upload_id].to_s
+        chunk_index = params[:chunk_index].to_i
+        total_chunks = params[:total_chunks].to_i
+
+        # Validate upload_id format to prevent path traversal
+        unless upload_id.match?(/\A[a-zA-Z0-9_-]+\z/) && upload_id.length <= 100
+          return render json: { error: 'Invalid upload_id format' }, status: :unprocessable_entity
+        end
+
+        # Validate chunk_index and total_chunks
+        max_chunks = 500 # ~1GB max with 2MB chunks
+        if total_chunks <= 0 || total_chunks > max_chunks
+          return render json: { error: "total_chunks must be between 1 and #{max_chunks}" }, status: :unprocessable_entity
+        end
+        if chunk_index.negative? || chunk_index >= total_chunks
+          return render json: { error: 'chunk_index out of range' }, status: :unprocessable_entity
+        end
+
+        # Create temp directory for this upload
+        upload_dir = Rails.root.join('tmp', 'chunked_uploads', map.id.to_s, upload_id)
+        FileUtils.mkdir_p(upload_dir)
+
+        # Save the chunk
+        chunk_path = upload_dir.join("chunk_#{chunk_index.to_s.rjust(5, '0')}")
+        File.binwrite(chunk_path, params[:chunk].read)
+
+        # Check how many chunks we have
+        existing_chunks = Dir.glob(upload_dir.join('chunk_*')).count
+
+        render json: {
+          received: chunk_index,
+          total: total_chunks,
+          chunks_received: existing_chunks,
+          complete: existing_chunks == total_chunks
+        }, status: :ok
+      rescue StandardError => e
+        Rails.logger.error "Chunk upload failed: #{e.message}"
+        render json: { error: "Failed to upload chunk: #{e.message}" }, status: :unprocessable_entity
+      end
+
+      # POST /v1/maps/:id/finalize_upload
+      # Assembles chunks and processes the package
+      def finalize_upload
+        map = FoundryMap.find(params[:id])
+
+        return render json: { error: 'Missing upload_id' }, status: :unprocessable_entity if params[:upload_id].blank?
+        return render json: { error: 'Missing filename' }, status: :unprocessable_entity if params[:filename].blank?
+
+        upload_id = params[:upload_id].to_s
+        filename = params[:filename].to_s
+
+        # Validate upload_id format to prevent path traversal
+        unless upload_id.match?(/\A[a-zA-Z0-9_-]+\z/) && upload_id.length <= 100
+          return render json: { error: 'Invalid upload_id format' }, status: :unprocessable_entity
+        end
+
+        upload_dir = Rails.root.join('tmp', 'chunked_uploads', map.id.to_s, upload_id)
+
+        return render json: { error: 'Upload not found. Chunks may have expired.' }, status: :not_found unless upload_dir.exist?
+
+        tempfile = nil
+        begin
+          # Assemble chunks into final file (Dir.glob returns sorted in Ruby 3+)
+          chunk_files = Dir.glob(upload_dir.join('chunk_*'))
+          return render json: { error: 'No chunks found' }, status: :unprocessable_entity if chunk_files.empty?
+
+          assembled_file = upload_dir.join(filename)
+          File.open(assembled_file, 'wb') do |outfile|
+            chunk_files.each do |chunk_path|
+              outfile.write(File.binread(chunk_path))
+            end
+          end
+
+          Rails.logger.info "Assembled #{chunk_files.count} chunks into #{filename} (#{File.size(assembled_file)} bytes)"
+
+          # Create a mock uploaded file object for process_scene_package
+          tempfile = File.open(assembled_file, 'rb')
+          uploaded_file = ActionDispatch::Http::UploadedFile.new(
+            tempfile: tempfile,
+            filename: filename,
+            type: 'application/zip'
+          )
+
+          # Process the assembled package
+          process_scene_package(map, uploaded_file)
+
+          render json: map.as_json_for_api.merge(
+            files: map.foundry_map_files.map(&:as_json_for_api)
+          ), status: :ok
+        rescue StandardError => e
+          Rails.logger.error "Finalize upload failed: #{e.message}"
+          Rails.logger.error e.backtrace.join("\n")
+          render json: { error: "Failed to process package: #{e.message}" }, status: :unprocessable_entity
+        ensure
+          # Close the tempfile to avoid file descriptor leak
+          tempfile&.close
+          # Cleanup the upload directory
+          FileUtils.rm_rf(upload_dir) if upload_dir&.exist?
         end
       end
 
