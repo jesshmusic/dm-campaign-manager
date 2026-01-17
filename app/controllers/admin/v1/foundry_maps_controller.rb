@@ -332,6 +332,7 @@ module Admin
 
       def process_scene_package(map, zip_file)
         require 'zip'
+        require 'parallel'
 
         # Create temp directory
         temp_dir = Rails.root.join('tmp', 'map_uploads', SecureRandom.uuid)
@@ -369,12 +370,43 @@ module Admin
           # Re-save scene.json with updated paths
           File.write(scene_json_path, JSON.pretty_generate(scene_data))
 
-          # Upload all files to S3
-          Dir.glob(temp_dir.join('**/*')).each do |file_path|
-            next if File.directory?(file_path)
+          # Collect all files to upload
+          files_to_upload = Dir.glob(temp_dir.join('**/*')).reject { |f| File.directory?(f) }
 
+          Rails.logger.info "Processing #{files_to_upload.length} files for map #{map.id}"
+
+          # Create a shared S3 client (thread-safe per AWS SDK documentation)
+          s3_client = Aws::S3::Client.new(
+            region: ENV['AWS_REGION'] || 'us-east-1',
+            access_key_id: ENV.fetch('AWS_ACCESS_KEY_ID', nil),
+            secret_access_key: ENV.fetch('AWS_SECRET_ACCESS_KEY', nil)
+          )
+
+          # Upload files in parallel (max 10 concurrent uploads)
+          # Each result is either {:success => data} or {:error => message}
+          upload_results = Parallel.map(files_to_upload, in_threads: 10) do |file_path|
             relative_path = Pathname.new(file_path).relative_path_from(temp_dir).to_s
-            upload_map_file(map, file_path, relative_path, map_slug)
+            file_data = upload_map_file_parallel(map, file_path, relative_path, map_slug, s3_client)
+            { success: file_data }
+          rescue StandardError => e
+            { error: "#{relative_path}: #{e.message}" }
+          end
+
+          # Separate successes and failures
+          failures = upload_results.select { |r| r[:error] }
+          uploaded_files = upload_results.select { |r| r[:success] }.pluck(:success)
+
+          # Raise if any uploads failed
+          if failures.any?
+            error_details = failures.pluck(:error).join('; ')
+            raise "Failed to upload #{failures.length} file(s): #{error_details}"
+          end
+
+          # Create database records in a transaction (must be done in main thread for ActiveRecord)
+          ActiveRecord::Base.transaction do
+            uploaded_files.each do |file_data|
+              map.foundry_map_files.create!(file_data)
+            end
           end
 
           Rails.logger.info "Successfully processed package for map #{map.id}: #{map.name}"
@@ -461,6 +493,37 @@ module Admin
           file_size: File.size(file_path),
           s3_key: s3_key
         )
+      end
+
+      # Thread-safe version for parallel uploads - returns data hash instead of creating record
+      def upload_map_file_parallel(map, file_path, relative_path, map_slug, s3_client)
+        # Generate S3 key
+        s3_key = "maps/#{map.id}/#{SecureRandom.uuid}_#{File.basename(relative_path)}"
+
+        # Upload to S3 (s3_client is thread-safe)
+        File.open(file_path, 'rb') do |file|
+          s3_client.put_object(
+            bucket: ENV.fetch('AWS_S3_BUCKET', nil),
+            key: s3_key,
+            body: file,
+            content_type: Marcel::MimeType.for(file_path)
+          )
+        end
+
+        # Build Foundry path
+        foundry_path = if relative_path == 'scene.json'
+                         "modules/dorman-lakely-cartography/assets/scenes/#{map_slug}/scene.json"
+                       else
+                         "modules/dorman-lakely-cartography/assets/scenes/#{map_slug}/#{relative_path}"
+                       end
+
+        # Return data hash for database record creation in main thread
+        {
+          file_path: foundry_path,
+          file_type: determine_file_type(File.basename(relative_path)),
+          file_size: File.size(file_path),
+          s3_key: s3_key
+        }
       end
     end
   end
