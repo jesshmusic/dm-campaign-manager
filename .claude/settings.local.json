@@ -136,7 +136,15 @@
       "Bash(lsof:*)",
       "Bash(xargs kill:*)",
       "Bash(kill:*)",
-      "Skill(create-pr)"
+      "Skill(create-pr)",
+      "Bash(for thread_id in PRRT_kwDOC-qnps5nZ3QH PRRT_kwDOC-qnps5nZ3QP PRRT_kwDOC-qnps5nZ3QU PRRT_kwDOC-qnps5nZ3Qc PRRT_kwDOC-qnps5nZ3Qi)",
+      "Bash(do)",
+      "Bash(done)",
+      "Bash(git fetch:*)",
+      "Bash(heroku logs:*)",
+      "Bash(command -v:*)",
+      "Bash(git rebase:*)",
+      "Bash(gh pr close:*)"
     ],
     "deny": [],
     "ask": []
