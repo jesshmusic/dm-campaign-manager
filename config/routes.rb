@@ -76,6 +76,8 @@ Rails.application.routes.draw do
       post '/maps/:id/upload_chunk', to: 'foundry_maps#upload_chunk'
       post '/maps/:id/finalize_upload', to: 'foundry_maps#finalize_upload'
       post '/maps/:id/upload_thumbnail', to: 'foundry_maps#upload_thumbnail'
+      get '/maps/:id/presign_upload', to: 'foundry_maps#presign_upload'
+      post '/maps/:id/process_s3_upload', to: 'foundry_maps#process_s3_upload'
       post '/maps/upload_image', to: 'foundry_maps#upload_image'
       delete '/maps/:id/files/:file_id', to: 'foundry_maps#delete_file'
       resources :foundry_maps, path: 'maps', except: %i[new edit], constraints: { format: 'json' }

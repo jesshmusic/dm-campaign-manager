@@ -2,7 +2,8 @@ module Admin
   module V1
     class FoundryMapsController < ApplicationController
       skip_before_action :verify_authenticity_token,
-                         only: %i[file upload_files upload_image upload_package upload_chunk finalize_upload upload_thumbnail]
+                         only: %i[file upload_files upload_image upload_package upload_chunk finalize_upload upload_thumbnail
+                                  presign_upload process_s3_upload]
 
       # GET /v1/maps/tags
       def tags
@@ -117,6 +118,13 @@ module Admin
       # DELETE /v1/maps/:id
       def destroy
         map = FoundryMap.find(params[:id])
+
+        # Delete all S3 files before destroying the map
+        delete_map_files_from_s3(map)
+
+        # Also delete thumbnail if exists
+        delete_thumbnail_from_s3(map) if map.thumbnail_s3_key.present?
+
         map.destroy
         head :no_content
       end
@@ -173,6 +181,9 @@ module Admin
         return render json: { error: 'No package file provided' }, status: :unprocessable_entity if params[:package].blank?
 
         begin
+          # Delete old files before processing new ones
+          delete_map_files_from_s3(map)
+
           process_scene_package(map, params[:package])
           render json: map.as_json_for_api.merge(
             files: map.foundry_map_files.map(&:as_json_for_api)
@@ -292,6 +303,90 @@ module Admin
           tempfile&.close
           # Cleanup the upload directory
           FileUtils.rm_rf(upload_dir) if upload_dir&.exist?
+        end
+      end
+
+      # GET /v1/maps/:id/presign_upload
+      # Returns a presigned URL for direct browser-to-S3 upload
+      def presign_upload
+        map = FoundryMap.find(params[:id])
+        filename = params[:filename].to_s
+
+        return render json: { error: 'Filename required' }, status: :unprocessable_entity if filename.blank?
+
+        # Generate unique S3 key for the upload
+        upload_key = "uploads/packages/#{map.id}/#{SecureRandom.uuid}/#{File.basename(filename)}"
+
+        # Create S3 resource for presigned URL generation
+        s3_resource = Aws::S3::Resource.new(
+          region: ENV['AWS_REGION'] || 'us-east-1',
+          access_key_id: ENV.fetch('AWS_ACCESS_KEY_ID', nil),
+          secret_access_key: ENV.fetch('AWS_SECRET_ACCESS_KEY', nil)
+        )
+
+        bucket = s3_resource.bucket(ENV.fetch('AWS_S3_BUCKET', nil))
+        obj = bucket.object(upload_key)
+
+        # Generate presigned PUT URL (valid for 15 minutes)
+        presigned_url = obj.presigned_url(:put,
+                                          expires_in: 900,
+                                          content_type: 'application/zip')
+
+        render json: { url: presigned_url, key: upload_key }
+      end
+
+      # POST /v1/maps/:id/process_s3_upload
+      # Processes a package that was uploaded directly to S3
+      def process_s3_upload
+        map = FoundryMap.find(params[:id])
+        s3_key = params[:key].to_s
+
+        return render json: { error: 'S3 key required' }, status: :unprocessable_entity if s3_key.blank?
+
+        # Validate the key is in our uploads path (security)
+        return render json: { error: 'Invalid S3 key' }, status: :unprocessable_entity unless s3_key.start_with?("uploads/packages/#{map.id}/")
+
+        s3_client = Aws::S3::Client.new(
+          region: ENV['AWS_REGION'] || 'us-east-1',
+          access_key_id: ENV.fetch('AWS_ACCESS_KEY_ID', nil),
+          secret_access_key: ENV.fetch('AWS_SECRET_ACCESS_KEY', nil)
+        )
+
+        # Download from S3 to temp file
+        tempfile = Tempfile.new(['package', '.zip'])
+        begin
+          s3_client.get_object(
+            bucket: ENV.fetch('AWS_S3_BUCKET', nil),
+            key: s3_key,
+            response_target: tempfile.path
+          )
+
+          # Create uploaded file object
+          uploaded_file = ActionDispatch::Http::UploadedFile.new(
+            tempfile: tempfile,
+            filename: File.basename(s3_key),
+            type: 'application/zip'
+          )
+
+          # Delete old files before processing new ones
+          delete_map_files_from_s3(map)
+
+          # Process using existing method
+          process_scene_package(map, uploaded_file)
+
+          # Delete the temporary upload from S3
+          s3_client.delete_object(bucket: ENV.fetch('AWS_S3_BUCKET', nil), key: s3_key)
+
+          render json: map.as_json_for_api.merge(
+            files: map.foundry_map_files.map(&:as_json_for_api)
+          ), status: :ok
+        rescue StandardError => e
+          Rails.logger.error "Process S3 upload failed: #{e.message}"
+          Rails.logger.error e.backtrace.join("\n")
+          render json: { error: "Failed to process: #{e.message}" }, status: :unprocessable_entity
+        ensure
+          tempfile&.close
+          tempfile&.unlink
         end
       end
 
@@ -636,6 +731,59 @@ module Admin
           file_size: File.size(file_path),
           s3_key: s3_key
         }
+      end
+
+      # Delete all map files from S3 and database
+      def delete_map_files_from_s3(map)
+        return if map.foundry_map_files.empty?
+
+        s3_client = Aws::S3::Client.new(
+          region: ENV['AWS_REGION'] || 'us-east-1',
+          access_key_id: ENV.fetch('AWS_ACCESS_KEY_ID', nil),
+          secret_access_key: ENV.fetch('AWS_SECRET_ACCESS_KEY', nil)
+        )
+
+        bucket = ENV.fetch('AWS_S3_BUCKET', nil)
+
+        # Delete files from S3 in batches (S3 allows up to 1000 per request)
+        map.foundry_map_files.pluck(:s3_key).each_slice(1000) do |keys|
+          objects_to_delete = keys.compact.map { |key| { key: key } }
+          next if objects_to_delete.empty?
+
+          s3_client.delete_objects(
+            bucket: bucket,
+            delete: { objects: objects_to_delete }
+          )
+        end
+
+        # Delete database records
+        map.foundry_map_files.destroy_all
+
+        Rails.logger.info "Deleted #{map.foundry_map_files.count} files for map #{map.id}"
+      rescue StandardError => e
+        Rails.logger.error "Failed to delete S3 files for map #{map.id}: #{e.message}"
+        # Don't raise - allow the operation to continue
+      end
+
+      # Delete thumbnail from S3
+      def delete_thumbnail_from_s3(map)
+        return if map.thumbnail_s3_key.blank?
+
+        s3_client = Aws::S3::Client.new(
+          region: ENV['AWS_REGION'] || 'us-east-1',
+          access_key_id: ENV.fetch('AWS_ACCESS_KEY_ID', nil),
+          secret_access_key: ENV.fetch('AWS_SECRET_ACCESS_KEY', nil)
+        )
+
+        s3_client.delete_object(
+          bucket: ENV.fetch('AWS_S3_BUCKET', nil),
+          key: map.thumbnail_s3_key
+        )
+
+        Rails.logger.info "Deleted thumbnail for map #{map.id}: #{map.thumbnail_s3_key}"
+      rescue StandardError => e
+        Rails.logger.error "Failed to delete thumbnail for map #{map.id}: #{e.message}"
+        # Don't raise - allow the operation to continue
       end
     end
   end

@@ -13,7 +13,6 @@ import {
 import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { GiSave } from 'react-icons/gi';
-import { GiLinkedRings } from 'react-icons/gi';
 import { MdEdit, MdDelete, MdVisibility, MdSave, MdCancel } from 'react-icons/md';
 import ImageResize from 'quill-image-resize-module-react';
 import { addFlashMessage, FlashMessageType } from '../reducers/flashMessages';
@@ -130,64 +129,52 @@ const compressImage = (file: File, maxWidth = 800, quality = 0.8): Promise<File>
   });
 };
 
-// Chunked upload to avoid Cloudflare timeouts
-const CHUNK_SIZE = 2 * 1024 * 1024; // 2MB chunks
-
-const uploadFileInChunks = async (
+// Upload directly to S3 using presigned URLs (bypasses Cloudflare/Heroku for faster uploads)
+const uploadViaPresignedUrl = async (
   file: File,
   mapId: string,
   onProgress?: (progress: number) => void,
 ): Promise<{ success: boolean; error?: string }> => {
-  const uploadId = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
-  const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
+  try {
+    // 1. Get presigned URL from server
+    onProgress?.(5);
+    const presignResponse = await fetch(
+      `/v1/maps/${mapId}/presign_upload?filename=${encodeURIComponent(file.name)}`,
+    );
+    if (!presignResponse.ok) {
+      const err = await presignResponse.json().catch(() => ({ error: 'Failed to get upload URL' }));
+      return { success: false, error: err.error || 'Failed to get upload URL' };
+    }
+    const { url, key } = await presignResponse.json();
 
-  // Upload each chunk
-  for (let chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
-    const start = chunkIndex * CHUNK_SIZE;
-    const end = Math.min(start + CHUNK_SIZE, file.size);
-    const chunk = file.slice(start, end);
-
-    const formData = new FormData();
-    formData.append('chunk', chunk);
-    formData.append('upload_id', uploadId);
-    formData.append('chunk_index', chunkIndex.toString());
-    formData.append('total_chunks', totalChunks.toString());
-
-    const response = await fetch(`/v1/maps/${mapId}/upload_chunk`, {
-      method: 'POST',
-      body: formData,
+    // 2. Upload directly to S3 (bypasses Cloudflare/Heroku!)
+    onProgress?.(10);
+    const uploadResponse = await fetch(url, {
+      method: 'PUT',
+      body: file,
+      headers: { 'Content-Type': 'application/zip' },
     });
-
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({ error: 'Upload failed' }));
-      return { success: false, error: error.error || 'Chunk upload failed' };
+    if (!uploadResponse.ok) {
+      return { success: false, error: 'Failed to upload to S3' };
     }
+    onProgress?.(80);
 
-    if (onProgress) {
-      onProgress(Math.round(((chunkIndex + 1) / totalChunks) * 90)); // 90% for upload
+    // 3. Tell server to process the uploaded file
+    const processResponse = await fetch(`/v1/maps/${mapId}/process_s3_upload`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ key }),
+    });
+    if (!processResponse.ok) {
+      const err = await processResponse.json().catch(() => ({ error: 'Failed to process upload' }));
+      return { success: false, error: err.error || 'Failed to process upload' };
     }
+    onProgress?.(100);
+
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: String(error) };
   }
-
-  // Finalize the upload
-  const finalizeFormData = new FormData();
-  finalizeFormData.append('upload_id', uploadId);
-  finalizeFormData.append('filename', file.name);
-
-  const finalizeResponse = await fetch(`/v1/maps/${mapId}/finalize_upload`, {
-    method: 'POST',
-    body: finalizeFormData,
-  });
-
-  if (!finalizeResponse.ok) {
-    const error = await finalizeResponse.json().catch(() => ({ error: 'Finalize failed' }));
-    return { success: false, error: error.error || 'Failed to process package' };
-  }
-
-  if (onProgress) {
-    onProgress(100);
-  }
-
-  return { success: true };
 };
 
 const FoundryMapsAdmin: React.FC = () => {
@@ -199,6 +186,7 @@ const FoundryMapsAdmin: React.FC = () => {
   const [selectedFiles, setSelectedFiles] = useState<FileList | null>(null);
   const [selectedThumbnail, setSelectedThumbnail] = useState<File | null>(null);
   const [uploadingFiles, setUploadingFiles] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [editingMap, setEditingMap] = useState<FoundryMap | null>(null);
   const [viewingMap, setViewingMap] = useState<FoundryMap | null>(null);
   const [editingTagId, setEditingTagId] = useState<string | null>(null);
@@ -442,6 +430,7 @@ const FoundryMapsAdmin: React.FC = () => {
 
   const onSubmit = async (data: FieldValues) => {
     setUploadingFiles(true);
+    setUploadProgress(0);
     try {
       const url = editingMap ? `/v1/maps/${editingMap.id}` : '/v1/maps';
       const method = editingMap ? 'PATCH' : 'POST';
@@ -509,10 +498,10 @@ const FoundryMapsAdmin: React.FC = () => {
           }
         }
 
-        // If a ZIP package was selected, upload it using chunked upload
+        // If a ZIP package was selected, upload it using presigned URL (direct to S3)
         if (selectedFiles && selectedFiles.length > 0) {
           const file = selectedFiles[0];
-          const result = await uploadFileInChunks(file, savedMap.id);
+          const result = await uploadViaPresignedUrl(file, savedMap.id, setUploadProgress);
 
           if (!result.success) {
             dispatch(
@@ -1142,9 +1131,23 @@ const FoundryMapsAdmin: React.FC = () => {
               )}
 
               {uploadingFiles && (
-                <div className={styles.spinnerContainer}>
-                  <GiLinkedRings size={50} className="spinner" />
-                  <span>{editingMap ? 'Updating map...' : 'Creating map...'}</span>
+                <div className={styles.progressContainer}>
+                  <div className={styles.progressLabel}>
+                    {uploadProgress < 10
+                      ? 'Preparing upload...'
+                      : uploadProgress < 80
+                        ? 'Uploading to S3...'
+                        : uploadProgress < 100
+                          ? 'Processing package...'
+                          : 'Complete!'}
+                  </div>
+                  <div className={styles.progressBar}>
+                    <div
+                      className={styles.progressFill}
+                      style={{ width: `${uploadProgress}%` }}
+                    />
+                  </div>
+                  <div className={styles.progressPercent}>{uploadProgress}%</div>
                 </div>
               )}
 
