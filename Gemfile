@@ -44,6 +44,9 @@ gem 'aws-sdk-s3', '~> 1'
 # ZIP file handling for scene packages
 gem 'rubyzip', '~> 2.3'
 
+# Parallel processing for faster S3 uploads
+gem 'parallel', '~> 1.20'
+
 # CORS for Foundry module API access
 gem 'rack-cors'
 

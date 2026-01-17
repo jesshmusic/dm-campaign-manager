@@ -375,7 +375,7 @@ module Admin
 
           Rails.logger.info "Processing #{files_to_upload.length} files for map #{map.id}"
 
-          # Create a shared S3 client (thread-safe)
+          # Create a shared S3 client (thread-safe per AWS SDK documentation)
           s3_client = Aws::S3::Client.new(
             region: ENV['AWS_REGION'] || 'us-east-1',
             access_key_id: ENV.fetch('AWS_ACCESS_KEY_ID', nil),
@@ -383,14 +383,30 @@ module Admin
           )
 
           # Upload files in parallel (max 10 concurrent uploads)
-          uploaded_files = Parallel.map(files_to_upload, in_threads: 10) do |file_path|
+          # Each result is either {:success => data} or {:error => message}
+          upload_results = Parallel.map(files_to_upload, in_threads: 10) do |file_path|
             relative_path = Pathname.new(file_path).relative_path_from(temp_dir).to_s
-            upload_map_file_parallel(map, file_path, relative_path, map_slug, s3_client)
+            file_data = upload_map_file_parallel(map, file_path, relative_path, map_slug, s3_client)
+            { success: file_data }
+          rescue StandardError => e
+            { error: "#{relative_path}: #{e.message}" }
           end
 
-          # Create database records (must be done in main thread for ActiveRecord)
-          uploaded_files.each do |file_data|
-            map.foundry_map_files.create!(file_data)
+          # Separate successes and failures
+          failures = upload_results.select { |r| r[:error] }
+          uploaded_files = upload_results.select { |r| r[:success] }.pluck(:success)
+
+          # Raise if any uploads failed
+          if failures.any?
+            error_details = failures.pluck(:error).join('; ')
+            raise "Failed to upload #{failures.length} file(s): #{error_details}"
+          end
+
+          # Create database records in a transaction (must be done in main thread for ActiveRecord)
+          ActiveRecord::Base.transaction do
+            uploaded_files.each do |file_data|
+              map.foundry_map_files.create!(file_data)
+            end
           end
 
           Rails.logger.info "Successfully processed package for map #{map.id}: #{map.name}"
