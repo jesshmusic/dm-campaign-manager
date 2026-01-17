@@ -194,9 +194,23 @@ module Admin
         return render json: { error: 'Missing chunk_index' }, status: :unprocessable_entity if params[:chunk_index].blank?
         return render json: { error: 'Missing total_chunks' }, status: :unprocessable_entity if params[:total_chunks].blank?
 
-        upload_id = params[:upload_id]
+        upload_id = params[:upload_id].to_s
         chunk_index = params[:chunk_index].to_i
         total_chunks = params[:total_chunks].to_i
+
+        # Validate upload_id format to prevent path traversal
+        unless upload_id.match?(/\A[a-zA-Z0-9_-]+\z/) && upload_id.length <= 100
+          return render json: { error: 'Invalid upload_id format' }, status: :unprocessable_entity
+        end
+
+        # Validate chunk_index and total_chunks
+        max_chunks = 500 # ~1GB max with 2MB chunks
+        if total_chunks <= 0 || total_chunks > max_chunks
+          return render json: { error: "total_chunks must be between 1 and #{max_chunks}" }, status: :unprocessable_entity
+        end
+        if chunk_index.negative? || chunk_index >= total_chunks
+          return render json: { error: 'chunk_index out of range' }, status: :unprocessable_entity
+        end
 
         # Create temp directory for this upload
         upload_dir = Rails.root.join('tmp', 'chunked_uploads', map.id.to_s, upload_id)
@@ -228,16 +242,22 @@ module Admin
         return render json: { error: 'Missing upload_id' }, status: :unprocessable_entity if params[:upload_id].blank?
         return render json: { error: 'Missing filename' }, status: :unprocessable_entity if params[:filename].blank?
 
-        upload_id = params[:upload_id]
-        filename = params[:filename]
+        upload_id = params[:upload_id].to_s
+        filename = params[:filename].to_s
+
+        # Validate upload_id format to prevent path traversal
+        unless upload_id.match?(/\A[a-zA-Z0-9_-]+\z/) && upload_id.length <= 100
+          return render json: { error: 'Invalid upload_id format' }, status: :unprocessable_entity
+        end
 
         upload_dir = Rails.root.join('tmp', 'chunked_uploads', map.id.to_s, upload_id)
 
         return render json: { error: 'Upload not found. Chunks may have expired.' }, status: :not_found unless upload_dir.exist?
 
+        tempfile = nil
         begin
-          # Assemble chunks into final file
-          chunk_files = Dir.glob(upload_dir.join('chunk_*')).sort
+          # Assemble chunks into final file (Dir.glob returns sorted in Ruby 3+)
+          chunk_files = Dir.glob(upload_dir.join('chunk_*'))
           return render json: { error: 'No chunks found' }, status: :unprocessable_entity if chunk_files.empty?
 
           assembled_file = upload_dir.join(filename)
@@ -250,8 +270,9 @@ module Admin
           Rails.logger.info "Assembled #{chunk_files.count} chunks into #{filename} (#{File.size(assembled_file)} bytes)"
 
           # Create a mock uploaded file object for process_scene_package
+          tempfile = File.open(assembled_file, 'rb')
           uploaded_file = ActionDispatch::Http::UploadedFile.new(
-            tempfile: File.open(assembled_file, 'rb'),
+            tempfile: tempfile,
             filename: filename,
             type: 'application/zip'
           )
@@ -267,6 +288,8 @@ module Admin
           Rails.logger.error e.backtrace.join("\n")
           render json: { error: "Failed to process package: #{e.message}" }, status: :unprocessable_entity
         ensure
+          # Close the tempfile to avoid file descriptor leak
+          tempfile&.close
           # Cleanup the upload directory
           FileUtils.rm_rf(upload_dir) if upload_dir&.exist?
         end
