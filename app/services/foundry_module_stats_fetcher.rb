@@ -63,7 +63,7 @@ class FoundryModuleStatsFetcher
       fetched_at: Time.current.iso8601,
       owner: OWNER,
       rate_limited: results.any? { |r| r[:rate_limited] },
-      modules: results.map { |r| r[:module] }
+      modules: results.pluck(:module)
     }
   end
 
