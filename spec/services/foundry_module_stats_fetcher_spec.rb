@@ -5,14 +5,6 @@ require_relative '../../app/services/foundry_module_stats_fetcher'
 RSpec.describe FoundryModuleStatsFetcher do
   subject(:fetcher) { described_class.new(token: nil) }
 
-  # Stub the private fetch_json method so we don't hit the network. Each
-  # URL maps to a canned response (or nil for "not found").
-  def stub_http(url_to_response)
-    allow(fetcher).to receive(:fetch_json) do |url|
-      url_to_response.fetch(url, nil)
-    end
-  end
-
   describe '#call' do
     it 'returns owner, fetched_at, rate_limited, and a module entry per repo' do
       allow(fetcher).to receive(:fetch_json).and_return(nil)
@@ -65,7 +57,8 @@ RSpec.describe FoundryModuleStatsFetcher do
           { 'version' => '1.5.0', 'compatibility' => { 'verified' => '13' } }
       }
 
-      # All other repos return nil so they're built as empty/error rows.
+      # All other repos return nil for every call, so they're built as
+      # empty (non-error) rows with zeroed counts and no releases.
       allow(fetcher).to receive(:fetch_json) { |url| url_map[url] }
 
       result = fetcher.call

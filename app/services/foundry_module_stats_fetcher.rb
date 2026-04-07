@@ -47,22 +47,23 @@ class FoundryModuleStatsFetcher
   end
 
   def call
-    rate_limited = false
-    modules = Parallel.map(REPOS, in_threads: REPOS.size) do |mod|
-      fetch_module(mod)
+    # Each thread returns its own {module:, rate_limited:} pair so we never
+    # touch shared state inside Parallel.map. The top-level flag is derived
+    # from the results after the parallel work completes.
+    results = Parallel.map(REPOS, in_threads: REPOS.size) do |mod|
+      { module: fetch_module(mod), rate_limited: false }
     rescue RateLimitError => e
-      rate_limited = true
-      error_module(mod, "rate limited: #{e.message}")
+      { module: error_module(mod, "rate limited: #{e.message}"), rate_limited: true }
     rescue StandardError => e
       Rails.logger.warn("FoundryModuleStatsFetcher: #{mod[:repo]} failed — #{e.class}: #{e.message}")
-      error_module(mod, e.message)
+      { module: error_module(mod, e.message), rate_limited: false }
     end
 
     {
       fetched_at: Time.current.iso8601,
       owner: OWNER,
-      rate_limited: rate_limited,
-      modules: modules
+      rate_limited: results.any? { |r| r[:rate_limited] },
+      modules: results.map { |r| r[:module] }
     }
   end
 

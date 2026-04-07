@@ -1,14 +1,12 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth0 } from '@auth0/auth0-react';
 import styled from 'styled-components';
 import Frame from '../../../../components/Frame/Frame';
 import Button from '../../../../components/Button/Button';
 import { Colors } from '../../../../utilities/enums';
 import InstallDonut from './InstallDonut';
-import { FoundryModuleStatsResponse } from '../types';
+import useFoundryModuleStats from '../useFoundryModuleStats';
 
-const ENDPOINT = '/v1/foundry-module-stats.json';
 const STATS_PATH = '/app/admin-dashboard/foundry-module-stats';
 
 const ClickableArea = styled.button`
@@ -53,45 +51,13 @@ const RefreshButtonRow = styled.div`
 `;
 
 const FoundryStatsPanel: React.FC = () => {
-  const { getAccessTokenSilently } = useAuth0();
   const navigate = useNavigate();
-  const [data, setData] = useState<FoundryModuleStatsResponse | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const load = useCallback(
-    async (refresh = false) => {
-      setLoading(true);
-      setError(null);
-      try {
-        const token = await getAccessTokenSilently();
-        const url = refresh ? `${ENDPOINT}?refresh=1` : ENDPOINT;
-        const response = await fetch(url, {
-          headers: {
-            Accept: 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        const json = (await response.json()) as FoundryModuleStatsResponse;
-        setData(json);
-      } catch (e) {
-        setError(e instanceof Error ? e.message : 'Failed to load');
-      } finally {
-        setLoading(false);
-      }
-    },
-    [getAccessTokenSilently],
-  );
-
-  useEffect(() => {
-    void load(false);
-  }, [load]);
+  const { data, loading, error, reload } = useFoundryModuleStats();
 
   const stopClick = (e: React.MouseEvent | React.KeyboardEvent) => e.stopPropagation();
   const handleRefresh = (e: React.MouseEvent) => {
     e.stopPropagation();
-    void load(true);
+    reload();
   };
 
   return (
