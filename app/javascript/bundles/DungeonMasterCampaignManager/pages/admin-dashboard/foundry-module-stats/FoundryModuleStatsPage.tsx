@@ -83,6 +83,12 @@ const FoundryModuleStatsPage: React.FC = () => {
             />
           </RefreshBar>
           {error && <ErrorMsg>Could not load stats: {error}</ErrorMsg>}
+          {data?.rate_limited && (
+            <ErrorMsg>
+              GitHub rate limit reached. Showing partial data — set GITHUB_TOKEN to lift the 60
+              req/hr cap.
+            </ErrorMsg>
+          )}
           {data && <SummaryBar modules={data.modules} />}
         </Section>
 

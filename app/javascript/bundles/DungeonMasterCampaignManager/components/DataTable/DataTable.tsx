@@ -192,10 +192,13 @@ const DataTable = <T extends object = Record<string, unknown>>({
         })}
       >
         <thead>
-          {dataTable.headerGroups.map((headerGroup) => {
-            const { key: _headerKey, ...headerGroupProps } = headerGroup.getHeaderGroupProps();
+          {dataTable.headerGroups.map((headerGroup, headerGroupIndex) => {
+            const { key: headerKey, ...headerGroupProps } = headerGroup.getHeaderGroupProps();
             return (
-              <tr key={headerGroup.id} {...headerGroupProps}>
+              <tr
+                key={(headerKey as React.Key | undefined) ?? `header-group-${headerGroupIndex}`}
+                {...headerGroupProps}
+              >
                 {headerGroup.headers.map((column) => {
                   const columnWithSorting = column as unknown as ColumnWithSorting<object>;
                   const { key: _columnKey, ...columnProps } = columnWithSorting.getHeaderProps(

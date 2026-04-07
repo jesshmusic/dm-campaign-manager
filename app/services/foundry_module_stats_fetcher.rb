@@ -2,6 +2,7 @@
 
 require 'json'
 require 'net/http'
+require 'parallel'
 require 'uri'
 
 # Fetches Foundry VTT module install statistics from GitHub for a hardcoded
@@ -13,11 +14,19 @@ require 'uri'
 # `download_count` field, summed across .zip assets in each release.
 #
 # To bucket the latest installs by Foundry major version (v13 vs v14), we
-# walk releases newest-to-oldest and read each release's `module.json`
-# manifest from raw.githubusercontent.com. The first release we find that
-# targets a given major version (via `compatibility.verified` or
-# `compatibility.minimum`) becomes the "latest for v{major}".
+# walk the most recent releases (capped at MANIFEST_WALK_LIMIT) and read
+# each release's `module.json` manifest from raw.githubusercontent.com. The
+# first release we find that targets a given major version (via
+# `compatibility.verified` or `compatibility.minimum`) becomes the "latest
+# for v{major}".
+#
+# Each repo's GitHub calls run in parallel threads (Net::HTTP releases the
+# GVL during IO so this is a real speedup) and the controller caches the
+# whole result in Rails.cache for an hour to stay well under the 60 req/hr
+# unauthenticated GitHub limit.
 class FoundryModuleStatsFetcher
+  class RateLimitError < StandardError; end
+
   OWNER = 'jesshmusic'
   REPOS = [
     { name: 'Tile Utilities',        repo: 'em-tile-utilities' },
@@ -29,6 +38,7 @@ class FoundryModuleStatsFetcher
     { name: 'Cartography',           repo: 'dorman-lakely-cartography' }
   ].freeze
   WANTED_MAJORS = [13, 14].freeze
+  MANIFEST_WALK_LIMIT = 8
   USER_AGENT = 'dungeon-master-guru-admin'
 
   def initialize(token: ENV.fetch('GITHUB_TOKEN', nil))
@@ -36,10 +46,22 @@ class FoundryModuleStatsFetcher
   end
 
   def call
+    rate_limited = false
+    modules = Parallel.map(REPOS, in_threads: REPOS.size) do |mod|
+      fetch_module(mod)
+    rescue RateLimitError => e
+      rate_limited = true
+      error_module(mod, "rate limited: #{e.message}")
+    rescue StandardError => e
+      Rails.logger.warn("FoundryModuleStatsFetcher: #{mod[:repo]} failed — #{e.class}: #{e.message}")
+      error_module(mod, e.message)
+    end
+
     {
       fetched_at: Time.current.iso8601,
       owner: OWNER,
-      modules: REPOS.map { |mod| fetch_module(mod) }
+      rate_limited: rate_limited,
+      modules: modules
     }
   end
 
@@ -65,8 +87,9 @@ class FoundryModuleStatsFetcher
       releases: releases.map { |r| serialize_release(r) },
       error: nil
     }
-  rescue StandardError => e
-    Rails.logger.warn("FoundryModuleStatsFetcher: #{mod[:repo]} failed — #{e.class}: #{e.message}")
+  end
+
+  def error_module(mod, message)
     {
       name: mod[:name],
       repo: mod[:repo],
@@ -78,7 +101,7 @@ class FoundryModuleStatsFetcher
       v13: nil,
       v14: nil,
       releases: [],
-      error: e.message
+      error: message
     }
   end
 
@@ -112,12 +135,13 @@ class FoundryModuleStatsFetcher
     zip_count(releases.first)
   end
 
-  # Walks releases newest-to-oldest, fetching each release's module.json,
-  # and returns the latest release per Foundry major version we care about.
-  # Stops once all wanted majors are found or releases are exhausted.
+  # Walks the most recent releases newest-to-oldest, fetching each release's
+  # module.json, and returns the latest release per Foundry major version we
+  # care about. Stops once all wanted majors are found, or after walking
+  # MANIFEST_WALK_LIMIT releases — bounding the worst-case API call count.
   def find_latest_per_version(repo, releases)
     results = {}
-    releases.each do |release|
+    releases.first(MANIFEST_WALK_LIMIT).each do |release|
       break if WANTED_MAJORS.all? { |v| results[v] }
 
       manifest = fetch_manifest_for_release(repo, release)
@@ -176,11 +200,32 @@ class FoundryModuleStatsFetcher
       http.request(req)
     end
 
+    if rate_limited?(response)
+      reset = response['x-ratelimit-reset']
+      raise RateLimitError, "GitHub rate limit reached (resets at #{reset_time(reset)})"
+    end
+
     return nil unless response.is_a?(Net::HTTPSuccess)
 
     JSON.parse(response.body)
   rescue JSON::ParserError, Net::OpenTimeout, Net::ReadTimeout, SocketError => e
     Rails.logger.warn("FoundryModuleStatsFetcher#fetch_json #{url} -> #{e.class}: #{e.message}")
     nil
+  end
+
+  def rate_limited?(response)
+    return true if response.is_a?(Net::HTTPTooManyRequests)
+    return false unless response.is_a?(Net::HTTPForbidden)
+
+    remaining = response['x-ratelimit-remaining']
+    remaining.present? && remaining.to_i.zero?
+  end
+
+  def reset_time(epoch)
+    return 'unknown' if epoch.blank?
+
+    Time.zone.at(epoch.to_i).strftime('%H:%M %Z')
+  rescue StandardError
+    'unknown'
   end
 end

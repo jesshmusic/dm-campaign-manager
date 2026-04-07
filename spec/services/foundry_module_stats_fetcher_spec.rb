@@ -14,13 +14,24 @@ RSpec.describe FoundryModuleStatsFetcher do
   end
 
   describe '#call' do
-    it 'returns owner, fetched_at, and a module entry per repo' do
+    it 'returns owner, fetched_at, rate_limited, and a module entry per repo' do
       allow(fetcher).to receive(:fetch_json).and_return(nil)
       result = fetcher.call
 
       expect(result[:owner]).to eq('jesshmusic')
       expect(result[:fetched_at]).to be_a(String)
+      expect(result[:rate_limited]).to be(false)
       expect(result[:modules].length).to eq(described_class::REPOS.length)
+    end
+
+    it 'flags rate_limited when any repo fetch hits the GitHub limit' do
+      allow(fetcher)
+        .to receive(:fetch_json)
+        .and_raise(FoundryModuleStatsFetcher::RateLimitError.new('quota exhausted'))
+
+      result = fetcher.call
+      expect(result[:rate_limited]).to be(true)
+      expect(result[:modules]).to all(include(error: a_string_matching(/rate limited/)))
     end
 
     it 'aggregates install counts and buckets the latest releases by Foundry version' do

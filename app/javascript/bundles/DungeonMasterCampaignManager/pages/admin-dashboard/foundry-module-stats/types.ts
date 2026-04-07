@@ -27,5 +27,6 @@ export interface ModuleStats {
 export interface FoundryModuleStatsResponse {
   fetched_at: string;
   owner: string;
+  rate_limited?: boolean;
   modules: ModuleStats[];
 }

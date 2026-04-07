@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import styled from 'styled-components';
 import Frame from '../../../../components/Frame/Frame';
+import Button from '../../../../components/Button/Button';
+import { Colors } from '../../../../utilities/enums';
 import InstallDonut from './InstallDonut';
 import { FoundryModuleStatsResponse } from '../types';
 
@@ -33,25 +35,38 @@ const HintRow = styled.div`
   text-align: center;
 `;
 
-const Loading = styled.div`
+const StateMessage = styled.div`
   color: ${({ theme }) => theme.colors.textMuted};
   font-style: italic;
-  padding: 1rem;
+  padding: 1.5rem 1rem;
   text-align: center;
+`;
+
+const RateLimitMessage = styled(StateMessage)`
+  color: ${({ theme }) => theme.colors.danger};
+`;
+
+const RefreshButtonRow = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0.5rem;
 `;
 
 const FoundryStatsPanel: React.FC = () => {
   const { getAccessTokenSilently } = useAuth0();
   const navigate = useNavigate();
   const [data, setData] = useState<FoundryModuleStatsResponse | null>(null);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    let cancelled = false;
-    const load = async () => {
+  const load = useCallback(
+    async (refresh = false) => {
+      setLoading(true);
+      setError(null);
       try {
         const token = await getAccessTokenSilently();
-        const response = await fetch(ENDPOINT, {
+        const url = refresh ? `${ENDPOINT}?refresh=1` : ENDPOINT;
+        const response = await fetch(url, {
           headers: {
             Accept: 'application/json',
             Authorization: `Bearer ${token}`,
@@ -59,34 +74,52 @@ const FoundryStatsPanel: React.FC = () => {
         });
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const json = (await response.json()) as FoundryModuleStatsResponse;
-        if (!cancelled) setData(json);
+        setData(json);
       } catch (e) {
-        if (!cancelled) {
-          setError(e instanceof Error ? e.message : 'Failed to load');
-        }
+        setError(e instanceof Error ? e.message : 'Failed to load');
+      } finally {
+        setLoading(false);
       }
-    };
-    void load();
-    return () => {
-      cancelled = true;
-    };
-  }, [getAccessTokenSilently]);
+    },
+    [getAccessTokenSilently],
+  );
+
+  useEffect(() => {
+    void load(false);
+  }, [load]);
+
+  const stopClick = (e: React.MouseEvent | React.KeyboardEvent) => e.stopPropagation();
+  const handleRefresh = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    void load(true);
+  };
 
   return (
     <Frame style={{ width: '100%', height: '100%' }} title="Foundry Module Installs">
+      <RefreshButtonRow onClick={stopClick}>
+        <Button
+          color={Colors.transparent}
+          title={loading ? 'Refreshing…' : 'Refresh'}
+          onClick={handleRefresh}
+          disabled={loading}
+          isLoading={loading}
+        />
+      </RefreshButtonRow>
       <ClickableArea
         type="button"
         onClick={() => navigate(STATS_PATH)}
         aria-label="View full Foundry module install statistics"
       >
-        {!data && !error && <Loading>Loading…</Loading>}
-        {error && <Loading>Could not load: {error}</Loading>}
-        {data && (
-          <>
-            <InstallDonut modules={data.modules} />
-            <HintRow>Click for full release history →</HintRow>
-          </>
+        {loading && !data && <StateMessage>Loading…</StateMessage>}
+        {error && <RateLimitMessage>Could not load: {error}</RateLimitMessage>}
+        {data?.rate_limited && (
+          <RateLimitMessage>
+            GitHub rate limit reached. Showing partial data — set GITHUB_TOKEN to lift the 60 req/hr
+            cap.
+          </RateLimitMessage>
         )}
+        {data && <InstallDonut modules={data.modules} />}
+        {data && <HintRow>Click for full release history →</HintRow>}
       </ClickableArea>
     </Frame>
   );
