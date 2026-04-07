@@ -6,12 +6,6 @@ const store = configureStore({
   reducer: rootReducer,
   preloadedState: {
     flashMessages: [],
-    conditions: {
-      conditions: [],
-      count: 0,
-      currentCondition: null,
-      loading: false,
-    },
     customActions: {
       actions: [],
       count: 0,

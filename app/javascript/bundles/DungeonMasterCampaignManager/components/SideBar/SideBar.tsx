@@ -217,15 +217,19 @@ const SideBar = (props: {
   }, [location.pathname]);
 
   const handleLogout = () => {
-    void getAccessTokenSilently()
-      .then((token) => {
-        logOutUser(token);
-        document.cookie =
-          '_dungeon_master_screen_online_session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-        void logout({ logoutParams: { returnTo: window.location.origin } });
-      })
+    // Always clear local session state, even if Auth0's silent token fetch fails
+    // (e.g. expired refresh token). Otherwise a stale token would trap the user
+    // in a logged-in-but-broken state with no way to log out from the UI.
+    document.cookie =
+      '_dungeon_master_screen_online_session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+
+    getAccessTokenSilently()
+      .then((token) => logOutUser(token))
       .catch((err) => {
-        console.error(err);
+        console.warn('Silent token fetch failed during logout, proceeding anyway:', err);
+      })
+      .finally(() => {
+        void logout({ logoutParams: { returnTo: window.location.origin } });
       });
   };
 

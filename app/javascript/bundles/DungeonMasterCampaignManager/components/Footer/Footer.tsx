@@ -3,6 +3,7 @@ import DndLogo from '../HeroBanner/DMLogo';
 import { User } from '@auth0/auth0-react';
 import { useSidebar } from '../../contexts/SidebarContext';
 
+import packageJson from '../../../../../../package.json';
 import footerBg from './FooterBackground.jpg';
 import patreonBanner from './PatreonBanner.png';
 
@@ -20,6 +21,7 @@ import {
   FooterLink,
   SiteTitle,
   Logo,
+  Copyright,
 } from './Footer.styles';
 
 const PATREON_URL =
@@ -64,6 +66,9 @@ const Footer = (_props: { user?: User }) => {
           </Nav>
         </Right>
       </Content>
+      <Copyright>
+        © {new Date().getFullYear()} Jess Hendricks · v{packageJson.version}
+      </Copyright>
     </FooterWrapper>
   );
 };

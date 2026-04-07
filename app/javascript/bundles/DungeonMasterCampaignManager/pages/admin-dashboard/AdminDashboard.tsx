@@ -5,6 +5,7 @@ import MonstersTable from '../monsters/MonstersTable';
 import UsersTable from './components/UsersTable';
 import { GiBarbute, GiBlacksmith } from 'react-icons/gi';
 import { FaMap } from 'react-icons/fa';
+import FoundryStatsPanel from './foundry-module-stats/components/FoundryStatsPanel';
 import { useNavigate } from 'react-router-dom';
 import ActionsTable from './components/ActionsTable';
 import WidgetsTable from './components/WidgetsTable';
@@ -14,9 +15,7 @@ import Frame from '../../components/Frame/Frame';
 import Button from '../../components/Button/Button';
 import { Colors } from '../../utilities/enums';
 
-import packageJson from '../../../../../../package.json';
-
-import { Wrapper, Section, InfoContainer } from './AdminDashboard.styles';
+import { Wrapper, Section, InfoContainer, InfoFlex1, InfoFlex2 } from './AdminDashboard.styles';
 import { RootState, AppDispatch } from '../../store/store';
 
 const AdminDashboard = (props: {
@@ -41,22 +40,22 @@ const AdminDashboard = (props: {
         <Section>
           <h2>Site Statistics</h2>
           <InfoContainer>
-            <Frame style={{ width: '100%', height: '100%' }} title={'Info'}>
-              <p>
-                <strong>Users:</strong> {userCount}
-              </p>
-              <p>
-                <strong>Custom Actions:</strong> {actionCount}
-              </p>
-              <p>
-                <strong>Custom NPCs:</strong> {npcCount}
-              </p>
-            </Frame>
-            <Frame style={{ width: '100%', height: '100%' }} title={'Site'}>
-              <p>
-                <strong>Version:</strong> {packageJson.version}
-              </p>
-            </Frame>
+            <InfoFlex1>
+              <Frame style={{ width: '100%', height: '100%' }} title={'Info'}>
+                <p>
+                  <strong>Users:</strong> {userCount}
+                </p>
+                <p>
+                  <strong>Custom Actions:</strong> {actionCount}
+                </p>
+                <p>
+                  <strong>Custom NPCs:</strong> {npcCount}
+                </p>
+              </Frame>
+            </InfoFlex1>
+            <InfoFlex2>
+              <FoundryStatsPanel />
+            </InfoFlex2>
           </InfoContainer>
           <Section>
             <h3>Users</h3>

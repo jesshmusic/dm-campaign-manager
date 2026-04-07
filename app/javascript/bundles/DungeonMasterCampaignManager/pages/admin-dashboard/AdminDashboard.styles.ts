@@ -30,9 +30,15 @@ export const ActionTypeContainer = styled.div`
 `;
 
 export const InfoContainer = styled.div`
-  display: grid;
-  grid-gap: ${({ theme }) => theme.spacing.spacer};
-  grid-template-columns: 1fr 1fr;
+  align-items: stretch;
+  display: flex;
+  flex-wrap: wrap;
+  gap: ${({ theme }) => theme.spacing.spacer};
+  margin-bottom: ${({ theme }) => theme.spacing.spacer};
+
+  > * {
+    min-width: 240px;
+  }
 
   p {
     color: ${({ theme }) => theme.colors.primaryDark};
@@ -40,6 +46,26 @@ export const InfoContainer = styled.div`
     font-size: calc(${({ theme }) => theme.fontSizes.lg} * 0.85);
     grid-template-columns: 2fr 1fr;
     max-width: 25rem;
+  }
+`;
+
+export const InfoFlex1 = styled.div`
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+
+  > * {
+    flex: 1;
+  }
+`;
+
+export const InfoFlex2 = styled.div`
+  display: flex;
+  flex: 2;
+  flex-direction: column;
+
+  > * {
+    flex: 1;
   }
 `;
 

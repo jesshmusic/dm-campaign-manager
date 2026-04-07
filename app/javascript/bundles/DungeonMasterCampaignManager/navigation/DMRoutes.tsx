@@ -27,6 +27,7 @@ import EditWidgetPage from '../pages/admin-dashboard/EditWidgetPage';
 import SearchResults from '../pages/search-results/SearchResults';
 import PrivacyPolicy from '../pages/privacy-policy/PrivacyPolicy';
 import FoundryMapsAdmin from '../pages/FoundryMapsAdmin';
+import FoundryModuleStatsPage from '../pages/admin-dashboard/foundry-module-stats/FoundryModuleStatsPage';
 import { ItemType } from '../pages/items/use-data';
 
 type ResolverProps = Record<string, unknown>;
@@ -159,6 +160,10 @@ const DMRoutes = (props: ResolverProps) => {
       <Route
         path="/app/admin-dashboard/foundry-maps"
         element={<ProtectedRoute as={FoundryMapsAdmin} requireAdmin={true} {...props} />}
+      />
+      <Route
+        path="/app/admin-dashboard/foundry-module-stats"
+        element={<ProtectedRoute as={FoundryModuleStatsPage} requireAdmin={true} {...props} />}
       />
       <Route
         path="/app/user-dashboard"
