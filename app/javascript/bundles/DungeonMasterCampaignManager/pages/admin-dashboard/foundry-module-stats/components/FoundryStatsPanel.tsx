@@ -73,7 +73,7 @@ const FoundryStatsPanel: React.FC = () => {
   }, [getAccessTokenSilently]);
 
   return (
-    <Frame style={{ width: '100%' }} title="Foundry Module Installs">
+    <Frame style={{ width: '100%', height: '100%' }} title="Foundry Module Installs">
       <ClickableArea
         type="button"
         onClick={() => navigate(STATS_PATH)}

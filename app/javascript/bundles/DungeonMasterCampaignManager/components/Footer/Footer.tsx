@@ -20,8 +20,8 @@ import {
   PatreonText,
   FooterLink,
   SiteTitle,
-  SiteVersion,
   Logo,
+  Copyright,
 } from './Footer.styles';
 
 const PATREON_URL =
@@ -35,7 +35,6 @@ const Footer = (_props: { user?: User }) => {
       <Content>
         <Left>
           <SiteTitle>Dungeon Master GURU</SiteTitle>
-          <SiteVersion>v{packageJson.version}</SiteVersion>
           <Logo as={DndLogo} />
         </Left>
         <Center>
@@ -67,6 +66,9 @@ const Footer = (_props: { user?: User }) => {
           </Nav>
         </Right>
       </Content>
+      <Copyright>
+        © {new Date().getFullYear()} Jess Hendricks · v{packageJson.version}
+      </Copyright>
     </FooterWrapper>
   );
 };

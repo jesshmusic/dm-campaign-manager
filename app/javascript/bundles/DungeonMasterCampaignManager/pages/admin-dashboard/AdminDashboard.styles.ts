@@ -50,11 +50,23 @@ export const InfoContainer = styled.div`
 `;
 
 export const InfoFlex1 = styled.div`
+  display: flex;
   flex: 1;
+  flex-direction: column;
+
+  > * {
+    flex: 1;
+  }
 `;
 
 export const InfoFlex2 = styled.div`
+  display: flex;
   flex: 2;
+  flex-direction: column;
+
+  > * {
+    flex: 1;
+  }
 `;
 
 export const EditButton = styled.span`
