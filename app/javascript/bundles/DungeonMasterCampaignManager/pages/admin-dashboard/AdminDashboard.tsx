@@ -5,6 +5,7 @@ import MonstersTable from '../monsters/MonstersTable';
 import UsersTable from './components/UsersTable';
 import { GiBarbute, GiBlacksmith } from 'react-icons/gi';
 import { FaMap } from 'react-icons/fa';
+import FoundryStatsPanel from './foundry-module-stats/components/FoundryStatsPanel';
 import { useNavigate } from 'react-router-dom';
 import ActionsTable from './components/ActionsTable';
 import WidgetsTable from './components/WidgetsTable';
@@ -57,6 +58,7 @@ const AdminDashboard = (props: {
                 <strong>Version:</strong> {packageJson.version}
               </p>
             </Frame>
+            <FoundryStatsPanel />
           </InfoContainer>
           <Section>
             <h3>Users</h3>

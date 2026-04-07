@@ -30,9 +30,10 @@ export const ActionTypeContainer = styled.div`
 `;
 
 export const InfoContainer = styled.div`
+  align-items: stretch;
   display: grid;
   grid-gap: ${({ theme }) => theme.spacing.spacer};
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
 
   p {
     color: ${({ theme }) => theme.colors.primaryDark};

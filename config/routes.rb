@@ -92,6 +92,10 @@ Rails.application.routes.draw do
       # Admin UI for managing maps
       get '/maps-admin', to: 'foundry_maps_admin#index'
 
+      # Foundry module install statistics (GitHub releases proxy)
+      get '/foundry-module-stats', to: 'foundry_module_stats#index',
+                                   constraints: { format: 'json' }
+
       scope except: %i[new edit] do
         resources :actions, only: %i[index create update destroy], constraints: { format: 'json' }
         resources :proficiencies, only: %i[index show], constraints: { format: 'json' }
