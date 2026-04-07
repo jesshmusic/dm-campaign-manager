@@ -143,30 +143,37 @@ export const ModuleCard = styled.div<{ $open: boolean }>`
   transition: border-color ${({ theme }) => theme.transitions.fast};
 `;
 
+export const ModuleHeaderRow = styled.div`
+  align-items: center;
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.spacer};
+  justify-content: space-between;
+  padding: ${({ theme }) => theme.spacing[3]} ${({ theme }) => theme.spacing[4]};
+`;
+
+export const ModuleHeaderLeft = styled.div`
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+`;
+
 export const ModuleHeaderButton = styled.button`
   align-items: center;
   background: transparent;
   border: 0;
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
   cursor: pointer;
-  display: flex;
+  display: inline-flex;
   font-family: inherit;
-  gap: ${({ theme }) => theme.spacing.spacer};
-  justify-content: space-between;
-  padding: ${({ theme }) => theme.spacing[3]} ${({ theme }) => theme.spacing[4]};
+  gap: 0.75rem;
+  padding: 0.25rem 0;
   text-align: left;
-  width: 100%;
 
   &:hover {
     background: rgba(201, 173, 106, 0.08);
   }
-`;
-
-export const ModuleLeft = styled.div`
-  align-items: center;
-  display: flex;
-  flex: 1;
-  gap: 0.75rem;
-  min-width: 0;
 `;
 
 export const Chevron = styled.span<{ $open: boolean }>`
@@ -177,10 +184,6 @@ export const Chevron = styled.span<{ $open: boolean }>`
   transform: rotate(${({ $open }) => ($open ? '90deg' : '0deg')});
   transition: transform ${({ theme }) => theme.transitions.fast};
   width: 14px;
-`;
-
-export const ModuleInfo = styled.div`
-  min-width: 0;
 `;
 
 export const ModuleName = styled.div`

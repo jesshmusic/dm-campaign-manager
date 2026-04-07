@@ -13,8 +13,8 @@ import {
   LatestBadge,
   ModuleCard,
   ModuleHeaderButton,
-  ModuleInfo,
-  ModuleLeft,
+  ModuleHeaderLeft,
+  ModuleHeaderRow,
   ModuleMeta,
   ModuleName,
   NoReleases,
@@ -53,46 +53,42 @@ const VersionColumn: React.FC<{ label: string; info: VersionInfo | null }> = ({ 
 
 const ModuleAccordion: React.FC<Props> = ({ module: mod }) => {
   const [open, setOpen] = useState(false);
-  const stop = (e: React.MouseEvent) => e.stopPropagation();
 
   const maxDl = Math.max(1, ...mod.releases.map((r) => r.installs));
 
   return (
     <ModuleCard $open={open} data-testid={`module-card-${mod.repo}`}>
-      <ModuleHeaderButton type="button" onClick={() => setOpen((v) => !v)} aria-expanded={open}>
-        <ModuleLeft>
-          <Chevron $open={open} aria-hidden="true">
-            ▶
-          </Chevron>
-          <ModuleInfo>
+      <ModuleHeaderRow>
+        <ModuleHeaderLeft>
+          {/* Toggle is a real <button> so it's keyboard-accessible. The repo
+              link and issues badge live as siblings outside the button to
+              avoid nesting <a> inside <button> (invalid HTML). */}
+          <ModuleHeaderButton type="button" onClick={() => setOpen((v) => !v)} aria-expanded={open}>
+            <Chevron $open={open} aria-hidden="true">
+              ▶
+            </Chevron>
             <ModuleName>{mod.name}</ModuleName>
-            <ModuleMeta>
-              <RepoLink
-                href={mod.repo_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={stop}
-              >
-                jesshmusic/{mod.repo} ↗
-              </RepoLink>
-              <IssuesBadge
-                href={mod.issues_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={stop}
-                $hasIssues={mod.open_issues_count > 0}
-              >
-                <IssuesDot />
-                {mod.open_issues_count} issue{mod.open_issues_count === 1 ? '' : 's'}
-              </IssuesBadge>
-            </ModuleMeta>
-          </ModuleInfo>
-        </ModuleLeft>
+          </ModuleHeaderButton>
+          <ModuleMeta>
+            <RepoLink href={mod.repo_url} target="_blank" rel="noopener noreferrer">
+              jesshmusic/{mod.repo} ↗
+            </RepoLink>
+            <IssuesBadge
+              href={mod.issues_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              $hasIssues={mod.open_issues_count > 0}
+            >
+              <IssuesDot />
+              {mod.open_issues_count} issue{mod.open_issues_count === 1 ? '' : 's'}
+            </IssuesBadge>
+          </ModuleMeta>
+        </ModuleHeaderLeft>
         <VersionCounts>
           <VersionColumn label="Foundry v13" info={mod.v13} />
           <VersionColumn label="Foundry v14" info={mod.v14} />
         </VersionCounts>
-      </ModuleHeaderButton>
+      </ModuleHeaderRow>
       <AccordionBody $open={open}>
         {mod.error ? (
           <ErrorMsg>Could not load: {mod.error}</ErrorMsg>

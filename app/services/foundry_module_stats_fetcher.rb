@@ -22,8 +22,9 @@ require 'uri'
 #
 # Each repo's GitHub calls run in parallel threads (Net::HTTP releases the
 # GVL during IO so this is a real speedup) and the controller caches the
-# whole result in Rails.cache for an hour to stay well under the 60 req/hr
-# unauthenticated GitHub limit.
+# whole result in Rails.cache for its configured CACHE_TTL (see
+# Admin::V1::FoundryModuleStatsController::CACHE_TTL) to stay well under
+# the 60 req/hr unauthenticated GitHub limit.
 class FoundryModuleStatsFetcher
   class RateLimitError < StandardError; end
 
