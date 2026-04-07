@@ -9,7 +9,7 @@ module Admin
       def index
         authorize :foundry_module_stats, :index?
 
-        Rails.cache.delete(CACHE_KEY) if params[:refresh].present?
+        Rails.cache.delete(CACHE_KEY) if ActiveModel::Type::Boolean.new.cast(params[:refresh])
 
         cached = Rails.cache.read(CACHE_KEY)
         if cached

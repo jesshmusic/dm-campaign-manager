@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import Frame from '../../../../components/Frame/Frame';
 import Button from '../../../../components/Button/Button';
@@ -9,13 +9,14 @@ import useFoundryModuleStats from '../useFoundryModuleStats';
 
 const STATS_PATH = '/app/admin-dashboard/foundry-module-stats';
 
-const ClickableArea = styled.button`
-  background: transparent;
-  border: 0;
-  cursor: pointer;
+// styled(Link) — semantic anchor, valid HTML wrapper for the donut SVG and
+// legend (block-level content). Avoids the previous <button> that wrapped
+// block-level children, which was invalid HTML.
+const ClickableArea = styled(Link)`
+  color: inherit;
   display: block;
   padding: 0.25rem;
-  text-align: left;
+  text-decoration: none;
   width: 100%;
 
   &:hover {
@@ -51,31 +52,20 @@ const RefreshButtonRow = styled.div`
 `;
 
 const FoundryStatsPanel: React.FC = () => {
-  const navigate = useNavigate();
   const { data, loading, error, reload } = useFoundryModuleStats();
-
-  const stopClick = (e: React.MouseEvent | React.KeyboardEvent) => e.stopPropagation();
-  const handleRefresh = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    reload();
-  };
 
   return (
     <Frame style={{ width: '100%', height: '100%' }} title="Foundry Module Installs">
-      <RefreshButtonRow onClick={stopClick}>
+      <RefreshButtonRow>
         <Button
           color={Colors.transparent}
           title={loading ? 'Refreshing…' : 'Refresh'}
-          onClick={handleRefresh}
+          onClick={reload}
           disabled={loading}
           isLoading={loading}
         />
       </RefreshButtonRow>
-      <ClickableArea
-        type="button"
-        onClick={() => navigate(STATS_PATH)}
-        aria-label="View full Foundry module install statistics"
-      >
+      <ClickableArea to={STATS_PATH} aria-label="View full Foundry module install statistics">
         {loading && !data && <StateMessage>Loading…</StateMessage>}
         {error && <RateLimitMessage>Could not load: {error}</RateLimitMessage>}
         {data?.rate_limited && (
