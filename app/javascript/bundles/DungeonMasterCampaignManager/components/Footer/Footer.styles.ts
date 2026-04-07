@@ -112,6 +112,15 @@ export const SiteTitle = styled.h3`
   text-shadow: 1px 1px ${({ theme }) => theme.colors.black};
 `;
 
+export const SiteVersion = styled.div`
+  color: ${({ theme }) => adjustLightness(theme.colors.danger, 30)};
+  font-family: ${({ theme }) => theme.fonts.monospace};
+  font-size: ${({ theme }) => theme.fontSizes.xs};
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+  opacity: 0.85;
+`;
+
 export const Logo = styled.img`
   max-height: 12rem;
 `;

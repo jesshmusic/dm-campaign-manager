@@ -31,9 +31,14 @@ export const ActionTypeContainer = styled.div`
 
 export const InfoContainer = styled.div`
   align-items: stretch;
-  display: grid;
-  grid-gap: ${({ theme }) => theme.spacing.spacer};
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
+  gap: ${({ theme }) => theme.spacing.spacer};
+  margin-bottom: ${({ theme }) => theme.spacing.spacer};
+
+  > * {
+    min-width: 240px;
+  }
 
   p {
     color: ${({ theme }) => theme.colors.primaryDark};
@@ -42,6 +47,14 @@ export const InfoContainer = styled.div`
     grid-template-columns: 2fr 1fr;
     max-width: 25rem;
   }
+`;
+
+export const InfoFlex1 = styled.div`
+  flex: 1;
+`;
+
+export const InfoFlex2 = styled.div`
+  flex: 2;
 `;
 
 export const EditButton = styled.span`

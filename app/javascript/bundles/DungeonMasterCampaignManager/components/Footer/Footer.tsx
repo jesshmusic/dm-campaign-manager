@@ -3,6 +3,7 @@ import DndLogo from '../HeroBanner/DMLogo';
 import { User } from '@auth0/auth0-react';
 import { useSidebar } from '../../contexts/SidebarContext';
 
+import packageJson from '../../../../../../package.json';
 import footerBg from './FooterBackground.jpg';
 import patreonBanner from './PatreonBanner.png';
 
@@ -19,6 +20,7 @@ import {
   PatreonText,
   FooterLink,
   SiteTitle,
+  SiteVersion,
   Logo,
 } from './Footer.styles';
 
@@ -33,6 +35,7 @@ const Footer = (_props: { user?: User }) => {
       <Content>
         <Left>
           <SiteTitle>Dungeon Master GURU</SiteTitle>
+          <SiteVersion>v{packageJson.version}</SiteVersion>
           <Logo as={DndLogo} />
         </Left>
         <Center>

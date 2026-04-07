@@ -3,42 +3,34 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import styled from 'styled-components';
 import Frame from '../../../../components/Frame/Frame';
-import DonutSvg from './DonutSvg';
+import InstallDonut from './InstallDonut';
 import { FoundryModuleStatsResponse } from '../types';
 
 const ENDPOINT = '/v1/foundry-module-stats.json';
 const STATS_PATH = '/app/admin-dashboard/foundry-module-stats';
 
 const ClickableArea = styled.button`
-  align-items: center;
   background: transparent;
   border: 0;
   cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  display: block;
   padding: 0.25rem;
+  text-align: left;
   width: 100%;
 
   &:hover {
-    opacity: 0.85;
+    opacity: 0.92;
   }
 `;
 
-const Total = styled.div`
-  color: ${({ theme }) => theme.colors.primary};
-  font-family: ${({ theme }) => theme.fonts.draconis};
-  font-size: ${({ theme }) => theme.fontSizes.lg};
-  text-align: center;
-`;
-
-const SubLabel = styled.div`
+const HintRow = styled.div`
   color: ${({ theme }) => theme.colors.textMuted};
   font-family: ${({ theme }) => theme.fonts.sansSerif};
   font-size: ${({ theme }) => theme.fontSizes.xs};
-  letter-spacing: 0.1em;
+  font-style: italic;
+  letter-spacing: 0.05em;
+  margin-top: 0.75rem;
   text-align: center;
-  text-transform: uppercase;
 `;
 
 const Loading = styled.div`
@@ -80,10 +72,8 @@ const FoundryStatsPanel: React.FC = () => {
     };
   }, [getAccessTokenSilently]);
 
-  const totalInstalls = data?.modules.reduce((sum, m) => sum + m.latest_installs, 0) ?? 0;
-
   return (
-    <Frame style={{ width: '100%', height: '100%' }} title="Foundry Module Installs">
+    <Frame style={{ width: '100%' }} title="Foundry Module Installs">
       <ClickableArea
         type="button"
         onClick={() => navigate(STATS_PATH)}
@@ -93,9 +83,8 @@ const FoundryStatsPanel: React.FC = () => {
         {error && <Loading>Could not load: {error}</Loading>}
         {data && (
           <>
-            <DonutSvg modules={data.modules} size={160} />
-            <Total>{totalInstalls.toLocaleString()}</Total>
-            <SubLabel>Total installs · click for details</SubLabel>
+            <InstallDonut modules={data.modules} />
+            <HintRow>Click for full release history →</HintRow>
           </>
         )}
       </ClickableArea>
