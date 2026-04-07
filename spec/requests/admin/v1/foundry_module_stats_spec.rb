@@ -29,9 +29,12 @@ RSpec.describe 'Admin::V1::FoundryModuleStats', type: :request do
   end
 
   let(:fetcher) { instance_double(FoundryModuleStatsFetcher, call: fixture_payload) }
+  let(:memory_cache) { ActiveSupport::Cache::MemoryStore.new }
 
   before do
-    Rails.cache.clear
+    # The default test cache is NullStore, which silently no-ops, so the
+    # cache hit/miss assertions below need a real in-memory store.
+    allow(Rails).to receive(:cache).and_return(memory_cache)
     allow(FoundryModuleStatsFetcher).to receive(:new).and_return(fetcher)
   end
 
