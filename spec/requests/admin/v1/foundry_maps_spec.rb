@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe 'Admin::V1::FoundryMapsController', type: :request do
-  let(:json) { JSON.parse(response.body) }
+  let(:json) { response.parsed_body }
 
   describe 'GET /v1/maps/tags' do
     let!(:tags) { create_list(:foundry_map_tag, 3) }
@@ -20,7 +20,7 @@ RSpec.describe 'Admin::V1::FoundryMapsController', type: :request do
 
       get '/v1/maps/tags'
 
-      names = json.map { |tag| tag['label'] }
+      names = json.pluck('label')
       expect(names).to eq(names.sort)
     end
   end
@@ -39,7 +39,7 @@ RSpec.describe 'Admin::V1::FoundryMapsController', type: :request do
     it 'returns maps in recent order' do
       get '/v1/maps/list'
 
-      ids = json.map { |m| m['id'] }
+      ids = json.pluck('id')
       expect(ids).to eq(published_maps.reverse.map { |m| m.id.to_s })
     end
 
@@ -74,6 +74,12 @@ RSpec.describe 'Admin::V1::FoundryMapsController', type: :request do
 
         expect(json['totalSize']).to be_a(Integer)
         expect(json['totalSize']).to be > 0
+      end
+
+      it 'increments download count once per manifest request' do
+        expect do
+          get "/v1/maps/files/#{free_map.id}"
+        end.to change { free_map.reload.download_count }.by(1)
       end
     end
 
@@ -180,10 +186,19 @@ RSpec.describe 'Admin::V1::FoundryMapsController', type: :request do
       expect(map_json['tags']).to be_an(Array)
     end
 
+    it 'includes download count' do
+      map_with_downloads = create(:foundry_map, download_count: 42)
+
+      get '/v1/maps'
+
+      map_json = json.find { |m| m['id'] == map_with_downloads.id.to_s }
+      expect(map_json['downloadCount']).to eq(42)
+    end
+
     it 'orders maps by created_at descending' do
       get '/v1/maps'
 
-      ids = json.map { |m| m['id'] }
+      ids = json.pluck('id')
       expect(ids.first).to eq(maps.last.id.to_s)
     end
   end
@@ -201,9 +216,9 @@ RSpec.describe 'Admin::V1::FoundryMapsController', type: :request do
     end
 
     it 'returns 404 for non-existent map' do
-      expect {
+      expect do
         get '/v1/maps/999999'
-      }.to raise_error(ActiveRecord::RecordNotFound)
+      end.to raise_error(ActiveRecord::RecordNotFound)
     end
   end
 
@@ -223,16 +238,16 @@ RSpec.describe 'Admin::V1::FoundryMapsController', type: :request do
     end
 
     it 'creates a new map' do
-      expect {
+      expect do
         post '/v1/maps', params: valid_params
-      }.to change(FoundryMap, :count).by(1)
+      end.to change(FoundryMap, :count).by(1)
 
       expect(response).to have_http_status(:created)
       expect(json['name']).to eq('New Map')
     end
 
     it 'creates tags when provided' do
-      post '/v1/maps', params: valid_params.merge(tags: ['Dungeon', 'Cave'])
+      post '/v1/maps', params: valid_params.merge(tags: %w[Dungeon Cave])
 
       map = FoundryMap.last
       expect(map.foundry_map_tags.pluck(:name)).to contain_exactly('Dungeon', 'Cave')
@@ -246,11 +261,11 @@ RSpec.describe 'Admin::V1::FoundryMapsController', type: :request do
     end
 
     it 'accepts keywords array' do
-      params = valid_params.deep_merge(foundry_map: { keywords: ['dungeon', 'underground'] })
+      params = valid_params.deep_merge(foundry_map: { keywords: %w[dungeon underground] })
       post '/v1/maps', params: params
 
       expect(response).to have_http_status(:created)
-      expect(json['keywords']).to eq(['dungeon', 'underground'])
+      expect(json['keywords']).to eq(%w[dungeon underground])
     end
   end
 
@@ -266,7 +281,7 @@ RSpec.describe 'Admin::V1::FoundryMapsController', type: :request do
     end
 
     it 'updates tags' do
-      patch "/v1/maps/#{map.id}", params: { foundry_map: { name: map.name }, tags: ['Forest', 'River'] }
+      patch "/v1/maps/#{map.id}", params: { foundry_map: { name: map.name }, tags: %w[Forest River] }
 
       expect(response).to have_http_status(:success)
       expect(map.reload.foundry_map_tags.pluck(:name)).to contain_exactly('Forest', 'River')
@@ -284,9 +299,9 @@ RSpec.describe 'Admin::V1::FoundryMapsController', type: :request do
     let!(:map) { create(:foundry_map) }
 
     it 'deletes the map' do
-      expect {
+      expect do
         delete "/v1/maps/#{map.id}"
-      }.to change(FoundryMap, :count).by(-1)
+      end.to change(FoundryMap, :count).by(-1)
 
       expect(response).to have_http_status(:no_content)
     end
@@ -294,9 +309,9 @@ RSpec.describe 'Admin::V1::FoundryMapsController', type: :request do
     it 'cascades delete to associated records' do
       map_with_files = create(:foundry_map, :with_files, :with_tags)
 
-      expect {
+      expect do
         delete "/v1/maps/#{map_with_files.id}"
-      }.to change(FoundryMapFile, :count).by(-3)
+      end.to change(FoundryMapFile, :count).by(-3)
     end
   end
 
@@ -333,9 +348,9 @@ RSpec.describe 'Admin::V1::FoundryMapsController', type: :request do
     let(:file) { map.foundry_map_files.first }
 
     it 'deletes the file' do
-      expect {
+      expect do
         delete "/v1/maps/#{map.id}/files/#{file.id}"
-      }.to change(FoundryMapFile, :count).by(-1)
+      end.to change(FoundryMapFile, :count).by(-1)
 
       expect(response).to have_http_status(:no_content)
     end

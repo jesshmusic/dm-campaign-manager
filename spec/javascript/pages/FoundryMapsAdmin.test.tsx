@@ -153,4 +153,42 @@ describe('FoundryMapsAdmin', () => {
     expect(global.fetch).toHaveBeenCalledWith('/v1/maps', expect.any(Object));
     expect(global.fetch).toHaveBeenCalledWith('/v1/map-tags', expect.any(Object));
   });
+
+  it('renders Downloads column header when maps are loaded', async () => {
+    (global.fetch as jest.Mock).mockImplementation((url) => {
+      if (url === '/v1/maps') {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve([
+            {
+              id: '1',
+              name: 'Test Map',
+              access: 'Free',
+              published: true,
+              tags: [],
+              downloadCount: 5,
+              createdAt: '2024-01-01T00:00:00Z',
+            },
+          ]),
+        });
+      }
+      if (url === '/v1/map-tags') {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve([]),
+        });
+      }
+      return Promise.reject(new Error('Unknown URL'));
+    });
+
+    render(
+      <Provider store={mockStore}>
+        <FoundryMapsAdmin />
+      </Provider>
+    );
+
+    await screen.findByText('Downloads');
+    expect(screen.getByText('Downloads')).toBeInTheDocument();
+    expect(screen.getByText('5')).toBeInTheDocument();
+  });
 });

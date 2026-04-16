@@ -41,6 +41,7 @@ interface FoundryMap {
   requiredTier?: string;
   published: boolean;
   tags: string[];
+  downloadCount: number;
   createdAt: string;
   files?: FoundryMapFile[];
 }
@@ -869,6 +870,7 @@ const FoundryMapsAdmin: React.FC = () => {
                   <th>Tags</th>
                   <th>Access</th>
                   <th>Status</th>
+                  <th>Downloads</th>
                   <th>Created</th>
                   <th>Actions</th>
                 </tr>
@@ -876,7 +878,7 @@ const FoundryMapsAdmin: React.FC = () => {
               <tbody>
                 {maps.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className={styles.emptyState}>
+                    <td colSpan={8} className={styles.emptyState}>
                       No maps yet. Create one to get started!
                     </td>
                   </tr>
@@ -932,6 +934,7 @@ const FoundryMapsAdmin: React.FC = () => {
                           {map.published ? 'Published' : 'Draft'}
                         </button>
                       </td>
+                      <td className={styles.centerText}>{map.downloadCount ?? 0}</td>
                       <td className={styles.dateText}>
                         {new Date(map.createdAt).toLocaleDateString()}
                       </td>

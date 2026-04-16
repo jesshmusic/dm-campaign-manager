@@ -32,6 +32,9 @@ module Admin
         end
 
         # Free maps don't require authentication
+        # Track download once per manifest request (not per individual file)
+        map.increment_downloads!
+
         # Return file manifest
         files = map.foundry_map_files.map(&:as_json_for_api)
         render json: {

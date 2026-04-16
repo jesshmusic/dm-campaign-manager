@@ -51,7 +51,7 @@ class FoundryMap < ApplicationRecord
   end
 
   def increment_downloads!
-    increment!(:download_count)
+    FoundryMap.update_counters(id, download_count: 1)
   end
 
   def generate_thumbnail_signed_url(expires_in: 3600)
@@ -89,6 +89,7 @@ class FoundryMap < ApplicationRecord
         width: width,
         height: height
       }.compact,
+      downloadCount: download_count,
       createdAt: created_at.iso8601,
       updatedAt: updated_at.iso8601
     }.compact
