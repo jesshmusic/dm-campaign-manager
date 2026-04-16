@@ -75,6 +75,12 @@ RSpec.describe 'Admin::V1::FoundryMapsController', type: :request do
         expect(json['totalSize']).to be_a(Integer)
         expect(json['totalSize']).to be > 0
       end
+
+      it 'increments download count once per manifest request' do
+        expect do
+          get "/v1/maps/files/#{free_map.id}"
+        end.to change { free_map.reload.download_count }.by(1)
+      end
     end
 
     context 'for premium maps' do
@@ -127,14 +133,6 @@ RSpec.describe 'Admin::V1::FoundryMapsController', type: :request do
 
         expect(response).to have_http_status(:success)
         expect(json['url']).to eq('https://example.com/signed-url')
-      end
-
-      it 'increments download count' do
-        allow_any_instance_of(FoundryMapFile).to receive(:generate_signed_url).and_return('https://example.com/signed-url')
-
-        expect do
-          post "/v1/maps/file/#{free_map.id}", params: { path: free_file.file_path }
-        end.to change { free_map.reload.download_count }.by(1)
       end
 
       it 'returns 404 for non-existent file' do

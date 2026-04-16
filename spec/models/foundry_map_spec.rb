@@ -88,7 +88,7 @@ RSpec.describe FoundryMap, type: :model do
     it 'destroys dependent foundry_map_taggings' do
       map = create(:foundry_map)
       tag = create(:foundry_map_tag)
-      tagging = create(:foundry_map_tagging, foundry_map: map, foundry_map_tag: tag)
+      create(:foundry_map_tagging, foundry_map: map, foundry_map_tag: tag)
 
       expect { map.destroy }.to change { FoundryMapTagging.count }.by(-1)
     end
@@ -100,7 +100,7 @@ RSpec.describe FoundryMap, type: :model do
 
     it 'destroys dependent foundry_map_files' do
       map = create(:foundry_map)
-      file = create(:foundry_map_file, foundry_map: map)
+      create(:foundry_map_file, foundry_map: map)
 
       expect { map.destroy }.to change { FoundryMapFile.count }.by(-1)
     end
@@ -136,7 +136,7 @@ RSpec.describe FoundryMap, type: :model do
 
     it 'recent scope orders by created_at descending' do
       map1 = create(:foundry_map, name: 'Map 1')
-      map2 = create(:foundry_map, name: 'Map 2')
+      create(:foundry_map, name: 'Map 2')
       map3 = create(:foundry_map, name: 'Map 3')
 
       result = FoundryMap.recent
@@ -174,22 +174,24 @@ RSpec.describe FoundryMap, type: :model do
       map = create(:foundry_map, download_count: 5)
       map.increment_downloads!
 
-      expect(map.download_count).to eq(6)
+      expect(map.reload.download_count).to eq(6)
     end
 
     it 'increments from zero' do
       map = create(:foundry_map, download_count: 0)
       map.increment_downloads!
 
-      expect(map.download_count).to eq(1)
+      expect(map.reload.download_count).to eq(1)
     end
 
-    it 'persists to database' do
+    it 'persists to database without touching updated_at' do
       map = create(:foundry_map, download_count: 10)
+      original_updated_at = map.updated_at
       map.increment_downloads!
 
       reloaded = FoundryMap.find(map.id)
       expect(reloaded.download_count).to eq(11)
+      expect(reloaded.updated_at).to eq(original_updated_at)
     end
   end
 
@@ -226,7 +228,7 @@ RSpec.describe FoundryMap, type: :model do
       presigner_mock = double
       allow_any_instance_of(Aws::S3::Presigner).to receive(:presigned_url).with(
         :get_object,
-        bucket: ENV['AWS_S3_BUCKET'],
+        bucket: ENV.fetch('AWS_S3_BUCKET', nil),
         key: 'maps/test-map.jpg',
         expires_in: 3600
       ).and_return('https://signed.url')
@@ -250,7 +252,7 @@ RSpec.describe FoundryMap, type: :model do
                    grid_units: 'ft',
                    width: 800,
                    height: 600,
-                   keywords: ['tavern', 'indoor'],
+                   keywords: %w[tavern indoor],
                    published: true)
 
       result = map.as_json_for_api
@@ -281,10 +283,10 @@ RSpec.describe FoundryMap, type: :model do
     end
 
     it 'includes keywords array or empty array' do
-      map_with_keywords = create(:foundry_map, keywords: ['tavern', 'forest'])
+      map_with_keywords = create(:foundry_map, keywords: %w[tavern forest])
       map_without_keywords = create(:foundry_map, keywords: nil)
 
-      expect(map_with_keywords.as_json_for_api[:keywords]).to eq(['tavern', 'forest'])
+      expect(map_with_keywords.as_json_for_api[:keywords]).to eq(%w[tavern forest])
       expect(map_without_keywords.as_json_for_api[:keywords]).to eq([])
     end
 
@@ -378,7 +380,7 @@ RSpec.describe FoundryMap, type: :model do
     end
 
     it 'has keywords attribute' do
-      map = create(:foundry_map, keywords: ['forest', 'outdoor'])
+      map = create(:foundry_map, keywords: %w[forest outdoor])
       expect(map.keywords).to include('forest', 'outdoor')
     end
 
@@ -404,8 +406,8 @@ RSpec.describe FoundryMap, type: :model do
 
     it 'can have multiple files' do
       map = create(:foundry_map)
-      file1 = create(:foundry_map_file, foundry_map: map)
-      file2 = create(:foundry_map_file, foundry_map: map)
+      create(:foundry_map_file, foundry_map: map)
+      create(:foundry_map_file, foundry_map: map)
 
       expect(map.foundry_map_files.count).to eq(2)
     end
@@ -421,7 +423,7 @@ RSpec.describe FoundryMap, type: :model do
                    grid_units: 'meters',
                    width: 2048,
                    height: 1536,
-                   keywords: ['ancient', 'exploration'])
+                   keywords: %w[ancient exploration])
 
       reloaded = FoundryMap.find(map.id)
       expect(reloaded.name).to eq('Lost City')
@@ -429,7 +431,7 @@ RSpec.describe FoundryMap, type: :model do
       expect(reloaded.access_level).to eq('premium')
       expect(reloaded.published).to eq(true)
       expect(reloaded.download_count).to eq(100)
-      expect(reloaded.keywords).to eq(['ancient', 'exploration'])
+      expect(reloaded.keywords).to eq(%w[ancient exploration])
     end
   end
 end
