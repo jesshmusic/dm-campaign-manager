@@ -89,6 +89,7 @@ class FoundryMap < ApplicationRecord
         width: width,
         height: height
       }.compact,
+      downloadCount: download_count,
       createdAt: created_at.iso8601,
       updatedAt: updated_at.iso8601
     }.compact

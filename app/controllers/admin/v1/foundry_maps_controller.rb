@@ -64,6 +64,9 @@ module Admin
         # Generate signed URL
         signed_url = map_file.generate_signed_url(expires_in: 3600)
 
+        # Track download
+        map.increment_downloads!
+
         # Option 1: Return signed URL for direct download
         render json: { url: signed_url }
 

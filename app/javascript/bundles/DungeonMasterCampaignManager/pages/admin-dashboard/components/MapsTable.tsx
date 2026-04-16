@@ -14,6 +14,7 @@ interface FoundryMap {
   access: string;
   published: boolean;
   tags: string[];
+  downloadCount: number;
   createdAt: string;
 }
 
@@ -140,6 +141,11 @@ const MapsTable: React.FC = () => {
         Cell: ({ value }: { value: boolean }) => (value ? 'Published' : 'Draft'),
       },
       {
+        Header: 'Downloads',
+        accessor: 'downloadCount' as const,
+        size: 80,
+      },
+      {
         Header: 'Actions',
         accessor: 'id' as const,
         size: 100,
@@ -176,6 +182,7 @@ const MapsTable: React.FC = () => {
       tags: map.tags,
       access: map.access,
       published: map.published,
+      downloadCount: map.downloadCount ?? 0,
     }));
   }, [maps]);
 

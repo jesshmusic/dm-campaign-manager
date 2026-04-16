@@ -19,6 +19,7 @@ jest.mock(
         tags: string[];
         access: string;
         published: boolean;
+        downloadCount: number;
         thumbnail?: string;
       }>;
       onSearch: (term: string) => void;
@@ -51,6 +52,7 @@ jest.mock(
                   <td data-testid={`status-${row.id}`}>
                     {row.published ? 'Published' : 'Draft'}
                   </td>
+                  <td data-testid={`downloads-${row.id}`}>{row.downloadCount}</td>
                 </tr>
               ))}
             </tbody>
@@ -74,6 +76,7 @@ const mockMaps = [
     access: 'Free',
     published: true,
     tags: ['Cave', 'Dungeon'],
+    downloadCount: 15,
     createdAt: '2024-01-01T00:00:00Z',
   },
   {
@@ -83,6 +86,7 @@ const mockMaps = [
     access: 'Premium',
     published: false,
     tags: ['Forest', 'Outdoor', 'River'],
+    downloadCount: 42,
     createdAt: '2024-01-02T00:00:00Z',
   },
 ];
@@ -148,6 +152,15 @@ describe('MapsTable Component', () => {
       await waitFor(() => {
         expect(screen.getByTestId('status-1')).toHaveTextContent('Published');
         expect(screen.getByTestId('status-2')).toHaveTextContent('Draft');
+      });
+    });
+
+    it('should display download counts', async () => {
+      renderMapsTable();
+
+      await waitFor(() => {
+        expect(screen.getByTestId('downloads-1')).toHaveTextContent('15');
+        expect(screen.getByTestId('downloads-2')).toHaveTextContent('42');
       });
     });
 
