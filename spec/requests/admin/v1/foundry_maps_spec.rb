@@ -83,6 +83,16 @@ RSpec.describe 'Admin::V1::FoundryMapsController', type: :request do
       end
     end
 
+    context 'for unpublished maps' do
+      let(:unpublished_map) { create(:foundry_map, :with_files, :unpublished) }
+
+      it 'does not serve them' do
+        expect do
+          get "/v1/maps/files/#{unpublished_map.id}"
+        end.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+
     context 'for premium maps' do
       let(:premium_map) { create(:foundry_map, :premium, :with_files) }
       let(:premium_user) { create(:patreon_user, :wizard) }
@@ -168,6 +178,8 @@ RSpec.describe 'Admin::V1::FoundryMapsController', type: :request do
   end
 
   describe 'GET /v1/maps' do
+    before { stub_admin_auth }
+
     let!(:maps) { create_list(:foundry_map, 3) }
 
     it 'returns all maps' do
@@ -204,6 +216,8 @@ RSpec.describe 'Admin::V1::FoundryMapsController', type: :request do
   end
 
   describe 'GET /v1/maps/:id' do
+    before { stub_admin_auth }
+
     let(:map) { create(:foundry_map, :with_files) }
 
     it 'returns map details with files' do
@@ -223,6 +237,8 @@ RSpec.describe 'Admin::V1::FoundryMapsController', type: :request do
   end
 
   describe 'POST /v1/maps' do
+    before { stub_admin_auth }
+
     let(:valid_params) do
       {
         foundry_map: {
@@ -270,6 +286,8 @@ RSpec.describe 'Admin::V1::FoundryMapsController', type: :request do
   end
 
   describe 'PATCH /v1/maps/:id' do
+    before { stub_admin_auth }
+
     let(:map) { create(:foundry_map) }
 
     it 'updates the map' do
@@ -296,6 +314,8 @@ RSpec.describe 'Admin::V1::FoundryMapsController', type: :request do
   end
 
   describe 'DELETE /v1/maps/:id' do
+    before { stub_admin_auth }
+
     let!(:map) { create(:foundry_map) }
 
     it 'deletes the map' do
@@ -316,6 +336,8 @@ RSpec.describe 'Admin::V1::FoundryMapsController', type: :request do
   end
 
   describe 'POST /v1/maps/:id/upload_thumbnail' do
+    before { stub_admin_auth }
+
     let(:map) { create(:foundry_map) }
     let(:thumbnail_file) { fixture_file_upload(Rails.root.join('spec/fixtures/test_image.jpg'), 'image/jpeg') }
 
@@ -344,6 +366,8 @@ RSpec.describe 'Admin::V1::FoundryMapsController', type: :request do
   end
 
   describe 'DELETE /v1/maps/:id/files/:file_id' do
+    before { stub_admin_auth }
+
     let!(:map) { create(:foundry_map, :with_files) }
     let(:file) { map.foundry_map_files.first }
 
@@ -353,6 +377,88 @@ RSpec.describe 'Admin::V1::FoundryMapsController', type: :request do
       end.to change(FoundryMapFile, :count).by(-1)
 
       expect(response).to have_http_status(:no_content)
+    end
+
+    it 'deletes the S3 object' do
+      s3_client = instance_double(Aws::S3::Client, delete_object: true)
+      allow(Aws::S3::Client).to receive(:new).and_return(s3_client)
+
+      delete "/v1/maps/#{map.id}/files/#{file.id}"
+
+      expect(s3_client).to have_received(:delete_object).with(hash_including(key: file.s3_key))
+    end
+  end
+
+  describe 'admin authorization' do
+    let(:map) { create(:foundry_map, :with_files) }
+    let(:tag) { create(:foundry_map_tag) }
+    let(:admin_requests) do
+      {
+        'GET /v1/maps' => -> { get '/v1/maps' },
+        'GET /v1/maps/:id' => -> { get "/v1/maps/#{map.id}" },
+        'POST /v1/maps' => -> { post '/v1/maps', params: { foundry_map: { name: 'Sneaky Map' } } },
+        'PATCH /v1/maps/:id' => -> { patch "/v1/maps/#{map.id}", params: { foundry_map: { name: 'Renamed' } } },
+        'DELETE /v1/maps/:id' => -> { delete "/v1/maps/#{map.id}" },
+        'GET /v1/maps/:id/presign_upload' => -> { get "/v1/maps/#{map.id}/presign_upload", params: { filename: 'map.zip' } },
+        'POST /v1/maps/:id/process_s3_upload' => -> { post "/v1/maps/#{map.id}/process_s3_upload", params: { s3_key: 'x' } },
+        'POST /v1/maps/:id/upload_thumbnail' => -> { post "/v1/maps/#{map.id}/upload_thumbnail" },
+        'POST /v1/maps/upload_image' => -> { post '/v1/maps/upload_image' },
+        'DELETE /v1/maps/:id/files/:file_id' => -> { delete "/v1/maps/#{map.id}/files/#{map.foundry_map_files.first.id}" }
+      }
+    end
+
+    context 'when not authenticated' do
+      before { stub_no_auth }
+
+      it 'rejects every admin endpoint with 401' do
+        admin_requests.each do |name, make_request|
+          instance_exec(&make_request)
+          expect(response).to have_http_status(:unauthorized), "expected 401 for #{name}, got #{response.status}"
+        end
+      end
+
+      it 'does not create, change, or delete maps' do
+        map
+        admin_requests.each_value { |make_request| instance_exec(&make_request) }
+
+        expect(FoundryMap.count).to eq(1)
+        expect(map.reload.name).not_to eq('Renamed')
+        expect(map.foundry_map_files.count).to eq(3)
+      end
+    end
+
+    context 'when authenticated as a non-admin' do
+      before { stub_dungeon_master_auth }
+
+      it 'rejects every admin endpoint with 403' do
+        admin_requests.each do |name, make_request|
+          instance_exec(&make_request)
+          expect(response).to have_http_status(:forbidden), "expected 403 for #{name}, got #{response.status}"
+        end
+      end
+    end
+
+    context 'for the public Foundry module endpoints' do
+      before { stub_no_auth }
+
+      it 'still serves tags, the map list, and free map files without auth' do
+        get '/v1/maps/tags'
+        expect(response).to have_http_status(:success)
+
+        get '/v1/maps/list'
+        expect(response).to have_http_status(:success)
+
+        get "/v1/maps/files/#{map.id}"
+        expect(response).to have_http_status(:success)
+      end
+    end
+  end
+
+  describe 'GET /v1/maps-admin' do
+    it 'redirects to the admin dashboard page' do
+      get '/v1/maps-admin'
+
+      expect(response).to redirect_to('/app/admin-dashboard/foundry-maps')
     end
   end
 end

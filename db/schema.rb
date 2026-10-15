@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_12_19_201735) do
+ActiveRecord::Schema[7.1].define(version: 2026_10_15_170100) do
   create_schema "heroku_ext"
 
   # These are extensions that must be enabled in order to support this database
@@ -66,6 +66,18 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_19_201735) do
     t.bigint "equipment_id"
     t.index ["equipment_id"], name: "index_api_references_on_equipment_id"
     t.index ["slug"], name: "index_api_references_on_slug", unique: true
+  end
+
+  create_table "api_tokens", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "name", null: false
+    t.string "token_digest", null: false
+    t.string "token_prefix", null: false
+    t.datetime "last_used_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["token_digest"], name: "index_api_tokens_on_token_digest", unique: true
+    t.index ["user_id"], name: "index_api_tokens_on_user_id"
   end
 
   create_table "armor_classes", force: :cascade do |t|
@@ -478,7 +490,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_19_201735) do
   end
 
   create_table "patreon_users", force: :cascade do |t|
-    t.string "user_id", null: false
+    t.string "user_id"
     t.string "patreon_id"
     t.string "email"
     t.string "name"
@@ -491,7 +503,9 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_19_201735) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "tier_name"
+    t.bigint "linked_user_id"
     t.index ["expires_at"], name: "index_patreon_users_on_expires_at"
+    t.index ["linked_user_id"], name: "index_patreon_users_on_linked_user_id", unique: true
     t.index ["patreon_id"], name: "index_patreon_users_on_patreon_id"
     t.index ["user_id"], name: "index_patreon_users_on_user_id", unique: true
   end
@@ -791,6 +805,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_19_201735) do
   add_foreign_key "ability_score_dnd_classes", "ability_scores"
   add_foreign_key "ability_score_dnd_classes", "dnd_classes"
   add_foreign_key "actions", "monsters"
+  add_foreign_key "api_tokens", "users"
   add_foreign_key "armor_classes", "items"
   add_foreign_key "backgrounds", "users"
   add_foreign_key "class_features", "dnd_class_levels"
@@ -815,6 +830,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_19_201735) do
   add_foreign_key "multi_classing_profs", "multi_classings"
   add_foreign_key "multi_classing_profs", "profs"
   add_foreign_key "multi_classings", "dnd_classes"
+  add_foreign_key "patreon_users", "users", column: "linked_user_id"
   add_foreign_key "prerequisites", "class_features"
   add_foreign_key "race_traits", "races"
   add_foreign_key "races", "users"

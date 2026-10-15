@@ -4,6 +4,7 @@ import Button from '../../../components/Button/Button';
 import { Colors } from '../../../utilities/enums';
 import { GiPencil, GiTrashCan } from 'react-icons/gi';
 import { NavLink } from '../../../components/NavLink/NavLink';
+import useAuthFetch from '../../../utilities/useAuthFetch';
 
 import { EditButton } from '../AdminDashboard.styles';
 
@@ -22,11 +23,12 @@ const MapsTable: React.FC = () => {
   const [allMaps, setAllMaps] = useState<FoundryMap[]>([]);
   const [maps, setMaps] = useState<FoundryMap[]>([]);
   const [loading, setLoading] = useState(true);
+  const authFetch = useAuthFetch();
 
   const fetchMaps = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await fetch('/v1/maps', {
+      const response = await authFetch('/v1/maps', {
         headers: {
           Accept: 'application/json',
         },
@@ -44,7 +46,7 @@ const MapsTable: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [authFetch]);
 
   const filterMaps = useCallback(
     (searchTerm: string) => {
@@ -68,7 +70,7 @@ const MapsTable: React.FC = () => {
       if (!confirm('Are you sure you want to delete this map?')) return;
 
       try {
-        const response = await fetch(`/v1/maps/${id}`, {
+        const response = await authFetch(`/v1/maps/${id}`, {
           method: 'DELETE',
           headers: {
             Accept: 'application/json',

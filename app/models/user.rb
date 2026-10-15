@@ -52,9 +52,18 @@ class User < ApplicationRecord
   has_many :monsters, dependent: :destroy
   has_many :races, dependent: :destroy
   has_many :spells, dependent: :destroy
+  has_many :api_tokens, dependent: :destroy
+  has_one :patreon_account, class_name: 'PatreonUser', foreign_key: :linked_user_id,
+                            inverse_of: :linked_user, dependent: :destroy
 
   def set_default_role
     self.role ||= :user
+  end
+
+  # Premium features (hosted AI, Foundry sync) need an active $5+ Patreon
+  # pledge linked to this account. Admins always have access.
+  def premium?
+    admin? || patreon_account&.premium_active? || false
   end
 
   # instead of deleting, indicate the user requested a delete & timestamp it

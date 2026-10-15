@@ -89,6 +89,17 @@ Rails.application.routes.draw do
       get '/users/:user_id/ready', to: 'patreon_auth#check_status', constraints: { format: 'json' }
       get '/patreon/callback', to: 'patreon_auth#callback'
 
+      # Patreon account linked to the signed-in user (web app)
+      resource :patreon_link, path: 'patreon/link', only: %i[show create destroy], constraints: { format: 'json' }
+
+      # Personal API tokens for Foundry modules
+      resources :api_tokens, path: 'api-tokens', only: %i[index create destroy], constraints: { format: 'json' }
+
+      # Endpoints for Foundry modules, authenticated with a personal API token
+      namespace :foundry do
+        get 'me', to: 'accounts#show', constraints: { format: 'json' }
+      end
+
       # Admin UI for managing maps
       get '/maps-admin', to: 'foundry_maps_admin#index'
 

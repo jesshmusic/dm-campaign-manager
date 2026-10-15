@@ -1,9 +1,15 @@
 module Admin
   module V1
     class FoundryMapsController < ApplicationController
+      include AdminApiAuthorization
+
+      # Endpoints called by the Dorman Lakely Cartography Foundry module
+      PUBLIC_ACTIONS = %i[tags list files file].freeze
+
       skip_before_action :verify_authenticity_token,
                          only: %i[file upload_files upload_image upload_package upload_chunk finalize_upload upload_thumbnail
                                   presign_upload process_s3_upload]
+      before_action :require_admin!, except: PUBLIC_ACTIONS
 
       # GET /v1/maps/tags
       def tags
@@ -19,7 +25,7 @@ module Admin
 
       # GET /v1/maps/files/:id
       def files
-        map = FoundryMap.find(params[:id])
+        map = FoundryMap.published.find(params[:id])
         user_id = request.headers['Authorization']
 
         # Check access level for premium maps only
@@ -46,7 +52,7 @@ module Admin
 
       # POST /v1/maps/file/:id
       def file
-        map = FoundryMap.find(params[:id])
+        map = FoundryMap.published.find(params[:id])
         user_id = request.headers['Authorization']
         file_path = params[:path]
 
@@ -74,7 +80,7 @@ module Admin
         # redirect_to signed_url, allow_other_host: true
       end
 
-      # Admin endpoints below (add authorization as needed)
+      # Admin endpoints below (require_admin!)
 
       # GET /v1/maps
       def index
@@ -486,6 +492,7 @@ module Admin
         file = map.foundry_map_files.find(params[:file_id])
 
         if file.destroy
+          delete_s3_object(file.s3_key)
           head :no_content
         else
           render json: { error: 'Failed to delete file' }, status: :unprocessable_entity
@@ -772,6 +779,22 @@ module Admin
       rescue StandardError => e
         Rails.logger.error "Failed to delete S3 files for map #{map.id}: #{e.message}"
         # Don't raise - allow the operation to continue
+      end
+
+      # Delete a single object from S3
+      def delete_s3_object(key)
+        return if key.blank?
+
+        s3_client = Aws::S3::Client.new(
+          region: ENV['AWS_REGION'] || 'us-east-1',
+          access_key_id: ENV.fetch('AWS_ACCESS_KEY_ID', nil),
+          secret_access_key: ENV.fetch('AWS_SECRET_ACCESS_KEY', nil)
+        )
+
+        s3_client.delete_object(bucket: ENV.fetch('AWS_S3_BUCKET', nil), key: key)
+      rescue StandardError => e
+        Rails.logger.error "Failed to delete S3 object #{key}: #{e.message}"
+        # Don't raise - the database record is already gone
       end
 
       # Delete thumbnail from S3

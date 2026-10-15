@@ -1,6 +1,9 @@
 module Admin
   module V1
     class FoundryMapTagsController < ApplicationController
+      include AdminApiAuthorization
+
+      before_action :require_admin!
       before_action :set_tag, only: %i[update destroy]
 
       # GET /v1/map-tags
