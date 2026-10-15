@@ -29,7 +29,7 @@
 #
 #  fk_rails_...  (linked_user_id => users.id)
 #
-#
+
 # A row comes from one of two Patreon logins:
 # - the Foundry module, keyed by the module-generated `user_id`
 # - the web app, linked to a DM Guru account through `linked_user`

@@ -5,8 +5,7 @@ module Admin
     # Links a Patreon account to the signed-in DM Guru user. The OAuth
     # redirect lands on PatreonAuthController#callback.
     class PatreonLinksController < SecuredController
-      before_action :set_user
-      before_action :require_user!
+      include SignedInUser
 
       # GET /v1/patreon/link
       def show
@@ -37,14 +36,6 @@ module Admin
       end
 
       private
-
-      def set_user
-        @user = AuthorizationService.new(request.headers).get_current_user
-      end
-
-      def require_user!
-        render json: { errors: ['Not Authenticated'] }, status: :unauthorized unless @user
-      end
 
       def link_status
         account = @user.patreon_account

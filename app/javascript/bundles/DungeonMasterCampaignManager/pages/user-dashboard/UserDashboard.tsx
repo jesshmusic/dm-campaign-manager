@@ -8,6 +8,7 @@ import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
 import PatreonConnection from './components/PatreonConnection';
 import ApiTokens from './components/ApiTokens';
+import OpenAIKey from './components/OpenAIKey';
 import { ConnectionsGrid } from './components/Connections.styles';
 
 import { Section, UserInfo, UserPic, UserData } from './UserDashboard.styles';
@@ -54,6 +55,7 @@ const UserDashboard = (_props: PageProps) => {
           <ConnectionsGrid>
             <PatreonConnection />
             <ApiTokens />
+            <OpenAIKey />
           </ConnectionsGrid>
         </Section>
       )}

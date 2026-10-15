@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_10_15_170100) do
+ActiveRecord::Schema[7.1].define(version: 2026_10_15_200000) do
   create_schema "heroku_ext"
 
   # These are extensions that must be enabled in order to support this database
@@ -109,6 +109,226 @@ ActiveRecord::Schema[7.1].define(version: 2026_10_15_170100) do
     t.index ["homebrew"], name: "index_backgrounds_on_homebrew"
     t.index ["slug", "edition"], name: "index_backgrounds_on_slug_and_edition", unique: true
     t.index ["user_id"], name: "index_backgrounds_on_user_id"
+  end
+
+  create_table "campaign_factions", force: :cascade do |t|
+    t.bigint "campaign_id", null: false
+    t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
+    t.string "name", null: false
+    t.text "description"
+    t.text "goal"
+    t.text "notes"
+    t.bigint "sync_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["campaign_id", "sync_version"], name: "index_campaign_factions_on_campaign_id_and_sync_version"
+    t.index ["campaign_id"], name: "index_campaign_factions_on_campaign_id"
+    t.index ["uuid"], name: "index_campaign_factions_on_uuid", unique: true
+  end
+
+  create_table "campaign_fronts", force: :cascade do |t|
+    t.bigint "campaign_id", null: false
+    t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
+    t.bigint "npc_id"
+    t.bigint "faction_id"
+    t.string "name", null: false
+    t.text "description"
+    t.text "goal"
+    t.text "doom"
+    t.jsonb "stakes", default: [], null: false
+    t.jsonb "portents", default: [], null: false
+    t.integer "clock_segments", default: 6, null: false
+    t.integer "clock_filled", default: 0, null: false
+    t.bigint "sync_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["campaign_id", "sync_version"], name: "index_campaign_fronts_on_campaign_id_and_sync_version"
+    t.index ["campaign_id"], name: "index_campaign_fronts_on_campaign_id"
+    t.index ["faction_id"], name: "index_campaign_fronts_on_faction_id"
+    t.index ["npc_id"], name: "index_campaign_fronts_on_npc_id"
+    t.index ["uuid"], name: "index_campaign_fronts_on_uuid", unique: true
+  end
+
+  create_table "campaign_locations", force: :cascade do |t|
+    t.bigint "campaign_id", null: false
+    t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
+    t.bigint "parent_id"
+    t.bigint "foundry_map_id"
+    t.string "name", null: false
+    t.text "description"
+    t.jsonb "features", default: [], null: false
+    t.text "notes"
+    t.bigint "sync_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["campaign_id", "sync_version"], name: "index_campaign_locations_on_campaign_id_and_sync_version"
+    t.index ["campaign_id"], name: "index_campaign_locations_on_campaign_id"
+    t.index ["foundry_map_id"], name: "index_campaign_locations_on_foundry_map_id"
+    t.index ["parent_id"], name: "index_campaign_locations_on_parent_id"
+    t.index ["uuid"], name: "index_campaign_locations_on_uuid", unique: true
+  end
+
+  create_table "campaign_npcs", force: :cascade do |t|
+    t.bigint "campaign_id", null: false
+    t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
+    t.bigint "monster_id"
+    t.bigint "faction_id"
+    t.string "name", null: false
+    t.string "role", default: "neutral", null: false
+    t.text "description"
+    t.text "motive"
+    t.text "secret"
+    t.string "appearance"
+    t.string "voice"
+    t.text "notes"
+    t.bigint "sync_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "stat_block_reference_id"
+    t.index ["campaign_id", "sync_version"], name: "index_campaign_npcs_on_campaign_id_and_sync_version"
+    t.index ["campaign_id"], name: "index_campaign_npcs_on_campaign_id"
+    t.index ["faction_id"], name: "index_campaign_npcs_on_faction_id"
+    t.index ["monster_id"], name: "index_campaign_npcs_on_monster_id"
+    t.index ["stat_block_reference_id"], name: "index_campaign_npcs_on_stat_block_reference_id"
+    t.index ["uuid"], name: "index_campaign_npcs_on_uuid", unique: true
+  end
+
+  create_table "campaign_quests", force: :cascade do |t|
+    t.bigint "campaign_id", null: false
+    t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
+    t.bigint "parent_id"
+    t.bigint "giver_npc_id"
+    t.bigint "location_id"
+    t.string "name", null: false
+    t.string "kind", default: "main", null: false
+    t.string "status", default: "available", null: false
+    t.text "description"
+    t.text "reward"
+    t.text "notes"
+    t.integer "act"
+    t.integer "position", default: 0, null: false
+    t.integer "level_min"
+    t.integer "level_max"
+    t.bigint "sync_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["campaign_id", "sync_version"], name: "index_campaign_quests_on_campaign_id_and_sync_version"
+    t.index ["campaign_id"], name: "index_campaign_quests_on_campaign_id"
+    t.index ["giver_npc_id"], name: "index_campaign_quests_on_giver_npc_id"
+    t.index ["location_id"], name: "index_campaign_quests_on_location_id"
+    t.index ["parent_id"], name: "index_campaign_quests_on_parent_id"
+    t.index ["uuid"], name: "index_campaign_quests_on_uuid", unique: true
+  end
+
+  create_table "campaign_references", force: :cascade do |t|
+    t.bigint "campaign_id", null: false
+    t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
+    t.string "name", null: false
+    t.string "book", default: "mm", null: false
+    t.string "category", default: "monster", null: false
+    t.integer "page"
+    t.string "challenge_rating"
+    t.string "foundry_uuid"
+    t.text "notes"
+    t.bigint "sync_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["campaign_id", "sync_version"], name: "index_campaign_references_on_campaign_id_and_sync_version"
+    t.index ["campaign_id"], name: "index_campaign_references_on_campaign_id"
+    t.index ["uuid"], name: "index_campaign_references_on_uuid", unique: true
+  end
+
+  create_table "campaign_secrets", force: :cascade do |t|
+    t.bigint "campaign_id", null: false
+    t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
+    t.bigint "revealed_session_id"
+    t.text "text", null: false
+    t.string "revelation"
+    t.datetime "revealed_at"
+    t.integer "position", default: 0, null: false
+    t.bigint "sync_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["campaign_id", "sync_version"], name: "index_campaign_secrets_on_campaign_id_and_sync_version"
+    t.index ["campaign_id"], name: "index_campaign_secrets_on_campaign_id"
+    t.index ["revealed_session_id"], name: "index_campaign_secrets_on_revealed_session_id"
+    t.index ["uuid"], name: "index_campaign_secrets_on_uuid", unique: true
+  end
+
+  create_table "campaign_session_links", force: :cascade do |t|
+    t.bigint "session_id", null: false
+    t.string "linkable_type", null: false
+    t.bigint "linkable_id", null: false
+    t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
+    t.integer "position", default: 0, null: false
+    t.bigint "sync_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["linkable_type", "linkable_id"], name: "index_campaign_session_links_on_linkable"
+    t.index ["session_id", "linkable_type", "linkable_id"], name: "index_campaign_session_links_uniqueness", unique: true
+    t.index ["session_id"], name: "index_campaign_session_links_on_session_id"
+    t.index ["uuid"], name: "index_campaign_session_links_on_uuid", unique: true
+  end
+
+  create_table "campaign_sessions", force: :cascade do |t|
+    t.bigint "campaign_id", null: false
+    t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
+    t.integer "number", null: false
+    t.string "title"
+    t.date "scheduled_on"
+    t.string "status", default: "planned", null: false
+    t.integer "level"
+    t.text "character_notes"
+    t.text "strong_start"
+    t.jsonb "scenes", default: [], null: false
+    t.text "treasure"
+    t.text "log"
+    t.text "recap"
+    t.bigint "sync_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["campaign_id", "number"], name: "index_campaign_sessions_on_campaign_id_and_number", unique: true
+    t.index ["campaign_id", "sync_version"], name: "index_campaign_sessions_on_campaign_id_and_sync_version"
+    t.index ["campaign_id"], name: "index_campaign_sessions_on_campaign_id"
+    t.index ["uuid"], name: "index_campaign_sessions_on_uuid", unique: true
+  end
+
+  create_table "campaign_tombstones", force: :cascade do |t|
+    t.bigint "campaign_id", null: false
+    t.string "record_type", null: false
+    t.uuid "record_uuid", null: false
+    t.bigint "sync_version", null: false
+    t.datetime "created_at", null: false
+    t.index ["campaign_id", "sync_version"], name: "index_campaign_tombstones_on_campaign_id_and_sync_version"
+    t.index ["campaign_id"], name: "index_campaign_tombstones_on_campaign_id"
+  end
+
+  create_table "campaigns", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
+    t.string "name", null: false
+    t.string "slug", null: false
+    t.text "premise"
+    t.text "pitch"
+    t.string "setting_name"
+    t.text "setting_notes"
+    t.jsonb "truths", default: [], null: false
+    t.string "mode", default: "arc", null: false
+    t.string "status", default: "planning", null: false
+    t.integer "planned_sessions"
+    t.string "cadence"
+    t.integer "party_size"
+    t.integer "start_level"
+    t.integer "target_level"
+    t.string "tone"
+    t.string "edition", default: "2024", null: false
+    t.bigint "sync_counter", default: 0, null: false
+    t.bigint "sync_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id", "slug"], name: "index_campaigns_on_user_id_and_slug", unique: true
+    t.index ["user_id"], name: "index_campaigns_on_user_id"
+    t.index ["uuid"], name: "index_campaigns_on_uuid", unique: true
   end
 
   create_table "class_features", force: :cascade do |t|
@@ -785,6 +1005,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_10_15_170100) do
     t.text "info"
     t.string "auth_id", default: "", null: false
     t.string "preferred_edition", default: "2024"
+    t.text "openai_api_key"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["username"], name: "index_users_on_username", unique: true
@@ -808,6 +1029,28 @@ ActiveRecord::Schema[7.1].define(version: 2026_10_15_170100) do
   add_foreign_key "api_tokens", "users"
   add_foreign_key "armor_classes", "items"
   add_foreign_key "backgrounds", "users"
+  add_foreign_key "campaign_factions", "campaigns"
+  add_foreign_key "campaign_fronts", "campaign_factions", column: "faction_id", on_delete: :nullify
+  add_foreign_key "campaign_fronts", "campaign_npcs", column: "npc_id", on_delete: :nullify
+  add_foreign_key "campaign_fronts", "campaigns"
+  add_foreign_key "campaign_locations", "campaign_locations", column: "parent_id", on_delete: :nullify
+  add_foreign_key "campaign_locations", "campaigns"
+  add_foreign_key "campaign_locations", "foundry_maps", on_delete: :nullify
+  add_foreign_key "campaign_npcs", "campaign_factions", column: "faction_id", on_delete: :nullify
+  add_foreign_key "campaign_npcs", "campaign_references", column: "stat_block_reference_id", on_delete: :nullify
+  add_foreign_key "campaign_npcs", "campaigns"
+  add_foreign_key "campaign_npcs", "monsters", on_delete: :nullify
+  add_foreign_key "campaign_quests", "campaign_locations", column: "location_id", on_delete: :nullify
+  add_foreign_key "campaign_quests", "campaign_npcs", column: "giver_npc_id", on_delete: :nullify
+  add_foreign_key "campaign_quests", "campaign_quests", column: "parent_id", on_delete: :nullify
+  add_foreign_key "campaign_quests", "campaigns"
+  add_foreign_key "campaign_references", "campaigns"
+  add_foreign_key "campaign_secrets", "campaign_sessions", column: "revealed_session_id", on_delete: :nullify
+  add_foreign_key "campaign_secrets", "campaigns"
+  add_foreign_key "campaign_session_links", "campaign_sessions", column: "session_id", on_delete: :cascade
+  add_foreign_key "campaign_sessions", "campaigns"
+  add_foreign_key "campaign_tombstones", "campaigns", on_delete: :cascade
+  add_foreign_key "campaigns", "users"
   add_foreign_key "class_features", "dnd_class_levels"
   add_foreign_key "class_level_choices", "class_features"
   add_foreign_key "class_specific_spell_slots", "class_specifics"

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Button from '../../../components/Button/Button';
 import { Colors } from '../../../utilities/enums';
 import useAuthFetch from '../../../utilities/useAuthFetch';

@@ -14,6 +14,19 @@ Decisions already made:
 - **AI is free when the DM brings their own OpenAI key.** The hosted AI key and Foundry sync are
   Patreon-premium.
 - Foundry integration is **full two-way sync**.
+- The planner is **2024-only** and works with the 2024 Player's Handbook, Dungeon Master's Guide and Monster
+  Manual through book references (name and page), never their text or stat blocks.
+- It uses DM Guru's existing generators as helpers: random names, tavern names, adventure hooks, and the NPC
+  stat-block generator.
+- Everything ships in one PR.
+
+## Status (2026-10-15)
+- **Phase 0 (done):** map admin endpoints locked down, Patreon linked to accounts, personal API tokens and
+  `GET /v1/foundry/me`.
+- **Phase 1 (done):** planner models and API, the campaign wizard with templates, campaign tabs (Overview,
+  Story, Quests, Cast, Places, Secrets, Sessions, Books), session prep (8 steps) and run mode, Three Clue Rule
+  check, dashboard widgets (Next Session, Campaign Clocks), book references.
+- **Not started:** phase 2 (bring-your-own-key AI), phase 3 and 4 (the Foundry module and sync).
 
 ## Research takeaways (what to build on)
 | Source | Idea we borrow |
@@ -133,6 +146,23 @@ sidebar section and routes in `navigation/DMRoutes.tsx`.
 - Rate-limit the same way as `cr_calc`, and spec with `instance_double(OpenAIClient)` like
   `spec/requests/admin/v1/dashboard_spec.rb`.
 
+## The 2024 core books
+DM Guru has the SRD 5.2 monsters, items and spells, but not the full Player's Handbook, Dungeon Master's Guide
+or Monster Manual. The planner uses them without copying them:
+- **Book references** (`campaign_references`): name, book, category (monster, magic item, spell, table, rule),
+  page, optional CR and notes. NPCs can use one as their stat block, and session prep steps 7 (monsters) and 8
+  (treasure) can link them. Nothing from the books' text is stored.
+- **Through Foundry:** the DM's world has the official modules installed (`dnd-monster-manual`,
+  `dnd-dungeon-masters-guide`, `dnd-players-handbook`), with compendium packs for Monster Manual creatures, DMG
+  equipment and roll tables, and PHB spells and equipment.
+  - The companion module reads only each pack's index (name, CR, type, compendium UUID) and sends it to DM Guru
+    for that DM alone. The planner can then suggest "Zombie, Monster Manual" next to the SRD monsters.
+  - A reference stores the compendium UUID in `foundry_uuid`. Session journals the module writes link to it
+    (`@UUID[Compendium.dnd-monster-manual.actors.Actor.…]{Zombie}`), so clicking opens the DM's own licensed
+    stat block. Stat blocks never leave Foundry.
+  - Judgment call to confirm: names and CRs from a book the DM owns are stored privately per DM, never shared.
+- AI suggestions (phase 2) can name 2024 creatures and items, but never page numbers, which it would guess.
+
 ## Foundry module — Dorman Lakely's Campaign Planner
 **Where it lives** (same conventions as the other Dorman Lakely modules):
 - Title "Dorman Lakely's Campaign Planner", id `dorman-lakelys-campaign-planner`.
@@ -172,6 +202,11 @@ sidebar section and routes in `navigation/DMRoutes.tsx`.
   - a "Sync now" button
   - later: ActionCable push
 - Things created in Foundry, such as an improvised NPC, can be sent to DM Guru with a one-click "Send to DM Guru".
+- Known gaps to close before two-way sync:
+  - When a record is deleted, the database clears other records' references to it (e.g. an NPC's
+    `faction_id`) without bumping their `sync_version`.
+  - Session links removed along with their target leave no tombstone of their own (the target's tombstone
+    covers them).
 - Server checks: token + `user.premium?` + campaign ownership. Sanitize HTML both ways.
 
 ## Phases
@@ -182,11 +217,13 @@ sidebar section and routes in `navigation/DMRoutes.tsx`.
    - Link Patreon to `users`.
    - Add `api_tokens` and token management in the User Dashboard.
 1. **Planner core (free):**
-   - models, policies, API and specs
+   - models, API and specs
    - wizard with templates (no AI)
    - campaign home tabs, sessions with 8-step prep + run mode
    - Three-Clue lint
-   - dashboard widgets: "Next session" and "Clocks"; revive `NotesWidget` scoped to a campaign
+   - dashboard widgets: "Next session" and "Clocks"
+   - book references for the 2024 PHB, DMG and Monster Manual
+   - not done: reviving `NotesWidget` scoped to a campaign, and linking places to Cartography maps in the UI
 2. **AI:**
    - first, BYOK key settings + `OpenAIClient.for(user)`, which also benefits the existing generators
    - then generate-from-brief, fill-a-step, and recap + proposed diff

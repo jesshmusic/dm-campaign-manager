@@ -28,6 +28,10 @@ import SearchResults from '../pages/search-results/SearchResults';
 import PrivacyPolicy from '../pages/privacy-policy/PrivacyPolicy';
 import FoundryMapsAdmin from '../pages/FoundryMapsAdmin';
 import FoundryModuleStatsPage from '../pages/admin-dashboard/foundry-module-stats/FoundryModuleStatsPage';
+import CampaignsIndex from '../pages/campaigns/CampaignsIndex';
+import NewCampaign from '../pages/campaigns/NewCampaign';
+import CampaignPage from '../pages/campaigns/CampaignPage';
+import SessionPage from '../pages/campaigns/SessionPage';
 import { ItemType } from '../pages/items/use-data';
 
 type ResolverProps = Record<string, unknown>;
@@ -168,6 +172,22 @@ const DMRoutes = (props: ResolverProps) => {
       <Route
         path="/app/user-dashboard"
         element={<ProtectedRoute as={UserDashboard} requireAdmin={false} {...props} />}
+      />
+      <Route
+        path="/app/campaigns"
+        element={<ProtectedRoute as={CampaignsIndex} requireAdmin={false} {...props} />}
+      />
+      <Route
+        path="/app/campaigns/new"
+        element={<ProtectedRoute as={NewCampaign} requireAdmin={false} {...props} />}
+      />
+      <Route
+        path="/app/campaigns/:campaignSlug"
+        element={<ProtectedRoute as={CampaignPage} requireAdmin={false} {...props} />}
+      />
+      <Route
+        path="/app/campaigns/:campaignSlug/sessions/:sessionId"
+        element={<ProtectedRoute as={SessionPage} requireAdmin={false} {...props} />}
       />
       <Route path="*" element={<HomePage {...props} />} />
     </Routes>

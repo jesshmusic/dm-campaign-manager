@@ -4,8 +4,7 @@ module Admin
   module V1
     # Lets the signed-in user manage their personal API tokens.
     class ApiTokensController < SecuredController
-      before_action :set_user
-      before_action :require_user!
+      include SignedInUser
 
       # GET /v1/api-tokens
       def index
@@ -28,16 +27,6 @@ module Admin
         head :no_content
       rescue ActiveRecord::RecordNotFound
         render json: { errors: ['API token not found'] }, status: :not_found
-      end
-
-      private
-
-      def set_user
-        @user = AuthorizationService.new(request.headers).get_current_user
-      end
-
-      def require_user!
-        render json: { errors: ['Not Authenticated'] }, status: :unauthorized unless @user
       end
     end
   end

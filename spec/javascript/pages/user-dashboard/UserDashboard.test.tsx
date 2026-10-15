@@ -32,6 +32,12 @@ jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages
   };
 });
 
+jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/user-dashboard/components/OpenAIKey', () => {
+  return function MockOpenAIKey() {
+    return <div data-testid="openai-key">OpenAI key</div>;
+  };
+});
+
 jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/user-dashboard/components/ApiTokens', () => {
   return function MockApiTokens() {
     return <div data-testid="api-tokens">API tokens</div>;
@@ -209,6 +215,7 @@ describe('UserDashboard', () => {
     expect(screen.getByText('Connections')).toBeInTheDocument();
     expect(screen.getByTestId('patreon-connection')).toBeInTheDocument();
     expect(screen.getByTestId('api-tokens')).toBeInTheDocument();
+    expect(screen.getByTestId('openai-key')).toBeInTheDocument();
   });
 
   it('hides account connections when signed out', () => {

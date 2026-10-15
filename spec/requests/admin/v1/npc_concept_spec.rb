@@ -141,6 +141,21 @@ RSpec.describe 'NPC Concept Endpoints', type: :request do
       end
     end
 
+    context 'with a player (user role)' do
+      before do
+        allow_any_instance_of(AuthorizationService).to receive(:get_current_user).and_return(create(:user))
+      end
+
+      it 'returns the monster without saving it as a public monster' do
+        expect {
+          post v1_create_from_concept_path(format: :json), params: concept_params
+        }.not_to change(Monster, :count)
+
+        expect(response).to have_http_status(:ok)
+        expect(JSON.parse(response.body)['name']).to eq('Shadow Lurker')
+      end
+    end
+
     context 'with dungeon master user' do
       before do
         allow_any_instance_of(AuthorizationService).to receive(:get_current_user).and_return(dm_user)

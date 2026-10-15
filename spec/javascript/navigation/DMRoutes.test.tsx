@@ -179,6 +179,30 @@ jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/fe
   };
 });
 
+jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/CampaignsIndex', () => {
+  return function CampaignsIndex() {
+    return <div data-testid="campaigns-index-page">Campaigns Index Page</div>;
+  };
+});
+
+jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/NewCampaign', () => {
+  return function NewCampaign() {
+    return <div data-testid="new-campaign-page">New Campaign Page</div>;
+  };
+});
+
+jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/CampaignPage', () => {
+  return function CampaignPage() {
+    return <div data-testid="campaign-page">Campaign Page</div>;
+  };
+});
+
+jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/SessionPage', () => {
+  return function SessionPage() {
+    return <div data-testid="session-page">Session Page</div>;
+  };
+});
+
 describe('DMRoutes', () => {
   describe('public routes with edition', () => {
     it('should render home page on root path', () => {
@@ -457,6 +481,22 @@ describe('DMRoutes', () => {
 
       expect(screen.getByTestId('protected-route')).toBeInTheDocument();
       expect(screen.getByTestId('foundry-maps-admin-page')).toBeInTheDocument();
+    });
+
+    it.each([
+      ['/app/campaigns', 'campaigns-index-page'],
+      ['/app/campaigns/new', 'new-campaign-page'],
+      ['/app/campaigns/zombie-siege', 'campaign-page'],
+      ['/app/campaigns/zombie-siege/sessions/12', 'session-page'],
+    ])('should wrap the campaign planner route %s in ProtectedRoute', (path, testId) => {
+      render(
+        <MemoryRouter initialEntries={[path]}>
+          <DMRoutes />
+        </MemoryRouter>
+      );
+
+      expect(screen.getByTestId('protected-route')).toBeInTheDocument();
+      expect(screen.getByTestId(testId)).toBeInTheDocument();
     });
   });
 
