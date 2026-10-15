@@ -37,6 +37,7 @@ class FoundryModuleStatsFetcher
     { name: 'Crit & Fumble Tables',  repo: 'dorman-lakelys-crit-fumble-tables' },
     { name: 'Playlist Enhancements', repo: 'dorman-lakelys-playlist-enhancements' },
     { name: 'Legendary Actions',     repo: 'dormanlakely-legendary-actions' },
+    { name: 'Battle Tracker',        repo: 'dorman-lakelys-battle-tracker' },
     { name: 'Cartography',           repo: 'dorman-lakely-cartography' }
   ].freeze
   WANTED_MAJORS = [13, 14].freeze
