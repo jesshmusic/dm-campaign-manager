@@ -116,6 +116,9 @@ Rails.application.routes.draw do
       # Endpoints for Foundry modules, authenticated with a personal API token
       namespace :foundry do
         get 'me', to: 'accounts#show', constraints: { format: 'json' }
+        get 'campaigns', to: 'campaigns#index', constraints: { format: 'json' }
+        get 'campaigns/:uuid/changes', to: 'campaigns#changes', constraints: { format: 'json' }
+        post 'campaigns/:uuid/changes', to: 'campaigns#push', constraints: { format: 'json' }
       end
 
       # Admin UI for managing maps

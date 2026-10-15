@@ -42,6 +42,11 @@ class CampaignSessionLink < ApplicationRecord
   validates :linkable_id, uniqueness: { scope: %i[session_id linkable_type], message: 'is already linked to this session' }
   validate :linkable_available
 
+  after_destroy :bump_session_sync_version, unless: -> { destroyed_by_association&.active_record == CampaignSession }
+  # A session's links are synced as part of the session, so changing them
+  # bumps the session's version (unless the session itself is being deleted)
+  after_save :bump_session_sync_version
+
   def as_json_for_api
     {
       id: id.to_s,
@@ -59,6 +64,10 @@ class CampaignSessionLink < ApplicationRecord
 
   def sync_campaign
     session.campaign
+  end
+
+  def bump_session_sync_version
+    session.save!
   end
 
   # Campaign records must come from this session's campaign; compendium

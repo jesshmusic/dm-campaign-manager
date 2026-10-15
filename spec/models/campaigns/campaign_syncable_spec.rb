@@ -50,11 +50,14 @@ RSpec.describe CampaignSyncable do
       expect(link.uuid).to match(uuid_format)
     end
 
-    it "is versioned by its session's campaign" do
-      expect(link.sync_version).to eq(campaign.reload.sync_counter)
+    it "is versioned by its session's campaign, and bumps its session" do
+      link
+      expect(link.sync_version).to be < campaign.reload.sync_counter
+      expect(session.reload.sync_version).to eq(campaign.sync_counter)
 
       link.update!(position: 3)
-      expect(link.reload.sync_version).to eq(campaign.reload.sync_counter)
+      expect(link.reload.sync_version).to be > 0
+      expect(session.reload.sync_version).to eq(campaign.reload.sync_counter)
     end
 
     it "leaves a tombstone in the session's campaign when destroyed on its own" do

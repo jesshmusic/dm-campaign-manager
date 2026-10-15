@@ -26,7 +26,13 @@ Decisions already made:
 - **Phase 1 (done):** planner models and API, the campaign wizard with templates, campaign tabs (Overview,
   Story, Quests, Cast, Places, Secrets, Sessions, Books), session prep (8 steps) and run mode, Three Clue Rule
   check, dashboard widgets (Next Session, Campaign Clocks), book references.
-- **Not started:** phase 2 (bring-your-own-key AI), phase 3 and 4 (the Foundry module and sync).
+- **Phase 2 (done):** bring-your-own OpenAI key, AI outline, prep suggestions and recaps.
+- **Phases 3 and 4 (in progress):**
+  - DM Guru sync endpoints are done: `GET /v1/foundry/campaigns`, `GET` and `POST /v1/foundry/campaigns/:uuid/changes`.
+  - The module (0.1.0) is built locally. It links with a pasted API token; the device-code flow is planned for
+    later.
+  - The module is not yet tested in a live world.
+- **Later:** syncing the book compendium index from Foundry, and the device-code linking flow.
 
 ## Research takeaways (what to build on)
 | Source | Idea we borrow |
