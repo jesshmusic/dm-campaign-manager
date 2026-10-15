@@ -10,6 +10,9 @@ export type SuggestionItem = {
   value: string | Record<string, unknown>;
 };
 
+// "The crypt is cold." -> "The crypt is cold", so it reads well before a colon
+const withoutEndPunctuation = (text: string) => text.trim().replace(/[\s.:;,]+$/, '');
+
 // Turns the AI response for a step into items the DM can pick
 export const suggestionItems = (step: PrepStep, suggestion: PrepSuggestion): SuggestionItem[] => {
   if (step === 'strong_start')
@@ -19,7 +22,9 @@ export const suggestionItems = (step: PrepStep, suggestion: PrepSuggestion): Sug
     if (step === 'secrets' && item.text) {
       return [
         {
-          label: item.revelation ? `${item.revelation}: ${item.text}` : item.text,
+          label: item.revelation
+            ? `${withoutEndPunctuation(item.revelation)}: ${item.text}`
+            : item.text,
           value: { text: item.text, revelation: item.revelation ?? null },
         },
       ];

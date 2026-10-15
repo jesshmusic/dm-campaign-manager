@@ -41,6 +41,13 @@ class CampaignOutlineApplier
     Array(@outline[key]).select { |item| item.is_a?(Hash) }.first(LIMITS.fetch(key, 20))
   end
 
+  # Items whose name (or other field) isn't already in the campaign or earlier
+  # in the list, since the AI sometimes repeats what's there
+  def new_items(key, existing, field: 'name')
+    seen = existing.to_set { |value| value.to_s.strip.downcase }
+    list(key).select { |item| seen.add?(item[field].to_s.strip.downcase) }
+  end
+
   def text(value, max = 1000)
     value.to_s.strip.first(max).presence
   end
@@ -62,14 +69,20 @@ class CampaignOutlineApplier
     attributes = {}
     attributes[:pitch] = text(@outline['pitch'], 2000) if sections.include?('pitch') && @outline['pitch'].present?
     if sections.include?('truths')
-      truths = (@campaign.truths + strings(@outline['truths'], Campaign::MAX_TRUTHS)).uniq
-      attributes[:truths] = truths.first(Campaign::MAX_TRUTHS)
+      # The same truth reworded slightly ("…within the hour" vs "…within the hour;") isn't new
+      seen = @campaign.truths.to_set { |truth| comparable_truth(truth) }
+      added = strings(@outline['truths'], Campaign::MAX_TRUTHS).select { |truth| seen.add?(comparable_truth(truth)) }
+      attributes[:truths] = (@campaign.truths + added).first(Campaign::MAX_TRUTHS)
     end
     @campaign.update!(attributes) if attributes.any?
   end
 
+  def comparable_truth(truth)
+    truth.downcase.gsub(/[^a-z0-9\s]/, '').squish
+  end
+
   def create_factions
-    list('factions').each_with_object({}) do |faction, index|
+    new_items('factions', @campaign.factions.pluck(:name)).each_with_object({}) do |faction, index|
       record = @campaign.factions.create!(name: text(faction['name'], 120) || 'Unnamed faction',
                                           goal: text(faction['goal']), description: text(faction['description']))
       index[record.name.downcase] = record
@@ -77,8 +90,9 @@ class CampaignOutlineApplier
   end
 
   def create_npcs(factions)
-    list('npcs').each_with_object({}) do |npc, index|
-      role = CampaignNpc::ROLES.include?(npc['role']) ? npc['role'] : 'neutral'
+    new_items('npcs', @campaign.npcs.pluck(:name)).each_with_object({}) do |npc, index|
+      role = npc['role'].to_s.downcase.delete(%(' "))
+      role = 'neutral' unless CampaignNpc::ROLES.include?(role)
       record = @campaign.npcs.create!(
         name: text(npc['name'], 120) || 'Unnamed NPC', role: role, description: text(npc['description']),
         motive: text(npc['motive']), secret: text(npc['secret']), faction: lookup(factions, npc['faction'])
@@ -88,7 +102,7 @@ class CampaignOutlineApplier
   end
 
   def create_fronts(npcs)
-    list('fronts').each do |front|
+    new_items('fronts', @campaign.fronts.pluck(:name)).each do |front|
       segments = front['clock_segments'].presence&.to_i || DEFAULT_CLOCK_SEGMENTS
       segments = segments.clamp(CampaignFront::CLOCK_SEGMENTS.min, CampaignFront::CLOCK_SEGMENTS.max)
       @campaign.fronts.create!(
@@ -100,7 +114,7 @@ class CampaignOutlineApplier
   end
 
   def create_locations
-    list('locations').each do |location|
+    new_items('locations', @campaign.locations.pluck(:name)).each do |location|
       @campaign.locations.create!(name: text(location['name'], 120) || 'Unnamed place',
                                   description: text(location['description']),
                                   features: strings(location['features'], CampaignLocation::MAX_FEATURES))
@@ -108,7 +122,7 @@ class CampaignOutlineApplier
   end
 
   def create_quests(npcs)
-    list('quests').each_with_index do |quest, position|
+    new_items('quests', @campaign.quests.pluck(:name)).each_with_index do |quest, position|
       kind = CampaignQuest::KINDS.include?(quest['kind']) ? quest['kind'] : 'side'
       act = quest['act'].to_i
       @campaign.quests.create!(
@@ -120,11 +134,10 @@ class CampaignOutlineApplier
   end
 
   def create_secrets
-    list('secrets').each_with_index do |secret, position|
-      next unless (body = text(secret['text']))
-
-      @campaign.secrets.create!(text: body, revelation: text(secret['revelation'], 120), position: position)
+    clues = new_items('secrets', @campaign.secrets.pluck(:text), field: 'text').filter_map do |secret|
+      (body = text(secret['text'])) && { text: body, revelation: text(secret['revelation'], 120) }
     end
+    clues.each_with_index { |clue, position| @campaign.secrets.create!(clue.merge(position: position)) }
   end
 
   # Fills in sessions without overwriting what the DM already wrote

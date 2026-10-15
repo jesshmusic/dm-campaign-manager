@@ -381,10 +381,18 @@ RSpec.describe CampaignOutlineApplier do
                                                        position: 0, revealed?: false)
     end
 
+    it "skips clues the campaign already has, and repeats in the outline" do
+      create(:campaign_secret, campaign: campaign, text: 'A servant saw him')
+
+      apply({ 'secrets' => [{ 'text' => 'a servant saw him ' }, { 'text' => 'New clue' }, { 'text' => 'New clue' }] })
+
+      expect(campaign.secrets.order(:id).pluck(:text)).to eq(['A servant saw him', 'New clue'])
+    end
+
     it 'skips secrets without text' do
       apply({ 'secrets' => [{ 'revelation' => 'No clue' }, { 'text' => '   ' }, { 'text' => 'A real clue' }] })
 
-      expect(campaign.secrets.sole).to have_attributes(text: 'A real clue', revelation: nil, position: 2)
+      expect(campaign.secrets.sole).to have_attributes(text: 'A real clue', revelation: nil, position: 0)
     end
 
     it 'caps revelations at 120 characters and text at 1000' do
@@ -471,6 +479,51 @@ RSpec.describe CampaignOutlineApplier do
       expect(campaign.truths).to eq(['Magic is fading'])
       expect(record_counts).to eq([0, 0, 0, 0, 0, 0, 1])
       expect(broken.reload.title).to be_nil
+    end
+  end
+
+  describe 'skipping what the campaign already has' do
+    it 'skips truths the campaign already has, ignoring case and punctuation' do
+      campaign.update!(truths: ['Anyone who dies rises within the hour'])
+
+      apply({ 'truths' => ['anyone who dies rises within the hour;', 'The gates are sealed.'] }, sections: %w[truths])
+
+      expect(campaign.reload.truths).to eq(['Anyone who dies rises within the hour', 'The gates are sealed.'])
+    end
+
+    it 'skips factions, NPCs, fronts, places and quests whose names already exist' do
+      create(:campaign_faction, campaign: campaign, name: 'Iron Hand')
+      kalvar = create(:campaign_npc, campaign: campaign, name: 'Kalvar the Hollow', role: 'bbeg')
+      create(:campaign_front, campaign: campaign, name: 'The Rising Dead')
+      create(:campaign_location, campaign: campaign, name: 'Old City')
+      create(:campaign_quest, campaign: campaign, name: 'Find the source')
+
+      apply({
+              'factions' => [{ 'name' => 'iron hand' }, { 'name' => 'Order of Pelor' }],
+              'npcs' => [{ 'name' => 'Kalvar the Hollow', 'role' => 'bbeg' }, { 'name' => 'Sister Elira', 'role' => 'ally' }],
+              'fronts' => [{ 'name' => 'The Rising Dead', 'leader' => 'Kalvar the Hollow' }],
+              'locations' => [{ 'name' => ' Old City ' }, { 'name' => 'Shattered Square' }],
+              'quests' => [{ 'name' => 'Find the source', 'kind' => 'main' }, { 'name' => 'Escort refugees', 'kind' => 'side' }]
+            })
+
+      expect(campaign.factions.pluck(:name)).to contain_exactly('Iron Hand', 'Order of Pelor')
+      expect(campaign.npcs.pluck(:name)).to contain_exactly('Kalvar the Hollow', 'Sister Elira')
+      expect(campaign.npcs.find_by(name: 'Kalvar the Hollow')).to eq(kalvar)
+      expect(campaign.fronts.count).to eq(1)
+      expect(campaign.locations.pluck(:name)).to contain_exactly('Old City', 'Shattered Square')
+      expect(campaign.quests.pluck(:name)).to contain_exactly('Find the source', 'Escort refugees')
+    end
+
+    it 'skips repeats within the outline itself' do
+      apply({ 'npcs' => [{ 'name' => 'Vex' }, { 'name' => 'vex' }] })
+
+      expect(campaign.npcs.count).to eq(1)
+    end
+
+    it 'cleans up quoted roles' do
+      apply({ 'npcs' => [{ 'name' => 'Tabitha', 'role' => "'Patron'" }] })
+
+      expect(campaign.npcs.sole.role).to eq('patron')
     end
   end
 end

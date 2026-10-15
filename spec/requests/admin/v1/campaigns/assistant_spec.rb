@@ -29,7 +29,7 @@ RSpec.describe 'Admin::V1::Campaigns::AssistantController', type: :request do
       expect(json).to eq('pitch' => 'Find the crown', 'factions' => [{ 'name' => 'Iron Hand' }])
       expect(OpenAIClient).to have_received(:for).with(user)
       expect(ai_client).to have_received(:completions).with(
-        hash_including(system: CampaignAssistant::SYSTEM_PROMPT, json_mode: true,
+        hash_including(system: CampaignAssistant::SYSTEM_PROMPT, json_schema: CampaignAssistantSchemas::OUTLINE,
                        prompt: a_string_including('Campaign: Shattered Crown'))
       )
       expect(campaign.reload.pitch).to be_nil

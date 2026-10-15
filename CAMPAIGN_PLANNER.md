@@ -27,11 +27,12 @@ Decisions already made:
   Story, Quests, Cast, Places, Secrets, Sessions, Books), session prep (8 steps) and run mode, Three Clue Rule
   check, dashboard widgets (Next Session, Campaign Clocks), book references.
 - **Phase 2 (done):** bring-your-own OpenAI key, AI outline, prep suggestions and recaps.
-- **Phases 3 and 4 (in progress):**
-  - DM Guru sync endpoints are done: `GET /v1/foundry/campaigns`, `GET` and `POST /v1/foundry/campaigns/:uuid/changes`.
-  - The module (0.1.0) is built locally. It links with a pasted API token; the device-code flow is planned for
-    later.
-  - The module is not yet tested in a live world.
+- **Phases 3 and 4 (done):**
+  - DM Guru sync endpoints: `GET /v1/foundry/campaigns`, `GET` and `POST /v1/foundry/campaigns/:uuid/changes`.
+  - The module (0.1.0) is at github.com/jesshmusic/dorman-lakelys-campaign-planner. It links with a pasted API
+    token.
+  - Tested end to end in a live Foundry v14 world: linking, full pull, pushes from Foundry, pulls from DM Guru,
+    the conflict dialog, and an AI-drafted plan and recap syncing into the journals.
 - **Later:** syncing the book compendium index from Foundry, and the device-code linking flow.
 
 ## Research takeaways (what to build on)
@@ -149,6 +150,10 @@ sidebar section and routes in `navigation/DMRoutes.tsx`.
 - **Fill this step:** suggestions for any of the 8 prep steps, using current campaign state.
 - **Post-session:** log → recap, plus a *proposed diff* (secrets revealed, clocks advanced, quest status) for
   the DM to approve.
+- Every request uses OpenAI **structured outputs** (`CampaignAssistantSchemas`), so replies always have the
+  expected keys and allowed values. Without them, models sometimes mangled keys (`"_quests_"`, `"scenes "`).
+  The outline asks for each revelation with exactly 3 clues, and applying it skips NPCs, places and truths the
+  campaign already has.
 - Rate-limit the same way as `cr_calc`, and spec with `instance_double(OpenAIClient)` like
   `spec/requests/admin/v1/dashboard_spec.rb`.
 

@@ -44,8 +44,28 @@ RSpec.describe CampaignAssistant do
 
     it 'asks for JSON with the planner system prompt and returns the parsed plan' do
       expect(assistant.outline).to eq('pitch' => 'Find the crown', 'npcs' => [{ 'name' => 'Vex', 'role' => 'bbeg' }])
-      expect(calls.sole).to include(system: described_class::SYSTEM_PROMPT, json_mode: true,
+      expect(calls.sole).to include(system: described_class::SYSTEM_PROMPT, json_schema: CampaignAssistantSchemas::OUTLINE,
                                     model: described_class::MODEL, max_tokens: 4000)
+    end
+
+    context 'with clues grouped by revelation' do
+      let(:reply) do
+        { 'revelations' => [{ 'revelation' => 'Vex lies', 'clues' => ['A forged letter', 'A false alibi', 'Ink stains'] }] }.to_json
+      end
+
+      it 'returns one secret per clue, each pointing at its revelation' do
+        expect(assistant.outline).to eq('secrets' => [
+                                           { 'revelation' => 'Vex lies', 'text' => 'A forged letter' },
+                                           { 'revelation' => 'Vex lies', 'text' => 'A false alibi' },
+                                           { 'revelation' => 'Vex lies', 'text' => 'Ink stains' }
+                                         ])
+      end
+    end
+
+    it 'asks for three clues per revelation' do
+      assistant.outline
+
+      expect(prompt).to include('exactly 3', 'the Three Clue Rule')
     end
 
     it 'describes the campaign' do
@@ -150,6 +170,15 @@ RSpec.describe CampaignAssistant do
       end
     end
 
+    context 'when the reply has mangled keys' do
+      let(:reply) { { '_quests_' => [{ '_name_' => 'Find the crown' }], '$sessions ' => [{ ' Strong_Start ' => 'Ambush' }] }.to_json }
+
+      it 'cleans them up' do
+        expect(assistant.outline).to eq('quests' => [{ 'name' => 'Find the crown' }],
+                                        'sessions' => [{ 'strong_start' => 'Ambush' }])
+      end
+    end
+
     context 'when the reply is JSON but not an object' do
       let(:reply) { [1, 2].to_json }
 
@@ -182,7 +211,8 @@ RSpec.describe CampaignAssistant do
 
     it 'asks for JSON with the planner system prompt and returns the parsed suggestion' do
       expect(assistant.prep(session, 'strong_start')).to eq('text' => 'Bandits drop from the cliffs')
-      expect(calls.sole).to include(system: described_class::SYSTEM_PROMPT, json_mode: true,
+      expect(calls.sole).to include(system: described_class::SYSTEM_PROMPT,
+                                    json_schema: CampaignAssistantSchemas::PREP['strong_start'],
                                     model: described_class::MODEL, max_tokens: 1500)
     end
 
@@ -269,7 +299,7 @@ RSpec.describe CampaignAssistant do
     it 'sends the log with the unrevealed secrets, fronts and open quests' do
       assistant.recap(session)
 
-      expect(calls.sole).to include(system: described_class::SYSTEM_PROMPT, json_mode: true,
+      expect(calls.sole).to include(system: described_class::SYSTEM_PROMPT, json_schema: CampaignAssistantSchemas::RECAP,
                                     model: described_class::MODEL, max_tokens: 1200)
       expect(prompt).to include(
         'Campaign: Shattered Crown', "Session 1 log:\nThe party unmasked Vex at the inn.",

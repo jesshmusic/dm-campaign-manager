@@ -41,11 +41,13 @@ class CampaignAssistant
       "locations": 4-8 of {"name", "description", "features" (3 short details)}.
       "quests": main and side quests of {"name", "kind" (main or side), "act" (1-3 for main quests),
         "description", "reward", "giver" (an npc name or null)}.
-      "secrets": 3-4 revelations the party must uncover, each with 3 clues, as {"revelation", "text"}.
+      "revelations": 3 or 4 things the party must uncover, as {"revelation", "clues"}, with exactly 3
+        different clues for each (the Three Clue Rule). New revelations, or more clues for ones already in
+        the campaign.
       "sessions": #{session_count.positive? ? "#{session_count} sessions of {\"number\", \"title\", \"strong_start\", \"scenes\" (3-5 short possible scenes)}" : 'an empty list'}.
       Don't repeat anything already in the campaign.
     PROMPT
-    ask(prompt, max_tokens: 4000)
+    flatten_revelations(ask(prompt, schema: CampaignAssistantSchemas::OUTLINE, max_tokens: 4000))
   end
 
   # Suggestions for one Lazy DM prep step of a session
@@ -65,7 +67,7 @@ class CampaignAssistant
 
       Suggest prep for this session. Return JSON with #{shape}.
     PROMPT
-    ask(prompt, max_tokens: 1500)
+    ask(prompt, schema: CampaignAssistantSchemas::PREP.fetch(step), max_tokens: 1500)
   end
 
   # A recap of a played session from its log, plus changes the DM may want to apply
@@ -92,20 +94,22 @@ class CampaignAssistant
       "quest_updates": [{"quest_id", "status" (active, completed or failed)}].
       Only include changes the log supports.
     PROMPT
-    normalize_recap(ask(prompt, max_tokens: 1200))
+    normalize_recap(ask(prompt, schema: CampaignAssistantSchemas::RECAP, max_tokens: 1200))
   end
 
   private
 
-  def ask(prompt, max_tokens:)
+  def ask(prompt, schema:, max_tokens:)
     content = @client.completions(
-      prompt: prompt, system: SYSTEM_PROMPT, model: MODEL, json_mode: true, max_tokens: max_tokens,
-      temperature: 0.8, presence_penalty: 0.3, frequency_penalty: 0.2
+      prompt: prompt, system: SYSTEM_PROMPT, model: MODEL, json_schema: schema, max_tokens: max_tokens,
+      # No repetition penalties: JSON repeats the same keys on every item, and
+      # penalizing them degrades the output (blank names, stray symbols)
+      temperature: 0.7, presence_penalty: 0, frequency_penalty: 0
     )
     data = JSON.parse(content.to_s)
     raise JSON::ParserError, 'not an object' unless data.is_a?(Hash)
 
-    data
+    clean_keys(data)
   rescue JSON::ParserError
     raise Error, 'The AI returned something unreadable. Please try again.'
   end
@@ -166,6 +170,26 @@ class CampaignAssistant
   def previous_recap(session)
     previous = @campaign.sessions.where(number: ...session.number).where.not(recap: [nil, '']).order(:number).last
     previous && "Last time: #{previous.recap}"
+  end
+
+  # The model groups clues by revelation; the planner stores one secret per clue
+  def flatten_revelations(outline)
+    revelations = outline.delete('revelations')
+    return outline unless revelations.is_a?(Array)
+
+    outline.merge('secrets' => revelations.select { |r| r.is_a?(Hash) }.flat_map do |revelation|
+      Array(revelation['clues']).map { |clue| { 'revelation' => revelation['revelation'], 'text' => clue } }
+    end)
+  end
+
+  # Safety net for mangled keys ("_quests_", "scenes "): keep letters, digits
+  # and inner underscores, lowercased
+  def clean_keys(value)
+    case value
+    when Hash then value.to_h { |key, inner| [key.to_s.strip.downcase.gsub(/\A[^a-z0-9]+|[^a-z0-9]+\z/, ''), clean_keys(inner)] }
+    when Array then value.map { |inner| clean_keys(inner) }
+    else value
+    end
   end
 
   # An integer id from whatever the AI returned, or nil

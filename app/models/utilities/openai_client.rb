@@ -62,6 +62,8 @@ class OpenAIClient
   # @param prompt [String] The user prompt to send to the model
   # @param system [String, nil] Optional system message sent before the prompt
   # @param opts [Hash] Optional parameters:
+  #   - :json_schema [Hash] { name:, strict:, schema: } for OpenAI structured outputs:
+  #     the reply must match the schema. Takes precedence over :json_mode.
   #   - :json_mode [Boolean] When true, forces the model to output valid JSON.
   #     Use when you need to parse the response as JSON (e.g., NPC generation).
   #   - :return_usage [Boolean] When true, returns a hash with :content and :usage
@@ -98,6 +100,8 @@ class OpenAIClient
 
     # Add JSON response format if requested (forces valid JSON output)
     body[:response_format] = { type: 'json_object' } if p[:json_mode]
+    # Structured outputs: the reply must match this JSON schema exactly
+    body[:response_format] = { type: 'json_schema', json_schema: p[:json_schema] } if p[:json_schema]
 
     response = post('/v1/chat/completions', body: body)
     choices  = response[:choices].map { |c| c.dig(:message, :content)&.strip }

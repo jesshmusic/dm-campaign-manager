@@ -41,6 +41,14 @@ describe('suggestionItems', () => {
     ]);
   });
 
+  it('drops end punctuation from the revelation in the label', () => {
+    const [item] = suggestionItems('secrets', {
+      items: [{ revelation: 'The crypt is cold.', text: 'Frost on the door.' }],
+    });
+    expect(item.label).toBe('The crypt is cold: Frost on the door.');
+    expect(item.value).toEqual({ text: 'Frost on the door.', revelation: 'The crypt is cold.' });
+  });
+
   it('turns locations into location attributes', () => {
     expect(
       suggestionItems('locations', {

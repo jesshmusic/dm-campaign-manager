@@ -138,6 +138,19 @@ RSpec.describe OpenAIClient do
         expect(requests.sole[:body]).to include('model' => 'gpt-json', 'response_format' => { 'type' => 'json_object' })
       end
 
+      it 'sends a JSON schema for structured outputs, in place of JSON mode' do
+        schema = { name: 'plan', strict: true, schema: { type: 'object', properties: {}, required: [], additionalProperties: false } }
+
+        client.completions(prompt: 'Hi', json_mode: true, json_schema: schema)
+
+        expect(requests.sole[:body]['response_format']).to eq(
+          'type' => 'json_schema',
+          'json_schema' => { 'name' => 'plan', 'strict' => true,
+                             'schema' => { 'type' => 'object', 'properties' => {}, 'required' => [],
+                                           'additionalProperties' => false } }
+        )
+      end
+
       it 'returns the trimmed content' do
         expect(client.completions(prompt: 'Hi')).to eq('Hello there')
       end
