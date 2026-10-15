@@ -35,13 +35,6 @@ module Admin
 
         private
 
-        def require_premium!
-          return if @user.premium?
-
-          render json: { errors: ['Campaign sync needs a premium Patreon membership.'], code: 'premium_required' },
-                 status: :forbidden
-        end
-
         def set_campaign
           uuid = params[:uuid].to_s
           @campaign = @user.campaigns.find_by(uuid: uuid) if uuid.match?(UUID_FORMAT)

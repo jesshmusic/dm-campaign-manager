@@ -2,6 +2,8 @@ import { Link } from 'react-router-dom';
 import AutosaveField from '../components/AutosaveField';
 import LinkPicker from '../components/LinkPicker';
 import CompendiumSearch from '../components/CompendiumSearch';
+import { referenceFor, searchCompendium } from '../compendium';
+import { CompendiumResult } from '../useCampaignApi';
 import PrepSuggestions, { SuggestionItem } from '../assistant/PrepSuggestions';
 import { PrepStep } from '../assistant/useAssistantApi';
 import { CampaignState } from '../useCampaign';
@@ -44,6 +46,21 @@ const PrepView = ({ campaign, session, state }: PrepViewProps) => {
     mutate(() => api.removeSessionLink(campaign.slug, session.id, link.id));
 
   const unrevealed = campaign.secrets.filter((secret) => !secret.revealed);
+
+  // A search result from the DM's Foundry compendiums becomes a book reference
+  // (a draggable link in Foundry); one from DM Guru's SRD links directly
+  const addResult = (linkableType: 'Monster' | 'Item') => (result: CompendiumResult) => {
+    const { entry } = result;
+    if (!entry) return addLink(linkableType, result.id);
+    return mutate(async () => {
+      const reference = await referenceFor(api, campaign, entry);
+      const linked = session.links.some(
+        (link) => link.linkableType === 'CampaignReference' && link.linkableId === reference.id,
+      );
+      if (!linked)
+        await api.addSessionLink(campaign.slug, session.id, 'CampaignReference', reference.id);
+    });
+  };
 
   // Saves an AI suggestion the DM picked: text goes into the session, new
   // secrets and locations are created and linked to the session
@@ -243,8 +260,10 @@ const PrepView = ({ campaign, session, state }: PrepViewProps) => {
         />
         <CompendiumSearch
           label="Search monsters"
-          search={(query) => api.searchMonsters(query, campaign.edition)}
-          onPick={(monster) => addLink('Monster', monster.id)}
+          search={searchCompendium(api, campaign.slug, ['monster'], (query) =>
+            api.searchMonsters(query, campaign.edition),
+          )}
+          onPick={addResult('Monster')}
         />
         {bookPicker({
           label: 'Add a monster from your books',
@@ -273,13 +292,18 @@ const PrepView = ({ campaign, session, state }: PrepViewProps) => {
         />
         <CompendiumSearch
           label="Search items"
-          search={(query) => api.searchItems(query, campaign.edition)}
-          onPick={(item) => addLink('Item', item.id)}
+          search={searchCompendium(
+            api,
+            campaign.slug,
+            ['magic_item', 'equipment', 'table'],
+            (query) => api.searchItems(query, campaign.edition),
+          )}
+          onPick={addResult('Item')}
         />
         {bookPicker({
           label: 'Add treasure from your books',
           references: campaign.references.filter((reference) =>
-            ['magic_item', 'table'].includes(reference.category),
+            ['magic_item', 'equipment', 'table'].includes(reference.category),
           ),
           emptyText: 'No book items or tables picked yet.',
         })}

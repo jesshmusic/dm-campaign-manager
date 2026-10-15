@@ -98,6 +98,10 @@ Rails.application.routes.draw do
       # Personal API tokens for Foundry modules
       resources :api_tokens, path: 'api-tokens', only: %i[index create destroy], constraints: { format: 'json' }
 
+      # Search the signed-in DM's Foundry compendium index
+      get 'compendium', to: 'compendium_entries#index', constraints: { format: 'json' }
+      get 'compendium/packs', to: 'compendium_entries#packs', constraints: { format: 'json' }
+
       # Campaign planner (the signed-in DM's own campaigns)
       resources :campaigns, only: %i[index show create update destroy], constraints: { format: 'json' } do
         scope module: :campaigns do
@@ -119,6 +123,8 @@ Rails.application.routes.draw do
         get 'campaigns', to: 'campaigns#index', constraints: { format: 'json' }
         get 'campaigns/:uuid/changes', to: 'campaigns#changes', constraints: { format: 'json' }
         post 'campaigns/:uuid/changes', to: 'campaigns#push', constraints: { format: 'json' }
+        get 'compendium', to: 'compendium#show', constraints: { format: 'json' }
+        post 'compendium', to: 'compendium#create', constraints: { format: 'json' }
       end
 
       # Admin UI for managing maps

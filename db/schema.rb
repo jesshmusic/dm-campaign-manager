@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_10_15_200000) do
+ActiveRecord::Schema[7.1].define(version: 2026_10_15_220000) do
   create_schema "heroku_ext"
 
   # These are extensions that must be enabled in order to support this database
@@ -326,6 +326,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_10_15_200000) do
     t.bigint "sync_version", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.jsonb "excluded_compendium_packs", default: [], null: false
     t.index ["user_id", "slug"], name: "index_campaigns_on_user_id_and_slug", unique: true
     t.index ["user_id"], name: "index_campaigns_on_user_id"
     t.index ["uuid"], name: "index_campaigns_on_uuid", unique: true
@@ -396,6 +397,22 @@ ActiveRecord::Schema[7.1].define(version: 2026_10_15_200000) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["dnd_class_level_id"], name: "index_class_spellcastings_on_dnd_class_level_id"
+  end
+
+  create_table "compendium_entries", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "pack", null: false
+    t.string "pack_version"
+    t.string "foundry_uuid", null: false
+    t.string "name", null: false
+    t.string "category", null: false
+    t.string "challenge_rating"
+    t.string "detail"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id", "category", "name"], name: "index_compendium_entries_on_user_id_and_category_and_name"
+    t.index ["user_id", "foundry_uuid"], name: "index_compendium_entries_on_user_id_and_foundry_uuid", unique: true
+    t.index ["user_id", "pack"], name: "index_compendium_entries_on_user_id_and_pack"
   end
 
   create_table "container_items", force: :cascade do |t|
@@ -1056,6 +1073,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_10_15_200000) do
   add_foreign_key "class_specific_spell_slots", "class_specifics"
   add_foreign_key "class_specifics", "dnd_class_levels"
   add_foreign_key "class_spellcastings", "dnd_class_levels"
+  add_foreign_key "compendium_entries", "users"
   add_foreign_key "content_items", "items"
   add_foreign_key "costs", "items"
   add_foreign_key "damages", "items"

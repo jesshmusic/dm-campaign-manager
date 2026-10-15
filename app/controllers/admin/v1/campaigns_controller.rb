@@ -63,7 +63,7 @@ module Admin
       def campaign_params
         params.require(:campaign).permit(
           :name, :premise, :pitch, :setting_name, :setting_notes, :mode, :status, :planned_sessions, :cadence,
-          :party_size, :start_level, :target_level, :tone, truths: []
+          :party_size, :start_level, :target_level, :tone, truths: [], excluded_compendium_packs: []
         )
       end
     end

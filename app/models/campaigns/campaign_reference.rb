@@ -42,9 +42,10 @@ class CampaignReference < ApplicationRecord
     'phb' => "Player's Handbook",
     'dmg' => "Dungeon Master's Guide",
     'mm' => 'Monster Manual',
+    'srd' => 'SRD 5.2',
     'other' => 'Other'
   }.freeze
-  CATEGORIES = %w[monster magic_item spell table rule other].freeze
+  CATEGORIES = %w[monster magic_item equipment spell table rule other].freeze
   CHALLENGE_RATING = %r{\A(0|1/8|1/4|1/2|[1-9]|[12][0-9]|30)\z}
 
   has_many :npcs, class_name: 'CampaignNpc', foreign_key: :stat_block_reference_id,

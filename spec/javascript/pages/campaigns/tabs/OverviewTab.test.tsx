@@ -1,12 +1,12 @@
 import React from 'react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
-import { render, screen, fireEvent, waitFor } from '../../../test-utils';
+import { render, screen, fireEvent, waitFor, within } from '../../../test-utils';
 import OverviewTab, {
   playerGuideText,
 } from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/tabs/OverviewTab';
 import { formatDate } from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/tabs/SessionsTab';
 import { Campaign } from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/types';
-import { FakeState, makeState, sampleCampaign } from '../fixtures';
+import { FakeState, makeState, sampleCampaign, samplePacks } from '../fixtures';
 
 const renderTab = (campaign: Campaign = sampleCampaign(), state: FakeState = makeState()) => {
   render(
@@ -248,6 +248,52 @@ describe('OverviewTab', () => {
         await screen.findByText('Could not delete the campaign. Please try again.'),
       ).toBeInTheDocument();
       expect(screen.queryByText('All campaigns page')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('compendiums', () => {
+    it("shows the campaign's compendiums with the excluded ones unchecked", async () => {
+      const state = makeState();
+      state.api.compendiumPacks.mockResolvedValue(samplePacks());
+      renderTab(sampleCampaign({ excludedCompendiumPacks: ['dnd5e.actors24'] }), state);
+
+      const srd = await screen.findByRole('group', { name: 'SRD 5.2' });
+      expect(within(srd).getByRole('checkbox', { name: /Monsters/ })).not.toBeChecked();
+      expect(
+        within(screen.getByRole('group', { name: 'Monster Manual' })).getByRole('checkbox', {
+          name: /Monsters/,
+        }),
+      ).toBeChecked();
+    });
+
+    it('saves a change, holding the checkboxes until it is saved', async () => {
+      let finishSave: (saved: boolean) => void = () => undefined;
+      const state = makeState({
+        updateCampaign: jest.fn(
+          () =>
+            new Promise<boolean>((resolve) => {
+              finishSave = resolve;
+            }),
+        ),
+      });
+      state.api.compendiumPacks.mockResolvedValue(samplePacks());
+      renderTab(sampleCampaign(), state);
+
+      fireEvent.click(await screen.findByRole('checkbox', { name: 'All compendiums' }));
+
+      expect(state.updateCampaign).toHaveBeenCalledWith({
+        excluded_compendium_packs: [
+          'dnd-monster-manual.actors',
+          'dnd-monster-manual.tables',
+          'dnd5e.actors24',
+        ],
+      });
+      expect(screen.getByRole('checkbox', { name: 'All compendiums' })).toBeDisabled();
+
+      finishSave(true);
+      await waitFor(() =>
+        expect(screen.getByRole('checkbox', { name: 'All compendiums' })).toBeEnabled(),
+      );
     });
   });
 

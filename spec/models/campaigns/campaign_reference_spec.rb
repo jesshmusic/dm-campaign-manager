@@ -37,6 +37,10 @@ RSpec.describe CampaignReference, type: :model do
     it 'leaves out a missing page' do
       expect(build(:campaign_reference, book: 'dmg', page: nil).citation).to eq("Dungeon Master's Guide")
     end
+
+    it 'names the SRD for entries from the free SRD 5.2 compendiums' do
+      expect(build(:campaign_reference, book: 'srd', page: nil).citation).to eq('SRD 5.2')
+    end
   end
 
   describe 'deleting' do

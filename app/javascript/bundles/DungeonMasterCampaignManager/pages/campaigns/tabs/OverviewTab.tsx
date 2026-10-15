@@ -9,6 +9,8 @@ import { CampaignState } from '../useCampaign';
 import { Campaign, MODE_LABELS } from '../types';
 import { RevelationCheck } from './SecretsTab';
 import OutlineReview from '../assistant/OutlineReview';
+import CompendiumPicker from '../components/CompendiumPicker';
+import { useCompendiumPacks } from '../compendium';
 import { formatDate } from './SessionsTab';
 import { ButtonRow, Card, CardGrid, List, Meta, Notice, SectionTitle } from '../Campaigns.styles';
 
@@ -34,6 +36,15 @@ const OverviewTab = ({ campaign, state }: OverviewTabProps) => {
   const [editing, setEditing] = useState(false);
   const [copied, setCopied] = useState(false);
   const fields = [campaignStatusField, campaignModeField, ...campaignFields(state.api)];
+  const packs = useCompendiumPacks(state.api);
+  // Each change saves the whole list, so wait for one save before the next
+  const [savingPacks, setSavingPacks] = useState(false);
+
+  const saveExcludedPacks = async (excluded: string[]) => {
+    setSavingPacks(true);
+    await state.updateCampaign({ excluded_compendium_packs: excluded });
+    setSavingPacks(false);
+  };
 
   const upcoming = campaign.sessions.find((session) => session.status !== 'played');
   const activeQuests = campaign.quests.filter((quest) => quest.status === 'active');
@@ -170,6 +181,20 @@ const OverviewTab = ({ campaign, state }: OverviewTabProps) => {
 
       <SectionTitle>Secrets and clues</SectionTitle>
       <RevelationCheck revelations={campaign.revelations} />
+
+      <SectionTitle>Compendiums</SectionTitle>
+      <Card>
+        <Meta>
+          Your Foundry compendiums. Monster and treasure searches in this campaign use the checked
+          ones.
+        </Meta>
+        <CompendiumPicker
+          packs={packs}
+          excluded={campaign.excludedCompendiumPacks}
+          onChange={(excluded) => void saveExcludedPacks(excluded)}
+          disabled={savingPacks}
+        />
+      </Card>
 
       <SectionTitle>Danger zone</SectionTitle>
       <Notice $tone="danger">

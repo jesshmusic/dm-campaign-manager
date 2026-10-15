@@ -4,29 +4,30 @@
 #
 # Table name: campaigns
 #
-#  id               :bigint           not null, primary key
-#  cadence          :string
-#  edition          :string           default("2024"), not null
-#  mode             :string           default("arc"), not null
-#  name             :string           not null
-#  party_size       :integer
-#  pitch            :text
-#  planned_sessions :integer
-#  premise          :text
-#  setting_name     :string
-#  setting_notes    :text
-#  slug             :string           not null
-#  start_level      :integer
-#  status           :string           default("planning"), not null
-#  sync_counter     :bigint           default(0), not null
-#  sync_version     :bigint           default(0), not null
-#  target_level     :integer
-#  tone             :string
-#  truths           :jsonb            not null
-#  uuid             :uuid             not null
-#  created_at       :datetime         not null
-#  updated_at       :datetime         not null
-#  user_id          :bigint           not null
+#  id                        :bigint           not null, primary key
+#  cadence                   :string
+#  edition                   :string           default("2024"), not null
+#  excluded_compendium_packs :jsonb            not null
+#  mode                      :string           default("arc"), not null
+#  name                      :string           not null
+#  party_size                :integer
+#  pitch                     :text
+#  planned_sessions          :integer
+#  premise                   :text
+#  setting_name              :string
+#  setting_notes             :text
+#  slug                      :string           not null
+#  start_level               :integer
+#  status                    :string           default("planning"), not null
+#  sync_counter              :bigint           default(0), not null
+#  sync_version              :bigint           default(0), not null
+#  target_level              :integer
+#  tone                      :string
+#  truths                    :jsonb            not null
+#  uuid                      :uuid             not null
+#  created_at                :datetime         not null
+#  updated_at                :datetime         not null
+#  user_id                   :bigint           not null
 #
 # Indexes
 #
@@ -73,6 +74,7 @@ class Campaign < ApplicationRecord
   validates :party_size, numericality: { only_integer: true, in: 1..12 }, allow_nil: true
   validate :target_level_not_below_start
   validate :truths_are_strings
+  validate :excluded_compendium_packs_are_known
 
   before_validation :assign_uuid, on: :create
   before_update :assign_sync_version
@@ -119,6 +121,7 @@ class Campaign < ApplicationRecord
       targetLevel: target_level,
       tone: tone,
       edition: edition,
+      excludedCompendiumPacks: excluded_compendium_packs,
       createdAt: created_at.iso8601,
       updatedAt: updated_at.iso8601
     }
@@ -177,5 +180,12 @@ class Campaign < ApplicationRecord
     return if truths.is_a?(Array) && truths.all?(String) && truths.size <= MAX_TRUTHS
 
     errors.add(:truths, "must be a list of up to #{MAX_TRUTHS} statements")
+  end
+
+  def excluded_compendium_packs_are_known
+    packs = excluded_compendium_packs
+    return if packs.is_a?(Array) && (packs - CompendiumEntry::PACKS.keys).empty?
+
+    errors.add(:excluded_compendium_packs, 'must be a list of supported compendiums')
   end
 end

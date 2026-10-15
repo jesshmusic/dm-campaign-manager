@@ -175,6 +175,36 @@ describe('useCampaignApi', () => {
     });
   });
 
+  describe('Foundry compendium index', () => {
+    it("gets the DM's compendium packs", async () => {
+      mockFetch.mockImplementation(() => jsonResponse([{ pack: 'dnd5e.actors24', count: 441 }]));
+
+      await expect(api().compendiumPacks()).resolves.toEqual([
+        { pack: 'dnd5e.actors24', count: 441 },
+      ]);
+      expect(lastCall()[0]).toBe('/v1/compendium/packs');
+    });
+
+    it("searches a campaign's compendiums by category", async () => {
+      mockFetch.mockImplementation(() => jsonResponse({ indexed: true, results: [] }));
+
+      await expect(
+        api().searchCompendium('zombie', ['monster', 'spell'], 'zombie-siege'),
+      ).resolves.toEqual({ indexed: true, results: [] });
+      expect(lastCall()[0]).toBe(
+        '/v1/compendium?search=zombie&categories=monster%2Cspell&campaign=zombie-siege',
+      );
+    });
+
+    it('searches every compendium without a campaign or categories', async () => {
+      mockFetch.mockImplementation(() => jsonResponse({ indexed: false, results: [] }));
+
+      await api().searchCompendium('zombie', []);
+
+      expect(lastCall()[0]).toBe('/v1/compendium?search=zombie&categories=');
+    });
+  });
+
   describe('generators', () => {
     it('gets a random name', async () => {
       mockFetch.mockImplementation(() => jsonResponse({ name: 'Elmo' }));

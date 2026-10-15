@@ -1,10 +1,10 @@
 import React from 'react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
-import { render, screen, fireEvent, waitFor } from '../../test-utils';
+import { render, screen, fireEvent, waitFor, within } from '../../test-utils';
 import NewCampaign, {
   TEMPLATES,
 } from '../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/NewCampaign';
-import { jsonResponse, sampleCampaign } from './fixtures';
+import { jsonResponse, sampleCampaign, samplePacks } from './fixtures';
 
 const mockGetAccessTokenSilently = jest.fn(() => Promise.resolve('test-token'));
 jest.mock('@auth0/auth0-react', () => ({
@@ -49,7 +49,11 @@ describe('NewCampaign', () => {
     );
 
   beforeEach(() => {
-    mockFetch = jest.fn(() => jsonResponse(sampleCampaign(), 201));
+    mockFetch = jest.fn((url: string) =>
+      url === '/v1/compendium/packs'
+        ? jsonResponse(samplePacks())
+        : jsonResponse(sampleCampaign(), 201),
+    );
     global.fetch = mockFetch;
   });
 
@@ -107,9 +111,70 @@ describe('NewCampaign', () => {
         truths: ['The dead walk', 'The temple is corrupt'],
         setting_notes: null,
         mode: 'arc',
+        excluded_compendium_packs: [],
       },
       template: 'three_act',
     });
+  });
+
+  it('lists the Foundry compendiums in a sidebar, all on to start', async () => {
+    renderPage();
+
+    const sidebar = screen.getByRole('complementary', { name: 'Compendiums' });
+    expect(await within(sidebar).findByRole('checkbox', { name: 'All compendiums' })).toBeChecked();
+    const monsterManual = within(sidebar).getByRole('group', { name: 'Monster Manual' });
+    expect(within(monsterManual).getByRole('checkbox', { name: /Monsters/ })).toBeChecked();
+    expect(within(monsterManual).getByRole('checkbox', { name: /Tables/ })).toBeChecked();
+    expect(
+      within(within(sidebar).getByRole('group', { name: 'SRD 5.2' })).getByRole('checkbox', {
+        name: /Monsters/,
+      }),
+    ).toBeChecked();
+    expect(mockFetch).toHaveBeenCalledWith(
+      '/v1/compendium/packs',
+      expect.objectContaining({ method: 'GET' }),
+    );
+  });
+
+  it('creates the campaign without the compendiums the DM turned off', async () => {
+    renderPage();
+
+    const monsterManual = await screen.findByRole('group', { name: 'Monster Manual' });
+    fireEvent.click(within(monsterManual).getByRole('checkbox', { name: /Monsters/ }));
+    fireEvent.change(input('name'), { target: { value: 'Zombie Siege' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Create campaign' }));
+
+    expect(await screen.findByText('Campaign page')).toBeInTheDocument();
+    expect(JSON.parse(createRequest()[1].body).campaign.excluded_compendium_packs).toEqual([
+      'dnd-monster-manual.actors',
+    ]);
+  });
+
+  it('turns every compendium off and back on with one checkbox', async () => {
+    renderPage();
+
+    const all = await screen.findByRole('checkbox', { name: 'All compendiums' });
+    fireEvent.click(all);
+
+    expect(all).not.toBeChecked();
+    expect(
+      screen.getAllByRole('checkbox').filter((box) => (box as HTMLInputElement).checked),
+    ).toEqual([]);
+
+    fireEvent.click(all);
+    expect(screen.getAllByRole('checkbox').every((box) => (box as HTMLInputElement).checked)).toBe(
+      true,
+    );
+  });
+
+  it('explains where compendiums come from when there are none', async () => {
+    mockFetch.mockImplementation((url: string) =>
+      url === '/v1/compendium/packs' ? jsonResponse([]) : jsonResponse(sampleCampaign(), 201),
+    );
+    renderPage();
+
+    expect(await screen.findByText(/No compendiums yet/)).toBeInTheDocument();
+    expect(screen.queryByRole('checkbox')).not.toBeInTheDocument();
   });
 
   it.each([

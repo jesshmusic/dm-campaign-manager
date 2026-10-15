@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor, within } from '../../../test-utils';
 import BooksTab from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/tabs/BooksTab';
 import { Campaign } from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/types';
-import { FakeState, makeState, sampleCampaign } from '../fixtures';
+import { FakeState, makeState, sampleCampaign, sampleCompendiumEntry } from '../fixtures';
 
 const renderTab = (campaign: Campaign = sampleCampaign(), state: FakeState = makeState()) => {
   render(<BooksTab campaign={campaign} state={state} />);
@@ -22,6 +22,72 @@ describe('BooksTab', () => {
 
   afterEach(() => {
     confirmSpy.mockRestore();
+  });
+
+  describe('adding from Foundry compendiums', () => {
+    const search = (query: string) => {
+      fireEvent.change(screen.getByRole('textbox', { name: 'Search your compendiums' }), {
+        target: { value: query },
+      });
+      fireEvent.click(screen.getByRole('button', { name: 'Search' }));
+    };
+
+    it('searches every compendium the campaign uses and adds a reference', async () => {
+      const state = makeState();
+      state.api.searchCompendium.mockResolvedValue({
+        indexed: true,
+        results: [sampleCompendiumEntry()],
+      });
+      renderTab(sampleCampaign(), state);
+
+      search('zom');
+      const result = await screen.findByText('Zombie');
+      fireEvent.click(within(result).getByRole('button', { name: 'Add' }));
+
+      await waitFor(() =>
+        expect(state.api.createChild).toHaveBeenCalledWith('zombie-siege', 'references', {
+          name: 'Zombie',
+          book: 'mm',
+          category: 'monster',
+          challenge_rating: '1/4',
+          foundry_uuid: 'Compendium.dnd-monster-manual.actors.Actor.mmZombie00000000',
+        }),
+      );
+      expect(state.api.searchCompendium).toHaveBeenCalledWith('zom', [], 'zombie-siege');
+      expect(screen.queryByText(/No compendiums to search/)).not.toBeInTheDocument();
+    });
+
+    it('does not add a reference the campaign already has', async () => {
+      const state = makeState();
+      state.api.searchCompendium.mockResolvedValue({
+        indexed: true,
+        results: [
+          sampleCompendiumEntry({
+            name: 'Cult Fanatic',
+            foundryUuid: 'Compendium.dnd-monster-manual.actors.abc',
+          }),
+        ],
+      });
+      renderTab(sampleCampaign(), state);
+
+      search('cult');
+      const result = await screen.findByText((_, element) =>
+        Boolean(element?.tagName === 'LI' && element.textContent?.startsWith('Cult Fanatic')),
+      );
+      fireEvent.click(within(result).getByRole('button', { name: 'Add' }));
+
+      await waitFor(() => expect(state.mutate).toHaveBeenCalled());
+      await state.mutate.mock.results[0].value;
+      expect(state.api.createChild).not.toHaveBeenCalled();
+    });
+
+    it('explains how to get compendiums when there are none to search', async () => {
+      renderTab();
+
+      search('zom');
+
+      expect(await screen.findByText(/No compendiums to search/)).toBeInTheDocument();
+    });
   });
 
   it('explains that only names and pages are saved', () => {

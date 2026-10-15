@@ -3,7 +3,13 @@ import { MemoryRouter } from 'react-router-dom';
 import { render, screen, fireEvent, waitFor, within } from '../../../test-utils';
 import PrepView from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/session/PrepView';
 import { Campaign } from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/types';
-import { FakeState, makeState, plannerSession, sampleCampaign } from '../fixtures';
+import {
+  FakeState,
+  makeState,
+  plannerSession,
+  sampleCampaign,
+  sampleCompendiumEntry,
+} from '../fixtures';
 
 const renderPrep = (campaign: Campaign = sampleCampaign(), state: FakeState = makeState()) => {
   const session = campaign.sessions[1];
@@ -269,6 +275,149 @@ describe('PrepView', () => {
         ),
       );
       expect(state.api.searchMonsters).toHaveBeenCalledWith('ghast', '2024');
+    });
+
+    describe('with a Foundry compendium index', () => {
+      const searchFor = async (
+        state: FakeState,
+        stepNumber: number,
+        label: string,
+        name: string,
+      ) => {
+        const section = step(stepNumber);
+        fireEvent.change(within(section).getByRole('textbox', { name: label }), {
+          target: { value: name.slice(0, 3) },
+        });
+        fireEvent.click(within(section).getByRole('button', { name: 'Search' }));
+        const result = await within(section).findByText(name);
+        fireEvent.click(within(result).getByRole('button', { name: 'Add' }));
+        await waitFor(() => expect(state.mutate).toHaveBeenCalled());
+        // Let the change finish before checking what it did
+        await state.mutate.mock.results[0].value;
+      };
+
+      it("searches the campaign's compendiums and links the monster as a book reference", async () => {
+        const state = makeState();
+        state.api.searchCompendium.mockResolvedValue({
+          indexed: true,
+          results: [sampleCompendiumEntry()],
+        });
+        state.api.createChild.mockResolvedValue({ id: 'r9' });
+        renderPrep(sampleCampaign(), state);
+
+        expect(await screen.findByRole('textbox', { name: 'Search monsters' })).toBeInTheDocument();
+        await searchFor(state, 7, 'Search monsters', 'Zombie');
+
+        expect(screen.getByText('(CR 1/4 · Undead · Monster Manual)')).toBeInTheDocument();
+        await waitFor(() =>
+          expect(state.api.addSessionLink).toHaveBeenCalledWith(
+            'zombie-siege',
+            'sess2',
+            'CampaignReference',
+            'r9',
+          ),
+        );
+        expect(state.api.searchCompendium).toHaveBeenCalledWith('Zom', ['monster'], 'zombie-siege');
+        expect(state.api.createChild).toHaveBeenCalledWith('zombie-siege', 'references', {
+          name: 'Zombie',
+          book: 'mm',
+          category: 'monster',
+          challenge_rating: '1/4',
+          foundry_uuid: 'Compendium.dnd-monster-manual.actors.Actor.mmZombie00000000',
+        });
+        expect(state.api.searchMonsters).not.toHaveBeenCalled();
+      });
+
+      it('links the reference the campaign already has for that entry', async () => {
+        const campaign = sampleCampaign();
+        campaign.references = campaign.references.map((reference) =>
+          reference.id === 'r4'
+            ? { ...reference, foundryUuid: 'Compendium.x.Actor.veteran' }
+            : reference,
+        );
+        const state = makeState();
+        state.api.searchCompendium.mockResolvedValue({
+          indexed: true,
+          results: [
+            sampleCompendiumEntry({ name: 'Veteran', foundryUuid: 'Compendium.x.Actor.veteran' }),
+          ],
+        });
+        renderPrep(campaign, state);
+
+        await searchFor(state, 7, 'Search monsters', 'Veteran');
+
+        await waitFor(() =>
+          expect(state.api.addSessionLink).toHaveBeenCalledWith(
+            'zombie-siege',
+            'sess2',
+            'CampaignReference',
+            'r4',
+          ),
+        );
+        expect(state.api.createChild).not.toHaveBeenCalled();
+      });
+
+      it('does not link a reference the session already has', async () => {
+        const state = makeState();
+        state.api.searchCompendium.mockResolvedValue({
+          indexed: true,
+          results: [
+            sampleCompendiumEntry({
+              name: 'Cult Fanatic',
+              foundryUuid: 'Compendium.dnd-monster-manual.actors.abc',
+            }),
+          ],
+        });
+        renderPrep(sampleCampaign(), state);
+
+        await searchFor(state, 7, 'Search monsters', 'Cult Fanatic');
+
+        expect(state.api.createChild).not.toHaveBeenCalled();
+        expect(state.api.addSessionLink).not.toHaveBeenCalled();
+      });
+
+      it('searches treasure in the magic item, equipment and table compendiums', async () => {
+        const state = makeState();
+        state.api.searchCompendium.mockResolvedValue({
+          indexed: true,
+          results: [
+            sampleCompendiumEntry({
+              id: '700',
+              name: 'Bag of Holding',
+              category: 'magic_item',
+              book: 'dmg',
+              bookName: "Dungeon Master's Guide",
+              challengeRating: null,
+              detail: 'Uncommon',
+              foundryUuid: 'Compendium.dnd-dungeon-masters-guide.equipment.Item.dmgBagOfHolding',
+            }),
+          ],
+        });
+        state.api.createChild.mockResolvedValue({ id: 'r10' });
+        renderPrep(sampleCampaign(), state);
+
+        await searchFor(state, 8, 'Search items', 'Bag of Holding');
+
+        expect(state.api.searchCompendium).toHaveBeenCalledWith(
+          'Bag',
+          ['magic_item', 'equipment', 'table'],
+          'zombie-siege',
+        );
+        await waitFor(() =>
+          expect(state.api.addSessionLink).toHaveBeenCalledWith(
+            'zombie-siege',
+            'sess2',
+            'CampaignReference',
+            'r10',
+          ),
+        );
+        expect(state.api.createChild).toHaveBeenCalledWith(
+          'zombie-siege',
+          'references',
+          expect.objectContaining({ category: 'magic_item', book: 'dmg' }),
+        );
+        expect(state.api.searchItems).not.toHaveBeenCalled();
+      });
     });
 
     it('only shows monster book references in this step', () => {

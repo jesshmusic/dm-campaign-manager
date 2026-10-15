@@ -23,6 +23,8 @@ export interface CampaignBase {
   targetLevel: number | null;
   tone: string | null;
   edition: '2014' | '2024';
+  // Foundry compendium packs this campaign's searches leave out
+  excludedCompendiumPacks: string[];
   createdAt: string;
   updatedAt: string;
 }
@@ -84,8 +86,15 @@ export interface Npc {
   statBlockReference: { id: string; name: string; citation: string } | null;
 }
 
-export type Book = 'phb' | 'dmg' | 'mm' | 'other';
-export type ReferenceCategory = 'monster' | 'magic_item' | 'spell' | 'table' | 'rule' | 'other';
+export type Book = 'phb' | 'dmg' | 'mm' | 'srd' | 'other';
+export type ReferenceCategory =
+  | 'monster'
+  | 'magic_item'
+  | 'equipment'
+  | 'spell'
+  | 'table'
+  | 'rule'
+  | 'other';
 
 // A pointer into a 2024 core book: name and page only, never book text
 export interface BookReference {
@@ -105,17 +114,43 @@ export const BOOK_LABELS: Record<Book, string> = {
   phb: "Player's Handbook",
   dmg: "Dungeon Master's Guide",
   mm: 'Monster Manual',
+  srd: 'SRD 5.2',
   other: 'Other',
 };
 
 export const REFERENCE_CATEGORY_LABELS: Record<ReferenceCategory, string> = {
   monster: 'Monster',
   magic_item: 'Magic item',
+  equipment: 'Equipment',
   spell: 'Spell',
   table: 'Table',
   rule: 'Rule',
   other: 'Other',
 };
+
+export type CompendiumCategory = 'monster' | 'spell' | 'magic_item' | 'equipment' | 'table';
+
+// An entry from the DM's Foundry compendium index, sent by the Campaign Planner
+// module: a name and compendium UUID, never a stat block
+export interface CompendiumEntry {
+  id: string;
+  name: string;
+  category: CompendiumCategory;
+  book: Book;
+  bookName: string;
+  challengeRating: string | null;
+  detail: string | null;
+  foundryUuid: string;
+}
+
+// One compendium pack in the DM's index, e.g. the Monster Manual's monsters
+export interface CompendiumPack {
+  pack: string;
+  book: Book;
+  bookName: string;
+  label: string;
+  count: number;
+}
 
 export interface Portent {
   text: string;

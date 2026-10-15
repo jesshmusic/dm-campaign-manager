@@ -8,6 +8,9 @@ import {
   CampaignTemplate,
   CHILD_KINDS,
   ChildKind,
+  CompendiumCategory,
+  CompendiumEntry,
+  CompendiumPack,
   LinkableType,
   SessionLink,
 } from './types';
@@ -37,6 +40,8 @@ export interface CompendiumResult {
   name: string;
   slug: string;
   detail: string;
+  // Set for results from the DM's Foundry compendium index
+  entry?: CompendiumEntry;
 }
 
 /**
@@ -116,6 +121,21 @@ const useCampaignApi = () => {
           slug: item.slug,
           detail: item.rarity ?? item.category ?? '',
         }));
+      },
+
+      // The DM's Foundry compendium index. With a campaign, only its compendiums;
+      // `indexed` is false when there is nothing to search.
+      compendiumPacks: () => request<CompendiumPack[]>('/v1/compendium/packs'),
+      searchCompendium: (
+        query: string,
+        categories: CompendiumCategory[],
+        campaignSlug?: string,
+      ) => {
+        const params = new URLSearchParams({ search: query, categories: categories.join(',') });
+        if (campaignSlug) params.set('campaign', campaignSlug);
+        return request<{ indexed: boolean; results: CompendiumEntry[] }>(
+          `/v1/compendium?${params.toString()}`,
+        );
       },
 
       // Existing generators

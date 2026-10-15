@@ -6,6 +6,8 @@ import {
   BookReference,
   Campaign,
   CampaignSummary,
+  CompendiumEntry,
+  CompendiumPack,
   Front,
   Location,
   Npc,
@@ -145,6 +147,7 @@ export const sampleCampaign = (overrides: Partial<Campaign> = {}): Campaign => (
   targetLevel: 8,
   tone: 'survival horror',
   edition: '2024',
+  excludedCompendiumPacks: [],
   createdAt: '2026-10-01T12:00:00Z',
   updatedAt: '2026-10-02T12:00:00Z',
   factions: [
@@ -398,6 +401,39 @@ export const campaignSummary = (overrides: Partial<CampaignSummary> = {}): Campa
   };
 };
 
+// Packs from a DM's Foundry compendium index
+export const samplePacks = (): CompendiumPack[] => [
+  {
+    pack: 'dnd-monster-manual.actors',
+    book: 'mm',
+    bookName: 'Monster Manual',
+    label: 'Monsters',
+    count: 504,
+  },
+  {
+    pack: 'dnd-monster-manual.tables',
+    book: 'mm',
+    bookName: 'Monster Manual',
+    label: 'Tables',
+    count: 116,
+  },
+  { pack: 'dnd5e.actors24', book: 'srd', bookName: 'SRD 5.2', label: 'Monsters', count: 441 },
+];
+
+export const sampleCompendiumEntry = (
+  overrides: Partial<CompendiumEntry> = {},
+): CompendiumEntry => ({
+  id: '501',
+  name: 'Zombie',
+  category: 'monster',
+  book: 'mm',
+  bookName: 'Monster Manual',
+  challengeRating: '1/4',
+  detail: 'Undead',
+  foundryUuid: 'Compendium.dnd-monster-manual.actors.Actor.mmZombie00000000',
+  ...overrides,
+});
+
 export type MockApi = { [K in keyof CampaignApi]: jest.Mock };
 
 /** Every CampaignApi call as a jest.fn, resolving to something sensible. */
@@ -414,6 +450,8 @@ export const makeApi = (overrides: Partial<MockApi> = {}): MockApi => ({
   removeSessionLink: jest.fn().mockResolvedValue(undefined),
   searchMonsters: jest.fn().mockResolvedValue([]),
   searchItems: jest.fn().mockResolvedValue([]),
+  compendiumPacks: jest.fn().mockResolvedValue([]),
+  searchCompendium: jest.fn().mockResolvedValue({ indexed: false, results: [] }),
   randomName: jest.fn().mockResolvedValue('Random Name'),
   randomTavernName: jest.fn().mockResolvedValue('The Prancing Pony'),
   adventureHook: jest.fn().mockResolvedValue('A dragon attacks'),

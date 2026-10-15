@@ -20,6 +20,7 @@ export const assistantCampaign = (): Campaign => ({
   targetLevel: 8,
   tone: null,
   edition: '2024',
+  excludedCompendiumPacks: [],
   createdAt: '2026-10-15T12:00:00Z',
   updatedAt: '2026-10-15T12:00:00Z',
   factions: [],

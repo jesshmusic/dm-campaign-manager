@@ -33,7 +33,58 @@ Decisions already made:
     token.
   - Tested end to end in a live Foundry v14 world: linking, full pull, pushes from Foundry, pulls from DM Guru,
     the conflict dialog, and an AI-drafted plan and recap syncing into the journals.
-- **Later:** syncing the book compendium index from Foundry, and the device-code linking flow.
+- **Compendium index (done):** the module sends the index of the DM's SRD 5.2 and 2024 core book compendiums.
+  Planner searches use it, and picks become draggable compendium links in the session journals. Each campaign
+  chooses its compendiums (a sidebar on New Campaign, and a list on Overview). See "The 2024 core books".
+
+## What's left
+**To ship this PR**
+- Watch CI on the latest push, resolve Copilot's review comments, then merge.
+- Production setup:
+  - run the migrations
+  - set Active Record encryption keys in credentials or ENV, so they don't depend on `secret_key_base`
+  - set `OPENAI_API_KEY` for premium members' hosted AI
+  - lock CORS down from `origins '*'` (`config/initializers/cors.rb`) to the Foundry origins that need it
+
+**To release the module**
+- Release 0.2.0 with `npm run release:minor`. The unreleased changes are the compendium index and the
+  draggable links.
+- Register the package on foundryvtt.com, and add the `FOUNDRY_PACKAGE_TOKEN` secret to the repo for the
+  release workflow.
+- Add the module to `app/services/foundry_module_stats_fetcher.rb` after its first release.
+
+**Planned but not built**
+- Guided setup for a new campaign (see Suggestions).
+- Device-code linking, so DMs don't paste an API token.
+- "Send to DM Guru" for things made in Foundry, like an improvised NPC.
+- Player-facing pages: the shareable player guide, and player-visible journal pages.
+- A monthly cap on the hosted AI key for premium members (there is an hourly limit).
+- From phase 1: a campaign-scoped `NotesWidget`, and linking places to Cartography maps.
+- From phase 5: treasure hoards, an in-world calendar, and export as a Foundry Adventure compendium.
+
+## Suggestions
+**Guided setup for a new campaign.** Today New Campaign is one long form. A step-by-step guide would teach the
+method as it goes. Each step would have a short "why this matters", an example, and a way to skip it:
+1. *What kind of game?* Story arc, sandbox or one-shot, with an example of each.
+2. *The pitch:* premise and tone, with "Suggest a hook".
+3. *The party:* players, starting and target level, number of sessions, how often you play.
+4. *The world:* setting and six truths, with examples like "The dead do not rest in Greyhawk".
+5. *Your books:* the compendium list, and how linking Foundry turns picks into draggable links.
+6. *Draft with AI* (optional): generate the outline from the brief, then review it before saving.
+7. *Review and create.* Then an Overview checklist: make the villain's front, add three NPCs, write
+   secrets, prep session 1, link Foundry.
+
+The guide should save a draft in the browser, so leaving the page doesn't lose it.
+
+**Other ideas**
+- Search the compendium index from the NPC form, so a stat block doesn't have to be added on the Books tab
+  first.
+- Let the AI choose monsters and treasure from the DM's compendium index, so its suggestions arrive already
+  linked.
+- Show encounter difficulty for the party's level next to a session's monsters. This is a number only; the DM
+  still places monsters on the map.
+- Push changes to Foundry over ActionCable instead of polling every 2 minutes.
+- Index homebrew and adventure compendiums the DM chooses, not just the official 2024 packs.
 
 ## Research takeaways (what to build on)
 | Source | Idea we borrow |
@@ -163,15 +214,25 @@ or Monster Manual. The planner uses them without copying them:
 - **Book references** (`campaign_references`): name, book, category (monster, magic item, spell, table, rule),
   page, optional CR and notes. NPCs can use one as their stat block, and session prep steps 7 (monsters) and 8
   (treasure) can link them. Nothing from the books' text is stored.
-- **Through Foundry:** the DM's world has the official modules installed (`dnd-monster-manual`,
-  `dnd-dungeon-masters-guide`, `dnd-players-handbook`), with compendium packs for Monster Manual creatures, DMG
-  equipment and roll tables, and PHB spells and equipment.
-  - The companion module reads only each pack's index (name, CR, type, compendium UUID) and sends it to DM Guru
-    for that DM alone. The planner can then suggest "Zombie, Monster Manual" next to the SRD monsters.
-  - A reference stores the compendium UUID in `foundry_uuid`. Session journals the module writes link to it
-    (`@UUID[Compendium.dnd-monster-manual.actors.Actor.…]{Zombie}`), so clicking opens the DM's own licensed
-    stat block. Stat blocks never leave Foundry.
-  - Judgment call to confirm: names and CRs from a book the DM owns are stored privately per DM, never shared.
+- **Compendium index (`compendium_entries`), sent by the module:**
+  - It covers dnd5e's free SRD 5.2 packs (`actors24`, `spells24`, `equipment24`, `tables24`) plus the official
+    `dnd-players-handbook`, `dnd-dungeon-masters-guide` and `dnd-monster-manual` packs the DM has.
+  - Each entry is a name, category, CR, short detail (creature type, spell level, rarity) and compendium UUID.
+    Stat blocks and book text never leave Foundry, and the entries are private to that DM.
+  - The official packs use the same UUIDs in every world (e.g. `Compendium.dnd-monster-manual.actors.Actor.mmZombie00000000`),
+    so a link works in any of the DM's worlds.
+  - The module sends a pack again when its package version changes. `GET` and `POST /v1/foundry/compendium`
+    are premium, like sync.
+- **Searching:** `GET /v1/compendium` searches the DM's index. A book entry hides the SRD entry of the same
+  name. Session prep (monsters, treasure) and the Books tab use it, and fall back to DM Guru's own SRD when there
+  is no index.
+- **Per campaign:** `campaigns.excluded_compendium_packs` lists the compendiums a campaign leaves out. It stores
+  the ones turned off, so a book indexed later is on by default.
+- **In Foundry:**
+  - Picking an entry creates a book reference with its `foundry_uuid`. Session journals link to it, e.g.
+    `@UUID[Compendium.dnd-monster-manual.actors.Actor.…]{Zombie}`. Click it to open the stat block, or drag it
+    onto a scene to place a token.
+  - Monsters and items picked from DM Guru's own SRD list link to the compendium entry of the same name.
 - AI suggestions (phase 2) can name 2024 creatures and items, but never page numbers, which it would guess.
 
 ## Foundry module — Dorman Lakely's Campaign Planner

@@ -5,6 +5,8 @@ import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
 import EntityForm, { toFormValues } from './components/EntityForm';
 import { campaignFields } from './campaignFields';
+import CompendiumPicker from './components/CompendiumPicker';
+import { useCompendiumPacks } from './compendium';
 import useCampaignApi from './useCampaignApi';
 import { CampaignMode, CampaignTemplate } from './types';
 import { Card, Meta, Notice, PlannerWrapper, SectionTitle, Toolbar } from './Campaigns.styles';
@@ -71,18 +73,42 @@ const TemplateOption = styled.div<{ $selected: boolean }>`
   }
 `;
 
+// The brief, with the compendium picker beside it on wide screens
+const Layout = styled.div`
+  display: grid;
+  gap: 0 1.5rem;
+  grid-template-columns: minmax(0, 1fr);
+
+  @media (min-width: 1100px) {
+    align-items: start;
+    grid-template-columns: minmax(0, 1fr) 18rem;
+  }
+`;
+
+const Sidebar = styled.aside`
+  @media (min-width: 1100px) {
+    position: sticky;
+    top: 1rem;
+  }
+`;
+
 const NewCampaign = () => {
   const api = useCampaignApi();
   const navigate = useNavigate();
   const [template, setTemplate] = useState<CampaignTemplate>('three_act');
   const [error, setError] = useState<string | null>(null);
+  const [excludedPacks, setExcludedPacks] = useState<string[]>([]);
+  const packs = useCompendiumPacks(api);
   const fields = campaignFields(api);
 
   const create = async (attributes: Record<string, unknown>) => {
     setError(null);
     const mode = TEMPLATES.find((option) => option.value === template)?.mode ?? 'arc';
     try {
-      const campaign = await api.createCampaign({ ...attributes, mode }, template);
+      const campaign = await api.createCampaign(
+        { ...attributes, mode, excluded_compendium_packs: excludedPacks },
+        template,
+      );
       navigate(`/app/campaigns/${campaign.slug}`);
       return true;
     } catch (e) {
@@ -98,38 +124,56 @@ const NewCampaign = () => {
         <Toolbar>
           <Link to="/app/campaigns">← All campaigns</Link>
         </Toolbar>
-        <SectionTitle>What kind of campaign?</SectionTitle>
-        <TemplateGrid role="radiogroup" aria-label="Campaign template">
-          {TEMPLATES.map((option) => (
-            <TemplateOption key={option.value} $selected={template === option.value}>
-              <label>
-                <input
-                  type="radio"
-                  name="template"
-                  value={option.value}
-                  checked={template === option.value}
-                  aria-describedby={`template-${option.value}-description`}
-                  onChange={() => setTemplate(option.value)}
-                />
-                {option.title}
-              </label>
-              <Meta id={`template-${option.value}-description`}>{option.description}</Meta>
-            </TemplateOption>
-          ))}
-        </TemplateGrid>
-        <SectionTitle>The brief</SectionTitle>
-        <Card>
-          {error && <Notice>{error}</Notice>}
-          <EntityForm
-            fields={fields}
-            initialValues={toFormValues(fields, {
-              party_size: 4,
-              start_level: 1,
-            })}
-            submitLabel="Create campaign"
-            onSubmit={create}
-          />
-        </Card>
+        <Layout>
+          <div>
+            <SectionTitle>What kind of campaign?</SectionTitle>
+            <TemplateGrid role="radiogroup" aria-label="Campaign template">
+              {TEMPLATES.map((option) => (
+                <TemplateOption key={option.value} $selected={template === option.value}>
+                  <label>
+                    <input
+                      type="radio"
+                      name="template"
+                      value={option.value}
+                      checked={template === option.value}
+                      aria-describedby={`template-${option.value}-description`}
+                      onChange={() => setTemplate(option.value)}
+                    />
+                    {option.title}
+                  </label>
+                  <Meta id={`template-${option.value}-description`}>{option.description}</Meta>
+                </TemplateOption>
+              ))}
+            </TemplateGrid>
+            <SectionTitle>The brief</SectionTitle>
+            <Card>
+              {error && <Notice>{error}</Notice>}
+              <EntityForm
+                fields={fields}
+                initialValues={toFormValues(fields, {
+                  party_size: 4,
+                  start_level: 1,
+                })}
+                submitLabel="Create campaign"
+                onSubmit={create}
+              />
+            </Card>
+          </div>
+          <Sidebar aria-label="Compendiums">
+            <SectionTitle>Compendiums</SectionTitle>
+            <Card>
+              <Meta>
+                Your Foundry compendiums. Monster and treasure searches in this campaign use the
+                checked ones.
+              </Meta>
+              <CompendiumPicker
+                packs={packs}
+                excluded={excludedPacks}
+                onChange={setExcludedPacks}
+              />
+            </Card>
+          </Sidebar>
+        </Layout>
       </PlannerWrapper>
     </PageContainer>
   );

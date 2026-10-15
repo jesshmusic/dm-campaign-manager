@@ -2,29 +2,30 @@
 #
 # Table name: campaigns
 #
-#  id               :bigint           not null, primary key
-#  cadence          :string
-#  edition          :string           default("2024"), not null
-#  mode             :string           default("arc"), not null
-#  name             :string           not null
-#  party_size       :integer
-#  pitch            :text
-#  planned_sessions :integer
-#  premise          :text
-#  setting_name     :string
-#  setting_notes    :text
-#  slug             :string           not null
-#  start_level      :integer
-#  status           :string           default("planning"), not null
-#  sync_counter     :bigint           default(0), not null
-#  sync_version     :bigint           default(0), not null
-#  target_level     :integer
-#  tone             :string
-#  truths           :jsonb            not null
-#  uuid             :uuid             not null
-#  created_at       :datetime         not null
-#  updated_at       :datetime         not null
-#  user_id          :bigint           not null
+#  id                        :bigint           not null, primary key
+#  cadence                   :string
+#  edition                   :string           default("2024"), not null
+#  excluded_compendium_packs :jsonb            not null
+#  mode                      :string           default("arc"), not null
+#  name                      :string           not null
+#  party_size                :integer
+#  pitch                     :text
+#  planned_sessions          :integer
+#  premise                   :text
+#  setting_name              :string
+#  setting_notes             :text
+#  slug                      :string           not null
+#  start_level               :integer
+#  status                    :string           default("planning"), not null
+#  sync_counter              :bigint           default(0), not null
+#  sync_version              :bigint           default(0), not null
+#  target_level              :integer
+#  tone                      :string
+#  truths                    :jsonb            not null
+#  uuid                      :uuid             not null
+#  created_at                :datetime         not null
+#  updated_at                :datetime         not null
+#  user_id                   :bigint           not null
 #
 # Indexes
 #

@@ -212,6 +212,18 @@ RSpec.describe 'Admin::V1::CampaignsController', type: :request do
       expect(campaign.reload.sync_version).to be_positive
     end
 
+    it 'saves the compendiums the campaign leaves out' do
+      patch "/v1/campaigns/#{campaign.slug}", params: { campaign: { excluded_compendium_packs: ['dnd5e.actors24'] } },
+                                              as: :json
+
+      expect(response).to have_http_status(:success)
+      expect(json['excludedCompendiumPacks']).to eq(['dnd5e.actors24'])
+
+      patch "/v1/campaigns/#{campaign.slug}", params: { campaign: { excluded_compendium_packs: [] } }, as: :json
+
+      expect(campaign.reload.excluded_compendium_packs).to eq([])
+    end
+
     it 'returns validation errors' do
       patch "/v1/campaigns/#{campaign.slug}", params: { campaign: { mode: 'megadungeon' } }
 

@@ -84,6 +84,19 @@ RSpec.describe Campaign, type: :model do
       expect(build(:campaign, truths: ['Fine', 3])).not_to be_valid
       expect(build(:campaign, truths: { 'a' => 'b' })).not_to be_valid
     end
+
+    it 'uses every compendium unless some are excluded' do
+      expect(build(:campaign).excluded_compendium_packs).to eq([])
+      expect(build(:campaign, excluded_compendium_packs: ['dnd5e.actors24'])).to be_valid
+    end
+
+    it 'only excludes compendiums it knows' do
+      campaign = build(:campaign, excluded_compendium_packs: ['world.homebrew'])
+
+      expect(campaign).not_to be_valid
+      expect(campaign.errors[:excluded_compendium_packs]).to include('must be a list of supported compendiums')
+      expect(build(:campaign, excluded_compendium_packs: 'dnd5e.actors24')).not_to be_valid
+    end
   end
 
   describe 'slugs' do
