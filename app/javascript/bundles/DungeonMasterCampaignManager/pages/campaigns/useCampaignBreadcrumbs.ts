@@ -14,7 +14,6 @@ const useCampaignBreadcrumbs = (paths: BreadcrumbPathItem[] | null) => {
     setCustomPaths([{ title: 'Campaigns', url: '/app/campaigns' }, ...paths]);
     return () => setCustomPaths(undefined);
     // `key` stands in for `paths`, which is a new array on every render
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key, setCustomPaths]);
 };
 

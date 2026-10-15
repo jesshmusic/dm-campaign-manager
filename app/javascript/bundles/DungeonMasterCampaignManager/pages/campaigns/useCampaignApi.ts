@@ -72,14 +72,14 @@ const useCampaignApi = () => {
         request<Campaign>('/v1/campaigns', 'POST', { campaign, template }),
       updateCampaign: (slug: string, campaign: Attributes) =>
         request<CampaignBase>(base(slug), 'PATCH', { campaign }),
-      deleteCampaign: (slug: string) => request<void>(base(slug), 'DELETE'),
+      deleteCampaign: (slug: string) => request<undefined>(base(slug), 'DELETE'),
 
       createChild: <T>(slug: string, kind: ChildKind, attributes: Attributes) =>
         request<T>(`${base(slug)}/${kind}`, 'POST', { [CHILD_KINDS[kind]]: attributes }),
       updateChild: <T>(slug: string, kind: ChildKind, id: string, attributes: Attributes) =>
         request<T>(`${base(slug)}/${kind}/${id}`, 'PATCH', { [CHILD_KINDS[kind]]: attributes }),
       deleteChild: (slug: string, kind: ChildKind, id: string) =>
-        request<void>(`${base(slug)}/${kind}/${id}`, 'DELETE'),
+        request<undefined>(`${base(slug)}/${kind}/${id}`, 'DELETE'),
 
       addSessionLink: (
         slug: string,
@@ -91,7 +91,7 @@ const useCampaignApi = () => {
           link: { linkable_type: linkableType, linkable_id: linkableId },
         }),
       removeSessionLink: (slug: string, sessionId: string, linkId: string) =>
-        request<void>(`${base(slug)}/sessions/${sessionId}/links/${linkId}`, 'DELETE'),
+        request<undefined>(`${base(slug)}/sessions/${sessionId}/links/${linkId}`, 'DELETE'),
 
       searchMonsters: async (query: string, edition: string): Promise<CompendiumResult[]> => {
         const params = new URLSearchParams({ search: query, edition });
