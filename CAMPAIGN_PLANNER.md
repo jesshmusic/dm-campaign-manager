@@ -67,6 +67,17 @@ Decisions already made:
   - Campaigns have at most six truths. Older campaigns with more can still be edited, and AI plans never drop the
     truths a campaign already has.
 
+- **Planning in Foundry, no account (done, module):**
+  - Most DMs will find this through the module, and some won't want a website at all. They can plan entirely in
+    Foundry; Dungeon Master Guru is the step up for AI.
+  - The module's guide can create a campaign in the world itself: the same journals, records and template
+    structure as Dungeon Master Guru (its templates are ported to `scripts/local.mjs`).
+  - The Campaign Dashboard runs it, saving changes to the journals, and adds threats, secrets, quests, NPCs, places,
+    factions and sessions.
+  - The Journal sidebar has Campaign, New, Open and help buttons. Open switches between campaigns in the world and
+    on Dungeon Master Guru.
+  - A "How it works" window explains both ways to plan, and opens once on a GM's first load.
+
 ## What's left
 **To ship this PR**
 - Watch CI on the latest push, resolve Copilot's review comments, then merge.
@@ -84,6 +95,10 @@ Decisions already made:
 - Add the module to `app/services/foundry_module_stats_fetcher.rb` after its first release.
 
 **Planned but not built**
+- "Send to Dungeon Master Guru" for a campaign made in Foundry: an upload endpoint that maps its local ids to new
+  records, after which it syncs like any linked campaign. (Next.)
+- Editing a local campaign's records in Foundry (today the Dashboard adds them; details are typed into the pages).
+- Linking places to Foundry scenes, with scene thumbnails uploaded so Dungeon Master Guru can show a preview.
 - One source for the setup guide's words, shared by the website and the module (today they're copied).
 - Device-code linking, so DMs don't paste an API token.
 - "Send to DM Guru" for things made in Foundry, like an improvised NPC.
