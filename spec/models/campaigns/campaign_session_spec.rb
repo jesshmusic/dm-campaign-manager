@@ -51,6 +51,119 @@ RSpec.describe CampaignSession, type: :model do
     end
   end
 
+  describe 'Foundry scenes' do
+    subject(:session) { build(:campaign_session, campaign: campaign) }
+
+    def scene(index, name: "Scene #{index}")
+      { uuid: "Scene.#{index.to_s.rjust(16, 'a')}", name: name }
+    end
+
+    it 'has none by default' do
+      expect(described_class.new.foundry_scenes).to eq([])
+    end
+
+    it 'accepts up to 20 scenes, each with a scene UUID and a name' do
+      session.foundry_scenes = Array.new(CampaignSession::MAX_FOUNDRY_SCENES) { |i| scene(i) }
+      expect(session).to be_valid
+
+      session.foundry_scenes = Array.new(CampaignSession::MAX_FOUNDRY_SCENES + 1) { |i| scene(i) }
+      expect(session).not_to be_valid
+      expect(session.errors[:foundry_scenes]).to include(
+        'must be up to 20 Foundry scenes, each with a scene UUID and a name of up to 120 characters'
+      )
+    end
+
+    it 'keeps only the UUID and name' do
+      session.foundry_scenes = [{ uuid: 'Scene.5wVcsNPOg2RjRbFx', name: 'Mountain Pass', img: 'pass.webp' }]
+
+      expect(session).to be_valid
+      expect(session.foundry_scenes).to eq([{ 'uuid' => 'Scene.5wVcsNPOg2RjRbFx', 'name' => 'Mountain Pass' }])
+    end
+
+    it 'rejects a scene without a scene UUID' do
+      [{ name: 'Mountain Pass' }, { uuid: 'Actor.5wVcsNPOg2RjRbFx', name: 'Mountain Pass' },
+       { uuid: 'Scene.short', name: 'Mountain Pass' }, { uuid: 42, name: 'Mountain Pass' }].each do |entry|
+        session.foundry_scenes = [entry]
+
+        expect(session).not_to be_valid, "expected #{entry.inspect} to be rejected"
+      end
+    end
+
+    it 'rejects a scene without a name, or with a name over 120 characters' do
+      session.foundry_scenes = [scene(1, name: 'x' * CampaignSession::MAX_SCENE_NAME)]
+      expect(session).to be_valid
+
+      [nil, '', '  ', 7, 'x' * (CampaignSession::MAX_SCENE_NAME + 1)].each do |name|
+        session.foundry_scenes = [scene(1, name: name)]
+
+        expect(session).not_to be_valid, "expected the name #{name.inspect} to be rejected"
+      end
+    end
+
+    it 'rejects scenes that are not a list of scenes' do
+      ['Mountain Pass', ['Scene.5wVcsNPOg2RjRbFx'], { uuid: 'Scene.5wVcsNPOg2RjRbFx', name: 'Mountain Pass' }].each do |value|
+        session.foundry_scenes = value
+
+        expect(session).not_to be_valid, "expected #{value.inspect} to be rejected"
+      end
+    end
+
+    it 'treats no scenes as an empty list' do
+      session.foundry_scenes = nil
+
+      expect(session.foundry_scenes).to eq([])
+      expect(session).to be_valid
+    end
+  end
+
+  describe 'treasure coins' do
+    subject(:session) { build(:campaign_session, campaign: campaign) }
+
+    let(:message) { 'must be whole numbers of pp, gp, ep, sp and cp, up to 1,000,000 each' }
+
+    it 'has none by default' do
+      expect(described_class.new.treasure_currency).to eq({})
+    end
+
+    it 'accepts each kind of coin, from none up to a million' do
+      session.treasure_currency = { pp: 0, gp: 50, ep: 1, sp: 12, cp: CampaignSession::MAX_COINS }
+
+      expect(session).to be_valid
+      expect(session.treasure_currency).to eq('pp' => 0, 'gp' => 50, 'ep' => 1, 'sp' => 12, 'cp' => 1_000_000)
+    end
+
+    it 'turns whole numbers sent as text into numbers' do
+      session.treasure_currency = { 'gp' => '50' }
+
+      expect(session).to be_valid
+      expect(session.treasure_currency).to eq('gp' => 50)
+    end
+
+    it 'rejects other coins, and counts that are not whole numbers in range' do
+      [{ zz: 5 }, { GP: 5 }, { gp: -1 }, { gp: CampaignSession::MAX_COINS + 1 }, { gp: 1.5 }, { gp: '1.5' },
+       { gp: 'lots' }, { gp: nil }, { gp: true }].each do |coins|
+        session.treasure_currency = coins
+
+        expect(session).not_to be_valid, "expected #{coins.inspect} to be rejected"
+        expect(session.errors[:treasure_currency]).to include(message)
+      end
+    end
+
+    it 'rejects coins that are not a set of counts' do
+      session.treasure_currency = [['gp', 5]]
+
+      expect(session).not_to be_valid
+      expect(session.errors[:treasure_currency]).to include(message)
+    end
+
+    it 'treats no coins as none' do
+      session.treasure_currency = nil
+
+      expect(session.treasure_currency).to eq({})
+      expect(session).to be_valid
+    end
+  end
+
   describe 'numbering' do
     it 'numbers sessions in order' do
       first = create(:campaign_session, campaign: campaign)
@@ -130,7 +243,17 @@ RSpec.describe CampaignSession, type: :model do
       expect(session.as_json_for_api).to include(
         id: session.id.to_s, uuid: session.uuid, number: 1, title: 'Goblin Ambush', displayTitle: 'Goblin Ambush',
         scheduledOn: '2026-10-20', status: 'planned', level: 2, strongStart: 'Arrows fly',
-        scenes: ['Ambush', 'Cragmaw hideout'], links: []
+        scenes: ['Ambush', 'Cragmaw hideout'], treasureCurrency: {}, foundryScenes: [], links: []
+      )
+    end
+
+    it 'includes the treasure coins and Foundry scenes' do
+      session = create(:campaign_session, campaign: campaign, treasure_currency: { gp: 50, sp: 12 },
+                                          foundry_scenes: [{ uuid: 'Scene.5wVcsNPOg2RjRbFx', name: 'Mountain Pass' }])
+
+      expect(session.reload.as_json_for_api).to include(
+        treasureCurrency: { 'gp' => 50, 'sp' => 12 },
+        foundryScenes: [{ 'uuid' => 'Scene.5wVcsNPOg2RjRbFx', 'name' => 'Mountain Pass' }]
       )
     end
   end

@@ -4,18 +4,20 @@
 #
 # Table name: campaign_locations
 #
-#  id             :bigint           not null, primary key
-#  description    :text
-#  features       :jsonb            not null
-#  name           :string           not null
-#  notes          :text
-#  sync_version   :bigint           default(0), not null
-#  uuid           :uuid             not null
-#  created_at     :datetime         not null
-#  updated_at     :datetime         not null
-#  campaign_id    :bigint           not null
-#  foundry_map_id :bigint
-#  parent_id      :bigint
+#  id                 :bigint           not null, primary key
+#  description        :text
+#  features           :jsonb            not null
+#  foundry_scene_name :string
+#  foundry_scene_uuid :string
+#  name               :string           not null
+#  notes              :text
+#  sync_version       :bigint           default(0), not null
+#  uuid               :uuid             not null
+#  created_at         :datetime         not null
+#  updated_at         :datetime         not null
+#  campaign_id        :bigint           not null
+#  foundry_map_id     :bigint
+#  parent_id          :bigint
 #
 # Indexes
 #
@@ -33,16 +35,23 @@
 #
 
 # A fantastic location, optionally nested in a parent and linked to a
-# Dorman Lakely Cartography map.
+# Dorman Lakely Cartography map. The Foundry module can link it to one of the
+# DM's Foundry scenes (picked in Foundry, so the website only shows it).
 class CampaignLocation < ApplicationRecord
   include CampaignRecord
 
   MAX_FEATURES = 20
+  # A world scene's UUID in Foundry, e.g. "Scene.5wVcsNPOg2RjRbFx"
+  FOUNDRY_SCENE_UUID = /\AScene\.[A-Za-z0-9]{16}\z/
 
   belongs_to :parent, class_name: 'CampaignLocation', optional: true
   belongs_to :foundry_map, optional: true
 
+  normalizes :foundry_scene_uuid, :foundry_scene_name, with: ->(value) { value.strip.presence }
+
   validates :name, presence: true, length: { maximum: 120 }
+  validates :foundry_scene_uuid, length: { maximum: 255 }, format: { with: FOUNDRY_SCENE_UUID }, allow_nil: true
+  validates :foundry_scene_name, length: { maximum: 120 }
   validates_string_list :features, max: MAX_FEATURES
   validates_same_campaign :parent
   validates_acyclic_parent message: "can't be this location or one inside it"
@@ -57,7 +66,9 @@ class CampaignLocation < ApplicationRecord
       features: features,
       notes: notes,
       parentId: parent_id&.to_s,
-      foundryMapId: foundry_map_id&.to_s
+      foundryMapId: foundry_map_id&.to_s,
+      foundrySceneUuid: foundry_scene_uuid,
+      foundrySceneName: foundry_scene_name
     }
   end
 end

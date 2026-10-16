@@ -79,6 +79,21 @@ RSpec.describe 'Admin::V1::CampaignsController', type: :request do
       expect(json['revelations']).to eq([{ 'name' => 'Glasstaff is Iarno', 'clueCount' => 2, 'revealedCount' => 1 }])
     end
 
+    it "includes thumbnails of the Foundry scenes it uses as maps, from the DM's own scenes" do
+      pass = create(:foundry_scene, user: user, name: 'Mountain Pass')
+      camp = create(:foundry_scene, user: user, name: 'Camp')
+      create(:foundry_scene, user: user, name: 'Unused')
+      create(:foundry_scene, user: other_user, foundry_uuid: 'Scene.zzzzzzzzzzzzzzzz')
+      create(:campaign_location, campaign: campaign, foundry_scene_uuid: pass.foundry_uuid, foundry_scene_name: 'Pass')
+      create(:campaign_session, campaign: campaign, foundry_scenes: [
+               { 'uuid' => camp.foundry_uuid, 'name' => 'Camp' }, { 'uuid' => 'Scene.zzzzzzzzzzzzzzzz', 'name' => 'Not sent' }
+             ])
+
+      get "/v1/campaigns/#{campaign.slug}"
+
+      expect(json['sceneThumbnails']).to eq(pass.foundry_uuid => pass.thumbnail_url, camp.foundry_uuid => camp.thumbnail_url)
+    end
+
     it 'also finds the campaign by id' do
       get "/v1/campaigns/#{campaign.id}"
 

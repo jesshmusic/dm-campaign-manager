@@ -10,7 +10,7 @@ RSpec.describe 'Admin::V1::Campaigns::LocationsController', type: :request do
     let(:valid_attributes) { { name: 'Phandalin', description: 'A frontier town', features: ['Stonehill Inn', 'Shrine of Luck'] } }
     let(:created_json) do
       { 'name' => 'Phandalin', 'description' => 'A frontier town', 'features' => ['Stonehill Inn', 'Shrine of Luck'],
-        'parentId' => nil, 'foundryMapId' => nil }
+        'parentId' => nil, 'foundryMapId' => nil, 'foundrySceneUuid' => nil, 'foundrySceneName' => nil }
     end
     let(:invalid_attributes) { { name: '' } }
     let(:invalid_message) { "Name can't be blank" }
@@ -72,6 +72,31 @@ RSpec.describe 'Admin::V1::Campaigns::LocationsController', type: :request do
       expect(response).to have_http_status(:unprocessable_entity)
       expect(json['errors']).to include("Parent can't be this location or one inside it")
       expect(city.reload.parent_id).to be_nil
+    end
+
+    it "can't link a Foundry scene, which is picked in Foundry" do
+      patch "#{locations_path}/#{city.id}",
+            params: { location: { name: 'Neverwinter', foundry_scene_uuid: 'Scene.5wVcsNPOg2RjRbFx', foundry_scene_name: 'Pass' } },
+            as: :json
+
+      expect(response).to have_http_status(:success)
+      expect(city.reload).to have_attributes(name: 'Neverwinter', foundry_scene_uuid: nil, foundry_scene_name: nil)
+    end
+
+    it 'shows the Foundry scene linked in Foundry' do
+      city.update!(foundry_scene_uuid: 'Scene.5wVcsNPOg2RjRbFx', foundry_scene_name: 'Waterdeep Harbor')
+
+      get "#{locations_path}/#{city.id}"
+
+      expect(json).to include('foundrySceneUuid' => 'Scene.5wVcsNPOg2RjRbFx', 'foundrySceneName' => 'Waterdeep Harbor')
+    end
+
+    it 'keeps the Foundry scene when the website edits the location' do
+      city.update!(foundry_scene_uuid: 'Scene.5wVcsNPOg2RjRbFx', foundry_scene_name: 'Waterdeep Harbor')
+
+      patch "#{locations_path}/#{city.id}", params: { location: { description: 'City of Splendors' } }, as: :json
+
+      expect(city.reload).to have_attributes(description: 'City of Splendors', foundry_scene_uuid: 'Scene.5wVcsNPOg2RjRbFx')
     end
 
     it 'rejects too many features' do

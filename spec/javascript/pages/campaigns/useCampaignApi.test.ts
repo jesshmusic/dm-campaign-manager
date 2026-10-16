@@ -129,6 +129,23 @@ describe('useCampaignApi', () => {
       expect(lastBody()).toEqual({ link: { linkable_type: 'Monster', linkable_id: '12' } });
     });
 
+    it("changes a session link's quantity with a PATCH", async () => {
+      mockFetch.mockImplementation(() => jsonResponse({ id: 'link6', quantity: 3 }));
+
+      const link = await api().updateSessionLink('zombie-siege', 'sess2', 'link6', { quantity: 3 });
+
+      expect(link).toEqual({ id: 'link6', quantity: 3 });
+      expect(lastCall()[0]).toBe('/v1/campaigns/zombie-siege/sessions/sess2/links/link6');
+      expect(lastCall()[1].method).toBe('PATCH');
+      expect(lastBody()).toEqual({ link: { quantity: 3 } });
+    });
+
+    it('clears a quantity with null', async () => {
+      await api().updateSessionLink('zombie-siege', 'sess2', 'link6', { quantity: null });
+
+      expect(lastBody()).toEqual({ link: { quantity: null } });
+    });
+
     it('removes a session link', async () => {
       mockFetch.mockImplementation(() => jsonResponse(undefined, 204));
 

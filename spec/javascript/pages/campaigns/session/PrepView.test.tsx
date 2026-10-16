@@ -241,6 +241,55 @@ describe('PrepView', () => {
       ]);
     });
 
+    it('lists the Foundry scenes picked for the session in Foundry', () => {
+      const campaign = sampleCampaign();
+      campaign.sessions[1].foundryScenes = [
+        { uuid: 'Scene.5wVcsNPOg2RjRbFx', name: 'Mountain Pass' },
+        { uuid: 'Scene.aaaaaaaaaaaaaaaa', name: 'Cragmaw Cave' },
+      ];
+      renderPrep(campaign);
+
+      const scenes = within(step(5)).getByRole('list', { name: 'Foundry scenes' });
+      expect(
+        within(scenes)
+          .getAllByRole('listitem')
+          .map((item) => item.textContent),
+      ).toEqual(['Mountain Pass', 'Cragmaw Cave']);
+      expect(within(step(5)).getByRole('heading', { name: 'Foundry scenes' })).toBeInTheDocument();
+      expect(within(step(5)).getByText('Picked for this session in Foundry.')).toBeInTheDocument();
+      // Read-only: scenes are picked in Foundry
+      expect(within(scenes).queryByRole('button')).not.toBeInTheDocument();
+    });
+
+    it("shows the scenes' thumbnails once Foundry has sent them", () => {
+      const campaign = sampleCampaign();
+      campaign.sessions[1].foundryScenes = [
+        { uuid: 'Scene.5wVcsNPOg2RjRbFx', name: 'Mountain Pass' },
+        { uuid: 'Scene.aaaaaaaaaaaaaaaa', name: 'Cragmaw Cave' },
+      ];
+      campaign.sceneThumbnails = { 'Scene.5wVcsNPOg2RjRbFx': 'https://example.com/pass.webp' };
+      renderPrep(campaign);
+
+      const scenes = within(step(5)).getByRole('list', { name: 'Foundry scenes' });
+      expect(within(scenes).getByRole('img', { name: 'Map: Mountain Pass' })).toHaveAttribute(
+        'src',
+        'https://example.com/pass.webp',
+      );
+      expect(
+        within(scenes).queryByRole('img', { name: 'Map: Cragmaw Cave' }),
+      ).not.toBeInTheDocument();
+      expect(within(scenes).getByText('Cragmaw Cave')).toBeInTheDocument();
+    });
+
+    it('leaves out Foundry scenes when none were picked', () => {
+      renderPrep();
+
+      expect(
+        within(step(5)).queryByRole('list', { name: 'Foundry scenes' }),
+      ).not.toBeInTheDocument();
+      expect(within(step(5)).queryByText(/Foundry/)).not.toBeInTheDocument();
+    });
+
     it('links a location', async () => {
       const { state } = renderPrep();
 
@@ -533,7 +582,7 @@ describe('PrepView', () => {
         within(treasure)
           .getAllByRole('listitem')
           .map((item) => item.textContent),
-      ).toEqual(['Bag of Holding (DMG p. 224) remove']);
+      ).toEqual(['Bag of Holding (DMG p. 224) × remove']);
       expect(within(treasure).queryByText(/Cult Fanatic/)).not.toBeInTheDocument();
       expect(
         within(treasure).getByRole('heading', { name: 'Add an item or table' }),
@@ -541,6 +590,89 @@ describe('PrepView', () => {
       expect(
         optionsOf(within(treasure).getByRole('combobox', { name: 'Add treasure from your books' })),
       ).toEqual(['Choose…', 'Trinkets (PHB p. 413)']);
+    });
+
+    it('shows how many of each book treasure, and saves a new quantity', async () => {
+      const campaign = sampleCampaign();
+      const session = campaign.sessions[1];
+      session.links = session.links.map((link) =>
+        link.id === 'link6' ? { ...link, quantity: 2 } : link,
+      );
+      const { state } = renderPrep(campaign);
+      const quantity = within(step(8)).getByRole('spinbutton', {
+        name: 'Quantity of Bag of Holding',
+      });
+      expect(quantity).toHaveValue(2);
+
+      fireEvent.change(quantity, { target: { value: '3' } });
+      fireEvent.blur(quantity);
+
+      await waitFor(() =>
+        expect(state.api.updateSessionLink).toHaveBeenCalledWith('zombie-siege', 'sess2', 'link6', {
+          quantity: 3,
+        }),
+      );
+      expect(state.mutate).toHaveBeenCalled();
+      await waitFor(() => expect(screen.queryByText('Saving…')).not.toBeInTheDocument());
+    });
+
+    it('clears a quantity back to one', async () => {
+      const campaign = sampleCampaign();
+      const session = campaign.sessions[1];
+      session.links = session.links.map((link) =>
+        link.id === 'link6' ? { ...link, quantity: 2 } : link,
+      );
+      const { state } = renderPrep(campaign);
+      const quantity = screen.getByRole('spinbutton', { name: 'Quantity of Bag of Holding' });
+
+      fireEvent.change(quantity, { target: { value: '' } });
+      fireEvent.blur(quantity);
+
+      await waitFor(() =>
+        expect(state.api.updateSessionLink).toHaveBeenCalledWith('zombie-siege', 'sess2', 'link6', {
+          quantity: null,
+        }),
+      );
+      await waitFor(() => expect(screen.queryByText('Saving…')).not.toBeInTheDocument());
+    });
+
+    it('only asks how many for treasure from the books', () => {
+      renderPrep();
+
+      expect(
+        within(step(7)).queryByRole('spinbutton', { name: /^Quantity of/ }),
+      ).not.toBeInTheDocument();
+      expect(within(step(8)).getAllByRole('spinbutton', { name: /^Quantity of/ })).toHaveLength(1);
+    });
+
+    it('shows the treasure coins', () => {
+      const campaign = sampleCampaign();
+      campaign.sessions[1].treasureCurrency = { gp: 50, sp: 12 };
+      renderPrep(campaign);
+
+      const coins = within(step(8)).getByRole('group', { name: 'Coins' });
+      expect(within(coins).getByRole('spinbutton', { name: 'Gold pieces (gp)' })).toHaveValue(50);
+      expect(within(coins).getByRole('spinbutton', { name: 'Silver pieces (sp)' })).toHaveValue(12);
+      expect(within(coins).getByRole('spinbutton', { name: 'Platinum pieces (pp)' })).toHaveValue(
+        null,
+      );
+    });
+
+    it('saves the treasure coins', async () => {
+      const campaign = sampleCampaign();
+      campaign.sessions[1].treasureCurrency = { gp: 50 };
+      const { state } = renderPrep(campaign);
+      const platinum = screen.getByRole('spinbutton', { name: 'Platinum pieces (pp)' });
+
+      fireEvent.change(platinum, { target: { value: '3' } });
+      fireEvent.blur(platinum);
+
+      expect(state.saveChild).toHaveBeenCalledWith(
+        'sessions',
+        { treasure_currency: { pp: 3, gp: 50 } },
+        'sess2',
+      );
+      expect(await within(step(8)).findByText('Saved')).toBeInTheDocument();
     });
 
     it('says when no items are picked', () => {

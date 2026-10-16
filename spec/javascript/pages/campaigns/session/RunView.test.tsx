@@ -105,6 +105,7 @@ describe('RunView', () => {
             slug: null,
             detail: null,
             position: 0,
+            quantity: null,
           },
         ],
       };
@@ -201,12 +202,107 @@ describe('RunView', () => {
       );
     });
 
+    it("shows the session's maps and the picked places' maps", () => {
+      const campaign = sampleCampaign();
+      campaign.sessions[1].foundryScenes = [
+        { uuid: 'Scene.5wVcsNPOg2RjRbFx', name: 'Mountain Pass' },
+        { uuid: 'Scene.aaaaaaaaaaaaaaaa', name: 'Cragmaw Cave' },
+      ];
+      const hommlet = campaign.locations.findIndex((location) => location.name === 'Hommlet');
+      campaign.locations[hommlet] = {
+        ...campaign.locations[hommlet],
+        foundrySceneUuid: 'Scene.bbbbbbbbbbbbbbbb',
+        foundrySceneName: 'Hommlet Village',
+      };
+      campaign.sceneThumbnails = {
+        'Scene.5wVcsNPOg2RjRbFx': 'https://example.com/pass.webp',
+        'Scene.bbbbbbbbbbbbbbbb': 'https://example.com/hommlet.webp',
+      };
+      renderRun(campaign);
+
+      const maps = screen.getByRole('list', { name: 'Maps' });
+      expect(
+        within(maps)
+          .getAllByRole('listitem')
+          .map((item) => item.textContent),
+      ).toEqual(['Mountain Pass', 'Cragmaw Cave']);
+      expect(within(maps).getByRole('img', { name: 'Map: Mountain Pass' })).toBeInTheDocument();
+      const place = screen.getByRole('heading', { name: 'Hommlet' }).parentElement as HTMLElement;
+      expect(within(place).getByRole('img', { name: 'Map: Hommlet Village' })).toHaveAttribute(
+        'src',
+        'https://example.com/hommlet.webp',
+      );
+    });
+
+    it('leaves out the maps card when the session has no maps', () => {
+      renderRun();
+
+      expect(screen.queryByRole('heading', { name: 'Maps' })).not.toBeInTheDocument();
+    });
+
     it('leaves out empty book and monster cards', () => {
       const campaign = sampleCampaign();
       renderRun(campaign, { ...campaign.sessions[1], links: [] });
 
       expect(screen.queryByRole('heading', { name: 'From your books' })).not.toBeInTheDocument();
       expect(screen.queryByRole('heading', { name: 'Monsters' })).not.toBeInTheDocument();
+    });
+
+    it('shows how many of a book treasure there are', () => {
+      const campaign = sampleCampaign();
+      const session = {
+        ...campaign.sessions[1],
+        links: campaign.sessions[1].links.map((link) =>
+          link.id === 'link6'
+            ? { ...link, quantity: 3 }
+            : link.id === 'link5'
+              ? { ...link, quantity: 1 }
+              : link,
+        ),
+      };
+      renderRun(campaign, session);
+
+      const books = screen.getByRole('heading', { name: 'From your books' })
+        .parentElement as HTMLElement;
+      expect(
+        within(books)
+          .getAllByRole('listitem')
+          .map((item) => item.textContent),
+      ).toEqual(['Cult Fanatic (MM p. 34)', 'Bag of Holding ×3 (DMG p. 224)']);
+    });
+
+    it('shows the treasure coins and notes', () => {
+      const campaign = sampleCampaign();
+      renderRun(campaign, {
+        ...campaign.sessions[1],
+        treasure: 'A silver chalice',
+        treasureCurrency: { pp: 2, gp: 1500, cp: 0 },
+      });
+
+      const treasure = screen.getByRole('heading', { name: 'Treasure' })
+        .parentElement as HTMLElement;
+      expect(within(treasure).getByText('2 pp, 1,500 gp')).toBeInTheDocument();
+      expect(within(treasure).getByText('A silver chalice')).toBeInTheDocument();
+    });
+
+    it('shows the coins without notes', () => {
+      const campaign = sampleCampaign();
+      renderRun(campaign, {
+        ...campaign.sessions[1],
+        treasure: null,
+        treasureCurrency: { sp: 30 },
+      });
+
+      const treasure = screen.getByRole('heading', { name: 'Treasure' })
+        .parentElement as HTMLElement;
+      expect(within(treasure).getByText('30 sp')).toBeInTheDocument();
+    });
+
+    it('leaves out the treasure card with no treasure', () => {
+      const campaign = sampleCampaign();
+      renderRun(campaign, { ...campaign.sessions[1], treasure: null, treasureCurrency: { gp: 0 } });
+
+      expect(screen.queryByRole('heading', { name: 'Treasure' })).not.toBeInTheDocument();
     });
   });
 

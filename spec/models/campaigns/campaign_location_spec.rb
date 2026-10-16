@@ -47,6 +47,46 @@ RSpec.describe CampaignLocation, type: :model do
     end
   end
 
+  describe 'Foundry scene' do
+    subject(:location) { build(:campaign_location, campaign: campaign) }
+
+    it 'has no scene by default' do
+      expect(location).to have_attributes(foundry_scene_uuid: nil, foundry_scene_name: nil)
+    end
+
+    it 'links a Foundry scene by its UUID and name' do
+      location.assign_attributes(foundry_scene_uuid: 'Scene.5wVcsNPOg2RjRbFx', foundry_scene_name: 'Mountain Pass')
+
+      expect(location).to be_valid
+    end
+
+    it 'rejects a UUID that is not a Foundry scene' do
+      ['Scene.short', 'Scene.5wVcsNPOg2RjRbFx0', 'scene.5wVcsNPOg2RjRbFx', 'Actor.5wVcsNPOg2RjRbFx',
+       'Compendium.world.scenes.Scene.5wVcsNPOg2RjRbFx', 'Scene.5wVcsNPOg2RjRb-x', "Scene.5wVcsNPOg2RjRbFx\nScene.x",
+       'Mountain Pass'].each do |uuid|
+        location.foundry_scene_uuid = uuid
+
+        expect(location).not_to be_valid, "expected #{uuid.inspect} to be rejected"
+        expect(location.errors[:foundry_scene_uuid]).to include('is invalid')
+      end
+    end
+
+    it { is_expected.to validate_length_of(:foundry_scene_name).is_at_most(120) }
+
+    it 'stores a blank scene as none' do
+      location.assign_attributes(foundry_scene_uuid: '', foundry_scene_name: '  ')
+
+      expect(location).to be_valid
+      expect(location).to have_attributes(foundry_scene_uuid: nil, foundry_scene_name: nil)
+    end
+
+    it 'trims the scene name' do
+      location.foundry_scene_name = ' Mountain Pass '
+
+      expect(location.foundry_scene_name).to eq('Mountain Pass')
+    end
+  end
+
   describe 'nesting' do
     let(:city) { create(:campaign_location, campaign: campaign, name: 'Waterdeep') }
     let(:ward) { create(:campaign_location, campaign: campaign, name: 'Dock Ward', parent: city) }
@@ -117,8 +157,16 @@ RSpec.describe CampaignLocation, type: :model do
 
       expect(location.as_json_for_api).to eq(
         id: location.id.to_s, uuid: location.uuid, name: 'Phandalin', description: 'A frontier town',
-        features: ['Stonehill Inn', 'Tresendar Manor'], notes: 'Redbrands', parentId: nil, foundryMapId: nil
+        features: ['Stonehill Inn', 'Tresendar Manor'], notes: 'Redbrands', parentId: nil, foundryMapId: nil,
+        foundrySceneUuid: nil, foundrySceneName: nil
       )
+    end
+
+    it 'includes the linked Foundry scene' do
+      location = create(:campaign_location, campaign: campaign, foundry_scene_uuid: 'Scene.5wVcsNPOg2RjRbFx',
+                                            foundry_scene_name: 'Mountain Pass')
+
+      expect(location.as_json_for_api).to include(foundrySceneUuid: 'Scene.5wVcsNPOg2RjRbFx', foundrySceneName: 'Mountain Pass')
     end
   end
 end

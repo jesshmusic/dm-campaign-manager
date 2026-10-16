@@ -14,7 +14,7 @@ RSpec.describe 'Admin::V1::Campaigns::NpcsController', type: :request do
     let(:created_json) do
       { 'name' => 'Glasstaff', 'role' => 'lieutenant', 'motive' => 'Power', 'secret' => 'He is Iarno',
         'appearance' => 'Robed', 'voice' => 'Nasal', 'monster' => nil, 'factionId' => nil,
-        'statBlockReference' => nil }
+        'statBlockReference' => nil, 'foundryActorUuid' => nil, 'foundryActorName' => nil }
     end
     let(:invalid_attributes) { { role: 'sidekick' } }
     let(:invalid_message) { 'Role is not included in the list' }
@@ -96,6 +96,27 @@ RSpec.describe 'Admin::V1::Campaigns::NpcsController', type: :request do
 
       expect(response).to have_http_status(:unprocessable_entity)
       expect(json['errors']).to include('Faction must belong to the same campaign')
+    end
+
+    it "can't link a Foundry actor, which is picked in Foundry" do
+      npc = create(:campaign_npc, campaign: campaign, name: 'Ash')
+
+      patch "#{npcs_path}/#{npc.id}",
+            params: { npc: { name: 'Brother Ash', foundry_actor_uuid: 'Actor.Kz8rTq2LmN4pQw7X', foundry_actor_name: 'Cult Fanatic' } },
+            as: :json
+
+      expect(response).to have_http_status(:success)
+      expect(npc.reload).to have_attributes(name: 'Brother Ash', foundry_actor_uuid: nil, foundry_actor_name: nil)
+    end
+
+    it 'shows the Foundry actor linked in Foundry' do
+      npc = create(:campaign_npc, campaign: campaign, foundry_actor_uuid: 'Compendium.dnd-monster-manual.actors.Actor.mmCultFanatic000',
+                                  foundry_actor_name: 'Cult Fanatic')
+
+      get "#{npcs_path}/#{npc.id}"
+
+      expect(json).to include('foundryActorUuid' => 'Compendium.dnd-monster-manual.actors.Actor.mmCultFanatic000',
+                              'foundryActorName' => 'Cult Fanatic')
     end
 
     it 'clears the monster link' do

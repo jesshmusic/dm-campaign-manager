@@ -106,6 +106,38 @@ describe('CastTab', () => {
     expect(within(cardFor('Elmo')).getByText('Stat block: Veteran, MM p. 323')).toBeInTheDocument();
   });
 
+  it('shows the Foundry actor linked in Foundry', () => {
+    const campaign = sampleCampaign();
+    campaign.npcs = campaign.npcs.map((member) =>
+      member.id === 'n1'
+        ? {
+            ...member,
+            foundryActorUuid: 'Compendium.dnd-monster-manual.actors.Actor.mmCultFanatic000',
+            foundryActorName: 'Cult Fanatic',
+          }
+        : member.id === 'n3'
+          ? { ...member, foundryActorUuid: 'Actor.Kz8rTq2LmN4pQw7X' }
+          : member,
+    );
+    renderTab(campaign);
+
+    expect(within(cardFor('Lareth')).getByText('Foundry actor: Cult Fanatic')).toBeInTheDocument();
+    expect(
+      within(cardFor('Elmo')).getByText('Foundry actor: Actor.Kz8rTq2LmN4pQw7X'),
+    ).toBeInTheDocument();
+    expect(within(cardFor('Mordred')).queryByText(/Foundry actor/)).not.toBeInTheDocument();
+  });
+
+  it('says actors are linked in Foundry', () => {
+    renderTab();
+
+    expect(
+      within(cast()).getByText(
+        /Link an NPC to a Foundry actor in Foundry, with Dorman Lakely's Campaign Planner/,
+      ),
+    ).toBeInTheDocument();
+  });
+
   it('only offers to generate a stat block for NPCs without one', () => {
     renderTab();
 

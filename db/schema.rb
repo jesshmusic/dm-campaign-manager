@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_10_16_150000) do
+ActiveRecord::Schema[7.1].define(version: 2026_10_16_170000) do
   create_schema "heroku_ext"
 
   # These are extensions that must be enabled in order to support this database
@@ -161,6 +161,8 @@ ActiveRecord::Schema[7.1].define(version: 2026_10_16_150000) do
     t.bigint "sync_version", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "foundry_scene_uuid"
+    t.string "foundry_scene_name"
     t.index ["campaign_id", "sync_version"], name: "index_campaign_locations_on_campaign_id_and_sync_version"
     t.index ["campaign_id"], name: "index_campaign_locations_on_campaign_id"
     t.index ["foundry_map_id"], name: "index_campaign_locations_on_foundry_map_id"
@@ -185,6 +187,8 @@ ActiveRecord::Schema[7.1].define(version: 2026_10_16_150000) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "stat_block_reference_id"
+    t.string "foundry_actor_uuid"
+    t.string "foundry_actor_name"
     t.index ["campaign_id", "sync_version"], name: "index_campaign_npcs_on_campaign_id_and_sync_version"
     t.index ["campaign_id"], name: "index_campaign_npcs_on_campaign_id"
     t.index ["faction_id"], name: "index_campaign_npcs_on_faction_id"
@@ -273,6 +277,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_10_16_150000) do
     t.bigint "sync_version", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "quantity"
     t.index ["linkable_type", "linkable_id"], name: "index_campaign_session_links_on_linkable"
     t.index ["session_id", "linkable_type", "linkable_id"], name: "index_campaign_session_links_uniqueness", unique: true
     t.index ["session_id"], name: "index_campaign_session_links_on_session_id"
@@ -296,6 +301,8 @@ ActiveRecord::Schema[7.1].define(version: 2026_10_16_150000) do
     t.bigint "sync_version", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.jsonb "foundry_scenes", default: [], null: false
+    t.jsonb "treasure_currency", default: {}, null: false
     t.index ["campaign_id", "number"], name: "index_campaign_sessions_on_campaign_id_and_number", unique: true
     t.index ["campaign_id", "sync_version"], name: "index_campaign_sessions_on_campaign_id_and_sync_version"
     t.index ["campaign_id"], name: "index_campaign_sessions_on_campaign_id"
@@ -571,6 +578,21 @@ ActiveRecord::Schema[7.1].define(version: 2026_10_16_150000) do
     t.index ["access_level"], name: "index_foundry_maps_on_access_level"
     t.index ["created_at"], name: "index_foundry_maps_on_created_at"
     t.index ["published"], name: "index_foundry_maps_on_published"
+  end
+
+  create_table "foundry_scenes", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "world_id", null: false
+    t.string "world_title"
+    t.string "foundry_uuid", null: false
+    t.string "name", null: false
+    t.string "version", null: false
+    t.string "thumbnail_s3_key", null: false
+    t.string "thumbnail_url", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id", "foundry_uuid"], name: "index_foundry_scenes_on_user_id_and_foundry_uuid"
+    t.index ["user_id", "world_id", "foundry_uuid"], name: "index_foundry_scenes_on_user_id_and_world_id_and_foundry_uuid", unique: true
   end
 
   create_table "friendly_id_slugs", force: :cascade do |t|
@@ -1108,6 +1130,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_10_16_150000) do
   add_foreign_key "foundry_map_files", "foundry_maps"
   add_foreign_key "foundry_map_taggings", "foundry_map_tags"
   add_foreign_key "foundry_map_taggings", "foundry_maps"
+  add_foreign_key "foundry_scenes", "users"
   add_foreign_key "item_ranges", "items"
   add_foreign_key "item_throw_ranges", "items"
   add_foreign_key "items", "users"

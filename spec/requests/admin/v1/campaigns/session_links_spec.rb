@@ -112,6 +112,21 @@ RSpec.describe 'Admin::V1::Campaigns::SessionLinksController', type: :request do
         expect(json['errors']).to include('Linkable must exist')
       end
 
+      it 'links treasure with a quantity' do
+        potion = create(:campaign_reference, campaign: campaign, name: 'Potion of Healing', category: 'magic_item')
+
+        post links_path, params: { link: { linkable_type: 'CampaignReference', linkable_id: potion.id, quantity: 3 } }, as: :json
+
+        expect(response).to have_http_status(:created)
+        expect(json).to include('name' => 'Potion of Healing', 'quantity' => 3)
+      end
+
+      it 'has no quantity unless given one' do
+        link('CampaignNpc', npc.id)
+
+        expect(json['quantity']).to be_nil
+      end
+
       it 'returns 404 for a session from another campaign' do
         foreign_session = create(:campaign_session, campaign: create(:campaign, user: user))
 
@@ -120,6 +135,62 @@ RSpec.describe 'Admin::V1::Campaigns::SessionLinksController', type: :request do
 
         expect(response).to have_http_status(:not_found)
         expect(CampaignSessionLink.count).to eq(0)
+      end
+    end
+
+    describe 'PATCH /v1/campaigns/:campaign_id/sessions/:session_id/links/:id' do
+      let(:potion) { create(:campaign_reference, campaign: campaign, name: 'Potion of Healing', category: 'magic_item') }
+      let!(:session_link) { create(:campaign_session_link, session: session, linkable: potion) }
+      let(:link_path) { "#{links_path}/#{session_link.id}" }
+
+      it 'changes the quantity and bumps the session for sync' do
+        version = session.reload.sync_version
+
+        patch link_path, params: { link: { quantity: 4 } }, as: :json
+
+        expect(response).to have_http_status(:success)
+        expect(json).to include('id' => session_link.id.to_s, 'name' => 'Potion of Healing', 'quantity' => 4)
+        expect(session_link.reload.quantity).to eq(4)
+        expect(session.reload.sync_version).to be > version
+      end
+
+      it 'clears the quantity' do
+        session_link.update!(quantity: 2)
+
+        patch link_path, params: { link: { quantity: nil } }, as: :json
+
+        expect(response).to have_http_status(:success)
+        expect(session_link.reload.quantity).to be_nil
+      end
+
+      it 'rejects a quantity out of range' do
+        [0, 10_000].each do |quantity|
+          patch link_path, params: { link: { quantity: quantity } }, as: :json
+
+          expect(response).to have_http_status(:unprocessable_entity)
+          expect(json['errors']).to include(/Quantity must be/)
+        end
+        expect(session_link.reload.quantity).to be_nil
+      end
+
+      it 'only changes the quantity' do
+        other = create(:campaign_npc, campaign: campaign)
+
+        patch link_path, params: { link: { quantity: 2, linkable_type: 'CampaignNpc', linkable_id: other.id, position: 9 } },
+                         as: :json
+
+        expect(response).to have_http_status(:success)
+        expect(session_link.reload).to have_attributes(quantity: 2, linkable: potion, position: 0)
+      end
+
+      it 'returns 404 for a link on another session' do
+        other_session = create(:campaign_session, campaign: campaign)
+
+        patch "/v1/campaigns/#{campaign.slug}/sessions/#{other_session.id}/links/#{session_link.id}",
+              params: { link: { quantity: 2 } }, as: :json
+
+        expect(response).to have_http_status(:not_found)
+        expect(session_link.reload.quantity).to be_nil
       end
     end
 
@@ -156,10 +227,14 @@ RSpec.describe 'Admin::V1::Campaigns::SessionLinksController', type: :request do
       link('CampaignNpc', create(:campaign_npc, campaign: campaign).id)
       expect(response).to have_http_status(:not_found)
 
+      patch "#{links_path}/#{session_link.id}", params: { link: { quantity: 2 } }, as: :json
+      expect(response).to have_http_status(:not_found)
+
       delete "#{links_path}/#{session_link.id}"
       expect(response).to have_http_status(:not_found)
 
       expect(CampaignSessionLink.pluck(:id)).to eq([session_link.id])
+      expect(session_link.reload.quantity).to be_nil
     end
   end
 
@@ -172,10 +247,14 @@ RSpec.describe 'Admin::V1::Campaigns::SessionLinksController', type: :request do
       link('CampaignNpc', create(:campaign_npc, campaign: campaign).id)
       expect(response).to have_http_status(:unauthorized)
 
+      patch "#{links_path}/#{session_link.id}", params: { link: { quantity: 2 } }, as: :json
+      expect(response).to have_http_status(:unauthorized)
+
       delete "#{links_path}/#{session_link.id}"
       expect(response).to have_http_status(:unauthorized)
 
       expect(CampaignSessionLink.pluck(:id)).to eq([session_link.id])
+      expect(session_link.reload.quantity).to be_nil
     end
   end
 end

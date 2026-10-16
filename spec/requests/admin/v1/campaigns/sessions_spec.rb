@@ -15,7 +15,7 @@ RSpec.describe 'Admin::V1::Campaigns::SessionsController', type: :request do
       { 'number' => 1, 'title' => 'Goblin Arrows', 'displayTitle' => 'Goblin Arrows', 'scheduledOn' => '2026-10-20',
         'status' => 'planned', 'level' => 1, 'characterNotes' => 'Rogue owes money',
         'strongStart' => 'Ambush on the road', 'scenes' => ['Ambush', 'Goblin trail'], 'treasure' => '10 gp',
-        'links' => [] }
+        'treasureCurrency' => {}, 'foundryScenes' => [], 'links' => [] }
     end
     let(:invalid_attributes) { { status: 'cancelled' } }
     let(:invalid_message) { 'Status is not included in the list' }
@@ -60,6 +60,74 @@ RSpec.describe 'Admin::V1::Campaigns::SessionsController', type: :request do
       get "#{sessions_path}/#{session.id}"
 
       expect(json['links'].sole).to include('linkableType' => 'CampaignNpc', 'name' => 'Sildar', 'position' => 0)
+    end
+
+    describe 'treasure coins' do
+      let(:session) { create(:campaign_session, campaign: campaign, treasure_currency: { gp: 10 }) }
+      let(:session_path) { "#{sessions_path}/#{session.id}" }
+
+      it 'saves the coins' do
+        patch session_path, params: { session: { treasure_currency: { pp: 1, gp: 50, sp: 12 } } }, as: :json
+
+        expect(response).to have_http_status(:success)
+        expect(json['treasureCurrency']).to eq('pp' => 1, 'gp' => 50, 'sp' => 12)
+        expect(session.reload.treasure_currency).to eq('pp' => 1, 'gp' => 50, 'sp' => 12)
+      end
+
+      it 'creates a session with coins' do
+        post sessions_path, params: { session: { title: 'Hoard', treasure_currency: { gp: 100 } } }, as: :json
+
+        expect(response).to have_http_status(:created)
+        expect(json['treasureCurrency']).to eq('gp' => 100)
+      end
+
+      it 'clears the coins' do
+        patch session_path, params: { session: { treasure_currency: {} } }, as: :json
+
+        expect(response).to have_http_status(:success)
+        expect(session.reload.treasure_currency).to eq({})
+      end
+
+      it 'leaves out coins that are not pp, gp, ep, sp or cp' do
+        patch session_path, params: { session: { treasure_currency: { gp: 5, zz: 99 } } }, as: :json
+
+        expect(response).to have_http_status(:success)
+        expect(session.reload.treasure_currency).to eq('gp' => 5)
+      end
+
+      it 'rejects counts that are not whole numbers in range' do
+        patch session_path, params: { session: { treasure_currency: { gp: -5 } } }, as: :json
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(json['errors']).to include('Treasure currency must be whole numbers of pp, gp, ep, sp and cp, up to 1,000,000 each')
+        expect(session.reload.treasure_currency).to eq('gp' => 10)
+      end
+
+      it 'keeps the coins when other fields change' do
+        patch session_path, params: { session: { treasure: 'A silver chalice' } }, as: :json
+
+        expect(session.reload).to have_attributes(treasure: 'A silver chalice', treasure_currency: { 'gp' => 10 })
+      end
+    end
+
+    it "can't change the session's Foundry scenes, which are picked in Foundry" do
+      session = create(:campaign_session, campaign: campaign)
+
+      patch "#{sessions_path}/#{session.id}",
+            params: { session: { title: 'Pass', foundry_scenes: [{ uuid: 'Scene.5wVcsNPOg2RjRbFx', name: 'Mountain Pass' }] } },
+            as: :json
+
+      expect(response).to have_http_status(:success)
+      expect(session.reload).to have_attributes(title: 'Pass', foundry_scenes: [])
+    end
+
+    it 'shows the Foundry scenes picked in Foundry' do
+      session = create(:campaign_session, campaign: campaign,
+                                          foundry_scenes: [{ uuid: 'Scene.5wVcsNPOg2RjRbFx', name: 'Mountain Pass' }])
+
+      get "#{sessions_path}/#{session.id}"
+
+      expect(json['foundryScenes']).to eq([{ 'uuid' => 'Scene.5wVcsNPOg2RjRbFx', 'name' => 'Mountain Pass' }])
     end
 
     it 'deletes its links with it' do

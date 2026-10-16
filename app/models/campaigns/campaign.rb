@@ -167,8 +167,15 @@ class Campaign < ApplicationRecord
       sessions: sessions.includes(links: :linkable).order(:number).map(&:as_json_for_api),
       references: book_references.order(:book, :name).map(&:as_json_for_api),
       party: party.order(:name).map(&:as_json_for_api),
-      revelations: revelation_summaries
+      revelations: revelation_summaries,
+      sceneThumbnails: FoundryScene.thumbnail_urls(user, foundry_scene_uuids)
     )
+  end
+
+  # The Foundry scenes it uses as maps: each place's map and each session's maps
+  def foundry_scene_uuids
+    session_scenes = sessions.pluck(:foundry_scenes).flatten.filter_map { |scene| scene['uuid'] if scene.is_a?(Hash) }
+    (locations.where.not(foundry_scene_uuid: nil).pluck(:foundry_scene_uuid) + session_scenes).uniq
   end
 
   private

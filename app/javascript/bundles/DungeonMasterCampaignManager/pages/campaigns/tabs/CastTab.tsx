@@ -138,6 +138,12 @@ const CastTab = ({ campaign, state }: CastTabProps) => {
           stat_block_reference_id: npc.statBlockReference?.id,
         })}
         emptyText="No NPCs yet. Start with your BBEG and the people the party will meet first."
+        intro={
+          <Meta>
+            Link an NPC to a Foundry actor in Foundry, with Dorman Lakely&apos;s Campaign Planner.
+            It shows here once it syncs.
+          </Meta>
+        }
         onSave={(attributes, id) => saveChild('npcs', attributes, id)}
         onDelete={(id) => removeChild('npcs', id)}
         renderItem={(npc) => (
@@ -174,6 +180,9 @@ const CastTab = ({ campaign, state }: CastTabProps) => {
                   {npc.monster.name} (CR {npc.monster.challengeRating})
                 </Link>
               </Meta>
+            )}
+            {npc.foundryActorUuid && (
+              <Meta>Foundry actor: {npc.foundryActorName ?? npc.foundryActorUuid}</Meta>
             )}
           </>
         )}

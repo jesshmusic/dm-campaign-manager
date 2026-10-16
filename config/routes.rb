@@ -111,7 +111,7 @@ Rails.application.routes.draw do
           resources :factions, :locations, :npcs, :fronts, :quests, :secrets, :references,
                     only: %i[index show create update destroy]
           resources :sessions, only: %i[index show create update destroy] do
-            resources :links, controller: 'session_links', only: %i[create destroy]
+            resources :links, controller: 'session_links', only: %i[create update destroy]
             post 'assistant/prep', to: 'assistant#prep'
             post 'assistant/recap', to: 'assistant#recap'
           end
@@ -128,6 +128,8 @@ Rails.application.routes.draw do
         get 'campaigns/:uuid/changes', to: 'campaigns#changes', constraints: { format: 'json' }
         post 'campaigns/:uuid/changes', to: 'campaigns#push', constraints: { format: 'json' }
         post 'characters', to: 'characters#create', constraints: { format: 'json' }
+        get 'scenes', to: 'scenes#index', constraints: { format: 'json' }
+        post 'scenes', to: 'scenes#create', constraints: { format: 'json' }
         get 'compendium', to: 'compendium#show', constraints: { format: 'json' }
         post 'compendium', to: 'compendium#create', constraints: { format: 'json' }
       end

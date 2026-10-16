@@ -68,6 +68,40 @@ RSpec.describe CampaignSync do
       expect(after_remove[:records]['sessions'].first[:links]).to eq([])
     end
 
+    it 'includes what was picked in Foundry, and the treasure' do
+      location = create(:campaign_location, campaign: campaign, foundry_scene_uuid: 'Scene.5wVcsNPOg2RjRbFx',
+                                            foundry_scene_name: 'Mountain Pass')
+      npc = create(:campaign_npc, campaign: campaign, foundry_actor_uuid: 'Actor.Kz8rTq2LmN4pQw7X', foundry_actor_name: 'Cult Fanatic')
+      session = create(:campaign_session, campaign: campaign, treasure_currency: { gp: 50 },
+                                          foundry_scenes: [{ uuid: 'Scene.5wVcsNPOg2RjRbFx', name: 'Mountain Pass' }])
+      potion = create(:campaign_reference, campaign: campaign, name: 'Potion of Healing', category: 'magic_item')
+      session.links.create!(linkable: potion, quantity: 2)
+
+      records = sync.changes_since(0)[:records]
+
+      expect(records['locations'].sole).to include(uuid: location.uuid, foundrySceneUuid: 'Scene.5wVcsNPOg2RjRbFx',
+                                                   foundrySceneName: 'Mountain Pass')
+      expect(records['npcs'].sole).to include(uuid: npc.uuid, foundryActorUuid: 'Actor.Kz8rTq2LmN4pQw7X',
+                                              foundryActorName: 'Cult Fanatic')
+      expect(records['sessions'].sole).to include(
+        uuid: session.uuid, treasureCurrency: { 'gp' => 50 },
+        foundryScenes: [{ 'uuid' => 'Scene.5wVcsNPOg2RjRbFx', 'name' => 'Mountain Pass' }],
+        links: [include(name: 'Potion of Healing', quantity: 2)]
+      )
+    end
+
+    it 'includes a session again when a treasure quantity changes' do
+      session = create(:campaign_session, campaign: campaign)
+      link = session.links.create!(linkable: create(:campaign_reference, campaign: campaign, category: 'magic_item'))
+      cursor = sync.changes_since(0)[:cursor]
+
+      link.update!(quantity: 5)
+
+      expect(sync.changes_since(cursor)[:records]['sessions']).to contain_exactly(
+        include(uuid: session.uuid, links: [include(quantity: 5)])
+      )
+    end
+
     it "never includes another campaign's records" do
       create(:campaign_npc, campaign: create(:campaign))
 
@@ -138,11 +172,157 @@ RSpec.describe CampaignSync do
     end
 
     it 'rejects record types Foundry may not change' do
-      npc = create(:campaign_npc, campaign: campaign)
+      faction = create(:campaign_faction, campaign: campaign)
 
-      result = sync.apply([{ type: 'npc', uuid: npc.uuid, baseVersion: npc.sync_version, attributes: { name: 'X' } }])
+      result = sync.apply([{ type: 'faction', uuid: faction.uuid, baseVersion: faction.sync_version,
+                             attributes: { name: 'X' } }])
 
       expect(result[:errors]).to contain_exactly(include(errors: [/Can't change/]))
+      expect(faction.reload.name).not_to eq('X')
+    end
+
+    describe "a place's Foundry scene" do
+      let(:location) { create(:campaign_location, campaign: campaign, name: 'Mountain Pass') }
+
+      def push(attributes, base: location.sync_version)
+        sync.apply([{ type: 'location', uuid: location.uuid, baseVersion: base, attributes: attributes }])
+      end
+
+      it 'links the scene picked in Foundry' do
+        result = push({ foundrySceneUuid: 'Scene.5wVcsNPOg2RjRbFx', foundrySceneName: 'The Pass' })
+
+        expect(result[:applied]).to contain_exactly(
+          include(type: 'location', uuid: location.uuid,
+                  current: include(foundrySceneUuid: 'Scene.5wVcsNPOg2RjRbFx', foundrySceneName: 'The Pass'))
+        )
+        expect(location.reload).to have_attributes(foundry_scene_uuid: 'Scene.5wVcsNPOg2RjRbFx', foundry_scene_name: 'The Pass')
+      end
+
+      it 'unlinks the scene' do
+        location.update!(foundry_scene_uuid: 'Scene.5wVcsNPOg2RjRbFx', foundry_scene_name: 'The Pass')
+
+        result = push({ foundrySceneUuid: nil, foundrySceneName: nil })
+
+        expect(result[:applied].size).to eq(1)
+        expect(location.reload).to have_attributes(foundry_scene_uuid: nil, foundry_scene_name: nil)
+      end
+
+      it 'returns a conflict when the place changed since the base version' do
+        base = location.sync_version
+        location.update!(foundry_scene_uuid: 'Scene.aaaaaaaaaaaaaaaa', foundry_scene_name: 'Old')
+
+        result = push({ foundrySceneUuid: 'Scene.5wVcsNPOg2RjRbFx', foundrySceneName: 'New' }, base: base)
+
+        expect(result[:conflicts]).to contain_exactly(
+          include(type: 'location', uuid: location.uuid, current: include(foundrySceneUuid: 'Scene.aaaaaaaaaaaaaaaa'))
+        )
+        expect(location.reload.foundry_scene_name).to eq('Old')
+      end
+
+      it 'reports a UUID that is not a scene' do
+        result = push({ foundrySceneUuid: 'Actor.5wVcsNPOg2RjRbFx', foundrySceneName: 'The Pass' })
+
+        expect(result[:errors]).to contain_exactly(include(uuid: location.uuid, errors: ['Foundry scene uuid is invalid']))
+        expect(location.reload.foundry_scene_uuid).to be_nil
+      end
+
+      it 'ignores the fields Foundry may not change' do
+        push({ foundrySceneUuid: 'Scene.5wVcsNPOg2RjRbFx', name: 'Renamed', description: 'Changed' })
+
+        expect(location.reload).to have_attributes(foundry_scene_uuid: 'Scene.5wVcsNPOg2RjRbFx', name: 'Mountain Pass',
+                                                   description: nil)
+      end
+    end
+
+    describe "an NPC's Foundry actor" do
+      let(:npc) { create(:campaign_npc, campaign: campaign, name: 'Brother Ash') }
+      let(:actor_uuid) { 'Compendium.dnd-monster-manual.actors.Actor.mmCultFanatic000' }
+
+      def push(attributes, base: npc.sync_version)
+        sync.apply([{ type: 'npc', uuid: npc.uuid, baseVersion: base, attributes: attributes }])
+      end
+
+      it 'links the actor picked in Foundry' do
+        result = push({ foundryActorUuid: actor_uuid, foundryActorName: 'Cult Fanatic' })
+
+        expect(result[:applied]).to contain_exactly(
+          include(type: 'npc', uuid: npc.uuid, current: include(foundryActorUuid: actor_uuid, foundryActorName: 'Cult Fanatic'))
+        )
+        expect(npc.reload).to have_attributes(foundry_actor_uuid: actor_uuid, foundry_actor_name: 'Cult Fanatic')
+      end
+
+      it 'returns a conflict when the NPC changed since the base version' do
+        base = npc.sync_version
+        npc.update!(motive: 'Revenge')
+
+        result = push({ foundryActorUuid: actor_uuid }, base: base)
+
+        expect(result[:conflicts]).to contain_exactly(include(type: 'npc', uuid: npc.uuid, current: include(motive: 'Revenge')))
+        expect(npc.reload.foundry_actor_uuid).to be_nil
+      end
+
+      it 'reports a UUID that is not an actor' do
+        result = push({ foundryActorUuid: 'Compendium.dnd5e.items.Item.Kz8rTq2LmN4pQw7X', foundryActorName: 'Cult Fanatic' })
+
+        expect(result[:errors]).to contain_exactly(include(uuid: npc.uuid, errors: ['Foundry actor uuid is invalid']))
+        expect(npc.reload.foundry_actor_uuid).to be_nil
+      end
+
+      it 'ignores the fields Foundry may not change' do
+        push({ foundryActorUuid: actor_uuid, name: 'Renamed', role: 'bbeg', secret: 'Changed' })
+
+        expect(npc.reload).to have_attributes(foundry_actor_uuid: actor_uuid, name: 'Brother Ash', role: 'neutral', secret: nil)
+      end
+    end
+
+    describe "a session's Foundry scenes and treasure coins" do
+      let(:session) { create(:campaign_session, campaign: campaign, treasure_currency: { gp: 5 }) }
+      let(:scenes) { [{ uuid: 'Scene.5wVcsNPOg2RjRbFx', name: 'Mountain Pass' }, { uuid: 'Scene.aaaaaaaaaaaaaaaa', name: 'Cave' }] }
+
+      def push(attributes, base: session.sync_version)
+        sync.apply([{ type: 'session', uuid: session.uuid, baseVersion: base, attributes: attributes }])
+      end
+
+      it 'saves the scenes and coins picked in Foundry' do
+        result = push({ foundryScenes: scenes, treasureCurrency: { gp: 50, sp: 12 } })
+
+        expect(result[:applied]).to contain_exactly(
+          include(type: 'session', uuid: session.uuid,
+                  current: include(treasureCurrency: { 'gp' => 50, 'sp' => 12 }, foundryScenes: scenes.map(&:stringify_keys)))
+        )
+        expect(session.reload).to have_attributes(treasure_currency: { 'gp' => 50, 'sp' => 12 },
+                                                  foundry_scenes: scenes.map(&:stringify_keys))
+      end
+
+      it 'returns a conflict when the session changed since the base version' do
+        base = session.sync_version
+        session.update!(treasure_currency: { gp: 7 })
+
+        result = push({ treasureCurrency: { gp: 50 } }, base: base)
+
+        expect(result[:conflicts]).to contain_exactly(include(uuid: session.uuid, current: include(treasureCurrency: { 'gp' => 7 })))
+        expect(session.reload.treasure_currency).to eq('gp' => 7)
+      end
+
+      it 'reports scenes that are not Foundry scenes' do
+        result = push({ foundryScenes: [{ uuid: 'Actor.5wVcsNPOg2RjRbFx', name: 'Not a scene' }] })
+
+        expect(result[:errors]).to contain_exactly(include(uuid: session.uuid, errors: [/Foundry scenes must be/]))
+        expect(session.reload.foundry_scenes).to eq([])
+      end
+
+      it 'reports coins that are not whole numbers of pp, gp, ep, sp and cp' do
+        result = push({ treasureCurrency: { gp: -1, zz: 3 } })
+
+        expect(result[:errors]).to contain_exactly(include(uuid: session.uuid, errors: [/Treasure currency must be/]))
+        expect(session.reload.treasure_currency).to eq('gp' => 5)
+      end
+
+      it 'keeps the existing fields Foundry may change' do
+        push({ log: 'The party took the pass.', foundryScenes: scenes })
+
+        expect(session.reload).to have_attributes(log: 'The party took the pass.', treasure_currency: { 'gp' => 5 })
+      end
     end
 
     it "can't change another campaign's records" do

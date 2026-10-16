@@ -72,7 +72,67 @@ RSpec.describe CampaignNpc, type: :model do
     end
   end
 
+  describe 'Foundry actor' do
+    subject(:npc) { build(:campaign_npc, campaign: campaign) }
+
+    it 'has no actor by default' do
+      expect(npc).to have_attributes(foundry_actor_uuid: nil, foundry_actor_name: nil)
+    end
+
+    it 'links a world actor' do
+      npc.assign_attributes(foundry_actor_uuid: 'Actor.Kz8rTq2LmN4pQw7X', foundry_actor_name: 'Brother Ash')
+
+      expect(npc).to be_valid
+    end
+
+    it 'links a compendium actor' do
+      npc.assign_attributes(foundry_actor_uuid: 'Compendium.dnd-monster-manual.actors.Actor.mmCultFanatic000',
+                            foundry_actor_name: 'Cult Fanatic')
+
+      expect(npc).to be_valid
+    end
+
+    it 'rejects a UUID that is not a Foundry actor' do
+      ['Actor.short', 'Actor.Kz8rTq2LmN4pQw7X0', 'actor.Kz8rTq2LmN4pQw7X', 'Scene.Kz8rTq2LmN4pQw7X',
+       'Compendium.dnd5e.Actor.Kz8rTq2LmN4pQw7X', 'Compendium.dnd5e.actors24.Item.Kz8rTq2LmN4pQw7X',
+       'Compendium.dnd 5e.actors.Actor.Kz8rTq2LmN4pQw7X', 'Compendium..actors.Actor.Kz8rTq2LmN4pQw7X',
+       "Actor.Kz8rTq2LmN4pQw7X\nActor.x", 'Cult Fanatic'].each do |uuid|
+        npc.foundry_actor_uuid = uuid
+
+        expect(npc).not_to be_valid, "expected #{uuid.inspect} to be rejected"
+        expect(npc.errors[:foundry_actor_uuid]).to include('is invalid')
+      end
+    end
+
+    it 'rejects a UUID over 255 characters' do
+      npc.foundry_actor_uuid = "Compendium.#{'a' * 240}.actors.Actor.Kz8rTq2LmN4pQw7X"
+
+      expect(npc).not_to be_valid
+      expect(npc.errors[:foundry_actor_uuid]).to include('is too long (maximum is 255 characters)')
+    end
+
+    it { is_expected.to validate_length_of(:foundry_actor_name).is_at_most(120) }
+
+    it 'stores a blank actor as none' do
+      npc.assign_attributes(foundry_actor_uuid: ' ', foundry_actor_name: '')
+
+      expect(npc).to be_valid
+      expect(npc).to have_attributes(foundry_actor_uuid: nil, foundry_actor_name: nil)
+    end
+  end
+
   describe '#as_json_for_api' do
+    it 'includes the linked Foundry actor' do
+      npc = create(:campaign_npc, campaign: campaign, foundry_actor_uuid: 'Actor.Kz8rTq2LmN4pQw7X',
+                                  foundry_actor_name: 'Cult Fanatic')
+
+      expect(npc.as_json_for_api).to include(foundryActorUuid: 'Actor.Kz8rTq2LmN4pQw7X', foundryActorName: 'Cult Fanatic')
+    end
+
+    it 'has no Foundry actor when unlinked' do
+      expect(create(:campaign_npc, campaign: campaign).as_json_for_api).to include(foundryActorUuid: nil, foundryActorName: nil)
+    end
+
     it 'serializes the NPC with a summary of its stat block' do
       monster = create(:monster, user: nil, name: 'Mage', challenge_rating: '6')
       npc = create(:campaign_npc, campaign: campaign, name: 'Iarno', role: 'villain', motive: 'Power', monster: monster)

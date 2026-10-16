@@ -42,6 +42,64 @@ describe('PlacesTab', () => {
     expect(within(cardFor('Hommlet')).queryByText(/^In /)).not.toBeInTheDocument();
   });
 
+  it('shows the Foundry scene linked in Foundry', () => {
+    const campaign = sampleCampaign();
+    campaign.locations[0] = {
+      ...campaign.locations[0],
+      foundrySceneUuid: 'Scene.5wVcsNPOg2RjRbFx',
+      foundrySceneName: 'Mountain Pass',
+    };
+    renderTab(campaign);
+
+    expect(
+      within(cardFor('Hommlet')).getByText('Foundry scene: Mountain Pass'),
+    ).toBeInTheDocument();
+    expect(within(cardFor('Moathouse')).queryByText(/Foundry scene/)).not.toBeInTheDocument();
+  });
+
+  it("shows the scene's thumbnail once Foundry has sent it", () => {
+    const campaign = sampleCampaign();
+    campaign.locations[0] = {
+      ...campaign.locations[0],
+      foundrySceneUuid: 'Scene.5wVcsNPOg2RjRbFx',
+      foundrySceneName: 'Mountain Pass',
+    };
+    campaign.sceneThumbnails = { 'Scene.5wVcsNPOg2RjRbFx': 'https://example.com/pass.webp' };
+    renderTab(campaign);
+
+    expect(
+      within(cardFor('Hommlet')).getByRole('img', { name: 'Map: Mountain Pass' }),
+    ).toHaveAttribute('src', 'https://example.com/pass.webp');
+    expect(
+      within(cardFor('Hommlet')).getByText('Foundry scene: Mountain Pass'),
+    ).toBeInTheDocument();
+  });
+
+  it("shows a linked scene's UUID when it has no name", () => {
+    const campaign = sampleCampaign();
+    campaign.locations[0] = {
+      ...campaign.locations[0],
+      foundrySceneUuid: 'Scene.5wVcsNPOg2RjRbFx',
+    };
+    renderTab(campaign);
+
+    expect(
+      within(cardFor('Hommlet')).getByText('Foundry scene: Scene.5wVcsNPOg2RjRbFx'),
+    ).toBeInTheDocument();
+  });
+
+  it('says scenes are linked in Foundry, and has no field for them', () => {
+    renderTab();
+
+    expect(
+      screen.getByText(
+        /Link a place to a Foundry scene in Foundry, with Dorman Lakely's Campaign Planner/,
+      ),
+    ).toBeInTheDocument();
+    fireEvent.click(within(cardFor('Hommlet')).getByRole('button', { name: 'Edit' }));
+    expect(screen.queryByLabelText(/scene/i)).not.toBeInTheDocument();
+  });
+
   it('shows the empty text with no locations', () => {
     renderTab(sampleCampaign({ locations: [] }));
 
@@ -100,7 +158,9 @@ describe('PlacesTab', () => {
 
     fireEvent.click(within(cardFor('Hommlet')).getByRole('button', { name: 'Edit' }));
 
-    const options = Array.from(input('parent_id').querySelectorAll('option')).map((o) => o.textContent);
+    const options = Array.from(input('parent_id').querySelectorAll('option')).map(
+      (o) => o.textContent,
+    );
     expect(options).toEqual(['Nowhere (top level)', 'Moathouse']);
   });
 

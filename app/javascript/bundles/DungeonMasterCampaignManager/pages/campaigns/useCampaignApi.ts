@@ -96,6 +96,16 @@ const useCampaignApi = () => {
         request<SessionLink>(`${base(slug)}/sessions/${sessionId}/links`, 'POST', {
           link: { linkable_type: linkableType, linkable_id: linkableId },
         }),
+      // Only a link's quantity can change
+      updateSessionLink: (
+        slug: string,
+        sessionId: string,
+        linkId: string,
+        attributes: { quantity: number | null },
+      ) =>
+        request<SessionLink>(`${base(slug)}/sessions/${sessionId}/links/${linkId}`, 'PATCH', {
+          link: attributes,
+        }),
       removeSessionLink: (slug: string, sessionId: string, linkId: string) =>
         request<undefined>(`${base(slug)}/sessions/${sessionId}/links/${linkId}`, 'DELETE'),
 

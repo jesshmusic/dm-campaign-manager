@@ -20,7 +20,7 @@ Decisions already made:
   stat-block generator.
 - Everything ships in one PR.
 
-## Status (2026-10-15)
+## Status (2026-10-16)
 - **Phase 0 (done):** map admin endpoints locked down, Patreon linked to accounts, personal API tokens and
   `GET /v1/foundry/me`.
 - **Phase 1 (done):** planner models and API, the campaign wizard with templates, campaign tabs (Overview,
@@ -78,6 +78,21 @@ Decisions already made:
     on Dungeon Master Guru.
   - A "How it works" window explains both ways to plan, and opens once on a GM's first load.
 
+- **Maps, actors and treasure (done, web and module):**
+  - In Foundry, the DM drops a scene on a place for its map, an actor on an NPC for their stat block, and scenes
+    into a session as its maps. These sync to Dungeon Master Guru (`location`, `npc` and `session` pushes), which
+    shows them but doesn't edit them.
+  - Sessions have treasure coins (`treasure_currency`: pp, gp, ep, sp, cp), and treasure links have a quantity.
+    Both are edited on the web and in Foundry.
+- **Scene thumbnails (done):**
+  - The module sends a 640×360 WebP thumbnail of each scene a linked campaign uses (place and session maps), made
+    with Foundry's `Scene#createThumbnail`, to `POST /v1/foundry/scenes` (premium, like sync). It sends again only
+    when what the thumbnail shows changes: the scene's size, levels or tiles, not tokens or walls.
+  - Dungeon Master Guru keeps them in S3's public `thumbnails/scenes/` path (`FoundryScene`), so they show on the
+    Places tab, in session prep and in run mode while Foundry is closed. The campaign's `sceneThumbnails` maps
+    scene UUIDs to them.
+  - Scenes without a map image, and 3D Canvas scenes, get no thumbnail; they show by name.
+
 ## What's left
 **To ship this PR**
 - Watch CI on the latest push, resolve Copilot's review comments, then merge.
@@ -98,7 +113,6 @@ Decisions already made:
 - "Send to Dungeon Master Guru" for a campaign made in Foundry: an upload endpoint that maps its local ids to new
   records, after which it syncs like any linked campaign. (Next.)
 - Editing a local campaign's records in Foundry (today the Dashboard adds them; details are typed into the pages).
-- Linking places to Foundry scenes, with scene thumbnails uploaded so Dungeon Master Guru can show a preview.
 - One source for the setup guide's words, shared by the website and the module (today they're copied).
 - Device-code linking, so DMs don't paste an API token.
 - "Send to DM Guru" for things made in Foundry, like an improvised NPC.

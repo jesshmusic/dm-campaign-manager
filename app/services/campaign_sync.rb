@@ -6,9 +6,11 @@
 # plus tombstones for deletions, and a cursor to send next time.
 #
 # Push: #apply(changes) takes at-the-table updates from Foundry (reveal a secret,
-# advance a clock, change a quest's status, write the session log). Each change
-# names the sync_version it was based on; if the record has moved on since, it
-# comes back as a conflict with the current record so the module can merge.
+# advance a clock, change a quest's status, write the session log), and what
+# the DM picks in Foundry (a place's scene, an NPC's actor, a session's scenes
+# and treasure coins). Each change names the sync_version it was based on; if
+# the record has moved on since, it comes back as a conflict with the current
+# record so the module can merge.
 class CampaignSync
   COLLECTIONS = {
     'factions' => :factions,
@@ -26,7 +28,13 @@ class CampaignSync
     'secret' => { collection: :secrets, fields: { 'revealed' => :revealed, 'revealedSessionUuid' => :revealed_session } },
     'front' => { collection: :fronts, fields: { 'clockFilled' => :clock_filled, 'portents' => :portents } },
     'quest' => { collection: :quests, fields: { 'status' => :status } },
-    'session' => { collection: :sessions, fields: { 'log' => :log, 'recap' => :recap, 'status' => :status } }
+    'session' => {
+      collection: :sessions,
+      fields: { 'log' => :log, 'recap' => :recap, 'status' => :status, 'foundryScenes' => :foundry_scenes,
+                'treasureCurrency' => :treasure_currency }
+    },
+    'location' => { collection: :locations, fields: { 'foundrySceneUuid' => :foundry_scene_uuid, 'foundrySceneName' => :foundry_scene_name } },
+    'npc' => { collection: :npcs, fields: { 'foundryActorUuid' => :foundry_actor_uuid, 'foundryActorName' => :foundry_actor_name } }
   }.freeze
 
   MAX_CHANGES = 100

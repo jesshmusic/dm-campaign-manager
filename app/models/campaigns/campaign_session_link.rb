@@ -7,6 +7,7 @@
 #  id            :bigint           not null, primary key
 #  linkable_type :string           not null
 #  position      :integer          default(0), not null
+#  quantity      :integer
 #  sync_version  :bigint           default(0), not null
 #  uuid          :uuid             not null
 #  created_at    :datetime         not null
@@ -27,19 +28,22 @@
 #
 
 # Something the DM preps for a session: a secret, location, NPC, quest or front
-# from the campaign, or a monster or item from the compendium.
+# from the campaign, or a monster or item from the compendium. Treasure (such
+# as a book reference to a magic item) can say how many the session gives.
 class CampaignSessionLink < ApplicationRecord
   include CampaignSyncable
 
   CAMPAIGN_TYPES = %w[CampaignSecret CampaignLocation CampaignNpc CampaignQuest CampaignFront CampaignReference].freeze
   COMPENDIUM_TYPES = %w[Monster Item].freeze
   LINKABLE_TYPES = (CAMPAIGN_TYPES + COMPENDIUM_TYPES).freeze
+  MAX_QUANTITY = 9999
 
   belongs_to :session, class_name: 'CampaignSession', inverse_of: :links
   belongs_to :linkable, polymorphic: true
 
   validates :linkable_type, inclusion: { in: LINKABLE_TYPES }
   validates :linkable_id, uniqueness: { scope: %i[session_id linkable_type], message: 'is already linked to this session' }
+  validates :quantity, numericality: { only_integer: true, in: 1..MAX_QUANTITY }, allow_nil: true
   validate :linkable_available
 
   after_destroy :bump_session_sync_version, unless: -> { destroyed_by_association&.active_record == CampaignSession }
@@ -56,7 +60,8 @@ class CampaignSessionLink < ApplicationRecord
       name: linkable.respond_to?(:name) ? linkable.name : linkable.try(:text),
       slug: linkable.try(:slug),
       detail: detail,
-      position: position
+      position: position,
+      quantity: quantity
     }
   end
 

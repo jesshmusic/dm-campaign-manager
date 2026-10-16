@@ -66,6 +66,9 @@ export interface Location {
   notes: string | null;
   parentId: string | null;
   foundryMapId: string | null;
+  // The Foundry scene the DM linked in Foundry (read-only here)
+  foundrySceneUuid: string | null;
+  foundrySceneName: string | null;
 }
 
 export type NpcRole = 'bbeg' | 'villain' | 'lieutenant' | 'ally' | 'patron' | 'neutral';
@@ -84,6 +87,9 @@ export interface Npc {
   factionId: string | null;
   monster: { id: string; name: string; slug: string; challengeRating: string } | null;
   statBlockReference: { id: string; name: string; citation: string } | null;
+  // The Foundry actor the DM linked in Foundry (read-only here)
+  foundryActorUuid: string | null;
+  foundryActorName: string | null;
 }
 
 export type Book = 'phb' | 'dmg' | 'mm' | 'srd' | 'other';
@@ -152,6 +158,13 @@ export interface CompendiumPack {
   count: number;
 }
 
+export type Coin = 'pp' | 'gp' | 'ep' | 'sp' | 'cp';
+
+// Coins from most to least valuable
+export const COINS: Coin[] = ['pp', 'gp', 'ep', 'sp', 'cp'];
+
+export type Currency = Partial<Record<Coin, number>>;
+
 // A player character's sheet as the Foundry module sends it: what the player
 // built, never rules text. Every field is optional; the module leaves out
 // what a character doesn't have.
@@ -214,7 +227,7 @@ export interface CharacterSheet {
     attuned?: boolean;
     rarity?: string;
   }[];
-  currency?: Partial<Record<'pp' | 'gp' | 'ep' | 'sp' | 'cp', number>>;
+  currency?: Currency;
   personality?: {
     traits?: string;
     ideals?: string;
@@ -316,6 +329,14 @@ export interface SessionLink {
   // Book and page, for book references
   detail: string | null;
   position: number;
+  // How many, for treasure (null means one)
+  quantity: number | null;
+}
+
+// A Foundry scene the DM picked for a session in Foundry
+export interface FoundryScene {
+  uuid: string;
+  name: string;
 }
 
 export type SessionStatus = 'planned' | 'prepped' | 'played';
@@ -333,6 +354,9 @@ export interface PlannerSession {
   strongStart: string | null;
   scenes: string[];
   treasure: string | null;
+  treasureCurrency: Currency;
+  // Picked in Foundry (read-only here)
+  foundryScenes: FoundryScene[];
   log: string | null;
   recap: string | null;
   links: SessionLink[];
@@ -355,6 +379,8 @@ export interface Campaign extends CampaignBase {
   references: BookReference[];
   party: PartyCharacter[];
   revelations: RevelationSummary[];
+  // { scene uuid: thumbnail URL } for the Foundry scenes it uses as maps, once Foundry has sent them
+  sceneThumbnails: Record<string, string>;
 }
 
 // Nested resource names in /v1/campaigns/:slug/<kind>, with the request root key

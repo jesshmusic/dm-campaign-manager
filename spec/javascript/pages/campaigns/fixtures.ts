@@ -33,6 +33,8 @@ export const npc = (overrides: Partial<Npc> = {}): Npc => ({
   factionId: null,
   monster: null,
   statBlockReference: null,
+  foundryActorUuid: null,
+  foundryActorName: null,
   ...overrides,
 });
 
@@ -45,6 +47,8 @@ export const location = (overrides: Partial<Location> = {}): Location => ({
   notes: null,
   parentId: null,
   foundryMapId: null,
+  foundrySceneUuid: null,
+  foundrySceneName: null,
   ...overrides,
 });
 
@@ -122,6 +126,8 @@ export const plannerSession = (overrides: Partial<PlannerSession> = {}): Planner
   strongStart: null,
   scenes: [],
   treasure: null,
+  treasureCurrency: {},
+  foundryScenes: [],
   log: null,
   recap: null,
   links: [],
@@ -279,6 +285,7 @@ export const sampleCampaign = (overrides: Partial<Campaign> = {}): Campaign => (
           slug: null,
           detail: null,
           position: 0,
+          quantity: null,
         },
         {
           id: 'link2',
@@ -289,6 +296,7 @@ export const sampleCampaign = (overrides: Partial<Campaign> = {}): Campaign => (
           slug: null,
           detail: null,
           position: 1,
+          quantity: null,
         },
         {
           id: 'link3',
@@ -299,6 +307,7 @@ export const sampleCampaign = (overrides: Partial<Campaign> = {}): Campaign => (
           slug: null,
           detail: null,
           position: 2,
+          quantity: null,
         },
         {
           id: 'link4',
@@ -309,6 +318,7 @@ export const sampleCampaign = (overrides: Partial<Campaign> = {}): Campaign => (
           slug: 'ghoul',
           detail: null,
           position: 3,
+          quantity: null,
         },
         {
           id: 'link5',
@@ -319,6 +329,7 @@ export const sampleCampaign = (overrides: Partial<Campaign> = {}): Campaign => (
           slug: null,
           detail: 'MM p. 34',
           position: 4,
+          quantity: null,
         },
         {
           id: 'link6',
@@ -329,6 +340,7 @@ export const sampleCampaign = (overrides: Partial<Campaign> = {}): Campaign => (
           slug: null,
           detail: 'DMG p. 224',
           position: 5,
+          quantity: null,
         },
       ],
     }),
@@ -372,6 +384,7 @@ export const sampleCampaign = (overrides: Partial<Campaign> = {}): Campaign => (
     { name: 'Mayor is the cult leader', clueCount: 2, revealedCount: 0 },
     { name: 'The tunnel', clueCount: 3, revealedCount: 1 },
   ],
+  sceneThumbnails: {},
   ...overrides,
 });
 
@@ -386,6 +399,7 @@ export const campaignSummary = (overrides: Partial<CampaignSummary> = {}): Campa
     sessions: _sessions,
     references: _references,
     revelations: _revelations,
+    sceneThumbnails: _sceneThumbnails,
     ...base
   } = sampleCampaign();
   return {
@@ -519,6 +533,7 @@ export const makeApi = (overrides: Partial<MockApi> = {}): MockApi => ({
   updateChild: jest.fn().mockResolvedValue({}),
   deleteChild: jest.fn().mockResolvedValue(undefined),
   addSessionLink: jest.fn().mockResolvedValue({}),
+  updateSessionLink: jest.fn().mockResolvedValue({}),
   removeSessionLink: jest.fn().mockResolvedValue(undefined),
   searchMonsters: jest.fn().mockResolvedValue([]),
   searchItems: jest.fn().mockResolvedValue([]),

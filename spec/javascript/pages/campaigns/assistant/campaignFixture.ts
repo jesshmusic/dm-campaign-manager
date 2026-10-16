@@ -87,6 +87,8 @@ export const assistantCampaign = (): Campaign => ({
       strongStart: null,
       scenes: [],
       treasure: null,
+      treasureCurrency: {},
+      foundryScenes: [],
       log: 'The party found the crypt.',
       recap: null,
       links: [],
@@ -95,4 +97,5 @@ export const assistantCampaign = (): Campaign => ({
   references: [],
   party: [],
   revelations: [{ name: 'The crypt', clueCount: 1, revealedCount: 0 }],
+  sceneThumbnails: {},
 });

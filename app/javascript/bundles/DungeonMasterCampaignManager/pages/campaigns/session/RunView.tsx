@@ -5,6 +5,8 @@ import { Colors } from '../../../utilities/enums';
 import AutosaveField from '../components/AutosaveField';
 import RecapDraft from '../assistant/RecapDraft';
 import ProgressClock from '../components/ProgressClock';
+import { formatCoins } from '../components/CoinFields';
+import SceneThumbnail, { SceneGallery } from '../components/SceneThumbnail';
 import { CampaignState } from '../useCampaign';
 import { Campaign, NPC_ROLE_LABELS, PlannerSession, QuestStatus, Secret } from '../types';
 import { QUEST_STATUS_LABELS } from '../tabs/QuestsTab';
@@ -48,6 +50,7 @@ const RunView = ({ campaign, session, state }: RunViewProps) => {
   const openQuests = campaign.quests.filter(
     (quest) => quest.status === 'active' || quest.status === 'available',
   );
+  const coins = formatCoins(session.treasureCurrency);
 
   const reveal = (secret: Secret, revealed: boolean) =>
     saveChild(
@@ -169,9 +172,31 @@ const RunView = ({ campaign, session, state }: RunViewProps) => {
             {npc.motive && <p>Wants: {npc.motive}</p>}
           </Card>
         ))}
+        {session.foundryScenes.length > 0 && (
+          <Card>
+            <h3>Maps</h3>
+            <SceneGallery aria-label="Maps">
+              {session.foundryScenes.map((scene) => (
+                <li key={scene.uuid}>
+                  <SceneThumbnail
+                    name={scene.name}
+                    url={campaign.sceneThumbnails[scene.uuid]}
+                    label={null}
+                  />
+                </li>
+              ))}
+            </SceneGallery>
+          </Card>
+        )}
         {locations.map((location) => (
           <Card key={location.id}>
             <h3>{location.name}</h3>
+            {location.foundrySceneUuid && (
+              <SceneThumbnail
+                name={location.foundrySceneName ?? location.foundrySceneUuid}
+                url={campaign.sceneThumbnails[location.foundrySceneUuid]}
+              />
+            )}
             {location.features.length > 0 && (
               <List>
                 {location.features.map((feature) => (
@@ -188,10 +213,18 @@ const RunView = ({ campaign, session, state }: RunViewProps) => {
               {bookReferences.map((reference) => (
                 <li key={reference.id}>
                   {reference.name}
+                  {(reference.quantity ?? 1) > 1 && <span> ×{reference.quantity}</span>}
                   {reference.detail && <Meta as="span"> ({reference.detail})</Meta>}
                 </li>
               ))}
             </List>
+          </Card>
+        )}
+        {(coins || session.treasure) && (
+          <Card>
+            <h3>Treasure</h3>
+            {coins && <p>{coins}</p>}
+            {session.treasure && <p>{session.treasure}</p>}
           </Card>
         )}
         {monsters.length > 0 && (

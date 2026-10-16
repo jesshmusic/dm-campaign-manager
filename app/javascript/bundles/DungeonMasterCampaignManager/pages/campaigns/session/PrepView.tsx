@@ -2,6 +2,9 @@ import { Link } from 'react-router-dom';
 import AutosaveField from '../components/AutosaveField';
 import LinkPicker from '../components/LinkPicker';
 import CompendiumSearch from '../components/CompendiumSearch';
+import CoinFields from '../components/CoinFields';
+import QuantityField from '../components/QuantityField';
+import SceneThumbnail, { SceneGallery } from '../components/SceneThumbnail';
 import { quickStats } from '../components/CharacterSheetView';
 import { referenceFor, searchCompendium } from '../compendium';
 import { CompendiumResult } from '../useCampaignApi';
@@ -50,6 +53,8 @@ const PrepView = ({ campaign, session, state }: PrepViewProps) => {
     mutate(() => api.addSessionLink(campaign.slug, session.id, linkableType, id));
   const removeLink = (link: SessionLink) =>
     mutate(() => api.removeSessionLink(campaign.slug, session.id, link.id));
+  const saveQuantity = (link: SessionLink) => (quantity: number | null) =>
+    mutate(() => api.updateSessionLink(campaign.slug, session.id, link.id, { quantity }));
 
   const unrevealed = campaign.secrets.filter((secret) => !secret.revealed);
   const { party } = campaign;
@@ -115,12 +120,14 @@ const PrepView = ({ campaign, session, state }: PrepViewProps) => {
   const referenceById = (id: string) => campaign.references.find((r) => r.id === id);
 
   // Steps 7 and 8 list everything picked, from DM Guru's SRD or the campaign's
-  // books, then the ways to add more. Render helpers rather than nested
-  // components, so React doesn't remount them every render.
+  // books, then the ways to add more. Treasure from the books says how many.
+  // Render helpers rather than nested components, so React doesn't remount
+  // them every render.
   const pickedList = (
     linkableType: 'Monster' | 'Item',
     categories: ReferenceCategory[],
     emptyText: string,
+    withQuantity = false,
   ) => {
     const picked = session.links.filter((link) =>
       link.linkableType === 'CampaignReference'
@@ -146,6 +153,15 @@ const PrepView = ({ campaign, session, state }: PrepViewProps) => {
                 link.name
               )}{' '}
               {detail && <Meta as="span">({detail})</Meta>}{' '}
+              {withQuantity && link.linkableType === 'CampaignReference' && (
+                <>
+                  <QuantityField
+                    label={`Quantity of ${link.name}`}
+                    value={link.quantity}
+                    onSave={saveQuantity(link)}
+                  />{' '}
+                </>
+              )}
               <LinkButton aria-label={`Remove ${link.name}`} onClick={() => void removeLink(link)}>
                 remove
               </LinkButton>
@@ -305,6 +321,23 @@ const PrepView = ({ campaign, session, state }: PrepViewProps) => {
           onAdd={addLink}
           onRemove={removeLink}
         />
+        {session.foundryScenes.length > 0 && (
+          <>
+            <AddHeading>Foundry scenes</AddHeading>
+            <Meta>Picked for this session in Foundry.</Meta>
+            <SceneGallery aria-label="Foundry scenes">
+              {session.foundryScenes.map((scene) => (
+                <li key={scene.uuid}>
+                  <SceneThumbnail
+                    name={scene.name}
+                    url={campaign.sceneThumbnails[scene.uuid]}
+                    label={null}
+                  />
+                </li>
+              ))}
+            </SceneGallery>
+          </>
+        )}
         {suggestions('locations')}
       </Step>
 
@@ -349,7 +382,11 @@ const PrepView = ({ campaign, session, state }: PrepViewProps) => {
           onSave={saveField('treasure')}
           rows={3}
         />
-        {pickedList('Item', TREASURE_CATEGORIES, 'No items picked yet.')}
+        <CoinFields
+          value={session.treasureCurrency}
+          onSave={(coins) => saveChild('sessions', { treasure_currency: coins }, session.id)}
+        />
+        {pickedList('Item', TREASURE_CATEGORIES, 'No items picked yet.', true)}
         <AddHeading>Add an item or table</AddHeading>
         <CompendiumSearch
           label="Search items"

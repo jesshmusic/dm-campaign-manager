@@ -75,6 +75,31 @@ RSpec.describe 'Admin::V1::Foundry::CampaignsController', type: :request do
       expect(front.reload.clock_filled).to eq(2)
     end
 
+    it "applies a place's scene, an NPC's actor, and a session's scenes and coins picked in Foundry" do
+      location = create(:campaign_location, campaign: campaign)
+      npc = create(:campaign_npc, campaign: campaign)
+      session = create(:campaign_session, campaign: campaign)
+      scenes = [{ 'uuid' => 'Scene.5wVcsNPOg2RjRbFx', 'name' => 'Mountain Pass' }]
+
+      post "/v1/foundry/campaigns/#{campaign.uuid}/changes",
+           params: { changes: [
+             { type: 'location', uuid: location.uuid, baseVersion: location.sync_version,
+               attributes: { foundrySceneUuid: 'Scene.5wVcsNPOg2RjRbFx', foundrySceneName: 'Mountain Pass' } },
+             { type: 'npc', uuid: npc.uuid, baseVersion: npc.sync_version,
+               attributes: { foundryActorUuid: 'Actor.Kz8rTq2LmN4pQw7X', foundryActorName: 'Cult Fanatic' } },
+             { type: 'session', uuid: session.uuid, baseVersion: session.sync_version,
+               attributes: { foundryScenes: scenes, treasureCurrency: { gp: 50, sp: 12 } } }
+           ] },
+           headers: headers, as: :json
+
+      expect(response).to have_http_status(:success)
+      expect(json['errors']).to eq([])
+      expect(json['applied'].pluck('type')).to eq(%w[location npc session])
+      expect(location.reload).to have_attributes(foundry_scene_uuid: 'Scene.5wVcsNPOg2RjRbFx', foundry_scene_name: 'Mountain Pass')
+      expect(npc.reload).to have_attributes(foundry_actor_uuid: 'Actor.Kz8rTq2LmN4pQw7X', foundry_actor_name: 'Cult Fanatic')
+      expect(session.reload).to have_attributes(foundry_scenes: scenes, treasure_currency: { 'gp' => 50, 'sp' => 12 })
+    end
+
     it 'rejects changes that are not a list' do
       post "/v1/foundry/campaigns/#{campaign.uuid}/changes", params: { changes: { type: 'front' } },
                                                              headers: headers, as: :json

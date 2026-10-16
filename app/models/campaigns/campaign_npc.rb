@@ -7,6 +7,8 @@
 #  id                      :bigint           not null, primary key
 #  appearance              :string
 #  description             :text
+#  foundry_actor_name      :string
+#  foundry_actor_uuid      :string
 #  motive                  :text
 #  name                    :string           not null
 #  notes                   :text
@@ -40,21 +42,29 @@
 #
 
 # A member of the campaign's cast, from the BBEG down to a friendly innkeeper.
-# Can link to a Monster for its stat block.
+# Can link to a Monster for its stat block. The Foundry module can link it to
+# one of the DM's Foundry actors (picked in Foundry, so the website only shows it).
 class CampaignNpc < ApplicationRecord
   include CampaignRecord
 
   linkable_from_sessions
 
   ROLES = %w[bbeg villain lieutenant ally patron neutral].freeze
+  # A world actor ("Actor.<id>") or a compendium actor
+  # ("Compendium.dnd-monster-manual.actors.Actor.mmCultFanatic000")
+  FOUNDRY_ACTOR_UUID = /\A(Compendium\.[\w-]+\.[\w-]+\.)?Actor\.[A-Za-z0-9]{16}\z/
 
   belongs_to :monster, optional: true
   belongs_to :faction, class_name: 'CampaignFaction', optional: true
   # A book stat block (e.g. Monster Manual) instead of, or as well as, a DM Guru monster
   belongs_to :stat_block_reference, class_name: 'CampaignReference', optional: true
 
+  normalizes :foundry_actor_uuid, :foundry_actor_name, with: ->(value) { value.strip.presence }
+
   validates :name, presence: true, length: { maximum: 120 }
   validates :role, inclusion: { in: ROLES }
+  validates :foundry_actor_uuid, length: { maximum: 255 }, format: { with: FOUNDRY_ACTOR_UUID }, allow_nil: true
+  validates :foundry_actor_name, length: { maximum: 120 }
   validates_same_campaign :faction, :stat_block_reference
   validate :monster_visible_to_owner
 
@@ -74,7 +84,9 @@ class CampaignNpc < ApplicationRecord
       monster: monster && { id: monster.id.to_s, name: monster.name, slug: monster.slug, challengeRating: monster.challenge_rating },
       statBlockReference: stat_block_reference && {
         id: stat_block_reference.id.to_s, name: stat_block_reference.name, citation: stat_block_reference.citation
-      }
+      },
+      foundryActorUuid: foundry_actor_uuid,
+      foundryActorName: foundry_actor_name
     }
   end
 

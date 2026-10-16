@@ -101,6 +101,37 @@ RSpec.describe CampaignSessionLink, type: :model do
     expect(build(:campaign_session_link, session: next_session, linkable: npc)).to be_valid
   end
 
+  describe 'quantity' do
+    subject(:link) { link_to(create(:campaign_reference, campaign: campaign, category: 'magic_item')) }
+
+    it 'has none by default' do
+      expect(link.quantity).to be_nil
+      expect(link).to be_valid
+    end
+
+    it 'allows 1 to 9999' do
+      [1, 2, CampaignSessionLink::MAX_QUANTITY].each do |quantity|
+        link.quantity = quantity
+        expect(link).to be_valid
+      end
+    end
+
+    it 'rejects counts that are not whole numbers from 1 to 9999' do
+      [0, -1, CampaignSessionLink::MAX_QUANTITY + 1, 1.5].each do |quantity|
+        link.quantity = quantity
+
+        expect(link).not_to be_valid, "expected #{quantity.inspect} to be rejected"
+        expect(link.errors[:quantity]).to be_present
+      end
+    end
+
+    it "bumps the session's sync version when it changes" do
+      link.save!
+
+      expect { link.update!(quantity: 3) }.to(change { session.reload.sync_version })
+    end
+  end
+
   describe '#as_json_for_api' do
     it 'names a campaign record' do
       link = create(:campaign_session_link, session: session,
@@ -108,7 +139,14 @@ RSpec.describe CampaignSessionLink, type: :model do
 
       expect(link.as_json_for_api).to eq(id: link.id.to_s, uuid: link.uuid, linkableType: 'CampaignNpc',
                                          linkableId: link.linkable_id.to_s, name: 'Gundren', slug: nil, detail: nil,
-                                         position: 0)
+                                         position: 0, quantity: nil)
+    end
+
+    it 'includes the quantity' do
+      reference = create(:campaign_reference, campaign: campaign, name: 'Potion of Healing', category: 'magic_item')
+      link = create(:campaign_session_link, session: session, linkable: reference, quantity: 3)
+
+      expect(link.as_json_for_api).to include(name: 'Potion of Healing', quantity: 3)
     end
 
     it "uses a secret's text as its name" do
