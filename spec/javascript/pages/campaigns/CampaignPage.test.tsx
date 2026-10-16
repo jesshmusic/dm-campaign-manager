@@ -1,7 +1,7 @@
 import React from 'react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
-import { render, screen, waitFor } from '../../test-utils';
+import { render, screen, waitFor, fireEvent } from '../../test-utils';
 import CampaignPage from '../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/CampaignPage';
 import { jsonResponse, sampleCampaign } from './fixtures';
 
@@ -116,6 +116,19 @@ describe('CampaignPage', () => {
 
     expect(await screen.findByRole('region', { name: 'Main quests' })).toBeInTheDocument();
     expect(window.location.search).toBe('?tab=quests');
+  });
+
+  it('switches to the tab a link asks for', async () => {
+    window.localStorage.clear();
+    renderPage();
+    await screen.findByRole('heading', { name: 'Getting started' });
+
+    fireEvent.click(screen.getByRole('link', { name: 'Hide some secrets' }));
+
+    expect(await screen.findByRole('tab', { name: /Secrets/ })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
   });
 
   it('shows an error when the campaign cannot load', async () => {

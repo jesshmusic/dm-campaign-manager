@@ -45,6 +45,15 @@ Decisions already made:
   - Each campaign picks its party from them: a name, class, level and player list on New Campaign ("Who's
     playing?") and on the Party tab, which also shows each party member's full sheet.
   - Session prep step 1 lists the party with quick stats, bonds and flaws. The AI brief includes the party.
+- **Guided setup (done, web):**
+  - New Campaign is a six-step guide: what kind of game, the pitch, the table (party, players, levels, sessions),
+    the world (setting and truths), your books (compendiums), then review and create.
+  - Each step has a short "Why this matters" with an example. The copy for every step lives in
+    `pages/campaigns/setup/setupSteps.ts`.
+  - The answers are saved in the browser as the DM goes, so leaving the page doesn't lose them.
+  - After creating, the guide offers an AI draft of the plan.
+  - The Overview tab shows a "Getting started" checklist (party, threat, cast, secrets, first session) until it's
+    done or hidden.
 
 ## What's left
 **To ship this PR**
@@ -63,7 +72,7 @@ Decisions already made:
 - Add the module to `app/services/foundry_module_stats_fetcher.rb` after its first release.
 
 **Planned but not built**
-- Guided setup for a new campaign (see Suggestions).
+- Guided setup in the Foundry module (see "Guided setup in Foundry" below).
 - Device-code linking, so DMs don't paste an API token.
 - "Send to DM Guru" for things made in Foundry, like an improvised NPC.
 - Player-facing pages: the shareable player guide, and player-visible journal pages.
@@ -72,18 +81,26 @@ Decisions already made:
 - From phase 5: treasure hoards, an in-world calendar, and export as a Foundry Adventure compendium.
 
 ## Suggestions
-**Guided setup for a new campaign.** Today New Campaign is one long form. A step-by-step guide would teach the
-method as it goes. Each step would have a short "why this matters", an example, and a way to skip it:
-1. *What kind of game?* Story arc, sandbox or one-shot, with an example of each.
-2. *The pitch:* premise and tone, with "Suggest a hook".
-3. *The party:* players, starting and target level, number of sessions, how often you play.
-4. *The world:* setting and six truths, with examples like "The dead do not rest in Greyhawk".
-5. *Your books:* the compendium list, and how linking Foundry turns picks into draggable links.
-6. *Draft with AI* (optional): generate the outline from the brief, then review it before saving.
-7. *Review and create.* Then an Overview checklist: make the villain's front, add three NPCs, write
-   secrets, prep session 1, link Foundry.
-
-The guide should save a draft in the browser, so leaving the page doesn't lose it.
+**Guided setup in Foundry (proposal, not built).** The same steps in the module, without AI. The web copy in
+`setupSteps.ts` should become a plain JSON file both sides use.
+- **Server:** a premium `POST /v1/foundry/campaigns` sharing a `CampaignCreator` service with the web create, so
+  the allowed fields can't drift.
+  - The server works out the mode from the template.
+  - The party is sent as `{ world_id, actor_uuids }`, after the module sends the world's characters.
+  - A `request_id` makes a retried create return the same campaign.
+  - It answers 422 with the fields that failed, so the module can jump to the right step.
+- **Module:**
+  - A pure `scripts/setup.mjs` (steps, validation, payload, draft upgrades), tested in Node.
+  - A `NewCampaignApp` (ApplicationV2, one window with Back, Next and Skip). Opened from the Connect window and
+    from the Dashboard when no campaign is linked.
+  - After creating, it links the world and pulls, reusing the Connect window's link flow (moved into
+    `CampaignSync.link`).
+  - The draft is kept in a client setting, keyed by world.
+- **Rough size:** about five days with live testing.
+- **Open questions:**
+  - Should creating from Foundry need premium, when creating on the web doesn't?
+  - Should Blank let the DM choose a mode?
+  - Truths: six (the hint) or twelve (the model's limit)?
 
 **Other ideas**
 - Search the compendium index from the NPC form, so a stat block doesn't have to be added on the Books tab

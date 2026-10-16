@@ -9,6 +9,7 @@ import { CampaignState } from '../useCampaign';
 import { Campaign, MODE_LABELS } from '../types';
 import { RevelationCheck } from './SecretsTab';
 import OutlineReview from '../assistant/OutlineReview';
+import GettingStarted from './GettingStarted';
 import CompendiumPicker from '../components/CompendiumPicker';
 import { useCompendiumPacks } from '../compendium';
 import { formatDate } from './SessionsTab';
@@ -114,6 +115,8 @@ const OverviewTab = ({ campaign, state }: OverviewTabProps) => {
           onClick={() => void copyPlayerGuide()}
         />
       </ButtonRow>
+
+      <GettingStarted campaign={campaign} />
 
       <CardGrid>
         <Card>

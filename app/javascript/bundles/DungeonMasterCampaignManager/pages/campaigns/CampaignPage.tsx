@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import {
   GiBookCover,
   GiBookshelf,
@@ -60,6 +60,13 @@ const CampaignPage = () => {
   const state = useCampaign(campaignSlug);
   const { campaign, loading, error, actionError, clearActionError } = state;
   const [tab, setTab] = useState(initialTab);
+  const { search } = useLocation();
+
+  // Links like "?tab=story" (e.g. from the Getting started list) switch tabs
+  useEffect(() => {
+    const requested = new URLSearchParams(search).get('tab');
+    if (TABS.some((t) => t.value === requested)) setTab(requested as string);
+  }, [search]);
 
   const changeTab = (value: string) => {
     setTab(value);
