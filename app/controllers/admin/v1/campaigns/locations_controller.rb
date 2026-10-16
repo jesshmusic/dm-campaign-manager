@@ -14,7 +14,8 @@ module Admin
         end
 
         def resource_params
-          params.require(:location).permit([:name, :description, :notes, :parent_id, :foundry_map_id, { features: [] }])
+          params.require(:location).permit([:name, :description, :notes, :parent_id, :foundry_map_id, :foundry_scene_uuid,
+                                            :foundry_scene_name, { features: [] }])
         end
       end
     end

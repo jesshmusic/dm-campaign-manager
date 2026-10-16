@@ -11,8 +11,10 @@ import {
   CompendiumCategory,
   CompendiumEntry,
   CompendiumPack,
+  FoundrySceneSummary,
   PlayerCharacter,
   LinkableType,
+  QuestLink,
   SessionLink,
 } from './types';
 
@@ -109,6 +111,29 @@ const useCampaignApi = () => {
       removeSessionLink: (slug: string, sessionId: string, linkId: string) =>
         request<undefined>(`${base(slug)}/sessions/${sessionId}/links/${linkId}`, 'DELETE'),
 
+      // A quest's NPCs, monsters and reward items
+      addQuestLink: (
+        slug: string,
+        questId: string,
+        linkableType: LinkableType,
+        linkableId: string,
+      ) =>
+        request<QuestLink>(`${base(slug)}/quests/${questId}/links`, 'POST', {
+          link: { linkable_type: linkableType, linkable_id: linkableId },
+        }),
+      // Only a link's quantity can change
+      updateQuestLink: (
+        slug: string,
+        questId: string,
+        linkId: string,
+        attributes: { quantity: number | null },
+      ) =>
+        request<QuestLink>(`${base(slug)}/quests/${questId}/links/${linkId}`, 'PATCH', {
+          link: attributes,
+        }),
+      removeQuestLink: (slug: string, questId: string, linkId: string) =>
+        request<undefined>(`${base(slug)}/quests/${questId}/links/${linkId}`, 'DELETE'),
+
       searchMonsters: async (query: string, edition: string): Promise<CompendiumResult[]> => {
         const params = new URLSearchParams({ search: query, edition });
         const data = await request<{
@@ -151,6 +176,14 @@ const useCampaignApi = () => {
 
       // The DM's player characters from Foundry, for choosing a party
       listPlayerCharacters: () => request<PlayerCharacter[]>('/v1/player-characters'),
+
+      // The DM's Foundry scenes with thumbnails, by world, for picking maps
+      listFoundryScenes: async () => {
+        const data = await request<{ count: number; results: FoundrySceneSummary[] }>(
+          '/v1/foundry_scenes',
+        );
+        return data.results;
+      },
 
       // Existing generators
       randomName: async () => {

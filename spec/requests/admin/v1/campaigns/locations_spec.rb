@@ -74,16 +74,34 @@ RSpec.describe 'Admin::V1::Campaigns::LocationsController', type: :request do
       expect(city.reload.parent_id).to be_nil
     end
 
-    it "can't link a Foundry scene, which is picked in Foundry" do
+    it 'links a Foundry scene picked on the website' do
       patch "#{locations_path}/#{city.id}",
             params: { location: { name: 'Neverwinter', foundry_scene_uuid: 'Scene.5wVcsNPOg2RjRbFx', foundry_scene_name: 'Pass' } },
             as: :json
 
       expect(response).to have_http_status(:success)
-      expect(city.reload).to have_attributes(name: 'Neverwinter', foundry_scene_uuid: nil, foundry_scene_name: nil)
+      expect(json).to include('foundrySceneUuid' => 'Scene.5wVcsNPOg2RjRbFx', 'foundrySceneName' => 'Pass')
+      expect(city.reload).to have_attributes(name: 'Neverwinter', foundry_scene_uuid: 'Scene.5wVcsNPOg2RjRbFx', foundry_scene_name: 'Pass')
     end
 
-    it 'shows the Foundry scene linked in Foundry' do
+    it 'unlinks the Foundry scene' do
+      city.update!(foundry_scene_uuid: 'Scene.5wVcsNPOg2RjRbFx', foundry_scene_name: 'Waterdeep Harbor')
+
+      patch "#{locations_path}/#{city.id}", params: { location: { foundry_scene_uuid: nil, foundry_scene_name: nil } }, as: :json
+
+      expect(response).to have_http_status(:success)
+      expect(city.reload).to have_attributes(foundry_scene_uuid: nil, foundry_scene_name: nil)
+    end
+
+    it 'rejects something that is not a Foundry scene' do
+      patch "#{locations_path}/#{city.id}", params: { location: { foundry_scene_uuid: 'Actor.5wVcsNPOg2RjRbFx' } }, as: :json
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(json['errors']).to include('Foundry scene uuid is invalid')
+      expect(city.reload.foundry_scene_uuid).to be_nil
+    end
+
+    it 'shows the linked Foundry scene' do
       city.update!(foundry_scene_uuid: 'Scene.5wVcsNPOg2RjRbFx', foundry_scene_name: 'Waterdeep Harbor')
 
       get "#{locations_path}/#{city.id}"

@@ -5,6 +5,8 @@ import PrepView from '../../../../../app/javascript/bundles/DungeonMasterCampaig
 import { Campaign } from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/types';
 import {
   FakeState,
+  foundryScene,
+  makeApi,
   makeState,
   plannerSession,
   playerCharacter,
@@ -241,27 +243,35 @@ describe('PrepView', () => {
       ]);
     });
 
-    it('lists the Foundry scenes picked for the session in Foundry', () => {
+    it("lists the session's maps, each removable", async () => {
       const campaign = sampleCampaign();
       campaign.sessions[1].foundryScenes = [
         { uuid: 'Scene.5wVcsNPOg2RjRbFx', name: 'Mountain Pass' },
         { uuid: 'Scene.aaaaaaaaaaaaaaaa', name: 'Cragmaw Cave' },
       ];
-      renderPrep(campaign);
+      const { state } = renderPrep(campaign);
 
-      const scenes = within(step(5)).getByRole('list', { name: 'Foundry scenes' });
+      expect(within(step(5)).getByRole('heading', { name: 'Maps' })).toBeInTheDocument();
+      const scenes = within(step(5)).getByRole('list', { name: 'Session maps' });
+      expect(within(scenes).getAllByRole('listitem')).toHaveLength(2);
+      expect(within(scenes).getByText('Mountain Pass')).toBeInTheDocument();
+      expect(within(scenes).getByText('Cragmaw Cave')).toBeInTheDocument();
       expect(
-        within(scenes)
-          .getAllByRole('listitem')
-          .map((item) => item.textContent),
-      ).toEqual(['Mountain Pass', 'Cragmaw Cave']);
-      expect(within(step(5)).getByRole('heading', { name: 'Foundry scenes' })).toBeInTheDocument();
-      expect(within(step(5)).getByText('Picked for this session in Foundry.')).toBeInTheDocument();
-      // Read-only: scenes are picked in Foundry
-      expect(within(scenes).queryByRole('button')).not.toBeInTheDocument();
+        within(step(5)).queryByText('Picked for this session in Foundry.'),
+      ).not.toBeInTheDocument();
+
+      fireEvent.click(within(scenes).getByRole('button', { name: 'Remove Mountain Pass' }));
+
+      await waitFor(() =>
+        expect(state.saveChild).toHaveBeenCalledWith(
+          'sessions',
+          { foundry_scenes: [{ uuid: 'Scene.aaaaaaaaaaaaaaaa', name: 'Cragmaw Cave' }] },
+          'sess2',
+        ),
+      );
     });
 
-    it("shows the scenes' thumbnails once Foundry has sent them", () => {
+    it("shows the maps' thumbnails once Foundry has sent them", () => {
       const campaign = sampleCampaign();
       campaign.sessions[1].foundryScenes = [
         { uuid: 'Scene.5wVcsNPOg2RjRbFx', name: 'Mountain Pass' },
@@ -270,7 +280,7 @@ describe('PrepView', () => {
       campaign.sceneThumbnails = { 'Scene.5wVcsNPOg2RjRbFx': 'https://example.com/pass.webp' };
       renderPrep(campaign);
 
-      const scenes = within(step(5)).getByRole('list', { name: 'Foundry scenes' });
+      const scenes = within(step(5)).getByRole('list', { name: 'Session maps' });
       expect(within(scenes).getByRole('img', { name: 'Map: Mountain Pass' })).toHaveAttribute(
         'src',
         'https://example.com/pass.webp',
@@ -281,13 +291,23 @@ describe('PrepView', () => {
       expect(within(scenes).getByText('Cragmaw Cave')).toBeInTheDocument();
     });
 
-    it('leaves out Foundry scenes when none were picked', () => {
-      renderPrep();
+    it("adds maps from the DM's Foundry scenes", async () => {
+      const state = makeState({
+        api: makeApi({ listFoundryScenes: jest.fn().mockResolvedValue([foundryScene()]) }),
+      });
+      renderPrep(sampleCampaign(), state);
 
-      expect(
-        within(step(5)).queryByRole('list', { name: 'Foundry scenes' }),
-      ).not.toBeInTheDocument();
-      expect(within(step(5)).queryByText(/Foundry/)).not.toBeInTheDocument();
+      expect(within(step(5)).getByText('No maps picked yet.')).toBeInTheDocument();
+      fireEvent.click(within(step(5)).getByRole('button', { name: 'Add maps from Foundry' }));
+      fireEvent.click(await within(step(5)).findByRole('button', { name: 'Mountain Pass' }));
+
+      await waitFor(() =>
+        expect(state.saveChild).toHaveBeenCalledWith(
+          'sessions',
+          { foundry_scenes: [{ uuid: 'Scene.5wVcsNPOg2RjRbFx', name: 'Mountain Pass' }] },
+          'sess2',
+        ),
+      );
     });
 
     it('links a location', async () => {

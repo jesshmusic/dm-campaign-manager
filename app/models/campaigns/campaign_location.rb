@@ -35,8 +35,8 @@
 #
 
 # A fantastic location, optionally nested in a parent and linked to a
-# Dorman Lakely Cartography map. The Foundry module can link it to one of the
-# DM's Foundry scenes (picked in Foundry, so the website only shows it).
+# Dorman Lakely Cartography map. Its map can be one of the DM's Foundry
+# scenes, picked on the website or in Foundry with the Campaign Planner module.
 class CampaignLocation < ApplicationRecord
   include CampaignRecord
 

@@ -95,6 +95,12 @@ export const SectionTitle = styled.h2`
   margin: 1.5rem 0 0.75rem;
 `;
 
+// A small heading inside a card, e.g. "Add a monster"
+export const AddHeading = styled.h4`
+  font-size: ${({ theme }) => theme.fontSizes.base};
+  margin: 0.75rem 0 0.25rem;
+`;
+
 export const EmptyState = styled.p`
   color: ${({ theme }) => theme.colors.textMuted};
   font-style: italic;

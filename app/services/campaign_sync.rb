@@ -8,7 +8,8 @@
 # Push: #apply(changes) takes at-the-table updates from Foundry (reveal a secret,
 # advance a clock, change a quest's status, write the session log), and what
 # the DM picks in Foundry (a place's scene, an NPC's actor, a session's scenes
-# and treasure coins). Each change names the sync_version it was based on; if
+# and treasure coins, a quest's scenes and reward). A session's or quest's
+# links aren't pushed; they come with it on pulls. Each change names the sync_version it was based on; if
 # the record has moved on since, it comes back as a conflict with the current
 # record so the module can merge.
 class CampaignSync
@@ -27,7 +28,11 @@ class CampaignSync
   WRITABLE = {
     'secret' => { collection: :secrets, fields: { 'revealed' => :revealed, 'revealedSessionUuid' => :revealed_session } },
     'front' => { collection: :fronts, fields: { 'clockFilled' => :clock_filled, 'portents' => :portents } },
-    'quest' => { collection: :quests, fields: { 'status' => :status } },
+    'quest' => {
+      collection: :quests,
+      fields: { 'status' => :status, 'foundryScenes' => :foundry_scenes, 'rewardCurrency' => :reward_currency,
+                'rewardXp' => :reward_xp, 'milestone' => :milestone }
+    },
     'session' => {
       collection: :sessions,
       fields: { 'log' => :log, 'recap' => :recap, 'status' => :status, 'foundryScenes' => :foundry_scenes,
@@ -79,7 +84,7 @@ class CampaignSync
   def records_since(association, since)
     scope = @campaign.public_send(association).where('sync_version > ?', since).order(:sync_version)
     scope = scope.includes(:monster, :stat_block_reference) if association == :npcs
-    scope = scope.includes(links: :linkable) if association == :sessions
+    scope = scope.includes(links: :linkable) if %i[sessions quests].include?(association)
     scope.map { |record| sync_json(record) }
   end
 

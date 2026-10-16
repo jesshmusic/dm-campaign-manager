@@ -78,19 +78,32 @@ Decisions already made:
     on Dungeon Master Guru.
   - A "How it works" window explains both ways to plan, and opens once on a GM's first load.
 
-- **Maps, actors and treasure (done, web and module):**
-  - In Foundry, the DM drops a scene on a place for its map, an actor on an NPC for their stat block, and scenes
-    into a session as its maps. These sync to Dungeon Master Guru (`location`, `npc` and `session` pushes), which
-    shows them but doesn't edit them.
+- **Maps, actors, treasure and quests (done on the web; module in progress):**
+  - Places, sessions and quests use Foundry scenes as maps: a place has one (`foundry_scene_uuid`,
+    `foundry_scene_name`), sessions and quests up to 20 (`foundry_scenes`). The DM picks them on the website, from a
+    searchable grid of their scenes' thumbnails grouped by world (`ScenePicker`, from `GET /v1/foundry_scenes`), or
+    in Foundry by dropping a scene. Both ways sync (`location`, `session` and `quest` pushes).
+  - In Foundry, the DM drops an actor on an NPC for their stat block. It syncs (`npc` push); the website shows it but
+    doesn't edit it.
   - Sessions have treasure coins (`treasure_currency`: pp, gp, ep, sp, cp), and treasure links have a quantity.
-    Both are edited on the web and in Foundry.
+  - Quests hold their maps, the NPCs involved (besides the giver), monsters for their encounters (DM Guru SRD
+    monsters or book references) and a reward: items with how many (SRD items or book references), coins
+    (`reward_currency`), XP (`reward_xp`) and/or a milestone ("level up when done"), plus the reward notes
+    (`reward`).
+    - NPCs, monsters and items are `campaign_quest_links`, shaped like session links and synced as part of the
+      quest (changing one bumps the quest). Deleting the NPC, book reference, monster or item removes its links.
+    - On the web, "Plan quest" on the Quests tab edits them, like session prep; each quest card shows them, and run
+      mode shows each open quest's reward.
+    - Foundry pushes a quest's `status`, `foundryScenes`, `rewardCurrency`, `rewardXp` and `milestone`. Like session
+      links, quest links aren't pushed from Foundry.
 - **Scene thumbnails (done):**
-  - The module sends a 640×360 WebP thumbnail of each scene a linked campaign uses (place and session maps), made
-    with Foundry's `Scene#createThumbnail`, to `POST /v1/foundry/scenes` (premium, like sync). It sends again only
-    when what the thumbnail shows changes: the scene's size, levels or tiles, not tokens or walls.
-  - Dungeon Master Guru keeps them in S3's public `thumbnails/scenes/` path (`FoundryScene`), so they show on the
-    Places tab, in session prep and in run mode while Foundry is closed. The campaign's `sceneThumbnails` maps
-    scene UUIDs to them.
+  - The module sends a 640×360 WebP thumbnail of every scene in the world that has a map image, made with
+    Foundry's `Scene#createThumbnail`, to `POST /v1/foundry/scenes` (premium, like sync), so the website can offer
+    them as maps. It sends again only when what the thumbnail shows changes: the scene's size, levels or tiles, not
+    tokens or walls. `DELETE /v1/foundry/scenes?world=&uuid=` removes a scene deleted in Foundry, with its image.
+  - Dungeon Master Guru keeps them in S3's public `thumbnails/scenes/` path (`FoundryScene`, up to 500 per world),
+    so they show on the Places and Quests tabs, in session prep and in run mode while Foundry is closed. The
+    campaign's `sceneThumbnails` maps the UUIDs of the scenes it uses (places', sessions' and quests' maps) to them.
   - Scenes without a map image, and 3D Canvas scenes, get no thumbnail; they show by name.
 
 ## What's left
@@ -196,10 +209,11 @@ Every planner table has:
 | `campaign_factions` | | |
 | `fronts` | owner (villain or faction), goal, doom, stakes jsonb, clock_segments, clock_filled | |
 | `portents` | ordered, triggered_at | |
-| `quests` | kind (main/side), status, `parent_id`, act, position, giver_npc_id, location_id, reward, level_min/max | |
+| `quests` | kind (main/side), status, `parent_id`, act, position, giver_npc_id, location_id, reward, level_min/max, `foundry_scenes` jsonb, `reward_currency` jsonb, reward_xp, milestone | |
 | `secrets` | revelation, text, revealed_at, revealed_session_id, polymorphic `subject` | |
 | `campaign_sessions` | number, scheduled_on, status (planned/prepped/played), level, strong_start, scenes jsonb, log, recap | |
 | `session_links` | polymorphic join: session ↔ npc / location / monster / item / secret / quest | Lazy DM steps 5–8 |
+| `quest_links` | polymorphic join: quest ↔ npc / book reference / monster / item, with a quantity | NPCs involved, monsters, reward items |
 | `campaign_links` | polymorphic source → target | Cross-references used for the wiki-style "mentioned in" |
 | `api_tokens` | user_id, name, token_digest, scopes, last_used_at | For Foundry |
 

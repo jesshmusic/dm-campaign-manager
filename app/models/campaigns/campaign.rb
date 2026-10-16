@@ -162,7 +162,7 @@ class Campaign < ApplicationRecord
       locations: locations.order(:name).map(&:as_json_for_api),
       npcs: npcs.includes(:monster, :stat_block_reference).order(:name).map(&:as_json_for_api),
       fronts: fronts.order(:created_at).map(&:as_json_for_api),
-      quests: quests.order(:kind, :act, :position, :created_at).map(&:as_json_for_api),
+      quests: quests.includes(links: :linkable).order(:kind, :act, :position, :created_at).map(&:as_json_for_api),
       secrets: secrets.order(:position, :created_at).map(&:as_json_for_api),
       sessions: sessions.includes(links: :linkable).order(:number).map(&:as_json_for_api),
       references: book_references.order(:book, :name).map(&:as_json_for_api),
@@ -172,10 +172,10 @@ class Campaign < ApplicationRecord
     )
   end
 
-  # The Foundry scenes it uses as maps: each place's map and each session's maps
+  # The Foundry scenes it uses as maps: each place's map, and each session's and quest's maps
   def foundry_scene_uuids
-    session_scenes = sessions.pluck(:foundry_scenes).flatten.filter_map { |scene| scene['uuid'] if scene.is_a?(Hash) }
-    (locations.where.not(foundry_scene_uuid: nil).pluck(:foundry_scene_uuid) + session_scenes).uniq
+    listed = MapsAndCoins.scene_uuids(sessions.pluck(:foundry_scenes).flatten + quests.pluck(:foundry_scenes).flatten)
+    (locations.where.not(foundry_scene_uuid: nil).pluck(:foundry_scene_uuid) + listed).uniq
   end
 
   private

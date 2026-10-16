@@ -90,6 +90,30 @@ RSpec.describe CampaignSync do
       )
     end
 
+    it "includes a quest's maps, reward and links, and the quest again when its links change" do
+      quest = create(:campaign_quest, campaign: campaign, reward_currency: { gp: 50 }, reward_xp: 300, milestone: true,
+                                      foundry_scenes: [{ uuid: 'Scene.5wVcsNPOg2RjRbFx', name: 'Mountain Pass' }])
+      sildar = create(:campaign_npc, campaign: campaign, name: 'Sildar')
+      quest.links.create!(linkable: sildar)
+      potion = quest.links.create!(linkable: create(:campaign_reference, campaign: campaign, name: 'Potion', category: 'magic_item'),
+                                   quantity: 2, position: 1)
+
+      first = sync.changes_since(0)
+      expect(first[:records]['quests'].sole).to include(
+        uuid: quest.uuid, rewardCurrency: { 'gp' => 50 }, rewardXp: 300, milestone: true,
+        foundryScenes: [{ 'uuid' => 'Scene.5wVcsNPOg2RjRbFx', 'name' => 'Mountain Pass' }],
+        links: [include(linkableType: 'CampaignNpc', name: 'Sildar'), include(name: 'Potion', quantity: 2)]
+      )
+
+      potion.update!(quantity: 3)
+      after_change = sync.changes_since(first[:cursor])
+      expect(after_change[:records]['quests']).to contain_exactly(include(uuid: quest.uuid, links: [anything, include(quantity: 3)]))
+
+      sildar.destroy!
+      after_delete = sync.changes_since(after_change[:cursor])
+      expect(after_delete[:records]['quests'].sole[:links].pluck(:name)).to eq(['Potion'])
+    end
+
     it 'includes a session again when a treasure quantity changes' do
       session = create(:campaign_session, campaign: campaign)
       link = session.links.create!(linkable: create(:campaign_reference, campaign: campaign, category: 'magic_item'))
@@ -272,6 +296,63 @@ RSpec.describe CampaignSync do
         push({ foundryActorUuid: actor_uuid, name: 'Renamed', role: 'bbeg', secret: 'Changed' })
 
         expect(npc.reload).to have_attributes(foundry_actor_uuid: actor_uuid, name: 'Brother Ash', role: 'neutral', secret: nil)
+      end
+    end
+
+    describe "a quest's maps and reward" do
+      let(:quest) { create(:campaign_quest, campaign: campaign, reward_currency: { gp: 5 }) }
+      let(:scenes) { [{ uuid: 'Scene.5wVcsNPOg2RjRbFx', name: 'Mountain Pass' }] }
+
+      def push(attributes, base: quest.sync_version)
+        sync.apply([{ type: 'quest', uuid: quest.uuid, baseVersion: base, attributes: attributes }])
+      end
+
+      it 'saves the scenes, coins, XP and milestone picked in Foundry' do
+        result = push({ foundryScenes: scenes, rewardCurrency: { gp: 50, sp: 12 }, rewardXp: 450, milestone: true, status: 'active' })
+
+        expect(result[:applied]).to contain_exactly(
+          include(type: 'quest', uuid: quest.uuid,
+                  current: include(rewardCurrency: { 'gp' => 50, 'sp' => 12 }, foundryScenes: scenes.map(&:stringify_keys),
+                                   rewardXp: 450, milestone: true, status: 'active', links: []))
+        )
+        expect(quest.reload).to have_attributes(reward_currency: { 'gp' => 50, 'sp' => 12 }, foundry_scenes: scenes.map(&:stringify_keys),
+                                                reward_xp: 450, milestone: true, status: 'active')
+      end
+
+      it 'clears the XP and coins' do
+        quest.update!(reward_xp: 100)
+
+        push({ rewardXp: nil, rewardCurrency: {} })
+
+        expect(quest.reload).to have_attributes(reward_xp: nil, reward_currency: {})
+      end
+
+      it 'returns a conflict when the quest changed since the base version' do
+        base = quest.sync_version
+        quest.update!(reward_xp: 100)
+
+        result = push({ rewardXp: 450 }, base: base)
+
+        expect(result[:conflicts]).to contain_exactly(include(uuid: quest.uuid, current: include(rewardXp: 100)))
+        expect(quest.reload.reward_xp).to eq(100)
+      end
+
+      it 'reports bad scenes, coins, XP and milestones' do
+        result = push({ foundryScenes: [{ uuid: 'Actor.5wVcsNPOg2RjRbFx', name: 'Not a scene' }], rewardCurrency: { gp: -1 },
+                        rewardXp: -5, milestone: nil })
+
+        expect(result[:errors]).to contain_exactly(
+          include(uuid: quest.uuid, errors: include(/Foundry scenes must be/, /Reward currency must be/, /Reward xp must be/,
+                                                    /Milestone must be/))
+        )
+        expect(quest.reload).to have_attributes(foundry_scenes: [], reward_currency: { 'gp' => 5 }, reward_xp: nil, milestone: false)
+      end
+
+      it "doesn't take links or the quest's other fields from Foundry" do
+        push({ name: 'Renamed', reward: 'Changed', links: [{ linkableType: 'CampaignNpc', linkableId: '1' }], rewardXp: 10 })
+
+        expect(quest.reload).to have_attributes(name: quest.name, reward: nil, reward_xp: 10)
+        expect(quest.links).to be_empty
       end
     end
 

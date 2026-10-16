@@ -10,12 +10,15 @@ module Admin
         private
 
         def resource_scope
-          @campaign.quests.order(:kind, :act, :position, :created_at)
+          @campaign.quests.includes(links: :linkable).order(:kind, :act, :position, :created_at)
         end
 
         def resource_params
-          params.require(:quest).permit(%i[name kind status description reward notes act position level_min level_max parent_id
-                                           giver_npc_id location_id])
+          params.require(:quest).permit(
+            :name, :kind, :status, :description, :reward, :notes, :act, :position, :level_min, :level_max, :parent_id,
+            :giver_npc_id, :location_id, :reward_xp, :milestone,
+            reward_currency: MapsAndCoins::COINS, foundry_scenes: %i[uuid name]
+          )
         end
       end
     end

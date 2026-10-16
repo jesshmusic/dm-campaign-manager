@@ -64,6 +64,70 @@ RSpec.describe 'Admin::V1::Campaigns::QuestsController', type: :request do
       expect(json['errors']).to include('Kind is not included in the list')
     end
 
+    describe 'maps and reward' do
+      let(:quest) { create(:campaign_quest, campaign: campaign, reward: 'The mayor owes them') }
+      let(:scenes) { [{ 'uuid' => 'Scene.5wVcsNPOg2RjRbFx', 'name' => 'Mountain Pass' }, { 'uuid' => 'Scene.aaaaaaaaaaaaaaaa', 'name' => 'Cave' }] }
+
+      it 'saves the maps picked on the website, the coins, XP and milestone' do
+        patch "#{quests_path}/#{quest.id}",
+              params: { quest: { foundry_scenes: scenes, reward_currency: { gp: 50, sp: '12' }, reward_xp: 450, milestone: true } },
+              as: :json
+
+        expect(response).to have_http_status(:success)
+        expect(json).to include('foundryScenes' => scenes, 'rewardCurrency' => { 'gp' => 50, 'sp' => 12 }, 'rewardXp' => 450,
+                                'milestone' => true, 'reward' => 'The mayor owes them', 'links' => [])
+        expect(quest.reload).to have_attributes(foundry_scenes: scenes, reward_currency: { 'gp' => 50, 'sp' => 12 }, reward_xp: 450,
+                                                milestone: true)
+      end
+
+      it 'clears them' do
+        quest.update!(foundry_scenes: scenes, reward_currency: { gp: 50 }, reward_xp: 450, milestone: true)
+
+        patch "#{quests_path}/#{quest.id}", params: { quest: { foundry_scenes: [], reward_currency: {}, reward_xp: nil, milestone: false } },
+                                            as: :json
+
+        expect(response).to have_http_status(:success)
+        expect(quest.reload).to have_attributes(foundry_scenes: [], reward_currency: {}, reward_xp: nil, milestone: false)
+      end
+
+      it 'keeps them when other fields change' do
+        quest.update!(foundry_scenes: scenes, reward_currency: { gp: 50 }, reward_xp: 450, milestone: true)
+
+        patch "#{quests_path}/#{quest.id}", params: { quest: { name: 'Renamed' } }, as: :json
+
+        expect(quest.reload).to have_attributes(name: 'Renamed', foundry_scenes: scenes, reward_currency: { 'gp' => 50 },
+                                                reward_xp: 450, milestone: true)
+      end
+
+      it 'drops coins that are not pp, gp, ep, sp or cp, and keeps only the uuid and name of each scene' do
+        patch "#{quests_path}/#{quest.id}",
+              params: { quest: { reward_currency: { gp: 5, zz: 3 }, foundry_scenes: [scenes.first.merge('img' => 'pass.webp')] } },
+              as: :json
+
+        expect(response).to have_http_status(:success)
+        expect(quest.reload).to have_attributes(reward_currency: { 'gp' => 5 }, foundry_scenes: [scenes.first])
+      end
+
+      it 'rejects bad scenes, coins and XP' do
+        patch "#{quests_path}/#{quest.id}",
+              params: { quest: { foundry_scenes: [{ uuid: 'Actor.5wVcsNPOg2RjRbFx', name: 'Not a scene' }], reward_currency: { gp: -1 },
+                                 reward_xp: -5 } },
+              as: :json
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(json['errors']).to include(/Foundry scenes must be/, /Reward currency must be/, /Reward xp must be/)
+        expect(quest.reload).to have_attributes(foundry_scenes: [], reward_currency: {}, reward_xp: nil)
+      end
+
+      it 'lists each quest with its links' do
+        create(:campaign_quest_link, quest: quest, linkable: create(:campaign_npc, campaign: campaign, name: 'Sildar'))
+
+        get quests_path
+
+        expect(json.sole['links'].sole).to include('linkableType' => 'CampaignNpc', 'name' => 'Sildar')
+      end
+    end
+
     it 'rejects a quest as its own parent' do
       quest = create(:campaign_quest, campaign: campaign)
 

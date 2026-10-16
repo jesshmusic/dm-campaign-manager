@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_10_16_170000) do
+ActiveRecord::Schema[7.1].define(version: 2026_10_16_180000) do
   create_schema "heroku_ext"
 
   # These are extensions that must be enabled in order to support this database
@@ -206,6 +206,22 @@ ActiveRecord::Schema[7.1].define(version: 2026_10_16_170000) do
     t.index ["player_character_id"], name: "index_campaign_party_members_on_player_character_id"
   end
 
+  create_table "campaign_quest_links", force: :cascade do |t|
+    t.bigint "quest_id", null: false
+    t.string "linkable_type", null: false
+    t.bigint "linkable_id", null: false
+    t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
+    t.integer "position", default: 0, null: false
+    t.integer "quantity"
+    t.bigint "sync_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["linkable_type", "linkable_id"], name: "index_campaign_quest_links_on_linkable"
+    t.index ["quest_id", "linkable_type", "linkable_id"], name: "index_campaign_quest_links_uniqueness", unique: true
+    t.index ["quest_id"], name: "index_campaign_quest_links_on_quest_id"
+    t.index ["uuid"], name: "index_campaign_quest_links_on_uuid", unique: true
+  end
+
   create_table "campaign_quests", force: :cascade do |t|
     t.bigint "campaign_id", null: false
     t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
@@ -225,6 +241,10 @@ ActiveRecord::Schema[7.1].define(version: 2026_10_16_170000) do
     t.bigint "sync_version", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.jsonb "foundry_scenes", default: [], null: false
+    t.jsonb "reward_currency", default: {}, null: false
+    t.integer "reward_xp"
+    t.boolean "milestone", default: false, null: false
     t.index ["campaign_id", "sync_version"], name: "index_campaign_quests_on_campaign_id_and_sync_version"
     t.index ["campaign_id"], name: "index_campaign_quests_on_campaign_id"
     t.index ["giver_npc_id"], name: "index_campaign_quests_on_giver_npc_id"
@@ -1104,6 +1124,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_10_16_170000) do
   add_foreign_key "campaign_npcs", "monsters", on_delete: :nullify
   add_foreign_key "campaign_party_members", "campaigns", on_delete: :cascade
   add_foreign_key "campaign_party_members", "player_characters", on_delete: :cascade
+  add_foreign_key "campaign_quest_links", "campaign_quests", column: "quest_id", on_delete: :cascade
   add_foreign_key "campaign_quests", "campaign_locations", column: "location_id", on_delete: :nullify
   add_foreign_key "campaign_quests", "campaign_npcs", column: "giver_npc_id", on_delete: :nullify
   add_foreign_key "campaign_quests", "campaign_quests", column: "parent_id", on_delete: :nullify

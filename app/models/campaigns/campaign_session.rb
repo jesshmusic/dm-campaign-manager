@@ -41,16 +41,14 @@
 # 4 secrets & clues, 5 fantastic locations, 6 important NPCs, 7 relevant
 # monsters (4-7 are links), 8 treasure (treasure, treasure_currency and item
 # links). Run mode fills in the log; the recap is written afterwards.
-# foundry_scenes are the Foundry scenes the DM picked for it in Foundry.
+# foundry_scenes are the Foundry scenes the DM picked as its maps, in Foundry
+# or on the website.
 class CampaignSession < ApplicationRecord
   include CampaignRecord
+  include MapsAndCoins
 
   STATUSES = %w[planned prepped played].freeze
   MAX_SCENES = 20
-  MAX_FOUNDRY_SCENES = 20
-  MAX_SCENE_NAME = 120
-  COINS = %w[pp gp ep sp cp].freeze
-  MAX_COINS = 1_000_000
 
   has_many :links, -> { order(:position, :id) }, class_name: 'CampaignSessionLink', foreign_key: :session_id,
                                                  inverse_of: :session, dependent: :destroy
@@ -65,34 +63,13 @@ class CampaignSession < ApplicationRecord
   validates :status, inclusion: { in: STATUSES }
   validates :level, numericality: { only_integer: true, in: 1..20 }, allow_nil: true
   validates_string_list :scenes, max: MAX_SCENES
-  validate :foundry_scenes_are_valid
-  validate :treasure_currency_is_valid
+  foundry_scene_list :foundry_scenes
+  coin_purse :treasure_currency
 
   before_validation :assign_next_number, on: :create
 
   def display_title
     title.presence || "Session #{number}"
-  end
-
-  # Scenes arrive from Foundry as [{ uuid:, name: }]; keep only those keys.
-  # Anything else is left for validation to reject.
-  def foundry_scenes=(value)
-    value = [] if value.nil?
-    value = value.map { |scene| scene.is_a?(Hash) ? scene.stringify_keys.slice('uuid', 'name') : scene } if value.is_a?(Array)
-    super
-  end
-
-  # Coins arrive as { gp: 50, sp: 12 }. Whole numbers sent as text (from a
-  # form) become numbers; anything else is left for validation to reject.
-  def treasure_currency=(value)
-    value = {} if value.nil?
-    value = value.to_unsafe_h if value.respond_to?(:to_unsafe_h)
-    if value.is_a?(Hash)
-      value = value.each_with_object({}) do |(coin, count), coins|
-        coins[coin.to_s] = count.is_a?(String) && count.match?(/\A\d+\z/) ? count.to_i : count
-      end
-    end
-    super
   end
 
   def as_json_for_api
@@ -121,27 +98,5 @@ class CampaignSession < ApplicationRecord
 
   def assign_next_number
     self.number ||= (campaign&.sessions&.maximum(:number) || 0) + 1
-  end
-
-  def foundry_scenes_are_valid
-    return if foundry_scenes.is_a?(Array) && foundry_scenes.size <= MAX_FOUNDRY_SCENES && foundry_scenes.all? { |scene| foundry_scene?(scene) }
-
-    errors.add(:foundry_scenes, "must be up to #{MAX_FOUNDRY_SCENES} Foundry scenes, each with a scene UUID and a name " \
-                                "of up to #{MAX_SCENE_NAME} characters")
-  end
-
-  def foundry_scene?(scene)
-    scene.is_a?(Hash) && scene['uuid'].is_a?(String) && scene['uuid'].match?(CampaignLocation::FOUNDRY_SCENE_UUID) &&
-      scene['name'].is_a?(String) && scene['name'].present? && scene['name'].length <= MAX_SCENE_NAME
-  end
-
-  def treasure_currency_is_valid
-    valid = treasure_currency.is_a?(Hash) && treasure_currency.all? do |coin, count|
-      COINS.include?(coin) && count.is_a?(Integer) && count.between?(0, MAX_COINS)
-    end
-    return if valid
-
-    coins = COINS.to_sentence(last_word_connector: ' and ')
-    errors.add(:treasure_currency, "must be whole numbers of #{coins}, up to #{MAX_COINS.to_fs(:delimited)} each")
   end
 end

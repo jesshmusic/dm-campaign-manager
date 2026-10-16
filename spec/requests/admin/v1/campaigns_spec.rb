@@ -88,10 +88,24 @@ RSpec.describe 'Admin::V1::CampaignsController', type: :request do
       create(:campaign_session, campaign: campaign, foundry_scenes: [
                { 'uuid' => camp.foundry_uuid, 'name' => 'Camp' }, { 'uuid' => 'Scene.zzzzzzzzzzzzzzzz', 'name' => 'Not sent' }
              ])
+      lair = create(:foundry_scene, user: user, name: 'Lair')
+      create(:campaign_quest, campaign: campaign, foundry_scenes: [{ 'uuid' => lair.foundry_uuid, 'name' => 'Lair' }])
 
       get "/v1/campaigns/#{campaign.slug}"
 
-      expect(json['sceneThumbnails']).to eq(pass.foundry_uuid => pass.thumbnail_url, camp.foundry_uuid => camp.thumbnail_url)
+      expect(json['sceneThumbnails']).to eq(pass.foundry_uuid => pass.thumbnail_url, camp.foundry_uuid => camp.thumbnail_url,
+                                            lair.foundry_uuid => lair.thumbnail_url)
+    end
+
+    it 'includes each quest with its maps, reward and links' do
+      quest = create(:campaign_quest, campaign: campaign, name: 'Find Gundren', reward_currency: { gp: 50 }, milestone: true)
+      create(:campaign_quest_link, quest: quest, linkable: create(:campaign_npc, campaign: campaign, name: 'Sildar'))
+
+      get "/v1/campaigns/#{campaign.slug}"
+
+      expect(json['quests'].sole).to include('name' => 'Find Gundren', 'rewardCurrency' => { 'gp' => 50 }, 'milestone' => true,
+                                             'rewardXp' => nil, 'foundryScenes' => [])
+      expect(json['quests'].sole['links'].sole).to include('linkableType' => 'CampaignNpc', 'name' => 'Sildar')
     end
 
     it 'also finds the campaign by id' do

@@ -261,12 +261,15 @@ RSpec.describe Campaign, type: :model do
       create(:campaign_quest, campaign: campaign, giver_npc: npc, location: parent)
       create(:campaign_secret, campaign: campaign, revealed: true, revealed_session: session)
       create(:campaign_session_link, session: session, linkable: npc)
+      quest = create(:campaign_quest, campaign: campaign)
+      create(:campaign_quest_link, quest: quest, linkable: create(:campaign_npc, campaign: campaign))
+      create(:campaign_quest_link, quest: quest, linkable: create(:campaign_reference, campaign: campaign))
       npc.destroy! # leaves a tombstone
 
       campaign.destroy!
 
       [CampaignFaction, CampaignLocation, CampaignNpc, CampaignFront, CampaignQuest, CampaignSecret, CampaignSession,
-       CampaignSessionLink, CampaignTombstone].each do |model|
+       CampaignSessionLink, CampaignQuestLink, CampaignReference, CampaignTombstone].each do |model|
         expect(model.count).to eq(0), "expected no #{model.name} records left"
       end
     end
@@ -383,6 +386,34 @@ RSpec.describe Campaign, type: :model do
       create(:campaign_session, campaign: campaign, number: 1)
 
       expect(campaign.as_full_json_for_api[:sessions].pluck(:number)).to eq([1, 2])
+    end
+
+    it "includes each quest's links" do
+      quest = create(:campaign_quest, campaign: campaign)
+      create(:campaign_quest_link, quest: quest, linkable: create(:monster, user: nil, name: 'Owlbear'))
+
+      expect(campaign.as_full_json_for_api[:quests].sole[:links].pluck(:name)).to eq(['Owlbear'])
+    end
+  end
+
+  describe '#foundry_scene_uuids' do
+    def scene(uuid, name = 'Map')
+      { 'uuid' => uuid, 'name' => name }
+    end
+
+    it "lists each place's map and each session's and quest's maps, once each" do
+      create(:campaign_location, campaign: campaign, foundry_scene_uuid: 'Scene.aaaaaaaaaaaaaaaa')
+      create(:campaign_location, campaign: campaign)
+      create(:campaign_session, campaign: campaign, foundry_scenes: [scene('Scene.bbbbbbbbbbbbbbbb'), scene('Scene.aaaaaaaaaaaaaaaa')])
+      create(:campaign_quest, campaign: campaign, foundry_scenes: [scene('Scene.cccccccccccccccc'), scene('Scene.bbbbbbbbbbbbbbbb')])
+      create(:campaign_quest, campaign: create(:campaign), foundry_scenes: [scene('Scene.dddddddddddddddd')])
+
+      expect(campaign.foundry_scene_uuids).to contain_exactly('Scene.aaaaaaaaaaaaaaaa', 'Scene.bbbbbbbbbbbbbbbb',
+                                                              'Scene.cccccccccccccccc')
+    end
+
+    it 'is empty without maps' do
+      expect(campaign.foundry_scene_uuids).to eq([])
     end
   end
 end

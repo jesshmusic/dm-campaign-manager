@@ -31,69 +31,11 @@
 # from the campaign, or a monster or item from the compendium. Treasure (such
 # as a book reference to a magic item) can say how many the session gives.
 class CampaignSessionLink < ApplicationRecord
-  include CampaignSyncable
+  include CampaignLink
 
   CAMPAIGN_TYPES = %w[CampaignSecret CampaignLocation CampaignNpc CampaignQuest CampaignFront CampaignReference].freeze
-  COMPENDIUM_TYPES = %w[Monster Item].freeze
   LINKABLE_TYPES = (CAMPAIGN_TYPES + COMPENDIUM_TYPES).freeze
-  MAX_QUANTITY = 9999
 
   belongs_to :session, class_name: 'CampaignSession', inverse_of: :links
-  belongs_to :linkable, polymorphic: true
-
-  validates :linkable_type, inclusion: { in: LINKABLE_TYPES }
-  validates :linkable_id, uniqueness: { scope: %i[session_id linkable_type], message: 'is already linked to this session' }
-  validates :quantity, numericality: { only_integer: true, in: 1..MAX_QUANTITY }, allow_nil: true
-  validate :linkable_available
-
-  after_destroy :bump_session_sync_version, unless: -> { destroyed_by_association&.active_record == CampaignSession }
-  # A session's links are synced as part of the session, so changing them
-  # bumps the session's version (unless the session itself is being deleted)
-  after_save :bump_session_sync_version
-
-  def as_json_for_api
-    {
-      id: id.to_s,
-      uuid: uuid,
-      linkableType: linkable_type,
-      linkableId: linkable_id.to_s,
-      name: linkable.respond_to?(:name) ? linkable.name : linkable.try(:text),
-      slug: linkable.try(:slug),
-      detail: detail,
-      position: position,
-      quantity: quantity
-    }
-  end
-
-  private
-
-  # Shown next to the name: a book reference's citation, a monster's CR, an item's rarity
-  def detail
-    return linkable.citation if linkable.respond_to?(:citation)
-    return "CR #{linkable.challenge_rating}" if linkable.is_a?(Monster) && linkable.challenge_rating.present?
-
-    linkable.try(:rarity).presence
-  end
-
-  def sync_campaign
-    session.campaign
-  end
-
-  def bump_session_sync_version
-    session.save!
-  end
-
-  # Campaign records must come from this session's campaign; compendium
-  # entries must be SRD or the DM's own homebrew.
-  def linkable_available
-    return unless LINKABLE_TYPES.include?(linkable_type)
-    return if linkable.nil? || session.nil?
-
-    available = if CAMPAIGN_TYPES.include?(linkable_type)
-                  linkable.campaign_id == session.campaign_id
-                else
-                  linkable.user_id.nil? || linkable.user_id == session.campaign.user_id
-                end
-    errors.add(:linkable, 'is not available to this campaign') unless available
-  end
+  linked_from :session
 end

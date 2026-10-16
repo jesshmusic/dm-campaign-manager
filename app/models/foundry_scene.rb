@@ -27,10 +27,10 @@
 #
 
 # A thumbnail of a scene from one of the DM's Foundry worlds. Dorman Lakely's
-# Campaign Planner sends one for each scene a campaign uses as a map (a
-# place's map, or one of a session's maps), so the maps show here while
-# Foundry is closed. The image is in S3's public thumbnails path; the scene
-# itself stays in Foundry.
+# Campaign Planner sends one for each scene in the world that has a map
+# image, so the DM can pick maps for places, sessions and quests here, and
+# they show while Foundry is closed. The image is in S3's public thumbnails
+# path; the scene itself stays in Foundry.
 class FoundryScene < ApplicationRecord
   class InvalidThumbnail < StandardError; end
 
@@ -83,6 +83,11 @@ class FoundryScene < ApplicationRecord
 
   def as_json_for_api
     { uuid: foundry_uuid, name: name, version: version, thumbnailUrl: thumbnail_url, worldId: world_id }
+  end
+
+  # For picking maps on the website
+  def as_summary_json_for_api
+    { uuid: foundry_uuid, name: name, thumbnailUrl: thumbnail_url, worldId: world_id, worldTitle: world_title }
   end
 
   # Everything but the thumbnail must be valid before it's uploaded

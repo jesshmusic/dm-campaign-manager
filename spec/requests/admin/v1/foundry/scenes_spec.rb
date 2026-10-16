@@ -115,4 +115,56 @@ RSpec.describe 'Admin::V1::Foundry::ScenesController', type: :request do
       expect(response).to have_http_status(:unprocessable_entity)
     end
   end
+
+  describe 'DELETE /v1/foundry/scenes' do
+    let!(:pass) { create(:foundry_scene, user: user, foundry_uuid: 'Scene.a1B2c3D4e5F6g7H8') }
+
+    it "deletes the world's scene and its thumbnail" do
+      copy = create(:foundry_scene, user: user, foundry_uuid: pass.foundry_uuid, world_id: 'other')
+
+      delete '/v1/foundry/scenes', params: { world: 'greyhawk', uuid: pass.foundry_uuid }, headers: headers
+
+      expect(response).to have_http_status(:no_content)
+      expect(FoundryScene.exists?(pass.id)).to be false
+      expect(FoundryScene.exists?(copy.id)).to be true
+      expect(s3).to have_received(:delete_object).with(bucket: 'test-bucket', key: pass.thumbnail_s3_key)
+    end
+
+    it 'returns 404 for a scene that is not in the world, or not the DM\'s' do
+      create(:foundry_scene, foundry_uuid: 'Scene.zzzzzzzzzzzzzzzz')
+
+      [{ world: 'other', uuid: pass.foundry_uuid }, { world: 'greyhawk', uuid: 'Scene.zzzzzzzzzzzzzzzz' },
+       { world: 'greyhawk' }].each do |query|
+        delete '/v1/foundry/scenes', params: query, headers: headers
+
+        expect(response).to have_http_status(:not_found), "expected #{query.inspect} to be not found"
+        expect(json).to eq('errors' => ['Scene not found'])
+      end
+      expect(FoundryScene.count).to eq(2)
+      expect(s3).not_to have_received(:delete_object)
+    end
+
+    it 'needs a world' do
+      delete '/v1/foundry/scenes', params: { uuid: pass.foundry_uuid }, headers: headers
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(FoundryScene.exists?(pass.id)).to be true
+    end
+
+    it 'needs premium access' do
+      user.patreon_account.destroy!
+
+      delete '/v1/foundry/scenes', params: { world: 'greyhawk', uuid: pass.foundry_uuid }, headers: headers
+
+      expect(response).to have_http_status(:forbidden)
+      expect(FoundryScene.exists?(pass.id)).to be true
+    end
+
+    it 'needs a valid API token' do
+      delete '/v1/foundry/scenes', params: { world: 'greyhawk', uuid: pass.foundry_uuid }
+
+      expect(response).to have_http_status(:unauthorized)
+      expect(FoundryScene.exists?(pass.id)).to be true
+    end
+  end
 end

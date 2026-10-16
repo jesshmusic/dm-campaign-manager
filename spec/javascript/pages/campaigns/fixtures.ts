@@ -8,12 +8,14 @@ import {
   CampaignSummary,
   CompendiumEntry,
   CompendiumPack,
+  FoundrySceneSummary,
   Front,
   PartyCharacter,
   Location,
   Npc,
   PlannerSession,
   Quest,
+  QuestLink,
   Secret,
 } from '../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/types';
 import type { CampaignApi } from '../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/useCampaignApi';
@@ -68,6 +70,37 @@ export const quest = (overrides: Partial<Quest> = {}): Quest => ({
   parentId: null,
   giverNpcId: null,
   locationId: null,
+  foundryScenes: [],
+  rewardCurrency: {},
+  rewardXp: null,
+  milestone: false,
+  links: [],
+  ...overrides,
+});
+
+// A link from a quest (or session): an NPC by default
+export const questLink = (overrides: Partial<QuestLink> = {}): QuestLink => ({
+  id: 'ql0',
+  uuid: 'uuid-ql0',
+  linkableType: 'CampaignNpc',
+  linkableId: 'n1',
+  name: 'Lareth',
+  slug: null,
+  detail: null,
+  position: 0,
+  quantity: null,
+  ...overrides,
+});
+
+// One of the DM's Foundry scenes, as /v1/foundry_scenes lists it
+export const foundryScene = (
+  overrides: Partial<FoundrySceneSummary> = {},
+): FoundrySceneSummary => ({
+  uuid: 'Scene.5wVcsNPOg2RjRbFx',
+  name: 'Mountain Pass',
+  thumbnailUrl: 'https://example.com/pass.webp',
+  worldId: 'greyhawk',
+  worldTitle: 'Greyhawk',
   ...overrides,
 });
 
@@ -535,11 +568,15 @@ export const makeApi = (overrides: Partial<MockApi> = {}): MockApi => ({
   addSessionLink: jest.fn().mockResolvedValue({}),
   updateSessionLink: jest.fn().mockResolvedValue({}),
   removeSessionLink: jest.fn().mockResolvedValue(undefined),
+  addQuestLink: jest.fn().mockResolvedValue({}),
+  updateQuestLink: jest.fn().mockResolvedValue({}),
+  removeQuestLink: jest.fn().mockResolvedValue(undefined),
   searchMonsters: jest.fn().mockResolvedValue([]),
   searchItems: jest.fn().mockResolvedValue([]),
   compendiumPacks: jest.fn().mockResolvedValue([]),
   searchCompendium: jest.fn().mockResolvedValue({ indexed: false, results: [] }),
   listPlayerCharacters: jest.fn().mockResolvedValue([]),
+  listFoundryScenes: jest.fn().mockResolvedValue([]),
   randomName: jest.fn().mockResolvedValue('Random Name'),
   randomTavernName: jest.fn().mockResolvedValue('The Prancing Pony'),
   adventureHook: jest.fn().mockResolvedValue('A dragon attacks'),

@@ -5,7 +5,7 @@ import useAssistantApi, { AssistantError, RecapProposal } from './useAssistantAp
 import AssistantNotice from './AssistantNotice';
 import { CampaignState } from '../useCampaign';
 import { Campaign, PlannerSession } from '../types';
-import { QUEST_STATUS_LABELS } from '../tabs/QuestsTab';
+import { QUEST_STATUS_LABELS } from '../quest/questDetails';
 import { ButtonRow, Card, CheckboxField, Meta, TextArea } from '../Campaigns.styles';
 
 type Change = { key: string; label: string; apply: () => Promise<boolean> };

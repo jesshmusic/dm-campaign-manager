@@ -1,12 +1,66 @@
 import React from 'react';
+import { MemoryRouter } from 'react-router-dom';
 import { render, screen, fireEvent, waitFor, within } from '../../../test-utils';
 import QuestsTab from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/tabs/QuestsTab';
 import { Campaign } from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/types';
-import { FakeState, makeState, quest, sampleCampaign } from '../fixtures';
+import { FakeState, makeState, quest, questLink, sampleCampaign } from '../fixtures';
 
 const renderTab = (campaign: Campaign = sampleCampaign(), state: FakeState = makeState()) => {
-  render(<QuestsTab campaign={campaign} state={state} />);
+  render(
+    <MemoryRouter>
+      <QuestsTab campaign={campaign} state={state} />
+    </MemoryRouter>,
+  );
   return { campaign, state };
+};
+
+// The sample's main quest with maps, NPCs, monsters and a full reward
+const plannedCampaign = () => {
+  const campaign = sampleCampaign();
+  campaign.quests[0] = {
+    ...campaign.quests[0],
+    foundryScenes: [
+      { uuid: 'Scene.5wVcsNPOg2RjRbFx', name: 'Mountain Pass' },
+      { uuid: 'Scene.aaaaaaaaaaaaaaaa', name: 'Lair' },
+    ],
+    rewardCurrency: { pp: 2, gp: 1200 },
+    rewardXp: 450,
+    milestone: true,
+    links: [
+      questLink({ id: 'ql1', linkableType: 'CampaignNpc', linkableId: 'n1', name: 'Lareth' }),
+      questLink({ id: 'ql2', linkableType: 'CampaignNpc', linkableId: 'n2', name: 'Mordred' }),
+      questLink({
+        id: 'ql3',
+        linkableType: 'Monster',
+        linkableId: '12',
+        name: 'Ghoul',
+        slug: 'ghoul',
+        detail: 'CR 1',
+      }),
+      questLink({
+        id: 'ql4',
+        linkableType: 'CampaignReference',
+        linkableId: 'r1',
+        name: 'Cult Fanatic',
+      }),
+      questLink({
+        id: 'ql5',
+        linkableType: 'CampaignReference',
+        linkableId: 'r2',
+        name: 'Bag of Holding',
+      }),
+      questLink({
+        id: 'ql6',
+        linkableType: 'Item',
+        linkableId: '40',
+        name: 'Potion of Healing',
+        detail: 'common',
+        quantity: 3,
+      }),
+    ],
+  };
+  campaign.sceneThumbnails = { 'Scene.5wVcsNPOg2RjRbFx': 'https://example.com/pass.webp' };
+  return campaign;
 };
 
 const input = (name: string) => document.getElementById(`field-${name}`) as HTMLInputElement;
@@ -45,6 +99,75 @@ describe('QuestsTab', () => {
     ).toBeInTheDocument();
     expect(within(section).getByText('Find the cult and end it')).toBeInTheDocument();
     expect(within(section).getByText('500 gp')).toBeInTheDocument();
+  });
+
+  it("shows a quest's maps, NPCs and monsters", () => {
+    renderTab(plannedCampaign());
+
+    const maps = within(main()).getByRole('list', { name: 'Maps for Stop the cult' });
+    expect(within(maps).getByRole('img', { name: 'Map: Mountain Pass' })).toHaveAttribute(
+      'src',
+      'https://example.com/pass.webp',
+    );
+    expect(within(maps).getByText('Lair')).toBeInTheDocument();
+    expect(within(main()).getByText('Lareth, Mordred')).toBeInTheDocument();
+    expect(within(main()).getByRole('link', { name: 'Ghoul' })).toHaveAttribute(
+      'href',
+      '/app/2024/monsters/ghoul',
+    );
+    expect(within(main()).getByText('Cult Fanatic')).toBeInTheDocument();
+    expect(within(main()).getByText('(CR 2 · MM p. 34)')).toBeInTheDocument();
+  });
+
+  it("shows a quest's reward: items with how many, coins, XP, milestone and notes", () => {
+    renderTab(plannedCampaign());
+
+    const reward = within(main()).getByRole('group', { name: 'Reward for Stop the cult' });
+    expect(
+      within(reward)
+        .getAllByRole('listitem')
+        .map((item) => item.textContent),
+    ).toEqual(['Bag of Holding (DMG p. 224)', 'Potion of Healing ×3 (common)']);
+    expect(within(reward).getByText('2 pp, 1,200 gp')).toBeInTheDocument();
+    expect(within(reward).getByText('450 XP')).toBeInTheDocument();
+    expect(
+      within(reward).getByText("Milestone: the party levels up when it's done"),
+    ).toBeInTheDocument();
+    expect(within(reward).getByText('500 gp')).toBeInTheDocument();
+  });
+
+  it('leaves out what a quest has none of', () => {
+    renderTab();
+
+    const lostChild = within(side()).getByRole('heading', { name: 'Find the lost child' })
+      .parentElement?.parentElement as HTMLElement;
+    expect(within(lostChild).queryByRole('group', { name: /Reward/ })).not.toBeInTheDocument();
+    expect(within(lostChild).queryByRole('list')).not.toBeInTheDocument();
+    expect(within(lostChild).queryByText('NPCs')).not.toBeInTheDocument();
+    expect(within(lostChild).queryByText('Monsters')).not.toBeInTheDocument();
+  });
+
+  it('plans a quest, then goes back to all quests', () => {
+    renderTab(plannedCampaign());
+
+    fireEvent.click(within(main()).getByRole('button', { name: 'Plan the quest' }));
+
+    const plan = screen.getByRole('region', { name: 'Plan Stop the cult' });
+    expect(within(plan).getByRole('heading', { name: 'Plan: Stop the cult' })).toBeInTheDocument();
+    expect(screen.queryByRole('region', { name: 'Main quests' })).not.toBeInTheDocument();
+
+    fireEvent.click(within(plan).getByRole('button', { name: '← All quests' }));
+
+    expect(screen.queryByRole('region', { name: 'Plan Stop the cult' })).not.toBeInTheDocument();
+    expect(main()).toBeInTheDocument();
+  });
+
+  it('plans the quest it was asked to', () => {
+    renderTab();
+
+    fireEvent.click(within(side()).getAllByRole('button', { name: 'Plan the quest' })[1]);
+
+    expect(screen.getByRole('region', { name: 'Plan Old errand' })).toBeInTheDocument();
   });
 
   it('shows an open-ended level range and the parent quest', () => {
@@ -116,6 +239,8 @@ describe('QuestsTab', () => {
     const { state } = renderTab();
 
     fireEvent.click(within(main()).getByRole('button', { name: 'Edit' }));
+    expect(input('reward')).toHaveValue('500 gp');
+    expect(screen.getByText('Reward notes')).toBeInTheDocument();
     expect(input('level_min')).toHaveValue(3);
     expect(input('level_max')).toHaveValue(5);
     expect(input('giver_npc_id')).toHaveValue('n3');

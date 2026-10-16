@@ -3,8 +3,9 @@
 module Admin
   module V1
     module Foundry
-      # Thumbnails of the scenes a DM's campaigns use as maps, sent by Dorman
-      # Lakely's Campaign Planner so they show here while Foundry is closed.
+      # Thumbnails of the scenes in a DM's Foundry worlds, sent by Dorman
+      # Lakely's Campaign Planner so the DM can pick them as maps on the
+      # website, and they show while Foundry is closed.
       class ScenesController < BaseController
         # The body has its own `scene` key, so don't wrap it in one
         wrap_parameters false
@@ -41,6 +42,16 @@ module Admin
         rescue Aws::Errors::ServiceError, Seahorse::Client::NetworkingError => e
           Rails.logger.error "Scene thumbnail upload failed: #{e.message}"
           render json: { errors: ['Could not save the thumbnail. Try again later.'] }, status: :bad_gateway
+        end
+
+        # DELETE /v1/foundry/scenes?world=<world id>&uuid=<Scene.xxx>
+        # For a scene deleted in Foundry, or one that no longer has a map image
+        def destroy
+          scene = @user.foundry_scenes.find_by(world_id: @world_id, foundry_uuid: params[:uuid].to_s)
+          return render json: { errors: ['Scene not found'] }, status: :not_found unless scene
+
+          scene.destroy!
+          head :no_content
         end
 
         private

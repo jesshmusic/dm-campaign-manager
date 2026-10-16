@@ -6,7 +6,7 @@ import {
   Campaign,
   PlannerSession,
 } from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/types';
-import { FakeState, makeState, plannerSession, sampleCampaign } from '../fixtures';
+import { FakeState, makeState, plannerSession, questLink, sampleCampaign } from '../fixtures';
 
 const renderRun = (
   campaign: Campaign = sampleCampaign(),
@@ -173,6 +173,36 @@ describe('RunView', () => {
       });
 
       expect(state.saveChild).toHaveBeenCalledWith('quests', { status: 'completed' }, 'q1');
+    });
+
+    it("shows each open quest's reward", () => {
+      const campaign = sampleCampaign();
+      campaign.quests[0] = {
+        ...campaign.quests[0],
+        rewardCurrency: { gp: 50 },
+        rewardXp: 450,
+        milestone: true,
+        links: [
+          questLink({
+            linkableType: 'Item',
+            linkableId: '40',
+            name: 'Potion of Healing',
+            quantity: 2,
+          }),
+        ],
+      };
+      renderRun(campaign);
+
+      const stopTheCult = screen
+        .getByRole('combobox', { name: 'Status of Stop the cult' })
+        .closest('li') as HTMLElement;
+      expect(
+        within(stopTheCult).getByText('Reward: Potion of Healing ×2, 50 gp, 450 XP, level up'),
+      ).toBeInTheDocument();
+      const lostChild = screen
+        .getByRole('combobox', { name: 'Status of Find the lost child' })
+        .closest('li') as HTMLElement;
+      expect(within(lostChild).queryByText(/Reward:/)).not.toBeInTheDocument();
     });
   });
 

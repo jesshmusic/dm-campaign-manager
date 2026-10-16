@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor, within } from '../../../test-utils';
 import PlacesTab from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/tabs/PlacesTab';
 import { Campaign } from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/types';
-import { FakeState, makeState, sampleCampaign } from '../fixtures';
+import { FakeState, foundryScene, makeApi, makeState, sampleCampaign } from '../fixtures';
 
 const renderTab = (campaign: Campaign = sampleCampaign(), state: FakeState = makeState()) => {
   render(<PlacesTab campaign={campaign} state={state} />);
@@ -42,7 +42,7 @@ describe('PlacesTab', () => {
     expect(within(cardFor('Hommlet')).queryByText(/^In /)).not.toBeInTheDocument();
   });
 
-  it('shows the Foundry scene linked in Foundry', () => {
+  it("shows each place's map", () => {
     const campaign = sampleCampaign();
     campaign.locations[0] = {
       ...campaign.locations[0],
@@ -88,14 +88,65 @@ describe('PlacesTab', () => {
     ).toBeInTheDocument();
   });
 
-  it('says scenes are linked in Foundry, and has no field for them', () => {
+  it('says maps come from Foundry scenes, picked here or in Foundry', () => {
     renderTab();
 
     expect(
       screen.getByText(
-        /Link a place to a Foundry scene in Foundry, with Dorman Lakely's Campaign Planner/,
+        /Give a place a map from your Foundry scenes, here or in Foundry with Dorman Lakely's Campaign Planner/,
       ),
     ).toBeInTheDocument();
+  });
+
+  it("picks a place's map from the DM's Foundry scenes", async () => {
+    const cave = foundryScene({ uuid: 'Scene.aaaaaaaaaaaaaaaa', name: 'Cragmaw Cave' });
+    const state = makeState({
+      api: makeApi({ listFoundryScenes: jest.fn().mockResolvedValue([foundryScene(), cave]) }),
+    });
+    renderTab(sampleCampaign(), state);
+
+    const moathouse = cardFor('Moathouse');
+    fireEvent.click(within(moathouse).getByRole('button', { name: 'Choose a map from Foundry' }));
+    fireEvent.click(await within(moathouse).findByRole('button', { name: 'Cragmaw Cave' }));
+
+    await waitFor(() =>
+      expect(state.saveChild).toHaveBeenCalledWith(
+        'locations',
+        { foundry_scene_uuid: 'Scene.aaaaaaaaaaaaaaaa', foundry_scene_name: 'Cragmaw Cave' },
+        'l2',
+      ),
+    );
+    expect(state.api.listFoundryScenes).toHaveBeenCalledTimes(1);
+  });
+
+  it("removes a place's map", async () => {
+    const campaign = sampleCampaign();
+    campaign.locations[0] = {
+      ...campaign.locations[0],
+      foundrySceneUuid: 'Scene.5wVcsNPOg2RjRbFx',
+      foundrySceneName: 'Mountain Pass',
+    };
+    const { state } = renderTab(campaign);
+
+    expect(
+      within(cardFor('Hommlet')).getByRole('button', { name: 'Change map' }),
+    ).toBeInTheDocument();
+    fireEvent.click(
+      within(cardFor('Hommlet')).getByRole('button', { name: 'Remove Mountain Pass' }),
+    );
+
+    await waitFor(() =>
+      expect(state.saveChild).toHaveBeenCalledWith(
+        'locations',
+        { foundry_scene_uuid: null, foundry_scene_name: null },
+        'l1',
+      ),
+    );
+  });
+
+  it('has no map field in the place form', () => {
+    renderTab();
+
     fireEvent.click(within(cardFor('Hommlet')).getByRole('button', { name: 'Edit' }));
     expect(screen.queryByLabelText(/scene/i)).not.toBeInTheDocument();
   });

@@ -66,7 +66,7 @@ export interface Location {
   notes: string | null;
   parentId: string | null;
   foundryMapId: string | null;
-  // The Foundry scene the DM linked in Foundry (read-only here)
+  // Its map: a Foundry scene, picked here or in Foundry
   foundrySceneUuid: string | null;
   foundrySceneName: string | null;
 }
@@ -287,6 +287,7 @@ export interface Quest {
   kind: QuestKind;
   status: QuestStatus;
   description: string | null;
+  // Reward notes, beside the reward items, coins, XP and milestone
   reward: string | null;
   notes: string | null;
   act: number | null;
@@ -296,6 +297,14 @@ export interface Quest {
   parentId: string | null;
   giverNpcId: string | null;
   locationId: string | null;
+  // Its maps, picked here or in Foundry
+  foundryScenes: FoundryScene[];
+  rewardCurrency: Currency;
+  rewardXp: number | null;
+  // "Level up when done"
+  milestone: boolean;
+  // NPCs involved, monsters for its encounters, and reward items with how many
+  links: QuestLink[];
 }
 
 export interface Secret {
@@ -319,6 +328,7 @@ export type LinkableType =
   | 'Monster'
   | 'Item';
 
+// A link from a session or quest to a campaign record, or to a monster or item
 export interface SessionLink {
   id: string;
   uuid: string;
@@ -333,10 +343,21 @@ export interface SessionLink {
   quantity: number | null;
 }
 
-// A Foundry scene the DM picked for a session in Foundry
+// A quest's links have the same shape: CampaignNpc, CampaignReference, Monster or Item
+export type QuestLink = SessionLink;
+
+// A Foundry scene used as a map, picked here or in Foundry
 export interface FoundryScene {
   uuid: string;
   name: string;
+}
+
+// One of the DM's Foundry scenes, as Dorman Lakely's Campaign Planner sent it
+// (/v1/foundry_scenes), for picking maps
+export interface FoundrySceneSummary extends FoundryScene {
+  thumbnailUrl: string;
+  worldId: string;
+  worldTitle: string | null;
 }
 
 export type SessionStatus = 'planned' | 'prepped' | 'played';
@@ -355,7 +376,7 @@ export interface PlannerSession {
   scenes: string[];
   treasure: string | null;
   treasureCurrency: Currency;
-  // Picked in Foundry (read-only here)
+  // Its maps, picked here or in Foundry
   foundryScenes: FoundryScene[];
   log: string | null;
   recap: string | null;

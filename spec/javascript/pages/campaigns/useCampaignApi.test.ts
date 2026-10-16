@@ -156,6 +156,59 @@ describe('useCampaignApi', () => {
     });
   });
 
+  describe('quest links', () => {
+    it('links an NPC, monster or item to a quest with a POST', async () => {
+      mockFetch.mockImplementation(() => jsonResponse({ id: 'ql1', name: 'Owlbear' }, 201));
+
+      const link = await api().addQuestLink('zombie-siege', 'q1', 'Monster', '12');
+
+      expect(link).toEqual({ id: 'ql1', name: 'Owlbear' });
+      expect(lastCall()[0]).toBe('/v1/campaigns/zombie-siege/quests/q1/links');
+      expect(lastCall()[1].method).toBe('POST');
+      expect(lastBody()).toEqual({ link: { linkable_type: 'Monster', linkable_id: '12' } });
+    });
+
+    it("changes a quest link's quantity with a PATCH", async () => {
+      await api().updateQuestLink('zombie-siege', 'q1', 'ql2', { quantity: 3 });
+
+      expect(lastCall()[0]).toBe('/v1/campaigns/zombie-siege/quests/q1/links/ql2');
+      expect(lastCall()[1].method).toBe('PATCH');
+      expect(lastBody()).toEqual({ link: { quantity: 3 } });
+    });
+
+    it('removes a quest link', async () => {
+      mockFetch.mockImplementation(() => jsonResponse(undefined, 204));
+
+      await expect(api().removeQuestLink('zombie-siege', 'q1', 'ql2')).resolves.toBeUndefined();
+
+      expect(lastCall()[0]).toBe('/v1/campaigns/zombie-siege/quests/q1/links/ql2');
+      expect(lastCall()[1].method).toBe('DELETE');
+    });
+  });
+
+  describe('Foundry scenes', () => {
+    it("lists the DM's scenes", async () => {
+      const scene = {
+        uuid: 'Scene.5wVcsNPOg2RjRbFx',
+        name: 'Mountain Pass',
+        thumbnailUrl: 'https://example.com/pass.webp',
+        worldId: 'greyhawk',
+        worldTitle: 'Greyhawk',
+      };
+      mockFetch.mockImplementation(() => jsonResponse({ count: 1, results: [scene] }));
+
+      await expect(api().listFoundryScenes()).resolves.toEqual([scene]);
+      expect(lastCall()[0]).toBe('/v1/foundry_scenes');
+      expect(lastCall()[1].method).toBe('GET');
+    });
+
+    it('fails when the scenes cannot be loaded', async () => {
+      mockFetch.mockImplementation(() => jsonResponse({ errors: ['Not Authenticated'] }, 401));
+
+      await expect(api().listFoundryScenes()).rejects.toThrow('Not Authenticated');
+    });
+  });
+
   describe('compendium search', () => {
     it('searches monsters by edition and maps the results', async () => {
       mockFetch.mockImplementation(() =>

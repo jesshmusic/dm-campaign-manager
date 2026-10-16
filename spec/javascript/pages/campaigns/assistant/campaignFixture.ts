@@ -59,6 +59,11 @@ export const assistantCampaign = (): Campaign => ({
       parentId: null,
       giverNpcId: null,
       locationId: null,
+      foundryScenes: [],
+      rewardCurrency: {},
+      rewardXp: null,
+      milestone: false,
+      links: [],
     },
   ],
   secrets: [

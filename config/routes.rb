@@ -105,11 +105,17 @@ Rails.application.routes.draw do
       # The signed-in DM's player characters from Foundry
       get 'player-characters', to: 'player_characters#index', constraints: { format: 'json' }
 
+      # The signed-in DM's Foundry scenes (with thumbnails), for picking maps
+      get 'foundry_scenes', to: 'foundry_scenes#index', constraints: { format: 'json' }
+
       # Campaign planner (the signed-in DM's own campaigns)
       resources :campaigns, only: %i[index show create update destroy], constraints: { format: 'json' } do
         scope module: :campaigns do
-          resources :factions, :locations, :npcs, :fronts, :quests, :secrets, :references,
+          resources :factions, :locations, :npcs, :fronts, :secrets, :references,
                     only: %i[index show create update destroy]
+          resources :quests, only: %i[index show create update destroy] do
+            resources :links, controller: 'quest_links', only: %i[create update destroy]
+          end
           resources :sessions, only: %i[index show create update destroy] do
             resources :links, controller: 'session_links', only: %i[create update destroy]
             post 'assistant/prep', to: 'assistant#prep'
@@ -130,6 +136,7 @@ Rails.application.routes.draw do
         post 'characters', to: 'characters#create', constraints: { format: 'json' }
         get 'scenes', to: 'scenes#index', constraints: { format: 'json' }
         post 'scenes', to: 'scenes#create', constraints: { format: 'json' }
+        delete 'scenes', to: 'scenes#destroy', constraints: { format: 'json' }
         get 'compendium', to: 'compendium#show', constraints: { format: 'json' }
         post 'compendium', to: 'compendium#create', constraints: { format: 'json' }
       end

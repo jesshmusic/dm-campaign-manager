@@ -1,5 +1,5 @@
 import EntitySection from '../components/EntitySection';
-import SceneThumbnail from '../components/SceneThumbnail';
+import ScenePicker from '../components/ScenePicker';
 import { FieldConfig } from '../components/EntityForm';
 import { CampaignState } from '../useCampaign';
 import { Campaign, Location } from '../types';
@@ -55,8 +55,8 @@ const PlacesTab = ({ campaign, state }: PlacesTabProps) => {
       emptyText="No locations yet. Fantastic locations make great backdrops for scenes."
       intro={
         <Meta>
-          Link a place to a Foundry scene in Foundry, with Dorman Lakely&apos;s Campaign Planner. It
-          shows here once it syncs.
+          Give a place a map from your Foundry scenes, here or in Foundry with Dorman Lakely&apos;s
+          Campaign Planner.
         </Meta>
       }
       onSave={(attributes, id) => saveChild('locations', attributes, id)}
@@ -65,12 +65,31 @@ const PlacesTab = ({ campaign, state }: PlacesTabProps) => {
         <>
           <h3>{location.name}</h3>
           {location.parentId && <Meta>In {nameOf(location.parentId)}</Meta>}
-          {location.foundrySceneUuid && (
-            <SceneThumbnail
-              name={location.foundrySceneName ?? location.foundrySceneUuid}
-              url={campaign.sceneThumbnails[location.foundrySceneUuid]}
-            />
-          )}
+          <ScenePicker
+            label={`Map of ${location.name}`}
+            chosen={
+              location.foundrySceneUuid
+                ? [
+                    {
+                      uuid: location.foundrySceneUuid,
+                      name: location.foundrySceneName ?? location.foundrySceneUuid,
+                    },
+                  ]
+                : []
+            }
+            thumbnails={campaign.sceneThumbnails}
+            load={api.listFoundryScenes}
+            onChange={([scene]) =>
+              saveChild(
+                'locations',
+                {
+                  foundry_scene_uuid: scene?.uuid ?? null,
+                  foundry_scene_name: scene?.name ?? null,
+                },
+                location.id,
+              )
+            }
+          />
           {location.description && <p>{location.description}</p>}
           {location.features.length > 0 && (
             <List>

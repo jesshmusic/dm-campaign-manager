@@ -45,6 +45,11 @@ module CampaignRecord
       has_many :session_links, class_name: 'CampaignSessionLink', as: :linkable, dependent: :destroy, inverse_of: :linkable
     end
 
+    # For records a quest can link to (NPCs, book references): deleting the record removes those links
+    def linkable_from_quests
+      has_many :quest_links, class_name: 'CampaignQuestLink', as: :linkable, dependent: :destroy, inverse_of: :linkable
+    end
+
     # Validates a jsonb column holding a list of strings
     def validates_string_list(attribute, max:)
       validate do

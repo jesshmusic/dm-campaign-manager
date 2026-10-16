@@ -9,7 +9,8 @@ import { formatCoins } from '../components/CoinFields';
 import SceneThumbnail, { SceneGallery } from '../components/SceneThumbnail';
 import { CampaignState } from '../useCampaign';
 import { Campaign, NPC_ROLE_LABELS, PlannerSession, QuestStatus, Secret } from '../types';
-import { QUEST_STATUS_LABELS } from '../tabs/QuestsTab';
+import { QUEST_STATUS_LABELS } from '../quest/questDetails';
+import { rewardSummary } from '../quest/questLinks';
 import {
   Badge,
   Card,
@@ -141,25 +142,29 @@ const RunView = ({ campaign, session, state }: RunViewProps) => {
       <SectionTitle>Quests</SectionTitle>
       {openQuests.length === 0 && <EmptyState>No open quests.</EmptyState>}
       <List>
-        {openQuests.map((quest) => (
-          <li key={quest.id}>
-            {quest.name}{' '}
-            <Select
-              aria-label={`Status of ${quest.name}`}
-              value={quest.status}
-              style={{ display: 'inline-block', width: 'auto' }}
-              onChange={(event) =>
-                void saveChild('quests', { status: event.target.value as QuestStatus }, quest.id)
-              }
-            >
-              {Object.entries(QUEST_STATUS_LABELS).map(([value, label]) => (
-                <option key={value} value={value}>
-                  {label}
-                </option>
-              ))}
-            </Select>
-          </li>
-        ))}
+        {openQuests.map((quest) => {
+          const reward = rewardSummary(quest, campaign);
+          return (
+            <li key={quest.id}>
+              {quest.name}{' '}
+              <Select
+                aria-label={`Status of ${quest.name}`}
+                value={quest.status}
+                style={{ display: 'inline-block', width: 'auto' }}
+                onChange={(event) =>
+                  void saveChild('quests', { status: event.target.value as QuestStatus }, quest.id)
+                }
+              >
+                {Object.entries(QUEST_STATUS_LABELS).map(([value, label]) => (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
+              </Select>
+              {reward && <Meta>Reward: {reward}</Meta>}
+            </li>
+          );
+        })}
       </List>
 
       <SectionTitle>Quick reference</SectionTitle>

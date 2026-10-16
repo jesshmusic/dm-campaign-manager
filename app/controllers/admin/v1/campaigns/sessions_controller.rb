@@ -14,10 +14,9 @@ module Admin
         end
 
         def resource_params
-          # Foundry scenes are picked in Foundry, so only the module changes them
           params.require(:session).permit(
             :number, :title, :scheduled_on, :status, :level, :character_notes, :strong_start, :treasure, :log, :recap,
-            scenes: [], treasure_currency: CampaignSession::COINS
+            scenes: [], treasure_currency: MapsAndCoins::COINS, foundry_scenes: %i[uuid name]
           )
         end
       end

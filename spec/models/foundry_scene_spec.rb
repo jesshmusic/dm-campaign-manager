@@ -161,6 +161,13 @@ RSpec.describe FoundryScene, type: :model do
     end
   end
 
+  it 'lists for picking maps with its world' do
+    scene = create(:foundry_scene, user: user, name: 'Mountain Pass')
+
+    expect(scene.as_summary_json_for_api).to eq(uuid: scene.foundry_uuid, name: 'Mountain Pass', thumbnailUrl: scene.thumbnail_url,
+                                                worldId: 'greyhawk', worldTitle: 'Greyhawk')
+  end
+
   it 'deletes its thumbnail when destroyed' do
     scene = create(:foundry_scene, user: user)
 

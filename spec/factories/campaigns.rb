@@ -96,4 +96,9 @@ FactoryBot.define do
     association :session, factory: :campaign_session
     linkable { association :campaign_npc, campaign: session.campaign }
   end
+
+  factory :campaign_quest_link do
+    association :quest, factory: :campaign_quest
+    linkable { association :campaign_npc, campaign: quest.campaign }
+  end
 end

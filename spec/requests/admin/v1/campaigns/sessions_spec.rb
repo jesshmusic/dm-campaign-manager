@@ -110,18 +110,36 @@ RSpec.describe 'Admin::V1::Campaigns::SessionsController', type: :request do
       end
     end
 
-    it "can't change the session's Foundry scenes, which are picked in Foundry" do
+    it "changes the session's Foundry scenes, picked on the website" do
       session = create(:campaign_session, campaign: campaign)
+      scenes = [{ 'uuid' => 'Scene.5wVcsNPOg2RjRbFx', 'name' => 'Mountain Pass' }]
 
-      patch "#{sessions_path}/#{session.id}",
-            params: { session: { title: 'Pass', foundry_scenes: [{ uuid: 'Scene.5wVcsNPOg2RjRbFx', name: 'Mountain Pass' }] } },
-            as: :json
+      patch "#{sessions_path}/#{session.id}", params: { session: { title: 'Pass', foundry_scenes: scenes } }, as: :json
 
       expect(response).to have_http_status(:success)
-      expect(session.reload).to have_attributes(title: 'Pass', foundry_scenes: [])
+      expect(json['foundryScenes']).to eq(scenes)
+      expect(session.reload).to have_attributes(title: 'Pass', foundry_scenes: scenes)
+
+      patch "#{sessions_path}/#{session.id}", params: { session: { foundry_scenes: [] } }, as: :json
+
+      expect(session.reload.foundry_scenes).to eq([])
     end
 
-    it 'shows the Foundry scenes picked in Foundry' do
+    it 'keeps its Foundry scenes when other fields change, and rejects ones that are not scenes' do
+      scenes = [{ 'uuid' => 'Scene.5wVcsNPOg2RjRbFx', 'name' => 'Mountain Pass' }]
+      session = create(:campaign_session, campaign: campaign, foundry_scenes: scenes)
+
+      patch "#{sessions_path}/#{session.id}", params: { session: { title: 'Pass' } }, as: :json
+      expect(session.reload.foundry_scenes).to eq(scenes)
+
+      patch "#{sessions_path}/#{session.id}", params: { session: { foundry_scenes: [{ uuid: 'Scene.short', name: 'Bad' }] } },
+                                              as: :json
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(json['errors']).to include(/Foundry scenes must be/)
+      expect(session.reload.foundry_scenes).to eq(scenes)
+    end
+
+    it 'shows its Foundry scenes' do
       session = create(:campaign_session, campaign: campaign,
                                           foundry_scenes: [{ uuid: 'Scene.5wVcsNPOg2RjRbFx', name: 'Mountain Pass' }])
 

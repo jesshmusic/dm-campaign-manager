@@ -4,25 +4,29 @@
 #
 # Table name: campaign_quests
 #
-#  id           :bigint           not null, primary key
-#  act          :integer
-#  description  :text
-#  kind         :string           default("main"), not null
-#  level_max    :integer
-#  level_min    :integer
-#  name         :string           not null
-#  notes        :text
-#  position     :integer          default(0), not null
-#  reward       :text
-#  status       :string           default("available"), not null
-#  sync_version :bigint           default(0), not null
-#  uuid         :uuid             not null
-#  created_at   :datetime         not null
-#  updated_at   :datetime         not null
-#  campaign_id  :bigint           not null
-#  giver_npc_id :bigint
-#  location_id  :bigint
-#  parent_id    :bigint
+#  id              :bigint           not null, primary key
+#  act             :integer
+#  description     :text
+#  foundry_scenes  :jsonb            not null
+#  kind            :string           default("main"), not null
+#  level_max       :integer
+#  level_min       :integer
+#  milestone       :boolean          default(FALSE), not null
+#  name            :string           not null
+#  notes           :text
+#  position        :integer          default(0), not null
+#  reward          :text
+#  reward_currency :jsonb            not null
+#  reward_xp       :integer
+#  status          :string           default("available"), not null
+#  sync_version    :bigint           default(0), not null
+#  uuid            :uuid             not null
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#  campaign_id     :bigint           not null
+#  giver_npc_id    :bigint
+#  location_id     :bigint
+#  parent_id       :bigint
 #
 # Indexes
 #
@@ -43,24 +47,37 @@
 
 # A main or side quest on the campaign's quest board. Main quests can be
 # grouped into acts; any quest can nest under a parent quest.
+#
+# Besides its giver, a quest links to the NPCs involved, the monsters for its
+# encounters and its reward items (with how many of each), and can use Foundry
+# scenes as maps. Its reward is those items, coins, XP and/or a milestone
+# ("level up when done"), plus the reward notes.
 class CampaignQuest < ApplicationRecord
   include CampaignRecord
+  include MapsAndCoins
 
   KINDS = %w[main side].freeze
   STATUSES = %w[available active completed failed].freeze
+  MAX_XP = 1_000_000
 
   belongs_to :parent, class_name: 'CampaignQuest', optional: true
   belongs_to :giver_npc, class_name: 'CampaignNpc', optional: true
   belongs_to :location, class_name: 'CampaignLocation', optional: true
+  has_many :links, -> { order(:position, :id) }, class_name: 'CampaignQuestLink', foreign_key: :quest_id,
+                                                 inverse_of: :quest, dependent: :destroy
 
   validates :name, presence: true, length: { maximum: 120 }
   validates :kind, inclusion: { in: KINDS }
   validates :status, inclusion: { in: STATUSES }
   validates :act, numericality: { only_integer: true, in: 1..20 }, allow_nil: true
   validates :level_min, :level_max, numericality: { only_integer: true, in: 1..20 }, allow_nil: true
+  validates :reward_xp, numericality: { only_integer: true, in: 0..MAX_XP }, allow_nil: true
+  validates :milestone, inclusion: { in: [true, false], message: 'must be true or false' }
   validates_same_campaign :parent, :giver_npc, :location
   validates_acyclic_parent message: "can't be this quest or one of its sub-quests"
   linkable_from_sessions
+  foundry_scene_list :foundry_scenes
+  coin_purse :reward_currency
   validate :level_range_in_order
 
   def as_json_for_api
@@ -79,7 +96,12 @@ class CampaignQuest < ApplicationRecord
       levelMax: level_max,
       parentId: parent_id&.to_s,
       giverNpcId: giver_npc_id&.to_s,
-      locationId: location_id&.to_s
+      locationId: location_id&.to_s,
+      foundryScenes: foundry_scenes,
+      rewardCurrency: reward_currency,
+      rewardXp: reward_xp,
+      milestone: milestone,
+      links: links.select(&:linkable).map(&:as_json_for_api)
     }
   end
 
