@@ -6,6 +6,10 @@ import { connect } from 'react-redux';
 import Dashboard from './Dashboard';
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
+import PatreonConnection from './components/PatreonConnection';
+import ApiTokens from './components/ApiTokens';
+import OpenAIKey from './components/OpenAIKey';
+import { ConnectionsGrid } from './components/Connections.styles';
 
 import { Section, UserInfo, UserPic, UserData } from './UserDashboard.styles';
 import { RootState, AppDispatch } from '../../store/store';
@@ -43,6 +47,16 @@ const UserDashboard = (_props: PageProps) => {
               </p>
             </UserData>
           </UserInfo>
+        </Section>
+      )}
+      {isAuthenticated && (
+        <Section>
+          <h2>Connections</h2>
+          <ConnectionsGrid>
+            <PatreonConnection />
+            <ApiTokens />
+            <OpenAIKey />
+          </ConnectionsGrid>
         </Section>
       )}
       <Dashboard />

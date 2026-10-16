@@ -1,9 +1,14 @@
 import React from 'react';
-import { render, screen } from '../test-utils';
+import { render, screen, waitFor } from '../test-utils';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 
 global.fetch = jest.fn();
+
+const mockGetAccessTokenSilently = jest.fn(() => Promise.resolve('test-token'));
+jest.mock('@auth0/auth0-react', () => ({
+  useAuth0: () => ({ getAccessTokenSilently: mockGetAccessTokenSilently }),
+}));
 
 const mockQuill = {
   import: jest.fn(() => ({})),
@@ -148,10 +153,34 @@ describe('FoundryMapsAdmin', () => {
       </Provider>
     );
 
-    await screen.findByTestId('page-title');
+    await waitFor(() => {
+      expect(global.fetch).toHaveBeenCalledWith('/v1/maps', expect.any(Object));
+      expect(global.fetch).toHaveBeenCalledWith('/v1/map-tags', expect.any(Object));
+    });
+  });
 
-    expect(global.fetch).toHaveBeenCalledWith('/v1/maps', expect.any(Object));
-    expect(global.fetch).toHaveBeenCalledWith('/v1/map-tags', expect.any(Object));
+  it('sends the Auth0 token with admin API requests', async () => {
+    (global.fetch as jest.Mock).mockImplementation(() =>
+      Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve([]),
+      }),
+    );
+
+    render(
+      <Provider store={mockStore}>
+        <FoundryMapsAdmin />
+      </Provider>
+    );
+
+    await waitFor(() => {
+      expect(global.fetch).toHaveBeenCalledWith(
+        '/v1/maps',
+        expect.objectContaining({
+          headers: expect.objectContaining({ Authorization: 'Bearer test-token' }),
+        }),
+      );
+    });
   });
 
   it('renders Downloads column header when maps are loaded', async () => {

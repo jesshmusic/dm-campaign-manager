@@ -9,6 +9,7 @@ import {
   GiCapeArmor,
   GiChestArmor,
   GiDungeonGate,
+  GiScrollUnfurled,
   GiDwarfFace,
   GiEvilMinion,
   GiHorseHead,
@@ -439,6 +440,7 @@ const SideBar = (props: {
             </MenuItem>
             {isAuthenticated && user ? (
               <>
+                <SidebarLink to="/app/campaigns" title="Campaigns" icon={<GiScrollUnfurled />} />
                 <SidebarLink
                   to="/app/user-dashboard"
                   title="User Dashboard"

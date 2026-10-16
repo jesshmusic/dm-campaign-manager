@@ -10,6 +10,7 @@ json.extract! item,
               :rarity,
               :requires_attunement,
               :slug
+json.id item.id
 json.category item.category
 json.cost "#{number_with_delimiter(item.cost.quantity)} #{item.cost.unit}" unless item.cost.nil?
 

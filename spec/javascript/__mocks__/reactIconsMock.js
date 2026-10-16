@@ -55,4 +55,12 @@ module.exports = {
   GiCompass: MockIcon,
   GiCrossedSwords: MockIcon,
   GiSnowflake1: MockIcon,
+  // Campaign planner
+  GiBookCover: MockIcon,
+  GiHood: MockIcon,
+  GiThreeFriends: MockIcon,
+  GiLockedChest: MockIcon,
+  GiSandsOfTime: MockIcon,
+  GiScrollUnfurled: MockIcon,
+  GiTreasureMap: MockIcon,
 };

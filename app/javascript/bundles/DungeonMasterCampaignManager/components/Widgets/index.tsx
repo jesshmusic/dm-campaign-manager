@@ -13,6 +13,8 @@ import {
   GiCompass,
   GiCrossedSwords,
   GiSnowflake1,
+  GiSpellBook,
+  GiSandsOfTime,
 } from 'react-icons/gi';
 import ActionsInCombat from './ActionsInCombat';
 import TurnActions from './TurnActions';
@@ -21,6 +23,7 @@ import AdventureHookWidget from './AdventureHookWidget';
 import TravelCalculatorWidget from './TravelCalculatorWidget';
 import EncounterDistanceWidget from './EncounterDistanceWidget';
 import EnvironmentalEffectsWidget from './EnvironmentalEffectsWidget';
+import { CampaignClocksWidget, NextSessionWidget } from './CampaignWidgets';
 
 type DashboardComponent = {
   component: React.ComponentType<Record<string, unknown>>;
@@ -114,6 +117,20 @@ export const dashboardComponents: Record<string, DashboardComponent> = {
     title: 'Environmental Effects',
     subtitle: 'Hazards and conditions reference',
     grid: { w: 4, h: 5, x: 0, y: Infinity, minW: 4, minH: 5 },
+  },
+  nextSession: {
+    component: NextSessionWidget,
+    icon: <GiSpellBook />,
+    title: 'Next Session',
+    subtitle: 'Upcoming sessions from your campaigns',
+    grid: { w: 4, h: 3, x: 0, y: Infinity, minW: 3, minH: 3 },
+  },
+  campaignClocks: {
+    component: CampaignClocksWidget,
+    icon: <GiSandsOfTime />,
+    title: 'Campaign Clocks',
+    subtitle: 'Progress clocks for the threats in your campaigns',
+    grid: { w: 4, h: 4, x: 4, y: Infinity, minW: 3, minH: 3 },
   },
 };
 

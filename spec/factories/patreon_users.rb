@@ -14,14 +14,20 @@
 #  tier_name             :string
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
+#  linked_user_id        :bigint
 #  patreon_id            :string
-#  user_id               :string           not null
+#  user_id               :string
 #
 # Indexes
 #
-#  index_patreon_users_on_expires_at  (expires_at)
-#  index_patreon_users_on_patreon_id  (patreon_id)
-#  index_patreon_users_on_user_id     (user_id) UNIQUE
+#  index_patreon_users_on_expires_at      (expires_at)
+#  index_patreon_users_on_linked_user_id  (linked_user_id) UNIQUE
+#  index_patreon_users_on_patreon_id      (patreon_id)
+#  index_patreon_users_on_user_id         (user_id) UNIQUE
+#
+# Foreign Keys
+#
+#  fk_rails_...  (linked_user_id => users.id)
 #
 FactoryBot.define do
   factory :patreon_user do

@@ -22,5 +22,9 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
     resource '/v1/patreon/*',
       headers: :any,
       methods: [:get, :post, :options, :head]
+
+    resource '/v1/foundry/*',
+      headers: :any,
+      methods: [:get, :post, :patch, :delete, :options, :head]
   end
 end

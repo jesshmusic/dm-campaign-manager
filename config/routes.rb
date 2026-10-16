@@ -89,6 +89,58 @@ Rails.application.routes.draw do
       get '/users/:user_id/ready', to: 'patreon_auth#check_status', constraints: { format: 'json' }
       get '/patreon/callback', to: 'patreon_auth#callback'
 
+      # Patreon account linked to the signed-in user (web app)
+      resource :patreon_link, path: 'patreon/link', only: %i[show create destroy], constraints: { format: 'json' }
+
+      # The signed-in user's own OpenAI key (bring your own key)
+      resource :openai_key, path: 'openai-key', only: %i[show update destroy], constraints: { format: 'json' }
+
+      # Personal API tokens for Foundry modules
+      resources :api_tokens, path: 'api-tokens', only: %i[index create destroy], constraints: { format: 'json' }
+
+      # Search the signed-in DM's Foundry compendium index
+      get 'compendium', to: 'compendium_entries#index', constraints: { format: 'json' }
+      get 'compendium/packs', to: 'compendium_entries#packs', constraints: { format: 'json' }
+
+      # The signed-in DM's player characters from Foundry
+      get 'player-characters', to: 'player_characters#index', constraints: { format: 'json' }
+
+      # The signed-in DM's Foundry scenes (with thumbnails), for picking maps
+      get 'foundry_scenes', to: 'foundry_scenes#index', constraints: { format: 'json' }
+
+      # Campaign planner (the signed-in DM's own campaigns)
+      resources :campaigns, only: %i[index show create update destroy], constraints: { format: 'json' } do
+        scope module: :campaigns do
+          resources :factions, :locations, :npcs, :fronts, :secrets, :references,
+                    only: %i[index show create update destroy]
+          resources :quests, only: %i[index show create update destroy] do
+            resources :links, controller: 'quest_links', only: %i[create update destroy]
+          end
+          resources :sessions, only: %i[index show create update destroy] do
+            resources :links, controller: 'session_links', only: %i[create update destroy]
+            post 'assistant/prep', to: 'assistant#prep'
+            post 'assistant/recap', to: 'assistant#recap'
+          end
+          post 'assistant/outline', to: 'assistant#outline'
+          post 'assistant/apply', to: 'assistant#apply'
+        end
+      end
+
+      # Endpoints for Foundry modules, authenticated with a personal API token
+      namespace :foundry do
+        get 'me', to: 'accounts#show', constraints: { format: 'json' }
+        get 'campaigns', to: 'campaigns#index', constraints: { format: 'json' }
+        post 'campaigns', to: 'campaigns#create', constraints: { format: 'json' }
+        get 'campaigns/:uuid/changes', to: 'campaigns#changes', constraints: { format: 'json' }
+        post 'campaigns/:uuid/changes', to: 'campaigns#push', constraints: { format: 'json' }
+        post 'characters', to: 'characters#create', constraints: { format: 'json' }
+        get 'scenes', to: 'scenes#index', constraints: { format: 'json' }
+        post 'scenes', to: 'scenes#create', constraints: { format: 'json' }
+        delete 'scenes', to: 'scenes#destroy', constraints: { format: 'json' }
+        get 'compendium', to: 'compendium#show', constraints: { format: 'json' }
+        post 'compendium', to: 'compendium#create', constraints: { format: 'json' }
+      end
+
       # Admin UI for managing maps
       get '/maps-admin', to: 'foundry_maps_admin#index'
 

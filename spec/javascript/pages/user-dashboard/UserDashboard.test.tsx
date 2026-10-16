@@ -26,6 +26,24 @@ jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages
   };
 });
 
+jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/user-dashboard/components/PatreonConnection', () => {
+  return function MockPatreonConnection() {
+    return <div data-testid="patreon-connection">Patreon</div>;
+  };
+});
+
+jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/user-dashboard/components/OpenAIKey', () => {
+  return function MockOpenAIKey() {
+    return <div data-testid="openai-key">OpenAI key</div>;
+  };
+});
+
+jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/user-dashboard/components/ApiTokens', () => {
+  return function MockApiTokens() {
+    return <div data-testid="api-tokens">API tokens</div>;
+  };
+});
+
 const mockStore = configureStore({
   reducer: {
     users: () => ({ currentUser: null }),
@@ -174,5 +192,43 @@ describe('UserDashboard', () => {
     );
 
     expect(screen.getByTestId('page-container')).toBeInTheDocument();
+  });
+
+  it('shows account connections when signed in', () => {
+    const { useAuth0 } = require('@auth0/auth0-react');
+    useAuth0.mockReturnValue({
+      isAuthenticated: true,
+      user: {
+        name: 'John Doe',
+        nickname: 'johndoe',
+        email: 'john@example.com',
+        picture: 'https://example.com/pic.jpg',
+      },
+    });
+
+    render(
+      <Provider store={mockStore}>
+        <UserDashboard />
+      </Provider>
+    );
+
+    expect(screen.getByText('Connections')).toBeInTheDocument();
+    expect(screen.getByTestId('patreon-connection')).toBeInTheDocument();
+    expect(screen.getByTestId('api-tokens')).toBeInTheDocument();
+    expect(screen.getByTestId('openai-key')).toBeInTheDocument();
+  });
+
+  it('hides account connections when signed out', () => {
+    const { useAuth0 } = require('@auth0/auth0-react');
+    useAuth0.mockReturnValue({ isAuthenticated: false, user: undefined });
+
+    render(
+      <Provider store={mockStore}>
+        <UserDashboard />
+      </Provider>
+    );
+
+    expect(screen.queryByText('Connections')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('api-tokens')).not.toBeInTheDocument();
   });
 });

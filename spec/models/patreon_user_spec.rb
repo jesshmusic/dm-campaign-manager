@@ -14,14 +14,20 @@
 #  tier_name             :string
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
+#  linked_user_id        :bigint
 #  patreon_id            :string
-#  user_id               :string           not null
+#  user_id               :string
 #
 # Indexes
 #
-#  index_patreon_users_on_expires_at  (expires_at)
-#  index_patreon_users_on_patreon_id  (patreon_id)
-#  index_patreon_users_on_user_id     (user_id) UNIQUE
+#  index_patreon_users_on_expires_at      (expires_at)
+#  index_patreon_users_on_linked_user_id  (linked_user_id) UNIQUE
+#  index_patreon_users_on_patreon_id      (patreon_id)
+#  index_patreon_users_on_user_id         (user_id) UNIQUE
+#
+# Foreign Keys
+#
+#  fk_rails_...  (linked_user_id => users.id)
 #
 require 'rails_helper'
 
@@ -33,10 +39,23 @@ RSpec.describe PatreonUser, type: :model do
   end
 
   describe 'validations' do
-    it 'requires user_id presence' do
+    it 'requires a Foundry user_id or a linked DM Guru user' do
       patreon_user = build(:patreon_user, user_id: nil)
       expect(patreon_user).not_to be_valid
-      expect(patreon_user.errors[:user_id]).to include("can't be blank")
+      expect(patreon_user.errors[:base]).to be_present
+    end
+
+    it 'allows a web-linked account without a Foundry user_id' do
+      patreon_user = build(:patreon_user, user_id: nil, linked_user: create(:user))
+      expect(patreon_user).to be_valid
+    end
+
+    it 'allows only one Patreon account per DM Guru user' do
+      user = create(:user)
+      create(:patreon_user, user_id: nil, linked_user: user)
+      patreon_user = build(:patreon_user, user_id: nil, linked_user: user)
+      expect(patreon_user).not_to be_valid
+      expect(patreon_user.errors[:linked_user_id]).to include('has already been taken')
     end
 
     it 'requires unique user_id' do
@@ -126,6 +145,38 @@ RSpec.describe PatreonUser, type: :model do
       patreon_user = create(:patreon_user, expires_at: expires)
       json = patreon_user.as_json_for_api
       expect(json[:expires_in]).to eq((expires.to_f * 1000).to_i)
+    end
+  end
+
+  describe '#premium_active?' do
+    it 'is true for an authenticated premium pledge' do
+      expect(build(:patreon_user, :wizard).premium_active?).to be true
+    end
+
+    it 'is false for a free pledge' do
+      expect(build(:patreon_user, :free).premium_active?).to be false
+    end
+
+    it 'is false once the login expires' do
+      expect(build(:patreon_user, :wizard, :expired).premium_active?).to be false
+    end
+  end
+
+  describe '#as_json_for_account' do
+    it 'returns the link status for the user dashboard' do
+      patreon_user = build(:patreon_user, :wizard, name: 'Pat Ron', expires_at: Time.zone.local(2026, 11, 1))
+
+      expect(patreon_user.as_json_for_account).to eq(
+        name: 'Pat Ron',
+        tierName: 'Wizard',
+        hasPremium: true,
+        active: true,
+        expiresAt: Time.zone.local(2026, 11, 1).iso8601
+      )
+    end
+
+    it 'maps the legacy Adventurer tier to Wizard' do
+      expect(build(:patreon_user, tier_name: 'Adventurer').as_json_for_account[:tierName]).to eq('Wizard')
     end
   end
 
