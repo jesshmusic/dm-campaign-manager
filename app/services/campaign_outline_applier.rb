@@ -72,7 +72,9 @@ class CampaignOutlineApplier
       # The same truth reworded slightly ("…within the hour" vs "…within the hour;") isn't new
       seen = @campaign.truths.to_set { |truth| comparable_truth(truth) }
       added = strings(@outline['truths'], Campaign::MAX_TRUTHS).select { |truth| seen.add?(comparable_truth(truth)) }
-      attributes[:truths] = (@campaign.truths + added).first(Campaign::MAX_TRUTHS)
+      # Adds truths while there's room, and never drops the campaign's own
+      room = Campaign::MAX_TRUTHS - @campaign.truths.size
+      attributes[:truths] = @campaign.truths + added.first(room) if room.positive? && added.any?
     end
     @campaign.update!(attributes) if attributes.any?
   end

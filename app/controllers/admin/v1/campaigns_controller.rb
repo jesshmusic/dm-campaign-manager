@@ -27,16 +27,10 @@ module Admin
       # Optional `template`: blank, three_act, sandbox or five_room, and
       # `campaign[party_character_ids]`: the DM's player characters in the party
       def create
-        template = params[:template].presence || 'blank'
-        return render json: { errors: ['Unknown template'] }, status: :unprocessable_entity unless CampaignTemplate::TEMPLATES.include?(template)
-
-        campaign = @user.campaigns.new(campaign_params)
-        Campaign.transaction do
-          campaign.save!
-          campaign.assign_party!(party_ids) if party_ids
-          CampaignTemplate.apply!(campaign, template)
-        end
+        campaign = CampaignCreator.new(@user).create!(campaign_params, template: params[:template], party_ids: party_ids)
         render json: campaign.reload.as_full_json_for_api, status: :created
+      rescue CampaignCreator::UnknownTemplate
+        render json: { errors: ['Unknown template'] }, status: :unprocessable_entity
       rescue ActiveRecord::RecordInvalid => e
         render json: { errors: e.record.errors.full_messages }, status: :unprocessable_entity
       end
@@ -74,10 +68,7 @@ module Admin
       end
 
       def campaign_params
-        params.require(:campaign).permit(
-          :name, :premise, :pitch, :setting_name, :setting_notes, :mode, :status, :planned_sessions, :cadence,
-          :party_size, :start_level, :target_level, :tone, truths: [], excluded_compendium_packs: []
-        )
+        params.require(:campaign).permit(*CampaignCreator::ATTRIBUTES)
       end
     end
   end

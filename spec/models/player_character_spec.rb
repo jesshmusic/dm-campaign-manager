@@ -99,6 +99,17 @@ RSpec.describe PlayerCharacter, type: :model do
     end
   end
 
+  describe '.save_from_world!' do
+    it "saves these characters and leaves the world's others alone" do
+      other = create(:player_character, user: user, world_id: 'greyhawk')
+
+      saved = described_class.save_from_world!(user, 'greyhawk', 'Greyhawk', [sent('Akra'), sent('Akra'), 'text'])
+
+      expect(saved.map(&:name)).to eq(['Akra'])
+      expect(user.player_characters.pluck(:name)).to contain_exactly('Akra', other.name)
+    end
+  end
+
   describe '#class_line' do
     it 'names the class and subclass' do
       expect(build(:player_character).class_line).to eq('Cleric (Life Domain)')

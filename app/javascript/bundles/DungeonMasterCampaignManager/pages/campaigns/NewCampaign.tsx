@@ -29,6 +29,8 @@ import {
 } from './Campaigns.styles';
 
 const REVIEW_STEP = SETUP_STEPS.length - 1;
+// The truths everyone at the table knows; the server allows six
+const MAX_TRUTHS = 6;
 
 const Progress = styled.ol`
   display: flex;
@@ -199,9 +201,17 @@ const NewCampaign = () => {
     update({ step: index, furthest: Math.max(draft.furthest, index) });
   };
 
+  const truthCount = text('truths')
+    .split('\n')
+    .filter((truth) => truth.trim()).length;
+
   const next = () => {
     if (step.id === 'pitch' && !named) {
       setError('Give your campaign a name to go on.');
+      return;
+    }
+    if (step.id === 'world' && truthCount > MAX_TRUTHS) {
+      setError(`Keep it to ${MAX_TRUTHS} truths. You have ${truthCount}.`);
       return;
     }
     goTo(draft.step + 1);

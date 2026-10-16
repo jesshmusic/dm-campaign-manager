@@ -90,4 +90,87 @@ RSpec.describe 'Admin::V1::Foundry::CampaignsController', type: :request do
       expect(response).to have_http_status(:forbidden)
     end
   end
+
+  describe 'POST /v1/foundry/campaigns' do
+    let(:brief) { { name: 'Zombie Siege', premise: 'The dead rise', start_level: 3, truths: ['The dead walk'] } }
+    let(:akra) do
+      { uuid: 'Actor.a1B2c3D4e5F6g7H8', name: 'Akra', playerName: 'Sam', level: 3,
+        sheet: { summary: 'Level 3 Dragonborn Cleric' } }
+    end
+    let(:party) { { world: { id: 'greyhawk', title: 'Greyhawk' }, characters: [akra] } }
+
+    it 'creates the campaign from the template and says how to find it' do
+      post '/v1/foundry/campaigns', params: { template: 'three_act', campaign: brief }, headers: headers, as: :json
+
+      expect(response).to have_http_status(:created)
+      created = user.campaigns.find_by(name: 'Zombie Siege')
+      expect(json).to include('uuid' => created.uuid, 'name' => 'Zombie Siege', 'mode' => 'arc',
+                              'url' => "/app/campaigns/#{created.slug}", 'party' => [])
+      expect(created.sessions.count).to eq(6)
+      expect(created.truths).to eq(['The dead walk'])
+    end
+
+    it 'saves the party from the world and puts it in the campaign' do
+      create(:player_character, user: user, world_id: 'greyhawk', name: 'Not chosen')
+
+      post '/v1/foundry/campaigns', params: { template: 'blank', campaign: brief, party: party }, headers: headers,
+                                    as: :json
+
+      expect(json['party']).to eq(['Akra'])
+      expect(user.player_characters.pluck(:name)).to contain_exactly('Akra', 'Not chosen')
+    end
+
+    it 'does not need premium' do
+      user.patreon_account.destroy!
+
+      post '/v1/foundry/campaigns', params: { template: 'sandbox', campaign: brief }, headers: headers, as: :json
+
+      expect(response).to have_http_status(:created)
+      expect(json['mode']).to eq('sandbox')
+    end
+
+    it 'returns the same campaign when a request is sent twice' do
+      allow(Rails).to receive(:cache).and_return(ActiveSupport::Cache::MemoryStore.new)
+      body = { template: 'blank', campaign: brief, request_id: 'abc12345-retry' }
+
+      post '/v1/foundry/campaigns', params: body, headers: headers, as: :json
+      first = json['uuid']
+      post '/v1/foundry/campaigns', params: body, headers: headers, as: :json
+
+      expect(response).to have_http_status(:ok)
+      expect(json['uuid']).to eq(first)
+      expect(user.campaigns.where(name: 'Zombie Siege').count).to eq(1)
+    end
+
+    it 'says which fields are wrong' do
+      post '/v1/foundry/campaigns', params: { campaign: brief.merge(name: '', target_level: 1) }, headers: headers,
+                                    as: :json
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(json['fields']).to contain_exactly('name', 'target_level')
+      expect(json['errors']).to include("Name can't be blank")
+    end
+
+    it 'rejects more than six truths' do
+      post '/v1/foundry/campaigns', params: { campaign: brief.merge(truths: Array.new(7) { |i| "Truth #{i}" }) },
+                                    headers: headers, as: :json
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(json['fields']).to eq(['truths'])
+    end
+
+    it 'rejects an unknown template' do
+      post '/v1/foundry/campaigns', params: { template: 'megadungeon', campaign: brief }, headers: headers, as: :json
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(json).to eq('errors' => ['Unknown template'], 'fields' => ['template'])
+    end
+
+    it 'needs a valid API token' do
+      post '/v1/foundry/campaigns', params: { campaign: brief }, as: :json
+
+      expect(response).to have_http_status(:unauthorized)
+      expect(Campaign.where(name: 'Zombie Siege')).to be_empty
+    end
+  end
 end

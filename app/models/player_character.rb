@@ -54,16 +54,24 @@ class PlayerCharacter < ApplicationRecord
   # party; one no longer in the world leaves every party. Skips characters
   # that aren't valid. Returns how many were saved.
   def self.replace_world!(user, world_id, world_title, characters)
-    incoming = characters.first(MAX_PER_WORLD).filter_map { |character| attributes_for(character) }
-                         .uniq { |attributes| attributes[:foundry_uuid] }
     transaction do
-      user.player_characters.where(world_id: world_id).where.not(foundry_uuid: incoming.pluck(:foundry_uuid)).destroy_all
-      incoming.count do |attributes|
-        character = user.player_characters.find_or_initialize_by(world_id: world_id,
-                                                                 foundry_uuid: attributes[:foundry_uuid])
-        character.update(attributes.merge(world_title: world_title))
-      end
+      saved = save_from_world!(user, world_id, world_title, characters)
+      sent = characters.filter_map { |character| character['uuid'].to_s if character.is_a?(Hash) }
+      user.player_characters.where(world_id: world_id).where.not(foundry_uuid: sent).destroy_all
+      saved.size
     end
+  end
+
+  # Saves these characters from a world, leaving its others alone (e.g. a new
+  # campaign's party). Skips characters that aren't valid. Returns the saved ones.
+  def self.save_from_world!(user, world_id, world_title, characters)
+    characters.first(MAX_PER_WORLD).filter_map { |character| attributes_for(character) }
+              .uniq { |attributes| attributes[:foundry_uuid] }
+              .filter_map do |attributes|
+                character = user.player_characters.find_or_initialize_by(world_id: world_id,
+                                                                         foundry_uuid: attributes[:foundry_uuid])
+                character if character.update(attributes.merge(world_title: world_title))
+              end
   end
 
   def self.attributes_for(character)

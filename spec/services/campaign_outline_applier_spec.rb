@@ -143,13 +143,23 @@ RSpec.describe CampaignOutlineApplier do
     end
 
     it 'caps the total at Campaign::MAX_TRUTHS, keeping the existing truths' do
-      existing = Array.new(10) { |i| "Existing #{i}" }
+      existing = Array.new(4) { |i| "Existing #{i}" }
       campaign.update!(truths: existing)
 
       apply({ 'truths' => Array.new(5) { |i| "New #{i}" } }, sections: %w[truths])
 
       expect(campaign.truths.size).to eq(Campaign::MAX_TRUTHS)
       expect(campaign.truths).to eq(existing + ['New 0', 'New 1'])
+    end
+
+    it 'leaves the truths alone when the campaign already has too many from before' do
+      existing = Array.new(8) { |i| "Existing #{i}" }
+      campaign.update_column(:truths, existing)
+
+      apply({ 'truths' => ['New'], 'pitch' => 'A pitch' }, sections: %w[truths pitch])
+
+      expect(campaign.reload.truths).to eq(existing)
+      expect(campaign.pitch).to eq('A pitch')
     end
 
     it 'caps each truth at 300 characters' do

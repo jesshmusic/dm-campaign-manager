@@ -161,6 +161,25 @@ describe('NewCampaign', () => {
       expect(heading()).toHaveTextContent('The table');
     });
 
+    it('asks for six truths at most', () => {
+      renderPage();
+      next();
+      fireEvent.change(input('name'), { target: { value: 'Zombie Siege' } });
+      next();
+      next();
+      fireEvent.change(input('truths'), {
+        target: { value: ['One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven'].join('\n') },
+      });
+
+      next();
+      expect(screen.getByText('Keep it to 6 truths. You have 7.')).toBeInTheDocument();
+      expect(heading()).toHaveTextContent('The world');
+
+      fireEvent.change(input('truths'), { target: { value: 'One\n\nTwo' } });
+      next();
+      expect(heading()).toHaveTextContent('Your books');
+    });
+
     it('keeps answers when going back and forward', () => {
       renderPage();
       next();

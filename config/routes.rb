@@ -124,6 +124,7 @@ Rails.application.routes.draw do
       namespace :foundry do
         get 'me', to: 'accounts#show', constraints: { format: 'json' }
         get 'campaigns', to: 'campaigns#index', constraints: { format: 'json' }
+        post 'campaigns', to: 'campaigns#create', constraints: { format: 'json' }
         get 'campaigns/:uuid/changes', to: 'campaigns#changes', constraints: { format: 'json' }
         post 'campaigns/:uuid/changes', to: 'campaigns#push', constraints: { format: 'json' }
         post 'characters', to: 'characters#create', constraints: { format: 'json' }

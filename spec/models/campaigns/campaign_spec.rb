@@ -69,15 +69,24 @@ RSpec.describe Campaign, type: :model do
       expect(build(:campaign, start_level: 5, target_level: 5)).to be_valid
     end
 
-    it 'accepts up to 12 truths as strings' do
-      expect(build(:campaign, truths: Array.new(Campaign::MAX_TRUTHS) { |i| "Truth #{i}" })).to be_valid
+    it 'accepts up to six truths as strings' do
+      expect(Campaign::MAX_TRUTHS).to eq(6)
+      expect(build(:campaign, truths: Array.new(6) { |i| "Truth #{i}" })).to be_valid
     end
 
     it 'rejects too many truths' do
-      campaign = build(:campaign, truths: Array.new(Campaign::MAX_TRUTHS + 1) { |i| "Truth #{i}" })
+      campaign = build(:campaign, truths: Array.new(7) { |i| "Truth #{i}" })
 
       expect(campaign).not_to be_valid
-      expect(campaign.errors[:truths]).to include('must be a list of up to 12 statements')
+      expect(campaign.errors[:truths]).to include('must be a list of up to 6 statements')
+    end
+
+    it 'still saves other changes to a campaign that has more truths from before' do
+      campaign = create(:campaign)
+      campaign.update_column(:truths, Array.new(8) { |i| "Truth #{i}" })
+
+      expect(campaign.reload.update(pitch: 'A new pitch')).to be(true)
+      expect(campaign.update(truths: campaign.truths + ['One more'])).to be(false)
     end
 
     it 'rejects truths that are not strings or not a list' do

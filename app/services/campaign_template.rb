@@ -7,6 +7,8 @@
 # - five_room: a one-shot whose first session has Johnn Four's five rooms as scenes
 class CampaignTemplate
   TEMPLATES = %w[blank three_act sandbox five_room].freeze
+  # The kind of campaign each template makes, when the request doesn't say
+  MODES = { 'blank' => 'arc', 'three_act' => 'arc', 'sandbox' => 'sandbox', 'five_room' => 'oneshot' }.freeze
   DEFAULT_ARC_SESSIONS = 6
   ACTS = ['Act I: The hook', 'Act II: Complications', 'Act III: The showdown'].freeze
   FIVE_ROOMS = [

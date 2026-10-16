@@ -50,7 +50,8 @@ class Campaign < ApplicationRecord
 
   MODES = %w[arc sandbox oneshot].freeze
   STATUSES = %w[planning active completed archived].freeze
-  MAX_TRUTHS = 12
+  # Six truths, as the setup guide asks for
+  MAX_TRUTHS = 6
   # The planner is built on the 2024 rules (PHB, DMG and Monster Manual)
   EDITION = '2024'
 
@@ -75,7 +76,8 @@ class Campaign < ApplicationRecord
   validates :planned_sessions, numericality: { only_integer: true, in: 1..100 }, allow_nil: true
   validates :party_size, numericality: { only_integer: true, in: 1..12 }, allow_nil: true
   validate :target_level_not_below_start
-  validate :truths_are_strings
+  # Only when they change, so a campaign saved with more under an older limit can still be edited
+  validate :truths_are_strings, if: -> { new_record? || truths_changed? }
   validate :excluded_compendium_packs_are_known
 
   before_validation :assign_uuid, on: :create
