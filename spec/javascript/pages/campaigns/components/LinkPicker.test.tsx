@@ -58,6 +58,20 @@ describe('LinkPicker', () => {
     expect(within(picker()).getAllByRole('option')).toHaveLength(3);
   });
 
+  it('can show just the dropdown', () => {
+    renderPicker({ hideLinks: true });
+
+    expect(screen.queryByRole('listitem')).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /^Remove/ })).not.toBeInTheDocument();
+    expect(picker()).toBeInTheDocument();
+  });
+
+  it('shows no empty text in dropdown-only mode', () => {
+    renderPicker({ hideLinks: true, links: [] });
+
+    expect(screen.queryByText('No secrets picked yet.')).not.toBeInTheDocument();
+  });
+
   it('hides the dropdown when every option is linked', () => {
     renderPicker({ options: [secretOptions[0]] });
 

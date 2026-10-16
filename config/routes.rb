@@ -102,6 +102,9 @@ Rails.application.routes.draw do
       get 'compendium', to: 'compendium_entries#index', constraints: { format: 'json' }
       get 'compendium/packs', to: 'compendium_entries#packs', constraints: { format: 'json' }
 
+      # The signed-in DM's player characters from Foundry
+      get 'player-characters', to: 'player_characters#index', constraints: { format: 'json' }
+
       # Campaign planner (the signed-in DM's own campaigns)
       resources :campaigns, only: %i[index show create update destroy], constraints: { format: 'json' } do
         scope module: :campaigns do
@@ -123,6 +126,7 @@ Rails.application.routes.draw do
         get 'campaigns', to: 'campaigns#index', constraints: { format: 'json' }
         get 'campaigns/:uuid/changes', to: 'campaigns#changes', constraints: { format: 'json' }
         post 'campaigns/:uuid/changes', to: 'campaigns#push', constraints: { format: 'json' }
+        post 'characters', to: 'characters#create', constraints: { format: 'json' }
         get 'compendium', to: 'compendium#show', constraints: { format: 'json' }
         post 'compendium', to: 'compendium#create', constraints: { format: 'json' }
       end

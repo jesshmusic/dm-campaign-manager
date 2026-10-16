@@ -119,9 +119,18 @@ class CampaignAssistant
     details = {
       'Campaign' => c.name, 'Premise' => c.premise, 'Setting' => c.setting_name, 'Setting notes' => c.setting_notes,
       'Tone' => c.tone, 'Structure' => structure_line, 'Players' => c.party_size, 'Levels' => levels_line,
-      'Truths' => c.truths.join('; ')
+      'Truths' => c.truths.join('; '), 'Party' => party_line
     }.compact_blank.map { |label, value| "#{label}: #{value}" }
     [*details, existing_summary].compact.join("\n")
+  end
+
+  # The party's characters from Foundry, with their bonds and flaws as hooks
+  def party_line
+    @campaign.party.order(:name).map do |character|
+      personality = character.sheet['personality'].is_a?(Hash) ? character.sheet['personality'] : {}
+      hooks = personality.values_at('bonds', 'flaws').compact_blank.map { |text| text.to_s.squish.first(150) }
+      ["#{character.name} (#{character.sheet['summary'].presence || "level #{character.level}"})", *hooks].join(' - ')
+    end.join('; ')
   end
 
   def structure_line

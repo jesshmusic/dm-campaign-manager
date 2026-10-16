@@ -93,5 +93,6 @@ export const assistantCampaign = (): Campaign => ({
     },
   ],
   references: [],
+  party: [],
   revelations: [{ name: 'The crypt', clueCount: 1, revealedCount: 0 }],
 });

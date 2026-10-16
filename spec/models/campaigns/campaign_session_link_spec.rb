@@ -131,5 +131,19 @@ RSpec.describe CampaignSessionLink, type: :model do
 
       expect(link.as_json_for_api).to include(linkableType: 'Monster', name: 'Young Green Dragon', slug: monster.slug)
     end
+
+    it "shows a monster's challenge rating" do
+      monster = create(:monster, user: nil, name: 'Zombie', challenge_rating: '1/4')
+      link = create(:campaign_session_link, session: session, linkable: monster)
+
+      expect(link.as_json_for_api[:detail]).to eq('CR 1/4')
+    end
+
+    it "shows an item's rarity" do
+      item = create(:magic_item, user: nil, rarity: 'uncommon')
+      link = create(:campaign_session_link, session: session, linkable: item)
+
+      expect(link.as_json_for_api[:detail]).to eq('uncommon')
+    end
   end
 end

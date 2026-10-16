@@ -9,6 +9,7 @@ import {
   CompendiumEntry,
   CompendiumPack,
   Front,
+  PartyCharacter,
   Location,
   Npc,
   PlannerSession,
@@ -366,6 +367,7 @@ export const sampleCampaign = (overrides: Partial<Campaign> = {}): Campaign => (
       citation: 'MM p. 323',
     }),
   ],
+  party: [],
   revelations: [
     { name: 'Mayor is the cult leader', clueCount: 2, revealedCount: 0 },
     { name: 'The tunnel', clueCount: 3, revealedCount: 1 },
@@ -400,6 +402,76 @@ export const campaignSummary = (overrides: Partial<CampaignSummary> = {}): Campa
     ...overrides,
   };
 };
+
+// A player character from one of the DM's Foundry worlds, with the full sheet
+export const playerCharacter = (overrides: Partial<PartyCharacter> = {}): PartyCharacter => ({
+  id: 'pc1',
+  name: 'Akra',
+  playerName: 'Sam',
+  level: 5,
+  classes: 'Cleric (Life Domain)',
+  worldId: 'greyhawk',
+  worldTitle: 'Greyhawk',
+  updatedAt: '2026-10-16T12:00:00Z',
+  sheet: {
+    summary: 'Level 5 Dragonborn Cleric (Life Domain)',
+    level: 5,
+    species: 'Dragonborn',
+    background: 'Acolyte',
+    classes: [{ name: 'Cleric', subclass: 'Life Domain', levels: 5 }],
+    alignment: 'Lawful Good',
+    ac: 18,
+    hpMax: 38,
+    initiative: -1,
+    proficiency: 3,
+    speed: { walk: 30 },
+    senses: ['Darkvision 60 ft'],
+    abilities: [
+      { key: 'str', label: 'Strength', score: 13, mod: 1, save: 1, proficient: false },
+      { key: 'wis', label: 'Wisdom', score: 16, mod: 3, save: 6, proficient: true },
+    ],
+    skills: [
+      { key: 'ins', label: 'Insight', total: 6, passive: 16, proficiency: 1 },
+      { key: 'prc', label: 'Perception', total: 3, passive: 13, proficiency: 0 },
+      { key: 'rel', label: 'Religion', total: 6, passive: 16, proficiency: 2 },
+    ],
+    passives: { perception: 13, insight: 16 },
+    languages: ['Common', 'Draconic'],
+    proficiencies: { armor: ['Light', 'Medium'], weapons: ['Simple'] },
+    defenses: { resistances: ['Cold'] },
+    spellcasting: {
+      ability: 'Wisdom',
+      dc: 14,
+      attack: 6,
+      slots: [
+        { key: 'spell1', label: 'Level 1', max: 4 },
+        { key: 'spell2', label: 'Level 2', max: 3 },
+      ],
+      spells: [
+        { name: 'Sacred Flame', level: 0, prepared: 2 },
+        { name: 'Bless', level: 1, prepared: 1 },
+        { name: 'Guiding Bolt', level: 1, prepared: 1 },
+      ],
+    },
+    features: [
+      { name: 'Breath Weapon', kind: 'race' },
+      { name: 'Divine Order', kind: 'class' },
+    ],
+    inventory: [
+      { name: 'Mace', type: 'weapon', quantity: 1, equipped: true },
+      { name: 'Potion of Healing', type: 'consumable', quantity: 2, rarity: 'Common' },
+    ],
+    currency: { gp: 15, sp: 3 },
+    personality: {
+      traits: 'I quote scripture.',
+      bonds: 'My temple in Hommlet',
+      flaws: 'Too trusting',
+      backstory: 'Raised by priests.\nLeft to find the plague.',
+    },
+    details: { age: '22' },
+  },
+  ...overrides,
+});
 
 // Packs from a DM's Foundry compendium index
 export const samplePacks = (): CompendiumPack[] => [
@@ -452,6 +524,7 @@ export const makeApi = (overrides: Partial<MockApi> = {}): MockApi => ({
   searchItems: jest.fn().mockResolvedValue([]),
   compendiumPacks: jest.fn().mockResolvedValue([]),
   searchCompendium: jest.fn().mockResolvedValue({ indexed: false, results: [] }),
+  listPlayerCharacters: jest.fn().mockResolvedValue([]),
   randomName: jest.fn().mockResolvedValue('Random Name'),
   randomTavernName: jest.fn().mockResolvedValue('The Prancing Pony'),
   adventureHook: jest.fn().mockResolvedValue('A dragon attacks'),

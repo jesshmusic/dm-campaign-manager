@@ -80,7 +80,17 @@ describe('CampaignPage', () => {
     await screen.findByRole('tablist', { name: 'Campaign sections' });
     expect(
       screen.getAllByRole('tab').map((tab) => tab.textContent?.replace('Icon', '').trim()),
-    ).toEqual(['Overview', 'Story', 'Quests', 'Cast', 'Places', 'Secrets', 'Sessions', 'Books']);
+    ).toEqual([
+      'Overview',
+      'Party',
+      'Story',
+      'Quests',
+      'Cast',
+      'Places',
+      'Secrets',
+      'Sessions',
+      'Books',
+    ]);
   });
 
   it('opens the tab named in ?tab=', async () => {

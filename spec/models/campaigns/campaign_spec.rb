@@ -99,6 +99,37 @@ RSpec.describe Campaign, type: :model do
     end
   end
 
+  describe '#assign_party!' do
+    it "sets the party to the DM's chosen characters" do
+      akra = create(:player_character, user: campaign.user, name: 'Akra')
+      borin = create(:player_character, user: campaign.user, name: 'Borin')
+
+      campaign.assign_party!([akra.id, borin.id])
+      expect(campaign.party.reload).to contain_exactly(akra, borin)
+
+      campaign.assign_party!([borin.id.to_s])
+      expect(campaign.party.reload).to eq([borin])
+
+      campaign.assign_party!([])
+      expect(campaign.party.reload).to be_empty
+    end
+
+    it "ignores another DM's characters" do
+      campaign.assign_party!([create(:player_character).id])
+
+      expect(campaign.party.reload).to be_empty
+    end
+
+    it 'leaves the characters when the campaign is deleted' do
+      akra = create(:player_character, user: campaign.user)
+      campaign.assign_party!([akra.id])
+
+      campaign.destroy!
+
+      expect(akra.reload).to be_persisted
+    end
+  end
+
   describe 'slugs' do
     it 'generates a slug from the name' do
       expect(create(:campaign, user: user, name: 'Curse of the Lich').slug).to eq('curse-of-the-lich')

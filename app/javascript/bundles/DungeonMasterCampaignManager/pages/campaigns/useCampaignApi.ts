@@ -11,6 +11,7 @@ import {
   CompendiumCategory,
   CompendiumEntry,
   CompendiumPack,
+  PlayerCharacter,
   LinkableType,
   SessionLink,
 } from './types';
@@ -137,6 +138,9 @@ const useCampaignApi = () => {
           `/v1/compendium?${params.toString()}`,
         );
       },
+
+      // The DM's player characters from Foundry, for choosing a party
+      listPlayerCharacters: () => request<PlayerCharacter[]>('/v1/player-characters'),
 
       // Existing generators
       randomName: async () => {

@@ -152,6 +152,98 @@ export interface CompendiumPack {
   count: number;
 }
 
+// A player character's sheet as the Foundry module sends it: what the player
+// built, never rules text. Every field is optional; the module leaves out
+// what a character doesn't have.
+export interface CharacterSheet {
+  summary?: string;
+  level?: number;
+  cr?: number;
+  species?: string;
+  background?: string;
+  classes?: { name: string; subclass?: string; levels?: number }[];
+  alignment?: string;
+  size?: string;
+  xp?: number;
+  ac?: number;
+  hpMax?: number;
+  initiative?: number;
+  proficiency?: number;
+  speed?: Record<string, number>;
+  senses?: string[];
+  abilities?: {
+    key: string;
+    label: string;
+    score?: number;
+    mod?: number;
+    save?: number;
+    proficient?: boolean;
+  }[];
+  skills?: {
+    key: string;
+    label: string;
+    ability?: string;
+    total?: number;
+    passive?: number;
+    // 0 none, 0.5 half, 1 proficient, 2 expertise
+    proficiency?: number;
+  }[];
+  passives?: { perception?: number; insight?: number; investigation?: number };
+  languages?: string[];
+  proficiencies?: { armor?: string[]; weapons?: string[]; tools?: string[] };
+  defenses?: {
+    resistances?: string[];
+    immunities?: string[];
+    vulnerabilities?: string[];
+    conditionImmunities?: string[];
+  };
+  spellcasting?: {
+    ability?: string;
+    dc?: number;
+    attack?: number;
+    slots?: { key: string; label: string; max: number }[];
+    // prepared: 0 not prepared, 1 prepared, 2 always prepared
+    spells?: { name: string; level: number; school?: string; prepared?: number }[];
+  };
+  features?: { name: string; kind?: string }[];
+  inventory?: {
+    name: string;
+    type: string;
+    quantity?: number;
+    equipped?: boolean;
+    attuned?: boolean;
+    rarity?: string;
+  }[];
+  currency?: Partial<Record<'pp' | 'gp' | 'ep' | 'sp' | 'cp', number>>;
+  personality?: {
+    traits?: string;
+    ideals?: string;
+    bonds?: string;
+    flaws?: string;
+    appearance?: string;
+    backstory?: string;
+  };
+  details?: Record<string, string>;
+}
+
+// A player character from one of the DM's Foundry worlds
+export interface PlayerCharacter {
+  id: string;
+  name: string;
+  playerName: string | null;
+  level: number | null;
+  // e.g. "Cleric (Life Domain)" or "Fighter 3 / Wizard 2"
+  classes: string | null;
+  worldId: string;
+  worldTitle: string;
+  updatedAt: string;
+}
+
+// A character in a campaign's party, with the full sheet
+export interface PartyCharacter extends PlayerCharacter {
+  sheet: CharacterSheet;
+}
+
 export interface Portent {
   text: string;
   triggered: boolean;
@@ -261,6 +353,7 @@ export interface Campaign extends CampaignBase {
   secrets: Secret[];
   sessions: PlannerSession[];
   references: BookReference[];
+  party: PartyCharacter[];
   revelations: RevelationSummary[];
 }
 

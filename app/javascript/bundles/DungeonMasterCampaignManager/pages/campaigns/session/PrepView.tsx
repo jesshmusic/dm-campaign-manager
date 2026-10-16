@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import AutosaveField from '../components/AutosaveField';
 import LinkPicker from '../components/LinkPicker';
 import CompendiumSearch from '../components/CompendiumSearch';
+import { quickStats } from '../components/CharacterSheetView';
 import { referenceFor, searchCompendium } from '../compendium';
 import { CompendiumResult } from '../useCampaignApi';
 import PrepSuggestions, { SuggestionItem } from '../assistant/PrepSuggestions';
@@ -13,18 +14,23 @@ import {
   NPC_ROLE_LABELS,
   PlannerSession,
   SessionLink,
-  BookReference,
   Location,
+  ReferenceCategory,
   Secret,
   Attributes,
 } from '../types';
-import { Card, Meta } from '../Campaigns.styles';
+import { Card, EmptyState, LinkButton, List, Meta } from '../Campaigns.styles';
 import styled from 'styled-components';
 
 const Step = styled(Card)`
   h3 {
     margin-bottom: 0.25rem;
   }
+`;
+
+const AddHeading = styled.h4`
+  font-size: ${({ theme }) => theme.fontSizes.base};
+  margin: 0.75rem 0 0.25rem;
 `;
 
 type PrepViewProps = {
@@ -46,6 +52,7 @@ const PrepView = ({ campaign, session, state }: PrepViewProps) => {
     mutate(() => api.removeSessionLink(campaign.slug, session.id, link.id));
 
   const unrevealed = campaign.secrets.filter((secret) => !secret.revealed);
+  const { party } = campaign;
 
   // A search result from the DM's Foundry compendiums becomes a book reference
   // (a draggable link in Foundry); one from DM Guru's SRD links directly
@@ -105,32 +112,84 @@ const PrepView = ({ campaign, session, state }: PrepViewProps) => {
     />
   );
 
-  // Picker for book references of one kind (monsters, or items and tables). A render
-  // helper rather than a nested component, so React doesn't remount it every render.
-  const bookPicker = ({
-    label,
-    references,
-    emptyText,
-  }: {
-    label: string;
-    references: BookReference[];
-    emptyText: string;
-  }) => (
-    <LinkPicker
-      label={label}
-      linkableType="CampaignReference"
-      links={session.links}
-      scopeIds={references.map((reference) => reference.id)}
-      options={references.map((reference) => ({
-        id: reference.id,
-        label: `${reference.name} (${reference.citation})`,
-      }))}
-      emptyText={emptyText}
-      onAdd={addLink}
-      onRemove={removeLink}
-      renderLink={(link) => `${link.name}${link.detail ? ` (${link.detail})` : ''}`}
-    />
-  );
+  const referenceById = (id: string) => campaign.references.find((r) => r.id === id);
+
+  // Steps 7 and 8 list everything picked, from DM Guru's SRD or the campaign's
+  // books, then the ways to add more. Render helpers rather than nested
+  // components, so React doesn't remount them every render.
+  const pickedList = (
+    linkableType: 'Monster' | 'Item',
+    categories: ReferenceCategory[],
+    emptyText: string,
+  ) => {
+    const picked = session.links.filter((link) =>
+      link.linkableType === 'CampaignReference'
+        ? categories.includes(referenceById(link.linkableId)?.category as ReferenceCategory)
+        : link.linkableType === linkableType,
+    );
+    if (picked.length === 0) return <EmptyState>{emptyText}</EmptyState>;
+    return (
+      <List>
+        {picked.map((link) => {
+          const reference = referenceById(link.linkableId);
+          const detail =
+            link.linkableType === 'CampaignReference' && reference
+              ? [reference.challengeRating && `CR ${reference.challengeRating}`, reference.citation]
+                  .filter(Boolean)
+                  .join(' · ')
+              : link.detail;
+          return (
+            <li key={link.id}>
+              {link.linkableType === 'Monster' && link.slug ? (
+                <Link to={`/app/${campaign.edition}/monsters/${link.slug}`}>{link.name}</Link>
+              ) : (
+                link.name
+              )}{' '}
+              {detail && <Meta as="span">({detail})</Meta>}{' '}
+              <LinkButton aria-label={`Remove ${link.name}`} onClick={() => void removeLink(link)}>
+                remove
+              </LinkButton>
+            </li>
+          );
+        })}
+      </List>
+    );
+  };
+
+  // A dropdown of the campaign's book references not yet in this session
+  const bookPicker = (label: string, categories: ReferenceCategory[]) => {
+    const references = campaign.references.filter((reference) =>
+      categories.includes(reference.category),
+    );
+    const unpicked = references.filter(
+      (reference) =>
+        !session.links.some(
+          (link) => link.linkableType === 'CampaignReference' && link.linkableId === reference.id,
+        ),
+    );
+    if (unpicked.length === 0) return null;
+    return (
+      <>
+        <Meta>Or pick one from this campaign&apos;s book references:</Meta>
+        <LinkPicker
+          label={label}
+          linkableType="CampaignReference"
+          links={session.links}
+          options={references.map((reference) => ({
+            id: reference.id,
+            label: `${reference.name} (${reference.citation})`,
+          }))}
+          emptyText=""
+          onAdd={addLink}
+          onRemove={removeLink}
+          hideLinks
+        />
+      </>
+    );
+  };
+
+  const MONSTER_CATEGORIES: ReferenceCategory[] = ['monster'];
+  const TREASURE_CATEGORIES: ReferenceCategory[] = ['magic_item', 'equipment', 'table'];
   const level = session.level ?? campaign.startLevel;
 
   return (
@@ -138,6 +197,29 @@ const PrepView = ({ campaign, session, state }: PrepViewProps) => {
       <Step>
         <h3>1. Review the characters</h3>
         <Meta>What does each character want? What hooks might pull them in this session?</Meta>
+        {party.length > 0 && (
+          <List aria-label="The party">
+            {party.map((character) => (
+              <li key={character.id}>
+                <strong>{character.name}</strong>
+                {character.sheet.summary && ` (${character.sheet.summary})`}
+                {quickStats(character.sheet) && (
+                  <Meta as="span"> · {quickStats(character.sheet)}</Meta>
+                )}
+                {[
+                  character.sheet.personality?.bonds &&
+                    `Bond: ${character.sheet.personality.bonds}`,
+                  character.sheet.personality?.flaws &&
+                    `Flaw: ${character.sheet.personality.flaws}`,
+                ]
+                  .filter(Boolean)
+                  .map((hook) => (
+                    <Meta key={hook as string}>{hook}</Meta>
+                  ))}
+              </li>
+            ))}
+          </List>
+        )}
         <AutosaveField
           label="Character notes"
           value={session.characterNotes ?? ''}
@@ -246,18 +328,8 @@ const PrepView = ({ campaign, session, state }: PrepViewProps) => {
       <Step>
         <h3>7. Choose relevant monsters</h3>
         <Meta>Monsters that fit the locations and story, ready to drop in anywhere.</Meta>
-        <LinkPicker
-          label="Monsters"
-          linkableType="Monster"
-          links={session.links}
-          options={[]}
-          emptyText="No monsters picked yet."
-          onAdd={addLink}
-          onRemove={removeLink}
-          renderLink={(link) => (
-            <Link to={`/app/${campaign.edition}/monsters/${link.slug}`}>{link.name}</Link>
-          )}
-        />
+        {pickedList('Monster', MONSTER_CATEGORIES, 'No monsters picked yet.')}
+        <AddHeading>Add a monster</AddHeading>
         <CompendiumSearch
           label="Search monsters"
           search={searchCompendium(api, campaign.slug, ['monster'], (query) =>
@@ -265,11 +337,7 @@ const PrepView = ({ campaign, session, state }: PrepViewProps) => {
           )}
           onPick={addResult('Monster')}
         />
-        {bookPicker({
-          label: 'Add a monster from your books',
-          references: campaign.references.filter((reference) => reference.category === 'monster'),
-          emptyText: 'No book monsters picked yet.',
-        })}
+        {bookPicker('Add a monster from your books', MONSTER_CATEGORIES)}
       </Step>
 
       <Step>
@@ -281,15 +349,8 @@ const PrepView = ({ campaign, session, state }: PrepViewProps) => {
           onSave={saveField('treasure')}
           rows={3}
         />
-        <LinkPicker
-          label="Magic items"
-          linkableType="Item"
-          links={session.links}
-          options={[]}
-          emptyText="No items picked yet."
-          onAdd={addLink}
-          onRemove={removeLink}
-        />
+        {pickedList('Item', TREASURE_CATEGORIES, 'No items picked yet.')}
+        <AddHeading>Add an item or table</AddHeading>
         <CompendiumSearch
           label="Search items"
           search={searchCompendium(
@@ -300,13 +361,7 @@ const PrepView = ({ campaign, session, state }: PrepViewProps) => {
           )}
           onPick={addResult('Item')}
         />
-        {bookPicker({
-          label: 'Add treasure from your books',
-          references: campaign.references.filter((reference) =>
-            ['magic_item', 'equipment', 'table'].includes(reference.category),
-          ),
-          emptyText: 'No book items or tables picked yet.',
-        })}
+        {bookPicker('Add treasure from your books', TREASURE_CATEGORIES)}
       </Step>
     </>
   );

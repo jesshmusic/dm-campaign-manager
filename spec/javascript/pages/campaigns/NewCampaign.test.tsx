@@ -4,7 +4,14 @@ import { render, screen, fireEvent, waitFor, within } from '../../test-utils';
 import NewCampaign, {
   TEMPLATES,
 } from '../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/NewCampaign';
-import { jsonResponse, sampleCampaign, samplePacks } from './fixtures';
+import { jsonResponse, playerCharacter, sampleCampaign, samplePacks } from './fixtures';
+
+// The DM's characters as /v1/player-characters lists them, without sheets
+const sampleCharacters = () =>
+  [playerCharacter(), playerCharacter({ id: 'pc2', name: 'Borin', classes: 'Fighter' })].map(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    ({ sheet, ...summary }) => summary,
+  );
 
 const mockGetAccessTokenSilently = jest.fn(() => Promise.resolve('test-token'));
 jest.mock('@auth0/auth0-react', () => ({
@@ -49,11 +56,11 @@ describe('NewCampaign', () => {
     );
 
   beforeEach(() => {
-    mockFetch = jest.fn((url: string) =>
-      url === '/v1/compendium/packs'
-        ? jsonResponse(samplePacks())
-        : jsonResponse(sampleCampaign(), 201),
-    );
+    mockFetch = jest.fn((url: string) => {
+      if (url === '/v1/compendium/packs') return jsonResponse(samplePacks());
+      if (url === '/v1/player-characters') return jsonResponse(sampleCharacters());
+      return jsonResponse(sampleCampaign(), 201);
+    });
     global.fetch = mockFetch;
   });
 
@@ -112,6 +119,7 @@ describe('NewCampaign', () => {
         setting_notes: null,
         mode: 'arc',
         excluded_compendium_packs: [],
+        party_character_ids: [],
       },
       template: 'three_act',
     });
@@ -154,22 +162,50 @@ describe('NewCampaign', () => {
     renderPage();
 
     const all = await screen.findByRole('checkbox', { name: 'All compendiums' });
+    const sidebar = within(screen.getByRole('complementary', { name: 'Compendiums' }));
     fireEvent.click(all);
 
     expect(all).not.toBeChecked();
     expect(
-      screen.getAllByRole('checkbox').filter((box) => (box as HTMLInputElement).checked),
+      sidebar.getAllByRole('checkbox').filter((box) => (box as HTMLInputElement).checked),
     ).toEqual([]);
 
     fireEvent.click(all);
-    expect(screen.getAllByRole('checkbox').every((box) => (box as HTMLInputElement).checked)).toBe(
+    expect(sidebar.getAllByRole('checkbox').every((box) => (box as HTMLInputElement).checked)).toBe(
       true,
     );
   });
 
+  it("lists the DM's characters to choose the party from", async () => {
+    renderPage();
+
+    const table = await screen.findByRole('table', { name: 'Greyhawk' });
+    expect(within(table).getByRole('row', { name: /Akra/ })).toHaveTextContent(
+      'AkraCleric (Life Domain)5Sam',
+    );
+    expect(screen.getByRole('checkbox', { name: 'Akra is in the party' })).not.toBeChecked();
+  });
+
+  it('creates the campaign with the chosen party', async () => {
+    renderPage();
+
+    fireEvent.click(await screen.findByRole('checkbox', { name: 'Akra is in the party' }));
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Borin is in the party' }));
+    fireEvent.change(input('name'), { target: { value: 'Zombie Siege' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Create campaign' }));
+
+    expect(await screen.findByText('Campaign page')).toBeInTheDocument();
+    expect(JSON.parse(createRequest()[1].body).campaign.party_character_ids).toEqual([
+      'pc1',
+      'pc2',
+    ]);
+  });
+
   it('explains where compendiums come from when there are none', async () => {
     mockFetch.mockImplementation((url: string) =>
-      url === '/v1/compendium/packs' ? jsonResponse([]) : jsonResponse(sampleCampaign(), 201),
+      url === '/v1/compendium/packs' || url === '/v1/player-characters'
+        ? jsonResponse([])
+        : jsonResponse(sampleCampaign(), 201),
     );
     renderPage();
 

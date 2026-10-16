@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_10_15_220000) do
+ActiveRecord::Schema[7.1].define(version: 2026_10_16_150000) do
   create_schema "heroku_ext"
 
   # These are extensions that must be enabled in order to support this database
@@ -191,6 +191,15 @@ ActiveRecord::Schema[7.1].define(version: 2026_10_15_220000) do
     t.index ["monster_id"], name: "index_campaign_npcs_on_monster_id"
     t.index ["stat_block_reference_id"], name: "index_campaign_npcs_on_stat_block_reference_id"
     t.index ["uuid"], name: "index_campaign_npcs_on_uuid", unique: true
+  end
+
+  create_table "campaign_party_members", force: :cascade do |t|
+    t.bigint "campaign_id", null: false
+    t.bigint "player_character_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["campaign_id", "player_character_id"], name: "idx_on_campaign_id_player_character_id_c6c43d9df3", unique: true
+    t.index ["player_character_id"], name: "index_campaign_party_members_on_player_character_id"
   end
 
   create_table "campaign_quests", force: :cascade do |t|
@@ -756,6 +765,20 @@ ActiveRecord::Schema[7.1].define(version: 2026_10_15_220000) do
     t.index ["searchable_type", "searchable_id"], name: "index_pg_search_documents_on_searchable"
   end
 
+  create_table "player_characters", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "world_id", null: false
+    t.string "world_title"
+    t.string "foundry_uuid", null: false
+    t.string "name", null: false
+    t.string "player_name"
+    t.integer "level"
+    t.jsonb "sheet", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id", "world_id", "foundry_uuid"], name: "idx_on_user_id_world_id_foundry_uuid_9ad0edfc57", unique: true
+  end
+
   create_table "prerequisites", force: :cascade do |t|
     t.string "name"
     t.integer "level"
@@ -1057,6 +1080,8 @@ ActiveRecord::Schema[7.1].define(version: 2026_10_15_220000) do
   add_foreign_key "campaign_npcs", "campaign_references", column: "stat_block_reference_id", on_delete: :nullify
   add_foreign_key "campaign_npcs", "campaigns"
   add_foreign_key "campaign_npcs", "monsters", on_delete: :nullify
+  add_foreign_key "campaign_party_members", "campaigns", on_delete: :cascade
+  add_foreign_key "campaign_party_members", "player_characters", on_delete: :cascade
   add_foreign_key "campaign_quests", "campaign_locations", column: "location_id", on_delete: :nullify
   add_foreign_key "campaign_quests", "campaign_npcs", column: "giver_npc_id", on_delete: :nullify
   add_foreign_key "campaign_quests", "campaign_quests", column: "parent_id", on_delete: :nullify
@@ -1092,6 +1117,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_10_15_220000) do
   add_foreign_key "multi_classing_profs", "profs"
   add_foreign_key "multi_classings", "dnd_classes"
   add_foreign_key "patreon_users", "users", column: "linked_user_id"
+  add_foreign_key "player_characters", "users"
   add_foreign_key "prerequisites", "class_features"
   add_foreign_key "race_traits", "races"
   add_foreign_key "races", "users"

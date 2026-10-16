@@ -58,6 +58,7 @@ module.exports = {
   // Campaign planner
   GiBookCover: MockIcon,
   GiHood: MockIcon,
+  GiThreeFriends: MockIcon,
   GiLockedChest: MockIcon,
   GiSandsOfTime: MockIcon,
   GiScrollUnfurled: MockIcon,

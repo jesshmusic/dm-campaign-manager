@@ -139,6 +139,18 @@ RSpec.describe 'Admin::V1::CampaignsController', type: :request do
       expect(user.campaigns.last.edition).to eq('2024')
     end
 
+    it 'starts with the chosen party' do
+      akra = create(:player_character, user: user, name: 'Akra')
+      not_mine = create(:player_character, name: 'Not mine')
+
+      post '/v1/campaigns', params: { campaign: campaign_params.merge(party_character_ids: [akra.id, not_mine.id]) },
+                            as: :json
+
+      expect(response).to have_http_status(:created)
+      expect(json['party'].pluck('name')).to eq(['Akra'])
+      expect(json['party'].first['sheet']).to include('summary' => 'Level 3 Dragonborn Cleric')
+    end
+
     it 'treats an empty template as blank' do
       post '/v1/campaigns', params: { campaign: campaign_params, template: '' }
 
@@ -210,6 +222,26 @@ RSpec.describe 'Admin::V1::CampaignsController', type: :request do
       expect(json).to include('status' => 'active', 'pitch' => 'Find the mine', 'slug' => 'lost-mine')
       expect(json).not_to have_key('sessions')
       expect(campaign.reload.sync_version).to be_positive
+    end
+
+    it 'sets the party' do
+      akra = create(:player_character, user: user, name: 'Akra')
+      borin = create(:player_character, user: user, name: 'Borin')
+      campaign.assign_party!([akra.id])
+
+      patch "/v1/campaigns/#{campaign.slug}", params: { campaign: { party_character_ids: [borin.id.to_s] } }, as: :json
+
+      expect(response).to have_http_status(:success)
+      expect(campaign.party.reload).to eq([borin])
+    end
+
+    it 'leaves the party alone when the request does not set it' do
+      akra = create(:player_character, user: user)
+      campaign.assign_party!([akra.id])
+
+      patch "/v1/campaigns/#{campaign.slug}", params: { campaign: { pitch: 'New pitch' } }, as: :json
+
+      expect(campaign.party.reload).to eq([akra])
     end
 
     it 'saves the compendiums the campaign leaves out' do

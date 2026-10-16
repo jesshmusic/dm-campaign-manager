@@ -87,6 +87,11 @@ FactoryBot.define do
     page { 42 }
   end
 
+  factory :campaign_party_member do
+    campaign
+    player_character { association :player_character, user: campaign.user }
+  end
+
   factory :campaign_session_link do
     association :session, factory: :campaign_session
     linkable { association :campaign_npc, campaign: session.campaign }

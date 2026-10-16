@@ -56,6 +56,7 @@ class User < ApplicationRecord
   has_many :api_tokens, dependent: :destroy
   has_many :campaigns, dependent: :destroy
   has_many :compendium_entries, dependent: :delete_all
+  has_many :player_characters, dependent: :destroy
   has_one :patreon_account, class_name: 'PatreonUser', foreign_key: :linked_user_id,
                             inverse_of: :linked_user, dependent: :destroy
 

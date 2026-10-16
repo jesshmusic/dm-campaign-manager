@@ -63,6 +63,8 @@ class Campaign < ApplicationRecord
   has_many :sessions, class_name: 'CampaignSession', dependent: :destroy
   has_many :secrets, class_name: 'CampaignSecret', dependent: :destroy
   has_many :book_references, class_name: 'CampaignReference', dependent: :destroy
+  has_many :party_members, class_name: 'CampaignPartyMember', dependent: :delete_all
+  has_many :party, through: :party_members, source: :player_character
   has_many :tombstones, class_name: 'CampaignTombstone', dependent: :delete_all
 
   validates :name, presence: true, length: { maximum: 120 }
@@ -87,6 +89,12 @@ class Campaign < ApplicationRecord
                                     Time.current, id
                                   ])
     self.class.connection.select_value(sql).to_i
+  end
+
+  # Sets the party to these of the DM's player characters, ignoring any
+  # that aren't the DM's
+  def assign_party!(character_ids)
+    self.party = user.player_characters.where(id: Array(character_ids))
   end
 
   # Three Clue Rule: each revelation should have at least three clues
@@ -156,6 +164,7 @@ class Campaign < ApplicationRecord
       secrets: secrets.order(:position, :created_at).map(&:as_json_for_api),
       sessions: sessions.includes(links: :linkable).order(:number).map(&:as_json_for_api),
       references: book_references.order(:book, :name).map(&:as_json_for_api),
+      party: party.order(:name).map(&:as_json_for_api),
       revelations: revelation_summaries
     )
   end

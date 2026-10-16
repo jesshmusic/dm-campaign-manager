@@ -24,7 +24,8 @@ module Admin
       end
 
       # POST /v1/campaigns
-      # Optional `template`: blank, three_act, sandbox or five_room
+      # Optional `template`: blank, three_act, sandbox or five_room, and
+      # `campaign[party_character_ids]`: the DM's player characters in the party
       def create
         template = params[:template].presence || 'blank'
         return render json: { errors: ['Unknown template'] }, status: :unprocessable_entity unless CampaignTemplate::TEMPLATES.include?(template)
@@ -32,6 +33,7 @@ module Admin
         campaign = @user.campaigns.new(campaign_params)
         Campaign.transaction do
           campaign.save!
+          campaign.assign_party!(party_ids) if party_ids
           CampaignTemplate.apply!(campaign, template)
         end
         render json: campaign.reload.as_full_json_for_api, status: :created
@@ -41,7 +43,10 @@ module Admin
 
       # PATCH /v1/campaigns/:id
       def update
-        if @campaign.update(campaign_params)
+        saved = Campaign.transaction do
+          @campaign.update(campaign_params).tap { |ok| @campaign.assign_party!(party_ids) if ok && party_ids }
+        end
+        if saved
           render json: @campaign.as_json_for_api
         else
           render json: { errors: @campaign.errors.full_messages }, status: :unprocessable_entity
@@ -58,6 +63,14 @@ module Admin
 
       def set_campaign
         @campaign = @user.campaigns.friendly.find(params[:id])
+      end
+
+      # The party's player character ids, when the request sets them
+      def party_ids
+        campaign = params[:campaign]
+        return unless campaign.respond_to?(:key?) && campaign.key?(:party_character_ids)
+
+        Array(campaign[:party_character_ids]).map(&:to_s)
       end
 
       def campaign_params

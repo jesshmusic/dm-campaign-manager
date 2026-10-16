@@ -1,28 +1,9 @@
-import { useEffect, useState } from 'react';
+import useLoadedList from './useLoadedList';
 import { CampaignApi, CompendiumResult } from './useCampaignApi';
-import {
-  BookReference,
-  Campaign,
-  CompendiumCategory,
-  CompendiumEntry,
-  CompendiumPack,
-} from './types';
+import { BookReference, Campaign, CompendiumCategory, CompendiumEntry } from './types';
 
 // The compendium packs in the DM's index: null while loading, [] when none
-export const useCompendiumPacks = (api: CampaignApi) => {
-  const [packs, setPacks] = useState<CompendiumPack[] | null>(null);
-  useEffect(() => {
-    let current = true;
-    api
-      .compendiumPacks()
-      .then((data) => current && setPacks(Array.isArray(data) ? data : []))
-      .catch(() => current && setPacks([]));
-    return () => {
-      current = false;
-    };
-  }, [api]);
-  return packs;
-};
+export const useCompendiumPacks = (api: CampaignApi) => useLoadedList(api.compendiumPacks);
 
 // "Zombie (CR 1/4 · Undead · Monster Manual)"
 export const compendiumResult = (entry: CompendiumEntry): CompendiumResult => ({

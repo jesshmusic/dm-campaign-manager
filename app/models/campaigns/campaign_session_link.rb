@@ -55,12 +55,20 @@ class CampaignSessionLink < ApplicationRecord
       linkableId: linkable_id.to_s,
       name: linkable.respond_to?(:name) ? linkable.name : linkable.try(:text),
       slug: linkable.try(:slug),
-      detail: linkable.try(:citation),
+      detail: detail,
       position: position
     }
   end
 
   private
+
+  # Shown next to the name: a book reference's citation, a monster's CR, an item's rarity
+  def detail
+    return linkable.citation if linkable.respond_to?(:citation)
+    return "CR #{linkable.challenge_rating}" if linkable.is_a?(Monster) && linkable.challenge_rating.present?
+
+    linkable.try(:rarity).presence
+  end
 
   def sync_campaign
     session.campaign

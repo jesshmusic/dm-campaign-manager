@@ -15,6 +15,8 @@ type LinkPickerProps = {
   renderLink?: (link: SessionLink) => React.ReactNode;
   // Only show links to these records (when one type is split across steps)
   scopeIds?: string[];
+  // Just the dropdown, when the step lists its links itself
+  hideLinks?: boolean;
 };
 
 /** Lists what a session links to of one type, with a dropdown to add more. */
@@ -28,6 +30,7 @@ const LinkPicker = ({
   onRemove,
   renderLink,
   scopeIds,
+  hideLinks,
 }: LinkPickerProps) => {
   const [selected, setSelected] = useState('');
   const linked = links.filter(
@@ -45,7 +48,7 @@ const LinkPicker = ({
 
   return (
     <div>
-      {linked.length === 0 ? (
+      {hideLinks ? null : linked.length === 0 ? (
         <EmptyState>{emptyText}</EmptyState>
       ) : (
         <List>

@@ -7,14 +7,16 @@ import {
   GiHood,
   GiLockedChest,
   GiScrollUnfurled,
-  GiTreasureMap,
   GiSpellBook,
+  GiThreeFriends,
+  GiTreasureMap,
 } from 'react-icons/gi';
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
 import useCampaign from './useCampaign';
 import useCampaignBreadcrumbs from './useCampaignBreadcrumbs';
 import OverviewTab from './tabs/OverviewTab';
+import PartyTab from './tabs/PartyTab';
 import StoryTab from './tabs/StoryTab';
 import QuestsTab from './tabs/QuestsTab';
 import CastTab from './tabs/CastTab';
@@ -38,6 +40,7 @@ import {
 
 const TABS = [
   { value: 'overview', label: 'Overview', icon: <GiBookCover />, Component: OverviewTab },
+  { value: 'party', label: 'Party', icon: <GiThreeFriends />, Component: PartyTab },
   { value: 'story', label: 'Story', icon: <GiCrossedSwords />, Component: StoryTab },
   { value: 'quests', label: 'Quests', icon: <GiScrollUnfurled />, Component: QuestsTab },
   { value: 'cast', label: 'Cast', icon: <GiHood />, Component: CastTab },

@@ -78,13 +78,30 @@ RSpec.describe CampaignAssistant do
       )
     end
 
+    it "describes the party's characters with their bonds and flaws" do
+      akra = create(:player_character, user: campaign.user, name: 'Akra',
+                                       sheet: { 'summary' => 'Level 3 Dragonborn Cleric',
+                                                'personality' => { 'bonds' => 'My temple', 'flaws' => 'Too trusting',
+                                                                   'ideals' => 'Faith' } })
+      borin = create(:player_character, user: campaign.user, name: 'Borin', level: 2, sheet: {})
+      create(:player_character, user: campaign.user, name: 'Not playing')
+      campaign.assign_party!([akra.id, borin.id])
+
+      assistant.outline
+
+      expect(prompt).to include(
+        'Party: Akra (Level 3 Dragonborn Cleric) - My temple - Too trusting; Borin (level 2)'
+      )
+      expect(prompt).not_to include('Not playing', 'Faith')
+    end
+
     it 'leaves out details the campaign does not have' do
       bare = create(:campaign, user: user, name: 'Bare Bones', mode: 'sandbox')
 
       described_class.new(bare, client: client).outline
 
       expect(prompt).to include('Campaign: Bare Bones', 'Structure: sandbox')
-      expect(prompt).not_to include('Premise:', 'Setting:', 'Tone:', 'Players:', 'Levels:', 'Truths:',
+      expect(prompt).not_to include('Premise:', 'Setting:', 'Tone:', 'Players:', 'Levels:', 'Truths:', 'Party:',
                                     'Already in the campaign')
     end
 

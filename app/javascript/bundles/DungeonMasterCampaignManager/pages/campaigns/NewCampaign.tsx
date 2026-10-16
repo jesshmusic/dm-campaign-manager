@@ -6,6 +6,8 @@ import PageTitle from '../../components/PageTitle/PageTitle';
 import EntityForm, { toFormValues } from './components/EntityForm';
 import { campaignFields } from './campaignFields';
 import CompendiumPicker from './components/CompendiumPicker';
+import PartyPicker from './components/PartyPicker';
+import useLoadedList from './useLoadedList';
 import { useCompendiumPacks } from './compendium';
 import useCampaignApi from './useCampaignApi';
 import { CampaignMode, CampaignTemplate } from './types';
@@ -99,6 +101,8 @@ const NewCampaign = () => {
   const [error, setError] = useState<string | null>(null);
   const [excludedPacks, setExcludedPacks] = useState<string[]>([]);
   const packs = useCompendiumPacks(api);
+  const characters = useLoadedList(api.listPlayerCharacters);
+  const [partyIds, setPartyIds] = useState<string[]>([]);
   const fields = campaignFields(api);
 
   const create = async (attributes: Record<string, unknown>) => {
@@ -106,7 +110,12 @@ const NewCampaign = () => {
     const mode = TEMPLATES.find((option) => option.value === template)?.mode ?? 'arc';
     try {
       const campaign = await api.createCampaign(
-        { ...attributes, mode, excluded_compendium_packs: excludedPacks },
+        {
+          ...attributes,
+          mode,
+          excluded_compendium_packs: excludedPacks,
+          party_character_ids: partyIds,
+        },
         template,
       );
       navigate(`/app/campaigns/${campaign.slug}`);
@@ -145,6 +154,14 @@ const NewCampaign = () => {
                 </TemplateOption>
               ))}
             </TemplateGrid>
+            <SectionTitle>Who&apos;s playing?</SectionTitle>
+            <Card>
+              <Meta>
+                Pick the player characters in this campaign&apos;s party. Their character sheets
+                come from Foundry and stay up to date as they level up.
+              </Meta>
+              <PartyPicker characters={characters} selected={partyIds} onChange={setPartyIds} />
+            </Card>
             <SectionTitle>The brief</SectionTitle>
             <Card>
               {error && <Notice>{error}</Notice>}

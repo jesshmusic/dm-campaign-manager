@@ -36,6 +36,15 @@ Decisions already made:
 - **Compendium index (done):** the module sends the index of the DM's SRD 5.2 and 2024 core book compendiums.
   Planner searches use it, and picks become draggable compendium links in the session journals. Each campaign
   chooses its compendiums (a sidebar on New Campaign, and a list on Overview). See "The 2024 core books".
+- **Party (done):**
+  - The module sends each Foundry world's Player Character actors (not NPCs, even ones a player owns) to the
+    DM's account, when the GM loads the world and a few seconds after a sheet changes.
+  - A sheet holds what the player built: stats, saves, skills, class levels, spellcasting and slots, the names
+    of spells, features and gear, personality and backstory. It leaves out rules text, and values that change
+    every round, like current HP.
+  - Each campaign picks its party from them: a name, class, level and player list on New Campaign ("Who's
+    playing?") and on the Party tab, which also shows each party member's full sheet.
+  - Session prep step 1 lists the party with quick stats, bonds and flaws. The AI brief includes the party.
 
 ## What's left
 **To ship this PR**
@@ -85,6 +94,7 @@ The guide should save a draft in the browser, so leaving the page doesn't lose i
   still places monsters on the map.
 - Push changes to Foundry over ActionCable instead of polling every 2 minutes.
 - Index homebrew and adventure compendiums the DM chooses, not just the official 2024 packs.
+- Default the brief's "Players" to the size of the chosen party.
 
 ## Research takeaways (what to build on)
 | Source | Idea we borrow |

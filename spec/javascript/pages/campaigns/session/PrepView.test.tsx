@@ -7,6 +7,7 @@ import {
   FakeState,
   makeState,
   plannerSession,
+  playerCharacter,
   sampleCampaign,
   sampleCompendiumEntry,
 } from '../fixtures';
@@ -68,8 +69,26 @@ describe('PrepView', () => {
     expect(screen.getByText('No locations picked yet.')).toBeInTheDocument();
     expect(screen.getByText('No NPCs picked yet.')).toBeInTheDocument();
     expect(screen.getByText('No monsters picked yet.')).toBeInTheDocument();
-    expect(screen.getByText('No book monsters picked yet.')).toBeInTheDocument();
-    expect(screen.getByText('No book items or tables picked yet.')).toBeInTheDocument();
+    expect(screen.getByText('No items picked yet.')).toBeInTheDocument();
+  });
+
+  describe('the party', () => {
+    it('lists the party with quick stats and hooks in step 1', () => {
+      renderPrep(sampleCampaign({ party: [playerCharacter()] }));
+
+      const party = within(step(1)).getByRole('list', { name: 'The party' });
+      const akra = within(party).getByRole('listitem');
+      expect(akra).toHaveTextContent('Akra (Level 5 Dragonborn Cleric (Life Domain))');
+      expect(akra).toHaveTextContent('AC 18 · HP 38 · Speed 30 ft · Passive Perception 13');
+      expect(within(akra).getByText('Bond: My temple in Hommlet')).toBeInTheDocument();
+      expect(within(akra).getByText('Flaw: Too trusting')).toBeInTheDocument();
+    });
+
+    it('shows no party list without a party', () => {
+      renderPrep();
+
+      expect(within(step(1)).queryByRole('list', { name: 'The party' })).not.toBeInTheDocument();
+    });
   });
 
   describe('notes', () => {
@@ -289,7 +308,8 @@ describe('PrepView', () => {
           target: { value: name.slice(0, 3) },
         });
         fireEvent.click(within(section).getByRole('button', { name: 'Search' }));
-        const result = await within(section).findByText(name);
+        const form = within(section).getByRole('textbox', { name: label }).closest('form');
+        const result = await within(form as HTMLElement).findByText(name);
         fireEvent.click(within(result).getByRole('button', { name: 'Add' }));
         await waitFor(() => expect(state.mutate).toHaveBeenCalled());
         // Let the change finish before checking what it did
@@ -420,17 +440,56 @@ describe('PrepView', () => {
       });
     });
 
-    it('only shows monster book references in this step', () => {
+    it('lists every monster picked in one list, above the ways to add more', () => {
       renderPrep();
       const monsters = step(7);
 
-      expect(within(monsters).getByText('Cult Fanatic (MM p. 34)')).toBeInTheDocument();
+      const picked = within(monsters).getAllByRole('listitem');
+      expect(picked.map((item) => item.textContent)).toEqual([
+        'Ghoul  remove',
+        'Cult Fanatic (CR 2 · MM p. 34) remove',
+      ]);
+      expect(within(monsters).getByRole('link', { name: 'Ghoul' })).toHaveAttribute(
+        'href',
+        '/app/2024/monsters/ghoul',
+      );
       expect(within(monsters).queryByText(/Bag of Holding/)).not.toBeInTheDocument();
+
+      const search = within(monsters).getByRole('textbox', { name: 'Search monsters' });
+      expect(
+        picked[1].compareDocumentPosition(search) & Node.DOCUMENT_POSITION_FOLLOWING,
+      ).toBeTruthy();
+      expect(within(monsters).getByRole('heading', { name: 'Add a monster' })).toBeInTheDocument();
+      expect(
+        within(monsters).getByText("Or pick one from this campaign's book references:"),
+      ).toBeInTheDocument();
       expect(
         optionsOf(
           within(monsters).getByRole('combobox', { name: 'Add a monster from your books' }),
         ),
       ).toEqual(['Choose…', 'Veteran (MM p. 323)']);
+    });
+
+    it('shows the CR of a monster from DM Guru', () => {
+      const campaign = sampleCampaign();
+      const session = campaign.sessions.find((s) => s.id === 'sess2')!;
+      session.links = session.links.map((link) =>
+        link.linkableType === 'Monster' ? { ...link, detail: 'CR 1' } : link,
+      );
+      renderPrep(campaign);
+
+      expect(within(step(7)).getByText('(CR 1)')).toBeInTheDocument();
+    });
+
+    it('hides the book dropdown when every book monster is picked', () => {
+      const campaign = sampleCampaign();
+      campaign.references = campaign.references.filter((reference) => reference.id !== 'r4');
+      renderPrep(campaign);
+
+      expect(
+        within(step(7)).queryByRole('combobox', { name: 'Add a monster from your books' }),
+      ).not.toBeInTheDocument();
+      expect(within(step(7)).queryByText(/Or pick one/)).not.toBeInTheDocument();
     });
 
     it('links a monster from the books', async () => {
@@ -466,19 +525,29 @@ describe('PrepView', () => {
   });
 
   describe('treasure', () => {
-    it('only shows magic item and table book references in this step', () => {
+    it('lists the treasure picked from the books, above the ways to add more', () => {
       renderPrep();
       const treasure = step(8);
 
-      expect(within(treasure).getByText('Bag of Holding (DMG p. 224)')).toBeInTheDocument();
+      expect(
+        within(treasure)
+          .getAllByRole('listitem')
+          .map((item) => item.textContent),
+      ).toEqual(['Bag of Holding (DMG p. 224) remove']);
       expect(within(treasure).queryByText(/Cult Fanatic/)).not.toBeInTheDocument();
+      expect(
+        within(treasure).getByRole('heading', { name: 'Add an item or table' }),
+      ).toBeInTheDocument();
       expect(
         optionsOf(within(treasure).getByRole('combobox', { name: 'Add treasure from your books' })),
       ).toEqual(['Choose…', 'Trinkets (PHB p. 413)']);
     });
 
-    it('says when no compendium items are picked', () => {
-      renderPrep();
+    it('says when no items are picked', () => {
+      const campaign = sampleCampaign();
+      const session = campaign.sessions.find((s) => s.id === 'sess2')!;
+      session.links = session.links.filter((link) => link.linkableType !== 'CampaignReference');
+      renderPrep(campaign);
 
       expect(within(step(8)).getByText('No items picked yet.')).toBeInTheDocument();
     });
