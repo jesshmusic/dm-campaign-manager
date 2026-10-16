@@ -54,16 +54,6 @@ const QuestsTab = ({ campaign, state }: QuestsTabProps) => {
   const [planningId, setPlanningId] = useState<string | null>(null);
   const planning = campaign.quests.find((quest) => quest.id === planningId);
 
-  if (planning)
-    return (
-      <QuestPlan
-        campaign={campaign}
-        quest={planning}
-        state={state}
-        onClose={() => setPlanningId(null)}
-      />
-    );
-
   const fields: FieldConfig[] = [
     { name: 'name', label: 'Name', type: 'text', required: true },
     {
@@ -244,6 +234,15 @@ const QuestsTab = ({ campaign, state }: QuestsTabProps) => {
         'side',
         'Side quests',
         'No side quests yet. Hooks tied to NPCs and places make great side quests.',
+      )}
+      {planning && (
+        <QuestPlan
+          key={planning.id}
+          campaign={campaign}
+          quest={planning}
+          state={state}
+          onClose={() => setPlanningId(null)}
+        />
       )}
     </>
   );

@@ -94,9 +94,15 @@ const useCampaignApi = () => {
         sessionId: string,
         linkableType: LinkableType,
         linkableId: string,
+        // How many, for treasure (left out for one)
+        quantity: number | null = null,
       ) =>
         request<SessionLink>(`${base(slug)}/sessions/${sessionId}/links`, 'POST', {
-          link: { linkable_type: linkableType, linkable_id: linkableId },
+          link: {
+            linkable_type: linkableType,
+            linkable_id: linkableId,
+            ...(quantity && quantity > 1 ? { quantity } : {}),
+          },
         }),
       // Only a link's quantity can change
       updateSessionLink: (
@@ -117,9 +123,15 @@ const useCampaignApi = () => {
         questId: string,
         linkableType: LinkableType,
         linkableId: string,
+        // How many, for treasure (left out for one)
+        quantity: number | null = null,
       ) =>
         request<QuestLink>(`${base(slug)}/quests/${questId}/links`, 'POST', {
-          link: { linkable_type: linkableType, linkable_id: linkableId },
+          link: {
+            linkable_type: linkableType,
+            linkable_id: linkableId,
+            ...(quantity && quantity > 1 ? { quantity } : {}),
+          },
         }),
       // Only a link's quantity can change
       updateQuestLink: (

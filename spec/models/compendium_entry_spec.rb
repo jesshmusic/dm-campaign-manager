@@ -137,8 +137,19 @@ RSpec.describe CompendiumEntry, type: :model do
       expect(user.compendium_entries.search('').size).to eq(4)
     end
 
-    it 'treats LIKE wildcards in the query as text' do
+    it 'treats wildcards and regular expression characters in the query as text' do
       expect(user.compendium_entries.search('%')).to be_empty
+      expect(user.compendium_entries.search('.*')).to be_empty
+      expect(user.compendium_entries.search('(')).to be_empty
+    end
+
+    it 'matches the start of a word, not the middle of one' do
+      create(:compendium_entry, user: user, name: 'Cult Fanatic')
+      create(:compendium_entry, user: user, name: 'Knight')
+
+      expect(user.compendium_entries.search('fanatic').map(&:name)).to eq(['Cult Fanatic'])
+      expect(user.compendium_entries.search('nigh')).to be_empty
+      expect(user.compendium_entries.search('ogre zom').map(&:name)).to eq(['Ogre Zombie'])
     end
   end
 

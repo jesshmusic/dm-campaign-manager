@@ -8,6 +8,7 @@ import CastTab, {
 import { ApiError } from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/useCampaignApi';
 import { Campaign } from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/types';
 import { FakeState, makeState, npc, sampleCampaign } from '../fixtures';
+import { chooseOption, menuOptions, openSelect } from '../selectHelpers';
 
 const renderTab = (campaign: Campaign = sampleCampaign(), state: FakeState = makeState()) => {
   render(
@@ -248,10 +249,10 @@ describe('CastTab', () => {
       const { state } = renderTab();
 
       fireEvent.click(screen.getByRole('button', { name: 'Add NPC' }));
-      expect(input('role')).toHaveValue('neutral');
+      expect(within(screen.getByRole('dialog')).getByText('Neutral')).toBeInTheDocument();
       fireEvent.click(screen.getByRole('button', { name: 'Random name' }));
       await waitFor(() => expect(input('name')).toHaveValue('Random Name'));
-      fireEvent.click(within(cast()).getAllByRole('button', { name: 'Add NPC' })[0]);
+      fireEvent.click(within(screen.getByRole('dialog')).getByRole('button', { name: 'Add NPC' }));
 
       await waitFor(() =>
         expect(state.saveChild).toHaveBeenCalledWith(
@@ -273,19 +274,18 @@ describe('CastTab', () => {
 
       fireEvent.click(screen.getByRole('button', { name: 'Add NPC' }));
 
-      expect(
-        within(input('stat_block_reference_id'))
-          .getAllByRole('option')
-          .map((option) => option.textContent),
-      ).toEqual(['None', 'Cult Fanatic (MM p. 34)', 'Veteran (MM p. 323)']);
+      openSelect('Stat block from your books');
+      expect(menuOptions()).toEqual(['Cult Fanatic (MM p. 34)', 'Veteran (MM p. 323)']);
     });
 
     it('edits an NPC with its faction and book stat block', async () => {
       const { state } = renderTab();
 
       fireEvent.click(within(cardFor('Elmo')).getByRole('button', { name: 'Edit' }));
-      expect(input('stat_block_reference_id')).toHaveValue('r4');
-      fireEvent.change(input('faction_id'), { target: { value: 'f1' } });
+      expect(
+        within(screen.getByRole('dialog')).getByText('Veteran (MM p. 323)'),
+      ).toBeInTheDocument();
+      await chooseOption('Faction', 'Cult of Orcus');
       fireEvent.click(screen.getByRole('button', { name: 'Save' }));
 
       await waitFor(() =>
@@ -329,7 +329,9 @@ describe('CastTab', () => {
 
       fireEvent.click(within(factions()).getByRole('button', { name: 'Add faction' }));
       fireEvent.change(input('name'), { target: { value: 'The Silver Hand' } });
-      fireEvent.click(within(factions()).getByRole('button', { name: 'Add faction' }));
+      fireEvent.click(
+        within(screen.getByRole('dialog')).getByRole('button', { name: 'Add faction' }),
+      );
 
       await waitFor(() =>
         expect(state.saveChild).toHaveBeenCalledWith(

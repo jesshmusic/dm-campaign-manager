@@ -1,21 +1,16 @@
 import { Link } from 'react-router-dom';
-import LinkPicker from './LinkPicker';
 import CompendiumSearch from './CompendiumSearch';
 import QuantityField from './QuantityField';
-import { referenceFor, searchCompendium } from '../compendium';
-import { CompendiumResult } from '../useCampaignApi';
-import { CampaignState } from '../useCampaign';
-import {
-  Campaign,
-  CompendiumCategory,
-  LinkableType,
-  ReferenceCategory,
-  SessionLink,
-} from '../types';
-import { AddHeading, EmptyState, LinkButton, List, Meta } from '../Campaigns.styles';
+import { searchCompendium } from '../compendium';
+import { DraftLink, NewLink } from '../linkDraft';
+import { CampaignApi, CompendiumResult } from '../useCampaignApi';
+import { Campaign, CompendiumCategory, ReferenceCategory, SessionLink } from '../types';
+import { EmptyState, LinkButton, List, Meta } from '../Campaigns.styles';
 
 export const MONSTER_CATEGORIES: ReferenceCategory[] = ['monster'];
 export const TREASURE_CATEGORIES: ReferenceCategory[] = ['magic_item', 'equipment', 'table'];
+
+const REFERENCE_PREFIX = 'reference-';
 
 /** A book reference's CR and citation ("CR 2 · MM p. 34"), else the link's own detail. */
 export const linkDetail = (link: SessionLink, campaign: Campaign) => {
@@ -39,9 +34,10 @@ export const LinkName = ({ link, campaign }: { link: SessionLink; campaign: Camp
 
 type CompendiumLinksProps = {
   campaign: Campaign;
-  state: CampaignState;
-  // The session's or quest's links (only the matching ones are listed)
-  links: SessionLink[];
+  // Only for searching
+  api: CampaignApi;
+  // The session's or quest's links, as drafted (only the matching ones are listed)
+  links: DraftLink[];
   linkableType: 'Monster' | 'Item';
   // The book references listed here, e.g. monsters
   categories: ReferenceCategory[];
@@ -49,68 +45,107 @@ type CompendiumLinksProps = {
   bookCategories?: ReferenceCategory[];
   // What to search the DM's Foundry compendiums for
   searchCategories: CompendiumCategory[];
-  labels: { empty: string; add: string; search: string; books: string };
-  // The API call that links a record (this wraps it in the campaign's mutate)
-  link: (linkableType: LinkableType, id: string) => Promise<unknown>;
-  onRemove: (link: SessionLink) => Promise<boolean>;
-  // Which links say how many, and saving how many
-  hasQuantity?: (link: SessionLink) => boolean;
-  onSaveQuantity?: (link: SessionLink, quantity: number | null) => Promise<boolean>;
+  labels: { empty: string; search: string };
+  onAdd: (link: NewLink) => void;
+  onRemove: (link: DraftLink) => void;
+  // Which links say how many, and changing how many
+  hasQuantity?: (link: DraftLink) => boolean;
+  onQuantity?: (link: DraftLink, quantity: number | null) => void;
 };
 
 /**
- * Monsters or items picked for a session or quest, from DM Guru's SRD or the
- * campaign's books, then the ways to add more: a search of the DM's Foundry
- * compendiums (or DM Guru's SRD without them), and the campaign's book
- * references. A pick from the compendiums becomes a book reference, which is
- * a draggable link in Foundry.
+ * Monsters or items picked for a session or quest, then one search that
+ * fills in as you type: the campaign's book references first, then the DM's
+ * Foundry compendiums (or DM Guru's SRD without them). A compendium pick
+ * becomes a book reference when the plan is saved, which is a draggable link
+ * in Foundry.
  */
 const CompendiumLinks = ({
   campaign,
-  state,
+  api,
   links,
   linkableType,
   categories,
   bookCategories = categories,
   searchCategories,
   labels,
-  link,
+  onAdd,
   onRemove,
   hasQuantity,
-  onSaveQuantity,
+  onQuantity,
 }: CompendiumLinksProps) => {
-  const { api, mutate } = state;
   const referenceById = (id: string) => campaign.references.find((r) => r.id === id);
+  const referenceByUuid = (uuid: string) =>
+    campaign.references.find((reference) => reference.foundryUuid === uuid);
 
-  const addLink = (type: LinkableType, id: string) => mutate(() => link(type, id));
+  const picked = links.filter((link) => {
+    if (link.entry) return categories.includes(link.entry.category as ReferenceCategory);
+    if (link.linkableType === 'CampaignReference') {
+      return categories.includes(referenceById(link.linkableId)?.category as ReferenceCategory);
+    }
+    return link.linkableType === linkableType;
+  });
 
-  const addResult = (result: CompendiumResult) => {
+  const linkedReference = (id: string) =>
+    links.some((link) => link.linkableType === 'CampaignReference' && link.linkableId === id);
+
+  const isPicked = (result: CompendiumResult) => {
+    if (result.id.startsWith(REFERENCE_PREFIX)) {
+      return linkedReference(result.id.slice(REFERENCE_PREFIX.length));
+    }
     const { entry } = result;
-    if (!entry) return addLink(linkableType, result.id);
-    return mutate(async () => {
-      const reference = await referenceFor(api, campaign, entry);
-      const linked = links.some(
-        (other) => other.linkableType === 'CampaignReference' && other.linkableId === reference.id,
+    if (entry) {
+      const reference = referenceByUuid(entry.foundryUuid);
+      return (
+        links.some((link) => link.entry?.foundryUuid === entry.foundryUuid) ||
+        (reference !== undefined && linkedReference(reference.id))
       );
-      if (!linked) await link('CampaignReference', reference.id);
-    });
+    }
+    return links.some(
+      (link) => link.linkableType === linkableType && link.linkableId === result.id,
+    );
   };
 
-  const picked = links.filter((other) =>
-    other.linkableType === 'CampaignReference'
-      ? categories.includes(referenceById(other.linkableId)?.category as ReferenceCategory)
-      : other.linkableType === linkableType,
-  );
+  const pick = (result: CompendiumResult) => {
+    const referenceId = result.id.startsWith(REFERENCE_PREFIX)
+      ? result.id.slice(REFERENCE_PREFIX.length)
+      : result.entry && referenceByUuid(result.entry.foundryUuid)?.id;
+    if (referenceId) {
+      const reference = referenceById(referenceId);
+      onAdd({
+        linkableType: 'CampaignReference',
+        linkableId: referenceId,
+        name: reference?.name ?? result.name,
+        detail: reference?.citation ?? null,
+      });
+    } else if (result.entry) {
+      onAdd({
+        linkableType: 'CampaignReference',
+        linkableId: `entry-${result.entry.id}`,
+        name: result.name,
+        detail: result.detail || null,
+        entry: result.entry,
+      });
+    } else {
+      onAdd({
+        linkableType,
+        linkableId: result.id,
+        name: result.name,
+        detail: result.detail || null,
+      });
+    }
+  };
 
-  const references = campaign.references.filter((reference) =>
-    bookCategories.includes(reference.category),
-  );
-  const unpicked = references.filter(
-    (reference) =>
-      !links.some(
-        (other) => other.linkableType === 'CampaignReference' && other.linkableId === reference.id,
-      ),
-  );
+  const books: CompendiumResult[] = campaign.references
+    .filter((reference) => bookCategories.includes(reference.category))
+    .map((reference) => ({
+      id: `${REFERENCE_PREFIX}${reference.id}`,
+      name: reference.name,
+      slug: '',
+      detail: [reference.challengeRating && `CR ${reference.challengeRating}`, reference.citation]
+        .filter(Boolean)
+        .join(' · '),
+    }));
 
   const fallback = (query: string) =>
     linkableType === 'Monster'
@@ -123,25 +158,25 @@ const CompendiumLinks = ({
         <EmptyState>{labels.empty}</EmptyState>
       ) : (
         <List>
-          {picked.map((other) => {
-            const detail = linkDetail(other, campaign);
+          {picked.map((link) => {
+            const detail = linkDetail(link, campaign);
             return (
-              <li key={other.id}>
-                <LinkName link={other} campaign={campaign} />{' '}
+              <li key={link.id}>
+                <LinkName link={link} campaign={campaign} />{' '}
                 {detail && <Meta as="span">({detail})</Meta>}{' '}
-                {onSaveQuantity && hasQuantity?.(other) && (
+                {onQuantity && hasQuantity?.(link) && (
                   <>
                     <QuantityField
-                      label={`Quantity of ${other.name}`}
-                      value={other.quantity}
-                      onSave={(quantity) => onSaveQuantity(other, quantity)}
+                      label={`Quantity of ${link.name}`}
+                      value={link.quantity}
+                      onSave={(quantity) => {
+                        onQuantity(link, quantity);
+                        return Promise.resolve(true);
+                      }}
                     />{' '}
                   </>
                 )}
-                <LinkButton
-                  aria-label={`Remove ${other.name}`}
-                  onClick={() => void onRemove(other)}
-                >
+                <LinkButton aria-label={`Remove ${link.name}`} onClick={() => onRemove(link)}>
                   remove
                 </LinkButton>
               </li>
@@ -149,30 +184,14 @@ const CompendiumLinks = ({
           })}
         </List>
       )}
-      <AddHeading>{labels.add}</AddHeading>
       <CompendiumSearch
         label={labels.search}
         search={searchCompendium(api, campaign.slug, searchCategories, fallback)}
-        onPick={addResult}
+        onPick={pick}
+        isPicked={isPicked}
+        local={books.length > 0 ? { label: "This campaign's books", results: books } : undefined}
+        resultsLabel={linkableType === 'Monster' ? 'Monsters' : 'Items'}
       />
-      {unpicked.length > 0 && (
-        <>
-          <Meta>Or pick one from this campaign&apos;s book references:</Meta>
-          <LinkPicker
-            label={labels.books}
-            linkableType="CampaignReference"
-            links={links}
-            options={references.map((reference) => ({
-              id: reference.id,
-              label: `${reference.name} (${reference.citation})`,
-            }))}
-            emptyText=""
-            onAdd={addLink}
-            onRemove={onRemove}
-            hideLinks
-          />
-        </>
-      )}
     </>
   );
 };

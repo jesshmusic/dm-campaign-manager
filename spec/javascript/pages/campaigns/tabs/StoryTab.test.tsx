@@ -5,6 +5,7 @@ import StoryTab, {
 } from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/tabs/StoryTab';
 import { Campaign } from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/types';
 import { FakeState, makeState, npc, sampleCampaign } from '../fixtures';
+import { menuOptions, openSelect } from '../selectHelpers';
 
 const renderTab = (campaign: Campaign = sampleCampaign(), state: FakeState = makeState()) => {
   render(<StoryTab campaign={campaign} state={state} />);
@@ -159,7 +160,9 @@ describe('StoryTab', () => {
       expect(input('clock_segments')).toHaveValue(6);
       fireEvent.change(input('name'), { target: { value: 'The Black Tide' } });
       fireEvent.change(input('portents'), { target: { value: 'Ships vanish\nFish die' } });
-      fireEvent.click(within(frontsSection()).getAllByRole('button', { name: 'Add front' })[0]);
+      fireEvent.click(
+        within(screen.getByRole('dialog')).getByRole('button', { name: 'Add front' }),
+      );
 
       await waitFor(() => expect(state.saveChild).toHaveBeenCalled());
       expect(state.saveChild).toHaveBeenCalledWith(
@@ -183,11 +186,9 @@ describe('StoryTab', () => {
 
       fireEvent.click(screen.getByRole('button', { name: 'Add front' }));
 
-      expect(
-        within(input('npc_id'))
-          .getAllByRole('option')
-          .map((option) => option.textContent),
-      ).toEqual(['Nobody in particular', 'Mordred', 'Lareth', 'Elmo']);
+      expect(screen.getByText('Nobody in particular')).toBeInTheDocument();
+      openSelect('Led by');
+      expect(menuOptions()).toEqual(['Mordred', 'Lareth', 'Elmo']);
     });
 
     it('edits a front and keeps triggered portents', async () => {
@@ -195,8 +196,8 @@ describe('StoryTab', () => {
 
       fireEvent.click(within(frontsSection()).getByRole('button', { name: 'Edit' }));
       expect(input('name')).toHaveValue('The Rising Dead');
-      expect(input('npc_id')).toHaveValue('n1');
-      expect(input('faction_id')).toHaveValue('f1');
+      expect(within(screen.getByRole('dialog')).getByText('Lareth')).toBeInTheDocument();
+      expect(within(screen.getByRole('dialog')).getByText('Cult of Orcus')).toBeInTheDocument();
       expect(input('portents')).toHaveValue('Graves open\nLivestock die');
 
       fireEvent.change(input('portents'), { target: { value: 'Graves open\nThe sky darkens' } });

@@ -28,7 +28,7 @@ type EntitySectionProps<T extends Entity> = {
 
 /**
  * A titled list of campaign records with add, edit and delete. Each record
- * renders as a card; editing swaps the card for an EntityForm.
+ * renders as a card; adding and editing open an EntityForm in a modal.
  */
 function EntitySection<T extends Entity>({
   title,
@@ -54,56 +54,47 @@ function EntitySection<T extends Entity>({
   };
 
   const formValues = (record: Record<string, unknown>): FormValues => toFormValues(fields, record);
+  const editing = items.find((item) => item.id === editingId);
 
   return (
     <section aria-label={title}>
       <SectionTitle>
         {title}
-        {!adding && (
-          <Button color={Colors.primary} title={`Add ${noun}`} onClick={() => setAdding(true)} />
-        )}
+        <Button color={Colors.primary} title={`Add ${noun}`} onClick={() => setAdding(true)} />
       </SectionTitle>
       {intro}
       {adding && (
-        <Card>
-          <h3>New {noun}</h3>
-          <EntityForm
-            fields={fields}
-            initialValues={formValues(newValues)}
-            submitLabel={`Add ${noun}`}
-            onSubmit={(attributes) => onSave(attributes)}
-            onCancel={() => setAdding(false)}
-          />
-        </Card>
+        <EntityForm
+          title={`New ${noun}`}
+          fields={fields}
+          initialValues={formValues(newValues)}
+          submitLabel={`Add ${noun}`}
+          onSubmit={(attributes) => onSave(attributes)}
+          onCancel={() => setAdding(false)}
+        />
       )}
-      {items.length === 0 && !adding && <EmptyState>{emptyText}</EmptyState>}
+      {editing && (
+        <EntityForm
+          title={`Edit ${editing.name ?? noun}`}
+          fields={editFields?.(editing) ?? fields}
+          initialValues={toFormValues(editFields?.(editing) ?? fields, valuesFor(editing))}
+          submitLabel="Save"
+          onSubmit={(attributes) => onSave(attributes, editing.id)}
+          onCancel={() => setEditingId(null)}
+        />
+      )}
+      {items.length === 0 && <EmptyState>{emptyText}</EmptyState>}
       <CardGrid>
-        {items.map((item) =>
-          editingId === item.id ? (
-            <Card key={item.id}>
-              <EntityForm
-                fields={editFields?.(item) ?? fields}
-                initialValues={toFormValues(editFields?.(item) ?? fields, valuesFor(item))}
-                submitLabel="Save"
-                onSubmit={(attributes) => onSave(attributes, item.id)}
-                onCancel={() => setEditingId(null)}
-              />
-            </Card>
-          ) : (
-            <Card key={item.id}>
-              {renderItem(item)}
-              <ButtonRow>
-                {renderActions?.(item)}
-                <Button
-                  color={Colors.secondary}
-                  title="Edit"
-                  onClick={() => setEditingId(item.id)}
-                />
-                <Button color={Colors.danger} title="Delete" onClick={() => confirmDelete(item)} />
-              </ButtonRow>
-            </Card>
-          ),
-        )}
+        {items.map((item) => (
+          <Card key={item.id}>
+            {renderItem(item)}
+            <ButtonRow>
+              {renderActions?.(item)}
+              <Button color={Colors.secondary} title="Edit" onClick={() => setEditingId(item.id)} />
+              <Button color={Colors.danger} title="Delete" onClick={() => confirmDelete(item)} />
+            </ButtonRow>
+          </Card>
+        ))}
       </CardGrid>
     </section>
   );

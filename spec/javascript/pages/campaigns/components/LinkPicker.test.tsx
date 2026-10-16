@@ -1,26 +1,28 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor, within } from '../../../test-utils';
+import { render, screen } from '../../../test-utils';
 import LinkPicker from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/components/LinkPicker';
 import { SessionLink } from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/types';
 import { sampleCampaign } from '../fixtures';
+import { chooseOption, menuOptions, openSelect, removeValue } from '../selectHelpers';
 
 const links: SessionLink[] = sampleCampaign().sessions[1].links;
 
 const secretOptions = [
   { id: 's1', label: 'The mayor is a cultist' },
   { id: 's2', label: "Lareth wears the mayor's ring" },
+  { id: 's3', label: 'The tunnel leads to the moathouse' },
 ];
 
 const renderPicker = (props: Partial<React.ComponentProps<typeof LinkPicker>> = {}) => {
-  const onAdd = jest.fn().mockResolvedValue(true);
-  const onRemove = jest.fn().mockResolvedValue(true);
+  const onAdd = jest.fn();
+  const onRemove = jest.fn();
   const view = render(
     <LinkPicker
       label="Add a secret"
       linkableType="CampaignSecret"
       links={links}
       options={secretOptions}
-      emptyText="No secrets picked yet."
+      emptyText="No secrets in the campaign yet."
       onAdd={onAdd}
       onRemove={onRemove}
       {...props}
@@ -29,113 +31,62 @@ const renderPicker = (props: Partial<React.ComponentProps<typeof LinkPicker>> = 
   return { ...view, onAdd, onRemove };
 };
 
-const picker = () => screen.getByRole('combobox', { name: 'Add a secret' });
-
 describe('LinkPicker', () => {
-  it('lists only links of its type', () => {
+  it('shows what is linked of its type as removable values', () => {
     renderPicker();
 
-    const list = screen.getByRole('list');
-    expect(within(list).getAllByRole('listitem')).toHaveLength(1);
-    expect(within(list).getByText(/The mayor is a cultist/)).toBeInTheDocument();
+    expect(screen.getByText('The mayor is a cultist')).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Remove The mayor is a cultist' }),
+    ).toBeInTheDocument();
     expect(screen.queryByText(/Hommlet/)).not.toBeInTheDocument();
   });
 
-  it('only offers options that are not linked yet', () => {
+  it('offers only what is not linked yet', () => {
     renderPicker();
+    openSelect('Add a secret');
 
-    expect(
-      within(picker())
-        .getAllByRole('option')
-        .map((option) => option.textContent),
-    ).toEqual(['Choose…', "Lareth wears the mayor's ring"]);
+    expect(menuOptions()).toEqual([
+      "Lareth wears the mayor's ring",
+      'The tunnel leads to the moathouse',
+    ]);
   });
 
-  it('shows the empty text when nothing of its type is linked', () => {
-    renderPicker({ links: [] });
+  it('filters the options as you type', () => {
+    renderPicker();
+    openSelect('Add a secret', 'tunnel');
 
-    expect(screen.getByText('No secrets picked yet.')).toBeInTheDocument();
-    expect(within(picker()).getAllByRole('option')).toHaveLength(3);
+    expect(menuOptions()).toEqual(['The tunnel leads to the moathouse']);
   });
 
-  it('can show just the dropdown', () => {
-    renderPicker({ hideLinks: true });
-
-    expect(screen.queryByRole('listitem')).not.toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: /^Remove/ })).not.toBeInTheDocument();
-    expect(picker()).toBeInTheDocument();
-  });
-
-  it('shows no empty text in dropdown-only mode', () => {
-    renderPicker({ hideLinks: true, links: [] });
-
-    expect(screen.queryByText('No secrets picked yet.')).not.toBeInTheDocument();
-  });
-
-  it('hides the dropdown when every option is linked', () => {
-    renderPicker({ options: [secretOptions[0]] });
-
-    expect(screen.queryByRole('combobox')).not.toBeInTheDocument();
-  });
-
-  it('adds the chosen option and resets the dropdown', async () => {
+  it('adds the picked option', async () => {
     const { onAdd } = renderPicker();
-    const addButton = screen.getByRole('button', { name: 'Add' });
 
-    expect(addButton).toBeDisabled();
-    fireEvent.change(picker(), { target: { value: 's2' } });
-    expect(addButton).toBeEnabled();
-    fireEvent.click(addButton);
+    await chooseOption('Add a secret', "Lareth wears the mayor's ring");
 
     expect(onAdd).toHaveBeenCalledWith('CampaignSecret', 's2');
-    await waitFor(() => expect(picker()).toHaveValue(''));
   });
 
-  it('keeps the choice when adding fails', async () => {
-    const { onAdd } = renderPicker();
-    onAdd.mockResolvedValue(false);
-
-    fireEvent.change(picker(), { target: { value: 's2' } });
-    fireEvent.click(screen.getByRole('button', { name: 'Add' }));
-
-    await waitFor(() => expect(onAdd).toHaveBeenCalled());
-    expect(picker()).toHaveValue('s2');
-  });
-
-  it('removes a link', () => {
+  it('removes a linked record with its ×', () => {
     const { onRemove } = renderPicker();
 
-    fireEvent.click(screen.getByRole('button', { name: 'Remove The mayor is a cultist' }));
+    removeValue('The mayor is a cultist');
 
-    expect(onRemove).toHaveBeenCalledWith(links[0]);
+    expect(onRemove).toHaveBeenCalledWith(
+      expect.objectContaining({ linkableType: 'CampaignSecret', linkableId: 's1' }),
+    );
   });
 
-  it('limits links to the scoped ids when one type is split up', () => {
-    renderPicker({
-      label: 'Add a monster from your books',
-      linkableType: 'CampaignReference',
-      options: [{ id: 'r1', label: 'Cult Fanatic (MM p. 34)' }],
-      scopeIds: ['r1'],
-    });
+  it('only shows links within its scope', () => {
+    renderPicker({ scopeIds: ['s2'] });
 
-    expect(screen.getByText(/Cult Fanatic/)).toBeInTheDocument();
-    expect(screen.queryByText(/Bag of Holding/)).not.toBeInTheDocument();
+    expect(screen.queryByText('The mayor is a cultist')).not.toBeInTheDocument();
   });
 
-  it('shows every link of its type without a scope', () => {
-    renderPicker({ linkableType: 'CampaignReference', options: [] });
+  it('says when the campaign has nothing to pick', () => {
+    renderPicker({ links: [], options: [] });
+    openSelect('Add a secret');
 
-    expect(screen.getByText(/Cult Fanatic/)).toBeInTheDocument();
-    expect(screen.getByText(/Bag of Holding/)).toBeInTheDocument();
-  });
-
-  it('renders links with a custom renderer', () => {
-    renderPicker({
-      linkableType: 'CampaignReference',
-      options: [],
-      renderLink: (link) => `${link.name} [${link.detail}]`,
-    });
-
-    expect(screen.getByText(/Cult Fanatic \[MM p\. 34\]/)).toBeInTheDocument();
+    expect(screen.getByText('No secrets in the campaign yet.')).toBeInTheDocument();
   });
 });

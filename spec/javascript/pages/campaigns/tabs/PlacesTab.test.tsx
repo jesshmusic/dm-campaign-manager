@@ -3,6 +3,7 @@ import { render, screen, fireEvent, waitFor, within } from '../../../test-utils'
 import PlacesTab from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/tabs/PlacesTab';
 import { Campaign } from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/types';
 import { FakeState, foundryScene, makeApi, makeState, sampleCampaign } from '../fixtures';
+import { chooseOption, menuOptions, openSelect } from '../selectHelpers';
 
 const renderTab = (campaign: Campaign = sampleCampaign(), state: FakeState = makeState()) => {
   render(<PlacesTab campaign={campaign} state={state} />);
@@ -163,9 +164,11 @@ describe('PlacesTab', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Add location' }));
     fireEvent.click(screen.getByRole('button', { name: 'Tavern name' }));
     await waitFor(() => expect(input('name')).toHaveValue('The Prancing Pony'));
-    fireEvent.change(input('parent_id'), { target: { value: 'l1' } });
+    await chooseOption('Inside', 'Hommlet');
     fireEvent.change(input('features'), { target: { value: 'Roaring hearth\nSecret cellar' } });
-    fireEvent.click(screen.getAllByRole('button', { name: 'Add location' })[0]);
+    fireEvent.click(
+      within(screen.getByRole('dialog')).getByRole('button', { name: 'Add location' }),
+    );
 
     await waitFor(() =>
       expect(state.saveChild).toHaveBeenCalledWith(
@@ -187,7 +190,7 @@ describe('PlacesTab', () => {
     const { state } = renderTab();
 
     fireEvent.click(within(cardFor('Moathouse')).getByRole('button', { name: 'Edit' }));
-    expect(input('parent_id')).toHaveValue('l1');
+    expect(within(screen.getByRole('dialog')).getByText('Hommlet')).toBeInTheDocument();
     fireEvent.change(input('description'), { target: { value: 'Ruined and haunted' } });
     fireEvent.click(screen.getByRole('button', { name: 'Save' }));
 
@@ -209,10 +212,8 @@ describe('PlacesTab', () => {
 
     fireEvent.click(within(cardFor('Hommlet')).getByRole('button', { name: 'Edit' }));
 
-    const options = Array.from(input('parent_id').querySelectorAll('option')).map(
-      (o) => o.textContent,
-    );
-    expect(options).toEqual(['Nowhere (top level)', 'Moathouse']);
+    openSelect('Inside');
+    expect(menuOptions()).toEqual(['Moathouse']);
   });
 
   it('deletes a location', () => {

@@ -7,6 +7,7 @@ import OverviewTab, {
 import { formatDate } from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/tabs/SessionsTab';
 import { Campaign } from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/types';
 import { FakeState, makeState, sampleCampaign, samplePacks } from '../fixtures';
+import { chooseOption } from '../selectHelpers';
 
 const renderTab = (campaign: Campaign = sampleCampaign(), state: FakeState = makeState()) => {
   render(
@@ -147,10 +148,10 @@ describe('OverviewTab', () => {
 
       fireEvent.click(screen.getByRole('button', { name: 'Edit campaign' }));
 
-      expect(screen.getByRole('heading', { name: 'Edit campaign' })).toBeInTheDocument();
+      expect(screen.getByRole('dialog', { name: 'Edit campaign' })).toBeInTheDocument();
       expect(input('name')).toHaveValue('Zombie Siege');
-      expect(input('status')).toHaveValue('active');
-      expect(input('mode')).toHaveValue('arc');
+      expect(within(screen.getByRole('dialog')).getByText('Active')).toBeInTheDocument();
+      expect(within(screen.getByRole('dialog')).getByText('Story arc')).toBeInTheDocument();
       expect(input('setting_name')).toHaveValue('Greyhawk');
       expect(input('party_size')).toHaveValue(4);
       expect(input('start_level')).toHaveValue(3);
@@ -164,14 +165,12 @@ describe('OverviewTab', () => {
       const { state } = renderTab();
 
       fireEvent.click(screen.getByRole('button', { name: 'Edit campaign' }));
-      fireEvent.change(input('status'), { target: { value: 'completed' } });
+      await chooseOption('Status', 'Completed');
       fireEvent.change(input('target_level'), { target: { value: '10' } });
       fireEvent.change(input('truths'), { target: { value: 'Only one truth' } });
       fireEvent.click(screen.getByRole('button', { name: 'Save' }));
 
-      await waitFor(() =>
-        expect(screen.queryByRole('heading', { name: 'Edit campaign' })).not.toBeInTheDocument(),
-      );
+      await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
       expect(state.updateCampaign).toHaveBeenCalledWith({
         status: 'completed',
         mode: 'arc',

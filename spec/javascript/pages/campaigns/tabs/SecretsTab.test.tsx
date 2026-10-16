@@ -155,7 +155,7 @@ describe('SecretsTab', () => {
     fireEvent.change(input('revelation'), { target: { value: 'Mayor is the cult leader' } });
     fireEvent.change(input('text'), { target: { value: 'The mayor has a holy symbol of Orcus' } });
     fireEvent.click(screen.getByRole('checkbox', { name: 'Already revealed to the players' }));
-    fireEvent.click(screen.getAllByRole('button', { name: 'Add secret' })[0]);
+    fireEvent.click(within(screen.getByRole('dialog')).getByRole('button', { name: 'Add secret' }));
 
     await waitFor(() =>
       expect(state.saveChild).toHaveBeenCalledWith(

@@ -41,6 +41,8 @@ const renderSection = (props: Partial<React.ComponentProps<typeof EntitySection<
 const cardFor = (name: string) =>
   screen.getByRole('heading', { name }).parentElement as HTMLElement;
 
+const dialog = (name: string) => screen.getByRole('dialog', { name });
+
 describe('EntitySection', () => {
   let confirmSpy: jest.SpyInstance;
 
@@ -79,21 +81,18 @@ describe('EntitySection', () => {
   });
 
   describe('adding', () => {
-    it('opens a form with the new values and saves without an id', async () => {
+    it('opens a form in a modal with the new values and saves without an id', async () => {
       const { onSave } = renderSection({ items: [] });
 
       fireEvent.click(screen.getByRole('button', { name: 'Add NPC' }));
 
-      expect(screen.getByRole('heading', { name: 'New NPC' })).toBeInTheDocument();
-      expect(screen.queryByText('No NPCs yet.')).not.toBeInTheDocument();
+      expect(dialog('New NPC')).toBeInTheDocument();
       expect(input('level')).toHaveValue(1);
 
       fireEvent.change(input('name'), { target: { value: 'Ostler' } });
-      fireEvent.click(screen.getByRole('button', { name: 'Add NPC' }));
+      fireEvent.click(within(dialog('New NPC')).getByRole('button', { name: 'Add NPC' }));
 
-      await waitFor(() =>
-        expect(screen.queryByRole('heading', { name: 'New NPC' })).not.toBeInTheDocument(),
-      );
+      await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
       expect(onSave).toHaveBeenCalledWith({ name: 'Ostler', level: 1 });
       expect(onSave.mock.calls[0]).toHaveLength(1);
     });
@@ -102,10 +101,9 @@ describe('EntitySection', () => {
       const { onSave } = renderSection();
 
       fireEvent.click(screen.getByRole('button', { name: 'Add NPC' }));
-      fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
+      fireEvent.click(within(dialog('New NPC')).getByRole('button', { name: 'Cancel' }));
 
-      expect(screen.queryByRole('heading', { name: 'New NPC' })).not.toBeInTheDocument();
-      expect(screen.getByRole('button', { name: 'Add NPC' })).toBeInTheDocument();
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
       expect(onSave).not.toHaveBeenCalled();
     });
 
@@ -114,28 +112,28 @@ describe('EntitySection', () => {
       onSave.mockResolvedValue(false);
 
       fireEvent.click(screen.getByRole('button', { name: 'Add NPC' }));
-      fireEvent.click(screen.getByRole('button', { name: 'Add NPC' }));
+      fireEvent.click(within(dialog('New NPC')).getByRole('button', { name: 'Add NPC' }));
 
       await waitFor(() => expect(onSave).toHaveBeenCalled());
-      expect(screen.getByRole('heading', { name: 'New NPC' })).toBeInTheDocument();
+      expect(dialog('New NPC')).toBeInTheDocument();
     });
   });
 
   describe('editing', () => {
-    it('swaps the card for a form with the item values and saves with its id', async () => {
+    it('opens a form in a modal with the item values and saves with its id', async () => {
       const { onSave } = renderSection();
 
       fireEvent.click(within(cardFor('Lareth')).getByRole('button', { name: 'Edit' }));
 
+      expect(dialog('Edit Lareth')).toBeInTheDocument();
       expect(input('name')).toHaveValue('Lareth');
       expect(input('level')).toHaveValue(5);
-      expect(screen.queryByRole('heading', { name: 'Lareth' })).not.toBeInTheDocument();
 
       fireEvent.change(input('level'), { target: { value: '6' } });
-      fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+      fireEvent.click(within(dialog('Edit Lareth')).getByRole('button', { name: 'Save' }));
 
       await waitFor(() => expect(onSave).toHaveBeenCalledWith({ name: 'Lareth', level: 6 }, '1'));
-      expect(await screen.findByRole('heading', { name: 'Lareth' })).toBeInTheDocument();
+      await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
     });
 
     it('goes back to the card on cancel', () => {

@@ -20,7 +20,7 @@ export const SESSION_STATUS_LABELS: Record<SessionStatus, string> = {
   played: 'Played',
 };
 
-const STATUS_TONES: Record<SessionStatus, 'muted' | 'primary' | 'success'> = {
+export const SESSION_STATUS_TONES: Record<SessionStatus, 'muted' | 'primary' | 'success'> = {
   planned: 'muted',
   prepped: 'primary',
   played: 'success',
@@ -61,7 +61,7 @@ const SessionsTab = ({ campaign, state }: SessionsTabProps) => {
               <h3>
                 <Link to={sessionPath(session.id)}>{session.displayTitle}</Link>
               </h3>
-              <Badge $tone={STATUS_TONES[session.status]}>
+              <Badge $tone={SESSION_STATUS_TONES[session.status]}>
                 {SESSION_STATUS_LABELS[session.status]}
               </Badge>
             </CardHeader>

@@ -105,6 +105,14 @@ Decisions already made:
     so they show on the Places and Quests tabs, in session prep and in run mode while Foundry is closed. The
     campaign's `sceneThumbnails` maps the UUIDs of the scenes it uses (places', sessions' and quests' maps) to them.
   - Scenes without a map image, and 3D Canvas scenes, get no thumbnail; they show by name.
+- **Planner modals and search selects (done, web):**
+  - Plan the quest, session prep, and every add and edit form open in a modal. Nothing saves until Save; Cancel
+    asks before throwing changes away. Session prep's Prep tab shows the plan read-only, with a "Prep this
+    session" button; run mode's session log still saves as you type.
+  - Dropdowns filter as you type (react-select, `components/SearchSelect.tsx`). Linking NPCs, secrets and
+    places is a multi-select; monster and item search fills in as you type, with the campaign's book references
+    first.
+  - Compendium search matches the start of words, so "gh" finds Ghoul but not Knight.
 
 ## What's left
 **To ship this PR**

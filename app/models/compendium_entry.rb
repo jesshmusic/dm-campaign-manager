@@ -83,12 +83,14 @@ class CompendiumEntry < ApplicationRecord
     rows.size
   end
 
-  # Entries whose name contains the query, names starting with it first. A
-  # book entry hides the SRD entry of the same name.
+  # Entries with a word in their name starting with the query ("fanatic"
+  # finds Cult Fanatic, "gh" doesn't find Knight), names starting with it
+  # first. A book entry hides the SRD entry of the same name.
   def self.search(query, categories: [])
     scope = all
     scope = scope.where(category: categories) if categories.any?
-    scope = scope.where('name ILIKE ?', "%#{sanitize_sql_like(query.strip)}%") if query.present?
+    # \m is the start of a word in a PostgreSQL regular expression
+    scope = scope.where('name ~* ?', "\\m#{Regexp.escape(query.strip)}") if query.present?
     prefix = query.strip.downcase
     scope.order(:name).limit(500).to_a
          .sort_by { |entry| [entry.name.downcase.start_with?(prefix) ? 0 : 1, BOOK_ORDER.index(entry.book) || 99] }

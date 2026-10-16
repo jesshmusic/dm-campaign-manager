@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import Button from '../../../components/Button/Button';
-import { Colors } from '../../../utilities/enums';
 import FormFields from './FormFields';
-import { ButtonRow, Form } from '../Campaigns.styles';
+import PlannerModal from './PlannerModal';
+import { Form } from '../Campaigns.styles';
 
 export type FormValues = Record<string, string | boolean>;
 
@@ -65,14 +64,21 @@ export const toFormValues = (fields: FieldConfig[], record: Record<string, unkno
   ) as FormValues;
 
 type EntityFormProps = {
+  // The modal's title, e.g. "Edit Hommlet"
+  title: string;
   fields: FieldConfig[];
   initialValues: FormValues;
   submitLabel: string;
   onSubmit: (attributes: Record<string, unknown>) => Promise<boolean>;
-  onCancel?: () => void;
+  onCancel: () => void;
 };
 
+/**
+ * Adds or edits a record in a modal. Nothing is saved until the Save button
+ * (or Enter in a field); Cancel throws the changes away.
+ */
 const EntityForm = ({
+  title,
   fields,
   initialValues,
   submitLabel,
@@ -81,26 +87,50 @@ const EntityForm = ({
 }: EntityFormProps) => {
   const [values, setValues] = useState<FormValues>(initialValues);
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const setValue = (name: string, value: string | boolean) =>
     setValues((current) => ({ ...current, [name]: value }));
 
-  const submit = async (event: React.FormEvent) => {
-    event.preventDefault();
+  const submit = async () => {
+    const missing = fields.find(
+      (field) =>
+        field.type === 'text' && field.required && !String(values[field.name] ?? '').trim(),
+    );
+    if (missing) {
+      setError(`${missing.label} is required.`);
+      return;
+    }
     setSaving(true);
+    setError(null);
     const saved = await onSubmit(toAttributes(fields, values));
     setSaving(false);
-    if (saved) onCancel?.();
+    if (saved) onCancel();
+    else setError("Couldn't save. Check the fields and try again.");
   };
 
   return (
-    <Form onSubmit={(event) => void submit(event)}>
-      <FormFields fields={fields} values={values} onChange={setValue} />
-      <ButtonRow>
-        <Button type="submit" color={Colors.primary} title={submitLabel} disabled={saving} />
-        {onCancel && <Button color={Colors.secondary} title="Cancel" onClick={onCancel} />}
-      </ButtonRow>
-    </Form>
+    <PlannerModal
+      isOpen
+      title={title}
+      saveLabel={submitLabel}
+      saving={saving}
+      error={error}
+      dirty={JSON.stringify(values) !== JSON.stringify(initialValues)}
+      onSave={submit}
+      onCancel={onCancel}
+    >
+      <Form
+        onSubmit={(event: React.FormEvent) => {
+          event.preventDefault();
+          void submit();
+        }}
+      >
+        <FormFields fields={fields} values={values} onChange={setValue} />
+        {/* Lets Enter in a field save, as in any form */}
+        <button type="submit" hidden aria-hidden tabIndex={-1} />
+      </Form>
+    </PlannerModal>
   );
 };
 

@@ -1,25 +1,16 @@
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
-import { render, screen, fireEvent, waitFor, within } from '../../../test-utils';
+import { render, screen, fireEvent } from '../../../test-utils';
 import CompendiumLinks, {
   linkDetail,
   LinkName,
   MONSTER_CATEGORIES,
   TREASURE_CATEGORIES,
 } from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/components/CompendiumLinks';
-import {
-  Campaign,
-  SessionLink,
-} from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/types';
-import {
-  FakeState,
-  makeApi,
-  makeState,
-  questLink,
-  reference,
-  sampleCampaign,
-  sampleCompendiumEntry,
-} from '../fixtures';
+import { DraftLink } from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/linkDraft';
+import { Campaign } from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/types';
+import { MockApi, makeApi, questLink, sampleCampaign, sampleCompendiumEntry } from '../fixtures';
+import { menuOptions, openSelect } from '../selectHelpers';
 
 const GHOUL = questLink({
   id: 'l1',
@@ -56,33 +47,28 @@ type Props = Partial<React.ComponentProps<typeof CompendiumLinks>>;
 
 const renderLinks = (
   props: Props = {},
-  state: FakeState = makeState(),
+  api: MockApi = makeApi(),
   campaign: Campaign = sampleCampaign(),
 ) => {
-  const link = jest.fn().mockResolvedValue({});
-  const onRemove = jest.fn().mockResolvedValue(true);
+  const onAdd = jest.fn();
+  const onRemove = jest.fn();
   render(
     <MemoryRouter>
       <CompendiumLinks
         campaign={campaign}
-        state={state}
+        api={api}
         links={[GHOUL, FANATIC, BAG, POTION]}
         linkableType="Monster"
         categories={MONSTER_CATEGORIES}
         searchCategories={['monster']}
-        labels={{
-          empty: 'No monsters yet.',
-          add: 'Add a monster',
-          search: 'Search monsters',
-          books: 'Add a monster from your books',
-        }}
-        link={link}
+        labels={{ empty: 'No monsters yet.', search: 'Search monsters' }}
+        onAdd={onAdd}
         onRemove={onRemove}
         {...props}
       />
     </MemoryRouter>,
   );
-  return { link, onRemove, state };
+  return { onAdd, onRemove, api };
 };
 
 const itemProps: Props = {
@@ -90,19 +76,10 @@ const itemProps: Props = {
   categories: ['magic_item', 'equipment', 'table', 'spell', 'rule', 'other'],
   bookCategories: TREASURE_CATEGORIES,
   searchCategories: ['magic_item', 'equipment'],
-  labels: {
-    empty: 'No reward items yet.',
-    add: 'Add an item',
-    search: 'Search items',
-    books: 'Add an item from your books',
-  },
+  labels: { empty: 'No reward items yet.', search: 'Search items' },
 };
 
-// Adds a search result, once it shows
-const addResult = async (name: string) => {
-  const result = (await screen.findByText(name)).closest('li') as HTMLElement;
-  fireEvent.click(within(result).getByRole('button', { name: 'Add' }));
-};
+const pick = async (name: string) => fireEvent.click(await screen.findByRole('option', { name }));
 
 describe('CompendiumLinks', () => {
   it('lists the monsters picked, from the SRD and the books', () => {
@@ -135,160 +112,168 @@ describe('CompendiumLinks', () => {
     expect(onRemove).toHaveBeenCalledWith(GHOUL);
   });
 
-  it('lists items with a quantity for each one that has it', async () => {
-    const onSaveQuantity = jest.fn().mockResolvedValue(true);
-    renderLinks({ ...itemProps, hasQuantity: () => true, onSaveQuantity });
+  it('lists items with a quantity input, and passes changes on', () => {
+    const onQuantity = jest.fn();
+    renderLinks({ ...itemProps, hasQuantity: () => true, onQuantity });
 
-    expect(screen.getAllByRole('listitem').map((item) => item.firstChild?.textContent)).toEqual([
-      'Bag of Holding',
-      'Potion of Healing',
-    ]);
-    expect(screen.getByRole('spinbutton', { name: 'Quantity of Bag of Holding' })).toHaveValue(2);
-    const potion = screen.getByRole('spinbutton', { name: 'Quantity of Potion of Healing' });
-    fireEvent.change(potion, { target: { value: '3' } });
-    fireEvent.blur(potion);
+    const quantity = screen.getByRole('spinbutton', { name: 'Quantity of Bag of Holding' });
+    expect(quantity).toHaveValue(2);
+    fireEvent.change(quantity, { target: { value: '5' } });
+    fireEvent.blur(quantity);
 
-    await waitFor(() => expect(onSaveQuantity).toHaveBeenCalledWith(POTION, 3));
+    expect(onQuantity).toHaveBeenCalledWith(BAG, 5);
+    expect(
+      screen.getByRole('spinbutton', { name: 'Quantity of Potion of Healing' }),
+    ).toBeInTheDocument();
   });
 
-  it('adds a monster from DM Guru when there is no compendium index', async () => {
-    const state = makeState({
-      api: makeApi({
-        searchMonsters: jest
-          .fn()
-          .mockResolvedValue([{ id: '77', name: 'Owlbear', slug: 'owlbear', detail: 'CR 3' }]),
+  it("lists a compendium pick that isn't saved yet", () => {
+    const zombie: DraftLink = {
+      ...questLink({
+        id: 'new-1',
+        linkableType: 'CampaignReference',
+        linkableId: 'entry-501',
+        name: 'Zombie',
+        detail: 'CR 1/4 · Monster Manual',
       }),
-    });
-    const { link } = renderLinks({}, state);
+      entry: sampleCompendiumEntry(),
+    };
+    renderLinks({ links: [zombie] });
 
-    fireEvent.change(screen.getByRole('textbox', { name: 'Search monsters' }), {
-      target: { value: 'owl' },
-    });
-    fireEvent.click(screen.getByRole('button', { name: 'Search' }));
-    await addResult('Owlbear');
+    expect(screen.getByRole('listitem')).toHaveTextContent('Zombie (CR 1/4 · Monster Manual)');
+  });
 
-    await waitFor(() => expect(link).toHaveBeenCalledWith('Monster', '77'));
-    expect(state.api.searchMonsters).toHaveBeenCalledWith('owl', '2024');
-    expect(state.mutate).toHaveBeenCalled();
+  it("adds a monster from DM Guru's SRD when there is no compendium index", async () => {
+    const api = makeApi({
+      searchMonsters: jest
+        .fn()
+        .mockResolvedValue([{ id: '30', name: 'Zombie', slug: 'zombie', detail: 'CR 1/4' }]),
+    });
+    const { onAdd } = renderLinks({}, api);
+
+    openSelect('Search monsters', 'zomb');
+    await pick('Zombie (CR 1/4)');
+
+    expect(api.searchMonsters).toHaveBeenCalledWith('zomb', '2024');
+    expect(onAdd).toHaveBeenCalledWith({
+      linkableType: 'Monster',
+      linkableId: '30',
+      name: 'Zombie',
+      detail: 'CR 1/4',
+    });
   });
 
   it("searches DM Guru's items for items", async () => {
-    const state = makeState();
-    renderLinks(itemProps, state);
-
-    fireEvent.change(screen.getByRole('textbox', { name: 'Search items' }), {
-      target: { value: 'potion' },
+    const api = makeApi({
+      searchItems: jest
+        .fn()
+        .mockResolvedValue([{ id: '41', name: 'Rope', slug: 'rope', detail: '' }]),
     });
-    fireEvent.click(screen.getByRole('button', { name: 'Search' }));
+    const { onAdd } = renderLinks(itemProps, api);
 
-    await waitFor(() => expect(state.api.searchItems).toHaveBeenCalledWith('potion', '2024'));
-    expect(state.api.searchCompendium).toHaveBeenCalledWith(
-      'potion',
-      ['magic_item', 'equipment'],
-      'zombie-siege',
+    openSelect('Search items', 'rope');
+    await pick('Rope');
+
+    expect(onAdd).toHaveBeenCalledWith(
+      expect.objectContaining({ linkableType: 'Item', linkableId: '41' }),
     );
   });
 
-  it('links a compendium pick as a book reference, made once', async () => {
+  it('adds a compendium pick, to become a book reference on Save', async () => {
     const entry = sampleCompendiumEntry();
-    const state = makeState({
-      api: makeApi({
-        searchCompendium: jest.fn().mockResolvedValue({ indexed: true, results: [entry] }),
-        createChild: jest.fn().mockResolvedValue(reference({ id: 'r9', name: 'Zombie' })),
-      }),
+    const api = makeApi({
+      searchCompendium: jest.fn().mockResolvedValue({ indexed: true, results: [entry] }),
     });
-    const { link } = renderLinks({}, state);
+    const { onAdd } = renderLinks({}, api);
 
-    fireEvent.change(screen.getByRole('textbox', { name: 'Search monsters' }), {
-      target: { value: 'zombie' },
+    openSelect('Search monsters', 'zom');
+    await pick('Zombie (CR 1/4 · Undead · Monster Manual)');
+
+    expect(api.searchCompendium).toHaveBeenCalledWith('zom', ['monster'], 'zombie-siege');
+    expect(onAdd).toHaveBeenCalledWith({
+      linkableType: 'CampaignReference',
+      linkableId: 'entry-501',
+      name: 'Zombie',
+      detail: 'CR 1/4 · Undead · Monster Manual',
+      entry,
     });
-    fireEvent.click(screen.getByRole('button', { name: 'Search' }));
-    await addResult('Zombie');
-
-    await waitFor(() => expect(link).toHaveBeenCalledWith('CampaignReference', 'r9'));
-    expect(state.api.createChild).toHaveBeenCalledWith(
-      'zombie-siege',
-      'references',
-      expect.objectContaining({ name: 'Zombie', foundry_uuid: entry.foundryUuid }),
-    );
+    expect(api.createChild).not.toHaveBeenCalled();
   });
 
-  it("doesn't link a book reference twice", async () => {
+  it('links the existing book reference for a compendium pick the campaign has', async () => {
     const entry = sampleCompendiumEntry({
+      id: '502',
+      name: 'Cult Fanatic',
       foundryUuid: 'Compendium.dnd-monster-manual.actors.abc',
     });
-    const state = makeState({
-      api: makeApi({
-        searchCompendium: jest.fn().mockResolvedValue({ indexed: true, results: [entry] }),
+    const api = makeApi({
+      searchCompendium: jest.fn().mockResolvedValue({ indexed: true, results: [entry] }),
+    });
+    const { onAdd } = renderLinks({ links: [] }, api);
+
+    openSelect('Search monsters', 'cult');
+    await pick('Cult Fanatic (CR 1/4 · Undead · Monster Manual)');
+
+    expect(onAdd).toHaveBeenCalledWith({
+      linkableType: 'CampaignReference',
+      linkableId: 'r1',
+      name: 'Cult Fanatic',
+      detail: 'MM p. 34',
+    });
+  });
+
+  it("offers the campaign's book references not yet picked, first", async () => {
+    const { onAdd } = renderLinks();
+
+    openSelect('Search monsters');
+
+    expect(await screen.findByText("This campaign's books")).toBeInTheDocument();
+    expect(menuOptions()).toEqual(['Veteran (CR 3 · MM p. 323)']);
+    await pick('Veteran (CR 3 · MM p. 323)');
+    expect(onAdd).toHaveBeenCalledWith(
+      expect.objectContaining({ linkableType: 'CampaignReference', linkableId: 'r4' }),
+    );
+  });
+
+  it('leaves out compendium results already picked', async () => {
+    const api = makeApi({
+      searchCompendium: jest.fn().mockResolvedValue({
+        indexed: true,
+        results: [
+          sampleCompendiumEntry({
+            id: '502',
+            foundryUuid: 'Compendium.dnd-monster-manual.actors.abc',
+          }),
+          sampleCompendiumEntry({ id: '503', name: 'Ghast' }),
+        ],
       }),
     });
-    const { link } = renderLinks({}, state);
+    renderLinks({}, api);
 
-    fireEvent.change(screen.getByRole('textbox', { name: 'Search monsters' }), {
-      target: { value: 'fanatic' },
-    });
-    fireEvent.click(screen.getByRole('button', { name: 'Search' }));
-    await addResult('Zombie');
+    openSelect('Search monsters', 'gh');
 
-    await waitFor(() => expect(state.mutate).toHaveBeenCalled());
-    expect(link).not.toHaveBeenCalled();
-    expect(state.api.createChild).not.toHaveBeenCalled();
-  });
-
-  it("offers the campaign's book references not yet picked", async () => {
-    const { link } = renderLinks({ links: [] });
-
-    const books = screen.getByRole('combobox', { name: 'Add a monster from your books' });
-    expect(
-      within(books)
-        .getAllByRole('option')
-        .map((option) => option.textContent),
-    ).toEqual(['Choose…', 'Cult Fanatic (MM p. 34)', 'Veteran (MM p. 323)']);
-    fireEvent.change(books, { target: { value: 'r4' } });
-    fireEvent.click(screen.getByRole('button', { name: 'Add' }));
-
-    await waitFor(() => expect(link).toHaveBeenCalledWith('CampaignReference', 'r4'));
-  });
-
-  it('leaves out the book picker when every book reference is picked', () => {
-    renderLinks({ ...itemProps, links: [BAG, { ...BAG, id: 'l5', linkableId: 'r3' }] });
-
-    expect(
-      screen.queryByRole('combobox', { name: 'Add an item from your books' }),
-    ).not.toBeInTheDocument();
+    await screen.findByRole('option', { name: /Ghast/ });
+    expect(menuOptions()).toEqual(['Ghast (CR 1/4 · Undead · Monster Manual)']);
   });
 });
 
-describe('linkDetail', () => {
-  const campaign = sampleCampaign();
-
-  it("gives a book reference's CR and citation", () => {
-    expect(linkDetail(FANATIC, campaign)).toBe('CR 2 · MM p. 34');
-    expect(linkDetail(BAG, campaign)).toBe('DMG p. 224');
-  });
-
-  it("falls back to the link's own detail", () => {
-    expect(linkDetail(GHOUL, campaign)).toBe('CR 1');
-    const missing: SessionLink = { ...FANATIC, linkableId: 'gone' };
-    expect(linkDetail(missing, campaign)).toBe('MM p. 34');
-  });
-});
-
-describe('LinkName', () => {
-  it("links DM Guru's monsters to their page, and names anything else", () => {
+describe('linkDetail and LinkName', () => {
+  it("gives a book reference's CR and citation, else the link's detail", () => {
     const campaign = sampleCampaign();
+
+    expect(linkDetail(FANATIC, campaign)).toBe('CR 2 · MM p. 34');
+    expect(linkDetail(GHOUL, campaign)).toBe('CR 1');
+  });
+
+  it("links DM Guru's own monsters to their page", () => {
     render(
       <MemoryRouter>
-        <LinkName link={GHOUL} campaign={campaign} />
-        <LinkName link={POTION} campaign={campaign} />
+        <LinkName link={GHOUL} campaign={sampleCampaign()} />
+        <LinkName link={FANATIC} campaign={sampleCampaign()} />
       </MemoryRouter>,
     );
 
-    expect(screen.getByRole('link', { name: 'Ghoul' })).toHaveAttribute(
-      'href',
-      '/app/2024/monsters/ghoul',
-    );
-    expect(screen.queryByRole('link', { name: 'Potion of Healing' })).not.toBeInTheDocument();
-    expect(screen.getByText('Potion of Healing')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Ghoul' })).toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: 'Cult Fanatic' })).not.toBeInTheDocument();
   });
 });

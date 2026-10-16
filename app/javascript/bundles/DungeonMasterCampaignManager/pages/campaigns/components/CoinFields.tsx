@@ -13,6 +13,11 @@ export const COIN_NAMES: Record<Coin, string> = {
   cp: 'Copper',
 };
 
+export const COIN_ERROR = 'Coins must be whole numbers from 0 to 1,000,000.';
+
+// What's typed in each coin's input
+export type CoinDrafts = Record<Coin, string>;
+
 // Only the coins there are, most valuable first, e.g. { gp: 50, sp: 12 }
 const counted = (currency: Currency): Currency =>
   Object.fromEntries(
@@ -26,12 +31,27 @@ export const formatCoins = (currency: Currency) =>
     return count > 0 ? [`${count.toLocaleString('en-US')} ${coin}`] : [];
   }).join(', ');
 
-const draftsFor = (currency: Currency) =>
+/** The inputs' text for some coins: blank for none */
+export const coinDrafts = (currency: Currency) =>
   Object.fromEntries(
     COINS.map((coin) => [coin, currency[coin] ? String(currency[coin]) : '']),
-  ) as Record<Coin, string>;
+  ) as CoinDrafts;
 
-const CoinSet = styled.fieldset`
+/**
+ * The coins typed, keeping only those above zero, or null when one isn't a
+ * whole number from 0 to 1,000,000.
+ */
+export const parseCoins = (drafts: CoinDrafts): Currency | null => {
+  const counts = COINS.map((coin) => [coin, drafts[coin].trim()] as const)
+    .filter(([, text]) => text !== '')
+    .map(([coin, text]) => [coin, Number(text)] as const);
+  if (counts.some(([, count]) => !Number.isInteger(count) || count < 0 || count > MAX_COINS)) {
+    return null;
+  }
+  return counted(Object.fromEntries(counts));
+};
+
+export const CoinSet = styled.fieldset`
   border: none;
   margin: 0;
   min-width: 0;
@@ -45,7 +65,7 @@ const CoinSet = styled.fieldset`
   }
 `;
 
-const CoinGrid = styled.div`
+export const CoinGrid = styled.div`
   display: grid;
   gap: 0.5rem;
   grid-template-columns: repeat(auto-fit, minmax(4.5rem, 1fr));
@@ -63,20 +83,17 @@ type CoinFieldsProps = {
 const CoinFields = ({ value, onSave }: CoinFieldsProps) => {
   // Compared as text, so a new object with the same coins isn't a change
   const saved = JSON.stringify(counted(value));
-  const [drafts, setDrafts] = useState(() => draftsFor(value));
+  const [drafts, setDrafts] = useState(() => coinDrafts(value));
   const [status, setStatus] = useState<'idle' | 'saving' | 'saved' | 'error' | 'invalid'>('idle');
 
-  useEffect(() => setDrafts(draftsFor(JSON.parse(saved) as Currency)), [saved]);
+  useEffect(() => setDrafts(coinDrafts(JSON.parse(saved) as Currency)), [saved]);
 
   const save = async () => {
-    const counts = COINS.map((coin) => [coin, drafts[coin].trim()] as const)
-      .filter(([, text]) => text !== '')
-      .map(([coin, text]) => [coin, Number(text)] as const);
-    if (counts.some(([, count]) => !Number.isInteger(count) || count < 0 || count > MAX_COINS)) {
+    const next = parseCoins(drafts);
+    if (!next) {
       setStatus('invalid');
       return;
     }
-    const next = counted(Object.fromEntries(counts));
     if (JSON.stringify(next) === saved) {
       setStatus('idle');
       return;
@@ -111,7 +128,7 @@ const CoinFields = ({ value, onSave }: CoinFieldsProps) => {
         {status === 'saving' && 'Saving…'}
         {status === 'saved' && 'Saved'}
         {status === 'error' && "Couldn't save. Try again."}
-        {status === 'invalid' && 'Coins must be whole numbers from 0 to 1,000,000.'}
+        {status === 'invalid' && COIN_ERROR}
       </Meta>
     </CoinSet>
   );

@@ -68,28 +68,24 @@ const OverviewTab = ({ campaign, state }: OverviewTabProps) => {
     }
   };
 
-  if (editing) {
-    return (
-      <Card>
-        <h3>Edit campaign</h3>
-        <EntityForm
-          fields={fields}
-          initialValues={toFormValues(fields, {
-            ...campaign,
-            setting_name: campaign.settingName,
-            setting_notes: campaign.settingNotes,
-            party_size: campaign.partySize,
-            start_level: campaign.startLevel,
-            target_level: campaign.targetLevel,
-            planned_sessions: campaign.plannedSessions,
-          })}
-          submitLabel="Save"
-          onSubmit={(attributes) => state.updateCampaign(attributes)}
-          onCancel={() => setEditing(false)}
-        />
-      </Card>
-    );
-  }
+  const editForm = editing && (
+    <EntityForm
+      title="Edit campaign"
+      fields={fields}
+      initialValues={toFormValues(fields, {
+        ...campaign,
+        setting_name: campaign.settingName,
+        setting_notes: campaign.settingNotes,
+        party_size: campaign.partySize,
+        start_level: campaign.startLevel,
+        target_level: campaign.targetLevel,
+        planned_sessions: campaign.plannedSessions,
+      })}
+      submitLabel="Save"
+      onSubmit={(attributes) => state.updateCampaign(attributes)}
+      onCancel={() => setEditing(false)}
+    />
+  );
 
   const details = [
     MODE_LABELS[campaign.mode],
@@ -106,6 +102,7 @@ const OverviewTab = ({ campaign, state }: OverviewTabProps) => {
 
   return (
     <>
+      {editForm}
       <Meta>{details.join(' · ')}</Meta>
       <ButtonRow>
         <Button color={Colors.primary} title="Edit campaign" onClick={() => setEditing(true)} />

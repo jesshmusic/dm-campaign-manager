@@ -6,6 +6,7 @@ import {
   Campaign,
   Quest,
 } from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/types';
+import { ApiError } from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/useCampaignApi';
 import {
   FakeState,
   foundryScene,
@@ -13,7 +14,9 @@ import {
   makeState,
   questLink,
   sampleCampaign,
+  sampleCompendiumEntry,
 } from '../fixtures';
+import { chooseOption, menuOptions, openSelect, removeValue } from '../selectHelpers';
 
 const LINKS = [
   questLink({ id: 'ql1', linkableType: 'CampaignNpc', linkableId: 'n1', name: 'Lareth' }),
@@ -66,223 +69,282 @@ const renderPlan = (campaign: Campaign = plannedCampaign(), state: FakeState = m
   return { campaign, state, onClose };
 };
 
+const plan = () => screen.getByRole('dialog', { name: 'Plan: Stop the cult' });
+
 // Each part is a card headed by an h3
 const part = (name: string) =>
-  screen.getByRole('heading', { level: 3, name }).parentElement as HTMLElement;
+  within(plan()).getByRole('heading', { level: 3, name }).parentElement as HTMLElement;
+
+const save = () => fireEvent.click(within(plan()).getByRole('button', { name: 'Save' }));
+const cancel = () => fireEvent.click(within(plan()).getByRole('button', { name: 'Cancel' }));
+
+// What the plan has saved through the api
+const savedCalls = (state: FakeState) => [
+  ...state.api.updateChild.mock.calls,
+  ...state.api.createChild.mock.calls,
+  ...state.api.addQuestLink.mock.calls,
+  ...state.api.updateQuestLink.mock.calls,
+  ...state.api.removeQuestLink.mock.calls,
+  ...state.saveChild.mock.calls,
+  ...state.mutate.mock.calls,
+];
+
+const quantity = (name: string) =>
+  within(part('Reward')).getByRole('spinbutton', { name: `Quantity of ${name}` });
 
 describe('QuestPlan', () => {
-  it("plans the quest's maps, NPCs, monsters and reward", () => {
+  let confirmSpy: jest.SpyInstance;
+
+  beforeEach(() => {
+    confirmSpy = jest.spyOn(window, 'confirm').mockReturnValue(true);
+  });
+
+  afterEach(() => {
+    confirmSpy.mockRestore();
+  });
+
+  it("plans the quest's maps, NPCs, monsters and reward in a modal", () => {
     renderPlan();
 
-    const plan = screen.getByRole('region', { name: 'Plan Stop the cult' });
-    expect(within(plan).getByRole('heading', { level: 2 })).toHaveTextContent(
+    expect(within(plan()).getByRole('heading', { level: 2 })).toHaveTextContent(
       'Plan: Stop the cult',
     );
-    expect(within(plan).getByText('Active')).toBeInTheDocument();
+    expect(within(plan()).getByText('Active')).toBeInTheDocument();
     expect(
-      within(plan).getByText('Act 1 · Levels 3–5 · From Elmo · At Moathouse'),
+      within(plan()).getByText('Act 1 · Levels 3–5 · From Elmo · At Moathouse'),
     ).toBeInTheDocument();
-    expect(within(plan).getByText('Find the cult and end it')).toBeInTheDocument();
+    expect(within(plan()).getByText('Find the cult and end it')).toBeInTheDocument();
+    expect(within(plan()).getByText(/Nothing is saved until you click Save/)).toBeInTheDocument();
     expect(
-      within(plan)
+      within(plan())
         .getAllByRole('heading', { level: 3 })
         .map((heading) => heading.textContent),
     ).toEqual(['Maps', 'NPCs involved', 'Monsters', 'Reward']);
   });
 
-  it('goes back to all quests', () => {
-    const { onClose } = renderPlan();
+  it('shows what the quest has so far', () => {
+    renderPlan();
 
-    fireEvent.click(screen.getByRole('button', { name: '← All quests' }));
-
-    expect(onClose).toHaveBeenCalled();
+    expect(
+      within(part('Maps')).getByRole('list', { name: 'Maps for Stop the cult' }),
+    ).toHaveTextContent('Mountain Pass');
+    expect(within(part('NPCs involved')).getByText('Lareth (Villain)')).toBeInTheDocument();
+    expect(within(part('Monsters')).getByRole('link', { name: 'Ghoul' })).toHaveAttribute(
+      'href',
+      '/app/2024/monsters/ghoul',
+    );
+    expect(within(part('Monsters')).queryByText('Bag of Holding')).not.toBeInTheDocument();
+    expect(quantity('Bag of Holding')).toHaveValue(2);
+    expect(quantity('Potion of Healing')).toHaveValue(null);
+    expect(
+      within(part('Reward')).getByRole('spinbutton', { name: 'Gold pieces (gp)' }),
+    ).toHaveValue(50);
+    expect(within(part('Reward')).getByRole('spinbutton', { name: 'XP' })).toHaveValue(450);
+    expect(
+      within(part('Reward')).getByRole('checkbox', {
+        name: "Milestone: the party levels up when it's done",
+      }),
+    ).not.toBeChecked();
+    expect(within(part('Reward')).getByLabelText('Reward notes')).toHaveValue('500 gp');
   });
 
-  describe('maps', () => {
-    it('shows the maps and adds more from Foundry', async () => {
+  it('says when the quest has nothing yet', () => {
+    renderPlan(plannedCampaign({ links: [], foundryScenes: [] }));
+
+    expect(within(part('Maps')).getByText('No maps yet.')).toBeInTheDocument();
+    expect(within(part('Monsters')).getByText('No monsters yet.')).toBeInTheDocument();
+    expect(within(part('Reward')).getByText('No reward items yet.')).toBeInTheDocument();
+  });
+
+  it('offers the cast for NPCs involved, leaving out the quest giver', () => {
+    renderPlan();
+
+    expect(within(part('NPCs involved')).getByText('Quest giver: Elmo')).toBeInTheDocument();
+    openSelect('Add an NPC');
+
+    expect(menuOptions()).toEqual(['Mordred (BBEG)']);
+  });
+
+  it('offers monsters from the books first', async () => {
+    renderPlan();
+
+    openSelect('Search monsters');
+
+    expect(await screen.findByText("This campaign's books")).toBeInTheDocument();
+    expect(menuOptions()).toEqual(['Cult Fanatic (CR 2 · MM p. 34)', 'Veteran (CR 3 · MM p. 323)']);
+  });
+
+  describe('saving', () => {
+    it('saves nothing until Save, then the reward, the maps and the link changes', async () => {
       const state = makeState({
         api: makeApi({
           listFoundryScenes: jest
             .fn()
             .mockResolvedValue([
               foundryScene(),
-              foundryScene({ uuid: 'Scene.aaaaaaaaaaaaaaaa', name: 'Lair' }),
+              foundryScene({ uuid: 'Scene.lair', name: 'Lair' }),
             ]),
-        }),
-      });
-      renderPlan(plannedCampaign(), state);
-
-      const maps = part('Maps');
-      expect(within(maps).getByRole('list', { name: 'Maps for Stop the cult' })).toHaveTextContent(
-        'Mountain Pass',
-      );
-      fireEvent.click(within(maps).getByRole('button', { name: 'Add maps from Foundry' }));
-      fireEvent.click(await within(maps).findByRole('button', { name: 'Lair' }));
-
-      await waitFor(() =>
-        expect(state.saveChild).toHaveBeenCalledWith(
-          'quests',
-          {
-            foundry_scenes: [
-              { uuid: 'Scene.5wVcsNPOg2RjRbFx', name: 'Mountain Pass' },
-              { uuid: 'Scene.aaaaaaaaaaaaaaaa', name: 'Lair' },
-            ],
-          },
-          'q1',
-        ),
-      );
-    });
-
-    it('says when there are none', () => {
-      renderPlan(plannedCampaign({ foundryScenes: [] }));
-
-      expect(within(part('Maps')).getByText('No maps yet.')).toBeInTheDocument();
-    });
-  });
-
-  describe('NPCs involved', () => {
-    it('lists them, with the quest giver, and offers the rest of the cast', () => {
-      renderPlan();
-
-      const npcs = part('NPCs involved');
-      expect(within(npcs).getByText('Lareth')).toBeInTheDocument();
-      expect(within(npcs).getByText('Quest giver: Elmo')).toBeInTheDocument();
-      expect(
-        within(within(npcs).getByRole('combobox', { name: 'Add an NPC' }))
-          .getAllByRole('option')
-          .map((option) => option.textContent),
-      ).toEqual(['Choose…', 'Mordred (BBEG)']);
-    });
-
-    it('adds and removes one', async () => {
-      const { state } = renderPlan();
-      const npcs = part('NPCs involved');
-
-      fireEvent.change(within(npcs).getByRole('combobox', { name: 'Add an NPC' }), {
-        target: { value: 'n2' },
-      });
-      fireEvent.click(within(npcs).getByRole('button', { name: 'Add' }));
-      await waitFor(() =>
-        expect(state.api.addQuestLink).toHaveBeenCalledWith(
-          'zombie-siege',
-          'q1',
-          'CampaignNpc',
-          'n2',
-        ),
-      );
-
-      fireEvent.click(within(npcs).getByRole('button', { name: 'Remove Lareth' }));
-      await waitFor(() =>
-        expect(state.api.removeQuestLink).toHaveBeenCalledWith('zombie-siege', 'q1', 'ql1'),
-      );
-    });
-
-    it('says when there are none', () => {
-      renderPlan(plannedCampaign({ links: [] }));
-
-      expect(within(part('NPCs involved')).getByText('No NPCs yet.')).toBeInTheDocument();
-    });
-  });
-
-  describe('monsters', () => {
-    it('lists them, linked to their stat blocks', () => {
-      renderPlan();
-
-      const monsters = part('Monsters');
-      expect(within(monsters).getByRole('link', { name: 'Ghoul' })).toHaveAttribute(
-        'href',
-        '/app/2024/monsters/ghoul',
-      );
-      expect(within(monsters).queryByText('Bag of Holding')).not.toBeInTheDocument();
-    });
-
-    it("adds one from DM Guru's monsters", async () => {
-      const state = makeState({
-        api: makeApi({
           searchMonsters: jest
             .fn()
             .mockResolvedValue([{ id: '77', name: 'Owlbear', slug: 'owlbear', detail: 'CR 3' }]),
-        }),
-      });
-      renderPlan(plannedCampaign(), state);
-      const monsters = part('Monsters');
-
-      fireEvent.change(within(monsters).getByRole('textbox', { name: 'Search monsters' }), {
-        target: { value: 'owlbear' },
-      });
-      fireEvent.click(within(monsters).getByRole('button', { name: 'Search' }));
-      const result = (await within(monsters).findByText('Owlbear')).closest('li') as HTMLElement;
-      fireEvent.click(within(result).getByRole('button', { name: 'Add' }));
-
-      await waitFor(() =>
-        expect(state.api.addQuestLink).toHaveBeenCalledWith('zombie-siege', 'q1', 'Monster', '77'),
-      );
-    });
-
-    it('offers monsters from the books', async () => {
-      const { state } = renderPlan();
-      const monsters = part('Monsters');
-
-      fireEvent.change(
-        within(monsters).getByRole('combobox', { name: 'Add a monster from your books' }),
-        { target: { value: 'r1' } },
-      );
-      fireEvent.click(within(monsters).getByRole('button', { name: 'Add' }));
-
-      await waitFor(() =>
-        expect(state.api.addQuestLink).toHaveBeenCalledWith(
-          'zombie-siege',
-          'q1',
-          'CampaignReference',
-          'r1',
-        ),
-      );
-    });
-  });
-
-  describe('reward', () => {
-    it('lists reward items with how many of each, and changes how many', async () => {
-      const { state } = renderPlan();
-      const reward = part('Reward');
-
-      expect(within(reward).getByText('Bag of Holding')).toBeInTheDocument();
-      expect(
-        within(reward).getByRole('spinbutton', { name: 'Quantity of Bag of Holding' }),
-      ).toHaveValue(2);
-      const potion = within(reward).getByRole('spinbutton', {
-        name: 'Quantity of Potion of Healing',
-      });
-      fireEvent.change(potion, { target: { value: '4' } });
-      fireEvent.blur(potion);
-
-      await waitFor(() =>
-        expect(state.api.updateQuestLink).toHaveBeenCalledWith('zombie-siege', 'q1', 'ql4', {
-          quantity: 4,
-        }),
-      );
-    });
-
-    it("searches DM Guru's items for rewards", async () => {
-      const state = makeState({
-        api: makeApi({
           searchItems: jest
             .fn()
             .mockResolvedValue([{ id: '41', name: 'Rope', slug: 'rope', detail: 'Gear' }]),
         }),
       });
-      renderPlan(plannedCampaign(), state);
-      const reward = part('Reward');
+      const { onClose } = renderPlan(plannedCampaign(), state);
 
-      fireEvent.change(within(reward).getByRole('textbox', { name: 'Search items' }), {
-        target: { value: 'rope' },
-      });
-      fireEvent.click(within(reward).getByRole('button', { name: 'Search' }));
-      const result = (await within(reward).findByText('Rope')).closest('li') as HTMLElement;
-      fireEvent.click(within(result).getByRole('button', { name: 'Add' }));
-
-      await waitFor(() =>
-        expect(state.api.addQuestLink).toHaveBeenCalledWith('zombie-siege', 'q1', 'Item', '41'),
+      // Maps
+      fireEvent.click(within(part('Maps')).getByRole('button', { name: 'Add maps from Foundry' }));
+      fireEvent.click(await within(part('Maps')).findByRole('button', { name: 'Lair' }));
+      // NPCs: swap Lareth for Mordred
+      await chooseOption('Add an NPC', 'Mordred (BBEG)');
+      removeValue('Lareth (Villain)');
+      // Monsters: drop the ghoul, add an owlbear and a book monster
+      fireEvent.click(within(part('Monsters')).getByRole('button', { name: 'Remove Ghoul' }));
+      await chooseOption('Search monsters', 'Owlbear (CR 3)', 'owl');
+      await chooseOption('Search monsters', 'Veteran (CR 3 · MM p. 323)', 'vet');
+      // Reward: four potions, three ropes, more gold, no XP, a milestone and notes
+      fireEvent.change(quantity('Potion of Healing'), { target: { value: '4' } });
+      fireEvent.blur(quantity('Potion of Healing'));
+      await chooseOption('Search items', 'Rope (Gear)', 'rope');
+      fireEvent.change(quantity('Rope'), { target: { value: '3' } });
+      fireEvent.blur(quantity('Rope'));
+      fireEvent.change(
+        within(part('Reward')).getByRole('spinbutton', { name: 'Gold pieces (gp)' }),
+        {
+          target: { value: '75' },
+        },
       );
+      fireEvent.change(within(part('Reward')).getByRole('spinbutton', { name: 'XP' }), {
+        target: { value: '' },
+      });
+      fireEvent.click(
+        within(part('Reward')).getByRole('checkbox', {
+          name: "Milestone: the party levels up when it's done",
+        }),
+      );
+      fireEvent.change(within(part('Reward')).getByLabelText('Reward notes'), {
+        target: { value: 'The mayor owes them a favor' },
+      });
+
+      expect(within(part('Monsters')).getByText('Owlbear')).toBeInTheDocument();
+      expect(within(part('Monsters')).queryByText('Ghoul')).not.toBeInTheDocument();
+      expect(savedCalls(state)).toEqual([]);
+
+      save();
+
+      await waitFor(() => expect(onClose).toHaveBeenCalled());
+      const { api } = state;
+      expect(api.updateChild).toHaveBeenCalledTimes(1);
+      expect(api.updateChild).toHaveBeenCalledWith('zombie-siege', 'quests', 'q1', {
+        foundry_scenes: [
+          { uuid: 'Scene.5wVcsNPOg2RjRbFx', name: 'Mountain Pass' },
+          { uuid: 'Scene.lair', name: 'Lair' },
+        ],
+        reward_currency: { gp: 75 },
+        reward_xp: null,
+        milestone: true,
+        reward: 'The mayor owes them a favor',
+      });
+      expect(api.removeQuestLink.mock.calls).toEqual([
+        ['zombie-siege', 'q1', 'ql1'],
+        ['zombie-siege', 'q1', 'ql2'],
+      ]);
+      expect(api.addQuestLink.mock.calls).toEqual([
+        ['zombie-siege', 'q1', 'CampaignNpc', 'n2', null],
+        ['zombie-siege', 'q1', 'Monster', '77', null],
+        ['zombie-siege', 'q1', 'CampaignReference', 'r4', null],
+        ['zombie-siege', 'q1', 'Item', '41', 3],
+      ]);
+      expect(api.updateQuestLink).toHaveBeenCalledTimes(1);
+      expect(api.updateQuestLink).toHaveBeenCalledWith('zombie-siege', 'q1', 'ql4', {
+        quantity: 4,
+      });
+      // The fields, then the links, then one reload
+      expect(api.updateChild.mock.invocationCallOrder[0]).toBeLessThan(
+        api.removeQuestLink.mock.invocationCallOrder[0],
+      );
+      expect(state.reload).toHaveBeenCalledTimes(1);
+      expect(state.reload.mock.invocationCallOrder[0]).toBeGreaterThan(
+        api.addQuestLink.mock.invocationCallOrder[3],
+      );
+      expect(state.saveChild).not.toHaveBeenCalled();
+    });
+
+    it('only saves the fields that changed', async () => {
+      const { state, onClose } = renderPlan();
+
+      fireEvent.change(within(part('Reward')).getByRole('spinbutton', { name: 'XP' }), {
+        target: { value: '500' },
+      });
+      save();
+
+      await waitFor(() => expect(onClose).toHaveBeenCalled());
+      expect(state.api.updateChild).toHaveBeenCalledWith('zombie-siege', 'quests', 'q1', {
+        reward_xp: 500,
+      });
+      expect(state.api.addQuestLink).not.toHaveBeenCalled();
+      expect(state.api.removeQuestLink).not.toHaveBeenCalled();
+    });
+
+    it('only saves the links when only they changed', async () => {
+      const { state, onClose } = renderPlan();
+
+      fireEvent.change(quantity('Bag of Holding'), { target: { value: '' } });
+      fireEvent.blur(quantity('Bag of Holding'));
+      save();
+
+      await waitFor(() => expect(onClose).toHaveBeenCalled());
+      expect(state.api.updateChild).not.toHaveBeenCalled();
+      expect(state.api.updateQuestLink).toHaveBeenCalledWith('zombie-siege', 'q1', 'ql3', {
+        quantity: null,
+      });
+    });
+
+    it('makes the book reference for a compendium pick on Save', async () => {
+      const state = makeState({
+        api: makeApi({
+          searchCompendium: jest
+            .fn()
+            .mockResolvedValue({ indexed: true, results: [sampleCompendiumEntry()] }),
+          createChild: jest.fn().mockResolvedValue({ id: 'r9' }),
+        }),
+      });
+      const { onClose } = renderPlan(plannedCampaign(), state);
+
+      await chooseOption('Search monsters', 'Zombie (CR 1/4 · Undead · Monster Manual)', 'zom');
+
+      expect(within(part('Monsters')).getByText('Zombie')).toBeInTheDocument();
+      expect(state.api.searchCompendium).toHaveBeenCalledWith('zom', ['monster'], 'zombie-siege');
+      expect(state.api.searchMonsters).not.toHaveBeenCalled();
+      expect(state.api.createChild).not.toHaveBeenCalled();
+
+      save();
+
+      await waitFor(() => expect(onClose).toHaveBeenCalled());
+      expect(state.api.createChild).toHaveBeenCalledWith('zombie-siege', 'references', {
+        name: 'Zombie',
+        book: 'mm',
+        category: 'monster',
+        challenge_rating: '1/4',
+        foundry_uuid: 'Compendium.dnd-monster-manual.actors.Actor.mmZombie00000000',
+      });
+      expect(state.api.addQuestLink).toHaveBeenCalledWith(
+        'zombie-siege',
+        'q1',
+        'CampaignReference',
+        'r9',
+        null,
+      );
+    });
+
+    it("searches DM Guru's items in the campaign's edition without a compendium index", async () => {
+      const { state } = renderPlan();
+
+      openSelect('Search items', 'rope');
+
+      await waitFor(() => expect(state.api.searchItems).toHaveBeenCalledWith('rope', '2024'));
       expect(state.api.searchCompendium).toHaveBeenCalledWith(
         'rope',
         ['magic_item', 'equipment'],
@@ -290,85 +352,146 @@ describe('QuestPlan', () => {
       );
     });
 
-    it('saves the coins', async () => {
-      const { state } = renderPlan();
-      const gold = within(part('Reward')).getByRole('spinbutton', { name: 'Gold pieces (gp)' });
+    it('just closes when nothing changed', async () => {
+      const { state, onClose } = renderPlan();
 
-      expect(gold).toHaveValue(50);
-      fireEvent.change(gold, { target: { value: '75' } });
-      fireEvent.blur(gold);
+      save();
 
-      await waitFor(() =>
-        expect(state.saveChild).toHaveBeenCalledWith(
-          'quests',
-          { reward_currency: { gp: 75 } },
-          'q1',
-        ),
-      );
+      await waitFor(() => expect(onClose).toHaveBeenCalled());
+      expect(savedCalls(state)).toEqual([]);
+      expect(state.reload).not.toHaveBeenCalled();
     });
 
-    it('saves the XP', async () => {
-      const { state } = renderPlan();
-      const xp = within(part('Reward')).getByRole('spinbutton', { name: 'XP' });
-
-      expect(xp).toHaveValue(450);
-      fireEvent.change(xp, { target: { value: '' } });
-      fireEvent.blur(xp);
-
-      await waitFor(() =>
-        expect(state.saveChild).toHaveBeenCalledWith('quests', { reward_xp: null }, 'q1'),
-      );
-    });
-
-    it('levels the party up when done', async () => {
-      const { state } = renderPlan();
-      const milestone = within(part('Reward')).getByRole('checkbox', {
-        name: "Milestone: the party levels up when it's done",
+    it('keeps the modal open with the error when saving fails', async () => {
+      const state = makeState({
+        api: makeApi({
+          updateChild: jest.fn().mockRejectedValue(new ApiError('Reward is too long', 422)),
+        }),
       });
+      const { onClose } = renderPlan(plannedCampaign(), state);
 
-      expect(milestone).not.toBeChecked();
-      fireEvent.click(milestone);
-
-      expect(milestone).toBeChecked();
-      await waitFor(() =>
-        expect(state.saveChild).toHaveBeenCalledWith('quests', { milestone: true }, 'q1'),
-      );
-    });
-
-    it("unticks the milestone again when it couldn't be saved", async () => {
-      const state = makeState({ saveChild: jest.fn().mockResolvedValue(false) });
-      renderPlan(plannedCampaign({ milestone: true }), state);
-      const milestone = within(part('Reward')).getByRole('checkbox', {
-        name: "Milestone: the party levels up when it's done",
+      fireEvent.change(within(part('Reward')).getByLabelText('Reward notes'), {
+        target: { value: 'A castle' },
       });
+      save();
 
-      fireEvent.click(milestone);
-
-      await waitFor(() => expect(milestone).toBeChecked());
-      expect(state.saveChild).toHaveBeenCalledWith('quests', { milestone: false }, 'q1');
+      expect(await within(plan()).findByRole('alert')).toHaveTextContent('Reward is too long');
+      expect(onClose).not.toHaveBeenCalled();
+      expect(within(plan()).getByRole('button', { name: 'Save' })).toBeEnabled();
+      expect(within(part('Reward')).getByLabelText('Reward notes')).toHaveValue('A castle');
+      expect(state.reload).toHaveBeenCalled();
     });
 
-    it('saves the reward notes', async () => {
-      const { state } = renderPlan();
-      const notes = within(part('Reward')).getByRole('textbox', { name: 'Reward notes' });
+    it('disables the buttons while saving', async () => {
+      let finish: (value: unknown) => void = () => {};
+      const state = makeState({
+        api: makeApi({
+          updateChild: jest.fn(
+            () =>
+              new Promise((resolve) => {
+                finish = resolve;
+              }),
+          ),
+        }),
+      });
+      const { onClose } = renderPlan(plannedCampaign(), state);
 
-      expect(notes).toHaveValue('500 gp');
-      fireEvent.change(notes, { target: { value: 'The mayor owes them a favor' } });
-      fireEvent.blur(notes);
+      fireEvent.change(within(part('Reward')).getByRole('spinbutton', { name: 'XP' }), {
+        target: { value: '10' },
+      });
+      save();
 
-      await waitFor(() =>
-        expect(state.saveChild).toHaveBeenCalledWith(
-          'quests',
-          { reward: 'The mayor owes them a favor' },
-          'q1',
-        ),
+      expect(await within(plan()).findByRole('button', { name: 'Saving…' })).toBeDisabled();
+      expect(within(plan()).getByRole('button', { name: 'Cancel' })).toBeDisabled();
+      finish({});
+      await waitFor(() => expect(onClose).toHaveBeenCalled());
+    });
+  });
+
+  describe('checking the reward', () => {
+    it.each([
+      [
+        'coins below zero',
+        'Gold pieces (gp)',
+        '-5',
+        'Coins must be whole numbers from 0 to 1,000,000.',
+      ],
+      [
+        'too many coins',
+        'Silver pieces (sp)',
+        '1000001',
+        'Coins must be whole numbers from 0 to 1,000,000.',
+      ],
+      [
+        'part of a coin',
+        'Copper pieces (cp)',
+        '1.5',
+        'Coins must be whole numbers from 0 to 1,000,000.',
+      ],
+      ['too much XP', 'XP', '1000001', 'XP must be a whole number from 0 to 1,000,000.'],
+      ['XP below zero', 'XP', '-1', 'XP must be a whole number from 0 to 1,000,000.'],
+    ])("doesn't save %s, and stays open", async (_case, field, value, message) => {
+      const { state, onClose } = renderPlan();
+
+      fireEvent.change(within(part('Reward')).getByRole('spinbutton', { name: field }), {
+        target: { value },
+      });
+      save();
+
+      expect(await within(plan()).findByRole('alert')).toHaveTextContent(message);
+      expect(savedCalls(state)).toEqual([]);
+      expect(onClose).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('cancelling', () => {
+    it('closes without asking when nothing changed', () => {
+      const { onClose } = renderPlan();
+
+      cancel();
+
+      expect(confirmSpy).not.toHaveBeenCalled();
+      expect(onClose).toHaveBeenCalled();
+    });
+
+    it('asks before throwing changes away, and saves nothing', () => {
+      const { state, onClose } = renderPlan();
+
+      fireEvent.click(
+        within(part('Reward')).getByRole('checkbox', {
+          name: "Milestone: the party levels up when it's done",
+        }),
       );
+      removeValue('Lareth (Villain)');
+      cancel();
+
+      expect(confirmSpy).toHaveBeenCalledWith('Discard your changes?');
+      expect(onClose).toHaveBeenCalled();
+      expect(savedCalls(state)).toEqual([]);
     });
 
-    it('says when there are no reward items', () => {
-      renderPlan(plannedCampaign({ links: [] }));
+    it('keeps the changes when the DM decides not to discard them', () => {
+      confirmSpy.mockReturnValue(false);
+      const { onClose } = renderPlan();
 
-      expect(within(part('Reward')).getByText('No reward items yet.')).toBeInTheDocument();
+      fireEvent.change(within(part('Reward')).getByLabelText('Reward notes'), {
+        target: { value: 'A castle' },
+      });
+      fireEvent.click(within(plan()).getByRole('button', { name: 'Close' }));
+
+      expect(onClose).not.toHaveBeenCalled();
+      expect(within(part('Reward')).getByLabelText('Reward notes')).toHaveValue('A castle');
+    });
+
+    it('is not a change to remove a pick and pick it again', async () => {
+      const { onClose } = renderPlan();
+
+      removeValue('Lareth (Villain)');
+      await chooseOption('Add an NPC', 'Lareth (Villain)');
+      cancel();
+
+      expect(confirmSpy).not.toHaveBeenCalled();
+      expect(onClose).toHaveBeenCalled();
     });
   });
 });

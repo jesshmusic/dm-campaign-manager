@@ -1,26 +1,31 @@
 import { Link, useParams, useSearchParams } from 'react-router-dom';
+import styled from 'styled-components';
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
 import useCampaign from './useCampaign';
 import useCampaignBreadcrumbs from './useCampaignBreadcrumbs';
 import PrepView from './session/PrepView';
 import RunView from './session/RunView';
-import { SESSION_STATUS_LABELS } from './tabs/SessionsTab';
-import { SessionStatus } from './types';
+import { formatDate, SESSION_STATUS_LABELS, SESSION_STATUS_TONES } from './tabs/SessionsTab';
 import {
-  Field,
-  FormGrid,
-  Input,
+  Badge,
   LinkButton,
   Meta,
   Notice,
   PlannerWrapper,
-  Select,
   TabsList,
   TabsRoot,
   TabsTrigger,
   Toolbar,
 } from './Campaigns.styles';
+
+// Its status, date and party level (changed with "Prep this session")
+const Facts = styled.div`
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+`;
 
 const SessionPage = () => {
   const { campaignSlug = '', sessionId = '' } = useParams<{
@@ -30,7 +35,7 @@ const SessionPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const mode = searchParams.get('mode') === 'run' ? 'run' : 'prep';
   const state = useCampaign(campaignSlug);
-  const { campaign, loading, error, actionError, clearActionError, saveChild } = state;
+  const { campaign, loading, error, actionError, clearActionError } = state;
   const session = campaign?.sessions.find((s) => s.id === sessionId);
 
   const title = session ? session.displayTitle : 'Session';
@@ -45,8 +50,6 @@ const SessionPage = () => {
         ]
       : null,
   );
-  const save = (attributes: Record<string, unknown>) =>
-    session && void saveChild('sessions', attributes, session.id);
 
   return (
     <PageContainer pageTitle={title} description="Prep and run a game session." maxWidth>
@@ -65,54 +68,19 @@ const SessionPage = () => {
         )}
         {campaign && session && (
           <>
-            <FormGrid>
-              <Field>
-                Title
-                <Input
-                  key={`title-${session.title ?? ''}`}
-                  defaultValue={session.title ?? ''}
-                  placeholder={`Session ${session.number}`}
-                  onBlur={(event) =>
-                    event.target.value !== (session.title ?? '') &&
-                    save({ title: event.target.value || null })
-                  }
-                />
-              </Field>
-              <Field>
-                Date
-                <Input
-                  type="date"
-                  value={session.scheduledOn ?? ''}
-                  onChange={(event) => save({ scheduled_on: event.target.value || null })}
-                />
-              </Field>
-              <Field>
-                Party level
-                <Input
-                  type="number"
-                  min={1}
-                  max={20}
-                  key={`level-${session.level ?? ''}`}
-                  defaultValue={session.level ?? ''}
-                  onBlur={(event) =>
-                    save({ level: event.target.value ? Number(event.target.value) : null })
-                  }
-                />
-              </Field>
-              <Field>
-                Status
-                <Select
-                  value={session.status}
-                  onChange={(event) => save({ status: event.target.value as SessionStatus })}
-                >
-                  {Object.entries(SESSION_STATUS_LABELS).map(([value, label]) => (
-                    <option key={value} value={value}>
-                      {label}
-                    </option>
-                  ))}
-                </Select>
-              </Field>
-            </FormGrid>
+            <Facts role="group" aria-label="Session details">
+              <Badge $tone={SESSION_STATUS_TONES[session.status]}>
+                {SESSION_STATUS_LABELS[session.status]}
+              </Badge>
+              <Meta as="span">
+                {[
+                  session.scheduledOn ? formatDate(session.scheduledOn) : 'No date yet',
+                  session.level && `Party level ${session.level}`,
+                ]
+                  .filter(Boolean)
+                  .join(' · ')}
+              </Meta>
+            </Facts>
 
             <TabsRoot
               value={mode}

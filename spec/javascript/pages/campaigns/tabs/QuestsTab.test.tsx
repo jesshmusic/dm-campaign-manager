@@ -4,6 +4,7 @@ import { render, screen, fireEvent, waitFor, within } from '../../../test-utils'
 import QuestsTab from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/tabs/QuestsTab';
 import { Campaign } from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/types';
 import { FakeState, makeState, quest, questLink, sampleCampaign } from '../fixtures';
+import { chooseOption } from '../selectHelpers';
 
 const renderTab = (campaign: Campaign = sampleCampaign(), state: FakeState = makeState()) => {
   render(
@@ -147,18 +148,22 @@ describe('QuestsTab', () => {
     expect(within(lostChild).queryByText('Monsters')).not.toBeInTheDocument();
   });
 
-  it('plans a quest, then goes back to all quests', () => {
+  it('plans a quest in a modal over the list', () => {
     renderTab(plannedCampaign());
 
     fireEvent.click(within(main()).getByRole('button', { name: 'Plan the quest' }));
 
-    const plan = screen.getByRole('region', { name: 'Plan Stop the cult' });
-    expect(within(plan).getByRole('heading', { name: 'Plan: Stop the cult' })).toBeInTheDocument();
-    expect(screen.queryByRole('region', { name: 'Main quests' })).not.toBeInTheDocument();
+    const plan = screen.getByRole('dialog', { name: 'Plan: Stop the cult' });
+    expect(
+      within(plan)
+        .getAllByRole('heading', { level: 3 })
+        .map((heading) => heading.textContent),
+    ).toEqual(['Maps', 'NPCs involved', 'Monsters', 'Reward']);
+    expect(main()).toBeInTheDocument();
 
-    fireEvent.click(within(plan).getByRole('button', { name: '← All quests' }));
+    fireEvent.click(within(plan).getByRole('button', { name: 'Cancel' }));
 
-    expect(screen.queryByRole('region', { name: 'Plan Stop the cult' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
     expect(main()).toBeInTheDocument();
   });
 
@@ -167,7 +172,40 @@ describe('QuestsTab', () => {
 
     fireEvent.click(within(side()).getAllByRole('button', { name: 'Plan the quest' })[1]);
 
-    expect(screen.getByRole('region', { name: 'Plan Old errand' })).toBeInTheDocument();
+    expect(screen.getByRole('dialog', { name: 'Plan: Old errand' })).toBeInTheDocument();
+  });
+
+  it('saves the plan on Save, then closes it', async () => {
+    const { state } = renderTab(plannedCampaign());
+
+    fireEvent.click(within(main()).getByRole('button', { name: 'Plan the quest' }));
+    const plan = screen.getByRole('dialog', { name: 'Plan: Stop the cult' });
+    fireEvent.change(within(plan).getByRole('spinbutton', { name: 'XP' }), {
+      target: { value: '600' },
+    });
+    expect(state.api.updateChild).not.toHaveBeenCalled();
+    fireEvent.click(within(plan).getByRole('button', { name: 'Save' }));
+
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+    expect(state.api.updateChild).toHaveBeenCalledWith('zombie-siege', 'quests', 'q1', {
+      reward_xp: 600,
+    });
+    expect(state.reload).toHaveBeenCalledTimes(1);
+  });
+
+  it('asks before cancelling a changed plan', () => {
+    const { state } = renderTab(plannedCampaign());
+
+    fireEvent.click(within(main()).getByRole('button', { name: 'Plan the quest' }));
+    const plan = screen.getByRole('dialog', { name: 'Plan: Stop the cult' });
+    fireEvent.change(within(plan).getByRole('spinbutton', { name: 'XP' }), {
+      target: { value: '600' },
+    });
+    fireEvent.click(within(plan).getByRole('button', { name: 'Cancel' }));
+
+    expect(confirmSpy).toHaveBeenCalledWith('Discard your changes?');
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(state.api.updateChild).not.toHaveBeenCalled();
   });
 
   it('shows an open-ended level range and the parent quest', () => {
@@ -195,12 +233,13 @@ describe('QuestsTab', () => {
     const { state } = renderTab(sampleCampaign({ quests: [] }));
 
     fireEvent.click(within(main()).getByRole('button', { name: 'Add main quest' }));
-    expect(input('kind')).toHaveValue('main');
-    expect(input('status')).toHaveValue('available');
+    const form = screen.getByRole('dialog', { name: 'New main quest' });
+    expect(within(form).getByText('Main quest')).toBeInTheDocument();
+    expect(within(form).getByText('Available')).toBeInTheDocument();
     fireEvent.change(input('name'), { target: { value: 'Close the portal' } });
     fireEvent.change(input('act'), { target: { value: '3' } });
-    fireEvent.change(input('giver_npc_id'), { target: { value: 'n3' } });
-    fireEvent.click(within(main()).getByRole('button', { name: 'Add main quest' }));
+    await chooseOption('Quest giver', 'Elmo', 'elm');
+    fireEvent.click(within(form).getByRole('button', { name: 'Add main quest' }));
 
     await waitFor(() => expect(state.saveChild).toHaveBeenCalled());
     expect(state.saveChild).toHaveBeenCalledWith(
@@ -216,15 +255,17 @@ describe('QuestsTab', () => {
       }),
       undefined,
     );
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
   });
 
   it('adds a side quest', async () => {
     const { state } = renderTab(sampleCampaign({ quests: [] }));
 
     fireEvent.click(within(side()).getByRole('button', { name: 'Add side quest' }));
-    expect(input('kind')).toHaveValue('side');
+    const form = screen.getByRole('dialog', { name: 'New side quest' });
+    expect(within(form).getByText('Side quest')).toBeInTheDocument();
     fireEvent.change(input('name'), { target: { value: 'Rescue the cat' } });
-    fireEvent.click(within(side()).getByRole('button', { name: 'Add side quest' }));
+    fireEvent.click(within(form).getByRole('button', { name: 'Add side quest' }));
 
     await waitFor(() =>
       expect(state.saveChild).toHaveBeenCalledWith(
@@ -239,14 +280,15 @@ describe('QuestsTab', () => {
     const { state } = renderTab();
 
     fireEvent.click(within(main()).getByRole('button', { name: 'Edit' }));
+    const form = screen.getByRole('dialog', { name: 'Edit Stop the cult' });
     expect(input('reward')).toHaveValue('500 gp');
-    expect(screen.getByText('Reward notes')).toBeInTheDocument();
+    expect(within(form).getByText('Reward notes')).toBeInTheDocument();
     expect(input('level_min')).toHaveValue(3);
     expect(input('level_max')).toHaveValue(5);
-    expect(input('giver_npc_id')).toHaveValue('n3');
-    expect(input('location_id')).toHaveValue('l2');
-    fireEvent.change(input('status'), { target: { value: 'completed' } });
-    fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+    expect(within(form).getByText('Elmo')).toBeInTheDocument();
+    expect(within(form).getByText('Moathouse')).toBeInTheDocument();
+    await chooseOption('Status', 'Completed', 'comp');
+    fireEvent.click(within(form).getByRole('button', { name: 'Save' }));
 
     await waitFor(() =>
       expect(state.saveChild).toHaveBeenCalledWith(
@@ -256,6 +298,7 @@ describe('QuestsTab', () => {
           status: 'completed',
           level_min: 3,
           level_max: 5,
+          giver_npc_id: 'n3',
           location_id: 'l2',
           reward: '500 gp',
         }),

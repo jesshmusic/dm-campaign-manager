@@ -3,6 +3,7 @@ import { render, screen, fireEvent, waitFor, within } from '../../../test-utils'
 import BooksTab from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/tabs/BooksTab';
 import { Campaign } from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/types';
 import { FakeState, makeState, sampleCampaign, sampleCompendiumEntry } from '../fixtures';
+import { openSelect } from '../selectHelpers';
 
 const renderTab = (campaign: Campaign = sampleCampaign(), state: FakeState = makeState()) => {
   render(<BooksTab campaign={campaign} state={state} />);
@@ -25,12 +26,7 @@ describe('BooksTab', () => {
   });
 
   describe('adding from Foundry compendiums', () => {
-    const search = (query: string) => {
-      fireEvent.change(screen.getByRole('textbox', { name: 'Search your compendiums' }), {
-        target: { value: query },
-      });
-      fireEvent.click(screen.getByRole('button', { name: 'Search' }));
-    };
+    const search = (query: string) => openSelect('Search your compendiums', query);
 
     it('searches every compendium the campaign uses and adds a reference', async () => {
       const state = makeState();
@@ -41,8 +37,7 @@ describe('BooksTab', () => {
       renderTab(sampleCampaign(), state);
 
       search('zom');
-      const result = await screen.findByText('Zombie');
-      fireEvent.click(within(result).getByRole('button', { name: 'Add' }));
+      fireEvent.click(await screen.findByRole('option', { name: /^Zombie/ }));
 
       await waitFor(() =>
         expect(state.api.createChild).toHaveBeenCalledWith('zombie-siege', 'references', {
@@ -71,10 +66,7 @@ describe('BooksTab', () => {
       renderTab(sampleCampaign(), state);
 
       search('cult');
-      const result = await screen.findByText((_, element) =>
-        Boolean(element?.tagName === 'LI' && element.textContent?.startsWith('Cult Fanatic')),
-      );
-      fireEvent.click(within(result).getByRole('button', { name: 'Add' }));
+      fireEvent.click(await screen.findByRole('option', { name: /^Cult Fanatic/ }));
 
       await waitFor(() => expect(state.mutate).toHaveBeenCalled());
       await state.mutate.mock.results[0].value;
@@ -123,12 +115,14 @@ describe('BooksTab', () => {
     const { state } = renderTab();
 
     fireEvent.click(screen.getByRole('button', { name: 'Add reference' }));
-    expect(input('book')).toHaveValue('mm');
-    expect(input('category')).toHaveValue('monster');
+    expect(within(screen.getByRole('dialog')).getByText('Monster Manual')).toBeInTheDocument();
+    expect(within(screen.getByRole('dialog')).getByText('Monster')).toBeInTheDocument();
     fireEvent.change(input('name'), { target: { value: 'Ghoul' } });
     fireEvent.change(input('page'), { target: { value: '145' } });
     fireEvent.change(input('challenge_rating'), { target: { value: '1' } });
-    fireEvent.click(screen.getAllByRole('button', { name: 'Add reference' })[0]);
+    fireEvent.click(
+      within(screen.getByRole('dialog')).getByRole('button', { name: 'Add reference' }),
+    );
 
     await waitFor(() =>
       expect(state.saveChild).toHaveBeenCalledWith(

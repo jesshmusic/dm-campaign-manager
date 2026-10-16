@@ -5,6 +5,7 @@ import EntityForm, {
   toAttributes,
   toFormValues,
 } from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/components/EntityForm';
+import { chooseOption, menuOptions, openSelect } from '../selectHelpers';
 
 const deferred = <T,>() => {
   let resolve!: (value: T) => void;
@@ -145,6 +146,7 @@ describe('EntityForm', () => {
     const onCancel = jest.fn();
     render(
       <EntityForm
+        title="Edit Elmo"
         fields={fields}
         initialValues={toFormValues(fields, { name: 'Elmo', role: 'ally', level: 2 })}
         submitLabel="Save"
@@ -158,15 +160,20 @@ describe('EntityForm', () => {
 
   const input = (name: string) => document.getElementById(`field-${name}`) as HTMLInputElement;
 
+  it('opens in a dialog with its title', () => {
+    renderForm();
+
+    expect(screen.getByRole('dialog', { name: 'Edit Elmo' })).toBeInTheDocument();
+  });
+
   it('renders each field with its initial value', () => {
     renderForm();
 
     expect(input('name')).toHaveValue('Elmo');
     expect(input('name')).toBeRequired();
-    expect(input('role')).toHaveValue('ally');
+    expect(screen.getByText('Ally')).toBeInTheDocument();
     expect(input('level')).toHaveValue(2);
     expect(screen.getByText('Only you see this')).toBeInTheDocument();
-    expect(screen.getByRole('option', { name: 'None' })).toBeInTheDocument();
     expect(screen.getByRole('checkbox', { name: 'Already revealed' })).not.toBeChecked();
   });
 
@@ -174,14 +181,29 @@ describe('EntityForm', () => {
     renderForm();
 
     expect(screen.getByLabelText('Name')).toBe(input('name'));
+    expect(screen.getByLabelText('Role')).toBe(input('role'));
     expect(screen.getByLabelText('Level')).toBe(input('level'));
+  });
+
+  it('filters a select as you type', () => {
+    renderForm();
+
+    openSelect('Role', 'vil');
+
+    expect(menuOptions()).toEqual(['Villain']);
+  });
+
+  it('shows the blank choice when a select has no value', () => {
+    renderForm({ initialValues: toFormValues(fields, { name: 'Elmo' }) });
+
+    expect(screen.getByText('None')).toBeInTheDocument();
   });
 
   it('submits converted attributes and closes when saved', async () => {
     const { onSubmit, onCancel } = renderForm();
 
     fireEvent.change(input('name'), { target: { value: ' Elmo the Drunk ' } });
-    fireEvent.change(input('role'), { target: { value: '' } });
+    fireEvent.keyDown(input('role'), { key: 'Backspace' });
     fireEvent.change(input('level'), { target: { value: '4' } });
     fireEvent.change(input('truths'), { target: { value: 'One\n\nTwo' } });
     fireEvent.click(screen.getByRole('checkbox', { name: 'Already revealed' }));
@@ -198,29 +220,60 @@ describe('EntityForm', () => {
     });
   });
 
-  it('stays open when saving fails', async () => {
+  it('saves a picked select option', async () => {
+    const { onSubmit } = renderForm();
+
+    await chooseOption('Role', 'Villain', 'vil');
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+
+    await waitFor(() =>
+      expect(onSubmit).toHaveBeenCalledWith(expect.objectContaining({ role: 'villain' })),
+    );
+  });
+
+  it('saves with Enter in a field', async () => {
+    const { onSubmit } = renderForm();
+
+    fireEvent.submit(input('name').closest('form') as HTMLFormElement);
+
+    await waitFor(() => expect(onSubmit).toHaveBeenCalled());
+  });
+
+  it('stays open with an error when saving fails', async () => {
     const { onSubmit, onCancel } = renderForm();
     onSubmit.mockResolvedValue(false);
 
     fireEvent.click(screen.getByRole('button', { name: 'Save' }));
 
-    await waitFor(() => expect(screen.getByRole('button', { name: 'Save' })).toBeEnabled());
-    expect(onSubmit).toHaveBeenCalled();
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      "Couldn't save. Check the fields and try again.",
+    );
+    expect(screen.getByRole('button', { name: 'Save' })).toBeEnabled();
     expect(onCancel).not.toHaveBeenCalled();
   });
 
-  it('disables the submit button while saving', async () => {
+  it('needs the required fields before saving', () => {
+    const { onSubmit } = renderForm();
+
+    fireEvent.change(input('name'), { target: { value: '  ' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+
+    expect(screen.getByRole('alert')).toHaveTextContent('Name is required.');
+    expect(onSubmit).not.toHaveBeenCalled();
+  });
+
+  it('disables the buttons while saving', async () => {
     const saving = deferred<boolean>();
     renderForm({ onSubmit: () => saving.promise });
 
     fireEvent.click(screen.getByRole('button', { name: 'Save' }));
 
-    expect(screen.getByRole('button', { name: 'Save' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Saving…' })).toBeDisabled();
     saving.resolve(false);
     await waitFor(() => expect(screen.getByRole('button', { name: 'Save' })).toBeEnabled());
   });
 
-  it('cancels', () => {
+  it('cancels without saving', () => {
     const { onSubmit, onCancel } = renderForm();
 
     fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
@@ -229,10 +282,16 @@ describe('EntityForm', () => {
     expect(onSubmit).not.toHaveBeenCalled();
   });
 
-  it('has no cancel button without onCancel', () => {
-    renderForm({ onCancel: undefined });
+  it('asks before throwing away changes', () => {
+    const confirm = jest.spyOn(window, 'confirm').mockReturnValue(false);
+    const { onCancel } = renderForm();
 
-    expect(screen.queryByRole('button', { name: 'Cancel' })).not.toBeInTheDocument();
+    fireEvent.change(input('name'), { target: { value: 'Elmo the Drunk' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
+
+    expect(confirm).toHaveBeenCalledWith('Discard your changes?');
+    expect(onCancel).not.toHaveBeenCalled();
+    confirm.mockRestore();
   });
 
   describe('helpers', () => {

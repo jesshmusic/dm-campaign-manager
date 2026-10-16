@@ -7,9 +7,9 @@ import {
   Input,
   InputWithHelper,
   Notice,
-  Select,
   TextArea,
 } from '../Campaigns.styles';
+import SearchSelect from './SearchSelect';
 import type { FieldConfig, FieldHelper, FormValues } from './EntityForm';
 
 type FormFieldsProps = {
@@ -56,19 +56,17 @@ const FormFields = ({ fields, values, onChange }: FormFieldsProps) => {
       case 'checkbox':
         return null;
       case 'select':
+        // Type to filter the choices; a field with a blank choice can be cleared
         return (
-          <Select
-            id={id}
-            value={String(value ?? '')}
-            onChange={(e) => onChange(field.name, e.target.value)}
-          >
-            {field.blankLabel !== undefined && <option value="">{field.blankLabel}</option>}
-            {field.options.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </Select>
+          <SearchSelect
+            inputId={id}
+            aria-label={field.label}
+            options={field.options}
+            value={field.options.find((option) => option.value === String(value ?? '')) ?? null}
+            isClearable={field.blankLabel !== undefined}
+            placeholder={field.blankLabel ?? 'Choose…'}
+            onChange={(option) => onChange(field.name, option?.value ?? '')}
+          />
         );
       case 'number':
         return (
