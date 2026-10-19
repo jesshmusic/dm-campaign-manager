@@ -7,8 +7,6 @@ RSpec.describe 'Admin::V1::Foundry::CampaignsController', type: :request do
   let(:headers) { { 'Authorization' => "Bearer #{token.plaintext_token}" } }
   let!(:campaign) { create(:campaign, user: user, name: 'The Grey Plague') }
 
-  before { create(:patreon_user, :wizard, user_id: nil, linked_user: user) }
-
   describe 'GET /v1/foundry/campaigns' do
     it "lists the user's campaigns" do
       create(:campaign, name: 'Not mine')
@@ -19,13 +17,15 @@ RSpec.describe 'Admin::V1::Foundry::CampaignsController', type: :request do
       expect(json).to contain_exactly(include('uuid' => campaign.uuid, 'name' => 'The Grey Plague'))
     end
 
-    it 'needs premium access' do
-      user.patreon_account.destroy!
+    it 'is open to any signed-up user with a token' do
+      member = create(:user)
+      create(:campaign, user: member, name: 'Free for all')
+      member_headers = { 'Authorization' => "Bearer #{ApiToken.issue!(user: member, name: 'Foundry').plaintext_token}" }
 
-      get '/v1/foundry/campaigns', headers: headers
+      get '/v1/foundry/campaigns', headers: member_headers
 
-      expect(response).to have_http_status(:forbidden)
-      expect(json['code']).to eq('premium_required')
+      expect(response).to have_http_status(:success)
+      expect(json).to contain_exactly(include('name' => 'Free for all'))
     end
 
     it 'needs a valid API token' do
@@ -159,12 +159,10 @@ RSpec.describe 'Admin::V1::Foundry::CampaignsController', type: :request do
       expect(response).to have_http_status(:unprocessable_entity)
     end
 
-    it 'needs premium access' do
-      user.patreon_account.update!(has_premium: false)
+    it 'needs a valid API token' do
+      post "/v1/foundry/campaigns/#{campaign.uuid}/changes", params: { changes: [] }, as: :json
 
-      post "/v1/foundry/campaigns/#{campaign.uuid}/changes", params: { changes: [] }, headers: headers, as: :json
-
-      expect(response).to have_http_status(:forbidden)
+      expect(response).to have_http_status(:unauthorized)
     end
   end
 
@@ -197,9 +195,7 @@ RSpec.describe 'Admin::V1::Foundry::CampaignsController', type: :request do
       expect(user.player_characters.pluck(:name)).to contain_exactly('Akra', 'Not chosen')
     end
 
-    it 'does not need premium' do
-      user.patreon_account.destroy!
-
+    it 'creates a sandbox campaign' do
       post '/v1/foundry/campaigns', params: { template: 'sandbox', campaign: brief }, headers: headers, as: :json
 
       expect(response).to have_http_status(:created)
@@ -318,14 +314,6 @@ RSpec.describe 'Admin::V1::Foundry::CampaignsController', type: :request do
       expect(response).to have_http_status(:created)
       expect(json['party']).to eq(['Akra'])
       expect(imported.party.pluck(:name)).to eq(['Akra'])
-    end
-
-    it 'does not need premium' do
-      user.patreon_account.destroy!
-
-      post '/v1/foundry/campaigns/import', params: body, headers: headers, as: :json
-
-      expect(response).to have_http_status(:created)
     end
 
     it 'needs a valid API token' do

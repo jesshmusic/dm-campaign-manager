@@ -6,8 +6,6 @@ module Admin
       # Player characters from a Foundry world, sent by Dorman Lakely's
       # Campaign Planner so campaigns can pick their party from them.
       class CharactersController < BaseController
-        before_action :require_premium!
-
         # POST /v1/foundry/characters
         # Body: { world: { id, title }, characters: [{ uuid, name, playerName, level, sheet }] }
         # Replaces everything from that world.

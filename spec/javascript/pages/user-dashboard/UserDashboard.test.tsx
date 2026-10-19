@@ -36,15 +36,6 @@ jest.mock(
 );
 
 jest.mock(
-  '../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/user-dashboard/components/PatreonConnection',
-  () => {
-    return function MockPatreonConnection() {
-      return <div data-testid="patreon-connection">Patreon</div>;
-    };
-  },
-);
-
-jest.mock(
   '../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/user-dashboard/components/ApiTokens',
   () => {
     return function MockApiTokens() {
@@ -224,7 +215,6 @@ describe('UserDashboard', () => {
     );
 
     expect(screen.getByText('Connections')).toBeInTheDocument();
-    expect(screen.getByTestId('patreon-connection')).toBeInTheDocument();
     expect(screen.getByTestId('api-tokens')).toBeInTheDocument();
   });
 

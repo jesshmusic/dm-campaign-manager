@@ -6,7 +6,6 @@ import { connect } from 'react-redux';
 import Dashboard from './Dashboard';
 import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
-import PatreonConnection from './components/PatreonConnection';
 import ApiTokens from './components/ApiTokens';
 import { ConnectionsGrid } from './components/Connections.styles';
 
@@ -52,7 +51,6 @@ const UserDashboard = (_props: PageProps) => {
         <Section>
           <h2>Connections</h2>
           <ConnectionsGrid>
-            <PatreonConnection />
             <ApiTokens />
           </ConnectionsGrid>
         </Section>

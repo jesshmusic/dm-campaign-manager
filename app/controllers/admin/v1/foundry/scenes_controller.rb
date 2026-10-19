@@ -10,7 +10,6 @@ module Admin
         # The body has its own `scene` key, so don't wrap it in one
         wrap_parameters false
 
-        before_action :require_premium!
         before_action :set_world_id
 
         # GET /v1/foundry/scenes?world=<world id>

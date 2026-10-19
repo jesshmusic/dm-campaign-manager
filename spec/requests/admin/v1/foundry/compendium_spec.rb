@@ -10,8 +10,6 @@ RSpec.describe 'Admin::V1::Foundry::CompendiumController', type: :request do
       challengeRating: '1/4', detail: 'Undead' }
   end
 
-  before { create(:patreon_user, :wizard, user_id: nil, linked_user: user) }
-
   describe 'GET /v1/foundry/compendium' do
     it 'lists the packs Dungeon Master Guru has, with versions and counts' do
       create_list(:compendium_entry, 2, user: user, pack_version: 'mm@1')
@@ -23,13 +21,14 @@ RSpec.describe 'Admin::V1::Foundry::CompendiumController', type: :request do
       expect(json).to eq('packs' => { 'dnd-monster-manual.actors' => { 'version' => 'mm@1', 'count' => 2 } })
     end
 
-    it 'needs premium access' do
-      user.patreon_account.destroy!
+    it 'is open to any signed-up user with a token' do
+      member = create(:user)
+      member_headers = { 'Authorization' => "Bearer #{ApiToken.issue!(user: member, name: 'Foundry').plaintext_token}" }
 
-      get '/v1/foundry/compendium', headers: headers
+      get '/v1/foundry/compendium', headers: member_headers
 
-      expect(response).to have_http_status(:forbidden)
-      expect(json['code']).to eq('premium_required')
+      expect(response).to have_http_status(:success)
+      expect(json).to eq('packs' => {})
     end
 
     it 'needs a valid API token' do
@@ -72,16 +71,6 @@ RSpec.describe 'Admin::V1::Foundry::CompendiumController', type: :request do
 
       expect(response).to have_http_status(:unprocessable_entity)
       expect(json['errors']).to eq(['entries must be a list'])
-    end
-
-    it 'needs premium access' do
-      user.patreon_account.destroy!
-
-      post '/v1/foundry/compendium', params: { pack: 'dnd-monster-manual.actors', entries: [zombie] },
-                                     headers: headers, as: :json
-
-      expect(response).to have_http_status(:forbidden)
-      expect(user.compendium_entries).to be_empty
     end
   end
 end

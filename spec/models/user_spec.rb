@@ -309,41 +309,12 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe '#premium?' do
-    it 'is true for admins' do
-      expect(create(:admin_user).premium?).to be true
-    end
-
-    it 'is false without a linked Patreon account' do
-      expect(create(:dungeon_master_user).premium?).to be false
-    end
-
-    it 'is true with an active premium Patreon pledge' do
-      user = create(:dungeon_master_user)
-      create(:patreon_user, :wizard, user_id: nil, linked_user: user)
-      expect(user.reload.premium?).to be true
-    end
-
-    it 'is false with a free Patreon pledge' do
-      user = create(:dungeon_master_user)
-      create(:patreon_user, :free, user_id: nil, linked_user: user)
-      expect(user.reload.premium?).to be false
-    end
-
-    it 'is false once the Patreon login expires' do
-      user = create(:dungeon_master_user)
-      create(:patreon_user, :wizard, :expired, user_id: nil, linked_user: user)
-      expect(user.reload.premium?).to be false
-    end
-  end
-
   describe 'account connections' do
-    it 'destroys API tokens and the Patreon link with the user' do
+    it 'destroys API tokens with the user' do
       user = create(:dungeon_master_user)
       ApiToken.issue!(user: user, name: 'Foundry')
-      create(:patreon_user, user_id: nil, linked_user: user)
 
-      expect { user.destroy }.to change(ApiToken, :count).by(-1).and change(PatreonUser, :count).by(-1)
+      expect { user.destroy }.to change(ApiToken, :count).by(-1)
     end
   end
 end

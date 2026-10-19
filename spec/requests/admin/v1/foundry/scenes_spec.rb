@@ -14,7 +14,6 @@ RSpec.describe 'Admin::V1::Foundry::ScenesController', type: :request do
   let(:s3) { instance_double(Aws::S3::Client, put_object: true, delete_object: true) }
 
   before do
-    create(:patreon_user, :wizard, user_id: nil, linked_user: user)
     allow(Aws::S3::Client).to receive(:new).and_return(s3)
     allow(ENV).to receive(:fetch).and_call_original
     allow(ENV).to receive(:fetch).with('AWS_S3_BUCKET', nil).and_return('test-bucket')
@@ -79,15 +78,6 @@ RSpec.describe 'Admin::V1::Foundry::ScenesController', type: :request do
       expect(user.foundry_scenes).to be_empty
     end
 
-    it 'needs premium access' do
-      user.patreon_account.destroy!
-
-      post '/v1/foundry/scenes', params: { world: world, scene: scene }, headers: headers, as: :json
-
-      expect(response).to have_http_status(:forbidden)
-      expect(s3).not_to have_received(:put_object)
-    end
-
     it 'needs a valid API token' do
       post '/v1/foundry/scenes', params: { world: world, scene: scene }, as: :json
 
@@ -148,15 +138,6 @@ RSpec.describe 'Admin::V1::Foundry::ScenesController', type: :request do
       delete '/v1/foundry/scenes', params: { uuid: pass.foundry_uuid }, headers: headers
 
       expect(response).to have_http_status(:unprocessable_entity)
-      expect(FoundryScene.exists?(pass.id)).to be true
-    end
-
-    it 'needs premium access' do
-      user.patreon_account.destroy!
-
-      delete '/v1/foundry/scenes', params: { world: 'greyhawk', uuid: pass.foundry_uuid }, headers: headers
-
-      expect(response).to have_http_status(:forbidden)
       expect(FoundryScene.exists?(pass.id)).to be true
     end
 

@@ -8,8 +8,6 @@ module Admin
       class CompendiumController < BaseController
         ENTRY_FIELDS = %i[uuid name category challengeRating detail].freeze
 
-        before_action :require_premium!
-
         # GET /v1/foundry/compendium
         # What Dungeon Master Guru has, so the module only sends packs that changed
         def show

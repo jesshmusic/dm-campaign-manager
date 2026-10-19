@@ -10,18 +10,7 @@ RSpec.describe 'Admin::V1::Foundry::AccountsController', type: :request do
       get '/v1/foundry/me', headers: { 'Authorization' => "Bearer #{token.plaintext_token}" }
 
       expect(response).to have_http_status(:success)
-      expect(json['user']).to eq('name' => 'Dorman Lakely', 'username' => 'dorman')
-      expect(json['premium']).to be false
-      expect(json['patreon']).to be_nil
-    end
-
-    it 'reports premium access from a linked Patreon account' do
-      create(:patreon_user, :wizard, user_id: nil, linked_user: user)
-
-      get '/v1/foundry/me', headers: { 'Authorization' => "Bearer #{token.plaintext_token}" }
-
-      expect(json['premium']).to be true
-      expect(json['patreon']['tierName']).to eq('Wizard')
+      expect(json).to eq('user' => { 'name' => 'Dorman Lakely', 'username' => 'dorman' })
     end
 
     it 'records when the token was used' do

@@ -3,14 +3,12 @@
 module Admin
   module V1
     module Foundry
-      # Campaigns for Dorman Lakely's Campaign Planner. Creating one (or sending
-      # one planned in Foundry) is free, as it is on the website; listing and
-      # syncing them are Patreon premium.
+      # Campaigns for Dorman Lakely's Campaign Planner: create them (or send one
+      # planned in Foundry), list them, and sync their changes.
       class CampaignsController < BaseController
         UUID_FORMAT = /\A\h{8}-\h{4}-\h{4}-\h{4}-\h{12}\z/
         REQUEST_ID_FORMAT = /\A[\w-]{8,64}\z/
 
-        before_action :require_premium!, except: %i[create import]
         before_action :set_campaign, except: %i[index create import]
 
         # GET /v1/foundry/campaigns

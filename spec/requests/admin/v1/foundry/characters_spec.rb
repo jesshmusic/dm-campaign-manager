@@ -11,8 +11,6 @@ RSpec.describe 'Admin::V1::Foundry::CharactersController', type: :request do
       sheet: { summary: 'Level 3 Dragonborn Cleric', abilities: [{ key: 'str', score: 13 }] } }
   end
 
-  before { create(:patreon_user, :wizard, user_id: nil, linked_user: user) }
-
   describe 'POST /v1/foundry/characters' do
     it "replaces the world's characters" do
       post '/v1/foundry/characters', params: { world: world, characters: [akra] }, headers: headers, as: :json
@@ -46,13 +44,14 @@ RSpec.describe 'Admin::V1::Foundry::CharactersController', type: :request do
       expect(json['errors']).to eq(['characters must be a list'])
     end
 
-    it 'needs premium access' do
-      user.patreon_account.destroy!
+    it 'is open to any signed-up user with a token' do
+      member = create(:user)
+      member_headers = { 'Authorization' => "Bearer #{ApiToken.issue!(user: member, name: 'Foundry').plaintext_token}" }
 
-      post '/v1/foundry/characters', params: { world: world, characters: [akra] }, headers: headers, as: :json
+      post '/v1/foundry/characters', params: { world: world, characters: [akra] }, headers: member_headers, as: :json
 
-      expect(response).to have_http_status(:forbidden)
-      expect(user.player_characters).to be_empty
+      expect(response).to have_http_status(:success)
+      expect(member.player_characters.pluck(:name)).to eq(['Akra'])
     end
 
     it 'needs a valid API token' do

@@ -3,7 +3,7 @@
 ## Context
 A good campaign/adventure planner has been a DM Guru goal for a long time. The original Campaign / Adventure /
 Encounter models were removed in commit `64b97d39` (2020-11-26), so this starts fresh. The Foundry side already
-has map hosting, Patreon-gated premium access and a dnd5e v13 actor export (`Monster#export_foundry_vtt`).
+has map hosting (Patreon-gated premium maps) and a dnd5e v13 actor export (`Monster#export_foundry_vtt`).
 
 The user plans **from a need**:
 - *Time-boxed arc:* "a ~6-week campaign where the PCs survive and stop a zombie apocalypse in Greyhawk".
@@ -13,7 +13,8 @@ Decisions already made:
 - The planner is **free** for logged-in DMs.
 - **The planner has no AI; the site's older AI tools are unchanged.** The planner's own AI (draft a plan, prep
   suggestions, recaps), the bring-your-own OpenAI key and the hosted key were removed on 2026-10-19.
-- Foundry sync is Patreon-premium, alongside the existing premium maps.
+- Foundry sync is **free** too: `/v1/foundry/*` needs only an API token. The Patreon premium check and the
+  Patreon account link on the website were removed on 2026-10-19; Patreon premium now applies only to the maps.
 - Foundry integration is **full two-way sync**.
 - The planner is **2024-only** and works with the 2024 Player's Handbook, Dungeon Master's Guide and Monster
   Manual through book references (name and page), never their text or stat blocks.
@@ -22,8 +23,7 @@ Decisions already made:
 - Everything ships in one PR.
 
 ## Status (2026-10-19)
-- **Phase 0 (done):** map admin endpoints locked down, Patreon linked to accounts, personal API tokens and
-  `GET /v1/foundry/me`.
+- **Phase 0 (done):** map admin endpoints locked down, personal API tokens and `GET /v1/foundry/me`.
 - **Phase 1 (done):** planner models and API, the campaign wizard with templates, campaign tabs (Overview,
   Story, Quests, Cast, Places, Secrets, Sessions, Books), session prep (8 steps) and run mode, Three Clue Rule
   check, dashboard widgets (Next Session, Campaign Clocks), book references.
@@ -57,13 +57,12 @@ Decisions already made:
     done or hidden.
   - The Foundry module has the same guide, opened from the Connect window and the Campaign Dashboard.
     Its copy lives in the module's `scripts/setup.mjs`; keep it in step with `setupSteps.ts`.
-    - It creates the campaign through `POST /v1/foundry/campaigns`. Creating is free, like on the web; listing
-      and syncing stay premium.
+    - It creates the campaign through `POST /v1/foundry/campaigns`.
     - The party's character sheets go with the request, and are saved like `POST /v1/foundry/characters` saves
       them.
     - A `request_id` makes a retried create return the same campaign.
     - Errors come back with the fields they're about, so the guide can return to the right step.
-    - With premium, the world links to the new campaign and opens the Dashboard.
+    - The world links to the new campaign and opens the Dashboard.
     - Drafts are kept per world in a client setting.
   - Campaigns have at most six truths. Older campaigns with more can still be edited.
 
@@ -99,8 +98,7 @@ Decisions already made:
       Foundry").
 - **Send to Dungeon Master Guru (done on the web; module in progress):**
   - A campaign planned in Foundry without an account is uploaded whole with `POST /v1/foundry/campaigns/import`
-    (`CampaignImporter`). Like creating one, it's free; listing and syncing stay premium. `request_id` and `party`
-    work as they do for `POST /v1/foundry/campaigns`.
+    (`CampaignImporter`). `request_id` and `party` work as they do for `POST /v1/foundry/campaigns`.
   - The body is the campaign and `records: { factions, references, locations, npcs, fronts, quests, sessions,
     secrets }`, in the shapes the sync pull returns. Each record has a local `id` that the others use to point at it
     (`factionId`, a link's `linkableId`); `uuid`, `syncVersion` and unknown keys are ignored.
@@ -115,7 +113,7 @@ Decisions already made:
     session or quest.
 - **Scene thumbnails (done):**
   - The module sends a 640×360 WebP thumbnail of every scene in the world that has a map image, made with
-    Foundry's `Scene#createThumbnail`, to `POST /v1/foundry/scenes` (premium, like sync), so the website can offer
+    Foundry's `Scene#createThumbnail`, to `POST /v1/foundry/scenes`, so the website can offer
     them as maps. It sends again only when what the thumbnail shows changes: the scene's size, levels or tiles, not
     tokens or walls. `DELETE /v1/foundry/scenes?world=&uuid=` removes a scene deleted in Foundry, with its image.
   - Dungeon Master Guru keeps them in S3's public `thumbnails/scenes/` path (`FoundryScene`, up to 500 per world),
@@ -152,12 +150,6 @@ Decisions already made:
   sync protocol"). Deleting a record, there or on the website, now bumps the records whose pointers it clears.
   New records get a UUID v4 made in Foundry from `crypto.getRandomValues` (`crypto.randomUUID` is missing on
   Foundry servers reached over plain HTTP).
-- **Patreon membership sync (done):** premium follows the patron's membership of the DM Guru campaign only
-  (`PATREON_CAMPAIGN_ID`), with `patron_status` `active_patron` and at least $5. A Patreon webhook
-  (`POST /v1/patreon/webhook`, HMAC-MD5 signed with `PATREON_WEBHOOK_SECRET`) re-reads a patron's membership on
-  every `members:*` event, and the daily `patreon:refresh_memberships` task renews tokens before they expire, so
-  premium no longer lapses when the Patreon access token does. The dashboard's Patreon card says whether the
-  membership is in sync, lapsed or revoked.
 
 ## What's left
 **To ship this PR**
@@ -165,24 +157,6 @@ Decisions already made:
 - Production setup:
   - run the migrations
   - lock CORS down from `origins '*'` (`config/initializers/cors.rb`) to the Foundry origins that need it
-  - Patreon membership sync (below)
-
-**Patreon membership sync (production setup)**
-- **`PATREON_CAMPAIGN_ID`**: the ID of the DM Guru Patreon campaign. Premium and the tier come only from a
-  patron's membership of this campaign; pledges to other creators are ignored. Get it with the creator access
-  token from the Patreon developer portal: `GET https://www.patreon.com/api/oauth2/v2/campaigns` (it's
-  `data[0].id`). If it isn't set, the app logs a warning and uses the patron's first membership, which may belong
-  to another creator, so set it before deploying.
-- **`PATREON_WEBHOOK_SECRET`**: the secret Patreon shows for the webhook below. Until it is set,
-  `POST /v1/patreon/webhook` answers 401 to everything.
-- **Register the webhook** in the Patreon developer portal (Webhooks): URL
-  `https://dungeonmaster.guru/v1/patreon/webhook`, triggers `members:create`, `members:update`, `members:delete`,
-  `members:pledge:create`, `members:pledge:update` and `members:pledge:delete`. Copy its secret into
-  `PATREON_WEBHOOK_SECRET`.
-- **Heroku Scheduler**: add a daily job `bundle exec rake patreon:refresh_memberships`. It renews Patreon tokens
-  expiring within 7 days (or lapsed within the last 30) and re-reads each membership.
-- After deploying, link a test patron and confirm premium follows their pledge (the `memberships.campaign`
-  include hasn't been checked against live Patreon yet).
 
 **To release the module**
 - The first release is 1.0.0 (0.1.0 was never released). `package.json` and `module.json` already say 1.0.0, and
@@ -282,8 +256,6 @@ Every planner table has:
 | `campaign_links` | polymorphic source → target | Cross-references used for the wiki-style "mentioned in" |
 | `api_tokens` | user_id, name, token_digest, scopes, last_used_at | For Foundry |
 
-Also link `patreon_users` to `users`; today they are keyed by a Foundry-generated string.
-
 API: `/v1/campaigns` and nested resources (jbuilder, `camelize: :lower`, `{count, results}`), plus
 `/v1/foundry/...` sync endpoints. Frontend: new `pages/campaigns/` using the redux-api + axios patterns, and new
 sidebar section and routes in `navigation/DMRoutes.tsx`.
@@ -301,8 +273,7 @@ or Monster Manual. The planner uses them without copying them:
     Stat blocks and book text never leave Foundry, and the entries are private to that DM.
   - The official packs use the same UUIDs in every world (e.g. `Compendium.dnd-monster-manual.actors.Actor.mmZombie00000000`),
     so a link works in any of the DM's worlds.
-  - The module sends a pack again when its package version changes. `GET` and `POST /v1/foundry/compendium`
-    are premium, like sync.
+  - The module sends a pack again when its package version changes.
 - **Searching:** `GET /v1/compendium` searches the DM's index. A book entry hides the SRD entry of the same
   name. Session prep (monsters, treasure) and the Books tab use it, and fall back to DM Guru's own SRD when there
   is no index.
@@ -395,14 +366,13 @@ or Monster Manual. The planner uses them without copying them:
   pull carries them. Deleting the whole campaign leaves that to the database.
 - Known gap: session and quest links removed along with their target leave no tombstone of their own. Their
   session or quest is bumped, so the next pull carries its new list, and the target's tombstone covers them.
-- Server checks: token + `user.premium?` + campaign ownership. Sanitize HTML both ways.
+- Server checks: token + campaign ownership. Sanitize HTML both ways.
 
 ## Phases
 0. **Prerequisites:**
    - Lock down the Foundry map admin endpoints:
      - `FoundryMapsController` and `FoundryMapTagsController` create/update/destroy/upload actions have no auth
      - `GET /v1/maps/:id` returns signed file URLs that bypass the premium check
-   - Link Patreon to `users`.
    - Add `api_tokens` and token management in the User Dashboard.
 1. **Planner core (free):**
    - models, API and specs
@@ -423,7 +393,7 @@ or Monster Manual. The planner uses them without copying them:
    - export a campaign as a Foundry Adventure compendium
 
 ## Verification (per phase)
-- RSpec model and request specs for every new model and endpoint: ownership scoping, Pundit, premium gating,
+- RSpec model and request specs for every new model and endpoint: ownership scoping, Pundit,
   sync cursor and conflict cases.
 - Jest specs for every new component.
 - `yarn lint`, `yarn format:check`, `bundle exec rubocop`, `NO_COVERAGE=true yarn test`,

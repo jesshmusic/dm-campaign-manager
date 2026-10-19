@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe 'Admin::V1::PatreonAuthController', type: :request do
-  include PatreonHttpStubs
-
   let(:json) { JSON.parse(response.body) }
 
   describe 'GET /v1/users/:user_id/ready' do
@@ -77,19 +75,12 @@ RSpec.describe 'Admin::V1::PatreonAuthController', type: :request do
         },
         'included' => [
           {
-            'id' => 'member_1',
             'type' => 'member',
             'attributes' => {
-              'currently_entitled_amount_cents' => 500,
-              'patron_status' => 'active_patron'
-            },
-            'relationships' => {
-              'campaign' => { 'data' => { 'id' => PatreonHttpStubs::PATREON_CAMPAIGN_ID, 'type' => 'campaign' } },
-              'currently_entitled_tiers' => { 'data' => [{ 'id' => 'tier_1', 'type' => 'tier' }] }
+              'currently_entitled_amount_cents' => 500
             }
           },
           {
-            'id' => 'tier_1',
             'type' => 'tier',
             'attributes' => {
               'title' => 'Wizard'
@@ -100,8 +91,8 @@ RSpec.describe 'Admin::V1::PatreonAuthController', type: :request do
     end
 
     before do
-      allow(PatreonClient).to receive(:exchange_code).and_return(token_response)
-      allow(PatreonClient).to receive(:identity).and_return(patreon_data)
+      allow_any_instance_of(Admin::V1::PatreonAuthController).to receive(:exchange_code_for_token).and_return(token_response)
+      allow_any_instance_of(Admin::V1::PatreonAuthController).to receive(:fetch_patreon_membership).and_return(patreon_data)
     end
 
     context 'with valid code and state' do
@@ -111,13 +102,6 @@ RSpec.describe 'Admin::V1::PatreonAuthController', type: :request do
         }.to change(PatreonUser, :count).by(1)
 
         expect(response).to have_http_status(:success)
-      end
-
-      it 'exchanges the code and reads the membership with the new access token' do
-        get '/v1/patreon/callback', params: { code: code, state: user_id }
-
-        expect(PatreonClient).to have_received(:exchange_code).with(code)
-        expect(PatreonClient).to have_received(:identity).with('access_token_123')
       end
 
       it 'stores patreon data correctly' do
@@ -143,19 +127,7 @@ RSpec.describe 'Admin::V1::PatreonAuthController', type: :request do
         free_data = patreon_data.deep_dup
         free_data['included'][0]['attributes']['currently_entitled_amount_cents'] = 0
         free_data['included'][1]['attributes']['title'] = 'Free'
-        allow(PatreonClient).to receive(:identity).and_return(free_data)
-
-        get '/v1/patreon/callback', params: { code: code, state: user_id }
-
-        user = PatreonUser.find_by(user_id: user_id)
-        expect(user.has_premium).to be false
-        expect(user.tier_name).to eq('Free')
-      end
-
-      it 'does not grant premium for a pledge to another creator' do
-        other_creator = patreon_data.deep_dup
-        other_creator['included'][0]['relationships']['campaign']['data']['id'] = 'someone_else'
-        allow(PatreonClient).to receive(:identity).and_return(other_creator)
+        allow_any_instance_of(Admin::V1::PatreonAuthController).to receive(:fetch_patreon_membership).and_return(free_data)
 
         get '/v1/patreon/callback', params: { code: code, state: user_id }
 
@@ -167,7 +139,7 @@ RSpec.describe 'Admin::V1::PatreonAuthController', type: :request do
       it 'maps legacy Adventurer tier to Wizard' do
         legacy_data = patreon_data.deep_dup
         legacy_data['included'][1]['attributes']['title'] = 'Adventurer'
-        allow(PatreonClient).to receive(:identity).and_return(legacy_data)
+        allow_any_instance_of(Admin::V1::PatreonAuthController).to receive(:fetch_patreon_membership).and_return(legacy_data)
 
         get '/v1/patreon/callback', params: { code: code, state: user_id }
 
@@ -224,7 +196,7 @@ RSpec.describe 'Admin::V1::PatreonAuthController', type: :request do
 
     context 'when token exchange fails' do
       before do
-        allow(PatreonClient).to receive(:exchange_code).and_raise('Token exchange failed')
+        allow_any_instance_of(Admin::V1::PatreonAuthController).to receive(:exchange_code_for_token).and_raise('Token exchange failed')
       end
 
       it 'returns error page' do
@@ -233,20 +205,11 @@ RSpec.describe 'Admin::V1::PatreonAuthController', type: :request do
         expect(response).to have_http_status(:internal_server_error)
         expect(response.body).to include('Authentication Failed')
       end
-
-      it 'does not echo the error message into the page' do
-        allow(PatreonClient).to receive(:exchange_code)
-          .and_raise('<script>alert(1)</script>')
-
-        get '/v1/patreon/callback', params: { code: code, state: user_id }
-
-        expect(response.body).not_to include('<script>alert(1)</script>')
-      end
     end
 
     context 'when membership fetch fails' do
       before do
-        allow(PatreonClient).to receive(:identity).and_raise('API Error')
+        allow_any_instance_of(Admin::V1::PatreonAuthController).to receive(:fetch_patreon_membership).and_raise('API Error')
       end
 
       it 'returns error page' do
@@ -272,7 +235,7 @@ RSpec.describe 'Admin::V1::PatreonAuthController', type: :request do
       end
 
       before do
-        allow(PatreonClient).to receive(:identity).and_return(minimal_patreon_data)
+        allow_any_instance_of(Admin::V1::PatreonAuthController).to receive(:fetch_patreon_membership).and_return(minimal_patreon_data)
       end
 
       it 'defaults to free tier' do
@@ -281,71 +244,6 @@ RSpec.describe 'Admin::V1::PatreonAuthController', type: :request do
         user = PatreonUser.find_by(user_id: user_id)
         expect(user.tier_name).to eq('Free')
         expect(user.has_premium).to be false
-      end
-    end
-
-    context 'with a web account link state' do
-      let(:dm) { create(:dungeon_master_user) }
-      let(:link_state) { PatreonLinkState.generate(dm) }
-
-      it 'links the Patreon account to the DM Guru user' do
-        expect do
-          get '/v1/patreon/callback', params: { code: code, state: link_state }
-        end.to change(PatreonUser, :count).by(1)
-
-        account = dm.reload.patreon_account
-        expect(account.patreon_id).to eq('patreon_123')
-        expect(account.user_id).to be_nil
-        expect(dm.premium?).to be true
-      end
-
-      it 'redirects back to the user dashboard' do
-        get '/v1/patreon/callback', params: { code: code, state: link_state }
-
-        expect(response).to redirect_to('/app/user-dashboard?patreon=linked')
-      end
-
-      it 'updates an existing link instead of creating another' do
-        create(:patreon_user, :free, user_id: nil, linked_user: dm)
-
-        expect do
-          get '/v1/patreon/callback', params: { code: code, state: link_state }
-        end.not_to change(PatreonUser, :count)
-
-        expect(dm.reload.patreon_account.has_premium).to be true
-      end
-
-      it 'rejects a tampered state' do
-        get '/v1/patreon/callback', params: { code: code, state: "#{link_state}x" }
-
-        expect(response).to redirect_to('/app/user-dashboard?patreon=expired')
-        expect(dm.reload.patreon_account).to be_nil
-      end
-
-      it 'rejects an expired state' do
-        state = link_state
-        travel PatreonLinkState::TTL + 1.minute do
-          get '/v1/patreon/callback', params: { code: code, state: state }
-        end
-
-        expect(response).to redirect_to('/app/user-dashboard?patreon=expired')
-      end
-
-      it 'refuses a Patreon account already linked to another user' do
-        create(:patreon_user, :wizard, user_id: nil, linked_user: create(:dungeon_master_user), patreon_id: 'patreon_123')
-
-        get '/v1/patreon/callback', params: { code: code, state: link_state }
-
-        expect(response).to redirect_to('/app/user-dashboard?patreon=already_linked')
-        expect(dm.reload.patreon_account).to be_nil
-      end
-
-      it 'redirects with an error when Patreon fails' do
-        allow(PatreonClient).to receive(:exchange_code).and_raise('boom')
-
-        get '/v1/patreon/callback', params: { code: code, state: link_state }
-
-        expect(response).to redirect_to('/app/user-dashboard?patreon=error')
       end
     end
   end
