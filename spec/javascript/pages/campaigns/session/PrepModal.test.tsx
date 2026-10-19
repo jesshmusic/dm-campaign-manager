@@ -186,7 +186,7 @@ describe('PrepModal', () => {
 
     expect(offered('Add a secret')).toEqual(["Lareth wears the mayor's ring"]);
     expect(offered('Add a location')).toEqual(['Moathouse']);
-    expect(offered('Add an NPC')).toEqual(['Lareth (Villain)', 'Mordred (BBEG)']);
+    expect(offered('Add an NPC')).toEqual(['Lareth (Enemy)', 'Mordred (BBEG)']);
   });
 
   describe('saving', () => {
@@ -211,7 +211,7 @@ describe('PrepModal', () => {
       fireEvent.click(within(step(5)).getByRole('button', { name: 'Add maps from Foundry' }));
       fireEvent.click(await within(step(5)).findByRole('button', { name: 'Mountain Pass' }));
       // NPCs
-      await chooseOption('Add an NPC', 'Lareth (Villain)');
+      await chooseOption('Add an NPC', 'Lareth (Enemy)');
       // Monsters: no ghoul, but a veteran from the books
       fireEvent.click(within(step(7)).getByRole('button', { name: 'Remove Ghoul' }));
       await chooseOption('Search monsters', 'Veteran (CR 3 · MM p. 323)', 'vet');

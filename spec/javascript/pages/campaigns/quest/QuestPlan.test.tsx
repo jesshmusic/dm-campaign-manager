@@ -128,7 +128,7 @@ describe('QuestPlan', () => {
     expect(
       within(part('Maps')).getByRole('list', { name: 'Maps for Stop the cult' }),
     ).toHaveTextContent('Mountain Pass');
-    expect(within(part('NPCs involved')).getByText('Lareth (Villain)')).toBeInTheDocument();
+    expect(within(part('NPCs involved')).getByText('Lareth (Enemy)')).toBeInTheDocument();
     expect(within(part('Monsters')).getByRole('link', { name: 'Ghoul' })).toHaveAttribute(
       'href',
       '/app/2024/monsters/ghoul',
@@ -199,7 +199,7 @@ describe('QuestPlan', () => {
       fireEvent.click(await within(part('Maps')).findByRole('button', { name: 'Lair' }));
       // NPCs: swap Lareth for Mordred
       await chooseOption('Add an NPC', 'Mordred (BBEG)');
-      removeValue('Lareth (Villain)');
+      removeValue('Lareth (Enemy)');
       // Monsters: drop the ghoul, add an owlbear and a book monster
       fireEvent.click(within(part('Monsters')).getByRole('button', { name: 'Remove Ghoul' }));
       await chooseOption('Search monsters', 'Owlbear (CR 3)', 'owl');
@@ -507,7 +507,7 @@ describe('QuestPlan', () => {
           name: "Milestone: the party levels up when it's done",
         }),
       );
-      removeValue('Lareth (Villain)');
+      removeValue('Lareth (Enemy)');
       cancel();
 
       expect(confirmSpy).toHaveBeenCalledWith('Discard your changes?');
@@ -531,8 +531,8 @@ describe('QuestPlan', () => {
     it('is not a change to remove a pick and pick it again', async () => {
       const { onClose } = renderPlan();
 
-      removeValue('Lareth (Villain)');
-      await chooseOption('Add an NPC', 'Lareth (Villain)');
+      removeValue('Lareth (Enemy)');
+      await chooseOption('Add an NPC', 'Lareth (Enemy)');
       cancel();
 
       expect(confirmSpy).not.toHaveBeenCalled();

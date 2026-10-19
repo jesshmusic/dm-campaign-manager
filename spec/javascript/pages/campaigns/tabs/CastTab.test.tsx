@@ -48,7 +48,7 @@ describe('statBlockDescription', () => {
       statBlockDescription(
         npc({ name: 'Lareth', role: 'villain', description: 'A cult priest.', motive: 'Orcus' }),
       ),
-    ).toBe('Villain named Lareth. A cult priest. Motive: Orcus');
+    ).toBe('Enemy named Lareth. A cult priest. Motive: Orcus');
   });
 
   it('leaves out what is missing', () => {
@@ -90,7 +90,7 @@ describe('CastTab', () => {
     renderTab();
 
     const lareth = cardFor('Lareth');
-    expect(within(lareth).getByText('Villain')).toBeInTheDocument();
+    expect(within(lareth).getByText('Enemy')).toBeInTheDocument();
     expect(within(lareth).getByText('Cult of Orcus')).toBeInTheDocument();
     expect(within(lareth).getByText('A beautiful cult priest')).toBeInTheDocument();
     expect(within(lareth).getByText('Serve Orcus')).toBeInTheDocument();

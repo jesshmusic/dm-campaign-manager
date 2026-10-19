@@ -423,7 +423,8 @@ export type Attributes = Record<string, unknown>;
 
 export const NPC_ROLE_LABELS: Record<NpcRole, string> = {
   bbeg: 'BBEG',
-  villain: 'Villain',
+  // Stored as 'villain'; shown as Enemy
+  villain: 'Enemy',
   lieutenant: 'Lieutenant',
   ally: 'Ally',
   patron: 'Patron',

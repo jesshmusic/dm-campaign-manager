@@ -120,7 +120,7 @@ const StoryTab = ({ campaign, state }: StoryTabProps) => {
       <SectionTitle>Villains</SectionTitle>
       {villains.length === 0 ? (
         <EmptyState>
-          Give someone in the Cast tab the BBEG, villain or lieutenant role to build the ladder.
+          Give someone in the Cast tab the BBEG, enemy or lieutenant role to build the ladder.
         </EmptyState>
       ) : (
         <CardGrid>
