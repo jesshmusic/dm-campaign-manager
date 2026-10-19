@@ -185,9 +185,12 @@ Decisions already made:
   include hasn't been checked against live Patreon yet).
 
 **To release the module**
-- Release 0.2.0 with `npm run release:minor`. The unreleased changes include the Campaign Planner, planning
-  without an account, quests, scene thumbnails, Send to Dungeon Master Guru, connecting with a code, editing
-  synced campaigns, and the welcome message (see the module's CHANGELOG).
+- The first release is 1.0.0 (0.1.0 was never released). `package.json` and `module.json` already say 1.0.0, and
+  the changelog's first section is `[1.0.0]`, so run the repo's **Manual Release** workflow; it tags v1.0.0,
+  builds the zip, makes the GitHub release from that section and notifies foundryvtt.com. Don't run
+  `npm run release:*` for it, which would bump past 1.0.0.
+- After 1.0.0, write notes under a new `## [Unreleased]` heading and release with `npm run release:patch`,
+  `release:minor` or `release:major`, as before.
 - Register the package on foundryvtt.com, and add the `FOUNDRY_PACKAGE_TOKEN` secret to the repo for the
   release workflow.
 - Add the module to `app/services/foundry_module_stats_fetcher.rb` after its first release.
