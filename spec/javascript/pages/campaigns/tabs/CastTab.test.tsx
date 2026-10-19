@@ -321,7 +321,13 @@ describe('CastTab', () => {
       expect(within(section).getByRole('heading', { name: 'Cult of Orcus' })).toBeInTheDocument();
       expect(within(section).getByText('Raise an army of the dead')).toBeInTheDocument();
       expect(within(section).getByText('Necromancers in hiding')).toBeInTheDocument();
-      expect(within(section).getByText('1 members in the cast')).toBeInTheDocument();
+      expect(within(section).getByText('1 member in the cast')).toBeInTheDocument();
+    });
+
+    it('counts a faction with no cast members in the plural', () => {
+      renderTab(sampleCampaign({ npcs: [] }));
+
+      expect(within(factions()).getByText('0 members in the cast')).toBeInTheDocument();
     });
 
     it('adds a faction', async () => {

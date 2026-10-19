@@ -37,6 +37,9 @@ type CastTabProps = {
   state: CampaignState;
 };
 
+// "1 member in the cast", "3 members in the cast"
+const memberCount = (count: number) => `${count} ${count === 1 ? 'member' : 'members'} in the cast`;
+
 const CastTab = ({ campaign, state }: CastTabProps) => {
   const { api, saveChild, removeChild } = state;
   const [generatingId, setGeneratingId] = useState<string | null>(null);
@@ -217,8 +220,7 @@ const CastTab = ({ campaign, state }: CastTabProps) => {
             )}
             {faction.description && <p>{faction.description}</p>}
             <Meta>
-              {campaign.npcs.filter((npc) => npc.factionId === faction.id).length} members in the
-              cast
+              {memberCount(campaign.npcs.filter((npc) => npc.factionId === faction.id).length)}
             </Meta>
           </>
         )}

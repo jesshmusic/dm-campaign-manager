@@ -1,6 +1,7 @@
 import { useId, useRef, useState } from 'react';
 import styled from 'styled-components';
-import { COIN_NAMES, CoinDrafts, CoinGrid, CoinSet, MAX_COINS } from './CoinFields';
+import { COIN_NAMES, CoinDrafts, MAX_COINS } from '../coins';
+import { MAX_QUANTITY } from '../linkDraft';
 import { COINS } from '../types';
 import { Field, HelperButton, Input, InputWithHelper, Meta, TextArea } from '../Campaigns.styles';
 
@@ -18,6 +19,37 @@ const Label = styled.label`
 
 const NumberInput = styled(Input)`
   max-width: 10rem;
+`;
+
+const CoinSet = styled.fieldset`
+  border: none;
+  margin: 0;
+  min-width: 0;
+  padding: 0;
+
+  legend {
+    font-size: ${({ theme }) => theme.fontSizes.sm};
+    font-weight: bold;
+    margin-bottom: 0.25rem;
+    padding: 0;
+  }
+`;
+
+const CoinGrid = styled.div`
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(4.5rem, 1fr));
+`;
+
+const Quantity = styled.span`
+  align-items: center;
+  display: inline-flex;
+  gap: 0.25rem;
+`;
+
+const QuantityInput = styled(Input)`
+  padding: 0.1rem 0.25rem;
+  width: 4.5rem;
 `;
 
 /** A whole number typed in a draft: null when blank, undefined when it isn't one from min to max */
@@ -170,4 +202,30 @@ export const DraftCoins = ({ value, onChange }: DraftCoinsProps) => (
       ))}
     </CoinGrid>
   </CoinSet>
+);
+
+type DraftQuantityProps = {
+  // Names the input, e.g. "Quantity of Bag of Holding"
+  label: string;
+  // As typed; blank for one
+  value: string;
+  onChange: (value: string) => void;
+};
+
+/** How many of a treasure ("× 2"), next to its name. The modal checks it on Save. */
+export const DraftQuantity = ({ label, value, onChange }: DraftQuantityProps) => (
+  <Quantity>
+    ×
+    <QuantityInput
+      type="number"
+      inputMode="numeric"
+      min={1}
+      max={MAX_QUANTITY}
+      step={1}
+      placeholder="1"
+      aria-label={label}
+      value={value}
+      onChange={(event) => onChange(event.target.value)}
+    />
+  </Quantity>
 );

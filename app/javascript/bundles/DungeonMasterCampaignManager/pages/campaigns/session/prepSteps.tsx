@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { quickStats } from '../components/CharacterSheetView';
+import { MONSTER_CATEGORIES, pickedLinks, REWARD_CATEGORIES } from '../components/CompendiumLinks';
 import { Campaign, PartyCharacter, PlannerSession, SessionLink } from '../types';
 import { Card, List, Meta } from '../Campaigns.styles';
 
@@ -21,25 +22,19 @@ export const Step = styled(Card)`
   }
 `;
 
-/** A session's links by step: secrets, locations, NPCs, monsters and treasure */
+/**
+ * A session's links by step: secrets, locations, NPCs, and the monsters and
+ * treasure as session prep lists them
+ */
 export const prepLinkGroups = (session: PlannerSession, campaign: Campaign) => {
   const ofType = (type: SessionLink['linkableType']) =>
     session.links.filter((link) => link.linkableType === type);
-  const isMonster = (link: SessionLink) =>
-    link.linkableType === 'Monster' ||
-    (link.linkableType === 'CampaignReference' &&
-      campaign.references.find((reference) => reference.id === link.linkableId)?.category ===
-        'monster');
   return {
     secrets: ofType('CampaignSecret'),
     locations: ofType('CampaignLocation'),
     npcs: ofType('CampaignNpc'),
-    monsters: session.links.filter(isMonster),
-    treasure: session.links.filter(
-      (link) =>
-        (link.linkableType === 'Item' || link.linkableType === 'CampaignReference') &&
-        !isMonster(link),
-    ),
+    monsters: pickedLinks(session.links, campaign, 'Monster', MONSTER_CATEGORIES),
+    treasure: pickedLinks(session.links, campaign, 'Item', REWARD_CATEGORIES),
   };
 };
 

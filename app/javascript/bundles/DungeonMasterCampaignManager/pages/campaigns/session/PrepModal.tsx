@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import styled from 'styled-components';
-import { COIN_ERROR, CoinDrafts, coinDrafts, parseCoins } from '../components/CoinFields';
+import { COIN_ERROR, CoinDrafts, coinDrafts, parseCoins } from '../coins';
 import CompendiumLinks, {
   MONSTER_CATEGORIES,
+  REWARD_CATEGORIES,
   TREASURE_CATEGORIES,
 } from '../components/CompendiumLinks';
 import { DraftCoins, DraftTextArea, parseWholeNumber, textOrNull } from '../components/DraftFields';
@@ -18,7 +19,14 @@ import {
   removeDraftLink,
   setDraftQuantity,
 } from '../linkDraft';
-import { changedAttributes, linkOpsFor, rebaseLinks, usePlanSave } from '../planDraft';
+import {
+  changedAttributes,
+  linkOpsFor,
+  parseQuantities,
+  QUANTITY_ERROR,
+  rebaseLinks,
+  usePlanSave,
+} from '../planDraft';
 import { SESSION_STATUS_LABELS } from '../tabs/SessionsTab';
 import { CampaignState } from '../useCampaign';
 import {
@@ -121,9 +129,12 @@ const PrepModal = ({ campaign, session, state, onClose }: PrepModalProps) => {
   const change = (changes: Partial<PrepDraft>) =>
     setDraft((current) => ({ ...current, ...changes }));
 
-  const rebased = rebaseLinks(links, session.links, campaign.references);
+  // The links to save, or null when a quantity typed isn't one
+  const parsedLinks = parseQuantities(links);
+  const rebased = parsedLinks && rebaseLinks(parsedLinks, session.links, campaign.references);
   const dirty =
     JSON.stringify(draft) !== JSON.stringify(draftFor(session)) ||
+    !rebased ||
     linksChanged(session.links, rebased);
 
   // A secret, place or NPC picked from the campaign
@@ -147,8 +158,8 @@ const PrepModal = ({ campaign, session, state, onClose }: PrepModalProps) => {
     );
   const addLink = (link: NewLink) => setLinks((current) => addDraftLink(current, link));
   const removeLink = (link: DraftLink) => setLinks((current) => removeDraftLink(current, link.id));
-  const setQuantity = (link: DraftLink, quantity: number | null) =>
-    setLinks((current) => setDraftQuantity(current, link.id, quantity));
+  const setQuantity = (link: DraftLink, text: string) =>
+    setLinks((current) => setDraftQuantity(current, link.id, text));
 
   const onSave = async () => {
     if (!dirty) {
@@ -158,6 +169,10 @@ const PrepModal = ({ campaign, session, state, onClose }: PrepModalProps) => {
     const parsed = attributesFor(draft);
     if ('error' in parsed) {
       setError(parsed.error);
+      return;
+    }
+    if (!rebased) {
+      setError(QUANTITY_ERROR);
       return;
     }
     await save(async () => {
@@ -378,7 +393,8 @@ const PrepModal = ({ campaign, session, state, onClose }: PrepModalProps) => {
             api={api}
             links={links}
             linkableType="Item"
-            categories={TREASURE_CATEGORIES}
+            categories={REWARD_CATEGORIES}
+            bookCategories={TREASURE_CATEGORIES}
             searchCategories={['magic_item', 'equipment', 'table']}
             labels={{ empty: 'No items picked yet.', search: 'Search items' }}
             onAdd={addLink}

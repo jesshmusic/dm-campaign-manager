@@ -132,6 +132,37 @@ RSpec.describe CampaignSessionLink, type: :model do
     end
   end
 
+  describe 'when the linked monster or item is deleted' do
+    it 'is removed with a monster, and bumps the session' do
+      monster = create(:monster, user: user)
+      create(:campaign_session_link, session: session, linkable: monster)
+      version = session.reload.sync_version
+
+      expect { monster.destroy! }.to change(described_class, :count).by(-1)
+      expect(session.reload.sync_version).to be > version
+    end
+
+    it 'is removed with an item, and bumps the session' do
+      item = create(:magic_item, user: user)
+      create(:campaign_session_link, session: session, linkable: item, quantity: 2)
+      version = session.reload.sync_version
+
+      expect { item.destroy! }.to change(described_class, :count).by(-1)
+      expect(session.reload.sync_version).to be > version
+    end
+
+    it "keeps the session's other links" do
+      monster = create(:monster, user: user)
+      npc = create(:campaign_npc, campaign: campaign)
+      create(:campaign_session_link, session: session, linkable: monster)
+      kept = create(:campaign_session_link, session: session, linkable: npc)
+
+      monster.destroy!
+
+      expect(session.reload.links).to eq([kept])
+    end
+  end
+
   describe '#as_json_for_api' do
     it 'names a campaign record' do
       link = create(:campaign_session_link, session: session,

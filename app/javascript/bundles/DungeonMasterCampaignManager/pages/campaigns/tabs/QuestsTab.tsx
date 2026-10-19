@@ -4,7 +4,7 @@ import Button from '../../../components/Button/Button';
 import { Colors } from '../../../utilities/enums';
 import EntitySection from '../components/EntitySection';
 import { FieldConfig } from '../components/EntityForm';
-import { formatCoins } from '../components/CoinFields';
+import { formatCoins } from '../coins';
 import { linkDetail, LinkName } from '../components/CompendiumLinks';
 import SceneThumbnail, { SceneGallery } from '../components/SceneThumbnail';
 import QuestPlan from '../quest/QuestPlan';

@@ -1,4 +1,4 @@
-import { formatCoins } from '../components/CoinFields';
+import { formatCoins } from '../coins';
 import { Campaign, Quest, QuestLink } from '../types';
 
 /**

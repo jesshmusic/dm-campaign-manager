@@ -12,6 +12,7 @@ import {
   plannerSession,
   playerCharacter,
   questLink,
+  reference,
   sampleCampaign,
 } from '../fixtures';
 
@@ -164,6 +165,58 @@ describe('PrepView', () => {
     expect(itemsOf(within(step(8)).getByRole('list', { name: 'Treasure' }))).toEqual([
       'Bag of Holding ×2 (DMG p. 224)',
       'Potion of Healing (common)',
+    ]);
+  });
+
+  it('lists any book reference but a monster as treasure, as session prep does', () => {
+    const campaign = sampleCampaign();
+    campaign.references.push(
+      reference({
+        id: 'r5',
+        name: 'Fireball',
+        book: 'phb',
+        category: 'spell',
+        citation: 'PHB p. 241',
+      }),
+      reference({
+        id: 'r6',
+        name: 'Grappling',
+        book: 'phb',
+        category: 'rule',
+        citation: 'PHB p. 366',
+      }),
+      reference({
+        id: 'r7',
+        name: 'A ship',
+        book: 'dmg',
+        category: 'other',
+        citation: 'DMG p. 60',
+      }),
+    );
+    const session = campaign.sessions[1];
+    session.links = [
+      ...session.links,
+      ...[
+        ['r5', 'Fireball'],
+        ['r6', 'Grappling'],
+        ['r7', 'A ship'],
+        // Not in the campaign's books
+        ['r99', 'Gone'],
+      ].map(([id, name]) =>
+        questLink({ id: `link-${id}`, linkableType: 'CampaignReference', linkableId: id, name }),
+      ),
+    ];
+    renderPrep(campaign);
+
+    expect(itemsOf(within(step(7)).getByRole('list', { name: 'Monsters' }))).toEqual([
+      'Ghoul',
+      'Cult Fanatic (CR 2 · MM p. 34)',
+    ]);
+    expect(itemsOf(within(step(8)).getByRole('list', { name: 'Treasure' }))).toEqual([
+      'Bag of Holding (DMG p. 224)',
+      'Fireball (PHB p. 241)',
+      'Grappling (PHB p. 366)',
+      'A ship (DMG p. 60)',
     ]);
   });
 

@@ -2,12 +2,14 @@ import { act, renderHook } from '@testing-library/react';
 import {
   changedAttributes,
   linkOpsFor,
+  parseQuantities,
   rebaseLinks,
   usePlanSave,
 } from '../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/planDraft';
 import {
   addDraftLink,
   removeDraftLink,
+  setDraftQuantity,
 } from '../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/linkDraft';
 import { ApiError } from '../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/useCampaignApi';
 import { makeApi, questLink, reference, sampleCampaign, sampleCompendiumEntry } from './fixtures';
@@ -31,6 +33,35 @@ describe('changedAttributes', () => {
 
   it('is empty when nothing changed', () => {
     expect(changedAttributes({ scenes: ['Gate'] }, { scenes: ['Gate'] })).toEqual({});
+  });
+});
+
+describe('parseQuantities', () => {
+  const bag = questLink({
+    id: 'l2',
+    linkableType: 'CampaignReference',
+    linkableId: 'r2',
+    name: 'Bag of Holding',
+    quantity: 2,
+  });
+  const typed = (text: string) => parseQuantities(setDraftQuantity([LARETH, bag], 'l2', text));
+
+  it('leaves links with nothing typed alone', () => {
+    expect(parseQuantities([LARETH, bag])).toEqual([LARETH, bag]);
+  });
+
+  it('puts in the whole numbers typed, with blank or one meaning one', () => {
+    expect(typed(' 7 ')?.[1]).toMatchObject({ quantity: 7 });
+    expect(typed('9999')?.[1]).toMatchObject({ quantity: 9999 });
+    expect(typed('1')?.[1]).toMatchObject({ quantity: null });
+    expect(typed('')?.[1]).toMatchObject({ quantity: null });
+    expect(typed('3')?.[0]).toBe(LARETH);
+  });
+
+  it('is null when a quantity typed is not a whole number from 1 to 9,999', () => {
+    ['0', '-2', '1.5', '10000', 'lots'].forEach((text) => {
+      expect(typed(text)).toBeNull();
+    });
   });
 });
 

@@ -3,11 +3,12 @@ import { render, screen, fireEvent, waitFor } from '../../../test-utils';
 import {
   DraftCoins,
   DraftNumber,
+  DraftQuantity,
   DraftTextArea,
   parseWholeNumber,
   textOrNull,
 } from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/components/DraftFields';
-import { coinDrafts } from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/components/CoinFields';
+import { coinDrafts } from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/coins';
 
 describe('parseWholeNumber', () => {
   it('is null when blank', () => {
@@ -160,5 +161,34 @@ describe('DraftCoins', () => {
     });
 
     expect(onChange).toHaveBeenCalledWith({ ...value, sp: '12' });
+  });
+});
+
+describe('DraftQuantity', () => {
+  const input = () => screen.getByRole('spinbutton', { name: 'Quantity of Potion of Healing' });
+
+  it('shows how many, blank meaning one', () => {
+    const { rerender } = render(
+      <DraftQuantity label="Quantity of Potion of Healing" value="3" onChange={jest.fn()} />,
+    );
+
+    expect(input()).toHaveValue(3);
+    expect(input()).toHaveAttribute('min', '1');
+    expect(input()).toHaveAttribute('max', '9999');
+
+    rerender(<DraftQuantity label="Quantity of Potion of Healing" value="" onChange={jest.fn()} />);
+
+    expect(input()).toHaveValue(null);
+    expect(input()).toHaveAttribute('placeholder', '1');
+  });
+
+  it('changes the draft as you type, even to a quantity Save will refuse', () => {
+    const onChange = jest.fn();
+    render(<DraftQuantity label="Quantity of Potion of Healing" value="3" onChange={onChange} />);
+
+    fireEvent.change(input(), { target: { value: '4' } });
+    fireEvent.change(input(), { target: { value: '0' } });
+
+    expect(onChange.mock.calls).toEqual([['4'], ['0']]);
   });
 });

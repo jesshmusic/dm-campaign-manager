@@ -5,11 +5,20 @@ import CompendiumLinks, {
   linkDetail,
   LinkName,
   MONSTER_CATEGORIES,
+  pickedLinks,
+  REWARD_CATEGORIES,
   TREASURE_CATEGORIES,
 } from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/components/CompendiumLinks';
 import { DraftLink } from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/linkDraft';
 import { Campaign } from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/types';
-import { MockApi, makeApi, questLink, sampleCampaign, sampleCompendiumEntry } from '../fixtures';
+import {
+  MockApi,
+  makeApi,
+  questLink,
+  reference,
+  sampleCampaign,
+  sampleCompendiumEntry,
+} from '../fixtures';
 import { menuOptions, openSelect } from '../selectHelpers';
 
 const GHOUL = questLink({
@@ -42,6 +51,27 @@ const POTION = questLink({
   slug: 'potion-of-healing',
   detail: 'common',
 });
+const FIREBALL = questLink({
+  id: 'l5',
+  linkableType: 'CampaignReference',
+  linkableId: 'r5',
+  name: 'Fireball',
+});
+
+// The sample campaign, with a spell in its books
+const withSpell = () => {
+  const campaign = sampleCampaign();
+  campaign.references.push(
+    reference({
+      id: 'r5',
+      name: 'Fireball',
+      book: 'phb',
+      category: 'spell',
+      citation: 'PHB p. 241',
+    }),
+  );
+  return campaign;
+};
 
 type Props = Partial<React.ComponentProps<typeof CompendiumLinks>>;
 
@@ -73,7 +103,7 @@ const renderLinks = (
 
 const itemProps: Props = {
   linkableType: 'Item',
-  categories: ['magic_item', 'equipment', 'table', 'spell', 'rule', 'other'],
+  categories: REWARD_CATEGORIES,
   bookCategories: TREASURE_CATEGORIES,
   searchCategories: ['magic_item', 'equipment'],
   labels: { empty: 'No reward items yet.', search: 'Search items' },
@@ -112,19 +142,65 @@ describe('CompendiumLinks', () => {
     expect(onRemove).toHaveBeenCalledWith(GHOUL);
   });
 
-  it('lists items with a quantity input, and passes changes on', () => {
+  it('lists items with a quantity input that changes the draft as you type', () => {
     const onQuantity = jest.fn();
-    renderLinks({ ...itemProps, hasQuantity: () => true, onQuantity });
+    renderLinks({ ...itemProps, onQuantity });
 
     const quantity = screen.getByRole('spinbutton', { name: 'Quantity of Bag of Holding' });
     expect(quantity).toHaveValue(2);
     fireEvent.change(quantity, { target: { value: '5' } });
-    fireEvent.blur(quantity);
 
-    expect(onQuantity).toHaveBeenCalledWith(BAG, 5);
+    expect(onQuantity).toHaveBeenCalledWith(BAG, '5');
+    expect(screen.getByRole('spinbutton', { name: 'Quantity of Potion of Healing' })).toHaveValue(
+      null,
+    );
+  });
+
+  it('shows a quantity as typed, even one Save will refuse', () => {
+    renderLinks({ ...itemProps, links: [{ ...BAG, quantityText: '0' }], onQuantity: jest.fn() });
+
+    expect(screen.getByRole('spinbutton', { name: 'Quantity of Bag of Holding' })).toHaveValue(0);
+  });
+
+  it('gives quantities only to the links that say how many', () => {
+    renderLinks({
+      ...itemProps,
+      onQuantity: jest.fn(),
+      hasQuantity: (link) => link.linkableType === 'CampaignReference',
+    });
+
     expect(
-      screen.getByRole('spinbutton', { name: 'Quantity of Potion of Healing' }),
+      screen.getByRole('spinbutton', { name: 'Quantity of Bag of Holding' }),
     ).toBeInTheDocument();
+    expect(
+      screen.queryByRole('spinbutton', { name: 'Quantity of Potion of Healing' }),
+    ).not.toBeInTheDocument();
+  });
+
+  it('has no quantities without a way to change them', () => {
+    renderLinks(itemProps);
+
+    expect(screen.getAllByRole('listitem')).toHaveLength(2);
+    expect(screen.queryByRole('spinbutton')).not.toBeInTheDocument();
+  });
+
+  it('lists spells, rules and other book references as treasure', () => {
+    renderLinks({ ...itemProps, links: [BAG, POTION, FIREBALL] }, makeApi(), withSpell());
+
+    expect(screen.getAllByRole('listitem').map((item) => item.textContent)).toEqual([
+      expect.stringContaining('Bag of Holding'),
+      expect.stringContaining('Potion of Healing'),
+      expect.stringContaining('Fireball (PHB p. 241)'),
+    ]);
+  });
+
+  it("offers only the book categories asked for from the campaign's books", async () => {
+    renderLinks({ ...itemProps, links: [BAG, POTION] }, makeApi(), withSpell());
+
+    openSelect('Search items');
+
+    expect(await screen.findByText("This campaign's books")).toBeInTheDocument();
+    expect(menuOptions()).toEqual(['Trinkets (PHB p. 413)']);
   });
 
   it("lists a compendium pick that isn't saved yet", () => {
@@ -254,6 +330,44 @@ describe('CompendiumLinks', () => {
 
     await screen.findByRole('option', { name: /Ghast/ });
     expect(menuOptions()).toEqual(['Ghast (CR 1/4 · Undead · Monster Manual)']);
+  });
+});
+
+describe('pickedLinks', () => {
+  const links = [GHOUL, FANATIC, BAG, POTION, FIREBALL];
+
+  it("picks out monsters: DM Guru's and the books'", () => {
+    expect(pickedLinks(links, withSpell(), 'Monster', MONSTER_CATEGORIES)).toEqual([
+      GHOUL,
+      FANATIC,
+    ]);
+  });
+
+  it("picks out treasure: DM Guru's items and anything from the books but a monster", () => {
+    expect(pickedLinks(links, withSpell(), 'Item', REWARD_CATEGORIES)).toEqual([
+      BAG,
+      POTION,
+      FIREBALL,
+    ]);
+    expect(pickedLinks(links, withSpell(), 'Item', TREASURE_CATEGORIES)).toEqual([BAG, POTION]);
+  });
+
+  it('picks out compendium picks by their category', () => {
+    const zombie: DraftLink = {
+      ...questLink({ id: 'new-1', linkableType: 'CampaignReference', linkableId: 'entry-501' }),
+      entry: sampleCompendiumEntry(),
+    };
+
+    expect(pickedLinks([zombie], sampleCampaign(), 'Monster', MONSTER_CATEGORIES)).toEqual([
+      zombie,
+    ]);
+    expect(pickedLinks([zombie], sampleCampaign(), 'Item', REWARD_CATEGORIES)).toEqual([]);
+  });
+
+  it("leaves out a book reference it can't find", () => {
+    expect(
+      pickedLinks([{ ...BAG, linkableId: 'gone' }], sampleCampaign(), 'Item', REWARD_CATEGORIES),
+    ).toEqual([]);
   });
 });
 

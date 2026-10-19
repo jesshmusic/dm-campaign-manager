@@ -14,6 +14,8 @@ import {
   makeApi,
   makeState,
   playerCharacter,
+  questLink,
+  reference,
   sampleCampaign,
   sampleCompendiumEntry,
 } from '../fixtures';
@@ -116,6 +118,48 @@ describe('PrepModal', () => {
     expect(within(step(7)).queryByRole('spinbutton')).not.toBeInTheDocument();
   });
 
+  it('lists any book reference but a monster as treasure, offering only treasure from the books', async () => {
+    const campaign = sampleCampaign();
+    campaign.references.push(
+      reference({
+        id: 'r5',
+        name: 'Fireball',
+        book: 'phb',
+        category: 'spell',
+        citation: 'PHB p. 241',
+      }),
+      reference({
+        id: 'r6',
+        name: 'Shield',
+        book: 'phb',
+        category: 'spell',
+        citation: 'PHB p. 316',
+      }),
+    );
+    campaign.sessions[1].links.push(
+      questLink({
+        id: 'link7',
+        linkableType: 'CampaignReference',
+        linkableId: 'r5',
+        name: 'Fireball',
+        position: 6,
+      }),
+    );
+    renderPrep(campaign);
+
+    expect(within(step(8)).getByText('Fireball')).toBeInTheDocument();
+    expect(
+      within(step(8)).getByRole('spinbutton', { name: 'Quantity of Fireball' }),
+    ).toBeInTheDocument();
+    expect(within(step(7)).queryByText('Fireball')).not.toBeInTheDocument();
+
+    openSelect('Search items');
+
+    expect(await screen.findByText("This campaign's books")).toBeInTheDocument();
+    expect(menuOptions()).toContain('Trinkets (PHB p. 413)');
+    expect(menuOptions()).not.toContain('Shield (PHB p. 316)');
+  });
+
   it('lists the party with quick stats and hooks in step 1', () => {
     renderPrep(sampleCampaign({ party: [playerCharacter()] }));
 
@@ -174,13 +218,9 @@ describe('PrepModal', () => {
       // Treasure: no notes, 3 pp, two bags and three tables of trinkets
       type(textbox('Treasure'), '');
       type(within(step(8)).getByRole('spinbutton', { name: 'Platinum pieces (pp)' }), '3');
-      const bags = within(step(8)).getByRole('spinbutton', { name: 'Quantity of Bag of Holding' });
-      type(bags, '2');
-      fireEvent.blur(bags);
+      type(within(step(8)).getByRole('spinbutton', { name: 'Quantity of Bag of Holding' }), '2');
       await chooseOption('Search items', 'Trinkets (PHB p. 413)', 'trin');
-      const trinkets = within(step(8)).getByRole('spinbutton', { name: 'Quantity of Trinkets' });
-      type(trinkets, '3');
-      fireEvent.blur(trinkets);
+      type(within(step(8)).getByRole('spinbutton', { name: 'Quantity of Trinkets' }), '3');
 
       expect(within(step(7)).getByText('Veteran')).toBeInTheDocument();
       expect(savedCalls(state)).toEqual([]);
@@ -282,9 +322,7 @@ describe('PrepModal', () => {
         "Bag of Tricks (Uncommon · Dungeon Master's Guide)",
         'tricks',
       );
-      const tricks = within(step(8)).getByRole('spinbutton', { name: 'Quantity of Bag of Tricks' });
-      type(tricks, '2');
-      fireEvent.blur(tricks);
+      type(within(step(8)).getByRole('spinbutton', { name: 'Quantity of Bag of Tricks' }), '2');
 
       expect(state.api.searchCompendium).toHaveBeenCalledWith(
         'tricks',
@@ -357,6 +395,24 @@ describe('PrepModal', () => {
         'Gold pieces (gp)',
         '-1',
         'Coins must be whole numbers from 0 to 1,000,000.',
+      ],
+      [
+        'no treasure',
+        'Quantity of Bag of Holding',
+        '0',
+        'Quantities must be whole numbers from 1 to 9,999.',
+      ],
+      [
+        'too much treasure',
+        'Quantity of Bag of Holding',
+        '10000',
+        'Quantities must be whole numbers from 1 to 9,999.',
+      ],
+      [
+        'part of a treasure',
+        'Quantity of Bag of Holding',
+        '1.5',
+        'Quantities must be whole numbers from 1 to 9,999.',
       ],
     ])("doesn't save %s, and stays open", async (_case, label, value, message) => {
       const { state, onClose } = renderPrep();

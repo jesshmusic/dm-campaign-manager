@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import Button from '../../../components/Button/Button';
 import { Colors } from '../../../utilities/enums';
-import { formatCoins } from '../components/CoinFields';
+import { formatCoins } from '../coins';
 import { linkDetail, LinkName } from '../components/CompendiumLinks';
 import SceneThumbnail, { SceneGallery } from '../components/SceneThumbnail';
 import { nameWithQuantity } from '../quest/questLinks';

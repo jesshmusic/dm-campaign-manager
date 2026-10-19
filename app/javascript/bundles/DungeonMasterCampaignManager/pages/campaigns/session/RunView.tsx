@@ -4,7 +4,7 @@ import Button from '../../../components/Button/Button';
 import { Colors } from '../../../utilities/enums';
 import AutosaveField from '../components/AutosaveField';
 import ProgressClock from '../components/ProgressClock';
-import { formatCoins } from '../components/CoinFields';
+import { formatCoins } from '../coins';
 import SceneThumbnail, { SceneGallery } from '../components/SceneThumbnail';
 import { CampaignState } from '../useCampaign';
 import { Campaign, NPC_ROLE_LABELS, PlannerSession, QuestStatus, Secret } from '../types';

@@ -1,16 +1,43 @@
 import { Link } from 'react-router-dom';
 import CompendiumSearch from './CompendiumSearch';
-import QuantityField from './QuantityField';
+import { DraftQuantity } from './DraftFields';
 import { searchCompendium } from '../compendium';
-import { DraftLink, NewLink } from '../linkDraft';
+import { DraftLink, NewLink, quantityText } from '../linkDraft';
 import { CampaignApi, CompendiumResult } from '../useCampaignApi';
 import { Campaign, CompendiumCategory, ReferenceCategory, SessionLink } from '../types';
 import { EmptyState, LinkButton, List, Meta } from '../Campaigns.styles';
 
 export const MONSTER_CATEGORIES: ReferenceCategory[] = ['monster'];
+// The treasure the item search offers from the campaign's books
 export const TREASURE_CATEGORIES: ReferenceCategory[] = ['magic_item', 'equipment', 'table'];
+// What counts as a session's treasure or a quest's reward: anything from the books but a monster
+export const REWARD_CATEGORIES: ReferenceCategory[] = [
+  ...TREASURE_CATEGORIES,
+  'spell',
+  'rule',
+  'other',
+];
 
 const REFERENCE_PREFIX = 'reference-';
+
+/**
+ * The links CompendiumLinks lists: `linkableType` from DM Guru's compendium,
+ * and book references (or compendium picks) in `categories`.
+ */
+export const pickedLinks = <T extends DraftLink>(
+  links: T[],
+  campaign: Campaign,
+  linkableType: 'Monster' | 'Item',
+  categories: ReferenceCategory[],
+): T[] =>
+  links.filter((link) => {
+    if (link.entry) return categories.includes(link.entry.category as ReferenceCategory);
+    if (link.linkableType === 'CampaignReference') {
+      const reference = campaign.references.find((r) => r.id === link.linkableId);
+      return reference !== undefined && categories.includes(reference.category);
+    }
+    return link.linkableType === linkableType;
+  });
 
 /** A book reference's CR and citation ("CR 2 · MM p. 34"), else the link's own detail. */
 export const linkDetail = (link: SessionLink, campaign: Campaign) => {
@@ -48,9 +75,10 @@ type CompendiumLinksProps = {
   labels: { empty: string; search: string };
   onAdd: (link: NewLink) => void;
   onRemove: (link: DraftLink) => void;
-  // Which links say how many, and changing how many
+  // Changing how many as typed; without it, the links don't say how many
+  onQuantity?: (link: DraftLink, text: string) => void;
+  // Which links say how many (all of them by default)
   hasQuantity?: (link: DraftLink) => boolean;
-  onQuantity?: (link: DraftLink, quantity: number | null) => void;
 };
 
 /**
@@ -71,20 +99,14 @@ const CompendiumLinks = ({
   labels,
   onAdd,
   onRemove,
-  hasQuantity,
   onQuantity,
+  hasQuantity = () => true,
 }: CompendiumLinksProps) => {
   const referenceById = (id: string) => campaign.references.find((r) => r.id === id);
   const referenceByUuid = (uuid: string) =>
     campaign.references.find((reference) => reference.foundryUuid === uuid);
 
-  const picked = links.filter((link) => {
-    if (link.entry) return categories.includes(link.entry.category as ReferenceCategory);
-    if (link.linkableType === 'CampaignReference') {
-      return categories.includes(referenceById(link.linkableId)?.category as ReferenceCategory);
-    }
-    return link.linkableType === linkableType;
-  });
+  const picked = pickedLinks(links, campaign, linkableType, categories);
 
   const linkedReference = (id: string) =>
     links.some((link) => link.linkableType === 'CampaignReference' && link.linkableId === id);
@@ -164,15 +186,12 @@ const CompendiumLinks = ({
               <li key={link.id}>
                 <LinkName link={link} campaign={campaign} />{' '}
                 {detail && <Meta as="span">({detail})</Meta>}{' '}
-                {onQuantity && hasQuantity?.(link) && (
+                {onQuantity && hasQuantity(link) && (
                   <>
-                    <QuantityField
+                    <DraftQuantity
                       label={`Quantity of ${link.name}`}
-                      value={link.quantity}
-                      onSave={(quantity) => {
-                        onQuantity(link, quantity);
-                        return Promise.resolve(true);
-                      }}
+                      value={quantityText(link)}
+                      onChange={(text) => onQuantity(link, text)}
                     />{' '}
                   </>
                 )}

@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import styled, { css } from 'styled-components';
-import { COIN_ERROR, CoinDrafts, coinDrafts, parseCoins } from '../components/CoinFields';
+import { COIN_ERROR, CoinDrafts, coinDrafts, parseCoins } from '../coins';
 import CompendiumLinks, {
   MONSTER_CATEGORIES,
+  REWARD_CATEGORIES,
   TREASURE_CATEGORIES,
 } from '../components/CompendiumLinks';
 import {
@@ -24,32 +25,21 @@ import {
   removeDraftLink,
   setDraftQuantity,
 } from '../linkDraft';
-import { changedAttributes, linkOpsFor, rebaseLinks, usePlanSave } from '../planDraft';
-import { CampaignState } from '../useCampaign';
 import {
-  Attributes,
-  Campaign,
-  FoundryScene,
-  LinkableType,
-  NPC_ROLE_LABELS,
-  Quest,
-  ReferenceCategory,
-} from '../types';
+  changedAttributes,
+  linkOpsFor,
+  parseQuantities,
+  QUANTITY_ERROR,
+  rebaseLinks,
+  usePlanSave,
+} from '../planDraft';
+import { CampaignState } from '../useCampaign';
+import { Attributes, Campaign, FoundryScene, LinkableType, NPC_ROLE_LABELS, Quest } from '../types';
 import { AddHeading, Badge, Card, CheckboxField, Meta } from '../Campaigns.styles';
 import { QUEST_STATUS_LABELS, QUEST_STATUS_TONES, questDetails } from './questDetails';
 
 export const MAX_XP = 1_000_000;
 export const XP_ERROR = 'XP must be a whole number from 0 to 1,000,000.';
-
-// Anything from the books but a monster can be a reward
-const REWARD_CATEGORIES: ReferenceCategory[] = [
-  'magic_item',
-  'equipment',
-  'table',
-  'spell',
-  'rule',
-  'other',
-];
 
 const PlanGrid = styled.div`
   display: grid;
@@ -158,9 +148,13 @@ const QuestPlan = ({ campaign, quest, state, onClose }: QuestPlanProps) => {
   const change = (changes: Partial<QuestDraft>) =>
     setDraft((current) => ({ ...current, ...changes }));
 
-  const rebased = rebaseLinks(links, quest.links, campaign.references);
+  // The links to save, or null when a quantity typed isn't one
+  const parsedLinks = parseQuantities(links);
+  const rebased = parsedLinks && rebaseLinks(parsedLinks, quest.links, campaign.references);
   const dirty =
-    JSON.stringify(draft) !== JSON.stringify(draftFor(quest)) || linksChanged(quest.links, rebased);
+    JSON.stringify(draft) !== JSON.stringify(draftFor(quest)) ||
+    !rebased ||
+    linksChanged(quest.links, rebased);
 
   const npcOptions = campaign.npcs
     .filter((npc) => npc.id !== quest.giverNpcId)
@@ -177,8 +171,8 @@ const QuestPlan = ({ campaign, quest, state, onClose }: QuestPlanProps) => {
     );
   const addLink = (link: NewLink) => setLinks((current) => addDraftLink(current, link));
   const removeLink = (link: DraftLink) => setLinks((current) => removeDraftLink(current, link.id));
-  const setQuantity = (link: DraftLink, quantity: number | null) =>
-    setLinks((current) => setDraftQuantity(current, link.id, quantity));
+  const setQuantity = (link: DraftLink, text: string) =>
+    setLinks((current) => setDraftQuantity(current, link.id, text));
 
   const onSave = async () => {
     if (!dirty) {
@@ -188,6 +182,10 @@ const QuestPlan = ({ campaign, quest, state, onClose }: QuestPlanProps) => {
     const parsed = attributesFor(draft);
     if ('error' in parsed) {
       setError(parsed.error);
+      return;
+    }
+    if (!rebased) {
+      setError(QUANTITY_ERROR);
       return;
     }
     await save(async () => {
@@ -297,7 +295,6 @@ const QuestPlan = ({ campaign, quest, state, onClose }: QuestPlanProps) => {
                 labels={{ empty: 'No reward items yet.', search: 'Search items' }}
                 onAdd={addLink}
                 onRemove={removeLink}
-                hasQuantity={() => true}
                 onQuantity={setQuantity}
               />
             </div>

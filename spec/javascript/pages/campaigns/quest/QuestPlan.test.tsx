@@ -206,10 +206,8 @@ describe('QuestPlan', () => {
       await chooseOption('Search monsters', 'Veteran (CR 3 · MM p. 323)', 'vet');
       // Reward: four potions, three ropes, more gold, no XP, a milestone and notes
       fireEvent.change(quantity('Potion of Healing'), { target: { value: '4' } });
-      fireEvent.blur(quantity('Potion of Healing'));
       await chooseOption('Search items', 'Rope (Gear)', 'rope');
       fireEvent.change(quantity('Rope'), { target: { value: '3' } });
-      fireEvent.blur(quantity('Rope'));
       fireEvent.change(
         within(part('Reward')).getByRole('spinbutton', { name: 'Gold pieces (gp)' }),
         {
@@ -292,7 +290,6 @@ describe('QuestPlan', () => {
       const { state, onClose } = renderPlan();
 
       fireEvent.change(quantity('Bag of Holding'), { target: { value: '' } });
-      fireEvent.blur(quantity('Bag of Holding'));
       save();
 
       await waitFor(() => expect(onClose).toHaveBeenCalled());
@@ -430,6 +427,24 @@ describe('QuestPlan', () => {
       ],
       ['too much XP', 'XP', '1000001', 'XP must be a whole number from 0 to 1,000,000.'],
       ['XP below zero', 'XP', '-1', 'XP must be a whole number from 0 to 1,000,000.'],
+      [
+        'no items',
+        'Quantity of Bag of Holding',
+        '0',
+        'Quantities must be whole numbers from 1 to 9,999.',
+      ],
+      [
+        'too many items',
+        'Quantity of Potion of Healing',
+        '10000',
+        'Quantities must be whole numbers from 1 to 9,999.',
+      ],
+      [
+        'part of an item',
+        'Quantity of Bag of Holding',
+        '2.5',
+        'Quantities must be whole numbers from 1 to 9,999.',
+      ],
     ])("doesn't save %s, and stays open", async (_case, field, value, message) => {
       const { state, onClose } = renderPlan();
 
@@ -441,6 +456,36 @@ describe('QuestPlan', () => {
       expect(await within(plan()).findByRole('alert')).toHaveTextContent(message);
       expect(savedCalls(state)).toEqual([]);
       expect(onClose).not.toHaveBeenCalled();
+    });
+
+    it('keeps a quantity it refused as typed, and saves it once fixed', async () => {
+      const { state, onClose } = renderPlan();
+
+      fireEvent.change(quantity('Bag of Holding'), { target: { value: '0' } });
+      save();
+
+      expect(await within(plan()).findByRole('alert')).toHaveTextContent(
+        'Quantities must be whole numbers from 1 to 9,999.',
+      );
+      expect(quantity('Bag of Holding')).toHaveValue(0);
+
+      fireEvent.change(quantity('Bag of Holding'), { target: { value: '3' } });
+      save();
+
+      await waitFor(() => expect(onClose).toHaveBeenCalled());
+      expect(state.api.updateQuestLink.mock.calls).toEqual([
+        ['zombie-siege', 'q1', 'ql3', { quantity: 3 }],
+      ]);
+    });
+
+    it('asks before throwing away a quantity it would refuse', () => {
+      const { onClose } = renderPlan();
+
+      fireEvent.change(quantity('Bag of Holding'), { target: { value: '0' } });
+      cancel();
+
+      expect(confirmSpy).toHaveBeenCalledWith('Discard your changes?');
+      expect(onClose).toHaveBeenCalled();
     });
   });
 

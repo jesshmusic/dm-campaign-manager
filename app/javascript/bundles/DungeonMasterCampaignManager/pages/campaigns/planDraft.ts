@@ -1,6 +1,7 @@
 import { useState } from 'react';
+import { parseWholeNumber } from './components/DraftFields';
 import { referenceFor } from './compendium';
-import { DraftLink, isNewLink, LinkOps } from './linkDraft';
+import { DraftLink, isNewLink, LinkOps, MAX_QUANTITY } from './linkDraft';
 import { CampaignApi } from './useCampaignApi';
 import { Attributes, BookReference, Campaign, SessionLink } from './types';
 
@@ -16,6 +17,26 @@ export const changedAttributes = (before: Attributes, after: Attributes): Attrib
       ([name, value]) => JSON.stringify(value) !== JSON.stringify(before[name]),
     ),
   );
+
+export const QUANTITY_ERROR = 'Quantities must be whole numbers from 1 to 9,999.';
+
+/**
+ * The draft with the quantities typed in place (null for one), or null when
+ * one isn't a whole number from 1 to 9,999.
+ */
+export const parseQuantities = (links: DraftLink[]): DraftLink[] | null => {
+  const parsed: DraftLink[] = [];
+  for (const link of links) {
+    if (link.quantityText === undefined) {
+      parsed.push(link);
+    } else {
+      const quantity = parseWholeNumber(link.quantityText, 1, MAX_QUANTITY);
+      if (quantity === undefined) return null;
+      parsed.push({ ...link, quantity: quantity && quantity > 1 ? quantity : null });
+    }
+  }
+  return parsed;
+};
 
 /**
  * The draft with each new pick that's already saved swapped for the saved

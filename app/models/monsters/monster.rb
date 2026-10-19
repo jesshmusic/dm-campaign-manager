@@ -67,7 +67,8 @@ class Monster < ApplicationRecord
   has_many :senses, dependent: :destroy
   has_many :speeds, dependent: :destroy
 
-  # Campaign quests that use it as a monster; deleting it takes it off those quests
+  # Campaign sessions and quests that use it as a monster; deleting it takes it off them
+  has_many :session_links, class_name: 'CampaignSessionLink', as: :linkable, dependent: :destroy, inverse_of: :linkable
   has_many :quest_links, class_name: 'CampaignQuestLink', as: :linkable, dependent: :destroy, inverse_of: :linkable
 
   has_many :monster_proficiencies

@@ -72,7 +72,9 @@ class Item < ApplicationRecord
   has_one :item_throw_range, dependent: :destroy
   has_one :two_handed_damage, dependent: :destroy
 
-  # Campaign quests that give it as a reward; deleting it takes it off those quests
+  # Campaign sessions that give it as treasure and quests that give it as a
+  # reward; deleting it takes it off them
+  has_many :session_links, class_name: 'CampaignSessionLink', as: :linkable, dependent: :destroy, inverse_of: :linkable
   has_many :quest_links, class_name: 'CampaignQuestLink', as: :linkable, dependent: :destroy, inverse_of: :linkable
 
   def category
