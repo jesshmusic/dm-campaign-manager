@@ -9,8 +9,6 @@ require 'uri'
 # Zeitwerk maps openai_client.rb to OpenAIClient (capital AI because of Zeitwerk inflector)
 class OpenAIClient
   class Error < RuntimeError; end
-  # No key available for this user: they need their own key or premium
-  class NoKeyError < Error; end
 
   LastResponse = Struct.new(
     :date, :organization, :processing_ms, :request_id,
@@ -40,30 +38,11 @@ class OpenAIClient
     @default_model = default_model
   end
 
-  # A client for AI planner features: the user's own key, or the hosted key
-  # for Patreon premium members (and admins). Raises NoKeyError otherwise.
-  def self.for(user)
-    key = user&.openai_api_key.presence
-    key ||= ENV.fetch('OPENAI_API_KEY', nil) if user&.premium?
-    raise NoKeyError, 'Add your OpenAI API key in your dashboard, or join Patreon for hosted AI.' if key.blank?
-
-    new(api_key: key)
-  end
-
-  # Checks the key with a cheap request. Raises Error when OpenAI rejects it.
-  def verify_key!
-    get('/v1/models')
-    nil
-  end
-
   # ─────────────────────────────────────────────────────────────
   # Chat completions
   #
   # @param prompt [String] The user prompt to send to the model
-  # @param system [String, nil] Optional system message sent before the prompt
   # @param opts [Hash] Optional parameters:
-  #   - :json_schema [Hash] { name:, strict:, schema: } for OpenAI structured outputs:
-  #     the reply must match the schema. Takes precedence over :json_mode.
   #   - :json_mode [Boolean] When true, forces the model to output valid JSON.
   #     Use when you need to parse the response as JSON (e.g., NPC generation).
   #   - :return_usage [Boolean] When true, returns a hash with :content and :usage
@@ -71,7 +50,7 @@ class OpenAIClient
   #   - :temperature, :top_p, :max_tokens, etc. - Standard OpenAI parameters
   # @return [String, Array<String>, Hash] Completion content, or hash with usage if requested
   # ─────────────────────────────────────────────────────────────
-  def completions(prompt:, system: nil, **opts)
+  def completions(prompt:, **opts)
     defaults = {
       temperature: 0.9,
       top_p: 1.0,
@@ -93,15 +72,12 @@ class OpenAIClient
       n: p[:n],
       max_tokens: p[:max_tokens],
       messages: [
-        system && { role: 'system', content: system.to_s },
         { role: 'user', content: prompt.to_s }
-      ].compact
+      ]
     }
 
     # Add JSON response format if requested (forces valid JSON output)
     body[:response_format] = { type: 'json_object' } if p[:json_mode]
-    # Structured outputs: the reply must match this JSON schema exactly
-    body[:response_format] = { type: 'json_schema', json_schema: p[:json_schema] } if p[:json_schema]
 
     response = post('/v1/chat/completions', body: body)
     choices  = response[:choices].map { |c| c.dig(:message, :content)&.strip }

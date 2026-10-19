@@ -68,6 +68,8 @@ const useSetupDraft = (initial: () => SetupDraft, lastStep: number) => {
   const clear = () => {
     setKeep(false);
     setDraft(initial());
+    // Straight away too: the page may close before the effect runs
+    writeDraft(null);
   };
 
   const restored = Boolean(saved && (Number(saved.step) > 0 || saved.values?.name));

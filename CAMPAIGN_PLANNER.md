@@ -11,8 +11,9 @@ The user plans **from a need**:
 
 Decisions already made:
 - The planner is **free** for logged-in DMs.
-- **AI is free when the DM brings their own OpenAI key.** The hosted AI key and Foundry sync are
-  Patreon-premium.
+- **The planner has no AI; the site's older AI tools are unchanged.** The planner's own AI (draft a plan, prep
+  suggestions, recaps), the bring-your-own OpenAI key and the hosted key were removed on 2026-10-19.
+- Foundry sync is Patreon-premium, alongside the existing premium maps.
 - Foundry integration is **full two-way sync**.
 - The planner is **2024-only** and works with the 2024 Player's Handbook, Dungeon Master's Guide and Monster
   Manual through book references (name and page), never their text or stat blocks.
@@ -26,13 +27,13 @@ Decisions already made:
 - **Phase 1 (done):** planner models and API, the campaign wizard with templates, campaign tabs (Overview,
   Story, Quests, Cast, Places, Secrets, Sessions, Books), session prep (8 steps) and run mode, Three Clue Rule
   check, dashboard widgets (Next Session, Campaign Clocks), book references.
-- **Phase 2 (done):** bring-your-own OpenAI key, AI outline, prep suggestions and recaps.
+- **Phase 2 (dropped):** the planner has no AI.
 - **Phases 3 and 4 (done):**
   - DM Guru sync endpoints: `GET /v1/foundry/campaigns`, `GET` and `POST /v1/foundry/campaigns/:uuid/changes`.
   - The module (0.1.0) is at github.com/jesshmusic/dorman-lakelys-campaign-planner. It links with a pasted API
     token.
-  - Tested end to end in a live Foundry v14 world: linking, full pull, pushes from Foundry, pulls from DM Guru,
-    the conflict dialog, and an AI-drafted plan and recap syncing into the journals.
+  - Tested end to end in a live Foundry v14 world: linking, full pull, pushes from Foundry, pulls from DM Guru
+    and the conflict dialog.
 - **Compendium index (done):** the module sends the index of the DM's SRD 5.2 and 2024 core book compendiums.
   Planner searches use it, and picks become draggable compendium links in the session journals. Each campaign
   chooses its compendiums (a sidebar on New Campaign, and a list on Overview). See "The 2024 core books".
@@ -44,17 +45,17 @@ Decisions already made:
     every round, like current HP.
   - Each campaign picks its party from them: a name, class, level and player list on New Campaign ("Who's
     playing?") and on the Party tab, which also shows each party member's full sheet.
-  - Session prep step 1 lists the party with quick stats, bonds and flaws. The AI brief includes the party.
+  - Session prep step 1 lists the party with quick stats, bonds and flaws.
 - **Guided setup (done, web and Foundry):**
   - New Campaign is a six-step guide: what kind of game, the pitch, the table (party, players, levels, sessions),
     the world (setting and truths), your books (compendiums), then review and create.
   - Each step has a short "Why this matters" with an example. The copy for every step lives in
     `pages/campaigns/setup/setupSteps.ts`.
   - The answers are saved in the browser as the DM goes, so leaving the page doesn't lose them.
-  - After creating, the guide offers an AI draft of the plan.
+  - Creating the campaign opens it.
   - The Overview tab shows a "Getting started" checklist (party, threat, cast, secrets, first session) until it's
     done or hidden.
-  - The Foundry module has the same guide without AI, opened from the Connect window and the Campaign Dashboard.
+  - The Foundry module has the same guide, opened from the Connect window and the Campaign Dashboard.
     Its copy lives in the module's `scripts/setup.mjs`; keep it in step with `setupSteps.ts`.
     - It creates the campaign through `POST /v1/foundry/campaigns`. Creating is free, like on the web; listing
       and syncing stay premium.
@@ -64,12 +65,12 @@ Decisions already made:
     - Errors come back with the fields they're about, so the guide can return to the right step.
     - With premium, the world links to the new campaign and opens the Dashboard.
     - Drafts are kept per world in a client setting.
-  - Campaigns have at most six truths. Older campaigns with more can still be edited, and AI plans never drop the
-    truths a campaign already has.
+  - Campaigns have at most six truths. Older campaigns with more can still be edited.
 
 - **Planning in Foundry, no account (done, module):**
   - Most DMs will find this through the module, and some won't want a website at all. They can plan entirely in
-    Foundry; Dungeon Master Guru is the step up for AI.
+    Foundry. Dungeon Master Guru is the step up: planning on the website, sync with Foundry, compendium search,
+    party sheets and map thumbnails.
   - The module's guide can create a campaign in the world itself: the same journals, records and template
     structure as Dungeon Master Guru (its templates are ported to `scripts/local.mjs`).
   - The Campaign Dashboard runs it, saving changes to the journals, and adds threats, secrets, quests, NPCs, places,
@@ -119,8 +120,6 @@ Decisions already made:
 - Watch CI on the latest push, resolve Copilot's review comments, then merge.
 - Production setup:
   - run the migrations
-  - set Active Record encryption keys in credentials or ENV, so they don't depend on `secret_key_base`
-  - set `OPENAI_API_KEY` for premium members' hosted AI
   - lock CORS down from `origins '*'` (`config/initializers/cors.rb`) to the Foundry origins that need it
 
 **To release the module**
@@ -138,7 +137,6 @@ Decisions already made:
 - Device-code linking, so DMs don't paste an API token.
 - "Send to DM Guru" for things made in Foundry, like an improvised NPC.
 - Player-facing pages: the shareable player guide, and player-visible journal pages.
-- A monthly cap on the hosted AI key for premium members (there is an hourly limit).
 - From phase 1: a campaign-scoped `NotesWidget`, and linking places to Cartography maps.
 - From phase 5: treasure hoards, an in-world calendar, and export as a Foundry Adventure compendium.
 
@@ -146,8 +144,6 @@ Decisions already made:
 **Other ideas**
 - Search the compendium index from the NPC form, so a stat block doesn't have to be added on the Books tab
   first.
-- Let the AI choose monsters and treasure from the DM's compendium index, so its suggestions arrive already
-  linked.
 - Show encounter difficulty for the party's level next to a session's monsters. This is a number only; the DM
   still places monsters on the map.
 - Push changes to Foundry over ActionCable instead of polling every 2 minutes.
@@ -163,16 +159,16 @@ Decisions already made:
 | Blades in the Dark | **Progress clocks** for factions and threats that advance between sessions |
 | Johnn Four, 5-Room Dungeon | One-shot / dungeon template: guardian → puzzle → setback → climax → reward |
 | Kanka / World Anvil / LegendKeeper | Wikis are crowded. Kanka's nested quests + calendars and LegendKeeper's timelines and boards are the bar for entity UX |
-| Archivist Sync, RoleCall Sync, SessionFlow | Foundry precedent. Archivist uses an API token, two-way sync and journal sheets. RoleCall splits GM and player pages. SessionFlow is an in-Foundry session workspace. None of them pairs structured prep with SRD content + statblocks + AI |
+| Archivist Sync, RoleCall Sync, SessionFlow | Foundry precedent. Archivist uses an API token, two-way sync and journal sheets. RoleCall splits GM and player pages. SessionFlow is an in-Foundry session workspace. None of them pairs structured prep with SRD content + statblocks |
 
-**Positioning:** "Describe the campaign you want → get a runnable, Lazy-DM-shaped plan with real 5e statblocks →
-run it in Foundry, where what happens at the table flows back."
+**Positioning:** "Plan the campaign you want as a runnable, Lazy-DM-shaped plan with real 5e statblocks → run it
+in Foundry, where what happens at the table flows back."
 
 ## Product shape
 **New Campaign wizard:**
 - Brief fields: premise, setting (free text + six truths), mode, length/cadence, party size, start and target
   level, tone, edition (2014/2024).
-- Starting point: blank, a template (3-act arc / sandbox / 5-room one-shot), or **Generate (premium)**.
+- Starting point: blank or a template (3-act arc / sandbox / 5-room one-shot).
 - Setting lore is supplied by the DM. Greyhawk is not in SRD 5.2, so we ship no setting text.
 
 **Campaign home tabs:**
@@ -231,52 +227,6 @@ API: `/v1/campaigns` and nested resources (jbuilder, `camelize: :lower`, `{count
 `/v1/foundry/...` sync endpoints. Frontend: new `pages/campaigns/` using the redux-api + axios patterns, and new
 sidebar section and routes in `navigation/DMRoutes.tsx`.
 
-## AI — bring your own OpenAI key (free) or hosted (premium)
-**Gating:**
-- Anyone can use the AI features with their **own OpenAI key**, at no cost to DM Guru.
-- Patreon premium gets the **hosted key** with a monthly cap, plus Foundry sync.
-- Premium therefore stays attractive, and AI costs stay neutral for free users.
-
-**Key storage and use:**
-- Add `users.openai_api_key`, using Rails 7 Active Record Encryption (`encrypts :openai_api_key`).
-  - Encryption isn't configured yet. Run `bin/rails db:encryption:init` and put the keys in credentials/ENV.
-  - The existing `:_key` entry in `config/initializers/filter_parameter_logging.rb` already filters it from logs.
-- Settings UI in the User Dashboard:
-  - paste the key, validate it with a cheap `GET /v1/models`, then save
-  - only ever show `sk-…last4`; never include the key in JSON
-  - remove-key button
-  - optional model picker
-- Add one factory, `OpenAIClient.for(user)`. It returns the user's key, else the hosted key when
-  `user.premium?`, else raises `OpenAIClient::NoKeyError`; the UI turns that into "Add your key or join Patreon".
-  - The constructor already takes `api_key:`.
-  - Swap the 6 `ENV.fetch('OPENAI_API_KEY')` call sites to use it: `name_gen.rb`, `npc_action_generator.rb`,
-    `commoner_description_generator.rb`, `npc_concept_generator.rb`, `cr_calc.rb`, `dashboard_controller.rb:56`.
-  - That also opens the existing NPC generators to BYOK users.
-- Keys stay server-side. The Foundry module requests AI through DM Guru and never sees the key.
-- Users with their own key get relaxed rate limits.
-- Specs:
-  - key never serialized
-  - encrypted at rest
-  - `for(user)` resolution order
-  - validation failure path
-
-**Features:**
-- Add system-message support to `app/models/utilities/openai_client.rb`.
-- **Generate campaign from brief.** Run it in stages, with each call under Cloudflare's ~100s limit, driven from
-  the client the way chunked upload was:
-  - outline: truths, BBEG, fronts, quest arc mapped to N sessions
-  - expand each section in turn: NPCs, places, secrets pool satisfying the Three Clue Rule, side quests
-  - review/approve before saving, reusing the `ConceptApprovalModal` pattern
-- **Fill this step:** suggestions for any of the 8 prep steps, using current campaign state.
-- **Post-session:** log → recap, plus a *proposed diff* (secrets revealed, clocks advanced, quest status) for
-  the DM to approve.
-- Every request uses OpenAI **structured outputs** (`CampaignAssistantSchemas`), so replies always have the
-  expected keys and allowed values. Without them, models sometimes mangled keys (`"_quests_"`, `"scenes "`).
-  The outline asks for each revelation with exactly 3 clues, and applying it skips NPCs, places and truths the
-  campaign already has.
-- Rate-limit the same way as `cr_calc`, and spec with `instance_double(OpenAIClient)` like
-  `spec/requests/admin/v1/dashboard_spec.rb`.
-
 ## The 2024 core books
 DM Guru has the SRD 5.2 monsters, items and spells, but not the full Player's Handbook, Dungeon Master's Guide
 or Monster Manual. The planner uses them without copying them:
@@ -302,7 +252,6 @@ or Monster Manual. The planner uses them without copying them:
     `@UUID[Compendium.dnd-monster-manual.actors.Actor.…]{Zombie}`. Click it to open the stat block, or drag it
     onto a scene to place a token.
   - Monsters and items picked from DM Guru's own SRD list link to the compendium entry of the same name.
-- AI suggestions (phase 2) can name 2024 creatures and items, but never page numbers, which it would guess.
 
 ## Foundry module — Dorman Lakely's Campaign Planner
 **Where it lives** (same conventions as the other Dorman Lakely modules):
@@ -359,15 +308,13 @@ or Monster Manual. The planner uses them without copying them:
    - Add `api_tokens` and token management in the User Dashboard.
 1. **Planner core (free):**
    - models, API and specs
-   - wizard with templates (no AI)
+   - wizard with templates
    - campaign home tabs, sessions with 8-step prep + run mode
    - Three-Clue lint
    - dashboard widgets: "Next session" and "Clocks"
    - book references for the 2024 PHB, DMG and Monster Manual
    - not done: reviving `NotesWidget` scoped to a campaign, and linking places to Cartography maps in the UI
-2. **AI:**
-   - first, BYOK key settings + `OpenAIClient.for(user)`, which also benefits the existing generators
-   - then generate-from-brief, fill-a-step, and recap + proposed diff
+2. **AI (dropped):** the planner has no AI; the site's older AI tools are unchanged.
 3. **Foundry module v1:** link account, pull-only import, Campaign Dashboard app.
 4. **Two-way sync:** push, merge/conflict UI, "Send to DM Guru". The protocol is already in place from phase 1's
    sync columns.

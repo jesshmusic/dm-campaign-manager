@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import Button from '../../../components/Button/Button';
 import { Colors } from '../../../utilities/enums';
 import AutosaveField from '../components/AutosaveField';
-import RecapDraft from '../assistant/RecapDraft';
 import ProgressClock from '../components/ProgressClock';
 import { formatCoins } from '../components/CoinFields';
 import SceneThumbnail, { SceneGallery } from '../components/SceneThumbnail';
@@ -258,7 +257,6 @@ const RunView = ({ campaign, session, state }: RunViewProps) => {
       />
 
       <SectionTitle>Wrap up</SectionTitle>
-      <RecapDraft campaign={campaign} session={session} state={state} />
       <AutosaveField
         label="Recap"
         value={session.recap ?? ''}

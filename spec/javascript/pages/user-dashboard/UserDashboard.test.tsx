@@ -8,41 +8,50 @@ jest.mock('@auth0/auth0-react', () => ({
   useAuth0: jest.fn(),
 }));
 
-jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/containers/PageContainer', () => {
-  return function MockPageContainer({ children }: any) {
-    return <div data-testid="page-container">{children}</div>;
-  };
-});
+jest.mock(
+  '../../../../app/javascript/bundles/DungeonMasterCampaignManager/containers/PageContainer',
+  () => {
+    return function MockPageContainer({ children }: any) {
+      return <div data-testid="page-container">{children}</div>;
+    };
+  },
+);
 
-jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/components/PageTitle/PageTitle', () => {
-  return function MockPageTitle({ title }: any) {
-    return <h1 data-testid="page-title">{title}</h1>;
-  };
-});
+jest.mock(
+  '../../../../app/javascript/bundles/DungeonMasterCampaignManager/components/PageTitle/PageTitle',
+  () => {
+    return function MockPageTitle({ title }: any) {
+      return <h1 data-testid="page-title">{title}</h1>;
+    };
+  },
+);
 
-jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/user-dashboard/Dashboard', () => {
-  return function MockDashboard() {
-    return <div data-testid="dashboard">Dashboard</div>;
-  };
-});
+jest.mock(
+  '../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/user-dashboard/Dashboard',
+  () => {
+    return function MockDashboard() {
+      return <div data-testid="dashboard">Dashboard</div>;
+    };
+  },
+);
 
-jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/user-dashboard/components/PatreonConnection', () => {
-  return function MockPatreonConnection() {
-    return <div data-testid="patreon-connection">Patreon</div>;
-  };
-});
+jest.mock(
+  '../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/user-dashboard/components/PatreonConnection',
+  () => {
+    return function MockPatreonConnection() {
+      return <div data-testid="patreon-connection">Patreon</div>;
+    };
+  },
+);
 
-jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/user-dashboard/components/OpenAIKey', () => {
-  return function MockOpenAIKey() {
-    return <div data-testid="openai-key">OpenAI key</div>;
-  };
-});
-
-jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/user-dashboard/components/ApiTokens', () => {
-  return function MockApiTokens() {
-    return <div data-testid="api-tokens">API tokens</div>;
-  };
-});
+jest.mock(
+  '../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/user-dashboard/components/ApiTokens',
+  () => {
+    return function MockApiTokens() {
+      return <div data-testid="api-tokens">API tokens</div>;
+    };
+  },
+);
 
 const mockStore = configureStore({
   reducer: {
@@ -66,7 +75,7 @@ describe('UserDashboard', () => {
     render(
       <Provider store={mockStore}>
         <UserDashboard />
-      </Provider>
+      </Provider>,
     );
   });
 
@@ -85,10 +94,12 @@ describe('UserDashboard', () => {
     render(
       <Provider store={mockStore}>
         <UserDashboard />
-      </Provider>
+      </Provider>,
     );
 
-    expect(screen.getByTestId('page-title')).toHaveTextContent('Dungeon Master GURU - Welcome, John Doe');
+    expect(screen.getByTestId('page-title')).toHaveTextContent(
+      'Dungeon Master GURU - Welcome, John Doe',
+    );
   });
 
   it('displays user info section', () => {
@@ -106,7 +117,7 @@ describe('UserDashboard', () => {
     render(
       <Provider store={mockStore}>
         <UserDashboard />
-      </Provider>
+      </Provider>,
     );
 
     expect(screen.getByText('Info')).toBeInTheDocument();
@@ -130,7 +141,7 @@ describe('UserDashboard', () => {
     render(
       <Provider store={mockStore}>
         <UserDashboard />
-      </Provider>
+      </Provider>,
     );
 
     expect(screen.getByTestId('dashboard')).toBeInTheDocument();
@@ -148,7 +159,7 @@ describe('UserDashboard', () => {
     render(
       <Provider store={mockStore}>
         <UserDashboard />
-      </Provider>
+      </Provider>,
     );
 
     expect(screen.getByText('John Doe')).toBeInTheDocument();
@@ -169,7 +180,7 @@ describe('UserDashboard', () => {
     const { container } = render(
       <Provider store={mockStore}>
         <UserDashboard />
-      </Provider>
+      </Provider>,
     );
 
     const img = container.querySelector('img[src="https://example.com/pic.jpg"]');
@@ -188,7 +199,7 @@ describe('UserDashboard', () => {
     render(
       <Provider store={mockStore}>
         <UserDashboard />
-      </Provider>
+      </Provider>,
     );
 
     expect(screen.getByTestId('page-container')).toBeInTheDocument();
@@ -209,13 +220,12 @@ describe('UserDashboard', () => {
     render(
       <Provider store={mockStore}>
         <UserDashboard />
-      </Provider>
+      </Provider>,
     );
 
     expect(screen.getByText('Connections')).toBeInTheDocument();
     expect(screen.getByTestId('patreon-connection')).toBeInTheDocument();
     expect(screen.getByTestId('api-tokens')).toBeInTheDocument();
-    expect(screen.getByTestId('openai-key')).toBeInTheDocument();
   });
 
   it('hides account connections when signed out', () => {
@@ -225,7 +235,7 @@ describe('UserDashboard', () => {
     render(
       <Provider store={mockStore}>
         <UserDashboard />
-      </Provider>
+      </Provider>,
     );
 
     expect(screen.queryByText('Connections')).not.toBeInTheDocument();

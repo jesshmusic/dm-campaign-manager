@@ -319,9 +319,7 @@ describe('NewCampaign', () => {
 
       fireEvent.click(screen.getByRole('button', { name: 'Create campaign' }));
 
-      expect(
-        await screen.findByRole('heading', { name: 'Zombie Siege is ready' }),
-      ).toBeInTheDocument();
+      expect(await screen.findByText('Campaign page')).toBeInTheDocument();
       expect(createdCampaign()).toEqual({
         campaign: {
           name: 'Zombie Siege',
@@ -355,7 +353,7 @@ describe('NewCampaign', () => {
 
       fireEvent.click(screen.getByRole('button', { name: 'Create campaign' }));
 
-      await screen.findByRole('heading', { name: 'Zombie Siege is ready' });
+      await screen.findByText('Campaign page');
       expect(createdCampaign().template).toBe(template);
       expect(createdCampaign().campaign.mode).toBe(mode);
     });
@@ -391,15 +389,11 @@ describe('NewCampaign', () => {
       );
     });
 
-    it('offers an AI draft of the plan, then opens the campaign', async () => {
+    it('opens the new campaign once it is created', async () => {
       renderPage();
       await goToReview();
       fireEvent.click(screen.getByRole('button', { name: 'Create campaign' }));
 
-      await screen.findByRole('heading', { name: 'Zombie Siege is ready' });
-      expect(screen.getByRole('button', { name: 'Draft a plan' })).toBeInTheDocument();
-
-      fireEvent.click(screen.getByRole('button', { name: 'Open the campaign' }));
       expect(await screen.findByText('Campaign page')).toBeInTheDocument();
     });
   });
@@ -445,7 +439,7 @@ describe('NewCampaign', () => {
 
       fireEvent.click(screen.getByRole('button', { name: 'Create campaign' }));
 
-      await screen.findByRole('heading', { name: 'Zombie Siege is ready' });
+      await screen.findByText('Campaign page');
       expect(window.localStorage.getItem(DRAFT_KEY)).toBeNull();
     });
 

@@ -9,14 +9,12 @@ import { FieldConfig, toAttributes, toFormValues } from './components/EntityForm
 import FormFields from './components/FormFields';
 import CompendiumPicker from './components/CompendiumPicker';
 import PartyPicker from './components/PartyPicker';
-import OutlineReview from './assistant/OutlineReview';
 import { campaignFields } from './campaignFields';
 import { useCompendiumPacks } from './compendium';
 import useCampaignApi from './useCampaignApi';
 import useLoadedList from './useLoadedList';
 import { SETUP_STEPS, SetupStepId, TEMPLATES } from './setup/setupSteps';
 import useSetupDraft from './setup/useSetupDraft';
-import { Campaign } from './types';
 import {
   ButtonRow,
   Card,
@@ -149,8 +147,8 @@ const Fact = ({ label, value }: { label: string; value?: React.ReactNode }) =>
 
 /**
  * A step-by-step guide to starting a campaign: what kind of game, the pitch,
- * the table, the world and the books, then a review. After creating it, the
- * DM can draft the rest of the plan with AI.
+ * the table, the world and the books, then a review. Creating it opens the
+ * new campaign.
  */
 const NewCampaign = () => {
   const api = useCampaignApi();
@@ -173,7 +171,6 @@ const NewCampaign = () => {
   const [showRestored, setShowRestored] = useState(restored);
   const [error, setError] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
-  const [created, setCreated] = useState<Campaign | null>(null);
 
   // Move to the new step's heading, but not when the page first opens
   const headingRef = useRef<HTMLHeadingElement>(null);
@@ -185,7 +182,7 @@ const NewCampaign = () => {
     }
     headingRef.current?.focus();
     headingRef.current?.scrollIntoView?.({ block: 'start' });
-  }, [draft.step, created]);
+  }, [draft.step]);
 
   const step = SETUP_STEPS[draft.step];
   const stepIndex = (id: SetupStepId) => SETUP_STEPS.findIndex((s) => s.id === id);
@@ -258,16 +255,13 @@ const NewCampaign = () => {
         draft.template,
       );
       clear();
-      setShowRestored(false);
-      setCreated(campaign);
+      navigate(`/app/campaigns/${campaign.slug}`);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Could not create the campaign.');
     } finally {
       setCreating(false);
     }
   };
-
-  const openCampaign = (campaign: Campaign) => navigate(`/app/campaigns/${campaign.slug}`);
 
   const renderKind = () => (
     <TemplateGrid role="radiogroup" aria-label="Campaign template">
@@ -412,32 +406,6 @@ const NewCampaign = () => {
         );
     }
   };
-
-  if (created) {
-    return (
-      <PageContainer pageTitle="New campaign" description="Start a new campaign plan." maxWidth>
-        <PageTitle title="New Campaign" />
-        <PlannerWrapper>
-          <Heading ref={headingRef} tabIndex={-1}>
-            {created.name} is ready
-          </Heading>
-          <p>
-            Want a head start? AI can draft a cast, threats, places, quests and clues from your
-            brief. You choose what to keep, and you can do this any time from the campaign&apos;s
-            Overview tab.
-          </p>
-          <OutlineReview campaign={created} onApplied={async () => openCampaign(created)} />
-          <ButtonRow>
-            <Button
-              color={Colors.secondary}
-              title="Open the campaign"
-              onClick={() => openCampaign(created)}
-            />
-          </ButtonRow>
-        </PlannerWrapper>
-      </PageContainer>
-    );
-  }
 
   return (
     <PageContainer pageTitle="New campaign" description="Start a new campaign plan." maxWidth>

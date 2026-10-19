@@ -8,7 +8,6 @@ import { campaignFields, campaignModeField, campaignStatusField } from '../campa
 import { CampaignState } from '../useCampaign';
 import { Campaign, MODE_LABELS } from '../types';
 import { RevelationCheck } from './SecretsTab';
-import OutlineReview from '../assistant/OutlineReview';
 import GettingStarted from './GettingStarted';
 import CompendiumPicker from '../components/CompendiumPicker';
 import { useCompendiumPacks } from '../compendium';
@@ -137,9 +136,6 @@ const OverviewTab = ({ campaign, state }: OverviewTabProps) => {
           )}
         </Card>
       </CardGrid>
-
-      <SectionTitle>Plan with AI</SectionTitle>
-      <OutlineReview campaign={campaign} onApplied={state.reload} />
 
       <SectionTitle>Where things stand</SectionTitle>
       <CardGrid>

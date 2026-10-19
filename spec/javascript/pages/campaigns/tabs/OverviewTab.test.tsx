@@ -295,11 +295,4 @@ describe('OverviewTab', () => {
       );
     });
   });
-
-  it('offers to draft a plan with AI', () => {
-    renderTab();
-
-    expect(screen.getByRole('heading', { name: 'Plan with AI' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Draft a plan' })).toBeInTheDocument();
-  });
 });

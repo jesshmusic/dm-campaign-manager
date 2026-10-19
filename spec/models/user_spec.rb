@@ -16,7 +16,6 @@
 #  last_sign_in_ip        :inet
 #  location               :string
 #  name                   :string
-#  openai_api_key         :text
 #  preferred_edition      :string           default("2024")
 #  remember_created_at    :datetime
 #  reset_password_sent_at :datetime
@@ -335,75 +334,6 @@ RSpec.describe User, type: :model do
       user = create(:dungeon_master_user)
       create(:patreon_user, :wizard, :expired, user_id: nil, linked_user: user)
       expect(user.reload.premium?).to be false
-    end
-  end
-
-  describe 'OpenAI API key' do
-    let(:key) { "sk-proj-#{'Ab3_cD9-' * 4}wxyz" }
-
-    def raw_key(user)
-      User.connection.select_value(User.where(id: user.id).select(:openai_api_key).to_sql)
-    end
-
-    it 'is optional' do
-      user = create(:user, openai_api_key: nil)
-
-      expect(user).to be_valid
-      expect(raw_key(user)).to be_nil
-    end
-
-    it 'accepts an OpenAI-style key' do
-      expect(build(:user, openai_api_key: key)).to be_valid
-      expect(build(:user, openai_api_key: "sk-#{'a' * 20}")).to be_valid
-    end
-
-    it 'rejects values that are not OpenAI keys' do
-      ['', 'hunter2', 'sk-tooshort', "pk-#{'a' * 30}", "sk-#{'a' * 30} extra", "sk-#{'a' * 30}\nsk-#{'b' * 30}",
-       "sk-#{'a' * 30}!"].each do |value|
-        user = build(:user, openai_api_key: value)
-
-        expect(user).not_to be_valid, "expected #{value.inspect} to be rejected"
-        expect(user.errors[:openai_api_key]).to eq(['must be an OpenAI API key (sk-…)'])
-      end
-    end
-
-    it 'is encrypted at rest' do
-      user = create(:user, openai_api_key: key)
-
-      raw = raw_key(user)
-      expect(raw).to be_present
-      expect(raw).not_to include(key)
-      expect(raw).not_to include(key.last(12))
-      expect(User.find(user.id).openai_api_key).to eq(key)
-    end
-
-    it 'encrypts the same key differently for different users' do
-      first = create(:user, openai_api_key: key)
-      second = create(:user, openai_api_key: key)
-
-      expect(raw_key(first)).not_to eq(raw_key(second))
-    end
-
-    it 'can be removed' do
-      user = create(:user, openai_api_key: key)
-      user.update!(openai_api_key: nil)
-
-      expect(raw_key(user)).to be_nil
-      expect(User.find(user.id).openai_api_key).to be_nil
-    end
-
-    it 'is kept out of inspect output' do
-      expect(create(:user, openai_api_key: key).inspect).not_to include(key)
-    end
-
-    describe '#openai_api_key_hint' do
-      it 'shows only the last four characters' do
-        expect(build(:user, openai_api_key: key).openai_api_key_hint).to eq('sk-…wxyz')
-      end
-
-      it 'is nil without a key' do
-        expect(build(:user, openai_api_key: nil).openai_api_key_hint).to be_nil
-      end
     end
   end
 

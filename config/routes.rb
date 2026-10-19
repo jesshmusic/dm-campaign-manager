@@ -92,9 +92,6 @@ Rails.application.routes.draw do
       # Patreon account linked to the signed-in user (web app)
       resource :patreon_link, path: 'patreon/link', only: %i[show create destroy], constraints: { format: 'json' }
 
-      # The signed-in user's own OpenAI key (bring your own key)
-      resource :openai_key, path: 'openai-key', only: %i[show update destroy], constraints: { format: 'json' }
-
       # Personal API tokens for Foundry modules
       resources :api_tokens, path: 'api-tokens', only: %i[index create destroy], constraints: { format: 'json' }
 
@@ -118,11 +115,7 @@ Rails.application.routes.draw do
           end
           resources :sessions, only: %i[index show create update destroy] do
             resources :links, controller: 'session_links', only: %i[create update destroy]
-            post 'assistant/prep', to: 'assistant#prep'
-            post 'assistant/recap', to: 'assistant#recap'
           end
-          post 'assistant/outline', to: 'assistant#outline'
-          post 'assistant/apply', to: 'assistant#apply'
         end
       end
 

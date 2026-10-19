@@ -377,11 +377,4 @@ describe('RunView', () => {
       ).not.toBeInTheDocument();
     });
   });
-
-  it('offers an AI recap in the wrap-up', () => {
-    renderRun();
-
-    expect(screen.getByRole('heading', { name: 'Recap with AI' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Draft recap' })).toBeInTheDocument();
-  });
 });

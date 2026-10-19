@@ -18,7 +18,6 @@
 #  last_sign_in_ip        :inet
 #  location               :string
 #  name                   :string
-#  openai_api_key         :text
 #  preferred_edition      :string           default("2024")
 #  remember_created_at    :datetime
 #  reset_password_sent_at :datetime
@@ -61,25 +60,14 @@ class User < ApplicationRecord
   has_one :patreon_account, class_name: 'PatreonUser', foreign_key: :linked_user_id,
                             inverse_of: :linked_user, dependent: :destroy
 
-  # The DM's own OpenAI key for AI planner features (encrypted at rest; never
-  # sent back to the browser)
-  encrypts :openai_api_key
-  validates :openai_api_key, format: { with: /\Ask-[A-Za-z0-9_-]{20,}\z/, message: 'must be an OpenAI API key (sk-…)' },
-                             allow_nil: true
-
   def set_default_role
     self.role ||= :user
   end
 
-  # Premium features (hosted AI, Foundry sync) need an active $5+ Patreon
-  # pledge linked to this account. Admins always have access.
+  # Premium features (Foundry sync) need an active $5+ Patreon pledge linked
+  # to this account. Admins always have access.
   def premium?
     admin? || patreon_account&.premium_active? || false
-  end
-
-  # Last four characters, to show which key is saved
-  def openai_api_key_hint
-    openai_api_key && "sk-…#{openai_api_key.last(4)}"
   end
 
   # instead of deleting, indicate the user requested a delete & timestamp it

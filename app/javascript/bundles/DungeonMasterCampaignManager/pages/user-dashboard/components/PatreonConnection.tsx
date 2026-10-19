@@ -101,10 +101,7 @@ const PatreonConnection = () => {
       {!status && !error && <Muted>Loading…</Muted>}
       {status && !account && (
         <>
-          <p>
-            Link your Patreon account to unlock premium features like hosted AI generation and
-            Foundry sync.
-          </p>
+          <p>Link your Patreon account to unlock premium features like Foundry sync.</p>
           {status.premium && <Muted>Your account already has premium access.</Muted>}
           <Actions>
             <Button

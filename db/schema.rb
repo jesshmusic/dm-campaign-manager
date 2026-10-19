@@ -1087,7 +1087,6 @@ ActiveRecord::Schema[7.1].define(version: 2026_10_16_180000) do
     t.text "info"
     t.string "auth_id", default: "", null: false
     t.string "preferred_edition", default: "2024"
-    t.text "openai_api_key"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["username"], name: "index_users_on_username", unique: true

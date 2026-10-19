@@ -8,10 +8,13 @@ jest.mock('@auth0/auth0-react', () => ({
   useAuth0: () => ({ getAccessTokenSilently: mockGetAccessTokenSilently }),
 }));
 
-jest.mock('../../../../../app/javascript/bundles/DungeonMasterCampaignManager/utilities/navigateTo', () => ({
-  __esModule: true,
-  default: jest.fn(),
-}));
+jest.mock(
+  '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/utilities/navigateTo',
+  () => ({
+    __esModule: true,
+    default: jest.fn(),
+  }),
+);
 
 const jsonResponse = (body: unknown, ok = true, status = 200) =>
   Promise.resolve({ ok, status, json: () => Promise.resolve(body) } as Response);
@@ -45,6 +48,9 @@ describe('PatreonConnection', () => {
     render(<PatreonConnection />);
 
     expect(await screen.findByRole('button', { name: 'Connect Patreon' })).toBeInTheDocument();
+    expect(
+      screen.getByText('Link your Patreon account to unlock premium features like Foundry sync.'),
+    ).toBeInTheDocument();
     expect(mockFetch).toHaveBeenCalledWith(
       '/v1/patreon/link',
       expect.objectContaining({
@@ -75,7 +81,9 @@ describe('PatreonConnection', () => {
     fireEvent.click(await screen.findByRole('button', { name: 'Connect Patreon' }));
 
     await waitFor(() => {
-      expect(navigateTo).toHaveBeenCalledWith('https://www.patreon.com/oauth2/authorize?state=web.abc');
+      expect(navigateTo).toHaveBeenCalledWith(
+        'https://www.patreon.com/oauth2/authorize?state=web.abc',
+      );
     });
   });
 
@@ -106,7 +114,10 @@ describe('PatreonConnection', () => {
     fireEvent.click(await screen.findByRole('button', { name: 'Disconnect' }));
 
     expect(await screen.findByRole('button', { name: 'Connect Patreon' })).toBeInTheDocument();
-    expect(mockFetch).toHaveBeenCalledWith('/v1/patreon/link', expect.objectContaining({ method: 'DELETE' }));
+    expect(mockFetch).toHaveBeenCalledWith(
+      '/v1/patreon/link',
+      expect.objectContaining({ method: 'DELETE' }),
+    );
     confirmSpy.mockRestore();
   });
 
@@ -117,7 +128,10 @@ describe('PatreonConnection', () => {
     render(<PatreonConnection />);
     fireEvent.click(await screen.findByRole('button', { name: 'Disconnect' }));
 
-    expect(mockFetch).not.toHaveBeenCalledWith('/v1/patreon/link', expect.objectContaining({ method: 'DELETE' }));
+    expect(mockFetch).not.toHaveBeenCalledWith(
+      '/v1/patreon/link',
+      expect.objectContaining({ method: 'DELETE' }),
+    );
     confirmSpy.mockRestore();
   });
 
@@ -127,7 +141,9 @@ describe('PatreonConnection', () => {
 
     render(<PatreonConnection />);
 
-    expect(await screen.findByText(/already linked to another DM Guru account/)).toBeInTheDocument();
+    expect(
+      await screen.findByText(/already linked to another DM Guru account/),
+    ).toBeInTheDocument();
   });
 
   it('shows an error when the status cannot load', async () => {

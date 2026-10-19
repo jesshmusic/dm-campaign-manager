@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 import { COIN_ERROR, CoinDrafts, coinDrafts, parseCoins } from '../components/CoinFields';
 import CompendiumLinks, {
@@ -9,8 +9,6 @@ import { DraftCoins, DraftTextArea, parseWholeNumber, textOrNull } from '../comp
 import LinkPicker from '../components/LinkPicker';
 import PlannerModal from '../components/PlannerModal';
 import ScenePicker from '../components/ScenePicker';
-import PrepSuggestions, { SuggestionItem } from '../assistant/PrepSuggestions';
-import { PrepStep } from '../assistant/useAssistantApi';
 import {
   addDraftLink,
   commitLinks,
@@ -26,7 +24,6 @@ import { CampaignState } from '../useCampaign';
 import {
   Attributes,
   Campaign,
-  ChildKind,
   FoundryScene,
   LinkableType,
   NPC_ROLE_LABELS,
@@ -104,11 +101,6 @@ const savedAttributes = (session: PlannerSession) => {
   return 'attributes' in saved ? saved.attributes : {};
 };
 
-// A secret or place the AI suggested, made when the prep is saved
-type Suggested = { kind: Extract<ChildKind, 'secrets' | 'locations'>; attributes: Attributes };
-
-const SUGGESTED_PREFIX = 'suggested-';
-
 type PrepModalProps = {
   campaign: Campaign;
   session: PlannerSession;
@@ -118,15 +110,12 @@ type PrepModalProps = {
 
 /**
  * Session prep in a modal: the session's details and the Lazy DM's eight
- * steps. Nothing is saved until Save, AI suggestions included; Cancel throws
- * the changes away.
+ * steps. Nothing is saved until Save; Cancel throws the changes away.
  */
 const PrepModal = ({ campaign, session, state, onClose }: PrepModalProps) => {
   const { api, reload } = state;
   const [draft, setDraft] = useState(() => draftFor(session));
   const [links, setLinks] = useState<DraftLink[]>(() => session.links);
-  const [suggested, setSuggested] = useState<Record<string, Suggested>>({});
-  const suggestions = useRef(0);
   const { saving, error, setError, save } = usePlanSave(reload, onClose);
 
   const change = (changes: Partial<PrepDraft>) =>
@@ -161,78 +150,6 @@ const PrepModal = ({ campaign, session, state, onClose }: PrepModalProps) => {
   const setQuantity = (link: DraftLink, quantity: number | null) =>
     setLinks((current) => setDraftQuantity(current, link.id, quantity));
 
-  // An AI suggestion the DM picked goes into the draft: text into the
-  // session, and new secrets and places as picks that are made on Save
-  const applySuggestion = (step: PrepStep, item: SuggestionItem) => {
-    if (step === 'strong_start' || step === 'scenes') {
-      const text = String(item.value);
-      setDraft((current) =>
-        step === 'strong_start'
-          ? {
-              ...current,
-              strongStart: current.strongStart ? `${current.strongStart}\n\n${text}` : text,
-            }
-          : {
-              ...current,
-              scenes: current.scenes.trim() ? `${current.scenes.trimEnd()}\n${text}` : text,
-            },
-      );
-      return Promise.resolve(true);
-    }
-    const attributes = item.value as Attributes;
-    suggestions.current += 1;
-    const id = `${SUGGESTED_PREFIX}${suggestions.current}`;
-    const isSecret = step === 'secrets';
-    const name = String((isSecret ? attributes.text : attributes.name) ?? '').slice(0, 80);
-    setSuggested((current) => ({
-      ...current,
-      [id]: { kind: isSecret ? 'secrets' : 'locations', attributes },
-    }));
-    setLinks((current) =>
-      addDraftLink(current, {
-        linkableType: isSecret ? 'CampaignSecret' : 'CampaignLocation',
-        linkableId: id,
-        name: `${name} (new)`,
-        detail: null,
-      }),
-    );
-    return Promise.resolve(true);
-  };
-
-  const suggest = (step: PrepStep) => (
-    <PrepSuggestions
-      campaignSlug={campaign.slug}
-      sessionId={session.id}
-      step={step}
-      onUse={(item) => applySuggestion(step, item)}
-    />
-  );
-
-  // Makes the suggested secrets and places the draft still links
-  const makeSuggested = async (draftLinks: DraftLink[]) => {
-    const made: DraftLink[] = [];
-    for (const link of draftLinks) {
-      const suggestion = suggested[link.linkableId];
-      if (suggestion) {
-        const record = await api.createChild<{ id: string }>(
-          campaign.slug,
-          suggestion.kind,
-          suggestion.attributes,
-        );
-        // So saving again after a failure doesn't make it twice
-        setLinks((current) =>
-          current.map((other) =>
-            other.id === link.id ? { ...other, linkableId: record.id } : other,
-          ),
-        );
-        made.push({ ...link, linkableId: record.id });
-      } else {
-        made.push(link);
-      }
-    }
-    return made;
-  };
-
   const onSave = async () => {
     if (!dirty) {
       onClose();
@@ -250,7 +167,7 @@ const PrepModal = ({ campaign, session, state, onClose }: PrepModalProps) => {
       }
       await commitLinks(
         session.links,
-        await makeSuggested(rebased),
+        rebased,
         linkOpsFor(api, campaign, { kind: 'sessions', id: session.id }),
       );
     });
@@ -347,7 +264,6 @@ const PrepModal = ({ campaign, session, state, onClose }: PrepModalProps) => {
                 }),
             }}
           />
-          {suggest('strong_start')}
         </Step>
 
         <Step>
@@ -360,14 +276,13 @@ const PrepModal = ({ campaign, session, state, onClose }: PrepModalProps) => {
             value={draft.scenes}
             onChange={(scenes) => change({ scenes })}
           />
-          {suggest('scenes')}
         </Step>
 
         <Step>
           <h3>{PREP_STEPS.secrets}</h3>
           <Meta>
             Pick around ten unrevealed secrets the party could discover. Don&apos;t decide how. New
-            ones can be added in the campaign&apos;s Secrets tab, or suggested below.
+            ones can be added in the campaign&apos;s Secrets tab.
           </Meta>
           <LinkPicker
             label="Add a secret"
@@ -381,7 +296,6 @@ const PrepModal = ({ campaign, session, state, onClose }: PrepModalProps) => {
             onAdd={pickRecord}
             onRemove={removeLink}
           />
-          {suggest('secrets')}
         </Step>
 
         <Step>
@@ -399,7 +313,6 @@ const PrepModal = ({ campaign, session, state, onClose }: PrepModalProps) => {
             onAdd={pickRecord}
             onRemove={removeLink}
           />
-          {suggest('locations')}
           <AddHeading>Maps</AddHeading>
           <ScenePicker
             label="Session maps"
