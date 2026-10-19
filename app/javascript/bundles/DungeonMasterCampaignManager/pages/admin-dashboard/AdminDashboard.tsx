@@ -3,7 +3,7 @@ import PageTitle from '../../components/PageTitle/PageTitle';
 import { UserProps } from '../../utilities/types';
 import MonstersTable from '../monsters/MonstersTable';
 import UsersTable from './components/UsersTable';
-import { GiBarbute, GiBlacksmith } from 'react-icons/gi';
+import { GiBarbute, GiBlacksmith, GiScrollUnfurled } from 'react-icons/gi';
 import { FaMap } from 'react-icons/fa';
 import FoundryStatsPanel from './foundry-module-stats/components/FoundryStatsPanel';
 import { useNavigate } from 'react-router-dom';
@@ -76,6 +76,22 @@ const AdminDashboard = (props: {
               icon={<FaMap />}
             />
             <MapsTable />
+          </Section>
+
+          <Section>
+            <h3>
+              <GiScrollUnfurled className={'me-2'} /> Setup Guide
+            </h3>
+            <p>
+              The words of the New Campaign guide, on the website and in the Foundry campaign
+              planner module.
+            </p>
+            <Button
+              onClick={() => navigate('/app/admin-dashboard/setup-guide')}
+              color={Colors.primary}
+              title="Edit Setup Guide"
+              icon={<GiScrollUnfurled />}
+            />
           </Section>
 
           <Section>

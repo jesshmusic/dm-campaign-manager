@@ -397,6 +397,34 @@ describe('useCampaignApi', () => {
     });
   });
 
+  describe('setup guide', () => {
+    it("gets the guide's words, letting the browser keep them", async () => {
+      mockFetch.mockImplementation(() => jsonResponse({ steps: [], templates: [] }));
+
+      await expect(api().getSetupGuide()).resolves.toEqual({ steps: [], templates: [] });
+      expect(mockFetch).toHaveBeenCalledWith('/v1/setup_guide', {
+        method: 'GET',
+        headers: HEADERS,
+        body: undefined,
+      });
+    });
+
+    it('asks the server again for fresh words', async () => {
+      await api().getSetupGuide(true);
+
+      expect(lastCall()[0]).toBe('/v1/setup_guide');
+      expect(lastCall()[1].cache).toBe('no-cache');
+    });
+
+    it('changes the words with a PATCH', async () => {
+      await api().updateSetupGuide({ steps: [{ id: 'kind', title: 'Pick a shape' }] });
+
+      expect(lastCall()[0]).toBe('/v1/setup_guide');
+      expect(lastCall()[1].method).toBe('PATCH');
+      expect(lastBody()).toEqual({ steps: [{ id: 'kind', title: 'Pick a shape' }] });
+    });
+  });
+
   describe('errors', () => {
     it('joins an errors array into the message and keeps the status', async () => {
       mockFetch.mockImplementation(() =>

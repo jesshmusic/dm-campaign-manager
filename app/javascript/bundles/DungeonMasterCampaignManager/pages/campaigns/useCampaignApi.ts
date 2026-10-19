@@ -17,6 +17,7 @@ import {
   QuestLink,
   SessionLink,
 } from './types';
+import { SetupGuide, SetupGuideChanges } from './setup/setupSteps';
 
 export class ApiError extends Error {
   constructor(
@@ -55,11 +56,18 @@ const useCampaignApi = () => {
   const authFetch = useAuthFetch();
 
   return useMemo(() => {
-    const request = async <T>(url: string, method = 'GET', body?: unknown): Promise<T> => {
+    const request = async <T>(
+      url: string,
+      method = 'GET',
+      body?: unknown,
+      // e.g. { cache: 'no-cache' } to skip the browser's copy
+      init: Pick<RequestInit, 'cache'> = {},
+    ): Promise<T> => {
       const response = await authFetch(url, {
         method,
         headers: JSON_HEADERS,
         body: body === undefined ? undefined : JSON.stringify(body),
+        ...init,
       });
       if (response.status === 204) return undefined as T;
       const data: unknown = await response.json().catch(() => null);
@@ -185,6 +193,19 @@ const useCampaignApi = () => {
           `/v1/compendium?${params.toString()}`,
         );
       },
+
+      // The new-campaign guide's words, which the Foundry module reads too. The
+      // server lets browsers keep them for a few minutes; `fresh` asks it again.
+      getSetupGuide: (fresh = false) =>
+        request<SetupGuide>(
+          '/v1/setup_guide',
+          'GET',
+          undefined,
+          fresh ? { cache: 'no-cache' } : {},
+        ),
+      // Admins only: changes the words of the steps and templates given
+      updateSetupGuide: (changes: SetupGuideChanges) =>
+        request<SetupGuide>('/v1/setup_guide', 'PATCH', changes),
 
       // The DM's player characters from Foundry, for choosing a party
       listPlayerCharacters: () => request<PlayerCharacter[]>('/v1/player-characters'),

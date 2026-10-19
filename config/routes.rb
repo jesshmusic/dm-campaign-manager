@@ -143,6 +143,11 @@ Rails.application.routes.draw do
         post 'link/token', to: 'links#token', constraints: { format: 'json' }
       end
 
+      # The new-campaign setup guide's words: public to read (the Foundry module
+      # reads them too), admin-only to change
+      get 'setup_guide', to: 'setup_guides#show', constraints: { format: 'json' }
+      patch 'setup_guide', to: 'setup_guides#update', constraints: { format: 'json' }
+
       # Admin UI for managing maps
       get '/maps-admin', to: 'foundry_maps_admin#index'
 

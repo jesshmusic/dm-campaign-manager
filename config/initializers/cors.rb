@@ -26,5 +26,10 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
     resource '/v1/foundry/*',
       headers: :any,
       methods: [:get, :post, :patch, :delete, :options, :head]
+
+    # The setup guide's words, which the campaign planner module reads
+    resource '/v1/setup_guide',
+      headers: :any,
+      methods: [:get, :options, :head]
   end
 end

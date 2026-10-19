@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_10_19_120000) do
+ActiveRecord::Schema[7.1].define(version: 2026_10_19_130000) do
   create_schema "heroku_ext"
 
   # These are extensions that must be enabled in order to support this database
@@ -965,6 +965,30 @@ ActiveRecord::Schema[7.1].define(version: 2026_10_19_120000) do
     t.datetime "updated_at", null: false
     t.string "value"
     t.index ["monster_id"], name: "index_senses_on_monster_id"
+  end
+
+  create_table "setup_guide_steps", force: :cascade do |t|
+    t.string "key", null: false
+    t.integer "position", null: false
+    t.string "label", null: false
+    t.string "title", null: false
+    t.text "intro", null: false
+    t.text "why"
+    t.text "example"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["key"], name: "index_setup_guide_steps_on_key", unique: true
+  end
+
+  create_table "setup_guide_templates", force: :cascade do |t|
+    t.string "key", null: false
+    t.integer "position", null: false
+    t.string "title", null: false
+    t.text "description", null: false
+    t.text "example", default: "", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["key"], name: "index_setup_guide_templates_on_key", unique: true
   end
 
   create_table "skills", force: :cascade do |t|

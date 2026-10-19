@@ -28,6 +28,7 @@ import SearchResults from '../pages/search-results/SearchResults';
 import PrivacyPolicy from '../pages/privacy-policy/PrivacyPolicy';
 import FoundryMapsAdmin from '../pages/FoundryMapsAdmin';
 import FoundryModuleStatsPage from '../pages/admin-dashboard/foundry-module-stats/FoundryModuleStatsPage';
+import SetupGuidePage from '../pages/admin-dashboard/setup-guide/SetupGuidePage';
 import CampaignsIndex from '../pages/campaigns/CampaignsIndex';
 import NewCampaign from '../pages/campaigns/NewCampaign';
 import CampaignPage from '../pages/campaigns/CampaignPage';
@@ -169,6 +170,10 @@ const DMRoutes = (props: ResolverProps) => {
       <Route
         path="/app/admin-dashboard/foundry-module-stats"
         element={<ProtectedRoute as={FoundryModuleStatsPage} requireAdmin={true} {...props} />}
+      />
+      <Route
+        path="/app/admin-dashboard/setup-guide"
+        element={<ProtectedRoute as={SetupGuidePage} requireAdmin={true} {...props} />}
       />
       <Route
         path="/app/user-dashboard"

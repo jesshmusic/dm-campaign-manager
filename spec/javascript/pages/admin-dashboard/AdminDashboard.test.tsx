@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '../../test-utils';
+import { render, screen, fireEvent } from '../../test-utils';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import { MemoryRouter } from 'react-router-dom';
@@ -11,64 +11,96 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
 }));
 
-jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/containers/PageContainer', () => {
-  return function MockPageContainer({ children }: any) {
-    return <div data-testid="page-container">{children}</div>;
-  };
-});
+jest.mock(
+  '../../../../app/javascript/bundles/DungeonMasterCampaignManager/containers/PageContainer',
+  () => {
+    return function MockPageContainer({ children }: any) {
+      return <div data-testid="page-container">{children}</div>;
+    };
+  },
+);
 
-jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/components/PageTitle/PageTitle', () => {
-  return function MockPageTitle({ title }: any) {
-    return <h1 data-testid="page-title">{title}</h1>;
-  };
-});
+jest.mock(
+  '../../../../app/javascript/bundles/DungeonMasterCampaignManager/components/PageTitle/PageTitle',
+  () => {
+    return function MockPageTitle({ title }: any) {
+      return <h1 data-testid="page-title">{title}</h1>;
+    };
+  },
+);
 
-jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/monsters/MonstersTable', () => {
-  return function MockMonstersTable() {
-    return <div data-testid="monsters-table">Monsters Table</div>;
-  };
-});
+jest.mock(
+  '../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/monsters/MonstersTable',
+  () => {
+    return function MockMonstersTable() {
+      return <div data-testid="monsters-table">Monsters Table</div>;
+    };
+  },
+);
 
-jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/admin-dashboard/components/UsersTable', () => {
-  return function MockUsersTable() {
-    return <div data-testid="users-table">Users Table</div>;
-  };
-});
+jest.mock(
+  '../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/admin-dashboard/components/UsersTable',
+  () => {
+    return function MockUsersTable() {
+      return <div data-testid="users-table">Users Table</div>;
+    };
+  },
+);
 
-jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/admin-dashboard/components/ActionsTable', () => {
-  return function MockActionsTable() {
-    return <div data-testid="actions-table">Actions Table</div>;
-  };
-});
+jest.mock(
+  '../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/admin-dashboard/components/ActionsTable',
+  () => {
+    return function MockActionsTable() {
+      return <div data-testid="actions-table">Actions Table</div>;
+    };
+  },
+);
 
-jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/admin-dashboard/components/WidgetsTable', () => {
-  return function MockWidgetsTable() {
-    return <div data-testid="widgets-table">Widgets Table</div>;
-  };
-});
+jest.mock(
+  '../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/admin-dashboard/components/WidgetsTable',
+  () => {
+    return function MockWidgetsTable() {
+      return <div data-testid="widgets-table">Widgets Table</div>;
+    };
+  },
+);
 
-jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/admin-dashboard/components/MapsTable', () => {
-  return function MockMapsTable() {
-    return <div data-testid="maps-table">Maps Table</div>;
-  };
-});
+jest.mock(
+  '../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/admin-dashboard/components/MapsTable',
+  () => {
+    return function MockMapsTable() {
+      return <div data-testid="maps-table">Maps Table</div>;
+    };
+  },
+);
 
-jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/components/Frame/Frame', () => {
-  return function MockFrame({ title, children }: any) {
-    return (
-      <div data-testid={`frame-${title}`}>
-        <h3>{title}</h3>
-        {children}
-      </div>
-    );
-  };
-});
+jest.mock(
+  '../../../../app/javascript/bundles/DungeonMasterCampaignManager/components/Frame/Frame',
+  () => {
+    return function MockFrame({ title, children }: any) {
+      return (
+        <div data-testid={`frame-${title}`}>
+          <h3>{title}</h3>
+          {children}
+        </div>
+      );
+    };
+  },
+);
 
-jest.mock('../../../../app/javascript/bundles/DungeonMasterCampaignManager/components/Button/Button', () => {
-  return function MockButton({ title, icon, onClick }: any) {
-    return <button onClick={onClick}>{icon}{title}</button>;
-  };
-});
+jest.mock(
+  '../../../../app/javascript/bundles/DungeonMasterCampaignManager/components/Button/Button',
+  () => {
+    return function MockButton({ title, icon, onClick }: any) {
+      return (
+        <button onClick={onClick}>
+          {icon}
+          {title}
+        </button>
+      );
+    };
+  },
+);
 
 const mockStore = configureStore({
   reducer: {
@@ -92,7 +124,7 @@ describe('AdminDashboard', () => {
             user={{ name: 'Admin', email: 'admin@example.com' } as any}
           />
         </MemoryRouter>
-      </Provider>
+      </Provider>,
     );
   });
 
@@ -108,7 +140,7 @@ describe('AdminDashboard', () => {
             user={{ name: 'Admin', email: 'admin@example.com' } as any}
           />
         </MemoryRouter>
-      </Provider>
+      </Provider>,
     );
 
     expect(screen.getByTestId('page-title')).toHaveTextContent('DM Screen Admin');
@@ -126,9 +158,29 @@ describe('AdminDashboard', () => {
             user={{ name: 'Admin', email: 'admin@example.com' } as any}
           />
         </MemoryRouter>
-      </Provider>
+      </Provider>,
     );
 
     expect(screen.getByText('Site Statistics')).toBeInTheDocument();
+  });
+
+  it('opens the setup guide editor', () => {
+    render(
+      <Provider store={mockStore}>
+        <MemoryRouter>
+          <AdminDashboard
+            actionCount={5}
+            npcCount={100}
+            widgetCount={10}
+            userCount={50}
+            user={{ name: 'Admin', email: 'admin@example.com' } as any}
+          />
+        </MemoryRouter>
+      </Provider>,
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: /Edit Setup Guide$/ }));
+
+    expect(mockNavigate).toHaveBeenCalledWith('/app/admin-dashboard/setup-guide');
   });
 });

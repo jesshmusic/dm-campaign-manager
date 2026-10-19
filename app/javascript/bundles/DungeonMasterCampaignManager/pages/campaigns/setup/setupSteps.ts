@@ -1,114 +1,94 @@
 import { CampaignMode, CampaignTemplate } from '../types';
 
-// The words for each step of the new-campaign guide, kept in one place so the
-// steps read as one voice
+// The shape of the new-campaign guide: its steps, what each one asks for, and
+// the kinds of campaign it offers. The words (titles, intros, "Why this
+// matters" and examples) come from GET /v1/setup_guide, which the Foundry
+// module reads too, and an admin edits them on the admin dashboard.
 
-export type SetupStepId = 'kind' | 'pitch' | 'table' | 'world' | 'books' | 'review';
+// The steps, in order. They're fixed; only their words change.
+export const SETUP_STEP_IDS = ['kind', 'pitch', 'table', 'world', 'books', 'review'] as const;
 
-export interface SetupStep {
+export type SetupStepId = (typeof SETUP_STEP_IDS)[number];
+
+// Fields from campaignFields shown on each step
+export const STEP_FIELDS: Partial<Record<SetupStepId, string[]>> = {
+  pitch: ['name', 'tone', 'premise', 'pitch'],
+  table: ['party_size', 'start_level', 'target_level', 'planned_sessions', 'cadence'],
+  world: ['setting_name', 'truths', 'setting_notes'],
+};
+
+// The kinds of campaign offered, in order
+export const TEMPLATE_VALUES: CampaignTemplate[] = ['three_act', 'sandbox', 'five_room', 'blank'];
+
+// The mode each template makes
+export const TEMPLATE_MODES: Record<CampaignTemplate, CampaignMode> = {
+  three_act: 'arc',
+  sandbox: 'sandbox',
+  five_room: 'oneshot',
+  blank: 'arc',
+};
+
+// A step's words, as GET /v1/setup_guide returns them
+export interface SetupGuideStep {
   id: SetupStepId;
   // Short name for the progress list
   label: string;
   title: string;
   intro: string;
   // "Why this matters" and an example, shown beside the step
-  why?: string;
-  example?: string;
-  // Fields from campaignFields shown on this step
-  fields?: string[];
+  why: string | null;
+  example: string | null;
 }
 
-export const SETUP_STEPS: SetupStep[] = [
-  {
-    id: 'kind',
-    label: 'Kind',
-    title: 'What kind of game?',
-    intro:
-      'Choose the shape of your campaign. It decides what we set up for you, and you can change any of it later.',
-    why: 'It gives your campaign the right structure from the start: a story arc gets its sessions, acts and main threat, a sandbox gets a questline and a villain, and a one-shot gets a five-room dungeon. Not sure? Pick a story arc.',
-  },
-  {
-    id: 'pitch',
-    label: 'Pitch',
-    title: 'The pitch',
-    intro: 'Give your campaign a name, and say what it is about in a sentence or two.',
-    why: 'A good premise is a situation, not a plot: who is in trouble, what is at stake, and why the characters would care. Prep the situation and let the players decide what happens next.',
-    example:
-      'The dead are rising in Hommlet, and the temple that should stop them is hiding something. Tone: survival horror.',
-    fields: ['name', 'tone', 'premise', 'pitch'],
-  },
-  {
-    id: 'table',
-    label: 'Table',
-    title: 'The table',
-    intro: 'Who is playing, at what level, and for how long.',
-    why: 'This sets the scale of the campaign: how dangerous the threats should be, how quickly the characters level up, and how many sessions to plan for.',
-    example: 'Four players, levels 3 to 8, six sessions, played weekly.',
-    fields: ['party_size', 'start_level', 'target_level', 'planned_sessions', 'cadence'],
-  },
-  {
-    id: 'world',
-    label: 'World',
-    title: 'The world',
-    intro: 'Where the campaign happens, and what everyone at the table knows about it.',
-    why: 'Truths are short facts every player knows before the first session. Six of them set the mood better than pages of history, and give the players something to build their characters around.',
-    example:
-      'The dead do not rest easy in the Flanaess.\nThe Church of Pelor has closed its doors to the poor.\nHommlet’s walls were built for bandits, not armies.',
-    fields: ['setting_name', 'truths', 'setting_notes'],
-  },
-  {
-    id: 'books',
-    label: 'Books',
-    title: 'Your books',
-    intro:
-      'Choose the compendiums this campaign uses when you pick monsters and treasure for your sessions.',
-    why: 'Picks from your compendiums become links in your Foundry session journals. Click one to open its stat block, or drag it onto a scene to place a token.',
-  },
-  {
-    id: 'review',
-    label: 'Review',
-    title: 'Review and create',
-    intro: "Check your brief. You can change all of it later on the campaign's Overview tab.",
-  },
-];
-
-export const TEMPLATES: {
+// A template's words, as GET /v1/setup_guide returns them
+export interface SetupGuideTemplate {
   value: CampaignTemplate;
-  mode: CampaignMode;
   title: string;
   description: string;
   example: string;
-}[] = [
-  {
-    value: 'three_act',
-    mode: 'arc',
-    title: 'Story arc',
-    description:
-      'A set number of sessions, like a six-week campaign. Creates every session with levels rising toward your target, three acts, and a main threat with a clock.',
-    example: 'Six weekly sessions to stop a zombie plague in Greyhawk.',
-  },
-  {
-    value: 'sandbox',
-    mode: 'sandbox',
-    title: 'Sandbox',
-    description:
-      'An open-ended campaign driven by quests and villains. Creates a main questline and a villain front; add sessions as you go.',
-    example:
-      'The party roams the Wild Coast, taking jobs from a quest board while two villains scheme.',
-  },
-  {
-    value: 'five_room',
-    mode: 'oneshot',
-    title: 'One-shot',
-    description:
-      'A single adventure built on the five-room dungeon: guardian, puzzle, setback, climax, reward.',
-    example: 'One stormy night in a haunted lighthouse.',
-  },
-  {
-    value: 'blank',
-    mode: 'arc',
-    title: 'Blank',
-    description: 'Start from scratch and build it your way.',
-    example: 'For when you already know exactly what you want.',
-  },
-];
+}
+
+export interface SetupGuide {
+  steps: SetupGuideStep[];
+  templates: SetupGuideTemplate[];
+  // When an admin last changed the words
+  updatedAt: string | null;
+}
+
+// What PATCH /v1/setup_guide takes: the words to change, by step id and template value
+export interface SetupGuideChanges {
+  steps?: Partial<SetupGuideStep>[];
+  templates?: Partial<SetupGuideTemplate>[];
+}
+
+export interface SetupStep extends SetupGuideStep {
+  fields?: string[];
+}
+
+export interface SetupTemplate extends SetupGuideTemplate {
+  mode: CampaignMode;
+}
+
+const isPresent = <T>(item: T | undefined): item is T => item !== undefined;
+
+/**
+ * Puts the guide's words with its shape, in the guide's order. Null when the
+ * words are missing any step or template.
+ */
+export const buildSetup = (
+  guide: SetupGuide,
+): { steps: SetupStep[]; templates: SetupTemplate[] } | null => {
+  const guideSteps = Array.isArray(guide?.steps) ? guide.steps : [];
+  const guideTemplates = Array.isArray(guide?.templates) ? guide.templates : [];
+  const words = SETUP_STEP_IDS.map((id) => guideSteps.find((step) => step.id === id));
+  const options = TEMPLATE_VALUES.map((value) =>
+    guideTemplates.find((template) => template.value === value),
+  );
+  const steps = words.filter(isPresent);
+  const templates = options.filter(isPresent);
+  if (steps.length < words.length || templates.length < options.length) return null;
+  return {
+    steps: steps.map((step) => ({ ...step, fields: STEP_FIELDS[step.id] })),
+    templates: templates.map((template) => ({ ...template, mode: TEMPLATE_MODES[template.value] })),
+  };
+};

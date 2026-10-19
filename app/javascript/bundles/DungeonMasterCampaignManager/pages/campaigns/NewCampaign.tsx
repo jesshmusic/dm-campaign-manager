@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import PageContainer from '../../containers/PageContainer';
@@ -13,8 +13,9 @@ import { campaignFields } from './campaignFields';
 import { useCompendiumPacks } from './compendium';
 import useCampaignApi from './useCampaignApi';
 import useLoadedList from './useLoadedList';
-import { SETUP_STEPS, SetupStepId, TEMPLATES } from './setup/setupSteps';
+import { buildSetup, SETUP_STEP_IDS, SetupStepId, TEMPLATE_MODES } from './setup/setupSteps';
 import useSetupDraft from './setup/useSetupDraft';
+import useSetupGuide from './setup/useSetupGuide';
 import {
   ButtonRow,
   Card,
@@ -26,7 +27,7 @@ import {
   Toolbar,
 } from './Campaigns.styles';
 
-const REVIEW_STEP = SETUP_STEPS.length - 1;
+const REVIEW_STEP = SETUP_STEP_IDS.length - 1;
 // The truths everyone at the table knows; the server allows six
 const MAX_TRUTHS = 6;
 
@@ -145,10 +146,23 @@ const Fact = ({ label, value }: { label: string; value?: React.ReactNode }) =>
     </p>
   ) : null;
 
+// The page around the guide, also shown while its words load
+const Page = ({ children }: { children: React.ReactNode }) => (
+  <PageContainer pageTitle="New campaign" description="Start a new campaign plan." maxWidth>
+    <PageTitle title="New Campaign" />
+    <PlannerWrapper>
+      <Toolbar>
+        <Link to="/app/campaigns">← All campaigns</Link>
+      </Toolbar>
+      {children}
+    </PlannerWrapper>
+  </PageContainer>
+);
+
 /**
  * A step-by-step guide to starting a campaign: what kind of game, the pitch,
  * the table, the world and the books, then a review. Creating it opens the
- * new campaign.
+ * new campaign. The guide's words come from the server (see setupSteps).
  */
 const NewCampaign = () => {
   const api = useCampaignApi();
@@ -156,6 +170,8 @@ const NewCampaign = () => {
   const fields = campaignFields(api);
   const packs = useCompendiumPacks(api);
   const characters = useLoadedList(api.listPlayerCharacters);
+  const { guide, error: guideError, retry } = useSetupGuide(api.getSetupGuide);
+  const setup = useMemo(() => (guide ? buildSetup(guide) : null), [guide]);
   const { draft, update, clear, restored } = useSetupDraft(
     () => ({
       step: 0,
@@ -184,8 +200,27 @@ const NewCampaign = () => {
     headingRef.current?.scrollIntoView?.({ block: 'start' });
   }, [draft.step]);
 
-  const step = SETUP_STEPS[draft.step];
-  const stepIndex = (id: SetupStepId) => SETUP_STEPS.findIndex((s) => s.id === id);
+  if (!setup) {
+    const problem = guideError ?? (guide ? 'The setup guide is missing some of its steps.' : null);
+    return (
+      <Page>
+        {problem ? (
+          <Card role="alert">
+            <p>{problem}</p>
+            <ButtonRow>
+              <Button color={Colors.primary} title="Retry" onClick={retry} />
+            </ButtonRow>
+          </Card>
+        ) : (
+          <Meta>Loading the guide…</Meta>
+        )}
+      </Page>
+    );
+  }
+
+  const { steps, templates } = setup;
+  const step = steps[draft.step];
+  const stepIndex = (id: SetupStepId) => steps.findIndex((s) => s.id === id);
   const fieldsFor = (names: string[] = []) =>
     names
       .map((name) => fields.find((field) => field.name === name))
@@ -243,7 +278,7 @@ const NewCampaign = () => {
     }
     setCreating(true);
     setError(null);
-    const mode = TEMPLATES.find((option) => option.value === draft.template)?.mode ?? 'arc';
+    const mode = TEMPLATE_MODES[draft.template] ?? 'arc';
     try {
       const campaign = await api.createCampaign(
         {
@@ -265,7 +300,7 @@ const NewCampaign = () => {
 
   const renderKind = () => (
     <TemplateGrid role="radiogroup" aria-label="Campaign template">
-      {TEMPLATES.map((option) => (
+      {templates.map((option) => (
         <TemplateOption key={option.value} $selected={draft.template === option.value}>
           <label>
             <input
@@ -279,9 +314,11 @@ const NewCampaign = () => {
             {option.title}
           </label>
           <Meta id={`template-${option.value}-description`}>{option.description}</Meta>
-          <Meta>
-            <em>{option.example}</em>
-          </Meta>
+          {option.example && (
+            <Meta>
+              <em>{option.example}</em>
+            </Meta>
+          )}
         </TemplateOption>
       ))}
     </TemplateGrid>
@@ -300,7 +337,7 @@ const NewCampaign = () => {
   );
 
   const renderReview = () => {
-    const template = TEMPLATES.find((option) => option.value === draft.template);
+    const template = templates.find((option) => option.value === draft.template);
     const start = text('start_level');
     const target = text('target_level');
     const levelOnly = start !== '' ? start : target;
@@ -313,10 +350,10 @@ const NewCampaign = () => {
     const summary = (id: SetupStepId, children: React.ReactNode) => (
       <SummaryBlock key={id}>
         <SummaryHeader>
-          <h3>{SETUP_STEPS[stepIndex(id)].title}</h3>
+          <h3>{steps[stepIndex(id)].title}</h3>
           <LinkButton
             type="button"
-            aria-label={`Edit ${SETUP_STEPS[stepIndex(id)].title.toLowerCase()}`}
+            aria-label={`Edit ${steps[stepIndex(id)].title.toLowerCase()}`}
             onClick={() => goTo(stepIndex(id))}
           >
             Edit
@@ -408,87 +445,81 @@ const NewCampaign = () => {
   };
 
   return (
-    <PageContainer pageTitle="New campaign" description="Start a new campaign plan." maxWidth>
-      <PageTitle title="New Campaign" />
-      <PlannerWrapper>
-        <Toolbar>
-          <Link to="/app/campaigns">← All campaigns</Link>
-        </Toolbar>
-        {showRestored && (
-          <Notice $tone="success">
-            Picking up where you left off.{' '}
-            <LinkButton type="button" onClick={startOver}>
-              Start over
-            </LinkButton>
-          </Notice>
-        )}
-        <nav aria-label="Setup steps">
-          <Progress>
-            {SETUP_STEPS.map((s, index) => (
-              <li key={s.id}>
-                <button
-                  type="button"
-                  aria-current={index === draft.step ? 'step' : undefined}
-                  disabled={index > draft.furthest}
-                  onClick={() => goTo(index)}
-                >
-                  {index + 1}. {s.label}
-                </button>
-              </li>
-            ))}
-          </Progress>
-        </nav>
-        <Layout>
-          <div>
-            <Heading ref={headingRef} tabIndex={-1}>
-              {step.title}
-            </Heading>
-            <Meta>{step.intro}</Meta>
+    <Page>
+      {showRestored && (
+        <Notice $tone="success">
+          Picking up where you left off.{' '}
+          <LinkButton type="button" onClick={startOver}>
+            Start over
+          </LinkButton>
+        </Notice>
+      )}
+      <nav aria-label="Setup steps">
+        <Progress>
+          {steps.map((s, index) => (
+            <li key={s.id}>
+              <button
+                type="button"
+                aria-current={index === draft.step ? 'step' : undefined}
+                disabled={index > draft.furthest}
+                onClick={() => goTo(index)}
+              >
+                {index + 1}. {s.label}
+              </button>
+            </li>
+          ))}
+        </Progress>
+      </nav>
+      <Layout>
+        <div>
+          <Heading ref={headingRef} tabIndex={-1}>
+            {step.title}
+          </Heading>
+          <Meta>{step.intro}</Meta>
+          <Card>
+            {renderStep()}
+            {error && <Notice>{error}</Notice>}
+            <ButtonRow>
+              {draft.step > 0 && (
+                <Button
+                  color={Colors.secondary}
+                  title="Back"
+                  onClick={() => goTo(draft.step - 1)}
+                />
+              )}
+              {draft.step < REVIEW_STEP ? (
+                <Button
+                  color={Colors.primary}
+                  title={`Next: ${steps[draft.step + 1].title}`}
+                  onClick={next}
+                />
+              ) : (
+                <Button
+                  color={Colors.primary}
+                  title={creating ? 'Creating…' : 'Create campaign'}
+                  disabled={creating}
+                  onClick={() => void create()}
+                />
+              )}
+            </ButtonRow>
+          </Card>
+        </div>
+        {(step.why ?? step.example) && (
+          <Aside aria-label="Why this matters">
             <Card>
-              {renderStep()}
-              {error && <Notice>{error}</Notice>}
-              <ButtonRow>
-                {draft.step > 0 && (
-                  <Button
-                    color={Colors.secondary}
-                    title="Back"
-                    onClick={() => goTo(draft.step - 1)}
-                  />
-                )}
-                {draft.step < REVIEW_STEP ? (
-                  <Button
-                    color={Colors.primary}
-                    title={`Next: ${SETUP_STEPS[draft.step + 1].title}`}
-                    onClick={next}
-                  />
-                ) : (
-                  <Button
-                    color={Colors.primary}
-                    title={creating ? 'Creating…' : 'Create campaign'}
-                    disabled={creating}
-                    onClick={() => void create()}
-                  />
-                )}
-              </ButtonRow>
+              <h3>Why this matters</h3>
+              {step.why && <p>{step.why}</p>}
+              {step.example && (
+                <>
+                  <h4>Example</h4>
+                  <Example>{step.example}</Example>
+                </>
+              )}
             </Card>
-          </div>
-          {(step.why ?? step.example) && (
-            <Aside aria-label="Why this matters">
-              <Card>
-                <h3>Why this matters</h3>
-                {step.why && <p>{step.why}</p>}
-                {step.example && (
-                  <>
-                    <h4>Example</h4>
-                    <Example>{step.example}</Example>
-                  </>
-                )}
-              </Card>
-            </Aside>
-          )}
-        </Layout>
-      </PlannerWrapper>
-    </PageContainer>
+          </Aside>
+        )}
+      </Layout>
+    </Page>
   );
 };
 

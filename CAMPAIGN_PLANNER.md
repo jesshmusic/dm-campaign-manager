@@ -49,14 +49,15 @@ Decisions already made:
 - **Guided setup (done, web and Foundry):**
   - New Campaign is a six-step guide: what kind of game, the pitch, the table (party, players, levels, sessions),
     the world (setting and truths), your books (compendiums), then review and create.
-  - Each step has a short "Why this matters" with an example. The copy for every step lives in
-    `pages/campaigns/setup/setupSteps.ts`.
+  - Each step has a short "Why this matters" with an example. The words come from `GET /v1/setup_guide` (see
+    "Setup guide words"); `pages/campaigns/setup/setupSteps.ts` keeps only the structure: which fields each step
+    shows and each template's mode.
   - The answers are saved in the browser as the DM goes, so leaving the page doesn't lose them.
   - Creating the campaign opens it.
   - The Overview tab shows a "Getting started" checklist (party, threat, cast, secrets, first session) until it's
     done or hidden.
   - The Foundry module has the same guide, opened from the Connect window and the Campaign Dashboard.
-    Its copy lives in the module's `scripts/setup.mjs`; keep it in step with `setupSteps.ts`.
+    It reads the same words from `GET /v1/setup_guide`.
     - It creates the campaign through `POST /v1/foundry/campaigns`.
     - The party's character sheets go with the request, and are saved like `POST /v1/foundry/characters` saves
       them.
@@ -128,6 +129,17 @@ Decisions already made:
     places is a multi-select; monster and item search fills in as you type, with the campaign's book references
     first.
   - Compendium search matches the start of words, so "gh" finds Ghoul but not Knight.
+- **Setup guide words (done, web):** the New Campaign guide's words have one source, shared by the website and
+  the module.
+  - Two tables with fixed rows: `setup_guide_steps` (kind, pitch, table, world, books, review: label, title, intro,
+    why, example) and `setup_guide_templates` (three_act, sandbox, five_room, blank: title, description, example).
+    Their migration inserts the current words, with the books and review steps worded for both the website and
+    Foundry, so production isn't empty when it goes live.
+  - `GET /v1/setup_guide` (public, CORS-enabled, cached for 5 minutes) returns `{ steps: [{ id, label, title,
+    intro, why, example }], templates: [{ value, title, description, example }], updatedAt }`, in order.
+  - `PATCH /v1/setup_guide` (admins only) changes the words of the steps and templates sent, all or none; it can't
+    add, remove or reorder them. Errors come back as `422` naming each step or template.
+  - Admins edit them on the admin dashboard's **Setup guide** page (`/app/admin-dashboard/setup-guide`).
 - **Device-code linking (done):** the DM links Foundry with a code instead of pasting an API token, in an
   OAuth-style device flow (RFC 8628). The module's Connect window has **Get a code**; pasting a token still works.
   - The module calls `POST /v1/foundry/link` (no auth; 10 a minute per IP, then `429`) with
@@ -170,7 +182,6 @@ Decisions already made:
 - Add the module to `app/services/foundry_module_stats_fetcher.rb` after its first release.
 
 **Planned but not built**
-- One source for the setup guide's words, shared by the website and the module (today they're copied).
 - Player-facing pages: the shareable player guide, and player-visible journal pages.
 - From phase 1: a campaign-scoped `NotesWidget`, and linking places to Cartography maps.
 - From phase 5: treasure hoards, an in-world calendar, and export as a Foundry Adventure compendium.

@@ -134,9 +134,9 @@ jest.mock(
 jest.mock(
   '../../../app/javascript/bundles/DungeonMasterCampaignManager/navigation/ProtectedRoute',
   () => {
-    return function ProtectedRoute({ as: Component, ...props }: any) {
+    return function ProtectedRoute({ as: Component, requireAdmin, ...props }: any) {
       return (
-        <div data-testid="protected-route">
+        <div data-testid="protected-route" data-require-admin={String(Boolean(requireAdmin))}>
           <Component {...props} />
         </div>
       );
@@ -185,6 +185,15 @@ jest.mock(
   () => {
     return function EditWidgetPage() {
       return <div data-testid="edit-widget-page">Edit Widget Page</div>;
+    };
+  },
+);
+
+jest.mock(
+  '../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/admin-dashboard/setup-guide/SetupGuidePage',
+  () => {
+    return function SetupGuidePage() {
+      return <div data-testid="setup-guide-page">Setup Guide</div>;
     };
   },
 );
@@ -575,6 +584,17 @@ describe('DMRoutes', () => {
 
       expect(screen.getByTestId('protected-route')).toBeInTheDocument();
       expect(screen.getByTestId('foundry-maps-admin-page')).toBeInTheDocument();
+    });
+
+    it('should keep the setup guide editor to admins', () => {
+      render(
+        <MemoryRouter initialEntries={['/app/admin-dashboard/setup-guide']}>
+          <DMRoutes />
+        </MemoryRouter>,
+      );
+
+      expect(screen.getByTestId('protected-route')).toHaveAttribute('data-require-admin', 'true');
+      expect(screen.getByTestId('setup-guide-page')).toBeInTheDocument();
     });
 
     it.each([

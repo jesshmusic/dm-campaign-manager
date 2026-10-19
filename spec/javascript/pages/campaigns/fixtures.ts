@@ -19,6 +19,7 @@ import {
   Secret,
 } from '../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/types';
 import type { CampaignApi } from '../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/useCampaignApi';
+import type { SetupGuide } from '../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/setup/setupSteps';
 import type { CampaignState } from '../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/useCampaign';
 
 export const npc = (overrides: Partial<Npc> = {}): Npc => ({
@@ -553,6 +554,88 @@ export const sampleCompendiumEntry = (
   ...overrides,
 });
 
+/** The new-campaign guide's words, as GET /v1/setup_guide returns them. */
+export const setupGuide = (overrides: Partial<SetupGuide> = {}): SetupGuide => ({
+  steps: [
+    {
+      id: 'kind',
+      label: 'Kind',
+      title: 'What kind of game?',
+      intro: 'Choose the shape of your campaign.',
+      why: 'It gives your campaign the right structure from the start. Not sure? Pick a story arc.',
+      example: null,
+    },
+    {
+      id: 'pitch',
+      label: 'Pitch',
+      title: 'The pitch',
+      intro: 'Give your campaign a name, and say what it is about in a sentence or two.',
+      why: 'A good premise is a situation, not a plot.',
+      example: 'The dead are rising in Hommlet. Tone: survival horror.',
+    },
+    {
+      id: 'table',
+      label: 'Table',
+      title: 'The table',
+      intro: 'Who is playing, at what level, and for how long.',
+      why: 'This sets the scale of the campaign.',
+      example: 'Four players, levels 3 to 8, six sessions, played weekly.',
+    },
+    {
+      id: 'world',
+      label: 'World',
+      title: 'The world',
+      intro: 'Where the campaign happens.',
+      why: 'Truths are short facts every player knows before the first session.',
+      example: 'The dead do not rest easy.\nHommlet’s walls were built for bandits.',
+    },
+    {
+      id: 'books',
+      label: 'Books',
+      title: 'Your books',
+      intro: 'Choose the compendiums this campaign uses for monsters, spells, items and tables.',
+      why: 'Each pick becomes a link in your session journals.',
+      example: null,
+    },
+    {
+      id: 'review',
+      label: 'Review',
+      title: 'Review and create',
+      intro: 'Check your brief. You can change any of it later.',
+      why: null,
+      example: null,
+    },
+  ],
+  templates: [
+    {
+      value: 'three_act',
+      title: 'Story arc',
+      description: 'A set number of sessions, like a six-week campaign.',
+      example: 'Six weekly sessions to stop a zombie plague in Greyhawk.',
+    },
+    {
+      value: 'sandbox',
+      title: 'Sandbox',
+      description: 'An open-ended campaign driven by quests and villains.',
+      example: 'The party roams the Wild Coast.',
+    },
+    {
+      value: 'five_room',
+      title: 'One-shot',
+      description: 'A single adventure built on the five-room dungeon.',
+      example: 'One stormy night in a haunted lighthouse.',
+    },
+    {
+      value: 'blank',
+      title: 'Blank',
+      description: 'Start from scratch and build it your way.',
+      example: 'For when you already know exactly what you want.',
+    },
+  ],
+  updatedAt: '2026-10-19T13:00:00.000Z',
+  ...overrides,
+});
+
 export type MockApi = { [K in keyof CampaignApi]: jest.Mock };
 
 /** Every CampaignApi call as a jest.fn, resolving to something sensible. */
@@ -581,6 +664,8 @@ export const makeApi = (overrides: Partial<MockApi> = {}): MockApi => ({
   randomTavernName: jest.fn().mockResolvedValue('The Prancing Pony'),
   adventureHook: jest.fn().mockResolvedValue('A dragon attacks'),
   generateStatBlock: jest.fn().mockResolvedValue({ id: '77', name: 'Lareth', slug: 'lareth' }),
+  getSetupGuide: jest.fn().mockResolvedValue(setupGuide()),
+  updateSetupGuide: jest.fn().mockResolvedValue(setupGuide()),
   ...overrides,
 });
 
