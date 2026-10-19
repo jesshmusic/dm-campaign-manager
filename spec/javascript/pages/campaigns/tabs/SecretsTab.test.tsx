@@ -5,6 +5,7 @@ import SecretsTab, {
 } from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/tabs/SecretsTab';
 import { Campaign } from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/types';
 import { FakeState, makeState, sampleCampaign } from '../fixtures';
+import { creditedTitles } from '../creditHelpers';
 
 const renderTab = (campaign: Campaign = sampleCampaign(), state: FakeState = makeState()) => {
   render(<SecretsTab campaign={campaign} state={state} />);
@@ -78,6 +79,24 @@ describe('RevelationCheck', () => {
     expect(screen.getByText('Every revelation has at least 3 clues.')).toBeInTheDocument();
     expect(screen.queryByText(/Needs/)).not.toBeInTheDocument();
   });
+
+  it('credits the Three Clue Rule before any clues are grouped', () => {
+    const { container } = render(<RevelationCheck revelations={[]} />);
+
+    expect(creditedTitles(container)).toEqual([['Three Clue Rule']]);
+  });
+
+  it('credits the Three Clue Rule beside the check', () => {
+    const { container } = render(
+      <RevelationCheck revelations={[{ name: 'A', clueCount: 1, revealedCount: 0 }]} />,
+    );
+
+    expect(creditedTitles(container)).toEqual([['Three Clue Rule']]);
+    expect(screen.getByRole('link', { name: 'Three Clue Rule' })).toHaveAttribute(
+      'href',
+      'https://thealexandrian.net/wordpress/1118/roleplaying-games/three-clue-rule',
+    );
+  });
 });
 
 describe('SecretsTab', () => {
@@ -95,6 +114,14 @@ describe('SecretsTab', () => {
     renderTab();
 
     expect(screen.getByText(/1 revelation has fewer than 3 clues/)).toBeInTheDocument();
+  });
+
+  it('credits where secrets and clues come from', () => {
+    renderTab();
+
+    expect(creditedTitles(secrets())).toEqual([
+      ['Secrets and Clues, the Secret Weapon of the Lazy Dungeon Master'],
+    ]);
   });
 
   it('lists hidden secrets before revealed ones', () => {

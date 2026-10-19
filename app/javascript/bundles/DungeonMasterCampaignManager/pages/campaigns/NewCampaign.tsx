@@ -8,6 +8,7 @@ import { Colors } from '../../utilities/enums';
 import { FieldConfig, toAttributes, toFormValues } from './components/EntityForm';
 import FormFields from './components/FormFields';
 import CompendiumPicker from './components/CompendiumPicker';
+import LearnMore from './components/LearnMore';
 import PartyPicker from './components/PartyPicker';
 import { campaignFields } from './campaignFields';
 import { useCompendiumPacks } from './compendium';
@@ -16,6 +17,7 @@ import useLoadedList from './useLoadedList';
 import { buildSetup, SETUP_STEP_IDS, SetupStepId, TEMPLATE_MODES } from './setup/setupSteps';
 import useSetupDraft from './setup/useSetupDraft';
 import useSetupGuide from './setup/useSetupGuide';
+import { SETUP_STEP_CREDITS, TEMPLATE_CREDITS } from './techniques';
 import {
   ButtonRow,
   Card,
@@ -319,6 +321,7 @@ const NewCampaign = () => {
               <em>{option.example}</em>
             </Meta>
           )}
+          <LearnMore credits={TEMPLATE_CREDITS[option.value] ?? []} />
         </TemplateOption>
       ))}
     </TemplateGrid>
@@ -476,6 +479,7 @@ const NewCampaign = () => {
             {step.title}
           </Heading>
           <Meta>{step.intro}</Meta>
+          <LearnMore credits={SETUP_STEP_CREDITS[step.id] ?? []} />
           <Card>
             {renderStep()}
             {error && <Notice>{error}</Notice>}

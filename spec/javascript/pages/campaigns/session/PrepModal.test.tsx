@@ -20,6 +20,7 @@ import {
   sampleCompendiumEntry,
 } from '../fixtures';
 import { chooseOption, menuOptions, openSelect, removeValue } from '../selectHelpers';
+import { creditedTitles } from '../creditHelpers';
 
 const renderPrep = (
   campaign: Campaign = sampleCampaign(),
@@ -94,6 +95,16 @@ describe('PrepModal', () => {
       '7. Choose relevant monsters',
       '8. Select treasure and magic items',
     ]);
+  });
+
+  it('credits the eight steps, and where a strong start comes from', () => {
+    renderPrep();
+
+    expect(creditedTitles(prep())).toEqual([
+      ['The Eight Steps of the Lazy DM', 'Return of the Lazy Dungeon Master'],
+      ['Starting Strong'],
+    ]);
+    expect(creditedTitles(step(2))).toEqual([['Starting Strong']]);
   });
 
   it('shows the prep so far', () => {

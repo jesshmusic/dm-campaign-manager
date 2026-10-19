@@ -10,6 +10,7 @@ import { Campaign, MODE_LABELS } from '../types';
 import { RevelationCheck } from './SecretsTab';
 import GettingStarted from './GettingStarted';
 import CompendiumPicker from '../components/CompendiumPicker';
+import LearnMore from '../components/LearnMore';
 import { useCompendiumPacks } from '../compendium';
 import { formatDate } from './SessionsTab';
 import { ButtonRow, Card, CardGrid, List, Meta, Notice, SectionTitle } from '../Campaigns.styles';
@@ -122,6 +123,7 @@ const OverviewTab = ({ campaign, state }: OverviewTabProps) => {
         <Card>
           <h3>Pitch for your players</h3>
           <p>{campaign.pitch ?? 'No pitch yet.'}</p>
+          <LearnMore credits={['pitch']} />
         </Card>
         <Card>
           <h3>Truths of the setting</h3>
@@ -134,6 +136,7 @@ const OverviewTab = ({ campaign, state }: OverviewTabProps) => {
           ) : (
             <p>No truths yet.</p>
           )}
+          <LearnMore credits={['truths']} />
         </Card>
       </CardGrid>
 

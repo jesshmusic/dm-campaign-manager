@@ -1,5 +1,6 @@
 import EntitySection from '../components/EntitySection';
 import { FieldConfig } from '../components/EntityForm';
+import LearnMore from '../components/LearnMore';
 import { CampaignState } from '../useCampaign';
 import { Campaign, RevelationSummary, Secret, THREE_CLUE_MINIMUM } from '../types';
 import { Badge, Card, CardHeader, List, Meta, Notice, SectionTitle } from '../Campaigns.styles';
@@ -7,10 +8,13 @@ import { Badge, Card, CardHeader, List, Meta, Notice, SectionTitle } from '../Ca
 export const RevelationCheck = ({ revelations }: { revelations: RevelationSummary[] }) => {
   if (revelations.length === 0) {
     return (
-      <Meta>
-        Group clues by the revelation they point to and the planner will check the Three Clue Rule:
-        every conclusion the party needs should have at least {THREE_CLUE_MINIMUM} clues.
-      </Meta>
+      <>
+        <Meta>
+          Group clues by the revelation they point to and the planner will check the Three Clue
+          Rule: every conclusion the party needs should have at least {THREE_CLUE_MINIMUM} clues.
+        </Meta>
+        <LearnMore credits={['threeClues']} />
+      </>
     );
   }
   const thin = revelations.filter((revelation) => revelation.clueCount < THREE_CLUE_MINIMUM);
@@ -41,6 +45,7 @@ export const RevelationCheck = ({ revelations }: { revelations: RevelationSummar
           </li>
         ))}
       </List>
+      <LearnMore credits={['threeClues']} />
     </Card>
   );
 };
@@ -86,10 +91,13 @@ const SecretsTab = ({ campaign, state }: SecretsTabProps) => {
         title="Secrets and clues"
         noun="secret"
         intro={
-          <Meta>
-            Write secrets without deciding how the party finds them. Unrevealed secrets carry
-            forward to the next session.
-          </Meta>
+          <>
+            <Meta>
+              Write secrets without deciding how the party finds them. Unrevealed secrets carry
+              forward to the next session.
+            </Meta>
+            <LearnMore credits={['secrets']} />
+          </>
         }
         items={ordered}
         fields={fields}

@@ -8,6 +8,7 @@ import { formatDate } from '../../../../../app/javascript/bundles/DungeonMasterC
 import { Campaign } from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/types';
 import { FakeState, makeState, sampleCampaign, samplePacks } from '../fixtures';
 import { chooseOption } from '../selectHelpers';
+import { creditedTitles } from '../creditHelpers';
 
 const renderTab = (campaign: Campaign = sampleCampaign(), state: FakeState = makeState()) => {
   render(
@@ -77,6 +78,20 @@ describe('OverviewTab', () => {
     expect(screen.getByText('Hold the walls of Hommlet for six weeks.')).toBeInTheDocument();
     expect(screen.getByText('The dead walk')).toBeInTheDocument();
     expect(screen.getByText('The temple is corrupt')).toBeInTheDocument();
+  });
+
+  it('credits where the pitch and the truths come from', () => {
+    renderTab();
+
+    const card = (title: string) =>
+      screen.getByRole('heading', { name: title }).parentElement as HTMLElement;
+    expect(creditedTitles(card('Pitch for your players'))).toEqual([
+      ['Writing a One-Page Campaign Guide'],
+    ]);
+    expect(creditedTitles(card('Truths of the setting'))).toEqual([
+      ['Understanding the Six Truths'],
+    ]);
+    expect(creditedTitles(card('Premise'))).toEqual([]);
   });
 
   it('shows a single level when the campaign does not level up', () => {

@@ -144,6 +144,24 @@ describe('CampaignsIndex', () => {
     expect(screen.queryByText('Loading…')).not.toBeInTheDocument();
   });
 
+  it("lists where the planner's ideas come from", async () => {
+    renderIndex();
+    await screen.findByRole('link', { name: 'Zombie Siege' });
+
+    const sources = screen.getByRole('region', { name: 'Where these ideas come from' });
+    expect(
+      within(sources).getByRole('list', { name: 'Sly Flourish (Mike Shea)' }),
+    ).toBeInTheDocument();
+    expect(within(sources).getByRole('link', { name: 'Fronts' })).toHaveAttribute(
+      'href',
+      'https://roll20.net/compendium/dw/Fronts',
+    );
+    expect(within(sources).getByRole('link', { name: 'Progress clocks' })).toHaveAttribute(
+      'target',
+      '_blank',
+    );
+  });
+
   it('starts a new campaign', async () => {
     renderIndex();
     await screen.findByRole('link', { name: 'Zombie Siege' });

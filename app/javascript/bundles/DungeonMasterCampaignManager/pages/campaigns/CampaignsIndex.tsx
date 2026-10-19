@@ -4,6 +4,7 @@ import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
 import Button from '../../components/Button/Button';
 import { Colors } from '../../utilities/enums';
+import { IdeaSources } from './components/LearnMore';
 import ProgressClock from './components/ProgressClock';
 import useCampaignApi from './useCampaignApi';
 import { CampaignSummary, MODE_LABELS } from './types';
@@ -94,6 +95,7 @@ const CampaignsIndex = () => {
             </Card>
           ))}
         </CardGrid>
+        <IdeaSources />
       </PlannerWrapper>
     </PageContainer>
   );

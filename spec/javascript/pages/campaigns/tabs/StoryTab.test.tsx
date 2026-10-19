@@ -6,6 +6,7 @@ import StoryTab, {
 import { Campaign } from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/types';
 import { FakeState, makeState, npc, sampleCampaign } from '../fixtures';
 import { menuOptions, openSelect } from '../selectHelpers';
+import { creditedTitles } from '../creditHelpers';
 
 const renderTab = (campaign: Campaign = sampleCampaign(), state: FakeState = makeState()) => {
   render(<StoryTab campaign={campaign} state={state} />);
@@ -101,6 +102,14 @@ describe('StoryTab', () => {
       renderTab(sampleCampaign({ fronts: [] }));
 
       expect(screen.getByText(/No fronts yet/)).toBeInTheDocument();
+    });
+
+    it('credits where fronts and clocks come from', () => {
+      renderTab(sampleCampaign({ fronts: [] }));
+
+      expect(creditedTitles(frontsSection())).toEqual([
+        ['Fronts', 'Prepping and Running Lazy Campaigns', 'Progress clocks'],
+      ]);
     });
 
     it('advances the clock', () => {

@@ -5,6 +5,7 @@ import Button from '../../../components/Button/Button';
 import { Colors } from '../../../utilities/enums';
 import { formatCoins } from '../coins';
 import { linkDetail, LinkName } from '../components/CompendiumLinks';
+import LearnMore from '../components/LearnMore';
 import SceneThumbnail, { SceneGallery } from '../components/SceneThumbnail';
 import { nameWithQuantity } from '../quest/questLinks';
 import { CampaignState } from '../useCampaign';
@@ -67,10 +68,13 @@ const PrepView = ({ campaign, session, state }: PrepViewProps) => {
   return (
     <>
       <PrepBar>
-        <Meta>
-          Prep with the Lazy DM&apos;s eight steps: what you pick syncs to Foundry with Dorman
-          Lakely&apos;s Campaign Planner.
-        </Meta>
+        <div>
+          <Meta>
+            Prep with the Lazy DM&apos;s eight steps: what you pick syncs to Foundry with Dorman
+            Lakely&apos;s Campaign Planner.
+          </Meta>
+          <LearnMore credits={['sessionPrep']} />
+        </div>
         <Button
           color={Colors.primary}
           title="Prep this session"
@@ -96,6 +100,7 @@ const PrepView = ({ campaign, session, state }: PrepViewProps) => {
           ) : (
             <EmptyState>No strong start yet.</EmptyState>
           )}
+          <LearnMore credits={['strongStart']} />
         </Summary>
 
         <Summary>

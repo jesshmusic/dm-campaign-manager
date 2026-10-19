@@ -7,6 +7,7 @@ import CompendiumLinks, {
   TREASURE_CATEGORIES,
 } from '../components/CompendiumLinks';
 import { DraftCoins, DraftTextArea, parseWholeNumber, textOrNull } from '../components/DraftFields';
+import LearnMore from '../components/LearnMore';
 import LinkPicker from '../components/LinkPicker';
 import PlannerModal from '../components/PlannerModal';
 import ScenePicker from '../components/ScenePicker';
@@ -205,6 +206,7 @@ const PrepModal = ({ campaign, session, state, onClose }: PrepModalProps) => {
       <Meta>
         Walk through the Lazy DM&apos;s eight steps. Nothing is saved until you click Save.
       </Meta>
+      <LearnMore credits={['sessionPrep']} />
       <FormGrid>
         <Field>
           Title
@@ -265,6 +267,7 @@ const PrepModal = ({ campaign, session, state, onClose }: PrepModalProps) => {
         <Step>
           <h3>{PREP_STEPS.strongStart}</h3>
           <Meta>Open with something happening that pulls the players straight into the game.</Meta>
+          <LearnMore credits={['strongStart']} />
           <DraftTextArea
             label="Strong start"
             value={draft.strongStart}

@@ -4,6 +4,7 @@ import { render, screen, fireEvent, waitFor, within } from '../../test-utils';
 import NewCampaign from '../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/NewCampaign';
 import { DRAFT_KEY } from '../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/setup/useSetupDraft';
 import { jsonResponse, playerCharacter, sampleCampaign, samplePacks, setupGuide } from './fixtures';
+import { creditedTitles, creditLines } from './creditHelpers';
 
 const mockGetAccessTokenSilently = jest.fn(() => Promise.resolve('test-token'));
 jest.mock('@auth0/auth0-react', () => ({
@@ -215,6 +216,52 @@ describe('NewCampaign', () => {
       expect(
         screen.getByText('Six weekly sessions to stop a zombie plague in Greyhawk.'),
       ).toBeInTheDocument();
+    });
+
+    it('credits where the sandbox and one-shot templates come from', async () => {
+      await renderPage();
+
+      const option = (name: RegExp) =>
+        screen.getByRole('radio', { name }).closest('label')?.parentElement as HTMLElement;
+      expect(creditedTitles(option(/^Sandbox/))).toEqual([["Don't Prep Plots"]]);
+      expect(creditedTitles(option(/^One-shot/))).toEqual([['5 Room Dungeons']]);
+      expect(creditedTitles(option(/^Story arc/))).toEqual([]);
+      expect(creditedTitles(option(/^Blank/))).toEqual([]);
+    });
+
+    it('credits the six truths on the world step, and nothing on the pitch', async () => {
+      await renderPage();
+      next();
+
+      expect(creditLines(document.body)).toEqual([]);
+
+      fireEvent.change(input('name'), { target: { value: 'Zombie Siege' } });
+      next();
+      next();
+      expect(heading()).toHaveTextContent('The world');
+      expect(creditedTitles(document.body)).toEqual([['Understanding the Six Truths']]);
+    });
+
+    it("keeps the credits by template and step when an admin changes the guide's words", async () => {
+      const guide = setupGuide();
+      guide.templates[1] = { ...guide.templates[1], title: 'Open world', description: 'Roam.' };
+      guide.steps[3] = { ...guide.steps[3], title: 'Your setting', intro: 'Where it happens.' };
+      mockFetch.mockImplementation(withGuide(() => jsonResponse([]), guide));
+      await renderPage();
+
+      const sandbox = screen.getByRole('radio', { name: /^Open world/ }).closest('label')
+        ?.parentElement as HTMLElement;
+      expect(creditedTitles(sandbox)).toEqual([["Don't Prep Plots"]]);
+
+      next();
+      fireEvent.change(input('name'), { target: { value: 'Zombie Siege' } });
+      next();
+      next();
+      expect(heading()).toHaveTextContent('Your setting');
+      expect(screen.getByRole('link', { name: 'Understanding the Six Truths' })).toHaveAttribute(
+        'href',
+        'https://slyflourish.com/understanding_the_six_truths.html',
+      );
     });
 
     it('needs a name before leaving the pitch', async () => {

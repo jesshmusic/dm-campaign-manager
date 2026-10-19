@@ -15,6 +15,7 @@ import {
   reference,
   sampleCampaign,
 } from '../fixtures';
+import { creditedTitles } from '../creditHelpers';
 
 const renderPrep = (
   campaign: Campaign = sampleCampaign(),
@@ -56,6 +57,16 @@ describe('PrepView', () => {
     ]);
     expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  });
+
+  it('credits the eight steps, and where a strong start comes from', () => {
+    renderPrep();
+
+    expect(creditedTitles(document.body)).toEqual([
+      ['The Eight Steps of the Lazy DM', 'Return of the Lazy Dungeon Master'],
+      ['Starting Strong'],
+    ]);
+    expect(creditedTitles(step(2))).toEqual([['Starting Strong']]);
   });
 
   it('shows the notes, strong start and scenes', () => {

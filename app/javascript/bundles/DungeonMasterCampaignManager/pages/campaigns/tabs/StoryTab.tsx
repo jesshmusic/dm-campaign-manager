@@ -1,5 +1,6 @@
 import EntitySection from '../components/EntitySection';
 import { FieldConfig } from '../components/EntityForm';
+import LearnMore from '../components/LearnMore';
 import ProgressClock from '../components/ProgressClock';
 import { CampaignState } from '../useCampaign';
 import { Campaign, Front, NPC_ROLE_LABELS, Portent } from '../types';
@@ -139,10 +140,13 @@ const StoryTab = ({ campaign, state }: StoryTabProps) => {
         title="Fronts and clocks"
         noun="front"
         intro={
-          <Meta>
-            Each front is a threat with a goal. Advance its clock between sessions as the threat
-            moves forward.
-          </Meta>
+          <>
+            <Meta>
+              Each front is a threat with a goal. Advance its clock between sessions as the threat
+              moves forward.
+            </Meta>
+            <LearnMore credits={['threats', 'clocks']} />
+          </>
         }
         items={campaign.fronts}
         fields={fields}
