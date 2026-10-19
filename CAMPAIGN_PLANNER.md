@@ -21,7 +21,7 @@ Decisions already made:
   stat-block generator.
 - Everything ships in one PR.
 
-## Status (2026-10-16)
+## Status (2026-10-19)
 - **Phase 0 (done):** map admin endpoints locked down, Patreon linked to accounts, personal API tokens and
   `GET /v1/foundry/me`.
 - **Phase 1 (done):** planner models and API, the campaign wizard with templates, campaign tabs (Overview,
@@ -95,8 +95,24 @@ Decisions already made:
       quest (changing one bumps the quest). Deleting the NPC, book reference, monster or item removes its links.
     - On the web, "Plan quest" on the Quests tab edits them, like session prep; each quest card shows them, and run
       mode shows each open quest's reward.
-    - Foundry pushes a quest's `status`, `foundryScenes`, `rewardCurrency`, `rewardXp` and `milestone`. Like session
-      links, quest links aren't pushed from Foundry.
+    - Foundry can change any of a quest's fields and its links, like a session's (see "Editing DM Guru campaigns from
+      Foundry").
+- **Send to Dungeon Master Guru (done on the web; module in progress):**
+  - A campaign planned in Foundry without an account is uploaded whole with `POST /v1/foundry/campaigns/import`
+    (`CampaignImporter`). Like creating one, it's free; listing and syncing stay premium. `request_id` and `party`
+    work as they do for `POST /v1/foundry/campaigns`.
+  - The body is the campaign and `records: { factions, references, locations, npcs, fronts, quests, sessions,
+    secrets }`, in the shapes the sync pull returns. Each record has a local `id` that the others use to point at it
+    (`factionId`, a link's `linkableId`); `uuid`, `syncVersion` and unknown keys are ignored.
+  - It all saves in one transaction, in dependency order, with those references pointed at the new records. Parents
+    (places, quests) are set in a second pass, then the sessions' and quests' links with their quantities. A
+    reference to an id that wasn't sent is left empty, and a link to one is skipped. Links to monsters and items keep
+    their DM Guru ids.
+  - The `201` response is the new campaign (as `create` returns it) plus `ids`, mapping each local id, the campaign's
+    and every record's, to its new uuid. The module re-tags its journals with them and pulls with `since=0`.
+  - Any problem saves nothing and returns `422` with every error, each naming the collection and record
+    ("Quests: Find the crypt: Name can't be blank"). It takes up to 500 records per collection and 100 links per
+    session or quest.
 - **Scene thumbnails (done):**
   - The module sends a 640×360 WebP thumbnail of every scene in the world that has a map image, made with
     Foundry's `Scene#createThumbnail`, to `POST /v1/foundry/scenes` (premium, like sync), so the website can offer
@@ -114,6 +130,34 @@ Decisions already made:
     places is a multi-select; monster and item search fills in as you type, with the campaign's book references
     first.
   - Compendium search matches the start of words, so "gh" finds Ghoul but not Knight.
+- **Device-code linking (done):** the DM links Foundry with a code instead of pasting an API token, in an
+  OAuth-style device flow (RFC 8628). The module's Connect window has **Get a code**; pasting a token still works.
+  - The module calls `POST /v1/foundry/link` (no auth; 10 a minute per IP, then `429`) with
+    `{ world: { id, title } }`. It gets a secret `deviceCode`, a `userCode` like `WXYZ-2345` (8 characters, no
+    0/O/1/I/L), `verificationUrl` (`<site>/link`, on the host it called), `verificationUrlComplete`
+    (`/link?code=…`), `expiresIn: 600` and `interval: 5`.
+  - The DM opens `/link`, signs in if needed (Auth0 brings them back to the code), and sees "Dorman Lakely's
+    Campaign Planner in the world 'Dev' wants to connect to your account" with Connect and Cancel. The page uses
+    `GET /v1/device-links/:code` and `POST /v1/device-links/:code/approve` or `/deny`; the code works with or
+    without its dash, in any case. Approving returns `422` if the DM already has 10 API tokens.
+  - The module polls `POST /v1/foundry/link/token` with `{ deviceCode }`. Until then it gets `400` with
+    `authorization_pending`, `slow_down` (polled faster than the interval), `access_denied`, or `expired_token`
+    (after 10 minutes, an unknown code, or one already used). Once approved it gets
+    `200 { token, user: { name } }` exactly once: a new API token named "Foundry: <world title>".
+  - `DeviceLink` stores only a SHA-256 digest of the device code. Expired links are deleted whenever a new one
+    starts.
+- **Editing DM Guru campaigns from Foundry (done):** the module's Campaign Planner and Dashboard edit a synced
+  campaign fully, when this browser is connected. Its pushes can change any field, add and delete records, and set a session's or
+  quest's links (`op: create`, `update` and `delete` on `POST /v1/foundry/campaigns/:uuid/changes`; see "Two-way
+  sync protocol"). Deleting a record, there or on the website, now bumps the records whose pointers it clears.
+  New records get a UUID v4 made in Foundry from `crypto.getRandomValues` (`crypto.randomUUID` is missing on
+  Foundry servers reached over plain HTTP).
+- **Patreon membership sync (done):** premium follows the patron's membership of the DM Guru campaign only
+  (`PATREON_CAMPAIGN_ID`), with `patron_status` `active_patron` and at least $5. A Patreon webhook
+  (`POST /v1/patreon/webhook`, HMAC-MD5 signed with `PATREON_WEBHOOK_SECRET`) re-reads a patron's membership on
+  every `members:*` event, and the daily `patreon:refresh_memberships` task renews tokens before they expire, so
+  premium no longer lapses when the Patreon access token does. The dashboard's Patreon card says whether the
+  membership is in sync, lapsed or revoked.
 
 ## What's left
 **To ship this PR**
@@ -121,21 +165,35 @@ Decisions already made:
 - Production setup:
   - run the migrations
   - lock CORS down from `origins '*'` (`config/initializers/cors.rb`) to the Foundry origins that need it
+  - Patreon membership sync (below)
+
+**Patreon membership sync (production setup)**
+- **`PATREON_CAMPAIGN_ID`**: the ID of the DM Guru Patreon campaign. Premium and the tier come only from a
+  patron's membership of this campaign; pledges to other creators are ignored. Get it with the creator access
+  token from the Patreon developer portal: `GET https://www.patreon.com/api/oauth2/v2/campaigns` (it's
+  `data[0].id`). If it isn't set, the app logs a warning and uses the patron's first membership, which may belong
+  to another creator, so set it before deploying.
+- **`PATREON_WEBHOOK_SECRET`**: the secret Patreon shows for the webhook below. Until it is set,
+  `POST /v1/patreon/webhook` answers 401 to everything.
+- **Register the webhook** in the Patreon developer portal (Webhooks): URL
+  `https://dungeonmaster.guru/v1/patreon/webhook`, triggers `members:create`, `members:update`, `members:delete`,
+  `members:pledge:create`, `members:pledge:update` and `members:pledge:delete`. Copy its secret into
+  `PATREON_WEBHOOK_SECRET`.
+- **Heroku Scheduler**: add a daily job `bundle exec rake patreon:refresh_memberships`. It renews Patreon tokens
+  expiring within 7 days (or lapsed within the last 30) and re-reads each membership.
+- After deploying, link a test patron and confirm premium follows their pledge (the `memberships.campaign`
+  include hasn't been checked against live Patreon yet).
 
 **To release the module**
-- Release 0.2.0 with `npm run release:minor`. The unreleased changes are the compendium index and the
-  draggable links.
+- Release 0.2.0 with `npm run release:minor`. The unreleased changes include the Campaign Planner, planning
+  without an account, quests, scene thumbnails, Send to Dungeon Master Guru, connecting with a code, editing
+  synced campaigns, and the welcome message (see the module's CHANGELOG).
 - Register the package on foundryvtt.com, and add the `FOUNDRY_PACKAGE_TOKEN` secret to the repo for the
   release workflow.
 - Add the module to `app/services/foundry_module_stats_fetcher.rb` after its first release.
 
 **Planned but not built**
-- "Send to Dungeon Master Guru" for a campaign made in Foundry: an upload endpoint that maps its local ids to new
-  records, after which it syncs like any linked campaign. (Next.)
-- Editing a local campaign's records in Foundry (today the Dashboard adds them; details are typed into the pages).
 - One source for the setup guide's words, shared by the website and the module (today they're copied).
-- Device-code linking, so DMs don't paste an API token.
-- "Send to DM Guru" for things made in Foundry, like an improvised NPC.
 - Player-facing pages: the shareable player guide, and player-visible journal pages.
 - From phase 1: a campaign-scoped `NotesWidget`, and linking places to Cartography maps.
 - From phase 5: treasure hoards, an in-world calendar, and export as a Foundry Adventure compendium.
@@ -262,8 +320,8 @@ or Monster Manual. The planner uses them without copying them:
 - Add it to the module list in `app/services/foundry_module_stats_fetcher.rb` so it shows up on the stats page.
 
 **Linking:**
-- Device-code flow. The module shows a code; the DM enters it at `dungeonmaster.guru/link`; that issues an
-  `api_token`.
+- Device-code flow (built; see "Device-code linking" under Status). The module shows a code; the DM
+  enters it at `dungeonmaster.guru/link`; that issues an `api_token`.
 - Store the token in a **client/user-scoped setting, never world-scoped**, because world settings reach every
   player's browser.
 - Only the GM client talks to DM Guru. Foundry's own sockets relay to players.
@@ -281,8 +339,45 @@ or Monster Manual. The planner uses them without copying them:
 
 **Two-way sync protocol:**
 - Pull: `GET /v1/foundry/campaigns/:uuid/changes?since=<cursor>` returns upserts + tombstones and a new cursor.
-- Push: `POST /v1/foundry/campaigns/:uuid/changes` with `[{type, uuid, base_version, fields}]`. On version
-  mismatch the server returns a conflict with its copy.
+- Push: `POST /v1/foundry/campaigns/:uuid/changes` with `{ changes: [CHANGE, ...] }` (up to 100; the rest are
+  ignored) edits a DM Guru campaign fully from Foundry (`CampaignSync`, `CampaignSync::Change`,
+  `CampaignSync::Links`). A CHANGE has an optional `op`:
+  - **update** (the default): `{ op?: "update", type, uuid, baseVersion, attributes }`. If the record's
+    `syncVersion` isn't `baseVersion`, it comes back in `conflicts` with `current`, the server's copy.
+  - **create**: `{ op: "create", type, uuid, attributes }`. `uuid` is a UUID v4 made in Foundry (any case; stored
+    lower-case). One that's malformed, or already used by anything in the campaign (the campaign, any record, a
+    deleted record's tombstone) or by any record of its type anywhere, is an error. It goes in `applied` with
+    `current`, including its new `id` and `syncVersion`. A new session takes the next number.
+  - **delete**: `{ op: "delete", type, uuid }`. Destroys the record as the website does: its links go, other records'
+    pointers to it are cleared (their `sync_version`s bumped, so the next pull carries them), and it leaves a
+    tombstone. Its uuid goes in `deleted` as sent; one that's already gone (or was never in this campaign) does too.
+  - `type` is `campaign`, `faction`, `location`, `npc`, `front`, `quest`, `secret`, `session` or `reference`. The
+    campaign can be updated but not created or deleted. `attributes` take the pull's camelCase keys
+    (`CampaignSync::WRITABLE`); any other key is an error for that change:
+    - campaign: `name premise pitch settingName settingNotes truths tone partySize startLevel targetLevel
+      plannedSessions cadence status`
+    - faction: `name goal description notes`
+    - location: `name description features notes parentId foundrySceneUuid foundrySceneName`
+    - npc: `name role description motive secret appearance voice notes factionId statBlockReferenceId
+      foundryActorUuid foundryActorName`
+    - front: `name goal doom description portents stakes clockSegments clockFilled npcId factionId`
+    - quest: `name kind status act description reward notes levelMin levelMax parentId giverNpcId locationId
+      foundryScenes rewardCurrency rewardXp milestone links`
+    - secret: `text revelation revealed revealedSessionUuid position` (an unknown session uuid clears it)
+    - session: `title scheduledOn level status characterNotes strongStart scenes treasure treasureCurrency
+      foundryScenes log recap links`
+    - reference: `name book category page challengeRating foundryUuid notes`
+  - Ids (`parentId`, `factionId`, `npcId`, `giverNpcId`, `locationId`, `statBlockReferenceId`) are DM Guru record ids
+    as the pull returns them, as text or a number; null or `""` clears one. Another campaign's record, or one that
+    doesn't exist, is an error.
+  - `links` (sessions and quests) is the whole new list, `[{ linkableType, linkableId, quantity }]` (other keys are
+    ignored), up to 100. Links not in it are removed (each leaves a tombstone), new ones are added, and every link
+    takes its quantity (none when left out) and its position in the list. Leaving `links` out keeps them as they
+    are. A link the website couldn't make (a type the session or quest can't link, another campaign's record,
+    someone else's homebrew, a record listed twice) makes the whole change an error.
+  - Response: `{ applied: [{ type, uuid, current }], conflicts: [{ type, uuid, current }], errors: [{ uuid,
+    errors: [...] }], deleted: [uuid], cursor }`. Each change is its own transaction, so one that fails undoes only
+    itself. It holds the campaign's row lock, so no other edit lands between its version check and its save.
 - Field-level **3-way merge in the module**, using the last-synced snapshot in `flags.base`:
   - auto-merge when only one side changed a field
   - when both changed the same field, show a conflict dialog (keep mine / keep DM Guru / both)
@@ -292,11 +387,11 @@ or Monster Manual. The planner uses them without copying them:
   - a "Sync now" button
   - later: ActionCable push
 - Things created in Foundry, such as an improvised NPC, can be sent to DM Guru with a one-click "Send to DM Guru".
-- Known gaps to close before two-way sync:
-  - When a record is deleted, the database clears other records' references to it (e.g. an NPC's
-    `faction_id`) without bumping their `sync_version`.
-  - Session links removed along with their target leave no tombstone of their own (the target's tombstone
-    covers them).
+- Deleting a record (on the website or from Foundry) clears the campaign's other records' pointers to it, such as
+  an NPC's `faction_id` or a quest's `giver_npc_id`, and bumps their `sync_version`s (`CampaignRecord`), so the next
+  pull carries them. Deleting the whole campaign leaves that to the database.
+- Known gap: session and quest links removed along with their target leave no tombstone of their own. Their
+  session or quest is bumped, so the next pull carries its new list, and the target's tombstone covers them.
 - Server checks: token + `user.premium?` + campaign ownership. Sanitize HTML both ways.
 
 ## Phases

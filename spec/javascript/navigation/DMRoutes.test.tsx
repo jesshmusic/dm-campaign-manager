@@ -5,23 +5,32 @@ import { MemoryRouter } from 'react-router-dom';
 import DMRoutes from '../../../app/javascript/bundles/DungeonMasterCampaignManager/navigation/DMRoutes';
 
 // Mock all page components
-jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/front-page/HomePage', () => {
-  return function HomePage() {
-    return <div data-testid="home-page">Home Page</div>;
-  };
-});
+jest.mock(
+  '../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/front-page/HomePage',
+  () => {
+    return function HomePage() {
+      return <div data-testid="home-page">Home Page</div>;
+    };
+  },
+);
 
-jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/dnd-classes/DndClasses', () => {
-  return function DndClasses() {
-    return <div data-testid="dnd-classes-page">D&D Classes Page</div>;
-  };
-});
+jest.mock(
+  '../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/dnd-classes/DndClasses',
+  () => {
+    return function DndClasses() {
+      return <div data-testid="dnd-classes-page">D&D Classes Page</div>;
+    };
+  },
+);
 
-jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/dnd-classes/DndClass', () => {
-  return function DndClass() {
-    return <div data-testid="dnd-class-page">D&D Class Detail Page</div>;
-  };
-});
+jest.mock(
+  '../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/dnd-classes/DndClass',
+  () => {
+    return function DndClass() {
+      return <div data-testid="dnd-class-page">D&D Class Detail Page</div>;
+    };
+  },
+);
 
 jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/races/Races', () => {
   return function Races() {
@@ -47,23 +56,32 @@ jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/it
   };
 });
 
-jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/monsters/Monsters', () => {
-  return function Monsters() {
-    return <div data-testid="monsters-page">Monsters Page</div>;
-  };
-});
+jest.mock(
+  '../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/monsters/Monsters',
+  () => {
+    return function Monsters() {
+      return <div data-testid="monsters-page">Monsters Page</div>;
+    };
+  },
+);
 
-jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/monsters/Monster', () => {
-  return function Monster() {
-    return <div data-testid="monster-page">Monster Detail Page</div>;
-  };
-});
+jest.mock(
+  '../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/monsters/Monster',
+  () => {
+    return function Monster() {
+      return <div data-testid="monster-page">Monster Detail Page</div>;
+    };
+  },
+);
 
-jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/spells/Spells', () => {
-  return function Spells() {
-    return <div data-testid="spells-page">Spells Page</div>;
-  };
-});
+jest.mock(
+  '../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/spells/Spells',
+  () => {
+    return function Spells() {
+      return <div data-testid="spells-page">Spells Page</div>;
+    };
+  },
+);
 
 jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/spells/Spell', () => {
   return function Spell() {
@@ -77,131 +95,207 @@ jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/ru
   };
 });
 
-jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/rules/RulesCategory', () => {
-  return function RulesCategory() {
-    return <div data-testid="rule-page">Rules Category Page</div>;
-  };
-});
+jest.mock(
+  '../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/rules/RulesCategory',
+  () => {
+    return function RulesCategory() {
+      return <div data-testid="rule-page">Rules Category Page</div>;
+    };
+  },
+);
 
-jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/monster-generator/MonsterGenerator', () => {
-  return function MonsterGenerator() {
-    return <div data-testid="monster-generator-page">Monster Generator Page</div>;
-  };
-});
+jest.mock(
+  '../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/monster-generator/MonsterGenerator',
+  () => {
+    return function MonsterGenerator() {
+      return <div data-testid="monster-generator-page">Monster Generator Page</div>;
+    };
+  },
+);
 
-jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/search-results/SearchResults', () => {
-  return function SearchResults() {
-    return <div data-testid="search-results-page">Search Results Page</div>;
-  };
-});
+jest.mock(
+  '../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/search-results/SearchResults',
+  () => {
+    return function SearchResults() {
+      return <div data-testid="search-results-page">Search Results Page</div>;
+    };
+  },
+);
 
-jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/privacy-policy/PrivacyPolicy', () => {
-  return function PrivacyPolicy() {
-    return <div data-testid="privacy-policy-page">Privacy Policy Page</div>;
-  };
-});
+jest.mock(
+  '../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/privacy-policy/PrivacyPolicy',
+  () => {
+    return function PrivacyPolicy() {
+      return <div data-testid="privacy-policy-page">Privacy Policy Page</div>;
+    };
+  },
+);
 
-jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/navigation/ProtectedRoute', () => {
-  return function ProtectedRoute({ as: Component, ...props }: any) {
-    return <div data-testid="protected-route"><Component {...props} /></div>;
-  };
-});
+jest.mock(
+  '../../../app/javascript/bundles/DungeonMasterCampaignManager/navigation/ProtectedRoute',
+  () => {
+    return function ProtectedRoute({ as: Component, ...props }: any) {
+      return (
+        <div data-testid="protected-route">
+          <Component {...props} />
+        </div>
+      );
+    };
+  },
+);
 
-jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/admin-dashboard/AdminDashboard', () => {
-  return function AdminDashboard() {
-    return <div data-testid="admin-dashboard-page">Admin Dashboard</div>;
-  };
-});
+jest.mock(
+  '../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/admin-dashboard/AdminDashboard',
+  () => {
+    return function AdminDashboard() {
+      return <div data-testid="admin-dashboard-page">Admin Dashboard</div>;
+    };
+  },
+);
 
-jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/user-dashboard/UserDashboard', () => {
-  return function UserDashboard() {
-    return <div data-testid="user-dashboard-page">User Dashboard</div>;
-  };
-});
+jest.mock(
+  '../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/user-dashboard/UserDashboard',
+  () => {
+    return function UserDashboard() {
+      return <div data-testid="user-dashboard-page">User Dashboard</div>;
+    };
+  },
+);
 
-jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/admin-dashboard/CreateWidgetPage', () => {
-  return function CreateWidgetPage() {
-    return <div data-testid="create-widget-page">Create Widget Page</div>;
-  };
-});
+jest.mock(
+  '../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/admin-dashboard/CreateWidgetPage',
+  () => {
+    return function CreateWidgetPage() {
+      return <div data-testid="create-widget-page">Create Widget Page</div>;
+    };
+  },
+);
 
-jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/admin-dashboard/CreateCustomActionPage', () => {
-  return function CreateCustomActionPage() {
-    return <div data-testid="create-custom-action-page">Create Custom Action Page</div>;
-  };
-});
+jest.mock(
+  '../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/admin-dashboard/CreateCustomActionPage',
+  () => {
+    return function CreateCustomActionPage() {
+      return <div data-testid="create-custom-action-page">Create Custom Action Page</div>;
+    };
+  },
+);
 
-jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/admin-dashboard/EditWidgetPage', () => {
-  return function EditWidgetPage() {
-    return <div data-testid="edit-widget-page">Edit Widget Page</div>;
-  };
-});
+jest.mock(
+  '../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/admin-dashboard/EditWidgetPage',
+  () => {
+    return function EditWidgetPage() {
+      return <div data-testid="edit-widget-page">Edit Widget Page</div>;
+    };
+  },
+);
 
-jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/FoundryMapsAdmin', () => {
-  return function FoundryMapsAdmin() {
-    return <div data-testid="foundry-maps-admin-page">Foundry Maps Admin</div>;
-  };
-});
+jest.mock(
+  '../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/FoundryMapsAdmin',
+  () => {
+    return function FoundryMapsAdmin() {
+      return <div data-testid="foundry-maps-admin-page">Foundry Maps Admin</div>;
+    };
+  },
+);
 
-jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/rules/RulesIndex', () => {
-  return function RulesIndex() {
-    return <div data-testid="rules-index-page">Rules Index Page</div>;
-  };
-});
+jest.mock(
+  '../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/rules/RulesIndex',
+  () => {
+    return function RulesIndex() {
+      return <div data-testid="rules-index-page">Rules Index Page</div>;
+    };
+  },
+);
 
-jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/rules/RulesGlossary', () => {
-  return function RulesGlossary() {
-    return <div data-testid="rules-glossary-page">Rules Glossary Page</div>;
-  };
-});
+jest.mock(
+  '../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/rules/RulesGlossary',
+  () => {
+    return function RulesGlossary() {
+      return <div data-testid="rules-glossary-page">Rules Glossary Page</div>;
+    };
+  },
+);
 
-jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/backgrounds/BackgroundsIndex', () => {
-  return function BackgroundsIndex() {
-    return <div data-testid="backgrounds-index-page">Backgrounds Index Page</div>;
-  };
-});
+jest.mock(
+  '../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/backgrounds/BackgroundsIndex',
+  () => {
+    return function BackgroundsIndex() {
+      return <div data-testid="backgrounds-index-page">Backgrounds Index Page</div>;
+    };
+  },
+);
 
-jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/backgrounds/BackgroundDetail', () => {
-  return function BackgroundDetail() {
-    return <div data-testid="background-detail-page">Background Detail Page</div>;
-  };
-});
+jest.mock(
+  '../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/backgrounds/BackgroundDetail',
+  () => {
+    return function BackgroundDetail() {
+      return <div data-testid="background-detail-page">Background Detail Page</div>;
+    };
+  },
+);
 
-jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/feats/FeatsIndex', () => {
-  return function FeatsIndex() {
-    return <div data-testid="feats-index-page">Feats Index Page</div>;
-  };
-});
+jest.mock(
+  '../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/feats/FeatsIndex',
+  () => {
+    return function FeatsIndex() {
+      return <div data-testid="feats-index-page">Feats Index Page</div>;
+    };
+  },
+);
 
-jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/feats/FeatDetail', () => {
-  return function FeatDetail() {
-    return <div data-testid="feat-detail-page">Feat Detail Page</div>;
-  };
-});
+jest.mock(
+  '../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/feats/FeatDetail',
+  () => {
+    return function FeatDetail() {
+      return <div data-testid="feat-detail-page">Feat Detail Page</div>;
+    };
+  },
+);
 
-jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/CampaignsIndex', () => {
-  return function CampaignsIndex() {
-    return <div data-testid="campaigns-index-page">Campaigns Index Page</div>;
-  };
-});
+jest.mock(
+  '../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/CampaignsIndex',
+  () => {
+    return function CampaignsIndex() {
+      return <div data-testid="campaigns-index-page">Campaigns Index Page</div>;
+    };
+  },
+);
 
-jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/NewCampaign', () => {
-  return function NewCampaign() {
-    return <div data-testid="new-campaign-page">New Campaign Page</div>;
-  };
-});
+jest.mock(
+  '../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/NewCampaign',
+  () => {
+    return function NewCampaign() {
+      return <div data-testid="new-campaign-page">New Campaign Page</div>;
+    };
+  },
+);
 
-jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/CampaignPage', () => {
-  return function CampaignPage() {
-    return <div data-testid="campaign-page">Campaign Page</div>;
-  };
-});
+jest.mock(
+  '../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/CampaignPage',
+  () => {
+    return function CampaignPage() {
+      return <div data-testid="campaign-page">Campaign Page</div>;
+    };
+  },
+);
 
-jest.mock('../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/SessionPage', () => {
-  return function SessionPage() {
-    return <div data-testid="session-page">Session Page</div>;
-  };
-});
+jest.mock(
+  '../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/SessionPage',
+  () => {
+    return function SessionPage() {
+      return <div data-testid="session-page">Session Page</div>;
+    };
+  },
+);
+
+jest.mock(
+  '../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/device-link/DeviceLinkPage',
+  () => {
+    return function DeviceLinkPage() {
+      return <div data-testid="device-link-page">Device Link Page</div>;
+    };
+  },
+);
 
 describe('DMRoutes', () => {
   describe('public routes with edition', () => {
@@ -209,7 +303,7 @@ describe('DMRoutes', () => {
       render(
         <MemoryRouter initialEntries={['/']}>
           <DMRoutes />
-        </MemoryRouter>
+        </MemoryRouter>,
       );
 
       expect(screen.getByTestId('home-page')).toBeInTheDocument();
@@ -219,7 +313,7 @@ describe('DMRoutes', () => {
       render(
         <MemoryRouter initialEntries={['/app/2024/classes']}>
           <DMRoutes />
-        </MemoryRouter>
+        </MemoryRouter>,
       );
 
       expect(screen.getByTestId('dnd-classes-page')).toBeInTheDocument();
@@ -229,7 +323,7 @@ describe('DMRoutes', () => {
       render(
         <MemoryRouter initialEntries={['/app/2024/classes/fighter']}>
           <DMRoutes />
-        </MemoryRouter>
+        </MemoryRouter>,
       );
 
       expect(screen.getByTestId('dnd-class-page')).toBeInTheDocument();
@@ -239,7 +333,7 @@ describe('DMRoutes', () => {
       render(
         <MemoryRouter initialEntries={['/app/2024/races']}>
           <DMRoutes />
-        </MemoryRouter>
+        </MemoryRouter>,
       );
 
       expect(screen.getByTestId('races-page')).toBeInTheDocument();
@@ -249,7 +343,7 @@ describe('DMRoutes', () => {
       render(
         <MemoryRouter initialEntries={['/app/2024/races/elf']}>
           <DMRoutes />
-        </MemoryRouter>
+        </MemoryRouter>,
       );
 
       expect(screen.getByTestId('race-page')).toBeInTheDocument();
@@ -259,7 +353,7 @@ describe('DMRoutes', () => {
       render(
         <MemoryRouter initialEntries={['/app/2024/items/weapons']}>
           <DMRoutes />
-        </MemoryRouter>
+        </MemoryRouter>,
       );
 
       expect(screen.getByTestId('items-page')).toBeInTheDocument();
@@ -269,7 +363,7 @@ describe('DMRoutes', () => {
       render(
         <MemoryRouter initialEntries={['/app/2024/items/weapons/longsword']}>
           <DMRoutes />
-        </MemoryRouter>
+        </MemoryRouter>,
       );
 
       expect(screen.getByTestId('item-page')).toBeInTheDocument();
@@ -279,7 +373,7 @@ describe('DMRoutes', () => {
       render(
         <MemoryRouter initialEntries={['/app/2024/monsters']}>
           <DMRoutes />
-        </MemoryRouter>
+        </MemoryRouter>,
       );
 
       expect(screen.getByTestId('monsters-page')).toBeInTheDocument();
@@ -289,7 +383,7 @@ describe('DMRoutes', () => {
       render(
         <MemoryRouter initialEntries={['/app/2024/monsters/goblin']}>
           <DMRoutes />
-        </MemoryRouter>
+        </MemoryRouter>,
       );
 
       expect(screen.getByTestId('monster-page')).toBeInTheDocument();
@@ -299,7 +393,7 @@ describe('DMRoutes', () => {
       render(
         <MemoryRouter initialEntries={['/app/2024/spells']}>
           <DMRoutes />
-        </MemoryRouter>
+        </MemoryRouter>,
       );
 
       expect(screen.getByTestId('spells-page')).toBeInTheDocument();
@@ -309,7 +403,7 @@ describe('DMRoutes', () => {
       render(
         <MemoryRouter initialEntries={['/app/2024/spells/fireball']}>
           <DMRoutes />
-        </MemoryRouter>
+        </MemoryRouter>,
       );
 
       expect(screen.getByTestId('spell-page')).toBeInTheDocument();
@@ -319,7 +413,7 @@ describe('DMRoutes', () => {
       render(
         <MemoryRouter initialEntries={['/app/2024/rules']}>
           <DMRoutes />
-        </MemoryRouter>
+        </MemoryRouter>,
       );
 
       expect(screen.getByTestId('rules-index-page')).toBeInTheDocument();
@@ -329,7 +423,7 @@ describe('DMRoutes', () => {
       render(
         <MemoryRouter initialEntries={['/app/2024/rules/combat']}>
           <DMRoutes />
-        </MemoryRouter>
+        </MemoryRouter>,
       );
 
       expect(screen.getByTestId('rule-page')).toBeInTheDocument();
@@ -339,7 +433,7 @@ describe('DMRoutes', () => {
       render(
         <MemoryRouter initialEntries={['/app/2024/rules/rules-glossary']}>
           <DMRoutes />
-        </MemoryRouter>
+        </MemoryRouter>,
       );
 
       expect(screen.getByTestId('rules-glossary-page')).toBeInTheDocument();
@@ -349,7 +443,7 @@ describe('DMRoutes', () => {
       render(
         <MemoryRouter initialEntries={['/app/monster-generator/']}>
           <DMRoutes />
-        </MemoryRouter>
+        </MemoryRouter>,
       );
 
       expect(screen.getByTestId('monster-generator-page')).toBeInTheDocument();
@@ -359,7 +453,7 @@ describe('DMRoutes', () => {
       render(
         <MemoryRouter initialEntries={['/app/search/dragon']}>
           <DMRoutes />
-        </MemoryRouter>
+        </MemoryRouter>,
       );
 
       expect(screen.getByTestId('search-results-page')).toBeInTheDocument();
@@ -369,7 +463,7 @@ describe('DMRoutes', () => {
       render(
         <MemoryRouter initialEntries={['/app/privacy-policy']}>
           <DMRoutes />
-        </MemoryRouter>
+        </MemoryRouter>,
       );
 
       expect(screen.getByTestId('privacy-policy-page')).toBeInTheDocument();
@@ -379,7 +473,7 @@ describe('DMRoutes', () => {
       render(
         <MemoryRouter initialEntries={['/app/2024/backgrounds']}>
           <DMRoutes />
-        </MemoryRouter>
+        </MemoryRouter>,
       );
 
       expect(screen.getByTestId('backgrounds-index-page')).toBeInTheDocument();
@@ -389,7 +483,7 @@ describe('DMRoutes', () => {
       render(
         <MemoryRouter initialEntries={['/app/2024/backgrounds/soldier']}>
           <DMRoutes />
-        </MemoryRouter>
+        </MemoryRouter>,
       );
 
       expect(screen.getByTestId('background-detail-page')).toBeInTheDocument();
@@ -399,7 +493,7 @@ describe('DMRoutes', () => {
       render(
         <MemoryRouter initialEntries={['/app/2024/feats']}>
           <DMRoutes />
-        </MemoryRouter>
+        </MemoryRouter>,
       );
 
       expect(screen.getByTestId('feats-index-page')).toBeInTheDocument();
@@ -409,7 +503,7 @@ describe('DMRoutes', () => {
       render(
         <MemoryRouter initialEntries={['/app/2024/feats/alert']}>
           <DMRoutes />
-        </MemoryRouter>
+        </MemoryRouter>,
       );
 
       expect(screen.getByTestId('feat-detail-page')).toBeInTheDocument();
@@ -421,7 +515,7 @@ describe('DMRoutes', () => {
       render(
         <MemoryRouter initialEntries={['/app/admin-dashboard']}>
           <DMRoutes />
-        </MemoryRouter>
+        </MemoryRouter>,
       );
 
       expect(screen.getByTestId('protected-route')).toBeInTheDocument();
@@ -432,7 +526,7 @@ describe('DMRoutes', () => {
       render(
         <MemoryRouter initialEntries={['/app/user-dashboard']}>
           <DMRoutes />
-        </MemoryRouter>
+        </MemoryRouter>,
       );
 
       expect(screen.getByTestId('protected-route')).toBeInTheDocument();
@@ -443,7 +537,7 @@ describe('DMRoutes', () => {
       render(
         <MemoryRouter initialEntries={['/app/admin-dashboard/create-widget']}>
           <DMRoutes />
-        </MemoryRouter>
+        </MemoryRouter>,
       );
 
       expect(screen.getByTestId('protected-route')).toBeInTheDocument();
@@ -454,7 +548,7 @@ describe('DMRoutes', () => {
       render(
         <MemoryRouter initialEntries={['/app/admin-dashboard/edit-widget/123']}>
           <DMRoutes />
-        </MemoryRouter>
+        </MemoryRouter>,
       );
 
       expect(screen.getByTestId('protected-route')).toBeInTheDocument();
@@ -465,7 +559,7 @@ describe('DMRoutes', () => {
       render(
         <MemoryRouter initialEntries={['/app/admin-dashboard/create-custom-action']}>
           <DMRoutes />
-        </MemoryRouter>
+        </MemoryRouter>,
       );
 
       expect(screen.getByTestId('protected-route')).toBeInTheDocument();
@@ -476,7 +570,7 @@ describe('DMRoutes', () => {
       render(
         <MemoryRouter initialEntries={['/app/admin-dashboard/foundry-maps']}>
           <DMRoutes />
-        </MemoryRouter>
+        </MemoryRouter>,
       );
 
       expect(screen.getByTestId('protected-route')).toBeInTheDocument();
@@ -492,11 +586,24 @@ describe('DMRoutes', () => {
       render(
         <MemoryRouter initialEntries={[path]}>
           <DMRoutes />
-        </MemoryRouter>
+        </MemoryRouter>,
       );
 
       expect(screen.getByTestId('protected-route')).toBeInTheDocument();
       expect(screen.getByTestId(testId)).toBeInTheDocument();
+    });
+  });
+
+  describe('Foundry device link', () => {
+    it('should render the link page without ProtectedRoute, so it can ask the DM to sign in', () => {
+      render(
+        <MemoryRouter initialEntries={['/link?code=WXYZ-2345']}>
+          <DMRoutes />
+        </MemoryRouter>,
+      );
+
+      expect(screen.getByTestId('device-link-page')).toBeInTheDocument();
+      expect(screen.queryByTestId('protected-route')).not.toBeInTheDocument();
     });
   });
 
@@ -505,7 +612,7 @@ describe('DMRoutes', () => {
       render(
         <MemoryRouter initialEntries={['/unknown/path']}>
           <DMRoutes />
-        </MemoryRouter>
+        </MemoryRouter>,
       );
 
       expect(screen.getByTestId('home-page')).toBeInTheDocument();
@@ -515,7 +622,7 @@ describe('DMRoutes', () => {
       render(
         <MemoryRouter initialEntries={['/app/unknown/nested/path']}>
           <DMRoutes />
-        </MemoryRouter>
+        </MemoryRouter>,
       );
 
       expect(screen.getByTestId('home-page')).toBeInTheDocument();
@@ -529,7 +636,7 @@ describe('DMRoutes', () => {
       render(
         <MemoryRouter initialEntries={['/']}>
           <DMRoutes {...testProps} />
-        </MemoryRouter>
+        </MemoryRouter>,
       );
 
       expect(screen.getByTestId('home-page')).toBeInTheDocument();

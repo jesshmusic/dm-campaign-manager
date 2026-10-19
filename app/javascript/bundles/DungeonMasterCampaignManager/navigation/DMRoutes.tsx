@@ -32,6 +32,7 @@ import CampaignsIndex from '../pages/campaigns/CampaignsIndex';
 import NewCampaign from '../pages/campaigns/NewCampaign';
 import CampaignPage from '../pages/campaigns/CampaignPage';
 import SessionPage from '../pages/campaigns/SessionPage';
+import DeviceLinkPage from '../pages/device-link/DeviceLinkPage';
 import { ItemType } from '../pages/items/use-data';
 
 type ResolverProps = Record<string, unknown>;
@@ -189,6 +190,8 @@ const DMRoutes = (props: ResolverProps) => {
         path="/app/campaigns/:campaignSlug/sessions/:sessionId"
         element={<ProtectedRoute as={SessionPage} requireAdmin={false} {...props} />}
       />
+      {/* Linking a Foundry module with a code; the page asks signed-out DMs to sign in */}
+      <Route path="/link" element={<DeviceLinkPage {...props} />} />
       <Route path="*" element={<HomePage {...props} />} />
     </Routes>
   );

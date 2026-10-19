@@ -53,6 +53,7 @@ class User < ApplicationRecord
   has_many :races, dependent: :destroy
   has_many :spells, dependent: :destroy
   has_many :api_tokens, dependent: :destroy
+  has_many :device_links, dependent: :delete_all
   has_many :campaigns, dependent: :destroy
   has_many :compendium_entries, dependent: :delete_all
   has_many :player_characters, dependent: :destroy

@@ -5,14 +5,28 @@
 # Pull: #changes_since(version) returns every record whose sync_version is newer,
 # plus tombstones for deletions, and a cursor to send next time.
 #
-# Push: #apply(changes) takes at-the-table updates from Foundry (reveal a secret,
-# advance a clock, change a quest's status, write the session log), and what
-# the DM picks in Foundry (a place's scene, an NPC's actor, a session's scenes
-# and treasure coins, a quest's scenes and reward). A session's or quest's
-# links aren't pushed; they come with it on pulls. Each change names the sync_version it was based on; if
-# the record has moved on since, it comes back as a conflict with the current
-# record so the module can merge.
+# Push: #apply(changes) takes the DM's edits in Foundry (see CampaignSync::Change).
+# Each change is one of:
+# - update (the default): { type, uuid, baseVersion, attributes }. If the record
+#   has moved on since baseVersion, it comes back as a conflict with the current
+#   record so the module can merge.
+# - create: { op: "create", type, uuid, attributes }, with a new UUID v4 made in Foundry
+# - delete: { op: "delete", type, uuid }, cleaned up as on the website
+# Attributes use the pull's camelCase keys (WRITABLE). Ids (factionId, a link's
+# linkableId) are DM Guru record ids; a session's or quest's links are its
+# whole list (see CampaignSync::Links). Each change saves on its own, all or
+# nothing.
 class CampaignSync
+  # A change that can't be applied, and why
+  class Rejected < StandardError
+    attr_reader :messages
+
+    def initialize(messages)
+      @messages = Array(messages)
+      super(@messages.join('; '))
+    end
+  end
+
   COLLECTIONS = {
     'factions' => :factions,
     'locations' => :locations,
@@ -24,25 +38,54 @@ class CampaignSync
     'references' => :book_references
   }.freeze
 
-  # What Foundry may change, per record type: payload key => model attribute
+  # What Foundry may set, per record type, by the pull's camelCase keys
+  # (settingName is setting_name). The campaign itself has no collection: it
+  # can be updated, but not created or deleted.
   WRITABLE = {
-    'secret' => { collection: :secrets, fields: { 'revealed' => :revealed, 'revealedSessionUuid' => :revealed_session } },
-    'front' => { collection: :fronts, fields: { 'clockFilled' => :clock_filled, 'portents' => :portents } },
+    'campaign' => {
+      collection: nil,
+      fields: %w[name premise pitch settingName settingNotes truths tone partySize startLevel targetLevel plannedSessions
+                 cadence status]
+    },
+    'faction' => { collection: :factions, fields: %w[name goal description notes] },
+    'location' => {
+      collection: :locations,
+      fields: %w[name description features notes parentId foundrySceneUuid foundrySceneName]
+    },
+    'npc' => {
+      collection: :npcs,
+      fields: %w[name role description motive secret appearance voice notes factionId statBlockReferenceId
+                 foundryActorUuid foundryActorName]
+    },
+    'front' => {
+      collection: :fronts,
+      fields: %w[name goal doom description portents stakes clockSegments clockFilled npcId factionId]
+    },
     'quest' => {
       collection: :quests,
-      fields: { 'status' => :status, 'foundryScenes' => :foundry_scenes, 'rewardCurrency' => :reward_currency,
-                'rewardXp' => :reward_xp, 'milestone' => :milestone }
+      fields: %w[name kind status act description reward notes levelMin levelMax parentId giverNpcId locationId
+                 foundryScenes rewardCurrency rewardXp milestone links]
     },
+    'secret' => { collection: :secrets, fields: %w[text revelation revealed revealedSessionUuid position] },
     'session' => {
       collection: :sessions,
-      fields: { 'log' => :log, 'recap' => :recap, 'status' => :status, 'foundryScenes' => :foundry_scenes,
-                'treasureCurrency' => :treasure_currency }
+      fields: %w[title scheduledOn level status characterNotes strongStart scenes treasure treasureCurrency foundryScenes
+                 log recap links]
     },
-    'location' => { collection: :locations, fields: { 'foundrySceneUuid' => :foundry_scene_uuid, 'foundrySceneName' => :foundry_scene_name } },
-    'npc' => { collection: :npcs, fields: { 'foundryActorUuid' => :foundry_actor_uuid, 'foundryActorName' => :foundry_actor_name } }
+    'reference' => {
+      collection: :book_references,
+      fields: %w[name book category page challengeRating foundryUuid notes]
+    }
   }.freeze
 
+  # A DM Guru record id, as the pull returns it (or as a number)
+  ID_FORMAT = /\A\d{1,18}\z/
   MAX_CHANGES = 100
+
+  # A record as the pull returns it
+  def self.sync_json(record)
+    record.as_json_for_api.merge(syncVersion: record.sync_version)
+  end
 
   def initialize(campaign)
     @campaign = campaign
@@ -63,29 +106,26 @@ class CampaignSync
     end
   end
 
+  # Returns { applied:, conflicts:, errors:, deleted:, cursor: }
   def apply(changes)
-    results = { applied: [], conflicts: [], errors: [] }
-    Array(changes).first(MAX_CHANGES).each { |change| apply_change(change.to_h.stringify_keys, results) }
+    results = { applied: [], conflicts: [], errors: [], deleted: [] }
+    Array(changes).first(MAX_CHANGES).each { |change| apply_change(change, results) }
     results.merge(cursor: @campaign.reload.sync_counter)
   end
 
   private
 
-  def sync_json(record)
-    record.as_json_for_api.merge(syncVersion: record.sync_version)
-  end
-
   def campaign_json(since)
     return unless since.zero? || @campaign.sync_version > since
 
-    @campaign.as_json_for_api.merge(syncVersion: @campaign.sync_version)
+    self.class.sync_json(@campaign)
   end
 
   def records_since(association, since)
     scope = @campaign.public_send(association).where('sync_version > ?', since).order(:sync_version)
     scope = scope.includes(:monster, :stat_block_reference) if association == :npcs
     scope = scope.includes(links: :linkable) if %i[sessions quests].include?(association)
-    scope.map { |record| sync_json(record) }
+    scope.map { |record| self.class.sync_json(record) }
   end
 
   def tombstones_since(since)
@@ -94,34 +134,26 @@ class CampaignSync
     end
   end
 
+  # Each change in its own transaction, so one that fails undoes only itself
   def apply_change(change, results)
-    config = WRITABLE[change['type']]
-    return results[:errors] << { uuid: change['uuid'], errors: ["Can't change #{change['type'].inspect} records from Foundry"] } unless config
+    change = change.to_unsafe_h if change.respond_to?(:to_unsafe_h)
+    return results[:errors] << { uuid: nil, errors: ['Each change must be an object'] } unless change.is_a?(Hash)
 
-    record = @campaign.public_send(config[:collection]).find_by(uuid: change['uuid'].to_s)
-    return results[:errors] << { uuid: change['uuid'], errors: ['Record not found'] } unless record
-
-    if record.sync_version != change['baseVersion'].to_i
-      return results[:conflicts] << { type: change['type'], uuid: record.uuid, current: sync_json(record) }
+    change = change.deep_stringify_keys
+    outcome, entry = Campaign.transaction(requires_new: true) do
+      # Holds off the campaign's other writes until this one is done, so
+      # another edit can't land between the version check and the save
+      @campaign.reload(lock: true)
+      Change.new(@campaign, change).apply
     end
-
-    if record.update(attributes_for(config, change['attributes']))
-      results[:applied] << { type: change['type'], uuid: record.uuid, current: sync_json(record) }
-    else
-      results[:errors] << { uuid: record.uuid, errors: record.errors.full_messages }
-    end
-  end
-
-  def attributes_for(config, payload)
-    payload = (payload.respond_to?(:to_unsafe_h) ? payload.to_unsafe_h : payload.to_h).deep_stringify_keys
-    config[:fields].each_with_object({}) do |(key, attribute), attributes|
-      next unless payload.key?(key)
-
-      attributes[attribute] = attribute == :revealed_session ? session_for(payload[key]) : payload[key]
-    end
-  end
-
-  def session_for(uuid)
-    uuid.present? ? @campaign.sessions.find_by(uuid: uuid.to_s) : nil
+    results[outcome] << entry
+  rescue Rejected => e
+    results[:errors] << { uuid: change['uuid'], errors: e.messages }
+  rescue ActiveRecord::RecordInvalid => e
+    results[:errors] << { uuid: change['uuid'], errors: e.record.errors.full_messages }
+  rescue ActiveRecord::RecordNotUnique
+    results[:errors] << { uuid: change['uuid'], errors: ['That conflicts with a change made at the same time. Please try again.'] }
+  rescue ActiveModel::RangeError
+    results[:errors] << { uuid: change['uuid'], errors: ['A number is out of range'] }
   end
 end

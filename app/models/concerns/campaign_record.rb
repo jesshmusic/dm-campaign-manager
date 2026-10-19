@@ -8,9 +8,24 @@ module CampaignRecord
   included do
     belongs_to :campaign
     validate :optional_references_exist
+    # Not when the whole campaign goes: everything pointing at it goes too
+    before_destroy :release_pointers, unless: :destroyed_by_association
   end
 
   module ClassMethods
+    # The [model, foreign key] pairs of the campaign's records that point at
+    # this type: a quest's giver_npc_id, a location's parent_id, ...
+    def pointers
+      @pointers ||= begin
+        models = Campaign.reflect_on_all_associations(:has_many).map(&:klass).uniq.select { |model| model < CampaignRecord }
+        models.flat_map do |model|
+          model.reflect_on_all_associations(:belongs_to)
+               .select { |reflection| !reflection.polymorphic? && reflection.klass == self }
+               .map { |reflection| [model, reflection.foreign_key] }
+        end
+      end
+    end
+
     # Validates that each named association, when set, belongs to the same campaign
     def validates_same_campaign(*associations)
       validate do
@@ -62,6 +77,18 @@ module CampaignRecord
   end
 
   private
+
+  # Clears the campaign's other records' pointers to this one before it's
+  # deleted. The database would (ON DELETE SET NULL), but without bumping their
+  # sync versions, so a Foundry pull wouldn't learn of it. Like the database,
+  # it skips validations: clearing an optional pointer can't make them fail.
+  def release_pointers
+    self.class.pointers.each do |model, foreign_key|
+      model.where(campaign_id: campaign_id, foreign_key => id).find_each do |record|
+        record.update_columns(foreign_key => nil, sync_version: campaign.next_sync_version!, updated_at: Time.current) # rubocop:disable Rails/SkipsModelValidations
+      end
+    end
+  end
 
   # A set optional reference (faction_id, monster_id, ...) must point at a real
   # record; otherwise saving would raise on the foreign key constraint

@@ -7,6 +7,7 @@ module Admin
         # GET /v1/foundry/me
         # Lets a Foundry module confirm its token works and see what the account can use.
         def show
+          refresh_stale_patreon_membership
           render json: {
             user: { name: @user.name, username: @user.username },
             premium: @user.premium?,

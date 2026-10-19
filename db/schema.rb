@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_10_16_180000) do
+ActiveRecord::Schema[7.1].define(version: 2026_10_19_120000) do
   create_schema "heroku_ext"
 
   # These are extensions that must be enabled in order to support this database
@@ -487,6 +487,25 @@ ActiveRecord::Schema[7.1].define(version: 2026_10_16_180000) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["item_id"], name: "index_damages_on_item_id"
+  end
+
+  create_table "device_links", force: :cascade do |t|
+    t.string "device_code_digest", null: false
+    t.string "user_code", null: false
+    t.string "world_id"
+    t.string "world_title"
+    t.bigint "user_id"
+    t.datetime "approved_at"
+    t.datetime "denied_at"
+    t.datetime "consumed_at"
+    t.datetime "last_polled_at"
+    t.datetime "expires_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["device_code_digest"], name: "index_device_links_on_device_code_digest", unique: true
+    t.index ["expires_at"], name: "index_device_links_on_expires_at"
+    t.index ["user_code"], name: "index_device_links_on_user_code", unique: true, where: "(consumed_at IS NULL)"
+    t.index ["user_id"], name: "index_device_links_on_user_id"
   end
 
   create_table "dnd_class_levels", force: :cascade do |t|
@@ -1144,6 +1163,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_10_16_180000) do
   add_foreign_key "content_items", "items"
   add_foreign_key "costs", "items"
   add_foreign_key "damages", "items"
+  add_foreign_key "device_links", "users"
   add_foreign_key "dnd_class_levels", "dnd_classes"
   add_foreign_key "dnd_classes", "users"
   add_foreign_key "feats", "users"

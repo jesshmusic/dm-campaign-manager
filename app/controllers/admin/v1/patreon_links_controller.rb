@@ -39,6 +39,8 @@ module Admin
 
       def link_status
         account = @user.patreon_account
+        # Renew a lapsed membership before reporting it (throttled per account)
+        PatreonMembership.refresh_if_stale(account)
         {
           linked: account.present?,
           premium: @user.premium?,

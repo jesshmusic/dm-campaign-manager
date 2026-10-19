@@ -33,6 +33,21 @@ const LINK_RESULTS: Record<string, { tone: 'success' | 'danger'; text: string }>
 const formatDate = (iso: string) =>
   new Date(iso).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
 
+// A tier only reads as current while Patreon still confirms the link
+const tierStatus = (account: PatreonAccount) => {
+  if (!account.active) return ' (not active)';
+  return account.hasPremium ? ' (premium)' : '';
+};
+
+// Memberships are rechecked with Patreon automatically, so Refresh is only
+// needed when that stops working (access revoked or Patreon unreachable)
+const membershipNote = (account: PatreonAccount) => {
+  if (account.active) return 'Your membership stays in sync with Patreon automatically.';
+  if (account.expiresAt)
+    return `Your membership could not be confirmed with Patreon after ${formatDate(account.expiresAt)}. Refresh to reconnect.`;
+  return 'Patreon access for this link has ended. Refresh to reconnect.';
+};
+
 const PatreonConnection = () => {
   const authFetch = useAuthFetch();
   const [status, setStatus] = useState<PatreonLinkStatus | null>(null);
@@ -117,14 +132,11 @@ const PatreonConnection = () => {
         <>
           <p>
             Linked{account.name ? ` as ${account.name}` : ''}: <strong>{account.tierName}</strong>
-            {status.premium ? ' (premium)' : ''}
+            {tierStatus(account)}
           </p>
-          {account.expiresAt && (
-            <Muted>
-              {account.active
-                ? `Membership checked until ${formatDate(account.expiresAt)}. Refresh after that to keep premium access.`
-                : `Membership check expired on ${formatDate(account.expiresAt)}. Refresh to restore premium access.`}
-            </Muted>
+          <Muted>{membershipNote(account)}</Muted>
+          {status.premium && !(account.active && account.hasPremium) && (
+            <Muted>Your account already has premium access.</Muted>
           )}
           <Actions>
             <Button

@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe 'Admin::V1::PatreonLinksController', type: :request do
+  include PatreonHttpStubs
+
   let(:json) { response.parsed_body }
   let(:user) { create(:dungeon_master_user) }
 
@@ -28,6 +30,35 @@ RSpec.describe 'Admin::V1::PatreonLinksController', type: :request do
         expect(json['linked']).to be true
         expect(json['premium']).to be true
         expect(json['account']).to include('name' => 'Pat Ron', 'tierName' => 'Wizard', 'hasPremium' => true, 'active' => true)
+      end
+    end
+
+    context 'when the linked membership has lapsed' do
+      let!(:account) { create(:patreon_user, :wizard, :expired, user_id: nil, linked_user: user) }
+
+      before do
+        allow(Rails).to receive(:cache).and_return(ActiveSupport::Cache::MemoryStore.new)
+        stub_authentication(user)
+      end
+
+      it 'renews it from Patreon before reporting' do
+        stub_patreon_http(token: [200, patreon_token_body], identity: [200, patreon_identity_body(cents: 500)])
+
+        get '/v1/patreon/link'
+
+        expect(json['premium']).to be true
+        expect(json['account']).to include('active' => true, 'hasPremium' => true)
+        expect(account.reload.refresh_token).to eq('new_refresh_token')
+      end
+
+      it 'reports the lapse when Patreon is unreachable' do
+        stub_patreon_http(token: SocketError.new('getaddrinfo failed'))
+
+        get '/v1/patreon/link'
+
+        expect(response).to have_http_status(:success)
+        expect(json['premium']).to be false
+        expect(json['account']).to include('active' => false, 'hasPremium' => true)
       end
     end
 

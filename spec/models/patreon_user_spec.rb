@@ -85,6 +85,21 @@ RSpec.describe PatreonUser, type: :model do
         expect(PatreonUser.premium).not_to include(free_user)
       end
     end
+
+    describe '.due_for_refresh' do
+      it 'returns refreshable tokens expiring within a week or lapsed within a month' do
+        due_soon = create(:patreon_user, expires_at: 6.days.from_now)
+        lapsed = create(:patreon_user, expires_at: 29.days.ago)
+        not_due = create(:patreon_user, expires_at: 8.days.from_now)
+        long_lapsed = create(:patreon_user, expires_at: 31.days.ago)
+        no_token = create(:patreon_user, expires_at: 1.day.from_now, refresh_token: '')
+        never_linked = create(:patreon_user, :unauthenticated)
+
+        due = PatreonUser.due_for_refresh
+        expect(due).to include(due_soon, lapsed, active_user, expired_user)
+        expect(due).not_to include(not_due, long_lapsed, no_token, never_linked)
+      end
+    end
   end
 
   describe '#authenticated?' do

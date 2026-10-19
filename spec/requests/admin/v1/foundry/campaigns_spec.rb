@@ -100,6 +100,58 @@ RSpec.describe 'Admin::V1::Foundry::CampaignsController', type: :request do
       expect(session.reload).to have_attributes(foundry_scenes: scenes, treasure_currency: { 'gp' => 50, 'sp' => 12 })
     end
 
+    it 'creates, changes and deletes records, and changes links' do
+      npc = create(:campaign_npc, campaign: campaign, name: 'Vex')
+      quest = create(:campaign_quest, campaign: campaign, giver_npc: npc)
+      potion = create(:campaign_reference, campaign: campaign, name: 'Potion', category: 'magic_item')
+      faction_uuid = SecureRandom.uuid
+
+      post "/v1/foundry/campaigns/#{campaign.uuid}/changes",
+           params: { changes: [
+             { op: 'create', type: 'faction', uuid: faction_uuid, attributes: { name: 'Cult of Nerull' } },
+             { op: 'update', type: 'quest', uuid: quest.uuid, baseVersion: quest.sync_version,
+               attributes: { name: 'Find the crypt',
+                             links: [{ linkableType: 'CampaignReference', linkableId: potion.id.to_s, quantity: 2 }] } },
+             { op: 'delete', type: 'npc', uuid: npc.uuid },
+             { op: 'delete', type: 'campaign', uuid: campaign.uuid }
+           ] },
+           headers: headers, as: :json
+
+      expect(response).to have_http_status(:success)
+      expect(json.keys).to eq(%w[applied conflicts errors deleted cursor])
+      faction = campaign.factions.sole
+      expect(json['applied']).to match(
+        [include('type' => 'faction', 'uuid' => faction_uuid,
+                 'current' => include('id' => faction.id.to_s, 'name' => 'Cult of Nerull', 'syncVersion' => faction.sync_version)),
+         include('type' => 'quest', 'uuid' => quest.uuid,
+                 'current' => include('name' => 'Find the crypt', 'links' => [include('name' => 'Potion', 'quantity' => 2)]))]
+      )
+      expect(json['deleted']).to eq([npc.uuid])
+      expect(json['errors']).to eq([{ 'uuid' => campaign.uuid, 'errors' => ["Can't delete a campaign from Foundry"] }])
+      expect(quest.reload).to have_attributes(name: 'Find the crypt', giver_npc_id: nil)
+      expect(json['cursor']).to eq(campaign.reload.sync_counter)
+    end
+
+    it 'pulls what a deletion changed' do
+      npc = create(:campaign_npc, campaign: campaign)
+      quest = create(:campaign_quest, campaign: campaign, giver_npc: npc)
+      cursor = campaign.reload.sync_counter
+
+      post "/v1/foundry/campaigns/#{campaign.uuid}/changes", params: { changes: [{ op: 'delete', type: 'npc', uuid: npc.uuid }] },
+                                                             headers: headers, as: :json
+      get "/v1/foundry/campaigns/#{campaign.uuid}/changes", params: { since: cursor }, headers: headers
+
+      expect(json['records']['quests']).to contain_exactly(include('uuid' => quest.uuid, 'giverNpcId' => nil))
+      expect(json['tombstones']).to contain_exactly(include('type' => 'CampaignNpc', 'uuid' => npc.uuid))
+    end
+
+    it "reports a change that isn't an object" do
+      post "/v1/foundry/campaigns/#{campaign.uuid}/changes", params: { changes: ['npc'] }, headers: headers, as: :json
+
+      expect(response).to have_http_status(:success)
+      expect(json['errors']).to eq([{ 'uuid' => nil, 'errors' => ['Each change must be an object'] }])
+    end
+
     it 'rejects changes that are not a list' do
       post "/v1/foundry/campaigns/#{campaign.uuid}/changes", params: { changes: { type: 'front' } },
                                                              headers: headers, as: :json
@@ -196,6 +248,115 @@ RSpec.describe 'Admin::V1::Foundry::CampaignsController', type: :request do
 
       expect(response).to have_http_status(:unauthorized)
       expect(Campaign.where(name: 'Zombie Siege')).to be_empty
+    end
+  end
+
+  describe 'POST /v1/foundry/campaigns/import' do
+    let(:akra) do
+      { uuid: 'Actor.a1B2c3D4e5F6g7H8', name: 'Akra', playerName: 'Sam', level: 3,
+        sheet: { summary: 'Level 3 Dragonborn Cleric' } }
+    end
+    let(:body) do
+      {
+        request_id: 'send-k2Lm9QwErTy7uIo1',
+        campaign: { id: 'k2Lm9QwErTy7uIo1', uuid: 'k2Lm9QwErTy7uIo1', name: 'Zombie Siege', startLevel: 3,
+                    truths: ['The dead walk'], syncVersion: 0, local: true },
+        records: {
+          npcs: [{ id: 'npc0000000000001', name: 'Vex', role: 'bbeg', factionId: 'fac0000000000001' }],
+          factions: [{ id: 'fac0000000000001', name: 'Cult of Nerull' }],
+          quests: [{ id: 'qst0000000000001', name: 'Find the crypt', giverNpcId: 'npc0000000000001',
+                     links: [{ linkableType: 'CampaignNpc', linkableId: 'npc0000000000001', position: 0 }] }]
+        }
+      }
+    end
+    let(:imported) { user.campaigns.find_by(name: 'Zombie Siege') }
+
+    it 'creates the campaign with its records and returns their new uuids' do
+      post '/v1/foundry/campaigns/import', params: body, headers: headers, as: :json
+
+      expect(response).to have_http_status(:created)
+      npc = imported.npcs.sole
+      quest = imported.quests.sole
+      expect(json).to include('uuid' => imported.uuid, 'name' => 'Zombie Siege', 'slug' => imported.slug, 'mode' => 'arc',
+                              'url' => "/app/campaigns/#{imported.slug}", 'party' => [], 'truths' => ['The dead walk'],
+                              'syncVersion' => imported.sync_counter)
+      expect(json['ids']).to eq('k2Lm9QwErTy7uIo1' => imported.uuid, 'npc0000000000001' => npc.uuid,
+                                'fac0000000000001' => imported.factions.sole.uuid, 'qst0000000000001' => quest.uuid)
+      expect(npc.faction).to eq(imported.factions.sole)
+      expect(quest).to have_attributes(giver_npc: npc)
+      expect(quest.links.map(&:linkable)).to eq([npc])
+    end
+
+    it 'is pulled whole by a following first sync' do
+      post '/v1/foundry/campaigns/import', params: body, headers: headers, as: :json
+      get "/v1/foundry/campaigns/#{imported.uuid}/changes", params: { since: 0 }, headers: headers
+
+      records = response.parsed_body['records']
+      expect(records.transform_values { |list| list.pluck('name') })
+        .to include('npcs' => ['Vex'], 'factions' => ['Cult of Nerull'], 'quests' => ['Find the crypt'])
+      expect(records['quests'].first['links']).to contain_exactly(include('name' => 'Vex'))
+    end
+
+    it 'returns the same campaign, with the same ids, when a request is sent twice' do
+      allow(Rails).to receive(:cache).and_return(ActiveSupport::Cache::MemoryStore.new)
+
+      post '/v1/foundry/campaigns/import', params: body, headers: headers, as: :json
+      first = response.parsed_body
+      post '/v1/foundry/campaigns/import', params: body, headers: headers, as: :json
+
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body.slice('uuid', 'ids')).to eq(first.slice('uuid', 'ids'))
+      expect(first['ids'].size).to eq(4)
+      expect(user.campaigns.where(name: 'Zombie Siege').count).to eq(1)
+    end
+
+    it 'saves the party from the world and puts it in the campaign' do
+      post '/v1/foundry/campaigns/import',
+           params: body.merge(party: { world: { id: 'greyhawk', title: 'Greyhawk' }, characters: [akra] }),
+           headers: headers, as: :json
+
+      expect(response).to have_http_status(:created)
+      expect(json['party']).to eq(['Akra'])
+      expect(imported.party.pluck(:name)).to eq(['Akra'])
+    end
+
+    it 'does not need premium' do
+      user.patreon_account.destroy!
+
+      post '/v1/foundry/campaigns/import', params: body, headers: headers, as: :json
+
+      expect(response).to have_http_status(:created)
+    end
+
+    it 'needs a valid API token' do
+      post '/v1/foundry/campaigns/import', params: body, as: :json
+
+      expect(response).to have_http_status(:unauthorized)
+      expect(Campaign.where(name: 'Zombie Siege')).to be_empty
+    end
+
+    it 'says which records are wrong, and saves nothing, not even the party' do
+      body[:records][:quests].first[:kind] = 'epic'
+      body[:records][:npcs].first[:name] = ''
+
+      post '/v1/foundry/campaigns/import',
+           params: body.merge(party: { world: { id: 'greyhawk', title: 'Greyhawk' }, characters: [akra] }),
+           headers: headers, as: :json
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(json).to eq('errors' => ["NPCs: #1: Name can't be blank", 'Quests: Find the crypt: Kind is not included in the list'])
+      expect(imported).to be_nil
+      expect(user.player_characters).to be_empty
+    end
+
+    it 'rejects more than 500 records in a collection' do
+      body[:records][:factions] = Array.new(501) { |index| { id: "faction#{index}", name: "Faction #{index}" } }
+
+      post '/v1/foundry/campaigns/import', params: body, headers: headers, as: :json
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(json['errors']).to eq(['Factions: no more than 500 at a time'])
+      expect(imported).to be_nil
     end
   end
 end

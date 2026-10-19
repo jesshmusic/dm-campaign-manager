@@ -70,6 +70,85 @@ describe('PatreonConnection', () => {
     expect(screen.getByRole('button', { name: 'Disconnect' })).toBeInTheDocument();
   });
 
+  it('says the membership stays in sync without manual refreshes', async () => {
+    mockFetch.mockImplementation(() => jsonResponse(linked));
+
+    render(<PatreonConnection />);
+
+    expect(
+      await screen.findByText('Your membership stays in sync with Patreon automatically.'),
+    ).toBeInTheDocument();
+    expect(screen.queryByText(/Refresh after that/)).not.toBeInTheDocument();
+  });
+
+  it('shows a non-premium tier without a premium label', async () => {
+    mockFetch.mockImplementation(() =>
+      jsonResponse({
+        ...linked,
+        premium: false,
+        account: { ...linked.account, tierName: 'Apprentice', hasPremium: false },
+      }),
+    );
+
+    render(<PatreonConnection />);
+
+    expect(await screen.findByText('Apprentice')).toBeInTheDocument();
+    expect(screen.queryByText(/\(premium\)/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/\(not active\)/)).not.toBeInTheDocument();
+  });
+
+  it('marks a revoked membership as not active', async () => {
+    mockFetch.mockImplementation(() =>
+      jsonResponse({
+        ...linked,
+        premium: false,
+        account: { ...linked.account, hasPremium: false, active: false, expiresAt: null },
+      }),
+    );
+
+    render(<PatreonConnection />);
+
+    expect(await screen.findByText(/\(not active\)/)).toBeInTheDocument();
+    expect(screen.queryByText(/\(premium\)/)).not.toBeInTheDocument();
+    expect(
+      screen.getByText('Patreon access for this link has ended. Refresh to reconnect.'),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Refresh' })).toBeInTheDocument();
+  });
+
+  it('marks a membership Patreon stopped confirming as not active', async () => {
+    mockFetch.mockImplementation(() =>
+      jsonResponse({
+        ...linked,
+        premium: false,
+        account: { ...linked.account, active: false, expiresAt: '2026-10-01T12:00:00Z' },
+      }),
+    );
+
+    render(<PatreonConnection />);
+
+    expect(await screen.findByText(/\(not active\)/)).toBeInTheDocument();
+    expect(screen.queryByText(/\(premium\)/)).not.toBeInTheDocument();
+    expect(
+      screen.getByText(/could not be confirmed with Patreon after .*Refresh to reconnect/),
+    ).toBeInTheDocument();
+  });
+
+  it('still mentions premium from elsewhere when the Patreon tier is not active', async () => {
+    mockFetch.mockImplementation(() =>
+      jsonResponse({
+        ...linked,
+        premium: true,
+        account: { ...linked.account, hasPremium: false, active: false, expiresAt: null },
+      }),
+    );
+
+    render(<PatreonConnection />);
+
+    expect(await screen.findByText(/\(not active\)/)).toBeInTheDocument();
+    expect(screen.getByText('Your account already has premium access.')).toBeInTheDocument();
+  });
+
   it('sends the user to Patreon when connecting', async () => {
     mockFetch.mockImplementation((_url: string, init?: RequestInit) =>
       init?.method === 'POST'

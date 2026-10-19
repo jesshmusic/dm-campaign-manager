@@ -3,14 +3,15 @@
 module Admin
   module V1
     module Foundry
-      # Campaigns for Dorman Lakely's Campaign Planner. Creating one is free, as
-      # it is on the website; listing and syncing them are Patreon premium.
+      # Campaigns for Dorman Lakely's Campaign Planner. Creating one (or sending
+      # one planned in Foundry) is free, as it is on the website; listing and
+      # syncing them are Patreon premium.
       class CampaignsController < BaseController
         UUID_FORMAT = /\A\h{8}-\h{4}-\h{4}-\h{4}-\h{12}\z/
         REQUEST_ID_FORMAT = /\A[\w-]{8,64}\z/
 
-        before_action :require_premium!, except: :create
-        before_action :set_campaign, except: %i[index create]
+        before_action :require_premium!, except: %i[create import]
+        before_action :set_campaign, except: %i[index create import]
 
         # GET /v1/foundry/campaigns
         def index
@@ -41,25 +42,47 @@ module Admin
                  status: :unprocessable_entity
         end
 
+        # POST /v1/foundry/campaigns/import
+        # Body: { campaign: {...}, records: { factions: [...], ..., secrets: [...] }, party: {...}, request_id }
+        # "Send to Dungeon Master Guru" for a campaign planned in Foundry: creates
+        # it with all its records (see CampaignImporter), and returns it with
+        # ids: { local id => new uuid }. The party and request_id work as in create.
+        def import
+          done = Rails.cache.read(request_key) if request_key
+          campaign = @user.campaigns.find_by(id: done[:campaign_id]) if done.is_a?(Hash)
+          return render json: imported_json(campaign, done[:ids]) if campaign
+
+          importer = CampaignImporter.new(@user)
+          # The party's characters too, so a failure saves nothing
+          campaign = Campaign.transaction do
+            importer.import!(params[:campaign], params[:records], party_ids: party_character_ids)
+          end
+          Rails.cache.write(request_key, { campaign_id: campaign.id, ids: importer.ids }, expires_in: 1.hour) if request_key
+          render json: imported_json(campaign.reload, importer.ids), status: :created
+        rescue CampaignImporter::Invalid => e
+          render json: { errors: e.errors }, status: :unprocessable_entity
+        end
+
         # GET /v1/foundry/campaigns/:uuid/changes?since=N
         def changes
           render json: CampaignSync.new(@campaign).changes_since(params[:since].to_i.clamp(0, nil))
         end
 
         # POST /v1/foundry/campaigns/:uuid/changes
-        # Body: { changes: [{ type, uuid, baseVersion, attributes: {...} }] }
+        # Body: { changes: [{ op?, type, uuid, baseVersion, attributes: {...} }] }, op being
+        # update (the default), create or delete. Responds { applied, conflicts, errors, deleted, cursor }.
         def push
           changes = params.require(:changes)
           return render json: { errors: ['changes must be a list'] }, status: :unprocessable_entity unless changes.is_a?(Array)
 
-          render json: CampaignSync.new(@campaign).apply(changes.map { |change| change.permit!.to_h })
+          render json: CampaignSync.new(@campaign).apply(changes.map { |change| change.respond_to?(:permit!) ? change.permit!.to_h : change })
         end
 
         private
 
         def request_key
           request_id = params[:request_id].to_s
-          "foundry-campaign-create/#{@user.id}/#{request_id}" if request_id.match?(REQUEST_ID_FORMAT)
+          "foundry-campaign-#{action_name}/#{@user.id}/#{request_id}" if request_id.match?(REQUEST_ID_FORMAT)
         end
 
         # Saves the party's characters from the world and returns their ids
@@ -80,6 +103,10 @@ module Admin
         def created_json(campaign)
           { uuid: campaign.uuid, name: campaign.name, slug: campaign.slug, mode: campaign.mode, status: campaign.status,
             syncVersion: campaign.sync_counter, url: "/app/campaigns/#{campaign.slug}", party: campaign.party.pluck(:name) }
+        end
+
+        def imported_json(campaign, ids)
+          campaign.as_json_for_api.merge(created_json(campaign), ids: ids)
         end
 
         def set_campaign

@@ -41,9 +41,17 @@ class PatreonUser < ApplicationRecord
   validates :linked_user_id, uniqueness: true, allow_nil: true
   validate :foundry_user_or_linked_user
 
+  # The daily membership refresh renews tokens expiring within REFRESH_AHEAD
+  # and gives up on ones that lapsed more than REFRESH_LAPSED ago
+  REFRESH_AHEAD = 7.days
+  REFRESH_LAPSED = 30.days
+
   # Scopes
   scope :active, -> { where('expires_at > ?', Time.current) }
   scope :premium, -> { where(has_premium: true) }
+  scope :due_for_refresh, lambda {
+    where.not(refresh_token: [nil, '']).where(expires_at: REFRESH_LAPSED.ago..REFRESH_AHEAD.from_now)
+  }
 
   # Methods
   def authenticated?

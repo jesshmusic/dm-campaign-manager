@@ -99,6 +99,43 @@ RSpec.describe CampaignSyncable do
     expect(CampaignTombstone).not_to have_received(:create!)
   end
 
+  describe 'deleting a record that others point at' do
+    it "clears their pointers and bumps their versions, so a pull carries them" do
+      npc = create(:campaign_npc, campaign: campaign)
+      quest = create(:campaign_quest, campaign: campaign, giver_npc: npc)
+      front = create(:campaign_front, campaign: campaign, npc: npc)
+      before = campaign.reload.sync_counter
+
+      npc.destroy!
+
+      expect(quest.reload).to have_attributes(giver_npc_id: nil, sync_version: be > before)
+      expect(front.reload).to have_attributes(npc_id: nil, sync_version: be > before)
+      expect([quest.sync_version, front.sync_version].uniq.size).to eq(2)
+      expect(CampaignTombstone.last.sync_version).to eq(campaign.reload.sync_counter)
+    end
+
+    it 'knows every pointer between planner records' do
+      expect(CampaignNpc.pointers).to contain_exactly([CampaignFront, 'npc_id'], [CampaignQuest, 'giver_npc_id'])
+      expect(CampaignFaction.pointers).to contain_exactly([CampaignNpc, 'faction_id'], [CampaignFront, 'faction_id'])
+      expect(CampaignLocation.pointers).to contain_exactly([CampaignLocation, 'parent_id'], [CampaignQuest, 'location_id'])
+      expect(CampaignQuest.pointers).to contain_exactly([CampaignQuest, 'parent_id'])
+      expect(CampaignSession.pointers).to contain_exactly([CampaignSecret, 'revealed_session_id'])
+      expect(CampaignReference.pointers).to contain_exactly([CampaignNpc, 'stat_block_reference_id'])
+      expect([CampaignFront, CampaignSecret].flat_map(&:pointers)).to eq([])
+    end
+
+    it "leaves another campaign's records alone" do
+      npc = create(:campaign_npc, campaign: campaign)
+      other = create(:campaign_quest)
+      other.update_column(:giver_npc_id, npc.id)
+      version = other.sync_version
+
+      npc.destroy!
+
+      expect(other.reload).to have_attributes(giver_npc_id: nil, sync_version: version)
+    end
+  end
+
   it 'leaves a tombstone for a destroyed session but not for the links destroyed with it' do
     session = create(:campaign_session, campaign: campaign)
     create(:campaign_session_link, session: session)
