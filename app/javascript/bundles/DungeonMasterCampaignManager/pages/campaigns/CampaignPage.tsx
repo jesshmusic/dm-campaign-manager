@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
+import { FiRefreshCw } from 'react-icons/fi';
 import {
   GiBookCover,
   GiBookshelf,
@@ -27,6 +28,8 @@ import BooksTab from './tabs/BooksTab';
 import { MODE_LABELS } from './types';
 import {
   Badge,
+  ButtonRow,
+  HelperButton,
   LinkButton,
   Meta,
   Notice,
@@ -58,8 +61,18 @@ const initialTab = () => {
 const CampaignPage = () => {
   const { campaignSlug = '' } = useParams<{ campaignSlug: string }>();
   const state = useCampaign(campaignSlug);
-  const { campaign, loading, error, actionError, clearActionError } = state;
+  const { campaign, loading, error, actionError, clearActionError, reload } = state;
   const [tab, setTab] = useState(initialTab);
+  // Changes made in Foundry show up here only when the DM asks: nothing polls
+  const [refreshing, setRefreshing] = useState(false);
+  const refresh = async () => {
+    setRefreshing(true);
+    try {
+      await reload();
+    } finally {
+      setRefreshing(false);
+    }
+  };
   const { search } = useLocation();
 
   // Links like "?tab=story" (e.g. from the Getting started list) switch tabs
@@ -91,10 +104,20 @@ const CampaignPage = () => {
         <Toolbar>
           <Link to="/app/campaigns">← All campaigns</Link>
           {campaign && (
-            <Meta>
-              <Badge $tone="primary">{MODE_LABELS[campaign.mode]}</Badge>{' '}
-              <Badge>{campaign.status}</Badge>
-            </Meta>
+            <ButtonRow>
+              <Meta>
+                <Badge $tone="primary">{MODE_LABELS[campaign.mode]}</Badge>{' '}
+                <Badge>{campaign.status}</Badge>
+              </Meta>
+              <HelperButton
+                type="button"
+                onClick={() => void refresh()}
+                disabled={refreshing}
+                title="Get changes synced from Foundry"
+              >
+                <FiRefreshCw aria-hidden /> {refreshing ? 'Refreshing…' : 'Refresh'}
+              </HelperButton>
+            </ButtonRow>
           )}
         </Toolbar>
         {loading && <Meta>Loading…</Meta>}

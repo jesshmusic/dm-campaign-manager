@@ -74,6 +74,23 @@ describe('CampaignPage', () => {
     );
   });
 
+  it('loads the campaign again when Refresh is clicked, and only then', async () => {
+    const campaignLoads = () => mockFetch.mock.calls.filter(([url]) => url === CAMPAIGN_URL).length;
+    renderPage();
+    await screen.findByRole('heading', { name: 'Zombie Siege', level: 1 });
+    expect(campaignLoads()).toBe(1);
+
+    mockFetch.mockImplementation(() =>
+      jsonResponse({ ...sampleCampaign(), name: 'Zombie Siege Renewed' }),
+    );
+    await userEvent.click(screen.getByRole('button', { name: 'Refresh' }));
+
+    expect(
+      await screen.findByRole('heading', { name: 'Zombie Siege Renewed', level: 1 }),
+    ).toBeInTheDocument();
+    expect(campaignLoads()).toBe(2);
+  });
+
   it('has a tab for every part of the plan', async () => {
     renderPage();
 
