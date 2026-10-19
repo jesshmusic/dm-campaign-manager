@@ -168,7 +168,6 @@ Decisions already made:
 - Watch CI on the latest push, resolve Copilot's review comments, then merge.
 - Production setup:
   - run the migrations
-  - lock CORS down from `origins '*'` (`config/initializers/cors.rb`) to the Foundry origins that need it
 
 **To release the module**
 - The first release is 1.0.0 (0.1.0 was never released). `package.json` and `module.json` already say 1.0.0, and

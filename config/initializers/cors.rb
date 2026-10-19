@@ -7,8 +7,11 @@
 
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
-    # Allow requests from FoundryVTT (running on different ports/origins)
-    origins '*' # In production, lock this down to specific origins
+    # Foundry modules call these from each DM's own Foundry server, at any
+    # address, so any origin is allowed, but only on the paths below. They're
+    # token- or key-authenticated, not cookie-based. The rest of the API isn't
+    # open to other origins.
+    origins '*'
 
     resource '/v1/maps/*',
       headers: :any,
