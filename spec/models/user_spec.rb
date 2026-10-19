@@ -308,4 +308,13 @@ RSpec.describe User, type: :model do
       expect(reloaded.username).to eq('uniquetestuser')
     end
   end
+
+  describe 'account connections' do
+    it 'destroys API tokens with the user' do
+      user = create(:dungeon_master_user)
+      ApiToken.issue!(user: user, name: 'Foundry')
+
+      expect { user.destroy }.to change(ApiToken, :count).by(-1)
+    end
+  end
 end

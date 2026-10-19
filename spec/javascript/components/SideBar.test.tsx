@@ -425,6 +425,45 @@ describe('SideBar Component', () => {
 
       expect(screen.getByText('User Dashboard')).toBeInTheDocument();
     });
+
+    it('should show the campaign planner link only when authenticated', () => {
+      mockUseAuth0.mockReturnValue({
+        user: { given_name: 'User', email: 'user@example.com' },
+        isAuthenticated: true,
+        getAccessTokenSilently: mockGetAccessTokenSilently,
+        loginWithRedirect: mockLoginWithRedirect,
+        logout: mockLogout,
+      } as any);
+
+      const { unmount } = render(
+        <Provider store={store}>
+          <MemoryRouter>
+            <SideBar />
+          </MemoryRouter>
+        </Provider>
+      );
+
+      expect(screen.getByText('Campaigns')).toBeInTheDocument();
+      unmount();
+
+      mockUseAuth0.mockReturnValue({
+        user: undefined,
+        isAuthenticated: false,
+        getAccessTokenSilently: mockGetAccessTokenSilently,
+        loginWithRedirect: mockLoginWithRedirect,
+        logout: mockLogout,
+      } as any);
+
+      render(
+        <Provider store={store}>
+          <MemoryRouter>
+            <SideBar />
+          </MemoryRouter>
+        </Provider>
+      );
+
+      expect(screen.queryByText('Campaigns')).not.toBeInTheDocument();
+    });
   });
 
   describe('user interactions', () => {

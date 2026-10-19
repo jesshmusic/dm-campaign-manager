@@ -68,4 +68,12 @@ RSpec.describe 'Home', type: :request do
       expect(response).to render_template(layout: 'home')
     end
   end
+
+  describe 'GET /link' do
+    it 'serves the app, where a DM enters a Foundry link code' do
+      get '/link', params: { code: 'WXYZ-2345' }
+      expect(response).to have_http_status(:success)
+      expect(response).to render_template(layout: 'home')
+    end
+  end
 end

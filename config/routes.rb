@@ -6,6 +6,8 @@ Rails.application.routes.draw do
   post '/users/login', to: 'users#set_auth_user', as: 'user_set_user'
   delete '/users/logout', to: 'users#logout_user', as: 'user_logout_user'
   get 'app(/*all)', to: 'home#index'
+  # Where a DM enters the code a Foundry module shows, to link it to their account
+  get 'link', to: 'home#index'
   scope module: 'admin' do
     namespace :v1 do
       get 'dashboard', to: 'dashboard#index'
@@ -88,6 +90,63 @@ Rails.application.routes.draw do
       # Patreon OAuth endpoints
       get '/users/:user_id/ready', to: 'patreon_auth#check_status', constraints: { format: 'json' }
       get '/patreon/callback', to: 'patreon_auth#callback'
+
+      # Personal API tokens for Foundry modules
+      resources :api_tokens, path: 'api-tokens', only: %i[index create destroy], constraints: { format: 'json' }
+
+      # The signed-in DM approves or denies a Foundry module's device-link code
+      get 'device-links/:user_code', to: 'device_links#show', constraints: { format: 'json' }
+      post 'device-links/:user_code/approve', to: 'device_links#approve', constraints: { format: 'json' }
+      post 'device-links/:user_code/deny', to: 'device_links#deny', constraints: { format: 'json' }
+
+      # Search the signed-in DM's Foundry compendium index
+      get 'compendium', to: 'compendium_entries#index', constraints: { format: 'json' }
+      get 'compendium/packs', to: 'compendium_entries#packs', constraints: { format: 'json' }
+
+      # The signed-in DM's player characters from Foundry
+      get 'player-characters', to: 'player_characters#index', constraints: { format: 'json' }
+
+      # The signed-in DM's Foundry scenes (with thumbnails), for picking maps
+      get 'foundry_scenes', to: 'foundry_scenes#index', constraints: { format: 'json' }
+
+      # Campaign planner (the signed-in DM's own campaigns)
+      resources :campaigns, only: %i[index show create update destroy], constraints: { format: 'json' } do
+        scope module: :campaigns do
+          resources :factions, :locations, :npcs, :fronts, :secrets, :references,
+                    only: %i[index show create update destroy]
+          resources :quests, only: %i[index show create update destroy] do
+            resources :links, controller: 'quest_links', only: %i[create update destroy]
+          end
+          resources :sessions, only: %i[index show create update destroy] do
+            resources :links, controller: 'session_links', only: %i[create update destroy]
+          end
+        end
+      end
+
+      # Endpoints for Foundry modules, authenticated with a personal API token
+      namespace :foundry do
+        get 'me', to: 'accounts#show', constraints: { format: 'json' }
+        get 'campaigns', to: 'campaigns#index', constraints: { format: 'json' }
+        post 'campaigns', to: 'campaigns#create', constraints: { format: 'json' }
+        post 'campaigns/import', to: 'campaigns#import', constraints: { format: 'json' }
+        get 'campaigns/:uuid/changes', to: 'campaigns#changes', constraints: { format: 'json' }
+        post 'campaigns/:uuid/changes', to: 'campaigns#push', constraints: { format: 'json' }
+        post 'characters', to: 'characters#create', constraints: { format: 'json' }
+        get 'scenes', to: 'scenes#index', constraints: { format: 'json' }
+        post 'scenes', to: 'scenes#create', constraints: { format: 'json' }
+        delete 'scenes', to: 'scenes#destroy', constraints: { format: 'json' }
+        get 'compendium', to: 'compendium#show', constraints: { format: 'json' }
+        post 'compendium', to: 'compendium#create', constraints: { format: 'json' }
+
+        # Device-code linking: no token yet, this is how a module gets one
+        post 'link', to: 'links#create', constraints: { format: 'json' }
+        post 'link/token', to: 'links#token', constraints: { format: 'json' }
+      end
+
+      # The new-campaign setup guide's words: public to read (the Foundry module
+      # reads them too), admin-only to change
+      get 'setup_guide', to: 'setup_guides#show', constraints: { format: 'json' }
+      patch 'setup_guide', to: 'setup_guides#update', constraints: { format: 'json' }
 
       # Admin UI for managing maps
       get '/maps-admin', to: 'foundry_maps_admin#index'

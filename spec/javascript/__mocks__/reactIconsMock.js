@@ -6,6 +6,7 @@ const MockIcon = (props) => React.createElement('span', { 'data-testid': 'mock-i
 // Export commonly used icons
 module.exports = {
   GiFire: MockIcon,
+  FiRefreshCw: MockIcon,
   GiAbstract029: MockIcon,
   GiBroadsword: MockIcon,
   GiInfo: MockIcon,
@@ -55,4 +56,12 @@ module.exports = {
   GiCompass: MockIcon,
   GiCrossedSwords: MockIcon,
   GiSnowflake1: MockIcon,
+  // Campaign planner
+  GiBookCover: MockIcon,
+  GiHood: MockIcon,
+  GiThreeFriends: MockIcon,
+  GiLockedChest: MockIcon,
+  GiSandsOfTime: MockIcon,
+  GiScrollUnfurled: MockIcon,
+  GiTreasureMap: MockIcon,
 };

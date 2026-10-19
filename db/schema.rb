@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_12_19_201735) do
+ActiveRecord::Schema[7.1].define(version: 2026_10_19_130000) do
   create_schema "heroku_ext"
 
   # These are extensions that must be enabled in order to support this database
@@ -68,6 +68,18 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_19_201735) do
     t.index ["slug"], name: "index_api_references_on_slug", unique: true
   end
 
+  create_table "api_tokens", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "name", null: false
+    t.string "token_digest", null: false
+    t.string "token_prefix", null: false
+    t.datetime "last_used_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["token_digest"], name: "index_api_tokens_on_token_digest", unique: true
+    t.index ["user_id"], name: "index_api_tokens_on_user_id"
+  end
+
   create_table "armor_classes", force: :cascade do |t|
     t.integer "ac_base"
     t.boolean "has_dex_bonus"
@@ -97,6 +109,263 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_19_201735) do
     t.index ["homebrew"], name: "index_backgrounds_on_homebrew"
     t.index ["slug", "edition"], name: "index_backgrounds_on_slug_and_edition", unique: true
     t.index ["user_id"], name: "index_backgrounds_on_user_id"
+  end
+
+  create_table "campaign_factions", force: :cascade do |t|
+    t.bigint "campaign_id", null: false
+    t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
+    t.string "name", null: false
+    t.text "description"
+    t.text "goal"
+    t.text "notes"
+    t.bigint "sync_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["campaign_id", "sync_version"], name: "index_campaign_factions_on_campaign_id_and_sync_version"
+    t.index ["campaign_id"], name: "index_campaign_factions_on_campaign_id"
+    t.index ["uuid"], name: "index_campaign_factions_on_uuid", unique: true
+  end
+
+  create_table "campaign_fronts", force: :cascade do |t|
+    t.bigint "campaign_id", null: false
+    t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
+    t.bigint "npc_id"
+    t.bigint "faction_id"
+    t.string "name", null: false
+    t.text "description"
+    t.text "goal"
+    t.text "doom"
+    t.jsonb "stakes", default: [], null: false
+    t.jsonb "portents", default: [], null: false
+    t.integer "clock_segments", default: 6, null: false
+    t.integer "clock_filled", default: 0, null: false
+    t.bigint "sync_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["campaign_id", "sync_version"], name: "index_campaign_fronts_on_campaign_id_and_sync_version"
+    t.index ["campaign_id"], name: "index_campaign_fronts_on_campaign_id"
+    t.index ["faction_id"], name: "index_campaign_fronts_on_faction_id"
+    t.index ["npc_id"], name: "index_campaign_fronts_on_npc_id"
+    t.index ["uuid"], name: "index_campaign_fronts_on_uuid", unique: true
+  end
+
+  create_table "campaign_locations", force: :cascade do |t|
+    t.bigint "campaign_id", null: false
+    t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
+    t.bigint "parent_id"
+    t.bigint "foundry_map_id"
+    t.string "name", null: false
+    t.text "description"
+    t.jsonb "features", default: [], null: false
+    t.text "notes"
+    t.bigint "sync_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "foundry_scene_uuid"
+    t.string "foundry_scene_name"
+    t.index ["campaign_id", "sync_version"], name: "index_campaign_locations_on_campaign_id_and_sync_version"
+    t.index ["campaign_id"], name: "index_campaign_locations_on_campaign_id"
+    t.index ["foundry_map_id"], name: "index_campaign_locations_on_foundry_map_id"
+    t.index ["parent_id"], name: "index_campaign_locations_on_parent_id"
+    t.index ["uuid"], name: "index_campaign_locations_on_uuid", unique: true
+  end
+
+  create_table "campaign_npcs", force: :cascade do |t|
+    t.bigint "campaign_id", null: false
+    t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
+    t.bigint "monster_id"
+    t.bigint "faction_id"
+    t.string "name", null: false
+    t.string "role", default: "neutral", null: false
+    t.text "description"
+    t.text "motive"
+    t.text "secret"
+    t.string "appearance"
+    t.string "voice"
+    t.text "notes"
+    t.bigint "sync_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "stat_block_reference_id"
+    t.string "foundry_actor_uuid"
+    t.string "foundry_actor_name"
+    t.index ["campaign_id", "sync_version"], name: "index_campaign_npcs_on_campaign_id_and_sync_version"
+    t.index ["campaign_id"], name: "index_campaign_npcs_on_campaign_id"
+    t.index ["faction_id"], name: "index_campaign_npcs_on_faction_id"
+    t.index ["monster_id"], name: "index_campaign_npcs_on_monster_id"
+    t.index ["stat_block_reference_id"], name: "index_campaign_npcs_on_stat_block_reference_id"
+    t.index ["uuid"], name: "index_campaign_npcs_on_uuid", unique: true
+  end
+
+  create_table "campaign_party_members", force: :cascade do |t|
+    t.bigint "campaign_id", null: false
+    t.bigint "player_character_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["campaign_id", "player_character_id"], name: "idx_on_campaign_id_player_character_id_c6c43d9df3", unique: true
+    t.index ["player_character_id"], name: "index_campaign_party_members_on_player_character_id"
+  end
+
+  create_table "campaign_quest_links", force: :cascade do |t|
+    t.bigint "quest_id", null: false
+    t.string "linkable_type", null: false
+    t.bigint "linkable_id", null: false
+    t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
+    t.integer "position", default: 0, null: false
+    t.integer "quantity"
+    t.bigint "sync_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["linkable_type", "linkable_id"], name: "index_campaign_quest_links_on_linkable"
+    t.index ["quest_id", "linkable_type", "linkable_id"], name: "index_campaign_quest_links_uniqueness", unique: true
+    t.index ["quest_id"], name: "index_campaign_quest_links_on_quest_id"
+    t.index ["uuid"], name: "index_campaign_quest_links_on_uuid", unique: true
+  end
+
+  create_table "campaign_quests", force: :cascade do |t|
+    t.bigint "campaign_id", null: false
+    t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
+    t.bigint "parent_id"
+    t.bigint "giver_npc_id"
+    t.bigint "location_id"
+    t.string "name", null: false
+    t.string "kind", default: "main", null: false
+    t.string "status", default: "available", null: false
+    t.text "description"
+    t.text "reward"
+    t.text "notes"
+    t.integer "act"
+    t.integer "position", default: 0, null: false
+    t.integer "level_min"
+    t.integer "level_max"
+    t.bigint "sync_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.jsonb "foundry_scenes", default: [], null: false
+    t.jsonb "reward_currency", default: {}, null: false
+    t.integer "reward_xp"
+    t.boolean "milestone", default: false, null: false
+    t.index ["campaign_id", "sync_version"], name: "index_campaign_quests_on_campaign_id_and_sync_version"
+    t.index ["campaign_id"], name: "index_campaign_quests_on_campaign_id"
+    t.index ["giver_npc_id"], name: "index_campaign_quests_on_giver_npc_id"
+    t.index ["location_id"], name: "index_campaign_quests_on_location_id"
+    t.index ["parent_id"], name: "index_campaign_quests_on_parent_id"
+    t.index ["uuid"], name: "index_campaign_quests_on_uuid", unique: true
+  end
+
+  create_table "campaign_references", force: :cascade do |t|
+    t.bigint "campaign_id", null: false
+    t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
+    t.string "name", null: false
+    t.string "book", default: "mm", null: false
+    t.string "category", default: "monster", null: false
+    t.integer "page"
+    t.string "challenge_rating"
+    t.string "foundry_uuid"
+    t.text "notes"
+    t.bigint "sync_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["campaign_id", "sync_version"], name: "index_campaign_references_on_campaign_id_and_sync_version"
+    t.index ["campaign_id"], name: "index_campaign_references_on_campaign_id"
+    t.index ["uuid"], name: "index_campaign_references_on_uuid", unique: true
+  end
+
+  create_table "campaign_secrets", force: :cascade do |t|
+    t.bigint "campaign_id", null: false
+    t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
+    t.bigint "revealed_session_id"
+    t.text "text", null: false
+    t.string "revelation"
+    t.datetime "revealed_at"
+    t.integer "position", default: 0, null: false
+    t.bigint "sync_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["campaign_id", "sync_version"], name: "index_campaign_secrets_on_campaign_id_and_sync_version"
+    t.index ["campaign_id"], name: "index_campaign_secrets_on_campaign_id"
+    t.index ["revealed_session_id"], name: "index_campaign_secrets_on_revealed_session_id"
+    t.index ["uuid"], name: "index_campaign_secrets_on_uuid", unique: true
+  end
+
+  create_table "campaign_session_links", force: :cascade do |t|
+    t.bigint "session_id", null: false
+    t.string "linkable_type", null: false
+    t.bigint "linkable_id", null: false
+    t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
+    t.integer "position", default: 0, null: false
+    t.bigint "sync_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "quantity"
+    t.index ["linkable_type", "linkable_id"], name: "index_campaign_session_links_on_linkable"
+    t.index ["session_id", "linkable_type", "linkable_id"], name: "index_campaign_session_links_uniqueness", unique: true
+    t.index ["session_id"], name: "index_campaign_session_links_on_session_id"
+    t.index ["uuid"], name: "index_campaign_session_links_on_uuid", unique: true
+  end
+
+  create_table "campaign_sessions", force: :cascade do |t|
+    t.bigint "campaign_id", null: false
+    t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
+    t.integer "number", null: false
+    t.string "title"
+    t.date "scheduled_on"
+    t.string "status", default: "planned", null: false
+    t.integer "level"
+    t.text "character_notes"
+    t.text "strong_start"
+    t.jsonb "scenes", default: [], null: false
+    t.text "treasure"
+    t.text "log"
+    t.text "recap"
+    t.bigint "sync_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.jsonb "foundry_scenes", default: [], null: false
+    t.jsonb "treasure_currency", default: {}, null: false
+    t.index ["campaign_id", "number"], name: "index_campaign_sessions_on_campaign_id_and_number", unique: true
+    t.index ["campaign_id", "sync_version"], name: "index_campaign_sessions_on_campaign_id_and_sync_version"
+    t.index ["campaign_id"], name: "index_campaign_sessions_on_campaign_id"
+    t.index ["uuid"], name: "index_campaign_sessions_on_uuid", unique: true
+  end
+
+  create_table "campaign_tombstones", force: :cascade do |t|
+    t.bigint "campaign_id", null: false
+    t.string "record_type", null: false
+    t.uuid "record_uuid", null: false
+    t.bigint "sync_version", null: false
+    t.datetime "created_at", null: false
+    t.index ["campaign_id", "sync_version"], name: "index_campaign_tombstones_on_campaign_id_and_sync_version"
+    t.index ["campaign_id"], name: "index_campaign_tombstones_on_campaign_id"
+  end
+
+  create_table "campaigns", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
+    t.string "name", null: false
+    t.string "slug", null: false
+    t.text "premise"
+    t.text "pitch"
+    t.string "setting_name"
+    t.text "setting_notes"
+    t.jsonb "truths", default: [], null: false
+    t.string "mode", default: "arc", null: false
+    t.string "status", default: "planning", null: false
+    t.integer "planned_sessions"
+    t.string "cadence"
+    t.integer "party_size"
+    t.integer "start_level"
+    t.integer "target_level"
+    t.string "tone"
+    t.string "edition", default: "2024", null: false
+    t.bigint "sync_counter", default: 0, null: false
+    t.bigint "sync_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.jsonb "excluded_compendium_packs", default: [], null: false
+    t.index ["user_id", "slug"], name: "index_campaigns_on_user_id_and_slug", unique: true
+    t.index ["user_id"], name: "index_campaigns_on_user_id"
+    t.index ["uuid"], name: "index_campaigns_on_uuid", unique: true
   end
 
   create_table "class_features", force: :cascade do |t|
@@ -166,6 +435,22 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_19_201735) do
     t.index ["dnd_class_level_id"], name: "index_class_spellcastings_on_dnd_class_level_id"
   end
 
+  create_table "compendium_entries", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "pack", null: false
+    t.string "pack_version"
+    t.string "foundry_uuid", null: false
+    t.string "name", null: false
+    t.string "category", null: false
+    t.string "challenge_rating"
+    t.string "detail"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id", "category", "name"], name: "index_compendium_entries_on_user_id_and_category_and_name"
+    t.index ["user_id", "foundry_uuid"], name: "index_compendium_entries_on_user_id_and_foundry_uuid", unique: true
+    t.index ["user_id", "pack"], name: "index_compendium_entries_on_user_id_and_pack"
+  end
+
   create_table "container_items", force: :cascade do |t|
     t.bigint "item_id"
     t.bigint "contained_item_id"
@@ -202,6 +487,25 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_19_201735) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["item_id"], name: "index_damages_on_item_id"
+  end
+
+  create_table "device_links", force: :cascade do |t|
+    t.string "device_code_digest", null: false
+    t.string "user_code", null: false
+    t.string "world_id"
+    t.string "world_title"
+    t.bigint "user_id"
+    t.datetime "approved_at"
+    t.datetime "denied_at"
+    t.datetime "consumed_at"
+    t.datetime "last_polled_at"
+    t.datetime "expires_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["device_code_digest"], name: "index_device_links_on_device_code_digest", unique: true
+    t.index ["expires_at"], name: "index_device_links_on_expires_at"
+    t.index ["user_code"], name: "index_device_links_on_user_code", unique: true, where: "(consumed_at IS NULL)"
+    t.index ["user_id"], name: "index_device_links_on_user_id"
   end
 
   create_table "dnd_class_levels", force: :cascade do |t|
@@ -313,6 +617,21 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_19_201735) do
     t.index ["access_level"], name: "index_foundry_maps_on_access_level"
     t.index ["created_at"], name: "index_foundry_maps_on_created_at"
     t.index ["published"], name: "index_foundry_maps_on_published"
+  end
+
+  create_table "foundry_scenes", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "world_id", null: false
+    t.string "world_title"
+    t.string "foundry_uuid", null: false
+    t.string "name", null: false
+    t.string "version", null: false
+    t.string "thumbnail_s3_key", null: false
+    t.string "thumbnail_url", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id", "foundry_uuid"], name: "index_foundry_scenes_on_user_id_and_foundry_uuid"
+    t.index ["user_id", "world_id", "foundry_uuid"], name: "index_foundry_scenes_on_user_id_and_world_id_and_foundry_uuid", unique: true
   end
 
   create_table "friendly_id_slugs", force: :cascade do |t|
@@ -505,6 +824,20 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_19_201735) do
     t.index ["searchable_type", "searchable_id"], name: "index_pg_search_documents_on_searchable"
   end
 
+  create_table "player_characters", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "world_id", null: false
+    t.string "world_title"
+    t.string "foundry_uuid", null: false
+    t.string "name", null: false
+    t.string "player_name"
+    t.integer "level"
+    t.jsonb "sheet", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id", "world_id", "foundry_uuid"], name: "idx_on_user_id_world_id_foundry_uuid_9ad0edfc57", unique: true
+  end
+
   create_table "prerequisites", force: :cascade do |t|
     t.string "name"
     t.integer "level"
@@ -632,6 +965,30 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_19_201735) do
     t.datetime "updated_at", null: false
     t.string "value"
     t.index ["monster_id"], name: "index_senses_on_monster_id"
+  end
+
+  create_table "setup_guide_steps", force: :cascade do |t|
+    t.string "key", null: false
+    t.integer "position", null: false
+    t.string "label", null: false
+    t.string "title", null: false
+    t.text "intro", null: false
+    t.text "why"
+    t.text "example"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["key"], name: "index_setup_guide_steps_on_key", unique: true
+  end
+
+  create_table "setup_guide_templates", force: :cascade do |t|
+    t.string "key", null: false
+    t.integer "position", null: false
+    t.string "title", null: false
+    t.text "description", null: false
+    t.text "example", default: "", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["key"], name: "index_setup_guide_templates_on_key", unique: true
   end
 
   create_table "skills", force: :cascade do |t|
@@ -791,22 +1148,51 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_19_201735) do
   add_foreign_key "ability_score_dnd_classes", "ability_scores"
   add_foreign_key "ability_score_dnd_classes", "dnd_classes"
   add_foreign_key "actions", "monsters"
+  add_foreign_key "api_tokens", "users"
   add_foreign_key "armor_classes", "items"
   add_foreign_key "backgrounds", "users"
+  add_foreign_key "campaign_factions", "campaigns"
+  add_foreign_key "campaign_fronts", "campaign_factions", column: "faction_id", on_delete: :nullify
+  add_foreign_key "campaign_fronts", "campaign_npcs", column: "npc_id", on_delete: :nullify
+  add_foreign_key "campaign_fronts", "campaigns"
+  add_foreign_key "campaign_locations", "campaign_locations", column: "parent_id", on_delete: :nullify
+  add_foreign_key "campaign_locations", "campaigns"
+  add_foreign_key "campaign_locations", "foundry_maps", on_delete: :nullify
+  add_foreign_key "campaign_npcs", "campaign_factions", column: "faction_id", on_delete: :nullify
+  add_foreign_key "campaign_npcs", "campaign_references", column: "stat_block_reference_id", on_delete: :nullify
+  add_foreign_key "campaign_npcs", "campaigns"
+  add_foreign_key "campaign_npcs", "monsters", on_delete: :nullify
+  add_foreign_key "campaign_party_members", "campaigns", on_delete: :cascade
+  add_foreign_key "campaign_party_members", "player_characters", on_delete: :cascade
+  add_foreign_key "campaign_quest_links", "campaign_quests", column: "quest_id", on_delete: :cascade
+  add_foreign_key "campaign_quests", "campaign_locations", column: "location_id", on_delete: :nullify
+  add_foreign_key "campaign_quests", "campaign_npcs", column: "giver_npc_id", on_delete: :nullify
+  add_foreign_key "campaign_quests", "campaign_quests", column: "parent_id", on_delete: :nullify
+  add_foreign_key "campaign_quests", "campaigns"
+  add_foreign_key "campaign_references", "campaigns"
+  add_foreign_key "campaign_secrets", "campaign_sessions", column: "revealed_session_id", on_delete: :nullify
+  add_foreign_key "campaign_secrets", "campaigns"
+  add_foreign_key "campaign_session_links", "campaign_sessions", column: "session_id", on_delete: :cascade
+  add_foreign_key "campaign_sessions", "campaigns"
+  add_foreign_key "campaign_tombstones", "campaigns", on_delete: :cascade
+  add_foreign_key "campaigns", "users"
   add_foreign_key "class_features", "dnd_class_levels"
   add_foreign_key "class_level_choices", "class_features"
   add_foreign_key "class_specific_spell_slots", "class_specifics"
   add_foreign_key "class_specifics", "dnd_class_levels"
   add_foreign_key "class_spellcastings", "dnd_class_levels"
+  add_foreign_key "compendium_entries", "users"
   add_foreign_key "content_items", "items"
   add_foreign_key "costs", "items"
   add_foreign_key "damages", "items"
+  add_foreign_key "device_links", "users"
   add_foreign_key "dnd_class_levels", "dnd_classes"
   add_foreign_key "dnd_classes", "users"
   add_foreign_key "feats", "users"
   add_foreign_key "foundry_map_files", "foundry_maps"
   add_foreign_key "foundry_map_taggings", "foundry_map_tags"
   add_foreign_key "foundry_map_taggings", "foundry_maps"
+  add_foreign_key "foundry_scenes", "users"
   add_foreign_key "item_ranges", "items"
   add_foreign_key "item_throw_ranges", "items"
   add_foreign_key "items", "users"
@@ -815,6 +1201,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_19_201735) do
   add_foreign_key "multi_classing_profs", "multi_classings"
   add_foreign_key "multi_classing_profs", "profs"
   add_foreign_key "multi_classings", "dnd_classes"
+  add_foreign_key "player_characters", "users"
   add_foreign_key "prerequisites", "class_features"
   add_foreign_key "race_traits", "races"
   add_foreign_key "races", "users"

@@ -24,6 +24,9 @@ export const BreadcrumbProvider = ({ children }: { children: React.ReactNode }) 
   return <BreadcrumbContext.Provider value={value}>{children}</BreadcrumbContext.Provider>;
 };
 
+// For pages that may render outside the provider (returns undefined there)
+export const useOptionalBreadcrumbs = () => useContext(BreadcrumbContext);
+
 export const useBreadcrumbs = () => {
   const context = useContext(BreadcrumbContext);
   if (!context) {

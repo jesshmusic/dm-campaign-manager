@@ -28,6 +28,12 @@ import SearchResults from '../pages/search-results/SearchResults';
 import PrivacyPolicy from '../pages/privacy-policy/PrivacyPolicy';
 import FoundryMapsAdmin from '../pages/FoundryMapsAdmin';
 import FoundryModuleStatsPage from '../pages/admin-dashboard/foundry-module-stats/FoundryModuleStatsPage';
+import SetupGuidePage from '../pages/admin-dashboard/setup-guide/SetupGuidePage';
+import CampaignsIndex from '../pages/campaigns/CampaignsIndex';
+import NewCampaign from '../pages/campaigns/NewCampaign';
+import CampaignPage from '../pages/campaigns/CampaignPage';
+import SessionPage from '../pages/campaigns/SessionPage';
+import DeviceLinkPage from '../pages/device-link/DeviceLinkPage';
 import { ItemType } from '../pages/items/use-data';
 
 type ResolverProps = Record<string, unknown>;
@@ -166,9 +172,31 @@ const DMRoutes = (props: ResolverProps) => {
         element={<ProtectedRoute as={FoundryModuleStatsPage} requireAdmin={true} {...props} />}
       />
       <Route
+        path="/app/admin-dashboard/setup-guide"
+        element={<ProtectedRoute as={SetupGuidePage} requireAdmin={true} {...props} />}
+      />
+      <Route
         path="/app/user-dashboard"
         element={<ProtectedRoute as={UserDashboard} requireAdmin={false} {...props} />}
       />
+      <Route
+        path="/app/campaigns"
+        element={<ProtectedRoute as={CampaignsIndex} requireAdmin={false} {...props} />}
+      />
+      <Route
+        path="/app/campaigns/new"
+        element={<ProtectedRoute as={NewCampaign} requireAdmin={false} {...props} />}
+      />
+      <Route
+        path="/app/campaigns/:campaignSlug"
+        element={<ProtectedRoute as={CampaignPage} requireAdmin={false} {...props} />}
+      />
+      <Route
+        path="/app/campaigns/:campaignSlug/sessions/:sessionId"
+        element={<ProtectedRoute as={SessionPage} requireAdmin={false} {...props} />}
+      />
+      {/* Linking a Foundry module with a code; the page asks signed-out DMs to sign in */}
+      <Route path="/link" element={<DeviceLinkPage {...props} />} />
       <Route path="*" element={<HomePage {...props} />} />
     </Routes>
   );

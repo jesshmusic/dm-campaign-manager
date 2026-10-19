@@ -4,6 +4,11 @@ import { render, screen, waitFor, fireEvent } from '../../../test-utils';
 import { MemoryRouter } from 'react-router-dom';
 import MapsTable from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/admin-dashboard/components/MapsTable';
 
+const mockGetAccessTokenSilently = jest.fn(() => Promise.resolve('test-token'));
+jest.mock('@auth0/auth0-react', () => ({
+  useAuth0: () => ({ getAccessTokenSilently: mockGetAccessTokenSilently }),
+}));
+
 // Mock DataTable to avoid DndSpinner and other complex component issues
 jest.mock(
   '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/components/DataTable/DataTable',
@@ -191,6 +196,7 @@ describe('MapsTable Component', () => {
         expect(mockFetch).toHaveBeenCalledWith('/v1/maps', {
           headers: {
             Accept: 'application/json',
+            Authorization: 'Bearer test-token',
           },
         });
       });

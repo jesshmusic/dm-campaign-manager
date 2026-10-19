@@ -17,6 +17,7 @@ import { MdEdit, MdDelete, MdVisibility, MdSave, MdCancel } from 'react-icons/md
 import ImageResize from 'quill-image-resize-module-react';
 import { addFlashMessage, FlashMessageType } from '../reducers/flashMessages';
 import FlashMessages from '../components/Alerts/FlashMessages';
+import useAuthFetch, { AuthFetch } from '../utilities/useAuthFetch';
 
 Quill.register('modules/imageResize', ImageResize);
 
@@ -134,12 +135,13 @@ const compressImage = (file: File, maxWidth = 800, quality = 0.8): Promise<File>
 const uploadViaPresignedUrl = async (
   file: File,
   mapId: string,
+  authFetch: AuthFetch,
   onProgress?: (progress: number) => void,
 ): Promise<{ success: boolean; error?: string }> => {
   try {
     // 1. Get presigned URL from server
     onProgress?.(5);
-    const presignResponse = await fetch(
+    const presignResponse = await authFetch(
       `/v1/maps/${mapId}/presign_upload?filename=${encodeURIComponent(file.name)}`,
     );
     if (!presignResponse.ok) {
@@ -149,6 +151,7 @@ const uploadViaPresignedUrl = async (
     const { url, key } = await presignResponse.json();
 
     // 2. Upload directly to S3 (bypasses Cloudflare/Heroku!)
+    // Plain fetch: the presigned URL carries its own auth, and S3 rejects our Bearer token
     onProgress?.(10);
     const uploadResponse = await fetch(url, {
       method: 'PUT',
@@ -161,7 +164,7 @@ const uploadViaPresignedUrl = async (
     onProgress?.(80);
 
     // 3. Tell server to process the uploaded file
-    const processResponse = await fetch(`/v1/maps/${mapId}/process_s3_upload`, {
+    const processResponse = await authFetch(`/v1/maps/${mapId}/process_s3_upload`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ key }),
@@ -180,6 +183,7 @@ const uploadViaPresignedUrl = async (
 
 const FoundryMapsAdmin: React.FC = () => {
   const dispatch = useDispatch();
+  const authFetch = useAuthFetch();
   const [maps, setMaps] = useState<FoundryMap[]>([]);
   const [tags, setTags] = useState<MapTag[]>([]);
   const [loading, setLoading] = useState(true);
@@ -227,7 +231,7 @@ const FoundryMapsAdmin: React.FC = () => {
       formData.append('file', file);
 
       try {
-        const response = await fetch('/v1/maps/upload_image', {
+        const response = await authFetch('/v1/maps/upload_image', {
           method: 'POST',
           body: formData,
         });
@@ -271,7 +275,7 @@ const FoundryMapsAdmin: React.FC = () => {
         );
       }
     };
-  }, [dispatch]);
+  }, [dispatch, authFetch]);
 
   // Memoize modules to prevent React Quill from reinitializing on every render
   const modules = useMemo(
@@ -304,7 +308,7 @@ const FoundryMapsAdmin: React.FC = () => {
 
   const fetchMaps = async () => {
     try {
-      const response = await fetch('/v1/maps', {
+      const response = await authFetch('/v1/maps', {
         headers: {
           Accept: 'application/json',
         },
@@ -320,7 +324,7 @@ const FoundryMapsAdmin: React.FC = () => {
 
   const fetchTags = async () => {
     try {
-      const response = await fetch('/v1/map-tags', {
+      const response = await authFetch('/v1/map-tags', {
         headers: {
           Accept: 'application/json',
         },
@@ -334,7 +338,7 @@ const FoundryMapsAdmin: React.FC = () => {
 
   const fetchMapDetails = async (mapId: string): Promise<FoundryMap | null> => {
     try {
-      const response = await fetch(`/v1/maps/${mapId}`, {
+      const response = await authFetch(`/v1/maps/${mapId}`, {
         headers: {
           Accept: 'application/json',
         },
@@ -436,7 +440,7 @@ const FoundryMapsAdmin: React.FC = () => {
       const url = editingMap ? `/v1/maps/${editingMap.id}` : '/v1/maps';
       const method = editingMap ? 'PATCH' : 'POST';
 
-      const response = await fetch(url, {
+      const response = await authFetch(url, {
         method,
         headers: {
           'Content-Type': 'application/json',
@@ -472,7 +476,7 @@ const FoundryMapsAdmin: React.FC = () => {
           }
           thumbnailFormData.append('thumbnail', thumbnailToUpload);
 
-          const thumbnailResponse = await fetch(`/v1/maps/${savedMap.id}/upload_thumbnail`, {
+          const thumbnailResponse = await authFetch(`/v1/maps/${savedMap.id}/upload_thumbnail`, {
             method: 'POST',
             body: thumbnailFormData,
           });
@@ -502,7 +506,12 @@ const FoundryMapsAdmin: React.FC = () => {
         // If a ZIP package was selected, upload it using presigned URL (direct to S3)
         if (selectedFiles && selectedFiles.length > 0) {
           const file = selectedFiles[0];
-          const result = await uploadViaPresignedUrl(file, savedMap.id, setUploadProgress);
+          const result = await uploadViaPresignedUrl(
+            file,
+            savedMap.id,
+            authFetch,
+            setUploadProgress,
+          );
 
           if (!result.success) {
             dispatch(
@@ -567,7 +576,7 @@ const FoundryMapsAdmin: React.FC = () => {
     if (!confirm('Are you sure you want to delete this map?')) return;
 
     try {
-      const response = await fetch(`/v1/maps/${id}`, {
+      const response = await authFetch(`/v1/maps/${id}`, {
         method: 'DELETE',
         headers: {
           Accept: 'application/json',
@@ -593,7 +602,7 @@ const FoundryMapsAdmin: React.FC = () => {
 
   const toggleMapPublished = async (id: string, currentPublished: boolean) => {
     try {
-      const response = await fetch(`/v1/maps/${id}`, {
+      const response = await authFetch(`/v1/maps/${id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -620,7 +629,7 @@ const FoundryMapsAdmin: React.FC = () => {
     if (!newTagName.trim()) return;
 
     try {
-      const response = await fetch('/v1/map-tags', {
+      const response = await authFetch('/v1/map-tags', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -674,7 +683,7 @@ const FoundryMapsAdmin: React.FC = () => {
     if (!editingTagName.trim()) return;
 
     try {
-      const response = await fetch(`/v1/map-tags/${id}`, {
+      const response = await authFetch(`/v1/map-tags/${id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -735,7 +744,7 @@ const FoundryMapsAdmin: React.FC = () => {
       return;
 
     try {
-      const response = await fetch(`/v1/map-tags/${id}`, {
+      const response = await authFetch(`/v1/map-tags/${id}`, {
         method: 'DELETE',
         headers: {
           Accept: 'application/json',
@@ -775,7 +784,7 @@ const FoundryMapsAdmin: React.FC = () => {
     }
 
     try {
-      const response = await fetch(`/v1/maps/${mapId}/files/${fileId}`, {
+      const response = await authFetch(`/v1/maps/${mapId}/files/${fileId}`, {
         method: 'DELETE',
         headers: {
           Accept: 'application/json',

@@ -1,0 +1,440 @@
+// Shapes returned by /v1/campaigns (see the as_*json_for_api model methods)
+
+export type CampaignMode = 'arc' | 'sandbox' | 'oneshot';
+export type CampaignStatus = 'planning' | 'active' | 'completed' | 'archived';
+export type CampaignTemplate = 'blank' | 'three_act' | 'sandbox' | 'five_room';
+
+export interface CampaignBase {
+  id: string;
+  uuid: string;
+  slug: string;
+  name: string;
+  premise: string | null;
+  pitch: string | null;
+  settingName: string | null;
+  settingNotes: string | null;
+  truths: string[];
+  mode: CampaignMode;
+  status: CampaignStatus;
+  plannedSessions: number | null;
+  cadence: string | null;
+  partySize: number | null;
+  startLevel: number | null;
+  targetLevel: number | null;
+  tone: string | null;
+  edition: '2014' | '2024';
+  // Foundry compendium packs this campaign's searches leave out
+  excludedCompendiumPacks: string[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ClockSummary {
+  id: string;
+  name: string;
+  clockSegments: number;
+  clockFilled: number;
+}
+
+export interface CampaignSummary extends CampaignBase {
+  sessionCount: number;
+  nextSession: {
+    id: string;
+    number: number;
+    displayTitle: string;
+    scheduledOn: string | null;
+    status: SessionStatus;
+  } | null;
+  clocks: ClockSummary[];
+}
+
+export interface Faction {
+  id: string;
+  uuid: string;
+  name: string;
+  description: string | null;
+  goal: string | null;
+  notes: string | null;
+}
+
+export interface Location {
+  id: string;
+  uuid: string;
+  name: string;
+  description: string | null;
+  features: string[];
+  notes: string | null;
+  parentId: string | null;
+  foundryMapId: string | null;
+  // Its map: a Foundry scene, picked here or in Foundry
+  foundrySceneUuid: string | null;
+  foundrySceneName: string | null;
+}
+
+export type NpcRole = 'bbeg' | 'villain' | 'lieutenant' | 'ally' | 'patron' | 'neutral';
+
+export interface Npc {
+  id: string;
+  uuid: string;
+  name: string;
+  role: NpcRole;
+  description: string | null;
+  motive: string | null;
+  secret: string | null;
+  appearance: string | null;
+  voice: string | null;
+  notes: string | null;
+  factionId: string | null;
+  monster: { id: string; name: string; slug: string; challengeRating: string } | null;
+  statBlockReference: { id: string; name: string; citation: string } | null;
+  // The Foundry actor the DM linked in Foundry (read-only here)
+  foundryActorUuid: string | null;
+  foundryActorName: string | null;
+}
+
+export type Book = 'phb' | 'dmg' | 'mm' | 'srd' | 'other';
+export type ReferenceCategory =
+  | 'monster'
+  | 'magic_item'
+  | 'equipment'
+  | 'spell'
+  | 'table'
+  | 'rule'
+  | 'other';
+
+// A pointer into a 2024 core book: name and page only, never book text
+export interface BookReference {
+  id: string;
+  uuid: string;
+  name: string;
+  book: Book;
+  category: ReferenceCategory;
+  page: number | null;
+  challengeRating: string | null;
+  foundryUuid: string | null;
+  notes: string | null;
+  citation: string;
+}
+
+export const BOOK_LABELS: Record<Book, string> = {
+  phb: "Player's Handbook",
+  dmg: "Dungeon Master's Guide",
+  mm: 'Monster Manual',
+  srd: 'SRD 5.2',
+  other: 'Other',
+};
+
+export const REFERENCE_CATEGORY_LABELS: Record<ReferenceCategory, string> = {
+  monster: 'Monster',
+  magic_item: 'Magic item',
+  equipment: 'Equipment',
+  spell: 'Spell',
+  table: 'Table',
+  rule: 'Rule',
+  other: 'Other',
+};
+
+export type CompendiumCategory = 'monster' | 'spell' | 'magic_item' | 'equipment' | 'table';
+
+// An entry from the DM's Foundry compendium index, sent by the Campaign Planner
+// module: a name and compendium UUID, never a stat block
+export interface CompendiumEntry {
+  id: string;
+  name: string;
+  category: CompendiumCategory;
+  book: Book;
+  bookName: string;
+  challengeRating: string | null;
+  detail: string | null;
+  foundryUuid: string;
+}
+
+// One compendium pack in the DM's index, e.g. the Monster Manual's monsters
+export interface CompendiumPack {
+  pack: string;
+  book: Book;
+  bookName: string;
+  label: string;
+  count: number;
+}
+
+export type Coin = 'pp' | 'gp' | 'ep' | 'sp' | 'cp';
+
+// Coins from most to least valuable
+export const COINS: Coin[] = ['pp', 'gp', 'ep', 'sp', 'cp'];
+
+export type Currency = Partial<Record<Coin, number>>;
+
+// A player character's sheet as the Foundry module sends it: what the player
+// built, never rules text. Every field is optional; the module leaves out
+// what a character doesn't have.
+export interface CharacterSheet {
+  summary?: string;
+  level?: number;
+  cr?: number;
+  species?: string;
+  background?: string;
+  classes?: { name: string; subclass?: string; levels?: number }[];
+  alignment?: string;
+  size?: string;
+  xp?: number;
+  ac?: number;
+  hpMax?: number;
+  initiative?: number;
+  proficiency?: number;
+  speed?: Record<string, number>;
+  senses?: string[];
+  abilities?: {
+    key: string;
+    label: string;
+    score?: number;
+    mod?: number;
+    save?: number;
+    proficient?: boolean;
+  }[];
+  skills?: {
+    key: string;
+    label: string;
+    ability?: string;
+    total?: number;
+    passive?: number;
+    // 0 none, 0.5 half, 1 proficient, 2 expertise
+    proficiency?: number;
+  }[];
+  passives?: { perception?: number; insight?: number; investigation?: number };
+  languages?: string[];
+  proficiencies?: { armor?: string[]; weapons?: string[]; tools?: string[] };
+  defenses?: {
+    resistances?: string[];
+    immunities?: string[];
+    vulnerabilities?: string[];
+    conditionImmunities?: string[];
+  };
+  spellcasting?: {
+    ability?: string;
+    dc?: number;
+    attack?: number;
+    slots?: { key: string; label: string; max: number }[];
+    // prepared: 0 not prepared, 1 prepared, 2 always prepared
+    spells?: { name: string; level: number; school?: string; prepared?: number }[];
+  };
+  features?: { name: string; kind?: string }[];
+  inventory?: {
+    name: string;
+    type: string;
+    quantity?: number;
+    equipped?: boolean;
+    attuned?: boolean;
+    rarity?: string;
+  }[];
+  currency?: Currency;
+  personality?: {
+    traits?: string;
+    ideals?: string;
+    bonds?: string;
+    flaws?: string;
+    appearance?: string;
+    backstory?: string;
+  };
+  details?: Record<string, string>;
+}
+
+// A player character from one of the DM's Foundry worlds
+export interface PlayerCharacter {
+  id: string;
+  name: string;
+  playerName: string | null;
+  level: number | null;
+  // e.g. "Cleric (Life Domain)" or "Fighter 3 / Wizard 2"
+  classes: string | null;
+  worldId: string;
+  worldTitle: string;
+  updatedAt: string;
+}
+
+// A character in a campaign's party, with the full sheet
+export interface PartyCharacter extends PlayerCharacter {
+  sheet: CharacterSheet;
+}
+
+export interface Portent {
+  text: string;
+  triggered: boolean;
+}
+
+export interface Front {
+  id: string;
+  uuid: string;
+  name: string;
+  description: string | null;
+  goal: string | null;
+  doom: string | null;
+  stakes: string[];
+  portents: Portent[];
+  clockSegments: number;
+  clockFilled: number;
+  npcId: string | null;
+  factionId: string | null;
+}
+
+export type QuestKind = 'main' | 'side';
+export type QuestStatus = 'available' | 'active' | 'completed' | 'failed';
+
+export interface Quest {
+  id: string;
+  uuid: string;
+  name: string;
+  kind: QuestKind;
+  status: QuestStatus;
+  description: string | null;
+  // Reward notes, beside the reward items, coins, XP and milestone
+  reward: string | null;
+  notes: string | null;
+  act: number | null;
+  position: number;
+  levelMin: number | null;
+  levelMax: number | null;
+  parentId: string | null;
+  giverNpcId: string | null;
+  locationId: string | null;
+  // Its maps, picked here or in Foundry
+  foundryScenes: FoundryScene[];
+  rewardCurrency: Currency;
+  rewardXp: number | null;
+  // "Level up when done"
+  milestone: boolean;
+  // NPCs involved, monsters for its encounters, and reward items with how many
+  links: QuestLink[];
+}
+
+export interface Secret {
+  id: string;
+  uuid: string;
+  text: string;
+  revelation: string | null;
+  revealed: boolean;
+  revealedAt: string | null;
+  revealedSessionId: string | null;
+  position: number;
+}
+
+export type LinkableType =
+  | 'CampaignSecret'
+  | 'CampaignLocation'
+  | 'CampaignNpc'
+  | 'CampaignQuest'
+  | 'CampaignFront'
+  | 'CampaignReference'
+  | 'Monster'
+  | 'Item';
+
+// A link from a session or quest to a campaign record, or to a monster or item
+export interface SessionLink {
+  id: string;
+  uuid: string;
+  linkableType: LinkableType;
+  linkableId: string;
+  name: string;
+  slug: string | null;
+  // Book and page, for book references
+  detail: string | null;
+  position: number;
+  // How many, for treasure (null means one)
+  quantity: number | null;
+}
+
+// A quest's links have the same shape: CampaignNpc, CampaignReference, Monster or Item
+export type QuestLink = SessionLink;
+
+// A Foundry scene used as a map, picked here or in Foundry
+export interface FoundryScene {
+  uuid: string;
+  name: string;
+}
+
+// One of the DM's Foundry scenes, as Dorman Lakely's Campaign Planner sent it
+// (/v1/foundry_scenes), for picking maps
+export interface FoundrySceneSummary extends FoundryScene {
+  thumbnailUrl: string;
+  worldId: string;
+  worldTitle: string | null;
+}
+
+export type SessionStatus = 'planned' | 'prepped' | 'played';
+
+export interface PlannerSession {
+  id: string;
+  uuid: string;
+  number: number;
+  title: string | null;
+  displayTitle: string;
+  scheduledOn: string | null;
+  status: SessionStatus;
+  level: number | null;
+  characterNotes: string | null;
+  strongStart: string | null;
+  scenes: string[];
+  treasure: string | null;
+  treasureCurrency: Currency;
+  // Its maps, picked here or in Foundry
+  foundryScenes: FoundryScene[];
+  log: string | null;
+  recap: string | null;
+  links: SessionLink[];
+}
+
+export interface RevelationSummary {
+  name: string;
+  clueCount: number;
+  revealedCount: number;
+}
+
+export interface Campaign extends CampaignBase {
+  factions: Faction[];
+  locations: Location[];
+  npcs: Npc[];
+  fronts: Front[];
+  quests: Quest[];
+  secrets: Secret[];
+  sessions: PlannerSession[];
+  references: BookReference[];
+  party: PartyCharacter[];
+  revelations: RevelationSummary[];
+  // { scene uuid: thumbnail URL } for the Foundry scenes it uses as maps, once Foundry has sent them
+  sceneThumbnails: Record<string, string>;
+}
+
+// Nested resource names in /v1/campaigns/:slug/<kind>, with the request root key
+export const CHILD_KINDS = {
+  factions: 'faction',
+  locations: 'location',
+  npcs: 'npc',
+  fronts: 'front',
+  quests: 'quest',
+  secrets: 'secret',
+  sessions: 'session',
+  references: 'reference',
+} as const;
+
+export type ChildKind = keyof typeof CHILD_KINDS;
+
+// Request bodies use the Rails attribute names (snake_case)
+export type Attributes = Record<string, unknown>;
+
+export const NPC_ROLE_LABELS: Record<NpcRole, string> = {
+  bbeg: 'BBEG',
+  // Stored as 'villain'; shown as Enemy
+  villain: 'Enemy',
+  lieutenant: 'Lieutenant',
+  ally: 'Ally',
+  patron: 'Patron',
+  neutral: 'Neutral',
+};
+
+export const MODE_LABELS: Record<CampaignMode, string> = {
+  arc: 'Story arc',
+  sandbox: 'Sandbox',
+  oneshot: 'One-shot',
+};
+
+export const THREE_CLUE_MINIMUM = 3;

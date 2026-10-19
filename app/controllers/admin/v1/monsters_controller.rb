@@ -224,7 +224,8 @@ module Admin
       # Create a monster from an approved AI-generated concept
       def create_from_concept
         @monster = Monster.new(monster_from_concept_params)
-        @monster.user = @user if @user&.dungeon_master? || @user&.admin?
+        can_save = @user&.dungeon_master? || @user&.admin?
+        @monster.user = @user if can_save
 
         # Validate required fields
         if @monster.name.blank?
@@ -235,10 +236,11 @@ module Admin
         # Build nested associations from concept data
         build_monster_from_concept(@monster, params)
 
-        if @user && @monster.save
+        if can_save && @monster.save
           render :show, status: :created
-        elsif @user.nil?
-          # Return unsaved monster for non-logged-in users
+        elsif !can_save
+          # Return an unsaved monster to visitors and players: saving it
+          # without an owner would publish it alongside the SRD monsters
           render :show, status: :ok
         else
           render json: { error: @monster.errors.full_messages.join(', ') }, status: :unprocessable_entity
