@@ -55,6 +55,16 @@ const renderPage = async () => {
 const GUIDE_URL = '/v1/setup_guide';
 
 const input = (name: string) => document.getElementById(`field-${name}`) as HTMLInputElement;
+const addTruth = (name: string, description = '') => {
+  fireEvent.click(screen.getByRole('button', { name: 'Add a truth' }));
+  const count = screen.getAllByRole('textbox', { name: /^Truth \d+ name$/ }).length;
+  fireEvent.change(screen.getByLabelText(`Truth ${count} name`), { target: { value: name } });
+  if (description) {
+    fireEvent.change(screen.getByLabelText(`Truth ${count} description`), {
+      target: { value: description },
+    });
+  }
+};
 const heading = () => screen.getByRole('heading', { level: 2 });
 const next = () => fireEvent.click(screen.getByRole('button', { name: /^Next: / }));
 const back = () => fireEvent.click(screen.getByRole('button', { name: 'Back' }));
@@ -229,7 +239,7 @@ describe('NewCampaign', () => {
       expect(creditedTitles(option(/^Blank/))).toEqual([]);
     });
 
-    it('credits the six truths on the world step, and nothing on the pitch', async () => {
+    it('credits the six truths article on the world step, and nothing on the pitch', async () => {
       await renderPage();
       next();
 
@@ -277,23 +287,60 @@ describe('NewCampaign', () => {
       expect(heading()).toHaveTextContent('The table');
     });
 
-    it('asks for six truths at most', async () => {
+    it('builds the truths one at a time, suggesting about six without a limit', async () => {
       await renderPage();
       next();
       fireEvent.change(input('name'), { target: { value: 'Zombie Siege' } });
       next();
       next();
-      fireEvent.change(input('truths'), {
-        target: { value: ['One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven'].join('\n') },
-      });
 
-      next();
-      expect(screen.getByText('Keep it to 6 truths. You have 7.')).toBeInTheDocument();
-      expect(heading()).toHaveTextContent('The world');
+      expect(
+        screen.getByText('About six is plenty: short facts everyone at the table knows.'),
+      ).toBeInTheDocument();
+      ['One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven'].forEach((name) => addTruth(name));
 
-      fireEvent.change(input('truths'), { target: { value: 'One\n\nTwo' } });
       next();
       expect(heading()).toHaveTextContent('Your books');
+    });
+
+    it('needs a name for each truth before leaving the world', async () => {
+      await renderPage();
+      next();
+      fireEvent.change(input('name'), { target: { value: 'Zombie Siege' } });
+      next();
+      next();
+      addTruth('', 'A description with no name');
+
+      next();
+      expect(screen.getByText('Each truth needs a name.')).toBeInTheDocument();
+      expect(heading()).toHaveTextContent('The world');
+
+      fireEvent.change(screen.getByLabelText('Truth 1 name'), {
+        target: { value: 'The dead walk' },
+      });
+      next();
+      expect(heading()).toHaveTextContent('Your books');
+    });
+
+    it('leaves out truths left empty', async () => {
+      await renderPage();
+      next();
+      fireEvent.change(input('name'), { target: { value: 'Zombie Siege' } });
+      next();
+      next();
+      addTruth('The dead walk');
+      fireEvent.click(screen.getByRole('button', { name: 'Add a truth' }));
+      next();
+      next();
+
+      expect(screen.getByRole('list', { name: 'Truths of the setting' })).toHaveTextContent(
+        /^The dead walk$/,
+      );
+      fireEvent.click(screen.getByRole('button', { name: 'Create campaign' }));
+      await screen.findByText('Campaign page');
+      expect(createdCampaign().campaign.truths).toEqual([
+        { name: 'The dead walk', description: '' },
+      ]);
     });
 
     it('keeps answers when going back and forward', async () => {
@@ -415,9 +462,9 @@ describe('NewCampaign', () => {
       fireEvent.change(input('cadence'), { target: { value: 'weekly' } });
       next();
       fireEvent.change(input('setting_name'), { target: { value: 'Greyhawk' } });
-      fireEvent.change(input('truths'), {
-        target: { value: 'The dead walk\nThe temple is corrupt' },
-      });
+      addTruth('The temple is corrupt');
+      addTruth('The dead walk.', 'Nobody who dies stays dead for long.');
+      fireEvent.click(screen.getByRole('button', { name: 'Move truth 2 up' }));
       next();
       fireEvent.click(
         within(await screen.findByRole('group', { name: 'Monster Manual' })).getByRole('checkbox', {
@@ -430,9 +477,13 @@ describe('NewCampaign', () => {
       expect(within(review).getByText('Story arc')).toBeInTheDocument();
       expect(within(review).getByText('Akra')).toBeInTheDocument();
       expect(within(review).getByText('3 to 8')).toBeInTheDocument();
-      expect(within(review).getByRole('list', { name: 'Truths of the setting' })).toHaveTextContent(
-        'The dead walkThe temple is corrupt',
-      );
+      const truths = within(review).getByRole('list', { name: 'Truths of the setting' });
+      expect(
+        within(truths)
+          .getAllByRole('listitem')
+          .map((item) => item.textContent),
+      ).toEqual(['The dead walk. Nobody who dies stays dead for long.', 'The temple is corrupt']);
+      expect(within(truths).getByText('The dead walk.').tagName).toBe('STRONG');
       expect(within(review).getByText('2 of 3 compendiums')).toBeInTheDocument();
 
       fireEvent.click(screen.getByRole('button', { name: 'Create campaign' }));
@@ -450,7 +501,10 @@ describe('NewCampaign', () => {
           cadence: 'weekly',
           premise: 'The dead rise',
           pitch: 'Hold the walls',
-          truths: ['The dead walk', 'The temple is corrupt'],
+          truths: [
+            { name: 'The dead walk.', description: 'Nobody who dies stays dead for long.' },
+            { name: 'The temple is corrupt', description: '' },
+          ],
           setting_notes: null,
           mode: 'arc',
           excluded_compendium_packs: ['dnd-monster-manual.actors'],
@@ -528,6 +582,45 @@ describe('NewCampaign', () => {
       expect(screen.getByText('Picking up where you left off.')).toBeInTheDocument();
       expect(heading()).toHaveTextContent('The pitch');
       expect(input('name')).toHaveValue('Zombie Siege');
+    });
+
+    it('keeps the truths in the draft', async () => {
+      const first = await renderPage();
+      next();
+      fireEvent.change(input('name'), { target: { value: 'Zombie Siege' } });
+      next();
+      next();
+      addTruth('The dead walk.', 'Nobody knows why.');
+      first.unmount();
+
+      await renderPage();
+
+      expect(heading()).toHaveTextContent('The world');
+      expect(screen.getByLabelText('Truth 1 name')).toHaveValue('The dead walk.');
+      expect(screen.getByLabelText('Truth 1 description')).toHaveValue('Nobody knows why.');
+    });
+
+    it('turns the truths of a draft saved before truths had names into a list', async () => {
+      window.localStorage.setItem(
+        DRAFT_KEY,
+        JSON.stringify({
+          step: 3,
+          furthest: 3,
+          values: {
+            name: 'Zombie Siege',
+            truths: 'Greyhawk runs on gold. Anything can be bought.\n\nThe dead walk',
+          },
+        }),
+      );
+
+      await renderPage();
+
+      expect(heading()).toHaveTextContent('The world');
+      expect(screen.getByLabelText('Truth 1 name')).toHaveValue('Greyhawk runs on gold.');
+      expect(screen.getByLabelText('Truth 1 description')).toHaveValue('Anything can be bought.');
+      expect(screen.getByLabelText('Truth 2 name')).toHaveValue('The dead walk');
+      expect(screen.getByLabelText('Truth 2 description')).toHaveValue('');
+      expect(screen.queryByLabelText('Truth 3 name')).not.toBeInTheDocument();
     });
 
     it('starts over', async () => {

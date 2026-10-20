@@ -50,8 +50,12 @@ class Campaign < ApplicationRecord
 
   MODES = %w[arc sandbox oneshot].freeze
   STATUSES = %w[planning active completed archived].freeze
-  # Six truths, as the setup guide asks for
-  MAX_TRUTHS = 6
+  # Truths of the setting: about six is plenty, but that's advice, not a rule
+  MAX_TRUTHS = 20
+  MAX_TRUTH_NAME_LENGTH = 120
+  MAX_TRUTH_DESCRIPTION_LENGTH = 1000
+  # Where a truth written as one string ends its first sentence
+  TRUTH_SENTENCE_END = /[.!?]\s/
   # The planner is built on the 2024 rules (PHB, DMG and Monster Manual)
   EDITION = '2024'
 
@@ -76,12 +80,63 @@ class Campaign < ApplicationRecord
   validates :planned_sessions, numericality: { only_integer: true, in: 1..100 }, allow_nil: true
   validates :party_size, numericality: { only_integer: true, in: 1..12 }, allow_nil: true
   validate :target_level_not_below_start
-  # Only when they change, so a campaign saved with more under an older limit can still be edited
-  validate :truths_are_strings, if: -> { new_record? || truths_changed? }
+  # Only when they change, so a campaign whose truths came from before these
+  # limits (a long first sentence, say) can still be edited
+  validate :truths_are_valid, if: -> { new_record? || truths_changed? }
   validate :excluded_compendium_packs_are_known
 
   before_validation :assign_uuid, on: :create
   before_update :assign_sync_version
+
+  # Truths as they're kept: a list of { "name" => ..., "description" => ... },
+  # trimmed, in order, leaving out empty ones. Each may arrive as an object
+  # (string or symbol keys; other keys are dropped) or as a string, as older
+  # clients send them: a string is split after its first sentence (see
+  # .truth_from_text). Anything else is left as it is for validation to reject.
+  # nil is no truths.
+  def self.normalize_truths(value)
+    return [] if value.nil?
+    return value unless value.is_a?(Array)
+
+    value.filter_map do |truth|
+      truth = truth.to_unsafe_h if truth.respond_to?(:to_unsafe_h)
+      entry = case truth
+              when String then truth_from_text(truth)
+              when Hash
+                truth = truth.stringify_keys
+                { 'name' => truth_text(truth['name']), 'description' => truth_text(truth['description']) }
+              else truth
+              end
+      entry unless entry.nil? || (entry.is_a?(Hash) && entry.values.all?(''))
+    end
+  end
+
+  # A truth written as one string: split after its first sentence end (".",
+  # "!" or "?" followed by whitespace), the punctuation staying on the name.
+  # "Greyhawk runs on gold. The Directing Oligarchy governs." is the name
+  # "Greyhawk runs on gold." and the description "The Directing Oligarchy
+  # governs."; with no sentence end, the whole string is the name.
+  def self.truth_from_text(text)
+    text = text.strip
+    split = text =~ TRUTH_SENTENCE_END
+    return { 'name' => text, 'description' => '' } unless split
+
+    { 'name' => text[..split], 'description' => text[(split + 1)..].strip }
+  end
+
+  # A truth's name or description, trimmed; nil is blank, and anything that
+  # isn't text is kept for validation to reject
+  def self.truth_text(value)
+    return '' if value.nil?
+
+    value.is_a?(String) ? value.strip : value
+  end
+  private_class_method :truth_text
+
+  # Truths arrive as [{ name:, description: }], or as strings from older clients
+  def truths=(value)
+    super(self.class.normalize_truths(value))
+  end
 
   # Atomically bumps and returns this campaign's sync counter. Also marks the
   # campaign updated, so the campaign list sorts by recent activity.
@@ -194,10 +249,22 @@ class Campaign < ApplicationRecord
     errors.add(:target_level, "can't be lower than the starting level")
   end
 
-  def truths_are_strings
-    return if truths.is_a?(Array) && truths.all?(String) && truths.size <= MAX_TRUTHS
+  # Each message is a whole sentence (see config/locales/en.yml)
+  def truths_are_valid
+    return errors.add(:truths, 'Truths must be a list, each with a name and a description') unless truths_listed?
 
-    errors.add(:truths, "must be a list of up to #{MAX_TRUTHS} statements")
+    errors.add(:truths, "A campaign can have up to #{MAX_TRUTHS} truths") if truths.size > MAX_TRUTHS
+    errors.add(:truths, 'Each truth needs a name') if truths.any? { |truth| truth['name'].empty? }
+    { 'name' => MAX_TRUTH_NAME_LENGTH, 'description' => MAX_TRUTH_DESCRIPTION_LENGTH }.each do |key, max|
+      next unless truths.any? { |truth| truth[key].length > max }
+
+      errors.add(:truths, "A truth's #{key} is too long (maximum is #{max} characters)")
+    end
+  end
+
+  # A list of truths, each with a name and a description
+  def truths_listed?
+    truths.is_a?(Array) && truths.all? { |truth| truth.is_a?(Hash) && truth.values_at('name', 'description').all?(String) }
   end
 
   def excluded_compendium_packs_are_known

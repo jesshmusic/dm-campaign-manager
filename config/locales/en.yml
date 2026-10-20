@@ -31,3 +31,12 @@
 
 en:
   hello: "Hello world"
+
+  activerecord:
+    errors:
+      models:
+        campaign:
+          attributes:
+            # Its errors are whole sentences ("Each truth needs a name")
+            truths:
+              format: "%{message}"

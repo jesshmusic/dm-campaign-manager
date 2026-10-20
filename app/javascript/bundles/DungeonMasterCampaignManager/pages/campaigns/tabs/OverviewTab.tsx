@@ -11,18 +11,24 @@ import { RevelationCheck } from './SecretsTab';
 import GettingStarted from './GettingStarted';
 import CompendiumPicker from '../components/CompendiumPicker';
 import LearnMore from '../components/LearnMore';
+import TruthList from '../components/TruthList';
 import { useCompendiumPacks } from '../compendium';
 import { formatDate } from './SessionsTab';
 import { ButtonRow, Card, CardGrid, List, Meta, Notice, SectionTitle } from '../Campaigns.styles';
 
-// Plain-text handout for session zero
+// Plain-text handout for session zero; truths are numbered, name then description
 export const playerGuideText = (campaign: Campaign) =>
   [
     campaign.name,
     campaign.settingName && `Setting: ${campaign.settingName}`,
     campaign.pitch,
     campaign.truths.length > 0 &&
-      ['Truths of the world:', ...campaign.truths.map((truth) => `- ${truth}`)].join('\n'),
+      [
+        'Truths of the world:',
+        ...campaign.truths.map((truth, index) =>
+          [`${index + 1}.`, truth.name, truth.description].filter(Boolean).join(' '),
+        ),
+      ].join('\n'),
   ]
     .filter(Boolean)
     .join('\n\n');
@@ -128,11 +134,7 @@ const OverviewTab = ({ campaign, state }: OverviewTabProps) => {
         <Card>
           <h3>Truths of the setting</h3>
           {campaign.truths.length > 0 ? (
-            <List>
-              {campaign.truths.map((truth) => (
-                <li key={truth}>{truth}</li>
-              ))}
-            </List>
+            <TruthList truths={campaign.truths} label="Truths of the setting" />
           ) : (
             <p>No truths yet.</p>
           )}

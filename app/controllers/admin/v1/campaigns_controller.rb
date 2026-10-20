@@ -68,7 +68,7 @@ module Admin
       end
 
       def campaign_params
-        params.require(:campaign).permit(*CampaignCreator::ATTRIBUTES)
+        CampaignCreator.permit(params.require(:campaign))
       end
     end
   end

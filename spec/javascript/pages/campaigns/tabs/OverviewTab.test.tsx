@@ -34,7 +34,7 @@ describe('playerGuideText', () => {
         'Zombie Siege',
         'Setting: Greyhawk',
         'Hold the walls of Hommlet for six weeks.',
-        'Truths of the world:\n- The dead walk\n- The temple is corrupt',
+        'Truths of the world:\n1. The dead walk. Nobody who dies stays dead for long.\n2. The temple is corrupt',
       ].join('\n\n'),
     );
   });
@@ -76,8 +76,21 @@ describe('OverviewTab', () => {
       screen.getByText('The party must survive and stop a zombie apocalypse.'),
     ).toBeInTheDocument();
     expect(screen.getByText('Hold the walls of Hommlet for six weeks.')).toBeInTheDocument();
-    expect(screen.getByText('The dead walk')).toBeInTheDocument();
-    expect(screen.getByText('The temple is corrupt')).toBeInTheDocument();
+  });
+
+  it('numbers the truths of the setting, each name in bold before its description', () => {
+    renderTab();
+
+    const truths = within(
+      screen.getByRole('heading', { name: 'Truths of the setting' }).parentElement as HTMLElement,
+    ).getByRole('list', { name: 'Truths of the setting' });
+    expect(truths.tagName).toBe('OL');
+    expect(
+      within(truths)
+        .getAllByRole('listitem')
+        .map((item) => item.textContent),
+    ).toEqual(['The dead walk. Nobody who dies stays dead for long.', 'The temple is corrupt']);
+    expect(within(truths).getByText('The dead walk.').tagName).toBe('STRONG');
   });
 
   it('credits where the pitch and the truths come from', () => {
@@ -172,7 +185,16 @@ describe('OverviewTab', () => {
       expect(input('start_level')).toHaveValue(3);
       expect(input('target_level')).toHaveValue(8);
       expect(input('planned_sessions')).toHaveValue(6);
-      expect(input('truths')).toHaveValue('The dead walk\nThe temple is corrupt');
+      expect(
+        screen.getByRole('group', { name: 'Truths of the setting' }),
+      ).toHaveAccessibleDescription(
+        'About six is plenty: short facts everyone at the table knows.',
+      );
+      expect(screen.getByLabelText('Truth 1 name')).toHaveValue('The dead walk.');
+      expect(screen.getByLabelText('Truth 1 description')).toHaveValue(
+        'Nobody who dies stays dead for long.',
+      );
+      expect(screen.getByLabelText('Truth 2 name')).toHaveValue('The temple is corrupt');
       expect(input('setting_notes')).toHaveValue('The Flanaess, 576 CY');
     });
 
@@ -182,7 +204,14 @@ describe('OverviewTab', () => {
       fireEvent.click(screen.getByRole('button', { name: 'Edit campaign' }));
       await chooseOption('Status', 'Completed');
       fireEvent.change(input('target_level'), { target: { value: '10' } });
-      fireEvent.change(input('truths'), { target: { value: 'Only one truth' } });
+      fireEvent.click(screen.getByRole('button', { name: 'Remove truth 1' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Add a truth' }));
+      fireEvent.change(screen.getByLabelText('Truth 2 name'), {
+        target: { value: 'Greyhawk runs on gold.' },
+      });
+      fireEvent.change(screen.getByLabelText('Truth 2 description'), {
+        target: { value: 'Nearly anything can be bought.' },
+      });
       fireEvent.click(screen.getByRole('button', { name: 'Save' }));
 
       await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
@@ -199,7 +228,10 @@ describe('OverviewTab', () => {
         cadence: 'weekly',
         premise: 'The party must survive and stop a zombie apocalypse.',
         pitch: 'Hold the walls of Hommlet for six weeks.',
-        truths: ['Only one truth'],
+        truths: [
+          { name: 'The temple is corrupt', description: '' },
+          { name: 'Greyhawk runs on gold.', description: 'Nearly anything can be bought.' },
+        ],
         setting_notes: 'The Flanaess, 576 CY',
       });
     });

@@ -2,8 +2,12 @@ import React, { useState } from 'react';
 import FormFields from './FormFields';
 import PlannerModal from './PlannerModal';
 import { Form } from '../Campaigns.styles';
+import { Truth } from '../types';
+import { truthsFrom, truthsMissingName, truthsToSave } from '../truths';
 
-export type FormValues = Record<string, string | boolean>;
+// Text, a checkbox, or a list of truths
+export type FormValue = string | boolean | Truth[];
+export type FormValues = Record<string, FormValue>;
 
 type BaseField = {
   // Rails attribute name (snake_case)
@@ -26,17 +30,23 @@ export type FieldConfig = BaseField &
     | { type: 'textarea'; placeholder?: string; helper?: FieldHelper }
     // A list of strings, edited one per line
     | { type: 'lines'; placeholder?: string }
+    // Truths of the setting, each a name and a description (see TruthsEditor)
+    | { type: 'truths' }
     | { type: 'number'; min?: number; max?: number }
     | { type: 'select'; options: { value: string; label: string }[]; blankLabel?: string }
     | { type: 'checkbox' }
   );
 
-/** Converts form values to request attributes: numbers, null for blanks, lines to arrays */
+/**
+ * Converts form values to request attributes: numbers, null for blanks, lines
+ * to arrays, and truths trimmed without empty rows
+ */
 export const toAttributes = (fields: FieldConfig[], values: FormValues) =>
   Object.fromEntries(
     fields.map((field) => {
       const value = values[field.name];
       if (field.type === 'checkbox') return [field.name, Boolean(value)];
+      if (field.type === 'truths') return [field.name, truthsToSave(truthsFrom(value))];
       const text = typeof value === 'string' ? value.trim() : '';
       if (field.type === 'lines') {
         return [
@@ -58,6 +68,7 @@ export const toFormValues = (fields: FieldConfig[], record: Record<string, unkno
     fields.map((field) => {
       const value = record[field.name];
       if (field.type === 'checkbox') return [field.name, Boolean(value)];
+      if (field.type === 'truths') return [field.name, truthsFrom(value)];
       if (Array.isArray(value)) return [field.name, value.join('\n')];
       return [field.name, value === null || value === undefined ? '' : String(value)];
     }),
@@ -89,7 +100,7 @@ const EntityForm = ({
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const setValue = (name: string, value: string | boolean) =>
+  const setValue = (name: string, value: FormValue) =>
     setValues((current) => ({ ...current, [name]: value }));
 
   const submit = async () => {
@@ -99,6 +110,14 @@ const EntityForm = ({
     );
     if (missing) {
       setError(`${missing.label} is required.`);
+      return;
+    }
+    if (
+      fields.some(
+        (field) => field.type === 'truths' && truthsMissingName(truthsFrom(values[field.name])),
+      )
+    ) {
+      setError('Each truth needs a name.');
       return;
     }
     setSaving(true);

@@ -29,7 +29,7 @@ module Admin
           created = Rails.cache.read(request_key) if request_key
           return render json: created_json(@user.campaigns.find(created)) if created && @user.campaigns.exists?(created)
 
-          campaign = CampaignCreator.new(@user).create!(params.require(:campaign).permit(*CampaignCreator::ATTRIBUTES),
+          campaign = CampaignCreator.new(@user).create!(CampaignCreator.permit(params.require(:campaign)),
                                                         template: params[:template], party_ids: party_character_ids)
           Rails.cache.write(request_key, campaign.id, expires_in: 1.hour) if request_key
           render json: created_json(campaign), status: :created

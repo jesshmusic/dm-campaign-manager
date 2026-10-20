@@ -10,12 +10,14 @@ import {
   TextArea,
 } from '../Campaigns.styles';
 import SearchSelect from './SearchSelect';
-import type { FieldConfig, FieldHelper, FormValues } from './EntityForm';
+import TruthsEditor from './TruthsEditor';
+import { truthsFrom } from '../truths';
+import type { FieldConfig, FieldHelper, FormValue, FormValues } from './EntityForm';
 
 type FormFieldsProps = {
   fields: FieldConfig[];
   values: FormValues;
-  onChange: (name: string, value: string | boolean) => void;
+  onChange: (name: string, value: FormValue) => void;
 };
 
 /**
@@ -55,6 +57,13 @@ const FormFields = ({ fields, values, onChange }: FormFieldsProps) => {
     switch (field.type) {
       case 'checkbox':
         return null;
+      case 'truths':
+        return (
+          <TruthsEditor
+            truths={truthsFrom(value)}
+            onChange={(truths) => onChange(field.name, truths)}
+          />
+        );
       case 'select':
         // Type to filter the choices; a field with a blank choice can be cleared
         return (
@@ -125,13 +134,28 @@ const FormFields = ({ fields, values, onChange }: FormFieldsProps) => {
   const wideFields = fields.filter((field) => field.wide && field.type !== 'checkbox');
   const checkboxes = fields.filter((field) => field.type === 'checkbox');
 
-  const renderField = (field: FieldConfig) => (
-    <Field key={field.name} htmlFor={`field-${field.name}`}>
-      {field.label}
-      {field.hint && <small>{field.hint}</small>}
-      {renderControl(field)}
-    </Field>
-  );
+  const renderField = (field: FieldConfig) =>
+    field.type === 'truths' ? (
+      // A list of inputs, so a group rather than a label
+      <Field
+        key={field.name}
+        as="div"
+        id={`field-${field.name}`}
+        role="group"
+        aria-labelledby={`field-${field.name}-label`}
+        aria-describedby={field.hint ? `field-${field.name}-hint` : undefined}
+      >
+        <span id={`field-${field.name}-label`}>{field.label}</span>
+        {field.hint && <small id={`field-${field.name}-hint`}>{field.hint}</small>}
+        {renderControl(field)}
+      </Field>
+    ) : (
+      <Field key={field.name} htmlFor={`field-${field.name}`}>
+        {field.label}
+        {field.hint && <small>{field.hint}</small>}
+        {renderControl(field)}
+      </Field>
+    );
 
   return (
     <>

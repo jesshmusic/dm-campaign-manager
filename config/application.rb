@@ -17,6 +17,9 @@ module DungeonMasterScreenOnline
     config.load_defaults 7.1
 
     config.autoload_paths += Dir[Rails.root.join('app', 'models', '**/')]
+    # Lets a model's attribute set how its errors read in full (a "format" in
+    # config/locales/en.yml), e.g. "Each truth needs a name" rather than "Truths ..."
+    config.active_model.i18n_customize_full_message = true
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files

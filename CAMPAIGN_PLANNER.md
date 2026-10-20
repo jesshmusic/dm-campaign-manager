@@ -65,7 +65,10 @@ Decisions already made:
     - Errors come back with the fields they're about, so the guide can return to the right step.
     - The world links to the new campaign and opens the Dashboard.
     - Drafts are kept per world in a client setting.
-  - Campaigns have at most six truths. Older campaigns with more can still be edited.
+  - Truths of the setting are a numbered list the DM builds one at a time, like a todo list: each has a short
+    **name** ("Greyhawk runs on gold.") and a **description** of what it means, and can be moved or removed. About
+    six is plenty (the editor says so), but that's advice, not a limit; the server takes up to 20. See "Truths of
+    the setting" under the data model.
 
 - **Planning in Foundry, no account (done, module):**
   - Most DMs will find this through the module, and some won't want a website at all. They can plan entirely in
@@ -211,13 +214,14 @@ in Foundry, where what happens at the table flows back."
 
 ## Product shape
 **New Campaign wizard:**
-- Brief fields: premise, setting (free text + six truths), mode, length/cadence, party size, start and target
+- Brief fields: premise, setting (free text + truths, about six), mode, length/cadence, party size, start and target
   level, tone, edition (2014/2024).
 - Starting point: blank or a template (3-act arc / sandbox / 5-room one-shot).
 - Setting lore is supplied by the DM. Greyhawk is not in SRD 5.2, so we ship no setting text.
 
 **Campaign home tabs:**
-1. **Overview**: pitch, six truths, player-facing one-page guide (shareable read-only link).
+1. **Overview**: pitch, truths of the setting (numbered, name then description), player-facing one-page guide
+   (shareable read-only link).
 2. **Story**: villain ladder (BBEG → lieutenants → minor villains). Each villain or faction owns a **front** with
    portents and a **clock**.
 3. **Quests**: board with main/side lanes and status columns; nested quests; giver NPC, location, reward,
@@ -265,6 +269,20 @@ Every planner table has:
 | `quest_links` | polymorphic join: quest ↔ npc / book reference / monster / item, with a quantity | NPCs involved, monsters, reward items |
 | `campaign_links` | polymorphic source → target | Cross-references used for the wiki-style "mentioned in" |
 | `api_tokens` | user_id, name, token_digest, scopes, last_used_at | For Foundry |
+
+**Truths of the setting** (`campaigns.truths`, jsonb) are a list in the DM's order, each
+`{ "name": string, "description": string }` (the keys are the same in the API's camelCase JSON):
+
+- `name` is required, at most 120 characters after trimming; `description` may be `""`, at most 1000.
+- At most 20 truths (a sanity cap; "about six" is only the editor's advice). An entry with neither a name nor a
+  description is dropped; one with a description but no name is an error ("Each truth needs a name").
+- Truths used to be plain strings, and every way in still takes them (the website's create and update, the
+  Foundry create, import and sync push): `Campaign.normalize_truths` splits a string after its first sentence end,
+  a `.`, `!` or `?` followed by whitespace, the punctuation staying on the name. "Greyhawk runs on gold. The
+  Directing Oligarchy governs." is the name "Greyhawk runs on gold." and the description "The Directing Oligarchy
+  governs."; with no sentence end the whole string is the name. The `ConvertCampaignTruthsToNamedEntries`
+  migration converted saved campaigns the same way (bumping their sync versions so Foundry pulls them again), and
+  the New Campaign guide converts a draft saved in the browser with one truth per line.
 
 API: `/v1/campaigns` and nested resources (jbuilder, `camelize: :lower`, `{count, results}`), plus
 `/v1/foundry/...` sync endpoints. Frontend: new `pages/campaigns/` using the redux-api + axios patterns, and new
@@ -351,6 +369,8 @@ or Monster Manual. The planner uses them without copying them:
     - session: `title scheduledOn level status characterNotes strongStart scenes treasure treasureCurrency
       foundryScenes log recap links`
     - reference: `name book category page challengeRating foundryUuid notes`
+  - A campaign's `truths` is its whole new list, `[{ name, description }]`; plain strings are still taken and split
+    (see "Truths of the setting").
   - Ids (`parentId`, `factionId`, `npcId`, `giverNpcId`, `locationId`, `statBlockReferenceId`) are DM Guru record ids
     as the pull returns them, as text or a number; null or `""` clears one. Another campaign's record, or one that
     doesn't exist, is an error.

@@ -69,29 +69,80 @@ RSpec.describe Campaign, type: :model do
       expect(build(:campaign, start_level: 5, target_level: 5)).to be_valid
     end
 
-    it 'accepts up to six truths as strings' do
-      expect(Campaign::MAX_TRUTHS).to eq(6)
-      expect(build(:campaign, truths: Array.new(6) { |i| "Truth #{i}" })).to be_valid
+    def truth(name, description = '')
+      { 'name' => name, 'description' => description }
     end
 
-    it 'rejects too many truths' do
-      campaign = build(:campaign, truths: Array.new(7) { |i| "Truth #{i}" })
+    it 'accepts up to 20 truths, each with a name and a description' do
+      expect(Campaign::MAX_TRUTHS).to eq(20)
+      expect(build(:campaign, truths: Array.new(20) { |i| truth("Truth #{i}.", 'Everyone knows it.') })).to be_valid
+    end
+
+    it 'has no rule of six' do
+      expect(build(:campaign, truths: Array.new(7) { |i| truth("Truth #{i}") })).to be_valid
+    end
+
+    it 'rejects more than 20 truths' do
+      campaign = build(:campaign, truths: Array.new(21) { |i| truth("Truth #{i}") })
 
       expect(campaign).not_to be_valid
-      expect(campaign.errors[:truths]).to include('must be a list of up to 6 statements')
+      expect(campaign.errors.full_messages).to eq(['A campaign can have up to 20 truths'])
     end
 
-    it 'still saves other changes to a campaign that has more truths from before' do
+    it 'needs a name for each truth that has a description' do
+      campaign = build(:campaign, truths: [truth('Fine'), { name: '  ', description: 'The temple is corrupt' }])
+
+      expect(campaign).not_to be_valid
+      expect(campaign.errors.attribute_names).to eq([:truths])
+      expect(campaign.errors.full_messages).to eq(['Each truth needs a name'])
+    end
+
+    it 'limits the name to 120 characters and the description to 1000, after trimming' do
+      expect(build(:campaign, truths: [truth("  #{'a' * 120}  ", 'b' * 1000)])).to be_valid
+
+      campaign = build(:campaign, truths: [truth('a' * 121, 'b' * 1001)])
+
+      expect(campaign).not_to be_valid
+      expect(campaign.errors.full_messages).to contain_exactly(
+        "A truth's name is too long (maximum is 120 characters)",
+        "A truth's description is too long (maximum is 1000 characters)"
+      )
+    end
+
+    it 'rejects truths that are not a list of names and descriptions' do
+      message = 'Truths must be a list, each with a name and a description'
+
+      [['Fine', 3], { 'a' => 'b' }, 'Magic is rare', [{ name: 5 }], [{ name: 'Fine', description: ['x'] }]].each do |truths|
+        campaign = build(:campaign, truths: truths)
+        expect(campaign).not_to be_valid, "expected #{truths.inspect} to be invalid"
+        expect(campaign.errors.full_messages).to eq([message])
+      end
+    end
+
+    it 'keeps truths in the shape it stores, from objects or older strings' do
+      campaign = create(:campaign, truths: ['Greyhawk runs on gold. Nearly anything can be bought.',
+                                            { name: ' The city has walls within walls. ', description: nil, extra: 'x' }])
+
+      expect(campaign.reload.truths).to eq([
+                                             truth('Greyhawk runs on gold.', 'Nearly anything can be bought.'),
+                                             truth('The city has walls within walls.')
+                                           ])
+    end
+
+    it 'still saves other changes to a campaign whose truths came from before the limits' do
       campaign = create(:campaign)
-      campaign.update_column(:truths, Array.new(8) { |i| "Truth #{i}" })
+      campaign.update_column(:truths, [truth('a' * 200)])
 
       expect(campaign.reload.update(pitch: 'A new pitch')).to be(true)
-      expect(campaign.update(truths: campaign.truths + ['One more'])).to be(false)
+      expect(campaign.update(truths: campaign.truths + [truth('One more')])).to be(false)
     end
 
-    it 'rejects truths that are not strings or not a list' do
-      expect(build(:campaign, truths: ['Fine', 3])).not_to be_valid
-      expect(build(:campaign, truths: { 'a' => 'b' })).not_to be_valid
+    it 'does not count saving the same truths again as a change' do
+      campaign = create(:campaign, truths: [truth('The dead walk.', 'Nobody knows why.')])
+
+      campaign.assign_attributes(truths: [{ name: 'The dead walk.', description: 'Nobody knows why.' }])
+
+      expect(campaign.truths_changed?).to be(false)
     end
 
     it 'uses every compendium unless some are excluded' do
@@ -105,6 +156,77 @@ RSpec.describe Campaign, type: :model do
       expect(campaign).not_to be_valid
       expect(campaign.errors[:excluded_compendium_packs]).to include('must be a list of supported compendiums')
       expect(build(:campaign, excluded_compendium_packs: 'dnd5e.actors24')).not_to be_valid
+    end
+  end
+
+  describe '.normalize_truths' do
+    def normalize(value)
+      described_class.normalize_truths(value)
+    end
+
+    it 'splits a string after its first sentence, keeping the punctuation on the name' do
+      expect(normalize(['Greyhawk runs on gold. The Directing Oligarchy governs.'])).to eq(
+        [{ 'name' => 'Greyhawk runs on gold.', 'description' => 'The Directing Oligarchy governs.' }]
+      )
+    end
+
+    it 'splits after "!" or "?" too, and only at the first sentence end' do
+      expect(normalize(['The dead walk! Nobody knows why. The priests say a curse.', 'Who rules? Gold does.'])).to eq(
+        [{ 'name' => 'The dead walk!', 'description' => 'Nobody knows why. The priests say a curse.' },
+         { 'name' => 'Who rules?', 'description' => 'Gold does.' }]
+      )
+    end
+
+    it 'keeps a string with no sentence end, or one ending the string, as the whole name' do
+      expect(normalize(['No punctuation here', '  The dead walk.  ', 'e.g.no space'])).to eq(
+        [{ 'name' => 'No punctuation here', 'description' => '' },
+         { 'name' => 'The dead walk.', 'description' => '' },
+         { 'name' => 'e.g.no space', 'description' => '' }]
+      )
+    end
+
+    it 'splits at a sentence end followed by a new line or extra spaces' do
+      expect(normalize(["The dead walk.\n  Nobody knows why", 'Wait... what'])).to eq(
+        [{ 'name' => 'The dead walk.', 'description' => 'Nobody knows why' }, { 'name' => 'Wait...', 'description' => 'what' }]
+      )
+    end
+
+    it 'trims objects, with string or symbol keys, and keeps only the name and description' do
+      expect(normalize([{ name: ' Gold rules ', description: ' Everything is for sale ', id: 3 },
+                        { 'name' => 'Walls', 'description' => nil }, { 'name' => 'Gates' }])).to eq(
+                          [{ 'name' => 'Gold rules', 'description' => 'Everything is for sale' },
+                           { 'name' => 'Walls', 'description' => '' },
+                           { 'name' => 'Gates', 'description' => '' }]
+                        )
+    end
+
+    it 'takes a mix of strings and objects, in order' do
+      expect(normalize(['First. One', { name: 'Second', description: 'Two' }, 'Third'])).to eq(
+        [{ 'name' => 'First.', 'description' => 'One' }, { 'name' => 'Second', 'description' => 'Two' },
+         { 'name' => 'Third', 'description' => '' }]
+      )
+    end
+
+    it 'takes request parameters' do
+      params = ActionController::Parameters.new(name: 'Gold rules', description: 'All of it')
+
+      expect(normalize([params])).to eq([{ 'name' => 'Gold rules', 'description' => 'All of it' }])
+    end
+
+    it 'drops empty truths, keeping one with only a description for validation to reject' do
+      expect(normalize(['', '  ', nil, { name: ' ', description: '' }, { name: '', description: 'Orphan' }])).to eq(
+        [{ 'name' => '', 'description' => 'Orphan' }]
+      )
+    end
+
+    it 'is no truths for nil' do
+      expect(normalize(nil)).to eq([])
+      expect(normalize([])).to eq([])
+    end
+
+    it 'leaves what is not a list of truths for validation to reject' do
+      expect(normalize('Magic is rare')).to eq('Magic is rare')
+      expect(normalize([3, { name: 5 }])).to eq([3, { 'name' => 5, 'description' => '' }])
     end
   end
 
@@ -318,11 +440,12 @@ RSpec.describe Campaign, type: :model do
   describe '#as_json_for_api' do
     it 'serializes the campaign in camelCase' do
       campaign = create(:campaign, user: user, name: 'Storm King', planned_sessions: 8, setting_name: 'Faerûn',
-                                   start_level: 1, target_level: 10, party_size: 4, truths: ['Magic is rare'])
+                                   start_level: 1, target_level: 10, party_size: 4,
+                                   truths: [{ name: 'Magic is rare.', description: 'Wizards hide.' }])
 
       expect(campaign.as_json_for_api).to include(
         id: campaign.id.to_s, uuid: campaign.uuid, slug: 'storm-king', name: 'Storm King', settingName: 'Faerûn',
-        truths: ['Magic is rare'], mode: 'arc', status: 'planning', plannedSessions: 8, partySize: 4,
+        truths: [{ 'name' => 'Magic is rare.', 'description' => 'Wizards hide.' }], mode: 'arc', status: 'planning', plannedSessions: 8, partySize: 4,
         startLevel: 1, targetLevel: 10, edition: '2024', createdAt: campaign.created_at.iso8601
       )
     end

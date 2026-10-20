@@ -144,7 +144,14 @@ RSpec.describe 'Admin::V1::CampaignsController', type: :request do
 
     let(:campaign_params) do
       { name: 'Storm King', premise: 'Giants are restless', mode: 'arc', planned_sessions: 4, start_level: 5,
-        target_level: 8, party_size: 4, tone: 'Epic', edition: '2014', truths: ['Giants rule the north', 'Dragons hide'] }
+        target_level: 8, party_size: 4, tone: 'Epic', edition: '2014', truths: truths }
+    end
+    let(:truths) do
+      [{ name: 'Giants rule the north.', description: 'The ordning is broken.' }, { name: 'Dragons hide', description: '' }]
+    end
+    let(:truths_json) do
+      [{ 'name' => 'Giants rule the north.', 'description' => 'The ordning is broken.' },
+       { 'name' => 'Dragons hide', 'description' => '' }]
     end
 
     it 'creates a blank campaign' do
@@ -156,10 +163,30 @@ RSpec.describe 'Admin::V1::CampaignsController', type: :request do
       expect(json).to include(
         'name' => 'Storm King', 'slug' => 'storm-king', 'premise' => 'Giants are restless', 'plannedSessions' => 4,
         'startLevel' => 5, 'targetLevel' => 8, 'partySize' => 4, 'edition' => '2024', 'status' => 'planning',
-        'truths' => ['Giants rule the north', 'Dragons hide'], 'sessions' => [], 'quests' => [], 'fronts' => [],
+        'truths' => truths_json, 'sessions' => [], 'quests' => [], 'fronts' => [],
         'revelations' => []
       )
       expect(json['uuid']).to be_present
+    end
+
+    it 'takes truths of any number, in order, including strings as older clients send them' do
+      sent = ['Giants rule the north. The ordning is broken.', { name: 'Dragons hide', description: '' }] +
+             Array.new(6) { |i| "Truth #{i}" }
+
+      post '/v1/campaigns', params: { campaign: campaign_params.merge(truths: sent) }, as: :json
+
+      expect(response).to have_http_status(:created)
+      expect(json['truths'].first(2)).to eq(truths_json)
+      expect(json['truths'].size).to eq(8)
+      expect(Campaign.find(json['id']).truths).to eq(json['truths'])
+    end
+
+    it 'needs a name for each truth' do
+      post '/v1/campaigns', params: { campaign: campaign_params.merge(truths: [{ name: '', description: 'No name' }]) },
+                            as: :json
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(json['errors']).to eq(['Each truth needs a name'])
     end
 
     it 'always uses the 2024 rules, ignoring a requested edition' do
@@ -283,6 +310,30 @@ RSpec.describe 'Admin::V1::CampaignsController', type: :request do
       patch "/v1/campaigns/#{campaign.slug}", params: { campaign: { excluded_compendium_packs: [] } }, as: :json
 
       expect(campaign.reload.excluded_compendium_packs).to eq([])
+    end
+
+    it 'replaces the truths with the list sent, in order' do
+      campaign.update!(truths: [{ name: 'Old truth', description: '' }])
+      sent = [{ name: 'The city has walls within walls.', description: 'Which side of a gate you sleep on matters.' },
+              { name: 'Greyhawk runs on gold.', description: 'Nearly anything can be bought.' }]
+
+      patch "/v1/campaigns/#{campaign.slug}", params: { campaign: { truths: sent } }, as: :json
+
+      expect(response).to have_http_status(:success)
+      expect(json['truths']).to eq(sent.map(&:stringify_keys))
+      expect(campaign.reload.truths.pluck('name')).to eq(['The city has walls within walls.', 'Greyhawk runs on gold.'])
+
+      patch "/v1/campaigns/#{campaign.slug}", params: { campaign: { truths: [] } }, as: :json
+
+      expect(campaign.reload.truths).to eq([])
+    end
+
+    it 'leaves the truths alone when the request does not send them' do
+      campaign.update!(truths: [{ name: 'Gold rules', description: '' }])
+
+      patch "/v1/campaigns/#{campaign.slug}", params: { campaign: { pitch: 'New pitch' } }, as: :json
+
+      expect(campaign.reload.truths).to eq([{ 'name' => 'Gold rules', 'description' => '' }])
     end
 
     it 'returns validation errors' do
