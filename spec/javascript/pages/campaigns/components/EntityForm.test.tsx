@@ -31,7 +31,7 @@ const fields: FieldConfig[] = [
   },
   { name: 'level', label: 'Level', type: 'number', min: 1, max: 20 },
   { name: 'notes', label: 'Notes', hint: 'Only you see this', type: 'textarea', wide: true },
-  { name: 'truths', label: 'Truths', type: 'lines', wide: true },
+  { name: 'features', label: 'Features', type: 'lines', wide: true },
   { name: 'revealed', label: 'Already revealed', type: 'checkbox' },
 ];
 
@@ -43,7 +43,7 @@ describe('toAttributes', () => {
         role: '',
         level: '',
         notes: '   ',
-        truths: '',
+        features: '',
         revealed: false,
       }),
     ).toEqual({
@@ -51,7 +51,7 @@ describe('toAttributes', () => {
       role: null,
       level: null,
       notes: null,
-      truths: [],
+      features: [],
       revealed: false,
     });
   });
@@ -63,7 +63,7 @@ describe('toAttributes', () => {
         role: 'villain',
         level: ' 5 ',
         notes: 'Beautiful',
-        truths: ' The dead walk \n\n  The temple is corrupt\n',
+        features: ' Bone altar \n\n  Collapsed stair\n',
         revealed: true,
       }),
     ).toEqual({
@@ -71,7 +71,7 @@ describe('toAttributes', () => {
       role: 'villain',
       level: 5,
       notes: 'Beautiful',
-      truths: ['The dead walk', 'The temple is corrupt'],
+      features: ['Bone altar', 'Collapsed stair'],
       revealed: true,
     });
   });
@@ -82,7 +82,7 @@ describe('toAttributes', () => {
       role: null,
       level: null,
       notes: null,
-      truths: [],
+      features: [],
       revealed: false,
     });
   });
@@ -94,6 +94,106 @@ describe('toAttributes', () => {
   });
 });
 
+describe('truths fields', () => {
+  const truthFields: FieldConfig[] = [
+    { name: 'truths', label: 'Truths of the setting', hint: 'About six', type: 'truths' },
+  ];
+
+  it('saves truths trimmed, in order, without empty rows', () => {
+    expect(
+      toAttributes(truthFields, {
+        truths: [
+          { name: ' Greyhawk runs on gold. ', description: ' Anything can be bought. ' },
+          { name: ' ', description: '' },
+          { name: 'Walls within walls', description: '' },
+        ],
+      }),
+    ).toEqual({
+      truths: [
+        { name: 'Greyhawk runs on gold.', description: 'Anything can be bought.' },
+        { name: 'Walls within walls', description: '' },
+      ],
+    });
+    expect(toAttributes(truthFields, {})).toEqual({ truths: [] });
+  });
+
+  it("edits a record's truths as a list, splitting any older strings", () => {
+    expect(
+      toFormValues(truthFields, {
+        truths: [
+          { name: 'Gold rules', description: 'All of it' },
+          'The dead walk. Nobody knows why.',
+        ],
+      }),
+    ).toEqual({
+      truths: [
+        { name: 'Gold rules', description: 'All of it' },
+        { name: 'The dead walk.', description: 'Nobody knows why.' },
+      ],
+    });
+    expect(toFormValues(truthFields, { truths: null })).toEqual({ truths: [] });
+  });
+
+  it('round-trips through toAttributes', () => {
+    const record = { truths: [{ name: 'Gold rules', description: 'All of it' }] };
+
+    expect(toAttributes(truthFields, toFormValues(truthFields, record))).toEqual(record);
+  });
+
+  const renderTruthsForm = () => {
+    const onSubmit = jest.fn().mockResolvedValue(true);
+    render(
+      <EntityForm
+        title="Edit campaign"
+        fields={truthFields}
+        initialValues={toFormValues(truthFields, {
+          truths: [{ name: 'Gold rules', description: 'All of it' }],
+        })}
+        submitLabel="Save"
+        onSubmit={onSubmit}
+        onCancel={jest.fn()}
+      />,
+    );
+    return onSubmit;
+  };
+
+  it('edits the truths as a labelled group with its hint', () => {
+    renderTruthsForm();
+
+    const group = screen.getByRole('group', { name: 'Truths of the setting' });
+    expect(group).toHaveAccessibleDescription('About six');
+    expect(screen.getByLabelText('Truth 1 name')).toHaveValue('Gold rules');
+  });
+
+  it('saves the truths the DM added', async () => {
+    const onSubmit = renderTruthsForm();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Add a truth' }));
+    fireEvent.change(screen.getByLabelText('Truth 2 name'), { target: { value: 'Walls' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Move truth 2 up' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+
+    await waitFor(() =>
+      expect(onSubmit).toHaveBeenCalledWith({
+        truths: [
+          { name: 'Walls', description: '' },
+          { name: 'Gold rules', description: 'All of it' },
+        ],
+      }),
+    );
+  });
+
+  it('needs a name for each truth with a description before saving', () => {
+    const onSubmit = renderTruthsForm();
+
+    fireEvent.change(screen.getByLabelText('Truth 1 name'), { target: { value: ' ' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+
+    expect(screen.getByRole('alert')).toHaveTextContent('Each truth needs a name.');
+    expect(onSubmit).not.toHaveBeenCalled();
+  });
+});
+
 describe('toFormValues', () => {
   it('converts a record into strings, joined lines and booleans', () => {
     expect(
@@ -102,7 +202,7 @@ describe('toFormValues', () => {
         role: 'villain',
         level: 5,
         notes: null,
-        truths: ['The dead walk', 'The temple is corrupt'],
+        features: ['Bone altar', 'Collapsed stair'],
         revealed: true,
       }),
     ).toEqual({
@@ -110,7 +210,7 @@ describe('toFormValues', () => {
       role: 'villain',
       level: '5',
       notes: '',
-      truths: 'The dead walk\nThe temple is corrupt',
+      features: 'Bone altar\nCollapsed stair',
       revealed: true,
     });
   });
@@ -121,7 +221,7 @@ describe('toFormValues', () => {
       role: '',
       level: '',
       notes: '',
-      truths: '',
+      features: '',
       revealed: false,
     });
   });
@@ -132,7 +232,7 @@ describe('toFormValues', () => {
       role: 'ally',
       level: 2,
       notes: 'Drinks a lot',
-      truths: ['One', 'Two'],
+      features: ['One', 'Two'],
       revealed: false,
     };
 
@@ -205,7 +305,7 @@ describe('EntityForm', () => {
     fireEvent.change(input('name'), { target: { value: ' Elmo the Drunk ' } });
     fireEvent.keyDown(input('role'), { key: 'Backspace' });
     fireEvent.change(input('level'), { target: { value: '4' } });
-    fireEvent.change(input('truths'), { target: { value: 'One\n\nTwo' } });
+    fireEvent.change(input('features'), { target: { value: 'One\n\nTwo' } });
     fireEvent.click(screen.getByRole('checkbox', { name: 'Already revealed' }));
     fireEvent.click(screen.getByRole('button', { name: 'Save' }));
 
@@ -215,7 +315,7 @@ describe('EntityForm', () => {
       role: null,
       level: 4,
       notes: null,
-      truths: ['One', 'Two'],
+      features: ['One', 'Two'],
       revealed: true,
     });
   });

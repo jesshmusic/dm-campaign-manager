@@ -4,6 +4,13 @@ export type CampaignMode = 'arc' | 'sandbox' | 'oneshot';
 export type CampaignStatus = 'planning' | 'active' | 'completed' | 'archived';
 export type CampaignTemplate = 'blank' | 'three_act' | 'sandbox' | 'five_room';
 
+// A truth of the setting: a short fact everyone at the table knows, e.g.
+// "Greyhawk runs on gold." with what it means in the description ('' for none)
+export interface Truth {
+  name: string;
+  description: string;
+}
+
 export interface CampaignBase {
   id: string;
   uuid: string;
@@ -13,7 +20,8 @@ export interface CampaignBase {
   pitch: string | null;
   settingName: string | null;
   settingNotes: string | null;
-  truths: string[];
+  // In order, as the DM listed them
+  truths: Truth[];
   mode: CampaignMode;
   status: CampaignStatus;
   plannedSessions: number | null;

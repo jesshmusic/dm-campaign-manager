@@ -5,11 +5,12 @@ import PageContainer from '../../containers/PageContainer';
 import PageTitle from '../../components/PageTitle/PageTitle';
 import Button from '../../components/Button/Button';
 import { Colors } from '../../utilities/enums';
-import { FieldConfig, toAttributes, toFormValues } from './components/EntityForm';
+import { FieldConfig, FormValue, toAttributes, toFormValues } from './components/EntityForm';
 import FormFields from './components/FormFields';
 import CompendiumPicker from './components/CompendiumPicker';
 import LearnMore from './components/LearnMore';
 import PartyPicker from './components/PartyPicker';
+import TruthList from './components/TruthList';
 import { campaignFields } from './campaignFields';
 import { useCompendiumPacks } from './compendium';
 import useCampaignApi from './useCampaignApi';
@@ -18,6 +19,7 @@ import { buildSetup, SETUP_STEP_IDS, SetupStepId, TEMPLATE_MODES } from './setup
 import useSetupDraft from './setup/useSetupDraft';
 import useSetupGuide from './setup/useSetupGuide';
 import { SETUP_STEP_CREDITS, TEMPLATE_CREDITS } from './techniques';
+import { truthsFrom, truthsMissingName, truthsToSave } from './truths';
 import {
   ButtonRow,
   Card,
@@ -30,8 +32,6 @@ import {
 } from './Campaigns.styles';
 
 const REVIEW_STEP = SETUP_STEP_IDS.length - 1;
-// The truths everyone at the table knows; the server allows six
-const MAX_TRUTHS = 6;
 
 const Progress = styled.ol`
   display: flex;
@@ -235,23 +235,21 @@ const NewCampaign = () => {
     update({ step: index, furthest: Math.max(draft.furthest, index) });
   };
 
-  const truthCount = text('truths')
-    .split('\n')
-    .filter((truth) => truth.trim()).length;
+  const truths = truthsFrom(draft.values.truths);
 
   const next = () => {
     if (step.id === 'pitch' && !named) {
       setError('Give your campaign a name to go on.');
       return;
     }
-    if (step.id === 'world' && truthCount > MAX_TRUTHS) {
-      setError(`Keep it to ${MAX_TRUTHS} truths. You have ${truthCount}.`);
+    if (step.id === 'world' && truthsMissingName(truths)) {
+      setError('Each truth needs a name.');
       return;
     }
     goTo(draft.step + 1);
   };
 
-  const setValue = (name: string, value: string | boolean) =>
+  const setValue = (name: string, value: FormValue) =>
     update({
       values: { ...draft.values, [name]: value },
       partySizeEdited: draft.partySizeEdited || name === 'party_size',
@@ -345,10 +343,7 @@ const NewCampaign = () => {
     const target = text('target_level');
     const levelOnly = start !== '' ? start : target;
     const party = (characters ?? []).filter((character) => draft.partyIds.includes(character.id));
-    const truths = text('truths')
-      .split('\n')
-      .map((truth) => truth.trim())
-      .filter(Boolean);
+    const listed = truthsToSave(truths);
     const onPacks = (packs ?? []).filter((pack) => !draft.excludedPacks.includes(pack.pack));
     const summary = (id: SetupStepId, children: React.ReactNode) => (
       <SummaryBlock key={id}>
@@ -397,15 +392,9 @@ const NewCampaign = () => {
           'world',
           <>
             <Fact label="Setting" value={text('setting_name')} />
-            {truths.length > 0 && (
-              <ul aria-label="Truths of the setting">
-                {truths.map((truth) => (
-                  <li key={truth}>{truth}</li>
-                ))}
-              </ul>
-            )}
+            {listed.length > 0 && <TruthList truths={listed} label="Truths of the setting" />}
             <Fact label="Setting notes" value={text('setting_notes')} />
-            {!text('setting_name') && truths.length === 0 && !text('setting_notes') && (
+            {!text('setting_name') && listed.length === 0 && !text('setting_notes') && (
               <Meta>Nothing yet. You can add it later.</Meta>
             )}
           </>,

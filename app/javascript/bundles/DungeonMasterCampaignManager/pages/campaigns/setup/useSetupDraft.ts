@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { FormValues } from '../components/EntityForm';
+import { truthsFrom } from '../truths';
 import { CampaignTemplate } from '../types';
 
 export const DRAFT_KEY = 'dmguru.newCampaignDraft';
@@ -15,6 +16,11 @@ export interface SetupDraft {
   // Once the DM types a player count, picking characters stops changing it
   partySizeEdited: boolean;
 }
+
+// A draft saved before truths had names holds them as text, one per line:
+// each line becomes a truth, split after its first sentence
+const restoreValues = (values: FormValues): FormValues =>
+  'truths' in values ? { ...values, truths: truthsFrom(values.truths) } : values;
 
 // Browser storage can be blocked or full; the guide works without it
 const readDraft = (): Partial<SetupDraft> | null => {
@@ -50,7 +56,7 @@ const useSetupDraft = (initial: () => SetupDraft, lastStep: number) => {
       ...saved,
       step,
       furthest: Math.min(Math.max(Number(saved.furthest) || step, step), lastStep),
-      values: { ...fresh.values, ...saved.values },
+      values: restoreValues({ ...fresh.values, ...saved.values }),
       partyIds: Array.isArray(saved.partyIds) ? saved.partyIds : [],
       excludedPacks: Array.isArray(saved.excludedPacks) ? saved.excludedPacks : [],
     };

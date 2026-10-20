@@ -46,6 +46,18 @@ RSpec.describe 'Admin::V1::Foundry::CampaignsController', type: :request do
       expect(json['cursor']).to eq(campaign.reload.sync_counter)
     end
 
+    it "returns the campaign's truths as names and descriptions, in order" do
+      campaign.update!(truths: [{ name: 'Greyhawk runs on gold.', description: 'Nearly anything can be bought.' },
+                                { name: 'The city has walls within walls.', description: '' }])
+
+      get "/v1/foundry/campaigns/#{campaign.uuid}/changes", params: { since: 0 }, headers: headers
+
+      expect(json['campaign']['truths']).to eq(
+        [{ 'name' => 'Greyhawk runs on gold.', 'description' => 'Nearly anything can be bought.' },
+         { 'name' => 'The city has walls within walls.', 'description' => '' }]
+      )
+    end
+
     it "returns 404 for another user's campaign" do
       other = create(:campaign)
 
@@ -73,6 +85,21 @@ RSpec.describe 'Admin::V1::Foundry::CampaignsController', type: :request do
       expect(response).to have_http_status(:success)
       expect(json['applied']).to contain_exactly(include('uuid' => front.uuid))
       expect(front.reload.clock_filled).to eq(2)
+    end
+
+    it "applies the campaign's truths, sent as objects or as strings by older versions of the module" do
+      sent = [{ name: 'Greyhawk runs on gold.', description: 'Nearly anything can be bought.' },
+              'The city has walls within walls. The Old City is shut off.']
+
+      post "/v1/foundry/campaigns/#{campaign.uuid}/changes",
+           params: { changes: [{ type: 'campaign', uuid: campaign.uuid, baseVersion: campaign.sync_version,
+                                 attributes: { truths: sent } }] },
+           headers: headers, as: :json
+
+      expected = [{ 'name' => 'Greyhawk runs on gold.', 'description' => 'Nearly anything can be bought.' },
+                  { 'name' => 'The city has walls within walls.', 'description' => 'The Old City is shut off.' }]
+      expect(json['applied']).to contain_exactly(include('current' => include('truths' => expected)))
+      expect(campaign.reload.truths).to eq(expected)
     end
 
     it "applies a place's scene, an NPC's actor, and a session's scenes and coins picked in Foundry" do
@@ -167,7 +194,10 @@ RSpec.describe 'Admin::V1::Foundry::CampaignsController', type: :request do
   end
 
   describe 'POST /v1/foundry/campaigns' do
-    let(:brief) { { name: 'Zombie Siege', premise: 'The dead rise', start_level: 3, truths: ['The dead walk'] } }
+    let(:brief) do
+      { name: 'Zombie Siege', premise: 'The dead rise', start_level: 3,
+        truths: [{ name: 'The dead walk.', description: 'Nobody knows why.' }] }
+    end
     let(:akra) do
       { uuid: 'Actor.a1B2c3D4e5F6g7H8', name: 'Akra', playerName: 'Sam', level: 3,
         sheet: { summary: 'Level 3 Dragonborn Cleric' } }
@@ -182,7 +212,17 @@ RSpec.describe 'Admin::V1::Foundry::CampaignsController', type: :request do
       expect(json).to include('uuid' => created.uuid, 'name' => 'Zombie Siege', 'mode' => 'arc',
                               'url' => "/app/campaigns/#{created.slug}", 'party' => [])
       expect(created.sessions.count).to eq(6)
-      expect(created.truths).to eq(['The dead walk'])
+      expect(created.truths).to eq([{ 'name' => 'The dead walk.', 'description' => 'Nobody knows why.' }])
+    end
+
+    it 'takes truths written as strings, as older versions of the module send them' do
+      post '/v1/foundry/campaigns', params: { campaign: brief.merge(truths: ['The dead walk. Nobody knows why.', 'Gold rules']) },
+                                    headers: headers, as: :json
+
+      expect(response).to have_http_status(:created)
+      expect(user.campaigns.find_by(name: 'Zombie Siege').truths).to eq(
+        [{ 'name' => 'The dead walk.', 'description' => 'Nobody knows why.' }, { 'name' => 'Gold rules', 'description' => '' }]
+      )
     end
 
     it 'saves the party from the world and puts it in the campaign' do
@@ -224,12 +264,20 @@ RSpec.describe 'Admin::V1::Foundry::CampaignsController', type: :request do
       expect(json['errors']).to include("Name can't be blank")
     end
 
-    it 'rejects more than six truths' do
-      post '/v1/foundry/campaigns', params: { campaign: brief.merge(truths: Array.new(7) { |i| "Truth #{i}" }) },
+    it 'takes more than six truths' do
+      post '/v1/foundry/campaigns', params: { campaign: brief.merge(truths: Array.new(7) { |i| { name: "Truth #{i}" } }) },
+                                    headers: headers, as: :json
+
+      expect(response).to have_http_status(:created)
+      expect(user.campaigns.find_by(name: 'Zombie Siege').truths.size).to eq(7)
+    end
+
+    it 'says a truth needs a name' do
+      post '/v1/foundry/campaigns', params: { campaign: brief.merge(truths: [{ name: '', description: 'No name' }]) },
                                     headers: headers, as: :json
 
       expect(response).to have_http_status(:unprocessable_entity)
-      expect(json['fields']).to eq(['truths'])
+      expect(json).to eq('errors' => ['Each truth needs a name'], 'fields' => ['truths'])
     end
 
     it 'rejects an unknown template' do
@@ -256,7 +304,7 @@ RSpec.describe 'Admin::V1::Foundry::CampaignsController', type: :request do
       {
         request_id: 'send-k2Lm9QwErTy7uIo1',
         campaign: { id: 'k2Lm9QwErTy7uIo1', uuid: 'k2Lm9QwErTy7uIo1', name: 'Zombie Siege', startLevel: 3,
-                    truths: ['The dead walk'], syncVersion: 0, local: true },
+                    truths: ['The dead walk. Nobody knows why.'], syncVersion: 0, local: true },
         records: {
           npcs: [{ id: 'npc0000000000001', name: 'Vex', role: 'bbeg', factionId: 'fac0000000000001' }],
           factions: [{ id: 'fac0000000000001', name: 'Cult of Nerull' }],
@@ -274,7 +322,8 @@ RSpec.describe 'Admin::V1::Foundry::CampaignsController', type: :request do
       npc = imported.npcs.sole
       quest = imported.quests.sole
       expect(json).to include('uuid' => imported.uuid, 'name' => 'Zombie Siege', 'slug' => imported.slug, 'mode' => 'arc',
-                              'url' => "/app/campaigns/#{imported.slug}", 'party' => [], 'truths' => ['The dead walk'],
+                              'url' => "/app/campaigns/#{imported.slug}", 'party' => [],
+                              'truths' => [{ 'name' => 'The dead walk.', 'description' => 'Nobody knows why.' }],
                               'syncVersion' => imported.sync_counter)
       expect(json['ids']).to eq('k2Lm9QwErTy7uIo1' => imported.uuid, 'npc0000000000001' => npc.uuid,
                                 'fac0000000000001' => imported.factions.sole.uuid, 'qst0000000000001' => quest.uuid)

@@ -50,8 +50,8 @@ export const campaignFields = (api: CampaignApi): FieldConfig[] => [
   {
     name: 'truths',
     label: 'Truths of the setting',
-    hint: 'Up to six facts everyone at the table knows, one per line',
-    type: 'lines',
+    hint: 'About six is plenty: short facts everyone at the table knows.',
+    type: 'truths',
     wide: true,
   },
   { name: 'setting_notes', label: 'Setting notes', type: 'textarea', wide: true },

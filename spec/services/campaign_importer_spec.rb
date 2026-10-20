@@ -4,7 +4,8 @@ RSpec.describe CampaignImporter do
   let(:user) { create(:dungeon_master_user) }
   let(:importer) { described_class.new(user) }
   let(:brief) do
-    { id: 'c1', name: 'Zombie Siege', premise: 'The dead rise', settingName: 'Greyhawk', truths: ['The dead walk'],
+    { id: 'c1', name: 'Zombie Siege', premise: 'The dead rise', settingName: 'Greyhawk',
+      truths: [{ name: 'The dead walk.', description: 'Nobody knows why.' }],
       mode: 'sandbox', startLevel: 3, targetLevel: 8, uuid: 'local-uuid', syncVersion: 0, local: true }
   end
   let(:scene) { { uuid: 'Scene.5wVcsNPOg2RjRbFx', name: 'The Crypt' } }
@@ -45,10 +46,23 @@ RSpec.describe CampaignImporter do
 
     expect(campaign).to be_persisted
     expect(campaign).to have_attributes(user: user, name: 'Zombie Siege', premise: 'The dead rise', setting_name: 'Greyhawk',
-                                        truths: ['The dead walk'], mode: 'sandbox', start_level: 3, target_level: 8)
+                                        truths: [{ 'name' => 'The dead walk.', 'description' => 'Nobody knows why.' }],
+                                        mode: 'sandbox', start_level: 3, target_level: 8)
     expect(campaign.uuid).not_to eq('local-uuid')
     expect([campaign.sessions, campaign.quests, campaign.fronts]).to all(be_empty)
     expect(importer.ids).to eq('c1' => campaign.uuid)
+  end
+
+  it 'takes truths written as strings, as older versions of the module send them' do
+    campaign = import(brief.merge(truths: ['The dead walk. Nobody knows why.', 'Gold rules']), nil)
+
+    expect(campaign.truths).to eq([{ 'name' => 'The dead walk.', 'description' => 'Nobody knows why.' },
+                                   { 'name' => 'Gold rules', 'description' => '' }])
+  end
+
+  it "names the campaign's truth errors" do
+    expect(errors_from(brief.merge(truths: [{ name: '', description: 'No name' }]), nil))
+      .to eq(['Campaign: Each truth needs a name'])
   end
 
   it 'creates every record, pointing references at the new records' do

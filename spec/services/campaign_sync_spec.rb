@@ -432,7 +432,8 @@ RSpec.describe CampaignSync do
 
       it "changes the campaign's brief" do
         attributes = { name: 'The Grey Plague', premise: 'The dead rise', pitch: 'Survive the winter', settingName: 'Greyhawk',
-                       settingNotes: 'The Flanaess', truths: ['The dead walk'], tone: 'Grim', partySize: 4, startLevel: 3,
+                       settingNotes: 'The Flanaess', truths: [{ 'name' => 'The dead walk.', 'description' => 'Nobody knows why.' }],
+                       tone: 'Grim', partySize: 4, startLevel: 3,
                        targetLevel: 8, plannedSessions: 6, cadence: 'Weekly', status: 'active' }
 
         result = push('campaign', campaign, attributes)
@@ -442,10 +443,27 @@ RSpec.describe CampaignSync do
         )
         expect(campaign).to have_attributes(
           name: 'The Grey Plague', premise: 'The dead rise', pitch: 'Survive the winter', setting_name: 'Greyhawk',
-          setting_notes: 'The Flanaess', truths: ['The dead walk'], tone: 'Grim', party_size: 4, start_level: 3, target_level: 8,
+          setting_notes: 'The Flanaess', truths: [{ 'name' => 'The dead walk.', 'description' => 'Nobody knows why.' }],
+          tone: 'Grim', party_size: 4, start_level: 3, target_level: 8,
           planned_sessions: 6, cadence: 'Weekly', status: 'active'
         )
         expect(sync.changes_since(0)[:campaign]).to include(name: 'The Grey Plague', syncVersion: campaign.sync_version)
+      end
+
+      it "takes the campaign's truths as strings, as older versions of the module send them" do
+        result = push('campaign', campaign, { truths: ['The dead walk. Nobody knows why.', { name: 'Gold rules' }, 'No end'] })
+
+        expected = [{ 'name' => 'The dead walk.', 'description' => 'Nobody knows why.' },
+                    { 'name' => 'Gold rules', 'description' => '' }, { 'name' => 'No end', 'description' => '' }]
+        expect(result[:applied]).to contain_exactly(include(current: include(truths: expected)))
+        expect(campaign.reload.truths).to eq(expected)
+      end
+
+      it 'says why truths are rejected' do
+        result = push('campaign', campaign, { truths: [{ name: '', description: 'No name' }] })
+
+        expect(result[:errors]).to contain_exactly(include(uuid: campaign.uuid, errors: ['Each truth needs a name']))
+        expect(campaign.reload.truths).to eq([])
       end
 
       it 'returns a conflict when the campaign changed since the base version' do

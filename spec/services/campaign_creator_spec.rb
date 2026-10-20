@@ -45,6 +45,44 @@ RSpec.describe CampaignCreator do
     expect(user.campaigns).to be_empty
   end
 
+  it 'saves truths in order, splitting ones written as strings' do
+    campaign = creator.create!({ name: 'Greyhawk', truths: ['Greyhawk runs on gold. Anything can be bought.',
+                                                             { name: 'Walls within walls', description: '' }] })
+
+    expect(campaign.reload.truths).to eq([{ 'name' => 'Greyhawk runs on gold.', 'description' => 'Anything can be bought.' },
+                                          { 'name' => 'Walls within walls', 'description' => '' }])
+  end
+
+  describe '.permit' do
+    def permit(campaign)
+      described_class.permit(ActionController::Parameters.new(campaign: campaign).require(:campaign)).to_h
+    end
+
+    it 'keeps truths sent as objects, with only their name and description' do
+      expect(permit(name: 'Greyhawk', truths: [{ name: 'Gold rules', description: 'All of it', id: 3 }]))
+        .to eq('name' => 'Greyhawk', 'truths' => [{ 'name' => 'Gold rules', 'description' => 'All of it' }])
+    end
+
+    it 'keeps truths sent as strings, mixed with objects, in order' do
+      expect(permit(truths: ['First. One', { name: 'Second' }, 'Third'])['truths'])
+        .to eq(['First. One', { 'name' => 'Second' }, 'Third'])
+    end
+
+    it 'keeps an empty list, to clear the truths' do
+      expect(permit(truths: [])).to eq('truths' => [])
+    end
+
+    it 'leaves out truths that are not a list, and entries that are not truths' do
+      expect(permit(name: 'Greyhawk', truths: 'Gold rules')).to eq('name' => 'Greyhawk')
+      expect(permit(truths: [3, ['nested'], 'Fine'])['truths']).to eq(['Fine'])
+    end
+
+    it 'permits the other campaign attributes, and nothing else' do
+      expect(permit(name: 'Greyhawk', excluded_compendium_packs: ['dnd5e.actors24'], user_id: 1))
+        .to eq('name' => 'Greyhawk', 'excluded_compendium_packs' => ['dnd5e.actors24'])
+    end
+  end
+
   it 'has a mode for every template' do
     expect(CampaignTemplate::MODES.keys).to match_array(CampaignTemplate::TEMPLATES)
   end

@@ -178,7 +178,10 @@ export const sampleCampaign = (overrides: Partial<Campaign> = {}): Campaign => (
   pitch: 'Hold the walls of Hommlet for six weeks.',
   settingName: 'Greyhawk',
   settingNotes: 'The Flanaess, 576 CY',
-  truths: ['The dead walk', 'The temple is corrupt'],
+  truths: [
+    { name: 'The dead walk.', description: 'Nobody who dies stays dead for long.' },
+    { name: 'The temple is corrupt', description: '' },
+  ],
   mode: 'arc',
   status: 'active',
   plannedSessions: 6,
