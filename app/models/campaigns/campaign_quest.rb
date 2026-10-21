@@ -8,6 +8,7 @@
 #  act             :integer
 #  description     :text
 #  foundry_scenes  :jsonb            not null
+#  handouts        :jsonb            not null
 #  kind            :string           default("main"), not null
 #  level_max       :integer
 #  level_min       :integer
@@ -48,10 +49,12 @@
 # A main or side quest on the campaign's quest board. Main quests can be
 # grouped into acts; any quest can nest under a parent quest.
 #
-# Besides its giver, a quest links to the NPCs involved, the monsters for its
-# encounters and its reward items (with how many of each), and can use Foundry
-# scenes as maps. Its reward is those items, coins, XP and/or a milestone
-# ("level up when done"), plus the reward notes.
+# Besides its giver, a quest links to the NPCs involved and its reward items
+# (with how many of each), and can use Foundry scenes as maps. Its reward is
+# those items, coins, XP and/or a milestone ("level up when done"), plus the
+# reward notes. Its monsters are in its encounters (CampaignEncounter), each
+# with its own maps and reward. Its handouts are Foundry journal entries or
+# pages, dropped on the quest in Foundry.
 class CampaignQuest < ApplicationRecord
   include CampaignRecord
   include MapsAndCoins
@@ -65,6 +68,8 @@ class CampaignQuest < ApplicationRecord
   belongs_to :location, class_name: 'CampaignLocation', optional: true
   has_many :links, -> { order(:position, :id) }, class_name: 'CampaignQuestLink', foreign_key: :quest_id,
                                                  inverse_of: :quest, dependent: :destroy
+  has_many :encounters, -> { order(:position, :id) }, class_name: 'CampaignEncounter', foreign_key: :quest_id,
+                                                      inverse_of: :quest, dependent: :destroy
 
   validates :name, presence: true, length: { maximum: 120 }
   validates :kind, inclusion: { in: KINDS }
@@ -77,6 +82,7 @@ class CampaignQuest < ApplicationRecord
   validates_acyclic_parent message: "can't be this quest or one of its sub-quests"
   linkable_from_sessions
   foundry_scene_list :foundry_scenes
+  foundry_document_list :handouts, :journals
   coin_purse :reward_currency
   validate :level_range_in_order
 
@@ -101,6 +107,7 @@ class CampaignQuest < ApplicationRecord
       rewardCurrency: reward_currency,
       rewardXp: reward_xp,
       milestone: milestone,
+      handouts: handouts,
       links: links.select(&:linkable).map(&:as_json_for_api)
     }
   end

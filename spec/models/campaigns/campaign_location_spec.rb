@@ -150,6 +150,55 @@ RSpec.describe CampaignLocation, type: :model do
     end
   end
 
+  describe 'roll tables' do
+    subject(:location) { build(:campaign_location, campaign: campaign) }
+
+    let(:message) { 'must be up to 10 Foundry roll tables, each with a roll table UUID and a name of up to 120 characters' }
+
+    def table(index, name: "Table #{index}")
+      { uuid: "RollTable.#{index.to_s.rjust(16, 'a')}", name: name }
+    end
+
+    it 'has none by default' do
+      expect(described_class.new.roll_tables).to eq([])
+    end
+
+    it 'accepts world and compendium roll tables, keeping only the uuid and name' do
+      location.roll_tables = [{ uuid: 'RollTable.5wVcsNPOg2RjRbFx', name: 'Moathouse encounters', formula: '1d8' },
+                              { uuid: 'Compendium.dnd5e.tables24.RollTable.5wVcsNPOg2RjRbFx', name: 'Trinkets' }]
+
+      expect(location).to be_valid
+      expect(location.roll_tables.first).to eq('uuid' => 'RollTable.5wVcsNPOg2RjRbFx', 'name' => 'Moathouse encounters')
+    end
+
+    it 'takes up to 10' do
+      location.roll_tables = Array.new(MapsAndCoins::MAX_ROLL_TABLES) { |i| table(i) }
+      expect(location).to be_valid
+
+      location.roll_tables = Array.new(MapsAndCoins::MAX_ROLL_TABLES + 1) { |i| table(i) }
+      expect(location).not_to be_valid
+      expect(location.errors[:roll_tables]).to include(message)
+    end
+
+    it 'rejects anything that is not a roll table with a name' do
+      [[{ name: 'Encounters' }], [{ uuid: 'JournalEntry.5wVcsNPOg2RjRbFx', name: 'Journal' }],
+       [{ uuid: 'RollTable.short', name: 'Short' }], [{ uuid: 'Compendium.dnd5e.RollTable.5wVcsNPOg2RjRbFx', name: 'No pack' }],
+       [table(1, name: '')], [table(1, name: 'x' * 121)], 'Encounters'].each do |value|
+        location.roll_tables = value
+
+        expect(location).not_to be_valid, "expected #{value.inspect} to be rejected"
+        expect(location.errors[:roll_tables]).to include(message)
+      end
+    end
+
+    it 'treats none as an empty list' do
+      location.roll_tables = nil
+
+      expect(location.roll_tables).to eq([])
+      expect(location).to be_valid
+    end
+  end
+
   describe '#as_json_for_api' do
     it 'serializes the location' do
       location = create(:campaign_location, campaign: campaign, name: 'Phandalin', description: 'A frontier town',
@@ -158,8 +207,16 @@ RSpec.describe CampaignLocation, type: :model do
       expect(location.as_json_for_api).to eq(
         id: location.id.to_s, uuid: location.uuid, name: 'Phandalin', description: 'A frontier town',
         features: ['Stonehill Inn', 'Tresendar Manor'], notes: 'Redbrands', parentId: nil, foundryMapId: nil,
-        foundrySceneUuid: nil, foundrySceneName: nil
+        foundrySceneUuid: nil, foundrySceneName: nil, rollTables: []
       )
+    end
+
+    it 'includes its roll tables in order' do
+      tables = [{ 'uuid' => 'RollTable.5wVcsNPOg2RjRbFx', 'name' => 'Moathouse encounters' },
+                { 'uuid' => 'RollTable.abcdefghijklmnop', 'name' => 'Weather' }]
+      location = create(:campaign_location, campaign: campaign, roll_tables: tables)
+
+      expect(location.reload.as_json_for_api[:rollTables]).to eq(tables)
     end
 
     it 'includes the linked Foundry scene' do

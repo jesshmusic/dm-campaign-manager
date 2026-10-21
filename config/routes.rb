@@ -116,6 +116,9 @@ Rails.application.routes.draw do
                     only: %i[index show create update destroy]
           resources :quests, only: %i[index show create update destroy] do
             resources :links, controller: 'quest_links', only: %i[create update destroy]
+            resources :encounters, only: %i[index show create update destroy] do
+              resources :links, controller: 'encounter_links', only: %i[create update destroy]
+            end
           end
           resources :sessions, only: %i[index show create update destroy] do
             resources :links, controller: 'session_links', only: %i[create update destroy]
@@ -137,6 +140,7 @@ Rails.application.routes.draw do
         delete 'scenes', to: 'scenes#destroy', constraints: { format: 'json' }
         get 'compendium', to: 'compendium#show', constraints: { format: 'json' }
         post 'compendium', to: 'compendium#create', constraints: { format: 'json' }
+        get 'monsters/:id', to: 'monsters#show', constraints: { format: 'json' }
 
         # Device-code linking: no token yet, this is how a module gets one
         post 'link', to: 'links#create', constraints: { format: 'json' }

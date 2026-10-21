@@ -82,11 +82,11 @@ type CompendiumLinksProps = {
 };
 
 /**
- * Monsters or items picked for a session or quest, then one search that
- * fills in as you type: the campaign's book references first, then the DM's
- * Foundry compendiums (or DM Guru's SRD without them). A compendium pick
- * becomes a book reference when the plan is saved, which is a draggable link
- * in Foundry.
+ * Monsters or items picked for a session, quest or encounter, then one
+ * search that fills in as you type: the campaign's book references first,
+ * then the DM's Foundry compendiums (or DM Guru's SRD without them), with the
+ * DM's own DM Guru monsters among the monsters. A compendium pick becomes a
+ * book reference when the plan is saved, which is a draggable link in Foundry.
  */
 const CompendiumLinks = ({
   campaign,
@@ -139,6 +139,7 @@ const CompendiumLinks = ({
         linkableId: referenceId,
         name: reference?.name ?? result.name,
         detail: reference?.citation ?? null,
+        challengeRating: reference?.challengeRating ?? null,
       });
     } else if (result.entry) {
       onAdd({
@@ -146,6 +147,7 @@ const CompendiumLinks = ({
         linkableId: `entry-${result.entry.id}`,
         name: result.name,
         detail: result.detail || null,
+        challengeRating: result.entry.challengeRating,
         entry: result.entry,
       });
     } else {
@@ -154,6 +156,7 @@ const CompendiumLinks = ({
         linkableId: result.id,
         name: result.name,
         detail: result.detail || null,
+        challengeRating: result.challengeRating ?? null,
       });
     }
   };
@@ -173,6 +176,18 @@ const CompendiumLinks = ({
     linkableType === 'Monster'
       ? api.searchMonsters(query, campaign.edition)
       : api.searchItems(query, campaign.edition);
+  const compendium = searchCompendium(api, campaign.slug, searchCategories, fallback);
+  // Monsters include the DM's own DM Guru monsters, from any edition
+  const search =
+    linkableType === 'Monster'
+      ? async (query: string) => {
+          const [found, own] = await Promise.all([
+            compendium(query),
+            api.searchOwnMonsters(query).catch(() => []),
+          ]);
+          return [...own, ...found.filter((result) => !own.some((mine) => mine.id === result.id))];
+        }
+      : compendium;
 
   return (
     <>
@@ -205,7 +220,7 @@ const CompendiumLinks = ({
       )}
       <CompendiumSearch
         label={labels.search}
-        search={searchCompendium(api, campaign.slug, searchCategories, fallback)}
+        search={search}
         onPick={pick}
         isPicked={isPicked}
         local={books.length > 0 ? { label: "This campaign's books", results: books } : undefined}

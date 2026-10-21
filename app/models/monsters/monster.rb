@@ -67,9 +67,9 @@ class Monster < ApplicationRecord
   has_many :senses, dependent: :destroy
   has_many :speeds, dependent: :destroy
 
-  # Campaign sessions and quests that use it as a monster; deleting it takes it off them
+  # Campaign sessions and encounters that use it as a monster; deleting it takes it off them
   has_many :session_links, class_name: 'CampaignSessionLink', as: :linkable, dependent: :destroy, inverse_of: :linkable
-  has_many :quest_links, class_name: 'CampaignQuestLink', as: :linkable, dependent: :destroy, inverse_of: :linkable
+  has_many :encounter_links, class_name: 'CampaignEncounterLink', as: :linkable, dependent: :destroy, inverse_of: :linkable
 
   has_many :monster_proficiencies
   has_many :profs, -> { distinct }, through: :monster_proficiencies
@@ -371,6 +371,21 @@ class Monster < ApplicationRecord
     }.to_json
   end
 
+  # The data for a dnd5e 6 NPC actor (Foundry 14), for Dorman Lakely's
+  # Campaign Planner to import (see MonsterFoundryActor)
+  def foundry_actor
+    MonsterFoundryActor.new(self).to_h
+  end
+
+  # The stat block's actions, traits, reactions and legendary actions as dnd5e items
+  def foundry_items
+    items = monster_actions.map { |action| foundry_action_item(action, 'action') }
+    special_abilities.each { |a| items << foundry_feat_item(a) }
+    reactions.each { |a| items << foundry_action_item(a, 'reaction') }
+    legendary_actions.each { |a| items << foundry_action_item(a, 'legendary') }
+    items
+  end
+
   private
 
   def foundry_abilities
@@ -457,14 +472,6 @@ class Monster < ApplicationRecord
       legres: { value: 0, max: 0 },
       lair: { value: false }
     }
-  end
-
-  def foundry_items
-    items = monster_actions.map { |action| foundry_action_item(action, 'action') }
-    special_abilities.each { |a| items << foundry_feat_item(a) }
-    reactions.each { |a| items << foundry_action_item(a, 'reaction') }
-    legendary_actions.each { |a| items << foundry_action_item(a, 'legendary') }
-    items
   end
 
   def foundry_action_item(action, activation_type)
@@ -564,7 +571,8 @@ class Monster < ApplicationRecord
         bonus: attack_data[:attack_bonus].to_s,
         critical: { threshold: nil },
         flat: true,
-        type: { value: attack_data[:attack_type] == 'melee' ? 'mwak' : 'rwak', classification: '' }
+        # dnd5e 4 and later: melee or ranged, and a weapon attack
+        type: { value: attack_data[:attack_type], classification: 'weapon' }
       },
       damage: {
         critical: { bonus: '' },

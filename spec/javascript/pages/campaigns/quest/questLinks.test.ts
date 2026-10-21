@@ -1,5 +1,8 @@
 import {
+  encounterRewardSummary,
   formatXp,
+  isMonsterLink,
+  linkGroups,
   nameWithQuantity,
   questLinkGroups,
   rewardSummary,
@@ -8,7 +11,7 @@ import {
   QUEST_STATUS_LABELS,
   questDetails,
 } from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/quest/questDetails';
-import { quest, questLink, sampleCampaign } from '../fixtures';
+import { encounter, quest, questLink, sampleCampaign, sampleCompendiumEntry } from '../fixtures';
 
 const NPC = questLink({ id: 'a', linkableType: 'CampaignNpc', linkableId: 'n1', name: 'Lareth' });
 const GHOUL = questLink({ id: 'b', linkableType: 'Monster', linkableId: '12', name: 'Ghoul' });
@@ -53,6 +56,28 @@ describe('questLinkGroups', () => {
   });
 });
 
+describe('linkGroups', () => {
+  it("splits an encounter's links the same way", () => {
+    const groups = linkGroups([GHOUL, NPC, POTION, FANATIC], sampleCampaign());
+
+    expect(groups).toEqual({ npcs: [NPC], monsters: [GHOUL, FANATIC], rewards: [POTION] });
+  });
+
+  it('counts a compendium pick by its category', () => {
+    const campaign = sampleCampaign();
+    const zombie = { ...FANATIC, linkableId: 'entry-501', entry: sampleCompendiumEntry() };
+    const wand = {
+      ...BAG,
+      linkableId: 'entry-502',
+      entry: sampleCompendiumEntry({ category: 'magic_item' }),
+    };
+
+    expect(isMonsterLink(zombie, campaign)).toBe(true);
+    expect(isMonsterLink(wand, campaign)).toBe(false);
+    expect(isMonsterLink(NPC, campaign)).toBe(false);
+  });
+});
+
 describe('reward text', () => {
   it('names items with how many there are', () => {
     expect(nameWithQuantity(POTION)).toBe('Potion of Healing ×3');
@@ -79,6 +104,19 @@ describe('reward text', () => {
       'Bag of Holding, Potion of Healing ×3, 50 gp, 12 sp, 450 XP, level up',
     );
     expect(rewardSummary(quest({ reward: 'Notes only' }), sampleCampaign())).toBe('');
+  });
+
+  it("sums up an encounter's reward, leaving out its monsters", () => {
+    const fight = encounter({
+      links: [GHOUL, BAG, POTION],
+      rewardCurrency: { sp: 30 },
+      rewardXp: 100,
+    });
+
+    expect(encounterRewardSummary(fight, sampleCampaign())).toBe(
+      'Bag of Holding, Potion of Healing ×3, 30 sp, 100 XP',
+    );
+    expect(encounterRewardSummary(encounter({ links: [GHOUL] }), sampleCampaign())).toBe('');
   });
 });
 

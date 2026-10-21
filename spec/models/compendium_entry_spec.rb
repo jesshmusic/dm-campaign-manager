@@ -7,8 +7,10 @@
 #  challenge_rating :string
 #  detail           :string
 #  foundry_uuid     :string           not null
+#  homebrew         :boolean          default(FALSE), not null
 #  name             :string           not null
 #  pack             :string           not null
+#  pack_label       :string
 #  pack_version     :string
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
@@ -46,6 +48,25 @@ RSpec.describe CompendiumEntry, type: :model do
 
     it 'rejects a uuid that could break out of a Foundry link' do
       expect(build(:compendium_entry, foundry_uuid: 'Compendium.x]{evil}')).not_to be_valid
+    end
+
+    it 'takes any well-formed pack id and a label for homebrew' do
+      expect(build(:compendium_entry, :homebrew)).to be_valid
+      expect(build(:compendium_entry, :homebrew, pack: 'world-actors.greyhawk', foundry_uuid: 'Actor.abcdefghijklmnop')).to be_valid
+      expect(build(:compendium_entry, :homebrew, pack: 'not a pack')).not_to be_valid
+      expect(build(:compendium_entry, :homebrew, pack_label: nil)).not_to be_valid
+      expect(build(:compendium_entry, :homebrew, pack_label: 'x' * 121)).not_to be_valid
+    end
+  end
+
+  describe '.pack_id?' do
+    it 'is a core book pack, or a homebrew one ("<package>.<pack>")' do
+      expect(described_class.pack_id?('dnd5e.actors24')).to be(true)
+      expect(described_class.pack_id?('world-actors.greyhawk-2')).to be(true)
+      expect(described_class.pack_id?('some-module.my_monsters')).to be(true)
+      ['world', 'world.my.monsters', 'world.my monsters', "world.#{'x' * 100}", nil, 5].each do |pack|
+        expect(described_class.pack_id?(pack)).to be(false), "expected #{pack.inspect} not to be a pack id"
+      end
     end
   end
 
@@ -107,6 +128,64 @@ RSpec.describe CompendiumEntry, type: :model do
 
       expect(user.compendium_entries.sole.challenge_rating).to be_nil
     end
+
+    it 'leaves a core pack unlabelled' do
+      described_class.replace_pack!(user, 'dnd-monster-manual.actors', 'mm@1', [entry('Zombie')], label: 'Mine now')
+
+      expect(user.compendium_entries.sole).to have_attributes(homebrew: false, pack_label: nil, book: 'mm')
+    end
+
+    describe 'homebrew' do
+      it "saves a homebrew compendium's entries with its label" do
+        entries = [entry('Owlbear King', uuid: 'Compendium.world.my-monsters.Actor.abcdefghijklmnop'),
+                   entry('Elsewhere', uuid: 'Compendium.world.other.Actor.abcdefghijklmnop')]
+
+        expect(described_class.replace_pack!(user, 'world.my-monsters', 'v1', entries, label: 'My Monsters')).to eq(1)
+        expect(user.compendium_entries.sole).to have_attributes(
+          name: 'Owlbear King', pack: 'world.my-monsters', pack_label: 'My Monsters', homebrew: true, book: 'other',
+          book_name: 'Homebrew: My Monsters'
+        )
+      end
+
+      it "saves a world's actors, which are world actor uuids" do
+        entries = [entry('Captain Brandt', uuid: 'Actor.abcdefghijklmnop'),
+                   entry('Not an actor', uuid: 'Item.abcdefghijklmnop'),
+                   entry('In a compendium', uuid: 'Compendium.world-actors.greyhawk.Actor.abcdefghijklmnop'),
+                   entry('Short', uuid: 'Actor.short')]
+
+        count = described_class.replace_pack!(user, 'world-actors.greyhawk', nil, entries, label: 'World actors (Greyhawk)')
+
+        expect(count).to eq(1)
+        expect(user.compendium_entries.sole).to have_attributes(name: 'Captain Brandt', foundry_uuid: 'Actor.abcdefghijklmnop',
+                                                                homebrew: true, pack_label: 'World actors (Greyhawk)')
+      end
+
+      it "keeps each world's actors apart" do
+        described_class.replace_pack!(user, 'world-actors.greyhawk', nil, [entry('Brandt', uuid: 'Actor.abcdefghijklmnop')],
+                                      label: 'World actors (Greyhawk)')
+        described_class.replace_pack!(user, 'world-actors.oerth', nil, [entry('Vex', uuid: 'Actor.qrstuvwxyzabcdef')],
+                                      label: 'World actors (Oerth)')
+
+        expect(user.compendium_entries.pluck(:pack, :name)).to contain_exactly(['world-actors.greyhawk', 'Brandt'],
+                                                                               ['world-actors.oerth', 'Vex'])
+      end
+
+      it "doesn't take world actor uuids in a compendium, or the old world.actors pack's" do
+        actor = [entry('Brandt', uuid: 'Actor.abcdefghijklmnop')]
+
+        expect(described_class.replace_pack!(user, 'world.my-monsters', nil, actor, label: 'Mine')).to eq(0)
+        expect(described_class.replace_pack!(user, 'world.actors', nil, actor, label: 'Actors')).to eq(0)
+        expect(described_class.replace_pack!(user, 'world-actors.Grey_Hawk', nil, actor, label: 'Actors')).to eq(0)
+      end
+
+      it 'removes a homebrew pack sent with no entries' do
+        create(:compendium_entry, :homebrew, user: user)
+
+        described_class.replace_pack!(user, 'world.my-monsters', nil, [])
+
+        expect(user.compendium_entries).to be_empty
+      end
+    end
   end
 
   describe '.search' do
@@ -137,6 +216,16 @@ RSpec.describe CompendiumEntry, type: :model do
       expect(user.compendium_entries.search('').size).to eq(4)
     end
 
+    it 'never hides homebrew behind a book entry of the same name' do
+      create(:compendium_entry, :homebrew, user: user, name: 'Zombie')
+      create(:compendium_entry, :homebrew, user: user, name: 'Zombie', pack: 'world-actors.greyhawk',
+                                           foundry_uuid: 'Actor.abcdefghijklmnop')
+
+      zombies = user.compendium_entries.search('zombie', categories: ['monster']).select { |e| e.name == 'Zombie' }
+
+      expect(zombies.map(&:book)).to eq(%w[mm other other])
+    end
+
     it 'treats wildcards and regular expression characters in the query as text' do
       expect(user.compendium_entries.search('%')).to be_empty
       expect(user.compendium_entries.search('.*')).to be_empty
@@ -158,9 +247,23 @@ RSpec.describe CompendiumEntry, type: :model do
       create_list(:compendium_entry, 2, user: user)
       create(:compendium_entry, user: user, pack: 'dnd5e.actors24')
 
-      mm = { pack: 'dnd-monster-manual.actors', book: 'mm', bookName: 'Monster Manual', label: 'Monsters', count: 2 }
-      srd = { pack: 'dnd5e.actors24', book: 'srd', bookName: 'SRD 5.2', label: 'Monsters', count: 1 }
+      mm = { pack: 'dnd-monster-manual.actors', book: 'mm', bookName: 'Monster Manual', label: 'Monsters', count: 2,
+             homebrew: false }
+      srd = { pack: 'dnd5e.actors24', book: 'srd', bookName: 'SRD 5.2', label: 'Monsters', count: 1, homebrew: false }
       expect(user.compendium_entries.pack_summaries).to eq([mm, srd])
+    end
+
+    it 'lists homebrew packs after the books, by label' do
+      create(:compendium_entry, user: user)
+      create_list(:compendium_entry, 2, :homebrew, user: user)
+      create(:compendium_entry, :homebrew, user: user, pack: 'world-actors.greyhawk', pack_label: 'Actors in Greyhawk',
+                                           foundry_uuid: 'Actor.abcdefghijklmnop')
+
+      expect(user.compendium_entries.pack_summaries.map { |summary| summary.values_at(:pack, :bookName, :label, :count) })
+        .to eq([['dnd-monster-manual.actors', 'Monster Manual', 'Monsters', 1],
+                ['world-actors.greyhawk', 'Homebrew', 'Actors in Greyhawk', 1],
+                ['world.my-monsters', 'Homebrew', 'My Monsters', 2]])
+      expect(user.compendium_entries.pack_summaries.last).to include(book: 'other', homebrew: true)
     end
   end
 
@@ -171,8 +274,15 @@ RSpec.describe CompendiumEntry, type: :model do
 
       expect(zombie.as_json_for_api).to include(
         name: 'Zombie', category: 'monster', book: 'mm', bookName: 'Monster Manual', challengeRating: '1/4',
-        detail: 'Undead', foundryUuid: 'Compendium.dnd-monster-manual.actors.Actor.mmZombie00000000'
+        detail: 'Undead', foundryUuid: 'Compendium.dnd-monster-manual.actors.Actor.mmZombie00000000', homebrew: false
       )
+    end
+
+    it "labels homebrew with its pack's title" do
+      entry = create(:compendium_entry, :homebrew, name: 'Owlbear King')
+
+      expect(entry.as_json_for_api).to include(name: 'Owlbear King', book: 'other', bookName: 'Homebrew: My Monsters',
+                                               homebrew: true)
     end
   end
 end

@@ -15,16 +15,17 @@ RSpec.describe CampaignQuestLink, type: :model do
   end
 
   describe 'campaign records' do
-    { CampaignNpc: :campaign_npc, CampaignReference: :campaign_reference }.each do |type, factory|
+    { CampaignNpc: [:campaign_npc, {}], CampaignReference: [:campaign_reference, { category: 'magic_item' }] }
+      .each do |type, (factory, attributes)|
       it "links a #{type} from the quest's campaign" do
-        link = link_to(create(factory, campaign: campaign))
+        link = link_to(create(factory, campaign: campaign, **attributes))
 
         expect(link).to be_valid
         expect(link.linkable_type).to eq(type.to_s)
       end
 
       it "rejects a #{type} from another campaign, even one the DM owns" do
-        link = link_to(create(factory, campaign: other_campaign))
+        link = link_to(create(factory, campaign: other_campaign, **attributes))
 
         expect(link).not_to be_valid
         expect(link.errors[:linkable]).to include('is not available to this campaign')
@@ -41,19 +42,27 @@ RSpec.describe CampaignQuestLink, type: :model do
     end
   end
 
-  describe 'compendium entries' do
-    it 'links an SRD monster, or the DM\'s own homebrew' do
-      expect(link_to(create(:monster, user: nil))).to be_valid
-      expect(link_to(create(:monster, user: user))).to be_valid
-    end
-
-    it "rejects another user's homebrew monster" do
-      link = link_to(create(:monster, user: create(:dungeon_master_user)))
+  describe 'monsters' do
+    it "rejects DM Guru's monsters: they go in the quest's encounters" do
+      link = link_to(create(:monster, user: nil))
 
       expect(link).not_to be_valid
-      expect(link.errors[:linkable]).to include('is not available to this campaign')
+      expect(link.errors[:linkable_type]).to be_present
     end
 
+    it 'rejects book references to monsters, but not to anything else' do
+      link = link_to(create(:campaign_reference, campaign: campaign, category: 'monster'))
+
+      expect(link).not_to be_valid
+      expect(link.errors[:linkable]).to include("is a monster: monsters go in the quest's encounters")
+
+      %w[magic_item equipment spell table rule other].each do |category|
+        expect(link_to(create(:campaign_reference, campaign: campaign, category: category))).to be_valid
+      end
+    end
+  end
+
+  describe 'compendium entries' do
     it 'links an SRD item, stored under the base Item type' do
       link = link_to(create(:magic_item, user: nil))
 
@@ -135,7 +144,7 @@ RSpec.describe CampaignQuestLink, type: :model do
   describe 'when the linked record is deleted' do
     it 'is removed with an NPC or book reference, and bumps the quest' do
       npc = create(:campaign_npc, campaign: campaign)
-      reference = create(:campaign_reference, campaign: campaign)
+      reference = create(:campaign_reference, campaign: campaign, category: 'magic_item')
       create(:campaign_quest_link, quest: quest, linkable: npc)
       create(:campaign_quest_link, quest: quest, linkable: reference)
       version = quest.reload.sync_version
@@ -145,13 +154,10 @@ RSpec.describe CampaignQuestLink, type: :model do
       expect(quest.reload.sync_version).to be > version
     end
 
-    it 'is removed with a monster or item' do
-      monster = create(:monster, user: user)
+    it 'is removed with an item' do
       item = create(:magic_item, user: user)
-      create(:campaign_quest_link, quest: quest, linkable: monster)
       create(:campaign_quest_link, quest: quest, linkable: item, quantity: 2)
 
-      expect { monster.destroy! }.to change(described_class, :count).by(-1)
       expect { item.destroy! }.to change(described_class, :count).by(-1)
     end
   end
@@ -162,24 +168,22 @@ RSpec.describe CampaignQuestLink, type: :model do
 
       expect(link.as_json_for_api).to eq(id: link.id.to_s, uuid: link.uuid, linkableType: 'CampaignNpc',
                                          linkableId: link.linkable_id.to_s, name: 'Gundren', slug: nil, detail: nil,
-                                         position: 0, quantity: nil)
+                                         challengeRating: nil, position: 0, quantity: nil)
     end
 
-    it "shows a monster's slug and challenge rating, and an item's rarity and quantity" do
-      monster = create(:monster, user: nil, name: 'Zombie', challenge_rating: '1/4')
+    it "shows an item's rarity and quantity" do
       item = create(:magic_item, user: nil, rarity: 'uncommon')
 
-      expect(create(:campaign_quest_link, quest: quest, linkable: monster).as_json_for_api)
-        .to include(linkableType: 'Monster', name: 'Zombie', slug: monster.slug, detail: 'CR 1/4')
       expect(create(:campaign_quest_link, quest: quest, linkable: item, quantity: 2).as_json_for_api)
         .to include(linkableType: 'Item', name: item.name, detail: 'uncommon', quantity: 2)
     end
 
     it 'cites the book and page of a book reference' do
-      reference = create(:campaign_reference, campaign: campaign, name: 'Cult Fanatic', book: 'mm', page: 92)
+      reference = create(:campaign_reference, campaign: campaign, name: 'Bag of Holding', book: 'dmg', page: 224,
+                                              category: 'magic_item')
 
       expect(create(:campaign_quest_link, quest: quest, linkable: reference).as_json_for_api)
-        .to include(name: 'Cult Fanatic', detail: 'Monster Manual p. 92')
+        .to include(name: 'Bag of Holding', detail: "Dungeon Master's Guide p. 224")
     end
   end
 end

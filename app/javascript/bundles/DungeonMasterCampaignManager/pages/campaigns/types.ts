@@ -77,6 +77,8 @@ export interface Location {
   // Its map: a Foundry scene, picked here or in Foundry
   foundrySceneUuid: string | null;
   foundrySceneName: string | null;
+  // Its random encounter tables: Foundry roll tables, added in Foundry
+  rollTables: FoundryDocument[];
 }
 
 export type NpcRole = 'bbeg' | 'villain' | 'lieutenant' | 'ally' | 'patron' | 'neutral';
@@ -155,6 +157,8 @@ export interface CompendiumEntry {
   challengeRating: string | null;
   detail: string | null;
   foundryUuid: string;
+  // From one of the DM's own Foundry compendiums or worlds (bookName says which)
+  homebrew?: boolean;
 }
 
 // One compendium pack in the DM's index, e.g. the Monster Manual's monsters
@@ -164,6 +168,8 @@ export interface CompendiumPack {
   bookName: string;
   label: string;
   count: number;
+  // One of the DM's own compendiums, or a world's actors
+  homebrew?: boolean;
 }
 
 export type Coin = 'pp' | 'gp' | 'ep' | 'sp' | 'cp';
@@ -311,8 +317,48 @@ export interface Quest {
   rewardXp: number | null;
   // "Level up when done"
   milestone: boolean;
-  // NPCs involved, monsters for its encounters, and reward items with how many
+  // Foundry journal entries or pages, added in Foundry
+  handouts: FoundryDocument[];
+  // NPCs involved, and reward items with how many (its monsters are in its encounters)
   links: QuestLink[];
+}
+
+export type EncounterKind = 'combat' | 'social' | 'exploration' | 'puzzle' | 'trap' | 'other';
+
+export const ENCOUNTER_KINDS: EncounterKind[] = [
+  'combat',
+  'social',
+  'exploration',
+  'puzzle',
+  'trap',
+  'other',
+];
+
+export const ENCOUNTER_KIND_LABELS: Record<EncounterKind, string> = {
+  combat: 'Combat',
+  social: 'Social',
+  exploration: 'Exploration',
+  puzzle: 'Puzzle',
+  trap: 'Trap',
+  other: 'Other',
+};
+
+// One of a quest's encounters, with its own maps and reward
+export interface Encounter {
+  id: string;
+  uuid: string;
+  questId: string;
+  name: string;
+  kind: EncounterKind;
+  description: string | null;
+  notes: string | null;
+  // Its order in the quest
+  position: number;
+  foundryScenes: FoundryScene[];
+  rewardCurrency: Currency;
+  rewardXp: number | null;
+  // Monsters with how many, NPCs, and reward items with how many
+  links: EncounterLink[];
 }
 
 export interface Secret {
@@ -346,16 +392,29 @@ export interface SessionLink {
   slug: string | null;
   // Book and page, for book references
   detail: string | null;
+  // A monster's or book reference's challenge rating ("1/4"), for encounter
+  // difficulty. The server sends it for every link; a pick not saved yet may not have it.
+  challengeRating?: string | null;
   position: number;
   // How many, for treasure (null means one)
   quantity: number | null;
 }
 
-// A quest's links have the same shape: CampaignNpc, CampaignReference, Monster or Item
+// A quest's links have the same shape: CampaignNpc, CampaignReference or Item
 export type QuestLink = SessionLink;
+
+// And an encounter's: CampaignNpc, CampaignReference, Monster or Item
+export type EncounterLink = SessionLink;
 
 // A Foundry scene used as a map, picked here or in Foundry
 export interface FoundryScene {
+  uuid: string;
+  name: string;
+}
+
+// A Foundry document the DM drops on a record in Foundry: a journal entry or
+// page (a quest's handout), or a roll table (a place's random encounters)
+export interface FoundryDocument {
   uuid: string;
   name: string;
 }
@@ -403,6 +462,8 @@ export interface Campaign extends CampaignBase {
   npcs: Npc[];
   fronts: Front[];
   quests: Quest[];
+  // Every quest's encounters, by quest and in order
+  encounters: Encounter[];
   secrets: Secret[];
   sessions: PlannerSession[];
   references: BookReference[];

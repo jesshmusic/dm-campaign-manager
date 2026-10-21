@@ -1,6 +1,6 @@
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
-import { render, screen, fireEvent } from '../../../test-utils';
+import { render, screen, fireEvent, waitFor } from '../../../test-utils';
 import CompendiumLinks, {
   linkDetail,
   LinkName,
@@ -236,7 +236,85 @@ describe('CompendiumLinks', () => {
       linkableId: '30',
       name: 'Zombie',
       detail: 'CR 1/4',
+      challengeRating: null,
     });
+  });
+
+  it("offers the DM's own DM Guru monsters, from any edition, with the compendium's", async () => {
+    const api = makeApi({
+      searchCompendium: jest
+        .fn()
+        .mockResolvedValue({ indexed: true, results: [sampleCompendiumEntry()] }),
+      searchOwnMonsters: jest.fn().mockResolvedValue([
+        {
+          id: '77',
+          name: 'Zombie Lord',
+          slug: 'zombie-lord',
+          detail: 'CR 5 · Your monster',
+          challengeRating: '5',
+        },
+      ]),
+    });
+    const { onAdd } = renderLinks({}, api);
+
+    openSelect('Search monsters', 'zomb');
+    await pick('Zombie Lord (CR 5 · Your monster)');
+
+    expect(api.searchOwnMonsters).toHaveBeenCalledWith('zomb');
+    expect(menuOptions()).toContain('Zombie (CR 1/4 · Undead · Monster Manual)');
+    expect(onAdd).toHaveBeenCalledWith({
+      linkableType: 'Monster',
+      linkableId: '77',
+      name: 'Zombie Lord',
+      detail: 'CR 5 · Your monster',
+      challengeRating: '5',
+    });
+  });
+
+  it("lists the DM's own monster once when the SRD search finds it too", async () => {
+    const own = {
+      id: '77',
+      name: 'Zombie Lord',
+      slug: 'zombie-lord',
+      detail: 'CR 5 · Your monster',
+    };
+    const api = makeApi({
+      searchMonsters: jest.fn().mockResolvedValue([
+        { ...own, detail: 'CR 5' },
+        { id: '30', name: 'Zombie', slug: 'zombie', detail: 'CR 1/4' },
+      ]),
+      searchOwnMonsters: jest.fn().mockResolvedValue([own]),
+    });
+    renderLinks({}, api);
+
+    openSelect('Search monsters', 'zomb');
+
+    expect(await screen.findByRole('option', { name: 'Zombie (CR 1/4)' })).toBeInTheDocument();
+    expect(menuOptions()).toEqual(['Zombie Lord (CR 5 · Your monster)', 'Zombie (CR 1/4)']);
+  });
+
+  it("still searches when the DM's own monsters can't be loaded", async () => {
+    const api = makeApi({
+      searchMonsters: jest
+        .fn()
+        .mockResolvedValue([{ id: '30', name: 'Zombie', slug: 'zombie', detail: 'CR 1/4' }]),
+      searchOwnMonsters: jest.fn().mockRejectedValue(new Error('offline')),
+    });
+    renderLinks({}, api);
+
+    openSelect('Search monsters', 'zomb');
+
+    expect(await screen.findByRole('option', { name: 'Zombie (CR 1/4)' })).toBeInTheDocument();
+  });
+
+  it("doesn't look for the DM's own monsters when searching items", async () => {
+    const api = makeApi();
+    renderLinks(itemProps, api);
+
+    openSelect('Search items', 'rope');
+
+    await waitFor(() => expect(api.searchItems).toHaveBeenCalledWith('rope', '2024'));
+    expect(api.searchOwnMonsters).not.toHaveBeenCalled();
   });
 
   it("searches DM Guru's items for items", async () => {
@@ -271,6 +349,7 @@ describe('CompendiumLinks', () => {
       linkableId: 'entry-501',
       name: 'Zombie',
       detail: 'CR 1/4 · Undead · Monster Manual',
+      challengeRating: '1/4',
       entry,
     });
     expect(api.createChild).not.toHaveBeenCalled();
@@ -295,6 +374,7 @@ describe('CompendiumLinks', () => {
       linkableId: 'r1',
       name: 'Cult Fanatic',
       detail: 'MM p. 34',
+      challengeRating: '2',
     });
   });
 

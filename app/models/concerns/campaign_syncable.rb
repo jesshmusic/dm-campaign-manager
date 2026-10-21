@@ -11,10 +11,16 @@ module CampaignSyncable
   included do
     before_validation :assign_uuid, on: :create
     before_save :assign_sync_version
-    after_destroy :record_tombstone, unless: :destroyed_by_association
+    after_destroy :record_tombstone, unless: :destroyed_without_tombstone?
   end
 
   private
+
+  # A record deleted along with what owns it (its session, quest or campaign)
+  # leaves no tombstone of its own: the owner's covers it
+  def destroyed_without_tombstone?
+    destroyed_by_association.present?
+  end
 
   # The campaign whose counter versions this record
   def sync_campaign

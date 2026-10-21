@@ -7,9 +7,23 @@ import ProgressClock from '../components/ProgressClock';
 import { formatCoins } from '../coins';
 import SceneThumbnail, { SceneGallery } from '../components/SceneThumbnail';
 import { CampaignState } from '../useCampaign';
-import { Campaign, NPC_ROLE_LABELS, PlannerSession, QuestStatus, Secret } from '../types';
+import {
+  Campaign,
+  ENCOUNTER_KIND_LABELS,
+  NPC_ROLE_LABELS,
+  PlannerSession,
+  QuestStatus,
+  Secret,
+} from '../types';
+import { difficultySummary } from '../quest/difficulty';
+import { questEncounters } from '../quest/encounterDraft';
 import { QUEST_STATUS_LABELS } from '../quest/questDetails';
-import { rewardSummary } from '../quest/questLinks';
+import {
+  encounterRewardSummary,
+  linkGroups,
+  nameWithQuantity,
+  rewardSummary,
+} from '../quest/questLinks';
 import {
   Badge,
   Card,
@@ -143,6 +157,7 @@ const RunView = ({ campaign, session, state }: RunViewProps) => {
       <List>
         {openQuests.map((quest) => {
           const reward = rewardSummary(quest, campaign);
+          const encounters = questEncounters(quest, campaign);
           return (
             <li key={quest.id}>
               {quest.name}{' '}
@@ -161,6 +176,31 @@ const RunView = ({ campaign, session, state }: RunViewProps) => {
                 ))}
               </Select>
               {reward && <Meta>Reward: {reward}</Meta>}
+              {quest.handouts.length > 0 && (
+                <Meta>Handouts: {quest.handouts.map((handout) => handout.name).join(', ')}</Meta>
+              )}
+              {encounters.length > 0 && (
+                <List aria-label={`Encounters for ${quest.name}`}>
+                  {encounters.map((encounter) => {
+                    const monsterNames = linkGroups(encounter.links, campaign)
+                      .monsters.map(nameWithQuantity)
+                      .join(', ');
+                    const difficulty =
+                      encounter.kind === 'combat'
+                        ? difficultySummary(encounter.links, quest, campaign)
+                        : null;
+                    const encounterReward = encounterRewardSummary(encounter, campaign);
+                    return (
+                      <li key={encounter.id}>
+                        {ENCOUNTER_KIND_LABELS[encounter.kind]}: {encounter.name}
+                        {monsterNames && ` — ${monsterNames}`}
+                        {difficulty && <Meta>{difficulty}</Meta>}
+                        {encounterReward && <Meta>Reward: {encounterReward}</Meta>}
+                      </li>
+                    );
+                  })}
+                </List>
+              )}
             </li>
           );
         })}

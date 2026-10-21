@@ -359,6 +359,160 @@ RSpec.describe CampaignSync do
       end
     end
 
+    describe "a quest's handouts" do
+      let(:quest) { create(:campaign_quest, campaign: campaign) }
+      let(:handouts) do
+        [{ uuid: 'JournalEntry.5wVcsNPOg2RjRbFx', name: 'A letter' },
+         { uuid: 'Compendium.world.lore.JournalEntry.5wVcsNPOg2RjRbFx.JournalEntryPage.abcdefghijklmnop', name: 'A map' }]
+      end
+
+      def push(attributes)
+        sync.apply([{ type: 'quest', uuid: quest.uuid, baseVersion: quest.reload.sync_version, attributes: attributes }])
+      end
+
+      it 'saves the journal entries and pages dropped on the quest, in order' do
+        result = push({ handouts: handouts })
+
+        expect(result[:applied]).to contain_exactly(include(current: include(handouts: handouts.map(&:stringify_keys))))
+        expect(quest.reload.handouts).to eq(handouts.map(&:stringify_keys))
+      end
+
+      it 'clears them' do
+        quest.update!(handouts: handouts)
+
+        push({ handouts: [] })
+
+        expect(quest.reload.handouts).to eq([])
+      end
+
+      it "reports handouts that aren't journal entries or pages" do
+        result = push({ handouts: [{ uuid: 'Scene.5wVcsNPOg2RjRbFx', name: 'Not a journal' }] })
+
+        expect(result[:errors]).to contain_exactly(include(uuid: quest.uuid, errors: [/Handouts must be up to 20 Foundry journal/]))
+        expect(quest.reload.handouts).to eq([])
+      end
+    end
+
+    describe "a place's roll tables" do
+      let(:location) { create(:campaign_location, campaign: campaign) }
+      let(:tables) { [{ uuid: 'RollTable.5wVcsNPOg2RjRbFx', name: 'Moathouse encounters' }] }
+
+      def push(attributes)
+        sync.apply([{ type: 'location', uuid: location.uuid, baseVersion: location.reload.sync_version, attributes: attributes }])
+      end
+
+      it 'saves the roll tables dropped on the place' do
+        result = push({ rollTables: tables })
+
+        expect(result[:applied]).to contain_exactly(include(current: include(rollTables: tables.map(&:stringify_keys))))
+        expect(location.reload.roll_tables).to eq(tables.map(&:stringify_keys))
+        expect(sync.changes_since(0)[:records]['locations']).to contain_exactly(include(rollTables: tables.map(&:stringify_keys)))
+      end
+
+      it "reports tables that aren't roll tables" do
+        result = push({ rollTables: [{ uuid: 'JournalEntry.5wVcsNPOg2RjRbFx', name: 'Not a table' }] })
+
+        expect(result[:errors]).to contain_exactly(include(uuid: location.uuid, errors: [/Roll tables must be up to 10 Foundry roll/]))
+      end
+    end
+
+    describe "a quest's encounters" do
+      let(:quest) { create(:campaign_quest, campaign: campaign, name: 'Find the crypt') }
+      let(:encounter) { create(:campaign_encounter, quest: quest, name: 'Ambush') }
+      let(:scenes) { [{ 'uuid' => 'Scene.5wVcsNPOg2RjRbFx', 'name' => 'Mountain Pass' }] }
+
+      def push(attributes, record: encounter, base: record.reload.sync_version)
+        sync.apply([{ type: 'encounter', uuid: record.uuid, baseVersion: base, attributes: attributes }])
+      end
+
+      it 'pulls them on their own, with their quest id and links' do
+        encounter.links.create!(linkable: create(:monster, user: nil, name: 'Ghoul'), quantity: 3)
+
+        pulled = sync.changes_since(0)[:records]['encounters']
+
+        expect(pulled).to contain_exactly(
+          include(uuid: encounter.uuid, questId: quest.id.to_s, name: 'Ambush', kind: 'combat', position: 0,
+                  foundryScenes: [], rewardCurrency: {}, rewardXp: nil, syncVersion: encounter.reload.sync_version,
+                  links: [include(linkableType: 'Monster', name: 'Ghoul', quantity: 3)])
+        )
+      end
+
+      it 'pulls an encounter again, and not its quest, when its links change' do
+        encounter
+        cursor = sync.changes_since(0)[:cursor]
+
+        encounter.links.create!(linkable: create(:monster, user: nil))
+
+        pulled = sync.changes_since(cursor)
+        expect(pulled[:records]['encounters'].pluck(:uuid)).to eq([encounter.uuid])
+        expect(pulled[:records]['quests']).to eq([])
+      end
+
+      it 'changes every field Foundry may set' do
+        other_quest = create(:campaign_quest, campaign: campaign)
+
+        result = push({ name: 'The lair', kind: 'puzzle', description: 'A riddle door', notes: 'Answer: echo', position: 2,
+                        questId: other_quest.id.to_s, foundryScenes: scenes, rewardCurrency: { gp: 50 }, rewardXp: 450 })
+
+        expect(result[:errors]).to eq([])
+        expect(encounter.reload).to have_attributes(name: 'The lair', kind: 'puzzle', description: 'A riddle door',
+                                                    notes: 'Answer: echo', position: 2, quest: other_quest,
+                                                    foundry_scenes: scenes, reward_currency: { 'gp' => 50 }, reward_xp: 450)
+        expect(result[:applied].sole[:current]).to include(questId: other_quest.id.to_s, kind: 'puzzle')
+      end
+
+      it "rejects a quest from another campaign, or none, and fields it doesn't have" do
+        stranger = create(:campaign_quest)
+
+        expect(push({ questId: stranger.id })[:errors].sole[:errors]).to include('Quest must belong to the same campaign')
+        expect(push({ questId: nil })[:errors].sole[:errors]).to include('Quest must exist')
+        expect(push({ questId: 'crypt' })[:errors].sole[:errors]).to eq(['Quest must be a record id'])
+        expect(push({ status: 'active' })[:errors].sole[:errors]).to eq(["Can't set status on an encounter"])
+        expect(push({ kind: 'brawl' })[:errors].sole[:errors]).to eq(['Kind is not included in the list'])
+        expect(encounter.reload.quest).to eq(quest)
+      end
+
+      it 'returns a conflict when it changed since the base version' do
+        base = encounter.sync_version
+        encounter.update!(name: 'Changed on the website')
+
+        result = push({ name: 'Changed in Foundry' }, base: base)
+
+        expect(result[:conflicts]).to contain_exactly(include(type: 'encounter', current: include(name: 'Changed on the website')))
+      end
+
+      it 'creates one on a quest, with its links' do
+        uuid = SecureRandom.uuid
+        zombie = create(:monster, user: nil)
+
+        result = sync.apply([{ op: 'create', type: 'encounter', uuid: uuid,
+                               attributes: { name: 'Ambush', kind: 'combat', questId: quest.id,
+                                             links: [{ linkableType: 'Monster', linkableId: zombie.id, quantity: 6 }] } }])
+
+        created = CampaignEncounter.find_by!(uuid: uuid)
+        expect(created).to have_attributes(campaign: campaign, quest: quest, name: 'Ambush')
+        expect(created.links.sole).to have_attributes(linkable: zombie, quantity: 6)
+        expect(result[:applied].sole).to include(type: 'encounter', uuid: uuid, current: include(questId: quest.id.to_s))
+      end
+
+      it "doesn't create one without a quest" do
+        result = sync.apply([{ op: 'create', type: 'encounter', uuid: SecureRandom.uuid, attributes: { name: 'Ambush' } }])
+
+        expect(result[:errors].sole[:errors]).to include('Quest must exist')
+        expect(CampaignEncounter.count).to eq(0)
+      end
+
+      it 'deletes one, leaving a tombstone' do
+        encounter
+        cursor = sync.changes_since(0)[:cursor]
+
+        result = sync.apply([{ op: 'delete', type: 'encounter', uuid: encounter.uuid }])
+
+        expect(result[:deleted]).to eq([encounter.uuid])
+        expect(sync.changes_since(cursor)[:tombstones]).to contain_exactly(include(type: 'CampaignEncounter', uuid: encounter.uuid))
+      end
+    end
+
     describe "a session's Foundry scenes and treasure coins" do
       let(:session) { create(:campaign_session, campaign: campaign, treasure_currency: { gp: 5 }) }
       let(:scenes) { [{ uuid: 'Scene.5wVcsNPOg2RjRbFx', name: 'Mountain Pass' }, { uuid: 'Scene.aaaaaaaaaaaaaaaa', name: 'Cave' }] }
@@ -767,17 +921,84 @@ RSpec.describe CampaignSync do
         expect(pulled[:tombstones]).to contain_exactly(include(type: 'CampaignSessionLink', uuid: removed.uuid))
       end
 
-      it "sets a quest's NPCs, monsters and reward items" do
+      it "sets a quest's NPCs and reward items" do
         quest = create(:campaign_quest, campaign: campaign)
         sword = create(:magic_item, user: nil)
 
-        result = push_links(quest, 'quest', [link_to(npc), { linkableType: 'Monster', linkableId: zombie.id, quantity: 4 },
-                                             link_to(potion, 2), { linkableType: 'Item', linkableId: sword.id.to_s }])
+        result = push_links(quest, 'quest', [link_to(npc), link_to(potion, 2), { linkableType: 'Item', linkableId: sword.id.to_s }])
 
         expect(result[:errors]).to eq([])
         expect(quest.links.reload.map { |link| [link.linkable_type, link.linkable_id, link.quantity, link.position] })
-          .to eq([['CampaignNpc', npc.id, nil, 0], ['Monster', zombie.id, 4, 1], ['CampaignReference', potion.id, 2, 2],
-                  ['Item', sword.id, nil, 3]])
+          .to eq([['CampaignNpc', npc.id, nil, 0], ['CampaignReference', potion.id, 2, 1], ['Item', sword.id, nil, 2]])
+      end
+
+      describe "monsters in a quest's links, from an older module or a change queued before quests had encounters" do
+        let(:quest) { create(:campaign_quest, campaign: campaign) }
+        let(:fanatic) { create(:campaign_reference, campaign: campaign, name: 'Cult Fanatic', category: 'monster') }
+
+        it 'moves them into a new fight, keeping their order and how many, and applies the rest of the change' do
+          result = push_links(quest, 'quest', [link_to(npc), { linkableType: 'Monster', linkableId: zombie.id, quantity: 4 },
+                                               link_to(potion, 2), link_to(fanatic)], { name: 'Renamed' })
+
+          expect(result[:errors]).to eq([])
+          expect(result[:applied].sole[:current]).to include(name: 'Renamed')
+          expect(quest.reload.links.map(&:linkable)).to eq([npc, potion])
+          encounter = quest.encounters.sole
+          expect(encounter).to have_attributes(name: 'Encounter', kind: 'combat', position: 0, campaign: campaign)
+          expect(encounter.links.map { |link| [link.linkable, link.quantity, link.position] })
+            .to eq([[zombie, 4, 0], [fanatic, nil, 1]])
+        end
+
+        it "adds them after the quest's first encounter's monsters, taking the count sent for one it has" do
+          first = create(:campaign_encounter, quest: quest, name: 'Ambush', position: 0)
+          create(:campaign_encounter, quest: quest, name: 'Lair', position: 1)
+          ghoul = create(:monster, user: nil)
+          first.links.create!(linkable: ghoul, position: 0)
+          first.links.create!(linkable: zombie, position: 1, quantity: 2)
+
+          result = push_links(quest, 'quest', [{ linkableType: 'Monster', linkableId: zombie.id, quantity: 5 }, link_to(fanatic, 3)])
+
+          expect(result[:errors]).to eq([])
+          expect(quest.encounters.count).to eq(2)
+          expect(first.links.reload.map { |link| [link.linkable, link.quantity, link.position] })
+            .to eq([[ghoul, nil, 0], [zombie, 5, 1], [fanatic, 3, 2]])
+          expect(quest.links.reload).to be_empty
+        end
+
+        it 'pulls the encounter they went into' do
+          cursor = sync.changes_since(0)[:cursor]
+
+          push_links(quest, 'quest', [{ linkableType: 'Monster', linkableId: zombie.id }])
+
+          expect(sync.changes_since(cursor)[:records]['encounters'])
+            .to contain_exactly(include(questId: quest.id.to_s, links: [include(linkableType: 'Monster', linkableId: zombie.id.to_s)]))
+        end
+
+        it 'does it for a quest created from Foundry too' do
+          uuid = SecureRandom.uuid
+
+          result = sync.apply([{ op: 'create', type: 'quest', uuid: uuid,
+                                 attributes: { name: 'Find the crypt', links: [{ linkableType: 'Monster', linkableId: zombie.id }] } }])
+
+          expect(result[:errors]).to eq([])
+          expect(CampaignQuest.find_by!(uuid: uuid).encounters.sole.links.sole.linkable).to eq(zombie)
+        end
+      end
+
+      it "sets an encounter's monsters with how many, its NPCs and its reward items" do
+        encounter = create(:campaign_encounter, quest: create(:campaign_quest, campaign: campaign))
+        fanatic = create(:campaign_reference, campaign: campaign, name: 'Cult Fanatic', category: 'monster')
+        sword = create(:magic_item, user: nil)
+
+        result = push_links(encounter, 'encounter', [{ linkableType: 'Monster', linkableId: zombie.id, quantity: 4 },
+                                                     link_to(fanatic), link_to(npc), link_to(potion, 2),
+                                                     { linkableType: 'Item', linkableId: sword.id.to_s }])
+
+        expect(result[:errors]).to eq([])
+        expect(result[:applied].sole[:current][:links].pluck(:name, :quantity))
+          .to eq([[zombie.name, 4], ['Cult Fanatic', nil], ['Vex', nil], ['Potion of Healing', 2], [sword.name, nil]])
+        expect(encounter.links.reload.map { |link| [link.linkable_type, link.position] })
+          .to eq([['Monster', 0], ['CampaignReference', 1], ['CampaignNpc', 2], ['CampaignReference', 3], ['Item', 4]])
       end
 
       it 'removes them all for an empty list' do
@@ -849,6 +1070,24 @@ RSpec.describe CampaignSync do
 
           expect_rejected([link_to(secret)], 'Links: "CampaignSecret" can\'t be linked to a quest', owner: quest, type: 'quest')
           expect(quest.links.reload).to be_empty
+        end
+
+        it "rejects a quest's monsters that the website couldn't link, saving nothing from the change" do
+          quest = create(:campaign_quest, campaign: campaign)
+          homebrew = create(:monster, user: create(:dungeon_master_user))
+
+          expect_rejected([link_to(npc), { linkableType: 'Monster', linkableId: homebrew.id }],
+                          "Links: Monster #{homebrew.id}: Linkable is not available to this campaign", owner: quest, type: 'quest')
+          expect(quest.links.reload).to be_empty
+          expect(quest.encounters.reload).to be_empty
+        end
+
+        it "rejects what an encounter can't link" do
+          encounter = create(:campaign_encounter, quest: create(:campaign_quest, campaign: campaign))
+
+          expect_rejected([link_to(secret)], 'Links: "CampaignSecret" can\'t be linked to an encounter', owner: encounter,
+                                                                                                      type: 'encounter')
+          expect(encounter.links.reload).to be_empty
         end
 
         it 'rejects ids that are not ids' do
@@ -1101,13 +1340,23 @@ RSpec.describe CampaignSync do
         it 'clears a book reference from the NPCs using it, and removes its links' do
           reference = create(:campaign_reference, campaign: campaign)
           npc = create(:campaign_npc, campaign: campaign, stat_block_reference: reference)
-          quest = create(:campaign_quest, campaign: campaign)
-          quest.links.create!(linkable: reference, quantity: 2)
+          encounter = create(:campaign_encounter, quest: create(:campaign_quest, campaign: campaign))
+          encounter.links.create!(linkable: reference, quantity: 2)
 
           pulled = delete_and_pull('reference', reference)
 
           expect(pulled[:records]).to include('npcs' => [include(uuid: npc.uuid, statBlockReference: nil)],
-                                              'quests' => [include(uuid: quest.uuid, links: [])])
+                                              'encounters' => [include(uuid: encounter.uuid, links: [])])
+        end
+
+        it "deletes a quest's encounters with it, each leaving a tombstone" do
+          quest = create(:campaign_quest, campaign: campaign)
+          encounter = create(:campaign_encounter, quest: quest)
+
+          pulled = delete_and_pull('quest', quest)
+
+          expect(pulled[:tombstones]).to contain_exactly(include(type: 'CampaignQuest', uuid: quest.uuid),
+                                                         include(type: 'CampaignEncounter', uuid: encounter.uuid))
         end
       end
     end

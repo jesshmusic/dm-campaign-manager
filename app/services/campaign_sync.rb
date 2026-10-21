@@ -12,10 +12,10 @@
 #   record so the module can merge.
 # - create: { op: "create", type, uuid, attributes }, with a new UUID v4 made in Foundry
 # - delete: { op: "delete", type, uuid }, cleaned up as on the website
-# Attributes use the pull's camelCase keys (WRITABLE). Ids (factionId, a link's
-# linkableId) are DM Guru record ids; a session's or quest's links are its
-# whole list (see CampaignSync::Links). Each change saves on its own, all or
-# nothing.
+# Attributes use the pull's camelCase keys (WRITABLE). Ids (factionId, an
+# encounter's questId, a link's linkableId) are DM Guru record ids; a session's,
+# quest's or encounter's links are its whole list (see CampaignSync::Links).
+# Each change saves on its own, all or nothing.
 class CampaignSync
   # A change that can't be applied, and why
   class Rejected < StandardError
@@ -33,6 +33,7 @@ class CampaignSync
     'npcs' => :npcs,
     'fronts' => :fronts,
     'quests' => :quests,
+    'encounters' => :encounters,
     'secrets' => :secrets,
     'sessions' => :sessions,
     'references' => :book_references
@@ -50,7 +51,7 @@ class CampaignSync
     'faction' => { collection: :factions, fields: %w[name goal description notes] },
     'location' => {
       collection: :locations,
-      fields: %w[name description features notes parentId foundrySceneUuid foundrySceneName]
+      fields: %w[name description features notes parentId foundrySceneUuid foundrySceneName rollTables]
     },
     'npc' => {
       collection: :npcs,
@@ -64,7 +65,11 @@ class CampaignSync
     'quest' => {
       collection: :quests,
       fields: %w[name kind status act description reward notes levelMin levelMax parentId giverNpcId locationId
-                 foundryScenes rewardCurrency rewardXp milestone links]
+                 foundryScenes rewardCurrency rewardXp milestone handouts links]
+    },
+    'encounter' => {
+      collection: :encounters,
+      fields: %w[name kind description notes position questId foundryScenes rewardCurrency rewardXp links]
     },
     'secret' => { collection: :secrets, fields: %w[text revelation revealed revealedSessionUuid position] },
     'session' => {
@@ -81,6 +86,11 @@ class CampaignSync
   # A DM Guru record id, as the pull returns it (or as a number)
   ID_FORMAT = /\A\d{1,18}\z/
   MAX_CHANGES = 100
+
+  # "a quest", "an encounter"
+  def self.with_article(noun)
+    "#{noun.to_s.match?(/\A[aeiou]/i) ? 'an' : 'a'} #{noun}"
+  end
 
   # A record as the pull returns it
   def self.sync_json(record)
@@ -124,7 +134,7 @@ class CampaignSync
   def records_since(association, since)
     scope = @campaign.public_send(association).where('sync_version > ?', since).order(:sync_version)
     scope = scope.includes(:monster, :stat_block_reference) if association == :npcs
-    scope = scope.includes(links: :linkable) if %i[sessions quests].include?(association)
+    scope = scope.includes(links: :linkable) if %i[sessions quests encounters].include?(association)
     scope.map { |record| self.class.sync_json(record) }
   end
 

@@ -36,6 +36,12 @@ RSpec.describe 'Monsters', type: :request do
         expect(result_monsters[:count]).to eq(3)
       end
 
+      it 'returns no monsters with mine' do
+        get '/v1/monsters.json', params: { mine: true }
+
+        expect(response.parsed_body['results']).to eq([])
+      end
+
       it 'should return results based on search query' do
         get '/v1/monsters.json?search=orc'
         result_monsters = JSON.parse response.body, symbolize_names: true
@@ -73,6 +79,21 @@ RSpec.describe 'Monsters', type: :request do
         expect(result_monsters[:results].find { |monster|
           monster[:name] == 'Other UserProps Monster'
         }).to be_nil
+      end
+
+      it "returns only the DM's own monsters, from every edition, with mine" do
+        create :monster, user: dungeon_master, name: 'DM Monster 2024', edition: '2024'
+
+        get '/v1/monsters.json', params: { mine: true, edition: '2024' }
+
+        names = response.parsed_body['results'].pluck('name')
+        expect(names).to contain_exactly('DM Monster', 'DM Monster 2024')
+      end
+
+      it 'searches their own monsters with mine' do
+        get '/v1/monsters.json', params: { mine: true, search: 'DM' }
+
+        expect(response.parsed_body['results'].pluck('name')).to eq(['DM Monster'])
       end
     end
 

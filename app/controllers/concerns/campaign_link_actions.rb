@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-# Adding, changing (only the quantity) and removing the links of a session or
-# quest (see CampaignLink). Including controllers set @link_owner, the session
-# or quest, in a before_action.
+# Adding, changing (only the quantity) and removing the links of a session,
+# quest or encounter (see CampaignLink). Including controllers set
+# @link_owner, the session, quest or encounter, in a before_action.
 module CampaignLinkActions
   extend ActiveSupport::Concern
 

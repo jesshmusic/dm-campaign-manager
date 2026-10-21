@@ -8,9 +8,11 @@
 # Each has a local `id` that other records use to point at it: an NPC's
 # factionId, a session link's linkableId. They're created in dependency order
 # with those references pointed at the new records; places' and quests'
-# parents are set in a second pass, then the sessions' and quests' links. A
-# reference to a local id that wasn't sent becomes nil, and a link to one is
-# skipped. Links to monsters and items use DM Guru ids, checked like any link.
+# parents are set in a second pass, then the sessions', quests' and
+# encounters' links. A reference to a local id that wasn't sent becomes nil
+# (an encounter needs its quest, so one without is an error), and a link to
+# one is skipped. Links to monsters and items use DM Guru ids, checked like
+# any link.
 #
 # Anything not valid raises Invalid with every problem found, each naming the
 # collection and record ("Quests: Find the crypt: Name can't be blank").
@@ -30,10 +32,11 @@ class CampaignImporter
 
   # In the order they're created: each points only at the ones before it,
   # apart from parents and links, which are set once everything exists
-  COLLECTIONS = %w[factions references locations npcs fronts quests sessions secrets].freeze
+  COLLECTIONS = %w[factions references locations npcs fronts quests encounters sessions secrets].freeze
   LABELS = {
     'factions' => 'Factions', 'references' => 'Book references', 'locations' => 'Locations', 'npcs' => 'NPCs',
-    'fronts' => 'Fronts', 'quests' => 'Quests', 'sessions' => 'Sessions', 'secrets' => 'Secrets'
+    'fronts' => 'Fronts', 'quests' => 'Quests', 'encounters' => 'Encounters', 'sessions' => 'Sessions',
+    'secrets' => 'Secrets'
   }.freeze
 
   CAMPAIGN_ATTRIBUTES = CampaignCreator::ATTRIBUTES.flat_map { |attribute| attribute.is_a?(Hash) ? attribute.keys : attribute }.freeze
@@ -41,11 +44,12 @@ class CampaignImporter
   ATTRIBUTES = {
     'factions' => %i[name description goal notes],
     'references' => %i[name book category page challenge_rating foundry_uuid notes],
-    'locations' => %i[name description features notes foundry_scene_uuid foundry_scene_name],
+    'locations' => %i[name description features notes foundry_scene_uuid foundry_scene_name roll_tables],
     'npcs' => %i[name role description motive secret appearance voice notes foundry_actor_uuid foundry_actor_name],
     'fronts' => %i[name description goal doom stakes portents clock_segments clock_filled],
     'quests' => %i[name kind status description reward notes act position level_min level_max foundry_scenes reward_currency
-                   reward_xp milestone],
+                   reward_xp milestone handouts],
+    'encounters' => %i[name kind description notes position foundry_scenes reward_currency reward_xp],
     'sessions' => %i[number title scheduled_on status level character_notes strong_start scenes treasure treasure_currency
                      foundry_scenes log recap],
     'secrets' => %i[text revelation revealed position]
@@ -55,10 +59,11 @@ class CampaignImporter
     'npcs' => { faction: %w[factions factionId], stat_block_reference: %w[references statBlockReferenceId statBlockReference] },
     'fronts' => { npc: %w[npcs npcId], faction: %w[factions factionId] },
     'quests' => { giver_npc: %w[npcs giverNpcId], location: %w[locations locationId] },
+    'encounters' => { quest: %w[quests questId] },
     'secrets' => { revealed_session: %w[sessions revealedSessionId] }
   }.freeze
   NESTED = %w[locations quests].freeze
-  LINKS = { 'sessions' => CampaignSessionLink, 'quests' => CampaignQuestLink }.freeze
+  LINKS = { 'sessions' => CampaignSessionLink, 'quests' => CampaignQuestLink, 'encounters' => CampaignEncounterLink }.freeze
   # Where a link to a campaign record finds its local id
   LINKED_COLLECTIONS = {
     'CampaignSecret' => 'secrets', 'CampaignLocation' => 'locations', 'CampaignNpc' => 'npcs',
@@ -150,8 +155,9 @@ class CampaignImporter
     return error(collection, payload, index, 'Links must be a list of links') unless links.is_a?(Array) && links.all?(Hash)
     return error(collection, payload, index, "Links: no more than #{MAX_LINKS}") if links.size > MAX_LINKS
 
+    owner = CampaignSync.with_article(collection.singularize)
     (links.pluck('linkableType').uniq - LINKS[collection]::LINKABLE_TYPES).each do |type|
-      problem = type.present? ? "#{type.to_s.truncate(40)} can't be linked to a #{collection.singularize}" : 'Links need a linkableType'
+      problem = type.present? ? "#{type.to_s.truncate(40)} can't be linked to #{owner}" : 'Links need a linkableType'
       error(collection, payload, index, problem)
     end
   end

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# A link from a session or quest to a record from its campaign, or to a
+# A link from a session, quest or encounter to a record from its campaign, or to a
 # monster or item from the compendium, with how many (for treasure and
 # rewards). Links are synced as part of what owns them, so changing one bumps
 # its owner's sync version (unless the owner itself is being deleted).
@@ -42,6 +42,8 @@ module CampaignLink
       name: linkable.respond_to?(:name) ? linkable.name : linkable.try(:text),
       slug: linkable.try(:slug),
       detail: detail,
+      # A monster's or book reference's CR ("1/4"), for encounter difficulty; nil for anything else
+      challengeRating: linkable.try(:challenge_rating).presence,
       position: position,
       quantity: quantity
     }

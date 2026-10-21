@@ -13,6 +13,7 @@ export const compendiumResult = (entry: CompendiumEntry): CompendiumResult => ({
   detail: [entry.challengeRating && `CR ${entry.challengeRating}`, entry.detail, entry.bookName]
     .filter(Boolean)
     .join(' · '),
+  challengeRating: entry.challengeRating,
   entry,
 });
 

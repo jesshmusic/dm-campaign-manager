@@ -1,13 +1,16 @@
 import { CompendiumEntry, LinkableType, SessionLink } from './types';
 
 /**
- * A session's or quest's links while a planner modal is open. Nothing is
+ * A session's, quest's or encounter's links while a planner modal is open. Nothing is
  * saved until Save: picks and removals change the draft, and commitLinks
  * then applies the difference.
  */
 
 // A link the DM picked in the modal, not saved yet
-export type NewLink = Pick<SessionLink, 'linkableType' | 'linkableId' | 'name' | 'detail'> & {
+export type NewLink = Pick<
+  SessionLink,
+  'linkableType' | 'linkableId' | 'name' | 'detail' | 'challengeRating'
+> & {
   // A compendium entry, which becomes a book reference on Save
   entry?: CompendiumEntry;
 };

@@ -28,6 +28,28 @@ RSpec.describe 'Admin::V1::CompendiumEntriesController', type: :request do
       expect(json['results'].pluck('name')).to eq(['Zombie Wave'])
     end
 
+    it "includes the DM's homebrew, labelled with its pack's title" do
+      create(:compendium_entry, user: user, name: 'Zombie')
+      create(:compendium_entry, :homebrew, user: user, name: 'Zombie King', challenge_rating: '5')
+
+      get '/v1/compendium', params: { search: 'zom', categories: 'monster' }
+
+      expect(json['results']).to contain_exactly(
+        include('name' => 'Zombie', 'book' => 'mm', 'homebrew' => false),
+        include('name' => 'Zombie King', 'book' => 'other', 'bookName' => 'Homebrew: My Monsters', 'challengeRating' => '5',
+                'homebrew' => true)
+      )
+    end
+
+    it "leaves out a campaign's excluded homebrew" do
+      campaign = create(:campaign, user: user, excluded_compendium_packs: ['world.my-monsters'])
+      create(:compendium_entry, :homebrew, user: user, name: 'Zombie King')
+
+      get '/v1/compendium', params: { search: 'zom', campaign: campaign.slug }
+
+      expect(json['results']).to eq([])
+    end
+
     it "leaves out a campaign's excluded compendiums" do
       campaign = create(:campaign, user: user, excluded_compendium_packs: ['dnd-monster-manual.actors'])
       create(:compendium_entry, user: user, name: 'Zombie')
@@ -73,7 +95,16 @@ RSpec.describe 'Admin::V1::CompendiumEntriesController', type: :request do
       get '/v1/compendium/packs'
 
       expect(json).to eq([{ 'pack' => 'dnd-monster-manual.actors', 'book' => 'mm', 'bookName' => 'Monster Manual',
-                            'label' => 'Monsters', 'count' => 1 }])
+                            'label' => 'Monsters', 'count' => 1, 'homebrew' => false }])
+    end
+
+    it 'lists homebrew packs too, by their titles' do
+      create(:compendium_entry, :homebrew, user: user)
+
+      get '/v1/compendium/packs'
+
+      expect(json).to eq([{ 'pack' => 'world.my-monsters', 'book' => 'other', 'bookName' => 'Homebrew', 'label' => 'My Monsters',
+                            'count' => 1, 'homebrew' => true }])
     end
   end
 

@@ -4,6 +4,7 @@ import {
   linkOpsFor,
   parseQuantities,
   rebaseLinks,
+  referenceMaker,
   usePlanSave,
 } from '../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/planDraft';
 import {
@@ -144,6 +145,51 @@ describe('linkOpsFor', () => {
     expect(api.updateQuestLink).toHaveBeenCalledWith('zombie-siege', 'q1', 'ql4', {
       quantity: 4,
     });
+  });
+
+  it("saves an encounter's links", async () => {
+    const api = makeApi();
+    const ops = linkOpsFor(api, campaign, { kind: 'encounters', questId: 'q1', id: 'e1' });
+
+    await ops.add('Monster', '12', 4);
+    await ops.remove('el1');
+    await ops.setQuantity('el2', 2);
+
+    expect(api.addEncounterLink).toHaveBeenCalledWith(
+      'zombie-siege',
+      'q1',
+      'e1',
+      'Monster',
+      '12',
+      4,
+    );
+    expect(api.removeEncounterLink).toHaveBeenCalledWith('zombie-siege', 'q1', 'e1', 'el1');
+    expect(api.updateEncounterLink).toHaveBeenCalledWith('zombie-siege', 'q1', 'e1', 'el2', {
+      quantity: 2,
+    });
+  });
+
+  it('uses the book references it is given, so a Save makes each one once', async () => {
+    const api = makeApi({ createChild: jest.fn().mockResolvedValue({ id: 'r9' }) });
+    const reference = referenceMaker(api, campaign);
+    const quest = linkOpsFor(api, campaign, { kind: 'quests', id: 'q1' }, reference);
+    const encounter = linkOpsFor(
+      api,
+      campaign,
+      { kind: 'encounters', questId: 'q1', id: 'e1' },
+      reference,
+    );
+
+    const [first, second] = await Promise.all([
+      quest.reference(sampleCompendiumEntry()),
+      encounter.reference(sampleCompendiumEntry()),
+    ]);
+
+    expect(first).toEqual({ id: 'r9' });
+    expect(second).toEqual({ id: 'r9' });
+    expect(api.createChild).toHaveBeenCalledTimes(1);
+    await encounter.reference(sampleCompendiumEntry({ foundryUuid: 'Compendium.x.y.Actor.other' }));
+    expect(api.createChild).toHaveBeenCalledTimes(2);
   });
 
   it('makes a book reference for a compendium entry only when the campaign has none', async () => {

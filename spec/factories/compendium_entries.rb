@@ -7,8 +7,10 @@
 #  challenge_rating :string
 #  detail           :string
 #  foundry_uuid     :string           not null
+#  homebrew         :boolean          default(FALSE), not null
 #  name             :string           not null
 #  pack             :string           not null
+#  pack_label       :string
 #  pack_version     :string
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
@@ -34,5 +36,12 @@ FactoryBot.define do
     challenge_rating { '1' }
     detail { 'Undead' }
     foundry_uuid { "Compendium.#{pack}.Actor.#{SecureRandom.alphanumeric(16)}" }
+
+    # From one of the DM's own compendiums
+    trait :homebrew do
+      pack { 'world.my-monsters' }
+      pack_label { 'My Monsters' }
+      homebrew { true }
+    end
   end
 end

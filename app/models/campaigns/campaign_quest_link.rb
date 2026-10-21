@@ -27,15 +27,24 @@
 #  fk_rails_...  (quest_id => campaign_quests.id) ON DELETE => cascade
 #
 
-# Something a quest involves: an NPC from the campaign, a monster for its
-# encounters (DM Guru's SRD, or a book reference to a monster), or a reward
-# item (DM Guru's SRD, or any other book reference) with how many.
+# Something a quest involves: an NPC from the campaign, or a reward item (DM
+# Guru's SRD, or a book reference that isn't a monster) with how many.
+# Monsters go in the quest's encounters (CampaignEncounterLink).
 class CampaignQuestLink < ApplicationRecord
   include CampaignLink
 
   CAMPAIGN_TYPES = %w[CampaignNpc CampaignReference].freeze
-  LINKABLE_TYPES = (CAMPAIGN_TYPES + COMPENDIUM_TYPES).freeze
+  LINKABLE_TYPES = (CAMPAIGN_TYPES + %w[Item]).freeze
 
   belongs_to :quest, class_name: 'CampaignQuest', inverse_of: :links
   linked_from :quest
+  validate :not_a_monster
+
+  private
+
+  def not_a_monster
+    return unless linkable_type == 'CampaignReference' && linkable.is_a?(CampaignReference) && linkable.category == 'monster'
+
+    errors.add(:linkable, "is a monster: monsters go in the quest's encounters")
+  end
 end

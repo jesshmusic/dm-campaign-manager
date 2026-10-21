@@ -1,9 +1,27 @@
+import styled from 'styled-components';
 import EntitySection from '../components/EntitySection';
+import FoundryDocumentList from '../components/FoundryDocumentList';
 import ScenePicker from '../components/ScenePicker';
 import { FieldConfig } from '../components/EntityForm';
 import { CampaignState } from '../useCampaign';
 import { Campaign, Location } from '../types';
 import { List, Meta } from '../Campaigns.styles';
+
+export const ROLL_TABLES_NOTE = 'Add roll tables in Foundry: drag a roll table onto the place.';
+
+const RollTables = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+
+  h4 {
+    font-size: ${({ theme }) => theme.fontSizes.base};
+  }
+
+  p {
+    margin: 0;
+  }
+`;
 
 type PlacesTabProps = {
   campaign: Campaign;
@@ -98,6 +116,24 @@ const PlacesTab = ({ campaign, state }: PlacesTabProps) => {
               ))}
             </List>
           )}
+          <RollTables role="group" aria-label={`Random encounters at ${location.name}`}>
+            <h4>Random encounters</h4>
+            <FoundryDocumentList
+              label={`Roll tables for ${location.name}`}
+              documents={location.rollTables}
+              emptyText="No roll tables yet."
+              onRemove={(table) =>
+                saveChild(
+                  'locations',
+                  {
+                    roll_tables: location.rollTables.filter((other) => other.uuid !== table.uuid),
+                  },
+                  location.id,
+                )
+              }
+            />
+            <Meta>{ROLL_TABLES_NOTE}</Meta>
+          </RollTables>
         </>
       )}
     />

@@ -14,13 +14,13 @@ module Admin
 
       # GET /v1/monsters
       # GET /v1/monsters.json
+      # With mine=true, only the signed-in user's own monsters, from every
+      # edition (the campaign planner offers a DM's homebrew this way)
       def index
         authorize Monster
-        @monsters = if params[:search].present?
-                      Monster.for_edition(current_edition).search_for(params[:search]).order(monster_type: :asc, name: :asc)
-                    else
-                      Monster.for_edition(current_edition).order(monster_type: :asc, name: :asc)
-                    end
+        @monsters = params[:mine].present? ? Monster.where(user_id: @user&.id || 0) : Monster.for_edition(current_edition)
+        @monsters = @monsters.search_for(params[:search]) if params[:search].present?
+        @monsters = @monsters.order(monster_type: :asc, name: :asc)
         @monsters = if !@user
                       @monsters.where(user_id: nil)
                     elsif @user.admin? && params[:refs].blank?

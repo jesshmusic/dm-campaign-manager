@@ -6,7 +6,14 @@ import {
   Campaign,
   PlannerSession,
 } from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/types';
-import { FakeState, makeState, plannerSession, questLink, sampleCampaign } from '../fixtures';
+import {
+  encounter,
+  FakeState,
+  makeState,
+  plannerSession,
+  questLink,
+  sampleCampaign,
+} from '../fixtures';
 
 const renderRun = (
   campaign: Campaign = sampleCampaign(),
@@ -203,6 +210,58 @@ describe('RunView', () => {
         .getByRole('combobox', { name: 'Status of Find the lost child' })
         .closest('li') as HTMLElement;
       expect(within(lostChild).queryByText(/Reward:/)).not.toBeInTheDocument();
+    });
+
+    it("shows each open quest's encounters, a fight's difficulty, and its handouts", () => {
+      const campaign = sampleCampaign();
+      campaign.quests[0] = {
+        ...campaign.quests[0],
+        handouts: [
+          { uuid: 'JournalEntry.5wVcsNPOg2RjRbFx', name: 'A letter' },
+          { uuid: 'JournalEntry.abcdefghijklmnop', name: 'A map' },
+        ],
+      };
+      campaign.encounters = [
+        encounter({ id: 'e2', name: 'Riddle door', kind: 'puzzle', position: 1 }),
+        encounter({
+          id: 'e1',
+          name: 'Ambush',
+          rewardCurrency: { sp: 30 },
+          links: [
+            questLink({
+              linkableType: 'Monster',
+              linkableId: '12',
+              name: 'Ghoul',
+              challengeRating: '1',
+              quantity: 3,
+            }),
+            questLink({
+              linkableType: 'CampaignReference',
+              linkableId: 'r1',
+              name: 'Cult Fanatic',
+            }),
+          ],
+        }),
+      ];
+      renderRun(campaign);
+
+      const stopTheCult = screen
+        .getByRole('combobox', { name: 'Status of Stop the cult' })
+        .closest('li') as HTMLElement;
+      expect(within(stopTheCult).getByText('Handouts: A letter, A map')).toBeInTheDocument();
+      const encounters = within(stopTheCult).getByRole('list', {
+        name: 'Encounters for Stop the cult',
+      });
+      const [ambush, door] = within(encounters).getAllByRole('listitem');
+      expect(ambush).toHaveTextContent('Combat: Ambush — Ghoul ×3, Cult Fanatic');
+      expect(
+        within(ambush).getByText(
+          'High: 1,050 XP (budget for 4 level-3 characters: Low 600 · Moderate 900 · High 1,600)',
+        ),
+      ).toBeInTheDocument();
+      expect(within(ambush).getByText('Reward: 30 sp')).toBeInTheDocument();
+      expect(door).toHaveTextContent('Puzzle: Riddle door');
+      expect(door).not.toHaveTextContent('XP');
     });
   });
 

@@ -101,6 +101,43 @@ RSpec.describe 'Admin::V1::Campaigns::LocationsController', type: :request do
       expect(city.reload.foundry_scene_uuid).to be_nil
     end
 
+    describe 'roll tables' do
+      let(:tables) do
+        [{ 'uuid' => 'RollTable.5wVcsNPOg2RjRbFx', 'name' => 'City encounters' },
+         { 'uuid' => 'Compendium.dnd5e.tables24.RollTable.abcdefghijklmnop', 'name' => 'Trinkets' }]
+      end
+
+      before { city.update!(roll_tables: tables) }
+
+      it 'shows the roll tables added in Foundry' do
+        get "#{locations_path}/#{city.id}"
+
+        expect(json['rollTables']).to eq(tables)
+      end
+
+      it 'removes one' do
+        patch "#{locations_path}/#{city.id}", params: { location: { roll_tables: [tables.first] } }, as: :json
+
+        expect(response).to have_http_status(:success)
+        expect(city.reload.roll_tables).to eq([tables.first])
+      end
+
+      it "rejects a table that isn't a roll table" do
+        patch "#{locations_path}/#{city.id}", params: { location: { roll_tables: [{ uuid: 'Actor.5wVcsNPOg2RjRbFx', name: 'Vex' }] } },
+                                              as: :json
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(json['errors']).to include(/Roll tables must be up to 10 Foundry roll tables/)
+        expect(city.reload.roll_tables).to eq(tables)
+      end
+
+      it 'keeps them when the website edits the location' do
+        patch "#{locations_path}/#{city.id}", params: { location: { description: 'City of Splendors' } }, as: :json
+
+        expect(city.reload.roll_tables).to eq(tables)
+      end
+    end
+
     it 'shows the linked Foundry scene' do
       city.update!(foundry_scene_uuid: 'Scene.5wVcsNPOg2RjRbFx', foundry_scene_name: 'Waterdeep Harbor')
 
