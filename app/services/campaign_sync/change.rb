@@ -9,7 +9,7 @@ class CampaignSync
   class Change
     OPS = { 'update' => :update_record, 'create' => :create_record, 'delete' => :delete_record }.freeze
     # Pointers to the campaign's other records, by DM Guru id (null clears them)
-    ID_FIELDS = %w[parentId factionId npcId giverNpcId locationId statBlockReferenceId].freeze
+    ID_FIELDS = %w[parentId factionId npcId giverNpcId locationId statBlockReferenceId questId].freeze
     UUID_FORMAT = /\A\h{8}-\h{4}-\h{4}-\h{4}-\h{12}\z/
     UUID_V4_FORMAT = /\A\h{8}-\h{4}-4\h{3}-[89ab]\h{3}-\h{12}\z/i
 
@@ -97,11 +97,15 @@ class CampaignSync
       raise Rejected, 'attributes must be an object' unless payload.is_a?(Hash)
 
       unknown = payload.keys - @config[:fields]
-      raise Rejected, "Can't set #{unknown.first(5).map { |key| key.truncate(40) }.join(', ')} on a #{@type}" if unknown.any?
+      raise Rejected, "Can't set #{unknown.first(5).map { |key| key.truncate(40) }.join(', ')} on #{CampaignSync.with_article(@type)}" if unknown.any?
 
       assign!(record, payload.except('links'))
       save_record!(record, payload.keys.map(&:underscore))
-      Links.new(record, @type).replace!(payload['links']) if payload.key?('links')
+      return unless payload.key?('links')
+
+      links = payload['links']
+      links = QuestMonsters.new(@campaign, record).move!(links) if @type == 'quest'
+      Links.new(record, @type).replace!(links)
     end
 
     def assign!(record, payload)

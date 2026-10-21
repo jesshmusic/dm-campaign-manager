@@ -128,6 +128,52 @@ RSpec.describe 'Admin::V1::Campaigns::QuestsController', type: :request do
       end
     end
 
+    describe 'handouts' do
+      let(:handouts) do
+        [{ 'uuid' => 'JournalEntry.5wVcsNPOg2RjRbFx', 'name' => 'A letter' },
+         { 'uuid' => 'JournalEntry.5wVcsNPOg2RjRbFx.JournalEntryPage.abcdefghijklmnop', 'name' => 'The map' }]
+      end
+      let(:quest) { create(:campaign_quest, campaign: campaign, handouts: handouts) }
+
+      it 'shows the handouts added in Foundry' do
+        get "#{quests_path}/#{quest.id}"
+
+        expect(json['handouts']).to eq(handouts)
+      end
+
+      it 'removes one, keeping the order of the rest' do
+        patch "#{quests_path}/#{quest.id}", params: { quest: { handouts: [handouts.last] } }, as: :json
+
+        expect(response).to have_http_status(:success)
+        expect(quest.reload.handouts).to eq([handouts.last])
+      end
+
+      it 'removes them all' do
+        patch "#{quests_path}/#{quest.id}", params: { quest: { handouts: [] } }, as: :json
+
+        expect(response).to have_http_status(:success)
+        expect(quest.reload.handouts).to eq([])
+      end
+
+      it "rejects a handout that isn't a journal entry or page" do
+        patch "#{quests_path}/#{quest.id}", params: { quest: { handouts: [{ uuid: 'Scene.5wVcsNPOg2RjRbFx', name: 'Pass' }] } },
+                                            as: :json
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(json['errors']).to include(/Handouts must be up to 20 Foundry journal entries or pages/)
+        expect(quest.reload.handouts).to eq(handouts)
+      end
+    end
+
+    it 'deletes its encounters with it, each leaving a tombstone' do
+      quest = create(:campaign_quest, campaign: campaign)
+      encounter = create(:campaign_encounter, quest: quest)
+
+      expect { delete "#{quests_path}/#{quest.id}" }.to change(CampaignEncounter, :count).by(-1)
+      expect(response).to have_http_status(:no_content)
+      expect(CampaignTombstone.where(record_type: 'CampaignEncounter').pluck(:record_uuid)).to eq([encounter.uuid])
+    end
+
     it 'rejects a quest as its own parent' do
       quest = create(:campaign_quest, campaign: campaign)
 

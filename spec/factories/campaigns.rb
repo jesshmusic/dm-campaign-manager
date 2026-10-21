@@ -101,4 +101,15 @@ FactoryBot.define do
     association :quest, factory: :campaign_quest
     linkable { association :campaign_npc, campaign: quest.campaign }
   end
+
+  factory :campaign_encounter do
+    association :quest, factory: :campaign_quest
+    campaign { quest.campaign }
+    sequence(:name) { |n| "Encounter #{n}" }
+  end
+
+  factory :campaign_encounter_link do
+    association :encounter, factory: :campaign_encounter
+    linkable { association :monster, user: nil }
+  end
 end

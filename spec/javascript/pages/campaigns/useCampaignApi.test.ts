@@ -186,6 +186,69 @@ describe('useCampaignApi', () => {
     });
   });
 
+  describe('encounters', () => {
+    it('adds an encounter to a quest with a POST', async () => {
+      mockFetch.mockImplementation(() => jsonResponse({ id: 'e1', name: 'Ambush' }, 201));
+
+      const encounter = await api().createEncounter('zombie-siege', 'q1', {
+        name: 'Ambush',
+        position: 0,
+      });
+
+      expect(encounter).toEqual({ id: 'e1', name: 'Ambush' });
+      expect(lastCall()[0]).toBe('/v1/campaigns/zombie-siege/quests/q1/encounters');
+      expect(lastCall()[1].method).toBe('POST');
+      expect(lastBody()).toEqual({ encounter: { name: 'Ambush', position: 0 } });
+    });
+
+    it('changes an encounter with a PATCH', async () => {
+      await api().updateEncounter('zombie-siege', 'q1', 'e1', { kind: 'social' });
+
+      expect(lastCall()[0]).toBe('/v1/campaigns/zombie-siege/quests/q1/encounters/e1');
+      expect(lastCall()[1].method).toBe('PATCH');
+      expect(lastBody()).toEqual({ encounter: { kind: 'social' } });
+    });
+
+    it('deletes an encounter', async () => {
+      mockFetch.mockImplementation(() => jsonResponse(undefined, 204));
+
+      await expect(api().deleteEncounter('zombie-siege', 'q1', 'e1')).resolves.toBeUndefined();
+
+      expect(lastCall()[0]).toBe('/v1/campaigns/zombie-siege/quests/q1/encounters/e1');
+      expect(lastCall()[1].method).toBe('DELETE');
+    });
+
+    it('links a monster to an encounter with how many', async () => {
+      await api().addEncounterLink('zombie-siege', 'q1', 'e1', 'Monster', '12', 4);
+
+      expect(lastCall()[0]).toBe('/v1/campaigns/zombie-siege/quests/q1/encounters/e1/links');
+      expect(lastCall()[1].method).toBe('POST');
+      expect(lastBody()).toEqual({
+        link: { linkable_type: 'Monster', linkable_id: '12', quantity: 4 },
+      });
+    });
+
+    it('leaves out a count of one', async () => {
+      await api().addEncounterLink('zombie-siege', 'q1', 'e1', 'CampaignNpc', 'n1', 1);
+
+      expect(lastBody()).toEqual({ link: { linkable_type: 'CampaignNpc', linkable_id: 'n1' } });
+    });
+
+    it("changes an encounter link's quantity, and removes one", async () => {
+      await api().updateEncounterLink('zombie-siege', 'q1', 'e1', 'el1', { quantity: 2 });
+
+      expect(lastCall()[0]).toBe('/v1/campaigns/zombie-siege/quests/q1/encounters/e1/links/el1');
+      expect(lastCall()[1].method).toBe('PATCH');
+      expect(lastBody()).toEqual({ link: { quantity: 2 } });
+
+      mockFetch.mockImplementation(() => jsonResponse(undefined, 204));
+      await api().removeEncounterLink('zombie-siege', 'q1', 'e1', 'el1');
+
+      expect(lastCall()[0]).toBe('/v1/campaigns/zombie-siege/quests/q1/encounters/e1/links/el1');
+      expect(lastCall()[1].method).toBe('DELETE');
+    });
+  });
+
   describe('Foundry scenes', () => {
     it("lists the DM's scenes", async () => {
       const scene = {
@@ -220,7 +283,30 @@ describe('useCampaignApi', () => {
       const results = await api().searchMonsters('ghoul king', '2024');
 
       expect(lastCall()[0]).toBe('/v1/monsters.json?search=ghoul+king&edition=2024');
-      expect(results).toEqual([{ id: '12', name: 'Ghoul', slug: 'ghoul', detail: 'CR 1' }]);
+      expect(results).toEqual([
+        { id: '12', name: 'Ghoul', slug: 'ghoul', detail: 'CR 1', challengeRating: '1' },
+      ]);
+    });
+
+    it("searches the DM's own monsters, from every edition", async () => {
+      mockFetch.mockImplementation(() =>
+        jsonResponse({
+          results: [{ value: 77, name: 'Zombie Lord', slug: 'zombie-lord', challengeRating: '5' }],
+        }),
+      );
+
+      const results = await api().searchOwnMonsters('zombie');
+
+      expect(lastCall()[0]).toBe('/v1/monsters.json?search=zombie&mine=true');
+      expect(results).toEqual([
+        {
+          id: '77',
+          name: 'Zombie Lord',
+          slug: 'zombie-lord',
+          detail: 'CR 5 · Your monster',
+          challengeRating: '5',
+        },
+      ]);
     });
 
     it('searches items and describes them by rarity, then category', async () => {

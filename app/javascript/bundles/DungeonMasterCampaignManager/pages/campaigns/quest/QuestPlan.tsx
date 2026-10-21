@@ -2,7 +2,6 @@ import { useState } from 'react';
 import styled, { css } from 'styled-components';
 import { COIN_ERROR, CoinDrafts, coinDrafts, parseCoins } from '../coins';
 import CompendiumLinks, {
-  MONSTER_CATEGORIES,
   REWARD_CATEGORIES,
   TREASURE_CATEGORIES,
 } from '../components/CompendiumLinks';
@@ -13,6 +12,7 @@ import {
   parseWholeNumber,
   textOrNull,
 } from '../components/DraftFields';
+import FoundryDocumentList from '../components/FoundryDocumentList';
 import LinkPicker from '../components/LinkPicker';
 import PlannerModal from '../components/PlannerModal';
 import ScenePicker from '../components/ScenePicker';
@@ -31,15 +31,47 @@ import {
   parseQuantities,
   QUANTITY_ERROR,
   rebaseLinks,
+  referenceMaker,
   usePlanSave,
 } from '../planDraft';
 import { CampaignState } from '../useCampaign';
-import { Attributes, Campaign, FoundryScene, LinkableType, NPC_ROLE_LABELS, Quest } from '../types';
-import { AddHeading, Badge, Card, CheckboxField, Meta } from '../Campaigns.styles';
+import {
+  Attributes,
+  Campaign,
+  FoundryDocument,
+  FoundryScene,
+  LinkableType,
+  NPC_ROLE_LABELS,
+  Quest,
+} from '../types';
+import {
+  AddHeading,
+  Badge,
+  ButtonRow,
+  Card,
+  CheckboxField,
+  EmptyState,
+  HelperButton,
+  Meta,
+} from '../Campaigns.styles';
+import EncounterCard from './EncounterCard';
+import {
+  draftForEncounter,
+  EncounterDraft,
+  encountersChanged,
+  moveEncounter,
+  newEncounterDraft,
+  planEncounters,
+  questEncounters,
+  saveEncounters,
+} from './encounterDraft';
 import { QUEST_STATUS_LABELS, QUEST_STATUS_TONES, questDetails } from './questDetails';
+import { MAX_XP, XP_ERROR } from './questLinks';
 
-export const MAX_XP = 1_000_000;
-export const XP_ERROR = 'XP must be a whole number from 0 to 1,000,000.';
+export { MAX_XP, XP_ERROR };
+
+export const HANDOUTS_NOTE =
+  "Add handouts in Foundry: drag journal entries or pages onto the quest's Handouts.";
 
 const PlanGrid = styled.div`
   display: grid;
@@ -87,13 +119,20 @@ const ItemsHeading = styled(AddHeading)`
   margin-top: 0;
 `;
 
-// What the modal edits besides the links, as typed
+const EncounterList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+`;
+
+// What the modal edits on the quest itself besides its links, as typed
 type QuestDraft = {
   foundryScenes: FoundryScene[];
   coins: CoinDrafts;
   xp: string;
   milestone: boolean;
   reward: string;
+  handouts: FoundryDocument[];
 };
 
 const draftFor = (quest: Quest): QuestDraft => ({
@@ -102,6 +141,7 @@ const draftFor = (quest: Quest): QuestDraft => ({
   xp: quest.rewardXp === null ? '' : String(quest.rewardXp),
   milestone: quest.milestone,
   reward: quest.reward ?? '',
+  handouts: quest.handouts,
 });
 
 // The quest attributes a draft saves, or why it can't be saved
@@ -117,6 +157,7 @@ const attributesFor = (draft: QuestDraft): { attributes: Attributes } | { error:
       reward_xp: xp,
       milestone: draft.milestone,
       reward: textOrNull(draft.reward),
+      handouts: draft.handouts,
     },
   };
 };
@@ -135,15 +176,21 @@ type QuestPlanProps = {
 
 /**
  * Plans one quest in a modal, like session prep: its maps (Foundry scenes),
- * the NPCs involved, the monsters for its encounters, and its reward (items
- * with how many, coins, XP and/or a milestone, and notes). Nothing is saved
- * until Save; Cancel throws the changes away.
+ * the NPCs involved, its handouts (added in Foundry), its encounters (each
+ * with its monsters, maps and reward) and the quest's reward (items with how
+ * many, coins, XP and/or a milestone, and notes). Nothing is saved until
+ * Save; Cancel throws the changes away.
  */
 const QuestPlan = ({ campaign, quest, state, onClose }: QuestPlanProps) => {
   const { api, reload } = state;
   const [draft, setDraft] = useState(() => draftFor(quest));
   const [links, setLinks] = useState<DraftLink[]>(() => quest.links);
+  const [encounters, setEncounters] = useState<EncounterDraft[]>(() =>
+    questEncounters(quest, campaign).map(draftForEncounter),
+  );
   const { saving, error, setError, save } = usePlanSave(reload, onClose);
+
+  const savedEncounters = questEncounters(quest, campaign);
 
   const change = (changes: Partial<QuestDraft>) =>
     setDraft((current) => ({ ...current, ...changes }));
@@ -154,7 +201,8 @@ const QuestPlan = ({ campaign, quest, state, onClose }: QuestPlanProps) => {
   const dirty =
     JSON.stringify(draft) !== JSON.stringify(draftFor(quest)) ||
     !rebased ||
-    linksChanged(quest.links, rebased);
+    linksChanged(quest.links, rebased) ||
+    encountersChanged(encounters, savedEncounters, campaign.references);
 
   const npcOptions = campaign.npcs
     .filter((npc) => npc.id !== quest.giverNpcId)
@@ -174,6 +222,20 @@ const QuestPlan = ({ campaign, quest, state, onClose }: QuestPlanProps) => {
   const setQuantity = (link: DraftLink, text: string) =>
     setLinks((current) => setDraftQuantity(current, link.id, text));
 
+  const updateEncounter = (key: string, update: (encounter: EncounterDraft) => EncounterDraft) =>
+    setEncounters((current) =>
+      current.map((encounter) => (encounter.key === key ? update(encounter) : encounter)),
+    );
+  const addEncounter = () =>
+    setEncounters((current) => [...current, newEncounterDraft(current.length + 1)]);
+  const removeEncounter = (key: string) =>
+    setEncounters((current) => current.filter((encounter) => encounter.key !== key));
+  const move = (index: number, offset: -1 | 1) =>
+    setEncounters((current) => moveEncounter(current, index, offset));
+  // A Save that fails after making an encounter changes it the next time, rather than making another
+  const created = (key: string, id: string) =>
+    updateEncounter(key, (encounter) => ({ ...encounter, savedId: id }));
+
   const onSave = async () => {
     if (!dirty) {
       onClose();
@@ -188,16 +250,31 @@ const QuestPlan = ({ campaign, quest, state, onClose }: QuestPlanProps) => {
       setError(QUANTITY_ERROR);
       return;
     }
+    const planned = planEncounters(encounters, savedEncounters, campaign.references);
+    if ('error' in planned) {
+      setError(planned.error);
+      return;
+    }
     await save(async () => {
       const changed = changedAttributes(savedAttributes(quest), parsed.attributes);
       if (Object.keys(changed).length > 0) {
         await api.updateChild(campaign.slug, 'quests', quest.id, changed);
       }
+      const reference = referenceMaker(api, campaign);
       await commitLinks(
         quest.links,
         rebased,
-        linkOpsFor(api, campaign, { kind: 'quests', id: quest.id }),
+        linkOpsFor(api, campaign, { kind: 'quests', id: quest.id }, reference),
       );
+      await saveEncounters({
+        api,
+        campaign,
+        quest,
+        saved: savedEncounters,
+        plans: planned.plans,
+        reference,
+        onCreated: created,
+      });
     });
   };
 
@@ -232,7 +309,7 @@ const QuestPlan = ({ campaign, quest, state, onClose }: QuestPlanProps) => {
       <PlanGrid>
         <Part $wide>
           <h3>Maps</h3>
-          <Meta>The Foundry scenes for this quest&apos;s places and encounters.</Meta>
+          <Meta>The Foundry scenes for this quest&apos;s places. Encounters have their own.</Meta>
           <ScenePicker
             label={`Maps for ${quest.name}`}
             chosen={draft.foundryScenes}
@@ -263,19 +340,49 @@ const QuestPlan = ({ campaign, quest, state, onClose }: QuestPlanProps) => {
         </Part>
 
         <Part>
-          <h3>Monsters</h3>
-          <Meta>Creatures for this quest&apos;s encounters, ready to drop onto a map.</Meta>
-          <CompendiumLinks
-            campaign={campaign}
-            api={api}
-            links={links}
-            linkableType="Monster"
-            categories={MONSTER_CATEGORIES}
-            searchCategories={['monster']}
-            labels={{ empty: 'No monsters yet.', search: 'Search monsters' }}
-            onAdd={addLink}
-            onRemove={removeLink}
+          <h3>Handouts</h3>
+          <Meta>{HANDOUTS_NOTE}</Meta>
+          <FoundryDocumentList
+            label={`Handouts for ${quest.name}`}
+            documents={draft.handouts}
+            emptyText="No handouts yet."
+            onRemove={(handout) =>
+              change({ handouts: draft.handouts.filter((other) => other.uuid !== handout.uuid) })
+            }
           />
+        </Part>
+
+        <Part $wide>
+          <h3>Encounters</h3>
+          <Meta>
+            The fights, talks, puzzles and traps along the way, in order, each with its monsters,
+            maps and reward.
+          </Meta>
+          {encounters.length === 0 ? (
+            <EmptyState>No encounters yet.</EmptyState>
+          ) : (
+            <EncounterList>
+              {encounters.map((encounter, index) => (
+                <EncounterCard
+                  key={encounter.key}
+                  campaign={campaign}
+                  api={api}
+                  quest={quest}
+                  draft={encounter}
+                  index={index}
+                  count={encounters.length}
+                  onChange={(update) => updateEncounter(encounter.key, update)}
+                  onMove={(offset) => move(index, offset)}
+                  onRemove={() => removeEncounter(encounter.key)}
+                />
+              ))}
+            </EncounterList>
+          )}
+          <ButtonRow>
+            <HelperButton type="button" onClick={addEncounter}>
+              Add encounter
+            </HelperButton>
+          </ButtonRow>
         </Part>
 
         <Part $wide>

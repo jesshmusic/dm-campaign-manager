@@ -49,6 +49,7 @@ class CampaignNpc < ApplicationRecord
 
   linkable_from_sessions
   linkable_from_quests
+  linkable_from_encounters
 
   ROLES = %w[bbeg villain lieutenant ally patron neutral].freeze
   # A world actor ("Actor.<id>") or a compendium actor

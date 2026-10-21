@@ -58,11 +58,91 @@ RSpec.describe 'Admin::V1::Foundry::CompendiumController', type: :request do
       expect(json).to include('count' => 1, 'skipped' => 2)
     end
 
-    it 'rejects a pack it does not support' do
+    it 'rejects a pack it does not support, unless it is homebrew' do
       post '/v1/foundry/compendium', params: { pack: 'world.homebrew', entries: [zombie] }, headers: headers, as: :json
 
       expect(response).to have_http_status(:unprocessable_entity)
       expect(json['errors']).to eq(["world.homebrew isn't a supported compendium"])
+    end
+
+    describe 'homebrew' do
+      let(:owlbear_king) do
+        { uuid: 'Compendium.world.my-monsters.Actor.abcdefghijklmnop', name: 'Owlbear King', category: 'monster',
+          challengeRating: '5', detail: 'Monstrosity' }
+      end
+
+      def send_pack(pack, entries, **extra)
+        post '/v1/foundry/compendium', params: { pack: pack, version: 'v1', entries: entries, homebrew: true, **extra },
+                                       headers: headers, as: :json
+      end
+
+      it "indexes one of the DM's own compendiums with its title" do
+        send_pack('world.my-monsters', [owlbear_king, zombie], label: '  My   Monsters ')
+
+        expect(response).to have_http_status(:success)
+        expect(json).to eq('pack' => 'world.my-monsters', 'count' => 1, 'skipped' => 1)
+        expect(user.compendium_entries.sole).to have_attributes(name: 'Owlbear King', homebrew: true, pack_label: 'My Monsters',
+                                                                challenge_rating: '5', book: 'other')
+      end
+
+      it "indexes a world's actors" do
+        actor = { uuid: 'Actor.abcdefghijklmnop', name: 'Captain Brandt', category: 'monster', challengeRating: '3' }
+
+        send_pack('world-actors.greyhawk', [actor], label: 'World actors (Greyhawk)')
+
+        expect(json).to include('count' => 1)
+        expect(user.compendium_entries.sole).to have_attributes(pack: 'world-actors.greyhawk', foundry_uuid: 'Actor.abcdefghijklmnop',
+                                                                pack_label: 'World actors (Greyhawk)')
+        get '/v1/foundry/compendium', headers: headers
+        expect(response.parsed_body['packs']).to eq('world-actors.greyhawk' => { 'version' => 'v1', 'count' => 1 })
+      end
+
+      it 'removes a pack sent with no entries, with or without its title' do
+        create(:compendium_entry, :homebrew, user: user)
+
+        send_pack('world.my-monsters', [])
+
+        expect(response).to have_http_status(:success)
+        expect(user.compendium_entries).to be_empty
+      end
+
+      it 'needs a title of up to 120 characters' do
+        send_pack('world.my-monsters', [owlbear_king])
+        expect(json['errors']).to eq(["label must be the compendium's title"])
+
+        send_pack('world.my-monsters', [owlbear_king], label: 'x' * 121)
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body['errors']).to eq(['label is too long (maximum is 120 characters)'])
+        expect(user.compendium_entries).to be_empty
+      end
+
+      it 'needs a pack id' do
+        ['world', 'world.my.monsters', 'world.my monsters', "world.#{'x' * 100}"].each do |pack|
+          send_pack(pack, [owlbear_king], label: 'Mine')
+
+          expect(response).to have_http_status(:unprocessable_entity), "expected #{pack.inspect} to be rejected"
+        end
+        expect(user.compendium_entries).to be_empty
+      end
+
+      it 'takes up to 50 homebrew compendiums' do
+        stub_const('CompendiumEntry::MAX_HOMEBREW_PACKS', 2)
+        create(:compendium_entry, :homebrew, user: user, pack: 'world.one')
+        create(:compendium_entry, :homebrew, user: user, pack: 'world.two')
+
+        send_pack('world.three', [owlbear_king.merge(uuid: 'Compendium.world.three.Actor.abcdefghijklmnop')], label: 'Three')
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(json['errors']).to eq(['No more than 2 homebrew compendiums'])
+
+        send_pack('world.two', [owlbear_king.merge(uuid: 'Compendium.world.two.Actor.abcdefghijklmnop')], label: 'Two')
+        expect(response).to have_http_status(:success)
+      end
+
+      it 'treats a core book pack as the book, whatever it says' do
+        send_pack('dnd-monster-manual.actors', [zombie], label: 'Mine')
+
+        expect(user.compendium_entries.sole).to have_attributes(homebrew: false, pack_label: nil, book: 'mm')
+      end
     end
 
     it 'rejects entries that are not a list' do

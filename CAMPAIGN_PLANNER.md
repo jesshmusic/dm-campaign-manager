@@ -22,7 +22,7 @@ Decisions already made:
   stat-block generator.
 - Everything ships in one PR.
 
-## Status (2026-10-19)
+## Status (2026-10-21)
 - **Phase 0 (done):** map admin endpoints locked down, personal API tokens and `GET /v1/foundry/me`.
 - **Phase 1 (done):** planner models and API, the campaign wizard with templates, campaign tabs (Overview,
   Story, Quests, Cast, Places, Secrets, Sessions, Books), session prep (8 steps) and run mode, Three Clue Rule
@@ -90,31 +90,99 @@ Decisions already made:
   - In Foundry, the DM drops an actor on an NPC for their stat block. It syncs (`npc` push); the website shows it but
     doesn't edit it.
   - Sessions have treasure coins (`treasure_currency`: pp, gp, ep, sp, cp), and treasure links have a quantity.
-  - Quests hold their maps, the NPCs involved (besides the giver), monsters for their encounters (DM Guru SRD
-    monsters or book references) and a reward: items with how many (SRD items or book references), coins
-    (`reward_currency`), XP (`reward_xp`) and/or a milestone ("level up when done"), plus the reward notes
-    (`reward`).
-    - NPCs, monsters and items are `campaign_quest_links`, shaped like session links and synced as part of the
-      quest (changing one bumps the quest). Deleting the NPC, book reference, monster or item removes its links.
+  - Quests hold their maps, the NPCs involved (besides the giver), their handouts, their encounters (see
+    "Encounters and handouts") and a reward: items with how many (SRD items or book references that aren't
+    monsters), coins (`reward_currency`), XP (`reward_xp`) and/or a milestone ("level up when done"), plus the
+    reward notes (`reward`).
+    - NPCs and items are `campaign_quest_links`, shaped like session links and synced as part of the quest
+      (changing one bumps the quest). Deleting the NPC, book reference or item removes its links. Quests no longer
+      link monsters (a DM Guru `Monster`, or a book reference whose category is monster): those go in encounters.
     - On the web, "Plan quest" on the Quests tab edits them, like session prep; each quest card shows them, and run
-      mode shows each open quest's reward.
+      mode shows each open quest's reward, encounters and handouts.
     - Foundry can change any of a quest's fields and its links, like a session's (see "Editing DM Guru campaigns from
       Foundry").
+- **Encounters and handouts (done on the web; module in progress):**
+  - A quest's monsters live in its **encounters** (`campaign_encounters`, `CampaignEncounter`): a fight, a talk, a
+    puzzle or a trap along the way, in order. Each has a `name` (≤ 120), a `kind` (`combat`, `social`,
+    `exploration`, `puzzle`, `trap` or `other`; default `combat`), a `description`, `notes`, a `position` in its
+    quest (0–9999), its own maps (`foundry_scenes`, like a quest's), and its own reward: coins (`reward_currency`)
+    and XP (`reward_xp`).
+  - Its links (`campaign_encounter_links`) are its monsters with how many (`quantity`: DM Guru SRD or the DM's own
+    monsters, or book references to monsters), the NPCs met there, and reward items with how many (SRD items or any
+    other book reference), in order.
+  - Encounters are planner records of their own: they belong to the campaign and to a quest (`quest_id`, required),
+    sync on their own (`encounters` in the pull; changing an encounter or its links bumps the encounter, not the
+    quest), and deleting the quest deletes its encounters, each leaving a `CampaignEncounter` tombstone. Deleting the
+    whole campaign leaves none.
+  - The `CreateCampaignEncounters` migration moved every quest's monster links into one new encounter per quest
+    ("Encounter", a fight, at position 0, same order and counts), removed them from the quest (each leaving a
+    `CampaignQuestLink` tombstone) and gave the quest and the encounter new sync versions. Rolling it back moves
+    every encounter's monsters back onto its quest (a monster in several of a quest's encounters once, its counts
+    added up) and leaves `CampaignEncounter` tombstones.
+  - Website API: `/v1/campaigns/:campaign_id/quests/:quest_id/encounters` (index, show, create, update, destroy; root
+    key `encounter`) and `.../encounters/:encounter_id/links` (create, update the quantity, destroy), like quest links.
+    The campaign JSON has `encounters`, every quest's in quest and position order.
+  - **Handouts** (`campaign_quests.handouts`, jsonb) are Foundry journal entries or pages the DM drops on a quest in
+    Foundry: an ordered list of up to 20 `{ uuid, name }`. The uuid is a world `JournalEntry.<16>` or
+    `JournalEntry.<16>.JournalEntryPage.<16>`, or a compendium's `Compendium.<package>.<pack>.JournalEntry.<16>`
+    (with an optional `.JournalEntryPage.<16>`); the name is required, at most 120 characters. The website can't
+    browse a world's journals, so it only lists them ("Add handouts in Foundry: drag journal entries or pages onto
+    the quest's Handouts") and can remove one.
+  - Plan the quest edits a quest's encounters (a card each: name, type, description, monsters with how many, NPCs,
+    its own maps and its own reward items, coins and XP; Add encounter, Remove, Move up and Move down) and removes
+    handouts. Nothing saves until Save, which deletes the encounters removed, then adds or changes each one in order
+    with its links. A compendium pick becomes one book reference however many encounters pick it.
+  - **Encounter difficulty** (2024 rules, SRD 5.2.1 "Combat Encounter Difficulty"; a number only, the DM decides):
+    each combat encounter shows its monsters' XP (each monster's XP by CR times how many) against the party's XP
+    budget, e.g. "High: 1,050 XP (budget for 4 level-3 characters: Low 600 · Moderate 900 · High 1,600)", in Plan
+    the quest and run mode. The party is the campaign's `party_size` (4 when it has none) at the quest's `level_min`,
+    else the campaign's `start_level`. Each budget is the most XP for its difficulty: up to Low is "Low", up to
+    Moderate "Moderate", up to High "High", and more "Over High". There's no multiplier for many monsters. The
+    tables are in `pages/campaigns/quest/difficulty.ts`, checked against `scripts/srd_parser/srd_5.2.1.md`. Every
+    link in the campaign JSON and the pull has `challengeRating`: a monster's or a book reference's CR (`"1/4"`),
+    null for anything else.
+- **Random encounter tables (done on the web; module in progress):** a place's `roll_tables` (`rollTables` in the
+  JSON) are Foundry roll tables the DM drops on the place in Foundry: up to 10 `{ uuid, name }`, a world
+  `RollTable.<16>` or a compendium's `Compendium.<package>.<pack>.RollTable.<16>`, validated like the maps. The Places
+  tab lists them ("Add roll tables in Foundry: drag a roll table onto the place.") and can remove one.
+- **Homebrew monsters (done on the web; module in progress):**
+  - Foundry → DM Guru, as an index only (never stat blocks): `POST /v1/foundry/compendium` also takes the DM's
+    homebrew packs, sent with `homebrew: true` and a `label` (the pack's title, ≤ 120, required unless `entries` is
+    empty). A world's actors are pack `world-actors.<world id>` (lowercase letters, digits and hyphens), labelled
+    "World actors (<world title>)", whose entries are that world's actors (`Actor.<16>`). A compendium is its real
+    id (`world.my-monsters`, `some-module.monsters`: `<package>.<pack>`, ≤ 100), whose entries are
+    `Compendium.<pack>.…`. Entries are checked as for the core packs. Up to 50 homebrew packs; an empty `entries`
+    removes one. A pack the module sends without `homebrew: true` must be a core pack.
+  - They're stored on the entries (`compendium_entries.homebrew`, `pack_label`). Search (`GET /v1/compendium`)
+    includes them, never hidden behind a book entry of the same name, with `book: "other"`, `bookName: "Homebrew:
+    <label>"` and `homebrew: true`; a pick becomes a book reference with book "other" and its `foundryUuid`.
+    `GET /v1/compendium/packs` lists them after the books (`bookName: "Homebrew"`, `homebrew: true`), so New Campaign
+    and Overview can leave them out of a campaign (`excluded_compendium_packs` takes any pack id).
+  - Monster searches in session prep and encounters also offer the DM's own DM Guru monsters from every edition
+    (`GET /v1/monsters.json?mine=true`).
+  - DM Guru → Foundry: `GET /v1/foundry/monsters/:id` (API token) returns `{ id, name, actor }` for the DM's own
+    monster or a public SRD one (someone else's homebrew is `404`). `actor` is the data for a dnd5e 6 `Actor.create`
+    (`MonsterFoundryActor`): `type: "npc"`, dnd5e's NPC artwork as `img`, abilities, AC (`{ flat, calcs: ["natural"]
+    }`), HP, `movement.speeds`, `senses.ranges`, CR, creature type, traits keyed the way dnd5e keys them (the rest
+    in each trait's `custom`), legendary actions as `{ max, spent }`, `source`, its actions and traits as items
+    (attack activities typed `melee` or `ranged`), and a `prototypeToken` sized for it.
 - **Send to Dungeon Master Guru (done on the web; module in progress):**
   - A campaign planned in Foundry without an account is uploaded whole with `POST /v1/foundry/campaigns/import`
     (`CampaignImporter`). `request_id` and `party` work as they do for `POST /v1/foundry/campaigns`.
-  - The body is the campaign and `records: { factions, references, locations, npcs, fronts, quests, sessions,
-    secrets }`, in the shapes the sync pull returns. Each record has a local `id` that the others use to point at it
-    (`factionId`, a link's `linkableId`); `uuid`, `syncVersion` and unknown keys are ignored.
+  - The body is the campaign and `records: { factions, references, locations, npcs, fronts, quests, encounters,
+    sessions, secrets }`, in the shapes the sync pull returns. Each record has a local `id` that the others use to point at it
+    (`factionId`, an encounter's `questId`, a link's `linkableId`); `uuid`, `syncVersion` and unknown keys are
+    ignored. An encounter whose quest wasn't sent is an error.
   - It all saves in one transaction, in dependency order, with those references pointed at the new records. Parents
-    (places, quests) are set in a second pass, then the sessions' and quests' links with their quantities. A
+    (places, quests) are set in a second pass, then the sessions', quests' and encounters' links with their
+    quantities. A quest's monster links are an error there (they go in its encounters). A
     reference to an id that wasn't sent is left empty, and a link to one is skipped. Links to monsters and items keep
     their DM Guru ids.
   - The `201` response is the new campaign (as `create` returns it) plus `ids`, mapping each local id, the campaign's
     and every record's, to its new uuid. The module re-tags its journals with them and pulls with `since=0`.
   - Any problem saves nothing and returns `422` with every error, each naming the collection and record
     ("Quests: Find the crypt: Name can't be blank"). It takes up to 500 records per collection and 100 links per
-    session or quest.
+    session, quest or encounter.
 - **Scene thumbnails (done):**
   - The module sends a 640×360 WebP thumbnail of every scene in the world that has a map image, made with
     Foundry's `Scene#createThumbnail`, to `POST /v1/foundry/scenes`, so the website can offer
@@ -192,10 +260,10 @@ Decisions already made:
 **Other ideas**
 - Search the compendium index from the NPC form, so a stat block doesn't have to be added on the Books tab
   first.
-- Show encounter difficulty for the party's level next to a session's monsters. This is a number only; the DM
-  still places monsters on the map.
+- Show encounter difficulty next to a session's monsters too (quests' combat encounters have it). This is a number
+  only; the DM still places monsters on the map.
 - Push changes to Foundry over ActionCable instead of polling every 2 minutes.
-- Index homebrew and adventure compendiums the DM chooses, not just the official 2024 packs.
+- Index adventure compendiums the DM chooses too (homebrew compendiums and world actors are indexed).
 - Default the brief's "Players" to the size of the chosen party.
 
 ## Research takeaways (what to build on)
@@ -258,15 +326,17 @@ Every planner table has:
 |---|---|---|
 | `campaigns` | `user_id`, name, slug, premise, setting_name, setting_notes, `truths` jsonb, `mode` (arc/sandbox/oneshot), planned_sessions, cadence, party_size, start_level, target_level, tone, edition, status, `share_token` | |
 | `campaign_npcs` | role (bbeg/villain/ally/patron/neutral), motive, secret, appearance, voice, `monster_id`, `faction_id` | `monster_id` is an optional statblock |
-| `campaign_locations` | `parent_id`, description, features jsonb, `foundry_map_id`, foundry_scene_uuid | |
+| `campaign_locations` | `parent_id`, description, features jsonb, `foundry_map_id`, foundry_scene_uuid, `roll_tables` jsonb | |
 | `campaign_factions` | | |
 | `fronts` | owner (villain or faction), goal, doom, stakes jsonb, clock_segments, clock_filled | |
 | `portents` | ordered, triggered_at | |
-| `quests` | kind (main/side), status, `parent_id`, act, position, giver_npc_id, location_id, reward, level_min/max, `foundry_scenes` jsonb, `reward_currency` jsonb, reward_xp, milestone | |
+| `quests` | kind (main/side), status, `parent_id`, act, position, giver_npc_id, location_id, reward, level_min/max, `foundry_scenes` jsonb, `reward_currency` jsonb, reward_xp, milestone, `handouts` jsonb | |
+| `encounters` | `quest_id` (required), name, kind (combat/social/exploration/puzzle/trap/other), description, notes, position, `foundry_scenes` jsonb, `reward_currency` jsonb, reward_xp | Deleted with their quest, each leaving a tombstone |
 | `secrets` | revelation, text, revealed_at, revealed_session_id, polymorphic `subject` | |
 | `campaign_sessions` | number, scheduled_on, status (planned/prepped/played), level, strong_start, scenes jsonb, log, recap | |
 | `session_links` | polymorphic join: session ↔ npc / location / monster / item / secret / quest | Lazy DM steps 5–8 |
-| `quest_links` | polymorphic join: quest ↔ npc / book reference / monster / item, with a quantity | NPCs involved, monsters, reward items |
+| `quest_links` | polymorphic join: quest ↔ npc / book reference (not a monster) / item, with a quantity | NPCs involved, reward items |
+| `encounter_links` | polymorphic join: encounter ↔ monster / npc / book reference / item, with a quantity | Monsters with how many, NPCs, reward items |
 | `campaign_links` | polymorphic source → target | Cross-references used for the wiki-style "mentioned in" |
 | `api_tokens` | user_id, name, token_digest, scopes, last_used_at | For Foundry |
 
@@ -302,8 +372,10 @@ or Monster Manual. The planner uses them without copying them:
   - The official packs use the same UUIDs in every world (e.g. `Compendium.dnd-monster-manual.actors.Actor.mmZombie00000000`),
     so a link works in any of the DM's worlds.
   - The module sends a pack again when its package version changes.
+- **Homebrew:** the module can also index the DM's homebrew compendiums and each world's actors (see "Homebrew
+  monsters" under Status).
 - **Searching:** `GET /v1/compendium` searches the DM's index. A book entry hides the SRD entry of the same
-  name. Session prep (monsters, treasure) and the Books tab use it, and fall back to DM Guru's own SRD when there
+  name (homebrew is never hidden). Session prep (monsters, treasure) and the Books tab use it, and fall back to DM Guru's own SRD when there
   is no index.
 - **Per campaign:** `campaigns.excluded_compendium_packs` lists the compendiums a campaign leaves out. It stores
   the ones turned off, so a book indexed later is on by default.
@@ -353,32 +425,41 @@ or Monster Manual. The planner uses them without copying them:
   - **delete**: `{ op: "delete", type, uuid }`. Destroys the record as the website does: its links go, other records'
     pointers to it are cleared (their `sync_version`s bumped, so the next pull carries them), and it leaves a
     tombstone. Its uuid goes in `deleted` as sent; one that's already gone (or was never in this campaign) does too.
-  - `type` is `campaign`, `faction`, `location`, `npc`, `front`, `quest`, `secret`, `session` or `reference`. The
-    campaign can be updated but not created or deleted. `attributes` take the pull's camelCase keys
+  - `type` is `campaign`, `faction`, `location`, `npc`, `front`, `quest`, `encounter`, `secret`, `session` or
+    `reference`. The campaign can be updated but not created or deleted. `attributes` take the pull's camelCase keys
     (`CampaignSync::WRITABLE`); any other key is an error for that change:
     - campaign: `name premise pitch settingName settingNotes truths tone partySize startLevel targetLevel
       plannedSessions cadence status`
     - faction: `name goal description notes`
-    - location: `name description features notes parentId foundrySceneUuid foundrySceneName`
+    - location: `name description features notes parentId foundrySceneUuid foundrySceneName rollTables`
     - npc: `name role description motive secret appearance voice notes factionId statBlockReferenceId
       foundryActorUuid foundryActorName`
     - front: `name goal doom description portents stakes clockSegments clockFilled npcId factionId`
     - quest: `name kind status act description reward notes levelMin levelMax parentId giverNpcId locationId
-      foundryScenes rewardCurrency rewardXp milestone links`
+      foundryScenes rewardCurrency rewardXp milestone handouts links`
+    - encounter: `name kind description notes position questId foundryScenes rewardCurrency rewardXp links`
     - secret: `text revelation revealed revealedSessionUuid position` (an unknown session uuid clears it)
     - session: `title scheduledOn level status characterNotes strongStart scenes treasure treasureCurrency
       foundryScenes log recap links`
     - reference: `name book category page challengeRating foundryUuid notes`
   - A campaign's `truths` is its whole new list, `[{ name, description }]`; plain strings are still taken and split
     (see "Truths of the setting").
-  - Ids (`parentId`, `factionId`, `npcId`, `giverNpcId`, `locationId`, `statBlockReferenceId`) are DM Guru record ids
-    as the pull returns them, as text or a number; null or `""` clears one. Another campaign's record, or one that
-    doesn't exist, is an error.
-  - `links` (sessions and quests) is the whole new list, `[{ linkableType, linkableId, quantity }]` (other keys are
-    ignored), up to 100. Links not in it are removed (each leaves a tombstone), new ones are added, and every link
+  - Ids (`parentId`, `factionId`, `npcId`, `giverNpcId`, `locationId`, `statBlockReferenceId`, `questId`) are DM Guru
+    record ids as the pull returns them, as text or a number; null or `""` clears one. Another campaign's record, or
+    one that doesn't exist, is an error. An encounter needs its `questId`: creating one without it, or clearing it,
+    is an error ("Quest must exist"); changing it moves the encounter to another quest.
+  - A quest's `handouts` and a location's `rollTables` are their whole new lists, `[{ uuid, name }]` (other keys are
+    dropped), validated as under "Encounters and handouts" and "Random encounter tables".
+  - `links` (sessions, quests and encounters) is the whole new list, `[{ linkableType, linkableId, quantity }]` (other
+    keys are ignored), up to 100. Links not in it are removed (each leaves a tombstone), new ones are added, and every link
     takes its quantity (none when left out) and its position in the list. Leaving `links` out keeps them as they
     are. A link the website couldn't make (a type the session or quest can't link, another campaign's record,
     someone else's homebrew, a record listed twice) makes the whole change an error.
+  - A quest's `links` that still list monsters (a DM Guru `Monster`, or a book reference to a monster), from an older
+    module or a change queued in Foundry before quests had encounters, aren't an error: they go to the end of the
+    quest's first encounter (a new fight called "Encounter" when it has none), keeping their order and counts (a
+    monster it already has takes the count sent), and the rest of the change applies. The next pull carries that
+    encounter.
   - Response: `{ applied: [{ type, uuid, current }], conflicts: [{ type, uuid, current }], errors: [{ uuid,
     errors: [...] }], deleted: [uuid], cursor }`. Each change is its own transaction, so one that fails undoes only
     itself. It holds the campaign's row lock, so no other edit lands between its version check and its save.
@@ -394,8 +475,9 @@ or Monster Manual. The planner uses them without copying them:
 - Deleting a record (on the website or from Foundry) clears the campaign's other records' pointers to it, such as
   an NPC's `faction_id` or a quest's `giver_npc_id`, and bumps their `sync_version`s (`CampaignRecord`), so the next
   pull carries them. Deleting the whole campaign leaves that to the database.
-- Known gap: session and quest links removed along with their target leave no tombstone of their own. Their
-  session or quest is bumped, so the next pull carries its new list, and the target's tombstone covers them.
+- Known gap: session, quest and encounter links removed along with their target leave no tombstone of their own.
+  Their session, quest or encounter is bumped, so the next pull carries its new list, and the target's tombstone
+  covers them.
 - Server checks: token + campaign ownership. Sanitize HTML both ways.
 
 ## Phases
@@ -418,7 +500,7 @@ or Monster Manual. The planner uses them without copying them:
    sync columns.
 5. **Later:**
    - finish treasure hoards (`treasure_utility.rb` TODOs) for step 8
-   - encounter builder from party level
+   - encounter builder from party level (encounters show their 2024 difficulty)
    - in-world calendar
    - export a campaign as a Foundry Adventure compendium
 

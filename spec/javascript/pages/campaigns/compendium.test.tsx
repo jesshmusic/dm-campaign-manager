@@ -17,6 +17,7 @@ describe('compendiumResult', () => {
       name: 'Zombie',
       slug: '',
       detail: 'CR 1/4 · Undead · Monster Manual',
+      challengeRating: '1/4',
       entry: sampleCompendiumEntry(),
     });
   });

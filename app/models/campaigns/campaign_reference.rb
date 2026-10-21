@@ -38,6 +38,7 @@ class CampaignReference < ApplicationRecord
 
   linkable_from_sessions
   linkable_from_quests
+  linkable_from_encounters
 
   BOOKS = {
     'phb' => "Player's Handbook",

@@ -28,22 +28,31 @@ RSpec.describe 'Admin::V1::Campaigns::QuestLinksController', type: :request do
         expect(quest.reload.sync_version).to be > version
       end
 
-      it 'links monsters and reward items, from the SRD or the books, after the last link' do
-        monster = create(:monster, user: nil, name: 'Owlbear')
-        zombie = create(:campaign_reference, campaign: campaign, name: 'Zombie', category: 'monster')
+      it 'links reward items, from the SRD or the books, after the last link' do
+        potion = create(:campaign_reference, campaign: campaign, name: 'Potion of Healing', category: 'magic_item')
         item = create(:magic_item, user: user)
 
-        link('Monster', monster.id)
-        link('CampaignReference', zombie.id)
+        link('CampaignReference', potion.id)
         link('Item', item.id, quantity: 2)
 
         expect(response).to have_http_status(:created)
-        expect(json).to include('linkableType' => 'Item', 'name' => item.name, 'quantity' => 2, 'position' => 2)
-        expect(quest.links.pluck(:linkable_type)).to eq(%w[Monster CampaignReference Item])
+        expect(json).to include('linkableType' => 'Item', 'name' => item.name, 'quantity' => 2, 'position' => 1)
+        expect(quest.links.pluck(:linkable_type)).to eq(%w[CampaignReference Item])
+      end
+
+      it "rejects monsters, from the SRD or the books: they go in the quest's encounters" do
+        link('Monster', create(:monster, user: nil).id)
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(json['errors']).to eq(['Unknown link type'])
+
+        link('CampaignReference', create(:campaign_reference, campaign: campaign, category: 'monster').id)
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body['errors']).to eq(["Linkable is a monster: monsters go in the quest's encounters"])
+        expect(CampaignQuestLink.count).to eq(0)
       end
 
       it "rejects another user's homebrew, and records from the DM's other campaign" do
-        link('Monster', create(:monster, user: create(:dungeon_master_user)).id)
+        link('Item', create(:magic_item, user: create(:dungeon_master_user)).id)
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.parsed_body['errors']).to include('Linkable is not available to this campaign')
 

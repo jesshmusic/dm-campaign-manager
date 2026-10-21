@@ -11,6 +11,8 @@ import {
   CompendiumCategory,
   CompendiumEntry,
   CompendiumPack,
+  Encounter,
+  EncounterLink,
   FoundrySceneSummary,
   PlayerCharacter,
   LinkableType,
@@ -44,9 +46,20 @@ export interface CompendiumResult {
   name: string;
   slug: string;
   detail: string;
+  // A monster's challenge rating ("1/4"), for encounter difficulty
+  challengeRating?: string | null;
   // Set for results from the DM's Foundry compendium index
   entry?: CompendiumEntry;
 }
+
+// How many of a link to add (left out for one)
+const linkBody = (linkableType: LinkableType, linkableId: string, quantity: number | null) => ({
+  link: {
+    linkable_type: linkableType,
+    linkable_id: linkableId,
+    ...(quantity && quantity > 1 ? { quantity } : {}),
+  },
+});
 
 /**
  * Typed calls to the campaign planner API, plus the existing generators the
@@ -105,13 +118,11 @@ const useCampaignApi = () => {
         // How many, for treasure (left out for one)
         quantity: number | null = null,
       ) =>
-        request<SessionLink>(`${base(slug)}/sessions/${sessionId}/links`, 'POST', {
-          link: {
-            linkable_type: linkableType,
-            linkable_id: linkableId,
-            ...(quantity && quantity > 1 ? { quantity } : {}),
-          },
-        }),
+        request<SessionLink>(
+          `${base(slug)}/sessions/${sessionId}/links`,
+          'POST',
+          linkBody(linkableType, linkableId, quantity),
+        ),
       // Only a link's quantity can change
       updateSessionLink: (
         slug: string,
@@ -134,13 +145,11 @@ const useCampaignApi = () => {
         // How many, for treasure (left out for one)
         quantity: number | null = null,
       ) =>
-        request<QuestLink>(`${base(slug)}/quests/${questId}/links`, 'POST', {
-          link: {
-            linkable_type: linkableType,
-            linkable_id: linkableId,
-            ...(quantity && quantity > 1 ? { quantity } : {}),
-          },
-        }),
+        request<QuestLink>(
+          `${base(slug)}/quests/${questId}/links`,
+          'POST',
+          linkBody(linkableType, linkableId, quantity),
+        ),
       // Only a link's quantity can change
       updateQuestLink: (
         slug: string,
@@ -154,6 +163,50 @@ const useCampaignApi = () => {
       removeQuestLink: (slug: string, questId: string, linkId: string) =>
         request<undefined>(`${base(slug)}/quests/${questId}/links/${linkId}`, 'DELETE'),
 
+      // A quest's encounters, and their monsters, NPCs and reward items
+      createEncounter: (slug: string, questId: string, attributes: Attributes) =>
+        request<Encounter>(`${base(slug)}/quests/${questId}/encounters`, 'POST', {
+          encounter: attributes,
+        }),
+      updateEncounter: (slug: string, questId: string, id: string, attributes: Attributes) =>
+        request<Encounter>(`${base(slug)}/quests/${questId}/encounters/${id}`, 'PATCH', {
+          encounter: attributes,
+        }),
+      deleteEncounter: (slug: string, questId: string, id: string) =>
+        request<undefined>(`${base(slug)}/quests/${questId}/encounters/${id}`, 'DELETE'),
+      addEncounterLink: (
+        slug: string,
+        questId: string,
+        encounterId: string,
+        linkableType: LinkableType,
+        linkableId: string,
+        // How many (left out for one)
+        quantity: number | null = null,
+      ) =>
+        request<EncounterLink>(
+          `${base(slug)}/quests/${questId}/encounters/${encounterId}/links`,
+          'POST',
+          linkBody(linkableType, linkableId, quantity),
+        ),
+      // Only a link's quantity can change
+      updateEncounterLink: (
+        slug: string,
+        questId: string,
+        encounterId: string,
+        linkId: string,
+        attributes: { quantity: number | null },
+      ) =>
+        request<EncounterLink>(
+          `${base(slug)}/quests/${questId}/encounters/${encounterId}/links/${linkId}`,
+          'PATCH',
+          { link: attributes },
+        ),
+      removeEncounterLink: (slug: string, questId: string, encounterId: string, linkId: string) =>
+        request<undefined>(
+          `${base(slug)}/quests/${questId}/encounters/${encounterId}/links/${linkId}`,
+          'DELETE',
+        ),
+
       searchMonsters: async (query: string, edition: string): Promise<CompendiumResult[]> => {
         const params = new URLSearchParams({ search: query, edition });
         const data = await request<{
@@ -164,6 +217,21 @@ const useCampaignApi = () => {
           name: monster.name,
           slug: monster.slug,
           detail: `CR ${monster.challengeRating}`,
+          challengeRating: monster.challengeRating,
+        }));
+      },
+      // The DM's own DM Guru monsters, from every edition
+      searchOwnMonsters: async (query: string): Promise<CompendiumResult[]> => {
+        const params = new URLSearchParams({ search: query, mine: 'true' });
+        const data = await request<{
+          results: { value: number; name: string; slug: string; challengeRating: string }[];
+        }>(`/v1/monsters.json?${params.toString()}`);
+        return data.results.map((monster) => ({
+          id: String(monster.value),
+          name: monster.name,
+          slug: monster.slug,
+          detail: `CR ${monster.challengeRating} · Your monster`,
+          challengeRating: monster.challengeRating,
         }));
       },
       searchItems: async (query: string, edition: string): Promise<CompendiumResult[]> => {

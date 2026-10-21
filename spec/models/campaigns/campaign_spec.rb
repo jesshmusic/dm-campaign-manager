@@ -150,12 +150,19 @@ RSpec.describe Campaign, type: :model do
       expect(build(:campaign, excluded_compendium_packs: ['dnd5e.actors24'])).to be_valid
     end
 
-    it 'only excludes compendiums it knows' do
-      campaign = build(:campaign, excluded_compendium_packs: ['world.homebrew'])
+    it 'can exclude homebrew compendiums, which the DM may have in another world' do
+      expect(build(:campaign, excluded_compendium_packs: ['world-actors.greyhawk', 'world.my-monsters', 'some_module.monsters'])).to be_valid
+    end
 
-      expect(campaign).not_to be_valid
-      expect(campaign.errors[:excluded_compendium_packs]).to include('must be a list of supported compendiums')
+    it 'only excludes compendium ids' do
+      ['world', 'world.my.monsters', 'world.my monsters', 'x' * 101, 5].each do |pack|
+        campaign = build(:campaign, excluded_compendium_packs: [pack])
+
+        expect(campaign).not_to be_valid, "expected #{pack.inspect} to be rejected"
+        expect(campaign.errors[:excluded_compendium_packs]).to include('must be a list of supported compendiums')
+      end
       expect(build(:campaign, excluded_compendium_packs: 'dnd5e.actors24')).not_to be_valid
+      expect(build(:campaign, excluded_compendium_packs: Array.new(201) { |i| "world.pack#{i}" })).not_to be_valid
     end
   end
 
@@ -385,13 +392,16 @@ RSpec.describe Campaign, type: :model do
       create(:campaign_session_link, session: session, linkable: npc)
       quest = create(:campaign_quest, campaign: campaign)
       create(:campaign_quest_link, quest: quest, linkable: create(:campaign_npc, campaign: campaign))
-      create(:campaign_quest_link, quest: quest, linkable: create(:campaign_reference, campaign: campaign))
+      create(:campaign_quest_link, quest: quest, linkable: create(:campaign_reference, campaign: campaign, category: 'rule'))
+      encounter = create(:campaign_encounter, quest: quest)
+      create(:campaign_encounter_link, encounter: encounter, linkable: create(:campaign_reference, campaign: campaign))
       npc.destroy! # leaves a tombstone
 
       campaign.destroy!
 
       [CampaignFaction, CampaignLocation, CampaignNpc, CampaignFront, CampaignQuest, CampaignSecret, CampaignSession,
-       CampaignSessionLink, CampaignQuestLink, CampaignReference, CampaignTombstone].each do |model|
+       CampaignSessionLink, CampaignQuestLink, CampaignEncounter, CampaignEncounterLink, CampaignReference,
+       CampaignTombstone].each do |model|
         expect(model.count).to eq(0), "expected no #{model.name} records left"
       end
     end
@@ -513,9 +523,24 @@ RSpec.describe Campaign, type: :model do
 
     it "includes each quest's links" do
       quest = create(:campaign_quest, campaign: campaign)
-      create(:campaign_quest_link, quest: quest, linkable: create(:monster, user: nil, name: 'Owlbear'))
+      create(:campaign_quest_link, quest: quest, linkable: create(:magic_item, user: nil, name: 'Bag of Holding'))
 
-      expect(campaign.as_full_json_for_api[:quests].sole[:links].pluck(:name)).to eq(['Owlbear'])
+      expect(campaign.as_full_json_for_api[:quests].sole[:links].pluck(:name)).to eq(['Bag of Holding'])
+    end
+
+    it 'includes the encounters, by quest and in order, with their links' do
+      quest = create(:campaign_quest, campaign: campaign)
+      later = create(:campaign_encounter, quest: quest, name: 'The lair', position: 1)
+      sooner = create(:campaign_encounter, quest: quest, name: 'Ambush', position: 0)
+      create(:campaign_encounter_link, encounter: later, linkable: create(:monster, user: nil, name: 'Owlbear'), quantity: 2)
+      create(:campaign_encounter, quest: create(:campaign_quest), name: 'Elsewhere')
+
+      encounters = campaign.as_full_json_for_api[:encounters]
+
+      expect(encounters.pluck(:name)).to eq(['Ambush', 'The lair'])
+      expect(encounters.pluck(:questId).uniq).to eq([quest.id.to_s])
+      expect(encounters.last[:links].map { |link| link.slice(:name, :quantity) }).to eq([{ name: 'Owlbear', quantity: 2 }])
+      expect(encounters.first[:id]).to eq(sooner.id.to_s)
     end
   end
 
@@ -524,15 +549,17 @@ RSpec.describe Campaign, type: :model do
       { 'uuid' => uuid, 'name' => name }
     end
 
-    it "lists each place's map and each session's and quest's maps, once each" do
+    it "lists each place's map and each session's, quest's and encounter's maps, once each" do
       create(:campaign_location, campaign: campaign, foundry_scene_uuid: 'Scene.aaaaaaaaaaaaaaaa')
       create(:campaign_location, campaign: campaign)
       create(:campaign_session, campaign: campaign, foundry_scenes: [scene('Scene.bbbbbbbbbbbbbbbb'), scene('Scene.aaaaaaaaaaaaaaaa')])
-      create(:campaign_quest, campaign: campaign, foundry_scenes: [scene('Scene.cccccccccccccccc'), scene('Scene.bbbbbbbbbbbbbbbb')])
+      quest = create(:campaign_quest, campaign: campaign,
+                                      foundry_scenes: [scene('Scene.cccccccccccccccc'), scene('Scene.bbbbbbbbbbbbbbbb')])
+      create(:campaign_encounter, quest: quest, foundry_scenes: [scene('Scene.eeeeeeeeeeeeeeee'), scene('Scene.cccccccccccccccc')])
       create(:campaign_quest, campaign: create(:campaign), foundry_scenes: [scene('Scene.dddddddddddddddd')])
 
       expect(campaign.foundry_scene_uuids).to contain_exactly('Scene.aaaaaaaaaaaaaaaa', 'Scene.bbbbbbbbbbbbbbbb',
-                                                              'Scene.cccccccccccccccc')
+                                                              'Scene.cccccccccccccccc', 'Scene.eeeeeeeeeeeeeeee')
     end
 
     it 'is empty without maps' do

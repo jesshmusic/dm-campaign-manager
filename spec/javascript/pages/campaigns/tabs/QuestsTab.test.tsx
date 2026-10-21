@@ -3,7 +3,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { render, screen, fireEvent, waitFor, within } from '../../../test-utils';
 import QuestsTab from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/tabs/QuestsTab';
 import { Campaign } from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/types';
-import { FakeState, makeState, quest, questLink, sampleCampaign } from '../fixtures';
+import { encounter, FakeState, makeState, quest, questLink, sampleCampaign } from '../fixtures';
 import { chooseOption } from '../selectHelpers';
 
 const renderTab = (campaign: Campaign = sampleCampaign(), state: FakeState = makeState()) => {
@@ -15,7 +15,7 @@ const renderTab = (campaign: Campaign = sampleCampaign(), state: FakeState = mak
   return { campaign, state };
 };
 
-// The sample's main quest with maps, NPCs, monsters and a full reward
+// The sample's main quest with maps, NPCs, encounters, handouts and a full reward
 const plannedCampaign = () => {
   const campaign = sampleCampaign();
   campaign.quests[0] = {
@@ -31,20 +31,6 @@ const plannedCampaign = () => {
       questLink({ id: 'ql1', linkableType: 'CampaignNpc', linkableId: 'n1', name: 'Lareth' }),
       questLink({ id: 'ql2', linkableType: 'CampaignNpc', linkableId: 'n2', name: 'Mordred' }),
       questLink({
-        id: 'ql3',
-        linkableType: 'Monster',
-        linkableId: '12',
-        name: 'Ghoul',
-        slug: 'ghoul',
-        detail: 'CR 1',
-      }),
-      questLink({
-        id: 'ql4',
-        linkableType: 'CampaignReference',
-        linkableId: 'r1',
-        name: 'Cult Fanatic',
-      }),
-      questLink({
         id: 'ql5',
         linkableType: 'CampaignReference',
         linkableId: 'r2',
@@ -59,12 +45,51 @@ const plannedCampaign = () => {
         quantity: 3,
       }),
     ],
+    handouts: [
+      { uuid: 'JournalEntry.5wVcsNPOg2RjRbFx', name: 'A letter from Lareth' },
+      { uuid: 'JournalEntry.abcdefghijklmnop', name: 'Map of the moathouse' },
+    ],
   };
+  campaign.encounters = [
+    encounter({
+      id: 'e2',
+      name: 'The lair',
+      kind: 'puzzle',
+      position: 1,
+    }),
+    encounter({
+      id: 'e1',
+      name: 'Ambush',
+      position: 0,
+      links: [
+        questLink({
+          id: 'el1',
+          linkableType: 'Monster',
+          linkableId: '12',
+          name: 'Ghoul',
+          slug: 'ghoul',
+          detail: 'CR 1',
+          quantity: 4,
+        }),
+        questLink({
+          id: 'el2',
+          linkableType: 'CampaignReference',
+          linkableId: 'r1',
+          name: 'Cult Fanatic',
+        }),
+        questLink({ id: 'el3', linkableType: 'CampaignNpc', linkableId: 'n1', name: 'Lareth' }),
+      ],
+    }),
+    encounter({ id: 'e9', questId: 'q2', name: 'Elsewhere' }),
+  ];
   campaign.sceneThumbnails = { 'Scene.5wVcsNPOg2RjRbFx': 'https://example.com/pass.webp' };
   return campaign;
 };
 
 const input = (name: string) => document.getElementById(`field-${name}`) as HTMLInputElement;
+// The quest's own Reward part in Plan the quest (encounters have their own XP)
+const rewardPart = (plan: HTMLElement) =>
+  within(plan).getByRole('heading', { level: 3, name: 'Reward' }).parentElement as HTMLElement;
 const main = () => screen.getByRole('region', { name: 'Main quests' });
 const side = () => screen.getByRole('region', { name: 'Side quests' });
 
@@ -102,7 +127,7 @@ describe('QuestsTab', () => {
     expect(within(section).getByText('500 gp')).toBeInTheDocument();
   });
 
-  it("shows a quest's maps, NPCs and monsters", () => {
+  it("shows a quest's maps, NPCs, encounters with their monsters, and handouts", () => {
     renderTab(plannedCampaign());
 
     const maps = within(main()).getByRole('list', { name: 'Maps for Stop the cult' });
@@ -112,12 +137,23 @@ describe('QuestsTab', () => {
     );
     expect(within(maps).getByText('Lair')).toBeInTheDocument();
     expect(within(main()).getByText('Lareth, Mordred')).toBeInTheDocument();
-    expect(within(main()).getByRole('link', { name: 'Ghoul' })).toHaveAttribute(
+    const encounters = within(main()).getByRole('list', { name: 'Encounters for Stop the cult' });
+    expect(
+      within(encounters)
+        .getAllByRole('listitem')
+        .map((item) => item.textContent),
+    ).toEqual([
+      'Combat: Ambush — Ghoul ×4 (CR 1), Cult Fanatic (CR 2 · MM p. 34)',
+      'Puzzle: The lair',
+    ]);
+    expect(within(encounters).getByRole('link', { name: 'Ghoul' })).toHaveAttribute(
       'href',
       '/app/2024/monsters/ghoul',
     );
-    expect(within(main()).getByText('Cult Fanatic')).toBeInTheDocument();
-    expect(within(main()).getByText('(CR 2 · MM p. 34)')).toBeInTheDocument();
+    expect(
+      within(main()).getByText('A letter from Lareth, Map of the moathouse'),
+    ).toBeInTheDocument();
+    expect(within(side()).getByText('Elsewhere')).toBeInTheDocument();
   });
 
   it("shows a quest's reward: items with how many, coins, XP, milestone and notes", () => {
@@ -145,7 +181,8 @@ describe('QuestsTab', () => {
     expect(within(lostChild).queryByRole('group', { name: /Reward/ })).not.toBeInTheDocument();
     expect(within(lostChild).queryByRole('list')).not.toBeInTheDocument();
     expect(within(lostChild).queryByText('NPCs')).not.toBeInTheDocument();
-    expect(within(lostChild).queryByText('Monsters')).not.toBeInTheDocument();
+    expect(within(lostChild).queryByText('Encounters')).not.toBeInTheDocument();
+    expect(within(lostChild).queryByText('Handouts')).not.toBeInTheDocument();
   });
 
   it('plans a quest in a modal over the list', () => {
@@ -158,7 +195,7 @@ describe('QuestsTab', () => {
       within(plan)
         .getAllByRole('heading', { level: 3 })
         .map((heading) => heading.textContent),
-    ).toEqual(['Maps', 'NPCs involved', 'Monsters', 'Reward']);
+    ).toEqual(['Maps', 'NPCs involved', 'Handouts', 'Encounters', 'Reward']);
     expect(main()).toBeInTheDocument();
 
     fireEvent.click(within(plan).getByRole('button', { name: 'Cancel' }));
@@ -180,7 +217,7 @@ describe('QuestsTab', () => {
 
     fireEvent.click(within(main()).getByRole('button', { name: 'Plan the quest' }));
     const plan = screen.getByRole('dialog', { name: 'Plan: Stop the cult' });
-    fireEvent.change(within(plan).getByRole('spinbutton', { name: 'XP' }), {
+    fireEvent.change(within(rewardPart(plan)).getByRole('spinbutton', { name: 'XP' }), {
       target: { value: '600' },
     });
     expect(state.api.updateChild).not.toHaveBeenCalled();
@@ -198,7 +235,7 @@ describe('QuestsTab', () => {
 
     fireEvent.click(within(main()).getByRole('button', { name: 'Plan the quest' }));
     const plan = screen.getByRole('dialog', { name: 'Plan: Stop the cult' });
-    fireEvent.change(within(plan).getByRole('spinbutton', { name: 'XP' }), {
+    fireEvent.change(within(rewardPart(plan)).getByRole('spinbutton', { name: 'XP' }), {
       target: { value: '600' },
     });
     fireEvent.click(within(plan).getByRole('button', { name: 'Cancel' }));

@@ -69,15 +69,44 @@ export const rebaseLinks = (
   });
 };
 
-/** How commitLinks saves a session's or a quest's links */
+/**
+ * The campaign's book reference for a compendium entry, made at most once
+ * however many links in one Save pick it (a quest's reward and its
+ * encounters can pick the same entry).
+ */
+export const referenceMaker = (api: CampaignApi, campaign: Campaign): LinkOps['reference'] => {
+  const made = new Map<string, Promise<{ id: string }>>();
+  return (entry) => {
+    const reference = made.get(entry.foundryUuid) ?? referenceFor(api, campaign, entry);
+    made.set(entry.foundryUuid, reference);
+    return reference;
+  };
+};
+
+// What owns the links: a session, a quest, or one of a quest's encounters
+export type LinkOwner =
+  | { kind: 'sessions' | 'quests'; id: string }
+  | { kind: 'encounters'; questId: string; id: string };
+
+/** How commitLinks saves a session's, quest's or encounter's links */
 export const linkOpsFor = (
   api: CampaignApi,
   campaign: Campaign,
-  owner: { kind: 'sessions' | 'quests'; id: string },
+  owner: LinkOwner,
+  reference: LinkOps['reference'] = referenceMaker(api, campaign),
 ): LinkOps => {
   const { slug } = campaign;
-  const reference = (entry: Parameters<LinkOps['reference']>[0]) =>
-    referenceFor(api, campaign, entry);
+  if (owner.kind === 'encounters') {
+    const { questId, id } = owner;
+    return {
+      add: (type, linkableId, quantity) =>
+        api.addEncounterLink(slug, questId, id, type, linkableId, quantity),
+      remove: (linkId) => api.removeEncounterLink(slug, questId, id, linkId),
+      setQuantity: (linkId, quantity) =>
+        api.updateEncounterLink(slug, questId, id, linkId, { quantity }),
+      reference,
+    };
+  }
   return owner.kind === 'sessions'
     ? {
         add: (type, id, quantity) => api.addSessionLink(slug, owner.id, type, id, quantity),

@@ -25,8 +25,8 @@ type CompendiumPickerProps = {
 
 /**
  * Checkboxes for the Foundry compendiums a campaign searches, grouped by
- * book, with one to turn them all on or off. Saves the ones turned off, so a
- * compendium indexed later is on by default.
+ * book (the DM's own under Homebrew), with one to turn them all on or off.
+ * Saves the ones turned off, so a compendium indexed later is on by default.
  */
 const CompendiumPicker = ({ packs, excluded, onChange, disabled }: CompendiumPickerProps) => {
   if (!packs) return <Meta>Loading compendiums…</Meta>;
@@ -34,8 +34,9 @@ const CompendiumPicker = ({ packs, excluded, onChange, disabled }: CompendiumPic
     return (
       <Meta>
         No compendiums yet. Install Dorman Lakely&apos;s Campaign Planner in Foundry and link it to
-        Dungeon Master Guru. It sends the index of your SRD and 2024 core book compendiums here, so
-        monsters and items you pick become links you can drag onto a scene.
+        Dungeon Master Guru. It sends the index of your SRD and 2024 core book compendiums here, and
+        of the homebrew compendiums and world actors you choose, so monsters and items you pick
+        become links you can drag onto a scene.
       </Meta>
     );
 

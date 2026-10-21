@@ -4,8 +4,8 @@ module Admin
   module V1
     module Campaigns
       # /v1/campaigns/:campaign_id/quests/:quest_id/links: the NPCs a quest
-      # involves, the monsters for its encounters, and its reward items with
-      # how many of each
+      # involves, and its reward items with how many of each (its monsters
+      # are in its encounters)
       class QuestLinksController < BaseController
         include CampaignLinkActions
 

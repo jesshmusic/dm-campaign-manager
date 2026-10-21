@@ -14,13 +14,15 @@ module CampaignRecord
 
   module ClassMethods
     # The [model, foreign key] pairs of the campaign's records that point at
-    # this type: a quest's giver_npc_id, a location's parent_id, ...
+    # this type: a quest's giver_npc_id, a location's parent_id, ... Only
+    # optional ones: a required one (an encounter's quest_id) is its owner,
+    # and the record goes with it.
     def pointers
       @pointers ||= begin
         models = Campaign.reflect_on_all_associations(:has_many).map(&:klass).uniq.select { |model| model < CampaignRecord }
         models.flat_map do |model|
           model.reflect_on_all_associations(:belongs_to)
-               .select { |reflection| !reflection.polymorphic? && reflection.klass == self }
+               .select { |reflection| !reflection.polymorphic? && reflection.options[:optional] && reflection.klass == self }
                .map { |reflection| [model, reflection.foreign_key] }
         end
       end
@@ -63,6 +65,11 @@ module CampaignRecord
     # For records a quest can link to (NPCs, book references): deleting the record removes those links
     def linkable_from_quests
       has_many :quest_links, class_name: 'CampaignQuestLink', as: :linkable, dependent: :destroy, inverse_of: :linkable
+    end
+
+    # For records an encounter can link to (NPCs, book references): deleting the record removes those links
+    def linkable_from_encounters
+      has_many :encounter_links, class_name: 'CampaignEncounterLink', as: :linkable, dependent: :destroy, inverse_of: :linkable
     end
 
     # Validates a jsonb column holding a list of strings

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_10_20_120000) do
+ActiveRecord::Schema[7.1].define(version: 2026_10_21_140000) do
   create_schema "heroku_ext"
 
   # These are extensions that must be enabled in order to support this database
@@ -111,6 +111,43 @@ ActiveRecord::Schema[7.1].define(version: 2026_10_20_120000) do
     t.index ["user_id"], name: "index_backgrounds_on_user_id"
   end
 
+  create_table "campaign_encounter_links", force: :cascade do |t|
+    t.bigint "encounter_id", null: false
+    t.string "linkable_type", null: false
+    t.bigint "linkable_id", null: false
+    t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
+    t.integer "position", default: 0, null: false
+    t.integer "quantity"
+    t.bigint "sync_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["encounter_id", "linkable_type", "linkable_id"], name: "index_campaign_encounter_links_uniqueness", unique: true
+    t.index ["encounter_id"], name: "index_campaign_encounter_links_on_encounter_id"
+    t.index ["linkable_type", "linkable_id"], name: "index_campaign_encounter_links_on_linkable"
+    t.index ["uuid"], name: "index_campaign_encounter_links_on_uuid", unique: true
+  end
+
+  create_table "campaign_encounters", force: :cascade do |t|
+    t.bigint "campaign_id", null: false
+    t.bigint "quest_id", null: false
+    t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
+    t.string "name", null: false
+    t.string "kind", default: "combat", null: false
+    t.text "description"
+    t.text "notes"
+    t.integer "position", default: 0, null: false
+    t.jsonb "foundry_scenes", default: [], null: false
+    t.jsonb "reward_currency", default: {}, null: false
+    t.integer "reward_xp"
+    t.bigint "sync_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["campaign_id", "sync_version"], name: "index_campaign_encounters_on_campaign_id_and_sync_version"
+    t.index ["campaign_id"], name: "index_campaign_encounters_on_campaign_id"
+    t.index ["quest_id"], name: "index_campaign_encounters_on_quest_id"
+    t.index ["uuid"], name: "index_campaign_encounters_on_uuid", unique: true
+  end
+
   create_table "campaign_factions", force: :cascade do |t|
     t.bigint "campaign_id", null: false
     t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
@@ -163,6 +200,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_10_20_120000) do
     t.datetime "updated_at", null: false
     t.string "foundry_scene_uuid"
     t.string "foundry_scene_name"
+    t.jsonb "roll_tables", default: [], null: false
     t.index ["campaign_id", "sync_version"], name: "index_campaign_locations_on_campaign_id_and_sync_version"
     t.index ["campaign_id"], name: "index_campaign_locations_on_campaign_id"
     t.index ["foundry_map_id"], name: "index_campaign_locations_on_foundry_map_id"
@@ -245,6 +283,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_10_20_120000) do
     t.jsonb "reward_currency", default: {}, null: false
     t.integer "reward_xp"
     t.boolean "milestone", default: false, null: false
+    t.jsonb "handouts", default: [], null: false
     t.index ["campaign_id", "sync_version"], name: "index_campaign_quests_on_campaign_id_and_sync_version"
     t.index ["campaign_id"], name: "index_campaign_quests_on_campaign_id"
     t.index ["giver_npc_id"], name: "index_campaign_quests_on_giver_npc_id"
@@ -446,6 +485,8 @@ ActiveRecord::Schema[7.1].define(version: 2026_10_20_120000) do
     t.string "detail"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "homebrew", default: false, null: false
+    t.string "pack_label"
     t.index ["user_id", "category", "name"], name: "index_compendium_entries_on_user_id_and_category_and_name"
     t.index ["user_id", "foundry_uuid"], name: "index_compendium_entries_on_user_id_and_foundry_uuid", unique: true
     t.index ["user_id", "pack"], name: "index_compendium_entries_on_user_id_and_pack"
@@ -1151,6 +1192,9 @@ ActiveRecord::Schema[7.1].define(version: 2026_10_20_120000) do
   add_foreign_key "api_tokens", "users"
   add_foreign_key "armor_classes", "items"
   add_foreign_key "backgrounds", "users"
+  add_foreign_key "campaign_encounter_links", "campaign_encounters", column: "encounter_id", on_delete: :cascade
+  add_foreign_key "campaign_encounters", "campaign_quests", column: "quest_id", on_delete: :cascade
+  add_foreign_key "campaign_encounters", "campaigns"
   add_foreign_key "campaign_factions", "campaigns"
   add_foreign_key "campaign_fronts", "campaign_factions", column: "faction_id", on_delete: :nullify
   add_foreign_key "campaign_fronts", "campaign_npcs", column: "npc_id", on_delete: :nullify

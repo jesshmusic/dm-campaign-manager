@@ -8,6 +8,7 @@ import {
   CampaignSummary,
   CompendiumEntry,
   CompendiumPack,
+  Encounter,
   FoundrySceneSummary,
   Front,
   PartyCharacter,
@@ -52,6 +53,7 @@ export const location = (overrides: Partial<Location> = {}): Location => ({
   foundryMapId: null,
   foundrySceneUuid: null,
   foundrySceneName: null,
+  rollTables: [],
   ...overrides,
 });
 
@@ -75,6 +77,23 @@ export const quest = (overrides: Partial<Quest> = {}): Quest => ({
   rewardCurrency: {},
   rewardXp: null,
   milestone: false,
+  handouts: [],
+  links: [],
+  ...overrides,
+});
+
+export const encounter = (overrides: Partial<Encounter> = {}): Encounter => ({
+  id: 'e0',
+  uuid: 'uuid-e0',
+  questId: 'q1',
+  name: 'Ambush',
+  kind: 'combat',
+  description: null,
+  notes: null,
+  position: 0,
+  foundryScenes: [],
+  rewardCurrency: {},
+  rewardXp: null,
   links: [],
   ...overrides,
 });
@@ -273,6 +292,7 @@ export const sampleCampaign = (overrides: Partial<Campaign> = {}): Campaign => (
     quest({ id: 'q2', name: 'Find the lost child', kind: 'side', status: 'available' }),
     quest({ id: 'q3', name: 'Old errand', kind: 'side', status: 'completed', levelMin: 2 }),
   ],
+  encounters: [],
   secrets: [
     secret({
       id: 's1',
@@ -432,6 +452,7 @@ export const campaignSummary = (overrides: Partial<CampaignSummary> = {}): Campa
     npcs: _npcs,
     fronts: _fronts,
     quests: _quests,
+    encounters: _encounters,
     secrets: _secrets,
     sessions: _sessions,
     references: _references,
@@ -657,7 +678,14 @@ export const makeApi = (overrides: Partial<MockApi> = {}): MockApi => ({
   addQuestLink: jest.fn().mockResolvedValue({}),
   updateQuestLink: jest.fn().mockResolvedValue({}),
   removeQuestLink: jest.fn().mockResolvedValue(undefined),
+  createEncounter: jest.fn().mockResolvedValue({ id: 'e-new' }),
+  updateEncounter: jest.fn().mockResolvedValue({}),
+  deleteEncounter: jest.fn().mockResolvedValue(undefined),
+  addEncounterLink: jest.fn().mockResolvedValue({}),
+  updateEncounterLink: jest.fn().mockResolvedValue({}),
+  removeEncounterLink: jest.fn().mockResolvedValue(undefined),
   searchMonsters: jest.fn().mockResolvedValue([]),
+  searchOwnMonsters: jest.fn().mockResolvedValue([]),
   searchItems: jest.fn().mockResolvedValue([]),
   compendiumPacks: jest.fn().mockResolvedValue([]),
   searchCompendium: jest.fn().mockResolvedValue({ indexed: false, results: [] }),

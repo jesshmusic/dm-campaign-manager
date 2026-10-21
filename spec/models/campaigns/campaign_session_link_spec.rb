@@ -170,7 +170,7 @@ RSpec.describe CampaignSessionLink, type: :model do
 
       expect(link.as_json_for_api).to eq(id: link.id.to_s, uuid: link.uuid, linkableType: 'CampaignNpc',
                                          linkableId: link.linkable_id.to_s, name: 'Gundren', slug: nil, detail: nil,
-                                         position: 0, quantity: nil)
+                                         challengeRating: nil, position: 0, quantity: nil)
     end
 
     it 'includes the quantity' do
@@ -192,6 +192,16 @@ RSpec.describe CampaignSessionLink, type: :model do
       link = create(:campaign_session_link, session: session, linkable: reference)
 
       expect(link.as_json_for_api).to include(name: 'Cult Fanatic', detail: 'Monster Manual p. 92')
+    end
+
+    it "gives a monster's or book monster's challenge rating, for encounter difficulty" do
+      monster = create(:monster, user: nil, challenge_rating: '1/4')
+      reference = create(:campaign_reference, campaign: campaign, challenge_rating: '5')
+      potion = create(:campaign_reference, campaign: campaign, category: 'magic_item', challenge_rating: nil)
+
+      expect(create(:campaign_session_link, session: session, linkable: monster).as_json_for_api).to include(challengeRating: '1/4')
+      expect(create(:campaign_session_link, session: session, linkable: reference).as_json_for_api).to include(challengeRating: '5')
+      expect(create(:campaign_session_link, session: session, linkable: potion).as_json_for_api).to include(challengeRating: nil)
     end
 
     it 'includes the slug of a compendium entry' do

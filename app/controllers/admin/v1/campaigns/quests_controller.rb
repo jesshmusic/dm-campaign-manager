@@ -17,7 +17,7 @@ module Admin
           params.require(:quest).permit(
             :name, :kind, :status, :description, :reward, :notes, :act, :position, :level_min, :level_max, :parent_id,
             :giver_npc_id, :location_id, :reward_xp, :milestone,
-            reward_currency: MapsAndCoins::COINS, foundry_scenes: %i[uuid name]
+            reward_currency: MapsAndCoins::COINS, foundry_scenes: %i[uuid name], handouts: %i[uuid name]
           )
         end
       end

@@ -151,6 +151,64 @@ RSpec.describe CampaignQuest, type: :model do
     end
   end
 
+  describe 'handouts' do
+    subject(:quest) { build(:campaign_quest, campaign: campaign) }
+
+    let(:message) do
+      'must be up to 20 Foundry journal entries or pages, each with a journal UUID and a name of up to 120 characters'
+    end
+
+    def handout(index, name: "Handout #{index}")
+      { uuid: "JournalEntry.#{index.to_s.rjust(16, 'a')}", name: name }
+    end
+
+    it 'has none by default' do
+      expect(described_class.new.handouts).to eq([])
+    end
+
+    it 'accepts world and compendium journal entries and pages, keeping only the uuid and name' do
+      quest.handouts = [
+        { uuid: 'JournalEntry.5wVcsNPOg2RjRbFx', name: 'A letter from Lareth', type: 'text' },
+        { uuid: 'JournalEntry.5wVcsNPOg2RjRbFx.JournalEntryPage.abcdefghijklmnop', name: 'The map' },
+        { uuid: 'Compendium.world.handouts.JournalEntry.5wVcsNPOg2RjRbFx', name: 'Rumors' },
+        { uuid: 'Compendium.my-module.lore.JournalEntry.5wVcsNPOg2RjRbFx.JournalEntryPage.abcdefghijklmnop', name: 'Lore' }
+      ]
+
+      expect(quest).to be_valid
+      expect(quest.handouts.first).to eq('uuid' => 'JournalEntry.5wVcsNPOg2RjRbFx', 'name' => 'A letter from Lareth')
+    end
+
+    it 'takes up to 20, in order' do
+      quest.handouts = Array.new(MapsAndCoins::MAX_HANDOUTS) { |i| handout(i) }
+      expect(quest).to be_valid
+      expect(quest.handouts.pluck('name').first(2)).to eq(['Handout 0', 'Handout 1'])
+
+      quest.handouts = Array.new(MapsAndCoins::MAX_HANDOUTS + 1) { |i| handout(i) }
+      expect(quest).not_to be_valid
+      expect(quest.errors[:handouts]).to include(message)
+    end
+
+    it 'rejects anything that is not a journal entry or page with a name' do
+      [[{ name: 'A letter' }], [{ uuid: 'Scene.5wVcsNPOg2RjRbFx', name: 'Pass' }],
+       [{ uuid: 'JournalEntry.short', name: 'Short' }], [{ uuid: 'JournalEntryPage.5wVcsNPOg2RjRbFx', name: 'Page' }],
+       [{ uuid: 'JournalEntry.5wVcsNPOg2RjRbFx.JournalEntryPage.short', name: 'Page' }],
+       [{ uuid: 'Compendium.pack.JournalEntry.5wVcsNPOg2RjRbFx', name: 'No package' }],
+       [handout(1, name: '')], [handout(1, name: 'x' * 121)], 'A letter', [['JournalEntry.5wVcsNPOg2RjRbFx']]].each do |value|
+        quest.handouts = value
+
+        expect(quest).not_to be_valid, "expected #{value.inspect} to be rejected"
+        expect(quest.errors[:handouts]).to include(message)
+      end
+    end
+
+    it 'treats no handouts as an empty list' do
+      quest.handouts = nil
+
+      expect(quest.handouts).to eq([])
+      expect(quest).to be_valid
+    end
+  end
+
   describe 'reward' do
     subject(:quest) { build(:campaign_quest, campaign: campaign) }
 
@@ -224,6 +282,29 @@ RSpec.describe CampaignQuest, type: :model do
     end
   end
 
+  describe 'encounters' do
+    let(:quest) { create(:campaign_quest, campaign: campaign) }
+
+    it 'are in order' do
+      later = create(:campaign_encounter, quest: quest, position: 2)
+      sooner = create(:campaign_encounter, quest: quest, position: 1)
+
+      expect(quest.reload.encounters).to eq([sooner, later])
+    end
+
+    it 'are deleted with the quest, each leaving a tombstone (they sync on their own), but not their links' do
+      encounter = create(:campaign_encounter, quest: quest)
+      create(:campaign_encounter_link, encounter: encounter)
+
+      expect { quest.destroy! }.to change(CampaignTombstone, :count).by(2)
+      expect(CampaignTombstone.pluck(:record_type, :record_uuid)).to contain_exactly(
+        ['CampaignQuest', quest.uuid], ['CampaignEncounter', encounter.uuid]
+      )
+      expect(CampaignEncounter.count).to eq(0)
+      expect(CampaignEncounterLink.count).to eq(0)
+    end
+  end
+
   describe '#as_json_for_api' do
     it 'serializes the quest' do
       npc = create(:campaign_npc, campaign: campaign)
@@ -236,7 +317,7 @@ RSpec.describe CampaignQuest, type: :model do
         id: quest.id.to_s, uuid: quest.uuid, name: 'Lost Mine', kind: 'side', status: 'active', description: nil,
         reward: '500 gp', notes: nil, act: 2, position: 3, levelMin: 2, levelMax: 4, parentId: nil,
         giverNpcId: npc.id.to_s, locationId: location.id.to_s, foundryScenes: [], rewardCurrency: {}, rewardXp: nil,
-        milestone: false, links: []
+        milestone: false, handouts: [], links: []
       )
     end
 
@@ -254,19 +335,28 @@ RSpec.describe CampaignQuest, type: :model do
         rewardCurrency: { 'gp' => 50, 'sp' => 12 }, rewardXp: 450, milestone: true,
         links: [
           { id: npc_link.id.to_s, uuid: npc_link.uuid, linkableType: 'CampaignNpc', linkableId: npc.id.to_s, name: 'Sildar',
-            slug: nil, detail: nil, position: 0, quantity: nil },
+            slug: nil, detail: nil, challengeRating: nil, position: 0, quantity: nil },
           { id: potion_link.id.to_s, uuid: potion_link.uuid, linkableType: 'CampaignReference', linkableId: potion.id.to_s,
-            name: 'Potion of Healing', slug: nil, detail: "Dungeon Master's Guide p. 188", position: 1, quantity: 3 }
+            name: 'Potion of Healing', slug: nil, detail: "Dungeon Master's Guide p. 188", challengeRating: nil, position: 1,
+            quantity: 3 }
         ]
       )
+    end
+
+    it 'includes the handouts in order' do
+      handouts = [{ 'uuid' => 'JournalEntry.5wVcsNPOg2RjRbFx', 'name' => 'A letter' },
+                  { 'uuid' => 'JournalEntry.abcdefghijklmnop', 'name' => 'A map' }]
+      quest = create(:campaign_quest, campaign: campaign, handouts: handouts)
+
+      expect(quest.reload.as_json_for_api[:handouts]).to eq(handouts)
     end
 
     it 'leaves out links whose record is gone' do
       quest = create(:campaign_quest, campaign: campaign)
       kept = create(:campaign_npc, campaign: campaign, name: 'Kept')
       create(:campaign_quest_link, quest: quest, linkable: kept)
-      create(:campaign_quest_link, quest: quest, linkable: create(:monster, user: nil))
-      CampaignQuestLink.where(linkable_type: 'Monster').update_all(linkable_id: 0)
+      create(:campaign_quest_link, quest: quest, linkable: create(:magic_item, user: nil))
+      CampaignQuestLink.where(linkable_type: 'Item').update_all(linkable_id: 0)
 
       expect(quest.reload.as_json_for_api[:links].pluck(:name)).to eq(['Kept'])
     end

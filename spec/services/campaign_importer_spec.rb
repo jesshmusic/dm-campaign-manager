@@ -9,19 +9,23 @@ RSpec.describe CampaignImporter do
       mode: 'sandbox', startLevel: 3, targetLevel: 8, uuid: 'local-uuid', syncVersion: 0, local: true }
   end
   let(:scene) { { uuid: 'Scene.5wVcsNPOg2RjRbFx', name: 'The Crypt' } }
+  let(:handout) { { uuid: 'JournalEntry.5wVcsNPOg2RjRbFx', name: 'A letter' } }
+  let(:table) { { uuid: 'RollTable.5wVcsNPOg2RjRbFx', name: 'Crypt encounters' } }
   let(:records) do
     {
       factions: [{ id: 'f1', name: 'Cult of Nerull', goal: 'Raise the dead' }],
       references: [{ id: 'r1', name: 'Zombie', book: 'mm', category: 'monster', page: 340, challengeRating: '1/4',
                      foundryUuid: 'Compendium.dnd-monster-manual.actors.Actor.mmZombie00000000', citation: 'ignored' }],
       locations: [{ id: 'l1', name: 'The Crypt', features: ['Bone altar'], foundrySceneUuid: scene[:uuid],
-                    foundrySceneName: 'The Crypt', foundryMapId: '99' }],
+                    foundrySceneName: 'The Crypt', foundryMapId: '99', rollTables: [table] }],
       npcs: [{ id: 'n1', name: 'Vex', role: 'bbeg', factionId: 'f1', statBlockReference: { id: 'r1', name: 'Zombie' },
                foundryActorUuid: 'Actor.Kz8rTq2LmN4pQw7X', foundryActorName: 'Vex', monster: nil }],
       fronts: [{ id: 'fr1', name: 'The Plague', npcId: 'n1', factionId: 'f1', stakes: ['Who survives?'],
                  portents: [{ text: 'Villages fall', triggered: true }], clockSegments: 6, clockFilled: 2 }],
       quests: [{ id: 'q1', name: 'Find the crypt', kind: 'main', status: 'active', giverNpcId: 'n1', locationId: 'l1',
-                 foundryScenes: [scene], rewardCurrency: { gp: 50 }, rewardXp: 300, milestone: true }],
+                 foundryScenes: [scene], rewardCurrency: { gp: 50 }, rewardXp: 300, milestone: true, handouts: [handout] }],
+      encounters: [{ id: 'e1', questId: 'q1', name: 'Ambush', kind: 'combat', description: 'At the gate', position: 0,
+                     foundryScenes: [scene], rewardCurrency: { sp: 30 }, rewardXp: 100, syncVersion: 4 }],
       sessions: [{ id: 's1', number: 1, title: 'Outbreak', scheduledOn: '2026-11-01', level: 3, scenes: ['The village'],
                    treasureCurrency: { sp: 12 }, foundryScenes: [scene], displayTitle: 'ignored' }],
       secrets: [{ id: 'x1', text: 'The priest leads the cult', revelation: 'Who leads the cult', revealed: true,
@@ -71,14 +75,18 @@ RSpec.describe CampaignImporter do
     session = campaign.sessions.sole
 
     expect(campaign.book_references.sole).to have_attributes(name: 'Zombie', page: 340, challenge_rating: '1/4')
-    expect(campaign.locations.sole).to have_attributes(features: ['Bone altar'], foundry_scene_uuid: scene[:uuid], foundry_map_id: nil)
+    expect(campaign.locations.sole).to have_attributes(features: ['Bone altar'], foundry_scene_uuid: scene[:uuid], foundry_map_id: nil,
+                                                       roll_tables: [table.stringify_keys])
     expect(npc).to have_attributes(role: 'bbeg', faction: campaign.factions.sole, stat_block_reference: campaign.book_references.sole,
                                    foundry_actor_uuid: 'Actor.Kz8rTq2LmN4pQw7X')
     expect(campaign.fronts.sole).to have_attributes(npc: npc, faction: campaign.factions.sole, stakes: ['Who survives?'],
                                                     portents: [{ 'text' => 'Villages fall', 'triggered' => true }], clock_filled: 2)
     expect(campaign.quests.sole).to have_attributes(giver_npc: npc, location: campaign.locations.sole, status: 'active',
                                                     foundry_scenes: [scene.stringify_keys], reward_currency: { 'gp' => 50 },
-                                                    reward_xp: 300, milestone: true)
+                                                    reward_xp: 300, milestone: true, handouts: [handout.stringify_keys])
+    expect(campaign.encounters.sole).to have_attributes(quest: campaign.quests.sole, name: 'Ambush', kind: 'combat',
+                                                        description: 'At the gate', foundry_scenes: [scene.stringify_keys],
+                                                        reward_currency: { 'sp' => 30 }, reward_xp: 100)
     expect(session).to have_attributes(number: 1, title: 'Outbreak', scheduled_on: Date.new(2026, 11, 1), scenes: ['The village'],
                                        treasure_currency: { 'sp' => 12 })
     expect(campaign.secrets.sole).to have_attributes(revealed?: true, revealed_session: session)
@@ -90,7 +98,8 @@ RSpec.describe CampaignImporter do
     expect(importer.ids).to eq(
       'c1' => campaign.uuid, 'f1' => campaign.factions.sole.uuid, 'r1' => campaign.book_references.sole.uuid,
       'l1' => campaign.locations.sole.uuid, 'n1' => campaign.npcs.sole.uuid, 'fr1' => campaign.fronts.sole.uuid,
-      'q1' => campaign.quests.sole.uuid, 's1' => campaign.sessions.sole.uuid, 'x1' => campaign.secrets.sole.uuid
+      'q1' => campaign.quests.sole.uuid, 'e1' => campaign.encounters.sole.uuid, 's1' => campaign.sessions.sole.uuid,
+      'x1' => campaign.secrets.sole.uuid
     )
   end
 
@@ -120,7 +129,7 @@ RSpec.describe CampaignImporter do
     expect(campaign.quests.find_by(name: 'Open the tomb').parent).to eq(campaign.quests.find_by(name: 'End the plague'))
   end
 
-  it 'creates session and quest links, with their quantities' do
+  it 'creates session, quest and encounter links, with their quantities' do
     zombie = create(:monster, user: nil)
     wand = create(:magic_item, user: nil)
     records[:sessions].first[:links] = [
@@ -135,9 +144,13 @@ RSpec.describe CampaignImporter do
     ]
     records[:quests].first[:links] = [
       { linkableType: 'CampaignNpc', linkableId: 'n1', position: 0 },
-      { linkableType: 'CampaignReference', linkableId: 'r1', position: 1, quantity: 4 },
-      { linkableType: 'Monster', linkableId: zombie.id, position: 2 },
-      { linkableType: 'Item', linkableId: wand.id, position: 3, quantity: 2 }
+      { linkableType: 'Item', linkableId: wand.id, position: 1, quantity: 2 }
+    ]
+    records[:encounters].first[:links] = [
+      { linkableType: 'CampaignReference', linkableId: 'r1', position: 0, quantity: 4 },
+      { linkableType: 'Monster', linkableId: zombie.id, position: 1 },
+      { linkableType: 'CampaignNpc', linkableId: 'n1', position: 2 },
+      { linkableType: 'Item', linkableId: wand.id, position: 3 }
     ]
 
     campaign = import
@@ -147,10 +160,30 @@ RSpec.describe CampaignImporter do
        [campaign.quests.sole, 3, nil], [campaign.fronts.sole, 4, nil], [campaign.book_references.sole, 5, 2],
        [zombie, 6, 3], [wand, 7, 1]]
     )
-    expect(campaign.quests.sole.links.map { |link| [link.linkable, link.quantity] }).to eq(
-      [[campaign.npcs.sole, nil], [campaign.book_references.sole, 4], [zombie, nil], [wand, 2]]
+    expect(campaign.quests.sole.links.map { |link| [link.linkable, link.quantity] }).to eq([[campaign.npcs.sole, nil], [wand, 2]])
+    expect(campaign.encounters.sole.links.map { |link| [link.linkable, link.quantity] }).to eq(
+      [[campaign.book_references.sole, 4], [zombie, nil], [campaign.npcs.sole, nil], [wand, nil]]
     )
     expect(importer.ids).not_to have_key('link1')
+  end
+
+  it "rejects monsters on a quest: they go in its encounters" do
+    records[:quests].first[:links] = [{ linkableType: 'Monster', linkableId: create(:monster, user: nil).id },
+                                      { linkableType: 'CampaignReference', linkableId: 'r1' }]
+
+    expect(errors_from).to eq(["Quests: Find the crypt: Monster can't be linked to a quest"])
+  end
+
+  it 'rejects a monster book reference on a quest' do
+    records[:quests].first[:links] = [{ linkableType: 'CampaignReference', linkableId: 'r1' }]
+
+    expect(errors_from).to eq(["Quests: Find the crypt: CampaignReference r1: Linkable is a monster: monsters go in the quest's encounters"])
+  end
+
+  it 'rejects an encounter without its quest' do
+    records[:encounters] = [{ id: 'e1', name: 'Ambush', questId: 'nope' }, { id: 'e2', name: 'Lost' }]
+
+    expect(errors_from).to contain_exactly('Encounters: Ambush: Quest must exist', 'Encounters: Lost: Quest must exist')
   end
 
   it "turns references to records that weren't sent into nil, and skips links to them" do

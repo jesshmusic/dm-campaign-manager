@@ -31,6 +31,35 @@ describe('CompendiumPicker', () => {
     expect(screen.getByRole('checkbox', { name: 'All compendiums' })).toBeChecked();
   });
 
+  it("lists the DM's homebrew compendiums and world actors under Homebrew", () => {
+    const onChange = jest.fn();
+    const packs = [
+      ...samplePacks(),
+      {
+        pack: 'world-actors.greyhawk',
+        book: 'other' as const,
+        bookName: 'Homebrew',
+        label: 'World actors (Greyhawk)',
+        count: 12,
+        homebrew: true,
+      },
+      {
+        pack: 'world.my-monsters',
+        book: 'other' as const,
+        bookName: 'Homebrew',
+        label: 'My Monsters',
+        count: 3,
+        homebrew: true,
+      },
+    ];
+    render(<CompendiumPicker packs={packs} excluded={[]} onChange={onChange} />);
+
+    expect(checkbox('Homebrew', /World actors \(Greyhawk\)/)).toBeChecked();
+    fireEvent.click(checkbox('Homebrew', /My Monsters/));
+
+    expect(onChange).toHaveBeenCalledWith(['world.my-monsters']);
+  });
+
   it('unchecks excluded packs and marks the all checkbox as partly on', () => {
     render(
       <CompendiumPicker packs={samplePacks()} excluded={['dnd5e.actors24']} onChange={jest.fn()} />,

@@ -145,6 +145,49 @@ describe('PlacesTab', () => {
     );
   });
 
+  it("shows a place's roll tables, added in Foundry", () => {
+    const campaign = sampleCampaign();
+    campaign.locations[0] = {
+      ...campaign.locations[0],
+      rollTables: [
+        { uuid: 'RollTable.5wVcsNPOg2RjRbFx', name: 'Village encounters' },
+        { uuid: 'Compendium.dnd5e.tables24.RollTable.abcdefghijklmnop', name: 'Trinkets' },
+      ],
+    };
+    renderTab(campaign);
+
+    const tables = within(cardFor('Hommlet')).getByRole('group', {
+      name: 'Random encounters at Hommlet',
+    });
+    expect(
+      within(tables)
+        .getAllByRole('listitem')
+        .map((item) => item.textContent),
+    ).toEqual(['Village encounters remove', 'Trinkets (compendium) remove']);
+    expect(
+      within(tables).getByText('Add roll tables in Foundry: drag a roll table onto the place.'),
+    ).toBeInTheDocument();
+    expect(within(cardFor('Moathouse')).getByText('No roll tables yet.')).toBeInTheDocument();
+  });
+
+  it('removes a roll table', async () => {
+    const campaign = sampleCampaign();
+    const tables = [
+      { uuid: 'RollTable.5wVcsNPOg2RjRbFx', name: 'Village encounters' },
+      { uuid: 'RollTable.abcdefghijklmnop', name: 'Weather' },
+    ];
+    campaign.locations[0] = { ...campaign.locations[0], rollTables: tables };
+    const { state } = renderTab(campaign);
+
+    fireEvent.click(
+      within(cardFor('Hommlet')).getByRole('button', { name: 'Remove Village encounters' }),
+    );
+
+    await waitFor(() =>
+      expect(state.saveChild).toHaveBeenCalledWith('locations', { roll_tables: [tables[1]] }, 'l1'),
+    );
+  });
+
   it('has no map field in the place form', () => {
     renderTab();
 

@@ -58,12 +58,15 @@ class Campaign < ApplicationRecord
   TRUTH_SENTENCE_END = /[.!?]\s/
   # The planner is built on the 2024 rules (PHB, DMG and Monster Manual)
   EDITION = '2024'
+  MAX_EXCLUDED_PACKS = 200
 
   belongs_to :user
   has_many :factions, class_name: 'CampaignFaction', dependent: :destroy
   has_many :locations, class_name: 'CampaignLocation', dependent: :destroy
   has_many :npcs, class_name: 'CampaignNpc', dependent: :destroy
   has_many :fronts, class_name: 'CampaignFront', dependent: :destroy
+  # Before quests, so encounters going with the campaign leave no tombstones
+  has_many :encounters, class_name: 'CampaignEncounter', dependent: :destroy
   has_many :quests, class_name: 'CampaignQuest', dependent: :destroy
   has_many :sessions, class_name: 'CampaignSession', dependent: :destroy
   has_many :secrets, class_name: 'CampaignSecret', dependent: :destroy
@@ -217,23 +220,31 @@ class Campaign < ApplicationRecord
       locations: locations.order(:name).map(&:as_json_for_api),
       npcs: npcs.includes(:monster, :stat_block_reference).order(:name).map(&:as_json_for_api),
       fronts: fronts.order(:created_at).map(&:as_json_for_api),
-      quests: quests.includes(links: :linkable).order(:kind, :act, :position, :created_at).map(&:as_json_for_api),
       secrets: secrets.order(:position, :created_at).map(&:as_json_for_api),
-      sessions: sessions.includes(links: :linkable).order(:number).map(&:as_json_for_api),
       references: book_references.order(:book, :name).map(&:as_json_for_api),
       party: party.order(:name).map(&:as_json_for_api),
       revelations: revelation_summaries,
       sceneThumbnails: FoundryScene.thumbnail_urls(user, foundry_scene_uuids)
-    )
+    ).merge(linked_records_json)
   end
 
-  # The Foundry scenes it uses as maps: each place's map, and each session's and quest's maps
+  # The Foundry scenes it uses as maps: each place's map, and each session's, quest's and encounter's maps
   def foundry_scene_uuids
-    listed = MapsAndCoins.scene_uuids(sessions.pluck(:foundry_scenes).flatten + quests.pluck(:foundry_scenes).flatten)
+    lists = [sessions, quests, encounters].flat_map { |records| records.pluck(:foundry_scenes) }
+    listed = MapsAndCoins.scene_uuids(lists.flatten)
     (locations.where.not(foundry_scene_uuid: nil).pluck(:foundry_scene_uuid) + listed).uniq
   end
 
   private
+
+  # The records with links: quests, their encounters (by quest, in order) and sessions
+  def linked_records_json
+    {
+      quests: quests.includes(links: :linkable).order(:kind, :act, :position, :created_at).map(&:as_json_for_api),
+      encounters: encounters.includes(links: :linkable).order(:quest_id, :position, :id).map(&:as_json_for_api),
+      sessions: sessions.includes(links: :linkable).order(:number).map(&:as_json_for_api)
+    }
+  end
 
   def assign_uuid
     self.uuid ||= SecureRandom.uuid
@@ -267,9 +278,11 @@ class Campaign < ApplicationRecord
     truths.is_a?(Array) && truths.all? { |truth| truth.is_a?(Hash) && truth.values_at('name', 'description').all?(String) }
   end
 
+  # The core book packs, and homebrew packs (which a DM's other worlds may
+  # have, so any well-formed pack id)
   def excluded_compendium_packs_are_known
     packs = excluded_compendium_packs
-    return if packs.is_a?(Array) && (packs - CompendiumEntry::PACKS.keys).empty?
+    return if packs.is_a?(Array) && packs.size <= MAX_EXCLUDED_PACKS && packs.all? { |pack| CompendiumEntry.pack_id?(pack) }
 
     errors.add(:excluded_compendium_packs, 'must be a list of supported compendiums')
   end

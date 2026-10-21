@@ -8,13 +8,14 @@ import { formatCoins } from '../coins';
 import { linkDetail, LinkName } from '../components/CompendiumLinks';
 import SceneThumbnail, { SceneGallery } from '../components/SceneThumbnail';
 import QuestPlan from '../quest/QuestPlan';
+import { questEncounters } from '../quest/encounterDraft';
 import { QUEST_STATUS_LABELS, QUEST_STATUS_TONES, questDetails } from '../quest/questDetails';
-import { formatXp, questLinkGroups } from '../quest/questLinks';
+import { formatXp, linkGroups, questLinkGroups } from '../quest/questLinks';
 import { CampaignState } from '../useCampaign';
-import { Campaign, Quest, QuestKind, QuestLink } from '../types';
+import { Campaign, ENCOUNTER_KIND_LABELS, Quest, QuestKind, QuestLink } from '../types';
 import { Badge, CardHeader, List, Meta } from '../Campaigns.styles';
 
-// "NPCs: Lareth, Mordred" and "Monsters: Ghoul (CR 1)"
+// "NPCs: Lareth, Mordred", "Encounters: Combat: Ambush (Ghoul ×4)" and "Handouts: A letter"
 const Facts = styled.dl`
   display: grid;
   gap: 0.25rem 0.5rem;
@@ -27,6 +28,11 @@ const Facts = styled.dl`
 
   dd {
     margin: 0;
+  }
+
+  dd ul {
+    margin: 0;
+    padding-left: 1rem;
   }
 `;
 
@@ -115,6 +121,7 @@ const QuestsTab = ({ campaign, state }: QuestsTabProps) => {
     parent_id: quest.parentId,
   });
 
+  // "Ghoul ×4 (CR 1), Cult Fanatic (CR 2 · MM p. 34)"
   const linkList = (links: QuestLink[]) =>
     links.map((link, index) => {
       const detail = linkDetail(link, campaign);
@@ -123,6 +130,7 @@ const QuestsTab = ({ campaign, state }: QuestsTabProps) => {
           {index > 0 && ', '}
           <span>
             <LinkName link={link} campaign={campaign} />
+            {(link.quantity ?? 1) > 1 && ` ×${link.quantity}`}
             {detail && <Meta as="span"> ({detail})</Meta>}
           </span>
         </Fragment>
@@ -131,7 +139,8 @@ const QuestsTab = ({ campaign, state }: QuestsTabProps) => {
 
   const renderQuest = (quest: Quest) => {
     const details = questDetails(quest, campaign);
-    const { npcs, monsters, rewards } = questLinkGroups(quest, campaign);
+    const { npcs, rewards } = questLinkGroups(quest, campaign);
+    const encounters = questEncounters(quest, campaign);
     const coins = formatCoins(quest.rewardCurrency);
     const xp = formatXp(quest.rewardXp);
     const hasReward = [rewards.length > 0, coins, xp, quest.milestone, quest.reward].some(Boolean);
@@ -158,7 +167,7 @@ const QuestsTab = ({ campaign, state }: QuestsTabProps) => {
             ))}
           </SceneGallery>
         )}
-        {(npcs.length > 0 || monsters.length > 0) && (
+        {(npcs.length > 0 || encounters.length > 0 || quest.handouts.length > 0) && (
           <Facts>
             {npcs.length > 0 && (
               <>
@@ -166,10 +175,28 @@ const QuestsTab = ({ campaign, state }: QuestsTabProps) => {
                 <dd>{npcs.map((npc) => npc.name).join(', ')}</dd>
               </>
             )}
-            {monsters.length > 0 && (
+            {encounters.length > 0 && (
               <>
-                <dt>Monsters</dt>
-                <dd>{linkList(monsters)}</dd>
+                <dt>Encounters</dt>
+                <dd>
+                  <ul aria-label={`Encounters for ${quest.name}`}>
+                    {encounters.map((encounter) => {
+                      const { monsters } = linkGroups(encounter.links, campaign);
+                      return (
+                        <li key={encounter.id}>
+                          {ENCOUNTER_KIND_LABELS[encounter.kind]}: <strong>{encounter.name}</strong>
+                          {monsters.length > 0 && <> — {linkList(monsters)}</>}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </dd>
+              </>
+            )}
+            {quest.handouts.length > 0 && (
+              <>
+                <dt>Handouts</dt>
+                <dd>{quest.handouts.map((handout) => handout.name).join(', ')}</dd>
               </>
             )}
           </Facts>
@@ -226,8 +253,8 @@ const QuestsTab = ({ campaign, state }: QuestsTabProps) => {
   return (
     <>
       <Meta>
-        Plan a quest for its maps, the NPCs involved, its monsters and its reward. It all syncs to
-        Foundry with Dorman Lakely&apos;s Campaign Planner.
+        Plan a quest for its maps, the NPCs involved, its encounters, handouts and reward. It all
+        syncs to Foundry with Dorman Lakely&apos;s Campaign Planner.
       </Meta>
       {section('main', 'Main quests', 'No main quests yet. What must the party do to win?')}
       {section(
