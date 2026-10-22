@@ -31,7 +31,7 @@ const fields: FieldConfig[] = [
   },
   { name: 'level', label: 'Level', type: 'number', min: 1, max: 20 },
   { name: 'notes', label: 'Notes', hint: 'Only you see this', type: 'textarea', wide: true },
-  { name: 'features', label: 'Features', type: 'lines', wide: true },
+  { name: 'features', label: 'Features', type: 'lines', noun: 'feature', max: 20, wide: true },
   { name: 'revealed', label: 'Already revealed', type: 'checkbox' },
 ];
 
@@ -73,6 +73,14 @@ describe('toAttributes', () => {
       notes: 'Beautiful',
       features: ['Bone altar', 'Collapsed stair'],
       revealed: true,
+    });
+  });
+
+  it("saves a list's rows trimmed, without empty ones", () => {
+    expect(
+      toAttributes(fields, { features: [' Bone altar ', '', '  ', 'Collapsed stair'] }),
+    ).toMatchObject({
+      features: ['Bone altar', 'Collapsed stair'],
     });
   });
 
@@ -195,7 +203,7 @@ describe('truths fields', () => {
 });
 
 describe('toFormValues', () => {
-  it('converts a record into strings, joined lines and booleans', () => {
+  it('converts a record into strings, lists and booleans', () => {
     expect(
       toFormValues(fields, {
         name: 'Lareth',
@@ -210,7 +218,7 @@ describe('toFormValues', () => {
       role: 'villain',
       level: '5',
       notes: '',
-      features: 'Bone altar\nCollapsed stair',
+      features: ['Bone altar', 'Collapsed stair'],
       revealed: true,
     });
   });
@@ -221,7 +229,7 @@ describe('toFormValues', () => {
       role: '',
       level: '',
       notes: '',
-      features: '',
+      features: [],
       revealed: false,
     });
   });
@@ -305,7 +313,15 @@ describe('EntityForm', () => {
     fireEvent.change(input('name'), { target: { value: ' Elmo the Drunk ' } });
     fireEvent.keyDown(input('role'), { key: 'Backspace' });
     fireEvent.change(input('level'), { target: { value: '4' } });
-    fireEvent.change(input('features'), { target: { value: 'One\n\nTwo' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Add a feature' }));
+    fireEvent.change(screen.getByRole('textbox', { name: 'Feature 1' }), {
+      target: { value: ' One ' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Add a feature' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Add a feature' }));
+    fireEvent.change(screen.getByRole('textbox', { name: 'Feature 3' }), {
+      target: { value: 'Two' },
+    });
     fireEvent.click(screen.getByRole('checkbox', { name: 'Already revealed' }));
     fireEvent.click(screen.getByRole('button', { name: 'Save' }));
 

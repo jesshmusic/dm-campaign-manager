@@ -4,9 +4,17 @@ import PlannerModal from './PlannerModal';
 import { Form } from '../Campaigns.styles';
 import { Truth } from '../types';
 import { truthsFrom, truthsMissingName, truthsToSave } from '../truths';
+import { listToSave } from './ListEditor';
 
-// Text, a checkbox, or a list of truths
-export type FormValue = string | boolean | Truth[];
+/** A list field's rows: from an array, or from text with one per line */
+export const linesFrom = (value: unknown): string[] => {
+  if (Array.isArray(value)) return value.map((item) => String(item ?? ''));
+  if (typeof value === 'string' && value !== '') return value.split('\n');
+  return [];
+};
+
+// Text, a checkbox, a list of short lines, or a list of truths
+export type FormValue = string | boolean | string[] | Truth[];
 export type FormValues = Record<string, FormValue>;
 
 type BaseField = {
@@ -28,8 +36,8 @@ export type FieldConfig = BaseField &
   (
     | { type: 'text'; required?: boolean; placeholder?: string; helper?: FieldHelper }
     | { type: 'textarea'; placeholder?: string; helper?: FieldHelper }
-    // A list of strings, edited one per line
-    | { type: 'lines'; placeholder?: string }
+    // A list of short lines built a row at a time (see ListEditor): noun names one row
+    | { type: 'lines'; noun: string; max: number; placeholder?: string }
     // Truths of the setting, each a name and a description (see TruthsEditor)
     | { type: 'truths' }
     | { type: 'number'; min?: number; max?: number }
@@ -47,16 +55,8 @@ export const toAttributes = (fields: FieldConfig[], values: FormValues) =>
       const value = values[field.name];
       if (field.type === 'checkbox') return [field.name, Boolean(value)];
       if (field.type === 'truths') return [field.name, truthsToSave(truthsFrom(value))];
+      if (field.type === 'lines') return [field.name, listToSave(linesFrom(value))];
       const text = typeof value === 'string' ? value.trim() : '';
-      if (field.type === 'lines') {
-        return [
-          field.name,
-          text
-            .split('\n')
-            .map((line) => line.trim())
-            .filter(Boolean),
-        ];
-      }
       if (field.type === 'number') return [field.name, text === '' ? null : Number(text)];
       return [field.name, text === '' ? null : text];
     }),
@@ -69,6 +69,7 @@ export const toFormValues = (fields: FieldConfig[], record: Record<string, unkno
       const value = record[field.name];
       if (field.type === 'checkbox') return [field.name, Boolean(value)];
       if (field.type === 'truths') return [field.name, truthsFrom(value)];
+      if (field.type === 'lines') return [field.name, linesFrom(value)];
       if (Array.isArray(value)) return [field.name, value.join('\n')];
       return [field.name, value === null || value === undefined ? '' : String(value)];
     }),

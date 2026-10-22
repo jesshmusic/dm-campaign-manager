@@ -1,3 +1,4 @@
+import ListEditor, { listToSave } from '../components/ListEditor';
 import { useState } from 'react';
 import styled from 'styled-components';
 import { COIN_ERROR, CoinDrafts, coinDrafts, parseCoins } from '../coins';
@@ -60,8 +61,7 @@ type PrepDraft = {
   status: SessionStatus;
   characterNotes: string;
   strongStart: string;
-  // One per line
-  scenes: string;
+  scenes: string[];
   treasure: string;
   coins: CoinDrafts;
   foundryScenes: FoundryScene[];
@@ -74,7 +74,7 @@ const draftFor = (session: PlannerSession): PrepDraft => ({
   status: session.status,
   characterNotes: session.characterNotes ?? '',
   strongStart: session.strongStart ?? '',
-  scenes: session.scenes.join('\n'),
+  scenes: session.scenes,
   treasure: session.treasure ?? '',
   coins: coinDrafts(session.treasureCurrency),
   foundryScenes: session.foundryScenes,
@@ -94,10 +94,7 @@ const attributesFor = (draft: PrepDraft): { attributes: Attributes } | { error: 
       status: draft.status,
       character_notes: textOrNull(draft.characterNotes),
       strong_start: textOrNull(draft.strongStart),
-      scenes: draft.scenes
-        .split('\n')
-        .map((line) => line.trim())
-        .filter(Boolean),
+      scenes: listToSave(draft.scenes),
       treasure: textOrNull(draft.treasure),
       treasure_currency: coins,
       foundry_scenes: draft.foundryScenes,
@@ -286,12 +283,12 @@ const PrepModal = ({ campaign, session, state, onClose }: PrepModalProps) => {
 
         <Step>
           <h3>{PREP_STEPS.scenes}</h3>
-          <Meta>
-            A short list of scenes that might happen. Be ready to throw them away. One per line.
-          </Meta>
-          <DraftTextArea
-            label="Potential scenes"
-            value={draft.scenes}
+          <Meta>A short list of scenes that might happen. Be ready to throw them away.</Meta>
+          <ListEditor
+            noun="scene"
+            max={20}
+            placeholder="e.g. Ambush at the ford"
+            items={draft.scenes}
             onChange={(scenes) => change({ scenes })}
           />
         </Step>

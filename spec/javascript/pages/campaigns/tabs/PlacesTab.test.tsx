@@ -208,7 +208,15 @@ describe('PlacesTab', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Tavern name' }));
     await waitFor(() => expect(input('name')).toHaveValue('The Prancing Pony'));
     await chooseOption('Inside', 'Hommlet');
-    fireEvent.change(input('features'), { target: { value: 'Roaring hearth\nSecret cellar' } });
+    const dialog = within(screen.getByRole('dialog'));
+    fireEvent.click(dialog.getByRole('button', { name: 'Add a feature' }));
+    fireEvent.change(dialog.getByRole('textbox', { name: 'Feature 1' }), {
+      target: { value: 'Roaring hearth' },
+    });
+    fireEvent.click(dialog.getByRole('button', { name: 'Add a feature' }));
+    fireEvent.change(dialog.getByRole('textbox', { name: 'Feature 2' }), {
+      target: { value: 'Secret cellar' },
+    });
     fireEvent.click(
       within(screen.getByRole('dialog')).getByRole('button', { name: 'Add location' }),
     );

@@ -11,7 +11,9 @@ import {
 } from '../Campaigns.styles';
 import SearchSelect from './SearchSelect';
 import TruthsEditor from './TruthsEditor';
+import ListEditor from './ListEditor';
 import { truthsFrom } from '../truths';
+import { linesFrom } from './EntityForm';
 import type { FieldConfig, FieldHelper, FormValue, FormValues } from './EntityForm';
 
 type FormFieldsProps = {
@@ -64,6 +66,16 @@ const FormFields = ({ fields, values, onChange }: FormFieldsProps) => {
             onChange={(truths) => onChange(field.name, truths)}
           />
         );
+      case 'lines':
+        return (
+          <ListEditor
+            noun={field.noun}
+            max={field.max}
+            placeholder={field.placeholder}
+            items={linesFrom(value)}
+            onChange={(items) => onChange(field.name, items)}
+          />
+        );
       case 'select':
         // Type to filter the choices; a field with a blank choice can be cleared
         return (
@@ -88,8 +100,7 @@ const FormFields = ({ fields, values, onChange }: FormFieldsProps) => {
             onChange={(e) => onChange(field.name, e.target.value)}
           />
         );
-      case 'textarea':
-      case 'lines': {
+      case 'textarea': {
         const textarea = (
           <TextArea
             id={id}
@@ -98,7 +109,7 @@ const FormFields = ({ fields, values, onChange }: FormFieldsProps) => {
             onChange={(e) => onChange(field.name, e.target.value)}
           />
         );
-        return field.type === 'textarea' && field.helper ? (
+        return field.helper ? (
           <InputWithHelper>
             {textarea}
             {helperButton(field)}
@@ -135,7 +146,7 @@ const FormFields = ({ fields, values, onChange }: FormFieldsProps) => {
   const checkboxes = fields.filter((field) => field.type === 'checkbox');
 
   const renderField = (field: FieldConfig) =>
-    field.type === 'truths' ? (
+    field.type === 'truths' || field.type === 'lines' ? (
       // A list of inputs, so a group rather than a label
       <Field
         key={field.name}

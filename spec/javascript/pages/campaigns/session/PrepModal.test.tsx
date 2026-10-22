@@ -112,7 +112,8 @@ describe('PrepModal', () => {
 
     expect(field('Character notes')).toHaveValue('Aria wants revenge');
     expect(textbox('Strong start')).toHaveValue('The bell tolls at midnight');
-    expect(textbox('Potential scenes')).toHaveValue('Fight at the gate\nMeet Elmo');
+    expect(textbox('Scene 1')).toHaveValue('Fight at the gate');
+    expect(textbox('Scene 2')).toHaveValue('Meet Elmo');
     expect(within(step(4)).getByText('The mayor is a cultist')).toBeInTheDocument();
     expect(within(step(5)).getByText('Hommlet')).toBeInTheDocument();
     expect(within(step(6)).getByText('Elmo (Ally)')).toBeInTheDocument();
@@ -213,7 +214,11 @@ describe('PrepModal', () => {
       fireEvent.change(field('Status'), { target: { value: 'prepped' } });
       type(field('Character notes'), 'Aria wants revenge on Lareth');
       type(textbox('Strong start'), 'Zombies at the gate');
-      type(textbox('Potential scenes'), ' Fight at the gate \n\nAmbush at the mill\n');
+      type(textbox('Scene 1'), ' Fight at the gate ');
+      fireEvent.click(within(prep()).getByRole('button', { name: 'Remove scene 2' }));
+      fireEvent.click(within(prep()).getByRole('button', { name: 'Add a scene' }));
+      fireEvent.click(within(prep()).getByRole('button', { name: 'Add a scene' }));
+      type(textbox('Scene 3'), 'Ambush at the mill');
       // Secrets: swap one for another
       await chooseOption('Add a secret', "Lareth wears the mayor's ring");
       removeValue('The mayor is a cultist');
