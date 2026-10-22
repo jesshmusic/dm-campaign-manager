@@ -83,6 +83,12 @@ After every commit and push to a PR:
 
 Never merge a PR with failing tests or unresolved Copilot review comments.
 
+## Campaign Planner Data Changes
+
+The campaign planner's records are kept on the website and in Foundry (Dorman Lakely's Campaign Planner module), and
+synced. Any change to their shape needs a Rails data migration, a matching module migration step, and possibly a sync
+data version bump. Follow "Changing the planner's data" in `CAMPAIGN_PLANNER.md`.
+
 ## Zeitwerk Naming Conventions
 
 The `OpenAIClient` class is in `app/models/utilities/openai_client.rb`. Zeitwerk maps `openai` to `OpenAI` via a custom inflector in `config/initializers/zeitwerk.rb`. The `utilities/` folder is added as an autoload root in `config/application.rb`, so classes there don't have a `Utilities::` namespace prefix.

@@ -35,6 +35,36 @@ RSpec.describe 'Admin::V1::Foundry::CampaignsController', type: :request do
     end
   end
 
+  describe 'the module version' do
+    let(:changes_path) { "/v1/foundry/campaigns/#{campaign.uuid}/changes" }
+
+    it 'syncs with modules that send no data version, as before 1.3.1' do
+      get changes_path, params: { since: 0 }, headers: headers
+
+      expect(response).to have_http_status(:success)
+    end
+
+    context 'when the sync no longer takes data version 1' do
+      before { stub_const('CampaignSync::MIN_CLIENT_SCHEMA', 2) }
+
+      it 'asks a module that sends no version, or an older one, to update' do
+        get changes_path, params: { since: 0 }, headers: headers
+        expect(response).to have_http_status(:upgrade_required)
+        expect(json).to include('code' => 'update_module', 'errors' => [/too old to sync/])
+
+        post changes_path, params: { changes: [] }.to_json,
+                           headers: headers.merge('X-Planner-Schema' => '1', 'Content-Type' => 'application/json')
+        expect(response).to have_http_status(:upgrade_required)
+      end
+
+      it 'syncs with a module that speaks the version it takes' do
+        get changes_path, params: { since: 0 }, headers: headers.merge('X-Planner-Schema' => '2')
+
+        expect(response).to have_http_status(:success)
+      end
+    end
+  end
+
   describe 'GET /v1/foundry/campaigns/:uuid/changes' do
     it 'returns the campaign changes since a cursor' do
       create(:campaign_npc, campaign: campaign, name: 'Vex')
