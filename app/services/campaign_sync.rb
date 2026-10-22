@@ -17,6 +17,15 @@
 # quest's or encounter's links are its whole list (see CampaignSync::Links).
 # Each change saves on its own, all or nothing.
 class CampaignSync
+  # The shape of the campaign data the sync sends and takes. Raise it when that
+  # shape changes, and raise MIN_CLIENT_SCHEMA to it too when a module that
+  # speaks the old shape would get the new one wrong: older modules are then
+  # asked to update instead of syncing. Modules send theirs in the
+  # X-Planner-Schema header; ones before 1.3.1 send none and speak 1. See
+  # "Changing the planner's data" in CAMPAIGN_PLANNER.md.
+  SCHEMA_VERSION = 1
+  MIN_CLIENT_SCHEMA = 1
+
   # A change that can't be applied, and why
   class Rejected < StandardError
     attr_reader :messages

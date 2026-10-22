@@ -8,7 +8,10 @@ module Admin
       class CampaignsController < BaseController
         UUID_FORMAT = /\A\h{8}-\h{4}-\h{4}-\h{4}-\h{12}\z/
         REQUEST_ID_FORMAT = /\A[\w-]{8,64}\z/
+        UPDATE_MODULE = "This version of Dorman Lakely's Campaign Planner is too old to sync with Dungeon Master " \
+                        "Guru. Update it in Foundry's Add-on Modules, then try again."
 
+        before_action :require_current_module
         before_action :set_campaign, except: %i[index create import]
 
         # GET /v1/foundry/campaigns
@@ -105,6 +108,16 @@ module Admin
 
         def imported_json(campaign, ids)
           campaign.as_json_for_api.merge(created_json(campaign), ids: ids)
+        end
+
+        # A module that speaks an older shape of campaign data than the sync
+        # still takes is asked to update (see CampaignSync::SCHEMA_VERSION)
+        def require_current_module
+          schema = Integer(request.headers['X-Planner-Schema'].to_s, exception: false) || 1
+          return if schema >= CampaignSync::MIN_CLIENT_SCHEMA
+
+          render json: { errors: [UPDATE_MODULE], code: 'update_module', schemaVersion: CampaignSync::SCHEMA_VERSION },
+                 status: :upgrade_required
         end
 
         def set_campaign
