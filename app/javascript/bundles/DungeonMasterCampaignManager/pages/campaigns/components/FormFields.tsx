@@ -14,6 +14,7 @@ import TruthsEditor from './TruthsEditor';
 import ListEditor from './ListEditor';
 import { truthsFrom } from '../truths';
 import { linesFrom } from './EntityForm';
+import { LEVEL_OPTIONS } from '../levels';
 import type { FieldConfig, FieldHelper, FormValue, FormValues } from './EntityForm';
 
 type FormFieldsProps = {
@@ -84,6 +85,19 @@ const FormFields = ({ fields, values, onChange }: FormFieldsProps) => {
             aria-label={field.label}
             options={field.options}
             value={field.options.find((option) => option.value === String(value ?? '')) ?? null}
+            isClearable={field.blankLabel !== undefined}
+            placeholder={field.blankLabel ?? 'Choose…'}
+            onChange={(option) => onChange(field.name, option?.value ?? '')}
+          />
+        );
+      case 'level':
+        // A dropdown of 1 to 20; type a number to jump to it
+        return (
+          <SearchSelect
+            inputId={id}
+            aria-label={field.label}
+            options={LEVEL_OPTIONS}
+            value={LEVEL_OPTIONS.find((option) => option.value === String(value ?? '')) ?? null}
             isClearable={field.blankLabel !== undefined}
             placeholder={field.blankLabel ?? 'Choose…'}
             onChange={(option) => onChange(field.name, option?.value ?? '')}

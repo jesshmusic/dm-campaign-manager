@@ -46,7 +46,7 @@ class CampaignSync
     'campaign' => {
       collection: nil,
       fields: %w[name premise pitch settingName settingNotes truths tone partySize startLevel targetLevel plannedSessions
-                 cadence status]
+                 cadence status mode]
     },
     'faction' => { collection: :factions, fields: %w[name goal description notes] },
     'location' => {

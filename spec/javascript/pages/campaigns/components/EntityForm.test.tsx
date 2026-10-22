@@ -102,6 +102,42 @@ describe('toAttributes', () => {
   });
 });
 
+describe('level fields', () => {
+  const levelFields: FieldConfig[] = [
+    { name: 'level_min', label: 'Minimum level', type: 'level', blankLabel: 'Any' },
+  ];
+
+  it('saves a picked level as a number, and none as null', () => {
+    expect(toAttributes(levelFields, { level_min: '4' })).toEqual({ level_min: 4 });
+    expect(toAttributes(levelFields, { level_min: '' })).toEqual({ level_min: null });
+    expect(toFormValues(levelFields, { level_min: 4 })).toEqual({ level_min: '4' });
+  });
+
+  it('is a dropdown of 1 to 20, showing the blank choice with no level', async () => {
+    const onSubmit = jest.fn().mockResolvedValue(true);
+    render(
+      <EntityForm
+        title="Edit quest"
+        fields={levelFields}
+        initialValues={{ level_min: '' }}
+        submitLabel="Save"
+        onSubmit={onSubmit}
+        onCancel={jest.fn()}
+      />,
+    );
+
+    expect(screen.getByText('Any')).toBeInTheDocument();
+    openSelect('Minimum level');
+    expect(menuOptions()).toHaveLength(20);
+    expect(menuOptions()[0]).toBe('1');
+    expect(menuOptions()[19]).toBe('20');
+    await chooseOption('Minimum level', '12', '12');
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+
+    await waitFor(() => expect(onSubmit).toHaveBeenCalledWith({ level_min: 12 }));
+  });
+});
+
 describe('truths fields', () => {
   const truthFields: FieldConfig[] = [
     { name: 'truths', label: 'Truths of the setting', hint: 'About six', type: 'truths' },

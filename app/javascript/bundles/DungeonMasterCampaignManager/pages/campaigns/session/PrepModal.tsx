@@ -41,10 +41,8 @@ import {
   SessionStatus,
 } from '../types';
 import { AddHeading, Field, FormGrid, Input, Meta, Select } from '../Campaigns.styles';
+import { LEVEL_OPTIONS, MAX_LEVEL } from '../levels';
 import { PartyList, PREP_STEPS, Step } from './prepSteps';
-
-export const MAX_LEVEL = 20;
-export const LEVEL_ERROR = 'Party level must be a whole number from 1 to 20.';
 
 const Steps = styled.div`
   display: flex;
@@ -82,8 +80,8 @@ const draftFor = (session: PlannerSession): PrepDraft => ({
 
 // The session attributes a draft saves, or why it can't be saved
 const attributesFor = (draft: PrepDraft): { attributes: Attributes } | { error: string } => {
-  const level = parseWholeNumber(draft.level, 1, MAX_LEVEL);
-  if (level === undefined) return { error: LEVEL_ERROR };
+  // Picked from 1 to 20, or not set
+  const level = parseWholeNumber(draft.level, 1, MAX_LEVEL) ?? null;
   const coins = parseCoins(draft.coins);
   if (!coins) return { error: COIN_ERROR };
   return {
@@ -223,15 +221,14 @@ const PrepModal = ({ campaign, session, state, onClose }: PrepModalProps) => {
         </Field>
         <Field>
           Party level
-          <Input
-            type="number"
-            inputMode="numeric"
-            min={1}
-            max={MAX_LEVEL}
-            step={1}
-            value={draft.level}
-            onChange={(event) => change({ level: event.target.value })}
-          />
+          <Select value={draft.level} onChange={(event) => change({ level: event.target.value })}>
+            <option value="">Not set</option>
+            {LEVEL_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </Select>
         </Field>
         <Field>
           Status

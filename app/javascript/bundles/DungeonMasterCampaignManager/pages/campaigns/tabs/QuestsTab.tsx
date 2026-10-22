@@ -78,8 +78,8 @@ const QuestsTab = ({ campaign, state }: QuestsTabProps) => {
       ],
     },
     { name: 'act', label: 'Act', type: 'number', min: 1, max: 20 },
-    { name: 'level_min', label: 'Minimum level', type: 'number', min: 1, max: 20 },
-    { name: 'level_max', label: 'Maximum level', type: 'number', min: 1, max: 20 },
+    { name: 'level_min', label: 'Minimum level', type: 'level', blankLabel: 'Any' },
+    { name: 'level_max', label: 'Maximum level', type: 'level', blankLabel: 'Any' },
     {
       name: 'giver_npc_id',
       label: 'Quest giver',

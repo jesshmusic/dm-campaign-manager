@@ -5,6 +5,7 @@ import NewCampaign from '../../../../app/javascript/bundles/DungeonMasterCampaig
 import { DRAFT_KEY } from '../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/setup/useSetupDraft';
 import { jsonResponse, playerCharacter, sampleCampaign, samplePacks, setupGuide } from './fixtures';
 import { creditedTitles, creditLines } from './creditHelpers';
+import { chooseOption, chosenOption } from './selectHelpers';
 
 const mockGetAccessTokenSilently = jest.fn(() => Promise.resolve('test-token'));
 jest.mock('@auth0/auth0-react', () => ({
@@ -389,7 +390,7 @@ describe('NewCampaign', () => {
         'AkraCleric (Life Domain)5Sam',
       );
       expect(input('party_size')).toHaveValue(4);
-      expect(input('start_level')).toHaveValue(1);
+      expect(chosenOption('Starting level')).toBe('1');
     });
 
     it('counts the players from the party until the DM types a number', async () => {
@@ -456,8 +457,8 @@ describe('NewCampaign', () => {
       fireEvent.change(input('pitch'), { target: { value: 'Hold the walls' } });
       next();
       fireEvent.click(await screen.findByRole('checkbox', { name: 'Akra is in the party' }));
-      fireEvent.change(input('start_level'), { target: { value: '3' } });
-      fireEvent.change(input('target_level'), { target: { value: '8' } });
+      await chooseOption('Starting level', '3');
+      await chooseOption('Target level', '8');
       fireEvent.change(input('planned_sessions'), { target: { value: '6' } });
       fireEvent.change(input('cadence'), { target: { value: 'weekly' } });
       next();

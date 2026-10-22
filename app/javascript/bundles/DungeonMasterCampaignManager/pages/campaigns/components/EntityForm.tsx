@@ -41,6 +41,8 @@ export type FieldConfig = BaseField &
     // Truths of the setting, each a name and a description (see TruthsEditor)
     | { type: 'truths' }
     | { type: 'number'; min?: number; max?: number }
+    // A character level, picked from 1 to 20; a field with a blank label can be cleared
+    | { type: 'level'; blankLabel?: string }
     | { type: 'select'; options: { value: string; label: string }[]; blankLabel?: string }
     | { type: 'checkbox' }
   );
@@ -57,7 +59,9 @@ export const toAttributes = (fields: FieldConfig[], values: FormValues) =>
       if (field.type === 'truths') return [field.name, truthsToSave(truthsFrom(value))];
       if (field.type === 'lines') return [field.name, listToSave(linesFrom(value))];
       const text = typeof value === 'string' ? value.trim() : '';
-      if (field.type === 'number') return [field.name, text === '' ? null : Number(text)];
+      if (field.type === 'number' || field.type === 'level') {
+        return [field.name, text === '' ? null : Number(text)];
+      }
       return [field.name, text === '' ? null : text];
     }),
   );

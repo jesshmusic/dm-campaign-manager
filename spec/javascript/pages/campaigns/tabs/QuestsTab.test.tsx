@@ -4,7 +4,7 @@ import { render, screen, fireEvent, waitFor, within } from '../../../test-utils'
 import QuestsTab from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/tabs/QuestsTab';
 import { Campaign } from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/types';
 import { encounter, FakeState, makeState, quest, questLink, sampleCampaign } from '../fixtures';
-import { chooseOption } from '../selectHelpers';
+import { chooseOption, chosenOption, menuOptions, openSelect } from '../selectHelpers';
 
 const renderTab = (campaign: Campaign = sampleCampaign(), state: FakeState = makeState()) => {
   render(
@@ -313,6 +313,28 @@ describe('QuestsTab', () => {
     );
   });
 
+  it('picks a quest\'s levels from 1 to 20, or Any', async () => {
+    const { state } = renderTab();
+
+    fireEvent.click(within(main()).getByRole('button', { name: 'Edit' }));
+    const form = screen.getByRole('dialog', { name: 'Edit Stop the cult' });
+    openSelect('Maximum level');
+    expect(menuOptions()).toEqual(Array.from({ length: 20 }, (_, index) => String(index + 1)));
+    fireEvent.click(screen.getByRole('option', { name: '8' }));
+    // Clearing the lowest level leaves it open-ended
+    fireEvent.keyDown(screen.getByRole('combobox', { name: 'Minimum level' }), { key: 'Backspace' });
+    expect(within(form).getByText('Any')).toBeInTheDocument();
+    fireEvent.click(within(form).getByRole('button', { name: 'Save' }));
+
+    await waitFor(() =>
+      expect(state.saveChild).toHaveBeenCalledWith(
+        'quests',
+        expect.objectContaining({ level_min: null, level_max: 8 }),
+        'q1',
+      ),
+    );
+  });
+
   it('edits a quest with its current values', async () => {
     const { state } = renderTab();
 
@@ -320,8 +342,8 @@ describe('QuestsTab', () => {
     const form = screen.getByRole('dialog', { name: 'Edit Stop the cult' });
     expect(input('reward')).toHaveValue('500 gp');
     expect(within(form).getByText('Reward notes')).toBeInTheDocument();
-    expect(input('level_min')).toHaveValue(3);
-    expect(input('level_max')).toHaveValue(5);
+    expect(chosenOption('Minimum level')).toBe('3');
+    expect(chosenOption('Maximum level')).toBe('5');
     expect(within(form).getByText('Elmo')).toBeInTheDocument();
     expect(within(form).getByText('Moathouse')).toBeInTheDocument();
     await chooseOption('Status', 'Completed', 'comp');
