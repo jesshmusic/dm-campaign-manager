@@ -168,7 +168,15 @@ describe('StoryTab', () => {
       fireEvent.click(screen.getByRole('button', { name: 'Add front' }));
       expect(input('clock_segments')).toHaveValue(6);
       fireEvent.change(input('name'), { target: { value: 'The Black Tide' } });
-      fireEvent.change(input('portents'), { target: { value: 'Ships vanish\nFish die' } });
+      const dialog = within(screen.getByRole('dialog'));
+      fireEvent.click(dialog.getByRole('button', { name: 'Add a portent' }));
+      fireEvent.change(dialog.getByRole('textbox', { name: 'Portent 1' }), {
+        target: { value: 'Ships vanish' },
+      });
+      fireEvent.click(dialog.getByRole('button', { name: 'Add a portent' }));
+      fireEvent.change(dialog.getByRole('textbox', { name: 'Portent 2' }), {
+        target: { value: 'Fish die' },
+      });
       fireEvent.click(
         within(screen.getByRole('dialog')).getByRole('button', { name: 'Add front' }),
       );
@@ -207,9 +215,16 @@ describe('StoryTab', () => {
       expect(input('name')).toHaveValue('The Rising Dead');
       expect(within(screen.getByRole('dialog')).getByText('Lareth')).toBeInTheDocument();
       expect(within(screen.getByRole('dialog')).getByText('Cult of Orcus')).toBeInTheDocument();
-      expect(input('portents')).toHaveValue('Graves open\nLivestock die');
+      const dialog = within(screen.getByRole('dialog'));
+      expect(dialog.getByRole('textbox', { name: 'Portent 1' })).toHaveValue('Graves open');
+      expect(dialog.getByRole('textbox', { name: 'Portent 2' })).toHaveValue('Livestock die');
+      expect(dialog.getByRole('textbox', { name: 'Question 1' })).toHaveValue(
+        'Will Hommlet survive?',
+      );
 
-      fireEvent.change(input('portents'), { target: { value: 'Graves open\nThe sky darkens' } });
+      fireEvent.change(dialog.getByRole('textbox', { name: 'Portent 2' }), {
+        target: { value: 'The sky darkens' },
+      });
       fireEvent.click(screen.getByRole('button', { name: 'Save' }));
 
       await waitFor(() => expect(state.saveChild).toHaveBeenCalled());

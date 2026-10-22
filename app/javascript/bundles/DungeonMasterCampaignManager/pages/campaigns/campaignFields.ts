@@ -13,8 +13,8 @@ export const campaignFields = (api: CampaignApi): FieldConfig[] => [
   },
   { name: 'tone', label: 'Tone', type: 'text', placeholder: 'e.g. survival horror, swashbuckling' },
   { name: 'party_size', label: 'Players', type: 'number', min: 1, max: 12 },
-  { name: 'start_level', label: 'Starting level', type: 'number', min: 1, max: 20 },
-  { name: 'target_level', label: 'Target level', type: 'number', min: 1, max: 20 },
+  { name: 'start_level', label: 'Starting level', type: 'level', blankLabel: 'Not set' },
+  { name: 'target_level', label: 'Target level', type: 'level', blankLabel: 'Not set' },
   {
     name: 'planned_sessions',
     label: 'Planned sessions',

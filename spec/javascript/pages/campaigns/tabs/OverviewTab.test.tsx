@@ -7,7 +7,7 @@ import OverviewTab, {
 import { formatDate } from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/tabs/SessionsTab';
 import { Campaign } from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/types';
 import { FakeState, makeState, sampleCampaign, samplePacks } from '../fixtures';
-import { chooseOption } from '../selectHelpers';
+import { chooseOption, chosenOption } from '../selectHelpers';
 import { creditedTitles } from '../creditHelpers';
 
 const renderTab = (campaign: Campaign = sampleCampaign(), state: FakeState = makeState()) => {
@@ -182,8 +182,8 @@ describe('OverviewTab', () => {
       expect(within(screen.getByRole('dialog')).getByText('Story arc')).toBeInTheDocument();
       expect(input('setting_name')).toHaveValue('Greyhawk');
       expect(input('party_size')).toHaveValue(4);
-      expect(input('start_level')).toHaveValue(3);
-      expect(input('target_level')).toHaveValue(8);
+      expect(chosenOption('Starting level')).toBe('3');
+      expect(chosenOption('Target level')).toBe('8');
       expect(input('planned_sessions')).toHaveValue(6);
       expect(
         screen.getByRole('group', { name: 'Truths of the setting' }),
@@ -203,7 +203,7 @@ describe('OverviewTab', () => {
 
       fireEvent.click(screen.getByRole('button', { name: 'Edit campaign' }));
       await chooseOption('Status', 'Completed');
-      fireEvent.change(input('target_level'), { target: { value: '10' } });
+      await chooseOption('Target level', '10');
       fireEvent.click(screen.getByRole('button', { name: 'Remove truth 1' }));
       fireEvent.click(screen.getByRole('button', { name: 'Add a truth' }));
       fireEvent.change(screen.getByLabelText('Truth 2 name'), {

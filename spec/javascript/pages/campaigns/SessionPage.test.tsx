@@ -169,7 +169,7 @@ describe('SessionPage', () => {
       expect(within(prep).getByLabelText('Title')).toHaveValue('');
       expect(within(prep).getByLabelText('Title')).toHaveAttribute('placeholder', 'Session 2');
       expect(within(prep).getByLabelText('Date')).toHaveValue('2026-10-08');
-      expect(within(prep).getByLabelText('Party level')).toHaveValue(4);
+      expect(within(prep).getByLabelText('Party level')).toHaveValue('4');
       expect(within(prep).getByLabelText('Status')).toHaveValue('planned');
 
       fireEvent.change(within(prep).getByLabelText('Title'), {

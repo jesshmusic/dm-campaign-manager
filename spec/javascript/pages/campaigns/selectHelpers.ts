@@ -16,9 +16,16 @@ export const openSelect = (label: string | RegExp, text?: string) => {
   return input;
 };
 
-/** The option labels the open menu shows */
+/** The option a single select shows as picked, or null */
+export const chosenOption = (label: string | RegExp) =>
+  selectInput(label).closest('.reactSelect')?.querySelector('.reactSelect__single-value')
+    ?.textContent ?? null;
+
+/** The option labels the open menu shows (not a plain <select>'s options) */
 export const menuOptions = () =>
-  screen.queryAllByRole('option').map((option) => option.textContent);
+  Array.from(document.querySelectorAll('.reactSelect__menu [role="option"]')).map(
+    (option) => option.textContent,
+  );
 
 /** Opens the select and picks an option by its text */
 export const chooseOption = async (

@@ -31,7 +31,7 @@ const fields: FieldConfig[] = [
   },
   { name: 'level', label: 'Level', type: 'number', min: 1, max: 20 },
   { name: 'notes', label: 'Notes', hint: 'Only you see this', type: 'textarea', wide: true },
-  { name: 'features', label: 'Features', type: 'lines', wide: true },
+  { name: 'features', label: 'Features', type: 'lines', noun: 'feature', max: 20, wide: true },
   { name: 'revealed', label: 'Already revealed', type: 'checkbox' },
 ];
 
@@ -76,6 +76,14 @@ describe('toAttributes', () => {
     });
   });
 
+  it("saves a list's rows trimmed, without empty ones", () => {
+    expect(
+      toAttributes(fields, { features: [' Bone altar ', '', '  ', 'Collapsed stair'] }),
+    ).toMatchObject({
+      features: ['Bone altar', 'Collapsed stair'],
+    });
+  });
+
   it('treats missing values as blank and unchecked', () => {
     expect(toAttributes(fields, {})).toEqual({
       name: null,
@@ -91,6 +99,42 @@ describe('toAttributes', () => {
     expect(toAttributes([fields[0]], { name: 'Elmo', extra: 'ignored' })).toEqual({
       name: 'Elmo',
     });
+  });
+});
+
+describe('level fields', () => {
+  const levelFields: FieldConfig[] = [
+    { name: 'level_min', label: 'Minimum level', type: 'level', blankLabel: 'Any' },
+  ];
+
+  it('saves a picked level as a number, and none as null', () => {
+    expect(toAttributes(levelFields, { level_min: '4' })).toEqual({ level_min: 4 });
+    expect(toAttributes(levelFields, { level_min: '' })).toEqual({ level_min: null });
+    expect(toFormValues(levelFields, { level_min: 4 })).toEqual({ level_min: '4' });
+  });
+
+  it('is a dropdown of 1 to 20, showing the blank choice with no level', async () => {
+    const onSubmit = jest.fn().mockResolvedValue(true);
+    render(
+      <EntityForm
+        title="Edit quest"
+        fields={levelFields}
+        initialValues={{ level_min: '' }}
+        submitLabel="Save"
+        onSubmit={onSubmit}
+        onCancel={jest.fn()}
+      />,
+    );
+
+    expect(screen.getByText('Any')).toBeInTheDocument();
+    openSelect('Minimum level');
+    expect(menuOptions()).toHaveLength(20);
+    expect(menuOptions()[0]).toBe('1');
+    expect(menuOptions()[19]).toBe('20');
+    await chooseOption('Minimum level', '12', '12');
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+
+    await waitFor(() => expect(onSubmit).toHaveBeenCalledWith({ level_min: 12 }));
   });
 });
 
@@ -195,7 +239,7 @@ describe('truths fields', () => {
 });
 
 describe('toFormValues', () => {
-  it('converts a record into strings, joined lines and booleans', () => {
+  it('converts a record into strings, lists and booleans', () => {
     expect(
       toFormValues(fields, {
         name: 'Lareth',
@@ -210,7 +254,7 @@ describe('toFormValues', () => {
       role: 'villain',
       level: '5',
       notes: '',
-      features: 'Bone altar\nCollapsed stair',
+      features: ['Bone altar', 'Collapsed stair'],
       revealed: true,
     });
   });
@@ -221,7 +265,7 @@ describe('toFormValues', () => {
       role: '',
       level: '',
       notes: '',
-      features: '',
+      features: [],
       revealed: false,
     });
   });
@@ -305,7 +349,15 @@ describe('EntityForm', () => {
     fireEvent.change(input('name'), { target: { value: ' Elmo the Drunk ' } });
     fireEvent.keyDown(input('role'), { key: 'Backspace' });
     fireEvent.change(input('level'), { target: { value: '4' } });
-    fireEvent.change(input('features'), { target: { value: 'One\n\nTwo' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Add a feature' }));
+    fireEvent.change(screen.getByRole('textbox', { name: 'Feature 1' }), {
+      target: { value: ' One ' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Add a feature' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Add a feature' }));
+    fireEvent.change(screen.getByRole('textbox', { name: 'Feature 3' }), {
+      target: { value: 'Two' },
+    });
     fireEvent.click(screen.getByRole('checkbox', { name: 'Already revealed' }));
     fireEvent.click(screen.getByRole('button', { name: 'Save' }));
 

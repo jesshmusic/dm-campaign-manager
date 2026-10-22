@@ -6,7 +6,6 @@ import {
   Campaign,
   PlannerSession,
 } from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/types';
-import { SESSION_STATUS_LABELS } from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/tabs/SessionsTab';
 import { ApiError } from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/campaigns/useCampaignApi';
 import {
   FakeState,
@@ -79,7 +78,7 @@ describe('PrepModal', () => {
     expect(field('Title')).toHaveValue('');
     expect(field('Title')).toHaveAttribute('placeholder', 'Session 2');
     expect(field('Date')).toHaveValue('2026-10-08');
-    expect(field('Party level')).toHaveValue(4);
+    expect(field('Party level')).toHaveValue('4');
     expect(field('Status')).toHaveValue('planned');
     expect(
       within(prep())
@@ -112,7 +111,8 @@ describe('PrepModal', () => {
 
     expect(field('Character notes')).toHaveValue('Aria wants revenge');
     expect(textbox('Strong start')).toHaveValue('The bell tolls at midnight');
-    expect(textbox('Potential scenes')).toHaveValue('Fight at the gate\nMeet Elmo');
+    expect(textbox('Scene 1')).toHaveValue('Fight at the gate');
+    expect(textbox('Scene 2')).toHaveValue('Meet Elmo');
     expect(within(step(4)).getByText('The mayor is a cultist')).toBeInTheDocument();
     expect(within(step(5)).getByText('Hommlet')).toBeInTheDocument();
     expect(within(step(6)).getByText('Elmo (Ally)')).toBeInTheDocument();
@@ -185,12 +185,10 @@ describe('PrepModal', () => {
   it('offers unrevealed secrets, the places and the cast that are not picked yet', () => {
     renderPrep();
 
-    // What a select offers (not the status select's options), closing it again after
+    // What a select offers, closing it again after
     const offered = (label: string) => {
       const input = openSelect(label);
-      const options = menuOptions().filter(
-        (option) => !Object.values(SESSION_STATUS_LABELS).includes(option ?? ''),
-      );
+      const options = menuOptions();
       fireEvent.keyDown(input, { key: 'Escape' });
       return options;
     };
@@ -213,7 +211,11 @@ describe('PrepModal', () => {
       fireEvent.change(field('Status'), { target: { value: 'prepped' } });
       type(field('Character notes'), 'Aria wants revenge on Lareth');
       type(textbox('Strong start'), 'Zombies at the gate');
-      type(textbox('Potential scenes'), ' Fight at the gate \n\nAmbush at the mill\n');
+      type(textbox('Scene 1'), ' Fight at the gate ');
+      fireEvent.click(within(prep()).getByRole('button', { name: 'Remove scene 2' }));
+      fireEvent.click(within(prep()).getByRole('button', { name: 'Add a scene' }));
+      fireEvent.click(within(prep()).getByRole('button', { name: 'Add a scene' }));
+      type(textbox('Scene 3'), 'Ambush at the mill');
       // Secrets: swap one for another
       await chooseOption('Add a secret', "Lareth wears the mayor's ring");
       removeValue('The mayor is a cultist');
@@ -286,6 +288,16 @@ describe('PrepModal', () => {
       });
       expect(state.api.addSessionLink).not.toHaveBeenCalled();
       expect(state.api.removeSessionLink).not.toHaveBeenCalled();
+    });
+
+    it('picks the party level from 1 to 20, or Not set', () => {
+      renderPrep();
+
+      const level = field('Party level') as HTMLSelectElement;
+      expect(Array.from(level.options).map((option) => option.textContent)).toEqual([
+        'Not set',
+        ...Array.from({ length: 20 }, (_, index) => String(index + 1)),
+      ]);
     });
 
     it('clears a title, date and level to null', async () => {
@@ -389,18 +401,6 @@ describe('PrepModal', () => {
 
   describe('checking the details', () => {
     it.each([
-      [
-        'a party level above 20',
-        'Party level',
-        '25',
-        'Party level must be a whole number from 1 to 20.',
-      ],
-      [
-        'a party level of 0',
-        'Party level',
-        '0',
-        'Party level must be a whole number from 1 to 20.',
-      ],
       [
         'coins below zero',
         'Gold pieces (gp)',

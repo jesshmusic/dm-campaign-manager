@@ -588,7 +588,7 @@ RSpec.describe CampaignSync do
         attributes = { name: 'The Grey Plague', premise: 'The dead rise', pitch: 'Survive the winter', settingName: 'Greyhawk',
                        settingNotes: 'The Flanaess', truths: [{ 'name' => 'The dead walk.', 'description' => 'Nobody knows why.' }],
                        tone: 'Grim', partySize: 4, startLevel: 3,
-                       targetLevel: 8, plannedSessions: 6, cadence: 'Weekly', status: 'active' }
+                       targetLevel: 8, plannedSessions: 6, cadence: 'Weekly', status: 'active', mode: 'sandbox' }
 
         result = push('campaign', campaign, attributes)
 
@@ -599,9 +599,16 @@ RSpec.describe CampaignSync do
           name: 'The Grey Plague', premise: 'The dead rise', pitch: 'Survive the winter', setting_name: 'Greyhawk',
           setting_notes: 'The Flanaess', truths: [{ 'name' => 'The dead walk.', 'description' => 'Nobody knows why.' }],
           tone: 'Grim', party_size: 4, start_level: 3, target_level: 8,
-          planned_sessions: 6, cadence: 'Weekly', status: 'active'
+          planned_sessions: 6, cadence: 'Weekly', status: 'active', mode: 'sandbox'
         )
         expect(sync.changes_since(0)[:campaign]).to include(name: 'The Grey Plague', syncVersion: campaign.sync_version)
+      end
+
+      it "won't set the campaign's type to one there isn't" do
+        result = push('campaign', campaign, { mode: 'saga' })
+
+        expect(result[:errors]).to contain_exactly(include(uuid: campaign.uuid, errors: ['Mode is not included in the list']))
+        expect(campaign.reload.mode).to eq('arc')
       end
 
       it "takes the campaign's truths as strings, as older versions of the module send them" do

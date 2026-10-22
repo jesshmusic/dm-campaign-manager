@@ -1,3 +1,4 @@
+import ListEditor, { listToSave } from '../components/ListEditor';
 import { useState } from 'react';
 import styled from 'styled-components';
 import { COIN_ERROR, CoinDrafts, coinDrafts, parseCoins } from '../coins';
@@ -40,10 +41,8 @@ import {
   SessionStatus,
 } from '../types';
 import { AddHeading, Field, FormGrid, Input, Meta, Select } from '../Campaigns.styles';
+import { LEVEL_OPTIONS, MAX_LEVEL } from '../levels';
 import { PartyList, PREP_STEPS, Step } from './prepSteps';
-
-export const MAX_LEVEL = 20;
-export const LEVEL_ERROR = 'Party level must be a whole number from 1 to 20.';
 
 const Steps = styled.div`
   display: flex;
@@ -60,8 +59,7 @@ type PrepDraft = {
   status: SessionStatus;
   characterNotes: string;
   strongStart: string;
-  // One per line
-  scenes: string;
+  scenes: string[];
   treasure: string;
   coins: CoinDrafts;
   foundryScenes: FoundryScene[];
@@ -74,7 +72,7 @@ const draftFor = (session: PlannerSession): PrepDraft => ({
   status: session.status,
   characterNotes: session.characterNotes ?? '',
   strongStart: session.strongStart ?? '',
-  scenes: session.scenes.join('\n'),
+  scenes: session.scenes,
   treasure: session.treasure ?? '',
   coins: coinDrafts(session.treasureCurrency),
   foundryScenes: session.foundryScenes,
@@ -82,8 +80,8 @@ const draftFor = (session: PlannerSession): PrepDraft => ({
 
 // The session attributes a draft saves, or why it can't be saved
 const attributesFor = (draft: PrepDraft): { attributes: Attributes } | { error: string } => {
-  const level = parseWholeNumber(draft.level, 1, MAX_LEVEL);
-  if (level === undefined) return { error: LEVEL_ERROR };
+  // Picked from 1 to 20, or not set
+  const level = parseWholeNumber(draft.level, 1, MAX_LEVEL) ?? null;
   const coins = parseCoins(draft.coins);
   if (!coins) return { error: COIN_ERROR };
   return {
@@ -94,10 +92,7 @@ const attributesFor = (draft: PrepDraft): { attributes: Attributes } | { error: 
       status: draft.status,
       character_notes: textOrNull(draft.characterNotes),
       strong_start: textOrNull(draft.strongStart),
-      scenes: draft.scenes
-        .split('\n')
-        .map((line) => line.trim())
-        .filter(Boolean),
+      scenes: listToSave(draft.scenes),
       treasure: textOrNull(draft.treasure),
       treasure_currency: coins,
       foundry_scenes: draft.foundryScenes,
@@ -226,15 +221,14 @@ const PrepModal = ({ campaign, session, state, onClose }: PrepModalProps) => {
         </Field>
         <Field>
           Party level
-          <Input
-            type="number"
-            inputMode="numeric"
-            min={1}
-            max={MAX_LEVEL}
-            step={1}
-            value={draft.level}
-            onChange={(event) => change({ level: event.target.value })}
-          />
+          <Select value={draft.level} onChange={(event) => change({ level: event.target.value })}>
+            <option value="">Not set</option>
+            {LEVEL_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </Select>
         </Field>
         <Field>
           Status
@@ -286,12 +280,12 @@ const PrepModal = ({ campaign, session, state, onClose }: PrepModalProps) => {
 
         <Step>
           <h3>{PREP_STEPS.scenes}</h3>
-          <Meta>
-            A short list of scenes that might happen. Be ready to throw them away. One per line.
-          </Meta>
-          <DraftTextArea
-            label="Potential scenes"
-            value={draft.scenes}
+          <Meta>A short list of scenes that might happen. Be ready to throw them away.</Meta>
+          <ListEditor
+            noun="scene"
+            max={20}
+            placeholder="e.g. Ambush at the ford"
+            items={draft.scenes}
             onChange={(scenes) => change({ scenes })}
           />
         </Step>

@@ -52,8 +52,11 @@ const PlacesTab = ({ campaign, state }: PlacesTabProps) => {
     {
       name: 'features',
       label: 'Fantastic features',
-      hint: 'Three evocative details the players can interact with, one per line',
+      hint: 'Three evocative details the players can interact with',
       type: 'lines',
+      noun: 'feature',
+      max: 20,
+      placeholder: 'e.g. A rope bridge over the gorge',
       wide: true,
     },
     { name: 'notes', label: 'Notes', type: 'textarea', wide: true },
