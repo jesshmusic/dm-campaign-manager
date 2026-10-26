@@ -429,7 +429,7 @@ or Monster Manual. The planner uses them without copying them:
     `reference`. The campaign can be updated but not created or deleted. `attributes` take the pull's camelCase keys
     (`CampaignSync::WRITABLE`); any other key is an error for that change:
     - campaign: `name premise pitch settingName settingNotes truths tone partySize startLevel targetLevel
-      plannedSessions cadence status`
+      plannedSessions cadence status mode`
     - faction: `name goal description notes`
     - location: `name description features notes parentId foundrySceneUuid foundrySceneName rollTables`
     - npc: `name role description motive secret appearance voice notes factionId statBlockReferenceId
@@ -479,6 +479,25 @@ or Monster Manual. The planner uses them without copying them:
   Their session, quest or encounter is bumped, so the next pull carries its new list, and the target's tombstone
   covers them.
 - Server checks: token + campaign ownership. Sanitize HTML both ways.
+
+**Changing the planner's data** (both sides keep copies, so a change of shape is made on both):
+- **Data version.** `CampaignSync::SCHEMA_VERSION` numbers the shape of the campaign data the sync sends and takes,
+  and `CampaignSync::MIN_CLIENT_SCHEMA` is the oldest the campaign endpoints still serve. The module sends the version
+  it speaks in an `X-Planner-Schema` header (`SYNC_SCHEMA` in its `src/api.mjs`); modules before 1.3.1 send none and
+  speak 1. An older one gets `426 Upgrade Required` with `code: "update_module"`, and the module stops syncing, keeps
+  its changes and asks the GM to update it.
+- **Website data.** A Rails migration with lightweight models (not the app's, which change later) converts the saved
+  records and bumps their `sync_version` (`sync_counter = sync_counter + 1, sync_version = sync_counter + 1`) so the next
+  pull carries the new shape. See `ConvertCampaignTruthsToNamedEntries` and `CreateCampaignEncounters`.
+- **What the sync takes.** Keep accepting the old shape when that's easy, as truths still take plain strings. When an
+  older module would get the new shape wrong, raise `SCHEMA_VERSION`, and `MIN_CLIENT_SCHEMA` with it, in the same
+  release as the module change; ship the module first.
+- **Module data.** The module keeps each campaign's records on its journal pages and the changes waiting for Sync on
+  the campaign's folder. `src/migrations.mjs` lists numbered steps; each folder notes the version it's at
+  (`dataVersion`), and the GM's client runs the steps after it on load and before Sync. A step converts the records
+  and the waiting changes, must be safe to run on data that's already right (an imported adventure can be any
+  version), and queues anything Dungeon Master Guru should have too. Step 1 repairs records and waiting changes that
+  1.3.0 left pointing at stand-in ids; step 2 gives book references their actor's name.
 
 ## Phases
 0. **Prerequisites:**
