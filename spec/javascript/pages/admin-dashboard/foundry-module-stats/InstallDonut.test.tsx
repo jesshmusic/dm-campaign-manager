@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, screen } from '../../../test-utils';
 import InstallDonut from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/admin-dashboard/foundry-module-stats/components/InstallDonut';
+import { DONUT_PALETTE } from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/admin-dashboard/foundry-module-stats/components/DonutSvg';
 import { ModuleStats } from '../../../../../app/javascript/bundles/DungeonMasterCampaignManager/pages/admin-dashboard/foundry-module-stats/types';
 
 const buildModule = (overrides: Partial<ModuleStats> = {}): ModuleStats => ({
@@ -48,5 +49,9 @@ describe('InstallDonut', () => {
     expect(screen.queryByText('C')).not.toBeInTheDocument();
     expect(screen.getByText('75.0%')).toBeInTheDocument();
     expect(screen.getByText('25.0%')).toBeInTheDocument();
+  });
+
+  it('has a distinct color for each of the nine modules', () => {
+    expect(new Set(DONUT_PALETTE).size).toBeGreaterThanOrEqual(9);
   });
 });

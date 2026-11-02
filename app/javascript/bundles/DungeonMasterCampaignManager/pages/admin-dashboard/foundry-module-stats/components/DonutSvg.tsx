@@ -2,7 +2,8 @@ import React from 'react';
 import { ModuleStats } from '../types';
 
 // On-brand palette derived from theme accent colors. Stays distinct enough
-// for a 7-slice chart without leaving the parchment palette.
+// for a 9-slice chart without leaving the parchment palette. Needs a color for
+// each repo in FoundryModuleStatsFetcher::REPOS.
 export const DONUT_PALETTE = [
   '#972c1d', // primary (dark red)
   '#dd9529', // orange
@@ -11,6 +12,8 @@ export const DONUT_PALETTE = [
   '#7b469b', // iris
   '#c9ad6a', // gold
   '#507f62', // pine green
+  '#7f513e', // brown
+  '#51a5c5', // blue
 ];
 
 interface Props {
