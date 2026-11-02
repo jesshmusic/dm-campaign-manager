@@ -38,7 +38,8 @@ class FoundryModuleStatsFetcher
     { name: 'Playlist Enhancements', repo: 'dorman-lakelys-playlist-enhancements' },
     { name: 'Legendary Actions',     repo: 'dormanlakely-legendary-actions' },
     { name: 'Battle Tracker',        repo: 'dorman-lakelys-battle-tracker' },
-    { name: 'Cartography',           repo: 'dorman-lakely-cartography' }
+    { name: 'Cartography',           repo: 'dorman-lakely-cartography' },
+    { name: 'Campaign Planner',      repo: 'dorman-lakelys-campaign-planner' }
   ].freeze
   WANTED_MAJORS = [13, 14].freeze
   MANIFEST_WALK_LIMIT = 8
